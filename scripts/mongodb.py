@@ -48,10 +48,23 @@ class MongoDB(Product):
 
 	def reset(self):
 		print 'Reimporting data from dump...'
-		Command.execute('{0} --drop --db healthdata {1}'.format(os.path.join(self.bin, 'mongorestore'), 
-			os.path.join(self.parent, 'dump', 'mongodb', 'healthdata')), self.parent)
+		Command.execute('{0} --drop --db user {1}'.format(os.path.join(self.bin, 'mongorestore'), 
+			os.path.join(self.parent, 'dump', 'mongodb', 'user')), self.parent)
+		Command.execute('{0} --drop --db access {1}'.format(os.path.join(self.bin, 'mongorestore'), 
+			os.path.join(self.parent, 'dump', 'mongodb', 'access')), self.parent)
+		Command.execute('{0} --drop --db mapping {1}'.format(os.path.join(self.bin, 'mongorestore'), 
+			os.path.join(self.parent, 'dump', 'mongodb', 'mapping')), self.parent)
+		Command.execute('{0} --drop --db record {1}'.format(os.path.join(self.bin, 'mongorestore'), 
+			os.path.join(self.parent, 'dump', 'mongodb', 'record')), self.parent)									
 
 	def dump(self):
 		print 'Dumping database...'
-		Command.execute('{0} --db healthdata --out {1}'.format(os.path.join(self.bin, 'mongodump'), 
+		Command.execute('{0} --db user --out {1}'.format(os.path.join(self.bin, 'mongodump'), 
 			os.path.join(self.parent, 'dump', 'mongodb')), self.parent)
+		Command.execute('{0} --db access --out {1}'.format(os.path.join(self.bin, 'mongodump'), 
+			os.path.join(self.parent, 'dump', 'mongodb')), self.parent)
+		Command.execute('{0} --db mapping --out {1}'.format(os.path.join(self.bin, 'mongodump'), 
+			os.path.join(self.parent, 'dump', 'mongodb')), self.parent)
+		Command.execute('{0} --db record --out {1}'.format(os.path.join(self.bin, 'mongodump'), 
+			os.path.join(self.parent, 'dump', 'mongodb')), self.parent)
+			

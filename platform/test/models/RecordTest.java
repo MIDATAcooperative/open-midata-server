@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import utils.DateTimeUtils;
 import utils.collections.ChainedMap;
-import utils.db.Database;
+import utils.db.DBLayer;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -26,18 +26,18 @@ public class RecordTest {
 	@Before
 	public void setUp() {
 		start(fakeApplication(fakeGlobal()));
-		Database.connectToTest();
-		Database.destroy();
+		DBLayer.connectToTest();
+		DBLayer.destroy();
 	}
 
 	@After
 	public void tearDown() {
-		Database.close();
+		DBLayer.close();
 	}
 
 	@Test
 	public void exists() throws ModelException {
-		DBCollection records = Database.getCollection("records");
+		DBCollection records = DBLayer.getCollection("records");
 		assertEquals(0, records.count());
 		Record record = new Record();
 		record._id = new ObjectId();
@@ -55,7 +55,7 @@ public class RecordTest {
 
 	@Test
 	public void notExists() throws ModelException {
-		DBCollection records = Database.getCollection("records");
+		DBCollection records = DBLayer.getCollection("records");
 		assertEquals(0, records.count());
 		Record record = new Record();
 		record._id = new ObjectId();
@@ -73,7 +73,7 @@ public class RecordTest {
 
 	@Test
 	public void add() throws ModelException {
-		DBCollection records = Database.getCollection("records");
+		DBCollection records = DBLayer.getCollection("records");
 		assertEquals(0, records.count());
 		Record record = new Record();
 		record._id = new ObjectId();
@@ -94,7 +94,7 @@ public class RecordTest {
 
 	@Test
 	public void delete() throws ModelException {
-		DBCollection records = Database.getCollection("records");
+		DBCollection records = DBLayer.getCollection("records");
 		assertEquals(0, records.count());
 		Record record = new Record();
 		record._id = new ObjectId();

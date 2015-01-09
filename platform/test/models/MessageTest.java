@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import utils.DateTimeUtils;
 import utils.collections.ChainedSet;
-import utils.db.Database;
+import utils.db.DBLayer;
 
 import com.mongodb.DBCollection;
 
@@ -21,18 +21,18 @@ public class MessageTest {
 	@Before
 	public void setUp() {
 		start(fakeApplication(fakeGlobal()));
-		Database.connectToTest();
-		Database.destroy();
+		DBLayer.connectToTest();
+		DBLayer.destroy();
 	}
 
 	@After
 	public void tearDown() {
-		Database.close();
+		DBLayer.close();
 	}
 
 	@Test
 	public void add() throws ModelException {
-		DBCollection messages = Database.getCollection("messages");
+		DBCollection messages = DBLayer.getCollection("messages");
 		assertEquals(0, messages.count());
 		Message message = new Message();
 		message._id = new ObjectId();

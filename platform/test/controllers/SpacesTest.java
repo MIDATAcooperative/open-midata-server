@@ -23,7 +23,7 @@ import play.mvc.Result;
 import utils.LoadData;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
-import utils.db.Database;
+import utils.db.DBLayer;
 import utils.db.DatabaseConversion;
 import utils.db.DatabaseConversionException;
 import utils.db.OrderOperations;
@@ -38,13 +38,13 @@ public class SpacesTest {
 	@Before
 	public void setUp() {
 		start(fakeApplication(fakeGlobal()));
-		Database.connectToTest();
+		DBLayer.connectToTest();
 		LoadData.load();
 	}
 
 	@After
 	public void tearDown() {
-		Database.close();
+		DBLayer.close();
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class SpacesTest {
 						Json.parse("{\"name\": \"Test space\", \"visualization\": \"" + visualizationId.toString()
 								+ "\"}")));
 		assertEquals(200, status(result));
-		DBObject foundSpace = Database.getCollection("spaces").findOne(new BasicDBObject("name", "Test space"));
+		DBObject foundSpace = DBLayer.getCollection("spaces").findOne(new BasicDBObject("name", "Test space"));
 		Space space = DatabaseConversion.toModel(Space.class, foundSpace);
 		assertNotNull(space);
 		assertEquals("Test space", space.name);
@@ -70,7 +70,7 @@ public class SpacesTest {
 
 	@Test
 	public void deleteSpaceSuccess() {
-		DBCollection spaces = Database.getCollection("spaces");
+		DBCollection spaces = DBLayer.getCollection("spaces");
 		long originalCount = spaces.count();
 		DBObject space = spaces.findOne();
 		ObjectId id = (ObjectId) space.get("_id");
@@ -85,7 +85,7 @@ public class SpacesTest {
 
 	@Test
 	public void deleteSpaceForbidden() throws Exception {
-		DBCollection spaces = Database.getCollection("spaces");
+		DBCollection spaces = DBLayer.getCollection("spaces");
 		long originalCount = spaces.count();
 		User user = User.get(new ChainedMap<String, String>().put("email", "test2@example.com").get(),
 				new ChainedSet<String>().add("_id").get());
@@ -104,9 +104,9 @@ public class SpacesTest {
 
 	@Test
 	public void addRecordSuccess() {
-		DBObject record = Database.getCollection("records").findOne();
+		DBObject record = DBLayer.getCollection("records").findOne();
 		ObjectId recordId = (ObjectId) record.get("_id");
-		DBCollection spaces = Database.getCollection("spaces");
+		DBCollection spaces = DBLayer.getCollection("spaces");
 		DBObject query = new BasicDBObject();
 		query.put("records", new BasicDBObject("$nin", new ObjectId[] { recordId }));
 		DBObject space = spaces.findOne(query);

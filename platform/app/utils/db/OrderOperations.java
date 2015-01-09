@@ -14,7 +14,7 @@ public class OrderOperations {
 	 * Returns the maximum of the order fields in the given collection.
 	 */
 	public static int getMax(String collection, ObjectId userId) {
-		DBCollection coll = Database.getCollection(collection);
+		DBCollection coll = DBLayer.getCollection(collection);
 		DBObject query = new BasicDBObject("owner", userId);
 		DBObject projection = new BasicDBObject("order", 1);
 		DBCursor maxOrder = coll.find(query, projection).sort(new BasicDBObject("order", -1)).limit(1);
@@ -67,7 +67,7 @@ public class OrderOperations {
 			query.put("$and", and);
 		}
 		DBObject update = new BasicDBObject("$inc", new BasicDBObject("order", increment));
-		DBCollection coll = Database.getCollection(collection);
+		DBCollection coll = DBLayer.getCollection(collection);
 		try {
 			coll.updateMulti(query, update);
 		} catch (MongoException e) {

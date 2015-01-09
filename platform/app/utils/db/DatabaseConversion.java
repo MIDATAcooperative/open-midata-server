@@ -18,14 +18,23 @@ import com.mongodb.DBObject;
 
 public class DatabaseConversion {
 
+	private Object encrypt(Class model, String path, Object source) {
+		return source;
+	}
+	
+	private Object decrypt(Class model, String path, Object source) {
+		return source;
+	}
+	
 	/**
 	 * Turns a model into a database object.
 	 */
-	public static <T extends Model> DBObject toDBObject(T modelObject) throws DatabaseConversionException {
+	public <T extends Model> DBObject toDBObject(T modelObject) throws DatabaseConversionException {
 		DBObject dbObject = new BasicDBObject();
-		for (Field field : modelObject.getClass().getFields()) {
+		Class model = modelObject.getClass();
+		for (Field field : model.getFields()) {
 			try {
-				dbObject.put(field.getName(), field.get(modelObject));
+				dbObject.put(field.getName(), encrypt(model, field.getName(), field.get(modelObject)));
 			} catch (IllegalArgumentException e) {
 				throw new DatabaseConversionException(e);
 			} catch (IllegalAccessException e) {
@@ -38,7 +47,7 @@ public class DatabaseConversion {
 	/**
 	 * Converts a database object back into a model.
 	 */
-	public static <T extends Model> T toModel(Class<T> modelClass, DBObject dbObject)
+	public <T extends Model> T toModel(Class<T> modelClass, DBObject dbObject)
 			throws DatabaseConversionException {
 		T modelObject;
 		try {
@@ -51,7 +60,7 @@ public class DatabaseConversion {
 		for (Field field : modelClass.getFields()) {
 			if (dbObject.keySet().contains(field.getName())) {
 				try {
-					field.set(modelObject, convert(field.getGenericType(), dbObject.get(field.getName())));
+					field.set(modelObject, convert(modelClass, field.getName(), field.getGenericType(), decrypt(modelClass, field.getName(), dbObject.get(field.getName()))));
 				} catch (IllegalArgumentException e) {
 					throw new DatabaseConversionException(e);
 				} catch (IllegalAccessException e) {
@@ -65,7 +74,7 @@ public class DatabaseConversion {
 	/**
 	 * Converts a set of database objects to models.
 	 */
-	public static <T extends Model> Set<T> toModel(Class<T> modelClass, Set<DBObject> dbObjects)
+	public <T extends Model> Set<T> toModel(Class<T> modelClass, Set<DBObject> dbObjects)
 			throws DatabaseConversionException {
 		Set<T> models = new HashSet<T>();
 		for (DBObject dbObject : dbObjects) {
@@ -77,15 +86,15 @@ public class DatabaseConversion {
 	/**
 	 * Converts an object retrieved from the database to the corresponding type.
 	 */
-	private static Object convert(Type type, Object value) {
+	private Object convert(Class model, String path, Type type, Object value) {
 		if (type instanceof ParameterizedType) {
 			ParameterizedType parameterizedType = (ParameterizedType) type;
 			if (parameterizedType.getRawType().equals(Map.class)) {
-				return convertToMap(type, value);
+				return convertToMap(model, path, type, value);
 			} else if (parameterizedType.getRawType().equals(Set.class)) {
-				return convertToSet(type, value);
+				return convertToSet(model, path, type, value);
 			} else if (parameterizedType.getRawType().equals(List.class)) {
-				return convertToList(type, value);
+				return convertToList(model, path, type, value);
 			}
 		}
 		return value;
@@ -94,13 +103,14 @@ public class DatabaseConversion {
 	/**
 	 * Converts a BasicDBObject into a map (keys are always strings because of JSON serialization).
 	 */
-	private static Map<String, Object> convertToMap(Type type, Object value) {
+	private Map<String, Object> convertToMap(Class model, String path, Type type, Object value) {
 		BasicDBObject dbObject = (BasicDBObject) value;
 		if (type instanceof ParameterizedType) {
 			Type valueType = ((ParameterizedType) type).getActualTypeArguments()[1];
 			Map<String, Object> map = new HashMap<String, Object>();
 			for (String key : dbObject.keySet()) {
-				map.put(key, convert(valueType, dbObject.get(key)));
+				String fullpath = path+"."+key;
+				map.put(key, convert(model, fullpath, valueType, decrypt(model, fullpath, dbObject.get(key))));
 			}
 			return map;
 		} else {
@@ -111,13 +121,14 @@ public class DatabaseConversion {
 	/**
 	 * Converts a BasicDBList into a set.
 	 */
-	private static Set<Object> convertToSet(Type type, Object value) {
+	private Set<Object> convertToSet(Class model, String path, Type type, Object value) {
 		BasicDBList dbList = (BasicDBList) value;
 		if (type instanceof ParameterizedType) {
 			Type valueType = ((ParameterizedType) type).getActualTypeArguments()[0];
 			Set<Object> set = new HashSet<Object>();
+			String fullpath = path+"[]";
 			for (Object element : dbList) {
-				set.add(convert(valueType, element));
+				set.add(convert(model, fullpath, valueType, decrypt(model, fullpath, element)));
 			}
 			return set;
 		} else {
@@ -128,13 +139,14 @@ public class DatabaseConversion {
 	/**
 	 * Converts a BasicDBList into a list.
 	 */
-	private static List<Object> convertToList(Type type, Object value) {
+	private List<Object> convertToList(Class model, String path, Type type, Object value) {
 		BasicDBList dbList = (BasicDBList) value;
 		if (type instanceof ParameterizedType) {
 			Type valueType = ((ParameterizedType) type).getActualTypeArguments()[0];
 			List<Object> list = new ArrayList<Object>();
+			String fullpath = path+"[]";
 			for (Object element : dbList) {
-				list.add(convert(valueType, element));
+				list.add(convert(model, fullpath, valueType, decrypt(model, fullpath, element)));
 			}
 			return list;
 		} else {

@@ -19,7 +19,7 @@ import org.junit.Test;
 import utils.CreateDBObjects;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
-import utils.db.Database;
+import utils.db.DBLayer;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -30,18 +30,18 @@ public class UserTest {
 	@Before
 	public void setUp() {
 		start(fakeApplication(fakeGlobal()));
-		Database.connectToTest();
-		Database.destroy();
+		DBLayer.connectToTest();
+		DBLayer.destroy();
 	}
 
 	@After
 	public void tearDown() {
-		Database.close();
+		DBLayer.close();
 	}
 
 	@Test
 	public void add() throws ModelException {
-		DBCollection users = Database.getCollection("users");
+		DBCollection users = DBLayer.getCollection("users");
 		assertEquals(0, users.count());
 		User user = new User();
 		user._id = new ObjectId();
@@ -63,7 +63,7 @@ public class UserTest {
 
 	@Test
 	public void delete() throws ModelException {
-		DBCollection users = Database.getCollection("users");
+		DBCollection users = DBLayer.getCollection("users");
 		assertEquals(0, users.count());
 		ObjectId[] userIds = CreateDBObjects.insertUsers(1);
 		assertEquals(1, users.count());
@@ -73,7 +73,7 @@ public class UserTest {
 
 	@Test
 	public void exists() throws ModelException {
-		DBCollection users = Database.getCollection("users");
+		DBCollection users = DBLayer.getCollection("users");
 		assertEquals(0, users.count());
 		assertFalse(User.exists(new ChainedMap<String, ObjectId>().put("_id", new ObjectId()).get()));
 		ObjectId userId = CreateDBObjects.insertUsers(1)[0];
@@ -82,7 +82,7 @@ public class UserTest {
 
 	@Test
 	public void findSuccess() throws ModelException {
-		DBCollection users = Database.getCollection("users");
+		DBCollection users = DBLayer.getCollection("users");
 		assertEquals(0, users.count());
 		ObjectId userId = CreateDBObjects.insertUsers(1)[0];
 		assertEquals(1, users.count());
@@ -93,7 +93,7 @@ public class UserTest {
 
 	@Test
 	public void findFailure() throws ModelException {
-		DBCollection users = Database.getCollection("users");
+		DBCollection users = DBLayer.getCollection("users");
 		assertEquals(0, users.count());
 		CreateDBObjects.insertUsers(1);
 		assertEquals(1, users.count());

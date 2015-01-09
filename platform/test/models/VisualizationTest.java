@@ -11,7 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import utils.db.Database;
+import utils.db.DBLayer;
 
 import com.mongodb.DBCollection;
 
@@ -22,18 +22,18 @@ public class VisualizationTest {
 	@Before
 	public void setUp() {
 		start(fakeApplication(fakeGlobal()));
-		Database.connectToTest();
-		Database.destroy();
+		DBLayer.connectToTest();
+		DBLayer.destroy();
 	}
 
 	@After
 	public void tearDown() {
-		Database.close();
+		DBLayer.close();
 	}
 
 	@Test
 	public void add() throws ModelException {
-		DBCollection visualizations = Database.getCollection(collection);
+		DBCollection visualizations = DBLayer.getCollection(collection);
 		assertEquals(0, visualizations.count());
 		Visualization visualization = new Visualization();
 		visualization._id = new ObjectId();
@@ -50,7 +50,7 @@ public class VisualizationTest {
 
 	@Test
 	public void delete() throws ModelException {
-		DBCollection visualizations = Database.getCollection(collection);
+		DBCollection visualizations = DBLayer.getCollection(collection);
 		assertEquals(0, visualizations.count());
 		Visualization visualization = new Visualization();
 		visualization._id = new ObjectId();

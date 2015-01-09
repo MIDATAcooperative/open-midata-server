@@ -22,7 +22,7 @@ import play.mvc.Result;
 import utils.LoadData;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
-import utils.db.Database;
+import utils.db.DBLayer;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -33,19 +33,19 @@ public class RegistrationTest {
 	@Before
 	public void setUp() {
 		start(fakeApplication(fakeGlobal()));
-		Database.connectToTest();
+		DBLayer.connectToTest();
 		LoadData.load();
 	}
 
 	@After
 	public void tearDown() {
-		Database.close();
+		DBLayer.close();
 	}
 
 	@Test
 	public void register() throws Exception {
 		String newEmail = "new@example.com";
-		DBCollection users = Database.getCollection("users");
+		DBCollection users = DBLayer.getCollection("users");
 		DBObject query = new BasicDBObject("email", newEmail);
 		assertNull(users.findOne(query));
 		long oldSize = users.count();
@@ -63,7 +63,7 @@ public class RegistrationTest {
 
 	@Test
 	public void registerSameEmail() {
-		DBCollection users = Database.getCollection("users");
+		DBCollection users = DBLayer.getCollection("users");
 		long oldSize = users.count();
 		assertTrue(oldSize > 0);
 		String existingEmail = (String) users.findOne().get("email");

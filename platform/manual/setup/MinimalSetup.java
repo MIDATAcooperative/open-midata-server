@@ -3,7 +3,7 @@ package setup;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.fakeGlobal;
 import static play.test.Helpers.start;
-import utils.db.Database;
+import utils.db.DBLayer;
 import utils.search.Search;
 
 /**
@@ -17,7 +17,7 @@ public class MinimalSetup {
 		// connecting
 		System.out.print("Connecting to MongoDB...");
 		start(fakeApplication(fakeGlobal()));
-		Database.connect();
+		DBLayer.connect();
 		System.out.println("done.");
 		System.out.print("Connecting to ElasticSearch...");
 		Search.connect();
@@ -25,7 +25,7 @@ public class MinimalSetup {
 
 		// initializing
 		System.out.print("Setting up MongoDB...");
-		Database.initialize();
+		DBLayer.initialize();
 		System.out.println("done.");
 		System.out.print("Setting up ElasticSearch...");
 		Search.initialize();
@@ -33,7 +33,7 @@ public class MinimalSetup {
 
 		// terminating
 		System.out.println("Shutting down...");
-		Database.close();
+		DBLayer.close();
 		Search.close();
 		System.out.println("Minimal setup complete.");
 	}

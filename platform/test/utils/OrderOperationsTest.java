@@ -13,7 +13,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import utils.db.Database;
+import utils.db.DBLayer;
 import utils.db.OrderOperations;
 
 import com.mongodb.BasicDBObject;
@@ -24,18 +24,18 @@ public class OrderOperationsTest {
 	@Before
 	public void setUp() {
 		start(fakeApplication(fakeGlobal()));
-		Database.connectToTest();
-		Database.destroy();
+		DBLayer.connectToTest();
+		DBLayer.destroy();
 	}
 
 	@After
 	public void tearDown() {
-		Database.close();
+		DBLayer.close();
 	}
 
 	@Test
 	public void maxOfUser() {
-		DBCollection collection = Database.getCollection("order");
+		DBCollection collection = DBLayer.getCollection("order");
 		Map<String, Object> values = new HashMap<String, Object>();
 		ObjectId user1 = new ObjectId();
 		ObjectId user2 = new ObjectId();
@@ -61,7 +61,7 @@ public class OrderOperationsTest {
 
 	@Test
 	public void maxNoEntriesForUser() {
-		DBCollection collection = Database.getCollection("order");
+		DBCollection collection = DBLayer.getCollection("order");
 		Map<String, Object> values = new HashMap<String, Object>();
 		ObjectId user1 = new ObjectId();
 		ObjectId user2 = new ObjectId();
@@ -78,7 +78,7 @@ public class OrderOperationsTest {
 	@Test
 	public void incrementGreaterThan() throws Exception {
 		ObjectId[] userIds = insertTestValues();
-		DBCollection collection = Database.getCollection("order");
+		DBCollection collection = DBLayer.getCollection("order");
 		OrderOperations.increment("order", userIds[0], 4, 0);
 		assertEquals(1, collection.findOne(new BasicDBObject("_id", 1)).get("order"));
 		assertEquals(6, collection.findOne(new BasicDBObject("_id", 2)).get("order"));
@@ -90,7 +90,7 @@ public class OrderOperationsTest {
 	@Test
 	public void incrementBetween() throws Exception {
 		ObjectId[] userIds = insertTestValues();
-		DBCollection collection = Database.getCollection("order");
+		DBCollection collection = DBLayer.getCollection("order");
 		OrderOperations.increment("order", userIds[0], 3, 4);
 		assertEquals(1, collection.findOne(new BasicDBObject("_id", 1)).get("order"));
 		assertEquals(5, collection.findOne(new BasicDBObject("_id", 2)).get("order"));
@@ -102,7 +102,7 @@ public class OrderOperationsTest {
 	@Test
 	public void incrementFromGreaterTo() throws Exception {
 		ObjectId[] userIds = insertTestValues();
-		DBCollection collection = Database.getCollection("order");
+		DBCollection collection = DBLayer.getCollection("order");
 		OrderOperations.increment("order", userIds[0], 4, 1);
 		assertEquals(2, collection.findOne(new BasicDBObject("_id", 1)).get("order"));
 		assertEquals(5, collection.findOne(new BasicDBObject("_id", 2)).get("order"));
@@ -114,7 +114,7 @@ public class OrderOperationsTest {
 	@Test
 	public void decrementGreaterThan() throws Exception {
 		ObjectId[] userIds = insertTestValues();
-		DBCollection collection = Database.getCollection("order");
+		DBCollection collection = DBLayer.getCollection("order");
 		OrderOperations.decrement("order", userIds[0], 0, 5);
 		assertEquals(0, collection.findOne(new BasicDBObject("_id", 1)).get("order"));
 		assertEquals(4, collection.findOne(new BasicDBObject("_id", 2)).get("order"));
@@ -126,7 +126,7 @@ public class OrderOperationsTest {
 	@Test
 	public void decrementBetween() throws Exception {
 		ObjectId[] userIds = insertTestValues();
-		DBCollection collection = Database.getCollection("order");
+		DBCollection collection = DBLayer.getCollection("order");
 		OrderOperations.decrement("order", userIds[0], 2, 5);
 		assertEquals(1, collection.findOne(new BasicDBObject("_id", 1)).get("order"));
 		assertEquals(4, collection.findOne(new BasicDBObject("_id", 2)).get("order"));
@@ -138,7 +138,7 @@ public class OrderOperationsTest {
 	@Test
 	public void decrementFromGreaterTo() throws Exception {
 		ObjectId[] userIds = insertTestValues();
-		DBCollection collection = Database.getCollection("order");
+		DBCollection collection = DBLayer.getCollection("order");
 		OrderOperations.decrement("order", userIds[0], 5, 3);
 		assertEquals(1, collection.findOne(new BasicDBObject("_id", 1)).get("order"));
 		assertEquals(4, collection.findOne(new BasicDBObject("_id", 2)).get("order"));
@@ -148,7 +148,7 @@ public class OrderOperationsTest {
 	}
 
 	private ObjectId[] insertTestValues() {
-		DBCollection collection = Database.getCollection("order");
+		DBCollection collection = DBLayer.getCollection("order");
 		Map<String, Object> values = new HashMap<String, Object>();
 		ObjectId[] userIds = new ObjectId[] { new ObjectId(), new ObjectId(), new ObjectId() };
 		values.put("_id", 1);

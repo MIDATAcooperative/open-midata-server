@@ -23,20 +23,20 @@ import play.mvc.Result;
 import utils.LoadData;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
-import utils.db.Database;
+import utils.db.DBLayer;
 
 public class LoginTest {
 
 	@Before
 	public void setUp() {
 		start(fakeApplication(fakeGlobal()));
-		Database.connectToTest();
+		DBLayer.connectToTest();
 		LoadData.load();
 	}
 
 	@After
 	public void tearDown() {
-		Database.close();
+		DBLayer.close();
 	}
 
 	@Test

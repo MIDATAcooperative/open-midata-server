@@ -18,7 +18,7 @@ public class FileStorage {
 	 * Stores an input file with GridFS, which automatically divides a file into chunks of 265 kB.
 	 */
 	public static void store(File file, ObjectId id, String filename, String contentType) throws DatabaseException {
-		GridFS fileSystem = new GridFS(Database.getDB(), FILE_STORAGE);
+		GridFS fileSystem = new GridFS(DBLayer.getFSDB(), FILE_STORAGE);
 		GridFSInputFile inputFile;
 		try {
 			inputFile = fileSystem.createFile(file);
@@ -35,7 +35,7 @@ public class FileStorage {
 	 * Returns an input stream from which the file can be read.
 	 */
 	public static FileData retrieve(ObjectId id) {
-		GridFS fileSystem = new GridFS(Database.getDB(), FILE_STORAGE);
+		GridFS fileSystem = new GridFS(DBLayer.getFSDB(), FILE_STORAGE);
 		GridFSDBFile retrievedFile = fileSystem.findOne(id);
 		return new FileData(retrievedFile.getInputStream(), retrievedFile.getFilename());
 	}

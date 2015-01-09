@@ -23,7 +23,7 @@ import play.mvc.Result;
 import utils.LoadData;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
-import utils.db.Database;
+import utils.db.DBLayer;
 import utils.db.DatabaseConversion;
 
 import com.mongodb.BasicDBList;
@@ -36,13 +36,13 @@ public class CirclesTest {
 	@Before
 	public void setUp() {
 		start(fakeApplication(fakeGlobal()));
-		Database.connectToTest();
+		DBLayer.connectToTest();
 		LoadData.load();
 	}
 
 	@After
 	public void tearDown() {
-		Database.close();
+		DBLayer.close();
 	}
 
 	@Test
@@ -54,7 +54,7 @@ public class CirclesTest {
 				fakeRequest().withSession("id", user._id.toString()).withJsonBody(
 						Json.parse("{\"name\": \"Test circle\"}")));
 		assertEquals(200, status(result));
-		DBObject foundCircle = Database.getCollection("circles").findOne(new BasicDBObject("name", "Test circle"));
+		DBObject foundCircle = DBLayer.getCollection("circles").findOne(new BasicDBObject("name", "Test circle"));
 		Circle circle = DatabaseConversion.toModel(Circle.class, foundCircle);
 		assertNotNull(circle);
 		assertEquals("Test circle", circle.name);
@@ -64,7 +64,7 @@ public class CirclesTest {
 
 	@Test
 	public void deleteCircleSuccess() {
-		DBCollection circles = Database.getCollection("circles");
+		DBCollection circles = DBLayer.getCollection("circles");
 		DBObject circle = circles.findOne();
 		ObjectId id = (ObjectId) circle.get("_id");
 		ObjectId userId = (ObjectId) circle.get("owner");
@@ -77,7 +77,7 @@ public class CirclesTest {
 
 	@Test
 	public void deleteCircleForbidden() throws Exception {
-		DBCollection circles = Database.getCollection("circles");
+		DBCollection circles = DBLayer.getCollection("circles");
 		User user = User.get(new ChainedMap<String, String>().put("email", "test2@example.com").get(),
 				new ChainedSet<String>().add("_id").get());
 		DBObject query = new BasicDBObject();
@@ -95,7 +95,7 @@ public class CirclesTest {
 	// forbidden requests are blocked by this controller, no longer testing this
 	@Test
 	public void addUser() throws Exception {
-		DBCollection circles = Database.getCollection("circles");
+		DBCollection circles = DBLayer.getCollection("circles");
 		User user = User.get(new ChainedMap<String, String>().put("email", "test3@example.com").get(),
 				new ChainedSet<String>().add("_id").get());
 		DBObject query = new BasicDBObject();
@@ -116,7 +116,7 @@ public class CirclesTest {
 
 	@Test
 	public void removeMember() throws Exception {
-		DBCollection circles = Database.getCollection("circles");
+		DBCollection circles = DBLayer.getCollection("circles");
 		User user = User.get(new ChainedMap<String, String>().put("email", "test2@example.com").get(),
 				new ChainedSet<String>().add("_id").get());
 		DBObject query = new BasicDBObject();

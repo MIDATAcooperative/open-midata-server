@@ -16,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import utils.collections.ChainedMap;
-import utils.db.Database;
+import utils.db.DBLayer;
 
 import com.mongodb.DBCollection;
 
@@ -25,18 +25,18 @@ public class CircleTest {
 	@Before
 	public void setUp() {
 		start(fakeApplication(fakeGlobal()));
-		Database.connectToTest();
-		Database.destroy();
+		DBLayer.connectToTest();
+		DBLayer.destroy();
 	}
 
 	@After
 	public void tearDown() {
-		Database.close();
+		DBLayer.close();
 	}
 
 	@Test
 	public void exists() throws ModelException {
-		DBCollection circles = Database.getCollection("circles");
+		DBCollection circles = DBLayer.getCollection("circles");
 		assertEquals(0, circles.count());
 		Circle circle = new Circle();
 		circle._id = new ObjectId();
@@ -53,7 +53,7 @@ public class CircleTest {
 
 	@Test
 	public void notExists() throws ModelException {
-		DBCollection circles = Database.getCollection("circles");
+		DBCollection circles = DBLayer.getCollection("circles");
 		assertEquals(0, circles.count());
 		Circle circle = new Circle();
 		circle._id = new ObjectId();
@@ -71,7 +71,7 @@ public class CircleTest {
 	// not testing order any further, has already been done in SpaceTest
 	@Test
 	public void add() throws ModelException {
-		DBCollection circles = Database.getCollection("circles");
+		DBCollection circles = DBLayer.getCollection("circles");
 		assertEquals(0, circles.count());
 		Circle circle = new Circle();
 		circle._id = new ObjectId();
@@ -88,7 +88,7 @@ public class CircleTest {
 
 	@Test
 	public void delete() throws ModelException {
-		DBCollection circles = Database.getCollection("circles");
+		DBCollection circles = DBLayer.getCollection("circles");
 		assertEquals(0, circles.count());
 		Circle circle = new Circle();
 		circle._id = new ObjectId();
@@ -106,7 +106,7 @@ public class CircleTest {
 
 	@Test
 	public void getMaxOrder() throws ModelException {
-		DBCollection circles = Database.getCollection("circles");
+		DBCollection circles = DBLayer.getCollection("circles");
 		assertEquals(0, circles.count());
 		Circle circle = new Circle();
 		circle._id = new ObjectId();

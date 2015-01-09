@@ -21,7 +21,7 @@ import org.bson.types.ObjectId;
 
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
-import utils.db.Database;
+import utils.db.DBLayer;
 import utils.search.Search;
 import utils.search.Search.Type;
 
@@ -34,7 +34,7 @@ public class ReimportData {
 		System.out.print("Connecting...");
 		// connect to MongoDB
 		start(fakeApplication(fakeGlobal()));
-		Database.connect();
+		DBLayer.connect();
 
 		// connect to ElasticSearch
 		Search.connect();
@@ -130,7 +130,7 @@ public class ReimportData {
 		System.out.println("done.");
 
 		// disconnect
-		Database.close();
+		DBLayer.close();
 		Search.close();
 		System.out.println("Finished.");
 	}

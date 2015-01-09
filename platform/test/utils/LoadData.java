@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import play.libs.Json;
-import utils.db.Database;
+import utils.db.DBLayer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mongodb.DBCollection;
@@ -23,7 +23,7 @@ public class LoadData {
 	 */
 	public static void load() {
 		try {
-			Database.destroy();
+			DBLayer.destroy();
 
 			// read JSON file
 			StringBuilder sb = new StringBuilder();
@@ -39,7 +39,7 @@ public class LoadData {
 			Iterator<Entry<String, JsonNode>> collections = node.fields();
 			while (collections.hasNext()) {
 				Entry<String, JsonNode> curColl = collections.next();
-				DBCollection collection = Database.getCollection(curColl.getKey());
+				DBCollection collection = DBLayer.getCollection(curColl.getKey());
 				for (JsonNode curDoc : curColl.getValue()) {
 					collection.insert((DBObject) JSON.parse(curDoc.toString()));
 				}

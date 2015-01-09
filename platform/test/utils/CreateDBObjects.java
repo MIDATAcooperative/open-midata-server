@@ -13,7 +13,7 @@ import models.Visualization;
 
 import org.bson.types.ObjectId;
 
-import utils.db.Database;
+import utils.db.DBLayer;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -22,7 +22,7 @@ import com.mongodb.util.JSON;
 public class CreateDBObjects {
 
 	public static ObjectId[] insertUsers(int numUsers) throws ModelException {
-		DBCollection users = Database.getCollection("users");
+		DBCollection users = DBLayer.getCollection("users");
 		long originalCount = users.count();
 		ObjectId[] userIds = new ObjectId[numUsers];
 		for (int i = 0; i < numUsers; i++) {
@@ -54,7 +54,7 @@ public class CreateDBObjects {
 	}
 
 	public static ObjectId[] insertRecords(int numRecords, ObjectId owner, ObjectId creator) throws ModelException {
-		DBCollection records = Database.getCollection("records");
+		DBCollection records = DBLayer.getCollection("records");
 		long originalCount = records.count();
 		ObjectId[] recordIds = new ObjectId[numRecords];
 		for (int i = 0; i < numRecords; i++) {
@@ -75,7 +75,7 @@ public class CreateDBObjects {
 	}
 
 	public static ObjectId[] insertVisualizations(int numVisualizations) throws ModelException {
-		DBCollection visualizations = Database.getCollection("visualizations");
+		DBCollection visualizations = DBLayer.getCollection("visualizations");
 		long originalCount = visualizations.count();
 		ObjectId[] visualizationIds = new ObjectId[numVisualizations];
 		for (int i = 0; i < numVisualizations; i++) {

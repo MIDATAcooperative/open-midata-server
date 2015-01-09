@@ -16,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import utils.collections.ChainedMap;
-import utils.db.Database;
+import utils.db.DBLayer;
 
 import com.mongodb.DBCollection;
 
@@ -25,18 +25,18 @@ public class SpaceTest {
 	@Before
 	public void setUp() {
 		start(fakeApplication(fakeGlobal()));
-		Database.connectToTest();
-		Database.destroy();
+		DBLayer.connectToTest();
+		DBLayer.destroy();
 	}
 
 	@After
 	public void tearDown() {
-		Database.close();
+		DBLayer.close();
 	}
 
 	@Test
 	public void exists() throws ModelException {
-		DBCollection spaces = Database.getCollection("spaces");
+		DBCollection spaces = DBLayer.getCollection("spaces");
 		assertEquals(0, spaces.count());
 		Space space = new Space();
 		space._id = new ObjectId();
@@ -53,7 +53,7 @@ public class SpaceTest {
 
 	@Test
 	public void notExists() throws ModelException {
-		DBCollection spaces = Database.getCollection("spaces");
+		DBCollection spaces = DBLayer.getCollection("spaces");
 		assertEquals(0, spaces.count());
 		Space space = new Space();
 		space._id = new ObjectId();
@@ -70,7 +70,7 @@ public class SpaceTest {
 
 	@Test
 	public void add() throws ModelException {
-		DBCollection spaces = Database.getCollection("spaces");
+		DBCollection spaces = DBLayer.getCollection("spaces");
 		assertEquals(0, spaces.count());
 		Space space = new Space();
 		space._id = new ObjectId();
@@ -87,7 +87,7 @@ public class SpaceTest {
 
 	@Test
 	public void delete() throws ModelException {
-		DBCollection spaces = Database.getCollection("spaces");
+		DBCollection spaces = DBLayer.getCollection("spaces");
 		assertEquals(0, spaces.count());
 		Space space = new Space();
 		space._id = new ObjectId();

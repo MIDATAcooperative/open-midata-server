@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import utils.DateTimeUtils;
 import utils.collections.ChainedSet;
-import utils.db.Database;
+import utils.db.DBLayer;
 import utils.db.DatabaseConversion;
 
 import com.mongodb.BasicDBObject;
@@ -35,26 +35,26 @@ public class DatabaseTest {
 	@Before
 	public void setUp() {
 		start(fakeApplication(fakeGlobal()));
-		Database.connectToTest();
-		Database.destroy();
+		DBLayer.connectToTest();
+		DBLayer.destroy();
 	}
 
 	@After
 	public void tearDown() {
-		Database.close();
+		DBLayer.close();
 	}
 
 	@Test
 	public void getCollection() {
 		String collection = "users";
-		DBCollection coll = Database.getCollection(collection);
+		DBCollection coll = DBLayer.getCollection(collection);
 		assertNotNull(coll);
 		assertEquals(collection, coll.getName());
 	}
 
 	@Test
 	public void createAndSaveObject() {
-		DBCollection users = Database.getCollection("users");
+		DBCollection users = DBLayer.getCollection("users");
 		assertEquals(0, users.count());
 		users.insert(new BasicDBObject("name", "Test User"));
 		assertEquals(1, users.count());
@@ -65,7 +65,7 @@ public class DatabaseTest {
 
 	@Test
 	public void createAndSaveUser() throws Exception {
-		DBCollection users = Database.getCollection("users");
+		DBCollection users = DBLayer.getCollection("users");
 		assertEquals(0, users.count());
 		User user = new User();
 		user._id = new ObjectId();
@@ -88,7 +88,7 @@ public class DatabaseTest {
 
 	@Test
 	public void createAndRetrieveUser() throws Exception {
-		DBCollection users = Database.getCollection("users");
+		DBCollection users = DBLayer.getCollection("users");
 		assertEquals(0, users.count());
 		User user = new User();
 		user._id = new ObjectId();
@@ -113,7 +113,7 @@ public class DatabaseTest {
 
 	@Test
 	public void createAndRetrieveMessage() throws Exception {
-		DBCollection messages = Database.getCollection("messages");
+		DBCollection messages = DBLayer.getCollection("messages");
 		assertEquals(0, messages.count());
 		Message message = new Message();
 		message._id = new ObjectId();
@@ -131,7 +131,7 @@ public class DatabaseTest {
 
 	@Test
 	public void createAndRetrieveCircle() throws Exception {
-		DBCollection circles = Database.getCollection("circles");
+		DBCollection circles = DBLayer.getCollection("circles");
 		assertEquals(0, circles.count());
 		Circle circle = new Circle();
 		circle._id = new ObjectId();

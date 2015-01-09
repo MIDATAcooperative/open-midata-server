@@ -3,7 +3,7 @@ package mongo;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.fakeGlobal;
 import static play.test.Helpers.start;
-import utils.db.Database;
+import utils.db.DBLayer;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -21,8 +21,8 @@ public class ManualMongo {
 		DBObject value = new BasicDBObject();
 
 		start(fakeApplication(fakeGlobal()));
-		Database.connect();
-		DBCollection coll = Database.getCollection(collection);
+		DBLayer.connect();
+		DBCollection coll = DBLayer.getCollection(collection);
 		try {
 			coll.updateMulti(new BasicDBObject(), new BasicDBObject("$set", new BasicDBObject(field, value)));
 		} catch (MongoException e) {
