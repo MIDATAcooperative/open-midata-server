@@ -19,10 +19,14 @@ import com.mongodb.DBObject;
 public class DatabaseConversion {
 
 	private Object encrypt(Class model, String path, Object source) {
+		if (source instanceof Enum) source = ((Enum) source).name();
 		return source;
 	}
 	
-	private Object decrypt(Class model, String path, Object source) {
+	private Object decrypt(Class model, String path, Class type, Object source) {
+		if (type.isEnum()) {
+			source = Enum.valueOf(type, (String) source);
+		}
 		return source;
 	}
 	
@@ -60,7 +64,7 @@ public class DatabaseConversion {
 		for (Field field : modelClass.getFields()) {
 			if (dbObject.keySet().contains(field.getName())) {
 				try {
-					field.set(modelObject, convert(modelClass, field.getName(), field.getGenericType(), decrypt(modelClass, field.getName(), dbObject.get(field.getName()))));
+					field.set(modelObject, convert(modelClass, field.getName(), field.getGenericType(), decrypt(modelClass, field.getName(), field.getType(), dbObject.get(field.getName()))));
 				} catch (IllegalArgumentException e) {
 					throw new DatabaseConversionException(e);
 				} catch (IllegalAccessException e) {
@@ -87,8 +91,9 @@ public class DatabaseConversion {
 	 * Converts an object retrieved from the database to the corresponding type.
 	 */
 	private Object convert(Class model, String path, Type type, Object value) {
+		
 		if (type instanceof ParameterizedType) {
-			ParameterizedType parameterizedType = (ParameterizedType) type;
+			ParameterizedType parameterizedType = (ParameterizedType) type;			
 			if (parameterizedType.getRawType().equals(Map.class)) {
 				return convertToMap(model, path, type, value);
 			} else if (parameterizedType.getRawType().equals(Set.class)) {
@@ -110,7 +115,7 @@ public class DatabaseConversion {
 			Map<String, Object> map = new HashMap<String, Object>();
 			for (String key : dbObject.keySet()) {
 				String fullpath = path+"."+key;
-				map.put(key, convert(model, fullpath, valueType, decrypt(model, fullpath, dbObject.get(key))));
+				map.put(key, convert(model, fullpath, valueType, decrypt(model, fullpath, Object.class, dbObject.get(key))));
 			}
 			return map;
 		} else {
@@ -128,7 +133,7 @@ public class DatabaseConversion {
 			Set<Object> set = new HashSet<Object>();
 			String fullpath = path+"[]";
 			for (Object element : dbList) {
-				set.add(convert(model, fullpath, valueType, decrypt(model, fullpath, element)));
+				set.add(convert(model, fullpath, valueType, decrypt(model, fullpath,  Object.class, element)));
 			}
 			return set;
 		} else {
@@ -146,7 +151,7 @@ public class DatabaseConversion {
 			List<Object> list = new ArrayList<Object>();
 			String fullpath = path+"[]";
 			for (Object element : dbList) {
-				list.add(convert(model, fullpath, valueType, decrypt(model, fullpath, element)));
+				list.add(convert(model, fullpath, valueType, decrypt(model, fullpath,  Object.class, element)));
 			}
 			return list;
 		} else {

@@ -2,9 +2,13 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+# Test
+GET     /test                       controllers.Application.test()
 # Home page
 GET     /welcome                    controllers.Application.welcome()
+GET     /login                      controllers.Application.welcome()
 POST    /welcome                    controllers.Application.authenticate()
+GET     /register                   controllers.Application.registration()
 POST    /registration               controllers.Application.register()
 GET     /logout                     controllers.Application.logout()
 GET     /lostpw                     controllers.Application.lostpw()
@@ -76,6 +80,13 @@ DELETE  /users/shared               controllers.Users.clearShared()
 GET     /users/:id                  controllers.Users.details(id: String)
 GET     /users/search/:query        controllers.Users.search(query: String)
 GET     /users/complete/:query      controllers.Users.complete(query: String)
+# Research
+GET     /research/register          controllers.research.ResearchFrontend.register()
+GET     /research/login             controllers.research.ResearchFrontend.login()
+GET     /research/messages          controllers.research.ResearchFrontend.messages()
+POST    /research/register          controllers.research.Researchers.register()
+POST    /research/login             controllers.research.Researchers.login()
+POST    /research/test              controllers.research.Researchers.get()
 # Apps
 POST    /apps/get                   controllers.Apps.get()
 GET     /apps/:id                   controllers.Apps.details(id: String)

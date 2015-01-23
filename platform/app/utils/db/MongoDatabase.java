@@ -94,7 +94,7 @@ public class MongoDatabase extends Database {
 		DBObject dbObject;
 		try {
 			dbObject = conversion.toDBObject(modelObject);
-			getCollection(collection).insert(dbObject);
+			getCollection(collection).insert(dbObject);			
 		} catch (DatabaseConversionException e) {
 			throw new DatabaseException(e);
 		} catch (MongoException e) {
@@ -136,6 +136,7 @@ public class MongoDatabase extends Database {
 		DBObject projection = toDBObject(fields);
 		try {
 			DBObject dbObject = getCollection(collection).findOne(query, projection);
+			if (dbObject == null) return null;
 			return conversion.toModel(modelClass, dbObject);
 		} catch (MongoException e) {
 			throw new DatabaseException(e);

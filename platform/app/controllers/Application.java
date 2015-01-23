@@ -1,12 +1,18 @@
 package controllers;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import models.ModelException;
-import models.User;
+import models.Member;
+import models.ResearchUser;
+import models.enums.ContractStatus;
+import models.enums.Gender;
+import models.enums.ParticipationInterest;
+import models.enums.UserStatus;
 
 import org.bson.types.ObjectId;
 
@@ -23,16 +29,28 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.mails.MailUtils;
 import views.html.welcome;
+import views.html.registration;
+import views.html.tester;
 import views.html.lostpw;
 import views.html.setpw;
 import views.txt.mails.lostpwmail;
+
+import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class Application extends Controller {
 
+	public static Result test() {
+		return ok(tester.render());
+	} 
+	
 	public static Result welcome() {
 		return ok(welcome.render());
+	}
+	
+	public static Result registration() {
+		return ok(registration.render());
 	}
 	
 	public static Result lostpw() {
@@ -53,14 +71,14 @@ public class Application extends Controller {
 		String email = json.get("email").asText();
 		
 		Map<String, String> emailQuery = new ChainedMap<String, String>().put("email", email).get();
-		User user;
+		Member user;
 		try {
-			if (User.exists(emailQuery)) {				
-			   user = User.get(emailQuery, new ChainedSet<String>().add("name").add("email").add("password").get());				
+			if (Member.exists(emailQuery)) {				
+			   user = Member.get(emailQuery, new ChainedSet<String>().add("name").add("email").add("password").get());				
 			   
 			   PasswordResetToken token = new PasswordResetToken(user._id);
-			   User.set(user._id, "resettoken", token.token);
-			   User.set(user._id, "resettokenTs", System.currentTimeMillis());
+			   Member.set(user._id, "resettoken", token.token);
+			   Member.set(user._id, "resettokenTs", System.currentTimeMillis());
 			   String encrypted = token.encrypt();
 			   
 			   String site = "https://" + Play.application().configuration().getString("platform.server");
@@ -99,17 +117,17 @@ public class Application extends Controller {
 		
 				
 		Map<String, Object> emailQuery = new ChainedMap<String, Object>().put("_id", userId).get();
-		User user;
+		Member user;
 		try {
-			if (User.exists(emailQuery)) {				
-			   user = User.get(emailQuery, new ChainedSet<String>().add("resettoken").add("password").add("resettokenTs").get());				
+			if (Member.exists(emailQuery)) {				
+			   user = Member.get(emailQuery, new ChainedSet<String>().add("resettoken").add("password").add("resettokenTs").get());				
 		       if (user.resettoken != null 
 		    		    
 		    		   && user.resettoken.equals(token)
 		    		   && System.currentTimeMillis() - user.resettokenTs < 1000 * 60 * 15) {	   
 			   
-		           User.set(userId, "resettoken", null);		       
-			       User.set(userId, "password", User.encrypt(password));
+		           Member.set(userId, "resettoken", null);		       
+			       Member.set(userId, "password", Member.encrypt(password));
 		       } else return badRequest("Password reset token has already expired.");
 			}
 		} catch (ModelException e) {
@@ -133,13 +151,13 @@ public class Application extends Controller {
 		String email = json.get("email").asText();
 		String password = json.get("password").asText();
 		Map<String, String> emailQuery = new ChainedMap<String, String>().put("email", email).get();
-		User user;
+		Member user;
 		try {
-			if (!User.exists(emailQuery)) {
+			if (!Member.exists(emailQuery)) {
 				return badRequest("Invalid user or password.");
 			} else {
-				user = User.get(emailQuery, new ChainedSet<String>().add("password").get());
-				if (!User.authenticationValid(password, user.password)) {
+				user = Member.get(emailQuery, new ChainedSet<String>().add("password").get());
+				if (!Member.authenticationValid(password, user.password)) {
 					return badRequest("Invalid user or password.");
 				}
 			}
@@ -150,42 +168,54 @@ public class Application extends Controller {
 		// user authenticated
 		session().clear();
 		session("id", user._id.toString());
+		session("role","member");
 		return ok(routes.News.index().url());
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result register() {
+	@APICall
+	public static Result register() throws JsonValidationException, ModelException {
 		// validate json
 		JsonNode json = request().body().asJson();
-		try {
-			JsonValidation.validate(json, "email", "firstName", "lastName", "password");
-		} catch (JsonValidationException e) {
-			return badRequest(e.getMessage());
-		}
-
+		
+		JsonValidation.validate(json, "email", "firstname", "sirname", "gender", "city", "zip", "country", "address1");
+		
 		// validate request
 		String email = json.get("email").asText();
-		String firstName = json.get("firstName").asText();
-		String lastName = json.get("lastName").asText();
+		String firstName = json.get("firstname").asText();
+		String lastName = json.get("sirname").asText();
 		String password = json.get("password").asText();
-		try {
-			if (User.exists(new ChainedMap<String, String>().put("email", email).get())) {
-				return badRequest("A user with this email address already exists.");
-			}
-		} catch (ModelException e) {
-			return internalServerError(e.getMessage());
+		
+		if (Member.existsByEMail(email)) {
+		  return badRequest("A user with this email address already exists.");
 		}
-
+		
 		// create the user
-		User user = new User();
+		Member user = new Member();
 		user._id = new ObjectId();
 		user.email = email;
 		user.name = firstName + " " + lastName;
-		try {
-			user.password = User.encrypt(password);
-		} catch (ModelException e) {
-			return internalServerError(e.getMessage());
-		}
+		
+		user.password = Member.encrypt(password);
+		
+		user.address1 = JsonValidation.getString(json, "address1");
+		user.address2 = JsonValidation.getString(json, "address2");
+		user.city = JsonValidation.getString(json, "city");
+		user.zip  = JsonValidation.getString(json, "zip");
+		user.country = JsonValidation.getString(json, "country");
+		user.firstname = JsonValidation.getString(json, "firstname"); 
+		user.sirname = JsonValidation.getString(json, "sirname");
+		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
+		user.birthday = JsonValidation.getDate(json, "birthday");
+		user.ssn = JsonValidation.getString(json, "ssn");
+						
+		user.registeredAt = new Date();		
+		
+		user.status = UserStatus.NEW;		
+		user.contractStatus = ContractStatus.NEW;		
+		user.confirmationCode = "ABCD";
+		user.partInterest = ParticipationInterest.UNSET;
+		
 		user.visible = new HashMap<String, Set<ObjectId>>();
 		user.apps = new HashSet<ObjectId>();
 		user.tokens = new HashMap<String, Map<String, String>>();
@@ -198,13 +228,12 @@ public class Application extends Controller {
 		user.news = new HashSet<ObjectId>();
 		user.pushed = new HashSet<ObjectId>();
 		user.shared = new HashSet<ObjectId>();
-		try {
-			User.add(user);
-		} catch (ModelException e) {
-			return badRequest(e.getMessage());
-		}
+		
+		Member.add(user);
+		
 		session().clear();
 		session("id", user._id.toString());
+		session("role","member");
 		return ok(routes.News.index().url());
 	}
 
@@ -283,6 +312,9 @@ public class Application extends Controller {
 				controllers.routes.javascript.Users.complete(),
 				controllers.routes.javascript.Users.clearPushed(),
 				controllers.routes.javascript.Users.clearShared(),
+				//Research
+				controllers.research.routes.javascript.Researchers.register(),
+				controllers.research.routes.javascript.Researchers.login(),
 				// Market
 				controllers.routes.javascript.Market.registerApp(),
 				controllers.routes.javascript.Market.registerVisualization(),

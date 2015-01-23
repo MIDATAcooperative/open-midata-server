@@ -14,7 +14,7 @@ import models.Message;
 import models.NewsItem;
 import models.Record;
 import models.Space;
-import models.User;
+import models.Member;
 import models.Visualization;
 
 import org.bson.types.ObjectId;
@@ -55,9 +55,9 @@ public class ReimportData {
 		// users
 		System.out.print("Importing users...");
 		Map<String, Object> emptyMap = new HashMap<String, Object>();
-		Set<User> users = User
+		Set<Member> users = Member
 				.getAll(emptyMap, new ChainedSet<String>().add("email").add("name").add("messages").get());
-		for (User user : users) {
+		for (Member user : users) {
 			Search.add(Type.USER, user._id, user.name, user.email);
 		}
 
@@ -66,7 +66,7 @@ public class ReimportData {
 		System.out.println("done.");
 
 		// for each user: add all the data
-		for (User user : users) {
+		for (Member user : users) {
 			System.out.print("Importing personal data for user '" + user.name + "'...");
 
 			// messages

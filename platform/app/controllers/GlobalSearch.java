@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import models.ModelException;
-import models.User;
+import models.Member;
 
 import org.bson.types.ObjectId;
 
@@ -39,9 +39,9 @@ public class GlobalSearch extends Controller {
 		ObjectId userId = new ObjectId(request().username());
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", userId).get();
 		Set<String> fields = new ChainedSet<String>().add("visible").get();
-		User user;
+		Member user;
 		try {
-			user = User.get(properties, fields);
+			user = Member.get(properties, fields);
 		} catch (ModelException e) {
 			return internalServerError(e.getMessage());
 		}

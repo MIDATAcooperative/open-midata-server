@@ -1,0 +1,61 @@
+@import views.html.help.formrow
+@import views.html.help.formerror
+@pubmain("Registration") {	
+	<div class="container" ng-app="login" ng-controller="RegistrationCtrl" ng-cloak>
+		<div class="row">
+			<!-- Registration -->
+			<div class="col-sm-12">
+				<div class="panel-container" style="max-width:630px; padding-top:120px; margin:0 auto;">
+					<div class="panel panel-default">
+		            	<div class="panel-heading">
+		              		<h3 class="panel-title">Sign up</h3>
+		            	</div>
+		            	<div class="panel-body">
+		            		<div class="alert alert-danger" ng-show="registration.error">
+								<p>{{registration.error}}</p>
+							</div>							
+							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="register()" role="form">								  
+							  @formrow("email","Email") { 
+							    <input type="email" class="form-control" id="email" name="email" placeholder="Email" ng-model="registration.email" required>
+							    @formerror("email","email","Please enter a valid email address.") 
+							    @formerror("email","exists","A user with this email is already registered.") 
+							  }
+							  @formrow("password","Password") { 
+							    <input type="password" class="form-control" id="password" name="password" placeholder="Password" ng-model="registration.password" required>
+							    @formerror("password","compare","Password and password repetition do not match!")  
+							  }
+							  @formrow("password2","Repeat Password") {  <input type="password" class="form-control" id="password2" name="password2" placeholder="Password" ng-model="registration.password2" required> }
+							  @formrow("firstname","First Name") {  <input type="text" class="form-control" id="firstname" name="firstname" placeholder="First Name" ng-model="registration.firstname" required> }
+							  @formrow("sirname","Sir Name") {  <input type="text" class="form-control" id="sirname" name="sirname" placeholder="Sir Name" ng-model="registration.sirname" required> }
+							  
+							  @formrow("gender","Gender") {  <select class="form-control" id="gender" name="gender" ng-model="registration.gender"><option value="FEMALE">female</option><option value="MALE">male</option></select> }
+							  @formrow("birthday","Birthday") {  
+							    <div class="input-group">
+							    <div class="input-group-addon">Day</div>
+							    <select class="form-control " id="birthday" name="birthday" ng-model="registration.birthdayDay" ><option ng-repeat="day in days">{{ day }}</option></select>
+							    <div class="input-group-addon">Month</div>
+							    <select class="form-control" id="birthdayMonth" name="birthdayMonth" ng-model="registration.birthdayMonth"><option ng-repeat="month in months">{{ month }}</option></select>
+							    <div class="input-group-addon">Year</div>
+							    <select class="form-control" id="birthdayYear" name="birthdayYear" ng-model="registration.birthdayYear"><option ng-repeat="year in years">{{ year }}</option></select>
+							    </div>
+							  }
+							  @formrow("ssn","SSN") {  <input type="text" class="form-control" id="ssn" name="ssn" placeholder="" ng-model="registration.ssn" required> }
+							  
+							  @formrow("address1","Address") {  <input type="text" class="form-control" id="address1" name="address1" placeholder="" ng-model="registration.address1" required> }
+							  @formrow("address2","Address") {  <input type="text" class="form-control" id="address2" name="address2" placeholder="" ng-model="registration.address2"> }
+							  @formrow("city","City") {  <input type="text" class="form-control" id="city" name="city" placeholder="" ng-model="registration.city" required> }
+							  @formrow("zip","Zip") {  <input type="text" class="form-control" id="zip" name="zip" placeholder="" ng-model="registration.zip" required> }
+							  @formrow("country","Country") {  <select class="form-control" id="country" name="country" ng-model="registration.country" required><option value="CH">Swiss</option></select> }
+                             
+                             <button type="submit" class="btn btn-lg btn-primary btn-block">Sign up</button>
+                            </form>
+		            	</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Load login controller -->
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/login.js")" defer></script>
+}

@@ -12,7 +12,7 @@ import models.LargeRecord;
 import models.ModelException;
 import models.Record;
 import models.Space;
-import models.User;
+import models.Member;
 
 import org.bson.types.ObjectId;
 
@@ -118,9 +118,9 @@ public class Records extends Controller {
 		// get visible records
 		properties = new ChainedMap<String, ObjectId>().put("_id", userId).get();
 		Set<String> visible = new ChainedSet<String>().add("visible").get();
-		User user;
+		Member user;
 		try {
-			user = User.get(properties, visible);
+			user = Member.get(properties, visible);
 		} catch (ModelException e) {
 			return internalServerError(e.getMessage());
 		}
@@ -143,9 +143,9 @@ public class Records extends Controller {
 		ObjectId userId = new ObjectId(request().username());
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", userId).get();
 		Set<String> fields = new ChainedSet<String>().add("visible").get();
-		User user;
+		Member user;
 		try {
-			user = User.get(properties, fields);
+			user = Member.get(properties, fields);
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}

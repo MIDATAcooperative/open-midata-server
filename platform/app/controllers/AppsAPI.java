@@ -7,7 +7,7 @@ import java.util.Set;
 import models.App;
 import models.ModelException;
 import models.Record;
-import models.User;
+import models.Member;
 
 import org.bson.types.ObjectId;
 
@@ -75,7 +75,7 @@ public class AppsAPI extends Controller {
 		Map<String, ObjectId> userProperties = new ChainedMap<String, ObjectId>().put("_id", appToken.userId).put("apps", appToken.appId)
 				.get();
 		try {
-			if (!User.exists(userProperties)) {
+			if (!Member.exists(userProperties)) {
 				return badRequest("Invalid authToken.");
 			}
 		} catch (ModelException e) {
@@ -136,7 +136,7 @@ public class AppsAPI extends Controller {
 		Map<String, ObjectId> userProperties = new ChainedMap<String, ObjectId>().put("_id", appToken.userId).put("apps", appToken.appId)
 				.get();
 		try {
-			if (!User.exists(userProperties)) {
+			if (!Member.exists(userProperties)) {
 				return badRequest("Invalid authToken.");
 			}
 		} catch (ModelException e) {
@@ -204,10 +204,10 @@ public class AppsAPI extends Controller {
 		Set<String> fields = new ChainedSet<String>().add("tokens." + appToken.appId.toString()).get();
 		String accessToken;
 		try {
-			if (!User.exists(userProperties)) {
+			if (!Member.exists(userProperties)) {
 				return badRequestPromise("Invalid authToken.");
 			} else {
-				User user = User.get(userProperties, fields);
+				Member user = Member.get(userProperties, fields);
 				accessToken = user.tokens.get(appToken.appId.toString()).get("accessToken");
 			}
 		} catch (ModelException e) {
@@ -252,10 +252,10 @@ public class AppsAPI extends Controller {
 		Set<String> fields = new ChainedSet<String>().add("tokens." + appToken.appId.toString()).get();
 		String oauthToken, oauthTokenSecret;
 		try {
-			if (!User.exists(userProperties)) {
+			if (!Member.exists(userProperties)) {
 				return badRequestPromise("Invalid authToken.");
 			} else {
-				User user = User.get(userProperties, fields);
+				Member user = Member.get(userProperties, fields);
 				oauthToken = user.tokens.get(appToken.appId.toString()).get("oauthToken");
 				oauthTokenSecret = user.tokens.get(appToken.appId.toString()).get("oauthTokenSecret");
 			}

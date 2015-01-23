@@ -12,7 +12,7 @@ import static play.test.Helpers.header;
 import static play.test.Helpers.session;
 import static play.test.Helpers.start;
 import static play.test.Helpers.status;
-import models.User;
+import models.Member;
 
 import org.junit.After;
 import org.junit.Before;
@@ -45,7 +45,7 @@ public class LoginTest {
 				fakeRequest().withJsonBody(Json.parse("{\"email\": \"test1@example.com\", \"password\": \"secret\"}")));
 		assertEquals(200, status(result));
 		assertNotNull(session(result).get("id"));
-		User user = User.get(new ChainedMap<String, String>().put("email", "test1@example.com").get(),
+		Member user = Member.get(new ChainedMap<String, String>().put("email", "test1@example.com").get(),
 				new ChainedSet<String>().add("_id").get());
 		assertEquals(user._id.toString(), session(result).get("id"));
 	}
@@ -72,7 +72,7 @@ public class LoginTest {
 
 	@Test
 	public void authenticated() throws Exception {
-		User user = User.get(new ChainedMap<String, String>().put("email", "test1@example.com").get(),
+		Member user = Member.get(new ChainedMap<String, String>().put("email", "test1@example.com").get(),
 				new ChainedSet<String>().add("_id").get());
 		Result result = callAction(controllers.routes.ref.Messages.index(),
 				fakeRequest().withSession("id", user._id.toString()));

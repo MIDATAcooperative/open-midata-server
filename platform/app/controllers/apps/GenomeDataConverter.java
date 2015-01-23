@@ -13,7 +13,7 @@ import models.App;
 import models.LargeRecord;
 import models.ModelException;
 import models.Record;
-import models.User;
+import models.Member;
 
 import org.bson.types.ObjectId;
 
@@ -111,7 +111,7 @@ public class GenomeDataConverter extends Controller {
 		Map<String, ObjectId> userProperties = new ChainedMap<String, ObjectId>().put("_id", appToken.userId).put("apps", appToken.appId)
 				.get();
 		try {
-			if (!User.exists(userProperties)) {
+			if (!Member.exists(userProperties)) {
 				return "Invalid authToken.";
 			}
 		} catch (ModelException e) {

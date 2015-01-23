@@ -1,0 +1,24 @@
+
+<!DOCTYPE html>
+<html ng-app="testerApp">
+    <head>
+  
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/tester.js")"></script>
+    </head>
+    <body ng-controller="TesterCtrl">
+     <form>
+       <ul>
+        <li ng-repeat="ext in saved"><a ng-click="doload(ext);">{{ ext.url }} ( {{ ext.body }} )</a> - <a ng-click="dodelete(ext);">delete</a></li>
+       </ul>
+       <table>
+        <tr><td>Server</td><td><input ng-model="server" size="100" /></td></tr>
+        <tr><td>Request</td><td><textarea ng-model="url" cols="120"></textarea></td></tr>
+        <tr><td>Body</td><td><textarea ng-model="body" cols="120"></textarea></td></tr>
+        <tr><td>Extra</td><td><input ng-model="extra" size="100"/></td></tr>
+        <tr><td> </td><td><button type="button" ng-click="dosubmit();">submit</button> <button type="button" ng-click="dosave();">save</button></td></tr>
+       </table>
+      </form>
+      <textarea ng-model="results" rows="40" cols="120"></textarea>
+    </body>
+</html>

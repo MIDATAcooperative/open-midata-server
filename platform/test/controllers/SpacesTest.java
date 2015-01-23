@@ -11,7 +11,7 @@ import static play.test.Helpers.fakeRequest;
 import static play.test.Helpers.start;
 import static play.test.Helpers.status;
 import models.Space;
-import models.User;
+import models.Member;
 
 import org.bson.types.ObjectId;
 import org.junit.After;
@@ -49,7 +49,7 @@ public class SpacesTest {
 
 	@Test
 	public void addSpace() throws DatabaseConversionException, Exception {
-		User user = User.get(new ChainedMap<String, String>().put("email", "test1@example.com").get(),
+		Member user = Member.get(new ChainedMap<String, String>().put("email", "test1@example.com").get(),
 				new ChainedSet<String>().add("_id").get());
 		ObjectId visualizationId = new ObjectId();
 		Result result = callAction(
@@ -87,7 +87,7 @@ public class SpacesTest {
 	public void deleteSpaceForbidden() throws Exception {
 		DBCollection spaces = DBLayer.getCollection("spaces");
 		long originalCount = spaces.count();
-		User user = User.get(new ChainedMap<String, String>().put("email", "test2@example.com").get(),
+		Member user = Member.get(new ChainedMap<String, String>().put("email", "test2@example.com").get(),
 				new ChainedSet<String>().add("_id").get());
 		DBObject query = new BasicDBObject();
 		query.put("owner", new BasicDBObject("$ne", user._id));

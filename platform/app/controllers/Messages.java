@@ -8,7 +8,7 @@ import java.util.Set;
 
 import models.Message;
 import models.ModelException;
-import models.User;
+import models.Member;
 
 import org.bson.types.ObjectId;
 
@@ -82,9 +82,9 @@ public class Messages extends Controller {
 		// validate receivers
 		Set<ObjectId> receiverIds = ObjectIdConversion
 				.castToObjectIds(JsonExtraction.extractSet(json.get("receivers")));
-		Set<User> users;
+		Set<Member> users;
 		try {
-			users = User.getAll(new ChainedMap<String, Set<ObjectId>>().put("_id", receiverIds).get(),
+			users = Member.getAll(new ChainedMap<String, Set<ObjectId>>().put("_id", receiverIds).get(),
 					new ChainedSet<String>().add("messages.inbox").get());
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
@@ -108,10 +108,10 @@ public class Messages extends Controller {
 		}
 
 		// add to inbox and search index of receivers
-		for (User user : users) {
+		for (Member user : users) {
 			user.messages.get("inbox").add(message._id);
 			try {
-				User.set(user._id, "messages.inbox", user.messages.get("inbox"));
+				Member.set(user._id, "messages.inbox", user.messages.get("inbox"));
 				Search.add(user._id, "message", message._id, message.title, message.content);
 			} catch (ModelException e) {
 				return badRequest(e.getMessage());
@@ -127,7 +127,7 @@ public class Messages extends Controller {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId messageId = new ObjectId(messageIdString);
 		try {
-			if (!User.exists(new ChainedMap<String, ObjectId>().put("_id", userId).put("messages." + from, messageId).get())) {
+			if (!Member.exists(new ChainedMap<String, ObjectId>().put("_id", userId).put("messages." + from, messageId).get())) {
 				return badRequest("No message with this id exists.");
 			}
 		} catch (ModelException e) {
@@ -136,12 +136,12 @@ public class Messages extends Controller {
 
 		// update the respective message folders
 		try {
-			User user = User.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>()
+			Member user = Member.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>()
 					.add("messages." + from).add("messages." + to).get());
 			user.messages.get(from).remove(messageId);
 			user.messages.get(to).add(messageId);
-			User.set(userId, "messages." + from, user.messages.get(from));
-			User.set(userId, "messages." + to, user.messages.get(to));
+			Member.set(userId, "messages." + from, user.messages.get(from));
+			Member.set(userId, "messages." + to, user.messages.get(to));
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}
@@ -153,7 +153,7 @@ public class Messages extends Controller {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId messageId = new ObjectId(messageIdString);
 		try {
-			if (!User.exists(new ChainedMap<String, ObjectId>().put("_id", userId).put("messages.trash", messageId).get())) {
+			if (!Member.exists(new ChainedMap<String, ObjectId>().put("_id", userId).put("messages.trash", messageId).get())) {
 				return badRequest("No message with this id exists.");
 			}
 		} catch (ModelException e) {
@@ -162,10 +162,10 @@ public class Messages extends Controller {
 
 		// remove message from trash folder and user's search index
 		try {
-			User user = User.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>()
+			Member user = Member.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>()
 					.add("messages.trash").get());
 			user.messages.get("trash").remove(messageId);
-			User.set(userId, "messages.trash", user.messages.get("trash"));
+			Member.set(userId, "messages.trash", user.messages.get("trash"));
 			Search.delete(userId, "message", messageId);
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());

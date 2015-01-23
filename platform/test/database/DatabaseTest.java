@@ -14,7 +14,7 @@ import java.util.Set;
 
 import models.Circle;
 import models.Message;
-import models.User;
+import models.Member;
 
 import org.bson.types.ObjectId;
 import org.junit.After;
@@ -67,11 +67,11 @@ public class DatabaseTest {
 	public void createAndSaveUser() throws Exception {
 		DBCollection users = DBLayer.getCollection("users");
 		assertEquals(0, users.count());
-		User user = new User();
+		Member user = new Member();
 		user._id = new ObjectId();
 		user.email = "test1@example.com";
 		user.name = "Test User";
-		user.password = User.encrypt("password");
+		user.password = Member.encrypt("password");
 		user.visible = new HashMap<String, Set<ObjectId>>();
 		user.apps = new HashSet<ObjectId>();
 		user.visualizations = new HashSet<ObjectId>();
@@ -90,11 +90,11 @@ public class DatabaseTest {
 	public void createAndRetrieveUser() throws Exception {
 		DBCollection users = DBLayer.getCollection("users");
 		assertEquals(0, users.count());
-		User user = new User();
+		Member user = new Member();
 		user._id = new ObjectId();
 		user.email = "test1@example.com";
 		user.name = "Test User";
-		user.password = User.encrypt("password");
+		user.password = Member.encrypt("password");
 		user.visible = new HashMap<String, Set<ObjectId>>();
 		user.apps = new HashSet<ObjectId>();
 		user.tokens = new HashMap<String, Map<String, String>>();
@@ -107,7 +107,7 @@ public class DatabaseTest {
 		users.insert(DatabaseConversion.toDBObject(user));
 		assertEquals(1, users.count());
 		DBObject foundObject = users.findOne();
-		User retrievedUser = DatabaseConversion.toModel(User.class, foundObject);
+		Member retrievedUser = DatabaseConversion.toModel(Member.class, foundObject);
 		assertEquals("Test User", retrievedUser.name);
 	}
 

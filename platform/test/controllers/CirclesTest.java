@@ -11,7 +11,7 @@ import static play.test.Helpers.fakeRequest;
 import static play.test.Helpers.start;
 import static play.test.Helpers.status;
 import models.Circle;
-import models.User;
+import models.Member;
 
 import org.bson.types.ObjectId;
 import org.junit.After;
@@ -47,7 +47,7 @@ public class CirclesTest {
 
 	@Test
 	public void addCircle() throws Exception {
-		User user = User.get(new ChainedMap<String, String>().put("email", "test1@example.com").get(),
+		Member user = Member.get(new ChainedMap<String, String>().put("email", "test1@example.com").get(),
 				new ChainedSet<String>().add("_id").get());
 		Result result = callAction(
 				controllers.routes.ref.Circles.add(),
@@ -78,7 +78,7 @@ public class CirclesTest {
 	@Test
 	public void deleteCircleForbidden() throws Exception {
 		DBCollection circles = DBLayer.getCollection("circles");
-		User user = User.get(new ChainedMap<String, String>().put("email", "test2@example.com").get(),
+		Member user = Member.get(new ChainedMap<String, String>().put("email", "test2@example.com").get(),
 				new ChainedSet<String>().add("_id").get());
 		DBObject query = new BasicDBObject();
 		query.put("owner", new BasicDBObject("$ne", user._id));
@@ -96,7 +96,7 @@ public class CirclesTest {
 	@Test
 	public void addUser() throws Exception {
 		DBCollection circles = DBLayer.getCollection("circles");
-		User user = User.get(new ChainedMap<String, String>().put("email", "test3@example.com").get(),
+		Member user = Member.get(new ChainedMap<String, String>().put("email", "test3@example.com").get(),
 				new ChainedSet<String>().add("_id").get());
 		DBObject query = new BasicDBObject();
 		query.put("members", new BasicDBObject("$nin", new ObjectId[] { user._id }));
@@ -117,7 +117,7 @@ public class CirclesTest {
 	@Test
 	public void removeMember() throws Exception {
 		DBCollection circles = DBLayer.getCollection("circles");
-		User user = User.get(new ChainedMap<String, String>().put("email", "test2@example.com").get(),
+		Member user = Member.get(new ChainedMap<String, String>().put("email", "test2@example.com").get(),
 				new ChainedSet<String>().add("_id").get());
 		DBObject query = new BasicDBObject();
 		query.put("members", new BasicDBObject("$in", new ObjectId[] { user._id }));

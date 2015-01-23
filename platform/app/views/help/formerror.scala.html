@@ -1,0 +1,4 @@
+@(id:String, typestr:String, message: String)
+<p ng-show="myform.@(id).$error.@(typestr) && (myform.@(id).$dirty || submitted)" class="help-block">
+  @message      
+</p>

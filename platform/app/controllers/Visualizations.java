@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import models.ModelException;
-import models.User;
+import models.Member;
 import models.Visualization;
 
 import org.bson.types.ObjectId;
@@ -62,9 +62,9 @@ public class Visualizations extends Controller {
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", userId).get();
 		Set<String> fields = new ChainedSet<String>().add("visualizations").get();
 		try {
-			User user = User.get(properties, fields);
+			Member user = Member.get(properties, fields);
 			user.visualizations.add(new ObjectId(visualizationIdString));
-			User.set(userId, "visualizations", user.visualizations);
+			Member.set(userId, "visualizations", user.visualizations);
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}
@@ -76,9 +76,9 @@ public class Visualizations extends Controller {
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", userId).get();
 		Set<String> fields = new ChainedSet<String>().add("visualizations").get();
 		try {
-			User user = User.get(properties, fields);
+			Member user = Member.get(properties, fields);
 			user.visualizations.remove(new ObjectId(visualizationIdString));
-			User.set(userId, "visualizations", user.visualizations);
+			Member.set(userId, "visualizations", user.visualizations);
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}
@@ -92,7 +92,7 @@ public class Visualizations extends Controller {
 				.put("visualizations", visualizationId).get();
 		boolean isInstalled;
 		try {
-			isInstalled = User.exists(properties);
+			isInstalled = Member.exists(properties);
 		} catch (ModelException e) {
 			return internalServerError(e.getMessage());
 		}

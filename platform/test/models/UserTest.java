@@ -43,11 +43,11 @@ public class UserTest {
 	public void add() throws ModelException {
 		DBCollection users = DBLayer.getCollection("users");
 		assertEquals(0, users.count());
-		User user = new User();
+		Member user = new Member();
 		user._id = new ObjectId();
 		user.email = "test1@example.com";
 		user.name = "Test User";
-		user.password = User.encrypt("password");
+		user.password = Member.encrypt("password");
 		user.visible = new HashMap<String, Set<ObjectId>>();
 		user.apps = new HashSet<ObjectId>();
 		user.visualizations = new HashSet<ObjectId>();
@@ -55,7 +55,7 @@ public class UserTest {
 		user.news = new HashSet<ObjectId>();
 		user.pushed = new HashSet<ObjectId>();
 		user.shared = new HashSet<ObjectId>();
-		User.add(user);
+		Member.add(user);
 		assertEquals(1, users.count());
 		DBObject query = new BasicDBObject("_id", user._id);
 		assertEquals(user.email, users.findOne(query).get("email"));
@@ -67,7 +67,7 @@ public class UserTest {
 		assertEquals(0, users.count());
 		ObjectId[] userIds = CreateDBObjects.insertUsers(1);
 		assertEquals(1, users.count());
-		User.delete(userIds[0]);
+		Member.delete(userIds[0]);
 		assertEquals(0, users.count());
 	}
 
@@ -75,9 +75,9 @@ public class UserTest {
 	public void exists() throws ModelException {
 		DBCollection users = DBLayer.getCollection("users");
 		assertEquals(0, users.count());
-		assertFalse(User.exists(new ChainedMap<String, ObjectId>().put("_id", new ObjectId()).get()));
+		assertFalse(Member.exists(new ChainedMap<String, ObjectId>().put("_id", new ObjectId()).get()));
 		ObjectId userId = CreateDBObjects.insertUsers(1)[0];
-		assertTrue(User.exists(new ChainedMap<String, ObjectId>().put("_id", userId).get()));
+		assertTrue(Member.exists(new ChainedMap<String, ObjectId>().put("_id", userId).get()));
 	}
 
 	@Test
@@ -86,7 +86,7 @@ public class UserTest {
 		assertEquals(0, users.count());
 		ObjectId userId = CreateDBObjects.insertUsers(1)[0];
 		assertEquals(1, users.count());
-		User foundUser = User.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>()
+		Member foundUser = Member.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>()
 				.add("name").get());
 		assertEquals("Test User 1", foundUser.name);
 	}
@@ -99,7 +99,7 @@ public class UserTest {
 		assertEquals(1, users.count());
 		boolean exceptionCaught = false;
 		try {
-			User.get(new ChainedMap<String, ObjectId>().put("_id", new ObjectId()).get(),
+			Member.get(new ChainedMap<String, ObjectId>().put("_id", new ObjectId()).get(),
 					new ChainedSet<String>().add("name").get());
 		} catch (NullPointerException e) {
 			exceptionCaught = true;

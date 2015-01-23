@@ -1,0 +1,58 @@
+@import views.html.help.formrow
+@import views.html.help.formerror
+@pubmain("Research Registration") {
+	
+	<div class="container" ng-app="registration" ng-controller="RegistrationCtrl" ng-cloak>
+		<div class="row">
+			<!-- Registration -->
+			<div class="col-sm-12">
+				<div class="panel-container" style="max-width:630px; padding-top:120px; margin:0 auto;">
+					<div class="panel panel-default">
+		            	<div class="panel-heading">
+		              		<h3 class="panel-title">Research Sign up</h3>
+		            	</div>
+		            	<div class="panel-body">
+		            		<div class="alert alert-danger" ng-show="registration.error">
+								<p>{{registration.error}}</p>
+							</div>							
+							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="register()" role="form">
+							 <h3>Research Organization</h3>
+							  @formrow("name","Name") { 
+							    <input type="text" class="form-control" id="name" name="name" placeholder="Name" ng-model="registration.name" ng-required="true">
+							    @formerror("name","exists","A research organization with this name already exists.") 
+							  }
+							  @formrow("description","Description") {  <textarea class="form-control" id="description" name="description" rows="5" ng-model="registration.description" ng-required="true"></textarea> }
+							 <h3>Research User</h3>
+							  @formrow("email","Email") {  
+							    <input type="email" class="form-control" id="email" name="email" placeholder="Email" ng-model="registration.email" ng-required="true">
+							    @formerror("email","email","Please enter a valid email address.") 
+							    @formerror("email","exists","A user with this email is already registered.")
+							  }
+							  @formrow("password","Password") {  
+							    <input type="password" class="form-control" id="password" name="password" placeholder="Password" ng-model="registration.password" ng-required="true">
+							    @formerror("password","compare","Password and password repetition do not match!") 
+							  }
+							  @formrow("password2","Repeat Password") {  <input type="password" class="form-control" id="password2" name="password2" placeholder="Password" ng-model="registration.password2" ng-required="true"> }
+							  @formrow("firstname","First Name") {  <input type="text" class="form-control" id="firstname" name="firstname" placeholder="First Name" ng-model="registration.firstname" ng-required="true"> }
+							  @formrow("sirname","Sir Name") {  <input type="text" class="form-control" id="sirname" name="sirname" placeholder="Sir Name" ng-model="registration.sirname" ng-required="true"> }
+							  
+							  @formrow("gender","Gender") {  <select class="form-control" id="gender" name="gender" ng-model="registration.gender"><option value="FEMALE">female</option><option value="MALE">male</option></select> }
+							  
+							  @formrow("address1","Address") {  <input type="text" class="form-control" id="address1" name="address1" placeholder="" ng-model="registration.address1" ng-required="true"> }
+							  @formrow("address2","Address") {  <input type="text" class="form-control" id="address2" name="address2" placeholder="" ng-model="registration.address2"> }
+							  @formrow("city","City") {  <input type="text" class="form-control" id="city" name="city" placeholder="" ng-model="registration.city" ng-required="true"> }
+							  @formrow("zip","Zip") {  <input type="text" class="form-control" id="zip" name="zip" placeholder="" ng-model="registration.zip" ng-required="true"> }
+							  @formrow("country","Country") {  <select class="form-control" id="country" name="country" ng-model="registration.country" ng-required="true"><option value="CH">Swiss</option></select> }
+                             
+                             <button type="submit" class="btn btn-lg btn-primary btn-block">Sign up</button>
+                            </form>
+		            	</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Load login controller -->
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/research/registration.js")" defer></script>
+}

@@ -8,7 +8,7 @@ import java.util.Set;
 
 import models.App;
 import models.ModelException;
-import models.User;
+import models.Member;
 
 import org.bson.types.ObjectId;
 
@@ -75,9 +75,9 @@ public class Apps extends Controller {
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", userId).get();
 		Set<String> fields = new ChainedSet<String>().add("apps").get();
 		try {
-			User user = User.get(properties, fields);
+			Member user = Member.get(properties, fields);
 			user.apps.add(new ObjectId(appIdString));
-			User.set(userId, "apps", user.apps);
+			Member.set(userId, "apps", user.apps);
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}
@@ -89,9 +89,9 @@ public class Apps extends Controller {
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", userId).get();
 		Set<String> fields = new ChainedSet<String>().add("apps").get();
 		try {
-			User user = User.get(properties, fields);
+			Member user = Member.get(properties, fields);
 			user.apps.remove(new ObjectId(appIdString));
-			User.set(userId, "apps", user.apps);
+			Member.set(userId, "apps", user.apps);
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}
@@ -104,7 +104,7 @@ public class Apps extends Controller {
 		Map<String, Object> properties = new ChainedMap<String, Object>().put("_id", userId).put("apps", appId).get();
 		boolean isInstalled;
 		try {
-			isInstalled = User.exists(properties);
+			isInstalled = Member.exists(properties);
 		} catch (ModelException e) {
 			return internalServerError(e.getMessage());
 		}

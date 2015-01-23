@@ -10,7 +10,7 @@ import java.util.Set;
 
 import models.Circle;
 import models.ModelException;
-import models.User;
+import models.Member;
 
 import org.bson.types.ObjectId;
 
@@ -53,9 +53,9 @@ public class Users extends Controller {
 		// get users
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
-		List<User> users;
+		List<Member> users;
 		try {
-			users = new ArrayList<User>(User.getAll(properties, fields));
+			users = new ArrayList<Member>(Member.getAll(properties, fields));
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}
@@ -81,9 +81,9 @@ public class Users extends Controller {
 		// get name for ids
 		Map<String, Set<ObjectId>> properties = new ChainedMap<String, Set<ObjectId>>().put("_id", userIds).get();
 		Set<String> fields = new ChainedSet<String>().add("name").get();
-		List<User> users;
+		List<Member> users;
 		try {
-			users = new ArrayList<User>(User.getAll(properties, fields));
+			users = new ArrayList<Member>(Member.getAll(properties, fields));
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}
@@ -97,20 +97,20 @@ public class Users extends Controller {
 	public static Result loadContacts() {
 		ObjectId userId = new ObjectId(request().username());
 		Set<ObjectId> contactIds = new HashSet<ObjectId>();
-		Set<User> contacts;
+		Set<Member> contacts;
 		try {
 			Set<Circle> circles = Circle.getAll(new ChainedMap<String, ObjectId>().put("owner", userId).get(), new ChainedSet<String>()
 					.add("members").get());
 			for (Circle circle : circles) {
 				contactIds.addAll(circle.members);
 			}
-			contacts = User.getAll(new ChainedMap<String, Set<ObjectId>>().put("_id", contactIds).get(),
+			contacts = Member.getAll(new ChainedMap<String, Set<ObjectId>>().put("_id", contactIds).get(),
 					new ChainedSet<String>().add("name").add("email").get());
 		} catch (ModelException e) {
 			return internalServerError(e.getMessage());
 		}
 		Set<ObjectNode> jsonContacts = new HashSet<ObjectNode>();
-		for (User contact : contacts) {
+		for (Member contact : contacts) {
 			ObjectNode node = Json.newObject();
 			node.put("value", contact.name + " (" + contact.email + ")");
 			String[] split = contact.name.split(" ");
@@ -138,8 +138,8 @@ public class Users extends Controller {
 		// get the visible fields for the owner from all users
 		Map<String, Set<ObjectId>> properties = new ChainedMap<String, Set<ObjectId>>().put("_id", userIds).get();
 		Set<String> fields = new ChainedSet<String>().add("visible." + ownerId.toString()).add("shared").get();
-		Set<User> users = User.getAll(properties, fields);
-		for (User user : users) {
+		Set<Member> users = Member.getAll(properties, fields);
+		for (Member user : users) {
 			if (user.visible.containsKey(ownerId.toString())) {
 				Set<ObjectId> visibleRecords = user.visible.get(ownerId.toString());
 				int originalSize = visibleRecords.size();
@@ -147,17 +147,17 @@ public class Users extends Controller {
 
 				// only update the field if some records were not visible before
 				if (visibleRecords.size() > originalSize) {
-					User.set(user._id, "visible." + ownerId.toString(), visibleRecords);
+					Member.set(user._id, "visible." + ownerId.toString(), visibleRecords);
 				}
 			} else {
-				User.set(user._id, "visible." + ownerId.toString(), recordIds);
+				Member.set(user._id, "visible." + ownerId.toString(), recordIds);
 			}
 
 			// also update shared field if it has changed
 			int originalSize = user.shared.size();
 			user.shared.addAll(recordIds);
 			if (user.shared.size() > originalSize) {
-				User.set(user._id, "shared", user.shared);
+				Member.set(user._id, "shared", user.shared);
 			}
 		}
 	}
@@ -189,17 +189,17 @@ public class Users extends Controller {
 			// update visible field if visible records have changed
 			recordIds.removeAll(stillSharedRecords);
 			if (recordIds.size() > 0) {
-				User user = User.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(),
+				Member user = Member.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(),
 						new ChainedSet<String>().add("visible." + ownerId.toString()).add("shared").get());
 				Set<ObjectId> visibleRecords = user.visible.get(ownerId.toString());
 				visibleRecords.removeAll(recordIds);
-				User.set(userId, "visible." + ownerId.toString(), visibleRecords);
+				Member.set(userId, "visible." + ownerId.toString(), visibleRecords);
 
 				// also update shared field if it has changed
 				int originalSize = user.shared.size();
 				user.shared.removeAll(recordIds);
 				if (user.shared.size() < originalSize) {
-					User.set(userId, "shared", user.shared);
+					Member.set(userId, "shared", user.shared);
 				}
 			}
 		}
@@ -209,18 +209,18 @@ public class Users extends Controller {
 	 * Add a record to the list of pushed records of the given user.
 	 */
 	static void pushRecord(ObjectId userId, ObjectId recordId) throws ModelException {
-		User user = User.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>().add("pushed").get());
+		Member user = Member.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>().add("pushed").get());
 		user.pushed.add(recordId);
-		User.set(user._id, "pushed", user.pushed);
+		Member.set(user._id, "pushed", user.pushed);
 	}
 
 	/**
 	 * Remove a record from the list of pushed records of the given user.
 	 */
 	static void pullRecord(ObjectId userId, ObjectId recordId) throws ModelException {
-		User user = User.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>().add("pushed").get());
+		Member user = Member.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>().add("pushed").get());
 		user.pushed.remove(recordId);
-		User.set(user._id, "pushed", user.pushed);
+		Member.set(user._id, "pushed", user.pushed);
 	}
 
 	/**
@@ -229,8 +229,8 @@ public class Users extends Controller {
 	public static Result clearPushed() {
 		ObjectId userId = new ObjectId(request().username());
 		try {
-			User.set(userId, "pushed", new HashSet<ObjectId>());
-			User.set(userId, "login", DateTimeUtils.now());
+			Member.set(userId, "pushed", new HashSet<ObjectId>());
+			Member.set(userId, "login", DateTimeUtils.now());
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}
@@ -243,8 +243,8 @@ public class Users extends Controller {
 	public static Result clearShared() {
 		ObjectId userId = new ObjectId(request().username());
 		try {
-			User.set(userId, "shared", new HashSet<ObjectId>());
-			User.set(userId, "login", DateTimeUtils.now());
+			Member.set(userId, "shared", new HashSet<ObjectId>());
+			Member.set(userId, "login", DateTimeUtils.now());
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}
@@ -255,7 +255,7 @@ public class Users extends Controller {
 	 * Get a user's authorization tokens for an app.
 	 */
 	static Map<String, String> getTokens(ObjectId userId, ObjectId appId) throws ModelException {
-		User user = User.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>().add("tokens").get());
+		Member user = Member.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>().add("tokens").get());
 		if (user.tokens.containsKey(appId.toString())) {
 			return user.tokens.get(appId.toString());
 		} else {
@@ -267,8 +267,8 @@ public class Users extends Controller {
 	 * Set authorization tokens, namely the access and refresh token.
 	 */
 	static void setTokens(ObjectId userId, ObjectId appId, Map<String, String> tokens) throws ModelException {
-		User user = User.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>().add("tokens").get());
+		Member user = Member.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>().add("tokens").get());
 		user.tokens.put(appId.toString(), tokens);
-		User.set(userId, "tokens", user.tokens);
+		Member.set(userId, "tokens", user.tokens);
 	}
 }

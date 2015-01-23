@@ -11,7 +11,7 @@ import static play.test.Helpers.fakeRequest;
 import static play.test.Helpers.session;
 import static play.test.Helpers.start;
 import static play.test.Helpers.status;
-import models.User;
+import models.Member;
 
 import org.junit.After;
 import org.junit.Before;
@@ -55,7 +55,7 @@ public class RegistrationTest {
 						Json.parse("{\"email\": \"" + newEmail
 								+ "\", \"firstName\": \"First\", \"lastName\": \"Last\", \"password\": \"secret\"}")));
 		assertEquals(200, status(result));
-		User user = User.get(new ChainedMap<String, String>().put("email", newEmail).get(), new ChainedSet<String>()
+		Member user = Member.get(new ChainedMap<String, String>().put("email", newEmail).get(), new ChainedSet<String>()
 				.add("_id").get());
 		assertEquals(user._id.toString(), session(result).get("id"));
 		assertEquals(oldSize + 1, users.count());

@@ -8,7 +8,7 @@ import java.util.Set;
 
 import models.ModelException;
 import models.NewsItem;
-import models.User;
+import models.Member;
 
 import org.bson.types.ObjectId;
 
@@ -90,10 +90,10 @@ public class News extends Controller {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId newsItemId = new ObjectId(newsItemIdString);
 		try {
-			User user = User.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>()
+			Member user = Member.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>()
 					.add("news").get());
 			user.news.remove(newsItemId);
-			User.set(userId, "news", user.news);
+			Member.set(userId, "news", user.news);
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}

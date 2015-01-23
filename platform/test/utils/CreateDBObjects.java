@@ -8,7 +8,7 @@ import java.util.Set;
 
 import models.ModelException;
 import models.Record;
-import models.User;
+import models.Member;
 import models.Visualization;
 
 import org.bson.types.ObjectId;
@@ -26,11 +26,11 @@ public class CreateDBObjects {
 		long originalCount = users.count();
 		ObjectId[] userIds = new ObjectId[numUsers];
 		for (int i = 0; i < numUsers; i++) {
-			User user = new User();
+			Member user = new Member();
 			user._id = new ObjectId();
 			user.email = "test" + (i + 1) + "@example.com";
 			user.name = "Test User " + (i + 1);
-			user.password = User.encrypt("password");
+			user.password = Member.encrypt("password");
 			user.visible = new HashMap<String, Set<ObjectId>>();
 			user.apps = new HashSet<ObjectId>();
 			user.visualizations = new HashSet<ObjectId>();
@@ -38,7 +38,7 @@ public class CreateDBObjects {
 			user.news = new HashSet<ObjectId>();
 			user.pushed = new HashSet<ObjectId>();
 			user.shared = new HashSet<ObjectId>();
-			User.add(user);
+			Member.add(user);
 			userIds[i] = user._id;
 		}
 		assertEquals(originalCount + numUsers, users.count());

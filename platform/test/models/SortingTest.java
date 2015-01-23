@@ -111,11 +111,11 @@ public class SortingTest {
 	
 	@Test
 	public void sortUsers() {
-		User user1 = new User();
+		Member user1 = new Member();
 		user1._id = new ObjectId();
-		User user2 = new User();
+		Member user2 = new Member();
 		user2._id = new ObjectId();
-		List<User> list = new ArrayList<User>();
+		List<Member> list = new ArrayList<Member>();
 		list.add(user1);
 		list.add(user2);
 		Collections.sort(list);
