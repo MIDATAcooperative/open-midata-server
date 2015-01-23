@@ -13,7 +13,7 @@ login.controller('LostPasswordCtrl', ['$scope', '$http', function($scope, $http)
 		}
 		
 		// send the request
-		var data = { "email": $scope.lostpw.email };
+		var data = { "email": $scope.lostpw.email, "role" : $scope.role };
 		$http.post(jsRoutes.controllers.Application.requestPasswordResetToken().url, JSON.stringify(data)).
 			success(function() { $scope.lostpw.success = true; }).
 			error(function(err) { $scope.lostpw.error = err; });

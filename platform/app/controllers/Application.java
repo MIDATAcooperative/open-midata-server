@@ -9,6 +9,7 @@ import java.util.Set;
 import models.ModelException;
 import models.Member;
 import models.ResearchUser;
+import models.User;
 import models.enums.ContractStatus;
 import models.enums.Gender;
 import models.enums.ParticipationInterest;
@@ -25,6 +26,7 @@ import utils.DateTimeUtils;
 import utils.auth.PasswordResetToken;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
+import utils.collections.Sets;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.mails.MailUtils;
@@ -53,43 +55,40 @@ public class Application extends Controller {
 		return ok(registration.render());
 	}
 	
-	public static Result lostpw() {
-		return ok(lostpw.render());
+	public static Result lostpw(String role) {
+		return ok(lostpw.render(role));
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result requestPasswordResetToken() {
+	@APICall
+	public static Result requestPasswordResetToken() throws JsonValidationException, ModelException {
 		// validate json
 		JsonNode json = request().body().asJson();
-		try {
-		  JsonValidation.validate(json, "email");
-		} catch (JsonValidationException e) {
-		  return badRequest(e.getMessage());
-		}
-
+		
+		JsonValidation.validate(json, "email", "role");
+		
 		// validate request
-		String email = json.get("email").asText();
+		String email = JsonValidation.getEMail(json, "email");
+		String role = JsonValidation.getString(json, "role");
 		
-		Map<String, String> emailQuery = new ChainedMap<String, String>().put("email", email).get();
-		Member user;
-		try {
-			if (Member.exists(emailQuery)) {				
-			   user = Member.get(emailQuery, new ChainedSet<String>().add("name").add("email").add("password").get());				
-			   
-			   PasswordResetToken token = new PasswordResetToken(user._id);
-			   Member.set(user._id, "resettoken", token.token);
-			   Member.set(user._id, "resettokenTs", System.currentTimeMillis());
-			   String encrypted = token.encrypt();
-			   
-			   String site = "https://" + Play.application().configuration().getString("platform.server");
-			   String url = site + "/setpw#?token=" + encrypted;
-			   
-			   MailUtils.sendTextMail(email, user.name, "Your Password", lostpwmail.render(site,url));
-			}
-		} catch (ModelException e) {
-			return internalServerError(e.getMessage());
+		User user = null;
+		switch (role) {
+		case "member" : user = Member.getByEmail(email, Sets.create("name","email","password"));break;
+		case "research" : user = ResearchUser.getByEmail(email, Sets.create("name","email","password"));break;
+		default: break;		
 		}
-		
+		if (user != null) {							  
+		  PasswordResetToken token = new PasswordResetToken(user._id, role);
+		  user.set("resettoken", token.token);
+		  user.set("resettokenTs", System.currentTimeMillis());
+		  String encrypted = token.encrypt();
+			   
+		  String site = "https://" + Play.application().configuration().getString("platform.server");
+		  String url = site + "/setpw#?token=" + encrypted;
+			   
+		  MailUtils.sendTextMail(email, user.name, "Your Password", lostpwmail.render(site,url));
+		}
+				
 		return ok();
 	}
 	
@@ -98,42 +97,39 @@ public class Application extends Controller {
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result setPasswordWithToken() {
+	@APICall
+	public static Result setPasswordWithToken() throws JsonValidationException, ModelException {
 		// validate json
 		JsonNode json = request().body().asJson();
-		try {
-		  JsonValidation.validate(json, "token", "password");
-		} catch (JsonValidationException e) {
-		  return badRequest(e.getMessage());
-		}
-
+		
+		JsonValidation.validate(json, "token", "password");
+		
 		// validate request
 		PasswordResetToken passwordResetToken = PasswordResetToken.decrypt(json.get("token").asText());
 		if (passwordResetToken == null) return badRequest("Missing or bad password token.");
 		
 		ObjectId userId = passwordResetToken.userId;
 		String token = passwordResetToken.token;
-		String password = json.get("password").asText();
+		String role = passwordResetToken.role;
+		String password = JsonValidation.getPassword(json, "password");
 		
+		User user = null;
+		switch (role) {
+		case "member" : user = Member.getById(userId, Sets.create("resettoken","password","resettokenTs"));break;
+		case "research" : user = ResearchUser.getById(userId, Sets.create("resettoken","password","resettokenTs"));break;
+		default: break;		
+		}
+		if (user!=null) {				
 				
-		Map<String, Object> emailQuery = new ChainedMap<String, Object>().put("_id", userId).get();
-		Member user;
-		try {
-			if (Member.exists(emailQuery)) {				
-			   user = Member.get(emailQuery, new ChainedSet<String>().add("resettoken").add("password").add("resettokenTs").get());				
-		       if (user.resettoken != null 
-		    		    
+		       if (user.resettoken != null 		    		    
 		    		   && user.resettoken.equals(token)
 		    		   && System.currentTimeMillis() - user.resettokenTs < 1000 * 60 * 15) {	   
 			   
-		           Member.set(userId, "resettoken", null);		       
-			       Member.set(userId, "password", Member.encrypt(password));
+		           user.set("resettoken", null);		       
+			       user.set("password", Member.encrypt(password));
 		       } else return badRequest("Password reset token has already expired.");
-			}
-		} catch (ModelException e) {
-			return internalServerError(e.getMessage());
 		}
-				
+					
 		return ok();		
 	}
 	

@@ -11,8 +11,10 @@ POST    /welcome                    controllers.Application.authenticate()
 GET     /register                   controllers.Application.registration()
 POST    /registration               controllers.Application.register()
 GET     /logout                     controllers.Application.logout()
-GET     /lostpw                     controllers.Application.lostpw()
+# Lost password feature
+GET     /lostpw                     controllers.Application.lostpw(role: String = "member")
 POST    /lostpw                     controllers.Application.requestPasswordResetToken()
+GET     /research/lostpw            controllers.Application.lostpw(role: String = "research") 
 GET     /setpw                      controllers.Application.setpw()
 POST    /setpw                      controllers.Application.setPasswordWithToken()
 # News

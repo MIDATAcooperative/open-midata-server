@@ -8,7 +8,7 @@ import org.bson.types.ObjectId;
 
 import play.libs.Crypto;
 import play.libs.Json;
-import utils.collections.ChainedMap;
+import utils.collections.CMaps;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -19,20 +19,24 @@ public class PasswordResetToken {
 
 	public ObjectId userId;
 	public String token;
+	public String role;
+	
 	static SecureRandom random = new SecureRandom();
 
-	public PasswordResetToken(ObjectId userId, String token) {		
+	public PasswordResetToken(ObjectId userId, String role, String token) {		
 		this.userId = userId;
+		this.role = role;
 		this.token = token;
 	}
 	
-	public PasswordResetToken(ObjectId userId) {
+	public PasswordResetToken(ObjectId userId, String role) {
 		this.userId = userId;
+		this.role = role;
 	    this.token = new BigInteger(130, random).toString(32);
 	}
 
 	public String encrypt() {
-		Map<String, String> map = new ChainedMap<String, String>().put("userId", userId.toString()).put("token", token).get();
+		Map<String, Object> map = CMaps.map("userId", userId.toString()).map("token", token);
 		String json = Json.stringify(Json.toJson(map));
 		return Crypto.encryptAES(json);
 	}
@@ -47,7 +51,8 @@ public class PasswordResetToken {
 			JsonNode json = Json.parse(plaintext);
 			ObjectId userId = new ObjectId(json.get("userId").asText());
 			String token = json.get("token").asText();
-			return new PasswordResetToken(userId, token);
+			String role = json.get("role").asText();
+			return new PasswordResetToken(userId, role, token);
 		} catch (Exception e) {
 			return null;
 		}

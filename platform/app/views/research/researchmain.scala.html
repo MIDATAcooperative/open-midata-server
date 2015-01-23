@@ -2,7 +2,7 @@
 
 @setup(active) {
 	<!-- Navbar -->
-	<header id="navbar" class="navbar navbar-default" role="navigation">
+	<header id="navbar" class="navbar navbar-default" role="navigation" ng-controller="NavbarCtrl">
 	  <div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -20,7 +20,13 @@
 				<li @if("Messages".equals(active)){class="active"}><a href="@routes.Messages.index()">Messages</a></li>
 				<li @if("Studies".equals(active)){class="active"}><a href="x">Studies</a></li>				
 			</ul>
-	    </nav>
+			<ul class="nav navbar-nav navbar-right" ng-cloak>
+				<li>{{user.name}}</li>
+				<li><a href="@routes.Application.logout()">
+					<span class="glyphicon glyphicon-off"></span> Sign out
+				</a></li>
+		    </ul>
+	    </nav>	    
 	   </div>
 	</header>
 	
@@ -29,5 +35,7 @@
 	</div>
 	
 	@footer()	
+	
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/navbar.js")" defer></script>
 	
 }

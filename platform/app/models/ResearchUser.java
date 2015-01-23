@@ -40,8 +40,16 @@ public class ResearchUser extends User {
 		return Model.get(ResearchUser.class, collection, CMaps.map("email", email), fields);
 	}
 	
+	public static ResearchUser getById(ObjectId id, Set<String> fields) throws ModelException {
+		return Model.get(ResearchUser.class, collection, CMaps.map("_id", id), fields);
+	}
+	
 	public static void add(ResearchUser user) throws ModelException {
 		Model.insert(collection, user);	
+	}
+	
+	protected String getCollection() {
+		return collection;
 	}
 		
 

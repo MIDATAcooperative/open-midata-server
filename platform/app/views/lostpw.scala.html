@@ -1,3 +1,4 @@
+@(role : String)
 @pubmain("Password Assistance - Step 1") {
 	
 	<div class="container" ng-app="lostpw" ng-controller="LostPasswordCtrl" ng-cloak>
@@ -17,8 +18,9 @@
 								<p>We have sent you an email with instructions on how to reset your password.</p>
 							</div>
 							<p>Enter the e-mail address associated with your account, then click Continue. We'll email you a link to a page where you can easily create a new password.</p>
-							<form ng-submit="submit()" role="form">
-								<input type="email" class="form-control" placeholder="Email address" ng-model="lostpw.email" style="margin-bottom:5px;" autofocus>								
+							<form name="form" ng-submit="submit()" role="form">
+								<input type="email" class="form-control" placeholder="Email address" ng-model="lostpw.email" style="margin-bottom:5px;" autofocus>
+								<input type="hidden" name="role" value="@role" ng-init="role='@role'">								
 								<button type="submit" class="btn btn-primary btn-block">Continue</button>
 							</form>
 		            	</div>

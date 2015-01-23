@@ -81,4 +81,12 @@ public class User extends Model implements Comparable<User> {
 		}
 	}
 	
+	protected String getCollection() {
+		return "users";
+	}
+	
+	public void set(String field, Object value) throws ModelException {
+		Model.set(getCollection(), this._id, field, value);
+	}
+	
 }
