@@ -27,6 +27,10 @@ public class Member extends User {
 	public Set<ObjectId> pushed; // records pushed by apps (since last login)
 	public Set<ObjectId> shared; // records shared by users (since last login)
 	
+	public Set<ObjectId> studyKeywords; // Keywords for studies
+	public Set<ObjectId> tags; // Tags describing account
+	
+	public String midataID;
 	public Date birthday;
 	public String ssn; // social security number
 	public ParticipationInterest partInterest;

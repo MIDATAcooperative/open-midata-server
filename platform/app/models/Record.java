@@ -20,6 +20,7 @@ public class Record extends Model implements Comparable<Record> {
 	public ObjectId creator; // user that imported the record
 	public String created; // date + time created
 	public String name; // used to display a record and for autocompletion
+	public String format; // format of record
 	public String description; // this will be indexed in the search cluster
 	public DBObject data; // arbitrary json data
 
