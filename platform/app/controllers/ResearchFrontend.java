@@ -1,5 +1,6 @@
-package controllers.research;
+package controllers;
 
+import controllers.research.ResearchSecured;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -8,6 +9,7 @@ import views.html.research.login;
 import views.html.research.messages;
 import views.html.research.codes;
 import views.html.research.createstudy;
+import views.html.research.studies;
 import views.html.research.studyfields;
 import views.html.research.studymessages;
 import views.html.research.studyoverview;
@@ -29,6 +31,11 @@ public class ResearchFrontend extends Controller {
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result messages() {
 		return ok(messages.render());
+	}
+	
+	@Security.Authenticated(ResearchSecured.class)
+	public static Result studies() {
+		return ok(studies.render());
 	}
 	
 	public static Result codes(String study) {
@@ -64,6 +71,6 @@ public class ResearchFrontend extends Controller {
 	}
 	
 	public static Result studyrules(String study) {
-		return ok(studyresults.render());
+		return ok(studyrules.render());
 	}
 }

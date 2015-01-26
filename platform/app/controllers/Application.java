@@ -311,6 +311,9 @@ public class Application extends Controller {
 				//Research
 				controllers.research.routes.javascript.Researchers.register(),
 				controllers.research.routes.javascript.Researchers.login(),
+				controllers.research.routes.javascript.Studies.create(),
+				controllers.research.routes.javascript.Studies.list(),
+				controllers.research.routes.javascript.Studies.get(),
 				// Market
 				controllers.routes.javascript.Market.registerApp(),
 				controllers.routes.javascript.Market.registerVisualization(),

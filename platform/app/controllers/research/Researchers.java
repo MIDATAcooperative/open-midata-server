@@ -16,7 +16,7 @@ import models.enums.UserStatus;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.APIController;
-import controllers.research.routes;
+import controllers.routes;
 
 import actions.APICall; 
 import play.libs.Json;
@@ -39,7 +39,7 @@ public class Researchers extends APIController {
 		JsonValidation.validate(json, "name", "email", "description", "firstname", "sirname", "gender", "city", "zip", "country", "address1");
 					
 		String name = JsonValidation.getString(json, "name");
-		if (Research.existsByName(name)) return inputerror("name", "exists", "A research organization with this email address already exists.");
+		if (Research.existsByName(name)) return inputerror("name", "exists", "A research organization with this name already exists.");
 		
 		String email = JsonValidation.getEMail(json, "email");
 		if (ResearchUser.existsByEMail(email)) return inputerror("email", "exists", "A user with this email address already exists.");
@@ -75,6 +75,8 @@ public class Researchers extends APIController {
 		session().clear();
 		session("id", user._id.toString());
 		session("role", "research");
+		session("org", research._id.toString());
+		
 		return ok(routes.ResearchFrontend.messages().url());
 	}
 	
@@ -88,7 +90,7 @@ public class Researchers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		ResearchUser user = ResearchUser.getByEmail(email, Sets.create("email","password"));
+		ResearchUser user = ResearchUser.getByEmail(email, Sets.create("email","password","organization"));
 		
 		if (user == null) return badRequest("Invalid user or password.");
 		if (!ResearchUser.authenticationValid(password, user.password)) {
@@ -99,6 +101,7 @@ public class Researchers extends APIController {
 		session().clear();
 		session("id", user._id.toString());
 		session("role", "research");
+		session("org", user.organization.toString());
 		return ok(routes.ResearchFrontend.messages().url());
 	}
 	

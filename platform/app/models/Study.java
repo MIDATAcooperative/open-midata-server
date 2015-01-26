@@ -2,6 +2,7 @@ package models;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import models.enums.ParticipantSearchStatus;
@@ -10,7 +11,9 @@ import models.enums.StudyValidationStatus;
 
 import org.bson.types.ObjectId;
 
-public class Study {
+import utils.collections.CMaps;
+
+public class Study extends Model {
 	
 	private static final String collection = "studies";
 	
@@ -27,5 +30,21 @@ public class Study {
 	public ParticipantSearchStatus participantSearchStatus;
 	public StudyExecutionStatus executionStatus;
     public List<History> history;
+    
+    public static void add(Study study) throws ModelException {
+		Model.insert(collection, study);
+	 }
+ 
+    public static boolean existsByName(String name) throws ModelException {
+	   return Model.exists(collection, CMaps.map("name", name));
+    }
+    
+    public static Set<Study> getByOwner(ObjectId research, Set<String> fields) throws ModelException {
+		return Model.getAll(Study.class, collection, CMaps.map("owner", research), fields);
+	}
+    
+    public static Study getByIdFromOwner(ObjectId studyid, ObjectId owner, Set<String> fields) throws ModelException {
+		return Model.get(Study.class, collection, CMaps.map("_id", studyid).map("owner",  owner), fields);
+	}
 	
 }

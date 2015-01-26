@@ -17,8 +17,8 @@
 		</div>
 		<nav class="collapse navbar-collapse navbar-ex1-collapse">
 			<ul class="nav navbar-nav">            	
-				<li @if("Messages".equals(active)){class="active"}><a href="@routes.Messages.index()">Messages</a></li>
-				<li @if("Studies".equals(active)){class="active"}><a href="x">Studies</a></li>				
+				<li @if("Messages".equals(active)){class="active"}><a href="@routes.ResearchFrontend.messages()">Messages</a></li>
+				<li @if("Studies".equals(active)){class="active"}><a href="@routes.ResearchFrontend.studies()">Studies</a></li>				
 			</ul>
 			<ul class="nav navbar-nav navbar-right" ng-cloak>
 				<li>{{user.name}}</li>
@@ -30,7 +30,7 @@
 	   </div>
 	</header>
 	
-	<div class="container">
+	<div class="container mainpart">
 		@content
 	</div>
 	

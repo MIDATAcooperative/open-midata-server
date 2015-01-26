@@ -1,5 +1,20 @@
+@import views.html.help.formrow
+@import views.html.help.formerror
 @researchmain("Create new Study") {
+  <div ng-app="studies" ng-controller="CreateStudyCtrl" ng-cloak>
 	<h1>Create new study</h1>
-	<p>Some content here...</p>
-	
+	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="createstudy()" role="form">
+	  @formrow("name","Study name") { 
+		<input type="text" class="form-control" id="name" name="name" placeholder="Study Name" ng-model="study.name" ng-required="true">
+		@formerror("name","exists","A study with this name already exists.") 
+      }
+      @formrow("description", "Study description") {
+        <textarea class="form-control" id="description" name="description" rows="5" ng-model="study.description" ng-required="true"></textarea>
+      }
+      @formrow("x", "") {
+        <button type="submit" class="btn btn-primary">Create</button>
+      }
+    </form>	
+  </div>
+  <script type="text/javascript" src="@routes.Assets.at("javascripts/research/studies.js")" defer></script>
 }

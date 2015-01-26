@@ -18,6 +18,8 @@
 			<ul class="nav navbar-nav">
             	<li @if("News".equals(active)){class="active"}><a href="@routes.News.index()">News <span class="badge">0</span></a></li>
 				<li @if("Messages".equals(active)){class="active"}><a href="@routes.Messages.index()">Messages</a></li>
+				<li @if("Healthcare Providers".equals(active)){class="active"}><a href="@routes.MemberFrontend.providers()">Providers</a></li>
+				<li @if("Studies".equals(active)){class="active"}><a href="@routes.MemberFrontend.studies()">Research</a></li>
 				<li @if("Records".equals(active)){class="active"}><a href="@routes.Records.index()">Records</a></li>
 				<li @if("Spaces".equals(active)){class="active"}><a href="@routes.Spaces.index()">Spaces</a></li>
 				<li @if("Circles".equals(active)){class="active"}><a href="@routes.Circles.index()">Circles</a></li>

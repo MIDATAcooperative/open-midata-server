@@ -1,0 +1,28 @@
+@researchmain("Studies") {
+<div ng-app="studies" ng-controller="ListStudiesCtrl" ng-cloak>
+	<h1>Studies</h1>
+	
+	<table class="table table-hover">
+	  <thead>
+	    <tr>
+	      <th>Name</th>
+	      <th>Validation</th>
+	      <th>Participants</th>
+	      <th>Execution</th>
+	      <th>Created</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr ng-repeat="study in results">
+	      <td><a ng-href="/research/{{study._id.$oid}}/overview">{{ study.name }}</a></td>	  
+	      <td>{{ study.validationStatus }}</td>
+	      <td>{{ study.participantSearchStatus }}</td>
+	      <td>{{ study.executionStatus }}</td>
+	      <td>{{ study.createdAt | date }}</td>	         
+	    </tr>
+	  </tbody>
+	</table>
+	<a class="btn btn-primary" href="@routes.ResearchFrontend.createstudy()">Create new study</a>
+</div>	
+<script type="text/javascript" src="@routes.Assets.at("javascripts/research/studies.js")" defer></script>
+}
