@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import models.HPUser;
 import models.ModelException;
 import models.Member;
 import models.ResearchUser;
@@ -23,6 +24,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import utils.DateTimeUtils;
+import utils.auth.CodeGenerator;
 import utils.auth.PasswordResetToken;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
@@ -75,6 +77,7 @@ public class Application extends Controller {
 		switch (role) {
 		case "member" : user = Member.getByEmail(email, Sets.create("name","email","password"));break;
 		case "research" : user = ResearchUser.getByEmail(email, Sets.create("name","email","password"));break;
+		case "provider" : user = HPUser.getByEmail(email, Sets.create("name","email","password"));break;
 		default: break;		
 		}
 		if (user != null) {							  
@@ -117,6 +120,7 @@ public class Application extends Controller {
 		switch (role) {
 		case "member" : user = Member.getById(userId, Sets.create("resettoken","password","resettokenTs"));break;
 		case "research" : user = ResearchUser.getById(userId, Sets.create("resettoken","password","resettokenTs"));break;
+		case "provider" : user = HPUser.getById(userId, Sets.create("resettoken","password","resettokenTs"));break;
 		default: break;		
 		}
 		if (user!=null) {				
@@ -198,6 +202,8 @@ public class Application extends Controller {
 		user.address2 = JsonValidation.getString(json, "address2");
 		user.city = JsonValidation.getString(json, "city");
 		user.zip  = JsonValidation.getString(json, "zip");
+		user.phone = JsonValidation.getString(json, "phone");
+		user.mobile = JsonValidation.getString(json, "mobile");
 		user.country = JsonValidation.getString(json, "country");
 		user.firstname = JsonValidation.getString(json, "firstname"); 
 		user.sirname = JsonValidation.getString(json, "sirname");
@@ -209,7 +215,7 @@ public class Application extends Controller {
 		
 		user.status = UserStatus.NEW;		
 		user.contractStatus = ContractStatus.NEW;		
-		user.confirmationCode = "ABCD";
+		user.confirmationCode = CodeGenerator.nextCode();
 		user.partInterest = ParticipationInterest.UNSET;
 		
 		user.visible = new HashMap<String, Set<ObjectId>>();
@@ -314,6 +320,16 @@ public class Application extends Controller {
 				controllers.research.routes.javascript.Studies.create(),
 				controllers.research.routes.javascript.Studies.list(),
 				controllers.research.routes.javascript.Studies.get(),
+				controllers.research.routes.javascript.Studies.listCodes(),
+				controllers.research.routes.javascript.Studies.generateCodes(),
+				controllers.research.routes.javascript.Studies.startParticipantSearch(),
+				controllers.research.routes.javascript.Studies.listParticipants(),
+				
+				controllers.members.routes.javascript.Studies.list(),
+				controllers.members.routes.javascript.Studies.enterCode(),
+				//Healthcare Providers
+				controllers.providers.routes.javascript.Providers.register(),
+				controllers.providers.routes.javascript.Providers.login(),
 				// Market
 				controllers.routes.javascript.Market.registerApp(),
 				controllers.routes.javascript.Market.registerVisualization(),

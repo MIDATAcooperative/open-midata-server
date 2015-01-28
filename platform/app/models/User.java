@@ -46,6 +46,8 @@ public class User extends Model implements Comparable<User> {
 	public String country;
 	public String address1;
 	public String address2;
+	public String phone;
+	public String mobile;
 	
 	public List<History> history;
 
@@ -86,7 +88,7 @@ public class User extends Model implements Comparable<User> {
 	}
 	
 	public void set(String field, Object value) throws ModelException {
-		Model.set(getCollection(), this._id, field, value);
+		Model.set(this.getClass(), getCollection(), this._id, field, value);
 	}
 	
 }

@@ -171,8 +171,8 @@ public class DBLayer {
 	/**
 	 * Set the given field of the object with the given id.
 	 */
-	public static void set(String collection, ObjectId modelId, String field, Object value) throws DatabaseException {
-		getDatabaseForCollection(collection).set(collection, modelId, field, value);		
+	public static <T extends Model> void set(Class<T> model, String collection, ObjectId modelId, String field, Object value) throws DatabaseException {
+		getDatabaseForCollection(collection).set(model, collection, modelId, field, value);		
 	}
 
 	public static DB getFSDB() {

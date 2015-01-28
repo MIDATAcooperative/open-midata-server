@@ -44,7 +44,7 @@ public class Space extends Model implements Comparable<Space> {
 	}
 
 	public static void set(ObjectId spaceId, String field, Object value) throws ModelException {
-		Model.set(collection, spaceId, field, value);
+		Model.set(Space.class, collection, spaceId, field, value);
 	}
 
 	public static void add(Space space) throws ModelException {

@@ -26,6 +26,18 @@ public class JsonValidation {
 		return json.path(field).asText();
 	}
 	
+	public static int getInteger(JsonNode json, String field, int lowest, int highest) throws JsonValidationException {
+		if (! json.path(field).isInt()) throw new JsonValidationException(field, "nonumber", "Integer value expected.");
+		int val = json.path(field).intValue();
+		if (val < lowest) throw new JsonValidationException(field, "toolow", "Value must be " + lowest+" at minimum.");
+		if (val > highest) throw new JsonValidationException(field, "toohigh", "Value may be " + lowest+" at maximum.");
+		return val;
+	}
+	
+	public static boolean getBoolean(JsonNode json, String field) {
+		return json.path(field).asBoolean();		
+	}
+	
 	public static String getPassword(JsonNode json, String field) throws JsonValidationException {
 		String pw = json.path(field).asText();
 		if (pw.length() < 5) throw new JsonValidationException("Password is too weak. It must be 5 characters at minimum.");

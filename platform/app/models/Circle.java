@@ -44,7 +44,7 @@ public class Circle extends Model implements Comparable<Circle> {
 	}
 
 	public static void set(ObjectId circleId, String field, Object value) throws ModelException {
-		Model.set(collection, circleId, field, value);
+		Model.set(Circle.class, collection, circleId, field, value);
 	}
 
 	public static void add(Circle circle) throws ModelException {

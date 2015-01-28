@@ -1,7 +1,33 @@
+@import views.html.help.formrow
+@import views.html.help.formerror
 @researchmain("Study Participants") {
-
-    @studynav("Study Participants")
-	<h1>Study Participants</h1>
-	<p>Some content here...</p>
+<div ng-app="studies" ng-controller="ListParticipantsCtrl" ng-cloak>
+   @studynav("Study Participants")
+	<h1>Study Participants</h1>	
+	<div ng-show="results.length > 0">
+	<table class="table table-hover">
+	  <thead>
+	    <tr>
+	      <th>Name</th>
+	      <th>Group</th>
+	      <th>Status</th>
+	      <th>Recruiter</th>	      	     
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr ng-repeat="participant in results">
+	      <td>{{ participant.memberName }}</td>	  
+	      <td>{{ participant.group }}</td>
+	      <td>{{ participant.status }}</td>
+	      <td>{{ participant.recruiterName }}</td>	      	        
+	    </tr>
+	  </tbody>
+	</table>
+	</div>
+	<p ng-show="results.length == 0">
+	  This study does not have any participants yet.
+	</p>	
+</div>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/research/studies.js")" defer></script>
 	
 }

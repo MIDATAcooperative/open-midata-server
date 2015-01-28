@@ -42,7 +42,7 @@ public class Message extends Model implements Comparable<Message> {
 	}
 
 	public static void set(ObjectId messageId, String field, Object value) throws ModelException {
-		Model.set(collection, messageId, field, value);
+		Model.set(Message.class, collection, messageId, field, value);
 	}
 
 	public static void add(Message message) throws ModelException {

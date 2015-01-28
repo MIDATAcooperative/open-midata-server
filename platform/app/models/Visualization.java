@@ -38,7 +38,7 @@ public class Visualization extends Plugin implements Comparable<Visualization> {
 	}
 
 	public static void set(ObjectId visualizationId, String field, Object value) throws ModelException {
-		Model.set(collection, visualizationId, field, value);
+		Model.set(Visualization.class, collection, visualizationId, field, value);
 	}
 
 	public static void add(Visualization visualization) throws ModelException {

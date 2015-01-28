@@ -15,6 +15,7 @@ GET     /logout                     controllers.Application.logout()
 GET     /lostpw                     controllers.Application.lostpw(role: String = "member")
 POST    /lostpw                     controllers.Application.requestPasswordResetToken()
 GET     /research/lostpw            controllers.Application.lostpw(role: String = "research") 
+GET     /providers/lostpw           controllers.Application.lostpw(role: String = "provider")
 GET     /setpw                      controllers.Application.setpw()
 POST    /setpw                      controllers.Application.setPasswordWithToken()
 # News
@@ -110,6 +111,20 @@ POST    /research/test              controllers.research.Researchers.get()
 POST    /studies                   controllers.research.Studies.create()
 GET     /studies                   controllers.research.Studies.list()
 GET     /studies/:study            controllers.research.Studies.get(study: String)
+GET     /studies/:study/codes      controllers.research.Studies.listCodes(study: String)
+POST    /studies/:study/codes      controllers.research.Studies.generateCodes(study: String)
+POST    /studies/:study/status/startsearch  controllers.research.Studies.startParticipantSearch(study: String)
+GET     /studies/:study/participants controllers.research.Studies.listParticipants(study: String)
+
+GET     /participation/studies     controllers.members.Studies.list()
+POST    /participation/entercode   controllers.members.Studies.enterCode()
+
+# Healthcare Provider
+GET     /providers/register         controllers.ProviderFrontend.register()
+GET     /providers/login            controllers.ProviderFrontend.login()
+
+POST    /providers/register         controllers.providers.Providers.register()
+POST    /providers/login            controllers.providers.Providers.login()
 
 # Apps
 POST    /apps/get                   controllers.Apps.get()

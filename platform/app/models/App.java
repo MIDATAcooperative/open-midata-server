@@ -49,7 +49,7 @@ public class App extends Plugin implements Comparable<App> {
 	}
 
 	public static void set(ObjectId appId, String field, Object value) throws ModelException {
-		Model.set(collection, appId, field, value);
+		Model.set(App.class, collection, appId, field, value);
 	}
 
 	public static void add(App app) throws ModelException {

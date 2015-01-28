@@ -43,7 +43,7 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 	}
 
 	public static void set(ObjectId newsItemId, String field, Object value) throws ModelException {
-		Model.set(collection, newsItemId, field, value);
+		Model.set(NewsItem.class, collection, newsItemId, field, value);
 	}
 
 	public static void add(NewsItem newsItem) throws ModelException {

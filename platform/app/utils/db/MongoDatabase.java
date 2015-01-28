@@ -166,13 +166,16 @@ public class MongoDatabase extends Database {
 	/**
 	 * Set the given field of the object with the given id.
 	 */
-	public void set(String collection, ObjectId modelId, String field, Object value) throws DatabaseException {
-		DBObject query = new BasicDBObject("_id", modelId);
-		DBObject update = new BasicDBObject("$set", new BasicDBObject(field, value));
+	public <T extends Model> void set(Class<T> model, String collection, ObjectId modelId, String field, Object value) throws DatabaseException {
 		try {
+			DBObject query = new BasicDBObject("_id", modelId);
+			DBObject update = new BasicDBObject("$set", conversion.toDBObject(model, field, value));
+		
 			getCollection(collection).update(query, update);
 		} catch (MongoException e) {
 			throw new DatabaseException(e);
+		} catch (DatabaseConversionException e2) {
+			throw new DatabaseException(e2);
 		}
 	}
 

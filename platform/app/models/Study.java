@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import models.enums.ParticipantSearchStatus;
+import models.enums.ParticipationCodeStatus;
 import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
 
@@ -45,6 +46,14 @@ public class Study extends Model {
     
     public static Study getByIdFromOwner(ObjectId studyid, ObjectId owner, Set<String> fields) throws ModelException {
 		return Model.get(Study.class, collection, CMaps.map("_id", studyid).map("owner",  owner), fields);
+	}
+    
+    public static Study getByIdFromMember(ObjectId studyid, Set<String> fields) throws ModelException {
+		return Model.get(Study.class, collection, CMaps.map("_id", studyid), fields);
+	}
+    
+    public void setParticipantSearchStatus(ParticipantSearchStatus newstatus) throws ModelException {
+		Model.set(Study.class, collection, this._id, "participantSearchStatus", newstatus);
 	}
 	
 }

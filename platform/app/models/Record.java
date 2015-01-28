@@ -47,7 +47,7 @@ public class Record extends Model implements Comparable<Record> {
 	}
 
 	public static void set(ObjectId recordId, String field, Object value) throws ModelException {
-		Model.set(collection, recordId, field, value);
+		Model.set(Record.class, collection, recordId, field, value);
 	}
 
 	public static void add(Record record) throws ModelException {

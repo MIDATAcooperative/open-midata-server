@@ -1,4 +1,44 @@
+@import views.html.help.formrow
+@import views.html.help.formerror
 @main("Studies") {
+<div ng-app="participation">
+<div ng-controller="ListStudiesCtrl" ng-cloak>
 	<h1>Studies</h1>
-	<p>Some content here...</p>
+	<div ng-show="results.length > 0">
+	<table class="table table-hover">
+	  <thead>
+	    <tr>
+	      <th>Study</th>
+	      <th>Status</th>	      	     
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr ng-repeat="study in results">
+	      <td>{{ study.studyName }}</td>	  
+	      <td>{{ study.status }}</td>	      	         
+	    </tr>
+	  </tbody>
+	</table>
+	</div>
+	<p ng-show="results.length == 0">
+	  You did not participate in any study.
+	</p>
+</div>
+<div ng-controller="EnterCodeCtrl" ng-cloak>
+	<h2>Enter participation code</h2>
+	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="submitcode()" role="form">
+	
+		@formrow("code","Participation Code") { 
+			<input type="text" class="form-control" id="code" name="code" placeholder="" ng-model="code.code" ng-required="true">
+		    @formerror("code","notfound","Unknown code")
+		    @formerror("code","alreadyused","Code has expired") 
+		    @formerror("code","notsearching","Study is currently not accepting participants")
+  	    }
+		@formrow("x", "") {
+          <button type="submit" class="btn btn-primary">Continue</button>
+        }				
+   </form>
+</div>
+</div>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/members/participation.js")" defer></script>
 }

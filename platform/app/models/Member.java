@@ -61,7 +61,7 @@ public class Member extends User {
 	}
 
 	public static void set(ObjectId userId, String field, Object value) throws ModelException {
-		Model.set(collection, userId, field, value);
+		Model.set(Member.class, collection, userId, field, value);
 	}
 
 	public static void add(Member user) throws ModelException {

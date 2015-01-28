@@ -47,6 +47,9 @@
 							  @formrow("zip","Zip") {  <input type="text" class="form-control" id="zip" name="zip" placeholder="" ng-model="registration.zip" required> }
 							  @formrow("country","Country") {  <select class="form-control" id="country" name="country" ng-model="registration.country" required><option value="CH">Swiss</option></select> }
                              
+                              @formrow("phone","Phone") {  <input type="text" class="form-control" id="phone" name="phone" placeholder="" ng-model="registration.phone"> }
+                              @formrow("mobile","Mobile Phone") {  <input type="text" class="form-control" id="mobile" name="mobile" placeholder="" ng-model="registration.mobile"> }
+                             
                              <button type="submit" class="btn btn-lg btn-primary btn-block">Sign up</button>
                             </form>
 		            	</div>

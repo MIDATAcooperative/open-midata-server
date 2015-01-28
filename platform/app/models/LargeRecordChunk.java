@@ -25,7 +25,7 @@ public class LargeRecordChunk extends Model {
 	}
 
 	public static void set(ObjectId chunkId, String field, Object value) throws ModelException {
-		Model.set(collection, chunkId, field, value);
+		Model.set(LargeRecordChunk.class, collection, chunkId, field, value);
 	}
 
 	public static void add(LargeRecordChunk chunk) throws ModelException {

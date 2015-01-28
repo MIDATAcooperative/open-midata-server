@@ -6,6 +6,7 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 
 import utils.db.DBLayer;
+import utils.db.DatabaseConversionException;
 import utils.db.DatabaseException;
 
 public abstract class Model {
@@ -70,9 +71,9 @@ public abstract class Model {
 		}
 	}
 
-	protected static void set(String collection, ObjectId modelId, String field, Object value) throws ModelException {
+	protected static void set(Class model, String collection, ObjectId modelId, String field, Object value) throws ModelException {
 		try {
-			DBLayer.set(collection, modelId, field, value);
+			DBLayer.set(model, collection, modelId, field, value);
 		} catch (DatabaseException e) {
 			throw new ModelException(e);
 		}
