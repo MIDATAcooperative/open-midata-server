@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Set;
+
 import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
@@ -21,5 +23,9 @@ public class Research extends Model {
 	 public static boolean existsByName(String name) throws ModelException {
 		 return Model.exists(collection, CMaps.map("name", name));
 	 }
+	 
+	 public static Research getById(ObjectId researchid, Set<String> fields) throws ModelException {
+			return Model.get(Research.class, collection, CMaps.map("_id", researchid), fields);
+		}
 	 
 }

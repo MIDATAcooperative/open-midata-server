@@ -55,5 +55,14 @@ public class Study extends Model {
     public void setParticipantSearchStatus(ParticipantSearchStatus newstatus) throws ModelException {
 		Model.set(Study.class, collection, this._id, "participantSearchStatus", newstatus);
 	}
+    
+    public void setExecutionStatus(StudyExecutionStatus newstatus) throws ModelException {
+		Model.set(Study.class, collection, this._id, "executionStatus", newstatus);
+	}
+    
+    public void addHistory(History newhistory) throws ModelException {
+    	this.history.add(newhistory);
+    	Model.set(Study.class, collection, this._id, "history", this.history);
+    }
 	
 }

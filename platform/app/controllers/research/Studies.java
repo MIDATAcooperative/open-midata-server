@@ -8,14 +8,18 @@ import java.util.Set;
 import models.FilterRule;
 import models.History;
 import models.Info;
+import models.Member;
 import models.ModelException;
 import models.ParticipationCode;
+import models.Research;
 import models.ResearchUser;
 import models.Study;
 import models.StudyParticipation;
 import models.User;
+import models.enums.EventType;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
+import models.enums.ParticipationStatus;
 import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
 
@@ -29,12 +33,15 @@ import utils.auth.CodeGenerator;
 import utils.collections.Sets;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import views.html.defaultpages.badRequest;
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import controllers.APIController;
 import controllers.routes;
+
 
 public class Studies extends APIController {
 
@@ -75,7 +82,7 @@ public class Studies extends APIController {
 		
 		Study.add(study);
 		
-		return ok();
+		return ok(Json.toJson(study));
 	}
 		
 	@APICall
@@ -96,7 +103,7 @@ public class Studies extends APIController {
 	   ObjectId owner = new ObjectId(session().get("org"));
 	   
 	   Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordRules","studyKeywords"));
-	   
+	   	   	   
 	   return ok(Json.toJson(study));
 	}
 	
@@ -142,6 +149,10 @@ public class Studies extends APIController {
 		  }		  
 		  ParticipationCode.add(code);
 	   }
+	   String comment = count+" codes";
+	   if (reuseable) comment += ", reuseable";
+	   if (group!=null && ! "".equals(group)) comment +=", group="+group;
+	   study.addHistory(new History(EventType.CODES_GENERATED, user, comment));
 	   
 	   return ok();
 	}
@@ -170,16 +181,63 @@ public class Studies extends APIController {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId owner = new ObjectId(session().get("org"));
 		ObjectId studyid = new ObjectId(id);
-		   
+		
+		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
+		
 		if (study == null) return badRequest("Study does not belong to organization.");
 		if (study.validationStatus != StudyValidationStatus.VALIDATED) return badRequest("Study must be validated before.");
-		if (study.participantSearchStatus != ParticipantSearchStatus.PRE) return badRequest("Study participant search already started.");
+		if (study.executionStatus != StudyExecutionStatus.PRE) return badRequest("Participants can only be searched as long as study has not stared.");
+		if (study.participantSearchStatus != ParticipantSearchStatus.PRE && study.participantSearchStatus != ParticipantSearchStatus.CLOSED) return badRequest("Study participant search already started.");
 		
 		study.setParticipantSearchStatus(ParticipantSearchStatus.SEARCHING);
-		
+		study.addHistory(new History(EventType.PARTICIPANT_SEARCH_STARTED, user, null));
+						
 		return ok();
 	}
+	
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)
+	public static Result endParticipantSearch(String id) throws JsonValidationException, ModelException {
+		ObjectId userId = new ObjectId(request().username());
+		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId studyid = new ObjectId(id);
+		
+		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));
+		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
+		
+		if (study == null) return badRequest("Study does not belong to organization.");
+		if (study.validationStatus != StudyValidationStatus.VALIDATED) return badRequest("Study must be validated before.");
+		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return badRequest("Study is not searching for participants.");
+		
+		study.setParticipantSearchStatus(ParticipantSearchStatus.CLOSED);
+		study.addHistory(new History(EventType.PARTICIPANT_SEARCH_CLOSED, user, null));
+						
+		return ok();
+	}
+	
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)
+	public static Result startExecution(String id) throws JsonValidationException, ModelException {
+		ObjectId userId = new ObjectId(request().username());
+		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId studyid = new ObjectId(id);
+		
+		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));
+		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
+		
+		if (study == null) return badRequest("Study does not belong to organization.");
+		if (study.validationStatus != StudyValidationStatus.VALIDATED) return badRequest("Study must be validated before.");
+		if (study.participantSearchStatus != ParticipantSearchStatus.CLOSED) return badRequest("Participant search must be closed before.");
+		if (study.executionStatus != StudyExecutionStatus.PRE) return badRequest("Wrong study execution status.");
+		
+		study.setExecutionStatus(StudyExecutionStatus.RUNNING);
+		study.addHistory(new History(EventType.STUDY_STARTED, user, null));
+						
+		return ok();
+	}
+	
+	
 	
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
@@ -192,8 +250,99 @@ public class Studies extends APIController {
 	   if (study == null) return badRequest("Study does not belong to organization.");
 	   
 
-	   Set<StudyParticipation> participants = StudyParticipation.getAllByStudy(studyid, Sets.create("memberName", "group", "status"));
+	   Set<StudyParticipation> participants = StudyParticipation.getAllByStudy(studyid, Sets.create("member", "memberName", "group", "status"));
 	   
 	   return ok(Json.toJson(participants));
 	}
+	
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)
+	public static Result getParticipant(String studyidstr, String memberidstr) throws JsonValidationException, ModelException {
+	   ObjectId userId = new ObjectId(request().username());	
+	   ObjectId owner = new ObjectId(session().get("org"));
+	   ObjectId studyId = new ObjectId(studyidstr);
+	   ObjectId memberId = new ObjectId(memberidstr);
+	   	   
+	   Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordRules","studyKeywords"));
+	   if (study == null) return badRequest("Study does not belong to organization");
+	   
+	   StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, memberId, Sets.create("status", "group", "history"));
+	   if (participation == null) return badRequest("Member does not participate in study");
+	   if (participation.status == ParticipationStatus.CODE || 
+		   participation.status == ParticipationStatus.MATCH || 
+		   participation.status == ParticipationStatus.MEMBER_REJECTED) return badRequest("Member does not participate in study");
+	   
+	   Member member = Member.getById(memberId, Sets.create("firstname","sirname","address1","address2","city","zip","country","phone","mobile"));
+	   if (member == null) return badRequest("Member does not exist");
+	   	   
+	   ObjectNode obj = Json.newObject();
+	   obj.put("member", Json.toJson(member));
+	   obj.put("participation", Json.toJson(participation));	   
+	   
+	   return ok(obj);
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)
+	public static Result approveParticipation(String id) throws JsonValidationException, ModelException {
+		JsonNode json = request().body().asJson();
+		
+		JsonValidation.validate(json, "member");
+		
+		ObjectId userId = new ObjectId(request().username());		
+		ObjectId studyId = new ObjectId(id);
+		ObjectId memberId = new ObjectId(JsonValidation.getString(json, "member"));
+		ObjectId owner = new ObjectId(session().get("org"));
+		String comment = JsonValidation.getString(json, "comment");
+		
+		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));		
+		User member = Member.getById(memberId, Sets.create("firstname","sirname"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, memberId, Sets.create("status", "history"));		
+		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
+		
+		if (study == null) return badRequest("Study does not exist.");
+		if (member == null) return badRequest("Member does not exist.");
+		if (participation == null) return badRequest("Member is not allowed to participate in study.");		
+		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return badRequest("Study is not searching for participants anymore.");
+		if (participation.status != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
+		
+		participation.setStatus(ParticipationStatus.ACCEPTED);
+		participation.addHistory(new History(EventType.PARTICIPATION_APPROVED, user, comment));
+						
+		return ok();
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)
+	public static Result rejectParticipation(String id) throws JsonValidationException, ModelException {
+		JsonNode json = request().body().asJson();
+		
+		JsonValidation.validate(json, "member");
+		
+		ObjectId userId = new ObjectId(request().username());		
+		ObjectId studyId = new ObjectId(id);
+		ObjectId memberId = new ObjectId(JsonValidation.getString(json, "member"));
+		ObjectId owner = new ObjectId(session().get("org"));
+		String comment = JsonValidation.getString(json, "comment");
+		
+		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));		
+		User member = Member.getById(memberId, Sets.create("firstname","sirname"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, memberId, Sets.create("status", "history"));		
+		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
+		
+		if (study == null) return badRequest("Study does not exist.");
+		if (member == null) return badRequest("Member does not exist.");
+		if (participation == null) return badRequest("Member is not allowed to participate in study.");		
+		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return badRequest("Study is not searching for participants anymore.");
+		if (participation.status != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
+		
+		participation.setStatus(ParticipationStatus.RESEARCH_REJECTED);
+		participation.addHistory(new History(EventType.PARTICIPATION_REJECTED, user, comment));
+						
+		return ok();
+	}
+	
+	
 }

@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import models.enums.UserRole;
+
 import org.bson.types.ObjectId;
 
 import utils.DateTimeUtils;
@@ -50,6 +52,10 @@ public class ResearchUser extends User {
 	
 	protected String getCollection() {
 		return collection;
+	}
+	
+	public UserRole getRole() {
+		return UserRole.RESEARCH;
 	}
 		
 

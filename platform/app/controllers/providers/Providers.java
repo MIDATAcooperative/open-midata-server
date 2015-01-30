@@ -77,7 +77,7 @@ public class Providers extends APIController {
 		session("role", "provider");
 		session("org", provider._id.toString());
 		
-		return ok(routes.ResearchFrontend.messages().url());
+		return ok(routes.ProviderFrontend.messages().url());
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
@@ -90,7 +90,7 @@ public class Providers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		HPUser user = HPUser.getByEmail(email, Sets.create("email","password","organization"));
+		HPUser user = HPUser.getByEmail(email, Sets.create("email","password","provider"));
 		
 		if (user == null) return badRequest("Invalid user or password.");
 		if (!HPUser.authenticationValid(password, user.password)) {
@@ -102,7 +102,7 @@ public class Providers extends APIController {
 		session("id", user._id.toString());
 		session("role", "provider");
 		session("org", user.provider.toString());
-		return ok(routes.ResearchFrontend.messages().url());
+		return ok(routes.ProviderFrontend.messages().url());
 	}
 		
 }

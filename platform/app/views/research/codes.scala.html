@@ -3,11 +3,12 @@
 @researchmain("Study Participation Codes") {
 <div ng-app="studies" ng-controller="CodesCtrl" ng-cloak>
    @studynav("Study Participation Codes")
-	<h1>Study Participation Codes</h1>
+	<h1>Study Participation Codes</h1>	
 	<p ng-show="blocked">
 	  Participation codes may be used to recruit participants for the study.
 	  The study must be validated before codes may be generated.
 	</p>
+	<div ng-hide="createnew">
 	<div ng-show="codes.length > 0">
 	<table class="table table-hover">
 	  <thead>
@@ -33,9 +34,11 @@
 	<p ng-show="codes.length == 0">
 	  No participation codes have been generated.
 	</p>
-	
-	<div ng-hide="blocked">
-	<h2>Generate new Codes</h2>
+		<div ng-hide="blocked">
+		  <button class="btn btn-primary" ng-click="createnew = true;">Generate new codes</button>
+		</div>
+	</div>
+	<div ng-show="createnew">
 	<div class="alert alert-danger" ng-show="newcodes.error">
        <p>{{newcodes.error}}</p>
     </div>

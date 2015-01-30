@@ -244,6 +244,14 @@ public class Application extends Controller {
 		return redirect(routes.Application.welcome());
 	}
 
+	public static Result portalRoutes() {
+		response().setContentType("text/javascript");
+		return ok(Routes.javascriptRouter(
+				"portalRoutes",
+				controllers.routes.javascript.ResearchFrontend.studyoverview()
+				));
+	}
+	
 	public static Result javascriptRoutes() {
 		response().setContentType("text/javascript");
 		return ok(Routes.javascriptRouter(
@@ -323,10 +331,18 @@ public class Application extends Controller {
 				controllers.research.routes.javascript.Studies.listCodes(),
 				controllers.research.routes.javascript.Studies.generateCodes(),
 				controllers.research.routes.javascript.Studies.startParticipantSearch(),
+				controllers.research.routes.javascript.Studies.endParticipantSearch(),
+				controllers.research.routes.javascript.Studies.startExecution(),
 				controllers.research.routes.javascript.Studies.listParticipants(),
+				controllers.research.routes.javascript.Studies.getParticipant(),
+				controllers.research.routes.javascript.Studies.approveParticipation(),
+				controllers.research.routes.javascript.Studies.rejectParticipation(),
 				
 				controllers.members.routes.javascript.Studies.list(),
 				controllers.members.routes.javascript.Studies.enterCode(),
+				controllers.members.routes.javascript.Studies.get(),
+				controllers.members.routes.javascript.Studies.requestParticipation(),
+				controllers.members.routes.javascript.Studies.noParticipation(),
 				//Healthcare Providers
 				controllers.providers.routes.javascript.Providers.register(),
 				controllers.providers.routes.javascript.Providers.login(),
@@ -336,7 +352,8 @@ public class Application extends Controller {
 				// Global search
 				controllers.routes.javascript.GlobalSearch.index(),
 				controllers.routes.javascript.GlobalSearch.search(),
-				controllers.routes.javascript.GlobalSearch.complete()));
+				controllers.routes.javascript.GlobalSearch.complete()));						        
+		        
 	}
 
 }

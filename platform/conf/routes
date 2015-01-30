@@ -102,6 +102,7 @@ GET     /research/:study/participants  controllers.ResearchFrontend.studypartici
 GET     /research/:study/records    controllers.ResearchFrontend.studyrecords(study: String)
 GET     /research/:study/results    controllers.ResearchFrontend.studyresults(study: String)
 GET     /research/:study/rules      controllers.ResearchFrontend.studyrules(study: String)
+GET     /research/:study/:part      controllers.ResearchFrontend.studyparticipant(study: String, part: String)
 GET     /research/createstudy       controllers.ResearchFrontend.createstudy()
 
 POST    /research/register          controllers.research.Researchers.register()
@@ -114,14 +115,23 @@ GET     /studies/:study            controllers.research.Studies.get(study: Strin
 GET     /studies/:study/codes      controllers.research.Studies.listCodes(study: String)
 POST    /studies/:study/codes      controllers.research.Studies.generateCodes(study: String)
 POST    /studies/:study/status/startsearch  controllers.research.Studies.startParticipantSearch(study: String)
+POST    /studies/:study/status/endsearch  controllers.research.Studies.endParticipantSearch(study: String)
+POST    /studies/:study/status/start  controllers.research.Studies.startExecution(study: String)
 GET     /studies/:study/participants controllers.research.Studies.listParticipants(study: String)
+GET     /studies/:study/participants/:participant controllers.research.Studies.getParticipant(study: String, participant: String)
+POST    /studies/:study/approve   controllers.research.Studies.approveParticipation(study: String)
+POST    /studies/:study/reject    controllers.research.Studies.rejectParticipation(study: String)
 
 GET     /participation/studies     controllers.members.Studies.list()
+GET     /participation/study/:study controllers.members.Studies.get(study: String)
+POST    /participation/study/:study/request controllers.members.Studies.requestParticipation(study: String)
+POST    /participation/study/:study/no controllers.members.Studies.noParticipation(study: String)
 POST    /participation/entercode   controllers.members.Studies.enterCode()
 
 # Healthcare Provider
 GET     /providers/register         controllers.ProviderFrontend.register()
 GET     /providers/login            controllers.ProviderFrontend.login()
+GET     /providers/messages            controllers.ProviderFrontend.messages()
 
 POST    /providers/register         controllers.providers.Providers.register()
 POST    /providers/login            controllers.providers.Providers.login()
@@ -146,6 +156,7 @@ GET     /visualizations/:id/url     controllers.Visualizations.getUrl(id: String
 
 # JS Routes
 GET     /assets/javascripts/routes  controllers.Application.javascriptRoutes()
+GET     /assets/javascripts/portalroutes  controllers.Application.portalRoutes()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

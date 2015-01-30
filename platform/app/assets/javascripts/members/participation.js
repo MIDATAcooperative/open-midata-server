@@ -46,3 +46,59 @@ participation.controller('ListStudiesCtrl', ['$scope', '$http', function($scope,
 	$scope.reload();
 	
 }]);
+participation.controller('StudyDetailCtrl', ['$scope', '$http', function($scope, $http) {
+	
+	$scope.studyid = window.location.pathname.split("/")[2];
+	$scope.study = {};
+	$scope.participation = {};
+	$scope.loading = true;
+		
+	$scope.reload = function() {
+			
+		$http.get(jsRoutes.controllers.members.Studies.get($scope.studyid).url).
+			success(function(data) { 				
+				$scope.study = data.study;
+				$scope.participation = data.participation;
+				$scope.research = data.research;
+				$scope.loading = false;
+			}).
+			error(function(err) {
+				$scope.error = err;				
+			});
+	};
+	
+	$scope.mayRequestParticipation = function() {
+		return ( $scope.participation.status == "MATCH" || $scope.participation.status == "CODE" );
+	};
+	
+	$scope.mayDeclineParticipation = function() {
+		return ( $scope.participation.status == "MATCH" || $scope.participation.status == "CODE" );
+	};
+	
+	$scope.requestParticipation = function() {
+		$scope.error = null;
+		
+		$http.post(jsRoutes.controllers.members.Studies.requestParticipation($scope.studyid).url).
+		success(function(data) { 				
+		    $scope.reload();
+		}).
+		error(function(err) {
+			$scope.error = err;			
+		});
+	};
+	
+	$scope.noParticipation = function() {
+		$scope.error = null;
+		
+		$http.post(jsRoutes.controllers.members.Studies.noParticipation($scope.studyid).url).
+		success(function(data) { 				
+		    $scope.reload();
+		}).
+		error(function(err) {
+			$scope.error = err;			
+		});
+	};
+	
+	$scope.reload();
+	
+}]);

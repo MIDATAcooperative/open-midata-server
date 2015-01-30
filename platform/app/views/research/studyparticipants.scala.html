@@ -11,15 +11,20 @@
 	      <th>Name</th>
 	      <th>Group</th>
 	      <th>Status</th>
-	      <th>Recruiter</th>	      	     
+	      <th>Recruiter</th>
+	      <th></th>	      	     
 	    </tr>
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="participant in results">
-	      <td>{{ participant.memberName }}</td>	  
+	      <td><a ng-href="/research/{{studyid}}/{{participant.member.$oid}}">{{ participant.memberName }}</a></td>	  
 	      <td>{{ participant.group }}</td>
 	      <td>{{ participant.status }}</td>
-	      <td>{{ participant.recruiterName }}</td>	      	        
+	      <td>{{ participant.recruiterName }}</td>
+	      <td>
+	        <button ng-show="mayApproveParticipation(participant)" ng-click="approveParticipation(participant)" class="btn btn-success btn-xs">Accept</button>
+	        <button ng-show="mayRejectParticipation(participant)" ng-click="rejectParticipation(participant)" class="btn btn-danger btn-xs">Reject</button>
+	      </td>	      	        
 	    </tr>
 	  </tbody>
 	</table>

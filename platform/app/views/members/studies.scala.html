@@ -14,7 +14,7 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="study in results">
-	      <td>{{ study.studyName }}</td>	  
+	      <td><a ng-href="/members/{{study.study.$oid}}/details">{{ study.studyName }}</a></td>	  
 	      <td>{{ study.status }}</td>	      	         
 	    </tr>
 	  </tbody>
@@ -25,18 +25,20 @@
 	</p>
 </div>
 <div ng-controller="EnterCodeCtrl" ng-cloak>
-	<h2>Enter participation code</h2>
+	<h2>Join by participation code</h2>
 	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="submitcode()" role="form">
 	
 		@formrow("code","Participation Code") { 
-			<input type="text" class="form-control" id="code" name="code" placeholder="" ng-model="code.code" ng-required="true">
+		    <div class="input-group">
+			  <input type="text" class="form-control" id="code" name="code" placeholder="" ng-model="code.code" ng-required="true">
+			  <span class="input-group-btn">
+			    <button type="submit" class="btn btn-primary">Continue</button>
+			  </span>
+			</div>
 		    @formerror("code","notfound","Unknown code")
 		    @formerror("code","alreadyused","Code has expired") 
 		    @formerror("code","notsearching","Study is currently not accepting participants")
-  	    }
-		@formrow("x", "") {
-          <button type="submit" class="btn btn-primary">Continue</button>
-        }				
+  	    }				
    </form>
 </div>
 </div>

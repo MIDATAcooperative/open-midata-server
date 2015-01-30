@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import models.enums.UserRole;
+
 import org.bson.types.ObjectId;
 
 import utils.DateTimeUtils;
@@ -46,5 +48,9 @@ public class HPUser extends User {
 	
 	protected String getCollection() {
 		return collection;
+	}
+	
+	public UserRole getRole() {
+		return UserRole.PROVIDER;
 	}
 }

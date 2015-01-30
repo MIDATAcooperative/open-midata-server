@@ -10,6 +10,7 @@ import java.util.Set;
 
 import models.enums.ContractStatus;
 import models.enums.Gender;
+import models.enums.UserRole;
 import models.enums.UserStatus;
 
 import org.bson.types.ObjectId;
@@ -85,6 +86,10 @@ public class User extends Model implements Comparable<User> {
 	
 	protected String getCollection() {
 		return "users";
+	}
+	
+	public UserRole getRole() {
+		return null;
 	}
 	
 	public void set(String field, Object value) throws ModelException {

@@ -3,6 +3,7 @@ package models;
 import java.util.List;
 import java.util.Set;
 
+import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationStatus;
 
 import org.bson.types.ObjectId;
@@ -39,4 +40,13 @@ public class StudyParticipation extends Model {
 	public static StudyParticipation getByStudyAndMember(ObjectId study, ObjectId member, Set<String> fields) throws ModelException {
 		return Model.get(StudyParticipation.class, collection, CMaps.map("study", study).map("member", member), fields);
 	}
+	
+	public void setStatus(ParticipationStatus newstatus) throws ModelException {
+		Model.set(StudyParticipation.class, collection, this._id, "status", newstatus);
+	}
+    
+    public void addHistory(History newhistory) throws ModelException {
+    	this.history.add(newhistory);
+    	Model.set(StudyParticipation.class, collection, this._id, "history", this.history);
+    }
 }

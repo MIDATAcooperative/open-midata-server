@@ -9,7 +9,7 @@ import utils.db.DBLayer;
 import utils.db.DatabaseConversionException;
 import utils.db.DatabaseException;
 
-public abstract class Model {
+public abstract class Model implements JsonSerializable {
 
 	public ObjectId _id;
 

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import models.enums.ParticipationInterest;
+import models.enums.UserRole;
 
 import org.bson.types.ObjectId;
 
@@ -86,6 +87,10 @@ public class Member extends User {
 	
 	protected String getCollection() {
 		return collection;
+	}
+	
+	public UserRole getRole() {
+		return UserRole.MEMBER;
 	}
 
 }

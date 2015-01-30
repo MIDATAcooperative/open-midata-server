@@ -34,7 +34,31 @@
         <td>{{ study.executionStatus }}</td>
       </tr>
     </table>	
+    <div ng-show="study.history.length">
+    <h2>History</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>Who</th>
+          <th>When</th>
+          <th>Comment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="entry in study.history">
+          <td>{{ entry.event }}</td>
+          <td>{{ entry.whoName }}</td>
+          <td>{{ entry.timestamp | date }}</td>
+          <td>{{ entry.message }}</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <a class="btn btn-default" href="@routes.ResearchFrontend.studies()">Back</a> 
     <button ng-show="readyForParticipantSearch()" class="btn btn-primary" ng-click="startParticipantSearch()">Start to search for participants</button>
+    <button ng-show="readyForEndParticipantSearch()" class="btn btn-primary" ng-click="endParticipantSearch()">End Participant Search</button>
+    <button ng-show="readyForStartExecution()" class="btn btn-primary" ng-click="startExecution()">Start Study Execution</button>
 </div>
 <script type="text/javascript" src="@routes.Assets.at("javascripts/research/studies.js")" defer></script>
 }

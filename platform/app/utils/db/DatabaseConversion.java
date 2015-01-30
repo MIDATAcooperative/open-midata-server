@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import models.JsonSerializable;
 import models.Model;
 
 import com.mongodb.BasicDBList;
@@ -30,15 +31,27 @@ public class DatabaseConversion {
 		return source;
 	}
 	
+	private Object todb(Object inp) throws DatabaseConversionException {
+		if (inp instanceof JsonSerializable) return toDBObject((JsonSerializable) inp);
+		if (inp instanceof List) {
+			List result = new ArrayList();
+			for (Object obj : (List) inp) {
+				result.add(todb(obj));
+			}
+			return result;
+		}
+		return inp;
+	}
+	
 	/**
 	 * Turns a model into a database object.
 	 */
-	public <T extends Model> DBObject toDBObject(T modelObject) throws DatabaseConversionException {
+	public <T extends JsonSerializable> DBObject toDBObject(T modelObject) throws DatabaseConversionException {
 		DBObject dbObject = new BasicDBObject();
 		Class model = modelObject.getClass();
 		for (Field field : model.getFields()) {
 			try {
-				dbObject.put(field.getName(), encrypt(model, field.getName(), field.get(modelObject)));
+				dbObject.put(field.getName(), todb(encrypt(model, field.getName(), field.get(modelObject))));
 			} catch (IllegalArgumentException e) {
 				throw new DatabaseConversionException(e);
 			} catch (IllegalAccessException e) {
@@ -49,7 +62,7 @@ public class DatabaseConversion {
 	}
 	
 	public BasicDBObject toDBObject(Class model, String field, Object value) throws DatabaseConversionException {
-		return new BasicDBObject(field, encrypt(model, field, value));
+		return new BasicDBObject(field, todb(encrypt(model, field, value)));
 	}
 
 	/**
