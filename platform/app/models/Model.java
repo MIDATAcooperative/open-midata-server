@@ -37,17 +37,17 @@ public abstract class Model implements JsonSerializable {
 		}
 	}
 
-	protected static void delete(String collection, Map<String, ? extends Object> properties) throws ModelException {
+	protected static <T extends Model> void delete(Class<T> modelClass, String collection, Map<String, ? extends Object> properties) throws ModelException {
 		try {
-			DBLayer.delete(collection, properties);
+			DBLayer.delete(modelClass, collection, properties);
 		} catch (DatabaseException e) {
 			throw new ModelException(e);
 		}
 	}
 
-	protected static boolean exists(String collection, Map<String, ? extends Object> properties) throws ModelException {
+	protected static <T extends Model> boolean exists(Class<T> modelClass, String collection, Map<String, ? extends Object> properties) throws ModelException {
 		try {
-			return DBLayer.exists(collection, properties);
+			return DBLayer.exists(modelClass, collection, properties);
 		} catch (DatabaseException e) {
 			throw new ModelException(e);
 		}

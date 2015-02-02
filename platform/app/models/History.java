@@ -23,7 +23,7 @@ public class History implements JsonSerializable {
 		this.timestamp = new Date();
 		this.who = who._id;
 		this.whoRole = who.getRole();
-		this.whoName = who.firstname+" "+who.sirname;
+		this.whoName = who.sirname+", "+who.firstname;
 		this.message = message;
 	}
 }

@@ -121,7 +121,7 @@ public class Studies extends APIController {
 	   ObjectId studyid = new ObjectId(id);
 	   
 	   User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));
-	   String userName = user.firstname + " " + user.sirname;
+	   String userName = user.sirname+", "+user.firstname;
 		
 	   
 	   int count = JsonValidation.getInteger(json, "count", 1, 1000);
@@ -166,8 +166,8 @@ public class Studies extends APIController {
 	   
 	   Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
 	   if (study == null) return badRequest("Study does not belong to organization.");
-	   if (study.validationStatus != StudyValidationStatus.VALIDATED) return badRequest("Study must be validated before.");
-	   if (study.participantSearchStatus == ParticipantSearchStatus.CLOSED) return badRequest("Study participant search already closed.");
+	   if (study.validationStatus != StudyValidationStatus.VALIDATED) return statusWarning("study_not_validated", "Study must be validated before.");
+	   if (study.participantSearchStatus == ParticipantSearchStatus.CLOSED) return statusWarning("participant_search_closed", "Study participant search already closed.");
 	 
 	   Set<ParticipationCode> codes = ParticipationCode.getByStudy(studyid);
 	   
@@ -250,7 +250,7 @@ public class Studies extends APIController {
 	   if (study == null) return badRequest("Study does not belong to organization.");
 	   
 
-	   Set<StudyParticipation> participants = StudyParticipation.getAllByStudy(studyid, Sets.create("member", "memberName", "group", "status"));
+	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, Sets.create("member", "memberName", "group", "status"));
 	   
 	   return ok(Json.toJson(participants));
 	}

@@ -10,9 +10,9 @@
 		              		<h3 class="panel-title">Password Assistance - Step 2</h3>
 		            	</div>
 		            	<div class="panel-body">
-			            	<div class="alert alert-danger" ng-show="setpw.error">
-								<p>{{setpw.error}}</p>
-							</div>
+			            	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	                          {{ error.message || error }}
+	                        </p>
 							<div class="alert alert-success" ng-show="setpw.success">
 								<p>You have successfully set a new password for your account.</p>
 								<p><a href="@routes.Application.welcome()">Go back to login page.</a></p>

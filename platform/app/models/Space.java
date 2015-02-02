@@ -32,7 +32,7 @@ public class Space extends Model implements Comparable<Space> {
 	}
 
 	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
-		return Model.exists(collection, properties);
+		return Model.exists(Space.class, collection, properties);
 	}
 
 	public static Space get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
@@ -72,7 +72,7 @@ public class Space extends Model implements Comparable<Space> {
 
 		// also remove from search index
 		Search.delete(ownerId, "space", spaceId);
-		Model.delete(collection, properties);
+		Model.delete(Space.class, collection, properties);
 	}
 
 	public static int getMaxOrder(ObjectId ownerId) {

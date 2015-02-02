@@ -12,14 +12,14 @@
 		              		<h3 class="panel-title">Research Sign up</h3>
 		            	</div>
 		            	<div class="panel-body">
-		            		<div class="alert alert-danger" ng-show="registration.error">
-								<p>{{registration.error}}</p>
-							</div>							
+		            		<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	                          {{ error.message || error }}
+	                        </p>						
 							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="register()" role="form">
-							 <h3>Research Organization</h3>
+							 <h3>Research Organisation</h3>
 							  @formrow("name","Name") { 
 							    <input type="text" class="form-control" id="name" name="name" placeholder="Name" ng-model="registration.name" ng-required="true">
-							    @formerror("name","exists","A research organization with this name already exists.") 
+							    @formerror("name","exists","A research organisation with this name already exists.") 
 							  }
 							  @formrow("description","Description") {  <textarea class="form-control" id="description" name="description" rows="5" ng-model="registration.description" ng-required="true"></textarea> }
 							 <h3>Research User</h3>
@@ -39,7 +39,7 @@
 							  @formrow("gender","Gender") {  <select class="form-control" id="gender" name="gender" ng-model="registration.gender"><option value="FEMALE">female</option><option value="MALE">male</option></select> }
 							  
 							  @formrow("address1","Address") {  <input type="text" class="form-control" id="address1" name="address1" placeholder="" ng-model="registration.address1" ng-required="true"> }
-							  @formrow("address2","Address") {  <input type="text" class="form-control" id="address2" name="address2" placeholder="" ng-model="registration.address2"> }
+							  @formrow("address2","") {  <input type="text" class="form-control" id="address2" name="address2" placeholder="" ng-model="registration.address2"> }
 							  @formrow("city","City") {  <input type="text" class="form-control" id="city" name="city" placeholder="" ng-model="registration.city" ng-required="true"> }
 							  @formrow("zip","Zip") {  <input type="text" class="form-control" id="zip" name="zip" placeholder="" ng-model="registration.zip" ng-required="true"> }
 							  @formrow("country","Country") {  <select class="form-control" id="country" name="country" ng-model="registration.country" ng-required="true"><option value="CH">Swiss</option></select> }

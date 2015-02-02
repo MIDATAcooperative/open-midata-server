@@ -31,7 +31,7 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 	}
 
 	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
-		return Model.exists(collection, properties);
+		return Model.exists(NewsItem.class, collection, properties);
 	}
 
 	public static NewsItem get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
@@ -64,7 +64,7 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 		if (broadcast) {
 			Search.delete(Type.NEWS, newsItemId);
 		}
-		Model.delete(collection, new ChainedMap<String, ObjectId>().put("_id", newsItemId).get());
+		Model.delete(NewsItem.class, collection, new ChainedMap<String, ObjectId>().put("_id", newsItemId).get());
 	}
 
 }

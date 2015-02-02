@@ -10,4 +10,11 @@ public class Sets {
 		for (String entry : contents) result.add(entry);
 		return result;
 	}
+	
+	@SafeVarargs
+	public static <T extends Enum> Set<T> createEnum(T... contents) {
+		HashSet<T> result = new HashSet<T>();
+		for (T entry : contents) result.add(entry);
+		return result;
+	}
 }

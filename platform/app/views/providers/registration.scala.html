@@ -12,9 +12,9 @@
 		              		<h3 class="panel-title">Healthcare Provider Sign up</h3>
 		            	</div>
 		            	<div class="panel-body">
-		            		<div class="alert alert-danger" ng-show="registration.error">
-								<p>{{registration.error}}</p>
-							</div>							
+		            		<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	                          {{ error.message || error }}
+	                        </p>							
 							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="register()" role="form">
 							 <h3>Healthcare Provider</h3>
 							  @formrow("name","Name") { 

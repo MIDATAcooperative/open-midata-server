@@ -64,6 +64,10 @@ public class DatabaseConversion {
 	public BasicDBObject toDBObject(Class model, String field, Object value) throws DatabaseConversionException {
 		return new BasicDBObject(field, todb(encrypt(model, field, value)));
 	}
+	
+	public Object toDBObjectValue(Class model, String field, Object value) throws DatabaseConversionException {
+		return todb(encrypt(model, field, value));
+	}
 
 	/**
 	 * Converts a database object back into a model.

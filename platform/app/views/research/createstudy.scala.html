@@ -3,6 +3,9 @@
 @researchmain("Create new Study") {
   <div ng-app="studies" ng-controller="CreateStudyCtrl" ng-cloak>
 	<h1>Create new study</h1>
+	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	   {{ error.message || error }}
+	</p>
 	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="createstudy()" role="form">
 	  @formrow("name","Study name") { 
 		<input type="text" class="form-control" id="name" name="name" placeholder="Study Name" ng-model="study.name" ng-required="true">

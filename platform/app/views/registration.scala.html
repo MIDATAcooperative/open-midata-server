@@ -11,9 +11,9 @@
 		              		<h3 class="panel-title">Sign up</h3>
 		            	</div>
 		            	<div class="panel-body">
-		            		<div class="alert alert-danger" ng-show="registration.error">
-								<p>{{registration.error}}</p>
-							</div>							
+		            		<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	                          {{ error.message || error }}
+	                        </p>						
 							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="register()" role="form">								  
 							  @formrow("email","Email") { 
 							    <input type="email" class="form-control" id="email" name="email" placeholder="Email" ng-model="registration.email" required>
@@ -42,7 +42,7 @@
 							  @formrow("ssn","SSN") {  <input type="text" class="form-control" id="ssn" name="ssn" placeholder="" ng-model="registration.ssn" required> }
 							  
 							  @formrow("address1","Address") {  <input type="text" class="form-control" id="address1" name="address1" placeholder="" ng-model="registration.address1" required> }
-							  @formrow("address2","Address") {  <input type="text" class="form-control" id="address2" name="address2" placeholder="" ng-model="registration.address2"> }
+							  @formrow("address2","") {  <input type="text" class="form-control" id="address2" name="address2" placeholder="" ng-model="registration.address2"> }
 							  @formrow("city","City") {  <input type="text" class="form-control" id="city" name="city" placeholder="" ng-model="registration.city" required> }
 							  @formrow("zip","Zip") {  <input type="text" class="form-control" id="zip" name="zip" placeholder="" ng-model="registration.zip" required> }
 							  @formrow("country","Country") {  <select class="form-control" id="country" name="country" ng-model="registration.country" required><option value="CH">Swiss</option></select> }

@@ -35,7 +35,7 @@ public class ResearchUser extends User {
 	}
 	
 	public static boolean existsByEMail(String email) throws ModelException {
-		return Model.exists(collection, CMaps.map("email", email));
+		return Model.exists(ResearchUser.class, collection, CMaps.map("email", email));
 	}
 	
 	public static ResearchUser getByEmail(String email, Set<String> fields) throws ModelException {

@@ -12,5 +12,16 @@ public class APIController extends Controller {
                                           .put("message", message));
 	}
 	
+	public static Result statusError(String code, String message) {
+		return badRequest(Json.newObject().put("type", code)        
+                                          .put("message", message));
+	}
+	
+	public static Result statusWarning(String code, String message) {
+		return badRequest(Json.newObject().put("type", code)        
+				                          .put("level", "warning")
+                                          .put("message", message));
+	}
+	
 	
 }

@@ -21,7 +21,7 @@ public class Research extends Model {
   	 }
 	 
 	 public static boolean existsByName(String name) throws ModelException {
-		 return Model.exists(collection, CMaps.map("name", name));
+		 return Model.exists(Research.class, collection, CMaps.map("name", name));
 	 }
 	 
 	 public static Research getById(ObjectId researchid, Set<String> fields) throws ModelException {

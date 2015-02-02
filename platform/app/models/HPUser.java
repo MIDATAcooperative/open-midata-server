@@ -31,7 +31,7 @@ public class HPUser extends User {
 	}
 	
 	public static boolean existsByEMail(String email) throws ModelException {
-		return Model.exists(collection, CMaps.map("email", email));
+		return Model.exists(HPUser.class, collection, CMaps.map("email", email));
 	}
 	
 	public static HPUser getByEmail(String email, Set<String> fields) throws ModelException {

@@ -1,8 +1,10 @@
 @researchmain("Studies") {
 <div ng-app="studies" ng-controller="ListStudiesCtrl" ng-cloak>
 	<h1>Studies</h1>
-	
-	<table class="table table-hover">
+	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	   {{ error.message || error }}
+	</p>
+	<table ng-show="results.length > 0" class="table table-hover">
 	  <thead>
 	    <tr>
 	      <th>Name</th>
@@ -22,6 +24,7 @@
 	    </tr>
 	  </tbody>
 	</table>
+	<p ng-hide="results.length">No studies have been created yet for your organisation.</p>
 	<a class="btn btn-primary" href="@routes.ResearchFrontend.createstudy()">Create new study</a>
 </div>	
 <script type="text/javascript" src="@routes.Assets.at("javascripts/research/studies.js")" defer></script>

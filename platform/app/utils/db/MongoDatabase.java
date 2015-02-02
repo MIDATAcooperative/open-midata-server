@@ -1,6 +1,7 @@
 package utils.db;
 
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
@@ -105,24 +106,28 @@ public class MongoDatabase extends Database {
 	/**
 	 * Remove all documents with the given properties from the given collection.
 	 */
-	public void delete(String collection, Map<String, ? extends Object> properties) throws DatabaseException {
-		DBObject query = toDBObject(properties);
+	public void delete(Class model, String collection, Map<String, ? extends Object> properties) throws DatabaseException {		
 		try {
+			DBObject query = toDBObject(model, properties);
 			getCollection(collection).remove(query);
 		} catch (MongoException e) {
 			throw new DatabaseException(e);
+		} catch (DatabaseConversionException e2) {
+			throw new DatabaseException(e2);
 		}
 	}
 
 	/**
 	 * Check whether a document exists that has the given properties.
 	 */
-	public boolean exists(String collection, Map<String, ? extends Object> properties) throws DatabaseException {
-		DBObject query = toDBObject(properties);
-		DBObject projection = new BasicDBObject("_id", 1);
+	public boolean exists(Class model, String collection, Map<String, ? extends Object> properties) throws DatabaseException {		
 		try {
+			DBObject query = toDBObject(model, properties);
+			DBObject projection = new BasicDBObject("_id", 1);
 			return getCollection(collection).findOne(query, projection) != null;
 		} catch (MongoException e) {
+			throw new DatabaseException(e);
+		} catch (DatabaseConversionException e) {
 			throw new DatabaseException(e);
 		}
 	}
@@ -131,10 +136,10 @@ public class MongoDatabase extends Database {
 	 * Return the given fields of the object that has the given properties.
 	 */
 	public <T extends Model> T get(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
-			Set<String> fields) throws DatabaseException {
-		DBObject query = toDBObject(properties);
-		DBObject projection = toDBObject(fields);
+			Set<String> fields) throws DatabaseException {		
 		try {
+			DBObject query = toDBObject(modelClass, properties);
+			DBObject projection = toDBObject(fields);
 			DBObject dbObject = getCollection(collection).findOne(query, projection);
 			if (dbObject == null) return null;
 			return conversion.toModel(modelClass, dbObject);
@@ -149,10 +154,10 @@ public class MongoDatabase extends Database {
 	 * Return the given fields of all objects that have the given properties.
 	 */
 	public <T extends Model> Set<T> getAll(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
-			Set<String> fields) throws DatabaseException {
-		DBObject query = toDBObject(properties);
-		DBObject projection = toDBObject(fields);
+			Set<String> fields) throws DatabaseException {		
 		try {
+			DBObject query = toDBObject(modelClass, properties);
+			DBObject projection = toDBObject(fields);
 			DBCursor cursor = getCollection(collection).find(query, projection);
 			Set<DBObject> dbObjects = CollectionConversion.toSet(cursor);
 			return conversion.toModel(modelClass, dbObjects);
@@ -182,14 +187,16 @@ public class MongoDatabase extends Database {
 	/**
 	 * Convert the properties map to a database object. If an array is given as the value, use the $in operator.
 	 */
-	private DBObject toDBObject(Map<String, ? extends Object> properties) {
+	private DBObject toDBObject(Class model, Map<String, ? extends Object> properties) throws DatabaseConversionException {
 		DBObject dbObject = new BasicDBObject();
 		for (String key : properties.keySet()) {
 			Object property = properties.get(key);
 			if (property instanceof Set<?>) {
-				dbObject.put(key, new BasicDBObject("$in", ((Set<?>) property).toArray()));
+				ArrayList al = new ArrayList();
+				for (Object v : ((Set<?>) property)) al.add(conversion.toDBObjectValue(model, key, v));
+				dbObject.put(key, new BasicDBObject("$in", al));
 			} else {
-				dbObject.put(key, property);
+				dbObject.put(key, conversion.toDBObjectValue(model, key, property));
 			}
 		}
 		return dbObject;

@@ -9,6 +9,7 @@ import models.enums.ParticipationStatus;
 import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
+import utils.collections.Sets;
 
 public class StudyParticipation extends Model {
 	
@@ -21,6 +22,7 @@ public class StudyParticipation extends Model {
 	public ParticipationStatus status; //how is the member related to the study?
 	public String group; // If study has multiple separate groups of participants
 	public ObjectId recruiter; // if member has been recruited through someone (by entering a participation code)
+	public String recruiterName; // replication of recruiter name
 	public Set<ObjectId> providers; // (Optional) List of healthcare providers monitoring the member for this study.
 	public List<History> history; // History of participation process
 	public Set<ObjectId> shared; // Records of member shared for this study
@@ -33,8 +35,8 @@ public class StudyParticipation extends Model {
 		return Model.getAll(StudyParticipation.class, collection, CMaps.map("member", member), fields);
 	}
 	
-	public static Set<StudyParticipation> getAllByStudy(ObjectId study, Set<String> fields) throws ModelException {
-		return Model.getAll(StudyParticipation.class, collection, CMaps.map("study", study), fields);
+	public static Set<StudyParticipation> getParticipantsByStudy(ObjectId study, Set<String> fields) throws ModelException {
+		return Model.getAll(StudyParticipation.class, collection, CMaps.map("study", study).map("status", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST, ParticipationStatus.RESEARCH_REJECTED)), fields);
 	}
 	
 	public static StudyParticipation getByStudyAndMember(ObjectId study, ObjectId member, Set<String> fields) throws ModelException {

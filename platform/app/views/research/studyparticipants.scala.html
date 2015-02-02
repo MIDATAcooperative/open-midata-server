@@ -4,6 +4,9 @@
 <div ng-app="studies" ng-controller="ListParticipantsCtrl" ng-cloak>
    @studynav("Study Participants")
 	<h1>Study Participants</h1>	
+	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	   {{ error.message || error }}
+	</p>
 	<div ng-show="results.length > 0">
 	<table class="table table-hover">
 	  <thead>

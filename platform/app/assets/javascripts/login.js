@@ -3,12 +3,13 @@ login.controller('LoginCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	// init
 	$scope.login = {};	
+	$scope.error = null;
 	
 	// login
 	$scope.login = function() {
 		// check user input
 		if (!$scope.login.email || !$scope.login.password) {
-			$scope.login.error = "Please provide an email address and a password.";
+			$scope.error = "Please provide an email address and a password.";
 			return;
 		}
 		
@@ -16,21 +17,16 @@ login.controller('LoginCtrl', ['$scope', '$http', function($scope, $http) {
 		var data = {"email": $scope.login.email, "password": $scope.login.password};
 		$http.post(jsRoutes.controllers.Application.authenticate().url, JSON.stringify(data)).
 			success(function(url) { window.location.replace(url); }).
-			error(function(err) { $scope.login.error = err; });
+			error(function(err) { $scope.error = err; });
 	};
 }]);
 login.controller('RegistrationCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	$scope.registration = {};
+	$scope.error = null;
 	
 	// register new user
-	$scope.register = function() {
-		// check user input
-		/*if (!$scope.registration.email || !$scope.registration.firstName || 
-				!$scope.registration.lastName || !$scope.registration.password) {
-			$scope.registration.error = "Please fill in all required fields.";
-			return;
-		}*/
+	$scope.register = function() {		
 		
         $scope.myform.password.$setValidity('compare', $scope.registration.password ==  $scope.registration.password2);
 		
@@ -40,11 +36,10 @@ login.controller('RegistrationCtrl', ['$scope', '$http', function($scope, $http)
 		if (! $scope.myform.$valid) return;
 		
 		if ($scope.registration.password !=  $scope.registration.password2) {
-			$scope.registration.error = "Password and password repetition do not match!";
+			$scope.error = "Password and password repetition do not match!";
 			return;
 		}
-		
-        $scope.registration.error = null;
+		        
         $scope.registration.birthday = $scope.registration.birthdayYear + "-" + 
                                        $scope.registration.birthdayMonth + "-" +
                                        $scope.registration.birthdayDay;
@@ -55,8 +50,7 @@ login.controller('RegistrationCtrl', ['$scope', '$http', function($scope, $http)
 			success(function(url) { window.location.replace(url); }).
 			error(function(err) { 
 				$scope.error = err;
-				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);
-				else $scope.registration.error = err; 
+				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);				
 			});
 	};
 	

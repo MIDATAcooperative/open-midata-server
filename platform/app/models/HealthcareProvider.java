@@ -13,7 +13,7 @@ public class HealthcareProvider extends Model {
 	 }
  
     public static boolean existsByName(String name) throws ModelException {
-	   return Model.exists(collection, CMaps.map("name", name));
+	   return Model.exists(HealthcareProvider.class, collection, CMaps.map("name", name));
     }
 
 }

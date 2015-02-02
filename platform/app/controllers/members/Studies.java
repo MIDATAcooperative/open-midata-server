@@ -57,7 +57,7 @@ public class Studies extends APIController {
 		ObjectId userId = new ObjectId(request().username());
 		
 		User user = Member.getById(userId, Sets.create("firstname","sirname"));
-		String userName = user.firstname + " " + user.sirname;
+		String userName = user.sirname+", "+user.firstname;
 		
 		ParticipationCode code = ParticipationCode.getByCode(codestr);
 		if (code == null) return inputerror("code", "notfound", "Unknown Participation Code.");
@@ -82,6 +82,7 @@ public class Studies extends APIController {
 		part.memberName = userName;
 		part.group = code.group;
 		part.recruiter = code.recruiter;		
+		part.recruiterName = code.recruiterName;
 		part.status = ParticipationStatus.CODE;
 		
 		part.history = new ArrayList<History>();
@@ -95,7 +96,9 @@ public class Studies extends APIController {
 		   code.setStatus(ParticipationCodeStatus.USED);
 		}
 		
-		return ok();
+		ObjectNode result = Json.newObject();
+		result.put("study", code.study.toString());
+		return ok(result);
 	}
 	
 	@APICall

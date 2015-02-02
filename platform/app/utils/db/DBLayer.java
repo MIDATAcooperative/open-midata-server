@@ -141,15 +141,15 @@ public class DBLayer {
 	/**
 	 * Remove all documents with the given properties from the given collection.
 	 */
-	public static void delete(String collection, Map<String, ? extends Object> properties) throws DatabaseException {
-		getDatabaseForCollection(collection).delete(collection, properties);		
+	public static void delete(Class model, String collection, Map<String, ? extends Object> properties) throws DatabaseException {
+		getDatabaseForCollection(collection).delete(model, collection, properties);		
 	}
 
 	/**
 	 * Check whether a document exists that has the given properties.
 	 */
-	public static boolean exists(String collection, Map<String, ? extends Object> properties) throws DatabaseException {
-		return getDatabaseForCollection(collection).exists(collection, properties);		
+	public static boolean exists(Class model, String collection, Map<String, ? extends Object> properties) throws DatabaseException {
+		return getDatabaseForCollection(collection).exists(model, collection, properties);		
 	}
 
 	/**

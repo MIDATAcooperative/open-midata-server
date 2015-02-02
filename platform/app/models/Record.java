@@ -35,7 +35,7 @@ public class Record extends Model implements Comparable<Record> {
 	}
 
 	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
-		return Model.exists(collection, properties);
+		return Model.exists(Record.class, collection, properties);
 	}
 
 	public static Record get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
@@ -66,7 +66,7 @@ public class Record extends Model implements Comparable<Record> {
 		Search.delete(ownerId, "record", recordId);
 
 		// TODO remove from spaces and circles
-		Model.delete(collection, new ChainedMap<String, ObjectId>().put("_id", recordId).get());
+		Model.delete(Record.class, collection, new ChainedMap<String, ObjectId>().put("_id", recordId).get());
 	}
 
 }

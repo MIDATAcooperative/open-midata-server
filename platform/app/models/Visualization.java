@@ -26,7 +26,7 @@ public class Visualization extends Plugin implements Comparable<Visualization> {
 	}
 
 	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
-		return Model.exists(collection, properties);
+		return Model.exists(Visualization.class, collection, properties);
 	}
 
 	public static Visualization get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
@@ -57,7 +57,7 @@ public class Visualization extends Plugin implements Comparable<Visualization> {
 		Search.delete(Type.VISUALIZATION, visualizationId);
 
 		// TODO only hide or remove from all users (including deleting their spaces associated with it)?
-		Model.delete(collection, new ChainedMap<String, ObjectId>().put("_id", visualizationId).get());
+		Model.delete(Visualization.class, collection, new ChainedMap<String, ObjectId>().put("_id", visualizationId).get());
 	}
 
 }

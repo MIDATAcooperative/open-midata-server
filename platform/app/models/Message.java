@@ -30,7 +30,7 @@ public class Message extends Model implements Comparable<Message> {
 	}
 
 	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
-		return Model.exists(collection, properties);
+		return Model.exists(Message.class, collection, properties);
 	}
 
 	public static Message get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
@@ -61,6 +61,6 @@ public class Message extends Model implements Comparable<Message> {
 	public static void delete(ObjectId receiverId, ObjectId messageId) throws ModelException {
 		// also remove from the search index
 		Search.delete(receiverId, "message", messageId);
-		Model.delete(collection, new ChainedMap<String, ObjectId>().put("_id", messageId).get());
+		Model.delete(Message.class, collection, new ChainedMap<String, ObjectId>().put("_id", messageId).get());
 	}
 }

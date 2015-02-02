@@ -32,7 +32,7 @@ public class Circle extends Model implements Comparable<Circle> {
 	}
 
 	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
-		return Model.exists(collection, properties);
+		return Model.exists(Circle.class, collection, properties);
 	}
 
 	public static Circle get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
@@ -72,7 +72,7 @@ public class Circle extends Model implements Comparable<Circle> {
 
 		// also remove from search index
 		Search.delete(ownerId, "circle", circleId);
-		Model.delete(collection, properties);
+		Model.delete(Circle.class, collection, properties);
 	}
 
 	public static int getMaxOrder(ObjectId ownerId) {

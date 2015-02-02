@@ -1,6 +1,9 @@
 @main("Study Details") {
 <div ng-app="participation" ng-controller="StudyDetailCtrl" ng-cloak>
 	<h1>Study Details</h1>
+	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	   {{ error.message || error }}
+	</p>
 	<p>{{ study.name }}</p>
 	<p>{{ study.description }}</p>
 	<h2>Organisation</h2>
@@ -29,8 +32,8 @@
 	    </table>
     </div>
 	
-	<button ng-show="mayRequestParticipation()" ng-click="requestParticipation()" class="btn btn-primary">Request Participation</button>
-	<button ng-show="mayDeclineParticipation()" ng-click="noParticipation()" class="btn">Do not participate</button>
+	<button ng-show="mayRequestParticipation()" ng-click="requestParticipation()" class="btn btn-success">Request Participation</button>
+	<button ng-show="mayDeclineParticipation()" ng-click="noParticipation()" class="btn btn-danger">Do not participate</button>
 	
 </div>
 <script type="text/javascript" src="@routes.Assets.at("javascripts/members/participation.js")" defer></script>

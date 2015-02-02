@@ -137,34 +137,29 @@ public class Application extends Controller {
 		return ok();		
 	}
 	
+	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result authenticate() {
+	public static Result authenticate() throws JsonValidationException, ModelException {
 		// validate json
 		JsonNode json = request().body().asJson();
-		try {
-			JsonValidation.validate(json, "email", "password");
-		} catch (JsonValidationException e) {
-			return badRequest(e.getMessage());
-		}
-
+		
+		JsonValidation.validate(json, "email", "password");
+		
 		// validate request
 		String email = json.get("email").asText();
 		String password = json.get("password").asText();
 		Map<String, String> emailQuery = new ChainedMap<String, String>().put("email", email).get();
 		Member user;
-		try {
-			if (!Member.exists(emailQuery)) {
-				return badRequest("Invalid user or password.");
-			} else {
-				user = Member.get(emailQuery, new ChainedSet<String>().add("password").get());
-				if (!Member.authenticationValid(password, user.password)) {
-					return badRequest("Invalid user or password.");
-				}
-			}
-		} catch (ModelException e) {
-			return internalServerError(e.getMessage());
+	
+	    if (!Member.exists(emailQuery)) {
+		  return badRequest("Invalid user or password.");
+		} else {
+		  user = Member.get(emailQuery, new ChainedSet<String>().add("password").get());
+		  if (!Member.authenticationValid(password, user.password)) {
+			return badRequest("Invalid user or password.");
+		  }
 		}
-
+	
 		// user authenticated
 		session().clear();
 		session("id", user._id.toString());
@@ -248,7 +243,8 @@ public class Application extends Controller {
 		response().setContentType("text/javascript");
 		return ok(Routes.javascriptRouter(
 				"portalRoutes",
-				controllers.routes.javascript.ResearchFrontend.studyoverview()
+				controllers.routes.javascript.ResearchFrontend.studyoverview(),
+				controllers.routes.javascript.MemberFrontend.studydetails()
 				));
 	}
 	

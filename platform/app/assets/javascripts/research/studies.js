@@ -2,6 +2,7 @@ var studies = angular.module('studies', []);
 studies.controller('CreateStudyCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	$scope.study = {};
+	$scope.error = null;
 	$scope.submitted = false;
 	
 	// register new user
@@ -11,9 +12,7 @@ studies.controller('CreateStudyCtrl', ['$scope', '$http', function($scope, $http
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;
 		if (! $scope.myform.$valid) return;
-		
-		$scope.study.error = null;
-		
+						
 		// send the request
 		var data = $scope.study;		
 		
@@ -21,8 +20,7 @@ studies.controller('CreateStudyCtrl', ['$scope', '$http', function($scope, $http
 			success(function(result) { window.location.replace(portalRoutes.controllers.ResearchFrontend.studyoverview(result._id.$oid).url); }).
 			error(function(err) {
 				$scope.error = err;
-				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);
-				else $scope.study.error = err; 
+				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);				
 			});
 	}
 	
@@ -30,6 +28,7 @@ studies.controller('CreateStudyCtrl', ['$scope', '$http', function($scope, $http
 studies.controller('ListStudiesCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	$scope.results =[];
+	$scope.error = null;
 	$scope.loading = true;
 	
 	$scope.reload = function() {
@@ -38,6 +37,7 @@ studies.controller('ListStudiesCtrl', ['$scope', '$http', function($scope, $http
 			success(function(data) { 				
 				$scope.results = data;
 				$scope.loading = false;
+				$scope.error = null;
 			}).
 			error(function(err) {
 				$scope.error = err;				
@@ -51,6 +51,7 @@ studies.controller('OverviewCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	$scope.studyid = window.location.pathname.split("/")[2];
 	$scope.study = {};
+	$scope.error = null;
 	$scope.loading = true;
 		
 	$scope.reload = function() {
@@ -59,6 +60,7 @@ studies.controller('OverviewCtrl', ['$scope', '$http', function($scope, $http) {
 			success(function(data) { 				
 				$scope.study = data;
 				$scope.loading = false;
+				$scope.error = null;
 			}).
 			error(function(err) {
 				$scope.error = err;				
@@ -132,6 +134,7 @@ studies.controller('CodesCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.createnew = false;
 	$scope.blocked = false;
 	$scope.submitted = false;
+	$scope.error = null;
 		
 	$scope.reload = function() {
 			
@@ -150,8 +153,8 @@ studies.controller('CodesCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	$scope.generate = function() {
 		$scope.submitted = true;	
-		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
-		$scope.error = null;
+		if ($scope.newcodes.error && $scope.newcodes.error.field && $scope.newcodes.error.type) $scope.myform[$scope.newcodes.error.field].$setValidity($scope.newcodes.error.type, true);
+		$scope.newcodes.error = null;
 		if (! $scope.myform.$valid) return;
 		
 		$scope.newcodes.error = null;
@@ -162,9 +165,8 @@ studies.controller('CodesCtrl', ['$scope', '$http', function($scope, $http) {
 		$http.post(jsRoutes.controllers.research.Studies.generateCodes($scope.studyid).url, JSON.stringify(data)).
 			success(function(url) { $scope.reload(); }).
 			error(function(err) {
-				$scope.error = err;
-				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);
-				else $scope.newcodes.error = err; 
+				$scope.newcodes.error = err;
+				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);			
 			});
 	};
 	
@@ -175,6 +177,7 @@ studies.controller('ListParticipantsCtrl', ['$scope', '$http', function($scope, 
 	
 	$scope.studyid = window.location.pathname.split("/")[2];
 	$scope.results =[];
+	$scope.error = null;
 	$scope.loading = true;
 	
 	$scope.reload = function() {
@@ -183,6 +186,7 @@ studies.controller('ListParticipantsCtrl', ['$scope', '$http', function($scope, 
 			success(function(data) { 				
 				$scope.results = data;
 				$scope.loading = false;
+				$scope.error = null;
 			}).
 			error(function(err) {
 				$scope.error = err;				

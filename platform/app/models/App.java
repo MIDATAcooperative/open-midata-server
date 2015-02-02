@@ -37,7 +37,7 @@ public class App extends Plugin implements Comparable<App> {
 	}
 
 	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
-		return Model.exists(collection, properties);
+		return Model.exists(App.class, collection, properties);
 	}
 
 	public static App get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
@@ -68,7 +68,7 @@ public class App extends Plugin implements Comparable<App> {
 		Search.delete(Type.APP, appId);
 
 		// TODO also remove from installed list of users
-		Model.delete(collection, new ChainedMap<String, ObjectId>().put("_id", appId).get());
+		Model.delete(App.class, collection, new ChainedMap<String, ObjectId>().put("_id", appId).get());
 	}
 
 }

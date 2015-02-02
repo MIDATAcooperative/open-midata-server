@@ -17,9 +17,9 @@
 		              		<h3 class="panel-title">Sign in</h3>
 		            	</div>
 		            	<div class="panel-body">
-			            	<div class="alert alert-danger" ng-show="login.error">
-								<p>{{login.error}}</p>
-							</div>
+			            	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	                           {{ error.message || error }}
+	                        </p>
 							<form ng-submit="login()" role="form">
 								<input type="email" class="form-control" placeholder="Email address" ng-model="login.email" style="margin-bottom:5px;" autofocus>
 								<input type="password" class="form-control" placeholder="Password" ng-model="login.password" style="margin-bottom:5px;">

@@ -33,11 +33,11 @@ public class LargeRecordChunk extends Model {
 	}
 
 	public static void delete(ObjectId chunkId) throws ModelException {
-		Model.delete(collection, new ChainedMap<String, ObjectId>().put("_id", chunkId).get());
+		Model.delete(LargeRecordChunk.class, collection, new ChainedMap<String, ObjectId>().put("_id", chunkId).get());
 	}
 
 	public static void deleteAll(ObjectId masterRecordId) throws ModelException {
-		Model.delete(collection, new ChainedMap<String, ObjectId>().put("masterRecord", masterRecordId).get());
+		Model.delete(LargeRecordChunk.class, collection, new ChainedMap<String, ObjectId>().put("masterRecord", masterRecordId).get());
 	}
 
 }

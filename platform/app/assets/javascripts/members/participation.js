@@ -2,6 +2,7 @@ var participation = angular.module('participation', []);
 participation.controller('EnterCodeCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	$scope.code = {};
+	$scope.error = null;
 	$scope.submitted = false;
 	
 	// register new user
@@ -18,17 +19,19 @@ participation.controller('EnterCodeCtrl', ['$scope', '$http', function($scope, $
 		var data = $scope.code;		
 		
 		$http.post(jsRoutes.controllers.members.Studies.enterCode().url, JSON.stringify(data)).
-			success(function(url) { window.location.replace(url); }).
+			success(function(data) { 
+				window.location.replace(portalRoutes.controllers.MemberFrontend.studydetails(data.study).url); 
+			}).
 			error(function(err) {
 				$scope.error = err;
-				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);
-				else $scope.code.error = err; 
+				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);				
 			});
 	}
 }]);
 participation.controller('ListStudiesCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	$scope.results =[];
+	$scope.error = null;
 	$scope.loading = true;
 	
 	$scope.reload = function() {
@@ -37,6 +40,7 @@ participation.controller('ListStudiesCtrl', ['$scope', '$http', function($scope,
 			success(function(data) { 				
 				$scope.results = data;
 				$scope.loading = false;
+				$scope.error = null;
 			}).
 			error(function(err) {
 				$scope.error = err;				
@@ -52,6 +56,7 @@ participation.controller('StudyDetailCtrl', ['$scope', '$http', function($scope,
 	$scope.study = {};
 	$scope.participation = {};
 	$scope.loading = true;
+	$scope.error = null;
 		
 	$scope.reload = function() {
 			
@@ -61,6 +66,7 @@ participation.controller('StudyDetailCtrl', ['$scope', '$http', function($scope,
 				$scope.participation = data.participation;
 				$scope.research = data.research;
 				$scope.loading = false;
+				$scope.error = null;
 			}).
 			error(function(err) {
 				$scope.error = err;				

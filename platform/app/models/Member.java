@@ -38,11 +38,11 @@ public class Member extends User {
 	
 	
 	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
-		return Model.exists(collection, properties);
+		return Model.exists(Member.class, collection, properties);
 	}
 	
 	public static boolean existsByEMail(String email) throws ModelException {
-		return Model.exists(collection, CMaps.map("email", email));
+		return Model.exists(Member.class, collection, CMaps.map("email", email));
 	}
 	
 	public static Member getByEmail(String email, Set<String> fields) throws ModelException {
@@ -82,7 +82,7 @@ public class Member extends User {
 
 		// TODO remove all the user's messages, records, spaces, circles, apps (if published, ask whether to leave it in
 		// the marketplace), ...
-		Model.delete(collection, new ChainedMap<String, ObjectId>().put("_id", userId).get());
+		Model.delete(Member.class, collection, new ChainedMap<String, ObjectId>().put("_id", userId).get());
 	}
 	
 	protected String getCollection() {
