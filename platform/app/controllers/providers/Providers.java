@@ -1,6 +1,9 @@
 package controllers.providers;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.bson.types.ObjectId;
 
@@ -10,14 +13,17 @@ import play.mvc.Result;
 
 import models.HPUser;
 import models.HealthcareProvider;
+import models.Member;
 import models.ModelException;
 import models.enums.ContractStatus;
 import models.enums.Gender;
 import models.enums.UserStatus;
 import utils.auth.CodeGenerator;
+import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import views.html.defaultpages.badRequest;
 import actions.APICall;
 import controllers.APIController;
 import controllers.routes;
@@ -25,6 +31,9 @@ import actions.APICall;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
+import controllers.providers.ProviderSecured;
+import play.mvc.Result;
+import play.mvc.Security;
 
 
 public class Providers extends APIController {
@@ -104,5 +113,39 @@ public class Providers extends APIController {
 		session("org", user.provider.toString());
 		return ok(routes.ProviderFrontend.messages().url());
 	}
+	
+	@Security.Authenticated(ProviderSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public static Result search() throws JsonValidationException, ModelException {
+		JsonNode json = request().body().asJson();
 		
+		JsonValidation.validate(json, "firstname", "sirname");
+		
+		Map<String, Object> criteria = 
+				CMaps.mapNotEmpty("firstname", JsonValidation.getString(json, "firstname"))
+				     .mapNotEmpty("sirname", JsonValidation.getString(json, "sirname"))
+				     .mapNotEmpty("ssn", JsonValidation.getString(json, "ssn"))
+				     .mapNotEmpty("city", JsonValidation.getString(json, "city"))
+				     .mapNotEmpty("zip", JsonValidation.getString(json, "zip"))
+				     .mapNotEmpty("country", JsonValidation.getString(json, "country"))
+				     .mapNotEmpty("email", JsonValidation.getString(json, "email"));
+		
+		Set<Member> results = Member.getAll(criteria, Sets.create("firstname","birthday", "sirname","city","zip","country","email","phone","mobile","ssn","address1"));
+		
+		return ok(Json.toJson(results));
+	}
+	
+	@Security.Authenticated(ProviderSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public static Result getMember(String id) throws JsonValidationException, ModelException {
+		
+		ObjectId memberId = new ObjectId(id);
+		
+		Member result = Member.getById(memberId, Sets.create("firstname","birthday", "sirname","city","zip","country","email","phone","mobile","ssn","address1","address2"));
+		if (result==null) return badRequest("Member does not exist.");
+		
+		return ok(Json.toJson(result));
+	}
 }

@@ -32,7 +32,7 @@ public class ParticipationCode extends Model {
 	}
 	
 	public static ParticipationCode getByCode(String code) throws ModelException {
-		return Model.get(ParticipationCode.class, collection, CMaps.map("code", code), Sets.create("code", "createdAt", "group", "recruiter", "status", "study"));
+		return Model.get(ParticipationCode.class, collection, CMaps.map("code", code), Sets.create("code", "createdAt", "group", "recruiter", "recruiterName", "status", "study"));
 	}
 	
 	public void setStatus(ParticipationCodeStatus newstatus) throws ModelException {

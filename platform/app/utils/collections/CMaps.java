@@ -11,4 +11,10 @@ public class CMaps {
 		result.put(key, value);
 		return result;
 	}
+	
+	public static NChainedMap<String, Object> mapNotEmpty(String key, Object value) {		
+		NChainedMap<String,Object> result = new NChainedMap<String,Object>();
+		if (value != null && ! "".equals(value.toString())) result.put(key, value);
+		return result;
+	}
 }

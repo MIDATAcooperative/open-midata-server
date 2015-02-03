@@ -18,6 +18,11 @@ public class NChainedMap<K, V> extends HashMap<K, V> {
 		put(key, value);
 		return this;
 	}
+	
+	public NChainedMap<K, V> mapNotEmpty(K key, V value) {				
+		if (value != null && !"".equals(value.toString())) put(key, value);
+		return this;
+	}
 		
 	
 }

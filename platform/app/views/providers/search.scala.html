@@ -1,0 +1,37 @@
+@import views.html.help.formrow
+@import views.html.help.formerror
+@providermain("Patient Search") {
+<div ng-app="search" ng-controller="MemberSearchCtrl" ng-cloak>
+	<h1>Patient Search</h1>
+	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="dosearch()" role="form">								  	  
+	  @formrow("firstname","First Name") {  <input type="text" class="form-control" id="firstname" name="firstname" ng-model="criteria.firstname" > }
+	  @formrow("sirname","Sir Name") {  <input type="text" class="form-control" id="sirname" name="sirname" ng-model="criteria.sirname" > }							  							  	  
+      @formrow("x","") {
+        <button type="submit" class="btn btn-primary">Search</button>
+      }
+    </form>
+    <table ng-show="results.length > 0" class="table table-hover">
+	  <thead>
+	    <tr>
+	      <th>Name</th>	      
+	      <th>Birthday</th>
+	      <th>SSN</th>	      
+	      <th>City</th>
+	      <th>Address</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr ng-repeat="member in results">
+	      <td><a ng-href="/providers/member/{{member._id.$oid}}">{{ member.sirname }}, {{ member.firstname }}</a></td>	  	      
+	      <td>{{ member.birthday | date }}</td>
+	      <td>{{ member.ssn }}</td>	     
+	      <td>{{ member.zip }} {{ member.city }}</td>
+	      <td>{{ member.address1 }}</td>	      	        
+	    </tr>
+	  </tbody>
+	</table>	
+	<p ng-show="results.length === 0">No matching members found.</p>
+	<p ng-show="loading">Searching...</p>
+</div>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/providers/search.js")" defer></script>
+}

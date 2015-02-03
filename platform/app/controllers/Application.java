@@ -342,6 +342,8 @@ public class Application extends Controller {
 				//Healthcare Providers
 				controllers.providers.routes.javascript.Providers.register(),
 				controllers.providers.routes.javascript.Providers.login(),
+				controllers.providers.routes.javascript.Providers.search(),
+				controllers.providers.routes.javascript.Providers.getMember(),
 				// Market
 				controllers.routes.javascript.Market.registerApp(),
 				controllers.routes.javascript.Market.registerVisualization(),

@@ -107,7 +107,6 @@ GET     /research/createstudy       controllers.ResearchFrontend.createstudy()
 
 POST    /research/register          controllers.research.Researchers.register()
 POST    /research/login             controllers.research.Researchers.login()
-POST    /research/test              controllers.research.Researchers.get()
 
 POST    /studies                   controllers.research.Studies.create()
 GET     /studies                   controllers.research.Studies.list()
@@ -131,10 +130,14 @@ POST    /participation/entercode   controllers.members.Studies.enterCode()
 # Healthcare Provider
 GET     /providers/register         controllers.ProviderFrontend.register()
 GET     /providers/login            controllers.ProviderFrontend.login()
-GET     /providers/messages            controllers.ProviderFrontend.messages()
+GET     /providers/messages         controllers.ProviderFrontend.messages()
+GET     /providers/search           controllers.ProviderFrontend.search()
+GET     /providers/member/:member   controllers.ProviderFrontend.member(member: String)
 
 POST    /providers/register         controllers.providers.Providers.register()
 POST    /providers/login            controllers.providers.Providers.login()
+POST    /providers/search           controllers.providers.Providers.search()
+GET     /providers/info/:member     controllers.providers.Providers.getMember(member: String)    
 
 # Apps
 POST    /apps/get                   controllers.Apps.get()

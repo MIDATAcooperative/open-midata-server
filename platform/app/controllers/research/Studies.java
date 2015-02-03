@@ -250,7 +250,7 @@ public class Studies extends APIController {
 	   if (study == null) return badRequest("Study does not belong to organization.");
 	   
 
-	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, Sets.create("member", "memberName", "group", "status"));
+	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, Sets.create("member", "memberName", "group", "recruiter", "recruiterName", "status"));
 	   
 	   return ok(Json.toJson(participants));
 	}

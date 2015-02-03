@@ -5,11 +5,12 @@
    @studynav("Study Participation Codes")
 	<h1>Study Participation Codes</h1>	
 	<p ng-show="blocked">
-	  Participation codes may be used to recruit participants for the study.<br/>
-	  <p ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
-	  {{ error.message || error }}
-	  </p>
+	  Participation codes may be used to recruit participants for the study.<br>
 	</p>
+	<p ng-show="error" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	  {{ error.message || error }}
+	</p>
+	
 	<div ng-hide="createnew">
 	<div ng-show="codes.length > 0">
 	<table class="table table-hover">
@@ -41,7 +42,7 @@
 		</div>
 	</div>
 	<div ng-show="createnew">
-	<p ng-class="{ 'alert-warning' : newcodes.error.level == 'warning', 'alert-danger' : !newcodes.error.level }" class="alert">
+	<p ng-show="newcodes.error" ng-class="{ 'alert-warning' : newcodes.error.level == 'warning', 'alert-danger' : !newcodes.error.level }" class="alert">
 	  {{ newcodes.error.message || newcodes.error }}
 	  </p>
 	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="generate()" role="form">

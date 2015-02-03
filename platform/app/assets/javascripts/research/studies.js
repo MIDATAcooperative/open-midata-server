@@ -143,6 +143,7 @@ studies.controller('CodesCtrl', ['$scope', '$http', function($scope, $http) {
 				$scope.codes = data;
 				$scope.loading = false;
 				$scope.createnew = false;
+				$scope.error = null;
 			}).
 			error(function(err) {
 				$scope.error = err;

@@ -1,0 +1,24 @@
+@import views.html.help.formrow
+@import views.html.help.formerror
+@providermain("Member Details") {
+<div ng-app="search" ng-controller="MemberDetailsCtrl" ng-cloak>  
+	<h1>Member Details</h1>
+	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	   {{ error.message || error }}
+	</p>
+	<address>	
+	  <strong>{{ member.firstname }} {{ member.sirname }}</strong><br>
+	{{ member.address1 }}<br>
+	{{ member.address2 }}<br>
+	{{ member.zip }} {{ member.city }}<br>
+	{{ member.country }}<br>
+	  <span ng-show="member.phone">Phone: {{ member.phone }}</span><br>
+	  <span ng-show="member.mobile">Mobile: {{ member.mobile }}</span><br>
+	  <span ng-show="member.ssn">SSN: {{ member.ssn }}</span><br>
+	  <span ng-show="member.email">Email: {{ member.email }}</span><br>
+    </address>		   
+    <a href="@routes.ProviderFrontend.search()" class="btn btn-default">Back</a>
+</div>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/providers/search.js")" defer></script>
+	
+}
