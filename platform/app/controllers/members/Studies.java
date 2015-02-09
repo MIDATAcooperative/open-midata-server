@@ -107,7 +107,7 @@ public class Studies extends APIController {
 	   ObjectId userId = new ObjectId(request().username());	
 	   ObjectId studyId = new ObjectId(id);
 	   	   
-	   Study study = Study.getByIdFromMember(studyId, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordRules","studyKeywords"));
+	   Study study = Study.getByIdFromMember(studyId, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordRules","studyKeywords","requiredInformation"));
 	   StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history"));
 	   Research research = Research.getById(study.owner, Sets.create("name", "description"));
 	   

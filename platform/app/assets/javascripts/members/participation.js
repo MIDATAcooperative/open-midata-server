@@ -73,6 +73,10 @@ participation.controller('StudyDetailCtrl', ['$scope', '$http', function($scope,
 			});
 	};
 	
+	$scope.needs = function(what) {
+		return $scope.study.requiredInformation && $scope.study.requiredInformation.indexOf(what) >= 0;
+	}
+	
 	$scope.mayRequestParticipation = function() {
 		return ( $scope.participation.status == "MATCH" || $scope.participation.status == "CODE" );
 	};

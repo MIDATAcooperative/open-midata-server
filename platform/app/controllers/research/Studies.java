@@ -17,6 +17,7 @@ import models.Study;
 import models.StudyParticipation;
 import models.User;
 import models.enums.EventType;
+import models.enums.InformationType;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
@@ -69,7 +70,7 @@ public class Studies extends APIController {
 		study.createdBy = userId;
 		study.owner = research;
 		
-		study.validationStatus = StudyValidationStatus.VALIDATED; //StudyValidationStatus.DRAFT;
+		study.validationStatus = StudyValidationStatus.DRAFT;
 		study.participantSearchStatus = ParticipantSearchStatus.PRE;
 		study.executionStatus = StudyExecutionStatus.PRE;
 				
@@ -77,7 +78,8 @@ public class Studies extends APIController {
 		study.infos = new ArrayList<Info>();
 		study.participantRules = new HashSet<FilterRule>();
 		study.recordRules = new HashSet<FilterRule>();
-		
+		study.requiredInformation = new HashSet<InformationType>();
+				
 		study.studyKeywords = new HashSet<ObjectId>();		
 		
 		Study.add(study);
@@ -172,6 +174,27 @@ public class Studies extends APIController {
 	   Set<ParticipationCode> codes = ParticipationCode.getByStudy(studyid);
 	   
 	   return ok(Json.toJson(codes));
+	}
+	
+	
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)
+	public static Result startValidation(String id) throws JsonValidationException, ModelException {
+		ObjectId userId = new ObjectId(request().username());
+		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId studyid = new ObjectId(id);
+		
+		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));
+		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
+		
+		if (study == null) return badRequest("Study does not belong to organization.");
+		if (study.validationStatus == StudyValidationStatus.VALIDATED) return badRequest("Study has already been validated.");
+		if (study.validationStatus == StudyValidationStatus.VALIDATION) return badRequest("Validation is already in progress.");
+		
+		study.setValidationStatus(StudyValidationStatus.VALIDATED); // TODO to be changed to VALIDATION
+		study.addHistory(new History(EventType.VALIDATION_REQUESTED, user, null));
+						
+		return ok();
 	}
 	
 	//@BodyParser.Of(BodyParser.Json.class)
@@ -344,5 +367,75 @@ public class Studies extends APIController {
 		return ok();
 	}
 	
+	
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)
+	public static Result getRequiredInformationSetup(String id) throws JsonValidationException, ModelException {
+		ObjectId userId = new ObjectId(request().username());
+		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId studyid = new ObjectId(id);
+		
+		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));
+		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation"));
+		
+		if (study == null) return badRequest("Study does not belong to organization.");
+	    Set<InformationType> inf = study.requiredInformation;
+		
+		ObjectNode result = Json.newObject();
+		result.put("identity", inf.contains(InformationType.FULLNAME) ? "FULLNAME" : inf.contains(InformationType.GENDER) ? "GENDER" : "NONE");
+		result.put("birthday", inf.contains(InformationType.BIRTHDAY) ? "BIRTHDAY" : inf.contains(InformationType.AGE) ? "AGE" : "NONE");
+		result.put("location", inf.contains(InformationType.ADDRESS) ? "ADDRESS" : inf.contains(InformationType.COUNTRY) ? "COUNTRY" : "NONE");
+		result.put("contact", inf.contains(InformationType.PHONE) ? "PHONE" : inf.contains(InformationType.EMAIL) ? "EMAIL" : "NONE");
+		result.put("ssn", inf.contains(InformationType.SSN));
+		return ok(result);
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)
+	public static Result setRequiredInformationSetup(String id) throws JsonValidationException, ModelException {
+        JsonNode json = request().body().asJson();
+		
+		JsonValidation.validate(json, "identity", "birthday", "location", "contact");
+		
+		ObjectId userId = new ObjectId(request().username());
+		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId studyid = new ObjectId(id);
+		
+		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));
+		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history", "requiredInformation"));
+		
+		if (study == null) return badRequest("Study does not belong to organization.");
+		if (study.validationStatus != StudyValidationStatus.DRAFT) return badRequest("Setup can only be changed as long as study is in draft phase.");
+        
+		Set<InformationType> inf = new HashSet<InformationType>();
+		// No break; to automatically add lower level rights
+		switch (JsonValidation.getEnum(json, "identity", InformationType.class)) {
+		  case FULLNAME: inf.add(InformationType.FULLNAME);
+		  case GENDER: inf.add(InformationType.GENDER);
+		  default:
+		}
+		switch (JsonValidation.getEnum(json, "birthday", InformationType.class)) {
+		  case BIRTHDAY : inf.add(InformationType.BIRTHDAY);
+		  case AGE : inf.add(InformationType.AGE);
+		  default:
+		}
+		switch (JsonValidation.getEnum(json, "location", InformationType.class)) {
+		  case ADDRESS : inf.add(InformationType.ADDRESS);
+		  case COUNTRY : inf.add(InformationType.COUNTRY);
+		  default:
+		}
+		switch (JsonValidation.getEnum(json, "contact", InformationType.class)) {
+		  case PHONE : inf.add(InformationType.PHONE);
+		  case EMAIL : inf.add(InformationType.EMAIL);
+		  default:
+		}
+		if (JsonValidation.getBoolean(json, "ssn")) inf.add(InformationType.SSN);
+		
+		study.setRequiredInformation(inf);
+        study.addHistory(new History(EventType.REQUIRED_INFORMATION_CHANGED, user, null));		
+        
+        return ok();
+	}
 	
 }

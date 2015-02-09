@@ -326,6 +326,7 @@ public class Application extends Controller {
 				controllers.research.routes.javascript.Studies.get(),
 				controllers.research.routes.javascript.Studies.listCodes(),
 				controllers.research.routes.javascript.Studies.generateCodes(),
+				controllers.research.routes.javascript.Studies.startValidation(),
 				controllers.research.routes.javascript.Studies.startParticipantSearch(),
 				controllers.research.routes.javascript.Studies.endParticipantSearch(),
 				controllers.research.routes.javascript.Studies.startExecution(),
@@ -333,6 +334,8 @@ public class Application extends Controller {
 				controllers.research.routes.javascript.Studies.getParticipant(),
 				controllers.research.routes.javascript.Studies.approveParticipation(),
 				controllers.research.routes.javascript.Studies.rejectParticipation(),
+				controllers.research.routes.javascript.Studies.getRequiredInformationSetup(),
+				controllers.research.routes.javascript.Studies.setRequiredInformationSetup(),
 				
 				controllers.members.routes.javascript.Studies.list(),
 				controllers.members.routes.javascript.Studies.enterCode(),

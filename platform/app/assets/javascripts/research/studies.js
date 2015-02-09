@@ -67,6 +67,10 @@ studies.controller('OverviewCtrl', ['$scope', '$http', function($scope, $http) {
 			});
 	};
 	
+	$scope.readyForValidation = function() {
+		return $scope.study.validationStatus == "DRAFT" || $scope.study.validationStatus == "REJECTED";
+	};
+	
 	$scope.readyForParticipantSearch = function() {
 		return $scope.study.validationStatus == "VALIDATED" &&
 		       $scope.study.executionStatus == "PRE" &&
@@ -84,6 +88,18 @@ studies.controller('OverviewCtrl', ['$scope', '$http', function($scope, $http) {
 		return $scope.study.validationStatus == "VALIDATED" && 
 		       $scope.study.participantSearchStatus == "CLOSED" &&
 		       $scope.study.executionStatus == "PRE";
+	};
+	
+	$scope.startValidation = function() {
+		$scope.error = null;
+		
+		$http.post(jsRoutes.controllers.research.Studies.startValidation($scope.studyid).url).
+		success(function(data) { 				
+		    $scope.reload();
+		}).
+		error(function(err) {
+			$scope.error = err;			
+		});
 	};
 	
 	$scope.startParticipantSearch = function() {
@@ -258,4 +274,37 @@ studies.controller('ParticipantCtrl', ['$scope', '$http', function($scope, $http
 		
 	$scope.reload();
 	
+}]);
+studies.controller('RequiredInformationCtrl', ['$scope', '$http', function($scope, $http) {
+   $scope.information = {};
+   $scope.studyid = window.location.pathname.split("/")[2];	
+   $scope.error = null;
+   $scope.loading = true;
+   
+   $scope.reload = function() {
+	   
+	   $http.get(jsRoutes.controllers.research.Studies.getRequiredInformationSetup($scope.studyid).url).
+		success(function(data) { 								
+			$scope.information = data;			
+			$scope.loading = false;
+			$scope.error = null;
+		}).
+		error(function(err) {
+			$scope.error = err;				
+		});
+   };
+   
+   $scope.setRequiredInformation = function() {
+	   var params = $scope.information;
+	   
+	   $http.post(jsRoutes.controllers.research.Studies.setRequiredInformationSetup($scope.studyid).url, params).
+		success(function(data) { 				
+		    $scope.reload();
+		}).
+		error(function(err) {
+			$scope.error = err;			
+		});  
+   };
+   
+   $scope.reload();
 }]);

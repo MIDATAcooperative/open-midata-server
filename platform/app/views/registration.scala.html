@@ -39,16 +39,16 @@
 							    <select class="form-control" id="birthdayYear" name="birthdayYear" ng-model="registration.birthdayYear"><option ng-repeat="year in years">{{ year }}</option></select>
 							    </div>
 							  }
-							  @formrow("ssn","SSN") {  <input type="text" class="form-control" id="ssn" name="ssn" placeholder="" ng-model="registration.ssn" required> }
+							  @formrow("ssn","SSN") {  <input type="text" class="form-control" id="ssn" name="ssn" placeholder="Social Security Number" ng-model="registration.ssn" required> }
 							  
-							  @formrow("address1","Address") {  <input type="text" class="form-control" id="address1" name="address1" placeholder="" ng-model="registration.address1" required> }
-							  @formrow("address2","") {  <input type="text" class="form-control" id="address2" name="address2" placeholder="" ng-model="registration.address2"> }
-							  @formrow("city","City") {  <input type="text" class="form-control" id="city" name="city" placeholder="" ng-model="registration.city" required> }
-							  @formrow("zip","Zip") {  <input type="text" class="form-control" id="zip" name="zip" placeholder="" ng-model="registration.zip" required> }
-							  @formrow("country","Country") {  <select class="form-control" id="country" name="country" ng-model="registration.country" required><option value="CH">Swiss</option></select> }
+							  @formrow("address1","Address") {  <input type="text" class="form-control" id="address1" name="address1" placeholder="Enter your address here" ng-model="registration.address1" required> }
+							  @formrow("address2","") {  <input type="text" class="form-control" id="address2" name="address2" placeholder="Second line for address" ng-model="registration.address2"> }
+							  @formrow("city","City") {  <input type="text" class="form-control" id="city" name="city" placeholder="City" ng-model="registration.city" required> }
+							  @formrow("zip","Zip") {  <input type="text" class="form-control" id="zip" name="zip" placeholder="Zip Code" ng-model="registration.zip" required> }
+							  @formrow("country","Country") {  <select class="form-control" id="country" name="country" ng-model="registration.country" required><option value="CH">Switzerland</option></select> }
                              
-                              @formrow("phone","Phone") {  <input type="text" class="form-control" id="phone" name="phone" placeholder="" ng-model="registration.phone"> }
-                              @formrow("mobile","Mobile Phone") {  <input type="text" class="form-control" id="mobile" name="mobile" placeholder="" ng-model="registration.mobile"> }
+                              @formrow("phone","Phone") {  <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone" ng-model="registration.phone"> }
+                              @formrow("mobile","Mobile Phone") {  <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile Phone" ng-model="registration.mobile"> }
                              
                              <button type="submit" class="btn btn-lg btn-primary btn-block">Sign up</button>
                             </form>

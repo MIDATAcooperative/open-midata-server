@@ -56,12 +56,12 @@
   	        <input type="text" class="form-control" id="group" name="group" placeholder="" ng-model="newcodes.group">
   	    }
   	    @formrow("reuseable","Codes are reuseable?") {
-  	       <label>
-  	         <input type="radio" class="form-control" id="reuseable" name="reuseable" value="true" ng-model="newcodes.reuseable">
+  	       <label class="radio-inline">
+  	         <input type="radio" id="reuseable" name="reuseable" value="true" ng-model="newcodes.reuseable">
   	         yes
   	       </label>
-  	       <label>
-  	         <input type="radio" class="form-control" name="reuseable" value="false" ng-model="newcodes.reuseable">
+  	       <label class="radio-inline">
+  	         <input type="radio" name="reuseable" value="false" ng-model="newcodes.reuseable">
   	         no
   	       </label>
   	    }

@@ -21,6 +21,13 @@ public class DatabaseConversion {
 
 	private Object encrypt(Class model, String path, Object source) {
 		if (source instanceof Enum) source = ((Enum) source).name();
+		if (source instanceof Set) {
+			Set result = new HashSet();
+			for (Object obj : (Set) source) {
+				result.add(encrypt(model, path, obj));
+			}
+			return result;
+		}
 		return source;
 	}
 	
@@ -39,7 +46,7 @@ public class DatabaseConversion {
 				result.add(todb(obj));
 			}
 			return result;
-		}
+		}		
 		return inp;
 	}
 	
@@ -151,10 +158,11 @@ public class DatabaseConversion {
 		BasicDBList dbList = (BasicDBList) value;
 		if (type instanceof ParameterizedType) {
 			Type valueType = ((ParameterizedType) type).getActualTypeArguments()[0];
+						
 			Set<Object> set = new HashSet<Object>();
 			String fullpath = path+"[]";
 			for (Object element : dbList) {
-				set.add(convert(model, fullpath, valueType, decrypt(model, fullpath,  Object.class, element)));
+				set.add(convert(model, fullpath, valueType, decrypt(model, fullpath,  (Class<?>) valueType, element)));
 			}
 			return set;
 		} else {
