@@ -223,7 +223,7 @@ studies.controller('ListParticipantsCtrl', ['$scope', '$http', function($scope, 
 	
 	$scope.rejectParticipation = function(participation) {
 		$scope.error = null;
-		var params = { member : participation.member.$oid };
+		var params = { member : participation._id.$oid };
 		
 		$http.post(jsRoutes.controllers.research.Studies.rejectParticipation($scope.studyid).url, params).
 		success(function(data) { 				
@@ -237,7 +237,7 @@ studies.controller('ListParticipantsCtrl', ['$scope', '$http', function($scope, 
 	$scope.approveParticipation = function(participation) {
 		$scope.error = null;
 		console.log(participation);
-		var params = { member : participation.member.$oid };
+		var params = { member : participation._id.$oid };
 		
 		$http.post(jsRoutes.controllers.research.Studies.approveParticipation($scope.studyid).url, params).
 		success(function(data) { 				

@@ -1,6 +1,7 @@
 package controllers.members;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,10 +20,12 @@ import models.Study;
 import models.StudyParticipation;
 import models.User;
 import models.enums.EventType;
+import models.enums.InformationType;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
 import models.enums.StudyValidationStatus;
+import utils.auth.CodeGenerator;
 import utils.collections.Sets;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -56,9 +59,8 @@ public class Studies extends APIController {
 		String codestr = JsonValidation.getString(json, "code");
 		ObjectId userId = new ObjectId(request().username());
 		
-		User user = Member.getById(userId, Sets.create("firstname","sirname"));
-		String userName = user.sirname+", "+user.firstname;
-		
+		Member user = Member.getById(userId, Sets.create("firstname","sirname","birthday","country","gender"));
+				
 		ParticipationCode code = ParticipationCode.getByCode(codestr);
 		if (code == null) return inputerror("code", "notfound", "Unknown Participation Code.");
 		
@@ -79,16 +81,31 @@ public class Studies extends APIController {
 		part.study = code.study;
 		part.studyName = study.name;
 		part.member = userId;
+		
+		String userName;
+		
+		if (study.requiredInformation == InformationType.DEMOGRAPHIC) {
+			userName = user.sirname+", "+user.firstname;	
+		} else {
+			userName = "Part. " + CodeGenerator.nextUniqueCode();
+		}
+				
 		part.memberName = userName;
 		part.group = code.group;
 		part.recruiter = code.recruiter;		
 		part.recruiterName = code.recruiterName;
 		part.status = ParticipationStatus.CODE;
 		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(user.birthday);
+		part.yearOfBirth = cal.get(Calendar.YEAR);
+		part.gender = user.gender;
+		part.country = user.country;
+		
 		part.history = new ArrayList<History>();
 		part.shared = new HashSet<ObjectId>();
 		
-		History codedentererd = new History(EventType.CODE_ENTERED, user, null); 
+		History codedentererd = new History(EventType.CODE_ENTERED, part, null); 
 		part.history.add(codedentererd);
 		StudyParticipation.add(part);
 		
@@ -126,7 +143,7 @@ public class Studies extends APIController {
 		ObjectId studyId = new ObjectId(id);
 		
 		User user = Member.getById(userId, Sets.create("firstname","sirname"));		
-		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history", "memberName"));		
 		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
 		if (study == null) return badRequest("Study does not exist.");
@@ -135,7 +152,7 @@ public class Studies extends APIController {
 		if (participation.status != ParticipationStatus.CODE && participation.status != ParticipationStatus.MATCH) return badRequest("Wrong participation status.");
 		
 		participation.setStatus(ParticipationStatus.REQUEST);
-		participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, user, null));
+		participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, null));
 						
 		return ok();
 	}
@@ -147,7 +164,7 @@ public class Studies extends APIController {
 		ObjectId studyId = new ObjectId(id);
 		
 		User user = Member.getById(userId, Sets.create("firstname","sirname"));		
-		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history", "memberName"));		
 		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
 		if (study == null) return badRequest("Study does not exist.");
@@ -155,7 +172,7 @@ public class Studies extends APIController {
 		if (participation.status != ParticipationStatus.CODE && participation.status != ParticipationStatus.MATCH && participation.status != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
 		
 		participation.setStatus(ParticipationStatus.MEMBER_REJECTED);
-		participation.addHistory(new History(EventType.NO_PARTICIPATION, user, null));
+		participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, null));
 						
 		return ok();
 	}

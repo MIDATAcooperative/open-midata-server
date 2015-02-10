@@ -38,6 +38,7 @@ import views.html.defaultpages.badRequest;
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import controllers.APIController;
@@ -78,7 +79,7 @@ public class Studies extends APIController {
 		study.infos = new ArrayList<Info>();
 		study.participantRules = new HashSet<FilterRule>();
 		study.recordRules = new HashSet<FilterRule>();
-		study.requiredInformation = new HashSet<InformationType>();
+		study.requiredInformation = InformationType.RESTRICTED;
 				
 		study.studyKeywords = new HashSet<ObjectId>();		
 		
@@ -273,7 +274,7 @@ public class Studies extends APIController {
 	   if (study == null) return badRequest("Study does not belong to organization.");
 	   
 
-	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, Sets.create("member", "memberName", "group", "recruiter", "recruiterName", "status"));
+	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, Sets.create("memberName", "group", "recruiter", "recruiterName", "status", "gender", "country", "yearOfBirth"));
 	   
 	   return ok(Json.toJson(participants));
 	}
@@ -288,19 +289,23 @@ public class Studies extends APIController {
 	   	   
 	   Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordRules","studyKeywords"));
 	   if (study == null) return badRequest("Study does not belong to organization");
-	   
-	   StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, memberId, Sets.create("status", "group", "history"));
+	   	   
+	   StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, Sets.create("status", "group", "history","memberName", "gender", "country", "yearOfBirth", "member"));
 	   if (participation == null) return badRequest("Member does not participate in study");
 	   if (participation.status == ParticipationStatus.CODE || 
 		   participation.status == ParticipationStatus.MATCH || 
 		   participation.status == ParticipationStatus.MEMBER_REJECTED) return badRequest("Member does not participate in study");
 	   
-	   Member member = Member.getById(memberId, Sets.create("firstname","sirname","address1","address2","city","zip","country","phone","mobile"));
-	   if (member == null) return badRequest("Member does not exist");
-	   	   
+	   if (study.requiredInformation != InformationType.DEMOGRAPHIC) { participation.member = null; }
+	   
 	   ObjectNode obj = Json.newObject();
-	   obj.put("member", Json.toJson(member));
 	   obj.put("participation", Json.toJson(participation));	   
+	    
+	   if (study.requiredInformation == InformationType.DEMOGRAPHIC) {
+	     Member member = Member.getById(memberId, Sets.create("firstname","sirname","address1","address2","city","zip","country","email", "phone","mobile"));
+	     if (member == null) return badRequest("Member does not exist");
+	     obj.put("member", Json.toJson(member));
+	   }
 	   
 	   return ok(obj);
 	}
@@ -319,13 +324,11 @@ public class Studies extends APIController {
 		ObjectId owner = new ObjectId(session().get("org"));
 		String comment = JsonValidation.getString(json, "comment");
 		
-		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));		
-		User member = Member.getById(memberId, Sets.create("firstname","sirname"));		
-		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, memberId, Sets.create("status", "history"));		
+		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));				
+		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, Sets.create("status", "history", "memberName"));		
 		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
-		if (study == null) return badRequest("Study does not exist.");
-		if (member == null) return badRequest("Member does not exist.");
+		if (study == null) return badRequest("Study does not exist.");		
 		if (participation == null) return badRequest("Member is not allowed to participate in study.");		
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return badRequest("Study is not searching for participants anymore.");
 		if (participation.status != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
@@ -350,13 +353,11 @@ public class Studies extends APIController {
 		ObjectId owner = new ObjectId(session().get("org"));
 		String comment = JsonValidation.getString(json, "comment");
 		
-		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));		
-		User member = Member.getById(memberId, Sets.create("firstname","sirname"));		
-		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, memberId, Sets.create("status", "history"));		
+		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));					
+		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, Sets.create("status", "history", "memberName"));		
 		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
-		if (study == null) return badRequest("Study does not exist.");
-		if (member == null) return badRequest("Member does not exist.");
+		if (study == null) return badRequest("Study does not exist.");		
 		if (participation == null) return badRequest("Member is not allowed to participate in study.");		
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return badRequest("Study is not searching for participants anymore.");
 		if (participation.status != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
@@ -378,15 +379,10 @@ public class Studies extends APIController {
 		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation"));
 		
-		if (study == null) return badRequest("Study does not belong to organization.");
-	    Set<InformationType> inf = study.requiredInformation;
+		if (study == null) return badRequest("Study does not belong to organization.");	    
 		
 		ObjectNode result = Json.newObject();
-		result.put("identity", inf.contains(InformationType.FULLNAME) ? "FULLNAME" : inf.contains(InformationType.GENDER) ? "GENDER" : "NONE");
-		result.put("birthday", inf.contains(InformationType.BIRTHDAY) ? "BIRTHDAY" : inf.contains(InformationType.AGE) ? "AGE" : "NONE");
-		result.put("location", inf.contains(InformationType.ADDRESS) ? "ADDRESS" : inf.contains(InformationType.COUNTRY) ? "COUNTRY" : "NONE");
-		result.put("contact", inf.contains(InformationType.PHONE) ? "PHONE" : inf.contains(InformationType.EMAIL) ? "EMAIL" : "NONE");
-		result.put("ssn", inf.contains(InformationType.SSN));
+		result.put("identity", study.requiredInformation.toString());
 		return ok(result);
 	}
 	
@@ -396,7 +392,9 @@ public class Studies extends APIController {
 	public static Result setRequiredInformationSetup(String id) throws JsonValidationException, ModelException {
         JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "identity", "birthday", "location", "contact");
+		JsonValidation.validate(json, "identity");
+		
+		InformationType inf = JsonValidation.getEnum(json, "identity", InformationType.class);
 		
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId owner = new ObjectId(session().get("org"));
@@ -404,34 +402,10 @@ public class Studies extends APIController {
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history", "requiredInformation"));
-		
+			
 		if (study == null) return badRequest("Study does not belong to organization.");
 		if (study.validationStatus != StudyValidationStatus.DRAFT) return badRequest("Setup can only be changed as long as study is in draft phase.");
-        
-		Set<InformationType> inf = new HashSet<InformationType>();
-		// No break; to automatically add lower level rights
-		switch (JsonValidation.getEnum(json, "identity", InformationType.class)) {
-		  case FULLNAME: inf.add(InformationType.FULLNAME);
-		  case GENDER: inf.add(InformationType.GENDER);
-		  default:
-		}
-		switch (JsonValidation.getEnum(json, "birthday", InformationType.class)) {
-		  case BIRTHDAY : inf.add(InformationType.BIRTHDAY);
-		  case AGE : inf.add(InformationType.AGE);
-		  default:
-		}
-		switch (JsonValidation.getEnum(json, "location", InformationType.class)) {
-		  case ADDRESS : inf.add(InformationType.ADDRESS);
-		  case COUNTRY : inf.add(InformationType.COUNTRY);
-		  default:
-		}
-		switch (JsonValidation.getEnum(json, "contact", InformationType.class)) {
-		  case PHONE : inf.add(InformationType.PHONE);
-		  case EMAIL : inf.add(InformationType.EMAIL);
-		  default:
-		}
-		if (JsonValidation.getBoolean(json, "ssn")) inf.add(InformationType.SSN);
-		
+        				
 		study.setRequiredInformation(inf);
         study.addHistory(new History(EventType.REQUIRED_INFORMATION_CHANGED, user, null));		
         

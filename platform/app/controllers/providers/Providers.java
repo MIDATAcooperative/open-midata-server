@@ -120,20 +120,14 @@ public class Providers extends APIController {
 	public static Result search() throws JsonValidationException, ModelException {
 		JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "firstname", "sirname");
+		JsonValidation.validate(json, "midataID", "birthday");
 		
-		Map<String, Object> criteria = 
-				CMaps.mapNotEmpty("firstname", JsonValidation.getString(json, "firstname"))
-				     .mapNotEmpty("sirname", JsonValidation.getString(json, "sirname"))
-				     .mapNotEmpty("ssn", JsonValidation.getString(json, "ssn"))
-				     .mapNotEmpty("city", JsonValidation.getString(json, "city"))
-				     .mapNotEmpty("zip", JsonValidation.getString(json, "zip"))
-				     .mapNotEmpty("country", JsonValidation.getString(json, "country"))
-				     .mapNotEmpty("email", JsonValidation.getString(json, "email"));
+		String midataID = JsonValidation.getString(json, "midataID");
+		Date birthday = JsonValidation.getDate(json, "birthday");
 		
-		Set<Member> results = Member.getAll(criteria, Sets.create("firstname","birthday", "sirname","city","zip","country","email","phone","mobile","ssn","address1"));
+		Member result = Member.getByMidataIDAndBirthday(midataID, birthday, Sets.create("firstname","birthday", "sirname","city","zip","country","email","phone","mobile","ssn","address1","address2"));
 		
-		return ok(Json.toJson(results));
+		return ok(Json.toJson(result));
 	}
 	
 	@Security.Authenticated(ProviderSecured.class)

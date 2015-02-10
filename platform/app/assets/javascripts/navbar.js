@@ -14,10 +14,13 @@ navbar.controller('NavbarCtrl', ['$scope', '$http', function($scope, $http) {
 	// get user's name
 	getName = function(userId) {
 		var properties = {"_id": userId};
-		var fields = ["name"];
+		var fields = ["name", "midataID"];
 		var data = {"properties": properties, "fields": fields};
 		$http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
-			success(function(users) { $scope.user.name = users[0].name; });
+			success(function(users) 
+					{ $scope.user.name = users[0].name;
+					  $scope.user.midataID = users[0].midataID;
+			        });
 	}
 	
 	// initialize global search with typeahead plugin

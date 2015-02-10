@@ -74,7 +74,7 @@ participation.controller('StudyDetailCtrl', ['$scope', '$http', function($scope,
 	};
 	
 	$scope.needs = function(what) {
-		return $scope.study.requiredInformation && $scope.study.requiredInformation.indexOf(what) >= 0;
+		return $scope.study.requiredInformation && $scope.study.requiredInformation == what;
 	}
 	
 	$scope.mayRequestParticipation = function() {

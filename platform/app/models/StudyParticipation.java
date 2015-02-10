@@ -3,6 +3,7 @@ package models;
 import java.util.List;
 import java.util.Set;
 
+import models.enums.Gender;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationStatus;
 
@@ -27,6 +28,10 @@ public class StudyParticipation extends Model {
 	public List<History> history; // History of participation process
 	public Set<ObjectId> shared; // Records of member shared for this study
 	
+	public int yearOfBirth;
+	public String country;
+	public Gender gender;
+	
 	public static void add(StudyParticipation studyparticipation) throws ModelException {
 		Model.insert(collection, studyparticipation);
 	}
@@ -41,6 +46,10 @@ public class StudyParticipation extends Model {
 	
 	public static StudyParticipation getByStudyAndMember(ObjectId study, ObjectId member, Set<String> fields) throws ModelException {
 		return Model.get(StudyParticipation.class, collection, CMaps.map("study", study).map("member", member), fields);
+	}
+	
+	public static StudyParticipation getByStudyAndId(ObjectId study, ObjectId id, Set<String> fields) throws ModelException {
+		return Model.get(StudyParticipation.class, collection, CMaps.map("_id", id).map("study", study), fields);
 	}
 	
 	public void setStatus(ParticipationStatus newstatus) throws ModelException {

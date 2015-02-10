@@ -26,4 +26,13 @@ public class History implements JsonSerializable {
 		this.whoName = who.sirname+", "+who.firstname;
 		this.message = message;
 	}
+	
+	public History(EventType event, StudyParticipation who, String message) {
+		this.event = event;
+		this.timestamp = new Date();
+		this.who = who._id;
+		this.whoRole = UserRole.MEMBER;
+		this.whoName = who.memberName;
+		this.message = message;
+	}
 }

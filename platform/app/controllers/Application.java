@@ -192,6 +192,7 @@ public class Application extends Controller {
 		user.name = firstName + " " + lastName;
 		
 		user.password = Member.encrypt(password);
+		user.midataID = CodeGenerator.nextUniqueCode();
 		
 		user.address1 = JsonValidation.getString(json, "address1");
 		user.address2 = JsonValidation.getString(json, "address2");

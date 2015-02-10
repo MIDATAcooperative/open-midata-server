@@ -4,33 +4,27 @@
 <div ng-app="search" ng-controller="MemberSearchCtrl" ng-cloak>
 	<h1>Patient Search</h1>
 	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="dosearch()" role="form">								  	  
-	  @formrow("firstname","First Name") {  <input type="text" class="form-control" id="firstname" name="firstname" ng-model="criteria.firstname" > }
-	  @formrow("sirname","Sir Name") {  <input type="text" class="form-control" id="sirname" name="sirname" ng-model="criteria.sirname" > }							  							  	  
+	  @formrow("midataID","Midata ID") {  <input type="text" class="form-control" id="midataID" name="midataID" ng-model="criteria.midataID" > }
+	  @formrow("birthday","Birthday") {  <input type="text" class="form-control" id="birthday" name="birthday" ng-model="criteria.birthday" > }							  							  	  
       @formrow("x","") {
         <button type="submit" class="btn btn-primary">Search</button>
       }
     </form>
-    <table ng-show="results.length > 0" class="table table-hover">
-	  <thead>
-	    <tr>
-	      <th>Name</th>	      
-	      <th>Birthday</th>
-	      <th>SSN</th>	      
-	      <th>City</th>
-	      <th>Address</th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	    <tr ng-repeat="member in results">
-	      <td><a ng-href="/providers/member/{{member._id.$oid}}">{{ member.sirname }}, {{ member.firstname }}</a></td>	  	      
-	      <td>{{ member.birthday | date }}</td>
-	      <td>{{ member.ssn }}</td>	     
-	      <td>{{ member.zip }} {{ member.city }}</td>
-	      <td>{{ member.address1 }}</td>	      	        
-	    </tr>
-	  </tbody>
-	</table>	
-	<p ng-show="results.length === 0">No matching members found.</p>
+    
+    <div ng-show="member">
+    <address>	
+	  <strong>{{ member.firstname }} {{ member.sirname }}</strong><br>
+	{{ member.address1 }}<br>
+	{{ member.address2 }}<br>
+	{{ member.zip }} {{ member.city }}<br>
+	{{ member.country }}<br>
+	  <span ng-show="member.phone">Phone: {{ member.phone }}</span><br>
+	  <span ng-show="member.mobile">Mobile: {{ member.mobile }}</span><br>
+	  <span ng-show="member.ssn">SSN: {{ member.ssn }}</span><br>
+	  <span ng-show="member.email">Email: {{ member.email }}</span><br>
+    </address>	
+    </div>
+    
 	<p ng-show="loading">Searching...</p>
 </div>
 <script type="text/javascript" src="@routes.Assets.at("javascripts/providers/search.js")" defer></script>

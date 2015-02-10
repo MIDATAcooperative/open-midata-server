@@ -13,4 +13,8 @@ public class CodeGenerator {
 	    code = code.substring(0,4) + "-" + code.substring(4,8);
 	    return code;
 	}
+	
+	public static String nextUniqueCode() {
+		return nextCode();
+	}
 }

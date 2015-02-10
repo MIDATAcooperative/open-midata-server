@@ -2,7 +2,7 @@ var search = angular.module('search', []);
 search.controller('MemberSearchCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	$scope.criteria = {};
-	$scope.results = null;
+	$scope.member = null;
 	$scope.error = null;
 	$scope.loading = false;
 	
@@ -11,7 +11,7 @@ search.controller('MemberSearchCtrl', ['$scope', '$http', function($scope, $http
 		
 		$http.post(jsRoutes.controllers.providers.Providers.search().url, $scope.criteria).
 		success(function(data) { 				
-		    $scope.results = data;
+		    $scope.member = data;
 		    $scope.error = null;
 		    $scope.loading = false;
 		}).

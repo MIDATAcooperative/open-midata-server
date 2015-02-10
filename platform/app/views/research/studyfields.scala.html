@@ -11,94 +11,21 @@
 	<h2>Required demographic data</h2>
 	<p class="alert alert-info">This setup cannot be changed anymore after Study has been validated.</p>
 	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="setRequiredInformation()" role="form">
-	  @formrow("identity","Member Identity") { 
+	  @formrow("identity","Member Identity") {
+	     <div class="radio">
+  	       <label>
+  	        <input type="radio" name="identity" value="RESTRICTED" ng-model="information.identity">
+  	         <strong>Anonymous Participation</strong>, reveals anonymized ID, year of birth, gender and country
+  	       </label>
+  	    </div>   	     
+	  
 	    <div class="radio">
 		 <label>
-  	        <input type="radio" id="identity" name="identity" value="FULLNAME" ng-model="information.identity">
-  	         Full Name
+  	        <input type="radio" id="identity" name="identity" value="DEMOGRAPHIC" ng-model="information.identity">
+  	         <strong>Not Anonymous</strong>, requests member to share full name, birthday and contact Information (address, phone, eMail) 
   	     </label>
   	    </div>
-  	    <div class="radio">
-  	     <label>
-  	        <input type="radio" name="identity" value="GENDER" ng-model="information.identity">
-  	         Gender only
-  	     </label>
-  	     </div> 
-  	     <div class="radio">
-  	     <label>
-  	        <input type="radio" name="identity" value="NONE" ng-model="information.identity">
-  	         No information (anonymized ID used for this study only)
-  	     </label>
-  	     </div>
-      }
-      @formrow("birthday", "Birthday") {
-         <div class="radio">
-         <label>
-  	        <input type="radio" id="birthday" name="birthday" value="BIRTHDAY" ng-model="information.birthday">
-  	         Exact birthday
-  	     </label>
-  	     </div>
-  	     <div class="radio">
-  	     <label>
-  	        <input type="radio" name="birthday" value="AGE" ng-model="information.birthday">
-  	         Age in years only
-  	     </label> 
-  	     </div>
-  	     <div class="radio">
-  	     <label>
-  	        <input type="radio" name="birthday" value="NONE" ng-model="information.birthday">
-  	         No age information
-  	     </label>
-  	     </div>
-      }
-      @formrow("location", "Location") {
-         <div class="radio">
-         <label>
-  	        <input type="radio" id="location" name="location" value="ADDRESS" ng-model="information.location">
-  	         Address
-  	     </label>
-  	     </div>
-  	     <div class="radio">
-  	     <label>
-  	        <input type="radio" name="location" value="COUNTRY" ng-model="information.location">
-  	         Country only
-  	     </label> 
-  	     </div>
-  	     <div class="radio">
-  	     <label>
-  	        <input type="radio" name="location" value="NONE" ng-model="information.location">
-  	         No location information
-  	     </label>
-  	     </div>
-      }
-      @formrow("contact", "Contact") {
-        <div class="radio">
-         <label>
-  	        <input type="radio" id="contact" name="contact" value="PHONE" ng-model="information.contact">
-  	         Phone &amp; Email
-  	     </label>
-  	     </div>
-  	     <div class="radio">
-  	     <label>
-  	        <input type="radio" name="contact" value="EMAIL" ng-model="information.contact">
-  	         Email only
-  	     </label> 
-  	     </div>
-  	     <div class="radio">
-  	     <label>
-  	        <input type="radio" name="contact" value="NONE" ng-model="information.contact">
-  	         Over MIDATA platform only
-  	     </label>
-  	     </div>
-      }
-      @formrow("other", "Other") {
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" name="ssn" value="true" ng-model="information.ssn">
-            Social Security Number
-          </label>
-        </div>
-      }
+      }      
       @formrow("x", "") {
         <button type="submit" class="btn btn-primary">Change</button>
       }

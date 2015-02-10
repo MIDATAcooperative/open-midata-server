@@ -7,6 +7,13 @@
 	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 	   {{ error.message || error }}
 	</p>
+	<div>
+	Participant: {{ participation.memberName }}<br>
+	Gender: {{ participation.gender }}<br>
+	Year of Birth: {{ participation.yearOfBirth }}<br>
+	Country: {{ participation.country }}<br>
+	</div>
+	<div ng-show="member">
 	<address>	
 	  <strong>{{ member.firstname }} {{ member.sirname }}</strong><br>
 	{{ member.address1 }}<br>
@@ -16,6 +23,7 @@
 	  <span ng-show="member.phone">Phone: {{ member.phone }}</span><br>
 	  <span ng-show="member.mobile">Mobile: {{ member.mobile }}</span><br>
     </address>		
+    </div>
     <p>Status: {{ participation.status }}</p>
     <p>Group: {{ participation.group }}</p>	
     <div ng-show="participation.history.length">

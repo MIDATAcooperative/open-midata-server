@@ -12,15 +12,8 @@
 	<h2>Information that must be shared for participation</h2>
 	<div class="alert alert-info">
 	<ul>
-	  <li ng-show="!needs('FULLNAME')">An anonymized ID to identify you</li>
-	  <li ng-show="needs('FULLNAME')">Your name</li>
-	  <li ng-show="needs('GENDER')">Your gender</li>	  
-	  <li ng-show="needs('AGE') && !needs('BIRTHDAY')">Your age</li>
-	  <li ng-show="needs('BIRTHDAY')">Your birthday</li>
-	  <li ng-show="needs('ADDRESS')">Your full postal address</li>
-	  <li ng-show="needs('COUNTRY') && !needs('ADDRESS')">The country you live in</li>
-	  <li ng-show="needs('EMAIL')">Your email address</li>
-	  <li ng-show="needs('PHONE')">Your phone number</li>	  
+	  <li ng-show="needs('RESTRICTED')">Your gender, year of birth and country</li>
+	  <li ng-show="needs('FULLNAME')">Your name, birthday and contact information (address, email, phone)</li>	  	  
 	</ul>
 	</div>
 	<div ng-show="participation.history.length">
