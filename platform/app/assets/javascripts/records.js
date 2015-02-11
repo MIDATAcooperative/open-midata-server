@@ -12,6 +12,8 @@ records.controller('RecordsCtrl', ['$scope', '$http', 'filterService', 'dateServ
 	$scope.spaces = [];
 	$scope.loadingCircles = false;
 	$scope.circles = [];
+	$scope.loadingStudies = false;
+	$scope.participations = [];
 	
 	// get current user
 	$http(jsRoutes.controllers.Users.getCurrentUser()).
@@ -80,7 +82,7 @@ records.controller('RecordsCtrl', ['$scope', '$http', 'filterService', 'dateServ
 		// set filters if any are defined in the url
 		if (window.location.pathname.indexOf("filters") !== -1) {
 			var split = window.location.pathname.split("/");
-			for (var i = 3; i < split.length - 2; i += 3) {
+			for (var i = 4; i < split.length - 2; i += 3) {
 				var name = split[i];
 				var arg1 = split[i+1];
 				var arg2 = split[i+2];
@@ -203,6 +205,40 @@ records.controller('RecordsCtrl', ['$scope', '$http', 'filterService', 'dateServ
 		}
 	}
 	
+	// load study participation
+	$scope.loadStudies = function() {
+		if ($scope.participations.length === 0) {
+			$scope.loadingStudies = true;
+			//var properties = {"owner": $scope.userId};
+			//var fields = ["name", "shared", "order"];
+			//var data = {"properties": properties, "fields": fields};
+			$http.get(jsRoutes.controllers.members.Studies.list().url).
+				success(function(participations) {
+					$scope.error = null;
+					$scope.participations = participations;
+					$scope.loadingStudies = false;
+					prepareStudies();
+				}).
+				error(function(err) {
+					$scope.error = "Failed to load studies: " + err;
+					$scope.loadingStudies = false;
+				});
+		} else {
+			prepareStudies();
+		}
+	}
+	
+	// set checkbox variable 'checked' for circles that the currently active
+	// record is shared with
+	prepareStudies = function() {
+		_.each($scope.participations, function(participation) { participation.checked = false; });
+		var activeRecord = getActiveRecord();
+		if (activeRecord) {
+			var circlesWithRecord = _.filter($scope.circles, function(circle) { return containsRecord(circle.shared, activeRecord._id); });
+			_.each(circlesWithRecord, function(circle) { circle.checked = true; });
+		}
+	}
+	
 	// helper method for contains
 	containsRecord = function(recordIdList, recordId) {
 		var ids = _.map(recordIdList, function(element) { return element.$oid; });
@@ -294,7 +330,7 @@ createRecords.controller('CreateRecordsCtrl', ['$scope', '$http', '$sce', functi
 	$scope.error = null;
 	
 	// get app id (format: /records/create/:appId)
-	var appId = window.location.pathname.split("/")[3];
+	var appId = window.location.pathname.split("/")[4];
 	
 	// get app url
 	$http(jsRoutes.controllers.Apps.getUrl(appId)).
@@ -324,7 +360,7 @@ importRecords.controller('ImportRecordsCtrl', ['$scope', '$http', '$sce', functi
 	var userId = null;
 	
 	// get app id (format: /records/import/:appId)
-	var appId = window.location.pathname.split("/")[3];
+	var appId = window.location.pathname.split("/")[4];
 	
 	// get current user
 	$http(jsRoutes.controllers.Users.getCurrentUser()).

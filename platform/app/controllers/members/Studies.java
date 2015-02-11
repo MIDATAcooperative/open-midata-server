@@ -45,7 +45,7 @@ public class Studies extends APIController {
 	public static Result list() throws JsonValidationException, ModelException {
 	   ObjectId user = new ObjectId(request().username());
 	   
-	   Set<StudyParticipation> participation = StudyParticipation.getAllByMember(user, Sets.create("study","studyName", "status","history"));
+	   Set<StudyParticipation> participation = StudyParticipation.getAllByMember(user, Sets.create("study","studyName", "status"));
 	   
 	   return ok(Json.toJson(participation));
 	}

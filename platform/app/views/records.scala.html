@@ -56,6 +56,9 @@
 					<span class="label label-info">{{record.created.name}}</span>
 					<a href="javascript:;" ng-click="showDetails(record)">{{record.name}}</a>
 					<div class="pull-right">
+					    <button data-toggle="modal" data-target="#studiesModal" class="btn btn-sm btn-primary" ng-click="activate(record); loadStudies()">
+							<span class="glyphicon glyphicon-picture"></span>
+						</button>
 						<button data-toggle="modal" data-target="#spacesModal" class="btn btn-sm btn-primary" ng-click="activate(record); loadSpaces()">
 							<span class="glyphicon glyphicon-picture"></span>
 						</button>
@@ -117,6 +120,34 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateCircles()">Update</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>	
+	
+	    <!-- Research modal -->
+		<div class="modal fade" id="studiesModal" role="dialog" aria-labelledby="studyLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="studyLabel">Studies this record is shared with</h4>
+					</div>
+					<div class="modal-body">
+						<p ng-show="loadingStudies && participations.length === 0">Loading studies...</p>
+						<p ng-show="!loadingStudies && participations.length === 0">You do not participate in any study yet.</p>
+						<div ng-show="participations.length > 0">
+							<div class="checkbox" ng-repeat="participation in participations">
+								<label>
+									<input type="checkbox" name="{{participation._id.$oid}}" ng-model="participation.checked">
+									{{participation.studyName}}
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateStudies()">Update</button>
 						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 					</div>
 				</div>

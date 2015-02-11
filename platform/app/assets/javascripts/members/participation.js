@@ -52,7 +52,7 @@ participation.controller('ListStudiesCtrl', ['$scope', '$http', function($scope,
 }]);
 participation.controller('StudyDetailCtrl', ['$scope', '$http', function($scope, $http) {
 	
-	$scope.studyid = window.location.pathname.split("/")[2];
+	$scope.studyid = window.location.pathname.split("/")[3];
 	$scope.study = {};
 	$scope.participation = {};
 	$scope.loading = true;

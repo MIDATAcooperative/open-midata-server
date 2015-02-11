@@ -5,7 +5,7 @@ details.controller('RecordCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.record = {};
 	
 	// parse record id (format: /record/:id) and load the record
-	var recordId = window.location.pathname.split("/")[2];
+	var recordId = window.location.pathname.split("/")[3];
 	var properties = {"_id": {"$oid": recordId}};
 	var fields = ["name", "owner", "app", "creator", "created", "data"];
 	var data = {"properties": properties, "fields": fields};
@@ -53,7 +53,7 @@ details.controller('UserCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.user = {};
 	
 	// parse user id (format: /users/:id) and load the user details
-	var userId = window.location.pathname.split("/")[2];
+	var userId = window.location.pathname.split("/")[3];
 	var data = {"properties": {"_id": {"$oid": userId}}, "fields": ["name", "email"]};
 	$http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
 		success(function(users) { $scope.user = users[0]; }).
@@ -66,7 +66,7 @@ details.controller('MessageCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.message = {};
 	
 	// parse message id (format: /messages/:id) and load the app
-	var messageId = window.location.pathname.split("/")[2];
+	var messageId = window.location.pathname.split("/")[3];
 	var data = {"properties": {"_id": {"$oid": messageId}}, "fields": ["sender", "receivers", "created", "title", "content"]};
 	$http.post(jsRoutes.controllers.Messages.get().url, JSON.stringify(data)).
 		success(function(messages) {
@@ -109,7 +109,7 @@ details.controller('AppCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.app = {};
 	
 	// parse app id (format: /apps/:id) and load the app
-	var appId = window.location.pathname.split("/")[2];
+	var appId = window.location.pathname.split("/")[3];
 	var data = {"properties": {"_id": {"$oid": appId}}, "fields": ["name", "creator", "description"]};
 	$http.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
 		success(function(apps) {
@@ -159,7 +159,7 @@ details.controller('VisualizationCtrl', ['$scope', '$http', function($scope, $ht
 	$scope.visualization = {};
 	
 	// parse visualization id (format: /visualizations/:id) and load the visualization
-	var visualizationId = window.location.pathname.split("/")[2];
+	var visualizationId = window.location.pathname.split("/")[3];
 	var data = {"properties": {"_id": {"$oid": visualizationId}}, "fields": ["name", "creator", "description"]};
 	$http.post(jsRoutes.controllers.Visualizations.get().url, JSON.stringify(data)).
 		success(function(visualizations) {

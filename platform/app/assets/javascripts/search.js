@@ -9,7 +9,7 @@ search.controller('SearchCtrl', ['$scope', '$http', '$sce', function($scope, $ht
 	$scope.active = null;
 	
 	// get search query (format: /search/:query)
-	$scope.query = decodeURI(window.location.pathname.split("/")[2]);
+	$scope.query = decodeURI(window.location.pathname.split("/")[3]);
 	
 	// start search
 	$scope.loading = true;

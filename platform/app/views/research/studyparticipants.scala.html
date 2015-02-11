@@ -20,7 +20,7 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="participant in results">
-	      <td><a ng-href="/research/{{studyid}}/{{participant._id.$oid}}">{{ participant.memberName }}</a></td>	  
+	      <td><a ng-href="/research/studies/{{studyid}}/participants/{{participant._id.$oid}}">{{ participant.memberName }}</a></td>	  
 	      <td>{{ participant.group }}</td>
 	      <td>{{ participant.status }}</td>
 	      <td>{{ participant.recruiterName }}</td>

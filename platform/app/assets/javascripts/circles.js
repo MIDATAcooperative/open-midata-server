@@ -29,7 +29,7 @@ circles.controller('CirclesCtrl', ['$scope', '$http', function($scope, $http) {
 				$scope.circles = circles;
 				loadContacts();
 				if ($scope.circles.length > 0) {
-					var activeCircle = window.location.pathname.split("/")[2];
+					var activeCircle = window.location.pathname.split("/")[3];
 					if (activeCircle) {
 						$scope.makeActive(_.find($scope.circles, function(circle) { return circle._id.$oid === activeCircle; }));
 					} else {

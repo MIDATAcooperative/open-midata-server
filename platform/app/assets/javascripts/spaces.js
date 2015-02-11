@@ -27,7 +27,7 @@ spaces.controller('SpacesCtrl', ['$scope', '$http', '$sce', function($scope, $ht
 			success(function(spaces) {
 				$scope.spaces = spaces;
 				if ($scope.spaces.length > 0) {
-					var active = window.location.pathname.split("/")[2];
+					var active = window.location.pathname.split("/")[3];
 					if (active) {
 						$scope.makeActive(_.find($scope.spaces, function(space) { return space._id.$oid === active; }));
 					} else {

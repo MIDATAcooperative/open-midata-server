@@ -49,7 +49,7 @@ studies.controller('ListStudiesCtrl', ['$scope', '$http', function($scope, $http
 }]);
 studies.controller('OverviewCtrl', ['$scope', '$http', function($scope, $http) {
 	
-	$scope.studyid = window.location.pathname.split("/")[2];
+	$scope.studyid = window.location.pathname.split("/")[3];
 	$scope.study = {};
 	$scope.error = null;
 	$scope.loading = true;
@@ -143,7 +143,7 @@ studies.controller('OverviewCtrl', ['$scope', '$http', function($scope, $http) {
 }]);
 studies.controller('CodesCtrl', ['$scope', '$http', function($scope, $http) {
 	
-	$scope.studyid = window.location.pathname.split("/")[2];
+	$scope.studyid = window.location.pathname.split("/")[3];
 	$scope.codes = null;
 	$scope.newcodes = { count:1, reuseable:true, group:"" };
 	$scope.loading = true;
@@ -192,7 +192,7 @@ studies.controller('CodesCtrl', ['$scope', '$http', function($scope, $http) {
 }]);
 studies.controller('ListParticipantsCtrl', ['$scope', '$http', function($scope, $http) {
 	
-	$scope.studyid = window.location.pathname.split("/")[2];
+	$scope.studyid = window.location.pathname.split("/")[3];
 	$scope.results =[];
 	$scope.error = null;
 	$scope.loading = true;
@@ -253,8 +253,8 @@ studies.controller('ListParticipantsCtrl', ['$scope', '$http', function($scope, 
 }]);
 studies.controller('ParticipantCtrl', ['$scope', '$http', function($scope, $http) {
 	
-	$scope.studyid = window.location.pathname.split("/")[2];
-	$scope.memberid = window.location.pathname.split("/")[3];
+	$scope.studyid = window.location.pathname.split("/")[3];
+	$scope.memberid = window.location.pathname.split("/")[5];
 	$scope.member = {};
 	$scope.participation = {};
 	$scope.loading = true;
@@ -277,7 +277,7 @@ studies.controller('ParticipantCtrl', ['$scope', '$http', function($scope, $http
 }]);
 studies.controller('RequiredInformationCtrl', ['$scope', '$http', function($scope, $http) {
    $scope.information = {};
-   $scope.studyid = window.location.pathname.split("/")[2];	
+   $scope.studyid = window.location.pathname.split("/")[3];	
    $scope.error = null;
    $scope.loading = true;
    
