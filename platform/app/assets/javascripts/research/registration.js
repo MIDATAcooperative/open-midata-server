@@ -20,7 +20,7 @@ registration.controller('RegistrationCtrl', ['$scope', '$http', function($scope,
 		var data = $scope.registration;		
 		
 		$http.post(jsRoutes.controllers.research.Researchers.register().url, JSON.stringify(data)).
-			success(function(url) { window.location.replace(url); }).
+			success(function(url) { window.location.replace(portalRoutes.controllers.ResearchFrontend.messages().url); }).
 			error(function(err) {
 				$scope.error = err;
 				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);		

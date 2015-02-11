@@ -98,7 +98,7 @@ public class Market extends Controller {
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}
-		return ok(routes.Market.index().url());
+		return ok();
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
@@ -139,7 +139,7 @@ public class Market extends Controller {
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}
-		return ok(routes.Market.index().url());
+		return ok();
 	}
 
 }

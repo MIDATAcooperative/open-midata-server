@@ -86,7 +86,7 @@ public class Providers extends APIController {
 		session("role", "provider");
 		session("org", provider._id.toString());
 		
-		return ok(routes.ProviderFrontend.messages().url());
+		return ok();
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
@@ -111,7 +111,7 @@ public class Providers extends APIController {
 		session("id", user._id.toString());
 		session("role", "provider");
 		session("org", user.provider.toString());
-		return ok(routes.ProviderFrontend.messages().url());
+		return ok();
 	}
 	
 	@Security.Authenticated(ProviderSecured.class)

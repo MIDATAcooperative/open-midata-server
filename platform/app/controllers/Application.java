@@ -164,7 +164,7 @@ public class Application extends Controller {
 		session().clear();
 		session("id", user._id.toString());
 		session("role","member");
-		return ok(routes.News.index().url());
+		return ok();
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
@@ -232,7 +232,7 @@ public class Application extends Controller {
 		session().clear();
 		session("id", user._id.toString());
 		session("role","member");
-		return ok(routes.News.index().url());
+		return ok();
 	}
 
 	public static Result logout() {
@@ -245,7 +245,11 @@ public class Application extends Controller {
 		return ok(Routes.javascriptRouter(
 				"portalRoutes",
 				controllers.routes.javascript.ResearchFrontend.studyoverview(),
-				controllers.routes.javascript.MemberFrontend.studydetails()
+				controllers.routes.javascript.MemberFrontend.studydetails(),
+				controllers.routes.javascript.ProviderFrontend.messages(),
+				controllers.routes.javascript.ResearchFrontend.messages(),
+				controllers.routes.javascript.Market.index(),
+				controllers.routes.javascript.News.index()				
 				));
 	}
 	

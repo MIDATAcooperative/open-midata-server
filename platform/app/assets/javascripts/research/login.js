@@ -16,7 +16,7 @@ login.controller('LoginCtrl', ['$scope', '$http', function($scope, $http) {
 		// send the request
 		var data = {"email": $scope.login.email, "password": $scope.login.password};
 		$http.post(jsRoutes.controllers.research.Researchers.login().url, JSON.stringify(data)).
-			success(function(url) { window.location.replace(url); }).
+			success(function(url) { window.location.replace(portalRoutes.controllers.ResearchFrontend.messages().url); }).
 			error(function(err) { $scope.error = err; });
 	}
 	

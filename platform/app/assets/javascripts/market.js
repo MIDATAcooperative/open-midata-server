@@ -79,7 +79,7 @@ market.controller('RegisterAppCtrl', ['$scope', '$http', function($scope, $http)
 		
 		// send the request
 		$http.post(jsRoutes.controllers.Market.registerApp(type).url, data).
-			success(function(redirectUrl) { window.location.replace(redirectUrl); }).
+			success(function(redirectUrl) { window.location.replace(portalRoutes.controllers.Market.index().url); }).
 			error(function(err) { $scope.error = "Failed to register app: " + err; });
 	}
 	
@@ -111,7 +111,7 @@ market.controller('RegisterVisualizationCtrl', ['$scope', '$http', function($sco
 				"url": $scope.visualization.url
 		};
 		$http.post(jsRoutes.controllers.Market.registerVisualization().url, data).
-			success(function(redirectUrl) { window.location.replace(redirectUrl); }).
+			success(function(redirectUrl) { window.location.replace(portalRoutes.controllers.Market.index().url); }).
 			error(function(err) { $scope.error = "Failed to register visualization: " + err; });
 	}
 	

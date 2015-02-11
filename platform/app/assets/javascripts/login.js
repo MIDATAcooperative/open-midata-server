@@ -16,7 +16,7 @@ login.controller('LoginCtrl', ['$scope', '$http', function($scope, $http) {
 		// send the request
 		var data = {"email": $scope.login.email, "password": $scope.login.password};
 		$http.post(jsRoutes.controllers.Application.authenticate().url, JSON.stringify(data)).
-			success(function(url) { window.location.replace(url); }).
+			success(function(url) { window.location.replace(portalRoutes.controllers.News.index().url); }).
 			error(function(err) { $scope.error = err; });
 	};
 }]);
@@ -47,7 +47,7 @@ login.controller('RegistrationCtrl', ['$scope', '$http', function($scope, $http)
 		// send the request
 		var data = $scope.registration;		
 		$http.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data)).
-			success(function(url) { window.location.replace(url); }).
+			success(function(url) { window.location.replace(portalRoutes.controllers.News.index().url); }).
 			error(function(err) { 
 				$scope.error = err;
 				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);				

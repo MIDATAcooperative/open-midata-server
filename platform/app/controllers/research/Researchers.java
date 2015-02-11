@@ -80,7 +80,7 @@ public class Researchers extends APIController {
 		session("role", "research");
 		session("org", research._id.toString());
 		
-		return ok(routes.ResearchFrontend.messages().url());
+		return ok();
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
@@ -105,7 +105,7 @@ public class Researchers extends APIController {
 		session("id", user._id.toString());
 		session("role", "research");
 		session("org", user.organization.toString());
-		return ok(routes.ResearchFrontend.messages().url());
+		return ok();
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
