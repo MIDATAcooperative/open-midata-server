@@ -31,12 +31,12 @@
 			
 			<!-- Show/share all records passing the filter -->
 			<div class="pull-right">
-				<button data-toggle="modal" data-target="#spacesModal" class="btn btn-primary" ng-click="activate(); loadSpaces()">
+				<button data-toggle="modal" data-target="#spacesModal" class="btn btn-primary" ng-click="activate(); loadShared('spaces')">
 					<span class="glyphicon glyphicon-picture"></span>
 					<span ng-show="filters[0].current.length">Show these</span>
 					<span ng-hide="filters[0].current.length">Show all</span>
 				</button>
-				<button data-toggle="modal" data-target="#circlesModal" class="btn btn-primary" ng-click="activate(); loadCircles()">
+				<button data-toggle="modal" data-target="#circlesModal" class="btn btn-primary" ng-click="activate(); loadShared('circles')">
 					<span class="glyphicon glyphicon-share"></span>
 					<span ng-show="filters[0].current.length">Share these</span>
 					<span ng-hide="filters[0].current.length">Share all</span>
@@ -56,13 +56,13 @@
 					<span class="label label-info">{{record.created.name}}</span>
 					<a href="javascript:;" ng-click="showDetails(record)">{{record.name}}</a>
 					<div class="pull-right">
-					    <button data-toggle="modal" data-target="#studiesModal" class="btn btn-sm btn-primary" ng-click="activate(record); loadStudies()">
+					    <button data-toggle="modal" data-target="#studiesModal" class="btn btn-sm btn-primary" ng-class="{'disabled': !isOwnRecord(record)}" ng-click="activate(record); loadShared('participations')">
 							<span class="glyphicon glyphicon-picture"></span>
 						</button>
-						<button data-toggle="modal" data-target="#spacesModal" class="btn btn-sm btn-primary" ng-click="activate(record); loadSpaces()">
+						<button data-toggle="modal" data-target="#spacesModal" class="btn btn-sm btn-primary" ng-click="activate(record); loadShared('spaces')">
 							<span class="glyphicon glyphicon-picture"></span>
 						</button>
-						<button data-toggle="modal" data-target="#circlesModal" class="btn btn-sm btn-primary" ng-class="{'disabled': !isOwnRecord(record)}" ng-click="activate(record); loadCircles()">
+						<button data-toggle="modal" data-target="#circlesModal" class="btn btn-sm btn-primary" ng-class="{'disabled': !isOwnRecord(record)}" ng-click="activate(record); loadShared('circles')">
 							<span class="glyphicon glyphicon-share"></span>
 						</button>
 					</div>
@@ -79,8 +79,8 @@
 						<h4 class="modal-title" id="spacesLabel">Spaces this record is shown in</h4>
 					</div>
 					<div class="modal-body">
-						<p ng-show="loadingSpaces && spaces.length === 0">Loading spaces...</p>
-						<p ng-show="!loadingSpaces && spaces.length === 0">You have no spaces yet. Go to <a href="@routes.Spaces.index()">your spaces</a> to create one.</p>
+						<p ng-show="loadingSharing && spaces.length === 0">Loading spaces...</p>
+						<p ng-show="!loadingSharing && spaces.length === 0">You have no spaces yet. Go to <a href="@routes.Spaces.index()">your spaces</a> to create one.</p>
 						<div ng-show="spaces.length > 0">
 							<div class="checkbox" ng-repeat="space in spaces">
 								<label>
@@ -91,7 +91,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateSpaces()">Update</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateShared('spaces')">Update</button>
 						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 					</div>
 				</div>
@@ -107,8 +107,8 @@
 						<h4 class="modal-title" id="circlesLabel">Circles this record is shared with</h4>
 					</div>
 					<div class="modal-body">
-						<p ng-show="loadingCircles && circles.length === 0">Loading circles...</p>
-						<p ng-show="!loadingCircles && circles.length === 0">You have no circles yet. Go to <a href="@routes.Circles.index()">your circles</a> to create one.</p>
+						<p ng-show="loadingSharing && circles.length === 0">Loading circles...</p>
+						<p ng-show="!loadingSharing && circles.length === 0">You have no circles yet. Go to <a href="@routes.Circles.index()">your circles</a> to create one.</p>
 						<div ng-show="circles.length > 0">
 							<div class="checkbox" ng-repeat="circle in circles">
 								<label>
@@ -119,7 +119,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateCircles()">Update</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateShared('circles')">Update</button>
 						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 					</div>
 				</div>
@@ -135,8 +135,8 @@
 						<h4 class="modal-title" id="studyLabel">Studies this record is shared with</h4>
 					</div>
 					<div class="modal-body">
-						<p ng-show="loadingStudies && participations.length === 0">Loading studies...</p>
-						<p ng-show="!loadingStudies && participations.length === 0">You do not participate in any study yet.</p>
+						<p ng-show="loadingSharing && participations.length === 0">Loading studies...</p>
+						<p ng-show="!loadingSharing && participations.length === 0">You do not participate in any study yet.</p>
 						<div ng-show="participations.length > 0">
 							<div class="checkbox" ng-repeat="participation in participations">
 								<label>
@@ -147,7 +147,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateStudies()">Update</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateShared('participations')">Update</button>
 						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 					</div>
 				</div>

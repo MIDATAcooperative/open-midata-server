@@ -5,8 +5,10 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 
+import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
+import utils.collections.Sets;
 import utils.db.DatabaseException;
 import utils.db.OrderOperations;
 import utils.search.Search;
@@ -20,7 +22,8 @@ public class Circle extends Model implements Comparable<Circle> {
 	public String name;
 	public int order;
 	public Set<ObjectId> members;
-	public Set<ObjectId> shared; // records shared with this circle
+	public ObjectId aps;
+	//public Set<ObjectId> shared; // records shared with this circle
 
 	@Override
 	public int compareTo(Circle other) {
@@ -34,13 +37,30 @@ public class Circle extends Model implements Comparable<Circle> {
 	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
 		return Model.exists(Circle.class, collection, properties);
 	}
+	
+	public static boolean existsByOwnerAndName(ObjectId owner, String name) throws ModelException {
+		return Model.exists(Circle.class, collection, CMaps.map("owner", owner).map("name", name));
+	}
 
 	public static Circle get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
 		return Model.get(Circle.class, collection, properties, fields);
 	}
+	
+	public static Circle getByIdAndOwner(ObjectId circleId, ObjectId ownerId, Set<String> fields) throws ModelException {
+		return Model.get(Circle.class, collection, CMaps.map("_id", circleId).map("owner", ownerId), fields);
+	}
+
 
 	public static Set<Circle> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
 		return Model.getAll(Circle.class, collection, properties, fields);
+	}
+	
+	public static Set<Circle> getAllByOwner(ObjectId owner) throws ModelException {
+		return Model.getAll(Circle.class, collection, CMaps.map("owner", owner), Sets.create("name", "members", "order", "aps"));
+	}
+	
+	public static Set<Circle> getAllByMember(ObjectId member) throws ModelException {
+		return Model.getAll(Circle.class, collection, CMaps.map("members", member), Sets.create("name", "aps", "order"));
 	}
 
 	public static void set(ObjectId circleId, String field, Object value) throws ModelException {

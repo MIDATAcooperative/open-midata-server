@@ -6,12 +6,12 @@ details.controller('RecordCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	// parse record id (format: /record/:id) and load the record
 	var recordId = window.location.pathname.split("/")[3];
-	var properties = {"_id": {"$oid": recordId}};
-	var fields = ["name", "owner", "app", "creator", "created", "data"];
-	var data = {"properties": properties, "fields": fields};
+	var data = {"_id": recordId };
+	//var fields = ["name", "owner", "app", "creator", "created", "data"];
+	// var data = {"properties": properties, "fields": fields};
 	$http.post(jsRoutes.controllers.Records.get().url, JSON.stringify(data)).
 		success(function(records) {
-			$scope.record = records[0];
+			$scope.record = records;
 			$scope.record.json = JSON.stringify($scope.record.data, null, "\t");
 			if (_.has($scope.record.data, "type") && $scope.record.data.type === "file") {
 				$scope.downloadLink = jsRoutes.controllers.Records.getFile(recordId).url;
@@ -109,7 +109,7 @@ details.controller('AppCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.app = {};
 	
 	// parse app id (format: /apps/:id) and load the app
-	var appId = window.location.pathname.split("/")[3];
+	var appId = window.location.pathname.split("/")[2];
 	var data = {"properties": {"_id": {"$oid": appId}}, "fields": ["name", "creator", "description"]};
 	$http.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
 		success(function(apps) {
@@ -159,7 +159,7 @@ details.controller('VisualizationCtrl', ['$scope', '$http', function($scope, $ht
 	$scope.visualization = {};
 	
 	// parse visualization id (format: /visualizations/:id) and load the visualization
-	var visualizationId = window.location.pathname.split("/")[3];
+	var visualizationId = window.location.pathname.split("/")[2];
 	var data = {"properties": {"_id": {"$oid": visualizationId}}, "fields": ["name", "creator", "description"]};
 	$http.post(jsRoutes.controllers.Visualizations.get().url, JSON.stringify(data)).
 		success(function(visualizations) {

@@ -47,6 +47,13 @@ public class DatabaseConversion {
 			}
 			return result;
 		}		
+		if (inp instanceof Map) {
+			Map result = new HashMap();
+			for (Object key : ((Map) inp).keySet()) {
+				result.put(key, todb(((Map) inp).get(key)));
+			}
+			return result;
+		}
 		return inp;
 	}
 	
@@ -118,7 +125,7 @@ public class DatabaseConversion {
 	/**
 	 * Converts an object retrieved from the database to the corresponding type.
 	 */
-	private Object convert(Class model, String path, Type type, Object value) {
+	private Object convert(Class model, String path, Type type, Object value) throws DatabaseConversionException {
 		
 		if (type instanceof ParameterizedType) {
 			ParameterizedType parameterizedType = (ParameterizedType) type;			
@@ -130,20 +137,26 @@ public class DatabaseConversion {
 				return convertToList(model, path, type, value);
 			}
 		}
+		/*if (type instanceof Class) {
+			Class c = (Class) type;
+			if (JsonSerializable.class.isAssignableFrom(c)) {
+			  return toModel(c, (DBObject) value);
+			}
+		}*/
 		return value;
 	}
 
 	/**
 	 * Converts a BasicDBObject into a map (keys are always strings because of JSON serialization).
 	 */
-	private Map<String, Object> convertToMap(Class model, String path, Type type, Object value) {
+	private Map<String, Object> convertToMap(Class model, String path, Type type, Object value) throws DatabaseConversionException {
 		BasicDBObject dbObject = (BasicDBObject) value;
 		if (type instanceof ParameterizedType) {
 			Type valueType = ((ParameterizedType) type).getActualTypeArguments()[1];
 			Map<String, Object> map = new HashMap<String, Object>();
 			for (String key : dbObject.keySet()) {
 				String fullpath = path+"."+key;
-				map.put(key, convert(model, fullpath, valueType, decrypt(model, fullpath, Object.class, dbObject.get(key))));
+				map.put(key, convert(model, fullpath, valueType, decrypt(model, fullpath, (Class<?>) valueType, dbObject.get(key))));
 			}
 			return map;
 		} else {
@@ -154,7 +167,7 @@ public class DatabaseConversion {
 	/**
 	 * Converts a BasicDBList into a set.
 	 */
-	private Set<Object> convertToSet(Class model, String path, Type type, Object value) {
+	private Set<Object> convertToSet(Class model, String path, Type type, Object value) throws DatabaseConversionException {
 		BasicDBList dbList = (BasicDBList) value;
 		if (type instanceof ParameterizedType) {
 			Type valueType = ((ParameterizedType) type).getActualTypeArguments()[0];
@@ -173,14 +186,14 @@ public class DatabaseConversion {
 	/**
 	 * Converts a BasicDBList into a list.
 	 */
-	private List<Object> convertToList(Class model, String path, Type type, Object value) {
+	private List<Object> convertToList(Class model, String path, Type type, Object value) throws DatabaseConversionException {
 		BasicDBList dbList = (BasicDBList) value;
 		if (type instanceof ParameterizedType) {
 			Type valueType = ((ParameterizedType) type).getActualTypeArguments()[0];
 			List<Object> list = new ArrayList<Object>();
 			String fullpath = path+"[]";
 			for (Object element : dbList) {
-				list.add(convert(model, fullpath, valueType, decrypt(model, fullpath,  Object.class, element)));
+				list.add(convert(model, fullpath, valueType, decrypt(model, fullpath,  (Class<?>) valueType, element)));
 			}
 			return list;
 		} else {

@@ -5,7 +5,9 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 
+import utils.collections.CMaps;
 import utils.collections.ChainedMap;
+import utils.collections.Sets;
 import utils.search.Search;
 import utils.search.SearchException;
 
@@ -41,9 +43,17 @@ public class Record extends Model implements Comparable<Record> {
 	public static Record get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
 		return Model.get(Record.class, collection, properties, fields);
 	}
+	
+	public static Record getById(ObjectId id) throws ModelException {
+		return Model.get(Record.class, collection, CMaps.map("_id", id), Sets.create("name", "owner", "app", "creator", "created", "data"));
+	}
 
 	public static Set<Record> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
 		return Model.getAll(Record.class, collection, properties, fields);
+	}
+	
+	public static Set<Record> getAllByIds(Set<ObjectId> ids, Set<String> fields) throws ModelException {
+		return Model.getAll(Record.class, collection, CMaps.map("_id", ids), fields);
 	}
 
 	public static void set(ObjectId recordId, String field, Object value) throws ModelException {

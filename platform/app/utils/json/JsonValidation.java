@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.bson.types.ObjectId;
+
 import models.enums.Gender;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,6 +26,10 @@ public class JsonValidation {
 	
 	public static String getString(JsonNode json, String field) {
 		return json.path(field).asText();
+	}
+	
+	public static ObjectId getObjectId(JsonNode json, String field) {
+		return new ObjectId(json.path(field).asText());
 	}
 	
 	public static int getInteger(JsonNode json, String field, int lowest, int highest) throws JsonValidationException {

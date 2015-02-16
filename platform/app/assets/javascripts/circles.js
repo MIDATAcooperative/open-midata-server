@@ -20,10 +20,9 @@ circles.controller('CirclesCtrl', ['$scope', '$http', function($scope, $http) {
 		});
 	
 	// get circles and make either given or first circle active
-	loadCircles = function(userId) {
-		var properties = {"owner": userId};
-		var fields = ["name", "members", "order"];
-		var data = {"properties": properties, "fields": fields};
+	loadCircles = function(userId) {		
+		//var fields = ["name", "members", "order"];
+		var data = {"owner": userId.$oid};
 		$http.post(jsRoutes.controllers.Circles.get().url, JSON.stringify(data)).
 			success(function(circles) {
 				$scope.circles = circles;

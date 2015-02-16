@@ -26,7 +26,8 @@ public class StudyParticipation extends Model {
 	public String recruiterName; // replication of recruiter name
 	public Set<ObjectId> providers; // (Optional) List of healthcare providers monitoring the member for this study.
 	public List<History> history; // History of participation process
-	public Set<ObjectId> shared; // Records of member shared for this study
+	public ObjectId aps;
+	//public Set<ObjectId> shared; // Records of member shared for this study
 	
 	public int yearOfBirth;
 	public String country;
@@ -42,6 +43,10 @@ public class StudyParticipation extends Model {
 	
 	public static Set<StudyParticipation> getParticipantsByStudy(ObjectId study, Set<String> fields) throws ModelException {
 		return Model.getAll(StudyParticipation.class, collection, CMaps.map("study", study).map("status", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST, ParticipationStatus.RESEARCH_REJECTED)), fields);
+	}
+	
+	public static StudyParticipation getById(ObjectId id, Set<String> fields) throws ModelException {
+		return Model.get(StudyParticipation.class, collection, CMaps.map("_id", id), fields);
 	}
 	
 	public static StudyParticipation getByStudyAndMember(ObjectId study, ObjectId member, Set<String> fields) throws ModelException {

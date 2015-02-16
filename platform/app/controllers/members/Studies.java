@@ -32,6 +32,7 @@ import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
 import play.libs.Json;
 import controllers.APIController;
+import controllers.RecordSharing;
 import controllers.Secured;
 import controllers.research.ResearchSecured;
 
@@ -103,7 +104,7 @@ public class Studies extends APIController {
 		part.country = user.country;
 		
 		part.history = new ArrayList<History>();
-		part.shared = new HashSet<ObjectId>();
+		part.aps = RecordSharing.instance.createAnonymizedAPS(userId, study.owner);
 		
 		History codedentererd = new History(EventType.CODE_ENTERED, part, null); 
 		part.history.add(codedentererd);

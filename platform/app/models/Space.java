@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 
+import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.db.DatabaseException;
@@ -20,7 +21,8 @@ public class Space extends Model implements Comparable<Space> {
 	public ObjectId owner;
 	public ObjectId visualization;
 	public int order;
-	public Set<ObjectId> records;
+	public ObjectId aps;
+	//public Set<ObjectId> records;
 
 	@Override
 	public int compareTo(Space other) {
@@ -34,13 +36,25 @@ public class Space extends Model implements Comparable<Space> {
 	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
 		return Model.exists(Space.class, collection, properties);
 	}
+	
+	public static boolean existsByNameAndOwner(String name, ObjectId ownerId) throws ModelException {
+		return Model.exists(Space.class, collection, CMaps.map("name", name).map("owner", ownerId));
+	}
 
 	public static Space get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
 		return Model.get(Space.class, collection, properties, fields);
 	}
-
+	
+	public static Space getByIdAndOwner(ObjectId spaceId, ObjectId ownerId, Set<String> fields) throws ModelException {
+		return Model.get(Space.class, collection, CMaps.map("_id", spaceId).map("owner", ownerId), fields);
+	}
+	
 	public static Set<Space> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
 		return Model.getAll(Space.class, collection, properties, fields);
+	}
+	
+	public static Set<Space> getAllByOwner(ObjectId owner, Set<String> fields) throws ModelException {
+		return Model.getAll(Space.class, collection, CMaps.map("owner", owner), fields);
 	}
 
 	public static void set(ObjectId spaceId, String field, Object value) throws ModelException {

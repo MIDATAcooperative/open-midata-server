@@ -19,7 +19,7 @@ public class Member extends User {
 
 	private static final String collection = "users";
 	
-	public Map<String, Set<ObjectId>> visible; // map from users (DBObject requires string) to their shared records
+	//public Map<String, Set<ObjectId>> visible; // map from users (DBObject requires string) to their shared records
 	public Set<ObjectId> apps; // installed apps
 	public Map<String, Map<String, String>> tokens; // map from apps to app details
 	public Set<ObjectId> visualizations; // installed visualizations
@@ -32,6 +32,7 @@ public class Member extends User {
 	public Date birthday;
 	public String ssn; // social security number
 	public ParticipationInterest partInterest;
+	public ObjectId myaps;
 	
 	
 	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
@@ -48,6 +49,10 @@ public class Member extends User {
 	
 	public static Member getById(ObjectId id, Set<String> fields) throws ModelException {
 		return Model.get(Member.class, collection, CMaps.map("_id", id), fields);
+	}
+	
+	public static Member getByIdAndApp(ObjectId id, ObjectId appId, Set<String> fields) throws ModelException {
+		return Model.get(Member.class, collection, CMaps.map("_id", id).map("apps", appId), fields);
 	}
 	
 	public static Member getByMidataIDAndBirthday(String midataID, Date birthday, Set<String> fields) throws ModelException {

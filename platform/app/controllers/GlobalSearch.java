@@ -45,7 +45,7 @@ public class GlobalSearch extends Controller {
 		} catch (ModelException e) {
 			return internalServerError(e.getMessage());
 		}
-		Map<String, List<SearchResult>> searchResults = Search.search(userId, user.visible, query);
+		Map<String, List<SearchResult>> searchResults = null; /* TODO Search.search(userId, user.visible, query); */
 		return ok(Json.toJson(searchResults));
 	}
 

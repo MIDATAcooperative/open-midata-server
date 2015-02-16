@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import models.Member;
 import models.ModelException;
 import models.Space;
 
@@ -20,11 +21,14 @@ import play.mvc.Security;
 import utils.auth.SpaceToken;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
+import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import views.html.spaces;
+
+import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -40,14 +44,13 @@ public class Spaces extends Controller {
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result get() {
+	@APICall
+	public static Result get() throws JsonValidationException {
 		// validate json
 		JsonNode json = request().body().asJson();
-		try {
-			JsonValidation.validate(json, "properties", "fields");
-		} catch (JsonValidationException e) {
-			return badRequest(e.getMessage());
-		}
+		
+		JsonValidation.validate(json, "properties", "fields");
+		
 
 		// get spaces
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
@@ -63,27 +66,23 @@ public class Spaces extends Controller {
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result add() {
+	@APICall
+	public static Result add() throws JsonValidationException, ModelException {
 		// validate json
 		JsonNode json = request().body().asJson();
-		try {
-			JsonValidation.validate(json, "name", "visualization");
-		} catch (JsonValidationException e) {
-			return badRequest(e.getMessage());
-		}
+		
+		JsonValidation.validate(json, "name", "visualization");
+		
 
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
 		String name = json.get("name").asText();
 		String visualizationIdString = json.get("visualization").asText();
-		try {
-			if (Space.exists(new ChainedMap<String, Object>().put("owner", userId).put("name", name).get())) {
-				return badRequest("A space with this name already exists.");
-			}
-		} catch (ModelException e) {
-			return internalServerError(e.getMessage());
+		
+		if (Space.existsByNameAndOwner(name, userId)) {
+			return badRequest("A space with this name already exists.");
 		}
-
+		
 		// create new space
 		Space space = new Space();
 		space._id = new ObjectId();
@@ -91,85 +90,75 @@ public class Spaces extends Controller {
 		space.name = name;
 		space.order = Space.getMaxOrder(userId) + 1;
 		space.visualization = new ObjectId(visualizationIdString);
-		space.records = new HashSet<ObjectId>();
-		try {
-			Space.add(space);
-		} catch (ModelException e) {
-			return badRequest(e.getMessage());
-		}
+		space.aps = RecordSharing.instance.createPrivateAPS(userId);
+		
+		Space.add(space);
+		
 		return ok(Json.toJson(space));
 	}
 
-	public static Result delete(String spaceIdString) {
+	@APICall
+	public static Result delete(String spaceIdString) throws ModelException {
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId spaceId = new ObjectId(spaceIdString);
-		try {
-			if (!Space.exists(new ChainedMap<String, ObjectId>().put("_id", spaceId).put("owner", userId).get())) {
-				return badRequest("No space with this id exists.");
-			}
-		} catch (ModelException e) {
-			return internalServerError(e.getMessage());
+		
+		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps"));
+		
+		if (space == null) {
+			return badRequest("No space with this id exists.");
 		}
+		
+		RecordSharing.instance.deleteAPS(space.aps, userId);
 
-		// delete space
-		try {
-			Space.delete(userId, spaceId);
-		} catch (ModelException e) {
-			return badRequest(e.getMessage());
-		}
+		// delete space		
+		Space.delete(userId, spaceId);
+		
 		return ok();
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result addRecords(String spaceIdString) {
+	@APICall
+	public static Result addRecords(String spaceIdString) throws JsonValidationException, ModelException {
 		// validate json
 		JsonNode json = request().body().asJson();
-		try {
-			JsonValidation.validate(json, "records");
-		} catch (JsonValidationException e) {
-			return badRequest(e.getMessage());
-		}
-
+		
+		JsonValidation.validate(json, "records");
+		
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId spaceId = new ObjectId(spaceIdString);
-		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", spaceId).put("owner", userId).get();
-		try {
-			if (!Space.exists(properties)) {
-				return badRequest("No space with this id exists.");
-			}
-		} catch (ModelException e) {
-			return internalServerError(e.getMessage());
+		
+		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps"));
+		Member owner = Member.getById(userId, Sets.create("myaps"));
+		if (owner == null) {
+			return badRequest("Member does not exist");
+		}		
+		if (space == null) {
+			return badRequest("No space with this id exists.");
 		}
-
+		
 		// add records to space (implicit: if not already present)
 		Set<ObjectId> recordIds = ObjectIdConversion.castToObjectIds(JsonExtraction.extractSet(json.get("records")));
-		Set<String> fields = new ChainedSet<String>().add("records").get();
-		try {
-			Space space = Space.get(properties, fields);
-			space.records.addAll(recordIds);
-			Space.set(space._id, "records", space.records);
-		} catch (ModelException e) {
-			return badRequest(e.getMessage());
-		}
+		
+		RecordSharing.instance.share(userId, owner.myaps, space.aps, recordIds, true);
+						
 		return ok();
 	}
 
-	public static Result getToken(String spaceIdString) {
+	@APICall
+	public static Result getToken(String spaceIdString) throws ModelException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId spaceId = new ObjectId(spaceIdString);
-		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", spaceId).put("owner", userId).get();
-		try {
-			if (!Space.exists(properties)) {
-				return badRequest("No space with this id exists.");
-			}
-		} catch (ModelException e) {
-			return internalServerError(e.getMessage());
+		
+		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps"));
+		
+		if (space==null) {
+		  return badRequest("No space with this id exists.");
 		}
 
 		// create encrypted authToken
-		SpaceToken spaceToken = new SpaceToken(spaceId, userId);
+		SpaceToken spaceToken = new SpaceToken(space.aps, userId);
 		return ok(spaceToken.encrypt());
 	}
 }

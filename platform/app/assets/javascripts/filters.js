@@ -156,7 +156,7 @@ filters.factory('filterService', ['$rootScope', '$http', '$q', '$timeout', 'date
 	// get the user's circles and sort them by name
 	getCircles = function() {
 		var deferred = $q.defer();
-		var data = {"properties": {"owner": userId}, "fields": ["name", "members"]};
+		var data = {"owner": userId.$oid};
 		$http.post(jsRoutes.controllers.Circles.get().url, JSON.stringify(data)).
 			success(function(circles) { deferred.resolve(_.sortBy(circles, "name")); }).
 			error(function(err) { deferred.reject("Failed to load user's circles: " + err); });

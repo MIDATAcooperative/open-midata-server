@@ -140,6 +140,7 @@ public class Users extends Controller {
 	/**
 	 * Make the owner's records visible to a set of users.
 	 */
+	/*
 	static void makeVisible(ObjectId ownerId, Set<ObjectId> recordIds, Set<ObjectId> userIds) throws ModelException {
 		// get the visible fields for the owner from all users
 		Map<String, Set<ObjectId>> properties = new ChainedMap<String, Set<ObjectId>>().put("_id", userIds).get();
@@ -166,22 +167,22 @@ public class Users extends Controller {
 				Member.set(user._id, "shared", user.shared);
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Make the owner's records invisible to a set of users, if these records are not shared with them via another circle.
-	 */
+	 *//*
 	static void makeInvisible(ObjectId ownerId, Set<ObjectId> recordIds, Set<ObjectId> userIds) throws ModelException {
 		// get the owner's circles
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("owner", ownerId).get();
 		Set<String> fields = new ChainedSet<String>().add("members").add("shared").get();
 		Set<Circle> circles = Circle.getAll(properties, fields);
 		Users.makeInvisible(ownerId, recordIds, userIds, circles);
-	}
+	}*/
 
 	/**
 	 * Use this if the owner's circles have already been loaded.
-	 */
+	 *//*
 	static void makeInvisible(ObjectId ownerId, Set<ObjectId> recordIds, Set<ObjectId> userIds, Set<Circle> circles) throws ModelException {
 		for (ObjectId userId : userIds) {
 			// get the records that are still shared with this user
@@ -209,7 +210,7 @@ public class Users extends Controller {
 				}
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Add a record to the list of pushed records of the given user.

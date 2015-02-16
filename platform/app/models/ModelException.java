@@ -7,5 +7,9 @@ public class ModelException extends Exception {
 	public ModelException(Throwable cause) {
 		super(cause);
 	}
+	
+	public ModelException(String msg) {
+		super(msg);
+	}
 
 }

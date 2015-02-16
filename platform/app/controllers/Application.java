@@ -214,7 +214,9 @@ public class Application extends Controller {
 		user.confirmationCode = CodeGenerator.nextCode();
 		user.partInterest = ParticipationInterest.UNSET;
 		
-		user.visible = new HashMap<String, Set<ObjectId>>();
+		//user.visible = new HashMap<String, Set<ObjectId>>();
+		user.myaps = RecordSharing.instance.createPrivateAPS(user._id);
+		
 		user.apps = new HashSet<ObjectId>();
 		user.tokens = new HashMap<String, Map<String, String>>();
 		user.visualizations = new HashSet<ObjectId>();
@@ -297,11 +299,9 @@ public class Application extends Controller {
 				controllers.routes.javascript.Records.importRecords(),
 				controllers.routes.javascript.Records.get(),
 				controllers.routes.javascript.Records.getVisibleRecords(),
-				controllers.routes.javascript.Records.search(),
-				controllers.routes.javascript.Records.updateSpaces(),
-				controllers.routes.javascript.Records.updateSharing(),
-				controllers.routes.javascript.Records.showInSpaces(),
-				controllers.routes.javascript.Records.shareWithCircles(),
+				controllers.routes.javascript.Records.getSharingInfo(),
+				controllers.routes.javascript.Records.search(),				
+				controllers.routes.javascript.Records.updateSharing(),				
 				controllers.routes.javascript.Records.getFile(),
 				// Circles
 				controllers.routes.javascript.Circles.get(),

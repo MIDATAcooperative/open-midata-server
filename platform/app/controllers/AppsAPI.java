@@ -30,10 +30,13 @@ import utils.DateTimeUtils;
 import utils.auth.AppToken;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
+import utils.collections.Sets;
 import utils.db.DatabaseException;
 import utils.db.FileStorage;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+
+import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mongodb.BasicDBObject;
@@ -54,34 +57,27 @@ public class AppsAPI extends Controller {
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result createRecord() {
+	@APICall
+	public static Result createRecord() throws ModelException, JsonValidationException {
 		// allow cross origin request from app server
 		String appServer = Play.application().configuration().getString("apps.server");
 		response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
 
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();
-		try {
-			JsonValidation.validate(json, "authToken", "data", "name", "description");
-		} catch (JsonValidationException e) {
-			return badRequest(e.getMessage());
-		}
+		
+		JsonValidation.validate(json, "authToken", "data", "name", "description");
+		
 
 		// decrypt authToken and check whether a user exists who has the app installed
 		AppToken appToken = AppToken.decrypt(json.get("authToken").asText());
 		if (appToken == null) {
 			return badRequest("Invalid authToken.");
 		}
-		Map<String, ObjectId> userProperties = new ChainedMap<String, ObjectId>().put("_id", appToken.userId).put("apps", appToken.appId)
-				.get();
-		try {
-			if (!Member.exists(userProperties)) {
-				return badRequest("Invalid authToken.");
-			}
-		} catch (ModelException e) {
-			return badRequest(e.getMessage());
-		}
-
+		
+		Member owner = Member.getByIdAndApp(appToken.userId, appToken.appId, Sets.create("myaps"));
+		if (owner == null) return badRequest("Invalid authToken.");
+				
 		// save new record with additional metadata
 		if (!json.get("data").isTextual() || !json.get("name").isTextual() || !json.get("description").isTextual()) {
 			return badRequest("At least one request parameter is of the wrong type.");
@@ -102,11 +98,9 @@ public class AppsAPI extends Controller {
 		}
 		record.name = name;
 		record.description = description;
-		try {
-			Record.add(record);
-		} catch (ModelException e) {
-			return badRequest(e.getMessage());
-		}
+		
+		RecordSharing.instance.addRecord(owner, record);
+		
 		return ok();
 	}
 
@@ -133,40 +127,36 @@ public class AppsAPI extends Controller {
 		if (appToken == null) {
 			return badRequest("Invalid authToken.");
 		}
-		Map<String, ObjectId> userProperties = new ChainedMap<String, ObjectId>().put("_id", appToken.userId).put("apps", appToken.appId)
-				.get();
+				
 		try {
-			if (!Member.exists(userProperties)) {
-				return badRequest("Invalid authToken.");
+			Member owner = Member.getByIdAndApp(appToken.userId, appToken.appId, Sets.create("myaps"));
+			if (owner == null) return badRequest("Invalid authToken.");
+			
+					
+			// extract file from data
+			FilePart fileData = formData.getFile("file");
+			if (fileData == null) {
+				return badRequest("No file found.");
 			}
-		} catch (ModelException e) {
-			return badRequest(e.getMessage());
-		}
-
-		// extract file from data
-		FilePart fileData = formData.getFile("file");
-		if (fileData == null) {
-			return badRequest("No file found.");
-		}
-		File file = fileData.getFile();
-		String filename = fileData.getFilename();
-		String contentType = fileData.getContentType();
-
-		// create record
-		Record record = new Record();
-		record._id = new ObjectId();
-		record.app = appToken.appId;
-		record.owner = appToken.userId;
-		record.creator = appToken.userId;
-		record.created = DateTimeUtils.now();
-		record.name = metaData.get("name")[0];
-		record.description = metaData.get("description")[0];
-		record.data = new BasicDBObject(new ChainedMap<String, String>().put("type", "file").put("name", filename)
-				.put("contentType", contentType).get());
+			File file = fileData.getFile();
+			String filename = fileData.getFilename();
+			String contentType = fileData.getContentType();
+	
+			// create record
+			Record record = new Record();
+			record._id = new ObjectId();
+			record.app = appToken.appId;
+			record.owner = appToken.userId;
+			record.creator = appToken.userId;
+			record.created = DateTimeUtils.now();
+			record.name = metaData.get("name")[0];
+			record.description = metaData.get("description")[0];
+			record.data = new BasicDBObject(new ChainedMap<String, String>().put("type", "file").put("name", filename)
+					.put("contentType", contentType).get());
 
 		// save file with file storage utility
-		try {
-			Record.add(record);
+		
+			RecordSharing.instance.addRecord(owner, record);
 			FileStorage.store(file, record._id, filename, contentType);
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
