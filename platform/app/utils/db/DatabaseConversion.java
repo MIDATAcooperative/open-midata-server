@@ -156,7 +156,8 @@ public class DatabaseConversion {
 			Map<String, Object> map = new HashMap<String, Object>();
 			for (String key : dbObject.keySet()) {
 				String fullpath = path+"."+key;
-				map.put(key, convert(model, fullpath, valueType, decrypt(model, fullpath, (Class<?>) valueType, dbObject.get(key))));
+				Class<?> cl = valueType instanceof Class ? (Class<?>) valueType : Object.class;
+				map.put(key, convert(model, fullpath, valueType, decrypt(model, fullpath, cl, dbObject.get(key))));
 			}
 			return map;
 		} else {

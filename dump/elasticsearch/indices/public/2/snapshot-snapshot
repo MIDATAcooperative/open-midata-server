@@ -1,8 +1,8 @@
 {
   "name" : "snapshot",
-  "index_version" : 3,
-  "start_time" : 1418901346465,
-  "time" : 233,
+  "index_version" : 4,
+  "start_time" : 1424446188222,
+  "time" : 25,
   "number_of_files" : 4,
   "total_size" : 7980,
   "files" : [ {
@@ -22,7 +22,7 @@
     "checksum" : "s1dp0j"
   }, {
     "name" : "__3",
-    "physical_name" : "segments_3",
+    "physical_name" : "segments_4",
     "length" : 115
   } ]
 }

@@ -3,6 +3,7 @@ package utils.search;
 public class SearchResult implements Comparable<SearchResult> {
 
 	public String id;
+	public String token;
 	public float score;
 	public String title;
 	public String highlighted;

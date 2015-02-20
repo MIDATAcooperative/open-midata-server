@@ -76,7 +76,7 @@ public class Member extends User {
 
 		// add to search index (email is document's content, so that it is searchable as well)
 		try {
-			Search.add(Type.USER, user._id, user.name, user.email);
+			Search.add(Type.USER, user._id, user.firstname + " " + user.sirname, user.email);
 		} catch (SearchException e) {
 			throw new ModelException(e);
 		}

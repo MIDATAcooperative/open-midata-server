@@ -9,7 +9,9 @@ import java.util.Set;
 import models.HPUser;
 import models.ModelException;
 import models.Member;
+import models.Record;
 import models.ResearchUser;
+import models.Space;
 import models.User;
 import models.enums.ContractStatus;
 import models.enums.Gender;
@@ -26,6 +28,7 @@ import play.mvc.Result;
 import utils.DateTimeUtils;
 import utils.auth.CodeGenerator;
 import utils.auth.PasswordResetToken;
+import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
@@ -89,7 +92,7 @@ public class Application extends Controller {
 		  String site = "https://" + Play.application().configuration().getString("platform.server");
 		  String url = site + "/setpw#?token=" + encrypted;
 			   
-		  MailUtils.sendTextMail(email, user.name, "Your Password", lostpwmail.render(site,url));
+		  MailUtils.sendTextMail(email, user.firstname+" "+user.sirname, "Your Password", lostpwmail.render(site,url));
 		}
 				
 		return ok();
@@ -159,6 +162,21 @@ public class Application extends Controller {
 			return badRequest("Invalid user or password.");
 		  }
 		}
+	    
+	    //patch old users
+	    if (user.myaps == null) {
+	    	user.myaps = RecordSharing.instance.createPrivateAPS(user._id);
+	    	Member.set(user._id, "myaps", user.myaps);
+	    	Set<Record> recs = Record.getAll(CMaps.map("owner", user._id), Sets.create("owner"));
+	    	for (Record r : recs) RecordSharing.instance.addRecord2(user, r);
+	    	
+	    	Set<Space> spaces = Space.getAllByOwner(user._id, Sets.create("aps"));
+	    	for (Space s : spaces) {
+	    		s.aps = RecordSharing.instance.createPrivateAPS(user._id);
+	    		Space.set(s._id, "aps", s.aps);
+	    	}
+	    	
+	    }
 	
 		// user authenticated
 		session().clear();

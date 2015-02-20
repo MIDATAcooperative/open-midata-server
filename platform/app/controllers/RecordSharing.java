@@ -93,6 +93,15 @@ public class RecordSharing {
 	    aps.addPermission(record._id, entry);	    
 	}
 	
+	public void addRecord2(Member owner, Record record) throws ModelException {
+	    AccessPermissionSet aps = AccessPermissionSet.getById(owner.myaps);	
+	    
+	    //Record.add(record);
+	    
+	    BasicDBObject entry = new BasicDBObject();	    
+	    aps.addPermission(record._id, entry);	    
+	}
+	
 	public void deleteAPS(ObjectId apsId, ObjectId ownerId) throws ModelException {
 		//AccessPermissionSet aps = AccessPermissionSet.getById(apsId);	
 		AccessPermissionSet.delete(apsId);

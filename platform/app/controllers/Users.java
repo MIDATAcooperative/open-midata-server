@@ -117,8 +117,8 @@ public class Users extends Controller {
 		Set<ObjectNode> jsonContacts = new HashSet<ObjectNode>();
 		for (Member contact : contacts) {
 			ObjectNode node = Json.newObject();
-			node.put("value", contact.name + " (" + contact.email + ")");
-			String[] split = contact.name.split(" ");
+			node.put("value", contact.firstname+" "+contact.sirname + " (" + contact.email + ")");
+			String[] split = (contact.firstname+" "+contact.sirname).split(" ");
 			String[] tokens = new String[split.length + 1];
 			System.arraycopy(split, 0, tokens, 0, split.length);
 			tokens[tokens.length - 1] = contact.email;

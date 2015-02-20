@@ -1,8 +1,8 @@
 {
   "name" : "snapshot",
-  "index_version" : 3,
-  "start_time" : 1418901346698,
-  "time" : 172,
+  "index_version" : 4,
+  "start_time" : 1424446188245,
+  "time" : 26,
   "number_of_files" : 4,
   "total_size" : 16461,
   "files" : [ {
@@ -22,7 +22,7 @@
     "checksum" : "vapije"
   }, {
     "name" : "__3",
-    "physical_name" : "segments_3",
+    "physical_name" : "segments_4",
     "length" : 115
   } ]
 }

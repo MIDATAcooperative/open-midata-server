@@ -6,10 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import models.Circle;
 import models.ModelException;
 import models.Member;
 
 import org.bson.types.ObjectId;
+
+import actions.APICall;
 
 import play.libs.Json;
 import play.mvc.Controller;
@@ -35,17 +38,12 @@ public class GlobalSearch extends Controller {
 	/**
 	 * Search in all the user's accessible data.
 	 */
-	public static Result search(String query) {
+	@APICall
+	public static Result search(String query) throws ModelException {
 		ObjectId userId = new ObjectId(request().username());
-		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", userId).get();
-		Set<String> fields = new ChainedSet<String>().add("visible").get();
-		Member user;
-		try {
-			user = Member.get(properties, fields);
-		} catch (ModelException e) {
-			return internalServerError(e.getMessage());
-		}
-		Map<String, List<SearchResult>> searchResults = null; /* TODO Search.search(userId, user.visible, query); */
+		
+		Set<Circle> circles = Circle.getAllByMember(userId);
+		Map<String, List<SearchResult>> searchResults = Search.search(userId, circles, query);
 		return ok(Json.toJson(searchResults));
 	}
 

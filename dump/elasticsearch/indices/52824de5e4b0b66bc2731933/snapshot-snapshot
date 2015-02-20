@@ -1,1 +1,1 @@
-{"52824de5e4b0b66bc2731933":{"version":1,"state":"open","settings":{"index.number_of_shards":"5","index.number_of_replicas":"1","index.version.created":"1020199","index.uuid":"bCuDn7htTtuoeGDXrqrykA"},"mappings":[],"aliases":{}}}
+{"52824de5e4b0b66bc2731933":{"version":14,"state":"open","settings":{"index.version.created":"1020199","index.number_of_replicas":"1","index.uuid":"bCuDn7htTtuoeGDXrqrykA","index.number_of_shards":"5"},"mappings":[],"aliases":{}}}

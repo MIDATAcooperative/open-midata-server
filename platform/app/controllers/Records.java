@@ -83,8 +83,28 @@ public class Records extends Controller {
 		
 		JsonValidation.validate(json, "_id");
 		
-		RecordToken tk = RecordToken.decrypt(JsonValidation.getString(json, "_id"));
+		String id = JsonValidation.getString(json, "_id");
+		RecordToken tk = null;
+		if (id.length()>25) {
+		   tk = RecordToken.decrypt(JsonValidation.getString(json, "_id"));
+		} else {
+		   ObjectId userId = new ObjectId(request().username());
+			
+		   Member user = Member.getById(userId, Sets.create("myaps"));
 		
+		   Set<String> ids = RecordSharing.instance.listRecordIds(user._id, user.myaps);
+		   if (ids.contains(id)) tk = new RecordToken(id, user.myaps.toString());
+		   else {		
+			  Set<Circle> circles = Circle.getAllByMember(userId);
+			
+		   	  for (Circle circle : circles) {
+				ids = RecordSharing.instance.listRecordIds(userId, circle.aps);
+				if (ids.contains(id)) tk = new RecordToken(id, circle.aps.toString());
+			  }
+		   }
+		}
+		
+		if (tk==null) return badRequest("Bad token");
 		Record target = RecordSharing.instance.fetch(tk);
 						
 		return ok(Json.toJson(target));
@@ -186,26 +206,19 @@ public class Records extends Controller {
 		
 		Member user = Member.getById(userId, Sets.create("myaps"));	
 		
-		return ok();
-
-		/*
+		Set<Circle> circles = Circle.getAllByMember(userId);
+		
 		// TODO use caching/incremental retrieval of results (scrolls)
-		List<SearchResult> searchResults = Search.searchRecords(userId, user.visible, query);
+		List<SearchResult> searchResults = Search.searchRecords(userId, circles, query);
 		Set<ObjectId> recordIds = new HashSet<ObjectId>();
 		for (SearchResult searchResult : searchResults) {
 			recordIds.add(new ObjectId(searchResult.id));
 		}
-
-		// get records
-		Map<String, Set<ObjectId>> recordProperties = new ChainedMap<String, Set<ObjectId>>().put("_id", recordIds).get();
-		fields = new ChainedSet<String>().add("app").add("owner").add("creator").add("created").add("name").add("data").get();
-		List<Record> records;
 		
-		records = new ArrayList<Record>(Record.getAll(recordProperties, fields));
+		List<Record> records = new ArrayList<Record>(Record.getAllByIds(recordIds, Sets.create("app","owner","creator","created","name","data")));
 		
 		Collections.sort(records);
 		return ok(Json.toJson(records));
-		*/
 	}
 
 	/**

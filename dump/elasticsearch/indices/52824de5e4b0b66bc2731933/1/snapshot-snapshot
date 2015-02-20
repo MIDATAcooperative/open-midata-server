@@ -1,13 +1,13 @@
 {
   "name" : "snapshot",
-  "index_version" : 3,
-  "start_time" : 1418901344718,
-  "time" : 88,
+  "index_version" : 4,
+  "start_time" : 1424446188066,
+  "time" : 12,
   "number_of_files" : 1,
   "total_size" : 79,
   "files" : [ {
     "name" : "__0",
-    "physical_name" : "segments_3",
+    "physical_name" : "segments_4",
     "length" : 79
   } ]
 }

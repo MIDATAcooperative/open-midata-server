@@ -54,8 +54,8 @@ public class User extends Model implements Comparable<User> {
 
 	@Override
 	public int compareTo(User other) {
-		if (this.name != null && other.name != null) {
-			return this.name.compareTo(other.name);
+		if (this.email != null && other.email != null) {
+			return this.email.compareTo(other.email);
 		} else {
 			return super.compareTo(other);
 		}
