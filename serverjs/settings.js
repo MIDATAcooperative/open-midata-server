@@ -11,8 +11,8 @@ var nodePort = 5000;
 
 // ssl certificate
 var sslOptions = {
-		key: fs.readFileSync("NODE_SSL_SERVER_KEY"),
-		cert: fs.readFileSync("NODE_SSL_SERVER_CERT")
+		key: fs.readFileSync("/home/alexander/projects/hdc/ssl-certificate/server.pem"),
+		cert: fs.readFileSync("/home/alexander/projects/hdc/ssl-certificate/server.pem")
 }
 
 // export settings
