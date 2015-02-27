@@ -339,8 +339,34 @@ public class Records extends Controller {
 	/**
 	 * Get the file associated with a record.
 	 */
-	public static Result getFile(String id) {
-		FileData fileData = FileStorage.retrieve(new ObjectId(id));
+	@APICall
+	public static Result getFile(String id) throws ModelException {
+		
+		RecordToken tk = null;
+		if (id.length()>25) {
+		   tk = RecordToken.decrypt(id);
+		} else {
+		   ObjectId userId = new ObjectId(request().username());
+			
+		   Member user = Member.getById(userId, Sets.create("myaps"));
+		
+		   Set<String> ids = RecordSharing.instance.listRecordIds(user._id, user.myaps);
+		   if (ids.contains(id)) tk = new RecordToken(id, user.myaps.toString());
+		   else {		
+			  Set<Circle> circles = Circle.getAllByMember(userId);
+			
+		   	  for (Circle circle : circles) {
+				ids = RecordSharing.instance.listRecordIds(userId, circle.aps);
+				if (ids.contains(id)) tk = new RecordToken(id, circle.aps.toString());
+			  }
+		   }
+		}
+		
+		if (tk==null) return badRequest("Bad token");
+		Record target = RecordSharing.instance.fetch(tk);
+		if (target==null) return badRequest("Unknown Record");
+		
+		FileData fileData = FileStorage.retrieve(new ObjectId(tk.recordId));
 		response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
 		return ok(fileData.inputStream);
 	}

@@ -50,8 +50,8 @@ GET     /members/records/filters/*filters                controllers.Records.fil
 POST    /members/api/records/get                         controllers.Records.get()
 GET     /members/api/records/visible                     controllers.Records.getVisibleRecords()
 GET     /members/api/records/shared                      controllers.Records.getSharingInfo()
-GET     /members/api/records/import/:appId               controllers.Records.importRecords(appId: String)
-GET     /members/api/records/redirect/:appId             controllers.Records.onAuthorized(appId: String)
+GET     /members/records/import/:appId                   controllers.Records.importRecords(appId: String)
+GET     /records/redirect/:appId                         controllers.Records.onAuthorized(appId: String)
 GET     /members/api/records/search/:query               controllers.Records.search(query: String)
 POST    /members/api/records/shared                      controllers.Records.updateSharing()
 
