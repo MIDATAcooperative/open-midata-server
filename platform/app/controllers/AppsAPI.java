@@ -75,22 +75,31 @@ public class AppsAPI extends Controller {
 			return badRequest("Invalid authToken.");
 		}
 		
-		Member owner = Member.getByIdAndApp(appToken.userId, appToken.appId, Sets.create("myaps"));
+		Member owner = Member.getByIdAndApp(appToken.userId, appToken.appId, Sets.create("myaps", "tokens"));
 		if (owner == null) return badRequest("Invalid authToken.");
 				
 		// save new record with additional metadata
 		if (!json.get("data").isTextual() || !json.get("name").isTextual() || !json.get("description").isTextual()) {
 			return badRequest("At least one request parameter is of the wrong type.");
 		}
+		
+		Map<String,String> tokens = owner.tokens.get(appToken.appId.toString());		
+		
 		String data = json.get("data").asText();
 		String name = json.get("name").asText();
 		String description = json.get("description").asText();
+		String format = JsonValidation.getString(json, "format");
+		if (format==null) format = "json";
 		Record record = new Record();
 		record._id = new ObjectId();
 		record.app = appToken.appId;
 		record.owner = appToken.userId;
 		record.creator = appToken.userId;
 		record.created = DateTimeUtils.now();
+		record.format = format;
+		
+		if (tokens!=null) record.series = tokens.get("series");
+		
 		try {
 			record.data = (DBObject) JSON.parse(data);
 		} catch (JSONParseException e) {

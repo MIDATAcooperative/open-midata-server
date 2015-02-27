@@ -112,7 +112,8 @@ credentials.controller('CreateCtrl', ['$scope', '$http', '$location',
 				"authToken": authToken,
 				"data": JSON.stringify(record),
 				"name": $scope.title,
-				"description": $scope.title + " created with the credentials app on " + formattedDate
+				"description": $scope.title + " created with the credentials app on " + formattedDate,
+				"format" : "Credentials/Midata"
 			};
 			
 			// submit to server

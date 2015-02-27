@@ -57,7 +57,8 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location',
 				"authToken": authToken,
 				"data": JSON.stringify($scope.json),
 				"name": $scope.title,
-				"description": $scope.description
+				"description": $scope.description,
+				"format" : "Json"
 			};
 			
 			// submit to server

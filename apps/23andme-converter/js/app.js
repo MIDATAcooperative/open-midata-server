@@ -47,7 +47,8 @@ converter.controller('ConverterCtrl', ['$scope', '$http', '$location',
 				"authToken": authToken,
 				"id": $scope.file._id.$oid,
 				"name": "23andMe Genome Data (HDC Format)",
-				"description": "23andMe genome data converted to the HDC format"
+				"description": "23andMe genome data converted to the HDC format",
+				"format" : "Genome Data/23andMe"
 			};
 			$http.post("https://" + window.location.hostname + ":9000/apps/gdconverter/convert", JSON.stringify(data)).
 				success(function() {

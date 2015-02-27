@@ -166,6 +166,7 @@ public class GenomeDataConverter extends Controller {
 		record.owner = appToken.userId;
 		record.name = json.get("name").asText();
 		record.description = json.get("description").asText();
+		record.format = json.get("format").asText();
 		record.data = null;
 		try {
 			LargeRecord.add(record, map);

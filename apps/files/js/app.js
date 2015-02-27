@@ -97,7 +97,8 @@ files.controller('FilesCtrl', ['$scope', '$http', '$location', 'FileUploader',
 			uploader.queue[0].formData = [{
 				"authToken": authToken,
 				"name": $scope.title,
-				"description": $scope.description
+				"description": $scope.description,
+				"format" : "File"
 			}];
 
 			// upload the current queue (1 file)
