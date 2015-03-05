@@ -2,21 +2,21 @@
      
     phonecatApp.controller('TesterCtrl', function ($scope, $http) {
    
-       $scope.server = "https://localhost:9000";
+       $scope.server = "https://195.65.191.10:9000";
        $scope.url = "";
        $scope.body = "";
-       $scope.extra = window.localStorage.extra;
+       //$scope.extra = window.localStorage.extra;
        $scope.results = "empty";
        $scope.saved = [];
        
-       if ($scope.extra == null) $scope.extra = "";
+       //if ($scope.extra == null) $scope.extra = "";
 
        $scope.dosubmit = function() {
-         var url = $scope.server + $scope.url + $scope.extra;
-         window.localStorage.extra = $scope.extra;
+         var url = $scope.server + $scope.url;
+         //window.localStorage.extra = $scope.extra;
          console.log(url);
          
-         $http({ method:"POST", url: url, data : JSON.parse($scope.body) })
+         $http({ method: $scope.type, url: url, data : JSON.parse($scope.body) })
          .success(function(data) { $scope.results = JSON.stringify(data); })
          .error(function(x,p) { $scope.results = p + ":" + JSON.stringify(x); });
        };

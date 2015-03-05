@@ -12,6 +12,7 @@
 					<li><a href="#architecture" data-toggle="tab">Architecture</a></li>
 					<li><a href="#apps" data-toggle="tab">Apps</a></li>
 					<li><a href="#visualizations" data-toggle="tab">Visualizations</a></li>
+					<li><a href="#mobile" data-toggle="tab">Mobile Apps</a></li>
 				</ul>
 			</div>
 			<div class="col-md-10">
@@ -127,6 +128,39 @@
 						records to a visualization, and can therefore also include records the
 						visualization might not understand. It is up to the devloper's 
 						implementation to decide on how to handle these cases.</p>
+					</div>
+					<div id="mobile" class="tab-pane fade">
+						<h2>Mobile Apps</h2>
+						<p>Mobile Apps are external applications that provide and/or query records from the platform.</p>
+						<h3>Registration on the market</h3>					
+						<p>Each app needs to have an internal name that is used by the platform to identify that app.
+						The app developer also needs to specify a public name for the marked place and a textual description, that describe
+						what it does. Also a secret key needs to be entered.</p>
+						<h4>Authentification</h4>
+						<p>A mobile app needs to authenticate to the platform before providing or querying records.
+						To authenticate call</p> 
+						<pre><i>POST</i> /api/apps/auth</pre>
+						<p>with these parameters as JSON body:</p>
+<pre>{ 
+	  "appname" : internal name of the application, 
+	  "secret" : the secret key that has been chosen, 
+	  "username" : the email of the user, 
+	  "password" : password of user 
+}</pre>
+						
+						<p>As result you either get a 400 status with an error message or a token that can be used for further requests.</p>
+						<h3>Creating new records</h3>
+						<p>To create a new record call this endpoint:</p>
+						<pre><i>POST</i> /api/apps/create</pre>
+						<p>The request needs a JSON body with these parameters:</p>
+<pre>{
+     "authToken" : the token from the authentication request, 
+     "name" : a name for the record, 
+     "description" : a description for the record (for fulltext search),
+     "format" : a string describing the data format,
+     "data" : JSON string containing the record itself 
+}</pre>						
+                        
 					</div>
 				</div>
 			</div>

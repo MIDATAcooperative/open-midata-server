@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 
+import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.search.Search;
 import utils.search.Search.Type;
@@ -14,7 +15,7 @@ public class App extends Plugin implements Comparable<App> {
 
 	private static final String collection = "apps";
 
-	public String type; // type can be one of: create, oauth1, oauth2
+	public String type; // type can be one of: create, oauth1, oauth2, mobile
 	public String url; // url to call the app
 	
 	// oauth 1.0/2.0 app
@@ -26,6 +27,8 @@ public class App extends Plugin implements Comparable<App> {
 	public String requestTokenUrl;
 	// oauth 2.0 app
 	public String scopeParameters;
+	// mobile app
+	public String secret;
 
 	@Override
 	public int compareTo(App other) {
@@ -42,6 +45,10 @@ public class App extends Plugin implements Comparable<App> {
 
 	public static App get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
 		return Model.get(App.class, collection, properties, fields);
+	}
+	
+	public static App getByFilenameAndSecret(String name, String secret, Set<String> fields) throws ModelException {
+		return Model.get(App.class, collection, CMaps.map("filename", name).map("secret", secret), fields);
 	}
 
 	public static Set<App> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {

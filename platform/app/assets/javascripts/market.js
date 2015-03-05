@@ -41,19 +41,25 @@ market.controller('RegisterAppCtrl', ['$scope', '$http', function($scope, $http)
 	// register app
 	$scope.registerApp = function(type) {
 		// check required fields
-		if (!$scope.app.filename || !$scope.app.name || !$scope.app.description || !$scope.app.url) {
+		if (!$scope.app.filename || !$scope.app.name || !$scope.app.description) {
 			$scope.error = "Please fill in all required fields";
 			return;
-		} else if (type === "oauth1" && (!$scope.app.authorizationUrl || !$scope.app.accessTokenUrl || !$scope.app.consumerKey || !$scope.app.consumerSecret || !$scope.app.requestTokenUrl)) {
+		} else if (type === "oauth1" && (!$scope.app.authorizationUrl || !$scope.app.url || !$scope.app.accessTokenUrl || !$scope.app.consumerKey || !$scope.app.consumerSecret || !$scope.app.requestTokenUrl)) {
 			$scope.error = "Please fill in all required fields";
 			return;
-		} else if (type === "oauth2" && (!$scope.app.authorizationUrl || !$scope.app.accessTokenUrl || !$scope.app.consumerKey || !$scope.app.consumerSecret || !$scope.app.scopeParameters)) {
+		} else if (type === "oauth2" && (!$scope.app.authorizationUrl || !$scope.app.url || !$scope.app.accessTokenUrl || !$scope.app.consumerKey || !$scope.app.consumerSecret || !$scope.app.scopeParameters)) {
+			$scope.error = "Please fill in all required fields";
+			return;
+		} else if (type === "mobile" && (!$scope.app.secret)) {
+			$scope.error = "Please fill in all required fields";
+			return;
+		} else if (type === "create" && (!$scope.app.url)) {
 			$scope.error = "Please fill in all required fields";
 			return;
 		}
 		
 		// check whether url contains ":authToken"
-		if ($scope.app.url.indexOf(":authToken") < 0) {
+		if (type !== "mobile" && $scope.app.url.indexOf(":authToken") < 0) {
 			$scope.error = "Url must contain ':authToken' to receive the authorization token required to create records.";
 			return;
 		}
@@ -76,6 +82,7 @@ market.controller('RegisterAppCtrl', ['$scope', '$http', function($scope, $http)
 				data.scopeParameters = $scope.app.scopeParameters;
 			}
 		}
+		if (type === "mobile") data.secret = $scope.app.secret;
 		
 		// send the request
 		$http.post(jsRoutes.controllers.Market.registerApp(type).url, data).

@@ -38,7 +38,7 @@ records.controller('RecordsCtrl', ['$scope', '$http', 'filterService', 'dateServ
 	
 	// get name and type for app ids
 	$scope.getAppDetails = function(appIds) {
-		var properties = {"_id": appIds};
+		var properties = {"_id": appIds, "type" : ["create","oauth1","oauth2"] };
 		var fields = ["name", "type"];
 		var data = {"properties": properties, "fields": fields};
 		$http.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).

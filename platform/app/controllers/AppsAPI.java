@@ -12,6 +12,7 @@ import models.Member;
 import org.bson.types.ObjectId;
 
 import play.Play;
+import play.libs.Json;
 import play.libs.F.Function;
 import play.libs.F.Function0;
 import play.libs.F.Promise;
@@ -26,13 +27,16 @@ import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
+import sun.security.krb5.internal.rcache.AuthTime;
 import utils.DateTimeUtils;
 import utils.auth.AppToken;
+import utils.auth.SpaceToken;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
 import utils.db.DatabaseException;
 import utils.db.FileStorage;
+import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
@@ -54,6 +58,114 @@ public class AppsAPI extends Controller {
 		response().setHeader("Access-Control-Allow-Methods", "POST");
 		response().setHeader("Access-Control-Allow-Headers", "Content-Type");
 		return ok();
+	}
+	
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public static Result authenticateExternalApp() throws JsonValidationException, ModelException {
+		
+        JsonNode json = request().body().asJson();
+		
+		JsonValidation.validate(json, "appname", "secret", "username", "password");
+		
+		String name = JsonValidation.getString(json, "appname");
+		String secret = JsonValidation.getString(json,"secret");
+		String username = JsonValidation.getEMail(json, "username");
+		String password = JsonValidation.getString(json, "password");
+		
+		App app = App.getByFilenameAndSecret(name, secret, Sets.create("type"));
+		if (app == null) return badRequest("Unknown app");
+		if (!app.type.equals("mobile")) return internalServerError("Wrong app type");
+		
+		Member member = Member.getByEmail(username, Sets.create("password","apps"));
+		if (member == null) return badRequest("Unknown user or bad password");
+		
+		// check password
+		if (!Member.authenticationValid(password, member.password)) return badRequest("Unknown user or bad password");
+		
+		// check that app is installed
+		if (!member.apps.contains(app._id)) return badRequest("App is not installed with portal");
+				
+		// create encrypted authToken
+		AppToken appToken = new AppToken(app._id, member._id);
+		String authToken = appToken.encrypt();
+
+		// return authtoken		
+		return ok(authToken);
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public static Result getRecords() throws JsonValidationException, ModelException {		
+		// validate json
+		JsonNode json = request().body().asJson();
+		
+		JsonValidation.validate(json, "authToken", "spaceToken", "properties", "fields");
+		
+		// decrypt authToken and check whether a user exists who has the app installed
+		AppToken appToken = AppToken.decrypt(json.get("authToken").asText());
+		if (appToken == null) {
+			return badRequest("Invalid authToken.");
+		}
+		
+		Member owner = Member.getByIdAndApp(appToken.userId, appToken.appId, Sets.create("myaps", "tokens"));
+		if (owner == null) return badRequest("Invalid authToken.");
+		
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+
+		// decrypt authToken and check whether space with corresponding owner exists
+		SpaceToken spaceToken = SpaceToken.decrypt(json.get("spaceToken").asText());
+		if (spaceToken == null) {
+			return badRequest("Invalid spaceToken.");
+		}
+		if (!spaceToken.userId.equals(appToken.userId)) {
+			return badRequest("Invalid spaceToken.");
+		}
+		
+		Object recordIdSet = properties.get("_id");
+		Set<String> recordIds = (Set<String>) recordIdSet;
+			
+		// get record data		
+		return ok(Json.toJson(RecordSharing.instance.fetchMultiple(spaceToken.userId, spaceToken.spaceId, recordIds, fields)));
+		
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public static Result getRecordMeta() throws JsonValidationException, ModelException {		
+		// validate json
+		JsonNode json = request().body().asJson();
+		
+		JsonValidation.validate(json, "authToken", "spaceToken", "properties", "fields");
+		
+		// decrypt authToken and check whether a user exists who has the app installed
+		AppToken appToken = AppToken.decrypt(json.get("authToken").asText());
+		if (appToken == null) {
+			return badRequest("Invalid authToken.");
+		}
+		
+		Member owner = Member.getByIdAndApp(appToken.userId, appToken.appId, Sets.create("myaps", "tokens"));
+		if (owner == null) return badRequest("Invalid authToken.");
+		
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+
+		// decrypt authToken and check whether space with corresponding owner exists
+		SpaceToken spaceToken = SpaceToken.decrypt(json.get("spaceToken").asText());
+		if (spaceToken == null) {
+			return badRequest("Invalid spaceToken.");
+		}
+		if (!spaceToken.userId.equals(appToken.userId)) {
+			return badRequest("Invalid spaceToken.");
+		}
+		
+		Object recordIdSet = properties.get("_id");
+		Set<String> recordIds = (Set<String>) recordIdSet;
+			
+		// get record meta		
+		return ok(Json.toJson(RecordSharing.instance.list(spaceToken.userId, spaceToken.spaceId, true, false)));		
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)

@@ -17,6 +17,8 @@ import views.html.market;
 import views.html.dialogs.registerapp;
 import views.html.dialogs.registervisualization;
 
+import actions.APICall;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Security.Authenticated(Secured.class)
@@ -35,10 +37,11 @@ public class Market extends Controller {
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result registerApp(String type) {
+	@APICall
+	public static Result registerApp(String type) throws JsonValidationException {
 		// validate json
 		JsonNode json = request().body().asJson();
-		try {
+		
 			if (type.equals("create")) {
 				JsonValidation.validate(json, "filename", "name", "description", "url");
 			} else if (type.equals("oauth1")) {
@@ -47,12 +50,12 @@ public class Market extends Controller {
 			} else if (type.equals("oauth2")) {
 				JsonValidation.validate(json, "filename", "name", "description", "url", "authorizationUrl", "accessTokenUrl",
 						"consumerKey", "consumerSecret", "scopeParameters");
+			} else if (type.equals("mobile")) {
+				JsonValidation.validate(json, "filename", "name", "description", "secret");
 			} else {
 				return badRequest("Unknown app type.");
 			}
-		} catch (JsonValidationException e) {
-			return badRequest(e.getMessage());
-		}
+		
 
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
@@ -75,9 +78,9 @@ public class Market extends Controller {
 		app.filename = filename;
 		app.name = name;
 		app.description = json.get("description").asText();
-		app.spotlighted = false;
+		app.spotlighted = true;
 		app.type = type;
-		app.url = json.get("url").asText();
+		app.url = JsonValidation.getString(json, "url");
 
 		// fill in specific fields
 		if (type.equals("oauth1") || type.equals("oauth2")) {
@@ -90,6 +93,9 @@ public class Market extends Controller {
 			} else if (type.equals("oauth2")) {
 				app.scopeParameters = json.get("scopeParameters").asText();
 			}
+		}
+		if (type.equals("mobile")) {
+			app.secret = JsonValidation.getString(json, "secret");
 		}
 
 		// add app to the platform
@@ -132,7 +138,7 @@ public class Market extends Controller {
 		visualization.filename = filename;
 		visualization.name = name;
 		visualization.description = json.get("description").asText();
-		visualization.spotlighted = false;
+		visualization.spotlighted = true;
 		visualization.url = json.get("url").asText();
 		try {
 			Visualization.add(visualization);

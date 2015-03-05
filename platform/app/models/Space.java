@@ -3,6 +3,8 @@ package models;
 import java.util.Map;
 import java.util.Set;
 
+import models.enums.SpaceType;
+
 import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
@@ -22,6 +24,8 @@ public class Space extends Model implements Comparable<Space> {
 	public ObjectId visualization;
 	public int order;
 	public ObjectId aps;
+	public SpaceType type;
+	
 	//public Set<ObjectId> records;
 
 	@Override

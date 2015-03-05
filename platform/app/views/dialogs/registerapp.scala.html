@@ -11,6 +11,7 @@
 		
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="#create" data-toggle="tab">Creation</a></li>
+			<li><a href="#mobile" data-toggle="tab">Mobile App</a></li>
 			<li><a href="#oauth1" data-toggle="tab">Import with OAuth 1.0</a></li>
 			<li><a href="#oauth2" data-toggle="tab">Import with OAuth 2.0</a></li>
 		</ul>
@@ -39,6 +40,38 @@
 						<label for="url" class="col-md-2 control-label">URL to create records</label>
 						<div class="col-md-10">
 							<input type="text" id="url" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" ng-model="app.url">
+						</div>
+					</div>
+					<div class="pull-right">
+						<button type="submit" class="btn btn-primary">Register</button>
+						<a href="@routes.Market.index()" class="btn btn-default">Cancel</a>
+					</div>
+				</form>
+			</div>
+			<div id="mobile" class="tab-pane fade">
+				<form class="form-horizontal" ng-submit="registerApp('mobile')">
+					<div class="form-group">
+						<label for="filename" class="col-md-2 control-label">Internal Name</label>
+						<div class="col-md-10">
+							<input type="text" id="filename" class="form-control" placeholder="Filename" ng-model="app.filename" autofocus>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="name" class="col-md-2 control-label">Name</label>
+						<div class="col-md-10">
+							<input type="text" id="name" class="form-control" placeholder="Name" ng-model="app.name">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="description" class="col-md-2 control-label">Description</label>
+						<div class="col-md-10">
+							<textarea rows="5" id="description" class="form-control" placeholder="Description" ng-model="app.description"></textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="secret" class="col-md-2 control-label">App Secret Key</label>
+						<div class="col-md-10">
+							<input type="text" id="secret" class="form-control" placeholder="Secret" ng-model="app.secret">
 						</div>
 					</div>
 					<div class="pull-right">
