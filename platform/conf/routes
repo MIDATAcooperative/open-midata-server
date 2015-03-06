@@ -200,6 +200,8 @@ OPTIONS /api/apps/oauth1            controllers.AppsAPI.checkPreflight()
 POST    /api/apps/oauth1            controllers.AppsAPI.oAuth1Call()
 OPTIONS /api/apps/auth              controllers.AppsAPI.checkPreflight()
 POST    /api/apps/auth              controllers.AppsAPI.authenticateExternalApp()
+OPTIONS /api/apps/records           controllers.AppsAPI.checkPreflight()
+POST    /api/apps/records           controllers.AppsAPI.getRecords()
 # Visualizations Public API
 OPTIONS /api/visualizations/ids     controllers.VisualizationsAPI.checkPreflight()
 POST    /api/visualizations/ids     controllers.VisualizationsAPI.getIds()

@@ -32,6 +32,7 @@ import utils.auth.AppToken;
 import utils.auth.SpaceToken;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
+import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.db.DatabaseException;
 import utils.db.FileStorage;
@@ -42,6 +43,7 @@ import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
@@ -52,8 +54,9 @@ public class AppsAPI extends Controller {
 
 	public static Result checkPreflight() {
 		// allow cross-origin request from app server
-		String appServer = Play.application().configuration().getString("apps.server");
-		response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
+		//String appServer = Play.application().configuration().getString("apps.server");
+		//response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
+		response().setHeader("Access-Control-Allow-Origin", "*");
 		response().setHeader("Access-Control-Allow-Methods", "POST");
 		response().setHeader("Access-Control-Allow-Headers", "Content-Type");
 		return ok();
@@ -63,6 +66,7 @@ public class AppsAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result authenticateExternalApp() throws JsonValidationException, ModelException {
+		response().setHeader("Access-Control-Allow-Origin", "*");
 		
         JsonNode json = request().body().asJson();
 		
@@ -77,7 +81,7 @@ public class AppsAPI extends Controller {
 		if (app == null) return badRequest("Unknown app");
 		if (!app.type.equals("mobile")) return internalServerError("Wrong app type");
 		
-		Member member = Member.getByEmail(username, Sets.create("password","apps"));
+		Member member = Member.getByEmail(username, Sets.create("password","apps","tokens","myaps"));
 		if (member == null) return badRequest("Unknown user or bad password");
 		
 		// check password
@@ -90,17 +94,32 @@ public class AppsAPI extends Controller {
 		AppToken appToken = new AppToken(app._id, member._id);
 		String authToken = appToken.encrypt();
 
+		ObjectNode obj = Json.newObject();
+		obj.put("authToken", authToken);
+				
+		Map<String, String> tokens = member.tokens.get(app._id.toString());
+		if (tokens!=null) {
+			String space = tokens.get("space");
+			if (space!=null) {
+				obj.put("aps", new SpaceToken(new ObjectId(space),member._id).encrypt());		
+			} 
+		} else {
+			// XXX incsecure remove
+			obj.put("aps", new SpaceToken(member.myaps, member._id).encrypt());
+		}
+										
 		// return authtoken		
-		return ok(authToken);
+		return ok(obj);
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result getRecords() throws JsonValidationException, ModelException {		
+	public static Result getRecords() throws JsonValidationException, ModelException {	
+		response().setHeader("Access-Control-Allow-Origin", "*");
 		// validate json
 		JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "authToken", "spaceToken", "properties", "fields");
+		JsonValidation.validate(json, "authToken", "aps", "properties", "fields");
 		
 		// decrypt authToken and check whether a user exists who has the app installed
 		AppToken appToken = AppToken.decrypt(json.get("authToken").asText());
@@ -115,7 +134,7 @@ public class AppsAPI extends Controller {
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 
 		// decrypt authToken and check whether space with corresponding owner exists
-		SpaceToken spaceToken = SpaceToken.decrypt(json.get("spaceToken").asText());
+		SpaceToken spaceToken = SpaceToken.decrypt(json.get("aps").asText());
 		if (spaceToken == null) {
 			return badRequest("Invalid spaceToken.");
 		}
@@ -126,54 +145,22 @@ public class AppsAPI extends Controller {
 		Object recordIdSet = properties.get("_id");
 		Set<String> recordIds = (Set<String>) recordIdSet;
 			
-		// get record data		
-		return ok(Json.toJson(RecordSharing.instance.fetchMultiple(spaceToken.userId, spaceToken.spaceId, recordIds, fields)));
+		// get record data	
+		Set<Record> records = RecordSharing.instance.fetchMultiple(spaceToken.userId, spaceToken.spaceId, recordIds, fields);
+		if (fields.contains("ownerName")) ReferenceTool.resolveOwners(records);
+		return ok(Json.toJson(records));
 		
 	}
 	
-	@BodyParser.Of(BodyParser.Json.class)
-	@APICall
-	public static Result getRecordMeta() throws JsonValidationException, ModelException {		
-		// validate json
-		JsonNode json = request().body().asJson();
-		
-		JsonValidation.validate(json, "authToken", "spaceToken", "properties", "fields");
-		
-		// decrypt authToken and check whether a user exists who has the app installed
-		AppToken appToken = AppToken.decrypt(json.get("authToken").asText());
-		if (appToken == null) {
-			return badRequest("Invalid authToken.");
-		}
-		
-		Member owner = Member.getByIdAndApp(appToken.userId, appToken.appId, Sets.create("myaps", "tokens"));
-		if (owner == null) return badRequest("Invalid authToken.");
-		
-		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
-		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
-
-		// decrypt authToken and check whether space with corresponding owner exists
-		SpaceToken spaceToken = SpaceToken.decrypt(json.get("spaceToken").asText());
-		if (spaceToken == null) {
-			return badRequest("Invalid spaceToken.");
-		}
-		if (!spaceToken.userId.equals(appToken.userId)) {
-			return badRequest("Invalid spaceToken.");
-		}
-		
-		Object recordIdSet = properties.get("_id");
-		Set<String> recordIds = (Set<String>) recordIdSet;
-			
-		// get record meta		
-		return ok(Json.toJson(RecordSharing.instance.list(spaceToken.userId, spaceToken.spaceId, true, false)));		
-	}
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result createRecord() throws ModelException, JsonValidationException {
 		// allow cross origin request from app server
-		String appServer = Play.application().configuration().getString("apps.server");
-		response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
-
+		//String appServer = Play.application().configuration().getString("apps.server");
+		//response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
+		response().setHeader("Access-Control-Allow-Origin", "*");
+		
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();
 		
@@ -229,8 +216,9 @@ public class AppsAPI extends Controller {
 	 */
 	public static Result uploadFile() {
 		// allow cross origin request from app server
-		String appServer = Play.application().configuration().getString("apps.server");
-		response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
+		//String appServer = Play.application().configuration().getString("apps.server");
+		//response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
+		response().setHeader("Access-Control-Allow-Origin", "*");
 
 		// check meta data
 		MultipartFormData formData = request().body().asMultipartFormData();
@@ -293,8 +281,9 @@ public class AppsAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Promise<Result> oAuth2Call() {
 		// allow cross origin request from app server
-		String appServer = Play.application().configuration().getString("apps.server");
-		response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
+		//String appServer = Play.application().configuration().getString("apps.server");
+		//response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
+		response().setHeader("Access-Control-Allow-Origin", "*");
 
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();
@@ -341,8 +330,9 @@ public class AppsAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Promise<Result> oAuth1Call() {
 		// allow cross origin request from app server
-		String appServer = Play.application().configuration().getString("apps.server");
-		response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
+		//String appServer = Play.application().configuration().getString("apps.server");
+		//response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
+		response().setHeader("Access-Control-Allow-Origin", "*");
 
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();

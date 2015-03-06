@@ -175,8 +175,9 @@ public class RecordSharing {
 		
 		AccessPermissionSet aps = AccessPermissionSet.getById(apsId);
 		Set<Record> result = new HashSet<Record>();
-		
-		for (String id : recordIds) {
+		Set<String> ids = recordIds != null ? recordIds : aps.permissions.keySet();
+				
+		for (String id : ids) {
 		  BasicDBObject entry = aps.permissions.get(id);
 		  if (entry!=null) {
 			result.addAll(LargeRecord.getAll(CMaps.map("_id", new ObjectId(id)), fields));			
