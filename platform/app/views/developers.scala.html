@@ -148,7 +148,12 @@
 	  "password" : password of user 
 }</pre>
 						
-						<p>As result you either get a 400 status with an error message or a token that can be used for further requests.</p>
+						<p>As result you either get a 400 status with an error message or two authorization tokens that can be used for further requests.</p>
+						<p>An example response looks like this:</p>
+<pre>{
+  "authToken":"014760...",
+  "aps":"ad0661..."
+}</pre>
 						<h3>Creating new records</h3>
 						<p>To create a new record call this endpoint:</p>
 						<pre><i>POST</i> /api/apps/create</pre>
@@ -160,7 +165,17 @@
      "format" : a string describing the data format,
      "data" : JSON string containing the record itself 
 }</pre>						
-                        
+                        <h3>Retrieving existing records</h3>
+                        <p>To retrieve records call this endpoint:</p>
+                        <pre><i>POST</i> /api/apps/records</pre>
+                        <p>The request needs a JSON body with these parameters:</p>
+<pre>{
+     "authToken": the token from the authentication request,
+     "aps": the second token from the authentication request,
+     "fields" : a string array of field names to return,
+     "properties" : a key-value map with restrictions. (May be empty) 
+}</pre>           
+<p>Possible values for <code>fields</code> are <code>"app"</code>, <code>"owner"</code>, <code>"ownerName"</code>, <code>"creator"</code>, <code>"series"</code>, <code>"created"</code>, <code>"name"</code>, <code>"format"</code>, <code>"description"</code>, <code>"data"</code></p>                                   
 					</div>
 				</div>
 			</div>
