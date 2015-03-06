@@ -157,14 +157,14 @@ public class Application extends Controller {
 	    if (!Member.exists(emailQuery)) {
 		  return badRequest("Invalid user or password.");
 		} else {
-		  user = Member.get(emailQuery, new ChainedSet<String>().add("password").get());
+		  user = Member.get(emailQuery, Sets.create("password","myaps"));
 		  if (!Member.authenticationValid(password, user.password)) {
 			return badRequest("Invalid user or password.");
 		  }
 		}
 	    
 	    //patch old users
-	    /*if (user.myaps == null) {
+	    if (user.myaps == null) {
 	    	user.myaps = RecordSharing.instance.createPrivateAPS(user._id);
 	    	Member.set(user._id, "myaps", user.myaps);
 	    	Set<Record> recs = Record.getAll(CMaps.map("owner", user._id), Sets.create("owner"));
@@ -176,7 +176,7 @@ public class Application extends Controller {
 	    		Space.set(s._id, "aps", s.aps);
 	    	}
 	    	
-	    }*/
+	    }
 	
 		// user authenticated
 		session().clear();

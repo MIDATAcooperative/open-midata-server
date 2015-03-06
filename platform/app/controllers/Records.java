@@ -155,7 +155,7 @@ public class Records extends Controller {
 		records.addAll(Record.getAll(visibleRecords, fields));
 		*/
 		List<RecordMetadata> records = new ArrayList<RecordMetadata>(results);
-		//Collections.sort(records);
+		Collections.sort(records);
 		return ok(Json.toJson(records));
 	}
 	

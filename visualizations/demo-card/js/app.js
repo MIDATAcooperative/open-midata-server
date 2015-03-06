@@ -49,9 +49,11 @@ recordList.controller('RecordListCtrl', ['$scope', '$http', '$location',
 					$scope.skipped.wrongFormat++;
 					continue;				
 				}
-				if (!owners[rec.owner]) owners[rec.owner] = { ownerName:rec.ownerName };
-				var owner = owners[rec.owner];
-				if (!owner[format]) {
+				var ownerName = (format == "part1") ? rec.ownerName : rec.data.ownerName;
+				var ownerName1 = ownerName.toLowerCase().replace(/\s/g,'');
+				if (owners[ownerName1] == null) owners[ownerName1] = { ownerName:ownerName };
+				var owner = owners[ownerName1];
+				if (owner[format] == null) {
 					owner[format] = rec;
 				} else {
 					$scope.skipped.outdated++;

@@ -13,11 +13,12 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 		$scope.validate = function() {
 			$scope.loading = true;
 			$scope.errors = {};
+			$scope.validateField("ownerName");
 			$scope.validateField("ldl");
 			$scope.validateField("hdl");
 			$scope.validateField("glucose");			
 			
-			if(!$scope.errors.ldl && !$scope.errors.hdl && !$scope.errors.glucose) {
+			if(!$scope.errors.ldl && !$scope.errors.hdl && !$scope.errors.glucose && !$scope.errors.ownerName) {
 				$scope.submit()
 			} else {
 				$scope.loading = false;
@@ -37,7 +38,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 			var data = {
 				"authToken": authToken,
 				"data": JSON.stringify($scope.data),
-				"name": "Kardiologischer Record 2 ("+$filter('date')(new Date(), 'yyyy-MM-dd')+")",
+				"name": "Kard. Record 2 ("+$scope.data.ownerName+", "+$filter('date')(new Date(), 'yyyy-MM-dd')+")",
 				"description": "Kardiologischer Record 2",
 				"format" : "cardio2/demo-card"
 			};
