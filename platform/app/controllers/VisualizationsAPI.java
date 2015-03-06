@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import models.ModelException;
+import models.Record;
 import models.Space;
 
 import org.bson.types.ObjectId;
@@ -18,6 +19,7 @@ import utils.auth.RecordToken;
 import utils.auth.SpaceToken;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
+import utils.collections.ReferenceTool;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -146,6 +148,8 @@ public class VisualizationsAPI extends Controller {
 		}*/
 
 		// get record data
-		return ok(Json.toJson(RecordSharing.instance.fetchMultiple(authToken.userId, authToken.spaceId, recordIds, fields)));
+		Set<Record> records = RecordSharing.instance.fetchMultiple(authToken.userId, authToken.spaceId, recordIds, fields);
+		if (fields.contains("ownerName")) ReferenceTool.resolveOwners(records);
+		return ok(Json.toJson(records));
 	}
 }

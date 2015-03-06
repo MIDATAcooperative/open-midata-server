@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
+import utils.db.NotMaterialized;
 import utils.search.Search;
 import utils.search.SearchException;
 
@@ -19,6 +20,7 @@ public class Record extends Model implements Comparable<Record> {
 
 	public ObjectId app; // app that created the record
 	public ObjectId owner; // person the record is about
+	public @NotMaterialized String ownerName;
 	public ObjectId creator; // user that imported the record
 	public String series; // series this record belongs to
 	public String created; // date + time created

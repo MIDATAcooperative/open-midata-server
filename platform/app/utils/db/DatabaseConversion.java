@@ -64,6 +64,7 @@ public class DatabaseConversion {
 		DBObject dbObject = new BasicDBObject();
 		Class model = modelObject.getClass();
 		for (Field field : model.getFields()) {
+			if (field.getAnnotation(NotMaterialized.class)!=null) continue;
 			try {
 				dbObject.put(field.getName(), todb(encrypt(model, field.getName(), field.get(modelObject))));
 			} catch (IllegalArgumentException e) {
