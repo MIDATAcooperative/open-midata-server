@@ -4,5 +4,6 @@ public enum UserRole {
    MEMBER,
    ADMIN,
    RESEARCH,
-   PROVIDER
+   PROVIDER,
+   ANY
 }

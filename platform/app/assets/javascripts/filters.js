@@ -34,6 +34,10 @@ filters.filter('recordFilter', ['filterData', function(filterData) {
 							return record[filter.property.name].$oid === filter.value._id.$oid;
 						} else if (filter.operator.value === "isnt") { // inequality
 							return record[filter.property.name].$oid !== filter.value._id.$oid;
+						} else if (filter.operator.value === "isval") { // equality
+							return record[filter.property.name] == filter.value.value;
+						} else if (filter.operator.value === "isntval") { // inequality
+							return record[filter.property.name] != filter.value.value;
 						} else if (filter.operator.value === "incircle") { // circle membership
 							if (filterData.circles[filter.value._id.$oid]) {
 								return _.some(filterData.circles[filter.value._id.$oid].members, 
@@ -80,6 +84,8 @@ filters.factory('filterService', ['$rootScope', '$http', '$q', '$timeout', 'date
 			filterData.filters[serviceId].operators = {
 					"is": {"value": "is", "name": "is"},
 					"isnt": {"value": "isnt", "name": "isn't"},
+					"isval": {"value": "isval", "name": "is"},
+					"isntval": {"value": "isntval", "name": "isn't"},
 					"incircle": {"value": "incircle", "name": "is in circle"},
 					"notincircle": {"value": "notincircle", "name": "isn't in circle"}
 			};
@@ -90,7 +96,8 @@ filters.factory('filterService', ['$rootScope', '$http', '$q', '$timeout', 'date
 					"app": getPropertyValues("app", jsRoutes.controllers.Apps.get().url),
 					"owner": getPropertyValues("owner", jsRoutes.controllers.Users.get().url),
 					"creator": getPropertyValues("creator", jsRoutes.controllers.Users.get().url),
-					"circle": getCircles()
+					"circle": getCircles(),
+					"format": getProperty("format")
 			};
 			var promises = filterData.filters[serviceId].promises;
 			
@@ -99,7 +106,8 @@ filters.factory('filterService', ['$rootScope', '$http', '$q', '$timeout', 'date
 					"app": {"name": "app", "type": "point", "operators": [operators.is, operators.isnt], values: {}},
 					"owner": {"name": "owner", "type": "point", "operators": [operators.is, operators.isnt, operators.incircle, operators.notincircle], values: {}},
 					"creator": {"name": "creator", "type": "point", "operators": [operators.is, operators.isnt, operators.incircle, operators.notincircle], values: {}},
-					"created": {"name": "created", "type": "range", "from": getMin("created"), "to": getMax("created")}
+					"created": {"name": "created", "type": "range", "from": getMin("created"), "to": getMax("created")},
+					"format" : {"name": "format", "type": "point", "operators": [operators.isval, operators.isntval], values: {}}
 			};
 			var properties = filterData.filters[serviceId].properties;
 			
@@ -109,7 +117,8 @@ filters.factory('filterService', ['$rootScope', '$http', '$q', '$timeout', 'date
 					"owner": [{"property": properties.owner, "operators": [operators.is, operators.isnt]}],
 					"creator": [{"property": properties.creator, "operators": [operators.is, operators.isnt]}],
 					"circle": [{"property": properties.owner, "operators": [operators.incircle, operators.notincircle]},
-					           {"property": properties.creator, "operators": [operators.incircle, operators.notincircle]}]
+					           {"property": properties.creator, "operators": [operators.incircle, operators.notincircle]}],
+					"format": [{"property": properties.format, "operators": [operators.isval, operators.isntval]}]
 			};
 			
 			// resolves promises by setting the values for the operators for each subscription
@@ -129,6 +138,7 @@ filters.factory('filterService', ['$rootScope', '$http', '$q', '$timeout', 'date
 				resolvePromise("circle", circles);
 				_.each(circles, function(circle) { filterData.circles[circle._id.$oid] = circle; });
 			}, function(err) { error = err; });
+			promises.format.then(function(formats) { resolvePromise("format", formats); });
 		}
 	}
 	
@@ -150,6 +160,14 @@ filters.factory('filterService', ['$rootScope', '$http', '$q', '$timeout', 'date
 		$http.post(url, JSON.stringify(data)).
 			success(function(values) { deferred.resolve(_.sortBy(values, "name")); }).
 			error(function(err) { deferred.reject("Failed to load filter values for property '" + property + "': " + err); });
+		return deferred.promise;
+	}
+	
+	getProperty = function(property) {
+		var deferred = $q.defer();
+		var values = _.uniq(_.pluck(records, property), false, function(value) { return value });
+		var results = _.map(values, function(value) { return { "name" : value, "value" : value };  });
+		deferred.resolve(results);
 		return deferred.promise;
 	}
 	

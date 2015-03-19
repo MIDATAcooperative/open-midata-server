@@ -1,10 +1,12 @@
 package models;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
 
+import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.search.Search;
 import utils.search.Search.Type;
@@ -15,6 +17,8 @@ public class Visualization extends Plugin implements Comparable<Visualization> {
 	private static final String collection = "visualizations";
 
 	public String url;
+	public String defaultSpaceName;
+	public List<FilterRule> defaultRules;
 
 	@Override
 	public int compareTo(Visualization other) {
@@ -31,6 +35,10 @@ public class Visualization extends Plugin implements Comparable<Visualization> {
 
 	public static Visualization get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
 		return Model.get(Visualization.class, collection, properties, fields);
+	}
+	
+	public static Visualization getById(ObjectId id, Set<String> fields) throws ModelException {
+		return Model.get(Visualization.class, collection, CMaps.map("_id", id), fields);
 	}
 
 	public static Set<Visualization> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {

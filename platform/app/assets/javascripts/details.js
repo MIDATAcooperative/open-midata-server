@@ -107,18 +107,36 @@ details.controller('AppCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.error = null;
 	$scope.success = false;
 	$scope.app = {};
+	$scope.visualizations = [];
 	
 	// parse app id (format: /apps/:id) and load the app
 	var appId = window.location.pathname.split("/")[2];
-	var data = {"properties": {"_id": {"$oid": appId}}, "fields": ["name", "creator", "description"]};
+	var data = {"properties": {"_id": {"$oid": appId}}, "fields": ["name", "creator", "description", "recommendedVisualizations"]};
 	$http.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
 		success(function(apps) {
 			$scope.error = null;
 			$scope.app = apps[0];
 			isInstalled();
 			getCreatorName();
+			if ($scope.app.recommendedVisualizations && $scope.app.recommendedVisualizations.length > 0) {
+				$scope.loadRecommendations($scope.app.recommendedVisualizations);
+			}
 		}).
 		error(function(err) { $scope.error = "Failed to load app details: " + err; });
+	
+	$scope.loadRecommendations = function(ids) {
+		var data = { "properties": {"_id": ids }, "fields": ["name", "creator", "description"]};
+		$http.post(jsRoutes.controllers.Visualizations.get().url, JSON.stringify(data)).
+			success(function(visualizations) {				
+				$scope.visualizations = visualizations;				
+			}).
+			error(function(err) { $scope.error = "Failed to load visualization details: " + err; });
+	};
+	
+	// show visualization details
+	$scope.showVisualizationDetails = function(visualization) {
+		window.location.href = jsRoutes.controllers.Visualizations.details(visualization._id.$oid).url;
+	};
 	
 	isInstalled = function() {
 		$http(jsRoutes.controllers.Apps.isInstalled($scope.app._id.$oid)).
@@ -157,14 +175,22 @@ details.controller('VisualizationCtrl', ['$scope', '$http', function($scope, $ht
 	$scope.error = null;
 	$scope.success = false;
 	$scope.visualization = {};
+	$scope.options = {};
 	
 	// parse visualization id (format: /visualizations/:id) and load the visualization
 	var visualizationId = window.location.pathname.split("/")[2];
-	var data = {"properties": {"_id": {"$oid": visualizationId}}, "fields": ["name", "creator", "description"]};
+	var data = {"properties": {"_id": {"$oid": visualizationId}}, "fields": ["name", "creator", "description", "defaultSpaceName", "defaultRules"]};
 	$http.post(jsRoutes.controllers.Visualizations.get().url, JSON.stringify(data)).
 		success(function(visualizations) {
 			$scope.error = null;
 			$scope.visualization = visualizations[0];
+			if ($scope.visualization.defaultSpaceName!=null) {
+			  $scope.options.createSpace = true;
+			  $scope.options.spaceName = $scope.visualization.defaultSpaceName;
+			  if ($scope.visualization.defaultRules &&$scope.visualization.defaultRules.length >0 ) {
+				  $scope.options.applyRules = true;
+			  }
+			}
 			isInstalled();
 			getCreatorName();
 		}).
@@ -184,7 +210,7 @@ details.controller('VisualizationCtrl', ['$scope', '$http', function($scope, $ht
 	}
 	
 	$scope.install = function() {
-		$http(jsRoutes.controllers.Visualizations.install($scope.visualization._id.$oid)).
+		$http.put(jsRoutes.controllers.Visualizations.install($scope.visualization._id.$oid).url, JSON.stringify($scope.options)).
 			success(function() {
 				$scope.visualization.installed = true;
 				$scope.success = true;

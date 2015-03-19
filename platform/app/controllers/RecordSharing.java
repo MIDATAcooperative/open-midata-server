@@ -20,7 +20,6 @@ import models.LargeRecord;
 import models.Member;
 import models.ModelException;
 import models.Record;
-import models.RecordMetadata;
 import models.User;
 
 public class RecordSharing {
@@ -31,6 +30,8 @@ public class RecordSharing {
 		AccessPermissionSet newset = new AccessPermissionSet();
 		newset._id = new ObjectId();
 		newset.permissions = new HashMap<String, BasicDBObject>();
+		newset.keys = new HashMap<String, String>();
+		newset.keys.put("owner", "key"+who.toString());
 		AccessPermissionSet.add(newset);
 		return newset._id;
 	}
@@ -39,16 +40,32 @@ public class RecordSharing {
 		AccessPermissionSet newset = new AccessPermissionSet();
 		newset._id = new ObjectId();
 		newset.permissions = new HashMap<String, BasicDBObject>();
+		newset.keys = new HashMap<String, String>();
+		newset.keys.put("owner", "key"+owner.toString());
+		newset.keys.put(other.toString(), "key"+other.toString());
 		AccessPermissionSet.add(newset);
 		return newset._id;
 	}
 	
 	public void shareAPS(ObjectId apsId, ObjectId ownerId, Set<ObjectId> targetUsers) throws ModelException {
-		
+		AccessPermissionSet aps = AccessPermissionSet.getById(apsId);
+		if (aps==null) throw new ModelException("APS not found.");
+		validateReadable(aps, ownerId);
+		for (ObjectId targetUser : targetUsers) {
+		  aps.keys.put(targetUser.toString(), "key"+targetUser.toString());
+		}
+		aps.setKeys(aps.keys);
 	}
 	
 	public void unshareAPS(ObjectId apsId, ObjectId ownerId, Set<ObjectId> targetUsers) throws ModelException {
+		AccessPermissionSet aps = AccessPermissionSet.getById(apsId);
+		if (aps==null) throw new ModelException("APS not found.");
+		validateReadable(aps, ownerId);
 		
+		for (ObjectId targetUser : targetUsers) {
+		  aps.keys.remove(targetUser.toString());
+		}
+		aps.setKeys(aps.keys);
 	}
 
 	public void share(ObjectId who, ObjectId fromAPS, ObjectId toAPS, Set<ObjectId> records, boolean withOwnerInformation) throws ModelException {
@@ -58,6 +75,9 @@ public class RecordSharing {
 		AccessPermissionSet target = AccessPermissionSet.getById(toAPS);
 		if (target==null) throw new ModelException("target APS not found.");
 				
+		validateReadable(source, who);
+		validateReadable(target, who);
+		
 		for (ObjectId record : records) {
 			String key = record.toString();
 			BasicDBObject entry = source.permissions.get(key);
@@ -76,6 +96,7 @@ public class RecordSharing {
 	
 	public void unshare(ObjectId who, ObjectId apsId, Set<ObjectId> records) throws ModelException {
 		AccessPermissionSet aps = AccessPermissionSet.getById(apsId);
+		validateReadable(aps, who);
 		
 		for (ObjectId rec : records) {
 			aps.permissions.remove(rec.toString());
@@ -86,6 +107,7 @@ public class RecordSharing {
 	
 	public void addRecord(Member owner, Record record) throws ModelException {
 	    AccessPermissionSet aps = AccessPermissionSet.getById(owner.myaps);	
+	    validateReadable(aps, owner._id);
 	    
 	    Record.add(record);
 	    
@@ -95,7 +117,7 @@ public class RecordSharing {
 	
 	public void addRecord2(Member owner, Record record) throws ModelException {
 	    AccessPermissionSet aps = AccessPermissionSet.getById(owner.myaps);	
-	    
+	    validateReadable(aps, owner._id);
 	    //Record.add(record);
 	    
 	    BasicDBObject entry = new BasicDBObject();	    
@@ -107,12 +129,13 @@ public class RecordSharing {
 		AccessPermissionSet.delete(apsId);
 	}
 					
-	public Collection<RecordMetadata> list(ObjectId who, ObjectId apsId, boolean withmetadata, boolean withId) throws ModelException {
+	public Collection<Record> list(ObjectId who, ObjectId apsId, boolean withmetadata, boolean withId, boolean externId) throws ModelException {
 		AccessPermissionSet aps = AccessPermissionSet.getById(apsId);	
-				
-		Map<String, RecordMetadata> result = new HashMap<String, RecordMetadata>();
+		validateReadable(aps, who);
+		
+		Map<String, Record> result = new HashMap<String, Record>();
 		for (String key : aps.permissions.keySet()) {
-			RecordMetadata md = new RecordMetadata();
+			Record md = new Record();
 			BasicDBObject entry = aps.permissions.get(key);
 			md.id = new RecordToken(key, apsId.toString()).encrypt();
 			md.owner = entry.get("owner") != null ? (ObjectId) entry.get("owner") : who;
@@ -122,7 +145,7 @@ public class RecordSharing {
 		if (withmetadata) {
 			Set<Record> records = Record.getAllByIds(ObjectIdConversion.toObjectIds(aps.permissions.keySet()), Sets.create("app","created","creator","description","format","name"));
 	        for (Record rec : records) {
-	          RecordMetadata md = result.get(rec._id.toString());
+	        	Record md = result.get(rec._id.toString());
 	          if (withId) md._id = rec._id;
 	          md.app = rec.app;
 	          md.created = rec.created;
@@ -140,6 +163,7 @@ public class RecordSharing {
 	
 	public Set<String> listTokens(ObjectId who, ObjectId apsId) throws ModelException {
 		AccessPermissionSet aps = AccessPermissionSet.getById(apsId);	
+		validateReadable(aps, who);
 		
 		Set<String> result = new HashSet<String>();
 		for (String key : aps.permissions.keySet()) {			
@@ -151,16 +175,18 @@ public class RecordSharing {
 	
 	public Set<String> listRecordIds(ObjectId who, ObjectId apsId) throws ModelException {
 		AccessPermissionSet aps = AccessPermissionSet.getById(apsId);	
-				
+		validateReadable(aps, who);		
 		return aps.permissions.keySet();						
 	}
 	
 	//public Map<String, Set<ObjectId>> toSearch(ObjectId who, )
 	
-	public Record fetch(RecordToken token) throws ModelException {
+	public Record fetch(ObjectId who, RecordToken token) throws ModelException {
 		ObjectId apsId = new ObjectId(token.apsId);		
 		
 		AccessPermissionSet aps = AccessPermissionSet.getById(apsId);
+		validateReadable(aps, who);
+		
 		BasicDBObject entry = aps.permissions.get(token.recordId);
 		if (entry!=null) {
 			Record result = Record.getById(new ObjectId(token.recordId)); 
@@ -174,6 +200,8 @@ public class RecordSharing {
 				
 		
 		AccessPermissionSet aps = AccessPermissionSet.getById(apsId);
+		validateReadable(aps, who);
+		
 		Set<Record> result = new HashSet<Record>();
 		Set<String> ids = recordIds != null ? recordIds : aps.permissions.keySet();
 				
@@ -185,5 +213,12 @@ public class RecordSharing {
 		}
 		
 		return result;
+	}
+	
+	private void validateReadable(AccessPermissionSet aps, ObjectId who) throws ModelException {
+		if (aps.keys == null) return; // Old version support
+		String key = aps.keys.get(who.toString());
+		if (key==null) key = aps.keys.get("owner"); 
+	    if (key==null || ! key.equals("key"+who.toString())) throw new ModelException("APS not readable by user");		
 	}
 }

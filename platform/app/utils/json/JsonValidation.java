@@ -25,7 +25,9 @@ public class JsonValidation {
 	}
 	
 	public static String getString(JsonNode json, String field) {
-		return json.path(field).asText();
+		String res = json.path(field).asText();
+		if (res != null) res = res.trim();
+		return res;
 	}
 	
 	public static ObjectId getObjectId(JsonNode json, String field) {

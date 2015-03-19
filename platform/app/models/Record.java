@@ -18,6 +18,7 @@ public class Record extends Model implements Comparable<Record> {
 
 	private static final String collection = "records";
 
+	public @NotMaterialized String id;
 	public ObjectId app; // app that created the record
 	public ObjectId owner; // person the record is about
 	public @NotMaterialized String ownerName;

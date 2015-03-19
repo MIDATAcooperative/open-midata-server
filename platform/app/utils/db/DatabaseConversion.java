@@ -87,7 +87,7 @@ public class DatabaseConversion {
 	/**
 	 * Converts a database object back into a model.
 	 */
-	public <T extends Model> T toModel(Class<T> modelClass, DBObject dbObject)
+	public <T extends JsonSerializable> T toModel(Class<T> modelClass, DBObject dbObject)
 			throws DatabaseConversionException {
 		T modelObject;
 		try {
@@ -138,12 +138,12 @@ public class DatabaseConversion {
 				return convertToList(model, path, type, value);
 			}
 		}
-		/*if (type instanceof Class) {
+		if (type instanceof Class) {
 			Class c = (Class) type;
 			if (JsonSerializable.class.isAssignableFrom(c)) {
 			  return toModel(c, (DBObject) value);
 			}
-		}*/
+		}
 		return value;
 	}
 

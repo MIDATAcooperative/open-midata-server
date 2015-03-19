@@ -26,6 +26,14 @@
 			
 			<button type="button" class="btn btn-primary" ng-hide="app.installed" ng-click="install()">Install</button>
 			<button type="button" class="btn btn-default" ng-show="app.installed" ng-click="uninstall()">Uninstall</button>
+			<p></p>
+			<div  ng-show="visualizations.length > 0">
+			  <p class="lead">Recommended Visualizations</p>
+			  <p>For viewing data created by this app these visualizations are recommended:</p>
+			  <div ng-repeat="visualization in visualizations">
+			     <button class="btn btn-default" ng-click="showVisualizationDetails(visualization)">{{ visualization.name }}</a>
+			  </div>
+			</div>
 		</div>
 	</div>
 	

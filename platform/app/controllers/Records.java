@@ -13,7 +13,6 @@ import models.Circle;
 import models.LargeRecord;
 import models.ModelException;
 import models.Record;
-import models.RecordMetadata;
 import models.Space;
 import models.Member;
 import models.StudyParticipation;
@@ -28,6 +27,7 @@ import play.mvc.Security;
 import utils.auth.RecordToken;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
+import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.db.FileStorage;
 import utils.db.FileStorage.FileData;
@@ -85,11 +85,11 @@ public class Records extends Controller {
 		
 		String id = JsonValidation.getString(json, "_id");
 		RecordToken tk = null;
+		ObjectId userId = new ObjectId(request().username());
+		
 		if (id.length()>25) {
 		   tk = RecordToken.decrypt(JsonValidation.getString(json, "_id"));
-		} else {
-		   ObjectId userId = new ObjectId(request().username());
-			
+		} else {		   		
 		   Member user = Member.getById(userId, Sets.create("myaps"));
 		
 		   Set<String> ids = RecordSharing.instance.listRecordIds(user._id, user.myaps);
@@ -105,7 +105,7 @@ public class Records extends Controller {
 		}
 		
 		if (tk==null) return badRequest("Bad token");
-		Record target = RecordSharing.instance.fetch(tk);
+		Record target = RecordSharing.instance.fetch(userId, tk);
 						
 		return ok(Json.toJson(target));
 	}
@@ -126,9 +126,9 @@ public class Records extends Controller {
 		
 		Member self = Member.getById(userId, Sets.create("myaps"));
 		
-		List<RecordMetadata> results = new ArrayList<RecordMetadata>();
+		List<Record> results = new ArrayList<Record>();
 		
-		results.addAll(RecordSharing.instance.list(userId, self.myaps, true, true));
+		results.addAll(RecordSharing.instance.list(userId, self.myaps, true, true, true));
 		
 		//Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("owner", userId).get();
 		//Set<String> fields = new ChainedSet<String>().add("app").add("owner").add("creator").add("created").add("name").get();
@@ -138,7 +138,7 @@ public class Records extends Controller {
 		Set<Circle> circles = Circle.getAllByMember(userId);
 		
 		for (Circle circle : circles) {
-			results.addAll(RecordSharing.instance.list(userId, circle.aps, true, true));
+			results.addAll(RecordSharing.instance.list(userId, circle.aps, true, true, true));
 		}
 		
 		/*
@@ -153,9 +153,10 @@ public class Records extends Controller {
 		Map<String, Set<ObjectId>> visibleRecords = new ChainedMap<String, Set<ObjectId>>().put("_id", visibleRecordIds).get();
 		
 		records.addAll(Record.getAll(visibleRecords, fields));
-		*/
-		List<RecordMetadata> records = new ArrayList<RecordMetadata>(results);
+		*/		
+		List<Record> records = new ArrayList<Record>(results); 
 		Collections.sort(records);
+		ReferenceTool.resolveOwners(records);
 		return ok(Json.toJson(records));
 	}
 	
@@ -343,11 +344,12 @@ public class Records extends Controller {
 	public static Result getFile(String id) throws ModelException {
 		
 		RecordToken tk = null;
+		ObjectId userId = new ObjectId(request().username());
+		
 		if (id.length()>25) {
 		   tk = RecordToken.decrypt(id);
 		} else {
-		   ObjectId userId = new ObjectId(request().username());
-			
+		   		
 		   Member user = Member.getById(userId, Sets.create("myaps"));
 		
 		   Set<String> ids = RecordSharing.instance.listRecordIds(user._id, user.myaps);
@@ -363,7 +365,7 @@ public class Records extends Controller {
 		}
 		
 		if (tk==null) return badRequest("Bad token");
-		Record target = RecordSharing.instance.fetch(tk);
+		Record target = RecordSharing.instance.fetch(userId, tk);
 		if (target==null) return badRequest("Unknown Record");
 		
 		FileData fileData = FileStorage.retrieve(new ObjectId(tk.recordId));

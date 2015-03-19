@@ -73,28 +73,37 @@ public class Spaces extends Controller {
 		
 		JsonValidation.validate(json, "name", "visualization");
 		
-
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
 		String name = json.get("name").asText();
 		String visualizationIdString = json.get("visualization").asText();
+		ObjectId visualizationId = new ObjectId(visualizationIdString);
 		
 		if (Space.existsByNameAndOwner(name, userId)) {
 			return badRequest("A space with this name already exists.");
 		}
-		
+				
+		Space space = add(userId, name, visualizationId);
+				
+		return ok(Json.toJson(space));
+	}
+	
+	public static Space add(ObjectId userId, String name, ObjectId visualizationId) throws ModelException {
+			
+		if (Space.existsByNameAndOwner(name, userId)) {
+			throw new ModelException("A space with this name already exists.");
+		}		
 		// create new space
 		Space space = new Space();
 		space._id = new ObjectId();
 		space.owner = userId;
 		space.name = name;
 		space.order = Space.getMaxOrder(userId) + 1;
-		space.visualization = new ObjectId(visualizationIdString);
+		space.visualization = visualizationId;
 		space.aps = RecordSharing.instance.createPrivateAPS(userId);
 		
-		Space.add(space);
-		
-		return ok(Json.toJson(space));
+		Space.add(space);		
+		return space;
 	}
 
 	@APICall

@@ -21,7 +21,7 @@ records.controller('RecordsCtrl', ['$scope', '$http', 'filterService', 'dateServ
 		success(function(userId) {
 			$scope.userId = userId;
 			$scope.getApps(userId);
-			$scope.getRecords(userId);
+			$scope.getRecords(userId);			
 		});
 	
 	// get apps

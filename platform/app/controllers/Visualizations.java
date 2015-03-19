@@ -8,7 +8,9 @@ import java.util.Set;
 
 import models.ModelException;
 import models.Member;
+import models.Space;
 import models.Visualization;
+import models.enums.UserRole;
 
 import org.bson.types.ObjectId;
 
@@ -20,15 +22,18 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
+import utils.collections.Sets;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import views.html.details.visualization;
 
+import actions.APICall;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Security.Authenticated(Secured.class)
-public class Visualizations extends Controller {
+public class Visualizations extends APIController {
 
 	public static Result details(String visualizationIdString) {
 		return ok(visualization.render());
@@ -57,17 +62,36 @@ public class Visualizations extends Controller {
 		return ok(Json.toJson(visualizations));
 	}
 
-	public static Result install(String visualizationIdString) {
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public static Result install(String visualizationIdString) throws ModelException {
+		JsonNode json = request().body().asJson();
 		ObjectId userId = new ObjectId(request().username());
-		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", userId).get();
-		Set<String> fields = new ChainedSet<String>().add("visualizations").get();
-		try {
-			Member user = Member.get(properties, fields);
-			user.visualizations.add(new ObjectId(visualizationIdString));
-			Member.set(userId, "visualizations", user.visualizations);
-		} catch (ModelException e) {
-			return badRequest(e.getMessage());
+		ObjectId visualizationId = new ObjectId(visualizationIdString);
+
+		String spaceName = JsonValidation.getString(json, "spaceName");
+		boolean applyRules = JsonValidation.getBoolean(json, "applyRules");
+		boolean createSpace = JsonValidation.getBoolean(json, "createSpace");
+		
+		Visualization visualization = Visualization.getById(visualizationId, Sets.create("defaultRules", "targetUserRole", "defaultSpaceName"));
+		if (visualization == null) return badRequest("Unknown visualization");
+		
+		if (visualization.targetUserRole != UserRole.MEMBER && visualization.targetUserRole != UserRole.ANY) return badRequest("Visualization is not for members");
+		
+		Member user = Member.getById(userId, Sets.create("visualizations", "myaps"));
+		user.visualizations.add(visualizationId);
+		Member.set(userId, "visualizations", user.visualizations);
+				
+		if (spaceName!=null && !spaceName.equals("") && visualization.defaultSpaceName != null) {
+			Space space = null;
+			if (createSpace) {
+				space = Spaces.add(userId, spaceName, visualizationId);
+			}
+			if (applyRules && space!=null) {
+				RuleApplication.instance.applyRules(userId, visualization.defaultRules, user.myaps, space.aps, true);
+			}
 		}
+		
 		return ok();
 	}
 

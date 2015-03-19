@@ -1,5 +1,6 @@
 package models;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,6 +18,8 @@ public class App extends Plugin implements Comparable<App> {
 
 	public String type; // type can be one of: create, oauth1, oauth2, mobile
 	public String url; // url to call the app
+	
+	public List<ObjectId> recommendedVisualizations;
 	
 	// oauth 1.0/2.0 app
 	public String authorizationUrl;
