@@ -50,6 +50,10 @@ public class App extends Plugin implements Comparable<App> {
 		return Model.get(App.class, collection, properties, fields);
 	}
 	
+	public static App getById(ObjectId id, Set<String> fields) throws ModelException {
+		return Model.get(App.class, collection, CMaps.map("_id", id), fields);
+	}
+	
 	public static App getByFilenameAndSecret(String name, String secret, Set<String> fields) throws ModelException {
 		return Model.get(App.class, collection, CMaps.map("filename", name).map("secret", secret), fields);
 	}

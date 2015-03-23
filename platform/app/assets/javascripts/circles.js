@@ -48,12 +48,12 @@ circles.controller('CirclesCtrl', ['$scope', '$http', function($scope, $http) {
 		contactIds = _.flatten(contactIds);
 		contactIds = _.uniq(contactIds, false, function(contactId) { return contactId.$oid; });
 		var properties = {"_id": contactIds};
-		var fields = ["name"];
+		var fields = ["firstname", "sirname"];
 		var data = {"properties": properties, "fields": fields};
 		$http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
 			success(function(contacts) {
 				$scope.contacts = contacts;
-				_.each(contacts, function(contact) { $scope.userNames[contact._id.$oid] = contact.name; });
+				_.each(contacts, function(contact) { $scope.userNames[contact._id.$oid] = (contact.firstname + " " + contact.sirname).trim(); });
 				$scope.loading = false;
 			}).
 			error(function(err) {

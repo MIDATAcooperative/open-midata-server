@@ -26,6 +26,7 @@ import utils.DateTimeUtils;
 import utils.auth.AppToken;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
+import utils.collections.Sets;
 import utils.db.FileStorage;
 import utils.db.FileStorage.FileData;
 import utils.json.JsonValidation;
@@ -107,11 +108,9 @@ public class GenomeDataConverter extends Controller {
 			return e.getMessage();
 		}
 
-		// check whether there exists a user with the app installed
-		Map<String, ObjectId> userProperties = new ChainedMap<String, ObjectId>().put("_id", appToken.userId).put("apps", appToken.appId)
-				.get();
+		// check whether there exists a user with the app installed		
 		try {
-			if (!Member.exists(userProperties)) {
+			if (Member.getByIdAndApp(appToken.userId,  appToken.appId, Sets.create()) == null) {
 				return "Invalid authToken.";
 			}
 		} catch (ModelException e) {

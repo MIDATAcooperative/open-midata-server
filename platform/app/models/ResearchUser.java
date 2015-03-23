@@ -35,11 +35,11 @@ public class ResearchUser extends User {
 	}
 	
 	public static boolean existsByEMail(String email) throws ModelException {
-		return Model.exists(ResearchUser.class, collection, CMaps.map("email", email));
+		return Model.exists(ResearchUser.class, collection, CMaps.map("email", email).map("role", UserRole.RESEARCH));
 	}
 	
 	public static ResearchUser getByEmail(String email, Set<String> fields) throws ModelException {
-		return Model.get(ResearchUser.class, collection, CMaps.map("email", email), fields);
+		return Model.get(ResearchUser.class, collection, CMaps.map("email", email).map("role", UserRole.RESEARCH), fields);
 	}
 	
 	public static ResearchUser getById(ObjectId id, Set<String> fields) throws ModelException {

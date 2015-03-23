@@ -111,12 +111,10 @@ public class Visualizations extends APIController {
 
 	public static Result isInstalled(String visualizationIdString) {
 		ObjectId userId = new ObjectId(request().username());
-		ObjectId visualizationId = new ObjectId(visualizationIdString);
-		Map<String, Object> properties = new ChainedMap<String, Object>().put("_id", userId)
-				.put("visualizations", visualizationId).get();
+		ObjectId visualizationId = new ObjectId(visualizationIdString);		
 		boolean isInstalled;
 		try {
-			isInstalled = Member.exists(properties);
+			isInstalled = Member.getByIdAndVisualization(userId, visualizationId, Sets.create()) != null;
 		} catch (ModelException e) {
 			return internalServerError(e.getMessage());
 		}

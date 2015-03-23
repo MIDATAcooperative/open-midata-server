@@ -33,7 +33,7 @@
 			</form>
 			<ul class="nav navbar-nav navbar-right" ng-cloak>
 			    <li><a>{{user.midataID}}</a></li>
-				<li><a href="/users/{{user._id.$oid}}">{{user.name}}</a></li>
+				<li><a href="/members/users/{{user._id.$oid}}">{{user.name}}</a></li>
 				<li><a href="@routes.Application.logout()">
 					<span class="glyphicon glyphicon-off"></span> Sign out
 				</a></li>

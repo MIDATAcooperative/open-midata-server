@@ -30,10 +30,13 @@ import play.mvc.Security;
 import utils.auth.AppToken;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
+import utils.collections.Sets;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import views.html.details.app;
+
+import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -98,16 +101,12 @@ public class Apps extends Controller {
 		return ok();
 	}
 
-	public static Result isInstalled(String appIdString) {
+	@APICall
+	public static Result isInstalled(String appIdString) throws ModelException {
 		ObjectId userId = new ObjectId(request().username());
-		ObjectId appId = new ObjectId(appIdString);
-		Map<String, Object> properties = new ChainedMap<String, Object>().put("_id", userId).put("apps", appId).get();
-		boolean isInstalled;
-		try {
-			isInstalled = Member.exists(properties);
-		} catch (ModelException e) {
-			return internalServerError(e.getMessage());
-		}
+		ObjectId appId = new ObjectId(appIdString);		
+		boolean isInstalled = (Member.getByIdAndApp(userId, appId, Sets.create()) != null);
+		
 		return ok(Json.toJson(isInstalled));
 	}
 

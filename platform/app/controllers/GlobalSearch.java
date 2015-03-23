@@ -25,7 +25,7 @@ import utils.search.Search;
 import utils.search.SearchResult;
 import views.html.search;
 
-@Security.Authenticated(Secured.class)
+@Security.Authenticated(AnyRoleSecured.class)
 public class GlobalSearch extends Controller {
 
 	/**

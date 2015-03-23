@@ -16,13 +16,8 @@ import utils.search.SearchException;
 import utils.search.Search.Type;
 
 public class Member extends User {
-
-	private static final String collection = "users";
 	
-	//public Map<String, Set<ObjectId>> visible; // map from users (DBObject requires string) to their shared records
-	public Set<ObjectId> apps; // installed apps
-	public Map<String, Map<String, String>> tokens; // map from apps to app details
-	public Set<ObjectId> visualizations; // installed visualizations
+	//public Map<String, Set<ObjectId>> visible; // map from users (DBObject requires string) to their shared records	
 	
 	public Set<ObjectId> news; // visible news items
 	public Set<ObjectId> pushed; // records pushed by apps (since last login)
@@ -40,11 +35,11 @@ public class Member extends User {
 	}
 	
 	public static boolean existsByEMail(String email) throws ModelException {
-		return Model.exists(Member.class, collection, CMaps.map("email", email));
+		return Model.exists(Member.class, collection, CMaps.map("email", email).map("role",  UserRole.MEMBER));
 	}
 	
 	public static Member getByEmail(String email, Set<String> fields) throws ModelException {
-		return Model.get(Member.class, collection, CMaps.map("email", email), fields);
+		return Model.get(Member.class, collection, CMaps.map("email", email).map("role", UserRole.MEMBER), fields);
 	}
 	
 	public static Member getById(ObjectId id, Set<String> fields) throws ModelException {
@@ -53,6 +48,10 @@ public class Member extends User {
 	
 	public static Member getByIdAndApp(ObjectId id, ObjectId appId, Set<String> fields) throws ModelException {
 		return Model.get(Member.class, collection, CMaps.map("_id", id).map("apps", appId), fields);
+	}
+	
+	public static Member getByIdAndVisualization(ObjectId id, ObjectId visualizationId, Set<String> fields) throws ModelException {
+		return Model.get(Member.class, collection, CMaps.map("_id", id).map("visualizations", visualizationId), fields);
 	}
 	
 	public static Member getByMidataIDAndBirthday(String midataID, Date birthday, Set<String> fields) throws ModelException {

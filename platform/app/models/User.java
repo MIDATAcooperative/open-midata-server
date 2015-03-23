@@ -18,15 +18,19 @@ import org.bson.types.ObjectId;
 import utils.PasswordHash;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
+import utils.db.NotMaterialized;
 import utils.search.Search;
 import utils.search.Search.Type;
 import utils.search.SearchException;
 
 public class User extends Model implements Comparable<User> {
 
+	protected static final String collection = "users";
+	
 	public String email; // must be unique
-	public String name;
+	public @NotMaterialized String name;
 	public String password;
+	public UserRole role;
 	
 	public Map<String, Set<ObjectId>> messages; // keys (folders) are: inbox, archive, trash
 	public String login; // timestamp of last login
@@ -51,6 +55,10 @@ public class User extends Model implements Comparable<User> {
 	public String mobile;
 	
 	public List<History> history;
+	
+	public Set<ObjectId> apps; // installed apps
+	public Map<String, Map<String, String>> tokens; // map from apps to app details
+	public Set<ObjectId> visualizations; // installed visualizations
 
 	@Override
 	public int compareTo(User other) {
@@ -92,8 +100,24 @@ public class User extends Model implements Comparable<User> {
 		return null;
 	}
 	
+	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
+		return Model.exists(User.class, collection, properties);
+	}
+	
 	public void set(String field, Object value) throws ModelException {
 		Model.set(this.getClass(), getCollection(), this._id, field, value);
+	}
+	
+	public static User getById(ObjectId id, Set<String> fields) throws ModelException {
+		return Model.get(User.class, collection, CMaps.map("_id", id), fields);
+	}
+	
+	public static Set<User> getAllUser(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
+		return Model.getAll(User.class, collection, properties, fields);
+	}
+	
+	public static void set(ObjectId userId, String field, Object value) throws ModelException {
+		Model.set(User.class, collection, userId, field, value);
 	}
 	
 }

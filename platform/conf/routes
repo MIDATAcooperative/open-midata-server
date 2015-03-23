@@ -33,14 +33,15 @@ PUT     /members/api/news/:id                            controllers.News.hide(i
 DELETE  /members/api/news/:id                            controllers.News.delete(id: String)
 # Messages
 GET     /members/messages                                controllers.Messages.index()
-GET     /members/messages/:id                            controllers.Messages.details(id: String)
 GET     /members/messages/create                         controllers.Messages.create()
+GET     /members/messages/:id                            controllers.Messages.details(id: String)
 
-POST    /members/api/messages/get                        controllers.Messages.get()
-POST    /members/api/messages/send                       controllers.Messages.send()
-DELETE  /members/api/messages/:id                        controllers.Messages.delete(id: String)
-DELETE  /members/api/messages/:id/trash                  controllers.Messages.remove(id: String)
-PUT     /members/api/messages/:id/:from/:to              controllers.Messages.move(id: String, from: String, to: String)
+
+POST    /shared/api/messages/get                         controllers.Messages.get()
+POST    /shared/api/messages/send                        controllers.Messages.send()
+DELETE  /shared/api/messages/:id                         controllers.Messages.delete(id: String)
+DELETE  /shared/api/messages/:id/trash                   controllers.Messages.remove(id: String)
+PUT     /shared/api/messages/:id/:from/:to               controllers.Messages.move(id: String, from: String, to: String)
 # Records
 GET     /members/records                                 controllers.Records.index()
 GET     /members/records/:id                             controllers.Records.details(id: String)
@@ -91,12 +92,13 @@ GET     /members/api/search/complete/:query              controllers.GlobalSearc
 GET     /members/users/:id                               controllers.Users.details(id: String)
 
 POST    /members/api/users/get                           controllers.Users.get()
-GET     /members/api/users/current                       controllers.Users.getCurrentUser()
-GET     /members/api/users/contacts                      controllers.Users.loadContacts()
+POST    /shared/api/users/get                            controllers.Users.getUsers()
+GET     /shared/api/users/current                        controllers.Users.getCurrentUser()
+GET     /shared/api/users/contacts                      controllers.Users.loadContacts()
 DELETE  /members/api/users/pushed                        controllers.Users.clearPushed()
 DELETE  /members/api/users/shared                        controllers.Users.clearShared()
 GET     /members/api/users/search/:query                 controllers.Users.search(query: String)
-GET     /members/api/users/complete/:query               controllers.Users.complete(query: String)
+GET     /shared/api/users/complete/:query                controllers.Users.complete(query: String)
 # Members
 GET     /members/configuration                           controllers.MemberFrontend.configuration()
 GET     /members/providers                               controllers.MemberFrontend.providers()
@@ -107,6 +109,8 @@ GET     /members/studies/:study/records                  controllers.MemberFront
 GET     /research/register                               controllers.ResearchFrontend.register()
 GET     /research/login                                  controllers.ResearchFrontend.login()
 GET     /research/messages                               controllers.ResearchFrontend.messages()
+GET     /research/messages/create                        controllers.ResearchFrontend.createMessage()
+GET     /research/messages/:id                           controllers.ResearchFrontend.messageDetails(id: String)
 GET     /research/studies                                controllers.ResearchFrontend.studies()
 GET     /research/studies/:study/codes                   controllers.ResearchFrontend.codes(study: String)
 GET     /research/studies/:study/fields                  controllers.ResearchFrontend.studyfields(study: String)
@@ -148,6 +152,8 @@ POST    /members/api/studies/entercode                   controllers.members.Stu
 GET     /providers/register                              controllers.ProviderFrontend.register()
 GET     /providers/login                                 controllers.ProviderFrontend.login()
 GET     /providers/messages                              controllers.ProviderFrontend.messages()
+GET     /providers/messages/create                       controllers.ProviderFrontend.createMessage()
+GET     /providers/messages/:id                          controllers.ProviderFrontend.messageDetails(id: String)
 GET     /providers/search                                controllers.ProviderFrontend.search()
 GET     /providers/member/:member                        controllers.ProviderFrontend.member(member: String)
 

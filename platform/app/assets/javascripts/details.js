@@ -23,12 +23,12 @@ details.controller('RecordCtrl', ['$scope', '$http', function($scope, $http) {
 		error(function(err) { $scope.error = "Failed to load record details: " + err; });
 	
 	var loadUserNames = function() {
-		var data = {"properties": {"_id": [$scope.record.owner, $scope.record.creator]}, "fields": ["name"]};
+		var data = {"properties": {"_id": [$scope.record.owner, $scope.record.creator]}, "fields": ["firstname", "sirname"]};
 		$http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
 			success(function(users) {
 				_.each(users, function(user) {
-					if ($scope.record.owner.$oid === user._id.$oid) { $scope.record.owner = user.name; }
-					if ($scope.record.creator.$oid === user._id.$oid) { $scope.record.creator = user.name; }
+					if ($scope.record.owner.$oid === user._id.$oid) { $scope.record.owner = (user.firstname+" "+user.sirname).trim(); }
+					if ($scope.record.creator.$oid === user._id.$oid) { $scope.record.creator = (user.firstname+" "+user.sirname).trim(); }
 				});
 			}).
 			error(function(err) { $scope.error = "Failed to load names: " + err; });
@@ -79,14 +79,14 @@ details.controller('MessageCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	getSenderName = function() {
 		var data = {"properties": {"_id": $scope.message.sender}, "fields": ["name"]};
-		$http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
+		$http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
 			success(function(users) { $scope.message.sender.name = users[0].name; }).
 			error(function(err) { $scope.error = "Failed to load sender name: " + err; });
 	}
 	
 	getReceiverNames = function() {
 		var data = {"properties": {"_id": $scope.message.receivers}, "fields": ["name"]};
-		$http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
+		$http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
 			success(function(users) {
 				_.each(users, function(user) {
 					var receiver = _.find($scope.message.receivers, function(rec) { return rec.$oid === user._id.$oid; });

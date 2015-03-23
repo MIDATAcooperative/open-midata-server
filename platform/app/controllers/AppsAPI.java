@@ -298,17 +298,14 @@ public class AppsAPI extends Controller {
 		if (appToken == null) {
 			return badRequestPromise("Invalid authToken.");
 		}
-		Map<String, ObjectId> userProperties = new ChainedMap<String, ObjectId>().put("_id", appToken.userId).put("apps", appToken.appId)
-				.get();
-		Set<String> fields = new ChainedSet<String>().add("tokens." + appToken.appId.toString()).get();
+		
 		String accessToken;
 		try {
-			if (!Member.exists(userProperties)) {
-				return badRequestPromise("Invalid authToken.");
-			} else {
-				Member user = Member.get(userProperties, fields);
-				accessToken = user.tokens.get(appToken.appId.toString()).get("accessToken");
-			}
+			
+			Member user = Member.getByIdAndApp(appToken.userId, appToken.appId, Sets.create("tokens." + appToken.appId.toString()));
+			if (user == null) return badRequestPromise("Invalid authToken.");
+			accessToken = user.tokens.get(appToken.appId.toString()).get("accessToken");
+			
 		} catch (ModelException e) {
 			return badRequestPromise(e.getMessage());
 		}
@@ -347,32 +344,25 @@ public class AppsAPI extends Controller {
 		if (appToken == null) {
 			return badRequestPromise("Invalid authToken.");
 		}
-		Map<String, ObjectId> userProperties = new ChainedMap<String, ObjectId>().put("_id", appToken.userId).put("apps", appToken.appId)
-				.get();
-		Set<String> fields = new ChainedSet<String>().add("tokens." + appToken.appId.toString()).get();
+		
 		String oauthToken, oauthTokenSecret;
 		try {
-			if (!Member.exists(userProperties)) {
-				return badRequestPromise("Invalid authToken.");
-			} else {
-				Member user = Member.get(userProperties, fields);
-				oauthToken = user.tokens.get(appToken.appId.toString()).get("oauthToken");
-				oauthTokenSecret = user.tokens.get(appToken.appId.toString()).get("oauthTokenSecret");
-			}
+			
+			Member user = Member.getByIdAndApp(appToken.userId, appToken.appId, Sets.create("tokens." + appToken.appId.toString()));
+			if (user == null) return badRequestPromise("Invalid authToken.");
+			oauthToken = user.tokens.get(appToken.appId.toString()).get("oauthToken");
+			oauthTokenSecret = user.tokens.get(appToken.appId.toString()).get("oauthTokenSecret");
+
 		} catch (ModelException e) {
 			return badRequestPromise(e.getMessage());
 		}
 
 		// also get the consumer key and secret
-		Map<String, ObjectId> appProperties = new ChainedMap<String, ObjectId>().put("_id", appToken.appId).get();
-		fields = new ChainedSet<String>().add("consumerKey").add("consumerSecret").get();
+				
 		App app;
-		try {
-			if (!App.exists(appProperties)) {
-				return badRequestPromise("Invalid authToken");
-			} else {
-				app = App.get(appProperties, fields);
-			}
+		try {			
+				app = App.getById(appToken.appId, Sets.create("consumerKey", "consumerSecret"));
+				if (app == null) return badRequestPromise("Invalid authToken");			
 		} catch (ModelException e) {
 			return badRequestPromise(e.getMessage());
 		}

@@ -17,6 +17,7 @@ import models.Member;
 import models.ModelException;
 import models.enums.ContractStatus;
 import models.enums.Gender;
+import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.auth.CodeGenerator;
 import utils.collections.CMaps;
@@ -59,6 +60,7 @@ public class Providers extends APIController {
 		
 		HPUser user = new HPUser(email);
 		user._id = new ObjectId();
+		user.role = UserRole.PROVIDER;		
 		user.address1 = JsonValidation.getString(json, "address1");
 		user.address2 = JsonValidation.getString(json, "address2");
 		user.city = JsonValidation.getString(json, "city");

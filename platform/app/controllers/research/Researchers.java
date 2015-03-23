@@ -11,6 +11,7 @@ import models.Research;
 import models.ResearchUser;
 import models.enums.ContractStatus;
 import models.enums.Gender;
+import models.enums.UserRole;
 import models.enums.UserStatus;
  
 import com.fasterxml.jackson.databind.JsonNode;
@@ -53,6 +54,7 @@ public class Researchers extends APIController {
 		
 		ResearchUser user = new ResearchUser(email);
 		user._id = new ObjectId();
+		user.role = UserRole.RESEARCH;
 		user.address1 = JsonValidation.getString(json, "address1");
 		user.address2 = JsonValidation.getString(json, "address2");
 		user.city = JsonValidation.getString(json, "city");

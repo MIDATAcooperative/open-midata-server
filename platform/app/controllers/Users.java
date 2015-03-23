@@ -11,6 +11,7 @@ import java.util.Set;
 import models.Circle;
 import models.ModelException;
 import models.Member;
+import models.User;
 
 import org.bson.types.ObjectId;
 
@@ -29,6 +30,8 @@ import utils.search.Search;
 import utils.search.Search.Type;
 import utils.search.SearchResult;
 import views.html.details.user;
+
+import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -64,8 +67,33 @@ public class Users extends Controller {
 		Collections.sort(users);
 		return ok(Json.toJson(users));
 	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
+	public static Result getUsers() throws JsonValidationException, ModelException {
+		// validate json
+		JsonNode json = request().body().asJson();
+	
+		JsonValidation.validate(json, "properties", "fields");
+			
+		// get users
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+		
+		if (fields.contains("name")) { fields.add("firstname"); fields.add("sirname"); }
+		
+		List<User> users = new ArrayList<User>(User.getAllUser(properties, fields));
+		
+		if (fields.contains("name")) {
+			for (User user : users) user.name = (user.firstname + " "+ user.sirname).trim();
+		}
+		
+		Collections.sort(users);
+		return ok(Json.toJson(users));
+	}
 
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getCurrentUser() {
 		return ok(Json.toJson(new ObjectId(request().username())));
 	}
@@ -98,7 +126,7 @@ public class Users extends Controller {
 	/**
 	 * Prefetch contacts for completion suggestions.
 	 */
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result loadContacts() {
 		ObjectId userId = new ObjectId(request().username());
 		Set<ObjectId> contactIds = new HashSet<ObjectId>();
@@ -132,7 +160,7 @@ public class Users extends Controller {
 	/**
 	 * Suggest users that complete the given query.
 	 */
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result complete(String query) {
 		return ok(Json.toJson(Search.complete(Type.USER, query)));
 	}

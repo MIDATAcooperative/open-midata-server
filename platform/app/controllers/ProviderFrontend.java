@@ -4,6 +4,8 @@ import controllers.providers.ProviderSecured;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import views.html.providers.message;
+import views.html.providers.createmessage;
 import views.html.providers.registration;
 import views.html.providers.login;
 import views.html.providers.messages;
@@ -23,6 +25,16 @@ public class ProviderFrontend extends Controller {
 	@Security.Authenticated(ProviderSecured.class)
 	public static Result messages() {
 		return ok(messages.render());
+	}
+	
+	@Security.Authenticated(ProviderSecured.class)
+	public static Result messageDetails(String messageIdString) {
+		return ok(message.render());
+	}
+
+	@Security.Authenticated(ProviderSecured.class)
+	public static Result createMessage() {
+		return ok(createmessage.render());
 	}
 	
 	@Security.Authenticated(ProviderSecured.class)

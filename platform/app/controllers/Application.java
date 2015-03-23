@@ -16,6 +16,7 @@ import models.User;
 import models.enums.ContractStatus;
 import models.enums.Gender;
 import models.enums.ParticipationInterest;
+import models.enums.UserRole;
 import models.enums.UserStatus;
 
 import org.bson.types.ObjectId;
@@ -151,18 +152,13 @@ public class Application extends Controller {
 		// validate request
 		String email = json.get("email").asText();
 		String password = json.get("password").asText();
-		Map<String, String> emailQuery = new ChainedMap<String, String>().put("email", email).get();
-		Member user;
-	
-	    if (!Member.exists(emailQuery)) {
-		  return badRequest("Invalid user or password.");
-		} else {
-		  user = Member.get(emailQuery, Sets.create("password","myaps"));
-		  if (!Member.authenticationValid(password, user.password)) {
+		
+		Member user = Member.getByEmail(email , Sets.create("password","myaps"));
+		if (user == null) return badRequest("Invalid user or password.");
+		if (!Member.authenticationValid(password, user.password)) {
 			return badRequest("Invalid user or password.");
-		  }
 		}
-	    
+			    
 	    //patch old users
 	    if (user.myaps == null) {
 	    	user.myaps = RecordSharing.instance.createPrivateAPS(user._id);
@@ -211,6 +207,7 @@ public class Application extends Controller {
 		
 		user.password = Member.encrypt(password);
 		user.midataID = CodeGenerator.nextUniqueCode();
+		user.role = UserRole.MEMBER;
 		
 		user.address1 = JsonValidation.getString(json, "address1");
 		user.address2 = JsonValidation.getString(json, "address2");
@@ -335,6 +332,7 @@ public class Application extends Controller {
 				controllers.routes.javascript.Spaces.getToken(),
 				// Users
 				controllers.routes.javascript.Users.get(),
+				controllers.routes.javascript.Users.getUsers(),
 				controllers.routes.javascript.Users.getCurrentUser(),
 				controllers.routes.javascript.Users.search(),
 				controllers.routes.javascript.Users.loadContacts(),

@@ -11,10 +11,12 @@ import org.bson.types.ObjectId;
 
 import utils.DateTimeUtils;
 import utils.collections.CMaps;
+import utils.search.Search;
+import utils.search.SearchException;
+import utils.search.Search.Type;
 
 public class HPUser extends User {
 	
-	private static final String collection = "hpusers";
 			
 	public ObjectId provider;
 	
@@ -31,11 +33,11 @@ public class HPUser extends User {
 	}
 	
 	public static boolean existsByEMail(String email) throws ModelException {
-		return Model.exists(HPUser.class, collection, CMaps.map("email", email));
+		return Model.exists(HPUser.class, collection, CMaps.map("email", email).map("role", UserRole.PROVIDER));
 	}
 	
 	public static HPUser getByEmail(String email, Set<String> fields) throws ModelException {
-		return Model.get(HPUser.class, collection, CMaps.map("email", email), fields);
+		return Model.get(HPUser.class, collection, CMaps.map("email", email).map("role", UserRole.PROVIDER), fields);
 	}
 	
 	public static HPUser getById(ObjectId id, Set<String> fields) throws ModelException {
@@ -44,6 +46,13 @@ public class HPUser extends User {
 	
 	public static void add(HPUser user) throws ModelException {
 		Model.insert(collection, user);	
+		
+		// add to search index (email is document's content, so that it is searchable as well)
+		try {
+			Search.add(Type.USER, user._id, user.firstname + " " + user.sirname, user.email);
+		} catch (SearchException e) {
+			throw new ModelException(e);
+		}
 	}
 	
 	protected String getCollection() {
