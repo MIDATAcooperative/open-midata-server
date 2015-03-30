@@ -34,7 +34,7 @@ public class RuleApplication {
 	}
 
 	public void applyRules(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws ModelException {
-		Collection<Record> records = RecordSharing.instance.list(userId, sourceaps, true, true, false);
+		Collection<Record> records = RecordSharing.instance.list(userId, sourceaps, RecordSharing.FULLAPS, RecordSharing.COMPLETE_META);
 	    Set<ObjectId> result = new HashSet<ObjectId>();
 	    
 		// TODO Apply correctly

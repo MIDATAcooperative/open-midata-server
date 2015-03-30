@@ -1,0 +1,61 @@
+
+	<div ng-app="details" ng-controller="VisualizationCtrl">
+		<div class="page-header">
+			<h1>Market <small>Visualizations</small></h1>
+		</div>
+		
+		<div ng-cloak>
+			<div class="alert alert-danger alert-dismissable" ng-show="error">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+				<p>{{error}}</p>
+			</div>
+			<div class="alert alert-success alert-dismissable" ng-show="success">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+				<p>You have successfully installed a new visualization. Go to your <a href="@routes.Spaces.index()">spaces</a> now to take a look.</p>
+			</div>
+			
+			<p class="lead">{{visualization.name}}</p>
+			<div class="row">
+				<p class="col-xs-2">Created by:</p>
+				<p class="col-xs-10">{{visualization.creator}}</p>
+			</div>
+			<div class="row">
+				<p class="col-xs-2">Description:</p>
+				<p class="col-xs-10">{{visualization.description}}</p>
+			</div>
+			<div ng-hide="visualization.installed">
+			<div ng-if="visualization.defaultSpaceName" class="row">
+			    <p class="col-xs-2">Space:</p>
+			    <p class="col-xs-10">
+			      <label>
+			        <input type="checkbox" ng-model="options.createSpace">
+			        Create a space for this visualization called:
+			      </label>
+			      <input type="text" ng-model="options.spaceName" />			
+                </p>			    			        
+			</div>
+			<div ng-if="visualization.defaultRules" class="row">
+			    <p class="col-xs-2"></p>
+			    <div class="col-xs-10">
+			      <label>
+			        <input type="checkbox" ng-model="options.applyRules">
+			        Add records to this space: 
+			      </label>
+			      <div class="alert alert-info">
+			      <ul>
+			        <li ng-repeat="rule in visualization.defaultRules">
+			          <span ng-if="rule.name == 'format'">Records that have format {{ rule.params[0] }}</span>
+			        </li>
+			      </ul>		
+			      </div>
+                </div>
+			</div>
+			</div>
+			
+			<button type="button" class="btn btn-primary" ng-hide="visualization.installed" ng-click="install()">Install</button>
+			<button type="button" class="btn btn-default" ng-show="visualization.installed" ng-click="uninstall()">Uninstall</button>
+		</div>
+	</div>
+	
+	<!-- Load details controller -->
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/details.js")" defer></script>

@@ -1,0 +1,14 @@
+@providermain("Visualization") {
+
+    <div>
+		<!-- Visualization -->
+		<p ng-hide="space.trustedUrl">Loading space...</p>
+		<div id="iframe-placeholder-{{space._id.$oid}}">
+			<iframe id="iframe-{{space._id.$oid}}" height="600px" width="100%" ng-show="space.trustedUrl"></iframe>
+		</div>
+	</div>
+
+	<!-- Load records controller -->
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/spaces.js")" defer></script>
+	
+}

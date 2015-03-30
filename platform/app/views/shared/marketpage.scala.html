@@ -1,0 +1,91 @@
+@(apptype: String) 
+	<div ng-app="market" ng-controller="MarketCtrl">
+		<div class="page-header">
+			<div class="pull-right">
+				<div class="btn-group">
+					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+						<span class="glyphicon glyphicon-plus"></span> Register new
+					</button>
+					<ul class="dropdown-menu" role="menu">
+						<li><a href="@routes.Market.registerAppForm()">App</a></li>
+						<li><a href="@routes.Market.registerVisualizationForm()">Visualization</a></li>
+					</ul>
+				</div>
+			</div>
+			<h1>Market</h1>
+		</div>
+		
+		<div class="alert alert-danger alert-dismissable" ng-show="error" ng-cloak>
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<p>{{error}}</p>
+		</div>
+	
+		<!-- Apps -->
+		<div class="page-header">
+			<h1><small>Apps</small></h1>
+		</div>
+		<div class="row" ng-cloak>
+			<div class="col-md-6">
+				<p class="lead">Spotlight</p>
+				<p ng-hide="apps.spotlighted.length">There are no spotlighted apps yet.</p>
+				<div class="media" ng-repeat="app in apps.spotlighted">
+					<a class="pull-left" href="javascript:;" ng-click="showAppDetails(app)">
+						<img class="media-object" ng-src="" alt="Icon">
+					</a>
+					<div class="media-body">
+						<a href="javascript:;" ng-click="showAppDetails(app)">{{app.name}}</a>
+						<p>{{app.description}}</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<p class="lead">Apps you may like</p>
+				<p ng-hide="apps.suggested.length">We have no recommendations for you yet.</p>
+				<div class="media" ng-repeat="app in apps.suggested">
+					<a class="pull-left" href="javascript:;" ng-click="showAppDetails(app)">
+						<img class="media-object" ng-src="" alt="Icon">
+					</a>
+					<div class="media-body">
+						<a href="javascript:;" ng-click="showAppDetails(app)">{{app.name}}</a>
+						<p>{{app.description}}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Visualizations -->
+		<div class="page-header">
+			<h1><small>Visualizations</small></h1>
+		</div>
+		<div class="row" ng-cloak>
+			<div class="col-md-6">
+				<p class="lead">Spotlight</p>
+				<p ng-hide="visualizations.spotlighted.length">There are no spotlighted visualizations yet.</p>
+				<div class="media" ng-repeat="visualization in visualizations.spotlighted">
+					<a class="pull-left" href="javascript:;" ng-click="showVisualizationDetails(visualization)">
+						<img class="media-object" ng-src="" alt="Icon">
+					</a>
+					<div class="media-body">
+						<a href="javascript:;" ng-click="showVisualizationDetails(visualization)">{{visualization.name}}</a>
+						<p>{{visualization.description}}</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<p class="lead">Visualizations you may like</p>
+				<p ng-hide="visualizations.suggested.length">We have no recommendations for you yet.</p>
+				<div class="media" ng-repeat="visualization in visualizations.suggested">
+					<a class="pull-left" href="javascript:;" ng-click="showVisualizationDetails(visualization)">
+						<img class="media-object" ng-src="" alt="Icon">
+					</a>
+					<div class="media-body">
+						<a href="javascript:;" ng-click="showVisualizationDetails(visualization)">{{visualization.name}}</a>
+						<p>{{visualization.description}}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Load market controller -->
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/market.js")" defer></script>

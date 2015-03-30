@@ -160,15 +160,15 @@ public class Application extends Controller {
 		}
 			    
 	    //patch old users
-	    if (user.myaps == null) {
-	    	user.myaps = RecordSharing.instance.createPrivateAPS(user._id);
+	    if (user.myaps == null || !user.myaps.equals(user._id)) {
+	    	user.myaps = RecordSharing.instance.createPrivateAPS(user._id, user._id);
 	    	Member.set(user._id, "myaps", user.myaps);
 	    	Set<Record> recs = Record.getAll(CMaps.map("owner", user._id), Sets.create("owner"));
 	    	for (Record r : recs) RecordSharing.instance.addRecord2(user, r);
 	    	
 	    	Set<Space> spaces = Space.getAllByOwner(user._id, Sets.create("aps"));
 	    	for (Space s : spaces) {
-	    		s.aps = RecordSharing.instance.createPrivateAPS(user._id);
+	    		s.aps = RecordSharing.instance.createPrivateAPS(user._id, s._id);
 	    		Space.set(s._id, "aps", s.aps);
 	    	}
 	    	
@@ -230,7 +230,7 @@ public class Application extends Controller {
 		user.partInterest = ParticipationInterest.UNSET;
 		
 		//user.visible = new HashMap<String, Set<ObjectId>>();
-		user.myaps = RecordSharing.instance.createPrivateAPS(user._id);
+		user.myaps = RecordSharing.instance.createPrivateAPS(user._id, user._id);
 		
 		user.apps = new HashSet<ObjectId>();
 		user.tokens = new HashMap<String, Map<String, String>>();
@@ -266,7 +266,14 @@ public class Application extends Controller {
 				controllers.routes.javascript.ProviderFrontend.messages(),
 				controllers.routes.javascript.ResearchFrontend.messages(),
 				controllers.routes.javascript.Market.index(),
-				controllers.routes.javascript.News.index()				
+				controllers.routes.javascript.News.index(),
+				controllers.routes.javascript.Apps.details(),
+				controllers.routes.javascript.Visualizations.details(),
+				controllers.routes.javascript.ProviderFrontend.appDetails(),
+				controllers.routes.javascript.ProviderFrontend.visualizationDetails(),
+				controllers.routes.javascript.Records.create(),
+				controllers.routes.javascript.Records.importRecords(),
+				controllers.routes.javascript.ProviderFrontend.createRecord()
 				));
 	}
 	
@@ -280,18 +287,17 @@ public class Application extends Controller {
 				controllers.routes.javascript.Application.register(),
 				controllers.routes.javascript.Application.requestPasswordResetToken(),
 				controllers.routes.javascript.Application.setPasswordWithToken(),
-				// Apps
-				controllers.routes.javascript.Apps.details(),
+				// Apps				
 				controllers.routes.javascript.Apps.get(),
 				controllers.routes.javascript.Apps.install(),
 				controllers.routes.javascript.Apps.uninstall(),
 				controllers.routes.javascript.Apps.isInstalled(),
 				controllers.routes.javascript.Apps.getUrl(),
+				controllers.routes.javascript.Apps.getUrlForMember(),
 				controllers.routes.javascript.Apps.requestAccessTokenOAuth2(),
 				controllers.routes.javascript.Apps.getRequestTokenOAuth1(),
 				controllers.routes.javascript.Apps.requestAccessTokenOAuth1(),
-				// Visualizations
-				controllers.routes.javascript.Visualizations.details(),
+				// Visualizations				
 				controllers.routes.javascript.Visualizations.get(),
 				controllers.routes.javascript.Visualizations.install(),
 				controllers.routes.javascript.Visualizations.uninstall(),
@@ -309,9 +315,7 @@ public class Application extends Controller {
 				controllers.routes.javascript.Messages.delete(),
 				// Records
 				controllers.routes.javascript.Records.filter(),
-				controllers.routes.javascript.Records.details(),
-				controllers.routes.javascript.Records.create(),
-				controllers.routes.javascript.Records.importRecords(),
+				controllers.routes.javascript.Records.details(),				
 				controllers.routes.javascript.Records.get(),
 				controllers.routes.javascript.Records.getVisibleRecords(),
 				controllers.routes.javascript.Records.getSharingInfo(),

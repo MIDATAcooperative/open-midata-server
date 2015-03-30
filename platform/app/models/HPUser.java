@@ -44,6 +44,10 @@ public class HPUser extends User {
 		return Model.get(HPUser.class, collection, CMaps.map("_id", id), fields);
 	}
 	
+	public static HPUser getByIdAndApp(ObjectId id, ObjectId appId, Set<String> fields) throws ModelException {
+		return Model.get(HPUser.class, collection, CMaps.map("_id", id).map("apps", appId).map("role",  UserRole.PROVIDER), fields);
+	}
+	
 	public static void add(HPUser user) throws ModelException {
 		Model.insert(collection, user);	
 		

@@ -110,7 +110,7 @@ details.controller('AppCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.visualizations = [];
 	
 	// parse app id (format: /apps/:id) and load the app
-	var appId = window.location.pathname.split("/")[2];
+	var appId = window.location.pathname.split("/")[3];
 	var data = {"properties": {"_id": {"$oid": appId}}, "fields": ["name", "creator", "description", "recommendedVisualizations"]};
 	$http.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
 		success(function(apps) {
@@ -146,7 +146,7 @@ details.controller('AppCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	getCreatorName = function() {
 		var data = {"properties": {"_id": $scope.app.creator}, "fields": ["name"]};
-		$http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
+		$http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
 			success(function(users) { $scope.app.creator = users[0].name; }).
 			error(function(err) { $scope.error = "Failed to load the name of the creator: " + err; })
 	}
@@ -178,7 +178,7 @@ details.controller('VisualizationCtrl', ['$scope', '$http', function($scope, $ht
 	$scope.options = {};
 	
 	// parse visualization id (format: /visualizations/:id) and load the visualization
-	var visualizationId = window.location.pathname.split("/")[2];
+	var visualizationId = window.location.pathname.split("/")[3];
 	var data = {"properties": {"_id": {"$oid": visualizationId}}, "fields": ["name", "creator", "description", "defaultSpaceName", "defaultRules"]};
 	$http.post(jsRoutes.controllers.Visualizations.get().url, JSON.stringify(data)).
 		success(function(visualizations) {
@@ -204,7 +204,7 @@ details.controller('VisualizationCtrl', ['$scope', '$http', function($scope, $ht
 	
 	getCreatorName = function() {
 		var data = {"properties": {"_id": $scope.visualization.creator}, "fields": ["name"]};
-		$http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
+		$http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
 			success(function(users) { $scope.visualization.creator = users[0].name; }).
 			error(function(err) { $scope.error = "Failed to load the name of the creator: " + err; })
 	}

@@ -79,6 +79,7 @@ public class Studies extends APIController {
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return inputerror("code", "notsearching", "Study is not searching for participants.");
 		
 		StudyParticipation part = new StudyParticipation();
+		part._id = new ObjectId();
 		part.study = code.study;
 		part.studyName = study.name;
 		part.member = userId;
@@ -104,7 +105,7 @@ public class Studies extends APIController {
 		part.country = user.country;
 		
 		part.history = new ArrayList<History>();
-		part.aps = RecordSharing.instance.createAnonymizedAPS(userId, study.owner);
+		part.aps = RecordSharing.instance.createAnonymizedAPS(userId, study.owner, part._id);
 		
 		History codedentererd = new History(EventType.CODE_ENTERED, part, null); 
 		part.history.add(codedentererd);

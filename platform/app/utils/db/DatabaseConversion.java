@@ -151,6 +151,7 @@ public class DatabaseConversion {
 	 * Converts a BasicDBObject into a map (keys are always strings because of JSON serialization).
 	 */
 	private Map<String, Object> convertToMap(Class model, String path, Type type, Object value) throws DatabaseConversionException {
+		if (value == null) return null;
 		BasicDBObject dbObject = (BasicDBObject) value;
 		if (type instanceof ParameterizedType) {
 			Type valueType = ((ParameterizedType) type).getActualTypeArguments()[1];
@@ -170,7 +171,8 @@ public class DatabaseConversion {
 	 * Converts a BasicDBList into a set.
 	 */
 	private Set<Object> convertToSet(Class model, String path, Type type, Object value) throws DatabaseConversionException {
-		BasicDBList dbList = (BasicDBList) value;
+		if (value == null) return null;
+		BasicDBList dbList = (BasicDBList) value;		
 		if (type instanceof ParameterizedType) {
 			Type valueType = ((ParameterizedType) type).getActualTypeArguments()[0];
 						
@@ -189,6 +191,7 @@ public class DatabaseConversion {
 	 * Converts a BasicDBList into a list.
 	 */
 	private List<Object> convertToList(Class model, String path, Type type, Object value) throws DatabaseConversionException {
+		if (value==null) return null;
 		BasicDBList dbList = (BasicDBList) value;
 		if (type instanceof ParameterizedType) {
 			Type valueType = ((ParameterizedType) type).getActualTypeArguments()[0];

@@ -19,7 +19,8 @@ public class AccessPermissionSet extends Model {
 
 	private static final String collection = "aps";
 	
-	public int series;
+	public boolean direct;
+	public long version;
 	
 	public Map<String, String> keys;
 	public Map<String, BasicDBObject> permissions;
@@ -29,13 +30,9 @@ public class AccessPermissionSet extends Model {
 	}
 	
 	public static AccessPermissionSet getById(ObjectId id) throws ModelException {
-		return Model.get(AccessPermissionSet.class, collection, CMaps.map("_id", id), Sets.create("keys", "series" ,"permissions"));
+		return Model.get(AccessPermissionSet.class, collection, CMaps.map("_id", id), Sets.create("keys", "version", "direct" ,"permissions"));
 	}
-	
-	public void addPermission(ObjectId record, BasicDBObject entry) throws ModelException {
-		permissions.put(record.toString(), entry);
-		Model.set(AccessPermissionSet.class, collection, this._id, "permissions", permissions);
-	}
+		
 	
 	public void setPermissions(Map<String, BasicDBObject> permissions) throws ModelException {		
 		Model.set(AccessPermissionSet.class, collection, this._id, "permissions", permissions);

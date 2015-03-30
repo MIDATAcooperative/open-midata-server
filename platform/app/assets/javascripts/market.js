@@ -1,8 +1,10 @@
 var market = angular.module('market', []);
 market.controller('MarketCtrl', ['$scope', '$http', function($scope, $http) {
 	
+	var pathsegment = window.location.pathname.split("/")[1];
 	// init
 	$scope.error = null;
+	$scope.targetRole = (pathsegment == "providers") ? "PROVIDER" : "MEMBER"; 
 	$scope.apps = {};
 	$scope.apps.spotlighted = [];
 	$scope.apps.suggested = [];
@@ -11,7 +13,7 @@ market.controller('MarketCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.visualizations.suggested = [];
 	
 	// get apps and visualizations
-	var properties = {"spotlighted": true};
+	var properties = {"spotlighted": true, "targetUserRole" : [ $scope.targetRole, "ANY"] };
 	var fields = ["name", "description"];
 	var data = {"properties": properties, "fields": fields};
 	$http.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
@@ -23,12 +25,16 @@ market.controller('MarketCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	// show app details
 	$scope.showAppDetails = function(app) {
-		window.location.href = jsRoutes.controllers.Apps.details(app._id.$oid).url;
+		if ($scope.targetRole == "PROVIDER") {
+			window.location.href = portalRoutes.controllers.ProviderFrontend.appDetails(app._id.$oid).url;
+		} else window.location.href = portalRoutes.controllers.Apps.details(app._id.$oid).url;
 	}
 	
 	// show visualization details
 	$scope.showVisualizationDetails = function(visualization) {
-		window.location.href = jsRoutes.controllers.Visualizations.details(visualization._id.$oid).url;
+		if ($scope.targetRole == "PROVIDER") {
+			window.location.href = portalRoutes.controllers.ProviderFrontend.visualizationDetails(visualization._id.$oid).url;
+		} else window.location.href = portalRoutes.controllers.Visualizations.details(visualization._id.$oid).url;
 	}
 	
 }]);

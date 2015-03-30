@@ -11,6 +11,10 @@ import views.html.providers.login;
 import views.html.providers.messages;
 import views.html.providers.search;
 import views.html.providers.memberdetails;
+import views.html.providers.market;
+import views.html.providers.app;
+import views.html.providers.visualization;
+import views.html.providers.createrecords;
 
 public class ProviderFrontend extends Controller {
 
@@ -35,6 +39,26 @@ public class ProviderFrontend extends Controller {
 	@Security.Authenticated(ProviderSecured.class)
 	public static Result createMessage() {
 		return ok(createmessage.render());
+	}
+	
+	@Security.Authenticated(ProviderSecured.class)
+	public static Result market() {
+		return ok(market.render());
+	}
+	
+	@Security.Authenticated(ProviderSecured.class)
+	public static Result appDetails(String id) {
+		return ok(app.render());
+	}
+	
+	@Security.Authenticated(ProviderSecured.class)
+	public static Result visualizationDetails(String id) {
+		return ok(visualization.render());
+	}
+	
+	@Security.Authenticated(ProviderSecured.class)
+	public static Result createRecord(String appIdString, String ownerIdString) {
+		return ok(createrecords.render());
 	}
 	
 	@Security.Authenticated(ProviderSecured.class)

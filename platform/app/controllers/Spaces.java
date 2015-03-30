@@ -100,7 +100,7 @@ public class Spaces extends Controller {
 		space.name = name;
 		space.order = Space.getMaxOrder(userId) + 1;
 		space.visualization = visualizationId;
-		space.aps = RecordSharing.instance.createPrivateAPS(userId);
+		space.aps = RecordSharing.instance.createPrivateAPS(userId, space._id);
 		
 		Space.add(space);		
 		return space;

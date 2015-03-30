@@ -21,6 +21,79 @@ search.controller('MemberSearchCtrl', ['$scope', '$http', function($scope, $http
 			$scope.loading = false;
 		});
 	};
+	
+	// For adding new records
+	$scope.error = null;
+	
+	$scope.loadingApps = true;	
+	$scope.userId = null;
+	$scope.apps = [];
+	
+	
+	// get current user
+	$http(jsRoutes.controllers.Users.getCurrentUser()).
+		success(function(userId) {
+			$scope.userId = userId;
+			$scope.getApps(userId);			
+		});
+	
+	// get apps
+	$scope.getApps = function(userId) {
+		var properties = {"_id": userId};
+		var fields = ["apps", "visualizations"];
+		var data = {"properties": properties, "fields": fields};
+		$http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
+			success(function(users) {
+				$scope.getAppDetails(users[0].apps);
+				$scope.getVisualizationDetails(users[0].visualizations);
+			}).
+			error(function(err) { $scope.error = "Failed to load apps: " + err; });
+	};
+	
+	// get name and type for app ids
+	$scope.getAppDetails = function(appIds) {
+		var properties = {"_id": appIds, "type" : ["create","oauth1","oauth2"] };
+		var fields = ["name", "type"];
+		var data = {"properties": properties, "fields": fields};
+		$http.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
+			success(function(apps) {
+				$scope.apps = apps;
+				$scope.loadingApps = false;
+			}).
+			error(function(err) { $scope.error = "Failed to load apps: " + err; });
+	};
+	
+	// get name and type for app ids
+	$scope.getVisualizationDetails = function(visualizationIds) {
+		var properties = {"_id": visualizationIds };
+		var fields = ["name", "type"];
+		var data = {"properties": properties, "fields": fields};
+		$http.post(jsRoutes.controllers.Visualizations.get().url, JSON.stringify(data)).
+			success(function(visualizations) {
+				$scope.visualizations = visualizations;
+				$scope.loadingVisualizations = false;
+			}).
+			error(function(err) { $scope.error = "Failed to load apps: " + err; });
+	};
+	
+	// go to record creation/import dialog
+	$scope.createOrImport = function(app) {
+		if (app.type === "create") {
+			window.location.href = portalRoutes.controllers.ProviderFrontend.createRecord(app._id.$oid, $scope.member._id.$oid).url;
+		} else {
+			window.location.href = portalRoutes.controllers.Records.importRecords(app._id.$oid).url;
+		}
+	};
+	
+	// Visualizations
+	$scope.loadingVisualizations = true;
+	$scope.visualizations = [];
+	
+	$scope.useVisualization = function(visualization) {		
+		window.location.href = portalRoutes.controllers.ProviderFrontend.createRecord(app._id.$oid, $scope.member._id.$oid).url;		
+	};
+			
+	
 }]);
 search.controller('MemberDetailsCtrl', ['$scope', '$http', function($scope, $http) {
 	
@@ -41,5 +114,7 @@ search.controller('MemberDetailsCtrl', ['$scope', '$http', function($scope, $htt
 	};
 		
 	$scope.reload();
+	
+	
 	
 }]);

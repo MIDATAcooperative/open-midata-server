@@ -156,6 +156,10 @@ GET     /providers/messages/create                       controllers.ProviderFro
 GET     /providers/messages/:id                          controllers.ProviderFrontend.messageDetails(id: String)
 GET     /providers/search                                controllers.ProviderFrontend.search()
 GET     /providers/member/:member                        controllers.ProviderFrontend.member(member: String)
+GET     /providers/market                                controllers.ProviderFrontend.market()
+GET     /providers/apps/:id                              controllers.ProviderFrontend.appDetails(id: String)
+GET     /providers/visualizations/:id                    controllers.ProviderFrontend.visualizationDetails(id: String)
+GET     /providers/records/create/:appId/:memberId       controllers.ProviderFrontend.createRecord(appId: String, memberId: String)
 
 POST    /providers/api/register                          controllers.providers.Providers.register()
 POST    /providers/api/login                             controllers.providers.Providers.login()
@@ -164,17 +168,18 @@ GET     /providers/api/member/:member                    controllers.providers.P
 
 # Apps
 POST    /apps/get                   controllers.Apps.get()
-GET     /apps/:id                   controllers.Apps.details(id: String)
+GET     /members/apps/:id           controllers.Apps.details(id: String)
 PUT     /apps/:id                   controllers.Apps.install(id: String)
 DELETE  /apps/:id                   controllers.Apps.uninstall(id: String)
 GET     /apps/:id/installed         controllers.Apps.isInstalled(id: String)
 GET     /apps/:id/url               controllers.Apps.getUrl(id: String)
+GET     /apps/:id/url/:member       controllers.Apps.getUrlForMember(id: String, member: String)
 POST    /apps/:id/access/oauth2     controllers.Apps.requestAccessTokenOAuth2(id: String)
 GET     /apps/:id/request/oauth1    controllers.Apps.getRequestTokenOAuth1(id: String)
 POST    /apps/:id/access/oauth1     controllers.Apps.requestAccessTokenOAuth1(id: String)
 # Visualizations
 POST    /visualizations/get         controllers.Visualizations.get()
-GET     /visualizations/:id         controllers.Visualizations.details(id: String)
+GET     /members/visualizations/:id         controllers.Visualizations.details(id: String)
 PUT     /visualizations/:id         controllers.Visualizations.install(id: String)
 DELETE  /visualizations/:id         controllers.Visualizations.uninstall(id: String)
 GET     /visualizations/:id/installed controllers.Visualizations.isInstalled(id: String)

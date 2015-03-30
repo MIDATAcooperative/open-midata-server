@@ -19,6 +19,7 @@
 			<ul class="nav navbar-nav">            	
 				<li @if("Messages".equals(active)){class="active"}><a href="@routes.ProviderFrontend.messages()">Messages</a></li>
 				<li @if("Patient Search".equals(active)){class="active"}><a href="@routes.ProviderFrontend.search()">Patient Search</a></li>				
+				<li @if("Market".equals(active)){class="active"}><a href="@routes.ProviderFrontend.market()">Market</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right" ng-cloak>
 				<li>{{user.name}}</li>

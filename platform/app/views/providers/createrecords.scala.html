@@ -1,0 +1,10 @@
+@providermain("Create a new record") {
+	<div ng-app="createRecords" ng-controller="ProviderCreateRecordsCtrl">
+		<a href="@routes.Records.index()" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Back to records</a>
+		<iframe ng-src="{{url}}" height="600px" width="100%" ng-cloak></iframe>
+	</div>
+	
+	<!-- Load records controller -->
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/records.js")" defer></script>
+	
+}

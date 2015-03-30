@@ -2,13 +2,17 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import models.App;
-import models.ModelException;
 import models.Member;
+import models.ModelException;
+import models.Record;
+import models.User;
+import models.enums.UserRole;
 
 import org.bson.types.ObjectId;
 
@@ -40,14 +44,16 @@ import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-@Security.Authenticated(Secured.class)
+
 public class Apps extends Controller {
 
+	@Security.Authenticated(Secured.class)
 	public static Result details(String appIdString) {
 		return ok(app.render());
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result get() {
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -73,28 +79,43 @@ public class Apps extends Controller {
 		return ok(Json.toJson(apps));
 	}
 
-	public static Result install(String appIdString) {
-		ObjectId userId = new ObjectId(request().username());
-		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", userId).get();
-		Set<String> fields = new ChainedSet<String>().add("apps").get();
-		try {
-			Member user = Member.get(properties, fields);
+	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
+	public static Result install(String appIdString) throws ModelException {
+		ObjectId userId = new ObjectId(request().username());		
+		App app = App.getById(new ObjectId(appIdString), Sets.create("recommendedStream", "targetUserRole"));
+		if (app==null) return badRequest("Unknown App");
+		
+		if (app.targetUserRole.equals(UserRole.MEMBER)) { 
+			Member user = Member.getById(userId, Sets.create("apps", "myaps", "tokens"));
 			user.apps.add(new ObjectId(appIdString));
-			Member.set(userId, "apps", user.apps);
-		} catch (ModelException e) {
-			return badRequest(e.getMessage());
+			User.set(userId, "apps", user.apps);
+			
+			if (app.recommendedStream != null) {
+				Record stream = RecordSharing.instance.createStream(user, user.myaps, app.recommendedStream, true);
+				Map<String, String> apptokens = new HashMap<String, String>();
+				apptokens.put("stream", stream._id.toString());
+			    user.tokens.put(appIdString, apptokens);
+			    User.set(userId, "tokens", user.tokens);
+			}
+			
+		} else { 
+			User user = User.getById(userId, Sets.create("apps"));    
+			user.apps.add(new ObjectId(appIdString));
+			User.set(userId, "apps", user.apps);
 		}
+		
 		return ok();
 	}
 
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result uninstall(String appIdString) {
-		ObjectId userId = new ObjectId(request().username());
-		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", userId).get();
+		ObjectId userId = new ObjectId(request().username());		
 		Set<String> fields = new ChainedSet<String>().add("apps").get();
 		try {
-			Member user = Member.get(properties, fields);
+			User user = User.getById(userId, fields);
 			user.apps.remove(new ObjectId(appIdString));
-			Member.set(userId, "apps", user.apps);
+			User.set(userId, "apps", user.apps);
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}
@@ -102,14 +123,16 @@ public class Apps extends Controller {
 	}
 
 	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result isInstalled(String appIdString) throws ModelException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId appId = new ObjectId(appIdString);		
-		boolean isInstalled = (Member.getByIdAndApp(userId, appId, Sets.create()) != null);
+		boolean isInstalled = (User.getByIdAndApp(userId, appId, Sets.create()) != null);
 		
 		return ok(Json.toJson(isInstalled));
 	}
 
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getUrl(String appIdString) {
 		// get app
 		ObjectId appId = new ObjectId(appIdString);
@@ -132,8 +155,28 @@ public class Apps extends Controller {
 		String url = app.url.replace(":authToken", authToken);
 		return ok("https://" + appServer + "/" + app.filename + "/" + url);
 	}
+	
+	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
+	public static Result getUrlForMember(String appIdString, String userIdString) throws ModelException {
+		// get app
+		ObjectId appId = new ObjectId(appIdString);
+		ObjectId userId = new ObjectId(userIdString);
+		ObjectId ownerId = new ObjectId(request().username());				
+		App app = App.getById(appId, Sets.create("filename", "type", "url"));
+		
+		// create encrypted authToken
+		AppToken appToken = new AppToken(appId, ownerId, userId);
+		String authToken = appToken.encrypt();
+
+		// put together url to load in iframe
+		String appServer = Play.application().configuration().getString("apps.server");
+		String url = app.url.replace(":authToken", authToken);
+		return ok("https://" + appServer + "/" + app.filename + "/" + url);
+	}
 
 	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Promise<Result> requestAccessTokenOAuth2(String appIdString) {
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -191,6 +234,7 @@ public class Apps extends Controller {
 		});
 	}
 
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getRequestTokenOAuth1(String appIdString) {
 		// get app details
 		ObjectId appId = new ObjectId(appIdString);
@@ -216,6 +260,7 @@ public class Apps extends Controller {
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result requestAccessTokenOAuth1(String appIdString) {
 		// validate json
 		JsonNode json = request().body().asJson();

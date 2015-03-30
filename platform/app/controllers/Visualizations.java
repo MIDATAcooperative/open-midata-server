@@ -8,6 +8,7 @@ import java.util.Set;
 
 import models.ModelException;
 import models.Member;
+import models.User;
 import models.Space;
 import models.Visualization;
 import models.enums.UserRole;
@@ -32,14 +33,15 @@ import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-@Security.Authenticated(Secured.class)
 public class Visualizations extends APIController {
 
+	@Security.Authenticated(Secured.class)
 	public static Result details(String visualizationIdString) {
 		return ok(visualization.render());
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result get() {
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -63,6 +65,7 @@ public class Visualizations extends APIController {
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Result install(String visualizationIdString) throws ModelException {
 		JsonNode json = request().body().asJson();
@@ -76,39 +79,53 @@ public class Visualizations extends APIController {
 		Visualization visualization = Visualization.getById(visualizationId, Sets.create("defaultRules", "targetUserRole", "defaultSpaceName"));
 		if (visualization == null) return badRequest("Unknown visualization");
 		
-		if (visualization.targetUserRole != UserRole.MEMBER && visualization.targetUserRole != UserRole.ANY) return badRequest("Visualization is not for members");
-		
-		Member user = Member.getById(userId, Sets.create("visualizations", "myaps"));
-		user.visualizations.add(visualizationId);
-		Member.set(userId, "visualizations", user.visualizations);
-				
-		if (spaceName!=null && !spaceName.equals("") && visualization.defaultSpaceName != null) {
-			Space space = null;
-			if (createSpace) {
-				space = Spaces.add(userId, spaceName, visualizationId);
+		if (visualization.targetUserRole.equals(UserRole.MEMBER)) { 
+			Member user = Member.getById(userId, Sets.create("visualizations", "myaps"));
+			user.visualizations.add(visualizationId);
+			Member.set(userId, "visualizations", user.visualizations);
+					
+			if (spaceName!=null && !spaceName.equals("") && visualization.defaultSpaceName != null) {
+				Space space = null;
+				if (createSpace) {
+					space = Spaces.add(userId, spaceName, visualizationId);
+				}
+				if (applyRules && space!=null) {
+					RuleApplication.instance.applyRules(userId, visualization.defaultRules, user.myaps, space.aps, true);
+				}
 			}
-			if (applyRules && space!=null) {
-				RuleApplication.instance.applyRules(userId, visualization.defaultRules, user.myaps, space.aps, true);
+	
+		} else {
+			User user = User.getById(userId, Sets.create("visualizations","role"));
+			
+			if (!user.role.equals(visualization.targetUserRole) && !visualization.targetUserRole.equals(UserRole.ANY)) {
+				return badRequest("Visualization is for a different role."+user.role);
 			}
+			
+			user.visualizations.add(visualizationId);
+			User.set(userId, "visualizations", user.visualizations);
+								
 		}
+			// && visualization.targetUserRole != UserRole.ANY) return badRequest("Visualization is not for members");
 		
+				
 		return ok();
 	}
 
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result uninstall(String visualizationIdString) {
-		ObjectId userId = new ObjectId(request().username());
-		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", userId).get();
+		ObjectId userId = new ObjectId(request().username());		
 		Set<String> fields = new ChainedSet<String>().add("visualizations").get();
 		try {
-			Member user = Member.get(properties, fields);
+			User user = User.getById(userId, fields);
 			user.visualizations.remove(new ObjectId(visualizationIdString));
-			Member.set(userId, "visualizations", user.visualizations);
+			User.set(userId, "visualizations", user.visualizations);
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}
 		return ok();
 	}
 
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result isInstalled(String visualizationIdString) {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId visualizationId = new ObjectId(visualizationIdString);		
@@ -121,6 +138,7 @@ public class Visualizations extends APIController {
 		return ok(Json.toJson(isInstalled));
 	}
 
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getUrl(String visualizationIdString) {
 		ObjectId visualizationId = new ObjectId(visualizationIdString);
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", visualizationId).get();

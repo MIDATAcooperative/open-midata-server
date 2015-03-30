@@ -1,13 +1,18 @@
 package controllers;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import models.App;
+import models.HPUser;
 import models.ModelException;
 import models.Record;
 import models.Member;
+import models.User;
+import models.enums.UserRole;
 
 import org.bson.types.ObjectId;
 
@@ -142,11 +147,11 @@ public class AppsAPI extends Controller {
 			return badRequest("Invalid spaceToken.");
 		}
 		
-		Object recordIdSet = properties.get("_id");
-		Set<String> recordIds = (Set<String>) recordIdSet;
+		//Object recordIdSet = properties.get("_id");
+		//Set<String> recordIds = (Set<String>) recordIdSet;
 			
 		// get record data	
-		Set<Record> records = RecordSharing.instance.fetchMultiple(spaceToken.userId, spaceToken.spaceId, recordIds, fields);
+		Collection<Record> records = RecordSharing.instance.list(spaceToken.userId, spaceToken.spaceId, properties, fields);
 		if (fields.contains("ownerName")) ReferenceTool.resolveOwners(records);
 		return ok(Json.toJson(records));
 		
@@ -173,15 +178,30 @@ public class AppsAPI extends Controller {
 			return badRequest("Invalid authToken.");
 		}
 		
-		Member owner = Member.getByIdAndApp(appToken.userId, appToken.appId, Sets.create("myaps", "tokens"));
-		if (owner == null) return badRequest("Invalid authToken.");
+		User owner;
+		Member targetUser;
+		ObjectId targetAps = null;
+		
+		if (appToken.ownerId.equals(appToken.userId)) {
+			targetUser = Member.getByIdAndApp(appToken.userId, appToken.appId, Sets.create("myaps", "tokens"));
+			if (targetUser == null) return badRequest("Invalid authToken.");
+			owner = targetUser;
+		} else {						
+			HPUser hpuser = HPUser.getByIdAndApp(appToken.ownerId, appToken.appId, Sets.create("tokens","role"));
+			if (hpuser == null) return badRequest("Invalid authToken.");			
+			targetUser = Member.getById(appToken.userId, Sets.create("myaps", "tokens"));
+			if (targetUser == null) return badRequest("Invalid authToken.");
+			targetAps = MemberKeys.getOrCreate(hpuser, targetUser);
+			owner = hpuser;
+		}
+				
 				
 		// save new record with additional metadata
 		if (!json.get("data").isTextual() || !json.get("name").isTextual() || !json.get("description").isTextual()) {
 			return badRequest("At least one request parameter is of the wrong type.");
 		}
 		
-		Map<String,String> tokens = owner.tokens.get(appToken.appId.toString());		
+		Map<String,String> tokens = targetUser.tokens.get(appToken.appId.toString());		
 		
 		String data = json.get("data").asText();
 		String name = json.get("name").asText();
@@ -192,11 +212,12 @@ public class AppsAPI extends Controller {
 		record._id = new ObjectId();
 		record.app = appToken.appId;
 		record.owner = appToken.userId;
-		record.creator = appToken.userId;
+		record.creator = appToken.ownerId;
 		record.created = DateTimeUtils.now();
 		record.format = format;
 		
-		if (tokens!=null) record.series = tokens.get("series");
+		String stream = tokens!=null ? tokens.get("stream") : null;
+		if (stream!=null) { record.stream = new ObjectId(stream); record.direct = true; }
 		
 		try {
 			record.data = (DBObject) JSON.parse(data);
@@ -206,7 +227,13 @@ public class AppsAPI extends Controller {
 		record.name = name;
 		record.description = description;
 		
-		RecordSharing.instance.addRecord(owner, record);
+		RecordSharing.instance.addRecord(targetUser, record);
+		
+		if (targetAps != null) {
+			Set<ObjectId> records = new HashSet<ObjectId>();
+			records.add(record._id);
+			RecordSharing.instance.share(targetUser._id, targetUser.myaps, targetAps, records, false);
+		}
 		
 		return ok();
 	}

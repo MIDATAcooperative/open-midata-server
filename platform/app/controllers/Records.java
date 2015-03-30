@@ -75,6 +75,15 @@ public class Records extends Controller {
 		return ok(authorized.render());
 	}
 
+	public static RecordToken getRecordTokenFromString(String id) {
+        int pos = id.indexOf('.');
+		
+		if (pos > 0) {
+		   return new RecordToken(id.substring(0,pos), id.substring(pos+1)); 
+		} else if (id.length()>25) {
+		   return RecordToken.decrypt(id);
+		} else return null;
+	}
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result get() throws JsonValidationException, ModelException {
@@ -84,13 +93,10 @@ public class Records extends Controller {
 		JsonValidation.validate(json, "_id");
 		
 		String id = JsonValidation.getString(json, "_id");
-		RecordToken tk = null;
+		RecordToken tk = getRecordTokenFromString(id);
 		ObjectId userId = new ObjectId(request().username());
-		
-		if (id.length()>25) {
-		   tk = RecordToken.decrypt(JsonValidation.getString(json, "_id"));
-		} else {		   		
-		   Member user = Member.getById(userId, Sets.create("myaps"));
+						   	
+		   /*Member user = Member.getById(userId, Sets.create("myaps"));
 		
 		   Set<String> ids = RecordSharing.instance.listRecordIds(user._id, user.myaps);
 		   if (ids.contains(id)) tk = new RecordToken(id, user.myaps.toString());
@@ -101,8 +107,8 @@ public class Records extends Controller {
 				ids = RecordSharing.instance.listRecordIds(userId, circle.aps);
 				if (ids.contains(id)) tk = new RecordToken(id, circle.aps.toString());
 			  }
-		   }
-		}
+		   }*/
+		
 		
 		if (tk==null) return badRequest("Bad token");
 		Record target = RecordSharing.instance.fetch(userId, tk);
@@ -126,19 +132,20 @@ public class Records extends Controller {
 		
 		Member self = Member.getById(userId, Sets.create("myaps"));
 		
-		List<Record> results = new ArrayList<Record>();
+		List<Record> records = new ArrayList<Record>();
 		
-		results.addAll(RecordSharing.instance.list(userId, self.myaps, true, true, true));
+		Set<String> fields = Sets.create("app","owner","creator","created","name","id");
+		records.addAll(RecordSharing.instance.list(userId, self.myaps, RecordSharing.FULLAPS, fields));
 		
 		//Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("owner", userId).get();
-		//Set<String> fields = new ChainedSet<String>().add("app").add("owner").add("creator").add("created").add("name").get();
+		
 		//List<Record> records = new ArrayList<Record>(Record.getAll(properties, fields));
 		
 		// get visible records
 		Set<Circle> circles = Circle.getAllByMember(userId);
 		
 		for (Circle circle : circles) {
-			results.addAll(RecordSharing.instance.list(userId, circle.aps, true, true, true));
+			records.addAll(RecordSharing.instance.list(userId, circle.aps, RecordSharing.FULLAPS, fields));
 		}
 		
 		/*
@@ -154,7 +161,7 @@ public class Records extends Controller {
 		
 		records.addAll(Record.getAll(visibleRecords, fields));
 		*/		
-		List<Record> records = new ArrayList<Record>(results); 
+		 
 		Collections.sort(records);
 		ReferenceTool.resolveOwners(records);
 		return ok(Json.toJson(records));
@@ -278,7 +285,7 @@ public class Records extends Controller {
 		
 		Map<String,Set<String>> records = new HashMap<String,Set<String>>();
 		for (String recordId :recordIds) {
-      	   RecordToken rt = RecordToken.decrypt(recordId);
+      	   RecordToken rt = getRecordTokenFromString(recordId);
       	   Set<String> recs = records.get(rt.apsId);
       	   if (recs == null) {
       		   recs = new HashSet<String>();
@@ -343,27 +350,9 @@ public class Records extends Controller {
 	@APICall
 	public static Result getFile(String id) throws ModelException {
 		
-		RecordToken tk = null;
+		RecordToken tk = getRecordTokenFromString(id);
 		ObjectId userId = new ObjectId(request().username());
-		
-		if (id.length()>25) {
-		   tk = RecordToken.decrypt(id);
-		} else {
-		   		
-		   Member user = Member.getById(userId, Sets.create("myaps"));
-		
-		   Set<String> ids = RecordSharing.instance.listRecordIds(user._id, user.myaps);
-		   if (ids.contains(id)) tk = new RecordToken(id, user.myaps.toString());
-		   else {		
-			  Set<Circle> circles = Circle.getAllByMember(userId);
-			
-		   	  for (Circle circle : circles) {
-				ids = RecordSharing.instance.listRecordIds(userId, circle.aps);
-				if (ids.contains(id)) tk = new RecordToken(id, circle.aps.toString());
-			  }
-		   }
-		}
-		
+						
 		if (tk==null) return badRequest("Bad token");
 		Record target = RecordSharing.instance.fetch(userId, tk);
 		if (target==null) return badRequest("Unknown Record");

@@ -111,9 +111,9 @@ records.controller('RecordsCtrl', ['$scope', '$http', 'filterService', 'dateServ
 	// go to record creation/import dialog
 	$scope.createOrImport = function(app) {
 		if (app.type === "create") {
-			window.location.href = jsRoutes.controllers.Records.create(app._id.$oid).url;
+			window.location.href = portalRoutes.controllers.Records.create(app._id.$oid).url;
 		} else {
-			window.location.href = jsRoutes.controllers.Records.importRecords(app._id.$oid).url;
+			window.location.href = portalRoutes.controllers.Records.importRecords(app._id.$oid).url;
 		}
 	};
 	
@@ -228,6 +228,24 @@ createRecords.controller('CreateRecordsCtrl', ['$scope', '$http', '$sce', functi
 	
 	// get app url
 	$http(jsRoutes.controllers.Apps.getUrl(appId)).
+		success(function(url) {
+			$scope.error = null;
+			$scope.url = $sce.trustAsResourceUrl(url);
+		}).
+		error(function(err) { $scope.error = "Failed to load app: " + err; });
+	
+}]);
+createRecords.controller('ProviderCreateRecordsCtrl', ['$scope', '$http', '$sce', function($scope, $http, $sce) {
+	
+	// init
+	$scope.error = null;
+	
+	// get app id (format: /records/create/:appId)
+	var appId = window.location.pathname.split("/")[4];
+	var userId = window.location.pathname.split("/")[5];
+	
+	// get app url
+	$http(jsRoutes.controllers.Apps.getUrlForMember(appId, userId)).
 		success(function(url) {
 			$scope.error = null;
 			$scope.url = $sce.trustAsResourceUrl(url);

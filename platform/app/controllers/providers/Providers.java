@@ -2,6 +2,7 @@ package controllers.providers;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -78,6 +79,10 @@ public class Providers extends APIController {
 		user.status = UserStatus.NEW;		
 		user.contractStatus = ContractStatus.NEW;		
 		user.confirmationCode = CodeGenerator.nextCode();
+		
+		user.apps = new HashSet<ObjectId>();
+		user.tokens = new HashMap<String, Map<String, String>>();
+		user.visualizations = new HashSet<ObjectId>();
 		
 		HealthcareProvider.add(provider);
 		user.provider = provider._id;

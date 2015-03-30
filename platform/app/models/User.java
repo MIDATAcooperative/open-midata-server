@@ -112,6 +112,10 @@ public class User extends Model implements Comparable<User> {
 		return Model.get(User.class, collection, CMaps.map("_id", id), fields);
 	}
 	
+	public static User getByIdAndApp(ObjectId id, ObjectId appId, Set<String> fields) throws ModelException {
+		return Model.get(User.class, collection, CMaps.map("_id", id).map("apps", appId), fields);
+	}
+	
 	public static Set<User> getAllUser(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
 		return Model.getAll(User.class, collection, properties, fields);
 	}

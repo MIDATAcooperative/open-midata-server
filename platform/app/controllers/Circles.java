@@ -79,7 +79,7 @@ public class Circles extends Controller {
 		circle.name = name;
 		circle.order = Circle.getMaxOrder(userId) + 1;
 		circle.members = new HashSet<ObjectId>();
-		circle.aps = RecordSharing.instance.createPrivateAPS(userId); 
+		circle.aps = RecordSharing.instance.createPrivateAPS(userId, circle._id); 
 		
 		Circle.add(circle);
 		

@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +21,7 @@ import utils.auth.SpaceToken;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.ReferenceTool;
+import utils.db.ObjectIdConversion;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -76,7 +78,7 @@ public class VisualizationsAPI extends Controller {
 			return internalServerError(e.getMessage());
 		}*/
 		
-		Set<String> tokens = RecordSharing.instance.listRecordIds(spaceToken.userId, spaceToken.spaceId);		
+		Set<ObjectId> tokens = ObjectIdConversion.toObjectIds(RecordSharing.instance.listRecordIds(spaceToken.userId, spaceToken.spaceId));		
 		return ok(Json.toJson(tokens));
 	}
 
@@ -137,8 +139,8 @@ public class VisualizationsAPI extends Controller {
 		}
 		
 		*/
-		Object recordIdSet = properties.get("_id");
-		Set<String> recordIds = (Set<String>) recordIdSet;
+		//Object recordIdSet = properties.get("_id");
+		//Set<String> recordIds = (Set<String>) recordIdSet;
 		
 		/*
 		if (recordIdSet instanceof Set<?>) {					
@@ -148,7 +150,7 @@ public class VisualizationsAPI extends Controller {
 		}*/
 
 		// get record data
-		Set<Record> records = RecordSharing.instance.fetchMultiple(authToken.userId, authToken.spaceId, recordIds, fields);
+		Collection<Record> records = RecordSharing.instance.list(authToken.userId, authToken.spaceId, properties, fields);
 		if (fields.contains("ownerName")) ReferenceTool.resolveOwners(records);
 		return ok(Json.toJson(records));
 	}
