@@ -127,7 +127,7 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location',
 				{
 					"name": "Body - Weight",
 					"title": "Fitbit body (weight) {date}",
-					"endpoint": "/1/user/-/body/weight/date/{date}/1d.json"
+					"endpoint": "/1/user/-/body/weight/date/{date}/1d.json",
 				    "format" : "Body Weight/Fitbit"
 				},
 				{
