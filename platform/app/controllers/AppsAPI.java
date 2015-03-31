@@ -286,6 +286,7 @@ public class AppsAPI extends Controller {
 			record.created = DateTimeUtils.now();
 			record.name = metaData.get("name")[0];
 			record.description = metaData.get("description")[0];
+			record.format = "Attachment";
 			record.data = new BasicDBObject(new ChainedMap<String, String>().put("type", "file").put("name", filename)
 					.put("contentType", contentType).get());
 
