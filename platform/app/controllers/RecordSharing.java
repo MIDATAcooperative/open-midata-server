@@ -41,6 +41,7 @@ public class RecordSharing {
 	public final static Set<String> INTERNALIDONLY = Sets.create("_id");
 	public final static Set<String> COMPLETE_META = Sets.create("id", "owner", "app", "creator", "created", "name", "format", "description");
 	public final static Set<String> COMPLETE_DATA = Sets.create("id", "owner", "app", "creator", "created", "name", "format", "description", "data");
+	public final static String STREAM_TYPE = "Stream";
 	
 	public ObjectId createPrivateAPS(ObjectId who, ObjectId proposedId) throws ModelException {
 		AccessPermissionSet newset = new AccessPermissionSet();
@@ -125,7 +126,7 @@ public class RecordSharing {
 		result._id = new ObjectId();
 		result.name = name;
 		result.direct = direct;
-		result.format = "stream";
+		result.format = STREAM_TYPE;
 		result.created = DateTimeUtils.now();
 		result.data = new BasicDBObject();
 		
@@ -155,7 +156,7 @@ public class RecordSharing {
 		  apswrapper = new APSWrapper(owner.myaps, owner._id);
 		}
 	
-		if (record.format.equals("stream")) {
+		if (record.format.equals(STREAM_TYPE)) {
 			apsDirect = record.direct;
 			record.stream = null;			
 			record.direct = false;
@@ -170,7 +171,7 @@ public class RecordSharing {
 	    Record.add(record);	  
 	    
 		if (!record.direct) apswrapper.addPermission(record, false);
-		if (record.format.equals("stream")) {
+		if (record.format.equals(STREAM_TYPE)) {
 			RecordSharing.instance.createAPSForRecord(owner._id, record._id, record.key, apsDirect);
 		}
 		
@@ -313,7 +314,7 @@ public class RecordSharing {
 		}
 		
 		protected void scanForStreams(Map<String, APSWrapper> apsToScan) throws ModelException {
-		  	BasicDBObject streams = aps.permissions.get("stream");
+		  	BasicDBObject streams = aps.permissions.get(STREAM_TYPE);
 		  	if (streams != null) {
 		  		for (String key : streams.keySet()) {
 		  			if (!apsToScan.containsKey(key)) {
