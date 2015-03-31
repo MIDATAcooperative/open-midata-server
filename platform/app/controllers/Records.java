@@ -82,7 +82,10 @@ public class Records extends Controller {
 		   return new RecordToken(id.substring(0,pos), id.substring(pos+1)); 
 		} else if (id.length()>25) {
 		   return RecordToken.decrypt(id);
-		} else return null;
+		} else {
+		   ObjectId userId = new ObjectId(request().username());
+		   return new RecordToken(id, userId.toString());
+		}
 	}
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
