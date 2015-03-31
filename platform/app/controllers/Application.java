@@ -163,8 +163,11 @@ public class Application extends Controller {
 	    if (user.myaps == null || !user.myaps.equals(user._id)) {
 	    	user.myaps = RecordSharing.instance.createPrivateAPS(user._id, user._id);
 	    	Member.set(user._id, "myaps", user.myaps);
-	    	Set<Record> recs = Record.getAll(CMaps.map("owner", user._id), Sets.create("owner"));
-	    	for (Record r : recs) RecordSharing.instance.addRecord2(user, r);
+	    	Set<Record> recs = Record.getAll(CMaps.map("owner", user._id), Sets.create("owner","format"));
+	    	for (Record r : recs) {
+	    		if (r.format==null) r.format = "Json";
+	    		RecordSharing.instance.addRecord2(user, r); 
+	    	}
 	    	
 	    	Set<Space> spaces = Space.getAllByOwner(user._id, Sets.create("aps"));
 	    	for (Space s : spaces) {
