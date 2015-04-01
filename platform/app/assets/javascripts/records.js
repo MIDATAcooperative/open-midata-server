@@ -247,6 +247,9 @@ createRecords.controller('ProviderCreateRecordsCtrl', ['$scope', '$http', '$sce'
 	var appId = window.location.pathname.split("/")[4];
 	var userId = window.location.pathname.split("/")[5];
 	
+	$scope.memberUrl = portalRoutes.controllers.ProviderFrontend.member(userId).url;
+	console.log($scope.memberUrl);
+	
 	// get app url
 	$http(jsRoutes.controllers.Apps.getUrlForMember(appId, userId)).
 		success(function(url) {

@@ -232,7 +232,8 @@ spaces.controller('VisualizationCtrl', ['$scope', '$http', '$sce', function($sco
 	$scope.memberId = window.location.pathname.split("/")[3];
 	$scope.loading = true;
 	$scope.space = { "visualization" : { "$oid" : window.location.pathname.split("/")[4] }};
-		
+	$scope.memberUrl = portalRoutes.controllers.ProviderFrontend.member($scope.memberId).url;
+	
 	// get current user
 	$http(jsRoutes.controllers.Users.getCurrentUser()).
 		success(function(userId) {

@@ -14,6 +14,8 @@ search.controller('MemberSearchCtrl', ['$scope', '$http', function($scope, $http
 		    $scope.member = data;
 		    $scope.error = null;
 		    $scope.loading = false;
+		    
+		    document.location.href = portalRoutes.controllers.ProviderFrontend.member($scope.member._id.$oid).url;
 		}).
 		error(function(err) {
 			$scope.error = err;	
@@ -21,6 +23,30 @@ search.controller('MemberSearchCtrl', ['$scope', '$http', function($scope, $http
 			$scope.loading = false;
 		});
 	};
+	
+
+			
+	
+}]);
+search.controller('MemberDetailsCtrl', ['$scope', '$http', function($scope, $http) {
+	
+	$scope.memberid = window.location.pathname.split("/")[3];
+	$scope.member = {};	
+	$scope.loading = true;
+		
+	$scope.reload = function() {
+			
+		$http.get(jsRoutes.controllers.providers.Providers.getMember($scope.memberid).url).
+			success(function(data) { 												
+				$scope.member = data;
+				$scope.loading = false;
+			}).
+			error(function(err) {
+				$scope.error = err;				
+			});
+	};
+		
+	$scope.reload();
 	
 	// For adding new records
 	$scope.error = null;
@@ -92,29 +118,5 @@ search.controller('MemberSearchCtrl', ['$scope', '$http', function($scope, $http
 	$scope.useVisualization = function(visualization) {		
 		window.location.href = portalRoutes.controllers.ProviderFrontend.useVisualization($scope.member._id.$oid, visualization._id.$oid ).url;		
 	};
-			
-	
-}]);
-search.controller('MemberDetailsCtrl', ['$scope', '$http', function($scope, $http) {
-	
-	$scope.memberid = window.location.pathname.split("/")[3];
-	$scope.member = {};	
-	$scope.loading = true;
-		
-	$scope.reload = function() {
-			
-		$http.get(jsRoutes.controllers.providers.Providers.getMember($scope.memberid).url).
-			success(function(data) { 												
-				$scope.member = data;
-				$scope.loading = false;
-			}).
-			error(function(err) {
-				$scope.error = err;				
-			});
-	};
-		
-	$scope.reload();
-	
-	
 	
 }]);

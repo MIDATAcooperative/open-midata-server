@@ -273,6 +273,7 @@ public class Application extends Controller {
 				controllers.routes.javascript.Apps.details(),
 				controllers.routes.javascript.Visualizations.details(),
 				controllers.routes.javascript.ProviderFrontend.appDetails(),
+				controllers.routes.javascript.ProviderFrontend.member(),
 				controllers.routes.javascript.ProviderFrontend.visualizationDetails(),
 				controllers.routes.javascript.ProviderFrontend.useVisualization(),
 				controllers.routes.javascript.Records.create(),
