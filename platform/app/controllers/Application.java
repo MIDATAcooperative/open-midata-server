@@ -274,6 +274,7 @@ public class Application extends Controller {
 				controllers.routes.javascript.Visualizations.details(),
 				controllers.routes.javascript.ProviderFrontend.appDetails(),
 				controllers.routes.javascript.ProviderFrontend.visualizationDetails(),
+				controllers.routes.javascript.ProviderFrontend.useVisualization(),
 				controllers.routes.javascript.Records.create(),
 				controllers.routes.javascript.Records.importRecords(),
 				controllers.routes.javascript.ProviderFrontend.createRecord()
@@ -370,11 +371,13 @@ public class Application extends Controller {
 				controllers.members.routes.javascript.Studies.get(),
 				controllers.members.routes.javascript.Studies.requestParticipation(),
 				controllers.members.routes.javascript.Studies.noParticipation(),
+				controllers.members.routes.javascript.HealthProvider.list(),
 				//Healthcare Providers
 				controllers.providers.routes.javascript.Providers.register(),
 				controllers.providers.routes.javascript.Providers.login(),
 				controllers.providers.routes.javascript.Providers.search(),
 				controllers.providers.routes.javascript.Providers.getMember(),
+				controllers.providers.routes.javascript.Providers.getVisualizationToken(),
 				// Market
 				controllers.routes.javascript.Market.registerApp(),
 				controllers.routes.javascript.Market.registerVisualization(),

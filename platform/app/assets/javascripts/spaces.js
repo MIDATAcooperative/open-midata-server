@@ -229,55 +229,17 @@ spaces.controller('VisualizationCtrl', ['$scope', '$http', '$sce', function($sco
 	// init
 	$scope.error = null;
 	$scope.userId = null;
+	$scope.memberId = window.location.pathname.split("/")[3];
 	$scope.loading = true;
-	$scope.spaces = [];
-	$scope.add = {};
-	$scope.loadingVisualizations = false;
-	$scope.visualizations = [];
-	
-	
+	$scope.space = { "visualization" : { "$oid" : window.location.pathname.split("/")[4] }};
+		
 	// get current user
 	$http(jsRoutes.controllers.Users.getCurrentUser()).
 		success(function(userId) {
 			$scope.userId = userId;
-			getSpaces();
+			loadBaseUrl($scope.space);
 		});
-	
-	// get spaces and make given space active (if one is given; first otherwise)
-	getSpaces = function(userId) {
-		var properties = {"owner": $scope.userId};
-		var fields = ["name", "records", "visualization", "order"]
-		var data = {"properties": properties, "fields": fields};
-		$http.post(jsRoutes.controllers.Spaces.get().url, JSON.stringify(data)).
-			success(function(spaces) {
-				$scope.spaces = spaces;
-				if ($scope.spaces.length > 0) {
-					var active = window.location.pathname.split("/")[3];
-					if (active) {
-						$scope.makeActive(_.find($scope.spaces, function(space) { return space._id.$oid === active; }));
-					} else {
-						$scope.makeActive($scope.spaces[0]);
-					}
-				}
-				$scope.loading = false;
-			}).
-			error(function(err) {
-				$scope.error = "Failed to load spaces: " + err;
-				$scope.loading = false;
-			});
-	}
-	
-	// make space tab active
-	$scope.makeActive = function(space) {
-		_.each($scope.spaces, function(space) { space.active = false; });
-		space.active = true;
 		
-		// lazily load url, authToken and visualization
-		if (!space.trustedUrl) {
-			loadBaseUrl(space);
-		}
-	}
-	
 	// load visualization url for given space
 	loadBaseUrl = function(space) {
 		$http(jsRoutes.controllers.Visualizations.getUrl(space.visualization.$oid)).
@@ -290,7 +252,9 @@ spaces.controller('VisualizationCtrl', ['$scope', '$http', '$sce', function($sco
 	
 	// get the authorization token for the current space
 	getAuthToken = function(space) {
-		$http(jsRoutes.controllers.Spaces.getToken(space._id.$oid)).
+		var body = { "member" : $scope.memberId };
+		console.log(body);
+		$http.post(jsRoutes.controllers.providers.Providers.getVisualizationToken().url, body).
 			success(function(authToken) {
 				space.completedUrl = space.baseUrl.replace(":authToken", authToken);
 				reloadIframe(space);
@@ -303,10 +267,10 @@ spaces.controller('VisualizationCtrl', ['$scope', '$http', '$sce', function($sco
 		space.trustedUrl = $sce.trustAsResourceUrl(space.completedUrl);
 
 		// have to detach and append again to force reload; just setting src didn't do the trick
-		var iframe = $("#iframe-" + space._id.$oid).detach();
+		var iframe = $("#iframe").detach();
 		// set src attribute of iframe to avoid creating an entry in the browser history
 		iframe.attr("src", space.trustedUrl);
-		$("#iframe-placeholder-" + space._id.$oid).append(iframe);
+		$("#iframe-placeholder").append(iframe);
 	}
 		
 }]);

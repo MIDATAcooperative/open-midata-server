@@ -147,6 +147,7 @@ GET     /members/api/participation/:study                controllers.members.Stu
 POST    /members/api/participation/:study/request        controllers.members.Studies.requestParticipation(study: String)
 POST    /members/api/participation/:study/no             controllers.members.Studies.noParticipation(study: String)
 POST    /members/api/studies/entercode                   controllers.members.Studies.enterCode()
+GET     /members/api/providers                           controllers.members.HealthProvider.list()
 
 # Healthcare Provider
 GET     /providers/register                              controllers.ProviderFrontend.register()
@@ -160,10 +161,12 @@ GET     /providers/market                                controllers.ProviderFro
 GET     /providers/apps/:id                              controllers.ProviderFrontend.appDetails(id: String)
 GET     /providers/visualizations/:id                    controllers.ProviderFrontend.visualizationDetails(id: String)
 GET     /providers/records/create/:appId/:memberId       controllers.ProviderFrontend.createRecord(appId: String, memberId: String)
+GET     /providers/member/:member/:visualization         controllers.ProviderFrontend.useVisualization(member: String, visualization: String)
 
 POST    /providers/api/register                          controllers.providers.Providers.register()
 POST    /providers/api/login                             controllers.providers.Providers.login()
 POST    /providers/api/search                            controllers.providers.Providers.search()
+POST    /providers/api/visualizationToken                controllers.providers.Providers.getVisualizationToken()
 GET     /providers/api/member/:member                    controllers.providers.Providers.getMember(member: String)    
 
 # Apps

@@ -119,9 +119,17 @@
 								</label>
 							</div>
 						</div>
+						<div ng-show="memberkeys.length > 0">
+						     <div class="checkbox" ng-repeat="memberkey in memberkeys">
+								<label>
+									<input type="checkbox" name="{{memberkey._id.$oid}}" ng-model="memberkey.checked">
+									{{memberkey.name}}
+								</label>
+							</div>
+						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateShared('circles')">Update</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateShared('circles');updateShared('memberkeys');">Update</button>
 						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 					</div>
 				</div>

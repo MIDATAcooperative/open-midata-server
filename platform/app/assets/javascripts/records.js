@@ -144,7 +144,8 @@ records.controller('RecordsCtrl', ['$scope', '$http', 'filterService', 'dateServ
 				$scope.shared = data.shared;
 				$scope.circles = data.circles;
 				$scope.spaces = data.spaces;
-				$scope.participations = data.participations;				
+				$scope.participations = data.participations;	
+				$scope.memberkeys = data.memberkeys;
 				$scope.loadingSharing = false;
 				$scope.prepare(type);
 			}).
@@ -198,6 +199,8 @@ records.controller('RecordsCtrl', ['$scope', '$http', 'filterService', 'dateServ
 			var objsWithRecord = _.filter($scope[type], function(obj) { return $scope.containsRecord($scope.shared[type][obj._id.$oid], activeRecord._id.$oid); });
 			_.each(objsWithRecord, function(obj) { obj.checked = obj.wasChecked = true; });
 		}
+		
+		if (type == "circles") $scope.prepare("memberkeys");
 	};
 		
 	

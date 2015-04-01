@@ -187,7 +187,7 @@ public class AppsAPI extends Controller {
 			if (targetUser == null) return badRequest("Invalid authToken.");
 			owner = targetUser;
 		} else {						
-			HPUser hpuser = HPUser.getByIdAndApp(appToken.ownerId, appToken.appId, Sets.create("tokens","role"));
+			HPUser hpuser = HPUser.getByIdAndApp(appToken.ownerId, appToken.appId, Sets.create("tokens","role","provider","firstname","sirname"));
 			if (hpuser == null) return badRequest("Invalid authToken.");			
 			targetUser = Member.getById(appToken.userId, Sets.create("myaps", "tokens"));
 			if (targetUser == null) return badRequest("Invalid authToken.");
@@ -232,7 +232,7 @@ public class AppsAPI extends Controller {
 		if (targetAps != null) {
 			Set<ObjectId> records = new HashSet<ObjectId>();
 			records.add(record._id);
-			RecordSharing.instance.share(targetUser._id, targetUser.myaps, targetAps, records, false);
+			RecordSharing.instance.share(targetUser._id, targetUser.myaps, targetAps, records, true);
 		}
 		
 		return ok();

@@ -15,12 +15,15 @@ import play.mvc.Result;
 import models.HPUser;
 import models.HealthcareProvider;
 import models.Member;
+import models.MemberKey;
 import models.ModelException;
+import models.Space;
 import models.enums.ContractStatus;
 import models.enums.Gender;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.auth.CodeGenerator;
+import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.json.JsonValidation;
@@ -148,5 +151,21 @@ public class Providers extends APIController {
 		if (result==null) return badRequest("Member does not exist.");
 		
 		return ok(Json.toJson(result));
+	}
+	
+	@Security.Authenticated(ProviderSecured.class)
+	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
+	public static Result getVisualizationToken() throws JsonValidationException, ModelException {
+		ObjectId userId = new ObjectId(request().username());
+		JsonNode json = request().body().asJson();
+						
+		JsonValidation.validate(json, "member");
+		ObjectId memberId = JsonValidation.getObjectId(json, "member");
+		MemberKey memberKey = MemberKey.getByMemberAndProvider(memberId, userId);
+
+		// create encrypted authToken
+		SpaceToken spaceToken = new SpaceToken(memberKey.aps, userId);
+		return ok(spaceToken.encrypt());
 	}
 }

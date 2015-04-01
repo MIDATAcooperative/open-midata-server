@@ -14,6 +14,7 @@ import views.html.providers.memberdetails;
 import views.html.providers.market;
 import views.html.providers.app;
 import views.html.providers.visualization;
+import views.html.providers.usevisualization;
 import views.html.providers.createrecords;
 
 public class ProviderFrontend extends Controller {
@@ -69,5 +70,10 @@ public class ProviderFrontend extends Controller {
 	@Security.Authenticated(ProviderSecured.class)
 	public static Result member(String member) {
 		return ok(memberdetails.render());
+	}
+	
+	@Security.Authenticated(ProviderSecured.class)
+	public static Result useVisualization(String member, String visualization) {
+		return ok(usevisualization.render());
 	}
 }

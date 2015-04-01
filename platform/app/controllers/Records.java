@@ -11,6 +11,7 @@ import java.util.Set;
 
 import models.Circle;
 import models.LargeRecord;
+import models.MemberKey;
 import models.ModelException;
 import models.Record;
 import models.Space;
@@ -177,6 +178,7 @@ public class Records extends Controller {
 		Map<String, Set<String>> circleResult = new HashMap<String, Set<String>>();
 		Map<String, Set<String>> spaceResult = new HashMap<String, Set<String>>();
 		Map<String, Set<String>> participationResult = new HashMap<String, Set<String>>();
+		Map<String, Set<String>> memberkeyResult = new HashMap<String, Set<String>>();
 		
 		ObjectNode result = Json.newObject();
 		ObjectNode shared = Json.newObject();
@@ -205,6 +207,14 @@ public class Records extends Controller {
 		
 		result.put("participations", Json.toJson(participations));
 		shared.put("participations", Json.toJson(participationResult));
+		
+		Set<MemberKey> memberkeys = MemberKey.getByMember(userId);
+		for (MemberKey memberkey : memberkeys) {
+		    memberkeyResult.put(memberkey._id.toString(), RecordSharing.instance.listRecordIds(userId, memberkey.aps));
+		}
+		result.put("memberkeys", Json.toJson(memberkeys));
+		shared.put("memberkeys", Json.toJson(memberkeyResult));
+		
 		
 		return ok(result);
 	}
@@ -314,6 +324,11 @@ public class Records extends Controller {
         		StudyParticipation part = StudyParticipation.getById(start, Sets.create("aps"));
         		aps = part.aps;
         		break;
+        	case "memberkeys" :
+        		MemberKey memberkey = MemberKey.getById(start);
+        		aps = memberkey.aps;
+        		withMember = true;
+        		break;
         	}
         	        	
         	for (String sourceAps :records.keySet()) {        	  
@@ -336,7 +351,11 @@ public class Records extends Controller {
         		StudyParticipation part = StudyParticipation.getById(start, Sets.create("aps"));
         		aps = part.aps;
         		break;
-        	}
+        	case "memberkeys" :
+        		MemberKey memberkey = MemberKey.getById(start);
+        		aps = memberkey.aps;
+        		break;
+        	}        
         	        
         	for (String sourceAps :records.keySet()) {        	  
           	  RecordSharing.instance.unshare(userId, aps, ObjectIdConversion.toObjectIds(records.get(sourceAps)));

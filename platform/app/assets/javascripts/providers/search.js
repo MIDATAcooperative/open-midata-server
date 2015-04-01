@@ -90,7 +90,7 @@ search.controller('MemberSearchCtrl', ['$scope', '$http', function($scope, $http
 	$scope.visualizations = [];
 	
 	$scope.useVisualization = function(visualization) {		
-		window.location.href = portalRoutes.controllers.ProviderFrontend.createRecord(app._id.$oid, $scope.member._id.$oid).url;		
+		window.location.href = portalRoutes.controllers.ProviderFrontend.useVisualization($scope.member._id.$oid, visualization._id.$oid ).url;		
 	};
 			
 	

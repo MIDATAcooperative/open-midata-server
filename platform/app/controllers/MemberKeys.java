@@ -1,6 +1,7 @@
 package controllers;
 
 import models.HPUser;
+import models.HealthcareProvider;
 import models.Member;
 import models.MemberKey;
 import models.ModelException;
@@ -15,11 +16,14 @@ public class MemberKeys {
 		MemberKey key = MemberKey.getByMemberAndProvider(member._id, hpuser._id);
 		if (key!=null) return key.aps;
 		
+		HealthcareProvider prov = HealthcareProvider.getById(hpuser.provider);
+		
 		key = new MemberKey();
 		key._id = new ObjectId();
 		key.member = member._id;
 		key.provider = hpuser._id;
 		key.status = MemberKeyStatus.UNCONFIRMED;
+		key.name = prov.name+": "+hpuser.firstname+" "+hpuser.sirname;
 		key.aps = RecordSharing.instance.createAnonymizedAPS(member._id, hpuser._id, key._id);
 		MemberKey.add(key);
 		

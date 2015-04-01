@@ -1,4 +1,33 @@
 @main("Healthcare Providers") {
-	<h1>Healthcare Providers</h1>
-	<p>Some content here...</p>
+	
+	<div ng-app="healthprovider">
+    <div ng-controller="ListHealthProviderCtrl" ng-cloak>
+    <h1>Healthcare Providers</h1>
+	
+	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	  {{ error.message || error }}
+	</p>
+	<div ng-show="results.length > 0">
+	<table class="table table-hover">
+	  <thead>
+	    <tr>
+	      <th>Name</th>
+	      <th>Status</th>
+	      <th>Confirmed</th>	      	     
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr ng-repeat="memberkey in results">
+	      <td>{{ memberkey.name }}</td>	  
+	      <td>{{ memberkey.status }}</td>	      	         
+	      <td>{{ memberkey.confirmDate | date }}</td>
+	    </tr>
+	  </tbody>
+	</table>
+	</div>
+	<p ng-show="results.length == 0">
+	  You do not have a registered contact to a healthcare provider. 
+	</p>
+    </div>
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/members/healthprovider.js")" defer></script>
 }
