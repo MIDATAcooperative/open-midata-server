@@ -49,7 +49,7 @@ recordList.controller('RecordListCtrl', ['$scope', '$http', '$location',
 					$scope.skipped.wrongFormat++;
 					continue;				
 				}
-				var ownerName = (format == "part1") ? rec.ownerName : rec.data.ownerName;
+				var ownerName = rec.ownerName;
 				var ownerName1 = ownerName.toLowerCase().replace(/\s/g,'');
 				if (owners[ownerName1] == null) owners[ownerName1] = { ownerName:ownerName };
 				var owner = owners[ownerName1];
