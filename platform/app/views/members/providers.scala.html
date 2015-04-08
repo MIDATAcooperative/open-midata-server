@@ -1,3 +1,4 @@
+@import views.html.details.flexiblerecords
 @main("Healthcare Providers") {
 	
 	<div ng-app="healthprovider">
@@ -18,7 +19,7 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="memberkey in results">
-	      <td>{{ memberkey.name }}</td>	  
+	      <td><a ng-click="showRecords(memberkey)" href="javascript:">{{ memberkey.name }}</a></td>	  
 	      <td>{{ memberkey.status }}</td>	      	         
 	      <td>{{ memberkey.confirmDate | date }}</td>
 	    </tr>
@@ -28,6 +29,14 @@
 	<p ng-show="results.length == 0">
 	  You do not have a registered contact to a healthcare provider. 
 	</p>
+	
+	<div ng-controller="FlexibleRecordListCtrl" viewid="records" title="Records">
+      <modal title="Records" viewid="records">
+	      @flexiblerecords()
+	  </modal>	          
+	</div>
+	
     </div>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/views.js")" defer></script>
 	<script type="text/javascript" src="@routes.Assets.at("javascripts/members/healthprovider.js")" defer></script>
 }

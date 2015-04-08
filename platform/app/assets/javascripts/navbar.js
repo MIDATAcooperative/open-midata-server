@@ -1,15 +1,14 @@
-var navbar = angular.module('navbar', []);
-navbar.controller('NavbarCtrl', ['$scope', '$http', function($scope, $http) {
+var navbar = angular.module('navbar', [ 'services' ]);
+navbar.controller('NavbarCtrl', ['$scope', '$http', 'currentUser', function($scope, $http, currentUser) {
 	
 	// init
 	$scope.user = {};
 	
 	// get current user
-	$http(jsRoutes.controllers.Users.getCurrentUser()).
-		success(function(userId) {
-			$scope.user._id = userId;
-			getName(userId);
-		});
+	currentUser.then(function(userId) {
+		$scope.user._id = userId;
+		getName(userId);
+	});
 	
 	// get user's name
 	getName = function(userId) {

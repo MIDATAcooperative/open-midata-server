@@ -119,7 +119,7 @@ records.controller('RecordsCtrl', ['$scope', '$http', 'filterService', 'dateServ
 	
 	// show record details
 	$scope.showDetails = function(record) {
-		window.location.href = jsRoutes.controllers.Records.details(record.id).url;
+		window.location.href = portalRoutes.controllers.Records.details(record.id).url;
 	};
 	
 	// check whether the user is the owner of the record

@@ -9,6 +9,7 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.mvc.Result;
 
@@ -144,13 +145,18 @@ public class Providers extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result getMember(String id) throws JsonValidationException, ModelException {
-		
+		ObjectId userId = new ObjectId(request().username());
 		ObjectId memberId = new ObjectId(id);
+		
+		MemberKey memberKey = MemberKey.getByMemberAndProvider(memberId, userId);
 		
 		Member result = Member.getById(memberId, Sets.create("firstname","birthday", "sirname","city","zip","country","email","phone","mobile","ssn","address1","address2"));
 		if (result==null) return badRequest("Member does not exist.");
 		
-		return ok(Json.toJson(result));
+		ObjectNode obj = Json.newObject();
+		obj.put("member", Json.toJson(result));
+		if (memberKey != null) obj.put("memberkey", Json.toJson(memberKey));
+		return ok(obj);
 	}
 	
 	@Security.Authenticated(ProviderSecured.class)

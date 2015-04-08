@@ -3,10 +3,13 @@ package controllers.members;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
 
+import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 
@@ -14,6 +17,7 @@ import models.History;
 import models.Member;
 import models.ModelException;
 import models.ParticipationCode;
+import models.Record;
 import models.Research;
 import models.ResearchUser;
 import models.Study;
@@ -27,6 +31,7 @@ import models.enums.ParticipationStatus;
 import models.enums.StudyValidationStatus;
 import utils.auth.CodeGenerator;
 import utils.collections.Sets;
+import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
@@ -53,6 +58,24 @@ public class Studies extends APIController {
 	
 	@APICall
 	@Security.Authenticated(Secured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	public static Result search() throws JsonValidationException, ModelException {
+	   ObjectId user = new ObjectId(request().username());
+	   
+	   JsonNode json = request().body().asJson();
+	   JsonValidation.validate(json, "properties", "fields");
+							   		
+	   Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+	   Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+	   	   
+	   Set<Study> studies = Study.getAll(user, properties, fields);
+	   
+	   return ok(Json.toJson(studies));
+	}
+	
+	@APICall
+	@Security.Authenticated(Secured.class)
+	@BodyParser.Of(BodyParser.Json.class)
 	public static Result enterCode() throws JsonValidationException, ModelException {
         JsonNode json = request().body().asJson();
 		

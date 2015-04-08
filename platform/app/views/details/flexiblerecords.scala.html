@@ -1,0 +1,13 @@
+    <p ng-show="records.length == 0">Empty</p>
+    <ul class="list-group" ng-show="!loadingRecords && records.length > 0">
+		<li class="list-group-item" ng-repeat="record in records">
+			<span class="label label-info">{{record.created }}</span>
+			<span ng-show="record.owner.$oid != userId.$oid" class="label label-info">{{ record.ownerName }}</span>
+			<a href="javascript:;" ng-click="showDetails(record)">{{record.name}}</a>
+			<div class="pull-right" ng-if="view.setup.allowRemove">
+			   <button type="button" class="btn btn-xs btn-danger" ng-click="removeRecord(record)">
+				  <span class="glyphicon glyphicon-remove"></span>
+			   </button>
+			</div>										
+		</li>
+	</ul>

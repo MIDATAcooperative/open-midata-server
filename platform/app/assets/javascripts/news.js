@@ -1,5 +1,5 @@
-var news = angular.module('news', ['date']);
-news.controller('NewsCtrl', ['$scope', '$http', 'dateService', function($scope, $http, dateService) {
+var news = angular.module('news', ['navbar', 'date', 'services', 'views']);
+news.controller('NewsCtrl', ['$scope', '$http', 'dateService', 'currentUser', 'users', 'views', function($scope, $http, dateService, currentUser, users, views) {
 	
 	// init
 	$scope.error = null;
@@ -13,29 +13,29 @@ news.controller('NewsCtrl', ['$scope', '$http', 'dateService', function($scope, 
 	$scope.users = {};
 	
 	// get current user
-	$http(jsRoutes.controllers.Users.getCurrentUser()).
-		success(function(userId) {
-			$scope.userId = userId;
-			getNews(userId);
-		});
+	currentUser.then(function(userId) {
+		$scope.userId = userId;
+		getNews(userId);
+		views.setView("1", { aps : userId.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ]});
+		views.setView("2", { properties : { }, fields : ["name"] });
+	});
 	
 	// get user's news
 	getNews = function(userId) {
-		var properties = {"_id": userId};
-		var fields = ["login", "news", "pushed", "shared"];
-		var data = {"properties": properties, "fields": fields};
-		$http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
-			success(function(users) {
-				$scope.lastLogin = users[0].login.split(" ")[0];
-				$scope.news = users[0].news;
-				$scope.pushed = users[0].pushed;
-				$scope.shared = users[0].shared;
+		users.getMembers({"_id": userId}, ["login", "news", "pushed", "shared", "apps", "visualizations"]).		
+		then(function(result) {
+			var user = result.data[0];
+				$scope.lastLogin = user.login.split(" ")[0];
+				$scope.news = user.news;
+				$scope.pushed = user.pushed;
+				$scope.shared = user.shared;
+				$scope.showAppTeaser = user.apps.length == 0;
+				$scope.showVisualizationsTeaser = user.visualizations.length == 0;
 				getNewsItems($scope.news);
-			}).
-			error(function(err) {
+		},function(err) {
 				$scope.error = "Failed to load your news: " + err;
 				$scope.loading = false;
-			});
+		});
 	}
 	
 	// get the news items

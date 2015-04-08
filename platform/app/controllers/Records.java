@@ -39,7 +39,7 @@ import utils.json.JsonValidation.JsonValidationException;
 import utils.search.Search;
 import utils.search.SearchResult;
 import views.html.records;
-import views.html.details.record;
+import views.html.members.record;
 import views.html.dialogs.authorized;
 import views.html.dialogs.createrecords;
 import views.html.dialogs.importrecords;
@@ -49,33 +49,39 @@ import actions.APICall;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-@Security.Authenticated(Secured.class)
+
 public class Records extends Controller {
 
+	@Security.Authenticated(Secured.class)
 	public static Result index() {
 		return ok(records.render());
 	}
 
+	@Security.Authenticated(Secured.class)
 	public static Result filter(String filters) {
 		return index();
 	}
 
+	@Security.Authenticated(Secured.class)
 	public static Result details(String recordIdString) {
 		return ok(record.render());
 	}
 
+	@Security.Authenticated(Secured.class)
 	public static Result create(String appIdString) {
 		return ok(createrecords.render());
 	}
 
+	@Security.Authenticated(Secured.class)
 	public static Result importRecords(String appIdString) {
 		return ok(importrecords.render());
 	}
 
+	@Security.Authenticated(Secured.class)
 	public static Result onAuthorized(String appIdString) {
 		return ok(authorized.render());
 	}
-
+	
 	public static RecordToken getRecordTokenFromString(String id) {
         int pos = id.indexOf('.');
 		
@@ -90,6 +96,7 @@ public class Records extends Controller {
 	}
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result get() throws JsonValidationException, ModelException {
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -130,6 +137,7 @@ public class Records extends Controller {
 	}
 
 	@APICall
+	@Security.Authenticated(Secured.class)
 	public static Result getVisibleRecords() throws ModelException {
 		// get own records
 		ObjectId userId = new ObjectId(request().username());
@@ -172,6 +180,28 @@ public class Records extends Controller {
 	}
 	
 	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result getRecords() throws ModelException, JsonValidationException {
+ 	
+		ObjectId userId = new ObjectId(request().username());
+		JsonNode json = request().body().asJson();
+		JsonValidation.validate(json, "properties", "fields", "aps");
+						
+		ObjectId aps = JsonValidation.getObjectId(json, "aps");
+		List<Record> records = new ArrayList<Record>();
+		
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+		
+		records.addAll(RecordSharing.instance.list(userId, aps, properties, fields));		
+		Collections.sort(records);
+		if (fields.contains("ownerName")) ReferenceTool.resolveOwners(records);
+		return ok(Json.toJson(records));
+	}
+	
+	@APICall
+	@Security.Authenticated(Secured.class)
 	public static Result getSharingInfo() throws ModelException {
 		ObjectId userId = new ObjectId(request().username());
 		
@@ -220,6 +250,7 @@ public class Records extends Controller {
 	}
 
 	@APICall
+	@Security.Authenticated(Secured.class)
 	public static Result search(String query) throws ModelException {
 		// get the visible records
 		ObjectId userId = new ObjectId(request().username());
@@ -247,6 +278,7 @@ public class Records extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
+	@Security.Authenticated(Secured.class)
 	public static Result updateSpaces(String recordIdString) throws JsonValidationException, ModelException {
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -279,6 +311,7 @@ public class Records extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
+	@Security.Authenticated(Secured.class)
 	public static Result updateSharing() throws JsonValidationException, ModelException {
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -370,6 +403,7 @@ public class Records extends Controller {
 	 * Get the file associated with a record.
 	 */
 	@APICall
+	@Security.Authenticated(Secured.class)
 	public static Result getFile(String id) throws ModelException {
 		
 		RecordToken tk = getRecordTokenFromString(id);

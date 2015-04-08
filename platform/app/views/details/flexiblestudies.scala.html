@@ -1,0 +1,6 @@
+
+  <ul class="list-group" ng-show="!loadingRecords && studies.length > 0">
+	<li class="list-group-item" ng-repeat="study in studies">					
+	   <a href="javascript:;" ng-click="showDetails(study)">{{study.name}}</a>										
+  	</li>
+  </ul>

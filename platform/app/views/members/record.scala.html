@@ -1,4 +1,10 @@
-
+@main("Records") {
+	<div ng-app="details" ng-controller="RecordCtrl">
+		<div class="page-header">
+			<h1>Record Details</h1>
+		</div>
+		
+		<div ng-cloak>
 			<div class="alert alert-danger alert-dismissable" ng-show="error">
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 				<p>{{error}}</p>
@@ -34,4 +40,9 @@
 			</div>
 			<div class="well" style="white-space: pre-wrap;" ng-show="record.json">{{record.json}}</div>
 			<a href="{{downloadLink}}" target="_self" class="btn btn-primary" ng-show="record.data.type === 'file'">Download</a>
-		
+		</div>
+	</div>
+	
+	<!-- Load details controller -->
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/details.js")" defer></script>
+}

@@ -1,5 +1,7 @@
 @import views.html.help.formrow
 @import views.html.help.formerror
+@import views.html.details.flexiblerecords
+@import views.html.details.record
 @providermain("Member Details") {
 <div ng-app="search" ng-controller="MemberDetailsCtrl" ng-cloak>  
 	<h1>Member Details</h1>
@@ -17,6 +19,13 @@
 	  <span ng-show="member.ssn">SSN: {{ member.ssn }}</span><br>
 	  <span ng-show="member.email">Email: {{ member.email }}</span><br>
     </address>	
+    
+    <div ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records of this patient:">
+	    <h3>{{ title }}</h3>
+	    @flexiblerecords()
+	</div>
+    
+    
                <div class="btn-group" ng-show="!loadingApps && apps.length > 0">
 					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 						<span class="glyphicon glyphicon-plus"></span> Create or import a new record
@@ -39,7 +48,16 @@
 					</ul>
 			   </div>
     <a href="@routes.ProviderFrontend.search()" class="btn btn-default">Back</a>
+    
+    <!-- Record modal -->
+    <div ng-controller="RecordDetailCtrl" viewid="record" title="Record Details">
+      <modal title="Record Details" viewid="record">
+	      @record()
+	  </modal>	          
+	</div>
+            
 </div>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/views.js")" defer></script>
 <script type="text/javascript" src="@routes.Assets.at("javascripts/providers/search.js")" defer></script>
 	
 }

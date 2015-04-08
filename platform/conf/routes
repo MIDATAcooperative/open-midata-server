@@ -50,6 +50,7 @@ GET     /members/records/filters/*filters                controllers.Records.fil
 
 POST    /members/api/records/get                         controllers.Records.get()
 GET     /members/api/records/visible                     controllers.Records.getVisibleRecords()
+POST    /members/api/records/list                        controllers.Records.getRecords()
 GET     /members/api/records/shared                      controllers.Records.getSharingInfo()
 GET     /members/records/import/:appId                   controllers.Records.importRecords(appId: String)
 GET     /records/redirect/:appId                         controllers.Records.onAuthorized(appId: String)
@@ -142,6 +143,7 @@ GET     /research/api/studies/:study/participants/:participant controllers.resea
 POST    /research/api/studies/:study/approve             controllers.research.Studies.approveParticipation(study: String)
 POST    /research/api/studies/:study/reject              controllers.research.Studies.rejectParticipation(study: String)
 
+POST    /members/api/studies                             controllers.members.Studies.search()
 GET     /members/api/participation                       controllers.members.Studies.list()
 GET     /members/api/participation/:study                controllers.members.Studies.get(study: String)
 POST    /members/api/participation/:study/request        controllers.members.Studies.requestParticipation(study: String)

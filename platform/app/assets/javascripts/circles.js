@@ -1,5 +1,5 @@
-var circles = angular.module('circles', []);
-circles.controller('CirclesCtrl', ['$scope', '$http', function($scope, $http) {
+var circles = angular.module('circles', [ 'services', 'views' ]);
+circles.controller('CirclesCtrl', ['$scope', '$http', 'currentUser', 'views', function($scope, $http, currentUser, views) {
 	
 	// init
 	$scope.error = null;
@@ -12,12 +12,7 @@ circles.controller('CirclesCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.searching = false;
 	
 	// get current user
-	$http(jsRoutes.controllers.Users.getCurrentUser()).
-		success(function(userId) { loadCircles(userId); }).
-		error(function(err) {
-			$scope.error = "Failed to load current user: " + err;
-			$scope.loading = false;
-		});
+	currentUser.then(function(userId) { loadCircles(userId); });
 	
 	// get circles and make either given or first circle active
 	loadCircles = function(userId) {		
@@ -66,6 +61,7 @@ circles.controller('CirclesCtrl', ['$scope', '$http', function($scope, $http) {
 	$scope.makeActive = function(circle) {
 		_.each($scope.circles, function(circle) { circle.active = false; });
 		circle.active = true;
+		views.setView("1", { aps : circle.aps.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowRemove : true, type : "circles" });
 	}
 	
 	// add a new circle

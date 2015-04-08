@@ -277,6 +277,7 @@ public class Application extends Controller {
 				controllers.routes.javascript.ProviderFrontend.visualizationDetails(),
 				controllers.routes.javascript.ProviderFrontend.useVisualization(),
 				controllers.routes.javascript.Records.create(),
+				controllers.routes.javascript.Records.details(),
 				controllers.routes.javascript.Records.importRecords(),
 				controllers.routes.javascript.ProviderFrontend.createRecord()
 				));
@@ -319,10 +320,10 @@ public class Application extends Controller {
 				controllers.routes.javascript.Messages.remove(),
 				controllers.routes.javascript.Messages.delete(),
 				// Records
-				controllers.routes.javascript.Records.filter(),
-				controllers.routes.javascript.Records.details(),				
+				controllers.routes.javascript.Records.filter(),							
 				controllers.routes.javascript.Records.get(),
 				controllers.routes.javascript.Records.getVisibleRecords(),
+				controllers.routes.javascript.Records.getRecords(),
 				controllers.routes.javascript.Records.getSharingInfo(),
 				controllers.routes.javascript.Records.search(),				
 				controllers.routes.javascript.Records.updateSharing(),				
@@ -368,6 +369,7 @@ public class Application extends Controller {
 				controllers.research.routes.javascript.Studies.setRequiredInformationSetup(),
 				
 				controllers.members.routes.javascript.Studies.list(),
+				controllers.members.routes.javascript.Studies.search(),
 				controllers.members.routes.javascript.Studies.enterCode(),
 				controllers.members.routes.javascript.Studies.get(),
 				controllers.members.routes.javascript.Studies.requestParticipation(),

@@ -46,6 +46,10 @@ public class Study extends Model {
 		return Model.getAll(Study.class, collection, CMaps.map("owner", research), fields);
 	}
     
+    public static Set<Study> getAll(ObjectId research, Map<String,Object> properties, Set<String> fields) throws ModelException {
+		return Model.getAll(Study.class, collection, properties, fields);
+	}
+    
     public static Study getByIdFromOwner(ObjectId studyid, ObjectId owner, Set<String> fields) throws ModelException {
 		return Model.get(Study.class, collection, CMaps.map("_id", studyid).map("owner",  owner), fields);
 	}

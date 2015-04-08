@@ -155,7 +155,7 @@ filters.factory('filterService', ['$rootScope', '$http', '$q', '$timeout', 'date
 	// get the values of a property, fetch the name from the given url and sort by it
 	getPropertyValues = function(property, url) {
 		var deferred = $q.defer();
-		var ids = _.uniq(_.pluck(records, property), false, function(value) { return value.$oid; });
+		var ids = _.uniq(_.pluck(records, property), false, function(value) { return value != null ? value.$oid : null; });
 		var data = {"properties": {"_id": ids}, "fields": ["name"]};
 		$http.post(url, JSON.stringify(data)).
 			success(function(values) { deferred.resolve(_.sortBy(values, "name")); }).

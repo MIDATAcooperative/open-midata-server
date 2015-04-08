@@ -1,3 +1,5 @@
+@import views.html.details.flexiblestudies
+@import views.html.details.flexiblerecords
 @main("News") {
 	<div ng-app="news" ng-controller="NewsCtrl">
 		<div class="page-header">
@@ -5,14 +7,36 @@
 		</div>
 		
 		<div ng-cloak>
+		   <div class="row">
+		    <div class="col-md-6">
 			<div class="alert alert-danger alert-dismissable" ng-show="error">
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 				<p>{{error}}</p>
 			</div>
+			</div>
+			
+			<div class="col-md-6">
+			<div class="jumbotron " class="center-block" ng-show="showAppTeaser">		  
+			  <h3>Welcome to MIDATA! To get started we recommend to install some applications from our market place!</h3>
+			  <div class="center-block">			  
+			    <a ng-href="@routes.Market.index()" class="btn btn-primary">Take me to the market page.</a>
+			  </div>			  
+			</div>
+			</div>
+			
+			<div class="col-md-6">
+			<div class="jumbotron" class="center-block" ng-show="showVisualizationsTeaser">		  
+			  <h3>Add Visualizations to improve your experience!</h3>
+			  <div class="center-block">			  
+			    <a ng-href="@routes.Market.index()" class="btn btn-primary">Take me to the market page.</a>
+			  </div>			  
+			</div>
+			</div>
 			
 			<!-- Records jumbotron -->
+			<div class="col-md-6">
 			<div class="jumbotron" ng-show="pushed.length || shared.length">
-				<h1>What's new?</h1>
+				<h3>What's new?</h3>
 				<div ng-show="pushed.length">
 					<a href="" ng-click="showPushed()">{{pushed.length}} new record<span ng-show="pushed.length > 1">s</span></a>
 					<span ng-show="pushed.length === 1">has</span>
@@ -32,6 +56,21 @@
 					</div>
 				</div>
 			</div>
+			</div>
+			
+			<div class="col-md-6">
+			<div ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records added this month:" class="panel panel-default">
+			  <div class="panel-heading">{{ title }}</div>
+			  @flexiblerecords()
+			</div>
+			</div>
+			
+			<div class="col-md-6">
+			<div ng-controller="FlexibleStudiesCtrl" viewid="2" title="New Studies:" class="panel panel-default">
+			  <div class="panel-heading">{{ title }}</div>
+			  @flexiblestudies()
+			</div>
+			</div>
 			
 			<!-- News -->
 			<p ng-show="loading">Loading news...</p>
@@ -50,5 +89,6 @@
 	
 	<!-- Load news controller -->
 	<script type="text/javascript" src="@routes.Assets.at("javascripts/date.js")" defer></script>
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/views.js")" defer></script>
 	<script type="text/javascript" src="@routes.Assets.at("javascripts/news.js")" defer></script>
 }

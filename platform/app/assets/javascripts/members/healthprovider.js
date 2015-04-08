@@ -1,6 +1,6 @@
-var participation = angular.module('healthprovider', []);
+var participation = angular.module('healthprovider', [ 'services', 'views' ]);
 
-participation.controller('ListHealthProviderCtrl', ['$scope', '$http', function($scope, $http) {
+participation.controller('ListHealthProviderCtrl', ['$scope', '$http', 'views', function($scope, $http, views) {
 	
 	$scope.results =[];
 	$scope.error = null;
@@ -17,6 +17,10 @@ participation.controller('ListHealthProviderCtrl', ['$scope', '$http', function(
 			error(function(err) {
 				$scope.error = err;				
 			});
+	};
+	
+	$scope.showRecords = function(mk) {
+		views.setView("records", { aps : mk.aps.$oid, properties: {}, fields : [ "ownerName", "created", "id", "name" ]});
 	};
 	
 	$scope.reload();

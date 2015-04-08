@@ -1,3 +1,4 @@
+@import views.html.details.flexiblerecords
 @main("Circles") {
 	<div ng-app="circles" ng-controller="CirclesCtrl">
 		<div class="page-header">
@@ -49,6 +50,7 @@
 					    	<span class="glyphicon glyphicon-remove-sign"></span> Delete circle
 					    </button>
 					    
+										   
 					    <!-- Add users modal -->
 						<div class="modal fade" id="userModal-{{circle._id.$oid}}" role="dialog" aria-labelledby="userModalLabel-{{circle._id.$oid}}" aria-hidden="true">
 							<div class="modal-dialog">
@@ -110,6 +112,11 @@
 					</div>
 				</div>
 			</div>
+			
+			<div ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records shared with this circle:">
+		      <h3>{{ title }}</h3>
+	          @flexiblerecords()
+	        </div>
 		</div>
 		
 		<!-- New circle modal -->
@@ -132,8 +139,13 @@
 				</div>
 			</div>
 		</div>
+		
+		
 	</div>
 	
+
+	
 	<!-- Load circles controller -->
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/views.js")" defer></script>
 	<script type="text/javascript" src="@routes.Assets.at("javascripts/circles.js")" defer></script>
 }

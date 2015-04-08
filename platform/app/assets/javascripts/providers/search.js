@@ -1,4 +1,4 @@
-var search = angular.module('search', []);
+var search = angular.module('search', [ 'views', 'services' ]);
 search.controller('MemberSearchCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	$scope.criteria = {};
@@ -28,17 +28,24 @@ search.controller('MemberSearchCtrl', ['$scope', '$http', function($scope, $http
 			
 	
 }]);
-search.controller('MemberDetailsCtrl', ['$scope', '$http', function($scope, $http) {
+search.controller('MemberDetailsCtrl', ['$scope', '$http', 'views', function($scope, $http, views) {
 	
 	$scope.memberid = window.location.pathname.split("/")[3];
 	$scope.member = {};	
 	$scope.loading = true;
 		
+	views.link("1", "record", "record");
 	$scope.reload = function() {
 			
 		$http.get(jsRoutes.controllers.providers.Providers.getMember($scope.memberid).url).
 			success(function(data) { 												
-				$scope.member = data;
+				$scope.member = data.member;
+				$scope.memberkey = data.memberkey;
+				if (data.memberkey) {
+				  views.setView("1", { aps : $scope.memberkey.aps.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ]});
+				} else {
+				  views.disableView("1");
+				}
 				$scope.loading = false;
 			}).
 			error(function(err) {
