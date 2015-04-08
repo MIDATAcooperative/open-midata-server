@@ -7,16 +7,14 @@
 		</div>
 		
 		<div ng-cloak>
-		   <div class="row">
-		    <div class="col-md-6">
-			<div class="alert alert-danger alert-dismissable" ng-show="error">
+		   <div class="alert alert-danger alert-dismissable" ng-show="error">
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 				<p>{{error}}</p>
 			</div>
-			</div>
-			
-			<div class="col-md-6">
-			<div class="jumbotron " class="center-block" ng-show="showAppTeaser">		  
+		   <div class="row">
+		   
+			<div class="col-md-6" ng-show="showAppTeaser">
+			<div class="jumbotron " class="center-block" >		  
 			  <h3>Welcome to MIDATA! To get started we recommend to install some applications from our market place!</h3>
 			  <div class="center-block">			  
 			    <a ng-href="@routes.Market.index()" class="btn btn-primary">Take me to the market page.</a>
@@ -24,8 +22,8 @@
 			</div>
 			</div>
 			
-			<div class="col-md-6">
-			<div class="jumbotron" class="center-block" ng-show="showVisualizationsTeaser">		  
+			<div class="col-md-6" ng-show="showVisualizationsTeaser">
+			<div class="jumbotron" class="center-block" >		  
 			  <h3>Add Visualizations to improve your experience!</h3>
 			  <div class="center-block">			  
 			    <a ng-href="@routes.Market.index()" class="btn btn-primary">Take me to the market page.</a>
@@ -34,8 +32,8 @@
 			</div>
 			
 			<!-- Records jumbotron -->
-			<div class="col-md-6">
-			<div class="jumbotron" ng-show="pushed.length || shared.length">
+			<div class="col-md-6" ng-show="pushed.length || shared.length">
+			<div class="jumbotron" >
 				<h3>What's new?</h3>
 				<div ng-show="pushed.length">
 					<a href="" ng-click="showPushed()">{{pushed.length}} new record<span ng-show="pushed.length > 1">s</span></a>
@@ -58,24 +56,25 @@
 			</div>
 			</div>
 			
-			<div class="col-md-6">
-			<div ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records added this month:" class="panel panel-default">
-			  <div class="panel-heading">{{ title }}</div>
-			  @flexiblerecords()
-			</div>
+			
+			<div class="col-md-6" ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records added this month:">
+			  <div class="panel panel-default">
+			    <div class="panel-heading">{{ title }}</div>
+			    @flexiblerecords()
+			  </div>
 			</div>
 			
-			<div class="col-md-6">
-			<div ng-controller="FlexibleStudiesCtrl" viewid="2" title="New Studies:" class="panel panel-default">
+						
+			<div class="col-md-6" ng-controller="FlexibleStudiesCtrl" viewid="2" title="New Studies:">
+			  <div class="panel panel-default">
 			  <div class="panel-heading">{{ title }}</div>
 			  @flexiblestudies()
-			</div>
-			</div>
+			  </div>
+			</div>			
 			
 			<!-- News -->
 			<p ng-show="loading">Loading news...</p>
-			<div ng-hide="loading">
-				<p ng-hide="news.length">There are no news.</p>
+			<div ng-hide="loading">			
 				<div class="panel panel-primary" ng-repeat="newsId in news" ng-show="news.length">
 					<div class="panel-heading">
 						{{newsItems[newsId.$oid].title}}

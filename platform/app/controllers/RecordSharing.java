@@ -24,6 +24,8 @@ import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
 import utils.db.ObjectIdConversion;
+import utils.search.Search;
+import utils.search.SearchException;
 
 import models.AccessPermissionSet;
 import models.LargeRecord;
@@ -165,6 +167,11 @@ public class RecordSharing {
 			record.key = apswrapper.encryptionKey;
 		} else {
 		    record.key = generateKey();
+		}
+		try {
+		    Search.add(record.owner, "record", record._id, record.name, record.description);
+		} catch (SearchException e) {
+			throw new ModelException(e);
 		}
 		apswrapper.encryptRecord(record);		
 	    Record.add(record);	  

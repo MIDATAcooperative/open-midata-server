@@ -21,8 +21,10 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.DateTimeUtils;
+import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
+import utils.collections.Sets;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -132,13 +134,11 @@ public class Users extends Controller {
 		Set<ObjectId> contactIds = new HashSet<ObjectId>();
 		Set<Member> contacts;
 		try {
-			Set<Circle> circles = Circle.getAll(new ChainedMap<String, ObjectId>().put("owner", userId).get(), new ChainedSet<String>()
-					.add("members").get());
+			Set<Circle> circles = Circle.getAll(CMaps.map("owner", userId), Sets.create("members"));
 			for (Circle circle : circles) {
 				contactIds.addAll(circle.members);
 			}
-			contacts = Member.getAll(new ChainedMap<String, Set<ObjectId>>().put("_id", contactIds).get(),
-					new ChainedSet<String>().add("name").add("email").get());
+			contacts = Member.getAll(CMaps.map("_id", contactIds),Sets.create("firstname","sirname","email"));
 		} catch (ModelException e) {
 			return internalServerError(e.getMessage());
 		}
