@@ -12,8 +12,8 @@
 				<p>{{error}}</p>
 			</div>
 		   <div class="row">
-		   
-			<div class="col-md-6" ng-show="showAppTeaser">
+		    <div class="col-md-6">
+			<div ng-show="showAppTeaser">
 			<div class="jumbotron " class="center-block" >		  
 			  <h3>Welcome to MIDATA! To get started we recommend to install some applications from our market place!</h3>
 			  <div class="center-block">			  
@@ -22,7 +22,7 @@
 			</div>
 			</div>
 			
-			<div class="col-md-6" ng-show="showVisualizationsTeaser">
+			<div ng-show="showVisualizationsTeaser">
 			<div class="jumbotron" class="center-block" >		  
 			  <h3>Add Visualizations to improve your experience!</h3>
 			  <div class="center-block">			  
@@ -32,7 +32,7 @@
 			</div>
 			
 			<!-- Records jumbotron -->
-			<div class="col-md-6" ng-show="pushed.length || shared.length">
+			<div ng-show="pushed.length || shared.length">
 			<div class="jumbotron" >
 				<h3>What's new?</h3>
 				<div ng-show="pushed.length">
@@ -56,23 +56,26 @@
 			</div>
 			</div>
 			
-			
-			<div class="col-md-6" ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records added this month:">
-			  <div class="panel panel-default">
-			    <div class="panel-heading">{{ title }}</div>
-			    @flexiblerecords()
-			  </div>
-			</div>
-			
-						
-			<div class="col-md-6" ng-controller="FlexibleStudiesCtrl" viewid="2" title="New Studies:">
+			<div ng-controller="FlexibleStudiesCtrl" viewid="2" title="New Studies:">
 			  <div class="panel panel-default">
 			  <div class="panel-heading">{{ title }}</div>
 			  @flexiblestudies()
 			  </div>
 			</div>	
+			
+			</div>			
+		    <div class="col-md-6">						
+						
+			
+			
+			<div ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records added this month:">
+			  <div class="panel panel-default">
+			    <div class="panel-heading">{{ title }}</div>
+			    @flexiblerecords()
+			  </div>
 			</div>		
 			
+			</div>
 			<div class="row"><div class="col-md-12">
 			
 			<!-- News -->
