@@ -1,4 +1,4 @@
-    <p ng-show="records.length == 0">Empty</p>
+    <div class="panel-body" ng-show="records.length == 0">Empty</div>
     <ul class="list-group" ng-show="!loadingRecords && records.length > 0">
 		<li class="list-group-item" ng-repeat="record in records">
 			<span class="label label-info">{{record.created }}</span>
