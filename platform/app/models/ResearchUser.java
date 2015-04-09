@@ -17,9 +17,7 @@ import utils.search.SearchException;
 import utils.search.Search.Type;
 
 public class ResearchUser extends User {
-	
-	private static final String collection = "researchusers";
-	
+			
 	public ObjectId organization;
 	
 	public ResearchUser() { }

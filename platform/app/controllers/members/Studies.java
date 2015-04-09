@@ -97,7 +97,7 @@ public class Studies extends APIController {
 			code.status != ParticipationCodeStatus.SHARED && 
 			code.status != ParticipationCodeStatus.REUSEABLE) return inputerror("code","alreadyused","Participation code has expired.");
 		
-		Study study = Study.getByIdFromMember(code.study, Sets.create("name", "participantSearchStatus"));
+		Study study = Study.getByIdFromMember(code.study, Sets.create("name", "participantSearchStatus", "owner"));
 				
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return inputerror("code", "notsearching", "Study is not searching for participants.");
 		
