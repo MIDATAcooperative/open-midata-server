@@ -114,8 +114,10 @@
 			</div>
 			
 			<div ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records shared with this circle:">
+			  <div ng-if="view.active">
 		      <h3>{{ title }}</h3>
 	          @flexiblerecords()
+	          </div>
 	        </div>
 		</div>
 		

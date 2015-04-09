@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,7 +16,7 @@ public class Message extends Model implements Comparable<Message> {
 
 	public ObjectId sender;
 	public Set<ObjectId> receivers;
-	public String created;
+	public Date created;
 	public String title;
 	public String content;
 

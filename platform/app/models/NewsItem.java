@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,7 +16,7 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 	private static final String collection = "news";
 
 	public ObjectId creator;
-	public String created;
+	public Date created;
 	public String title;
 	public String content;
 	public boolean broadcast; // broadcast to all users

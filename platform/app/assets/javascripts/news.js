@@ -25,7 +25,7 @@ news.controller('NewsCtrl', ['$scope', '$http', 'dateService', 'currentUser', 'u
 		users.getMembers({"_id": userId}, ["login", "news", "pushed", "shared", "apps", "visualizations"]).		
 		then(function(result) {
 			var user = result.data[0];
-				$scope.lastLogin = user.login.split(" ")[0];
+				$scope.lastLogin = user.login;
 				$scope.news = user.news;
 				$scope.pushed = user.pushed;
 				$scope.shared = user.shared;

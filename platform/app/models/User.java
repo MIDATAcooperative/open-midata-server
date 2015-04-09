@@ -33,7 +33,7 @@ public class User extends Model implements Comparable<User> {
 	public UserRole role;
 	
 	public Map<String, Set<ObjectId>> messages; // keys (folders) are: inbox, archive, trash
-	public String login; // timestamp of last login
+	public Date login; // timestamp of last login
 	public Date registeredAt; // Date of registration
 		
 	public String resettoken; // token to reset password

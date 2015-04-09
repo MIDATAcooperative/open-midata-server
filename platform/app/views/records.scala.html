@@ -53,7 +53,7 @@
 			<p ng-show="!loadingRecords && records.length === 0">No available records found.</p>
 			<ul class="list-group" ng-show="!loadingRecords && records.length > 0">
 				<li class="list-group-item" ng-repeat="record in filteredRecords = (records | recordFilter:0)">
-					<span class="label label-info">{{record.created.name}}</span>
+					<span class="label label-info">{{record.created | date}}</span>
 					<span ng-show="record.owner.$oid != userId.$oid" class="label label-info">{{ record.ownerName }}</span>
 					<a href="javascript:;" ng-click="showDetails(record)">{{record.name}}</a>
 					

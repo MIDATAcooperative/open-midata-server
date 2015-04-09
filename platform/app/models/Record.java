@@ -37,7 +37,8 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	// Encrypted part
 	public  ObjectId app; // app that created the record		
 	public  ObjectId creator; // user that imported the record	
-	public  String created; // date + time created TODO change to date
+	public  Date created; // date + time created TODO change to date
+	public  String createdOld; // date + time created TODO change to date
 	public  String name; // used to display a record and for autocompletion
 	public  String format; // format of record
 	public  String description; // this will be indexed in the search cluster

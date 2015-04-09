@@ -60,7 +60,7 @@ public class Circle extends Model implements Comparable<Circle> {
 	}
 	
 	public static Set<Circle> getAllByMember(ObjectId member) throws ModelException {
-		return Model.getAll(Circle.class, collection, CMaps.map("members", member), Sets.create("name", "aps", "order"));
+		return Model.getAll(Circle.class, collection, CMaps.map("members", member), Sets.create("name", "aps", "order", "owner"));
 	}
 
 	public static void set(ObjectId circleId, String field, Object value) throws ModelException {

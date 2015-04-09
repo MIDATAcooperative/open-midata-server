@@ -66,8 +66,8 @@ views.controller('RecordDetailCtrl', ['$scope', '$http', '$attrs', 'views', 'rec
 			then(function(result) { $scope.record.app = result.data[0].name; });
 			
 			console.log($scope.record);
-			var split = $scope.record.created.split(" ");
-			$scope.record.created = split[0] + " at " + split[1];
+			//var split = $scope.record.created.split(" ");
+			//$scope.record.created = split[0] + " at " + split[1];
 		});
 	};
     

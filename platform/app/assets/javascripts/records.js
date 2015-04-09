@@ -63,10 +63,10 @@ records.controller('RecordsCtrl', ['$scope', '$http', 'filterService', 'dateServ
 	
 	// prepare records: clip time from created and add JS date
 	$scope.prepareRecords = function() {
-		_.each($scope.records, function(record) {
+		/*_.each($scope.records, function(record) {
 			var date = record.created.split(" ")[0];
 			record.created = {"name": date, "value": dateService.toDate(date)};
-		});
+		});*/
 	};
 	
 	// initialize filter service

@@ -18,7 +18,7 @@ details.controller('RecordCtrl', ['$scope', '$http', function($scope, $http) {
 			}
 			loadUserNames();
 			loadAppName();
-			rewriteCreated();
+			//rewriteCreated();
 		}).
 		error(function(err) { $scope.error = "Failed to load record details: " + err; });
 	
@@ -41,10 +41,10 @@ details.controller('RecordCtrl', ['$scope', '$http', function($scope, $http) {
 			error(function(err) { $scope.error = "Failed to load app name: " + err; });
 	}
 	
-	var rewriteCreated = function() {
+	/*var rewriteCreated = function() {
 		var split = $scope.record.created.split(" ");
 		$scope.record.created = split[0] + " at " + split[1];
-	}
+	}*/
 	
 }]);
 details.controller('UserCtrl', ['$scope', '$http', function($scope, $http) {
@@ -73,7 +73,7 @@ details.controller('MessageCtrl', ['$scope', '$http', function($scope, $http) {
 			$scope.message = messages[0];
 			getSenderName();
 			getReceiverNames();
-			rewriteCreated();
+			//rewriteCreated();
 		}).
 		error(function(err) { $scope.error = "Failed to load message details: " + err; });
 	
@@ -96,10 +96,10 @@ details.controller('MessageCtrl', ['$scope', '$http', function($scope, $http) {
 			error(function(err) { $scope.error = "Failed to load receiver names: " + err; });
 	}
 	
-	rewriteCreated = function() {
+	/*rewriteCreated = function() {
 		var split = $scope.message.created.split(" ");
 		$scope.message.created = split[0] + " at " + split[1];
-	}
+	}*/
 	
 }]);
 details.controller('AppCtrl', ['$scope', '$http', function($scope, $http) {

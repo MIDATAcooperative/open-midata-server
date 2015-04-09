@@ -2,6 +2,7 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -144,7 +145,7 @@ public class RecordSharing {
 	}
 	
 	public void addRecord(Member owner, Record record) throws ModelException {
-		record.time = System.currentTimeMillis() / 1000 / 60 / 60 / 24 / 7;
+		record.time = getTimeFromDate(record.created); //System.currentTimeMillis() / 1000 / 60 / 60 / 24 / 7;
 		
 		record = record.clone();
 		APSWrapper apswrapper;
@@ -186,7 +187,7 @@ public class RecordSharing {
 		
 	
 	public void addRecord2(Member owner, Record record) throws ModelException {
-        record.time = System.currentTimeMillis() / 1000 / 60 / 60 / 24 / 7;
+        record.time = getTimeFromDate(record.created); //System.currentTimeMillis() / 1000 / 60 / 60 / 24 / 7;
 		
 		record = record.clone();
 		APSWrapper apswrapper;
@@ -353,6 +354,16 @@ public class RecordSharing {
 		
 		protected void decryptRecord(Record record) throws ModelException {
 			if (record.created != null) return;
+			
+			// Convert old format into new
+			if (record.createdOld != null) {
+				record.created = DateTimeUtils.toDate(record.createdOld);
+				record.time = getTimeFromDate(record.created);
+				Record.set(record._id, "created", record.created);
+				Record.set(record._id, "time", record.time);
+				//Record.set(record._id, "createdOld", null);
+				return;
+			}
 			if (!record.encrypted.equals("enc"+record.key)) throw new ModelException("Cannot decrypt");
 		}
 		
@@ -428,7 +439,7 @@ public class RecordSharing {
 						
 		List<Record> lookup(Map<String, Object> properties, Set<String> fields) throws ModelException {
 						
-			ArrayList<Record> result = new ArrayList<Record>();
+			List<Record> result = new ArrayList<Record>();
 			Map<String, APSWrapper> apsToScan = new HashMap<String, APSWrapper>();			
 			
 			// 1 If APS is from other server execute there (if APS redirection) (DB/API)
@@ -446,7 +457,7 @@ public class RecordSharing {
             		              properties.containsKey("created") ||
             		              properties.containsKey("name")
             		              ;
-            Set<String> fieldsFromDB = Sets.create();
+            Set<String> fieldsFromDB = Sets.create("createdOld");
             if (fetchFromDB) fieldsFromDB.add("encrypted");
             if (fields.contains("data")) fieldsFromDB.add("encryptedData");
             
@@ -541,6 +552,8 @@ public class RecordSharing {
 						record.name = r2.name;						
 						record.description = r2.description;
 						record.data = r2.data;
+						
+						record.createdOld = r2.createdOld;
 					}
 					decryptRecord(record);
 					if (!giveKey) record.clearSecrets();
@@ -555,7 +568,13 @@ public class RecordSharing {
 									
 			// 8 Post filter records if necessary
 			// 9 Order records
-		
+		    Collections.sort(result);
+		    if (properties.containsKey("limit")) {
+		    	Object limitObj = properties.get("limit");
+		    	int limit = Integer.parseInt(limitObj.toString());
+		    	if (result.size() > limit) result = result.subList(0, limit);
+		    }
+			
 			return result;
 		}
 		

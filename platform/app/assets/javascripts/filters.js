@@ -50,7 +50,7 @@ filters.filter('recordFilter', ['filterData', function(filterData) {
 							}
 						}
 					} else if (filter.sliderReady && filter.property.type === "range") {
-						return filter.from.value <= record[filter.property.name].value && record[filter.property.name].value <= filter.to.value;
+						return filter.from.value <= record[filter.property.name] && record[filter.property.name] <= filter.to.value;
 					}
 					return true;
 				});
@@ -106,7 +106,7 @@ filters.factory('filterService', ['$rootScope', '$http', '$q', '$timeout', 'date
 					"app": {"name": "app", "type": "point", "operators": [operators.is, operators.isnt], values: {}},
 					"owner": {"name": "owner", "type": "point", "operators": [operators.is, operators.isnt, operators.incircle, operators.notincircle], values: {}},
 					"creator": {"name": "creator", "type": "point", "operators": [operators.is, operators.isnt, operators.incircle, operators.notincircle], values: {}},
-					"created": {"name": "created", "type": "range", "from": getMin("created"), "to": getMax("created")},
+					"created": {"name": "created", "type": "range", "from": { value : new Date(getMin("created")) }, "to": { value : new Date(getMax("created")) }},
 					"format" : {"name": "format", "type": "point", "operators": [operators.isval, operators.isntval], values: {}}
 			};
 			var properties = filterData.filters[serviceId].properties;
@@ -144,12 +144,12 @@ filters.factory('filterService', ['$rootScope', '$http', '$q', '$timeout', 'date
 	
 	// get the min of all values of a property with a 'value' field
 	getMin = function(property) {
-		return _.min(records, function(record) { return record[property].value; })[property];
+		return _.min(records, function(record) { return record[property]; })[property];
 	}
 	
 	// get the max of all values of a property with a 'value' field
 	getMax = function(property) {
-		return _.max(records, function(record) { return record[property].value; })[property];
+		return _.max(records, function(record) { return record[property]; })[property];
 	}
 	
 	// get the values of a property, fetch the name from the given url and sort by it

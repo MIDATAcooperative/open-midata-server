@@ -10,8 +10,8 @@ public class DateTimeUtils {
 	private static final String DATE = "EEE, MMM d, yyyy";
 	private static final String TIME = "HH:mm:ss";
 
-	public static String now() {
-		return new SimpleDateFormat(COMPLETE).format(new Date());
+	public static Date now() {
+		return new Date(); //SimpleDateFormat(COMPLETE).format(new Date());
 	}
 
 	public static String getDate(String dateTimeString) {
@@ -30,6 +30,16 @@ public class DateTimeUtils {
 			return "Unable to parse date and time.";
 		}
 		return new SimpleDateFormat(format).format(date);
+	}
+	
+	public static Date toDate(String dateTimeString) {
+		Date date;
+		try {
+			date = new SimpleDateFormat(COMPLETE).parse(dateTimeString);
+		} catch (ParseException e) {
+			throw new NullPointerException(dateTimeString);
+		}
+		return date;
 	}
 
 }
