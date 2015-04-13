@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map; 
+import java.util.Random;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
@@ -23,6 +24,7 @@ import utils.auth.CodeGenerator;
 import utils.auth.RecordToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.db.LostUpdateException;
 import utils.db.NotMaterialized;
 import utils.db.ObjectIdConversion;
 import utils.search.Search;
@@ -44,6 +46,8 @@ public class RecordSharing {
 	public final static Set<String> COMPLETE_META = Sets.create("id", "owner", "app", "creator", "created", "name", "format", "description");
 	public final static Set<String> COMPLETE_DATA = Sets.create("id", "owner", "app", "creator", "created", "name", "format", "description", "data");
 	public final static String STREAM_TYPE = "Stream";
+	
+	public Random rand = new Random(System.currentTimeMillis());
 	
 	public ObjectId createPrivateAPS(ObjectId who, ObjectId proposedId) throws ModelException {
 		AccessPermissionSet newset = new AccessPermissionSet();
@@ -85,23 +89,37 @@ public class RecordSharing {
 	}
 	
 	public void shareAPS(ObjectId apsId, ObjectId ownerId, Set<ObjectId> targetUsers) throws ModelException {
-		APSWrapper apswrapper = new APSWrapper(apsId, ownerId);
-		
-		for (ObjectId targetUser : targetUsers) {
-			apswrapper.aps.keys.put(targetUser.toString(), "key"+targetUser.toString()+":"+apswrapper.encryptionKey);
+		try {
+			APSWrapper apswrapper = new APSWrapper(apsId, ownerId);
+			
+			for (ObjectId targetUser : targetUsers) {
+				apswrapper.aps.keys.put(targetUser.toString(), "key"+targetUser.toString()+":"+apswrapper.encryptionKey);
+			}
+			apswrapper.aps.updateKeys();
+		} catch (LostUpdateException e) {
+			try {
+			  Thread.sleep(rand.nextInt(1000));
+			} catch (InterruptedException e2) {}
+			shareAPS(apsId, ownerId, targetUsers);
 		}
-		apswrapper.aps.setKeys(apswrapper.aps.keys);
 	}
 	
 	public void unshareAPS(ObjectId apsId, ObjectId ownerId, Set<ObjectId> targetUsers) throws ModelException {
-		AccessPermissionSet aps = AccessPermissionSet.getById(apsId);
-		if (aps==null) throw new ModelException("APS not found.");
-		validateReadable(aps, ownerId);
-		
-		for (ObjectId targetUser : targetUsers) {
-		  aps.keys.remove(targetUser.toString());
+		try {
+			AccessPermissionSet aps = AccessPermissionSet.getById(apsId);
+			if (aps==null) throw new ModelException("APS not found.");
+			validateReadable(aps, ownerId);
+			
+			for (ObjectId targetUser : targetUsers) {
+			  aps.keys.remove(targetUser.toString());
+			}
+			aps.updateKeys();			
+		} catch (LostUpdateException e) {
+			try {
+			  Thread.sleep(rand.nextInt(1000));
+			} catch (InterruptedException e2) {}
+			unshareAPS(apsId, ownerId, targetUsers);
 		}
-		aps.setKeys(aps.keys);
 	}
 
 	public void share(ObjectId who, ObjectId fromAPS, ObjectId toAPS, Set<ObjectId> records, boolean withOwnerInformation) throws ModelException {
@@ -598,17 +616,36 @@ public class RecordSharing {
 		}
 		
 		public void addPermission(Record record, boolean withOwner) throws ModelException {
-			addPermissionInternal(record, withOwner);
-			
-			// Store
-			aps.setPermissions(aps.permissions);
+			try {
+				addPermissionInternal(record, withOwner);
+				
+				// Store
+				aps.updatePermissions();
+			} catch (LostUpdateException e) {
+				recoverFromLostUpdate();
+				addPermission(record,  withOwner);
+			}
 		}
 		
 		public void addPermission(Collection<Record> records, boolean withOwner) throws ModelException {
+			try {
 			for (Record record : records) addPermissionInternal(record, withOwner);
 			
 			// Store
-			aps.setPermissions(aps.permissions);
+			aps.updatePermissions();
+			} catch (LostUpdateException e) {
+				recoverFromLostUpdate();
+				addPermission(records,  withOwner);
+			}
+		}
+		
+		private void recoverFromLostUpdate() throws ModelException {
+			try {
+			   Thread.sleep(rand.nextInt(1000));
+			} catch (InterruptedException e) {};
+			
+			aps = AccessPermissionSet.getById(aps._id);
+			validateReadable(aps, who);			
 		}
 		
 		private void removePermissionInternal(Record record) throws ModelException {
@@ -625,23 +662,31 @@ public class RecordSharing {
 		}
 		
 		public void removePermission(Record record) throws ModelException {
-			removePermissionInternal(record);
+			try {
+			  removePermissionInternal(record);
 			
-			// Store
-			aps.setPermissions(aps.permissions);
+			  // Store
+			  aps.updatePermissions();
+			} catch (LostUpdateException e) {
+				recoverFromLostUpdate();
+				removePermission(record);
+			}
 		}
 		
 		public void removePermission(Collection<Record> records) throws ModelException {
-			for (Record record : records) removePermissionInternal(record);
+			try {
+			  for (Record record : records) removePermissionInternal(record);
 			
-			// Store
-			aps.setPermissions(aps.permissions);
+			  // Store
+			  aps.updatePermissions();
+			} catch (LostUpdateException e) {
+				recoverFromLostUpdate();
+				removePermission(records);
+			}
 		}
 		
 		
 	}
-	
-	
-	
+		
 	
 }

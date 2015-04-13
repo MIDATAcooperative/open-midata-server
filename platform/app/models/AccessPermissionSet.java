@@ -12,6 +12,9 @@ import com.mongodb.BasicDBObject;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
+import utils.db.DBLayer;
+import utils.db.DatabaseException;
+import utils.db.LostUpdateException;
 import utils.search.Search;
 import utils.search.Search.Type;
 
@@ -34,12 +37,20 @@ public class AccessPermissionSet extends Model {
 	}
 		
 	
-	public void setPermissions(Map<String, BasicDBObject> permissions) throws ModelException {		
-		Model.set(AccessPermissionSet.class, collection, this._id, "permissions", permissions);
+	public void updatePermissions() throws ModelException, LostUpdateException {
+		try {
+		   DBLayer.secureUpdate(this, collection, "version", "permissions");
+		} catch (DatabaseException e) {
+			throw new ModelException(e);
+		}
 	}
 	
-	public void setKeys(Map<String, String> keys) throws ModelException {		
-		Model.set(AccessPermissionSet.class, collection, this._id, "keys", keys);
+	public void updateKeys() throws LostUpdateException, ModelException {
+		try {
+		   DBLayer.secureUpdate(this, collection, "version", "keys");
+		} catch (DatabaseException e) {
+				throw new ModelException(e);
+		}		
 	}
 	
 	public static void delete(ObjectId appsId) throws ModelException {	

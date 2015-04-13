@@ -174,6 +174,14 @@ public class DBLayer {
 	public static <T extends Model> void set(Class<T> model, String collection, ObjectId modelId, String field, Object value) throws DatabaseException {
 		getDatabaseForCollection(collection).set(model, collection, modelId, field, value);		
 	}
+	
+	/**
+	 * Sets the given fields of the object and prevents lost updates
+	 * @return
+	 */
+	public static <T extends Model> void secureUpdate(T model, String collection, String timestampField, String... fields) throws LostUpdateException, DatabaseException {
+		getDatabaseForCollection(collection).secureUpdate(model, collection, timestampField, fields);
+	}
 
 	public static DB getFSDB() {
 		return ((MongoDatabase) DBLayer.dbnameToDB.get(DB_RECORD)).getDB();

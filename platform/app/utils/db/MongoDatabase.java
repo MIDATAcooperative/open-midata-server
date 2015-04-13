@@ -183,6 +183,36 @@ public class MongoDatabase extends Database {
 			throw new DatabaseException(e2);
 		}
 	}
+	
+	/**
+	 * Set the given field of the object with the given id.
+	 */
+	public <T extends Model> void secureUpdate(T model, String collection, String timestampField, String[] fields) throws LostUpdateException, DatabaseException {
+		try {
+			DBObject query = new BasicDBObject();
+			query.put("_id", model._id);
+			query.put(timestampField, model.getClass().getField(timestampField).get(model));
+			
+			DBObject updateContent = new BasicDBObject();
+			for (String field : fields) {
+				updateContent.put(field, conversion.toDBObjectValue(model.getClass(), field, model.getClass().getField(field).get(model)));
+			}
+			updateContent.put(timestampField, System.currentTimeMillis());
+			DBObject update = new BasicDBObject("$set", updateContent);
+		
+			DBObject result = getCollection(collection).findAndModify(query, update);
+			if (result == null) throw new LostUpdateException();
+											
+		} catch (MongoException e) {
+			throw new DatabaseException(e);
+		} catch (DatabaseConversionException e2) {
+			throw new DatabaseException(e2);
+		} catch (IllegalAccessException e3) {
+			throw new DatabaseException(e3);
+		} catch (NoSuchFieldException e4) {
+			throw new DatabaseException(e4);
+		}
+	}
 
 	/**
 	 * Convert the properties map to a database object. If an array is given as the value, use the $in operator.
