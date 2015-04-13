@@ -1,4 +1,4 @@
-var participation = angular.module('participation', []);
+var participation = angular.module('participation', [ 'services', 'views']);
 participation.controller('EnterCodeCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	$scope.code = {};
@@ -50,7 +50,7 @@ participation.controller('ListStudiesCtrl', ['$scope', '$http', function($scope,
 	$scope.reload();
 	
 }]);
-participation.controller('StudyDetailCtrl', ['$scope', '$http', function($scope, $http) {
+participation.controller('StudyDetailCtrl', ['$scope', '$http', 'views', function($scope, $http, views) {
 	
 	$scope.studyid = window.location.pathname.split("/")[3];
 	$scope.study = {};
@@ -58,6 +58,7 @@ participation.controller('StudyDetailCtrl', ['$scope', '$http', function($scope,
 	$scope.loading = true;
 	$scope.error = null;
 		
+	views.link("1", "record", "record");
 	$scope.reload = function() {
 			
 		$http.get(jsRoutes.controllers.members.Studies.get($scope.studyid).url).
@@ -67,6 +68,12 @@ participation.controller('StudyDetailCtrl', ['$scope', '$http', function($scope,
 				$scope.research = data.research;
 				$scope.loading = false;
 				$scope.error = null;
+				
+				if ($scope.participation && !($scope.participation.status == "CODE" || $scope.participation.status == "MATCH" )) {
+				  views.setView("1", { aps : $scope.participation._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ]});
+				} else {
+				  views.disableView("1");
+				}
 			}).
 			error(function(err) {
 				$scope.error = err;				
@@ -78,11 +85,11 @@ participation.controller('StudyDetailCtrl', ['$scope', '$http', function($scope,
 	}
 	
 	$scope.mayRequestParticipation = function() {
-		return ( $scope.participation.status == "MATCH" || $scope.participation.status == "CODE" );
+		return $scope.participation != null && ( $scope.participation.status == "MATCH" || $scope.participation.status == "CODE" );
 	};
 	
 	$scope.mayDeclineParticipation = function() {
-		return ( $scope.participation.status == "MATCH" || $scope.participation.status == "CODE" );
+		return $scope.participation != null && ( $scope.participation.status == "MATCH" || $scope.participation.status == "CODE" );
 	};
 	
 	$scope.requestParticipation = function() {

@@ -72,14 +72,16 @@ views.controller('RecordDetailCtrl', ['$scope', '$http', '$attrs', 'views', 'rec
 	};
     
     
-	var loadUserNames = function() {
+	var loadUserNames = function() {		
 		var data = {"properties": {"_id": [$scope.record.owner, $scope.record.creator]}, "fields": ["firstname", "sirname"]};
 		$http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
-			success(function(users) {
+			success(function(users) {				
 				_.each(users, function(user) {
-					if ($scope.record.owner.$oid === user._id.$oid) { $scope.record.owner = (user.firstname+" "+user.sirname).trim(); }
-					if ($scope.record.creator.$oid === user._id.$oid) { $scope.record.creator = (user.firstname+" "+user.sirname).trim(); }
+					if ($scope.record.owner && $scope.record.owner.$oid === user._id.$oid) { $scope.record.owner = (user.firstname+" "+user.sirname).trim(); }
+					if ($scope.record.creator && $scope.record.creator.$oid === user._id.$oid) { $scope.record.creator = (user.firstname+" "+user.sirname).trim(); }
 				});
+				if (!$scope.record.owner) $scope.record.owner = "?";
+				if (!$scope.record.creator) $scope.record.creator = "Same as owner";
 			}).
 			error(function(err) { $scope.error = "Failed to load names: " + err; });
 	};

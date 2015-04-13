@@ -169,6 +169,8 @@ public class RecordSharing {
 		APSWrapper apswrapper;
 		boolean apsDirect = false;
 		
+		if (record.owner.equals(record.creator)) record.creator = null;
+		
 		if (record.stream != null) {
 		  apswrapper = new APSWrapper(record.stream, owner._id);
 		  
@@ -574,6 +576,7 @@ public class RecordSharing {
 						record.createdOld = r2.createdOld;
 					}
 					decryptRecord(record);
+					if (record.creator == null) record.creator = record.owner;
 					if (!giveKey) record.clearSecrets();
 				}
 			} else {

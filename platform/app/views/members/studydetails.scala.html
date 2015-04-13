@@ -1,3 +1,5 @@
+@import views.html.details.flexiblerecords
+@import views.html.details.record
 @main("Study Details") {
 <div ng-app="participation" ng-controller="StudyDetailCtrl" ng-cloak>
 	<h1>Study Details</h1>
@@ -41,6 +43,19 @@
 	<button ng-show="mayRequestParticipation()" ng-click="requestParticipation()" class="btn btn-success">Request Participation</button>
 	<button ng-show="mayDeclineParticipation()" ng-click="noParticipation()" class="btn btn-danger">Do not participate</button>
 	
+	 <div ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records of this participant" ng-show="view.active">
+	    <h2>Shared records:</h2>
+	    @flexiblerecords()
+	</div>
+	
+	<!-- Record modal -->
+    <div ng-controller="RecordDetailCtrl" viewid="record" title="Record Details">
+      <modal title="Record Details" viewid="record">
+	      @views.html.details.record()
+	  </modal>	          
+	</div>
+	
 </div>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/views.js")" defer></script>
 <script type="text/javascript" src="@routes.Assets.at("javascripts/members/participation.js")" defer></script>
 }

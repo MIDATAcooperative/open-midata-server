@@ -97,7 +97,7 @@ public class Studies extends APIController {
 			code.status != ParticipationCodeStatus.SHARED && 
 			code.status != ParticipationCodeStatus.REUSEABLE) return inputerror("code","alreadyused","Participation code has expired.");
 		
-		Study study = Study.getByIdFromMember(code.study, Sets.create("name", "participantSearchStatus", "owner"));
+		Study study = Study.getByIdFromMember(code.study, Sets.create("name", "participantSearchStatus", "owner", "createdBy"));
 				
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return inputerror("code", "notsearching", "Study is not searching for participants.");
 		
@@ -128,7 +128,7 @@ public class Studies extends APIController {
 		part.country = user.country;
 		
 		part.history = new ArrayList<History>();
-		part.aps = RecordSharing.instance.createAnonymizedAPS(userId, study.owner, part._id);
+		part.aps = RecordSharing.instance.createAnonymizedAPS(userId, study.createdBy, part._id);
 		
 		History codedentererd = new History(EventType.CODE_ENTERED, part, null); 
 		part.history.add(codedentererd);

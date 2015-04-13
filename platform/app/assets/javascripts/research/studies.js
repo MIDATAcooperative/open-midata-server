@@ -1,4 +1,4 @@
-var studies = angular.module('studies', []);
+var studies = angular.module('studies', [ 'services', 'views' ]);
 studies.controller('CreateStudyCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	$scope.study = {};
@@ -251,7 +251,7 @@ studies.controller('ListParticipantsCtrl', ['$scope', '$http', function($scope, 
 	$scope.reload();
 	
 }]);
-studies.controller('ParticipantCtrl', ['$scope', '$http', function($scope, $http) {
+studies.controller('ParticipantCtrl', ['$scope', '$http', 'views', function($scope, $http, views) {
 	
 	$scope.studyid = window.location.pathname.split("/")[3];
 	$scope.memberid = window.location.pathname.split("/")[5];
@@ -259,13 +259,18 @@ studies.controller('ParticipantCtrl', ['$scope', '$http', function($scope, $http
 	$scope.participation = {};
 	$scope.loading = true;
 		
+	views.link("1", "record", "record");
+	
 	$scope.reload = function() {
 			
+		views.setView("1", { aps : $scope.memberid, properties : { } , fields : [ "ownerName", "created", "id", "name" ]});
+		
 		$http.get(jsRoutes.controllers.research.Studies.getParticipant($scope.studyid, $scope.memberid).url).
 			success(function(data) { 								
 				$scope.participation = data.participation;
 				$scope.member = data.member;
 				$scope.loading = false;
+								
 			}).
 			error(function(err) {
 				$scope.error = err;				
