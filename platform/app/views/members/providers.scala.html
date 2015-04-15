@@ -3,8 +3,12 @@
 	
 	<div ng-app="healthprovider">
     <div ng-controller="ListHealthProviderCtrl" ng-cloak>
+    <div class="page-header">
     <h1>Healthcare Providers</h1>
+    </div>
 	
+	<div class="panel panel-primary">
+	<div class="panel-body">
 	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 	  {{ error.message || error }}
 	</p>
@@ -29,6 +33,7 @@
 	<p ng-show="results.length == 0">
 	  You do not have a registered contact to a healthcare provider. 
 	</p>
+	</div>
 	
 	<div ng-controller="FlexibleRecordListCtrl" viewid="records" title="Records">
       <modal title="Records" viewid="records">

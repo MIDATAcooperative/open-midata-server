@@ -2,7 +2,11 @@
 @import views.html.help.formerror
 @providermain("Patient Search") {
 <div ng-app="search" ng-controller="MemberSearchCtrl" ng-cloak>
+    <div class="page-header">
 	<h1>Patient Search</h1>
+	</div>
+	<div class="panel panel-primary">
+	<div class="panel-body">
 	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="dosearch()" role="form">								  	  
 	  @formrow("midataID","Midata ID") {  <input type="text" class="form-control" id="midataID" name="midataID" ng-model="criteria.midataID" > }
 	  @formrow("birthday","Birthday") {  <input type="text" class="form-control" id="birthday" name="birthday" ng-model="criteria.birthday" > }							  							  	  
@@ -28,6 +32,8 @@
     </div>
     
 	<p ng-show="loading">Searching...</p>
+	</div>
+	</div>
 </div>
 <script type="text/javascript" src="@routes.Assets.at("javascripts/views.js")" defer></script>
 <script type="text/javascript" src="@routes.Assets.at("javascripts/providers/search.js")" defer></script>

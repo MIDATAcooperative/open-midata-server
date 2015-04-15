@@ -4,7 +4,8 @@
 			<h1>Write a new message</h1>
 		</div>
 		
-		<div ng-cloak>
+		<div ng-cloak class="panel panel-primary">
+		  <div class="panel-body">
 			<div class="row">
 				<div class="col-md-offset-2 col-md-10">
 					<div class="alert alert-danger alert-dismissable" ng-show="error">
@@ -55,7 +56,9 @@
 					<button type="button" class="btn btn-primary" ng-click="sendMessage()">Send</button>
 					<a href="@messageindex" class="btn btn-default">Discard</a>
 				</div>
+				<div style="clear:both"></div>
 			</form>
+		</div>
 		</div>
 	</div>
 

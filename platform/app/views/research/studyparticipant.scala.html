@@ -5,7 +5,10 @@
 @researchmain("Study Participant") {
 <div ng-app="studies" ng-controller="ParticipantCtrl" ng-cloak>
    @studynav("Study Participant","../")
-	<h1>Study Participant</h1>
+   <div class="panel panel-primary">
+   <div class="panel-heading">{{ participation.memberName }}</div>
+   <div class="panel-body">
+	
 	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 	   {{ error.message || error }}
 	</p>
@@ -27,9 +30,12 @@
     </address>		
     </div>
     <p>Status: {{ participation.status }}</p>
-    <p>Group: {{ participation.group }}</p>	
-    <div ng-show="participation.history.length">
-	    <h2>Participation History</h2>
+    <p>Group: {{ participation.group }}</p>
+    </div>
+    </div>	
+    <div ng-show="participation.history.length" class="panel panel-primary">
+	    <div class="panel-heading">Participation History</div>
+	    
 	    <table class="table">
 	      <thead>
 	        <tr>
@@ -47,11 +53,11 @@
 	          <td>{{ entry.message }}</td>
 	        </tr>
 	      </tbody>
-	    </table>
+	    </table>	    
     </div>
     
-    <div ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records of this participant">
-	    <h2>Shared records:</h2>
+    <div ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records of this participant" class="panel panel-primary">
+	    <div class="panel-heading">Shared records:</div>
 	    @flexiblerecords()
 	</div>
 	

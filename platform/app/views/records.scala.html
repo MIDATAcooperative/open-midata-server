@@ -22,7 +22,8 @@
 			<h1>My records</h1>
 		</div>
 		
-		<div ng-cloak>
+		<div ng-cloak >
+		  
 			<div class="alert alert-danger alert-dismissable" ng-show="error || filterError">
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 				<p ng-show="error">{{error}}</p>
@@ -48,9 +49,11 @@
 				@filters(0)
 			</div>
 			
+			<div class="panel panel-primary">			 
+			
 			<!-- Records -->
-			<p ng-show="loadingRecords">Loading records...</p>
-			<p ng-show="!loadingRecords && records.length === 0">No available records found.</p>
+			<div class="panel-body" ng-show="loadingRecords">Loading records...</div>
+			<div class="panel-body" ng-show="!loadingRecords && records.length === 0">No available records found.</div>
 			<ul class="list-group" ng-show="!loadingRecords && records.length > 0">
 				<li class="list-group-item" ng-repeat="record in filteredRecords = (records | recordFilter:0)">
 					<span class="label label-info">{{record.created | date}}</span>
@@ -58,13 +61,13 @@
 					<a href="javascript:;" ng-click="showDetails(record)">{{record.name}}</a>
 					
 					<div class="pull-right">
-					    <button data-toggle="modal" data-target="#studiesModal" class="btn btn-sm btn-primary" ng-class="{'disabled': !isOwnRecord(record)}" ng-click="activate(record); loadShared('participations')">
+					    <button data-toggle="modal" data-target="#studiesModal" class="btn btn-xs btn-primary" ng-class="{'disabled': !isOwnRecord(record)}" ng-click="activate(record); loadShared('participations')">
 							<span class="glyphicon glyphicon-book"></span>
 						</button>
-						<button data-toggle="modal" data-target="#spacesModal" class="btn btn-sm btn-primary" ng-click="activate(record); loadShared('spaces')">
+						<button data-toggle="modal" data-target="#spacesModal" class="btn btn-xs btn-primary" ng-click="activate(record); loadShared('spaces')">
 							<span class="glyphicon glyphicon-picture"></span>
 						</button>
-						<button data-toggle="modal" data-target="#circlesModal" class="btn btn-sm btn-primary" ng-class="{'disabled': !isOwnRecord(record)}" ng-click="activate(record); loadShared('circles')">
+						<button data-toggle="modal" data-target="#circlesModal" class="btn btn-xs btn-primary" ng-class="{'disabled': !isOwnRecord(record)}" ng-click="activate(record); loadShared('circles')">
 							<span class="glyphicon glyphicon-share"></span>
 						</button>
 					</div>
@@ -162,6 +165,7 @@
 					</div>
 				</div>
 			</div>
+		</div>
 		</div>
 	</div>
 	

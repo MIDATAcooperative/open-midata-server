@@ -3,8 +3,13 @@
 @import views.html.details.flexiblerecords
 @import views.html.details.record
 @providermain("Member Details") {
-<div ng-app="search" ng-controller="MemberDetailsCtrl" ng-cloak>  
+<div ng-app="search" ng-controller="MemberDetailsCtrl" ng-cloak> 
+    <div class="page-header"> 
 	<h1>Member Details</h1>
+	</div>
+	<div class="panel panel-primary">
+	<div class="panel-heading">{{ member.firstname }} {{ member.sirname }}</div>
+	<div class="panel-body">
 	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 	   {{ error.message || error }}
 	</p>
@@ -19,9 +24,11 @@
 	  <span ng-show="member.ssn">SSN: {{ member.ssn }}</span><br>
 	  <span ng-show="member.email">Email: {{ member.email }}</span><br>
     </address>	
+    </div>
+    </div>
     
-    <div ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records of this patient:">
-	    <h3>{{ title }}</h3>
+    <div ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records of this patient:" class="panel panel-primary">
+	    <div class="panel-heading">{{ title }}</div>
 	    @flexiblerecords()
 	</div>
     

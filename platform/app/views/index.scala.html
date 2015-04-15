@@ -13,18 +13,20 @@
 			</div>
 		   <div class="row">
 		    <div class="col-md-6">
-			<div ng-show="showAppTeaser">
-			<div class="jumbotron " class="center-block" >		  
-			  <h3>Welcome to MIDATA! To get started we recommend to install some applications from our market place!</h3>
+			<div ng-show="showAppTeaser" class="panel panel-primary">
+			<div class="panel-heading">Welcome to MIDATA!</div>
+			<div class="panel-body center-block" >		  
+			  <p>To get started we recommend to install some applications from our market place!</p>
 			  <div class="center-block">			  
 			    <a ng-href="@routes.Market.index()" class="btn btn-primary">Take me to the market page.</a>
 			  </div>			  
 			</div>
 			</div>
 			
-			<div ng-show="showVisualizationsTeaser">
-			<div class="jumbotron" class="center-block" >		  
-			  <h3>Add Visualizations to improve your experience!</h3>
+			<div ng-show="showVisualizationsTeaser" class="panel panel-primary">
+			<div class="panel-heading">Add Visualizations!</div>
+			<div class="panel-body" class="center-block" >		  
+			  <p>Add Visualizations to improve your experience!</p>
 			  <div class="center-block">			  
 			    <a ng-href="@routes.Market.index()" class="btn btn-primary">Take me to the market page.</a>
 			  </div>			  
@@ -32,9 +34,9 @@
 			</div>
 			
 			<!-- Records jumbotron -->
-			<div ng-show="pushed.length || shared.length">
-			<div class="jumbotron" >
-				<h3>What's new?</h3>
+			<div ng-show="pushed.length || shared.length" class="panel panel-primary">
+			<div class="panel-heading">What's new?</div>
+			<div class="panel-body" >				
 				<div ng-show="pushed.length">
 					<a href="" ng-click="showPushed()">{{pushed.length}} new record<span ng-show="pushed.length > 1">s</span></a>
 					<span ng-show="pushed.length === 1">has</span>
@@ -49,16 +51,16 @@
 				</div>
 				<div style="padding-bottom:10px;">
 					<div class="pull-right">
-						<button type="button" class="btn btn-primary btn-lg" ng-click="showAll()">Show me all new records</button>
-						<button type="button" class="btn btn-default btn-lg" ng-click="clearAll()">Okay, got it!</button>
+						<button type="button" class="btn btn-primary" ng-click="showAll()">Show me all new records</button>
+						<button type="button" class="btn btn-default" ng-click="clearAll()">Okay, got it!</button>
 					</div>
 				</div>
 			</div>
 			</div>
 			
 			<div ng-controller="FlexibleStudiesCtrl" viewid="2" title="New Studies:">
-			  <div class="panel panel-default">
-			  <div class="panel-heading">{{ title }}</div>
+			  <div class="panel panel-primary">
+			  <div class="panel-heading">{{ title }}</div>			  
 			  @flexiblestudies()
 			  </div>
 			</div>	
@@ -69,12 +71,13 @@
 			
 			
 			<div ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records added this month:">
-			  <div class="panel panel-default">
+			  <div class="panel panel-primary">
 			    <div class="panel-heading">{{ title }}</div>
 			    @flexiblerecords()
 			  </div>
 			</div>		
 			
+			</div>
 			</div>
 			<div class="row"><div class="col-md-12">
 			

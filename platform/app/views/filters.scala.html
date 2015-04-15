@@ -5,7 +5,8 @@
 </button>
 
 <!-- Current filters -->
-<div class="well well-sm" ng-repeat="filter in filters[@id].current">
+<div class="panel panel-primary" ng-repeat="filter in filters[@id].current">
+  <div class="panel-body">
 	<button type="button" class="close" aria-hidden="true" ng-click="removeFilter(filter)">&times;</button>
 	<form class="form-inline">
 		<select class="form-control" ng-model="filter.property" ng-options="property as key for (key, property) in filters[@id].properties" ng-change="filterChanged(@id)">
@@ -23,4 +24,5 @@
 		</span>
 		<div id="{{filter.id}}" style="margin-top:10px; margin-left:10px; width:250px;" ng-show="filter.property.type === 'range'"></div>
 	</form>
+	</div>
 </div>

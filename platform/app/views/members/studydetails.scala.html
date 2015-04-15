@@ -2,7 +2,11 @@
 @import views.html.details.record
 @main("Study Details") {
 <div ng-app="participation" ng-controller="StudyDetailCtrl" ng-cloak>
+    <div class="page-header">
 	<h1>Study Details</h1>
+	</div>
+	<div class="panel panel-primary">
+	<div class="panel-body">
 	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 	   {{ error.message || error }}
 	</p>
@@ -42,9 +46,11 @@
 	
 	<button ng-show="mayRequestParticipation()" ng-click="requestParticipation()" class="btn btn-success">Request Participation</button>
 	<button ng-show="mayDeclineParticipation()" ng-click="noParticipation()" class="btn btn-danger">Do not participate</button>
+	</div>
+	</div>
 	
-	 <div ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records of this participant" ng-show="view.active">
-	    <h2>Shared records:</h2>
+	<div ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records of this participant" ng-show="view.active" class="panel panel-primary">
+	    <div class="panel-heading">Shared records:</div>
 	    @flexiblerecords()
 	</div>
 	

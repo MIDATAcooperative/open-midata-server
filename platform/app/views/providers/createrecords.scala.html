@@ -1,7 +1,9 @@
 @providermain("Create a new record") {
-	<div ng-app="createRecords" ng-controller="ProviderCreateRecordsCtrl">
+	<div ng-app="createRecords" ng-controller="ProviderCreateRecordsCtrl" class="panel panel-primary">
+	  <div class="panel panel-body">
 		<a ng-href="{{ memberUrl }}" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Back to records</a>
 		<iframe ng-src="{{url}}" height="600px" width="100%" ng-cloak></iframe>
+	  </div>
 	</div>
 	
 	<!-- Load records controller -->

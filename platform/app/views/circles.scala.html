@@ -11,6 +11,7 @@
 		</div>
 		
 		<div ng-cloak>
+		   
 			<div class="alert alert-danger alert-dismissable" ng-show="error">
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 				<p>{{error}}</p>
@@ -111,12 +112,15 @@
 						</div>
 					</div>
 				</div>
+				
 			</div>
 			
 			<div ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records shared with this circle:">
-			  <div ng-if="view.active">
-		      <h3>{{ title }}</h3>
+			  <div ng-if="view.active" class="panel panel-primary">			  
+		      <div class="panel-heading">{{ title }}</div>
+		      <div class="panel-body">
 	          @flexiblerecords()
+	          </div>
 	          </div>
 	        </div>
 		</div>

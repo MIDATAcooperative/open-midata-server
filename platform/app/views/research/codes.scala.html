@@ -3,7 +3,9 @@
 @researchmain("Study Participation Codes") {
 <div ng-app="studies" ng-controller="CodesCtrl" ng-cloak>
    @studynav("Study Participation Codes")
-	<h1>Study Participation Codes</h1>	
+   
+	<div class="tab-content">
+	<div class="tab-pane active">
 	<p ng-show="blocked">
 	  Participation codes may be used to recruit participants for the study.<br>
 	</p>
@@ -11,7 +13,7 @@
 	  {{ error.message || error }}
 	</p>
 	
-	<div ng-hide="createnew">
+	<div >
 	<div ng-show="codes.length > 0">
 	<table class="table table-hover">
 	  <thead>
@@ -41,7 +43,10 @@
 		  <button class="btn btn-primary" ng-click="createnew = true;">Generate new codes</button>
 		</div>
 	</div>
-	<div ng-show="createnew">
+	</div></div>
+	<div ng-show="createnew" class="panel panel-primary">
+	<div class="panel-heading">Create New Codes</div>
+	<div class="panel-body">
 	<p ng-show="newcodes.error" ng-class="{ 'alert-warning' : newcodes.error.level == 'warning', 'alert-danger' : !newcodes.error.level }" class="alert">
 	  {{ newcodes.error.message || newcodes.error }}
 	  </p>
@@ -70,6 +75,7 @@
         }				
    </form>
    </div>
+   </div>   
 </div>
 <script type="text/javascript" src="@routes.Assets.at("javascripts/views.js")" defer></script>
 <script type="text/javascript" src="@routes.Assets.at("javascripts/research/studies.js")" defer></script>

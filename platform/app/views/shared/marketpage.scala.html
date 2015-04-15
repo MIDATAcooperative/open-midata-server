@@ -26,7 +26,9 @@
 		</div>
 		<div class="row" ng-cloak>
 			<div class="col-md-6">
-				<p class="lead">Spotlight</p>
+			    <div class="panel panel-primary">
+				<div class="panel-heading">Spotlight</div>
+				<div class="panel-body">
 				<p ng-hide="apps.spotlighted.length">There are no spotlighted apps yet.</p>
 				<div class="media" ng-repeat="app in apps.spotlighted">
 					<a class="pull-left" href="javascript:;" ng-click="showAppDetails(app)">
@@ -37,9 +39,13 @@
 						<p>{{app.description}}</p>
 					</div>
 				</div>
+				</div>
+				</div>
 			</div>
 			<div class="col-md-6">
-				<p class="lead">Apps you may like</p>
+			    <div class="panel panel-primary">
+				<div class="panel-heading">Apps you may like</div>
+				<div class="panel-body">
 				<p ng-hide="apps.suggested.length">We have no recommendations for you yet.</p>
 				<div class="media" ng-repeat="app in apps.suggested">
 					<a class="pull-left" href="javascript:;" ng-click="showAppDetails(app)">
@@ -50,6 +56,8 @@
 						<p>{{app.description}}</p>
 					</div>
 				</div>
+				</div>
+				</div>
 			</div>
 		</div>
 		
@@ -59,7 +67,9 @@
 		</div>
 		<div class="row" ng-cloak>
 			<div class="col-md-6">
-				<p class="lead">Spotlight</p>
+			  <div class="panel panel-primary">
+				<div class="panel-heading">Spotlight</div>
+				<div class="panel-body">
 				<p ng-hide="visualizations.spotlighted.length">There are no spotlighted visualizations yet.</p>
 				<div class="media" ng-repeat="visualization in visualizations.spotlighted">
 					<a class="pull-left" href="javascript:;" ng-click="showVisualizationDetails(visualization)">
@@ -70,9 +80,13 @@
 						<p>{{visualization.description}}</p>
 					</div>
 				</div>
+				</div>
+				</div>
 			</div>
 			<div class="col-md-6">
-				<p class="lead">Visualizations you may like</p>
+			    <div class="panel panel-primary">
+				<div class="panel-heading">Visualizations you may like</div>
+				<div class="panel-body">
 				<p ng-hide="visualizations.suggested.length">We have no recommendations for you yet.</p>
 				<div class="media" ng-repeat="visualization in visualizations.suggested">
 					<a class="pull-left" href="javascript:;" ng-click="showVisualizationDetails(visualization)">
@@ -83,7 +97,9 @@
 						<p>{{visualization.description}}</p>
 					</div>
 				</div>
+				</div>
 			</div>
+		</div>
 		</div>
 	</div>
 	
