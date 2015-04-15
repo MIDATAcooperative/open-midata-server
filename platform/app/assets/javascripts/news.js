@@ -16,7 +16,7 @@ news.controller('NewsCtrl', ['$scope', '$http', 'dateService', 'currentUser', 'u
 	currentUser.then(function(userId) {
 		$scope.userId = userId;
 		getNews(userId);
-		views.setView("1", { aps : userId.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ]});
+		views.setView("1", { aps : userId.$oid, properties : { "max-age" : 86400 * 31 } , fields : [ "ownerName", "created", "id", "name" ]});
 		views.setView("2", { properties : { }, fields : ["name"] });
 	});
 	

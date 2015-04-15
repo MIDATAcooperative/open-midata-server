@@ -154,8 +154,8 @@ public class RecordSharing {
 		return result;
 	}
 	
-	private long getTimeFromDate(Date dt) {
-		return dt.getTime() / 1000 / 60 / 60 / 24 / 7;
+	private int getTimeFromDate(Date dt) {
+		return (int) (dt.getTime() / 1000 / 60 / 60 / 24 / 7);
 	}
 	
 	private String generateKey() {
@@ -387,13 +387,27 @@ public class RecordSharing {
 			if (!record.encrypted.equals("enc"+record.key)) throw new ModelException("Cannot decrypt");
 		}
 		
+		protected void addTimeRestriction(Map<String, Object> properties, int minTime, int maxTime) {
+			if (minTime != 0 || maxTime != 0) {
+				if (minTime == maxTime) {
+					properties.put("time", minTime);
+				} else {
+				    Map<String, Integer> restriction = new HashMap<String, Integer>();
+				    if (minTime!=0) restriction.put("$ge", minTime);
+				    if (maxTime!=0) restriction.put("$le", maxTime);
+				    properties.put("time", restriction);
+				}
+			}
+		}
+		
 		protected void localQuery(List<Record> result, Map<String, Object> properties, Set<String> fields, Set<String> fieldsFromDB, int minTime, int maxTime) throws ModelException {
 			boolean withOwner = fields.contains("owner");
 			
 			if (aps.direct) {
 				Map<String, Object> query = new HashMap<String, Object>();
 				query.put("stream", aps._id);
-				query.put("direct", Boolean.TRUE);				
+				query.put("direct", Boolean.TRUE);
+				addTimeRestriction(query, minTime, maxTime);
 				List<Record> directResult = new ArrayList<Record>(Record.getAll(query, fieldsFromDB));
 				for (Record record : directResult) {
 					record.key = encryptionKey;
@@ -492,18 +506,41 @@ public class RecordSharing {
             if (fields.contains("tags")) fieldsFromDB.add("tags");
             
             
-			// 2 Load Records from DB (if ID given) -> Records (possibly, encrypted) (if properties _id set )
-			boolean restrictedOnTime = false;
+			
+			boolean restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age");
 			boolean giveKey = fields.contains("key");
 			int minTime = 0;
 			int maxTime = 0;
+			Date minDate = null;
+			Date maxDate = null;
+			if (restrictedOnTime) {
+				fieldsFromDB.add("time");
+				if (properties.containsKey("max-age")) {
+					Number maxAge = Long.parseLong(properties.get("max-age").toString());
+					minDate = new Date(System.currentTimeMillis() - 1000 * maxAge.longValue());
+					minTime = getTimeFromDate(minDate);
+				}
+				
+				/*Object timeRestriction = properties.get("created");
+				if (timeRestriction instanceof Map) {
+				  Map<String, Object> timeMap = (Map<String, Object>) timeRestriction;
+				  Object min = timeMap.get("$gt");
+				  Object max = timeMap.get("$lt");
+				  if (min!=null && min instanceof Number) {
+					  minTime = 0;
+				  }
+				}*/
+			}
+			boolean postFilter = minDate != null || maxDate != null;
 			
+			// 2 Load Records from DB (if ID given) -> Records (possibly, encrypted) (if properties _id set )
 			boolean restrictedById = properties.containsKey("_id");			
 			if (restrictedById) {
 				Map<String, Object> query = new HashMap<String, Object>();
 				Set<String> queryFields = Sets.create("stream", "time", "document", "part", "direct");
 				queryFields.addAll(fieldsFromDB);
 				query.put("_id", properties.get("_id"));
+				addTimeRestriction(query, minTime, maxTime);
 				result = new ArrayList<Record>(Record.getAll(query, queryFields));
 			}
 		
@@ -515,6 +552,7 @@ public class RecordSharing {
 				Set<String> queryFields = Sets.create("stream", "time", "document", "part", "encrypted");
 				queryFields.addAll(fieldsFromDB);
 				query.put("document", properties.get("document"));
+				addTimeRestriction(query, minTime, maxTime);
 				if (restrictedByPart) {
 					query.put("part", properties.get("part"));
 				}
@@ -562,6 +600,8 @@ public class RecordSharing {
 				for (Record record : result) {
 					if (record.encrypted == null) {
 						Record r2 = Record.getById(record._id, fieldsFromDB);
+						if (minTime != 0 && r2.time < minTime) continue;
+						if (maxTime != 0 && r2.time > maxTime) continue;
 						record.encrypted = r2.encrypted;
 						record.encryptedData = r2.encryptedData;	
 						
@@ -587,7 +627,18 @@ public class RecordSharing {
 				for (Record record : result) record.id = record._id.toString()+"."+this.aps._id.toString();
 			}
 									
-			// 8 Post filter records if necessary
+			// 8 Post filter records if necessary			
+			if (postFilter) {
+				List<Record> filteredResult = new ArrayList<Record>(result.size());
+				for (Record record : result) {
+					if (record.name == null) continue;
+					if (minDate != null && record.created.before(minDate)) continue;
+					if (maxDate != null && record.created.after(maxDate)) continue;
+					
+					filteredResult.add(record);
+				}
+				result = filteredResult;
+			}
 			// 9 Order records
 		    Collections.sort(result);
 		    if (properties.containsKey("limit")) {
