@@ -13,10 +13,29 @@ participation.controller('ListHealthProviderCtrl', ['$scope', '$http', 'views', 
 				$scope.results = data;
 				$scope.loading = false;
 				$scope.error = null;
+				$scope.showNewHCRecords();
 			}).
 			error(function(err) {
 				$scope.error = err;				
 			});
+	};
+	
+	$scope.showNewHCRecords = function() {
+		var creators = [];
+		var aps = null;
+		_.each($scope.results, function(hc) {
+			console.log(hc);
+			if (hc.provider) {
+				creators.push(hc.provider.$oid);
+				aps = hc.member.$oid;
+			}
+		});
+		
+		if (aps != null) {
+		  views.setView("hcrecords", { aps : aps, properties: { "max-age" : 60*60*24*31, "creator" : creators }, fields : [ "ownerName", "created", "id", "name" ]});
+		} else {
+		  views.disableView("hcrecords");
+		}
 	};
 	
 	$scope.showRecords = function(mk) {

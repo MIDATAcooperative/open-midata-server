@@ -28,6 +28,11 @@ participation.controller('EnterCodeCtrl', ['$scope', '$http', function($scope, $
 			});
 	}
 }]);
+
+participation.controller('StudiesCtrl', ['$scope', '$http', 'views', function($scope, $http, views) {
+  views.setView("newstudies", { properties : { }, fields : ["name"] });		
+}]);
+
 participation.controller('ListStudiesCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	$scope.results =[];

@@ -1,12 +1,15 @@
 @import views.html.help.formrow
 @import views.html.help.formerror
+@import views.html.details.flexiblestudies
 @main("Studies") {
 <div ng-app="participation">
-<div ng-controller="ListStudiesCtrl" ng-cloak>
+<div ng-controller="StudiesCtrl" ng-cloak>
+   <div ng-controller="ListStudiesCtrl" ng-cloak>
     <div class="page-header">
 	<h1>Studies</h1>
 	</div>
 	<div class="panel panel-primary">
+	<div class="panel-heading">Studies you are involved:</div>
     <div class="panel-body">
 	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 	  {{ error.message || error }}
@@ -32,7 +35,16 @@
 	</p>
 	</div>
 	</div>
+	</div>
+	
+	<div ng-controller="FlexibleStudiesCtrl" viewid="newstudies" title="New Studies" >
+	  <div class="panel panel-primary">
+	  <div class="panel-heading">{{ title }}</div>			  
+	     @flexiblestudies()
+	  </div>
+    </div>
 </div>
+
 <div ng-controller="EnterCodeCtrl" ng-cloak class="panel panel-primary">
 	<div class="panel-heading">Join by participation code</div>
 	<div class="panel-body">

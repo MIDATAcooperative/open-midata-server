@@ -479,6 +479,10 @@ public class RecordSharing {
 			// 1 If APS is from other server execute there (if APS redirection) (DB/API)
 			
 			// Prepare
+			boolean restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age");
+			boolean restrictedOnCreator = properties.containsKey("creator");
+		
+			
             boolean fetchFromDB = fields.contains("data") ||
             		              fields.contains("app") || 
             		              fields.contains("creator") || 
@@ -499,15 +503,15 @@ public class RecordSharing {
             if (fields.contains("data")) fieldsFromDB.add("data");
             if (fields.contains("app")) fieldsFromDB.add("app");
             if (fields.contains("format")) fieldsFromDB.add("format");
-            if (fields.contains("creator")) fieldsFromDB.add("creator");
-            if (fields.contains("created")) fieldsFromDB.add("created");
+            if (fields.contains("creator") || restrictedOnCreator) fieldsFromDB.add("creator");
+            if (fields.contains("created") || restrictedOnTime) fieldsFromDB.add("created");
             if (fields.contains("name")) fieldsFromDB.add("name");
             if (fields.contains("description")) fieldsFromDB.add("description");
             if (fields.contains("tags")) fieldsFromDB.add("tags");
             
             
 			
-			boolean restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age");
+				
 			boolean giveKey = fields.contains("key");
 			int minTime = 0;
 			int maxTime = 0;
@@ -531,7 +535,7 @@ public class RecordSharing {
 				  }
 				}*/
 			}
-			boolean postFilter = minDate != null || maxDate != null;
+			boolean postFilter = minDate != null || maxDate != null || restrictedOnCreator;
 			
 			// 2 Load Records from DB (if ID given) -> Records (possibly, encrypted) (if properties _id set )
 			boolean restrictedById = properties.containsKey("_id");			
@@ -627,14 +631,23 @@ public class RecordSharing {
 				for (Record record : result) record.id = record._id.toString()+"."+this.aps._id.toString();
 			}
 									
-			// 8 Post filter records if necessary			
+			// 8 Post filter records if necessary		
+			Set<ObjectId> creators = null;
+			if (restrictedOnCreator) {
+				Object val = properties.get("creator");
+				if (val instanceof Collection<?>) {
+					creators = new HashSet<ObjectId>();
+					for (Object obj : (Collection<?>) val) { creators.add(new ObjectId(obj.toString())); }
+				}
+			}
+						
 			if (postFilter) {
 				List<Record> filteredResult = new ArrayList<Record>(result.size());
 				for (Record record : result) {
 					if (record.name == null) continue;
 					if (minDate != null && record.created.before(minDate)) continue;
 					if (maxDate != null && record.created.after(maxDate)) continue;
-					
+					if (creators != null && !creators.contains(record.creator)) continue;					
 					filteredResult.add(record);
 				}
 				result = filteredResult;
