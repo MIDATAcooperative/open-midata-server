@@ -65,6 +65,12 @@
 		<div class="panel-heading">Shared records:</div>
 		@flexiblerecords()
 	</div>
+	
+	<div ng-controller="FlexibleRecordListCtrl" viewid="share" title="Share">
+	   <modal title="Share" viewid="share">		 
+		 @flexiblerecords()
+	   </modal>
+	</div>
 
 	<!-- Record modal -->
 	<div ng-controller="RecordDetailCtrl" viewid="record" title="Record Details">

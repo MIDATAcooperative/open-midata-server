@@ -18,9 +18,11 @@
 			</div>
 		
 			<p ng-show="loading">Loading circles...</p>
-			<div ng-show="!loading && circles.length === 0">
+			<div ng-show="!loading && circles.length === 0" class="panel panel-primary">
+			  <div class="panel-body">
 				<p>You have no circles yet.</p>
 				<p>Add one by clicking on the button on the top right.</p>
+			  </div>
 			</div>
 			<div ng-show="!loading && circles.length > 0">
 				<!-- Circle tabs -->

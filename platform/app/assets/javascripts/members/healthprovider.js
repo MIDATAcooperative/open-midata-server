@@ -1,6 +1,6 @@
 var participation = angular.module('healthprovider', [ 'services', 'views' ]);
 
-participation.controller('ListHealthProviderCtrl', ['$scope', '$http', 'views', function($scope, $http, views) {
+participation.controller('ListHealthProviderCtrl', ['$scope', '$http', 'views', 'hc', function($scope, $http, views, hc) {
 	
 	$scope.results =[];
 	$scope.error = null;
@@ -8,7 +8,7 @@ participation.controller('ListHealthProviderCtrl', ['$scope', '$http', 'views', 
 	
 	$scope.reload = function() {
 			
-		$http.get(jsRoutes.controllers.members.HealthProvider.list().url).
+		hc.list().
 			success(function(data) { 				
 				$scope.results = data;
 				$scope.loading = false;
@@ -19,6 +19,19 @@ participation.controller('ListHealthProviderCtrl', ['$scope', '$http', 'views', 
 				$scope.error = err;				
 			});
 	};
+	
+	$scope.confirm = function(memberKey) {
+		hc.confirm(memberKey.provider.$oid).then(function() { $scope.reload(); });		
+	};
+	
+	$scope.reject = function(memberKey) {
+		hc.reject(memberKey.provider.$oid).then(function() { $scope.reload(); });
+	};
+	
+	$scope.mayReject = $scope.mayConfirm = function(memberKey) {
+		return memberKey.status == "UNCONFIRMED";
+	};
+	
 	
 	$scope.showNewHCRecords = function() {
 		var creators = [];
@@ -32,7 +45,7 @@ participation.controller('ListHealthProviderCtrl', ['$scope', '$http', 'views', 
 		});
 		
 		if (aps != null) {
-		  views.setView("hcrecords", { aps : aps, properties: { "max-age" : 60*60*24*31, "creator" : creators }, fields : [ "ownerName", "created", "id", "name" ]});
+		  views.setView("hcrecords", { aps : aps, properties: { "max-age" : 60*60*24*31, "creator" : creators }, fields : [ "creatorName", "created", "id", "name" ]});
 		} else {
 		  views.disableView("hcrecords");
 		}

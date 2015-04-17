@@ -175,7 +175,7 @@ public class Records extends Controller {
 		*/		
 		 
 		Collections.sort(records);
-		ReferenceTool.resolveOwners(records);
+		ReferenceTool.resolveOwners(records, true, true);
 		return ok(Json.toJson(records));
 	}
 	
@@ -186,9 +186,10 @@ public class Records extends Controller {
  	
 		ObjectId userId = new ObjectId(request().username());
 		JsonNode json = request().body().asJson();
-		JsonValidation.validate(json, "properties", "fields", "aps");
+		JsonValidation.validate(json, "properties", "fields");
 						
 		ObjectId aps = JsonValidation.getObjectId(json, "aps");
+		if (aps == null) aps = userId;
 		List<Record> records = new ArrayList<Record>();
 		
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
@@ -196,7 +197,7 @@ public class Records extends Controller {
 		
 		records.addAll(RecordSharing.instance.list(userId, aps, properties, fields));		
 		Collections.sort(records);
-		if (fields.contains("ownerName")) ReferenceTool.resolveOwners(records);
+		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		return ok(Json.toJson(records));
 	}
 	

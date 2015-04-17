@@ -41,5 +41,15 @@ public class MemberKey extends Model {
 		Model.insert(collection, memberKey);
 	}
 	
+	public void setStatus(MemberKeyStatus status) throws ModelException {
+		this.status = status;
+		Model.set(MemberKey.class, collection, this._id, "status", status);
+	}
+	
+	public void setConfirmDate(Date confirmDate) throws ModelException {
+		this.confirmDate = confirmDate;
+		Model.set(MemberKey.class, collection, this._id, "confirmDate", confirmDate);
+	}
+	
 	
 }

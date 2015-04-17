@@ -152,7 +152,7 @@ public class AppsAPI extends Controller {
 			
 		// get record data	
 		Collection<Record> records = RecordSharing.instance.list(spaceToken.userId, spaceToken.spaceId, properties, fields);
-		if (fields.contains("ownerName")) ReferenceTool.resolveOwners(records);
+		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		return ok(Json.toJson(records));
 		
 	}

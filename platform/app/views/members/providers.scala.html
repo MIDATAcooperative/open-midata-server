@@ -19,13 +19,16 @@
 	    <tr>
 	      <th>Name</th>
 	      <th>Status</th>
-	      <th>Confirmed</th>	      	     
+	      <th>Confirmation Date</th>	      	     
 	    </tr>
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="memberkey in results">
 	      <td><a ng-click="showRecords(memberkey)" href="javascript:">{{ memberkey.name }}</a></td>	  
-	      <td>{{ memberkey.status }}</td>	      	         
+	      <td>{{ memberkey.status }}
+	        <button ng-show="mayConfirm(memberkey)" class="btn btn-primary btn-xs" ng-click="confirm(memberkey)">confirm</button>
+	        <button ng-show="mayReject(memberkey)" class="btn btn-danger btn-xs" ng-click="reject(memberkey)">reject</button>
+	      </td>	      	         
 	      <td>{{ memberkey.confirmDate | date }}</td>
 	    </tr>
 	  </tbody>

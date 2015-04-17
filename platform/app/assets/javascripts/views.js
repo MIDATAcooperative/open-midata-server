@@ -20,7 +20,28 @@ views.controller('FlexibleRecordListCtrl', ['$scope', '$http', '$attrs', 'views'
 	$scope.removeRecord = function(record) {
 		records.unshare($scope.view.setup.aps, record._id.$oid, $scope.view.setup.type);
 		$scope.records.splice($scope.records.indexOf(record), 1);
-	}; 
+	};
+	
+	$scope.shareRecords = function() {
+		var selection = _.filter($scope.records, function(rec) { return rec.marked; });
+		selection = _.chain(selection).pluck('_id').pluck('$oid').value();
+		records.share($scope.view.setup.targetAps, selection, $scope.view.setup.type)
+		.then(function () {
+		   views.changed($attrs.viewid);
+		   views.disableView($attrs.viewid);
+		});
+	};
+	
+	$scope.addRecords = function() {
+		views.updateLinked($scope.view, "shareFrom", 
+				 { aps : null, 
+			       properties:{}, 
+			       fields : $scope.view.setup.fields, 
+			       targetAps : $scope.view.setup.aps, 
+			       allowShare : true,
+			       type : $scope.view.setup.type
+			      });
+	};
 	
 	$scope.$watch('view.setup', function() { $scope.reload(); });	
 	

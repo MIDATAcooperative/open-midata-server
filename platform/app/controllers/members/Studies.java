@@ -91,6 +91,9 @@ public class Studies extends APIController {
 		StudyParticipation existing = StudyParticipation.getByStudyAndMember(code.study, userId, Sets.create("status"));
 		if (existing != null) {
 			// Redirect to study page
+			ObjectNode result = Json.newObject();
+			result.put("study", code.study.toString());
+			return ok(result);
 		}
 				
 		if (code.status != ParticipationCodeStatus.UNUSED && 
@@ -101,39 +104,8 @@ public class Studies extends APIController {
 				
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return inputerror("code", "notsearching", "Study is not searching for participants.");
 		
-		StudyParticipation part = new StudyParticipation();
-		part._id = new ObjectId();
-		part.study = code.study;
-		part.studyName = study.name;
-		part.member = userId;
-		
-		String userName;
-		
-		if (study.requiredInformation == InformationType.DEMOGRAPHIC) {
-			userName = user.sirname+", "+user.firstname;	
-		} else {
-			userName = "Part. " + CodeGenerator.nextUniqueCode();
-		}
+		StudyParticipation part = createStudyParticipation(study, user, code);
 				
-		part.memberName = userName;
-		part.group = code.group;
-		part.recruiter = code.recruiter;		
-		part.recruiterName = code.recruiterName;
-		part.status = ParticipationStatus.CODE;
-		
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(user.birthday);
-		part.yearOfBirth = cal.get(Calendar.YEAR);
-		part.gender = user.gender;
-		part.country = user.country;
-		
-		part.history = new ArrayList<History>();
-		part.aps = RecordSharing.instance.createAnonymizedAPS(userId, study.createdBy, part._id);
-		
-		History codedentererd = new History(EventType.CODE_ENTERED, part, null); 
-		part.history.add(codedentererd);
-		StudyParticipation.add(part);
-		
 		if (code.status != ParticipationCodeStatus.REUSEABLE) {
 		   code.setStatus(ParticipationCodeStatus.USED);
 		}
@@ -141,6 +113,48 @@ public class Studies extends APIController {
 		ObjectNode result = Json.newObject();
 		result.put("study", code.study.toString());
 		return ok(result);
+	}
+	
+	public static StudyParticipation createStudyParticipation(Study study, Member member, ParticipationCode code) throws ModelException {
+		StudyParticipation part = new StudyParticipation();
+		part._id = new ObjectId();
+		part.study = study._id;
+		part.studyName = study.name;
+		part.member = member._id;
+		
+		String userName;
+		
+		if (study.requiredInformation == InformationType.DEMOGRAPHIC) {
+			userName = member.sirname+", "+member.firstname;	
+		} else {
+			userName = "Part. " + CodeGenerator.nextUniqueCode();
+		}
+				
+		part.memberName = userName;
+		if (code != null) {
+			part.group = code.group;
+			part.recruiter = code.recruiter;		
+			part.recruiterName = code.recruiterName;
+			part.status = ParticipationStatus.CODE;
+		} else part.status = ParticipationStatus.MATCH;
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(member.birthday);
+		part.yearOfBirth = cal.get(Calendar.YEAR);
+		part.gender = member.gender;
+		part.country = member.country;
+		
+		part.history = new ArrayList<History>();
+		part.aps = RecordSharing.instance.createAnonymizedAPS(member._id, study.createdBy, part._id);
+		
+		if (code != null) {
+		  History codedentererd = new History(EventType.CODE_ENTERED, part, null); 
+		  part.history.add(codedentererd);
+		} 
+		StudyParticipation.add(part);
+		
+		return part;
+		
 	}
 	
 	@APICall
@@ -167,12 +181,18 @@ public class Studies extends APIController {
 		ObjectId userId = new ObjectId(request().username());		
 		ObjectId studyId = new ObjectId(id);
 		
-		User user = Member.getById(userId, Sets.create("firstname","sirname"));		
+		Member user = Member.getById(userId, Sets.create("firstname", "sirname", "birthday", "gender", "country"));		
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history", "memberName"));		
-		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history"));
+		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history", "owner", "createdBy", "name"));
 		
 		if (study == null) return badRequest("Study does not exist.");
-		if (participation == null) return badRequest("Member is not allowed to participate in study.");		
+		if (participation == null) {
+			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return inputerror("code", "notsearching", "Study is not searching for participants.");
+			
+			participation = createStudyParticipation(study, user, null);
+						
+			//return badRequest("Member is not allowed to participate in study.");		
+		}
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return badRequest("Study is not searching for participants anymore.");
 		if (participation.status != ParticipationStatus.CODE && participation.status != ParticipationStatus.MATCH) return badRequest("Wrong participation status.");
 		

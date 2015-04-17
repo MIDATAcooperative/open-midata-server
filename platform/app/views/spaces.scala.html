@@ -17,9 +17,11 @@
 			
 			<!-- Spaces -->
 			<p ng-show="loading">Loading spaces...</p>
-			<div ng-show="!loading && spaces.length === 0">
+			<div ng-show="!loading && spaces.length === 0" class="panel panel-primary">
+			  <div class="panel-body">
 				<p>You have no spaces yet.</p>
 				<p>Add one by clicking on the button on the top right.</p>
+			  </div>
 			</div>
 			<div ng-show="!loading && spaces.length > 0">
 				<!-- Space tabs -->

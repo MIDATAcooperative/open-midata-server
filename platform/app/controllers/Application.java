@@ -375,6 +375,8 @@ public class Application extends Controller {
 				controllers.members.routes.javascript.Studies.requestParticipation(),
 				controllers.members.routes.javascript.Studies.noParticipation(),
 				controllers.members.routes.javascript.HealthProvider.list(),
+				controllers.members.routes.javascript.HealthProvider.confirmMemberKey(),
+				controllers.members.routes.javascript.HealthProvider.rejectMemberKey(),
 				//Healthcare Providers
 				controllers.providers.routes.javascript.Providers.register(),
 				controllers.providers.routes.javascript.Providers.login(),

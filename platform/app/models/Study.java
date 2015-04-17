@@ -27,7 +27,7 @@ public class Study extends Model {
 	public List<Info> infos;
 	public Set<ObjectId> studyKeywords; //references StudyKeyword. Used to identify members as candidates if their participationInterest is set to 'some'
 	public Set<FilterRule> participantRules; //List of rules that members must satisfy to become participants
-	public Set<FilterRule> recordRules; //Rule set that determines which records a member must share during study execution
+	public Set<FilterRule> recordRules; //Rule set that determines which records a member must share during study execution	
 	public InformationType requiredInformation;
 	public StudyValidationStatus validationStatus;	
 	public ParticipantSearchStatus participantSearchStatus;

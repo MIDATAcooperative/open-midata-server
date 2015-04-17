@@ -253,8 +253,7 @@ spaces.controller('VisualizationCtrl', ['$scope', '$http', '$sce', function($sco
 	
 	// get the authorization token for the current space
 	getAuthToken = function(space) {
-		var body = { "member" : $scope.memberId };
-		console.log(body);
+		var body = { "member" : $scope.memberId };		
 		$http.post(jsRoutes.controllers.providers.Providers.getVisualizationToken().url, body).
 			success(function(authToken) {
 				space.completedUrl = space.baseUrl.replace(":authToken", authToken);

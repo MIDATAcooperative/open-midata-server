@@ -150,6 +150,8 @@ POST    /members/api/participation/:study/request        controllers.members.Stu
 POST    /members/api/participation/:study/no             controllers.members.Studies.noParticipation(study: String)
 POST    /members/api/studies/entercode                   controllers.members.Studies.enterCode()
 GET     /members/api/providers                           controllers.members.HealthProvider.list()
+POST    /members/api/providers/confirm                   controllers.members.HealthProvider.confirmMemberKey()
+POST    /members/api/providers/reject                    controllers.members.HealthProvider.rejectMemberKey()
 
 # Healthcare Provider
 GET     /providers/register                              controllers.ProviderFrontend.register()

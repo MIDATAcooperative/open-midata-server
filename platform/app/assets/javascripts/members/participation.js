@@ -64,6 +64,9 @@ participation.controller('StudyDetailCtrl', ['$scope', '$http', 'views', functio
 	$scope.error = null;
 		
 	views.link("1", "record", "record");
+	views.link("1", "shareFrom", "share");
+	views.link("share", "record", "record");
+	
 	$scope.reload = function() {
 			
 		$http.get(jsRoutes.controllers.members.Studies.get($scope.studyid).url).
@@ -75,7 +78,7 @@ participation.controller('StudyDetailCtrl', ['$scope', '$http', 'views', functio
 				$scope.error = null;
 				
 				if ($scope.participation && !($scope.participation.status == "CODE" || $scope.participation.status == "MATCH" )) {
-				  views.setView("1", { aps : $scope.participation._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ]});
+				  views.setView("1", { aps : $scope.participation._id.$oid, properties : { } , type:"participations", allowAdd : true, allowRemove : true, fields : [ "ownerName", "created", "id", "name" ]});
 				} else {
 				  views.disableView("1");
 				}
@@ -90,7 +93,8 @@ participation.controller('StudyDetailCtrl', ['$scope', '$http', 'views', functio
 	}
 	
 	$scope.mayRequestParticipation = function() {
-		return $scope.participation != null && ( $scope.participation.status == "MATCH" || $scope.participation.status == "CODE" );
+		return ($scope.participation != null && ( $scope.participation.status == "MATCH" || $scope.participation.status == "CODE" ))
+		       || ($scope.participation == null && $scope.study.participantSearchStatus == 'SEARCHING');
 	};
 	
 	$scope.mayDeclineParticipation = function() {

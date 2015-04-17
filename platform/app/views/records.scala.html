@@ -31,7 +31,7 @@
 			</div>
 			
 			<!-- Show/share all records passing the filter -->
-			<div class="pull-right">
+			<div class="pull-right" ng-show="records.length > 0">
 				<button data-toggle="modal" data-target="#spacesModal" class="btn btn-primary" ng-click="activate(); loadShared('spaces')">
 					<span class="glyphicon glyphicon-picture"></span>
 					<span ng-show="filters[0].current.length">Show these</span>
@@ -60,10 +60,7 @@
 					<span ng-show="record.owner.$oid != userId.$oid" class="label label-info">{{ record.ownerName }}</span>
 					<a href="javascript:;" ng-click="showDetails(record)">{{record.name}}</a>
 					
-					<div class="pull-right">
-					    <button data-toggle="modal" data-target="#studiesModal" class="btn btn-xs btn-primary" ng-class="{'disabled': !isOwnRecord(record)}" ng-click="activate(record); loadShared('participations')">
-							<span class="glyphicon glyphicon-book"></span>
-						</button>
+					<div class="pull-right">					   
 						<button data-toggle="modal" data-target="#spacesModal" class="btn btn-xs btn-primary" ng-click="activate(record); loadShared('spaces')">
 							<span class="glyphicon glyphicon-picture"></span>
 						</button>
@@ -112,9 +109,25 @@
 						<h4 class="modal-title" id="circlesLabel">Circles this record is shared with</h4>
 					</div>
 					<div class="modal-body">
-						<p ng-show="loadingSharing && circles.length === 0">Loading circles...</p>
+						<p ng-show="loadingSharing">Loading circles...</p>
 						<p ng-show="!loadingSharing && circles.length === 0">You have no circles yet. Go to <a href="@routes.Circles.index()">your circles</a> to create one.</p>
+						
+						<!--   <ul class="nav nav-tabs">
+					      <li ng-class="{'active': tab=='circles'}">
+					  	    <a href="javascript:;" ng-click="makeActive('circles')">Member Circles</a>
+					      </li>
+					      <li ng-class="{'active': tab=='memberkeys'}">
+					  	    <a href="javascript:;" ng-click="makeActive('memberkeys')">Healthcare Provider</a>
+					      </li>
+					      <li ng-class="{'active': tab=='participations'}">
+					  	    <a href="javascript:;" ng-click="makeActive('participations')">Research</a>
+					      </li>
+				        </ul> -->
+						
+						<!--  <div class="tab-content">
+						  <div class="tab-pane fade" ng-class="{'active in': tab == 'circles' }"> -->										
 						<div ng-show="circles.length > 0">
+						    <p class="text-primary">Member Circles:</p>
 							<div class="checkbox" ng-repeat="circle in circles">
 								<label>
 									<input type="checkbox" name="{{circle._id.$oid}}" ng-model="circle.checked">
@@ -122,7 +135,10 @@
 								</label>
 							</div>
 						</div>
+						<!--  </div>
+					    <div class="tab-pane" ng-class="{'active in': tab == 'memberkeys' }"> -->
 						<div ng-show="memberkeys.length > 0">
+						    <p class="text-primary">Healthcare Providers:</p>
 						     <div class="checkbox" ng-repeat="memberkey in memberkeys">
 								<label>
 									<input type="checkbox" name="{{memberkey._id.$oid}}" ng-model="memberkey.checked">
@@ -130,27 +146,10 @@
 								</label>
 							</div>
 						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateShared('circles');updateShared('memberkeys');">Update</button>
-						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					</div>
-				</div>
-			</div>
-		</div>	
-	
-	    <!-- Research modal -->
-		<div class="modal fade" id="studiesModal" role="dialog" aria-labelledby="studyLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="studyLabel">Studies this record is shared with</h4>
-					</div>
-					<div class="modal-body">
-						<p ng-show="loadingSharing && participations.length === 0">Loading studies...</p>
-						<p ng-show="!loadingSharing && participations.length === 0">You do not participate in any study yet.</p>
+						<!-- </div>
+						<div class="tab-pane" ng-class="{'active in': tab == 'participations' }"> -->
 						<div ng-show="participations.length > 0">
+						    <p class="text-primary">Studies:</p>
 							<div class="checkbox" ng-repeat="participation in participations">
 								<label>
 									<input type="checkbox" name="{{participation._id.$oid}}" ng-model="participation.checked">
@@ -158,14 +157,17 @@
 								</label>
 							</div>
 						</div>
+						<!-- </div>
+						</div> -->
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateShared('participations')">Update</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="updateShared('circles');updateShared('memberkeys');updateShared('participations');">Update</button>
 						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 					</div>
 				</div>
 			</div>
-		</div>
+		</div>	
+
 		</div>
 	</div>
 	

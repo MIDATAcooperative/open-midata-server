@@ -32,6 +32,7 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	public @NotMaterialized String id;
 	public @NotMaterialized ObjectId owner; // person the record is about
 	public @NotMaterialized String ownerName;
+	public @NotMaterialized String creatorName;
 	public @NotMaterialized String key;
 	
 	// Encrypted part

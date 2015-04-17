@@ -31,7 +31,9 @@ public class JsonValidation {
 	}
 	
 	public static ObjectId getObjectId(JsonNode json, String field) {
-		return new ObjectId(json.path(field).asText());
+		String id = json.path(field).asText();
+		if (id == null || id.trim().equals("")) return null;
+		return new ObjectId(id);
 	}
 	
 	public static int getInteger(JsonNode json, String field, int lowest, int highest) throws JsonValidationException {

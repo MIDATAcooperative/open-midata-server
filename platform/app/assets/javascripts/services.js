@@ -23,6 +23,29 @@ services.factory('users', function($q, $http) {
 	return service;
 	
 });
+services.factory('hc', function($q, $http) {
+	
+	var service = {};
+	
+	service.list = function() {
+	    return $http.get(jsRoutes.controllers.members.HealthProvider.list().url);
+	};
+	
+	service.confirm = function(providerId) {
+		var data = {"provider": providerId };
+
+		return $http.post(jsRoutes.controllers.members.HealthProvider.confirmMemberKey().url, JSON.stringify(data));
+	};
+	
+	service.reject = function(providerId) {
+		var data = {"provider": providerId };
+
+		return $http.post(jsRoutes.controllers.members.HealthProvider.rejectMemberKey().url, JSON.stringify(data));
+	};
+		
+	return service;
+	
+});
 
 services.factory('views', function() {
 	
@@ -32,7 +55,7 @@ services.factory('views', function() {
 	service.getView = function (id) {
 		var r = mapping[id];
 		if (r==null) {
-		   r = { active: false, setup:null, links:{} };
+		   r = { active: false, setup:null, links:{}, dependend:[], version:0 };
 		   mapping[id] = r;
 		} 
 		return r;
@@ -47,6 +70,7 @@ services.factory('views', function() {
 	service.link = function(id, name, viewid) {
 		var view = service.getView(id);
 		view.links[name] = viewid;
+		service.getView(viewid).dependend.push(id);
 	};
 	
 	service.updateLinked = function(view, name, setup) {
@@ -59,7 +83,12 @@ services.factory('views', function() {
 		var view = service.getView(id);
 		view.active = false; 
 		view.setup = null;
-	};		
+	};
+	
+	service.changed = function(id) {
+		var view = service.getView(id);
+		_.each(view.dependend, function(x) { service.getView(x).setup = _.clone(service.getView(x).setup); });
+	};
 		
 	return service;		
 	
@@ -69,7 +98,8 @@ services.factory('records', function($http) {
 	var service = {};
 	
 	service.getRecords = function(aps, properties, fields) {
-		var data = {"properties": properties, "fields": fields, "aps" : aps};
+		var data = {"properties": properties, "fields": fields};
+		if (aps != null) data.aps = aps;
 		return $http.post(jsRoutes.controllers.Records.getRecords().url, JSON.stringify(data));
 	};
 	
@@ -83,6 +113,13 @@ services.factory('records', function($http) {
 	  if (! angular.isArray(records)) records = [ records ];
 	  var data = { records:records, started:[], stopped:aps, type:type };		
 	  return $http.post(jsRoutes.controllers.Records.updateSharing().url, JSON.stringify(data));
+	};
+	
+	service.share = function(aps, records, type) {
+		  if (! angular.isArray(aps)) aps = [ aps ];
+		  if (! angular.isArray(records)) records = [ records ];
+		  var data = { records:records, started:aps, stopped:[], type:type };		
+		  return $http.post(jsRoutes.controllers.Records.updateSharing().url, JSON.stringify(data));
 	};
 	
 	return service;
@@ -127,6 +164,7 @@ services.directive('modal', function (views) {
       link: function postLink(scope, element, attrs) {
         scope.title = attrs.title;
         scope.view = views.getView(attrs.viewid);
+        scope.view.modal = true;
 
         scope.$watch("view.active", function(value){
           if(value == true)
