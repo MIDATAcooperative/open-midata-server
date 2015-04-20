@@ -1,5 +1,6 @@
 @import views.html.details.flexiblerecords 
-@import views.html.details.record 
+@import views.html.details.record
+@import views.html.details.search 
 @main("Study Details") {
 <div ng-app="participation" ng-controller="StudyDetailCtrl" ng-cloak>
 	<div class="page-header">
@@ -66,9 +67,9 @@
 		@flexiblerecords()
 	</div>
 	
-	<div ng-controller="FlexibleRecordListCtrl" viewid="share" title="Share">
+	<div ng-controller="AddRecordsCtrl" viewid="share" title="Share">
 	   <modal title="Share" viewid="share">		 
-		 @flexiblerecords()
+		 @search()
 	   </modal>
 	</div>
 

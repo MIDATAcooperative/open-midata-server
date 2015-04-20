@@ -122,6 +122,10 @@ services.factory('records', function($http) {
 		  return $http.post(jsRoutes.controllers.Records.updateSharing().url, JSON.stringify(data));
 	};
 	
+	service.search = function(query) {
+		return $http(jsRoutes.controllers.Records.search(query));
+	};
+	
 	return service;
 });
 services.factory('apps', function($http) {
