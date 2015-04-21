@@ -1,76 +1,107 @@
-var news = angular.module('news', ['navbar', 'date', 'services', 'views']);
-news.controller('NewsCtrl', ['$scope', '$http', 'dateService', 'currentUser', 'users', 'views', function($scope, $http, dateService, currentUser, users, views) {
+var news = angular.module('news', ['navbar', 'date', 'services', 'views', 'dashboards']);
+news.controller('NewsCtrl', ['$scope', '$http', '$attrs', 'currentUser', 'users', 'views', 'status', function($scope, $http, $attrs, currentUser, users, views, status) {
 	
+	$scope.view = views.getView($attrs.viewid || $scope.def.id);
+	$scope.status = new status(true);
 	// init
-	$scope.error = null;
-	$scope.loading = true;
-	$scope.userId = null;
-	$scope.lastLogin = null;
-	$scope.news = [];
-	$scope.pushed = [];
-	$scope.shared = [];
+	
+	$scope.userId = null;	
+	$scope.news = [];	
 	$scope.newsItems = {};
 	$scope.users = {};
 	
 	// get current user
 	currentUser.then(function(userId) {
 		$scope.userId = userId;
-		getNews(userId);
-		views.setView("1", { aps : userId.$oid, properties : { "max-age" : 86400 * 31 } , fields : [ "ownerName", "created", "id", "name" ]});
-		views.setView("2", { properties : { }, fields : ["name"] });
+		$scope.reload();
+		
 	});
 	
 	// get user's news
-	getNews = function(userId) {
-		users.getMembers({"_id": userId}, ["login", "news", "pushed", "shared", "apps", "visualizations"]).		
+	$scope.reload = function() {
+		if (!$scope.view.active || !$scope.userId) return;
+		
+		$scope.status.doBusy(users.getDashboardInfo($scope.userId)).		
 		then(function(result) {
-			var user = result.data[0];
-				$scope.lastLogin = user.login;
-				$scope.news = user.news;
-				$scope.pushed = user.pushed;
-				$scope.shared = user.shared;
-				$scope.showAppTeaser = user.apps.length == 0;
-				$scope.showVisualizationsTeaser = user.visualizations.length == 0;
-				getNewsItems($scope.news);
-		},function(err) {
-				$scope.error = "Failed to load your news: " + err;
-				$scope.loading = false;
+			var user = result.data[0];			
+			$scope.news = user.news;				
+			getNewsItems($scope.news);
 		});
-	}
+	};
 	
 	// get the news items
 	getNewsItems = function(newsItemIds) {
 		var properties = {"_id": newsItemIds};
 		var fields = ["creator", "created", "title", "content"];
 		var data = {"properties": properties, "fields": fields};
-		$http.post(jsRoutes.controllers.News.get().url, JSON.stringify(data)).
-			success(function(newsItems) {
+		$scope.status.doBusy($http.post(jsRoutes.controllers.News.get().url, JSON.stringify(data))).
+		then(function(results) {
+			    var newsItems = results.data;
 				_.each(newsItems, function(newsItem) { $scope.newsItems[newsItem._id.$oid] = newsItem; });
 				var creatorIds = _.pluck(newsItems, "creator");
 				creatorIds = _.uniq(creatorIds, false, function(id) { return id.$oid; });
 				getUserNames(creatorIds);
-			}).
-			error(function(err) {
-				$scope.error = "Failed to load news items: " + err;
-				$scope.loading = false;
-			});
-	}
+		});
+	};
 	
 	// get the user names
 	getUserNames = function(userIds) {
 		var properties = {"_id": userIds};
 		var fields = ["name"];
 		var data = {"properties": properties, "fields": fields};
-		$http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
-			success(function(users) {
-				_.each(users, function(user) { $scope.users[user._id.$oid] = user; });
-				$scope.loading = false;
-			}).
-			error(function(err) {
-				$scope.error = "Failed to load user names: " + err;
-				$scope.loading = false;
-			});
-	}
+		$scope.status.doSilent($http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data))).
+		then(function(results) {
+				_.each(results.data, function(user) { $scope.users[user._id.$oid] = user; });				
+		});
+	};	
+	
+	// hide news item
+	$scope.hide = function(newsItemId) {
+		$scope.status.doSilent($http(jsRoutes.controllers.News.hide(newsItemId.$oid))).
+		then(function() {
+				$scope.news.splice($scope.news.indexOf(newsItemId), 1);
+				delete $scope.newsItems[newsItemId.$oid];
+		});
+	};
+	
+	$scope.$watch('view.setup', function() { $scope.reload(); });
+	
+}]);
+news.controller('TeaserCtrl', ['$scope', '$http', '$attrs', 'dateService', 'currentUser', 'users', 'views', 'status', function($scope, $http, $attrs, dateService, currentUser, users, views, status) {
+	
+	$scope.view = views.getView($attrs.viewid || $scope.def.id);
+	$scope.status = new status(true);
+	
+	// init
+	$scope.userId = null;
+	$scope.lastLogin = null;
+	$scope.pushed = [];
+	$scope.shared = [];
+	
+	// get current user
+	currentUser.then(function(userId) {
+		$scope.userId = userId;
+		$scope.reload();	
+	});
+		
+	$scope.reload = function() {
+		if (!$scope.view.active || !$scope.userId) return;
+		
+		$scope.status.doBusy(users.getDashboardInfo($scope.userId)).		
+		then(function(result) {
+			var user = result.data[0];
+				$scope.lastLogin = user.login;			
+				$scope.pushed = user.pushed;
+				$scope.shared = user.shared;
+				$scope.apps = user.apps;
+				$scope.visualizations = user.visualizations;
+			switch ($scope.view.setup.type) {
+			case "noapps" : $scope.view.active = $scope.apps.length == 0;break;
+			case "novisualizations" : $scope.view.active = $scope.visualizations.length == 0;break;
+			case "news" : $scope.view.active = ($scope.pushed.length > 0 || $scope.shared.length > 0);break;
+			}
+		});
+	};
 	
 	// show new pushed records
 	$scope.showPushed = function() {
@@ -78,7 +109,7 @@ news.controller('NewsCtrl', ['$scope', '$http', 'dateService', 'currentUser', 'u
 		var ownerFilter = "owner/is/" + $scope.userId.$oid;
 		var createdFilter = "created/" + $scope.lastLogin + "/" + dateService.toString(dateService.now());
 		window.location.href = jsRoutes.controllers.Records.filter(ownerFilter + "/" + createdFilter).url;
-	}
+	};
 	
 	// show new shared records
 	$scope.showShared = function() {
@@ -86,35 +117,22 @@ news.controller('NewsCtrl', ['$scope', '$http', 'dateService', 'currentUser', 'u
 		var ownerFilter = "owner/isnt/" + $scope.userId.$oid;
 		var createdFilter = "created/" + $scope.lastLogin + "/" + dateService.toString(dateService.now());
 		window.location.href = jsRoutes.controllers.Records.filter(ownerFilter + "/" + createdFilter).url;
-	}
+	};
 	
 	// show new records
 	$scope.showAll = function() {
 		$scope.clearAll();
 		var createdFilter = "created/" + $scope.lastLogin + "/" + dateService.toString(dateService.now());
 		window.location.href = jsRoutes.controllers.Records.filter(createdFilter).url;
-	}
+	};
 	
 	// mark all records as seen
 	$scope.clearAll = function() {
-		$http(jsRoutes.controllers.Users.clearPushed()).
-			success(function() { $scope.pushed = []; }).
-			error(function(err) { $scope.error = "Failed to mark pushed records as seen: " + err; });
-		$http(jsRoutes.controllers.Users.clearShared()).
-			success(function() { $scope.shared = []; }).
-			error(function(err) { $scope.error = "Failed to mark shared records as seen: " + err; });
-	}
-	
-	// 
-	
-	// hide news item
-	$scope.hide = function(newsItemId) {
-		$http(jsRoutes.controllers.News.hide(newsItemId.$oid)).
-			success(function() {
-				$scope.news.splice($scope.news.indexOf(newsItemId), 1);
-				delete $scope.newsItems[newsItemId.$oid];
-			}).
-			error(function(err) { $scope.error = "Failed to hide this news item: " + err; });
-	}
-	
+		$scope.status.doSilent($http(jsRoutes.controllers.Users.clearPushed())).
+		then(function() { $scope.pushed = []; });
+		$scope.status.doSIlent($http(jsRoutes.controllers.Users.clearShared())).
+		then(function() { $scope.shared = []; });			
+	};
+		
+	$scope.$watch('view.setup', function() { $scope.reload(); });
 }]);

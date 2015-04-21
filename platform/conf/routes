@@ -104,6 +104,7 @@ GET     /shared/api/users/complete/:query                controllers.Users.compl
 GET     /members/configuration                           controllers.MemberFrontend.configuration()
 GET     /members/providers                               controllers.MemberFrontend.providers()
 GET     /members/studies                                 controllers.MemberFrontend.studies()
+GET     /templates/entercode                             controllers.MemberFrontend.entercode()
 GET     /members/studies/:study/details                  controllers.MemberFrontend.studydetails(study: String)
 GET     /members/studies/:study/records                  controllers.MemberFrontend.studyrecords(study: String)
 # Research

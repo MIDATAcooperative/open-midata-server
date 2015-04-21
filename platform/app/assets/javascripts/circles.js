@@ -1,4 +1,4 @@
-var circles = angular.module('circles', [ 'services', 'views' ]);
+var circles = angular.module('circles', [ 'services', 'views', 'dashboards' ]);
 circles.controller('CirclesCtrl', ['$scope', '$http', 'currentUser', 'views', function($scope, $http, currentUser, views) {
 	
 	// init
@@ -61,7 +61,7 @@ circles.controller('CirclesCtrl', ['$scope', '$http', 'currentUser', 'views', fu
 	$scope.makeActive = function(circle) {
 		_.each($scope.circles, function(circle) { circle.active = false; });
 		circle.active = true;
-		views.setView("1", { aps : circle.aps.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowRemove : true, type : "circles" });
+		views.setView("1", { aps : circle.aps.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowRemove : true, allowAdd : true, type : "circles" });
 	}
 	
 	// add a new circle
@@ -90,7 +90,7 @@ circles.controller('CirclesCtrl', ['$scope', '$http', 'currentUser', 'views', fu
 				$scope.error = null;
 				$scope.circles.splice($scope.circles.indexOf(circle), 1);
 				if ($scope.circles.length > 0) {
-					$scope.circles[0].active = true;
+					$scope.makeActive($scope.circles[0]);
 				}
 			}).
 			error(function(err) { $scope.error = "Failed to delete circle '" + circle.name + "': " + err; });

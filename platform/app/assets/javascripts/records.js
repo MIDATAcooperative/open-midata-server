@@ -137,6 +137,9 @@ records.controller('RecordsCtrl', ['$scope', '$http', 'filterService', 'dateServ
 		return $scope.activeRecord;
 	};
 	
+	$scope.tab = "circles";
+	$scope.makeActive = function(tab) { $scope.tab = tab; };
+	
 	$scope.loadShared = function(type) {
 		if ($scope.shared == null) {
 			$http.get(jsRoutes.controllers.Records.getSharingInfo().url).

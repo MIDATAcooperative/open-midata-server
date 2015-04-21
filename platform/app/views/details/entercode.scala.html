@@ -1,0 +1,17 @@
+@import views.html.help.formrow
+@import views.html.help.formerror
+<div ng-controller="EnterCodeCtrl" class="body" ng-cloak>		
+	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="submitcode()" role="form">	
+		@formrow("code","Participation Code") { 
+		    <div class="input-group">
+			  <input type="text" class="form-control" id="code" name="code" placeholder="" ng-model="code.code" ng-required="true">
+			  <span class="input-group-btn">
+			    <button type="submit" class="btn btn-primary">Continue</button>
+			  </span>
+			</div>
+		    @formerror("code","notfound","Unknown code")
+		    @formerror("code","alreadyused","Code has expired") 
+		    @formerror("code","notsearching","Study is currently not accepting participants")
+  	    }				
+   </form>     
+</div>

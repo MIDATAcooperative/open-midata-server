@@ -1,4 +1,4 @@
-var search = angular.module('search', [ 'views', 'services' ]);
+var search = angular.module('search', [ 'views', 'services', 'dashboards' ]);
 search.controller('MemberSearchCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	$scope.criteria = {};

@@ -1,60 +1,49 @@
-@import views.html.details.flexiblerecords
+
 @main("Healthcare Providers") {
 	
-	<div ng-app="healthprovider" ng-cloak>
-    <div ng-controller="ListHealthProviderCtrl" >
-    <div class="page-header">
-    <h1>Healthcare Providers</h1>
+	<div ng-app="healthprovider" ng-cloak ng-controller="DashboardCtrl">
+	<div class="page-header">
+      <h1>Healthcare Providers</h1>
     </div>
-	
-	<div class="panel panel-primary">
-	<div class="panel-heading">Your Health Providers</div>
-	<div class="panel-body">
-	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
-	  {{ error.message || error }}
-	</p>
-	<div ng-show="results.length > 0">
-	<table class="table table-hover">
-	  <thead>
-	    <tr>
-	      <th>Name</th>
-	      <th>Status</th>
-	      <th>Confirmation Date</th>	      	     
-	    </tr>
-	  </thead>
-	  <tbody>
-	    <tr ng-repeat="memberkey in results">
-	      <td><a ng-click="showRecords(memberkey)" href="javascript:">{{ memberkey.name }}</a></td>	  
-	      <td>{{ memberkey.status }}
-	        <button ng-show="mayConfirm(memberkey)" class="btn btn-primary btn-xs" ng-click="confirm(memberkey)">confirm</button>
-	        <button ng-show="mayReject(memberkey)" class="btn btn-danger btn-xs" ng-click="reject(memberkey)">reject</button>
-	      </td>	      	         
-	      <td>{{ memberkey.confirmDate | date }}</td>
-	    </tr>
-	  </tbody>
-	</table>
-	</div>
-	<p ng-show="results.length == 0">
-	  You do not have a registered contact to a healthcare provider. 
-	</p>
-	</div>
-	</div>
-	</div>
-	
-	<div ng-controller="FlexibleRecordListCtrl" viewid="hcrecords" title="Records added this month by your healthcare providers">
-	  <div class="panel panel-primary" ng-show="view.active">
-	    <div class="panel-heading">{{ title }}</div>
-		    @flexiblerecords()
+    
+    <div ng-repeat="def in layout.full">
+   
+      <div class="panel panel-primary" ng-show="def.active">
+	    <div class="panel-heading">{{ def.title }}</div>
+        <div ng-include="def.template"></div>		  
 	  </div>
-	</div>		
 	
-	<div ng-controller="FlexibleRecordListCtrl" viewid="records" title="Records">
-      <modal title="Records" viewid="records">
-	      @flexiblerecords()
-	  </modal>	          
 	</div>
 	
-    </div>
+	<div class="row">
+	  <div class="col-md-6">
+	     <div ng-repeat="def in layout.small" ng-if="$even">   
+		      <div class="panel panel-primary" ng-show="def.active">
+			    <div class="panel-heading">{{ def.title }}</div>
+		        <div ng-include="def.template"></div>		  
+			  </div>	
+	     </div>
+	  </div>
+	  <div class="col-md-6">
+	    <div ng-repeat="def in layout.small" ng-if="$odd">
+   
+          <div class="panel panel-primary" ng-show="def.active">
+	        <div class="panel-heading">{{ def.title }}</div>
+            <div ng-include="def.template"></div>		  
+	      </div>
+	
+	    </div>
+	  </div>
+	</div>
+	
+	<div ng-repeat="def in layout.modal">
+	  
+      <modal title="Records">
+	     <div ng-include="def.template"></div>
+	  </modal>	          
+	
+	</div>
+     
     <script type="text/javascript" src="@routes.Assets.at("javascripts/views.js")" defer></script>
 	<script type="text/javascript" src="@routes.Assets.at("javascripts/members/healthprovider.js")" defer></script>
 }

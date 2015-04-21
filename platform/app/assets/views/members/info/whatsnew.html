@@ -1,0 +1,16 @@
+<div ng-controller="TeaserCtrl" class="panel-body">
+	<div ng-show="pushed.length">
+		<a href="" ng-click="showPushed()">{{pushed.length}} new record<span ng-show="pushed.length > 1">s</span></a> <span
+			ng-show="pushed.length === 1">has</span> <span ng-show="pushed.length > 1">have</span> been pushed to your account.
+	</div>
+	<div ng-show="shared.length">
+		<a href="" ng-click="showShared()">{{shared.length}} record<span ng-show="shared.length > 1">s</span></a> <span
+			ng-show="shared.length === 1">has</span> <span ng-show="shared.length > 1">have</span> been shared with you.
+	</div>
+	<div style="padding-bottom: 10px;">
+		<div class="pull-right">
+			<button type="button" class="btn btn-primary" ng-click="showAll()">Show me all new records</button>
+			<button type="button" class="btn btn-default" ng-click="clearAll()">Okay, got it!</button>
+		</div>
+	</div>
+</div>

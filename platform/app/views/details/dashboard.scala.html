@@ -1,0 +1,41 @@
+@(dashid: String) 
+
+    <div ng-cloak ng-controller="DashboardCtrl" dashid="@dashid">
+    
+    <div ng-repeat="def in layout.full" class="rotate">
+   
+      <div class="panel panel-primary" ng-show="def.active">
+	    <div class="panel-heading" ng-click="makeSmall(def)">{{ def.title }}</div>
+        <div ng-include="def.template"></div>		  
+	  </div>
+	
+	</div>
+	
+	<div class="row">
+	  <div class="col-md-6">
+	     <div ng-repeat="def in layout.small | filter:filterEvenStartFrom(1)" class="rotate">   
+		      <div class="panel panel-primary" ng-show="def.active">
+			    <div class="panel-heading" ng-click="makeBig(def)">{{ def.title }}</div>
+		        <div ng-include="def.template"></div>		  
+			  </div>	
+	     </div>
+	  </div>
+	  <div class="col-md-6">
+	    <div ng-repeat="def in layout.small | filter:filterEvenStartFrom(0)" class="rotate">
+   
+          <div class="panel panel-primary" ng-show="def.active">
+	        <div class="panel-heading" ng-click="makeBig(def)">{{ def.title }}</div>
+            <div ng-include="def.template"></div>		  
+	      </div>
+	
+	    </div>
+	  </div>
+	</div>
+	
+	<div ng-repeat="def in layout.modal">	  
+      <modal>
+	     <div ng-include="def.template"></div>
+	  </modal>	          
+	
+	</div>
+   </div>         

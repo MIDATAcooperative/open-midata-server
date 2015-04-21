@@ -1,4 +1,4 @@
-var studies = angular.module('studies', [ 'services', 'views' ]);
+var studies = angular.module('studies', [ 'services', 'views', 'dashboards' ]);
 studies.controller('CreateStudyCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	$scope.study = {};

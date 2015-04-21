@@ -1,5 +1,6 @@
-  
-    <div class="panel-body" ng-show="records.length == 0">Empty</div>
+<div ng-controller="FlexibleRecordListCtrl">
+    <div class="body" ng-show="status.isBusy">Please wait...</div>
+    <div class="body" ng-show="!status.isBusy && records.length == 0">Empty</div>
     <ul class="list-group" ng-show="!loadingRecords && records.length > 0">
 		<li class="list-group-item" ng-repeat="record in records">
 		    <input type="checkbox" ng-model="record.marked" ng-if="view.setup.allowShare"/>
@@ -15,7 +16,8 @@
 		</li>
 	</ul>
 	
-	<div ng-class="{'panel-body' : !view.modal, 'modal-footer' : view.modal}" ng-show="view.setup.allowAdd || view.setup.allowShare">
+	<div class="footer" ng-show="view.setup.allowAdd || view.setup.allowShare">
 	<button ng-click="addRecords()" ng-if="view.setup.allowAdd" class="btn btn-primary">Add Records...</button>
 	<button ng-click="shareRecords()" ng-if="view.setup.allowShare" class="btn btn-primary">Share</button>
 	</div>
+</div>

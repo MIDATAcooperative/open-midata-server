@@ -1,70 +1,17 @@
 @import views.html.help.formrow
 @import views.html.help.formerror
-@import views.html.details.flexiblestudies
+@import views.html.details.dashboard
 @main("Studies") {
 <div ng-app="participation">
 <div ng-controller="StudiesCtrl" ng-cloak>
-   <div ng-controller="ListStudiesCtrl" ng-cloak>
+  
     <div class="page-header">
 	<h1>Studies</h1>
 	</div>
-	<div class="panel panel-primary">
-	<div class="panel-heading">Studies you are involved:</div>
-    <div class="panel-body">
-	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
-	  {{ error.message || error }}
-	</p>
-	<div ng-show="results.length > 0">
-	<table class="table table-hover">
-	  <thead>
-	    <tr>
-	      <th>Study</th>
-	      <th>Status</th>	      	     
-	    </tr>
-	  </thead>
-	  <tbody>
-	    <tr ng-repeat="study in results">
-	      <td><a ng-href="/members/studies/{{study.study.$oid}}/details">{{ study.studyName }}</a></td>	  
-	      <td>{{ study.status }}</td>	      	         
-	    </tr>
-	  </tbody>
-	</table>
-	</div>
-	<p ng-show="results.length == 0">
-	  You did not participate in any study.
-	</p>
-	</div>
-	</div>
-	</div>
 	
-	<div ng-controller="FlexibleStudiesCtrl" viewid="newstudies" title="New Studies" >
-	  <div class="panel panel-primary">
-	  <div class="panel-heading">{{ title }}</div>			  
-	     @flexiblestudies()
-	  </div>
-    </div>
-</div>
-
-<div ng-controller="EnterCodeCtrl" ng-cloak class="panel panel-primary">
-	<div class="panel-heading">Join by participation code</div>
-	<div class="panel-body">
-	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="submitcode()" role="form">
-	
-		@formrow("code","Participation Code") { 
-		    <div class="input-group">
-			  <input type="text" class="form-control" id="code" name="code" placeholder="" ng-model="code.code" ng-required="true">
-			  <span class="input-group-btn">
-			    <button type="submit" class="btn btn-primary">Continue</button>
-			  </span>
-			</div>
-		    @formerror("code","notfound","Unknown code")
-		    @formerror("code","alreadyused","Code has expired") 
-		    @formerror("code","notsearching","Study is currently not accepting participants")
-  	    }				
-   </form>
-   </div>   
-</div>
+    @dashboard("studies")
 
 <script type="text/javascript" src="@routes.Assets.at("javascripts/views.js")" defer></script></div>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/dashboards.js")" defer></script></div>
 <script type="text/javascript" src="@routes.Assets.at("javascripts/members/participation.js")" defer></script>
 }

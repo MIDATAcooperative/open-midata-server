@@ -13,12 +13,20 @@ services.factory('currentUser', function($q, $http) {
 services.factory('users', function($q, $http) {
 	
 	var service = {};
+	var dinfo;
 	
 	service.getMembers = function(properties, fields) {
 		var data = {"properties": properties, "fields": fields};
 
 		return $http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data));
 	};
+	
+	service.getDashboardInfo = function(id) {
+		if (!dinfo) {
+		  dinfo = service.getMembers({"_id": id}, ["login", "news", "pushed", "shared", "apps", "visualizations"]);
+		}
+		return dinfo;
+	}
 		
 	return service;
 	
@@ -47,24 +55,67 @@ services.factory('hc', function($q, $http) {
 	
 });
 
+services.factory('status', function() {
+	return function(showerrors) {		
+		this.loading = 0;
+		this.isBusy = false;
+		this.error = null;
+		this.showerrors = showerrors;
+		this.start = function() { this.loading++; this.isBusy = true; if (this.loading==1) this.error = null; };
+		this.end = function() { this.loading--; if (this.loading<=0) this.isBusy = false; };
+		this.fail = function(msg) { 
+			   console.log(msg);
+			   this.loading--; 
+			   this.error = msg; 
+			   if (this.loading<=0) { this.isBusy = false; }
+			   if (this.showerrors) alert("An error "+msg.status+" occured:"+msg.data);
+		};
+		this.doBusy = function(call) {
+			var me = this;
+		   	me.start();
+		   	return call.then(function(result) { me.end();return result; }, function(err) { me.fail(err); });		     
+		};
+		this.doSilent = function(call) {
+			var me = this;
+			return call.then(function(result) { return result; }, function(err) { me.fail(err); });
+		}
+	};
+		
+});
 services.factory('views', function() {
 	
 	var mapping = {};
 	var service = {};
 	
+	service.init = function(attrs) {
+		var v = service.getView(attrs.viewid);
+		if (attrs.title) v.title = attrs.title;
+		return v;
+	};
+	
+	service.def = function(attrs) {
+		var v = service.getView(attrs.id);
+		for (x in attrs) {
+			v[x] = attrs[x];			
+		}
+		return v;
+	}
+	
 	service.getView = function (id) {
 		var r = mapping[id];
 		if (r==null) {
-		   r = { active: false, setup:null, links:{}, dependend:[], version:0 };
+		   r = { active: false, setup:null, title:"no title", links:{}, dependend:[] };
 		   mapping[id] = r;
 		} 
 		return r;
-	}
+	};
 	
-	service.setView = function (id, setup) {
+	service.setView = function (id, setup, title) {
 		var view = service.getView(id);
 		view.active = true; 
 		view.setup = setup;
+		if (title) view.title = title;
+		return view;
 	};
 	
 	service.link = function(id, name, viewid) {
@@ -155,9 +206,9 @@ services.directive('modal', function (views) {
             '<div class="modal-content">' + 
               '<div class="modal-header">' + 
                 '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' + 
-                '<h4 class="modal-title">{{ title }}</h4>' + 
+                '<h4 class="modal-title">{{ view.title }}</h4>' + 
               '</div>' + 
-              '<div class="modal-body" ng-transclude></div>' + 
+              '<div class="" ng-transclude></div>' + 
             '</div>' + 
           '</div>' + 
         '</div>',
@@ -165,9 +216,8 @@ services.directive('modal', function (views) {
       transclude: true,
       replace:true,
       scope:true,
-      link: function postLink(scope, element, attrs) {
-        scope.title = attrs.title;
-        scope.view = views.getView(attrs.viewid);
+      link: function postLink(scope, element, attrs) {        
+        scope.view = views.getView(attrs.viewid || scope.def.id);
         scope.view.modal = true;
 
         scope.$watch("view.active", function(value){

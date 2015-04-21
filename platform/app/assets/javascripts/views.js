@@ -1,13 +1,14 @@
 var views = angular.module('views', ['services']);
-views.controller('FlexibleRecordListCtrl', ['$scope', '$http', '$attrs', 'views', 'records', function($scope, $http, $attrs, views, records) {
+views.controller('FlexibleRecordListCtrl', ['$scope', '$http', '$attrs', 'views', 'records', 'status', function($scope, $http, $attrs, views, records, status) {
+			
+	$scope.records = [];	
+	$scope.view = views.getView($attrs.viewid || $scope.def.id);
+	$scope.status = new status(true);
 	
-	$scope.records = [];
-	$scope.title = $attrs.title;
-	$scope.view = views.getView($attrs.viewid);
 	
 	$scope.reload = function() {		
 		if (!$scope.view.active) return;
-		records.getRecords($scope.view.setup.aps, $scope.view.setup.properties, $scope.view.setup.fields).
+		$scope.status.doBusy(records.getRecords($scope.view.setup.aps, $scope.view.setup.properties, $scope.view.setup.fields)).
 		then(function (result) { $scope.records = result.data; });
 	};
 	
@@ -18,14 +19,14 @@ views.controller('FlexibleRecordListCtrl', ['$scope', '$http', '$attrs', 'views'
 	};
 	
 	$scope.removeRecord = function(record) {
-		records.unshare($scope.view.setup.aps, record._id.$oid, $scope.view.setup.type);
+		$scope.status.doSilent(records.unshare($scope.view.setup.aps, record._id.$oid, $scope.view.setup.type));
 		$scope.records.splice($scope.records.indexOf(record), 1);
 	};
 	
 	$scope.shareRecords = function() {
 		var selection = _.filter($scope.records, function(rec) { return rec.marked; });
 		selection = _.chain(selection).pluck('_id').pluck('$oid').value();
-		records.share($scope.view.setup.targetAps, selection, $scope.view.setup.type)
+		$scope.status.doSilent(records.share($scope.view.setup.targetAps, selection, $scope.view.setup.type))
 		.then(function () {
 		   views.changed($attrs.viewid);
 		   views.disableView($attrs.viewid);
@@ -47,15 +48,15 @@ views.controller('FlexibleRecordListCtrl', ['$scope', '$http', '$attrs', 'views'
 	$scope.$watch('view.setup', function() { $scope.reload(); });	
 	
 }]);
-views.controller('FlexibleStudiesCtrl', ['$scope', '$http', '$attrs', 'views', 'studies', function($scope, $http, $attrs, views, studies) {
+views.controller('FlexibleStudiesCtrl', ['$scope', '$http', '$attrs', 'views', 'studies', 'status', function($scope, $http, $attrs, views, studies, status) {
 	
-	$scope.studies = [];
-	$scope.title = $attrs.title;
-	$scope.view = views.getView($attrs.viewid);
+	$scope.studies = [];	
+	$scope.view = views.getView($attrs.viewid || $scope.def.id);
+	$scope.status = new status(true);
 	
 	$scope.reload = function() {		
 		if (!$scope.view.active) return;
-		studies.search($scope.view.setup.properties, $scope.view.setup.fields).
+		$scope.status.doBusy(studies.search($scope.view.setup.properties, $scope.view.setup.fields)).
 		then(function (result) { $scope.studies = result.data; });
 	};
 	
@@ -66,15 +67,15 @@ views.controller('FlexibleStudiesCtrl', ['$scope', '$http', '$attrs', 'views', '
 	$scope.$watch('view.setup', function() { $scope.reload(); });	
 	
 }]);
-views.controller('RecordDetailCtrl', ['$scope', '$http', '$attrs', 'views', 'records', 'apps', function($scope, $http, $attrs, views, records, apps) {
-	
-	$scope.title = $attrs.title;
-	$scope.view = views.getView($attrs.viewid);
+views.controller('RecordDetailCtrl', ['$scope', '$http', '$attrs', 'views', 'records', 'apps', 'status', function($scope, $http, $attrs, views, records, apps, status) {
+		
+	$scope.view = views.getView($attrs.viewid || $scope.def.id);
 	$scope.record = {};
+	$scope.status = new status(true);
 	
 	$scope.reload = function() {
 	   if (!$scope.view.active) return;	
-       records.getRecord($scope.view.setup.id).
+       $scope.status.doBusy(records.getRecord($scope.view.setup.id)).
 	   then(function(result) {
 			$scope.record = result.data;
 			$scope.record.json = JSON.stringify($scope.record.data, null, "\t");
@@ -96,29 +97,29 @@ views.controller('RecordDetailCtrl', ['$scope', '$http', '$attrs', 'views', 'rec
     
 	var loadUserNames = function() {		
 		var data = {"properties": {"_id": [$scope.record.owner, $scope.record.creator]}, "fields": ["firstname", "sirname"]};
-		$http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
-			success(function(users) {				
-				_.each(users, function(user) {
+		$scope.status.doSilent($http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data))).
+			then(function(result) {				
+				_.each(result.data, function(user) {
 					if ($scope.record.owner && $scope.record.owner.$oid === user._id.$oid) { $scope.record.owner = (user.firstname+" "+user.sirname).trim(); }
 					if ($scope.record.creator && $scope.record.creator.$oid === user._id.$oid) { $scope.record.creator = (user.firstname+" "+user.sirname).trim(); }
 				});
 				if (!$scope.record.owner) $scope.record.owner = "?";
 				if (!$scope.record.creator) $scope.record.creator = "Same as owner";
-			}).
-			error(function(err) { $scope.error = "Failed to load names: " + err; });
+			});
 	};
 	
 	$scope.$watch('view.setup', function() { $scope.reload(); });	
 	
 }]);
-views.controller('AddRecordsCtrl', ['$scope', '$http', '$attrs', 'views', 'records', function($scope, $http, $attrs, views, records) {
+views.controller('AddRecordsCtrl', ['$scope', '$http', '$attrs', 'views', 'records', 'status', function($scope, $http, $attrs, views, records, status) {
 	
 	$scope.foundRecords = [];
 	$scope.criteria = { query : "" };
 	$scope.title = $attrs.title;
-	$scope.view = views.getView($attrs.viewid);
+	$scope.viewid = $attrs.viewid || $scope.def.id;
+	$scope.view = views.getView($scope.viewid);
 	$scope.records = [];
-	$scope.searching = false;
+	$scope.status = new status(true);
 	$scope.newest = true;
 	
 	$scope.reload = function() {		
@@ -134,10 +135,11 @@ views.controller('AddRecordsCtrl', ['$scope', '$http', '$attrs', 'views', 'recor
 	$scope.shareRecords = function() {
 		var selection = _.filter($scope.foundRecords, function(rec) { return rec.checked; });
 		selection = _.chain(selection).pluck('_id').pluck('$oid').value();
-		records.share($scope.view.setup.targetAps, selection, $scope.view.setup.type)
+		console.log(selection);
+		$scope.status.doSilent(records.share($scope.view.setup.targetAps, selection, $scope.view.setup.type))
 		.then(function () {
-		   views.changed($attrs.viewid);
-		   views.disableView($attrs.viewid);
+		   views.changed($scope.viewid);
+		   views.disableView($scope.viewid);
 		});
 	};
 	
@@ -163,23 +165,17 @@ views.controller('AddRecordsCtrl', ['$scope', '$http', '$attrs', 'views', 'recor
 		var query = $scope.criteria.query;
 		$scope.foundRecords = [];
 		
-		if (query) {
-			$scope.searching = true;
+		if (query) {			
 			$scope.newest = false;
-			records.search(query).
-				success(function(records) {
+			$scope.status.doBusy(records.search(query)).
+				then(function(results) {
 					$scope.error = null;
-					$scope.foundRecords = records;
-					$scope.searching = false;
-				}).
-				error(function(err) {
-					$scope.error = "Record search failed: " + err;
-					$scope.searching = false;
+					$scope.foundRecords = results.data;					
 				});
 		} else {
 			$scope.newest = true;
-			$scope.searching = true;
-		    records.getRecords(null, { "max-age" : 86400 * 31 }, [ "ownerName", "created", "id", "name" ]).
+			
+		    $scope.status.doBusy(records.getRecords(null, { "max-age" : 86400 * 31 }, [ "ownerName", "created", "id", "name" ])).
 			then(function (result) { 
 				$scope.foundRecords = result.data;
 				$scope.searching = false; 
@@ -188,5 +184,58 @@ views.controller('AddRecordsCtrl', ['$scope', '$http', '$attrs', 'views', 'recor
 	};
 	
 	$scope.$watch('view.setup', function() { $scope.reload(); });	
+	
+}]);
+views.controller('ListHealthProviderCtrl', ['$scope', '$http', '$attrs', 'views', 'hc', 'status', function($scope, $http, $attrs, views, hc, status) {
+	
+	$scope.results =[];
+	$scope.view = views.getView($attrs.viewid || $scope.def.id);
+    $scope.status = new status(true);
+	
+	$scope.reload = function() {
+			
+		$scope.status.doBusy(hc.list()).
+		then(function(results) { 				
+			$scope.results = results.data;				
+			$scope.showNewHCRecords();
+		});
+	};
+	
+	$scope.confirm = function(memberKey) {
+		hc.confirm(memberKey.provider.$oid).then(function() { $scope.reload(); });		
+	};
+	
+	$scope.reject = function(memberKey) {
+		hc.reject(memberKey.provider.$oid).then(function() { $scope.reload(); });
+	};
+	
+	$scope.mayReject = $scope.mayConfirm = function(memberKey) {
+		return memberKey.status == "UNCONFIRMED";
+	};
+	
+	
+	$scope.showNewHCRecords = function() {
+		var creators = [];
+		var aps = null;
+		_.each($scope.results, function(hc) {
+			console.log(hc);
+			if (hc.provider) {
+				creators.push(hc.provider.$oid);
+				aps = hc.member.$oid;
+			}
+		});
+		
+		if (aps != null) {
+		  views.setView("hcrecords", { aps : aps, properties: { "max-age" : 60*60*24*31, "creator" : creators }, fields : [ "creatorName", "created", "id", "name" ]});
+		} else {
+		  views.disableView("hcrecords");
+		}
+	};
+	
+	$scope.showRecords = function(mk) {
+		views.setView("records", { aps : mk.aps.$oid, properties: {}, fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type:"memberkeys"}, mk.name);
+	};
+	
+	$scope.reload();
 	
 }]);

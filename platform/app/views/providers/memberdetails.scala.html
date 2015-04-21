@@ -1,7 +1,5 @@
 @import views.html.help.formrow
 @import views.html.help.formerror
-@import views.html.details.flexiblerecords
-@import views.html.details.record
 @providermain("Member Details") {
 <div ng-app="search" ng-controller="MemberDetailsCtrl" ng-cloak> 
     <div class="page-header"> 
@@ -27,10 +25,8 @@
     </div>
     </div>
     
-    <div ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records of this patient:" class="panel panel-primary">
-	    <div class="panel-heading">{{ title }}</div>
-	    @flexiblerecords()
-	</div>
+    @views.html.details.dashboard("memberdetails")
+       
     
     
                <div class="btn-group" ng-show="!loadingApps && apps.length > 0">
@@ -56,15 +52,10 @@
 			   </div>
     <a href="@routes.ProviderFrontend.search()" class="btn btn-default">Back</a>
     
-    <!-- Record modal -->
-    <div ng-controller="RecordDetailCtrl" viewid="record" title="Record Details">
-      <modal title="Record Details" viewid="record">
-	      @record()
-	  </modal>	          
-	</div>
             
 </div>
 <script type="text/javascript" src="@routes.Assets.at("javascripts/views.js")" defer></script>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/dashboards.js")" defer></script>
 <script type="text/javascript" src="@routes.Assets.at("javascripts/providers/search.js")" defer></script>
 	
 }

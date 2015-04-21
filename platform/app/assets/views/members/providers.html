@@ -1,0 +1,27 @@
+<div ng-controller="ListHealthProviderCtrl"  class="body">
+  <div ng-show="status.isBusy">Please wait...</div>
+  <div ng-show="results.length > 0">
+	<table class="table table-hover">
+	  <thead>
+	    <tr>
+	      <th>Name</th>
+	      <th>Status</th>
+	      <th>Confirmation Date</th>	      	     
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr ng-repeat="memberkey in results">
+	      <td><a ng-click="showRecords(memberkey)" href="javascript:">{{ memberkey.name }}</a></td>	  
+	      <td>{{ memberkey.status }}
+	        <button ng-show="mayConfirm(memberkey)" class="btn btn-primary btn-xs" ng-click="confirm(memberkey)">confirm</button>
+	        <button ng-show="mayReject(memberkey)" class="btn btn-danger btn-xs" ng-click="reject(memberkey)">reject</button>
+	      </td>	      	         
+	      <td>{{ memberkey.confirmDate | date }}</td>
+	    </tr>
+	  </tbody>
+	</table>
+	</div>
+  <p ng-show="!status.isBusy && results.length == 0">
+    You do not have a registered contact to a healthcare provider. 
+  </p>
+</div>

@@ -1,7 +1,5 @@
 @import views.html.help.formrow
 @import views.html.help.formerror
-@import views.html.details.flexiblerecords
-@import views.html.details.record
 @researchmain("Study Participant") {
 <div ng-app="studies" ng-controller="ParticipantCtrl" ng-cloak>
    @studynav("Study Participant","../")
@@ -56,21 +54,12 @@
 	    </table>	    
     </div>
     
-    <div ng-controller="FlexibleRecordListCtrl" viewid="1" title="Records of this participant" class="panel panel-primary">
-	    <div class="panel-heading">Shared records:</div>
-	    @flexiblerecords()
-	</div>
-	
-	<!-- Record modal -->
-    <div ng-controller="RecordDetailCtrl" viewid="record" title="Record Details">
-      <modal title="Record Details" viewid="record">
-	      @record()
-	  </modal>	          
-	</div>
+    @views.html.details.dashboard("studyparticipant") 
     
     <a href="../participants" class="btn btn-default">Back</a>
 </div>
 <script type="text/javascript" src="@routes.Assets.at("javascripts/views.js")" defer></script>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/dashboards.js")" defer></script>
 <script type="text/javascript" src="@routes.Assets.at("javascripts/research/studies.js")" defer></script>
 	
 }

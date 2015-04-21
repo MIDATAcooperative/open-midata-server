@@ -1,4 +1,4 @@
-var participation = angular.module('participation', [ 'services', 'views']);
+var participation = angular.module('participation', [ 'services', 'views', 'dashboards']);
 participation.controller('EnterCodeCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	$scope.code = {};
