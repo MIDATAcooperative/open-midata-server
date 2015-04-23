@@ -1,0 +1,16 @@
+<div ng-controller="CreateRecordCtrl" class="ignore">	
+  <div class="body" ng-show="status.isBusy">Please wait...</div>
+  <div class="ignore" ng-hide="showapp">
+  <div class="body" ng-show="!status.isBusy && apps.length == 0">You do not have any applications installed.</div>
+  
+  <ul class="list-group" ng-show="!status.isBusy && apps.length > 0">
+	<li class="list-group-item" ng-repeat="app in apps">					
+	   <a href="javascript:;" ng-click="selectApp(app._id.$oid, app.name)">{{app.name}}</a>										
+  	</li>
+  </ul>
+  </div>
+  
+  <div ng-if="showapp" class="wrap"><iframe class="frame" ng-src="{{url}}" ng-cloak></iframe></div>	 
+  
+  <div ng-show="showapp && view.setup.allowSelection" class="body"><button class="btn btn-default" ng-click="showAppList()">Back to list</button></div>
+</div>

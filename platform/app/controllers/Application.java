@@ -340,6 +340,7 @@ public class Application extends Controller {
 				controllers.routes.javascript.Spaces.delete(),
 				controllers.routes.javascript.Spaces.addRecords(),
 				controllers.routes.javascript.Spaces.getToken(),
+				controllers.routes.javascript.Spaces.getUrl(),
 				// Users
 				controllers.routes.javascript.Users.get(),
 				controllers.routes.javascript.Users.getUsers(),

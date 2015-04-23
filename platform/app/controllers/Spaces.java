@@ -10,9 +10,11 @@ import java.util.Set;
 import models.Member;
 import models.ModelException;
 import models.Space;
+import models.Visualization;
 
 import org.bson.types.ObjectId;
 
+import play.Play;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
@@ -169,5 +171,27 @@ public class Spaces extends Controller {
 		// create encrypted authToken
 		SpaceToken spaceToken = new SpaceToken(space.aps, userId);
 		return ok(spaceToken.encrypt());
+	}
+	
+	@APICall
+	public static Result getUrl(String spaceIdString) throws ModelException {
+		ObjectId userId = new ObjectId(request().username());
+		ObjectId spaceId = new ObjectId(spaceIdString);
+		
+		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps", "visualization"));
+		
+		if (space==null) {
+		  return badRequest("No space with this id exists.");
+		}
+		
+		Visualization visualization = Visualization.getById(space.visualization, Sets.create("filename", "url"));
+		
+		// create encrypted authToken
+		SpaceToken spaceToken = new SpaceToken(space.aps, userId);
+		
+		String visualizationServer = Play.application().configuration().getString("visualizations.server");
+		String url = "https://" + visualizationServer + "/" + visualization.filename + "/" + visualization.url;
+		url = url.replace(":authToken", spaceToken.encrypt());
+		return ok(url);						
 	}
 }

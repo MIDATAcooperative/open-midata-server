@@ -179,15 +179,48 @@ services.factory('records', function($http) {
 	
 	return service;
 });
-services.factory('apps', function($http) {
+services.factory('apps', function($http, $q) {
 	var service = {};
 
     service.getApps = function(properties, fields) {
    	   var data = {"properties": properties, "fields": fields};
 	   return $http.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data));
     };
-
+    
+    service.getAppsOfUser = function(userId, types, fields) {
+    	var result = $q.defer();
+    	var uproperties = {"_id": userId};
+		var ufields = ["apps"];
+		var udata = {"properties": uproperties, "fields": ufields};
+		$http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(udata))
+		.then(function(results) {
+			console.log(results);
+			var appIds = results.data[0].apps;
+			var properties2 = { "_id": appIds, "type" : types };					
+			service.getApps(properties2, fields)
+			.then(function(results2) { result.resolve(results2); });			
+		});
+		return result.promise;
+    };
+    
 	return service;
+});
+services.factory('spaces', function($http, $q) {
+	var service = {};
+
+	service.getSpacesOfUser = function(userId) {
+       var properties = {"owner": userId};
+       var fields = ["name", "records", "visualization", "order"]
+       var data = {"properties": properties, "fields": fields};
+       return $http.post(jsRoutes.controllers.Spaces.get().url, JSON.stringify(data));
+	};
+	
+	service.getUrl = function(spaceId) {
+	   return $http(jsRoutes.controllers.Spaces.getUrl(spaceId));
+	};
+	
+	return service;
+	    	
 });
 services.factory('studies', function($http) {
 	var service = {};

@@ -1,4 +1,4 @@
-var dashboards = angular.module('dashboards', [ 'services', 'views', 'ngAnimate' ]);
+var dashboards = angular.module('dashboards', [ 'services', 'views' ]);
 dashboards.constant("dashboards",
 	{
 	  "providers" :
@@ -107,7 +107,24 @@ dashboards.constant("dashboards",
 	    	   active : true,
 	    	   position : "small",
 	    	   setup : { properties : { "max-age" : 86400 * 31 } , fields : [ "ownerName", "created", "id", "name" ]}
+	     },
+	     {
+	    	   id : "showspace",
+	    	   template : "/assets/views/members/showspace.html",
+	    	   title : "View a space",
+	    	   active : true,
+	    	   position : "small",
+	    	   setup : { allowSelection : true }
+	     },
+	     {
+	    	   id : "createrecord",
+	    	   template : "/assets/views/members/createrecord.html",
+	    	   title : "Create a new record",
+	    	   active : true,
+	    	   position : "small",
+	    	   setup : { xappId : "529f095fe4b035c062eb7ed4", allowSelection : true }
 	     }
+	     	     	     
 	 ],
 	 "circles" : [
 			{

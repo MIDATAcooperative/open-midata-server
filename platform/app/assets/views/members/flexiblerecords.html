@@ -1,8 +1,8 @@
-<div ng-controller="FlexibleRecordListCtrl">
+<div class="ignore" ng-controller="FlexibleRecordListCtrl">
     <div class="body" ng-show="status.isBusy">Please wait...</div>
     <div class="body" ng-show="!status.isBusy && records.length == 0">Empty</div>
     <ul class="list-group" ng-show="!loadingRecords && records.length > 0">
-		<li class="list-group-item" ng-repeat="record in records">
+		<li class="list-group-item rotate" ng-repeat="record in records">
 		    <input type="checkbox" ng-model="record.marked" ng-if="view.setup.allowShare"/>
 			<span class="label label-info">{{record.created | date }}</span>
 			<span ng-show="record.owner.$oid != userId.$oid" class="label label-info">{{ record.ownerName }}</span>

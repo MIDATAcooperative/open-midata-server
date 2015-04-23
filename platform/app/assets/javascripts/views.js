@@ -239,3 +239,115 @@ views.controller('ListHealthProviderCtrl', ['$scope', '$http', '$attrs', 'views'
 	$scope.reload();
 	
 }]);
+views.controller('CreateRecordCtrl', ['$scope', '$http', '$attrs', '$sce', 'views', 'status', 'apps', 'currentUser', function($scope, $http, $attrs, $sce, views, status, apps, currentUser) {
+	
+	$scope.view = views.getView($attrs.viewid || $scope.def.id);
+    $scope.status = new status(true);
+    $scope.apps = null;
+    $scope.showapp = false;    
+
+    currentUser.then(function(userId) { 
+    	$scope.userId = userId;
+    	$scope.reload(); 
+    });
+    
+    $scope.reload = function() {
+    	if (!$scope.view.active || !$scope.userId) return;	
+    	
+    	var appId = $scope.view.setup.appId;
+    	var userId = $scope.view.setup.userId;
+    
+    	if (appId) {
+    		$scope.selectApp(appId);
+    	} else {
+    		$scope.showAppList();
+    	}
+    	    	
+    };
+    
+    $scope.selectApp = function(appId, title) {
+        $scope.showapp = true;
+        // if (title != null) $scope.view.title = title;
+        $scope.status.doBusy($http(jsRoutes.controllers.Apps.getUrl(appId))).
+		then(function(results) {			
+			$scope.url = $sce.trustAsResourceUrl(results.data);
+		});
+    };
+    
+    $scope.showAppList = function() {
+    	$scope.showapp = false;
+    	if (!$scope.apps) $scope.loadAppList();
+    };
+    
+    $scope.loadAppList = function() {
+    	$scope.status.doBusy(apps.getAppsOfUser($scope.userId, ["create","oauth1","oauth2"], ["name", "type"]))
+    	.then(function(results) {
+    	  $scope.apps = results.data;    	  
+    	});
+    };
+	/* 
+	$scope.memberUrl = portalRoutes.controllers.ProviderFrontend.member(userId).url;
+	console.log($scope.memberUrl);
+	
+	
+	$http(jsRoutes.controllers.Apps.getUrlForMember(appId, userId)).
+		success(function(url) {
+			$scope.error = null;
+			$scope.url = $sce.trustAsResourceUrl(url);
+		}).
+		error(function(err) { $scope.error = "Failed to load app: " + err; });
+	*/
+	$scope.$watch('view.setup', function() { $scope.reload(); });
+	
+}]);
+views.controller('ShowSpaceCtrl', ['$scope', '$http', '$attrs', '$sce', 'views', 'status', 'spaces', 'currentUser', function($scope, $http, $attrs, $sce, views, status, spaces, currentUser) {
+	
+	$scope.view = views.getView($attrs.viewid || $scope.def.id);
+    $scope.status = new status(true);
+    $scope.spaces = null;
+    $scope.showspace = false;    
+
+    currentUser.then(function(userId) { 
+    	$scope.userId = userId;
+    	$scope.reload(); 
+    });
+    
+    $scope.reload = function() {
+    	if (!$scope.view.active || !$scope.userId) return;	
+    	
+    	var spaceId = $scope.view.setup.spaceId;    	
+    
+    	if (spaceId) {
+    		$scope.selectSpace(spaceId);
+    	} else {
+    		$scope.showSpaceList();
+    	}
+    	    	
+    };
+    
+    $scope.selectSpace = function(spaceId, title) {
+        $scope.showspace = true;
+        // if (title != null) $scope.view.title = title;
+        $scope.status.doBusy(spaces.getUrl(spaceId)).
+		then(function(results) {			
+			$scope.url = $sce.trustAsResourceUrl(results.data);
+		});
+    };
+        
+    $scope.showSpaceList = function() {
+    	$scope.showspace = false;
+    	$scope.loadSpaceList();
+    	// if ($scope.spaces == null) { $scope.loadSpaceList(); }
+    };
+    
+    $scope.loadSpaceList = function() {
+    	$scope.status.doBusy(spaces.getSpacesOfUser($scope.userId))
+    	.then(function(results) {
+    	  $scope.spaces = results.data;    	  
+    	});
+    };
+	 
+	
+	$scope.$watch('view.setup', function() { $scope.reload(); });
+	
+}]);

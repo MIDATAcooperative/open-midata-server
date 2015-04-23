@@ -68,6 +68,7 @@ POST    /members/api/spaces/get                          controllers.Spaces.get(
 DELETE  /members/api/spaces/:id                          controllers.Spaces.delete(id: String)
 POST    /members/api/spaces/:id/records                  controllers.Spaces.addRecords(id: String)
 GET     /members/api/spaces/:id/token                    controllers.Spaces.getToken(id: String)
+GET     /members/api/spaces/:id/url                      controllers.Spaces.getUrl(id: String)
 # Circles
 GET     /members/circles                                 controllers.Circles.index()
 GET     /members/circles/:id                             controllers.Circles.details(id: String)
