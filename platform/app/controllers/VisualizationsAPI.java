@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import models.LargeRecord;
 import models.ModelException;
 import models.Record;
 import models.Space;
@@ -150,7 +151,7 @@ public class VisualizationsAPI extends Controller {
 		}*/
 
 		// get record data
-		Collection<Record> records = RecordSharing.instance.list(authToken.userId, authToken.spaceId, properties, fields);
+		Collection<Record> records = LargeRecord.getAll(authToken.userId, authToken.spaceId, properties, fields);
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		return ok(Json.toJson(records));
 	}

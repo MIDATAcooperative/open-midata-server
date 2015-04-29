@@ -19,15 +19,15 @@ hdcSnpSnip.controller('SnpSnipCtrl', ['$scope', '$http', '$sce', '$location',
 
 		// get record ids
 		var data = {"authToken": authToken};
-		$http.post("https://" + window.location.hostname + ":9000/api/visualizations/ids", JSON.stringify(data)).
+		/*$http.post("https://" + window.location.hostname + ":9000/api/visualizations/ids", JSON.stringify(data)).
 			success(function(recordIds) {
 				$scope.recordIds = recordIds;
-				getMetaData();
+				
 			}).
 			error(function(err) {
 				$scope.importFailed = true;
 			});
-
+        */
 		$scope.recordCount = function() {
 			return $scope.recordIds.length;
 		}
@@ -82,12 +82,13 @@ hdcSnpSnip.controller('SnpSnipCtrl', ['$scope', '$http', '$sce', '$location',
 
 		getMetaData = function() {
 			var data = {"authToken": authToken};
-			data.properties = {"_id": $scope.recordIds};
-			data.fields = ["name", "data.date", "data.build", "data.buildUrl"];
+			data.properties = { /* "_id": $scope.recordIds */ };
+			data.fields = ["name", "data", "data.date", "data.build", "data.buildUrl"];
 			$http.post("https://" + window.location.hostname + ":9000/api/visualizations/records", JSON.stringify(data)).
 				success(function(records) {
 					for (i in records) {
 						var curId = records[i]._id.$oid;
+						$scope.recordIds.push(curId);
 						$scope.records[curId] = records[i];
 					}
 					if (records.length) {
@@ -98,13 +99,15 @@ hdcSnpSnip.controller('SnpSnipCtrl', ['$scope', '$http', '$sce', '$location',
 				error(function(err) {
 					$scope.importFailed = true;
 				})
-		}
+		};
+		
+		getMetaData();
 
 		getData = function(rsNumber) {
 			$scope.loadingRecordDataFailed = false;
 			var data = {"authToken": authToken};
-			data.properties = {"_id": $scope.recordIds};
-			data.fields = ["data." + rsNumber];
+			data.properties = {};
+			data.fields = ["data", "data." + rsNumber];
 			$http.post("https://" + window.location.hostname + ":9000/api/visualizations/records", JSON.stringify(data)).
 				success(function(records) {
 					for (i in records) {

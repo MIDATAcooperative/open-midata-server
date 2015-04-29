@@ -24,6 +24,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import utils.DateTimeUtils;
 import utils.auth.AppToken;
+import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
@@ -32,7 +33,12 @@ import utils.db.FileStorage.FileData;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
+import actions.APICall;
+
 import com.fasterxml.jackson.databind.JsonNode;
+import com.mongodb.BasicDBObject;
+
+import controllers.RecordSharing;
 
 //Not secured, accessible from app server
 public class GenomeDataConverter extends Controller {
@@ -54,19 +60,16 @@ public class GenomeDataConverter extends Controller {
 	 * Gets all the files of the user.
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result getFiles() {
+	@APICall
+	public static Result getFiles() throws ModelException, JsonValidationException {
 		// allow cross origin request from app server
 		String appServer = Play.application().configuration().getString("apps.server");
 		response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
 
 		// check whether the request is complete
-		JsonNode json = request().body().asJson();
-		try {
-			JsonValidation.validate(json, "authToken");
-		} catch (JsonValidationException e) {
-			return badRequest(e.getMessage());
-		}
-
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "authToken");
+		
 		// decrypt authToken
 		AppToken appToken = AppToken.decrypt(json.get("authToken").asText());
 		if (appToken == null) {
@@ -78,16 +81,9 @@ public class GenomeDataConverter extends Controller {
 		if (errorMessage != null) {
 			return badRequest(errorMessage);
 		}
-
-		// get the names of all files from the current user
-		Map<String, Object> properties = new ChainedMap<String, Object>().put("owner", appToken.userId).put("data.type", "file").get();
-		Set<String> fields = new ChainedSet<String>().add("name").get();
-		List<Record> records;
-		try {
-			records = new ArrayList<Record>(Record.getAll(properties, fields));
-		} catch (ModelException e) {
-			return badRequest(e.getMessage());
-		}
+		
+		List<Record> records = RecordSharing.instance.list(appToken.userId, appToken.userId, CMaps.map("format", "Attachment"), Sets.create("name"));
+		
 		Collections.sort(records);
 		return ok(Json.toJson(records));
 	}
@@ -123,18 +119,16 @@ public class GenomeDataConverter extends Controller {
 	 * Convert a 23andMe file to the HDC format.
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result convert() {
+	@APICall
+	public static Result convert() throws JsonValidationException, ModelException {
 		// allow cross origin request from app server
 		String appServer = Play.application().configuration().getString("apps.server");
 		response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
 
 		// check whether the request is complete
-		JsonNode json = request().body().asJson();
-		try {
-			JsonValidation.validate(json, "authToken", "id", "name", "description");
-		} catch (JsonValidationException e) {
-			return badRequest(e.getMessage());
-		}
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "authToken", "id", "name", "description");
+		
 
 		// decrypt authToken
 		AppToken appToken = AppToken.decrypt(json.get("authToken").asText());
@@ -147,6 +141,9 @@ public class GenomeDataConverter extends Controller {
 		if (errorMessage != null) {
 			return badRequest(errorMessage);
 		}
+		
+		Member owner = Member.getByIdAndApp(appToken.userId, appToken.appId, Sets.create("myaps", "tokens"));
+		if (owner == null) return badRequest("Invalid authToken.");
 
 		// parse the file
 		FileData fileData = FileStorage.retrieve(new ObjectId(json.get("id").asText()));
@@ -165,13 +162,30 @@ public class GenomeDataConverter extends Controller {
 		record.owner = appToken.userId;
 		record.name = json.get("name").asText();
 		record.description = json.get("description").asText();
-		record.format = json.get("format").asText();
+		record.format = "Genome"; //json.get("format").asText();
 		record.data = null;
-		try {
-			LargeRecord.add(record, map);
-		} catch (ModelException e) {
-			return badRequest(e.getMessage());
+		
+		LargeRecord.add(owner, record, map);
+		
+		/*
+		RecordSharing.instance.addRecord(owner, record);
+		
+		for (String key : map.keySet()) {
+			Record part = new Record();
+			part._id = new ObjectId();
+			part.app = appToken.appId;
+			part.created = DateTimeUtils.now();
+			part.creator = appToken.userId;
+			part.owner = appToken.userId;
+			part.name = key;
+			part.format = "GenomePart";
+			part.document = record._id;
+			part.part = key;
+			part.data = new BasicDBObject();
+			part.data.put(key, map.get(key));
+			RecordSharing.instance.addRecord(owner, part);
 		}
+		*/
 		return ok();
 	}
 

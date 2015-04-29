@@ -130,11 +130,11 @@ public class Records extends Controller {
 	/**
 	 * Returns record data for visualizations. Also fetches the information for large records.
 	 */	
-	static Result getRecordData(Map<String, Object> properties, Set<String> fields) throws ModelException {
+	/*static Result getRecordData(Map<String, Object> properties, Set<String> fields) throws ModelException {
 		List<Record> records = new ArrayList<Record>(LargeRecord.getAll(properties, fields));		
 		Collections.sort(records);
 		return ok(Json.toJson(records));
-	}
+	}*/
 
 	@APICall
 	@Security.Authenticated(Secured.class)

@@ -162,7 +162,23 @@ public class RecordSharing {
 		return CodeGenerator.nextCode();
 	}
 	
+	public void addDocumentRecord(Member owner, Record record, Collection<Record> parts) throws ModelException {
+	    String key = addRecordIntern(owner, record, false);
+	    if (key == null) throw new NullPointerException("no key");
+	    for (Record rec : parts) {
+	    	rec.document = record._id;
+	    	rec.key = key;
+	    	addRecordIntern(owner, rec, true);
+	    }
+	}
+	
 	public void addRecord(Member owner, Record record) throws ModelException {
+		addRecordIntern(owner, record, false);
+		record.key = null;
+	}
+	
+	private String addRecordIntern(Member owner, Record record, boolean documentPart) throws ModelException {
+		String usedKey = null;
 		record.time = getTimeFromDate(record.created); //System.currentTimeMillis() / 1000 / 60 / 60 / 24 / 7;
 		
 		record = record.clone();
@@ -186,23 +202,25 @@ public class RecordSharing {
 		
 		if (record.direct) {
 			record.key = apswrapper.encryptionKey;
-		} else {
+		} else if (!documentPart) {
 		    record.key = generateKey();
 		}
+	    usedKey = record.key;
+	    
 		try {
-		    Search.add(record.owner, "record", record._id, record.name, record.description);
+		    if (!documentPart) Search.add(record.owner, "record", record._id, record.name, record.description);
 		} catch (SearchException e) {
 			throw new ModelException(e);
 		}
 		apswrapper.encryptRecord(record);		
 	    Record.add(record);	  
 	    
-		if (!record.direct) apswrapper.addPermission(record, false);
+		if (!record.direct && !documentPart) apswrapper.addPermission(record, false);
 		if (record.format.equals(STREAM_TYPE)) {
 			RecordSharing.instance.createAPSForRecord(owner._id, record._id, record.key, apsDirect);
 		}
 		
-		record.key = null;
+		return usedKey;		
 	}
 		
 	
@@ -326,6 +344,7 @@ public class RecordSharing {
 			for (String format : formats.keySet()) {
 				   BasicDBObject map = formats.get(format);
 				   BasicDBObject target = (BasicDBObject) map.get(input._id.toString());
+				   if (target==null && input.document!=null) target = (BasicDBObject) map.get(input.document.toString());
 				   if (target!=null) {
 					   input.key = target.getString("key");
 					   input.format = format;

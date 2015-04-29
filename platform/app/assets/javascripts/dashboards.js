@@ -8,7 +8,8 @@ dashboards.constant("dashboards",
 	    	 title:"Your Health Providers",                 
 	         template : "/assets/views/members/providers.html",
 	         active : true,
-	         position : "small"
+	         position : "small",
+	         links : { "click-provider" : "records" }
 	       },
 	       {
 	    	 id : "hcrecords",
@@ -22,7 +23,7 @@ dashboards.constant("dashboards",
 	         id : "records",
 	         template : "/assets/views/members/flexiblerecords.html",
 	         title : "Records",
-	         position : "full",
+	         position : "modal",
 	         active : false,
 	         links : { "shareFrom" : "share", "record" : "details" }
 	       },
