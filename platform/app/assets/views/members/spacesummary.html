@@ -1,0 +1,14 @@
+<div ng-controller="SpaceSummaryCtrl" class="ignore autosize">        
+
+  <div class="body" ng-show="status.isBusy">Please wait...</div>
+ 
+  <div ng-show="!status.isBusy" class="body body-center">
+     <div class="text-center lead"><b>{{ count }}</b> Records to view.</div> 
+     <div ng-show="last" class="text-center">Last entry at <b>{{ last | date }}</b>.</div>
+     <div class="extraspace"></div>
+     <div class="text-center"> 
+       <button class="btn btn-default" ng-click="showSpace()">View</button>
+     </div>
+  </div>
+
+</div>

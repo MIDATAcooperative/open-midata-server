@@ -24,6 +24,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import views.html.index;
+import views.html.dashboard;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -31,7 +32,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class News extends Controller {
 
 	public static Result index() {
-		return ok(index.render());
+		return ok(dashboard.render("overview", "Overview"));
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)

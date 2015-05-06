@@ -10,6 +10,7 @@ import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
 import utils.db.DatabaseException;
+import utils.db.NotMaterialized;
 import utils.db.OrderOperations;
 import utils.search.Search;
 import utils.search.SearchException;
@@ -19,6 +20,7 @@ public class Circle extends Model implements Comparable<Circle> {
 	private static final String collection = "circles";
 
 	public ObjectId owner;
+	public @NotMaterialized String ownerName;
 	public String name;
 	public int order;
 	public Set<ObjectId> members;

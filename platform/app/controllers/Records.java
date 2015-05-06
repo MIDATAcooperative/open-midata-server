@@ -195,7 +195,18 @@ public class Records extends Controller {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
-		records.addAll(RecordSharing.instance.list(userId, aps, properties, fields));		
+		String apstype = properties.containsKey("set") ? properties.get("set").toString() : "user";
+		
+		if (!apstype.equals("circles")) {		
+		  records.addAll(RecordSharing.instance.list(userId, aps, properties, fields));
+		} 
+		if (!apstype.equals("user")) {
+	        Set<Circle> circles = Circle.getAllByMember(userId);		
+			for (Circle circle : circles) {
+				records.addAll(RecordSharing.instance.list(userId, circle.aps, properties, fields));
+			}
+		}
+				
 		Collections.sort(records);
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		return ok(Json.toJson(records));

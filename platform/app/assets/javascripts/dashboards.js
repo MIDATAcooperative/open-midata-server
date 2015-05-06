@@ -1,6 +1,168 @@
 var dashboards = angular.module('dashboards', [ 'services', 'views' ]);
 dashboards.constant("dashboards",
 	{
+	  "overview" :
+		  [
+			{
+			    id: "mydata",
+			    title: "Your personal data",
+			    template : "/assets/views/members/info/summary.html",
+			    active : true,
+			    position : "small",
+			    setup : {
+			   	 text : "Manage your health data. Enter new data and visualize existing data.",
+			   	 link : "/members/dashboard/mydata",
+			   	 icon : "/assets/images/icons/empower.png",
+			   	 button : "Your Data Dashboard"
+			    }
+			},
+		    {
+		     id: "social",
+		     title: "Social",
+		     template : "/assets/views/members/info/summary.html",
+	         active : true,
+	         position : "small",
+	         setup : {
+	        	 text : "Share your data with friends. Communicate with people sharing your health situation. Motivate yourself by competition with others.",
+	        	 icon : "/assets/images/icons/social.png",
+	        	 link : "/members/dashboard/social",	        	 
+	        	 button : "Social Dashboard"
+	         }
+		    },
+		    {
+			     id: "research",
+			     title: "Research",
+			     template : "/assets/views/members/info/summary.html",
+		         active : true,
+		         position : "small",
+		         setup : {
+		        	 text : "Participate in studies. Inform yourself about ongoing research.",
+		        	 link : "/members/dashboard/studies",
+		        	 icon : "/assets/images/icons/research.png",
+		        	 button : "Research Dashboard"
+		         }
+			},
+			
+			{
+			     id: "health",
+			     title: "Health",
+			     template : "/assets/views/members/info/summary.html",
+		         active : true,
+		         position : "small",
+		         setup : {
+		        	 text : "Share data with your doctor. Search for health professionals.",
+		        	 link : "/members/dashboard/providers",
+		        	 icon : "/assets/images/icons/health.png",
+		        	 button : "Health Professional Dashboard"
+		         }
+			}
+		  ],
+      "mydata" : [
+			{
+			    id: "myaccount",
+			    title: "My Account Data",
+			    template : "/assets/views/members/accountdata.html",
+			    active : true,
+			    position : "small"			    
+			},    
+		    {
+		    	id : "newrecords",
+		    	template : "/assets/views/members/flexiblerecords.html",
+		    	title : "Newest records added this month:",
+		    	active : true,
+		    	position : "small",
+		    	actions : { big : "/members/records" },
+		    	teaser : "There are no new records. Visit der Records page to browser all of your records.",
+		    	setup : { properties : { "max-age" : 86400 * 31, "limit" : 7 } , fields : [ "ownerName", "created", "id", "name" ], allowBrowse : true}
+		    },
+		    {
+		    	   id : "createrecord",
+		    	   template : "/assets/views/members/createrecord.html",
+		    	   title : "Create a new record",
+		    	   active : true,
+		    	   position : "small",		    	   
+		    	   teaser : { link : "/members/market", button : "Visit Market", text : "To get started we recommend to install some applications from our market place!" },
+		    	   setup : { allowSelection : true }
+		     },
+			{
+			    id: "myviews",
+			    title: "My Views",
+			    template : "/assets/views/members/viewconfig.html",
+			    active : true,
+			    position : "small",
+			    setup : {
+		        	 text : "Add Visualizations to improve your experience!",
+		        	 link : "/members/market",
+		        	 icon : "/assets/images/icons/eye.png",
+		        	 button : "Market Place"
+		        }
+			}
+          ],
+      "social" : [
+            {
+            	id : "newsharedrecords",
+		    	template : "/assets/views/members/flexiblerecords.html",
+		    	title : "New records shared with you",
+		    	active : true,
+		    	position : "small",
+		    	teaser : "Other MIDATA members may share their data with you.",
+		    	actions : { big : "/members/records" },
+		    	setup : { properties : { "max-age" : 86400 * 31, "set" : "circles" } , fields : [ "ownerName", "owner", "created", "id", "name" ], allowBrowse : true }
+		
+		    },		    
+			 {
+			     id: "circles",
+			     title: "Member of Circles",
+			     template : "/assets/views/members/othercircles.html",
+		         active : true,
+		         position : "small",
+		         teaser : "Ask others to add you to their circles.",
+		         setup : {
+		        	 properties : { member : true }
+		         }
+			 },
+			 {
+			     id: "circles2",
+			     title: "Your Circles",
+			     template : "/assets/views/members/circles.html",
+		         active : true,
+		         position : "small",
+		         teaser : "Create Circles to share your data with others. Share with friends, family or others.",
+		         setup : {
+		        	 properties : { owner : true }
+		         }
+			 },
+			{
+			     id: "messages",
+			     title: "Messages",
+			     template : "/assets/views/members/messages.html",
+		         active : true,
+		         position : "small",
+		         teaser : "Use our email system to safely communicate with other MIDATA members."
+			},
+			{
+			     id: "gaming",
+			     title: "Challenges",
+			     template : "/assets/views/members/info/summary.html",
+		         active : true,
+		         position : "small",
+		         setup : {
+		        	 text : "Compete with others for fun. Neither specified nor implemented.",		        	 
+		        	 icon : "/assets/images/icons/gaming.png"
+		        	     
+		         }
+			},
+			{
+			     id: "barometer",
+			     title: "Sharing Barometer",
+			     template : "/assets/views/members/info/summary.html",
+		         active : true,
+		         position : "small",
+		         setup : {
+		        	 text : "Neither specified nor implemented."		    
+		         }
+			}
+          ],
 	  "providers" :
 		  [
 		   {
@@ -9,11 +171,23 @@ dashboards.constant("dashboards",
 	         template : "/assets/views/members/providers.html",
 	         active : true,
 	         position : "small",
+	         teaser : "Search for healthcare providers and add them to your list in order to share data with them.",
 	         links : { "click-provider" : "records" }
 	       },
 	       {
+			     id: "providersearch",
+			     title: "Search for Health Providers",
+			     template : "/assets/views/members/info/summary.html",
+		         active : true,
+		         position : "small",
+		         setup : {
+		        	 text : "Search function for healthcare providers not yet implemented.",
+		        	 icon : "/assets/images/icons/search.png"
+		         }
+			},
+	       {
 	    	 id : "hcrecords",
-	    	 title : "Records added this month by your healthcare providers",
+	    	 title : "Newest Records from your healthcare providers",
 	    	 template : "/assets/views/members/flexiblerecords.html",
 	    	 active : false,
 	    	 position : "small",
@@ -50,6 +224,7 @@ dashboards.constant("dashboards",
 	    	   template : "/assets/views/members/research/yourstudies.html",
 	    	   title : "Studies you are involved:",
 	    	   active : true,
+	    	   teaser : "If you want to participate in research configure your research settings. You will be contacted in this tile if you match a studies profile.",
 	    	   position : "small"
 	       },
 	       {
@@ -61,6 +236,26 @@ dashboards.constant("dashboards",
 	    	   setup : { properties : { }, fields : ["name"] }
 	       },
 	       {
+			     id: "researchnews",
+			     title: "Research News",
+			     template : "/assets/views/members/info/summary.html",
+		         active : true,
+		         position : "small",
+		         setup : {
+			         text : "Search for new health research publications.",
+		        	 icon : "/assets/images/icons/info.png",
+		        	 link : "http://scholar.google.de/scholar?q=Health+study+publications",	        	 
+		        	 button : "Search for News"
+		         }
+			},
+	       {
+			     id: "studysettings",
+			     title: "My Research Settings",
+			     template : "/assets/views/members/research/researchsettings.html",
+		         active : true,
+		         position : "small"		         
+			},
+	       {
 	    	   id :"entercode",
 	    	   template : "/templates/entercode",
 	    	   title : "Join by participation code",
@@ -68,72 +263,14 @@ dashboards.constant("dashboards",
 	    	   position : "small"
 	       }
 	     ],
-	 "dashboard" : [
-	     {
-	    	  id : "appteaser",
-	    	  template : "/assets/views/members/info/appteaser.html",
-	    	  title : "Welcome to MIDATA!",
-	    	  active : true,
-	    	  position : "small",
-	    	  setup : { type : "noapps" }
-	     },
-	     {
-	    	  id : "visualizationteaser",
-	    	  template : "/assets/views/members/info/visualizationteaser.html",
-	    	  title : "Add Visualizations!",
-	    	  active : true,
-	    	  position : "small",
-	    	  setup : { type : "novisualizations" }
-	     },
-	     {
-	    	  id : "whatsnew",
-	    	  template : "/assets/views/members/info/whatsnew.html",
-	    	  title : "What's new?",
-	    	  active : true,
-	    	  position : "small",
-	    	  setup : { type : "news" }
-	     },
-	     {
-	    	  id : "newstudies",
-	    	  template : "/assets/views/members/research/flexiblestudies.html",
-	    	  title : "New Studies:",
-	    	  active : true,
-	    	  position : "small",
-	    	  setup : { properties : { }, fields : ["name"] }
-	     },
-	     {
-	    	   id : "newrecords",
-	    	   template : "/assets/views/members/flexiblerecords.html",
-	    	   title : "Records added this month:",
-	    	   active : true,
-	    	   position : "small",
-	    	   setup : { properties : { "max-age" : 86400 * 31 } , fields : [ "ownerName", "created", "id", "name" ]}
-	     },
-	     {
-	    	   id : "showspace",
-	    	   template : "/assets/views/members/showspace.html",
-	    	   title : "View a space",
-	    	   active : true,
-	    	   position : "small",
-	    	   setup : { allowSelection : true }
-	     },
-	     {
-	    	   id : "createrecord",
-	    	   template : "/assets/views/members/createrecord.html",
-	    	   title : "Create a new record",
-	    	   active : true,
-	    	   position : "small",
-	    	   setup : { xappId : "529f095fe4b035c062eb7ed4", allowSelection : true }
-	     }
-	     	     	     
-	 ],
+	
 	 "circles" : [
 			{
 				   id : "1",
 				   template : "/assets/views/members/flexiblerecords.html",
 				   title : "Records shared with this circle:",
 				   active : false,
-				   position : "small",
+				   position : "full",
 				   links : { "shareFrom" : "share", "record" : "details" }
 				   
 			},			
@@ -141,7 +278,7 @@ dashboards.constant("dashboards",
 			      id : "share",
 			      template : "/assets/views/members/search.html",
 			      title : "Share",
-			      position : "small",
+			      position : "modal",
 			      active : false,
 			      links : { "record" : "details" },
 			      dependend : [ "1" ]
@@ -221,7 +358,7 @@ dashboards.constant("dashboards",
 );
 dashboards.controller('DashboardCtrl', ['$scope', '$attrs', 'views', 'dashboards', function($scope, $attrs, views, dashboards) {  
 	   
-	   $scope.layout = {
+	   views.layout = $scope.layout = {
 	     full: [], small:[], modal:[]
 	   };
 	   _.each(dashboards[$attrs.dashid], function(view) {
@@ -231,11 +368,13 @@ dashboards.controller('DashboardCtrl', ['$scope', '$attrs', 'views', 'dashboards
 	   $scope.makeBig = function(view) {
 		 $scope.layout.small.splice($scope.layout.small.indexOf(view), 1);
 		 $scope.layout.full.push(view);
+		 view.position = "full";
 	   };
 	   
 	   $scope.makeSmall = function(view) {
 			 $scope.layout.full.splice($scope.layout.full.indexOf(view), 1);
 			 $scope.layout.small.push(view);
+			 view.position = "small";
 	   };
 	   
 	   $scope.filterEvenStartFrom = function (index) {

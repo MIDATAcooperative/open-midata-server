@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import models.Circle;
 import models.Member;
 import models.ModelException;
 import models.Record;
@@ -41,6 +42,26 @@ public class ReferenceTool {
 				}
 				record.creatorName = name;
 			}
+		}
+	}
+	
+	public static void resolveOwners(Collection<Circle> circles, boolean owners) throws ModelException {
+		Map<String, String> members = new HashMap<String, String>();		
+		
+		for (Circle circle : circles) {
+			if (owners && (circle.owner != null)) {
+				String key = circle.owner.toString();
+				String name = members.get(key);
+				if (name == null) {
+					Member member = Member.getById(circle.owner, fullName);
+					if (member != null) {
+						name = member.sirname + ", " + member.firstname;
+						members.put(key, name);
+					}
+				}
+				circle.ownerName = name;
+			}
+		
 		}
 	}
 		

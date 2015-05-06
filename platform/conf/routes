@@ -102,6 +102,7 @@ DELETE  /members/api/users/shared                        controllers.Users.clear
 GET     /members/api/users/search/:query                 controllers.Users.search(query: String)
 GET     /shared/api/users/complete/:query                controllers.Users.complete(query: String)
 # Members
+GET     /members/dashboard/:name                         controllers.MemberFrontend.dashboard(name: String)
 GET     /members/configuration                           controllers.MemberFrontend.configuration()
 GET     /members/providers                               controllers.MemberFrontend.providers()
 GET     /members/studies                                 controllers.MemberFrontend.studies()

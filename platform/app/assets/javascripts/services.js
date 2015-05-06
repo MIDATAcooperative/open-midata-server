@@ -232,6 +232,16 @@ services.factory('studies', function($http) {
 	
 	return service;
 });
+services.factory('circles', function($http) {
+	var service = {};
+	
+	service.get = function(properties, fields) {
+		var data = properties;
+		return $http.post(jsRoutes.controllers.Circles.get().url, JSON.stringify(data));
+	};
+	
+	return service;
+});
 services.directive('modal', function (views) {
     return {
       template: '<div class="modal fade">' + 

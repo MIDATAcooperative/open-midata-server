@@ -33,23 +33,19 @@ participation.controller('StudiesCtrl', ['$scope', '$http', 'views', function($s
   views.setView("newstudies", { properties : { }, fields : ["name"] });		
 }]);
 
-participation.controller('ListStudiesCtrl', ['$scope', '$http', function($scope, $http) {
+participation.controller('ListStudiesCtrl', ['$scope', '$http', '$attrs', 'views', 'status', function($scope, $http, $attrs, views, status) {
 	
+	$scope.view = views.getView($attrs.viewid || $scope.def.id);
+	$scope.status = new status(true);
 	$scope.results =[];
-	$scope.error = null;
-	$scope.loading = true;
 	
 	$scope.reload = function() {
+		if (!$scope.view.active) return;
 			
-		$http.get(jsRoutes.controllers.members.Studies.list().url).
-			success(function(data) { 				
-				$scope.results = data;
-				$scope.loading = false;
-				$scope.error = null;
-			}).
-			error(function(err) {
-				$scope.error = err;				
-			});
+		$scope.status.doBusy($http.get(jsRoutes.controllers.members.Studies.list().url)).
+		then(function(results) { 				
+		   $scope.results = results.data;			
+		});
 	};
 	
 	$scope.reload();

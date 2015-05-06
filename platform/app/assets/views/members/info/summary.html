@@ -1,0 +1,11 @@
+<div ng-controller="SummaryCtrl" class="autosize">
+  <div class="body">
+  <div ng-if="view.setup.icon" class="pull-left themeicon">
+    <img ng-src="{{ view.setup.icon }}" >
+  </div>		  
+  <p class="">{{ view.setup.text }}</p>
+  </div>
+   <div ng-show="view.setup.link" class="footer">			  
+	  <a ng-href="{{ view.setup.link }}" class="btn btn-primary">{{ view.setup.button }}</a>
+  </div>			  
+</div>

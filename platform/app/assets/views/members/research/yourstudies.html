@@ -1,4 +1,4 @@
- <div ng-controller="ListStudiesCtrl" ng-cloak class="body">
+ <div ng-controller="ListStudiesCtrl" ng-cloak class="autosize body">
         	
 	<div ng-show="results.length > 0">
 	<table class="table table-hover">
@@ -17,6 +17,7 @@
 	</table>
 	</div>
 	<p ng-show="results.length == 0">
-	  You did not participate in any study.
+	  You do not participate in any study.
 	</p>	
+	 <p ng-hide="status.isBusy || results.length" class="body teaser">{{ view.teaser }}</p>
 </div>

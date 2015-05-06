@@ -16,6 +16,10 @@ public class MemberFrontend extends Controller {
 		return ok(configuration.render());
 	}
 	
+	public static Result dashboard(String name) {
+		return ok(dashboard.render(name, name));
+	}
+	
 	public static Result providers() {
 		return ok(dashboard.render("providers", "Healthcare Providers"));
 	}

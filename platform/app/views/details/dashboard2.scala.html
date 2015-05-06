@@ -15,10 +15,9 @@
 	</div>
 	
 	<div class="row">
-	  
-	     <div ng-repeat="def in layout.small">
-	        <div class="col-lg-4 col-md-6" ng-show="def.active">        
-		      <div class="panel panel-primary">
+	  <div class="col-md-6">
+	     <div ng-repeat="def in layout.small" ng-if="$even">   
+		      <div class="panel panel-primary" ng-show="def.active">
 			    <div class="panel-heading">
 			      <span ng-click="makeBig(def)">{{ def.title }}</span>
 			      <a ng-show="def.actions.big" ng-href="{{def.actions.big}}" class="pull-right"><span class="glyphicon glyphicon-plus-sign"></span></a>
@@ -26,7 +25,20 @@
 		        <div class="smallpanel ignore" ng-include="def.template"></div>		  
 			  </div>	
 	     </div>
-	     </div>	  
+	  </div>
+	  <div class="col-md-6">
+	    <div ng-repeat="def in layout.small" ng-if="$odd">
+   
+          <div class="panel panel-primary" ng-show="def.active">
+	        <div class="panel-heading">
+	          <span ng-click="makeBig(def)">{{ def.title }}</span>
+	          <a ng-show="def.actions.big" ng-href="{{def.actions.big}}" class="pull-right"><span class="glyphicon glyphicon-plus-sign"></span></a>
+	        </div>
+            <div class="smallpanel ignore" ng-include="def.template"></div>		  
+	      </div>
+	
+	    </div>
+	  </div>
 	</div>
 	
 	<div ng-repeat="def in layout.modal">	  

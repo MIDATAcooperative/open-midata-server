@@ -4,10 +4,12 @@ views.controller('FlexibleRecordListCtrl', ['$scope', '$http', '$attrs', 'views'
 	$scope.records = [];	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
 	$scope.status = new status(true);
+	$scope.limit = 4;
 	
 	
 	$scope.reload = function() {		
 		if (!$scope.view.active) return;
+		$scope.limit = $scope.view.position == "small" ? 4 : 20;
 		$scope.status.doBusy(records.getRecords($scope.view.setup.aps, $scope.view.setup.properties, $scope.view.setup.fields)).
 		then(function (result) { $scope.records = result.data; });
 	};
@@ -53,9 +55,11 @@ views.controller('FlexibleStudiesCtrl', ['$scope', '$http', '$attrs', 'views', '
 	$scope.studies = [];	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
 	$scope.status = new status(true);
+	$scope.limit = 4;
 	
 	$scope.reload = function() {		
 		if (!$scope.view.active) return;
+		$scope.limit = $scope.view.position == "small" ? 4 : 20;
 		$scope.status.doBusy(studies.search($scope.view.setup.properties, $scope.view.setup.fields)).
 		then(function (result) { $scope.studies = result.data; });
 	};
@@ -266,6 +270,11 @@ views.controller('CreateRecordCtrl', ['$scope', '$http', '$attrs', '$sce', 'view
     };
     
     $scope.selectApp = function(appId, title) {
+    	if (!$scope.view.setup.inline) {
+    		window.location.href = "/members/records/create/" + appId;
+    		return;
+    	}
+    	
         $scope.showapp = true;
         // if (title != null) $scope.view.title = title;
         $scope.status.doBusy($http(jsRoutes.controllers.Apps.getUrl(appId))).
@@ -349,5 +358,206 @@ views.controller('ShowSpaceCtrl', ['$scope', '$http', '$attrs', '$sce', 'views',
 	 
 	
 	$scope.$watch('view.setup', function() { $scope.reload(); });
+	
+}]);
+views.controller('SummaryCtrl', ['$scope', '$http', '$attrs', '$sce', 'views', 'status', function($scope, $http, $attrs, $sce, views, status) {
+	
+	$scope.view = views.getView($attrs.viewid || $scope.def.id);
+    $scope.status = new status(true);
+    
+    $scope.reload = function() { };
+    
+	$scope.$watch('view.setup', function() { $scope.reload(); });
+	
+}]);
+views.controller('SpaceSummaryCtrl', ['$scope', '$http', '$attrs', 'records', 'views', 'status', function($scope, $http, $attrs, records, views, status) {
+	
+	$scope.view = views.getView($attrs.viewid || $scope.def.id);
+    $scope.status = new status(true);
+    $scope.count = 0;
+    $scope.last = null;
+    
+    $scope.reload = function() { 
+        if (!$scope.view.active) return;	
+    	
+    	var spaceId = $scope.view.setup.spaceId;   
+    	    	
+		$scope.status.doBusy(records.getRecords(spaceId, {}, ["created"])).
+		then(function(results) {
+			$scope.count = results.data.length;		
+			$scope.last = $scope.count > 0 ? _.chain(results.data).pluck('created').max().value() : null;
+		});	
+    };
+    
+    $scope.showSpace = function() {    	
+    	window.location.href = "/members/spaces/"+$scope.view.setup.spaceId;
+    };
+    
+	$scope.$watch('view.setup', function() { $scope.reload(); });
+	
+}]);
+views.controller('ViewConfigCtrl', ['$scope', '$http', '$attrs', '$sce', 'views', 'status', 'spaces', 'currentUser', function($scope, $http, $attrs, $sce, views, status, spaces, currentUser) {
+	
+	$scope.view = views.getView($attrs.viewid || $scope.def.id);
+    $scope.status = new status(true);
+    $scope.done = false;
+    
+    currentUser.then(function(userId) { 
+    	$scope.userId = userId;
+    	$scope.reload(); 
+    });
+    
+    $scope.reload = function() {
+    	if (!$scope.view.active || !$scope.userId || $scope.done) return;	
+    	$scope.done = true;
+    	
+    	
+    	$scope.status.doBusy(spaces.getSpacesOfUser($scope.userId))
+    	.then(function(results) {
+    		$scope.view.active = results.data.length == 0;
+    	  _.each(results.data, function(space) {
+    		 var spacedef =
+    		     {
+    		    	   id : "space"+space._id.$oid,
+    		    	   template : "/assets/views/members/spacesummary.html",
+    		    	   title : space.name,
+    		    	   active : true,
+    		    	   position : "small",
+    		    	   setup : { allowSelection : false, spaceId : space._id.$oid }
+    		     };
+    		 views.layout.small.push(views.def(spacedef)); 
+    	  });     	  
+    	});
+    	    	
+    };
+    
+	$scope.$watch('view.setup', function() { $scope.reload(); });
+	
+}]);
+views.controller('AccountDataCtrl', ['$scope', '$http', '$attrs', 'users', 'views', 'status', 'currentUser', function($scope, $http, $attrs, users, views, status, currentUser) {
+	
+	$scope.view = views.getView($attrs.viewid || $scope.def.id);
+    $scope.status = new status(true);
+    
+    currentUser.then(function(userId) { 
+    	$scope.userId = userId;
+    	$scope.reload(); 
+    });
+    
+    $scope.reload = function() { 
+    	if (!$scope.view.active || !$scope.userId) return;	
+    	
+    	$scope.status.doBusy(users.getMembers({ "_id" : $scope.userId }, ["midataID", "firstname", "sirname", "birthday", "address1", "address2", "zip", "city", "country"]))
+    	.then(function(results) { $scope.member = results.data[0]; });
+    };
+    
+	$scope.$watch('view.setup', function() { $scope.reload(); });
+	
+}]);
+views.controller('ResearchSettingsCtrl', ['$scope', '$http', '$attrs', '$sce', 'views', 'status', function($scope, $http, $attrs, $sce, views, status) {
+	
+	$scope.view = views.getView($attrs.viewid || $scope.def.id);
+    $scope.status = new status(true);
+    
+    $scope.reload = function() { };
+    
+	$scope.$watch('view.setup', function() { $scope.reload(); });
+	
+}]);
+
+views.controller('MessagesCtrl', ['$scope', '$http', '$attrs', 'currentUser', 'views', 'status', function($scope, $http, $attrs, currentUser, views, status) {
+	
+	$scope.view = views.getView($attrs.viewid || $scope.def.id);
+    $scope.status = new status(true);
+    $scope.limit = 4;
+    
+    currentUser.then(function(userId) { 
+    	$scope.userId = userId;
+    	$scope.reload(); 
+    });
+    
+    $scope.reload = function() { 
+    	if (!$scope.view.active || !$scope.userId) return;
+    	$scope.limit = $scope.view.position == "small" ? 4 : 20;
+    	
+    	getFolders($scope.userId);
+    };
+    
+    // get messages
+	getFolders = function(userId) {
+		var properties = {"_id": userId};
+		var fields = ["messages"];
+		var data = {"properties": properties, "fields": fields};
+		$scope.status.doBusy($http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data))).
+		then(function(results) {
+			    var users = results.data;
+				$scope.inbox = users[0].messages.inbox;
+				//$scope.archive = users[0].messages.archive;
+				//$scope.trash = users[0].messages.trash;
+				var messageIds = $scope.inbox;
+				getMessages(messageIds);
+		});
+	};
+	
+	getMessages = function(messageIds) {
+		var properties = {"_id": messageIds};
+		var fields = ["sender", "created", "title"];
+		var data = {"properties": properties, "fields": fields};
+		$scope.status.doBusy($http.post(jsRoutes.controllers.Messages.get().url, JSON.stringify(data))).
+		then(function(results) {
+			    $scope.messages = results.data;
+			    //var messages = results.data;
+				//_.each(messages, function(message) { $scope.messages[message._id.$oid] = message; });
+				//var senderIds = _.map(messages, function(message) { return message.sender; });
+				//senderIds = _.uniq(senderIds, false, function(senderId) { return senderId.$oid; });
+				//getSenderNames(senderIds);
+		});
+	};
+	
+	$scope.showMessage = function(messageId) {
+		window.location.href = jsRoutes.controllers.Messages.details(messageId).url;
+	};
+            
+	$scope.$watch('view.setup', function() { $scope.reload(); });
+	
+}]);
+views.controller('CirclesCtrl', ['$scope', '$http', '$attrs', 'views', 'circles', 'status', function($scope, $http, $attrs, views, circles, status) {
+	
+	$scope.circles = [];	
+	$scope.view = views.getView($attrs.viewid || $scope.def.id);
+	$scope.status = new status(true);
+	$scope.limit = 4;
+	$scope.alreadyadded = false;
+	
+	$scope.reload = function() {		
+		if (!$scope.view.active) return;
+		$scope.limit = $scope.view.position == "small" ? 4 : 20;
+		$scope.status.doBusy(circles.get($scope.view.setup.properties, $scope.view.setup.fields)).
+		then(function (result) { 
+			$scope.circles = result.data;
+			
+			if ($scope.alreadyadded) return;
+			$scope.alreadyadded = true;
+			
+			_.each($scope.circles, function(circle) {
+				var circledef =
+	   		     {
+	   		    	   id : "circle"+circle._id.$oid,
+	   		    	   template : "/assets/views/members/flexiblerecords.html",
+	   		    	   title : "Circle "+circle.name,
+	   		    	   active : true,
+	   		    	   position : "small",
+	   		    	   setup : { aps : circle.aps.$oid, properties : { "max-age" : 86400 * 31 } , fields : [ "ownerName", "created", "id", "name" ] }
+	   		     };
+	   		     views.layout.small.push(views.def(circledef)); 
+			});
+		});
+	};
+	
+	/*$scope.showDetails = function(study) {
+		window.location.href = portalRoutes.controllers.MemberFrontend.studydetails(study._id.$oid).url;
+	};*/
+	
+	$scope.$watch('view.setup', function() { $scope.reload(); });	
 	
 }]);

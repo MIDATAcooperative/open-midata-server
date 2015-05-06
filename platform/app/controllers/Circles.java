@@ -19,6 +19,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
+import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.json.JsonExtraction;
@@ -46,15 +47,22 @@ public class Circles extends Controller {
 	public static Result get() throws JsonValidationException, ModelException {
 		// validate json
 		JsonNode json = request().body().asJson();
-		
-		JsonValidation.validate(json, "owner");
-		
-		ObjectId owner = JsonValidation.getObjectId(json, "owner");
+						
+		List<Circle> circles = null;
 
-		List<Circle> circles = new ArrayList<Circle>(Circle.getAllByOwner(owner));		
+		if (json.has("owner")) {
+			ObjectId owner = new ObjectId(request().username());
+			circles = new ArrayList<Circle>(Circle.getAllByOwner(owner));
+		} else if (json.has("member")) {
+			ObjectId member = new ObjectId(request().username());
+			circles = new ArrayList<Circle>(Circle.getAllByMember(member));
+			ReferenceTool.resolveOwners(circles, true);
+		} else JsonValidation.validate(json, "owner");
 		Collections.sort(circles);
 		return ok(Json.toJson(circles));
 	}
+	
+
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
