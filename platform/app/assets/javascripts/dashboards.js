@@ -58,13 +58,7 @@ dashboards.constant("dashboards",
 			}
 		  ],
       "mydata" : [
-			{
-			    id: "myaccount",
-			    title: "My Account Data",
-			    template : "/assets/views/members/accountdata.html",
-			    active : true,
-			    position : "small"			    
-			},    
+			 
 		    {
 		    	id : "newrecords",
 		    	template : "/assets/views/members/flexiblerecords.html",
@@ -84,6 +78,13 @@ dashboards.constant("dashboards",
 		    	   teaser : { link : "/members/market", button : "Visit Market", text : "To get started we recommend to install some applications from our market place!" },
 		    	   setup : { allowSelection : true }
 		     },
+		     {
+				    id: "myaccount",
+				    title: "My Account Data",
+				    template : "/assets/views/members/accountdata.html",
+				    active : true,
+				    position : "small"			    
+			},   
 			{
 			    id: "myviews",
 			    title: "My Views",
@@ -118,7 +119,8 @@ dashboards.constant("dashboards",
 		         position : "small",
 		         teaser : "Ask others to add you to their circles.",
 		         setup : {
-		        	 properties : { member : true }
+		        	 properties : { member : true },
+		        	 instances : true
 		         }
 			 },
 			 {
@@ -224,7 +226,7 @@ dashboards.constant("dashboards",
 	    	   template : "/assets/views/members/research/yourstudies.html",
 	    	   title : "Studies you are involved:",
 	    	   active : true,
-	    	   teaser : "If you want to participate in research configure your research settings. You will be contacted in this tile if you match a studies profile.",
+	    	   teaser : "If you want to participate in research configure your research settings. You will be contacted in this tile if you match a studies requirements.",
 	    	   position : "small"
 	       },
 	       {

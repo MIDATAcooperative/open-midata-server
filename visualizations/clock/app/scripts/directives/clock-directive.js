@@ -500,7 +500,9 @@ angular.module('clockApp')
 
         return {
             restrict: 'E',
-            templateUrl: 'views/clock-view.html',
+            templateUrl: function(elem, attr){
+                return attr.preview ? 'views/clock-preview.html' : 'views/clock-view.html'
+            },
             scope: {
                 moveList: '=',
                 moveTicks: '=',

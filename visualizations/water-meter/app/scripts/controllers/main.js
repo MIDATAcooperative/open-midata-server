@@ -25,7 +25,7 @@ angular.module('waterMeterApp')
         $scope.noDataInDate = false;
         $scope.goalAccomplished = false;
         $scope.goalUnaccomplished = false;
-        if($scope.dateForm.inputDate.$valid){
+        if(true || $scope.dateForm.inputDate.$valid){
           var currentWaterLevel = 0;
           if(_.has($scope.waterData, $scope.selectedDate)){
             var dayWater = $scope.waterData[$scope.selectedDate];
@@ -67,9 +67,16 @@ angular.module('waterMeterApp')
           // create a list of dates and of record data
           var dates = _.map(filteredRecords, function(record) { return record.name.slice(-10); });
           var data = _.map(filteredRecords, function(record) { return record.data; });
-
           // waterData is an object with dates as keys and data as values
           $scope.waterData = _.object(dates, data);
+          
+          dates.sort();
+          console.log(dates);          
+          var newestDate = dates[dates.length - 1];
+          console.log(newestDate);
+          $scope.selectedDate = newestDate;
+          $scope.dateChanged();
+          
         }
       }
 

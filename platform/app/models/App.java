@@ -18,6 +18,7 @@ public class App extends Plugin implements Comparable<App> {
 
 	public String type; // type can be one of: create, oauth1, oauth2, mobile
 	public String url; // url to call the app
+	public String previewUrl;
 	
 	public List<ObjectId> recommendedVisualizations;
 	public String recommendedStream;

@@ -299,6 +299,7 @@ public class Application extends Controller {
 				controllers.routes.javascript.Apps.uninstall(),
 				controllers.routes.javascript.Apps.isInstalled(),
 				controllers.routes.javascript.Apps.getUrl(),
+				controllers.routes.javascript.Apps.getPreviewUrl(),
 				controllers.routes.javascript.Apps.getUrlForMember(),
 				controllers.routes.javascript.Apps.requestAccessTokenOAuth2(),
 				controllers.routes.javascript.Apps.getRequestTokenOAuth1(),
@@ -309,6 +310,7 @@ public class Application extends Controller {
 				controllers.routes.javascript.Visualizations.uninstall(),
 				controllers.routes.javascript.Visualizations.isInstalled(),
 				controllers.routes.javascript.Visualizations.getUrl(),
+				
 				// News
 				controllers.routes.javascript.News.get(),
 				controllers.routes.javascript.News.hide(),
@@ -341,6 +343,7 @@ public class Application extends Controller {
 				controllers.routes.javascript.Spaces.addRecords(),
 				controllers.routes.javascript.Spaces.getToken(),
 				controllers.routes.javascript.Spaces.getUrl(),
+				controllers.routes.javascript.Spaces.getPreviewUrl(),
 				// Users
 				controllers.routes.javascript.Users.get(),
 				controllers.routes.javascript.Users.getUsers(),

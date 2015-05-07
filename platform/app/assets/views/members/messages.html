@@ -2,12 +2,12 @@
    <div class="clearfix body">
    <div class="pull-left themeicon"><img src="/assets/images/icons/email.png"></div>
        <p ng-hide="inbox.length">You have no new messages.</p>
-	   <p ng-show="inbox.length">You have {{ inbox.length }} new messages:</p>
+	   <p ng-show="inbox.length">You have <span class="dashnumber">{{ inbox.length }}</span> new messages:</p>
    </div>
    <p ng-hide="inbox.length" class="body teaser">{{ view.teaser }}</p>
 		
 	<ul class="list-group" ng-show="inbox.length">
-		<li class="list-group-item" ng-repeat="message in messages">{{names[messages[messageId.$oid].sender.$oid]}}: <a href="javascript:;"
+		<li class="list-group-item" ng-repeat="message in messages"><a href="javascript:;"
 				ng-click="showMessage(message._id.$oid)">{{message.title}}</a>				
 		</li>
 	</ul>

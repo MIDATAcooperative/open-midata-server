@@ -31,7 +31,7 @@ angular.module('energyMeterApp')
         date = null;
 
         // capture the record's data
-        if (_.has(record, 'data') && _.has(record.data, 'data')) {
+        if (_.has(record, 'data') && _.has(record.data, 'data') ) {
             data = record.data.data;
         }
 

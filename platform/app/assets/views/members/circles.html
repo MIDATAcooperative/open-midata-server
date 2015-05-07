@@ -1,6 +1,6 @@
 <div class="ignore autosize" ng-controller="CirclesCtrl">
     <div class="body body-center text-center" ng-show="status.isBusy">Please wait...</div>
-    <div ng-show="circles.length" class="body">{{ circles.length }} Circles available:</div>
+    <div ng-show="circles.length" class="body"><span class="dashnumber">{{ circles.length }}</span> Circles available:</div>
     <div class="body text-center" ng-show="!status.isBusy && circles.length == 0">You do not have any circles.</div>
     <p ng-hide="status.isBusy || circles.length" class="body teaser">{{ view.teaser }}</p>
     <ul class="list-group" ng-show="!status.isBusy && circles.length > 0">
@@ -15,7 +15,20 @@
 												
 		</li>
 	</ul>
-	<div class="footer">
-	  <a class="btn btn-default" href="/members/circles">Manage Circles</a>
+	<div class="footer container">
+	  
+	   <div class="form-group" ng-class="{'has-error has-feedback': errors.newCircleName}">
+	    <div class="col-xs-8">
+	   <div class="input-group" >
+          <input type="text" class="form-control" ng-model="form.newCircleName" placeholder="Circle Name">          
+          <span class="input-group-btn">
+             <button ng-click="createCircle()" class="btn btn-default" type="button">Add</button>
+          </span>          
+       </div>       
+       </div>
+	   <div class="col-xs-4">
+	     <a class="btn btn-default" href="/members/circles">Manage</a>
+	   </div>
+	  </div>
 	</div>	
 </div>

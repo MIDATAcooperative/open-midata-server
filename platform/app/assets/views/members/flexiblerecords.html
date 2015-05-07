@@ -1,6 +1,6 @@
 <div class="ignore autosize" ng-controller="FlexibleRecordListCtrl">
     <div class="body body-center text-center" ng-show="status.isBusy">Please wait...</div>
-    <div ng-show="records.length" class="body">{{ records.length }} Records available:</div>
+    <div ng-show="records.length" class="body"><span class="dashnumber">{{ records.length }}</span> Records available:</div>
     <div class="body text-center" ng-show="!status.isBusy && records.length == 0">Empty</div>
     <p ng-hide="status.isBusy || records.length" class="body teaser">{{ view.teaser }}</p>
     <ul class="list-group" ng-show="!status.isBusy && records.length > 0">

@@ -2,9 +2,8 @@
   <div class="body" ng-show="status.isBusy">Please wait...</div>
   <div class="body body-center text-center" ng-show="!status.isBusy && studies.length == 0">Empty</div>
   <div ng-show="studies.length" class="body clearfix">   
-     <div class="pull-left themeicon"><img src="/assets/images/icons/research.png"></div>
-     <p>Inform yourself about new studies:</p>
-     <p>{{ studies.length }} Studies found:</p>
+     <div class="pull-left themeicon"><img src="/assets/images/icons/research.png"></div>     
+     <p><span class="dashnumber">{{ studies.length }}</span> Studies found:</p>
    </div>
   
   <ul class="list-group" ng-show="!loadingRecords && studies.length > 0">

@@ -22,6 +22,7 @@ public class Space extends Model implements Comparable<Space> {
 	public String name;
 	public ObjectId owner;
 	public ObjectId visualization;
+	public ObjectId app;
 	public int order;
 	public ObjectId aps;
 	public SpaceType type;

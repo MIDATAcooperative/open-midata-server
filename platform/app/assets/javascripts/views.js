@@ -277,7 +277,7 @@ views.controller('CreateRecordCtrl', ['$scope', '$http', '$attrs', '$sce', 'view
     	
         $scope.showapp = true;
         // if (title != null) $scope.view.title = title;
-        $scope.status.doBusy($http(jsRoutes.controllers.Apps.getUrl(appId))).
+        $scope.status.doBusy($http(jsRoutes.controllers.Apps.getPreviewUrl(appId))).
 		then(function(results) {			
 			$scope.url = $sce.trustAsResourceUrl(results.data);
 		});
@@ -289,9 +289,25 @@ views.controller('CreateRecordCtrl', ['$scope', '$http', '$attrs', '$sce', 'view
     };
     
     $scope.loadAppList = function() {
-    	$scope.status.doBusy(apps.getAppsOfUser($scope.userId, ["create","oauth1","oauth2"], ["name", "type"]))
+    	$scope.status.doBusy(apps.getAppsOfUser($scope.userId, ["create","oauth1","oauth2"], ["name", "type", "previewUrl"]))
     	.then(function(results) {
-    	  $scope.apps = results.data;    	  
+    	   $scope.apps = results.data;   
+    	  _.each(results.data, function(app) {
+    		  if (!app.previewUrl) return; 
+     		  var appdef =
+     		     {
+     		    	   id : "app"+app._id.$oid,
+     		    	   template : "/assets/views/members/createrecord.html",
+     		    	   title : app.name,
+     		    	   active : true,
+     		    	   position : "small",
+     		    	   actions : { big : "/members/records/create/" + app._id.$oid },
+     		    	   setup : { appId : app._id.$oid, inline : true }
+     		     };
+     		 views.layout.small.push(views.def(appdef)); 
+     	  });     
+    	  
+    	  
     	});
     };
 	/* 
@@ -370,7 +386,7 @@ views.controller('SummaryCtrl', ['$scope', '$http', '$attrs', '$sce', 'views', '
 	$scope.$watch('view.setup', function() { $scope.reload(); });
 	
 }]);
-views.controller('SpaceSummaryCtrl', ['$scope', '$http', '$attrs', 'records', 'views', 'status', function($scope, $http, $attrs, records, views, status) {
+views.controller('SpaceSummaryCtrl', ['$scope', '$http', '$attrs', '$sce', 'records', 'views', 'status', 'spaces', function($scope, $http, $attrs, $sce, records, views, status, spaces) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
     $scope.status = new status(true);
@@ -380,17 +396,29 @@ views.controller('SpaceSummaryCtrl', ['$scope', '$http', '$attrs', 'records', 'v
     $scope.reload = function() { 
         if (!$scope.view.active) return;	
     	
-    	var spaceId = $scope.view.setup.spaceId;   
-    	    	
-		$scope.status.doBusy(records.getRecords(spaceId, {}, ["created"])).
+    	var spaceId = $scope.view.setup.spaceId;
+    	
+    	$scope.status.doBusy(spaces.getPreviewUrl(spaceId)).
 		then(function(results) {
-			$scope.count = results.data.length;		
-			$scope.last = $scope.count > 0 ? _.chain(results.data).pluck('created').max().value() : null;
-		});	
+			if (results.data) {
+			  $scope.url = $sce.trustAsResourceUrl(results.data);
+			} else {
+			  $scope.status.doBusy(records.getRecords(spaceId, {}, ["created"])).
+			  then(function(results) {
+				 $scope.count = results.data.length;		
+				 $scope.last = $scope.count > 0 ? _.chain(results.data).pluck('created').max().value() : null;
+			  });						
+			}
+		});
+    	    	    				
     };
-    
+        
     $scope.showSpace = function() {    	
     	window.location.href = "/members/spaces/"+$scope.view.setup.spaceId;
+    };
+    
+    $scope.showCreate = function() {    	
+    	window.location.href = "/members/records/create/" + $scope.view.setup.appId;    		
     };
     
 	$scope.$watch('view.setup', function() { $scope.reload(); });
@@ -423,7 +451,7 @@ views.controller('ViewConfigCtrl', ['$scope', '$http', '$attrs', '$sce', 'views'
     		    	   title : space.name,
     		    	   active : true,
     		    	   position : "small",
-    		    	   setup : { allowSelection : false, spaceId : space._id.$oid }
+    		    	   setup : { allowSelection : false, spaceId : space._id.$oid, appId : (space.app ? space.app.$oid : null) }
     		     };
     		 views.layout.small.push(views.def(spacedef)); 
     	  });     	  
@@ -528,6 +556,8 @@ views.controller('CirclesCtrl', ['$scope', '$http', '$attrs', 'views', 'circles'
 	$scope.status = new status(true);
 	$scope.limit = 4;
 	$scope.alreadyadded = false;
+	$scope.form = { newCircleName : "" };
+	$scope.errors = {};
 	
 	$scope.reload = function() {		
 		if (!$scope.view.active) return;
@@ -536,15 +566,15 @@ views.controller('CirclesCtrl', ['$scope', '$http', '$attrs', 'views', 'circles'
 		then(function (result) { 
 			$scope.circles = result.data;
 			
-			if ($scope.alreadyadded) return;
+			if ($scope.alreadyadded || !$scope.view.setup.instances) return;
 			$scope.alreadyadded = true;
-			
+						
 			_.each($scope.circles, function(circle) {
 				var circledef =
 	   		     {
 	   		    	   id : "circle"+circle._id.$oid,
 	   		    	   template : "/assets/views/members/flexiblerecords.html",
-	   		    	   title : "Circle "+circle.name,
+	   		    	   title : circle.ownerName ? circle.ownerName : circle.name,
 	   		    	   active : true,
 	   		    	   position : "small",
 	   		    	   setup : { aps : circle.aps.$oid, properties : { "max-age" : 86400 * 31 } , fields : [ "ownerName", "created", "id", "name" ] }
@@ -552,6 +582,19 @@ views.controller('CirclesCtrl', ['$scope', '$http', '$attrs', 'views', 'circles'
 	   		     views.layout.small.push(views.def(circledef)); 
 			});
 		});
+	};
+	
+	$scope.createCircle = function() {
+		console.log($scope.form);
+		if ($scope.form.newCircleName.trim() == "") {
+			$scope.errors.newCircleName = "Please enter a valid name";
+			return;
+		} else { $scope.errors.newCircleName = null; }
+		
+		circles.createNew($scope.form.newCircleName).
+		then(function(results) {
+			window.location.href = "/members/circles/"+results.data._id.$oid;
+		});		
 	};
 	
 	/*$scope.showDetails = function(study) {

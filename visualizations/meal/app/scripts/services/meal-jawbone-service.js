@@ -19,7 +19,7 @@ angular.module('mealApp')
             date = null;
 
             // remove the meta information and bring the data node to the top level
-            if (_.has(record, 'data') && _.has(record.data, 'data')) {
+            if (_.has(record, 'data') && _.has(record.data, 'data') ) {
                 data = record.data.data;
             }
 

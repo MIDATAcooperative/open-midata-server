@@ -14,7 +14,7 @@ market.controller('MarketCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	// get apps and visualizations
 	var properties = {"spotlighted": true, "targetUserRole" : [ $scope.targetRole, "ANY"] };
-	var fields = ["name", "description"];
+	var fields = ["name", "type", "description"];
 	var data = {"properties": properties, "fields": fields};
 	$http.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
 		success(function(apps) { $scope.apps.spotlighted = apps; }).
@@ -28,7 +28,15 @@ market.controller('MarketCtrl', ['$scope', '$http', function($scope, $http) {
 		if ($scope.targetRole == "PROVIDER") {
 			window.location.href = portalRoutes.controllers.ProviderFrontend.appDetails(app._id.$oid).url;
 		} else window.location.href = portalRoutes.controllers.Apps.details(app._id.$oid).url;
-	}
+	};
+	
+	$scope.getAppImage = function(app) {
+	  return "/assets/images/icons/"+app.type.toLowerCase()+".png";
+	};
+	
+	$scope.getVisualizationImage = function(visulization) {
+		  return "/assets/images/icons/eye.png";
+	};
 	
 	// show visualization details
 	$scope.showVisualizationDetails = function(visualization) {

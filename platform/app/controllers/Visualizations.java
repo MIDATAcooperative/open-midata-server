@@ -87,7 +87,7 @@ public class Visualizations extends APIController {
 			if (spaceName!=null && !spaceName.equals("") && visualization.defaultSpaceName != null) {
 				Space space = null;
 				if (createSpace) {
-					space = Spaces.add(userId, spaceName, visualizationId);
+					space = Spaces.add(userId, spaceName, visualizationId, null);
 				}
 				if (applyRules && space!=null) {
 					RuleApplication.instance.applyRules(userId, visualization.defaultRules, user.myaps, space.aps, true);

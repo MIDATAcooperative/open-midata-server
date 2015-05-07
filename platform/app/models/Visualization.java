@@ -17,6 +17,7 @@ public class Visualization extends Plugin implements Comparable<Visualization> {
 	private static final String collection = "visualizations";
 
 	public String url;
+	public String previewUrl;
 	public String defaultSpaceName;
 	public List<FilterRule> defaultRules;
 

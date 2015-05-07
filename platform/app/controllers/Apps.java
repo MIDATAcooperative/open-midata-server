@@ -157,6 +157,30 @@ public class Apps extends Controller {
 	}
 	
 	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result getPreviewUrl(String appIdString) {
+		// get app
+		ObjectId appId = new ObjectId(appIdString);
+		ObjectId userId = new ObjectId(request().username());
+		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", appId).get();
+		Set<String> fields = new ChainedSet<String>().add("filename").add("type").add("previewUrl").get();
+		App app;
+		try {
+			app = App.get(properties, fields);
+		} catch (ModelException e) {
+			return internalServerError(e.getMessage());
+		}
+
+		// create encrypted authToken
+		AppToken appToken = new AppToken(appId, userId);
+		String authToken = appToken.encrypt();
+
+		// put together url to load in iframe
+		String appServer = Play.application().configuration().getString("apps.server");
+		String url = app.previewUrl.replace(":authToken", authToken);
+		return ok("https://" + appServer + "/" + app.filename + "/" + url);
+	}
+	
+	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Result getUrlForMember(String appIdString, String userIdString) throws ModelException {
 		// get app

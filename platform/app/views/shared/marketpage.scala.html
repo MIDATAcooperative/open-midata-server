@@ -32,7 +32,7 @@
 				<p ng-hide="apps.spotlighted.length">There are no spotlighted apps yet.</p>
 				<div class="media" ng-repeat="app in apps.spotlighted">
 					<a class="pull-left" href="javascript:;" ng-click="showAppDetails(app)">
-						<img class="media-object" ng-src="" alt="Icon">
+						<img class="media-object" ng-src="{{ getAppImage(app) }}" alt="Icon">
 					</a>
 					<div class="media-body">
 						<a href="javascript:;" ng-click="showAppDetails(app)">{{app.name}}</a>
@@ -49,7 +49,7 @@
 				<p ng-hide="apps.suggested.length">We have no recommendations for you yet.</p>
 				<div class="media" ng-repeat="app in apps.suggested">
 					<a class="pull-left" href="javascript:;" ng-click="showAppDetails(app)">
-						<img class="media-object" ng-src="" alt="Icon">
+						<img class="media-object" ng-src="{{ getAppImage(app) }}" alt="Icon">
 					</a>
 					<div class="media-body">
 						<a href="javascript:;" ng-click="showAppDetails(app)">{{app.name}}</a>
@@ -73,7 +73,7 @@
 				<p ng-hide="visualizations.spotlighted.length">There are no spotlighted visualizations yet.</p>
 				<div class="media" ng-repeat="visualization in visualizations.spotlighted">
 					<a class="pull-left" href="javascript:;" ng-click="showVisualizationDetails(visualization)">
-						<img class="media-object" ng-src="" alt="Icon">
+						<img class="media-object" ng-src="{{ getVisualizationImage(visualization) }}" alt="Icon">
 					</a>
 					<div class="media-body">
 						<a href="javascript:;" ng-click="showVisualizationDetails(visualization)">{{visualization.name}}</a>
@@ -90,7 +90,7 @@
 				<p ng-hide="visualizations.suggested.length">We have no recommendations for you yet.</p>
 				<div class="media" ng-repeat="visualization in visualizations.suggested">
 					<a class="pull-left" href="javascript:;" ng-click="showVisualizationDetails(visualization)">
-						<img class="media-object" ng-src="" alt="Icon">
+						<img class="media-object" ng-src="{{ getVisualizationImage(visualization) }}" alt="Icon">
 					</a>
 					<div class="media-body">
 						<a href="javascript:;" ng-click="showVisualizationDetails(visualization)">{{visualization.name}}</a>

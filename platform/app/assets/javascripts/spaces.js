@@ -1,5 +1,5 @@
-var spaces = angular.module('spaces', []);
-spaces.controller('SpacesCtrl', ['$scope', '$http', '$sce', function($scope, $http, $sce) {
+var spaces = angular.module('spaces', [ 'services' ]);
+spaces.controller('SpacesCtrl', ['$scope', '$http', '$sce', 'status', 'apps', function($scope, $http, $sce, status, apps) {
 	
 	// init
 	$scope.error = null;
@@ -10,6 +10,7 @@ spaces.controller('SpacesCtrl', ['$scope', '$http', '$sce', function($scope, $ht
 	$scope.loadingVisualizations = false;
 	$scope.visualizations = [];
 	$scope.searching = false;
+	$scope.status = new status(true);
 	
 	// get current user
 	$http(jsRoutes.controllers.Users.getCurrentUser()).
@@ -108,6 +109,7 @@ spaces.controller('SpacesCtrl', ['$scope', '$http', '$sce', function($scope, $ht
 	// load all installed visualizations (for creating a new space)
 	$scope.loadVisualizations = function() {
 		if ($scope.visualizations.length === 0) {
+			$scope.loadAppList();
 			$scope.loadingVisualizations = true;
 			var properties = {"_id": $scope.userId};
 			var fields = ["visualizations"];
@@ -137,6 +139,13 @@ spaces.controller('SpacesCtrl', ['$scope', '$http', '$sce', function($scope, $ht
 			});
 	}
 	
+	$scope.loadAppList = function() {
+    	$scope.status.doBusy(apps.getAppsOfUser($scope.userId, ["create","oauth1","oauth2"], ["name", "type"]))
+    	.then(function(results) {
+    	  $scope.apps = results.data;    	  
+    	});
+    };
+	
 	// add a space
 	$scope.addSpace = function() {
 		// dismiss modal
@@ -152,7 +161,11 @@ spaces.controller('SpacesCtrl', ['$scope', '$http', '$sce', function($scope, $ht
 		}
 		
 		// send the request
-		var data = {"name": $scope.add.name, "visualization": $scope.add.visualization.$oid};
+		var data = {
+				"name": $scope.add.name, 
+				"visualization": $scope.add.visualization.$oid,
+				"app" : $scope.add.app.$oid
+			};
 		$http.post(jsRoutes.controllers.Spaces.add().url, JSON.stringify(data)).
 			success(function(space) {
 				$scope.error = null;

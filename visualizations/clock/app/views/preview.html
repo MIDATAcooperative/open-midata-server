@@ -1,0 +1,9 @@
+<div class="row" ng-hide="error">
+    <clock-directive preview="true" move-list="moveList" move-ticks="moveTicks"
+    sleep-ticks="sleepTicks" sleep-list="sleepList" date-list="dateList"
+    selected-date-index="selectedDateIndex" style="display: block;">
+    </clock-directive>
+</div>
+<div class="row" ng-show="error">
+    <div class="alert alert-danger">{{errorMessage}}</div>
+</div>

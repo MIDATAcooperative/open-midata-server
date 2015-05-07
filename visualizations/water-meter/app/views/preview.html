@@ -1,0 +1,26 @@
+<div ng-hide="error.show">
+    <div class="row">
+        <div class="col-xs-1"></div>
+        <div ng-repeat="glassUnit in waterGlasses[0]"
+          class="col-xs-2 col-sm-2 col-md-2 col-lg-2 repeated-item">
+          <water-glass style="display: block; height: 60px"
+            water-level-value="glassUnit.value"></water-glass>
+        </div>
+      
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-xs-1"></div>
+        <div ng-repeat="glassUnit in waterGlasses[1]"
+          class="col-xs-2 col-sm-2 col-md-2 col-lg-2 repeated-item">
+          <water-glass style="display: block; height: 60px"
+            water-level-value="glassUnit.value"></water-glass>
+        </div>
+      
+    </div>
+    <hr>
+  <div class="text-center"><strong>{{selectedDate | date}}</strong></div>
+</div>
+<div ng-show="error.show">
+  <div class="alert alert-danger">{{error.message}}</div>
+</div>

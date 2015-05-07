@@ -151,7 +151,7 @@ angular.module('energyMeterApp')
       // get the records
       function getRecords(recordIds) {
           data.properties = {"_id": recordIds};
-          data.fields = ["data.data"];
+          data.fields = ["data", "data.data"];
           $http.post("https://" + window.location.hostname +
               ":9000/api/visualizations/records", JSON.stringify(data)).
               success(function(records) {
