@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Training Plan Creator</title>
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<!-- jQuery needed for Bootstrap's JavaScript plugins -->
+		<script type="text/javascript" src="//code.jquery.com/jquery-2.0.2.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
+		<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js" defer></script>
+		<script type="text/javascript" src="js/app.js" defer></script>
+	</head>
+	<body>
+		<div class="container-fluid" ng-app="planCreator" ng-controller="PlanEditorCtrl" ng-cloak>
+			<div class="alert alert-danger alert-dismissable" ng-show="error">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+				<p>{{error}}</p>
+			</div>
+			
+			<form class="form-inline">
+			  <div class="form-group" ng-show="!createMode">
+			    <label for="activePlan">Plan:</label>
+			    <select class="form-control" id="activePlan" ng-model="activePlan" ng-options="plan as name for (name,plan) in availablePlans" ></select>
+			  </div>
+			  <div class="form-group" ng-show="createMode"> 
+			     <label for="name">Name:</label>
+			     <input class="form-control" id="name" type="text" ng-model="newPlan.name" >
+			  </div>
+			  <div class="form-group" ng-show="createMode">
+			     <label for="date">Startdate:</label>
+			     <input class="form-control" id="date" type="text" placeholder="yyyy-mm-dd" ng-model="newPlan.data.startDate" >
+			  </div>
+			  <div class="form-group">
+			    <button class="btn btn-default" ng-show="!createMode" ng-click="createMode = true">Create New</button>
+			    <button class="btn btn-primary" ng-show="createMode" ng-disabled="newPlan.name == ''" ng-click="createNewPlan()">Create New</button>
+			    <button class="btn btn-default" ng-show="createMode" ng-click="createMode = false">Cancel</button>
+			  </div>
+			</form>
+			<br>
+			<div class="form-group">
+			  <label for="description">Plan Description:</label>
+			  <textarea style="border:none;" placeholder="Description" name="description" class="form-control" rows="2" ng-model="activePlan.description" ></textarea>
+			</div>	
+			<form class="form-inline">		
+			<table class="table">
+			  <tr>
+			    <th ng-repeat="day in activePlan.data.days">
+			      {{ day.date | date : 'EEEE' }}
+			    </th>
+			  </tr><tr>
+			    <th ng-repeat="day in activePlan.data.days">
+			      {{ day.date | date }}
+			    </th>
+			  </tr><tr>
+			    <th ng-repeat="day in activePlan.data.days">
+			      <input type="text" style="width:100%;border:none;" ng-model="day.location" placeholder="Location">
+			    </th>
+			  </tr>
+			  <tr>
+			    <td ng-repeat="day in activePlan.data.days">
+			      <div ng-repeat="action in day.actions"  ng-style="style(action)">
+			        <input ng-focus="select(action)" style="display:inline-block;width:100px;border:none;border-right:1px solid #f0f0f0" type="text" ng-change="checkAction(day, $index)" ng-model="action.name" placeholder="..."><input style="display:inline-block;text-align:right;width:30px;border:none;" type="text" ng-model="action.count" >
+			      </div>
+			    </td>
+			  </tr>
+			</table>
+			
+			<button ng-click="saveAll()" ng-hide="saving > 0" class="btn btn-primary">Save All</button>
+			<button ng-show="saving > 0" class="btn btn-primary disabled">Saving...</button>
+			</form>
+		</div>
+	</body>
+</html>
