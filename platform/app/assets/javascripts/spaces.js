@@ -164,7 +164,7 @@ spaces.controller('SpacesCtrl', ['$scope', '$http', '$sce', 'status', 'apps', fu
 		var data = {
 				"name": $scope.add.name, 
 				"visualization": $scope.add.visualization.$oid,
-				"app" : $scope.add.app.$oid
+				"app" : $scope.add.app ? $scope.add.app.$oid : null
 			};
 		$http.post(jsRoutes.controllers.Spaces.add().url, JSON.stringify(data)).
 			success(function(space) {

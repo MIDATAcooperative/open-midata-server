@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Daily Training</title>
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<!-- jQuery needed for Bootstrap's JavaScript plugins -->
+		<script type="text/javascript" src="//code.jquery.com/jquery-2.0.2.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.min.js"></script>
+		<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js" defer></script>
+		<script type="text/javascript" src="js/app.js" defer></script>
+	</head>
+	<body>
+		<div class="container-fluid" ng-app="planCreator" ng-controller="TrainingCtrl" ng-cloak>
+			<div class="alert alert-danger alert-dismissable" ng-show="error">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+				<p>{{error}}</p>
+			</div>
+			<div ng-hide="activePlan">
+			  <h2>Training Diary</h2>
+			  <p>In order to use this visulization you need to have at least one training plan associated with it!</p>			  
+			</div>
+			<div ng-show="activePlan">
+			<form class="form-inline">
+			  <div class="form-group">
+			    <label for="activePlan">Plan:</label>
+			    <select class="form-control" id="activePlan" ng-change="process(activePlan)" ng-model="activePlan" ng-options="plan as name for (name,plan) in availablePlans" ></select>
+			  </div>
+			  <div class="form-group">
+			    <button ng-click="save(activePlan)" ng-hide="saving > 0" class="btn btn-primary">Save</button>
+			    <button ng-show="saving > 0" class="btn btn-primary disabled">Saving...</button>
+			  </div>			  
+			</form>
+			<p>
+			{{ activePlan.description }}
+			</p>
+				
+			<form class="form-inline">		
+			<table class="table">
+			  <tr>
+			    <th>Date</th>
+			    <th>Location</th>
+			    <th>Actions</th>
+			    <th>Target</th>
+			    <th>Reached</th>			   
+			    <th>Weight [kg]</th>			    
+			    <th>Heart Rate [bpm]</th>
+			    <th>Sleep [h]</th>
+			  </tr>
+			  
+			
+			  <tr ng-repeat="day in activePlan.data.days">
+			    <td>
+			      <p>{{ day.date | date : 'EEEE' }}</p>
+			      <p>{{ day.date | date }}</p>
+			    </td>
+			    <td>
+			      {{ day.location }}
+			    </td>
+			    <td>			  
+			      <div style="height:20px" ng-repeat="action in day.actions"  ng-style="style(action)">
+			        {{ action.name }}
+			      </div>
+			    </td>
+			    <td>			  
+			      <div style="height:20px" ng-repeat="action in day.actions"  ng-style="style(action)">
+			        {{ action.count }}
+			      </div>
+			    </td>
+			    <td>			  
+			      <div style="height:20px" ng-repeat="action in day.actions"  ng-style="style(action)">
+			        <input ng-if="action.count" style="margin:0px;border:none;padding:0px;background-color:#f0f0f0;width:50px;display:inline-block;" ng-model="action.result.data.value" ng-change="mark(action.result)" />
+			        {{ action.unit }}
+			      </div>
+			    </td>
+			    <!-- <td>
+			      <textarea style="margin:0px;border:none;padding:0px;background-color:#f0f0f0" ng-model="day.comment"></textarea>
+			    </td> -->
+			    <td>
+			      <input style="margin:0px;border:none;padding:0px;background-color:#f0f0f0" type="text" ng-change="mark(day.weight)" ng-model="day.weight.data.value">
+			    </td>
+			    <td>
+			      <input style="margin:0px;border:none;padding:0px;background-color:#f0f0f0" type="text" ng-change="mark(day.pulse)" ng-model="day.pulse.data.value">
+			    </td>
+			    <td>
+			      <input style="margin:0px;border:none;padding:0px;background-color:#f0f0f0" type="text" ng-change="mark(day.sleep)" ng-model="day.sleep.data.value">
+			    </td>
+			  </tr>
+			</table>
+			
+			
+			</form>
+			</div>
+		</div>
+	</body>
+</html>

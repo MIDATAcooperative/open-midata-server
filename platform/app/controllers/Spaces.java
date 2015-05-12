@@ -81,7 +81,7 @@ public class Spaces extends Controller {
 		String visualizationIdString = json.get("visualization").asText();
 		ObjectId visualizationId = new ObjectId(visualizationIdString);
 		String appIdString = json.get("app").asText();
-		ObjectId appId = appIdString == null ? null : new ObjectId(appIdString);
+		ObjectId appId = (appIdString == null || appIdString.equals("null")) ? null : new ObjectId(appIdString);
 		
 		if (Space.existsByNameAndOwner(name, userId)) {
 			return badRequest("A space with this name already exists.");

@@ -48,9 +48,10 @@ planCreator.controller('PlanEditorCtrl', ['$scope', '$http', '$location', '$filt
 		
 		$scope.createNewPlan = function() {
 			var d = new Date($scope.newPlan.data.startDate);
+			console.log(d);
 			$scope.newPlan.data.days = [];
 			for (var day = 0; day < 7; day++) {
-				var newday = { changed: true, date:new Date(d.getFullYear(), d.getMonth(), d.getDay() + day), location:"", actions:[ {} ]};
+				var newday = { changed: true, date:new Date(d.getFullYear(), d.getMonth(), d.getDate() + day), location:"", actions:[ {} ]};
 				$scope.newPlan.data.days.push(newday);
 			}
 			

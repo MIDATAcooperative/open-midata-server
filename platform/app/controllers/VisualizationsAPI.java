@@ -159,6 +159,10 @@ public class VisualizationsAPI extends Controller {
 		} else {
 			return badRequest("No set of record ids found.");
 		}*/
+		
+		if (properties.containsKey("owner")) {
+			if (properties.get("owner").equals("self")) properties.put("owner", authToken.userId.toString());
+		}
 
 		// get record data
 		Collection<Record> records = LargeRecord.getAll(authToken.userId, authToken.spaceId, properties, fields);
@@ -185,9 +189,9 @@ public class VisualizationsAPI extends Controller {
 			return badRequest("Invalid authToken.");
 		}
 		
-		Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.userId, Sets.create("app", "aps"));
+		Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.userId, Sets.create("visualization", "app", "aps"));
 		
-		ObjectId appId = space.app;
+		ObjectId appId = space.visualization;
 			
 		User owner;
 		Member targetUser;

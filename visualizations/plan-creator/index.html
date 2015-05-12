@@ -59,7 +59,7 @@
 			  <tr>
 			    <td ng-repeat="day in activePlan.data.days">
 			      <div ng-repeat="action in day.actions"  ng-style="style(action)">
-			        <input ng-focus="select(action)" style="display:inline-block;width:100px;border:none;border-right:1px solid #f0f0f0" type="text" ng-change="checkAction(day, $index)" ng-model="action.name" placeholder="..."><input style="display:inline-block;text-align:right;width:30px;border:none;" type="text" ng-model="action.count" >
+			        <input ng-focus="select(action)" style="display:inline-block;width:90px;border:none;border-right:1px solid #f0f0f0" type="text" ng-change="checkAction(day, $index)" ng-model="action.name" placeholder="..."><input style="display:inline-block;text-align:right;width:40px;border:none;" type="text" ng-model="action.count" >
 			      </div>
 			    </td>
 			  </tr>
