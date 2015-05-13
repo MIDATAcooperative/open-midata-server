@@ -17,6 +17,11 @@
 				<p>{{error}}</p>
 			</div>
 			
+			<div ng-hide="activePlan">
+			  <h2>Training plan editor</h2>
+			  <p>Create a training plan by choosing a name and a start date for the training.</p>			  
+			</div>
+			
 			<form class="form-inline">
 			  <div class="form-group" ng-show="!createMode">
 			    <label for="activePlan">Plan:</label>
@@ -33,10 +38,11 @@
 			  <div class="form-group">
 			    <button class="btn btn-default" ng-show="!createMode" ng-click="createMode = true">Create New</button>
 			    <button class="btn btn-primary" ng-show="createMode" ng-disabled="newPlan.name == ''" ng-click="createNewPlan()">Create New</button>
-			    <button class="btn btn-default" ng-show="createMode" ng-click="createMode = false">Cancel</button>
+			    <button class="btn btn-default" ng-show="createMode && activePlan" ng-click="createMode = false">Cancel</button>
 			  </div>
 			</form>
 			<br>
+			<div ng-show="activePlan">
 			<div class="form-group">
 			  <label for="description">Plan Description:</label>
 			  <textarea style="border:none;" placeholder="Description" name="description" class="form-control" rows="2" ng-model="activePlan.description" ></textarea>
@@ -68,6 +74,8 @@
 			<button ng-click="saveAll()" ng-hide="saving > 0" class="btn btn-primary">Save All</button>
 			<button ng-show="saving > 0" class="btn btn-primary disabled">Saving...</button>
 			</form>
+			</div>
+			
 		</div>
 	</body>
 </html>

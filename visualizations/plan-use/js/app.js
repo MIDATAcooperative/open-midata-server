@@ -61,37 +61,48 @@ planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter
 		};
 		
 		$scope.mark = function(record) {			
-			record.changed = true;
+			record.record.changed = true;
 			console.log(record);
 		};
 		
 		$scope.createRecord = function(date, format, name, value, unit) {
 			console.log(date);
+			var td = $filter('date')(date, "yyyy-MM-dd");
+			
 			var result = $filter('filter')($scope.records, function(rec){
-			  return rec.name == name && rec.format == format && rec.data && rec.data.date == date
-			});			
-			if (result && result.length == 1) return result[0];
+			  return rec.name == name && rec.data[format] && rec.data[format][0].value && rec.data[format][0].dateTime == td; 
+			});
+			
 			if (result && result.length > 1) {
-				result = $filter('orderBy')(result, function(rec) { return rec.created; }, true);
-				return result[0];
-			}			
-			var res = { created : date, format : format, name : name, data : { date : date, value : value, unit : unit }};
+				result = $filter('orderBy')(result, function(rec) { return rec.created; }, true);				
+			}
+			
+			if (result && result.length > 0) {
+				var rec = result[0];
+				var res = { record : rec, data : rec.data[format][0] };
+				return res;
+			}
+						
+			var dp = { value : value, unit : unit, dateTime : td };
+			var res = { created : date, format : format, name : name, data : {} };
+			res.data[format] = [ dp ];			
 			$scope.records.push(res);
-			return res;
+			var res2 = { record : res, data : dp };
+			return res2;
 		}
 		
 		$scope.process = function(plan) {
             console.log("process");									
 			angular.forEach(plan.data.days, function(day) {
-				if (!day.weight || !day.weight.name) day.weight = $scope.createRecord(day.date, "weight", "weight", null, "kg");
-				if (!day.sleep || !day.sleep.name) day.sleep = $scope.createRecord(day.date, "sleep", "sleep", null, "h");
-				if (!day.pulse || !day.pulse.name) day.pulse = $scope.createRecord(day.date, "heart rate", "heart rate", null, "bpm");
+				if (!day.weight || !day.weight.name) day.weight = $scope.createRecord(day.date, "body-weight", "weight", null, "kg");
+				if (!day.sleep || !day.sleep.name) day.sleep = $scope.createRecord(day.date, "sleep-timeInBed", "sleep", null, "h");
+				if (!day.pulse || !day.pulse.name) day.pulse = $scope.createRecord(day.date, "activities-heart", "heart rate", null, "bpm");
 				
 				angular.forEach(day.actions, function(action) {
 					if (action.count) {
 						var unit = ("" + action.count).replace(/[0-9\.]+/g,"").trim();
 						action.unit = unit;
-						action.result = $scope.createRecord(day.date, "activity", action.name, null, unit);
+						action.result = $scope.createRecord(day.date, "activities-minutesFairlyActive", action.name, null, unit);
 					}
 				});
 			});
@@ -174,7 +185,7 @@ planCreator.controller('PreviewTrainingCtrl', ['$scope', '$http', '$location', '
 				
 				});
 				
-				$scope.select($scope.activePlan);								
+				$scope.process($scope.activePlan);								
 								
 			});
 		};

@@ -197,7 +197,7 @@ public class VisualizationsAPI extends Controller {
 		Member targetUser;
 		ObjectId targetAps = space.aps;
 				
-		targetUser = Member.getByIdAndApp(authToken.userId, appId, Sets.create("myaps", "tokens"));
+		targetUser = Member.getById(authToken.userId, Sets.create("myaps", "tokens"));
 		if (targetUser == null) return badRequest("Invalid authToken.");
 		owner = targetUser;
 		
