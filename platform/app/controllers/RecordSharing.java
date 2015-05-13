@@ -466,8 +466,10 @@ public class RecordSharing {
 				if (ids instanceof ObjectId) {
 					for (String format : formats.keySet()) {
 					   BasicDBObject map = formats.get(format);
-					   BasicDBObject target = (BasicDBObject) map.get(ids.toString());
-					   if (target!=null) result.add(createRecordFromAPSEntry(ids.toString(), format, target, withOwner));
+					   if (map != null) {
+						   BasicDBObject target = (BasicDBObject) map.get(ids.toString());
+						   if (target!=null) result.add(createRecordFromAPSEntry(ids.toString(), format, target, withOwner));
+					   }
 					}
 				} else {
 					for (ObjectId id : (Iterable<ObjectId>) ids) {
@@ -482,9 +484,11 @@ public class RecordSharing {
 			} else {
 				for (String format : formats.keySet()) {
 				    BasicDBObject map = formats.get(format);
-				    for (String id : map.keySet()) {
-				    	BasicDBObject target = (BasicDBObject) map.get(id);
-				    	result.add(createRecordFromAPSEntry(id , format, target, withOwner));
+				    if (map != null) {
+					    for (String id : map.keySet()) {
+					    	BasicDBObject target = (BasicDBObject) map.get(id);
+					    	result.add(createRecordFromAPSEntry(id , format, target, withOwner));
+					    }
 				    }
 				}
 			}			
