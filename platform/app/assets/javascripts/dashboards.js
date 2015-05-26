@@ -66,7 +66,7 @@ dashboards.constant("dashboards",
 		    	active : true,
 		    	position : "small",
 		    	actions : { big : "/members/records" },
-		    	teaser : "There are no new records. Visit der Records page to browser all of your records.",
+		    	teaser : "There are no new records. Visit the records page to browser all of your records.",
 		    	setup : { properties : { "max-age" : 86400 * 31, "limit" : 7 } , fields : [ "ownerName", "created", "id", "name" ], allowBrowse : true}
 		    },
 		    {
