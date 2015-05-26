@@ -10,7 +10,7 @@ planCreator.factory('server', [ '$http', function($http) {
 			"data": angular.toJson(data),
 			"name": name,
 			"format" : format,
-			"description": description
+			"description": (description || "")
 		};
 		
 		// submit to server

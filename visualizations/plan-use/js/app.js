@@ -10,7 +10,7 @@ planCreator.factory('server', [ '$http', function($http) {
 			"data": angular.toJson(data),
 			"name": name,
 			"format" : format,
-			"description": description
+			"description": (description || "")
 		};
 		
 		// submit to server
@@ -97,12 +97,16 @@ planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter
 				if (!day.weight || !day.weight.name) day.weight = $scope.createRecord(day.date, "body-weight", "weight", null, "kg");
 				if (!day.sleep || !day.sleep.name) day.sleep = $scope.createRecord(day.date, "sleep-timeInBed", "sleep", null, "h");
 				if (!day.pulse || !day.pulse.name) day.pulse = $scope.createRecord(day.date, "activities-heart", "heart rate", null, "bpm");
-				
+				var usedNames = {};
 				angular.forEach(day.actions, function(action) {
+					
 					if (action.count) {
+						var idx = usedNames[action.name] || 1;
+					    usedNames[action.name] = (idx + 1);
+					    var name = action.name + (idx > 1 ? " (" + idx+")" : "" );
 						var unit = ("" + action.count).replace(/[0-9\.]+/g,"").trim();
 						action.unit = unit;
-						action.result = $scope.createRecord(day.date, "activities-minutesFairlyActive", action.name, null, unit);
+						action.result = $scope.createRecord(day.date, "activities-minutesFairlyActive", name, null, unit);
 					}
 				});
 			});
