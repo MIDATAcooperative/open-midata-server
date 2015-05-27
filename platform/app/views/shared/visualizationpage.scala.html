@@ -40,12 +40,16 @@
 			    <div class="col-xs-10">
 			      <label>
 			        <input type="checkbox" ng-model="options.applyRules">
-			        Add records to this space: 
+			        Give space access to: 
 			      </label>
 			      <div class="alert alert-info">
 			      <ul>
 			        <li ng-repeat="rule in visualization.defaultRules">
-			          <span ng-if="rule.name == 'format'">Records that have format {{ rule.params[0] }}</span>
+			          <span ng-if="rule.name == 'format'">Records that have format:
+			            <ul>
+			              <li ng-repeat="format in rule.params">{{ format }}</li>
+			            </ul> 
+			          </span>
 			        </li>
 			      </ul>		
 			      </div>

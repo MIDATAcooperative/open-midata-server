@@ -52,5 +52,17 @@ public class RuleApplication {
 		
 		RecordSharing.instance.share(userId, sourceaps, targetaps, result, ownerInformation);
 	}
+	
+	public void setupRules(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws ModelException {
+		Map<String, Object> query = new HashMap<String, Object>();
+		
+		for (FilterRule filterRule : filterRules) {
+			Rule rule = rulecache.get(filterRule.name);
+			if (rule == null) throw new ModelException("Unknown rule: "+filterRule.name);
+			rule.setup(query, filterRule.params);
+		}
+		
+		RecordSharing.instance.shareByQuery(userId, sourceaps, targetaps, query);
+	}
 		
 }

@@ -1,10 +1,12 @@
 package utils.rules;
 
 import java.util.List;
+import java.util.Map;
 
 import models.ModelException;
 import models.Record;
 
 public interface Rule {
-	public boolean qualifies(Record record, List<Object> params) throws ModelException;		
+	public boolean qualifies(Record record, List<Object> params) throws ModelException;
+	public void setup(Map<String, Object> query, List<Object> params) throws ModelException;
 }

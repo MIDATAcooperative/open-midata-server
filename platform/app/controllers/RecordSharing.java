@@ -46,6 +46,7 @@ public class RecordSharing {
 	public final static Set<String> COMPLETE_META = Sets.create("id", "owner", "app", "creator", "created", "name", "format", "description");
 	public final static Set<String> COMPLETE_DATA = Sets.create("id", "owner", "app", "creator", "created", "name", "format", "description", "data");
 	public final static String STREAM_TYPE = "Stream";
+	public final static String QUERY = "_query";
 	
 	public Random rand = new Random(System.currentTimeMillis());
 	
@@ -132,6 +133,14 @@ public class RecordSharing {
 		target.addPermission(recordEntries, withOwnerInformation);
 				
 		// target.setPermissions(target.permissions);		
+	}
+	
+	public void shareByQuery(ObjectId who, ObjectId fromAPS, ObjectId toAPS, Map<String, Object> query) throws ModelException {
+		
+		APSWrapper target = new APSWrapper(toAPS, who);
+		query.put("aps", fromAPS.toString());
+		
+		target.setQuery(query);
 	}
 	
 	public void unshare(ObjectId who, ObjectId apsId, Set<ObjectId> records) throws ModelException {
@@ -295,7 +304,9 @@ public class RecordSharing {
 		private AccessPermissionSet aps;
 		private ObjectId who;
 		private ObjectId owner;
-		private String encryptionKey;		
+		private String encryptionKey;	
+		
+		private APSWrapper queryAPS;
 		
 		//private String myFormat;
 		//private int myMinTime;
@@ -419,6 +430,36 @@ public class RecordSharing {
 			}
 		}
 		
+		private Map<String, Object> combineQuery(Map<String,Object> properties, Map<String,Object> query) throws ModelException {			
+			Map<String, Object> combined = new HashMap<String,Object>();
+			combined.putAll(properties);
+			for (String key : query.keySet()) {
+				if (combined.containsKey(key)) {
+					Object val1 = combined.get(key);
+					Object val2 = query.get(key);
+					if (val1.equals(val2)) continue;
+					if (val1 instanceof Collection<?>) {
+					 if (val2 instanceof Collection<?>) {
+						((Collection<?>) val1).retainAll((Collection<?>) val2);
+						if (((Collection<?>) val1).isEmpty()) return null;
+					 } else {
+						 if ( ((Collection<?>) val1).contains(val2)) {
+							 combined.put(key, val2);
+						 } else return null;
+					 }
+					} else {
+						if (val2 instanceof Collection<?>) {
+							if ( ((Collection<?>) val2).contains(val1)) continue;
+							else return null;
+						} else return null;
+					}
+					
+				} else combined.put(key, query.get(key));
+			}
+			
+			return combined;
+		}
+		
 		protected void localQuery(List<Record> result, Map<String, Object> properties, Set<String> fields, Set<String> fieldsFromDB, int minTime, int maxTime) throws ModelException {
 			boolean withOwner = fields.contains("owner");
 			
@@ -435,8 +476,7 @@ public class RecordSharing {
 				result.addAll(directResult);
 				return;
 			}
-			
-			
+									
 			// 4 restricted by time? has APS time restriction? load other APS -> APS (4,5,6) APS LIST -> Records			
 			
 			// 5 Create list format -> Permission List (maybe load other APS)
@@ -500,6 +540,20 @@ public class RecordSharing {
 			Map<String, APSWrapper> apsToScan = new HashMap<String, APSWrapper>();			
 			
 			// 1 If APS is from other server execute there (if APS redirection) (DB/API)
+			
+			
+			// If APS is a query redirect with query
+			if (aps.permissions.containsKey(QUERY)) {
+				BasicDBObject query = aps.permissions.get(QUERY);
+				Map<String, Object> combined = combineQuery(properties, query);
+				if (combined == null) return new ArrayList<Record>();
+				if (queryAPS == null) {
+					Object targetAPSId = query.get("aps");
+					queryAPS = new APSWrapper(new ObjectId(targetAPSId.toString()), this.who);					
+				}
+				return queryAPS.lookup(combined, fields);
+			}
+			
 			
 			// Prepare
 			boolean restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age");
@@ -772,6 +826,16 @@ public class RecordSharing {
 			} catch (LostUpdateException e) {
 				recoverFromLostUpdate();
 				removePermission(records);
+			}
+		}
+		
+		public void setQuery(Map<String, Object> query) throws ModelException {
+			try {
+				aps.permissions.put(QUERY, new BasicDBObject(query));
+				aps.updatePermissions();
+			} catch (LostUpdateException e) {
+				recoverFromLostUpdate();
+				setQuery(query);
 			}
 		}
 		

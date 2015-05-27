@@ -90,7 +90,7 @@ public class Visualizations extends APIController {
 					space = Spaces.add(userId, spaceName, visualizationId, null);
 				}
 				if (applyRules && space!=null) {
-					RuleApplication.instance.applyRules(userId, visualization.defaultRules, user.myaps, space.aps, true);
+					RuleApplication.instance.setupRules(userId, visualization.defaultRules, user.myaps, space.aps, true);
 				}
 			}
 	
