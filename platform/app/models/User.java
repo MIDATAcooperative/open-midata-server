@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.Gender;
 import models.enums.UserRole;
@@ -39,7 +40,7 @@ public class User extends Model implements Comparable<User> {
 	public String resettoken; // token to reset password
 	public long resettokenTs; // timestamp of password reset token
 	
-	public UserStatus status; //tatus	enum: new, active, blocked, deleted	1	-	new: account is new and match with real person is not yet confirmed
+	public UserStatus status; //enum: new, active, blocked, deleted	1	-	new: account is new and match with real person is not yet confirmed
     public ContractStatus contractStatus; //enum: new, printed, signed	1	-	
     public String confirmationCode; //code needed to confirm account
 	
@@ -53,6 +54,9 @@ public class User extends Model implements Comparable<User> {
 	public String address2;
 	public String phone;
 	public String mobile;
+	
+	public AccountSecurityLevel security = AccountSecurityLevel.NONE;
+	public byte[] publicKey;
 	
 	public List<History> history;
 	

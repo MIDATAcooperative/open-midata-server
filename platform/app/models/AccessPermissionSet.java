@@ -3,8 +3,10 @@ package models;
 import java.util.Map;
 import java.util.Set;
 
+import models.enums.APSSecurityLevel;
 import models.enums.InformationType;
 
+import org.bson.BasicBSONObject;
 import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
@@ -23,23 +25,33 @@ public class AccessPermissionSet extends Model {
 	private static final String collection = "aps";
 	
 	public boolean direct;
+	public APSSecurityLevel security = APSSecurityLevel.NONE;
 	public long version;
 	
-	public Map<String, String> keys;
-	public Map<String, BasicDBObject> permissions;
+	public Map<String, byte[]> keys;
+	public byte[] encrypted;
+	public Map<String, BasicBSONObject> permissions;
 	
 	public static void add(AccessPermissionSet aps) throws ModelException {
 		Model.insert(collection, aps);	
 	}
 	
 	public static AccessPermissionSet getById(ObjectId id) throws ModelException {
-		return Model.get(AccessPermissionSet.class, collection, CMaps.map("_id", id), Sets.create("keys", "version", "direct" ,"permissions"));
+		return Model.get(AccessPermissionSet.class, collection, CMaps.map("_id", id), Sets.create("keys", "version", "direct" ,"permissions", "encrypted", "security"));
 	}
 		
 	
 	public void updatePermissions() throws ModelException, LostUpdateException {
 		try {
 		   DBLayer.secureUpdate(this, collection, "version", "permissions");
+		} catch (DatabaseException e) {
+			throw new ModelException(e);
+		}
+	}
+	
+	public void updateEncrypted() throws ModelException, LostUpdateException {
+		try {
+		   DBLayer.secureUpdate(this, collection, "version", "encrypted");
 		} catch (DatabaseException e) {
 			throw new ModelException(e);
 		}

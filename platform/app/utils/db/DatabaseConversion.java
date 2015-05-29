@@ -66,7 +66,8 @@ public class DatabaseConversion {
 		for (Field field : model.getFields()) {
 			if (field.getAnnotation(NotMaterialized.class)!=null) continue;
 			try {
-				dbObject.put(field.getName(), todb(encrypt(model, field.getName(), field.get(modelObject))));
+				Object val = todb(encrypt(model, field.getName(), field.get(modelObject)));
+				if (val != null) dbObject.put(field.getName(), val);
 			} catch (IllegalArgumentException e) {
 				throw new DatabaseConversionException(e);
 			} catch (IllegalAccessException e) {

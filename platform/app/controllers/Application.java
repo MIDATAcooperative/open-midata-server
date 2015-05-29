@@ -13,6 +13,8 @@ import models.Record;
 import models.ResearchUser;
 import models.Space;
 import models.User;
+import models.enums.APSSecurityLevel;
+import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.Gender;
 import models.enums.ParticipationInterest;
@@ -161,6 +163,7 @@ public class Application extends Controller {
 			    
 	    //patch old users
 	    if (user.myaps == null || !user.myaps.equals(user._id)) {
+	    		      
 	    	user.myaps = RecordSharing.instance.createPrivateAPS(user._id, user._id);
 	    	Member.set(user._id, "myaps", user.myaps);
 	    	Set<Record> recs = Record.getAll(CMaps.map("owner", user._id), Sets.create("owner","format"));
@@ -233,8 +236,7 @@ public class Application extends Controller {
 		user.partInterest = ParticipationInterest.UNSET;
 		
 		//user.visible = new HashMap<String, Set<ObjectId>>();
-		user.myaps = RecordSharing.instance.createPrivateAPS(user._id, user._id);
-		
+				
 		user.apps = new HashSet<ObjectId>();
 		user.tokens = new HashMap<String, Map<String, String>>();
 		user.visualizations = new HashSet<ObjectId>();
@@ -247,7 +249,16 @@ public class Application extends Controller {
 		user.pushed = new HashSet<ObjectId>();
 		user.shared = new HashSet<ObjectId>();
 		
+		user.security = AccountSecurityLevel.KEY;
+		
+		switch (user.security) {
+		case KEY: user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);break;
+		default: user.publicKey = null;
+		}
+						
 		Member.add(user);
+		user.myaps = RecordSharing.instance.createPrivateAPS(user._id, user._id);
+		Member.set(user._id, "myaps", user.myaps);
 		
 		session().clear();
 		session("id", user._id.toString());

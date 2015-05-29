@@ -9,6 +9,7 @@ import models.Member;
 import models.ModelException;
 import models.Research;
 import models.ResearchUser;
+import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.Gender;
 import models.enums.UserRole;
@@ -17,6 +18,7 @@ import models.enums.UserStatus;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.APIController;
+import controllers.KeyManager;
 import controllers.routes;
 
 import actions.APICall; 
@@ -72,6 +74,9 @@ public class Researchers extends APIController {
 		user.status = UserStatus.NEW;		
 		user.contractStatus = ContractStatus.NEW;		
 		user.confirmationCode = CodeGenerator.nextCode();
+		
+		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
+		user.security = AccountSecurityLevel.KEY;
 		
 		Research.add(research);
 		user.organization = research._id;

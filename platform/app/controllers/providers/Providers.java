@@ -19,6 +19,7 @@ import models.Member;
 import models.MemberKey;
 import models.ModelException;
 import models.Space;
+import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.Gender;
 import models.enums.UserRole;
@@ -32,6 +33,7 @@ import utils.json.JsonValidation.JsonValidationException;
 import views.html.defaultpages.badRequest;
 import actions.APICall;
 import controllers.APIController;
+import controllers.KeyManager;
 import controllers.routes;
 import actions.APICall; 
 import play.libs.Json;
@@ -87,6 +89,9 @@ public class Providers extends APIController {
 		user.apps = new HashSet<ObjectId>();
 		user.tokens = new HashMap<String, Map<String, String>>();
 		user.visualizations = new HashSet<ObjectId>();
+		
+		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
+		user.security = AccountSecurityLevel.KEY;
 		
 		HealthcareProvider.add(provider);
 		user.provider = provider._id;

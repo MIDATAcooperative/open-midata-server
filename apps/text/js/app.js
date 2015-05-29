@@ -42,7 +42,8 @@ textRecords.controller('CreateCtrl', ['$scope', '$http', '$location',
 				"authToken": authToken,
 				"data": JSON.stringify({"title": $scope.title, "content": $scope.content}),
 				"name": $scope.title,
-				"description": $scope.content
+				"description": $scope.content,
+				"format" : "text"
 			};
 			
 			// submit to server

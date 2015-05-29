@@ -4,16 +4,14 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
+import org.bson.BSONObject;
 import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
-import utils.collections.Sets;
 import utils.db.NotMaterialized;
 import utils.search.Search;
-import utils.search.SearchException;
 
-import com.mongodb.DBObject;
 
 public class Record extends Model implements Comparable<Record>, Cloneable {
 
@@ -24,8 +22,8 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	public long time;
 	public ObjectId document;
 	public String part;
-	public String encrypted;
-	public String encryptedData;
+	public byte[] encrypted;
+	public byte[] encryptedData;
 	public boolean direct;
 	
 	// Not materialized part (derived from APS)
@@ -33,20 +31,20 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	public @NotMaterialized ObjectId owner; // person the record is about
 	public @NotMaterialized String ownerName;
 	public @NotMaterialized String creatorName;
-	public @NotMaterialized String key;
+	public @NotMaterialized byte[] key;
+	public @NotMaterialized String format; // format of record
 	
 	// Encrypted part
 	public  ObjectId app; // app that created the record		
 	public  ObjectId creator; // user that imported the record	
 	public  Date created; // date + time created TODO change to date
 	public  String createdOld; // date + time created TODO change to date
-	public  String name; // used to display a record and for autocompletion
-	public  String format; // format of record
+	public  String name; // used to display a record and for autocompletion	
 	public  String description; // this will be indexed in the search cluster
 	public  Set<String> tags; // Optional tags describing the record
 	
 	// Contents
-	public DBObject data; // arbitrary json data
+	public BSONObject data; // arbitrary json data
 
 	@Override
 	public int compareTo(Record other) {
@@ -63,8 +61,9 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 		this.creator = null;	
 		this.created = null;
 		this.name = null;
-		this.format = null;
-		this.description = null;					
+		//this.format = null;
+		this.description = null;	
+		this.data = null;
 	}
 	
 	public void clearSecrets() {

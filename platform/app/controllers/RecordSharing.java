@@ -1,6 +1,10 @@
 package controllers;
 
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -12,15 +16,30 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.ShortBufferException;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.bson.BSON;
+import org.bson.BSONObject;
+import org.bson.BasicBSONObject;
 import org.bson.types.ObjectId;
 
 import play.libs.Json;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 
 import utils.DateTimeUtils;
 import utils.auth.CodeGenerator;
+import utils.auth.EncryptionNotSupportedException;
 import utils.auth.RecordToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -36,6 +55,7 @@ import models.Member;
 import models.ModelException;
 import models.Record;
 import models.User;
+import models.enums.APSSecurityLevel;
 
 public class RecordSharing {
 	
@@ -48,53 +68,100 @@ public class RecordSharing {
 	public final static String STREAM_TYPE = "Stream";
 	public final static String QUERY = "_query";
 	
+	public final static String KEY_ALGORITHM = "AES";
+	public final static String CIPHER_ALGORITHM = "AES";
+	
 	public Random rand = new Random(System.currentTimeMillis());
 	
 	public ObjectId createPrivateAPS(ObjectId who, ObjectId proposedId) throws ModelException {
 		AccessPermissionSet newset = new AccessPermissionSet();
-		String encryptionKey = generateKey();
+				
+		newset._id = proposedId;		
+		newset.permissions = new HashMap<String, BasicBSONObject>();
+		newset.keys = new HashMap<String, byte[]>();
+			
+		SecretKey encryptionKey = generateKey();	
+		try {
+		  newset.keys.put("owner", KeyManager.instance.encryptKey(who, encryptionKey.getEncoded()));
+		  newset.security = APSSecurityLevel.HIGH;
+		} catch (EncryptionNotSupportedException e) {
+		  newset.security = APSSecurityLevel.NONE;
+		  newset.keys.put("owner", who.toByteArray());
+		}
+			
+		return new APSWrapper(newset, who).getId();
 		
-		newset._id = proposedId;
-		newset.permissions = new HashMap<String, BasicDBObject>();
-		newset.keys = new HashMap<String, String>();
-		newset.keys.put("owner", "key"+who.toString()+":"+encryptionKey);
-		AccessPermissionSet.add(newset);
-		return newset._id;
 	}
 	
 	public ObjectId createAnonymizedAPS(ObjectId owner, ObjectId other, ObjectId proposedId) throws ModelException {
 		AccessPermissionSet newset = new AccessPermissionSet();
-		String encryptionKey = generateKey();
+		SecretKey encryptionKey = generateKey();
 		
 		newset._id = proposedId;
-		newset.permissions = new HashMap<String, BasicDBObject>();
-		newset.keys = new HashMap<String, String>();
-		newset.keys.put("owner", "key"+owner.toString()+":"+encryptionKey);
-		newset.keys.put(other.toString(), "key"+other.toString()+":"+encryptionKey);
-		AccessPermissionSet.add(newset);
-		return newset._id;
+
+		newset.permissions = new HashMap<String, BasicBSONObject>();
+		newset.keys = new HashMap<String, byte[]>();
+		
+		
+			try {
+			  newset.keys.put("owner", KeyManager.instance.encryptKey(owner, encryptionKey.getEncoded()));
+			  try {
+				  newset.keys.put(other.toString(), KeyManager.instance.encryptKey(other, encryptionKey.getEncoded()));
+				  newset.security = APSSecurityLevel.HIGH;
+			  } catch (EncryptionNotSupportedException e2) {
+				  throw new ModelException("NOT POSSIBLE ENCRYPTION REQUIRED");
+			  }
+			} catch (EncryptionNotSupportedException e) {
+				newset.keys.put("owner", owner.toByteArray());		
+				newset.keys.put(other.toString(), null);
+				newset.security = APSSecurityLevel.NONE;
+			}
+			
+				
+		
+		return new APSWrapper(newset, owner).getId();		
 	}
 	
-	public ObjectId createAPSForRecord(ObjectId owner, ObjectId recordId, String key, boolean direct) throws ModelException {
+	public ObjectId createAPSForRecord(ObjectId owner, ObjectId recordId, byte[] key, boolean direct) throws ModelException {
 		AccessPermissionSet newset = new AccessPermissionSet();
-		String encryptionKey = generateKey();
-		
-		newset._id = recordId;
+		byte[] encryptionKey = key!=null ? key : generateKey().getEncoded();
+				
+		newset._id = recordId;		
 		newset.direct = direct;
-		newset.permissions = new HashMap<String, BasicDBObject>();
-		newset.keys = new HashMap<String, String>();
-		newset.keys.put("owner", "key"+owner.toString()+":"+encryptionKey);
+		newset.permissions = new HashMap<String, BasicBSONObject>();
+		newset.keys = new HashMap<String, byte[]>();
 		
-		AccessPermissionSet.add(newset);
-		return newset._id;
+		if (key == null) {
+		  newset.keys.put("owner", owner.toByteArray());
+		  newset.security = APSSecurityLevel.NONE;
+		} else {
+			try {
+		        newset.keys.put("owner", KeyManager.instance.encryptKey(owner, encryptionKey));
+		        newset.security = APSSecurityLevel.HIGH;
+			} catch (EncryptionNotSupportedException e) {
+				newset.keys.put("owner", owner.toByteArray());
+				newset.security = APSSecurityLevel.NONE;
+			}
+		}
+		
+		return new APSWrapper(newset, owner).getId();		
 	}
 	
 	public void shareAPS(ObjectId apsId, ObjectId ownerId, Set<ObjectId> targetUsers) throws ModelException {
 		try {
 			APSWrapper apswrapper = new APSWrapper(apsId, ownerId);
-			
+
+			if (apswrapper.aps.security.equals(APSSecurityLevel.NONE)) {
+				for (ObjectId targetUser : targetUsers) {
+					apswrapper.aps.keys.put(targetUser.toString(), null);
+				}	
+			} else
 			for (ObjectId targetUser : targetUsers) {
-				apswrapper.aps.keys.put(targetUser.toString(), "key"+targetUser.toString()+":"+apswrapper.encryptionKey);
+				try {
+				    apswrapper.aps.keys.put(targetUser.toString(), KeyManager.instance.encryptKey(targetUser, apswrapper.encryptionKey.getEncoded()));
+				} catch (EncryptionNotSupportedException e) {
+					throw new ModelException("ENCRYPTION NOT POSSIBLE");
+				}
 			}
 			apswrapper.aps.updateKeys();
 		} catch (LostUpdateException e) {
@@ -107,14 +174,12 @@ public class RecordSharing {
 	
 	public void unshareAPS(ObjectId apsId, ObjectId ownerId, Set<ObjectId> targetUsers) throws ModelException {
 		try {
-			AccessPermissionSet aps = AccessPermissionSet.getById(apsId);
-			if (aps==null) throw new ModelException("APS not found.");
-			validateReadable(aps, ownerId);
-			
+			APSWrapper apswrapper = new APSWrapper(apsId, ownerId);
+									
 			for (ObjectId targetUser : targetUsers) {
-			  aps.keys.remove(targetUser.toString());
+				apswrapper.aps.keys.remove(targetUser.toString());
 			}
-			aps.updateKeys();			
+			apswrapper.aps.updateKeys();			
 		} catch (LostUpdateException e) {
 			try {
 			  Thread.sleep(rand.nextInt(1000));
@@ -167,12 +232,19 @@ public class RecordSharing {
 		return (int) (dt.getTime() / 1000 / 60 / 60 / 24 / 7);
 	}
 	
-	private String generateKey() {
-		return CodeGenerator.nextCode();
+	private SecretKey generateKey() {
+		try {
+			KeyGenerator keygen = KeyGenerator.getInstance(KEY_ALGORITHM);
+		    SecretKey aesKey = keygen.generateKey();
+			
+			return aesKey;
+		} catch (NoSuchAlgorithmException e) {
+			throw new NullPointerException("CRYPTO BROKEN");
+		}
 	}
 	
 	public void addDocumentRecord(Member owner, Record record, Collection<Record> parts) throws ModelException {
-	    String key = addRecordIntern(owner, record, false);
+	    byte[] key = addRecordIntern(owner, record, false);
 	    if (key == null) throw new NullPointerException("no key");
 	    for (Record rec : parts) {
 	    	rec.document = record._id;
@@ -186,8 +258,8 @@ public class RecordSharing {
 		record.key = null;
 	}
 	
-	private String addRecordIntern(Member owner, Record record, boolean documentPart) throws ModelException {
-		String usedKey = null;
+	private byte[] addRecordIntern(Member owner, Record record, boolean documentPart) throws ModelException {
+		byte[] usedKey = null;
 		record.time = getTimeFromDate(record.created); //System.currentTimeMillis() / 1000 / 60 / 60 / 24 / 7;
 		
 		record = record.clone();
@@ -209,10 +281,12 @@ public class RecordSharing {
 			record.direct = false;
 		}
 		
-		if (record.direct) {
-			record.key = apswrapper.encryptionKey;
+		if (apswrapper.aps.security.equals(APSSecurityLevel.NONE) || apswrapper.aps.security.equals(APSSecurityLevel.LOW)) {
+			record.key = null;
+		} else if (record.direct) {
+			record.key = apswrapper.encryptionKey.getEncoded();
 		} else if (!documentPart) {
-		    record.key = generateKey();
+		    record.key = generateKey().getEncoded();
 		}
 	    usedKey = record.key;
 	    
@@ -253,7 +327,7 @@ public class RecordSharing {
 		if (record.direct) {
 			record.key = apswrapper.encryptionKey;
 		} else { */
-		record.key = generateKey();
+		record.key = generateKey().getEncoded();
 		//}
 		apswrapper.encryptRecord(record);		
 	    Record.set(record._id, "encrypted", record.encrypted);	  
@@ -290,21 +364,14 @@ public class RecordSharing {
 		for (Record record : result) ids.add(record._id.toString());
 		return ids;
 	}
-		
-	
-	void validateReadable(AccessPermissionSet aps, ObjectId who) throws ModelException {
-		if (aps.keys == null) return; // Old version support
-		String key = aps.keys.get(who.toString());
-		if (key==null) key = aps.keys.get("owner"); 
-	    if (key==null || ! key.equals("key"+who.toString())) throw new ModelException("APS not readable by user");		
-	}
-	
+			
 	class APSWrapper {
 		
 		private AccessPermissionSet aps;
 		private ObjectId who;
 		private ObjectId owner;
-		private String encryptionKey;	
+		private SecretKey encryptionKey;
+		private boolean isEncrypted;
 		
 		private APSWrapper queryAPS;
 		
@@ -319,30 +386,125 @@ public class RecordSharing {
 			validateReadable(this.aps, this.who);
 		}
 		
+		APSWrapper(AccessPermissionSet aps, ObjectId who) throws ModelException {
+			this.aps = aps;
+			this.who = who;
+			this.owner = null;
+			validateReadable(this.aps, this.who);
+			isEncrypted = true;
+			encodeAPS();
+			this.aps.permissions = null;
+			AccessPermissionSet.add(this.aps);
+		}
+		
+		public ObjectId getId() {
+			return this.aps._id;
+		}
+		
 		private void validateReadable(AccessPermissionSet aps, ObjectId who) throws ModelException {
 			if (aps.keys == null) return; // Old version support
-			String key = aps.keys.get(who.toString());
-			if (key==null) { key = aps.keys.get("owner"); this.owner = who; } 
-		    if (key==null || ! key.startsWith("key"+who.toString())) throw new ModelException("APS not readable by user");
-		    encryptionKey = key.substring(key.indexOf(':'));
+			
+			if (aps.security.equals(APSSecurityLevel.NONE)) {
+				
+				encryptionKey = null;
+				if (aps.keys.containsKey(who.toString())) return;
+				if (aps.keys.get("owner") instanceof byte[]) {
+					if (Arrays.equals(who.toByteArray(), aps.keys.get("owner"))) { this.owner = who; return; }
+					throw new ModelException("APS not readable by user");
+				} else this.owner = who; // Old version support
+				
+			} else {
+			
+				byte[] key = aps.keys.get(who.toString());
+				if (key==null) { key = aps.keys.get("owner"); this.owner = who; } 
+			    if (key==null /*|| ! key.startsWith("key"+who.toString())*/) throw new ModelException("APS not readable by user");
+			    		 
+			    byte[] decryptedKey = KeyManager.instance.decryptKey(who, key);
+			    encryptionKey = new SecretKeySpec(decryptedKey, KEY_ALGORITHM);// SecretKeyFactory.getInstance(KEY_ALGORITHM).key.substring(key.indexOf(':'));
+			    
+			    decodeAPS();
+			}
+		}
+		
+		private BSONObject decrypt(SecretKey key, byte[] encrypted) throws ModelException {
+			try {
+				Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
+				c.init(Cipher.DECRYPT_MODE, key);
+
+				byte[] cipherText = encrypted; 
+				byte[] bson = CodeGenerator.derandomize(c.doFinal(cipherText));
+			   												
+		    	return BSON.decode(bson);
+		    			    	
+			} catch (InvalidKeyException e) {
+				throw new ModelException(e);
+			} catch (NoSuchPaddingException e2) {
+				throw new ModelException(e2);
+			} catch (NoSuchAlgorithmException e3) {
+				throw new ModelException(e3);
+			} catch (BadPaddingException e4) {
+				throw new ModelException(e4);
+			} catch (IllegalBlockSizeException e5) {
+				throw new ModelException(e5);
+			} 
+
+		}
+		
+		private void decodeAPS() throws ModelException  {
+			if (aps.permissions == null && aps.encrypted != null) {										
+			    	aps.permissions = decrypt(encryptionKey, aps.encrypted).toMap();
+			    	
+			    	if (aps.permissions == null) throw new NullPointerException();
+			    	aps.encrypted = null;
+			    	isEncrypted = true;				
+		    }
+		}
+		
+		private byte[] encrypt(SecretKey key, BSONObject obj) throws ModelException {
+			try {
+				Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
+				c.init(Cipher.ENCRYPT_MODE, key);
+
+			    byte[] bson = BSON.encode(obj);
+				byte[] cipherText = c.doFinal(CodeGenerator.randomize(bson));
+								
+		    	return cipherText;
+			} catch (InvalidKeyException e) {
+				throw new ModelException(e);
+			} catch (NoSuchPaddingException e2) {
+				throw new ModelException(e2);
+			} catch (NoSuchAlgorithmException e3) {
+				throw new ModelException(e3);
+			} catch (BadPaddingException e4) {
+				throw new ModelException(e4);
+			} catch (IllegalBlockSizeException e5) {
+				throw new ModelException(e5);
+			} 
+		
+		}
+		
+		private void encodeAPS() throws ModelException {
+			if (aps.permissions != null && !aps.security.equals(APSSecurityLevel.NONE)) {											
+			   aps.encrypted = encrypt(encryptionKey, new BasicBSONObject(aps.permissions));				
+		    }
 		}
 		
 		protected boolean lookupSingle(Record input, Map<String, Object> properties) {
 			if (aps.direct) {
-				input.key = encryptionKey;
+				input.key = encryptionKey.getEncoded();
 				input.owner = owner;
 				return true;
 			}
 			
-            Map<String, BasicDBObject> formats;			
+            Map<String, BasicBSONObject> formats;			
 			
 			if (properties.containsKey("format")) {
 				Object formatRestriction = properties.get("format");
 				if (formatRestriction instanceof String) {
-				  formats = new HashMap<String, BasicDBObject>();
+				  formats = new HashMap<String, BasicBSONObject>();
 				  formats.put((String) formatRestriction, aps.permissions.get((String) formatRestriction));
 				} else {
-					formats = new HashMap<String, BasicDBObject>();
+					formats = new HashMap<String, BasicBSONObject>();
 					for (String format : (Iterable<String>) formatRestriction) {
 						formats.put(format, aps.permissions.get(format));
 					}
@@ -353,11 +515,12 @@ public class RecordSharing {
 			
 			
 			for (String format : formats.keySet()) {
-				   BasicDBObject map = formats.get(format);
-				   BasicDBObject target = (BasicDBObject) map.get(input._id.toString());
-				   if (target==null && input.document!=null) target = (BasicDBObject) map.get(input.document.toString());
+				   BasicBSONObject map = formats.get(format);
+				   BasicBSONObject target = (BasicBSONObject) map.get(input._id.toString());
+				   if (target==null && input.document!=null) target = (BasicBSONObject) map.get(input.document.toString());
 				   if (target!=null) {
-					   input.key = target.getString("key");
+					   Object k = target.get("key");
+					   input.key = k instanceof String ? null : (byte[]) k; // Old version support
 					   input.format = format;
 					   if (input.owner == null) {
 						   String owner = target.getString("owner");
@@ -371,7 +534,7 @@ public class RecordSharing {
 		}
 		
 		protected void scanForStreams(Map<String, APSWrapper> apsToScan) throws ModelException {
-		  	BasicDBObject streams = aps.permissions.get(STREAM_TYPE);
+			BasicBSONObject streams = aps.permissions.get(STREAM_TYPE);
 		  	if (streams != null) {
 		  		for (String key : streams.keySet()) {
 		  			if (!apsToScan.containsKey(key)) {
@@ -382,11 +545,13 @@ public class RecordSharing {
 		  	}
 		}
 		
-		protected Record createRecordFromAPSEntry(String id, String format, BasicDBObject entry, boolean withOwner) {
+		protected Record createRecordFromAPSEntry(String id, String format, BasicBSONObject entry, boolean withOwner) {
 			Record record = new Record();
 			record._id = new ObjectId(id);
 			record.format = format;
-			record.key = entry.getString("key");			
+			
+			if (entry.get("key") instanceof String) record.key = null; // For old version support
+			else record.key = (byte[]) entry.get("key");			
 		
 			if (withOwner) {
 				String owner = entry.getString("owner");
@@ -397,9 +562,27 @@ public class RecordSharing {
 		}
 		
 		protected void encryptRecord(Record record) throws ModelException {
+			if (aps.security.equals(APSSecurityLevel.NONE) || aps.security.equals(APSSecurityLevel.LOW)) {
+				record.clearSecrets();
+				return;
+			}
+			
 			if (record.key == null) throw new ModelException("Cannot encrypt");
-			record.encrypted = "enc"+record.key;
-			//record.clearEncryptedFields();
+			
+			SecretKey encKey = new SecretKeySpec(record.key, KEY_ALGORITHM);
+			
+			Map<String, Object> meta = new HashMap<String, Object>();
+			meta.put("app", record.app);
+			meta.put("creator", record.creator);
+			meta.put("name", record.name);
+			meta.put("created", record.created);
+			meta.put("description", record.description);
+			meta.put("tags", record.tags);
+			
+			record.encrypted = encrypt(encKey, new BasicBSONObject(meta));
+			record.encryptedData = encrypt(encKey, record.data);
+														
+			record.clearEncryptedFields();
 		}
 		
 		protected void decryptRecord(Record record) throws ModelException {
@@ -414,7 +597,26 @@ public class RecordSharing {
 				//Record.set(record._id, "createdOld", null);
 				return;
 			}
-			if (!record.encrypted.equals("enc"+record.key)) throw new ModelException("Cannot decrypt");
+			
+			if (record.encrypted == null && record.encryptedData == null) return;
+			
+			SecretKey encKey = new SecretKeySpec(record.key, KEY_ALGORITHM);
+			if (record.encrypted != null) {
+			    BSONObject meta = decrypt(encKey, record.encrypted);
+			    
+			    record.app = (ObjectId) meta.get("app");
+				record.creator = (ObjectId) meta.get("creator");
+				record.name = (String) meta.get("name");				
+				record.created = (Date) meta.get("created");
+				record.description = (String) meta.get("description");
+				record.tags = (Set<String>) meta.get("tags");				
+			}
+			
+			if (record.encryptedData != null) {
+				record.data = decrypt(encKey, record.encryptedData);
+			}
+			
+			//if (!record.encrypted.equals("enc"+record.key)) throw new ModelException("Cannot decrypt");
 		}
 		
 		protected void addTimeRestriction(Map<String, Object> properties, int minTime, int maxTime) {
@@ -470,7 +672,7 @@ public class RecordSharing {
 				addTimeRestriction(query, minTime, maxTime);
 				List<Record> directResult = new ArrayList<Record>(Record.getAll(query, fieldsFromDB));
 				for (Record record : directResult) {
-					record.key = encryptionKey;
+					record.key = encryptionKey.getEncoded();
 					if (withOwner) record.owner = this.owner;					
 				}
 				result.addAll(directResult);
@@ -480,15 +682,15 @@ public class RecordSharing {
 			// 4 restricted by time? has APS time restriction? load other APS -> APS (4,5,6) APS LIST -> Records			
 			
 			// 5 Create list format -> Permission List (maybe load other APS)
-			Map<String, BasicDBObject> formats;			
+			Map<String, BasicBSONObject> formats;			
 			
 			if (properties.containsKey("format")) {
 				Object formatRestriction = properties.get("format");
 				if (formatRestriction instanceof String) {
-				  formats = new HashMap<String, BasicDBObject>();
+				  formats = new HashMap<String, BasicBSONObject>();
 				  formats.put((String) formatRestriction, aps.permissions.get((String) formatRestriction));
 				} else {
-					formats = new HashMap<String, BasicDBObject>();
+					formats = new HashMap<String, BasicBSONObject>();
 					for (String format : (Iterable<String>) formatRestriction) {
 						formats.put(format, aps.permissions.get(format));
 					}
@@ -505,17 +707,17 @@ public class RecordSharing {
 				Object ids = properties.get("_id");
 				if (ids instanceof ObjectId) {
 					for (String format : formats.keySet()) {
-					   BasicDBObject map = formats.get(format);
+						BasicBSONObject map = formats.get(format);
 					   if (map != null) {
-						   BasicDBObject target = (BasicDBObject) map.get(ids.toString());
+						   BasicBSONObject target = (BasicBSONObject) map.get(ids.toString());
 						   if (target!=null) result.add(createRecordFromAPSEntry(ids.toString(), format, target, withOwner));
 					   }
 					}
 				} else {
 					for (ObjectId id : (Iterable<ObjectId>) ids) {
 						for (String format : formats.keySet()) {
-							   BasicDBObject map = formats.get(format);
-							   BasicDBObject target = (BasicDBObject) map.get(id.toString());
+							   BasicBSONObject map = formats.get(format);
+							   BasicBSONObject target = (BasicBSONObject) map.get(id.toString());
 							   if (target!=null)
 							   result.add(createRecordFromAPSEntry(id.toString(), format, target, withOwner));
 							}
@@ -523,10 +725,10 @@ public class RecordSharing {
 				}
 			} else {
 				for (String format : formats.keySet()) {
-				    BasicDBObject map = formats.get(format);
+					BasicBSONObject map = formats.get(format);
 				    if (map != null) {
 					    for (String id : map.keySet()) {
-					    	BasicDBObject target = (BasicDBObject) map.get(id);
+					    	BasicBSONObject target = (BasicBSONObject) map.get(id);
 					    	result.add(createRecordFromAPSEntry(id , format, target, withOwner));
 					    }
 				    }
@@ -544,7 +746,7 @@ public class RecordSharing {
 			
 			// If APS is a query redirect with query
 			if (aps.permissions.containsKey(QUERY)) {
-				BasicDBObject query = aps.permissions.get(QUERY);
+				BasicBSONObject query = aps.permissions.get(QUERY);
 				Map<String, Object> combined = combineQuery(properties, query);
 				if (combined == null) return new ArrayList<Record>();
 				if (queryAPS == null) {
@@ -745,18 +947,27 @@ public class RecordSharing {
 			AccessPermissionSet withTime = aps;
 			
 			// resolve Format
-			BasicDBObject obj = withTime.permissions.get(record.format);
+			BasicBSONObject obj = withTime.permissions.get(record.format);
 			if (obj == null) {
 				obj = new BasicDBObject();
 				withTime.permissions.put(record.format, obj);
 			}
 			
 			// add entry
-			BasicDBObject entry = new BasicDBObject();
+			BasicBSONObject entry = new BasicDBObject();
 			entry.put("key", record.key);
 			if (record.owner!=null && withOwner) entry.put("owner", record.owner);
 			obj.put(record._id.toString(), entry);
 						
+		}
+		
+		private void savePermissions() throws ModelException, LostUpdateException {
+			if (isEncrypted) {
+				encodeAPS();
+				aps.updateEncrypted();
+			} else {
+				aps.updatePermissions();
+			}
 		}
 		
 		public void addPermission(Record record, boolean withOwner) throws ModelException {
@@ -764,7 +975,7 @@ public class RecordSharing {
 				addPermissionInternal(record, withOwner);
 				
 				// Store
-				aps.updatePermissions();
+				savePermissions();
 			} catch (LostUpdateException e) {
 				recoverFromLostUpdate();
 				addPermission(record,  withOwner);
@@ -776,7 +987,7 @@ public class RecordSharing {
 			for (Record record : records) addPermissionInternal(record, withOwner);
 			
 			// Store
-			aps.updatePermissions();
+			  savePermissions();
 			} catch (LostUpdateException e) {
 				recoverFromLostUpdate();
 				addPermission(records,  withOwner);
@@ -797,7 +1008,7 @@ public class RecordSharing {
 			AccessPermissionSet withTime = aps;
 			
 			// resolve Format
-			BasicDBObject obj = withTime.permissions.get(record.format);
+			BasicBSONObject obj = withTime.permissions.get(record.format);
 			if (obj == null) return;
 						
 			// remove entry			
@@ -822,7 +1033,7 @@ public class RecordSharing {
 			  for (Record record : records) removePermissionInternal(record);
 			
 			  // Store
-			  aps.updatePermissions();
+			  savePermissions();
 			} catch (LostUpdateException e) {
 				recoverFromLostUpdate();
 				removePermission(records);
@@ -832,7 +1043,7 @@ public class RecordSharing {
 		public void setQuery(Map<String, Object> query) throws ModelException {
 			try {
 				aps.permissions.put(QUERY, new BasicDBObject(query));
-				aps.updatePermissions();
+				savePermissions();
 			} catch (LostUpdateException e) {
 				recoverFromLostUpdate();
 				setQuery(query);
