@@ -40,7 +40,8 @@ angular.module('timeSeriesApp')
                             units: '%'},
       'body-weight' : {title: 'Weight', units: 'kg'},
       'body-bmi' : {title: 'BMI', units: ''},
-      'body-fat' : {title: 'Fat percentage', units: '%'}
+      'body-fat' : {title: 'Fat percentage', units: '%'},
+      'weight' : {title: 'Weight', units: 'kg'}
     };
     api.timeSeriesResourcesKeys = _.keys(api.timeSeriesResources);
     return api;
