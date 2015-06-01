@@ -13,6 +13,10 @@
 	<body>
 		<div class="container" ng-app="jsonRecords" ng-controller="CreateCtrl" ng-cloak>
 		  <h2>CDA Upload</h2>
+		  <div class="alert alert-success alert-dismissable" ng-show="success">
+			<button type="button" class="close" ng-click="success=false" aria-hidden="true">&times;</button>
+			CDA document successfully uploaded.
+		  </div>
 		  <form id="myform" enctype="multipart/form-data" method="post">
 		    <div class="form-group"> 
 		      <label for="files">CDA File:</label>

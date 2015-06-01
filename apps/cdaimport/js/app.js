@@ -48,6 +48,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 		$scope.authToken = authToken;
 		$scope.record = { name : "CDA", description : "Some description", format:"CDA" };
 		$scope.isValid = false;
+		$scope.success = false;
 		
 		$scope.init = function() {
 			 var hFs = function (evt) {
@@ -77,6 +78,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 		};
 		
 		$scope.parseCDA = function(cdaAsText) {
+			$scope.success = false;
 			var parser = new DOMParser();
 			$scope.doc = parser.parseFromString(cdaAsText, "application/xml");
 			
@@ -105,6 +107,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 		
 		$scope.upload = function() {
 			console.log("UPLOAD");
+			$scope.success = false;
 			var data = new FormData(document.forms[0]);
 			
 			$http.post("https://" + window.location.hostname + ":9000/api/apps/upload", data , { transformRequest: angular.identity, headers: {'Content-Type': undefined} })
@@ -117,6 +120,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 				
 				$scope.isValid = false;
 				$scope.patient = null;
+				$scope.success = true;
 			});
 		};
 		
