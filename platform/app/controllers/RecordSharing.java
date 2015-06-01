@@ -254,6 +254,7 @@ public class RecordSharing {
 	}
 	
 	public void addRecord(Member owner, Record record) throws ModelException {
+				
 		addRecordIntern(owner, record, false);
 		record.key = null;
 	}
@@ -283,10 +284,16 @@ public class RecordSharing {
 		
 		if (apswrapper.aps.security.equals(APSSecurityLevel.NONE) || apswrapper.aps.security.equals(APSSecurityLevel.LOW)) {
 			record.key = null;
+			if (record.document != null) documentPart = true;
 		} else if (record.direct) {
-			record.key = apswrapper.encryptionKey.getEncoded();
+			record.key = apswrapper.encryptionKey.getEncoded();		
 		} else if (!documentPart) {
-		    record.key = generateKey().getEncoded();
+			if (record.document != null) {
+				List<Record> doc = apswrapper.lookup(CMaps.map("_id", record.document.toString()), Sets.create("key"));
+				if (doc.size() == 1) record.key = doc.get(0).key;
+				else throw new ModelException("Document not identified");
+				documentPart = true;
+			} else  record.key = generateKey().getEncoded();
 		}
 	    usedKey = record.key;
 	    
@@ -358,8 +365,17 @@ public class RecordSharing {
 		if (result.isEmpty()) return null; else return result.get(0);				
 	}
 	
+	public Record fetch(ObjectId who, ObjectId aps, ObjectId recordId) throws ModelException {
+		List<Record> result = list(who, aps, CMaps.map("_id", recordId), RecordSharing.COMPLETE_DATA );
+		if (result.isEmpty()) return null; else return result.get(0);				
+	}
+	
 	public Set<String> listRecordIds(ObjectId who, ObjectId apsId) throws ModelException {
-		List<Record> result = list(who, apsId, RecordSharing.FULLAPS, RecordSharing.INTERNALIDONLY);
+		return listRecordIds(who, apsId, RecordSharing.FULLAPS);		
+	}
+	
+	public Set<String> listRecordIds(ObjectId who, ObjectId apsId, Map<String,Object> properties) throws ModelException {
+		List<Record> result = list(who, apsId, properties, RecordSharing.INTERNALIDONLY);
 		Set<String> ids = new HashSet<String>();
 		for (Record record : result) ids.add(record._id.toString());
 		return ids;
@@ -393,7 +409,7 @@ public class RecordSharing {
 			validateReadable(this.aps, this.who);
 			isEncrypted = true;
 			encodeAPS();
-			this.aps.permissions = null;
+			if (!aps.security.equals(APSSecurityLevel.NONE)) this.aps.permissions = null;
 			AccessPermissionSet.add(this.aps);
 		}
 		
@@ -578,6 +594,7 @@ public class RecordSharing {
 			meta.put("created", record.created);
 			meta.put("description", record.description);
 			meta.put("tags", record.tags);
+			meta.put("format", record.format);
 			
 			record.encrypted = encrypt(encKey, new BasicBSONObject(meta));
 			record.encryptedData = encrypt(encKey, record.data);
@@ -609,6 +626,8 @@ public class RecordSharing {
 				record.name = (String) meta.get("name");				
 				record.created = (Date) meta.get("created");
 				record.description = (String) meta.get("description");
+				String format = (String) meta.get("format");
+				if (format!=null) record.format = format;
 				record.tags = (Set<String>) meta.get("tags");				
 			}
 			
@@ -760,7 +779,9 @@ public class RecordSharing {
 			// Prepare
 			boolean restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age");
 			boolean restrictedOnCreator = properties.containsKey("creator");
-		
+			boolean restrictedOnFormat = properties.containsKey("format");
+			boolean restrictedByDocument = properties.containsKey("document");
+			boolean restrictedByPart = properties.containsKey("part");
 			
             boolean fetchFromDB = fields.contains("data") ||
             		              fields.contains("app") || 
@@ -814,7 +835,7 @@ public class RecordSharing {
 				  }
 				}*/
 			}
-			boolean postFilter = minDate != null || maxDate != null || restrictedOnCreator;
+			boolean postFilter = minDate != null || maxDate != null || restrictedOnCreator || (restrictedOnFormat && restrictedByDocument);
 			
 			// 2 Load Records from DB (if ID given) -> Records (possibly, encrypted) (if properties _id set )
 			boolean restrictedById = properties.containsKey("_id");			
@@ -828,19 +849,20 @@ public class RecordSharing {
 			}
 		
 			// Load Records from DB if document is given
-			boolean restrictedByDocument = properties.containsKey("document");
-			boolean restrictedByPart = properties.containsKey("part");
+			
 			if (restrictedByDocument && !restrictedById) {
 				Map<String, Object> query = new HashMap<String, Object>();
 				Set<String> queryFields = Sets.create("stream", "time", "document", "part", "encrypted");
 				queryFields.addAll(fieldsFromDB);
-				query.put("document", properties.get("document"));
+				query.put("document", new ObjectId("55686c8be4b08b543c12b847") /* properties.get("document") */);
 				addTimeRestriction(query, minTime, maxTime);
 				if (restrictedByPart) {
 					query.put("part", properties.get("part"));
 				}
-				result.addAll(Record.getAll(query, queryFields));
+				result.addAll(Record.getAll(query, queryFields));				
 			}
+			
+			
 			
 			// try single lookup in given APS with (time, _id, format? (4,5,6) (use 3 only if fails) (Records)
 			for (Record record : result) {
@@ -912,11 +934,25 @@ public class RecordSharing {
 									
 			// 8 Post filter records if necessary		
 			Set<ObjectId> creators = null;
+			Set<String> formats = null;
 			if (restrictedOnCreator) {
 				Object val = properties.get("creator");
 				if (val instanceof Collection<?>) {
 					creators = new HashSet<ObjectId>();
 					for (Object obj : (Collection<?>) val) { creators.add(new ObjectId(obj.toString())); }
+				} else {
+					creators = new HashSet<ObjectId>();
+					creators.add(new ObjectId(val.toString()));
+				}
+			}
+			if (restrictedByDocument && restrictedOnFormat) {
+				Object val = properties.get("format");
+				if (val instanceof Collection<?>) {
+					formats = new HashSet<String>();
+					formats.addAll((Collection<String>) val);					
+				} else if (val instanceof String) {
+					formats = new HashSet<String>();
+				    formats.add((String) val);
 				}
 			}
 						
@@ -926,7 +962,8 @@ public class RecordSharing {
 					if (record.name == null) continue;
 					if (minDate != null && record.created.before(minDate)) continue;
 					if (maxDate != null && record.created.after(maxDate)) continue;
-					if (creators != null && !creators.contains(record.creator)) continue;					
+					if (creators != null && !creators.contains(record.creator)) continue;	
+					if (formats != null && !formats.contains(record.format)) continue;
 					filteredResult.add(record);
 				}
 				result = filteredResult;

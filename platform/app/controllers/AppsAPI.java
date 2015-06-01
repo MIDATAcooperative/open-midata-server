@@ -207,6 +207,9 @@ public class AppsAPI extends Controller {
 		String name = json.get("name").asText();
 		String description = json.get("description").asText();
 		String format = JsonValidation.getString(json, "format");
+		ObjectId document = JsonValidation.getObjectId(json, "document");
+		String part = JsonValidation.getString(json, "part");
+		
 		if (format==null) format = "json";
 		Record record = new Record();
 		record._id = new ObjectId();
@@ -215,6 +218,8 @@ public class AppsAPI extends Controller {
 		record.creator = appToken.ownerId;
 		record.created = DateTimeUtils.now();
 		record.format = format;
+		record.document = document;
+		record.part = part;
 		
 		String stream = tokens!=null ? tokens.get("stream") : null;
 		if (stream!=null) { record.stream = new ObjectId(stream); record.direct = true; }
@@ -235,7 +240,9 @@ public class AppsAPI extends Controller {
 			RecordSharing.instance.share(targetUser._id, targetUser.myaps, targetAps, records, true);
 		}
 		
-		return ok();
+		ObjectNode obj = Json.newObject();
+		obj.put("_id", record._id.toString());
+		return ok(obj);
 	}
 
 	/**
@@ -286,7 +293,9 @@ public class AppsAPI extends Controller {
 			record.created = DateTimeUtils.now();
 			record.name = metaData.get("name")[0];
 			record.description = metaData.get("description")[0];
-			record.format = "Attachment";
+			String[] formats = metaData.get("format");
+			record.format = (formats != null && formats.length == 1) ? formats[0] : "Attachment";
+						
 			record.data = new BasicDBObject(new ChainedMap<String, String>().put("type", "file").put("name", filename)
 					.put("contentType", contentType).get());
 
@@ -294,12 +303,16 @@ public class AppsAPI extends Controller {
 		
 			RecordSharing.instance.addRecord(owner, record);
 			FileStorage.store(file, record._id, filename, contentType);
+			
+			ObjectNode obj = Json.newObject();
+			obj.put("_id", record._id.toString());
+			return ok(obj);
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		} catch (DatabaseException e) {
 			return badRequest(e.getMessage());
 		}
-		return ok();
+		
 	}
 
 	/**

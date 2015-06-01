@@ -1,8 +1,10 @@
 package controllers;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,6 +23,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 import utils.DateTimeUtils;
 import utils.auth.AppToken;
 import utils.auth.RecordToken;
@@ -29,7 +32,9 @@ import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
+import utils.db.FileStorage;
 import utils.db.ObjectIdConversion;
+import utils.db.FileStorage.FileData;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -113,61 +118,64 @@ public class VisualizationsAPI extends Controller {
 		if (authToken == null) {
 			return badRequest("Invalid authToken.");
 		}
-		/*
-		Map<String, ObjectId> spaceProperties = new ChainedMap<String, ObjectId>().put("_id", authToken.spaceId)
-				.put("owner", authToken.userId).get();
-		try {
-			if (!Space.exists(spaceProperties)) {
-				return badRequest("Invalid authToken.");
-			}
-		} catch (ModelException e) {
-			return badRequest(e.getMessage());
-		}
-
-		// get ids of records in this space
-		Space space;
-		try {
-			space = Space.get(spaceProperties, new ChainedSet<String>().add("records").get());
-		} catch (ModelException e) {
-			return internalServerError(e.getMessage());
-		}
-        */
-		// filter out records that are not assigned to that space
-		
-		/* TODO
-		Object recordIdSet = properties.get("_id");
-		if (recordIdSet instanceof Set<?>) {
-			Set<?> recordIds = (Set<?>) recordIdSet;
-			Iterator<?> iterator = recordIds.iterator();
-			while (iterator.hasNext()) {
-				Object recordId = iterator.next();
-				if (!space.records.contains(recordId)) {
-					iterator.remove();
-				}
-			}
-		} else {
-			return badRequest("No set of record ids found.");
-		}
-		
-		*/
-		//Object recordIdSet = properties.get("_id");
-		//Set<String> recordIds = (Set<String>) recordIdSet;
-		
-		/*
-		if (recordIdSet instanceof Set<?>) {					
-			RecordSharing.instance.fetch(recordIds);				
-		} else {
-			return badRequest("No set of record ids found.");
-		}*/
+	
 		
 		if (properties.containsKey("owner")) {
 			if (properties.get("owner").equals("self")) properties.put("owner", authToken.userId.toString());
 		}
 
 		// get record data
-		Collection<Record> records = LargeRecord.getAll(authToken.userId, authToken.spaceId, properties, fields);
+		Collection<Record> records = null;
+		
+		if (properties.containsKey("convert")) {
+		   // Load direct result
+		   records = LargeRecord.getAll(authToken.userId, authToken.spaceId, properties, fields);
+		   
+		   // Search for convertable
+		   Map<String, Object> extended = new HashMap<String,Object>(properties);
+		   extended.remove("format");
+		   Set<String> candidates = RecordSharing.instance.listRecordIds(authToken.userId, authToken.spaceId, extended);
+		   if (properties.containsKey("format")) {
+			   // extended.put("format", properties.get("format"));
+			   extended.put("part", properties.get("format"));
+		   }
+		   extended.put("document", ObjectIdConversion.toObjectIds(candidates));		   		 
+		   records.addAll(RecordSharing.instance.list(authToken.userId, authToken.spaceId, extended, fields));
+		   		   
+		} else {
+		   records = LargeRecord.getAll(authToken.userId, authToken.spaceId, properties, fields);		  
+		}
+		
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		return ok(Json.toJson(records));
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall	
+	public static Result getFile() throws ModelException, JsonValidationException {
+		// allow cross origin request from visualizations server
+        String visualizationsServer = Play.application().configuration().getString("visualizations.server");
+		response().setHeader("Access-Control-Allow-Origin", "https://" + visualizationsServer);
+
+		// validate json
+		JsonNode json = request().body().asJson();				
+		JsonValidation.validate(json, "authToken", "_id");		
+		
+		// decrypt authToken and check whether space with corresponding owner exists
+		SpaceToken authToken = SpaceToken.decrypt(json.get("authToken").asText());
+		if (authToken == null) {
+			return badRequest("Invalid authToken.");
+		}
+		
+		ObjectId recordId = JsonValidation.getObjectId(json, "_id");
+
+		Record target = RecordSharing.instance.fetch(authToken.userId, authToken.spaceId, recordId);
+		if (target==null) return badRequest("Unknown Record");
+		
+		FileData fileData = FileStorage.retrieve(recordId);
+		if (fileData == null) return badRequest();
+		//response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
+		return ok(fileData.inputStream);
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)

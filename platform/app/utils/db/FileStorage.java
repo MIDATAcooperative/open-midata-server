@@ -37,7 +37,8 @@ public class FileStorage {
 	public static FileData retrieve(ObjectId id) {
 		GridFS fileSystem = new GridFS(DBLayer.getFSDB(), FILE_STORAGE);
 		GridFSDBFile retrievedFile = fileSystem.findOne(id);
-		return new FileData(retrievedFile.getInputStream(), retrievedFile.getFilename());
+		if (retrievedFile != null) return new FileData(retrievedFile.getInputStream(), retrievedFile.getFilename());
+		return null;
 	}
 
 	/**

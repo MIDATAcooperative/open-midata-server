@@ -230,5 +230,7 @@ OPTIONS /api/visualizations/ids     controllers.VisualizationsAPI.checkPreflight
 POST    /api/visualizations/ids     controllers.VisualizationsAPI.getIds()
 OPTIONS /api/visualizations/records controllers.VisualizationsAPI.checkPreflight()
 POST    /api/visualizations/records controllers.VisualizationsAPI.getRecords()
+OPTIONS /api/visualizations/file    controllers.VisualizationsAPI.checkPreflight()
+POST    /api/visualizations/file    controllers.VisualizationsAPI.getFile()
 OPTIONS /api/visualizations/create  controllers.VisualizationsAPI.checkPreflight()
 POST    /api/visualizations/create  controllers.VisualizationsAPI.createRecord()
