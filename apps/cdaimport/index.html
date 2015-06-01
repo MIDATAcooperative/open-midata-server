@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>CDA Import</title>
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<!-- jQuery needed for Bootstrap's JavaScript plugins -->
+		<script type="text/javascript" src="//code.jquery.com/jquery-2.0.2.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
+		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" defer></script>
+		<script type="text/javascript" src="js/app.js" defer></script>
+	</head>
+	<body>
+		<div class="container" ng-app="jsonRecords" ng-controller="CreateCtrl" ng-cloak>
+		  <h2>CDA Upload</h2>
+		  <form id="myform" enctype="multipart/form-data" method="post">
+		    <div class="form-group"> 
+		      <label for="files">CDA File:</label>
+		      <input type="file" id="files" name="file" >
+		    </div>
+		     <div class="form-group" ng-show="noCDA">
+		      <label for="patient">File:</label>
+		      <span>This is not a valid CDA document.</span>
+		    </div>	
+		    <div class="form-group" ng-show="patient">
+		      <label for="patient">Patient:</label>
+		      <span>{{ patient.name }}</span>
+		    </div>		    
+		    <div class="form-group" ng-show="patient">
+		      <label for="patient">???:</label>
+		      <span>Welche Informationen sollen VOR dem Hochladen auf den Server angezeigt werden?</span>
+		    </div>
+		    <input type="hidden" name="authToken" ng-value="authToken" />
+		    <input type="hidden" name="name" ng-value="record.name" />
+		    <input type="hidden" name="description" ng-value="record.description" />
+		    <input type="hidden" name="format" ng-value="record.format" />
+		    
+		    <button class="btn btn-primary" ng-disabled="!isValid" ng-click="upload()">Upload</button>
+		  </form>
+		</div>
+	</body>
+</html>
