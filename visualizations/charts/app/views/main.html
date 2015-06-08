@@ -1,20 +1,47 @@
+<div>
 
-<div ng-if="chartType==line">
+<form class="form-inline">
+  <div class="form-group" ng-show="reports.length > 1">
+    <label for="report">Report:</label>
+    <select id="report" class="form-control" ng-model="report" ng-options="report.name for report in reports" ng-change="prepareReport()"></select>
+  </div>
+  <div class="form-group" ng-show="report.filter">
+     <label for="filter">{{ report.filterLabel }}</label>
+     <select id="filter"  class="form-control" ng-model="selectedFilter" ng-options="f for f in filter" ng-change="prepareFilter()"></select>
+  </div>
+  <div class="form-group" ng-show="report.filter2">
+     <label for="filter2">{{ report.filterLabel2 }}</label>
+     <select id="filter2" class="form-control" ng-model="selectedFilter2" ng-options="f for f in filter2" ng-change="update()"></select>
+  </div>
+</form>
+<p ng-show="report.unit">Unit: {{ report.unit }}</p>
+<div ng-show="entries.length==0" class="alert alert-warning">
+  <strong>Nothing to display!</strong> There must be at least one record with known format assigned to this visualization.  
+</div>
+
+<div ng-if="chartType=='line'">
 <canvas id="line" class="chart chart-line" data="data"
   labels="labels" legend="true" series="series"
   click="onClick">
 </canvas> 
 </div>
 
-<div ng-if="chartType==bar">
-<canvas id="bar" legend="true" class="chart chart-bar" data="data" labels="labels"></canvas>
+<div ng-if="chartType=='bar'">
+<canvas id="bar" legend="true" class="chart chart-bar" data="data" labels="labels" series="series"></canvas>
 </div>
 
-<div ng-if="chartType==pie">
+<div ng-if="chartType=='pie'">
 <canvas id="doughnut" class="chart chart-doughnut" data="data" labels="labels"></canvas>
 </div>
 
-<div ng-if="chartType==radar">
-<canvas id="radar" class="chart chart-radar" data="data" labels="labels"></canvas>
+<div ng-if="chartType=='radar'">
+<canvas id="radar" class="chart chart-radar" data="data" labels="labels" series="series"></canvas>
 </div>
- 
+   
+<div ng-if="chartType=='simple'" class="well well-lg">
+  <div class="text-center text-primary">Measure: <b>{{ entry.format }}</b></div>
+  <div ng-show="entry.context" class="text-center">Context: <i>{{ entry.context }}</i></div>
+  <div class="text-center lead"><span style="color: #1c4982;display: block;font-size: 100px;">{{ entry.value }}</span>{{ entry.unit }}</div>
+  <div class="text-center">Date: <strong>{{ entry.dateTime }}</strong></div>
+</div>
+</div>

@@ -1,0 +1,30 @@
+<div>
+
+
+<p class="text-center"><strong>{{ report.name }}</strong></p>
+<div ng-if="chartType=='line'">
+<canvas id="line" class="chart chart-line" data="data"
+  labels="labels" legend="true" series="series"
+  click="onClick">
+</canvas> 
+</div>
+
+<div ng-if="chartType=='bar'">
+<canvas id="bar" legend="true" class="chart chart-bar" data="data" labels="labels"></canvas>
+</div>
+
+<div ng-if="chartType=='pie'">
+<canvas id="doughnut" class="chart chart-doughnut" data="data" labels="labels" series="series"></canvas>
+</div>
+
+<div ng-if="chartType=='radar'">
+<canvas id="radar" class="chart chart-radar" data="data" labels="labels" series="series"></canvas>
+</div>
+
+<div ng-if="chartType=='simple'">
+  <div class="text-center text-primary"><b>{{ entry.format }}</b></div>
+  <div class="text-center"><i>{{ entry.context }}</i></div>
+  <div class="text-center lead"><span style="color: #1c4982;display: block;font-size: 100px;">{{ entry.value }}</span>{{ entry.unit }}</div>
+  <div class="text-center"><strong>{{ entry.dateTime }}</strong></div>
+</div>
+</div>

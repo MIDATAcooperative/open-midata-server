@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('chartApp')
-  .controller('MainCtrl', ['$scope', '$routeParams', 'server', 
-    function ($scope, $routeParams, server) {
+  .controller('MainCtrl', ['$scope', '$filter', '$routeParams', 'server', 
+    function ($scope, $filter, $routeParams, server) {
       
-	  $scope.authToken = $location.path().split("/")[1];
+	  $scope.authToken = $routeParams.authToken;
 	  
 	  $scope.labels = [];
 	  $scope.series = [];
@@ -13,29 +13,35 @@ angular.module('chartApp')
 	  $scope.chartType = "none";
 	  $scope.filter = [];
 	  $scope.selectedFilter = null;
+	  $scope.filter2 = [];
+	  $scope.selectedFilter2 = null;
 	  $scope.report = {};
+	  $scope.reports = [];
+	  $scope.unit = null;
 	  
 	  $scope.reload = function() {
-		  server.getRecords($scope.authToken, { }, ["owner", "ownerName", "format", "data"])
+		  server.getRecords($scope.authToken, { }, ["owner", "created", "ownerName", "format", "data"])
 		  .then(function(results) {
 			  $scope.raw = results.data;
-			  $scope.showBest();
+			  $scope.prepare();
 		  });
 	  };
 	  
 	  $scope.extractData = function(records) {
 		  var entries = [];
 		  angular.forEach(records, function(record) {
-			  angular.forEach(record, function(lst, format) {
+			  var cdate = new Date(record.created).toISOString();
+			  angular.forEach(record.data, function(lst, format) {
 				  angular.forEach(lst, function(entry) {
 					  var e = {
-							  value : entry.value,
+							  value : (Number(entry.value) || Number(entry.amount) || Number(entry[format])),
 							  unit : entry.unit,
-							  context : format,
-							  dateTime : entry.dateTime,
-							  owner : record.owner
+							  format : format,
+							  context : entry.context,
+							  dateTime : (entry.dateTime || entry.date || record.created),
+							  owner : record.ownerName
 					  };
-					  entries.push(e);
+					  if (Number.isFinite(e.value)) entries.push(e);
 				  });
 			  });
 		  });
@@ -46,27 +52,37 @@ angular.module('chartApp')
 		  var aTime = {};
 		  var aOwner = {};
 		  var aContext = {};
+		  var aFormat = {};
+		  var aUnit = {};
 		  angular.forEach(entries, function(entry) {
 			  aTime[entry.dateTime] = true;
 			  aOwner[entry.owner] = true;
 			  aContext[entry.context] = true;
+			  aFormat[entry.format] = true;
+			  aUnit[entry.unit] = true;
 		  });
 		  var result = {
 				  dateTime : [],
 		          owner : [],
-		          context : []
+		          context : [],
+		          format : [],
+		          units : []
 		  };
 		  angular.forEach(aTime, function(v,k) { result.dateTime.push(k); });
           angular.forEach(aOwner, function(v,k) { result.owner.push(k); });
           angular.forEach(aContext , function(v,k) { result.context.push(k); });
+          angular.forEach(aFormat , function(v,k) { result.format.push(k); });
+          angular.forEach(aUnit , function(v,k) { result.units.push(k); });
           
           result.dateTime.sort();
           result.owner.sort();
           result.context.sort();
+          result.format.sort();
           
           result.hasMultipleDates = result.dateTime.length > 1;
           result.hasMultipleOwners = result.owner.length > 1;
           result.hasMultipleContexts = result.context.length > 1;
+          result.hasMultipleFormats = result.format.length > 1;
 		  return result;
 	  };
 	  
@@ -76,47 +92,143 @@ angular.module('chartApp')
 		  return result;
 	  };
 	  
-	  $scope.filter = function(entries, prop, value) {
+	  $scope.doFilter = function(entries, prop, value) {
 		  return $filter('filter')(entries, function(entry) { return entry[prop] == value; });
 	  };
 	  
-	  $scope.build = function(labelAxis, seriesAxis, info, entries) {
+	  $scope.build = function(labelAxis, seriesAxis, info, entries, alg) {
+		  if (info.units.length == 1) { $scope.unit = info.units[0]; } else { $scope.unit = ""; }
+		  
+		  if (alg == "first") {
+			  $scope.entry = entries[0];
+			  return;
+		  }
 		  $scope.labels = info[labelAxis];
 		  $scope.series = info[seriesAxis];
+		  
 		  var labelMap = $scope.map($scope.labels);
 		  var seriesMap = $scope.map($scope.series);
 		  var d = $scope.data = [];
-		  angular.forEach($scope.series, function() { d.push(new Array($scope.labels.length)); });
-		  angular.forEach(entries, function(entry) {
-			  d[seriesMap[entry[seriesAxis]]][labelMap[entry[labelAxis]]] = entry.value;
-		  });
+		  var h = [];
+		  if (alg == null || alg == "simple") {
+			  angular.forEach($scope.series, function() { d.push(new Array($scope.labels.length).fill(0)); });
+			  angular.forEach(entries, function(entry) {
+				  d[seriesMap[entry[seriesAxis]]][labelMap[entry[labelAxis]]] = entry.value;
+			  });
+		  } else if (alg == "newest") {
+			  angular.forEach($scope.series, function() { 
+				  d.push(new Array($scope.labels.length).fill(0));
+				  h.push(new Array($scope.labels.length));
+			  });
+			  angular.forEach(entries, function(entry) {
+				  var s = seriesMap[entry[seriesAxis]];
+				  var l = labelMap[entry[labelAxis]];
+				  if (!h[s][l] || entry.dateTime > h[s][l]) {
+				    d[s][l] = entry.value;
+				    h[s][l] = entry.dateTime;
+				  }
+			  });
+		  } else if (alg == "avg") {
+			  // TODO
+		  }
+		  console.log(alg);
+		  console.log(d);
 	  };
-	  
+	  		 
 	  $scope.prepare = function() {
 		 var entries = $scope.extractData($scope.raw);
+		 console.log(entries);
 		 var info = $scope.buildAxes(entries);
-			 
+		 $scope.info = info;
+		 $scope.entries = entries;
+		 console.log(info);
+		 $scope.showBest(info);
+		 console.log($scope.report);
+				 
+		 $scope.prepareReport();
+	  };
+	  
+	  $scope.prepareReport = function() {
+		  console.log("prepareReport");
+		  $scope.chartType = $scope.report.type;
+		  
+		  if ($scope.report.filter) {
+		    $scope.filter = $scope.info[$scope.report.filter];
+		    $scope.selectedFilter = $scope.filter[0];
+		  }
+		  
+		  $scope.prepareFilter();
+	  };
+	  
+	  $scope.prepareFilter = function() {
+		  console.log("prepareFilter");
+		  		  
+		  var filteredEntries = $scope.report.filter ? $scope.doFilter($scope.entries, $scope.report.filter, $scope.selectedFilter) : $scope.entries;
+		  var filteredInfo = $scope.report.filter ? $scope.buildAxes(filteredEntries) : $scope.info;
+		  if ($scope.report.filter2) {
+			 $scope.filter2 = filteredInfo[$scope.report.filter2];
+			 $scope.selectedFilter2 = $scope.filter2[0];
+		  }
+		  $scope.entries1 = filteredEntries;
+		  $scope.info1 = filteredInfo;
+		  
+		  $scope.update();
 	  };
 	  
 	  $scope.update = function() {
+		  console.log("update");
+		  console.log($scope.report);
+		  var filteredEntries = $scope.report.filter2 ? $scope.doFilter($scope.entries1, $scope.report.filter2, $scope.selectedFilter2) : $scope.entries1;
+		  var filteredInfo = $scope.report.filter2 ? $scope.buildAxes(filteredEntries) : $scope.info1;
+		  $scope.build($scope.report.label, $scope.report.series, filteredInfo, filteredEntries, $scope.report.alg);
+		  console.log(filteredEntries);
+		  console.log(filteredInfo);
+		  console.log($scope.series);
 	  };
 	  
 	  $scope.showBest = function(info) {
-		 
+		 var r = [];
 		 if (info.hasMultipleDates) {
-			 if (info.hasMultipleOwner) {
-				 
+			 r.push( { name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", filter: info.hasMultipleFormats ? "format" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null } );
+			 
+			 if (info.hasMultipleFormats) {
+				r.push( { name:"Time Series per Measure", type : "line", label : "dateTime", series : "format", filter: info.hasMultipleOwners ? "owner" : null, filterLabel: info.hasMultipleOwners ? "Person" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null } );
 			 }
 			 
-		 };
+			 if (info.hasMultipleContexts) {
+   			    r.push( { name:"Time Series per Context", type : "line", label : "dateTime", series : "context", filter: info.hasMultipleFormats ? "format" : null , filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleOwners ? "owner" : null, filterLabel2: info.hasMultipleOwners ? "Person" : null } );				 
+			 }			    
+		 }
+		 
+		 if (info.hasMultipleFormats) {
+			 if (info.hasMultiplePersons) {				 
+				 r.push( { name:"Radar-Chart: Format/Person", type : "radar", label : "format", series : "owner", filter: null, filterLabel: null, alg : "newest" } );
+			 }
+			 r.push( { name:"Bar-Chart: Format/Person", type : "bar", label : "format", series : "owner", filter: null, filterLabel: null, alg : "newest" } );			
+		 }
+		 
+		 if (info.hasMultipleContexts) {
+			 if (info.hasMultiplePersons) {				 
+				 r.push( { name:"Radar-Chart: Context/Person", type : "radar", label : "context", series : "owner", filter: info.hasMultipleFormats ? "format" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, alg : "newest" } );
+			 }
+			 r.push( { name:"Bar-Chart: Context/Person", type : "bar", label : "context", series : "owner", filter: info.hasMultipleFormats ? "format" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, alg : "newest" });			 			 
+		 }
+		 
+		 if (info.hasMultiplePersons && !info.hasMultipleFormats && !info.hasMultipleContexts) {
+			 r.push( { name:"Bar-Chart: Persons", type : "bar", label : "owner", series : "format", filter: null, filterLabel: null, alg : "newest" });
+		 }
+         
+		 if (r.length==0) {
+			 r.push( { name:"Single Value", type:"simple", label:"format", series:"owner", filter:null, filterLabel : null, alg : "first" });
+		 }
+		 
+		 $scope.reports = r;
+		 $scope.report = r[0];		 
 	  };
 	  
+	  $scope.reload();
 	  
     }]);
 
 
-   // Line Chart : label:time  series:owner  filter:context
-   // Line chart: label:time series:context filter:owner
-   // Bar chart: label:context, series:context newest:time 
-   // Radar chart : label:context series:owner filter:time
-   // 
+ 
