@@ -12,18 +12,10 @@ recordList.controller('RecordListCtrl', ['$scope', '$http', '$location',
 
 		// get the ids of the records assigned to this space
 		var data = {"authToken": authToken};
-		$http.post("https://" + window.location.hostname + ":9000/api/visualizations/ids", JSON.stringify(data)).
-			success(function(recordIds) {
-				getRecords(recordIds);
-			}).
-			error(function(err) {
-				$scope.error = "Failed to load records: " + err;
-				$scope.loading = false;
-			});
-		
+				
 		// get the data for the records in this space
-		getRecords = function(recordIds) {
-			data.properties = {"_id": recordIds};
+		$scope.getRecords = function() {
+			data.properties = { "format" : "Text" };
 			data.fields = ["data"];
 			$http.post("https://" + window.location.hostname + ":9000/api/visualizations/records", JSON.stringify(data)).
 				success(function(records) {
@@ -42,5 +34,7 @@ recordList.controller('RecordListCtrl', ['$scope', '$http', '$location',
 					$scope.loading = false;
 				});
 		}
+		
+		$scope.getRecords();
 	}
 ]);

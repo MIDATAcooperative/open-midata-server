@@ -221,4 +221,6 @@ public class Spaces extends Controller {
 		url = url.replace(":authToken", spaceToken.encrypt());
 		return ok(url);						
 	}
+	
+	
 }

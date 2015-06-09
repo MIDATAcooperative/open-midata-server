@@ -226,7 +226,7 @@ public class VisualizationsAPI extends Controller {
 		record.name = name;
 		record.description = description;
 		
-		RecordSharing.instance.addRecord(targetUser, record);
+		RecordSharing.instance.addRecord(targetUser._id, record);
 				
 		Set<ObjectId> records = new HashSet<ObjectId>();
 		records.add(record._id);

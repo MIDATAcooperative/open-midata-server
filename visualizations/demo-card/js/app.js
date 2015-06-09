@@ -13,18 +13,12 @@ recordList.controller('RecordListCtrl', ['$scope', '$http', '$location',
 
 		// get the ids of the records assigned to this space
 		var data = {"authToken": authToken};
-		$http.post("https://" + window.location.hostname + ":9000/api/visualizations/ids", JSON.stringify(data)).
-			success(function(recordIds) {
-				getRecords(recordIds);
-			}).
-			error(function(err) {
-				$scope.error = "Failed to load records: " + err;
-				$scope.loading = false;
-			});
+				
+		
 		
 		// get the data for the records in this space
-		getRecords = function(recordIds) {
-			data.properties = {"_id": recordIds};
+		getRecords = function() {
+			data.properties = { format : [ "cardio1/demo-card", "cardio2/demo-card" ] };
 			data.fields = ["data", "format", "created", "owner", "ownerName"];
 			$http.post("https://" + window.location.hostname + ":9000/api/visualizations/records", JSON.stringify(data)).
 				success(function(records) {
@@ -75,6 +69,7 @@ recordList.controller('RecordListCtrl', ['$scope', '$http', '$location',
 			return pair.part2.data.ldl > 160 || pair.part1.data.bloodpressureSys > 160;			 
 		}; 
 		
+		getRecords();
 		
 	}
 ]);

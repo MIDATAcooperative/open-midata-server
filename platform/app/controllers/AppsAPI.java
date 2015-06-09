@@ -232,7 +232,7 @@ public class AppsAPI extends Controller {
 		record.name = name;
 		record.description = description;
 		
-		RecordSharing.instance.addRecord(targetUser, record);
+		RecordSharing.instance.addRecord(targetUser._id, record);
 		
 		if (targetAps != null) {
 			Set<ObjectId> records = new HashSet<ObjectId>();
@@ -301,7 +301,7 @@ public class AppsAPI extends Controller {
 
 		// save file with file storage utility
 		
-			RecordSharing.instance.addRecord(owner, record);
+			RecordSharing.instance.addRecord(owner._id, record);
 			FileStorage.store(file, record._id, filename, contentType);
 			
 			ObjectNode obj = Json.newObject();

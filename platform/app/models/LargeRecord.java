@@ -187,7 +187,7 @@ public class LargeRecord  {
 		masterRecord.data.put("chunks", chunks);
 
 		// insert the master record as a normal record
-		RecordSharing.instance.addDocumentRecord(owner, masterRecord, recs);
+		RecordSharing.instance.addDocumentRecord(owner._id, masterRecord, recs);
 	}
 
 	/**

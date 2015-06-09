@@ -92,7 +92,7 @@ public class Apps extends Controller {
 			User.set(userId, "apps", user.apps);
 			
 			if (app.recommendedStream != null) {
-				Record stream = RecordSharing.instance.createStream(user, user.myaps, app.recommendedStream, true);
+				Record stream = RecordSharing.instance.createStream(user._id, user.myaps, app.recommendedStream, true);
 				Map<String, String> apptokens = new HashMap<String, String>();
 				apptokens.put("stream", stream._id.toString());
 			    user.tokens.put(appIdString, apptokens);
