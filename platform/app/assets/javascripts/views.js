@@ -397,8 +397,9 @@ views.controller('SpaceSummaryCtrl', ['$scope', '$http', '$attrs', '$sce', 'reco
         if (!$scope.view.active) return;	
     	
     	var spaceId = $scope.view.setup.spaceId;
+    	var recordId = $scope.view.setup.recordId;
     	
-    	$scope.status.doBusy(spaces.getPreviewUrl(spaceId)).
+    	$scope.status.doBusy(recordId ? records.getUrl(recordId) : ($scope.view.setup.nopreview ? spaces.getUrl(spaceId) : spaces.getPreviewUrl(spaceId))).
 		then(function(results) {
 			if (results.data) {
 			  $scope.url = $sce.trustAsResourceUrl(results.data);

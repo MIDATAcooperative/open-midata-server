@@ -177,6 +177,10 @@ services.factory('records', function($http) {
 		return $http(jsRoutes.controllers.Records.search(query));
 	};
 	
+	service.getUrl = function(recordId) {
+		return $http(jsRoutes.controllers.Records.getRecordUrl(recordId));
+	};
+	
 	return service;
 });
 services.factory('apps', function($http, $q) {

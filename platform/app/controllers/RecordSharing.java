@@ -361,7 +361,11 @@ public class RecordSharing {
 	}
 	
 	public Record fetch(ObjectId who, RecordToken token) throws ModelException {
-		List<Record> result = list(who, new ObjectId(token.apsId), CMaps.map("_id", new ObjectId(token.recordId)), RecordSharing.COMPLETE_DATA );
+		return fetch(who, token, RecordSharing.COMPLETE_DATA);			
+	}
+	
+	public Record fetch(ObjectId who, RecordToken token, Set<String> fields) throws ModelException {
+		List<Record> result = list(who, new ObjectId(token.apsId), CMaps.map("_id", new ObjectId(token.recordId)), fields );
 		if (result.isEmpty()) return null; else return result.get(0);				
 	}
 	

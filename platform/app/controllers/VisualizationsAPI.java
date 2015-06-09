@@ -76,23 +76,6 @@ public class VisualizationsAPI extends Controller {
 			return badRequest("Invalid authToken.");
 		}
 		
-		/*
-		Map<String, ObjectId> spaceProperties = new ChainedMap<String, ObjectId>().put("_id", spaceToken.spaceId)
-				.put("owner", spaceToken.userId).get();
-		try {
-			if (!Space.exists(spaceProperties)) {
-				return badRequest("Invalid authToken.");
-			}
-		} catch (ModelException e) {
-			return badRequest(e.getMessage());
-		}
-		
-		Space space;
-		try {
-			space = Space.get(spaceProperties, new ChainedSet<String>().add("records").get());
-		} catch (ModelException e) {
-			return internalServerError(e.getMessage());
-		}*/
 		
 		Set<ObjectId> tokens = ObjectIdConversion.toObjectIds(RecordSharing.instance.listRecordIds(spaceToken.userId, spaceToken.spaceId));		
 		return ok(Json.toJson(tokens));
@@ -123,6 +106,8 @@ public class VisualizationsAPI extends Controller {
 		if (properties.containsKey("owner")) {
 			if (properties.get("owner").equals("self")) properties.put("owner", authToken.userId.toString());
 		}
+		
+		if (authToken.recordId != null) properties.put("_id", authToken.recordId);
 
 		// get record data
 		Collection<Record> records = null;

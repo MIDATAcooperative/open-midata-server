@@ -1,14 +1,21 @@
-var details = angular.module('details', []);
-details.controller('RecordCtrl', ['$scope', '$http', function($scope, $http) {
+var details = angular.module('details', [ 'services' ]);
+details.controller('RecordCtrl', ['$scope', '$http', '$sce', 'records', 'status', function($scope, $http, $sce, records, status) {
 	// init
 	$scope.error = null;
 	$scope.record = {};
+	$scope.status = new status(true);
 	
 	// parse record id (format: /record/:id) and load the record
 	var recordId = window.location.pathname.split("/")[3];
 	var data = {"_id": recordId };
-	//var fields = ["name", "owner", "app", "creator", "created", "data"];
-	// var data = {"properties": properties, "fields": fields};
+	
+	$scope.status.doBusy(records.getUrl(recordId)).
+	then(function(results) {
+		if (results.data) {
+		  $scope.url = $sce.trustAsResourceUrl(results.data);
+		}
+	});
+		
 	$http.post(jsRoutes.controllers.Records.get().url, JSON.stringify(data)).
 		success(function(records) {
 			$scope.record = records;
@@ -17,8 +24,8 @@ details.controller('RecordCtrl', ['$scope', '$http', function($scope, $http) {
 				$scope.downloadLink = jsRoutes.controllers.Records.getFile(recordId).url;
 			}
 			loadUserNames();
-			loadAppName();
-			//rewriteCreated();
+			loadAppName();										    	    	
+									
 		}).
 		error(function(err) { $scope.error = "Failed to load record details: " + err; });
 	

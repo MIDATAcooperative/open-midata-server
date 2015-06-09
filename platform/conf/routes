@@ -51,6 +51,7 @@ GET     /members/records/filters/*filters                controllers.Records.fil
 POST    /members/api/records/get                         controllers.Records.get()
 GET     /members/api/records/visible                     controllers.Records.getVisibleRecords()
 POST    /members/api/records/list                        controllers.Records.getRecords()
+GET     /members/api/records/:id/view                    controllers.Records.getRecordUrl(id: String)
 GET     /members/api/records/shared                      controllers.Records.getSharingInfo()
 GET     /members/records/import/:appId                   controllers.Records.importRecords(appId: String)
 GET     /records/redirect/:appId                         controllers.Records.onAuthorized(appId: String)
@@ -70,6 +71,7 @@ POST    /members/api/spaces/:id/records                  controllers.Spaces.addR
 GET     /members/api/spaces/:id/token                    controllers.Spaces.getToken(id: String)
 GET     /members/api/spaces/:id/url                      controllers.Spaces.getUrl(id: String)
 GET     /members/api/spaces/:id/preview                  controllers.Spaces.getPreviewUrl(id: String)
+
 # Circles
 GET     /members/circles                                 controllers.Circles.index()
 GET     /members/circles/:id                             controllers.Circles.details(id: String)

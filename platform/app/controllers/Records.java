@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import models.Circle;
+import models.FormatInfo;
 import models.LargeRecord;
 import models.MemberKey;
 import models.ModelException;
@@ -17,15 +18,18 @@ import models.Record;
 import models.Space;
 import models.Member;
 import models.StudyParticipation;
+import models.Visualization;
 
 import org.bson.types.ObjectId;
 
+import play.Play;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.auth.RecordToken;
+import utils.auth.SpaceToken;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.ReferenceTool;
@@ -409,6 +413,30 @@ public class Records extends Controller {
 		
 				
 		return ok();
+	}
+	
+	@APICall
+	@Security.Authenticated(Secured.class)
+	public static Result getRecordUrl(String recordIdString) throws ModelException {
+		ObjectId userId = new ObjectId(request().username());
+		RecordToken tk = Records.getRecordTokenFromString(recordIdString);
+		
+		Record record = RecordSharing.instance.fetch(userId, tk, Sets.create("format"));
+		if (record == null) return badRequest("Record not found!");
+		if (record.format == null) return ok();
+		
+		FormatInfo format = FormatInfo.getByName(record.format);
+		if (format == null) return ok();
+		
+		Visualization visualization = Visualization.getById(format.visualization, Sets.create("filename", "url"));
+					
+		// create encrypted authToken
+		SpaceToken spaceToken = new SpaceToken(new ObjectId(tk.apsId), userId, new ObjectId(tk.recordId));
+		
+		String visualizationServer = Play.application().configuration().getString("visualizations.server");
+		String url = "https://" + visualizationServer + "/" + visualization.filename + "/" + visualization.url;
+		url = url.replace(":authToken", spaceToken.encrypt());
+		return ok(url);						
 	}
 
 	/**

@@ -341,6 +341,7 @@ public class Application extends Controller {
 				controllers.routes.javascript.Records.search(),				
 				controllers.routes.javascript.Records.updateSharing(),				
 				controllers.routes.javascript.Records.getFile(),
+				controllers.routes.javascript.Records.getRecordUrl(),
 				// Circles
 				controllers.routes.javascript.Circles.get(),
 				controllers.routes.javascript.Circles.add(),

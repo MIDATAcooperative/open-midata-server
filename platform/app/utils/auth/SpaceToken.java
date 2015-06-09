@@ -17,15 +17,24 @@ public class SpaceToken {
 
 	public ObjectId spaceId;
 	public ObjectId userId;
+	public ObjectId recordId;
 
 	public SpaceToken(ObjectId spaceId, ObjectId userId) {
 		this.spaceId = spaceId;
 		this.userId = userId;
+		this.recordId = null;
+	}
+	
+	public SpaceToken(ObjectId spaceId, ObjectId userId, ObjectId recordId) {
+		this.spaceId = spaceId;
+		this.userId = userId;
+		this.recordId = recordId;
 	}
 
 	public String encrypt() {
 		Map<String, String> map = new ChainedMap<String, String>().put("spaceId", spaceId.toString()).put("userId", userId.toString())
 				.get();
+		if (recordId != null) map.put("recordId", recordId.toString());
 		String json = Json.stringify(Json.toJson(map));
 		return Crypto.encryptAES(json);
 	}
@@ -40,7 +49,8 @@ public class SpaceToken {
 			JsonNode json = Json.parse(plaintext);
 			ObjectId spaceId = new ObjectId(json.get("spaceId").asText());
 			ObjectId userId = new ObjectId(json.get("userId").asText());
-			return new SpaceToken(spaceId, userId);
+			ObjectId recordId = json.has("recordId") ? new ObjectId(json.get("recordId").asText()) : null;
+			return new SpaceToken(spaceId, userId, recordId);
 		} catch (Exception e) {
 			return null;
 		}
