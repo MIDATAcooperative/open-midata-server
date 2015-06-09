@@ -43,7 +43,7 @@ textRecords.controller('CreateCtrl', ['$scope', '$http', '$location',
 				"data": JSON.stringify({"title": $scope.title, "content": $scope.content}),
 				"name": $scope.title,
 				"description": $scope.content,
-				"format" : "text"
+				"format" : "Text"
 			};
 			
 			// submit to server
