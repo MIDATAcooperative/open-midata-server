@@ -82,6 +82,8 @@ public class Researchers extends APIController {
 		user.organization = research._id;
 		ResearchUser.add(user);
 		
+		KeyManager.instance.unlock(user._id, "12345");
+		
 		session().clear();
 		session("id", user._id.toString());
 		session("role", "research");
@@ -108,6 +110,8 @@ public class Researchers extends APIController {
 		}
 		
 		// user authenticated
+		KeyManager.instance.unlock(user._id, "12345");
+		
 		session().clear();
 		session("id", user._id.toString());
 		session("role", "research");

@@ -184,6 +184,7 @@ public class Application extends Controller {
 		session().clear();
 		session("id", user._id.toString());
 		session("role","member");
+		KeyManager.instance.unlock(user._id, "12345");
 		return ok();
 	}
 
@@ -257,6 +258,9 @@ public class Application extends Controller {
 		}
 						
 		Member.add(user);
+		
+		KeyManager.instance.unlock(user._id, "12345");
+		
 		user.myaps = RecordSharing.instance.createPrivateAPS(user._id, user._id);
 		Member.set(user._id, "myaps", user.myaps);
 		

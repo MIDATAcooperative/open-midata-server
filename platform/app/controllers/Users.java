@@ -60,12 +60,20 @@ public class Users extends Controller {
 		// get users
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+
+		if (fields.contains("name")) { fields.add("firstname"); fields.add("sirname"); }
+		
 		List<Member> users;
 		try {
 			users = new ArrayList<Member>(Member.getAll(properties, fields));
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}
+		
+		if (fields.contains("name")) {
+			for (User user : users) user.name = (user.firstname + " "+ user.sirname).trim();
+		}
+		
 		Collections.sort(users);
 		return ok(Json.toJson(users));
 	}

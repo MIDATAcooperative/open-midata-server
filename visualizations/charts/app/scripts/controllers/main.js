@@ -137,10 +137,14 @@ angular.module('chartApp')
 	  		 
 	  $scope.prepare = function() {
 		 var entries = $scope.extractData($scope.raw);
-		 console.log(entries);
+		 console.log(entries);		 
 		 var info = $scope.buildAxes(entries);
 		 $scope.info = info;
 		 $scope.entries = entries;
+		 if (entries.length == 0) {
+			 $scope.chartType = "none";
+			 return;
+		 }
 		 console.log(info);
 		 $scope.showBest(info);
 		 console.log($scope.report);

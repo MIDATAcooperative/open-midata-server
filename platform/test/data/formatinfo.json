@@ -8,6 +8,8 @@
 {  "format" :"Calories Intake/Fitbit",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM"}
 {  "format" :"Calories Burned/Fitbit",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM"}
 {  "format" :"Steps/Fitbit",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM"}
+{  "format" :"height",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM"}
+{  "format" :"heartrate",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM"}
 {  "format" :"Distance/Fitbit",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM"}
 {  "format" :"Floors Climbed/Fitbit",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM"}
 {  "format" :"Elevation/Fitbit",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM"}

@@ -10,6 +10,8 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -34,6 +36,8 @@ public class KeyManager {
 	
 	public final static String KEY_ALGORITHM = "RSA";
 	public final static String CIPHER_ALGORITHM = "RSA/ECB/PKCS1Padding";
+	
+	private Map<String, byte[]> pks = new HashMap<String, byte[]>();
 	
 	public byte[] encryptKey(ObjectId target, byte[] keyToEncrypt) throws EncryptionNotSupportedException, ModelException {
 		try {
@@ -70,9 +74,11 @@ public class KeyManager {
 	
 	public byte[] decryptKey(ObjectId target, byte[] keyToDecrypt) throws ModelException {
 		try {
-			KeyInfo inf = KeyInfo.getById(target);
 			
-			PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(inf.privateKey);
+			byte key[] = pks.get(target.toString());
+			if (key == null) throw new ModelException("Authorization Failure");
+			
+			PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(key);
 			
 			KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
 			PrivateKey privKey = keyFactory.generatePrivate(spec);
@@ -117,8 +123,14 @@ public class KeyManager {
 		}
 	}
 	
-	public void unlock(ObjectId target, String password) {
-		
+	public void unlock(ObjectId target, String password) throws ModelException {
+		KeyInfo inf = KeyInfo.getById(target);
+		if (inf == null) pks.put(target.toString(), null);
+		else pks.put(target.toString(), inf.privateKey);
+	}
+	
+	public void lock(ObjectId target) throws ModelException {
+		pks.remove(target.toString());
 	}
 	
 	

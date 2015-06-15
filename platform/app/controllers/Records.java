@@ -421,12 +421,12 @@ public class Records extends Controller {
 		ObjectId userId = new ObjectId(request().username());
 		RecordToken tk = Records.getRecordTokenFromString(recordIdString);
 		
-		Record record = RecordSharing.instance.fetch(userId, tk, Sets.create("format"));
+		Record record = RecordSharing.instance.fetch(userId, tk, Sets.create("format","created"));
 		if (record == null) return badRequest("Record not found!");
 		if (record.format == null) return ok();
 		
 		FormatInfo format = FormatInfo.getByName(record.format);
-		if (format == null) return ok();
+		if (format == null || format.visualization == null) return ok();
 		
 		Visualization visualization = Visualization.getById(format.visualization, Sets.create("filename", "url"));
 					

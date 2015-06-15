@@ -19,6 +19,13 @@ public class FormatInfo extends Model {
 	public APSSecurityLevel security;
 	
 	public static FormatInfo getByName(String name) throws ModelException {
-		return Model.get(FormatInfo.class, collection, CMaps.map("format", name), ALL);
+		FormatInfo r = Model.get(FormatInfo.class, collection, CMaps.map("format", name), ALL);
+		if (r == null) {
+			r = new FormatInfo();
+			r.format = name;
+			r.security = APSSecurityLevel.HIGH;
+			r.visualization = null;
+		}
+		return r;
 	}
 }

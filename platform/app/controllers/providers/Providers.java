@@ -97,6 +97,8 @@ public class Providers extends APIController {
 		user.provider = provider._id;
 		HPUser.add(user);
 		
+		KeyManager.instance.unlock(user._id, "12345");
+		
 		session().clear();
 		session("id", user._id.toString());
 		session("role", "provider");
@@ -122,6 +124,7 @@ public class Providers extends APIController {
 			return badRequest("Invalid user or password.");
 		}
 		
+		KeyManager.instance.unlock(user._id, "12345");
 		// user authenticated
 		session().clear();
 		session("id", user._id.toString());
