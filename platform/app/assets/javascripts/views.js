@@ -425,7 +425,7 @@ views.controller('SpaceSummaryCtrl', ['$scope', '$http', '$attrs', '$sce', 'reco
 	$scope.$watch('view.setup', function() { $scope.reload(); });
 	
 }]);
-views.controller('ViewConfigCtrl', ['$scope', '$http', '$attrs', '$sce', 'views', 'status', 'spaces', 'currentUser', function($scope, $http, $attrs, $sce, views, status, spaces, currentUser) {
+views.controller('ViewConfigCtrl', ['$scope', '$http', '$attrs', '$sce', 'views', 'status', 'spaces', 'currentUser', 'apps', function($scope, $http, $attrs, $sce, views, status, spaces, currentUser, apps) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
     $scope.status = new status(true);
@@ -436,26 +436,78 @@ views.controller('ViewConfigCtrl', ['$scope', '$http', '$attrs', '$sce', 'views'
     	$scope.reload(); 
     });
     
+    $scope.test = function(vis) {
+    	apps.isVisualizationInstalled(vis.id)
+		.then(function(result) {
+			if (result.data == "true") {
+				$scope.install(vis);
+			} else {
+				$scope.addTeaser(vis);
+			}
+		});
+    };
+    
+    $scope.install = function(vis) {
+    	angular.forEach(vis.spaces, function(space) {
+    		space.visualization = vis.id;
+    		spaces.add(space)
+    		.then (function(result) {
+    			console.log(result);
+    			$scope.addSpace(result.data);
+    		});
+    	});
+    };
+    
+    $scope.addTeaser = function(vis) {
+    	var teaser = {
+				id : "vis"+vis.id,
+				template : "/assets/views/members/info/summary.html",
+				title : vis.title,
+				position : "small",
+				active : true,
+				setup : {
+					text : vis.teaser,
+		        	link : "/members/visualizations/" + vis.id,
+		        	icon : "/assets/images/icons/health.png",
+		        	button : "Info + Install"
+				}
+		}		
+		views.layout.small.push(views.def(teaser));
+    };
+    
+    $scope.addSpace = function(space) {
+    	 var spacedef =
+	     {
+	    	   id : "space"+space._id.$oid,
+	    	   template : "/assets/views/members/spacesummary.html",
+	    	   title : space.name,
+	    	   active : true,
+	    	   position : "small",
+	    	   setup : { allowSelection : false, spaceId : space._id.$oid, appId : (space.app ? space.app.$oid : null) }
+	     };
+	     views.layout.small.push(views.def(spacedef)); 
+    };
+    
     $scope.reload = function() {
     	if (!$scope.view.active || !$scope.userId || $scope.done) return;	
     	$scope.done = true;
     	
     	
-    	$scope.status.doBusy(spaces.getSpacesOfUser($scope.userId))
+    	$scope.status.doBusy($scope.view.setup.context ? spaces.getSpacesOfUserContext($scope.userId, $scope.view.setup.context) : spaces.getSpacesOfUser($scope.userId))
     	.then(function(results) {
-    		$scope.view.active = results.data.length == 0;
+    		$scope.view.active = (results.data.length == 0 && $scope.view.setup.visualizations == null);
+    		var usedvis = {};
     	  _.each(results.data, function(space) {
-    		 var spacedef =
-    		     {
-    		    	   id : "space"+space._id.$oid,
-    		    	   template : "/assets/views/members/spacesummary.html",
-    		    	   title : space.name,
-    		    	   active : true,
-    		    	   position : "small",
-    		    	   setup : { allowSelection : false, spaceId : space._id.$oid, appId : (space.app ? space.app.$oid : null) }
-    		     };
-    		 views.layout.small.push(views.def(spacedef)); 
-    	  });     	  
+    		  usedvis[space.visualization.$oid] = true;
+    		  $scope.addSpace(space);    		
+    	  });
+    	  if ($scope.view.setup.visualizations) {
+    	  _.each($scope.view.setup.visualizations, function(vis) {
+    		if (!usedvis[vis.id]) {
+    			$scope.test(vis);    			
+    		}  
+    	  });
+    	  }
     	});
     	    	
     };

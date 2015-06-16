@@ -30,3 +30,4 @@
 {  "format" :"Sleep Ticks/Jawbone",  "visName" : "Jawbone Activity Clock",  "visualization" : { "$oid" : "543d2c14e4b0f34f43670afa" },  "security" : "MEDIUM"}
 {  "format" :"Text",  "visName" : "Text Record List",  "visualization" : { "$oid" : "5280bd5ee4b0660aab2a423d" },  "security" : "HIGH"}
 {  "format" :"text",  "visName" : "Text Record List",  "visualization" : { "$oid" : "5280bd5ee4b0660aab2a423d" },  "security" : "HIGH"}
+{  "format" :"trainingplan",  "visName" : "Training Editor",  "visualization" : { "$oid" : "554c867de4b08413ff37d6f5" },  "security" : "HIGH"}

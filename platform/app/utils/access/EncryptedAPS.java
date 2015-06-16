@@ -132,6 +132,7 @@ public class EncryptedAPS {
 	
 	private void load() throws ModelException {
 		this.aps = AccessPermissionSet.getById(this.apsId);
+		if (this.aps == null) throw new ModelException("APS does not exist.");
 		isValidated = false;
 	}
 	

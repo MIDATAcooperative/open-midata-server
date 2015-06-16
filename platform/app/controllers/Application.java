@@ -360,6 +360,7 @@ public class Application extends Controller {
 				controllers.routes.javascript.Spaces.getToken(),
 				controllers.routes.javascript.Spaces.getUrl(),
 				controllers.routes.javascript.Spaces.getPreviewUrl(),
+				controllers.routes.javascript.Spaces.getPreviewUrlFromSetup(),
 				// Users
 				controllers.routes.javascript.Users.get(),
 				controllers.routes.javascript.Users.getUsers(),

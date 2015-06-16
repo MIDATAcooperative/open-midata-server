@@ -25,6 +25,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.DateTimeUtils;
+import utils.access.AccessLog;
 import utils.auth.AppToken;
 import utils.auth.RecordToken;
 import utils.auth.SpaceToken;
@@ -112,6 +113,7 @@ public class VisualizationsAPI extends Controller {
 		// get record data
 		Collection<Record> records = null;
 		
+		AccessLog.debug("NEW QUERY");
 		if (properties.containsKey("convert")) {
 		   // Load direct result
 		   records = LargeRecord.getAll(authToken.userId, authToken.spaceId, properties, fields);

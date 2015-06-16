@@ -13,12 +13,17 @@ public class AccessLog {
 		Logger.debug("Access APS:"+aps.toString()+" from user:"+who.toString());
 	}
 	
+	public static void debug(String txt) {
+		Logger.debug(txt);
+	}
+	
 	public static void logQuery(ObjectId aps, Map<String,Object> properties, Set<String> fields) {
 	   StringBuilder s = new StringBuilder();
 	   for (String key : properties.keySet()) {
+		   Object v = properties.get(key);
 		   s.append(key);
 		   s.append("=");
-		   s.append(properties.get(key).toString());
+		   s.append(v != null ? v.toString() : "null");
 		   s.append(",");
 	   }
 	   for (String key : fields) {
@@ -31,9 +36,10 @@ public class AccessLog {
 	public static void logLocalQuery(ObjectId aps, Map<String,Object> properties, Set<String> fields) {
 		   StringBuilder s = new StringBuilder();
 		   for (String key : properties.keySet()) {
+			   Object v = properties.get(key);
 			   s.append(key);
 			   s.append("=");
-			   s.append(properties.get(key).toString());
+			   s.append(v != null ? v.toString() : "null");
 			   s.append(",");
 		   }
 		   for (String key : fields) {

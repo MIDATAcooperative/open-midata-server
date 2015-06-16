@@ -365,8 +365,8 @@ public class RecordSharing {
 	public List<Record> list(ObjectId who, ObjectId apsId, Map<String, Object> properties, Set<String> fields) throws ModelException {
 		
 		APSWrapper apswrapper = new APSWrapper(apsId, who);
-		StreamLayouter.instance.adjustQuery(who, apsId, properties);
-		return apswrapper.lookup(properties, fields);		
+		boolean ok = StreamLayouter.instance.adjustQuery(who, apsId, properties);
+		return ok ? apswrapper.lookup(properties, fields) : Collections.<Record>emptyList();		
 	}
 	
 	public Record fetch(ObjectId who, RecordToken token) throws ModelException {
@@ -576,7 +576,9 @@ public class RecordSharing {
 			}
 		}
 		
-		private Map<String, Object> combineQuery(Map<String,Object> properties, Map<String,Object> query) throws ModelException {			
+		private Map<String, Object> combineQuery(Map<String,Object> properties, Map<String,Object> query) throws ModelException {
+			Object fq = properties.get("format");
+			if (fq != null && fq.equals(STREAM_TYPE)) return properties;
 			Map<String, Object> combined = new HashMap<String,Object>();
 			combined.putAll(properties);
 			for (String key : query.keySet()) {
@@ -603,6 +605,7 @@ public class RecordSharing {
 				} else combined.put(key, query.get(key));
 			}
 			
+			AccessLog.logMap(combined);
 			return combined;
 		}
 		
@@ -717,7 +720,7 @@ public class RecordSharing {
 		}
 						
 		List<Record> lookup(Map<String, Object> properties, Set<String> fields) throws ModelException {
-			AccessLog.logQuery(this.getId(), properties,fields);			
+						
 			List<Record> result = new ArrayList<Record>();
 			Map<String, APSWrapper> apsToScan = new HashMap<String, APSWrapper>();			
 			
@@ -728,15 +731,23 @@ public class RecordSharing {
 			if (eaps.getPermissions().containsKey(QUERY)) {
 				BasicBSONObject query = eaps.getPermissions().get(QUERY);
 				Map<String, Object> combined = combineQuery(properties, query);
-				if (combined == null) return new ArrayList<Record>();
+				if (combined == null) {
+					AccessLog.debug("combine empty:");
+					AccessLog.logMap(properties);
+					AccessLog.logMap(query);
+					return new ArrayList<Record>();
+				}
 				if (queryAPS == null) {
 					Object targetAPSId = query.get("aps");
 					queryAPS = new APSWrapper(new ObjectId(targetAPSId.toString()), eaps.getAccessor());					
 				}
-				StreamLayouter.instance.adjustQuery(eaps.getAccessor(), queryAPS.getId(), combined);
-				return queryAPS.lookup(combined, fields);
+				boolean ok = StreamLayouter.instance.adjustQuery(eaps.getAccessor(), queryAPS.getId(), combined);
+				AccessLog.logQuery(this.getId(), properties,fields);
+				AccessLog.debug("is okay?"+ok);
+				return ok ? queryAPS.lookup(combined, fields) : Collections.<Record>emptyList();
 			}
 			
+			AccessLog.logQuery(this.getId(), properties,fields);
 			
 			// Prepare
 			boolean restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age");
@@ -940,6 +951,8 @@ public class RecordSharing {
 		    	if (result.size() > limit) result = result.subList(0, limit);
 		    }
 			
+		    AccessLog.debug("END Full Query, result size="+result.size());
+		    
 			return result;
 		}
 		

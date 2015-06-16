@@ -76,7 +76,7 @@ public class Visualizations extends APIController {
 		boolean applyRules = JsonValidation.getBoolean(json, "applyRules");
 		boolean createSpace = JsonValidation.getBoolean(json, "createSpace");
 		
-		Visualization visualization = Visualization.getById(visualizationId, Sets.create("defaultRules", "targetUserRole", "defaultSpaceName"));
+		Visualization visualization = Visualization.getById(visualizationId, Sets.create("defaultRules", "targetUserRole", "defaultSpaceName", "defaultSpaceContext"));
 		if (visualization == null) return badRequest("Unknown visualization");
 		
 		if (visualization.targetUserRole.equals(UserRole.MEMBER)) { 
@@ -87,7 +87,7 @@ public class Visualizations extends APIController {
 			if (spaceName!=null && !spaceName.equals("") && visualization.defaultSpaceName != null) {
 				Space space = null;
 				if (createSpace) {
-					space = Spaces.add(userId, spaceName, visualizationId, null);
+					space = Spaces.add(userId, spaceName, visualizationId, null, visualization.defaultSpaceContext);
 				}
 				if (applyRules && space!=null) {
 					RuleApplication.instance.setupRules(userId, visualization.defaultRules, user.myaps, space.aps, true);

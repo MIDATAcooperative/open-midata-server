@@ -28,16 +28,19 @@ public class StreamLayouter {
 		}
 	}
 	
-	public void adjustQuery(ObjectId who, ObjectId apsId, Map<String,Object> query) throws ModelException {
+	public boolean adjustQuery(ObjectId who, ObjectId apsId, Map<String,Object> query) throws ModelException {
 		Logger.debug("adjustQuery");
 		 if (query.containsKey("format") && !query.containsKey("stream") && !query.containsKey("_id")) {
 			 Object format = query.get("format");
-			 if (format.equals(RecordSharing.STREAM_TYPE)) return;
+			 if (format.equals(RecordSharing.STREAM_TYPE)) return true;
 			 if (format instanceof Collection) {
 			   query.put("stream", RecordSharing.instance.getStreamsByName(who, apsId, (Collection) format));
 			 } else if (format instanceof String) {
-			   query.put("stream", RecordSharing.instance.getStreamByName(who, apsId, (String) format));
+			   ObjectId str = RecordSharing.instance.getStreamByName(who, apsId, (String) format);
+			   if (str == null) return false;
+			   query.put("stream", str);
 			 }
 		 }
+		 return true;
 	}
 }

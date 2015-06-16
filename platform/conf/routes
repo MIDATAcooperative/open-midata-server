@@ -66,11 +66,13 @@ GET     /members/spaces/:id                              controllers.Spaces.deta
 
 POST    /members/api/spaces                              controllers.Spaces.add()
 POST    /members/api/spaces/get                          controllers.Spaces.get()
+POST    /members/api/spaces/preview                      controllers.Spaces.getPreviewUrlFromSetup()
 DELETE  /members/api/spaces/:id                          controllers.Spaces.delete(id: String)
 POST    /members/api/spaces/:id/records                  controllers.Spaces.addRecords(id: String)
 GET     /members/api/spaces/:id/token                    controllers.Spaces.getToken(id: String)
 GET     /members/api/spaces/:id/url                      controllers.Spaces.getUrl(id: String)
 GET     /members/api/spaces/:id/preview                  controllers.Spaces.getPreviewUrl(id: String)
+
 
 # Circles
 GET     /members/circles                                 controllers.Circles.index()

@@ -55,6 +55,19 @@ dashboards.constant("dashboards",
 		        	 icon : "/assets/images/icons/health.png",
 		        	 button : "Health Professional Dashboard"
 		         }
+			},
+			{
+			     id: "training",
+			     title: "Training",
+			     template : "/assets/views/members/info/summary.html",
+		         active : true,
+		         position : "small",
+		         setup : {
+		        	 text : "Manage your personal training!",
+		        	 link : "/members/dashboard/training",
+		        	 icon : "/assets/images/icons/health.png",
+		        	 button : "Training Dashboard"
+		         }
 			}
 		  ],
       "mydata" : [
@@ -355,7 +368,68 @@ dashboards.constant("dashboards",
 				  active : false,
 				  position : "modal"			 
 			}   
-	 ]
+	 ],
+	 "training" : [				 	 		   	 		    
+	 			{
+	 			    id: "editor",
+	 			    title: "Plan Editor",
+	 			    template : "/assets/views/members/viewconfig.html",
+	 			    active : true,
+	 			    position : "small",
+	 			    setup : {
+	 			    	 context : "training",
+	 			    	 visualizations : [
+	 			    	   { 
+	 			    		 id : "554c867de4b08413ff37d6f5", 
+	 			    		 title : "Training Editor", 
+	 			    		 teaser : "Plan your training using our training app.", 
+	 			    		 spaces : [ {
+	 			    			name : "Training Editor",
+	 			    			context : "training",
+	 			    			query : { 
+	 			    				format : "trainingplan"
+	 			    			}
+	 			    		 } ] 
+	 			    	   },
+	 			    	   { 
+	 			    		 id : "5550872fe4b042b13ab4c95c", 
+	 			    	     title : "Training Diary", 
+	 			    	     teaser : "Control your training using the training diary!",
+	 			    	     spaces : [ {
+	 			    	    	 name : "Training Diary",
+	 			    	    	 context : "training",
+	 			    	    	 query : {
+	 			    	    		 format : [ "trainingplan" ]
+	 			    	    	 }	 			    	    	 
+	 			    	     } ]
+	 			    	   },
+	 			    	   {
+	 			    		   id : "5571700fe4b0c309cbc949ce",
+	 			    		   title : "Performance Charts",
+	 			    		   teaser : "View your training performance and compare results with others!",
+	 			    		   spaces : [
+	 			    		      {
+	 			    		    	  name : "Your Performance",
+	 			    		    	  context : "training",
+	 			    		    	  query : {
+	 			    		    		  format : [],
+	 			    		    		  set : "user"
+	 			    		    	  }
+	 			    		      },
+	 			    		      {
+	 			    		    	  name : "Comparison",
+	 			    		    	  context : "training",
+	 			    		    	  query : {
+	 			    		    		 format : [],
+	 			    		    		 set : ["user", "circles"]
+	 			    		    	  }
+	 			    		      }
+	 			    		   ]
+	 			    	   }
+	 			    	 ]	 		        	 
+	 		        }
+	 			}
+	           ]
 	}			
 );
 dashboards.controller('DashboardCtrl', ['$scope', '$attrs', 'views', 'dashboards', function($scope, $attrs, views, dashboards) {  

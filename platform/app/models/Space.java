@@ -26,6 +26,7 @@ public class Space extends Model implements Comparable<Space> {
 	public int order;
 	public ObjectId aps;
 	public SpaceType type;
+	public String context;
 	
 	//public Set<ObjectId> records;
 
@@ -52,6 +53,10 @@ public class Space extends Model implements Comparable<Space> {
 	
 	public static Space getByIdAndOwner(ObjectId spaceId, ObjectId ownerId, Set<String> fields) throws ModelException {
 		return Model.get(Space.class, collection, CMaps.map("_id", spaceId).map("owner", ownerId), fields);
+	}
+	
+	public static Space getByOwnerVisualizationContext(ObjectId ownerId, ObjectId visualizationId, String context, Set<String> fields) throws ModelException {
+		return Model.get(Space.class, collection, CMaps.map("owner", ownerId).map("visualization", visualizationId).map("context", context), fields);
 	}
 	
 	public static Set<Space> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {

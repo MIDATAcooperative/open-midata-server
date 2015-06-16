@@ -207,6 +207,10 @@ services.factory('apps', function($http, $q) {
 		return result.promise;
     };
     
+    service.isVisualizationInstalled = function(visId) {
+    	return $http(jsRoutes.controllers.Visualizations.isInstalled(visId))
+    };
+    
 	return service;
 });
 services.factory('spaces', function($http, $q) {
@@ -218,6 +222,12 @@ services.factory('spaces', function($http, $q) {
        var data = {"properties": properties, "fields": fields};
        return $http.post(jsRoutes.controllers.Spaces.get().url, JSON.stringify(data));
 	};
+	service.getSpacesOfUserContext = function(userId, context) {
+	   var properties = {"owner": userId, "context" : context };
+	   var fields = ["name", "records", "visualization", "app", "order"]
+	   var data = {"properties": properties, "fields": fields};
+	   return $http.post(jsRoutes.controllers.Spaces.get().url, JSON.stringify(data));
+	};
 	
 	service.getUrl = function(spaceId) {
 	   return $http(jsRoutes.controllers.Spaces.getUrl(spaceId));
@@ -226,6 +236,14 @@ services.factory('spaces', function($http, $q) {
 	service.getPreviewUrl = function(spaceId) {
 	   return $http(jsRoutes.controllers.Spaces.getPreviewUrl(spaceId));
 	};
+	
+	service.getPreviewUrlFromSetup = function(setup) {
+	   return $http.post(jsRoutes.controllers.Spaces.getPreviewUrlSetup(), JSON.stringify(setup));
+	}
+	
+	service.add = function(def) {
+		return $http.post(jsRoutes.controllers.Spaces.add().url, JSON.stringify(def));
+	}
 	
 	return service;
 	    	

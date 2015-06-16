@@ -19,6 +19,7 @@ public class Visualization extends Plugin implements Comparable<Visualization> {
 	public String url;
 	public String previewUrl;
 	public String defaultSpaceName;
+	public String defaultSpaceContext;
 	public List<FilterRule> defaultRules;
 
 	@Override

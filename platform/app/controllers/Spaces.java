@@ -77,22 +77,30 @@ public class Spaces extends Controller {
 		
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
-		String name = json.get("name").asText();
-		String visualizationIdString = json.get("visualization").asText();
-		ObjectId visualizationId = new ObjectId(visualizationIdString);
-		String appIdString = json.get("app").asText();
-		ObjectId appId = (appIdString == null || appIdString.equals("null")) ? null : new ObjectId(appIdString);
+		String name = JsonValidation.getString(json, "name");		
+		ObjectId visualizationId = JsonValidation.getObjectId(json, "visualization" );		
+		ObjectId appId = JsonValidation.getObjectId(json,  "app");
+		
+		String context = JsonValidation.getString(json, "context");
+		
+		Map<String, Object> query = null;
+		
+		if (json.has("query")) query = JsonExtraction.extractMap(json.get("query"));
 		
 		if (Space.existsByNameAndOwner(name, userId)) {
 			return badRequest("A space with this name already exists.");
 		}
 				
-		Space space = add(userId, name, visualizationId, appId);
+		Space space = add(userId, name, visualizationId, appId, context);
+		
+		if (query != null) {
+		  RecordSharing.instance.shareByQuery(userId, userId, space._id, query);
+		}
 				
 		return ok(Json.toJson(space));
 	}
 	
-	public static Space add(ObjectId userId, String name, ObjectId visualizationId, ObjectId appId) throws ModelException {
+	public static Space add(ObjectId userId, String name, ObjectId visualizationId, ObjectId appId, String context) throws ModelException {
 			
 		if (Space.existsByNameAndOwner(name, userId)) {
 			throw new ModelException("A space with this name already exists.");
@@ -104,11 +112,49 @@ public class Spaces extends Controller {
 		space.name = name;
 		space.order = Space.getMaxOrder(userId) + 1;
 		space.visualization = visualizationId;
+		space.context = context;
 		space.app = appId;
 		space.aps = RecordSharing.instance.createPrivateAPS(userId, space._id);
 		
 		Space.add(space);		
 		return space;
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public static Result getPreviewUrlFromSetup() throws ModelException, JsonValidationException {
+		// validate json
+		JsonNode json = request().body().asJson();
+				
+		JsonValidation.validate(json, "name", "visualization", "context", "rules");
+		
+		ObjectId userId = new ObjectId(request().username());
+		ObjectId visualizationId = JsonValidation.getObjectId(json, "visualization");
+		String context = JsonValidation.getString(json, "context");
+		String name = JsonValidation.getString(json, "name");
+		
+		Space space = Space.getByOwnerVisualizationContext(userId, visualizationId, context, Sets.create("aps"));
+		Visualization visualization = Visualization.getById(visualizationId, Sets.create("filename", "previewUrl"));
+		
+		if (space==null) {
+		   Member member = Member.getByIdAndVisualization(userId, visualizationId, Sets.create("aps"));
+		   if (member == null) return badRequest("Not installed");
+		
+		   space = Spaces.add(userId, name, visualizationId, null, context);
+		   
+		   // RuleApplication.instance.setupRules(userId, visualization.defaultRules, user.myaps, space.aps, true);
+		}
+						
+		if (visualization.previewUrl == null) return ok();
+		
+		// create encrypted authToken
+		SpaceToken spaceToken = new SpaceToken(space.aps, userId);
+		
+		String visualizationServer = Play.application().configuration().getString("visualizations.server");
+		String url = "https://" + visualizationServer + "/" + visualization.filename + "/" + visualization.previewUrl;
+		url = url.replace(":authToken", spaceToken.encrypt());
+		return ok(url);		
+				
 	}
 
 	@APICall
