@@ -4,6 +4,8 @@ import models.ModelException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import controllers.RecordSharing;
+
 import play.libs.F;
 import play.libs.Json;
 import play.mvc.Action;
@@ -29,6 +31,8 @@ public class APICallAction extends Action<APICall> {
     		}
 		} catch (ModelException e2) {			
 			return F.Promise.pure((Result) internalServerError(e2.getMessage()));			
+		} finally {
+			RecordSharing.instance.clear();
 		}
     }
 }

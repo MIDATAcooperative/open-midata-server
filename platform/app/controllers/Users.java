@@ -122,13 +122,14 @@ public class Users extends Controller {
 
 		// get name for ids
 		Map<String, Set<ObjectId>> properties = new ChainedMap<String, Set<ObjectId>>().put("_id", userIds).get();
-		Set<String> fields = new ChainedSet<String>().add("name").get();
+		Set<String> fields = Sets.create("name", "firstname", "sirname");
 		List<Member> users;
 		try {
 			users = new ArrayList<Member>(Member.getAll(properties, fields));
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}
+		for (User user : users) user.name = (user.firstname + " "+ user.sirname).trim();
 		Collections.sort(users);
 		return ok(Json.toJson(users));
 	}

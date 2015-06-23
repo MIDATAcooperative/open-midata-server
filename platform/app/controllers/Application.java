@@ -162,7 +162,7 @@ public class Application extends Controller {
 		}
 			    
 	    //patch old users
-	    if (user.myaps == null || !user.myaps.equals(user._id)) {
+	    /*if (user.myaps == null || !user.myaps.equals(user._id)) {
 	    		      
 	    	user.myaps = RecordSharing.instance.createPrivateAPS(user._id, user._id);
 	    	Member.set(user._id, "myaps", user.myaps);
@@ -178,7 +178,7 @@ public class Application extends Controller {
 	    		Space.set(s._id, "aps", s.aps);
 	    	}
 	    	
-	    }
+	    }*/
 	
 		// user authenticated
 		session().clear();

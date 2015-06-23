@@ -158,11 +158,11 @@ public class Records extends Controller {
 		//List<Record> records = new ArrayList<Record>(Record.getAll(properties, fields));
 		
 		// get visible records
-		Set<Circle> circles = Circle.getAllByMember(userId);
+		/*Set<Circle> circles = Circle.getAllByMember(userId);
 		
 		for (Circle circle : circles) {
 			records.addAll(RecordSharing.instance.list(userId, circle.aps, RecordSharing.FULLAPS, fields));
-		}
+		}*/
 		
 		/*
 		properties = new ChainedMap<String, ObjectId>().put("_id", userId).get();
@@ -199,17 +199,18 @@ public class Records extends Controller {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
+		/*
 		String apstype = properties.containsKey("set") ? properties.get("set").toString() : "user";
 		
-		if (!apstype.equals("circles")) {		
+		if (!apstype.equals("circles")) {*/		
 		  records.addAll(RecordSharing.instance.list(userId, aps, properties, fields));
-		} 
+		/*} 
 		if (!apstype.equals("user")) {
 	        Set<Circle> circles = Circle.getAllByMember(userId);		
 			for (Circle circle : circles) {
 				records.addAll(RecordSharing.instance.list(userId, circle.aps, properties, fields));
 			}
-		}
+		}*/
 				
 		Collections.sort(records);
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));

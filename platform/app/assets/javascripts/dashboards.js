@@ -399,7 +399,7 @@ dashboards.constant("dashboards",
 	 			    	    	 name : "Training Diary",
 	 			    	    	 context : "training",
 	 			    	    	 query : {
-	 			    	    		 format : [ "trainingplan" ]
+	 			    	    		 format : [ "trainingplan", "activities-minutesFairlyActive", "body-weight", "sleep-timeInBed", "activities-heart" ]
 	 			    	    	 }	 			    	    	 
 	 			    	     } ]
 	 			    	   },
@@ -412,16 +412,15 @@ dashboards.constant("dashboards",
 	 			    		    	  name : "Your Performance",
 	 			    		    	  context : "training",
 	 			    		    	  query : {
-	 			    		    		  format : [],
-	 			    		    		  set : "user"
+	 			    		    		  format : [ "activities-minutesFairlyActive", "body-weight", "sleep-timeInBed", "activities-heart" ],
+	 			    		    		  owner : "self"
 	 			    		    	  }
 	 			    		      },
 	 			    		      {
 	 			    		    	  name : "Comparison",
 	 			    		    	  context : "training",
 	 			    		    	  query : {
-	 			    		    		 format : [],
-	 			    		    		 set : ["user", "circles"]
+	 			    		    		 format : [ "activities-minutesFairlyActive", "body-weight", "sleep-timeInBed", "activities-heart" ]	 			    		    		 
 	 			    		    	  }
 	 			    		      }
 	 			    		   ]

@@ -17,22 +17,25 @@ public class AccessLog {
 		Logger.debug(txt);
 	}
 	
-	public static void logQuery(ObjectId aps, Map<String,Object> properties, Set<String> fields) {
+	public static void logQuery(Map<String,Object> properties, Set<String> fields) {
 	   StringBuilder s = new StringBuilder();
+	   boolean first = true;
 	   for (String key : properties.keySet()) {
 		   Object v = properties.get(key);
+		   if (first) first = false; else s.append(",");
 		   s.append(key);
 		   s.append("=");
-		   s.append(v != null ? v.toString() : "null");
-		   s.append(",");
+		   s.append(v != null ? v.toString() : "null");		   
 	   }
+	   s.append(" (");
 	   for (String key : fields) {
 		   s.append(key);
 		   s.append(" ");
 	   }
-	   Logger.debug("Full Query:"+aps.toString()+" : "+s.toString());
+	   s.append(")");
+	   Logger.debug("New Full Query:"+s.toString());
 	}
-	
+	/*
 	public static void logLocalQuery(ObjectId aps, Map<String,Object> properties, Set<String> fields) {
 		   StringBuilder s = new StringBuilder();
 		   for (String key : properties.keySet()) {
@@ -74,7 +77,7 @@ public class AccessLog {
 	public static void identified(ObjectId aps, ObjectId record) {
 		  Logger.debug("Identified Record APS="+aps.toString()+" Record="+record.toString());
 	}
-	
+	*/
 	public static void decryptFailure(ObjectId record) {
 		 Logger.debug("Decrypt Failure Record="+record.toString());
 	}

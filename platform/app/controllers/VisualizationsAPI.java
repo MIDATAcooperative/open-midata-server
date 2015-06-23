@@ -104,9 +104,9 @@ public class VisualizationsAPI extends Controller {
 		}
 	
 		
-		if (properties.containsKey("owner")) {
+		/*if (properties.containsKey("owner")) {
 			if (properties.get("owner").equals("self")) properties.put("owner", authToken.userId.toString());
-		}
+		}*/
 		
 		if (authToken.recordId != null) properties.put("_id", authToken.recordId);
 

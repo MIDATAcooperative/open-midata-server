@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import models.FilterRule;
 import models.Member;
 import models.ModelException;
 import models.Space;
@@ -94,7 +95,8 @@ public class Spaces extends Controller {
 		Space space = add(userId, name, visualizationId, appId, context);
 		
 		if (query != null) {
-		  RecordSharing.instance.shareByQuery(userId, userId, space._id, query);
+			RecordSharing.instance.shareByQuery(userId, userId, space._id, query);
+			//RuleApplication.instance.setupRulesForSpace(userId, rules, userId, space._id, true);
 		}
 				
 		return ok(Json.toJson(space));

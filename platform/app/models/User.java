@@ -63,6 +63,7 @@ public class User extends Model implements Comparable<User> {
 	public Set<ObjectId> apps; // installed apps
 	public Map<String, Map<String, String>> tokens; // map from apps to app details
 	public Set<ObjectId> visualizations; // installed visualizations
+	public Map<String, List<FilterRule>> rules;
 
 	@Override
 	public int compareTo(User other) {

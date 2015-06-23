@@ -1,5 +1,6 @@
 package models;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,18 +33,20 @@ public class AccessPermissionSet extends Model {
 	public byte[] encrypted;
 	public Map<String, BasicBSONObject> permissions;
 	
+	public List<AccessPermissionSet> unmerged;
+	
 	public static void add(AccessPermissionSet aps) throws ModelException {
 		Model.insert(collection, aps);	
 	}
 	
 	public static AccessPermissionSet getById(ObjectId id) throws ModelException {
-		return Model.get(AccessPermissionSet.class, collection, CMaps.map("_id", id), Sets.create("keys", "version", "direct" ,"permissions", "encrypted", "security"));
+		return Model.get(AccessPermissionSet.class, collection, CMaps.map("_id", id), Sets.create("keys", "version", "direct" ,"permissions", "encrypted", "security", "unmerged"));
 	}
 		
 	
 	public void updatePermissions() throws ModelException, LostUpdateException {
 		try {
-		   DBLayer.secureUpdate(this, collection, "version", "permissions");
+		   DBLayer.secureUpdate(this, collection, "version", "permissions", "unmerged");
 		} catch (DatabaseException e) {
 			throw new ModelException(e);
 		}
@@ -51,7 +54,7 @@ public class AccessPermissionSet extends Model {
 	
 	public void updateEncrypted() throws ModelException, LostUpdateException {
 		try {
-		   DBLayer.secureUpdate(this, collection, "version", "encrypted");
+		   DBLayer.secureUpdate(this, collection, "version", "encrypted", "unmerged");
 		} catch (DatabaseException e) {
 			throw new ModelException(e);
 		}

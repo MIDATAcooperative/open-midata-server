@@ -28,7 +28,7 @@ public class StreamLayouter {
 		}
 	}
 	
-	public boolean adjustQuery(ObjectId who, ObjectId apsId, Map<String,Object> query) throws ModelException {
+	/*public boolean adjustQuery(ObjectId who, ObjectId apsId, Map<String,Object> query) throws ModelException {
 		Logger.debug("adjustQuery");
 		 if (query.containsKey("format") && !query.containsKey("stream") && !query.containsKey("_id")) {
 			 Object format = query.get("format");
@@ -42,5 +42,5 @@ public class StreamLayouter {
 			 }
 		 }
 		 return true;
-	}
+	}*/
 }

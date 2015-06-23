@@ -193,7 +193,9 @@ angular.module('chartApp')
 	  $scope.showBest = function(info) {
 		 var r = [];
 		 if (info.hasMultipleDates) {
-			 r.push( { name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", filter: info.hasMultipleFormats ? "format" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null } );
+			 if (info.hasMultipleOwners) {
+			    r.push( { name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", filter: info.hasMultipleFormats ? "format" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null } );
+			 }
 			 
 			 if (info.hasMultipleFormats) {
 				r.push( { name:"Time Series per Measure", type : "line", label : "dateTime", series : "format", filter: info.hasMultipleOwners ? "owner" : null, filterLabel: info.hasMultipleOwners ? "Person" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null } );
@@ -201,7 +203,11 @@ angular.module('chartApp')
 			 
 			 if (info.hasMultipleContexts) {
    			    r.push( { name:"Time Series per Context", type : "line", label : "dateTime", series : "context", filter: info.hasMultipleFormats ? "format" : null , filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleOwners ? "owner" : null, filterLabel2: info.hasMultipleOwners ? "Person" : null } );				 
-			 }			    
+			 }
+			 
+			 if (!info.hasMultipleOwners) {
+				 r.push( { name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", filter: info.hasMultipleFormats ? "format" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null } ); 
+			 }
 		 }
 		 
 		 if (info.hasMultipleFormats) {
