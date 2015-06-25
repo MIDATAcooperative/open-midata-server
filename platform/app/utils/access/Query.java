@@ -131,6 +131,14 @@ public class Query {
 		return restrictedBy("format") && properties.get("format").equals(STREAM_TYPE);
 	}
 	
+	public boolean includeStreams() {
+		return isStreamOnlyQuery() || (restrictedBy("streams") && properties.get("streams").equals("true"));
+	}
+	
+	public boolean deepQuery() {
+		return !restrictedBy("flat");
+	}
+	
 	public int getMinTime() {
 		return minTime;
 	}

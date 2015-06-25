@@ -173,6 +173,11 @@ services.factory('records', function($http) {
 		  return $http.post(jsRoutes.controllers.Records.updateSharing().url, JSON.stringify(data));
 	};
 	
+	service.shareSpaceWithCircle = function(fromSpace, toCircle) {
+		var data = { fromSpace : fromSpace, toCircle : toCircle };
+		return $http.post(jsRoutes.controllers.Records.share().url, JSON.stringify(data));
+	}
+	
 	service.search = function(query) {
 		return $http(jsRoutes.controllers.Records.search(query));
 	};
@@ -222,6 +227,10 @@ services.factory('spaces', function($http, $q) {
        var data = {"properties": properties, "fields": fields};
        return $http.post(jsRoutes.controllers.Spaces.get().url, JSON.stringify(data));
 	};
+	service.get = function(properties, fields) {	       
+	       var data = {"properties": properties, "fields": fields};
+	       return $http.post(jsRoutes.controllers.Spaces.get().url, JSON.stringify(data));
+	};
 	service.getSpacesOfUserContext = function(userId, context) {
 	   var properties = {"owner": userId, "context" : context };
 	   var fields = ["name", "records", "visualization", "app", "order"]
@@ -243,6 +252,10 @@ services.factory('spaces', function($http, $q) {
 	
 	service.add = function(def) {
 		return $http.post(jsRoutes.controllers.Spaces.add().url, JSON.stringify(def));
+	}
+	
+	service.deleteSpace = function(space) {
+		return $http["delete"](jsRoutes.controllers.Spaces["delete"](space).url);
 	}
 	
 	return service;

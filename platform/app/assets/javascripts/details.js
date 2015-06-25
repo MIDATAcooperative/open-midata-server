@@ -177,7 +177,7 @@ details.controller('AppCtrl', ['$scope', '$http', function($scope, $http) {
 	}
 	
 }]);
-details.controller('VisualizationCtrl', ['$scope', '$http', function($scope, $http) {
+details.controller('VisualizationCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
 	// init
 	$scope.error = null;
 	$scope.success = false;
@@ -221,6 +221,7 @@ details.controller('VisualizationCtrl', ['$scope', '$http', function($scope, $ht
 			success(function() {
 				$scope.visualization.installed = true;
 				$scope.success = true;
+				if ($location.search().next) document.location.href = $location.search().next; 
 			}).
 			error(function(err) { $scope.error = "Failed to install the visualization: " + err; });
 	}

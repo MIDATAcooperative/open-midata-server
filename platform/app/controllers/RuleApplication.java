@@ -2,6 +2,7 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +15,7 @@ import utils.collections.Sets;
 import utils.rules.FormatRule;
 import utils.rules.Rule;
 
+import models.APSNotExistingException;
 import models.FilterRule;
 import models.Member;
 import models.ModelException;
@@ -38,30 +40,50 @@ public class RuleApplication {
 
 	public void applyRules(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws ModelException {
 		Collection<Record> records = RecordSharing.instance.list(userId, sourceaps, RecordSharing.FULLAPS, RecordSharing.COMPLETE_META);
-	    Set<ObjectId> result = new HashSet<ObjectId>();
-	    
-		// TODO Apply correctly
-		for (Record record : records) {
-			boolean qualifies = true;
-			
-			for (FilterRule rule : filterRules) {
-				if (!qualifiesFor(record, rule)) qualifies = false; 
-			}
-			
-			if (qualifies) { 
-				result.add(record._id); 
-			}
-		}
+		Set<ObjectId> result = applyRules(records, filterRules);
 		
 		RecordSharing.instance.share(userId, sourceaps, targetaps, result, ownerInformation);
 	}
 	
-	public void applyRules(ObjectId userId, Record record) throws ModelException {
+	protected Set<ObjectId> applyRules(Collection<Record> records, List<FilterRule> filterRules) throws ModelException {
+        Set<ObjectId> result = new HashSet<ObjectId>();
+	    		
+		for (Record record : records) {
+						
+			if (applyRules(record, filterRules)) { 
+				result.add(record._id); 
+			}
+		}
+		
+		return result;
+	}
+	
+	protected boolean applyRules(Record record, List<FilterRule> filterRules) throws ModelException {
+		// TODO Apply correctly
+		boolean qualifies = true;
+		
+		for (FilterRule rule : filterRules) {
+			if (!qualifiesFor(record, rule)) qualifies = false; 
+		}
+	
+		return qualifies;
+	}
+	
+	public void applyRules(ObjectId executingPerson, ObjectId userId, Record record, ObjectId useAps) throws ModelException {
 		Member member = Member.getById(userId, Sets.create("rules"));
 		if (member.rules!=null) {
 			for (String key : member.rules.keySet()) {
 				List<FilterRule> rules = member.rules.get(key);
-				applyRules(userId, rules, userId, new ObjectId(key), true);
+				if (applyRules(record, rules)) {
+					try {
+					  RecordSharing.instance.share(executingPerson, useAps, new ObjectId(key), Collections.singleton(record._id), true);
+					} catch (APSNotExistingException e) {
+						/*if (e.getAps().toString().equals(key)) {
+							member.rules.remove(key);
+							Member.set(member._id, "rules", member.rules);
+						}*/
+					}
+				}
 			}
 		}
 	}
@@ -78,6 +100,18 @@ public class RuleApplication {
 		member.rules.put(targetaps.toString(), filterRules);
         Member.set(userId, "rules", member.rules);			
 			
+	}
+	
+	public void removeRules(ObjectId userId, ObjectId targetaps) throws ModelException {
+        Member member = Member.getById(userId, Sets.create("rules"));
+		
+		if (member.rules == null) return;
+		 
+		String key = targetaps.toString();
+	    if (member.rules.containsKey(key)) {
+	    	member.rules.remove(key);
+	    	Member.set(userId, "rules", member.rules);
+	    }
 	}
 	
     public void setupRulesForSpace(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws ModelException {
@@ -97,8 +131,10 @@ public class RuleApplication {
 		List<FilterRule> rules = new ArrayList<FilterRule>();
 		if (query.containsKey("format")) {
 			FilterRule fr = new FilterRule();
+			Object formats = query.get("format");
 			fr.name = "format";
-			fr.params = (List) query.get("format"); 
+			fr.params = formats instanceof List ? (List) formats : Collections.<String>singletonList(formats.toString());
+			rules.add(fr);
 		}
 		return rules;
 	}

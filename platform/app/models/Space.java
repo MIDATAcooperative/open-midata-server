@@ -1,5 +1,6 @@
 package models;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,6 +12,7 @@ import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.db.DatabaseException;
+import utils.db.NotMaterialized;
 import utils.db.OrderOperations;
 import utils.search.Search;
 import utils.search.SearchException;
@@ -27,6 +29,7 @@ public class Space extends Model implements Comparable<Space> {
 	public ObjectId aps;
 	public SpaceType type;
 	public String context;
+	public @NotMaterialized List<FilterRule> rules;
 	
 	//public Set<ObjectId> records;
 

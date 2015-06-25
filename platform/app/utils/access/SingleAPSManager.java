@@ -124,7 +124,7 @@ public class SingleAPSManager extends QueryManager {
 		List<Record> result = new ArrayList<Record>();
 		boolean withOwner = q.returns("owner");
 		boolean restrictedOnFormat = q.restrictedBy("format");
-		boolean streamOnlySearch = q.isStreamOnlyQuery();
+		boolean includeStreams = q.includeStreams();
 		
 		if (eaps.isDirect()) {
 			AccessLog.debug("direct query stream="+eaps.getId());
@@ -183,7 +183,7 @@ public class SingleAPSManager extends QueryManager {
 			}
 		} else {
 			for (String format : formats.keySet()) {
-				if (!streamOnlySearch && format.equals(Query.STREAM_TYPE)) continue;
+				if (!includeStreams && format.equals(Query.STREAM_TYPE)) continue;
 				if (format.startsWith("_")) continue;
 				
 				BasicBSONObject map = formats.get(format);

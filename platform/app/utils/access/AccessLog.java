@@ -10,7 +10,7 @@ import play.Logger;
 public class AccessLog {
 
 	public static void apsAccess(ObjectId aps, ObjectId who) {
-		Logger.debug("Access APS:"+aps.toString()+" from user:"+who.toString());
+		Logger.debug("Access APS:"+(aps != null ? aps.toString() : "null")+" from user:"+(who!=null?who.toString():"null"));
 	}
 	
 	public static void debug(String txt) {

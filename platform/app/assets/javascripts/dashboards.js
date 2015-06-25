@@ -65,7 +65,7 @@ dashboards.constant("dashboards",
 		         setup : {
 		        	 text : "Manage your personal training!",
 		        	 link : "/members/dashboard/training",
-		        	 icon : "/assets/images/icons/health.png",
+		        	 icon : "/assets/images/icons/training.png",
 		        	 button : "Training Dashboard"
 		         }
 			}
@@ -431,7 +431,7 @@ dashboards.constant("dashboards",
 	           ]
 	}			
 );
-dashboards.controller('DashboardCtrl', ['$scope', '$attrs', 'views', 'dashboards', function($scope, $attrs, views, dashboards) {  
+dashboards.controller('DashboardCtrl', ['$scope', '$attrs', 'views', 'dashboards', 'spaces', function($scope, $attrs, views, dashboards, spaces) {  
 	   
 	   views.layout = $scope.layout = {
 	     full: [], small:[], modal:[]
@@ -450,6 +450,18 @@ dashboards.controller('DashboardCtrl', ['$scope', '$attrs', 'views', 'dashboards
 			 $scope.layout.full.splice($scope.layout.full.indexOf(view), 1);
 			 $scope.layout.small.push(view);
 			 view.position = "small";
+	   };
+	   
+	   $scope.remove = function(view) {
+		   if (view.position == "small") {
+			   $scope.layout.small.splice($scope.layout.small.indexOf(view), 1);
+		   } else if (view.position == "full") {
+			   $scope.layout.full.splice($scope.layout.full.indexOf(view), 1);
+		   }
+		   
+		   if (view.actions.remove && view.actions.remove.space) {
+			   spaces.deleteSpace(view.actions.remove.space);
+		   } 
 	   };
 	   
 	   $scope.filterEvenStartFrom = function (index) {

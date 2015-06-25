@@ -34,11 +34,20 @@ public class APSCache {
 		return result;
 	}
 	
-	public SingleAPSManager getAPS(ObjectId apsId, byte[] unlockKey, boolean isOwner) throws ModelException, EncryptionNotSupportedException {
+	public SingleAPSManager getAPS(ObjectId apsId, ObjectId owner) throws ModelException {
+		SingleAPSManager result = cache.get(apsId.toString());
+		if (result == null) {
+			result = new SingleAPSManager(new EncryptedAPS(apsId, who, owner));
+			cache.put(apsId.toString(), result);
+		}	
+		return result;
+	}
+	
+	public SingleAPSManager getAPS(ObjectId apsId, byte[] unlockKey, ObjectId owner) throws ModelException, EncryptionNotSupportedException {
 		SingleAPSManager result = cache.get(apsId.toString());
 		if (result == null) { 
-			result = new SingleAPSManager(new EncryptedAPS(apsId, who, unlockKey, isOwner));
-			if (!isOwner) result.addAccess(Collections.<ObjectId>singleton(who));
+			result = new SingleAPSManager(new EncryptedAPS(apsId, who, unlockKey, owner));
+			if (!result.eaps.isOwner()) result.addAccess(Collections.<ObjectId>singleton(who));
 			cache.put(apsId.toString(), result);
 		}
 		return result;

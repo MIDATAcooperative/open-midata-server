@@ -61,7 +61,7 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 		this.creator = null;	
 		this.created = null;
 		this.name = null;
-		//this.format = null;
+		this.format = null;
 		this.description = null;	
 		this.data = null;
 	}

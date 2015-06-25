@@ -232,13 +232,13 @@ public class AppsAPI extends Controller {
 		record.name = name;
 		record.description = description;
 		
-		RecordSharing.instance.addRecord(targetUser._id, record);
+		RecordSharing.instance.addRecord(appToken.ownerId, record, targetAps);
 		
-		if (targetAps != null) {
+		/*if (targetAps != null) {
 			Set<ObjectId> records = new HashSet<ObjectId>();
 			records.add(record._id);
 			RecordSharing.instance.share(targetUser._id, targetUser.myaps, targetAps, records, true);
-		}
+		}*/
 		
 		ObjectNode obj = Json.newObject();
 		obj.put("_id", record._id.toString());

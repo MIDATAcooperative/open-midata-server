@@ -19,7 +19,6 @@ import org.bson.types.ObjectId;
 
 import utils.DateTimeUtils;
 import utils.collections.Sets;
-import controllers.StreamLayouter;
 import models.ModelException;
 import models.Record;
 import models.enums.APSSecurityLevel;
@@ -92,6 +91,18 @@ public class ComplexQueryManager {
     }
     
     protected static List<Record> postProcessRecords(Query q, List<Record> result) throws ModelException {
+    	// Duplicate Elimination
+    	Set<ObjectId> used = new HashSet<ObjectId>(result.size());
+    	List<Record> filteredresult = new ArrayList<Record>(result.size());
+    	for (Record r : result) {
+    		if (!used.contains(r._id)) {
+    			used.add(r._id);
+    			filteredresult.add(r);
+    		}
+    	}
+    	result = filteredresult; 
+		
+    	
     	boolean postFilter = q.getMinDate() != null || q.getMaxDate() != null || q.restrictedBy("creator") || (q.restrictedBy("format") && q.restrictedBy("document"));
     	if (q.getFetchFromDB()) {	
 			int minTime = q.getMinTime();
@@ -122,7 +133,7 @@ public class ComplexQueryManager {
 		   if (!q.getGiveKey()) for (Record record : result) record.clearSecrets();
 		}
 		
-		
+    	
 								
 		// 8 Post filter records if necessary		
 		Set<ObjectId> creators = null;

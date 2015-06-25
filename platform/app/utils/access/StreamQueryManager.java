@@ -10,6 +10,7 @@ import utils.auth.EncryptionNotSupportedException;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 
+import models.APSNotExistingException;
 import models.ModelException;
 import models.Record;
 
@@ -39,16 +40,23 @@ public class StreamQueryManager extends QueryManager {
 
 	@Override
 	protected List<Record> query(Query q) throws ModelException {		
-		QueryManager next = q.getCache().getAPS(q.getApsId());
+		SingleAPSManager next = q.getCache().getAPS(q.getApsId());
 		List<Record> records = new ArrayList<Record>();
 		boolean restrictedByStream = q.restrictedBy("stream");
-		if (!restrictedByStream && !q.isStreamOnlyQuery()) {
+		if (!restrictedByStream && !q.isStreamOnlyQuery() && q.deepQuery()) {
 			AccessLog.debug("scan stream query");
 			List<Record> streams = next.query(new Query(CMaps.map("format", Query.STREAM_TYPE), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId(), true ));
 			
-			try {
-			  for (Record r : streams) records.addAll(q.getCache().getAPS(r._id, r.key, q.getCache().getOwner().equals(r.owner)).query(q));				
-			} catch (EncryptionNotSupportedException e) { throw new ModelException("Encryption not supported."); }
+			
+			  for (Record r : streams) {
+				  try {
+				      records.addAll(q.getCache().getAPS(r._id, r.key, r.owner).query(q));
+				  } catch (EncryptionNotSupportedException e) { throw new ModelException("Encryption not supported."); }
+				  catch (APSNotExistingException e2) {
+					  next.removePermission(r);
+				  }
+			  }
+			
 			
 			records.addAll(next.query(q));
 			return records;

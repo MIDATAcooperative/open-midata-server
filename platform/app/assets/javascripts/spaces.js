@@ -1,5 +1,5 @@
-var spaces = angular.module('spaces', [ 'services' ]);
-spaces.controller('SpacesCtrl', ['$scope', '$http', '$sce', 'status', 'apps', function($scope, $http, $sce, status, apps) {
+var spaces = angular.module('spaces', [ 'services', 'views', 'dashboards' ]);
+spaces.controller('SpacesCtrl', ['$scope', '$http', '$sce', 'status', 'apps', 'views', function($scope, $http, $sce, status, apps, views) {
 	
 	// init
 	$scope.error = null;
@@ -11,6 +11,14 @@ spaces.controller('SpacesCtrl', ['$scope', '$http', '$sce', 'status', 'apps', fu
 	$scope.visualizations = [];
 	$scope.searching = false;
 	$scope.status = new status(true);
+	
+	$scope.def = views.def( {                        
+		  id : "share",
+		  template : "/assets/views/members/share.html",
+		  title : "Share With...",
+		  active : false,
+		  position : "modal"			 
+	} );
 	
 	// get current user
 	$http(jsRoutes.controllers.Users.getCurrentUser()).
@@ -98,13 +106,17 @@ spaces.controller('SpacesCtrl', ['$scope', '$http', '$sce', 'status', 'apps', fu
 		
 		// start side-by-side display
 		space.compare = true;
-	}
+	};
 
 	// end side-by-side display of current visualization
 	$scope.endCompare = function(space) {
 		space.compare = false;
 		space.copy = {};
-	}
+	};
+	
+	$scope.startShare = function(space) {
+		views.setView("share", { space : space._id.$oid });
+	};
 	
 	// load all installed visualizations (for creating a new space)
 	$scope.loadVisualizations = function() {

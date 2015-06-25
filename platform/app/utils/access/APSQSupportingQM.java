@@ -61,7 +61,7 @@ public class APSQSupportingQM extends QueryManager {
 		return next.query(q);		
 	}
 	
-	private Map<String, Object> combineQuery(Map<String,Object> properties, Map<String,Object> query) throws ModelException {
+	public static Map<String, Object> combineQuery(Map<String,Object> properties, Map<String,Object> query) throws ModelException {
 		Object fq = properties.get("format");
 		if (fq != null && fq.equals(Query.STREAM_TYPE)) return properties;
 		Map<String, Object> combined = new HashMap<String,Object>();

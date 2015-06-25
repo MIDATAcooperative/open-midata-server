@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import models.APSNotExistingException;
 import models.AccessPermissionSet;
 import models.ModelException;
 import models.enums.APSSecurityLevel;
@@ -41,19 +42,25 @@ public class EncryptedAPS {
 		this.owner = null;
 	}
 	
-	public EncryptedAPS(ObjectId apsId, ObjectId who, byte[] enckey, boolean isOwner) throws ModelException {
+	public EncryptedAPS(ObjectId apsId, ObjectId who, ObjectId owner) throws ModelException {
 		this.apsId = apsId;		
 		this.who = who;
-		this.owner = isOwner ? who : null;
+		this.owner = owner;
+	}
+	
+	public EncryptedAPS(ObjectId apsId, ObjectId who, byte[] enckey, ObjectId owner) throws ModelException {
+		this.apsId = apsId;		
+		this.who = who;
+		this.owner = owner;
 		this.encryptionKey = (enckey != null) ? new SecretKeySpec(enckey, KEY_ALGORITHM) : null;
 		keyProvided = true;
 	}
 			
-	public EncryptedAPS(ObjectId apsId, ObjectId who, APSSecurityLevel lvl, byte[] encKey) throws ModelException {
+	public EncryptedAPS(ObjectId apsId, ObjectId who, ObjectId owner, APSSecurityLevel lvl, byte[] encKey) throws ModelException {
 		this.apsId = apsId;
 		this.aps = new AccessPermissionSet();
 		this.who = who;
-		this.owner = who;
+		this.owner = owner;
 						
 		aps._id = apsId;
 		aps.security = lvl;
@@ -72,6 +79,7 @@ public class EncryptedAPS {
 	
 	protected EncryptedAPS(AccessPermissionSet subset, ObjectId who) {
 		this.aps = subset;
+		this.apsId = subset._id;
 		this.who = who;
 	}
 	
@@ -116,7 +124,7 @@ public class EncryptedAPS {
 	}
 	
 	public SecretKey getAPSKey() throws ModelException {
-		if (!isValidated) validate();
+		if (!keyProvided && !isValidated) validate();
 		return encryptionKey;
 	}
 	
@@ -150,6 +158,7 @@ public class EncryptedAPS {
 	}
 	
 	public Map<String, BasicBSONObject> getPermissions() throws ModelException {
+		if (owner!=null && !isAccessable()) return getPermissions(owner);
 		if (!isValidated) validate();		
 		return aps.permissions;
 	}
@@ -170,10 +179,10 @@ public class EncryptedAPS {
 					}
 			}
 			
-			if (wrapper == null) {							
-			   AccessPermissionSet newaps = new AccessPermissionSet();
-			   newaps.security = aps.security;			   
-			   wrapper = new EncryptedAPS(null, who, null, false);
+			if (wrapper == null) {		
+			   AccessLog.debug("split:" + apsId.toString());
+			 	   
+			   wrapper = new EncryptedAPS(new ObjectId(), who, owner, aps.security, EncryptionUtils.generateKey(KEY_ALGORITHM).getEncoded());
 			   aps.unmerged.add(wrapper.aps);
 			   for (String ckey : aps.keys.keySet()) {
 				   try {
@@ -181,7 +190,10 @@ public class EncryptedAPS {
 				     wrapper.setKey(ckey, KeyManager.instance.encryptKey(person, wrapper.getAPSKey().getEncoded()));
 				   } catch (EncryptionNotSupportedException e) {}
 			   }
-			}
+			   try {
+			     wrapper.setKey(who.toString(), KeyManager.instance.encryptKey(who, wrapper.getAPSKey().getEncoded()));
+			   } catch (EncryptionNotSupportedException e) {}
+			} else { AccessLog.debug("use existing split:" + apsId.toString()); };
 			
 			if (sublists == null) sublists = new ArrayList<EncryptedAPS>();
 			sublists.add(wrapper);
@@ -226,6 +238,7 @@ public class EncryptedAPS {
 	public void merge() throws ModelException {
 		try {
 		if (aps.unmerged != null) {
+			AccessLog.debug("merge:" + apsId.toString());
 			for (AccessPermissionSet subaps : aps.unmerged) {
 				EncryptedAPS encsubaps = new EncryptedAPS(subaps, who);
 				encsubaps.validate();
@@ -254,7 +267,14 @@ public class EncryptedAPS {
 	
 	private void load() throws ModelException {
 		this.aps = AccessPermissionSet.getById(this.apsId);
-		if (this.aps == null) throw new ModelException("APS does not exist.");
+		if (this.aps == null) {
+			AccessLog.debug("APS does not exist: aps="+this.apsId.toString());
+			throw new APSNotExistingException(this.apsId, "APS does not exist:"+this.apsId.toString());
+			/*this.aps = new AccessPermissionSet();
+			aps.permissions = new HashMap<String, BasicBSONObject>();
+			aps.keys = new HashMap<String, byte[]>();*/
+			
+		}
 		isValidated = false;
 	}
 				
@@ -287,6 +307,14 @@ public class EncryptedAPS {
 		}
 		isValidated = true;
 		if (aps.unmerged != null) merge();
+	}
+	
+	public boolean isAccessable() throws ModelException {
+		if (who.equals(owner)) return true;
+		if (apsId.equals(who)) return true;
+		if (!isLoaded()) load();	
+		if (aps.keys.containsKey(who.toString())) return true;
+		return false;
 	}
 	
 	 

@@ -37,15 +37,22 @@ public class FormatHandling extends QueryManager {
 		 if (q.restrictedBy("format") && !q.restrictedBy("stream")) {
 			 			 
 			 Set<String> formats = q.getRestriction("format");
-			 
-			 List<Record> results = next.query(new Query(CMaps.map("format", Query.STREAM_TYPE).map("name", formats), Sets.create("_id"), q.getCache(), q.getApsId()));
+			 			 
 			 //if (results.size() == 0) return Collections.<Record>emptyList();
-			 Set<String> streams = new HashSet<String>();
-			 streams.add(q.getApsId().toString());
-			 for (Record r : results) streams.add(r._id.toString());
-			 q = new Query(q, CMaps.map("stream", streams));
 			 
-			 return next.query(q);
+			 if (q.deepQuery()) {
+				 List<Record> results = next.query(new Query(CMaps.map("format", Query.STREAM_TYPE).map("name", formats), Sets.create("_id"), q.getCache(), q.getApsId()));
+				 Set<String> streams = new HashSet<String>();
+				 streams.add(q.getApsId().toString());
+				 for (Record r : results) streams.add(r._id.toString());
+				 q = new Query(q, CMaps.map("stream", streams));
+				 
+				 return next.query(q);
+			 } else {
+				 List<Record> results = next.query(new Query(CMaps.map("format", Query.STREAM_TYPE).map("name", formats), q.getFields(), q.getCache(), q.getApsId()));
+				 results.addAll(next.query(q));
+				 return results;
+			 }
 		 }
 		
 		return next.query(q);

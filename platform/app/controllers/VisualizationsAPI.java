@@ -16,6 +16,7 @@ import models.Record;
 import models.Space;
 import models.User;
 
+import org.bson.BSONObject;
 import org.bson.types.ObjectId;
 
 import play.Play;
@@ -82,6 +83,92 @@ public class VisualizationsAPI extends Controller {
 		return ok(Json.toJson(tokens));
 	}
 
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public static Result getConfig() throws JsonValidationException, ModelException {
+		// allow cross origin request from visualizations server
+		String visualizationsServer = Play.application().configuration().getString("visualizations.server");
+		response().setHeader("Access-Control-Allow-Origin", "https://" + visualizationsServer);
+
+		// validate json
+		JsonNode json = request().body().asJson();
+		
+		JsonValidation.validate(json, "authToken");
+		
+		// decrypt authToken and check whether space with corresponding owner exists
+		SpaceToken spaceToken = SpaceToken.decrypt(json.get("authToken").asText());
+		if (spaceToken == null) {
+			return badRequest("Invalid authToken.");
+		}
+		BSONObject meta = RecordSharing.instance.getMeta(spaceToken.userId, spaceToken.spaceId, "_config");
+		
+		if (meta != null) return ok(Json.toJson(meta.toMap()));
+		
+		return ok();
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public static Result setConfig() throws JsonValidationException, ModelException {
+		// allow cross origin request from visualizations server
+		String visualizationsServer = Play.application().configuration().getString("visualizations.server");
+		response().setHeader("Access-Control-Allow-Origin", "https://" + visualizationsServer);
+
+		// validate json
+		JsonNode json = request().body().asJson();
+		
+		JsonValidation.validate(json, "authToken", "config");
+		
+		// decrypt authToken and check whether space with corresponding owner exists
+		SpaceToken spaceToken = SpaceToken.decrypt(json.get("authToken").asText());
+		if (spaceToken == null) {
+			return badRequest("Invalid authToken.");
+		}
+		Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));
+		
+		RecordSharing.instance.setMeta(spaceToken.userId, spaceToken.spaceId, "_config", config);
+						
+		return ok();
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public static Result cloneAs() throws JsonValidationException, ModelException {
+		// allow cross origin request from visualizations server
+		String visualizationsServer = Play.application().configuration().getString("visualizations.server");
+		response().setHeader("Access-Control-Allow-Origin", "https://" + visualizationsServer);
+
+		// validate json
+		JsonNode json = request().body().asJson();
+		
+		JsonValidation.validate(json, "authToken", "name", "config");
+		
+		// decrypt authToken and check whether space with corresponding owner exists
+		SpaceToken spaceToken = SpaceToken.decrypt(json.get("authToken").asText());
+		if (spaceToken == null) {
+			return badRequest("Invalid authToken.");
+		}
+		Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));
+		String name = JsonValidation.getString(json, "name");
+		Space current = Space.getByIdAndOwner(spaceToken.spaceId, spaceToken.userId, Sets.create("context", "visualization", "app"));
+		
+		Space space = Spaces.add(spaceToken.userId, name, current.visualization, current.app, current.context);
+		
+		BSONObject bquery = RecordSharing.instance.getMeta(spaceToken.userId, spaceToken.spaceId, "_query");		
+		Map<String, Object> query;
+		if (bquery != null) {
+			query = bquery.toMap();
+			
+			/*if (json.has("query")) {
+				
+			}*/
+			RecordSharing.instance.shareByQuery(spaceToken.userId, spaceToken.userId, space._id, query);
+		}		
+		RecordSharing.instance.setMeta(spaceToken.userId, space._id, "_config", config);
+						
+		return ok();
+	}
+	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result getRecords() throws JsonValidationException, ModelException {

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import models.Circle;
+import models.FilterRule;
 import models.FormatInfo;
 import models.LargeRecord;
 import models.MemberKey;
@@ -20,6 +21,7 @@ import models.Member;
 import models.StudyParticipation;
 import models.Visualization;
 
+import org.bson.BSONObject;
 import org.bson.types.ObjectId;
 
 import play.Play;
@@ -319,6 +321,32 @@ public class Records extends Controller {
 			  RecordSharing.instance.unshare(userId, space.aps, recordIds);				
 		  }
 		}
+		
+		return ok();
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(Secured.class)
+	public static Result share() throws JsonValidationException, ModelException {
+		JsonNode json = request().body().asJson();
+		
+		JsonValidation.validate(json, "fromSpace", "toCircle");
+		
+		ObjectId userId = new ObjectId(request().username());
+		ObjectId fromSpace = JsonValidation.getObjectId(json, "fromSpace");
+		ObjectId toCircle = JsonValidation.getObjectId(json, "toCircle");
+		
+		BSONObject query = RecordSharing.instance.getMeta(userId, fromSpace, "_query");
+		if (query != null) {
+			List<FilterRule> rules = RuleApplication.instance.createRulesFromQuery(query.toMap());
+			if (rules != null) {
+				RuleApplication.instance.setupRules(userId, rules, userId, toCircle, true);
+				//RuleApplication.instance.applyRules(userId, rules, userId, toCircle, true);
+			}
+		}
+				
+		RecordSharing.instance.share(userId, fromSpace, toCircle, null, true);
 		
 		return ok();
 	}

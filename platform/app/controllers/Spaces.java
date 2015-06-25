@@ -13,6 +13,7 @@ import models.ModelException;
 import models.Space;
 import models.Visualization;
 
+import org.bson.BSONObject;
 import org.bson.types.ObjectId;
 
 import play.Play;
@@ -48,21 +49,30 @@ public class Spaces extends Controller {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result get() throws JsonValidationException {
+	public static Result get() throws JsonValidationException, ModelException {
 		// validate json
 		JsonNode json = request().body().asJson();
-		
+		ObjectId userId = new ObjectId(request().username());
 		JsonValidation.validate(json, "properties", "fields");
 		
 
 		// get spaces
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		properties.put("owner", userId);
+		
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		List<Space> spaces;
 		try {
 			spaces = new ArrayList<Space>(Space.getAll(properties, fields));
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
+		}
+		
+		if (fields.contains("rules")) {
+			for (Space space : spaces) {
+				BSONObject q = RecordSharing.instance.getMeta(userId, space._id, "_query");
+				if (q != null) space.rules = RuleApplication.instance.createRulesFromQuery(q.toMap());
+			}
 		}
 		Collections.sort(spaces);
 		return ok(Json.toJson(spaces));
@@ -85,8 +95,10 @@ public class Spaces extends Controller {
 		String context = JsonValidation.getString(json, "context");
 		
 		Map<String, Object> query = null;
+		Map<String, Object> config = null;
 		
 		if (json.has("query")) query = JsonExtraction.extractMap(json.get("query"));
+		if (json.has("config")) config = JsonExtraction.extractMap(json.get("config"));
 		
 		if (Space.existsByNameAndOwner(name, userId)) {
 			return badRequest("A space with this name already exists.");
@@ -97,6 +109,9 @@ public class Spaces extends Controller {
 		if (query != null) {
 			RecordSharing.instance.shareByQuery(userId, userId, space._id, query);
 			//RuleApplication.instance.setupRulesForSpace(userId, rules, userId, space._id, true);
+		}
+		if (config != null) {
+			RecordSharing.instance.setMeta(userId, space._id, "_config", config);
 		}
 				
 		return ok(Json.toJson(space));

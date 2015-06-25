@@ -66,6 +66,8 @@ public class RecordSharing {
 	public static RecordSharing instance = new RecordSharing();
 
 	public final static Map<String, Object> FULLAPS = new HashMap<String, Object>();
+	public final static Map<String, Object> FULLAPS_WITHSTREAMS = CMaps.map("streams", "true");
+	public final static Map<String, Object> FULLAPS_FLAT = CMaps.map("streams", "true").map("flat", "true");
 	public final static Set<String> INTERNALIDONLY = Sets.create("_id");
 	public final static Set<String> COMPLETE_META = Sets.create("id", "owner",
 			"app", "creator", "created", "name", "format", "description");
@@ -99,7 +101,7 @@ public class RecordSharing {
 
 		SecretKey encryptionKey = EncryptionUtils.generateKey(KEY_ALGORITHM);
 
-		EncryptedAPS eaps = new EncryptedAPS(proposedId, who,
+		EncryptedAPS eaps = new EncryptedAPS(proposedId, who, who,
 				APSSecurityLevel.HIGH, encryptionKey.getEncoded());
 
 		try {
@@ -123,7 +125,7 @@ public class RecordSharing {
 
 		SecretKey encryptionKey = EncryptionUtils.generateKey(KEY_ALGORITHM);
 
-		EncryptedAPS eaps = new EncryptedAPS(proposedId, owner,
+		EncryptedAPS eaps = new EncryptedAPS(proposedId, owner, owner,
 				APSSecurityLevel.HIGH, encryptionKey.getEncoded());
 
 		try {
@@ -151,13 +153,13 @@ public class RecordSharing {
 
 	}
 
-	public ObjectId createAPSForRecord(ObjectId owner, ObjectId recordId,
+	public ObjectId createAPSForRecord(ObjectId executingPerson, ObjectId owner, ObjectId recordId,
 			byte[] key, boolean direct) throws ModelException {
 
 		byte[] encryptionKey = key != null ? key : EncryptionUtils.generateKey(
 				KEY_ALGORITHM).getEncoded();
 
-		EncryptedAPS eaps = new EncryptedAPS(recordId, owner,
+		EncryptedAPS eaps = new EncryptedAPS(recordId, executingPerson, owner,
 				direct ? APSSecurityLevel.MEDIUM : APSSecurityLevel.HIGH,
 				encryptionKey);
 
@@ -202,11 +204,11 @@ public class RecordSharing {
 	public void share(ObjectId who, ObjectId fromAPS, ObjectId toAPS,
 			Set<ObjectId> records, boolean withOwnerInformation)
 			throws ModelException {
-        AccessLog.debug("share: who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString()+" count="+records.size());
+        AccessLog.debug("share: who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString()+" count="+(records!=null ? records.size() : "?"));
 		SingleAPSManager apswrapper = getCache(who).getAPS(toAPS);
 		List<Record> recordEntries = ComplexQueryManager.listInternal(getCache(who), fromAPS,
-				CMaps.map("_id", records),
-				Sets.create("_id", "key", "owner", "format"));
+				records != null ? CMaps.map("_id", records) : RecordSharing.FULLAPS_FLAT,
+				Sets.create("_id", "key", "owner", "format", "name"));
 		apswrapper.addPermission(recordEntries, withOwnerInformation);
 	}
 
@@ -228,9 +230,9 @@ public class RecordSharing {
 		apswrapper.removePermission(recordEntries);
 	}
 
-	public Record createStream(ObjectId owner, ObjectId targetAPS, String name,
+	public Record createStream(ObjectId executingPerson, ObjectId owner, ObjectId targetAPS, String name,
 			boolean direct) throws ModelException {
-		AccessLog.debug("Create Stream: who="+owner.toString()+" name="+name+" direct="+direct+" into="+targetAPS);
+		AccessLog.debug("Create Stream: who="+executingPerson.toString()+" name="+name+" direct="+direct+" into="+targetAPS);
 		Record result = new Record();
 		result._id = new ObjectId();
 		result.name = name;
@@ -240,7 +242,7 @@ public class RecordSharing {
 		result.created = DateTimeUtils.now();
 		result.data = new BasicDBObject();
 
-		addRecord(owner, result);
+		addRecord(executingPerson, result, targetAPS);
 		return result;
 	}
 
@@ -260,6 +262,14 @@ public class RecordSharing {
 				CMaps.map("format", RecordSharing.STREAM_TYPE)
 						.map("name", name));
 	}
+	
+	public BSONObject getMeta(ObjectId who, ObjectId apsId, String key) throws ModelException {
+		return getCache(who).getAPS(apsId).getMeta(key);
+	}
+	
+	public void setMeta(ObjectId who, ObjectId apsId, String key, Map<String,Object> data) throws ModelException {
+		getCache(who).getAPS(apsId).setMeta(key, data);
+	}
 
 	/*
 	 * private int getTimeFromDate(Date dt) { return (int) (dt.getTime() / 1000
@@ -268,39 +278,52 @@ public class RecordSharing {
 
 	public void addDocumentRecord(ObjectId owner, Record record,
 			Collection<Record> parts) throws ModelException {
-		byte[] key = addRecordIntern(owner, record, false);
+		byte[] key = addRecordIntern(owner, record, false, null);
 		if (key == null)
 			throw new NullPointerException("no key");
 		for (Record rec : parts) {
 			rec.document = record._id;
 			rec.key = key;
-			addRecordIntern(owner, rec, true);
+			addRecordIntern(owner, rec, true, null);
 		}
 	}
 
-	public void addRecord(ObjectId owner, Record record) throws ModelException {
-
-		addRecordIntern(owner, record, false);
+	public void addRecord(ObjectId executingPerson, Record record) throws ModelException {
+		addRecordIntern(executingPerson, record, false, null);
+		record.key = null;
+	}
+	
+	public void addRecord(ObjectId executingPerson, Record record, ObjectId alternateAps) throws ModelException {
+		addRecordIntern(executingPerson, record, false, alternateAps);
 		record.key = null;
 	}
 
-	private byte[] addRecordIntern(ObjectId owner, Record record, boolean documentPart) throws ModelException {
-		
+	private byte[] addRecordIntern(ObjectId executingPerson, Record record, boolean documentPart, ObjectId alternateAps) throws ModelException {		
 		if (!record.format.equals(RecordSharing.STREAM_TYPE)) {
 		  if (record.stream == null) {
-			  record.stream = RecordSharing.instance.getStreamByName(owner, owner, record.format);
+			  if (getCache(executingPerson).getAPS(record.owner, record.owner).eaps.isAccessable()) {		 
+			     record.stream = RecordSharing.instance.getStreamByName(executingPerson, record.owner, record.format);
+			  } else if (alternateAps != null) {
+				 record.stream = RecordSharing.instance.getStreamByName(executingPerson, alternateAps, record.format);
+			  }
 		  }
 		  if (record.stream == null && record.format != null) {
 			 FormatInfo format = FormatInfo.getByName(record.format);
-			 Record stream = RecordSharing.instance.createStream(owner, owner, record.format, format.security.equals(APSSecurityLevel.MEDIUM));			 
-			 RuleApplication.instance.applyRules(owner, record);
-			 record.stream = stream._id;
+			 if (getCache(executingPerson).getAPS(record.owner, record.owner).eaps.isAccessable()) {
+			    Record stream = RecordSharing.instance.createStream(executingPerson, record.owner, record.owner, record.format, format.security.equals(APSSecurityLevel.MEDIUM));			 			
+			    record.stream = stream._id;
+			 } else if (alternateAps != null) {
+ 			    Record stream = RecordSharing.instance.createStream(executingPerson, record.owner, alternateAps, record.format, format.security.equals(APSSecurityLevel.MEDIUM));
+				record.stream = stream._id;
+				//getCache(executingPerson).getAPS(record.owner, record.owner).addPermission(stream, true);				
+			 }
 		  }
 		}
-		AccessLog.debug("Add Record owner="+owner.toString()+" format="+record.format+" stream="+(record.stream != null ? record.stream.toString() : "null"));	
+		AccessLog.debug("Add Record execPerson="+executingPerson.toString()+" format="+record.format+" stream="+(record.stream != null ? record.stream.toString() : "null"));	
 		byte[] usedKey = null;
 		record.time = Query.getTimeFromDate(record.created); //System.currentTimeMillis() / 1000 / 60 / 60 / 24 / 7;
 		
+		Record orig = record;
 		record = record.clone();
 		
 		SingleAPSManager apswrapper = null;
@@ -310,11 +333,12 @@ public class RecordSharing {
 		if (record.owner.equals(record.creator)) record.creator = null;
 		
 		if (record.stream != null) {
-		  apswrapper = getCache(owner).getAPS(record.stream);
+		  apswrapper = getCache(executingPerson).getAPS(record.stream, record.owner);
 		  record.direct = apswrapper.eaps.isDirect();
 		  
 		} else {		
-		  apswrapper = getCache(owner).getAPS(owner);
+			if (alternateAps != null) apswrapper = getCache(executingPerson).getAPS(alternateAps);
+			else apswrapper = getCache(executingPerson).getAPS(record.owner, record.owner);
 		}
 	
 		if (record.format.equals(STREAM_TYPE)) {
@@ -330,7 +354,7 @@ public class RecordSharing {
 			record.key = apswrapper.eaps.getAPSKey().getEncoded();		
 		} else if (!documentPart) {
 			if (record.document != null) {
-				List<Record> doc = ComplexQueryManager.listInternal(getCache(owner), owner, CMaps.map("_id", record.document.toString()), Sets.create("key"));
+				List<Record> doc = ComplexQueryManager.listInternal(getCache(executingPerson), record.owner, CMaps.map("_id", record.document.toString()), Sets.create("key"));
 				if (doc.size() == 1) record.key = doc.get(0).key;
 				else throw new ModelException("Document not identified");
 				documentPart = true;
@@ -346,14 +370,20 @@ public class RecordSharing {
 		
 		if (!record.direct && !documentPart) apswrapper.addPermission(record, false);
 		
-		if (record.stream == null) { RuleApplication.instance.applyRules(owner, record); }
-		
+		Record unecrypted = record.clone();
+				
 		SingleAPSManager.encryptRecord(record, apswrapper.eaps.getSecurityLevel());		
 	    Record.add(record);	  
 	    		
-		if (record.format.equals(STREAM_TYPE)) {
-			RecordSharing.instance.createAPSForRecord(owner, record._id, record.key, apsDirect);
+		if (unecrypted.format.equals(STREAM_TYPE)) {
+			RecordSharing.instance.createAPSForRecord(executingPerson, unecrypted.owner, unecrypted._id, unecrypted.key, apsDirect);
 		}
+		
+		if (alternateAps != null && record.stream == null) {
+			getCache(executingPerson).getAPS(record.owner, record.owner).addPermission(unecrypted, false);
+		}
+		
+		if (unecrypted.stream == null) { RuleApplication.instance.applyRules(executingPerson, unecrypted.owner, unecrypted, alternateAps != null ? alternateAps : unecrypted.owner); }
 		
 		return usedKey;	
 	}

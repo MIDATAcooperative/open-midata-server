@@ -32,7 +32,7 @@ public class JsonValidation {
 	
 	public static ObjectId getObjectId(JsonNode json, String field) {
 		String id = json.path(field).asText();
-		if (id == null || id.trim().equals("")) return null;
+		if (id == null || id.trim().equals("") || id.equals("null")) return null;
 		return new ObjectId(id);
 	}
 	

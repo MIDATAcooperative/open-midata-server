@@ -4,13 +4,13 @@
 <p class="text-center"><strong>{{ report.name }}</strong></p>
 <div ng-if="chartType=='line'">
 <canvas id="line" class="chart chart-line" data="data"
-  labels="labels" legend="true" series="series"
+  labels="labels" legend="false" series="series"
   click="onClick">
 </canvas> 
 </div>
 
 <div ng-if="chartType=='bar'">
-<canvas id="bar" legend="true" class="chart chart-bar" data="data" labels="labels"></canvas>
+<canvas id="bar" legend="false" class="chart chart-bar" data="data" labels="labels"></canvas>
 </div>
 
 <div ng-if="chartType=='pie'">

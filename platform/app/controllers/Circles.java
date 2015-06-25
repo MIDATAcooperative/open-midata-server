@@ -108,6 +108,9 @@ public class Circles extends Controller {
 		// Remove APS
 		RecordSharing.instance.deleteAPS(circle.aps, circle.owner);
 		
+		// Remove Rules
+		RuleApplication.instance.removeRules(userId, circleId);
+		
 		// delete circle		
 		Circle.delete(userId, circleId);
 		

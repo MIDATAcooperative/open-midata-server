@@ -18,6 +18,8 @@ angular.module('chartApp')
 	  $scope.report = {};
 	  $scope.reports = [];
 	  $scope.unit = null;
+	  $scope.name = "";
+	  $scope.config = {};
 	  
 	  $scope.reload = function() {
 		  server.getRecords($scope.authToken, { }, ["owner", "created", "ownerName", "format", "data"])
@@ -103,11 +105,17 @@ angular.module('chartApp')
 			  $scope.entry = entries[0];
 			  return;
 		  }
-		  $scope.labels = info[labelAxis];
-		  $scope.series = info[seriesAxis];
+		  var shorten = function(a) {
+			  var r = [];
+			  angular.forEach(a, function(x) { if (x.length && x.length > 15) r.push(x.substr(0,13) + "..."); else r.push(x); });
+			  return r;
+		  }
 		  
-		  var labelMap = $scope.map($scope.labels);
-		  var seriesMap = $scope.map($scope.series);
+		  $scope.labels = shorten(info[labelAxis]);
+		  $scope.series = shorten(info[seriesAxis]);
+		  
+		  var labelMap = $scope.map(info[labelAxis]);
+		  var seriesMap = $scope.map(info[seriesAxis]);
 		  var d = $scope.data = [];
 		  var h = [];
 		  if (alg == null || alg == "simple") {
@@ -158,7 +166,7 @@ angular.module('chartApp')
 		  
 		  if ($scope.report.filter) {
 		    $scope.filter = $scope.info[$scope.report.filter];
-		    $scope.selectedFilter = $scope.filter[0];
+		    $scope.selectedFilter = $scope.config.filter != null ? $scope.config.filter : $scope.filter[0];
 		  }
 		  
 		  $scope.prepareFilter();
@@ -171,7 +179,7 @@ angular.module('chartApp')
 		  var filteredInfo = $scope.report.filter ? $scope.buildAxes(filteredEntries) : $scope.info;
 		  if ($scope.report.filter2) {
 			 $scope.filter2 = filteredInfo[$scope.report.filter2];
-			 $scope.selectedFilter2 = $scope.filter2[0];
+			 $scope.selectedFilter2 = $scope.config.filter2 != null ? $scope.config.filter2 : $scope.filter2[0];
 		  }
 		  $scope.entries1 = filteredEntries;
 		  $scope.info1 = filteredInfo;
@@ -233,10 +241,34 @@ angular.module('chartApp')
 		 }
 		 
 		 $scope.reports = r;
-		 $scope.report = r[0];		 
+		 $scope.report = $scope.config.report != null ? $filter('filter')($scope.reports, function(r) { return r.name  == $scope.config.report.name })[0] : r[0];
 	  };
 	  
-	  $scope.reload();
+	  $scope.loadConfig = function() {
+		  server.getConfig($scope.authToken)
+		  .then(function (result) {
+			if (result.data) {
+				$scope.config = result.data;
+				/*$scope.report = result.report;
+				$scope.selectedFilter = result.filter;
+				$scope.selectedFilter2 = result.filter2;*/
+			}  
+			$scope.reload();
+		  });
+		  
+	  };
+	  
+	  $scope.saveConfig = function() {
+		 var config = { report : $scope.report, filter : $scope.selectedFilter, filter2: $scope.selectedFilter2 };
+		 server.setConfig($scope.authToken, config);
+	  };
+	  
+	  $scope.add = function(name) {
+		 var config = { report : $scope.report, filter : $scope.selectedFilter, filter2: $scope.selectedFilter2 };
+		 server.cloneAs($scope.authToken, name, config);
+	  };
+	  
+	  $scope.loadConfig();
 	  
     }]);
 

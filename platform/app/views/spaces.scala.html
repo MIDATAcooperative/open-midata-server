@@ -63,6 +63,9 @@
 						<button class="btn btn-danger" ng-click="deleteSpace(space)">
 							<span class="glyphicon glyphicon-remove-sign"></span> Delete this space
 						</button>
+						<button class="btn" ng-hide="space.compare" ng-click="startShare(space)">
+						    <span></span>Share...
+						</button>
 						
 						<!-- Add records modal -->
 						<div class="modal fade" id="recordModal-{{space._id.$oid}}" role="dialog" aria-labelledby="recordModalLabel-{{space._id.$oid}}" aria-hidden="true">
@@ -106,6 +109,10 @@
 				</div>
 			</div>
 		</div>
+		
+		<modal>
+	       <div ng-include="def.template"></div>
+	    </modal>
 		
 		<!-- New space modal -->
 		<div class="modal fade" id="spaceModal" role="dialog" aria-labelledby="spaceModalLabel" aria-hidden="true">
@@ -158,5 +165,7 @@
 	</div>
 
 	<!-- Load spaces controller -->
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/views.js")" defer></script>
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/dashboards.js")" defer></script>
 	<script type="text/javascript" src="@routes.Assets.at("javascripts/spaces.js")" defer></script>
 }

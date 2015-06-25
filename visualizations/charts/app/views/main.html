@@ -13,6 +13,17 @@
      <label for="filter2">{{ report.filterLabel2 }}</label>
      <select id="filter2" class="form-control" ng-model="selectedFilter2" ng-options="f for f in filter2" ng-change="update()"></select>
   </div>
+  <div class="form-group" ng-show="reports.length > 1 || report.filter || report.filter2">
+    <button class="btn btn-default" ng-click="saveConfig()">Save</button>    
+  </div>
+  <div class="form-group" ng-show="reports.length > 1 || report.filter || report.filter2">
+    <div class="input-group">
+    <input class="form-control" type="text" ng-model="name" placeholder="Name for new chart">
+    <div class="input-group-btn">
+      <button ng-click="add(name)" ng-disabled="!name" class="btn btn-default">Add</button>
+    </div>
+    </div>    
+  </div>
 </form>
 <p ng-show="report.unit">Unit: {{ report.unit }}</p>
 <div ng-show="entries.length==0" class="alert alert-warning">

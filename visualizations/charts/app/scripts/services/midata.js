@@ -22,5 +22,20 @@ midata.factory('server', [ '$http', function($http) {
 		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/records", data);
 	};
 	
+	service.getConfig = function(authToken) {
+		 var data = { "authToken" : authToken  };		
+		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/getconfig", data);
+	};
+	
+	service.setConfig = function(authToken, config) {
+		 var data = { "authToken" : authToken, "config" : config  };		
+		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/setconfig", data);
+	};
+	
+	service.cloneAs = function(authToken, name, config) {
+		 var data = { "authToken" : authToken, "name" : name, "config" : config };		
+		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/clone", data);
+	};
+	
 	return service;	
 }]);
