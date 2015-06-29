@@ -212,7 +212,7 @@ public class SingleAPSManager extends QueryManager {
 	protected boolean lookupSingle(Record input, Query q) throws ModelException {
 		//AccessLog.lookupSingle(eaps.getId(), input._id, q.getProperties());
 		if (eaps.isDirect()) {
-			input.key = eaps.getAPSKey().getEncoded();
+			input.key = eaps.getAPSKey() != null ? eaps.getAPSKey().getEncoded() : null;
 			input.owner = eaps.getOwner();
 			return true;
 		}
