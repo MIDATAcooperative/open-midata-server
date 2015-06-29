@@ -340,9 +340,10 @@ public class Records extends Controller {
 		BSONObject query = RecordSharing.instance.getMeta(userId, fromSpace, "_query");
 		if (query != null) {
 			List<FilterRule> rules = RuleApplication.instance.createRulesFromQuery(query.toMap());
+			List<FilterRule> oldrules = RuleApplication.instance.getRules(userId, toCircle);
 			if (rules != null) {
-				RuleApplication.instance.setupRules(userId, rules, userId, toCircle, true);
-				//RuleApplication.instance.applyRules(userId, rules, userId, toCircle, true);
+				if (oldrules != null) RuleApplication.instance.merge(rules, oldrules);
+				RuleApplication.instance.setupRules(userId, rules, userId, toCircle, true);			
 			}
 		}
 				

@@ -163,9 +163,11 @@ public class SingleAPSManager extends QueryManager {
 			for (ObjectId id : q.getObjectIdRestriction("_id")) {
 				for (String format : formats.keySet()) {
 					   BasicBSONObject map = formats.get(format);
-					   BasicBSONObject target = (BasicBSONObject) map.get(id.toString());
-					   if (target!=null) {
-						   result.add(createRecordFromAPSEntry(id.toString(), format, target, withOwner));
+					   if (map != null) {
+						   BasicBSONObject target = (BasicBSONObject) map.get(id.toString());
+						   if (target!=null) {
+							   result.add(createRecordFromAPSEntry(id.toString(), format, target, withOwner));
+						   }
 					   }
 				}
 			}			

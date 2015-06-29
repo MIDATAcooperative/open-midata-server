@@ -21,6 +21,10 @@ angular.module('chartApp')
 	  $scope.name = "";
 	  $scope.config = {};
 	  
+	  $scope.saving = false;
+	  $scope.saving2 = false;
+	  $scope.readonly = false;
+	  
 	  $scope.reload = function() {
 		  server.getRecords($scope.authToken, { }, ["owner", "created", "ownerName", "format", "data"])
 		  .then(function(results) {
@@ -248,7 +252,11 @@ angular.module('chartApp')
 		  server.getConfig($scope.authToken)
 		  .then(function (result) {
 			if (result.data) {
-				$scope.config = result.data;
+				if (result.data && result.data.readonly) {
+					$scope.readonly = true;
+				} else {
+				    $scope.config = result.data;
+				}
 				/*$scope.report = result.report;
 				$scope.selectedFilter = result.filter;
 				$scope.selectedFilter2 = result.filter2;*/
@@ -260,12 +268,16 @@ angular.module('chartApp')
 	  
 	  $scope.saveConfig = function() {
 		 var config = { report : $scope.report, filter : $scope.selectedFilter, filter2: $scope.selectedFilter2 };
-		 server.setConfig($scope.authToken, config);
+		 $scope.saving = true;
+		 server.setConfig($scope.authToken, config)
+		 .then(function() { $scope.saving = false; });
 	  };
 	  
 	  $scope.add = function(name) {
 		 var config = { report : $scope.report, filter : $scope.selectedFilter, filter2: $scope.selectedFilter2 };
-		 server.cloneAs($scope.authToken, name, config);
+		 $scope.saving2 = true;
+		 server.cloneAs($scope.authToken, name, config)
+		 .then(function() { $scope.saving2 = false; });;
 	  };
 	  
 	  $scope.loadConfig();

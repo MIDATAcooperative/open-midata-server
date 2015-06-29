@@ -27,4 +27,8 @@
   <div class="text-center lead"><span style="color: #1c4982;display: block;font-size: 100px;">{{ entry.value }}</span>{{ entry.unit }}</div>
   <div class="text-center"><strong>{{ entry.dateTime }}</strong></div>
 </div>
+
+<div ng-show="entries.length==0" class="text-center">
+  <strong>Nothing to display!</strong>   
+</div>
 </div>

@@ -88,6 +88,18 @@ public class RuleApplication {
 		}
 	}
 	
+	public void merge(List<FilterRule> target , List<FilterRule> add_rules) throws ModelException {
+		for (FilterRule rule : add_rules) {
+			for (FilterRule srule : target) {
+				if (rule.name.equals(srule.name)) {
+					Rule r = rulecache.get(srule.name);
+					if (r == null) throw new ModelException("Unknown rule: "+srule.name);
+				    r.merge(srule.params, rule.params);
+				}
+			}
+		}
+	}
+	
 	public void setupRules(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws ModelException {
 		
 		Member member = Member.getById(userId, Sets.create("rules"));
@@ -100,6 +112,12 @@ public class RuleApplication {
 		member.rules.put(targetaps.toString(), filterRules);
         Member.set(userId, "rules", member.rules);			
 			
+	}
+	
+	public List<FilterRule> getRules(ObjectId userId, ObjectId apsId) throws ModelException {
+		Member member = Member.getById(userId, Sets.create("rules"));
+		if (member.rules!=null) return member.rules.get(apsId.toString());
+		return null;
 	}
 	
 	public void removeRules(ObjectId userId, ObjectId targetaps) throws ModelException {

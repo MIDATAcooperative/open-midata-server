@@ -22,6 +22,21 @@ planCreator.factory('server', [ '$http', function($http) {
 		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/records", data);
 	};
 	
+	service.getConfig = function(authToken) {
+		 var data = { "authToken" : authToken  };		
+		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/getconfig", data);
+	};
+	
+	service.setConfig = function(authToken, config) {
+		 var data = { "authToken" : authToken, "config" : config  };		
+		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/setconfig", data);
+	};
+	
+	service.cloneAs = function(authToken, name, config) {
+		 var data = { "authToken" : authToken, "name" : name, "config" : config };		
+		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/clone", data);
+	};
+	
 	return service;	
 }]);
 planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter', 'server',
@@ -38,6 +53,7 @@ planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter
 		$scope.activePlan = null;
 		$scope.availablePlans = {};		
 		$scope.saving = 0;
+		$scope.readonly = true;
 				
 		// { date format name value [target] 
 				
@@ -114,7 +130,12 @@ planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter
 		
 		
 						
-		$scope.load = function() {			
+		$scope.load = function() {	
+			server.getConfig($scope.authToken)
+			.then(function(result) {
+				if (!result.data || !result.data.readonly) $scope.readonly = false;
+			});
+			
 			server.getRecords($scope.authToken, { }, ["name", "owner", "ownerName", "format", "description", "created", "data"])
 			.then(function(results) {				
 				

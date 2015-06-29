@@ -44,6 +44,7 @@ import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import com.mongodb.util.JSONParseException;
@@ -100,6 +101,12 @@ public class VisualizationsAPI extends Controller {
 		if (spaceToken == null) {
 			return badRequest("Invalid authToken.");
 		}
+		if (spaceToken.recordId != null)  {
+		   ObjectNode result = Json.newObject();
+		   result.put("readonly", true);
+		   return ok(result);
+		}
+		
 		BSONObject meta = RecordSharing.instance.getMeta(spaceToken.userId, spaceToken.spaceId, "_config");
 		
 		if (meta != null) return ok(Json.toJson(meta.toMap()));
@@ -270,6 +277,8 @@ public class VisualizationsAPI extends Controller {
 		if (authToken == null) {
 			return badRequest("Invalid authToken.");
 		}
+		
+		if (authToken.recordId != null) return badRequest("This view is readonly.");
 		
 		Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.userId, Sets.create("visualization", "app", "aps"));
 		

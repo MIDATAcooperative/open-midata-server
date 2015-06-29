@@ -9,4 +9,5 @@ import models.Record;
 public interface Rule {
 	public boolean qualifies(Record record, List<Object> params) throws ModelException;
 	public void setup(Map<String, Object> query, List<Object> params) throws ModelException;
+	public void merge(List<Object> params, List<Object> params2) throws ModelException;
 }

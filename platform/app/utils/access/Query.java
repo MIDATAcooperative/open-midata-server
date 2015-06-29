@@ -106,8 +106,8 @@ public class Query {
 		Object v = properties.get(name);
 		if (v instanceof ObjectId) {
 			return Collections.singleton((ObjectId) v);
-		} else if (v instanceof Set) {
-			return (Set) v;
+		/*} else if (v instanceof Set) {
+			return (Set) v;*/
 		} else if (v instanceof Collection) {
 			Set<ObjectId> results = new HashSet<ObjectId>();
 			for (Object obj : (Collection<?>) v) { results.add(new ObjectId(obj.toString())); }			

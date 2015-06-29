@@ -1,5 +1,6 @@
 package utils.rules;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +27,15 @@ public class FormatRule implements Rule {
 		if (params.size() == 1) {
 			query.put("format", params.get(0));
 		} else query.put("format", params);		
+	}
+
+
+	@Override
+	public void merge(List<Object> params, List<Object> params2)
+			throws ModelException {
+		for (Object o : params2) {
+			if (!params.contains(o)) params.add(o);
+		}		
 	}
     
 }

@@ -31,7 +31,14 @@ public class StreamQueryManager extends QueryManager {
 		if (!found) {
 			if (record.stream != null && record.key == null) {
 				boolean result = q.getCache().getAPS(record.stream).lookupSingle(record, q);
-				if (result) return true;
+				                					
+				if (result) {
+					if (q.returns("owner") && record.owner == null) {
+						List<Record> stream = next.query(new Query(CMaps.map("_id", record.stream).map("format", Query.STREAM_TYPE), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId(), true ));
+						if (stream.size() > 0) record.owner = stream.get(0).owner;
+					}
+                    return true;					
+				}
 			}
 		}
 		
@@ -63,11 +70,22 @@ public class StreamQueryManager extends QueryManager {
 		}		
 		else if (restrictedByStream) {
 		  AccessLog.debug("single stream query");
-		  Set<String> streams1 = q.getRestriction("stream");
+		  //Set<String> streams1 = q.getRestriction("stream");
 		  
-		  for (String streamId : streams1) {
+		  List<Record> streams = next.query(new Query(CMaps.map("_id", q.getProperties().get("stream")).map("format", Query.STREAM_TYPE), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId(), true ));
+			
+		  for (Record r : streams) {
+			  try {
+			      records.addAll(q.getCache().getAPS(r._id, r.key, r.owner).query(q));
+			  } catch (EncryptionNotSupportedException e) { throw new ModelException("Encryption not supported."); }
+			  catch (APSNotExistingException e2) {
+				  next.removePermission(r);
+			  }
+		  }				
+		  
+		  /*for (String streamId : streams1) {
 			 records.addAll(q.getCache().getAPS(new ObjectId(streamId)).query(q));
-		  }		
+		  }	*/	
 		  
 		  return records;
 		}
