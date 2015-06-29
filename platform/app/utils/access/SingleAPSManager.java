@@ -134,7 +134,7 @@ public class SingleAPSManager extends QueryManager {
 			q.addMongoTimeRestriction(query);
 			List<Record> directResult = new ArrayList<Record>(Record.getAll(query, q.getFieldsFromDB()));
 			for (Record record : directResult) {
-				record.key = eaps.getAPSKey().getEncoded();
+				record.key = eaps.getAPSKey() != null ? eaps.getAPSKey().getEncoded() : null;
 				if (withOwner) record.owner = eaps.getOwner();					
 			}
 			result.addAll(directResult);

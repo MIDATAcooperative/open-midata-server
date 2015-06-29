@@ -351,7 +351,7 @@ public class RecordSharing {
 			record.key = null;
 			if (record.document != null) documentPart = true;
 		} else if (record.direct) {
-			record.key = apswrapper.eaps.getAPSKey().getEncoded();		
+			record.key = apswrapper.eaps.getAPSKey() != null ? apswrapper.eaps.getAPSKey().getEncoded() : null;		
 		} else if (!documentPart) {
 			if (record.document != null) {
 				List<Record> doc = ComplexQueryManager.listInternal(getCache(executingPerson), record.owner, CMaps.map("_id", record.document.toString()), Sets.create("key"));
