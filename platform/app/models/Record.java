@@ -32,7 +32,7 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	public @NotMaterialized String ownerName;
 	public @NotMaterialized String creatorName;
 	public @NotMaterialized byte[] key;
-	public @NotMaterialized String format; // format of record
+	public String format; // format of record
 	
 	// Encrypted part
 	public  ObjectId app; // app that created the record		
