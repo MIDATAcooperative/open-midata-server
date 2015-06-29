@@ -157,6 +157,11 @@ public class EncryptedAPS {
 		return aps.keys.get(name);
 	}
 	
+	public boolean hasKey(String name) throws ModelException {
+		if (!isLoaded()) load();
+		return aps.keys.containsKey(name);
+	}
+	
 	public Map<String, BasicBSONObject> getPermissions() throws ModelException {
 		if (owner!=null && !isAccessable()) return getPermissions(owner);
 		if (!isValidated) validate();		
@@ -185,13 +190,21 @@ public class EncryptedAPS {
 			   wrapper = new EncryptedAPS(new ObjectId(), who, owner, aps.security, EncryptionUtils.generateKey(KEY_ALGORITHM).getEncoded());
 			   aps.unmerged.add(wrapper.aps);
 			   for (String ckey : aps.keys.keySet()) {
-				   try {
-					 ObjectId person = ckey.equals("owner") ? owner : new ObjectId(ckey);
-				     wrapper.setKey(ckey, KeyManager.instance.encryptKey(person, wrapper.getAPSKey().getEncoded()));
+				   try {					 
+					 if (aps.security.equals(APSSecurityLevel.NONE)) {
+						if (ckey.equals("owner")) wrapper.setKey("owner", owner.toByteArray());
+						else wrapper.setKey(ckey, null);
+					 } else {
+						ObjectId person = ckey.equals("owner") ? owner : new ObjectId(ckey);
+				        wrapper.setKey(ckey, KeyManager.instance.encryptKey(person, wrapper.getAPSKey().getEncoded()));
+					 }
 				   } catch (EncryptionNotSupportedException e) {}
+				   
 			   }
 			   try {
-			     wrapper.setKey(who.toString(), KeyManager.instance.encryptKey(who, wrapper.getAPSKey().getEncoded()));
+				 if (wrapper.getSecurityLevel().equals(APSSecurityLevel.NONE)) {
+					wrapper.setKey(who.toString(), null);
+				 } else wrapper.setKey(who.toString(), KeyManager.instance.encryptKey(who, wrapper.getAPSKey().getEncoded()));
 			   } catch (EncryptionNotSupportedException e) {}
 			} else { AccessLog.debug("use existing split:" + apsId.toString()); };
 			

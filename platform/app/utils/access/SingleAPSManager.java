@@ -46,10 +46,18 @@ public class SingleAPSManager extends QueryManager {
 	public void addAccess(Set<ObjectId> targets) throws ModelException,EncryptionNotSupportedException {
 		try {
 		  boolean changed = false;
-		  for (ObjectId target : targets)
-		  if (eaps.getKey(target.toString()) == null) {
-			 eaps.setKey(target.toString(), KeyManager.instance.encryptKey(target, eaps.getAPSKey().getEncoded()));
-			 changed = true;
+		  if (eaps.getSecurityLevel().equals(APSSecurityLevel.NONE)) {
+			  for (ObjectId target : targets)
+		      if (!eaps.hasKey(target.toString())) {
+		    	  eaps.setKey(target.toString(), null);
+		    	  changed = true;
+		      }
+		  } else {
+			  for (ObjectId target : targets)
+			  if (eaps.getKey(target.toString()) == null) {			 
+				 eaps.setKey(target.toString(), KeyManager.instance.encryptKey(target, eaps.getAPSKey().getEncoded()));
+				 changed = true;
+			  }
 		  }
 		  if (changed) eaps.updateKeys();
 		} catch (LostUpdateException e) {
