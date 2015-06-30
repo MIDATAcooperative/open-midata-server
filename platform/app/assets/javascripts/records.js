@@ -69,6 +69,13 @@ records.controller('RecordsCtrl', ['$scope', '$http', 'filterService', 'dateServ
 		});*/
 	};
 	
+	$scope.deleteRecord = function(record) {
+		$http.post(jsRoutes.controllers.Records["delete"]().url, { "_id" : record.id }).
+		success(function(data) {
+			$scope.records.splice($scope.records.indexOf(record), 1);
+		});
+	};
+	
 	// initialize filter service
 	$scope.initFilterService = function(records, userId) {
 		$scope.filterChanged = function(serviceId) { /* do nothing, automatically updated by filters */ }

@@ -49,6 +49,7 @@ GET     /members/records/create/:appId                   controllers.Records.cre
 GET     /members/records/filters/*filters                controllers.Records.filter(filters)
 
 POST    /members/api/records/get                         controllers.Records.get()
+POST    /members/api/records/delete                      controllers.Records.delete()
 GET     /members/api/records/visible                     controllers.Records.getVisibleRecords()
 POST    /members/api/records/list                        controllers.Records.getRecords()
 GET     /members/api/records/:id/view                    controllers.Records.getRecordUrl(id: String)

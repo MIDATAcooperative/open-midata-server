@@ -56,9 +56,14 @@ import utils.search.Search;
 import utils.search.SearchException;
 
 import models.AccessPermissionSet;
+import models.Circle;
 import models.FormatInfo;
+import models.MemberKey;
 import models.ModelException;
 import models.Record;
+import models.Space;
+import models.Study;
+import models.StudyParticipation;
 import models.enums.APSSecurityLevel;
 
 public class RecordSharing {
@@ -296,6 +301,41 @@ public class RecordSharing {
 	public void addRecord(ObjectId executingPerson, Record record, ObjectId alternateAps) throws ModelException {
 		addRecordIntern(executingPerson, record, false, alternateAps);
 		record.key = null;
+	}
+	
+	public void deleteRecord(ObjectId executingPerson, RecordToken tk) throws ModelException {
+		Record record = fetch(executingPerson, tk);
+		
+		if (!record.owner.equals(executingPerson)) throw new ModelException("Not owner of record!");
+		APSCache cache = getCache(executingPerson);
+		Set<Circle> circles = Circle.getAllByOwner(executingPerson);
+		
+		for (Circle c : circles) {
+			cache.getAPS(c._id).removePermission(record);
+		}
+		
+		Set<StudyParticipation> parts = StudyParticipation.getAllByMember(executingPerson, Sets.create("_id"));
+		for (StudyParticipation part : parts) {
+			cache.getAPS(part._id, executingPerson).removePermission(record);
+		}
+		
+		Set<MemberKey> mkeys = MemberKey.getByMember(executingPerson);
+		for (MemberKey mk : mkeys) {
+			cache.getAPS(mk._id, executingPerson).removePermission(record);
+		}
+		
+		Set<Space> spaces = Space.getAllByOwner(executingPerson, Sets.create("_id"));
+		for (Space s : spaces) {
+			cache.getAPS(s._id, executingPerson).removePermission(record);
+		}
+		
+		if (record.stream != null) {
+			cache.getAPS(record.stream, executingPerson).removePermission(record);
+		}
+		
+		cache.getAPS(executingPerson, executingPerson).removePermission(record);
+		
+		Record.delete(record.owner, record._id);
 	}
 
 	private byte[] addRecordIntern(ObjectId executingPerson, Record record, boolean documentPart, ObjectId alternateAps) throws ModelException {		

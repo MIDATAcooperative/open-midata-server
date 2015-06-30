@@ -351,7 +351,22 @@ public class Records extends Controller {
 		
 		return ok();
 	}
-
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(Secured.class)
+	public static Result delete() throws JsonValidationException, ModelException {
+        JsonNode json = request().body().asJson();
+		
+		JsonValidation.validate(json, "_id");
+		
+		String id = JsonValidation.getString(json, "_id");
+		RecordToken tk = getRecordTokenFromString(id);
+		ObjectId userId = new ObjectId(request().username());
+		
+		RecordSharing.instance.deleteRecord(userId, tk);
+		return ok();
+	}
 	/**
 	 * Updates the circles the given record is shared with.
 	 */

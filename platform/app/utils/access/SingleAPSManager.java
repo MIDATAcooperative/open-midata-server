@@ -385,25 +385,27 @@ public class SingleAPSManager extends QueryManager {
 			eaps.reload();			
 		}
 		
-		private void removePermissionInternal(Record record) throws ModelException {
+		private boolean removePermissionInternal(Record record) throws ModelException {
 			// resolve time
 			EncryptedAPS withTime = eaps;
 			
 			// resolve Format
 			BasicBSONObject obj = withTime.getPermissions().get(record.format);
-			if (obj == null) return;
+			if (obj == null) return false;
 						
 			// remove entry			
+			boolean result = obj.containsField(record._id.toString());
 			obj.remove(record._id.toString());
-						
+
+			return result;
 		}
 		
 		public void removePermission(Record record) throws ModelException {
 			try {
-			  removePermissionInternal(record);
+			  boolean success = removePermissionInternal(record);
 			
 			  // Store
-			  eaps.savePermissions();
+			  if (success) eaps.savePermissions();
 			} catch (LostUpdateException e) {
 				recoverFromLostUpdate();
 				removePermission(record);
