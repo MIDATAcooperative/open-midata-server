@@ -5,15 +5,15 @@ dashboards.constant("dashboards",
 		  [
 			{
 			    id: "mydata",
-			    title: "Your personal data",
+			    title: "My personal data",
 			    template : "/assets/views/members/info/summary.html",
 			    active : true,
 			    position : "small",
 			    setup : {
 			   	 text : "Manage your health data. Enter new data and visualize existing data.",
 			   	 link : "/members/dashboard/mydata",
-			   	 icon : "/assets/images/icons/empower.png",
-			   	 button : "Your Data Dashboard"
+			   	 icon : "/assets/images/icons/health.png",			   	 
+			   	 button : "View"
 			    }
 			},
 		    {
@@ -26,7 +26,7 @@ dashboards.constant("dashboards",
 	        	 text : "Share your data with friends. Communicate with people sharing your health situation. Motivate yourself by competition with others.",
 	        	 icon : "/assets/images/icons/social.png",
 	        	 link : "/members/dashboard/social",	        	 
-	        	 button : "Social Dashboard"
+	        	 button : "View"
 	         }
 		    },
 		    {
@@ -39,7 +39,7 @@ dashboards.constant("dashboards",
 		        	 text : "Participate in studies. Inform yourself about ongoing research.",
 		        	 link : "/members/dashboard/studies",
 		        	 icon : "/assets/images/icons/research.png",
-		        	 button : "Research Dashboard"
+		        	 button : "View"
 		         }
 			},
 			
@@ -51,9 +51,9 @@ dashboards.constant("dashboards",
 		         position : "small",
 		         setup : {
 		        	 text : "Share data with your doctor. Search for health professionals.",
-		        	 link : "/members/dashboard/providers",
-		        	 icon : "/assets/images/icons/health.png",
-		        	 button : "Health Professional Dashboard"
+		        	 link : "/members/dashboard/providers",		        	 
+		        	 icon : "/assets/images/icons/empower.png",
+		        	 button : "View"
 		         }
 			},
 			{
@@ -66,7 +66,7 @@ dashboards.constant("dashboards",
 		        	 text : "Manage your personal training!",
 		        	 link : "/members/dashboard/training",
 		        	 icon : "/assets/images/icons/training.png",
-		        	 button : "Training Dashboard"
+		        	 button : "View"
 		         }
 			}
 		  ],

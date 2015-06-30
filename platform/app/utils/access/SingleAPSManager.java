@@ -73,7 +73,7 @@ public class SingleAPSManager extends QueryManager {
 		try {
 			  boolean changed = false;
 			  for (ObjectId target : targets)
-			  if (eaps.getKey(target.toString()) != null) {
+			  if (eaps.hasKey(target.toString())) {
 				 eaps.removeKey(target.toString());
 				 changed = true;
 			  }
