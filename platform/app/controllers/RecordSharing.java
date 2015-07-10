@@ -73,6 +73,8 @@ public class RecordSharing {
 	public final static Map<String, Object> FULLAPS = new HashMap<String, Object>();
 	public final static Map<String, Object> FULLAPS_WITHSTREAMS = CMaps.map("streams", "true");
 	public final static Map<String, Object> FULLAPS_FLAT = CMaps.map("streams", "true").map("flat", "true");
+	public final static Map<String, Object> FULLAPS_FLAT_OWNER = CMaps.map("streams", "true").map("flat", "true").map("owner", "self");
+	
 	public final static Set<String> INTERNALIDONLY = Sets.create("_id");
 	public final static Set<String> COMPLETE_META = Sets.create("id", "owner",
 			"app", "creator", "created", "name", "format", "description");
@@ -80,6 +82,8 @@ public class RecordSharing {
 			"app", "creator", "created", "name", "format", "description",
 			"data");
 	public final static String STREAM_TYPE = "Stream";
+	public final static Map<String, Object> STREAMS_ONLY = CMaps.map("streams", "true").map("flat", "true").map("format", STREAM_TYPE);
+	public final static Map<String, Object> STREAMS_ONLY_OWNER = CMaps.map("streams", "true").map("flat", "true").map("format", STREAM_TYPE).map("owner", "self");
 	public final static String QUERY = "_query";
 
 	public final static String KEY_ALGORITHM = "AES";

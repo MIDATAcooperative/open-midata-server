@@ -169,6 +169,8 @@ public class Query {
 	}
 	
 	private void process() {
+		 if (fields.contains("group")) fields.add("format");
+		
 		 fetchFromDB = fields.contains("data") ||
 	              fields.contains("app") || 
 	              fields.contains("creator") || 

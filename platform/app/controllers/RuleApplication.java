@@ -13,6 +13,7 @@ import org.bson.types.ObjectId;
 
 import utils.collections.Sets;
 import utils.rules.FormatRule;
+import utils.rules.GroupRule;
 import utils.rules.Rule;
 
 import models.APSNotExistingException;
@@ -30,6 +31,7 @@ public class RuleApplication {
 	public RuleApplication() {
 		rulecache = new HashMap<String, Rule>();
 		rulecache.put("format", new FormatRule());
+		rulecache.put("group", new GroupRule());
 	}
 	
 	public boolean qualifiesFor(Record record, FilterRule filterRule) throws ModelException {
@@ -39,10 +41,17 @@ public class RuleApplication {
 	}
 
 	public void applyRules(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws ModelException {
-		Collection<Record> records = RecordSharing.instance.list(userId, sourceaps, RecordSharing.FULLAPS, RecordSharing.COMPLETE_META);
-		Set<ObjectId> result = applyRules(records, filterRules);
-		
+		Collection<Record> records = RecordSharing.instance.list(userId, sourceaps, RecordSharing.FULLAPS_FLAT_OWNER, RecordSharing.COMPLETE_META);
+		Set<ObjectId> result = applyRules(records, filterRules);		
 		RecordSharing.instance.share(userId, sourceaps, targetaps, result, ownerInformation);
+		
+		Collection<Record> streams = RecordSharing.instance.list(userId, targetaps, RecordSharing.STREAMS_ONLY_OWNER, RecordSharing.COMPLETE_META);
+		Set<ObjectId> remove = new HashSet<ObjectId>();
+		for (Record stream : streams) {
+			if (!applyRules(stream, filterRules)) remove.add(stream._id);
+		}
+		RecordSharing.instance.unshare(userId, targetaps, remove);
+		
 	}
 	
 	protected Set<ObjectId> applyRules(Collection<Record> records, List<FilterRule> filterRules) throws ModelException {
@@ -60,6 +69,8 @@ public class RuleApplication {
 	
 	protected boolean applyRules(Record record, List<FilterRule> filterRules) throws ModelException {
 		// TODO Apply correctly
+		if (filterRules == null || filterRules.size() == 0) return false;
+		
 		boolean qualifies = true;
 		
 		for (FilterRule rule : filterRules) {
@@ -101,6 +112,10 @@ public class RuleApplication {
 	}
 	
 	public void setupRules(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws ModelException {
+		if (filterRules.size() == 0) {
+			removeRules(userId, targetaps);
+			return;
+		}
 		
 		Member member = Member.getById(userId, Sets.create("rules"));
 		
@@ -132,16 +147,8 @@ public class RuleApplication {
 	    }
 	}
 	
-    public void setupRulesForSpace(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws ModelException {
-				
-		Map<String, Object> query = new HashMap<String, Object>();
-		
-		for (FilterRule filterRule : filterRules) {
-			Rule rule = rulecache.get(filterRule.name);
-			if (rule == null) throw new ModelException("Unknown rule: "+filterRule.name);
-			rule.setup(query, filterRule.params);
-		}
-		
+    public void setupRulesForSpace(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws ModelException {				
+		Map<String, Object> query = queryFromRules(filterRules);						
 		RecordSharing.instance.shareByQuery(userId, sourceaps, targetaps, query);
 	}
 
@@ -151,10 +158,30 @@ public class RuleApplication {
 			FilterRule fr = new FilterRule();
 			Object formats = query.get("format");
 			fr.name = "format";
-			fr.params = formats instanceof List ? (List) formats : Collections.<String>singletonList(formats.toString());
+			fr.params = formats instanceof Collection ? new ArrayList((Collection) formats) : Collections.<String>singletonList(formats.toString());
+			rules.add(fr);
+		}
+		if (query.containsKey("group")) {
+			FilterRule fr = new FilterRule();
+			Object groups = query.get("group");
+			fr.name = "group";
+			fr.params = groups instanceof Collection ? new ArrayList((Collection) groups) : Collections.<String>singletonList(groups.toString());
 			rules.add(fr);
 		}
 		return rules;
 	}
+	
+	public Map<String, Object> queryFromRules(List<FilterRule> filterRules) throws ModelException {
+        Map<String, Object> query = new HashMap<String, Object>();
+		
+		for (FilterRule filterRule : filterRules) {
+			Rule rule = rulecache.get(filterRule.name);
+			if (rule == null) throw new ModelException("Unknown rule: "+filterRule.name);
+			rule.setup(query, filterRule.params);
+		}
+		
+		return query;
+	}
+		
 		
 }

@@ -39,7 +39,7 @@ public class ComplexQueryManager {
     	List<Record> result;
     	
     	
-    	QueryManager qm = new APSQSupportingQM(new AccountLevelQueryManager(new FormatHandling(new StreamQueryManager())));
+    	QueryManager qm = new APSQSupportingQM(new AccountLevelQueryManager(new FormatGroupHandling(new FormatHandling(new StreamQueryManager()))));
     									
 		result = findRecordsDirectlyInDB(q);
     	

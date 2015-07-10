@@ -45,6 +45,7 @@ import utils.json.JsonValidation.JsonValidationException;
 import utils.search.Search;
 import utils.search.SearchResult;
 import views.html.records;
+import views.html.records2;
 import views.html.members.record;
 import views.html.dialogs.authorized;
 import views.html.dialogs.createrecords;
@@ -60,7 +61,7 @@ public class Records extends Controller {
 
 	@Security.Authenticated(Secured.class)
 	public static Result index() {
-		return ok(records.render());
+		return ok(records2.render());
 	}
 
 	@Security.Authenticated(Secured.class)
@@ -267,6 +268,25 @@ public class Records extends Controller {
 		
 		return ok(result);
 	}
+	
+	@APICall
+	@Security.Authenticated(Secured.class)
+	public static Result getSharingDetails(String aps) throws ModelException {
+		ObjectId userId = new ObjectId(request().username());
+		ObjectId apsId = new ObjectId(aps);
+		
+		List<FilterRule> rules = RuleApplication.instance.getRules(userId, apsId);
+		Map<String, Object> query = rules != null ? RuleApplication.instance.queryFromRules(rules) : null;
+		Set<String> records = RecordSharing.instance.listRecordIds(userId, apsId);
+		
+		ObjectNode result = Json.newObject();
+		
+		result.put("records", Json.toJson(records));
+		result.put("query", Json.toJson(query));
+				
+		return ok(result);
+		
+	}
 
 	@APICall
 	@Security.Authenticated(Secured.class)
@@ -386,6 +406,7 @@ public class Records extends Controller {
 		Set<ObjectId> stopped = ObjectIdConversion.toObjectIds(JsonExtraction.extractStringSet(json.get("stopped")));
 		Set<String> recordIds = JsonExtraction.extractStringSet(json.get("records"));
 		String type = JsonValidation.getString(json, "type");
+		Map<String, Object> query = json.has("query") ? JsonExtraction.extractMap(json.get("query")) : null;
 		
 		// get owner
 		Member owner = Member.getById(userId, Sets.create("myaps"));
@@ -427,15 +448,23 @@ public class Records extends Controller {
         	        	
         	for (String sourceAps :records.keySet()) {        	  
         	  RecordSharing.instance.share(userId, new ObjectId(sourceAps), aps, ObjectIdConversion.toObjectIds(records.get(sourceAps)), withMember);
-        	}        	
+        	}    
+        	
+        	if (query != null) {
+        	  List<FilterRule> rules = RuleApplication.instance.createRulesFromQuery(query);
+        	  RuleApplication.instance.setupRules(userId, rules, userId, aps, withMember);
+        	  RuleApplication.instance.applyRules(userId, rules, userId, aps, withMember);
+        	}
         }
         
         for (ObjectId start : stopped) {
-        	ObjectId aps = null;        	
+        	ObjectId aps = null;
+        	boolean withMember = false;
         	switch (type) {
         	case "circles" :
         		Circle circle = Circle.getByIdAndOwner(start, userId, Sets.create("aps"));
-        		aps = circle.aps;        		
+        		aps = circle.aps; 
+        		withMember = true;
         		break;
         	case "spaces" :
         		Space space = Space.getByIdAndOwner(start, userId, Sets.create("aps"));
@@ -448,12 +477,20 @@ public class Records extends Controller {
         	case "memberkeys" :
         		MemberKey memberkey = MemberKey.getById(start);
         		aps = memberkey.aps;
+        		withMember = true;
         		break;
         	}        
         	        
         	for (String sourceAps :records.keySet()) {        	  
           	  RecordSharing.instance.unshare(userId, aps, ObjectIdConversion.toObjectIds(records.get(sourceAps)));
-          	}            	
+          	}    
+        	
+        	if (query != null) {
+          	  List<FilterRule> rules = RuleApplication.instance.createRulesFromQuery(query);
+          	  RuleApplication.instance.setupRules(userId, rules, userId, aps, withMember);
+          	  RuleApplication.instance.applyRules(userId, rules, userId, aps, withMember);
+          	}
+        	        	
         }
 		
 				

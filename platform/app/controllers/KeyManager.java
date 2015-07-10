@@ -75,7 +75,11 @@ public class KeyManager {
 	public byte[] decryptKey(ObjectId target, byte[] keyToDecrypt) throws ModelException {
 		try {
 			
-			byte key[] = pks.get(target.toString());
+			//byte key[] = pks.get(target.toString());
+			
+			KeyInfo inf = KeyInfo.getById(target);
+			byte key[] = inf.privateKey;
+			
 			if (key == null) throw new ModelException("Authorization Failure");
 			
 			PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(key);

@@ -54,6 +54,7 @@ GET     /members/api/records/visible                     controllers.Records.get
 POST    /members/api/records/list                        controllers.Records.getRecords()
 GET     /members/api/records/:id/view                    controllers.Records.getRecordUrl(id: String)
 GET     /members/api/records/shared                      controllers.Records.getSharingInfo()
+GET     /members/api/records/shared/:apsId               controllers.Records.getSharingDetails(apsId: String)
 GET     /members/records/import/:appId                   controllers.Records.importRecords(appId: String)
 GET     /records/redirect/:appId                         controllers.Records.onAuthorized(appId: String)
 GET     /members/api/records/search/:query               controllers.Records.search(query: String)

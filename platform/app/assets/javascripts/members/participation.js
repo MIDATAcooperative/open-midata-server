@@ -74,7 +74,7 @@ participation.controller('StudyDetailCtrl', ['$scope', '$http', 'views', functio
 				$scope.error = null;
 				
 				if ($scope.participation && !($scope.participation.status == "CODE" || $scope.participation.status == "MATCH" )) {
-				  views.setView("1", { aps : $scope.participation._id.$oid, properties : { } , type:"participations", allowAdd : true, allowRemove : true, fields : [ "ownerName", "created", "id", "name" ]});
+				  views.setView("1", { aps : $scope.participation._id.$oid, properties : { } , type:"participations", allowAdd : true, allowRemove : false, fields : [ "ownerName", "created", "id", "name" ]});
 				} else {
 				  views.disableView("1");
 				}

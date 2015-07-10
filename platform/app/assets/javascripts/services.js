@@ -159,17 +159,17 @@ services.factory('records', function($http) {
 		return $http.post(jsRoutes.controllers.Records.get().url, JSON.stringify(data));
 	};
 	
-	service.unshare = function(aps, records, type) {
+	service.unshare = function(aps, records, type, query) {
 	  if (! angular.isArray(aps)) aps = [ aps ];
-	  if (! angular.isArray(records)) records = [ records ];
-	  var data = { records:records, started:[], stopped:aps, type:type };		
+	  if (records != null && ! angular.isArray(records)) records = [ records ];
+	  var data = { records:records, started:[], stopped:aps, type:type, query:query };		
 	  return $http.post(jsRoutes.controllers.Records.updateSharing().url, JSON.stringify(data));
 	};
 	
-	service.share = function(aps, records, type) {
+	service.share = function(aps, records, type, query) {
 		  if (! angular.isArray(aps)) aps = [ aps ];
-		  if (! angular.isArray(records)) records = [ records ];
-		  var data = { records:records, started:aps, stopped:[], type:type };		
+		  if (records != null && ! angular.isArray(records)) records = [ records ];
+		  var data = { records:records, started:aps, stopped:[], type:type, query:query };		
 		  return $http.post(jsRoutes.controllers.Records.updateSharing().url, JSON.stringify(data));
 	};
 	
