@@ -63,6 +63,9 @@
 						<button class="btn btn-danger" ng-click="deleteSpace(space)">
 							<span class="glyphicon glyphicon-remove-sign"></span> Delete this space
 						</button>
+						<a class="btn btn-primary" ng-href="/members/records/spaces/{{space._id.$oid}}">
+						    <span class="glyphicon glyphicon-share"></span>Used records...
+						</a>
 						<button class="btn btn-primary" ng-hide="space.compare" ng-click="startShare(space)">
 						    <span class="glyphicon glyphicon-share"></span>Share...
 						</button>

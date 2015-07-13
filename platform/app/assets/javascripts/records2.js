@@ -1,5 +1,5 @@
 var records = angular.module('records', ['date', 'services']);
-records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', 'dateService', 'records', 'circles', function($scope, $http, $filter, dateService, records, circles) {
+records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', 'dateService', 'records', 'circles', function($scope, $http, $filter, $location, dateService, records, circles) {
 	
 	// init
 	$scope.error = null;
@@ -19,9 +19,19 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', 'dateService',
 			$scope.availableAps = [{ name : "My Data", aps:userId, owner : "self"  }, { name : "All Data", aps:userId, owner : "all"}];
 			$scope.displayAps = $scope.availableAps[0];
 			$scope.getApps(userId);
-			$scope.getRecords(userId, "self");	
+			$scope.getRecords(userId, "self");						
 			$scope.getAvailableSets(userId);
-			$scope.loadShared(userId);
+						
+			var p = window.location.pathname.split("/");
+			console.log(p);
+			if (p.length >= 5) {
+			  var selectedType = window.location.pathname.split("/")[3];
+			  var selected = window.location.pathname.split("/")[4];
+			  $scope.selectedAps = { "_id" : { "$oid" : selected, type : selectedType } };
+			  $scope.compare = null;
+			  $scope.loadSharingDetails();
+			} else $scope.loadShared(userId); 
+			
 		});
 	
 	// get apps
@@ -217,6 +227,10 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', 'dateService',
 			console.log(results.data);
 		    $scope.sharing = results.data;
 		    $scope.sharing.ids = {};
+		    if ($scope.sharing.query) {
+		    	if ($scope.sharing.query.format && !angular.isArray($scope.sharing.query.format)) { $scope.sharing.query.format = [ $scope.sharing.query.format ]; }
+		    	if ($scope.sharing.query.group && !angular.isArray($scope.sharing.query.group)) { $scope.sharing.query.group = [ $scope.sharing.query.group ]; }
+		    }
 		    angular.forEach($scope.sharing.records, function(r) { $scope.sharing.ids[r] = true; });
 		    angular.forEach($scope.tree, function(t) { countShared(t); });
 		});

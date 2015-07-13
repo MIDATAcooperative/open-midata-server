@@ -30,6 +30,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.access.SingleAPSManager;
 import utils.auth.RecordToken;
 import utils.auth.SpaceToken;
 import utils.collections.ChainedMap;
@@ -61,6 +62,11 @@ public class Records extends Controller {
 
 	@Security.Authenticated(Secured.class)
 	public static Result index() {
+		return ok(records2.render());
+	}
+	
+	@Security.Authenticated(Secured.class)
+	public static Result index2(String type, String aps) {
 		return ok(records2.render());
 	}
 
@@ -276,7 +282,13 @@ public class Records extends Controller {
 		ObjectId apsId = new ObjectId(aps);
 		
 		List<FilterRule> rules = RuleApplication.instance.getRules(userId, apsId);
-		Map<String, Object> query = rules != null ? RuleApplication.instance.queryFromRules(rules) : null;
+		Map<String, Object> query = null;
+		if (rules != null) {
+			query = RuleApplication.instance.queryFromRules(rules);
+		} else {
+			BSONObject b = RecordSharing.instance.getMeta(userId, apsId, SingleAPSManager.QUERY);
+			if (b!=null) query = b.toMap();
+		}
 		Set<String> records = RecordSharing.instance.listRecordIds(userId, apsId);
 		
 		ObjectNode result = Json.newObject();
@@ -451,9 +463,13 @@ public class Records extends Controller {
         	}    
         	
         	if (query != null) {
-        	  List<FilterRule> rules = RuleApplication.instance.createRulesFromQuery(query);
-        	  RuleApplication.instance.setupRules(userId, rules, userId, aps, withMember);
-        	  RuleApplication.instance.applyRules(userId, rules, userId, aps, withMember);
+        		if (type.equals("spaces")) {
+        		  RecordSharing.instance.shareByQuery(userId, aps, userId, query);
+        		} else {
+	        	  List<FilterRule> rules = RuleApplication.instance.createRulesFromQuery(query);
+	        	  RuleApplication.instance.setupRules(userId, rules, userId, aps, withMember);
+	        	  RuleApplication.instance.applyRules(userId, rules, userId, aps, withMember);
+        		}
         	}
         }
         
@@ -486,10 +502,14 @@ public class Records extends Controller {
           	}    
         	
         	if (query != null) {
-          	  List<FilterRule> rules = RuleApplication.instance.createRulesFromQuery(query);
-          	  RuleApplication.instance.setupRules(userId, rules, userId, aps, withMember);
-          	  RuleApplication.instance.applyRules(userId, rules, userId, aps, withMember);
-          	}
+        		if (type.equals("spaces")) {
+        		  RecordSharing.instance.shareByQuery(userId, aps, userId, query);
+        		} else {
+	        	  List<FilterRule> rules = RuleApplication.instance.createRulesFromQuery(query);
+	        	  RuleApplication.instance.setupRules(userId, rules, userId, aps, withMember);
+	        	  RuleApplication.instance.applyRules(userId, rules, userId, aps, withMember);
+        		}
+        	}
         	        	
         }
 		

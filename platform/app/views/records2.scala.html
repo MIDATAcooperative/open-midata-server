@@ -27,9 +27,12 @@
 					<div class="panel panel-primary">
 					<div style="margin:10px">
 		<div class="row">	
-			<div class="pull-right col-sm-4" ng-show="displayAps.owner">
+			<div class="pull-right col-sm-4" ng-show="displayAps.owner && compare!=null">
 			   <label for="selectedAps">Shared With:</label>
 			  <select class="form-control" id="selectedAps" ng-model="selectedAps" ng-options="c.name for c in compare" ng-change="loadSharingDetails()"></select>
+	        </div>	
+	        <div class="pull-right col-sm-4" ng-show="compare==null && selectedAps!=null">
+			  <label for="selectedAps">Records used for app</label>			  
 	        </div>	
 	        <div class="col-sm-4">
 	           <label for="owner">Show:</label>
