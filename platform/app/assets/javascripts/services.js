@@ -104,7 +104,7 @@ services.factory('views', function() {
 	service.getView = function (id) {
 		var r = mapping[id];
 		if (r==null) {
-		   r = { active: false, setup:null, title:"no title", links:{}, dependend:[] };
+		   r = { active: false, setup:null, title:"no title", links:{}, dependend:[], order : 0 };
 		   mapping[id] = r;
 		} 
 		return r;

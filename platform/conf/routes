@@ -44,9 +44,9 @@ DELETE  /shared/api/messages/:id/trash                   controllers.Messages.re
 PUT     /shared/api/messages/:id/:from/:to               controllers.Messages.move(id: String, from: String, to: String)
 # Records
 GET     /members/records                                 controllers.Records.index()
+GET     /members/records/create/:appId                   controllers.Records.create(appId: String)
 GET     /members/records/:type/:aps                      controllers.Records.index2(type: String, aps: String)
 GET     /members/records/:id                             controllers.Records.details(id: String)
-GET     /members/records/create/:appId                   controllers.Records.create(appId: String)
 GET     /members/records/filters/*filters                controllers.Records.filter(filters)
 
 POST    /members/api/records/get                         controllers.Records.get()

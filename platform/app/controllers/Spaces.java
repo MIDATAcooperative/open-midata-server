@@ -31,6 +31,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import views.html.spaces;
+import views.html.spaces2;
 
 import actions.APICall;
 
@@ -44,7 +45,7 @@ public class Spaces extends Controller {
 	}
 
 	public static Result details(String spaceIdString) {
-		return index();
+		return ok(spaces2.render());
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)

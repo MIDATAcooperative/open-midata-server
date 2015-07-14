@@ -1,5 +1,5 @@
 var market = angular.module('market', []);
-market.controller('MarketCtrl', ['$scope', '$http', function($scope, $http) {
+market.controller('MarketCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
 	
 	var pathsegment = window.location.pathname.split("/")[1];
 	// init
@@ -25,9 +25,15 @@ market.controller('MarketCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	// show app details
 	$scope.showAppDetails = function(app) {
+		var addToURL = "";
+		var q = $location.search();
+		if (q.context != null) addToURL += "&context="+encodeURIComponent(q.context);
+		if (q.next != null) addToURL += "&next="+encodeURIComponent(q.next);
+		if (addToURL!="") addToURL = "#?"+addToURL.substr(1);
+		
 		if ($scope.targetRole == "PROVIDER") {
 			window.location.href = portalRoutes.controllers.ProviderFrontend.appDetails(app._id.$oid).url;
-		} else window.location.href = portalRoutes.controllers.Apps.details(app._id.$oid).url;
+		} else window.location.href = portalRoutes.controllers.Apps.details(app._id.$oid).url+addToURL;
 	};
 	
 	$scope.getAppImage = function(app) {
@@ -40,9 +46,15 @@ market.controller('MarketCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	// show visualization details
 	$scope.showVisualizationDetails = function(visualization) {
+		var addToURL = "";
+		var q = $location.search();
+		if (q.context != null) addToURL += "&context="+encodeURIComponent(q.context);
+		if (q.next != null) addToURL += "&next="+encodeURIComponent(q.next);
+		if (addToURL!="") addToURL = "#?"+addToURL.substr(1);
+		
 		if ($scope.targetRole == "PROVIDER") {
 			window.location.href = portalRoutes.controllers.ProviderFrontend.visualizationDetails(visualization._id.$oid).url;
-		} else window.location.href = portalRoutes.controllers.Visualizations.details(visualization._id.$oid).url;
+		} else window.location.href = portalRoutes.controllers.Visualizations.details(visualization._id.$oid).url+addToURL;
 	}
 	
 }]);

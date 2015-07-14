@@ -68,6 +68,19 @@ dashboards.constant("dashboards",
 		        	 icon : "/assets/images/icons/training.png",
 		        	 button : "View"
 		         }
+			},
+			{
+			     id: "qself",
+			     title: "Quantified Self",
+			     template : "/assets/views/members/info/summary.html",
+		         active : true,
+		         position : "small",
+		         setup : {
+		        	 text : "Monitor yourself",
+		        	 link : "/members/dashboard/qself",
+		        	 icon : "/assets/images/icons/training.png",
+		        	 button : "View"
+		         }
 			}
 		  ],
       "mydata" : [
@@ -104,11 +117,9 @@ dashboards.constant("dashboards",
 			    template : "/assets/views/members/viewconfig.html",
 			    active : true,
 			    position : "small",
-			    setup : {
-		        	 text : "Add Visualizations to improve your experience!",
-		        	 link : "/members/market",
-		        	 icon : "/assets/images/icons/eye.png",
-		        	 button : "Market Place"
+			    setup : {	
+			    	 context : "mydata",		        	 
+		        	 always : true
 		        }
 			}
           ],
@@ -176,6 +187,17 @@ dashboards.constant("dashboards",
 		         setup : {
 		        	 text : "Neither specified nor implemented."		    
 		         }
+			},
+			{
+			    id: "myviews",
+			    title: "My Views",
+			    template : "/assets/views/members/viewconfig.html",
+			    active : true,
+			    position : "small",
+			    setup : {	
+			    	 context : "social",		        	 
+		        	 always : true
+		        }
 			}
           ],
 	  "providers" :
@@ -216,6 +238,17 @@ dashboards.constant("dashboards",
 	         active : false,
 	         links : { "shareFrom" : "share", "record" : "details" }
 	       },
+	       {
+			    id: "myviews",
+			    title: "My Views",
+			    template : "/assets/views/members/viewconfig.html",
+			    active : true,
+			    position : "small",
+			    setup : {	
+			    	 context : "health",		        	 
+		        	 always : true
+		        }
+			},
 	       {                        
 		      id : "share",
 		      template : "/assets/views/members/search.html",
@@ -378,6 +411,7 @@ dashboards.constant("dashboards",
 	 			    position : "small",
 	 			    setup : {
 	 			    	 context : "training",
+	 			    	 always : true,
 	 			    	 visualizations : [
 	 			    	   { 
 	 			    		 id : "554c867de4b08413ff37d6f5", 
@@ -387,7 +421,7 @@ dashboards.constant("dashboards",
 	 			    			name : "Training Editor",
 	 			    			context : "training",
 	 			    			query : { 
-	 			    				format : "trainingplan"
+	 			    				format : ["trainingplan"]
 	 			    			}
 	 			    		 } ] 
 	 			    	   },
@@ -428,7 +462,20 @@ dashboards.constant("dashboards",
 	 			    	 ]	 		        	 
 	 		        }
 	 			}
-	           ]
+	           ],	          
+	      	 "qself" : [				 	 		   	 		    
+	      	 			{
+	      	 			    id: "editor",
+	      	 			    title: "Quantified Self",
+	      	 			    template : "/assets/views/members/viewconfig.html",
+	      	 			    active : true,
+	      	 			    position : "small",
+	      	 			    setup : {
+	      	 			    	 context : "qself",
+	      	 			    	 always : true
+	      	 		        }
+	      	 			}
+	      	           ]
 	}			
 );
 dashboards.controller('DashboardCtrl', ['$scope', '$attrs', 'views', 'dashboards', 'spaces', function($scope, $attrs, views, dashboards, spaces) {  

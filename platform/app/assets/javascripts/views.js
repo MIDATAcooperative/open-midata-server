@@ -467,7 +467,7 @@ views.controller('ViewConfigCtrl', ['$scope', '$http', '$attrs', '$sce', 'views'
 				active : true,
 				setup : {
 					text : vis.teaser,
-		        	link : ("/members/visualizations/" + vis.id+"#?next="+encodeURIComponent(document.location.href)),
+		        	link : ("/members/visualizations/" + vis.id+"#?next="+encodeURIComponent(document.location.href)+"&name="+encodeURIComponent(vis.title)+"&query="+encodeURIComponent(JSON.stringify(vis.spaces[0].query))+"&context="+encodeURIComponent(vis.spaces[0].context)),
 		        	icon : "/assets/images/icons/add.png",
 		        	button : "Info + Install"
 				}
@@ -496,7 +496,7 @@ views.controller('ViewConfigCtrl', ['$scope', '$http', '$attrs', '$sce', 'views'
     	
     	$scope.status.doBusy($scope.view.setup.context ? spaces.getSpacesOfUserContext($scope.userId, $scope.view.setup.context) : spaces.getSpacesOfUser($scope.userId))
     	.then(function(results) {
-    		$scope.view.active = (results.data.length == 0 && $scope.view.setup.visualizations == null);
+    		$scope.view.active = (results.data.length == 0 && $scope.view.setup.visualizations == null) && !$scope.view.setup.always;
     		var usedvis = {};
     	  _.each(results.data, function(space) {
     		  usedvis[space.visualization.$oid] = true;
@@ -508,6 +508,21 @@ views.controller('ViewConfigCtrl', ['$scope', '$http', '$attrs', '$sce', 'views'
     			$scope.test(vis);    			
     		}  
     	  });
+    	  }
+    	  if ($scope.view.setup.always) {
+    		  views.layout.small.push(views.def({
+    			id : "addmore",
+    			order : 1000,
+  				template : "/assets/views/members/info/simpleadd.html",
+  				title : "Add more",
+  				position : "small",
+  				active : true,
+  				setup : {  					
+  		        	link : "/members/market#?next="+encodeURIComponent(document.location.href)+"&context="+encodeURIComponent($scope.view.setup.context),
+  		        	icon : "/assets/images/icons/add.png",
+  		        	button : "Install from Market"
+  				}
+    		  }));  
     	  }
     	});
     	    	

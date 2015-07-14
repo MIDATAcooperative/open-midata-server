@@ -109,7 +109,7 @@ details.controller('MessageCtrl', ['$scope', '$http', function($scope, $http) {
 	}*/
 	
 }]);
-details.controller('AppCtrl', ['$scope', '$http', function($scope, $http) {
+details.controller('AppCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
 	// init
 	$scope.error = null;
 	$scope.success = false;
@@ -163,6 +163,7 @@ details.controller('AppCtrl', ['$scope', '$http', function($scope, $http) {
 			success(function() {
 				$scope.app.installed = true;
 				$scope.success = true;
+				if ($location.search().next) document.location.href = $location.search().next; 
 			}).
 			error(function(err) { $scope.error = "Failed to install the app: " + err; });
 	}
@@ -183,6 +184,8 @@ details.controller('VisualizationCtrl', ['$scope', '$http', '$location', functio
 	$scope.success = false;
 	$scope.visualization = {};
 	$scope.options = {};
+	$scope.params = $location.search();
+	console.log($scope.params);
 	
 	// parse visualization id (format: /visualizations/:id) and load the visualization
 	var visualizationId = window.location.pathname.split("/")[3];
@@ -193,10 +196,21 @@ details.controller('VisualizationCtrl', ['$scope', '$http', '$location', functio
 			$scope.visualization = visualizations[0];
 			if ($scope.visualization.defaultSpaceName!=null) {
 			  $scope.options.createSpace = true;
-			  $scope.options.spaceName = $scope.visualization.defaultSpaceName;
-			  if ($scope.visualization.defaultRules &&$scope.visualization.defaultRules.length >0 ) {
+			  $scope.options.spaceName = $scope.params.name || $scope.visualization.defaultSpaceName;
+			  if ($scope.visualization.defaultQuery) {
+				  $scope.options.query = $scope.visualization.defaultQuery;
 				  $scope.options.applyRules = true;
 			  }
+			}
+			if ($scope.params && $scope.params.context) {
+				$scope.options.context = $scope.params.context;
+			}
+			if ($scope.params && $scope.params.name) {
+				$scope.options.spaceName = $scope.params.name;
+			}
+			if ($scope.params && $scope.params.query) {
+				$scope.options.query = JSON.parse($scope.params.query);
+				$scope.options.applyRules = true;
 			}
 			isInstalled();
 			getCreatorName();

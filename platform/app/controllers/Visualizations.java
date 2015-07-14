@@ -74,38 +74,42 @@ public class Visualizations extends APIController {
 
 		String spaceName = JsonValidation.getString(json, "spaceName");
 		boolean applyRules = JsonValidation.getBoolean(json, "applyRules");
-		boolean createSpace = JsonValidation.getBoolean(json, "createSpace");
+		//boolean createSpace = JsonValidation.getBoolean(json, "createSpace");
 		
-		Visualization visualization = Visualization.getById(visualizationId, Sets.create("defaultRules", "targetUserRole", "defaultSpaceName", "defaultSpaceContext"));
+		Visualization visualization = Visualization.getById(visualizationId, Sets.create("defaultQuery", "targetUserRole", "defaultSpaceName", "defaultSpaceContext"));
 		if (visualization == null) return badRequest("Unknown visualization");
 		
-		if (visualization.targetUserRole.equals(UserRole.MEMBER)) { 
-			Member user = Member.getById(userId, Sets.create("visualizations", "myaps"));
-			user.visualizations.add(visualizationId);
-			Member.set(userId, "visualizations", user.visualizations);
+		User user = User.getById(userId, Sets.create("visualizations","role"));
+		
+		if (!user.role.equals(visualization.targetUserRole) && !visualization.targetUserRole.equals(UserRole.ANY)) {
+			return badRequest("Visualization is for a different role."+user.role);
+		}
+		
+		user.visualizations.add(visualizationId);
+		User.set(userId, "visualizations", user.visualizations);
+		
+		String context = json.has("context") ? JsonValidation.getString(json, "context") : visualization.defaultSpaceContext;
+		
+		if (user.role.equals(UserRole.MEMBER)) { 
 					
-			if (spaceName!=null && !spaceName.equals("") && visualization.defaultSpaceName != null) {
+			if (spaceName!=null && !spaceName.equals("")) {
 				Space space = null;
-				if (createSpace) {
-					space = Spaces.add(userId, spaceName, visualizationId, null, visualization.defaultSpaceContext);
-				}
+				space = Spaces.add(userId, spaceName, visualizationId, null, context);
+
 				if (applyRules && space!=null) {
-					RuleApplication.instance.setupRules(userId, visualization.defaultRules, user.myaps, space.aps, true);
+					
+					if (json.has("query")) {
+					  Map<String, Object> query = JsonExtraction.extractMap(json.get("query"));
+					  RecordSharing.instance.shareByQuery(userId, userId, space._id, query);
+					} else {					
+					  RecordSharing.instance.shareByQuery(userId, userId, space._id, visualization.defaultQuery);
+					  
+					}
 				}
 			}
 	
-		} else {
-			User user = User.getById(userId, Sets.create("visualizations","role"));
-			
-			if (!user.role.equals(visualization.targetUserRole) && !visualization.targetUserRole.equals(UserRole.ANY)) {
-				return badRequest("Visualization is for a different role."+user.role);
-			}
-			
-			user.visualizations.add(visualizationId);
-			User.set(userId, "visualizations", user.visualizations);
-								
-		}
-			// && visualization.targetUserRole != UserRole.ANY) return badRequest("Visualization is not for members");
+		} 
+		// && visualization.targetUserRole != UserRole.ANY) return badRequest("Visualization is not for members");
 		
 				
 		return ok();

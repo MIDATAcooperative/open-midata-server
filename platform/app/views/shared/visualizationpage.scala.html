@@ -24,30 +24,37 @@
 				<p class="col-xs-2">Description:</p>
 				<p class="col-xs-10">{{visualization.description}}</p>
 			</div>
-			<div ng-hide="visualization.installed">
-			<div ng-if="visualization.defaultSpaceName" class="row">
-			    <p class="col-xs-2">Space:</p>
-			    <p class="col-xs-10">
-			      <label>
-			        <input type="checkbox" ng-model="options.createSpace">
-			        Create a space for this visualization called:
-			      </label>
+		
+			<div class="row">
+			    <p class="col-xs-2">Tile Name:</p>
+			    <p class="col-xs-10">			      
 			      <input type="text" ng-model="options.spaceName" />			
                 </p>			    			        
 			</div>
-			<div ng-if="visualization.defaultRules" class="row">
+			<div class="row">
+			    <p class="col-xs-2">Location:</p>
+			    <p class="col-xs-10">			      
+			      <input type="text" ng-model="options.context" />			
+                </p>			    			        
+			</div>
+			<div ng-if="options.query" class="row">
 			    <p class="col-xs-2"></p>
 			    <div class="col-xs-10">
 			      <label>
 			        <input type="checkbox" ng-model="options.applyRules">
-			        Give space access to: 
+			        Grant this visualization access to: 
 			      </label>
 			      <div class="alert alert-info">
 			      <ul>
-			        <li ng-repeat="rule in visualization.defaultRules">
-			          <span ng-if="rule.name == 'format'">Records that have format:
+			        <li ng-repeat="(rule, params) in options.query">
+			          <span ng-if="rule == 'format'">Records that have format:
 			            <ul>
-			              <li ng-repeat="format in rule.params">{{ format }}</li>
+			              <li ng-repeat="format in params">{{ format }}</li>
+			            </ul> 
+			          </span>
+			          <span ng-if="rule == 'group'">Records that belong to group:
+			            <ul>
+			              <li ng-repeat="group in params">{{ group }}</li>
 			            </ul> 
 			          </span>
 			        </li>
@@ -55,10 +62,9 @@
 			      </div>
                 </div>
 			</div>
-			</div>
-			
-			<button type="button" class="btn btn-primary" ng-hide="visualization.installed" ng-click="install()">Install</button>
-			<button type="button" class="btn btn-default" ng-show="visualization.installed" ng-click="uninstall()">Uninstall</button>
+					
+			<button type="button" class="btn btn-primary" ng-click="install()">Add Visualization</button>
+			<button type="button" class="btn btn-default" ng-show="visualization.installed" ng-click="uninstall()">Uninstall Visualization</button>
 			</div>
 		</div>
 	</div>

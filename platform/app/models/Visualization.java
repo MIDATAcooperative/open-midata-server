@@ -20,7 +20,7 @@ public class Visualization extends Plugin implements Comparable<Visualization> {
 	public String previewUrl;
 	public String defaultSpaceName;
 	public String defaultSpaceContext;
-	public List<FilterRule> defaultRules;
+	public Map<String, Object> defaultQuery;
 
 	@Override
 	public int compareTo(Visualization other) {
