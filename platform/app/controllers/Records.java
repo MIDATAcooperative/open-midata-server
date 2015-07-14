@@ -46,7 +46,7 @@ import utils.json.JsonValidation.JsonValidationException;
 import utils.search.Search;
 import utils.search.SearchResult;
 import views.html.records;
-import views.html.records2;
+import views.html.records2; 
 import views.html.members.record;
 import views.html.dialogs.authorized;
 import views.html.dialogs.createrecords;
@@ -464,7 +464,7 @@ public class Records extends Controller {
         	
         	if (query != null) {
         		if (type.equals("spaces")) {
-        		  RecordSharing.instance.shareByQuery(userId, aps, userId, query);
+        		  RecordSharing.instance.shareByQuery(userId, userId, aps, query);
         		} else {
 	        	  List<FilterRule> rules = RuleApplication.instance.createRulesFromQuery(query);
 	        	  RuleApplication.instance.setupRules(userId, rules, userId, aps, withMember);
@@ -503,7 +503,7 @@ public class Records extends Controller {
         	
         	if (query != null) {
         		if (type.equals("spaces")) {
-        		  RecordSharing.instance.shareByQuery(userId, aps, userId, query);
+        		  RecordSharing.instance.shareByQuery(userId, userId, aps, query);
         		} else {
 	        	  List<FilterRule> rules = RuleApplication.instance.createRulesFromQuery(query);
 	        	  RuleApplication.instance.setupRules(userId, rules, userId, aps, withMember);
@@ -513,7 +513,7 @@ public class Records extends Controller {
         	        	
         }
 		
-				
+				 
 		return ok();
 	}
 	

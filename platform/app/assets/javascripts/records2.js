@@ -27,7 +27,8 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 			if (p.length >= 5) {
 			  var selectedType = window.location.pathname.split("/")[3];
 			  var selected = window.location.pathname.split("/")[4];
-			  $scope.selectedAps = { "_id" : { "$oid" : selected, type : selectedType } };
+			  $scope.displayAps = $scope.availableAps[1];
+			  $scope.selectedAps = { "_id" : { "$oid" : selected }, type : selectedType };
 			  $scope.compare = null;
 			  $scope.loadSharingDetails();
 			} else $scope.loadShared(userId); 
@@ -64,7 +65,7 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 		//$scope.loadingRecords = true;
 		var properties = {};
 		if (owner) properties.owner = owner;
-		records.getRecords(userId, properties, ["id", "owner", "ownerName", "format", "created", "name", "group"]).
+		return records.getRecords(userId, properties, ["id", "owner", "ownerName", "format", "created", "name", "group"]).
 		then(function(results) {
 			$scope.records = results.data;
 			$scope.prepareRecords();	
@@ -83,8 +84,9 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 	};
 	
 	$scope.selectSet = function() {
-		$scope.getRecords($scope.displayAps.aps, $scope.displayAps.owner);
-		$scope.selectedAps = null;
+		$scope.getRecords($scope.displayAps.aps, $scope.displayAps.owner)
+		.then(function() { $scope.loadSharingDetails(); });
+		
 	};
 		
 	
@@ -170,10 +172,10 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 		angular.forEach($scope.tree, function(t) { countRecords(t); });
 	};
 	
-	$scope.deleteRecord = function(record) {
+	$scope.deleteRecord = function(record, group) {
 		$http.post(jsRoutes.controllers.Records["delete"]().url, { "_id" : record.id }).
 		success(function(data) {
-			$scope.records.splice($scope.records.indexOf(record), 1);
+			group.records.splice(group.records.indexOf(record), 1);
 		});
 	};
 	
@@ -279,7 +281,9 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 		if ($scope.sharing.query[type].length == 0) $scope.sharing.query[type] = undefined;
 		var recs = [];
 		angular.forEach(group.records, function(r) { recs.push(r._id.$oid); });
-		records.unshare($scope.selectedAps._id.$oid, recs, $scope.selectedAps.type, $scope.sharing.query);		
+		console.log($scope.selectedAps);
+		records.unshare($scope.selectedAps._id.$oid, recs, $scope.selectedAps.type, $scope.sharing.query).
+		then(function() { $scope.loadSharingDetails(); });
 	};
 					
 }]);

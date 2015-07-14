@@ -189,7 +189,7 @@ details.controller('VisualizationCtrl', ['$scope', '$http', '$location', functio
 	
 	// parse visualization id (format: /visualizations/:id) and load the visualization
 	var visualizationId = window.location.pathname.split("/")[3];
-	var data = {"properties": {"_id": {"$oid": visualizationId}}, "fields": ["name", "creator", "description", "defaultSpaceName", "defaultRules"]};
+	var data = {"properties": {"_id": {"$oid": visualizationId}}, "fields": ["name", "creator", "description", "defaultSpaceName", "defaultQuery"]};
 	$http.post(jsRoutes.controllers.Visualizations.get().url, JSON.stringify(data)).
 		success(function(visualizations) {
 			$scope.error = null;

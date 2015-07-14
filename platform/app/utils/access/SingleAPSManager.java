@@ -95,6 +95,18 @@ public class SingleAPSManager extends QueryManager {
 			eaps.reload();
 			setMeta(key, data);
 		}
+	} 
+	
+	public void removeMeta(String key) throws ModelException {
+		try {			
+			if (eaps.getPermissions().containsKey(key)) {
+				eaps.getPermissions().remove(key);
+				eaps.savePermissions();
+			}
+		} catch (LostUpdateException e) {
+			eaps.reload();
+			removeMeta(key);
+		}
 	}
 	
 	

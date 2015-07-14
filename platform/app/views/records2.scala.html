@@ -19,7 +19,7 @@
 					</ul>
 				</div>
 			</div>
-			<h1>My records</h1>
+			<h1>My records</h1> 
 		</div>
 		
 		<div ng-cloak >
@@ -56,7 +56,7 @@
 
            <ul class="list-group" ng-if="data.records.length > 0">
 				<li class="list-group-item" ng-repeat="record in data.records" ng-class="{ 'list-group-item-success' : (data.shared || isShared(record)) }">
-					<span class="label label-info" ng-dblclick="deleteRecord(record)">{{record.created | date}}</span>
+					<span class="label label-info" ng-dblclick="deleteRecord(record, data)">{{record.created | date}}</span>
 					<span ng-show="record.owner.$oid != userId.$oid" class="label label-info">{{ record.ownerName }}</span>
 					<a href="javascript:;" ng-click="showDetails(record)">{{record.name}}</a>
                     <div class="pull-right" ng-hide="data.shared || selectedAps==null">					   

@@ -80,7 +80,7 @@ public class RecordSharing {
 			"app", "creator", "created", "name", "format", "description");
 	public final static Set<String> COMPLETE_DATA = Sets.create("id", "owner",
 			"app", "creator", "created", "name", "format", "description",
-			"data");
+			"data", "group");
 	public final static String STREAM_TYPE = "Stream";
 	public final static Map<String, Object> STREAMS_ONLY = CMaps.map("streams", "true").map("flat", "true").map("format", STREAM_TYPE);
 	public final static Map<String, Object> STREAMS_ONLY_OWNER = CMaps.map("streams", "true").map("flat", "true").map("format", STREAM_TYPE).map("owner", "self");
@@ -224,10 +224,16 @@ public class RecordSharing {
 	public void shareByQuery(ObjectId who, ObjectId fromAPS, ObjectId toAPS,
 			Map<String, Object> query) throws ModelException {
         AccessLog.debug("shareByQuery who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString());
-		SingleAPSManager apswrapper = getCache(who).getAPS(toAPS);
+		if (toAPS.equals(who)) throw new ModelException("Bad call to shareByQuery. target APS may not be user APS!");
+        SingleAPSManager apswrapper = getCache(who).getAPS(toAPS);
 
-		query.put("aps", fromAPS.toString());
-		apswrapper.setMeta("_query", query);
+        query.remove("aps");
+        if (query.isEmpty()) {
+           apswrapper.removeMeta("_query");
+        } else {
+		   query.put("aps", fromAPS.toString());
+		   apswrapper.setMeta("_query", query);
+        }
 	}
 
 	public void unshare(ObjectId who, ObjectId apsId, Set<ObjectId> records)

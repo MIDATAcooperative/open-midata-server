@@ -1,5 +1,6 @@
 package models;
 
+import java.util.List;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
@@ -29,5 +30,9 @@ public class FormatInfo extends Model {
 			r.group = "other";
 		}
 		return r;
+	}
+	
+	public static Set<FormatInfo> getByGroups(Set<String> group) throws ModelException {
+		return Model.getAll(FormatInfo.class, collection, CMaps.map("group", group), ALL);
 	}
 }

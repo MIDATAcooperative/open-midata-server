@@ -38,7 +38,8 @@ public class APSQSupportingQM extends QueryManager {
 		
 		BasicBSONObject query = q.getCache().getAPS(q.getApsId()).getMeta(SingleAPSManager.QUERY);
     	SingleAPSManager queryAPS;
-		if (query != null) {			
+    	// Ignores queries in main APS 
+		if (query != null && !q.getApsId().equals(q.getCache().getOwner())) {			
 			Map<String, Object> combined = combineQuery(q.getProperties(), query);
 			if (combined == null) {
 				AccessLog.debug("combine empty:");
