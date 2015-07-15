@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import models.enums.SubUserRole;
 import models.enums.UserRole;
 
 import org.bson.types.ObjectId;
@@ -19,6 +20,7 @@ public class HPUser extends User {
 	
 			
 	public ObjectId provider;
+	public SubUserRole subrole;
 	
     public HPUser() { }
 	

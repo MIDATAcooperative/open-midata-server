@@ -329,7 +329,7 @@ public class RecordSharing {
 			cache.getAPS(part._id, executingPerson).removePermission(record);
 		}
 		
-		Set<MemberKey> mkeys = MemberKey.getByMember(executingPerson);
+		Set<MemberKey> mkeys = MemberKey.getByOwner(executingPerson);
 		for (MemberKey mk : mkeys) {
 			cache.getAPS(mk._id, executingPerson).removePermission(record);
 		}
@@ -418,7 +418,7 @@ public class RecordSharing {
 			throw new ModelException(e);
 		}
 		
-		if (!record.direct && !documentPart) apswrapper.addPermission(record, false);
+		if (!record.direct && !documentPart) apswrapper.addPermission(record, alternateAps != null && !alternateAps.equals(record.owner) && record.stream == null);
 		
 		Record unecrypted = record.clone();
 				

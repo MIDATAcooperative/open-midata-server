@@ -65,7 +65,11 @@ views.controller('FlexibleStudiesCtrl', ['$scope', '$http', '$attrs', 'views', '
 	};
 	
 	$scope.showDetails = function(study) {
-		window.location.href = portalRoutes.controllers.MemberFrontend.studydetails(study._id.$oid).url;
+		if (window.location.href.contains("/members/")) {
+		  window.location.href = portalRoutes.controllers.MemberFrontend.studydetails(study._id.$oid).url;
+		} else {		
+		  window.location.href = portalRoutes.controllers.ProviderFrontend.studydetails(study._id.$oid).url;
+		}
 	};
 	
 	$scope.$watch('view.setup', function() { $scope.reload(); });	

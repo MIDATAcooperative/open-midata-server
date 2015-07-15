@@ -264,7 +264,7 @@ public class Records extends Controller {
 		result.put("participations", Json.toJson(participations));
 		shared.put("participations", Json.toJson(participationResult));
 		
-		Set<MemberKey> memberkeys = MemberKey.getByMember(userId);
+		Set<MemberKey> memberkeys = MemberKey.getByOwner(userId);
 		for (MemberKey memberkey : memberkeys) {
 		    memberkeyResult.put(memberkey._id.toString(), RecordSharing.instance.listRecordIds(userId, memberkey.aps));
 		}

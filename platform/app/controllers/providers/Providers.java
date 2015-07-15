@@ -22,6 +22,7 @@ import models.Space;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.Gender;
+import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.auth.CodeGenerator;
@@ -34,6 +35,7 @@ import views.html.defaultpages.badRequest;
 import actions.APICall;
 import controllers.APIController;
 import controllers.KeyManager;
+import controllers.MemberKeys;
 import controllers.routes;
 import actions.APICall; 
 import play.libs.Json;
@@ -68,6 +70,7 @@ public class Providers extends APIController {
 		HPUser user = new HPUser(email);
 		user._id = new ObjectId();
 		user.role = UserRole.PROVIDER;		
+		user.subrole = SubUserRole.MANAGER;
 		user.address1 = JsonValidation.getString(json, "address1");
 		user.address2 = JsonValidation.getString(json, "address2");
 		user.city = JsonValidation.getString(json, "city");
@@ -137,14 +140,34 @@ public class Providers extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result search() throws JsonValidationException, ModelException {
+		ObjectId userId = new ObjectId(request().username());
 		JsonNode json = request().body().asJson();
-		
+			
 		JsonValidation.validate(json, "midataID", "birthday");
 		
 		String midataID = JsonValidation.getString(json, "midataID");
 		Date birthday = JsonValidation.getDate(json, "birthday");
 		
 		Member result = Member.getByMidataIDAndBirthday(midataID, birthday, Sets.create("firstname","birthday", "sirname","city","zip","country","email","phone","mobile","ssn","address1","address2"));
+		HPUser hpuser = HPUser.getById(userId, Sets.create("provider", "firstname", "sirname"));
+		
+		MemberKeys.getOrCreate(hpuser, result);
+		
+		return ok(Json.toJson(result));
+	}
+	
+	@Security.Authenticated(ProviderSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public static Result list() throws JsonValidationException, ModelException {
+		JsonNode json = request().body().asJson();
+		
+		ObjectId userId = new ObjectId(request().username());
+		//JsonValidation.validate(json, "midataID", "birthday");
+		Set<MemberKey> memberKeys = MemberKey.getByAuthorizedPerson(userId, Sets.create("owner"));
+		Set<ObjectId> ids = new HashSet<ObjectId>();
+		for (MemberKey key : memberKeys) ids.add(key.owner);
+		Set<Member> result = Member.getAll(CMaps.map("_id", ids), Sets.create("_id", "firstname","birthday", "sirname"));
 		
 		return ok(Json.toJson(result));
 	}
@@ -156,7 +179,7 @@ public class Providers extends APIController {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId memberId = new ObjectId(id);
 		
-		MemberKey memberKey = MemberKey.getByMemberAndProvider(memberId, userId);
+		MemberKey memberKey = MemberKey.getByOwnerAndAuthorizedPerson(memberId, userId);
 		
 		Member result = Member.getById(memberId, Sets.create("firstname","birthday", "sirname","city","zip","country","email","phone","mobile","ssn","address1","address2"));
 		if (result==null) return badRequest("Member does not exist.");
@@ -176,7 +199,7 @@ public class Providers extends APIController {
 						
 		JsonValidation.validate(json, "member");
 		ObjectId memberId = JsonValidation.getObjectId(json, "member");
-		MemberKey memberKey = MemberKey.getByMemberAndProvider(memberId, userId);
+		MemberKey memberKey = MemberKey.getByOwnerAndAuthorizedPerson(memberId, userId);
 
 		// create encrypted authToken
 		SpaceToken spaceToken = new SpaceToken(memberKey.aps, userId);

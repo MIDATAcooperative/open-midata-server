@@ -266,7 +266,7 @@ services.factory('studies', function($http) {
 	
 	service.search = function(properties, fields) {
 		var data = {"properties": properties, "fields": fields };
-		return $http.post(jsRoutes.controllers.members.Studies.search().url, JSON.stringify(data));
+		return $http.post(jsRoutes.controllers.common.Studies.search().url, JSON.stringify(data));
 	};
 	
 	return service;

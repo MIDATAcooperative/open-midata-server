@@ -1,0 +1,66 @@
+
+<div ng-app="participation" ng-controller="StudyDetailCtrl" ng-cloak>
+	<div class="page-header">
+		<h1>Study Details</h1>
+	</div>
+	<div class="panel panel-primary">
+		<div class="panel-heading">Study</div>
+		<div class="panel-body">
+			<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+				{{ error.message || error }}</p>
+			<p>{{ study.name }}</p>
+			<p>{{ study.description }}</p>
+		</div>
+	</div>
+	<div class="panel panel-primary">
+		<div class="panel-heading">Organisation</div>
+		<div class="panel-body">
+			<p>{{ research.name }}</p>
+			<p>{{ research.description }}</p>
+		</div>
+	</div>
+	<div class="panel panel-primary">
+		<div class="panel-heading">Information that must be shared for participation</div>
+		<div class="panel-body">
+
+			<ul>
+				<li ng-show="needs('RESTRICTED')">Your gender, year of birth and country</li>
+				<li ng-show="needs('FULLNAME')">Your name, birthday and contact information (address, email, phone)</li>
+			</ul>
+
+		</div>
+	</div>
+	<div ng-show="participation.history.length" class="panel panel-primary">
+		<div class="panel-heading">Participation History</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Event</th>
+					<th>Who</th>
+					<th>When</th>
+					<th>Comment</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="entry in participation.history">
+					<td>{{ entry.event }}</td>
+					<td>{{ entry.whoName }}</td>
+					<td>{{ entry.timestamp | date }}</td>
+					<td>{{ entry.message }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+
+
+	<button ng-show="mayRequestParticipation()" ng-click="requestParticipation()" class="btn btn-success">Request Participation</button>
+	<button ng-show="mayDeclineParticipation()" ng-click="noParticipation()" class="btn btn-danger">Do not participate</button>
+
+    @views.html.details.dashboard("studydetails")
+
+</div>
+
+<script type="text/javascript" src="@routes.Assets.at("javascripts/views.js")" defer></script>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/dashboards.js")" defer></script>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/members/participation.js")" defer></script>

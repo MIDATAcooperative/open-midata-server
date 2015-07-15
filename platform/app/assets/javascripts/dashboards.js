@@ -475,7 +475,33 @@ dashboards.constant("dashboards",
 	      	 			    	 always : true
 	      	 		        }
 	      	 			}
-	      	           ]
+	      	           ],
+	      	           
+	      	   // Providers    	      	         
+  	 	  "research" : [
+  	 	       
+  	 	       {
+  	 	    	   id : "newstudies",
+  	 	    	   template : "/assets/views/members/research/flexiblestudies.html",
+  	 	    	   title : "New Studies",
+  	 	    	   active : true,
+  	 	    	   position : "small",
+  	 	    	   setup : { properties : { }, fields : ["name"] }
+  	 	       },
+  	 	       {
+  	 			     id: "researchnews",
+  	 			     title: "Research News",
+  	 			     template : "/assets/views/members/info/summary.html",
+  	 		         active : true,
+  	 		         position : "small",
+  	 		         setup : {
+  	 			         text : "Search for new health research publications.",
+  	 		        	 icon : "/assets/images/icons/info.png",
+  	 		        	 link : "http://scholar.google.de/scholar?q=Health+study+publications",	        	 
+  	 		        	 button : "Search for News"
+  	 		         }
+  	 			}  	 	      
+  	 	     ]
 	}			
 );
 dashboards.controller('DashboardCtrl', ['$scope', '$attrs', 'views', 'dashboards', 'spaces', function($scope, $attrs, views, dashboards, spaces) {  

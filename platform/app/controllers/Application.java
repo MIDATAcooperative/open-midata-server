@@ -281,6 +281,7 @@ public class Application extends Controller {
 				"portalRoutes",
 				controllers.routes.javascript.ResearchFrontend.studyoverview(),
 				controllers.routes.javascript.MemberFrontend.studydetails(),
+				controllers.routes.javascript.ProviderFrontend.studydetails(),
 				controllers.routes.javascript.ProviderFrontend.messages(),
 				controllers.routes.javascript.ResearchFrontend.messages(),
 				controllers.routes.javascript.Market.index(),
@@ -393,7 +394,7 @@ public class Application extends Controller {
 				controllers.research.routes.javascript.Studies.setRequiredInformationSetup(),
 				
 				controllers.members.routes.javascript.Studies.list(),
-				controllers.members.routes.javascript.Studies.search(),
+				controllers.common.routes.javascript.Studies.search(),
 				controllers.members.routes.javascript.Studies.enterCode(),
 				controllers.members.routes.javascript.Studies.get(),
 				controllers.members.routes.javascript.Studies.requestParticipation(),
@@ -405,6 +406,7 @@ public class Application extends Controller {
 				controllers.providers.routes.javascript.Providers.register(),
 				controllers.providers.routes.javascript.Providers.login(),
 				controllers.providers.routes.javascript.Providers.search(),
+				controllers.providers.routes.javascript.Providers.list(),
 				controllers.providers.routes.javascript.Providers.getMember(),
 				controllers.providers.routes.javascript.Providers.getVisualizationToken(),
 				// Market

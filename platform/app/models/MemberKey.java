@@ -16,8 +16,9 @@ public class MemberKey extends Model {
 	
 	private static final String collection = "memberkeys";
 
-	public ObjectId member;
-	public ObjectId provider;
+	public ObjectId owner;
+	public ObjectId organization;
+	public Set<ObjectId> authorized;
 	public MemberKeyStatus status;	
 	//public Map<String,String> key; //key used to identify this member
 	public Date confirmDate;
@@ -26,15 +27,19 @@ public class MemberKey extends Model {
 	public String name;
 	
 	public static MemberKey getById(ObjectId id) throws ModelException {
-		return Model.get(MemberKey.class, collection, CMaps.map("_id", id), Sets.create("member", "provider", "status", "confirmDate", "aps", "comment"));
+		return Model.get(MemberKey.class, collection, CMaps.map("_id", id), Sets.create("owner", "organization", "authorized", "status", "confirmDate", "aps", "comment"));
 	}
 	
-	public static MemberKey getByMemberAndProvider(ObjectId memberId, ObjectId providerId) throws ModelException {
-		return Model.get(MemberKey.class, collection, CMaps.map("member", memberId).map("provider", providerId), Sets.create("member", "provider", "status", "confirmDate", "aps", "comment"));
+	public static MemberKey getByOwnerAndAuthorizedPerson(ObjectId ownerId, ObjectId authorizedId) throws ModelException {
+		return Model.get(MemberKey.class, collection, CMaps.map("owner", ownerId).map("authorized", authorizedId), Sets.create("owner", "organization", "authorized", "status", "confirmDate", "aps", "comment"));
 	}
 	
-	public static Set<MemberKey> getByMember(ObjectId memberId) throws ModelException {
-		return Model.getAll(MemberKey.class, collection, CMaps.map("member", memberId), Sets.create("member", "provider", "status", "confirmDate", "aps", "comment", "name"));
+	public static Set<MemberKey> getByAuthorizedPerson(ObjectId authorizedId, Set<String> fields) throws ModelException {
+		return Model.getAll(MemberKey.class, collection, CMaps.map("authorized", authorizedId), fields);
+	}
+	
+	public static Set<MemberKey> getByOwner(ObjectId ownerId) throws ModelException {
+		return Model.getAll(MemberKey.class, collection, CMaps.map("owner", ownerId), Sets.create("owner", "organization", "authorized", "status", "confirmDate", "aps", "comment", "name"));
 	}
 	
 	public static void add(MemberKey memberKey) throws ModelException {

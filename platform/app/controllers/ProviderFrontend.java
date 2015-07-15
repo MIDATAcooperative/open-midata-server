@@ -4,12 +4,15 @@ import controllers.providers.ProviderSecured;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import views.html.providers.studydetails;
+import views.html.providers.dashboard;
 import views.html.providers.message;
 import views.html.providers.createmessage;
 import views.html.providers.registration;
 import views.html.providers.login;
 import views.html.providers.messages;
 import views.html.providers.search;
+import views.html.providers.patients;
 import views.html.providers.memberdetails;
 import views.html.providers.market;
 import views.html.providers.app;
@@ -25,6 +28,16 @@ public class ProviderFrontend extends Controller {
 	
 	public static Result login() {
 		return ok(login.render());
+	}
+	
+	@Security.Authenticated(ProviderSecured.class)
+	public static Result dashboard(String name) {
+		return ok(dashboard.render(name, name));
+	}
+	
+	@Security.Authenticated(ProviderSecured.class)
+	public static Result research() {
+		return ok(dashboard.render("research", "Research"));
 	}
 	
 	@Security.Authenticated(ProviderSecured.class)
@@ -68,6 +81,11 @@ public class ProviderFrontend extends Controller {
 	}
 	
 	@Security.Authenticated(ProviderSecured.class)
+	public static Result patients() {
+		return ok(patients.render());
+	}
+	
+	@Security.Authenticated(ProviderSecured.class)
 	public static Result member(String member) {
 		return ok(memberdetails.render());
 	}
@@ -75,5 +93,10 @@ public class ProviderFrontend extends Controller {
 	@Security.Authenticated(ProviderSecured.class)
 	public static Result useVisualization(String member, String visualization) {
 		return ok(usevisualization.render());
+	}
+	
+	@Security.Authenticated(ProviderSecured.class)
+	public static Result studydetails(String study) {
+		return ok(studydetails.render());
 	}
 }

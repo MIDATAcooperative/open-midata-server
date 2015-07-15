@@ -28,7 +28,7 @@ public class HealthProvider extends Controller {
 	public static Result list() throws ModelException {
 	      
 		ObjectId userId = new ObjectId(request().username());	
-		Set<MemberKey> memberkeys = MemberKey.getByMember(userId);
+		Set<MemberKey> memberkeys = MemberKey.getByOwner(userId);
 		
 		return ok(Json.toJson(memberkeys));
 	}
@@ -42,7 +42,7 @@ public class HealthProvider extends Controller {
 		JsonValidation.validate(json, "provider");
 		
 		ObjectId providerId = JsonValidation.getObjectId(json, "provider");
-		MemberKey target = MemberKey.getByMemberAndProvider(userId, providerId);
+		MemberKey target = MemberKey.getByOwnerAndAuthorizedPerson(userId, providerId);
 		if (target.status.equals(MemberKeyStatus.UNCONFIRMED)) {
 			target.setConfirmDate(new Date());
 			target.setStatus(MemberKeyStatus.CONFIRMED);
@@ -60,7 +60,7 @@ public class HealthProvider extends Controller {
 		JsonValidation.validate(json, "provider");
 		
 		ObjectId providerId = JsonValidation.getObjectId(json, "provider");
-		MemberKey target = MemberKey.getByMemberAndProvider(userId, providerId);
+		MemberKey target = MemberKey.getByOwnerAndAuthorizedPerson(userId, providerId);
 		if (target.status.equals(MemberKeyStatus.UNCONFIRMED)) {
 			target.setConfirmDate(new Date());
 			target.setStatus(MemberKeyStatus.REJECTED);

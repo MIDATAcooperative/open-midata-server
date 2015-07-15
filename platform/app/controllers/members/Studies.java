@@ -37,6 +37,7 @@ import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
 import play.libs.Json;
 import controllers.APIController;
+import controllers.AnyRoleSecured;
 import controllers.RecordSharing;
 import controllers.Secured;
 import controllers.research.ResearchSecured;
@@ -158,7 +159,7 @@ public class Studies extends APIController {
 	}
 	
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result get(String id) throws JsonValidationException, ModelException {
 	   ObjectId userId = new ObjectId(request().username());	
 	   ObjectId studyId = new ObjectId(id);
