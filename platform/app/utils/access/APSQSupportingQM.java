@@ -49,7 +49,10 @@ public class APSQSupportingQM extends QueryManager {
 			}
 			Object targetAPSId = query.get("aps");
 			AccessLog.debug("Redirect to Query:");
-			return next.query(new Query(combined, q.getFields(), q.getCache(), new ObjectId(targetAPSId.toString()))); 
+			List<Record> result = next.query(new Query(combined, q.getFields(), q.getCache(), new ObjectId(targetAPSId.toString())));
+			List<Record> result2 = next.query(q);
+			result.addAll(result2);
+			return result;
 			
 			/*queryAPS = q.getCache().getAPS(new ObjectId(targetAPSId.toString()));
 			
