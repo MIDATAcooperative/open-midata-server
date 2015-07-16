@@ -46,7 +46,7 @@
 		      </div>
 		    </div>		    
 		    		   		    
-		    <button class="btn btn-primary" ng-disabled="!isValid" ng-click="add()">Add</button>
+		    <button class="btn btn-primary" ng-disabled="isBusy || !isValid" ng-click="add()">Add</button>
 		  </form>
 		</div>
 	</body>

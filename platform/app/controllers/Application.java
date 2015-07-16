@@ -67,7 +67,7 @@ public class Application extends Controller {
 		return ok(lostpw.render(role));
 	}
 
-	@BodyParser.Of(BodyParser.Json.class)
+	@BodyParser.Of(BodyParser.Json.class) 
 	@APICall
 	public static Result requestPasswordResetToken() throws JsonValidationException, ModelException {
 		// validate json

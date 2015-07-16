@@ -29,7 +29,7 @@
 										<input type="checkbox" value="remember-me"> Remember me
 									</label>
 								</div>
-								<button type="submit" class="btn btn-lg btn-primary btn-block">Sign in</button>
+								<button type="submit" ng-disabled="status.isBusy=='login'" class="btn btn-lg btn-primary btn-block">Sign in</button>
 								<div class="margin-top">
 								  <a href='@routes.Application.lostpw("member")'>Forgot your password?</a>
 								</div>

@@ -17,7 +17,7 @@
 			<button type="button" class="close" ng-click="success=false" aria-hidden="true">&times;</button>
 			Data successfully added.
 		  </div>
-		  <form class="form-horizontal">
+		  <form class="form-horizontal" ng-hide="success">
 		    <div class="form-group"> 
 		      <label class="col-sm-4 control-label" for="what">What:</label>
 		      <div class="col-sm-8">
@@ -44,8 +44,8 @@
 		  </form>		  
 		  
 		</div>
-		<div class="text-center" style="position:absolute;bottom:0px;width:100%;top:auto;margin:0px;padding:15px">
-		     <button class="btn btn-primary" ng-click="add()">Add</button>
+		<div ng-hide="success" class="text-center" style="position:absolute;bottom:0px;width:100%;top:auto;margin:0px;padding:15px">
+		     <button class="btn btn-primary" ng-disabled="isBusy" ng-click="add()">Add</button>
 		</div>
 		</div>
 	</body>

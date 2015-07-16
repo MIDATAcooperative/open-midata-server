@@ -10,14 +10,14 @@ textRecords.controller('CreateCtrl', ['$scope', '$http', '$location',
 		
 		// controller functions
 		$scope.validate = function() {
-			$scope.loading = true;
+			
 			$scope.hasError = false;
 			$scope.validateTitle();
 			$scope.validateContent();
 			if(!$scope.errors.title && !$scope.errors.content) {
 				$scope.submit()
 			}
-			$scope.loading = false;
+			
 		};
 		
 		$scope.validateTitle = function() {
@@ -45,7 +45,7 @@ textRecords.controller('CreateCtrl', ['$scope', '$http', '$location',
 				"description": $scope.content,
 				"format" : "Text"
 			};
-			
+			$scope.loading = true;
 			// submit to server
 			$http.post("https://" + window.location.hostname + ":9000/api/apps/create", data).
 				success(function() {
@@ -53,10 +53,12 @@ textRecords.controller('CreateCtrl', ['$scope', '$http', '$location',
 					$scope.error = null;
 					$scope.title = null;
 					$scope.content = null;
+					$scope.loading = false;
 				}).
 				error(function(err) {
 					$scope.success = null;
 					$scope.error = err;
+					$scope.loading = false;
 				});
 		};
 		

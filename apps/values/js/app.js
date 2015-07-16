@@ -36,8 +36,8 @@ jsonRecords.factory('server', [ '$http', function($http) {
 		
 	return service;	
 }]);
-jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', 'server',
-	function($scope, $http, $location, $filter, server) {
+jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$timeout', 'server',
+	function($scope, $http, $location, $filter, $timeout, server) {
 		
 		// init
 		$scope.errors = {};
@@ -78,6 +78,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 		console.log(authToken);
 		$scope.authToken = authToken;		
 		$scope.isValid = true;
+		$scope.isBusy = false;
 		$scope.success = false;
 		
 		$scope.reset = function() {
@@ -105,8 +106,9 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 			var envelope = {};
 			envelope[$scope.newentry.format.objkey] = [ data ];
 			
+			$scope.isBusy = true;
 			server.createRecord(authToken, $scope.newentry.format.label, "Manually entered "+$scope.newentry.format.label, $scope.newentry.format.format, envelope)
-			.then(function() { $scope.success = true; $scope.reset(); });			
+			.then(function() { $scope.success = true; $scope.isBusy = false; $scope.reset(); $timeout(function() { $scope.success = false; }, 2000); });			
 		};
 					
 		$scope.reset();

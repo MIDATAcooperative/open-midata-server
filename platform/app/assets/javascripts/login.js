@@ -1,9 +1,10 @@
-var login = angular.module('login', []);
-login.controller('LoginCtrl', ['$scope', '$http', function($scope, $http) {
+var login = angular.module('login', [ 'services' ]);
+login.controller('LoginCtrl', ['$scope', '$http', 'status', function($scope, $http, status) {
 	
 	// init
 	$scope.login = {};	
 	$scope.error = null;
+	$scope.status = new status(false);
 	
 	// login
 	$scope.login = function() {
@@ -15,15 +16,16 @@ login.controller('LoginCtrl', ['$scope', '$http', function($scope, $http) {
 		
 		// send the request
 		var data = {"email": $scope.login.email, "password": $scope.login.password};
-		$http.post(jsRoutes.controllers.Application.authenticate().url, JSON.stringify(data)).
-			success(function(url) { window.location.replace(portalRoutes.controllers.News.index().url); }).
-			error(function(err) { $scope.error = err; });
+		$scope.status.doAction("login", $http.post(jsRoutes.controllers.Application.authenticate().url, JSON.stringify(data))).
+		then(function() { window.location.replace(portalRoutes.controllers.News.index().url); },
+			 function(err) { $scope.error = err; });
 	};
 }]);
-login.controller('RegistrationCtrl', ['$scope', '$http', function($scope, $http) {
+login.controller('RegistrationCtrl', ['$scope', '$http', 'status', function($scope, $http, status) {
 	
 	$scope.registration = {};
 	$scope.error = null;
+	$scope.status = new status(false);
 	
 	// register new user
 	$scope.register = function() {		
@@ -46,9 +48,9 @@ login.controller('RegistrationCtrl', ['$scope', '$http', function($scope, $http)
 		
 		// send the request
 		var data = $scope.registration;		
-		$http.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data)).
-			success(function(url) { window.location.replace(portalRoutes.controllers.News.index().url); }).
-			error(function(err) { 
+		$scope.status.doAction("register", $http.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
+		then(function() { window.location.replace(portalRoutes.controllers.News.index().url); },
+			 function(err) { 
 				$scope.error = err;
 				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);				
 			});

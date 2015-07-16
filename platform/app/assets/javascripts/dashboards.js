@@ -68,19 +68,6 @@ dashboards.constant("dashboards",
 		        	 icon : "/assets/images/icons/training.png",
 		        	 button : "View"
 		         }
-			},
-			{
-			     id: "qself",
-			     title: "Quantified Self",
-			     template : "/assets/views/members/info/summary.html",
-		         active : true,
-		         position : "small",
-		         setup : {
-		        	 text : "Monitor yourself",
-		        	 link : "/members/dashboard/qself",
-		        	 icon : "/assets/images/icons/training.png",
-		        	 button : "View"
-		         }
 			}
 		  ],
       "mydata" : [

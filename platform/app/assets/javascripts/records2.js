@@ -1,5 +1,5 @@
 var records = angular.module('records', ['date', 'services']);
-records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', 'dateService', 'records', 'circles', function($scope, $http, $filter, $location, dateService, records, circles) {
+records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', 'dateService', 'records', 'circles', 'status', function($scope, $http, $filter, $location, dateService, records, circles, status) {
 	
 	// init
 	$scope.error = null;
@@ -11,6 +11,7 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 	$scope.records = [];	
 	$scope.tree = [ ];
 	$scope.compare = [];
+	$scope.status = new status(true);
 	
 	// get current user
 	$http(jsRoutes.controllers.Users.getCurrentUser()).
@@ -19,8 +20,10 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 			$scope.availableAps = [{ name : "My Data", aps:userId, owner : "self"  }, { name : "All Data", aps:userId, owner : "all"}];
 			$scope.displayAps = $scope.availableAps[0];
 			$scope.getApps(userId);
-			$scope.getRecords(userId, "self");						
 			$scope.getAvailableSets(userId);
+			$scope.getRecords(userId, "self")
+			.then(function() {
+			
 						
 			var p = window.location.pathname.split("/");
 			console.log(p);
@@ -32,7 +35,7 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 			  $scope.compare = null;
 			  $scope.loadSharingDetails();
 			} else $scope.loadShared(userId); 
-			
+			});
 		});
 	
 	// get apps
@@ -65,6 +68,7 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 		//$scope.loadingRecords = true;
 		var properties = {};
 		if (owner) properties.owner = owner;
+		if ($scope.debug) properties.streams = "true";
 		return records.getRecords(userId, properties, ["id", "owner", "ownerName", "format", "created", "name", "group"]).
 		then(function(results) {
 			$scope.records = results.data;
@@ -84,6 +88,13 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 	};
 	
 	$scope.selectSet = function() {
+		$scope.getRecords($scope.displayAps.aps, $scope.displayAps.owner)
+		.then(function() { $scope.loadSharingDetails(); });
+		
+	};
+	
+	$scope.showDebug = function() {
+		$scope.debug = true;
 		$scope.getRecords($scope.displayAps.aps, $scope.displayAps.owner)
 		.then(function() { $scope.loadSharingDetails(); });
 		
@@ -145,7 +156,7 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 		var c = group.records.length;		
 		angular.forEach(group.children, function(g) { c+= countRecords(g); });
 		group.count = c;
-		group.open = (c < 5) || group.type == "format" || group.parent == null;
+		group.open =  group.type == "format" || group.parent == null;
 		return c;
 	};
 	
@@ -224,7 +235,7 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 	};
 	
 	$scope.loadSharingDetails = function() {
-		$http.get(jsRoutes.controllers.Records.getSharingDetails($scope.selectedAps._id.$oid).url).
+		$scope.status.doBusy($http.get(jsRoutes.controllers.Records.getSharingDetails($scope.selectedAps._id.$oid).url)).
 		then(function(results) {
 			console.log(results.data);
 		    $scope.sharing = results.data;
@@ -255,14 +266,25 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 	   return r;
 	};
 	
-	$scope.share = function(record) {
-		records.share($scope.selectedAps._id.$oid, record._id.$oid, $scope.selectedAps.type);
+	$scope.share = function(record, group) {
+		$scope.status.doBusy(records.share($scope.selectedAps._id.$oid, record._id.$oid, $scope.selectedAps.type));
 		$scope.sharing.ids[record._id.$oid] = true;
+		
+		while (group != null) {
+			console.log(group);
+			group.countShared++;
+			group = groups[group.parent];
+		}
 	};
 	
-	$scope.unshare = function(record) {
-		records.unshare($scope.selectedAps._id.$oid, record._id.$oid, $scope.selectedAps.type);
+	$scope.unshare = function(record, group) {
+		$scope.status.doBusy(records.unshare($scope.selectedAps._id.$oid, record._id.$oid, $scope.selectedAps.type));
 		$scope.sharing.ids[record._id.$oid] = false;
+		
+		while (group != null) {
+			group.countShared--;
+			group = groups[group.parent];
+		}
 	};
 	
 	$scope.shareGroup = function(group) {
@@ -270,7 +292,8 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 		if (!$scope.sharing.query) $scope.sharing.query = {};
 		if (!$scope.sharing.query[type]) $scope.sharing.query[type] = [];
 		$scope.sharing.query[type].push(group.name);
-		records.share($scope.selectedAps._id.$oid, null, $scope.selectedAps.type, $scope.sharing.query);		
+		$scope.status.doBusy(records.share($scope.selectedAps._id.$oid, null, $scope.selectedAps.type, $scope.sharing.query)).
+		then(function() { $scope.loadSharingDetails(); });
 	};
 	
 	$scope.unshareGroup = function(group) {
@@ -280,9 +303,15 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 		$scope.sharing.query[type].splice(idx, 1);
 		if ($scope.sharing.query[type].length == 0) $scope.sharing.query[type] = undefined;
 		var recs = [];
-		angular.forEach(group.records, function(r) { recs.push(r._id.$oid); });
+		
+		var unselect = function(group) {
+			angular.forEach(group.records, function(r) { recs.push(r._id.$oid); });
+			angular.forEach(group.children, function(c) { unselect(c); });
+		};
+		unselect(group);
+		
 		console.log($scope.selectedAps);
-		records.unshare($scope.selectedAps._id.$oid, recs, $scope.selectedAps.type, $scope.sharing.query).
+		$scope.status.doBusy(records.unshare($scope.selectedAps._id.$oid, recs, $scope.selectedAps.type, $scope.sharing.query)).
 		then(function() { $scope.loadSharingDetails(); });
 	};
 					

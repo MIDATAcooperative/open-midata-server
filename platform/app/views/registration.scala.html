@@ -50,7 +50,7 @@
                               @formrow("phone","Phone") {  <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone" ng-model="registration.phone"> }
                               @formrow("mobile","Mobile Phone") {  <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile Phone" ng-model="registration.mobile"> }
                              
-                             <button type="submit" class="btn btn-lg btn-primary btn-block">Sign up</button>
+                             <button type="submit" ng-disabled="status.isBusy=='register'" class="btn btn-lg btn-primary btn-block">Sign up</button>
                             </form>
 		            	</div>
 					</div>
