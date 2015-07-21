@@ -3,12 +3,13 @@ midata.factory('server', [ '$http', function($http) {
 	
 	var service = {};
 	
-	service.createRecord = function(authToken, name, description, format, data) {
+	service.createRecord = function(authToken, name, description, content, format, data) {
 		// construct json
 		var data = {
 			"authToken": authToken,
 			"data": angular.toJson(data),
 			"name": name,
+			"content" : content,
 			"format" : format,
 			"description": (description || "")
 		};

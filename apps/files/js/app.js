@@ -98,7 +98,8 @@ files.controller('FilesCtrl', ['$scope', '$http', '$location', 'FileUploader',
 				"authToken": authToken,
 				"name": $scope.title,
 				"description": $scope.description,
-				"format" : "File"
+				"format" : "application/octet-stream",
+				"content" : "other"
 			}];
 
 			// upload the current queue (1 file)

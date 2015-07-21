@@ -3,13 +3,14 @@ jsonRecords.factory('server', [ '$http', function($http) {
 	
 	var service = {};
 	
-	service.createRecord = function(authToken, name, description, format, data) {
+	service.createRecord = function(authToken, name, description, content, format, data) {
 		// construct json
 		var data = {
 			"authToken": authToken,
 			"data": angular.toJson(data),
 			"name": name,
 			"format" : format,
+			"content" : content,
 			"description": (description || "")
 		};
 		
@@ -17,12 +18,13 @@ jsonRecords.factory('server', [ '$http', function($http) {
 		return $http.post("https://" + window.location.hostname + ":9000/api/apps/create", data);
 	};
 	
-	service.createConversion = function(authToken, name, description, format, data, appendToId) {
+	service.createConversion = function(authToken, name, description, content, format, data, appendToId) {
 		// construct json
 		var data = {
 			"authToken": authToken,
 			"data": angular.toJson(data),
 			"name": name,
+			"content" : content,
 			"format" : format,
 			"description": (description || ""),
 			"document" : appendToId,
@@ -62,7 +64,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 		};
 		
 		$scope.execute = function() {
-			var f = function(i) { return function() { return server.createRecord(authToken, "Record "+i, null, $scope.setup.format, $scope.data); } };
+			var f = function(i) { return function() { return server.createRecord(authToken, "Record "+i, null, $scope.setup.content, $scope.setup.format, $scope.data); } };
 			var q = null;
 			for (var i=0;i < $scope.setup.numCreate;i++) {
 				q = (q != null) ? q.then(f(i)) : f(i)();

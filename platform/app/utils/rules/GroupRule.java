@@ -7,7 +7,7 @@ import utils.access.Query;
 import utils.access.SingleAPSManager;
 
 import models.FormatGroup;
-import models.FormatInfo;
+import models.ContentInfo;
 import models.ModelException;
 import models.Record;
 
@@ -15,9 +15,8 @@ public class GroupRule implements Rule {
 
 	@Override
 	public boolean qualifies(Record record, List<Object> params) throws ModelException {
-		if (record.group == null && record.format != null) {
-		   if (record.format.equals(Query.STREAM_TYPE)) record.group = FormatInfo.getByName(record.name).group;
-		   else record.group = FormatInfo.getByName(record.format).group;
+		if (record.group == null && record.content != null) {
+		   record.group = ContentInfo.getByName(record.content).group;
 		}
 		if (record.group == null) return false;
 		

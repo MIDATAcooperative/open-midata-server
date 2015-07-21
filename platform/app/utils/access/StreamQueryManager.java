@@ -34,7 +34,7 @@ public class StreamQueryManager extends QueryManager {
 				                					
 				if (result) {
 					if (q.returns("owner") && record.owner == null) {
-						List<Record> stream = next.query(new Query(CMaps.map("_id", record.stream).map("format", Query.STREAM_TYPE), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId(), true ));
+						List<Record> stream = next.query(new Query(CMaps.map("_id", record.stream), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId(), true ));
 						if (stream.size() > 0) record.owner = stream.get(0).owner;
 					}
                     return true;					
@@ -50,48 +50,57 @@ public class StreamQueryManager extends QueryManager {
 		SingleAPSManager next = q.getCache().getAPS(q.getApsId());
 		List<Record> records = new ArrayList<Record>();
 		boolean restrictedByStream = q.restrictedBy("stream");
-		if (!restrictedByStream && !q.isStreamOnlyQuery() && q.deepQuery()) {
-			AccessLog.debug("scan stream query");
-			List<Record> streams = next.query(new Query(CMaps.map("format", Query.STREAM_TYPE), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId(), true ));
-			
-			
-			  for (Record r : streams) {
-				  try {
-				      records.addAll(q.getCache().getAPS(r._id, r.key, r.owner).query(q));
-				  } catch (EncryptionNotSupportedException e) { throw new ModelException("Encryption not supported."); }
-				  catch (APSNotExistingException e2) {
-					  next.removePermission(r);
-				  }
-			  }
-			
-			
-			records.addAll(next.query(q));
-			return records;
-		}		
-		else if (restrictedByStream) {
-		  AccessLog.debug("single stream query");
-		  //Set<String> streams1 = q.getRestriction("stream");
-		  
-		  List<Record> streams = next.query(new Query(CMaps.map("_id", q.getProperties().get("stream")).map("format", Query.STREAM_TYPE), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId(), true ));
-			
-		  for (Record r : streams) {
-			  try {
-			      records.addAll(q.getCache().getAPS(r._id, r.key, r.owner).query(q));
-			  } catch (EncryptionNotSupportedException e) { throw new ModelException("Encryption not supported."); }
-			  catch (APSNotExistingException e2) {
-				  next.removePermission(r);
-			  }
-		  }				
-		  
-		  /*for (String streamId : streams1) {
-			 records.addAll(q.getCache().getAPS(new ObjectId(streamId)).query(q));
-		  }	*/	
-		  
-		  return records;
-		}
-		AccessLog.debug("non stream query");
-		records.addAll(next.query(q));
 		
+		if (restrictedByStream) {
+			  AccessLog.debug("single stream query");
+			  //Set<String> streams1 = q.getRestriction("stream");
+			  
+			  List<Record> streams = next.query(new Query(CMaps.map("_id", q.getProperties().get("stream")), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId(), true ));
+				
+			  for (Record r : streams) {
+				  if (r.isStream) {
+					  try {
+					      records.addAll(q.getCache().getAPS(r._id, r.key, r.owner).query(q));
+					  } catch (EncryptionNotSupportedException e) { throw new ModelException("Encryption not supported."); }
+					  catch (APSNotExistingException e2) {
+						  next.removePermission(r);
+					  }
+				  }
+			  }				
+			  			  			  
+			  return records;
+		}
+        		
+		
+		records = next.query(q);
+		boolean includeStreams = q.includeStreams();
+		boolean streamsOnly = q.isStreamOnlyQuery();
+		if (streamsOnly) {
+			List<Record> filtered = new ArrayList<Record>(records.size());
+			for (Record r : records) {
+			  if (r.isStream) filtered.add(r);
+			}
+			return filtered;
+		} else
+		if (q.deepQuery()) {
+			List<Record> filtered = new ArrayList<Record>(records.size());
+			for (Record r : records) {
+				if (r.isStream) {
+					try {
+					  filtered.addAll(q.getCache().getAPS(r._id, r.key, r.owner).query(q));
+					} catch (EncryptionNotSupportedException e) { throw new ModelException("Encryption not supported."); }
+				    if (includeStreams) filtered.add(r);	
+				} else filtered.add(r);
+			}
+			records = filtered;
+		} else if (!includeStreams) {
+			List<Record> filtered = new ArrayList<Record>(records.size());
+			for (Record record : records) {
+				if (!record.isStream) filtered.add(record);
+			}
+			records = filtered;
+		}
+							
 		return records;
 		
 	}

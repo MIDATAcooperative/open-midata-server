@@ -31,7 +31,7 @@ public class AccessPermissionSet extends Model {
 	
 	public Map<String, byte[]> keys;
 	public byte[] encrypted;
-	public Map<String, BasicBSONObject> permissions;
+	public Map<String, Object> permissions;
 	
 	public List<AccessPermissionSet> unmerged;
 	

@@ -33,7 +33,9 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	public @NotMaterialized String creatorName;
 	public @NotMaterialized byte[] key;
 	public String format; // format of record
+	public String content;
 	public @NotMaterialized String group;
+	public @NotMaterialized boolean isStream;
 	
 	// Encrypted part
 	public  ObjectId app; // app that created the record		
@@ -63,6 +65,7 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 		this.created = null;
 		this.name = null;
 		this.format = null;
+		this.content = null;
 		this.description = null;	
 		this.data = null;
 	}
@@ -117,6 +120,10 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 			throw new ModelException(e);
 		}
 		*/
+	}
+	
+	public static void upsert(Record record) throws ModelException {
+		Model.upsert(collection, record);
 	}
 
 	public static void delete(ObjectId ownerId, ObjectId recordId) throws ModelException {

@@ -32,6 +32,7 @@ public class User extends Model implements Comparable<User> {
 	public @NotMaterialized String name;
 	public String password;
 	public UserRole role;
+	public int accountVersion;
 	
 	public Map<String, Set<ObjectId>> messages; // keys (folders) are: inbox, archive, trash
 	public Date login; // timestamp of last login

@@ -43,7 +43,8 @@ textRecords.controller('CreateCtrl', ['$scope', '$http', '$location',
 				"data": JSON.stringify({"title": $scope.title, "content": $scope.content}),
 				"name": $scope.title,
 				"description": $scope.content,
-				"format" : "Text"
+				"content" : "diary",
+				"format" : "text-app"
 			};
 			$scope.loading = true;
 			// submit to server

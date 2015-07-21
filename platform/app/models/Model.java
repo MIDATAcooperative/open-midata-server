@@ -36,6 +36,14 @@ public abstract class Model implements JsonSerializable {
 			throw new ModelException(e);
 		}
 	}
+	
+	protected static <T extends Model> void upsert(String collection, T modelObject) throws ModelException {
+		try {
+			DBLayer.upsert(collection, modelObject);
+		} catch (DatabaseException e) {
+			throw new ModelException(e);
+		}
+	}
 
 	protected static <T extends Model> void delete(Class<T> modelClass, String collection, Map<String, ? extends Object> properties) throws ModelException {
 		try {

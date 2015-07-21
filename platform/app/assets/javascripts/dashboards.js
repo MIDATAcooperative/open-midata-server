@@ -408,7 +408,7 @@ dashboards.constant("dashboards",
 	 			    			name : "Training Editor",
 	 			    			context : "training",
 	 			    			query : { 
-	 			    				format : ["trainingplan"]
+	 			    				content : ["calendar/trainingplan"]
 	 			    			}
 	 			    		 } ] 
 	 			    	   },
@@ -420,7 +420,7 @@ dashboards.constant("dashboards",
 	 			    	    	 name : "Training Diary",
 	 			    	    	 context : "training",
 	 			    	    	 query : {
-	 			    	    		 format : [ "trainingplan", "activities-minutesFairlyActive", "body-weight", "sleep-timeInBed", "activities-heart" ]
+	 			    	    		 content : [ "calendar/trainingplan", "activities/minutes-active", "body/weight", "sleep/time-in-bed", "activities/heartrate" ]
 	 			    	    	 }	 			    	    	 
 	 			    	     } ]
 	 			    	   },
@@ -433,7 +433,7 @@ dashboards.constant("dashboards",
 	 			    		    	  name : "Your Performance",
 	 			    		    	  context : "training",
 	 			    		    	  query : {
-	 			    		    		  format : [ "activities-minutesFairlyActive", "body-weight", "sleep-timeInBed", "activities-heart" ],
+	 			    		    		  content : [ "activities/minutes-active", "body/weight", "sleep/time-in-bed", "activities/heartrate" ],
 	 			    		    		  owner : "self"
 	 			    		    	  }
 	 			    		      },
@@ -441,7 +441,7 @@ dashboards.constant("dashboards",
 	 			    		    	  name : "Comparison",
 	 			    		    	  context : "training",
 	 			    		    	  query : {
-	 			    		    		 format : [ "activities-minutesFairlyActive", "body-weight", "sleep-timeInBed", "activities-heart" ]	 			    		    		 
+	 			    		    		 format : [ "activities/minutes-active", "body/weight", "sleep/time-in-bed", "activities/heartrate" ]	 			    		    		 
 	 			    		    	  }
 	 			    		      }
 	 			    		   ]

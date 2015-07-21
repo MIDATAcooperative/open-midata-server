@@ -15,7 +15,8 @@ jawboneUp.controller('ImportCtrl', ['$scope', '$http', '$location',
 					"main": {
 						"title": "Jawbone UP meals {date}", 
 						"endpoint": "/nudge/api/v.1.1/users/@me/meals?date={date}",
-						"format" : "Meals/Jawbone"
+						"content" : "food/meals",
+						"format" : "jawbone/summary"
 					}
 				},
 				{
@@ -23,12 +24,14 @@ jawboneUp.controller('ImportCtrl', ['$scope', '$http', '$location',
 					"main": {
 						"title": "Jawbone UP moves {date}", 
 						"endpoint": "/nudge/api/v.1.1/users/@me/moves?date={date}",
-						"format" : "Moves/Jawbone"
+						"content" : "activities/move",
+						"format" : "jawbone/summary"
 					},
 					"details": {
 						"title": "Jawbone UP move ticks {date}", 
 						"endpoint": "/nudge/api/v.1.1/moves/{xid}/ticks",
-						"format" : "Move Ticks/Jawbone"
+						"content" : "activities/move",
+						"format" : "jawbone/ticks"
 					}
 				},
 				{
@@ -36,12 +39,14 @@ jawboneUp.controller('ImportCtrl', ['$scope', '$http', '$location',
 					"main": {
 						"title": "Jawbone UP sleep {date}", 
 						"endpoint": "/nudge/api/v.1.1/users/@me/sleeps?date={date}",
-						"format" : "Sleep/Jawbone"
+						"content" : "sleep",
+						"format" : "jawbone/summary"
 					},
 					"details": {
 						"title": "Jawbone UP sleep ticks {date}", 
 						"endpoint": "/nudge/api/v.1.1/sleeps/{xid}/ticks",
-						"format" : "Sleep Ticks/Jawbone"
+						"content" : "sleep",
+						"format" : "jawbone/ticks"
 					}
 				},
 				{
@@ -49,7 +54,8 @@ jawboneUp.controller('ImportCtrl', ['$scope', '$http', '$location',
 					"main": {
 						"title": "Jawbone UP workouts {date}", 
 						"endpoint": "/nudge/api/v.1.1/users/@me/workouts?date={date}",
-						"format" : "Workouts/Jawbone"
+						"content" : "activities/workouts",
+						"format" : "jawbone/summary"
 					}
 				}
 		];
@@ -119,9 +125,9 @@ jawboneUp.controller('ImportCtrl', ['$scope', '$http', '$location',
 							} else if (response.data.links && response.data.links.next) {
 								data.url = baseUrl + response.data.links.next;
 								delete response.data.links;
-								fetchRemaining($scope.measure.main.title, $scope.measure.main.format, formattedDate, response, data);
+								fetchRemaining($scope.measure.main.title, $scope.measure.main.format, $scope.measure.main.content , formattedDate, response, data);
 							} else {
-								saveRecord($scope.measure.main.title, $scope.measure.main.format, formattedDate, response);
+								saveRecord($scope.measure.main.title, $scope.measure.main.format, $scope.measure.main.content, formattedDate, response);
 
 								// also import record ticks if present
 								if ($scope.measure.details && response.data.items.length > 0) {
@@ -129,7 +135,7 @@ jawboneUp.controller('ImportCtrl', ['$scope', '$http', '$location',
 									$scope.requested += 1;
 									$http.post("https://" + window.location.hostname + ":9000/api/apps/oauth2", data).
 										success(function(response) {
-											saveRecord($scope.measure.details.title, $scope.measure.details.format, formattedDate, response);
+											saveRecord($scope.measure.details.title, $scope.measure.details.format, $scope.measure.main.content, formattedDate, response);
 										}).
 										error(function(err) {
 											errorMessage("Failed to import record ticks on " + formattedDate + ": " + err);
@@ -151,7 +157,7 @@ jawboneUp.controller('ImportCtrl', ['$scope', '$http', '$location',
 		}
 
 		// fetch the remaining data items of a record
-		fetchRemaining = function(title, format, formattedDate, record, data) {
+		fetchRemaining = function(title, format, content, formattedDate, record, data) {
 			$http.post("https://" + window.location.hostname + ":9000/api/apps/oauth2", data).
 				success(function(response) {
 					if (response.meta.code !== 200) {
@@ -161,9 +167,9 @@ jawboneUp.controller('ImportCtrl', ['$scope', '$http', '$location',
 						record.data.size += response.data.size;
 						if (response.data.links && response.data.links.next) {
 							data.url = baseUrl + response.data.links.next;
-							fetchRemaining(title, format, formattedDate, record, data);
+							fetchRemaining(title, format, content, formattedDate, record, data);
 						} else {
-							saveRecord(title, format, formattedDate, record);
+							saveRecord(title, format, content, formattedDate, record);
 						}
 					}
 				}).
@@ -173,14 +179,15 @@ jawboneUp.controller('ImportCtrl', ['$scope', '$http', '$location',
 		}
 		
 		// save a single record to the database
-		saveRecord = function(title, format, formattedDate, record) {
+		saveRecord = function(title, format, content, formattedDate, record) {
 			var name = title.replace("{date}", formattedDate);
 			var data = {
 					"authToken": authToken,
 					"data": JSON.stringify(record),
 					"name": name,
 					"description": name,
-					"format" : format
+					"format" : format,
+					"content" : content
 			};
 			$http.post("https://" + window.location.hostname + ":9000/api/apps/create", data).
 				success(function() {

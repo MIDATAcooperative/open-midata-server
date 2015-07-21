@@ -110,43 +110,19 @@ public class SingleAPSManager extends QueryManager {
 	}
 	
 	
-	/*
-	public void addRecords(List<Record> records) throws ModelException {
-		try {
-			for (Record record : records) {
-		
-			   BasicBSONObject obj = eaps.getPermissions().get(record.format);
-			   if (obj == null) {
-				  obj = new BasicDBObject();
-				  eaps.getPermissions().put(record.format, obj);
-			   }
-			
-	   		   // add entry
-			   BasicBSONObject entry = new BasicDBObject();
-			   entry.put("key", record.key);
-			   if (record.owner!=null && withOwner) entry.put("owner", record.owner);
-			   if (record.format.equals(Query.STREAM_TYPE)) entry.put("name", record.name);
-			   obj.put(record._id.toString(), entry);
-			}
-			eaps.savePermissions();
-		} catch (LostUpdateException e) {
-			eaps.reload();
-			addRecords(records);
-		}
-	}
-	*/
+
 	public BasicBSONObject getMeta(String key) throws ModelException {
-		return eaps.getPermissions().get(key);
+		return (BasicBSONObject) eaps.getPermissions().get(key);
 	}
 	
 	public List<Record> query(Query q) throws ModelException {		
 		//AccessLog.logLocalQuery(eaps.getId(), q.getProperties(), q.getFields() );
 		List<Record> result = new ArrayList<Record>();
-		boolean withOwner = q.returns("owner");
-		boolean restrictedOnFormat = q.restrictedBy("format");
-		boolean includeStreams = q.includeStreams();
+		boolean withOwner = q.returns("owner");	
 		
 		if (eaps.isDirect()) {
+			if (q.isStreamOnlyQuery()) return result;
+			
 			AccessLog.debug("direct query stream="+eaps.getId());
 			Map<String, Object> query = new HashMap<String, Object>();
 			query.put("stream", eaps.getId());
@@ -164,58 +140,29 @@ public class SingleAPSManager extends QueryManager {
 		// 4 restricted by time? has APS time restriction? load other APS -> APS (4,5,6) APS LIST -> Records			
 		
 		// 5 Create list format -> Permission List (maybe load other APS)
-		Map<String, BasicBSONObject> permissions = eaps.getPermissions();
-		Map<String, BasicBSONObject> formats;			
-		
-		if (restrictedOnFormat) {			
-			formats = new HashMap<String, BasicBSONObject>();
-			for (String format : q.getRestriction("format")) {
-				formats.put(format, permissions.get(format));
-			}			
-		} else {
-			formats = permissions;
-		}
-        AccessLog.debug("# formats="+formats.size());				
+		Map<String, Object> permissions = eaps.getPermissions();
+		List<BasicBSONObject> rows = APSEntry.findMatchingRowsForQuery(permissions, q);
+		        			
 		// 6 Each permission list : apply filters -> Records
-		boolean restrictedById = q.restrictedBy("_id");
-		boolean restrictedByName = q.restrictedBy("name");		
+		boolean restrictedById = q.restrictedBy("_id");			
 		if (restrictedById) {
 			for (ObjectId id : q.getObjectIdRestriction("_id")) {
-				for (String format : formats.keySet()) {
-					   BasicBSONObject map = formats.get(format);
-					   if (map != null) {
-						   BasicBSONObject target = (BasicBSONObject) map.get(id.toString());
-						   if (target!=null) {
-							   result.add(createRecordFromAPSEntry(id.toString(), format, target, withOwner));
-						   }
-					   }
+				for (BasicBSONObject row : rows) {
+					   BasicBSONObject map = APSEntry.getEntries(row);					   
+					   BasicBSONObject target = (BasicBSONObject) map.get(id.toString());
+					   if (target!=null) {
+						  result.add(createRecordFromAPSEntry(id.toString(), row, target, withOwner));
+					   }					   
 				}
 			}			
-		} else if (restrictedByName) {			
-			Set<String> names = q.getRestriction("name");
-			for (String format : formats.keySet()) {
-				BasicBSONObject map = formats.get(format);
-			    if (map != null) {
-				    for (String id : map.keySet()) {
+		}  else {
+			for (BasicBSONObject row : rows) {								
+				BasicBSONObject map =APSEntry.getEntries(row);
+				//AccessLog.debug("format:" + format+" map="+map.toString());			    
+				for (String id : map.keySet()) {
 				    	BasicBSONObject target = (BasicBSONObject) map.get(id);
-				    	String name = target.getString("name");
-				    	if (name == null || names.contains(name)) result.add(createRecordFromAPSEntry(id , format, target, withOwner));
-				    }
-			    }
-			}
-		} else {
-			for (String format : formats.keySet()) {
-				if (!includeStreams && format.equals(Query.STREAM_TYPE)) continue;
-				if (format.startsWith("_")) continue;
-				
-				BasicBSONObject map = formats.get(format);
-				//AccessLog.debug("format:" + format+" map="+map.toString());
-			    if (map != null) {
-				    for (String id : map.keySet()) {
-				    	BasicBSONObject target = (BasicBSONObject) map.get(id);
-				    	result.add(createRecordFromAPSEntry(id , format, target, withOwner));
-				    }
-			    }
+				    	result.add(createRecordFromAPSEntry(id , row, target, withOwner));
+				}			    
 			}
 		}		
 		return result;
@@ -229,32 +176,21 @@ public class SingleAPSManager extends QueryManager {
 			return true;
 		}
 		
-		Map<String, BasicBSONObject> permissions = eaps.getPermissions();
-        Map<String, BasicBSONObject> formats = null;			
+		Map<String, Object> permissions = eaps.getPermissions();
 		
-		if (q.restrictedBy("format")) {
-			
-			formats = new HashMap<String, BasicBSONObject>();
-			for (String format : q.getRestriction("format")) {
-				BasicBSONObject fObj = permissions.get(format);
-				if (fObj != null) formats.put(format, fObj);
-			}
-			if (formats.isEmpty()) return false;
-			
-		} else {
-			formats = permissions; 
-		}
+		List<BasicBSONObject> rows = APSEntry.findMatchingRowsForQuery(permissions, q);
+		        
 		//AccessLog.logMap(formats);
 		
-		for (String format : formats.keySet()) {
-			   BasicBSONObject map = formats.get(format);
-			   if (map == null) continue;
+		for (BasicBSONObject row : rows) {
+			   BasicBSONObject map = APSEntry.getEntries(row);			   
 			   BasicBSONObject target = (BasicBSONObject) map.get(input._id.toString());
 			   if (target==null && input.document!=null) target = (BasicBSONObject) map.get(input.document.toString());
 			   if (target!=null) {
 				   Object k = target.get("key");
 				   input.key = (k instanceof String) ? null : (byte[]) k; // Old version support
-				   input.format = format;
+				   APSEntry.populateRecord(row, input);
+				   input.isStream = target.getBoolean("s");
 				   if (input.owner == null) {
 					   String owner = target.getString("owner");
 					   if (owner!=null) input.owner = new ObjectId(owner); else input.owner = eaps.getOwner();
@@ -267,15 +203,16 @@ public class SingleAPSManager extends QueryManager {
 		return false;
 	}
 	
-	private Record createRecordFromAPSEntry(String id, String format, BasicBSONObject entry, boolean withOwner) throws ModelException {
+	private Record createRecordFromAPSEntry(String id, BasicBSONObject row, BasicBSONObject entry, boolean withOwner) throws ModelException {
 		Record record = new Record();
 		record._id = new ObjectId(id);
-		record.format = format;
+		APSEntry.populateRecord(row, record);		
+		record.isStream = entry.getBoolean("s");
 		
 		if (entry.get("key") instanceof String) record.key = null; // For old version support
 		else record.key = (byte[]) entry.get("key");			
 				
-		if (withOwner) {
+		if (withOwner || record.isStream) {
 			String owner = entry.getString("owner");
 		    if (owner!=null) record.owner = new ObjectId(owner); else record.owner = eaps.getOwner();
 		}
@@ -305,6 +242,7 @@ public class SingleAPSManager extends QueryManager {
 			meta.put("description", record.description);
 			meta.put("tags", record.tags);
 			meta.put("format", record.format);
+			meta.put("content", record.content);
 			
 			record.encrypted = EncryptionUtils.encryptBSON(encKey, new BasicBSONObject(meta));
 			record.encryptedData = EncryptionUtils.encryptBSON(encKey, record.data);
@@ -330,6 +268,7 @@ public class SingleAPSManager extends QueryManager {
 			
 			SecretKey encKey = new SecretKeySpec(record.key, EncryptedAPS.KEY_ALGORITHM);
 			if (record.encrypted != null) {
+				try {
 			    BSONObject meta = EncryptionUtils.decryptBSON(encKey, record.encrypted);
 			    
 			    record.app = (ObjectId) meta.get("app");
@@ -339,32 +278,38 @@ public class SingleAPSManager extends QueryManager {
 				record.description = (String) meta.get("description");
 				String format = (String) meta.get("format");
 				if (format!=null) record.format = format;
-				record.tags = (Set<String>) meta.get("tags");				
+				String content = (String) meta.get("content");
+				if (content!=null) record.content = content;
+				record.tags = (Set<String>) meta.get("tags");
+				} catch (ModelException e) {
+					AccessLog.debug("Error decrypting record: id="+record._id.toString());
+					//throw e;
+				}
 			}
 			
 			if (record.encryptedData != null) {
+				try {
 				record.data = EncryptionUtils.decryptBSON(encKey, record.encryptedData);
+				} catch (ModelException e) {
+					AccessLog.debug("Error decrypting data of record: id="+record._id.toString());
+					//throw e;
+				}
 			}
 			
 			//if (!record.encrypted.equals("enc"+record.key)) throw new ModelException("Cannot decrypt");
 		}
 						
 		private void addPermissionInternal(Record record, boolean withOwner) throws ModelException {
-			// resolve time
-			EncryptedAPS withTime = eaps;
-			
+						
 			// resolve Format
-			BasicBSONObject obj = withTime.getPermissions().get(record.format);
-			if (obj == null) {
-				obj = new BasicDBObject();
-				withTime.getPermissions().put(record.format, obj);
-			}
-			
+			BasicBSONObject obj = APSEntry.findMatchingRowForRecord(eaps.getPermissions(), record, true);
+			obj = APSEntry.getEntries(obj);	
 			// add entry
 			BasicBSONObject entry = new BasicDBObject();
 			entry.put("key", record.key);
+			if (record.isStream) entry.put("s", true);
 			if (record.owner!=null && withOwner) entry.put("owner", record.owner);
-			if (record.format.equals(Query.STREAM_TYPE)) entry.put("name", record.name);
+			//if (record.format.equals(Query.STREAM_TYPE)) entry.put("name", record.name);
 			obj.put(record._id.toString(), entry);
 						
 		}
@@ -398,13 +343,11 @@ public class SingleAPSManager extends QueryManager {
 		}
 		
 		private boolean removePermissionInternal(Record record) throws ModelException {
-			// resolve time
-			EncryptedAPS withTime = eaps;
-			
-			// resolve Format
-			BasicBSONObject obj = withTime.getPermissions().get(record.format);
-			if (obj == null) return false;
 						
+			// resolve Format
+			BasicBSONObject obj = APSEntry.findMatchingRowForRecord(eaps.getPermissions(), record, false);
+			if (obj == null) return false;
+			obj = APSEntry.getEntries(obj);	
 			// remove entry			
 			boolean result = obj.containsField(record._id.toString());
 			obj.remove(record._id.toString());

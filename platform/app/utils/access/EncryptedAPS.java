@@ -12,11 +12,16 @@ import javax.crypto.spec.SecretKeySpec;
 import models.APSNotExistingException;
 import models.AccessPermissionSet;
 import models.ModelException;
+import models.Record;
 import models.enums.APSSecurityLevel;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
+import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
+
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
 
 import utils.auth.EncryptionNotSupportedException;
 import utils.db.LostUpdateException;
@@ -64,7 +69,8 @@ public class EncryptedAPS {
 						
 		aps._id = apsId;
 		aps.security = lvl;
-		aps.permissions = new HashMap<String, BasicBSONObject>();
+		aps.permissions = new HashMap<String, Object>();
+		aps.permissions.put("p", new BasicBSONList());
 		aps.keys = new HashMap<String, byte[]>();
 		aps.direct = lvl.equals(APSSecurityLevel.MEDIUM);
 		
@@ -162,13 +168,13 @@ public class EncryptedAPS {
 		return aps.keys.containsKey(name);
 	}
 	
-	public Map<String, BasicBSONObject> getPermissions() throws ModelException {
+	public Map<String, Object> getPermissions() throws ModelException {
 		if (owner!=null && !isAccessable()) return getPermissions(owner);
 		if (!isValidated) validate();		
 		return aps.permissions;
 	}
 	
-	public Map<String, BasicBSONObject> getPermissions(ObjectId owner) throws ModelException {
+	public Map<String, Object> getPermissions(ObjectId owner) throws ModelException {
 		if (!isLoaded()) load();	
 		if (!isValidated && (getKey(who.toString()) != null || owner.equals(who) )) validate();
 		if (!isValidated) {
@@ -252,19 +258,32 @@ public class EncryptedAPS {
 		try {
 		if (aps.unmerged != null) {
 			AccessLog.debug("merge:" + apsId.toString());
+			Record dummy = new Record();
 			for (AccessPermissionSet subaps : aps.unmerged) {
 				EncryptedAPS encsubaps = new EncryptedAPS(subaps, who);
 				encsubaps.validate();
-				Map<String, BasicBSONObject> props = encsubaps.getPermissions();
-				for (String key : props.keySet()) {
-					BasicBSONObject copyVal = props.get(key);
-					if (!aps.permissions.containsKey(key)) {
-						aps.permissions.put(key, new BasicBSONObject());
-					}
-					BasicBSONObject sourceVal = aps.permissions.get(key);
-					for (String v : copyVal.keySet()) {
-						sourceVal.put(v, copyVal.get(v));
-					}
+				Map<String, Object> props = encsubaps.getPermissions();												
+				BasicBSONList lst = (BasicBSONList) props.get("p");
+				
+				for (Object row : lst) {
+					BasicBSONObject crit = (BasicBSONObject) row;
+					BasicBSONObject entries = APSEntry.getEntries(crit);
+                    APSEntry.populateRecord(crit, dummy);										
+				    for (String key : entries.keySet()) {
+					   BasicBSONObject copyVal = (BasicBSONObject) entries.get(key);
+					   
+					   BasicBSONObject targetRow = APSEntry.findMatchingRowForRecord(aps.permissions, dummy, true);
+					   BasicBSONObject targetEntries = APSEntry.getEntries(targetRow);
+					   
+					   if (!targetEntries.containsField(key)) {
+						  targetEntries.put(key, new BasicBSONObject());
+					   }
+					   BasicBSONObject targetVals = (BasicBSONObject) targetEntries.get(key);
+					
+					   for (String v : copyVal.keySet()) {
+						  targetVals.put(v, copyVal.get(v));
+					   }
+				    }
 				}
 				
 			}
@@ -333,13 +352,64 @@ public class EncryptedAPS {
 	 
 			
 	private void decodeAPS() throws ModelException  {
-		if (aps.permissions == null && aps.encrypted != null) {		
+		if (aps.permissions == null && aps.encrypted != null) {
+			try {
 			    BSONObject decrypted = EncryptionUtils.decryptBSON(encryptionKey, aps.encrypted);
 		    	aps.permissions = decrypted.toMap();
 		    	AccessLog.debug("decoded:"+decrypted.toString());
 		    	if (aps.permissions == null) throw new NullPointerException();
-		    	aps.encrypted = null;		 				
+		    	aps.encrypted = null;
+			} catch (ModelException e) {
+				AccessLog.debug("Error decoding APS="+apsId.toString()+" user="+who.toString());
+				throw e;
+			}
 	    }
+		if (!aps.permissions.containsKey("p")) {
+			try {
+			patchOldFormat();
+			} catch (LostUpdateException e) {
+				throw new NullPointerException("Lost Update!!");
+			}
+		}
+	}
+	
+	private void patchOldFormat() throws ModelException, LostUpdateException {
+		aps.permissions.put("p", new BasicDBList());
+		for (String key : aps.permissions.keySet()) {
+			if (key.equals("p") || (key.startsWith("_") && !key.toLowerCase().startsWith("stream"))) continue;
+			
+			BasicBSONObject entries = (BasicBSONObject) aps.permissions.get(key);
+			for (String id : entries.keySet()) {
+				BasicBSONObject obj = (BasicBSONObject) entries.get(id);
+				Record record = new Record();
+				record._id = new ObjectId(id);
+				
+				if (obj.get("key") instanceof String) record.key = null; // For old version support
+				else record.key = (byte[]) obj.get("key");	
+				
+				record.format = key;
+				if (key.toLowerCase().startsWith("stream")) {
+					record.isStream = true;
+					record.format = obj.getString("name");
+				}
+				record.content = "other";
+				
+				String owner = obj.getString("owner");
+			    if (owner!=null) record.owner = new ObjectId(owner); 
+			    
+			    BasicBSONObject obj2 = APSEntry.findMatchingRowForRecord(aps.permissions, record, true);
+				obj2 = APSEntry.getEntries(obj2);	
+				// add entry
+				BasicBSONObject entry = new BasicDBObject();
+				entry.put("key", record.key);
+				if (record.isStream) entry.put("s", true);
+				if (record.owner!=null) entry.put("owner", record.owner);				
+				obj2.put(record._id.toString(), entry);
+			}
+			
+			
+		}
+		savePermissions();
 	}
 			
 	private void encodeAPS() throws ModelException {

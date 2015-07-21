@@ -20,8 +20,7 @@ public class App extends Plugin implements Comparable<App> {
 	public String url; // url to call the app
 	public String previewUrl;
 	
-	public List<ObjectId> recommendedVisualizations;
-	public String recommendedStream;
+	public List<ObjectId> recommendedVisualizations;	
 	
 	// oauth 1.0/2.0 app
 	public String authorizationUrl;

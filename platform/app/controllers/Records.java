@@ -11,6 +11,7 @@ import java.util.Set;
 
 import models.Circle;
 import models.FilterRule;
+import models.ContentInfo;
 import models.FormatInfo;
 import models.LargeRecord;
 import models.MemberKey;

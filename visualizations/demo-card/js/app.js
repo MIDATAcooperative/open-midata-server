@@ -18,8 +18,8 @@ recordList.controller('RecordListCtrl', ['$scope', '$http', '$location',
 		
 		// get the data for the records in this space
 		getRecords = function() {
-			data.properties = { format : [ "cardio1/demo-card", "cardio2/demo-card" ] };
-			data.fields = ["data", "format", "created", "owner", "ownerName"];
+			data.properties = { format : [ "demo-card/part1", "demo-card/part2" ] };
+			data.fields = ["data", "content", "format", "created", "owner", "ownerName"];
 			$http.post("https://" + window.location.hostname + ":9000/api/visualizations/records", JSON.stringify(data)).
 				success(function(records) {
 					$scope.buildView(records);
@@ -38,7 +38,7 @@ recordList.controller('RecordListCtrl', ['$scope', '$http', '$location',
 			
 			for (var i = 0; i < records.length; i++) {
 				var rec = records[i];
-				var format = (rec.format == "cardio1/demo-card") ? "part1" : (rec.format == "cardio2/demo-card") ? "part2" : null;
+				var format = (rec.format == "demo-card/part1") ? "part1" : (rec.format == "demo-card/part2") ? "part2" : null;
 				if (!format) { 
 					$scope.skipped.wrongFormat++;
 					continue;				

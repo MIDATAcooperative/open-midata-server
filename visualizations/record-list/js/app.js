@@ -15,7 +15,7 @@ recordList.controller('RecordListCtrl', ['$scope', '$http', '$location',
 				
 		// get the data for the records in this space
 		$scope.getRecords = function() {
-			data.properties = { "format" : "Text" };
+			data.properties = { "format" : "text-app" };
 			data.fields = ["data"];
 			$http.post("https://" + window.location.hostname + ":9000/api/visualizations/records", JSON.stringify(data)).
 				success(function(records) {

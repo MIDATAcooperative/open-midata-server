@@ -9,6 +9,16 @@
 		          <li ng-repeat="format in rule.params">{{ format }}</li>
 	           </ul> 
 	        </span>
+	        <span ng-if="rule.name == 'content'">Records that have content:
+	           <ul>
+		          <li ng-repeat="content in rule.params">{{ content }}</li>
+	           </ul> 
+	        </span>
+	        <span ng-if="rule.name == 'group'">Records that belong to group:
+	           <ul>
+		          <li ng-repeat="group in rule.params">{{ group }}</li>
+	           </ul> 
+	        </span>
 	      </li>
 	   </ul>	
     </div>

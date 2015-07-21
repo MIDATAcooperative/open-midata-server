@@ -39,7 +39,7 @@ public class ComplexQueryManager {
     	List<Record> result;
     	
     	
-    	QueryManager qm = new APSQSupportingQM(new AccountLevelQueryManager(new FormatGroupHandling(new FormatHandling(new StreamQueryManager()))));
+    	QueryManager qm = new APSQSupportingQM(new AccountLevelQueryManager(new FormatGroupHandling(new StreamQueryManager())));
     									
 		result = findRecordsDirectlyInDB(q);
     	
@@ -137,12 +137,12 @@ public class ComplexQueryManager {
 								
 		// 8 Post filter records if necessary		
 		Set<ObjectId> creators = null;
-		Set<String> formats = null;
+		FormatMatching formats = null;
 		if (q.restrictedBy("creator")) {
 			creators = q.getObjectIdRestriction("creator");			
 		}
 		if (q.restrictedBy("document") && q.restrictedBy("format")) {
-			formats = q.getRestriction("format");				
+			formats = new FormatMatching(q.getRestriction("format"));				
 		}
 					
 		if (postFilter) {
@@ -154,7 +154,7 @@ public class ComplexQueryManager {
 				if (minDate != null && record.created.before(minDate)) continue;
 				if (maxDate != null && record.created.after(maxDate)) continue;
 				if (creators != null && !creators.contains(record.creator)) continue;	
-				if (formats != null && !formats.contains(record.format)) continue;
+				if (formats != null && !formats.matches(record.format)) continue;
 				filteredResult.add(record);
 			}
 			result = filteredResult;

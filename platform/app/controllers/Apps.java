@@ -83,7 +83,7 @@ public class Apps extends Controller {
 	@APICall
 	public static Result install(String appIdString) throws ModelException {
 		ObjectId userId = new ObjectId(request().username());		
-		App app = App.getById(new ObjectId(appIdString), Sets.create("recommendedStream", "targetUserRole"));
+		App app = App.getById(new ObjectId(appIdString), Sets.create("targetUserRole"));
 		if (app==null) return badRequest("Unknown App");
 		
 		if (app.targetUserRole.equals(UserRole.MEMBER)) { 
@@ -91,13 +91,13 @@ public class Apps extends Controller {
 			user.apps.add(new ObjectId(appIdString));
 			User.set(userId, "apps", user.apps);
 			
-			if (app.recommendedStream != null) {
+			/*if (app.recommendedStream != null) {
 				Record stream = RecordSharing.instance.createStream(user._id, user._id, user.myaps, app.recommendedStream, true);
 				Map<String, String> apptokens = new HashMap<String, String>();
 				apptokens.put("stream", stream._id.toString());
 			    user.tokens.put(appIdString, apptokens);
 			    User.set(userId, "tokens", user.tokens);
-			}
+			}*/
 			
 		} else { 
 			User user = User.getById(userId, Sets.create("apps"));    

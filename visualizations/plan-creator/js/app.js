@@ -3,12 +3,13 @@ planCreator.factory('server', [ '$http', function($http) {
 	
 	var service = {};
 	
-	service.createRecord = function(authToken, name, description, format, data) {
+	service.createRecord = function(authToken, name, description, content, format, data) {
 		// construct json
 		var data = {
 			"authToken": authToken,
 			"data": angular.toJson(data),
 			"name": name,
+			"content" : content,
 			"format" : format,
 			"description": (description || "")
 		};
@@ -95,7 +96,7 @@ planCreator.controller('PlanEditorCtrl', ['$scope', '$http', '$location', '$filt
 		
 		$scope.save = function(plan) {	
 			$scope.saving++;
-			server.createRecord($scope.authToken, plan.name, plan.description, "trainingplan", plan.data)
+			server.createRecord($scope.authToken, plan.name, plan.description, "calendar/trainingplan", "training-app", plan.data)
 			.then(function() { $scope.saving--; });
 		};
 		
@@ -116,7 +117,7 @@ planCreator.controller('PlanEditorCtrl', ['$scope', '$http', '$location', '$filt
 				if (!result.data || !result.data.readonly) $scope.readonly = false;
 			});
 			
-			server.getRecords($scope.authToken, { "format" : "trainingplan" }, ["name", "description", "created", "data"])
+			server.getRecords($scope.authToken, { "format" : "training-app" }, ["name", "description", "created", "data"])
 			.then(function(results) {				
 				
 				angular.forEach(results.data, function(rec) {

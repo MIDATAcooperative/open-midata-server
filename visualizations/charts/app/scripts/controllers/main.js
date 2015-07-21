@@ -26,7 +26,7 @@ angular.module('chartApp')
 	  $scope.readonly = false;
 	  
 	  $scope.reload = function() {
-		  server.getRecords($scope.authToken, { }, ["owner", "created", "ownerName", "format", "data"])
+		  server.getRecords($scope.authToken, { }, ["owner", "created", "ownerName", "content", "format", "data"])
 		  .then(function(results) {
 			  $scope.raw = results.data;
 			  $scope.prepare();
@@ -37,12 +37,12 @@ angular.module('chartApp')
 		  var entries = [];
 		  angular.forEach(records, function(record) {
 			  var cdate = new Date(record.created).toISOString();
-			  angular.forEach(record.data, function(lst, format) {
+			  angular.forEach(record.data, function(lst, content) {
 				  angular.forEach(lst, function(entry) {
 					  var e = {
-							  value : (Number(entry.value) || Number(entry.amount) || Number(entry[format])),
+							  value : (Number(entry.value) || Number(entry.amount) || Number(entry[content])),
 							  unit : entry.unit,
-							  format : format,
+							  content : content,
 							  context : entry.context,
 							  dateTime : (entry.dateTime || entry.date || record.created),
 							  owner : record.ownerName
@@ -206,42 +206,42 @@ angular.module('chartApp')
 		 var r = [];
 		 if (info.hasMultipleDates) {
 			 if (info.hasMultipleOwners) {
-			    r.push( { name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", filter: info.hasMultipleFormats ? "format" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null } );
+			    r.push( { name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", filter: info.hasMultipleFormats ? "content" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null } );
 			 }
 			 
 			 if (info.hasMultipleFormats) {
-				r.push( { name:"Time Series per Measure", type : "line", label : "dateTime", series : "format", filter: info.hasMultipleOwners ? "owner" : null, filterLabel: info.hasMultipleOwners ? "Person" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null } );
+				r.push( { name:"Time Series per Measure", type : "line", label : "dateTime", series : "content", filter: info.hasMultipleOwners ? "owner" : null, filterLabel: info.hasMultipleOwners ? "Person" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null } );
 			 }
 			 
 			 if (info.hasMultipleContexts) {
-   			    r.push( { name:"Time Series per Context", type : "line", label : "dateTime", series : "context", filter: info.hasMultipleFormats ? "format" : null , filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleOwners ? "owner" : null, filterLabel2: info.hasMultipleOwners ? "Person" : null } );				 
+   			    r.push( { name:"Time Series per Context", type : "line", label : "dateTime", series : "context", filter: info.hasMultipleFormats ? "content" : null , filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleOwners ? "owner" : null, filterLabel2: info.hasMultipleOwners ? "Person" : null } );				 
 			 }
 			 
 			 if (!info.hasMultipleOwners) {
-				 r.push( { name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", filter: info.hasMultipleFormats ? "format" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null } ); 
+				 r.push( { name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", filter: info.hasMultipleFormats ? "content" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null } ); 
 			 }
 		 }
 		 
 		 if (info.hasMultipleFormats) {
 			 if (info.hasMultiplePersons) {				 
-				 r.push( { name:"Radar-Chart: Format/Person", type : "radar", label : "format", series : "owner", filter: null, filterLabel: null, alg : "newest" } );
+				 r.push( { name:"Radar-Chart: Format/Person", type : "radar", label : "content", series : "owner", filter: null, filterLabel: null, alg : "newest" } );
 			 }
-			 r.push( { name:"Bar-Chart: Format/Person", type : "bar", label : "format", series : "owner", filter: null, filterLabel: null, alg : "newest" } );			
+			 r.push( { name:"Bar-Chart: Format/Person", type : "bar", label : "content", series : "owner", filter: null, filterLabel: null, alg : "newest" } );			
 		 }
 		 
 		 if (info.hasMultipleContexts) {
 			 if (info.hasMultiplePersons) {				 
-				 r.push( { name:"Radar-Chart: Context/Person", type : "radar", label : "context", series : "owner", filter: info.hasMultipleFormats ? "format" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, alg : "newest" } );
+				 r.push( { name:"Radar-Chart: Context/Person", type : "radar", label : "context", series : "owner", filter: info.hasMultipleFormats ? "content" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, alg : "newest" } );
 			 }
-			 r.push( { name:"Bar-Chart: Context/Person", type : "bar", label : "context", series : "owner", filter: info.hasMultipleFormats ? "format" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, alg : "newest" });			 			 
+			 r.push( { name:"Bar-Chart: Context/Person", type : "bar", label : "context", series : "owner", filter: info.hasMultipleFormats ? "content" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, alg : "newest" });			 			 
 		 }
 		 
 		 if (info.hasMultiplePersons && !info.hasMultipleFormats && !info.hasMultipleContexts) {
-			 r.push( { name:"Bar-Chart: Persons", type : "bar", label : "owner", series : "format", filter: null, filterLabel: null, alg : "newest" });
+			 r.push( { name:"Bar-Chart: Persons", type : "bar", label : "owner", series : "content", filter: null, filterLabel: null, alg : "newest" });
 		 }
          
 		 if (r.length==0) {
-			 r.push( { name:"Single Value", type:"simple", label:"format", series:"owner", filter:null, filterLabel : null, alg : "first" });
+			 r.push( { name:"Single Value", type:"simple", label:"content", series:"owner", filter:null, filterLabel : null, alg : "first" });
 		 }
 		 
 		 $scope.reports = r;

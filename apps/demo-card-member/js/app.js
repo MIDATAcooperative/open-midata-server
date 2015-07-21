@@ -40,7 +40,8 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 				"data": JSON.stringify($scope.data),
 				"name": "Kardiologischer Record 1 ("+$filter('date')(new Date(), 'yyyy-MM-dd')+")",
 				"description": "Kardiologischer Record 1",
-				"format" : "cardio1/demo-card"
+				"format" : "demo-card/part1",
+				"content" : "observation/cardio"
 			};
 			
 			// submit to server

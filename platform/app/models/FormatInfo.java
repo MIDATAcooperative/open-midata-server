@@ -1,38 +1,31 @@
 package models;
 
-import java.util.List;
 import java.util.Set;
+
+import models.enums.APSSecurityLevel;
 
 import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
 
-import models.enums.APSSecurityLevel;
-
 public class FormatInfo extends Model {
 
-	private static final String collection = "formats";
-	private static final Set<String> ALL = Sets.create("format","visualization","security","group");
+	private static final String collection = "formatinfo";
+	private static final Set<String> ALL = Sets.create("format","visualization");
 	
 	public String format;
 	public ObjectId visualization;
-	public APSSecurityLevel security;
-	public String group;
 	
 	public static FormatInfo getByName(String name) throws ModelException {
+	
 		FormatInfo r = Model.get(FormatInfo.class, collection, CMaps.map("format", name), ALL);
 		if (r == null) {
 			r = new FormatInfo();
-			r.format = name;
-			r.security = APSSecurityLevel.HIGH;
-			r.visualization = null;
-			r.group = "other";
+			r.format = name;			
+			r.visualization = null;			
 		}
 		return r;
 	}
-	
-	public static Set<FormatInfo> getByGroups(Set<String> group) throws ModelException {
-		return Model.getAll(FormatInfo.class, collection, CMaps.map("group", group), ALL);
-	}
+		
 }

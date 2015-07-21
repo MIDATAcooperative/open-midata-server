@@ -1,6 +1,7 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,11 @@ public class FormatGroup extends Model {
 	public static FormatGroup getByName(String name) throws ModelException {
 		if (cache == null) load();
 		return cache.get(name);
+	}
+	
+	public static Collection<FormatGroup> getAll() throws ModelException {
+		if (cache == null) load();
+		return cache.values();
 	}
 	
 	public static void load() throws ModelException {

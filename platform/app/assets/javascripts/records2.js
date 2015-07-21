@@ -1,5 +1,5 @@
 var records = angular.module('records', ['date', 'services']);
-records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', 'dateService', 'records', 'circles', 'status', function($scope, $http, $filter, $location, dateService, records, circles, status) {
+records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', 'dateService', 'records', 'circles', 'formats', 'status', function($scope, $http, $filter, $location, dateService, records, circles, formats, status) {
 	
 	// init
 	$scope.error = null;
@@ -11,6 +11,7 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 	$scope.records = [];	
 	$scope.tree = [ ];
 	$scope.compare = [];
+	$scope.selectedAps = null;
 	$scope.status = new status(true);
 	
 	// get current user
@@ -21,6 +22,7 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 			$scope.displayAps = $scope.availableAps[0];
 			$scope.getApps(userId);
 			$scope.getAvailableSets(userId);
+			$scope.loadGroups();
 			$scope.getRecords(userId, "self")
 			.then(function() {
 			
@@ -69,10 +71,10 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 		var properties = {};
 		if (owner) properties.owner = owner;
 		if ($scope.debug) properties.streams = "true";
-		return records.getRecords(userId, properties, ["id", "owner", "ownerName", "format", "created", "name", "group"]).
+		return records.getRecords(userId, properties, ["id", "owner", "ownerName", "content", "created", "name", "group"]).
 		then(function(results) {
 			$scope.records = results.data;
-			$scope.prepareRecords();	
+			if ($scope.gi != null) $scope.prepareRecords();	
 			$scope.loadingRecords = false;
 		});
 	};
@@ -99,32 +101,22 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 		.then(function() { $scope.loadSharingDetails(); });
 		
 	};
-		
+	
+	$scope.loadGroups = function() {
+		formats.listGroups().
+		then(function(result) { 
+			$scope.gi = result.data;
+			if ($scope.records.length > 0) $scope.prepareRecords();	
+		});
+	};
 	
 	var groups = {};
-	
-	var gi = [
-	{ name:"root", label:"All", parent:null },
-	{ name:"lifestyle", label:"Lifestyle", parent:"root" },
-	{ name:"nutrition", label:"Nutrition", parent:"lifestyle" },
-	{ name:"mood", label:"Mood", parent:"lifestyle" },
-	{ name:"qself", label:"Quantified self", parent:"lifestyle" },
-	{ name:"heartrate", label:"Heartrate", parent:"qself" },
-	{ name:"movement", label:"Movement", parent:"lifestyle" },
-	{ name:"sleep", label:"Sleep", parent:"lifestyle" },
-	{ name:"health", label:"Health", parent:"root" },
-	{ name:"alergies", label:"Alergies", parent:"health" },
-	{ name:"lab", label:"Lab results", parent:"health" },
-	{ name:"studies", label:"Studies", parent:"health" },
-	{ name:"medication", label:"Medication", parent:"health" },
-	{ name:"genome", label:"Genome", parent:"health" },
-	{ name:"desease", label:"Desease specific", parent:"health" },
-	{ name:"other", label:"Other", parent:"root" }];
+		
 	
 	var getOrCreateGroup = function(group) {
 	   	if (groups[group] != null) return groups[group];
 	   	console.log(group);
-	   	var newgroup = $filter("filter")(gi, function(x){  return x.name == group; })[0];
+	   	var newgroup = $filter("filter")($scope.gi, function(x){  return x.name == group; })[0];
 	   	console.log(newgroup);
 	   	newgroup.children = [];
 	   	newgroup.records = [];
@@ -146,7 +138,7 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 	   	if (groups[format] != null) return groups[format];
 	   	console.log(format);
 	   	var grp = getOrCreateGroup(group);
-	   	var newfmt = { name : format, type:"format", fullLabel:"Format: "+format, parent:group, children:[], records:[] }; 
+	   	var newfmt = { name : format, type:"content", fullLabel:"Content: "+format, parent:group, children:[], records:[] }; 
 	   	grp.children.push(newfmt);	   		   	
 	   	groups[format] = newfmt;
 	   	return newfmt;
@@ -156,7 +148,7 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 		var c = group.records.length;		
 		angular.forEach(group.children, function(g) { c+= countRecords(g); });
 		group.count = c;
-		group.open =  group.type == "format" || group.parent == null;
+		group.open =  group.type == "content" || group.parent == null;
 		return c;
 	};
 	
@@ -175,7 +167,7 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 		$scope.tree = [];
 		groups = {};
 		angular.forEach($scope.records, function(record) {
-		    var format = record.format;
+		    var format = record.content;
 		    var group = record.group;
 		    var groupItem = getOrCreateFormat(format, group);
 		    groupItem.records.push(record);
@@ -235,6 +227,7 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 	};
 	
 	$scope.loadSharingDetails = function() {
+		if ($scope.selectedAps == null) return;
 		$scope.status.doBusy($http.get(jsRoutes.controllers.Records.getSharingDetails($scope.selectedAps._id.$oid).url)).
 		then(function(results) {
 			console.log(results.data);
@@ -255,7 +248,7 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 	};
 	
 	$scope.isSharedGroup = function(group) {
-	   var type = group.type == "format" ? "format" : "group";
+	   var type = group.type == "content" ? "content" : "group";
 	   group.parentShared = (group.parent != null && groups[group.parent].shared);
 	   if (!$scope.sharing || !$scope.sharing.query || !$scope.sharing.query[type]) {
 		   group.shared = group.parentShared;
@@ -288,7 +281,7 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 	};
 	
 	$scope.shareGroup = function(group) {
-		var type = group.type == "format" ? "format" : "group";
+		var type = group.type == "content" ? "content" : "group";
 		if (!$scope.sharing.query) $scope.sharing.query = {};
 		if (!$scope.sharing.query[type]) $scope.sharing.query[type] = [];
 		$scope.sharing.query[type].push(group.name);
@@ -297,7 +290,7 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 	};
 	
 	$scope.unshareGroup = function(group) {
-		var type = group.type == "format" ? "format" : "group";
+		var type = group.type == "content" ? "content" : "group";
 		var idx = $scope.sharing.query[type].indexOf(group.name);
 		if (idx<0) return;
 		$scope.sharing.query[type].splice(idx, 1);

@@ -57,7 +57,7 @@ import utils.search.SearchException;
 
 import models.AccessPermissionSet;
 import models.Circle;
-import models.FormatInfo;
+import models.ContentInfo;
 import models.MemberKey;
 import models.ModelException;
 import models.Record;
@@ -77,13 +77,13 @@ public class RecordSharing {
 	
 	public final static Set<String> INTERNALIDONLY = Sets.create("_id");
 	public final static Set<String> COMPLETE_META = Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format", "description");
+			"app", "creator", "created", "name", "format", "description", "isStream");
 	public final static Set<String> COMPLETE_DATA = Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format", "description",
+			"app", "creator", "created", "name", "format", "description", "isStream",
 			"data", "group");
-	public final static String STREAM_TYPE = "Stream";
-	public final static Map<String, Object> STREAMS_ONLY = CMaps.map("streams", "true").map("flat", "true").map("format", STREAM_TYPE);
-	public final static Map<String, Object> STREAMS_ONLY_OWNER = CMaps.map("streams", "true").map("flat", "true").map("format", STREAM_TYPE).map("owner", "self");
+	//public final static String STREAM_TYPE = "Stream";
+	public final static Map<String, Object> STREAMS_ONLY = CMaps.map("streams", "only").map("flat", "true");
+	public final static Map<String, Object> STREAMS_ONLY_OWNER = CMaps.map("streams", "only").map("flat", "true").map("owner", "self");
 	public final static String QUERY = "_query";
 
 	public final static String KEY_ALGORITHM = "AES";
@@ -217,7 +217,7 @@ public class RecordSharing {
 		SingleAPSManager apswrapper = getCache(who).getAPS(toAPS);
 		List<Record> recordEntries = ComplexQueryManager.listInternal(getCache(who), fromAPS,
 				records != null ? CMaps.map("_id", records) : RecordSharing.FULLAPS_FLAT,
-				Sets.create("_id", "key", "owner", "format", "name"));
+				Sets.create("_id", "key", "owner", "format", "name", "isStream"));
 		apswrapper.addPermission(recordEntries, withOwnerInformation);
 	}
 
@@ -245,15 +245,17 @@ public class RecordSharing {
 		apswrapper.removePermission(recordEntries);
 	}
 
-	public Record createStream(ObjectId executingPerson, ObjectId owner, ObjectId targetAPS, String name,
+	public Record createStream(ObjectId executingPerson, ObjectId owner, ObjectId targetAPS, String content, String format,
 			boolean direct) throws ModelException {
-		AccessLog.debug("Create Stream: who="+executingPerson.toString()+" name="+name+" direct="+direct+" into="+targetAPS);
+		AccessLog.debug("Create Stream: who="+executingPerson.toString()+" content="+content+" format="+format+" direct="+direct+" into="+targetAPS);
 		Record result = new Record();
 		result._id = new ObjectId();
-		result.name = name;
+		result.name = content;
 		result.owner = owner;
 		result.direct = direct;
-		result.format = STREAM_TYPE;
+		result.format = format;
+		result.content = content;
+		result.isStream = true;
 		result.created = DateTimeUtils.now();
 		result.data = new BasicDBObject();
 
@@ -261,22 +263,23 @@ public class RecordSharing {
 		return result;
 	}
 
-	public ObjectId getStreamByName(ObjectId who, ObjectId apsId, String name)
+	public ObjectId getStreamByFormatContent(ObjectId who, ObjectId apsId, String format, String content)
 			throws ModelException {
 		List<Record> result = list(who, apsId,
-				CMaps.map("format", RecordSharing.STREAM_TYPE)
-						.map("name", name), RecordSharing.INTERNALIDONLY);
+				CMaps.map("format", format)
+				     .map("content", content)
+					 .map("streams", "only"), RecordSharing.INTERNALIDONLY);
 		if (result.isEmpty())
 			return null;
 		return result.get(0)._id;
 	}
 
-	public Set<String> getStreamsByName(ObjectId who, ObjectId apsId,
-			Collection<String> name) throws ModelException {
+	/*public Set<String> getStreamsByFormatContent(ObjectId who, ObjectId apsId,
+			Collection<String> formats) throws ModelException {
 		return listRecordIds(who, apsId,
-				CMaps.map("format", RecordSharing.STREAM_TYPE)
-						.map("name", name));
-	}
+				CMaps.map("format", formats)
+						.map("streams", "only"));
+	}*/
 	
 	public BSONObject getMeta(ObjectId who, ObjectId apsId, String key) throws ModelException {
 		return getCache(who).getAPS(apsId).getMeta(key);
@@ -293,23 +296,23 @@ public class RecordSharing {
 
 	public void addDocumentRecord(ObjectId owner, Record record,
 			Collection<Record> parts) throws ModelException {
-		byte[] key = addRecordIntern(owner, record, false, null);
+		byte[] key = addRecordIntern(owner, record, false, null, false);
 		if (key == null)
 			throw new NullPointerException("no key");
 		for (Record rec : parts) {
 			rec.document = record._id;
 			rec.key = key;
-			addRecordIntern(owner, rec, true, null);
+			addRecordIntern(owner, rec, true, null, false);
 		}
 	}
 
 	public void addRecord(ObjectId executingPerson, Record record) throws ModelException {
-		addRecordIntern(executingPerson, record, false, null);
+		addRecordIntern(executingPerson, record, false, null, false);
 		record.key = null;
 	}
 	
 	public void addRecord(ObjectId executingPerson, Record record, ObjectId alternateAps) throws ModelException {
-		addRecordIntern(executingPerson, record, false, alternateAps);
+		addRecordIntern(executingPerson, record, false, alternateAps, false);
 		record.key = null;
 	}
 	
@@ -348,22 +351,22 @@ public class RecordSharing {
 		Record.delete(record.owner, record._id);
 	}
 
-	private byte[] addRecordIntern(ObjectId executingPerson, Record record, boolean documentPart, ObjectId alternateAps) throws ModelException {		
-		if (!record.format.equals(RecordSharing.STREAM_TYPE)) {
+	private byte[] addRecordIntern(ObjectId executingPerson, Record record, boolean documentPart, ObjectId alternateAps, boolean upsert) throws ModelException {		
+		if (!record.isStream) {
 		  if (record.stream == null) {
 			  if (getCache(executingPerson).getAPS(record.owner, record.owner).eaps.isAccessable()) {		 
-			     record.stream = RecordSharing.instance.getStreamByName(executingPerson, record.owner, record.format);
+			     record.stream = RecordSharing.instance.getStreamByFormatContent(executingPerson, record.owner, record.format, record.content);
 			  } else if (alternateAps != null) {
-				 record.stream = RecordSharing.instance.getStreamByName(executingPerson, alternateAps, record.format);
+				 record.stream = RecordSharing.instance.getStreamByFormatContent(executingPerson, alternateAps, record.format, record.content);
 			  }
 		  }
 		  if (record.stream == null && record.format != null) {
-			 FormatInfo format = FormatInfo.getByName(record.format);
+			 ContentInfo content = ContentInfo.getByName(record.content);
 			 if (getCache(executingPerson).getAPS(record.owner, record.owner).eaps.isAccessable()) {
-			    Record stream = RecordSharing.instance.createStream(executingPerson, record.owner, record.owner, record.format, format.security.equals(APSSecurityLevel.MEDIUM));			 			
+			    Record stream = RecordSharing.instance.createStream(executingPerson, record.owner, record.owner, record.content, record.format, content.security.equals(APSSecurityLevel.MEDIUM));			 			
 			    record.stream = stream._id;
 			 } else if (alternateAps != null) {
- 			    Record stream = RecordSharing.instance.createStream(executingPerson, record.owner, alternateAps, record.format, format.security.equals(APSSecurityLevel.MEDIUM));
+ 			    Record stream = RecordSharing.instance.createStream(executingPerson, record.owner, alternateAps, record.content, record.format, content.security.equals(APSSecurityLevel.MEDIUM));
 				record.stream = stream._id;
 				//getCache(executingPerson).getAPS(record.owner, record.owner).addPermission(stream, true);				
 			 }
@@ -371,6 +374,7 @@ public class RecordSharing {
 		}
 		AccessLog.debug("Add Record execPerson="+executingPerson.toString()+" format="+record.format+" stream="+(record.stream != null ? record.stream.toString() : "null"));	
 		byte[] usedKey = null;
+		if (record.created == null) return null;
 		record.time = Query.getTimeFromDate(record.created); //System.currentTimeMillis() / 1000 / 60 / 60 / 24 / 7;
 		
 		Record orig = record;
@@ -391,7 +395,7 @@ public class RecordSharing {
 			else apswrapper = getCache(executingPerson).getAPS(record.owner, record.owner);
 		}
 	
-		if (record.format.equals(STREAM_TYPE)) {
+		if (record.isStream) {
 			apsDirect = record.direct;
 			record.stream = null;			
 			record.direct = false;
@@ -423,9 +427,9 @@ public class RecordSharing {
 		Record unecrypted = record.clone();
 				
 		SingleAPSManager.encryptRecord(record, apswrapper.eaps.getSecurityLevel());		
-	    Record.add(record);	  
+	    if (upsert) { Record.upsert(record); } else { Record.add(record); }	  
 	    		
-		if (unecrypted.format.equals(STREAM_TYPE)) {
+		if (unecrypted.isStream) {
 			RecordSharing.instance.createAPSForRecord(executingPerson, unecrypted.owner, unecrypted._id, unecrypted.key, apsDirect);
 		}
 		
@@ -487,6 +491,33 @@ public class RecordSharing {
 		for (Record record : result)
 			ids.add(record._id.toString());
 		return ids;
+	}
+	
+	public void changeFormatName(ObjectId owner, String oldName, String newContent, String newFormat) throws ModelException {
+		List<Record> records = ComplexQueryManager.listInternal(getCache(owner), owner, CMaps.map("format", oldName).map("owner", "self"), RecordSharing.COMPLETE_DATA);
+		List<Record> patchedRecords = new ArrayList<Record>();
+		for (Record record : records) {
+			Record patched = record.clone();
+			patched.content = newContent;
+			patched.format = newFormat;
+			patched.stream = null;
+			patched.key = null;
+			patched.clearSecrets();
+			patchedRecords.add(patched);
+		}
+		patch(owner, records, patchedRecords);		
+	}
+	
+	public void patch(ObjectId owner, List<Record> old, List<Record> patched) throws ModelException {
+		Iterator<Record> oldIt = old.iterator();
+		for (Record newRecord : patched) {
+			Record oldRecord = oldIt.next();
+			if (!newRecord._id.equals(oldRecord._id)) throw new ModelException("Patch error: Bad record _ids");
+			if (!oldRecord.owner.equals(owner)) throw new ModelException("Can only patch own records.");
+			ObjectId sourceAPS =  oldRecord.stream != null ? oldRecord.stream : owner;
+			getCache(owner).getAPS(sourceAPS, owner).removePermission(oldRecord);
+			addRecordIntern(owner, newRecord, false, null, true);			
+		}
 	}
 
 }

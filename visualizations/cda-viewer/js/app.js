@@ -16,7 +16,7 @@ cda.controller('CDACtrl', ['$scope', '$http', '$location',
 		// get the data for the records in this space
 		$scope.getRecords = function() {
 			var data = {"authToken": authToken};
-			data.properties = {  };
+			data.properties = { "format" : "cda" };
 			data.fields = ["_id", "data"];
 			$http.post("https://" + window.location.hostname + ":9000/api/visualizations/records", JSON.stringify(data)).
 				success(function(records) {

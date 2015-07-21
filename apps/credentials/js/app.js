@@ -113,7 +113,8 @@ credentials.controller('CreateCtrl', ['$scope', '$http', '$location',
 				"data": JSON.stringify(record),
 				"name": $scope.title,
 				"description": $scope.title + " created with the credentials app on " + formattedDate,
-				"format" : "Credentials/Midata"
+				"format" : "credentials-manager",
+				"content" : "accounts/credentials"
 			};
 			
 			// submit to server

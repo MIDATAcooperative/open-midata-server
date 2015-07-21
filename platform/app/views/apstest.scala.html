@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html ng-app="testerApp">
+    <head>
+  
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/tester.js")"></script>
+    </head>
+    <body ng-controller="ApsTestCtrl">
+     <form>       
+       <table>
+        <tr><td>Server</td><td><input ng-model="server" size="100" /></td></tr>
+        <tr><td>APS</td><td><input ng-model="aps" size="100" /></td></tr>
+        
+        <tr><td> </td><td><button type="button" ng-click="dosubmit();">submit</button><button type="button" ng-click="aps='-';dosubmit();">back</button></td></tr>
+       </table>
+      </form>
+      <pre>
+        {{ data | json }}
+      </pre>
+    </body>
+</html>

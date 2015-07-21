@@ -1,36 +1,10 @@
-{  "format" :"Genome Data/23andMe",  "visName" : "SNP-Snip",  "visualization" : { "$oid" : "541c25f222f153b77f6a70f8" },  "security" : "HIGH", group : "genome" }
-{  "format" :"CDA",  "visName" : "CDA-Viewer",  "visualization" : { "$oid" : "556c007fe4b06e7275af0f19" },  "security" : "HIGH", group : "health" }
-{  "format" :"Credentials/Midata",  "visName" : "Credentials Manager",  "visualization" : { "$oid" : "54450c48e4b0a1a96b5ff54c" },  "security" : "HIGH", group : "other" }
-{  "format" :"cardio2/demo-card",  "visName" : "Demo kardiologische Risikoauswertung",  "visualization" : { "$oid" : "54f9c2b8e4b0a71e0368d8e9" },  "security" : "HIGH", group : "health" }
-{  "format" :"cardio1/demo-card",  "visName" : "Demo kardiologische Risikoauswertung",  "visualization" : { "$oid" : "54f9c2b8e4b0a71e0368d8e9" },  "security" : "HIGH", group : "health" }
-{  "format" :"Water Consumption/Fitbit",  "visName" : "Fitbit Water Meter",  "visualization" : { "$oid" : "54621b44e4b0a29eb4b0e72d" },  "security" : "MEDIUM", group : "nutrition" }
-{  "format" :"Body Weight/Fitbit",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "qself" }
-{  "format" :"Calories Intake/Fitbit",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "nutrition" }
-{  "format" :"Calories Burned/Fitbit",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "nutrition" }
-{  "format" :"Steps/Fitbit",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM" , group : "movement"}
-{  "format" :"height",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM" , group : "qself"}
-{  "format" :"heartrate",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM"  , group : "qself"}
-{  "format" :"Distance/Fitbit",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "movement" }
-{  "format" :"Floors Climbed/Fitbit",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "movement"}
-{  "format" :"Elevation/Fitbit",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "movement"}
-{  "format" :"Minutes/Fitbit/Sedentary",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "movement"}
-{  "format" :"Minutes/Fitbit",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "movement"}
-{  "format" :"activities-minutesFairlyActive",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "movement"}
-{  "format" :"sleep-timeInBed",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "sleep"}
-{  "format" :"body-weight",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "qself" }
-{  "format" :"Minutes/Fitbit/Time In Bed",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "sleep"}
-{  "format" :"Minutes/Fitbit/Asleep",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "sleep"}
-{  "format" :"Minutes/Fitbit/Awake",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "sleep"}
-{  "format" :"Minutes/Fitbit/Fall Asleep",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "sleep"}
-{  "format" :"Sleep Efficiency/Fitbit",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "sleep"}
-{  "format" :"Body Weight/Fitbit",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "qself"}
-{  "format" :"BMI/Fitbit",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "qself"}
-{  "format" :"Fat/Fitbit",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" },  "security" : "MEDIUM", group : "qself"}
-{  "format" :"Meals/Jawbone",  "visName" : "Jawbone Meals",  "visualization" : { "$oid" : "543fd403e4b0722020c54b10" },  "security" : "MEDIUM", group : "nutrition"}
-{  "format" :"Moves/Jawbone",  "visName" : "Jawbone Activity Clock",  "visualization" : { "$oid" : "543d2c14e4b0f34f43670afa" },  "security" : "MEDIUM", group : "movement"}
-{  "format" :"Move Ticks/Jawbone",  "visName" : "Jawbone Activity Clock",  "visualization" : { "$oid" : "543d2c14e4b0f34f43670afa" },  "security" : "MEDIUM"}
-{  "format" :"Sleep/Jawbone",  "visName" : "Jawbone Activity Clock",  "visualization" : { "$oid" : "543d2c14e4b0f34f43670afa" },  "security" : "MEDIUM", group : "sleep"}
-{  "format" :"Sleep Ticks/Jawbone",  "visName" : "Jawbone Activity Clock",  "visualization" : { "$oid" : "543d2c14e4b0f34f43670afa" },  "security" : "MEDIUM", group : "sleep"}
-{  "format" :"Text",  "visName" : "Text Record List",  "visualization" : { "$oid" : "5280bd5ee4b0660aab2a423d" },  "security" : "HIGH", group : "other"}
-{  "format" :"text",  "visName" : "Text Record List",  "visualization" : { "$oid" : "5280bd5ee4b0660aab2a423d" },  "security" : "HIGH", group : "other"}
-{  "format" :"trainingplan",  "visName" : "Training Editor",  "visualization" : { "$oid" : "554c867de4b08413ff37d6f5" },  "security" : "HIGH", group : "other" }
+{  "format" :"23-and-me",  "visName" : "SNP-Snip",  "visualization" : { "$oid" : "541c25f222f153b77f6a70f8" } } }
+{  "format" :"cda",  "visName" : "CDA-Viewer",  "visualization" : { "$oid" : "556c007fe4b06e7275af0f19" } } }
+{  "format" :"credentials-manager",  "visName" : "Credentials Manager",  "visualization" : { "$oid" : "54450c48e4b0a1a96b5ff54c" } } }
+{  "format" :"demo-card/part1",  "visName" : "Demo kardiologische Risikoauswertung",  "visualization" : { "$oid" : "54f9c2b8e4b0a71e0368d8e9" } } }
+{  "format" :"demo-card/part2",  "visName" : "Demo kardiologische Risikoauswertung",  "visualization" : { "$oid" : "54f9c2b8e4b0a71e0368d8e9" } } }
+{  "format" :"measurements",  "visName" : "Charts",  "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" } } }
+{  "format" :"jawbone/summary",  "visName" : "Jawbone Activity Clock",  "visualization" : { "$oid" : "543d2c14e4b0f34f43670afa" } } }
+{  "format" :"jawbone/ticks",  "visName" : "Jawbone Activity Clock",  "visualization" : { "$oid" : "543d2c14e4b0f34f43670afa" }  }
+{  "format" :"text-app",  "visName" : "Text Record List",  "visualization" : { "$oid" : "5280bd5ee4b0660aab2a423d" } } }
+{  "format" :"training-app",  "visName" : "Training Editor",  "visualization" : { "$oid" : "554c867de4b08413ff37d6f5" } } }

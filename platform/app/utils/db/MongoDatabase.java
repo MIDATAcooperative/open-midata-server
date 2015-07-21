@@ -102,6 +102,23 @@ public class MongoDatabase extends Database {
 			throw new DatabaseException(e);
 		}
 	}
+	
+	/**
+	 * Insert a document into the given collection.
+	 */
+	public <T extends Model> void upsert(String collection, T modelObject) throws DatabaseException {
+		DBObject dbObject;
+		try {
+			dbObject = conversion.toDBObject(modelObject);
+			DBObject query = new BasicDBObject();
+			query.put("_id", modelObject._id);
+			getCollection(collection).update(query, dbObject);			
+		} catch (DatabaseConversionException e) {
+			throw new DatabaseException(e);
+		} catch (MongoException e) {
+			throw new DatabaseException(e);
+		}
+	}
 
 	/**
 	 * Remove all documents with the given properties from the given collection.
@@ -197,11 +214,14 @@ public class MongoDatabase extends Database {
 			for (String field : fields) {
 				updateContent.put(field, conversion.toDBObjectValue(model.getClass(), field, model.getClass().getField(field).get(model)));
 			}
-			updateContent.put(timestampField, System.currentTimeMillis());
+			long ts = System.currentTimeMillis();
+			updateContent.put(timestampField, ts);
 			DBObject update = new BasicDBObject("$set", updateContent);
 		
 			DBObject result = getCollection(collection).findAndModify(query, update);
 			if (result == null) throw new LostUpdateException();
+			
+			model.getClass().getField(timestampField).set(model, ts);
 											
 		} catch (MongoException e) {
 			throw new DatabaseException(e);

@@ -41,6 +41,7 @@ import utils.mails.MailUtils;
 import views.html.welcome;
 import views.html.registration;
 import views.html.tester;
+import views.html.apstest;
 import views.html.lostpw;
 import views.html.setpw;
 import views.txt.mails.lostpwmail;
@@ -53,6 +54,10 @@ public class Application extends Controller {
 
 	public static Result test() {
 		return ok(tester.render());
+	}
+	
+	public static Result test2() {
+		return ok(apstest.render());
 	} 
 	
 	public static Result welcome() {
@@ -155,30 +160,13 @@ public class Application extends Controller {
 		String email = json.get("email").asText();
 		String password = json.get("password").asText();
 		
-		Member user = Member.getByEmail(email , Sets.create("password","myaps"));
+		Member user = Member.getByEmail(email , Sets.create("password","myaps", "accountVersion"));
 		if (user == null) return badRequest("Invalid user or password.");
 		if (!Member.authenticationValid(password, user.password)) {
 			return badRequest("Invalid user or password.");
 		}
 			    
-	    //patch old users
-	    /*if (user.myaps == null || !user.myaps.equals(user._id)) {
-	    		      
-	    	user.myaps = RecordSharing.instance.createPrivateAPS(user._id, user._id);
-	    	Member.set(user._id, "myaps", user.myaps);
-	    	Set<Record> recs = Record.getAll(CMaps.map("owner", user._id), Sets.create("owner","format"));
-	    	for (Record r : recs) {
-	    		if (r.format==null) r.format = "Json";
-	    		RecordSharing.instance.addRecord2(user, r); 
-	    	}
-	    	
-	    	Set<Space> spaces = Space.getAllByOwner(user._id, Sets.create("aps"));
-	    	for (Space s : spaces) {
-	    		s.aps = RecordSharing.instance.createPrivateAPS(user._id, s._id);
-	    		Space.set(s._id, "aps", s.aps);
-	    	}
-	    	
-	    }*/
+	    AccountPatches.check(user);
 	
 		// user authenticated
 		session().clear();
@@ -337,6 +325,8 @@ public class Application extends Controller {
 				controllers.routes.javascript.Messages.move(),
 				controllers.routes.javascript.Messages.remove(),
 				controllers.routes.javascript.Messages.delete(),
+				controllers.routes.javascript.FormatAPI.listGroups(),
+				
 				// Records
 				controllers.routes.javascript.Records.filter(),							
 				controllers.routes.javascript.Records.get(),

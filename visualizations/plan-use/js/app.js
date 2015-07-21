@@ -3,12 +3,13 @@ planCreator.factory('server', [ '$http', function($http) {
 	
 	var service = {};
 	
-	service.createRecord = function(authToken, name, description, format, data) {
+	service.createRecord = function(authToken, name, description, content, format, data) {
 		// construct json
 		var data = {
 			"authToken": authToken,
 			"data": angular.toJson(data),
 			"name": name,
+			"content" : content,
 			"format" : format,
 			"description": (description || "")
 		};
@@ -62,7 +63,7 @@ planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter
 				if (record.changed) {
 					$scope.saving++;
 					record.changed = false;
-					server.createRecord($scope.authToken, record.name, "Created using plan "+plan.name, record.format, record.data)
+					server.createRecord($scope.authToken, record.name, "Created using plan "+plan.name, record.content, "measurements", record.data)
 					.then(function() { $scope.saving--; });		
 				}
 			});
@@ -81,12 +82,12 @@ planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter
 			console.log(record);
 		};
 		
-		$scope.createRecord = function(date, format, name, value, unit) {
+		$scope.createRecord = function(date, content, name, value, unit) {
 			console.log(date);
 			var td = $filter('date')(date, "yyyy-MM-dd");
 			
 			var result = $filter('filter')($scope.records, function(rec){
-			  return rec.name == name && rec.data[format] && rec.data[format][0].value && rec.data[format][0].dateTime == td; 
+			  return rec.name == name && rec.data[content] && rec.data[content][0].value && rec.data[content][0].dateTime == td; 
 			});
 			
 			if (result && result.length > 1) {
@@ -95,13 +96,13 @@ planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter
 			
 			if (result && result.length > 0) {
 				var rec = result[0];
-				var res = { record : rec, data : rec.data[format][0] };
+				var res = { record : rec, data : rec.data[content][0] };
 				return res;
 			}
 						
 			var dp = { value : value, unit : unit, dateTime : td };
-			var res = { created : date, format : format, name : name, data : {} };
-			res.data[format] = [ dp ];			
+			var res = { created : date, content : content, format : "measurements", name : name, data : {} };
+			res.data[content] = [ dp ];			
 			$scope.records.push(res);
 			var res2 = { record : res, data : dp };
 			return res2;
@@ -110,9 +111,9 @@ planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter
 		$scope.process = function(plan) {
             console.log("process");									
 			angular.forEach(plan.data.days, function(day) {
-				if (!day.weight || !day.weight.name) day.weight = $scope.createRecord(day.date, "body-weight", "weight", null, "kg");
-				if (!day.sleep || !day.sleep.name) day.sleep = $scope.createRecord(day.date, "sleep-timeInBed", "sleep", null, "h");
-				if (!day.pulse || !day.pulse.name) day.pulse = $scope.createRecord(day.date, "activities-heart", "heart rate", null, "bpm");
+				if (!day.weight || !day.weight.name) day.weight = $scope.createRecord(day.date, "body/weight", "weight", null, "kg");
+				if (!day.sleep || !day.sleep.name) day.sleep = $scope.createRecord(day.date, "sleep/time-in-bed", "sleep", null, "h");
+				if (!day.pulse || !day.pulse.name) day.pulse = $scope.createRecord(day.date, "activities/heartrate", "heart rate", null, "bpm");
 				var usedNames = {};
 				angular.forEach(day.actions, function(action) {
 					
@@ -122,7 +123,7 @@ planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter
 					    var name = action.name + (idx > 1 ? " (" + idx+")" : "" );
 						var unit = ("" + action.count).replace(/[0-9\.]+/g,"").trim();
 						action.unit = unit;
-						action.result = $scope.createRecord(day.date, "activities-minutesFairlyActive", name, null, unit);
+						action.result = $scope.createRecord(day.date, "activities/minutes-active", name, null, unit);
 					}
 				});
 			});
@@ -136,11 +137,11 @@ planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter
 				if (!result.data || !result.data.readonly) $scope.readonly = false;
 			});
 			
-			server.getRecords($scope.authToken, { }, ["name", "owner", "ownerName", "format", "description", "created", "data"])
+			server.getRecords($scope.authToken, { "format" : ["training-app", "measurements"] }, ["name", "owner", "ownerName", "format", "content", "description", "created", "data"])
 			.then(function(results) {				
 				
 				angular.forEach(results.data, function(rec) {
-                       if (rec.format == "trainingplan") {										
+                       if (rec.format == "training-app") {										
 							var old = $scope.availablePlans[rec.name];
 							if (!old || old.created < rec.created) {
 								$scope.availablePlans[rec.name] = rec;
@@ -196,7 +197,7 @@ planCreator.controller('PreviewTrainingCtrl', ['$scope', '$http', '$location', '
 		};
 											
 		$scope.load = function() {			
-			server.getRecords($scope.authToken, { format : "trainingplan" }, ["name", "format", "description", "created", "data"])
+			server.getRecords($scope.authToken, { format : "training-app", content:"calendar/trainingplan" }, ["name", "content", "format", "description", "created", "data"])
 			.then(function(results) {				
 				
 				angular.forEach(results.data, function(rec) {

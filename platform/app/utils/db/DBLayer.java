@@ -137,6 +137,13 @@ public class DBLayer {
 	public static <T extends Model> void insert(String collection, T modelObject) throws DatabaseException {
 		getDatabaseForCollection(collection).insert(collection, modelObject);		
 	}
+	
+	/**
+	 * Upserts a document into the given collection.
+	 */
+	public static <T extends Model> void upsert(String collection, T modelObject) throws DatabaseException {
+		getDatabaseForCollection(collection).upsert(collection, modelObject);		
+	}
 
 	/**
 	 * Remove all documents with the given properties from the given collection.

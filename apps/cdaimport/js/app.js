@@ -3,12 +3,13 @@ jsonRecords.factory('server', [ '$http', function($http) {
 	
 	var service = {};
 	
-	service.createRecord = function(authToken, name, description, format, data) {
+	service.createRecord = function(authToken, name, description, content, format, data) {
 		// construct json
 		var data = {
 			"authToken": authToken,
 			"data": angular.toJson(data),
 			"name": name,
+			"content" : content,
 			"format" : format,
 			"description": (description || "")
 		};
@@ -46,7 +47,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 		// get authorization token
 		var authToken = $location.path().split("/")[1];
 		$scope.authToken = authToken;
-		$scope.record = { name : "CDA", description : "Some description", format:"CDA" };
+		$scope.record = { name : "CDA", description : "Some description", content: "medical", format:"cda" };
 		$scope.isValid = false;
 		$scope.success = false;
 		

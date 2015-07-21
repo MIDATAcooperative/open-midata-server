@@ -169,7 +169,7 @@ public class AppsAPI extends Controller {
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "authToken", "data", "name", "description");
+		JsonValidation.validate(json, "authToken", "data", "name", "description","format","content");
 		
 
 		// decrypt authToken and check whether a user exists who has the app installed
@@ -207,6 +207,7 @@ public class AppsAPI extends Controller {
 		String name = json.get("name").asText();
 		String description = json.get("description").asText();
 		String format = JsonValidation.getString(json, "format");
+		String content = JsonValidation.getString(json, "content");
 		ObjectId document = JsonValidation.getObjectId(json, "document");
 		String part = JsonValidation.getString(json, "part");
 		
@@ -218,6 +219,7 @@ public class AppsAPI extends Controller {
 		record.creator = appToken.ownerId;
 		record.created = DateTimeUtils.now();
 		record.format = format;
+		record.content = content;
 		record.document = document;
 		record.part = part;
 		
@@ -294,7 +296,9 @@ public class AppsAPI extends Controller {
 			record.name = metaData.get("name")[0];
 			record.description = metaData.get("description")[0];
 			String[] formats = metaData.get("format");
-			record.format = (formats != null && formats.length == 1) ? formats[0] : "Attachment";
+			record.format = (formats != null && formats.length == 1) ? formats[0] : (contentType != null) ? contentType : "application/octet-stream";
+			String[] contents = metaData.get("contents");
+			record.content =  (contents != null && contents.length == 1) ? contents[0] : "other";
 						
 			record.data = new BasicDBObject(new ChainedMap<String, String>().put("type", "file").put("name", filename)
 					.put("contentType", contentType).get());

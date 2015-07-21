@@ -30,7 +30,7 @@ public class Query {
 	private boolean giveKey;	
 	
 	
-	public final static String STREAM_TYPE = "Stream";
+	//public final static String STREAM_TYPE = "Stream";
 		
 	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, ObjectId apsId) {
 		this.properties = properties;
@@ -128,7 +128,7 @@ public class Query {
 	}
 	
 	public boolean isStreamOnlyQuery() {
-		return restrictedBy("format") && properties.get("format").equals(STREAM_TYPE);
+		return (restrictedBy("streams") && properties.get("streams").equals("only"));
 	}
 	
 	public boolean includeStreams() {
@@ -169,7 +169,7 @@ public class Query {
 	}
 	
 	private void process() {
-		 if (fields.contains("group")) fields.add("format");
+		 if (fields.contains("group")) fields.add("content");
 		
 		 fetchFromDB = fields.contains("data") ||
 	              fields.contains("app") || 
@@ -194,6 +194,7 @@ public class Query {
 		 if (fields.contains("data")) fieldsFromDB.add("data");
 		 if (fields.contains("app")) fieldsFromDB.add("app");
 		 if (fields.contains("format")) fieldsFromDB.add("format");
+		 if (fields.contains("content")) fieldsFromDB.add("content");
 		 if (uses("creator")) fieldsFromDB.add("creator");
 		 if (fields.contains("created") || restrictedOnTime) fieldsFromDB.add("created");
 		 if (fields.contains("name")) fieldsFromDB.add("name");

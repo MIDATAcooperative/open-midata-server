@@ -208,7 +208,7 @@ public class VisualizationsAPI extends Controller {
 		Collection<Record> records = null;
 		
 		AccessLog.debug("NEW QUERY");
-		if (properties.containsKey("convert")) {
+		/*if (properties.containsKey("convert")) {
 		   // Load direct result
 		   records = LargeRecord.getAll(authToken.userId, authToken.spaceId, properties, fields);
 		   
@@ -223,9 +223,9 @@ public class VisualizationsAPI extends Controller {
 		   extended.put("document", ObjectIdConversion.toObjectIds(candidates));		   		 
 		   records.addAll(RecordSharing.instance.list(authToken.userId, authToken.spaceId, extended, fields));
 		   		   
-		} else {
+		} else {*/
 		   records = LargeRecord.getAll(authToken.userId, authToken.spaceId, properties, fields);		  
-		}
+		//}
 		
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		return ok(Json.toJson(records));
@@ -270,7 +270,7 @@ public class VisualizationsAPI extends Controller {
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "authToken", "data", "name", "description");
+		JsonValidation.validate(json, "authToken", "data", "name", "description", "format", "content");
 		
 		// decrypt authToken and check whether space with corresponding owner exists
 		SpaceToken authToken = SpaceToken.decrypt(json.get("authToken").asText());
@@ -304,7 +304,9 @@ public class VisualizationsAPI extends Controller {
 		String name = json.get("name").asText();
 		String description = json.get("description").asText();
 		String format = JsonValidation.getString(json, "format");
-		if (format==null) format = "json";
+		if (format==null) format = "application/json";
+		String content = JsonValidation.getString(json, "content");
+		if (content==null) content = "other";
 		Record record = new Record();
 		record._id = new ObjectId();
 		record.app = appId;
@@ -312,6 +314,7 @@ public class VisualizationsAPI extends Controller {
 		record.creator = authToken.userId;
 		record.created = DateTimeUtils.now();
 		record.format = format;
+		record.content = content;
 		
 		String stream = tokens!=null ? tokens.get("stream") : null;
 		if (stream!=null) { record.stream = new ObjectId(stream); record.direct = true; }

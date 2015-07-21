@@ -4,6 +4,9 @@
 
 # Test
 GET     /test                                            controllers.Application.test()
+GET     /test2                                           controllers.Application.test2()
+GET     /debug/aps/:id                                   controllers.Debug.get(id: String)
+
 # Home page
 GET     /welcome                                         controllers.Application.welcome()
 GET     /logout                                          controllers.Application.logout()
@@ -156,6 +159,7 @@ POST    /research/api/studies/:study/approve             controllers.research.St
 POST    /research/api/studies/:study/reject              controllers.research.Studies.rejectParticipation(study: String)
 
 POST    /common/api/studies                              controllers.common.Studies.search()
+GET     /common/api/groups                               controllers.FormatAPI.listGroups()
 GET     /members/api/participation                       controllers.members.Studies.list()
 GET     /members/api/participation/:study                controllers.members.Studies.get(study: String)
 POST    /members/api/participation/:study/request        controllers.members.Studies.requestParticipation(study: String)

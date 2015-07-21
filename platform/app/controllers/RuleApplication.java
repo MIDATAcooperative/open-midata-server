@@ -12,6 +12,7 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 
 import utils.collections.Sets;
+import utils.rules.ContentRule;
 import utils.rules.FormatRule;
 import utils.rules.GroupRule;
 import utils.rules.Rule;
@@ -32,6 +33,7 @@ public class RuleApplication {
 		rulecache = new HashMap<String, Rule>();
 		rulecache.put("format", new FormatRule());
 		rulecache.put("group", new GroupRule());
+		rulecache.put("content", new ContentRule());
 	}
 	
 	public boolean qualifiesFor(Record record, FilterRule filterRule) throws ModelException {
@@ -159,6 +161,13 @@ public class RuleApplication {
 			Object formats = query.get("format");
 			fr.name = "format";
 			fr.params = formats instanceof Collection ? new ArrayList((Collection) formats) : Collections.<String>singletonList(formats.toString());
+			rules.add(fr);
+		}
+		if (query.containsKey("content")) {
+			FilterRule fr = new FilterRule();
+			Object contents = query.get("content");
+			fr.name = "content";
+			fr.params = contents instanceof Collection ? new ArrayList((Collection) contents) : Collections.<String>singletonList(contents.toString());
 			rules.add(fr);
 		}
 		if (query.containsKey("group")) {

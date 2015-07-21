@@ -3,12 +3,13 @@ jsonRecords.factory('server', [ '$http', function($http) {
 	
 	var service = {};
 	
-	service.createRecord = function(authToken, name, description, format, data) {
+	service.createRecord = function(authToken, name, description, content, format, data) {
 		// construct json
 		var data = {
 			"authToken": authToken,
 			"data": angular.toJson(data),
 			"name": name,
+			"content" : content,
 			"format" : format,
 			"description": (description || "")
 		};
@@ -17,12 +18,13 @@ jsonRecords.factory('server', [ '$http', function($http) {
 		return $http.post("https://" + window.location.hostname + ":9000/api/apps/create", data);
 	};
 	
-	service.createConversion = function(authToken, name, description, format, data, appendToId) {
+	service.createConversion = function(authToken, name, description, content, format, data, appendToId) {
 		// construct json
 		var data = {
 			"authToken": authToken,
 			"data": angular.toJson(data),
 			"name": name,
+			"content" : content,
 			"format" : format,
 			"description": (description || ""),
 			"document" : appendToId,
@@ -46,25 +48,25 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 		   {
 				label : "Weight",
 				unit : "kg",
-				format : "Body Weight/Fitbit",
+				format : "body/weight",
 				objkey : "weight"
 		   },
 		   {
 			   label : "Height",
 			   unit : "cm",
-			   format : "height",
+			   format : "body/height",
 			   objkey : "height"
 		   },
 		   {
 			   label : "Steps",
 			   unit : "steps",
-			   format : "Steps/Fitbit",
+			   format : "activities/steps",
 			   objkey : "activities-steps"
 		   },
 		   {
 			   label : "Heartrate",
 			   unit : "bpm",
-			   format : "heartrate",
+			   format : "activities/heartrate",
 			   objkey : "heartrate"
 		   }
 		];
@@ -107,7 +109,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 			envelope[$scope.newentry.format.objkey] = [ data ];
 			
 			$scope.isBusy = true;
-			server.createRecord(authToken, $scope.newentry.format.label, "Manually entered "+$scope.newentry.format.label, $scope.newentry.format.format, envelope)
+			server.createRecord(authToken, $scope.newentry.format.label, "Manually entered "+$scope.newentry.format.label, $scope.newentry.format.content, "measurements", envelope)
 			.then(function() { $scope.success = true; $scope.isBusy = false; $scope.reset(); $timeout(function() { $scope.success = false; }, 2000); });			
 		};
 					

@@ -10,12 +10,18 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
+import models.AccessPermissionSet;
 import models.ModelException;
+import models.enums.APSSecurityLevel;
 
 import org.bson.BSON;
 import org.bson.BSONObject;
+import org.bson.types.ObjectId;
+
+import controllers.KeyManager;
 
 import utils.auth.CodeGenerator;
+import utils.auth.EncryptionNotSupportedException;
 
 public class EncryptionUtils {
 	
@@ -77,6 +83,23 @@ public class EncryptionUtils {
 			throw new ModelException(e5);
 		} 
 	
+	}
+	
+	public static void addKey(ObjectId target, EncryptedAPS eaps) throws ModelException, EncryptionNotSupportedException {
+		if (eaps.getSecurityLevel().equals(APSSecurityLevel.NONE) || eaps.getAPSKey() == null) {
+			if (target.equals(eaps.getOwner())) {
+				eaps.setKey("owner", eaps.getOwner().toByteArray());
+			} else {
+				eaps.setKey(target.toString(), null);
+			}
+		} else {
+		   if (target.equals(eaps.getOwner())) {
+			   eaps.setKey("owner", KeyManager.instance.encryptKey(target, eaps.getAPSKey().getEncoded()));
+		   } else {
+			   eaps.setKey(target.toString(), KeyManager.instance.encryptKey(target, eaps.getAPSKey().getEncoded()));	
+		   }
+		}
+		
 	}
 	
 }
