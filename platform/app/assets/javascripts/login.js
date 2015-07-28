@@ -17,8 +17,8 @@ login.controller('LoginCtrl', ['$scope', '$http', 'status', function($scope, $ht
 		// send the request
 		var data = {"email": $scope.login.email, "password": $scope.login.password};
 		$scope.status.doAction("login", $http.post(jsRoutes.controllers.Application.authenticate().url, JSON.stringify(data))).
-		then(function() { window.location.replace(portalRoutes.controllers.News.index().url); },
-			 function(err) { $scope.error = err; });
+		then(function() { window.location.replace(portalRoutes.controllers.News.index().url); }).
+		catch(function(err) { $scope.error = err.data; });
 	};
 }]);
 login.controller('RegistrationCtrl', ['$scope', '$http', 'status', function($scope, $http, status) {

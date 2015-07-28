@@ -78,17 +78,29 @@ public class APSQSupportingQM extends QueryManager {
 				if (val1 instanceof Collection<?>) {
 				 if (val2 instanceof Collection<?>) {
 					((Collection<?>) val1).retainAll((Collection<?>) val2);
-					if (((Collection<?>) val1).isEmpty()) return null;
+					if (((Collection<?>) val1).isEmpty()) {
+						//AccessLog.debug("A");
+						return null;
+					}
 				 } else {
 					 if ( ((Collection<?>) val1).contains(val2)) {
 						 combined.put(key, val2);
-					 } else return null;
+					 } else {
+						 //AccessLog.debug("B");
+						 return null;
+					 }
 				 }
 				} else {
 					if (val2 instanceof Collection<?>) {
 						if ( ((Collection<?>) val2).contains(val1)) continue;
-						else return null;
-					} else return null;
+						else {
+							//AccessLog.debug("C: "+val2.toString()+" v:"+val1.toString());
+							return null;
+						}
+					} else {
+						//AccessLog.debug("D");
+						return null;
+					}
 				}
 				
 			} else combined.put(key, query.get(key));
@@ -102,6 +114,13 @@ public class APSQSupportingQM extends QueryManager {
 		aps.setMeta(SingleAPSManager.QUERY, query);
 		
 		//List<Record> r = FormatHandling.findStreams(new Query(query, Sets.create("_id","key"),  cache, true);
+	}
+
+	@Override
+	protected void postProcess(List<Record> records, Query q)
+			throws ModelException {
+		next.postProcess(records, q);
+		
 	}
 
 }

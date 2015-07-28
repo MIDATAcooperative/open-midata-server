@@ -55,7 +55,7 @@ services.factory('hc', function($q, $http) {
 	
 });
 
-services.factory('status', function() {
+services.factory('status', function($q) {
 	return function(showerrors) {		
 		this.loading = 0;
 		this.isBusy = false;
@@ -76,11 +76,11 @@ services.factory('status', function() {
 		this.doAction = function(action, call) {
 			var me = this;
 		   	me.start(action);
-		   	return call.then(function(result) { me.end();return result; }, function(err) { me.fail(err); });		     
+		   	return call.then(function(result) { me.end();return result; }, function(err) { me.fail(err);return $q.reject(err); });		     
 		};
 		this.doSilent = function(call) {
 			var me = this;
-			return call.then(function(result) { return result; }, function(err) { me.fail(err); });
+			return call.then(function(result) { return result; }, function(err) { me.fail(err);return $q.reject(err); });
 		}
 	};
 		

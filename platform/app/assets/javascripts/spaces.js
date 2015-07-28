@@ -255,7 +255,8 @@ spaces.controller('Spaces2Ctrl', ['$scope', '$http', '$sce', 'status', 'spaces',
 	$scope.error = null;
 	$scope.userId = null;
 	$scope.loading = true;
-	$scope.space = { "_id" : { "$oid" : window.location.pathname.split("/")[3] } };
+	$scope.spaceId = window.location.pathname.split("/")[3];
+	$scope.space = { "_id" : { "$oid" : $scope.spaceId } };
 	
 	
 	// get current user
@@ -336,7 +337,12 @@ spaces.controller('Spaces2Ctrl', ['$scope', '$http', '$sce', 'status', 'spaces',
 				}
 			}).
 			error(function(err) { $scope.error = "Failed to delete space '" + space.name + "': " + err; });
-	}
+	};
+	
+	$scope.goBack = function() {
+	   spaces.get({ "_id" :  { $oid : $scope.spaceId } }, ["context"]).
+	   then(function(result) { document.location.href = "/members/dashboard/" + encodeURIComponent(result.data[0].context)});
+	};
 	
 }]);
 spaces.controller('VisualizationCtrl', ['$scope', '$http', '$sce', function($scope, $http, $sce) {

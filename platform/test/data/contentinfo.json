@@ -8,3 +8,5 @@
 {  "content" :"sleep",  "security" : "MEDIUM", group : "sleep" }
 {  "content" :"calendar",  "security" : "MEDIUM", group : "calendar" }
 {  "content" :"diary",  "security" : "MEDIUM", group : "diary" }
+{  "content" :"survey",  "security" : "HIGH", group : "studies" }
+{  "content" :"templates",  "security" : "HIGH", group : "templates" }

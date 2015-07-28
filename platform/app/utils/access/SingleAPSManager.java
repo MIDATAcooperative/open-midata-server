@@ -31,7 +31,7 @@ import models.enums.APSSecurityLevel;
 public class SingleAPSManager extends QueryManager {
 
 	public EncryptedAPS eaps;
-	
+	 
 	public final static String QUERY = "_query";
 	public Random rand = new Random(System.currentTimeMillis());
 	
@@ -234,6 +234,9 @@ public class SingleAPSManager extends QueryManager {
 			
 			SecretKey encKey = new SecretKeySpec(record.key, EncryptedAPS.KEY_ALGORITHM);
 			
+			if (record.format == null) throw new ModelException("Missing format in record!");
+			if (record.content == null) throw new ModelException("Missing content in record!");
+			
 			Map<String, Object> meta = new HashMap<String, Object>();
 			meta.put("app", record.app);
 			meta.put("creator", record.creator);
@@ -377,5 +380,11 @@ public class SingleAPSManager extends QueryManager {
 				recoverFromLostUpdate();
 				removePermission(records);
 			}
+		}
+
+		@Override
+		protected void postProcess(List<Record> records, Query q)
+				throws ModelException {			
+			
 		}
 }

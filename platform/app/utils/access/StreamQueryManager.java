@@ -105,5 +105,11 @@ public class StreamQueryManager extends QueryManager {
 		
 	}
 
+	@Override
+	protected void postProcess(List<Record> records, Query q)
+			throws ModelException {		
+		
+	}
+
     
 }

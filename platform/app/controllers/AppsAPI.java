@@ -169,7 +169,7 @@ public class AppsAPI extends Controller {
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "authToken", "data", "name", "description","format","content");
+		JsonValidation.validate(json, "authToken", "data", "name", "description", "format", "content");
 		
 
 		// decrypt authToken and check whether a user exists who has the app installed

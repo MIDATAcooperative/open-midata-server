@@ -1,47 +1,6 @@
-var planCreator = angular.module('planCreator', []);
-planCreator.factory('server', [ '$http', function($http) {
-	
-	var service = {};
-	
-	service.createRecord = function(authToken, name, description, content, format, data) {
-		// construct json
-		var data = {
-			"authToken": authToken,
-			"data": angular.toJson(data),
-			"name": name,
-			"content" : content,
-			"format" : format,
-			"description": (description || "")
-		};
-		
-		// submit to server
-		return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/create", data);
-	};
-	
-	service.getRecords = function(authToken, properties,fields) {
-		 var data = { "authToken" : authToken, "properties" : properties, fields : fields };		
-		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/records", data);
-	};
-	
-	service.getConfig = function(authToken) {
-		 var data = { "authToken" : authToken  };		
-		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/getconfig", data);
-	};
-	
-	service.setConfig = function(authToken, config) {
-		 var data = { "authToken" : authToken, "config" : config  };		
-		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/setconfig", data);
-	};
-	
-	service.cloneAs = function(authToken, name, config) {
-		 var data = { "authToken" : authToken, "name" : name, "config" : config };		
-		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/clone", data);
-	};
-	
-	return service;	
-}]);
-planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter', 'server',
-	function($scope, $http, $location, $filter, server) {
+var planCreator = angular.module('planCreator', [ 'midata']);
+planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter', 'midataServer',
+	function($scope, $http, $location, $filter, midataServer) {
 		
 		// init
 		$scope.loading = true;
@@ -63,7 +22,7 @@ planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter
 				if (record.changed) {
 					$scope.saving++;
 					record.changed = false;
-					server.createRecord($scope.authToken, record.name, "Created using plan "+plan.name, record.content, "measurements", record.data)
+					midataServer.createRecord($scope.authToken, record.name, "Created using plan "+plan.name, record.content, "measurements", record.data)
 					.then(function() { $scope.saving--; });		
 				}
 			});
@@ -132,12 +91,12 @@ planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter
 		
 						
 		$scope.load = function() {	
-			server.getConfig($scope.authToken)
+			midataServer.getConfig($scope.authToken)
 			.then(function(result) {
 				if (!result.data || !result.data.readonly) $scope.readonly = false;
 			});
 			
-			server.getRecords($scope.authToken, { "format" : ["training-app", "measurements"] }, ["name", "owner", "ownerName", "format", "content", "description", "created", "data"])
+			midataServer.getRecords($scope.authToken, { "format" : ["training-app", "measurements"] }, ["name", "owner", "ownerName", "format", "content", "description", "created", "data"])
 			.then(function(results) {				
 				
 				angular.forEach(results.data, function(rec) {
@@ -162,8 +121,8 @@ planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter
 				
 	}
 ]);
-planCreator.controller('PreviewTrainingCtrl', ['$scope', '$http', '$location', '$filter', 'server',
-	function($scope, $http, $location, $filter, server) {
+planCreator.controller('PreviewTrainingCtrl', ['$scope', '$http', '$location', '$filter', 'midataServer',
+	function($scope, $http, $location, $filter, midataServer) {
 		
 		// init
 		$scope.loading = true;
@@ -197,7 +156,7 @@ planCreator.controller('PreviewTrainingCtrl', ['$scope', '$http', '$location', '
 		};
 											
 		$scope.load = function() {			
-			server.getRecords($scope.authToken, { format : "training-app", content:"calendar/trainingplan" }, ["name", "content", "format", "description", "created", "data"])
+			midataServer.getRecords($scope.authToken, { format : "training-app", content:"calendar/trainingplan" }, ["name", "content", "format", "description", "created", "data"])
 			.then(function(results) {				
 				
 				angular.forEach(results.data, function(rec) {

@@ -65,7 +65,7 @@ public class ComplexQueryManager {
 		}
 		*/
 		
-		return postProcessRecords(q, result);
+		return postProcessRecords(qm, q, result);
 	}
     
     protected static void addFullIdField(Query q, SingleAPSManager source, List<Record> result) {
@@ -90,7 +90,7 @@ public class ComplexQueryManager {
     	return result;
     }
     
-    protected static List<Record> postProcessRecords(Query q, List<Record> result) throws ModelException {
+    protected static List<Record> postProcessRecords(QueryManager qm, Query q, List<Record> result) throws ModelException {
     	// Duplicate Elimination
     	Set<ObjectId> used = new HashSet<ObjectId>(result.size());
     	List<Record> filteredresult = new ArrayList<Record>(result.size());
@@ -132,8 +132,7 @@ public class ComplexQueryManager {
 		} else {
 		   if (!q.getGiveKey()) for (Record record : result) record.clearSecrets();
 		}
-		
-    	
+		qm.postProcess(result, q);     	
 								
 		// 8 Post filter records if necessary		
 		Set<ObjectId> creators = null;

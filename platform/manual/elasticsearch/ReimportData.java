@@ -43,7 +43,7 @@ public class ReimportData {
 		// dropping old content
 		System.out.print("Deleting existing ElasticSearch indices...");
 		Search.destroy();
-		Thread.sleep(1000);
+		Thread.sleep(5000);
 		System.out.println("done.");
 
 		// initializing
@@ -96,10 +96,10 @@ public class ReimportData {
 
 			// records
 			fields.add("description");
-			Set<Record> records = Record.getAll(properties, fields);
+			/*Set<Record> records = Record.getAll(properties, fields);
 			for (Record record : records) {
 				Search.add(user._id, "record", record._id, record.name, record.description);
-			}
+			}*/
 			System.out.println("done.");
 		}
 

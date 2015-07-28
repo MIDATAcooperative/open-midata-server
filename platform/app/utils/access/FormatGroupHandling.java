@@ -22,10 +22,7 @@ public class FormatGroupHandling extends QueryManager {
 			throws ModelException {
 		
 		boolean result = next.lookupSingle(record, q);
-		if (result && q.returns("group")) {
-			ContentInfo fi = ContentInfo.getByName(record.content);
-    		record.group = fi.group;
-		}
+		
 		
 		return result;
 	}
@@ -58,13 +55,18 @@ public class FormatGroupHandling extends QueryManager {
 		
         List<Record> result = next.query(q);
         
-        if (q.returns("group")) {
-        	for (Record r : result) {
-        		ContentInfo fi = ContentInfo.getByName(r.content);
-        		r.group = fi.group;
-        	}
-        }
 		return result;
+	}
+
+	@Override
+	protected void postProcess(List<Record> records, Query q) throws ModelException {
+		next.postProcess(records, q);
+		if (q.returns("group")) {
+			for (Record record : records) {
+				ContentInfo fi = ContentInfo.getByName(record.content);
+	    		record.group = fi.group;
+			}
+		}		
 	}
 
 }
