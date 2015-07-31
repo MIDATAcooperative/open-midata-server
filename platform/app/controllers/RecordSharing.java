@@ -77,9 +77,9 @@ public class RecordSharing {
 	
 	public final static Set<String> INTERNALIDONLY = Sets.create("_id");
 	public final static Set<String> COMPLETE_META = Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format", "description", "isStream");
+			"app", "creator", "created", "name", "format", "content", "description", "isStream");
 	public final static Set<String> COMPLETE_DATA = Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format", "description", "isStream",
+			"app", "creator", "created", "name", "format", "content", "description", "isStream",
 			"data", "group");
 	//public final static String STREAM_TYPE = "Stream";
 	public final static Map<String, Object> STREAMS_ONLY = CMaps.map("streams", "only").map("flat", "true");
@@ -217,8 +217,22 @@ public class RecordSharing {
 		SingleAPSManager apswrapper = getCache(who).getAPS(toAPS);
 		List<Record> recordEntries = ComplexQueryManager.listInternal(getCache(who), fromAPS,
 				records != null ? CMaps.map("_id", records) : RecordSharing.FULLAPS_FLAT,
-				Sets.create("_id", "key", "owner", "format", "name", "isStream"));
+				Sets.create("_id", "key", "owner", "format", "content", "name", "isStream"));
 		apswrapper.addPermission(recordEntries, withOwnerInformation);
+		
+		/*BasicBSONObject query =  apswrapper.getMeta("_query");
+		if (query != null) {
+			if (query.containsField("_exclude")) {
+			  BasicBSONObject exclude = (BasicBSONObject) query.get("_exclude");
+			  if (exclude.containsField("_id")) {
+			    Collection ids = (Collection) exclude.get("_id");
+			    for (Record r : recordEntries) {
+				  ids.remove(r._id.toString());
+			    }
+			    apswrapper.setMeta("_query", query);
+			  }
+			}
+		}*/
 	}
 
 	public void shareByQuery(ObjectId who, ObjectId fromAPS, ObjectId toAPS,
@@ -241,8 +255,23 @@ public class RecordSharing {
 
 		SingleAPSManager apswrapper = getCache(who).getAPS(apsId);
 		List<Record> recordEntries = ComplexQueryManager.list(getCache(who), apsId,
-				CMaps.map("_id", records), Sets.create("_id", "format"));
+				CMaps.map("_id", records), Sets.create("_id", "format", "content"));
+		for (Record r : recordEntries) {
+			AccessLog.debug("remove perm cnt="+r.content+" fmt="+r.format);
+		}
 		apswrapper.removePermission(recordEntries);
+		
+		/*BasicBSONObject query =  apswrapper.getMeta("_query");
+		if (query != null) {
+			if (!query.containsField("_exclude")) query.put("_exclude", new BasicBSONObject());
+			BasicBSONObject exclude = (BasicBSONObject) query.get("_exclude");
+			if (!exclude.containsField("_id")) exclude.put("_id", new ArrayList());
+			Collection ids = (Collection) exclude.get("_id");
+			for (Record r : recordEntries) {
+				ids.add(r._id.toString());
+			}
+			apswrapper.setMeta("_query", query);
+		}*/
 	}
 
 	public Record createStream(ObjectId executingPerson, ObjectId owner, ObjectId targetAPS, String content, String format,

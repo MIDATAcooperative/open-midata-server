@@ -135,12 +135,12 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 	};
 	
 	var getOrCreateFormat = function(format, group) {
-	   	if (groups[format] != null) return groups[format];
+	   	if (groups["_"+format] != null) return groups["_"+format];
 	   	console.log(format);
 	   	var grp = getOrCreateGroup(group);
 	   	var newfmt = { name : format, type:"content", fullLabel:"Content: "+format, parent:group, children:[], records:[] }; 
 	   	grp.children.push(newfmt);	   		   	
-	   	groups[format] = newfmt;
+	   	groups["_"+format] = newfmt;
 	   	return newfmt;
 	};
 		
@@ -151,14 +151,15 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 		group.open =  group.type == "content" || group.parent == null;
 		return c;
 	};
+		
 	
-	var countShared = function(group) {
+	var countShared = function(group, sh) {
 		var s = 0;	
-		if ($scope.isSharedGroup(group)) s = group.count;
-		else {
-			angular.forEach(group.records, function(r) { if ($scope.isShared(r)) s++; });		
-		    angular.forEach(group.children, function(g) { s+= countShared(g); });
-		}
+		var alls = $scope.isSharedGroup(group);
+		
+		angular.forEach(group.records, function(r) { if (alls || $scope.isShared(r)) s++; });		
+		angular.forEach(group.children, function(g) { s+= countShared(g); });
+		
 		group.countShared = s;
 		return s;
 	};
@@ -250,17 +251,28 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 	$scope.isSharedGroup = function(group) {
 	   var type = group.type == "content" ? "content" : "group";
 	   group.parentShared = (group.parent != null && groups[group.parent].shared);
+	   group.parentExcluded = (group.parent != null && groups[group.parent].excluded);
+	   var excluded = $scope.sharing 
+	       && $scope.sharing.query 
+	       && $scope.sharing.query._exclude
+	       && $scope.sharing.query._exclude[type]
+	       && $scope.sharing.query._exclude[type].indexOf(group.name) >= 0;
+       group.excluded = group.parentExcluded || excluded;
+       
 	   if (!$scope.sharing || !$scope.sharing.query || !$scope.sharing.query[type]) {
-		   group.shared = group.parentShared;
+		   group.shared = group.parentShared && !excluded;
 		   return group.shared;
 	   }
 	   
-	   var r = group.shared = ($scope.sharing.query[type].indexOf(group.name) >= 0 || group.parentShared); 
+	   var r = group.shared = ($scope.sharing.query[type].indexOf(group.name) >= 0 || group.parentShared) && !excluded; 
 	   return r;
 	};
 	
+	
+	
 	$scope.share = function(record, group) {
-		$scope.status.doBusy(records.share($scope.selectedAps._id.$oid, record._id.$oid, $scope.selectedAps.type));
+		shareInQuery("_id", record._id.$oid);
+		$scope.status.doBusy(records.share($scope.selectedAps._id.$oid, record._id.$oid, $scope.selectedAps.type, $scope.sharing.query));
 		$scope.sharing.ids[record._id.$oid] = true;
 		
 		while (group != null) {
@@ -270,8 +282,43 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 		}
 	};
 	
+	var unexclude = function(type, item) {
+		if ($scope.sharing.query._exclude 
+				&& $scope.sharing.query._exclude[type] 
+			    && $scope.sharing.query._exclude[type].indexOf(item) >= 0) {
+				 var h = $scope.sharing.query._exclude[type];
+				 h.splice(h.indexOf(item), 1);
+				 if (h.length == 0) {
+					 $scope.sharing.query._exclude[type] = undefined;
+				 }
+				 return true;
+		} else return false;
+	};
+	
+	var shareInQuery = function(type, item) {
+		if (!$scope.sharing.query) $scope.sharing.query = {};
+		if (!$scope.sharing.query[type]) $scope.sharing.query[type] = [];
+		
+		if (!unexclude(type, item)) {
+		  if (type != "_id") $scope.sharing.query[type].push(item);
+		}
+	};
+	
+	var unshareFromQuery = function(type, item) {
+		var idx = $scope.sharing.query[type] != null ? $scope.sharing.query[type].indexOf(item) : -1;
+		if (idx<0) {
+			if ($scope.sharing.query._exclude == null) $scope.sharing.query._exclude = {};
+			if ($scope.sharing.query._exclude[type] == null) $scope.sharing.query._exclude[type] = [];
+			$scope.sharing.query._exclude[type].push(item);
+		} else {
+		  $scope.sharing.query[type].splice(idx, 1);
+		  if ($scope.sharing.query[type].length == 0) $scope.sharing.query[type] = undefined;
+		}
+	};
+	
 	$scope.unshare = function(record, group) {
-		$scope.status.doBusy(records.unshare($scope.selectedAps._id.$oid, record._id.$oid, $scope.selectedAps.type));
+		if (group.shared) unshareFromQuery("_id", record._id.$oid);
+		$scope.status.doBusy(records.unshare($scope.selectedAps._id.$oid, record._id.$oid, $scope.selectedAps.type, $scope.sharing.query));
 		$scope.sharing.ids[record._id.$oid] = false;
 		
 		while (group != null) {
@@ -282,24 +329,23 @@ records.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', '
 	
 	$scope.shareGroup = function(group) {
 		var type = group.type == "content" ? "content" : "group";
-		if (!$scope.sharing.query) $scope.sharing.query = {};
-		if (!$scope.sharing.query[type]) $scope.sharing.query[type] = [];
-		$scope.sharing.query[type].push(group.name);
+		shareInQuery(type, group.name);
+		
 		$scope.status.doBusy(records.share($scope.selectedAps._id.$oid, null, $scope.selectedAps.type, $scope.sharing.query)).
 		then(function() { $scope.loadSharingDetails(); });
 	};
 	
 	$scope.unshareGroup = function(group) {
 		var type = group.type == "content" ? "content" : "group";
-		var idx = $scope.sharing.query[type].indexOf(group.name);
-		if (idx<0) return;
-		$scope.sharing.query[type].splice(idx, 1);
-		if ($scope.sharing.query[type].length == 0) $scope.sharing.query[type] = undefined;
+		unshareFromQuery(type, group.name);
 		var recs = [];
 		
 		var unselect = function(group) {
 			angular.forEach(group.records, function(r) { recs.push(r._id.$oid); });
-			angular.forEach(group.children, function(c) { unselect(c); });
+			angular.forEach(group.children, function(c) {
+				unexclude(c.type == "content" ? "content" : "group", c.name);
+				unselect(c);
+			});
 		};
 		unselect(group);
 		

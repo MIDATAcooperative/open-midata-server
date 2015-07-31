@@ -3,9 +3,12 @@ package utils.access;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.ObjectId;
 
@@ -14,6 +17,9 @@ import utils.db.LostUpdateException;
 
 import com.mongodb.BasicDBObject;
 
+import controllers.RuleApplication;
+
+import models.FilterRule;
 import models.ModelException;
 import models.Record;
 
@@ -36,33 +42,45 @@ public class APSQSupportingQM extends QueryManager {
 	@Override
 	protected List<Record> query(Query q) throws ModelException {
 		
-		BasicBSONObject query = q.getCache().getAPS(q.getApsId()).getMeta(SingleAPSManager.QUERY);
-    	SingleAPSManager queryAPS;
+		BasicBSONObject query = q.getCache().getAPS(q.getApsId()).getMeta(SingleAPSManager.QUERY);    	
     	// Ignores queries in main APS 
 		if (query != null && !q.getApsId().equals(q.getCache().getOwner())) {			
-			Map<String, Object> combined = combineQuery(q.getProperties(), query);
-			if (combined == null) {
-				AccessLog.debug("combine empty:");
-				//AccessLog.logMap(q.getProperties());
-				//AccessLog.logMap(query);
-				return new ArrayList<Record>();
+			List<Record> result = next.query(q);
+			
+			if (query.containsField("$or")) {
+				Collection queryparts = (Collection) query.get("$or");
+				for (Object part : queryparts) {
+					query(q, (BasicBSONObject) part, result);
+				}
+			} else {
+				query(q, query, result);
 			}
-			Object targetAPSId = query.get("aps");
-			AccessLog.debug("Redirect to Query:");
-			List<Record> result = next.query(new Query(combined, q.getFields(), q.getCache(), new ObjectId(targetAPSId.toString())));
-			List<Record> result2 = next.query(q);
-			result.addAll(result2);
+						
 			return result;
-			
-			/*queryAPS = q.getCache().getAPS(new ObjectId(targetAPSId.toString()));
-			
-			boolean ok = StreamLayouter.instance.adjustQuery(eaps.getAccessor(), queryAPS.getId(), combined);
-			AccessLog.logQuery(q.getBaseAPS().getId(), q.getProperties() ,q.getFields());
-			AccessLog.debug("is okay?"+ok);
-			return ok ? queryAPS.lookup(combined, fields) : Collections.<Record>emptyList();*/
+						
 		}
 		
 		return next.query(q);		
+	}
+	
+	private void query(Query q, BasicBSONObject query, List<Record> results) throws ModelException {
+		Map<String, Object> combined = combineQuery(q.getProperties(), query);
+		if (combined == null) {
+			AccessLog.debug("combine empty:");			
+			return;
+		}
+		Object targetAPSId = query.get("aps");
+		AccessLog.debug("Redirect to Query:");
+		List<Record> result = next.query(new Query(combined, q.getFields(), q.getCache(), new ObjectId(targetAPSId.toString())));
+		
+		if (query.containsField("_exclude") && result.size() > 0) {
+			
+			List<FilterRule> rules = RuleApplication.instance.createRulesFromQuery(query);
+						
+			for (Record r : result) {
+				if (RuleApplication.instance.applyRules(r, rules)) results.add(r);
+			}							
+		} else results.addAll(result);
 	}
 	
 	public static Map<String, Object> combineQuery(Map<String,Object> properties, Map<String,Object> query) throws ModelException {

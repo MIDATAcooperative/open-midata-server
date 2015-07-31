@@ -172,7 +172,7 @@ public class SingleAPSManager extends QueryManager {
 		//AccessLog.lookupSingle(eaps.getId(), input._id, q.getProperties());
 		if (eaps.isDirect()) {
 			input.key = eaps.getAPSKey() != null ? eaps.getAPSKey().getEncoded() : null;
-			input.owner = eaps.getOwner();
+			input.owner = eaps.getOwner();			
 			return true;
 		}
 		
@@ -281,8 +281,9 @@ public class SingleAPSManager extends QueryManager {
 				record.description = (String) meta.get("description");
 				String format = (String) meta.get("format");
 				if (format!=null) record.format = format;
-				String content = (String) meta.get("content");
+				String content = (String) meta.get("content");				
 				if (content!=null) record.content = content;
+				AccessLog.debug("decrypt cnt="+content+" fmt="+format);
 				record.tags = (Set<String>) meta.get("tags");
 				} catch (ModelException e) {
 					AccessLog.debug("Error decrypting record: id="+record._id.toString());
@@ -358,15 +359,16 @@ public class SingleAPSManager extends QueryManager {
 			return result;
 		}
 		
-		public void removePermission(Record record) throws ModelException {
+		public boolean removePermission(Record record) throws ModelException {
 			try {
 			  boolean success = removePermissionInternal(record);
 			
 			  // Store
 			  if (success) eaps.savePermissions();
+			  return success;
 			} catch (LostUpdateException e) {
 				recoverFromLostUpdate();
-				removePermission(record);
+				return removePermission(record);
 			}
 		}
 		

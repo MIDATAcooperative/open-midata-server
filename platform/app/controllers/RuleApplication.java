@@ -11,10 +11,12 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 
+import utils.access.AccessLog;
 import utils.collections.Sets;
 import utils.rules.ContentRule;
 import utils.rules.FormatRule;
 import utils.rules.GroupRule;
+import utils.rules.IDRule;
 import utils.rules.Rule;
 
 import models.APSNotExistingException;
@@ -34,29 +36,34 @@ public class RuleApplication {
 		rulecache.put("format", new FormatRule());
 		rulecache.put("group", new GroupRule());
 		rulecache.put("content", new ContentRule());
+		rulecache.put("_id", new IDRule());
 	}
 	
 	public boolean qualifiesFor(Record record, FilterRule filterRule) throws ModelException {
 		Rule rule = rulecache.get(filterRule.name);
 		if (rule == null) throw new ModelException("Unknown rule: "+filterRule.name);
-		return rule.qualifies(record, filterRule.params);
+		return filterRule.negate ? !rule.qualifies(record, filterRule.params) : rule.qualifies(record, filterRule.params);
 	}
 
 	public void applyRules(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws ModelException {
+		AccessLog.debug("BEGIN APPLY RULES");
 		Collection<Record> records = RecordSharing.instance.list(userId, sourceaps, RecordSharing.FULLAPS_FLAT_OWNER, RecordSharing.COMPLETE_META);
 		Set<ObjectId> result = applyRules(records, filterRules);		
 		RecordSharing.instance.share(userId, sourceaps, targetaps, result, ownerInformation);
 		
 		Collection<Record> streams = RecordSharing.instance.list(userId, targetaps, RecordSharing.STREAMS_ONLY_OWNER, RecordSharing.COMPLETE_META);
+		AccessLog.debug("UNSHARE STREAMS CANDIDATES = "+streams.size());
 		Set<ObjectId> remove = new HashSet<ObjectId>();
 		for (Record stream : streams) {
 			if (!applyRules(stream, filterRules)) remove.add(stream._id);
 		}
+		AccessLog.debug("UNSHARE STREAMS QUALIFIED = "+remove.size());
 		RecordSharing.instance.unshare(userId, targetaps, remove);
+		AccessLog.debug("END APPLY RULES");
 		
 	}
 	
-	protected Set<ObjectId> applyRules(Collection<Record> records, List<FilterRule> filterRules) throws ModelException {
+	public Set<ObjectId> applyRules(Collection<Record> records, List<FilterRule> filterRules) throws ModelException {
         Set<ObjectId> result = new HashSet<ObjectId>();
 	    		
 		for (Record record : records) {
@@ -69,14 +76,14 @@ public class RuleApplication {
 		return result;
 	}
 	
-	protected boolean applyRules(Record record, List<FilterRule> filterRules) throws ModelException {
+	public boolean applyRules(Record record, List<FilterRule> filterRules) throws ModelException {
 		// TODO Apply correctly
 		if (filterRules == null || filterRules.size() == 0) return false;
 		
 		boolean qualifies = true;
 		
 		for (FilterRule rule : filterRules) {
-			if (!qualifiesFor(record, rule)) qualifies = false; 
+			if (!qualifiesFor(record, rule)) qualifies = false;			
 		}
 	
 		return qualifies;
@@ -156,11 +163,20 @@ public class RuleApplication {
 
 	public List<FilterRule> createRulesFromQuery(Map<String, Object> query) {
 		List<FilterRule> rules = new ArrayList<FilterRule>();
+		createRulesFromQuery(query, rules, false);
+		if (query.containsKey("_exclude")) {
+			createRulesFromQuery((Map<String, Object>) query.get("_exclude"), rules, true);
+		}
+		return rules;
+	}
+	
+	private void createRulesFromQuery(Map<String, Object> query, List<FilterRule> rules, boolean negate) {	
 		if (query.containsKey("format")) {
 			FilterRule fr = new FilterRule();
 			Object formats = query.get("format");
 			fr.name = "format";
 			fr.params = formats instanceof Collection ? new ArrayList((Collection) formats) : Collections.<String>singletonList(formats.toString());
+			fr.negate = negate;
 			rules.add(fr);
 		}
 		if (query.containsKey("content")) {
@@ -168,6 +184,7 @@ public class RuleApplication {
 			Object contents = query.get("content");
 			fr.name = "content";
 			fr.params = contents instanceof Collection ? new ArrayList((Collection) contents) : Collections.<String>singletonList(contents.toString());
+			fr.negate = negate;
 			rules.add(fr);
 		}
 		if (query.containsKey("group")) {
@@ -175,18 +192,36 @@ public class RuleApplication {
 			Object groups = query.get("group");
 			fr.name = "group";
 			fr.params = groups instanceof Collection ? new ArrayList((Collection) groups) : Collections.<String>singletonList(groups.toString());
+			fr.negate = negate;
 			rules.add(fr);
 		}
-		return rules;
+		if (query.containsKey("_id")) {
+			FilterRule fr = new FilterRule();
+			Object ids = query.get("_id");
+			fr.name = "_id";
+			fr.params = ids instanceof Collection ? new ArrayList((Collection) ids) : Collections.<String>singletonList(ids.toString());
+			fr.negate = negate;
+			rules.add(fr);
+		}	
 	}
 	
 	public Map<String, Object> queryFromRules(List<FilterRule> filterRules) throws ModelException {
         Map<String, Object> query = new HashMap<String, Object>();
+        Map<String, Object> exclude = null;
 		
 		for (FilterRule filterRule : filterRules) {
 			Rule rule = rulecache.get(filterRule.name);
 			if (rule == null) throw new ModelException("Unknown rule: "+filterRule.name);
-			rule.setup(query, filterRule.params);
+			
+			if (filterRule.negate) {
+			   if (exclude==null) {
+				   exclude = new HashMap<String, Object>();
+				   query.put("_exclude", exclude);
+			   }				
+			   rule.setup(exclude, filterRule.params);	
+			} else {
+			  rule.setup(query, filterRule.params);
+			}
 		}
 		
 		return query;

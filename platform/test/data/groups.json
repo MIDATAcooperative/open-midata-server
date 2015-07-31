@@ -16,4 +16,4 @@
 { name:"calendar", label:"Calendar", parent:"other" }
 { name:"diary", label:"Diary", parent:"other" }
 { name:"account", label:"External Accounts", parent:"other" }
-{ name:"template", label:"Templates", parent:"other" }
+{ name:"templates", label:"Templates", parent:"other" }

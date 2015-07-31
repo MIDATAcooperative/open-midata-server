@@ -43,7 +43,7 @@
         </div>
 					
 		<script type="text/ng-template"  id="tree_item_renderer.html">
-           <div class="pull-right sharebox" ng-show="selectedAps && !data.parentShared">	                				  
+           <div class="pull-right sharebox" ng-show="selectedAps && !data.parentExcluded && data.type!='content' ">	                				  
 				<button class="btn btn-xs btn-primary" ng-disabled="status.isBusy" ng-click="unshareGroup(data);" ng-show="isSharedGroup(data)">
 					<span class="glyphicon glyphicon-picture"></span>unshare
 				</button>
@@ -55,11 +55,11 @@
            <div ng-show="data.open">
 
            <ul class="list-group" ng-if="data.records.length > 0">
-				<li class="list-group-item" ng-repeat="record in data.records" ng-class="{ 'list-group-item-success' : (data.shared || isShared(record)) }">
+				<li class="list-group-item" ng-repeat="record in data.records" ng-class="{ 'list-group-item-success' : ( isShared(record)) }">
 					<span class="label label-info" ng-dblclick="deleteRecord(record, data)">{{record.created | date}}</span>
 					<span ng-show="record.owner.$oid != userId.$oid" class="label label-info">{{ record.ownerName }}</span>
 					<a href="javascript:;" ng-click="showDetails(record)">{{record.name}}</a>
-                    <div class="pull-right" ng-hide="data.shared || selectedAps==null">					   
+                    <div class="pull-right" ng-hide="selectedAps==null || data.shared">					   
 						<button class="btn btn-xs btn-primary" ng-disabled="status.isBusy" ng-click="unshare(record, data);" ng-show="isShared(record)">
 							<span class="glyphicon glyphicon-picture"></span>unshare
 						</button>

@@ -67,4 +67,29 @@ class MongoDB(Product):
 			os.path.join(self.parent, 'dump', 'mongodb')), self.parent)
 		Command.execute('{0} --db record --out {1}'.format(os.path.join(self.bin, 'mongodump'), 
 			os.path.join(self.parent, 'dump', 'mongodb')), self.parent)
-			
+	
+	def export(self):
+	   print 'Exporting metadata'
+	   Command.execute('{0} -d user -c formatgroups -o {1}'.format(os.path.join(self.bin, 'mongoexport'), 
+			os.path.join(self.parent, 'json', 'formatgroups.json')), self.parent)		
+	   Command.execute('{0} -d user -c contentinfo -o {1}'.format(os.path.join(self.bin, 'mongoexport'), 
+			os.path.join(self.parent, 'json', 'contentinfo.json')), self.parent)
+	   Command.execute('{0} -d user -c formatinfo -o {1}'.format(os.path.join(self.bin, 'mongoexport'), 
+			os.path.join(self.parent, 'json', 'formatinfo.json')), self.parent)
+	   Command.execute('{0} -d user -c visualizations -o {1}'.format(os.path.join(self.bin, 'mongoexport'), 
+			os.path.join(self.parent, 'json', 'visualizations.json')), self.parent)
+	   Command.execute('{0} -d user -c apps -o {1}'.format(os.path.join(self.bin, 'mongoexport'), 
+			os.path.join(self.parent, 'json', 'apps.json')), self.parent)
+
+	def reimport(self):
+	   print 'Importing metadata'
+	   Command.execute('{0} -d user -c formatgroups --file {1} --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
+			os.path.join(self.parent, 'json', 'formatgroups.json')), self.parent)		
+	   Command.execute('{0} -d user -c contentinfo --file {1} --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
+			os.path.join(self.parent, 'json', 'contentinfo.json')), self.parent)
+	   Command.execute('{0} -d user -c formatinfo --file {1} --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
+			os.path.join(self.parent, 'json', 'formatinfo.json')), self.parent)
+	   Command.execute('{0} -d user -c visualizations --file {1} --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
+			os.path.join(self.parent, 'json', 'visualizations.json')), self.parent)
+	   Command.execute('{0} -d user -c apps --file {1} --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
+			os.path.join(self.parent, 'json', 'apps.json')), self.parent)

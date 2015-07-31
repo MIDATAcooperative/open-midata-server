@@ -15,4 +15,5 @@ public class FilterRule implements JsonSerializable {
     public List<Object> params; //Parameters to be used by filter class. Semantic depends on used class
 	public String group; //Name of result group, selected records or members will belong to. Required for studies with multiple groups of participants.
 	public ObjectId aps; //APS to which this rule provides records 	
+	public boolean negate;
 }

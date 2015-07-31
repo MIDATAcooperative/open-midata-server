@@ -3,6 +3,7 @@ package utils.rules;
 import java.util.List;
 import java.util.Map;
 
+import utils.access.AccessLog;
 import utils.access.Query;
 import utils.access.SingleAPSManager;
 
@@ -27,6 +28,7 @@ public class GroupRule implements Rule {
 		if (params.size() == 0) return true;
 		
 		for (Object obj : params) {
+			AccessLog.debug(group+" vs "+obj+" = "+group.equals(obj));
 			if (group.equals(obj)) return true;			
 		}
 		FormatGroup grp = FormatGroup.getByName(group);

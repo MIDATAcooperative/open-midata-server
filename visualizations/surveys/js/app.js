@@ -145,6 +145,7 @@ surveys.controller('SurveyCtrl', ['$scope', '$http', '$location', '$filter', 'mi
 			} else {
 			  $scope.saveResults($scope.activeSurvey, $scope.surveyResult);
 			  $scope.activeSurvey = null;
+			  $scope.loadSurveys();
 			}
 			$scope.activeStep = null;
 			console.log($scope.surveyResult);
@@ -289,6 +290,14 @@ surveys.controller('SurveyCtrl', ['$scope', '$http', '$location', '$filter', 'mi
 		
 		$scope.saveSurvey = function() {
 			$scope.activeSurvey.answered = undefined;
+			angular.forEach($scope.activeSurvey.steps, function(step) {
+			   step.result = undefined;
+			   if (step.items != null) {
+				   angular.forEach(step.items, function(item) {
+					 item.result = undefined;  
+				   });
+			   }
+			});
 			midataServer.createRecord($scope.authToken, $scope.activeSurvey.title, "Survey", "templates/survey", "survey/questions", $scope.activeSurvey)
 			.then(function() { $scope.cancel; });
 		};

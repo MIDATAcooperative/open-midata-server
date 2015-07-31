@@ -204,6 +204,8 @@ details.controller('VisualizationCtrl', ['$scope', '$http', '$location', functio
 			}
 			if ($scope.params && $scope.params.context) {
 				$scope.options.context = $scope.params.context;
+			} else { 
+				$scope.options.context = "mydata"; 
 			}
 			if ($scope.params && $scope.params.name) {
 				$scope.options.spaceName = $scope.params.name;

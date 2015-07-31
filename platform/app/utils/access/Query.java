@@ -178,6 +178,8 @@ public class Query {
 	              fields.contains("name") || 
 	              fields.contains("description") || 
 	              fields.contains("tags") ||
+	              fields.contains("content") ||
+	              fields.contains("format") ||
 	              properties.containsKey("app") ||
 	              properties.containsKey("creator") ||
 	              properties.containsKey("created") ||

@@ -76,6 +76,7 @@ public class APSEntry {
 		
 		fmt = row.getString("content");
 		if (fmt != null) record.content = fmt;
+		AccessLog.debug("populate:"+record.format+"/"+record.content);
 	}
 		
 }
