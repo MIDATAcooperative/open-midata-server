@@ -3,6 +3,7 @@
 # ~~~~
 
 # Test
+OPTIONS  /*all                                           controllers.Application.checkPreflight(all)
 GET     /test                                            controllers.Application.test()
 GET     /test2                                           controllers.Application.test2()
 GET     /debug/aps/:id                                   controllers.Debug.get(id: String)

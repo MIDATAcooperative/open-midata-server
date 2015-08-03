@@ -1,0 +1,10 @@
+{
+  "name": "portal",
+  "description": "Health Portal",
+  "version": "1.0.0",
+  "dependencies": {
+    "angular": "~1.4.3",
+    "angular-ui-router": "~0.2.15",
+    "jquery": "~2.1.4"
+  }
+}

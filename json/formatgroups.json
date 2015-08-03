@@ -1,0 +1,19 @@
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc7c" }, "name" : "all", "label" : "Personal Data", "parent" : null }
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc7d" }, "name" : "lifestyle", "label" : "Lifestyle", "parent" : "all" }
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc7e" }, "name" : "nutrition", "label" : "Nutrition", "parent" : "lifestyle" }
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc7f" }, "name" : "mood", "label" : "Mood", "parent" : "lifestyle" }
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc80" }, "name" : "qself", "label" : "Quantified self", "parent" : "lifestyle" }
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc81" }, "name" : "movement", "label" : "Movement", "parent" : "lifestyle" }
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc82" }, "name" : "sleep", "label" : "Sleep", "parent" : "lifestyle" }
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc83" }, "name" : "health", "label" : "Health", "parent" : "all" }
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc84" }, "name" : "alergies", "label" : "Alergies", "parent" : "health" }
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc85" }, "name" : "lab", "label" : "Lab results", "parent" : "health" }
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc86" }, "name" : "studies", "label" : "Studies", "parent" : "health" }
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc87" }, "name" : "medication", "label" : "Medication", "parent" : "health" }
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc88" }, "name" : "genome", "label" : "Genome", "parent" : "health" }
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc89" }, "name" : "desease", "label" : "Desease specific", "parent" : "health" }
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc8a" }, "name" : "other", "label" : "Other", "parent" : "all" }
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc8b" }, "name" : "calendar", "label" : "Calendar", "parent" : "other" }
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc8c" }, "name" : "diary", "label" : "Diary", "parent" : "other" }
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc8d" }, "name" : "account", "label" : "External Accounts", "parent" : "other" }
+{ "_id" : { "$oid" : "55b5fe1ca69243d780682795" }, "name" : "templates", "label" : "Templates", "parent" : "other" }

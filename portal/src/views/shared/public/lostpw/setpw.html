@@ -1,0 +1,31 @@
+	<div class="container" ng-app="lostpw" ng-controller="SetPasswordCtrl" ng-cloak>
+		<div class="row">
+			<!-- Login -->
+			<div class="col-sm-12">
+				<div class="panel-container" style="max-width:600px; padding-top:120px; margin:0 auto;">
+					<div class="panel panel-primary">
+		            	<div class="panel-heading">
+		              		<h3 class="panel-title">Password Assistance - Step 2</h3>
+		            	</div>
+		            	<div class="panel-body">
+			            	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	                          {{ error.message || error }}
+	                        </p>
+							<div class="alert alert-success" ng-show="setpw.success">
+								<p>You have successfully set a new password for your account.</p>
+								<p><a href="@routes.Application.welcome()">Go back to login page.</a></p>
+							</div>
+							<p>Please enter a new password for your account.</p>
+							<form ng-submit="submit()" role="form">
+								<input type="password" class="form-control" placeholder="New password" ng-model="setpw.password" style="margin-bottom:5px;" autofocus>								
+								<input type="password" class="form-control" placeholder="Password repetition" ng-model="setpw.passwordRepeat" style="margin-bottom:5px;">
+								<button type="submit" class="btn btn-primary btn-block">Set New Password</button>
+							</form>
+		            	</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+	

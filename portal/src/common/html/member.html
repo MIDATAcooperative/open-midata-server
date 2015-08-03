@@ -1,0 +1,47 @@
+
+	<!-- Navbar -->
+	<div id="navbar" class="navbar navbar-default" role="navigation" ng-controller="NavbarCtrl">
+	  <div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a  style="vertical-align:middle" href="@routes.News.index()">
+           		<img width="40%" src="@routes.Assets.at("images/logo2.png")" alt="Midata.coop" />
+           	</a>
+		</div>
+		<div class="collapse navbar-collapse navbar-ex1-collapse">
+			<ul class="nav navbar-nav">
+            	<li @if("News".equals(active)){class="active"}><a href="@routes.News.index()">Dashboard</a></li>
+				<li @if("Messages".equals(active)){class="active"}><a href="@routes.Messages.index()">Messages</a></li>
+				<li @if("Healthcare Providers".equals(active)){class="active"}><a href="@routes.MemberFrontend.providers()">Providers</a></li>
+				<li @if("Studies".equals(active)){class="active"}><a href="@routes.MemberFrontend.studies()">Research</a></li>
+				<li @if("Records".equals(active)){class="active"}><a href="@routes.Records.index()">Records</a></li>				
+				<li @if("Circles".equals(active)){class="active"}><a href="@routes.Circles.index()">Circles</a></li>
+				<li @if("Market".equals(active)){class="active"}><a href="@routes.Market.index()">Market</a></li>
+			</ul>
+			<form class="navbar-form navbar-left" ng-submit="startSearch()">
+				<div class="form-group">
+					<input type="text" id="globalSearch" class="form-control" placeholder="Search in your data" ng-model="query">
+				</div>
+				<button type="submit" class="btn btn-primary">Go!</button>
+			</form>
+			<ul class="nav navbar-nav navbar-right" ng-cloak>
+			    <li><a>{{user.midataID}}</a></li>
+				<li><a href="/members/users/{{user._id.$oid}}">{{user.name}}</a></li>
+				<li><a href="@routes.Application.logout()">
+					<span class="glyphicon glyphicon-off"></span> Sign out
+				</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	  </div>
+	</div>
+	
+	<div class="container">
+	  <div ui-view></div>
+	</div>
+	
+}

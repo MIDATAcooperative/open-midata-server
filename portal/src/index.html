@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Health Data Cooperative</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="Health Data Cooperative">		
+		<link rel="shortcut icon" type="image/png" href="/images/favicon.png")">
+		<!-- Clear CSS defaults -->
+		
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		
+		<!-- Plugin CSS -->
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+		
+		<!-- Application style sheet -->
+		<link rel="stylesheet" href="/app.css">
+		
+		<!-- JS framework and libraries -->
+        <!-- jQuery needed for Bootstrap's JavaScript plugins and is also used by AngularJS -->
+		
+		<script type="text/javascript" src="components/jquery/dist/jquery.js" defer></script>
+        <script type="text/javascript" src="components/angular/angular.js" defer></script>
+        <script type="text/javascript" src="components/angular-ui-router/release/angular-ui-router.js" defer></script>
+		<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js" defer></script>		
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js" defer></script>
+		<script type="text/javascript" src="https://localhost:9000/assets/javascripts/routes" defer></script>	
+		<script type="text/javascript" src="app.js" defer></script>
+	</head>
+	<body ng-app="portal">
+	  <div ui-view></div>
+	  <footer>
+		 <div class="container">
+			<p>(c) 2015 ETH Zürich</p>
+			<p><strong>Midata Portals:</strong></p>
+			   <ul>			     
+			      <li><a ui-sref="public.login">For Members of the Cooperative</a></li>
+			      <li><a ui-sref="public_research.login">For Research Organizations</a></li>
+			      <li><a ui-sref="public_hc.login">For Healthcare Providers</a></li>
+			      <li><a ui-sref="public_developer.guide">For Developers</a></li>
+			   </ul>	    
+		 </div>
+	  </footer>
+	</body>
+</html>
