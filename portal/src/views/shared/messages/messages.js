@@ -1,0 +1,91 @@
+angular.module('portal')
+.controller('MessagesCtrl', ['$scope', '$http', function($scope, $http) {
+	
+	// init
+	$scope.error = null;
+	$scope.loading = true;
+	$scope.inbox = [];
+	$scope.archive = [];
+	$scope.trash = [];
+	$scope.messages = {};
+	$scope.names = {};
+	
+	// get current user
+	$http(jsRoutes.controllers.Users.getCurrentUser()).
+		success(function(userId) { getFolders(userId); });
+	
+	// get messages
+	getFolders = function(userId) {
+		var properties = {"_id": userId};
+		var fields = ["messages"];
+		var data = {"properties": properties, "fields": fields};
+		$http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
+			success(function(users) {
+				$scope.inbox = users[0].messages.inbox;
+				$scope.archive = users[0].messages.archive;
+				$scope.trash = users[0].messages.trash;
+				var messageIds = _.flatten([$scope.inbox, $scope.archive, $scope.trash]);
+				getMessages(messageIds);
+			}).
+			error(function(err) {
+				$scope.error = "Failed to load message: " + err;
+				$scope.loading = false;
+			});
+	};
+	
+	getMessages = function(messageIds) {
+		var properties = {"_id": messageIds};
+		var fields = ["sender", "created", "title"];
+		var data = {"properties": properties, "fields": fields};
+		$http.post(jsRoutes.controllers.Messages.get().url, JSON.stringify(data)).
+			success(function(messages) {
+				_.each(messages, function(message) { $scope.messages[message._id.$oid] = message; });
+				var senderIds = _.map(messages, function(message) { return message.sender; });
+				senderIds = _.uniq(senderIds, false, function(senderId) { return senderId.$oid; });
+				getSenderNames(senderIds);
+			}).
+			error(function(err) {
+				$scope.error = "Failed to load message: " + err;
+				$scope.loading = false;
+			});
+	};
+	
+	getSenderNames = function(senderIds) {
+		var data = {"properties": {"_id": senderIds}, "fields": ["name"]};
+		$http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
+			success(function(users) {
+				_.each(users, function(user) { $scope.names[user._id.$oid] = user.name; });
+				$scope.loading = false;
+			}).
+			error(function(err) {
+				$scope.error = "Failed to load user names: " + err;
+				$scope.loading = false;
+			});
+	};
+	
+	// open message details
+	$scope.showMessage = function(messageId) {
+		window.location.href = jsRoutes.controllers.Messages.details(messageId.$oid).url;
+	};
+	
+	// move message to another folder
+	$scope.move = function(messageId, from, to) {
+		$http(jsRoutes.controllers.Messages.move(messageId.$oid, from, to)).
+			success(function() {
+				$scope[from].splice($scope[from].indexOf(messageId), 1);
+				$scope[to].push(messageId);
+			}).
+			error(function(err) { $scope.error = "Failed to move the message from " + from + " to " + to + ": " + err; });
+	};
+	
+	// remove message
+	$scope.remove = function(messageId) {
+		$http(jsRoutes.controllers.Messages.remove(messageId.$oid)).
+			success(function() {
+				delete $scope.messages[messageId.$oid];
+				$scope.trash.splice($scope.trash.indexOf(messageId), 1);
+			}).
+			error(function(err) { $scope.error = "Failed to delete message: " + err; });
+	};
+	
+}]);

@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RegistrationCtrl', ['$scope', '$http', 'status', function($scope, $http, status) {
+.controller('RegistrationCtrl', ['$scope', '$http', 'status', 'apiurl', function($scope, $http, status, apiurl) {
 	
 	$scope.registration = {};
 	$scope.error = null;
@@ -26,7 +26,7 @@ angular.module('portal')
 		
 		// send the request
 		var data = $scope.registration;		
-		$scope.status.doAction("register", $http.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
+		$scope.status.doAction("register", $http.post(apiurl + jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
 		then(function() { window.location.replace(portalRoutes.controllers.News.index().url); },
 			 function(err) { 
 				$scope.error = err;

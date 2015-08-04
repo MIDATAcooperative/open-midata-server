@@ -1,0 +1,40 @@
+
+<div ng-controller="ListParticipantsCtrl" ng-cloak>
+   @studynav("Study Participants")
+   <div class="tab-content">
+    <div class="tab-pane active">
+	
+	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	   {{ error.message || error }}
+	</p>
+	<div ng-show="results.length > 0">
+	<table class="table table-hover">
+	  <thead>
+	    <tr>
+	      <th>Name</th>
+	      <th>Group</th>
+	      <th>Status</th>
+	      <th>Recruiter</th>
+	      <th></th>	      	     
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr ng-repeat="participant in results">
+	      <td><a ng-href="/research/studies/{{studyid}}/participants/{{participant._id.$oid}}">{{ participant.memberName }}</a></td>	  
+	      <td>{{ participant.group }}</td>
+	      <td>{{ participant.status }}</td>
+	      <td>{{ participant.recruiterName }}</td>
+	      <td>
+	        <button ng-show="mayApproveParticipation(participant)" ng-click="approveParticipation(participant)" class="btn btn-success btn-xs">Accept</button>
+	        <button ng-show="mayRejectParticipation(participant)" ng-click="rejectParticipation(participant)" class="btn btn-danger btn-xs">Reject</button>
+	      </td>	      	        
+	    </tr>
+	  </tbody>
+	</table>
+	</div>
+	<p ng-show="results.length == 0">
+	  This study does not have any participants yet.
+	</p>
+	</div>
+	</div>	
+</div>

@@ -1,0 +1,49 @@
+<div ng-controller="ShareCtrl">
+<div class="body autosize">
+   <p>Do you want to share this with a circle?</p>
+   <div class="alert alert-info">
+	   <ul>
+	      <li ng-repeat="rule in rules">
+	        <span ng-if="rule.name == 'format'">Records that have format:
+	           <ul>
+		          <li ng-repeat="format in rule.params">{{ format }}</li>
+	           </ul> 
+	        </span>
+	        <span ng-if="rule.name == 'content'">Records that have content:
+	           <ul>
+		          <li ng-repeat="content in rule.params">{{ content }}</li>
+	           </ul> 
+	        </span>
+	        <span ng-if="rule.name == 'group'">Records that belong to group:
+	           <ul>
+		          <li ng-repeat="group in rule.params">{{ group }}</li>
+	           </ul> 
+	        </span>
+	      </li>
+	   </ul>	
+    </div>
+   
+   <div class="form-group">
+     <label for="circle">Circle:</label>
+     <select id="circle" class="form-control" ng-model="selectedCircle" ng-options="circle.name for circle in circles"></select>
+   </div>
+   
+    <div ng-show="selectedCircle.isNew" class="form-group" ng-class="{'has-error has-feedback': errors.newCircleName}">
+	   
+	   <div class="input-group" >
+          <input type="text" class="form-control" ng-model="form.newCircleName" placeholder="Circle Name">          
+          <span class="input-group-btn">
+             <button ng-click="createCircle()" class="btn btn-default" type="button">Add</button>
+          </span>          
+       </div>       
+       	   
+	</div>
+	
+	<div ng-show="success" class="alert alert-success">Data has been shared.</div>
+</div>
+<div class="footer">
+	<button type="submit" ng-disabled="selectedCircle.isNew || success" class="btn btn-primary" ng-click="share()">Share</button>
+	<a class="btn btn-default" ng-show="success" ng-href="/members/circles/{{ selectedCircle._id.$oid }}">Manage Circle</a>
+	<button type="button" class="btn btn-default" ng-click="cancel()">Close</button>
+</div>
+</div>

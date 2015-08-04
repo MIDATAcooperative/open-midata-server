@@ -1,0 +1,64 @@
+
+	<div ng-controller="RecordCtrl">
+		<div class="page-header">
+			<h1>Record Details</h1>
+		</div>
+		
+		<div ng-cloak class="panel panel-primary">
+		  <div class="panel-heading">Meta Information</div>
+		  <div class="panel-body">
+			<div class="alert alert-danger alert-dismissable" ng-show="error">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+				<p>{{error}}</p>
+			</div>
+			<div class="alert alert-warning alert-dismissable" ng-show="record.data.type === 'largeRecord'">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+				<p>This is a very large record which has been divided into chunks internally. Only the index information is shown here.</p>
+			</div>
+			
+			<div class="row">
+				<p class="col-sm-2">Name:</p>
+				<p class="col-sm-10">{{record.name}}</p>
+			</div>
+			<div class="row">
+				<p class="col-sm-2">Owned by:</p>
+				<p class="col-sm-10">{{record.owner}}</p>
+			</div>
+			<div class="row">
+				<p class="col-sm-2">Created by:</p>
+				<p class="col-sm-10">{{record.creator}}</p>
+			</div>
+			<div class="row">
+				<p class="col-sm-2">Created with:</p>
+				<p class="col-sm-10">{{record.app}}</p>
+			</div>
+			<div class="row">
+				<p class="col-sm-2">Created on:</p>
+				<p class="col-sm-10">{{record.created | date}}</p>
+			</div>
+			<div class="row">
+				<p class="col-sm-2">Content:</p>
+				<p class="col-sm-10">{{record.content}}</p>
+			</div>
+			<div class="row">
+				<p class="col-sm-2">Format:</p>
+				<p class="col-sm-10">{{record.format}}</p>
+			</div>		
+			<a href="{{downloadLink}}" target="_self" class="btn btn-primary" ng-show="record.data.type === 'file'">Download</a>
+		 </div></div>
+		 <div ng-cloak class="panel panel-primary">
+		    <div class="panel-heading">Content Visualization</div>
+		    <div class="panel-body">
+		      <div ng-show="status.isBusy">Please wait...</div>
+		      <div ng-hide="url || status.isBusy" class="body">No visualization available for this record.</div>
+			  <div ng-show="url" class="body"><div class=""><iframe class="frame" ng-src="{{url}}" ng-cloak></iframe></div></div>	
+			</div>
+		 </div>
+		 <div ng-cloak class="panel panel-primary">
+		    <div class="panel-heading">RAW Data</div>
+		    <div class="panel-body">
+			  <div style="white-space: pre-wrap;" ng-show="record.json">{{record.json}}</div>		
+		    </div>
+		</div>		
+	</div>
+	

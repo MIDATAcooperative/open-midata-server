@@ -1,0 +1,10 @@
+<p ng-show="loading">Loading news...</p>
+			<div ng-hide="loading">			
+				<div class="panel panel-primary" ng-repeat="newsId in news" ng-show="news.length">
+					<div class="panel-heading">
+						{{newsItems[newsId.$oid].title}}
+						<button type="button" class="close" aria-hidden="true" ng-click="hide(newsId)">&times;</button>
+					</div>
+					<div class="panel-body" style="white-space:pre-line;">{{newsItems[newsId.$oid].content}}</div>
+				</div>
+			</div>

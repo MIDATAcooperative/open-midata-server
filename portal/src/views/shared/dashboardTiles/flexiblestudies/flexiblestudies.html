@@ -1,0 +1,15 @@
+ <div class="ignore autosize" ng-controller="FlexibleStudiesCtrl">
+  <div class="body" ng-show="status.isBusy">Please wait...</div>
+  <div class="body body-center text-center" ng-show="!status.isBusy && studies.length == 0">Empty</div>
+  <div ng-show="studies.length" class="body clearfix">   
+     <div class="pull-left themeicon"><img src="/assets/images/icons/research.png"></div>     
+     <p><span class="dashnumber">{{ studies.length }}</span> Studies found:</p>
+   </div>
+  
+  <ul class="list-group" ng-show="!loadingRecords && studies.length > 0">
+	<li class="list-group-item" ng-repeat="study in studies | limitTo : limit">					
+	   <a href="javascript:;" ng-click="showDetails(study)">{{study.name}}</a>										
+  	</li>
+  </ul>
+  <div class="footer"><button class="btn btn-default">More...</button></div>
+</div>

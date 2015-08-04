@@ -1,0 +1,57 @@
+angular.module('views')
+.controller('MessagesCtrl', ['$scope', '$http', '$attrs', 'currentUser', 'views', 'status', function($scope, $http, $attrs, currentUser, views, status) {
+	
+	$scope.view = views.getView($attrs.viewid || $scope.def.id);
+    $scope.status = new status(true);
+    $scope.limit = 4;
+    
+    currentUser.then(function(userId) { 
+    	$scope.userId = userId;
+    	$scope.reload(); 
+    });
+    
+    $scope.reload = function() { 
+    	if (!$scope.view.active || !$scope.userId) return;
+    	$scope.limit = $scope.view.position == "small" ? 4 : 20;
+    	
+    	getFolders($scope.userId);
+    };
+    
+    // get messages
+	getFolders = function(userId) {
+		var properties = {"_id": userId};
+		var fields = ["messages"];
+		var data = {"properties": properties, "fields": fields};
+		$scope.status.doBusy($http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data))).
+		then(function(results) {
+			    var users = results.data;
+				$scope.inbox = users[0].messages.inbox;
+				//$scope.archive = users[0].messages.archive;
+				//$scope.trash = users[0].messages.trash;
+				var messageIds = $scope.inbox;
+				getMessages(messageIds);
+		});
+	};
+	
+	getMessages = function(messageIds) {
+		var properties = {"_id": messageIds};
+		var fields = ["sender", "created", "title"];
+		var data = {"properties": properties, "fields": fields};
+		$scope.status.doBusy($http.post(jsRoutes.controllers.Messages.get().url, JSON.stringify(data))).
+		then(function(results) {
+			    $scope.messages = results.data;
+			    //var messages = results.data;
+				//_.each(messages, function(message) { $scope.messages[message._id.$oid] = message; });
+				//var senderIds = _.map(messages, function(message) { return message.sender; });
+				//senderIds = _.uniq(senderIds, false, function(senderId) { return senderId.$oid; });
+				//getSenderNames(senderIds);
+		});
+	};
+	
+	$scope.showMessage = function(messageId) {
+		window.location.href = jsRoutes.controllers.Messages.details(messageId).url;
+	};
+            
+	$scope.$watch('view.setup', function() { $scope.reload(); });
+	
+}]);

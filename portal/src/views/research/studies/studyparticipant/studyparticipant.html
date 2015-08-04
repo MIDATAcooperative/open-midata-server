@@ -1,0 +1,57 @@
+<div ng-controller="ParticipantCtrl" ng-cloak>
+   @studynav("Study Participant","../")
+   <div class="panel panel-primary">
+   <div class="panel-heading">{{ participation.memberName }}</div>
+   <div class="panel-body">
+	
+	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	   {{ error.message || error }}
+	</p>
+	<div>
+	Participant: {{ participation.memberName }}<br>
+	Gender: {{ participation.gender }}<br>
+	Year of Birth: {{ participation.yearOfBirth }}<br>
+	Country: {{ participation.country }}<br>
+	</div>
+	<div ng-show="member">
+	<address>	
+	  <strong>{{ member.firstname }} {{ member.sirname }}</strong><br>
+	{{ member.address1 }}<br>
+	{{ member.address2 }}<br>
+	{{ member.zip }} {{ member.city }}<br>
+	{{ member.country }}<br>
+	  <span ng-show="member.phone">Phone: {{ member.phone }}</span><br>
+	  <span ng-show="member.mobile">Mobile: {{ member.mobile }}</span><br>
+    </address>		
+    </div>
+    <p>Status: {{ participation.status }}</p>
+    <p>Group: {{ participation.group }}</p>
+    </div>
+    </div>	
+    <div ng-show="participation.history.length" class="panel panel-primary">
+	    <div class="panel-heading">Participation History</div>
+	    
+	    <table class="table">
+	      <thead>
+	        <tr>
+	          <th>Event</th>
+	          <th>Who</th>
+	          <th>When</th>
+	          <th>Comment</th>
+	        </tr>
+	      </thead>
+	      <tbody>
+	        <tr ng-repeat="entry in participation.history">
+	          <td>{{ entry.event }}</td>
+	          <td>{{ entry.whoName }}</td>
+	          <td>{{ entry.timestamp | date }}</td>
+	          <td>{{ entry.message }}</td>
+	        </tr>
+	      </tbody>
+	    </table>	    
+    </div>
+    
+    @views.html.details.dashboard("studyparticipant") 
+    
+    <a href="../participants" class="btn btn-default">Back</a>
+</div>

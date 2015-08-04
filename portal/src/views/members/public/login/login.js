@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('LoginCtrl', ['$scope', '$http', 'status', 'apiurl',  function($scope, $http, status, apiurl) {
+.controller('LoginCtrl', ['$scope', '$http', '$state', 'status', 'apiurl',  function($scope, $http, $state, status, apiurl) {
 	
 	// init
 	$scope.login = {};	
@@ -17,7 +17,7 @@ angular.module('portal')
 		// send the request
 		var data = {"email": $scope.login.email, "password": $scope.login.password};
 		$scope.status.doAction("login", $http.post(apiurl + jsRoutes.controllers.Application.authenticate().url, JSON.stringify(data))).
-		then(function() { window.location.replace(portalRoutes.controllers.News.index().url); }).
+		then(function() { $state.go('member.dashboard'); }).
 		catch(function(err) { $scope.error = err.data; });
 	};
 }]);

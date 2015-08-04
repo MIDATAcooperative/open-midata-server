@@ -1,0 +1,14 @@
+    <div ng-controller="VisualizationCtrl">
+        <div class="extraspace">
+          <a ng-href="{{ memberUrl }}" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Back to records</a>
+        </div>
+		<!-- Visualization -->
+		<div class="panel panel-primary">
+		  <div class="body">
+		<p ng-hide="space.trustedUrl">Loading Visualization...</p>
+		<div id="iframe-placeholder">
+			<iframe id="iframe" height="600px" width="100%" ng-show="space.trustedUrl"></iframe>
+		</div>
+		</div>
+		</div>
+	</div>

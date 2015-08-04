@@ -1,0 +1,146 @@
+
+	<div ng-controller="CirclesCtrl">
+		<div class="page-header">
+			<div class="pull-right">
+				<button data-toggle="modal" data-target="#circleModal" class="btn btn-primary">
+					<span class="glyphicon glyphicon-plus-sign"></span> Add a new circle
+				</button>
+			</div>
+			<h1>My circles</h1>
+		</div>
+		
+		<div ng-cloak>
+		   
+			<div class="alert alert-danger alert-dismissable" ng-show="error">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+				<p>{{error}}</p>
+			</div>
+		
+			<p ng-show="loading">Loading circles...</p>
+			<div ng-show="!loading && circles.length === 0" class="panel panel-primary">
+			  <div class="panel-body">
+				<p>You have no circles yet.</p>
+				<p>Add one by clicking on the button on the top right.</p>
+			  </div>
+			</div>
+			<div ng-show="!loading && circles.length > 0">
+				<!-- Circle tabs -->
+				<ul class="nav nav-tabs">
+					<li ng-class="{'active': circle.active}" ng-repeat="circle in circles">
+						<a href="javascript:;" ng-click="makeActive(circle)">{{circle.name}}</a>
+					</li>
+				</ul>
+				
+				<!-- Circle content -->
+				<div class="tab-content">
+					<div class="tab-pane fade" ng-class="{'active in': circle.active}" ng-repeat="circle in circles">
+						<p ng-show="circle.members.length === 0">This circle has no members yet.</p>
+						<ul class="list-group" ng-show="circle.members.length > 0">
+							<li class="list-group-item" ng-repeat="member in circle.members">
+								{{userNames[member.$oid]}}
+								<div class="pull-right">
+									<button type="button" class="btn btn-xs btn-danger" ng-click="removeMember(circle, member)">
+										<span class="glyphicon glyphicon-remove"></span>
+									</button>
+								</div>
+							</li>
+					   	</ul>
+					   	<button data-toggle="modal" data-target="#userModal-{{circle._id.$oid}}" class="btn btn-primary">
+							<span class="glyphicon glyphicon-plus-sign"></span> Add user
+						</button>
+					    <button class="btn btn-danger" ng-click="deleteCircle(circle)">
+					    	<span class="glyphicon glyphicon-remove-sign"></span> Delete circle
+					    </button>
+					    
+										   
+					    <!-- Add users modal -->
+						<div class="modal fade" id="userModal-{{circle._id.$oid}}" role="dialog" aria-labelledby="userModalLabel-{{circle._id.$oid}}" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+										<h4 class="modal-title" id="userModalLabel-{{circle._id.$oid}}">Add users to circle '{{circle.name}}'</h4>
+									</div>
+									<div class="modal-body">
+										<ul class="nav nav-tabs">
+											<li class="active"><a href="#contacts-{{circle._id.$oid}}" data-toggle="tab">Contacts</a></li>
+											<li><a href="#all-{{circle._id.$oid}}" data-toggle="tab">All users</a></li>
+										</ul>
+										<div class="tab-content">
+											<div id="contacts-{{circle._id.$oid}}" class="tab-pane fade active in">
+												<p ng-show="contacts.length === 0">You have no users in your circles yet.</p>
+												<div ng-show="contacts.length > 0">
+													<div class="checkbox" ng-repeat="contact in filteredContacts = (contacts | filter:isntMember)">
+														<label>
+															<input type="checkbox" ng-model="contact.checked">
+															{{contact.name}}
+														</label>
+													</div>
+													<p ng-show="filteredContacts.length === 0">No contacts can be added to this circle.</p>
+												</div>
+											</div>
+											<div id="all-{{circle._id.$oid}}" class="tab-pane fade">
+												<form class="form-horizontal" ng-submit="searchUsers(circle)">
+													<div class="form-group">
+														<div class="col-xs-10">
+															<input type="text" class="form-control" placeholder="Search for a user" ng-model="circle.userQuery" autofocus>
+														</div>
+														<div class="col-xs-2">
+															<button type="submit" class="btn btn-primary form-control">Search</button>
+														</div>
+													</div>
+												</form>
+												<p ng-show="searching">Searching...</p>
+												<p ng-show="!searching && foundUsers.length === 0">No users matched your search.</p>
+												<div ng-show="!searching && foundUsers.length > 0">
+													<div class="checkbox" ng-repeat="user in filteredUsers = (foundUsers | filter:isntMember)">
+														<label>
+															<input type="checkbox" ng-model="user.checked">
+															{{user.name}}
+														</label>
+													</div>
+													<p ng-show="filteredUsers.length === 0">All found users are already members of this circle.</p>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addUsers(circle)">Add</button>
+										<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+						
+		</div>
+		
+		@views.html.details.dashboard("circles")
+		
+		<!-- New circle modal -->
+		<div class="modal fade" id="circleModal" role="dialog" aria-labelledby="circleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="circleModalLabel">Create a new circle</h4>
+					</div>
+					<form ng-submit="addCircle()">
+						<div class="modal-body">
+							<input type="text" class="form-control" placeholder="Name" ng-model="newCircleName" autofocus>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary">Create</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		
+	</div>
+	

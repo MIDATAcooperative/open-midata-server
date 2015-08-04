@@ -48,6 +48,7 @@ public class Users extends Controller {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(Secured.class)
+	@APICall
 	public static Result get() {
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -104,11 +105,13 @@ public class Users extends Controller {
 	}
 
 	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
 	public static Result getCurrentUser() {
 		return ok(Json.toJson(new ObjectId(request().username())));
 	}
 
 	@Security.Authenticated(Secured.class)
+	@APICall
 	public static Result search(String query) {
 		// TODO use caching/incremental retrieval of results (scrolls)
 		List<SearchResult> searchResults = Search.search(Type.USER, query);
@@ -138,6 +141,7 @@ public class Users extends Controller {
 	 * Prefetch contacts for completion suggestions.
 	 */
 	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
 	public static Result loadContacts() {
 		ObjectId userId = new ObjectId(request().username());
 		Set<ObjectId> contactIds = new HashSet<ObjectId>();
@@ -170,6 +174,7 @@ public class Users extends Controller {
 	 * Suggest users that complete the given query.
 	 */
 	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
 	public static Result complete(String query) {
 		return ok(Json.toJson(Search.complete(Type.USER, query)));
 	}
@@ -271,6 +276,7 @@ public class Users extends Controller {
 	 * Clear the list of pushed records of the current user.
 	 */
 	@Security.Authenticated(Secured.class)
+	@APICall
 	public static Result clearPushed() {
 		ObjectId userId = new ObjectId(request().username());
 		try {
@@ -286,6 +292,7 @@ public class Users extends Controller {
 	 * Clear the list of shared records of the current user.
 	 */
 	@Security.Authenticated(Secured.class)
+	@APICall
 	public static Result clearShared() {
 		ObjectId userId = new ObjectId(request().username());
 		try {

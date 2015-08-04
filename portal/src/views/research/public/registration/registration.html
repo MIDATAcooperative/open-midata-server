@@ -1,0 +1,53 @@
+	<div class="container" ng-controller="ResearchRegistrationCtrl" ng-cloak>
+		<div class="row">
+			<!-- Registration -->
+			<div class="col-sm-12">
+				<div class="panel-container" style="max-width:630px; padding-top:120px; margin:0 auto;">
+					<div class="panel panel-primary">
+		            	<div class="panel-heading">
+		              		<h3 class="panel-title">Research Sign up</h3>
+		            	</div>
+		            	<div class="panel-body">
+		            		<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	                          {{ error.message || error }}
+	                        </p>						
+							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="register()" role="form">
+							 <h3>Research Organisation</h3>
+							  <formrow myid="name" label="Name"> 
+							    <input type="text" class="form-control" id="name" name="name" placeholder="Name" ng-model="registration.name" ng-required="true">
+							    <formerror myid="name" type="exists" message="A research organisation with this name already exists."></formerror>
+							  </formrow>
+							  <formrow myid="description" label="Description">  <textarea class="form-control" id="description" name="description" rows="5" ng-model="registration.description" ng-required="true"></textarea> </formrow>
+							 <h3>Research User</h3>
+							  <formrow myid="email" label="Email">  
+							    <input type="email" class="form-control" id="email" name="email" placeholder="Email" ng-model="registration.email" ng-required="true">
+							    <formerror myid="email" type="email" message="Please enter a valid email address."></formerror>
+							    <formerror myid="email" type="exists" message="A user with this email is already registered."></formerror>
+							  </formrow>
+							  <formrow myid="password" label="Password">  
+							    <input type="password" class="form-control" id="password" name="password" placeholder="Password" ng-model="registration.password" ng-required="true">
+							    <formerror myid="password" type="compare" message="Password and password repetition do not match!"></formerror> 
+							  </formrow>
+							  <formrow myid="password2" label="Repeat Password">  <input type="password" class="form-control" id="password2" name="password2" placeholder="Password" ng-model="registration.password2" ng-required="true"> </formrow>
+							  <formrow myid="firstname" label="First Name">  <input type="text" class="form-control" id="firstname" name="firstname" placeholder="First Name" ng-model="registration.firstname" ng-required="true"> </formrow>
+							  <formrow myid="sirname" label="Surname">  <input type="text" class="form-control" id="sirname" name="sirname" placeholder="Surname" ng-model="registration.sirname" ng-required="true"> </formrow>
+							  
+							  <formrow myid="gender" label="Gender">  <select class="form-control" id="gender" name="gender" ng-model="registration.gender"><option value="FEMALE">female</option><option value="MALE">male</option></select> </formrow>
+							  
+							  <formrow myid="address1" label="Address">  <input type="text" class="form-control" id="address1" name="address1" placeholder="Enter your address here" ng-model="registration.address1" ng-required="true"> </formrow>
+							  <formrow myid="address2" label="">  <input type="text" class="form-control" id="address2" name="address2" placeholder="Second line for address" ng-model="registration.address2"> </formrow>
+							  <formrow myid="city" label="City">  <input type="text" class="form-control" id="city" name="city" placeholder="City" ng-model="registration.city" ng-required="true"> </formrow>
+							  <formrow myid="zip" label="Zip">  <input type="text" class="form-control" id="zip" name="zip" placeholder="Zip Code" ng-model="registration.zip" ng-required="true"> </formrow>
+							  <formrow myid="country" label="Country">  <select class="form-control" id="country" name="country" ng-model="registration.country" ng-required="true"><option value="CH">Switzerland</option></select> </formrow>
+                             
+                              <formrow myid="phone" label="Phone">  <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone" ng-model="registration.phone"> </formrow>
+                              <formrow myid="mobile" label="Mobile">  <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile Phone" ng-model="registration.mobile"> </formrow>
+                             <button type="submit" class="btn btn-lg btn-primary btn-block">Sign up</button>
+                            </form>
+		            	</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	

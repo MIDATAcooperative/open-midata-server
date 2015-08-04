@@ -1,0 +1,42 @@
+<div ng-controller="CreateRecordCtrl" class="ignore autosize">
+	<div class="body" ng-show="status.isBusy">Please wait...</div>
+	<div class="ignore" ng-hide="showapp">
+		<div class="clearfix body">
+			<div class="pull-left themeicon">
+				<img src="/assets/images/icons/add.png">
+			</div>
+			<p ng-show="!status.isBusy && apps.length == 0">You do not have any input forms installed.</p>
+			<p ng-show="apps.length">
+				<br />You have <span class="dashnumber">{{ apps.length }}</span> input forms:
+			</p>
+		</div>
+
+		<p ng-hide="status.isBusy || apps.length" class="body teaser">{{ view.teaser.text }}</p>
+		<ul class="list-group" ng-show="!status.isBusy && apps.length > 0 && apps.length < 7">
+			<li class="list-group-item" ng-repeat="app in apps"><a href="javascript:;" ng-click="selectApp(app._id.$oid, app.name)">{{app.name}}</a>
+			</li>
+		</ul>
+
+		<div class="footer" ng-show="apps.length > 6">
+			<div class="btn-group">
+				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+					<span class="glyphicon glyphicon-plus"></span> Create a new record
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li ng-repeat="app in apps"><a href="javascript:;" ng-click="selectApp(app._id.$oid, app.name)">{{app.name}}</a></li>
+				</ul>
+			</div>
+		</div>
+
+
+
+
+		<div ng-show="showapp && view.setup.allowSelection" class="body">
+			<button class="btn btn-default" ng-click="showAppList()">Back to list</button>
+		</div>
+		<div class="footer">
+			<a ng-href="{{ view.teaser.link }}" ng-if="!showapp && !apps.length" class="btn btn-primary">{{ view.teaser.button }}</a>
+		</div>
+	</div>
+	<div ng-if="showapp" class="preview"><iframe class="frame" ng-src="{{url}}" ng-cloak></iframe></div>
+</div>

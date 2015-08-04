@@ -1,27 +1,34 @@
 var services = angular.module('services', []);
-
-angular.module('portal', [ 'ui.router', 'services' ])
+var views = angular.module('views', ['services']);
+angular.module('portal', [ 'ui.router', 'services', 'views' ])
 .constant('apiurl', 'https://localhost:9000')
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+   //$httpProvider.defaults.useXDomain = true;
+   $httpProvider.defaults.withCredentials = true;
+   //delete $httpProvider.defaults.headers.common['X-Requested-With'];
+   
    $stateProvider
     .state('public', {
       url: '/portal',
-      templateUrl: 'common/html/public.html'
+      templateUrl: 'assets/nav/public.html'
     })
-    .state('public_hc', {
+    .state('public_providers', {
       url: '/hc',
-      templateUrl: 'common/html/public.html'
+      templateUrl: 'assets/nav/public.html'
     })
     .state('public_research', {
       url: '/research',
-      templateUrl: 'common/html/public.html'
+      templateUrl: 'assets/nav/public.html'
     })
     .state('public_developer', {
       url: '/developer',
-      templateUrl: 'common/html/public.html'
+      templateUrl: 'assets/nav/public.html'
     })
     .state('member', {
       url: '/member',
-      templateUrl: 'common/html/member.html'
-    });    
+      templateUrl: 'assets/nav/member.html'
+    });   
+   
+   $urlRouterProvider
+   .otherwise('/portal/login');
 });

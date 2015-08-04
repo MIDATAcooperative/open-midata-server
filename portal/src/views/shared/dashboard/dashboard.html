@@ -1,4 +1,38 @@
-    <div>		
-      DASHBOARD     
-    </div>
+    <div ng-cloak ng-controller="DashboardCtrl" dashid="@dashid">
     
+    <div ng-repeat="def in layout.full">
+   
+      <div class="panel panel-primary" ng-show="def.active">
+	    <div class="panel-heading">
+	      <span ng-click="makeSmall(def)">{{ def.title }}</span>
+	      <a ng-show="def.actions.remove" ng-click="remove(def)" class="pull-right"><span class="glyphicon glyphicon-remove-circle"></span></a>
+	      <a ng-show="def.actions.big" ng-href="{{def.actions.big}}" class="pull-right"><span class="glyphicon glyphicon-plus-sign"></span></a>
+	    </div>
+        <div class="ignore" ng-include="def.template"></div>		  
+	  </div>
+	
+	</div>
+	
+	<div class="row">
+	  
+	     <div ng-repeat="def in layout.small | orderBy : 'order'">
+	        <div class="col-lg-4 col-md-6" ng-show="def.active">        
+		      <div class="panel panel-primary">
+			    <div class="panel-heading">
+			      <span ng-click="makeBig(def)">{{ def.title }}</span>
+			      <a ng-show="def.actions.remove" ng-click="remove(def)" href="javascript:" class="pull-right"><span class="glyphicon glyphicon-remove-circle"></span></a>
+			      <a ng-show="def.actions.big" ng-href="{{def.actions.big}}" class="pull-right"><span class="glyphicon glyphicon-plus-sign"></span></a>
+			    </div>
+		        <div class="smallpanel ignore" ng-include="def.template"></div>		  
+			  </div>	
+	     </div>
+	     </div>	  
+	</div>
+	
+	<div ng-repeat="def in layout.modal">	  
+      <modal>
+	     <div ng-include="def.template"></div>
+	  </modal>	          
+	
+	</div>
+   </div>         

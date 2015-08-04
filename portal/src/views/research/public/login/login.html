@@ -1,0 +1,27 @@
+	<div class="container" ng-controller="ResearchLoginCtrl" ng-cloak>
+		<div class="row">
+			<!-- Login -->
+			<div class="col-sm-12">
+				<div class="panel-container" style="max-width:630px; padding-top:120px; margin:0 auto;">
+					<div class="panel panel-primary">
+		            	<div class="panel-heading">
+		              		<h3 class="panel-title">Research Login</h3>
+		            	</div>
+		            	<div class="panel-body">
+		            		<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	                          {{ error.message || error }}
+	                        </p>						
+							<form name="form" novalidate class="css-form form-horizontal" ng-submit="dologin()" role="form">							  
+							  <formrow myid="email" label="Email"><input type="email" class="form-control" id="email" placeholder="Email" ng-model="login.email" required></formrow>
+							  <formrow myid="password" label="Password"><input type="password" class="form-control" id="password" placeholder="Password" ng-model="login.password" required></formrow>							  
+                             <button type="submit" class="btn btn-lg btn-primary btn-block">Login</button>
+                            </form>
+                            <div class="margin-top">
+							   <a ui-sref="public_research.lostpw">Forgot your password?</a>							   
+							</div>
+		            	</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>

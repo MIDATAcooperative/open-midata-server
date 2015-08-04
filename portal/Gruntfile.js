@@ -52,7 +52,7 @@ module.exports = function(grunt) {
       main: {    
     	files : [
     	 { expand : true, cwd: 'src/', src: '**/*.html', dest: 'dest/' },
-    	 { expand : true, cwd: 'src/common/images/', src : '*', dest : 'dest/images' }    	 
+    	 { expand : true, cwd: 'src/assets/images/', src : '*', dest : 'dest/images' }    	 
         ]
       }
     },
@@ -61,11 +61,11 @@ module.exports = function(grunt) {
     concat: {
         
         js: {
-          src: ['src/portals/app.js', 'src/common/**/*.js', 'src/views/**/*.js' ],
+          src: ['src/portals/app.js', 'src/assets/**/*.js', 'src/views/**/*.js' ],
           dest: 'dest/app.js'
         },
         css : {
-          src : ['src/common/css/*' , 'src/views/**/*.less'],
+          src : ['src/assets/css/*' , 'src/views/**/*.less'],
           dest: 'dest/app.less'
         }
      },

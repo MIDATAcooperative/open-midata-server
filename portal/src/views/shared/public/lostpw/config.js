@@ -5,7 +5,7 @@ angular.module('portal')
 	      url: '/lostpw',
 	      templateUrl: 'views/shared/public/lostpw/lostpw.html' 
 	    })
-	    .state('public_hc.lostpw', {
+	    .state('public_providers.lostpw', {
 	      url: '/lostpw',
 	      templateUrl: 'views/shared/public/lostpw/lostpw.html' 
 	    })

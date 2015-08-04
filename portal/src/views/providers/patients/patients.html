@@ -1,0 +1,26 @@
+
+<div ng-controller="PatientsCtrl" ng-cloak>
+    <div class="page-header">
+	<h1>Patients</h1>
+	</div>
+	<div class="panel panel-primary">
+		<div class="panel-body">
+		
+	    <table class="table" ng-show="patients.length > 0">
+	      <tr>
+	        <th>Surname</th>
+	        <th>Firstname</th>
+	        <th>Birthday</th>
+	      </tr>
+	      <tr ng-repeat="patient in patients">
+	        <td><a href="javascript:" ng-click="selectPatient(patient)">{{ patient.sirname }}</a></td>
+	        <td>{{ patient.firstname }}</td>
+	        <td>{{ patient.birthday | date }}</td>
+	      </tr>
+	    </table>
+	    
+	    <p ng-show="patients.length == 0">No patients found.</p>
+	                  
+	    </div>	
+	</div>
+</div>

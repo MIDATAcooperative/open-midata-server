@@ -19,10 +19,11 @@ public class APICallAction extends Action<APICall> {
     	try {
     	  JsonNode json = ctx.request().body().asJson();
     	  ctx.args.put("json", json);
-    	  ctx.response().setHeader("Access-Control-Allow-Origin", "*");
+    	  ctx.response().setHeader("Access-Control-Allow-Origin", "http://localhost:9002");
     	  ctx.response().setHeader("Allow", "*");
+    	  ctx.response().setHeader("Access-Control-Allow-Credentials", "true");
     	  ctx.response().setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
-    	  ctx.response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent");
+    	  ctx.response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie");
           return delegate.call(ctx);
     	} catch (JsonValidationException e) {
     		if (e.getField() != null) {

@@ -1,0 +1,35 @@
+
+<div ng-controller="ListStudiesCtrl" ng-cloak>
+    <div class="page-header">
+	<h1>Studies</h1>
+	</div>
+	<div class="panel panel-primary">
+	<div class="panel-body">
+	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	   {{ error.message || error }}
+	</p>
+	<table ng-show="results.length > 0" class="table table-hover">
+	  <thead>
+	    <tr>
+	      <th>Name</th>
+	      <th>Validation</th>
+	      <th>Participants</th>
+	      <th>Execution</th>
+	      <th>Created</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr ng-repeat="study in results">
+	      <td><a ng-href="/research/studies/{{study._id.$oid}}/overview">{{ study.name }}</a></td>	  
+	      <td>{{ study.validationStatus }}</td>
+	      <td>{{ study.participantSearchStatus }}</td>
+	      <td>{{ study.executionStatus }}</td>
+	      <td>{{ study.createdAt | date }}</td>	         
+	    </tr>
+	  </tbody>
+	</table>
+	<p ng-hide="results.length">No studies have been created yet for your organisation.</p>
+	<a class="btn btn-primary" href="@routes.ResearchFrontend.createstudy()">Create new study</a>
+	</div>
+	</div>
+</div>	

@@ -1,0 +1,11 @@
+
+<ul class="nav nav-tabs">
+  <li @if("Study Overview".equals(active)){class="active"}><a href="@(rel)overview">Overview</a></li>
+  <li @if("Study Details".equals(active)){class="active"}><a href="@(rel)fields">Details</a></li>
+  <li @if("Study Participation Rules".equals(active)){class="active"}><a href="@(rel)rules">Rules</a></li>
+  <li @if("Study Participation Codes".equals(active)){class="active"}><a href="@(rel)codes">Codes</a></li>
+  <li @if("Study Participants".equals(active)){class="active"}><a href="@(rel)participants">Participants</a></li>
+  <li @if("Study Messages".equals(active)){class="active"}><a href="@(rel)messages">Messages</a></li>
+  <li @if("Study Records".equals(active)){class="active"}><a href="@(rel)records">Records</a></li>
+  <li @if("Study Results".equals(active)){class="active"}><a href="@(rel)results">Results</a></li>
+</ul>
