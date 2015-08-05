@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('AccountDataCtrl', ['$scope', '$http', '$attrs', 'users', 'views', 'status', 'currentUser', function($scope, $http, $attrs, users, views, status, currentUser) {
+.controller('AccountDataCtrl', ['$scope', 'server', '$attrs', 'users', 'views', 'status', 'currentUser', function($scope, server, $attrs, users, views, status, currentUser) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
     $scope.status = new status(true);

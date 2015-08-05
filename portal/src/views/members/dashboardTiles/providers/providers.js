@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('ListHealthProviderCtrl', ['$scope', '$http', '$attrs', 'views', 'hc', 'status', function($scope, $http, $attrs, views, hc, status) {
+.controller('ListHealthProviderCtrl', ['$scope', 'server', '$attrs', 'views', 'hc', 'status', function($scope, server, $attrs, views, hc, status) {
 	
 	$scope.results =[];
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);

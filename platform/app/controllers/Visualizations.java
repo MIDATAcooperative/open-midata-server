@@ -42,6 +42,7 @@ public class Visualizations extends APIController {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
 	public static Result get() {
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -116,6 +117,7 @@ public class Visualizations extends APIController {
 	}
 
 	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
 	public static Result uninstall(String visualizationIdString) {
 		ObjectId userId = new ObjectId(request().username());		
 		Set<String> fields = new ChainedSet<String>().add("visualizations").get();
@@ -130,6 +132,7 @@ public class Visualizations extends APIController {
 	}
 
 	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
 	public static Result isInstalled(String visualizationIdString) {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId visualizationId = new ObjectId(visualizationIdString);		
@@ -143,6 +146,7 @@ public class Visualizations extends APIController {
 	}
 
 	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
 	public static Result getUrl(String visualizationIdString) {
 		ObjectId visualizationId = new ObjectId(visualizationIdString);
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", visualizationId).get();

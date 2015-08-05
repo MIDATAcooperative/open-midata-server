@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('VisualizationCtrl', ['$scope', '$http', '$sce', function($scope, $http, $sce) {
+.controller('VisualizationCtrl', ['$scope', 'server', '$sce', function($scope, server, $sce) {
 	
 	// init
 	$scope.error = null;
@@ -10,7 +10,7 @@ angular.module('portal')
 	$scope.memberUrl = portalRoutes.controllers.ProviderFrontend.member($scope.memberId).url;
 	
 	// get current user
-	$http(jsRoutes.controllers.Users.getCurrentUser()).
+	server.get(jsRoutes.controllers.Users.getCurrentUser().url).
 		success(function(userId) {
 			$scope.userId = userId;
 			loadBaseUrl($scope.space);
@@ -18,7 +18,7 @@ angular.module('portal')
 		
 	// load visualization url for given space
 	loadBaseUrl = function(space) {
-		$http(jsRoutes.controllers.Visualizations.getUrl(space.visualization.$oid)).
+		server.get(jsRoutes.controllers.Visualizations.getUrl(space.visualization.$oid).url).
 			success(function(url) {
 				space.baseUrl = url;
 				getAuthToken(space);
@@ -29,7 +29,7 @@ angular.module('portal')
 	// get the authorization token for the current space
 	getAuthToken = function(space) {
 		var body = { "member" : $scope.memberId };		
-		$http.post(jsRoutes.controllers.providers.Providers.getVisualizationToken().url, body).
+		server.post(jsRoutes.controllers.providers.Providers.getVisualizationToken().url, body).
 			success(function(authToken) {
 				space.completedUrl = space.baseUrl.replace(":authToken", authToken);
 				reloadIframe(space);

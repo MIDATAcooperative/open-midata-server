@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ListStudiesCtrl', ['$scope', '$http', function($scope, $http) {
+.controller('ListStudiesCtrl', ['$scope', 'server', function($scope, server) {
 	
 	$scope.results =[];
 	$scope.error = null;
@@ -7,7 +7,7 @@ angular.module('portal')
 	
 	$scope.reload = function() {
 			
-		$http.get(jsRoutes.controllers.research.Studies.list().url).
+		server.get(jsRoutes.controllers.research.Studies.list().url).
 			success(function(data) { 				
 				$scope.results = data;
 				$scope.loading = false;

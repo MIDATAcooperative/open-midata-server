@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('SearchCtrl', ['$scope', '$http', '$sce', function($scope, $http, $sce) {
+.controller('SearchCtrl', ['$scope', 'server', '$sce', function($scope, server, $sce) {
 	
 	// init
 	$scope.error = null;
@@ -13,7 +13,7 @@ angular.module('portal')
 	
 	// start search
 	$scope.loading = true;
-	$http(jsRoutes.controllers.GlobalSearch.search($scope.query)).
+	server.get(jsRoutes.controllers.GlobalSearch.search($scope.query).url).
 		success(function(results) {
 			$scope.error = null;
 			$scope.results = results;

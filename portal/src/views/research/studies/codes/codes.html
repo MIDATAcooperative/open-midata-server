@@ -1,5 +1,4 @@
 <div ng-controller="CodesCtrl" ng-cloak>
-   @studynav("Study Participation Codes")
    
 	<div class="tab-content">
 	<div class="tab-pane active">
@@ -49,15 +48,15 @@
 	  </p>
 	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="generate()" role="form">
 	
-		@formrow("count","Number of Codes") { 
+		<formrow myid="count" label="Number of Codes"> 
 			<input type="number" class="form-control" id="count" name="count" placeholder="1" ng-model="newcodes.count" ng-required="true">
-		    @formerror("count","toolow","Please enter a positive number.")
-		    @formerror("count","toohigh","Please enter a lower number.") 
-  	    }
-  	    @formrow("group","Group") {
+		    <formerror myid="count" type="toolow" message="Please enter a positive number."></formerror>
+		    <formerror myid="count" type="toohigh" message="Please enter a lower number."></formerror> 
+  	    </formrow>
+  	    <formrow myid="group" label="Group">
   	        <input type="text" class="form-control" id="group" name="group" placeholder="" ng-model="newcodes.group">
-  	    }
-  	    @formrow("reuseable","Codes are reuseable?") {
+  	    </formrow>
+  	    <formrow myid="reuseable" label="Codes are reuseable?">
   	       <label class="radio-inline">
   	         <input type="radio" id="reuseable" name="reuseable" value="true" ng-model="newcodes.reuseable">
   	         yes
@@ -66,10 +65,10 @@
   	         <input type="radio" name="reuseable" value="false" ng-model="newcodes.reuseable">
   	         no
   	       </label>
-  	    }
-		@formrow("x", "") {
+        </formrow>  	    
+		<formrow myid="x" label="">
           <button type="submit" class="btn btn-primary">Generate</button>
-        }				
+        </formrow>
    </form>
    </div>
    </div>   

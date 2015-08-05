@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ParticipantCtrl', ['$scope', '$http', 'views', function($scope, $http, views) {
+.controller('ParticipantCtrl', ['$scope', 'server', 'views', function($scope, server, views) {
 	
 	$scope.studyid = window.location.pathname.split("/")[3];
 	$scope.memberid = window.location.pathname.split("/")[5];
@@ -13,7 +13,7 @@ angular.module('portal')
 			
 		views.setView("1", { aps : $scope.memberid, properties : { } , fields : [ "ownerName", "created", "id", "name" ]});
 		
-		$http.get(jsRoutes.controllers.research.Studies.getParticipant($scope.studyid, $scope.memberid).url).
+		server.get(jsRoutes.controllers.research.Studies.getParticipant($scope.studyid, $scope.memberid).url).
 			success(function(data) { 								
 				$scope.participation = data.participation;
 				$scope.member = data.member;

@@ -108,6 +108,7 @@ public class Market extends Controller {
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
 	public static Result registerVisualization() {
 		// validate json
 		JsonNode json = request().body().asJson();

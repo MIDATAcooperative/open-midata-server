@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('FlexibleRecordListCtrl', ['$scope', '$http', '$attrs', 'views', 'records', 'status', function($scope, $http, $attrs, views, records, status) {
+.controller('FlexibleRecordListCtrl', ['$scope', 'server', '$attrs', 'views', 'records', 'status', function($scope, server, $attrs, views, records, status) {
 			
 	$scope.records = [];	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);

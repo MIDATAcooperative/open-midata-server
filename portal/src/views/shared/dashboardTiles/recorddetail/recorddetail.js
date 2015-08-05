@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('RecordDetailCtrl', ['$scope', '$http', '$attrs', 'views', 'records', 'apps', 'status', function($scope, $http, $attrs, views, records, apps, status) {
+.controller('RecordDetailCtrl', ['$scope', 'server', '$attrs', 'views', 'records', 'apps', 'status', function($scope, server, $attrs, views, records, apps, status) {
 		
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
 	$scope.record = {};
@@ -29,7 +29,7 @@ angular.module('views')
     
 	var loadUserNames = function() {		
 		var data = {"properties": {"_id": [$scope.record.owner, $scope.record.creator]}, "fields": ["firstname", "sirname"]};
-		$scope.status.doSilent($http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data))).
+		$scope.status.doSilent(server.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data))).
 			then(function(result) {				
 				_.each(result.data, function(user) {
 					if ($scope.record.owner && $scope.record.owner.$oid === user._id.$oid) { $scope.record.owner = (user.firstname+" "+user.sirname).trim(); }

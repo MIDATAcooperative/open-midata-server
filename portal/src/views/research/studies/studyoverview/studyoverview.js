@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('StudyOverviewCtrl', ['$scope', '$http', function($scope, $http) {
+.controller('StudyOverviewCtrl', ['$scope', 'server', function($scope, server) {
 	
 	$scope.studyid = window.location.pathname.split("/")[3];
 	$scope.study = {};
@@ -8,7 +8,7 @@ angular.module('portal')
 		
 	$scope.reload = function() {
 			
-		$http.get(jsRoutes.controllers.research.Studies.get($scope.studyid).url).
+		server.get(jsRoutes.controllers.research.Studies.get($scope.studyid).url).
 			success(function(data) { 				
 				$scope.study = data;
 				$scope.loading = false;
@@ -45,7 +45,7 @@ angular.module('portal')
 	$scope.startValidation = function() {
 		$scope.error = null;
 		
-		$http.post(jsRoutes.controllers.research.Studies.startValidation($scope.studyid).url).
+		server.post(jsRoutes.controllers.research.Studies.startValidation($scope.studyid).url).
 		success(function(data) { 				
 		    $scope.reload();
 		}).
@@ -57,7 +57,7 @@ angular.module('portal')
 	$scope.startParticipantSearch = function() {
 		$scope.error = null;
 		
-		$http.post(jsRoutes.controllers.research.Studies.startParticipantSearch($scope.studyid).url).
+		server.post(jsRoutes.controllers.research.Studies.startParticipantSearch($scope.studyid).url).
 		success(function(data) { 				
 		    $scope.reload();
 		}).
@@ -69,7 +69,7 @@ angular.module('portal')
 	$scope.endParticipantSearch = function() {
 		$scope.error = null;
 		
-		$http.post(jsRoutes.controllers.research.Studies.endParticipantSearch($scope.studyid).url).
+		server.post(jsRoutes.controllers.research.Studies.endParticipantSearch($scope.studyid).url).
 		success(function(data) { 				
 		    $scope.reload();
 		}).
@@ -81,7 +81,7 @@ angular.module('portal')
 	$scope.startExecution = function() {
 		$scope.error = null;
 		
-		$http.post(jsRoutes.controllers.research.Studies.startExecution($scope.studyid).url).
+		server.post(jsRoutes.controllers.research.Studies.startExecution($scope.studyid).url).
 		success(function(data) { 				
 		    $scope.reload();
 		}).

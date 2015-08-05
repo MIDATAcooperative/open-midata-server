@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('ShareCtrl', ['$scope', '$http', '$attrs', 'views', 'circles', 'spaces', 'records', 'status', function($scope, $http, $attrs, views, circles, spaces, records, status) {
+.controller('ShareCtrl', ['$scope', 'server', '$attrs', 'views', 'circles', 'spaces', 'records', 'status', function($scope, server, $attrs, views, circles, spaces, records, status) {
 	
 	$scope.circles = [];	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);

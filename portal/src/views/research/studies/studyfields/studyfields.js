@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RequiredInformationCtrl', ['$scope', '$http', function($scope, $http) {
+.controller('RequiredInformationCtrl', ['$scope', 'server', function($scope, server) {
    $scope.information = {};
    $scope.studyid = window.location.pathname.split("/")[3];	
    $scope.error = null;
@@ -7,7 +7,7 @@ angular.module('portal')
    
    $scope.reload = function() {
 	   
-	   $http.get(jsRoutes.controllers.research.Studies.getRequiredInformationSetup($scope.studyid).url).
+	   server.get(jsRoutes.controllers.research.Studies.getRequiredInformationSetup($scope.studyid).url).
 		success(function(data) { 								
 			$scope.information = data;			
 			$scope.loading = false;
@@ -21,7 +21,7 @@ angular.module('portal')
    $scope.setRequiredInformation = function() {
 	   var params = $scope.information;
 	   
-	   $http.post(jsRoutes.controllers.research.Studies.setRequiredInformationSetup($scope.studyid).url, params).
+	   server.post(jsRoutes.controllers.research.Studies.setRequiredInformationSetup($scope.studyid).url, params).
 		success(function(data) { 				
 		    $scope.reload();
 		}).

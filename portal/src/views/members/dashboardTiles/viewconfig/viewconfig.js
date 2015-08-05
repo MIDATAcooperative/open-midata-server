@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('ViewConfigCtrl', ['$scope', '$http', '$attrs', '$sce', 'views', 'status', 'spaces', 'currentUser', 'apps', function($scope, $http, $attrs, $sce, views, status, spaces, currentUser, apps) {
+.controller('ViewConfigCtrl', ['$scope', 'server', '$attrs', '$sce', 'views', 'status', 'spaces', 'currentUser', 'apps', function($scope, server, $attrs, $sce, views, status, spaces, currentUser, apps) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
     $scope.status = new status(true);
@@ -42,7 +42,7 @@ angular.module('views')
 				setup : {
 					text : vis.teaser,
 		        	link : ("/members/visualizations/" + vis.id+"#?next="+encodeURIComponent(document.location.href)+"&name="+encodeURIComponent(vis.title)+"&query="+encodeURIComponent(JSON.stringify(vis.spaces[0].query))+"&context="+encodeURIComponent(vis.spaces[0].context)),
-		        	icon : "/assets/images/icons/add.png",
+		        	icon : "/images/icons/add.png",
 		        	button : "Info + Install"
 				}
 		};	
@@ -53,7 +53,7 @@ angular.module('views')
     	 var spacedef =
 	     {
 	    	   id : "space"+space._id.$oid,
-	    	   template : "/assets/views/members/spacesummary.html",
+	    	   template : "/views/members/dashboardTiles/spacesummary/spacesummary.html",
 	    	   title : space.name,
 	    	   active : true,
 	    	   position : "small",
@@ -87,13 +87,13 @@ angular.module('views')
     		  views.layout.small.push(views.def({
     			id : "addmore",
     			order : 1000,
-  				template : "/assets/views/members/info/simpleadd.html",
+  				template : "/views/shared/dashboardTiles/simpleadd/simpleadd.html",
   				title : "Add more",
   				position : "small",
   				active : true,
   				setup : {  					
-  		        	link : "/members/market#?next="+encodeURIComponent(document.location.href)+"&context="+encodeURIComponent($scope.view.setup.context),
-  		        	icon : "/assets/images/icons/add.png",
+  		        	link : "^.market({ next : '"+document.location.href+"', context : '"+$scope.view.setup.context+"'})",
+  		        	icon : "/images/icons/add.png",
   		        	button : "Install from Market"
   				}
     		  }));  

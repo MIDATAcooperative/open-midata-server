@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('Spaces2Ctrl', ['$scope', '$http', '$sce', 'status', 'spaces', 'views', function($scope, $http, $sce, status, spaces, views) {
+.controller('Spaces2Ctrl', ['$scope', 'server', '$sce', 'status', 'spaces', 'views', function($scope, server, $sce, status, spaces, views) {
 	
 	// init
 	$scope.error = null;
@@ -10,7 +10,7 @@ angular.module('portal')
 	
 	
 	// get current user
-	$http(jsRoutes.controllers.Users.getCurrentUser()).
+	server.get(jsRoutes.controllers.Users.getCurrentUser().url).
 		success(function(userId) {
 			$scope.userId = userId;
 			getAuthToken($scope.space);
@@ -78,7 +78,7 @@ angular.module('portal')
 	
 	// delete a space
 	$scope.deleteSpace = function(space) {
-		$http(jsRoutes.controllers.Spaces["delete"](space._id.$oid)).
+		server.delete(jsRoutes.controllers.Spaces["delete"](space._id.$oid).url).
 			success(function() {
 				$scope.error = null;
 				$scope.spaces.splice($scope.spaces.indexOf(space), 1);

@@ -1,5 +1,5 @@
 var participation = angular.module('participation', [ 'services', 'views', 'dashboards']);
-participation.controller('EnterCodeCtrl', ['$scope', '$http', function($scope, $http) {
+participation.controller('EnterCodeCtrl', ['$scope', 'server', function($scope, server) {
 	
 	$scope.code = {};
 	$scope.error = null;
@@ -18,7 +18,7 @@ participation.controller('EnterCodeCtrl', ['$scope', '$http', function($scope, $
 		// send the request
 		var data = $scope.code;		
 		
-		$http.post(jsRoutes.controllers.members.Studies.enterCode().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.members.Studies.enterCode().url, JSON.stringify(data)).
 			success(function(data) { 
 				window.location.replace(portalRoutes.controllers.MemberFrontend.studydetails(data.study).url); 
 			}).
@@ -29,11 +29,11 @@ participation.controller('EnterCodeCtrl', ['$scope', '$http', function($scope, $
 	};
 }]);
 
-participation.controller('StudiesCtrl', ['$scope', '$http', 'views', function($scope, $http, views) {
+participation.controller('StudiesCtrl', ['$scope', 'server', 'views', function($scope, server, views) {
   views.setView("newstudies", { properties : { }, fields : ["name"] });		
 }]);
 
-participation.controller('ListStudiesCtrl', ['$scope', '$http', '$attrs', 'views', 'status', function($scope, $http, $attrs, views, status) {
+participation.controller('ListStudiesCtrl', ['$scope', 'server', '$attrs', 'views', 'status', function($scope, server, $attrs, views, status) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
 	$scope.status = new status(true);
@@ -42,7 +42,7 @@ participation.controller('ListStudiesCtrl', ['$scope', '$http', '$attrs', 'views
 	$scope.reload = function() {
 		if (!$scope.view.active) return;
 			
-		$scope.status.doBusy($http.get(jsRoutes.controllers.members.Studies.list().url)).
+		$scope.status.doBusy(server.get(jsRoutes.controllers.members.Studies.list().url)).
 		then(function(results) { 				
 		   $scope.results = results.data;			
 		});
@@ -51,7 +51,7 @@ participation.controller('ListStudiesCtrl', ['$scope', '$http', '$attrs', 'views
 	$scope.reload();
 	
 }]);
-participation.controller('StudyDetailCtrl', ['$scope', '$http', 'views', function($scope, $http, views) {
+participation.controller('StudyDetailCtrl', ['$scope', 'server', 'views', function($scope, server, views) {
 	
 	$scope.studyid = window.location.pathname.split("/")[3];
 	$scope.study = {};
@@ -65,7 +65,7 @@ participation.controller('StudyDetailCtrl', ['$scope', '$http', 'views', functio
 	
 	$scope.reload = function() {
 			
-		$http.get(jsRoutes.controllers.members.Studies.get($scope.studyid).url).
+		server.get(jsRoutes.controllers.members.Studies.get($scope.studyid).url).
 			success(function(data) { 				
 				$scope.study = data.study;
 				$scope.participation = data.participation;
@@ -100,7 +100,7 @@ participation.controller('StudyDetailCtrl', ['$scope', '$http', 'views', functio
 	$scope.requestParticipation = function() {
 		$scope.error = null;
 		
-		$http.post(jsRoutes.controllers.members.Studies.requestParticipation($scope.studyid).url).
+		server.post(jsRoutes.controllers.members.Studies.requestParticipation($scope.studyid).url).
 		success(function(data) { 				
 		    $scope.reload();
 		}).
@@ -112,7 +112,7 @@ participation.controller('StudyDetailCtrl', ['$scope', '$http', 'views', functio
 	$scope.noParticipation = function() {
 		$scope.error = null;
 		
-		$http.post(jsRoutes.controllers.members.Studies.noParticipation($scope.studyid).url).
+		server.post(jsRoutes.controllers.members.Studies.noParticipation($scope.studyid).url).
 		success(function(data) { 				
 		    $scope.reload();
 		}).

@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('CirclesCtrl', ['$scope', '$http', 'currentUser', 'views', function($scope, $http, currentUser, views) {
+.controller('CirclesCtrl', ['$scope', 'server', 'currentUser', 'views', function($scope, server, currentUser, views) {
 	
 	// init
 	$scope.error = null;
@@ -18,7 +18,7 @@ angular.module('portal')
 	loadCircles = function(userId) {		
 		//var fields = ["name", "members", "order"];
 		var data = {"owner": userId.$oid};
-		$http.post(jsRoutes.controllers.Circles.get().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Circles.get().url, JSON.stringify(data)).
 			success(function(circles) {
 				$scope.circles = circles;
 				loadContacts();
@@ -45,7 +45,7 @@ angular.module('portal')
 		var properties = {"_id": contactIds};
 		var fields = ["firstname", "sirname"];
 		var data = {"properties": properties, "fields": fields};
-		$http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
 			success(function(contacts) {
 				$scope.contacts = contacts;
 				_.each(contacts, function(contact) { $scope.userNames[contact._id.$oid] = (contact.firstname + " " + contact.sirname).trim(); });
@@ -72,7 +72,7 @@ angular.module('portal')
 			$scope.error = "Please provide a name for the new circle.";
 		} else {
 			var data = {"name": name};
-			$http.post(jsRoutes.controllers.Circles.add().url, JSON.stringify(data)).
+			server.post(jsRoutes.controllers.Circles.add().url, JSON.stringify(data)).
 				success(function(newCircle) {
 					$scope.error = null;
 					$scope.newCircleName = null;
@@ -85,7 +85,7 @@ angular.module('portal')
 	
 	// delete a circle
 	$scope.deleteCircle = function(circle) {
-		$http(jsRoutes.controllers.Circles["delete"](circle._id.$oid)).
+		server.delete(jsRoutes.controllers.Circles["delete"](circle._id.$oid).url).
 			success(function() {
 				$scope.error = null;
 				$scope.circles.splice($scope.circles.indexOf(circle), 1);
@@ -108,7 +108,7 @@ angular.module('portal')
 		$scope.searching = true;
 		var query = circle.userQuery;
 		if (query) {
-		$http(jsRoutes.controllers.Users.search(query)).
+		server.get(jsRoutes.controllers.Users.search(query).url).
 			success(function(users) {
 				$scope.error = null;
 				$scope.foundUsers = users;
@@ -131,7 +131,7 @@ angular.module('portal')
 		userIds = _.uniq(userIds, false, function(userId) { return userId.$oid; });
 		
 		var data = {"users": userIds};
-		$http.post(jsRoutes.controllers.Circles.addUsers(circle._id.$oid).url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Circles.addUsers(circle._id.$oid).url, JSON.stringify(data)).
 			success(function() {
 				$scope.error = null;
 				$scope.foundUsers = [];
@@ -144,7 +144,7 @@ angular.module('portal')
 	
 	// remove a user
 	$scope.removeMember = function(circle, userId) {
-		$http(jsRoutes.controllers.Circles.removeMember(circle._id.$oid, userId.$oid)).
+		server.post(jsRoutes.controllers.Circles.removeMember(circle._id.$oid, userId.$oid).url).
 			success(function() {
 				$scope.error = null;
 				circle.members.splice(circle.members.indexOf(userId), 1);

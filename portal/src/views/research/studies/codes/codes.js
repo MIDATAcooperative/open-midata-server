@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('CodesCtrl', ['$scope', '$http', function($scope, $http) {
+.controller('CodesCtrl', ['$scope', 'server', function($scope, server) {
 	
 	$scope.studyid = window.location.pathname.split("/")[3];
 	$scope.codes = null;
@@ -12,7 +12,7 @@ angular.module('portal')
 		
 	$scope.reload = function() {
 			
-		$http.get(jsRoutes.controllers.research.Studies.listCodes($scope.studyid).url).
+		server.get(jsRoutes.controllers.research.Studies.listCodes($scope.studyid).url).
 			success(function(data) { 				
 				$scope.codes = data;
 				$scope.loading = false;
@@ -37,7 +37,7 @@ angular.module('portal')
 		// send the request
 		var data = $scope.newcodes;		
 		
-		$http.post(jsRoutes.controllers.research.Studies.generateCodes($scope.studyid).url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.research.Studies.generateCodes($scope.studyid).url, JSON.stringify(data)).
 			success(function(url) { $scope.reload(); }).
 			error(function(err) {
 				$scope.newcodes.error = err;

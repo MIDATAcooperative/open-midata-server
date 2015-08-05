@@ -5,11 +5,11 @@
 	<div class="panel panel-primary">
 	<div class="panel-body">
 	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="dosearch()" role="form">								  	  
-	  @formrow("midataID","Midata ID") {  <input type="text" class="form-control" id="midataID" name="midataID" ng-model="criteria.midataID" > }
-	  @formrow("birthday","Birthday") {  <input type="text" class="form-control" id="birthday" name="birthday" ng-model="criteria.birthday" > }							  							  	  
-      @formrow("x","") {
+	  <formrow myid="midataID" label="Midata ID"><input type="text" class="form-control" id="midataID" name="midataID" ng-model="criteria.midataID" ></formrow>
+	  <formrow myid="birthday" label="Birthday"><input type="text" class="form-control" id="birthday" name="birthday" ng-model="criteria.birthday" ></formrow>							  							  	  
+      <formrow myid="x" label="">
         <button type="submit" class="btn btn-primary">Search</button>
-      }
+      </formrow>
     </form>
     
     <div ng-show="member">

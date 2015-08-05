@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RecordsCtrl', ['$scope', '$http',  '$filter', '$location', 'dateService', 'records', 'circles', 'formats', 'status', function($scope, $http, $filter, $location, dateService, records, circles, formats, status) {
+.controller('RecordsCtrl', ['$scope', 'server',  '$filter', '$location', 'dateService', 'records', 'circles', 'formats', 'apps', 'status', function($scope, server, $filter, $location, dateService, records, circles, formats, apps, status) {
 	
 	// init
 	$scope.error = null;
@@ -15,7 +15,7 @@ angular.module('portal')
 	$scope.status = new status(true);
 	
 	// get current user
-	$http(jsRoutes.controllers.Users.getCurrentUser()).
+	server.get(jsRoutes.controllers.Users.getCurrentUser().url).
 		success(function(userId) {
 			$scope.userId = userId;
 			$scope.availableAps = [{ name : "My Data", aps:userId, owner : "self"  }, { name : "All Data", aps:userId, owner : "all"}];
@@ -44,12 +44,10 @@ angular.module('portal')
 	$scope.getApps = function(userId) {
 		var properties = {"_id": userId};
 		var fields = ["apps"];
-		var data = {"properties": properties, "fields": fields};
-		$http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
-			success(function(users) {
-				$scope.getAppDetails(users[0].apps);
-			}).
-			error(function(err) { $scope.error = "Failed to load apps: " + err; });
+		apps.getApps(properties, fields)
+		.then(function(results) {
+				$scope.getAppDetails(results.data[0].apps);
+		});
 	};
 	
 	// get name and type for app ids
@@ -57,7 +55,7 @@ angular.module('portal')
 		var properties = {"_id": appIds, "type" : ["create","oauth1","oauth2"] };
 		var fields = ["name", "type"];
 		var data = {"properties": properties, "fields": fields};
-		$http.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
 			success(function(apps) {
 				$scope.apps = apps;
 				$scope.loadingApps = false;
@@ -177,7 +175,7 @@ angular.module('portal')
 	};
 	
 	$scope.deleteRecord = function(record, group) {
-		$http.post(jsRoutes.controllers.Records["delete"]().url, { "_id" : record.id }).
+		server.post(jsRoutes.controllers.Records["delete"]().url, { "_id" : record.id }).
 		success(function(data) {
 			group.records.splice(group.records.indexOf(record), 1);
 		});
@@ -205,7 +203,7 @@ angular.module('portal')
 	
 	$scope.loadShared = function() {
 		if ($scope.shared == null) {
-			$http.get(jsRoutes.controllers.Records.getSharingInfo().url).
+			server.get(jsRoutes.controllers.Records.getSharingInfo().url).
 			success(function(data) {			
 				$scope.shared = data.shared;
 				$scope.circles = data.circles;
@@ -229,7 +227,7 @@ angular.module('portal')
 	
 	$scope.loadSharingDetails = function() {
 		if ($scope.selectedAps == null) return;
-		$scope.status.doBusy($http.get(jsRoutes.controllers.Records.getSharingDetails($scope.selectedAps._id.$oid).url)).
+		$scope.status.doBusy(server.get(jsRoutes.controllers.Records.getSharingDetails($scope.selectedAps._id.$oid).url)).
 		then(function(results) {
 			console.log(results.data);
 		    $scope.sharing = results.data;

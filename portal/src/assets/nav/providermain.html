@@ -1,0 +1,37 @@
+
+	<!-- Navbar -->
+	<header id="navbar" class="navbar navbar-default" role="navigation" ng-controller="NavbarCtrl">
+	  <div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="javascript:">
+           		<img width="40%" src="/images/logo2.png" alt="Midata.coop" />
+           	</a>
+		</div>
+		<nav class="collapse navbar-collapse navbar-ex1-collapse">
+			<ul class="nav navbar-nav">            	
+				<li ui-sref-active="active"><a ui-sref="provider.messages">Messages</a></li>
+				<li ui-sref-active="active"><a ui-sref="provider.patientsearch">New Patient</a></li>
+				<li ui-sref-active="active"><a ui-sref="provider.patients">Patients</a></li>				
+				<li ui-sref-active="active"><a ui-sref="provider.research">Research</a></li>
+				<li ui-sref-active="active"><a ui-sref="provider.market">Market</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right" ng-cloak>
+				<li>{{user.name}}</li>
+				<li><a href="@routes.Application.logout()">
+					<span class="glyphicon glyphicon-off"></span> Sign out
+				</a></li>
+		    </ul>
+	    </nav>	    
+	   </div>
+	</header>
+	
+	<div class="container mainpart">
+		<div ui-view></div>
+	</div>
+	

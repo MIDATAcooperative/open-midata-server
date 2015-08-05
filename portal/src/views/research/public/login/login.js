@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ResearchLoginCtrl', ['$scope', '$http', function($scope, $http) {
+.controller('ResearchLoginCtrl', ['$scope', 'server', function($scope, server) {
 	
 	// init
 	$scope.login = {};
@@ -15,7 +15,7 @@ angular.module('portal')
 		
 		// send the request
 		var data = {"email": $scope.login.email, "password": $scope.login.password};
-		$http.post(jsRoutes.controllers.research.Researchers.login().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.research.Researchers.login().url, JSON.stringify(data)).
 			success(function(url) { window.location.replace(portalRoutes.controllers.ResearchFrontend.messages().url); }).
 			error(function(err) { $scope.error = err; });
 	};

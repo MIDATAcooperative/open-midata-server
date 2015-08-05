@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ResearchRegistrationCtrl', ['$scope', '$http', function($scope, $http) {
+.controller('ResearchRegistrationCtrl', ['$scope', 'server', function($scope, server) {
 	
 	$scope.registration = {};
 	$scope.error = null;
@@ -19,7 +19,7 @@ angular.module('portal')
 		// send the request
 		var data = $scope.registration;		
 		
-		$http.post(jsRoutes.controllers.research.Researchers.register().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.research.Researchers.register().url, JSON.stringify(data)).
 			success(function(url) { window.location.replace(portalRoutes.controllers.ResearchFrontend.messages().url); }).
 			error(function(err) {
 				$scope.error = err;

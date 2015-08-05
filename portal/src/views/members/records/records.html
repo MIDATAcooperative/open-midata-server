@@ -6,7 +6,7 @@
 				<p ng-show="loadingApps">Loading apps...</p>
 				<div ng-show="!loadingApps && apps.length === 0">
 					<p>You can create or import records with apps.</p>
-					<p>Go to the <a href="@routes.Market.index()">Market</a> to install one.</p>
+					<p>Go to the <a ui-sref="^.market">Market</a> to install one.</p>
 				</div>
 				<div class="btn-group" ng-show="!loadingApps && apps.length > 0">
 					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">

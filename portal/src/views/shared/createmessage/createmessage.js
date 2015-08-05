@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('CreateMessageCtrl', ['$scope', '$http', function($scope, $http) {
+.controller('CreateMessageCtrl', ['$scope', 'server', function($scope, server) {
 	
 	// init
 	$scope.error = null;
@@ -9,7 +9,7 @@ angular.module('portal')
 	$scope.contacts = [];
 	
 	// prefetch contacts
-	$http(jsRoutes.controllers.Users.loadContacts()).
+	server.get(jsRoutes.controllers.Users.loadContacts().url).
 		success(function(contacts) {
 			$scope.contacts = contacts;
 			initTypeahead();
@@ -66,7 +66,7 @@ angular.module('portal')
 		var receiverIds = _.uniq(_.map($scope.message.receivers, function(receiver) { return receiver.id; }));
 		var receivers = _.map(receiverIds, function(receiverId) { return {"$oid": receiverId}; });
 		var data = {"receivers": receivers, "title": $scope.message.title, "content": $scope.message.content};
-		$http.post(jsRoutes.controllers.Messages.send().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Messages.send().url, JSON.stringify(data)).
 			success(function() {
 				$scope.success = "Your message was sent.";
 				$scope.message = {};

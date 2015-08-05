@@ -52,7 +52,7 @@ module.exports = function(grunt) {
       main: {    
     	files : [
     	 { expand : true, cwd: 'src/', src: '**/*.html', dest: 'dest/' },
-    	 { expand : true, cwd: 'src/assets/images/', src : '*', dest : 'dest/images' }    	 
+    	 { expand : true, cwd: 'src/assets/images/', src : '**/*', dest : 'dest/images' }    	 
         ]
       }
     },

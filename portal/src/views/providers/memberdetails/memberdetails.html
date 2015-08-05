@@ -23,7 +23,7 @@
     </div>
     </div>
     
-    @views.html.details.dashboard("memberdetails")
+    <div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
        
     
     
@@ -48,7 +48,7 @@
 						</li>
 					</ul>
 			   </div>
-    <a href="@routes.ProviderFrontend.search()" class="btn btn-default">Back</a>
+    <a ui-sref="^.patientsearch" class="btn btn-default">Back</a>
     
             
 </div>

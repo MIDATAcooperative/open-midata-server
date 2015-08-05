@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ProviderCreateRecordsCtrl', ['$scope', '$http', '$sce', function($scope, $http, $sce) {
+.controller('ProviderCreateRecordsCtrl', ['$scope', 'server', '$sce', function($scope, server, $sce) {
 	
 	// init
 	$scope.error = null;
@@ -12,7 +12,7 @@ angular.module('portal')
 	console.log($scope.memberUrl);
 	
 	// get app url
-	$http(jsRoutes.controllers.Apps.getUrlForMember(appId, userId)).
+	server.get(jsRoutes.controllers.Apps.getUrlForMember(appId, userId).url).
 		success(function(url) {
 			$scope.error = null;
 			$scope.url = $sce.trustAsResourceUrl(url);

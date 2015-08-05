@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('MemberDetailsCtrl', ['$scope', '$http', 'views', function($scope, $http, views) {
+.controller('MemberDetailsCtrl', ['$scope', 'server', 'views', function($scope, server, views) {
 	
 	$scope.memberid = window.location.pathname.split("/")[3];
 	$scope.member = {};	
@@ -8,7 +8,7 @@ angular.module('portal')
 	views.link("1", "record", "record");
 	$scope.reload = function() {
 			
-		$http.get(jsRoutes.controllers.providers.Providers.getMember($scope.memberid).url).
+		server.get(jsRoutes.controllers.providers.Providers.getMember($scope.memberid).url).
 			success(function(data) { 												
 				$scope.member = data.member;
 				$scope.memberkey = data.memberkey;
@@ -35,7 +35,7 @@ angular.module('portal')
 	
 	
 	// get current user
-	$http(jsRoutes.controllers.Users.getCurrentUser()).
+	server.get(jsRoutes.controllers.Users.getCurrentUser().url).
 		success(function(userId) {
 			$scope.userId = userId;
 			$scope.getApps(userId);			
@@ -46,7 +46,7 @@ angular.module('portal')
 		var properties = {"_id": userId};
 		var fields = ["apps", "visualizations"];
 		var data = {"properties": properties, "fields": fields};
-		$http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
 			success(function(users) {
 				$scope.getAppDetails(users[0].apps);
 				$scope.getVisualizationDetails(users[0].visualizations);
@@ -59,7 +59,7 @@ angular.module('portal')
 		var properties = {"_id": appIds, "type" : ["create","oauth1","oauth2"] };
 		var fields = ["name", "type"];
 		var data = {"properties": properties, "fields": fields};
-		$http.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
 			success(function(apps) {
 				$scope.apps = apps;
 				$scope.loadingApps = false;
@@ -72,7 +72,7 @@ angular.module('portal')
 		var properties = {"_id": visualizationIds };
 		var fields = ["name", "type"];
 		var data = {"properties": properties, "fields": fields};
-		$http.post(jsRoutes.controllers.Visualizations.get().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Visualizations.get().url, JSON.stringify(data)).
 			success(function(visualizations) {
 				$scope.visualizations = visualizations;
 				$scope.loadingVisualizations = false;

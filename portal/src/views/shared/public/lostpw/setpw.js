@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('SetPasswordCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+.controller('SetPasswordCtrl', ['$scope', 'server', '$location', function($scope, server, $location) {
 	
 	// init
 	$scope.setpw = {
@@ -23,7 +23,7 @@ angular.module('portal')
 		
 		// send the request
 		var data = { "token": $scope.setpw.token, "password" : $scope.setpw.password };
-		$http.post(jsRoutes.controllers.Application.setPasswordWithToken().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Application.setPasswordWithToken().url, JSON.stringify(data)).
 			success(function() { $scope.setpw.success = true; }).
 			error(function(err) { $scope.error = err; });
 	};

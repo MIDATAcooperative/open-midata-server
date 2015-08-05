@@ -1,5 +1,4 @@
 
-    @studynav("Study Details")
     <div class="tab-content">
     <div class="tab-pane active">
 	
@@ -10,7 +9,7 @@
 	<h2>Required demographic data</h2>
 	<p class="alert alert-info">This setup cannot be changed anymore after Study has been validated.</p>
 	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="setRequiredInformation()" role="form">
-	  @formrow("identity","Member Identity") {
+	  <formrow myid="identity" label="Member Identity">
 	     <div class="radio">
   	       <label>
   	        <input type="radio" name="identity" value="RESTRICTED" ng-model="information.identity">
@@ -24,10 +23,10 @@
   	         <strong>Not Anonymous</strong>, requests member to share full name, birthday and contact Information (address, phone, eMail) 
   	     </label>
   	    </div>
-      }      
-      @formrow("x", "") {
+      </formrow>
+      <formrow myid="x" label="">
         <button type="submit" class="btn btn-primary">Change</button>
-      }
+      </formrow>
     </form>
     </div>
     </div>	

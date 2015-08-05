@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('FlexibleStudiesCtrl', ['$scope', '$http', '$attrs', 'views', 'studies', 'status', function($scope, $http, $attrs, views, studies, status) {
+.controller('FlexibleStudiesCtrl', ['$scope', 'server', '$attrs', 'views', 'studies', 'status', function($scope, server, $attrs, views, studies, status) {
 	
 	$scope.studies = [];	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);

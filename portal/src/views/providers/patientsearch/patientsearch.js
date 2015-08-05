@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('MemberSearchCtrl', ['$scope', '$http', function($scope, $http) {
+.controller('MemberSearchCtrl', ['$scope', 'server', function($scope, server) {
 	
 	$scope.criteria = {};
 	$scope.member = null;
@@ -9,7 +9,7 @@ angular.module('portal')
 	$scope.dosearch = function() {
 		$scope.loading = true;
 		
-		$http.post(jsRoutes.controllers.providers.Providers.search().url, $scope.criteria).
+		server.post(jsRoutes.controllers.providers.Providers.search().url, $scope.criteria).
 		success(function(data) { 				
 		    $scope.member = data;
 		    $scope.error = null;

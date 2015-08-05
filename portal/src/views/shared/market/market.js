@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('MarketCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+.controller('MarketCtrl', ['$scope', 'server', '$location', function($scope, server, $location) {
 	
 	var pathsegment = window.location.pathname.split("/")[1];
 	// init
@@ -16,10 +16,10 @@ angular.module('portal')
 	var properties = {"spotlighted": true, "targetUserRole" : [ $scope.targetRole, "ANY"] };
 	var fields = ["name", "type", "description"];
 	var data = {"properties": properties, "fields": fields};
-	$http.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
+	server.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
 		success(function(apps) { $scope.apps.spotlighted = apps; }).
 		error(function(err) { $scope.error = "Failed to load apps: " + err; });
-	$http.post(jsRoutes.controllers.Visualizations.get().url, JSON.stringify(data)).
+	server.post(jsRoutes.controllers.Visualizations.get().url, JSON.stringify(data)).
 		success(function(visualizations) { $scope.visualizations.spotlighted = visualizations; }).
 		error(function(err) { $scope.error = "Failed to load visualizations: " + err; });
 	
@@ -37,11 +37,11 @@ angular.module('portal')
 	};
 	
 	$scope.getAppImage = function(app) {
-	  return "/assets/images/icons/"+app.type.toLowerCase()+".png";
+	  return "/images/icons/"+app.type.toLowerCase()+".png";
 	};
 	
 	$scope.getVisualizationImage = function(visulization) {
-		  return "/assets/images/icons/eye.png";
+		  return "/images/icons/eye.png";
 	};
 	
 	// show visualization details

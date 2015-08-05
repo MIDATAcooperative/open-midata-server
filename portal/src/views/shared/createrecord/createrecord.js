@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('CreateRecordsCtrl', ['$scope', '$http', '$sce', function($scope, $http, $sce) {
+.controller('CreateRecordsCtrl', ['$scope', 'server', '$sce', function($scope, server, $sce) {
 	
 	// init
 	$scope.error = null;
@@ -8,7 +8,7 @@ angular.module('portal')
 	var appId = window.location.pathname.split("/")[4];
 	
 	// get app url
-	$http(jsRoutes.controllers.Apps.getUrl(appId)).
+	server.get(jsRoutes.controllers.Apps.getUrl(appId).url).
 		success(function(url) {
 			$scope.error = null;
 			$scope.url = $sce.trustAsResourceUrl(url);

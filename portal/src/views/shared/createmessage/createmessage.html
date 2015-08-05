@@ -1,5 +1,5 @@
-@(messageindex: play.api.mvc.Call) 
-	<div ng-app="messages" ng-controller="CreateMessageCtrl">
+
+	<div ng-controller="CreateMessageCtrl">
 		<div class="page-header">
 			<h1>Write a new message</h1>
 		</div>
@@ -54,13 +54,10 @@
 				</div>
 				<div class="pull-right">
 					<button type="button" class="btn btn-primary" ng-click="sendMessage()">Send</button>
-					<a href="@messageindex" class="btn btn-default">Discard</a>
+					<a ui-sref="^.messages" class="btn btn-default">Discard</a>
 				</div>
 				<div style="clear:both"></div>
 			</form>
 		</div>
 		</div>
 	</div>
-
-	<!-- Load messages controller -->
-	<script type="text/javascript" src="@routes.Assets.at("javascripts/messages.js")" defer></script>

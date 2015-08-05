@@ -1,20 +1,19 @@
-@import views.html.help.formrow
-@import views.html.help.formerror
+
 <div ng-controller="EnterCodeCtrl" class="autosize" ng-cloak>
   <div class="body">
    <div class="clearfix">
-   <div class="pull-left themeicon"><img src="/assets/images/icons/research.png"></div>
+   <div class="pull-left themeicon"><img src="/images/icons/research.png"></div>
    <p>Configure your interest in study participation.</p>
    </div>
    <div class="extraspace">&nbsp;</div>     
     <p>Join a study by entering a code:</p>		
 	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="submitcode()" role="form">	
-		@formrow("code","Participation Code") { 	
+		<formrow myis="code" label="Participation Code"> 	
 	  	    <input type="text" class="form-control" id="code" name="code" placeholder="" ng-model="code.code" ng-required="true">	
-		    @formerror("code","notfound","Unknown code")
-		    @formerror("code","alreadyused","Code has expired") 
-		    @formerror("code","notsearching","Study is currently not accepting participants")
-  	    }				
+		    <formerror myid="code" type="notfound" message="Unknown code"></formerror>
+		    <formerror myid="code" type="alreadyused" message="Code has expired"></formerror> 
+		    <formerror myid="code" type="notsearching" message="Study is currently not accepting participants"></formerror>
+  	    </formrow>				
    </form>     
   </div>
   <div class="footer">

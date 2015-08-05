@@ -1,5 +1,5 @@
 var news = angular.module('news', ['navbar', 'date', 'services', 'views', 'dashboards']);
-news.controller('NewsCtrl', ['$scope', '$http', '$attrs', 'currentUser', 'users', 'views', 'status', function($scope, $http, $attrs, currentUser, users, views, status) {
+news.controller('NewsCtrl', ['$scope', 'server', '$attrs', 'currentUser', 'users', 'views', 'status', function($scope, server, $attrs, currentUser, users, views, status) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
 	$scope.status = new status(true);
@@ -34,7 +34,7 @@ news.controller('NewsCtrl', ['$scope', '$http', '$attrs', 'currentUser', 'users'
 		var properties = {"_id": newsItemIds};
 		var fields = ["creator", "created", "title", "content"];
 		var data = {"properties": properties, "fields": fields};
-		$scope.status.doBusy($http.post(jsRoutes.controllers.News.get().url, JSON.stringify(data))).
+		$scope.status.doBusy(server.post(jsRoutes.controllers.News.get().url, JSON.stringify(data))).
 		then(function(results) {
 			    var newsItems = results.data;
 				_.each(newsItems, function(newsItem) { $scope.newsItems[newsItem._id.$oid] = newsItem; });
@@ -49,7 +49,7 @@ news.controller('NewsCtrl', ['$scope', '$http', '$attrs', 'currentUser', 'users'
 		var properties = {"_id": userIds};
 		var fields = ["name"];
 		var data = {"properties": properties, "fields": fields};
-		$scope.status.doSilent($http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data))).
+		$scope.status.doSilent(server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data))).
 		then(function(results) {
 				_.each(results.data, function(user) { $scope.users[user._id.$oid] = user; });				
 		});
@@ -57,7 +57,7 @@ news.controller('NewsCtrl', ['$scope', '$http', '$attrs', 'currentUser', 'users'
 	
 	// hide news item
 	$scope.hide = function(newsItemId) {
-		$scope.status.doSilent($http(jsRoutes.controllers.News.hide(newsItemId.$oid))).
+		$scope.status.doSilent(server.post(jsRoutes.controllers.News.hide(newsItemId.$oid).url)).
 		then(function() {
 				$scope.news.splice($scope.news.indexOf(newsItemId), 1);
 				delete $scope.newsItems[newsItemId.$oid];
@@ -67,7 +67,7 @@ news.controller('NewsCtrl', ['$scope', '$http', '$attrs', 'currentUser', 'users'
 	$scope.$watch('view.setup', function() { $scope.reload(); });
 	
 }]);
-news.controller('TeaserCtrl', ['$scope', '$http', '$attrs', 'dateService', 'currentUser', 'users', 'views', 'status', function($scope, $http, $attrs, dateService, currentUser, users, views, status) {
+news.controller('TeaserCtrl', ['$scope', 'server', '$attrs', 'dateService', 'currentUser', 'users', 'views', 'status', function($scope, server, $attrs, dateService, currentUser, users, views, status) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
 	$scope.status = new status(true);
@@ -128,9 +128,9 @@ news.controller('TeaserCtrl', ['$scope', '$http', '$attrs', 'dateService', 'curr
 	
 	// mark all records as seen
 	$scope.clearAll = function() {
-		$scope.status.doSilent($http(jsRoutes.controllers.Users.clearPushed())).
+		$scope.status.doSilent(server.post(jsRoutes.controllers.Users.clearPushed().url)).
 		then(function() { $scope.pushed = []; });
-		$scope.status.doSIlent($http(jsRoutes.controllers.Users.clearShared())).
+		$scope.status.doSIlent(server.post(jsRoutes.controllers.Users.clearShared().url)).
 		then(function() { $scope.shared = []; });			
 	};
 		

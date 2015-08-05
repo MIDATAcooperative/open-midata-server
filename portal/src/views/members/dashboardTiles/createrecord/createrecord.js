@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('CreateRecordCtrl', ['$scope', '$http', '$attrs', '$sce', 'views', 'status', 'apps', 'currentUser', function($scope, $http, $attrs, $sce, views, status, apps, currentUser) {
+.controller('CreateRecordCtrl', ['$scope', 'server', '$attrs', '$sce', 'views', 'status', 'apps', 'currentUser', function($scope, server, $attrs, $sce, views, status, apps, currentUser) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
     $scope.status = new status(true);
@@ -33,7 +33,7 @@ angular.module('views')
     	
         $scope.showapp = true;
         // if (title != null) $scope.view.title = title;
-        $scope.status.doBusy($http(jsRoutes.controllers.Apps.getPreviewUrl(appId))).
+        $scope.status.doBusy(server.get(jsRoutes.controllers.Apps.getPreviewUrl(appId).url)).
 		then(function(results) {			
 			$scope.url = $sce.trustAsResourceUrl(results.data);
 		});
@@ -71,7 +71,7 @@ angular.module('views')
 	console.log($scope.memberUrl);
 	
 	
-	$http(jsRoutes.controllers.Apps.getUrlForMember(appId, userId)).
+	server(jsRoutes.controllers.Apps.getUrlForMember(appId, userId)).
 		success(function(url) {
 			$scope.error = null;
 			$scope.url = $sce.trustAsResourceUrl(url);

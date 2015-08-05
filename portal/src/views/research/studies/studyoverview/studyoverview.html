@@ -1,7 +1,6 @@
 
 <div ng-controller="StudyOverviewCtrl" ng-cloak>
 
-    @studynav("Study Overview")
 	<div class="tab-content">	
 	<div class="tab-pane active">
 	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
@@ -63,7 +62,7 @@
     </div>
     </div>
   
-    <a class="btn btn-default" href="@routes.ResearchFrontend.studies()">Back</a> 
+    <a class="btn btn-default" ui-sref="research.studies">Back</a> 
     <button ng-show="readyForValidation()" class="btn btn-primary" ng-click="startValidation()">Request Study Validation</button>
     <button ng-show="readyForParticipantSearch()" class="btn btn-primary" ng-click="startParticipantSearch()">Start to search for participants</button>
     <button ng-show="readyForEndParticipantSearch()" class="btn btn-primary" ng-click="endParticipantSearch()">End Participant Search</button>

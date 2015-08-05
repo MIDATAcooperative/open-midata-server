@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RegisterAppCtrl', ['$scope', '$http', function($scope, $http) {
+.controller('RegisterAppCtrl', ['$scope', 'server', function($scope, server) {
 	
 	// init
 	$scope.error = null;
@@ -52,7 +52,7 @@ angular.module('portal')
 		if (type === "mobile") data.secret = $scope.app.secret;
 		
 		// send the request
-		$http.post(jsRoutes.controllers.Market.registerApp(type).url, data).
+		server.post(jsRoutes.controllers.Market.registerApp(type).url, data).
 			success(function(redirectUrl) { window.location.replace(portalRoutes.controllers.Market.index().url); }).
 			error(function(err) { $scope.error = "Failed to register app: " + err; });
 	};

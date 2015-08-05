@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('CirclesCtrl', ['$scope', '$http', '$attrs', 'views', 'circles', 'status', function($scope, $http, $attrs, views, circles, status) {
+.controller('CirclesCtrl', ['$scope', 'server', '$attrs', 'views', 'circles', 'status', function($scope, server, $attrs, views, circles, status) {
 	
 	$scope.circles = [];	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);

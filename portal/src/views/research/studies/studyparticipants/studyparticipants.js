@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ListParticipantsCtrl', ['$scope', '$http', function($scope, $http) {
+.controller('ListParticipantsCtrl', ['$scope', 'server', function($scope, server) {
 	
 	$scope.studyid = window.location.pathname.split("/")[3];
 	$scope.results =[];
@@ -8,7 +8,7 @@ angular.module('portal')
 	
 	$scope.reload = function() {
 			
-		$http.get(jsRoutes.controllers.research.Studies.listParticipants($scope.studyid).url).
+		server.get(jsRoutes.controllers.research.Studies.listParticipants($scope.studyid).url).
 			success(function(data) { 				
 				$scope.results = data;
 				$scope.loading = false;
@@ -34,7 +34,7 @@ angular.module('portal')
 		$scope.error = null;
 		var params = { member : participation._id.$oid };
 		
-		$http.post(jsRoutes.controllers.research.Studies.rejectParticipation($scope.studyid).url, params).
+		server.post(jsRoutes.controllers.research.Studies.rejectParticipation($scope.studyid).url, params).
 		success(function(data) { 				
 		    $scope.reload();
 		}).
@@ -48,7 +48,7 @@ angular.module('portal')
 		console.log(participation);
 		var params = { member : participation._id.$oid };
 		
-		$http.post(jsRoutes.controllers.research.Studies.approveParticipation($scope.studyid).url, params).
+		server.post(jsRoutes.controllers.research.Studies.approveParticipation($scope.studyid).url, params).
 		success(function(data) { 				
 		    $scope.reload();
 		}).

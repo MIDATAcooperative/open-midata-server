@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ProviderRegistrationCtrl', ['$scope', '$http', function($scope, $http) {
+.controller('ProviderRegistrationCtrl', ['$scope', 'server', function($scope, server) {
 	
 	$scope.registration = {};
 	$scope.error = null;
@@ -18,7 +18,7 @@ angular.module('portal')
 		// send the request
 		var data = $scope.registration;		
 		
-		$http.post(jsRoutes.controllers.providers.Providers.register().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.providers.Providers.register().url, JSON.stringify(data)).
 			success(function(url) { window.location.replace(portalRoutes.controllers.ProviderFrontend.messages().url); }).
 			error(function(err) {
 				$scope.error = err;

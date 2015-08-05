@@ -1,6 +1,6 @@
 // service to handle dates
-var date = angular.module('date', []);
-date.factory('dateService', function() {
+var date = angular.module('portal')
+.factory('dateService', function() {
 	// string format: YEAR-MONTH-DAY (YYYY-MM-DD)
 	// date format: JavaScript Date
 	

@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('PatientsCtrl', ['$scope', '$http', function($scope, $http) {
+.controller('PatientsCtrl', ['$scope', 'server', function($scope, server) {
 	
 	$scope.criteria = {};
 	$scope.member = null;
@@ -9,7 +9,7 @@ angular.module('portal')
 	$scope.dosearch = function() {
 		$scope.loading = true;
 		
-		$http.post(jsRoutes.controllers.providers.Providers.list().url, $scope.criteria).
+		server.post(jsRoutes.controllers.providers.Providers.list().url, $scope.criteria).
 		then(function(result) { 				
 		    $scope.patients = result.data;
 		    $scope.error = null;

@@ -15,13 +15,13 @@
 		</div>
 		<div class="collapse navbar-collapse navbar-ex1-collapse">
 			<ul class="nav navbar-nav">
-            	<li @if("News".equals(active)){class="active"}><a href="@routes.News.index()">Dashboard</a></li>
-				<li @if("Messages".equals(active)){class="active"}><a href="@routes.Messages.index()">Messages</a></li>
-				<li @if("Healthcare Providers".equals(active)){class="active"}><a href="@routes.MemberFrontend.providers()">Providers</a></li>
-				<li @if("Studies".equals(active)){class="active"}><a href="@routes.MemberFrontend.studies()">Research</a></li>
-				<li @if("Records".equals(active)){class="active"}><a href="@routes.Records.index()">Records</a></li>				
-				<li @if("Circles".equals(active)){class="active"}><a href="@routes.Circles.index()">Circles</a></li>
-				<li @if("Market".equals(active)){class="active"}><a href="@routes.Market.index()">Market</a></li>
+            	<li ui-sref-active="active"><a ui-sref="member.overview">Dashboard</a></li>
+				<li ui-sref-active="active"><a ui-sref="member.messages">Messages</a></li>
+				<li ui-sref-active="active"><a ui-sref="member.providers">Providers</a></li>
+				<li ui-sref-active="active"><a ui-sref="member.studies">Research</a></li>
+				<li ui-sref-active="active"><a ui-sref="member.records">Records</a></li>				
+				<li ui-sref-active="active"><a ui-sref="member.circles">Circles</a></li>
+				<li ui-sref-active="active"><a ui-sref="member.market">Market</a></li>
 			</ul>
 			<form class="navbar-form navbar-left" ng-submit="startSearch()">
 				<div class="form-group">

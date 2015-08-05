@@ -1,5 +1,5 @@
 var details = angular.module('details', [ 'services' ]);
-details.controller('RecordCtrl', ['$scope', '$http', '$sce', 'records', 'status', function($scope, $http, $sce, records, status) {
+details.controller('RecordCtrl', ['$scope', 'server', '$sce', 'records', 'status', function($scope, server, $sce, records, status) {
 	// init
 	$scope.error = null;
 	$scope.record = {};
@@ -16,7 +16,7 @@ details.controller('RecordCtrl', ['$scope', '$http', '$sce', 'records', 'status'
 		}
 	});
 		
-	$http.post(jsRoutes.controllers.Records.get().url, JSON.stringify(data)).
+	server.post(jsRoutes.controllers.Records.get().url, JSON.stringify(data)).
 		success(function(records) {
 			$scope.record = records;
 			$scope.record.json = JSON.stringify($scope.record.data, null, "\t");
@@ -31,7 +31,7 @@ details.controller('RecordCtrl', ['$scope', '$http', '$sce', 'records', 'status'
 	
 	var loadUserNames = function() {
 		var data = {"properties": {"_id": [$scope.record.owner, $scope.record.creator]}, "fields": ["firstname", "sirname"]};
-		$http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
 			success(function(users) {
 				_.each(users, function(user) {
 					if ($scope.record.owner.$oid === user._id.$oid) { $scope.record.owner = (user.firstname+" "+user.sirname).trim(); }
@@ -43,7 +43,7 @@ details.controller('RecordCtrl', ['$scope', '$http', '$sce', 'records', 'status'
 	
 	var loadAppName = function() {
 		var data = {"properties": {"_id": $scope.record.app}, "fields": ["name"]};
-		$http.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
 			success(function(apps) { $scope.record.app = apps[0].name; }).
 			error(function(err) { $scope.error = "Failed to load app name: " + err; });
 	};
@@ -54,7 +54,7 @@ details.controller('RecordCtrl', ['$scope', '$http', '$sce', 'records', 'status'
 	}*/
 	
 }]);
-details.controller('UserCtrl', ['$scope', '$http', function($scope, $http) {
+details.controller('UserCtrl', ['$scope', 'server', function($scope, server) {
 	// init
 	$scope.error = null;
 	$scope.user = {};
@@ -62,12 +62,12 @@ details.controller('UserCtrl', ['$scope', '$http', function($scope, $http) {
 	// parse user id (format: /users/:id) and load the user details
 	var userId = window.location.pathname.split("/")[3];
 	var data = {"properties": {"_id": {"$oid": userId}}, "fields": ["name", "email"]};
-	$http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
+	server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
 		success(function(users) { $scope.user = users[0]; }).
 		error(function(err) { $scope.error = "Failed to load user details: " + err; });
 	
 }]);
-details.controller('MessageCtrl', ['$scope', '$http', function($scope, $http) {
+details.controller('MessageCtrl', ['$scope', 'server', function($scope, server) {
 	// init
 	$scope.error = null;
 	$scope.message = {};
@@ -75,7 +75,7 @@ details.controller('MessageCtrl', ['$scope', '$http', function($scope, $http) {
 	// parse message id (format: /messages/:id) and load the app
 	var messageId = window.location.pathname.split("/")[3];
 	var data = {"properties": {"_id": {"$oid": messageId}}, "fields": ["sender", "receivers", "created", "title", "content"]};
-	$http.post(jsRoutes.controllers.Messages.get().url, JSON.stringify(data)).
+	server.post(jsRoutes.controllers.Messages.get().url, JSON.stringify(data)).
 		success(function(messages) {
 			$scope.message = messages[0];
 			getSenderName();
@@ -86,14 +86,14 @@ details.controller('MessageCtrl', ['$scope', '$http', function($scope, $http) {
 	
 	getSenderName = function() {
 		var data = {"properties": {"_id": $scope.message.sender}, "fields": ["name"]};
-		$http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
 			success(function(users) { $scope.message.sender.name = users[0].name; }).
 			error(function(err) { $scope.error = "Failed to load sender name: " + err; });
 	};
 	
 	getReceiverNames = function() {
 		var data = {"properties": {"_id": $scope.message.receivers}, "fields": ["name"]};
-		$http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
 			success(function(users) {
 				_.each(users, function(user) {
 					var receiver = _.find($scope.message.receivers, function(rec) { return rec.$oid === user._id.$oid; });
@@ -109,7 +109,7 @@ details.controller('MessageCtrl', ['$scope', '$http', function($scope, $http) {
 	}*/
 	
 }]);
-details.controller('AppCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+details.controller('AppCtrl', ['$scope', 'server', '$location', function($scope, server, $location) {
 	// init
 	$scope.error = null;
 	$scope.success = false;
@@ -119,7 +119,7 @@ details.controller('AppCtrl', ['$scope', '$http', '$location', function($scope, 
 	// parse app id (format: /apps/:id) and load the app
 	var appId = window.location.pathname.split("/")[3];
 	var data = {"properties": {"_id": {"$oid": appId}}, "fields": ["name", "creator", "description", "recommendedVisualizations"]};
-	$http.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
+	server.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
 		success(function(apps) {
 			$scope.error = null;
 			$scope.app = apps[0];
@@ -133,7 +133,7 @@ details.controller('AppCtrl', ['$scope', '$http', '$location', function($scope, 
 	
 	$scope.loadRecommendations = function(ids) {
 		var data = { "properties": {"_id": ids }, "fields": ["name", "creator", "description"]};
-		$http.post(jsRoutes.controllers.Visualizations.get().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Visualizations.get().url, JSON.stringify(data)).
 			success(function(visualizations) {				
 				$scope.visualizations = visualizations;				
 			}).
@@ -146,20 +146,20 @@ details.controller('AppCtrl', ['$scope', '$http', '$location', function($scope, 
 	};
 	
 	isInstalled = function() {
-		$http(jsRoutes.controllers.Apps.isInstalled($scope.app._id.$oid)).
+		server.get(jsRoutes.controllers.Apps.isInstalled($scope.app._id.$oid).url).
 			success(function(installed) { $scope.app.installed = installed; }).
 			error(function(err) { $scope.error = "Failed to check whether this app is installed: " + err; });
 	};
 	
 	getCreatorName = function() {
 		var data = {"properties": {"_id": $scope.app.creator}, "fields": ["name"]};
-		$http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
 			success(function(users) { $scope.app.creator = users[0].name; }).
 			error(function(err) { $scope.error = "Failed to load the name of the creator: " + err; });
 	};
 	
 	$scope.install = function() {
-		$http(jsRoutes.controllers.Apps.install($scope.app._id.$oid)).
+		server.post(jsRoutes.controllers.Apps.install($scope.app._id.$oid).url).
 			success(function() {
 				$scope.app.installed = true;
 				$scope.success = true;
@@ -169,7 +169,7 @@ details.controller('AppCtrl', ['$scope', '$http', '$location', function($scope, 
 	};
 	
 	$scope.uninstall = function() {
-		$http(jsRoutes.controllers.Apps.uninstall($scope.app._id.$oid)).
+		server.post(jsRoutes.controllers.Apps.uninstall($scope.app._id.$oid).url).
 		success(function() {
 			$scope.app.installed = false;
 			$scope.success = false;
@@ -178,7 +178,7 @@ details.controller('AppCtrl', ['$scope', '$http', '$location', function($scope, 
 	};
 	
 }]);
-details.controller('VisualizationCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+details.controller('VisualizationCtrl', ['$scope', 'server', '$location', function($scope, server, $location) {
 	// init
 	$scope.error = null;
 	$scope.success = false;
@@ -190,7 +190,7 @@ details.controller('VisualizationCtrl', ['$scope', '$http', '$location', functio
 	// parse visualization id (format: /visualizations/:id) and load the visualization
 	var visualizationId = window.location.pathname.split("/")[3];
 	var data = {"properties": {"_id": {"$oid": visualizationId}}, "fields": ["name", "creator", "description", "defaultSpaceName", "defaultQuery"]};
-	$http.post(jsRoutes.controllers.Visualizations.get().url, JSON.stringify(data)).
+	server.post(jsRoutes.controllers.Visualizations.get().url, JSON.stringify(data)).
 		success(function(visualizations) {
 			$scope.error = null;
 			$scope.visualization = visualizations[0];
@@ -220,20 +220,20 @@ details.controller('VisualizationCtrl', ['$scope', '$http', '$location', functio
 		error(function(err) { $scope.error = "Failed to load visualization details: " + err; });
 	
 	isInstalled = function() {
-		$http(jsRoutes.controllers.Visualizations.isInstalled($scope.visualization._id.$oid)).
+		server.get(jsRoutes.controllers.Visualizations.isInstalled($scope.visualization._id.$oid).url).
 			success(function(installed) { $scope.visualization.installed = installed; }).
 			error(function(err) { $scope.error = "Failed to check whether this visualization is installed: " + err; });
 	};
 	
 	getCreatorName = function() {
 		var data = {"properties": {"_id": $scope.visualization.creator}, "fields": ["name"]};
-		$http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
 			success(function(users) { $scope.visualization.creator = users[0].name; }).
 			error(function(err) { $scope.error = "Failed to load the name of the creator: " + err; });
 	};
 	
 	$scope.install = function() {
-		$http.put(jsRoutes.controllers.Visualizations.install($scope.visualization._id.$oid).url, JSON.stringify($scope.options)).
+		server.put(jsRoutes.controllers.Visualizations.install($scope.visualization._id.$oid).url, JSON.stringify($scope.options)).
 			success(function() {
 				$scope.visualization.installed = true;
 				$scope.success = true;
@@ -243,7 +243,7 @@ details.controller('VisualizationCtrl', ['$scope', '$http', '$location', functio
 	};
 	
 	$scope.uninstall = function() {
-		$http(jsRoutes.controllers.Visualizations.uninstall($scope.visualization._id.$oid)).
+		server.post(jsRoutes.controllers.Visualizations.uninstall($scope.visualization._id.$oid).url).
 		success(function() {
 			$scope.visualization.installed = false;
 			$scope.success = false;

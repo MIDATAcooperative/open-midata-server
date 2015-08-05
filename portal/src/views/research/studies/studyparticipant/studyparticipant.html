@@ -1,5 +1,4 @@
-<div ng-controller="ParticipantCtrl" ng-cloak>
-   @studynav("Study Participant","../")
+<div ng-controller="ParticipantCtrl" ng-cloak>   
    <div class="panel panel-primary">
    <div class="panel-heading">{{ participation.memberName }}</div>
    <div class="panel-body">
@@ -51,7 +50,7 @@
 	    </table>	    
     </div>
     
-    @views.html.details.dashboard("studyparticipant") 
+    <div ng-include="/views/shared/dashboard/dashboard.html"></div> 
     
-    <a href="../participants" class="btn btn-default">Back</a>
+    <a ui-sref="research.study.participants" class="btn btn-default">Back</a>
 </div>

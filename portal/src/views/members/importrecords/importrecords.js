@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ImportRecordsCtrl', ['$scope', '$http', '$sce', function($scope, $http, $sce) {
+.controller('ImportRecordsCtrl', ['$scope', 'server', '$sce', function($scope, server, $sce) {
 	
 	// init
 	$scope.error = null;
@@ -18,7 +18,7 @@ angular.module('portal')
 	var appId = window.location.pathname.split("/")[4];
 	
 	// get current user
-	$http(jsRoutes.controllers.Users.getCurrentUser()).
+	server.get(jsRoutes.controllers.Users.getCurrentUser().url).
 		success(function(uId) {
 			userId = uId.$oid;
 			checkAuthorized();
@@ -29,7 +29,7 @@ angular.module('portal')
 		var properties = {"_id": {"$oid": userId}};
 		var fields = ["tokens." + appId];
 		var data = {"properties": properties, "fields": fields};
-		$http.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
 			success(function(users) {
 				var tokens = users[0].tokens[appId];
 				if(!_.isEmpty(tokens)) {
@@ -52,7 +52,7 @@ angular.module('portal')
 		var properties = {"_id": {"$oid": appId}};
 		var fields = ["filename", "name", "type", "authorizationUrl", "consumerKey", "scopeParameters"];
 		var data = {"properties": properties, "fields": fields};
-		$http.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
 			success(function(apps) {
 				app = apps[0];
 				$scope.appName = app.name;
@@ -76,7 +76,7 @@ angular.module('portal')
 			authWindow = window.open(app.authorizationUrl + encodeURI(parameters));
 			window.addEventListener("message", onAuthorized);
 		} else if (app.type === "oauth1") {
-			$http(jsRoutes.controllers.Apps.getRequestTokenOAuth1(appId)).
+			server.get(jsRoutes.controllers.Apps.getRequestTokenOAuth1(appId).url).
 				success(function(authUrl) {
 					authorizationUrl = authUrl;
 					$scope.authorizingOAuth1 = true;
@@ -142,7 +142,7 @@ angular.module('portal')
 		} else if (app.type === "oauth1") {
 			requestTokensUrl = jsRoutes.controllers.Apps.requestAccessTokenOAuth1(appId).url;
 		}
-		$http.post(requestTokensUrl, JSON.stringify(data)).
+		server.post(requestTokensUrl, JSON.stringify(data)).
 			success(function() {
 				$scope.authorized = true;
 				$scope.authorizing = false;
@@ -158,7 +158,7 @@ angular.module('portal')
 	// load the app into the iframe
 	loadApp = function() {
 		// get app url
-		$http(jsRoutes.controllers.Apps.getUrl(appId)).
+		server.get(jsRoutes.controllers.Apps.getUrl(appId).url).
 			success(function(url) {
 				$scope.error = null;
 				$scope.message = null;

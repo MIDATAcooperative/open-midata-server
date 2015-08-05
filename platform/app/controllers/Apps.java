@@ -54,6 +54,7 @@ public class Apps extends Controller {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
 	public static Result get() {
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -109,6 +110,7 @@ public class Apps extends Controller {
 	}
 
 	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
 	public static Result uninstall(String appIdString) {
 		ObjectId userId = new ObjectId(request().username());		
 		Set<String> fields = new ChainedSet<String>().add("apps").get();
@@ -133,6 +135,7 @@ public class Apps extends Controller {
 	}
 
 	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
 	public static Result getUrl(String appIdString) {
 		// get app
 		ObjectId appId = new ObjectId(appIdString);
@@ -157,6 +160,7 @@ public class Apps extends Controller {
 	}
 	
 	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
 	public static Result getPreviewUrl(String appIdString) {
 		// get app
 		ObjectId appId = new ObjectId(appIdString);
@@ -201,6 +205,7 @@ public class Apps extends Controller {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
 	public static Promise<Result> requestAccessTokenOAuth2(String appIdString) {
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -259,6 +264,7 @@ public class Apps extends Controller {
 	}
 
 	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
 	public static Result getRequestTokenOAuth1(String appIdString) {
 		// get app details
 		ObjectId appId = new ObjectId(appIdString);
@@ -285,6 +291,7 @@ public class Apps extends Controller {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
 	public static Result requestAccessTokenOAuth1(String appIdString) {
 		// validate json
 		JsonNode json = request().body().asJson();

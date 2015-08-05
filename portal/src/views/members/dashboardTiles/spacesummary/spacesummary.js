@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('SpaceSummaryCtrl', ['$scope', '$http', '$attrs', '$sce', 'records', 'views', 'status', 'spaces', function($scope, $http, $attrs, $sce, records, views, status, spaces) {
+.controller('SpaceSummaryCtrl', ['$scope', 'server', '$attrs', '$sce', 'records', 'views', 'status', 'spaces', function($scope, server, $attrs, $sce, records, views, status, spaces) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
     $scope.status = new status(true);

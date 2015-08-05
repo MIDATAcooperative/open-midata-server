@@ -13,7 +13,7 @@
 	                        </p>
 							<div class="alert alert-success" ng-show="setpw.success">
 								<p>You have successfully set a new password for your account.</p>
-								<p><a href="@routes.Application.welcome()">Go back to login page.</a></p>
+								<p><a ui-sref="^.login">Go back to login page.</a></p>
 							</div>
 							<p>Please enter a new password for your account.</p>
 							<form ng-submit="submit()" role="form">

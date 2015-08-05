@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('CreateStudyCtrl', ['$scope', '$http', function($scope, $http) {
+.controller('CreateStudyCtrl', ['$scope', 'server', function($scope, server) {
 	
 	$scope.study = {};
 	$scope.error = null;
@@ -16,7 +16,7 @@ angular.module('portal')
 		// send the request
 		var data = $scope.study;		
 		
-		$http.post(jsRoutes.controllers.research.Studies.create().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.research.Studies.create().url, JSON.stringify(data)).
 			success(function(result) { window.location.replace(portalRoutes.controllers.ResearchFrontend.studyoverview(result._id.$oid).url); }).
 			error(function(err) {
 				$scope.error = err;

@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('MessagesCtrl', ['$scope', '$http', '$attrs', 'currentUser', 'views', 'status', function($scope, $http, $attrs, currentUser, views, status) {
+.controller('MessagesCtrl', ['$scope', 'server', '$attrs', 'currentUser', 'views', 'status', function($scope, server, $attrs, currentUser, views, status) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
     $scope.status = new status(true);
@@ -22,7 +22,7 @@ angular.module('views')
 		var properties = {"_id": userId};
 		var fields = ["messages"];
 		var data = {"properties": properties, "fields": fields};
-		$scope.status.doBusy($http.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data))).
+		$scope.status.doBusy(server.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data))).
 		then(function(results) {
 			    var users = results.data;
 				$scope.inbox = users[0].messages.inbox;
@@ -37,7 +37,7 @@ angular.module('views')
 		var properties = {"_id": messageIds};
 		var fields = ["sender", "created", "title"];
 		var data = {"properties": properties, "fields": fields};
-		$scope.status.doBusy($http.post(jsRoutes.controllers.Messages.get().url, JSON.stringify(data))).
+		$scope.status.doBusy(server.post(jsRoutes.controllers.Messages.get().url, JSON.stringify(data))).
 		then(function(results) {
 			    $scope.messages = results.data;
 			    //var messages = results.data;

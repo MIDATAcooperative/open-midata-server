@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('AddRecordsCtrl', ['$scope', '$http', '$attrs', 'views', 'records', 'status', function($scope, $http, $attrs, views, records, status) {
+.controller('AddRecordsCtrl', ['$scope', 'server', '$attrs', 'views', 'records', 'status', function($scope, server, $attrs, views, records, status) {
 	
 	$scope.foundRecords = [];
 	$scope.criteria = { query : "" };
