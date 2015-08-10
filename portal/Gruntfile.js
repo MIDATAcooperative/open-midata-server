@@ -22,10 +22,12 @@ module.exports = function(grunt) {
         src: {
           files: ['src/**/*.{html,png,jpg,jpeg,gif,webp,svg}' ],
           tasks: ['copy'],
+          options: { livereload: true }
         },
         js : {
           files : 'src/**/*.js',
-          tasks : ['concat:js']
+          tasks : ['concat:js'],
+          options: { livereload: true }
         },
         css: {
           files : 'src/**/*.less',
@@ -76,9 +78,18 @@ module.exports = function(grunt) {
           options: {
             port: 9002,
             base: 'dest'
-          }
+          }                 
         }
      },
+     
+     /*reload: {
+         port: 35729,
+         liveReload: {},
+         proxy: {
+           host: "localhost",
+           port: 9002
+         }
+     },*/
      
      less: {
        development: {
@@ -101,6 +112,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-less');
+  //grunt.loadNpmTasks('connect-livereload');
 
   // Default task(s).
   grunt.registerTask('default', ['clean','copy']);

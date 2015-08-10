@@ -25,7 +25,7 @@
 					<div class="tab-pane fade" ng-class="{'active in': type === active}" ng-repeat="type in types">
 						<ul>
 							<li ng-repeat="result in results[type]">
-								<a href="/members/{{type}}s/{{result.id}}">{{result.title}}</a>
+								<a ng-click="goTo(type, result.id)" href="javascript:">{{result.title}}</a>
 								<p ng-show="result.highlighted" ng-bind-html="toHtml(result.highlighted)"></p>
 							</li>
 						</ul>

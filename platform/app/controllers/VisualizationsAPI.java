@@ -42,6 +42,7 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
 import actions.APICall;
+import actions.VisualizationCall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -62,7 +63,7 @@ public class VisualizationsAPI extends Controller {
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
-	@APICall
+	@VisualizationCall
 	public static Result getIds() throws ModelException, JsonValidationException  {
 		// allow cross origin request from visualizations server
 		String visualizationsServer = Play.application().configuration().getString("visualizations.server");
@@ -85,7 +86,7 @@ public class VisualizationsAPI extends Controller {
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
-	@APICall
+	@VisualizationCall
 	public static Result getConfig() throws JsonValidationException, ModelException {
 		// allow cross origin request from visualizations server
 		String visualizationsServer = Play.application().configuration().getString("visualizations.server");
@@ -115,7 +116,7 @@ public class VisualizationsAPI extends Controller {
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
-	@APICall
+	@VisualizationCall
 	public static Result setConfig() throws JsonValidationException, ModelException {
 		// allow cross origin request from visualizations server
 		String visualizationsServer = Play.application().configuration().getString("visualizations.server");
@@ -139,7 +140,7 @@ public class VisualizationsAPI extends Controller {
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
-	@APICall
+	@VisualizationCall
 	public static Result cloneAs() throws JsonValidationException, ModelException {
 		// allow cross origin request from visualizations server
 		String visualizationsServer = Play.application().configuration().getString("visualizations.server");
@@ -177,7 +178,7 @@ public class VisualizationsAPI extends Controller {
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
-	@APICall
+	@VisualizationCall
 	public static Result getRecords() throws JsonValidationException, ModelException {
 		// allow cross origin request from visualizations server
 		String visualizationsServer = Play.application().configuration().getString("visualizations.server");
@@ -232,7 +233,7 @@ public class VisualizationsAPI extends Controller {
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
-	@APICall	
+	@VisualizationCall	
 	public static Result getFile() throws ModelException, JsonValidationException {
 		// allow cross origin request from visualizations server
         String visualizationsServer = Play.application().configuration().getString("visualizations.server");
@@ -260,7 +261,7 @@ public class VisualizationsAPI extends Controller {
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
-	@APICall
+	@VisualizationCall
 	public static Result createRecord() throws ModelException, JsonValidationException {
 		// allow cross origin request from visualizations server
 		String visualizationsServer = Play.application().configuration().getString("visualizations.server");

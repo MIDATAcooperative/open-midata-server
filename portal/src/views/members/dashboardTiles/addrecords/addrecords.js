@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('AddRecordsCtrl', ['$scope', 'server', '$attrs', 'views', 'records', 'status', function($scope, server, $attrs, views, records, status) {
+.controller('AddRecordsCtrl', ['$scope', '$state', 'server', '$attrs', 'views', 'records', 'status', function($scope, $state, server, $attrs, views, records, status) {
 	
 	$scope.foundRecords = [];
 	$scope.criteria = { query : "" };
@@ -44,7 +44,7 @@ angular.module('views')
 	
 	$scope.showDetails = function(record) {
 		if (!views.updateLinked($scope.view, "record", { id : record.id })) {
-		  window.location.href = portalRoutes.controllers.Records.details(record.id).url;
+		  $state.go("^.recorddetails", { recordId : record.id });
 		}
 	};
 	

@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ImportRecordsCtrl', ['$scope', 'server', '$sce', function($scope, server, $sce) {
+.controller('ImportRecordsCtrl', ['$scope', '$state', 'server', '$sce', function($scope, $state, server, $sce) {
 	
 	// init
 	$scope.error = null;
@@ -15,7 +15,7 @@ angular.module('portal')
 	var userId = null;
 	
 	// get app id (format: /records/import/:appId)
-	var appId = window.location.pathname.split("/")[4];
+	var appId = $state.params.appId;
 	
 	// get current user
 	server.get(jsRoutes.controllers.Users.getCurrentUser().url).
@@ -69,7 +69,7 @@ angular.module('portal')
 	$scope.authorize = function() {
 		$scope.authorizing = true;
 		$scope.message = "Authorization in progress...";
-		var redirectUri = "https://" + window.location.hostname + ":9000/records/redirect/" + app._id.$oid;
+		var redirectUri = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port +"/authorized.html";
 		if (app.type === "oauth2") {
 			var parameters = "?response_type=code" + "&client_id=" + app.consumerKey + "&scope=" + app.scopeParameters +
 				"&redirect_uri=" + redirectUri;
@@ -102,7 +102,7 @@ angular.module('portal')
 		$scope.authorizingOAuth1 = false;
 		var message = null;
 		var error = null;
-		if (event.origin === "https://" + window.location.hostname + ":9000" && event.source === authWindow) {
+		if (/*event.origin === window.location.protocol + "//" + (window.location.hostname + ":" + window.location.port) &&*/ event.source === authWindow) {
 			var arguments1 = event.data.split("&");
 			var keys = _.map(arguments1, function(argument) { return argument.split("=")[0]; });
 			var values = _.map(arguments1, function(argument) { return argument.split("=")[1]; });

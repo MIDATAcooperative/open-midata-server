@@ -4,7 +4,7 @@
     <img ng-src="{{ view.setup.icon }}" >
   </div>		  
   </div>
-   <div ng-show="view.setup.link" class="footer">			  
+   <div ng-if="view.setup.link" class="footer">			  
 	  <a ui-sref="{{ view.setup.link }}" class="btn btn-default">{{ view.setup.button }}</a>
   </div>			  
 </div>

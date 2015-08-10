@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('MessagesCtrl', ['$scope', 'server', function($scope, server) {
+.controller('MessagesCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
 	
 	// init
 	$scope.error = null;
@@ -65,7 +65,7 @@ angular.module('portal')
 	
 	// open message details
 	$scope.showMessage = function(messageId) {
-		window.location.href = jsRoutes.controllers.Messages.details(messageId.$oid).url;
+		$state.go('^.message', { messageId : messageId.$oid });
 	};
 	
 	// move message to another folder

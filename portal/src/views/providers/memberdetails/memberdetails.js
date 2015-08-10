@@ -1,7 +1,7 @@
 angular.module('portal')
-.controller('MemberDetailsCtrl', ['$scope', 'server', 'views', function($scope, server, views) {
+.controller('MemberDetailsCtrl', ['$scope', '$state', 'server', 'views', function($scope, $state, server, views) {
 	
-	$scope.memberid = window.location.pathname.split("/")[3];
+	$scope.memberid = $state.params.memberId;
 	$scope.member = {};	
 	$scope.loading = true;
 		
@@ -83,9 +83,9 @@ angular.module('portal')
 	// go to record creation/import dialog
 	$scope.createOrImport = function(app) {
 		if (app.type === "create") {
-			window.location.href = portalRoutes.controllers.ProviderFrontend.createRecord(app._id.$oid, $scope.member._id.$oid).url;
+			$state.go("^.createrecord", { appId : app._id.$oid, userId : $scope.member._id.$oid });			
 		} else {
-			window.location.href = portalRoutes.controllers.Records.importRecords(app._id.$oid).url;
+			$state.go("^.importrecords", { appId : app._id.$oid });			
 		}
 	};
 	
@@ -94,7 +94,7 @@ angular.module('portal')
 	$scope.visualizations = [];
 	
 	$scope.useVisualization = function(visualization) {		
-		window.location.href = portalRoutes.controllers.ProviderFrontend.useVisualization($scope.member._id.$oid, visualization._id.$oid ).url;		
+		$state.go("^.usevisualization", { userId : $scope.member._id.$oid , visualizationId : visualization._id.$oid });				
 	};
 	
 }]);

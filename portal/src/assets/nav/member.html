@@ -17,8 +17,8 @@
 			<ul class="nav navbar-nav">
             	<li ui-sref-active="active"><a ui-sref="member.overview">Dashboard</a></li>
 				<li ui-sref-active="active"><a ui-sref="member.messages">Messages</a></li>
-				<li ui-sref-active="active"><a ui-sref="member.providers">Providers</a></li>
-				<li ui-sref-active="active"><a ui-sref="member.studies">Research</a></li>
+				<li ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'providers' })">Providers</a></li>
+				<li ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'studies' })">Research</a></li>
 				<li ui-sref-active="active"><a ui-sref="member.records">Records</a></li>				
 				<li ui-sref-active="active"><a ui-sref="member.circles">Circles</a></li>
 				<li ui-sref-active="active"><a ui-sref="member.market">Market</a></li>
@@ -31,8 +31,8 @@
 			</form>
 			<ul class="nav navbar-nav navbar-right" ng-cloak>
 			    <li><a>{{user.midataID}}</a></li>
-				<li><a href="/members/users/{{user._id.$oid}}">{{user.name}}</a></li>
-				<li><a href="@routes.Application.logout()">
+				<li><a ui-sref=".user({ userId : user._id.$oid})">{{user.name}}</a></li>
+				<li><a ng-click="logout()" href="javascript:">
 					<span class="glyphicon glyphicon-off"></span> Sign out
 				</a></li>
 			</ul>
@@ -44,4 +44,3 @@
 	  <div ui-view></div>
 	</div>
 	
-}

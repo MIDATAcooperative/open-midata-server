@@ -12,6 +12,10 @@ angular.module('services')
 		return $http.post(apiurl + url, body);
 	};
 	
+	service.put = function(url, body) {
+		return $http.put(apiurl + url, body);
+	};
+	
 	service.delete = function(url, body) {
 		return $http.delete(apiurl + url, body);
 	};

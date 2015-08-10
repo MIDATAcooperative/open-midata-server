@@ -33,8 +33,7 @@ angular.module('views')
 		circles.createNew($scope.form.newCircleName).
 		then(function(results) {
 			$scope.circles.push(results.data);
-			$scope.selectedCircle = results.data;
-			//window.location.href = "/members/circles/"+results.data._id.$oid;
+			$scope.selectedCircle = results.data;			
 		});		
 	};
 	

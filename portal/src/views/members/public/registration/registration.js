@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RegistrationCtrl', ['$scope', 'server', 'status', function($scope, server, status) {
+.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', function($scope, $state, server, status) {
 	
 	$scope.registration = {};
 	$scope.error = null;
@@ -27,7 +27,7 @@ angular.module('portal')
 		// send the request
 		var data = $scope.registration;		
 		$scope.status.doAction("register", server.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
-		then(function() { window.location.replace(portalRoutes.controllers.News.index().url); },
+		then(function() { $state.go("member.overview"); },
 			 function(err) { 
 				$scope.error = err;
 				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);				

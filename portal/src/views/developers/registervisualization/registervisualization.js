@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RegisterVisualizationCtrl', ['$scope', 'server', function($scope, server) {
+.controller('RegisterVisualizationCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
 	
 	// init
 	$scope.error = null;
@@ -26,7 +26,7 @@ angular.module('portal')
 				"url": $scope.visualization.url
 		};
 		server.post(jsRoutes.controllers.Market.registerVisualization().url, data).
-			success(function(redirectUrl) { window.location.replace(portalRoutes.controllers.Market.index().url); }).
+			success(function(redirectUrl) { $state.go('developer.main'); }).
 			error(function(err) { $scope.error = "Failed to register visualization: " + err; });
 	};
 	

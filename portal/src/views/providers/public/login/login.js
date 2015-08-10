@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ProviderLoginCtrl', ['$scope', 'server', function($scope, server) {
+.controller('ProviderLoginCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
 	
 	// init
 	$scope.login = {};
@@ -18,7 +18,7 @@ angular.module('portal')
 		// send the request
 		var data = {"email": $scope.login.email, "password": $scope.login.password};
 		server.post(jsRoutes.controllers.providers.Providers.login().url, JSON.stringify(data)).
-			success(function(url) { window.location.replace(portalRoutes.controllers.ProviderFrontend.messages().url); }).
+			success(function(url) { $state.go('provider.patientsearch'); }).
 			error(function(err) { $scope.error = err; });
 	};
 	

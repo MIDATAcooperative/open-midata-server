@@ -50,6 +50,7 @@ public class GlobalSearch extends Controller {
 	/**
 	 * Suggests completions for the given query.
 	 */
+	 @APICall
 	public static Result complete(String query) {
 		Map<String, List<CompletionResult>> completions = Search.complete(new ObjectId(request().username()), query);
 		List<CompletionResult> results = new ArrayList<CompletionResult>();

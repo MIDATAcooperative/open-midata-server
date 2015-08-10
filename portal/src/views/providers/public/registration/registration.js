@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ProviderRegistrationCtrl', ['$scope', 'server', function($scope, server) {
+.controller('ProviderRegistrationCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
 	
 	$scope.registration = {};
 	$scope.error = null;
@@ -19,7 +19,7 @@ angular.module('portal')
 		var data = $scope.registration;		
 		
 		server.post(jsRoutes.controllers.providers.Providers.register().url, JSON.stringify(data)).
-			success(function(url) { window.location.replace(portalRoutes.controllers.ProviderFrontend.messages().url); }).
+			success(function(url) { $state.go('provider.patientsearch'); }).
 			error(function(err) {
 				$scope.error = err;
 				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);				

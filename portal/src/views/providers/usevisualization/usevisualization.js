@@ -1,13 +1,13 @@
 angular.module('portal')
-.controller('VisualizationCtrl', ['$scope', 'server', '$sce', function($scope, server, $sce) {
+.controller('VisualizationCtrl', ['$scope', '$state', 'server', '$sce', function($scope, $state, server, $sce) {
 	
 	// init
 	$scope.error = null;
 	$scope.userId = null;
-	$scope.memberId = window.location.pathname.split("/")[3];
+	$scope.memberId = $state.params.memberId;
 	$scope.loading = true;
-	$scope.space = { "visualization" : { "$oid" : window.location.pathname.split("/")[4] }};
-	$scope.memberUrl = portalRoutes.controllers.ProviderFrontend.member($scope.memberId).url;
+	$scope.space = { "visualization" : { "$oid" : $state.params.visualizationId }};
+	//$scope.memberUrl = portalRoutes.controllers.ProviderFrontend.member($scope.memberId).url;
 	
 	// get current user
 	server.get(jsRoutes.controllers.Users.getCurrentUser().url).

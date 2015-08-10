@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('SearchCtrl', ['$scope', 'server', '$sce', function($scope, server, $sce) {
+.controller('SearchCtrl', ['$scope', '$state', 'server', '$sce', function($scope, $state, server, $sce) {
 	
 	// init
 	$scope.error = null;
@@ -8,8 +8,7 @@ angular.module('portal')
 	$scope.types = [];
 	$scope.active = null;
 	
-	// get search query (format: /search/:query)
-	$scope.query = decodeURI(window.location.pathname.split("/")[3]);
+	$scope.query = $state.params.query;
 	
 	// start search
 	$scope.loading = true;
@@ -41,6 +40,17 @@ angular.module('portal')
 	// display as html
 	$scope.toHtml = function(html) {
 		return $sce.trustAsHtml(html);
+	};
+	
+	$scope.goTo = function(type, id) {		
+		switch (type) {
+		case "user" : $state.go('^.user', { userId : id });break;
+		case "app" : $state.go('^.app', { appId : id });break;
+		case "visualization" : $state.go('^.visualization', { visualizationId : id });break;
+		case "record" : $state.go('^.recorddetail', { recordId : id });break;
+		case "space" : $state.go('^.space', { spaceId : id });break;
+		case "circle" : $state.go('^.circles', { circleId : id });break;
+		}
 	};
 	
 }]);

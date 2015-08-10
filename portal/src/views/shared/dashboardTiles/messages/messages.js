@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('MessagesCtrl', ['$scope', 'server', '$attrs', 'currentUser', 'views', 'status', function($scope, server, $attrs, currentUser, views, status) {
+.controller('MessagesCtrl', ['$scope', '$state', 'server', '$attrs', 'currentUser', 'views', 'status', function($scope, $state, server, $attrs, currentUser, views, status) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
     $scope.status = new status(true);
@@ -49,7 +49,7 @@ angular.module('views')
 	};
 	
 	$scope.showMessage = function(messageId) {
-		window.location.href = jsRoutes.controllers.Messages.details(messageId).url;
+		$state.go('^.message', { messageId : messageId });		
 	};
             
 	$scope.$watch('view.setup', function() { $scope.reload(); });

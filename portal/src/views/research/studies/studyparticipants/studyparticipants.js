@@ -1,7 +1,7 @@
 angular.module('portal')
-.controller('ListParticipantsCtrl', ['$scope', 'server', function($scope, server) {
+.controller('ListParticipantsCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
 	
-	$scope.studyid = window.location.pathname.split("/")[3];
+	$scope.studyid = $state.params.studyId;
 	$scope.results =[];
 	$scope.error = null;
 	$scope.loading = true;

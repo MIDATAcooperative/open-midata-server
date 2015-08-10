@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('CreateMessageCtrl', ['$scope', 'server', function($scope, server) {
+.controller('CreateMessageCtrl', ['$scope', 'server', 'apiurl', function($scope, server, apiurl) {
 	
 	// init
 	$scope.error = null;
@@ -28,7 +28,7 @@ angular.module('portal')
 				"url": null,
 				"replace": function(url, unusedQuery) {
 					// use query before URI encoding (done by play framework)
-					return jsRoutes.controllers.Users.complete($scope.message.query).url;
+					return apiurl + jsRoutes.controllers.Users.complete($scope.message.query).url;
 				}
 			},
 			header: '<span class="text-info">All users</span>'

@@ -4,20 +4,19 @@ angular.module('portal')
 	    .state('member.overview', {
 	      url: '/overview',
 	      templateUrl: 'views/shared/dashboard/dashboard.html',
-	      dashid : 'overview'
+	      dashId : 'overview'
 	    })
 	    .state('member.dashboard', {
-	      url: '/dashboard/:dashid',
+	      url: '/dashboard/:dashId',
 	      templateUrl: 'views/shared/dashboard/dashboard.html',	      
 	    })
 	    .state('provider.dashboard', {
-	      url: '/dashboard',
-	      templateUrl: 'views/shared/dashboard/dashboard.html',
-	      dashid : 'overview'
+	      url: '/dashboard/:dashId',
+	      templateUrl: 'views/shared/dashboard/dashboard.html'
+	    
 	    })
 	    .state('research.dashboard', {
-	      url: '/dashboard',
-	      templateUrl: 'views/shared/dashboard/dashboard.html',
-	      dashid : 'overview'
+	      url: '/dashboard/:dashId',
+	      templateUrl: 'views/shared/dashboard/dashboard.html'	      
 	    });
 });

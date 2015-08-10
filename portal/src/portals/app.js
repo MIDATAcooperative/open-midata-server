@@ -12,7 +12,7 @@ angular.module('portal', [ 'ui.router', 'services', 'views' ])
       url: '/portal',
       templateUrl: 'assets/nav/public.html'
     })
-    .state('public_providers', {
+    .state('public_provider', {
       url: '/hc',
       templateUrl: 'assets/nav/public.html'
     })
@@ -27,6 +27,14 @@ angular.module('portal', [ 'ui.router', 'services', 'views' ])
     .state('member', {
       url: '/member',
       templateUrl: 'assets/nav/member.html'
+    })
+    .state('research', {
+      url: '/research',
+      templateUrl: 'assets/nav/research.html'
+    })
+    .state('provider', {
+      url: '/provider',
+      templateUrl: 'assets/nav/provider.html'
     });   
    
    $urlRouterProvider

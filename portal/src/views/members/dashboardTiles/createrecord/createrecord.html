@@ -35,7 +35,7 @@
 			<button class="btn btn-default" ng-click="showAppList()">Back to list</button>
 		</div>
 		<div class="footer">
-			<a ng-href="{{ view.teaser.link }}" ng-if="!showapp && !apps.length" class="btn btn-primary">{{ view.teaser.button }}</a>
+			<a ui-sref="{{ view.teaser.link }}" ng-if="!showapp && !apps.length" class="btn btn-primary">{{ view.teaser.button }}</a>
 		</div>
 	</div>
 	<div ng-if="showapp" class="preview"><iframe class="frame" ng-src="{{url}}" ng-cloak></iframe></div>

@@ -7,7 +7,7 @@
   </div>		  
   <p class="">{{ view.setup.text }}</p>
   </div>
-   <div ng-show="view.setup.link" class="footer">			  
-	  <a ng-href="{{ view.setup.link }}" class="btn btn-primary">{{ view.setup.button }}</a>
+   <div ng-if="view.setup.link" class="footer">			  
+	  <a ui-sref="{{ view.setup.link }}" class="btn btn-primary">{{ view.setup.button }}</a>
   </div>	
 </div>

@@ -267,9 +267,11 @@ public class Application extends Controller {
 		return ok();
 	}
 
+	@APICall
 	public static Result logout() {
 		session().clear();
-		return redirect(routes.Application.welcome());
+		return ok();
+		// return redirect(routes.Application.welcome());
 	}
 
 	public static Result portalRoutes() {

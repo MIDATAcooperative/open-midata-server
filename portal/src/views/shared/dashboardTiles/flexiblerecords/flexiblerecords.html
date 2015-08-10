@@ -20,7 +20,7 @@
 	</ul>
 	
 	<div class="footer" ng-if="view.setup.allowBrowse || view.setup.allowAdd || view.setup.allowShare">
-	<a href="/members/records" ng-if="view.setup.allowBrowse" class="btn btn-default">Browse Records</a>
+	<a ui-sref="^.records" ng-if="view.setup.allowBrowse" class="btn btn-default">Browse Records</a>
 	<button ng-click="addRecords()" ng-if="view.setup.allowAdd" class="btn btn-primary">Add Records...</button>
 	<button ng-click="shareRecords()" ng-if="view.setup.allowShare" class="btn btn-primary">Share</button>
 	</div>

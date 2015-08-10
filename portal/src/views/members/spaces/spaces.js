@@ -1,11 +1,11 @@
 angular.module('portal')
-.controller('Spaces2Ctrl', ['$scope', 'server', '$sce', 'status', 'spaces', 'views', function($scope, server, $sce, status, spaces, views) {
+.controller('Spaces2Ctrl', ['$scope', '$state', 'server', '$sce', 'status', 'spaces', 'views', function($scope, $state, server, $sce, status, spaces, views) {
 	
 	// init
 	$scope.error = null;
 	$scope.userId = null;
 	$scope.loading = true;
-	$scope.spaceId = window.location.pathname.split("/")[3];
+	$scope.spaceId = $state.params.spaceId;
 	$scope.space = { "_id" : { "$oid" : $scope.spaceId } };
 	
 	
@@ -43,7 +43,7 @@ angular.module('portal')
 	
 	$scope.def = views.def( {                        
 		  id : "share",
-		  template : "/assets/views/members/share.html",
+		  template : "/views/members/dashboardTiles/share/share.html",
 		  title : "Share With...",
 		  active : false,
 		  position : "modal"			 
@@ -91,7 +91,7 @@ angular.module('portal')
 	
 	$scope.goBack = function() {
 	   spaces.get({ "_id" :  { $oid : $scope.spaceId } }, ["context"]).
-	   then(function(result) { document.location.href = "/members/dashboard/" + encodeURIComponent(result.data[0].context); });
+	   then(function(result) { $state.go('^.dashboard', { dashId : result.data[0].context }); });
 	};
 	
 }]);

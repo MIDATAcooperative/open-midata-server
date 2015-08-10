@@ -2,15 +2,15 @@ angular.module('portal')
 .config(function($stateProvider) {
 	   $stateProvider
 	    .state('member.market', {
-	      url: '/market',
+	      url: '/market?context',
 	      templateUrl: 'views/shared/market/market.html' 
 	    })
 	    .state('provider.market', {
-	      url: '/market',
+	      url: '/market?context',
 	      templateUrl: 'views/shared/market/market.html' 
 	    })
 	    .state('research.market', {
-	      url: '/market',
+	      url: '/market?context',
 	      templateUrl: 'views/shared/market/market.html' 
 	    });
 });

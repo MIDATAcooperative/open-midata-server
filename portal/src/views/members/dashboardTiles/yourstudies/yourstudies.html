@@ -10,7 +10,7 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="study in results">
-	      <td><a ng-href="/members/studies/{{study.study.$oid}}/details">{{ study.studyName }}</a></td>	  
+	      <td><a ui-sref="^.studydetails({ studyId : study.study.$oid })">{{ study.studyName }}</a></td>	  
 	      <td>{{ study.status }}</td>	      	         
 	    </tr>
 	  </tbody>

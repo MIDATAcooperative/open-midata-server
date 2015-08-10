@@ -6,7 +6,7 @@ angular.module('portal')
 	      templateUrl: 'views/shared/public/lostpw/lostpw.html',
 	      data : { role : "member" }
 	    })
-	    .state('public_providers.lostpw', {
+	    .state('public_provider.lostpw', {
 	      url: '/lostpw',
 	      templateUrl: 'views/shared/public/lostpw/lostpw.html',
 	      data : { role : "hpuser" } 

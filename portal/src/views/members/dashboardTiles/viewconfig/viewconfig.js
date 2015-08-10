@@ -35,13 +35,13 @@ angular.module('views')
     $scope.addTeaser = function(vis) {
     	var teaser = {
 				id : "vis"+vis.id,
-				template : "/assets/views/members/info/summary.html",
+				template : "/views/shared/dashboardTiles/summary/summary.html",
 				title : vis.title,
 				position : "small",
 				active : true,
 				setup : {
 					text : vis.teaser,
-		        	link : ("/members/visualizations/" + vis.id+"#?next="+encodeURIComponent(document.location.href)+"&name="+encodeURIComponent(vis.title)+"&query="+encodeURIComponent(JSON.stringify(vis.spaces[0].query))+"&context="+encodeURIComponent(vis.spaces[0].context)),
+		        	link : ("^.visualization({ visualizationId : '" + vis.id+"', name : '"+vis.title+"', query:'"+encodeURIComponent(JSON.stringify(vis.spaces[0].query))+"', context:'"+encodeURIComponent(vis.spaces[0].context)+"'})"),
 		        	icon : "/images/icons/add.png",
 		        	button : "Info + Install"
 				}

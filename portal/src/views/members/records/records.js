@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RecordsCtrl', ['$scope', 'server',  '$filter', '$location', 'dateService', 'records', 'circles', 'formats', 'apps', 'status', function($scope, server, $filter, $location, dateService, records, circles, formats, apps, status) {
+.controller('RecordsCtrl', ['$scope', '$state', 'server',  '$filter', 'dateService', 'records', 'circles', 'formats', 'apps', 'status', function($scope, $state, server, $filter, dateService, records, circles, formats, apps, status) {
 	
 	// init
 	$scope.error = null;
@@ -26,17 +26,14 @@ angular.module('portal')
 			$scope.getRecords(userId, "self")
 			.then(function() {
 			
-						
-			var p = window.location.pathname.split("/");
-			console.log(p);
-			if (p.length >= 5) {
-			  var selectedType = window.location.pathname.split("/")[3];
-			  var selected = window.location.pathname.split("/")[4];
-			  $scope.displayAps = $scope.availableAps[1];
-			  $scope.selectedAps = { "_id" : { "$oid" : selected }, type : selectedType };
-			  $scope.compare = null;
-			  $scope.loadSharingDetails();
-			} else $scope.loadShared(userId); 
+				if ($state.params.selected != null) {						
+				  var selectedType = $state.params.selectedType;
+				  var selected = $state.params.selected;
+				  $scope.displayAps = $scope.availableAps[1];
+				  $scope.selectedAps = { "_id" : { "$oid" : selected }, type : selectedType };
+				  $scope.compare = null;
+				  $scope.loadSharingDetails();
+				} else $scope.loadShared(userId); 
 			});
 		});
 	
@@ -44,10 +41,12 @@ angular.module('portal')
 	$scope.getApps = function(userId) {
 		var properties = {"_id": userId};
 		var fields = ["apps"];
-		apps.getApps(properties, fields)
-		.then(function(results) {
-				$scope.getAppDetails(results.data[0].apps);
-		});
+		var data = {"properties": properties, "fields": fields};
+		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
+			success(function(users) {
+				$scope.getAppDetails(users[0].apps);
+			}).
+			error(function(err) { $scope.error = "Failed to load apps: " + err; });
 	};
 	
 	// get name and type for app ids
@@ -185,15 +184,15 @@ angular.module('portal')
 	// go to record creation/import dialog
 	$scope.createOrImport = function(app) {
 		if (app.type === "create") {
-			window.location.href = portalRoutes.controllers.Records.create(app._id.$oid).url;
+			$state.go('^.createrecord', { appId : app._id.$oid });
 		} else {
-			window.location.href = portalRoutes.controllers.Records.importRecords(app._id.$oid).url;
+			$state.go('^.importrecords', { appId : app._id.$oid });
 		}
 	};
 	
 	// show record details
 	$scope.showDetails = function(record) {
-		window.location.href = portalRoutes.controllers.Records.details(record.id).url;
+		$state.go('^.recorddetails', { recordId : record.id });
 	};
 	
 	// check whether the user is the owner of the record

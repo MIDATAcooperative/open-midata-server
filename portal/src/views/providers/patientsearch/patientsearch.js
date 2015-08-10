@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('MemberSearchCtrl', ['$scope', 'server', function($scope, server) {
+.controller('MemberSearchCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
 	
 	$scope.criteria = {};
 	$scope.member = null;
@@ -15,7 +15,7 @@ angular.module('portal')
 		    $scope.error = null;
 		    $scope.loading = false;
 		    
-		    document.location.href = portalRoutes.controllers.ProviderFrontend.member($scope.member._id.$oid).url;
+		    $state.go('^.memberdetails', { memberId : $scope.member._id.$oid });		    
 		}).
 		error(function(err) {
 			$scope.error = err;	

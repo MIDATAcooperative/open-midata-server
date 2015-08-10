@@ -1,12 +1,12 @@
 angular.module('portal')
-.controller('ProviderCreateRecordsCtrl', ['$scope', 'server', '$sce', function($scope, server, $sce) {
+.controller('ProviderCreateRecordsCtrl', ['$scope', '$state', 'server', '$sce', function($scope, $state, server, $sce) {
 	
 	// init
 	$scope.error = null;
 	
 	// get app id (format: /records/create/:appId)
-	var appId = window.location.pathname.split("/")[4];
-	var userId = window.location.pathname.split("/")[5];
+	var appId = $state.params.appId;
+	var userId = $state.params.userId;
 	
 	$scope.memberUrl = portalRoutes.controllers.ProviderFrontend.member(userId).url;
 	console.log($scope.memberUrl);

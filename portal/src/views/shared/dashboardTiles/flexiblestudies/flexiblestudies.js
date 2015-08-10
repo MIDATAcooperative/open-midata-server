@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('FlexibleStudiesCtrl', ['$scope', 'server', '$attrs', 'views', 'studies', 'status', function($scope, server, $attrs, views, studies, status) {
+.controller('FlexibleStudiesCtrl', ['$scope', '$state', 'server', '$attrs', 'views', 'studies', 'status', function($scope, $state, server, $attrs, views, studies, status) {
 	
 	$scope.studies = [];	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
@@ -14,11 +14,7 @@ angular.module('views')
 	};
 	
 	$scope.showDetails = function(study) {
-		if (window.location.href.contains("/members/")) {
-		  window.location.href = portalRoutes.controllers.MemberFrontend.studydetails(study._id.$oid).url;
-		} else {		
-		  window.location.href = portalRoutes.controllers.ProviderFrontend.studydetails(study._id.$oid).url;
-		}
+		$state.go('^.studydetails', { studyId : study._id.$oid });		
 	};
 	
 	$scope.$watch('view.setup', function() { $scope.reload(); });	

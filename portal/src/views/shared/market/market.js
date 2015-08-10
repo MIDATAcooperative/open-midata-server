@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('MarketCtrl', ['$scope', 'server', '$location', function($scope, server, $location) {
+.controller('MarketCtrl', ['$scope', 'server', '$state', function($scope, server, $state) {
 	
 	var pathsegment = window.location.pathname.split("/")[1];
 	// init
@@ -24,16 +24,8 @@ angular.module('portal')
 		error(function(err) { $scope.error = "Failed to load visualizations: " + err; });
 	
 	// show app details
-	$scope.showAppDetails = function(app) {
-		var addToURL = "";
-		var q = $location.search();
-		if (q.context != null) addToURL += "&context="+encodeURIComponent(q.context);
-		if (q.next != null) addToURL += "&next="+encodeURIComponent(q.next);
-		if (addToURL!=="") addToURL = "#?"+addToURL.substr(1);
-		
-		if ($scope.targetRole == "PROVIDER") {
-			window.location.href = portalRoutes.controllers.ProviderFrontend.appDetails(app._id.$oid).url;
-		} else window.location.href = portalRoutes.controllers.Apps.details(app._id.$oid).url+addToURL;
+	$scope.showAppDetails = function(app) {		
+		$state.go("^.app", { appId : app._id.$oid, context : $state.params.context, next : $state.params.next });
 	};
 	
 	$scope.getAppImage = function(app) {
@@ -46,15 +38,7 @@ angular.module('portal')
 	
 	// show visualization details
 	$scope.showVisualizationDetails = function(visualization) {
-		var addToURL = "";
-		var q = $location.search();
-		if (q.context != null) addToURL += "&context="+encodeURIComponent(q.context);
-		if (q.next != null) addToURL += "&next="+encodeURIComponent(q.next);
-		if (addToURL!== "") addToURL = "#?"+addToURL.substr(1);
-		
-		if ($scope.targetRole == "PROVIDER") {
-			window.location.href = portalRoutes.controllers.ProviderFrontend.visualizationDetails(visualization._id.$oid).url;
-		} else window.location.href = portalRoutes.controllers.Visualizations.details(visualization._id.$oid).url+addToURL;
+		$state.go("^.visualization", { visualizationId : visualization._id.$oid, context : $state.params.context, next : $state.params.next });		
 	};
 	
 }]);

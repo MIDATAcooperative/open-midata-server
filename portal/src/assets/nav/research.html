@@ -20,7 +20,7 @@
 			</ul>
 			<ul class="nav navbar-nav navbar-right" ng-cloak>
 				<li>{{user.name}}</li>
-				<li><a href="@routes.Application.logout()">
+				<li><a ng-click="logout()" href="javascript:">
 					<span class="glyphicon glyphicon-off"></span> Sign out
 				</a></li>
 		    </ul>

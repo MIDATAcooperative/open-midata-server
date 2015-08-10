@@ -57,6 +57,6 @@
 	<button ng-show="mayRequestParticipation()" ng-click="requestParticipation()" class="btn btn-success">Request Participation</button>
 	<button ng-show="mayDeclineParticipation()" ng-click="noParticipation()" class="btn btn-danger">Do not participate</button>
 
-    @views.html.details.dashboard("studydetails")
+    <div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
 
 </div>

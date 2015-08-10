@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('SpaceSummaryCtrl', ['$scope', 'server', '$attrs', '$sce', 'records', 'views', 'status', 'spaces', function($scope, server, $attrs, $sce, records, views, status, spaces) {
+.controller('SpaceSummaryCtrl', ['$scope', '$state', 'server', '$attrs', '$sce', 'records', 'views', 'status', 'spaces', function($scope, $state, server, $attrs, $sce, records, views, status, spaces) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
     $scope.status = new status(true);
@@ -27,12 +27,12 @@ angular.module('views')
     	    	    				
     };
         
-    $scope.showSpace = function() {    	
-    	window.location.href = "/members/spaces/"+$scope.view.setup.spaceId;
+    $scope.showSpace = function() {
+    	$state.go('^.spaces', { spaceId : $scope.view.setup.spaceId });
     };
     
     $scope.showCreate = function() {    	
-    	window.location.href = "/members/records/create/" + $scope.view.setup.appId;    		
+    	$state.go('^.createrecord', { appId : $scope.view.setup.appId });    		
     };
     
 	$scope.$watch('view.setup', function() { $scope.reload(); });

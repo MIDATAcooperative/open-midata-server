@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('NavbarCtrl', ['$scope', '$http', 'currentUser', 'apiurl', function($scope, $http, currentUser, apiurl) {
+.controller('NavbarCtrl', ['$scope', '$state', 'server', 'currentUser', 'apiurl', function($scope, $state, server, currentUser, apiurl) {
 	
 	// init
 	$scope.user = {};
@@ -17,18 +17,28 @@ angular.module('portal')
 		var properties = {"_id": userId};
 		var fields = ["name", "midataID"];
 		var data = {"properties": properties, "fields": fields};
-		$http.post(apiurl + jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
 			success(function(users) 
 					{ $scope.user.name = users[0].name;
 					  $scope.user.midataID = users[0].midataID;
 			        });
 	};
 	
+	$scope.logout = function() {		
+		server.get('/logout')
+		.then(function() { $state.go('public.login'); });
+	};
+	
 	// initialize global search with typeahead plugin
 	$("#globalSearch").typeahead({"name": "data", remote: {
 		"url": null,
+		"prepare" : function(query, settings) {
+			console.log(settings);
+			settings.xhrFields = { withCredentials : true };
+			return settings;
+		},		
 		"replace": function(url, query) {
-			return jsRoutes.controllers.GlobalSearch.complete(query).url;
+			return apiurl + jsRoutes.controllers.GlobalSearch.complete(query).url;
 		}
 	}}).
 	on("typeahead:selected", function(event, datum) {
@@ -41,12 +51,7 @@ angular.module('portal')
 	$scope.startSearch = function() {
 		// need to use jQuery instead of ng-model (typeahead overrides ng-model somehow)
 		var query = $("#globalSearch").val();
-		window.location.href = jsRoutes.controllers.GlobalSearch.index(query).url;
+		$state.go('^.search', { query : query });		
 	};
 	
 }]);
-
-// manually bootstrap this angular app since only one app can be automatically initialized
-/*$("#navbar").ready(function() {
-	angular.bootstrap($("#navbar")[0], ['navbar']);
-});*/

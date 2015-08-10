@@ -1,7 +1,7 @@
 angular.module('portal')
-.controller('CodesCtrl', ['$scope', 'server', function($scope, server) {
+.controller('CodesCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
 	
-	$scope.studyid = window.location.pathname.split("/")[3];
+	$scope.studyid = $state.params.studyId;
 	$scope.codes = null;
 	$scope.newcodes = { count:1, reuseable:true, group:"" };
 	$scope.loading = true;

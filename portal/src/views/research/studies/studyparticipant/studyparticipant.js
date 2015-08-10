@@ -1,8 +1,8 @@
 angular.module('portal')
-.controller('ParticipantCtrl', ['$scope', 'server', 'views', function($scope, server, views) {
+.controller('ParticipantCtrl', ['$scope', '$state', 'server', 'views', function($scope, $state, server, views) {
 	
-	$scope.studyid = window.location.pathname.split("/")[3];
-	$scope.memberid = window.location.pathname.split("/")[5];
+	$scope.studyid = $state.params.studyId;
+	$scope.memberid = $state.params.participantId;
 	$scope.member = {};
 	$scope.participation = {};
 	$scope.loading = true;

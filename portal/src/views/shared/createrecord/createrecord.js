@@ -1,11 +1,11 @@
 angular.module('portal')
-.controller('CreateRecordsCtrl', ['$scope', 'server', '$sce', function($scope, server, $sce) {
+.controller('CreateRecordsCtrl', ['$scope', '$state', 'server', '$sce', function($scope, $state, server, $sce) {
 	
 	// init
 	$scope.error = null;
 	
 	// get app id (format: /records/create/:appId)
-	var appId = window.location.pathname.split("/")[4];
+	var appId = $state.params.appId;
 	
 	// get app url
 	server.get(jsRoutes.controllers.Apps.getUrl(appId).url).

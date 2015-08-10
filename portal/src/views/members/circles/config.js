@@ -4,6 +4,6 @@ angular.module('portal')
 	    .state('member.circles', {
 	      url: '/circles',
 	      templateUrl: 'views/members/circles/circles.html',
-	      dashid : 'circles'
+	      dashId : 'circles'
 	    });
 });

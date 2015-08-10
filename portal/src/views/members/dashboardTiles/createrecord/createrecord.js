@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('CreateRecordCtrl', ['$scope', 'server', '$attrs', '$sce', 'views', 'status', 'apps', 'currentUser', function($scope, server, $attrs, $sce, views, status, apps, currentUser) {
+.controller('CreateRecordCtrl', ['$scope', '$state', 'server', '$attrs', '$sce', 'views', 'status', 'apps', 'currentUser', function($scope, $state, server, $attrs, $sce, views, status, apps, currentUser) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
     $scope.status = new status(true);
@@ -27,7 +27,7 @@ angular.module('views')
     
     $scope.selectApp = function(appId, title) {
     	if (!$scope.view.setup.inline) {
-    		window.location.href = "/members/records/create/" + appId;
+    		$state.go('^.createrecord', { appId : appId });
     		return;
     	}
     	
@@ -53,7 +53,7 @@ angular.module('views')
      		  var appdef =
      		     {
      		    	   id : "app"+app._id.$oid,
-     		    	   template : "/assets/views/members/createrecord.html",
+     		    	   template : "/views/members/dashboardTiles/createrecord/createrecord.html",
      		    	   title : app.name,
      		    	   active : true,
      		    	   position : "small",

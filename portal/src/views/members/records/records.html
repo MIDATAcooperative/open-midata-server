@@ -33,7 +33,7 @@
 	        </div>	
 	        <div class="pull-right col-sm-4" ng-show="compare==null && selectedAps!=null">
 			  <label for="selectedAps">Records used for app</label>	
-			  <a class="btn btn-default" ng-href="/members/spaces/{{selectedAps._id.$oid}}">Back to Visualization</a>		  
+			  <a class="btn btn-default" ui-sref="^.spaces({ spaceId : selectedAps._id.$oid })">Back to Visualization</a>		  
 	        </div>	
 	        <div class="col-sm-4">
 	           <label for="owner" ng-dblclick="showDebug()">Show:</label>

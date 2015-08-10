@@ -4,6 +4,6 @@ angular.module('portal')
 	    .state('research.study.participant', {
 	      url: '/participant/:participantId',
 	      templateUrl: 'views/research/studies/studyparticipant/studyparticipant.html',
-	      dashid : 'studyparticipant'
+	      dashId : 'studyparticipant'
 	    });
 });

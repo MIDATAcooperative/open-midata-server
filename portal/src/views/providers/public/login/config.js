@@ -1,7 +1,7 @@
 angular.module('portal')
 .config(function($stateProvider) {
 	   $stateProvider
-	    .state('public_providers.login', {
+	    .state('public_provider.login', {
 	      url: '/login',
 	      templateUrl: 'views/providers/public/login/login.html' 
 	    });

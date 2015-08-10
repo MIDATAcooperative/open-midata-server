@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('CirclesCtrl', ['$scope', 'server', 'currentUser', 'views', function($scope, server, currentUser, views) {
+.controller('CirclesCtrl', ['$scope', '$state', 'server', 'currentUser', 'views', function($scope, $state, server, currentUser, views) {
 	
 	// init
 	$scope.error = null;
@@ -23,7 +23,7 @@ angular.module('portal')
 				$scope.circles = circles;
 				loadContacts();
 				if ($scope.circles.length > 0) {
-					var activeCircle = window.location.pathname.split("/")[3];
+					var activeCircle = $state.params.circleId;
 					if (activeCircle) {
 						$scope.makeActive(_.find($scope.circles, function(circle) { return circle._id.$oid === activeCircle; }));
 					} else {

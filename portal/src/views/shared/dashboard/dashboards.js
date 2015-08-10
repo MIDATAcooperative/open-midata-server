@@ -11,7 +11,7 @@ angular.module('portal')
 			    position : "small",
 			    setup : {
 			   	 text : "Manage your health data. Enter new data and visualize existing data.",
-			   	 link : "member.dashboard({ dashid : 'mydata'})",
+			   	 link : "member.dashboard({ dashId : 'mydata'})",
 			   	 icon : "/images/icons/health.png",			   	 
 			   	 button : "View"
 			    }
@@ -25,7 +25,7 @@ angular.module('portal')
 	         setup : {
 	        	 text : "Share your data with friends. Communicate with people sharing your health situation. Motivate yourself by competition with others.",
 	        	 icon : "/images/icons/social.png",
-	        	 link : "member.dashboard({ dashid : 'social'})",	        	 
+	        	 link : "member.dashboard({ dashId : 'social'})",	        	 
 	        	 button : "View"
 	         }
 		    },
@@ -37,7 +37,7 @@ angular.module('portal')
 		         position : "small",
 		         setup : {
 		        	 text : "Participate in studies. Inform yourself about ongoing research.",
-		        	 link : "member.dashboard({ dashid : 'studies'})",
+		        	 link : "member.dashboard({ dashId : 'studies'})",
 		        	 icon : "/images/icons/research.png",
 		        	 button : "View"
 		         }
@@ -51,7 +51,7 @@ angular.module('portal')
 		         position : "small",
 		         setup : {
 		        	 text : "Share data with your doctor. Search for health professionals.",
-		        	 link : "member.dashboard({ dashid : 'providers'})",		        	 
+		        	 link : "member.dashboard({ dashId : 'providers'})",		        	 
 		        	 icon : "/images/icons/empower.png",
 		        	 button : "View"
 		         }
@@ -64,7 +64,7 @@ angular.module('portal')
 		         position : "small",
 		         setup : {
 		        	 text : "Manage your personal training!",
-		        	 link : "member.dashboard({ dashid : 'training'})",
+		        	 link : "member.dashboard({ dashId : 'training'})",
 		        	 icon : "/images/icons/training.png",
 		        	 button : "View"
 		         }
@@ -88,7 +88,7 @@ angular.module('portal')
 		    	   title : "Create a new record",
 		    	   active : true,
 		    	   position : "small",		    	   
-		    	   teaser : { link : "/members/market", button : "Visit Market", text : "To get started we recommend to install some applications from our market place!" },
+		    	   teaser : { link : "^.market", button : "Visit Market", text : "To get started we recommend to install some applications from our market place!" },
 		    	   setup : { allowSelection : true }
 		     },
 		     {
@@ -292,7 +292,7 @@ angular.module('portal')
 			},
 	       {
 	    	   id :"entercode",
-	    	   template : "/views/members/dashboardTiles/entercode/entercode",
+	    	   template : "/views/members/dashboardTiles/entercode/entercode.html",
 	    	   title : "Join by participation code",
 	    	   active : true,
 	    	   position : "small"
@@ -496,7 +496,7 @@ angular.module('portal')
 	   views.layout = $scope.layout = {
 	     full: [], small:[], modal:[]
 	   };
-	   var dashid = $state.params.dashid || $state.current.dashid;
+	   var dashid = $state.params.dashId || $state.current.dashId;
 	   
 	   console.log(dashid);
 	   _.each(dashboards[dashid], function(view) {

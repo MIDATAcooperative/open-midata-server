@@ -11,7 +11,11 @@
 				<p ng-show="message">{{message}}</p>
 				<button id="authorize" type="button" class="btn btn-success" ng-hide="authorized || authorizingOAuth1" ng-class="{'disabled': authorizing}" ng-click="authorize()">Authorize</button>
 				<button type="button" class="btn btn-success" ng-show="authorizingOAuth1" ng-click="authorizeOAuth1()">Sign in with {{appName}} and authorize access</button>
-				<iframe ng-src="{{url}}" height="600px" width="100%" ng-show="authorized"></iframe>
+				<div class="panel panel-primary" ng-show="authorized">
+			      <div class="panel-body">	
+				    <iframe ng-src="{{url}}" height="600px" width="100%" ></iframe>
+				  </div>
+				</div>
 			</p>
 		</div>
 	</div>

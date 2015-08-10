@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('CirclesCtrl', ['$scope', 'server', '$attrs', 'views', 'circles', 'status', function($scope, server, $attrs, views, circles, status) {
+.controller('CirclesCtrl', ['$scope', '$state', 'server', '$attrs', 'views', 'circles', 'status', function($scope, $state, server, $attrs, views, circles, status) {
 	
 	$scope.circles = [];	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
@@ -23,7 +23,7 @@ angular.module('views')
 				var circledef =
 	   		     {
 	   		    	   id : "circle"+circle._id.$oid,
-	   		    	   template : "/assets/views/members/flexiblerecords.html",
+	   		    	   template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
 	   		    	   title : circle.ownerName ? circle.ownerName : circle.name,
 	   		    	   active : true,
 	   		    	   position : "small",
@@ -43,13 +43,10 @@ angular.module('views')
 		
 		circles.createNew($scope.form.newCircleName).
 		then(function(results) {
-			window.location.href = "/members/circles/"+results.data._id.$oid;
+			$state.go('^.circle', { circleId : results.data._id.$oid });
 		});		
 	};
-	
-	/*$scope.showDetails = function(study) {
-		window.location.href = portalRoutes.controllers.MemberFrontend.studydetails(study._id.$oid).url;
-	};*/
+		
 	
 	$scope.$watch('view.setup', function() { $scope.reload(); });	
 	

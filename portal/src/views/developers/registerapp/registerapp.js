@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RegisterAppCtrl', ['$scope', 'server', function($scope, server) {
+.controller('RegisterAppCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
 	
 	// init
 	$scope.error = null;
@@ -53,7 +53,7 @@ angular.module('portal')
 		
 		// send the request
 		server.post(jsRoutes.controllers.Market.registerApp(type).url, data).
-			success(function(redirectUrl) { window.location.replace(portalRoutes.controllers.Market.index().url); }).
+			success(function(redirectUrl) { $state.go('developer.main'); }).
 			error(function(err) { $scope.error = "Failed to register app: " + err; });
 	};
 	

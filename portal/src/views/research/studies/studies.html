@@ -1,5 +1,5 @@
 
-<div ng-controller="ListStudiesCtrl" ng-cloak>
+<div ng-controller="ResearchListStudiesCtrl" ng-cloak>
     <div class="page-header">
 	<h1>Studies</h1>
 	</div>
@@ -20,7 +20,7 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="study in results">
-	      <td><a ng-href="/research/studies/{{study._id.$oid}}/overview">{{ study.name }}</a></td>	  
+	      <td><a ui-sref="research.study.overview({ study : study._id.$oid})">{{ study.name }}</a></td>	  
 	      <td>{{ study.validationStatus }}</td>
 	      <td>{{ study.participantSearchStatus }}</td>
 	      <td>{{ study.executionStatus }}</td>

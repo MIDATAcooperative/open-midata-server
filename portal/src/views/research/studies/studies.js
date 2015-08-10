@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ListStudiesCtrl', ['$scope', 'server', function($scope, server) {
+.controller('ResearchListStudiesCtrl', ['$scope', 'server', function($scope, server) {
 	
 	$scope.results =[];
 	$scope.error = null;

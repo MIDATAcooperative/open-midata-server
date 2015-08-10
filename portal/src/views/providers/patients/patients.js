@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('PatientsCtrl', ['$scope', 'server', function($scope, server) {
+.controller('PatientsCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
 	
 	$scope.criteria = {};
 	$scope.member = null;
@@ -23,7 +23,7 @@ angular.module('portal')
 	};
 	
 	$scope.selectPatient = function(patient) {
-		document.location.href = portalRoutes.controllers.ProviderFrontend.member(patient._id.$oid).url;
+		$state.go('^.memberdetails', { memberId : patient._id.$oid });		
 	};
 	
     $scope.dosearch();	

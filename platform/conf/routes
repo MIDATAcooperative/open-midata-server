@@ -3,7 +3,7 @@
 # ~~~~
 
 # Test
-OPTIONS  /*all                                           controllers.Application.checkPreflight(all)
+
 GET     /test                                            controllers.Application.test()
 GET     /test2                                           controllers.Application.test2()
 GET     /debug/aps/:id                                   controllers.Debug.get(id: String)
@@ -258,3 +258,5 @@ POST    /api/visualizations/setconfig  controllers.VisualizationsAPI.setConfig()
 POST    /api/visualizations/getconfig  controllers.VisualizationsAPI.getConfig()
 OPTIONS /api/visualizations/clone  controllers.VisualizationsAPI.checkPreflight()
 POST    /api/visualizations/clone  controllers.VisualizationsAPI.cloneAs()
+
+OPTIONS  /*all                                           controllers.Application.checkPreflight(all)
