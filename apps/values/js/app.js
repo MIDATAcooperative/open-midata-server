@@ -48,7 +48,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 		   {
 				label : "Weight",
 				unit : "kg",
-				format : "body/weight",
+				content : "body/weight",
 				objkey : "weight"
 		   },
 		   {
@@ -60,13 +60,13 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 		   {
 			   label : "Steps",
 			   unit : "steps",
-			   format : "activities/steps",
+			   content : "activities/steps",
 			   objkey : "activities-steps"
 		   },
 		   {
 			   label : "Heartrate",
 			   unit : "bpm",
-			   format : "activities/heartrate",
+			   content : "activities/heartrate",
 			   objkey : "heartrate"
 		   }
 		];

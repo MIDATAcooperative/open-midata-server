@@ -34,7 +34,6 @@ import utils.auth.CodeGenerator;
 import utils.collections.Sets;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import views.html.defaultpages.badRequest;
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -42,7 +41,6 @@ import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import controllers.APIController;
-import controllers.routes;
 
 
 public class Studies extends APIController {

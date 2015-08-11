@@ -16,11 +16,11 @@ import models.FormatInfo;
 import models.LargeRecord;
 import models.MemberKey;
 import models.ModelException;
+import models.Plugin;
 import models.Record;
 import models.Space;
 import models.Member;
 import models.StudyParticipation;
-import models.Visualization;
 
 import org.bson.BSONObject;
 import org.bson.types.ObjectId;
@@ -46,12 +46,8 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.search.Search;
 import utils.search.SearchResult;
-import views.html.records;
-import views.html.records2; 
-import views.html.members.record;
 import views.html.dialogs.authorized;
-import views.html.dialogs.createrecords;
-import views.html.dialogs.importrecords;
+
 
 import actions.APICall;
 
@@ -60,36 +56,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 public class Records extends Controller {
-
-	@Security.Authenticated(Secured.class)
-	public static Result index() {
-		return ok(records2.render());
-	}
-	
-	@Security.Authenticated(Secured.class)
-	public static Result index2(String type, String aps) {
-		return ok(records2.render());
-	}
-
-	@Security.Authenticated(Secured.class)
-	public static Result filter(String filters) {
-		return index();
-	}
-
-	@Security.Authenticated(Secured.class)
-	public static Result details(String recordIdString) {
-		return ok(record.render());
-	}
-
-	@Security.Authenticated(Secured.class)
-	public static Result create(String appIdString) {
-		return ok(createrecords.render());
-	}
-
-	@Security.Authenticated(Secured.class)
-	public static Result importRecords(String appIdString) {
-		return ok(importrecords.render());
-	}
 
 	@Security.Authenticated(Secured.class)
 	public static Result onAuthorized(String appIdString) {
@@ -531,7 +497,7 @@ public class Records extends Controller {
 		FormatInfo format = FormatInfo.getByName(record.format);
 		if (format == null || format.visualization == null) return ok();
 		
-		Visualization visualization = Visualization.getById(format.visualization, Sets.create("filename", "url"));
+		Plugin visualization = Plugin.getById(format.visualization, Sets.create("filename", "url"));
 					
 		// create encrypted authToken
 		SpaceToken spaceToken = new SpaceToken(new ObjectId(tk.apsId), userId, new ObjectId(tk.recordId));

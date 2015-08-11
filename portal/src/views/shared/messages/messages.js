@@ -9,6 +9,7 @@ angular.module('portal')
 	$scope.trash = [];
 	$scope.messages = {};
 	$scope.names = {};
+	$scope.tab = 'inbox';
 	
 	// get current user
 	server.get(jsRoutes.controllers.Users.getCurrentUser().url).

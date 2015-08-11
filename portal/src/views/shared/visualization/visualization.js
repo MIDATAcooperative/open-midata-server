@@ -11,7 +11,7 @@ angular.module('portal')
 	// parse visualization id (format: /visualizations/:id) and load the visualization
 	var visualizationId = $state.params.visualizationId;
 	var data = {"properties": {"_id": {"$oid": visualizationId}}, "fields": ["name", "creator", "description", "defaultSpaceName", "defaultQuery"]};
-	server.post(jsRoutes.controllers.Visualizations.get().url, JSON.stringify(data)).
+	server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data)).
 		success(function(visualizations) {
 			$scope.error = null;
 			$scope.visualization = visualizations[0];
@@ -41,7 +41,7 @@ angular.module('portal')
 		error(function(err) { $scope.error = "Failed to load visualization details: " + err; });
 	
 	isInstalled = function() {
-		server.get(jsRoutes.controllers.Visualizations.isInstalled($scope.visualization._id.$oid).url).
+		server.get(jsRoutes.controllers.Plugins.isInstalled($scope.visualization._id.$oid).url).
 			success(function(installed) { $scope.visualization.installed = installed; }).
 			error(function(err) { $scope.error = "Failed to check whether this visualization is installed: " + err; });
 	};
@@ -54,7 +54,7 @@ angular.module('portal')
 	};
 	
 	$scope.install = function() {
-		server.put(jsRoutes.controllers.Visualizations.install($scope.visualization._id.$oid).url, JSON.stringify($scope.options)).
+		server.put(jsRoutes.controllers.Plugins.install($scope.visualization._id.$oid).url, JSON.stringify($scope.options)).
 			success(function() {
 				$scope.visualization.installed = true;
 				$scope.success = true;
@@ -64,7 +64,7 @@ angular.module('portal')
 	};
 	
 	$scope.uninstall = function() {
-		server.delete(jsRoutes.controllers.Visualizations.uninstall($scope.visualization._id.$oid).url).
+		server.delete(jsRoutes.controllers.Plugins.uninstall($scope.visualization._id.$oid).url).
 		success(function() {
 			$scope.visualization.installed = false;
 			$scope.success = false;

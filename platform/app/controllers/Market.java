@@ -1,8 +1,7 @@
 package controllers;
 
-import models.App;
 import models.ModelException;
-import models.Visualization;
+import models.Plugin;
 
 import org.bson.types.ObjectId;
 
@@ -13,9 +12,6 @@ import play.mvc.Security;
 import utils.collections.ChainedMap;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import views.html.market;
-import views.html.dialogs.registerapp;
-import views.html.dialogs.registervisualization;
 
 import actions.APICall;
 
@@ -23,18 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 @Security.Authenticated(Secured.class)
 public class Market extends Controller {
-
-	public static Result index() {
-		return ok(market.render());
-	}
-
-	public static Result registerAppForm() {
-		return ok(registerapp.render());
-	}
-
-	public static Result registerVisualizationForm() {
-		return ok(registervisualization.render());
-	}
+	
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
@@ -62,9 +47,9 @@ public class Market extends Controller {
 		String filename = json.get("filename").asText();
 		String name = json.get("name").asText();
 		try {
-			if (App.exists(new ChainedMap<String, Object>().put("filename", filename).get())) {
+			if (Plugin.exists(new ChainedMap<String, Object>().put("filename", filename).get())) {
 				return badRequest("An app with the same filename already exists.");
-			} else if (App.exists(new ChainedMap<String, Object>().put("creator", userId).put("name", name).get())) {
+			} else if (Plugin.exists(new ChainedMap<String, Object>().put("creator", userId).put("name", name).get())) {
 				return badRequest("An app with the same name already exists.");
 			}
 		} catch (ModelException e) {
@@ -72,7 +57,7 @@ public class Market extends Controller {
 		}
 
 		// create new app
-		App app = new App();
+		Plugin app = new Plugin();
 		app._id = new ObjectId();
 		app.creator = userId;
 		app.filename = filename;
@@ -100,7 +85,7 @@ public class Market extends Controller {
 
 		// add app to the platform
 		try {
-			App.add(app);
+			Plugin.add(app);
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}
@@ -123,9 +108,9 @@ public class Market extends Controller {
 		String filename = json.get("filename").asText();
 		String name = json.get("name").asText();
 		try {
-			if (Visualization.exists(new ChainedMap<String, String>().put("filename", filename).get())) {
+			if (Plugin.exists(new ChainedMap<String, String>().put("filename", filename).get())) {
 				return badRequest("A visualization with the same filename already exists.");
-			} else if (Visualization.exists(new ChainedMap<String, Object>().put("creator", userId).put("name", name).get())) {
+			} else if (Plugin.exists(new ChainedMap<String, Object>().put("creator", userId).put("name", name).get())) {
 				return badRequest("A visualization with the same name already exists.");
 			}
 		} catch (ModelException e) {
@@ -133,7 +118,7 @@ public class Market extends Controller {
 		}
 
 		// create new visualization
-		Visualization visualization = new Visualization();
+		Plugin visualization = new Plugin();
 		visualization._id = new ObjectId();
 		visualization.creator = userId;
 		visualization.filename = filename;
@@ -142,7 +127,7 @@ public class Market extends Controller {
 		visualization.spotlighted = true;
 		visualization.url = json.get("url").asText();
 		try {
-			Visualization.add(visualization);
+			Plugin.add(visualization);
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}

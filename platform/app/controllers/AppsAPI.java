@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import models.App;
 import models.HPUser;
 import models.ModelException;
+import models.Plugin;
 import models.Record;
 import models.Member;
 import models.User;
@@ -83,7 +83,7 @@ public class AppsAPI extends Controller {
 		String username = JsonValidation.getEMail(json, "username");
 		String password = JsonValidation.getString(json, "password");
 		
-		App app = App.getByFilenameAndSecret(name, secret, Sets.create("type"));
+		Plugin app = Plugin.getByFilenameAndSecret(name, secret, Sets.create("type"));
 		if (app == null) return badRequest("Unknown app");
 		if (!app.type.equals("mobile")) return internalServerError("Wrong app type");
 		
@@ -405,9 +405,9 @@ public class AppsAPI extends Controller {
 
 		// also get the consumer key and secret
 				
-		App app;
+		Plugin app;
 		try {			
-				app = App.getById(appToken.appId, Sets.create("consumerKey", "consumerSecret"));
+				app = Plugin.getById(appToken.appId, Sets.create("consumerKey", "consumerSecret"));
 				if (app == null) return badRequestPromise("Invalid authToken");			
 		} catch (ModelException e) {
 			return badRequestPromise(e.getMessage());

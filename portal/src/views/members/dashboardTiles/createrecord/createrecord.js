@@ -41,15 +41,16 @@ angular.module('views')
     
     $scope.showAppList = function() {
     	$scope.showapp = false;
-    	if (!$scope.apps) $scope.loadAppList();
+    	if ($scope.apps == null) $scope.loadAppList();
     };
     
     $scope.loadAppList = function() {
+    	$scope.apps = [];
     	$scope.status.doBusy(apps.getAppsOfUser($scope.userId, ["create","oauth1","oauth2"], ["name", "type", "previewUrl"]))
     	.then(function(results) {
     	   $scope.apps = results.data;   
     	  _.each(results.data, function(app) {
-    		  if (!app.previewUrl) return; 
+    		  if (!app.previewUrl) return;    		 
      		  var appdef =
      		     {
      		    	   id : "app"+app._id.$oid,

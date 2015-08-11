@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import models.Circle;
@@ -17,30 +16,19 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import utils.collections.ChainedMap;
-import utils.collections.ChainedSet;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import views.html.circles;
 
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Security.Authenticated(Secured.class)
-public class Circles extends Controller {
-
-	public static Result index() {
-		return ok(circles.render());
-	}
-
-	public static Result details(String circleIdString) {
-		return index();
-	}
+public class Circles extends Controller {	
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall

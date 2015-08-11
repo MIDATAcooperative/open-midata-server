@@ -6,16 +6,16 @@
 		<div class="row">
 			<div class="col-md-2">
 				<ul class="nav nav-pills nav-stacked">
-					<li class="active"><a href="#home" data-toggle="tab">Home</a></li>
-					<li><a href="#architecture" data-toggle="tab">Architecture</a></li>
-					<li><a href="#apps" data-toggle="tab">Apps</a></li>
-					<li><a href="#visualizations" data-toggle="tab">Visualizations</a></li>
-					<li><a href="#mobile" data-toggle="tab">Mobile Apps</a></li>
+					<li ng-init="tab='home'" ng-class="{ 'active' : tab=='home' }"><a href="javascript:" ng-click="tab='home';">Home</a></li>
+					<li ng-class="{ 'active' : tab=='architecture' }"><a href="javascript:" ng-click="tab='architecture';">Architecture</a></li>
+					<li ng-class="{ 'active' : tab=='apps' }"><a href="javascript:" ng-click="tab='apps';">Apps</a></li>
+					<li ng-class="{ 'active' : tab=='visualizations' }"><a href="javascript:" ng-click="tab='visualizations';">Visualizations</a></li>
+					<li ng-class="{ 'active' : tab=='mobile' }"><a href="javascript:" ng-click="tab='mobile';">Mobile Apps</a></li>
 				</ul>
 			</div>
 			<div class="col-md-10">
 				<div class="tab-content">
-					<div id="home" class="tab-pane fade active in">
+					<div id="home" class="tab-pane fade" ng-class="{ 'active in' : tab=='home' }">
 						<h2>Overview</h2>
 						<p>The developer's guide explains the general architecture of the
 							platform, how plugins (apps and visualizations) interact with it,
@@ -33,7 +33,7 @@
 							their own data.
 						</p>
 					</div>
-					<div id="architecture" class="tab-pane fade">
+					<div id="architecture" class="tab-pane fade" ng-class="{ 'active in' : tab=='architecture' }">
 						<h2>Architecture</h2>
 						<p>The platform promises not to give data out. To adhere to that 
 							promise, plugins run on an isolated and sandboxed application 
@@ -42,7 +42,7 @@
 						<p>Plugins need to be registered via the market and the code needs to
 						be uploaded, so that it can be deployed on the plugin server.</p>
 					</div>
-					<div id="apps" class="tab-pane fade">
+					<div id="apps" class="tab-pane fade" ng-class="{ 'active in' : tab=='apps' }">
 						<h2>Apps</h2>
 						<p>An app provides the functionality to let the user create or import a 
 						record and to give a detailed view of a single instance of a record
@@ -95,7 +95,7 @@
 						facts of the record, so that the user can manage it accordingly, i.e.
 						decide whether to share it and in which spaces to put it.</p>
 					</div>
-					<div id="visualizations" class="tab-pane fade">
+					<div id="visualizations" class="tab-pane fade" ng-class="{ 'active in' : tab=='visualizations' }">
 						<h2>Visualizations</h2>
 						<p>Visualizations aggregate a set of records and display interesting 
 						characteristics to the user. It is called with the set of records, that
@@ -127,7 +127,7 @@
 						visualization might not understand. It is up to the devloper's 
 						implementation to decide on how to handle these cases.</p>
 					</div>
-					<div id="mobile" class="tab-pane fade">
+					<div id="mobile" class="tab-pane fade" ng-class="{ 'active in' : tab=='mobile' }">
 						<h2>Mobile Apps</h2>
 						<p>Mobile Apps are external applications that provide and/or query records from the platform.</p>
 						<h3>Registration on the market</h3>					

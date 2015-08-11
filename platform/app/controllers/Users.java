@@ -31,7 +31,6 @@ import utils.json.JsonValidation.JsonValidationException;
 import utils.search.Search;
 import utils.search.Search.Type;
 import utils.search.SearchResult;
-import views.html.details.user;
 
 import actions.APICall;
 
@@ -40,11 +39,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 public class Users extends Controller {
-
-	@Security.Authenticated(Secured.class)
-	public static Result details(String userIdString) {
-		return ok(user.render());
-	}
+	
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(Secured.class)

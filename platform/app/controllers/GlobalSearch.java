@@ -23,17 +23,10 @@ import utils.collections.ChainedSet;
 import utils.search.CompletionResult;
 import utils.search.Search;
 import utils.search.SearchResult;
-import views.html.search;
 
 @Security.Authenticated(AnyRoleSecured.class)
 public class GlobalSearch extends Controller {
 
-	/**
-	 * Load site and give control to JS controller.
-	 */
-	public static Result index(String query) {
-		return ok(search.render());
-	}
 
 	/**
 	 * Search in all the user's accessible data.

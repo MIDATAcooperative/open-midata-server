@@ -4,7 +4,7 @@ angular.module('services')
 
     service.getApps = function(properties, fields) {
    	   var data = {"properties": properties, "fields": fields};
-	   return server.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data));
+	   return server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data));
     };
     
     service.getAppsOfUser = function(userId, types, fields) {

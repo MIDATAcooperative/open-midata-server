@@ -1,17 +1,6 @@
 
 	<div ng-app="market" ng-controller="MarketCtrl">
-		<div class="page-header">
-			<div class="pull-right">
-				<div class="btn-group">
-					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-						<span class="glyphicon glyphicon-plus"></span> Register new
-					</button>
-					<ul class="dropdown-menu" role="menu">
-						<li><a href="@routes.Market.registerAppForm()">App</a></li>
-						<li><a href="@routes.Market.registerVisualizationForm()">Visualization</a></li>
-					</ul>
-				</div>
-			</div>
+		<div class="page-header">			
 			<h1>Market</h1>
 		</div>
 		
@@ -19,59 +8,31 @@
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			<p>{{error}}</p>
 		</div>
-	
-		<!-- Apps -->
-		<div class="page-header">
-			<h1><small>Apps</small></h1>
-		</div>
-		<div class="row" ng-cloak>
-			<div class="col-md-6">
-			    <div class="panel panel-primary">
-				<div class="panel-heading">Spotlight</div>
-				<div class="panel-body">
-				<p ng-hide="apps.spotlighted.length">There are no spotlighted apps yet.</p>
-				<div class="media" ng-repeat="app in apps.spotlighted">
-					<a class="pull-left" href="javascript:;" ng-click="showAppDetails(app)">
-						<img class="media-object" ng-src="{{ getAppImage(app) }}" alt="Icon">
-					</a>
-					<div class="media-body">
-						<a href="javascript:;" ng-click="showAppDetails(app)">{{app.name}}</a>
-						<p>{{app.description}}</p>
-					</div>
-				</div>
-				</div>
-				</div>
-			</div>
-			<div class="col-md-6">
-			    <div class="panel panel-primary">
-				<div class="panel-heading">Apps you may like</div>
-				<div class="panel-body">
-				<p ng-hide="apps.suggested.length">We have no recommendations for you yet.</p>
-				<div class="media" ng-repeat="app in apps.suggested">
-					<a class="pull-left" href="javascript:;" ng-click="showAppDetails(app)">
-						<img class="media-object" ng-src="{{ getAppImage(app) }}" alt="Icon">
-					</a>
-					<div class="media-body">
-						<a href="javascript:;" ng-click="showAppDetails(app)">{{app.name}}</a>
-						<p>{{app.description}}</p>
-					</div>
-				</div>
-				</div>
-				</div>
-			</div>
-		</div>
-		
+			
 		<!-- Visualizations -->
 		<div class="page-header">
-			<h1><small>Visualizations</small></h1>
+			<h1><small>Categories</small></h1>
 		</div>
+		
+		<div class="row" ng-cloak>
+		  
+		    
+		    <div class="col-sm-2" ng-repeat="tag in tags"><a class="btn btn-default btn-block" href="javascript:" ng-click="setTag(tag);">{{ tag }}</a></div>
+		    
+		 
+		</div>
+		
+		<div class="page-header">
+			<h1><small>Plugins</small></h1>
+		</div>
+		
 		<div class="row" ng-cloak>
 			<div class="col-md-6">
 			  <div class="panel panel-primary">
-				<div class="panel-heading">Spotlight</div>
+				<div class="panel-heading">{{ tag || 'Spotlight' }}</div>
 				<div class="panel-body">
-				<p ng-hide="visualizations.spotlighted.length">There are no spotlighted visualizations yet.</p>
-				<div class="media" ng-repeat="visualization in visualizations.spotlighted">
+				<p ng-hide="visualizations.spotlighted.length">There are no spotlighted plugins yet.</p>
+				<div class="media" ng-repeat="visualization in visualizations.spotlighted | filter : hasTag">
 					<a class="pull-left" href="javascript:;" ng-click="showVisualizationDetails(visualization)">
 						<img class="media-object" ng-src="{{ getVisualizationImage(visualization) }}" alt="Icon">
 					</a>
@@ -85,7 +46,7 @@
 			</div>
 			<div class="col-md-6">
 			    <div class="panel panel-primary">
-				<div class="panel-heading">Visualizations you may like</div>
+				<div class="panel-heading">Plugins you may like</div>
 				<div class="panel-body">
 				<p ng-hide="visualizations.suggested.length">We have no recommendations for you yet.</p>
 				<div class="media" ng-repeat="visualization in visualizations.suggested">

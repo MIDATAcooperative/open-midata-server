@@ -17,7 +17,7 @@ public class ResearchSecured extends Security.Authenticator {
 
 	@Override
 	public Result onUnauthorized(Context ctx) {
-		return redirect(routes.Application.welcome());
+		return unauthorized();
 	}
 
 }

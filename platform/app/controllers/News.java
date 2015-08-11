@@ -23,17 +23,12 @@ import utils.collections.ChainedSet;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import views.html.index;
-import views.html.dashboard;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Security.Authenticated(Secured.class)
 public class News extends Controller {
 
-	public static Result index() {
-		return ok(dashboard.render("overview", "Overview"));
-	}
 
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result get() {

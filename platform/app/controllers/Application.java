@@ -38,12 +38,8 @@ import utils.collections.Sets;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.mails.MailUtils;
-import views.html.welcome;
-import views.html.registration;
 import views.html.tester;
 import views.html.apstest;
-import views.html.lostpw;
-import views.html.setpw;
 import views.txt.mails.lostpwmail;
 
 import actions.APICall;
@@ -59,19 +55,7 @@ public class Application extends Controller {
 	public static Result test2() {
 		return ok(apstest.render());
 	} 
-	
-	public static Result welcome() {
-		return ok(welcome.render());
-	}
-	
-	public static Result registration() {
-		return ok(registration.render());
-	}
-	
-	public static Result lostpw(String role) {
-		return ok(lostpw.render(role));
-	}
-	
+			
 	public static Result checkPreflight(String all) {		
 		response().setHeader("Access-Control-Allow-Origin", "http://localhost:9002");
         response().setHeader("Allow", "*");
@@ -115,10 +99,7 @@ public class Application extends Controller {
 		return ok();
 	}
 	
-	public static Result setpw() {
-		return ok(setpw.render());
-	}
-	
+		
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result setPasswordWithToken() throws JsonValidationException, ModelException {
@@ -270,67 +251,38 @@ public class Application extends Controller {
 	@APICall
 	public static Result logout() {
 		session().clear();
-		return ok();
-		// return redirect(routes.Application.welcome());
+		return ok();		
 	}
-
-	public static Result portalRoutes() {
-		response().setContentType("text/javascript");
-		return ok(Routes.javascriptRouter(
-				"portalRoutes",
-				controllers.routes.javascript.ResearchFrontend.studyoverview(),
-				controllers.routes.javascript.MemberFrontend.studydetails(),
-				controllers.routes.javascript.ProviderFrontend.studydetails(),
-				controllers.routes.javascript.ProviderFrontend.messages(),
-				controllers.routes.javascript.ResearchFrontend.messages(),
-				controllers.routes.javascript.Market.index(),
-				controllers.routes.javascript.News.index(),
-				controllers.routes.javascript.Apps.details(),
-				controllers.routes.javascript.Visualizations.details(),
-				controllers.routes.javascript.ProviderFrontend.appDetails(),
-				controllers.routes.javascript.ProviderFrontend.member(),
-				controllers.routes.javascript.ProviderFrontend.visualizationDetails(),
-				controllers.routes.javascript.ProviderFrontend.useVisualization(),
-				controllers.routes.javascript.Records.create(),
-				controllers.routes.javascript.Records.details(),
-				controllers.routes.javascript.Records.importRecords(),
-				controllers.routes.javascript.ProviderFrontend.createRecord()
-				));
-	}
+	
 	
 	public static Result javascriptRoutes() {
 		response().setContentType("text/javascript");
 		return ok(Routes.javascriptRouter(
 				"jsRoutes",
 				// Application
-				controllers.routes.javascript.Application.welcome(),
+				
 				controllers.routes.javascript.Application.authenticate(),
 				controllers.routes.javascript.Application.register(),
 				controllers.routes.javascript.Application.requestPasswordResetToken(),
 				controllers.routes.javascript.Application.setPasswordWithToken(),
-				// Apps				
-				controllers.routes.javascript.Apps.get(),
-				controllers.routes.javascript.Apps.install(),
-				controllers.routes.javascript.Apps.uninstall(),
-				controllers.routes.javascript.Apps.isInstalled(),
+				// Apps								
 				controllers.routes.javascript.Apps.getUrl(),
 				controllers.routes.javascript.Apps.getPreviewUrl(),
 				controllers.routes.javascript.Apps.getUrlForMember(),
-				controllers.routes.javascript.Apps.requestAccessTokenOAuth2(),
-				controllers.routes.javascript.Apps.getRequestTokenOAuth1(),
-				controllers.routes.javascript.Apps.requestAccessTokenOAuth1(),
+				controllers.routes.javascript.Plugins.requestAccessTokenOAuth2(),
+				controllers.routes.javascript.Plugins.getRequestTokenOAuth1(),
+				controllers.routes.javascript.Plugins.requestAccessTokenOAuth1(),
 				// Visualizations				
-				controllers.routes.javascript.Visualizations.get(),
-				controllers.routes.javascript.Visualizations.install(),
-				controllers.routes.javascript.Visualizations.uninstall(),
-				controllers.routes.javascript.Visualizations.isInstalled(),
-				controllers.routes.javascript.Visualizations.getUrl(),
+				controllers.routes.javascript.Plugins.get(),
+				controllers.routes.javascript.Plugins.install(),
+				controllers.routes.javascript.Plugins.uninstall(),
+				controllers.routes.javascript.Plugins.isInstalled(),
+				controllers.routes.javascript.Plugins.getUrl(),
 				
 				// News
 				controllers.routes.javascript.News.get(),
 				controllers.routes.javascript.News.hide(),
-				// Messages
-				controllers.routes.javascript.Messages.details(),
+				// Messages				
 				controllers.routes.javascript.Messages.get(),
 				controllers.routes.javascript.Messages.send(),
 				controllers.routes.javascript.Messages.move(),
@@ -338,8 +290,7 @@ public class Application extends Controller {
 				controllers.routes.javascript.Messages.delete(),
 				controllers.routes.javascript.FormatAPI.listGroups(),
 				
-				// Records
-				controllers.routes.javascript.Records.filter(),							
+				// Records					
 				controllers.routes.javascript.Records.get(),
 				controllers.routes.javascript.Records.getVisibleRecords(),
 				controllers.routes.javascript.Records.getRecords(),
@@ -410,11 +361,13 @@ public class Application extends Controller {
 				controllers.providers.routes.javascript.Providers.list(),
 				controllers.providers.routes.javascript.Providers.getMember(),
 				controllers.providers.routes.javascript.Providers.getVisualizationToken(),
+				// Developers
+				controllers.routes.javascript.Developers.register(),
+				controllers.routes.javascript.Developers.login(),
 				// Market
 				controllers.routes.javascript.Market.registerApp(),
 				controllers.routes.javascript.Market.registerVisualization(),
-				// Global search
-				controllers.routes.javascript.GlobalSearch.index(),
+				// Global search				
 				controllers.routes.javascript.GlobalSearch.search(),
 				controllers.routes.javascript.GlobalSearch.complete()));						        
 		        

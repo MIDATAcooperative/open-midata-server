@@ -54,7 +54,7 @@ angular.module('portal')
 		var properties = {"_id": appIds, "type" : ["create","oauth1","oauth2"] };
 		var fields = ["name", "type"];
 		var data = {"properties": properties, "fields": fields};
-		server.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
+		apps.getApps(properties, fields).
 			success(function(apps) {
 				$scope.apps = apps;
 				$scope.loadingApps = false;

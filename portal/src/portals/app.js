@@ -35,6 +35,10 @@ angular.module('portal', [ 'ui.router', 'services', 'views' ])
     .state('provider', {
       url: '/provider',
       templateUrl: 'assets/nav/provider.html'
+    })
+    .state('developer', {
+      url: '/developer',
+      templateUrl: 'assets/nav/developer.html'
     });   
    
    $urlRouterProvider

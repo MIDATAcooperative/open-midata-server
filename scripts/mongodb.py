@@ -76,10 +76,8 @@ class MongoDB(Product):
 			os.path.join(self.parent, 'json', 'contentinfo.json')), self.parent)
 	   Command.execute('{0} -d user -c formatinfo -o {1}'.format(os.path.join(self.bin, 'mongoexport'), 
 			os.path.join(self.parent, 'json', 'formatinfo.json')), self.parent)
-	   Command.execute('{0} -d user -c visualizations -o {1}'.format(os.path.join(self.bin, 'mongoexport'), 
-			os.path.join(self.parent, 'json', 'visualizations.json')), self.parent)
-	   Command.execute('{0} -d user -c apps -o {1}'.format(os.path.join(self.bin, 'mongoexport'), 
-			os.path.join(self.parent, 'json', 'apps.json')), self.parent)
+	   Command.execute('{0} -d user -c plugins -o {1}'.format(os.path.join(self.bin, 'mongoexport'), 
+			os.path.join(self.parent, 'json', 'plugins.json')), self.parent)	   
 
 	def reimport(self):
 	   print 'Importing metadata'
@@ -89,7 +87,5 @@ class MongoDB(Product):
 			os.path.join(self.parent, 'json', 'contentinfo.json')), self.parent)
 	   Command.execute('{0} -d user -c formatinfo --file {1} --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
 			os.path.join(self.parent, 'json', 'formatinfo.json')), self.parent)
-	   Command.execute('{0} -d user -c visualizations --file {1} --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
-			os.path.join(self.parent, 'json', 'visualizations.json')), self.parent)
-	   Command.execute('{0} -d user -c apps --file {1} --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
-			os.path.join(self.parent, 'json', 'apps.json')), self.parent)
+	   Command.execute('{0} -d user -c plugins --file {1} --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
+			os.path.join(self.parent, 'json', 'plugins.json')), self.parent)	   

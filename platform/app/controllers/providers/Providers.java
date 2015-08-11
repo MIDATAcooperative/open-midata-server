@@ -31,11 +31,11 @@ import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import views.html.defaultpages.badRequest;
 import actions.APICall;
 import controllers.APIController;
 import controllers.KeyManager;
 import controllers.MemberKeys;
+import controllers.RecordSharing;
 import controllers.routes;
 import actions.APICall; 
 import play.libs.Json;
@@ -101,6 +101,8 @@ public class Providers extends APIController {
 		HPUser.add(user);
 		
 		KeyManager.instance.unlock(user._id, "12345");
+		
+		RecordSharing.instance.createPrivateAPS(user._id, user._id);		
 		
 		session().clear();
 		session("id", user._id.toString());

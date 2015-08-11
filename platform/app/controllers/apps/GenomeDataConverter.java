@@ -9,9 +9,9 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeMap;
 
-import models.App;
 import models.LargeRecord;
 import models.ModelException;
+import models.Plugin;
 import models.Record;
 import models.Member;
 
@@ -97,7 +97,7 @@ public class GenomeDataConverter extends Controller {
 		Map<String, Object> appProperties = new ChainedMap<String, Object>().put("_id", appToken.appId)
 				.put("filename", "23andme-converter").get();
 		try {
-			if (!App.exists(appProperties)) {
+			if (!Plugin.exists(appProperties)) {
 				return "Invalid authToken.";
 			}
 		} catch (ModelException e) {

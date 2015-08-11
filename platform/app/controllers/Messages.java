@@ -29,9 +29,6 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.search.Search;
 import utils.search.SearchException;
-import views.html.messages;
-import views.html.details.message;
-import views.html.dialogs.createmessage;
 
 import actions.APICall;
 
@@ -39,21 +36,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 
 public class Messages extends Controller {
-
-	@Security.Authenticated(Secured.class)
-	public static Result index() {
-		return ok(messages.render());
-	}
-
-	@Security.Authenticated(Secured.class)
-	public static Result details(String messageIdString) {
-		return ok(message.render());
-	}
-
-	@Security.Authenticated(Secured.class)
-	public static Result create() {
-		return ok(createmessage.render());
-	}
+	
 
 	@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
