@@ -49,7 +49,7 @@ public class FormatGroupHandling extends QueryManager {
 			
 		    Set<ContentInfo> qualified = ContentInfo.getByGroups(groups);
 		    Set<String> contents = new HashSet<String>();
-		    for (ContentInfo fi : qualified) contents.add(fi.content);
+		    for (ContentInfo fi : qualified) contents.add(fi.content);		    
 		    q.getProperties().put("content", contents);		    
 		}
 		
@@ -59,14 +59,15 @@ public class FormatGroupHandling extends QueryManager {
 	}
 
 	@Override
-	protected void postProcess(List<Record> records, Query q) throws ModelException {
-		next.postProcess(records, q);
+	protected List<Record> postProcess(List<Record> records, Query q) throws ModelException {
+		List<Record> result = next.postProcess(records, q);
 		if (q.returns("group")) {
-			for (Record record : records) {
+			for (Record record : result) {
 				ContentInfo fi = ContentInfo.getByName(record.content);
 	    		record.group = fi.group;
 			}
-		}		
+		}	
+		return result;
 	}
 
 }

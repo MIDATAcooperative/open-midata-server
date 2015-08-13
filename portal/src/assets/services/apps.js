@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('apps', function(server, $q) {
+.factory('apps', ['server', '$q', function(server, $q) {
 	var service = {};
 
     service.getApps = function(properties, fields) {
@@ -28,4 +28,4 @@ angular.module('services')
     };
     
 	return service;
-});
+}]);

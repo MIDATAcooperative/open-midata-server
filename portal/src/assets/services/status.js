@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('status', function($q) {
+.factory('status', ['$q', function($q) {
 	return function(showerrors) {		
 		this.loading = 0;
 		this.isBusy = false;
@@ -28,4 +28,4 @@ angular.module('services')
 		};
 	};
 		
-});
+}]);

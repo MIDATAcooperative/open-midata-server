@@ -73,14 +73,12 @@ public class APSQSupportingQM extends QueryManager {
 		AccessLog.debug("Redirect to Query:");
 		List<Record> result = next.query(new Query(combined, q.getFields(), q.getCache(), new ObjectId(targetAPSId.toString())));
 		
-		if (query.containsField("_exclude") && result.size() > 0) {
-			
-			List<FilterRule> rules = RuleApplication.instance.createRulesFromQuery(query);
-						
-			for (Record r : result) {
-				if (RuleApplication.instance.applyRules(r, rules)) results.add(r);
-			}							
-		} else results.addAll(result);
+		if (query.containsField("_exclude") && result.size() > 0) {			
+			List<Record> excluded = ComplexQueryManager.listFromMemory((Map<String, Object>) query.get("_exclude"), result);
+            result.removeAll(excluded);						
+		} 
+		
+		results.addAll(result);
 	}
 	
 	public static Map<String, Object> combineQuery(Map<String,Object> properties, Map<String,Object> query) throws ModelException {
@@ -135,9 +133,9 @@ public class APSQSupportingQM extends QueryManager {
 	}
 
 	@Override
-	protected void postProcess(List<Record> records, Query q)
+	protected List<Record> postProcess(List<Record> records, Query q)
 			throws ModelException {
-		next.postProcess(records, q);
+		return next.postProcess(records, q);
 		
 	}
 

@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('hc', function($q, server) {
+.factory('hc', ['$q', 'server', function($q, server) {
 	
 	var service = {};
 	
@@ -21,4 +21,4 @@ angular.module('services')
 		
 	return service;
 	
-});
+}]);

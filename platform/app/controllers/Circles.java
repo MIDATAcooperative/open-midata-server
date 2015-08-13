@@ -2,11 +2,14 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import models.Circle;
+import models.Member;
 import models.ModelException;
 
 import org.bson.types.ObjectId;
@@ -97,7 +100,7 @@ public class Circles extends Controller {
 		RecordSharing.instance.deleteAPS(circle.aps, circle.owner);
 		
 		// Remove Rules
-		RuleApplication.instance.removeRules(userId, circleId);
+		removeQueries(userId, circleId);
 		
 		// delete circle		
 		Circle.delete(userId, circleId);
@@ -163,6 +166,37 @@ public class Circles extends Controller {
 		//Users.makeInvisible(userId, circle.shared, new ChainedSet<ObjectId>().add(memberId).get());
 		
 		return ok();
+	}
+	
+	public static Map<String, Object> getQueries(ObjectId userId, ObjectId apsId) throws ModelException {
+		Member member = Member.getById(userId, Sets.create("queries"));
+		if (member.queries!=null) return member.queries.get(apsId.toString());
+		return null;
+	}
+	
+	public static void setQuery(ObjectId userId, ObjectId apsId, Map<String, Object> query) throws ModelException {
+		Member member = Member.getById(userId, Sets.create("queries"));
+		if (member.queries==null) {
+			member.queries = new HashMap<String, Map<String, Object>>();
+		}
+		member.queries.put(apsId.toString(), query);
+		Member.set(userId, "queries", member.queries);
+	}
+	
+	public static Map<String, Object> mergeQueries(Map<String, Object> query1, Map<String, Object> query2) {
+		return query1;
+	}
+	
+	public static void removeQueries(ObjectId userId, ObjectId targetaps) throws ModelException {
+        Member member = Member.getById(userId, Sets.create("queries"));
+		
+		if (member.queries == null) return;
+		 
+		String key = targetaps.toString();
+	    if (member.queries.containsKey(key)) {
+	    	member.queries.remove(key);
+	    	Member.set(userId, "queries", member.queries);
+	    }
 	}
 
 }

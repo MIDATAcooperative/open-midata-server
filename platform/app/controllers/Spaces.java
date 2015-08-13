@@ -61,10 +61,10 @@ public class Spaces extends Controller {
 			return badRequest(e.getMessage());
 		}
 		
-		if (fields.contains("rules")) {
+		if (fields.contains("query")) {
 			for (Space space : spaces) {
 				BSONObject q = RecordSharing.instance.getMeta(userId, space._id, "_query");
-				if (q != null) space.rules = RuleApplication.instance.createRulesFromQuery(q.toMap());
+				if (q != null) space.query = q.toMap();
 			}
 		}
 		Collections.sort(spaces);

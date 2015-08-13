@@ -3,15 +3,34 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    /*
     uglify: {
       options: {
-        banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+       
       },
       build: {
-        src: 'src/<%= pkg.name %>.js',
-        dest: 'build/<%= pkg.name %>.min.js'
+        src: 'dest/app.js',
+        dest: 'dest/app.min.js'
       }
     },
+    
+    cssmin: {
+    	  options: {
+    	    shorthandCompacting: false,
+    	    roundingPrecision: -1
+    	  },
+    	  target: {
+    	    files: {
+    	      'dest/app.min.css': ['dest/app.css']
+    	    }
+    	  }
+    },*/
+    
+    useminPrepare: {
+      html: 'dest/index.html'
+    },
+    
+    
     
     // Which files to watch
     watch: {
@@ -112,10 +131,20 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-contrib-usemin');
   //grunt.loadNpmTasks('connect-livereload');
 
   // Default task(s).
   grunt.registerTask('default', ['clean','copy']);
+  grunt.registerTask('build', [
+                               'useminPrepare',
+                               'concat:generated',
+                               'cssmin:generated',
+                               'uglify:generated',
+                               'usemin'
+  ]);
   grunt.registerTask('server', ['clean', 'copy', 'jshint', 'concat', 'less','connect', 'watch']);
-
+  grunt.registerTask('deploy', ['clean', 'copy', 'jshint', 'concat', 'less','build']);
+  
 };

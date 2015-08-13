@@ -39,6 +39,7 @@ public class RuleApplication {
 		rulecache.put("_id", new IDRule());
 	}
 	
+	/*
 	public boolean qualifiesFor(Record record, FilterRule filterRule) throws ModelException {
 		Rule rule = rulecache.get(filterRule.name);
 		if (rule == null) throw new ModelException("Unknown rule: "+filterRule.name);
@@ -98,10 +99,7 @@ public class RuleApplication {
 					try {
 					  RecordSharing.instance.share(executingPerson, useAps, new ObjectId(key), Collections.singleton(record._id), true);
 					} catch (APSNotExistingException e) {
-						/*if (e.getAps().toString().equals(key)) {
-							member.rules.remove(key);
-							Member.set(member._id, "rules", member.rules);
-						}*/
+						
 					}
 				}
 			}
@@ -226,6 +224,6 @@ public class RuleApplication {
 		
 		return query;
 	}
-		
+		*/
 		
 }

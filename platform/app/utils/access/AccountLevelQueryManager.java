@@ -70,9 +70,9 @@ public class AccountLevelQueryManager extends QueryManager {
 	}
 
 	@Override
-	protected void postProcess(List<Record> records, Query q)
+	protected List<Record> postProcess(List<Record> records, Query q)
 			throws ModelException {
-		next.postProcess(records, q);
+		return next.postProcess(records, q);
 		
 	}
 

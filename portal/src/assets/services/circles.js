@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('circles', function(server) {
+.factory('circles', ['server', function(server) {
 	var service = {};
 	
 	service.get = function(properties, fields) {
@@ -13,4 +13,4 @@ angular.module('services')
 	};
 	
 	return service;
-});
+}]);

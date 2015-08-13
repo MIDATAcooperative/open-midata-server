@@ -16,7 +16,7 @@ angular.module('views')
 	
 	$scope.showDetails = function(record) {
 		if (!views.updateLinked($scope.view, "record", { id : record.id })) {
-			$state.go('^.recorddetails', { recordId : record.id });		  
+			$state.go('^.recorddetail', { recordId : record.id });		  
 		}
 	};
 	

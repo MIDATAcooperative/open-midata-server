@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('studies', function(server) {
+.factory('studies', ['server', function(server) {
 	var service = {};
 	
 	service.search = function(properties, fields) {
@@ -8,4 +8,4 @@ angular.module('services')
 	};
 	
 	return service;
-});
+}]);

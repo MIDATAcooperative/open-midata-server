@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('records', function(server) {
+.factory('records', ['server', function(server) {
 	var service = {};
 	
 	service.getRecords = function(aps, properties, fields) {
@@ -41,4 +41,4 @@ angular.module('services')
 	};
 	
 	return service;
-});
+}]);

@@ -192,7 +192,7 @@ angular.module('portal')
 	
 	// show record details
 	$scope.showDetails = function(record) {
-		$state.go('^.recorddetails', { recordId : record.id });
+		$state.go('^.recorddetail', { recordId : record.id });
 	};
 	
 	// check whether the user is the owner of the record

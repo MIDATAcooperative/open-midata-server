@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('spaces', function(server, $q) {
+.factory('spaces', ['server', '$q', function(server, $q) {
 	var service = {};
 
 	service.getSpacesOfUser = function(userId) {
@@ -41,4 +41,4 @@ angular.module('services')
 	
 	return service;
 	    	
-});
+}]);

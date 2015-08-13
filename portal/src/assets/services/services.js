@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('currentUser', function($q, server) {
+.factory('currentUser', ['$q', 'server', function($q, server) {
 	
 	var deferred = $q.defer();
 	console.log("INIT");
@@ -11,7 +11,7 @@ angular.module('services')
 	});	
 	 		
 	return deferred.promise;
-});
+}]);
 
 
 

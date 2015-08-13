@@ -55,9 +55,11 @@ import utils.db.ObjectIdConversion;
 import utils.search.Search;
 import utils.search.SearchException;
 
+import models.APSNotExistingException;
 import models.AccessPermissionSet;
 import models.Circle;
 import models.ContentInfo;
+import models.Member;
 import models.MemberKey;
 import models.ModelException;
 import models.Record;
@@ -466,10 +468,57 @@ public class RecordSharing {
 			getCache(executingPerson).getAPS(record.owner, record.owner).addPermission(unecrypted, false);
 		}
 		
-		if (unecrypted.stream == null) { RuleApplication.instance.applyRules(executingPerson, unecrypted.owner, unecrypted, alternateAps != null ? alternateAps : unecrypted.owner); }
+		if (unecrypted.stream == null) { applyQueries(executingPerson, unecrypted.owner, unecrypted, alternateAps != null ? alternateAps : unecrypted.owner); }
 		
 		return usedKey;	
 	}
+	
+	public void applyQuery(ObjectId userId, Map<String, Object> query, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws ModelException {
+		AccessLog.debug("BEGIN APPLY QUERY");
+		
+		
+		List<Record> records = RecordSharing.instance.list(userId, sourceaps, RecordSharing.FULLAPS_FLAT_OWNER, RecordSharing.COMPLETE_META);
+		AccessLog.debug("SHARE CANDIDATES:"+records.size());
+		records = ComplexQueryManager.listFromMemory(query, records);
+		AccessLog.debug("SHARE QUALIFIED:"+records.size());
+		if (records.size() > 0) {
+			Set<ObjectId> ids = new HashSet<ObjectId>();
+			for (Record record : records) ids.add(record._id);
+			RecordSharing.instance.share(userId, sourceaps, targetaps, ids, ownerInformation);
+		}
+		
+		List<Record> streams = RecordSharing.instance.list(userId, targetaps, RecordSharing.STREAMS_ONLY_OWNER, RecordSharing.COMPLETE_META);
+		AccessLog.debug("UNSHARE STREAMS CANDIDATES = "+streams.size());
+		
+		List<Record> stillOkay = ComplexQueryManager.listFromMemory(query, streams);
+		streams.removeAll(stillOkay);		
+		Set<ObjectId> remove = new HashSet<ObjectId>();
+		for (Record stream : streams) {
+			remove.add(stream._id);
+		}
+		
+		AccessLog.debug("UNSHARE STREAMS QUALIFIED = "+remove.size());
+		RecordSharing.instance.unshare(userId, targetaps, remove);
+		AccessLog.debug("END APPLY RULES");
+		
+	}
+	
+	public void applyQueries(ObjectId executingPerson, ObjectId userId, Record record, ObjectId useAps) throws ModelException {
+		Member member = Member.getById(userId, Sets.create("queries"));
+		if (member.queries!=null) {
+			for (String key : member.queries.keySet()) {
+				Map<String, Object> query = member.queries.get(key);
+				if (ComplexQueryManager.isInQuery(query, record)) {
+					try {
+					  RecordSharing.instance.share(executingPerson, useAps, new ObjectId(key), Collections.singleton(record._id), true);
+					} catch (APSNotExistingException e) {
+						
+					}
+				}
+			}
+		}
+	}
+	
 
 	public void deleteAPS(ObjectId apsId, ObjectId ownerId)
 			throws ModelException {

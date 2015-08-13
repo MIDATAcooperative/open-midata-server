@@ -29,7 +29,7 @@ public class Space extends Model implements Comparable<Space> {
 	public ObjectId aps;
 	public SpaceType type;
 	public String context;
-	public @NotMaterialized List<FilterRule> rules;
+	public @NotMaterialized Map<String, Object> query;
 	
 	//public Set<ObjectId> records;
 

@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('formats', function(server) {
+.factory('formats', ['server', function(server) {
 	var service = {};
 	
 	service.listGroups = function() {
@@ -7,4 +7,4 @@ angular.module('services')
 	};
 	
 	return service;
-});
+}]);

@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('server', function($q, $http, apiurl) {
+.factory('server', ['$q', '$http', 'apiurl', function($q, $http, apiurl) {
 	var service = {};
 	console.log(apiurl);
 	
@@ -21,5 +21,5 @@ angular.module('services')
 	};
 				 	
 	return service;
-});
+}]);
 

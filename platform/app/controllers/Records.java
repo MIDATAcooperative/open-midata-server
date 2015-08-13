@@ -248,11 +248,9 @@ public class Records extends Controller {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId apsId = new ObjectId(aps);
 		
-		List<FilterRule> rules = RuleApplication.instance.getRules(userId, apsId);
-		Map<String, Object> query = null;
-		if (rules != null) {
-			query = RuleApplication.instance.queryFromRules(rules);
-		} else {
+		
+		Map<String, Object> query = Circles.getQueries(userId, apsId);
+		if (query == null) {			
 			BSONObject b = RecordSharing.instance.getMeta(userId, apsId, SingleAPSManager.QUERY);
 			if (b!=null) query = b.toMap();
 		}
@@ -338,11 +336,13 @@ public class Records extends Controller {
 		
 		BSONObject query = RecordSharing.instance.getMeta(userId, fromSpace, "_query");
 		if (query != null) {
-			List<FilterRule> rules = RuleApplication.instance.createRulesFromQuery(query.toMap());
-			List<FilterRule> oldrules = RuleApplication.instance.getRules(userId, toCircle);
-			if (rules != null) {
-				if (oldrules != null) RuleApplication.instance.merge(rules, oldrules);
-				RuleApplication.instance.setupRules(userId, rules, userId, toCircle, true);			
+			Map<String, Object> oldquery = Circles.getQueries(userId, toCircle);
+			
+			if (oldquery != null) {
+				Map<String, Object> newquery = Circles.mergeQueries(query.toMap(), oldquery);
+				Circles.setQuery(userId, toCircle, newquery);
+			} else {
+				Circles.setQuery(userId, toCircle, query.toMap());
 			}
 		}
 				
@@ -433,9 +433,8 @@ public class Records extends Controller {
         		if (type.equals("spaces")) {
         		  RecordSharing.instance.shareByQuery(userId, userId, aps, query);
         		} else {
-	        	  List<FilterRule> rules = RuleApplication.instance.createRulesFromQuery(query);
-	        	  RuleApplication.instance.setupRules(userId, rules, userId, aps, withMember);
-	        	  RuleApplication.instance.applyRules(userId, rules, userId, aps, withMember);
+        		  Circles.setQuery(userId, aps, query);
+	        	  RecordSharing.instance.applyQuery(userId, query, userId, aps, withMember);	        	  
         		}
         	}
         }
@@ -472,9 +471,8 @@ public class Records extends Controller {
         		if (type.equals("spaces")) {
         		  RecordSharing.instance.shareByQuery(userId, userId, aps, query);
         		} else {
-	        	  List<FilterRule> rules = RuleApplication.instance.createRulesFromQuery(query);
-	        	  RuleApplication.instance.setupRules(userId, rules, userId, aps, withMember);
-	        	  RuleApplication.instance.applyRules(userId, rules, userId, aps, withMember);
+        		  Circles.setQuery(userId, aps, query);
+	        	  RecordSharing.instance.applyQuery(userId, query, userId, aps, withMember);	        	  
         		}
         	}
         	        	
