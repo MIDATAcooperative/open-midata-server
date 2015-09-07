@@ -3,20 +3,20 @@
    <p>Do you want to share this with a circle?</p>
    <div class="alert alert-info">
 	   <ul>
-	      <li ng-repeat="rule in rules">
-	        <span ng-if="rule.name == 'format'">Records that have format:
+	      <li ng-repeat="(rule, params) in rules">
+	        <span ng-if="rule == 'format'">Records that have format:
 	           <ul>
-		          <li ng-repeat="format in rule.params">{{ format }}</li>
+		          <li ng-repeat="format in params">{{ format }}</li>
 	           </ul> 
 	        </span>
-	        <span ng-if="rule.name == 'content'">Records that have content:
+	        <span ng-if="rule == 'content'">Records that have content:
 	           <ul>
-		          <li ng-repeat="content in rule.params">{{ content }}</li>
+		          <li ng-repeat="content in params">{{ content }}</li>
 	           </ul> 
 	        </span>
-	        <span ng-if="rule.name == 'group'">Records that belong to group:
+	        <span ng-if="rule == 'group'">Records that belong to group:
 	           <ul>
-		          <li ng-repeat="group in rule.params">{{ group }}</li>
+		          <li ng-repeat="group in params">{{ group }}</li>
 	           </ul> 
 	        </span>
 	      </li>

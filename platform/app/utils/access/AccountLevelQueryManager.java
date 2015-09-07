@@ -23,12 +23,11 @@ public class AccountLevelQueryManager extends QueryManager {
 	}
 	
 	@Override
-	protected boolean lookupSingle(Record record, Query q) throws ModelException {
-		if (! this.next.lookupSingle(record,q)) {
-			return false;
-		}
-		return true;
+	protected List<Record> lookup(List<Record> record, Query q)
+			throws ModelException {
+		return next.lookup(record, q);
 	}
+		
 
 	@Override
 	protected List<Record> query(Query q) throws ModelException {
@@ -75,6 +74,8 @@ public class AccountLevelQueryManager extends QueryManager {
 		return next.postProcess(records, q);
 		
 	}
+
+	
 
 	
 }

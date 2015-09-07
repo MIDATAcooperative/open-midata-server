@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('CreateMessageCtrl', ['$scope', 'server', 'apiurl', function($scope, server, apiurl) {
+.controller('CreateMessageCtrl', ['$scope', 'server', function($scope, server) {
 	
 	// init
 	$scope.error = null;
@@ -12,11 +12,26 @@ angular.module('portal')
 	server.get(jsRoutes.controllers.Users.loadContacts().url).
 		success(function(contacts) {
 			$scope.contacts = contacts;
-			initTypeahead();
+			//initTypeahead();
 		}).
 		error(function(err) { $scope.error = "Failed to load contacts: " + err; });
 	
 	// initialize typeahead for receivers field
+	$scope.showContacts = function(viewValue) {
+		return server.get(jsRoutes.controllers.Users.complete($scope.message.query).url)
+		.then(function(result) {
+			return result.data;
+		});
+	};
+	
+	$scope.selectContact = function(item) {
+		if (!_.some($scope.message.receivers, function(receiver) { return receiver.id === item.id; })) {
+			$scope.message.receivers.push(item);
+		}
+		$scope.message.query = null;
+	};
+	
+	/*
 	initTypeahead = function() {
 		$("#query").typeahead([{
 			name: "contacts",
@@ -41,7 +56,7 @@ angular.module('portal')
 				$("#query").typeahead('setQuery', "");
 			});
 		});
-	};
+	};*/
 	
 	// remove a receiver from the list
 	$scope.remove = function(receiver) {

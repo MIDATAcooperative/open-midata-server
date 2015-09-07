@@ -144,7 +144,7 @@ public class Users extends Controller {
 		try {
 			Set<Circle> circles = Circle.getAll(CMaps.map("owner", userId), Sets.create("members"));
 			for (Circle circle : circles) {
-				contactIds.addAll(circle.members);
+				contactIds.addAll(circle.authorized);
 			}
 			contacts = Member.getAll(CMaps.map("_id", contactIds),Sets.create("firstname","sirname","email"));
 		} catch (ModelException e) {

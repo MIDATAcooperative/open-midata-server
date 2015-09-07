@@ -72,12 +72,12 @@ public class Circles extends Controller {
 		}
 		
 		// create new circle
-		Circle circle = new Circle();
+		Circle circle = new Circle();		
 		circle._id = new ObjectId();
 		circle.owner = userId;
 		circle.name = name;
 		circle.order = Circle.getMaxOrder(userId) + 1;
-		circle.members = new HashSet<ObjectId>();
+		circle.authorized = new HashSet<ObjectId>();
 		circle.aps = RecordSharing.instance.createPrivateAPS(userId, circle._id); 
 		
 		Circle.add(circle);
@@ -131,8 +131,8 @@ public class Circles extends Controller {
 		// add users to circle (implicit: if not already present)
 		Set<ObjectId> newMemberIds = ObjectIdConversion.castToObjectIds(JsonExtraction.extractSet(json.get("users")));
 				
-		circle.members.addAll(newMemberIds);
-		Circle.set(circle._id, "members", circle.members);
+		circle.authorized.addAll(newMemberIds);
+		Circle.set(circle._id, "members", circle.authorized);
 		
 		RecordSharing.instance.shareAPS(circle.aps, userId, newMemberIds);
 		
@@ -155,8 +155,8 @@ public class Circles extends Controller {
 		// remove member from circle (implicit: if present)
 		ObjectId memberId = new ObjectId(memberIdString);
 		
-		circle.members.remove(memberId);
-		Circle.set(circle._id, "members", circle.members);
+		circle.authorized.remove(memberId);
+		Circle.set(circle._id, "members", circle.authorized);
 
 		Set<ObjectId> memberIds = new HashSet<ObjectId>();
 		memberIds.add(memberId);
@@ -181,6 +181,11 @@ public class Circles extends Controller {
 		}
 		member.queries.put(apsId.toString(), query);
 		Member.set(userId, "queries", member.queries);
+		if (query.containsKey("exclude-ids")) {
+			Map<String, Object> ids = new HashMap<String,Object>();
+			ids.put("ids", query.get("exclude-ids"));
+			RecordSharing.instance.setMeta(userId, apsId, "_exclude", ids);
+		}
 	}
 	
 	public static Map<String, Object> mergeQueries(Map<String, Object> query1, Map<String, Object> query2) {

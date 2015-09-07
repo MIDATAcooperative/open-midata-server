@@ -3,6 +3,7 @@ package models;
 import java.util.List;
 import java.util.Set;
 
+import models.enums.ConsentType;
 import models.enums.Gender;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationStatus;
@@ -12,12 +13,10 @@ import org.bson.types.ObjectId;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 
-public class StudyParticipation extends Model {
+public class StudyParticipation extends Consent {
 	
 	private static final String collection = "participation";
-
-	public ObjectId member; //member that is related to a study
-	public String memberName; // replication of member name
+	
 	public ObjectId study; //study that the member is related to
 	public String studyName; // replication of study name
 	public ParticipationStatus status; //how is the member related to the study?
@@ -33,12 +32,16 @@ public class StudyParticipation extends Model {
 	public String country;
 	public Gender gender;
 	
+	public StudyParticipation() {
+		this.type = ConsentType.STUDYPARTICIPATION;
+	}
+	
 	public static void add(StudyParticipation studyparticipation) throws ModelException {
 		Model.insert(collection, studyparticipation);
 	}
 	
 	public static Set<StudyParticipation> getAllByMember(ObjectId member, Set<String> fields) throws ModelException {
-		return Model.getAll(StudyParticipation.class, collection, CMaps.map("member", member), fields);
+		return Model.getAll(StudyParticipation.class, collection, CMaps.map("owner", member), fields);
 	}
 	
 	public static Set<StudyParticipation> getParticipantsByStudy(ObjectId study, Set<String> fields) throws ModelException {
@@ -50,7 +53,7 @@ public class StudyParticipation extends Model {
 	}
 	
 	public static StudyParticipation getByStudyAndMember(ObjectId study, ObjectId member, Set<String> fields) throws ModelException {
-		return Model.get(StudyParticipation.class, collection, CMaps.map("study", study).map("member", member), fields);
+		return Model.get(StudyParticipation.class, collection, CMaps.map("study", study).map("owner", member), fields);
 	}
 	
 	public static StudyParticipation getByStudyAndId(ObjectId study, ObjectId id, Set<String> fields) throws ModelException {

@@ -1,5 +1,5 @@
 angular.module('portal')
-.directive('formerror', function (views) {
+.directive('formerror', ['views', function (views) {
     return {
       template: function(element, attrs) {
     	  return '<p ng-show="myform.'+attrs.myid+'.$error.'+attrs.type+' && submitted" class="help-block">' +
@@ -9,4 +9,4 @@ angular.module('portal')
       transclude: false,
       replace:true
     };
-});
+}]);

@@ -19,6 +19,7 @@ import org.bson.types.ObjectId;
 
 import utils.DateTimeUtils;
 import utils.collections.Sets;
+import models.ContentInfo;
 import models.ModelException;
 import models.Record;
 import models.enums.APSSecurityLevel;
@@ -49,17 +50,14 @@ public class ComplexQueryManager {
     	List<Record> result;
     	
     	
-    	QueryManager qm = new APSQSupportingQM(new AccountLevelQueryManager(new FormatGroupHandling(new StreamQueryManager())));
+    	QueryManager qm = new BlackListQM(q, new APSQSupportingQM(new AccountLevelQueryManager(new FormatGroupHandling(new StreamQueryManager()))));
     									
 		result = findRecordsDirectlyInDB(q);
     	
-		if (result != null) {									
-			for (Record record : result) {
-				qm.lookupSingle(record, q);
-			}
-														
+		if (result != null) {												
+		   result = qm.lookup(result, q);															
 		} else {												
-			result = qm.query(q);			
+		   result = qm.query(q);			
 		}
 		if (result == null) {
 			AccessLog.debug("NULL result");
@@ -174,15 +172,17 @@ public class ComplexQueryManager {
     
     
     
-    protected static List<Record> filterByFormat(List<Record> input, Set<String> formats, Set<String> contents) {
-    	if (formats == null && contents == null) return input;
+    protected static List<Record> filterByFormat(List<Record> input, Set<String> formats, Set<String> contents, Set<String> contentsWC) {
+    	if (formats == null && contents == null && contentsWC == null) return input;
     	AccessLog.debug("filterByFormat:" + formats);
     	AccessLog.debug("filterByContents:" + contents);
+    	AccessLog.debug("filterByContentsWC:" + contentsWC);
     	List<Record> filteredResult = new ArrayList<Record>(input.size());
     	for (Record record : input) {
     		AccessLog.debug("test:"+record.content);
     		if (formats!= null && !formats.contains(record.format)) continue;
     		if (contents!= null && !contents.contains(record.content)) continue;
+    		if (contentsWC!=null && !contentsWC.contains(ContentInfo.getWildcardName(record.content))) continue;
     		AccessLog.debug("add:"+record.content);
     		filteredResult.add(record);
     	}

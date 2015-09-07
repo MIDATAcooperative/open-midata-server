@@ -3,6 +3,8 @@ package models;
 import java.util.Map;
 import java.util.Set;
 
+import models.enums.ConsentType;
+
 import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
@@ -15,17 +17,12 @@ import utils.db.OrderOperations;
 import utils.search.Search;
 import utils.search.SearchException;
 
-public class Circle extends Model implements Comparable<Circle> {
+public class Circle extends Consent implements Comparable<Circle> {
 
 	private static final String collection = "circles";
-
-	public ObjectId owner;
-	public @NotMaterialized String ownerName;
-	public String name;
+	
 	public int order;
-	public Set<ObjectId> members;
 	public ObjectId aps;
-	//public Set<ObjectId> shared; // records shared with this circle
 
 	@Override
 	public int compareTo(Circle other) {
@@ -34,6 +31,10 @@ public class Circle extends Model implements Comparable<Circle> {
 		} else {
 			return super.compareTo(other);
 		}
+	}
+	
+	public Circle() {
+		this.type = ConsentType.CIRCLE;
 	}
 
 	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {

@@ -32,12 +32,13 @@ public class APSQSupportingQM extends QueryManager {
 	}
 	
 	@Override
-	protected boolean lookupSingle(Record record, Query q) throws ModelException {
-		
-		
-        // TODO Correct
-		return next.lookupSingle(record, q);
+	protected List<Record> lookup(List<Record> record, Query q)
+			throws ModelException {
+		List<Record> result = next.lookup(record, q);
+		// Add Filter
+		return result;
 	}
+		
 
 	@Override
 	protected List<Record> query(Query q) throws ModelException {
@@ -138,5 +139,7 @@ public class APSQSupportingQM extends QueryManager {
 		return next.postProcess(records, q);
 		
 	}
+
+	
 
 }

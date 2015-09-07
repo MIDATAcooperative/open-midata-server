@@ -1,5 +1,6 @@
 package utils.access;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import models.ModelException;
@@ -12,11 +13,15 @@ public class InMemoryQM extends QueryManager {
 	public InMemoryQM(List<Record> contents) {
 		this.contents = contents;
 	}
-	
+			
 	@Override
-	protected boolean lookupSingle(Record record, Query q)
-			throws ModelException {		
-		return contents.contains(record);
+	protected List<Record> lookup(List<Record> input, Query q)
+			throws ModelException {
+		List<Record> result = new ArrayList<Record>();
+		for (Record record : input) {
+			if (contents.contains(record)) result.add(record);
+		}
+		return result;
 	}
 
 	@Override
@@ -29,5 +34,7 @@ public class InMemoryQM extends QueryManager {
 			throws ModelException {
 		return records;
 	}
+
+	
 
 }

@@ -1,13 +1,13 @@
 <div ng-controller="ParticipantCtrl" ng-cloak>   
    <div class="panel panel-primary">
-   <div class="panel-heading">{{ participation.memberName }}</div>
+   <div class="panel-heading">{{ participation.ownerName }}</div>
    <div class="panel-body">
 	
 	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 	   {{ error.message || error }}
 	</p>
 	<div>
-	Participant: {{ participation.memberName }}<br>
+	Participant: {{ participation.ownerName }}<br>
 	Gender: {{ participation.gender }}<br>
 	Year of Birth: {{ participation.yearOfBirth }}<br>
 	Country: {{ participation.country }}<br>

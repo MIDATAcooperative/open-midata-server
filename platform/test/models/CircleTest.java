@@ -43,7 +43,7 @@ public class CircleTest {
 		circle.owner = new ObjectId();
 		circle.name = "Test circle";
 		circle.order = 1;
-		circle.members = new HashSet<ObjectId>();
+		circle.authorized = new HashSet<ObjectId>();
 		circle.shared = new HashSet<ObjectId>();
 		Circle.add(circle);
 		assertEquals(1, circles.count());
@@ -60,7 +60,7 @@ public class CircleTest {
 		circle.owner = new ObjectId();
 		circle.name = "Test circle";
 		circle.order = 1;
-		circle.members = new HashSet<ObjectId>();
+		circle.authorized = new HashSet<ObjectId>();
 		circle.shared = new HashSet<ObjectId>();
 		Circle.add(circle);
 		assertEquals(1, circles.count());
@@ -78,7 +78,7 @@ public class CircleTest {
 		circle.owner = new ObjectId();
 		circle.name = "Test circle";
 		circle.order = 1;
-		circle.members = new HashSet<ObjectId>();
+		circle.authorized = new HashSet<ObjectId>();
 		circle.shared = new HashSet<ObjectId>();
 		Circle.add(circle);
 		assertEquals(1, circles.count());
@@ -95,7 +95,7 @@ public class CircleTest {
 		circle.owner = new ObjectId();
 		circle.name = "Test circle";
 		circle.order = 1;
-		circle.members = new HashSet<ObjectId>();
+		circle.authorized = new HashSet<ObjectId>();
 		circle.shared = new HashSet<ObjectId>();
 		Circle.add(circle);
 		assertEquals(1, circles.count());
@@ -113,7 +113,7 @@ public class CircleTest {
 		circle.owner = new ObjectId();
 		circle.name = "Test circle 1";
 		circle.order = 1;
-		circle.members = new HashSet<ObjectId>();
+		circle.authorized = new HashSet<ObjectId>();
 		circle.shared = new HashSet<ObjectId>();
 		Circle.add(circle);
 		assertEquals(1, circles.count());

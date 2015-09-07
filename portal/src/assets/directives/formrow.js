@@ -1,5 +1,5 @@
 angular.module('portal')
-.directive('formrow', function (views) {
+.directive('formrow', ['views', function (views) {
     return {
       template: function(element, attrs) {
     	  return '<div class="form-group" ng-class="{ \'has-error\' :  myform.' +
@@ -14,4 +14,4 @@ angular.module('portal')
       transclude: true,
       replace:true  
     };
-});
+}]);

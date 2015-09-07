@@ -15,21 +15,56 @@
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
 		
 		<!-- Application style sheet -->
+		<!-- build:css app.min.css -->
 		<link rel="stylesheet" href="/app.css">
+		<!-- endbuild -->
 		
 		<!-- JS framework and libraries -->
         <!-- jQuery needed for Bootstrap's JavaScript plugins and is also used by AngularJS -->
 		<script src="http://localhost:35729/livereload.js"></script>
-		<script type="text/javascript" src="components/jquery/dist/jquery.js" defer></script>
-        <script type="text/javascript" src="components/angular/angular.js" defer></script>
-        <script type="text/javascript" src="components/angular-ui-router/release/angular-ui-router.js" defer></script>
+		<script type="text/javascript" src="components/jquery/dist/jquery.js" defer></script>	
 		<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js" defer></script>		
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js" defer></script>
-		<script type="text/javascript" src="https://localhost:9000/assets/javascripts/routes" defer></script>	
+		<script type="text/javascript" src="https://localhost:9000/assets/javascripts/routes" defer></script>
+		
+		<!-- build:js app.min.js -->				
+        <script type="text/javascript" src="components/angular/angular.js" defer></script>
+        <script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap.js" defer></script>
+        <script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>
+        <script type="text/javascript" src="components/angular-ui-router/release/angular-ui-router.js" defer></script>                				
 		<script type="text/javascript" src="app.js" defer></script>
+		<!-- endbuild -->
 	</head>
 	<body ng-app="portal">
-	  <div ui-view></div>
+	  <div ng-if="false">
+	  <header id="navbar" class="navbar navbar-default" role="navigation" ng-controller="NavbarCtrl">
+	  <div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="javascript:">
+           		<img width="40%" src="/images/logo2.png" alt="Midata.coop" />
+           	</a>
+		</div>
+			    
+	   </div>
+	   </header>
+	  
+	    <div class="container">
+	     <div class="panel panel-primary">
+	       <div class="panel-body" style="height:200px;position:relative;">
+	         <div style="text-align:center;margin:-15px;top:50%;width:100%;position:absolute;">
+	           Please wait while page is loading...
+	         </div>
+	       </div>
+	     </div>
+	     </div>
+	  </div>
+	  <div ui-view class="ng-cloak"></div>
 	  <footer>
 		 <div class="container">
 			<p>(c) 2015 ETH Zürich</p>

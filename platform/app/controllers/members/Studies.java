@@ -121,7 +121,7 @@ public class Studies extends APIController {
 		part._id = new ObjectId();
 		part.study = study._id;
 		part.studyName = study.name;
-		part.member = member._id;
+		part.owner = member._id;
 		
 		String userName;
 		
@@ -131,7 +131,7 @@ public class Studies extends APIController {
 			userName = "Part. " + CodeGenerator.nextUniqueCode();
 		}
 				
-		part.memberName = userName;
+		part.ownerName = userName;
 		if (code != null) {
 			part.group = code.group;
 			part.recruiter = code.recruiter;		

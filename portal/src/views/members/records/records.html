@@ -43,7 +43,7 @@
         </div>
 					
 		<script type="text/ng-template"  id="tree_item_renderer.html">
-           <div class="pull-right sharebox" ng-show="selectedAps && !data.parentExcluded && data.type!='content' ">	                				  
+           <div class="pull-right sharebox" ng-show="selectedAps">	                				  
 				<button class="btn btn-xs btn-primary" ng-disabled="status.isBusy" ng-click="unshareGroup(data);" ng-show="isSharedGroup(data)">
 					<span class="glyphicon glyphicon-picture"></span>unshare
 				</button>
@@ -59,7 +59,7 @@
 					<span class="label label-info" ng-dblclick="deleteRecord(record, data)">{{record.created | date}}</span>
 					<span ng-show="record.owner.$oid != userId.$oid" class="label label-info">{{ record.ownerName }}</span>
 					<a href="javascript:;" ng-click="showDetails(record)">{{record.name}}</a>
-                    <div class="pull-right" ng-hide="selectedAps==null || data.shared">					   
+                    <div class="pull-right" ng-hide="selectedAps==null">					   
 						<button class="btn btn-xs btn-primary" ng-disabled="status.isBusy" ng-click="unshare(record, data);" ng-show="isShared(record)">
 							<span class="glyphicon glyphicon-picture"></span>unshare
 						</button>

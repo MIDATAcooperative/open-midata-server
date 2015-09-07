@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('NavbarCtrl', ['$scope', '$state', 'server', 'currentUser', 'apiurl', function($scope, $state, server, currentUser, apiurl) {
+.controller('NavbarCtrl', ['$scope', '$state', 'server', 'currentUser', function($scope, $state, server, currentUser) {
 	
 	// init
 	$scope.user = {};
@@ -29,7 +29,13 @@ angular.module('portal')
 		.then(function() { $state.go('public.login'); });
 	};
 	
+	$scope.search = function(value) {
+		return server.get(jsRoutes.controllers.GlobalSearch.complete(value).url)
+		.then(function(response) { return response.data; });
+	};
+	
 	// initialize global search with typeahead plugin
+	/*
 	$("#globalSearch").typeahead({"name": "data", remote: {
 		"url": null,
 		"prepare" : function(query, settings) {
@@ -45,13 +51,12 @@ angular.module('portal')
 		if (datum.type !== "other") {
 			window.location.href = "/" + datum.type + "s/" + datum.id;
 		}
-	});
-	
+	});*/
+			
 	// start a search
 	$scope.startSearch = function() {
-		// need to use jQuery instead of ng-model (typeahead overrides ng-model somehow)
-		var query = $("#globalSearch").val();
-		$state.go('^.search', { query : query });		
+		
+		$state.go('^.search', { query : $scope.query });		
 	};
 	
 }]);

@@ -42,7 +42,7 @@ angular.module('portal')
 	
 	var loadAppName = function() {
 		var data = {"properties": {"_id": $scope.record.app}, "fields": ["name"]};
-		server.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data)).
 			success(function(apps) { $scope.record.app = apps[0].name; }).
 			error(function(err) { $scope.error = "Failed to load app name: " + err; });
 	};

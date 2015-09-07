@@ -389,4 +389,11 @@ public class SingleAPSManager extends QueryManager {
 				throws ModelException {			
 			return records;
 		}
+
+		@Override
+		protected List<Record> lookup(List<Record> input, Query q)
+				throws ModelException {
+			for (Record record : input) { lookupSingle(record, q); }			
+			return input;
+		}
 }

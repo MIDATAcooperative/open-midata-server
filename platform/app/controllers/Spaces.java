@@ -112,9 +112,9 @@ public class Spaces extends Controller {
 	
 	public static Space add(ObjectId userId, String name, ObjectId visualizationId, ObjectId appId, String context) throws ModelException {
 			
-		if (Space.existsByNameAndOwner(name, userId)) {
+		/*if (Space.existsByNameAndOwner(name, userId)) {
 			throw new ModelException("A space with this name already exists.");
-		}		
+		}*/		
 		// create new space
 		Space space = new Space();
 		space._id = new ObjectId();

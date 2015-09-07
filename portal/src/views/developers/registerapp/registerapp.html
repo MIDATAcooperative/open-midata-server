@@ -10,13 +10,13 @@
 		</div>
 		
 		<ul class="nav nav-tabs">
-			<li class="active"><a href="#create" data-toggle="tab">Creation</a></li>
-			<li><a href="#mobile" data-toggle="tab">Mobile App</a></li>
-			<li><a href="#oauth1" data-toggle="tab">Import with OAuth 1.0</a></li>
-			<li><a href="#oauth2" data-toggle="tab">Import with OAuth 2.0</a></li>
+			<li ng-init="tab='create';" ng-class="{ 'active' : tab=='create' }"><a href="javascript:" ng-click="tab='create';">Creation</a></li>
+			<li ng-class="{ 'active' : tab=='mobile' }"><a href="javascript:" ng-click="tab='mobile';">Mobile App</a></li>
+			<li ng-class="{ 'active' : tab=='oauth1' }"><a href="javascript:" ng-click="tab='oauth1';">Import with OAuth 1.0</a></li>
+			<li ng-class="{ 'active' : tab=='oauth2' }"><a href="javascript:" ng-click="tab='oauth2';">Import with OAuth 2.0</a></li>
 		</ul>
 		<div class="tab-content">
-			<div id="create" class="tab-pane fade active in">
+			<div id="create" class="tab-pane fade" ng-class="{ 'active in' : tab=='create' }">
 				<form class="form-horizontal" ng-submit="registerApp('create')">
 					<div class="form-group">
 						<label for="filename" class="col-md-2 control-label">Filename</label>
@@ -49,7 +49,7 @@
 					<div style="clear:both"></div>
 				</form>
 			</div>
-			<div id="mobile" class="tab-pane fade">
+			<div id="mobile" class="tab-pane fade" ng-class="{ 'active in' : tab=='mobile' }">
 				<form class="form-horizontal" ng-submit="registerApp('mobile')">
 					<div class="form-group">
 						<label for="filename" class="col-md-2 control-label">Internal Name</label>
@@ -82,7 +82,7 @@
 					<div style="clear:both"></div>
 				</form>
 			</div>
-			<div id="oauth1" class="tab-pane fade">
+			<div id="oauth1" class="tab-pane fade" ng-class="{ 'active in' : tab=='oauth1' }">
 				<form class="form-horizontal" ng-submit="registerApp('oauth1')">
 					<div class="form-group">
 						<label for="filename1" class="col-md-2 control-label">Filename</label>
@@ -145,7 +145,7 @@
 					<div style="clear:both"></div>
 				</form>
 			</div>
-			<div id="oauth2" class="tab-pane fade">
+			<div id="oauth2" class="tab-pane fade" ng-class="{ 'active in' : tab=='oauth2' }">
 				<form class="form-horizontal" ng-submit="registerApp('oauth2')">
 					<div class="form-group">
 						<label for="filename2" class="col-md-2 control-label">Filename</label>

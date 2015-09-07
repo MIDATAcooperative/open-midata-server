@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
+import models.enums.ConsentType;
 import models.enums.MemberKeyStatus;
 
 import org.bson.types.ObjectId;
@@ -12,19 +13,20 @@ import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
 
-public class MemberKey extends Model {
+public class MemberKey extends Consent {
 	
 	private static final String collection = "memberkeys";
-
-	public ObjectId owner;
+	
 	public ObjectId organization;
-	public Set<ObjectId> authorized;
 	public MemberKeyStatus status;	
 	//public Map<String,String> key; //key used to identify this member
 	public Date confirmDate;
 	public String comment;
-	public ObjectId aps;
-	public String name;
+	public ObjectId aps;	
+	
+	public MemberKey() {
+		this.type = ConsentType.HEALTHCARE;
+	}
 	
 	public static MemberKey getById(ObjectId id) throws ModelException {
 		return Model.get(MemberKey.class, collection, CMaps.map("_id", id), Sets.create("owner", "organization", "authorized", "status", "confirmDate", "aps", "comment"));

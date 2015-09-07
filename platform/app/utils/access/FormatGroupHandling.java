@@ -17,45 +17,56 @@ public class FormatGroupHandling extends QueryManager {
 		this.next = next;
 	}
 	
+	
+	
 	@Override
-	protected boolean lookupSingle(Record record, Query q)
+	protected List<Record> lookup(List<Record> input, Query q)
 			throws ModelException {
-		
-		boolean result = next.lookupSingle(record, q);
-		
-		
-		return result;
+		Set<String> contents = prepareFilter(q);
+		if (contents != null) q.getProperties().put("content/*", contents);
+		return next.lookup(input, q);
 	}
 
-	private void addChildren(String group, Set<String> groups) throws ModelException {		
+	private void addChildren(String group, Set<String> groups, Set<String> exclude) throws ModelException {		
 			FormatGroup grp = FormatGroup.getByName(group);
 		    for (FormatGroup child : grp.children) {
-		    	if (!groups.contains(child.name)) {
+		    	if (!groups.contains(child.name) && !exclude.contains(child.name)) {
 		    		groups.add(child.name);
-		    		addChildren(child.name, groups);
+		    		addChildren(child.name, groups, exclude);
 		    	}
 		    }		
+	}
+	
+	private Set<String> prepareFilter(Query q) throws ModelException {		
+		
+		if (q.restrictedBy("group")) {
+			Set<String> contents = new HashSet<String>();
+			
+			Set<String> groups = new HashSet<String>();
+			Set<String> included = q.getRestriction("group"); 
+			groups.addAll(included);
+			
+			Set<String> exclude = new HashSet<String>();
+			if (q.restrictedBy("group-exclude")) exclude.addAll(q.getRestriction("group-exclude"));
+			
+			for (String group : included) {
+				addChildren(group, groups, exclude);				
+			}
+			
+		    Set<ContentInfo> qualified = ContentInfo.getByGroups(groups);		    
+		    for (ContentInfo fi : qualified) contents.add(fi.content);
+		    
+		    return contents;
+		}
+		
+		return null;
 	}
 
 	@Override
 	protected List<Record> query(Query q) throws ModelException {
-				
-		if (q.restrictedBy("group") && !q.restrictedBy("content")) {
-			Set<String> groups = new HashSet<String>();
-			groups.addAll(q.getRestriction("group"));
-			for (String group : groups) {
-				addChildren(group, groups);				
-			}
-			
-		    Set<ContentInfo> qualified = ContentInfo.getByGroups(groups);
-		    Set<String> contents = new HashSet<String>();
-		    for (ContentInfo fi : qualified) contents.add(fi.content);		    
-		    q.getProperties().put("content", contents);		    
-		}
-		
-        List<Record> result = next.query(q);
-        
-		return result;
+		Set<String> contents = prepareFilter(q);
+		if (contents != null) q.getProperties().put("content/*", contents);			
+		return next.query(q);		
 	}
 
 	@Override
@@ -68,6 +79,6 @@ public class FormatGroupHandling extends QueryManager {
 			}
 		}	
 		return result;
-	}
+	}	
 
 }

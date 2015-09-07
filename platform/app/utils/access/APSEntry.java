@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import models.ContentInfo;
 import models.ModelException;
 import models.Record;
 
@@ -22,6 +23,7 @@ public class APSEntry {
 		BasicBSONList lst = (BasicBSONList) permissions.get("p");
 		Set<String> formats = q.restrictedBy("format") ? q.getRestriction("format") : null;
 		Set<String> contents = q.restrictedBy("content") ? q.getRestriction("content") : null;
+		Set<String> contentsWC = q.restrictedBy("content/*") ? q.getRestriction("content/*") : null;
 		
 		for (Object row : lst) {
 			BasicBSONObject crit = (BasicBSONObject) row;
@@ -32,7 +34,11 @@ public class APSEntry {
 			}
 			if (contents != null) {
 			  String fmt = crit.getString("content");
-			  if (fmt != null && !contents.contains(fmt)) match = false; 
+			  if (fmt != null && !contents.contains(fmt)) match = false;  
+			}
+			if (contentsWC != null) {
+  			  String fmt = crit.getString("content");
+			  if (fmt != null && !contentsWC.contains(ContentInfo.getWildcardName(fmt))) match = false;
 			}
 			if (match) result.add(crit);			
 		}

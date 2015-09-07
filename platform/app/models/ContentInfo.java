@@ -19,6 +19,12 @@ public class ContentInfo extends Model {
 	public APSSecurityLevel security;
 	public String group;
 	
+	public static String getWildcardName(String name) {
+		int p = name.indexOf("/");
+		if (p>=0) name = name.substring(0, p);
+		return name;
+	}
+	
 	public static ContentInfo getByName(String name) throws ModelException {
 		int p = name.indexOf("/");
 		if (p>=0) name = name.substring(0, p);

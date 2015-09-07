@@ -100,7 +100,7 @@ public class Plugins extends APIController {
 		
 		String context = json.has("context") ? JsonValidation.getString(json, "context") : visualization.defaultSpaceContext;
 		
-		if (user.role.equals(UserRole.MEMBER) && visualization.type.equals(visualization)) { 
+		if (user.role.equals(UserRole.MEMBER) && visualization.type.equals("visualization")) { 
 					
 			if (spaceName!=null && !spaceName.equals("")) {
 				Space space = null;

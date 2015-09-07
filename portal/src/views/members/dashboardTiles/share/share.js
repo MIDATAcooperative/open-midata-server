@@ -17,9 +17,12 @@ angular.module('views')
             if ($scope.circles.length > 0) $scope.selectedCircle = $scope.circles[0];
             $scope.circles.push({ name : "<Create new...>", isNew : true });			
 		});
-		$scope.status.doBusy(spaces.get({ "_id" : { "$oid" : $scope.view.setup.space  }}, [ "rules" ]))
+		$scope.status.doBusy(spaces.get({ "_id" : { "$oid" : $scope.view.setup.space  }}, [ "query" ]))
 		.then(function(result) {
-			if (result.data) $scope.rules = result.data[0].rules;
+			if (result.data) {  
+				$scope.rules = result.data[0].query;
+				delete $scope.rules.aps;				
+			}
 		});
 	};
 	

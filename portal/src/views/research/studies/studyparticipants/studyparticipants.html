@@ -19,7 +19,7 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="participant in results">
-	      <td><a ui-sref="research.study.participant({ studyId : studyid, participantId : participant._id.$oid})">{{ participant.memberName }}</a></td>	  
+	      <td><a ui-sref="research.study.participant({ studyId : studyid, participantId : participant._id.$oid})">{{ participant.ownerName }}</a></td>	  
 	      <td>{{ participant.group }}</td>
 	      <td>{{ participant.status }}</td>
 	      <td>{{ participant.recruiterName }}</td>

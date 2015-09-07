@@ -1,8 +1,7 @@
 var services = angular.module('services', []);
 var views = angular.module('views', ['services']);
-angular.module('portal', [ 'ui.router', 'services', 'views' ])
-.constant('apiurl', 'https://localhost:9000')
-.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+angular.module('portal', [ 'ui.router', 'ui.bootstrap', 'services', 'views', 'config' ])
+.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', function($stateProvider, $urlRouterProvider, $httpProvider) {
    //$httpProvider.defaults.useXDomain = true;
    $httpProvider.defaults.withCredentials = true;
    //delete $httpProvider.defaults.headers.common['X-Requested-With'];
@@ -43,4 +42,4 @@ angular.module('portal', [ 'ui.router', 'services', 'views' ])
    
    $urlRouterProvider
    .otherwise('/portal/login');
-});
+}]);

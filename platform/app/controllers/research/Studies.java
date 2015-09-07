@@ -294,7 +294,7 @@ public class Studies extends APIController {
 		   participation.status == ParticipationStatus.MATCH || 
 		   participation.status == ParticipationStatus.MEMBER_REJECTED) return badRequest("Member does not participate in study");
 	   
-	   if (study.requiredInformation != InformationType.DEMOGRAPHIC) { participation.member = null; }
+	   if (study.requiredInformation != InformationType.DEMOGRAPHIC) { participation.owner = null; }
 	   
 	   ObjectNode obj = Json.newObject();
 	   obj.put("participation", Json.toJson(participation));	   

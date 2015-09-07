@@ -138,10 +138,10 @@ public class DatabaseTest {
 		circle.owner = new ObjectId();
 		circle.name = "Family";
 		circle.order = 1;
-		circle.members = new HashSet<ObjectId>();
-		circle.members.add(new ObjectId());
-		circle.members.add(new ObjectId());
-		circle.members.add(new ObjectId());
+		circle.authorized = new HashSet<ObjectId>();
+		circle.authorized.add(new ObjectId());
+		circle.authorized.add(new ObjectId());
+		circle.authorized.add(new ObjectId());
 		circle.shared = new HashSet<ObjectId>();
 		circles.insert(DatabaseConversion.toDBObject(circle));
 		assertEquals(1, circles.count());

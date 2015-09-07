@@ -34,9 +34,9 @@
 				<!-- Circle content -->
 				<div class="tab-content">
 					<div class="tab-pane fade" ng-class="{'active in': circle.active}" ng-repeat="circle in circles">
-						<p ng-show="circle.members.length === 0">This circle has no members yet.</p>
-						<ul class="list-group" ng-show="circle.members.length > 0">
-							<li class="list-group-item" ng-repeat="member in circle.members">
+						<p ng-show="circle.authorized.length === 0">This circle has no members yet.</p>
+						<ul class="list-group" ng-show="circle.authorized.length > 0">
+							<li class="list-group-item" ng-repeat="member in circle.authorized">
 								{{userNames[member.$oid]}}
 								<div class="pull-right">
 									<button type="button" class="btn btn-xs btn-danger" ng-click="removeMember(circle, member)">
@@ -62,12 +62,10 @@
 										<h4 class="modal-title" id="userModalLabel-{{circle._id.$oid}}">Add users to circle '{{circle.name}}'</h4>
 									</div>
 									<div class="modal-body">
-										<ul class="nav nav-tabs">
-											<li class="active"><a href="#contacts-{{circle._id.$oid}}" data-toggle="tab">Contacts</a></li>
-											<li><a href="#all-{{circle._id.$oid}}" data-toggle="tab">All users</a></li>
-										</ul>
-										<div class="tab-content">
-											<div id="contacts-{{circle._id.$oid}}" class="tab-pane fade active in">
+										
+										<tabset>
+										
+											<tab heading="Contacts">
 												<p ng-show="contacts.length === 0">You have no users in your circles yet.</p>
 												<div ng-show="contacts.length > 0">
 													<div class="checkbox" ng-repeat="contact in filteredContacts = (contacts | filter:isntMember)">
@@ -78,8 +76,8 @@
 													</div>
 													<p ng-show="filteredContacts.length === 0">No contacts can be added to this circle.</p>
 												</div>
-											</div>
-											<div id="all-{{circle._id.$oid}}" class="tab-pane fade">
+											</tab>
+											<tab heading="All users">
 												<form class="form-horizontal" ng-submit="searchUsers(circle)">
 													<div class="form-group">
 														<div class="col-xs-10">
@@ -101,8 +99,8 @@
 													</div>
 													<p ng-show="filteredUsers.length === 0">All found users are already members of this circle.</p>
 												</div>
-											</div>
-										</div>
+											</tab>
+										</tabset>
 									</div>
 									<div class="modal-footer">
 										<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addUsers(circle)">Add</button>

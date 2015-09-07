@@ -27,10 +27,15 @@ module.exports = function(grunt) {
     },*/
     
     useminPrepare: {
-      html: 'dest/index.html'
+      html: 'dest/index.html',
+      options : { 
+    	  dest : 'dest'
+      }
     },
     
-    
+    usemin: {
+      html: 'dest/index.html'      
+    },
     
     // Which files to watch
     watch: {
@@ -82,13 +87,25 @@ module.exports = function(grunt) {
     concat: {
         
         js: {
-          src: ['src/portals/app.js', 'src/assets/**/*.js', 'src/views/**/*.js' ],
+          src: ['src/portals/app.js', 'tmp/scripts/config.js', 'src/assets/**/*.js', 'src/views/**/*.js' ],
           dest: 'dest/app.js'
         },
         css : {
           src : ['src/assets/css/*' , 'src/views/**/*.less'],
           dest: 'dest/app.less'
         }
+     },
+     
+     // ng-annotate
+     ngAnnotate: {
+         options: {
+             singleQuotes: true,
+         },
+         app: {
+             files: {
+                 'dest/app.js': ['dest/app.js']                
+             }
+         }
      },
      
      // Test Server
@@ -119,7 +136,38 @@ module.exports = function(grunt) {
     	      "dest/app.css": "dest/app.less"
     	 }
       }
-     }
+     },
+     
+     ngconstant: {    	  
+    	  options: {
+    	    space: '  ',
+    	    wrap: '"use strict";\n\n {%= __ngModule %}',
+    	    name: 'config',
+    	  },
+    	  // Environment targets
+    	  development: {
+    	    options: {
+    	      dest: 'tmp/scripts/config.js'
+    	    },
+    	    constants: {
+    	      ENV: {
+    	        name: 'development',
+    	        apiurl: 'https://localhost:9000'
+    	      }
+    	    }
+    	  },
+    	  production: {
+    	    options: {
+    	      dest: 'tmp/scripts/config.js'
+    	    },
+    	    constants: {
+    	      ENV: {
+    	        name: 'production',
+    	        apiurl: 'https://demo.midata.coop:9000'
+    	      }
+    	    }
+    	  }
+    	}
   });
 
   // Load grunt tasks
@@ -132,7 +180,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
-  grunt.loadNpmTasks('grunt-contrib-usemin');
+  grunt.loadNpmTasks('grunt-ng-annotate');
+  grunt.loadNpmTasks('grunt-ng-constant');
+  grunt.loadNpmTasks('grunt-usemin');
   //grunt.loadNpmTasks('connect-livereload');
 
   // Default task(s).
@@ -144,7 +194,8 @@ module.exports = function(grunt) {
                                'uglify:generated',
                                'usemin'
   ]);
-  grunt.registerTask('server', ['clean', 'copy', 'jshint', 'concat', 'less','connect', 'watch']);
-  grunt.registerTask('deploy', ['clean', 'copy', 'jshint', 'concat', 'less','build']);
+  grunt.registerTask('server', ['clean', 'ngconstant:development','copy', 'jshint', 'concat', 'less','connect', 'watch']);
+  grunt.registerTask('server-dist', ['clean', 'copy', 'jshint', 'concat', 'less', 'ngAnnotate', 'build', 'connect', 'watch']);
+  grunt.registerTask('deploy', ['clean', 'ngconstant:production', 'copy', 'jshint', 'concat', 'less', 'ngAnnotate', 'build']);
   
 };

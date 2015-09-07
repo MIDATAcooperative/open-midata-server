@@ -7,7 +7,8 @@ import models.Record;
 
 public abstract class QueryManager {
 
-	protected abstract boolean lookupSingle(Record record, Query q) throws ModelException;
+		
+	protected abstract List<Record> lookup(List<Record> record, Query q) throws ModelException;
 	
 	protected abstract List<Record> query(Query q) throws ModelException;
 	

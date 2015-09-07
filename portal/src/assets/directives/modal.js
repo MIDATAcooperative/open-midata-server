@@ -1,5 +1,5 @@
 angular.module('portal')
-.directive('modal', function (views) {
+.directive('modal', ['views', function (views) {
     return {
       template: '<div class="modal fade">' + 
           '<div class="modal-dialog modal-lg">' + 
@@ -40,4 +40,4 @@ angular.module('portal')
         });
       }
     };
-  });
+  }]);

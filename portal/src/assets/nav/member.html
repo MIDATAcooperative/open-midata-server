@@ -25,7 +25,7 @@
 			</ul>
 			<form class="navbar-form navbar-left" ng-submit="startSearch()">
 				<div class="form-group">
-					<input type="text" id="globalSearch" class="form-control" placeholder="Search in your data" ng-model="query">
+					<input type="text" typeahead="res.value for res in search($viewValue)" typeahead-on-select="startSearch();" class="form-control" placeholder="Search in your data" ng-model="query">
 				</div>
 				<button type="submit" class="btn btn-primary">Go!</button>
 			</form>

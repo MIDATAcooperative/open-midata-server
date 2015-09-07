@@ -31,6 +31,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import scala.NotImplementedError;
 import utils.access.SingleAPSManager;
 import utils.auth.RecordToken;
 import utils.auth.SpaceToken;
@@ -326,7 +327,8 @@ public class Records extends Controller {
 	@APICall
 	@Security.Authenticated(Secured.class)
 	public static Result share() throws JsonValidationException, ModelException {
-		JsonNode json = request().body().asJson();
+		throw new NotImplementedError();
+		/*JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "fromSpace", "toCircle");
 		
@@ -348,7 +350,7 @@ public class Records extends Controller {
 				
 		RecordSharing.instance.share(userId, fromSpace, toCircle, null, true);
 		
-		return ok();
+		return ok();*/
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
@@ -433,7 +435,7 @@ public class Records extends Controller {
         		if (type.equals("spaces")) {
         		  RecordSharing.instance.shareByQuery(userId, userId, aps, query);
         		} else {
-        		  Circles.setQuery(userId, aps, query);
+        		  Circles.setQuery(userId, aps, query);        		          		  
 	        	  RecordSharing.instance.applyQuery(userId, query, userId, aps, withMember);	        	  
         		}
         	}

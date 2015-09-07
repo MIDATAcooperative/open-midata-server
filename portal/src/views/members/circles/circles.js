@@ -39,7 +39,7 @@ angular.module('portal')
 	
 	// get names for users in circles
 	loadContacts = function() {
-		var contactIds = _.map($scope.circles, function(circle) { return circle.members; });
+		var contactIds = _.map($scope.circles, function(circle) { return circle.authorized; });
 		contactIds = _.flatten(contactIds);
 		contactIds = _.uniq(contactIds, false, function(contactId) { return contactId.$oid; });
 		var properties = {"_id": contactIds};
@@ -99,7 +99,7 @@ angular.module('portal')
 	// check whether user is not already in active circle
 	$scope.isntMember = function(user) {
 		var activeCircle = _.find($scope.circles, function(circle) { return circle.active; });
-		var memberIds = _.map(activeCircle.members, function(member) { return member.$oid; });
+		var memberIds = _.map(activeCircle.authorized, function(member) { return member.$oid; });
 		return !_.contains(memberIds, user._id.$oid);
 	};
 	
@@ -136,7 +136,7 @@ angular.module('portal')
 				$scope.error = null;
 				$scope.foundUsers = [];
 				_.each($scope.contacts, function(contact) { contact.checked = false; });
-				_.each(userIds, function(userId) { circle.members.push(userId); });
+				_.each(userIds, function(userId) { circle.authorized.push(userId); });
 				_.each(usersToAdd, function(user) { $scope.userNames[user._id.$oid] = user.name; });
 			}).
 			error(function(err) { $scope.error = "Failed to add users: " + err; });
@@ -147,7 +147,7 @@ angular.module('portal')
 		server.post(jsRoutes.controllers.Circles.removeMember(circle._id.$oid, userId.$oid).url).
 			success(function() {
 				$scope.error = null;
-				circle.members.splice(circle.members.indexOf(userId), 1);
+				circle.authorized.splice(circle.authorized.indexOf(userId), 1);
 			}).
 			error(function(err) { $scope.error = "Failed to remove the selected member from circle '" + circle.name + "': " + err; });
 	};

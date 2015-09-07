@@ -23,28 +23,29 @@ public class StreamQueryManager extends QueryManager {
 	}
 	
 	@Override
-	protected boolean lookupSingle(Record record, Query q) throws ModelException {
+	protected List<Record> lookup(List<Record> records, Query q)
+			throws ModelException {
 		QueryManager next = q.getCache().getAPS(q.getApsId());
 		
-		boolean found = next != null ? next.lookupSingle(record, q) : false;
+		List<Record> result = (next != null) ? next.lookup(records, q) : null;
 		
-		if (!found) {
+		for (Record record : result) {
 			if (record.stream != null && record.key == null) {
-				boolean result = q.getCache().getAPS(record.stream).lookupSingle(record, q);
+				boolean found = q.getCache().getAPS(record.stream).lookupSingle(record, q);
 				                					
-				if (result) {
+				if (found) {
 					if (q.returns("owner") && record.owner == null) {
 						List<Record> stream = next.query(new Query(CMaps.map("_id", record.stream), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId(), true ));
 						if (stream.size() > 0) record.owner = stream.get(0).owner;
-					}
-                    return true;					
+					}                    					
 				}
 			}
 		}
 		
-		return found; 
+		return result;
 	}
-
+	
+	
 	@Override
 	protected List<Record> query(Query q) throws ModelException {		
 		SingleAPSManager next = q.getCache().getAPS(q.getApsId());
@@ -110,6 +111,8 @@ public class StreamQueryManager extends QueryManager {
 			throws ModelException {		
 		return records;
 	}
+
+	
 
     
 }

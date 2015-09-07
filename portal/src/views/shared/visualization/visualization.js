@@ -18,9 +18,13 @@ angular.module('portal')
 			if ($scope.visualization.defaultSpaceName!=null) {
 			  $scope.options.createSpace = true;
 			  $scope.options.spaceName = $scope.params.name || $scope.visualization.defaultSpaceName;
-			  if ($scope.visualization.defaultQuery) {
+			  if ($scope.visualization.defaultQuery != null) {
 				  $scope.options.query = $scope.visualization.defaultQuery;
 				  $scope.options.applyRules = true;
+				  console.log($scope.options.query);
+			  } else {
+				  console.log("XXX");
+				  console.log($scope.visualization);
 			  }
 			}
 			if ($scope.params && $scope.params.context) {

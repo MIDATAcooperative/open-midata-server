@@ -12,24 +12,23 @@ public class ContentFilterQM extends QueryManager {
 	public ContentFilterQM(QueryManager next) {
 		this.next = next;
 	}
-	
-	@Override
-	protected boolean lookupSingle(Record record, Query q)
-			throws ModelException {
 		
-		return next.lookupSingle(record, q);
-	}
 
 	@Override
-	protected List<Record> query(Query q) throws ModelException {
-		
+	protected List<Record> query(Query q) throws ModelException {		
 		return next.query(q);
 	}
 
 	@Override
 	protected List<Record> postProcess(List<Record> records, Query q)
 			throws ModelException {
-		return ComplexQueryManager.filterByFormat(records, q.restrictedBy("format") ? q.getRestriction("format") : null, q.restrictedBy("content") ? q.getRestriction("content") : null);	
+		return ComplexQueryManager.filterByFormat(records, q.restrictedBy("format") ? q.getRestriction("format") : null, q.restrictedBy("content") ? q.getRestriction("content") : null, q.restrictedBy("content/*") ? q.getRestriction("content/*") : null);	
+	}
+
+	@Override
+	protected List<Record> lookup(List<Record> record, Query q)
+			throws ModelException {		
+		return next.lookup(record, q);
 	}
 
 }

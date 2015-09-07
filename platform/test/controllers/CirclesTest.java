@@ -59,7 +59,7 @@ public class CirclesTest {
 		assertNotNull(circle);
 		assertEquals("Test circle", circle.name);
 		assertEquals(user._id, circle.owner);
-		assertEquals(0, circle.members.size());
+		assertEquals(0, circle.authorized.size());
 	}
 
 	@Test
