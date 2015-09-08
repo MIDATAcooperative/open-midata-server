@@ -250,11 +250,8 @@ public class PluginsAPI extends Controller {
 		}
 		
 		ObjectId recordId = JsonValidation.getObjectId(json, "_id");
-
-		Record target = RecordSharing.instance.fetch(authToken.userId, authToken.spaceId, recordId);
-		if (target==null) return badRequest("Unknown Record");
-		
-		FileData fileData = FileStorage.retrieve(recordId);
+			
+		FileData fileData = RecordSharing.instance.fetchFile(authToken.userId, new RecordToken(recordId.toString(), authToken.spaceId.toString()));
 		if (fileData == null) return badRequest();
 		//response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
 		return ok(fileData.inputStream);

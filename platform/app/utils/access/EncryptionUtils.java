@@ -1,10 +1,12 @@
 package utils.access;
 
+import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
@@ -82,6 +84,40 @@ public class EncryptionUtils {
 		} catch (IllegalBlockSizeException e5) {
 			throw new ModelException(e5);
 		} 
+	
+	}
+	
+	public static InputStream encryptStream(SecretKey key, InputStream in) throws ModelException {
+		try {
+			Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
+			c.init(Cipher.ENCRYPT_MODE, key);
+
+		    return new CipherInputStream(in, c);
+								    	
+		} catch (InvalidKeyException e) {
+			throw new ModelException(e);
+		} catch (NoSuchPaddingException e2) {
+			throw new ModelException(e2);
+		} catch (NoSuchAlgorithmException e3) {
+			throw new ModelException(e3);
+		}
+	
+	}
+	
+	public static InputStream decryptStream(SecretKey key, InputStream in) throws ModelException {
+		try {
+			Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
+			c.init(Cipher.DECRYPT_MODE, key);
+
+		    return new CipherInputStream(in, c);
+								    	
+		} catch (InvalidKeyException e) {
+			throw new ModelException(e);
+		} catch (NoSuchPaddingException e2) {
+			throw new ModelException(e2);
+		} catch (NoSuchAlgorithmException e3) {
+			throw new ModelException(e3);
+		}
 	
 	}
 	

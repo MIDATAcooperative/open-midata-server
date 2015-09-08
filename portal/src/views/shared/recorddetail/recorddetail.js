@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RecordCtrl', ['$scope', '$state', 'server', '$sce', 'records', 'status', function($scope, $state, server, $sce, records, status) {
+.controller('RecordCtrl', ['$scope', '$state', 'server', '$sce', 'records', 'status', 'ENV', function($scope, $state, server, $sce, records, status, ENV) {
 	// init
 	$scope.error = null;
 	$scope.record = {};
@@ -20,7 +20,7 @@ angular.module('portal')
 			$scope.record = records;
 			$scope.record.json = JSON.stringify($scope.record.data, null, "\t");
 			if (_.has($scope.record.data, "type") && $scope.record.data.type === "file") {
-				$scope.downloadLink = jsRoutes.controllers.Records.getFile(recordId).url;
+				$scope.downloadLink = ENV.apiurl + jsRoutes.controllers.Records.getFile(recordId).url;
 			}
 			loadUserNames();
 			loadAppName();										    	    	

@@ -8,14 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import models.App;
 import models.Circle;
 import models.Message;
 import models.NewsItem;
+import models.Plugin;
 import models.Record;
 import models.Space;
 import models.Member;
-import models.Visualization;
 
 import org.bson.types.ObjectId;
 
@@ -112,19 +111,19 @@ public class ReimportData {
 		System.out.println("done.");
 
 		// apps
-		System.out.print("Importing apps...");
+		/*System.out.print("Importing apps...");
 		Set<App> apps = App.getAll(new HashMap<String, Object>(),
 				new ChainedSet<String>().add("name").add("description").get());
 		for (App app : apps) {
 			Search.add(Type.APP, app._id, app.name, app.description);
 		}
-		System.out.println("done.");
+		System.out.println("done.");*/
 
-		// visualizations
+		// Plugins
 		System.out.print("Importing visualizations...");
-		Set<Visualization> visualizations = Visualization.getAll(emptyMap,
+		Set<Plugin> visualizations = Plugin.getAll(emptyMap,
 				new ChainedSet<String>().add("name").add("description").get());
-		for (Visualization visualization : visualizations) {
+		for (Plugin visualization : visualizations) {
 			Search.add(Type.VISUALIZATION, visualization._id, visualization.name, visualization.description);
 		}
 		System.out.println("done.");

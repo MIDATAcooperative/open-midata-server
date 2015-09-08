@@ -519,10 +519,8 @@ public class Records extends Controller {
 		ObjectId userId = new ObjectId(request().username());
 						
 		if (tk==null) return badRequest("Bad token");
-		Record target = RecordSharing.instance.fetch(userId, tk);
-		if (target==null) return badRequest("Unknown Record");
-		
-		FileData fileData = FileStorage.retrieve(new ObjectId(tk.recordId));
+				
+		FileData fileData = RecordSharing.instance.fetchFile(userId, tk);
 		response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
 		return ok(fileData.inputStream);
 	}

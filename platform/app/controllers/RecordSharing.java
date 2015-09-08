@@ -1,5 +1,6 @@
 package controllers;
 
+import java.io.FileInputStream;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -49,9 +50,12 @@ import utils.auth.EncryptionNotSupportedException;
 import utils.auth.RecordToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.db.DatabaseException;
+import utils.db.FileStorage;
 import utils.db.LostUpdateException;
 import utils.db.NotMaterialized;
 import utils.db.ObjectIdConversion;
+import utils.db.FileStorage.FileData;
 import utils.search.Search;
 import utils.search.SearchException;
 
@@ -342,6 +346,13 @@ public class RecordSharing {
 		record.key = null;
 	}
 	
+	public void addRecord(ObjectId executingPerson, Record record, FileInputStream data, String fileName, String contentType) throws DatabaseException, ModelException {
+		byte[] kdata = addRecordIntern(executingPerson, record, false, null, false);
+		SecretKey key = new SecretKeySpec(kdata, EncryptedAPS.KEY_ALGORITHM);
+		FileStorage.store(EncryptionUtils.encryptStream(key, data), record._id, fileName, contentType);
+		record.key = null;
+	}
+	
 	public void addRecord(ObjectId executingPerson, Record record, ObjectId alternateAps) throws ModelException {
 		addRecordIntern(executingPerson, record, false, alternateAps, false);
 		record.key = null;
@@ -534,6 +545,21 @@ public class RecordSharing {
 
 	public Record fetch(ObjectId who, RecordToken token) throws ModelException {
 		return fetch(who, token, RecordSharing.COMPLETE_DATA);
+	}
+	
+	public FileData fetchFile(ObjectId who, RecordToken token) throws ModelException {		
+		List<Record> result = ComplexQueryManager.listInternal(getCache(who), new ObjectId(token.apsId), CMaps.map("_id", new ObjectId(token.recordId)), Sets.create("key"));
+				
+		if (result.size() != 1) throw new ModelException("Unknown Record");
+		
+		FileData fileData = FileStorage.retrieve(new ObjectId(token.recordId));
+		Record rec = result.get(0);
+		AccessLog.debug(rec.toString()+ "::" + rec.key);
+		AccessLog.debug(fileData.filename+" :: "+fileData.inputStream);
+		
+		fileData.inputStream = EncryptionUtils.decryptStream(new SecretKeySpec(rec.key, EncryptedAPS.KEY_ALGORITHM), fileData.inputStream);
+		
+		return fileData;
 	}
 
 	public Record fetch(ObjectId who, RecordToken token, Set<String> fields)

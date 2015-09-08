@@ -1,6 +1,8 @@
 package controllers;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -305,10 +307,12 @@ public class AppsAPI extends Controller {
 					.put("contentType", contentType).get());
 
 		// save file with file storage utility
-		
-			RecordSharing.instance.addRecord(owner._id, record);
-			FileStorage.store(file, record._id, filename, contentType);
-			
+		    try {
+			  RecordSharing.instance.addRecord(owner._id, record, new FileInputStream(file), filename, contentType);
+		    } catch (FileNotFoundException e) {
+		    	throw new ModelException(e);
+		    }
+						
 			ObjectNode obj = Json.newObject();
 			obj.put("_id", record._id.toString());
 			return ok(obj);
