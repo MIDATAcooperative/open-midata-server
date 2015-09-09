@@ -21,11 +21,17 @@
 		
 		<!-- JS framework and libraries -->
         <!-- jQuery needed for Bootstrap's JavaScript plugins and is also used by AngularJS -->
+        <!-- @if NODE_ENV == 'DEVELOPMENT' -->
 		<script src="http://localhost:35729/livereload.js"></script>
+		<script type="text/javascript" src="https://localhost:9000/assets/javascripts/routes" defer></script>
+		<!-- @endif -->
+		<!-- @if NODE_ENV == 'PRODUCTION' -->
+		<script type="text/javascript" src="https://demo.midata.coop:9000/assets/javascripts/routes" defer></script>
+		<!-- @endif -->
 		<script type="text/javascript" src="components/jquery/dist/jquery.js" defer></script>	
 		<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js" defer></script>		
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js" defer></script>
-		<script type="text/javascript" src="https://localhost:9000/assets/javascripts/routes" defer></script>
+		
 		
 		<!-- build:js app.min.js -->				
         <script type="text/javascript" src="components/angular/angular.js" defer></script>

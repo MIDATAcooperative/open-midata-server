@@ -29,6 +29,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import utils.DateTimeUtils;
+import utils.access.AccessLog;
 import utils.auth.CodeGenerator;
 import utils.auth.PasswordResetToken;
 import utils.collections.CMaps;
@@ -57,7 +58,11 @@ public class Application extends Controller {
 	} 
 			
 	public static Result checkPreflight(String all) {		
-		response().setHeader("Access-Control-Allow-Origin", "http://localhost:9002");
+		String host = request().getHeader("Origin");
+		//AccessLog.debug(host);
+		if (host.startsWith("http://localhost:") || host.equals("https://demo.midata.coop")) {
+		    response().setHeader("Access-Control-Allow-Origin", host);
+		} else response().setHeader("Access-Control-Allow-Origin", "https://demo.midata.coop");
         response().setHeader("Allow", "*");
         response().setHeader("Access-Control-Allow-Credentials", "true");
         response().setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");

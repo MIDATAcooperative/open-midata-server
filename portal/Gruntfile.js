@@ -26,6 +26,27 @@ module.exports = function(grunt) {
     	  }
     },*/
     
+    env : {
+
+        options : {
+        },
+
+        dev: {
+            NODE_ENV : 'DEVELOPMENT'
+        },
+
+        prod : {
+            NODE_ENV : 'PRODUCTION'
+        }
+    },
+    
+    preprocess : {
+        all : {
+            src : 'src/index.html',
+            dest : 'dest/index.html'
+        }
+    },
+    
     useminPrepare: {
       html: 'dest/index.html',
       options : { 
@@ -183,19 +204,26 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-ng-annotate');
   grunt.loadNpmTasks('grunt-ng-constant');
   grunt.loadNpmTasks('grunt-usemin');
+  grunt.loadNpmTasks('grunt-env');
+  grunt.loadNpmTasks('grunt-preprocess');
   //grunt.loadNpmTasks('connect-livereload');
 
   // Default task(s).
-  grunt.registerTask('default', ['clean','copy']);
+  grunt.registerTask('default', ['deploy']);
+  grunt.registerTask('webserver', ['connect', 'watch']);
+  grunt.registerTask('bundle', [ 'copy', 'preprocess', 'jshint', 'concat', 'less' ]);
   grunt.registerTask('build', [
+                               'ngAnnotate',
                                'useminPrepare',
                                'concat:generated',
                                'cssmin:generated',
                                'uglify:generated',
                                'usemin'
   ]);
-  grunt.registerTask('server', ['clean', 'ngconstant:development','copy', 'jshint', 'concat', 'less','connect', 'watch']);
-  grunt.registerTask('server-dist', ['clean', 'copy', 'jshint', 'concat', 'less', 'ngAnnotate', 'build', 'connect', 'watch']);
-  grunt.registerTask('deploy', ['clean', 'ngconstant:production', 'copy', 'jshint', 'concat', 'less', 'ngAnnotate', 'build']);
+  grunt.registerTask('server'           , ['clean', 'ngconstant:development', 'env:dev', 'bundle','webserver']);
+  grunt.registerTask('server-remote'    , ['clean', 'ngconstant:production', 'env:prod', 'bundle','webserver']);
+  grunt.registerTask('server-local-dist', ['clean', 'ngconstant:development', 'env:dev', 'bundle', 'build', 'webserver']);
+  grunt.registerTask('server-remote-dist', ['clean', 'ngconstant:production', 'env:prod', 'bundle', 'build', 'webserver']);
+  grunt.registerTask('deploy', ['clean', 'ngconstant:production', 'env:prod', 'bundle', 'build']);
   
 };

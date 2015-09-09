@@ -11,6 +11,7 @@ import play.libs.Json;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
+import utils.access.AccessLog;
 import utils.json.JsonValidation.JsonValidationException;
 
 public class APICallAction extends Action<APICall> {
@@ -19,7 +20,11 @@ public class APICallAction extends Action<APICall> {
     	try {
     	  JsonNode json = ctx.request().body().asJson();
     	  ctx.args.put("json", json);
-    	  ctx.response().setHeader("Access-Control-Allow-Origin", "http://localhost:9002");
+    	  String host = ctx.request().getHeader("Origin");
+    	  //AccessLog.debug(host);
+  		  if (host.startsWith("http://localhost:") || host.equals("https://demo.midata.coop")) {
+  		    ctx.response().setHeader("Access-Control-Allow-Origin", host);
+  		  } else ctx.response().setHeader("Access-Control-Allow-Origin", "https://demo.midata.coop");
     	  ctx.response().setHeader("Allow", "*");
     	  ctx.response().setHeader("Access-Control-Allow-Credentials", "true");
     	  ctx.response().setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
