@@ -1,12 +1,12 @@
 angular.module('views')
-.controller('CreateRecordCtrl', ['$scope', '$state', 'server', '$attrs', '$sce', 'views', 'status', 'apps', 'currentUser', function($scope, $state, server, $attrs, $sce, views, status, apps, currentUser) {
+.controller('CreateRecordCtrl', ['$scope', '$state', 'server', '$attrs', '$sce', 'views', 'status', 'apps', 'session', function($scope, $state, server, $attrs, $sce, views, status, apps, session) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
     $scope.status = new status(true);
     $scope.apps = null;
     $scope.showapp = false;    
 
-    currentUser.then(function(userId) { 
+    session.currentUser.then(function(userId) { 
     	$scope.userId = userId;
     	$scope.reload(); 
     });

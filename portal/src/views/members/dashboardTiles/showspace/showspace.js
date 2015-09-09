@@ -1,12 +1,12 @@
 angular.module('views')
-.controller('ShowSpaceCtrl', ['$scope', 'server', '$attrs', '$sce', 'views', 'status', 'spaces', 'currentUser', function($scope, server, $attrs, $sce, views, status, spaces, currentUser) {
+.controller('ShowSpaceCtrl', ['$scope', 'server', '$attrs', '$sce', 'views', 'status', 'spaces', 'session', function($scope, server, $attrs, $sce, views, status, spaces, session) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
     $scope.status = new status(true);
     $scope.spaces = null;
     $scope.showspace = false;    
 
-    currentUser.then(function(userId) { 
+    session.currentUser.then(function(userId) { 
     	$scope.userId = userId;
     	$scope.reload(); 
     });

@@ -1,11 +1,11 @@
 angular.module('views')
-.controller('ViewConfigCtrl', ['$scope', 'server', '$attrs', '$sce', 'views', 'status', 'spaces', 'currentUser', 'apps', function($scope, server, $attrs, $sce, views, status, spaces, currentUser, apps) {
+.controller('ViewConfigCtrl', ['$scope', 'server', '$attrs', '$sce', 'views', 'status', 'spaces', 'session', 'apps', function($scope, server, $attrs, $sce, views, status, spaces, session, apps) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
     $scope.status = new status(true);
     $scope.done = false;
     
-    currentUser.then(function(userId) { 
+    session.currentUser.then(function(userId) { 
     	$scope.userId = userId;
     	$scope.reload(); 
     });

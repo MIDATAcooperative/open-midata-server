@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('CirclesCtrl', ['$scope', '$state', 'server', 'currentUser', 'views', function($scope, $state, server, currentUser, views) {
+.controller('CirclesCtrl', ['$scope', '$state', 'server', 'session', 'views', function($scope, $state, server, session, views) {
 	
 	// init
 	$scope.error = null;
@@ -12,7 +12,7 @@ angular.module('portal')
 	$scope.searching = false;
 	
 	// get current user
-	currentUser.then(function(userId) { loadCircles(userId); });
+	session.currentUser.then(function(userId) { loadCircles(userId); });
 	
 	// get circles and make either given or first circle active
 	loadCircles = function(userId) {		

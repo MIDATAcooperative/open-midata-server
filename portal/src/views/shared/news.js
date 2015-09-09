@@ -1,5 +1,5 @@
 var news = angular.module('news', ['navbar', 'date', 'services', 'views', 'dashboards']);
-news.controller('NewsCtrl', ['$scope', 'server', '$attrs', 'currentUser', 'users', 'views', 'status', function($scope, server, $attrs, currentUser, users, views, status) {
+news.controller('NewsCtrl', ['$scope', 'server', '$attrs', 'session', 'users', 'views', 'status', function($scope, server, $attrs, session, users, views, status) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
 	$scope.status = new status(true);
@@ -11,7 +11,7 @@ news.controller('NewsCtrl', ['$scope', 'server', '$attrs', 'currentUser', 'users
 	$scope.users = {};
 	
 	// get current user
-	currentUser.then(function(userId) {
+	session.currentUser.then(function(userId) {
 		$scope.userId = userId;
 		$scope.reload();
 		
@@ -67,7 +67,7 @@ news.controller('NewsCtrl', ['$scope', 'server', '$attrs', 'currentUser', 'users
 	$scope.$watch('view.setup', function() { $scope.reload(); });
 	
 }]);
-news.controller('TeaserCtrl', ['$scope', 'server', '$attrs', 'dateService', 'currentUser', 'users', 'views', 'status', function($scope, server, $attrs, dateService, currentUser, users, views, status) {
+news.controller('TeaserCtrl', ['$scope', 'server', '$attrs', 'dateService', 'session', 'users', 'views', 'status', function($scope, server, $attrs, dateService, session, users, views, status) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
 	$scope.status = new status(true);
@@ -79,7 +79,7 @@ news.controller('TeaserCtrl', ['$scope', 'server', '$attrs', 'dateService', 'cur
 	$scope.shared = [];
 	
 	// get current user
-	currentUser.then(function(userId) {
+	session.currentUser.then(function(userId) {
 		$scope.userId = userId;
 		$scope.reload();	
 	});

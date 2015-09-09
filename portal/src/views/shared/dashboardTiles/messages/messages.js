@@ -1,11 +1,11 @@
 angular.module('views')
-.controller('MessagesCtrl', ['$scope', '$state', 'server', '$attrs', 'currentUser', 'views', 'status', function($scope, $state, server, $attrs, currentUser, views, status) {
+.controller('MessagesCtrl', ['$scope', '$state', 'server', '$attrs', 'session', 'views', 'status', function($scope, $state, server, $attrs, session, views, status) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
     $scope.status = new status(true);
     $scope.limit = 4;
     
-    currentUser.then(function(userId) { 
+    session.currentUser.then(function(userId) { 
     	$scope.userId = userId;
     	$scope.reload(); 
     });

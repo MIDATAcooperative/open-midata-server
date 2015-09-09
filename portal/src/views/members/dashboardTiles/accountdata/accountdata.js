@@ -1,10 +1,10 @@
 angular.module('views')
-.controller('AccountDataCtrl', ['$scope', 'server', '$attrs', 'users', 'views', 'status', 'currentUser', function($scope, server, $attrs, users, views, status, currentUser) {
+.controller('AccountDataCtrl', ['$scope', 'server', '$attrs', 'users', 'views', 'status', 'session', function($scope, server, $attrs, users, views, status, session) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
     $scope.status = new status(true);
     
-    currentUser.then(function(userId) { 
+    session.currentUser.then(function(userId) { 
     	$scope.userId = userId;
     	$scope.reload(); 
     });
