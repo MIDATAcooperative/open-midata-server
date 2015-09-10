@@ -1,6 +1,118 @@
 angular.module('portal')
+.constant("tiles", {	
+    'jawboneupimport' : { 
+	   id : "5360f7c1e4b0e85c6385cd0c", 
+	   title : "Jawbone Up Import",
+	   teaser : "Import data from Jawbone UP."
+    },
+	
+   'clock' : { 
+	 id : "543d2c14e4b0f34f43670afa", 
+	 title : "Jawbone Activity Clock", 
+	 teaser : "Visualize Jawbone move and sleep events in a clean and friendly interface."
+   },
+   'meal' : { 
+	   id :  "543fd403e4b0722020c54b10", 
+	   title : "Jawbone Meals", 
+	   teaser : "See your nutritional habits in a nutshell."
+   },
+   'credentials_store' : { 
+	   id :  "54413bd1e4b009ab2b06716e", 
+	   title : "Credentials Manager", 
+	   teaser : "Store your username/password combinations, encrypted with your passphrase."
+   },
+   'credentials' : { 
+	   id :  "54450c48e4b0a1a96b5ff54c", 
+	   title : "Credentials Manager",
+	   teaser : "Look up the credentials you stored and encrypted with the Credentials Manager app."
+   },
+   'energy-meter' : { 
+	   id :  "54467fe0e4b066dcca1a3dc5", 
+	   title : "Jawbone Energy Meter", 
+	   teaser : "A geovisualization of Jawbone workouts, with weekly timespan and summaries of intensity, calories and step."
+   },
+   'fitbit' : { 
+	   id :  "545258f4e4b0a9447b348c17", 
+	   title : "Fitbit", 
+	   teaser : "Import data collected with Fitbit devices, such as the Fitbit Flex armband."
+   },
+   'water-meter' : { 
+	   id : "54621b44e4b0a29eb4b0e72d", 
+	   title : "Fitbit Water Meter", 
+	   teaser : "See your Fitbit water consumption glass by glass."
+   },
+   'weight-watcher' : { 
+	   id :  "5469e31de4b065acd080126a", 
+	   title : "Fitbit Weight Watcher", 
+	   teaser : "Displays a scale with your latest BMI and weight and some advice, based on your historical weight data."
+   },
+   'fileupload' : { 
+	   id :  "5475f8b3e4b0c5d11a59a999", 
+	   title : "File Uploader", 
+	   teaser : "Simply upload files of any kind up to a size of 2GB."
+   },
+   
+   'trainingeditor' : { 
+	   id :  "554c867de4b08413ff37d6f5", 
+	   title : "Training Editor", 
+	   teaser : "Create and edit training plans for yourself or others."
+   },
+   'trainingdiary' : { 
+	   id :  "5550872fe4b042b13ab4c95c", 
+	   title : "Training Diary", 
+	   teaser : "Fill out a training diary based upon a training plan created by the training plan visualization."
+   },
+   'cdaimport' : { 
+	   id :  "55682c26e4b08b543c12b834", 
+	   title : "CDA Import", 
+	   teaser : "This is a CDA import"
+   },
+   'cdaviewer' : { 
+	   id :  "556c007fe4b06e7275af0f19", 
+	   title : "CDA Viewer", 
+	   teaser : "Displays CDA Files in browser"
+   },
+   'charts' : { 
+	   id :  "5571700fe4b0c309cbc949ce", 
+	   title : "Charts", 
+	   teaser : "Tries to show a useful diagram for assigned records."
+   },
+   
+   'entry' : { 
+	   id :  "557936b7e4b0cf0d3bcafd6c", 
+	   title : "Data Entry", 
+	   teaser : "Enter your weight, steps or bloodpressure directly into the portal."
+   },
+   'surveys' : { 
+	   id :  "55af6055e4b044f0420c9bf2", 
+	   title : "Surveys", 
+	   teaser : "Allows participation in surveys."
+   }
+})
 .constant("dashboards",
 	{
+	  "me" : 
+		  [
+		   {
+			    id: "help_welcome",
+			    title: "Welcome to MIDATA",
+			    template : "/views/members/dashboardTiles/help/help_welcome.html",
+			    active : true,
+			    position : "full"			    
+		    },  
+			{
+			    id: "myviews",
+			    title: "My Views",
+			    template : "/views/members/dashboardTiles/viewconfig/viewconfig.html",
+			    active : true,
+			    position : "small",
+			    setup : {	
+			    	 context : "me",		        	 
+			    	 always : true,
+			    	 visualizations : []
+			    }
+			}
+		  ],
 	  "overview" :
 		  [
 			{
@@ -57,6 +169,19 @@ angular.module('portal')
 		         }
 			},
 			{
+			     id: "help",
+			     title: "Help",
+			     template : "/views/shared/dashboardTiles/summary/summary.html",
+		         active : true,
+		         position : "small",
+		         setup : {
+		        	 text : "Get help about MIDATA functions",
+		        	 link : "member.dashboard({ dashId : 'help'})",
+		        	 icon : "/images/icons/help.png",
+		        	 button : "View"
+		         }
+			},
+			{
 			     id: "training",
 			     title: "Training",
 			     template : "/views/shared/dashboardTiles/summary/summary.html",
@@ -70,6 +195,16 @@ angular.module('portal')
 		         }
 			}
 		  ],
+		"help" : 
+			  [
+			   {
+				    id: "help_welcome",
+				    title: "Welcome to MIDATA",
+				    template : "/views/members/dashboardTiles/help/help_welcome.html",
+				    active : true,
+				    position : "full"			    
+			    }
+			  ],  
       "mydata" : [
 			 
 		    {
@@ -464,7 +599,7 @@ angular.module('portal')
 	      	 			}
 	      	           ],
 	      	           
-	      	   // Providers    	      	         
+	      	   // Providers
   	 	  "research" : [
   	 	       
   	 	       {
@@ -491,16 +626,47 @@ angular.module('portal')
   	 	     ]
 	}			
 )
-.controller('DashboardCtrl', ['$scope', '$state', 'views', 'dashboards', 'spaces', function($scope, $state, views, dashboards, spaces) {  
+.controller('DashboardCtrl', ['$scope', '$state', 'views', 'dashboards', 'tiles', 'spaces', 'portal', function($scope, $state, views, dashboards, tiles, spaces, portal) {  
 	   
 	   views.layout = $scope.layout = {
 	     full: [], small:[], modal:[]
 	   };
 	   var dashid = $state.params.dashId || $state.current.dashId;
+	   views.context = dashid;
 	   
 	   console.log(dashid);
-	   _.each(dashboards[dashid], function(view) {
-		  $scope.layout[view.position].push(views.def(view)); 
+	   /*
+		 * _.each(dashboards[dashid], function(view) {
+		 * $scope.layout[view.position].push(views.def(view)); });
+		 */
+	   
+	   portal.getConfig()
+	   .then(function(res) {
+		  var conf = { add : [], remove : [] };
+		  if (res.data && res.data.dashboards && res.data.dashboards[dashid]) {
+			  conf = res.data.dashboards[dashid];
+		  }
+			 
+		  _.each(dashboards[dashid], function(view) {
+			  console.log("VIEW:"+view.id);			  
+			  if (conf.remove.indexOf(view.id) < 0) {
+				  console.log("ADDED");
+				  $scope.layout[view.position].push(views.def(view));
+			  }
+		  });
+		  
+		  _.each(conf.add, function(add) {
+			 var tile = tiles[add];
+			 if (tile.template != null) {
+			   $scope.layout[tile.position].push(views.def(tile));
+			 } else {
+				 var vc = views.getView("myviews");
+				 if (vc != null) {
+					 vc.setup.visualizations.push(tile);
+				 }
+			 }
+		  });
+			  		  
 	   });
 	   
 	   $scope.makeBig = function(view) {

@@ -141,6 +141,10 @@ DELETE  /plugins/:id                controllers.Plugins.uninstall(id: String)
 GET     /plugins/:id/installed      controllers.Plugins.isInstalled(id: String)
 GET     /plugins/:id/url            controllers.Plugins.getUrl(id: String)
 
+#Portal
+GET     /portal/config              controllers.PortalConfig.getConfig()
+POST    /portal/config              controllers.PortalConfig.setConfig()
+
 # JS Routes
 GET     /assets/javascripts/routes  controllers.Application.javascriptRoutes()
 

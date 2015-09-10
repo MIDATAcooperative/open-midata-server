@@ -13,7 +13,9 @@ angular.module('views')
     $scope.test = function(vis) {
     	apps.isVisualizationInstalled(vis.id)
 		.then(function(result) {
-			if (result.data == "true") {
+			console.log(vis);
+			console.log(result.data);
+			if (result.data == "true" || result.data == true) {
 				$scope.install(vis);
 			} else {
 				$scope.addTeaser(vis);
@@ -33,6 +35,13 @@ angular.module('views')
     };
     
     $scope.addTeaser = function(vis) {
+    	var lnk;
+    	if (vis.spaces) {
+    		lnk = ("^.visualization({ visualizationId : '" + vis.id+"', name : '"+vis.title+"', query:'"+encodeURIComponent(JSON.stringify(vis.spaces[0].query))+"', context:'"+encodeURIComponent(vis.spaces[0].context)+"'})");
+    	} else {
+    		lnk = ("^.visualization({ visualizationId : '" + vis.id+"', name : '"+vis.title+"', context:'"+encodeURIComponent(views.context)+"'})");
+    	}
+    	
     	var teaser = {
 				id : "vis"+vis.id,
 				template : "/views/shared/dashboardTiles/summary/summary.html",
@@ -41,7 +50,7 @@ angular.module('views')
 				active : true,
 				setup : {
 					text : vis.teaser,
-		        	link : ("^.visualization({ visualizationId : '" + vis.id+"', name : '"+vis.title+"', query:'"+encodeURIComponent(JSON.stringify(vis.spaces[0].query))+"', context:'"+encodeURIComponent(vis.spaces[0].context)+"'})"),
+		        	link : lnk,
 		        	icon : "/images/icons/add.png",
 		        	button : "Info + Install"
 				}

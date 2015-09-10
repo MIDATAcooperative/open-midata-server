@@ -3,6 +3,7 @@ angular.module('services')
 	
 	var session = {
 		currentUser : null,
+		cache : {},
 			
 		login : function() {			
 			var def  = $q.defer();		
@@ -16,6 +17,20 @@ angular.module('services')
 		
 		logout : function() {
 			session.currentUser = null;
+			session.cache = {};
+		},
+		
+		cacheGet : function(name) {
+			return session.cache[name];
+		},
+		
+		cachePut : function(name, promise) {
+			session.cache[name] = promise;
+			return promise;
+		},
+		
+		cacheClear : function(name) {
+			session.cache[name] = null;
 		}
 	};
 	

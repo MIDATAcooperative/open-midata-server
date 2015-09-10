@@ -2,9 +2,9 @@ angular.module('portal')
 .config(function($stateProvider) {
 	   $stateProvider
 	    .state('member.overview', {
-	      url: '/overview',
+	      url: '/me',
 	      templateUrl: 'views/shared/dashboard/dashboard.html',
-	      dashId : 'overview'
+	      dashId : 'me'
 	    })
 	    .state('member.dashboard', {
 	      url: '/dashboard/:dashId',

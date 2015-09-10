@@ -374,7 +374,10 @@ public class Application extends Controller {
 				controllers.routes.javascript.Market.registerVisualization(),
 				// Global search				
 				controllers.routes.javascript.GlobalSearch.search(),
-				controllers.routes.javascript.GlobalSearch.complete()));						        
+				controllers.routes.javascript.GlobalSearch.complete(),
+		        // Portal
+		        controllers.routes.javascript.PortalConfig.getConfig(),
+		        controllers.routes.javascript.PortalConfig.setConfig()));
 		        
 	}
 

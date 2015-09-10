@@ -22,9 +22,11 @@ public class APICallAction extends Action<APICall> {
     	  ctx.args.put("json", json);
     	  String host = ctx.request().getHeader("Origin");
     	  //AccessLog.debug(host);
-  		  if (host.startsWith("http://localhost:") || host.equals("https://demo.midata.coop")) {
-  		    ctx.response().setHeader("Access-Control-Allow-Origin", host);
-  		  } else ctx.response().setHeader("Access-Control-Allow-Origin", "https://demo.midata.coop");
+    	  if (host != null) {
+	  		  if (host.startsWith("http://localhost:") || host.equals("https://demo.midata.coop")) {
+	  		    ctx.response().setHeader("Access-Control-Allow-Origin", host);
+	  		  } else ctx.response().setHeader("Access-Control-Allow-Origin", "https://demo.midata.coop");
+    	  }
     	  ctx.response().setHeader("Allow", "*");
     	  ctx.response().setHeader("Access-Control-Allow-Credentials", "true");
     	  ctx.response().setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");

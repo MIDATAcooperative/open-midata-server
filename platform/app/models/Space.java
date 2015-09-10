@@ -62,6 +62,10 @@ public class Space extends Model implements Comparable<Space> {
 		return Model.get(Space.class, collection, CMaps.map("owner", ownerId).map("visualization", visualizationId).map("context", context), fields);
 	}
 	
+	public static Space getByOwnerSpecialContext(ObjectId ownerId, String context, Set<String> fields) throws ModelException {
+		return Model.get(Space.class, collection, CMaps.map("owner", ownerId).map("context", context), fields);
+	}
+	
 	public static Set<Space> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
 		return Model.getAll(Space.class, collection, properties, fields);
 	}

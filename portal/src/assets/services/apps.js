@@ -24,7 +24,7 @@ angular.module('services')
     };
     
     service.isVisualizationInstalled = function(visId) {
-    	return server.get(jsRoutes.controllers.Visualizations.isInstalled(visId).url);
+    	return server.get(jsRoutes.controllers.Plugins.isInstalled(visId).url);
     };
     
 	return service;

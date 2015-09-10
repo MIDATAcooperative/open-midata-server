@@ -66,7 +66,7 @@ module.exports = function(grunt) {
         },
         src: {
           files: ['src/**/*.{html,png,jpg,jpeg,gif,webp,svg}' ],
-          tasks: ['copy'],
+          tasks: ['copy','preprocess'],
           options: { livereload: true }
         },
         js : {
