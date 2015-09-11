@@ -61,9 +61,11 @@ GET     /members/api/spaces/:id/preview                  controllers.Spaces.getP
 # Circles
 POST    /members/api/circles                             controllers.Circles.add()
 POST    /members/api/circles/get                         controllers.Circles.get()
+POST    /members/api/circles/join                        controllers.Circles.joinByPasscode()
 
 DELETE  /members/api/circles/:id                         controllers.Circles.delete(id: String)
 POST    /members/api/circles/:id/users                   controllers.Circles.addUsers(id: String)
+
 DELETE  /members/api/circles/:id/users/:userId           controllers.Circles.removeMember(id: String, userId: String)
 # Market
 
@@ -111,15 +113,17 @@ POST    /members/api/participation/:study/request        controllers.members.Stu
 POST    /members/api/participation/:study/no             controllers.members.Studies.noParticipation(study: String)
 POST    /members/api/studies/entercode                   controllers.members.Studies.enterCode()
 GET     /members/api/providers                           controllers.members.HealthProvider.list()
-POST    /members/api/providers/confirm                   controllers.members.HealthProvider.confirmMemberKey()
-POST    /members/api/providers/reject                    controllers.members.HealthProvider.rejectMemberKey()
+POST    /members/api/providers/search                    controllers.members.HealthProvider.search()
+POST    /members/api/consents/confirm                   controllers.members.HealthProvider.confirmConsent()
+POST    /members/api/consents/reject                    controllers.members.HealthProvider.rejectConsent()
 
 # Healthcare Provider
 POST    /providers/api/register                          controllers.providers.Providers.register()
 POST    /providers/api/login                             controllers.providers.Providers.login()
 POST    /providers/api/search                            controllers.providers.Providers.search()
 POST    /providers/api/list                              controllers.providers.Providers.list()
-POST    /providers/api/visualizationToken                controllers.providers.Providers.getVisualizationToken()
+POST    /providers/api/usevisualization                  controllers.providers.Providers.getVisualizationToken()
+
 GET     /providers/api/member/:member                    controllers.providers.Providers.getMember(member: String)    
 
 # Developers
@@ -130,7 +134,7 @@ POST    /developers/api/login                             controllers.Developers
 
 GET     /apps/:id/url               controllers.Apps.getUrl(id: String)
 GET     /apps/:id/url/preview       controllers.Apps.getPreviewUrl(id: String)
-GET     /apps/:id/url/:member       controllers.Apps.getUrlForMember(id: String, member: String)
+GET     /apps/:id/url/:consent      controllers.Apps.getUrlForConsent(id: String, consent: String)
 POST    /apps/:id/access/oauth2     controllers.Plugins.requestAccessTokenOAuth2(id: String)
 GET     /apps/:id/request/oauth1    controllers.Plugins.getRequestTokenOAuth1(id: String)
 POST    /apps/:id/access/oauth1     controllers.Plugins.requestAccessTokenOAuth1(id: String)

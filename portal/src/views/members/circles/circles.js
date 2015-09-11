@@ -61,7 +61,7 @@ angular.module('portal')
 	$scope.makeActive = function(circle) {
 		_.each($scope.circles, function(circle) { circle.active = false; });
 		circle.active = true;
-		views.setView("1", { aps : circle.aps.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowRemove : false, allowAdd : true, type : "circles" });
+		views.setView("1", { aps : circle._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowRemove : false, allowAdd : true, type : "circles" });
 	};
 	
 	// add a new circle

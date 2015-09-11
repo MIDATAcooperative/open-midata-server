@@ -42,7 +42,7 @@ public class Users extends Controller {
 	
 
 	@BodyParser.Of(BodyParser.Json.class)
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Result get() {
 		// validate json
@@ -142,7 +142,7 @@ public class Users extends Controller {
 		Set<ObjectId> contactIds = new HashSet<ObjectId>();
 		Set<Member> contacts;
 		try {
-			Set<Circle> circles = Circle.getAll(CMaps.map("owner", userId), Sets.create("members"));
+			Set<Circle> circles = Circle.getAll(CMaps.map("owner", userId), Sets.create("authorized"));
 			for (Circle circle : circles) {
 				contactIds.addAll(circle.authorized);
 			}

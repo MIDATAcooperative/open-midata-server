@@ -165,15 +165,15 @@ public class Apps extends Controller {
 	
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result getUrlForMember(String appIdString, String userIdString) throws ModelException {
+	public static Result getUrlForConsent(String appIdString, String consentIdString) throws ModelException {
 		// get app
 		ObjectId appId = new ObjectId(appIdString);
-		ObjectId userId = new ObjectId(userIdString);
+		ObjectId consentId = new ObjectId(consentIdString);
 		ObjectId ownerId = new ObjectId(request().username());				
 		Plugin app = Plugin.getById(appId, Sets.create("filename", "type", "url"));
 		
 		// create encrypted authToken
-		AppToken appToken = new AppToken(appId, ownerId, userId);
+		AppToken appToken = new AppToken(appId, ownerId, consentId);
 		String authToken = appToken.encrypt();
 
 		// put together url to load in iframe

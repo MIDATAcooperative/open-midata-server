@@ -15,7 +15,7 @@ angular.module('views')
 		.then(function(result) {
 			console.log(vis);
 			console.log(result.data);
-			if (result.data == "true" || result.data == true) {
+			if (result.data == "true" || result.data === true) {
 				$scope.install(vis);
 			} else {
 				$scope.addTeaser(vis);

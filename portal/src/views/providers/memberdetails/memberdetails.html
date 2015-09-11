@@ -19,15 +19,19 @@
 	  <span ng-show="member.mobile">Mobile: {{ member.mobile }}</span><br>
 	  <span ng-show="member.ssn">SSN: {{ member.ssn }}</span><br>
 	  <span ng-show="member.email">Email: {{ member.email }}</span><br>
-    </address>	
+    </address>
+      <p>Pick consent:</p>
+      <select class="form-control" ng-change="selectConsent()" ng-model="consent" ng-options="consent.name for consent in consents"></select>
+    	
     </div>
-    </div>
+    
+      </div>
     
     <div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
        
     
     
-               <div class="btn-group" ng-show="!loadingApps && apps.length > 0">
+               <div class="btn-group" ng-show="!loadingApps && apps.length > 0 && consent!=null">
 					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 						<span class="glyphicon glyphicon-plus"></span> Create or import a new record
 					</button>
@@ -38,7 +42,7 @@
 					</ul>
 			   </div>
 			   
-			    <div class="btn-group" ng-show="!loadingVisualizations && visualizations.length > 0">
+			    <div class="btn-group" ng-show="!loadingVisualizations && visualizations.length > 0 && consent!= null">
 					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 						<span class="glyphicon glyphicon-plus"></span> Use a visualization
 					</button>

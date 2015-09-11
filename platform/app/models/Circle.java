@@ -18,11 +18,9 @@ import utils.search.Search;
 import utils.search.SearchException;
 
 public class Circle extends Consent implements Comparable<Circle> {
-
-	private static final String collection = "circles";
-	
+		
 	public int order;
-	public ObjectId aps;
+	//public ObjectId aps;
 
 	@Override
 	public int compareTo(Circle other) {
@@ -40,10 +38,7 @@ public class Circle extends Consent implements Comparable<Circle> {
 	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
 		return Model.exists(Circle.class, collection, properties);
 	}
-	
-	public static boolean existsByOwnerAndName(ObjectId owner, String name) throws ModelException {
-		return Model.exists(Circle.class, collection, CMaps.map("owner", owner).map("name", name));
-	}
+		
 
 	public static Circle get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
 		return Model.get(Circle.class, collection, properties, fields);
@@ -59,23 +54,23 @@ public class Circle extends Consent implements Comparable<Circle> {
 	}
 	
 	public static Set<Circle> getAllByOwner(ObjectId owner) throws ModelException {
-		return Model.getAll(Circle.class, collection, CMaps.map("owner", owner), Sets.create("name", "members", "order", "aps"));
+		return Model.getAll(Circle.class, collection, CMaps.map("owner", owner).map("type",  ConsentType.CIRCLE), Sets.create("name", "authorized", "order"));
 	}
 	
 	public static Set<Circle> getAllByMember(ObjectId member) throws ModelException {
-		return Model.getAll(Circle.class, collection, CMaps.map("members", member), Sets.create("name", "aps", "order", "owner"));
+		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  ConsentType.CIRCLE), Sets.create("name", "order", "owner"));
 	}
 
 	public static void set(ObjectId circleId, String field, Object value) throws ModelException {
 		Model.set(Circle.class, collection, circleId, field, value);
 	}
 
-	public static void add(Circle circle) throws ModelException {
-		Model.insert(collection, circle);
+	public void add() throws ModelException {
+		Model.insert(collection, this);
 
 		// also add this circle to the user's search index
 		try {
-			Search.add(circle.owner, "circle", circle._id, circle.name);
+			Search.add(this.owner, "circle", this._id, this.name);
 		} catch (SearchException e) {
 			throw new ModelException(e);
 		}

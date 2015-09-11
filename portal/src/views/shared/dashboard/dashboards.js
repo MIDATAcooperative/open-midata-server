@@ -326,7 +326,7 @@ angular.module('portal')
 		  [
 		   {
 	    	 id : "providers",
-	    	 title:"Your Health Providers",                 
+	    	 title:"Your Health Consents",                 
 	         template : "/views/members/dashboardTiles/providers/providers.html",
 	         active : true,
 	         position : "small",
@@ -336,11 +336,11 @@ angular.module('portal')
 	       {
 			     id: "providersearch",
 			     title: "Search for Health Providers",
-			     template : "/views/shared/dashboardTiles/summary/summary.html",
+			     template : "/views/shared/dashboardTiles/providersearch/providersearch.html",
 		         active : true,
 		         position : "small",
 		         setup : {
-		        	 text : "Search function for healthcare providers not yet implemented.",
+		        	 text : "Search function for healthcare providers.",
 		        	 icon : "/images/icons/search.png"
 		         }
 			},
@@ -493,7 +493,7 @@ angular.module('portal')
 				   id : "1",
 				   template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
 				   title : "Records of this patient:",
-				   active : true,
+				   active : false,
 				   position : "full",
 				   links : { "record" : "details" }
 				   
@@ -628,6 +628,7 @@ angular.module('portal')
 )
 .controller('DashboardCtrl', ['$scope', '$state', 'views', 'dashboards', 'tiles', 'spaces', 'portal', function($scope, $state, views, dashboards, tiles, spaces, portal) {  
 	   
+	  views.reset();
 	   views.layout = $scope.layout = {
 	     full: [], small:[], modal:[]
 	   };

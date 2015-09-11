@@ -1,7 +1,7 @@
 
 	<div ng-controller="ProviderCreateRecordsCtrl" class="panel panel-primary">
 	  <div class="body">
-		<a ng-href="{{ memberUrl }}" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Back to records</a>
+		<a ui-sref="^.memberdetails({ memberId : memberId })" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Back to records</a>
 		<iframe ng-src="{{url}}" height="600px" width="100%" ng-cloak></iframe>
 	  </div>
 	</div>

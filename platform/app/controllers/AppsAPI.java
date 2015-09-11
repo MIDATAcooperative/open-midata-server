@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import models.HPUser;
+import models.MemberKey;
 import models.ModelException;
 import models.Plugin;
 import models.Record;
@@ -181,21 +182,26 @@ public class AppsAPI extends Controller {
 			return badRequest("Invalid authToken.");
 		}
 		
-		User owner;
+		User executor;
 		Member targetUser;
 		ObjectId targetAps = null;
 		
-		if (appToken.ownerId.equals(appToken.userId)) {
+		if (appToken.consentId == null) {
 			targetUser = Member.getByIdAndApp(appToken.userId, appToken.appId, Sets.create("myaps", "tokens"));
 			if (targetUser == null) return badRequest("Invalid authToken.");
-			owner = targetUser;
+			executor = targetUser;
 		} else {						
-			HPUser hpuser = HPUser.getByIdAndApp(appToken.ownerId, appToken.appId, Sets.create("tokens","role","provider","firstname","sirname"));
+			MemberKey mk = MemberKey.getById(appToken.consentId);
+			if (mk == null) return badRequest("Invalid consent");
+			if (!mk.authorized.contains(appToken.userId)) return badRequest("Invalid consent");
+			
+			HPUser hpuser = HPUser.getByIdAndApp(appToken.userId, appToken.appId, Sets.create("tokens","role","provider","firstname","sirname"));
 			if (hpuser == null) return badRequest("Invalid authToken.");			
-			targetUser = Member.getById(appToken.userId, Sets.create("myaps", "tokens"));
+			targetUser = Member.getById(mk.owner, Sets.create("myaps", "tokens"));
 			if (targetUser == null) return badRequest("Invalid authToken.");
-			targetAps = MemberKeys.getOrCreate(hpuser, targetUser);
-			owner = hpuser;
+			
+			targetAps = appToken.consentId;
+			executor = hpuser;
 		}
 				
 				
@@ -218,8 +224,8 @@ public class AppsAPI extends Controller {
 		Record record = new Record();
 		record._id = new ObjectId();
 		record.app = appToken.appId;
-		record.owner = appToken.userId;
-		record.creator = appToken.ownerId;
+		record.owner = targetUser._id;
+		record.creator = executor._id;
 		record.created = DateTimeUtils.now();
 		record.format = format;
 		record.content = content;
@@ -237,7 +243,7 @@ public class AppsAPI extends Controller {
 		record.name = name;
 		record.description = description;
 		
-		RecordSharing.instance.addRecord(appToken.ownerId, record, targetAps);
+		RecordSharing.instance.addRecord(executor._id, record, targetAps);
 		
 		/*if (targetAps != null) {
 			Set<ObjectId> records = new HashSet<ObjectId>();

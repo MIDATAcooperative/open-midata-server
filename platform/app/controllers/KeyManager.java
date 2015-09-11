@@ -25,6 +25,7 @@ import models.User;
 
 import org.bson.types.ObjectId;
 
+import utils.access.EncryptionUtils;
 import utils.auth.CodeGenerator;
 import utils.auth.EncryptionNotSupportedException;
 import utils.collections.Sets;
@@ -39,13 +40,17 @@ public class KeyManager {
 	
 	private Map<String, byte[]> pks = new HashMap<String, byte[]>();
 	
-	public byte[] encryptKey(ObjectId target, byte[] keyToEncrypt) throws EncryptionNotSupportedException, ModelException {
-		try {
+	public byte[] encryptKey(ObjectId target, byte[] keyToEncrypt) throws EncryptionNotSupportedException, ModelException {		
 			User user = User.getById(target, Sets.create("publicKey"));
 			
-			if (user.publicKey == null) throw new EncryptionNotSupportedException();
-			
-			X509EncodedKeySpec spec = new X509EncodedKeySpec(user.publicKey);
+			if (user.publicKey == null) throw new EncryptionNotSupportedException();			
+			return encryptKey(user.publicKey , keyToEncrypt);								 
+	}
+	
+	
+	public byte[] encryptKey(byte[] publicKey, byte[] keyToEncrypt) throws EncryptionNotSupportedException, ModelException {
+		try {						
+			X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKey);
 			
 			KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
 			PublicKey pubKey = keyFactory.generatePublic(spec);
@@ -75,11 +80,12 @@ public class KeyManager {
 	public byte[] decryptKey(ObjectId target, byte[] keyToDecrypt) throws ModelException {
 		try {
 			
-			//byte key[] = pks.get(target.toString());
+			byte key[] = pks.get(target.toString());
 			
+			/*
 			KeyInfo inf = KeyInfo.getById(target);
 			byte key[] = inf.privateKey;
-			
+			*/
 			if (key == null) throw new ModelException("Authorization Failure");
 			
 			PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(key);
@@ -109,6 +115,10 @@ public class KeyManager {
 	}
 	
 	public byte[] generateKeypairAndReturnPublicKey(ObjectId target) throws ModelException {
+		return generateKeypairAndReturnPublicKey(target, null);
+	}
+	
+	public byte[] generateKeypairAndReturnPublicKey(ObjectId target, String passphrase) throws ModelException {
 		try {
 		   KeyPairGenerator generator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
 		   
@@ -118,7 +128,12 @@ public class KeyManager {
 		   
 		   KeyInfo keyinfo = new KeyInfo();
 		   keyinfo._id = target;
-		   keyinfo.privateKey = priv.getEncoded();
+		   if (passphrase == null) {
+		     keyinfo.privateKey = priv.getEncoded();
+		   } else {
+			 keyinfo.privateKey = EncryptionUtils.applyKey(priv.getEncoded(), passphrase); 
+			 keyinfo.type = 1;
+		   }
 		   KeyInfo.add(keyinfo);
 		   
 		   return pub.getEncoded();
@@ -130,7 +145,11 @@ public class KeyManager {
 	public void unlock(ObjectId target, String password) throws ModelException {
 		KeyInfo inf = KeyInfo.getById(target);
 		if (inf == null) pks.put(target.toString(), null);
-		else pks.put(target.toString(), inf.privateKey);
+		else {
+			if (inf.type == 1) {
+				pks.put(target.toString(), EncryptionUtils.applyKey(inf.privateKey, password));
+			} else pks.put(target.toString(), inf.privateKey);
+		}
 	}
 	
 	public void lock(ObjectId target) throws ModelException {

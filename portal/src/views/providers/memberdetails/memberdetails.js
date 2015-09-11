@@ -11,9 +11,11 @@ angular.module('portal')
 		server.get(jsRoutes.controllers.providers.Providers.getMember($scope.memberid).url).
 			success(function(data) { 												
 				$scope.member = data.member;
+				$scope.consents = data.consents;
+				console.log(data);
 				$scope.memberkey = data.memberkey;
 				if (data.memberkey) {
-				  views.setView("1", { aps : $scope.memberkey.aps.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ]});
+				  views.setView("1", { aps : $scope.memberkey._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ]});
 				} else {
 				  views.disableView("1");
 				}
@@ -22,6 +24,14 @@ angular.module('portal')
 			error(function(err) {
 				$scope.error = err;				
 			});
+	};
+	
+	$scope.selectConsent = function() {
+		if ($scope.consent != null) {
+			views.setView("1", { aps : $scope.consent._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ]});			
+		} else {
+			views.disableView("1");
+		}
 	};
 		
 	$scope.reload();
@@ -59,7 +69,7 @@ angular.module('portal')
 		var properties = {"_id": appIds, "type" : ["create","oauth1","oauth2"] };
 		var fields = ["name", "type"];
 		var data = {"properties": properties, "fields": fields};
-		server.post(jsRoutes.controllers.Apps.get().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data)).
 			success(function(apps) {
 				$scope.apps = apps;
 				$scope.loadingApps = false;
@@ -69,10 +79,10 @@ angular.module('portal')
 	
 	// get name and type for app ids
 	$scope.getVisualizationDetails = function(visualizationIds) {
-		var properties = {"_id": visualizationIds };
+		var properties = {"_id": visualizationIds, type: ["visualization"] };
 		var fields = ["name", "type"];
 		var data = {"properties": properties, "fields": fields};
-		server.post(jsRoutes.controllers.Visualizations.get().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data)).
 			success(function(visualizations) {
 				$scope.visualizations = visualizations;
 				$scope.loadingVisualizations = false;
@@ -83,7 +93,7 @@ angular.module('portal')
 	// go to record creation/import dialog
 	$scope.createOrImport = function(app) {
 		if (app.type === "create") {
-			$state.go("^.createrecord", { appId : app._id.$oid, userId : $scope.member._id.$oid });			
+			$state.go("^.createrecord", { memberId : $scope.member._id.$oid, appId : app._id.$oid, consentId : $scope.consent._id.$oid });			
 		} else {
 			$state.go("^.importrecords", { appId : app._id.$oid });			
 		}
@@ -94,7 +104,7 @@ angular.module('portal')
 	$scope.visualizations = [];
 	
 	$scope.useVisualization = function(visualization) {		
-		$state.go("^.usevisualization", { userId : $scope.member._id.$oid , visualizationId : visualization._id.$oid });				
+		$state.go("^.usevisualization", { memberId : $scope.member._id.$oid , visualizationId : visualization._id.$oid, consentId : $scope.consent._id.$oid });				
 	};
 	
 }]);

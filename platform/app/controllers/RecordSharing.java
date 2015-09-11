@@ -148,17 +148,19 @@ public class RecordSharing {
 					"owner",
 					KeyManager.instance.encryptKey(owner,
 							encryptionKey.getEncoded()));
-			try {
-				eaps.setKey(
-						other.toString(),
-						KeyManager.instance.encryptKey(other,
-								encryptionKey.getEncoded()));
-			} catch (EncryptionNotSupportedException e2) {
-				throw new ModelException("NOT POSSIBLE ENCRYPTION REQUIRED");
+			if (! owner.equals(other)) {
+				try {
+					eaps.setKey(
+							other.toString(),
+							KeyManager.instance.encryptKey(other,
+									encryptionKey.getEncoded()));
+				} catch (EncryptionNotSupportedException e2) {
+					throw new ModelException("NOT POSSIBLE ENCRYPTION REQUIRED");
+				}
 			}
 		} catch (EncryptionNotSupportedException e) {
 			eaps.setKey("owner", owner.toByteArray());
-			eaps.setKey(other.toString(), null);
+			if (! owner.equals(other)) eaps.setKey(other.toString(), null);
 			eaps.setSecurityLevel(APSSecurityLevel.NONE);
 		}
 
@@ -202,6 +204,17 @@ public class RecordSharing {
 		SingleAPSManager apswrapper = getCache(ownerId).getAPS(apsId);
 		try {
 			apswrapper.addAccess(targetUsers);
+		} catch (EncryptionNotSupportedException e) {
+			throw new ModelException("Encryption Problem");
+		}
+
+	}
+	
+	public void shareAPS(ObjectId apsId, ObjectId ownerId,
+			ObjectId targetId, byte[] publickey) throws ModelException {
+		SingleAPSManager apswrapper = getCache(ownerId).getAPS(apsId);
+		try {
+			apswrapper.addAccess(targetId, publickey);
 		} catch (EncryptionNotSupportedException e) {
 			throw new ModelException("Encryption Problem");
 		}

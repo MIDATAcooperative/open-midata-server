@@ -3,7 +3,7 @@ angular.module('portal')
 	   $stateProvider
 	    .state('member.circles', {
 	      url: '/circles',
-	      templateUrl: 'views/members/circles/circles.html',
+	      templateUrl: 'views/members/circles/circles.html',	      
 	      dashId : 'circles'
 	    });
 });

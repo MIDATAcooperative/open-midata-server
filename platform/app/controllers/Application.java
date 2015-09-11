@@ -160,14 +160,15 @@ public class Application extends Controller {
 		if (!Member.authenticationValid(password, user.password)) {
 			return badRequest("Invalid user or password.");
 		}
-			    
-	    AccountPatches.check(user);
+			    	    
 	
 		// user authenticated
 		session().clear();
 		session("id", user._id.toString());
 		session("role","member");
 		KeyManager.instance.unlock(user._id, "12345");
+		
+		AccountPatches.check(user);
 		return ok();
 	}
 
@@ -273,7 +274,7 @@ public class Application extends Controller {
 				// Apps								
 				controllers.routes.javascript.Apps.getUrl(),
 				controllers.routes.javascript.Apps.getPreviewUrl(),
-				controllers.routes.javascript.Apps.getUrlForMember(),
+				controllers.routes.javascript.Apps.getUrlForConsent(),
 				controllers.routes.javascript.Plugins.requestAccessTokenOAuth2(),
 				controllers.routes.javascript.Plugins.getRequestTokenOAuth1(),
 				controllers.routes.javascript.Plugins.requestAccessTokenOAuth1(),
@@ -313,6 +314,7 @@ public class Application extends Controller {
 				controllers.routes.javascript.Circles.delete(),
 				controllers.routes.javascript.Circles.addUsers(),
 				controllers.routes.javascript.Circles.removeMember(),
+				controllers.routes.javascript.Circles.joinByPasscode(),
 				// Spaces
 				controllers.routes.javascript.Spaces.get(),
 				controllers.routes.javascript.Spaces.add(),
@@ -357,8 +359,9 @@ public class Application extends Controller {
 				controllers.members.routes.javascript.Studies.requestParticipation(),
 				controllers.members.routes.javascript.Studies.noParticipation(),
 				controllers.members.routes.javascript.HealthProvider.list(),
-				controllers.members.routes.javascript.HealthProvider.confirmMemberKey(),
-				controllers.members.routes.javascript.HealthProvider.rejectMemberKey(),
+				controllers.members.routes.javascript.HealthProvider.search(),
+				controllers.members.routes.javascript.HealthProvider.confirmConsent(),
+				controllers.members.routes.javascript.HealthProvider.rejectConsent(),
 				//Healthcare Providers
 				controllers.providers.routes.javascript.Providers.register(),
 				controllers.providers.routes.javascript.Providers.login(),
@@ -366,6 +369,7 @@ public class Application extends Controller {
 				controllers.providers.routes.javascript.Providers.list(),
 				controllers.providers.routes.javascript.Providers.getMember(),
 				controllers.providers.routes.javascript.Providers.getVisualizationToken(),
+				
 				// Developers
 				controllers.routes.javascript.Developers.register(),
 				controllers.routes.javascript.Developers.login(),

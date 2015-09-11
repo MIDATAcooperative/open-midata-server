@@ -52,7 +52,7 @@ public class Studies extends APIController {
 	public static Result list() throws JsonValidationException, ModelException {
 	   ObjectId user = new ObjectId(request().username());
 	   
-	   Set<StudyParticipation> participation = StudyParticipation.getAllByMember(user, Sets.create("study","studyName", "status"));
+	   Set<StudyParticipation> participation = StudyParticipation.getAllByMember(user, Sets.create("study","studyName", "pstatus"));
 	   
 	   return ok(Json.toJson(participation));
 	}
@@ -89,7 +89,7 @@ public class Studies extends APIController {
 		ParticipationCode code = ParticipationCode.getByCode(codestr);
 		if (code == null) return inputerror("code", "notfound", "Unknown Participation Code.");
 		
-		StudyParticipation existing = StudyParticipation.getByStudyAndMember(code.study, userId, Sets.create("status"));
+		StudyParticipation existing = StudyParticipation.getByStudyAndMember(code.study, userId, Sets.create("pstatus"));
 		if (existing != null) {
 			// Redirect to study page
 			ObjectNode result = Json.newObject();
@@ -136,8 +136,8 @@ public class Studies extends APIController {
 			part.group = code.group;
 			part.recruiter = code.recruiter;		
 			part.recruiterName = code.recruiterName;
-			part.status = ParticipationStatus.CODE;
-		} else part.status = ParticipationStatus.MATCH;
+			part.pstatus = ParticipationStatus.CODE;
+		} else part.pstatus = ParticipationStatus.MATCH;
 		
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(member.birthday);
@@ -165,7 +165,7 @@ public class Studies extends APIController {
 	   ObjectId studyId = new ObjectId(id);
 	   	   
 	   Study study = Study.getByIdFromMember(studyId, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordRules","studyKeywords","requiredInformation"));
-	   StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history"));
+	   StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("pstatus", "history"));
 	   Research research = Research.getById(study.owner, Sets.create("name", "description"));
 	   
 	   ObjectNode obj = Json.newObject();
@@ -195,9 +195,9 @@ public class Studies extends APIController {
 			//return badRequest("Member is not allowed to participate in study.");		
 		}
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return badRequest("Study is not searching for participants anymore.");
-		if (participation.status != ParticipationStatus.CODE && participation.status != ParticipationStatus.MATCH) return badRequest("Wrong participation status.");
+		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) return badRequest("Wrong participation status.");
 		
-		participation.setStatus(ParticipationStatus.REQUEST);
+		participation.setPStatus(ParticipationStatus.REQUEST);
 		participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, null));
 						
 		return ok();
@@ -215,9 +215,9 @@ public class Studies extends APIController {
 		
 		if (study == null) return badRequest("Study does not exist.");
 		if (participation == null) return badRequest("Member is not allowed to participate in study.");				
-		if (participation.status != ParticipationStatus.CODE && participation.status != ParticipationStatus.MATCH && participation.status != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
+		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH && participation.pstatus != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
 		
-		participation.setStatus(ParticipationStatus.MEMBER_REJECTED);
+		participation.setPStatus(ParticipationStatus.MEMBER_REJECTED);
 		participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, null));
 						
 		return ok();

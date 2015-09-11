@@ -4,7 +4,7 @@ angular.module('portal')
 	var pathsegment = window.location.pathname.split("/")[1];
 	// init
 	$scope.error = null;
-	$scope.targetRole = (pathsegment == "providers") ? "PROVIDER" : "MEMBER"; 
+	$scope.targetRole = $state.params.context == "PROVIDER" ? "PROVIDER" : "MEMBER"; 
 	/*$scope.apps = {};
 	$scope.apps.spotlighted = [];
 	$scope.apps.suggested = [];*/

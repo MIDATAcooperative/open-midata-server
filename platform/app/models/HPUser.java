@@ -3,6 +3,7 @@ package models;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import models.enums.SubUserRole;
@@ -48,6 +49,10 @@ public class HPUser extends User {
 	
 	public static HPUser getByIdAndApp(ObjectId id, ObjectId appId, Set<String> fields) throws ModelException {
 		return Model.get(HPUser.class, collection, CMaps.map("_id", id).map("apps", appId).map("role",  UserRole.PROVIDER), fields);
+	}
+	
+	public static Set<HPUser> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
+		return Model.getAll(HPUser.class, collection, properties, fields);
 	}
 	
 	public static void add(HPUser user) throws ModelException {

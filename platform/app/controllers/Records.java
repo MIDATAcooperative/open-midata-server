@@ -96,8 +96,8 @@ public class Records extends Controller {
 			  Set<Circle> circles = Circle.getAllByMember(userId);
 			
 		   	  for (Circle circle : circles) {
-				ids = RecordSharing.instance.listRecordIds(userId, circle.aps);
-				if (ids.contains(id)) tk = new RecordToken(id, circle.aps.toString());
+				ids = RecordSharing.instance.listRecordIds(userId, circle._id);
+				if (ids.contains(id)) tk = new RecordToken(id, circle._id.toString());
 			  }
 		   }*/
 		
@@ -138,7 +138,7 @@ public class Records extends Controller {
 		/*Set<Circle> circles = Circle.getAllByMember(userId);
 		
 		for (Circle circle : circles) {
-			records.addAll(RecordSharing.instance.list(userId, circle.aps, RecordSharing.FULLAPS, fields));
+			records.addAll(RecordSharing.instance.list(userId, circle._id, RecordSharing.FULLAPS, fields));
 		}*/
 		
 		/*
@@ -185,7 +185,7 @@ public class Records extends Controller {
 		if (!apstype.equals("user")) {
 	        Set<Circle> circles = Circle.getAllByMember(userId);		
 			for (Circle circle : circles) {
-				records.addAll(RecordSharing.instance.list(userId, circle.aps, properties, fields));
+				records.addAll(RecordSharing.instance.list(userId, circle._id, properties, fields));
 			}
 		}*/
 				
@@ -209,35 +209,35 @@ public class Records extends Controller {
 		result.put("shared", shared);
 		
         Set<Circle> circles = Circle.getAllByOwner(userId);       
-		for (Circle circle : circles) {
-			circleResult.put(circle._id.toString(), RecordSharing.instance.listRecordIds(userId, circle.aps));
-		}
+		/*for (Circle circle : circles) {
+			circleResult.put(circle._id.toString(), RecordSharing.instance.listRecordIds(userId, circle._id));
+		}*/
 		
 		result.put("circles", Json.toJson(circles));
-		shared.put("circles", Json.toJson(circleResult));
+		/*shared.put("circles", Json.toJson(circleResult));*/
 		
 		Set<Space> spaces = Space.getAllByOwner(userId, Sets.create("name", "aps"));
-		for (Space space : spaces) {
+		/*for (Space space : spaces) {
 			spaceResult.put(space._id.toString(), RecordSharing.instance.listRecordIds(userId, space.aps));
-		}
+		}*/
 		
 		result.put("spaces", Json.toJson(spaces));
-		shared.put("spaces", Json.toJson(spaceResult));
+		/*shared.put("spaces", Json.toJson(spaceResult));*/
 		
 		Set<StudyParticipation> participations = StudyParticipation.getAllByMember(userId, Sets.create("studyName", "aps"));
-		for (StudyParticipation participation : participations) {
+		/*for (StudyParticipation participation : participations) {
 			participationResult.put(participation._id.toString(), RecordSharing.instance.listRecordIds(userId, participation.aps));
-		}
+		}*/
 		
 		result.put("participations", Json.toJson(participations));
-		shared.put("participations", Json.toJson(participationResult));
+		/*shared.put("participations", Json.toJson(participationResult));*/
 		
 		Set<MemberKey> memberkeys = MemberKey.getByOwner(userId);
-		for (MemberKey memberkey : memberkeys) {
+		/*for (MemberKey memberkey : memberkeys) {
 		    memberkeyResult.put(memberkey._id.toString(), RecordSharing.instance.listRecordIds(userId, memberkey.aps));
-		}
+		}*/
 		result.put("memberkeys", Json.toJson(memberkeys));
-		shared.put("memberkeys", Json.toJson(memberkeyResult));
+		/*shared.put("memberkeys", Json.toJson(memberkeyResult));*/
 		
 		
 		return ok(result);
@@ -409,7 +409,7 @@ public class Records extends Controller {
         	switch (type) {
         	case "circles" :
         		Circle circle = Circle.getByIdAndOwner(start, userId, Sets.create("aps"));
-        		aps = circle.aps;
+        		aps = circle._id;
         		withMember = true;
         		break;
         	case "spaces" :
@@ -418,11 +418,11 @@ public class Records extends Controller {
         		break;
         	case "participations" :
         		StudyParticipation part = StudyParticipation.getById(start, Sets.create("aps"));
-        		aps = part.aps;
+        		aps = part._id;
         		break;
         	case "memberkeys" :
         		MemberKey memberkey = MemberKey.getById(start);
-        		aps = memberkey.aps;
+        		aps = memberkey._id;
         		withMember = true;
         		break;
         	}
@@ -447,7 +447,7 @@ public class Records extends Controller {
         	switch (type) {
         	case "circles" :
         		Circle circle = Circle.getByIdAndOwner(start, userId, Sets.create("aps"));
-        		aps = circle.aps; 
+        		aps = circle._id; 
         		withMember = true;
         		break;
         	case "spaces" :
@@ -456,11 +456,11 @@ public class Records extends Controller {
         		break;
         	case "participations" :
         		StudyParticipation part = StudyParticipation.getById(start, Sets.create("aps"));
-        		aps = part.aps;
+        		aps = part._id;
         		break;
         	case "memberkeys" :
         		MemberKey memberkey = MemberKey.getById(start);
-        		aps = memberkey.aps;
+        		aps = memberkey._id;
         		withMember = true;
         		break;
         	}        

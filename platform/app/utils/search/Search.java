@@ -336,7 +336,7 @@ public class Search {
 	   Map<String, Set<ObjectId>> map = new HashMap<String, Set<ObjectId>>();
 	   
 	   for (Circle circle : circles) {
-		   Set<String> sharedids = RecordSharing.instance.listRecordIds(userId, circle.aps);
+		   Set<String> sharedids = RecordSharing.instance.listRecordIds(userId, circle._id);
 		   map.put(circle.owner.toString(), ObjectIdConversion.toObjectIds(sharedids));		   
 	   }
 	   
@@ -381,7 +381,7 @@ public class Search {
 		   Map<String, Set<ObjectId>> map = new HashMap<String, Set<ObjectId>>();
 		   
 		   for (Circle circle : circles) {
-			   Set<String> sharedids = RecordSharing.instance.listRecordIds(userId, circle.aps);
+			   Set<String> sharedids = RecordSharing.instance.listRecordIds(userId, circle._id);
 			   map.put(circle.owner.toString(), ObjectIdConversion.toObjectIds(sharedids));		   
 		   }
 		   

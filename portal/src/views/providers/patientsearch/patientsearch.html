@@ -1,34 +1,60 @@
 <div ng-controller="MemberSearchCtrl" ng-cloak>
-    <div class="page-header">
-	<h1>Patient Search</h1>
+	<div class="page-header">
+		<h1>Patient Search</h1>
 	</div>
 	<div class="panel panel-primary">
-	<div class="panel-body">
-	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="dosearch()" role="form">								  	  
-	  <formrow myid="midataID" label="Midata ID"><input type="text" class="form-control" id="midataID" name="midataID" ng-model="criteria.midataID" ></formrow>
-	  <formrow myid="birthday" label="Birthday"><input type="text" class="form-control" id="birthday" name="birthday" ng-model="criteria.birthday" ></formrow>							  							  	  
-      <formrow myid="x" label="">
-        <button type="submit" class="btn btn-primary">Search</button>
-      </formrow>
-    </form>
-    
-    <div ng-show="member">
-    <address>	
-	  <strong>{{ member.firstname }} {{ member.sirname }}</strong><br>
-	{{ member.address1 }}<br>
-	{{ member.address2 }}<br>
-	{{ member.zip }} {{ member.city }}<br>
-	{{ member.country }}<br>
-	  <span ng-show="member.phone">Phone: {{ member.phone }}</span><br>
-	  <span ng-show="member.mobile">Mobile: {{ member.mobile }}</span><br>
-	  <span ng-show="member.ssn">SSN: {{ member.ssn }}</span><br>
-	  <span ng-show="member.email">Email: {{ member.email }}</span><br>
-    </address>	
-               
-			   
-    </div>
-    
-	<p ng-show="loading">Searching...</p>
+		<div class="panel-body">
+			<form name="myform" novalidate class="css-form form-horizontal" ng-submit="dosearch()" role="form">
+				<formrow myid="midataID" label="Midata ID">
+				<input type="text" class="form-control" id="midataID" name="midataID" ng-model="criteria.midataID"></formrow>
+				<formrow myid="birthday" label="Birthday">
+				<input type="text" class="form-control" id="birthday" name="birthday" ng-model="criteria.birthday"></formrow>
+				
+				<button type="submit" class="btn btn-primary">Search</button>
+				</formrow>
+			</form>
+			<p ng-show="status.isBusy === true">Searching...</p>
+		</div>
 	</div>
+	<div ng-show="member">
+		<div class="panel panel-primary">
+			<div class="panel-body">
+				<address>
+					<strong>{{ member.firstname }} {{ member.sirname }}</strong><br> {{ member.address1 }}<br> {{ member.address2 }}<br> {{
+					member.zip }} {{ member.city }}<br> {{ member.country }}<br> <span ng-show="member.phone">Phone: {{ member.phone }}</span><br>
+					<span ng-show="member.mobile">Mobile: {{ member.mobile }}</span><br> <span ng-show="member.ssn">SSN: {{ member.ssn }}</span><br>
+					<span ng-show="member.email">Email: {{ member.email }}</span><br>
+				</address>
+				<div ng-show="consents.length > 0">
+					<p>Consents with this patient:</p>
+					<ul>
+						<li ng-repeat="consent in consents">{{ consent.name }}</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-primary">
+			<div class="panel-heading">Add new consent</div>
+			<div class="panel-body">
+				<form>
+					<formrow myid="name" label="Title"> <input id="name" type="text" class="form-control" ng-model="newconsent.name"> </formrow>
+					<formrow myid="x2" label="">
+					<button ng-click="addConsent();" ng-disabled="status.isBusy == 'createconsent'" class="btn btn-default">Add new consent</button>
+					</formrow>
+				</form>
+			</div>
+		</div>
+		<div class="panel panel-primary">
+			<div class="panel-heading">Add consent using passcode</div>
+			<div class="panel-body">
+				<form>
+					<formrow myid="passcode" label="Optional Access Passcode">
+				      <input type="text" class="form-control" id="passcode" name="passcode" ng-model="criteria.passcode"></formrow>				    
+					<formrow myid="x3" label="">
+					  <button ng-click="usePasscode();" ng-disabled="status.isBusy == 'usepasscode'" class="btn btn-default">Use passcode</button>
+					</formrow>
+				</form>
+			</div>
+		</div>
 	</div>
 </div>

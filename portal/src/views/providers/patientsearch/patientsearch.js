@@ -1,27 +1,42 @@
 angular.module('portal')
-.controller('MemberSearchCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
+.controller('MemberSearchCtrl', ['$scope', '$state', 'status', 'provideraccess', 'circles', function($scope, $state, status, provideraccess, circles) {
 	
 	$scope.criteria = {};
+	$scope.newconsent = {};
 	$scope.member = null;
 	$scope.error = null;
+	$scope.status = new status(true);
 	$scope.loading = false;
 	
 	$scope.dosearch = function() {
 		$scope.loading = true;
 		
-		server.post(jsRoutes.controllers.providers.Providers.search().url, $scope.criteria).
-		success(function(data) { 				
-		    $scope.member = data;
+		$scope.status.doBusy(provideraccess.search($scope.criteria))
+		.then(function(data) { 				
+		    $scope.member = data.data.member;
+		    $scope.consents = data.data.consents;
 		    $scope.error = null;
 		    $scope.loading = false;
 		    
-		    $state.go('^.memberdetails', { memberId : $scope.member._id.$oid });		    
-		}).
-		error(function(err) {
-			$scope.error = err;	
-			$scope.results = null;
-			$scope.loading = false;
+		    //$state.go('^.memberdetails', { memberId : $scope.member._id.$oid });		    
 		});
+	};
+	
+	$scope.addConsent = function() {
+		
+      $scope.newconsent.type = "HEALTHCARE";
+      $scope.newconsent.owner = $scope.member._id.$oid;
+      $scope.status.doAction("createconsent", circles.createNew($scope.newconsent))
+      .then(function(data) {
+    	 $scope.dosearch(); 
+      });
+	};
+	
+	$scope.usePasscode = function() {
+		$scope.status.doAction("usepasscode", circles.joinByPasscode($scope.member._id.$oid, $scope.criteria.passcode))
+	    .then(function(data) {
+	    	 $scope.dosearch(); 
+	    });
 	};
 	
 }]);

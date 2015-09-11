@@ -33,7 +33,7 @@ angular.module('views')
 			return;
 		} else { $scope.errors.newCircleName = null; }
 		
-		circles.createNew($scope.form.newCircleName).
+		circles.createNew({ name : $scope.form.newCircleName, type:"CIRCLE" }).
 		then(function(results) {
 			$scope.circles.push(results.data);
 			$scope.selectedCircle = results.data;			

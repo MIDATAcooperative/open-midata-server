@@ -27,13 +27,14 @@ angular.module('views')
 	   		    	   title : circle.ownerName ? circle.ownerName : circle.name,
 	   		    	   active : true,
 	   		    	   position : "small",
-	   		    	   setup : { aps : circle.aps.$oid, properties : { "max-age" : 86400 * 31 } , fields : [ "ownerName", "created", "id", "name" ] }
+	   		    	   setup : { aps : circle._id.$oid, properties : { "max-age" : 86400 * 31 } , fields : [ "ownerName", "created", "id", "name" ] }
 	   		     };
 	   		     views.layout.small.push(views.def(circledef)); 
 			});
 		});
 	};
 	
+	/*
 	$scope.createCircle = function() {
 		console.log($scope.form);
 		if ($scope.form.newCircleName.trim() === "") {
@@ -46,7 +47,7 @@ angular.module('views')
 			$state.go('^.circle', { circleId : results.data._id.$oid });
 		});		
 	};
-		
+		*/
 	
 	$scope.$watch('view.setup', function() { $scope.reload(); });	
 	

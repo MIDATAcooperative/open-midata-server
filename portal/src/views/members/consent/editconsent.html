@@ -1,0 +1,32 @@
+<div ng-controller="NewConsentCtrl">
+ <div class="panel panel-primary">
+  <div class="panel-body">
+  <form name="myform" class="css-form form-horizontal" ng-submit="create()" novalidate role="form">
+    <formrow id="name" label="Name for consent">
+      <input id="name" type="text" class="form-control" ng-model="consent.name">
+    </formrow>
+    <formrow id="type" label="Type of consent">
+      <select id="type" class="form-control" ng-model="consent.type" ng-options="type.value as type.label for type in types">
+      </select>
+    </formrow>
+    <formrow id="type" label="Status of consent">
+      <select id="type" class="form-control" ng-model="consent.status" ng-options="status.value as status.label for status in stati">
+      </select>
+    </formrow>
+    <formrow id="passcode" label="Passcode">
+      <input id="passcode" type="text" class="form-control" ng-model="consent.passcode">
+    </formrow>
+    <p>People who data is shared to:</p>
+    	<p ng-show="consent.authorized.length === 0">No people assigned yet.</p>
+		<ul class="list-group" ng-show="consent.authorized.length > 0">
+			<li class="list-group-item" ng-repeat="member in circle.authorized">
+			  {{userNames[member.$oid]}}
+			</li>
+	   	</ul>
+    <p>Data that is shared:</p>
+    <button type="submit" class="btn btn-primary">Create</button>
+  </form>			
+</div>
+</div>
+</div>
+	

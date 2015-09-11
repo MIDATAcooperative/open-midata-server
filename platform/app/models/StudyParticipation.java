@@ -19,7 +19,7 @@ public class StudyParticipation extends Consent {
 	
 	public ObjectId study; //study that the member is related to
 	public String studyName; // replication of study name
-	public ParticipationStatus status; //how is the member related to the study?
+	public ParticipationStatus pstatus; //how is the member related to the study?
 	public String group; // If study has multiple separate groups of participants
 	public ObjectId recruiter; // if member has been recruited through someone (by entering a participation code)
 	public String recruiterName; // replication of recruiter name
@@ -45,7 +45,7 @@ public class StudyParticipation extends Consent {
 	}
 	
 	public static Set<StudyParticipation> getParticipantsByStudy(ObjectId study, Set<String> fields) throws ModelException {
-		return Model.getAll(StudyParticipation.class, collection, CMaps.map("study", study).map("status", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST, ParticipationStatus.RESEARCH_REJECTED)), fields);
+		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("pstatus", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST, ParticipationStatus.RESEARCH_REJECTED)), fields);
 	}
 	
 	public static StudyParticipation getById(ObjectId id, Set<String> fields) throws ModelException {
@@ -53,15 +53,15 @@ public class StudyParticipation extends Consent {
 	}
 	
 	public static StudyParticipation getByStudyAndMember(ObjectId study, ObjectId member, Set<String> fields) throws ModelException {
-		return Model.get(StudyParticipation.class, collection, CMaps.map("study", study).map("owner", member), fields);
+		return Model.get(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("owner", member), fields);
 	}
 	
 	public static StudyParticipation getByStudyAndId(ObjectId study, ObjectId id, Set<String> fields) throws ModelException {
-		return Model.get(StudyParticipation.class, collection, CMaps.map("_id", id).map("study", study), fields);
+		return Model.get(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("_id", id).map("study", study), fields);
 	}
 	
-	public void setStatus(ParticipationStatus newstatus) throws ModelException {
-		Model.set(StudyParticipation.class, collection, this._id, "status", newstatus);
+	public void setPStatus(ParticipationStatus newstatus) throws ModelException {
+		Model.set(StudyParticipation.class, collection, this._id, "pstatus", newstatus);
 	}
     
     public void addHistory(History newhistory) throws ModelException {

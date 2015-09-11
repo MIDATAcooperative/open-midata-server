@@ -34,7 +34,6 @@ import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
 import controllers.APIController;
 import controllers.KeyManager;
-import controllers.MemberKeys;
 import controllers.RecordSharing;
 import controllers.routes;
 import actions.APICall; 
@@ -153,9 +152,14 @@ public class Providers extends APIController {
 		Member result = Member.getByMidataIDAndBirthday(midataID, birthday, Sets.create("firstname","birthday", "sirname","city","zip","country","email","phone","mobile","ssn","address1","address2"));
 		HPUser hpuser = HPUser.getById(userId, Sets.create("provider", "firstname", "sirname"));
 		
-		MemberKeys.getOrCreate(hpuser, result);
+		//MemberKeys.getOrCreate(hpuser, result);
+		Set<MemberKey> memberKeys = MemberKey.getByOwnerAndAuthorizedPerson(result._id, userId);
 		
-		return ok(Json.toJson(result));
+		ObjectNode obj = Json.newObject();
+		obj.put("member", Json.toJson(result));
+		obj.put("consents", Json.toJson(memberKeys));
+		
+		return ok(Json.toJson(obj));
 	}
 	
 	@Security.Authenticated(ProviderSecured.class)
@@ -174,23 +178,24 @@ public class Providers extends APIController {
 		return ok(Json.toJson(result));
 	}
 	
-	@Security.Authenticated(ProviderSecured.class)
-	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(ProviderSecured.class)	
 	@APICall
 	public static Result getMember(String id) throws JsonValidationException, ModelException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId memberId = new ObjectId(id);
 		
-		MemberKey memberKey = MemberKey.getByOwnerAndAuthorizedPerson(memberId, userId);
+		Set<MemberKey> memberKeys = MemberKey.getByOwnerAndAuthorizedPerson(memberId, userId);
+		if (memberKeys.isEmpty()) return badRequest("You are not authorized.");
 		
 		Member result = Member.getById(memberId, Sets.create("firstname","birthday", "sirname","city","zip","country","email","phone","mobile","ssn","address1","address2"));
 		if (result==null) return badRequest("Member does not exist.");
 		
 		ObjectNode obj = Json.newObject();
 		obj.put("member", Json.toJson(result));
-		if (memberKey != null) obj.put("memberkey", Json.toJson(memberKey));
+		obj.put("consents", Json.toJson(memberKeys));
 		return ok(obj);
 	}
+	
 	
 	@Security.Authenticated(ProviderSecured.class)
 	@APICall
@@ -199,12 +204,15 @@ public class Providers extends APIController {
 		ObjectId userId = new ObjectId(request().username());
 		JsonNode json = request().body().asJson();
 						
-		JsonValidation.validate(json, "member");
-		ObjectId memberId = JsonValidation.getObjectId(json, "member");
-		MemberKey memberKey = MemberKey.getByOwnerAndAuthorizedPerson(memberId, userId);
+		JsonValidation.validate(json, "consent");
+		
+		//ObjectId memberId = JsonValidation.getObjectId(json, "member");
+		ObjectId consentId = JsonValidation.getObjectId(json, "consent");
+		//MemberKey memberKey = MemberKey.getByIdAndOwner(consentId, memberId, Sets.create());
 
 		// create encrypted authToken
-		SpaceToken spaceToken = new SpaceToken(memberKey.aps, userId);
+		SpaceToken spaceToken = new SpaceToken(consentId, userId);
 		return ok(spaceToken.encrypt());
 	}
+	
 }

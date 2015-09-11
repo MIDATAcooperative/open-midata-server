@@ -1,7 +1,9 @@
 package utils.access;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +13,7 @@ import org.bson.types.ObjectId;
 import controllers.RecordSharing;
 
 import models.Circle;
+import models.Consent;
 import models.ModelException;
 import models.Record;
 
@@ -44,18 +47,36 @@ public class AccountLevelQueryManager extends QueryManager {
 			} else result = new ArrayList<Record>();
 			
 			if (sets.contains("all")) {
-				Set<Circle> circles = Circle.getAllByMember(q.getCache().getOwner());
-				for (Circle circle : circles) {
-					List<Record> circleRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id));
+				Set<Consent> consents = Consent.getAllByAuthorized(q.getCache().getOwner());
+				for (Consent circle : consents) {
+					List<Record> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id));
 					
 					if (q.returns("id")) {
-						for (Record record : circleRecords) record.id = record._id.toString()+"."+circle._id.toString();
+						for (Record record : consentRecords) record.id = record._id.toString()+"."+circle._id.toString();
 					}
 					
-					result.addAll(circleRecords);
+					result.addAll(consentRecords);
 										
 				}
-			} 
+			} else {
+				Set<ObjectId> owners = new HashSet<ObjectId>();
+				for (String owner : sets) { 
+					if (ObjectId.isValid(owner)) owners.add(new ObjectId(owner));										
+				}		
+				
+				Set<Consent> consents = Consent.getAllByAuthorizedAndOwners(q.getCache().getOwner(), owners);
+				for (Consent circle : consents) {
+					List<Record> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id));
+					
+					if (q.returns("id")) {
+						for (Record record : consentRecords) record.id = record._id.toString()+"."+circle._id.toString();
+					}
+					
+					result.addAll(consentRecords);
+										
+				}
+				
+			}
 						
 		    return result;
 		} else {

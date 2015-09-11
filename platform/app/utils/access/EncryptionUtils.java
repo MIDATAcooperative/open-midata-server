@@ -1,6 +1,7 @@
 package utils.access;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
@@ -136,6 +137,20 @@ public class EncryptionUtils {
 		   }
 		}
 		
+	}
+	
+	public static byte[] applyKey(byte[] data, String key) {
+		try {
+			byte[] result = new byte[data.length];
+			byte[] keyc = key.getBytes("UTF-8");
+			
+			for (int i=0;i<data.length;i++) {
+				result[i] = (byte) (data[i] ^ keyc[i % keyc.length]);
+			}
+			return result;
+		} catch (UnsupportedEncodingException e) {
+			throw new NullPointerException();
+		}
 	}
 	
 }

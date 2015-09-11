@@ -6,13 +6,14 @@ angular.module('portal')
 	
 	// get app id (format: /records/create/:appId)
 	var appId = $state.params.appId;
-	var userId = $state.params.userId;
+	var consentId = $state.params.consentId;
+	$scope.memberId = $state.params.memberId;
 	
-	$scope.memberUrl = portalRoutes.controllers.ProviderFrontend.member(userId).url;
-	console.log($scope.memberUrl);
+	//$scope.memberUrl = portalRoutes.controllers.ProviderFrontend.member(userId).url;
+	//console.log($scope.memberUrl);
 	
 	// get app url
-	server.get(jsRoutes.controllers.Apps.getUrlForMember(appId, userId).url).
+	server.get(jsRoutes.controllers.Apps.getUrlForConsent(appId, consentId).url).
 		success(function(url) {
 			$scope.error = null;
 			$scope.url = $sce.trustAsResourceUrl(url);

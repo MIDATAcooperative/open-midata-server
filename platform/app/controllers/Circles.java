@@ -1,5 +1,8 @@
 package controllers;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.acl.Owner;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,8 +12,14 @@ import java.util.Map;
 import java.util.Set;
 
 import models.Circle;
+import models.Consent;
+import models.HPUser;
+import models.HealthcareProvider;
 import models.Member;
+import models.MemberKey;
 import models.ModelException;
+import models.enums.ConsentStatus;
+import models.enums.ConsentType;
 
 import org.bson.types.ObjectId;
 
@@ -19,6 +28,9 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.PasswordHash;
+import utils.access.AccessLog;
+import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
@@ -29,12 +41,14 @@ import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 
-@Security.Authenticated(Secured.class)
+
 public class Circles extends Controller {	
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
+	@Security.Authenticated(Secured.class)
 	public static Result get() throws JsonValidationException, ModelException {
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -57,62 +71,137 @@ public class Circles extends Controller {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result add() throws JsonValidationException, ModelException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "name");
+		JsonValidation.validate(json, "name", "type");
 		
 		// validate request
-		ObjectId userId = new ObjectId(request().username());
+		ConsentType type = JsonValidation.getEnum(json, "type", ConsentType.class);
+		ObjectId executorId = new ObjectId(request().username());
 		String name = JsonValidation.getString(json, "name");
-		
-		if (Circle.existsByOwnerAndName(userId, name)) {
-		  return badRequest("A circle with this name already exists.");
+		ObjectId userId = JsonValidation.getObjectId(json, "owner");
+		if (userId == null) userId = executorId;
+		String passcode = json.has("passcode") ? JsonValidation.getPassword(json, "passcode") : null;
+						
+		if (Consent.existsByOwnerAndName(userId, name)) {
+		  return badRequest("A consent with this name already exists.");
 		}
 		
-		// create new circle
-		Circle circle = new Circle();		
-		circle._id = new ObjectId();
-		circle.owner = userId;
-		circle.name = name;
-		circle.order = Circle.getMaxOrder(userId) + 1;
-		circle.authorized = new HashSet<ObjectId>();
-		circle.aps = RecordSharing.instance.createPrivateAPS(userId, circle._id); 
+		if (passcode != null && !executorId.equals(userId)) {
+		  return badRequest("Only owner may create consent with passcode");
+		}
 		
-		Circle.add(circle);
+		Consent consent;
+		switch (type) {
+		case CIRCLE : 
+			consent = new Circle();
+			((Circle) consent).order = Circle.getMaxOrder(userId) + 1;
+			break;
+		case HEALTHCARE :
+			consent = new MemberKey();
+			break;
+		default :
+			return badRequest("Unsupported consent type");
+		}
 		
-		return ok(Json.toJson(circle));
+		if (passcode != null) {
+			try{
+				String hpasscode = PasswordHash.createHashGivenSalt(passcode.toCharArray(), userId.toByteArray());
+				consent.passcode = hpasscode;
+				if (Consent.getByOwnerAndPasscode(userId, hpasscode, Sets.create("name")) != null) {
+					return badRequest("Please choose a different passcode!");
+				}
+			}  catch (NoSuchAlgorithmException e) {
+				throw new ModelException(e);
+			} catch (InvalidKeySpecException e) {
+				throw new ModelException(e);
+			}
+		}
+			
+		consent._id = new ObjectId();
+		consent.owner = userId;
+		consent.name = name;		
+		consent.authorized = new HashSet<ObjectId>();
+		consent.status = userId.equals(executorId) ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;
+		if (! userId.equals(executorId)) consent.authorized.add(executorId);
+							
+		RecordSharing.instance.createAnonymizedAPS(userId, executorId, consent._id);
+		
+		if (passcode != null) {			  
+			  byte[] pubkey = KeyManager.instance.generateKeypairAndReturnPublicKey(consent._id, passcode);
+		      RecordSharing.instance.shareAPS(consent._id, userId, consent._id, pubkey);
+		      RecordSharing.instance.setMeta(userId, consent._id, "_config", CMaps.map("passcode", passcode));			  		
+		}
+		
+		consent.add();
+				
+		return ok(Json.toJson(consent));
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result joinByPasscode() throws JsonValidationException, ModelException {
+		// validate json
+		ObjectId executorId = new ObjectId(request().username());
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "passcode", "owner");
+		String passcode = JsonValidation.getString(json, "passcode");
+		ObjectId ownerId = JsonValidation.getObjectId(json, "owner");
+		
+		try {
+		   String hpasscode = PasswordHash.createHashGivenSalt(passcode.toCharArray(), ownerId.toByteArray());
+		   
+		   Consent consent = Consent.getByOwnerAndPasscode(ownerId, hpasscode, Sets.create("name","authorized"));
+		   if (consent == null) return badRequest("Bad passcode");
+		   
+		   KeyManager.instance.unlock(consent._id, passcode);		  
+		   RecordSharing.instance.shareAPS(consent._id, consent._id, Collections.singleton(executorId));		   
+		   consent.authorized.add(executorId);
+		   Consent.set(consent._id, "authorized", consent.authorized);
+		
+		   return ok(Json.toJson(consent));
+		} catch (NoSuchAlgorithmException e) {
+	    	throw new ModelException(e);
+	    } catch (InvalidKeySpecException e) {
+	    	throw new ModelException(e);
+	    }
 	}
 
 	@APICall
+	@Security.Authenticated(Secured.class)
 	public static Result delete(String circleIdString) throws JsonValidationException, ModelException {
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId circleId = new ObjectId(circleIdString);
 		
-		Circle circle = Circle.getByIdAndOwner(circleId, userId, Sets.create("members", "aps"));
-		if (circle == null) {
-			return badRequest("No circle with this id exists.");
+		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("authorized", "type"));
+		if (consent == null) {
+			return badRequest("No consent with this id exists.");
 		}
+		if (consent.type != ConsentType.CIRCLE) return badRequest("Operation not supported");
 		
 		// Remove APS
-		RecordSharing.instance.deleteAPS(circle.aps, circle.owner);
+		RecordSharing.instance.deleteAPS(consent._id, consent.owner);
 		
 		// Remove Rules
 		removeQueries(userId, circleId);
 		
 		// delete circle		
-		Circle.delete(userId, circleId);
+		switch (consent.type) {
+		case CIRCLE: Circle.delete(userId, circleId);break;		
+		}
 		
-		// make the records of the deleted circle invisible to its former members		
-		//Users.makeInvisible(userId, circle.shared, circle.members);
 		
 		return ok();
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
+	@Security.Authenticated(Secured.class)
 	public static Result addUsers(String circleIdString) throws JsonValidationException, ModelException {
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -123,47 +212,44 @@ public class Circles extends Controller {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId circleId = new ObjectId(circleIdString);
 		
-		Circle circle = Circle.getByIdAndOwner(circleId, userId, Sets.create("members","aps"));
-		if (circle == null) {
-			return badRequest("No circle with this id exists.");
+		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("authorized","type"));
+		if (consent == null) {
+			return badRequest("No consent with this id exists.");
 		}
 		
 		// add users to circle (implicit: if not already present)
 		Set<ObjectId> newMemberIds = ObjectIdConversion.castToObjectIds(JsonExtraction.extractSet(json.get("users")));
 				
-		circle.authorized.addAll(newMemberIds);
-		Circle.set(circle._id, "members", circle.authorized);
+		consent.authorized.addAll(newMemberIds);
+		Consent.set(consent._id, "authorized", consent.authorized);
 		
-		RecordSharing.instance.shareAPS(circle.aps, userId, newMemberIds);
-		
-		// also make records of this circle visible		
-		//Users.makeVisible(userId, circle.shared, newMemberIds);
-		
+		RecordSharing.instance.shareAPS(consent._id, userId, newMemberIds);
+					
 		return ok();
 	}
 
+	@Security.Authenticated(Secured.class)
+	@APICall
 	public static Result removeMember(String circleIdString, String memberIdString) throws JsonValidationException, ModelException {
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId circleId = new ObjectId(circleIdString);
 		
-		Circle circle = Circle.getByIdAndOwner(circleId, userId, Sets.create("members","aps"));
-		if (circle == null) {
+		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("authorized","type"));
+		if (consent == null) {
 			return badRequest("No circle with this id exists.");
 		}
 		
 		// remove member from circle (implicit: if present)
 		ObjectId memberId = new ObjectId(memberIdString);
 		
-		circle.authorized.remove(memberId);
-		Circle.set(circle._id, "members", circle.authorized);
+		consent.authorized.remove(memberId);
+		Consent.set(consent._id, "authorized", consent.authorized);
 
 		Set<ObjectId> memberIds = new HashSet<ObjectId>();
 		memberIds.add(memberId);
 		
-		RecordSharing.instance.unshareAPS(circle.aps, userId, memberIds);
-			// also remove records from visible records that are no longer shared with the member
-		//Users.makeInvisible(userId, circle.shared, new ChainedSet<ObjectId>().add(memberId).get());
+		RecordSharing.instance.unshareAPS(consent._id, userId, memberIds);
 		
 		return ok();
 	}
@@ -203,5 +289,27 @@ public class Circles extends Controller {
 	    	Member.set(userId, "queries", member.queries);
 	    }
 	}
-
+	
+	/*
+	public static ObjectId getOrCreateMemberKey(HPUser hpuser, Member member) throws ModelException {
+		MemberKey key = MemberKey.getByOwnerAndAuthorizedPerson(member._id, hpuser._id);
+		if (key!=null) return key.aps;
+		
+		HealthcareProvider prov = HealthcareProvider.getById(hpuser.provider);
+		
+		key = new MemberKey();
+		key._id = new ObjectId();
+		key.owner = member._id;
+		key.organization = hpuser.provider;
+		key.authorized = new HashSet<ObjectId>();
+		key.authorized.add(hpuser._id);
+		key.status = ConsentStatus.UNCONFIRMED;
+		key.name = prov.name+": "+hpuser.firstname+" "+hpuser.sirname;
+		key.aps = RecordSharing.instance.createAnonymizedAPS(member._id, hpuser._id, key._id);
+		key.add();
+		
+		return key.aps;
+		
+	}
+    */
 }

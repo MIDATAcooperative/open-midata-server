@@ -202,10 +202,10 @@ angular.module('portal')
 	};
 	
 	$scope.loadShared = function() {
-		if ($scope.shared == null) {
+		if ($scope.circles == null) {
 			server.get(jsRoutes.controllers.Records.getSharingInfo().url).
 			success(function(data) {			
-				$scope.shared = data.shared;
+				//$scope.shared = data.shared;
 				$scope.circles = data.circles;
 				$scope.spaces = data.spaces;
 				$scope.participations = data.participations;	

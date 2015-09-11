@@ -51,6 +51,14 @@ public class PasswordHash {
 		// format iterations:salt:hash
 		return PBKDF2_ITERATIONS + ":" + toHex(salt) + ":" + toHex(hash);
 	}
+	
+	public static String createHashGivenSalt(char[] password, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
+		
+		// Hash the password
+		byte[] hash = pbkdf2(password, salt, PBKDF2_ITERATIONS, HASH_BYTE_SIZE);
+		// format iterations:salt:hash
+		return PBKDF2_ITERATIONS + ":" + toHex(salt) + ":" + toHex(hash);
+	}
 
 	/**
 	 * Validates a password using a hash.

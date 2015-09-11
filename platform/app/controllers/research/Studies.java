@@ -272,7 +272,7 @@ public class Studies extends APIController {
 	   if (study == null) return badRequest("Study does not belong to organization.");
 	   
 
-	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, Sets.create("memberName", "group", "recruiter", "recruiterName", "status", "gender", "country", "yearOfBirth"));
+	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, Sets.create("memberName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth"));
 	   
 	   return ok(Json.toJson(participants));
 	}
@@ -290,9 +290,9 @@ public class Studies extends APIController {
 	   	   
 	   StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, Sets.create("status", "group", "history","memberName", "gender", "country", "yearOfBirth", "member"));
 	   if (participation == null) return badRequest("Member does not participate in study");
-	   if (participation.status == ParticipationStatus.CODE || 
-		   participation.status == ParticipationStatus.MATCH || 
-		   participation.status == ParticipationStatus.MEMBER_REJECTED) return badRequest("Member does not participate in study");
+	   if (participation.pstatus == ParticipationStatus.CODE || 
+		   participation.pstatus == ParticipationStatus.MATCH || 
+		   participation.pstatus == ParticipationStatus.MEMBER_REJECTED) return badRequest("Member does not participate in study");
 	   
 	   if (study.requiredInformation != InformationType.DEMOGRAPHIC) { participation.owner = null; }
 	   
@@ -323,15 +323,15 @@ public class Studies extends APIController {
 		String comment = JsonValidation.getString(json, "comment");
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));				
-		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, Sets.create("status", "history", "memberName"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, Sets.create("pstatus", "history", "memberName"));		
 		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
 		if (study == null) return badRequest("Study does not exist.");		
 		if (participation == null) return badRequest("Member is not allowed to participate in study.");		
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return badRequest("Study is not searching for participants anymore.");
-		if (participation.status != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
+		if (participation.pstatus != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
 		
-		participation.setStatus(ParticipationStatus.ACCEPTED);
+		participation.setPStatus(ParticipationStatus.ACCEPTED);
 		participation.addHistory(new History(EventType.PARTICIPATION_APPROVED, user, comment));
 						
 		return ok();
@@ -352,15 +352,15 @@ public class Studies extends APIController {
 		String comment = JsonValidation.getString(json, "comment");
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));					
-		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, Sets.create("status", "history", "memberName"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, Sets.create("pstatus", "history", "memberName"));		
 		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
 		if (study == null) return badRequest("Study does not exist.");		
 		if (participation == null) return badRequest("Member is not allowed to participate in study.");		
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return badRequest("Study is not searching for participants anymore.");
-		if (participation.status != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
+		if (participation.pstatus != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
 		
-		participation.setStatus(ParticipationStatus.RESEARCH_REJECTED);
+		participation.setPStatus(ParticipationStatus.RESEARCH_REJECTED);
 		participation.addHistory(new History(EventType.PARTICIPATION_REJECTED, user, comment));
 						
 		return ok();

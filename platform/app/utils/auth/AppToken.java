@@ -18,23 +18,23 @@ public class AppToken {
 
 	public ObjectId appId;
 	public ObjectId userId;
-	public ObjectId ownerId;
+	public ObjectId consentId;
 
 	public AppToken(ObjectId appId, ObjectId userId) {
 		this.appId = appId;
 		this.userId = userId;
 	}
 	
-	public AppToken(ObjectId appId, ObjectId ownerId, ObjectId userId) {
+	public AppToken(ObjectId appId, ObjectId userId, ObjectId consentId) {
 		this.appId = appId;
 		this.userId = userId;
-		this.ownerId = ownerId;
+		this.consentId = consentId;
 	}
 
 	public String encrypt() {
 		Map<String, Object> map;
-		if (this.ownerId != null && !this.ownerId.equals(this.userId)) {
-			map = CMaps.map("appId", appId.toString()).map("userId", userId.toString()).map("ownerId", ownerId.toString());
+		if (this.consentId != null) {
+			map = CMaps.map("appId", appId.toString()).map("userId", userId.toString()).map("consentId", consentId.toString());
 		} else {
 			map = CMaps.map("appId", appId.toString()).map("userId", userId.toString());
 		}
@@ -52,9 +52,9 @@ public class AppToken {
 			JsonNode json = Json.parse(plaintext);
 			ObjectId appId = new ObjectId(json.get("appId").asText());
 			ObjectId userId = new ObjectId(json.get("userId").asText());
-			String ownerIdStr = json.path("ownerId").asText();
-			ObjectId ownerId = (ownerIdStr != null && !ownerIdStr.equals("")) ? new ObjectId(ownerIdStr) : userId;
-			return new AppToken(appId, ownerId, userId);
+			String consentIdStr = json.path("consentId").asText();
+			ObjectId consentId = (consentIdStr != null && !consentIdStr.equals("")) ? new ObjectId(consentIdStr) : null;
+			return new AppToken(appId, userId, consentId);
 		} catch (Exception e) {
 			return null;
 		}

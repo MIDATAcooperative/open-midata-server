@@ -1,0 +1,20 @@
+<div ng-controller="ProviderSearchCtrl" class="autosize">
+  <div class="body">
+  <div ng-if="view.setup.icon" class="pull-left themeicon">
+    <img ng-src="{{ view.setup.icon }}" >
+  </div>		  
+  <p class="">{{ view.setup.text }}</p>
+  <div class="clearfix"></div>
+  <form class="css-form form-horizontal">
+  <formrow myid="name" label="Name"> 
+    <input type="text" class="form-control" ng-model="criteria.name">
+  </formrow>
+  <formrow myid="city" label="City / Zip"> 
+    <input type="text" class="form-control" ng-model="criteria.city">
+  </formrow>
+   </form>
+  </div>
+   <div class="footer">			  
+	  <button ng-click="search()" class="btn btn-default">Search</button>
+  </div>			  
+</div>

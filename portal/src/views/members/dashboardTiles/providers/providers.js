@@ -15,11 +15,11 @@ angular.module('views')
 	};
 	
 	$scope.confirm = function(memberKey) {
-		hc.confirm(memberKey.provider.$oid).then(function() { $scope.reload(); });		
+		hc.confirm(memberKey._id.$oid).then(function() { $scope.reload(); });		
 	};
 	
 	$scope.reject = function(memberKey) {
-		hc.reject(memberKey.provider.$oid).then(function() { $scope.reload(); });
+		hc.reject(memberKey._id.$oid).then(function() { $scope.reload(); });
 	};
 	
 	$scope.mayReject = $scope.mayConfirm = function(memberKey) {
@@ -46,7 +46,7 @@ angular.module('views')
 	};
 	
 	$scope.showRecords = function(mk) {
-		views.setView("records", { aps : mk.aps.$oid, properties: {}, fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type:"memberkeys"}, mk.name);
+		views.setView("records", { aps : mk._id.$oid, properties: {}, fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type:"memberkeys"}, mk.name);
 	};
 	
 	$scope.reload();

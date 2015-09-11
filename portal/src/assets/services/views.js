@@ -4,6 +4,10 @@ angular.module('services')
 	var mapping = {};
 	var service = {};
 	
+	service.reset = function() {
+		mapping = {};	
+	};
+	
 	service.init = function(attrs) {
 		var v = service.getView(attrs.viewid);
 		if (attrs.title) v.title = attrs.title;

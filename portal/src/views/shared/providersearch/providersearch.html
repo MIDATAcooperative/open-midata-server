@@ -1,0 +1,40 @@
+<div ng-controller="ProviderSearchResultsCtrl">
+
+	<div ng-cloak class="panel panel-primary">
+		<div class="panel-heading">Provider search results</div>
+		<div class="panel-body">
+
+			<form class="css-form form-horizontal">
+				<formrow myid="name" label="Name">
+				  <input type="text" class="form-control" ng-model="criteria.name"> 
+				</formrow>
+				<formrow myid="city" label="City / Zip"> 
+				  <input type="text" class="form-control" ng-model="criteria.city"> 
+				</formrow>
+				<formrow myid="x" label=""> 
+				  <button ng-click="search()" class="btn btn-default">Search</button>
+				</formrow>
+			</form>
+			<table class="table" ng-show="providers.length > 0">
+	      <tr>
+	        <th>Surname</th>
+	        <th>Firstname</th>
+	        <th>ZIP</th>
+	        <th>City</th>
+	        <th>Street</th>
+	        <th>-</th>
+	      </tr>
+	      <tr ng-repeat="provider in providers">
+	        <td>{{ provider.sirname }}</td>
+	        <td>{{ provider.firstname }}</td>
+	        <td>{{ provider.zip }}</td>
+	        <td>{{ provider.city }}</td>
+	        <td>{{ provider.address1 }}</td>
+	        <td><a href="javascript:" ng-click="addConsent(provider)">Add Consent</a></td>
+	      </tr>
+	    </table>
+	    
+	    <p ng-show="providers.length == 0">No providers found.</p>
+		</div>
+	</div>
+</div>

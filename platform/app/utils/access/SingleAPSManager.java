@@ -69,6 +69,30 @@ public class SingleAPSManager extends QueryManager {
 		}
 	}
 	
+	public void addAccess(ObjectId target, byte[] publickey) throws ModelException,EncryptionNotSupportedException {
+		try {
+		  boolean changed = false;
+		  if (eaps.getSecurityLevel().equals(APSSecurityLevel.NONE)) {		
+		      if (!eaps.hasKey(target.toString())) {
+		    	  eaps.setKey(target.toString(), null);
+		    	  changed = true;
+		      }
+		  } else {			  
+			  if (eaps.getKey(target.toString()) == null) {			 
+				 eaps.setKey(target.toString(), KeyManager.instance.encryptKey(publickey, eaps.getAPSKey().getEncoded()));
+				 changed = true;
+			  }
+		  }
+		  if (changed) eaps.updateKeys();
+		} catch (LostUpdateException e) {
+			try {
+				  Thread.sleep(rand.nextInt(1000));
+			} catch (InterruptedException e2) {}
+			eaps.reload();
+			addAccess(target, publickey);
+		}
+	}
+	
 	public void removeAccess(Set<ObjectId> targets) throws ModelException {
 		try {
 			  boolean changed = false;
