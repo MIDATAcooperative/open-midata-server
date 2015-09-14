@@ -43,12 +43,12 @@ angular.module('portal')
 		contactIds = _.flatten(contactIds);
 		contactIds = _.uniq(contactIds, false, function(contactId) { return contactId.$oid; });
 		var properties = {"_id": contactIds};
-		var fields = ["firstname", "sirname"];
+		var fields = ["firstname", "lastname"];
 		var data = {"properties": properties, "fields": fields};
 		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
 			success(function(contacts) {
 				$scope.contacts = contacts;
-				_.each(contacts, function(contact) { $scope.userNames[contact._id.$oid] = (contact.firstname + " " + contact.sirname).trim(); });
+				_.each(contacts, function(contact) { $scope.userNames[contact._id.$oid] = (contact.firstname + " " + contact.lastname).trim(); });
 				$scope.loading = false;
 			}).
 			error(function(err) {

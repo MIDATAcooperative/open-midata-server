@@ -98,7 +98,7 @@ public class Application extends Controller {
 		  String site = "https://" + Play.application().configuration().getString("platform.server");
 		  String url = site + "/setpw#?token=" + encrypted;
 			   
-		  MailUtils.sendTextMail(email, user.firstname+" "+user.sirname, "Your Password", lostpwmail.render(site,url));
+		  MailUtils.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url));
 		}
 				
 		return ok();
@@ -178,12 +178,12 @@ public class Application extends Controller {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "email", "firstname", "sirname", "gender", "city", "zip", "country", "address1");
+		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
 		
 		// validate request
 		String email = json.get("email").asText();
 		String firstName = json.get("firstname").asText();
-		String lastName = json.get("sirname").asText();
+		String lastName = json.get("lastname").asText();
 		String password = json.get("password").asText();
 		
 		if (Member.existsByEMail(email)) {
@@ -208,7 +208,7 @@ public class Application extends Controller {
 		user.mobile = JsonValidation.getString(json, "mobile");
 		user.country = JsonValidation.getString(json, "country");
 		user.firstname = JsonValidation.getString(json, "firstname"); 
-		user.sirname = JsonValidation.getString(json, "sirname");
+		user.lastname = JsonValidation.getString(json, "lastname");
 		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.ssn = JsonValidation.getString(json, "ssn");

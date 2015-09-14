@@ -6,7 +6,7 @@ angular.module('views')
             
     $scope.search = function() {
     	var crit = {};
-    	hc.search(crit, ["firstname", "sirname", "city", "zip", "address1"])
+    	hc.search(crit, ["firstname", "lastname", "city", "zip", "address1"])
     	.then(function(data) {
     		$scope.providers = data.data;
     	});

@@ -55,9 +55,9 @@ public class ReimportData {
 		System.out.print("Importing users...");
 		Map<String, Object> emptyMap = new HashMap<String, Object>();
 		Set<Member> users = Member
-				.getAll(emptyMap, new ChainedSet<String>().add("email").add("firstname").add("sirname").add("messages").get());
+				.getAll(emptyMap, new ChainedSet<String>().add("email").add("firstname").add("lastname").add("messages").get());
 		for (Member user : users) {
-			Search.add(Type.USER, user._id, user.firstname+" "+user.sirname, user.email);
+			Search.add(Type.USER, user._id, user.firstname+" "+user.lastname, user.email);
 		}
 
 		// waiting for previous operations to finish...
@@ -66,7 +66,7 @@ public class ReimportData {
 
 		// for each user: add all the data
 		for (Member user : users) {
-			System.out.print("Importing personal data for user '" + user.firstname+" "+user.sirname + "'...");
+			System.out.print("Importing personal data for user '" + user.firstname+" "+user.lastname + "'...");
 
 			// messages
 			Set<ObjectId> messageIds = user.messages.get("inbox");

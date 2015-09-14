@@ -4,13 +4,13 @@
 	<h1>Member Details</h1>
 	</div>
 	<div class="panel panel-primary">
-	<div class="panel-heading">{{ member.firstname }} {{ member.sirname }}</div>
+	<div class="panel-heading">{{ member.firstname }} {{ member.lastname }}</div>
 	<div class="panel-body">
 	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 	   {{ error.message || error }}
 	</p>
 	 <address>	
-	  <strong>{{ member.firstname }} {{ member.sirname }}</strong><br>
+	  <strong>{{ member.firstname }} {{ member.lastname }}</strong><br>
 	{{ member.address1 }}<br>
 	{{ member.address2 }}<br>
 	{{ member.zip }} {{ member.city }}<br>

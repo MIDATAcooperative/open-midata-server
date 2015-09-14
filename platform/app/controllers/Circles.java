@@ -304,7 +304,7 @@ public class Circles extends Controller {
 		key.authorized = new HashSet<ObjectId>();
 		key.authorized.add(hpuser._id);
 		key.status = ConsentStatus.UNCONFIRMED;
-		key.name = prov.name+": "+hpuser.firstname+" "+hpuser.sirname;
+		key.name = prov.name+": "+hpuser.firstname+" "+hpuser.lastname;
 		key.aps = RecordSharing.instance.createAnonymizedAPS(member._id, hpuser._id, key._id);
 		key.add();
 		

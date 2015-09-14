@@ -52,7 +52,7 @@ public class Providers extends APIController {
 	public static Result register() throws JsonValidationException, ModelException {
 		JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "name", "email", "firstname", "sirname", "gender", "city", "zip", "country", "address1");
+		JsonValidation.validate(json, "name", "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
 					
 		String name = JsonValidation.getString(json, "name");
 		if (HealthcareProvider.existsByName(name)) return inputerror("name", "exists", "A healthcare provider with this name already exists.");
@@ -76,7 +76,7 @@ public class Providers extends APIController {
 		user.zip  = JsonValidation.getString(json, "zip");
 		user.country = JsonValidation.getString(json, "country");
 		user.firstname = JsonValidation.getString(json, "firstname"); 
-		user.sirname = JsonValidation.getString(json, "sirname");
+		user.lastname = JsonValidation.getString(json, "lastname");
 		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
 		user.phone = JsonValidation.getString(json, "phone");
 		user.mobile = JsonValidation.getString(json, "mobile");
@@ -149,8 +149,8 @@ public class Providers extends APIController {
 		String midataID = JsonValidation.getString(json, "midataID");
 		Date birthday = JsonValidation.getDate(json, "birthday");
 		
-		Member result = Member.getByMidataIDAndBirthday(midataID, birthday, Sets.create("firstname","birthday", "sirname","city","zip","country","email","phone","mobile","ssn","address1","address2"));
-		HPUser hpuser = HPUser.getById(userId, Sets.create("provider", "firstname", "sirname"));
+		Member result = Member.getByMidataIDAndBirthday(midataID, birthday, Sets.create("firstname","birthday", "lastname","city","zip","country","email","phone","mobile","ssn","address1","address2"));
+		HPUser hpuser = HPUser.getById(userId, Sets.create("provider", "firstname", "lastname"));
 		
 		//MemberKeys.getOrCreate(hpuser, result);
 		Set<MemberKey> memberKeys = MemberKey.getByOwnerAndAuthorizedPerson(result._id, userId);
@@ -173,7 +173,7 @@ public class Providers extends APIController {
 		Set<MemberKey> memberKeys = MemberKey.getByAuthorizedPerson(userId, Sets.create("owner"));
 		Set<ObjectId> ids = new HashSet<ObjectId>();
 		for (MemberKey key : memberKeys) ids.add(key.owner);
-		Set<Member> result = Member.getAll(CMaps.map("_id", ids), Sets.create("_id", "firstname","birthday", "sirname"));
+		Set<Member> result = Member.getAll(CMaps.map("_id", ids), Sets.create("_id", "firstname","birthday", "lastname"));
 		
 		return ok(Json.toJson(result));
 	}
@@ -187,7 +187,7 @@ public class Providers extends APIController {
 		Set<MemberKey> memberKeys = MemberKey.getByOwnerAndAuthorizedPerson(memberId, userId);
 		if (memberKeys.isEmpty()) return badRequest("You are not authorized.");
 		
-		Member result = Member.getById(memberId, Sets.create("firstname","birthday", "sirname","city","zip","country","email","phone","mobile","ssn","address1","address2"));
+		Member result = Member.getById(memberId, Sets.create("firstname","birthday", "lastname","city","zip","country","email","phone","mobile","ssn","address1","address2"));
 		if (result==null) return badRequest("Member does not exist.");
 		
 		ObjectNode obj = Json.newObject();

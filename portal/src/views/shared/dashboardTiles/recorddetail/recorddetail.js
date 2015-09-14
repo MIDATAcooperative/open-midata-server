@@ -28,12 +28,12 @@ angular.module('views')
     
     
 	var loadUserNames = function() {		
-		var data = {"properties": {"_id": [$scope.record.owner, $scope.record.creator]}, "fields": ["firstname", "sirname"]};
+		var data = {"properties": {"_id": [$scope.record.owner, $scope.record.creator]}, "fields": ["firstname", "lastname"]};
 		$scope.status.doSilent(server.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data))).
 			then(function(result) {				
 				_.each(result.data, function(user) {
-					if ($scope.record.owner && $scope.record.owner.$oid === user._id.$oid) { $scope.record.owner = (user.firstname+" "+user.sirname).trim(); }
-					if ($scope.record.creator && $scope.record.creator.$oid === user._id.$oid) { $scope.record.creator = (user.firstname+" "+user.sirname).trim(); }
+					if ($scope.record.owner && $scope.record.owner.$oid === user._id.$oid) { $scope.record.owner = (user.firstname+" "+user.lastname).trim(); }
+					if ($scope.record.creator && $scope.record.creator.$oid === user._id.$oid) { $scope.record.creator = (user.firstname+" "+user.lastname).trim(); }
 				});
 				if (!$scope.record.owner) $scope.record.owner = "?";
 				if (!$scope.record.creator) $scope.record.creator = "Same as owner";

@@ -12,7 +12,7 @@ import models.Record;
 
 public class ReferenceTool {
 
-	private static Set<String> fullName = Sets.create("firstname", "sirname");
+	private static Set<String> fullName = Sets.create("firstname", "lastname");
 	
 	public static void resolveOwners(Collection<Record> records, boolean owners, boolean creators) throws ModelException {
 		Map<String, String> members = new HashMap<String, String>();		
@@ -24,7 +24,7 @@ public class ReferenceTool {
 				if (name == null) {
 					Member member = Member.getById(record.owner, fullName);
 					if (member != null) {
-						name = member.sirname + ", " + member.firstname;
+						name = member.lastname + ", " + member.firstname;
 						members.put(key, name);
 					}
 				}
@@ -36,7 +36,7 @@ public class ReferenceTool {
 				if (name == null) {
 					Member member = Member.getById(record.creator, fullName);
 					if (member != null) {
-						name = member.sirname + ", " + member.firstname;
+						name = member.lastname + ", " + member.firstname;
 						members.put(key, name);
 					}
 				}
@@ -55,7 +55,7 @@ public class ReferenceTool {
 				if (name == null) {
 					Member member = Member.getById(circle.owner, fullName);
 					if (member != null) {
-						name = member.sirname + ", " + member.firstname;
+						name = member.lastname + ", " + member.firstname;
 						members.put(key, name);
 					}
 				}

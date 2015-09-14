@@ -121,8 +121,8 @@ public class Studies extends APIController {
 	   ObjectId owner = new ObjectId(session().get("org"));
 	   ObjectId studyid = new ObjectId(id);
 	   
-	   User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));
-	   String userName = user.sirname+", "+user.firstname;
+	   User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
+	   String userName = user.lastname+", "+user.firstname;
 		
 	   
 	   int count = JsonValidation.getInteger(json, "count", 1, 1000);
@@ -183,7 +183,7 @@ public class Studies extends APIController {
 		ObjectId owner = new ObjectId(session().get("org"));
 		ObjectId studyid = new ObjectId(id);
 		
-		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));
+		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
 		
 		if (study == null) return badRequest("Study does not belong to organization.");
@@ -204,7 +204,7 @@ public class Studies extends APIController {
 		ObjectId owner = new ObjectId(session().get("org"));
 		ObjectId studyid = new ObjectId(id);
 		
-		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));
+		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
 		
 		if (study == null) return badRequest("Study does not belong to organization.");
@@ -225,7 +225,7 @@ public class Studies extends APIController {
 		ObjectId owner = new ObjectId(session().get("org"));
 		ObjectId studyid = new ObjectId(id);
 		
-		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));
+		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
 		
 		if (study == null) return badRequest("Study does not belong to organization.");
@@ -245,7 +245,7 @@ public class Studies extends APIController {
 		ObjectId owner = new ObjectId(session().get("org"));
 		ObjectId studyid = new ObjectId(id);
 		
-		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));
+		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
 		
 		if (study == null) return badRequest("Study does not belong to organization.");
@@ -300,7 +300,7 @@ public class Studies extends APIController {
 	   obj.put("participation", Json.toJson(participation));	   
 	    
 	   if (study.requiredInformation == InformationType.DEMOGRAPHIC) {
-	     Member member = Member.getById(memberId, Sets.create("firstname","sirname","address1","address2","city","zip","country","email", "phone","mobile"));
+	     Member member = Member.getById(memberId, Sets.create("firstname","lastname","address1","address2","city","zip","country","email", "phone","mobile"));
 	     if (member == null) return badRequest("Member does not exist");
 	     obj.put("member", Json.toJson(member));
 	   }
@@ -322,7 +322,7 @@ public class Studies extends APIController {
 		ObjectId owner = new ObjectId(session().get("org"));
 		String comment = JsonValidation.getString(json, "comment");
 		
-		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));				
+		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));				
 		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, Sets.create("pstatus", "history", "memberName"));		
 		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
@@ -351,7 +351,7 @@ public class Studies extends APIController {
 		ObjectId owner = new ObjectId(session().get("org"));
 		String comment = JsonValidation.getString(json, "comment");
 		
-		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));					
+		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));					
 		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, Sets.create("pstatus", "history", "memberName"));		
 		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
@@ -374,7 +374,7 @@ public class Studies extends APIController {
 		ObjectId owner = new ObjectId(session().get("org"));
 		ObjectId studyid = new ObjectId(id);
 		
-		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));
+		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation"));
 		
 		if (study == null) return badRequest("Study does not belong to organization.");	    
@@ -398,7 +398,7 @@ public class Studies extends APIController {
 		ObjectId owner = new ObjectId(session().get("org"));
 		ObjectId studyid = new ObjectId(id);
 		
-		User user = ResearchUser.getById(userId, Sets.create("firstname","sirname"));
+		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history", "requiredInformation"));
 			
 		if (study == null) return badRequest("Study does not belong to organization.");

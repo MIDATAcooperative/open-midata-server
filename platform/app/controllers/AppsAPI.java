@@ -195,7 +195,7 @@ public class AppsAPI extends Controller {
 			if (mk == null) return badRequest("Invalid consent");
 			if (!mk.authorized.contains(appToken.userId)) return badRequest("Invalid consent");
 			
-			HPUser hpuser = HPUser.getByIdAndApp(appToken.userId, appToken.appId, Sets.create("tokens","role","provider","firstname","sirname"));
+			HPUser hpuser = HPUser.getByIdAndApp(appToken.userId, appToken.appId, Sets.create("tokens","role","provider","firstname","lastname"));
 			if (hpuser == null) return badRequest("Invalid authToken.");			
 			targetUser = Member.getById(mk.owner, Sets.create("myaps", "tokens"));
 			if (targetUser == null) return badRequest("Invalid authToken.");

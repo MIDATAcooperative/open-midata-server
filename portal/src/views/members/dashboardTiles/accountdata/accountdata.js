@@ -12,7 +12,7 @@ angular.module('views')
     $scope.reload = function() { 
     	if (!$scope.view.active || !$scope.userId) return;	
     	
-    	$scope.status.doBusy(users.getMembers({ "_id" : $scope.userId }, ["midataID", "firstname", "sirname", "birthday", "address1", "address2", "zip", "city", "country"]))
+    	$scope.status.doBusy(users.getMembers({ "_id" : $scope.userId }, ["midataID", "firstname", "lastname", "birthday", "address1", "address2", "zip", "city", "country"]))
     	.then(function(results) { $scope.member = results.data[0]; });
     };
     

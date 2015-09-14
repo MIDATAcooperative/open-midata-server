@@ -84,7 +84,7 @@ public class Studies extends APIController {
 		String codestr = JsonValidation.getString(json, "code");
 		ObjectId userId = new ObjectId(request().username());
 		
-		Member user = Member.getById(userId, Sets.create("firstname","sirname","birthday","country","gender"));
+		Member user = Member.getById(userId, Sets.create("firstname","lastname","birthday","country","gender"));
 				
 		ParticipationCode code = ParticipationCode.getByCode(codestr);
 		if (code == null) return inputerror("code", "notfound", "Unknown Participation Code.");
@@ -126,7 +126,7 @@ public class Studies extends APIController {
 		String userName;
 		
 		if (study.requiredInformation == InformationType.DEMOGRAPHIC) {
-			userName = member.sirname+", "+member.firstname;	
+			userName = member.lastname+", "+member.firstname;	
 		} else {
 			userName = "Part. " + CodeGenerator.nextUniqueCode();
 		}
@@ -182,7 +182,7 @@ public class Studies extends APIController {
 		ObjectId userId = new ObjectId(request().username());		
 		ObjectId studyId = new ObjectId(id);
 		
-		Member user = Member.getById(userId, Sets.create("firstname", "sirname", "birthday", "gender", "country"));		
+		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "birthday", "gender", "country"));		
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history", "memberName"));		
 		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history", "owner", "createdBy", "name"));
 		
@@ -209,7 +209,7 @@ public class Studies extends APIController {
 		ObjectId userId = new ObjectId(request().username());		
 		ObjectId studyId = new ObjectId(id);
 		
-		User user = Member.getById(userId, Sets.create("firstname","sirname"));		
+		User user = Member.getById(userId, Sets.create("firstname","lastname"));		
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history", "memberName"));		
 		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		

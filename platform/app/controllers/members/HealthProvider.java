@@ -60,12 +60,12 @@ public class HealthProvider extends Controller {
 		properties.put("role", UserRole.PROVIDER);
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 
-		if (fields.contains("name")) { fields.add("firstname"); fields.add("sirname"); } 
+		if (fields.contains("name")) { fields.add("firstname"); fields.add("lastname"); } 
 						
 		List<HPUser> users = new ArrayList<HPUser>(HPUser.getAll(properties, fields));
 		
 		if (fields.contains("name")) {
-			for (User user : users) user.name = (user.firstname + " "+ user.sirname).trim();
+			for (User user : users) user.name = (user.firstname + " "+ user.lastname).trim();
 		}
 				
 		Collections.sort(users);

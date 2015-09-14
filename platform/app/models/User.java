@@ -46,7 +46,7 @@ public class User extends Model implements Comparable<User> {
     public String confirmationCode; //code needed to confirm account
 	
     public String firstname;	 
-	public String sirname;	 
+	public String lastname;	 
 	public Gender gender;	 
 	public String city;	 
 	public String zip;	 

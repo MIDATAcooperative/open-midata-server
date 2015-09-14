@@ -57,7 +57,7 @@ public class Users extends Controller {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 
-		if (fields.contains("name")) { fields.add("firstname"); fields.add("sirname"); }
+		if (fields.contains("name")) { fields.add("firstname"); fields.add("lastname"); }
 		
 		List<Member> users;
 		try {
@@ -67,7 +67,7 @@ public class Users extends Controller {
 		}
 		
 		if (fields.contains("name")) {
-			for (User user : users) user.name = (user.firstname + " "+ user.sirname).trim();
+			for (User user : users) user.name = (user.firstname + " "+ user.lastname).trim();
 		}
 		
 		Collections.sort(users);
@@ -87,12 +87,12 @@ public class Users extends Controller {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
-		if (fields.contains("name")) { fields.add("firstname"); fields.add("sirname"); }
+		if (fields.contains("name")) { fields.add("firstname"); fields.add("lastname"); }
 		
 		List<User> users = new ArrayList<User>(User.getAllUser(properties, fields));
 		
 		if (fields.contains("name")) {
-			for (User user : users) user.name = (user.firstname + " "+ user.sirname).trim();
+			for (User user : users) user.name = (user.firstname + " "+ user.lastname).trim();
 		}
 		
 		Collections.sort(users);
@@ -120,14 +120,14 @@ public class Users extends Controller {
 
 		// get name for ids
 		Map<String, Set<ObjectId>> properties = new ChainedMap<String, Set<ObjectId>>().put("_id", userIds).get();
-		Set<String> fields = Sets.create("name", "firstname", "sirname");
+		Set<String> fields = Sets.create("name", "firstname", "lastname");
 		List<Member> users;
 		try {
 			users = new ArrayList<Member>(Member.getAll(properties, fields));
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}
-		for (User user : users) user.name = (user.firstname + " "+ user.sirname).trim();
+		for (User user : users) user.name = (user.firstname + " "+ user.lastname).trim();
 		Collections.sort(users);
 		return ok(Json.toJson(users));
 	}
@@ -146,15 +146,15 @@ public class Users extends Controller {
 			for (Circle circle : circles) {
 				contactIds.addAll(circle.authorized);
 			}
-			contacts = Member.getAll(CMaps.map("_id", contactIds),Sets.create("firstname","sirname","email"));
+			contacts = Member.getAll(CMaps.map("_id", contactIds),Sets.create("firstname","lastname","email"));
 		} catch (ModelException e) {
 			return internalServerError(e.getMessage());
 		}
 		Set<ObjectNode> jsonContacts = new HashSet<ObjectNode>();
 		for (Member contact : contacts) {
 			ObjectNode node = Json.newObject();
-			node.put("value", contact.firstname+" "+contact.sirname + " (" + contact.email + ")");
-			String[] split = (contact.firstname+" "+contact.sirname).split(" ");
+			node.put("value", contact.firstname+" "+contact.lastname + " (" + contact.email + ")");
+			String[] split = (contact.firstname+" "+contact.lastname).split(" ");
 			String[] tokens = new String[split.length + 1];
 			System.arraycopy(split, 0, tokens, 0, split.length);
 			tokens[tokens.length - 1] = contact.email;

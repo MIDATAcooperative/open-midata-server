@@ -41,7 +41,7 @@ public class Researchers extends APIController {
 	public static Result register() throws JsonValidationException, ModelException {
 		JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "name", "email", "description", "firstname", "sirname", "gender", "city", "zip", "country", "address1");
+		JsonValidation.validate(json, "name", "email", "description", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
 					
 		String name = JsonValidation.getString(json, "name");
 		if (Research.existsByName(name)) return inputerror("name", "exists", "A research organization with this name already exists.");
@@ -64,7 +64,7 @@ public class Researchers extends APIController {
 		user.zip  = JsonValidation.getString(json, "zip");
 		user.country = JsonValidation.getString(json, "country");
 		user.firstname = JsonValidation.getString(json, "firstname"); 
-		user.sirname = JsonValidation.getString(json, "sirname");
+		user.lastname = JsonValidation.getString(json, "lastname");
 		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
 		user.phone = JsonValidation.getString(json, "phone");
 		user.mobile = JsonValidation.getString(json, "mobile");

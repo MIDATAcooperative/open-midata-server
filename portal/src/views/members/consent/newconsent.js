@@ -23,7 +23,7 @@ angular.module('portal')
 			$scope.consent.type = "HEALTHCARE";			
 			$scope.consent.authorized = [ { "$oid" : $state.params.authorize } ];
 			
-			hc.search({ "_id" : { "$oid" : $state.params.authorize } }, [ "firstname", "sirname", "city", "address1", "address2", "country"])
+			hc.search({ "_id" : { "$oid" : $state.params.authorize } }, [ "firstname", "lastname", "city", "address1", "address2", "country"])
 			.then(function(data) {
 				$scope.authpersons = data.data;
 			});
