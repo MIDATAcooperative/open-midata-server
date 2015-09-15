@@ -486,7 +486,15 @@ angular.module('portal')
 				  title : "Details",
 				  active : false,
 				  position : "modal"			 
+			},
+			{                        
+				  id : "providersearch",
+				  template : "/views/shared/providersearch/providersearch.html",
+				  title : "Provider to Add",
+				  active : false,
+				  position : "modal"			 
 			}
+			
 	 ],
 	 "memberdetails" : [
 			{

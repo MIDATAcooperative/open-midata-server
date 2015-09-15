@@ -67,6 +67,7 @@ import models.Member;
 import models.MemberKey;
 import models.ModelException;
 import models.Record;
+import models.RecordsInfo;
 import models.Space;
 import models.Study;
 import models.StudyParticipation;
@@ -554,6 +555,10 @@ public class RecordSharing {
 			Map<String, Object> properties, Set<String> fields)
 			throws ModelException {
 		return ComplexQueryManager.list(getCache(who), apsId, properties, fields);
+	}
+	
+	public Collection<RecordsInfo> info(ObjectId who, ObjectId aps, Map<String, Object> properties) throws ModelException {
+		return ComplexQueryManager.info(getCache(who), aps, properties);
 	}
 
 	public Record fetch(ObjectId who, RecordToken token) throws ModelException {

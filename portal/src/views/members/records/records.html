@@ -51,7 +51,7 @@
 					<span class="glyphicon glyphicon-share"></span>share
 			    </button>
 		   </div>	
-           <h1 ng-class="{ 'text-success' : isSharedGroup(data), 'format': data.type == 'content' }"><span ng-click="data.open=true;" ng-hide="data.open" class="treehandle glyphicon glyphicon-plus"></span><span ng-show="data.open && !data.type" ng-click="data.open=false;" class="treehandle glyphicon glyphicon-minus"></span>{{data.fullLabel}} <small>(<span ng-show="selectedAps">{{ data.countShared }} / </span>{{ data.count }})</small></h1>
+           <h1 ng-class="{ 'text-success' : isSharedGroup(data), 'format': data.type == 'content' }"><span ng-click="setOpen(data,true);" ng-hide="data.open" class="treehandle glyphicon glyphicon-plus"></span><span ng-show="data.open && !data.type" ng-click="setOpen(data,false);" class="treehandle glyphicon glyphicon-minus"></span>{{data.fullLabel}} <small>(<span ng-show="selectedAps">{{ data.countShared }} / </span>{{ data.count }})</small></h1>
            <div ng-show="data.open">
 
            <ul class="list-group" ng-if="data.records.length > 0">

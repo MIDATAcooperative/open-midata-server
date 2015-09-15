@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('StudyDetailCtrl', ['$scope', '$state', 'server', 'views', function($scope, $state, server, views) {
+.controller('StudyDetailCtrl', ['$scope', '$state', 'server', 'views', 'session', 'users', function($scope, $state, server, views, session, users) {
 	
 	$scope.studyid = $state.params.studyId;
 	$scope.study = {};
@@ -21,6 +21,12 @@ angular.module('portal')
 				$scope.loading = false;
 				$scope.error = null;
 				
+				$scope.providers = [];
+				angular.forEach(data.participation.providers, function(p) {
+					console.log(p);
+					$scope.providers.push(session.resolve(p, function() { return users.getMembers({ "_id" : p },users.ALLPUBLIC ); }));
+				});
+				
 				if ($scope.participation && !($scope.participation.status == "CODE" || $scope.participation.status == "MATCH" )) {
 				  views.setView("1", { aps : $scope.participation._id.$oid, properties : { } , type:"participations", allowAdd : true, allowRemove : false, fields : [ "ownerName", "created", "id", "name" ]});
 				} else {
@@ -30,6 +36,10 @@ angular.module('portal')
 			error(function(err) {
 				$scope.error = err;				
 			});
+	};
+	
+	$scope.addProvider = function() {
+		views.setView("providersearch", { studyId : $scope.study._id.$oid });
 	};
 	
 	$scope.needs = function(what) {

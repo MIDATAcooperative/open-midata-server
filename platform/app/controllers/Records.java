@@ -18,6 +18,7 @@ import models.MemberKey;
 import models.ModelException;
 import models.Plugin;
 import models.Record;
+import models.RecordsInfo;
 import models.Space;
 import models.Member;
 import models.StudyParticipation;
@@ -175,23 +176,30 @@ public class Records extends Controller {
 		
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
-		
-		/*
-		String apstype = properties.containsKey("set") ? properties.get("set").toString() : "user";
-		
-		if (!apstype.equals("circles")) {*/		
-		  records.addAll(RecordSharing.instance.list(userId, aps, properties, fields));
-		/*} 
-		if (!apstype.equals("user")) {
-	        Set<Circle> circles = Circle.getAllByMember(userId);		
-			for (Circle circle : circles) {
-				records.addAll(RecordSharing.instance.list(userId, circle._id, properties, fields));
-			}
-		}*/
+					
+	    records.addAll(RecordSharing.instance.list(userId, aps, properties, fields));	
 				
 		Collections.sort(records);
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		return ok(Json.toJson(records));
+	}
+	
+	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result getInfo() throws ModelException, JsonValidationException {
+ 	
+		ObjectId userId = new ObjectId(request().username());
+		JsonNode json = request().body().asJson();
+		JsonValidation.validate(json, "properties");
+						
+		ObjectId aps = JsonValidation.getObjectId(json, "aps");
+		if (aps == null) aps = userId;		
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));			
+		
+	    Collection<RecordsInfo> result = RecordSharing.instance.info(userId, aps, properties);	
+						
+		return ok(Json.toJson(result));
 	}
 	
 	@APICall

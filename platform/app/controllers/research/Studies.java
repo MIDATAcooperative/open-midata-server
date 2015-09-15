@@ -63,6 +63,7 @@ public class Studies extends APIController {
 				
 		study._id = new ObjectId();
 		study.name = name;
+		study.code = CodeGenerator.nextUniqueCode();
 		study.description = JsonValidation.getString(json, "description");
 		
 		study.createdAt = new Date();
@@ -103,7 +104,7 @@ public class Studies extends APIController {
 	   ObjectId studyid = new ObjectId(id);
 	   ObjectId owner = new ObjectId(session().get("org"));
 	   
-	   Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordRules","studyKeywords"));
+	   Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordRules","studyKeywords","code"));
 	   	   	   
 	   return ok(Json.toJson(study));
 	}

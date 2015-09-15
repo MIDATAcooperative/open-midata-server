@@ -8,7 +8,8 @@ angular.module('portal')
 	$scope.loadingRecords = true;
 	$scope.userId = null;
 	$scope.apps = [];
-	$scope.records = [];	
+	$scope.records = [];
+	$scope.infos = [];
 	$scope.tree = [ ];
 	$scope.compare = [];
 	$scope.selectedAps = null;
@@ -23,7 +24,7 @@ angular.module('portal')
 			$scope.getApps(userId);
 			$scope.getAvailableSets(userId);
 			$scope.loadGroups();
-			$scope.getRecords(userId, "self")
+			$scope.getInfos(userId, "self")
 			.then(function() {
 			
 				if ($state.params.selected != null) {						
@@ -63,10 +64,11 @@ angular.module('portal')
 	};
 	
 	// get records
-	$scope.getRecords = function(userId, owner) {
+	$scope.getRecords = function(userId, owner, group) {
 		//$scope.loadingRecords = true;
 		var properties = {};
 		if (owner) properties.owner = owner;
+		if (group) properties.group = group;
 		if ($scope.debug) properties.streams = "true";
 		return records.getRecords(userId, properties, ["id", "owner", "ownerName", "content", "created", "name", "group"]).
 		then(function(results) {
@@ -75,6 +77,27 @@ angular.module('portal')
 			$scope.loadingRecords = false;
 		});
 	};
+	
+	$scope.getInfos = function(userId, owner) {
+		var properties = {};
+		if (owner) properties.owner = owner;
+		if ($scope.debug) properties.streams = "true";
+		return records.getInfos(userId, properties).
+		then(function(results) {
+			$scope.infos = results.data;
+			if ($scope.gi != null) $scope.prepareInfos();	
+			$scope.loadingRecords = false;			
+		});
+	};
+	
+	$scope.setOpen = function(group, open) {
+		group.open = open;
+		if (open && !group.loaded) {
+			group.loaded = true;
+			$scope.getRecords($scope.displayAps.aps, $scope.displayAps.owner, group.name);
+		}
+	};
+	
 	
 	$scope.getAvailableSets = function(userId) {
 		circles.get({ "member": userId }, ["name","aps","ownerName"])
@@ -87,14 +110,14 @@ angular.module('portal')
 	};
 	
 	$scope.selectSet = function() {
-		$scope.getRecords($scope.displayAps.aps, $scope.displayAps.owner)
+		$scope.getInfos($scope.displayAps.aps, $scope.displayAps.owner)
 		.then(function() { $scope.loadSharingDetails(); });
 		
 	};
 	
 	$scope.showDebug = function() {
 		$scope.debug = true;
-		$scope.getRecords($scope.displayAps.aps, $scope.displayAps.owner)
+		$scope.getInfos($scope.displayAps.aps, $scope.displayAps.owner)
 		.then(function() { $scope.loadSharingDetails(); });
 		
 	};
@@ -103,6 +126,7 @@ angular.module('portal')
 		formats.listGroups().
 		then(function(result) { 
 			$scope.gi = result.data;
+			if ($scope.infos.length > 0) $scope.prepareInfos();	
 			if ($scope.records.length > 0) $scope.prepareRecords();	
 		});
 	};
@@ -143,10 +167,10 @@ angular.module('portal')
 	};*/
 		
 	var countRecords = function(group) {
-		var c = group.records.length;		
+		var c = group.infoCount || group.records.length;		
 		angular.forEach(group.children, function(g) { c+= countRecords(g); });
 		group.count = c;
-		group.open =  /*group.type == "content" ||*/ group.parent == null;
+		group.open =  /*group.type == "content" ||*/ group.open || (group.parent == null);
 		return c;
 	};
 		
@@ -155,7 +179,11 @@ angular.module('portal')
 		var s = 0;	
 		//var alls = $scope.isSharedGroup(group);
 		
-		angular.forEach(group.records, function(r) { if ($scope.isShared(r)) s++; });		
+		if (!group.loaded) {
+		  if ($scope.isSharedGroup(group) && group.infoCount) s += group.infoCount;	
+		} else {
+		  angular.forEach(group.records, function(r) { if ($scope.isShared(r)) s++; });
+		}
 		angular.forEach(group.children, function(g) { s+= countShared(g); });
 		
 		group.countShared = s;
@@ -163,13 +191,27 @@ angular.module('portal')
 	};
 	
 	$scope.prepareRecords = function() {
-		$scope.tree = [];
-		groups = {};
+		//$scope.tree = [];
+		//groups = {};
 		angular.forEach($scope.records, function(record) {
 		    var format = record.content;
 		    var group = record.group;
 		    var groupItem = getOrCreateGroup(group);
 		    groupItem.records.push(record);
+		});
+		angular.forEach($scope.tree, function(t) { countRecords(t); });
+	};
+	
+	$scope.prepareInfos = function() {
+		$scope.tree = [];
+		groups = {};
+		angular.forEach($scope.infos, function(info) {		    
+		    var group = info.group;
+		    var groupItem = getOrCreateGroup(group);
+		    groupItem.infoCount = info.count;
+		    groupItem.records = [];
+		    groupItem.loaded = false;
+		    groupItem.open = false;
 		});
 		angular.forEach($scope.tree, function(t) { countRecords(t); });
 	};

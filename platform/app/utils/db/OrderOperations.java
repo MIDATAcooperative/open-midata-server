@@ -16,6 +16,7 @@ public class OrderOperations {
 	public static int getMax(String collection, ObjectId userId) {
 		DBCollection coll = DBLayer.getCollection(collection);
 		DBObject query = new BasicDBObject("owner", userId);
+		query.put("order", new BasicDBObject("$exists", true));
 		DBObject projection = new BasicDBObject("order", 1);
 		DBCursor maxOrder = coll.find(query, projection).sort(new BasicDBObject("order", -1)).limit(1);
 		int max = 0;
@@ -57,6 +58,7 @@ public class OrderOperations {
 	private static void incOperation(String collection, ObjectId userId, int fromLimit, int toLimit, int increment)
 			throws DatabaseException {
 		DBObject query = new BasicDBObject("owner", userId);
+		query.put("order", new BasicDBObject("$exists", true));
 		if (fromLimit == 0) {
 			query.put("order", new BasicDBObject("$lte", toLimit));
 		} else if (toLimit == 0) {

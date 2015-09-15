@@ -65,7 +65,7 @@ public class Application extends Controller {
 		} else response().setHeader("Access-Control-Allow-Origin", "https://demo.midata.coop");
         response().setHeader("Allow", "*");
         response().setHeader("Access-Control-Allow-Credentials", "true");
-        response().setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
+        response().setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH");
         response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie");
 		return ok();
 	}
@@ -300,6 +300,7 @@ public class Application extends Controller {
 				controllers.routes.javascript.Records.get(),
 				controllers.routes.javascript.Records.getVisibleRecords(),
 				controllers.routes.javascript.Records.getRecords(),
+				controllers.routes.javascript.Records.getInfo(),
 				controllers.routes.javascript.Records.getSharingInfo(),
 				controllers.routes.javascript.Records.getSharingDetails(),
 				controllers.routes.javascript.Records.search(),				
@@ -348,7 +349,7 @@ public class Application extends Controller {
 				controllers.research.routes.javascript.Studies.listParticipants(),
 				controllers.research.routes.javascript.Studies.getParticipant(),
 				controllers.research.routes.javascript.Studies.approveParticipation(),
-				controllers.research.routes.javascript.Studies.rejectParticipation(),
+				controllers.research.routes.javascript.Studies.rejectParticipation(),				
 				controllers.research.routes.javascript.Studies.getRequiredInformationSetup(),
 				controllers.research.routes.javascript.Studies.setRequiredInformationSetup(),
 				
@@ -357,6 +358,7 @@ public class Application extends Controller {
 				controllers.members.routes.javascript.Studies.enterCode(),
 				controllers.members.routes.javascript.Studies.get(),
 				controllers.members.routes.javascript.Studies.requestParticipation(),
+				controllers.members.routes.javascript.Studies.updateParticipation(),
 				controllers.members.routes.javascript.Studies.noParticipation(),
 				controllers.members.routes.javascript.HealthProvider.list(),
 				controllers.members.routes.javascript.HealthProvider.search(),

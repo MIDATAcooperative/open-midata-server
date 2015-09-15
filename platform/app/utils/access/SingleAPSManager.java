@@ -26,6 +26,7 @@ import utils.db.LostUpdateException;
 
 import models.ModelException;
 import models.Record;
+import models.RecordsInfo;
 import models.enums.APSSecurityLevel;
 
 public class SingleAPSManager extends QueryManager {
@@ -420,4 +421,5 @@ public class SingleAPSManager extends QueryManager {
 			for (Record record : input) { lookupSingle(record, q); }			
 			return input;
 		}
+		
 }

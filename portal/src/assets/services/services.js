@@ -31,6 +31,17 @@ angular.module('services')
 		
 		cacheClear : function(name) {
 			session.cache[name] = null;
+		},
+		
+		resolve : function(id, callback) {
+		   var c = session.cache[id];
+		   if (c != null) return c;
+		   c = session.cache[id] = {};
+		   callback().then(function(data) {
+			   data = data.data[0];
+			  for (var attr in data) { c[attr] = data[attr]; }
+		   });
+		   return c;
 		}
 	};
 	

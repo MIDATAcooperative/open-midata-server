@@ -2,7 +2,7 @@
 
 	<div ng-cloak class="panel panel-primary">
 		<div class="panel-heading">Provider search results</div>
-		<div class="panel-body">
+		<div class="body">
 
 			<form class="css-form form-horizontal">
 				<formrow myid="name" label="Name">
@@ -10,6 +10,13 @@
 				</formrow>
 				<formrow myid="city" label="City / Zip"> 
 				  <input type="text" class="form-control" ng-model="criteria.city"> 
+				</formrow>
+				<formrow myid="restrict" label="">
+				  <div class="checkbox">				
+				    <label>
+				      <input type="checkbox" ng-model="criteria.onlymine">Search only healthcare providers you already had contact with. 
+				    </label>
+				  </div>
 				</formrow>
 				<formrow myid="x" label=""> 
 				  <button ng-click="search()" class="btn btn-default">Search</button>

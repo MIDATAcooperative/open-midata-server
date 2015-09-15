@@ -116,11 +116,46 @@ public class Studies extends APIController {
 		return ok(result);
 	}
 	
+	@APICall
+	@Security.Authenticated(Secured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	public static Result updateParticipation(String id) throws JsonValidationException, ModelException {
+		JsonNode json = request().body().asJson();
+		ObjectId studyId = new ObjectId(id);
+		ObjectId memberId = new ObjectId(request().username());
+		
+		
+		StudyParticipation part = StudyParticipation.getByStudyAndMember(studyId, memberId, Sets.create("history", "providers", "authorized"));
+		if (part == null) return badRequest("Study Participation not found.");
+		
+		JsonNode add = json.get("add");
+		if (add != null) {
+			JsonNode providers = add.get("providers");
+			Set<ObjectId> newProviders = JsonExtraction.extractObjectIdSet(providers);
+			if (part.providers == null) part.providers = new HashSet<ObjectId>();
+			if (part.authorized == null) part.authorized = new HashSet<ObjectId>();
+			
+			for (ObjectId providerId : newProviders) {				
+				part.providers.add(providerId);	
+				part.authorized.add(providerId);
+			}
+			RecordSharing.instance.shareAPS(part._id, memberId, newProviders);
+			
+			StudyParticipation.set(part._id, "providers", part.providers);
+			StudyParticipation.set(part._id, "authorized", part.authorized);
+		}
+		
+		return ok();
+	}
+	
+	
+	
 	public static StudyParticipation createStudyParticipation(Study study, Member member, ParticipationCode code) throws ModelException {
 		StudyParticipation part = new StudyParticipation();
 		part._id = new ObjectId();
 		part.study = study._id;
 		part.studyName = study.name;
+		part.name = "Study: "+study.name;
 		part.owner = member._id;
 		
 		String userName;
@@ -146,6 +181,8 @@ public class Studies extends APIController {
 		part.country = member.country;
 		
 		part.history = new ArrayList<History>();
+		part.providers = new HashSet<ObjectId>();
+		part.authorized = new HashSet<ObjectId>();
 		part.aps = RecordSharing.instance.createAnonymizedAPS(member._id, study.createdBy, part._id);
 		
 		if (code != null) {
@@ -165,7 +202,7 @@ public class Studies extends APIController {
 	   ObjectId studyId = new ObjectId(id);
 	   	   
 	   Study study = Study.getByIdFromMember(studyId, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordRules","studyKeywords","requiredInformation"));
-	   StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("pstatus", "history"));
+	   StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("pstatus", "history","providers"));
 	   Research research = Research.getById(study.owner, Sets.create("name", "description"));
 	   
 	   ObjectNode obj = Json.newObject();

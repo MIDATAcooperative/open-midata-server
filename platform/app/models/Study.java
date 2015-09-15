@@ -20,6 +20,7 @@ public class Study extends Model {
 	private static final String collection = "studies";
 	
 	public String name;
+	public String code;
 	public ObjectId owner; // references Research
 	public ObjectId createdBy; // references ResearchUser	 
 	public Date createdAt;	 

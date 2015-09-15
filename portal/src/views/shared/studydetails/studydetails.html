@@ -19,6 +19,23 @@
 			<p>{{ research.description }}</p>
 		</div>
 	</div>
+	<div class="panel panel-primary" ng-show="participation">
+		<div class="panel-heading">Healthcare Providers monitoring the study</div>
+		<div class="panel-body">
+		    <p ng-show="providers.length == 0">None</p>
+			<div ng-repeat="prov in providers">
+				<address>
+					<strong>{{ prov.firstname }} {{ prov.lastname }}</strong><br>
+					 {{ prov.address1 }}<br>
+					 {{ prov.address2 }}<br> 
+					 {{ prov.zip }} {{ prov.city }}<br> {{ prov.country }}<br> <span ng-show="prov.phone">Phone: {{ prov.phone }}</span><br>
+					<span ng-show="prov.mobile">Mobile: {{ prov.mobile }}</span><br>
+					<span ng-show="prov.email">Email: {{ prov.email }}</span><br>
+				</address>
+			</div>
+			<button class="btn btn-default" ng-click="addProvider()">Add</button>
+		</div>
+	</div>
 	<div class="panel panel-primary">
 		<div class="panel-heading">Information that must be shared for participation</div>
 		<div class="panel-body">

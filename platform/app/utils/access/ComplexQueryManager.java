@@ -22,6 +22,7 @@ import utils.collections.Sets;
 import models.ContentInfo;
 import models.ModelException;
 import models.Record;
+import models.RecordsInfo;
 import models.enums.APSSecurityLevel;
 
 public class ComplexQueryManager {
@@ -32,6 +33,10 @@ public class ComplexQueryManager {
 	
 	public static List<Record> listInternal(APSCache cache, ObjectId aps, Map<String, Object> properties, Set<String> fields) throws ModelException {
 		return fullQuery(new Query(properties, fields, cache, aps, true), aps);
+	}
+	
+	public static Collection<RecordsInfo> info(APSCache cache, ObjectId aps, Map<String, Object> properties) throws ModelException {
+		return infoQuery(new Query(new HashMap<String,Object>(), Sets.create("created", "group"), cache, aps), aps);
 	}
 		
 	public static boolean isInQuery(Map<String, Object> properties, Record record) throws ModelException {
@@ -44,6 +49,30 @@ public class ComplexQueryManager {
 		QueryManager qm = new FormatGroupHandling(new ContentFilterQM(new InMemoryQM(records)));
 		Query query = new Query(properties, Sets.create(), null, null);
 		return postProcessRecords(qm, query, qm.query(query));		
+	}
+	
+	public static Collection<RecordsInfo> infoQuery(Query q, ObjectId aps) throws ModelException {
+		QueryManager qm = new BlackListQM(q, new APSQSupportingQM(new AccountLevelQueryManager(new FormatGroupHandling(new StreamQueryManager()))));
+		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
+		
+		List<Record> recs = qm.query(q);
+		recs = postProcessRecords(qm, q, recs);
+		
+		for (Record record : recs) {
+			RecordsInfo ri = result.get(record.group);
+			if (ri == null) {
+				ri = new RecordsInfo();
+				ri.group = record.group;
+				ri.newest = record.created;
+				ri.oldest = record.created;
+				result.put(record.group, ri);
+			}
+			ri.count++;
+			if (record.created.after(ri.newest)) ri.newest = record.created;
+			if (record.created.before(ri.oldest)) ri.oldest = record.created;
+						
+		}
+		return result.values();
 	}
 	
     public static List<Record> fullQuery(Query q, ObjectId aps) throws ModelException {

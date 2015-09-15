@@ -16,6 +16,10 @@ angular.module('services')
 		return $http.put(ENV.apiurl + url, body);
 	};
 	
+	service.patch = function(url, body) {
+		return $http.patch(ENV.apiurl + url, body);
+	};
+	
 	service.delete = function(url, body) {
 		return $http.delete(ENV.apiurl + url, body);
 	};

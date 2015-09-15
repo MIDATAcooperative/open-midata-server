@@ -15,7 +15,7 @@ import utils.collections.Sets;
 
 public class StudyParticipation extends Consent {
 	
-	private static final String collection = "participation";
+	//private static final String collection = "participation";
 	
 	public ObjectId study; //study that the member is related to
 	public String studyName; // replication of study name

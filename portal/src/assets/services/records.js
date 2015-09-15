@@ -8,6 +8,12 @@ angular.module('services')
 		return server.post(jsRoutes.controllers.Records.getRecords().url, JSON.stringify(data));
 	};
 	
+	service.getInfos = function(aps, properties) {
+		var data = {"properties": properties};
+		if (aps != null) data.aps = aps;
+		return server.post(jsRoutes.controllers.Records.getInfo().url, JSON.stringify(data));
+	};
+	
 	service.getRecord = function(recordId) {
 		var data = {"_id": recordId };		
 		return server.post(jsRoutes.controllers.Records.get().url, JSON.stringify(data));

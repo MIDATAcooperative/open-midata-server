@@ -23,6 +23,17 @@ public class JsonExtraction {
 		}
 		return set;
 	}
+	
+	/**
+	 * Extracts a set with elements guaranteed to be strings.
+	 */
+	public static Set<ObjectId> extractObjectIdSet(JsonNode json) {
+		Set<ObjectId> set = new HashSet<ObjectId>();
+		for (JsonNode jsonNode : json) {
+			set.add(new ObjectId(jsonNode.asText()));
+		}
+		return set;
+	}
 
 	/**
 	 * Extracts a general map.

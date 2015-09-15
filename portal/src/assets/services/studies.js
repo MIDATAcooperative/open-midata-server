@@ -7,5 +7,9 @@ angular.module('services')
 		return server.post(jsRoutes.controllers.common.Studies.search().url, JSON.stringify(data));
 	};
 	
+	service.updateParticipation = function(studyId, data) {
+		return server.patch(jsRoutes.controllers.members.Studies.updateParticipation(studyId).url, JSON.stringify(data));
+	};
+	
 	return service;
 }]);
