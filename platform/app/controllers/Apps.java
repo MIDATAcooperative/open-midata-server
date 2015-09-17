@@ -119,8 +119,10 @@ public class Apps extends Controller {
 		// get app
 		ObjectId appId = new ObjectId(appIdString);
 		ObjectId userId = new ObjectId(request().username());
+		String role = session().get("role");
+		
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", appId).get();
-		Set<String> fields = new ChainedSet<String>().add("filename").add("type").add("url").get();
+		Set<String> fields = Sets.create("filename", "type", "url", "developmentServer", "creator");
 		Plugin app;
 		try {
 			app = Plugin.get(properties, fields);
@@ -133,9 +135,10 @@ public class Apps extends Controller {
 		String authToken = appToken.encrypt();
 
 		// put together url to load in iframe
-		String appServer = Play.application().configuration().getString("apps.server");
+		String appServer = "https://" + Play.application().configuration().getString("apps.server") + "/" + app.filename;
+		if (role.equals("developer") && userId.equals(app.creator) && app.developmentServer != null && app.developmentServer.length()> 0) appServer = app.developmentServer; 
 		String url = app.url.replace(":authToken", authToken);
-		return ok("https://" + appServer + "/" + app.filename + "/" + url);
+		return ok(appServer  + "/" + url);
 	}
 	
 	@Security.Authenticated(AnyRoleSecured.class)
@@ -144,8 +147,9 @@ public class Apps extends Controller {
 		// get app
 		ObjectId appId = new ObjectId(appIdString);
 		ObjectId userId = new ObjectId(request().username());
+		String role = session().get("role");
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", appId).get();
-		Set<String> fields = new ChainedSet<String>().add("filename").add("type").add("previewUrl").get();
+		Set<String> fields = Sets.create("filename", "type", "previewUrl", "developmentServer", "creator");
 		Plugin app;
 		try {
 			app = Plugin.get(properties, fields);
@@ -158,9 +162,10 @@ public class Apps extends Controller {
 		String authToken = appToken.encrypt();
 
 		// put together url to load in iframe
-		String appServer = Play.application().configuration().getString("apps.server");
+		String appServer = "https://" + Play.application().configuration().getString("apps.server") + "/" + app.filename;
+		if (role.equals("developer") && userId.equals(app.creator) && app.developmentServer != null && app.developmentServer.length()> 0) appServer = app.developmentServer;
 		String url = app.previewUrl.replace(":authToken", authToken);
-		return ok("https://" + appServer + "/" + app.filename + "/" + url);
+		return ok(appServer  + "/" + url);
 	}
 	
 	@Security.Authenticated(AnyRoleSecured.class)
@@ -177,9 +182,9 @@ public class Apps extends Controller {
 		String authToken = appToken.encrypt();
 
 		// put together url to load in iframe
-		String appServer = Play.application().configuration().getString("apps.server");
+		String appServer = Play.application().configuration().getString("apps.server") + "/" + app.filename;
 		String url = app.url.replace(":authToken", authToken);
-		return ok("https://" + appServer + "/" + app.filename + "/" + url);
+		return ok("https://" + appServer + "/" + url);
 	}
 
 	

@@ -43,6 +43,10 @@ public class JsonValidation {
 		if (val > highest) throw new JsonValidationException(field, "toohigh", "Value may be " + lowest+" at maximum.");
 		return val;
 	}
+	public static long getLong(JsonNode json, String field) throws JsonValidationException {
+		if (! json.path(field).canConvertToLong()) throw new JsonValidationException(field, "nonumber", "Long value expected.");
+		return json.path(field).longValue();		
+	}
 	
 	public static boolean getBoolean(JsonNode json, String field) {
 		return json.path(field).asBoolean();		

@@ -631,7 +631,39 @@ angular.module('portal')
   	 		        	 button : "Search for News"
   	 		         }
   	 			}  	 	      
-  	 	     ]
+  	 	     ],
+  	 	  "sandbox" : [
+  	 				 
+  	 			    {
+  	 			    	id : "newrecords",
+  	 			    	template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
+  	 			    	title : "Newest records",
+  	 			    	active : true,
+  	 			    	position : "small",  	 			    	
+  	 			    	teaser : "There are no new records. Visit the records page to browser all of your records.",
+  	 			    	setup : { properties : { "max-age" : 86400 * 31, "limit" : 7 } , fields : [ "ownerName", "created", "id", "name" ], allowBrowse : true}
+  	 			    },
+  	 			    {
+  	 			    	   id : "createrecord",
+  	 			    	   template : "/views/members/dashboardTiles/createrecord/createrecord.html",
+  	 			    	   title : "Create a new record",
+  	 			    	   active : true,
+  	 			    	   position : "small",		    	   
+  	 			    	   teaser : { link : "^.yourapps", button : "Your Apps", text : "Install Plugins you developed." },
+  	 			    	   setup : { allowSelection : true }
+  	 			     },  	 			       
+  	 				{
+  	 				    id: "myviews",
+  	 				    title: "My Views",
+  	 				    template : "/views/members/dashboardTiles/viewconfig/viewconfig.html",
+  	 				    active : true,
+  	 				    position : "small",
+  	 				    setup : {	
+  	 				    	 context : "sandbox",		        	 
+  	 			        	 always : true
+  	 			        }
+  	 				}
+  	 	          ]
 	}			
 )
 .controller('DashboardCtrl', ['$scope', '$state', 'views', 'dashboards', 'tiles', 'spaces', 'portal', function($scope, $state, views, dashboards, tiles, spaces, portal) {  

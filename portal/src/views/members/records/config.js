@@ -8,5 +8,13 @@ angular.module('portal')
 	    .state('member.recordsharing', {
 	      url: '/records/:selectedType/:selected',
 	      templateUrl: 'views/members/records/records.html' 
+	    })
+	    .state('developer.records', {
+	      url: '/records',
+	      templateUrl: 'views/members/records/records.html' 
+	    })
+	    .state('developer.recordsharing', {
+	      url: '/records/:selectedType/:selected',
+	      templateUrl: 'views/members/records/records.html' 
 	    });
 });

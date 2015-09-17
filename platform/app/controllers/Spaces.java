@@ -36,7 +36,7 @@ import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-@Security.Authenticated(Secured.class)
+@Security.Authenticated(AnyRoleSecured.class)
 public class Spaces extends Controller {
 	
 
@@ -243,14 +243,17 @@ public class Spaces extends Controller {
 		  return badRequest("No space with this id exists.");
 		}
 		
-		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "filename", "url"));
+		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "filename", "url", "creator", "developmentServer"));
+
+		boolean testing = session().get("role").equals("developer") && visualization.creator.equals(userId) && visualization.developmentServer != null && visualization.developmentServer.length()> 0;
 		
 		if (visualization.type.equals("visualization")) {
 			// create encrypted authToken
 			SpaceToken spaceToken = new SpaceToken(space.aps, userId);
 			
-			String visualizationServer = Play.application().configuration().getString("visualizations.server");
-			String url = "https://" + visualizationServer + "/" + visualization.filename + "/" + visualization.url;
+			String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename;
+			if (testing) visualizationServer = visualization.developmentServer;
+			String url =  visualizationServer  + "/" + visualization.url;
 			url = url.replace(":authToken", spaceToken.encrypt());
 			return ok(url);	
 		} else {
@@ -259,9 +262,10 @@ public class Spaces extends Controller {
 			String authToken = appToken.encrypt();
  
 			// put together url to load in iframe
-			String appServer = Play.application().configuration().getString("apps.server");
+			String appServer = "https://" + Play.application().configuration().getString("apps.server") + "/" + visualization.filename;
+			if (testing) appServer = visualization.developmentServer;
 			String url = visualization.url.replace(":authToken", authToken);
-			return ok("https://" + appServer + "/" + visualization.filename + "/" + url);
+			return ok( appServer  + "/" + url);
 		}
 	}
 	
@@ -276,16 +280,18 @@ public class Spaces extends Controller {
 		  return badRequest("No space with this id exists.");
 		}
 		
-		Plugin visualization = Plugin.getById(space.visualization, Sets.create("filename", "previewUrl", "type"));
+		Plugin visualization = Plugin.getById(space.visualization, Sets.create("filename", "previewUrl", "type", "creator", "developmentServer"));
 		
-		if (visualization.previewUrl == null) return ok();
-		
+		if (visualization.previewUrl == null || visualization.previewUrl.equals("")) return ok();
+
+		boolean testing = session().get("role").equals("developer") && visualization.creator.equals(userId) && visualization.developmentServer != null && visualization.developmentServer.length()> 0;
 		if (visualization.type.equals("visualization")) {
 		// create encrypted authToken
 			SpaceToken spaceToken = new SpaceToken(space.aps, userId);
 			
-			String visualizationServer = Play.application().configuration().getString("visualizations.server");
-			String url = "https://" + visualizationServer + "/" + visualization.filename + "/" + visualization.previewUrl;
+			String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename;
+			if (testing) visualizationServer = visualization.developmentServer;
+			String url = visualizationServer  + "/" + visualization.previewUrl;
 			url = url.replace(":authToken", spaceToken.encrypt());
 			return ok(url);						
 		
@@ -296,9 +302,10 @@ public class Spaces extends Controller {
 				String authToken = appToken.encrypt();
 
 				// put together url to load in iframe
-				String appServer = Play.application().configuration().getString("apps.server");
+				String appServer = "https://" + Play.application().configuration().getString("apps.server") + "/" + visualization.filename;
+				if (testing) appServer = visualization.developmentServer;
 				String url = visualization.previewUrl.replace(":authToken", authToken);
-				return ok("https://" + appServer + "/" + visualization.filename + "/" + url);
+				return ok( appServer + "/" + url);
 		}
 	}
 	

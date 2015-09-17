@@ -68,6 +68,7 @@ public class Developers extends APIController {
 		user.security = AccountSecurityLevel.KEY;
 				
 		Developer.add(user);
+		RecordSharing.instance.createPrivateAPS(user._id, user._id);
 		
 		KeyManager.instance.unlock(user._id, "12345");
 		
@@ -95,7 +96,15 @@ public class Developers extends APIController {
 			return badRequest("Invalid user or password.");
 		}
 		
+		
+		//user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
+		//Developer.set(user._id, "publicKey", user.publicKey);
+		
 		KeyManager.instance.unlock(user._id, "12345");
+		
+		//RecordSharing.instance.createPrivateAPS(user._id, user._id);
+		
+		
 		// user authenticated
 		session().clear();
 		session("id", user._id.toString());

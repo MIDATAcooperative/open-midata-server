@@ -70,8 +70,9 @@ POST    /members/api/circles/:id/users                   controllers.Circles.add
 DELETE  /members/api/circles/:id/users/:userId           controllers.Circles.removeMember(id: String, userId: String)
 # Market
 
-POST    /members/api/market/apps/:type                   controllers.Market.registerApp(type: String)
-POST    /members/api/market/visualizations               controllers.Market.registerVisualization()
+
+POST    /developers/api/plugins                          controllers.Market.registerPlugin()
+PUT     /developers/api/plugins/:appId                   controllers.Market.updatePlugin(appId: String)
 # Search
 GET     /members/api/search/run/:query                   controllers.GlobalSearch.search(query: String)
 GET     /members/api/search/complete/:query              controllers.GlobalSearch.complete(query: String)

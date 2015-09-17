@@ -1,0 +1,26 @@
+
+<div ng-controller="YourAppsCtrl">
+		
+  <div class="panel panel-primary">
+    <div class="body">
+      <table class="table" ng-show="apps.length > 0">
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Target Role</th>
+        </tr>
+        <tr ng-repeat="app in apps">
+          <td><a ui-sref="^.manageapp({ appId : app._id.$oid })">{{  app.name }}</a></td>
+          <td>{{ app.type }}</td>
+          <td>{{ app.targetUserRole }}</td>
+        </tr>
+      </table>
+      <p ng-show="apps.length == 0">You have not registered any plugin yet.</p>
+      
+      <a class="btn btn-default" ui-sref="developer.registerapp">Register a new plugin</a>		
+    </div>
+  </div>		
+
+		  	
+</div>
+	

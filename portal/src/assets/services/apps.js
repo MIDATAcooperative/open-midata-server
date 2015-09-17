@@ -27,5 +27,17 @@ angular.module('services')
     	return server.get(jsRoutes.controllers.Plugins.isInstalled(visId).url);
     };
     
+    service.updatePlugin = function(plugin) {
+    	return server.put(jsRoutes.controllers.Market.updatePlugin(plugin._id.$oid).url, JSON.stringify(plugin));
+    };
+    
+    service.registerPlugin = function(plugin) {
+    	return server.post(jsRoutes.controllers.Market.registerPlugin(plugin._id.$oid).url, JSON.stringify(plugin));
+    };
+    
+    service.installPlugin = function(appId, options) {
+    	return server.post(jsRoutes.controllers.Plugins.install(appId).url, JSON.stringify(options));
+    };
+    
 	return service;
 }]);

@@ -12,5 +12,9 @@ angular.module('portal')
 	    .state('research.recorddetail', {
 	      url: '/record/:recordId',
 	      templateUrl: 'views/shared/recorddetail/recorddetail.html' 
+	    })
+	    .state('developer.recorddetail', {
+	      url: '/record/:recordId',
+	      templateUrl: 'views/shared/recorddetail/recorddetail.html' 
 	    });
 });

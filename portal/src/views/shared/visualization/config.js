@@ -12,5 +12,9 @@ angular.module('portal')
 	    .state('research.visualization', {
 	      url: '/visualization/:visualizationId?name&context&query',
 	      templateUrl: 'views/shared/visualization/visualization.html'
+	    })
+	    .state('developer.visualization', {
+	      url: '/visualization/:visualizationId?name&context&query',
+	      templateUrl: 'views/shared/visualization/visualization.html'
 	    });
 });

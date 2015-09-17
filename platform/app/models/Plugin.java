@@ -10,6 +10,9 @@ import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
+import utils.db.DBLayer;
+import utils.db.DatabaseException;
+import utils.db.LostUpdateException;
 import utils.search.Search;
 import utils.search.SearchException;
 import utils.search.Search.Type;
@@ -18,6 +21,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 
 	private static final String collection = "plugins";
 	
+	public long version;
 	public ObjectId creator;
 	public String filename;
 	public String name;
@@ -47,6 +51,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	public String scopeParameters;
 	// mobile app
 	public String secret;
+	public String developmentServer;
 
 	@Override
 	public int compareTo(Plugin other) {
@@ -79,6 +84,14 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	
 	public static Plugin getByFilenameAndSecret(String name, String secret, Set<String> fields) throws ModelException {
 		return Model.get(Plugin.class, collection, CMaps.map("filename", name).map("secret", secret), fields);
+	}
+	
+	public void update() throws ModelException, LostUpdateException {
+		try {
+			   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","url","developmentServer" );
+		} catch (DatabaseException e) {
+			throw new ModelException(e);
+		}
 	}
 
 

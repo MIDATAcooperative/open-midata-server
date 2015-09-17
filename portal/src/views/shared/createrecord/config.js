@@ -8,5 +8,9 @@ angular.module('portal')
 	    .state('research.createrecord', {
 	      url: '/createrecord/:appId',
 	      templateUrl: 'views/shared/createrecord/createrecord.html'
+	    })
+	    .state('developer.createrecord', {
+	      url: '/createrecord/:appId',
+	      templateUrl: 'views/shared/createrecord/createrecord.html'
 	    });
 });

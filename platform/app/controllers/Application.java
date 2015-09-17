@@ -375,9 +375,9 @@ public class Application extends Controller {
 				// Developers
 				controllers.routes.javascript.Developers.register(),
 				controllers.routes.javascript.Developers.login(),
-				// Market
-				controllers.routes.javascript.Market.registerApp(),
-				controllers.routes.javascript.Market.registerVisualization(),
+				// Market				
+				controllers.routes.javascript.Market.registerPlugin(),
+				controllers.routes.javascript.Market.updatePlugin(),
 				// Global search				
 				controllers.routes.javascript.GlobalSearch.search(),
 				controllers.routes.javascript.GlobalSearch.complete(),

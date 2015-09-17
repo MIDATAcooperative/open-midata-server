@@ -81,12 +81,14 @@ public class Plugins extends APIController {
 		boolean applyRules = JsonValidation.getBoolean(json, "applyRules");
 		//boolean createSpace = JsonValidation.getBoolean(json, "createSpace");
 		
-		Plugin visualization = Plugin.getById(visualizationId, Sets.create("defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext"));
+		Plugin visualization = Plugin.getById(visualizationId, Sets.create("defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator"));
 		if (visualization == null) return badRequest("Unknown visualization");
 		
 		User user = User.getById(userId, Sets.create("visualizations","apps", "role"));
+
+		boolean testing = user.role.equals(UserRole.DEVELOPER) && visualization.creator.equals(user._id);
 		
-		if (!user.role.equals(visualization.targetUserRole) && !visualization.targetUserRole.equals(UserRole.ANY)) {
+		if (!user.role.equals(visualization.targetUserRole) && !visualization.targetUserRole.equals(UserRole.ANY) && !testing) {
 			return badRequest("Visualization is for a different role."+user.role);
 		}
 		
@@ -100,7 +102,7 @@ public class Plugins extends APIController {
 		
 		String context = json.has("context") ? JsonValidation.getString(json, "context") : visualization.defaultSpaceContext;
 		
-		if (user.role.equals(UserRole.MEMBER) && visualization.type.equals("visualization")) { 
+		if ((testing || user.role.equals(UserRole.MEMBER)) && visualization.type.equals("visualization")) { 
 					
 			if (spaceName!=null && !spaceName.equals("")) {
 				Space space = null;
@@ -169,8 +171,8 @@ public class Plugins extends APIController {
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
 		}
-		String visualizationServer = Play.application().configuration().getString("visualizations.server");
-		String url = "https://" + visualizationServer + "/" + visualization.filename + "/" + visualization.url;
+		String visualizationServer = Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename;
+		String url = "https://" + visualizationServer  + "/" + visualization.url;
 		return ok(url);
 	}
 	

@@ -53,22 +53,20 @@ import com.mongodb.util.JSONParseException;
 // not secured, accessible from visualizations server (only with valid authToken)
 public class PluginsAPI extends Controller {
 
+	@VisualizationCall
 	public static Result checkPreflight() {
 		// allow cross-origin request from visualizations server
-		String visualizationsServer = Play.application().configuration().getString("visualizations.server");
+		/*String visualizationsServer = Play.application().configuration().getString("visualizations.server");
 		response().setHeader("Access-Control-Allow-Origin", "https://" + visualizationsServer);
 		response().setHeader("Access-Control-Allow-Methods", "POST");
-		response().setHeader("Access-Control-Allow-Headers", "Content-Type");
+		response().setHeader("Access-Control-Allow-Headers", "Content-Type");*/
 		return ok();
 	}
  
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
 	public static Result getIds() throws ModelException, JsonValidationException  {
-		// allow cross origin request from visualizations server
-		String visualizationsServer = Play.application().configuration().getString("visualizations.server");
-		response().setHeader("Access-Control-Allow-Origin", "https://" + visualizationsServer);
-
+		
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -88,10 +86,7 @@ public class PluginsAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
 	public static Result getConfig() throws JsonValidationException, ModelException {
-		// allow cross origin request from visualizations server
-		String visualizationsServer = Play.application().configuration().getString("visualizations.server");
-		response().setHeader("Access-Control-Allow-Origin", "https://" + visualizationsServer);
-
+		
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -118,10 +113,7 @@ public class PluginsAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
 	public static Result setConfig() throws JsonValidationException, ModelException {
-		// allow cross origin request from visualizations server
-		String visualizationsServer = Play.application().configuration().getString("visualizations.server");
-		response().setHeader("Access-Control-Allow-Origin", "https://" + visualizationsServer);
-
+		
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -142,10 +134,7 @@ public class PluginsAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
 	public static Result cloneAs() throws JsonValidationException, ModelException {
-		// allow cross origin request from visualizations server
-		String visualizationsServer = Play.application().configuration().getString("visualizations.server");
-		response().setHeader("Access-Control-Allow-Origin", "https://" + visualizationsServer);
-
+		
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -180,10 +169,7 @@ public class PluginsAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
 	public static Result getRecords() throws JsonValidationException, ModelException {
-		// allow cross origin request from visualizations server
-		String visualizationsServer = Play.application().configuration().getString("visualizations.server");
-		response().setHeader("Access-Control-Allow-Origin", "https://" + visualizationsServer);
-
+		
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -235,10 +221,7 @@ public class PluginsAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall	
 	public static Result getFile() throws ModelException, JsonValidationException {
-		// allow cross origin request from visualizations server
-        String visualizationsServer = Play.application().configuration().getString("visualizations.server");
-		response().setHeader("Access-Control-Allow-Origin", "https://" + visualizationsServer);
-
+		
 		// validate json
 		JsonNode json = request().body().asJson();				
 		JsonValidation.validate(json, "authToken", "_id");		
@@ -260,9 +243,6 @@ public class PluginsAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
 	public static Result createRecord() throws ModelException, JsonValidationException {
-		// allow cross origin request from visualizations server
-		String visualizationsServer = Play.application().configuration().getString("visualizations.server");
-		response().setHeader("Access-Control-Allow-Origin", "https://" + visualizationsServer);
 		//response().setHeader("Access-Control-Allow-Origin", "*");
 		
 		// check whether the request is complete

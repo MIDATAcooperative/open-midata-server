@@ -59,7 +59,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class Records extends Controller {
 
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result onAuthorized(String appIdString) {
 		return ok(authorized.render());
 	}
@@ -203,7 +203,7 @@ public class Records extends Controller {
 	}
 	
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getSharingInfo() throws ModelException {
 		ObjectId userId = new ObjectId(request().username());
 		
@@ -252,7 +252,7 @@ public class Records extends Controller {
 	}
 	
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getSharingDetails(String aps) throws ModelException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId apsId = new ObjectId(aps);
@@ -493,7 +493,7 @@ public class Records extends Controller {
 	}
 	
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getRecordUrl(String recordIdString) throws ModelException {
 		ObjectId userId = new ObjectId(request().username());
 		RecordToken tk = Records.getRecordTokenFromString(recordIdString);
@@ -520,7 +520,7 @@ public class Records extends Controller {
 	 * Get the file associated with a record.
 	 */
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getFile(String id) throws ModelException {
 		
 		RecordToken tk = getRecordTokenFromString(id);

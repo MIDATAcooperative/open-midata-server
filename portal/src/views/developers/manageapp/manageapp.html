@@ -1,0 +1,88 @@
+
+	<div  ng-controller="ManageAppCtrl">
+		
+		<div class="panel panel-primary">
+		<div class="panel-heading">
+		  	<p ng-hide="app._id">Register a new plugin</p>
+			<p ng-show="app._id">Manage Plugin</p>
+		</div>
+		<div class="body">
+		
+		<form class="form-horizontal" ng-submit="updateApp()">
+		  <formrow myid="filename" label="Internal Name">
+		    <input type="text" id="filename" class="form-control" placeholder="Filename" ng-model="app.filename" autofocus>
+		  </formrow>
+		  <formrow myid="name" label="Name">
+		    <input type="text" id="name" class="form-control" placeholder="Name" ng-model="app.name">
+		  </formrow>
+		  <formrow myid="description" label="Description">
+		    <textarea rows="5" id="description" class="form-control" placeholder="Description" ng-model="app.description"></textarea>
+		  </formrow>
+		  <formrow myid="tags" label="Tags">
+		    <div class="checkbox" ng-repeat="tagdef in tags">
+		      <label>
+		        <input type="checkbox" ng-checked="app.tags.indexOf(tagdef)>=0" ng-click="toggle(app.tags, tagdef)">
+		        {{ tagdef }}
+		      </label>
+		    </div>
+		  </formrow>
+		  <formrow myid="targetUserRole" label="Target Role">
+		    <select id="targetUserRole" class="form-control" ng-model="app.targetUserRole" ng-options="role.value as role.label for role in targetUserRoles"></select>
+		  </formrow>
+		  <formrow myid="type" label="Type">
+		    <select id="type" class="form-control" ng-model="app.type" ng-options="type.value as type.label for type in types"></select>
+		  </formrow>
+		  <formrow myid="spotlighted" label="Spotlighted in Market">
+		    <div class="checkbox"><label>
+		    <input type="checkbox" ng-model="app.spotlighted"> Active
+		    </label>
+		    </div>
+		  </formrow>
+		  <formrow myid="url" label="URL" ng-hide="app.type == 'mobile'">
+		    <input type="text" id="url" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" ng-model="app.url">
+		  </formrow>
+		  <formrow myid="previewUrl" label="Dashboard Tile URL" ng-hide="app.type == 'mobile'">
+		    <input type="text" id="previewUrl" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" ng-model="app.previewUrl">
+		  </formrow>
+		  <formrow myid="defaultSpaceName" label="Tile Name" ng-show="app.type == 'visualization'">
+		    <input type="text" id="defaultSpaceName" class="form-control" placeholder="Tile Name" ng-model="app.defaultSpaceName">
+		  </formrow>
+		  <formrow myid="defaultSpaceContext" label="Default Dashboard" ng-show="app.type == 'visualization'">
+		    <input type="text" id="defaultSpaceContext" class="form-control" placeholder="Dashboard Name" ng-model="app.defaultSpaceContext">
+		  </formrow>
+		  <formrow myid="defaultQuery" label="Data Access">
+		  
+		  </formrow>		 
+		  <formrow myid="authorizationUrl" label="Authorization URL" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
+		    <input type="text" id="authorizationUrl" class="form-control" placeholder="Authorization URL" ng-model="app.authorizationUrl">
+		  </formrow>
+		  <formrow myid="accessTokenUrl" label="Access Token URL" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
+		    <input type="text" id="accessTokenUrl" class="form-control" placeholder="Access token URL" ng-model="app.accessTokenUrl">
+		  </formrow>
+		  <formrow myid="consumerKey" label="Consumer Key" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
+		    <input type="text" id="consumerKey" class="form-control" placeholder="Consumer key" ng-model="app.consumerKey">
+		  </formrow>
+		  <formrow myid="consumerSecret" label="Consumer Secret" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
+		    <input type="text" id="consumerSecret" class="form-control" placeholder="Consumer secret" ng-model="app.consumerSecret">
+		  </formrow>
+		  <formrow myid="requestTokenUrl" label="Request Token URL" ng-show="app.type == 'oauth1'">
+		    <input type="text" id="requestTokenUrl" class="form-control" placeholder="Request token URL" ng-model="app.requestTokenUrl">
+		  </formrow>
+		  <formrow myid="scopeParameters" label="Scope Parameters" ng-show="app.type == 'oauth2'">
+		    <input type="text" id="scopeParameters" class="form-control" placeholder="Scope parameters" ng-model="app.scopeParameters">
+		  </formrow>
+		  <formrow myid="secret" label="Application Secret" ng-show="app.type == 'mobile'">
+		    <input type="text" id="secret" class="form-control" placeholder="Secret" ng-model="app.secret">
+		  </formrow>
+		   <formrow myid="developmentServer" label="Development Server" ng-hide="app.type == 'mobile'">
+		    <input type="text" id="developmentServer" class="form-control" placeholder="http://localhost:9000" ng-model="app.developmentServer">
+		  </formrow>
+		  <formrow myid="x" label="">
+		    <button type="submit" class="btn btn-primary">Submit</button>
+		    <button class="btn btn-default" ng-click="doInstall()">Install</button>
+		  </formrow>
+	     </form>	  
+		  
+		
+	</div>
+	</div></div>

@@ -13,18 +13,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.RecordSharing;
 
-public class VisualizationCallAction extends Action<VisualizationCall> {
+public class AppsCallAction extends Action<AppsCall> {
 
     public F.Promise<Result> call(Http.Context ctx) throws Throwable { 
     	try {
     	  JsonNode json = ctx.request().body().asJson();
     	  ctx.args.put("json", json);
     	  String host = ctx.request().getHeader("Origin");
-    	  String visualizationsServer = "https://" + Play.application().configuration().getString("visualizations.server");
+    	  String appsServer = "https://" + Play.application().configuration().getString("apps.server");
     	  if (host != null) {
-	  		  if (host.startsWith("https://localhost:") || host.startsWith("http://localhost:") || host.equals(visualizationsServer)) {
+	  		  if (host.startsWith("https://localhost:") || host.startsWith("http://localhost:") || host.equals(appsServer)) {
 	  		    ctx.response().setHeader("Access-Control-Allow-Origin", host);
-	  		  } else ctx.response().setHeader("Access-Control-Allow-Origin", visualizationsServer);
+	  		  } else ctx.response().setHeader("Access-Control-Allow-Origin", appsServer);
     	  }
     	  ctx.response().setHeader("Allow", "*");
     	  ctx.response().setHeader("Access-Control-Allow-Credentials", "true");
