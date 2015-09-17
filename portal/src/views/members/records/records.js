@@ -68,7 +68,7 @@ angular.module('portal')
 		//$scope.loadingRecords = true;
 		var properties = {};
 		if (owner) properties.owner = owner;
-		if (group) properties.group = group;
+		if (group) properties["group-strict"] = group;
 		if ($scope.debug) properties.streams = "true";
 		return records.getRecords(userId, properties, ["id", "owner", "ownerName", "content", "created", "name", "group"]).
 		then(function(results) {

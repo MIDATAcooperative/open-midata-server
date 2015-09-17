@@ -57,6 +57,17 @@ public class FormatGroupHandling extends QueryManager {
 		    for (ContentInfo fi : qualified) contents.add(fi.content);
 		    
 		    return contents;
+		} else if (q.restrictedBy("group-strict")) {
+            Set<String> contents = new HashSet<String>();
+			
+			Set<String> groups = new HashSet<String>();
+			Set<String> included = q.getRestriction("group-strict"); 
+			groups.addAll(included);
+									
+		    Set<ContentInfo> qualified = ContentInfo.getByGroups(groups);		    
+		    for (ContentInfo fi : qualified) contents.add(fi.content);
+		    
+		    return contents;
 		}
 		
 		return null;
