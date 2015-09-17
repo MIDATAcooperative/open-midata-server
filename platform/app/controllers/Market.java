@@ -55,6 +55,7 @@ public class Market extends Controller {
 		app.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
 		app.defaultSpaceName = JsonValidation.getString(json, "defaultSpaceName");
 		app.defaultSpaceContext = JsonValidation.getString(json, "defaultSpaceContext");
+		app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 
 		// fill in specific fields
 		if (app.type.equals("oauth1") || app.type.equals("oauth2")) {
@@ -135,6 +136,7 @@ public class Market extends Controller {
 		plugin.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
 		plugin.defaultSpaceName = JsonValidation.getString(json, "defaultSpaceName");
 		plugin.defaultSpaceContext = JsonValidation.getString(json, "defaultSpaceContext");
+		plugin.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 
 		// fill in specific fields
 		if (plugin.type.equals("oauth1") || plugin.type.equals("oauth2")) {

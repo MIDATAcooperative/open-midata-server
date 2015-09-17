@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import models.AccessPermissionSet;
 import models.Developer;
 
 import models.ModelException;
@@ -102,7 +103,7 @@ public class Developers extends APIController {
 		
 		KeyManager.instance.unlock(user._id, "12345");
 		
-		//RecordSharing.instance.createPrivateAPS(user._id, user._id);
+		if (AccessPermissionSet.getById(user._id) == null) RecordSharing.instance.createPrivateAPS(user._id, user._id);
 		
 		
 		// user authenticated

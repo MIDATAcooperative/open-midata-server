@@ -25,11 +25,19 @@ angular.module('portal')
 	
 	$scope.loadApp = function(appId) {
 		apps.getApps({ "_id" : { "$oid" :  appId }}, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","url","developmentServer","version"])
-		.then(function(data) { $scope.app = data.data[0]; });
+		.then(function(data) { 
+			$scope.app = data.data[0];
+			$scope.app.defaultQueryStr = JSON.stringify($scope.app.defaultQuery);
+		});
 	};
 	
 	// register app
 	$scope.updateApp = function(type) {
+		if ($scope.app.defaultQueryStr != null && $scope.app.defaultQueryStr !== "") {
+		  $scope.app.defaultQuery = JSON.parse($scope.app.defaultQueryStr);
+		} else {
+		  $scope.app.defaultQuery = null;	
+		}
 		
 		// check whether url contains ":authToken"
 		if (type !== "mobile" && $scope.app.url.indexOf(":authToken") < 0) {

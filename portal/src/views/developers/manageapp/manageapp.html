@@ -50,8 +50,8 @@
 		  <formrow myid="defaultSpaceContext" label="Default Dashboard" ng-show="app.type == 'visualization'">
 		    <input type="text" id="defaultSpaceContext" class="form-control" placeholder="Dashboard Name" ng-model="app.defaultSpaceContext">
 		  </formrow>
-		  <formrow myid="defaultQuery" label="Data Access">
-		  
+		  <formrow myid="defaultQuery" label="Access Query(JSON)" ng-show="app.type == 'visualization'">
+		    <textarea rows="5" id="defaultQuery" class="form-control" placeholder="Description" ng-model="app.defaultQueryStr"></textarea>
 		  </formrow>		 
 		  <formrow myid="authorizationUrl" label="Authorization URL" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
 		    <input type="text" id="authorizationUrl" class="form-control" placeholder="Authorization URL" ng-model="app.authorizationUrl">

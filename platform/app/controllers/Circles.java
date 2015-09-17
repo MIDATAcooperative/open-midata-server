@@ -1,7 +1,6 @@
 package controllers;
 
 import java.security.NoSuchAlgorithmException;
-import java.security.acl.Owner;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,8 +12,6 @@ import java.util.Set;
 
 import models.Circle;
 import models.Consent;
-import models.HPUser;
-import models.HealthcareProvider;
 import models.Member;
 import models.MemberKey;
 import models.ModelException;
@@ -29,7 +26,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.PasswordHash;
-import utils.access.AccessLog;
 import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
@@ -41,7 +37,6 @@ import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 
 
 public class Circles extends Controller {	
