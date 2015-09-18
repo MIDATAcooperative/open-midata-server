@@ -22,6 +22,7 @@ import models.RecordsInfo;
 import models.Space;
 import models.Member;
 import models.StudyParticipation;
+import models.User;
 
 import org.bson.BSONObject;
 import org.bson.types.ObjectId;
@@ -381,7 +382,7 @@ public class Records extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result updateSharing() throws JsonValidationException, ModelException {
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -398,7 +399,7 @@ public class Records extends Controller {
 		Map<String, Object> query = json.has("query") ? JsonExtraction.extractMap(json.get("query")) : null;
 		
 		// get owner
-		Member owner = Member.getById(userId, Sets.create("myaps"));
+		User owner = User.getById(userId, Sets.create("myaps"));
 		
 		Map<String,Set<String>> records = new HashMap<String,Set<String>>();
 		for (String recordId :recordIds) {

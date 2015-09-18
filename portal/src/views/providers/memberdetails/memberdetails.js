@@ -15,7 +15,7 @@ angular.module('portal')
 				console.log(data);
 				$scope.memberkey = data.memberkey;
 				if (data.memberkey) {
-				  views.setView("1", { aps : $scope.memberkey._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ]});
+				  views.setView("1", { aps : $scope.memberkey._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd: true, type : "memberkeys"});
 				} else {
 				  views.disableView("1");
 				}
@@ -28,7 +28,7 @@ angular.module('portal')
 	
 	$scope.selectConsent = function() {
 		if ($scope.consent != null) {
-			views.setView("1", { aps : $scope.consent._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ]});			
+			views.setView("1", { aps : $scope.consent._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type : "memberkeys" });			
 		} else {
 			views.disableView("1");
 		}
@@ -93,7 +93,7 @@ angular.module('portal')
 	// go to record creation/import dialog
 	$scope.createOrImport = function(app) {
 		if (app.type === "create") {
-			$state.go("^.createrecord", { memberId : $scope.member._id.$oid, appId : app._id.$oid, consentId : $scope.consent._id.$oid });			
+			$state.go("^.createpatientrecord", { memberId : $scope.member._id.$oid, appId : app._id.$oid, consentId : $scope.consent._id.$oid });			
 		} else {
 			$state.go("^.importrecords", { appId : app._id.$oid });			
 		}

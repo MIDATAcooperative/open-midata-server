@@ -8,5 +8,13 @@ angular.module('portal')
 	    .state('developer.spaces', {
 	      url: '/spaces/:spaceId',
 	      templateUrl: 'views/members/spaces/spaces.html' 
+	    })
+	    .state('research.spaces', {
+	      url: '/spaces/:spaceId',
+	      templateUrl: 'views/members/spaces/spaces.html' 
+	    })
+	     .state('provider.spaces', {
+	      url: '/spaces/:spaceId',
+	      templateUrl: 'views/members/spaces/spaces.html' 
 	    });
 });

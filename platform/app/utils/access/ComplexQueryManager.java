@@ -18,6 +18,7 @@ import org.bson.BasicBSONObject;
 import org.bson.types.ObjectId;
 
 import utils.DateTimeUtils;
+import utils.collections.CMaps;
 import utils.collections.Sets;
 import models.ContentInfo;
 import models.ModelException;
@@ -36,7 +37,7 @@ public class ComplexQueryManager {
 	}
 	
 	public static Collection<RecordsInfo> info(APSCache cache, ObjectId aps, Map<String, Object> properties) throws ModelException {
-		return infoQuery(new Query(new HashMap<String,Object>(), Sets.create("created", "group"), cache, aps), aps);
+		return infoQuery(new Query(properties, Sets.create("created", "group"), cache, aps), aps, false);
 	}
 		
 	public static boolean isInQuery(Map<String, Object> properties, Record record) throws ModelException {
@@ -51,26 +52,87 @@ public class ComplexQueryManager {
 		return postProcessRecords(qm, query, qm.query(query));		
 	}
 	
-	public static Collection<RecordsInfo> infoQuery(Query q, ObjectId aps) throws ModelException {
-		QueryManager qm = new BlackListQM(q, new APSQSupportingQM(new AccountLevelQueryManager(new FormatGroupHandling(new StreamQueryManager()))));
+	public static Collection<RecordsInfo> infoQuery(Query q, ObjectId aps, boolean cached) throws ModelException {
+		AccessLog.debug("infoQuery aps="+aps+" cached="+cached);
 		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
 		
+		if (cached) {
+			BasicBSONObject obj = q.getCache().getAPS(aps).getMeta("_info");
+			if (obj != null) {
+				
+				RecordsInfo inf = new RecordsInfo();
+				inf.count = obj.getInt("count");
+				inf.group = obj.getString("group");
+				inf.newest = obj.getDate("newest");
+				inf.oldest = obj.getDate("oldest");
+				inf.newestRecord = obj.getObjectId("newestRecord");
+				result.put(inf.group, inf);
+				q = new Query(q, CMaps.map("created-after", new Date(inf.newest.getTime() + 1 /*+ 1000 * 60 * 60* 24*60 */)));
+			
+			}
+		}
+		
+		
+		QueryManager qm = new BlackListQM(q, new APSQSupportingQM(new AccountLevelQueryManager(new FormatGroupHandling(new StreamQueryManager()))));
+		
+		boolean checkDates = q.uses("created");
 		List<Record> recs = qm.query(q);
 		recs = postProcessRecords(qm, q, recs);
 		
 		for (Record record : recs) {
-			RecordsInfo ri = result.get(record.group);
-			if (ri == null) {
-				ri = new RecordsInfo();
-				ri.group = record.group;
-				ri.newest = record.created;
-				ri.oldest = record.created;
-				result.put(record.group, ri);
+			if (record.isStream) {
+				Collection<RecordsInfo> streaminfo = infoQuery(new Query(q, CMaps.map("stream", record._id)), record._id, true);
+				
+				for (RecordsInfo inf : streaminfo) {
+					RecordsInfo here = result.get(inf.group);
+					if (here == null) {
+						result.put(inf.group, inf);
+					} else {
+						here.count += inf.count;
+						if (inf.newest.after(here.newest)) {
+							here.newest = inf.newest;
+							here.newestRecord = inf.newestRecord;
+						}
+						if (inf.oldest.before(here.oldest)) {
+							here.oldest = inf.oldest;
+						}
+					}
+				}
+			} else {
+			
+				RecordsInfo ri = result.get(record.group);
+				if (ri == null) {
+					ri = new RecordsInfo();
+					ri.group = record.group;
+					if (checkDates) {
+					ri.newest = record.created;
+					ri.oldest = record.created;
+					ri.newestRecord = record._id;
+					}
+					result.put(record.group, ri);				
+				}
+				ri.count++;
+				if (checkDates) {
+					if (record.created.after(ri.newest)) {
+						ri.newest = record.created;
+						ri.newestRecord = record._id;
+					}
+					if (record.created.before(ri.oldest)) ri.oldest = record.created;
+				}
 			}
-			ri.count++;
-			if (record.created.after(ri.newest)) ri.newest = record.created;
-			if (record.created.before(ri.oldest)) ri.oldest = record.created;
 						
+		}
+		
+		AccessLog.debug("infoQuery result: cached="+cached+" records="+recs.size()+" result="+result.size()+" checkDates="+checkDates);
+		if (cached && recs.size()>0 && result.size() == 1 && checkDates) {
+			RecordsInfo inf = result.get(recs.get(0).group);
+			BasicBSONObject r = new BasicBSONObject();
+			r.put("group", inf.group);
+			r.put("count", inf.count);
+			r.put("newest", inf.newest);
+			r.put("oldest", inf.oldest);
+			r.put("newestRecord", inf.newestRecord);
+			q.getCache().getAPS(aps).setMeta("_info", r);
 		}
 		return result.values();
 	}
@@ -131,6 +193,7 @@ public class ComplexQueryManager {
 			record.name = r2.name;						
 			record.description = r2.description;
 			record.data = r2.data;
+			record.time = r2.time;
 			
 			record.createdOld = r2.createdOld;
 		}
@@ -152,16 +215,29 @@ public class ComplexQueryManager {
     	result = duplicateElimination(result); 
 			
     	boolean postFilter = q.getMinDate() != null || q.getMaxDate() != null || q.restrictedBy("creator") || (q.restrictedBy("format") && q.restrictedBy("document"));
+    	int minTime = q.getMinTime();
+    	int compress = 0;
     	if (q.getFetchFromDB()) {				
 			for (Record record : result) {
 				fetchFromDB(q, record);
-				SingleAPSManager.decryptRecord(record);
-				if (record.creator == null) record.creator = record.owner;
+				if (minTime == 0 || record.time ==0 || record.time >= minTime) {
+				  SingleAPSManager.decryptRecord(record);
+				  if (record.creator == null) record.creator = record.owner;
+				} else compress++;				
 				if (!q.getGiveKey()) record.clearSecrets();
 			}
 		} else {
 		   if (!q.getGiveKey()) for (Record record : result) record.clearSecrets();
 		}
+    	AccessLog.debug("compress: "+compress+ "minTime="+minTime);
+    	if (compress > 0) {
+    		List<Record> result_new = new ArrayList<Record>(result.size() - compress);
+    		for (Record r : result) {
+    			if (r.created != null) result_new.add(r);
+    		}
+    		result = result_new;    		
+    	}
+    	
 		if (qm!=null) result = qm.postProcess(result, q);     	
 								
 		// 8 Post filter records if necessary		
@@ -180,6 +256,7 @@ public class ComplexQueryManager {
 			List<Record> filteredResult = new ArrayList<Record>(result.size());
 			for (Record record : result) {
 				if (record.name == null) continue;
+				//if (minDate != null) AccessLog.debug("minDate="+minDate.toString()+" vs "+record.createdOld.toString()+" skip="+record.created)
 				if (minDate != null && record.created.before(minDate)) continue;
 				if (maxDate != null && record.created.after(maxDate)) continue;
 				if (creators != null && !creators.contains(record.creator)) continue;	
@@ -203,16 +280,16 @@ public class ComplexQueryManager {
     
     protected static List<Record> filterByFormat(List<Record> input, Set<String> formats, Set<String> contents, Set<String> contentsWC) {
     	if (formats == null && contents == null && contentsWC == null) return input;
-    	AccessLog.debug("filterByFormat:" + formats);
+    	/*AccessLog.debug("filterByFormat:" + formats);
     	AccessLog.debug("filterByContents:" + contents);
-    	AccessLog.debug("filterByContentsWC:" + contentsWC);
+    	AccessLog.debug("filterByContentsWC:" + contentsWC);*/
     	List<Record> filteredResult = new ArrayList<Record>(input.size());
     	for (Record record : input) {
-    		AccessLog.debug("test:"+record.content);
+    		//AccessLog.debug("test:"+record.content);
     		if (formats!= null && !formats.contains(record.format)) continue;
     		if (contents!= null && !contents.contains(record.content)) continue;
     		if (contentsWC!=null && !contentsWC.contains(ContentInfo.getWildcardName(record.content))) continue;
-    		AccessLog.debug("add:"+record.content);
+    		//AccessLog.debug("add:"+record.content);
     		filteredResult.add(record);
     	}
     	

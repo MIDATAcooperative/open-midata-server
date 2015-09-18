@@ -15,8 +15,7 @@ public class Consent extends Model {
 
 	protected static final String collection = "consents";
 	
-	public ObjectId owner;
-	public @NotMaterialized String ownerName;
+	public ObjectId owner;	
 	public String name;	
 	public Set<ObjectId> authorized;
 	public ConsentType type;

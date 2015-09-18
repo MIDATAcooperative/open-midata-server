@@ -16,5 +16,10 @@ angular.module('portal')
 	    .state('developer.recordsharing', {
 	      url: '/records/:selectedType/:selected',
 	      templateUrl: 'views/members/records/records.html' 
+	    })
+	    .state('research.records', {
+	      url: '/records',
+	      templateUrl: 'views/members/records/records.html',
+	      role : 'research'
 	    });
 });

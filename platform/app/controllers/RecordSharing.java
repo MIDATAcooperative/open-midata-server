@@ -558,7 +558,13 @@ public class RecordSharing {
 	}
 	
 	public Collection<RecordsInfo> info(ObjectId who, ObjectId aps, Map<String, Object> properties) throws ModelException {
-		return ComplexQueryManager.info(getCache(who), aps, properties);
+		// Only allow specific properties as results are materialized
+		Map<String, Object> nproperties = new HashMap<String, Object>();
+		nproperties.put("streams", "true");
+		nproperties.put("flat", "true");
+		if (properties.containsKey("owner")) nproperties.put("owner", properties.get("owner"));
+		if (properties.containsKey("study")) nproperties.put("study", properties.get("study"));
+		return ComplexQueryManager.info(getCache(who), aps, nproperties);
 	}
 
 	public Record fetch(ObjectId who, RecordToken token) throws ModelException {
@@ -571,9 +577,7 @@ public class RecordSharing {
 		if (result.size() != 1) throw new ModelException("Unknown Record");
 		
 		FileData fileData = FileStorage.retrieve(new ObjectId(token.recordId));
-		Record rec = result.get(0);
-		AccessLog.debug(rec.toString()+ "::" + rec.key);
-		AccessLog.debug(fileData.filename+" :: "+fileData.inputStream);
+		Record rec = result.get(0);		
 		
 		fileData.inputStream = EncryptionUtils.decryptStream(new SecretKeySpec(rec.key, EncryptedAPS.KEY_ALGORITHM), fileData.inputStream);
 		

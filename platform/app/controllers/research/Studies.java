@@ -3,19 +3,25 @@ package controllers.research;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import models.Consent;
 import models.FilterRule;
 import models.History;
 import models.Info;
 import models.Member;
 import models.ModelException;
 import models.ParticipationCode;
+import models.Record;
 import models.Research;
 import models.ResearchUser;
 import models.Study;
 import models.StudyParticipation;
+import models.StudyRelated;
 import models.User;
+import models.enums.ConsentStatus;
+import models.enums.ConsentType;
 import models.enums.EventType;
 import models.enums.InformationType;
 import models.enums.ParticipantSearchStatus;
@@ -31,6 +37,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.auth.CodeGenerator;
+import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -41,6 +48,7 @@ import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import controllers.APIController;
+import controllers.RecordSharing;
 
 
 public class Studies extends APIController {
@@ -84,8 +92,38 @@ public class Studies extends APIController {
 		
 		Study.add(study);
 		
+		/*StudyRelated consent = new StudyRelated();
+		consent._id = study._id;
+		consent.type = ConsentType.STUDYRELATED;
+		consent.name = "Study: "+study.name;
+		consent.owner = userId;
+		consent.status = ConsentStatus.ACTIVE;
+		consent.authorized = new HashSet<ObjectId>();
+		consent.add();
+		
+		RecordSharing.instance.createAnonymizedAPS(userId, userId, consent._id);*/
+		
 		return ok(Json.toJson(study));
 	}
+	
+	
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)
+	public static Result download(String id) throws ModelException {
+		 ObjectId studyid = new ObjectId(id);
+		 ObjectId owner = new ObjectId(session().get("org"));
+		 ObjectId executorId = new ObjectId(request().username());
+		   
+		 Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("executionStatus","participantSearchStatus","validationStatus","history","owner"));
+
+		 if (study == null) return badRequest("Unknown Study");
+		 
+		 List<Record> allRecords = RecordSharing.instance.list(executorId, executorId, CMaps.map("study",  study._id), Sets.create("id", "ownerName",
+					"app", "creator", "created", "name", "format", "content", "description", "data", "group"));
+		 
+		 return ok(Json.toJson(allRecords));
+	}
+	
 		
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
@@ -273,7 +311,8 @@ public class Studies extends APIController {
 	   if (study == null) return badRequest("Study does not belong to organization.");
 	   
 
-	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, Sets.create("memberName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth"));
+	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, Sets.create("ownerName", "owner", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth"));
+	   
 	   
 	   return ok(Json.toJson(participants));
 	}
@@ -289,7 +328,7 @@ public class Studies extends APIController {
 	   Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordRules","studyKeywords"));
 	   if (study == null) return badRequest("Study does not belong to organization");
 	   	   
-	   StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, Sets.create("status", "group", "history","memberName", "gender", "country", "yearOfBirth", "member"));
+	   StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, Sets.create("pstatus", "group", "history","ownerName", "gender", "country", "yearOfBirth", "owner"));
 	   if (participation == null) return badRequest("Member does not participate in study");
 	   if (participation.pstatus == ParticipationStatus.CODE || 
 		   participation.pstatus == ParticipationStatus.MATCH || 

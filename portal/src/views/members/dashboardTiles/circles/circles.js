@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('CirclesCtrl', ['$scope', '$state', 'server', '$attrs', 'views', 'circles', 'status', function($scope, $state, server, $attrs, views, circles, status) {
+.controller('SmallCirclesCtrl', ['$scope', '$state', 'server', '$attrs', 'views', 'circles', 'status', function($scope, $state, server, $attrs, views, circles, status) {
 	
 	$scope.circles = [];	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
@@ -34,7 +34,7 @@ angular.module('views')
 		});
 	};
 	
-	/*
+	
 	$scope.createCircle = function() {
 		console.log($scope.form);
 		if ($scope.form.newCircleName.trim() === "") {
@@ -42,13 +42,12 @@ angular.module('views')
 			return;
 		} else { $scope.errors.newCircleName = null; }
 		
-		circles.createNew($scope.form.newCircleName).
+		circles.createNew({ name : $scope.form.newCircleName, type : "CIRCLE" }).
 		then(function(results) {
-			$state.go('^.circle', { circleId : results.data._id.$oid });
+			$state.go('^.circles', { circleId : results.data._id.$oid });
 		});		
 	};
-		*/
-	
+		
 	$scope.$watch('view.setup', function() { $scope.reload(); });	
 	
 }]);

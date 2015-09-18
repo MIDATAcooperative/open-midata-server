@@ -309,7 +309,7 @@ public class PluginsAPI extends Controller {
 				
 		Set<ObjectId> records = new HashSet<ObjectId>();
 		records.add(record._id);
-		RecordSharing.instance.share(targetUser._id, targetUser.myaps, targetAps, records, false);
+		RecordSharing.instance.share(targetUser._id, targetUser._id, targetAps, records, false);
 				
 		return ok();
 	}

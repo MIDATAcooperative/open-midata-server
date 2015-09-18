@@ -12,5 +12,9 @@ angular.module('services')
 		return server.post(jsRoutes.controllers.PortalConfig.setConfig().url, JSON.stringify(data));
 	};
 	
+	service.remove = function(context, view) {
+		console.log("remove context:"+context+" view="+view);
+	};
+	
 	return service;
 }]);

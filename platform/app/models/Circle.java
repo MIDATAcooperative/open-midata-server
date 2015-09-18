@@ -20,6 +20,7 @@ import utils.search.SearchException;
 public class Circle extends Consent implements Comparable<Circle> {
 		
 	public int order;
+	public @NotMaterialized String ownerName;
 	//public ObjectId aps;
 
 	@Override

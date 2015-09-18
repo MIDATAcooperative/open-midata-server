@@ -356,7 +356,7 @@ public class EncryptedAPS {
 			try {
 			    BSONObject decrypted = EncryptionUtils.decryptBSON(encryptionKey, aps.encrypted);
 		    	aps.permissions = decrypted.toMap();
-		    	AccessLog.debug("decoded:"+decrypted.toString());
+		    	//AccessLog.debug("decoded:"+decrypted.toString());
 		    	if (aps.permissions == null) throw new NullPointerException();
 		    	aps.encrypted = null;
 			} catch (ModelException e) {

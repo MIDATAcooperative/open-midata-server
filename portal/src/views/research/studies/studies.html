@@ -20,7 +20,7 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="study in results">
-	      <td><a ui-sref="research.study.overview({ study : study._id.$oid})">{{ study.name }}</a></td>	  
+	      <td><a ui-sref="research.study.overview({ studyId : study._id.$oid})">{{ study.name }}</a></td>	  
 	      <td>{{ study.validationStatus }}</td>
 	      <td>{{ study.participantSearchStatus }}</td>
 	      <td>{{ study.executionStatus }}</td>

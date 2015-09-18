@@ -1,6 +1,8 @@
 package controllers.research;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.bson.types.ObjectId;
@@ -78,6 +80,9 @@ public class Researchers extends APIController {
 		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
 		user.security = AccountSecurityLevel.KEY;
+		user.apps = new HashSet<ObjectId>();
+		user.tokens = new HashMap<String, Map<String, String>>();
+		user.visualizations = new HashSet<ObjectId>();
 		
 		Research.add(research);
 		user.organization = research._id;

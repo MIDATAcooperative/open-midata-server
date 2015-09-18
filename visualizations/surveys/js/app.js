@@ -3,8 +3,10 @@ surveys.controller('SurveyCtrl', ['$scope', '$http', '$location', '$filter', 'mi
 	function($scope, $http, $location, $filter, midataServer) {
 		
 		var path = $location.path().split("/");
+		console.log(path[2]);
 		$scope.authToken = path[1];
-		$scope.edit = path.length > 2 ? path[2] == "editor" : false;;
+		$scope.edit = path.length > 2 ? path[2] == "editor" : false;
+		console.log($scope.edit);
 		
 		$scope.types = [
            { id : "survey", label:"Survey" },

@@ -16,7 +16,9 @@
 		<nav class="collapse navbar-collapse navbar-ex1-collapse">
 			<ul class="nav navbar-nav">            	
 				<li ui-sref-active="active"><a ui-sref="research.messages">Messages</a></li>
-				<li ui-sref-active="active"><a ui-sref="research.studies">Studies</a></li>				
+				<li ui-sref-active="active"><a ui-sref="research.studies">Studies</a></li>
+				<li ui-sref-active="active"><a ui-sref="research.dashboard({ dashId : 'workspace' })">Workspace</a></li>	
+				<li ui-sref-active="active"><a ui-sref="research.records">Data</a></li>			
 			</ul>
 			<ul class="nav navbar-nav navbar-right" ng-cloak>
 				<li><a>{{user.name}}</a></li>

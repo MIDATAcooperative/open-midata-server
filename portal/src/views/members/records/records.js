@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RecordsCtrl', ['$scope', '$state', 'server',  '$filter', 'dateService', 'records', 'circles', 'formats', 'apps', 'status', function($scope, $state, server, $filter, dateService, records, circles, formats, apps, status) {
+.controller('RecordsCtrl', ['$scope', '$state', 'server',  '$filter', 'dateService', 'records', 'circles', 'formats', 'apps', 'status', 'studies', function($scope, $state, server, $filter, dateService, records, circles, formats, apps, status, studies) {
 	
 	// init
 	$scope.error = null;
@@ -64,10 +64,11 @@ angular.module('portal')
 	};
 	
 	// get records
-	$scope.getRecords = function(userId, owner, group) {
+	$scope.getRecords = function(userId, owner, group, study) {
 		//$scope.loadingRecords = true;
 		var properties = {};
 		if (owner) properties.owner = owner;
+		if (study) properties.study = study;
 		if (group) properties["group-strict"] = group;
 		if ($scope.debug) properties.streams = "true";
 		return records.getRecords(userId, properties, ["id", "owner", "ownerName", "content", "created", "name", "group"]).
@@ -78,9 +79,10 @@ angular.module('portal')
 		});
 	};
 	
-	$scope.getInfos = function(userId, owner) {
+	$scope.getInfos = function(userId, owner, study) {
 		var properties = {};
 		if (owner) properties.owner = owner;
+		if (study) properties.study = study;
 		if ($scope.debug) properties.streams = "true";
 		return records.getInfos(userId, properties).
 		then(function(results) {
@@ -94,30 +96,43 @@ angular.module('portal')
 		group.open = open;
 		if (open && !group.loaded) {
 			group.loaded = true;
-			$scope.getRecords($scope.displayAps.aps, $scope.displayAps.owner, group.name);
+			$scope.getRecords($scope.displayAps.aps, $scope.displayAps.owner, group.name, $scope.displayAps.study);
 		}
 	};
 	
 	
 	$scope.getAvailableSets = function(userId) {
-		circles.get({ "member": userId }, ["name","aps","ownerName"])
-		.then(function(results) {
-			//$scope.availableAps = [{ name : "Your Data", aps:userId, owner : "self"  }, { name : "All Data", aps:userId, owner : "all"}];
-			angular.forEach(results.data, function(circle) { 
-				$scope.availableAps.push({ name:"Shared by "+circle.ownerName, aps:circle._id.$oid });
+		
+		if ($state.current.role == "research") {
+			
+			studies.research.list()
+			.then(function(results) {
+				angular.forEach(results.data, function(study) { 
+					$scope.availableAps.push({ name:"Study "+study.name, aps:userId, study : study._id.$oid });
+				});
 			});
-		});
+			
+		} else {
+		
+			circles.get({ "member": userId }, ["name","aps","ownerName"])
+			.then(function(results) {
+				//$scope.availableAps = [{ name : "Your Data", aps:userId, owner : "self"  }, { name : "All Data", aps:userId, owner : "all"}];
+				angular.forEach(results.data, function(circle) { 
+					$scope.availableAps.push({ name:"Shared by "+circle.ownerName, aps:circle._id.$oid });
+				});
+			});
+		}
 	};
 	
 	$scope.selectSet = function() {
-		$scope.getInfos($scope.displayAps.aps, $scope.displayAps.owner)
+		$scope.getInfos($scope.displayAps.aps, $scope.displayAps.owner, $scope.displayAps.study)
 		.then(function() { $scope.loadSharingDetails(); });
 		
 	};
 	
 	$scope.showDebug = function() {
 		$scope.debug = true;
-		$scope.getInfos($scope.displayAps.aps, $scope.displayAps.owner)
+		$scope.getInfos($scope.displayAps.aps, $scope.displayAps.owner, $scope.displayAps.study)
 		.then(function() { $scope.loadSharingDetails(); });
 		
 	};
@@ -256,7 +271,11 @@ angular.module('portal')
 				
 				$scope.compare = [];
 				angular.forEach($scope.circles, function(circle) { circle.type="circles"; $scope.compare.push(circle); });
-				angular.forEach($scope.participations, function(part) { part.type="participations"; $scope.compare.push(part); });
+				angular.forEach($scope.participations, function(part) { 
+					part.type="participations";
+					if (!part.name) part.name = "Study:"+part.studyName;
+					$scope.compare.push(part);
+				});
 				angular.forEach($scope.memberkeys, function(mk) { mk.type="memberkeys"; $scope.compare.push(mk); });
 				
 			}).

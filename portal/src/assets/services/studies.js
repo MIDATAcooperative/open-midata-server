@@ -11,5 +11,11 @@ angular.module('services')
 		return server.patch(jsRoutes.controllers.members.Studies.updateParticipation(studyId).url, JSON.stringify(data));
 	};
 	
+	service.research = {
+			list : function() {	
+		       return server.get(jsRoutes.controllers.research.Studies.list().url);
+	        }
+	};
+	
 	return service;
 }]);

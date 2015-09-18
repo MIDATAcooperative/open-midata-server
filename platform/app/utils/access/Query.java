@@ -111,7 +111,9 @@ public class Query {
 		} else if (v instanceof Collection) {
 			Set<ObjectId> results = new HashSet<ObjectId>();
 			for (Object obj : (Collection<?>) v) { results.add(new ObjectId(obj.toString())); }			
-			return results;											
+			return results;		
+		} else if (v instanceof String && ObjectId.isValid((String) v)) {
+			return Collections.singleton( new ObjectId((String) v));
 		} else throw new ModelException("Bad Restriction: "+name);
 	}
 	
@@ -161,7 +163,10 @@ public class Query {
 				properties.put("time", minTime);
 			} else {
 			    Map<String, Integer> restriction = new HashMap<String, Integer>();
-			    if (minTime!=0) restriction.put("$gte", minTime);
+			    if (minTime!=0) {
+			    	restriction.put("$gte", minTime);
+			    	AccessLog.debug("$gte:"+minTime);
+			    }
 			    if (maxTime!=0) restriction.put("$lte", maxTime);
 			    properties.put("time", restriction);
 			}
@@ -185,7 +190,7 @@ public class Query {
 	              properties.containsKey("created") ||
 	              properties.containsKey("name");
 		 
-		 restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age");
+		 restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age") || properties.containsKey("created-after");
 		 
          fieldsFromDB = Sets.create("createdOld");
          if (restrictedOnTime) fieldsFromDB.add("time");
@@ -207,6 +212,11 @@ public class Query {
 			Number maxAge = Long.parseLong(properties.get("max-age").toString());
 			minDate = new Date(System.currentTimeMillis() - 1000 * maxAge.longValue());
 			minTime = getTimeFromDate(minDate);
+		 }
+		 
+		 if (properties.containsKey("created-after")) {				
+				minDate = (Date) properties.get("created-after");
+				minTime = getTimeFromDate(minDate);
 		 }
 	}
 	

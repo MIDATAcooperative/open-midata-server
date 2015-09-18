@@ -12,11 +12,13 @@ import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.db.NotMaterialized;
 
 public class StudyParticipation extends Consent {
 	
 	//private static final String collection = "participation";
 	
+	public String ownerName;
 	public ObjectId study; //study that the member is related to
 	public String studyName; // replication of study name
 	public ParticipationStatus pstatus; //how is the member related to the study?

@@ -23,7 +23,7 @@
 	  <span ng-show="member.mobile">Mobile: {{ member.mobile }}</span><br>
     </address>		
     </div>
-    <p>Status: {{ participation.status }}</p>
+    <p>Status: {{ participation.pstatus }}</p>
     <p>Group: {{ participation.group }}</p>
     </div>
     </div>	
@@ -50,7 +50,7 @@
 	    </table>	    
     </div>
     
-    <div ng-include="/views/shared/dashboard/dashboard.html"></div> 
+    <div ng-include="'/views/shared/dashboard/dashboard.html'"></div> 
     
     <a ui-sref="research.study.participants" class="btn btn-default">Back</a>
 </div>

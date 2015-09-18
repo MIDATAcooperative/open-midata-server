@@ -308,7 +308,7 @@ public class SingleAPSManager extends QueryManager {
 				if (format!=null) record.format = format;
 				String content = (String) meta.get("content");				
 				if (content!=null) record.content = content;
-				AccessLog.debug("decrypt cnt="+content+" fmt="+format);
+				//AccessLog.debug("decrypt cnt="+content+" fmt="+format);
 				record.tags = (Set<String>) meta.get("tags");
 				} catch (ModelException e) {
 					AccessLog.debug("Error decrypting record: id="+record._id.toString());

@@ -6,19 +6,22 @@ angular.module('portal')
 	$scope.member = {};
 	$scope.participation = {};
 	$scope.loading = true;
-		
-	views.link("1", "record", "record");
 	
+	views.reset();
+	views.link("1", "record", "record");
+	views.setView("1", { aps : $scope.memberid, properties : { } , fields : [ "ownerName", "created", "id", "name" ]});
+
 	$scope.reload = function() {
-			
-		views.setView("1", { aps : $scope.memberid, properties : { } , fields : [ "ownerName", "created", "id", "name" ]});
+					
 		
 		server.get(jsRoutes.controllers.research.Studies.getParticipant($scope.studyid, $scope.memberid).url).
 			success(function(data) { 								
 				$scope.participation = data.participation;
 				$scope.member = data.member;
 				$scope.loading = false;
-								
+				console.log("A");
+					console.log("B");
+											
 			}).
 			error(function(err) {
 				$scope.error = err;				

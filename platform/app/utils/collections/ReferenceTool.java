@@ -18,7 +18,7 @@ public class ReferenceTool {
 		Map<String, String> members = new HashMap<String, String>();		
 		
 		for (Record record : records) {
-			if (owners && (record.owner != null)) {
+			if (owners && (record.owner != null && record.ownerName == null)) {
 				String key = record.owner.toString();
 				String name = members.get(key);
 				if (name == null) {
@@ -30,7 +30,7 @@ public class ReferenceTool {
 				}
 				record.ownerName = name;
 			}
-			if (creators && (record.creator != null)) {
+			if (creators && (record.creator != null && record.creatorName == null)) {
 				String key = record.creator.toString();
 				String name = members.get(key);
 				if (name == null) {

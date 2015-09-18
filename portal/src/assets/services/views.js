@@ -2,10 +2,13 @@ angular.module('services')
 .factory('views', function() {
 	
 	var mapping = {};
-	var service = {};
+	var service = { isreset : true };	
 	
 	service.reset = function() {
-		mapping = {};	
+		if (!service.isreset) {
+		  mapping = {};
+		  service.isreset = true;
+		}
 	};
 	
 	service.init = function(attrs) {

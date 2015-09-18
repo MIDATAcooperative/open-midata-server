@@ -213,7 +213,7 @@ angular.module('portal')
 		    	title : "Newest records added this month:",
 		    	active : true,
 		    	position : "small",
-		    	actions : { big : "/members/records" },
+		    	actions : { remove : "config" },
 		    	teaser : "There are no new records. Visit the records page to browser all of your records.",
 		    	setup : { properties : { "max-age" : 86400 * 31, "limit" : 7 } , fields : [ "ownerName", "created", "id", "name" ], allowBrowse : true}
 		    },
@@ -253,8 +253,8 @@ angular.module('portal')
 		    	active : true,
 		    	position : "small",
 		    	teaser : "Other MIDATA members may share their data with you.",
-		    	actions : { big : "/members/records" },
-		    	setup : { properties : { "max-age" : 86400 * 31, "set" : "circles" } , fields : [ "ownerName", "owner", "created", "id", "name" ], allowBrowse : true }
+		    	actions : { remove : "config" },
+		    	setup : { properties : { "max-age" : 86400 * 31, "owner" : "members" } , fields : [ "ownerName", "owner", "created", "id", "name" ], allowBrowse : true }
 		
 		    },		    
 			 {
@@ -367,13 +367,13 @@ angular.module('portal')
 			    active : true,
 			    position : "small",
 			    setup : {	
-			    	 context : "health",		        	 
+			    	 context : "providers",		        	 
 		        	 always : true
 		        }
 			},
 	       {                        
 		      id : "share",
-		      template : "/views/members/dashboardTiles/search/search.html",
+		      template : "/views/members/dashboardTiles/addrecords/search.html",
 		      title : "Share",
 		      position : "modal",
 		      active : false,
@@ -446,7 +446,7 @@ angular.module('portal')
 			},			
 		    {                        
 			      id : "share",
-			      template : "/views/members/dashboardTiles/search/search.html",
+			      template : "/views/members/dashboardTiles/addrecords/search.html",
 			      title : "Share",
 			      position : "modal",
 			      active : false,
@@ -473,7 +473,7 @@ angular.module('portal')
 			},			
 		    {                        
 			      id : "share",
-			      template : "/views/members/dashboardTiles/search/search.html",
+			      template : "/views/members/dashboardTiles/addrecords/search.html",
 			      title : "Share",
 			      position : "modal",
 			      active : false,
@@ -503,9 +503,18 @@ angular.module('portal')
 				   title : "Records of this patient:",
 				   active : false,
 				   position : "full",
-				   links : { "record" : "details" }
+				   links : { "shareFrom" : "share", "record" : "details" }				   
 				   
-			},					
+			},
+			 {                        
+			      id : "share",
+			      template : "/views/members/dashboardTiles/addrecords/search.html",
+			      title : "Share",
+			      position : "modal",
+			      active : false,
+			      links : { "record" : "details" },
+			      dependend : [ "1" ]
+			},
 			{                        
 				  id : "details",
 				  template : "/views/shared/dashboardTiles/recorddetail/recorddetail.html",
@@ -631,44 +640,68 @@ angular.module('portal')
   	 		        	 button : "Search for News"
   	 		         }
   	 			}  	 	      
-  	 	     ],
-  	 	  "sandbox" : [
-  	 				 
-  	 			    {
-  	 			    	id : "newrecords",
-  	 			    	template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
-  	 			    	title : "Newest records",
-  	 			    	active : true,
-  	 			    	position : "small",  	 			    	
-  	 			    	teaser : "There are no new records. Visit the records page to browser all of your records.",
-  	 			    	setup : { properties : { "max-age" : 86400 * 31, "limit" : 7 } , fields : [ "ownerName", "created", "id", "name" ], allowBrowse : true}
-  	 			    },
-  	 			    {
-  	 			    	   id : "createrecord",
-  	 			    	   template : "/views/members/dashboardTiles/createrecord/createrecord.html",
-  	 			    	   title : "Create a new record",
-  	 			    	   active : true,
-  	 			    	   position : "small",		    	   
-  	 			    	   teaser : { link : "^.yourapps", button : "Your Apps", text : "Install Plugins you developed." },
-  	 			    	   setup : { allowSelection : true }
-  	 			     },  	 			       
-  	 				{
-  	 				    id: "myviews",
-  	 				    title: "My Views",
-  	 				    template : "/views/members/dashboardTiles/viewconfig/viewconfig.html",
-  	 				    active : true,
-  	 				    position : "small",
-  	 				    setup : {	
-  	 				    	 context : "sandbox",		        	 
-  	 			        	 always : true
-  	 			        }
-  	 				}
-  	 	          ]
+  	 	       ],
+  	 	       "sandbox" : [
+
+                {
+                	id : "newrecords",
+                	template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
+                	title : "Newest records",
+                	active : true,
+                	position : "small",  	 			    	
+                	teaser : "There are no new records. Visit the records page to browser all of your records.",
+                	setup : { properties : { "max-age" : 86400 * 31, "limit" : 7 } , fields : [ "ownerName", "created", "id", "name" ], allowBrowse : true}
+                },
+                {
+                	id : "createrecord",
+                	template : "/views/members/dashboardTiles/createrecord/createrecord.html",
+                	title : "Create a new record",
+                	active : true,
+                	position : "small",		    	   
+                	teaser : { link : "^.yourapps", button : "Your Apps", text : "Install Plugins you developed." },
+                	setup : { allowSelection : true }
+                },  	 			       
+                {
+                	id: "myviews",
+                	title: "My Views",
+                	template : "/views/members/dashboardTiles/viewconfig/viewconfig.html",
+                	active : true,
+                	position : "small",
+                	setup : {	
+                		context : "sandbox",		        	 
+                		always : true
+                	}
+                }
+                ],
+                "workspace" : [
+             
+              {
+            	  id : "createrecord",
+            	  template : "/views/members/dashboardTiles/createrecord/createrecord.html",
+            	  title : "Create a new record",
+            	  active : true,
+            	  position : "small",		    	   
+            	  teaser : { link : "^.market({ context : 'workspace' })", button : "Install", text : "Install Plugins" },
+            	  setup : { allowSelection : true }
+              },  	 			       
+              {
+            	  id: "myviews",
+            	  title: "Work Views",
+            	  template : "/views/members/dashboardTiles/viewconfig/viewconfig.html",
+            	  active : true,
+            	  position : "small",
+            	  setup : {	
+            		  context : "workspace",		        	 
+            		  always : true
+            	  }
+              }
+              ]
 	}			
 )
 .controller('DashboardCtrl', ['$scope', '$state', 'views', 'dashboards', 'tiles', 'spaces', 'portal', function($scope, $state, views, dashboards, tiles, spaces, portal) {  
 	   
 	  views.reset();
+	  views.isreset = false;
 	   views.layout = $scope.layout = {
 	     full: [], small:[], modal:[]
 	   };
@@ -732,6 +765,10 @@ angular.module('portal')
 		   if (view.actions.remove && view.actions.remove.space) {
 			   spaces.deleteSpace(view.actions.remove.space);
 		   } 
+		   
+		   if (view.actions.remove === "config") {
+			   portal.remove(views.context, view.id);
+		   }
 	   };
 	   
 	   $scope.filterEvenStartFrom = function (index) {

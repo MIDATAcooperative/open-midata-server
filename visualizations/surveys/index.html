@@ -105,7 +105,7 @@
 		    <h1>Survey participation</h1>
 		    <p>This visualizations allows you to participate in surveys shared with you. You currently do not have any survey to participate.</p>
 		  </div>
-		  <div ng-show="activeSurvey==null && surveys.length > 0">
+		  <div ng-show="activeSurvey==null && (surveys.length > 0 || edit)">
 		      <h1>Select a survey</h1>
 			  <ul class="list-group">
 				  <li class="list-group-item" ng-repeat="survey in surveys">

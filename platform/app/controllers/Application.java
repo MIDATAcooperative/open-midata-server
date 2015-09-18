@@ -340,6 +340,7 @@ public class Application extends Controller {
 				controllers.research.routes.javascript.Studies.create(),
 				controllers.research.routes.javascript.Studies.list(),
 				controllers.research.routes.javascript.Studies.get(),
+				controllers.research.routes.javascript.Studies.download(),
 				controllers.research.routes.javascript.Studies.listCodes(),
 				controllers.research.routes.javascript.Studies.generateCodes(),
 				controllers.research.routes.javascript.Studies.startValidation(),

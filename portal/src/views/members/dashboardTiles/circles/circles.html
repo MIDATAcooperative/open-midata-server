@@ -1,4 +1,4 @@
-<div class="ignore autosize" ng-controller="CirclesCtrl">
+<div class="ignore autosize" ng-controller="SmallCirclesCtrl">
     <div class="body body-center text-center" ng-show="status.isBusy">Please wait...</div>
     <div ng-show="circles.length" class="body"><span class="dashnumber">{{ circles.length }}</span> Circles available:</div>
     <div class="body text-center" ng-show="!status.isBusy && circles.length == 0">You do not have any circles.</div>
@@ -11,7 +11,7 @@
 			   </button>
 			</div>			    			
 			<span ng-show="circle.ownerName" class="label label-info">{{ circle.ownerName }}</span>					
-			<a href="javascript:;" ng-click="showCircle(circle)">{{circle.name}}</a>
+			<a href="javascript:;" ui-sref="^.circles({ circleId : circle._id.$oid })">{{circle.name}}</a>
 												
 		</li>
 	</ul>
@@ -22,7 +22,7 @@
 	   <div class="input-group" >
           <input type="text" class="form-control" ng-model="form.newCircleName" placeholder="Circle Name">          
           <span class="input-group-btn">
-             <button ng-click="createCircle()" class="btn btn-default" type="button">Add</button>
+             <button ng-click="createCircle();" class="btn btn-default" type="button">Add</button>
           </span>          
        </div>       
        </div>

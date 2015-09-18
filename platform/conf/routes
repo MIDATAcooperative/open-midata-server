@@ -94,6 +94,7 @@ POST    /research/api/login                              controllers.research.Re
 POST    /research/api/studies                            controllers.research.Studies.create()
 GET     /research/api/studies                            controllers.research.Studies.list()
 GET     /research/api/studies/:study                     controllers.research.Studies.get(study: String)
+GET     /research/api/studies/:study/download            controllers.research.Studies.download(study: String)
 GET     /research/api/studies/:study/codes               controllers.research.Studies.listCodes(study: String)
 POST    /research/api/studies/:study/codes               controllers.research.Studies.generateCodes(study: String)
 GET     /research/api/studies/:study/requiredinfo        controllers.research.Studies.getRequiredInformationSetup(study: String)
