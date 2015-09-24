@@ -1,7 +1,9 @@
-var credentials = angular.module('credentials', []);
-credentials.controller('CreateCtrl', ['$scope', '$http', '$location',
-	function($scope, $http, $location) {
+var credentials = angular.module('credentials', [ 'midata' ]);
+credentials.controller('CreateCtrl', ['$scope', '$http', '$location', 'midataServer', 'midataPortal',
+	function($scope, $http, $location, midataServer, midataPortal) {
 		
+	    midataPortal.autoresize();
+	    
 		// init
 		$scope.errors = {};
 		$scope.credentials = [{ // add one set of initial credentials
@@ -114,7 +116,7 @@ credentials.controller('CreateCtrl', ['$scope', '$http', '$location',
 				"name": $scope.title,
 				"description": $scope.title + " created with the credentials app on " + formattedDate,
 				"format" : "credentials-manager",
-				"content" : "accounts/credentials"
+				"content" : "account/credentials"
 			};
 			
 			// submit to server

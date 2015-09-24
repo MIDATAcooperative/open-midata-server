@@ -1,7 +1,8 @@
-var cda = angular.module('cda', []);
-cda.controller('CDACtrl', ['$scope', '$http', '$location',
-	function($scope, $http, $location) {
+var cda = angular.module('cda', [ 'midata' ]);
+cda.controller('CDACtrl', ['$scope', '$http', '$location', 'midataPortal',
+	function($scope, $http, $location, midataPortal) {
 		
+	    midataPortal.autoresize();
 		// init
 		$scope.loading = 1;
 		$scope.error = null;

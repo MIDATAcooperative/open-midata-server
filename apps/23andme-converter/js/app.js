@@ -1,7 +1,9 @@
-var converter = angular.module('converter', []);
-converter.controller('ConverterCtrl', ['$scope', '$http', '$location',
-	function($scope, $http, $location) {
+var converter = angular.module('converter', [ 'midata' ]);
+converter.controller('ConverterCtrl', ['$scope', '$http', '$location', 'midataServer', 'midataPortal', 
+	function($scope, $http, $location, midataServer, midataPortal) {
 		
+	    midataPortal.autoresize();
+	    
 		// init
 		$scope.loading = true;
 		$scope.converting = false;

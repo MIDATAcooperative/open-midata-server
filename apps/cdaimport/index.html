@@ -4,15 +4,17 @@
 		<meta charset="utf-8">
 		<title>CDA Import</title>
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="/shared/css/app.css">
 		<!-- jQuery needed for Bootstrap's JavaScript plugins -->
 		<script type="text/javascript" src="//code.jquery.com/jquery-2.0.2.min.js"></script>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
 		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" defer></script>
+		<script type="text/javascript" src="/shared/js/midata.js" defer></script>
 		<script type="text/javascript" src="js/app.js" defer></script>
 	</head>
 	<body>
 		<div class="container" ng-app="jsonRecords" ng-controller="CreateCtrl" ng-cloak>
-		  <h2>CDA Upload</h2>
+		  <p class="head">CDA Upload</p>
 		  <div class="alert alert-success alert-dismissable" ng-show="success">
 			<button type="button" class="close" ng-click="success=false" aria-hidden="true">&times;</button>
 			CDA document successfully uploaded.
@@ -29,11 +31,7 @@
 		    <div class="form-group" ng-show="patient">
 		      <label for="patient">Patient:</label>
 		      <span>{{ patient.name }}</span>
-		    </div>		    
-		    <div class="form-group" ng-show="patient">
-		      <label for="patient">???:</label>
-		      <span>Welche Informationen sollen VOR dem Hochladen auf den Server angezeigt werden?</span>
-		    </div>
+		    </div>		    		   
 		    <input type="hidden" name="authToken" ng-value="authToken" />
 		    <input type="hidden" name="name" ng-value="record.name" />
 		    <input type="hidden" name="description" ng-value="record.description" />

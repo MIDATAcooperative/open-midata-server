@@ -1,9 +1,11 @@
 var modules = {}; // will hold the handlers for modules defined in modules/js/handlers.js
 
-var hdcSnpSnip = angular.module('hdcSnpSnip', []);
-hdcSnpSnip.controller('SnpSnipCtrl', ['$scope', '$http', '$sce', '$location',
-	function($scope, $http, $sce, $location) {
+var hdcSnpSnip = angular.module('hdcSnpSnip', [ 'midata' ]);
+hdcSnpSnip.controller('SnpSnipCtrl', ['$scope', '$http', '$sce', '$location', 'midataPortal',
+	function($scope, $http, $sce, $location, midataPortal) {
 
+	    midataPortal.autoresize();
+	    
 		// export sce to module handlers
 		$scope.angular = {'sce': $sce};
 

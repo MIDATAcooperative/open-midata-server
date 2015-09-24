@@ -1,7 +1,9 @@
-var recordList = angular.module('recordList', []);
-recordList.controller('RecordListCtrl', ['$scope', '$http', '$location',
-	function($scope, $http, $location) {
+var recordList = angular.module('recordList', [ 'midata' ]);
+recordList.controller('RecordListCtrl', ['$scope', '$http', '$location', 'midataServer', 'midataPortal',
+	function($scope, $http, $location, midataServer, midataPortal) {
 		
+	    midataPortal.autoresize();
+	    
 		// init
 		$scope.loading = true;
 		$scope.error = null;

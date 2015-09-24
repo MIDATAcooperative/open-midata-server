@@ -12,12 +12,12 @@
 		</div>
 
 		<p ng-hide="status.isBusy || apps.length" class="body teaser">{{ view.teaser.text }}</p>
-		<ul class="list-group" ng-show="!status.isBusy && apps.length > 0 && apps.length < 7">
+		<ul class="list-group" ng-show="!status.isBusy && apps.length > 0 && apps.length < 6">
 			<li class="list-group-item" ng-repeat="app in apps"><a href="javascript:;" ng-click="selectApp(app)">{{app.name}}</a>
 			</li>
 		</ul>
 
-		<div class="footer" ng-show="apps.length > 6">
+		<div class="footer" ng-show="apps.length > 5">
 			<div class="btn-group">
 				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 					<span class="glyphicon glyphicon-plus"></span> Create a new record

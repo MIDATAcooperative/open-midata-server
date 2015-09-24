@@ -1,45 +1,9 @@
-var jsonRecords = angular.module('jsonRecords', []);
-jsonRecords.factory('server', [ '$http', function($http) {
-	
-	var service = {};
-	
-	service.createRecord = function(authToken, name, description, content, format, data) {
-		// construct json
-		var data = {
-			"authToken": authToken,
-			"data": angular.toJson(data),
-			"name": name,
-			"content" : content,
-			"format" : format,
-			"description": (description || "")
-		};
+var jsonRecords = angular.module('jsonRecords', [ 'midata' ]);
+
+jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', 'midataServer', 'midataPortal',
+	function($scope, $http, $location, $filter, midataServer, midataPortal) {
 		
-		// submit to server
-		return $http.post("https://" + window.location.hostname + ":9000/api/apps/create", data);
-	};
-	
-	service.createConversion = function(authToken, name, description, format, data, appendToId) {
-		// construct json
-		var data = {
-			"authToken": authToken,
-			"data": angular.toJson(data),
-			"name": name,
-			"format" : format,
-			"description": (description || ""),
-			"document" : appendToId,
-			"part" : format
-		};
-		
-		// submit to server
-		return $http.post("https://" + window.location.hostname + ":9000/api/apps/create", data);
-	};
-		
-		
-	return service;	
-}]);
-jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', 'server',
-	function($scope, $http, $location, $filter, server) {
-		
+	    midataPortal.autoresize();
 		// init
 		$scope.errors = {};
 		$scope.data = {};

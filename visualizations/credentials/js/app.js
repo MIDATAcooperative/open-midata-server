@@ -1,7 +1,9 @@
-var credentials = angular.module('credentials', []);
-credentials.controller('CredentialsCtrl', ['$scope', '$http', '$location',
-	function($scope, $http, $location) {
+var credentials = angular.module('credentials', [ 'midata' ]);
+credentials.controller('CredentialsCtrl', ['$scope', '$http', '$location', 'midataServer', 'midataPortal',
+	function($scope, $http, $location, midataServer, midataPortal) {
 		
+	    midataPortal.autoresize();
+	    
 		// init
 		$scope.loading = true;
 		$scope.error = null;

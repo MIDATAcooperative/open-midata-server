@@ -1,7 +1,8 @@
-var textRecords = angular.module('textRecords', []);
-textRecords.controller('CreateCtrl', ['$scope', '$http', '$location',
-	function($scope, $http, $location) {
+var textRecords = angular.module('textRecords', [ 'midata' ]);
+textRecords.controller('CreateCtrl', ['$scope', '$http', '$location', 'midataServer', 'midataPortal',
+	function($scope, $http, $location, midataServer, midataPortal) {
 		
+	    midataPortal.autoresize();
 		// init
 		$scope.errors = {};
 
