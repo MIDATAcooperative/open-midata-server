@@ -63,6 +63,7 @@ GET     /members/api/spaces/:id/preview                  controllers.Spaces.getP
 POST    /members/api/circles                             controllers.Circles.add()
 POST    /members/api/circles/get                         controllers.Circles.get()
 POST    /members/api/circles/join                        controllers.Circles.joinByPasscode()
+POST    /members/api/consents                            controllers.Circles.listConsents()
 
 DELETE  /members/api/circles/:id                         controllers.Circles.delete(id: String)
 POST    /members/api/circles/:id/users                   controllers.Circles.addUsers(id: String)

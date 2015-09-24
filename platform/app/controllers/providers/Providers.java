@@ -13,6 +13,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.mvc.Result;
 
+import models.Consent;
+import models.HCRelated;
 import models.HPUser;
 import models.HealthcareProvider;
 import models.Member;
@@ -187,12 +189,15 @@ public class Providers extends APIController {
 		Set<MemberKey> memberKeys = MemberKey.getByOwnerAndAuthorizedPerson(memberId, userId);
 		if (memberKeys.isEmpty()) return badRequest("You are not authorized.");
 		
+		Set<HCRelated> backconsent = HCRelated.getByAuthorizedAndOwner(memberId,  userId);
+		
 		Member result = Member.getById(memberId, Sets.create("firstname","birthday", "lastname","city","zip","country","email","phone","mobile","ssn","address1","address2"));
 		if (result==null) return badRequest("Member does not exist.");
 		
 		ObjectNode obj = Json.newObject();
 		obj.put("member", Json.toJson(result));
 		obj.put("consents", Json.toJson(memberKeys));
+		obj.put("backwards", Json.toJson(backconsent));
 		return ok(obj);
 	}
 	

@@ -33,8 +33,8 @@ angular.module('services')
 		  return server.post(jsRoutes.controllers.Records.updateSharing().url, JSON.stringify(data));
 	};
 	
-	service.shareSpaceWithCircle = function(fromSpace, toCircle) {
-		var data = { fromSpace : fromSpace, toCircle : toCircle };
+	service.shareSpaceWithCircle = function(fromSpace, toConsent) {
+		var data = { fromSpace : fromSpace, toConsent : toConsent };
 		return server.post(jsRoutes.controllers.Records.share().url, JSON.stringify(data));
 	};
 	

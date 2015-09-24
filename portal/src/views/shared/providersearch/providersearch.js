@@ -6,7 +6,7 @@ angular.module('views')
     $scope.view = $scope.def ? views.getView($scope.def.id) : views.getView("providersearch");
     
     var dosearch = function(crit) {
-    	hc.search(crit, ["firstname", "lastname", "city", "zip", "address1"])
+    	$scope.status.doBusy(hc.search(crit, ["firstname", "lastname", "city", "zip", "address1"]))
     	.then(function(data) {
     		$scope.providers = data.data;
     	});
@@ -17,7 +17,7 @@ angular.module('views')
     	if ($scope.criteria.city !== "") crit.city = $scope.criteria.city;
     	if ($scope.criteria.name !== "") crit.name = $scope.criteria.name;
     	if ($scope.criteria.onlymine) {
-    		hc.list().then(function(data) {
+    		$scope.status.doBusy(hc.list()).then(function(data) {
     			var ids = [];
     			angular.forEach(data.data, function(x) {     			
     				angular.forEach(x.authorized, function(a) { ids.push(a); });
@@ -38,12 +38,15 @@ angular.module('views')
     	     views.changed($scope.view.id);
     	     views.disableView($scope.view.id);
     	   });
+    	} else if ( $scope.view.setup && $scope.view.setup.callback ) {
+    		$scope.view.setup.callback(prov);
+    		views.disableView($scope.view.id);
     	} else {
     	   $state.go("^.newconsent", { authorize : prov._id.$oid });
     	}
     };
     
-    if ($scope.view.active) $scope.search();
+    if ($scope.view.active) $scope.search(); else { $scope.status.isBusy = false; }
     
 		
 }]);

@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('CreateRecordsCtrl', ['$scope', '$state', 'server', '$sce', function($scope, $state, server, $sce) {
+.controller('CreateRecordsCtrl', ['$scope', '$state', 'server', '$sce', 'session', function($scope, $state, server, $sce, session) {
 	
 	// init
 	$scope.error = null;
@@ -14,5 +14,11 @@ angular.module('portal')
 			$scope.url = $sce.trustAsResourceUrl(url);
 		}).
 		error(function(err) { $scope.error = "Failed to load app: " + err; });
+	
+	$scope.$on('$messageIncoming', function (event, data){		
+	    if (data && data.viewHeight) {
+	    	document.getElementById("myframe").height = data.viewHeight;
+	    }
+	});
 	
 }]);

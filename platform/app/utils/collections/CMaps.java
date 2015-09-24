@@ -12,6 +12,12 @@ public class CMaps {
 		return result;
 	}
 	
+	public static NChainedMap<String, Object> map(Map<String, Object> properties) {
+		NChainedMap<String,Object> result = new NChainedMap<String,Object>();
+		result.putAll(properties);
+		return result;
+	}
+	
 	public static NChainedMap<String, Object> mapNotEmpty(String key, Object value) {		
 		NChainedMap<String,Object> result = new NChainedMap<String,Object>();
 		if (value != null && ! "".equals(value.toString())) result.put(key, value);

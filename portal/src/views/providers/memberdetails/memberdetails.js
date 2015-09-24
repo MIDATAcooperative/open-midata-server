@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('MemberDetailsCtrl', ['$scope', '$state', 'server', 'views', function($scope, $state, server, views) {
+.controller('MemberDetailsCtrl', ['$scope', '$state', 'server', 'views', 'circles', 'session', function($scope, $state, server, views, circles, session) {
 	
 	$scope.memberid = $state.params.memberId;
 	$scope.member = {};	
@@ -12,10 +12,11 @@ angular.module('portal')
 			success(function(data) { 												
 				$scope.member = data.member;
 				$scope.consents = data.consents;
+				$scope.backwards = data.backwards;
 				console.log(data);
 				$scope.memberkey = data.memberkey;
 				if (data.memberkey) {
-				  views.setView("1", { aps : $scope.memberkey._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd: true, type : "memberkeys"});
+				  views.setView("1", { aps : $scope.memberkey._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd: false, type : "memberkeys"});
 				} else {
 				  views.disableView("1");
 				}
@@ -27,10 +28,33 @@ angular.module('portal')
 	};
 	
 	$scope.selectConsent = function() {
+		$scope.hideAdd = false;
 		if ($scope.consent != null) {
-			views.setView("1", { aps : $scope.consent._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type : "memberkeys" });			
+			views.setView("1", { aps : $scope.consent._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : false, type : "memberkeys" });			
 		} else {
 			views.disableView("1");
+		}
+	};
+	
+	var addDataConsent = function(backConsent) {
+		$scope.consent = null;
+		$scope.hideAdd = true;
+		views.setView("1", { aps : backConsent._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type : "hcrelated" });
+	};
+	
+	$scope.addData = function() {
+		if ($scope.backwards.length > 0) {
+			var consent = $scope.backwards[0];
+			addDataConsent(consent);
+		} else {
+			circles.createNew({ type : "HCRELATED", name : $scope.member.firstname+" "+$scope.member.surname })
+			.then(function(data) {
+				circles.addUsers(data.data._id.$oid, [ { "$oid" : $scope.memberid } ])
+				.then(function(xdata) {
+					$scope.backwards.push(data.data);
+					addDataConsent(data.data);
+				});
+			});
 		}
 	};
 		

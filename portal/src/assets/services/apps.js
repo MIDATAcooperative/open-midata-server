@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('apps', ['server', '$q', function(server, $q) {
+.factory('apps', ['server', '$q', 'session', '$filter', function(server, $q, session, $filter) {
 	var service = {};
 
     service.getApps = function(properties, fields) {
@@ -7,24 +7,26 @@ angular.module('services')
 	   return server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data));
     };
     
-    service.getAppsOfUser = function(userId, types, fields) {
-    	var result = $q.defer();
-    	var uproperties = {"_id": userId};
-		var ufields = ["apps"];
-		var udata = {"properties": uproperties, "fields": ufields};
-		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(udata))
-		.then(function(results) {
-			console.log(results);
-			var appIds = results.data[0].apps;
-			var properties2 = { "_id": appIds, "type" : types };					
-			service.getApps(properties2, fields)
-			.then(function(results2) { result.resolve(results2); });			
-		});
-		return result.promise;
+    service.getAppsOfUser = function(types, fields) {
+		var appIds = session.user.apps;
+		var properties2 = { "_id": session.user.apps, "type" : types };
+		console.log("HH");
+		console.log(session.user.apps);
+		return service.getApps(properties2, fields);			
     };
     
     service.isVisualizationInstalled = function(visId) {
-    	return server.get(jsRoutes.controllers.Plugins.isInstalled(visId).url);
+    	var def = $q.defer();
+    	var inApps = $filter("filter")(session.user.apps, function(x){  return x.$oid == visId; });
+    	if (inApps.length > 0) {
+    		def.resolve({ data : true });
+    		return def.promise;
+    	}
+    	var inVis  = $filter("filter")(session.user.visualizations, function(x){  return x.$oid == visId; });
+    	if (inVis.length > 0) {
+    		def.resolve({ data : true });
+    	} else { def.resolve({ data : false }); }
+    	return def.promise;
     };
     
     service.updatePlugin = function(plugin) {
@@ -35,8 +37,12 @@ angular.module('services')
     	return server.post(jsRoutes.controllers.Market.registerPlugin(plugin._id.$oid).url, JSON.stringify(plugin));
     };
     
-    service.installPlugin = function(appId, options) {
-    	return server.post(jsRoutes.controllers.Plugins.install(appId).url, JSON.stringify(options));
+    service.installPlugin = function(appId, options) {    	
+    	return server.put(jsRoutes.controllers.Plugins.install(appId).url, JSON.stringify(options));
+    };
+    
+    service.uninstallPlugin = function(appId) {    	
+    	return server.delete(jsRoutes.controllers.Plugins.install(appId).url);
     };
     
 	return service;

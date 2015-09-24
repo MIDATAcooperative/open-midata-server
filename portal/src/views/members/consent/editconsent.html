@@ -1,32 +1,67 @@
 <div ng-controller="NewConsentCtrl">
  <div class="panel panel-primary">
+  <div class="panel-heading">
+    Consent
+  </div>
   <div class="panel-body">
+  <loader busy="status.isBusy !== false">
   <form name="myform" class="css-form form-horizontal" ng-submit="create()" novalidate role="form">
-    <formrow id="name" label="Name for consent">
-      <input id="name" type="text" class="form-control" ng-model="consent.name">
+    <formrow id="name" label="Name of Consent">
+      <p class="form-control-static">{{ consent.name }}</p>
     </formrow>
-    <formrow id="type" label="Type of consent">
-      <select id="type" class="form-control" ng-model="consent.type" ng-options="type.value as type.label for type in types">
-      </select>
+    <formrow id="type" label="Type of Consent">
+      <p class="form-control-static" ng-show="consent.type == 'CIRCLE'">This consent shares data with other MIDATA members.</p>
+      <p class="form-control-static" ng-show="consent.type == 'HEALTHCARE'">This consent shares data with healthcare professionals.</p>
+      <p class="form-control-static" ng-show="consent.type == 'STUDYPARTICIPATION'">This consent shares data with research for use in a study..</p>    
     </formrow>
-    <formrow id="type" label="Status of consent">
-      <select id="type" class="form-control" ng-model="consent.status" ng-options="status.value as status.label for status in stati">
-      </select>
-    </formrow>
-    <formrow id="passcode" label="Passcode">
-      <input id="passcode" type="text" class="form-control" ng-model="consent.passcode">
-    </formrow>
-    <p>People who data is shared to:</p>
-    	<p ng-show="consent.authorized.length === 0">No people assigned yet.</p>
-		<ul class="list-group" ng-show="consent.authorized.length > 0">
-			<li class="list-group-item" ng-repeat="member in circle.authorized">
-			  {{userNames[member.$oid]}}
-			</li>
-	   	</ul>
-    <p>Data that is shared:</p>
-    <button type="submit" class="btn btn-primary">Create</button>
-  </form>			
+    <formrow id="status" label="Status of Consent">
+      <p class="form-control-static" ng-show="consent.status == 'ACTIVE'">This consent is active.</p>
+      <p class="form-control-static" ng-show="consent.status == 'EXPIRED'">This consent is expired. Data is no longer shared.</p>
+      <p class="form-control-static" ng-show="consent.status == 'UNCONFIRMED'">This consent needs confirmation by its owner.</p>    
+      <p class="form-control-static" ng-show="consent.status == 'REJECTED'">This consent has been rejected by its owner.</p>
+    </formrow>      
+    <formrow id="passcode" label="Passcode?" ng-show="consent.passcode">
+      <p class="form-control-static">{{ consent.passcode }}</p>
+    </formrow>    
+    
+   <formrow id="share" label="With which persons(s) do you want to share data?">
+		<div class="well well-sm" ng-repeat="person in authpersons">
+		  <button type="button" ng-click="deletePerson(person)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>	
+		  <address>
+			<strong>{{ person.firstname }} {{ person.lastname }}</strong><br>
+			{{ person.address1 }}<br>
+			{{ person.address2 }}<br>
+			{{ person.zip }} {{ person.city }}<br>
+			{{ person.country }}<br>
+			<span ng-show="person.email">Email: {{ member.email }}</span><br>
+		  </address>
+		</div>
+		<button type="button" class="btn btn-default" ng-click="addPeople();">Add More People</button>
+	</formrow>
+	<formrow id="reshare" label="3rd party access?">
+	  <div class="checkbox">
+	    <label>
+	      <input type="checkbox" ng-model="consent.reshare">The person(s) authorized with this consent may reshare the data I gave them access to.
+	    </label>
+	  </div>
+	</formrow>
+	<formrow id="what" label="What data is shared?">
+	  <p class="form-control-static" ng-show="sharing.records.length == 0 && !sharing.query.group.length">This consent does not share any data at the moment.</p>
+	  <div class="well well-sm" ng-show="sharing.records.length">
+	  <p class="form-control-static" ng-show="sharing.records.length">This consent shares {{ sharing.records.length }} records.</p>
+	  <div ng-repeat="group in sharing.query.group">Shares all records belonging to group: {{ group }}</div>
+	  <div ng-repeat="group in sharing.query['group-exclude']">Excluded are records belonging to group: {{ group }}</div>
+	  </div>
+	  <button class="btn btn-default" ui-sref="^.recordsharing({ selected : consentId, selectedType : 'circles' })">Change data selection</button>
+	</formrow>
+	<a  ui-sref="^.circles" class="btn btn-default">Back to consent list</a>
+	<button type="button" ng-click="confirmConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-primary">Confirm this Consent</button>
+	<button type="button" ng-click="rejectConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-danger">Reject this Consent</button>
+    <button type="button" ng-click="deleteConsent();" ng-show="consent.status == 'ACTIVE'" class="btn btn-danger">Delete this Consent</button>
+  </form>	
+  </loader>		
 </div>
 </div>
+<div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
 </div>
 	

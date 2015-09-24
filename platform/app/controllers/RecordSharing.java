@@ -372,6 +372,11 @@ public class RecordSharing {
 		record.key = null;
 	}
 	
+	/*public void addRecord(ObjectId executingPerson, Record record, ObjectId alternateAps) throws ModelException {
+		addRecordIntern(executingPerson, record, false, alternateAps, false);
+		record.key = null;
+	}*/
+	
 	public void deleteRecord(ObjectId executingPerson, RecordToken tk) throws ModelException {
 		Record record = fetch(executingPerson, tk);
 		

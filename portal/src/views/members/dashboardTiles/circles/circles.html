@@ -1,5 +1,5 @@
 <div class="ignore autosize" ng-controller="SmallCirclesCtrl">
-    <div class="body body-center text-center" ng-show="status.isBusy">Please wait...</div>
+    <loader busy="status.isBusy !== false">
     <div ng-show="circles.length" class="body"><span class="dashnumber">{{ circles.length }}</span> Circles available:</div>
     <div class="body text-center" ng-show="!status.isBusy && circles.length == 0">You do not have any circles.</div>
     <p ng-hide="status.isBusy || circles.length" class="body teaser">{{ view.teaser }}</p>
@@ -30,5 +30,6 @@
 	     <a class="btn btn-default" ui-sref="^.circles">Manage</a>
 	   </div>
 	  </div>
-	</div>	
+	</div>
+	</loader>	
 </div>

@@ -7,6 +7,11 @@ angular.module('services')
 		return server.post(jsRoutes.controllers.Circles.get().url, JSON.stringify(data));
 	};
 	
+	service.listConsents = function(properties, fields) {
+		var data = { properties : properties, fields : fields };
+		return server.post(jsRoutes.controllers.Circles.listConsents().url, JSON.stringify(data));
+	};
+	
 	service.createNew = function(data) {		
 		return server.post(jsRoutes.controllers.Circles.add().url, JSON.stringify(data));
 	};

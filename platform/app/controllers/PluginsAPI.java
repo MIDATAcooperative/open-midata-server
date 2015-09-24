@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import models.Consent;
 import models.HPUser;
 import models.LargeRecord;
 import models.Member;
@@ -258,17 +259,16 @@ public class PluginsAPI extends Controller {
 		
 		if (authToken.recordId != null) return badRequest("This view is readonly.");
 		
-		Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.userId, Sets.create("visualization", "app", "aps"));
+		Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.userId, Sets.create("visualization", "app", "aps", "autoShare"));
 		
 		ObjectId appId = space.visualization;
-			
-		User owner;
+				
 		Member targetUser;
 		ObjectId targetAps = space.aps;
 				
 		targetUser = Member.getById(authToken.userId, Sets.create("myaps", "tokens"));
 		if (targetUser == null) return badRequest("Invalid authToken.");
-		owner = targetUser;
+		//owner = targetUser;
 		
 							
 		// save new record with additional metadata
@@ -310,6 +310,15 @@ public class PluginsAPI extends Controller {
 		Set<ObjectId> records = new HashSet<ObjectId>();
 		records.add(record._id);
 		RecordSharing.instance.share(targetUser._id, targetUser._id, targetAps, records, false);
+		
+		if (space.autoShare != null && !space.autoShare.isEmpty()) {
+			for (ObjectId autoshareAps : space.autoShare) {
+				Consent consent = Consent.getByIdAndOwner(autoshareAps, targetUser._id, Sets.create("type"));
+				if (consent != null) { 
+				  RecordSharing.instance.share(targetUser._id, targetUser._id, autoshareAps, records, true);
+				}
+			}
+		}
 				
 		return ok();
 	}

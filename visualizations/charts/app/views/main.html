@@ -51,7 +51,7 @@
 <canvas id="radar" class="chart chart-radar" data="data" labels="labels" series="series"></canvas>
 </div>
    
-<div ng-if="chartType=='simple'" class="well well-lg">
+<div ng-if="chartType=='simple'">
   <div class="text-center text-primary">Measure: <b>{{ entry.format }}</b></div>
   <div ng-show="entry.context" class="text-center">Context: <i>{{ entry.context }}</i></div>
   <div class="text-center lead"><span style="color: #1c4982;display: block;font-size: 100px;">{{ entry.value }}</span>{{ entry.unit }}</div>

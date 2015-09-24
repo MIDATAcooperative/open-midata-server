@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import models.Circle;
+import models.Consent;
 import models.FilterRule;
 import models.ContentInfo;
 import models.FormatInfo;
@@ -336,30 +337,28 @@ public class Records extends Controller {
 	@APICall
 	@Security.Authenticated(Secured.class)
 	public static Result share() throws JsonValidationException, ModelException {
-		throw new NotImplementedError();
-		/*JsonNode json = request().body().asJson();
+	
+		JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "fromSpace", "toCircle");
+		JsonValidation.validate(json, "fromSpace", "toConsent");
 		
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId fromSpace = JsonValidation.getObjectId(json, "fromSpace");
-		ObjectId toCircle = JsonValidation.getObjectId(json, "toCircle");
+		ObjectId toConsent = JsonValidation.getObjectId(json, "toConsent");
 		
-		BSONObject query = RecordSharing.instance.getMeta(userId, fromSpace, "_query");
-		if (query != null) {
-			Map<String, Object> oldquery = Circles.getQueries(userId, toCircle);
-			
-			if (oldquery != null) {
-				Map<String, Object> newquery = Circles.mergeQueries(query.toMap(), oldquery);
-				Circles.setQuery(userId, toCircle, newquery);
-			} else {
-				Circles.setQuery(userId, toCircle, query.toMap());
-			}
-		}
+		Space space = Space.getByIdAndOwner(fromSpace, userId, Sets.create("autoShare"));
+		if (space == null) return badRequest("Bad space.");
+		
+		Consent consent = Consent.getByIdAndOwner(toConsent, userId, Sets.create("type"));
+		if (consent == null) return badRequest("Bad consent.");
+		
+		if (space.autoShare == null) space.autoShare = new HashSet<ObjectId>();
+		space.autoShare.add(toConsent);
+		Space.set(space._id, "autoShare", space.autoShare);
 				
-		RecordSharing.instance.share(userId, fromSpace, toCircle, null, true);
+		//RecordSharing.instance.share(userId, fromSpace, toConsent, null, true);
 		
-		return ok();*/
+		return ok();
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
@@ -415,23 +414,20 @@ public class Records extends Controller {
         for (ObjectId start : started) {
         	ObjectId aps = null;
         	boolean withMember = false;
+        	Consent consent = Consent.getByIdAndOwner(start, userId, Sets.create("type"));
+        	aps = consent._id;
         	switch (type) {
-        	case "circles" :
-        		Circle circle = Circle.getByIdAndOwner(start, userId, Sets.create("aps"));
-        		aps = circle._id;
+        	case "circles" :        		
         		withMember = true;
         		break;
-        	case "spaces" :
-        		Space space = Space.getByIdAndOwner(start, userId, Sets.create("aps"));
-        		aps = space.aps;
+        	case "spaces" :        		
         		break;
-        	case "participations" :
-        		StudyParticipation part = StudyParticipation.getById(start, Sets.create("aps"));
-        		aps = part._id;
+        	case "participations" :        		
         		break;
-        	case "memberkeys" :
-        		MemberKey memberkey = MemberKey.getById(start);
-        		aps = memberkey._id;
+        	case "memberkeys" :        		
+        		withMember = true;
+        		break;
+        	case "hcrelated" :
         		withMember = true;
         		break;
         	}
@@ -453,26 +449,26 @@ public class Records extends Controller {
         for (ObjectId start : stopped) {
         	ObjectId aps = null;
         	boolean withMember = false;
+        	Consent consent = Consent.getByIdAndOwner(start, userId, Sets.create("type"));
+        	aps = consent._id;
         	switch (type) {
         	case "circles" :
-        		Circle circle = Circle.getByIdAndOwner(start, userId, Sets.create("aps"));
-        		aps = circle._id; 
+        		 
         		withMember = true;
         		break;
         	case "spaces" :
-        		Space space = Space.getByIdAndOwner(start, userId, Sets.create("aps"));
-        		aps = space.aps;
+        		
         		break;
         	case "participations" :
-        		StudyParticipation part = StudyParticipation.getById(start, Sets.create("aps"));
-        		aps = part._id;
+        		
         		break;
-        	case "memberkeys" :
-        		MemberKey memberkey = MemberKey.getById(start);
-        		aps = memberkey._id;
+        	case "memberkeys" :        		
         		withMember = true;
-        		break;
-        	}        
+        		break;        	      
+	        case "hcrelated" :
+	    		withMember = true;
+	    		break;
+	    	}
         	        
         	for (String sourceAps :records.keySet()) {        	  
           	  RecordSharing.instance.unshare(userId, aps, ObjectIdConversion.toObjectIds(records.get(sourceAps)));

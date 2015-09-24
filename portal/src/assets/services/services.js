@@ -3,13 +3,21 @@ angular.module('services')
 	
 	var session = {
 		currentUser : null,
+		user : null,
 		cache : {},
 			
 		login : function() {			
 			var def  = $q.defer();		
 			server.get(jsRoutes.controllers.Users.getCurrentUser().url).
-			success(function(userId) {				
-				def.resolve(userId);			
+			success(function(userId) {	
+				console.log("GOT USERID");
+				var data = {"properties": { "_id" : userId }, "fields": ["email", "firstname", "sirname", "visualizations", "apps", "midataID", "name"] };
+				server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data))
+				.then(function(data) {
+				   session.user = data.data[0];
+				   console.log("GOT USER");
+				   def.resolve(userId);
+				});																					
 			}).
 			error(function() { document.location.href="/#/public/login"; });		
 			session.currentUser = def.promise;

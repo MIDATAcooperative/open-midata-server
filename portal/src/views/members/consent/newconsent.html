@@ -1,48 +1,70 @@
 <div ng-controller="NewConsentCtrl">
  <div class="panel panel-primary">
+  <div class="panel-heading">
+    Create a new consent
+  </div>
   <div class="panel-body">
   <form name="myform" class="css-form form-horizontal" ng-submit="create()" novalidate role="form">
-    <formrow id="name" label="Name for consent">
-      <input id="name" type="text" class="form-control" ng-model="consent.name">
+    <p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	                          {{ error.message || error }}
+	</p>	
+    <formrow myid="name" label="How should this consent be named?">
+      <input id="name" name="name" type="text" class="form-control" ng-model="consent.name" required>
     </formrow>
-    <formrow id="type" label="Type of consent">
+    <formrow myid="type" label="What type of consent do you want to create?">
       <div class="radio">
 	      <label>
 	        <input type="radio" ng-model="consent.type" value="CIRCLE">
-	        Circle: Share your data with other MIDATA members
+	        I want to share data with other MIDATA members.
 	      </label>
       </div>
       <div class="radio">
 	      <label>
 	         <input type="radio" ng-model="consent.type" value="HEALTHCARE">
-	         Share data with health professionals.
+	         I want to share data with a health professional.
 	      </label>
       </div>    
     </formrow>    
-    <formrow id="passcode" label="Passcode">
+    <formrow myid="passcode" label="Include a passcode?" ng-show="consent.type == 'HEALTHCARE'">
       <div class="checkbox">
       <label> 
         <input type="checkbox" ng-model="consent.usepasscode">
-        Add a passcode to this consent that you can give to a health professional.
+        I do not know yet to whom I want to share the data. Please add a passcode to this consent that I can give to a health professional of my choice.
       </label>
       </div>
-      <div ng-show="consent.usepasscode">
-	      <b>Choose a secure passcode:</b>
-	      <input  id="passcode" type="text" class="form-control" ng-model="consent.passcode">
-      </div>
+    </formrow>
+    <formrow myid="passcode2" label="Choose a secure passcode" ng-if="consent.usepasscode">	      
+	   <input  id="passcode2" name="passcode2" type="text" class="form-control" ng-model="consent.passcode" required>     
     </formrow>    
     
-    <div ng-repeat="person in authpersons">
-      <p>Authorized Person:</p>
-					<address>
-						<strong>{{ person.firstname }} {{ person.lastname }}</strong><br> {{ person.address1 }}<br> {{ person.address2 }}<br> {{
-						person.zip }} {{ person.city }}<br> {{ person.country }}<br> 						
-						<span ng-show="person.email">Email: {{ member.email }}</span><br>
-					</address>
-				</div>
-    <button type="submit" class="btn btn-primary">Create</button>
+   <formrow myid="share" label="With which persons(s) do you want to share data?" ng-hide="consent.usepasscode && consent.type == 'HEALTHCARE'">
+		<div class="well well-sm" ng-repeat="person in authpersons">
+		  <button type="button" ng-click="deletePerson(person)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>	
+		  <address>
+			<strong>{{ person.firstname }} {{ person.lastname }}</strong><br>
+			{{ person.address1 }}<br>
+			{{ person.address2 }}<br>
+			{{ person.zip }} {{ person.city }}<br>
+			{{ person.country }}<br>
+			<span ng-show="person.email">Email: {{ member.email }}</span><br>
+		  </address>
+		</div>
+		<button type="button" class="btn btn-default" ng-click="addPeople();">Add New Person</button>
+	</formrow>
+	<formrow myid="reshare" label="3rd party access?">
+	  <div class="checkbox">
+	    <label>
+	      <input type="checkbox" ng-model="consent.reshare">The person(s) authorized with this consent may reshare the data I gave them access to.
+	    </label>
+	  </div>
+	</formrow>
+	<formrow myid="what" label="What data do you want to share?">
+	  <p class="form-control-static">This consent is empty at the beginning. You can select the data you want to share with this consent afterwards.</p>
+	</formrow>
+    <button type="submit" class="btn btn-primary">Create and Data Selection</button>
   </form>			
 </div>
 </div>
+<div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
 </div>
 	

@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Import Fitbit Data</title>
+		<link rel="stylesheet" href="/shared/css/app.css">
 		<link rel="stylesheet" href="css/datepicker3.css">
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
 		<!-- jQuery needed for Bootstrap's JavaScript plugins -->
@@ -11,13 +12,13 @@
 		<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js" defer></script>
 		<!-- Ignoring locales for now -->
 		<script type="text/javascript" src="js/bootstrap-datepicker.js" defer></script>
+		<script type="text/javascript" src="/shared/js/midata.js" defer></script>
 		<script type="text/javascript" src="js/controller.js" defer></script>
 	</head>
 	<body>
 		<div ng-app="fitbit" ng-controller="ImportCtrl" ng-cloak>
-			<div class="page-header">
-				<h1>Import a record</h1>
-			</div>
+		   <div class="container">
+			<p>Import Records from your Fitbit Account</p>
 			<div class="alert alert-danger alert-dismissable" ng-show="error.message || error.messages.length">
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 				<p>{{error.message}}</p>
@@ -42,6 +43,8 @@
 				<button type="button" class="btn btn-primary" ng-click="startImport()" ng-disabled="saving">Import data</button>
 			</form>
 			<p ng-show="saving">Requested {{requested}} records from Fitbit. {{saved}} records saved to database.</p>
+			<div style="height:300px"></div>
+		</div>
 		</div>
 	</body>
 </html>

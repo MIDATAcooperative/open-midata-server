@@ -1,7 +1,9 @@
-var fitbit = angular.module('fitbit', []);
-fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 
-	function($scope, $http, $location) {
+var fitbit = angular.module('fitbit', [ 'midata' ]);
+fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer', 'midataPortal', 
+	function($scope, $http, $location, midataServer, midataPortal) {
 		// init
+	    midataPortal.autoresize();
+	    
 		$scope.error = {};
 		$scope.status = null;
 		$scope.requesting = false;

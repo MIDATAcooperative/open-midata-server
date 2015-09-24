@@ -1,18 +1,19 @@
 angular.module('portal')
-.controller('VisualizationCtrl', ['$scope', 'server', '$state', function($scope, server, $state) {
+.controller('VisualizationCtrl', ['$scope', 'apps', '$state', 'status', 'users', 'session', function($scope, apps, $state, status, users, session) {
 	// init
 	$scope.error = null;
 	$scope.success = false;
 	$scope.visualization = {};
 	$scope.options = {};
 	$scope.params = $state.params;
-	console.log($scope.params);
+	$scope.status = new status(true);
+	
 	
 	// parse visualization id (format: /visualizations/:id) and load the visualization
-	var visualizationId = $state.params.visualizationId;
-	var data = {"properties": {"_id": {"$oid": visualizationId}}, "fields": ["name", "creator", "description", "defaultSpaceName", "defaultQuery"]};
-	server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data)).
-		success(function(visualizations) {
+	var visualizationId = $state.params.visualizationId;	
+	$scope.status.doBusy(apps.getApps({"_id": {"$oid": visualizationId}}, ["name", "creator", "description", "defaultSpaceName", "defaultQuery"]))
+	.then(function(results) {
+		   var visualizations = results.data;
 			$scope.error = null;
 			$scope.visualization = visualizations[0];
 			if ($scope.visualization.defaultSpaceName!=null) {
@@ -41,39 +42,35 @@ angular.module('portal')
 			}
 			isInstalled();
 			getCreatorName();
-		}).
-		error(function(err) { $scope.error = "Failed to load visualization details: " + err; });
+		});
 	
 	isInstalled = function() {
-		server.get(jsRoutes.controllers.Plugins.isInstalled($scope.visualization._id.$oid).url).
-			success(function(installed) { $scope.visualization.installed = installed; }).
-			error(function(err) { $scope.error = "Failed to check whether this visualization is installed: " + err; });
+		 apps.isVisualizationInstalled($scope.visualization._id.$oid)
+		 .then(function(installed) { $scope.visualization.installed = installed.data; });			
 	};
 	
 	getCreatorName = function() {
-		var data = {"properties": {"_id": $scope.visualization.creator}, "fields": ["name"]};
-		server.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
-			success(function(users) { $scope.visualization.creator = users[0].name; }).
-			error(function(err) { $scope.error = "Failed to load the name of the creator: " + err; });
+		users.getMembers({"_id": $scope.visualization.creator}, ["name"])
+		.then(function(users) { if (users.data && users.data[0]) { $scope.visualization.creator = users.data[0].name; } });			
 	};
 	
 	$scope.install = function() {
-		server.put(jsRoutes.controllers.Plugins.install($scope.visualization._id.$oid).url, JSON.stringify($scope.options)).
-			success(function() {
+		$scope.status.doAction("install", apps.installPlugin($scope.visualization._id.$oid, $scope.options))
+		.then(function() {
 				$scope.visualization.installed = true;
 				$scope.success = true;
+				session.login();
 				$state.go('^.dashboard', { dashId : $scope.options.context }); 
-			}).
-			error(function(err) { $scope.error = "Failed to install the visualization: " + err; });
+		});			
 	};
 	
-	$scope.uninstall = function() {
-		server.delete(jsRoutes.controllers.Plugins.uninstall($scope.visualization._id.$oid).url).
-		success(function() {
+	$scope.uninstall = function() {	  
+		$scope.status.doAction("uninstall", apps.uninstallPlugin($scope.visualization._id.$oid))
+		.then(function() {
 			$scope.visualization.installed = false;
+			session.login();
 			$scope.success = false;
-		}).
-		error(function(err) { $scope.error = "Failed to uninstall the visualization: " + err; });
+		});		
 	};
 	
 }]);

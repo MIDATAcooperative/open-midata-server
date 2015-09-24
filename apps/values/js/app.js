@@ -1,46 +1,8 @@
-var jsonRecords = angular.module('jsonRecords', []);
-jsonRecords.factory('server', [ '$http', function($http) {
-	
-	var service = {};
-	
-	service.createRecord = function(authToken, name, description, content, format, data) {
-		// construct json
-		var data = {
-			"authToken": authToken,
-			"data": angular.toJson(data),
-			"name": name,
-			"content" : content,
-			"format" : format,
-			"description": (description || "")
-		};
-		
-		// submit to server
-		return $http.post("https://" + window.location.hostname + ":9000/api/apps/create", data);
-	};
-	
-	service.createConversion = function(authToken, name, description, content, format, data, appendToId) {
-		// construct json
-		var data = {
-			"authToken": authToken,
-			"data": angular.toJson(data),
-			"name": name,
-			"content" : content,
-			"format" : format,
-			"description": (description || ""),
-			"document" : appendToId,
-			"part" : format
-		};
-		
-		// submit to server
-		return $http.post("https://" + window.location.hostname + ":9000/api/apps/create", data);
-	};
-		
-		
-	return service;	
-}]);
-jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$timeout', 'server',
-	function($scope, $http, $location, $filter, $timeout, server) {
-		
+var jsonRecords = angular.module('jsonRecords', [ 'midata' ]);
+
+jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$timeout', 'midataServer', 'midataPortal',
+	function($scope, $http, $location, $filter, $timeout, midataServer, midataPortal) {
+		console.log("INIT!!");
 		// init
 		$scope.errors = {};
 				
@@ -90,6 +52,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 					context : "",
 					date : $filter('date')(new Date(), "yyyy-MM-dd")
 			};
+			midataPortal.autoresize();			
 		};
 		
 		
@@ -109,7 +72,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 			envelope[$scope.newentry.format.objkey] = [ data ];
 			
 			$scope.isBusy = true;
-			server.createRecord(authToken, $scope.newentry.format.label, "Manually entered "+$scope.newentry.format.label, $scope.newentry.format.content, "measurements", envelope)
+			midataServer.createRecord(authToken, $scope.newentry.format.label, "Manually entered "+$scope.newentry.format.label, $scope.newentry.format.content, "measurements", envelope)
 			.then(function() { $scope.success = true; $scope.isBusy = false; $scope.reset(); $timeout(function() { $scope.success = false; }, 2000); });			
 		};
 					

@@ -1,9 +1,9 @@
 <div class="ignore autosize" ng-controller="SmallCirclesCtrl">
-    <div class="body body-center text-center" ng-show="status.isBusy">Please wait...</div>
+    <loader busy="status.isBusy !== false">
     <div ng-show="circles.length" class="body">{{ circles.length }} Circles available:</div>
-    <div class="body" ng-show="!status.isBusy && circles.length == 0">No MIDATA members share data with you.</div>
+    <div class="body" ng-show="circles.length == 0">No MIDATA members share data with you.</div>
     <p ng-hide="circles.length" class="body teaser">{{ view.teaser }}</p>
-    <ul class="list-group" ng-show="!status.isBusy && circles.length > 0">
+    <ul class="list-group" ng-show="circles.length > 0">
 		<li class="list-group-item rotate truncate" ng-repeat="circle in circles | limitTo : limit">
 		    <div class="pull-right" ng-if="view.setup.allowRemove">
 			   <button type="button" class="btn btn-xs btn-danger" ng-click="removeRecord(record)">
@@ -15,5 +15,5 @@
 												
 		</li>
 	</ul>
-		
+	</loader>	
 </div>

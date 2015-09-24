@@ -1,8 +1,6 @@
 <div ng-controller="AccountDataCtrl" class="ignore autosize">        
-
-  <div class="body" ng-show="status.isBusy">Please wait...</div>
- 
-  <div ng-show="!status.isBusy" class="body">
+  <div class="body">
+     <loader busy="status.isBusy !== false">
      <span>Midata ID: </span><strong>{{ member.midataID }}</strong><br/>
      <span>Birthday: </span><strong>{{ member.birthday | date }}</strong><br/><br/>
      <address>     
@@ -11,6 +9,7 @@
      {{ member.address2 }}<br/>
      {{ member.zip }} {{ member.city }}
      </address>         
+     </loader>
   </div>
   <div class="footer">
     <button class="btn btn-default">Change</button>

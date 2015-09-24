@@ -12,6 +12,7 @@ import java.util.Set;
 
 import models.Circle;
 import models.Consent;
+import models.HCRelated;
 import models.Member;
 import models.MemberKey;
 import models.ModelException;
@@ -62,6 +63,27 @@ public class Circles extends Controller {
 		return ok(Json.toJson(circles));
 	}
 	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(Secured.class)
+	public static Result listConsents() throws JsonValidationException, ModelException {
+		// validate json
+		JsonNode json = request().body().asJson();					
+		JsonValidation.validate(json, "properties", "fields");
+		
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+				
+		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+		List<Consent> consents = null;
+
+		
+		ObjectId owner = new ObjectId(request().username());
+		consents = new ArrayList<Consent>(Consent.getAllByOwner(owner, properties, fields));
+		
+		//Collections.sort(circles);
+		return ok(Json.toJson(consents));
+	}
+	
 
 
 	@BodyParser.Of(BodyParser.Json.class)
@@ -98,6 +120,9 @@ public class Circles extends Controller {
 		case HEALTHCARE :
 			consent = new MemberKey();
 			break;
+		case HCRELATED :
+			consent = new HCRelated();
+			break;		
 		default :
 			return badRequest("Unsupported consent type");
 		}
@@ -196,7 +221,7 @@ public class Circles extends Controller {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result addUsers(String circleIdString) throws JsonValidationException, ModelException {
 		// validate json
 		JsonNode json = request().body().asJson();

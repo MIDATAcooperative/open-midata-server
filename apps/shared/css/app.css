@@ -1,0 +1,440 @@
+iframe {
+  border: none;
+  margin: none;
+  padding: none;
+}
+.margin-top {
+  margin-top: 5px;
+}
+[ng\:cloak],
+[ng-cloak],
+.ng-cloak {
+  display: none !important;
+}
+footer {
+  background-color: #e0e0e0;
+  border-top: 1px solid #c0c0c0;
+  padding-top: 20px;
+}
+.loader {
+  min-height: 300px;
+  position: relative;
+}
+.loader div {
+  text-align: center;
+  margin-top: -40px;
+  top: 50%;
+  width: 100%;
+  position: absolute;
+}
+.mainpart {
+  min-height: 500px;
+  padding-bottom: 10px;
+}
+.navbar-brand {
+  height: auto;
+}
+.extraspace {
+  margin-bottom: 10px;
+}
+.welcome h1 {
+  color: #000000;
+}
+.welcome h2 {
+  color: #000000;
+}
+.modal-lg {
+  width: 900px;
+}
+.smallpanel .autosize {
+  height: 300px;
+  position: relative;
+}
+.smallpanel .autosize .body-center {
+  margin-top: -25%;
+  margin-bottom: auto;
+  position: absolute;
+  top: 50%;
+  width: 100%;
+}
+.smallpanel .autosize .footer {
+  margin-bottom: 0px;
+  bottom: 0px;
+  top: auto;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+}
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.teaser {
+  font-style: italic;
+  color: #707070;
+  font-size: 21px;
+  text-align: center;
+  margin-top: 20px;
+}
+.dashnumber {
+  font-size: 30px;
+  color: #1C4982;
+}
+.bignumber {
+  font-size: 100px;
+  color: #1C4982;
+  display: block;
+}
+.tree h1 {
+  font-size: 30px;
+}
+.subtree {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.subtree h1 {
+  font-size: 20px;
+}
+.subtree .subtree h1 {
+  font-size: 20px;
+}
+.tree .subtree .format {
+  font-size: 12px;
+  color: #808080;
+  margin-left: 20px;
+}
+.tree .sharebox {
+  margin-right: 16px;
+}
+.treehandle {
+  border: 1px solid #808080;
+  color: #808080;
+  cursor: pointer;
+  font-size: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding: 2px;
+  vertical-align: middle;
+}
+.themeicon {
+  padding-right: 10px;
+}
+/* body { background-color:#c6851d } */
+body {
+  background-color: #ffffff;
+}
+.panel {
+  background-color: #ffffff;
+  -webkit-box-shadow: 7px 7px 4px -4px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 7px 7px 4px -4px rgba(0, 0, 0, 0.5);
+  box-shadow: 7px 7px 4px -4px rgba(0, 0, 0, 0.5);
+  border-radius: 5px 5px 5px 5px;
+  -moz-border-radius: 5px 5px 5px 5px;
+  -webkit-border-radius: 5px 5px 5px 5px;
+  border: 1px solid #d0d0d0;
+  margin-bottom: 20px;
+}
+.tab-content {
+  background-color: #ffffff;
+  -webkit-box-shadow: 7px 7px 4px -4px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 7px 7px 4px -4px rgba(0, 0, 0, 0.5);
+  box-shadow: 7px 7px 4px -4px rgba(0, 0, 0, 0.5);
+  border-radius: 5px 5px 5px 5px;
+  -moz-border-radius: 5px 5px 5px 5px;
+  -webkit-border-radius: 5px 5px 5px 5px;
+  border: 1px solid #e0e0e0;
+  border-top: none;
+  margin-bottom: 20px;
+  margin-top: 0px;
+  padding-top: 10px;
+}
+.tab-pane {
+  padding: 10px 15px;
+}
+.panel-primary .panel-heading {
+  /* background-color:#c6851d;
+  color: #ffffff; */
+  background-color: #ffffff;
+  color: #c6851d;
+  font-weight: bold;
+  padding: 10px 15px;
+  border-bottom: none;
+}
+.panel .body {
+  padding: 0px 15px 15px 15px;
+}
+.modal .body {
+  padding: 20px;
+  position: relative;
+}
+.modal .panel {
+  background-color: inherit;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  border: none;
+  margin: none;
+  padding: none;
+}
+.modal .panel .panel-heading {
+  display: none;
+}
+.panel .footer {
+  padding: 15px;
+}
+.modal .footer {
+  border-top: 1px solid #e5e5e5;
+  margin-top: 15px;
+  padding: 19px 20px 20px;
+  text-align: right;
+}
+.page-header {
+  margin: 0px;
+  padding: 0px;
+  border: none;
+}
+.btn-primary {
+  background-color: #1C4982;
+  border-color: #0F376A;
+}
+.text-primary {
+  color: #1C4982;
+}
+.text-primary:hover {
+  color: #1C4982;
+}
+a {
+  color: #1C4982;
+}
+.label-info {
+  background-color: #E0A442;
+}
+.btn-danger {
+  background-color: #A2680A;
+  border-color: #794B00;
+}
+.frame {
+  width: 100%;
+  height: 600px;
+}
+.preview .frame {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  padding: 0px;
+}
+.ignore > .list-group {
+  margin-bottom: 0px;
+}
+.smallpanel .wrap {
+  width: 100%;
+  height: 450px;
+  padding: 0;
+  overflow: hidden;
+}
+.smallpanel .wrap .frame {
+  width: 133%;
+  height: 600px;
+  -ms-zoom: 0.75;
+  -moz-transform: scale(0.75);
+  -moz-transform-origin: 0 0;
+  -o-transform: scale(0.75);
+  -o-transform-origin: 0 0;
+  -webkit-transform: scale(0.75);
+  -webkit-transform-origin: 0 0;
+}
+.repeat-item.ng-enter,
+.repeat-item.ng-leave {
+  -webkit-transition: 0.5s linear all;
+  transition: 0.5s linear all;
+}
+.repeat-item.ng-enter,
+.repeat-item.ng-leave.ng-leave-active {
+  opacity: 0;
+}
+.repeat-item.ng-leave,
+.repeat-item.ng-enter.ng-enter-active {
+  opacity: 1;
+}
+.animation {
+  -webkit-transition: 0.5s;
+}
+.animation.ng-enter {
+  opacity: 0;
+}
+.animation.ng-leave {
+  opacity: 1;
+}
+.animation.ng-enter.ng-enter-active {
+  opacity: 1;
+}
+.animation.ng-leave.ng-leave-active {
+  opacity: 0;
+}
+.animate {
+  -webkit-transition: 400ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+  -moz-transition: 400ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+  -ms-transition: 400ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+  -o-transition: 400ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+  transition: 400ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+}
+.animate.ng-enter,
+.animate-ng-leave {
+  position: relative;
+  display: block;
+}
+.animate.ng-leave.ng-leave-active,
+.animate.ng-enter {
+  -webkit-transform: scaleY(0);
+  -moz-transform: scaleY(0);
+  -ms-transform: scaleY(0);
+  -o-transform: scaleY(0);
+  transform: scaleY(0);
+  height: 0px;
+  opacity: 0;
+}
+.animate.ng-enter.ng-enter-active,
+.animate.ng-leave {
+  -webkit-transform: scaleY(1);
+  -moz-transform: scaleY(1);
+  -ms-transform: scaleY(1);
+  -o-transform: scaleY(1);
+  transform: scaleY(1);
+  height: 30px;
+  opacity: 1;
+}
+.skew.ng-enter,
+.skew.ng-leave {
+  -webkit-transition: 400ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+  -moz-transition: 400ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+  -ms-transition: 400ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+  -o-transition: 400ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+  transition: 400ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+  position: relative;
+  display: block;
+}
+.skew.ng-leave.ng-leave-active,
+.skew.ng-enter {
+  -webkit-transform: skewX(45deg) skewY(30deg);
+  -moz-transform: skewX(45deg) skewY(30deg);
+  -ms-transform: skewX(45deg) skewY(30deg);
+  -o-transform: skewX(45deg) skewY(30deg);
+  transform: skewX(45deg) skewY(30deg);
+  opacity: 0;
+  height: 0px;
+}
+.skew.ng-enter.ng-enter-active,
+.skew.ng-leave {
+  -webkit-transform: skewX(0deg) skewY(0deg);
+  -moz-transform: skewX(0deg) skewY(0deg);
+  -ms-transform: skewX(0deg) skewY(0deg);
+  -o-transform: skewX(0deg) skewY(0deg);
+  transform: skewX(0deg) skewY(0deg);
+  opacity: 1;
+  height: 30px;
+}
+.rotate.ng-enter,
+.rotate.ng-leave {
+  -webkit-transition: 500ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+  -moz-transition: 500ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+  -ms-transition: 500ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+  -o-transition: 500ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+  transition: 250ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+  position: relative;
+  display: block;
+}
+.rotate.ng-leave.ng-leave-active,
+.rotate.ng-enter {
+  -webkit-transform: rotateX(90deg);
+  -moz-transform: rotateX(90deg);
+  -ms-transform: rotateX(90deg);
+  -o-transform: rotateX(90deg);
+  transform: rotateX(90deg);
+  opacity: 0;
+  height: 0px;
+}
+.rotate.ng-enter.ng-enter-active,
+.rotate.ng-leave {
+  -webkit-transform: rotateX(0deg);
+  -moz-transform: rotateX(0deg);
+  -ms-transform: rotateX(0deg);
+  -o-transform: rotateX(0deg);
+  transform: rotateX(0deg);
+  opacity: 1;
+  height: 30px;
+}
+a.navbar-brand {
+  padding: 0;
+  margin: 5px;
+}
+img.navbar-brand {
+  height: 40px;
+  width: auto;
+  padding: 0;
+}
+.navbar .navbar-nav > .active > a {
+  background-color: #e7e7e7;
+}
+body.modal-open {
+  margin-right: 0px;
+}
+[ng\:cloak],
+[ng-cloak],
+[data-ng-cloak],
+[x-ng-cloak],
+.ng-cloak,
+.x-ng-cloak {
+  display: none !important;
+}
+.twitter-typeahead .tt-query,
+.twitter-typeahead .tt-hint {
+  margin-bottom: 0;
+}
+.tt-hint {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.428571429;
+  color: #999;
+  vertical-align: middle;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+.tt-dropdown-menu {
+  min-width: 160px;
+  width: 100%;
+  margin-top: 2px;
+  padding: 5px 0;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  background-clip: padding-box;
+}
+.tt-suggestion {
+  display: block;
+  padding: 3px 20px;
+}
+.tt-suggestion.tt-is-under-cursor {
+  color: #fff;
+  background-color: #428bca;
+}
+.tt-suggestion.tt-is-under-cursor a {
+  color: #fff;
+}
+.tt-suggestion p {
+  margin: 0;
+}
+.twitter-typeahead {
+  width: 100%;
+}

@@ -7,22 +7,25 @@
 			  <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span>Back</button>
 			</div>
 			<div class="panel panel-primary">
+			  <div class="panel-heading">MIDATA Plugin</div>
 			  <div class="panel-body">	
 			
 						<div class="row">
 							<div ng-class="{'col-lg-6': space.compare}">
 								<!-- Visualization -->
-								<p ng-hide="space.trustedUrl">Loading space...</p>
+								<loader busy="!space.trustedUrl">
 								<div id="iframe-placeholder">
-									<iframe id="iframe" height="600px" width="100%" ng-src="{{space.trustedUrl}}" ng-show="space.trustedUrl"></iframe>
+									<pluginframe id="iframe" height="600px" width="100%" mysrc="{{space.trustedUrl}}" ng-show="space.trustedUrl"></pluginframe>
 								</div>
+								</loader>
 							</div>
 							<div class="col-lg-6" ng-show="space.compare">
 								<!-- Visualization -->
-								<p ng-hide="space.copy.trustedUrl">Loading space...</p>
+								<loader busy="!space.copy.trustedUrl">
 								<div id="iframe-placeholder-copy">
-									<iframe id="iframe-copy" height="600px" width="100%" ng-src="{{space.copy.trustedUrl}}" ng-show="space.copy.trustedUrl"></iframe>
+									<pluginframe id="iframe-copy" height="600px" width="100%" mysrc="{{space.copy.trustedUrl}}" ng-show="space.copy.trustedUrl"></pluginframe>
 								</div>
+								</loader>
 							</div>
 						</div>
 						
@@ -42,9 +45,9 @@
 						<a class="btn btn-primary" ui-sref="^.recordsharing({ selectedType : 'spaces', selected : space._id.$oid})">
 						    <span class="glyphicon glyphicon-share"></span>Used records...
 						</a>
-						<!-- <button class="btn btn-primary" ng-hide="space.compare" ng-click="startShare(space)">
+						<button class="btn btn-primary" ng-hide="space.compare" ng-click="startShare(space)">
 						    <span class="glyphicon glyphicon-share"></span>Share...
-						</button>  -->
+						</button> 
 						
 				</div>
 			 </div>							 				

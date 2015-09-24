@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('chartApp')
-  .controller('MainCtrl', ['$scope', '$filter', '$routeParams', 'server', 
-    function ($scope, $filter, $routeParams, server) {
+  .controller('MainCtrl', ['$scope', '$filter', '$routeParams', 'midataServer', 'midataPortal', 
+    function ($scope, $filter, $routeParams, midataServer, midataPortal) {
       
 	  $scope.authToken = $routeParams.authToken;
 	  
@@ -24,9 +24,10 @@ angular.module('chartApp')
 	  $scope.saving = false;
 	  $scope.saving2 = false;
 	  $scope.readonly = false;
+	  midataPortal.autoresize();
 	  
 	  $scope.reload = function() {
-		  server.getRecords($scope.authToken, { }, ["owner", "created", "ownerName", "content", "format", "data"])
+		  midataServer.getRecords($scope.authToken, { }, ["owner", "created", "ownerName", "content", "format", "data"])
 		  .then(function(results) {
 			  $scope.raw = results.data;
 			  $scope.prepare();
@@ -249,7 +250,7 @@ angular.module('chartApp')
 	  };
 	  
 	  $scope.loadConfig = function() {
-		  server.getConfig($scope.authToken)
+		  midataServer.getConfig($scope.authToken)
 		  .then(function (result) {
 			if (result.data) {
 				if (result.data && result.data.readonly) {
@@ -269,14 +270,14 @@ angular.module('chartApp')
 	  $scope.saveConfig = function() {
 		 var config = { report : $scope.report, filter : $scope.selectedFilter, filter2: $scope.selectedFilter2 };
 		 $scope.saving = true;
-		 server.setConfig($scope.authToken, config)
+		 midataServer.setConfig($scope.authToken, config)
 		 .then(function() { $scope.saving = false; });
 	  };
 	  
 	  $scope.add = function(name) {
 		 var config = { report : $scope.report, filter : $scope.selectedFilter, filter2: $scope.selectedFilter2 };
 		 $scope.saving2 = true;
-		 server.cloneAs($scope.authToken, name, config)
+		 midataServer.cloneAs($scope.authToken, name, config)
 		 .then(function() { $scope.saving2 = false; });;
 	  };
 	  

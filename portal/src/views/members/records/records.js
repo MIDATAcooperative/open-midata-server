@@ -1,13 +1,11 @@
 angular.module('portal')
-.controller('RecordsCtrl', ['$scope', '$state', 'server',  '$filter', 'dateService', 'records', 'circles', 'formats', 'apps', 'status', 'studies', function($scope, $state, server, $filter, dateService, records, circles, formats, apps, status, studies) {
+.controller('RecordsCtrl', ['$scope', '$state', 'server',  '$filter', 'dateService', 'records', 'circles', 'formats', 'apps', 'status', 'studies', 'session', function($scope, $state, server, $filter, dateService, records, circles, formats, apps, status, studies, session) {
 	
 	// init
 	$scope.error = null;
 		
-	$scope.loadingApps = true;
-	$scope.loadingRecords = true;
 	$scope.userId = null;
-	$scope.apps = [];
+	
 	$scope.records = [];
 	$scope.infos = [];
 	$scope.tree = [ ];
@@ -15,53 +13,36 @@ angular.module('portal')
 	$scope.selectedAps = null;
 	$scope.status = new status(true);
 	
+	
 	// get current user
-	server.get(jsRoutes.controllers.Users.getCurrentUser().url).
-		success(function(userId) {
+	session.currentUser
+	.then(function(userId) {		
 			$scope.userId = userId;
 			$scope.availableAps = [{ name : "My Data", aps:userId, owner : "self"  }, { name : "All Data", aps:userId, owner : "all"}];
 			$scope.displayAps = $scope.availableAps[0];
-			$scope.getApps(userId);
+			
+			if ($state.params.selected != null) {	
+				 var selectedType = $state.params.selectedType;
+				 var selected = $state.params.selected;
+				 $scope.selectedType = selectedType;
+				 $scope.selectedAps = { "_id" : { "$oid" : selected }, type : selectedType };
+				 $scope.explainPreselection();
+			}
+			
 			$scope.getAvailableSets(userId);
 			$scope.loadGroups();
 			$scope.getInfos(userId, "self")
 			.then(function() {
 			
-				if ($state.params.selected != null) {						
-				  var selectedType = $state.params.selectedType;
-				  var selected = $state.params.selected;
-				  $scope.displayAps = $scope.availableAps[1];
-				  $scope.selectedAps = { "_id" : { "$oid" : selected }, type : selectedType };
+				if ($state.params.selected != null) {										 
+				  $scope.displayAps = $scope.availableAps[1];				  
 				  $scope.compare = null;
-				  $scope.loadSharingDetails();
+				  $scope.loadSharingDetails();				 
 				} else $scope.loadShared(userId); 
 			});
 		});
 	
-	// get apps
-	$scope.getApps = function(userId) {
-		var properties = {"_id": userId};
-		var fields = ["apps"];
-		var data = {"properties": properties, "fields": fields};
-		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
-			success(function(users) {
-				$scope.getAppDetails(users[0].apps);
-			}).
-			error(function(err) { $scope.error = "Failed to load apps: " + err; });
-	};
 	
-	// get name and type for app ids
-	$scope.getAppDetails = function(appIds) {
-		var properties = {"_id": appIds, "type" : ["create","oauth1","oauth2"] };
-		var fields = ["name", "type"];
-		var data = {"properties": properties, "fields": fields};
-		apps.getApps(properties, fields).
-			success(function(apps) {
-				$scope.apps = apps;
-				$scope.loadingApps = false;
-			}).
-			error(function(err) { $scope.error = "Failed to load apps: " + err; });
-	};
 	
 	// get records
 	$scope.getRecords = function(userId, owner, group, study) {
@@ -71,24 +52,23 @@ angular.module('portal')
 		if (study) properties.study = study;
 		if (group) properties["group-strict"] = group;
 		if ($scope.debug) properties.streams = "true";
-		return records.getRecords(userId, properties, ["id", "owner", "ownerName", "content", "created", "name", "group"]).
+		return $scope.status.doAction("load", records.getRecords(userId, properties, ["id", "owner", "ownerName", "content", "created", "name", "group"])).
 		then(function(results) {
 			$scope.records = results.data;
-			if ($scope.gi != null) $scope.prepareRecords();	
-			$scope.loadingRecords = false;
+			if ($scope.gi != null) $scope.prepareRecords();				
 		});
 	};
 	
 	$scope.getInfos = function(userId, owner, study) {
+		console.log(owner);
 		var properties = {};
 		if (owner) properties.owner = owner;
 		if (study) properties.study = study;
 		if ($scope.debug) properties.streams = "true";
-		return records.getInfos(userId, properties).
+		return $scope.status.doBusy(records.getInfos(userId, properties)).
 		then(function(results) {
 			$scope.infos = results.data;
-			if ($scope.gi != null) $scope.prepareInfos();	
-			$scope.loadingRecords = false;			
+			if ($scope.gi != null) $scope.prepareInfos();				
 		});
 	};
 	
@@ -114,7 +94,7 @@ angular.module('portal')
 			
 		} else {
 		
-			circles.get({ "member": userId }, ["name","aps","ownerName"])
+			circles.get({ "member": userId }, ["name","aps","owner", "ownerName"])
 			.then(function(results) {
 				//$scope.availableAps = [{ name : "Your Data", aps:userId, owner : "self"  }, { name : "All Data", aps:userId, owner : "all"}];
 				angular.forEach(results.data, function(circle) { 
@@ -414,6 +394,20 @@ angular.module('portal')
 		console.log($scope.selectedAps);
 		$scope.status.doBusy(records.unshare($scope.selectedAps._id.$oid, recs, $scope.selectedAps.type, $scope.sharing.query)).
 		then(function() { $scope.loadSharingDetails(); });
+	};
+	
+	$scope.explainPreselection = function() {
+		if ($scope.selectedType == "circles") {
+		   circles.listConsents({ _id : { "$oid" : $scope.selectedAps._id.$oid }}, ["name", "type", "authorized" ])
+		   .then(function(data) {
+			   $scope.consent = data.data[0];
+		   });
+		} else if ($scope.selectedType == "spaces") {
+		   spaces.get({ _id : { "$oid" : $scope.selectedAps._id.$oid }}, ["name", "context"] )
+		   .then(function(data) {
+			 $scope.space = data.data[0];  
+		   });
+		}
 	};
 					
 }]);

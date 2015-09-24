@@ -1,7 +1,9 @@
-var files = angular.module('files', ['angularFileUpload']);
-files.controller('FilesCtrl', ['$scope', '$http', '$location', 'FileUploader',
-	function($scope, $http, $location, FileUploader) {
+var files = angular.module('files', ['angularFileUpload', 'midata']);
+files.controller('FilesCtrl', ['$scope', '$http', '$location', 'FileUploader', 'midataPortal',
+	function($scope, $http, $location, FileUploader, midataPortal) {
 		
+	    midataPortal.autoresize();
+	    
 		// init
 		$scope.errors = {};
 		$scope.uploading = false;

@@ -1,16 +1,10 @@
 
 	<div ng-controller="RecordCtrl">
-		<div class="page-header">
-			<h1>Record Details</h1>
-		</div>
-		
-		<div ng-cloak class="panel panel-primary">
+				
+		<div class="panel panel-primary">
 		  <div class="panel-heading">Meta Information</div>
 		  <div class="panel-body">
-			<div class="alert alert-danger alert-dismissable" ng-show="error">
-				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-				<p>{{error}}</p>
-			</div>
+			<loader busy="status.isBusy !== false">
 			<div class="alert alert-warning alert-dismissable" ng-show="record.data.type === 'largeRecord'">
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 				<p>This is a very large record which has been divided into chunks internally. Only the index information is shown here.</p>
@@ -45,13 +39,15 @@
 				<p class="col-sm-10">{{record.format}}</p>
 			</div>		
 			<a href="{{downloadLink}}" target="_self" class="btn btn-primary" ng-show="record.data.type === 'file'">Download</a>
+			</loader>
 		 </div></div>
-		 <div ng-cloak class="panel panel-primary">
+		 <div  class="panel panel-primary">
 		    <div class="panel-heading">Content Visualization</div>
 		    <div class="panel-body">
-		      <div ng-show="status.isBusy">Please wait...</div>
-		      <div ng-hide="url || status.isBusy" class="body">No visualization available for this record.</div>
-			  <div ng-show="url" class="body"><div class=""><iframe class="frame" ng-src="{{url}}" ng-cloak></iframe></div></div>	
+		      <loader busy="status.isBusy !== false">
+		      <div ng-hide="url" class="body">No visualization available for this record.</div>
+			  <div ng-show="url" class="body"><div class=""><pluginframe id="myframe" mysrc="{{url}}" width="100%" height="600px"></pluginframe></div></div>
+			  </loader>	
 			</div>
 		 </div>
 		 <div ng-cloak class="panel panel-primary">

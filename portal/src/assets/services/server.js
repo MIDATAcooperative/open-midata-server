@@ -1,10 +1,8 @@
 angular.module('services')
 .factory('server', ['$q', '$http', 'ENV', function($q, $http, ENV) {
-	var service = {};
-	console.log(ENV.apiurl);
+	var service = {};	
 	
-	service.get = function(url) {
-		console.log(url);
+	service.get = function(url) {	
 		return $http.get(ENV.apiurl + url);
 	};
 	

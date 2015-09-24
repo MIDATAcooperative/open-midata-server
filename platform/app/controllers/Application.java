@@ -315,6 +315,7 @@ public class Application extends Controller {
 				controllers.routes.javascript.Circles.delete(),
 				controllers.routes.javascript.Circles.addUsers(),
 				controllers.routes.javascript.Circles.removeMember(),
+				controllers.routes.javascript.Circles.listConsents(),
 				controllers.routes.javascript.Circles.joinByPasscode(),
 				// Spaces
 				controllers.routes.javascript.Spaces.get(),

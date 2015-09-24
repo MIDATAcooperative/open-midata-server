@@ -7,6 +7,8 @@ angular.module('views')
     $scope.showapp = false;    
 
     session.currentUser.then(function(userId) { 
+    	console.log("IN:");
+    	console.log(userId);
     	$scope.userId = userId;
     	$scope.reload(); 
     });
@@ -18,22 +20,28 @@ angular.module('views')
     	var userId = $scope.view.setup.userId;
     
     	if (appId) {
-    		$scope.selectApp(appId);
+    		$scope.selectApp({ _id : { "$oid" : appId}});
     	} else {
     		$scope.showAppList();
     	}
     	    	
     };
     
-    $scope.selectApp = function(appId, title) {
+    $scope.selectApp = function(app) {
     	if (!$scope.view.setup.inline) {
-    		$state.go('^.createrecord', { appId : appId });
+    		
+    		if (app.type == "oauth1" || app.type == "oauth2") {
+    		  $state.go('^.importrecords', { appId : app._id.$oid });
+    		} else {
+    		  $state.go('^.createrecord', { appId : app._id.$oid });
+    		}
     		return;
     	}
     	
         $scope.showapp = true;
         // if (title != null) $scope.view.title = title;
-        $scope.status.doBusy(server.get(jsRoutes.controllers.Apps.getPreviewUrl(appId).url)).
+        console.log(app);
+        $scope.status.doBusy(server.get(jsRoutes.controllers.Apps.getPreviewUrl(app._id.$oid).url)).
 		then(function(results) {			
 			$scope.url = $sce.trustAsResourceUrl(results.data);
 		});
@@ -46,9 +54,13 @@ angular.module('views')
     
     $scope.loadAppList = function() {
     	$scope.apps = [];
-    	$scope.status.doBusy(apps.getAppsOfUser($scope.userId, ["create","oauth1","oauth2"], ["name", "type", "previewUrl"]))
+    	
+    	$scope.status.doBusy(apps.getAppsOfUser(["create","oauth1","oauth2"], ["name", "type", "previewUrl"]))
     	.then(function(results) {
-    	   $scope.apps = results.data;   
+    	   $scope.apps = results.data;
+    	   if ($scope.apps.length === 0 && !$scope.view.setup.teaser) {
+    		   views.disableView($scope.view.id);
+    	   }
     	  _.each(results.data, function(app) {
     		  if (!app.previewUrl) return;    		 
      		  var appdef =
@@ -58,7 +70,7 @@ angular.module('views')
      		    	   title : app.name,
      		    	   active : true,
      		    	   position : "small",
-     		    	   actions : { big : "/members/records/create/" + app._id.$oid },
+     		    	   actions : {  },
      		    	   setup : { appId : app._id.$oid, inline : true }
      		     };
      		 views.layout.small.push(views.def(appdef)); 

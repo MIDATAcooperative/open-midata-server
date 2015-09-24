@@ -1,5 +1,5 @@
  <div ng-controller="ListStudiesCtrl" ng-cloak class="autosize body">
-        	
+    <loader busy="status.isBusy !== false"> 	
 	<div ng-show="results.length > 0">
 	<table class="table table-hover">
 	  <thead>
@@ -19,5 +19,6 @@
 	<p ng-show="results.length == 0">
 	  You do not participate in any study.
 	</p>	
-	 <p ng-hide="status.isBusy || results.length" class="body teaser">{{ view.teaser }}</p>
+	 <p ng-hide="results.length" class="body teaser">{{ view.teaser }}</p>
+	 </loader>
 </div>

@@ -1,22 +1,25 @@
 
 	<div ng-controller="ImportRecordsCtrl">
-		<a ui-sref="^.records" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Back to records</a>
-		<div ng-cloak>
+	  <div class="pull-right">
+		<a ui-sref="^.records" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span> Back to records</a><br>
+		</div>
+		<div class="extraspace clearfix"></div>
+	  <div class="panel panel-primary">
+	  <div class="panel-heading">Import</div>
+	  <div class="panel-body">		    
+		<loader busy="status.isBusy !== false">
 			<div class="alert alert-danger alert-dismissable" ng-show="error">
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 				<p>{{error}}</p>
 			</div>
-			<p ng-show="loading">Loading...</p>
-			<p ng-hide="loading">
+			
 				<p ng-show="message">{{message}}</p>
 				<button id="authorize" type="button" class="btn btn-success" ng-hide="authorized || authorizingOAuth1" ng-class="{'disabled': authorizing}" ng-click="authorize()">Authorize</button>
 				<button type="button" class="btn btn-success" ng-show="authorizingOAuth1" ng-click="authorizeOAuth1()">Sign in with {{appName}} and authorize access</button>
-				<div class="panel panel-primary" ng-show="authorized">
-			      <div class="panel-body">	
-				    <iframe ng-src="{{url}}" height="600px" width="100%" ></iframe>
-				  </div>
+				<div ng-if="authorized">			      	
+				  <pluginframe id="myframe" mysrc="{{url}}" height="600px" width="100%" ></pluginframe>				  
 				</div>
-			</p>
+		</loader>
 		</div>
 	</div>
-	
+	</div>

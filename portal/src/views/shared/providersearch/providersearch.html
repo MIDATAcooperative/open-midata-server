@@ -22,6 +22,8 @@
 				  <button ng-click="search()" class="btn btn-default">Search</button>
 				</formrow>
 			</form>
+			
+			<loader busy="status.isBusy !== false">
 			<table class="table" ng-show="providers.length > 0">
 	      <tr>
 	        <th>Surname</th>
@@ -42,6 +44,7 @@
 	    </table>
 	    
 	    <p ng-show="providers.length == 0">No providers found.</p>
+	    </loader>
 		</div>
 	</div>
 </div>

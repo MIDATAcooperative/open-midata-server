@@ -1,49 +1,10 @@
-var planCreator = angular.module('planCreator', []);
-planCreator.factory('server', [ '$http', function($http) {
-	
-	var service = {};
-	
-	service.createRecord = function(authToken, name, description, content, format, data) {
-		// construct json
-		var data = {
-			"authToken": authToken,
-			"data": angular.toJson(data),
-			"name": name,
-			"content" : content,
-			"format" : format,
-			"description": (description || "")
-		};
-		
-		// submit to server
-		return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/create", data);
-	};
-	
-	service.getRecords = function(authToken, properties,fields) {
-		 var data = { "authToken" : authToken, "properties" : properties, fields : fields };		
-		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/records", data);
-	};
-	
-	service.getConfig = function(authToken) {
-		 var data = { "authToken" : authToken  };		
-		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/getconfig", data);
-	};
-	
-	service.setConfig = function(authToken, config) {
-		 var data = { "authToken" : authToken, "config" : config  };		
-		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/setconfig", data);
-	};
-	
-	service.cloneAs = function(authToken, name, config) {
-		 var data = { "authToken" : authToken, "name" : name, "config" : config };		
-		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/clone", data);
-	};
-	
-	return service;	
-}]);
-planCreator.controller('PlanEditorCtrl', ['$scope', '$http', '$location', '$filter', 'server',
-	function($scope, $http, $location, $filter, server) {
+var planCreator = angular.module('planCreator', ['midata']);
+
+planCreator.controller('PlanEditorCtrl', ['$scope', '$http', '$location', '$filter', 'midataServer', 'midataPortal',
+	function($scope, $http, $location, $filter, midataServer, midataPortal) {
 		
 		// init
+	    midataPortal.autoresize();
 		$scope.loading = true;
 		$scope.error = null;
 		$scope.readonly = true;
@@ -96,7 +57,7 @@ planCreator.controller('PlanEditorCtrl', ['$scope', '$http', '$location', '$filt
 		
 		$scope.save = function(plan) {	
 			$scope.saving++;
-			server.createRecord($scope.authToken, plan.name, plan.description, "calendar/trainingplan", "training-app", plan.data)
+			midataServer.createRecord($scope.authToken, plan.name, plan.description, "calendar/trainingplan", "training-app", plan.data)
 			.then(function() { $scope.saving--; });
 		};
 		
@@ -112,12 +73,12 @@ planCreator.controller('PlanEditorCtrl', ['$scope', '$http', '$location', '$filt
 		};
 						
 		$scope.load = function() {	
-			server.getConfig($scope.authToken)
+			midataServer.getConfig($scope.authToken)
 			.then(function(result) {
 				if (!result.data || !result.data.readonly) $scope.readonly = false;
 			});
 			
-			server.getRecords($scope.authToken, { "format" : "training-app" }, ["name", "description", "created", "data"])
+			midataServer.getRecords($scope.authToken, { "format" : "training-app" }, ["name", "description", "created", "data"])
 			.then(function(results) {				
 				
 				angular.forEach(results.data, function(rec) {

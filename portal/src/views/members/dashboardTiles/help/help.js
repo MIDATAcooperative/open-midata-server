@@ -66,13 +66,13 @@ angular.module('views')
 		add('charts','me', true);
 		add('entry','me', q.qself.weight || q.qself.sleep);
 		
-		add('jawboneupimport','mydata', q.devices.jawbone);
+		add('jawboneupimport','me', q.devices.jawbone);
 		add('clock','me', q.devices.jawbone && (q.qself.steps || q.qself.sleep));
 		add('meal','me', q.devices.jawbone && q.qself.nutrition);
 		//add('credentials_store','me', true);
 		//add('credentials','me', true);
 		add('energy-meter','me', q.devices.jawbone && (q.qself.steps || q.qself.nutrition));
-		add('fitbit','mydata', q.devices.fitbit);
+		add('fitbit','me', q.devices.fitbit);
 		add('water-meter','me', q.devices.fitbit && q.qself.water);
 		add('weight-watcher','me', q.devices.fitbit && q.qself.weight);
 		add('fileupload','mydata', q.general.manage || q.general.protocol);

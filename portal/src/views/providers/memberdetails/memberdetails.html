@@ -22,7 +22,7 @@
     </address>
       <p>Pick consent:</p>
       <select class="form-control" ng-change="selectConsent()" ng-model="consent" ng-options="consent.name for consent in consents"></select>
-    	
+      <button class="btn btn-default" ng-click="addData();" ng-hide="hideAdd">Share Data With Patient</button>
     </div>
     
       </div>

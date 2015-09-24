@@ -1,0 +1,41 @@
+
+<div class="ignore autosize" ng-controller="AddUsersCtrl">
+  <div class="body">
+	<tabset> 
+	<tab heading="Contacts">
+	<p ng-show="contacts.length === 0">You have no users in your circles yet.</p>
+	<div ng-show="contacts.length > 0">
+		<div class="checkbox" ng-repeat="contact in filteredContacts = (contacts | filter:isntMember)">
+			<label> <input type="checkbox" ng-model="contact.checked"> {{contact.name}}
+			</label>
+		</div>
+		<p ng-show="filteredContacts.length === 0">No contacts can be added to this circle.</p>
+	</div>
+	</tab>
+	<tab heading="All users">
+	<form class="form-horizontal" ng-submit="searchUsers()">
+		<div class="form-group">
+			<div class="col-xs-10">
+				<input type="text" class="form-control" placeholder="Search for a user" ng-model="crit.userQuery" autofocus>
+			</div>
+			<div class="col-xs-2">
+				<button type="submit" class="btn btn-primary form-control">Search</button>
+			</div>
+		</div>
+	</form>
+	<p ng-show="searching">Searching...</p>
+	<p ng-show="!searching && foundUsers.length === 0">No users matched your search.</p>
+	<div ng-show="!searching && foundUsers.length > 0">
+		<div class="checkbox" ng-repeat="user in filteredUsers = (foundUsers | filter:isntMember)">
+			<label> <input type="checkbox" ng-model="user.checked"> {{user.name}}
+			</label>
+		</div>
+		<p ng-show="filteredUsers.length === 0">All found users are already members of this circle.</p>
+	</div>
+	</tab> </tabset>
+</div>
+<div class="footer">
+	<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addUsers(circle)">Add</button>
+	<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+</div>
+</div>

@@ -6,16 +6,16 @@ angular.module('views')
 	$scope.status = new status(true);	
 	$scope.form = { newCircleName : "" };
 	$scope.errors = {};
-	$scope.selectedCircle = null;
+	$scope.selectedConsent = null;
 	
 	$scope.reload = function() {		
 		if (!$scope.view.active) return;
 		$scope.limit = $scope.view.position == "small" ? 4 : 20;
-		$scope.status.doBusy(circles.get({ owner : true }, [ "name", "order", "members" ])).
+		$scope.status.doBusy(circles.listConsents({  }, [ "name", "type", "authorized" ])).
 		then(function (result) { 
-			$scope.circles = result.data;
-            if ($scope.circles.length > 0) $scope.selectedCircle = $scope.circles[0];
-            $scope.circles.push({ name : "<Create new...>", isNew : true });			
+			$scope.consents = result.data;
+            if ($scope.consents.length > 0) $scope.selectedConsent = $scope.consents[0];
+            $scope.consents.push({ name : "<Create new...>", isNew : true });			
 		});
 		$scope.status.doBusy(spaces.get({ "_id" : { "$oid" : $scope.view.setup.space  }}, [ "query" ]))
 		.then(function(result) {
@@ -35,13 +35,13 @@ angular.module('views')
 		
 		circles.createNew({ name : $scope.form.newCircleName, type:"CIRCLE" }).
 		then(function(results) {
-			$scope.circles.push(results.data);
-			$scope.selectedCircle = results.data;			
+			$scope.consents.push(results.data);
+			$scope.selectedConsent = results.data;			
 		});		
 	};
 	
 	$scope.share = function() {
-		records.shareSpaceWithCircle($scope.view.setup.space, $scope.selectedCircle._id.$oid)
+		records.shareSpaceWithCircle($scope.view.setup.space, $scope.selectedConsent._id.$oid)
 		.then(function() {
 		   $scope.success = true;
            //views.disableView($scope.view.id);			

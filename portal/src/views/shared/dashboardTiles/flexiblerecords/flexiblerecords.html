@@ -1,9 +1,9 @@
 <div class="ignore autosize" ng-controller="FlexibleRecordListCtrl">
-    <div class="body body-center text-center" ng-show="status.isBusy">Please wait...</div>
+    <loader busy="status.isBusy !== false">
     <div ng-show="records.length" class="body"><span class="dashnumber">{{ records.length }}</span> Records available:</div>
-    <div class="body text-center" ng-show="!status.isBusy && records.length == 0">Empty</div>
-    <p ng-hide="status.isBusy || records.length" class="body teaser">{{ view.teaser }}</p>
-    <ul class="list-group" ng-show="!status.isBusy && records.length > 0">
+    <div class="body text-center" ng-show="records.length == 0">Empty</div>
+    <p ng-hide="records.length" class="body teaser">{{ view.teaser }}</p>
+    <ul class="list-group" ng-show="records.length > 0">
 		<li class="list-group-item rotate truncate" ng-repeat="record in records | limitTo : limit">
 		    <div class="pull-right" ng-if="view.setup.allowRemove">
 			   <button type="button" class="btn btn-xs btn-danger" ng-click="removeRecord(record)">
@@ -24,4 +24,5 @@
 	<button ng-click="addRecords()" ng-if="view.setup.allowAdd" class="btn btn-primary">Add Records...</button>
 	<button ng-click="shareRecords()" ng-if="view.setup.allowShare" class="btn btn-primary">Share</button>
 	</div>
+	</loader>
 </div>

@@ -1,6 +1,6 @@
 <div ng-controller="ShowSpaceCtrl" class="ignore">        
 
-  <div class="body" ng-show="status.isBusy">Please wait...</div>
+  <loader busy="status.isBusy !== false">
   <div class="ignore" ng-hide="showspace">
 	  <div class="body" ng-show="!status.isBusy && spaces.length == 0">You do not have any spaces.</div>
 	  
@@ -14,5 +14,5 @@
   <div ng-if="showspace" class="body"><div class="wrap"><iframe class="frame" ng-src="{{url}}" ng-cloak></iframe></div></div>	 
   
   <div ng-show="showspace && view.setup.allowSelection" class="body"><button class="btn btn-default" ng-click="showSpaceList()">Back to list</button></div>
-
+  </loader>
 </div>

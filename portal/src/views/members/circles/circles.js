@@ -37,25 +37,7 @@ angular.module('portal')
 			});
 	};
 	
-	// get names for users in circles
-	loadContacts = function() {
-		var contactIds = _.map($scope.circles, function(circle) { return circle.authorized; });
-		contactIds = _.flatten(contactIds);
-		contactIds = _.uniq(contactIds, false, function(contactId) { return contactId.$oid; });
-		var properties = {"_id": contactIds};
-		var fields = ["firstname", "lastname"];
-		var data = {"properties": properties, "fields": fields};
-		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
-			success(function(contacts) {
-				$scope.contacts = contacts;
-				_.each(contacts, function(contact) { $scope.userNames[contact._id.$oid] = (contact.firstname + " " + contact.lastname).trim(); });
-				$scope.loading = false;
-			}).
-			error(function(err) {
-				$scope.error = "Failed to load contacts: " + err;
-				$scope.loading = false;
-			});
-	};
+	
 	
 	// make circle tab active
 	$scope.makeActive = function(circle) {

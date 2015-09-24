@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Map;
 import java.util.Set;
 
 import models.enums.ConsentStatus;
@@ -29,6 +30,10 @@ public class Consent extends Model {
 	
 	public static Consent getByOwnerAndPasscode(ObjectId ownerId, String passcode, Set<String> fields) throws ModelException {
 		return Model.get(Consent.class, collection, CMaps.map("owner", ownerId).map("passcode", passcode), fields);
+	}
+	
+	public static Set<Consent> getAllByOwner(ObjectId owner, Map<String, Object> properties,  Set<String> fields) throws ModelException {
+		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("owner", owner), fields);
 	}
 	
 	public static Set<Consent> getAllByAuthorized(ObjectId member) throws ModelException {

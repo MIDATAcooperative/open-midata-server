@@ -30,8 +30,7 @@ angular.module('views')
 	$scope.showNewHCRecords = function() {
 		var creators = [];
 		var aps = null;
-		_.each($scope.results, function(hc) {
-			console.log(hc);
+		_.each($scope.results, function(hc) {		
 			if (hc.provider) {
 				creators.push(hc.provider.$oid);
 				aps = hc.member.$oid;

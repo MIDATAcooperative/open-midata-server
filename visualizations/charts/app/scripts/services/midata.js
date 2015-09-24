@@ -1,5 +1,5 @@
 var midata = angular.module('midata', []);
-midata.factory('server', [ '$http', function($http) {
+midata.factory('midataServer', [ '$http', function($http) {
 	
 	var service = {};
 	
@@ -17,6 +17,25 @@ midata.factory('server', [ '$http', function($http) {
 		// submit to server
 		return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/create", data);
 	};
+	
+	/*
+	service.createConversion = function(authToken, name, description, content, format, data, appendToId) {
+		// construct json
+		var data = {
+			"authToken": authToken,
+			"data": angular.toJson(data),
+			"name": name,
+			"content" : content,
+			"format" : format,
+			"description": (description || ""),
+			"document" : appendToId,
+			"part" : format
+		};
+		
+		// submit to server
+		return $http.post("https://" + window.location.hostname + ":9000/api/apps/create", data);
+	};
+	*/
 	
 	service.getRecords = function(authToken, properties,fields) {
 		 var data = { "authToken" : authToken, "properties" : properties, fields : fields };		
@@ -39,4 +58,24 @@ midata.factory('server', [ '$http', function($http) {
 	};
 	
 	return service;	
+}]);
+midata.factory('midataPortal', [ '$window', '$interval', function($window, $interval) {
+	
+	var service = {};
+	var height = 0;
+	
+	service.autoresize = function() {		
+		$interval(function() { service.resize(); }, 300);
+	};
+	
+	service.resize = function() {
+		// var height = document.body.scrollHeight+"px";
+		var newheight = $window.document.body.offsetHeight+"px";		
+		if (newheight !== height) {			
+		  $window.parent.postMessage({ type: "height", viewHeight : newheight }, "*");		
+		  height = newheight;
+		}
+	};
+	
+	return service;
 }]);

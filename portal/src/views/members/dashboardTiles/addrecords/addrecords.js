@@ -22,8 +22,7 @@ angular.module('views')
 			
 	$scope.shareRecords = function() {
 		var selection = _.filter($scope.foundRecords, function(rec) { return rec.checked; });
-		selection = _.chain(selection).pluck('_id').pluck('$oid').value();
-		console.log(selection);
+		selection = _.chain(selection).pluck('_id').pluck('$oid').value();	
 		$scope.status.doSilent(records.share($scope.view.setup.targetAps, selection, $scope.view.setup.type))
 		.then(function () {
 		   views.changed($scope.viewid);
@@ -63,7 +62,7 @@ angular.module('views')
 		} else {
 			$scope.newest = true;
 			
-		    $scope.status.doBusy(records.getRecords(null, { "max-age" : 86400 * 31 }, [ "ownerName", "created", "id", "name" ])).
+		    $scope.status.doBusy(records.getRecords(null, { "max-age" : 86400 * 31, "limit" : 100, "owner" : "self" }, [ "ownerName", "created", "id", "name" ])).
 			then(function (result) { 
 				$scope.foundRecords = result.data;
 				$scope.searching = false; 

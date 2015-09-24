@@ -1,7 +1,9 @@
 var surveys = angular.module('surveys', [ 'midata']);
-surveys.controller('SurveyCtrl', ['$scope', '$http', '$location', '$filter', 'midataServer',
-	function($scope, $http, $location, $filter, midataServer) {
+surveys.controller('SurveyCtrl', ['$scope', '$http', '$location', '$filter', 'midataServer', 'midataPortal',
+	function($scope, $http, $location, $filter, midataServer, midataPortal) {
 		
+	    midataPortal.autoresize();
+	    
 		var path = $location.path().split("/");
 		console.log(path[2]);
 		$scope.authToken = path[1];

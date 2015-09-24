@@ -1,7 +1,8 @@
 <div ng-controller="ViewConfigCtrl" class="ignore autosize">        
 
-  <div class="body" ng-show="status.isBusy">Please wait...</div>
+  <loader busy="status.isBusy !== false">
   <div class="body">
+  
   <div ng-if="view.setup.icon" class="pull-left themeicon">
     <img ng-src="{{ view.setup.icon }}" >
   </div>		  
@@ -10,4 +11,5 @@
    <div ng-if="view.setup.link" class="footer">			  
 	  <a ui-sref="{{ view.setup.link }}" class="btn btn-primary">{{ view.setup.button }}</a>
   </div>	
+  </loader>
 </div>

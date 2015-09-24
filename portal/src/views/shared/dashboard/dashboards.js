@@ -100,6 +100,14 @@ angular.module('portal')
 			    active : true,
 			    position : "full"			    
 		    },  
+		    {
+		    	   id : "createrecord",
+		    	   template : "/views/members/dashboardTiles/createrecord/createrecord.html",
+		    	   title : "Create a new record",
+		    	   active : true,
+		    	   position : "small",		    	   		    	   
+		    	   setup : { allowSelection : true }
+		    },
 			{
 			    id: "myviews",
 			    title: "My Views",
@@ -459,7 +467,22 @@ angular.module('portal')
 				  title : "Details",
 				  active : false,
 				  position : "modal"			 
+			},
+			{                        
+				  id : "addusers",
+				  template : "/views/shared/dashboardTiles/addusers/addusers.html",
+				  title : "Add Users to Consent",
+				  active : false,
+				  position : "modal"			 
+			},
+			{                        
+				  id : "providersearch",
+				  template : "/views/shared/providersearch/providersearch.html",
+				  title : "Add Health Providers to Consent",
+				  active : false,
+				  position : "modal"			 
 			}
+			
 	 ],
 	 "studydetails" : [
 	        {
@@ -729,13 +752,21 @@ angular.module('portal')
 			  }
 		  });
 		  
+		  var vc = views.getView("myviews");
+		  if (vc != null) {			
+			 if (!vc.setup) { vc.setup = {}; }
+			 vc.setup.visualizations = [];
+		  }
+		  
 		  _.each(conf.add, function(add) {
 			 var tile = tiles[add];
 			 if (tile.template != null) {
+				console.log("ADD VIEW:"+tile);
 			   $scope.layout[tile.position].push(views.def(tile));
-			 } else {
-				 var vc = views.getView("myviews");
+			 } else {				
 				 if (vc != null) {
+					 console.log("ADD TILE");
+					 console.log(tile);
 					 vc.setup.visualizations.push(tile);
 				 }
 			 }

@@ -35,8 +35,7 @@ angular.module('views')
 	};
 	
 	
-	$scope.createCircle = function() {
-		console.log($scope.form);
+	$scope.createCircle = function() {		
 		if ($scope.form.newCircleName.trim() === "") {
 			$scope.errors.newCircleName = "Please enter a valid name";
 			return;

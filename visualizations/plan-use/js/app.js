@@ -1,7 +1,8 @@
 var planCreator = angular.module('planCreator', [ 'midata']);
-planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter', 'midataServer',
-	function($scope, $http, $location, $filter, midataServer) {
-		
+planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter', 'midataServer', 'midataPortal',
+	function($scope, $http, $location, $filter, midataServer, midataPortal) {
+
+	    midataPortal.autoresize();
 		// init
 		$scope.loading = true;
 		$scope.error = null;

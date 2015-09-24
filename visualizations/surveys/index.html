@@ -4,6 +4,7 @@
 		<meta charset="utf-8">
 		<title>Surveys</title>
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="stylesheet" href="/shared/css/app.css">
 		<!-- jQuery needed for Bootstrap's JavaScript plugins -->
 		<script type="text/javascript" src="//code.jquery.com/jquery-2.0.2.min.js"></script>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.min.js"></script>
@@ -102,7 +103,7 @@
 		  </div>
 		
 		  <div ng-show="surveys.length == 0">
-		    <h1>Survey participation</h1>
+		    <p class="head">Survey participation</p>
 		    <p>This visualizations allows you to participate in surveys shared with you. You currently do not have any survey to participate.</p>
 		  </div>
 		  <div ng-show="activeSurvey==null && (surveys.length > 0 || edit)">
