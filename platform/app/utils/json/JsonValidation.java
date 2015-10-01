@@ -67,6 +67,7 @@ public class JsonValidation {
 	
 	public static Date getDate(JsonNode json, String field) throws JsonValidationException {
 		String dateStr = json.path(field).asText();
+		if (dateStr == null || dateStr.length() == 0) return null;
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		try {
           Date result = formatter.parse(dateStr);

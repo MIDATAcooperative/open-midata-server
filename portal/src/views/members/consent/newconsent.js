@@ -30,7 +30,7 @@ angular.module('portal')
 				$scope.consent = $scope.myform = data.data[0];				
 				views.setView("1", { aps : $state.params.consentId, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowRemove : true, allowAdd : true, type : "circles" });
 								
-				angular.forEach($scope.consent.authorized, function(p) {
+				angular.forEach($scope.consent.authorized, function(p) {					
 					$scope.authpersons.push(session.resolve(p, function() { return users.getMembers({ "_id" : p },users.ALLPUBLIC ); }));
 				});				
 				
@@ -56,6 +56,7 @@ angular.module('portal')
 			hc.search({ "_id" : { "$oid" : $state.params.authorize } }, [ "firstname", "lastname", "city", "address1", "address2", "country"])
 			.then(function(data) {
 				$scope.authpersons = data.data;
+				$scope.consent.name = "Health Professional: "+$scope.authpersons[0].firstname+" "+$scope.authpersons[0].lastname;
 			});
 		}
 	};

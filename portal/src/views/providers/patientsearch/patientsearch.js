@@ -7,6 +7,7 @@ angular.module('portal')
 	$scope.error = null;
 	$scope.status = new status(true);
 	$scope.loading = false;
+	$scope.status.isBusy = false;
 	
 	$scope.dosearch = function() {
 		$scope.loading = true;

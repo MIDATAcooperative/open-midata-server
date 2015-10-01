@@ -284,8 +284,8 @@ surveys.controller('SurveyCtrl', ['$scope', '$http', '$location', '$filter', 'mi
 		$scope.reformatAnswer = function(itm) {
 			switch (itm.answer.type) {
 			case "boolean": itm.answer = { type : "boolean" }; break;
-			case "textChoice": itm.answer = { type : "textChoice", choices:[{ value:"C1", text:"Auswahl 1"}, { value:"C2", text:"Auswahl 2"}] }; break;
-			case "multiTextChoice": itm.answer = { type : "multiTextChoice", choices:[{ value:"C1", text:"Auswahl 1"}, { value:"C2", text:"Auswahl 2"}] }; break;
+			case "textChoice": itm.answer = { type : "textChoice", choices:[{ value:"C1", title:"Auswahl 1"}, { value:"C2", title:"Auswahl 2"}] }; break;
+			case "multiTextChoice": itm.answer = { type : "multiTextChoice", choices:[{ value:"C1", title:"Auswahl 1"}, { value:"C2", title:"Auswahl 2"}] }; break;
 			case "integerAnswerWithUnit": itm.answer = { type : "integerAnswerWithUnit", min:0, max:10 };break;
 			case "textLimited": itm.answer = { type : "textLimited" };break;
 			case "textUnlimited": itm.answer = { type : "textUnlimited" };break;
@@ -334,11 +334,11 @@ surveys.controller('SurveyCtrl', ['$scope', '$http', '$location', '$filter', 'mi
 		};
 		
 		$scope.insertChoice = function(idx) {
-		   $scope.activeStep.answer.choices.splice(idx + 1,0,{ value : "", title : "", text:"" });
+		   $scope.selectedItem.answer.choices.splice(idx + 1,0,{ value : "", title : "", text:"" });
 		};
 		
 		$scope.deleteChoice = function(idx) {
-		   $scope.activeStep.answer.choices.splice(idx,1);
+		   $scope.selectedItem.answer.choices.splice(idx,1);
 		};
 		
 	}

@@ -16,5 +16,9 @@ angular.module('portal')
 	    .state('developer.messages', {
 	      url: '/messages',
 	      templateUrl: 'views/shared/messages/messages.html' 
+	    })
+	    .state('admin.messages', {
+	      url: '/messages',
+	      templateUrl: 'views/shared/messages/messages.html' 
 	    });
 });

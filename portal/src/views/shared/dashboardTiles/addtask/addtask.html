@@ -1,0 +1,24 @@
+
+<div class="ignore autosize" ng-controller="AddTaskCtrl">
+  <div class="body">
+    <form class="form-horizontal">
+      <formrow myid="type" label="Task Type">
+        <select id="type" class="form-control" ng-change="prepare(task.type);" ng-model="task.type" ng-options="tasktemplate.name for tasktemplate in tasks"></select>
+      </formrow>
+      <formrow myid="title" label="Task Title">
+        <input type="text" class="form-control" ng-model="task.title">
+      </formrow>
+      <formrow myid="description" label="Description">
+        <textarea class="form-control" ng-model="task.description"></textarea>
+      </formrow>
+      <formrow myid="frequency" label="Frequency">
+        <select id="frequency" class="form-control" ng-model="task.frequency" ng-options="freq.value as freq.label for freq in frequencies"></select>
+      </formrow>
+    </form>
+    
+  </div>
+<div class="footer">
+	<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="submit()">Add</button>
+	<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+</div>
+</div>

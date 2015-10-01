@@ -38,6 +38,10 @@ angular.module('portal', [ 'ui.router', 'ui.bootstrap', 'services', 'views', 'co
     .state('developer', {
       url: '/developer',
       templateUrl: 'assets/nav/developer.html'
+    })
+    .state('admin', {
+      url: '/admin',
+      templateUrl: 'assets/nav/admin.html'
     });   
    
    $urlRouterProvider

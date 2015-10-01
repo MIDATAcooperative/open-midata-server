@@ -17,6 +17,8 @@ import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.ObjectId;
 
+import controllers.RecordSharing;
+
 import utils.DateTimeUtils;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -39,6 +41,10 @@ public class ComplexQueryManager {
 	public static Collection<RecordsInfo> info(APSCache cache, ObjectId aps, Map<String, Object> properties) throws ModelException {
 		return infoQuery(new Query(properties, Sets.create("created", "group"), cache, aps), aps, false);
 	}
+	
+	public static List<Record> isContainedInAps(APSCache cache, ObjectId aps, List<Record> candidates) throws ModelException {
+		return onlyWithKey((new APSQSupportingQM(cache.getAPS(aps)).lookup(candidates, new Query(CMaps.map(RecordSharing.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps))));
+	}
 		
 	public static boolean isInQuery(Map<String, Object> properties, Record record) throws ModelException {
 		List<Record> results = new ArrayList<Record>(1);
@@ -48,7 +54,7 @@ public class ComplexQueryManager {
 	
 	public static List<Record> listFromMemory(Map<String, Object> properties, List<Record> records) throws ModelException {
 		QueryManager qm = new FormatGroupHandling(new ContentFilterQM(new InMemoryQM(records)));
-		Query query = new Query(properties, Sets.create(), null, null);
+		Query query = new Query(properties, Sets.create(), null, null, true);
 		return postProcessRecords(qm, query, qm.query(query));		
 	}
 	
@@ -207,6 +213,14 @@ public class ComplexQueryManager {
     			used.add(r._id);
     			filteredresult.add(r);
     		}
+    	}
+    	return filteredresult;
+    }
+    
+    protected static List<Record> onlyWithKey(List<Record> input) {    	
+    	List<Record> filteredresult = new ArrayList<Record>(input.size());
+    	for (Record r : input) {
+    		if (r.key != null) filteredresult.add(r);
     	}
     	return filteredresult;
     }

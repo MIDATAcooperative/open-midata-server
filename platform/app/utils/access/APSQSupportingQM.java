@@ -2,6 +2,7 @@ package utils.access;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +37,23 @@ public class APSQSupportingQM extends QueryManager {
 			throws ModelException {
 		List<Record> result = next.lookup(record, q);
 		// Add Filter
+		
+		BasicBSONObject query = q.getCache().getAPS(q.getApsId()).getMeta(SingleAPSManager.QUERY);    	
+    	// Ignores queries in main APS 
+		if (query != null && !q.getApsId().equals(q.getCache().getOwner())) {			
+						
+			if (query.containsField("$or")) {
+				Collection queryparts = (Collection) query.get("$or");
+				List<Record> filteredResult = new ArrayList<Record>(result.size());
+				for (Object part : queryparts) {
+					filteredResult.addAll(memoryQuery(q, (BasicBSONObject) part, result));
+				}
+				return filteredResult;
+			} else {
+				return memoryQuery(q, query, result);
+			}															
+		}
+						
 		return result;
 	}
 		
@@ -80,6 +98,23 @@ public class APSQSupportingQM extends QueryManager {
 		} 
 		
 		results.addAll(result);
+	}
+	
+	private List<Record> memoryQuery(Query q, BasicBSONObject query, List<Record> results) throws ModelException {
+		Map<String, Object> combined = combineQuery(q.getProperties(), query);
+		if (combined == null) {
+			AccessLog.debug("combine empty:");			
+			return Collections.emptyList();
+		}
+		
+		List<Record> result = ComplexQueryManager.listFromMemory(combined, results); 
+									
+		if (query.containsField("_exclude") && result.size() > 0) {			
+			List<Record> excluded = ComplexQueryManager.listFromMemory((Map<String, Object>) query.get("_exclude"), result);
+            result.removeAll(excluded);						
+		} 
+		
+		return result;
 	}
 	
 	public static Map<String, Object> combineQuery(Map<String,Object> properties, Map<String,Object> query) throws ModelException {

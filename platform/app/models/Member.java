@@ -29,6 +29,9 @@ public class Member extends User {
 	public ParticipationInterest partInterest;
 	public ObjectId myaps;
 	
+	public Member() {
+		role =UserRole.MEMBER;
+	}
 	
 	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
 		return Model.exists(Member.class, collection, properties);
@@ -94,8 +97,8 @@ public class Member extends User {
 		return collection;
 	}
 	
-	public UserRole getRole() {
+	/*public UserRole getRole() {
 		return UserRole.MEMBER;
-	}
+	}*/
 
 }

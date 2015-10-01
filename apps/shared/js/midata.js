@@ -15,7 +15,7 @@ midata.factory('midataServer', [ '$http', function($http) {
 		};
 		
 		// submit to server
-		return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/create", data);
+		return $http.post("https://" + window.location.hostname + ":9000/api/apps/create", data);
 	};
 	
 	/*

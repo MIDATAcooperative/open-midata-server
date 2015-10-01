@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 import models.AccessPermissionSet;
+import models.Admin;
 import models.Developer;
 
 import models.ModelException;
@@ -91,6 +92,21 @@ public class Developers extends APIController {
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
 		Developer user = Developer.getByEmail(email, Sets.create("email","password","provider"));
+		
+		if (user == null) {
+			Admin adminuser = Admin.getByEmail(email, Sets.create("email","password"));
+			if (adminuser != null) {
+				if (!Admin.authenticationValid(password, adminuser.password)) {
+					return badRequest("Invalid user or password.");
+				}
+				
+				KeyManager.instance.unlock(adminuser._id, "12345");
+				session().clear();
+				session("id", adminuser._id.toString());
+				session("role", "admin");		
+				return ok("admin");
+			}
+		}
 		
 		if (user == null) return badRequest("Invalid user or password.");
 		if (!Developer.authenticationValid(password, user.password)) {

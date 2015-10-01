@@ -47,6 +47,7 @@ angular.module('services')
 		   c = session.cache[id] = {};
 		   callback().then(function(data) {
 			   data = data.data[0];
+			   console.log(data);
 			  for (var attr in data) { c[attr] = data[attr]; }
 		   });
 		   return c;

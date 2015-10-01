@@ -78,12 +78,22 @@
 		       </div>
 		       <div class="form-group" ng-show="selectedItem.answer.type=='textChoice' || selectedItem.answer.type=='multiTextChoice'">
 		         <label class="control-label col-sm-4">Choices [ID/Text]</label>
-		         <div class="col-sm-12" ng-repeat="choice in selectedItem.answer.choices">
-		           <input type="text" ng-model="choice.value">		         
-		           <input type="text" ng-model="choice.title">
-		           <input type="text" ng-model="choice.text">
-		           <a href="javascript:" ng-click="insertChoice($index)">add</a>
-		           <a href="javascript:" ng-click="deleteChoice($index)">delete</a>		           
+		         <div class="col-sm-8">
+		         <table>
+		         <tr>
+		           <th>Internal Value</th>
+		           <th>Title</th>
+		           <th>Additional text</th>
+		         </tr>
+		         
+		         <tr ng-repeat="choice in selectedItem.answer.choices">
+		           <td><input class="form-control" type="text" ng-model="choice.value"></td>		         
+		           <td><input class="form-control" type="text" ng-model="choice.title"></td>
+		           <td><input class="form-control" type="text" ng-model="choice.text"></td>
+		           <td><a class="btn btn-default btn-xs" href="javascript:" ng-click="insertChoice($index)">add afterwards</a></td>
+		           <td><a class="btn btn-default btn-xs" href="javascript:" ng-click="deleteChoice($index)">delete this</a></td>		           
+		         </tr>
+		         </table>
 		         </div>
 		       </div>	
 		       <button class="btn btn-danger" ng-click="deleteStep()">Delete</button>
@@ -162,15 +172,17 @@
 					     <div class="radio" ng-repeat="choice in activeItem.answer.choices">
 					     <label >
 					       <input type="radio" ng-value="choice.value" ng-model="activeItem.result.value">
-					       {{ choice.text }}
-					     </label>			
+					       {{ choice.title }}
+					       <span class="help-block">{{ choice.text }}</span> 
+					     </label>					     			
 					     </div>		     					     					     					    
 					   </div>
 					    <div ng-show="activeItem.answer.type == 'multiTextChoice'">
 					     <div class="radio" ng-repeat="choice in activeItem.answer.choices">
 					     <label >
 					       <input type="checkbox" ng-checked="isChecked(activeItem, choice.value)" ng-changed="changeCheckbox(activeItem, choice.value)">
-					       {{ choice.text }}
+					       {{ choice.title }}
+					       <span class="help-block">{{ choice.text }}</span>
 					     </label>			
 					     </div>		     					     					     					    
 					   </div>

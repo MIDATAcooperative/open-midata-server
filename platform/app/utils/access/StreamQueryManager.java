@@ -22,6 +22,7 @@ public class StreamQueryManager extends QueryManager {
 		
 	}
 	
+	
 	@Override
 	protected List<Record> lookup(List<Record> records, Query q)
 			throws ModelException {
@@ -29,11 +30,22 @@ public class StreamQueryManager extends QueryManager {
 		
 		List<Record> result = (next != null) ? next.lookup(records, q) : null;
 		
-		for (Record record : result) {
+		boolean isStrict = q.restrictedBy("strict");
+		
+		for (Record record : records) {
 			if (record.stream != null && record.key == null) {
-				boolean found = q.getCache().getAPS(record.stream).lookupSingle(record, q);
-				                					
+				boolean lookup = true;
+				if (isStrict) {
+					Record stream = new Record();
+					stream._id = record.stream;
+					if (!((SingleAPSManager) next).lookupSingle(stream, q)) lookup = false; 
+				}
+				
+				boolean found = lookup && q.getCache().getAPS(record.stream).lookupSingle(record, q);
+				AccessLog.debug("looked for:"+record._id.toString()+" found="+found+" key="+(record.key != null));                			
 				if (found) {
+					result.add(record);
+					
 					if (q.returns("owner") && record.owner == null) {
 						List<Record> stream = next.query(new Query(CMaps.map("_id", record.stream), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId(), true ));
 						if (stream.size() > 0) record.owner = stream.get(0).owner;

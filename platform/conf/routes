@@ -135,6 +135,14 @@ GET     /providers/api/member/:member                    controllers.providers.P
 POST    /developers/api/register                          controllers.Developers.register()
 POST    /developers/api/login                             controllers.Developers.login()
 
+# Admins
+POST    /admins/api/changeStatus                         controllers.admin.Administration.changeStatus()
+
+# Tasks
+POST    /shared/api/tasks/create         controllers.Tasking.add()
+POST    /shared/api/tasks/list           controllers.Tasking.list()
+POST    /shared/api/tasks/execute/:taskid   controllers.Tasking.execute(taskid: String)
+
 # Apps
 
 GET     /apps/:id/url               controllers.Apps.getUrl(id: String)

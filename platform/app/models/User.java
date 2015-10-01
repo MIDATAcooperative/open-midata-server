@@ -103,7 +103,7 @@ public class User extends Model implements Comparable<User> {
 	}
 	
 	public UserRole getRole() {
-		return null;
+		return role;
 	}
 	
 	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {

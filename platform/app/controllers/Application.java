@@ -335,6 +335,11 @@ public class Application extends Controller {
 				controllers.routes.javascript.Users.complete(),
 				controllers.routes.javascript.Users.clearPushed(),
 				controllers.routes.javascript.Users.clearShared(),
+				
+				controllers.routes.javascript.Tasking.add(),
+				controllers.routes.javascript.Tasking.list(),
+				controllers.routes.javascript.Tasking.execute(),
+				
 				//Research
 				controllers.research.routes.javascript.Researchers.register(),
 				controllers.research.routes.javascript.Researchers.login(),
@@ -374,9 +379,13 @@ public class Application extends Controller {
 				controllers.providers.routes.javascript.Providers.getMember(),
 				controllers.providers.routes.javascript.Providers.getVisualizationToken(),
 				
+				
+				
 				// Developers
 				controllers.routes.javascript.Developers.register(),
 				controllers.routes.javascript.Developers.login(),
+				
+				controllers.admin.routes.javascript.Administration.changeStatus(),
 				// Market				
 				controllers.routes.javascript.Market.registerPlugin(),
 				controllers.routes.javascript.Market.updatePlugin(),

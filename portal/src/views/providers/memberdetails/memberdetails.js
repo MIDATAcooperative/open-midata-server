@@ -1,15 +1,16 @@
 angular.module('portal')
-.controller('MemberDetailsCtrl', ['$scope', '$state', 'server', 'views', 'circles', 'session', function($scope, $state, server, views, circles, session) {
+.controller('MemberDetailsCtrl', ['$scope', '$state', 'server', 'views', 'circles', 'session', 'status', function($scope, $state, server, views, circles, session, status) {
 	
 	$scope.memberid = $state.params.memberId;
 	$scope.member = {};	
-	$scope.loading = true;
+	$scope.status = new status(true);
 		
 	views.link("1", "record", "record");
 	$scope.reload = function() {
 			
-		server.get(jsRoutes.controllers.providers.Providers.getMember($scope.memberid).url).
-			success(function(data) { 												
+		$scope.status.doBusy(server.get(jsRoutes.controllers.providers.Providers.getMember($scope.memberid).url))
+		.then(function(results) {
+			    var data = results.data;
 				$scope.member = data.member;
 				$scope.consents = data.consents;
 				$scope.backwards = data.backwards;
@@ -20,15 +21,13 @@ angular.module('portal')
 				} else {
 				  views.disableView("1");
 				}
-				$scope.loading = false;
-			}).
-			error(function(err) {
-				$scope.error = err;				
 			});
 	};
 	
-	$scope.selectConsent = function() {
+	$scope.selectConsent = function(consent) {
 		$scope.hideAdd = false;
+		$scope.consent = consent;
+		console.log($scope.consent);
 		if ($scope.consent != null) {
 			views.setView("1", { aps : $scope.consent._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : false, type : "memberkeys" });			
 		} else {
@@ -56,6 +55,14 @@ angular.module('portal')
 				});
 			});
 		}
+	};
+	
+	$scope.addTask = function() {
+	  console.log("AAAA");
+	  console.log($scope);
+	  console.log($scope.consent);
+	  views.setView("addtask", { "owner" : $scope.memberid, "shareBackTo" : $scope.consent._id.$oid });
+	  console.log("BBBB");
 	};
 		
 	$scope.reload();

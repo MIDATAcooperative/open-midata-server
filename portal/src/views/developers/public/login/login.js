@@ -17,7 +17,13 @@ angular.module('portal')
 		// send the request
 		var data = {"email": $scope.login.email, "password": $scope.login.password};
 		$scope.status.doAction("login", server.post(jsRoutes.controllers.Developers.login().url, JSON.stringify(data))).
-		then(function() { $state.go('developer.messages'); }).
+		then(function(result) {
+			if (result.data == "admin") {
+			  $state.go('admin.messages');
+			} else {
+			  $state.go('developer.messages');
+			}
+		}).
 		catch(function(err) { $scope.error = err.data; });
 	};
 }]);

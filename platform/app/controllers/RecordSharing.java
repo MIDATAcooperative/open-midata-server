@@ -40,6 +40,7 @@ import com.mongodb.DBObject;
 
 import utils.DateTimeUtils;
 import utils.access.APSCache;
+import utils.access.APSQSupportingQM;
 import utils.access.AccessLog;
 import utils.access.ComplexQueryManager;
 import utils.access.EncryptedAPS;
@@ -237,22 +238,23 @@ public class RecordSharing {
 		SingleAPSManager apswrapper = getCache(who).getAPS(toAPS);
 		List<Record> recordEntries = ComplexQueryManager.listInternal(getCache(who), fromAPS,
 				records != null ? CMaps.map("_id", records) : RecordSharing.FULLAPS_FLAT,
-				Sets.create("_id", "key", "owner", "format", "content", "name", "isStream"));
-		apswrapper.addPermission(recordEntries, withOwnerInformation);
+				Sets.create("_id", "key", "owner", "format", "content", "created", "name", "isStream"));
 		
-		/*BasicBSONObject query =  apswrapper.getMeta("_query");
-		if (query != null) {
-			if (query.containsField("_exclude")) {
-			  BasicBSONObject exclude = (BasicBSONObject) query.get("_exclude");
-			  if (exclude.containsField("_id")) {
-			    Collection ids = (Collection) exclude.get("_id");
-			    for (Record r : recordEntries) {
-				  ids.remove(r._id.toString());
-			    }
-			    apswrapper.setMeta("_query", query);
-			  }
-			}
-		}*/
+		List<Record> alreadyContained = ComplexQueryManager.isContainedInAps(getCache(who), toAPS, recordEntries);
+		AccessLog.debug("to-share: "+recordEntries.size()+" already="+alreadyContained.size());
+        if (alreadyContained.size() == recordEntries.size()) return;
+        if (alreadyContained.size() == 0) {		
+		    apswrapper.addPermission(recordEntries, withOwnerInformation);
+        } else {
+        	Set<ObjectId> contained = new HashSet<ObjectId>();
+        	for (Record rec : alreadyContained) contained.add(rec._id);
+        	List<Record> filtered = new ArrayList<Record>(recordEntries.size());
+        	for (Record rec : recordEntries) {
+        		if (!contained.contains(rec._id)) filtered.add(rec);
+        	}
+        	apswrapper.addPermission(filtered, withOwnerInformation);
+        }
+				
 	}
 
 	public void shareByQuery(ObjectId who, ObjectId fromAPS, ObjectId toAPS,
@@ -580,9 +582,11 @@ public class RecordSharing {
 		List<Record> result = ComplexQueryManager.listInternal(getCache(who), new ObjectId(token.apsId), CMaps.map("_id", new ObjectId(token.recordId)), Sets.create("key"));
 				
 		if (result.size() != 1) throw new ModelException("Unknown Record");
+		Record rec = result.get(0);
 		
+		if (rec.key == null) throw new ModelException("Missing key for record:"+rec._id.toString());
 		FileData fileData = FileStorage.retrieve(new ObjectId(token.recordId));
-		Record rec = result.get(0);		
+				
 		
 		fileData.inputStream = EncryptionUtils.decryptStream(new SecretKeySpec(rec.key, EncryptedAPS.KEY_ALGORITHM), fileData.inputStream);
 		

@@ -101,6 +101,13 @@ angular.module('portal')
 			    position : "full"			    
 		    },  
 		    {
+		    	   id : "tasks",
+		    	   template : "/views/shared/dashboardTiles/tasks/tasks.html",
+		    	   title : "Tasks",
+		    	   active : true,
+		    	   position : "small"
+		    },
+		    {
 		    	   id : "createrecord",
 		    	   template : "/views/members/dashboardTiles/createrecord/createrecord.html",
 		    	   title : "Create a new record",
@@ -544,7 +551,14 @@ angular.module('portal')
 				  title : "Details",
 				  active : false,
 				  position : "modal"			 
-			}            
+			},
+			{                        
+				  id : "addtask",
+				  template : "/views/shared/dashboardTiles/addtask/addtask.html",
+				  title : "Add Task",
+				  active : false,
+				  position : "modal"			 
+			}              
 	 ],
 	 "studyparticipant" : [
 			{

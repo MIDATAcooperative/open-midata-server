@@ -6,6 +6,7 @@
 	<div class="panel panel-primary">
 	<div class="panel-heading">{{ member.firstname }} {{ member.lastname }}</div>
 	<div class="panel-body">
+	 <loader busy="status.isBusy !== false">
 	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 	   {{ error.message || error }}
 	</p>
@@ -21,11 +22,20 @@
 	  <span ng-show="member.email">Email: {{ member.email }}</span><br>
     </address>
       <p>Pick consent:</p>
-      <select class="form-control" ng-change="selectConsent()" ng-model="consent" ng-options="consent.name for consent in consents"></select>
+      <div class="row">
+      <div class="col-sm-8">
+      <select class="form-control" ng-change="selectConsent(consent)" ng-model="consent" ng-options="consent.name for consent in consents"></select>
+      </div><div class="col-sm-4">
       <button class="btn btn-default" ng-click="addData();" ng-hide="hideAdd">Share Data With Patient</button>
+      <button class="btn btn-default" ng-click="addTask();" ng-hide="hideAdd || consent==null">Add Task</button>
+      </div>
+      </div>
+      </loader>
     </div>
     
+    
       </div>
+      
     
     <div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
        

@@ -12,5 +12,9 @@ angular.module('portal')
 	    .state('research.message', {
 	      url: '/message/:messageId',
 	      templateUrl: 'views/shared/message/message.html' 
+	    })
+	    .state('admin.message', {
+	      url: '/message/:messageId',
+	      templateUrl: 'views/shared/message/message.html' 
 	    });
 });

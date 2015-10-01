@@ -47,6 +47,7 @@ public class Query {
 		this.fields = q.getFields();
 		this.cache = q.getCache();
 		this.apsId = q.getApsId();
+		this.giveKey = q.giveKey;
 		process();
 		AccessLog.logQuery(properties, fields);
 	}
@@ -93,13 +94,15 @@ public class Query {
 		Object v = properties.get(name);
 		if (v instanceof String) {
 			return Collections.singleton((String) v);
+		} else if (v instanceof ObjectId) {
+			return Collections.singleton(v.toString());
 		} else if (v instanceof Set) {
 			return (Set) v;
 		} else if (v instanceof Collection) {
 			Set<String> results = new HashSet<String>();
 			results.addAll((Collection<String>) v);
 			return results;											
-		} else throw new ModelException("Bad Restriction: "+name);
+		} else throw new ModelException("Bad Restriction 1: "+name);
 	}
 	
 	public Set<ObjectId> getObjectIdRestriction(String name) throws ModelException {
@@ -114,7 +117,7 @@ public class Query {
 			return results;		
 		} else if (v instanceof String && ObjectId.isValid((String) v)) {
 			return Collections.singleton( new ObjectId((String) v));
-		} else throw new ModelException("Bad Restriction: "+name);
+		} else throw new ModelException("Bad Restriction 2: "+name);
 	}
 	
 	public boolean restrictedBy(String field) {

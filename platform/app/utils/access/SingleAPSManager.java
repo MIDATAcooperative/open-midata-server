@@ -175,7 +175,7 @@ public class SingleAPSManager extends QueryManager {
 				for (BasicBSONObject row : rows) {
 					   BasicBSONObject map = APSEntry.getEntries(row);					   
 					   BasicBSONObject target = (BasicBSONObject) map.get(id.toString());
-					   if (target!=null) {
+					   if (target!=null && satisfies(target, q)) {
 						  result.add(createRecordFromAPSEntry(id.toString(), row, target, withOwner));
 					   }					   
 				}
@@ -186,11 +186,25 @@ public class SingleAPSManager extends QueryManager {
 				//AccessLog.debug("format:" + format+" map="+map.toString());			    
 				for (String id : map.keySet()) {
 				    	BasicBSONObject target = (BasicBSONObject) map.get(id);
-				    	result.add(createRecordFromAPSEntry(id , row, target, withOwner));
+				    	if (satisfies(target,q )) {
+				    	  result.add(createRecordFromAPSEntry(id , row, target, withOwner));
+				    	}
 				}			    
 			}
 		}		
 		return result;
+	}
+	
+	protected boolean satisfies(BasicBSONObject entry, Query q) {
+		if (q.getMinDate() != null) {
+			Date created  = entry.getDate("created");
+			if (created != null && created.before(q.getMinDate())) return false;
+		}
+		if (q.getMaxDate() != null) {
+			Date created  = entry.getDate("created");
+			if (created != null && created.after(q.getMinDate())) return false;
+		}
+		return true;
 	}
 	
 	protected boolean lookupSingle(Record input, Query q) throws ModelException {
@@ -241,6 +255,8 @@ public class SingleAPSManager extends QueryManager {
 			String owner = entry.getString("owner");
 		    if (owner!=null) record.owner = new ObjectId(owner); else record.owner = eaps.getOwner();
 		}
+		
+		record.created = entry.getDate("created");
 						
 		return record;
 	}
@@ -330,6 +346,7 @@ public class SingleAPSManager extends QueryManager {
 						
 		private void addPermissionInternal(Record record, boolean withOwner) throws ModelException {
 						
+			if (record.key == null) throw new ModelException("Record with NULL key: Record:"+record.name+"/"+record.content+"/"+record.isStream);
 			// resolve Format
 			BasicBSONObject obj = APSEntry.findMatchingRowForRecord(eaps.getPermissions(), record, true);
 			obj = APSEntry.getEntries(obj);	
@@ -338,6 +355,7 @@ public class SingleAPSManager extends QueryManager {
 			entry.put("key", record.key);
 			if (record.isStream) entry.put("s", true);
 			if (record.owner!=null && withOwner) entry.put("owner", record.owner);
+			if (record.created != null && !record.isStream) entry.put("created",record.created);
 			//if (record.format.equals(Query.STREAM_TYPE)) entry.put("name", record.name);
 			obj.put(record._id.toString(), entry);
 						
@@ -418,8 +436,13 @@ public class SingleAPSManager extends QueryManager {
 		@Override
 		protected List<Record> lookup(List<Record> input, Query q)
 				throws ModelException {
-			for (Record record : input) { lookupSingle(record, q); }			
-			return input;
+			List<Record> filtered = new ArrayList<Record>(input.size());
+			for (Record record : input) { 
+				if (lookupSingle(record, q)) { filtered.add(record); }			
+			}
+			return filtered;
 		}
+		
+		
 		
 }
