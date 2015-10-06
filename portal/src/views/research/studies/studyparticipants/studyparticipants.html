@@ -2,7 +2,7 @@
 <div ng-controller="ListParticipantsCtrl" ng-cloak>   
    <div class="tab-content">
     <div class="tab-pane active">
-	
+	<loader busy="status.isBusy !== false">
 	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 	   {{ error.message || error }}
 	</p>
@@ -20,7 +20,7 @@
 	  <tbody>
 	    <tr ng-repeat="participant in results">
 	      <td><a ui-sref="research.study.participant({ studyId : studyid, participantId : participant._id.$oid})">{{ participant.ownerName }}</a></td>	  
-	      <td>{{ participant.group }}</td>
+	      <td><select ng-model="participant.group" class="form-control" ng-change="changeGroup(participant)" ng-options="group.name as group.name for group in study.groups"></select></td>
 	      <td>{{ participant.pstatus }}</td>
 	      <td>{{ participant.recruiterName }}</td>
 	      <td>
@@ -34,6 +34,7 @@
 	<p ng-show="results.length == 0">
 	  This study does not have any participants yet.
 	</p>
-	</div>
+	</loader>
+	</div>	
 	</div>	
 </div>

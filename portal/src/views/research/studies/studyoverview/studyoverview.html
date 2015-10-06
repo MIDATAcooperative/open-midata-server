@@ -3,6 +3,7 @@
 
 	<div class="tab-content">	
 	<div class="tab-pane active">
+	<loader busy="status.isBusy !== false">
 	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 	   {{ error.message || error }}
 	</p>
@@ -40,6 +41,7 @@
         <td>{{ study.executionStatus }}</td>
       </tr>
     </table>	
+    </loader>
     </div>
     </div>
     <div ng-show="study.history.length" class="panel panel-primary">
@@ -62,9 +64,10 @@
           <td>{{ entry.message }}</td>
         </tr>
       </tbody>
-    </table>
+    </table>    
     </div>
     </div>
+    
   
     <a class="btn btn-default" ui-sref="research.studies">Back</a> 
     <button ng-show="readyForValidation()" class="btn btn-primary" ng-click="startValidation()">Request Study Validation</button>

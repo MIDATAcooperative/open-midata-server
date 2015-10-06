@@ -4,6 +4,7 @@ angular.module('portal')
 	$scope.studyid = $state.params.studyId;
 	$scope.study = {};
 	$scope.participation = {};
+	$scope.providers = [];
 	$scope.loading = true;
 	$scope.error = null;
 		
@@ -22,10 +23,12 @@ angular.module('portal')
 				$scope.error = null;
 				
 				$scope.providers = [];
-				angular.forEach(data.participation.providers, function(p) {
-					console.log(p);
-					$scope.providers.push(session.resolve(p, function() { return users.getMembers({ "_id" : p },users.ALLPUBLIC ); }));
-				});
+				if (data.participation && data.participation.providers) {
+					angular.forEach(data.participation.providers, function(p) {
+						console.log(p);
+						$scope.providers.push(session.resolve(p, function() { return users.getMembers({ "_id" : p },users.ALLPUBLIC ); }));
+					});
+				}
 				
 				if ($scope.participation && !($scope.participation.status == "CODE" || $scope.participation.status == "MATCH" )) {
 				  views.setView("1", { aps : $scope.participation._id.$oid, properties : { } , type:"participations", allowAdd : true, allowRemove : false, fields : [ "ownerName", "created", "id", "name" ]});

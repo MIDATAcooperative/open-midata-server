@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import models.enums.AssistanceType;
 import models.enums.InformationType;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
@@ -28,12 +29,14 @@ public class Study extends Model {
 	public List<Info> infos;
 	public Set<ObjectId> studyKeywords; //references StudyKeyword. Used to identify members as candidates if their participationInterest is set to 'some'
 	public Set<FilterRule> participantRules; //List of rules that members must satisfy to become participants
-	public Set<FilterRule> recordRules; //Rule set that determines which records a member must share during study execution	
+	public Map<String, Object> recordQuery; // Query that determines which records a member must share during study execution	
 	public InformationType requiredInformation;
+	public AssistanceType assistance;
 	public StudyValidationStatus validationStatus;	
 	public ParticipantSearchStatus participantSearchStatus;
 	public StudyExecutionStatus executionStatus;
     public List<History> history;
+    public List<StudyGroup> groups;
     
     public static void add(Study study) throws ModelException {
 		Model.insert(collection, study);
@@ -73,6 +76,20 @@ public class Study extends Model {
     
     public void setRequiredInformation(InformationType inf) throws ModelException {
 		Model.set(Study.class, collection, this._id, "requiredInformation", inf);
+	}
+    
+    public void setAssistance(AssistanceType inf) throws ModelException {
+		Model.set(Study.class, collection, this._id, "assistance", inf);
+	}
+    
+    public void setGroups(List<StudyGroup> groups) throws ModelException {
+    	this.groups = groups;
+		Model.set(Study.class, collection, this._id, "groups", groups);
+	}
+    
+    public void setRecordQuery(Map<String, Object> recordQuery) throws ModelException {
+    	this.recordQuery = recordQuery;
+		Model.set(Study.class, collection, this._id, "recordQuery", recordQuery);
 	}
     
     public void addHistory(History newhistory) throws ModelException {

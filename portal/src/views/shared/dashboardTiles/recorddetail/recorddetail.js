@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('RecordDetailCtrl', ['$scope', 'server', '$attrs', 'views', 'records', 'apps', 'status', function($scope, server, $attrs, views, records, apps, status) {
+.controller('RecordDetailCtrl', ['$scope', 'server', '$attrs', 'views', 'records', 'apps', 'status', '$state', '$timeout', function($scope, server, $attrs, views, records, apps, status, $state, $timeout) {
 		
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
 	$scope.record = {};
@@ -38,6 +38,13 @@ angular.module('views')
 				if (!$scope.record.owner) $scope.record.owner = "?";
 				if (!$scope.record.creator) $scope.record.creator = "Same as owner";
 			});
+	};
+	
+	$scope.showDetail = function() {		
+		var recordId = $scope.view.setup.id;
+		views.disableView($scope.view.id);
+		var sname = $state.current.name.split('.')[0]+".recorddetail";		
+		$timeout(function() { $state.go(sname, { recordId : recordId }); }, 500);		
 	};
 	
 	$scope.$watch('view.setup', function() { $scope.reload(); });	

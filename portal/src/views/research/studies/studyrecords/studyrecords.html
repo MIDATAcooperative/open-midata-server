@@ -1,7 +1,20 @@
    
 <div ng-controller="StudyRecordsCtrl" ng-cloak>   
    <div class="tab-content">
-    <div class="tab-pane active">	
-	  <a ng-href="{{downloadUrl}}" class="btn btn-primary" target="_blank">Download</a>
+    <div class="tab-pane active">
+      <loader busy="status.isBusy !== false">
+      <p class="alert alert-info">Once data is available it can be downloaded here.</p>
+      <table class="table table-striped" ng-show="infos.length">	
+      <tr>
+        <th>Data Group</th>
+        <th># Records</th>
+      </tr>
+      <tr ng-repeat="info in infos">        
+	      <td>{{ info.group }}</td>      
+	      <td>{{ info.count }}</td>
+      </tr>
+      </table>
+	  <a ng-href="{{downloadUrl}}" ng-show="infos.length" class="btn btn-primary" target="_blank">Download</a>
+	  </loader>
 	</div>	
 </div>

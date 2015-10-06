@@ -95,6 +95,7 @@ POST    /research/api/login                              controllers.research.Re
 POST    /research/api/studies                            controllers.research.Studies.create()
 GET     /research/api/studies                            controllers.research.Studies.list()
 GET     /research/api/studies/:study                     controllers.research.Studies.get(study: String)
+PUT     /research/api/studies/:study                     controllers.research.Studies.update(study: String)
 GET     /research/api/studies/:study/download            controllers.research.Studies.download(study: String)
 GET     /research/api/studies/:study/codes               controllers.research.Studies.listCodes(study: String)
 POST    /research/api/studies/:study/codes               controllers.research.Studies.generateCodes(study: String)
@@ -108,6 +109,9 @@ GET     /research/api/studies/:study/participants        controllers.research.St
 GET     /research/api/studies/:study/participants/:participant controllers.research.Studies.getParticipant(study: String, participant: String)
 POST    /research/api/studies/:study/approve             controllers.research.Studies.approveParticipation(study: String)
 POST    /research/api/studies/:study/reject              controllers.research.Studies.rejectParticipation(study: String)
+POST    /research/api/studies/:study/update              controllers.research.Studies.updateParticipation(study: String)
+POST    /research/api/studies/:study/share/:group        controllers.research.Studies.shareWithGroup(study: String, group:String)
+POST    /research/api/studies/:study/task/:group         controllers.research.Studies.addTask(study: String, group:String)
 
 POST    /common/api/studies                              controllers.common.Studies.search()
 GET     /common/api/groups                               controllers.FormatAPI.listGroups()

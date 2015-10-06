@@ -533,7 +533,7 @@ angular.module('portal')
 				   title : "Records of this patient:",
 				   active : false,
 				   position : "full",
-				   links : { "shareFrom" : "share", "record" : "details" }				   
+				   links : { "shareFrom" : "share" }				   
 				   
 			},
 			 {                        
@@ -560,6 +560,40 @@ angular.module('portal')
 				  position : "modal"			 
 			}              
 	 ],
+	 "studyactions" : [
+	        			{
+	        				   id : "1",
+	        				   template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
+	        				   title : "Records of this group:",
+	        				   active : false,
+	        				   position : "full",
+	        				   links : { "shareFrom" : "share", "record" : "details" }				   
+	        				   
+	        			},
+	        			 {                        
+	        			      id : "share",
+	        			      template : "/views/members/dashboardTiles/addrecords/search.html",
+	        			      title : "Share",
+	        			      position : "modal",
+	        			      active : false,
+	        			      links : { "record" : "details" },
+	        			      dependend : [ "1" ]
+	        			},
+	        			{                        
+	        				  id : "details",
+	        				  template : "/views/shared/dashboardTiles/recorddetail/recorddetail.html",
+	        				  title : "Details",
+	        				  active : false,
+	        				  position : "modal"			 
+	        			},
+	        			{                        
+	        				  id : "addtask",
+	        				  template : "/views/shared/dashboardTiles/addtask/addtask.html",
+	        				  title : "Add Task",
+	        				  active : false,
+	        				  position : "modal"			 
+	        			}              
+	        	 ],
 	 "studyparticipant" : [
 			{
 				   id : "1",

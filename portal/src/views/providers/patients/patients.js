@@ -1,24 +1,17 @@
 angular.module('portal')
-.controller('PatientsCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
+.controller('PatientsCtrl', ['$scope', '$state', 'server', 'status', function($scope, $state, server, status) {
 	
 	$scope.criteria = {};
 	$scope.member = null;
 	$scope.error = null;
-	$scope.loading = false;
+	$scope.status = new status(true);
 	
 	$scope.dosearch = function() {
-		$scope.loading = true;
 		
-		server.post(jsRoutes.controllers.providers.Providers.list().url, $scope.criteria).
+		
+		$scope.status.doBusy(server.post(jsRoutes.controllers.providers.Providers.list().url, $scope.criteria)).
 		then(function(result) { 				
-		    $scope.patients = result.data;
-		    $scope.error = null;
-		    $scope.loading = false;
-		    		    
-		},function(err) {
-			$scope.error = err;	
-			$scope.results = null;
-			$scope.loading = false;
+		    $scope.patients = result.data;			 		    		  
 		});
 	};
 	

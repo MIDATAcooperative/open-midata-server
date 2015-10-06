@@ -19,7 +19,7 @@
 			<p>{{ research.description }}</p>
 		</div>
 	</div>
-	<div class="panel panel-primary" ng-show="participation">
+	<div class="panel panel-primary" ng-show="participation && study.assistance=='HCPROFESSIONAL'">
 		<div class="panel-heading">Healthcare Providers monitoring the study</div>
 		<div class="panel-body">
 		    <p ng-show="providers.length == 0">None</p>
@@ -42,7 +42,7 @@
 
 			<ul>
 				<li ng-show="needs('RESTRICTED')">Your gender, year of birth and country</li>
-				<li ng-show="needs('FULLNAME')">Your name, birthday and contact information (address, email, phone)</li>
+				<li ng-show="needs('DEMOGRAPHIC')">Your name, birthday and contact information (address, email, phone)</li>
 			</ul>
 
 		</div>

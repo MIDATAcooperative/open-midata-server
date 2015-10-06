@@ -1,32 +1,31 @@
 angular.module('portal')
-.controller('ListParticipantsCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
+.controller('ListParticipantsCtrl', ['$scope', '$state', 'server', 'status', function($scope, $state, server, status) {
 	
 	$scope.studyid = $state.params.studyId;
 	$scope.results =[];
-	$scope.error = null;
-	$scope.loading = true;
+    $scope.status = new status(true);
 	
 	$scope.reload = function() {
 			
-		server.get(jsRoutes.controllers.research.Studies.listParticipants($scope.studyid).url).
-			success(function(data) { 				
-				$scope.results = data;
-				$scope.loading = false;
-				$scope.error = null;
-			}).
-			error(function(err) {
-				$scope.error = err;				
-			});
+		$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyid).url))
+		.then(function(data) { 				
+			$scope.study = data.data;	
+		});
+		
+		$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.listParticipants($scope.studyid).url))
+		.then(function(data) { 				
+			$scope.results = data.data;		
+		});
 	};
 	
 	
 	$scope.mayApproveParticipation = function(participation) {
-	   return participation.status == "REQUEST";
+	   return participation.pstatus == "REQUEST";
 	
 	};
 	
     $scope.mayRejectParticipation = function(participation) {
-      return participation.status == "REQUEST";
+      return participation.pstatus == "REQUEST";
 	};
 	
 	
@@ -54,6 +53,14 @@ angular.module('portal')
 		}).
 		error(function(err) {
 			$scope.error = err;			
+		});
+	};
+	
+	$scope.changeGroup = function(participation) {
+		var params = { member : participation._id.$oid, group : participation.group };
+		server.post(jsRoutes.controllers.research.Studies.updateParticipation($scope.studyid).url, JSON.stringify(params))
+		.then(function(data) { 				
+		    //$scope.reload();
 		});
 	};
 	

@@ -207,12 +207,7 @@ public class Records extends Controller {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getSharingInfo() throws ModelException {
-		ObjectId userId = new ObjectId(request().username());
-		
-		Map<String, Set<String>> circleResult = new HashMap<String, Set<String>>();
-		Map<String, Set<String>> spaceResult = new HashMap<String, Set<String>>();
-		Map<String, Set<String>> participationResult = new HashMap<String, Set<String>>();
-		Map<String, Set<String>> memberkeyResult = new HashMap<String, Set<String>>();
+		ObjectId userId = new ObjectId(request().username());				
 		
 		ObjectNode result = Json.newObject();
 		ObjectNode shared = Json.newObject();

@@ -1,20 +1,20 @@
 angular.module('portal')
-.controller('RequiredInformationCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
+.controller('RequiredInformationCtrl', ['$scope', '$state', 'server', 'status', function($scope, $state, server, status) {
    $scope.information = {};
-   $scope.studyid = $state.params.studyId;	
-   $scope.error = null;
-   $scope.loading = true;
+   $scope.studyid = $state.params.studyId;
+   $scope.status = new status(true);
+   
    
    $scope.reload = function() {
 	   
-	   server.get(jsRoutes.controllers.research.Studies.getRequiredInformationSetup($scope.studyid).url).
-		success(function(data) { 								
-			$scope.information = data;			
-			$scope.loading = false;
-			$scope.error = null;
-		}).
-		error(function(err) {
-			$scope.error = err;				
+	   $scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.getRequiredInformationSetup($scope.studyid).url))
+		.then(function(data) { 								
+			$scope.information = data.data;						
+		});
+	   
+	   $scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyid).url))
+	    .then(function(data) { 				
+			$scope.study = data.data;	
 		});
    };
    
@@ -28,6 +28,22 @@ angular.module('portal')
 		error(function(err) {
 			$scope.error = err;			
 		});  
+   };
+   
+   $scope.addGroup = function() {
+	   if (!$scope.study.groups) { $scope.study.groups = []; }
+	   
+	   $scope.study.groups.push({ name:"", description:"" });
+   };
+   
+   $scope.deleteGroup = function(group) {
+	   $scope.study.groups.splice($scope.study.groups.indexOf(group), 1);
+	   $scope.groupschanged = true;
+   };
+   
+   $scope.saveGroups = function() {
+	 $scope.groupschanged = false;
+	 $scope.status.doAction("groups", server.put(jsRoutes.controllers.research.Studies.update($scope.studyid).url, JSON.stringify($scope.study)));	 
    };
    
    $scope.reload();

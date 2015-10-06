@@ -1,7 +1,9 @@
 package controllers.research;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,12 +19,16 @@ import models.Record;
 import models.Research;
 import models.ResearchUser;
 import models.Study;
+import models.StudyGroup;
 import models.StudyParticipation;
 import models.StudyRelated;
+import models.Task;
 import models.User;
+import models.enums.AssistanceType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.EventType;
+import models.enums.Frequency;
 import models.enums.InformationType;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
@@ -32,6 +38,7 @@ import models.enums.StudyValidationStatus;
 
 import org.bson.types.ObjectId;
 
+import play.api.libs.iteratee.Enumerator;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -39,6 +46,7 @@ import play.mvc.Security;
 import utils.auth.CodeGenerator;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
@@ -48,6 +56,7 @@ import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import controllers.APIController;
+import controllers.AnyRoleSecured;
 import controllers.RecordSharing;
 
 
@@ -85,10 +94,17 @@ public class Studies extends APIController {
 		study.history = new ArrayList<History>();
 		study.infos = new ArrayList<Info>();
 		study.participantRules = new HashSet<FilterRule>();
-		study.recordRules = new HashSet<FilterRule>();
+		study.recordQuery = new HashMap<String, Object>();
 		study.requiredInformation = InformationType.RESTRICTED;
+		study.assistance = AssistanceType.NONE;
+		study.groups = new ArrayList<StudyGroup>();		
 				
-		study.studyKeywords = new HashSet<ObjectId>();		
+		study.studyKeywords = new HashSet<ObjectId>();
+		
+		/*StudyGroup defaultGroup = new StudyGroup();
+		defaultGroup.name = "default";
+		defaultGroup.description="One group for all participants.";
+		study.groups*/
 		
 		Study.add(study);
 		
@@ -120,8 +136,33 @@ public class Studies extends APIController {
 		 
 		 List<Record> allRecords = RecordSharing.instance.list(executorId, executorId, CMaps.map("study",  study._id), Sets.create("id", "ownerName",
 					"app", "creator", "created", "name", "format", "content", "description", "data", "group"));
+		 		
 		 
 		 return ok(Json.toJson(allRecords));
+		 
+		 /*
+		 try {
+			    OutputStream servletOutputStream = response().getOutputStream(); // retrieve OutputStream from HttpServletResponse
+			    ZipOutputStream zos = new ZipOutputStream(servletOutputStream); // create a ZipOutputStream from servletOutputStream
+
+			    List<String[]> csvFileContents  = getContentToZIP(); // get the list of csv contents. I am assuming the CSV content is generated programmatically
+			    int count = 0;
+			    for (String[] entries : csvFileContents) {
+			        String filename = "file-" + ++count  + ".csv";
+			        ZipEntry entry = new ZipEntry(filename); // create a zip entry and add it to ZipOutputStream
+			        zos.putNextEntry(entry);
+
+			        CSVWriter writer = new CSVWriter(new OutputStreamWriter(zos));  // There is no need for staging the CSV on filesystem or reading bytes into memory. Directly write bytes to the output stream.
+			        writer.writeNext(entries);  // write the contents
+			        writer.flush(); // flush the writer. Very important!
+			        zos.closeEntry(); // close the entry. Note : we are not closing the zos just yet as we need to add more files to our ZIP
+			    }
+
+			    zos.close(); // finally closing the ZipOutputStream to mark completion of ZIP file
+			} catch (Exception e) {
+			    log.error(e); // handle error
+			}
+		 */
 	}
 	
 		
@@ -142,7 +183,7 @@ public class Studies extends APIController {
 	   ObjectId studyid = new ObjectId(id);
 	   ObjectId owner = new ObjectId(session().get("org"));
 	   
-	   Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordRules","studyKeywords","code"));
+	   Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "assistance"));
 	   	   	   
 	   return ok(Json.toJson(study));
 	}
@@ -298,6 +339,85 @@ public class Studies extends APIController {
 		return ok();
 	}
 	
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)
+	public static Result shareWithGroup(String id, String group) throws ModelException {
+		ObjectId userId = new ObjectId(request().username());
+		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId studyid = new ObjectId(id);
+		
+		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history", "name"));
+		if (study == null) return badRequest("Study does not belong to organization.");
+		if (study.validationStatus != StudyValidationStatus.VALIDATED) return badRequest("Study must be validated before.");
+		if (study.executionStatus != StudyExecutionStatus.RUNNING) return badRequest("Wrong study execution status.");
+		
+		StudyRelated consent = StudyRelated.getByGroupAndStudy(group, studyid, Sets.create("authorized"));
+		
+		if (consent == null) {
+			consent = new StudyRelated();
+			consent._id = new ObjectId();
+			consent.study = studyid;
+			consent.group = group;			
+			consent.owner = userId;
+			consent.name = "Study:"+study.name;		
+			consent.authorized = new HashSet<ObjectId>();
+			consent.status = ConsentStatus.ACTIVE;
+						
+			RecordSharing.instance.createAnonymizedAPS(userId, userId, consent._id);			
+			consent.add();
+		}
+		
+		Set<StudyParticipation> parts = StudyParticipation.getParticipantsByStudyAndGroup(studyid, group, Sets.create());
+		Set<ObjectId> participants = new HashSet<ObjectId>();
+		for (StudyParticipation part : parts) { participants.add(part.owner); }
+		
+		consent.authorized.addAll(participants);
+		StudyRelated.set(consent._id, "authorized", consent.authorized);
+		RecordSharing.instance.shareAPS(consent._id, userId, participants);
+				
+		return ok(Json.toJson(consent));		
+	}
+	
+	@Security.Authenticated(AnyRoleSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public static Result addTask(String id, String group) throws ModelException, JsonValidationException {
+		ObjectId userId = new ObjectId(request().username());
+		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId studyid = new ObjectId(id);
+		
+		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history", "name"));
+		if (study == null) return badRequest("Study does not belong to organization.");
+		if (study.validationStatus != StudyValidationStatus.VALIDATED) return badRequest("Study must be validated before.");
+		if (study.executionStatus != StudyExecutionStatus.RUNNING) return badRequest("Wrong study execution status.");
+		
+		// validate json
+		JsonNode json = request().body().asJson();	
+		JsonValidation.validate(json, "plugin", "context", "title", "description", "pluginQuery", "frequency");
+
+		Set<StudyParticipation> parts = StudyParticipation.getParticipantsByStudyAndGroup(studyid, group, Sets.create());
+		
+		for (StudyParticipation part : parts) {		
+			Task task = new Task();
+			task._id = new ObjectId();
+			task.owner = part.owner;
+			task.createdBy = userId;
+			task.plugin = JsonValidation.getObjectId(json, "plugin");
+			task.shareBackTo = part._id;
+			task.createdAt = new Date(System.currentTimeMillis());
+			task.deadline = JsonValidation.getDate(json, "deadline");
+			task.context = JsonValidation.getString(json, "context");
+			task.title = JsonValidation.getString(json, "title");
+			task.description = JsonValidation.getString(json, "description");
+			task.pluginQuery = JsonExtraction.extractMap(json.get("pluginQuery"));
+			task.frequency = JsonValidation.getEnum(json, "frequency", Frequency.class);
+			task.done = false;	
+			Task.add(task);						
+		}
+		
+		return ok();
+	}
+	
 	
 	
 	@APICall
@@ -325,7 +445,7 @@ public class Studies extends APIController {
 	   ObjectId studyId = new ObjectId(studyidstr);
 	   ObjectId memberId = new ObjectId(memberidstr);
 	   	   
-	   Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordRules","studyKeywords"));
+	   Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords"));
 	   if (study == null) return badRequest("Study does not belong to organization");
 	   	   
 	   StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, Sets.create("pstatus", "group", "history","ownerName", "gender", "country", "yearOfBirth", "owner"));
@@ -406,6 +526,35 @@ public class Studies extends APIController {
 		return ok();
 	}
 	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)
+	public static Result updateParticipation(String id) throws JsonValidationException, ModelException {
+		JsonNode json = request().body().asJson();
+		
+		JsonValidation.validate(json, "member", "group");
+		
+		ObjectId userId = new ObjectId(request().username());		
+		ObjectId studyId = new ObjectId(id);
+		ObjectId memberId = new ObjectId(JsonValidation.getString(json, "member"));
+		ObjectId owner = new ObjectId(session().get("org"));
+		String comment = JsonValidation.getString(json, "comment");
+		
+		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));					
+		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, Sets.create("pstatus", "history", "memberName"));		
+		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
+		
+		if (study == null) return badRequest("Study does not exist.");		
+		if (participation == null) return badRequest("Member is not allowed to participate in study.");		
+		if (study.executionStatus != StudyExecutionStatus.PRE) return badRequest("Study is already running.");
+						
+		participation.group = JsonValidation.getString(json, "group");
+		StudyParticipation.set(participation._id, "group", participation.group);
+		participation.addHistory(new History(EventType.GROUP_ASSIGNED, user, comment));
+						
+		return ok();
+	}
+	
 	
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
@@ -415,12 +564,13 @@ public class Studies extends APIController {
 		ObjectId studyid = new ObjectId(id);
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
-		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation"));
+		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation", "assistance"));
 		
 		if (study == null) return badRequest("Study does not belong to organization.");	    
 		
 		ObjectNode result = Json.newObject();
 		result.put("identity", study.requiredInformation.toString());
+		result.put("assistance", study.assistance.toString());
 		return ok(result);
 	}
 	
@@ -430,9 +580,10 @@ public class Studies extends APIController {
 	public static Result setRequiredInformationSetup(String id) throws JsonValidationException, ModelException {
         JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "identity");
+		JsonValidation.validate(json, "identity", "assistance");
 		
 		InformationType inf = JsonValidation.getEnum(json, "identity", InformationType.class);
+		AssistanceType assist = JsonValidation.getEnum(json, "assistance", AssistanceType.class);
 		
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId owner = new ObjectId(session().get("org"));
@@ -445,8 +596,48 @@ public class Studies extends APIController {
 		if (study.validationStatus != StudyValidationStatus.DRAFT) return badRequest("Setup can only be changed as long as study is in draft phase.");
         				
 		study.setRequiredInformation(inf);
+		study.setAssistance(assist);
         study.addHistory(new History(EventType.REQUIRED_INFORMATION_CHANGED, user, null));		
         
+        return ok();
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)
+	public static Result update(String id) throws JsonValidationException, ModelException {
+        JsonNode json = request().body().asJson();
+		
+		//JsonValidation.validate(json, "groups");
+						
+		ObjectId userId = new ObjectId(request().username());
+		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId studyid = new ObjectId(id);
+		
+		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
+		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history", "requiredInformation"));
+			
+		if (study == null) return badRequest("Study does not belong to organization.");
+		if (study.validationStatus != StudyValidationStatus.DRAFT) return badRequest("Setup can only be changed as long as study is in draft phase.");
+        				
+		if (json.has("groups")) {
+			List<StudyGroup> groups = new ArrayList<StudyGroup>();
+			for (JsonNode group : json.get("groups")) {
+				StudyGroup grp = new StudyGroup();
+				grp.name = group.get("name").asText();
+				grp.description = group.get("description").asText();
+				groups.add(grp);
+			}
+			
+			study.setGroups(groups);
+			study.addHistory(new History(EventType.STUDY_SETUP_CHANGED, user, null));
+		}
+		
+		if (json.has("recordQuery")) {
+			study.setRecordQuery(JsonExtraction.extractMap(json.get("recordQuery")));
+			study.addHistory(new History(EventType.STUDY_SETUP_CHANGED, user, null));
+		}
+				        	        
         return ok();
 	}
 	

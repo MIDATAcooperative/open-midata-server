@@ -47,6 +47,7 @@ angular.module('portal')
 	};
 		
 	
+	
 }]);
 
 

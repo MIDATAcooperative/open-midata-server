@@ -1,0 +1,24 @@
+   
+<div ng-controller="StudyActionsCtrl" ng-cloak>   
+   <div class="tab-content">
+	    <div class="tab-pane active">	
+	       <loader busy="status.isBusy !== false">
+	       
+	       <p class="alert alert-info">When the study is running you can share data with participants and have them complete tasks. (Like fill out a form)</p>
+	       
+	       <div ng-show="study.executionStatus == 'RUNNING'">
+	       <form class="form-vertical">
+	         <formrow myid="group" label="Group">
+	           <select ng-model="crit.group" class="form-control" ng-options="group.name as group.name for group in study.groups"></select>
+	         </formrow>
+	       </form>
+		   
+		   
+		   <button class="btn btn-default" ng-click="setGroup();">Select Group</button>		  
+           <button class="btn btn-default" ng-click="addTask();" ng-disabled="group == null">Add Task for Participants</button>
+           </div>
+   		   </loader>
+		</div>	
+	</div>
+	<div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
+</div>

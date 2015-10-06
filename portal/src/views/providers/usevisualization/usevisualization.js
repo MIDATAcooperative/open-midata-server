@@ -41,12 +41,7 @@ angular.module('portal')
 	// reload the iframe displaying the visualization
 	reloadIframe = function(space) {
 		space.trustedUrl = $sce.trustAsResourceUrl(space.completedUrl);
-
-		// have to detach and append again to force reload; just setting src didn't do the trick
-		var iframe = $("#iframe").detach();
-		// set src attribute of iframe to avoid creating an entry in the browser history
-		iframe.attr("src", space.trustedUrl);
-		$("#iframe-placeholder").append(iframe);
+	
 	};
 		
 }]);

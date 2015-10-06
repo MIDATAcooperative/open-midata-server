@@ -5,10 +5,12 @@
 		<!-- Visualization -->
 		<div class="panel panel-primary">
 		  <div class="body">
-		<p ng-hide="space.trustedUrl">Loading Visualization...</p>
+		    <loader busy="!space.trustedUrl">
+		
 		<div id="iframe-placeholder">
-			<iframe id="iframe" height="600px" width="100%" ng-show="space.trustedUrl"></iframe>
+			<pluginframe id="iframe" height="600px" width="100%" mysrc="{{space.trustedUrl}}"></pluginframe>
 		</div>
+		</loader>
 		</div>
 		</div>
 	</div>

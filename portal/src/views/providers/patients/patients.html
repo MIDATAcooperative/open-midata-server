@@ -6,6 +6,7 @@
 	<div class="panel panel-primary">
 		<div class="panel-body">
 		
+		<loader busy="status.isBusy !== false">
 	    <table class="table" ng-show="patients.length > 0">
 	      <tr>
 	        <th>Surname</th>
@@ -20,7 +21,7 @@
 	    </table>
 	    
 	    <p ng-show="patients.length == 0">No patients found.</p>
-	                  
+	    </loader>	                  
 	    </div>	
 	</div>
 </div>

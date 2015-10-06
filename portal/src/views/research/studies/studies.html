@@ -5,9 +5,7 @@
 	</div>
 	<div class="panel panel-primary">
 	<div class="panel-body">
-	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
-	   {{ error.message || error }}
-	</p>
+	<loader busy="status.isBusy !== false">	
 	<table ng-show="results.length > 0" class="table table-hover">
 	  <thead>
 	    <tr>
@@ -30,6 +28,7 @@
 	</table>
 	<p ng-hide="results.length">No studies have been created yet for your organisation.</p>
 	<a class="btn btn-primary" ui-sref="research.createstudy">Create new study</a>
+	</loader>
 	</div>
 	</div>
 </div>	

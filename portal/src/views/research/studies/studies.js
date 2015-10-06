@@ -1,21 +1,16 @@
 angular.module('portal')
-.controller('ResearchListStudiesCtrl', ['$scope', 'server', function($scope, server) {
+.controller('ResearchListStudiesCtrl', ['$scope', 'server', 'status', function($scope, server, status) {
 	
 	$scope.results =[];
-	$scope.error = null;
-	$scope.loading = true;
+	$scope.status = new status(true);
+	
 	
 	$scope.reload = function() {
 			
-		server.get(jsRoutes.controllers.research.Studies.list().url).
-			success(function(data) { 				
-				$scope.results = data;
-				$scope.loading = false;
-				$scope.error = null;
-			}).
-			error(function(err) {
-				$scope.error = err;				
-			});
+		$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.list().url))
+		.then(function(data) { 				
+				$scope.results = data.data;	
+		});
 	};
 	
 	$scope.reload();

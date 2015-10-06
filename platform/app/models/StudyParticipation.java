@@ -50,6 +50,10 @@ public class StudyParticipation extends Consent {
 		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("pstatus", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST, ParticipationStatus.RESEARCH_REJECTED)), fields);
 	}
 	
+	public static Set<StudyParticipation> getParticipantsByStudyAndGroup(ObjectId study, String group, Set<String> fields) throws ModelException {
+		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("group", group).map("pstatus", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST, ParticipationStatus.RESEARCH_REJECTED)), fields);
+	}
+	
 	public static StudyParticipation getById(ObjectId id, Set<String> fields) throws ModelException {
 		return Model.get(StudyParticipation.class, collection, CMaps.map("_id", id), fields);
 	}

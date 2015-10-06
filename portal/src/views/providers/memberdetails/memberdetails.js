@@ -5,6 +5,7 @@ angular.module('portal')
 	$scope.member = {};	
 	$scope.status = new status(true);
 		
+	views.reset();
 	views.link("1", "record", "record");
 	$scope.reload = function() {
 			

@@ -3,10 +3,11 @@
     <div class="tab-pane active">
 	
 	<div ng-app="studies" ng-controller="RequiredInformationCtrl" ng-cloak>
+	<loader busy="status.isBusy !== false">
 	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 	   {{ error.message || error }}
 	</p>
-	<h2>Required demographic data</h2>
+	<h2>Required data</h2>
 	<p class="alert alert-info">This setup cannot be changed anymore after Study has been validated.</p>
 	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="setRequiredInformation()" role="form">
 	  <formrow myid="identity" label="Member Identity">
@@ -24,10 +25,44 @@
   	     </label>
   	    </div>
       </formrow>
+       <formrow myid="assistance" label="Assistance">
+	     <div class="radio">
+  	       <label>
+  	        <input type="radio" name="assistance" value="NONE" ng-model="information.assistance">
+  	         <strong>None</strong> - the MIDATA member participates alone.
+  	       </label>
+  	    </div>   	     
+	  
+	    <div class="radio">
+		 <label>
+  	        <input type="radio" id="assistance" name="assistance" value="HCPROFESSIONAL" ng-model="information.assistance">
+  	         <strong>Health Professional</strong> - the MIDATA member needs assistance of a health professional. 
+  	     </label>
+  	    </div>
+      </formrow>
       <formrow myid="x" label="">
         <button type="submit" class="btn btn-primary">Change</button>
       </formrow>
     </form>
+    
+    <h2>Participant Groups</h2>
+    <p ng-hide="study.groups.length">No groups of participants have been defined yet.</p>
+    <table ng-show="study.groups.length" class="table table-striped">
+      <tr>
+        <th>Group Name</th>
+        <th>Description</th>
+        <th>&nbsp;</th>
+      </tr>
+      <tr ng-repeat="group in study.groups">
+        <td><input class="form-control" type="text"  ng-model="group.name"></td>
+        <td><input class="form-control" type="text"  ng-model="group.description"></td>
+        <td><button class="btn btn-danger btn-sm" ng-click="deleteGroup(group);">Delete</button>
+      </tr>
+    </table>
+    <button class="btn btn-default" ng-click="addGroup();">Add Group</button>
+    <button class="btn btn-primary" ng-click="saveGroups()" ng-disabled="status.action == 'groups'">Save Changes</button>
+        
+    </loader>
     </div>
     </div>	
 	</div>

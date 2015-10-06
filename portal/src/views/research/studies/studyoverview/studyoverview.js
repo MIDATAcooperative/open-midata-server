@@ -1,22 +1,16 @@
 angular.module('portal')
-.controller('StudyOverviewCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
+.controller('StudyOverviewCtrl', ['$scope', '$state', 'server', 'status', function($scope, $state, server, status) {
 	
 	$scope.studyid = $state.params.studyId;
 	$scope.study = {};
-	$scope.error = null;
-	$scope.loading = true;
+	$scope.status = new status(true);
 		
 	$scope.reload = function() {
 			
-		server.get(jsRoutes.controllers.research.Studies.get($scope.studyid).url).
-			success(function(data) { 				
-				$scope.study = data;
-				$scope.loading = false;
-				$scope.error = null;
-			}).
-			error(function(err) {
-				$scope.error = err;				
-			});
+		$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyid).url))
+		.then(function(data) { 				
+				$scope.study = data.data;	
+		});
 	};
 	
 	$scope.readyForValidation = function() {
