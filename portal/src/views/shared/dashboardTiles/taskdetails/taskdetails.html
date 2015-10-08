@@ -1,6 +1,8 @@
  <div class="ignore autosize" ng-controller="TaskDetailsCtrl">
   <loader busy="status.isBusy !== false">
-  <div class="body">
+  <div class="body">   
+     <div ng-if="!task.done" class="pull-left themeicon"><img src="/images/icons/task-todo.png"></div> 
+     <div ng-if="task.done" class="pull-left themeicon"><img src="/images/icons/task-done.png"></div>
        <div class="row">
 		  <p class="col-sm-3">Created by:</p>
 	  	  <p class="col-sm-9">{{ creator.firstname }} {{ creator.lastname }}</p>
@@ -15,6 +17,6 @@
 	   </div>
 	   <p>{{ task.description }}</p>	   
   </div>
-  <div class="footer"><button ng-click="showDetails(task);" class="btn btn-default">Do now</button></div>
+  <div class="footer"><button ng-click="showDetails(task);" class="btn btn-primary">Do now</button></div>
   </loader>
 </div>

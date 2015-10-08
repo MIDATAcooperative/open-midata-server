@@ -44,8 +44,12 @@
            <h1 ng-class="{ 'text-success' : isSharedGroup(data), 'format': data.type == 'content' }"><span ng-click="setOpen(data,true);" ng-hide="data.open" class="treehandle glyphicon glyphicon-plus"></span><span ng-show="data.open && !data.type" ng-click="setOpen(data,false);" class="treehandle glyphicon glyphicon-minus"></span>{{data.fullLabel}} <small>(<span ng-show="selectedAps">{{ data.countShared }} / </span>{{ data.count }})</small></h1>
            <div ng-show="data.open">
 
+           <div ng-if="data.records.length > 10">
+              <dir-pagination-controls pagination-id="data.name"></dir-pagination-controls>
+            </div>
+
            <ul class="list-group" ng-if="data.records.length > 0">
-				<li class="list-group-item" ng-repeat="record in data.records" ng-class="{ 'list-group-item-success' : ( isShared(record)) }">
+				<li class="list-group-item" dir-paginate="record in data.records | itemsPerPage : 10" pagination-id="data.name" ng-class="{ 'list-group-item-success' : ( isShared(record)) }">
 					<span class="label label-info" ng-dblclick="deleteRecord(record, data)">{{record.created | date}}</span>
 					<span ng-show="record.owner.$oid != userId.$oid" class="label label-info">{{ record.ownerName }}</span>
 					<a href="javascript:;" ng-click="showDetails(record)">{{record.name}}</a>
@@ -59,6 +63,7 @@
 					</div>										
 				</li>
 			</ul>
+            
            <div class="subtree">
             <div ng-repeat="data in data.children" ng-include="'tree_item_renderer.html'"></div>
            </div>

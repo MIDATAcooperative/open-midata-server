@@ -44,4 +44,8 @@ public class Task extends Model {
 	public static Task getByIdAndOwner(ObjectId taskId, ObjectId ownerId, Set<String> fields) throws ModelException {
 		return Model.get(Task.class, collection, CMaps.map("_id", taskId).map("owner", ownerId), fields);
 	}
+
+	public static void inactivateTask(Task task) throws ModelException {
+		Model.delete(Task.class, collection, CMaps.map("_id", task._id));		
+	}
 }

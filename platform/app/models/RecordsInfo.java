@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
@@ -22,6 +23,25 @@ public class RecordsInfo {
 	@Override
 	public int hashCode() {
 		return group.hashCode();
+	}
+	
+	public static RecordsInfo merge(Collection<RecordsInfo> items) {
+		RecordsInfo result = null;
+		for (RecordsInfo item : items) {
+			if (result == null) {
+				result = item;
+			} else {
+				result.count += item.count;
+				if (item.newest.after(result.newest)) {
+					result.newest = item.newest;
+					result.newestRecord = item.newestRecord;
+				}
+				if (item.oldest.before(result.oldest)) {
+					result.oldest = item.oldest;
+				}
+			}
+		}
+		return result;
 	}
 
 }

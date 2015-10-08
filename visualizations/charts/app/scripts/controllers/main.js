@@ -27,7 +27,9 @@ angular.module('chartApp')
 	  midataPortal.autoresize();
 	  
 	  $scope.reload = function() {
-		  midataServer.getRecords($scope.authToken, { }, ["owner", "created", "ownerName", "content", "format", "data"])
+		  var p = { };
+		  if (document.location.href.indexOf("/preview") >= 0) p = { "limit" : 100 };
+		  midataServer.getRecords($scope.authToken, p, ["owner", "created", "ownerName", "content", "format", "data"])
 		  .then(function(results) {
 			  $scope.raw = results.data;
 			  $scope.prepare();

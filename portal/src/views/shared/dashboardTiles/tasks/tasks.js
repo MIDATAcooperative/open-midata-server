@@ -9,33 +9,45 @@ angular.module('views')
 	$scope.reload = function() {		
 		if (!$scope.view.active) return;
 		$scope.limit = $scope.view.position == "small" ? 4 : 20;
-		$scope.status.doBusy(tasking.list()).
-		then(function (result) {			
+				
+		$scope.status.doBusy(tasking.list())
+		.then(function (result) {			
 			$scope.tasks = result.data;
 			if ($scope.tasks.length === 0) views.disableView($scope.view.id);
-			
-			angular.forEach($scope.tasks, function(task) {
-				var teaser = {
-						id : "task"+task._id.$oid,
-						template : "/views/shared/dashboardTiles/taskdetails/taskdetails.html",
-						title : task.title,
-						position : "small",
-						active : true,
-						setup : {
-							task : task				        	
-						}
-				};	
-				views.layout.small.push(views.def(teaser));
-			});
-			
+			console.log($scope.tasks);
+			if (($scope.view.setup && $scope.view.setup.autoopen) || $scope.tasks.length < 3) {		
+			  angular.forEach($scope.tasks, function(task) {
+				$scope.showTaskDetail(task, "full");				
+			  });
+			}
+		
+			if (($scope.view.setup && $scope.view.setup.hidden) || $scope.tasks.length < 3) {
+				views.disableView($scope.view.id);
+			}
 		});
+						
+	};
+	
+	$scope.showTaskDetail = function(task, position) {
+		var teaser = {
+				id : "task"+task._id.$oid,
+				template : "/views/shared/dashboardTiles/taskdetails/taskdetails.html",
+				title : task.title,
+				position : position,
+				active : true,
+				setup : {
+					task : task				        	
+				}
+		};	
+		views.layout[position].push(views.def(teaser));
 	};
 	
 	$scope.showDetails = function(task) {
-		tasking.execute(task._id.$oid)
+		$scope.showTaskDetail(task, "modal");
+		/*tasking.execute(task._id.$oid)
 		.then(function(data) {
 		   $state.go('^.spaces' , { spaceId : data.data._id.$oid });
-		});
+		});*/
 					
 	};
 	

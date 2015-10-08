@@ -291,6 +291,11 @@ public class PluginsAPI extends Controller {
 		record.owner = authToken.userId;
 		record.creator = authToken.userId;
 		record.created = DateTimeUtils.now();
+		
+		if (json.has("created-override")) {
+			record.created = JsonValidation.getDate(json, "created-override");
+		}
+		
 		record.format = format;
 		record.content = content;
 		

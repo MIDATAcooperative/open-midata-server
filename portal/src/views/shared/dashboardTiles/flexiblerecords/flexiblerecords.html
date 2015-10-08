@@ -3,8 +3,12 @@
     <div ng-show="records.length" class="body"><span class="dashnumber">{{ records.length }}</span> Records available:</div>
     <div class="body text-center" ng-show="records.length == 0">Empty</div>
     <p ng-hide="records.length" class="body teaser">{{ view.teaser }}</p>
+    <div ng-if="records.length > limit">
+      <dir-pagination-controls></dir-pagination-controls>
+    </div>
+    
     <ul class="list-group" ng-show="records.length > 0">
-		<li class="list-group-item rotate truncate" ng-repeat="record in records | limitTo : limit">
+		<li class="list-group-item rotate truncate" dir-paginate="record in records | itemsPerPage: limit">
 		    <div class="pull-right" ng-if="view.setup.allowRemove">
 			   <button type="button" class="btn btn-xs btn-danger" ng-click="removeRecord(record)">
 				  <span class="glyphicon glyphicon-remove"></span>

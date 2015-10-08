@@ -227,6 +227,9 @@ public class AppsAPI extends Controller {
 		record.owner = targetUser._id;
 		record.creator = executor._id;
 		record.created = DateTimeUtils.now();
+		if (json.has("created-override")) {
+			record.created = JsonValidation.getDate(json, "created-override");
+		}		
 		record.format = format;
 		record.content = content;
 		record.document = document;

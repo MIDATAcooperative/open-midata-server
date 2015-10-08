@@ -1,5 +1,7 @@
 package controllers;
 
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
@@ -7,9 +9,11 @@ import java.util.Set;
 
 import models.ModelException;
 import models.Plugin;
+import models.RecordsInfo;
 import models.Space;
 import models.Task;
 import models.enums.Frequency;
+import models.enums.SpaceType;
 
 import org.bson.types.ObjectId;
 
@@ -21,6 +25,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
@@ -56,6 +61,26 @@ public class Tasking extends Controller {
 		return ok();
 	}
 	
+	public static void check(ObjectId who, Task task) throws ModelException {
+		Date dateLimit = new Date(System.currentTimeMillis());
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		if (!task.done && task.confirmQuery != null) {
+			task.confirmQuery.put("owner", "self");
+			switch (task.frequency) {
+			case DAILY: dateLimit = cal.getTime();break;
+			case MONTHLY: cal.set(Calendar.DAY_OF_MONTH, 1);dateLimit = cal.getTime();break;
+			case WEEKLY: cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);dateLimit = cal.getTime(); break;
+			case YEARLY: cal.set(Calendar.DAY_OF_YEAR, 1);dateLimit = cal.getTime(); break;
+			case ONCE: dateLimit = task.createdAt;
+			}
+			RecordsInfo info = RecordsInfo.merge(RecordSharing.instance.info(who, task.shareBackTo, task.confirmQuery));
+			if (info.count > 0 && info.newest.after(dateLimit)) task.done = true;
+		}
+	}
+	
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Result list() throws ModelException {
@@ -63,6 +88,13 @@ public class Tasking extends Controller {
 		ObjectId userId = new ObjectId(request().username());
 		
 		Set<Task> tasks = Task.getAllByOwner(userId, Sets.create("owner", "createdBy", "plugin", "shareBackTo", "createdAt", "deadline", "context", "title", "description", "pluginQuery", "confirmQuery", "frequency", "done"));
+		
+		for (Task task : tasks) {
+			check(userId, task);
+			if (task.done && task.frequency.equals(Frequency.ONCE)) {
+				Task.inactivateTask(task);
+			}
+		}
 		return ok(Json.toJson(tasks));
 	}
 	
@@ -76,12 +108,20 @@ public class Tasking extends Controller {
 		Plugin plugin = Plugin.getById(task.plugin, Sets.create("defaultQuery"));
 		if (plugin == null) return badRequest("Unknown plugin in task.");
 		
-		Space space = Spaces.add(userId, task.title, task.plugin, null, task.context);
+		Set<Space> spaces = Space.getAll(CMaps.map("owner", userId).map("context", task.context).map("visualization", task.plugin).map("autoShare", task.shareBackTo), Sets.create("name", "owner", "visualization", "app", "order", "type", "context", "autoShare"));
+		
+		
+		Space space = null;
+		if (!spaces.isEmpty()) space = spaces.iterator().next();
+		
+		if (space == null) space = Spaces.add(userId, task.title, task.plugin, null, task.context);
 		
 		if (task.shareBackTo != null) {
 			if (space.autoShare == null) space.autoShare = new HashSet<ObjectId>();
-			space.autoShare.add(task.shareBackTo);
-			Space.set(space._id, "autoShare", space.autoShare);
+			if (!space.autoShare.contains(task.shareBackTo)) {
+				space.autoShare.add(task.shareBackTo);
+				Space.set(space._id, "autoShare", space.autoShare);
+			}
 		}
 		
 		if (task.pluginQuery != null) {			  

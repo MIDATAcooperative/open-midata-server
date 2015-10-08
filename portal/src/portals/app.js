@@ -1,6 +1,6 @@
 var services = angular.module('services', []);
 var views = angular.module('views', ['services']);
-angular.module('portal', [ 'ui.router', 'ui.bootstrap', 'services', 'views', 'config', 'ngPostMessage' ])
+angular.module('portal', [ 'ui.router', 'ui.bootstrap', 'services', 'views', 'config', 'ngPostMessage', 'angularUtils.directives.dirPagination'])
 .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', function($stateProvider, $urlRouterProvider, $httpProvider) {
    //$httpProvider.defaults.useXDomain = true;
    $httpProvider.defaults.withCredentials = true;
