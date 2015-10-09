@@ -23,8 +23,9 @@ import controllers.KeyManager;
 import utils.DateTimeUtils;
 import utils.auth.EncryptionNotSupportedException;
 import utils.db.LostUpdateException;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 
-import models.ModelException;
 import models.Record;
 import models.RecordsInfo;
 import models.enums.APSSecurityLevel;
@@ -44,7 +45,7 @@ public class SingleAPSManager extends QueryManager {
 		return eaps.getId();
 	}
 	
-	public void addAccess(Set<ObjectId> targets) throws ModelException,EncryptionNotSupportedException {
+	public void addAccess(Set<ObjectId> targets) throws AppException,EncryptionNotSupportedException {
 		try {
 		  boolean changed = false;
 		  if (eaps.getSecurityLevel().equals(APSSecurityLevel.NONE)) {
@@ -70,7 +71,7 @@ public class SingleAPSManager extends QueryManager {
 		}
 	}
 	
-	public void addAccess(ObjectId target, byte[] publickey) throws ModelException,EncryptionNotSupportedException {
+	public void addAccess(ObjectId target, byte[] publickey) throws AppException,EncryptionNotSupportedException {
 		try {
 		  boolean changed = false;
 		  if (eaps.getSecurityLevel().equals(APSSecurityLevel.NONE)) {		
@@ -112,7 +113,7 @@ public class SingleAPSManager extends QueryManager {
 			}
 	}
 	
-	public void setMeta(String key, Map<String, Object> data) throws ModelException {
+	public void setMeta(String key, Map<String, Object> data) throws AppException {
 		try {			
 			eaps.getPermissions().put(key, new BasicDBObject(data));
 			eaps.savePermissions();
@@ -122,7 +123,7 @@ public class SingleAPSManager extends QueryManager {
 		}
 	} 
 	
-	public void removeMeta(String key) throws ModelException {
+	public void removeMeta(String key) throws AppException {
 		try {			
 			if (eaps.getPermissions().containsKey(key)) {
 				eaps.getPermissions().remove(key);
@@ -136,11 +137,11 @@ public class SingleAPSManager extends QueryManager {
 	
 	
 
-	public BasicBSONObject getMeta(String key) throws ModelException {
+	public BasicBSONObject getMeta(String key) throws AppException {
 		return (BasicBSONObject) eaps.getPermissions().get(key);
 	}
 	
-	public List<Record> query(Query q) throws ModelException {		
+	public List<Record> query(Query q) throws AppException {		
 		//AccessLog.logLocalQuery(eaps.getId(), q.getProperties(), q.getFields() );
 		List<Record> result = new ArrayList<Record>();
 		boolean withOwner = q.returns("owner");	
@@ -207,7 +208,7 @@ public class SingleAPSManager extends QueryManager {
 		return true;
 	}
 	
-	protected boolean lookupSingle(Record input, Query q) throws ModelException {
+	protected boolean lookupSingle(Record input, Query q) throws AppException {
 		//AccessLog.lookupSingle(eaps.getId(), input._id, q.getProperties());
 		if (eaps.isDirect()) {
 			input.key = eaps.getAPSKey() != null ? eaps.getAPSKey().getEncoded() : null;
@@ -242,7 +243,7 @@ public class SingleAPSManager extends QueryManager {
 		return false;
 	}
 	
-	private Record createRecordFromAPSEntry(String id, BasicBSONObject row, BasicBSONObject entry, boolean withOwner) throws ModelException {
+	private Record createRecordFromAPSEntry(String id, BasicBSONObject row, BasicBSONObject entry, boolean withOwner) throws AppException {
 		Record record = new Record();
 		record._id = new ObjectId(id);
 		APSEntry.populateRecord(row, record);		
@@ -261,22 +262,22 @@ public class SingleAPSManager extends QueryManager {
 		return record;
 	}
 	
-	protected void encryptRecord(Record record) throws ModelException {
+	protected void encryptRecord(Record record) throws AppException {
 		encryptRecord(record, eaps.getSecurityLevel());
 	}
 		
-	public static void encryptRecord(Record record, APSSecurityLevel lvl) throws ModelException {
+	public static void encryptRecord(Record record, APSSecurityLevel lvl) throws AppException {
 			if (lvl.equals(APSSecurityLevel.NONE) || lvl.equals(APSSecurityLevel.LOW)) {
 				record.clearSecrets();
 				return;
 			}
 			
-			if (record.key == null) throw new ModelException("Cannot encrypt");
+			if (record.key == null) throw new ModelException("error.internal", "Cannot encrypt");
 			
 			SecretKey encKey = new SecretKeySpec(record.key, EncryptedAPS.KEY_ALGORITHM);
 			
-			if (record.format == null) throw new ModelException("Missing format in record!");
-			if (record.content == null) throw new ModelException("Missing content in record!");
+			if (record.format == null) throw new ModelException("error.internal", "Missing format in record!");
+			if (record.content == null) throw new ModelException("error.internal", "Missing content in record!");
 			
 			Map<String, Object> meta = new HashMap<String, Object>();
 			meta.put("app", record.app);
@@ -294,7 +295,7 @@ public class SingleAPSManager extends QueryManager {
 			record.clearEncryptedFields();
 		}
 		
-		protected static void decryptRecord(Record record) throws ModelException {
+		protected static void decryptRecord(Record record) throws AppException {
 			if (record.created != null) return;
 			
 			// Convert old format into new
@@ -344,9 +345,9 @@ public class SingleAPSManager extends QueryManager {
 			//if (!record.encrypted.equals("enc"+record.key)) throw new ModelException("Cannot decrypt");
 		}
 						
-		private void addPermissionInternal(Record record, boolean withOwner) throws ModelException {
+		private void addPermissionInternal(Record record, boolean withOwner) throws AppException {
 						
-			if (record.key == null) throw new ModelException("Record with NULL key: Record:"+record.name+"/"+record.content+"/"+record.isStream);
+			if (record.key == null) throw new ModelException("error.internal", "Record with NULL key: Record:"+record.name+"/"+record.content+"/"+record.isStream);
 			// resolve Format
 			BasicBSONObject obj = APSEntry.findMatchingRowForRecord(eaps.getPermissions(), record, true);
 			obj = APSEntry.getEntries(obj);	
@@ -361,7 +362,7 @@ public class SingleAPSManager extends QueryManager {
 						
 		}
 						
-		public void addPermission(Record record, boolean withOwner) throws ModelException {
+		public void addPermission(Record record, boolean withOwner) throws AppException {
 			try {
 				addPermissionInternal(record, withOwner);								
 				eaps.savePermissions();
@@ -371,7 +372,7 @@ public class SingleAPSManager extends QueryManager {
 			}
 		}
 		
-		public void addPermission(Collection<Record> records, boolean withOwner) throws ModelException {
+		public void addPermission(Collection<Record> records, boolean withOwner) throws AppException {
 			try {
 			   for (Record record : records) addPermissionInternal(record, withOwner);					
 			   eaps.savePermissions();
@@ -389,7 +390,7 @@ public class SingleAPSManager extends QueryManager {
 			eaps.reload();			
 		}
 		
-		private boolean removePermissionInternal(Record record) throws ModelException {
+		private boolean removePermissionInternal(Record record) throws AppException {
 						
 			// resolve Format
 			BasicBSONObject obj = APSEntry.findMatchingRowForRecord(eaps.getPermissions(), record, false);
@@ -402,7 +403,7 @@ public class SingleAPSManager extends QueryManager {
 			return result;
 		}
 		
-		public boolean removePermission(Record record) throws ModelException {
+		public boolean removePermission(Record record) throws AppException {
 			try {
 			  boolean success = removePermissionInternal(record);
 			
@@ -415,7 +416,7 @@ public class SingleAPSManager extends QueryManager {
 			}
 		}
 		
-		public void removePermission(Collection<Record> records) throws ModelException {
+		public void removePermission(Collection<Record> records) throws AppException {
 			try {
 			  for (Record record : records) removePermissionInternal(record);
 			
@@ -435,7 +436,7 @@ public class SingleAPSManager extends QueryManager {
 
 		@Override
 		protected List<Record> lookup(List<Record> input, Query q)
-				throws ModelException {
+				throws AppException {
 			List<Record> filtered = new ArrayList<Record>(input.size());
 			for (Record record : input) { 
 				if (lookupSingle(record, q)) { filtered.add(record); }			

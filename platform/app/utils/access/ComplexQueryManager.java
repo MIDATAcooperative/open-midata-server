@@ -22,43 +22,44 @@ import controllers.RecordSharing;
 import utils.DateTimeUtils;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 import models.ContentInfo;
-import models.ModelException;
 import models.Record;
 import models.RecordsInfo;
 import models.enums.APSSecurityLevel;
 
 public class ComplexQueryManager {
 
-	public static List<Record> list(APSCache cache, ObjectId aps, Map<String, Object> properties, Set<String> fields) throws ModelException {
+	public static List<Record> list(APSCache cache, ObjectId aps, Map<String, Object> properties, Set<String> fields) throws AppException {
 		return fullQuery(new Query(properties, fields, cache, aps), aps);
 	}
 	
-	public static List<Record> listInternal(APSCache cache, ObjectId aps, Map<String, Object> properties, Set<String> fields) throws ModelException {
+	public static List<Record> listInternal(APSCache cache, ObjectId aps, Map<String, Object> properties, Set<String> fields) throws AppException {
 		return fullQuery(new Query(properties, fields, cache, aps, true), aps);
 	}
 	
-	public static Collection<RecordsInfo> info(APSCache cache, ObjectId aps, Map<String, Object> properties) throws ModelException {
+	public static Collection<RecordsInfo> info(APSCache cache, ObjectId aps, Map<String, Object> properties) throws AppException {
 		return infoQuery(new Query(properties, Sets.create("created", "group"), cache, aps), aps, false);
 	}
 	
-	public static List<Record> isContainedInAps(APSCache cache, ObjectId aps, List<Record> candidates) throws ModelException {
+	public static List<Record> isContainedInAps(APSCache cache, ObjectId aps, List<Record> candidates) throws AppException {
 		return onlyWithKey((new APSQSupportingQM(cache.getAPS(aps)).lookup(candidates, new Query(CMaps.map(RecordSharing.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps))));
 	}
 		
-	public static boolean isInQuery(Map<String, Object> properties, Record record) throws ModelException {
+	public static boolean isInQuery(Map<String, Object> properties, Record record) throws AppException {
 		List<Record> results = new ArrayList<Record>(1);
 		results.add(record);
 		return listFromMemory(properties, results).size() > 0;		
 	}
 	
-	public static List<Record> listFromMemory(Map<String, Object> properties, List<Record> records) throws ModelException {
+	public static List<Record> listFromMemory(Map<String, Object> properties, List<Record> records) throws AppException {
 		QueryManager qm = new FormatGroupHandling(new ContentFilterQM(new InMemoryQM(records)));
 		Query query = new Query(properties, Sets.create(), null, null, true);
 		return postProcessRecords(qm, query, qm.query(query));		
 	}
 	
-	public static Collection<RecordsInfo> infoQuery(Query q, ObjectId aps, boolean cached) throws ModelException {
+	public static Collection<RecordsInfo> infoQuery(Query q, ObjectId aps, boolean cached) throws AppException {
 		AccessLog.debug("infoQuery aps="+aps+" cached="+cached);
 		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
 		
@@ -143,7 +144,7 @@ public class ComplexQueryManager {
 		return result.values();
 	}
 	
-    public static List<Record> fullQuery(Query q, ObjectId aps) throws ModelException {
+    public static List<Record> fullQuery(Query q, ObjectId aps) throws AppException {
     	List<Record> result;
     	
     	
@@ -170,7 +171,7 @@ public class ComplexQueryManager {
 		}
     }
     
-    protected static List<Record> scanForRecordsInMultipleAPS(Query q, Set<SingleAPSManager> apses, List<Record> result) throws ModelException {
+    protected static List<Record> scanForRecordsInMultipleAPS(Query q, Set<SingleAPSManager> apses, List<Record> result) throws AppException {
     	for (SingleAPSManager aps : apses) {
     		result.addAll(aps.query(q));
     	}
@@ -225,7 +226,7 @@ public class ComplexQueryManager {
     	return filteredresult;
     }
     
-    protected static List<Record> postProcessRecords(QueryManager qm, Query q, List<Record> result) throws ModelException {    	
+    protected static List<Record> postProcessRecords(QueryManager qm, Query q, List<Record> result) throws AppException {    	
     	result = duplicateElimination(result); 
 			
     	boolean postFilter = q.getMinDate() != null || q.getMaxDate() != null || q.restrictedBy("creator") || (q.restrictedBy("format") && q.restrictedBy("document"));

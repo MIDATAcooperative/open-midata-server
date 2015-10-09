@@ -3,7 +3,8 @@ package utils.access;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.ModelException;
+import utils.exceptions.ModelException;
+
 import models.Record;
 
 public class InMemoryQM extends QueryManager {

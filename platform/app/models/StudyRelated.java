@@ -7,6 +7,7 @@ import models.enums.ConsentType;
 import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
+import utils.exceptions.ModelException;
 
 
 

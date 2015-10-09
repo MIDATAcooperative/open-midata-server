@@ -94,7 +94,7 @@ angular.module('portal')
 			
 		} else {
 		
-			circles.get({ "member": userId }, ["name","aps","owner", "ownerName"])
+			circles.listConsents({ "member": userId }, ["name","owner", "ownerName"])
 			.then(function(results) {
 				//$scope.availableAps = [{ name : "Your Data", aps:userId, owner : "self"  }, { name : "All Data", aps:userId, owner : "all"}];
 				angular.forEach(results.data, function(circle) { 
@@ -283,6 +283,7 @@ angular.module('portal')
 	};
 	
 	$scope.isShared = function(record) {
+	   if (record == null) return;
 	   if (!$scope.sharing) return;
 	   return $scope.sharing.ids[record._id.$oid];
 	};

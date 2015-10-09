@@ -20,7 +20,7 @@ angular.module('portal')
 		var properties = {"_id": userId};
 		var fields = ["messages"];
 		var data = {"properties": properties, "fields": fields};
-		server.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
 			success(function(users) {
 				$scope.inbox = users[0].messages.inbox;
 				$scope.archive = users[0].messages.archive;
@@ -53,7 +53,7 @@ angular.module('portal')
 	
 	getSenderNames = function(senderIds) {
 		var data = {"properties": {"_id": senderIds}, "fields": ["name"]};
-		server.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
 			success(function(users) {
 				_.each(users, function(user) { $scope.names[user._id.$oid] = user.name; });
 				$scope.loading = false;

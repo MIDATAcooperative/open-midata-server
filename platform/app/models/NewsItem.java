@@ -7,6 +7,7 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 
 import utils.collections.ChainedMap;
+import utils.exceptions.ModelException;
 import utils.search.Search;
 import utils.search.Search.Type;
 import utils.search.SearchException;
@@ -55,7 +56,7 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 			try {
 				Search.add(Type.NEWS, newsItem._id, newsItem.title, newsItem.content);
 			} catch (SearchException e) {
-				throw new ModelException(e);
+				throw new ModelException("error.internal", e);
 			}
 		}
 	}

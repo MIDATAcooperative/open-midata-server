@@ -1,6 +1,5 @@
 package actions;
 
-import models.ModelException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -12,12 +11,16 @@ import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 import utils.access.AccessLog;
+import utils.exceptions.AuthException;
+import utils.exceptions.ModelException;
 import utils.json.JsonValidation.JsonValidationException;
 
 public class APICallAction extends Action<APICall> {
 
     public F.Promise<Result> call(Http.Context ctx) throws Throwable { 
     	try {
+    		
+    	  Thread.sleep(500);	
     	  JsonNode json = ctx.request().body().asJson();
     	  ctx.args.put("json", json);
     	  String host = ctx.request().getHeader("Origin");
@@ -41,6 +44,8 @@ public class APICallAction extends Action<APICall> {
     		} else {
     		  return F.Promise.pure((Result) badRequest(e.getMessage()));
     		}
+    	} catch (AuthException e3) {
+    		return F.Promise.pure((Result) forbidden(e3.getMessage()));    
 		} catch (ModelException e2) {			
 			return F.Promise.pure((Result) internalServerError(e2.getMessage()));			
 		} finally {

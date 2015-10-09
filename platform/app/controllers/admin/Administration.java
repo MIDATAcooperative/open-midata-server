@@ -1,6 +1,5 @@
 package controllers.admin;
 
-import models.ModelException;
 import models.User;
 import models.enums.UserStatus;
 
@@ -14,7 +13,9 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.auth.AdminSecured;
 import utils.collections.Sets;
+import utils.exceptions.ModelException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 

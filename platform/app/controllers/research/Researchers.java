@@ -8,7 +8,6 @@ import java.util.Map;
 import org.bson.types.ObjectId;
 
 import models.Member;
-import models.ModelException;
 import models.Research;
 import models.ResearchUser;
 import models.enums.AccountSecurityLevel;
@@ -33,6 +32,7 @@ import utils.auth.CodeGenerator;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
+import utils.exceptions.ModelException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
@@ -94,7 +94,7 @@ public class Researchers extends APIController {
 		
 		session().clear();
 		session("id", user._id.toString());
-		session("role", "research");
+		session("role", UserRole.RESEARCH.toString());
 		session("org", research._id.toString());
 		
 		return ok();
@@ -122,7 +122,7 @@ public class Researchers extends APIController {
 		
 		session().clear();
 		session("id", user._id.toString());
-		session("role", "research");
+		session("role", UserRole.RESEARCH.toString());
 		session("org", user.organization.toString());
 		return ok();
 	}

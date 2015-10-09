@@ -11,7 +11,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 import models.APSNotExistingException;
 import models.AccessPermissionSet;
-import models.ModelException;
 import models.Record;
 import models.enums.APSSecurityLevel;
 
@@ -25,6 +24,9 @@ import com.mongodb.BasicDBObject;
 
 import utils.auth.EncryptionNotSupportedException;
 import utils.db.LostUpdateException;
+import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
+import utils.exceptions.ModelException;
 
 import controllers.KeyManager;
 
@@ -93,14 +95,14 @@ public class EncryptedAPS {
 		return this.aps != null;
 	}
 	
-	public boolean isOwner() throws ModelException {		
+	public boolean isOwner() throws AppException {		
 		if (apsId.equals(who)) return true;	
 		if (!isValidated) validate();
 		if (who.equals(owner)) return true;
 		return false;
 	}
 	
-	public ObjectId getOwner() throws ModelException {
+	public ObjectId getOwner() throws AppException {
 		if (apsId.equals(who)) return who;
 		if (!isValidated) validate();
 		return owner;
@@ -125,11 +127,11 @@ public class EncryptedAPS {
 	}
 	
 	public void setSecurityLevel(APSSecurityLevel lvl) throws ModelException {
-		if (!notStored) throw new ModelException("APS already stored. Cannot change security.");
+		if (!notStored) throw new ModelException("error.internal", "APS already stored. Cannot change security.");
 		aps.security = lvl;		
 	}
 	
-	public SecretKey getAPSKey() throws ModelException {
+	public SecretKey getAPSKey() throws AppException {
 		if (!keyProvided && !isValidated) validate();
 		return encryptionKey;
 	}
@@ -168,13 +170,13 @@ public class EncryptedAPS {
 		return aps.keys.containsKey(name);
 	}
 	
-	public Map<String, Object> getPermissions() throws ModelException {
+	public Map<String, Object> getPermissions() throws AppException {
 		if (owner!=null && !isAccessable()) return getPermissions(owner);
 		if (!isValidated) validate();		
 		return aps.permissions;
 	}
 	
-	public Map<String, Object> getPermissions(ObjectId owner) throws ModelException {
+	public Map<String, Object> getPermissions(ObjectId owner) throws AppException {
 		if (!isLoaded()) load();	
 		if (!isValidated && (getKey(who.toString()) != null || owner.equals(who) )) validate();
 		if (!isValidated) {
@@ -222,7 +224,7 @@ public class EncryptedAPS {
 	}
 	
 	public void create() throws ModelException {
-		if (!notStored) throw new ModelException("APS is already created");
+		if (!notStored) throw new ModelException("error.internal", "APS is already created");
 		if (!aps.security.equals(APSSecurityLevel.NONE)) {
 			encodeAPS();
 			aps.permissions = null;
@@ -254,7 +256,7 @@ public class EncryptedAPS {
 		load();
 	}
 	
-	public void merge() throws ModelException {
+	public void merge() throws AppException {
 		try {
 		if (aps.unmerged != null) {
 			AccessLog.debug("merge:" + apsId.toString());
@@ -310,7 +312,7 @@ public class EncryptedAPS {
 		isValidated = false;
 	}
 				
-	private void validate() throws ModelException {
+	private void validate() throws AppException {
 		if (!isLoaded()) load();		
 		AccessLog.apsAccess(aps._id, who);
 		if (aps.keys == null) { isValidated = true; return;} // Old version support
@@ -322,12 +324,12 @@ public class EncryptedAPS {
 				if (aps.keys.containsKey(who.toString())) return;						
 				if (aps.keys.get("owner") instanceof byte[]) {
 					if (Arrays.equals(who.toByteArray(), aps.keys.get("owner"))) { this.owner = who; return; }
-					throw new ModelException("APS not readable by user");
+					throw new ModelException("error.internal", "APS not readable by user");
 				} else this.owner = who; // Old version support			
 			} else {		
 				byte[] key = aps.keys.get(who.toString());
 				if (key==null) { key = aps.keys.get("owner"); this.owner = who; } 
-			    if (key==null /*|| ! key.startsWith("key"+who.toString())*/) throw new ModelException("APS not readable by user");
+			    if (key==null /*|| ! key.startsWith("key"+who.toString())*/) throw new ModelException("error.internal", "APS not readable by user");
 			    		 
 			    byte[] decryptedKey = KeyManager.instance.decryptKey(who, key);
 			    encryptionKey = new SecretKeySpec(decryptedKey, KEY_ALGORITHM);// SecretKeyFactory.getInstance(KEY_ALGORITHM).key.substring(key.indexOf(':'));

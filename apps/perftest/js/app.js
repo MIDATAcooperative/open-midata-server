@@ -3,6 +3,14 @@ jsonRecords.factory('server', [ '$http', function($http) {
 	
 	var service = {};
 	
+	var rand = function(min,max) {
+	   return Math.floor((Math.random() * (max-min)) + min); 
+	};
+	
+	var twodigit = function(d) {
+		return d < 10 ? ("0" + d) : d;
+	}
+	
 	service.createRecord = function(authToken, name, description, content, format, data) {
 		// construct json
 		var data = {
@@ -11,6 +19,7 @@ jsonRecords.factory('server', [ '$http', function($http) {
 			"name": name,
 			"format" : format,
 			"content" : content,
+			"created-override" : (rand(2000,2015) +"-" + twodigit(rand(1,12)) + "-" + twodigit(rand(1,28))),
 			"description": (description || "")
 		};
 		
@@ -41,6 +50,14 @@ jsonRecords.factory('server', [ '$http', function($http) {
 jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', 'server',
 	function($scope, $http, $location, $filter, server) {
 		
+	    var rand = function(min,max) {
+		   return Math.floor((Math.random() * (max-min)) + min); 
+		};
+		
+		var twodigit = function(d) {
+			return d < 10 ? ("0" + d) : d;
+		}
+	
 		// init
 		$scope.errors = {};
 		$scope.data = {};
@@ -50,13 +67,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 		$scope.authToken = authToken;
 		$scope.setup = { numCreate : 1, format : "Json" };
 		
-		$scope.data = { a : "This is a test record that has an average length. ",
-				        b : "This is a test record that has an average length. ",
-				        c : "This is a test record that has an average length. ",
-				        d : "This is a test record that has an average length. ",
-				        e : "This is a test record that has an average length. ",
-				        f : "This is a test record that has an average length. "				        
-				       };	
+		$scope.data = { "weight": [ { "value": rand(50,80), "unit": "kg", "dateTime": (rand(2000,2015) +"-" + twodigit(rand(1,12)) + "-" + twodigit(rand(1,28))) } ] }
 		$scope.success = false;
 		
 		$scope.init = function() {
@@ -64,7 +75,10 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 		};
 		
 		$scope.execute = function() {
-			var f = function(i) { return function() { return server.createRecord(authToken, "Record "+i, null, $scope.setup.content, $scope.setup.format, $scope.data); } };
+			var f = function(i) { return function() {
+				$scope.data = { "weight": [ { "value": rand(50,80), "unit": "kg", "dateTime": (rand(2000,2015) +"-" + twodigit(rand(1,12)) + "-" + twodigit(rand(1,28))) } ] };
+				return server.createRecord(authToken, "Record "+i, null, $scope.setup.content, $scope.setup.format, $scope.data); 
+			} };
 			var q = null;
 			for (var i=0;i < $scope.setup.numCreate;i++) {
 				q = (q != null) ? q.then(f(i)) : f(i)();

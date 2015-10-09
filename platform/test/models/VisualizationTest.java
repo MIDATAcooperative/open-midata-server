@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import utils.db.DBLayer;
+import utils.exceptions.ModelException;
 
 import com.mongodb.DBCollection;
 

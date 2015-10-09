@@ -1,5 +1,6 @@
 package controllers;
 
+import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -21,6 +22,10 @@ public class APIController extends Controller {
 		return badRequest(Json.newObject().put("type", code)        
 				                          .put("level", "warning")
                                           .put("message", message));
+	}
+	
+	public static UserRole getRole() {
+		return UserRole.valueOf(session().get("role"));
 	}
 	
 	

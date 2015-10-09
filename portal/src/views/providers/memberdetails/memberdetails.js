@@ -4,6 +4,7 @@ angular.module('portal')
 	$scope.memberid = $state.params.memberId;
 	$scope.member = {};	
 	$scope.status = new status(true);
+	$scope.data = { consent : null };
 		
 	views.reset();
 	views.link("1", "record", "record");
@@ -37,7 +38,7 @@ angular.module('portal')
 	};
 	
 	var addDataConsent = function(backConsent) {
-		$scope.consent = null;
+		$scope.data.consent = $scope.consent = null;
 		$scope.hideAdd = true;
 		views.setView("1", { aps : backConsent._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type : "hcrelated" });
 	};
@@ -88,7 +89,7 @@ angular.module('portal')
 		var properties = {"_id": userId};
 		var fields = ["apps", "visualizations"];
 		var data = {"properties": properties, "fields": fields};
-		server.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
 			success(function(users) {
 				$scope.getAppDetails(users[0].apps);
 				$scope.getVisualizationDetails(users[0].visualizations);

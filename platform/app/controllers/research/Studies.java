@@ -13,7 +13,6 @@ import models.FilterRule;
 import models.History;
 import models.Info;
 import models.Member;
-import models.ModelException;
 import models.ParticipationCode;
 import models.Record;
 import models.Research;
@@ -43,9 +42,13 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
+import utils.auth.ResearchSecured;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -56,7 +59,6 @@ import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import controllers.APIController;
-import controllers.AnyRoleSecured;
 import controllers.RecordSharing;
 
 
@@ -125,7 +127,7 @@ public class Studies extends APIController {
 	
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result download(String id) throws ModelException {
+	public static Result download(String id) throws AppException {
 		 ObjectId studyid = new ObjectId(id);
 		 ObjectId owner = new ObjectId(session().get("org"));
 		 ObjectId executorId = new ObjectId(request().username());
@@ -341,7 +343,7 @@ public class Studies extends APIController {
 	
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result shareWithGroup(String id, String group) throws ModelException {
+	public static Result shareWithGroup(String id, String group) throws AppException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId owner = new ObjectId(session().get("org"));
 		ObjectId studyid = new ObjectId(id);
@@ -381,7 +383,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result addTask(String id, String group) throws ModelException, JsonValidationException {
+	public static Result addTask(String id, String group) throws AppException, JsonValidationException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId owner = new ObjectId(session().get("org"));
 		ObjectId studyid = new ObjectId(id);

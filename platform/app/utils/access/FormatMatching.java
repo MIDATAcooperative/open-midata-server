@@ -6,7 +6,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import models.ModelException;
+import utils.exceptions.ModelException;
+
 
 public class FormatMatching {
   
@@ -42,7 +43,7 @@ public class FormatMatching {
 			if (ac.contains("*")) {
 				if (acceptedWildcards == null) acceptedWildcards = new ArrayList<DetailFormat>();
 				Matcher matcher = resolve.matcher(ac);
-				if (!matcher.matches()) throw new ModelException("Bad format expression: "+ac);
+				if (!matcher.matches()) throw new ModelException("error.internal", "Bad format expression: "+ac);
 				acceptedWildcards.add(new DetailFormat(matcher));
 			}
 		}
@@ -56,7 +57,7 @@ public class FormatMatching {
 		if (acceptedFormats.contains(format)) return true;
 		if (acceptedWildcards != null) {
 			Matcher matcher = resolve.matcher(format);
-			if (!matcher.matches()) throw new ModelException("Bad format:"+format);
+			if (!matcher.matches()) throw new ModelException("error.internal", "Bad format:"+format);
 			for (DetailFormat df : acceptedWildcards)
 				if (df.matches(new DetailFormat(matcher))) return true;
 		}

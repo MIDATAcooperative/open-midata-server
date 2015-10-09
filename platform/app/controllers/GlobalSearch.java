@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 
 import models.Circle;
-import models.ModelException;
 import models.Member;
 
 import org.bson.types.ObjectId;
@@ -18,8 +17,11 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.auth.AnyRoleSecured;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 import utils.search.CompletionResult;
 import utils.search.Search;
 import utils.search.SearchResult;
@@ -32,7 +34,7 @@ public class GlobalSearch extends Controller {
 	 * Search in all the user's accessible data.
 	 */
 	@APICall
-	public static Result search(String query) throws ModelException {
+	public static Result search(String query) throws AppException {
 		ObjectId userId = new ObjectId(request().username());
 		
 		Set<Circle> circles = Circle.getAllByMember(userId);

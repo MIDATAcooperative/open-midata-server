@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.exceptions.ModelException;
 
 public class HCRelated extends Consent {
 

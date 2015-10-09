@@ -15,13 +15,14 @@ import org.bson.types.ObjectId;
 
 import utils.collections.Sets;
 import utils.db.LostUpdateException;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 
 import com.mongodb.BasicDBObject;
 
 import controllers.RuleApplication;
 
 import models.FilterRule;
-import models.ModelException;
 import models.Record;
 
 public class APSQSupportingQM extends QueryManager {
@@ -34,7 +35,7 @@ public class APSQSupportingQM extends QueryManager {
 	
 	@Override
 	protected List<Record> lookup(List<Record> record, Query q)
-			throws ModelException {
+			throws AppException {
 		List<Record> result = next.lookup(record, q);
 		// Add Filter
 		
@@ -59,7 +60,7 @@ public class APSQSupportingQM extends QueryManager {
 		
 
 	@Override
-	protected List<Record> query(Query q) throws ModelException {
+	protected List<Record> query(Query q) throws AppException {
 		
 		BasicBSONObject query = q.getCache().getAPS(q.getApsId()).getMeta(SingleAPSManager.QUERY);    	
     	// Ignores queries in main APS 
@@ -82,7 +83,7 @@ public class APSQSupportingQM extends QueryManager {
 		return next.query(q);		
 	}
 	
-	private void query(Query q, BasicBSONObject query, List<Record> results) throws ModelException {
+	private void query(Query q, BasicBSONObject query, List<Record> results) throws AppException {
 		Map<String, Object> combined = combineQuery(q.getProperties(), query);
 		if (combined == null) {
 			AccessLog.debug("combine empty:");			
@@ -100,7 +101,7 @@ public class APSQSupportingQM extends QueryManager {
 		results.addAll(result);
 	}
 	
-	private List<Record> memoryQuery(Query q, BasicBSONObject query, List<Record> results) throws ModelException {
+	private List<Record> memoryQuery(Query q, BasicBSONObject query, List<Record> results) throws AppException {
 		Map<String, Object> combined = combineQuery(q.getProperties(), query);
 		if (combined == null) {
 			AccessLog.debug("combine empty:");			
@@ -161,7 +162,7 @@ public class APSQSupportingQM extends QueryManager {
 		return combined;
 	}
 	
-	public static void setQuery(APSCache cache, ObjectId apsId, Map<String, Object> query) throws ModelException {		
+	public static void setQuery(APSCache cache, ObjectId apsId, Map<String, Object> query) throws AppException {		
 		SingleAPSManager aps = cache.getAPS(apsId);
 		aps.setMeta(SingleAPSManager.QUERY, query);
 		
@@ -170,7 +171,7 @@ public class APSQSupportingQM extends QueryManager {
 
 	@Override
 	protected List<Record> postProcess(List<Record> records, Query q)
-			throws ModelException {
+			throws AppException {
 		return next.postProcess(records, q);
 		
 	}

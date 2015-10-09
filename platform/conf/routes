@@ -80,7 +80,6 @@ GET     /members/api/search/complete/:query              controllers.GlobalSearc
 # Users
 
 POST    /members/api/users/get                           controllers.Users.get()
-POST    /shared/api/users/get                            controllers.Users.getUsers()
 GET     /shared/api/users/current                        controllers.Users.getCurrentUser()
 GET     /shared/api/users/contacts                      controllers.Users.loadContacts()
 DELETE  /members/api/users/pushed                        controllers.Users.clearPushed()

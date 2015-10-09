@@ -11,8 +11,8 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 
 import utils.collections.Sets;
+import utils.exceptions.ModelException;
 
-import models.ModelException;
 
 public class Query {
 
@@ -102,7 +102,7 @@ public class Query {
 			Set<String> results = new HashSet<String>();
 			results.addAll((Collection<String>) v);
 			return results;											
-		} else throw new ModelException("Bad Restriction 1: "+name);
+		} else throw new ModelException("error.badquery","Bad Restriction 1: "+name);
 	}
 	
 	public Set<ObjectId> getObjectIdRestriction(String name) throws ModelException {
@@ -117,7 +117,7 @@ public class Query {
 			return results;		
 		} else if (v instanceof String && ObjectId.isValid((String) v)) {
 			return Collections.singleton( new ObjectId((String) v));
-		} else throw new ModelException("Bad Restriction 2: "+name);
+		} else throw new ModelException("error.badquery", "Bad Restriction 2: "+name);
 	}
 	
 	public boolean restrictedBy(String field) {

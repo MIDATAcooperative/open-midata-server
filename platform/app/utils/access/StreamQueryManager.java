@@ -9,9 +9,10 @@ import org.bson.types.ObjectId;
 import utils.auth.EncryptionNotSupportedException;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 
 import models.APSNotExistingException;
-import models.ModelException;
 import models.Record;
 
 public class StreamQueryManager extends QueryManager {
@@ -25,7 +26,7 @@ public class StreamQueryManager extends QueryManager {
 	
 	@Override
 	protected List<Record> lookup(List<Record> records, Query q)
-			throws ModelException {
+			throws AppException {
 		QueryManager next = q.getCache().getAPS(q.getApsId());
 		
 		List<Record> result = (next != null) ? next.lookup(records, q) : null;
@@ -59,7 +60,7 @@ public class StreamQueryManager extends QueryManager {
 	
 	
 	@Override
-	protected List<Record> query(Query q) throws ModelException {		
+	protected List<Record> query(Query q) throws AppException {		
 		SingleAPSManager next = q.getCache().getAPS(q.getApsId());
 		List<Record> records = new ArrayList<Record>();
 		boolean restrictedByStream = q.restrictedBy("stream");
@@ -74,7 +75,7 @@ public class StreamQueryManager extends QueryManager {
 				  if (r.isStream) {
 					  try {
 					      records.addAll(q.getCache().getAPS(r._id, r.key, r.owner).query(q));
-					  } catch (EncryptionNotSupportedException e) { throw new ModelException("Encryption not supported."); }
+					  } catch (EncryptionNotSupportedException e) { throw new ModelException("error.internal", "Encryption not supported."); }
 					  catch (APSNotExistingException e2) {
 						  next.removePermission(r);
 					  }
@@ -101,7 +102,7 @@ public class StreamQueryManager extends QueryManager {
 				if (r.isStream) {
 					try {
 					  filtered.addAll(q.getCache().getAPS(r._id, r.key, r.owner).query(q));
-					} catch (EncryptionNotSupportedException e) { throw new ModelException("Encryption not supported."); }
+					} catch (EncryptionNotSupportedException e) { throw new ModelException("error.internal", "Encryption not supported."); }
 				    if (includeStreams) filtered.add(r);	
 				} else filtered.add(r);
 			}

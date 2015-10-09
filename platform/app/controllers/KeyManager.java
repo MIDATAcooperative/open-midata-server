@@ -20,7 +20,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.ShortBufferException;
 
 import models.KeyInfo;
-import models.ModelException;
 import models.User;
 
 import org.bson.types.ObjectId;
@@ -29,6 +28,8 @@ import utils.access.EncryptionUtils;
 import utils.auth.CodeGenerator;
 import utils.auth.EncryptionNotSupportedException;
 import utils.collections.Sets;
+import utils.exceptions.AuthException;
+import utils.exceptions.ModelException;
 
 
 public class KeyManager {
@@ -63,21 +64,21 @@ public class KeyManager {
 			
 			return cipherText;
 		} catch (NoSuchAlgorithmException e) {
-			throw new ModelException(e);		
+			throw new ModelException("error.internal.cryptography", e);		
 		} catch (NoSuchPaddingException e2) {
-			throw new ModelException(e2);
+			throw new ModelException("error.internal.cryptography", e2);
 		} catch (InvalidKeyException e3) {
-			throw new ModelException(e3);
+			throw new ModelException("error.internal.cryptography", e3);
 		} catch (InvalidKeySpecException e4) {
-			throw new ModelException(e4);
+			throw new ModelException("error.internal.cryptography", e4);
 		} catch (BadPaddingException e5) {
-			throw new ModelException(e5);
+			throw new ModelException("error.internal.cryptography", e5);
 		} catch (IllegalBlockSizeException e6) {
-			throw new ModelException(e6);
+			throw new ModelException("error.internal.cryptography", e6);
 		} 
 	}
 	
-	public byte[] decryptKey(ObjectId target, byte[] keyToDecrypt) throws ModelException {
+	public byte[] decryptKey(ObjectId target, byte[] keyToDecrypt) throws ModelException, AuthException {
 		try {
 			
 			byte key[] = pks.get(target.toString());
@@ -86,7 +87,7 @@ public class KeyManager {
 			KeyInfo inf = KeyInfo.getById(target);
 			byte key[] = inf.privateKey;
 			*/
-			if (key == null) throw new ModelException("Authorization Failure");
+			if (key == null) throw new AuthException("error.auth.relogin", "Authorization Failure");
 			
 			PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(key);
 			
@@ -100,17 +101,17 @@ public class KeyManager {
 						
 			return CodeGenerator.derandomize(cipherText);
 		} catch (NoSuchAlgorithmException e) {
-			throw new ModelException(e);		
+			throw new ModelException("error.internal.cryptography", e);		
 		} catch (NoSuchPaddingException e2) {
-			throw new ModelException(e2);
+			throw new ModelException("error.internal.cryptography", e2);
 		} catch (InvalidKeyException e3) {
-			throw new ModelException(e3);
+			throw new ModelException("error.internal.cryptography", e3);
 		} catch (InvalidKeySpecException e4) {
-			throw new ModelException(e4);
+			throw new ModelException("error.internal.cryptography", e4);
 		} catch (BadPaddingException e5) {
-			throw new ModelException(e5);
+			throw new ModelException("error.internal.cryptography", e5);
 		} catch (IllegalBlockSizeException e6) {
-			throw new ModelException(e6);
+			throw new ModelException("error.internal.cryptography", e6);
 		} 
 	}
 	
@@ -138,7 +139,7 @@ public class KeyManager {
 		   
 		   return pub.getEncoded();
 		} catch (NoSuchAlgorithmException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal.cryptography", e);
 		}
 	}
 	

@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import models.LargeRecord;
-import models.ModelException;
 import models.Plugin;
 import models.Record;
 import models.Member;
@@ -30,6 +29,8 @@ import utils.collections.ChainedSet;
 import utils.collections.Sets;
 import utils.db.FileStorage;
 import utils.db.FileStorage.FileData;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
@@ -61,7 +62,7 @@ public class GenomeDataConverter extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result getFiles() throws ModelException, JsonValidationException {
+	public static Result getFiles() throws AppException, JsonValidationException {
 		// allow cross origin request from app server
 		String appServer = Play.application().configuration().getString("apps.server");
 		response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
@@ -120,7 +121,7 @@ public class GenomeDataConverter extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result convert() throws JsonValidationException, ModelException {
+	public static Result convert() throws JsonValidationException, AppException {
 		// allow cross origin request from app server
 		String appServer = Play.application().configuration().getString("apps.server");
 		response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);

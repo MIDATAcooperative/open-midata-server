@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import utils.access.Query;
+import utils.exceptions.ModelException;
 
-import models.ModelException;
 import models.Record;
 
 public class FormatRule implements Rule {

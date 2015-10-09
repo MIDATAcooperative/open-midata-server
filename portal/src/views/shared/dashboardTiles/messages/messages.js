@@ -22,7 +22,7 @@ angular.module('views')
 		var properties = {"_id": userId};
 		var fields = ["messages"];
 		var data = {"properties": properties, "fields": fields};
-		$scope.status.doBusy(server.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data))).
+		$scope.status.doBusy(server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data))).
 		then(function(results) {
 			    var users = results.data;
 				$scope.inbox = users[0].messages.inbox;

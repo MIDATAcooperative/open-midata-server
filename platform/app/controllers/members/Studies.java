@@ -15,7 +15,6 @@ import play.mvc.Security;
 
 import models.History;
 import models.Member;
-import models.ModelException;
 import models.ParticipationCode;
 import models.Record;
 import models.Research;
@@ -29,18 +28,20 @@ import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
 import models.enums.StudyValidationStatus;
+import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
+import utils.auth.MemberSecured;
+import utils.auth.ResearchSecured;
 import utils.collections.Sets;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
 import play.libs.Json;
 import controllers.APIController;
-import controllers.AnyRoleSecured;
 import controllers.RecordSharing;
-import controllers.Secured;
-import controllers.research.ResearchSecured;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -48,7 +49,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class Studies extends APIController {
 
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(MemberSecured.class)
 	public static Result list() throws JsonValidationException, ModelException {
 	   ObjectId user = new ObjectId(request().username());
 	   
@@ -58,7 +59,7 @@ public class Studies extends APIController {
 	}
 	
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result search() throws JsonValidationException, ModelException {
 	   ObjectId user = new ObjectId(request().username());
@@ -75,7 +76,7 @@ public class Studies extends APIController {
 	}
 	
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result enterCode() throws JsonValidationException, ModelException {
         JsonNode json = request().body().asJson();
@@ -117,9 +118,9 @@ public class Studies extends APIController {
 	}
 	
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result updateParticipation(String id) throws JsonValidationException, ModelException {
+	public static Result updateParticipation(String id) throws JsonValidationException, AppException {
 		JsonNode json = request().body().asJson();
 		ObjectId studyId = new ObjectId(id);
 		ObjectId memberId = new ObjectId(request().username());
@@ -140,6 +141,23 @@ public class Studies extends APIController {
 				part.authorized.add(providerId);
 			}
 			RecordSharing.instance.shareAPS(part._id, memberId, newProviders);
+			
+			StudyParticipation.set(part._id, "providers", part.providers);
+			StudyParticipation.set(part._id, "authorized", part.authorized);
+		}
+		
+		JsonNode remove = json.get("remove");
+		if (remove != null) {
+			JsonNode providers = remove.get("providers");
+			Set<ObjectId> newProviders = JsonExtraction.extractObjectIdSet(providers);
+			if (part.providers == null) part.providers = new HashSet<ObjectId>();
+			if (part.authorized == null) part.authorized = new HashSet<ObjectId>();
+			
+			for (ObjectId providerId : newProviders) {				
+				part.providers.remove(providerId);	
+				part.authorized.remove(providerId);
+			}
+			RecordSharing.instance.unshareAPS(part._id, memberId, newProviders);
 			
 			StudyParticipation.set(part._id, "providers", part.providers);
 			StudyParticipation.set(part._id, "authorized", part.authorized);
@@ -214,7 +232,7 @@ public class Studies extends APIController {
 	}
 	
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(MemberSecured.class)
 	public static Result requestParticipation(String id) throws JsonValidationException, ModelException {
 		ObjectId userId = new ObjectId(request().username());		
 		ObjectId studyId = new ObjectId(id);
@@ -241,7 +259,7 @@ public class Studies extends APIController {
 	}
 	
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(MemberSecured.class)
 	public static Result noParticipation(String id) throws JsonValidationException, ModelException {
 		ObjectId userId = new ObjectId(request().username());		
 		ObjectId studyId = new ObjectId(id);

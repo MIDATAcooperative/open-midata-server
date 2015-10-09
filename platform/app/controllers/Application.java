@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import models.Developer;
 import models.HPUser;
-import models.ModelException;
 import models.Member;
 import models.Record;
 import models.ResearchUser;
@@ -36,6 +36,8 @@ import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
+import utils.evolution.AccountPatches;
+import utils.exceptions.ModelException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.mails.MailUtils;
@@ -47,7 +49,7 @@ import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class Application extends Controller {
+public class Application extends APIController {
 
 	public static Result test() {
 		return ok(tester.render());
@@ -58,8 +60,7 @@ public class Application extends Controller {
 	} 
 			
 	public static Result checkPreflight(String all) {		
-		String host = request().getHeader("Origin");
-		//AccessLog.debug(host);
+		String host = request().getHeader("Origin");		
 		if (host.startsWith("http://localhost:") || host.equals("https://demo.midata.coop")) {
 		    response().setHeader("Access-Control-Allow-Origin", host);
 		} else response().setHeader("Access-Control-Allow-Origin", "https://demo.midata.coop");
@@ -73,20 +74,19 @@ public class Application extends Controller {
 	@BodyParser.Of(BodyParser.Json.class) 
 	@APICall
 	public static Result requestPasswordResetToken() throws JsonValidationException, ModelException {
-		// validate json
-		JsonNode json = request().body().asJson();
-		
-		JsonValidation.validate(json, "email", "role");
-		
-		// validate request
+		// validate input
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "email", "role");				
 		String email = JsonValidation.getEMail(json, "email");
 		String role = JsonValidation.getString(json, "role");
 		
+		// execute
 		User user = null;
 		switch (role) {
 		case "member" : user = Member.getByEmail(email, Sets.create("name","email","password"));break;
 		case "research" : user = ResearchUser.getByEmail(email, Sets.create("name","email","password"));break;
 		case "provider" : user = HPUser.getByEmail(email, Sets.create("name","email","password"));break;
+		case "developer" : user = Developer.getByEmail(email, Sets.create("name","email","password"));break;
 		default: break;		
 		}
 		if (user != null) {							  
@@ -100,7 +100,8 @@ public class Application extends Controller {
 			   
 		  MailUtils.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url));
 		}
-				
+			
+		// response
 		return ok();
 	}
 	
@@ -108,15 +109,15 @@ public class Application extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result setPasswordWithToken() throws JsonValidationException, ModelException {
-		// validate json
-		JsonNode json = request().body().asJson();
-		
+		// validate 
+		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "token", "password");
 		
-		// validate request
+		// check status
 		PasswordResetToken passwordResetToken = PasswordResetToken.decrypt(json.get("token").asText());
 		if (passwordResetToken == null) return badRequest("Missing or bad password token.");
 		
+		// execute
 		ObjectId userId = passwordResetToken.userId;
 		String token = passwordResetToken.token;
 		String role = passwordResetToken.role;
@@ -127,6 +128,7 @@ public class Application extends Controller {
 		case "member" : user = Member.getById(userId, Sets.create("resettoken","password","resettokenTs"));break;
 		case "research" : user = ResearchUser.getById(userId, Sets.create("resettoken","password","resettokenTs"));break;
 		case "provider" : user = HPUser.getById(userId, Sets.create("resettoken","password","resettokenTs"));break;
+		case "developer" : user = Developer.getById(userId, Sets.create("resettoken","password","resettokenTs"));break;
 		default: break;		
 		}
 		if (user!=null) {				
@@ -140,52 +142,51 @@ public class Application extends Controller {
 		       } else return badRequest("Password reset token has already expired.");
 		}
 					
+		// response
 		return ok();		
 	}
 	
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result authenticate() throws JsonValidationException, ModelException {
-		// validate json
-		JsonNode json = request().body().asJson();
-		
-		JsonValidation.validate(json, "email", "password");
-		
-		// validate request
+		// validate 
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "email", "password");	
 		String email = json.get("email").asText();
 		String password = json.get("password").asText();
 		
-		Member user = Member.getByEmail(email , Sets.create("password","myaps", "accountVersion"));
+		// check status
+		Member user = Member.getByEmail(email , Sets.create("password", "status", "accountVersion"));
 		if (user == null) return badRequest("Invalid user or password.");
 		if (!Member.authenticationValid(password, user.password)) {
 			return badRequest("Invalid user or password.");
 		}
-			    	    
-	
-		// user authenticated
+		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) return badRequest("User is not allowed to log in.");
+			    	    	
+		// execute
 		session().clear();
 		session("id", user._id.toString());
-		session("role","member");
+		session("role", UserRole.MEMBER.toString());
 		KeyManager.instance.unlock(user._id, "12345");
 		
 		AccountPatches.check(user);
+		
+		// response
 		return ok();
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result register() throws JsonValidationException, ModelException {
-		// validate json
-		JsonNode json = request().body().asJson();
-		
-		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
-		
-		// validate request
+		// validate 
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1");				
 		String email = json.get("email").asText();
 		String firstName = json.get("firstname").asText();
 		String lastName = json.get("lastname").asText();
 		String password = json.get("password").asText();
-		
+
+		// check status
 		if (Member.existsByEMail(email)) {
 		  return badRequest("A user with this email address already exists.");
 		}
@@ -219,9 +220,7 @@ public class Application extends Controller {
 		user.contractStatus = ContractStatus.NEW;		
 		user.confirmationCode = CodeGenerator.nextCode();
 		user.partInterest = ParticipationInterest.UNSET;
-		
-		//user.visible = new HashMap<String, Set<ObjectId>>();
-				
+							
 		user.apps = new HashSet<ObjectId>();
 		user.tokens = new HashMap<String, Map<String, String>>();
 		user.visualizations = new HashSet<ObjectId>();
@@ -250,13 +249,18 @@ public class Application extends Controller {
 		
 		session().clear();
 		session("id", user._id.toString());
-		session("role","member");
+		session("role",UserRole.MEMBER.toString());
+		
+		// reponse
 		return ok();
 	}
 
 	@APICall
 	public static Result logout() {
+		// execute
 		session().clear();
+		
+		// reponse
 		return ok();		
 	}
 	
@@ -327,8 +331,7 @@ public class Application extends Controller {
 				controllers.routes.javascript.Spaces.getPreviewUrl(),
 				controllers.routes.javascript.Spaces.getPreviewUrlFromSetup(),
 				// Users
-				controllers.routes.javascript.Users.get(),
-				controllers.routes.javascript.Users.getUsers(),
+				controllers.routes.javascript.Users.get(),		
 				controllers.routes.javascript.Users.getCurrentUser(),
 				controllers.routes.javascript.Users.search(),
 				controllers.routes.javascript.Users.loadContacts(),

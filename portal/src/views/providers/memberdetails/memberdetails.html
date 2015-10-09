@@ -24,7 +24,7 @@
       <p>Pick consent:</p>
       <div class="row">
       <div class="col-sm-8">
-      <select class="form-control" ng-change="selectConsent(consent)" ng-model="consent" ng-options="consent.name for consent in consents"></select>
+      <select class="form-control" ng-change="selectConsent(data.consent)" ng-model="data.consent" ng-options="consent.name for consent in consents"></select>
       </div><div class="col-sm-4">
       <button class="btn btn-default" ng-click="addData();" ng-hide="hideAdd">Share Data With Patient</button>
       <button class="btn btn-default" ng-click="addTask();" ng-hide="hideAdd || consent==null">Add Task</button>

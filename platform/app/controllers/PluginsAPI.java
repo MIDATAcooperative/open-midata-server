@@ -12,7 +12,6 @@ import models.Consent;
 import models.HPUser;
 import models.LargeRecord;
 import models.Member;
-import models.ModelException;
 import models.Record;
 import models.Space;
 import models.User;
@@ -38,6 +37,8 @@ import utils.collections.Sets;
 import utils.db.FileStorage;
 import utils.db.ObjectIdConversion;
 import utils.db.FileStorage.FileData;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -66,7 +67,7 @@ public class PluginsAPI extends Controller {
  
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result getIds() throws ModelException, JsonValidationException  {
+	public static Result getIds() throws AppException, JsonValidationException  {
 		
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -86,7 +87,7 @@ public class PluginsAPI extends Controller {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result getConfig() throws JsonValidationException, ModelException {
+	public static Result getConfig() throws JsonValidationException, AppException {
 		
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -113,7 +114,7 @@ public class PluginsAPI extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result setConfig() throws JsonValidationException, ModelException {
+	public static Result setConfig() throws JsonValidationException, AppException {
 		
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -134,7 +135,7 @@ public class PluginsAPI extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result cloneAs() throws JsonValidationException, ModelException {
+	public static Result cloneAs() throws JsonValidationException, AppException {
 		
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -169,7 +170,7 @@ public class PluginsAPI extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result getRecords() throws JsonValidationException, ModelException {
+	public static Result getRecords() throws JsonValidationException, AppException {
 		
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -221,7 +222,7 @@ public class PluginsAPI extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall	
-	public static Result getFile() throws ModelException, JsonValidationException {
+	public static Result getFile() throws AppException, JsonValidationException {
 		
 		// validate json
 		JsonNode json = request().body().asJson();				
@@ -243,7 +244,7 @@ public class PluginsAPI extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result createRecord() throws ModelException, JsonValidationException {
+	public static Result createRecord() throws AppException, JsonValidationException {
 		//response().setHeader("Access-Control-Allow-Origin", "*");
 		
 		// check whether the request is complete

@@ -10,7 +10,6 @@ import java.util.Set;
 
 import models.HPUser;
 import models.MemberKey;
-import models.ModelException;
 import models.Plugin;
 import models.Record;
 import models.Member;
@@ -44,6 +43,8 @@ import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.db.DatabaseException;
 import utils.db.FileStorage;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -123,7 +124,7 @@ public class AppsAPI extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result getRecords() throws JsonValidationException, ModelException {	
+	public static Result getRecords() throws JsonValidationException, AppException {	
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -164,7 +165,7 @@ public class AppsAPI extends Controller {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result createRecord() throws ModelException, JsonValidationException {
+	public static Result createRecord() throws AppException, JsonValidationException {
 		// allow cross origin request from app server
 		//String appServer = Play.application().configuration().getString("apps.server");
 		//response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
@@ -319,13 +320,13 @@ public class AppsAPI extends Controller {
 		    try {
 			  RecordSharing.instance.addRecord(owner._id, record, new FileInputStream(file), filename, contentType);
 		    } catch (FileNotFoundException e) {
-		    	throw new ModelException(e);
+		    	throw new ModelException("error.internal",e);
 		    }
 						
 			ObjectNode obj = Json.newObject();
 			obj.put("_id", record._id.toString());
 			return ok(obj);
-		} catch (ModelException e) {
+		} catch (AppException e) {
 			return badRequest(e.getMessage());
 		} catch (DatabaseException e) {
 			return badRequest(e.getMessage());

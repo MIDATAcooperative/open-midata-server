@@ -4,12 +4,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import models.ModelException;
 
 import org.bson.types.ObjectId;
 
 import utils.auth.EncryptionNotSupportedException;
 import utils.collections.Sets;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 
 public class APSCache {
 
@@ -43,7 +44,7 @@ public class APSCache {
 		return result;
 	}
 	
-	public SingleAPSManager getAPS(ObjectId apsId, byte[] unlockKey, ObjectId owner) throws ModelException, EncryptionNotSupportedException {
+	public SingleAPSManager getAPS(ObjectId apsId, byte[] unlockKey, ObjectId owner) throws AppException, EncryptionNotSupportedException {
 		SingleAPSManager result = cache.get(apsId.toString());
 		if (result == null) { 
 			result = new SingleAPSManager(new EncryptedAPS(apsId, who, unlockKey, owner));

@@ -10,6 +10,7 @@ import org.bson.types.ObjectId;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.db.NotMaterialized;
+import utils.exceptions.ModelException;
 import utils.search.Search;
 
 

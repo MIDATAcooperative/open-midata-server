@@ -15,6 +15,7 @@ import models.enums.StudyValidationStatus;
 import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
+import utils.exceptions.ModelException;
 
 public class Study extends Model {
 	

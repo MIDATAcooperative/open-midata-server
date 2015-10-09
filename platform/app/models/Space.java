@@ -14,6 +14,7 @@ import utils.collections.ChainedSet;
 import utils.db.DatabaseException;
 import utils.db.NotMaterialized;
 import utils.db.OrderOperations;
+import utils.exceptions.ModelException;
 import utils.search.Search;
 import utils.search.SearchException;
 
@@ -86,7 +87,7 @@ public class Space extends Model implements Comparable<Space> {
 		try {
 			Search.add(space.owner, "space", space._id, space.name);
 		} catch (SearchException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal", e);
 		}
 	}
 
@@ -99,7 +100,7 @@ public class Space extends Model implements Comparable<Space> {
 		try {
 			OrderOperations.decrement(collection, ownerId, space.order, 0);
 		} catch (DatabaseException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal", e);
 		}
 
 		// also remove from search index

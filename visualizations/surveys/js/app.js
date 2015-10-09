@@ -147,9 +147,11 @@ surveys.controller('SurveyCtrl', ['$scope', '$http', '$location', '$filter', 'mi
 			if ($scope.edit) {
 				
 			} else {
-			  $scope.saveResults($scope.activeSurvey, $scope.surveyResult);
-			  $scope.activeSurvey = null;
-			  $scope.loadSurveys();
+			  $scope.saveResults($scope.activeSurvey, $scope.surveyResult)
+			  .then(function() {
+				  $scope.activeSurvey = null;
+				  $scope.loadSurveys();
+			  });
 			}
 			$scope.activeStep = null;
 			console.log($scope.surveyResult);
@@ -183,7 +185,7 @@ surveys.controller('SurveyCtrl', ['$scope', '$http', '$location', '$filter', 'mi
 		};
 		
 		$scope.saveResults = function(survey, result) {
-			midataServer.createRecord($scope.authToken, survey.title, "Answers to survey", "survey", "survey/answers", result);
+			return midataServer.createRecord($scope.authToken, survey.title, "Answers to survey", "survey", "survey/answers", result);
 		};
 		
 		$scope.isChecked = function(vals, val) {
@@ -304,6 +306,8 @@ surveys.controller('SurveyCtrl', ['$scope', '$http', '$location', '$filter', 'mi
 			});
 			midataServer.createRecord($scope.authToken, $scope.activeSurvey.title, "Survey", "templates/survey", "survey/questions", $scope.activeSurvey)
 			.then(function() { $scope.cancel; });
+			
+			$scope.cancel();
 		};
 		
 		$scope.createNew = function() {

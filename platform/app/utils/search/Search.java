@@ -13,7 +13,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import models.Circle;
-import models.ModelException;
 
 import org.bson.types.ObjectId;
 import org.elasticsearch.action.ListenableActionFuture;
@@ -38,6 +37,8 @@ import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import play.libs.Json;
 import utils.collections.CollectionConversion;
 import utils.db.ObjectIdConversion;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -332,7 +333,7 @@ public class Search {
 		return searchResults.get("record");
 	}
 
-	public static List<SearchResult> searchRecords(ObjectId userId, Set<Circle> circles, String query) throws ModelException {
+	public static List<SearchResult> searchRecords(ObjectId userId, Set<Circle> circles, String query) throws AppException {
 	   Map<String, Set<ObjectId>> map = new HashMap<String, Set<ObjectId>>();
 	   
 	   for (Circle circle : circles) {
@@ -377,7 +378,7 @@ public class Search {
 		return searchResults;
 	}
 	
-	public static Map<String, List<SearchResult>> search(ObjectId userId, Set<Circle> circles, String query) throws ModelException {
+	public static Map<String, List<SearchResult>> search(ObjectId userId, Set<Circle> circles, String query) throws AppException {
 		   Map<String, Set<ObjectId>> map = new HashMap<String, Set<ObjectId>>();
 		   
 		   for (Circle circle : circles) {

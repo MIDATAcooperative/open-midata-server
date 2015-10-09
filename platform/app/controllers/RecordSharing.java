@@ -57,6 +57,8 @@ import utils.db.LostUpdateException;
 import utils.db.NotMaterialized;
 import utils.db.ObjectIdConversion;
 import utils.db.FileStorage.FileData;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 import utils.search.Search;
 import utils.search.SearchException;
 
@@ -66,7 +68,6 @@ import models.Circle;
 import models.ContentInfo;
 import models.Member;
 import models.MemberKey;
-import models.ModelException;
 import models.Record;
 import models.RecordsInfo;
 import models.Space;
@@ -105,7 +106,7 @@ public class RecordSharing {
 		if (apsCache.get() == null)
 			apsCache.set(new APSCache(who));
 		APSCache result = apsCache.get();
-		if (!result.getOwner().equals(who)) throw new ModelException("Owner Change!");
+		if (!result.getOwner().equals(who)) throw new ModelException("error.internal", "Owner Change!");
 		return result;
 	}
 	
@@ -157,7 +158,7 @@ public class RecordSharing {
 							KeyManager.instance.encryptKey(other,
 									encryptionKey.getEncoded()));
 				} catch (EncryptionNotSupportedException e2) {
-					throw new ModelException("NOT POSSIBLE ENCRYPTION REQUIRED");
+					throw new ModelException("error.internal.cryptography", "NOT POSSIBLE ENCRYPTION REQUIRED");
 				}
 			}
 		} catch (EncryptionNotSupportedException e) {
@@ -201,24 +202,24 @@ public class RecordSharing {
 	}
 
 	public void shareAPS(ObjectId apsId, ObjectId ownerId,
-			Set<ObjectId> targetUsers) throws ModelException {
+			Set<ObjectId> targetUsers) throws AppException {
 
 		SingleAPSManager apswrapper = getCache(ownerId).getAPS(apsId);
 		try {
 			apswrapper.addAccess(targetUsers);
 		} catch (EncryptionNotSupportedException e) {
-			throw new ModelException("Encryption Problem");
+			throw new ModelException("error.internal.cryptography", "Encryption Problem");
 		}
 
 	}
 	
 	public void shareAPS(ObjectId apsId, ObjectId ownerId,
-			ObjectId targetId, byte[] publickey) throws ModelException {
+			ObjectId targetId, byte[] publickey) throws AppException {
 		SingleAPSManager apswrapper = getCache(ownerId).getAPS(apsId);
 		try {
 			apswrapper.addAccess(targetId, publickey);
 		} catch (EncryptionNotSupportedException e) {
-			throw new ModelException("Encryption Problem");
+			throw new ModelException("error.internal.cryptography", "Encryption Problem");
 		}
 
 	}
@@ -233,7 +234,7 @@ public class RecordSharing {
 
 	public void share(ObjectId who, ObjectId fromAPS, ObjectId toAPS,
 			Set<ObjectId> records, boolean withOwnerInformation)
-			throws ModelException {
+			throws AppException {
         AccessLog.debug("share: who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString()+" count="+(records!=null ? records.size() : "?"));
 		SingleAPSManager apswrapper = getCache(who).getAPS(toAPS);
 		List<Record> recordEntries = ComplexQueryManager.listInternal(getCache(who), fromAPS,
@@ -258,9 +259,9 @@ public class RecordSharing {
 	}
 
 	public void shareByQuery(ObjectId who, ObjectId fromAPS, ObjectId toAPS,
-			Map<String, Object> query) throws ModelException {
+			Map<String, Object> query) throws AppException {
         AccessLog.debug("shareByQuery who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString());
-		if (toAPS.equals(who)) throw new ModelException("Bad call to shareByQuery. target APS may not be user APS!");
+		if (toAPS.equals(who)) throw new ModelException("error.internal", "Bad call to shareByQuery. target APS may not be user APS!");
         SingleAPSManager apswrapper = getCache(who).getAPS(toAPS);
 
         query.remove("aps");
@@ -273,7 +274,7 @@ public class RecordSharing {
 	}
 
 	public void unshare(ObjectId who, ObjectId apsId, Set<ObjectId> records)
-			throws ModelException {
+			throws AppException {
 
 		SingleAPSManager apswrapper = getCache(who).getAPS(apsId);
 		List<Record> recordEntries = ComplexQueryManager.list(getCache(who), apsId,
@@ -297,7 +298,7 @@ public class RecordSharing {
 	}
 
 	public Record createStream(ObjectId executingPerson, ObjectId owner, ObjectId targetAPS, String content, String format,
-			boolean direct) throws ModelException {
+			boolean direct) throws AppException {
 		AccessLog.debug("Create Stream: who="+executingPerson.toString()+" content="+content+" format="+format+" direct="+direct+" into="+targetAPS);
 		Record result = new Record();
 		result._id = new ObjectId();
@@ -315,7 +316,7 @@ public class RecordSharing {
 	}
 
 	public ObjectId getStreamByFormatContent(ObjectId who, ObjectId apsId, String format, String content)
-			throws ModelException {
+			throws AppException {
 		List<Record> result = list(who, apsId,
 				CMaps.map("format", format)
 				     .map("content", content)
@@ -332,11 +333,11 @@ public class RecordSharing {
 						.map("streams", "only"));
 	}*/
 	
-	public BSONObject getMeta(ObjectId who, ObjectId apsId, String key) throws ModelException {
+	public BSONObject getMeta(ObjectId who, ObjectId apsId, String key) throws AppException {
 		return getCache(who).getAPS(apsId).getMeta(key);
 	}
 	
-	public void setMeta(ObjectId who, ObjectId apsId, String key, Map<String,Object> data) throws ModelException {
+	public void setMeta(ObjectId who, ObjectId apsId, String key, Map<String,Object> data) throws AppException {
 		getCache(who).getAPS(apsId).setMeta(key, data);
 	}
 
@@ -346,7 +347,7 @@ public class RecordSharing {
 	 */
 
 	public void addDocumentRecord(ObjectId owner, Record record,
-			Collection<Record> parts) throws ModelException {
+			Collection<Record> parts) throws AppException {
 		byte[] key = addRecordIntern(owner, record, false, null, false);
 		if (key == null)
 			throw new NullPointerException("no key");
@@ -357,19 +358,19 @@ public class RecordSharing {
 		}
 	}
 
-	public void addRecord(ObjectId executingPerson, Record record) throws ModelException {
+	public void addRecord(ObjectId executingPerson, Record record) throws AppException {
 		addRecordIntern(executingPerson, record, false, null, false);
 		record.key = null;
 	}
 	
-	public void addRecord(ObjectId executingPerson, Record record, FileInputStream data, String fileName, String contentType) throws DatabaseException, ModelException {
+	public void addRecord(ObjectId executingPerson, Record record, FileInputStream data, String fileName, String contentType) throws DatabaseException, AppException {
 		byte[] kdata = addRecordIntern(executingPerson, record, false, null, false);
 		SecretKey key = new SecretKeySpec(kdata, EncryptedAPS.KEY_ALGORITHM);
 		FileStorage.store(EncryptionUtils.encryptStream(key, data), record._id, fileName, contentType);
 		record.key = null;
 	}
 	
-	public void addRecord(ObjectId executingPerson, Record record, ObjectId alternateAps) throws ModelException {
+	public void addRecord(ObjectId executingPerson, Record record, ObjectId alternateAps) throws AppException {
 		addRecordIntern(executingPerson, record, false, alternateAps, false);
 		record.key = null;
 	}
@@ -379,10 +380,10 @@ public class RecordSharing {
 		record.key = null;
 	}*/
 	
-	public void deleteRecord(ObjectId executingPerson, RecordToken tk) throws ModelException {
+	public void deleteRecord(ObjectId executingPerson, RecordToken tk) throws AppException {
 		Record record = fetch(executingPerson, tk);
 		
-		if (!record.owner.equals(executingPerson)) throw new ModelException("Not owner of record!");
+		if (!record.owner.equals(executingPerson)) throw new ModelException("error.internal", "Not owner of record!");
 		APSCache cache = getCache(executingPerson);
 		Set<Circle> circles = Circle.getAllByOwner(executingPerson);
 		
@@ -414,7 +415,7 @@ public class RecordSharing {
 		Record.delete(record.owner, record._id);
 	}
 
-	private byte[] addRecordIntern(ObjectId executingPerson, Record record, boolean documentPart, ObjectId alternateAps, boolean upsert) throws ModelException {		
+	private byte[] addRecordIntern(ObjectId executingPerson, Record record, boolean documentPart, ObjectId alternateAps, boolean upsert) throws AppException {		
 		if (!record.isStream) {
 		  if (record.stream == null) {
 			  if (getCache(executingPerson).getAPS(record.owner, record.owner).eaps.isAccessable()) {		 
@@ -473,7 +474,7 @@ public class RecordSharing {
 			if (record.document != null) {
 				List<Record> doc = ComplexQueryManager.listInternal(getCache(executingPerson), record.owner, CMaps.map("_id", record.document.toString()), Sets.create("key"));
 				if (doc.size() == 1) record.key = doc.get(0).key;
-				else throw new ModelException("Document not identified");
+				else throw new ModelException("error.internal", "Document not identified");
 				documentPart = true;
 			} else  record.key = EncryptionUtils.generateKey(KEY_ALGORITHM).getEncoded();
 		}
@@ -482,7 +483,7 @@ public class RecordSharing {
 		try {
 		    if (!documentPart) Search.add(record.owner, "record", record._id, record.name, record.description);
 		} catch (SearchException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal", e);
 		}
 		
 		if (!record.direct && !documentPart) apswrapper.addPermission(record, alternateAps != null && !alternateAps.equals(record.owner) && record.stream == null);
@@ -505,7 +506,7 @@ public class RecordSharing {
 		return usedKey;	
 	}
 	
-	public void applyQuery(ObjectId userId, Map<String, Object> query, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws ModelException {
+	public void applyQuery(ObjectId userId, Map<String, Object> query, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws AppException {
 		AccessLog.debug("BEGIN APPLY QUERY");
 		
 		
@@ -535,7 +536,7 @@ public class RecordSharing {
 		
 	}
 	
-	public void applyQueries(ObjectId executingPerson, ObjectId userId, Record record, ObjectId useAps) throws ModelException {
+	public void applyQueries(ObjectId executingPerson, ObjectId userId, Record record, ObjectId useAps) throws AppException {
 		Member member = Member.getById(userId, Sets.create("queries"));
 		if (member.queries!=null) {
 			for (String key : member.queries.keySet()) {
@@ -560,11 +561,11 @@ public class RecordSharing {
 
 	public List<Record> list(ObjectId who, ObjectId apsId,
 			Map<String, Object> properties, Set<String> fields)
-			throws ModelException {
+			throws AppException {
 		return ComplexQueryManager.list(getCache(who), apsId, properties, fields);
 	}
 	
-	public Collection<RecordsInfo> info(ObjectId who, ObjectId aps, Map<String, Object> properties) throws ModelException {
+	public Collection<RecordsInfo> info(ObjectId who, ObjectId aps, Map<String, Object> properties) throws AppException {
 		// Only allow specific properties as results are materialized
 		Map<String, Object> nproperties = new HashMap<String, Object>();
 		nproperties.put("streams", "true");
@@ -574,17 +575,17 @@ public class RecordSharing {
 		return ComplexQueryManager.info(getCache(who), aps, nproperties);
 	}
 
-	public Record fetch(ObjectId who, RecordToken token) throws ModelException {
+	public Record fetch(ObjectId who, RecordToken token) throws AppException {
 		return fetch(who, token, RecordSharing.COMPLETE_DATA);
 	}
 	
-	public FileData fetchFile(ObjectId who, RecordToken token) throws ModelException {		
+	public FileData fetchFile(ObjectId who, RecordToken token) throws AppException {		
 		List<Record> result = ComplexQueryManager.listInternal(getCache(who), new ObjectId(token.apsId), CMaps.map("_id", new ObjectId(token.recordId)), Sets.create("key"));
 				
-		if (result.size() != 1) throw new ModelException("Unknown Record");
+		if (result.size() != 1) throw new ModelException("error.internal.notfound", "Unknown Record");
 		Record rec = result.get(0);
 		
-		if (rec.key == null) throw new ModelException("Missing key for record:"+rec._id.toString());
+		if (rec.key == null) throw new ModelException("error.internal", "Missing key for record:"+rec._id.toString());
 		FileData fileData = FileStorage.retrieve(new ObjectId(token.recordId));
 				
 		
@@ -594,7 +595,7 @@ public class RecordSharing {
 	}
 
 	public Record fetch(ObjectId who, RecordToken token, Set<String> fields)
-			throws ModelException {
+			throws AppException {
 		List<Record> result = list(who, new ObjectId(token.apsId),
 				CMaps.map("_id", new ObjectId(token.recordId)), fields);
 		if (result.isEmpty())
@@ -604,7 +605,7 @@ public class RecordSharing {
 	}
 
 	public Record fetch(ObjectId who, ObjectId aps, ObjectId recordId)
-			throws ModelException {
+			throws AppException {
 		List<Record> result = list(who, aps, CMaps.map("_id", recordId),
 				RecordSharing.COMPLETE_DATA);
 		if (result.isEmpty())
@@ -614,12 +615,12 @@ public class RecordSharing {
 	}
 
 	public Set<String> listRecordIds(ObjectId who, ObjectId apsId)
-			throws ModelException {
+			throws AppException {
 		return listRecordIds(who, apsId, RecordSharing.FULLAPS);
 	}
 
 	public Set<String> listRecordIds(ObjectId who, ObjectId apsId,
-			Map<String, Object> properties) throws ModelException {
+			Map<String, Object> properties) throws AppException {
 		List<Record> result = list(who, apsId, properties,
 				RecordSharing.INTERNALIDONLY);
 		Set<String> ids = new HashSet<String>();
@@ -628,7 +629,7 @@ public class RecordSharing {
 		return ids;
 	}
 	
-	public void changeFormatName(ObjectId owner, String oldName, String newContent, String newFormat) throws ModelException {
+	public void changeFormatName(ObjectId owner, String oldName, String newContent, String newFormat) throws AppException {
 		List<Record> records = ComplexQueryManager.listInternal(getCache(owner), owner, CMaps.map("format", oldName).map("owner", "self"), RecordSharing.COMPLETE_DATA);
 		List<Record> patchedRecords = new ArrayList<Record>();
 		for (Record record : records) {
@@ -643,12 +644,12 @@ public class RecordSharing {
 		patch(owner, records, patchedRecords);		
 	}
 	
-	public void patch(ObjectId owner, List<Record> old, List<Record> patched) throws ModelException {
+	public void patch(ObjectId owner, List<Record> old, List<Record> patched) throws AppException {
 		Iterator<Record> oldIt = old.iterator();
 		for (Record newRecord : patched) {
 			Record oldRecord = oldIt.next();
-			if (!newRecord._id.equals(oldRecord._id)) throw new ModelException("Patch error: Bad record _ids");
-			if (!oldRecord.owner.equals(owner)) throw new ModelException("Can only patch own records.");
+			if (!newRecord._id.equals(oldRecord._id)) throw new ModelException("error.internal", "Patch error: Bad record _ids");
+			if (!oldRecord.owner.equals(owner)) throw new ModelException("error.internal", "Can only patch own records.");
 			ObjectId sourceAPS =  oldRecord.stream != null ? oldRecord.stream : owner;
 			getCache(owner).getAPS(sourceAPS, owner).removePermission(oldRecord);
 			addRecordIntern(owner, newRecord, false, null, true);			

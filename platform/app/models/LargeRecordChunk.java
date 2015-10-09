@@ -6,6 +6,7 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 
 import utils.collections.ChainedMap;
+import utils.exceptions.ModelException;
 
 import com.mongodb.DBObject;
 

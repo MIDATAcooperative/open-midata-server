@@ -11,7 +11,7 @@ angular.module('services')
 			server.get(jsRoutes.controllers.Users.getCurrentUser().url).
 			success(function(userId) {	
 				console.log("GOT USERID");
-				var data = {"properties": { "_id" : userId }, "fields": ["email", "firstname", "sirname", "visualizations", "apps", "midataID", "name"] };
+				var data = {"properties": { "_id" : userId }, "fields": ["email", "firstname", "lastname", "visualizations", "apps", "midataID", "name"] };
 				server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data))
 				.then(function(data) {
 				   session.user = data.data[0];

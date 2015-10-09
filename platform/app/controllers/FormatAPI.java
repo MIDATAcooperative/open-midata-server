@@ -5,10 +5,10 @@ import java.util.Collection;
 import actions.APICall;
 
 import models.FormatGroup;
-import models.ModelException;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+import utils.exceptions.ModelException;
 
 public class FormatAPI extends Controller {
 

@@ -7,6 +7,7 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 
 import utils.collections.ChainedMap;
+import utils.exceptions.ModelException;
 import utils.search.Search;
 import utils.search.SearchException;
 
@@ -54,7 +55,7 @@ public class Message extends Model implements Comparable<Message> {
 			try {
 				Search.add(receiver, "message", message._id, message.title, message.content);
 			} catch (SearchException e) {
-				throw new ModelException(e);
+				throw new ModelException("error.internal", e);
 			}
 		}
 	}

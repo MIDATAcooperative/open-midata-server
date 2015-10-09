@@ -1,12 +1,12 @@
 package actions;
 
-import models.ModelException;
 import play.Play;
 import play.libs.F;
 import play.libs.Json;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
+import utils.exceptions.ModelException;
 import utils.json.JsonValidation.JsonValidationException;
 
 import com.fasterxml.jackson.databind.JsonNode;

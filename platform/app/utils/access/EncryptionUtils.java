@@ -14,7 +14,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
 import models.AccessPermissionSet;
-import models.ModelException;
 import models.enums.APSSecurityLevel;
 
 import org.bson.BSON;
@@ -25,6 +24,8 @@ import controllers.KeyManager;
 
 import utils.auth.CodeGenerator;
 import utils.auth.EncryptionNotSupportedException;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 
 public class EncryptionUtils {
 	
@@ -52,15 +53,15 @@ public class EncryptionUtils {
 	    	return BSON.decode(bson);
 	    			    	
 		} catch (InvalidKeyException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal.cryptography", e);
 		} catch (NoSuchPaddingException e2) {
-			throw new ModelException(e2);
+			throw new ModelException("error.internal.cryptography",e2);
 		} catch (NoSuchAlgorithmException e3) {
-			throw new ModelException(e3);
+			throw new ModelException("error.internal.cryptography",e3);
 		} catch (BadPaddingException e4) {
-			throw new ModelException(e4);
+			throw new ModelException("error.internal.cryptography",e4);
 		} catch (IllegalBlockSizeException e5) {
-			throw new ModelException(e5);
+			throw new ModelException("error.internal.cryptography",e5);
 		} 
 
 	}
@@ -75,15 +76,15 @@ public class EncryptionUtils {
 							
 	    	return cipherText;
 		} catch (InvalidKeyException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal.cryptography", e);
 		} catch (NoSuchPaddingException e2) {
-			throw new ModelException(e2);
+			throw new ModelException("error.internal.cryptography", e2);
 		} catch (NoSuchAlgorithmException e3) {
-			throw new ModelException(e3);
+			throw new ModelException("error.internal.cryptography", e3);
 		} catch (BadPaddingException e4) {
-			throw new ModelException(e4);
+			throw new ModelException("error.internal.cryptography", e4);
 		} catch (IllegalBlockSizeException e5) {
-			throw new ModelException(e5);
+			throw new ModelException("error.internal.cryptography", e5);
 		} 
 	
 	}
@@ -96,11 +97,11 @@ public class EncryptionUtils {
 		    return new CipherInputStream(in, c);
 								    	
 		} catch (InvalidKeyException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal.cryptography", e);
 		} catch (NoSuchPaddingException e2) {
-			throw new ModelException(e2);
+			throw new ModelException("error.internal.cryptography", e2);
 		} catch (NoSuchAlgorithmException e3) {
-			throw new ModelException(e3);
+			throw new ModelException("error.internal.cryptography", e3);
 		}
 	
 	}
@@ -113,16 +114,16 @@ public class EncryptionUtils {
 		    return new CipherInputStream(in, c);
 								    	
 		} catch (InvalidKeyException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal.cryptography", e);
 		} catch (NoSuchPaddingException e2) {
-			throw new ModelException(e2);
+			throw new ModelException("error.internal.cryptography", e2);
 		} catch (NoSuchAlgorithmException e3) {
-			throw new ModelException(e3);
+			throw new ModelException("error.internal.cryptography", e3);
 		}
 	
 	}
 	
-	public static void addKey(ObjectId target, EncryptedAPS eaps) throws ModelException, EncryptionNotSupportedException {
+	public static void addKey(ObjectId target, EncryptedAPS eaps) throws AppException, EncryptionNotSupportedException {
 		if (eaps.getSecurityLevel().equals(APSSecurityLevel.NONE) || eaps.getAPSKey() == null) {
 			if (target.equals(eaps.getOwner())) {
 				eaps.setKey("owner", eaps.getOwner().toByteArray());

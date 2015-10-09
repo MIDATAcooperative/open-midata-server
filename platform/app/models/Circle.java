@@ -14,13 +14,14 @@ import utils.collections.Sets;
 import utils.db.DatabaseException;
 import utils.db.NotMaterialized;
 import utils.db.OrderOperations;
+import utils.exceptions.ModelException;
 import utils.search.Search;
 import utils.search.SearchException;
 
 public class Circle extends Consent implements Comparable<Circle> {
 		
 	public int order;
-	public @NotMaterialized String ownerName;
+	
 	//public ObjectId aps;
 
 	@Override
@@ -73,7 +74,7 @@ public class Circle extends Consent implements Comparable<Circle> {
 		try {
 			Search.add(this.owner, "circle", this._id, this.name);
 		} catch (SearchException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal", e);
 		}
 	}
 
@@ -86,7 +87,7 @@ public class Circle extends Consent implements Comparable<Circle> {
 		try {
 			OrderOperations.decrement(collection, ownerId, circle.order, 0);
 		} catch (DatabaseException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal", e);
 		}
 
 		// also remove from search index

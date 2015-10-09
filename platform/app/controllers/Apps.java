@@ -9,7 +9,6 @@ import java.util.Set;
 
 import models.Plugin;
 import models.Member;
-import models.ModelException;
 import models.Record;
 import models.User;
 import models.enums.UserRole;
@@ -31,10 +30,12 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.auth.AnyRoleSecured;
 import utils.auth.AppToken;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
+import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -136,7 +137,7 @@ public class Apps extends Controller {
 
 		// put together url to load in iframe
 		String appServer = "https://" + Play.application().configuration().getString("apps.server") + "/" + app.filename;
-		if (role.equals("developer") && userId.equals(app.creator) && app.developmentServer != null && app.developmentServer.length()> 0) appServer = app.developmentServer; 
+		if (role.equals(UserRole.DEVELOPER.toString()) && userId.equals(app.creator) && app.developmentServer != null && app.developmentServer.length()> 0) appServer = app.developmentServer; 
 		String url = app.url.replace(":authToken", authToken);
 		return ok(appServer  + "/" + url);
 	}
@@ -163,7 +164,7 @@ public class Apps extends Controller {
 
 		// put together url to load in iframe
 		String appServer = "https://" + Play.application().configuration().getString("apps.server") + "/" + app.filename;
-		if (role.equals("developer") && userId.equals(app.creator) && app.developmentServer != null && app.developmentServer.length()> 0) appServer = app.developmentServer;
+		if (role.equals(UserRole.DEVELOPER.toString()) && userId.equals(app.creator) && app.developmentServer != null && app.developmentServer.length()> 0) appServer = app.developmentServer;
 		String url = app.previewUrl.replace(":authToken", authToken);
 		return ok(appServer  + "/" + url);
 	}

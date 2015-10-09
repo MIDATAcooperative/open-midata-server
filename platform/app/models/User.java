@@ -20,6 +20,7 @@ import utils.PasswordHash;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.db.NotMaterialized;
+import utils.exceptions.ModelException;
 import utils.search.Search;
 import utils.search.Search.Type;
 import utils.search.SearchException;
@@ -82,9 +83,9 @@ public class User extends Model implements Comparable<User> {
 		try {
 			return PasswordHash.validatePassword(givenPassword, savedPassword);
 		} catch (NoSuchAlgorithmException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal", e);
 		} catch (InvalidKeySpecException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal", e);
 		}
 	}
 
@@ -92,9 +93,9 @@ public class User extends Model implements Comparable<User> {
 		try {
 			return PasswordHash.createHash(password);
 		} catch (NoSuchAlgorithmException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal", e);
 		} catch (InvalidKeySpecException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal", e);
 		}
 	}
 	

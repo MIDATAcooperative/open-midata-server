@@ -10,6 +10,7 @@ import java.util.Set;
 
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
+import utils.exceptions.ModelException;
 
 public class FormatGroup extends Model {
 	

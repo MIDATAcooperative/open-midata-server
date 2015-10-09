@@ -7,7 +7,6 @@ import java.util.Set;
 
 import models.History;
 import models.Member;
-import models.ModelException;
 import models.ParticipationCode;
 import models.Research;
 import models.Study;
@@ -26,6 +25,8 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 
+import utils.auth.AnyRoleSecured;
+import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -35,7 +36,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import controllers.APIController;
-import controllers.AnyRoleSecured;
 
 public class Studies extends APIController {
 	

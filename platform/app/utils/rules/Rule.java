@@ -3,7 +3,8 @@ package utils.rules;
 import java.util.List;
 import java.util.Map;
 
-import models.ModelException;
+import utils.exceptions.ModelException;
+
 import models.Record;
 
 public interface Rule {

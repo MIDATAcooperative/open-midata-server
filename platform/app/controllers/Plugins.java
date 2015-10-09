@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import models.ModelException;
 import models.Member;
 import models.Plugin;
 import models.User;
@@ -30,9 +29,12 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.auth.AnyRoleSecured;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -72,7 +74,7 @@ public class Plugins extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result install(String visualizationIdString) throws ModelException {
+	public static Result install(String visualizationIdString) throws AppException {
 		JsonNode json = request().body().asJson();
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId visualizationId = new ObjectId(visualizationIdString);

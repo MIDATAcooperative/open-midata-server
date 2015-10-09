@@ -2,7 +2,6 @@ package controllers;
 
 import java.util.Map;
 
-import models.ModelException;
 import models.Space;
 
 import org.bson.BSONObject;
@@ -14,8 +13,11 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.auth.AnyRoleSecured;
 import utils.auth.SpaceToken;
 import utils.collections.Sets;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -27,7 +29,7 @@ public class PortalConfig extends Controller {
 	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result getConfig() throws JsonValidationException, ModelException {
+	public static Result getConfig() throws JsonValidationException, AppException {
 	
 		ObjectId userId = new ObjectId(request().username());
 		
@@ -43,7 +45,7 @@ public class PortalConfig extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result setConfig() throws JsonValidationException, ModelException {
+	public static Result setConfig() throws JsonValidationException, AppException {
 		ObjectId userId = new ObjectId(request().username());
 
 		// validate json

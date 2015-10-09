@@ -20,6 +20,7 @@ import utils.CreateDBObjects;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.db.DBLayer;
+import utils.exceptions.ModelException;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;

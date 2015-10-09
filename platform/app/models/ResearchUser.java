@@ -12,6 +12,7 @@ import org.bson.types.ObjectId;
 
 import utils.DateTimeUtils;
 import utils.collections.CMaps;
+import utils.exceptions.ModelException;
 import utils.search.Search;
 import utils.search.SearchException;
 import utils.search.Search.Type;

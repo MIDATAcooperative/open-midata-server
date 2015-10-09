@@ -9,7 +9,6 @@ import models.AccessPermissionSet;
 import models.Admin;
 import models.Developer;
 
-import models.ModelException;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.Gender;
@@ -22,6 +21,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import utils.auth.CodeGenerator;
 import utils.collections.Sets;
+import utils.exceptions.ModelException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
@@ -76,7 +76,7 @@ public class Developers extends APIController {
 		
 		session().clear();
 		session("id", user._id.toString());
-		session("role", "developer");		
+		session("role", UserRole.DEVELOPER.toString());		
 		
 		return ok();
 	}
@@ -103,7 +103,7 @@ public class Developers extends APIController {
 				KeyManager.instance.unlock(adminuser._id, "12345");
 				session().clear();
 				session("id", adminuser._id.toString());
-				session("role", "admin");		
+				session("role", UserRole.ADMIN.toString());		
 				return ok("admin");
 			}
 		}
@@ -125,7 +125,7 @@ public class Developers extends APIController {
 		// user authenticated
 		session().clear();
 		session("id", user._id.toString());
-		session("role", "developer");		
+		session("role", UserRole.DEVELOPER.toString());		
 		return ok();
 	}
 }

@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import models.ModelException;
 import models.Plugin;
 import models.RecordsInfo;
 import models.Space;
@@ -25,8 +24,11 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.auth.AnyRoleSecured;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -40,7 +42,7 @@ public class Tasking extends Controller {
 		// validate json
 		JsonNode json = request().body().asJson();
 		ObjectId userId = new ObjectId(request().username());
-		JsonValidation.validate(json, "owner", "plugin", "shareBackTo", "context", "title", "description", "pluginQuery", "frequency");
+		JsonValidation.validate(json, "owner", "plugin", "shareBackTo", "context", "title", "description", "pluginQuery", "confirmQuery", "frequency");
 		
 		Task task = new Task();
 		task._id = new ObjectId();
@@ -54,6 +56,7 @@ public class Tasking extends Controller {
 		task.title = JsonValidation.getString(json, "title");
 		task.description = JsonValidation.getString(json, "description");
 		task.pluginQuery = JsonExtraction.extractMap(json.get("pluginQuery"));
+		task.confirmQuery = JsonExtraction.extractMap(json.get("confirmQuery"));
 		task.frequency = JsonValidation.getEnum(json, "frequency", Frequency.class);
 		task.done = false;	
 		Task.add(task);		
@@ -61,7 +64,7 @@ public class Tasking extends Controller {
 		return ok();
 	}
 	
-	public static void check(ObjectId who, Task task) throws ModelException {
+	public static void check(ObjectId who, Task task) throws AppException {
 		Date dateLimit = new Date(System.currentTimeMillis());
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -83,7 +86,7 @@ public class Tasking extends Controller {
 	
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result list() throws ModelException {
+	public static Result list() throws AppException {
 		
 		ObjectId userId = new ObjectId(request().username());
 		
@@ -100,7 +103,7 @@ public class Tasking extends Controller {
 	
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result execute(String taskIdStr) throws ModelException {
+	public static Result execute(String taskIdStr) throws AppException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId taskId = new ObjectId(taskIdStr);
 		

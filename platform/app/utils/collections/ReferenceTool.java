@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import utils.exceptions.ModelException;
+
 import models.Circle;
+import models.Consent;
 import models.Member;
-import models.ModelException;
 import models.Record;
 
 public class ReferenceTool {
@@ -45,10 +47,10 @@ public class ReferenceTool {
 		}
 	}
 	
-	public static void resolveOwners(Collection<Circle> circles, boolean owners) throws ModelException {
+	public static void resolveOwners(Collection<? extends Consent> circles, boolean owners) throws ModelException {
 		Map<String, String> members = new HashMap<String, String>();		
 		
-		for (Circle circle : circles) {
+		for (Consent circle : circles) {
 			if (owners && (circle.owner != null)) {
 				String key = circle.owner.toString();
 				String name = members.get(key);

@@ -9,9 +9,9 @@ import java.util.Set;
 
 import models.FilterRule;
 import models.Member;
-import models.ModelException;
 import models.Plugin;
 import models.Space;
+import models.enums.UserRole;
 
 import org.bson.BSONObject;
 import org.bson.types.ObjectId;
@@ -22,12 +22,15 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.auth.AnyRoleSecured;
 import utils.auth.AppToken;
 import utils.auth.SpaceToken;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -42,7 +45,7 @@ public class Spaces extends Controller {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result get() throws JsonValidationException, ModelException {
+	public static Result get() throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		ObjectId userId = new ObjectId(request().username());
@@ -73,7 +76,7 @@ public class Spaces extends Controller {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result add() throws JsonValidationException, ModelException {
+	public static Result add() throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -189,7 +192,7 @@ public class Spaces extends Controller {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result addRecords(String spaceIdString) throws JsonValidationException, ModelException {
+	public static Result addRecords(String spaceIdString) throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -245,7 +248,7 @@ public class Spaces extends Controller {
 		
 		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "filename", "url", "creator", "developmentServer"));
 
-		boolean testing = session().get("role").equals("developer") && visualization.creator.equals(userId) && visualization.developmentServer != null && visualization.developmentServer.length()> 0;
+		boolean testing = session().get("role").equals(UserRole.DEVELOPER.toString()) && visualization.creator.equals(userId) && visualization.developmentServer != null && visualization.developmentServer.length()> 0;
 		
 		if (visualization.type.equals("visualization")) {
 			// create encrypted authToken
@@ -284,7 +287,7 @@ public class Spaces extends Controller {
 		
 		if (visualization.previewUrl == null || visualization.previewUrl.equals("")) return ok();
 
-		boolean testing = session().get("role").equals("developer") && visualization.creator.equals(userId) && visualization.developmentServer != null && visualization.developmentServer.length()> 0;
+		boolean testing = session().get("role").equals(UserRole.DEVELOPER.toString()) && visualization.creator.equals(userId) && visualization.developmentServer != null && visualization.developmentServer.length()> 0;
 		if (visualization.type.equals("visualization")) {
 		// create encrypted authToken
 			SpaceToken spaceToken = new SpaceToken(space.aps, userId);

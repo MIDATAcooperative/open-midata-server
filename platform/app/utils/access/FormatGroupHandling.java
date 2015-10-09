@@ -4,9 +4,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
+
 import models.FormatGroup;
 import models.ContentInfo;
-import models.ModelException;
 import models.Record;
 
 public class FormatGroupHandling extends QueryManager {
@@ -21,7 +23,7 @@ public class FormatGroupHandling extends QueryManager {
 	
 	@Override
 	protected List<Record> lookup(List<Record> input, Query q)
-			throws ModelException {
+			throws AppException {
 		Set<String> contents = prepareFilter(q);
 		if (contents != null) q.getProperties().put("content/*", contents);
 		return next.lookup(input, q);
@@ -74,14 +76,14 @@ public class FormatGroupHandling extends QueryManager {
 	}
 
 	@Override
-	protected List<Record> query(Query q) throws ModelException {
+	protected List<Record> query(Query q) throws AppException {
 		Set<String> contents = prepareFilter(q);
 		if (contents != null) q.getProperties().put("content/*", contents);			
 		return next.query(q);		
 	}
 
 	@Override
-	protected List<Record> postProcess(List<Record> records, Query q) throws ModelException {
+	protected List<Record> postProcess(List<Record> records, Query q) throws AppException {
 		List<Record> result = next.postProcess(records, q);
 		if (q.returns("group")) {
 			for (Record record : result) {

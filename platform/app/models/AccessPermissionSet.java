@@ -18,6 +18,7 @@ import utils.collections.Sets;
 import utils.db.DBLayer;
 import utils.db.DatabaseException;
 import utils.db.LostUpdateException;
+import utils.exceptions.ModelException;
 import utils.search.Search;
 import utils.search.Search.Type;
 
@@ -48,7 +49,7 @@ public class AccessPermissionSet extends Model {
 		try {
 		   DBLayer.secureUpdate(this, collection, "version", "permissions", "unmerged");
 		} catch (DatabaseException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal.db", e);
 		}
 	}
 	
@@ -56,7 +57,7 @@ public class AccessPermissionSet extends Model {
 		try {
 		   DBLayer.secureUpdate(this, collection, "version", "encrypted", "unmerged");
 		} catch (DatabaseException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal.db", e);
 		}
 	}
 	
@@ -64,7 +65,7 @@ public class AccessPermissionSet extends Model {
 		try {
 		   DBLayer.secureUpdate(this, collection, "version", "keys");
 		} catch (DatabaseException e) {
-				throw new ModelException(e);
+				throw new ModelException("error.internal.db", e);
 		}		
 	}
 	

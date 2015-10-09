@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import models.ModelException;
 import models.Record;
 import models.Member;
 import models.Visualization;
@@ -14,6 +13,7 @@ import models.Visualization;
 import org.bson.types.ObjectId;
 
 import utils.db.DBLayer;
+import utils.exceptions.ModelException;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;

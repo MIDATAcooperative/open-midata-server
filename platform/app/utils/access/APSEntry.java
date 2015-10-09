@@ -7,11 +7,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import models.ContentInfo;
-import models.ModelException;
 import models.Record;
 
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
+
+import utils.exceptions.ModelException;
 
 import com.mongodb.BasicDBList;
 

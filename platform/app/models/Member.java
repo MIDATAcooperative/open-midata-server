@@ -11,6 +11,7 @@ import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
+import utils.exceptions.ModelException;
 import utils.search.Search;
 import utils.search.SearchException;
 import utils.search.Search.Type;
@@ -80,7 +81,7 @@ public class Member extends User {
 		try {
 			Search.add(Type.USER, user._id, user.firstname + " " + user.lastname, user.email);
 		} catch (SearchException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal", e);
 		}
 	}
 

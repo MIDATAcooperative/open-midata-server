@@ -13,6 +13,7 @@ import utils.collections.ChainedMap;
 import utils.db.DBLayer;
 import utils.db.DatabaseException;
 import utils.db.LostUpdateException;
+import utils.exceptions.ModelException;
 import utils.search.Search;
 import utils.search.SearchException;
 import utils.search.Search.Type;
@@ -90,7 +91,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		try {
 			   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","url","developmentServer" );
 		} catch (DatabaseException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal.db", e);
 		}
 	}
 
@@ -102,7 +103,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		try {
 			Search.add(Type.VISUALIZATION, plugin._id, plugin.name, plugin.description);
 		} catch (SearchException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal.db", e);
 		}
 	}
 

@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.Set;
 
 import models.Circle;
-import models.ModelException;
 import models.Member;
 import models.User;
+import models.enums.UserRole;
 
 import org.bson.types.ObjectId;
 
@@ -21,10 +21,15 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.DateTimeUtils;
+import utils.auth.AnyRoleSecured;
+import utils.auth.Rights;
+import utils.auth.MemberSecured;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -38,13 +43,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
-public class Users extends Controller {
+public class Users extends APIController {
 	
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result get() {
+	public static Result get() throws AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		try {
@@ -56,6 +61,24 @@ public class Users extends Controller {
 		// get users
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+		
+		boolean postcheck = false;
+		
+		if (properties.containsKey("_id") && properties.get("_id").toString().equals(request().username())) {
+		  Rights.chk("Users.getSelf", getRole(), properties, fields);
+		} else if (properties.containsKey("role")) {
+		  UserRole role = UserRole.valueOf(properties.get("role").toString());
+		  if (Rights.existsAction("Users.get"+role, getRole())) {
+		    Rights.chk("Users.get"+role.toString(), getRole(), properties, fields);
+		  } else {
+			Rights.chk("Users.get", getRole(), properties, fields);
+		  }
+		} else if (fields.contains("role")) {
+			// Check later
+			postcheck = true;
+		} else {		
+		  Rights.chk("Users.get", getRole(), properties, fields);
+		}
 
 		if (fields.contains("name")) { fields.add("firstname"); fields.add("lastname"); }
 		
@@ -64,6 +87,12 @@ public class Users extends Controller {
 			users = new ArrayList<Member>(Member.getAll(properties, fields));
 		} catch (ModelException e) {
 			return badRequest(e.getMessage());
+		}
+		
+		if (postcheck) {
+			for (Member mem : users) {
+				Rights.chk("Users.get"+mem.getRole().toString(), getRole(), properties, fields);
+			}
 		}
 		
 		if (fields.contains("name")) {
@@ -77,7 +106,7 @@ public class Users extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result getUsers() throws JsonValidationException, ModelException {
+	public static Result getUsers() throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 	
@@ -86,6 +115,8 @@ public class Users extends Controller {
 		// get users
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+		
+		Rights.chk("Users.getUsers", getRole(), properties, fields);
 		
 		if (fields.contains("name")) { fields.add("firstname"); fields.add("lastname"); }
 		
@@ -105,7 +136,7 @@ public class Users extends Controller {
 		return ok(Json.toJson(new ObjectId(request().username())));
 	}
 
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(MemberSecured.class)
 	@APICall
 	public static Result search(String query) {
 		// TODO use caching/incremental retrieval of results (scrolls)
@@ -270,7 +301,7 @@ public class Users extends Controller {
 	/**
 	 * Clear the list of pushed records of the current user.
 	 */
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(MemberSecured.class)
 	@APICall
 	public static Result clearPushed() {
 		ObjectId userId = new ObjectId(request().username());
@@ -286,7 +317,7 @@ public class Users extends Controller {
 	/**
 	 * Clear the list of shared records of the current user.
 	 */
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(MemberSecured.class)
 	@APICall
 	public static Result clearShared() {
 		ObjectId userId = new ObjectId(request().username());

@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 import utils.db.DBLayer;
 import utils.db.DatabaseConversionException;
 import utils.db.DatabaseException;
+import utils.exceptions.ModelException;
 
 public abstract class Model implements JsonSerializable {
 
@@ -33,7 +34,7 @@ public abstract class Model implements JsonSerializable {
 		try {
 			DBLayer.insert(collection, modelObject);
 		} catch (DatabaseException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal.db", e);
 		}
 	}
 	
@@ -41,7 +42,7 @@ public abstract class Model implements JsonSerializable {
 		try {
 			DBLayer.upsert(collection, modelObject);
 		} catch (DatabaseException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal.db", e);
 		}
 	}
 
@@ -49,7 +50,7 @@ public abstract class Model implements JsonSerializable {
 		try {
 			DBLayer.delete(modelClass, collection, properties);
 		} catch (DatabaseException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal.db", e);
 		}
 	}
 
@@ -57,7 +58,7 @@ public abstract class Model implements JsonSerializable {
 		try {
 			return DBLayer.exists(modelClass, collection, properties);
 		} catch (DatabaseException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal.db", e);
 		}
 	}
 
@@ -66,7 +67,7 @@ public abstract class Model implements JsonSerializable {
 		try {
 			return DBLayer.get(modelClass, collection, properties, fields);
 		} catch (DatabaseException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal.db", e);
 		}
 	}
 
@@ -75,7 +76,7 @@ public abstract class Model implements JsonSerializable {
 		try {
 			return DBLayer.getAll(modelClass, collection, properties, fields);
 		} catch (DatabaseException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal.db", e);
 		}
 	}
 
@@ -83,7 +84,7 @@ public abstract class Model implements JsonSerializable {
 		try {
 			DBLayer.set(model, collection, modelId, field, value);
 		} catch (DatabaseException e) {
-			throw new ModelException(e);
+			throw new ModelException("error.internal.db", e);
 		}
 	}
 

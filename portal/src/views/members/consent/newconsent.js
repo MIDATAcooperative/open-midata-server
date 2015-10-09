@@ -29,9 +29,10 @@ angular.module('portal')
 				
 				$scope.consent = $scope.myform = data.data[0];				
 				views.setView("1", { aps : $state.params.consentId, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowRemove : true, allowAdd : true, type : "circles" });
-								
+
+                var role = ($scope.consent.type === "CIRCLE") ? "MEMBER" : "PROVIDER";				
 				angular.forEach($scope.consent.authorized, function(p) {					
-					$scope.authpersons.push(session.resolve(p, function() { return users.getMembers({ "_id" : p },users.ALLPUBLIC ); }));
+					$scope.authpersons.push(session.resolve(p, function() { return users.getMembers({ "_id" : p, "role" : role },users.ALLPUBLIC ); }));
 				});				
 				
 			});

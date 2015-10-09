@@ -12,6 +12,7 @@ import org.bson.types.ObjectId;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
+import utils.exceptions.ModelException;
 
 public class MemberKey extends Consent {
 		

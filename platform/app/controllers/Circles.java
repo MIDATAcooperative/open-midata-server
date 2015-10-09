@@ -15,7 +15,6 @@ import models.Consent;
 import models.HCRelated;
 import models.Member;
 import models.MemberKey;
-import models.ModelException;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 
@@ -27,10 +26,14 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.PasswordHash;
+import utils.auth.AnyRoleSecured;
+import utils.auth.MemberSecured;
 import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -44,7 +47,7 @@ public class Circles extends Controller {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(MemberSecured.class)
 	public static Result get() throws JsonValidationException, ModelException {
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -65,7 +68,7 @@ public class Circles extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(MemberSecured.class)
 	public static Result listConsents() throws JsonValidationException, ModelException {
 		// validate json
 		JsonNode json = request().body().asJson();					
@@ -78,7 +81,13 @@ public class Circles extends Controller {
 
 		
 		ObjectId owner = new ObjectId(request().username());
-		consents = new ArrayList<Consent>(Consent.getAllByOwner(owner, properties, fields));
+		if (properties.containsKey("member")) {
+		  consents = new ArrayList<Consent>(Consent.getAllByAuthorized(owner));
+		} else {
+		  consents = new ArrayList<Consent>(Consent.getAllByOwner(owner, properties, fields));
+		}
+		
+		if (fields.contains("ownerName")) ReferenceTool.resolveOwners(consents, true);
 		
 		//Collections.sort(circles);
 		return ok(Json.toJson(consents));
@@ -89,7 +98,7 @@ public class Circles extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result add() throws JsonValidationException, ModelException {
+	public static Result add() throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -135,9 +144,9 @@ public class Circles extends Controller {
 					return badRequest("Please choose a different passcode!");
 				}
 			}  catch (NoSuchAlgorithmException e) {
-				throw new ModelException(e);
+				throw new ModelException("error.internal.cryptography", e);
 			} catch (InvalidKeySpecException e) {
-				throw new ModelException(e);
+				throw new ModelException("error.internal.cryptography", e);
 			}
 		}
 			
@@ -164,7 +173,7 @@ public class Circles extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result joinByPasscode() throws JsonValidationException, ModelException {
+	public static Result joinByPasscode() throws JsonValidationException, AppException {
 		// validate json
 		ObjectId executorId = new ObjectId(request().username());
 		JsonNode json = request().body().asJson();		
@@ -185,14 +194,14 @@ public class Circles extends Controller {
 		
 		   return ok(Json.toJson(consent));
 		} catch (NoSuchAlgorithmException e) {
-	    	throw new ModelException(e);
+	    	throw new ModelException("error.internal.cryptography", e);
 	    } catch (InvalidKeySpecException e) {
-	    	throw new ModelException(e);
+	    	throw new ModelException("error.internal.cryptography", e);
 	    }
 	}
 
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(MemberSecured.class)
 	public static Result delete(String circleIdString) throws JsonValidationException, ModelException {
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
@@ -222,7 +231,7 @@ public class Circles extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result addUsers(String circleIdString) throws JsonValidationException, ModelException {
+	public static Result addUsers(String circleIdString) throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -248,7 +257,7 @@ public class Circles extends Controller {
 		return ok();
 	}
 
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(MemberSecured.class)
 	@APICall
 	public static Result removeMember(String circleIdString, String memberIdString) throws JsonValidationException, ModelException {
 		// validate request
@@ -280,7 +289,7 @@ public class Circles extends Controller {
 		return null;
 	}
 	
-	public static void setQuery(ObjectId userId, ObjectId apsId, Map<String, Object> query) throws ModelException {
+	public static void setQuery(ObjectId userId, ObjectId apsId, Map<String, Object> query) throws AppException {
 		Member member = Member.getById(userId, Sets.create("queries"));
 		if (member.queries==null) {
 			member.queries = new HashMap<String, Map<String, Object>>();

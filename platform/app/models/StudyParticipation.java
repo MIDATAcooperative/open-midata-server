@@ -13,6 +13,7 @@ import org.bson.types.ObjectId;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
+import utils.exceptions.ModelException;
 
 public class StudyParticipation extends Consent {
 	
@@ -43,7 +44,7 @@ public class StudyParticipation extends Consent {
 	}
 	
 	public static Set<StudyParticipation> getAllByMember(ObjectId member, Set<String> fields) throws ModelException {
-		return Model.getAll(StudyParticipation.class, collection, CMaps.map("owner", member), fields);
+		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("owner", member), fields);
 	}
 	
 	public static Set<StudyParticipation> getParticipantsByStudy(ObjectId study, Set<String> fields) throws ModelException {

@@ -3,19 +3,21 @@
   <div class="body">   
      <div ng-if="!task.done" class="pull-left themeicon"><img src="/images/icons/task-todo.png"></div> 
      <div ng-if="task.done" class="pull-left themeicon"><img src="/images/icons/task-done.png"></div>
+       <p class="lead">{{ task.description }}</p>
+       <div class="clearfix"></div>
        <div class="row">
 		  <p class="col-sm-3">Created by:</p>
-	  	  <p class="col-sm-9">{{ creator.firstname }} {{ creator.lastname }}</p>
+	  	  <p class="col-sm-9"><b>{{ creator.firstname }} {{ creator.lastname }}</b></p>
 	   </div>
 	   <div class="row">
 		  <p class="col-sm-3">How often:</p>
-	  	  <p class="col-sm-9">{{ task.frequency }}</p>
+	  	  <p class="col-sm-9"><b>{{ task.frequency }}</b></p>
 	   </div>
 	   <div class="row">
 		  <p class="col-sm-3">Plugin:</p>
-	  	  <p class="col-sm-9">{{ plugin.name }}</p>
+	  	  <p class="col-sm-9"><b>{{ plugin.name }}</b></p>
 	   </div>
-	   <p>{{ task.description }}</p>	   
+	   	   
   </div>
   <div class="footer"><button ng-click="showDetails(task);" class="btn btn-primary">Do now</button></div>
   </loader>

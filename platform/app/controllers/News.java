@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import models.ModelException;
 import models.NewsItem;
 import models.Member;
 
@@ -18,15 +17,17 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.DateTimeUtils;
+import utils.auth.MemberSecured;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
+import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-@Security.Authenticated(Secured.class)
+@Security.Authenticated(MemberSecured.class)
 public class News extends Controller {
 
 

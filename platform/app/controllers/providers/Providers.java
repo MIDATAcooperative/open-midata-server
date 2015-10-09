@@ -19,7 +19,6 @@ import models.HPUser;
 import models.HealthcareProvider;
 import models.Member;
 import models.MemberKey;
-import models.ModelException;
 import models.Space;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
@@ -28,9 +27,11 @@ import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.auth.CodeGenerator;
+import utils.auth.ProviderSecured;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.exceptions.ModelException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
@@ -42,7 +43,6 @@ import actions.APICall;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
-import controllers.providers.ProviderSecured;
 import play.mvc.Result;
 import play.mvc.Security;
 
@@ -107,7 +107,7 @@ public class Providers extends APIController {
 		
 		session().clear();
 		session("id", user._id.toString());
-		session("role", "provider");
+		session("role", UserRole.PROVIDER.toString());
 		session("org", provider._id.toString());
 		
 		return ok();
@@ -134,7 +134,7 @@ public class Providers extends APIController {
 		// user authenticated
 		session().clear();
 		session("id", user._id.toString());
-		session("role", "provider");
+		session("role", UserRole.PROVIDER.toString());
 		session("org", user.provider.toString());
 		return ok();
 	}

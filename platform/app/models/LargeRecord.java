@@ -15,6 +15,8 @@ import org.bson.types.ObjectId;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -43,7 +45,7 @@ public class LargeRecord  {
 	/**
 	 * Gets all records and substitutes the data from chunks for the records that are large records.
 	 */
-	public static List<Record> getAll(ObjectId who, ObjectId aps, Map<String, Object> properties, Set<String> fields) throws ModelException {
+	public static List<Record> getAll(ObjectId who, ObjectId aps, Map<String, Object> properties, Set<String> fields) throws AppException {
 		Set<String> tempFields = new HashSet<String>(fields);
 		tempFields.add("data.type");
 		List<Record> records = RecordSharing.instance.list(who, aps, properties, tempFields);
@@ -65,7 +67,7 @@ public class LargeRecord  {
 	/**
 	 * Substitutes the data from the chunk for the base record's data.
 	 */
-	private static void replaceData(ObjectId who, ObjectId aps, Record masterRecord, Set<String> fields) throws ModelException {
+	private static void replaceData(ObjectId who, ObjectId aps, Record masterRecord, Set<String> fields) throws AppException {
 		// extract only the fields concerning the data, and strip the "data." qualifier
 		Set<String> dataFields = new HashSet<String>();
 		for (String field : fields) {
@@ -134,7 +136,7 @@ public class LargeRecord  {
 	/**
 	 * Creates chunks from the data and saves the index information in the master record.
 	 */
-	public static void add(Member owner, Record masterRecord, TreeMap<String, Object> data) throws ModelException {
+	public static void add(Member owner, Record masterRecord, TreeMap<String, Object> data) throws AppException {
 		// initialize data and set the type to 'largeRecord'
 		masterRecord.data = new BasicDBObject();
 		masterRecord.data.put("type", "largeRecord");

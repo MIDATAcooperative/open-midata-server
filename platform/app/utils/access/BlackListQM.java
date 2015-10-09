@@ -7,22 +7,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import models.ModelException;
 import models.Record;
 
 import org.bson.BasicBSONObject;
+
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 
 public class BlackListQM extends QueryManager {
 
     private QueryManager next;
     private Set<String> blacklist; 
 	
-	public BlackListQM(Query q, QueryManager next) throws ModelException {
+	public BlackListQM(Query q, QueryManager next) throws AppException {
 		this.next = next;
 		initBlacklist(q);
 	}
 	
-	private void initBlacklist(Query q) throws ModelException {
+	private void initBlacklist(Query q) throws AppException {
 		blacklist = new HashSet<String>();
 		BasicBSONObject list = q.getCache().getAPS(q.getApsId()).getMeta("_exclude");
 		if (list != null) {
@@ -36,7 +38,7 @@ public class BlackListQM extends QueryManager {
 	
 	@Override
 	protected List<Record> lookup(List<Record> record, Query q)
-			throws ModelException {
+			throws AppException {
 		List<Record> result = next.lookup(record, q);
 		return filter(result);
 	}
@@ -51,7 +53,7 @@ public class BlackListQM extends QueryManager {
 	}
 
 	@Override
-	protected List<Record> query(Query q) throws ModelException {		
+	protected List<Record> query(Query q) throws AppException {		
 		List<Record> result = next.query(q);
 		return filter(result);
 	}
@@ -59,7 +61,7 @@ public class BlackListQM extends QueryManager {
 
 	@Override
 	protected List<Record> postProcess(List<Record> records, Query q)
-			throws ModelException {
+			throws AppException {
 		return next.postProcess(records, q);		
 	}
 

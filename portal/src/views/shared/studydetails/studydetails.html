@@ -32,7 +32,9 @@
 					<span ng-show="prov.mobile">Mobile: {{ prov.mobile }}</span><br>
 					<span ng-show="prov.email">Email: {{ prov.email }}</span><br>
 				</address>
+				<button class="btn btn-danger btn-xs" ng-click="removeProvider(prov);">remove</button>
 			</div>
+			<div class="extraspace"></div>
 			<button class="btn btn-default" ng-click="addProvider()">Add</button>
 		</div>
 	</div>

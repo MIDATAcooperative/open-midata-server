@@ -15,5 +15,10 @@ angular.module('portal')
 	      url: '/lostpw',
 	      templateUrl: 'views/shared/public/lostpw/lostpw.html',
 		  data : { role : "research" }
+	    })
+	    .state('public_developer.lostpw', {
+	      url: '/lostpw',
+	      templateUrl: 'views/shared/public/lostpw/lostpw.html',
+		  data : { role : "developer" }
 	    });
 });

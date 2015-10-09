@@ -18,14 +18,14 @@ angular.module('portal')
 	
 	getSenderName = function() {
 		var data = {"properties": {"_id": $scope.message.sender}, "fields": ["name"]};
-		server.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
 			success(function(users) { $scope.message.sender.name = users[0].name; }).
 			error(function(err) { $scope.error = "Failed to load sender name: " + err; });
 	};
 	
 	getReceiverNames = function() {
 		var data = {"properties": {"_id": $scope.message.receivers}, "fields": ["name"]};
-		server.post(jsRoutes.controllers.Users.getUsers().url, JSON.stringify(data)).
+		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
 			success(function(users) {
 				_.each(users, function(user) {
 					var receiver = _.find($scope.message.receivers, function(rec) { return rec.$oid === user._id.$oid; });

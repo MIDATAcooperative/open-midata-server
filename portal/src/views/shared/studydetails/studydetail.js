@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('StudyDetailCtrl', ['$scope', '$state', 'server', 'views', 'session', 'users', function($scope, $state, server, views, session, users) {
+.controller('StudyDetailCtrl', ['$scope', '$state', 'server', 'views', 'session', 'users', 'studies', function($scope, $state, server, views, session, users, studies) {
 	
 	$scope.studyid = $state.params.studyId;
 	$scope.study = {};
@@ -42,8 +42,24 @@ angular.module('portal')
 	};
 	
 	$scope.addProvider = function() {
-		views.setView("providersearch", { studyId : $scope.study._id.$oid });
+		var execAdd = function(prov) {
+		   return studies.updateParticipation($scope.study._id.$oid, { add : { providers : [ prov._id.$oid ]}})
+		          .then(function() {
+		        	  $scope.reload();
+		          });
+		   
+		};
+		
+		views.setView("providersearch", { callback : execAdd });
 	};
+	
+	$scope.removeProvider = function(prov) {
+		studies.updateParticipation($scope.study._id.$oid, { remove : { providers : [ prov._id.$oid ]}})
+        .then(function() {
+      	  $scope.reload();
+        });
+	};
+		
 	
 	$scope.needs = function(what) {
 		return $scope.study.requiredInformation && $scope.study.requiredInformation == what;

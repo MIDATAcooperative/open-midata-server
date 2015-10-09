@@ -6,10 +6,10 @@ import java.util.Map;
 import utils.access.AccessLog;
 import utils.access.Query;
 import utils.access.SingleAPSManager;
+import utils.exceptions.ModelException;
 
 import models.FormatGroup;
 import models.ContentInfo;
-import models.ModelException;
 import models.Record;
 
 public class GroupRule implements Rule {
@@ -32,7 +32,7 @@ public class GroupRule implements Rule {
 			if (group.equals(obj)) return true;			
 		}
 		FormatGroup grp = FormatGroup.getByName(group);
-		if (grp == null) throw new ModelException("Missing group:" + group);
+		if (grp == null) throw new ModelException("error.internal", "Missing group:" + group);
 		if (grp != null && grp.parent != null) return qualifies(grp.parent, params);
 		return false;
 	}

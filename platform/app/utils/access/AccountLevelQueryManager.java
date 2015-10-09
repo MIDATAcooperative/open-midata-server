@@ -11,12 +11,13 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 
 import utils.collections.Sets;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 
 import controllers.RecordSharing;
 
 import models.Circle;
 import models.Consent;
-import models.ModelException;
 import models.Record;
 import models.StudyParticipation;
 
@@ -29,12 +30,12 @@ public class AccountLevelQueryManager extends QueryManager {
 	}
 
 	@Override
-	protected List<Record> lookup(List<Record> record, Query q) throws ModelException {
+	protected List<Record> lookup(List<Record> record, Query q) throws AppException {
 		return next.lookup(record, q);
 	}
 
 	@Override
-	protected List<Record> query(Query q) throws ModelException {
+	protected List<Record> query(Query q) throws AppException {
 
 		if (q.getApsId().equals(q.getCache().getOwner())) {
 			Set<String> sets = q.restrictedBy("owner") ? q.getRestriction("owner") : Collections.singleton("all");
@@ -129,7 +130,7 @@ public class AccountLevelQueryManager extends QueryManager {
 	}
 
 	@Override
-	protected List<Record> postProcess(List<Record> records, Query q) throws ModelException {
+	protected List<Record> postProcess(List<Record> records, Query q) throws AppException {
 		return next.postProcess(records, q);
 
 	}

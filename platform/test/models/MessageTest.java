@@ -13,6 +13,7 @@ import org.junit.Test;
 import utils.DateTimeUtils;
 import utils.collections.ChainedSet;
 import utils.db.DBLayer;
+import utils.exceptions.ModelException;
 
 import com.mongodb.DBCollection;
 

@@ -9,6 +9,7 @@ import models.enums.Frequency;
 import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
+import utils.exceptions.ModelException;
 
 
 public class Task extends Model {

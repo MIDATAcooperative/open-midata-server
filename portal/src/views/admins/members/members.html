@@ -20,7 +20,7 @@
 				<tr>
 					<th>midataID</th>
 					<th>Firstname</th>
-					<th>Sirname</th>
+					<th>Lastname</th>
 					<th>EMail</th>
 					<th>Role</th>
 					<th>Status</th>
@@ -29,7 +29,7 @@
 				<tr ng-repeat="member in members">
 					<td><a href="javascript:">{{ member.midataID }}</a></td>
 					<td>{{ member.firstname }}</td>
-					<td>{{ member.sirname }}</td>
+					<td>{{ member.lastname }}</td>
 					<td>{{ member.email }}</td>
 					<td>{{ member.role }}</td>
 					<td><select ng-change="changeUser(member);" ng-model="member.status" class="form-control" ng-options="status for status in stati"></select></td>

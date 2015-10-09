@@ -23,6 +23,10 @@ angular.module('portal')
 		});
 	};
 	
+	$scope.selectPatient = function() {
+		$state.go('^.memberdetails', { memberId : $scope.member._id.$oid });		
+	};
+	
 	$scope.addConsent = function() {
 		
       $scope.newconsent.type = "HEALTHCARE";

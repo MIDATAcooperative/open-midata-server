@@ -13,6 +13,7 @@ import org.bson.types.ObjectId;
 
 import utils.access.AccessLog;
 import utils.collections.Sets;
+import utils.exceptions.ModelException;
 import utils.rules.ContentRule;
 import utils.rules.FormatRule;
 import utils.rules.GroupRule;
@@ -22,7 +23,6 @@ import utils.rules.Rule;
 import models.APSNotExistingException;
 import models.FilterRule;
 import models.Member;
-import models.ModelException;
 import models.Record;
 
 public class RuleApplication {

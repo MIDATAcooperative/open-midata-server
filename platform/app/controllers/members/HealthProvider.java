@@ -11,12 +11,11 @@ import org.bson.types.ObjectId;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import controllers.Secured;
+import controllers.APIController;
 
 import models.HPUser;
 import models.Member;
 import models.MemberKey;
-import models.ModelException;
 import models.User;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
@@ -27,15 +26,19 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.auth.Rights;
+import utils.auth.MemberSecured;
 import utils.collections.Sets;
+import utils.exceptions.AppException;
+import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
-public class HealthProvider extends Controller {
+public class HealthProvider extends APIController {
 		
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(MemberSecured.class)
 	public static Result list() throws ModelException {
 	      
 		ObjectId userId = new ObjectId(request().username());	
@@ -45,9 +48,9 @@ public class HealthProvider extends Controller {
 	}
 	
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result search() throws ModelException {
+	public static Result search() throws AppException {
 		JsonNode json = request().body().asJson();
 		try {
 			JsonValidation.validate(json, "properties", "fields");
@@ -59,6 +62,7 @@ public class HealthProvider extends Controller {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		properties.put("role", UserRole.PROVIDER);
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+		Rights.chk("HealthProvider.search", getRole(), properties, fields);
 
 		if (fields.contains("name")) { fields.add("firstname"); fields.add("lastname"); } 
 						
@@ -73,7 +77,7 @@ public class HealthProvider extends Controller {
 	}
 	
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(MemberSecured.class)
 	public static Result confirmConsent() throws ModelException, JsonValidationException {
 		
 		ObjectId userId = new ObjectId(request().username());
@@ -91,7 +95,7 @@ public class HealthProvider extends Controller {
 	}
 	
 	@APICall
-	@Security.Authenticated(Secured.class)
+	@Security.Authenticated(MemberSecured.class)
 	public static Result rejectConsent() throws ModelException, JsonValidationException {
 		
 		ObjectId userId = new ObjectId(request().username());

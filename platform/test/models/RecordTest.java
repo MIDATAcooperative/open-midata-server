@@ -16,6 +16,7 @@ import org.junit.Test;
 import utils.DateTimeUtils;
 import utils.collections.ChainedMap;
 import utils.db.DBLayer;
+import utils.exceptions.ModelException;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;

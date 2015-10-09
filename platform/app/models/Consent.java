@@ -11,6 +11,7 @@ import org.bson.types.ObjectId;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
+import utils.exceptions.ModelException;
 
 public class Consent extends Model {
 
@@ -21,6 +22,7 @@ public class Consent extends Model {
 	public Set<ObjectId> authorized;
 	public ConsentType type;
 	public ConsentStatus status;
+	public @NotMaterialized String ownerName;
 	
 	public String passcode;
 	

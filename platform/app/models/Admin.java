@@ -11,6 +11,7 @@ import org.bson.types.ObjectId;
 
 import utils.DateTimeUtils;
 import utils.collections.CMaps;
+import utils.exceptions.ModelException;
 
 public class Admin extends User {
 
