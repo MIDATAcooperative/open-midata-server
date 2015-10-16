@@ -32,10 +32,13 @@ import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.MemberSecured;
 import utils.auth.ResearchSecured;
+import utils.auth.Rights;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
 import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
@@ -53,15 +56,16 @@ public class Studies extends APIController {
 	public static Result list() throws JsonValidationException, ModelException {
 	   ObjectId user = new ObjectId(request().username());
 	   
-	   Set<StudyParticipation> participation = StudyParticipation.getAllByMember(user, Sets.create("study","studyName", "pstatus"));
+	   Set<String> fields = Sets.create("study","studyName", "pstatus");
+	   Set<StudyParticipation> participation = StudyParticipation.getAllByMember(user, fields);
 	   
-	   return ok(Json.toJson(participation));
+	   return ok(JsonOutput.toJson(participation, "Consent", fields));
 	}
 	
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result search() throws JsonValidationException, ModelException {
+	public static Result search() throws JsonValidationException, ModelException, AuthException {
 	   ObjectId user = new ObjectId(request().username());
 	   
 	   JsonNode json = request().body().asJson();
@@ -70,9 +74,10 @@ public class Studies extends APIController {
 	   Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 	   Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 	   	   
+	   Rights.chk("Studies.search", getRole(), properties, fields);
 	   Set<Study> studies = Study.getAll(user, properties, fields);
 	   
-	   return ok(Json.toJson(studies));
+	   return ok(JsonOutput.toJson(studies, "Study", fields));
 	}
 	
 	@APICall
@@ -219,14 +224,18 @@ public class Studies extends APIController {
 	   ObjectId userId = new ObjectId(request().username());	
 	   ObjectId studyId = new ObjectId(id);
 	   	   
-	   Study study = Study.getByIdFromMember(studyId, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords","requiredInformation","assistance"));
-	   StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("pstatus", "history","providers"));
-	   Research research = Research.getById(study.owner, Sets.create("name", "description"));
+	   Set<String> studyFields = Sets.create("_id", "createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords","requiredInformation","assistance");
+	   Set<String> consentFields = Sets.create("_id", "pstatus", "history","providers");
+	   Set<String> researchFields = Sets.create("_id", "name", "description");
+	   
+	   Study study = Study.getByIdFromMember(studyId, studyFields);
+	   StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, consentFields);
+	   Research research = Research.getById(study.owner, researchFields);
 	   
 	   ObjectNode obj = Json.newObject();
-	   obj.put("study", Json.toJson(study));
-	   obj.put("participation", Json.toJson(participation));
-	   obj.put("research", Json.toJson(research));
+	   obj.put("study", JsonOutput.toJsonNode(study, "Study", studyFields));
+	   obj.put("participation", JsonOutput.toJsonNode(participation, "Consent", consentFields));
+	   obj.put("research", JsonOutput.toJsonNode(research, "Research", researchFields));
 	   
 	   return ok(obj);
 	}

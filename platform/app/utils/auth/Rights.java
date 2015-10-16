@@ -1,14 +1,32 @@
 package utils.auth;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bson.BSONObject;
+import org.bson.types.ObjectId;
+
 import utils.collections.Sets;
+import utils.db.NotMaterialized;
 import utils.exceptions.AuthException;
 import utils.exceptions.ModelException;
 
+import models.FilterRule;
+import models.History;
+import models.Info;
+import models.Plugin;
+import models.StudyGroup;
+import models.enums.AssistanceType;
+import models.enums.ConsentStatus;
+import models.enums.ConsentType;
+import models.enums.InformationType;
+import models.enums.ParticipantSearchStatus;
+import models.enums.StudyExecutionStatus;
+import models.enums.StudyValidationStatus;
 import models.enums.UserRole;
 
 public class Rights {
@@ -23,6 +41,10 @@ public class Rights {
 	
 	private static void role(UserRole role, String... fields) {
 		allowed.get(currentAction).put(role, Sets.create(fields));
+	}
+	
+	private static void role(UserRole role, Set<String> fields) {
+		allowed.get(currentAction).put(role, fields);
 	}
 		
 	static {
@@ -50,6 +72,23 @@ public class Rights {
 		role(UserRole.RESEARCH, "_id", "address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "mobile", "name", "role", "status", "zip");
 		role(UserRole.PROVIDER, "_id", "address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "mobile", "name", "role", "status", "zip");
 		role(UserRole.ADMIN   , "_id", "address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "mobile", "name", "role", "status", "zip");
+		
+		action("Studies.search");
+		role(UserRole.RESEARCH, "_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history", "groups");
+		role(UserRole.ADMIN, "_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history", "groups");
+		role(UserRole.PROVIDER, "_id", "name", "code", "owner", "createdAt", "description", "infos", "studyKeywords", "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history");
+		role(UserRole.MEMBER, "_id", "name", "code", "owner", "createdAt", "description", "infos", "studyKeywords", "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history");
+		
+		action("getRecords");
+		role(UserRole.ANY, "_id", "id", "owner" , "ownerName", "creatorName", "format", "content", "group", "app", "creator", "created", "name", "description", "tags", "data");
+		
+		action("Circles.listConsents");
+		role(UserRole.ANY, "_id", "owner", "name", "authorized", "type", "status", "ownerName", "member");
+		
+		action("Plugins.get");
+		role(UserRole.ANY, Plugin.ALL_PUBLIC);
+		role(UserRole.DEVELOPER, Plugin.ALL_DEVELOPER);
+
 	}
 	
 	public static void chk(String action, UserRole role, Map<String, Object> props, Set<String> fields) throws ModelException, AuthException {
@@ -67,9 +106,10 @@ public class Rights {
 	
 	public static void chk(String action, UserRole role, Set<String> fields) throws ModelException, AuthException {
 		Map<UserRole, Set<String>> ac = allowed.get(action);
-		if (ac == null) throw new ModelException("error.internal", "Action does not exist");
+		if (ac == null) throw new ModelException("error.internal", "Action '"+action+"' does not exist");
 		
 		Set<String> isallowed = ac.get(role);
+		if (isallowed == null) isallowed = ac.get(UserRole.ANY);
 		if (isallowed == null) throw new AuthException("error.notauthorized", "Role is not allowed to perform action.");
 		
 		if (!isallowed.containsAll(fields)) {		

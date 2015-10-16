@@ -28,13 +28,16 @@ import play.mvc.Security;
 import utils.PasswordHash;
 import utils.auth.AnyRoleSecured;
 import utils.auth.MemberSecured;
+import utils.auth.Rights;
 import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
 import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
@@ -43,7 +46,7 @@ import actions.APICall;
 import com.fasterxml.jackson.databind.JsonNode;
 
 
-public class Circles extends Controller {	
+public class Circles extends APIController {	
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
@@ -63,23 +66,24 @@ public class Circles extends Controller {
 			ReferenceTool.resolveOwners(circles, true);
 		} else JsonValidation.validate(json, "owner");
 		Collections.sort(circles);
-		return ok(Json.toJson(circles));
+		return ok(JsonOutput.toJson(circles, "Consent", Sets.create("name", "order", "owner", "authorized")));
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public static Result listConsents() throws JsonValidationException, ModelException {
+	public static Result listConsents() throws JsonValidationException, ModelException, AuthException {
 		// validate json
 		JsonNode json = request().body().asJson();					
 		JsonValidation.validate(json, "properties", "fields");
 		
-		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
-				
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));				
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
-		List<Consent> consents = null;
-
 		
+		Rights.chk("Circles.listConsents", getRole(), properties, fields);
+		
+		List<Consent> consents = null;
+	
 		ObjectId owner = new ObjectId(request().username());
 		if (properties.containsKey("member")) {
 		  consents = new ArrayList<Consent>(Consent.getAllByAuthorized(owner));
@@ -90,7 +94,7 @@ public class Circles extends Controller {
 		if (fields.contains("ownerName")) ReferenceTool.resolveOwners(consents, true);
 		
 		//Collections.sort(circles);
-		return ok(Json.toJson(consents));
+		return ok(JsonOutput.toJson(consents, "Consent", fields));
 	}
 	
 
@@ -167,7 +171,7 @@ public class Circles extends Controller {
 		
 		consent.add();
 				
-		return ok(Json.toJson(consent));
+		return ok(JsonOutput.toJson(consent, "Consent", Consent.ALL));
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
@@ -192,7 +196,7 @@ public class Circles extends Controller {
 		   consent.authorized.add(executorId);
 		   Consent.set(consent._id, "authorized", consent.authorized);
 		
-		   return ok(Json.toJson(consent));
+		   return ok(JsonOutput.toJson(consent, "Consent", Sets.create("_id", "authorized")));
 		} catch (NoSuchAlgorithmException e) {
 	    	throw new ModelException("error.internal.cryptography", e);
 	    } catch (InvalidKeySpecException e) {
@@ -318,27 +322,5 @@ public class Circles extends Controller {
 	    	Member.set(userId, "queries", member.queries);
 	    }
 	}
-	
-	/*
-	public static ObjectId getOrCreateMemberKey(HPUser hpuser, Member member) throws ModelException {
-		MemberKey key = MemberKey.getByOwnerAndAuthorizedPerson(member._id, hpuser._id);
-		if (key!=null) return key.aps;
 		
-		HealthcareProvider prov = HealthcareProvider.getById(hpuser.provider);
-		
-		key = new MemberKey();
-		key._id = new ObjectId();
-		key.owner = member._id;
-		key.organization = hpuser.provider;
-		key.authorized = new HashSet<ObjectId>();
-		key.authorized.add(hpuser._id);
-		key.status = ConsentStatus.UNCONFIRMED;
-		key.name = prov.name+": "+hpuser.firstname+" "+hpuser.lastname;
-		key.aps = RecordSharing.instance.createAnonymizedAPS(member._id, hpuser._id, key._id);
-		key.add();
-		
-		return key.aps;
-		
-	}
-    */
 }

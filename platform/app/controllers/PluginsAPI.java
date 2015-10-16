@@ -15,6 +15,7 @@ import models.Member;
 import models.Record;
 import models.Space;
 import models.User;
+import models.enums.UserRole;
 
 import org.bson.BSONObject;
 import org.bson.types.ObjectId;
@@ -29,6 +30,7 @@ import utils.DateTimeUtils;
 import utils.access.AccessLog;
 import utils.auth.AppToken;
 import utils.auth.RecordToken;
+import utils.auth.Rights;
 import utils.auth.SpaceToken;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
@@ -40,6 +42,7 @@ import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
 import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
@@ -173,12 +176,13 @@ public class PluginsAPI extends Controller {
 	public static Result getRecords() throws JsonValidationException, AppException {
 		
 		// validate json
-		JsonNode json = request().body().asJson();
-		
+		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken", "properties", "fields");
 		
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+		
+		Rights.chk("getRecords", UserRole.ANY, fields);
 
 		// decrypt authToken and check whether space with corresponding owner exists
 		SpaceToken authToken = SpaceToken.decrypt(json.get("authToken").asText());
@@ -217,7 +221,7 @@ public class PluginsAPI extends Controller {
 		//}
 		
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
-		return ok(Json.toJson(records));
+		return ok(JsonOutput.toJson(records, "Record", fields));
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
@@ -265,7 +269,7 @@ public class PluginsAPI extends Controller {
 		ObjectId appId = space.visualization;
 				
 		Member targetUser;
-		ObjectId targetAps = space.aps;
+		ObjectId targetAps = space._id;
 				
 		targetUser = Member.getById(authToken.userId, Sets.create("myaps", "tokens"));
 		if (targetUser == null) return badRequest("Invalid authToken.");

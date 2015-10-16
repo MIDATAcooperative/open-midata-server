@@ -16,6 +16,9 @@ import models.enums.UserStatus;
 
 import org.bson.types.ObjectId;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import utils.PasswordHash;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
@@ -25,6 +28,7 @@ import utils.search.Search;
 import utils.search.Search.Type;
 import utils.search.SearchException;
 
+@JsonFilter("User")
 public class User extends Model implements Comparable<User> {
 
 	protected static final String collection = "users";
@@ -33,13 +37,15 @@ public class User extends Model implements Comparable<User> {
 	public @NotMaterialized String name;
 	public String password;
 	public UserRole role;
+	
 	public int accountVersion;
 	
 	public Map<String, Set<ObjectId>> messages; // keys (folders) are: inbox, archive, trash
 	public Date login; // timestamp of last login
 	public Date registeredAt; // Date of registration
-		
+			
 	public String resettoken; // token to reset password
+	
 	public long resettokenTs; // timestamp of password reset token
 	
 	public UserStatus status; //enum: new, active, blocked, deleted	1	-	new: account is new and match with real person is not yet confirmed

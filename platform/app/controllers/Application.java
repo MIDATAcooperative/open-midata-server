@@ -287,6 +287,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Plugins.install(),
 				controllers.routes.javascript.Plugins.uninstall(),
 				controllers.routes.javascript.Plugins.isInstalled(),
+				controllers.routes.javascript.Plugins.isAuthorized(),
 				controllers.routes.javascript.Plugins.getUrl(),
 				
 				// News
@@ -301,11 +302,9 @@ public class Application extends APIController {
 				controllers.routes.javascript.FormatAPI.listGroups(),
 				
 				// Records					
-				controllers.routes.javascript.Records.get(),
-				controllers.routes.javascript.Records.getVisibleRecords(),
+				controllers.routes.javascript.Records.get(),				
 				controllers.routes.javascript.Records.getRecords(),
-				controllers.routes.javascript.Records.getInfo(),
-				controllers.routes.javascript.Records.getSharingInfo(),
+				controllers.routes.javascript.Records.getInfo(),	
 				controllers.routes.javascript.Records.getSharingDetails(),
 				controllers.routes.javascript.Records.search(),				
 				controllers.routes.javascript.Records.updateSharing(),
@@ -336,8 +335,6 @@ public class Application extends APIController {
 				controllers.routes.javascript.Users.search(),
 				controllers.routes.javascript.Users.loadContacts(),
 				controllers.routes.javascript.Users.complete(),
-				controllers.routes.javascript.Users.clearPushed(),
-				controllers.routes.javascript.Users.clearShared(),
 				
 				controllers.routes.javascript.Tasking.add(),
 				controllers.routes.javascript.Tasking.list(),

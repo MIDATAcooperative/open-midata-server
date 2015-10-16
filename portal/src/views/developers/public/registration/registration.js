@@ -27,7 +27,7 @@ angular.module('portal')
 		// send the request
 		var data = $scope.registration;		
 		$scope.status.doAction("register", server.post(jsRoutes.controllers.Developers.register().url, JSON.stringify(data))).
-		then(function() { $state.go("developer.messages"); },
+		then(function() { $state.go("developer.yourapps"); },
 			 function(err) { 
 				$scope.error = err;
 				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);				

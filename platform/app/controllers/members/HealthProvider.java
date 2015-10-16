@@ -32,6 +32,7 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
@@ -44,20 +45,16 @@ public class HealthProvider extends APIController {
 		ObjectId userId = new ObjectId(request().username());	
 		Set<MemberKey> memberkeys = MemberKey.getByOwner(userId);
 		
-		return ok(Json.toJson(memberkeys));
+		return ok(JsonOutput.toJson(memberkeys, "Consent", Sets.create("owner", "organization", "authorized", "status", "confirmDate", "aps", "comment", "name")));
 	}
 	
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result search() throws AppException {
-		JsonNode json = request().body().asJson();
-		try {
-			JsonValidation.validate(json, "properties", "fields");
-		} catch (JsonValidationException e) {
-			return badRequest(e.getMessage());
-		}
-
+	public static Result search() throws AppException, JsonValidationException {
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "properties", "fields");
+		
 		// get users
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		properties.put("role", UserRole.PROVIDER);
@@ -73,7 +70,7 @@ public class HealthProvider extends APIController {
 		}
 				
 		Collections.sort(users);
-		return ok(Json.toJson(users));
+		return ok(JsonOutput.toJson(users, "User", fields));
 	}
 	
 	@APICall

@@ -8,8 +8,11 @@ import models.enums.UserRole;
 
 import org.bson.types.ObjectId;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
+import utils.collections.Sets;
 import utils.db.DBLayer;
 import utils.db.DatabaseException;
 import utils.db.LostUpdateException;
@@ -18,9 +21,20 @@ import utils.search.Search;
 import utils.search.SearchException;
 import utils.search.Search.Type;
 
+@JsonFilter("Plugin")
 public class Plugin extends Model implements Comparable<Plugin> {
 
 	private static final String collection = "plugins";
+	public final static Set<String> ALL_DEVELOPER = 
+			 Sets.create("_id", "version", "creator", "filename", "name", "description", "tags", 
+	                     "targetUserRole", "spotlighted", "url", "previewUrl", "defaultSpaceName",
+	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
+	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret",
+	                     "requestTokenUrl", "scopeParameters", "secret", "developmentServer");
+	public final static Set<String> ALL_PUBLIC = 
+			 Sets.create("_id", "version", "creator", "filename", "name", "description", "tags", 
+	                     "targetUserRole", "spotlighted", "url", "previewUrl", "defaultSpaceName",
+	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins");
 	
 	public long version;
 	public ObjectId creator;

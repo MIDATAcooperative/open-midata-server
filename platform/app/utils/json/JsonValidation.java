@@ -6,8 +6,6 @@ import java.util.Date;
 
 import org.bson.types.ObjectId;
 
-import models.enums.Gender;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class JsonValidation {

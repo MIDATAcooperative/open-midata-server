@@ -15,6 +15,7 @@ import utils.collections.Sets;
 import utils.db.LostUpdateException;
 import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
@@ -157,7 +158,7 @@ public class Market extends Controller {
 			
 		Plugin.add(plugin);
 		
-		return ok(Json.toJson(plugin));
+		return ok(JsonOutput.toJson(plugin, "Plugin", Plugin.ALL_DEVELOPER));
 	}
 
 }

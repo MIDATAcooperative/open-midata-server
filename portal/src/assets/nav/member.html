@@ -17,17 +17,19 @@
 			<ul class="nav navbar-nav">
 			    <li ui-sref-active="active"><a ui-sref="member.overview">Me</a></li>
             	<li ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'overview' })">Overview</a></li>
-				<li ui-sref-active="active"><a ui-sref="member.messages">Messages</a></li>				
+				<!-- <li ui-sref-active="active"><a ui-sref="member.messages">Messages</a></li> -->				
 				<li ui-sref-active="active"><a ui-sref="member.records">Your Data</a></li>				
 				<li ui-sref-active="active"><a ui-sref="member.circles">Consents</a></li>
 				<li ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'help' })">Help</a></li>				
 			</ul>
+			<!-- 
 			<form class="navbar-form navbar-left" ng-submit="startSearch()">
 				<div class="form-group">
 					<input type="text" typeahead="res.value for res in search($viewValue)" typeahead-on-select="startSearch();" class="form-control" placeholder="Search in your data" ng-model="query">
 				</div>
 				<button type="submit" class="btn btn-primary">Go!</button>
 			</form>
+			 -->
 			<ul class="nav navbar-nav navbar-right" ng-cloak>
 			    <li><a>{{user.midataID}}</a></li>
 				<li><a ui-sref=".user({ userId : user._id.$oid})">{{user.name}}</a></li>

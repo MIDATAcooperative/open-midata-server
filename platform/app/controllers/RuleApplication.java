@@ -14,10 +14,7 @@ import org.bson.types.ObjectId;
 import utils.access.AccessLog;
 import utils.collections.Sets;
 import utils.exceptions.ModelException;
-import utils.rules.ContentRule;
-import utils.rules.FormatRule;
-import utils.rules.GroupRule;
-import utils.rules.IDRule;
+
 import utils.rules.Rule;
 
 import models.APSNotExistingException;
@@ -32,11 +29,7 @@ public class RuleApplication {
 	public Map<String, Rule> rulecache;
 	
 	public RuleApplication() {
-		rulecache = new HashMap<String, Rule>();
-		rulecache.put("format", new FormatRule());
-		rulecache.put("group", new GroupRule());
-		rulecache.put("content", new ContentRule());
-		rulecache.put("_id", new IDRule());
+		rulecache = new HashMap<String, Rule>();		
 	}
 	
 	/*

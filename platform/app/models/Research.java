@@ -4,12 +4,15 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 import utils.collections.CMaps;
 import utils.exceptions.ModelException;
 import utils.search.Search;
 import utils.search.SearchException;
 import utils.search.Search.Type;
 
+@JsonFilter("Research")
 public class Research extends Model {
 
 	 private static final String collection = "research";

@@ -240,16 +240,16 @@ angular.module('portal')
 	
 	$scope.loadShared = function() {
 		if ($scope.circles == null) {
-			server.get(jsRoutes.controllers.Records.getSharingInfo().url).
-			success(function(data) {			
-				//$scope.shared = data.shared;
-				$scope.circles = data.circles;
-				$scope.spaces = data.spaces;
-				$scope.participations = data.participations;	
-				$scope.memberkeys = data.memberkeys;
-				$scope.loadingSharing = false;
+			circles.listConsents({ owner : true }, ["name", "type", "status"])
+			.then(function(results) {
 				
+                $scope.loadingSharing = false;				
 				$scope.compare = [];
+				angular.forEach(results.data, function(entry) { 
+					$scope.compare.push(entry);
+				});
+								
+				/*
 				angular.forEach($scope.circles, function(circle) { circle.type="circles"; $scope.compare.push(circle); });
 				angular.forEach($scope.participations, function(part) { 
 					part.type="participations";
@@ -257,12 +257,8 @@ angular.module('portal')
 					$scope.compare.push(part);
 				});
 				angular.forEach($scope.memberkeys, function(mk) { mk.type="memberkeys"; $scope.compare.push(mk); });
-				
-			}).
-			error(function(err) {
-				$scope.error = "Failed to load Sharing: " + err;
-				$scope.loadingSharing = false;
-			});				
+				*/
+			});		
 		} 
 	};
 	

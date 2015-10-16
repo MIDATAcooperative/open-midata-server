@@ -36,6 +36,7 @@ import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import utils.DateTimeUtils;
 import utils.auth.AppToken;
+import utils.auth.Rights;
 import utils.auth.SpaceToken;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
@@ -46,6 +47,7 @@ import utils.db.FileStorage;
 import utils.exceptions.AppException;
 import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
@@ -143,6 +145,8 @@ public class AppsAPI extends Controller {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 
+		Rights.chk("getRecords", UserRole.ANY, properties, fields);
+		
 		// decrypt authToken and check whether space with corresponding owner exists
 		SpaceToken spaceToken = SpaceToken.decrypt(json.get("aps").asText());
 		if (spaceToken == null) {
@@ -151,14 +155,11 @@ public class AppsAPI extends Controller {
 		if (!spaceToken.userId.equals(appToken.userId)) {
 			return badRequest("Invalid spaceToken.");
 		}
-		
-		//Object recordIdSet = properties.get("_id");
-		//Set<String> recordIds = (Set<String>) recordIdSet;
-			
+				
 		// get record data	
 		Collection<Record> records = RecordSharing.instance.list(spaceToken.userId, spaceToken.spaceId, properties, fields);
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
-		return ok(Json.toJson(records));
+		return ok(JsonOutput.toJson(records, "Record", fields));
 		
 	}
 	

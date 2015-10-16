@@ -30,12 +30,15 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.auth.AnyRoleSecured;
+import utils.auth.Rights;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
 import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
@@ -49,26 +52,20 @@ public class Plugins extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result get() {
+	public static Result get() throws JsonValidationException, ModelException, AuthException {
 		// validate json
-		JsonNode json = request().body().asJson();
-		try {
-			JsonValidation.validate(json, "properties", "fields");
-		} catch (JsonValidationException e) {
-			return badRequest(e.getMessage());
-		}
-
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "properties", "fields");
+		
 		// get visualizations
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
-		List<Plugin> visualizations;
-		try {
-			visualizations = new ArrayList<Plugin>(Plugin.getAll(properties, fields));
-		} catch (ModelException e) {
-			return badRequest(e.getMessage());
-		}
+		
+		Rights.chk("Plugins.get", getRole(), properties, fields);
+		List<Plugin> visualizations = new ArrayList<Plugin>(Plugin.getAll(properties, fields));
+		
 		Collections.sort(visualizations);
-		return ok(Json.toJson(visualizations));
+		return ok(JsonOutput.toJson(visualizations, "Plugin", fields));
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
@@ -123,9 +120,7 @@ public class Plugins extends APIController {
 			}
 	
 		} 
-		// && visualization.targetUserRole != UserRole.ANY) return badRequest("Visualization is not for members");
-		
-				
+						
 		return ok();
 	}
 
@@ -148,31 +143,35 @@ public class Plugins extends APIController {
 
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result isInstalled(String visualizationIdString) {
+	public static Result isInstalled(String visualizationIdString) throws ModelException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId visualizationId = new ObjectId(visualizationIdString);		
-		boolean isInstalled;
-		try {
-			isInstalled = Member.getByIdAndVisualization(userId, visualizationId, Sets.create()) != null
-					     || Member.getByIdAndApp(userId, visualizationId, Sets.create()) != null;
-		} catch (ModelException e) {
-			return internalServerError(e.getMessage());
-		}
+		boolean isInstalled = Member.getByIdAndVisualization(userId, visualizationId, Sets.create()) != null
+					        || Member.getByIdAndApp(userId, visualizationId, Sets.create()) != null;
+		
+		return ok(Json.toJson(isInstalled));
+	}
+	
+	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
+	public static Result isAuthorized(String visualizationIdString) throws ModelException {
+		ObjectId userId = new ObjectId(request().username());				
+			
+		User me = User.getById(userId, Sets.create("tokens"));
+		if (me == null) return badRequest("User not found");
+		boolean isInstalled = me.tokens.containsKey(visualizationIdString);			
+	
 		return ok(Json.toJson(isInstalled));
 	}
 
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result getUrl(String visualizationIdString) {
+	public static Result getUrl(String visualizationIdString) throws ModelException {
 		ObjectId visualizationId = new ObjectId(visualizationIdString);
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", visualizationId).get();
 		Set<String> fields = new ChainedSet<String>().add("filename").add("url").get();
-		Plugin visualization;
-		try {
-			visualization = Plugin.get(properties, fields);
-		} catch (ModelException e) {
-			return badRequest(e.getMessage());
-		}
+		Plugin visualization = Plugin.get(properties, fields);
+		
 		String visualizationServer = Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename;
 		String url = "https://" + visualizationServer  + "/" + visualization.url;
 		return ok(url);
@@ -180,19 +179,14 @@ public class Plugins extends APIController {
 	
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result getRequestTokenOAuth1(String appIdString) {
+	public static Result getRequestTokenOAuth1(String appIdString) throws ModelException {
 		// get app details
 		ObjectId appId = new ObjectId(appIdString);
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", appId).get();
 		Set<String> fields = new ChainedSet<String>().add("consumerKey").add("consumerSecret").add("requestTokenUrl").add("accessTokenUrl")
 				.add("authorizationUrl").get();
-		Plugin app;
-		try {
-			app = Plugin.get(properties, fields);
-		} catch (ModelException e) {
-			return internalServerError(e.getMessage());
-		}
-
+		Plugin app = Plugin.get(properties, fields);
+		
 		// get request token (pass callback url as argument)
 		ConsumerKey key = new ConsumerKey(app.consumerKey, app.consumerSecret);
 		ServiceInfo info = new ServiceInfo(app.requestTokenUrl, app.accessTokenUrl, app.authorizationUrl, key);
@@ -207,27 +201,18 @@ public class Plugins extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result requestAccessTokenOAuth1(String appIdString) {
+	public static Result requestAccessTokenOAuth1(String appIdString) throws JsonValidationException, ModelException {
 		// validate json
-		JsonNode json = request().body().asJson();
-		try {
-			JsonValidation.validate(json, "code");
-		} catch (JsonValidationException e) {
-			return badRequest(e.getMessage());
-		}
-
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "code");
+		
 		// get app details
 		final ObjectId appId = new ObjectId(appIdString);
 		final ObjectId userId = new ObjectId(request().username());
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", appId).get();
 		Set<String> fields = new ChainedSet<String>().add("accessTokenUrl").add("consumerKey").add("consumerSecret").get();
-		Plugin app;
-		try {
-			app = Plugin.get(properties, fields);
-		} catch (ModelException e) {
-			return internalServerError(e.getMessage());
-		}
-
+		Plugin app = Plugin.get(properties, fields);
+		
 		// request access token
 		ConsumerKey key = new ConsumerKey(app.consumerKey, app.consumerSecret);
 		ServiceInfo info = new ServiceInfo(app.requestTokenUrl, app.accessTokenUrl, app.authorizationUrl, key);
@@ -236,13 +221,11 @@ public class Plugins extends APIController {
 		RequestToken accessToken = client.retrieveAccessToken(requestToken, json.get("code").asText());
 
 		// save token and secret to database
-		try {
-			Map<String, String> tokens = new ChainedMap<String, String>().put("oauthToken", accessToken.token)
-					.put("oauthTokenSecret", accessToken.secret).get();
-			Users.setTokens(userId, appId, tokens);
-		} catch (ModelException e) {
-			return badRequest(e.getMessage());
-		}
+		
+		Map<String, String> tokens = new ChainedMap<String, String>().put("oauthToken", accessToken.token)
+			.put("oauthTokenSecret", accessToken.secret).get();
+		Users.setTokens(userId, appId, tokens);
+		
 		return ok();
 	}
 

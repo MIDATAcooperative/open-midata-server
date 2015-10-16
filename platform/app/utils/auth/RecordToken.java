@@ -19,8 +19,7 @@ public class RecordToken {
 		this.apsId = apsId;
 	}
 
-	public String encrypt() {
-		//Map<String, String> map = new ChainedMap<String, String>().put("recordId", recordId.toString()).put("apsId", apsId.toString()).get();
+	public String encrypt() {		
 		String json = Json.stringify(Json.toJson(this));
 		return Crypto.encryptAES(json);
 	}

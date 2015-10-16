@@ -19,9 +19,9 @@ angular.module('portal')
 		$scope.status.doAction("login", server.post(jsRoutes.controllers.Developers.login().url, JSON.stringify(data))).
 		then(function(result) {
 			if (result.data == "admin") {
-			  $state.go('admin.messages');
+			  $state.go('admin.members');
 			} else {
-			  $state.go('developer.messages');
+			  $state.go('developer.yourapps');
 			}
 		}).
 		catch(function(err) { $scope.error = err.data; });

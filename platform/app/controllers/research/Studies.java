@@ -50,6 +50,7 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
@@ -121,7 +122,7 @@ public class Studies extends APIController {
 		
 		RecordSharing.instance.createAnonymizedAPS(userId, userId, consent._id);*/
 		
-		return ok(Json.toJson(study));
+		return ok(JsonOutput.toJson(study, "Study", Study.ALL));
 	}
 	
 	
@@ -135,12 +136,13 @@ public class Studies extends APIController {
 		 Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("executionStatus","participantSearchStatus","validationStatus","history","owner"));
 
 		 if (study == null) return badRequest("Unknown Study");
-		 
-		 List<Record> allRecords = RecordSharing.instance.list(executorId, executorId, CMaps.map("study",  study._id), Sets.create("id", "ownerName",
-					"app", "creator", "created", "name", "format", "content", "description", "data", "group"));
+
+		 Set<String> fields = Sets.create("id", "ownerName",
+					"app", "creator", "created", "name", "format", "content", "description", "data", "group"); 
+		 List<Record> allRecords = RecordSharing.instance.list(executorId, executorId, CMaps.map("study",  study._id), fields);
 		 		
 		 
-		 return ok(Json.toJson(allRecords));
+		 return ok(JsonOutput.toJson(allRecords, "Record" , fields));
 		 
 		 /*
 		 try {
@@ -173,9 +175,10 @@ public class Studies extends APIController {
 	public static Result list() throws JsonValidationException, ModelException {
 	   ObjectId owner = new ObjectId(session().get("org"));
 	   
-	   Set<Study> studies = Study.getByOwner(owner, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus"));
+	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus");
+	   Set<Study> studies = Study.getByOwner(owner, fields);
 	   
-	   return ok(Json.toJson(studies));
+	   return ok(JsonOutput.toJson(studies, "Study", fields));
 	}
 		
 	@APICall
@@ -184,10 +187,11 @@ public class Studies extends APIController {
        
 	   ObjectId studyid = new ObjectId(id);
 	   ObjectId owner = new ObjectId(session().get("org"));
-	   
-	   Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "assistance"));
+
+	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "assistance"); 
+	   Study study = Study.getByIdFromOwner(studyid, owner, fields);
 	   	   	   
-	   return ok(Json.toJson(study));
+	   return ok(JsonOutput.toJson(study, "Study", fields));
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
@@ -377,7 +381,7 @@ public class Studies extends APIController {
 		StudyRelated.set(consent._id, "authorized", consent.authorized);
 		RecordSharing.instance.shareAPS(consent._id, userId, participants);
 				
-		return ok(Json.toJson(consent));		
+		return ok(JsonOutput.toJson(consent, "Consent", Sets.create("_id", "authorized")));		
 	}
 	
 	@Security.Authenticated(AnyRoleSecured.class)
@@ -432,11 +436,11 @@ public class Studies extends APIController {
 	   Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
 	   if (study == null) return badRequest("Study does not belong to organization.");
 	   
-
-	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, Sets.create("ownerName", "owner", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth"));
+       Set<String> fields = Sets.create("ownerName", "owner", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth"); 
+	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, fields);
 	   
 	   
-	   return ok(Json.toJson(participants));
+	   return ok(JsonOutput.toJson(participants, "Consent", fields));
 	}
 	
 	@APICall
@@ -450,7 +454,8 @@ public class Studies extends APIController {
 	   Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords"));
 	   if (study == null) return badRequest("Study does not belong to organization");
 	   	   
-	   StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, Sets.create("pstatus", "group", "history","ownerName", "gender", "country", "yearOfBirth", "owner"));
+	   Set<String> participationFields = Sets.create("pstatus", "group", "history","ownerName", "gender", "country", "yearOfBirth", "owner"); 
+	   StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, participationFields);
 	   if (participation == null) return badRequest("Member does not participate in study");
 	   if (participation.pstatus == ParticipationStatus.CODE || 
 		   participation.pstatus == ParticipationStatus.MATCH || 
@@ -459,12 +464,13 @@ public class Studies extends APIController {
 	   if (study.requiredInformation != InformationType.DEMOGRAPHIC) { participation.owner = null; }
 	   
 	   ObjectNode obj = Json.newObject();
-	   obj.put("participation", Json.toJson(participation));	   
+	   obj.put("participation", JsonOutput.toJsonNode(participation, "Consent", participationFields));	   
 	    
 	   if (study.requiredInformation == InformationType.DEMOGRAPHIC) {
-	     Member member = Member.getById(memberId, Sets.create("firstname","lastname","address1","address2","city","zip","country","email", "phone","mobile"));
+		 Set<String> memberFields = Sets.create("_id", "firstname","lastname","address1","address2","city","zip","country","email", "phone","mobile"); 
+	     Member member = Member.getById(memberId, memberFields);
 	     if (member == null) return badRequest("Member does not exist");
-	     obj.put("member", Json.toJson(member));
+	     obj.put("member", JsonOutput.toJsonNode(member, "User", memberFields));
 	   }
 	   
 	   return ok(obj);

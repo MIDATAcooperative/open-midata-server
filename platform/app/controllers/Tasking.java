@@ -33,7 +33,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
-public class Tasking extends Controller {
+public class Tasking extends APIController {
 	
 	@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
@@ -88,8 +88,7 @@ public class Tasking extends Controller {
 	@APICall
 	public static Result list() throws AppException {
 		
-		ObjectId userId = new ObjectId(request().username());
-		
+		ObjectId userId = new ObjectId(request().username());		
 		Set<Task> tasks = Task.getAllByOwner(userId, Sets.create("owner", "createdBy", "plugin", "shareBackTo", "createdAt", "deadline", "context", "title", "description", "pluginQuery", "confirmQuery", "frequency", "done"));
 		
 		for (Task task : tasks) {

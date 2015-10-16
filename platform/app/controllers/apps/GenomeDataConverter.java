@@ -31,6 +31,7 @@ import utils.db.FileStorage;
 import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
 import utils.exceptions.ModelException;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
@@ -83,10 +84,11 @@ public class GenomeDataConverter extends Controller {
 			return badRequest(errorMessage);
 		}
 		
-		List<Record> records = RecordSharing.instance.list(appToken.userId, appToken.userId, CMaps.map("format", "Attachment"), Sets.create("name"));
+		Set<String> fields = Sets.create("name");
+		List<Record> records = RecordSharing.instance.list(appToken.userId, appToken.userId, CMaps.map("format", "Attachment"), fields);
 		
 		Collections.sort(records);
-		return ok(Json.toJson(records));
+		return ok(JsonOutput.toJson(records, "Record", fields));
 	}
 
 	/**

@@ -108,7 +108,7 @@ module.exports = function(grunt) {
     concat: {
         
         js: {
-          src: ['src/portals/app.js', 'tmp/scripts/config.js', 'src/assets/**/*.js', 'src/views/**/*.js' ],
+          src: ['src/app.js', 'tmp/scripts/config.js', 'src/assets/**/*.js', 'src/views/**/*.js' ],
           dest: 'dest/app.js'
         },
         css : {

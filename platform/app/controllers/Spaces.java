@@ -32,6 +32,7 @@ import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
@@ -52,17 +53,12 @@ public class Spaces extends Controller {
 		JsonValidation.validate(json, "properties", "fields");
 		
 
-		// get spaces
+		// get parameters
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
-		properties.put("owner", userId);
-		
+		properties.put("owner", userId);		
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
-		List<Space> spaces;
-		try {
-			spaces = new ArrayList<Space>(Space.getAll(properties, fields));
-		} catch (ModelException e) {
-			return badRequest(e.getMessage());
-		}
+				
+		List<Space> spaces = new ArrayList<Space>(Space.getAll(properties, fields));
 		
 		if (fields.contains("query")) {
 			for (Space space : spaces) {
@@ -71,23 +67,21 @@ public class Spaces extends Controller {
 			}
 		}
 		Collections.sort(spaces);
-		return ok(Json.toJson(spaces));
+		return ok(JsonOutput.toJson(spaces, "Space", fields));
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result add() throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
-		
+		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "name", "visualization");
 		
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
 		String name = JsonValidation.getString(json, "name");		
 		ObjectId visualizationId = JsonValidation.getObjectId(json, "visualization" );		
-		ObjectId appId = JsonValidation.getObjectId(json,  "app");
-		
+		ObjectId appId = JsonValidation.getObjectId(json,  "app");		
 		String context = JsonValidation.getString(json, "context");
 		
 		Map<String, Object> query = null;
@@ -96,28 +90,28 @@ public class Spaces extends Controller {
 		if (json.has("query")) query = JsonExtraction.extractMap(json.get("query"));
 		if (json.has("config")) config = JsonExtraction.extractMap(json.get("config"));
 		
+		// check
+		
 		if (Space.existsByNameAndOwner(name, userId)) {
 			return badRequest("A space with this name already exists.");
 		}
 				
+		// execute
+		
 		Space space = add(userId, name, visualizationId, appId, context);
 		
 		if (query != null) {
-			RecordSharing.instance.shareByQuery(userId, userId, space._id, query);
-			//RuleApplication.instance.setupRulesForSpace(userId, rules, userId, space._id, true);
+			RecordSharing.instance.shareByQuery(userId, userId, space._id, query);		
 		}
 		if (config != null) {
 			RecordSharing.instance.setMeta(userId, space._id, "_config", config);
 		}
 				
-		return ok(Json.toJson(space));
+		return ok(JsonOutput.toJson(space, "Space", Space.ALL));
 	}
 	
 	public static Space add(ObjectId userId, String name, ObjectId visualizationId, ObjectId appId, String context) throws ModelException {
-			
-		/*if (Space.existsByNameAndOwner(name, userId)) {
-			throw new ModelException("A space with this name already exists.");
-		}*/		
+						
 		// create new space
 		Space space = new Space();
 		space._id = new ObjectId();
@@ -127,7 +121,7 @@ public class Spaces extends Controller {
 		space.visualization = visualizationId;
 		space.context = context;
 		space.app = appId;
-		space.aps = RecordSharing.instance.createPrivateAPS(userId, space._id);
+		RecordSharing.instance.createPrivateAPS(userId, space._id);
 		
 		Space.add(space);		
 		return space;
@@ -137,32 +131,30 @@ public class Spaces extends Controller {
 	@APICall
 	public static Result getPreviewUrlFromSetup() throws ModelException, JsonValidationException {
 		// validate json
-		JsonNode json = request().body().asJson();
-				
+		JsonNode json = request().body().asJson();				
 		JsonValidation.validate(json, "name", "visualization", "context", "rules");
 		
+		// get parameters
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId visualizationId = JsonValidation.getObjectId(json, "visualization");
 		String context = JsonValidation.getString(json, "context");
 		String name = JsonValidation.getString(json, "name");
 		
+		// execute
 		Space space = Space.getByOwnerVisualizationContext(userId, visualizationId, context, Sets.create("aps"));
-		Plugin visualization = Plugin.getById(visualizationId, Sets.create("filename", "previewUrl"));
-		
+		Plugin visualization = Plugin.getById(visualizationId, Sets.create("filename", "previewUrl"));		
 		if (space==null) {
 		   Member member = Member.getByIdAndVisualization(userId, visualizationId, Sets.create("aps"));
 		   if (member == null) return badRequest("Not installed");
 		
 		   space = Spaces.add(userId, name, visualizationId, null, context);
-		   
-		   // RuleApplication.instance.setupRules(userId, visualization.defaultRules, user.myaps, space.aps, true);
+		   		   
 		}
 						
 		if (visualization.previewUrl == null) return ok();
 		
 		// create encrypted authToken
-		SpaceToken spaceToken = new SpaceToken(space.aps, userId);
-		
+		SpaceToken spaceToken = new SpaceToken(space._id, userId);		
 		String visualizationServer = Play.application().configuration().getString("visualizations.server");
 		String url = "https://" + visualizationServer + "/" + visualization.filename + "/" + visualization.previewUrl;
 		url = url.replace(":authToken", spaceToken.encrypt());
@@ -182,7 +174,7 @@ public class Spaces extends Controller {
 			return badRequest("No space with this id exists.");
 		}
 		
-		RecordSharing.instance.deleteAPS(space.aps, userId);
+		RecordSharing.instance.deleteAPS(space._id, userId);
 
 		// delete space		
 		Space.delete(userId, spaceId);
@@ -194,8 +186,7 @@ public class Spaces extends Controller {
 	@APICall
 	public static Result addRecords(String spaceIdString) throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
-		
+		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "records");
 		
 		// validate request
@@ -212,9 +203,8 @@ public class Spaces extends Controller {
 		}
 		
 		// add records to space (implicit: if not already present)
-		Set<ObjectId> recordIds = ObjectIdConversion.castToObjectIds(JsonExtraction.extractSet(json.get("records")));
-		
-		RecordSharing.instance.share(userId, owner.myaps, space.aps, recordIds, true);
+		Set<ObjectId> recordIds = ObjectIdConversion.castToObjectIds(JsonExtraction.extractSet(json.get("records")));		
+		RecordSharing.instance.share(userId, owner.myaps, space._id, recordIds, true);
 						
 		return ok();
 	}
@@ -231,7 +221,7 @@ public class Spaces extends Controller {
 		}
 
 		// create encrypted authToken
-		SpaceToken spaceToken = new SpaceToken(space.aps, userId);
+		SpaceToken spaceToken = new SpaceToken(space._id, userId);
 		return ok(spaceToken.encrypt());
 	}
 	
@@ -252,7 +242,7 @@ public class Spaces extends Controller {
 		
 		if (visualization.type.equals("visualization")) {
 			// create encrypted authToken
-			SpaceToken spaceToken = new SpaceToken(space.aps, userId);
+			SpaceToken spaceToken = new SpaceToken(space._id, userId);
 			
 			String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename;
 			if (testing) visualizationServer = visualization.developmentServer;
@@ -290,7 +280,7 @@ public class Spaces extends Controller {
 		boolean testing = session().get("role").equals(UserRole.DEVELOPER.toString()) && visualization.creator.equals(userId) && visualization.developmentServer != null && visualization.developmentServer.length()> 0;
 		if (visualization.type.equals("visualization")) {
 		// create encrypted authToken
-			SpaceToken spaceToken = new SpaceToken(space.aps, userId);
+			SpaceToken spaceToken = new SpaceToken(space._id, userId);
 			
 			String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename;
 			if (testing) visualizationServer = visualization.developmentServer;

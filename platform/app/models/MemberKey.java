@@ -16,23 +16,23 @@ import utils.exceptions.ModelException;
 
 public class MemberKey extends Consent {
 		
-	
+
+	public final static Set<String> ALL = Sets.create("owner", "organization", "authorized", "type", "status", "confirmDate", "comment");
 	public ObjectId organization;	
 	//public Map<String,String> key; //key used to identify this member
 	public Date confirmDate;
-	public String comment;
-	public ObjectId aps;	
+	public String comment;	
 	
 	public MemberKey() {
 		this.type = ConsentType.HEALTHCARE;
 	}
 	
 	public static MemberKey getById(ObjectId id) throws ModelException {
-		return Model.get(MemberKey.class, collection, CMaps.map("_id", id), Sets.create("owner", "organization", "authorized", "status", "confirmDate", "aps", "comment"));
+		return Model.get(MemberKey.class, collection, CMaps.map("_id", id), ALL);
 	}
 	
 	public static Set<MemberKey> getByOwnerAndAuthorizedPerson(ObjectId ownerId, ObjectId authorizedId) throws ModelException {
-		return Model.getAll(MemberKey.class, collection, CMaps.map("owner", ownerId).map("authorized", authorizedId).map("type",  ConsentType.HEALTHCARE), Sets.create("owner", "name", "organization", "authorized", "status", "confirmDate", "aps", "comment"));
+		return Model.getAll(MemberKey.class, collection, CMaps.map("owner", ownerId).map("authorized", authorizedId).map("type",  ConsentType.HEALTHCARE), ALL);
 	}
 	
 	public static Set<MemberKey> getByAuthorizedPerson(ObjectId authorizedId, Set<String> fields) throws ModelException {
@@ -40,7 +40,7 @@ public class MemberKey extends Consent {
 	}
 	
 	public static Set<MemberKey> getByOwner(ObjectId ownerId) throws ModelException {
-		return Model.getAll(MemberKey.class, collection, CMaps.map("owner", ownerId).map("type",  ConsentType.HEALTHCARE), Sets.create("owner", "organization", "authorized", "status", "confirmDate", "aps", "comment", "name"));
+		return Model.getAll(MemberKey.class, collection, CMaps.map("owner", ownerId).map("type",  ConsentType.HEALTHCARE), ALL);
 	}
 	
 	public static MemberKey getByIdAndOwner(ObjectId consentId, ObjectId ownerId, Set<String> fields) throws ModelException {

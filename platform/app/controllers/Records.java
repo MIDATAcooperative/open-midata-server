@@ -23,6 +23,7 @@ import models.Space;
 import models.Member;
 import models.StudyParticipation;
 import models.User;
+import models.enums.ConsentType;
 
 import org.bson.BSONObject;
 import org.bson.types.ObjectId;
@@ -49,6 +50,7 @@ import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.search.Search;
@@ -62,14 +64,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
-public class Records extends Controller {
+public class Records extends APIController {
 
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result onAuthorized(String appIdString) {
 		return ok(authorized.render());
 	}
 	
-	public static RecordToken getRecordTokenFromString(String id) {
+	protected static RecordToken getRecordTokenFromString(String id) {
         int pos = id.indexOf('.');
 		
 		if (pos > 0) {
@@ -86,85 +88,20 @@ public class Records extends Controller {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result get() throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
-		
+		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "_id");
 		
+		// get parameters
 		String id = JsonValidation.getString(json, "_id");
-		RecordToken tk = getRecordTokenFromString(id);
-		ObjectId userId = new ObjectId(request().username());
-						   	
-		   /*Member user = Member.getById(userId, Sets.create("myaps"));
-		
-		   Set<String> ids = RecordSharing.instance.listRecordIds(user._id, user.myaps);
-		   if (ids.contains(id)) tk = new RecordToken(id, user.myaps.toString());
-		   else {		
-			  Set<Circle> circles = Circle.getAllByMember(userId);
-			
-		   	  for (Circle circle : circles) {
-				ids = RecordSharing.instance.listRecordIds(userId, circle._id);
-				if (ids.contains(id)) tk = new RecordToken(id, circle._id.toString());
-			  }
-		   }*/
-		
-		
+		RecordToken tk = getRecordTokenFromString(id);								   		
 		if (tk==null) return badRequest("Bad token");
+		ObjectId userId = new ObjectId(request().username());
+		
+		// execute
 		Record target = RecordSharing.instance.fetch(userId, tk);
 						
-		return ok(Json.toJson(target));
-	}
-
-	/**
-	 * Returns record data for visualizations. Also fetches the information for large records.
-	 */	
-	/*static Result getRecordData(Map<String, Object> properties, Set<String> fields) throws ModelException {
-		List<Record> records = new ArrayList<Record>(LargeRecord.getAll(properties, fields));		
-		Collections.sort(records);
-		return ok(Json.toJson(records));
-	}*/
-
-	@APICall
-	@Security.Authenticated(MemberSecured.class)
-	public static Result getVisibleRecords() throws AppException {
-		// get own records
-		ObjectId userId = new ObjectId(request().username());
-		
-		Member self = Member.getById(userId, Sets.create("myaps"));
-		
-		List<Record> records = new ArrayList<Record>();
-		
-		Set<String> fields = Sets.create("app","owner","creator","created","name","id");
-		records.addAll(RecordSharing.instance.list(userId, self.myaps, RecordSharing.FULLAPS, fields));
-		
-		//Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("owner", userId).get();
-		
-		//List<Record> records = new ArrayList<Record>(Record.getAll(properties, fields));
-		
-		// get visible records
-		/*Set<Circle> circles = Circle.getAllByMember(userId);
-		
-		for (Circle circle : circles) {
-			records.addAll(RecordSharing.instance.list(userId, circle._id, RecordSharing.FULLAPS, fields));
-		}*/
-		
-		/*
-		properties = new ChainedMap<String, ObjectId>().put("_id", userId).get();
-		Set<String> visible = new ChainedSet<String>().add("visible").get();
-		Member user = Member.get(properties, visible);
-		
-		Set<ObjectId> visibleRecordIds = new HashSet<ObjectId>();
-		for (String userIdString : user.visible.keySet()) {
-			visibleRecordIds.addAll(user.visible.get(userIdString));
-		}
-		Map<String, Set<ObjectId>> visibleRecords = new ChainedMap<String, Set<ObjectId>>().put("_id", visibleRecordIds).get();
-		
-		records.addAll(Record.getAll(visibleRecords, fields));
-		*/		
-		 
-		Collections.sort(records);
-		ReferenceTool.resolveOwners(records, true, true);
-		return ok(Json.toJson(records));
-	}
+		return ok(JsonOutput.toJson(target, "Record", Record.ALL_PUBLIC));
+	}		
 	
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
@@ -186,7 +123,7 @@ public class Records extends Controller {
 				
 		Collections.sort(records);
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
-		return ok(Json.toJson(records));
+		return ok(JsonOutput.toJson(records, "Record", fields));
 	}
 	
 	@APICall
@@ -207,73 +144,30 @@ public class Records extends Controller {
 		return ok(Json.toJson(result));
 	}
 	
-	@APICall
-	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result getSharingInfo() throws ModelException {
-		ObjectId userId = new ObjectId(request().username());				
 		
-		ObjectNode result = Json.newObject();
-		ObjectNode shared = Json.newObject();
-		result.put("shared", shared);
-		
-        Set<Circle> circles = Circle.getAllByOwner(userId);       
-		/*for (Circle circle : circles) {
-			circleResult.put(circle._id.toString(), RecordSharing.instance.listRecordIds(userId, circle._id));
-		}*/
-		
-		result.put("circles", Json.toJson(circles));
-		/*shared.put("circles", Json.toJson(circleResult));*/
-		
-		Set<Space> spaces = Space.getAllByOwner(userId, Sets.create("name", "aps"));
-		/*for (Space space : spaces) {
-			spaceResult.put(space._id.toString(), RecordSharing.instance.listRecordIds(userId, space.aps));
-		}*/
-		
-		result.put("spaces", Json.toJson(spaces));
-		/*shared.put("spaces", Json.toJson(spaceResult));*/
-		
-		Set<StudyParticipation> participations = StudyParticipation.getAllByMember(userId, Sets.create("studyName", "aps"));
-		/*for (StudyParticipation participation : participations) {
-			participationResult.put(participation._id.toString(), RecordSharing.instance.listRecordIds(userId, participation.aps));
-		}*/
-		
-		result.put("participations", Json.toJson(participations));
-		/*shared.put("participations", Json.toJson(participationResult));*/
-		
-		Set<MemberKey> memberkeys = MemberKey.getByOwner(userId);
-		/*for (MemberKey memberkey : memberkeys) {
-		    memberkeyResult.put(memberkey._id.toString(), RecordSharing.instance.listRecordIds(userId, memberkey.aps));
-		}*/
-		result.put("memberkeys", Json.toJson(memberkeys));
-		/*shared.put("memberkeys", Json.toJson(memberkeyResult));*/
-		
-		
-		return ok(result);
-	}
-	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getSharingDetails(String aps) throws AppException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId apsId = new ObjectId(aps);
-		
-		
+				
 		Map<String, Object> query = Circles.getQueries(userId, apsId);
 		if (query == null) {			
 			BSONObject b = RecordSharing.instance.getMeta(userId, apsId, SingleAPSManager.QUERY);
 			if (b!=null) query = b.toMap();
 		}
-		Set<String> records = RecordSharing.instance.listRecordIds(userId, apsId);
+		Set<String> recordsIds = RecordSharing.instance.listRecordIds(userId, apsId);
 		
 		ObjectNode result = Json.newObject();
 		
-		result.put("records", Json.toJson(records));
+		result.put("records", Json.toJson(recordsIds));
 		result.put("query", Json.toJson(query));
 				
 		return ok(result);
 		
 	}
 
+	
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result search(String query) throws AppException {
@@ -292,11 +186,13 @@ public class Records extends Controller {
 			recordIds.add(new ObjectId(searchResult.id));
 		}
 		
-		List<Record> records = new ArrayList<Record>(Record.getAllByIds(recordIds, Sets.create("app","owner","creator","created","name","data")));
+		Set<String> fields = Sets.create("app","owner","creator","created","name","data");
+		List<Record> records = new ArrayList<Record>(Record.getAllByIds(recordIds, fields));
 		
 		Collections.sort(records);
-		return ok(Json.toJson(records));
+		return ok(JsonOutput.toJson(records, "Record", fields));
 	}
+	
 
 	/**
 	 * Updates the spaces the given record is in.
@@ -322,9 +218,9 @@ public class Records extends Controller {
 				
 		for (Space space : spaces) {
 		  if (spaceIds.contains(space._id)) {
-			  RecordSharing.instance.share(userId, owner.myaps, space.aps, recordIds, false);			
+			  RecordSharing.instance.share(userId, owner.myaps, space._id, recordIds, false);			
 		  } else {
-			  RecordSharing.instance.unshare(userId, space.aps, recordIds);				
+			  RecordSharing.instance.unshare(userId, space._id, recordIds);				
 		  }
 		}
 		
@@ -353,9 +249,7 @@ public class Records extends Controller {
 		if (space.autoShare == null) space.autoShare = new HashSet<ObjectId>();
 		space.autoShare.add(toConsent);
 		Space.set(space._id, "autoShare", space.autoShare);
-				
-		//RecordSharing.instance.share(userId, fromSpace, toConsent, null, true);
-		
+								
 		return ok();
 	}
 	
@@ -382,17 +276,15 @@ public class Records extends Controller {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result updateSharing() throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
-		
-		JsonValidation.validate(json, "type", "records", "started", "stopped");
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "records", "started", "stopped");
 		
 		// validate request: record
 		ObjectId userId = new ObjectId(request().username());
 						
 		Set<ObjectId> started = ObjectIdConversion.toObjectIds(JsonExtraction.extractStringSet(json.get("started")));
 		Set<ObjectId> stopped = ObjectIdConversion.toObjectIds(JsonExtraction.extractStringSet(json.get("stopped")));
-		Set<String> recordIds = JsonExtraction.extractStringSet(json.get("records"));
-		String type = JsonValidation.getString(json, "type");
+		Set<String> recordIds = JsonExtraction.extractStringSet(json.get("records"));		
 		Map<String, Object> query = json.has("query") ? JsonExtraction.extractMap(json.get("query")) : null;
 		
 		// get owner
@@ -410,74 +302,57 @@ public class Records extends Controller {
       	}
 		
         for (ObjectId start : started) {
-        	ObjectId aps = null;
+        	
         	boolean withMember = false;
         	Consent consent = Consent.getByIdAndOwner(start, userId, Sets.create("type"));
-        	aps = consent._id;
-        	switch (type) {
-        	case "circles" :        		
-        		withMember = true;
-        		break;
-        	case "spaces" :        		
-        		break;
-        	case "participations" :        		
-        		break;
-        	case "memberkeys" :        		
-        		withMember = true;
-        		break;
-        	case "hcrelated" :
-        		withMember = true;
-        		break;
-        	}
+        	if (consent == null) {
+        		Space space = Space.getByIdAndOwner(start, userId, Sets.create("_id"));
+        		if (space == null) {
+        		  throw new ModelException("error.unknown.consent", "Consent not found");
+        		}
+        	} else {        	
+        	  ConsentType type = consent.type;
+        	  withMember = !type.equals(ConsentType.STUDYPARTICIPATION);
+        	}        	         	
         	        	
         	for (String sourceAps :records.keySet()) {        	  
-        	  RecordSharing.instance.share(userId, new ObjectId(sourceAps), aps, ObjectIdConversion.toObjectIds(records.get(sourceAps)), withMember);
+        	  RecordSharing.instance.share(userId, new ObjectId(sourceAps), start, ObjectIdConversion.toObjectIds(records.get(sourceAps)), withMember);
         	}    
         	
         	if (query != null) {
-        		if (type.equals("spaces")) {
-        		  RecordSharing.instance.shareByQuery(userId, userId, aps, query);
+        		if (consent == null) {
+        		  RecordSharing.instance.shareByQuery(userId, userId, start, query);
         		} else {
-        		  Circles.setQuery(userId, aps, query);        		          		  
-	        	  RecordSharing.instance.applyQuery(userId, query, userId, aps, withMember);	        	  
+        		  Circles.setQuery(userId, start, query);        		          		  
+	        	  RecordSharing.instance.applyQuery(userId, query, userId, start, withMember);	        	  
         		}
         	}
         }
         
         for (ObjectId start : stopped) {
-        	ObjectId aps = null;
+
         	boolean withMember = false;
         	Consent consent = Consent.getByIdAndOwner(start, userId, Sets.create("type"));
-        	aps = consent._id;
-        	switch (type) {
-        	case "circles" :
-        		 
-        		withMember = true;
-        		break;
-        	case "spaces" :
-        		
-        		break;
-        	case "participations" :
-        		
-        		break;
-        	case "memberkeys" :        		
-        		withMember = true;
-        		break;        	      
-	        case "hcrelated" :
-	    		withMember = true;
-	    		break;
-	    	}
-        	        
+        	if (consent == null) {
+        		Space space = Space.getByIdAndOwner(start, userId, Sets.create("_id"));
+        		if (space == null) {
+        		  throw new ModelException("error.unknown.consent", "Consent not found");
+        		}
+        	} else {        	
+        	  ConsentType type = consent.type;
+        	  withMember = !type.equals(ConsentType.STUDYPARTICIPATION);
+        	}        	         	
+        	        	
         	for (String sourceAps :records.keySet()) {        	  
-          	  RecordSharing.instance.unshare(userId, aps, ObjectIdConversion.toObjectIds(records.get(sourceAps)));
-          	}    
+        	  RecordSharing.instance.unshare(userId, start, ObjectIdConversion.toObjectIds(records.get(sourceAps)));
+        	}    
         	
         	if (query != null) {
-        		if (type.equals("spaces")) {
-        		  RecordSharing.instance.shareByQuery(userId, userId, aps, query);
+        		if (consent == null) {
+        		  RecordSharing.instance.shareByQuery(userId, userId, start, query);
         		} else {
-        		  Circles.setQuery(userId, aps, query);
-	        	  RecordSharing.instance.applyQuery(userId, query, userId, aps, withMember);	        	  
+        		  Circles.setQuery(userId, start, query);        		          		  
+	        	  RecordSharing.instance.applyQuery(userId, query, userId, start, withMember);	        	  
         		}
         	}
         	        	

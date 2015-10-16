@@ -7,16 +7,21 @@ import java.util.Set;
 import org.bson.BSONObject;
 import org.bson.types.ObjectId;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
+import utils.collections.Sets;
 import utils.db.NotMaterialized;
 import utils.exceptions.ModelException;
 import utils.search.Search;
 
-
+@JsonFilter("Record")
 public class Record extends Model implements Comparable<Record>, Cloneable {
 
 	private static final String collection = "records";
+	public final static Set<String> ALL_PUBLIC = Sets.create("_id", "id", "owner",
+			"app", "creator", "created", "name", "format", "content", "description", "data", "group");
 
 	// Not encrypted part
 	public ObjectId stream; // series this record belongs to

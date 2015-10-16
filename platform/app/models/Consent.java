@@ -8,14 +8,18 @@ import models.enums.ConsentType;
 
 import org.bson.types.ObjectId;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
 import utils.exceptions.ModelException;
 
+@JsonFilter("Consent")
 public class Consent extends Model {
 
 	protected static final String collection = "consents";
+	public final static Set<String> ALL = Sets.create("owner", "name", "authorized", "type", "status");
 	
 	public ObjectId owner;	
 	public String name;	

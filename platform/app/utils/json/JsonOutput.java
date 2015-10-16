@@ -1,0 +1,47 @@
+package utils.json;
+
+import java.util.Set;
+
+import utils.exceptions.ModelException;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+
+public class JsonOutput {
+	
+	public static String toJson(Object o, String filtered, Set<String> fields) throws ModelException {	   	    
+		fields.add("_id");
+		
+	    SimpleBeanPropertyFilter filter =
+	            new SimpleBeanPropertyFilter.FilterExceptFilter(fields);
+	    SimpleFilterProvider fProvider = new SimpleFilterProvider();
+	    fProvider.addFilter(filtered, filter);
+
+	    ObjectMapper mapper = CustomObjectMapper.me;	  
+
+	    try {
+	      String json = mapper.writer(fProvider).writeValueAsString(o);
+	      return json;
+	    } catch (JsonProcessingException e) {
+	    	throw new ModelException("error.internal.json", e);
+	    }
+	}
+	
+	public static JsonNode toJsonNode(Object o, String filtered, Set<String> fields) throws ModelException {	   	    
+		fields.add("_id");
+		
+	    SimpleBeanPropertyFilter filter =
+	            new SimpleBeanPropertyFilter.FilterExceptFilter(fields);
+	    SimpleFilterProvider fProvider = new SimpleFilterProvider();
+	    fProvider.addFilter(filtered, filter);
+
+	    ObjectMapper mapper = CustomObjectMapper.me.copy();
+	    mapper.setFilters(fProvider);
+	    
+	    return mapper.valueToTree(o);	    	      	   
+	}
+
+}

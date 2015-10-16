@@ -35,11 +35,9 @@ PUT     /shared/api/messages/:id/:from/:to               controllers.Messages.mo
 
 POST    /members/api/records/get                         controllers.Records.get()
 POST    /members/api/records/delete                      controllers.Records.delete()
-GET     /members/api/records/visible                     controllers.Records.getVisibleRecords()
 POST    /members/api/records/list                        controllers.Records.getRecords()
 POST    /members/api/records/info                        controllers.Records.getInfo()
 GET     /members/api/records/:id/view                    controllers.Records.getRecordUrl(id: String)
-GET     /members/api/records/shared                      controllers.Records.getSharingInfo()
 GET     /members/api/records/shared/:apsId               controllers.Records.getSharingDetails(apsId: String)
 GET     /records/redirect/:appId                         controllers.Records.onAuthorized(appId: String)
 GET     /members/api/records/search/:query               controllers.Records.search(query: String)
@@ -82,8 +80,6 @@ GET     /members/api/search/complete/:query              controllers.GlobalSearc
 POST    /members/api/users/get                           controllers.Users.get()
 GET     /shared/api/users/current                        controllers.Users.getCurrentUser()
 GET     /shared/api/users/contacts                      controllers.Users.loadContacts()
-DELETE  /members/api/users/pushed                        controllers.Users.clearPushed()
-DELETE  /members/api/users/shared                        controllers.Users.clearShared()
 GET     /members/api/users/search/:query                 controllers.Users.search(query: String)
 GET     /shared/api/users/complete/:query                controllers.Users.complete(query: String)
 # Research
@@ -159,6 +155,7 @@ POST    /plugins                    controllers.Plugins.get()
 PUT     /plugins/:id                controllers.Plugins.install(id: String)
 DELETE  /plugins/:id                controllers.Plugins.uninstall(id: String)
 GET     /plugins/:id/installed      controllers.Plugins.isInstalled(id: String)
+GET     /plugins/:id/authorized     controllers.Plugins.isAuthorized(id: String)
 GET     /plugins/:id/url            controllers.Plugins.getUrl(id: String)
 
 #Portal

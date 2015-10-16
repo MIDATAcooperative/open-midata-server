@@ -191,7 +191,7 @@ public class MongoDatabase extends Database {
 	public <T extends Model> void set(Class<T> model, String collection, ObjectId modelId, String field, Object value) throws DatabaseException {
 		try {
 			DBObject query = new BasicDBObject("_id", modelId);
-			DBObject update = new BasicDBObject("$set", conversion.toDBObject(model, field, value));
+			DBObject update = new BasicDBObject("$set", conversion.toDBObject(field, value));
 		
 			getCollection(collection).update(query, update);
 		} catch (MongoException e) {
@@ -212,7 +212,7 @@ public class MongoDatabase extends Database {
 			
 			DBObject updateContent = new BasicDBObject();
 			for (String field : fields) {
-				updateContent.put(field, conversion.toDBObjectValue(model.getClass(), field, model.getClass().getField(field).get(model)));
+				updateContent.put(field, conversion.toDBObjectValue(model.getClass().getField(field).get(model)));
 			}
 			long ts = System.currentTimeMillis();
 			updateContent.put(timestampField, ts);
@@ -243,17 +243,17 @@ public class MongoDatabase extends Database {
 			Object property = properties.get(key);
 			if (property instanceof Set<?>) {
 				ArrayList al = new ArrayList();
-				for (Object v : ((Set<?>) property)) al.add(conversion.toDBObjectValue(model, key, v));
+				for (Object v : ((Set<?>) property)) al.add(conversion.toDBObjectValue(v));
 				dbObject.put(key, new BasicDBObject("$in", al));
 			} else if (property instanceof Map<?, ?>) {
 				BasicDBObject dbo = new BasicDBObject();
 				Map propertyMap = (Map<?,?>) property;
 				for (Object k : propertyMap.keySet()) {
-					dbo.put(k.toString(), conversion.toDBObjectValue(model, key, propertyMap.get(k)));
+					dbo.put(k.toString(), conversion.toDBObjectValue(propertyMap.get(k)));
 				}
 				dbObject.put(key,  dbo);
 			} else {
-				dbObject.put(key, conversion.toDBObjectValue(model, key, property));
+				dbObject.put(key, conversion.toDBObjectValue(property));
 			}
 		}
 		return dbObject;

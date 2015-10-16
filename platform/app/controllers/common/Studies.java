@@ -26,8 +26,11 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 import utils.auth.AnyRoleSecured;
+import utils.auth.Rights;
+import utils.exceptions.AuthException;
 import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
@@ -43,18 +46,18 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result search() throws JsonValidationException, ModelException {
-	   ObjectId user = new ObjectId(request().username());
-	   
+	public static Result search() throws JsonValidationException, ModelException, AuthException {
+	   ObjectId user = new ObjectId(request().username());	   
 	   JsonNode json = request().body().asJson();
 	   JsonValidation.validate(json, "properties", "fields");
 							   		
 	   Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 	   Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
-	   	   
+	   
+	   Rights.chk("Studies.search", getRole(), properties, fields);	   	   
 	   Set<Study> studies = Study.getAll(user, properties, fields);
 	   
-	   return ok(Json.toJson(studies));
+	   return ok(JsonOutput.toJson(studies, "Study", fields));
 	}	
 			
 }

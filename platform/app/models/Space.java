@@ -8,9 +8,12 @@ import models.enums.SpaceType;
 
 import org.bson.types.ObjectId;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
+import utils.collections.Sets;
 import utils.db.DatabaseException;
 import utils.db.NotMaterialized;
 import utils.db.OrderOperations;
@@ -18,16 +21,17 @@ import utils.exceptions.ModelException;
 import utils.search.Search;
 import utils.search.SearchException;
 
+@JsonFilter("Space")
 public class Space extends Model implements Comparable<Space> {
 
 	private static final String collection = "spaces";
+	public static final Set<String> ALL = Sets.create("_id", "name","owner", "visualization", "app", "order", "type", "context", "autoShare");
 
 	public String name;
 	public ObjectId owner;
 	public ObjectId visualization;
 	public ObjectId app;
 	public int order;
-	public ObjectId aps;
 	public SpaceType type;
 	public String context;
 	public Set<ObjectId> autoShare;

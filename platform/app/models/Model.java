@@ -5,6 +5,8 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 import utils.db.DBLayer;
 import utils.db.DatabaseConversionException;
 import utils.db.DatabaseException;

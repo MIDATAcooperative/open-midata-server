@@ -33,8 +33,7 @@ public class Developers extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result register() throws JsonValidationException, ModelException {
-		JsonNode json = request().body().asJson();
-		
+		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
 							
 		String email = JsonValidation.getEMail(json, "email");
@@ -112,16 +111,11 @@ public class Developers extends APIController {
 		if (!Developer.authenticationValid(password, user.password)) {
 			return badRequest("Invalid user or password.");
 		}
-		
-		
-		//user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
-		//Developer.set(user._id, "publicKey", user.publicKey);
-		
+						
 		KeyManager.instance.unlock(user._id, "12345");
 		
 		if (AccessPermissionSet.getById(user._id) == null) RecordSharing.instance.createPrivateAPS(user._id, user._id);
-		
-		
+				
 		// user authenticated
 		session().clear();
 		session("id", user._id.toString());

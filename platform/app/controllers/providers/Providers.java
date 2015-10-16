@@ -32,6 +32,7 @@ import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.ModelException;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
@@ -151,15 +152,16 @@ public class Providers extends APIController {
 		String midataID = JsonValidation.getString(json, "midataID");
 		Date birthday = JsonValidation.getDate(json, "birthday");
 		
-		Member result = Member.getByMidataIDAndBirthday(midataID, birthday, Sets.create("firstname","birthday", "lastname","city","zip","country","email","phone","mobile","ssn","address1","address2"));
+		Set<String> memberFields = Sets.create("firstname","birthday", "lastname","city","zip","country","email","phone","mobile","ssn","address1","address2");
+		Member result = Member.getByMidataIDAndBirthday(midataID, birthday, memberFields);
 		HPUser hpuser = HPUser.getById(userId, Sets.create("provider", "firstname", "lastname"));
 		
 		//MemberKeys.getOrCreate(hpuser, result);
 		Set<MemberKey> memberKeys = MemberKey.getByOwnerAndAuthorizedPerson(result._id, userId);
 		
 		ObjectNode obj = Json.newObject();
-		obj.put("member", Json.toJson(result));
-		obj.put("consents", Json.toJson(memberKeys));
+		obj.put("member", JsonOutput.toJsonNode(result, "User", memberFields));
+		obj.put("consents", JsonOutput.toJsonNode(memberKeys, "Consent", MemberKey.ALL));
 		
 		return ok(Json.toJson(obj));
 	}
@@ -175,9 +177,10 @@ public class Providers extends APIController {
 		Set<MemberKey> memberKeys = MemberKey.getByAuthorizedPerson(userId, Sets.create("owner"));
 		Set<ObjectId> ids = new HashSet<ObjectId>();
 		for (MemberKey key : memberKeys) ids.add(key.owner);
-		Set<Member> result = Member.getAll(CMaps.map("_id", ids), Sets.create("_id", "firstname","birthday", "lastname"));
+		Set<String> fields = Sets.create("_id", "firstname","birthday", "lastname"); 
+		Set<Member> result = Member.getAll(CMaps.map("_id", ids), fields);
 		
-		return ok(Json.toJson(result));
+		return ok(JsonOutput.toJson(result, "User", fields));
 	}
 	
 	@Security.Authenticated(ProviderSecured.class)	
@@ -191,13 +194,14 @@ public class Providers extends APIController {
 		
 		Set<HCRelated> backconsent = HCRelated.getByAuthorizedAndOwner(memberId,  userId);
 		
-		Member result = Member.getById(memberId, Sets.create("firstname","birthday", "lastname","city","zip","country","email","phone","mobile","ssn","address1","address2"));
+		Set<String> memberFields = Sets.create("_id", "firstname","birthday", "lastname","city","zip","country","email","phone","mobile","ssn","address1","address2");
+		Member result = Member.getById(memberId, memberFields);
 		if (result==null) return badRequest("Member does not exist.");
 		
 		ObjectNode obj = Json.newObject();
-		obj.put("member", Json.toJson(result));
-		obj.put("consents", Json.toJson(memberKeys));
-		obj.put("backwards", Json.toJson(backconsent));
+		obj.put("member", JsonOutput.toJsonNode(result, "User", memberFields));
+		obj.put("consents", JsonOutput.toJsonNode(memberKeys, "Consent", MemberKey.ALL));
+		obj.put("backwards", JsonOutput.toJsonNode(backconsent, "Consent", Sets.create("_id", "name", "owner") ));
 		return ok(obj);
 	}
 	

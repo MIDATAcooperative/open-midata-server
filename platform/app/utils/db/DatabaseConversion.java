@@ -18,20 +18,8 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
 public class DatabaseConversion {
-
-	private Object encrypt(Class model, String path, Object source) {
-		if (source instanceof Enum) source = ((Enum) source).name();
-		if (source instanceof Set) {
-			Set result = new HashSet();
-			for (Object obj : (Set) source) {
-				result.add(encrypt(model, path, obj));
-			}
-			return result;
-		}
-		return source;
-	}
 	
-	private Object decrypt(Class model, String path, Class type, Object source) {
+	private Object resolveEnums(Class type, Object source) {
 		if (type.isEnum()) {
 			source = Enum.valueOf(type, (String) source);
 		}
@@ -39,6 +27,15 @@ public class DatabaseConversion {
 	}
 	
 	private Object todb(Object inp) throws DatabaseConversionException {
+		if (inp instanceof Enum) return ((Enum) inp).name();
+		if (inp instanceof Set) {
+			Set result = new HashSet();
+			for (Object obj : (Set) inp) {
+				result.add(todb(obj));
+			}
+			return result;
+		}
+			
 		if (inp instanceof JsonSerializable) return toDBObject((JsonSerializable) inp);
 		if (inp instanceof List) {
 			List result = new ArrayList();
@@ -66,7 +63,7 @@ public class DatabaseConversion {
 		for (Field field : model.getFields()) {
 			if (field.getAnnotation(NotMaterialized.class)!=null) continue;
 			try {
-				Object val = todb(encrypt(model, field.getName(), field.get(modelObject)));
+				Object val = todb(field.get(modelObject));
 				if (val != null) dbObject.put(field.getName(), val);
 			} catch (IllegalArgumentException e) {
 				throw new DatabaseConversionException(e);
@@ -77,12 +74,12 @@ public class DatabaseConversion {
 		return dbObject;
 	}
 	
-	public BasicDBObject toDBObject(Class model, String field, Object value) throws DatabaseConversionException {
-		return new BasicDBObject(field, todb(encrypt(model, field, value)));
+	public BasicDBObject toDBObject(String field, Object value) throws DatabaseConversionException {
+		return new BasicDBObject(field, todb(value));
 	}
 	
-	public Object toDBObjectValue(Class model, String field, Object value) throws DatabaseConversionException {
-		return todb(encrypt(model, field, value));
+	public Object toDBObjectValue(Object value) throws DatabaseConversionException {
+		return todb(value);
 	}
 
 	/**
@@ -101,7 +98,7 @@ public class DatabaseConversion {
 		for (Field field : modelClass.getFields()) {
 			if (dbObject.keySet().contains(field.getName())) {
 				try {
-					field.set(modelObject, convert(modelClass, field.getName(), field.getGenericType(), decrypt(modelClass, field.getName(), field.getType(), dbObject.get(field.getName()))));
+					field.set(modelObject, convert(modelClass, field.getName(), field.getGenericType(), resolveEnums(field.getType(), dbObject.get(field.getName()))));
 				} catch (IllegalArgumentException e) {
 					throw new DatabaseConversionException(e);
 				} catch (IllegalAccessException e) {
@@ -160,7 +157,7 @@ public class DatabaseConversion {
 			for (String key : dbObject.keySet()) {
 				String fullpath = path+"."+key;
 				Class<?> cl = valueType instanceof Class ? (Class<?>) valueType : Object.class;
-				map.put(key, convert(model, fullpath, valueType, decrypt(model, fullpath, cl, dbObject.get(key))));
+				map.put(key, convert(model, fullpath, valueType, resolveEnums(cl, dbObject.get(key))));
 			}
 			return map;
 		} else {
@@ -180,7 +177,7 @@ public class DatabaseConversion {
 			Set<Object> set = new HashSet<Object>();
 			String fullpath = path+"[]";
 			for (Object element : dbList) {
-				set.add(convert(model, fullpath, valueType, decrypt(model, fullpath,  (Class<?>) valueType, element)));
+				set.add(convert(model, fullpath, valueType, resolveEnums((Class<?>) valueType, element)));
 			}
 			return set;
 		} else {
@@ -199,7 +196,7 @@ public class DatabaseConversion {
 			List<Object> list = new ArrayList<Object>();
 			String fullpath = path+"[]";
 			for (Object element : dbList) {
-				list.add(convert(model, fullpath, valueType, decrypt(model, fullpath,  (Class<?>) valueType, element)));
+				list.add(convert(model, fullpath, valueType, resolveEnums((Class<?>) valueType, element)));
 			}
 			return list;
 		} else {

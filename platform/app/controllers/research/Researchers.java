@@ -126,16 +126,5 @@ public class Researchers extends APIController {
 		session("org", user.organization.toString());
 		return ok();
 	}
-	
-	@BodyParser.Of(BodyParser.Json.class)
-	@APICall
-	public static Result get() throws JsonValidationException, ModelException {
-		JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "email");
-		
-		ResearchUser user = ResearchUser.getByEmail(JsonValidation.getEMail(json, "email"), Sets.create("gender", "firstname"));
-		
-		return ok(Json.toJson(user));
-	}
 }
