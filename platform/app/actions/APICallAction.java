@@ -20,7 +20,7 @@ public class APICallAction extends Action<APICall> {
     public F.Promise<Result> call(Http.Context ctx) throws Throwable { 
     	try {
     		
-    	  Thread.sleep(500);	
+    	  //Thread.sleep(500);	
     	  JsonNode json = ctx.request().body().asJson();
     	  ctx.args.put("json", json);
     	  String host = ctx.request().getHeader("Origin");
