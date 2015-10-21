@@ -34,7 +34,8 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	public final static Set<String> ALL_PUBLIC = 
 			 Sets.create("_id", "version", "creator", "filename", "name", "description", "tags", 
 	                     "targetUserRole", "spotlighted", "url", "previewUrl", "defaultSpaceName",
-	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins");
+	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
+	                     "authorizationUrl", "consumerKey", "scopeParameters");
 	
 	public long version;
 	public ObjectId creator;

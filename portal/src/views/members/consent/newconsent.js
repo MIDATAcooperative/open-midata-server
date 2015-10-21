@@ -32,7 +32,7 @@ angular.module('portal')
 
                 var role = ($scope.consent.type === "CIRCLE") ? "MEMBER" : "PROVIDER";				
 				angular.forEach($scope.consent.authorized, function(p) {					
-					$scope.authpersons.push(session.resolve(p, function() { return users.getMembers({ "_id" : p, "role" : role },users.ALLPUBLIC ); }));
+					$scope.authpersons.push(session.resolve(p.$oid, function() { return users.getMembers({ "_id" : p, "role" : role }, (role == "PROVIDER" ? users.ALLPUBLIC : users.MINIMAL )); }));
 				});				
 				
 			});

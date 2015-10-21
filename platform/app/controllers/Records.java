@@ -229,7 +229,7 @@ public class Records extends APIController {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	@Security.Authenticated(MemberSecured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result share() throws JsonValidationException, ModelException {
 	
 		JsonNode json = request().body().asJson();

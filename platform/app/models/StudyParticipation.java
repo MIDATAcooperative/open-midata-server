@@ -28,7 +28,7 @@ public class StudyParticipation extends Consent {
 	public String recruiterName; // replication of recruiter name
 	public Set<ObjectId> providers; // (Optional) List of healthcare providers monitoring the member for this study.
 	public List<History> history; // History of participation process
-	public ObjectId aps;
+	//public ObjectId aps;
 	//public Set<ObjectId> shared; // Records of member shared for this study
 	
 	public int yearOfBirth;

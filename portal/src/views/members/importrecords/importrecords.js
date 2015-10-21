@@ -29,11 +29,10 @@ angular.module('portal')
 		var properties = {"_id": {"$oid": userId}};
 		var fields = ["tokens." + appId];
 		var data = {"properties": properties, "fields": fields};
-		$scope.status.doBusy(server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data))).
+		$scope.status.doBusy(server.get(jsRoutes.controllers.Plugins.isAuthorized(appId).url)).
 		then(function(results) {
-			    var users = results.data;
-				var tokens = users[0].tokens[appId];
-				if(!_.isEmpty(tokens)) {
+			    console.log(results);
+				if(results.data == "true") {
 					$scope.authorized = true;
 					$scope.message = "Loading app...";					
 					loadApp();

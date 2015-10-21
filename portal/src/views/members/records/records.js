@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RecordsCtrl', ['$scope', '$state', 'server',  '$filter', 'dateService', 'records', 'circles', 'formats', 'apps', 'status', 'studies', 'session', function($scope, $state, server, $filter, dateService, records, circles, formats, apps, status, studies, session) {
+.controller('RecordsCtrl', ['$scope', '$state', 'server',  '$filter', 'dateService', 'records', 'circles', 'formats', 'apps', 'status', 'studies', 'session', 'spaces', function($scope, $state, server, $filter, dateService, records, circles, formats, apps, status, studies, session, spaces) {
 	
 	// init
 	$scope.error = null;

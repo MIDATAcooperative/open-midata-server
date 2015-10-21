@@ -71,7 +71,7 @@ public class Circles extends APIController {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	@Security.Authenticated(MemberSecured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result listConsents() throws JsonValidationException, ModelException, AuthException {
 		// validate json
 		JsonNode json = request().body().asJson();					

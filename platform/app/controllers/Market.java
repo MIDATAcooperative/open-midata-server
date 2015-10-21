@@ -46,32 +46,32 @@ public class Market extends Controller {
 		app.version = JsonValidation.getLong(json, "version");		
 		app.filename = JsonValidation.getString(json, "filename");
 		app.name = JsonValidation.getString(json, "name");
-		app.description = JsonValidation.getString(json, "description");
+		app.description = JsonValidation.getStringOrNull(json, "description");
 		app.spotlighted = JsonValidation.getBoolean(json, "spotlighted");
 		app.type = JsonValidation.getString(json, "type");
-		app.url = JsonValidation.getString(json, "url");
-		app.previewUrl = JsonValidation.getString(json, "previewUrl");
-		app.developmentServer = JsonValidation.getString(json, "developmentServer");
+		app.url = JsonValidation.getStringOrNull(json, "url");
+		app.previewUrl = JsonValidation.getStringOrNull(json, "previewUrl");
+		app.developmentServer = JsonValidation.getStringOrNull(json, "developmentServer");
 		app.tags = JsonExtraction.extractStringSet(json.get("tags"));
 		app.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
-		app.defaultSpaceName = JsonValidation.getString(json, "defaultSpaceName");
-		app.defaultSpaceContext = JsonValidation.getString(json, "defaultSpaceContext");
+		app.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
+		app.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 
 		// fill in specific fields
 		if (app.type.equals("oauth1") || app.type.equals("oauth2")) {
-			app.authorizationUrl = json.get("authorizationUrl").asText();
-			app.accessTokenUrl = json.get("accessTokenUrl").asText();
-			app.consumerKey = json.get("consumerKey").asText();
-			app.consumerSecret = json.get("consumerSecret").asText();
+			app.authorizationUrl = JsonValidation.getStringOrNull(json, "authorizationUrl");
+			app.accessTokenUrl = JsonValidation.getStringOrNull(json, "accessTokenUrl");
+			app.consumerKey = JsonValidation.getStringOrNull(json, "consumerKey");
+			app.consumerSecret = JsonValidation.getStringOrNull(json, "consumerSecret");
 			if (app.type.equals("oauth1")) {
-				app.requestTokenUrl = json.get("requestTokenUrl").asText();
+				app.requestTokenUrl = JsonValidation.getStringOrNull(json, "requestTokenUrl");
 			} else if (app.type.equals("oauth2")) {
-				app.scopeParameters = json.get("scopeParameters").asText();
+				app.scopeParameters = JsonValidation.getStringOrNull(json, "scopeParameters");
 			}
 		}
 		if (app.type.equals("mobile")) {
-			app.secret = JsonValidation.getString(json, "secret");
+			app.secret = JsonValidation.getStringOrNull(json, "secret");
 		}
 		 
 		try {
@@ -125,34 +125,34 @@ public class Market extends Controller {
 		plugin._id = new ObjectId();
 		
 		plugin.version = JsonValidation.getLong(json, "version");		
-		plugin.filename = JsonValidation.getString(json, "filename");
-		plugin.name = JsonValidation.getString(json, "name");
-		plugin.description = JsonValidation.getString(json, "description");
+		plugin.filename = JsonValidation.getStringOrNull(json, "filename");
+		plugin.name = JsonValidation.getStringOrNull(json, "name");
+		plugin.description = JsonValidation.getStringOrNull(json, "description");
 		plugin.spotlighted = JsonValidation.getBoolean(json, "spotlighted");
 		plugin.type = JsonValidation.getString(json, "type");
-		plugin.url = JsonValidation.getString(json, "url");
-		plugin.previewUrl = JsonValidation.getString(json, "previewUrl");
-		plugin.developmentServer = JsonValidation.getString(json, "developmentServer");
+		plugin.url = JsonValidation.getStringOrNull(json, "url");
+		plugin.previewUrl = JsonValidation.getStringOrNull(json, "previewUrl");
+		plugin.developmentServer = JsonValidation.getStringOrNull(json, "developmentServer");
 		plugin.tags = JsonExtraction.extractStringSet(json.get("tags"));
 		plugin.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
-		plugin.defaultSpaceName = JsonValidation.getString(json, "defaultSpaceName");
-		plugin.defaultSpaceContext = JsonValidation.getString(json, "defaultSpaceContext");
+		plugin.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
+		plugin.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		plugin.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 
 		// fill in specific fields
 		if (plugin.type.equals("oauth1") || plugin.type.equals("oauth2")) {
-			plugin.authorizationUrl = json.get("authorizationUrl").asText();
-			plugin.accessTokenUrl = json.get("accessTokenUrl").asText();
-			plugin.consumerKey = json.get("consumerKey").asText();
-			plugin.consumerSecret = json.get("consumerSecret").asText();
+			plugin.authorizationUrl = JsonValidation.getStringOrNull(json, "authorizationUrl");
+			plugin.accessTokenUrl = JsonValidation.getStringOrNull(json, "accessTokenUrl");
+			plugin.consumerKey = JsonValidation.getStringOrNull(json, "consumerKey");
+			plugin.consumerSecret = JsonValidation.getStringOrNull(json, "consumerSecret");
 			if (plugin.type.equals("oauth1")) {
-				plugin.requestTokenUrl = json.get("requestTokenUrl").asText();
+				plugin.requestTokenUrl = JsonValidation.getStringOrNull(json, "requestTokenUrl");
 			} else if (plugin.type.equals("oauth2")) {
-				plugin.scopeParameters = json.get("scopeParameters").asText();
+				plugin.scopeParameters = JsonValidation.getStringOrNull(json, "scopeParameters");
 			}
 		}
 		if (plugin.type.equals("mobile")) {
-			plugin.secret = JsonValidation.getString(json, "secret");
+			plugin.secret = JsonValidation.getStringOrNull(json, "secret");
 		}
 		
 			

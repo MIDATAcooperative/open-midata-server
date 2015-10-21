@@ -22,6 +22,7 @@ import models.ResearchUser;
 import models.Study;
 import models.StudyParticipation;
 import models.User;
+import models.enums.ConsentStatus;
 import models.enums.EventType;
 import models.enums.InformationType;
 import models.enums.ParticipantSearchStatus;
@@ -190,6 +191,7 @@ public class Studies extends APIController {
 		}
 				
 		part.ownerName = userName;
+		part.status = ConsentStatus.ACTIVE;
 		if (code != null) {
 			part.group = code.group;
 			part.recruiter = code.recruiter;		
@@ -205,8 +207,9 @@ public class Studies extends APIController {
 		
 		part.history = new ArrayList<History>();
 		part.providers = new HashSet<ObjectId>();
-		part.authorized = new HashSet<ObjectId>();
-		part.aps = RecordSharing.instance.createAnonymizedAPS(member._id, study.createdBy, part._id);
+		part.authorized = new HashSet<ObjectId>();		
+		
+		RecordSharing.instance.createAnonymizedAPS(member._id, study.createdBy, part._id);
 		
 		if (code != null) {
 		  History codedentererd = new History(EventType.CODE_ENTERED, part, null); 

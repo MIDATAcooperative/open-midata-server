@@ -41,12 +41,13 @@
 		<div class="well well-sm" ng-repeat="person in authpersons">
 		  <button type="button" ng-click="deletePerson(person)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>	
 		  <address>
-			<strong>{{ person.firstname }} {{ person.lastname }}</strong><br>
-			{{ person.address1 }}<br>
+			<strong>{{ person.firstname }} {{ person.lastname }}</strong>
+			<span ng-show="person.address1 || person.city || person.country"><br>{{ person.address1 }}<br>
 			{{ person.address2 }}<br>
 			{{ person.zip }} {{ person.city }}<br>
 			{{ person.country }}<br>
-			<span ng-show="person.email">Email: {{ member.email }}</span><br>
+			</span>
+			<span ng-show="person.email">Email: {{ member.email }}<br></span>
 		  </address>
 		</div>
 		<button type="button" class="btn btn-default" ng-click="addPeople();">Add New Person</button>

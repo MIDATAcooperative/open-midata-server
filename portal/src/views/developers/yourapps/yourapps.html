@@ -3,6 +3,7 @@
 		
   <div class="panel panel-primary">
     <div class="body">
+      <loader busy="status.isBusy !== false">
       <table class="table" ng-show="apps.length > 0">
         <tr>
           <th>Name</th>
@@ -17,7 +18,8 @@
       </table>
       <p ng-show="apps.length == 0">You have not registered any plugin yet.</p>
       
-      <a class="btn btn-default" ui-sref="developer.registerapp">Register a new plugin</a>		
+      <a class="btn btn-default" ui-sref="developer.registerapp">Register a new plugin</a>
+      </loader>		
     </div>
   </div>		
 

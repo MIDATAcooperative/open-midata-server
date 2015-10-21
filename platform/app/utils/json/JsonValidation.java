@@ -28,6 +28,13 @@ public class JsonValidation {
 		return res;
 	}
 	
+	public static String getStringOrNull(JsonNode json, String field) {
+		String res = json.path(field).asText();
+		if (res != null) res = res.trim();
+		if (res != null && res.length() == 0) return null;
+		return res;
+	}
+	
 	public static ObjectId getObjectId(JsonNode json, String field) {
 		String id = json.path(field).asText();
 		if (id == null || id.trim().equals("") || id.equals("null")) return null;

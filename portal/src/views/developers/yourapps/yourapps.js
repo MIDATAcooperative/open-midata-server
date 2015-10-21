@@ -1,8 +1,10 @@
 angular.module('portal')
-.controller('YourAppsCtrl', ['$scope', '$state', 'views', 'session', 'apps', function($scope, $state, views, session, apps) {
+.controller('YourAppsCtrl', ['$scope', '$state', 'views', 'session', 'apps', 'status', function($scope, $state, views, session, apps, status) {
+
+	$scope.status = new status(true);
 	
 	$scope.init = function(userId) {		
-		  apps.getApps({ creator : userId }, [ "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type"])
+		  $scope.status.doBusy(apps.getApps({ creator : userId }, [ "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type"]))
 		  .then(function(data) { $scope.apps = data.data; });		  		  
 	};
 	
