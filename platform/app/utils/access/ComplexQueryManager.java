@@ -193,7 +193,8 @@ public class ComplexQueryManager {
 			record.encrypted = r2.encrypted;
 			record.encryptedData = r2.encryptedData;	
 			
-			// TODO may be removed if encryption is working
+			// may be removed if encryption is working
+			/*
 			record.app = r2.app;		
 			record.creator = r2.creator;	
 			record.created = r2.created;
@@ -203,6 +204,7 @@ public class ComplexQueryManager {
 			record.time = r2.time;
 			
 			record.createdOld = r2.createdOld;
+			*/
 		}
     }
     

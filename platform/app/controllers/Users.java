@@ -42,9 +42,19 @@ import actions.APICall;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-
+/**
+ * user related functions
+ *
+ */
 public class Users extends APIController {
 	
+	/**
+	 * retrieve a list of users matching some criteria
+	 * allowed restrictions and returned fields depend heavily on user role
+	 * @return list of users
+	 * @throws AppException
+	 * @throws JsonValidationException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
@@ -93,12 +103,22 @@ public class Users extends APIController {
 		return ok(JsonOutput.toJson(users, "User", fields));
 	}
 		
+	/**
+	 * get ID of currently logged in user
+	 * @return
+	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Result getCurrentUser() {
 		return ok(Json.toJson(new ObjectId(request().username())));
 	}
 
+    /**
+     * text search for users
+     * @param query search string
+     * @return list of users (json)
+     * @throws ModelException
+     */
 	@Security.Authenticated(MemberSecured.class)
 	@APICall
 	public static Result search(String query) throws ModelException {
@@ -166,7 +186,7 @@ public class Users extends APIController {
 	/**
 	 * Get a user's authorization tokens for an app.
 	 */
-	static Map<String, String> getTokens(ObjectId userId, ObjectId appId) throws ModelException {
+	protected static Map<String, String> getTokens(ObjectId userId, ObjectId appId) throws ModelException {
 		Member user = Member.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>().add("tokens").get());
 		if (user.tokens.containsKey(appId.toString())) {
 			return user.tokens.get(appId.toString());
@@ -178,7 +198,7 @@ public class Users extends APIController {
 	/**
 	 * Set authorization tokens, namely the access and refresh token.
 	 */
-	static void setTokens(ObjectId userId, ObjectId appId, Map<String, String> tokens) throws ModelException {
+	protected static void setTokens(ObjectId userId, ObjectId appId, Map<String, String> tokens) throws ModelException {
 		Member user = Member.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>().add("tokens").get());
 		user.tokens.put(appId.toString(), tokens);
 		Member.set(userId, "tokens", user.tokens);

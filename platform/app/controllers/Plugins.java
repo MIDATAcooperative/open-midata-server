@@ -48,7 +48,34 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class Plugins extends APIController {
 	
+	/**
+	 * returns the requested plugin fields and checks if the user is allowed to use that plugin
+	 * @param pluginId id of plugin to return
+	 * @param userId id of user to check
+	 * @param fields plugin fields to be returned
+	 * @return requested Plugin object
+	 * @throws ModelException
+	 * @throws AuthException
+	 */
+    protected static Plugin getPluginAndCheckIfInstalled(ObjectId pluginId, ObjectId userId, Set<String> fields) throws ModelException, AuthException {
+    	            
+		Plugin app = Plugin.getById(pluginId, fields);
+		if (app == null) throw new ModelException("error.unknownplugin", "Unknown Plugin");
 
+		return app;
+		
+		// Currently we do not check if installed because we have some "public" plugins 
+		/*
+		User user = User.getById(userId, Sets.create("role", "apps", "visualizations"));
+		if (user == null) throw new ModelException("error.internal", "Unknown User");
+		
+		if (user.apps != null && user.apps.contains(pluginId)) return app;
+		if (user.visualizations != null && user.visualizations.contains(pluginId)) return app;
+		
+		throw new AuthException("error", "User is not authorized to use plugin.");
+		*/    	
+    }
+	
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall

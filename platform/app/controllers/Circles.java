@@ -45,7 +45,10 @@ import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-
+/**
+ * functions for managing consents
+ *
+ */
 public class Circles extends APIController {	
 
 	@BodyParser.Of(BodyParser.Json.class)
@@ -69,6 +72,13 @@ public class Circles extends APIController {
 		return ok(JsonOutput.toJson(circles, "Consent", Sets.create("name", "order", "owner", "authorized")));
 	}
 	
+	/**
+	 * list either all consents of a user or all consents of others where the user is authorized 
+	 * @return list of consents
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 * @throws AuthException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
@@ -98,7 +108,12 @@ public class Circles extends APIController {
 	}
 	
 
-
+    /**
+     * create a new consent
+     * @return Consent json
+     * @throws JsonValidationException
+     * @throws AppException
+     */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
@@ -174,6 +189,13 @@ public class Circles extends APIController {
 		return ok(JsonOutput.toJson(consent, "Consent", Consent.ALL));
 	}
 	
+	/**
+	 * allows a user to get authorized for a consent by providing 
+	 * a passphrase that has been specified during consent creation 
+	 * @return consent authorized list
+	 * @throws JsonValidationException
+	 * @throws AppException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
@@ -204,6 +226,13 @@ public class Circles extends APIController {
 	    }
 	}
 
+	/**
+	 * delete a consent
+	 * @param circleIdString ID of consent
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result delete(String circleIdString) throws JsonValidationException, ModelException {
@@ -232,13 +261,19 @@ public class Circles extends APIController {
 		return ok();
 	}
 
+	/**
+	 * add users to the authorized people list of a consent
+	 * @param circleIdString ID of consent
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws AppException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result addUsers(String circleIdString) throws JsonValidationException, AppException {
 		// validate json
-		JsonNode json = request().body().asJson();
-		
+		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "users");
 		
 		// validate request
@@ -247,7 +282,7 @@ public class Circles extends APIController {
 		
 		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("authorized","type"));
 		if (consent == null) {
-			return badRequest("No consent with this id exists.");
+			return badRequest("No consent with this id belonging to user exists.");
 		}
 		
 		// add users to circle (implicit: if not already present)
@@ -261,6 +296,14 @@ public class Circles extends APIController {
 		return ok();
 	}
 
+	/**
+	 * remove a user from the authorized people lift of a consent
+	 * @param circleIdString ID of consent
+	 * @param memberIdString ID of user
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@Security.Authenticated(MemberSecured.class)
 	@APICall
 	public static Result removeMember(String circleIdString, String memberIdString) throws JsonValidationException, ModelException {
@@ -270,7 +313,7 @@ public class Circles extends APIController {
 		
 		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("authorized","type"));
 		if (consent == null) {
-			return badRequest("No circle with this id exists.");
+			return badRequest("No consent with this id exists.");
 		}
 		
 		// remove member from circle (implicit: if present)
@@ -287,12 +330,26 @@ public class Circles extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * return query for automatic record adding for a consent
+	 * @param userId ID of user
+	 * @param apsId ID of consent
+	 * @return query
+	 * @throws ModelException
+	 */
 	public static Map<String, Object> getQueries(ObjectId userId, ObjectId apsId) throws ModelException {
 		Member member = Member.getById(userId, Sets.create("queries"));
 		if (member.queries!=null) return member.queries.get(apsId.toString());
 		return null;
 	}
 	
+	/**
+	 * set query for automatic record adding for a consent 
+	 * @param userId ID of user
+	 * @param apsId ID of consent
+	 * @param query query to be set
+	 * @throws AppException
+	 */
 	public static void setQuery(ObjectId userId, ObjectId apsId, Map<String, Object> query) throws AppException {
 		Member member = Member.getById(userId, Sets.create("queries"));
 		if (member.queries==null) {
@@ -306,12 +363,14 @@ public class Circles extends APIController {
 			RecordSharing.instance.setMeta(userId, apsId, "_exclude", ids);
 		}
 	}
-	
-	public static Map<String, Object> mergeQueries(Map<String, Object> query1, Map<String, Object> query2) {
-		return query1;
-	}
-	
-	public static void removeQueries(ObjectId userId, ObjectId targetaps) throws ModelException {
+			
+	/**
+	 * remove query for automatic record adding for a consent from user account
+	 * @param userId ID of user
+	 * @param targetaps ID of content
+	 * @throws ModelException
+	 */
+	protected static void removeQueries(ObjectId userId, ObjectId targetaps) throws ModelException {
         Member member = Member.getById(userId, Sets.create("queries"));
 		
 		if (member.queries == null) return;

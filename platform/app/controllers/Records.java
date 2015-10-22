@@ -63,7 +63,10 @@ import actions.APICall;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-
+/**
+ * functions for handling the records
+ *
+ */
 public class Records extends APIController {
 
 	@Security.Authenticated(AnyRoleSecured.class)
@@ -71,6 +74,11 @@ public class Records extends APIController {
 		return ok(authorized.render());
 	}
 	
+	/**
+	 * parse a string into a record token. Three different formats are supported
+	 * @param id record ID to be parsed
+	 * @return
+	 */
 	protected static RecordToken getRecordTokenFromString(String id) {
         int pos = id.indexOf('.');
 		
@@ -83,6 +91,13 @@ public class Records extends APIController {
 		   return new RecordToken(id, userId.toString());
 		}
 	}
+	
+	/**
+	 * retrieve a specific record
+	 * @return record
+	 * @throws JsonValidationException
+	 * @throws AppException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
@@ -103,6 +118,12 @@ public class Records extends APIController {
 		return ok(JsonOutput.toJson(target, "Record", Record.ALL_PUBLIC));
 	}		
 	
+	/**
+	 * retrieve a list of records matching some criteria. Can retrieve only records the user has access to.
+	 * @return list of records
+	 * @throws AppException
+	 * @throws JsonValidationException
+	 */
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
@@ -126,6 +147,12 @@ public class Records extends APIController {
 		return ok(JsonOutput.toJson(records, "Record", fields));
 	}
 	
+	/**
+	 * retrieve aggregated information about records matching some criteria
+	 * @return record info json
+	 * @throws AppException
+	 * @throws JsonValidationException
+	 */
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
@@ -144,7 +171,12 @@ public class Records extends APIController {
 		return ok(Json.toJson(result));
 	}
 	
-		
+	/**
+	 * retrieve record IDs and query of an access permission set (consent or space)	
+	 * @param aps ID of consent or space
+	 * @return
+	 * @throws AppException
+	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getSharingDetails(String aps) throws AppException {
@@ -167,7 +199,6 @@ public class Records extends APIController {
 		
 	}
 
-	
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result search(String query) throws AppException {
@@ -227,6 +258,12 @@ public class Records extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * automatically share all records created in a space into a consent. Used for tasks
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
@@ -253,6 +290,12 @@ public class Records extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * delete a record of the current user.
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws AppException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
@@ -268,8 +311,12 @@ public class Records extends APIController {
 		RecordSharing.instance.deleteRecord(userId, tk);
 		return ok();
 	}
+	
 	/**
-	 * Updates the circles the given record is shared with.
+	 * changes sharing of records to consents and/or spaces
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws AppException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
@@ -387,7 +434,10 @@ public class Records extends APIController {
 	}
 
 	/**
-	 * Get the file associated with a record.
+	 * download a file associated with a record
+	 * @param id record ID token
+	 * @return file
+	 * @throws AppException
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)

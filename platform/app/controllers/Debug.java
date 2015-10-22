@@ -21,6 +21,11 @@ import utils.exceptions.ModelException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
+/**
+ * used for debugging. MUST be removed in productive system
+ * @author alexander
+ *
+ */
 public class Debug extends Controller {
 
 	@APICall

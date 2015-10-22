@@ -13,6 +13,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.RecordSharing;
 
+/**
+ * Default wrapper for requests done by plugins
+ *
+ */
 public class VisualizationCallAction extends Action<VisualizationCall> {
 
     public F.Promise<Result> call(Http.Context ctx) throws Throwable { 

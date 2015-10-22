@@ -9,11 +9,8 @@ import java.util.Set;
 import models.Developer;
 import models.HPUser;
 import models.Member;
-import models.Record;
 import models.ResearchUser;
-import models.Space;
 import models.User;
-import models.enums.APSSecurityLevel;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.Gender;
@@ -26,39 +23,44 @@ import org.bson.types.ObjectId;
 import play.Play;
 import play.Routes;
 import play.mvc.BodyParser;
-import play.mvc.Controller;
 import play.mvc.Result;
 import utils.DateTimeUtils;
-import utils.access.AccessLog;
 import utils.auth.CodeGenerator;
 import utils.auth.PasswordResetToken;
-import utils.collections.CMaps;
-import utils.collections.ChainedMap;
-import utils.collections.ChainedSet;
 import utils.collections.Sets;
 import utils.evolution.AccountPatches;
 import utils.exceptions.ModelException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.mails.MailUtils;
-import views.html.tester;
 import views.html.apstest;
+import views.html.tester;
 import views.txt.mails.lostpwmail;
-
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * Member login, registration and password reset functions 
+ *
+ */
 public class Application extends APIController {
 
+	// For debugging only
 	public static Result test() {
 		return ok(tester.render());
 	}
-	
+
+	// For debugging only
 	public static Result test2() {
 		return ok(apstest.render());
 	} 
 			
+	/**
+	 * Handling of OPTIONS requests
+	 * @param all dummy parameter
+	 * @return status ok
+	 */
 	public static Result checkPreflight(String all) {		
 		String host = request().getHeader("Origin");		
 		if (host.startsWith("http://localhost:") || host.equals("https://demo.midata.coop")) {
@@ -71,6 +73,12 @@ public class Application extends APIController {
 		return ok();
 	}
 
+	/**
+	 * request sending a password reset token by email
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@BodyParser.Of(BodyParser.Json.class) 
 	@APICall
 	public static Result requestPasswordResetToken() throws JsonValidationException, ModelException {
@@ -105,7 +113,13 @@ public class Application extends APIController {
 		return ok();
 	}
 	
-		
+
+	/**
+	 * set a new password for a user account by using a password reset token
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result setPasswordWithToken() throws JsonValidationException, ModelException {
@@ -146,6 +160,12 @@ public class Application extends APIController {
 		return ok();		
 	}
 	
+	/**
+	 * login function for MIDATA members
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result authenticate() throws JsonValidationException, ModelException {
@@ -175,6 +195,12 @@ public class Application extends APIController {
 		return ok();
 	}
 
+	/**
+	 * register a new MIDATA member
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result register() throws JsonValidationException, ModelException {
@@ -255,6 +281,10 @@ public class Application extends APIController {
 		return ok();
 	}
 
+	/**
+	 * logout current user
+	 * @return status ok
+	 */
 	@APICall
 	public static Result logout() {
 		// execute
@@ -264,7 +294,10 @@ public class Application extends APIController {
 		return ok();		
 	}
 	
-	
+	/**
+	 * retrieves a list of URLs to all functions used by the MIDATA portal
+	 * @return javascript file with URL routes
+	 */
 	public static Result javascriptRoutes() {
 		response().setContentType("text/javascript");
 		return ok(Routes.javascriptRouter(

@@ -13,6 +13,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.RecordSharing;
 
+/**
+ * Wrapper for requests done by input forms
+ *
+ */
 public class AppsCallAction extends Action<AppsCall> {
 
     public F.Promise<Result> call(Http.Context ctx) throws Throwable { 

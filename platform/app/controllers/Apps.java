@@ -35,6 +35,7 @@ import utils.auth.AppToken;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
+import utils.exceptions.AuthException;
 import utils.exceptions.ModelException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
@@ -44,13 +45,20 @@ import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * Functions for input forms. May be removed in the future as all MIDATA plugins will use the plugins API instead of this one. 
+ *
+ */
+public class Apps extends APIController {
 
-public class Apps extends Controller {
-
-
+    /**
+     * retrieve URL to be used for an input form. Includes access token for this input form and user	
+     * @param appIdString - ID of input form
+     * @return URL
+     */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result getUrl(String appIdString) {
+	public static Result getUrl(String appIdString) throws ModelException, AuthException {
 		// get app
 		ObjectId appId = new ObjectId(appIdString);
 		ObjectId userId = new ObjectId(request().username());
@@ -58,13 +66,8 @@ public class Apps extends Controller {
 		
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", appId).get();
 		Set<String> fields = Sets.create("filename", "type", "url", "developmentServer", "creator");
-		Plugin app;
-		try {
-			app = Plugin.get(properties, fields);
-		} catch (ModelException e) {
-			return internalServerError(e.getMessage());
-		}
-
+		Plugin app = Plugins.getPluginAndCheckIfInstalled(appId, userId, fields);
+						
 		// create encrypted authToken
 		AppToken appToken = new AppToken(appId, userId);
 		String authToken = appToken.encrypt();
@@ -76,21 +79,20 @@ public class Apps extends Controller {
 		return ok(appServer  + "/" + url);
 	}
 	
+	 /**
+     * retrieve URL to be used for the PREVIEW of an input form. Includes access token for this input form and user	
+     * @param appIdString - ID of input form
+     * @return URL
+     */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result getPreviewUrl(String appIdString) {
+	public static Result getPreviewUrl(String appIdString) throws ModelException, AuthException {
 		// get app
 		ObjectId appId = new ObjectId(appIdString);
 		ObjectId userId = new ObjectId(request().username());
-		String role = session().get("role");
-		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", appId).get();
+		String role = session().get("role");		
 		Set<String> fields = Sets.create("filename", "type", "previewUrl", "developmentServer", "creator");
-		Plugin app;
-		try {
-			app = Plugin.get(properties, fields);
-		} catch (ModelException e) {
-			return internalServerError(e.getMessage());
-		}
+		Plugin app = Plugins.getPluginAndCheckIfInstalled(appId, userId, fields);
 
 		// create encrypted authToken
 		AppToken appToken = new AppToken(appId, userId);
@@ -103,14 +105,20 @@ public class Apps extends Controller {
 		return ok(appServer  + "/" + url);
 	}
 	
+	/**
+     * retrieve URL to be used for an input form that may add data to the data set of a specific consent. Includes access token for this input form and user	
+     * @param appIdString - ID of input form
+     * @param consentIdString - ID of consent
+     * @return URL
+     */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result getUrlForConsent(String appIdString, String consentIdString) throws ModelException {
+	public static Result getUrlForConsent(String appIdString, String consentIdString) throws ModelException, AuthException {
 		// get app
 		ObjectId appId = new ObjectId(appIdString);
 		ObjectId consentId = new ObjectId(consentIdString);
 		ObjectId ownerId = new ObjectId(request().username());				
-		Plugin app = Plugin.getById(appId, Sets.create("filename", "type", "url"));
+		Plugin app = Plugins.getPluginAndCheckIfInstalled(appId, ownerId, Sets.create("filename", "type", "url"));
 		
 		// create encrypted authToken
 		AppToken appToken = new AppToken(appId, ownerId, consentId);

@@ -33,8 +33,18 @@ import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
+/**
+ * functions for managing user tasks
+ *
+ */
 public class Tasking extends APIController {
 	
+	/**
+	 * create a new task for another user
+	 * @return
+	 * @throws ModelException
+	 * @throws JsonValidationException
+	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
@@ -64,6 +74,12 @@ public class Tasking extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * check if tasks are done
+	 * @param who ID of user whos task shall be checked
+	 * @param task task to be checked
+	 * @throws AppException
+	 */
 	public static void check(ObjectId who, Task task) throws AppException {
 		Date dateLimit = new Date(System.currentTimeMillis());
 		Calendar cal = Calendar.getInstance();
@@ -84,6 +100,11 @@ public class Tasking extends APIController {
 		}
 	}
 	
+	/**
+	 * retrieve list of tasks for current user
+	 * @return list of tasks
+	 * @throws AppException
+	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Result list() throws AppException {
@@ -100,6 +121,12 @@ public class Tasking extends APIController {
 		return ok(Json.toJson(tasks));
 	}
 	
+	/**
+	 * lets a user execute one of her tasks
+	 * @param taskIdStr ID of task
+	 * @return space to be shown
+	 * @throws AppException
+	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Result execute(String taskIdStr) throws AppException {

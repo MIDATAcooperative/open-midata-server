@@ -25,8 +25,18 @@ import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class PortalConfig extends Controller {	
+/**
+ * function for reading and writing the portal configuration of each user
+ *
+ */
+public class PortalConfig extends APIController {	
 	
+	/**
+	 * retrieve portal configuration json
+	 * @return json with portal configuration
+	 * @throws JsonValidationException
+	 * @throws AppException
+	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getConfig() throws JsonValidationException, AppException {
@@ -42,6 +52,12 @@ public class PortalConfig extends Controller {
 		return ok();
 	}
 	
+	/**
+	 * write portal configuration for current user
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws AppException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall

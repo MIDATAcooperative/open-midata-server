@@ -27,6 +27,10 @@ import utils.json.JsonValidation.JsonValidationException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * functions for a "news" system. Not used.
+ *
+ */
 @Security.Authenticated(MemberSecured.class)
 public class News extends Controller {
 

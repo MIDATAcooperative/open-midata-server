@@ -15,6 +15,10 @@ import utils.exceptions.AuthException;
 import utils.exceptions.ModelException;
 import utils.json.JsonValidation.JsonValidationException;
 
+/**
+ * Default wrapper for requests done by the portal
+ *
+ */
 public class APICallAction extends Action<APICall> {
 
     public F.Promise<Result> call(Http.Context ctx) throws Throwable { 

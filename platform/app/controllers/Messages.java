@@ -35,7 +35,10 @@ import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-
+/**
+ * functions for a message system. Needs to be rewritten in a secure way. Not used.
+ *
+ */
 public class Messages extends Controller {
 	
 

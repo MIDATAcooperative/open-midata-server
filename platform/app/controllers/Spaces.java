@@ -40,10 +40,19 @@ import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * functions for managing spaces (instances of plugins)
+ *
+ */
 @Security.Authenticated(AnyRoleSecured.class)
 public class Spaces extends Controller {
 	
-
+    /**
+     * retrieve a list of spaces of the current user matching some criteria
+     * @return list of spaces
+     * @throws JsonValidationException
+     * @throws AppException
+     */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result get() throws JsonValidationException, AppException {
@@ -52,9 +61,9 @@ public class Spaces extends Controller {
 		ObjectId userId = new ObjectId(request().username());
 		JsonValidation.validate(json, "properties", "fields");
 		
-
 		// get parameters
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		// always restrict to current user
 		properties.put("owner", userId);		
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 				
@@ -70,6 +79,12 @@ public class Spaces extends Controller {
 		return ok(JsonOutput.toJson(spaces, "Space", fields));
 	}
 
+	/**
+	 * create a new space for the current user
+	 * @return the new space
+	 * @throws JsonValidationException
+	 * @throws AppException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result add() throws JsonValidationException, AppException {
@@ -91,13 +106,13 @@ public class Spaces extends Controller {
 		if (json.has("config")) config = JsonExtraction.extractMap(json.get("config"));
 		
 		// check
-		
+		/* spaces are no longer identified by their name
 		if (Space.existsByNameAndOwner(name, userId)) {
 			return badRequest("A space with this name already exists.");
 		}
+		*/
 				
-		// execute
-		
+		// execute		
 		Space space = add(userId, name, visualizationId, appId, context);
 		
 		if (query != null) {
@@ -110,6 +125,16 @@ public class Spaces extends Controller {
 		return ok(JsonOutput.toJson(space, "Space", Space.ALL));
 	}
 	
+	/**
+	 * helper function to create a new space
+	 * @param userId ID of user owning the space
+	 * @param name name of the space
+	 * @param visualizationId plugin to be used for space
+	 * @param appId input form to be used for space
+	 * @param context name of dashboard where space should be shown
+	 * @return
+	 * @throws ModelException
+	 */
 	public static Space add(ObjectId userId, String name, ObjectId visualizationId, ObjectId appId, String context) throws ModelException {
 						
 		// create new space
@@ -162,6 +187,12 @@ public class Spaces extends Controller {
 				
 	}
 
+	/**
+	 * delete a space of the current user
+	 * @param spaceIdString ID of space
+	 * @return status ok
+	 * @throws ModelException
+	 */
 	@APICall
 	public static Result delete(String spaceIdString) throws ModelException {
 		// validate request
@@ -182,6 +213,13 @@ public class Spaces extends Controller {
 		return ok();
 	}
 
+	/**
+	 * add records to a space of the current user
+	 * @param spaceIdString ID of space
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws AppException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result addRecords(String spaceIdString) throws JsonValidationException, AppException {

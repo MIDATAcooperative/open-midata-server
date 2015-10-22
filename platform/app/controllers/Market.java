@@ -24,10 +24,20 @@ import actions.APICall;
 import com.fasterxml.jackson.databind.JsonNode;
 import play.libs.Json;
 
-
+/**
+ * functions for controlling the "market" of plugins
+ *
+ */
 @Security.Authenticated(DeveloperSecured.class)
 public class Market extends Controller {
 		
+	/**
+	 * update a plugins meta data
+	 * @param pluginIdStr ID of plugin to update
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result updatePlugin(String pluginIdStr) throws JsonValidationException, ModelException {
@@ -83,6 +93,12 @@ public class Market extends Controller {
 		return ok();
 	}
 
+	/**
+	 * create a new plugin
+	 * @return plugin
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result registerPlugin() throws JsonValidationException, ModelException {

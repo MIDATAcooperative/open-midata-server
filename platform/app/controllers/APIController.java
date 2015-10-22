@@ -5,7 +5,11 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-public class APIController extends Controller {
+/**
+ * Baseclass for controller classes
+ *
+ */
+public abstract class APIController extends Controller {
 
 	public static Result inputerror(String field, String type, String message) {		
 		return badRequest(Json.newObject().put("field", field)

@@ -61,9 +61,16 @@ import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import com.mongodb.util.JSONParseException;
 
-// Not secured, accessible from app server
+/**
+ * API for input forms. May be removed when all plugins use the Plugins API
+ *
+ */
 public class AppsAPI extends Controller {
 
+	/**
+	 * handling of OPTIONS requests
+	 * @return status ok
+	 */
 	public static Result checkPreflight() {
 		// allow cross-origin request from app server
 		//String appServer = Play.application().configuration().getString("apps.server");

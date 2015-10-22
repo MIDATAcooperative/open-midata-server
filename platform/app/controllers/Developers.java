@@ -28,8 +28,18 @@ import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * login and registration for developers
+ *
+ */
 public class Developers extends APIController {
 
+	/**
+	 * register a new developer
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result register() throws JsonValidationException, ModelException {
@@ -80,6 +90,12 @@ public class Developers extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * login a developer or admin
+	 * @return status ok / returns "admin" if person logged in is an admin
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result login() throws JsonValidationException, ModelException {
