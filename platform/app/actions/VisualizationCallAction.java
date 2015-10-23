@@ -7,7 +7,8 @@ import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 import utils.access.RecordSharing;
-import utils.exceptions.ModelException;
+import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation.JsonValidationException;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -51,7 +52,9 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
     		} else {
     		  return F.Promise.pure((Result) badRequest(e.getMessage()));
     		}
-		} catch (ModelException e2) {			
+    	} catch (BadRequestException e3) {
+    		return F.Promise.pure((Result) badRequest(e3.getMessage()));
+		} catch (InternalServerException e2) {			
 			return F.Promise.pure((Result) internalServerError(e2.getMessage()));			
 		} finally {
 			RecordSharing.instance.clear();

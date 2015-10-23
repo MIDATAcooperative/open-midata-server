@@ -13,7 +13,7 @@ import org.bson.types.ObjectId;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
 import utils.exceptions.AuthException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import models.FilterRule;
 import models.History;
@@ -91,12 +91,12 @@ public class Rights {
 
 	}
 	
-	public static void chk(String action, UserRole role, Map<String, Object> props, Set<String> fields) throws ModelException, AuthException {
+	public static void chk(String action, UserRole role, Map<String, Object> props, Set<String> fields) throws InternalServerException, AuthException {
 		chk(action, role, props.keySet());
 		chk(action, role, fields);
 	}
 	
-    public static void chk(String action, UserRole role, Map<String, Object> props) throws ModelException, AuthException {
+    public static void chk(String action, UserRole role, Map<String, Object> props) throws InternalServerException, AuthException {
 		chk(action, role, props.keySet());
 	}
     
@@ -104,9 +104,9 @@ public class Rights {
     	return allowed.containsKey(action) && allowed.get(action).containsKey(role);
     }
 	
-	public static void chk(String action, UserRole role, Set<String> fields) throws ModelException, AuthException {
+	public static void chk(String action, UserRole role, Set<String> fields) throws InternalServerException, AuthException {
 		Map<UserRole, Set<String>> ac = allowed.get(action);
-		if (ac == null) throw new ModelException("error.internal", "Action '"+action+"' does not exist");
+		if (ac == null) throw new InternalServerException("error.internal", "Action '"+action+"' does not exist");
 		
 		Set<String> isallowed = ac.get(role);
 		if (isallowed == null) isallowed = ac.get(UserRole.ANY);

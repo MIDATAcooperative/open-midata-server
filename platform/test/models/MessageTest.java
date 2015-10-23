@@ -13,7 +13,7 @@ import org.junit.Test;
 import utils.DateTimeUtils;
 import utils.collections.ChainedSet;
 import utils.db.DBLayer;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import com.mongodb.DBCollection;
 
@@ -32,7 +32,7 @@ public class MessageTest {
 	}
 
 	@Test
-	public void add() throws ModelException {
+	public void add() throws InternalServerException {
 		DBCollection messages = DBLayer.getCollection("messages");
 		assertEquals(0, messages.count());
 		Message message = new Message();

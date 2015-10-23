@@ -18,7 +18,7 @@ import utils.auth.AnyRoleSecured;
 import utils.auth.SpaceToken;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;

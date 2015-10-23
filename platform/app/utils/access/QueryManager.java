@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import models.Record;
 import models.RecordsInfo;

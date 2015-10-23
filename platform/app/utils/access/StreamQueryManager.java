@@ -10,7 +10,7 @@ import utils.auth.EncryptionNotSupportedException;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import models.APSNotExistingException;
 import models.Record;
@@ -75,7 +75,7 @@ public class StreamQueryManager extends QueryManager {
 				  if (r.isStream) {
 					  try {
 					      records.addAll(q.getCache().getAPS(r._id, r.key, r.owner).query(q));
-					  } catch (EncryptionNotSupportedException e) { throw new ModelException("error.internal", "Encryption not supported."); }
+					  } catch (EncryptionNotSupportedException e) { throw new InternalServerException("error.internal", "Encryption not supported."); }
 					  catch (APSNotExistingException e2) {
 						  next.removePermission(r);
 					  }
@@ -102,7 +102,7 @@ public class StreamQueryManager extends QueryManager {
 				if (r.isStream) {
 					try {
 					  filtered.addAll(q.getCache().getAPS(r._id, r.key, r.owner).query(q));
-					} catch (EncryptionNotSupportedException e) { throw new ModelException("error.internal", "Encryption not supported."); }
+					} catch (EncryptionNotSupportedException e) { throw new InternalServerException("error.internal", "Encryption not supported."); }
 				    if (includeStreams) filtered.add(r);	
 				} else filtered.add(r);
 			}
@@ -121,7 +121,7 @@ public class StreamQueryManager extends QueryManager {
 
 	@Override
 	protected List<Record> postProcess(List<Record> records, Query q)
-			throws ModelException {		
+			throws InternalServerException {		
 		return records;
 	}
 

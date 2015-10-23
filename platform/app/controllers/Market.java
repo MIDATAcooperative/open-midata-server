@@ -13,7 +13,7 @@ import utils.auth.DeveloperSecured;
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
 import utils.db.LostUpdateException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -36,11 +36,11 @@ public class Market extends Controller {
 	 * @param pluginIdStr ID of plugin to update
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result updatePlugin(String pluginIdStr) throws JsonValidationException, ModelException {
+	public static Result updatePlugin(String pluginIdStr) throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();
 			
@@ -97,11 +97,11 @@ public class Market extends Controller {
 	 * create a new plugin
 	 * @return plugin
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result registerPlugin() throws JsonValidationException, ModelException {
+	public static Result registerPlugin() throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -132,7 +132,7 @@ public class Market extends Controller {
 			} else if (Plugin.exists(new ChainedMap<String, Object>().put("creator", userId).put("name", name).get())) {
 				return badRequest("A visualization with the same name already exists.");
 			}
-		} catch (ModelException e) {
+		} catch (InternalServerException e) {
 			return internalServerError(e.getMessage());
 		}
 

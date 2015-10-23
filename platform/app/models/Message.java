@@ -7,7 +7,7 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 
 import utils.collections.ChainedMap;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.search.Search;
 import utils.search.SearchException;
 
@@ -31,23 +31,23 @@ public class Message extends Model implements Comparable<Message> {
 		}
 	}
 
-	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
+	public static boolean exists(Map<String, ? extends Object> properties) throws InternalServerException {
 		return Model.exists(Message.class, collection, properties);
 	}
 
-	public static Message get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
+	public static Message get(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.get(Message.class, collection, properties, fields);
 	}
 
-	public static Set<Message> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
+	public static Set<Message> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.getAll(Message.class, collection, properties, fields);
 	}
 
-	public static void set(ObjectId messageId, String field, Object value) throws ModelException {
+	public static void set(ObjectId messageId, String field, Object value) throws InternalServerException {
 		Model.set(Message.class, collection, messageId, field, value);
 	}
 
-	public static void add(Message message) throws ModelException {
+	public static void add(Message message) throws InternalServerException {
 		Model.insert(collection, message);
 
 		// also add this message to each receiver's search index
@@ -55,12 +55,12 @@ public class Message extends Model implements Comparable<Message> {
 			try {
 				Search.add(receiver, "message", message._id, message.title, message.content);
 			} catch (SearchException e) {
-				throw new ModelException("error.internal", e);
+				throw new InternalServerException("error.internal", e);
 			}
 		}
 	}
 
-	public static void delete(ObjectId receiverId, ObjectId messageId) throws ModelException {
+	public static void delete(ObjectId receiverId, ObjectId messageId) throws InternalServerException {
 		// also remove from the search index
 		Search.delete(receiverId, "message", messageId);
 		Model.delete(Message.class, collection, new ChainedMap<String, ObjectId>().put("_id", messageId).get());

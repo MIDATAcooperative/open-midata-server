@@ -16,7 +16,7 @@ import org.junit.Test;
 import utils.DateTimeUtils;
 import utils.collections.ChainedMap;
 import utils.db.DBLayer;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -37,7 +37,7 @@ public class RecordTest {
 	}
 
 	@Test
-	public void exists() throws ModelException {
+	public void exists() throws InternalServerException {
 		DBCollection records = DBLayer.getCollection("records");
 		assertEquals(0, records.count());
 		Record record = new Record();
@@ -55,7 +55,7 @@ public class RecordTest {
 	}
 
 	@Test
-	public void notExists() throws ModelException {
+	public void notExists() throws InternalServerException {
 		DBCollection records = DBLayer.getCollection("records");
 		assertEquals(0, records.count());
 		Record record = new Record();
@@ -73,7 +73,7 @@ public class RecordTest {
 	}
 
 	@Test
-	public void add() throws ModelException {
+	public void add() throws InternalServerException {
 		DBCollection records = DBLayer.getCollection("records");
 		assertEquals(0, records.count());
 		Record record = new Record();
@@ -94,7 +94,7 @@ public class RecordTest {
 	}
 
 	@Test
-	public void delete() throws ModelException {
+	public void delete() throws InternalServerException {
 		DBCollection records = DBLayer.getCollection("records");
 		assertEquals(0, records.count());
 		Record record = new Record();

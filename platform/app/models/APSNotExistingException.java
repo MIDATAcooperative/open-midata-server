@@ -2,9 +2,9 @@ package models;
 
 import org.bson.types.ObjectId;
 
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
-public class APSNotExistingException extends ModelException {
+public class APSNotExistingException extends InternalServerException {
 
 	private ObjectId aps;
 	

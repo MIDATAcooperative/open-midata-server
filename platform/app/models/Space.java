@@ -17,7 +17,7 @@ import utils.collections.Sets;
 import utils.db.DatabaseException;
 import utils.db.NotMaterialized;
 import utils.db.OrderOperations;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.search.Search;
 import utils.search.SearchException;
 
@@ -48,54 +48,54 @@ public class Space extends Model implements Comparable<Space> {
 		}
 	}
 
-	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
+	public static boolean exists(Map<String, ? extends Object> properties) throws InternalServerException {
 		return Model.exists(Space.class, collection, properties);
 	}
 	
-	public static boolean existsByNameAndOwner(String name, ObjectId ownerId) throws ModelException {
+	public static boolean existsByNameAndOwner(String name, ObjectId ownerId) throws InternalServerException {
 		return Model.exists(Space.class, collection, CMaps.map("name", name).map("owner", ownerId));
 	}
 
-	public static Space get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
+	public static Space get(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.get(Space.class, collection, properties, fields);
 	}
 	
-	public static Space getByIdAndOwner(ObjectId spaceId, ObjectId ownerId, Set<String> fields) throws ModelException {
+	public static Space getByIdAndOwner(ObjectId spaceId, ObjectId ownerId, Set<String> fields) throws InternalServerException {
 		return Model.get(Space.class, collection, CMaps.map("_id", spaceId).map("owner", ownerId), fields);
 	}
 	
-	public static Space getByOwnerVisualizationContext(ObjectId ownerId, ObjectId visualizationId, String context, Set<String> fields) throws ModelException {
+	public static Space getByOwnerVisualizationContext(ObjectId ownerId, ObjectId visualizationId, String context, Set<String> fields) throws InternalServerException {
 		return Model.get(Space.class, collection, CMaps.map("owner", ownerId).map("visualization", visualizationId).map("context", context), fields);
 	}
 	
-	public static Space getByOwnerSpecialContext(ObjectId ownerId, String context, Set<String> fields) throws ModelException {
+	public static Space getByOwnerSpecialContext(ObjectId ownerId, String context, Set<String> fields) throws InternalServerException {
 		return Model.get(Space.class, collection, CMaps.map("owner", ownerId).map("context", context), fields);
 	}
 	
-	public static Set<Space> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
+	public static Set<Space> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.getAll(Space.class, collection, properties, fields);
 	}
 	
-	public static Set<Space> getAllByOwner(ObjectId owner, Set<String> fields) throws ModelException {
+	public static Set<Space> getAllByOwner(ObjectId owner, Set<String> fields) throws InternalServerException {
 		return Model.getAll(Space.class, collection, CMaps.map("owner", owner), fields);
 	}
 
-	public static void set(ObjectId spaceId, String field, Object value) throws ModelException {
+	public static void set(ObjectId spaceId, String field, Object value) throws InternalServerException {
 		Model.set(Space.class, collection, spaceId, field, value);
 	}
 
-	public static void add(Space space) throws ModelException {
+	public static void add(Space space) throws InternalServerException {
 		Model.insert(collection, space);
 
 		// also add this space to the user's search index
 		try {
 			Search.add(space.owner, "space", space._id, space.name);
 		} catch (SearchException e) {
-			throw new ModelException("error.internal", e);
+			throw new InternalServerException("error.internal", e);
 		}
 	}
 
-	public static void delete(ObjectId ownerId, ObjectId spaceId) throws ModelException {
+	public static void delete(ObjectId ownerId, ObjectId spaceId) throws InternalServerException {
 		// find order first
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", spaceId).get();
 		Space space = get(properties, new ChainedSet<String>().add("order").get());
@@ -104,7 +104,7 @@ public class Space extends Model implements Comparable<Space> {
 		try {
 			OrderOperations.decrement(collection, ownerId, space.order, 0);
 		} catch (DatabaseException e) {
-			throw new ModelException("error.internal", e);
+			throw new InternalServerException("error.internal", e);
 		}
 
 		// also remove from search index

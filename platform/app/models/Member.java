@@ -11,7 +11,7 @@ import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.search.Search;
 import utils.search.SearchException;
 import utils.search.Search.Type;
@@ -34,58 +34,58 @@ public class Member extends User {
 		role =UserRole.MEMBER;
 	}
 	
-	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
+	public static boolean exists(Map<String, ? extends Object> properties) throws InternalServerException {
 		return Model.exists(Member.class, collection, properties);
 	}
 	
-	public static boolean existsByEMail(String email) throws ModelException {
+	public static boolean existsByEMail(String email) throws InternalServerException {
 		return Model.exists(Member.class, collection, CMaps.map("email", email).map("role",  UserRole.MEMBER));
 	}
 	
-	public static Member getByEmail(String email, Set<String> fields) throws ModelException {
+	public static Member getByEmail(String email, Set<String> fields) throws InternalServerException {
 		return Model.get(Member.class, collection, CMaps.map("email", email).map("role", UserRole.MEMBER), fields);
 	}
 	
-	public static Member getById(ObjectId id, Set<String> fields) throws ModelException {
+	public static Member getById(ObjectId id, Set<String> fields) throws InternalServerException {
 		return Model.get(Member.class, collection, CMaps.map("_id", id), fields);
 	}
 	
-	public static Member getByIdAndApp(ObjectId id, ObjectId appId, Set<String> fields) throws ModelException {
+	public static Member getByIdAndApp(ObjectId id, ObjectId appId, Set<String> fields) throws InternalServerException {
 		return Model.get(Member.class, collection, CMaps.map("_id", id).map("apps", appId), fields);
 	}
 	
-	public static Member getByIdAndVisualization(ObjectId id, ObjectId visualizationId, Set<String> fields) throws ModelException {
+	public static Member getByIdAndVisualization(ObjectId id, ObjectId visualizationId, Set<String> fields) throws InternalServerException {
 		return Model.get(Member.class, collection, CMaps.map("_id", id).map("visualizations", visualizationId), fields);
 	}
 	
-	public static Member getByMidataIDAndBirthday(String midataID, Date birthday, Set<String> fields) throws ModelException {
+	public static Member getByMidataIDAndBirthday(String midataID, Date birthday, Set<String> fields) throws InternalServerException {
 		return Model.get(Member.class, collection, CMaps.map("midataID", midataID).map("birthday", birthday), fields);
 	}
 
-	public static Member get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
+	public static Member get(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.get(Member.class, collection, properties, fields);
 	}
 
-	public static Set<Member> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
+	public static Set<Member> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.getAll(Member.class, collection, properties, fields);
 	}
 
-	public static void set(ObjectId userId, String field, Object value) throws ModelException {
+	public static void set(ObjectId userId, String field, Object value) throws InternalServerException {
 		Model.set(Member.class, collection, userId, field, value);
 	}
 
-	public static void add(Member user) throws ModelException {
+	public static void add(Member user) throws InternalServerException {
 		Model.insert(collection, user);
 
 		// add to search index (email is document's content, so that it is searchable as well)
 		try {
 			Search.add(Type.USER, user._id, user.firstname + " " + user.lastname, user.email);
 		} catch (SearchException e) {
-			throw new ModelException("error.internal", e);
+			throw new InternalServerException("error.internal", e);
 		}
 	}
 
-	public static void delete(ObjectId userId) throws ModelException {
+	public static void delete(ObjectId userId) throws InternalServerException {
 		// remove from search index
 		Search.delete(Type.USER, userId);
 

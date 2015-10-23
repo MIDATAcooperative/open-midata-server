@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 
 public class FormatMatching {
@@ -37,13 +37,13 @@ public class FormatMatching {
 	private static Pattern resolve = Pattern.compile("([\\w\\-\\*]+)(/[\\w\\-\\*]+)?\\[([\\w\\-\\*]+)(/[\\w\\-\\*]+)?\\]");
 	
 	
-	public FormatMatching(Set<String> acceptedFormats) throws ModelException {
+	public FormatMatching(Set<String> acceptedFormats) throws InternalServerException {
 		this.acceptedFormats = acceptedFormats;
 		for (String ac : acceptedFormats) {
 			if (ac.contains("*")) {
 				if (acceptedWildcards == null) acceptedWildcards = new ArrayList<DetailFormat>();
 				Matcher matcher = resolve.matcher(ac);
-				if (!matcher.matches()) throw new ModelException("error.internal", "Bad format expression: "+ac);
+				if (!matcher.matches()) throw new InternalServerException("error.internal", "Bad format expression: "+ac);
 				acceptedWildcards.add(new DetailFormat(matcher));
 			}
 		}
@@ -53,11 +53,11 @@ public class FormatMatching {
 		return acceptedWildcards == null;
 	}
 	
-	public boolean matches(String format) throws ModelException {
+	public boolean matches(String format) throws InternalServerException {
 		if (acceptedFormats.contains(format)) return true;
 		if (acceptedWildcards != null) {
 			Matcher matcher = resolve.matcher(format);
-			if (!matcher.matches()) throw new ModelException("error.internal", "Bad format:"+format);
+			if (!matcher.matches()) throw new InternalServerException("error.internal", "Bad format:"+format);
 			for (DetailFormat df : acceptedWildcards)
 				if (df.matches(new DetailFormat(matcher))) return true;
 		}

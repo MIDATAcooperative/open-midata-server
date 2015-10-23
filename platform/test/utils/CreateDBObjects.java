@@ -13,7 +13,7 @@ import models.Visualization;
 import org.bson.types.ObjectId;
 
 import utils.db.DBLayer;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -21,7 +21,7 @@ import com.mongodb.util.JSON;
 
 public class CreateDBObjects {
 
-	public static ObjectId[] insertUsers(int numUsers) throws ModelException {
+	public static ObjectId[] insertUsers(int numUsers) throws InternalServerException {
 		DBCollection users = DBLayer.getCollection("users");
 		long originalCount = users.count();
 		ObjectId[] userIds = new ObjectId[numUsers];
@@ -45,15 +45,15 @@ public class CreateDBObjects {
 		return userIds;
 	}
 
-	public static ObjectId[] insertRecords(int numRecords) throws ModelException {
+	public static ObjectId[] insertRecords(int numRecords) throws InternalServerException {
 		return insertRecords(numRecords, new ObjectId());
 	}
 
-	public static ObjectId[] insertRecords(int numRecords, ObjectId owner) throws ModelException {
+	public static ObjectId[] insertRecords(int numRecords, ObjectId owner) throws InternalServerException {
 		return insertRecords(numRecords, owner, new ObjectId());
 	}
 
-	public static ObjectId[] insertRecords(int numRecords, ObjectId owner, ObjectId creator) throws ModelException {
+	public static ObjectId[] insertRecords(int numRecords, ObjectId owner, ObjectId creator) throws InternalServerException {
 		DBCollection records = DBLayer.getCollection("records");
 		long originalCount = records.count();
 		ObjectId[] recordIds = new ObjectId[numRecords];
@@ -74,7 +74,7 @@ public class CreateDBObjects {
 		return recordIds;
 	}
 
-	public static ObjectId[] insertVisualizations(int numVisualizations) throws ModelException {
+	public static ObjectId[] insertVisualizations(int numVisualizations) throws InternalServerException {
 		DBCollection visualizations = DBLayer.getCollection("visualizations");
 		long originalCount = visualizations.count();
 		ObjectId[] visualizationIds = new ObjectId[numVisualizations];

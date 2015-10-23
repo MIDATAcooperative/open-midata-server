@@ -31,7 +31,7 @@ import utils.collections.ChainedSet;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -134,9 +134,9 @@ public class Spaces extends Controller {
 	 * @param appId input form to be used for space
 	 * @param context name of dashboard where space should be shown
 	 * @return
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
-	public static Space add(ObjectId userId, String name, ObjectId visualizationId, ObjectId appId, String context) throws ModelException {
+	public static Space add(ObjectId userId, String name, ObjectId visualizationId, ObjectId appId, String context) throws InternalServerException {
 						
 		// create new space
 		Space space = new Space();
@@ -155,7 +155,7 @@ public class Spaces extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result getPreviewUrlFromSetup() throws ModelException, JsonValidationException {
+	public static Result getPreviewUrlFromSetup() throws InternalServerException, JsonValidationException {
 		// validate json
 		JsonNode json = request().body().asJson();				
 		JsonValidation.validate(json, "name", "visualization", "context", "rules");
@@ -192,10 +192,10 @@ public class Spaces extends Controller {
 	 * delete a space of the current user
 	 * @param spaceIdString ID of space
 	 * @return status ok
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
-	public static Result delete(String spaceIdString) throws ModelException {
+	public static Result delete(String spaceIdString) throws InternalServerException {
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId spaceId = new ObjectId(spaceIdString);
@@ -249,7 +249,7 @@ public class Spaces extends Controller {
 	}
 
 	@APICall
-	public static Result getToken(String spaceIdString) throws ModelException {
+	public static Result getToken(String spaceIdString) throws InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId spaceId = new ObjectId(spaceIdString);
 		
@@ -265,7 +265,7 @@ public class Spaces extends Controller {
 	}
 	
 	@APICall
-	public static Result getUrl(String spaceIdString) throws ModelException {
+	public static Result getUrl(String spaceIdString) throws InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId spaceId = new ObjectId(spaceIdString);
 		
@@ -302,7 +302,7 @@ public class Spaces extends Controller {
 	}
 	
 	@APICall
-	public static Result getPreviewUrl(String spaceIdString) throws ModelException {
+	public static Result getPreviewUrl(String spaceIdString) throws InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId spaceId = new ObjectId(spaceIdString);
 		

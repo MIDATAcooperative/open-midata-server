@@ -20,7 +20,7 @@ import utils.DateTimeUtils;
 import utils.auth.MemberSecured;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -51,7 +51,7 @@ public class News extends Controller {
 		List<NewsItem> newsItems;
 		try {
 			newsItems = new ArrayList<NewsItem>(NewsItem.getAll(properties, fields));
-		} catch (ModelException e) {
+		} catch (InternalServerException e) {
 			return badRequest(e.getMessage());
 		}
 		Collections.sort(newsItems);
@@ -78,7 +78,7 @@ public class News extends Controller {
 		item.broadcast = json.get("broadcast").asBoolean();
 		try {
 			NewsItem.add(item);
-		} catch (ModelException e) {
+		} catch (InternalServerException e) {
 			return badRequest(e.getMessage());
 		}
 		return ok();
@@ -95,7 +95,7 @@ public class News extends Controller {
 					.add("news").get());
 			user.news.remove(newsItemId);
 			Member.set(userId, "news", user.news);
-		} catch (ModelException e) {
+		} catch (InternalServerException e) {
 			return badRequest(e.getMessage());
 		}
 		return ok();
@@ -109,7 +109,7 @@ public class News extends Controller {
 			if (!NewsItem.exists(new ChainedMap<String, ObjectId>().put("_id", newsItemId).put("creator", userId).get())) {
 				return badRequest("No news item with this id exists.");
 			}
-		} catch (ModelException e) {
+		} catch (InternalServerException e) {
 			return internalServerError(e.getMessage());
 		}
 
@@ -118,7 +118,7 @@ public class News extends Controller {
 			NewsItem item = NewsItem.get(new ChainedMap<String, ObjectId>().put("_id", newsItemId).get(),
 					new ChainedSet<String>().add("broadcast").get());
 			NewsItem.delete(userId, newsItemId, item.broadcast);
-		} catch (ModelException e) {
+		} catch (InternalServerException e) {
 			return badRequest(e.getMessage());
 		}
 		return ok();

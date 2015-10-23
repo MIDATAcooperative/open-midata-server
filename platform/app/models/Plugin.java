@@ -16,7 +16,7 @@ import utils.collections.Sets;
 import utils.db.DBLayer;
 import utils.db.DatabaseException;
 import utils.db.LostUpdateException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.search.Search;
 import utils.search.SearchException;
 import utils.search.Search.Type;
@@ -78,51 +78,51 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		}
 	}
 	
-	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
+	public static boolean exists(Map<String, ? extends Object> properties) throws InternalServerException {
 		return Model.exists(Plugin.class, collection, properties);
 	}
 
-	public static Plugin get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
+	public static Plugin get(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.get(Plugin.class, collection, properties, fields);
 	}
 	
-	public static Plugin getById(ObjectId id, Set<String> fields) throws ModelException {
+	public static Plugin getById(ObjectId id, Set<String> fields) throws InternalServerException {
 		return Model.get(Plugin.class, collection, CMaps.map("_id", id), fields);
 	}
 
-	public static Set<Plugin> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
+	public static Set<Plugin> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.getAll(Plugin.class, collection, properties, fields);
 	}
 
-	public static void set(ObjectId pluginId, String field, Object value) throws ModelException {
+	public static void set(ObjectId pluginId, String field, Object value) throws InternalServerException {
 		Model.set(Plugin.class, collection, pluginId, field, value);
 	}
 	
-	public static Plugin getByFilenameAndSecret(String name, String secret, Set<String> fields) throws ModelException {
+	public static Plugin getByFilenameAndSecret(String name, String secret, Set<String> fields) throws InternalServerException {
 		return Model.get(Plugin.class, collection, CMaps.map("filename", name).map("secret", secret), fields);
 	}
 	
-	public void update() throws ModelException, LostUpdateException {
+	public void update() throws InternalServerException, LostUpdateException {
 		try {
 			   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","url","developmentServer" );
 		} catch (DatabaseException e) {
-			throw new ModelException("error.internal.db", e);
+			throw new InternalServerException("error.internal.db", e);
 		}
 	}
 
 
-	public static void add(Plugin plugin) throws ModelException {
+	public static void add(Plugin plugin) throws InternalServerException {
 		Model.insert(collection, plugin);
 
 		// add to search index
 		try {
 			Search.add(Type.VISUALIZATION, plugin._id, plugin.name, plugin.description);
 		} catch (SearchException e) {
-			throw new ModelException("error.internal.db", e);
+			throw new InternalServerException("error.internal.db", e);
 		}
 	}
 
-	public static void delete(ObjectId pluginId) throws ModelException {
+	public static void delete(ObjectId pluginId) throws InternalServerException {
 		// remove from search index
 		Search.delete(Type.VISUALIZATION, pluginId);
 

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import models.FormatGroup;
 import models.ContentInfo;
@@ -29,7 +29,7 @@ public class FormatGroupHandling extends QueryManager {
 		return next.lookup(input, q);
 	}
 
-	private void addChildren(String group, Set<String> groups, Set<String> exclude) throws ModelException {		
+	private void addChildren(String group, Set<String> groups, Set<String> exclude) throws InternalServerException {		
 			FormatGroup grp = FormatGroup.getByName(group);
 		    for (FormatGroup child : grp.children) {
 		    	if (!groups.contains(child.name) && !exclude.contains(child.name)) {
@@ -39,7 +39,7 @@ public class FormatGroupHandling extends QueryManager {
 		    }		
 	}
 	
-	private Set<String> prepareFilter(Query q) throws ModelException {		
+	private Set<String> prepareFilter(Query q) throws AppException {		
 		
 		if (q.restrictedBy("group")) {
 			Set<String> contents = new HashSet<String>();

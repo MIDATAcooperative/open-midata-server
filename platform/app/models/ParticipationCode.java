@@ -9,7 +9,7 @@ import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 public class ParticipationCode extends Model {
 	
@@ -24,19 +24,19 @@ public class ParticipationCode extends Model {
 	public ParticipationCodeStatus status; 
 	public Date createdAt;
 	
-	public static void add(ParticipationCode participationCode) throws ModelException {
+	public static void add(ParticipationCode participationCode) throws InternalServerException {
 		Model.insert(collection, participationCode);
 	}
 	
-	public static Set<ParticipationCode> getByStudy(ObjectId study) throws ModelException {
+	public static Set<ParticipationCode> getByStudy(ObjectId study) throws InternalServerException {
 		return Model.getAll(ParticipationCode.class, collection, CMaps.map("study", study), Sets.create("code", "group", "recruiter", "recruiterName", "status", "study", "createdAt"));
 	}
 	
-	public static ParticipationCode getByCode(String code) throws ModelException {
+	public static ParticipationCode getByCode(String code) throws InternalServerException {
 		return Model.get(ParticipationCode.class, collection, CMaps.map("code", code), Sets.create("code", "createdAt", "group", "recruiter", "recruiterName", "status", "study"));
 	}
 	
-	public void setStatus(ParticipationCodeStatus newstatus) throws ModelException {
+	public void setStatus(ParticipationCodeStatus newstatus) throws InternalServerException {
 		Model.set(ParticipationCode.class, collection, this._id, "status", newstatus);
 	}
 }

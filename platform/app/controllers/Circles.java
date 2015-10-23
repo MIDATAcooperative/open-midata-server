@@ -36,7 +36,7 @@ import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -55,7 +55,7 @@ public class Circles extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public static Result get() throws JsonValidationException, ModelException {
+	public static Result get() throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();
 						
@@ -77,13 +77,13 @@ public class Circles extends APIController {
 	 * list either all consents of a user or all consents of others where the user is authorized 
 	 * @return list of consents
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 * @throws AuthException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result listConsents() throws JsonValidationException, ModelException, AuthException {
+	public static Result listConsents() throws JsonValidationException, InternalServerException, AuthException {
 		// validate json
 		JsonNode json = request().body().asJson();					
 		JsonValidation.validate(json, "properties", "fields");
@@ -164,9 +164,9 @@ public class Circles extends APIController {
 					return badRequest("Please choose a different passcode!");
 				}
 			}  catch (NoSuchAlgorithmException e) {
-				throw new ModelException("error.internal.cryptography", e);
+				throw new InternalServerException("error.internal.cryptography", e);
 			} catch (InvalidKeySpecException e) {
-				throw new ModelException("error.internal.cryptography", e);
+				throw new InternalServerException("error.internal.cryptography", e);
 			}
 		}
 			
@@ -221,9 +221,9 @@ public class Circles extends APIController {
 		
 		   return ok(JsonOutput.toJson(consent, "Consent", Sets.create("_id", "authorized")));
 		} catch (NoSuchAlgorithmException e) {
-	    	throw new ModelException("error.internal.cryptography", e);
+	    	throw new InternalServerException("error.internal.cryptography", e);
 	    } catch (InvalidKeySpecException e) {
-	    	throw new ModelException("error.internal.cryptography", e);
+	    	throw new InternalServerException("error.internal.cryptography", e);
 	    }
 	}
 
@@ -232,11 +232,11 @@ public class Circles extends APIController {
 	 * @param circleIdString ID of consent
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public static Result delete(String circleIdString) throws JsonValidationException, ModelException {
+	public static Result delete(String circleIdString) throws JsonValidationException, InternalServerException {
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId circleId = new ObjectId(circleIdString);
@@ -303,11 +303,11 @@ public class Circles extends APIController {
 	 * @param memberIdString ID of user
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@Security.Authenticated(MemberSecured.class)
 	@APICall
-	public static Result removeMember(String circleIdString, String memberIdString) throws JsonValidationException, ModelException {
+	public static Result removeMember(String circleIdString, String memberIdString) throws JsonValidationException, InternalServerException {
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId circleId = new ObjectId(circleIdString);
@@ -336,9 +336,9 @@ public class Circles extends APIController {
 	 * @param userId ID of user
 	 * @param apsId ID of consent
 	 * @return query
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
-	public static Map<String, Object> getQueries(ObjectId userId, ObjectId apsId) throws ModelException {
+	public static Map<String, Object> getQueries(ObjectId userId, ObjectId apsId) throws InternalServerException {
 		Member member = Member.getById(userId, Sets.create("queries"));
 		if (member.queries!=null) return member.queries.get(apsId.toString());
 		return null;
@@ -369,9 +369,9 @@ public class Circles extends APIController {
 	 * remove query for automatic record adding for a consent from user account
 	 * @param userId ID of user
 	 * @param targetaps ID of content
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
-	protected static void removeQueries(ObjectId userId, ObjectId targetaps) throws ModelException {
+	protected static void removeQueries(ObjectId userId, ObjectId targetaps) throws InternalServerException {
         Member member = Member.getById(userId, Sets.create("queries"));
 		
 		if (member.queries == null) return;

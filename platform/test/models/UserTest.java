@@ -20,7 +20,7 @@ import utils.CreateDBObjects;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.db.DBLayer;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -41,7 +41,7 @@ public class UserTest {
 	}
 
 	@Test
-	public void add() throws ModelException {
+	public void add() throws InternalServerException {
 		DBCollection users = DBLayer.getCollection("users");
 		assertEquals(0, users.count());
 		Member user = new Member();
@@ -63,7 +63,7 @@ public class UserTest {
 	}
 
 	@Test
-	public void delete() throws ModelException {
+	public void delete() throws InternalServerException {
 		DBCollection users = DBLayer.getCollection("users");
 		assertEquals(0, users.count());
 		ObjectId[] userIds = CreateDBObjects.insertUsers(1);
@@ -73,7 +73,7 @@ public class UserTest {
 	}
 
 	@Test
-	public void exists() throws ModelException {
+	public void exists() throws InternalServerException {
 		DBCollection users = DBLayer.getCollection("users");
 		assertEquals(0, users.count());
 		assertFalse(Member.exists(new ChainedMap<String, ObjectId>().put("_id", new ObjectId()).get()));
@@ -82,7 +82,7 @@ public class UserTest {
 	}
 
 	@Test
-	public void findSuccess() throws ModelException {
+	public void findSuccess() throws InternalServerException {
 		DBCollection users = DBLayer.getCollection("users");
 		assertEquals(0, users.count());
 		ObjectId userId = CreateDBObjects.insertUsers(1)[0];
@@ -93,7 +93,7 @@ public class UserTest {
 	}
 
 	@Test
-	public void findFailure() throws ModelException {
+	public void findFailure() throws InternalServerException {
 		DBCollection users = DBLayer.getCollection("users");
 		assertEquals(0, users.count());
 		CreateDBObjects.insertUsers(1);

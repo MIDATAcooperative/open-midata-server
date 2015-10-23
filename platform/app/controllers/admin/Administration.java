@@ -17,7 +17,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.auth.AdminSecured;
 import utils.collections.Sets;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
@@ -31,12 +31,12 @@ public class Administration extends APIController {
 	 * change status of target user
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public static Result changeStatus() throws JsonValidationException, ModelException {
+	public static Result changeStatus() throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		

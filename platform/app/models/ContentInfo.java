@@ -7,7 +7,7 @@ import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import models.enums.APSSecurityLevel;
 
@@ -26,7 +26,7 @@ public class ContentInfo extends Model {
 		return name;
 	}
 	
-	public static ContentInfo getByName(String name) throws ModelException {
+	public static ContentInfo getByName(String name) throws InternalServerException {
 		int p = name.indexOf("/");
 		if (p>=0) name = name.substring(0, p);
 		ContentInfo r = Model.get(ContentInfo.class, collection, CMaps.map("content", name), ALL);
@@ -39,7 +39,7 @@ public class ContentInfo extends Model {
 		return r;
 	}
 	
-	public static Set<ContentInfo> getByGroups(Set<String> group) throws ModelException {
+	public static Set<ContentInfo> getByGroups(Set<String> group) throws InternalServerException {
 		return Model.getAll(ContentInfo.class, collection, CMaps.map("group", group), ALL);
 	}
 }

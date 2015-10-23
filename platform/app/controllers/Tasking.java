@@ -29,7 +29,7 @@ import utils.auth.AnyRoleSecured;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -43,13 +43,13 @@ public class Tasking extends APIController {
 	/**
 	 * create a new task for another user
 	 * @return
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 * @throws JsonValidationException
 	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result add() throws ModelException, JsonValidationException {
+	public static Result add() throws InternalServerException, JsonValidationException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		ObjectId userId = new ObjectId(request().username());

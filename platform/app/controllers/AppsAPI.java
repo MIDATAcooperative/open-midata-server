@@ -46,7 +46,7 @@ import utils.collections.Sets;
 import utils.db.DatabaseException;
 import utils.db.FileStorage;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -85,7 +85,7 @@ public class AppsAPI extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result authenticateExternalApp() throws JsonValidationException, ModelException {
+	public static Result authenticateExternalApp() throws JsonValidationException, InternalServerException {
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		
         JsonNode json = request().body().asJson();
@@ -329,7 +329,7 @@ public class AppsAPI extends Controller {
 		    try {
 			  RecordSharing.instance.addRecord(owner._id, record, new FileInputStream(file), filename, contentType);
 		    } catch (FileNotFoundException e) {
-		    	throw new ModelException("error.internal",e);
+		    	throw new InternalServerException("error.internal",e);
 		    }
 						
 			ObjectNode obj = Json.newObject();
@@ -375,7 +375,7 @@ public class AppsAPI extends Controller {
 			if (user == null) return badRequestPromise("Invalid authToken.");
 			accessToken = user.tokens.get(appToken.appId.toString()).get("accessToken");
 			
-		} catch (ModelException e) {
+		} catch (InternalServerException e) {
 			return badRequestPromise(e.getMessage());
 		}
 
@@ -422,7 +422,7 @@ public class AppsAPI extends Controller {
 			oauthToken = user.tokens.get(appToken.appId.toString()).get("oauthToken");
 			oauthTokenSecret = user.tokens.get(appToken.appId.toString()).get("oauthTokenSecret");
 
-		} catch (ModelException e) {
+		} catch (InternalServerException e) {
 			return badRequestPromise(e.getMessage());
 		}
 
@@ -432,7 +432,7 @@ public class AppsAPI extends Controller {
 		try {			
 				app = Plugin.getById(appToken.appId, Sets.create("consumerKey", "consumerSecret"));
 				if (app == null) return badRequestPromise("Invalid authToken");			
-		} catch (ModelException e) {
+		} catch (InternalServerException e) {
 			return badRequestPromise(e.getMessage());
 		}
 

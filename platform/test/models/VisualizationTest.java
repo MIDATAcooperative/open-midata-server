@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import utils.db.DBLayer;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import com.mongodb.DBCollection;
 
@@ -33,7 +33,7 @@ public class VisualizationTest {
 	}
 
 	@Test
-	public void add() throws ModelException {
+	public void add() throws InternalServerException {
 		DBCollection visualizations = DBLayer.getCollection(collection);
 		assertEquals(0, visualizations.count());
 		Visualization visualization = new Visualization();
@@ -50,7 +50,7 @@ public class VisualizationTest {
 	}
 
 	@Test
-	public void delete() throws ModelException {
+	public void delete() throws InternalServerException {
 		DBCollection visualizations = DBLayer.getCollection(collection);
 		assertEquals(0, visualizations.count());
 		Visualization visualization = new Visualization();

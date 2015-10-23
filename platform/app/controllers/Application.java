@@ -30,7 +30,7 @@ import utils.auth.CodeGenerator;
 import utils.auth.PasswordResetToken;
 import utils.collections.Sets;
 import utils.evolution.AccountPatches;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.mails.MailUtils;
@@ -78,11 +78,11 @@ public class Application extends APIController {
 	 * request sending a password reset token by email
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@BodyParser.Of(BodyParser.Json.class) 
 	@APICall
-	public static Result requestPasswordResetToken() throws JsonValidationException, ModelException {
+	public static Result requestPasswordResetToken() throws JsonValidationException, InternalServerException {
 		// validate input
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "role");				
@@ -119,11 +119,11 @@ public class Application extends APIController {
 	 * set a new password for a user account by using a password reset token
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result setPasswordWithToken() throws JsonValidationException, ModelException {
+	public static Result setPasswordWithToken() throws JsonValidationException, InternalServerException {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "token", "password");
@@ -165,11 +165,11 @@ public class Application extends APIController {
 	 * login function for MIDATA members
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result authenticate() throws JsonValidationException, ModelException {
+	public static Result authenticate() throws JsonValidationException, InternalServerException {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "password");	
@@ -200,11 +200,11 @@ public class Application extends APIController {
 	 * register a new MIDATA member
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result register() throws JsonValidationException, ModelException {
+	public static Result register() throws JsonValidationException, InternalServerException {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1");				

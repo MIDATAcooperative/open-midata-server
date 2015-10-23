@@ -24,7 +24,7 @@ import utils.DateTimeUtils;
 import utils.auth.EncryptionNotSupportedException;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import models.Record;
 import models.RecordsInfo;
@@ -95,7 +95,7 @@ public class SingleAPSManager extends QueryManager {
 		}
 	}
 	
-	public void removeAccess(Set<ObjectId> targets) throws ModelException {
+	public void removeAccess(Set<ObjectId> targets) throws InternalServerException {
 		try {
 			  boolean changed = false;
 			  for (ObjectId target : targets)
@@ -272,12 +272,12 @@ public class SingleAPSManager extends QueryManager {
 				return;
 			}
 			
-			if (record.key == null) throw new ModelException("error.internal", "Cannot encrypt");
+			if (record.key == null) throw new InternalServerException("error.internal", "Cannot encrypt");
 			
 			SecretKey encKey = new SecretKeySpec(record.key, EncryptedAPS.KEY_ALGORITHM);
 			
-			if (record.format == null) throw new ModelException("error.internal", "Missing format in record!");
-			if (record.content == null) throw new ModelException("error.internal", "Missing content in record!");
+			if (record.format == null) throw new InternalServerException("error.internal", "Missing format in record!");
+			if (record.content == null) throw new InternalServerException("error.internal", "Missing content in record!");
 			
 			Map<String, Object> meta = new HashMap<String, Object>();
 			meta.put("app", record.app);
@@ -327,7 +327,7 @@ public class SingleAPSManager extends QueryManager {
 				if (content!=null) record.content = content;
 				//AccessLog.debug("decrypt cnt="+content+" fmt="+format);
 				record.tags = (Set<String>) meta.get("tags");
-				} catch (ModelException e) {
+				} catch (InternalServerException e) {
 					AccessLog.debug("Error decrypting record: id="+record._id.toString());
 					//throw e;
 				}
@@ -336,18 +336,18 @@ public class SingleAPSManager extends QueryManager {
 			if (record.encryptedData != null) {
 				try {
 				record.data = EncryptionUtils.decryptBSON(encKey, record.encryptedData);
-				} catch (ModelException e) {
+				} catch (InternalServerException e) {
 					AccessLog.debug("Error decrypting data of record: id="+record._id.toString());
 					//throw e;
 				}
 			}
 			
-			//if (!record.encrypted.equals("enc"+record.key)) throw new ModelException("Cannot decrypt");
+			//if (!record.encrypted.equals("enc"+record.key)) throw new InternalServerException("Cannot decrypt");
 		}
 						
 		private void addPermissionInternal(Record record, boolean withOwner) throws AppException {
 						
-			if (record.key == null) throw new ModelException("error.internal", "Record with NULL key: Record:"+record.name+"/"+record.content+"/"+record.isStream);
+			if (record.key == null) throw new InternalServerException("error.internal", "Record with NULL key: Record:"+record.name+"/"+record.content+"/"+record.isStream);
 			// resolve Format
 			BasicBSONObject obj = APSEntry.findMatchingRowForRecord(eaps.getPermissions(), record, true);
 			obj = APSEntry.getEntries(obj);	
@@ -382,7 +382,7 @@ public class SingleAPSManager extends QueryManager {
 			}
 		}
 		
-		private void recoverFromLostUpdate() throws ModelException {
+		private void recoverFromLostUpdate() throws InternalServerException {
 			try {
 			   Thread.sleep(rand.nextInt(1000));
 			} catch (InterruptedException e) {};
@@ -430,7 +430,7 @@ public class SingleAPSManager extends QueryManager {
 
 		@Override
 		protected List<Record> postProcess(List<Record> records, Query q)
-				throws ModelException {			
+				throws InternalServerException {			
 			return records;
 		}
 

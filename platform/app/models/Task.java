@@ -9,7 +9,7 @@ import models.enums.Frequency;
 import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 
 public class Task extends Model {
@@ -30,23 +30,23 @@ public class Task extends Model {
 	public Frequency frequency;
 	public boolean done;
 	
-	public static void add(Task task) throws ModelException {
+	public static void add(Task task) throws InternalServerException {
 		Model.insert(collection, task);
 	}
 	
-	public static Set<Task> getAllByOwner(ObjectId owner, Set<String> fields) throws ModelException {
+	public static Set<Task> getAllByOwner(ObjectId owner, Set<String> fields) throws InternalServerException {
 		return Model.getAll(Task.class, collection, CMaps.map("owner", owner), fields);
 	}
 	
-	public static void set(ObjectId taskId, String field, Object value) throws ModelException {
+	public static void set(ObjectId taskId, String field, Object value) throws InternalServerException {
 		Model.set(Task.class, collection, taskId, field, value);
 	}
 	
-	public static Task getByIdAndOwner(ObjectId taskId, ObjectId ownerId, Set<String> fields) throws ModelException {
+	public static Task getByIdAndOwner(ObjectId taskId, ObjectId ownerId, Set<String> fields) throws InternalServerException {
 		return Model.get(Task.class, collection, CMaps.map("_id", taskId).map("owner", ownerId), fields);
 	}
 
-	public static void inactivateTask(Task task) throws ModelException {
+	public static void inactivateTask(Task task) throws InternalServerException {
 		Model.delete(Task.class, collection, CMaps.map("_id", task._id));		
 	}
 }

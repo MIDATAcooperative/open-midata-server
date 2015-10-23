@@ -13,7 +13,7 @@ import org.bson.types.ObjectId;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 public class StudyParticipation extends Consent {
 	
@@ -39,39 +39,39 @@ public class StudyParticipation extends Consent {
 		this.type = ConsentType.STUDYPARTICIPATION;
 	}
 	
-	public static void add(StudyParticipation studyparticipation) throws ModelException {
+	public static void add(StudyParticipation studyparticipation) throws InternalServerException {
 		Model.insert(collection, studyparticipation);
 	}
 	
-	public static Set<StudyParticipation> getAllByMember(ObjectId member, Set<String> fields) throws ModelException {
+	public static Set<StudyParticipation> getAllByMember(ObjectId member, Set<String> fields) throws InternalServerException {
 		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("owner", member), fields);
 	}
 	
-	public static Set<StudyParticipation> getParticipantsByStudy(ObjectId study, Set<String> fields) throws ModelException {
+	public static Set<StudyParticipation> getParticipantsByStudy(ObjectId study, Set<String> fields) throws InternalServerException {
 		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("pstatus", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST, ParticipationStatus.RESEARCH_REJECTED)), fields);
 	}
 	
-	public static Set<StudyParticipation> getParticipantsByStudyAndGroup(ObjectId study, String group, Set<String> fields) throws ModelException {
+	public static Set<StudyParticipation> getParticipantsByStudyAndGroup(ObjectId study, String group, Set<String> fields) throws InternalServerException {
 		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("group", group).map("pstatus", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST, ParticipationStatus.RESEARCH_REJECTED)), fields);
 	}
 	
-	public static StudyParticipation getById(ObjectId id, Set<String> fields) throws ModelException {
+	public static StudyParticipation getById(ObjectId id, Set<String> fields) throws InternalServerException {
 		return Model.get(StudyParticipation.class, collection, CMaps.map("_id", id), fields);
 	}
 	
-	public static StudyParticipation getByStudyAndMember(ObjectId study, ObjectId member, Set<String> fields) throws ModelException {
+	public static StudyParticipation getByStudyAndMember(ObjectId study, ObjectId member, Set<String> fields) throws InternalServerException {
 		return Model.get(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("owner", member), fields);
 	}
 	
-	public static StudyParticipation getByStudyAndId(ObjectId study, ObjectId id, Set<String> fields) throws ModelException {
+	public static StudyParticipation getByStudyAndId(ObjectId study, ObjectId id, Set<String> fields) throws InternalServerException {
 		return Model.get(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("_id", id).map("study", study), fields);
 	}
 	
-	public void setPStatus(ParticipationStatus newstatus) throws ModelException {
+	public void setPStatus(ParticipationStatus newstatus) throws InternalServerException {
 		Model.set(StudyParticipation.class, collection, this._id, "pstatus", newstatus);
 	}
     
-    public void addHistory(History newhistory) throws ModelException {
+    public void addHistory(History newhistory) throws InternalServerException {
     	this.history.add(newhistory);
     	Model.set(StudyParticipation.class, collection, this._id, "history", this.history);
     }

@@ -18,7 +18,7 @@ import utils.collections.Sets;
 import utils.db.DBLayer;
 import utils.db.DatabaseException;
 import utils.db.LostUpdateException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.search.Search;
 import utils.search.Search.Type;
 
@@ -36,40 +36,40 @@ public class AccessPermissionSet extends Model {
 	
 	public List<AccessPermissionSet> unmerged;
 	
-	public static void add(AccessPermissionSet aps) throws ModelException {
+	public static void add(AccessPermissionSet aps) throws InternalServerException {
 		Model.insert(collection, aps);	
 	}
 	
-	public static AccessPermissionSet getById(ObjectId id) throws ModelException {
+	public static AccessPermissionSet getById(ObjectId id) throws InternalServerException {
 		return Model.get(AccessPermissionSet.class, collection, CMaps.map("_id", id), Sets.create("keys", "version", "direct" ,"permissions", "encrypted", "security", "unmerged"));
 	}
 		
 	
-	public void updatePermissions() throws ModelException, LostUpdateException {
+	public void updatePermissions() throws InternalServerException, LostUpdateException {
 		try {
 		   DBLayer.secureUpdate(this, collection, "version", "permissions", "unmerged");
 		} catch (DatabaseException e) {
-			throw new ModelException("error.internal.db", e);
+			throw new InternalServerException("error.internal.db", e);
 		}
 	}
 	
-	public void updateEncrypted() throws ModelException, LostUpdateException {
+	public void updateEncrypted() throws InternalServerException, LostUpdateException {
 		try {
 		   DBLayer.secureUpdate(this, collection, "version", "encrypted", "unmerged");
 		} catch (DatabaseException e) {
-			throw new ModelException("error.internal.db", e);
+			throw new InternalServerException("error.internal.db", e);
 		}
 	}
 	
-	public void updateKeys() throws LostUpdateException, ModelException {
+	public void updateKeys() throws LostUpdateException, InternalServerException {
 		try {
 		   DBLayer.secureUpdate(this, collection, "version", "keys");
 		} catch (DatabaseException e) {
-				throw new ModelException("error.internal.db", e);
+				throw new InternalServerException("error.internal.db", e);
 		}		
 	}
 	
-	public static void delete(ObjectId appsId) throws ModelException {	
+	public static void delete(ObjectId appsId) throws InternalServerException {	
 		Model.delete(AccessPermissionSet.class, collection, new ChainedMap<String, ObjectId>().put("_id", appsId).get());
 	}
 }

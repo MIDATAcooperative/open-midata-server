@@ -32,7 +32,7 @@ import utils.auth.CodeGenerator;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
@@ -46,11 +46,11 @@ public class Researchers extends APIController {
 	 * register a new researcher
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result register() throws JsonValidationException, ModelException {
+	public static Result register() throws JsonValidationException, InternalServerException {
 		JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "name", "email", "description", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
@@ -114,11 +114,11 @@ public class Researchers extends APIController {
 	 * login a researcher
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result login() throws JsonValidationException, ModelException {
+	public static Result login() throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		

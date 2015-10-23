@@ -12,7 +12,7 @@ import org.bson.types.ObjectId;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 public class MemberKey extends Consent {
 		
@@ -27,36 +27,36 @@ public class MemberKey extends Consent {
 		this.type = ConsentType.HEALTHCARE;
 	}
 	
-	public static MemberKey getById(ObjectId id) throws ModelException {
+	public static MemberKey getById(ObjectId id) throws InternalServerException {
 		return Model.get(MemberKey.class, collection, CMaps.map("_id", id), ALL);
 	}
 	
-	public static Set<MemberKey> getByOwnerAndAuthorizedPerson(ObjectId ownerId, ObjectId authorizedId) throws ModelException {
+	public static Set<MemberKey> getByOwnerAndAuthorizedPerson(ObjectId ownerId, ObjectId authorizedId) throws InternalServerException {
 		return Model.getAll(MemberKey.class, collection, CMaps.map("owner", ownerId).map("authorized", authorizedId).map("type",  ConsentType.HEALTHCARE), ALL);
 	}
 	
-	public static Set<MemberKey> getByAuthorizedPerson(ObjectId authorizedId, Set<String> fields) throws ModelException {
+	public static Set<MemberKey> getByAuthorizedPerson(ObjectId authorizedId, Set<String> fields) throws InternalServerException {
 		return Model.getAll(MemberKey.class, collection, CMaps.map("authorized", authorizedId).map("type", ConsentType.HEALTHCARE), fields);
 	}
 	
-	public static Set<MemberKey> getByOwner(ObjectId ownerId) throws ModelException {
+	public static Set<MemberKey> getByOwner(ObjectId ownerId) throws InternalServerException {
 		return Model.getAll(MemberKey.class, collection, CMaps.map("owner", ownerId).map("type",  ConsentType.HEALTHCARE), ALL);
 	}
 	
-	public static MemberKey getByIdAndOwner(ObjectId consentId, ObjectId ownerId, Set<String> fields) throws ModelException {
+	public static MemberKey getByIdAndOwner(ObjectId consentId, ObjectId ownerId, Set<String> fields) throws InternalServerException {
 		return Model.get(MemberKey.class, collection, CMaps.map("_id", consentId).map("owner", ownerId), fields);
 	}
 	
-	public void add() throws ModelException {
+	public void add() throws InternalServerException {
 		Model.insert(collection, this);
 	}
 	
-	public void setStatus(ConsentStatus status) throws ModelException {
+	public void setStatus(ConsentStatus status) throws InternalServerException {
 		this.status = status;
 		Model.set(MemberKey.class, collection, this._id, "status", status);
 	}
 	
-	public void setConfirmDate(Date confirmDate) throws ModelException {
+	public void setConfirmDate(Date confirmDate) throws InternalServerException {
 		this.confirmDate = confirmDate;
 		Model.set(MemberKey.class, collection, this._id, "confirmDate", confirmDate);
 	}

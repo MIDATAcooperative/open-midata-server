@@ -6,7 +6,7 @@ import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 public class KeyInfo extends Model {
 
@@ -15,11 +15,11 @@ public class KeyInfo extends Model {
 	public byte[] privateKey;
 	public int type;
 	
-	public static KeyInfo getById(ObjectId id) throws ModelException {
+	public static KeyInfo getById(ObjectId id) throws InternalServerException {
 		return Model.get(KeyInfo.class, collection, CMaps.map("_id", id), Sets.create("privateKey", "type"));
 	}
 	
-	public static void add(KeyInfo keyinfo) throws ModelException {
+	public static void add(KeyInfo keyinfo) throws InternalServerException {
 		Model.insert(collection, keyinfo);
 	}
 }

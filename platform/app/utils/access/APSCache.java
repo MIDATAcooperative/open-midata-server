@@ -10,7 +10,7 @@ import org.bson.types.ObjectId;
 import utils.auth.EncryptionNotSupportedException;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 public class APSCache {
 
@@ -26,7 +26,7 @@ public class APSCache {
 		return who;
 	}
 	
-	public SingleAPSManager getAPS(ObjectId apsId) throws ModelException {
+	public SingleAPSManager getAPS(ObjectId apsId) throws InternalServerException {
 		SingleAPSManager result = cache.get(apsId.toString());
 		if (result == null) {
 			result = new SingleAPSManager(new EncryptedAPS(apsId, who));
@@ -35,7 +35,7 @@ public class APSCache {
 		return result;
 	}
 	
-	public SingleAPSManager getAPS(ObjectId apsId, ObjectId owner) throws ModelException {
+	public SingleAPSManager getAPS(ObjectId apsId, ObjectId owner) throws InternalServerException {
 		SingleAPSManager result = cache.get(apsId.toString());
 		if (result == null) {
 			result = new SingleAPSManager(new EncryptedAPS(apsId, who, owner));

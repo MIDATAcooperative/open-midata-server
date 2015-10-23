@@ -12,7 +12,7 @@ import org.bson.types.ObjectId;
 
 import utils.DateTimeUtils;
 import utils.collections.CMaps;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.search.Search;
 import utils.search.SearchException;
 import utils.search.Search.Type;
@@ -33,19 +33,19 @@ public class ResearchUser extends User {
 		history = new ArrayList<History>();
 	}
 	
-	public static boolean existsByEMail(String email) throws ModelException {
+	public static boolean existsByEMail(String email) throws InternalServerException {
 		return Model.exists(ResearchUser.class, collection, CMaps.map("email", email).map("role", UserRole.RESEARCH));
 	}
 	
-	public static ResearchUser getByEmail(String email, Set<String> fields) throws ModelException {
+	public static ResearchUser getByEmail(String email, Set<String> fields) throws InternalServerException {
 		return Model.get(ResearchUser.class, collection, CMaps.map("email", email).map("role", UserRole.RESEARCH), fields);
 	}
 	
-	public static ResearchUser getById(ObjectId id, Set<String> fields) throws ModelException {
+	public static ResearchUser getById(ObjectId id, Set<String> fields) throws InternalServerException {
 		return Model.get(ResearchUser.class, collection, CMaps.map("_id", id), fields);
 	}
 	
-	public static void add(ResearchUser user) throws ModelException {
+	public static void add(ResearchUser user) throws InternalServerException {
 		Model.insert(collection, user);	
 	}
 	

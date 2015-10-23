@@ -35,8 +35,9 @@ import utils.auth.AppToken;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
+import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -58,7 +59,7 @@ public class Apps extends APIController {
      */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result getUrl(String appIdString) throws ModelException, AuthException {
+	public static Result getUrl(String appIdString) throws AppException {
 		// get app
 		ObjectId appId = new ObjectId(appIdString);
 		ObjectId userId = new ObjectId(request().username());
@@ -86,7 +87,7 @@ public class Apps extends APIController {
      */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result getPreviewUrl(String appIdString) throws ModelException, AuthException {
+	public static Result getPreviewUrl(String appIdString) throws AppException {
 		// get app
 		ObjectId appId = new ObjectId(appIdString);
 		ObjectId userId = new ObjectId(request().username());
@@ -113,7 +114,7 @@ public class Apps extends APIController {
      */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result getUrlForConsent(String appIdString, String consentIdString) throws ModelException, AuthException {
+	public static Result getUrlForConsent(String appIdString, String consentIdString) throws AppException {
 		// get app
 		ObjectId appId = new ObjectId(appIdString);
 		ObjectId consentId = new ObjectId(consentIdString);

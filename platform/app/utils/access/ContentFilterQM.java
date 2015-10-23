@@ -3,7 +3,7 @@ package utils.access;
 import java.util.List;
 
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import models.Record;
 

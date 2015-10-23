@@ -17,7 +17,7 @@ import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -125,7 +125,7 @@ public class LargeRecord  {
 		return chunksWithData;
 	}
 
-	/*public static void set(Record masterRecord, String field, Object value) throws ModelException {
+	/*public static void set(Record masterRecord, String field, Object value) throws InternalServerException {
 		Set<ObjectId> chunkIds = getChunkIds(masterRecord, new ChainedSet<String>().add("field").get());
 		if (chunkIds.size() == 1) {
 			ObjectId chunkId = chunkIds.iterator().next();
@@ -195,7 +195,7 @@ public class LargeRecord  {
 	/**
 	 * Deletes all chunks of the given master record.
 	 */
-	public static void delete(ObjectId masterRecordId) throws ModelException {
+	public static void delete(ObjectId masterRecordId) throws InternalServerException {
 		//LargeRecordChunk.deleteAll(masterRecordId);
 	}
 }

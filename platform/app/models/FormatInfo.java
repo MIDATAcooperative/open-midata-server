@@ -8,7 +8,7 @@ import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 public class FormatInfo extends Model {
 
@@ -18,7 +18,7 @@ public class FormatInfo extends Model {
 	public String format;
 	public ObjectId visualization;
 	
-	public static FormatInfo getByName(String name) throws ModelException {
+	public static FormatInfo getByName(String name) throws InternalServerException {
 	
 		FormatInfo r = Model.get(FormatInfo.class, collection, CMaps.map("format", name), ALL);
 		if (r == null) {

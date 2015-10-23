@@ -12,7 +12,8 @@ import play.mvc.Result;
 import utils.access.AccessLog;
 import utils.access.RecordSharing;
 import utils.exceptions.AuthException;
-import utils.exceptions.ModelException;
+import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation.JsonValidationException;
 
 /**
@@ -48,9 +49,11 @@ public class APICallAction extends Action<APICall> {
     		} else {
     		  return F.Promise.pure((Result) badRequest(e.getMessage()));
     		}
+    	} catch (BadRequestException e5) {
+    		return F.Promise.pure((Result) badRequest(e5.getMessage()));
     	} catch (AuthException e3) {
     		return F.Promise.pure((Result) forbidden(e3.getMessage()));    
-		} catch (ModelException e2) {			
+		} catch (InternalServerException e2) {			
 			return F.Promise.pure((Result) internalServerError(e2.getMessage()));			
 		} finally {
 			RecordSharing.instance.clear();

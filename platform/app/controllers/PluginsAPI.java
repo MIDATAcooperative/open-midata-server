@@ -41,7 +41,7 @@ import utils.db.FileStorage;
 import utils.db.ObjectIdConversion;
 import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;

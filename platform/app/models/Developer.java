@@ -11,7 +11,7 @@ import org.bson.types.ObjectId;
 
 import utils.DateTimeUtils;
 import utils.collections.CMaps;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 
 public class Developer extends User {
@@ -28,20 +28,20 @@ public class Developer extends User {
 		history = new ArrayList<History>();
 	}
 	
-	public static boolean existsByEMail(String email) throws ModelException {
+	public static boolean existsByEMail(String email) throws InternalServerException {
 		return Model.exists(Developer.class, collection, CMaps.map("email", email).map("role", UserRole.DEVELOPER));
 	}
 	
-	public static Developer getByEmail(String email, Set<String> fields) throws ModelException {
+	public static Developer getByEmail(String email, Set<String> fields) throws InternalServerException {
 		return Model.get(Developer.class, collection, CMaps.map("email", email).map("role", UserRole.DEVELOPER), fields);
 	}
 	
-	public static Developer getById(ObjectId id, Set<String> fields) throws ModelException {
+	public static Developer getById(ObjectId id, Set<String> fields) throws InternalServerException {
 		return Model.get(Developer.class, collection, CMaps.map("_id", id), fields);
 	}
 		
 	
-	public static void add(Developer user) throws ModelException {
+	public static void add(Developer user) throws InternalServerException {
 		Model.insert(collection, user);				
 	}
 	

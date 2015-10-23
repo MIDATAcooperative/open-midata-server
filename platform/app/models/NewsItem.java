@@ -7,7 +7,7 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 
 import utils.collections.ChainedMap;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.search.Search;
 import utils.search.Search.Type;
 import utils.search.SearchException;
@@ -32,23 +32,23 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 		}
 	}
 
-	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
+	public static boolean exists(Map<String, ? extends Object> properties) throws InternalServerException {
 		return Model.exists(NewsItem.class, collection, properties);
 	}
 
-	public static NewsItem get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
+	public static NewsItem get(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.get(NewsItem.class, collection, properties, fields);
 	}
 
-	public static Set<NewsItem> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
+	public static Set<NewsItem> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.getAll(NewsItem.class, collection, properties, fields);
 	}
 
-	public static void set(ObjectId newsItemId, String field, Object value) throws ModelException {
+	public static void set(ObjectId newsItemId, String field, Object value) throws InternalServerException {
 		Model.set(NewsItem.class, collection, newsItemId, field, value);
 	}
 
-	public static void add(NewsItem newsItem) throws ModelException {
+	public static void add(NewsItem newsItem) throws InternalServerException {
 		Model.insert(collection, newsItem);
 
 		// add broadcasts to public search index
@@ -56,12 +56,12 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 			try {
 				Search.add(Type.NEWS, newsItem._id, newsItem.title, newsItem.content);
 			} catch (SearchException e) {
-				throw new ModelException("error.internal", e);
+				throw new InternalServerException("error.internal", e);
 			}
 		}
 	}
 
-	public static void delete(ObjectId receiverId, ObjectId newsItemId, boolean broadcast) throws ModelException {
+	public static void delete(ObjectId receiverId, ObjectId newsItemId, boolean broadcast) throws InternalServerException {
 		// also remove from the search index if it was a broadcast
 		if (broadcast) {
 			Search.delete(Type.NEWS, newsItemId);

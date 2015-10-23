@@ -13,7 +13,7 @@ import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.search.Search;
 
 @JsonFilter("Record")
@@ -82,40 +82,40 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 		this.encryptedData = null;
 	}
 
-	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
+	public static boolean exists(Map<String, ? extends Object> properties) throws InternalServerException {
 		return Model.exists(Record.class, collection, properties);
 	}
 
 	
-	public static Record get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
+	public static Record get(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.get(Record.class, collection, properties, fields);
 	}
 	
-	public static Record getById(ObjectId id, Set<String> fields) throws ModelException {
+	public static Record getById(ObjectId id, Set<String> fields) throws InternalServerException {
 		return Model.get(Record.class, collection, CMaps.map("_id", id), fields);
 	}
 
-	public static Set<Record> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
+	public static Set<Record> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.getAll(Record.class, collection, properties, fields);
 	}
 	
-	public static Set<Record> getAllByIds(Set<ObjectId> ids, Set<String> fields) throws ModelException {
+	public static Set<Record> getAllByIds(Set<ObjectId> ids, Set<String> fields) throws InternalServerException {
 		return Model.getAll(Record.class, collection, CMaps.map("_id", ids), fields);
 	}
 	
-	/*public static Record getById(ObjectId id, String encKey, Set<String> fields) throws ModelException {
+	/*public static Record getById(ObjectId id, String encKey, Set<String> fields) throws InternalServerException {
 		return Model.get(Record.class, collection, CMaps.map("_id", id), fields);
 	}
 	
-	public static Set<Record> getAll(Map<String, ? extends Object> properties, Set<String> fields, Map<String, String> keyMap, String defaultKey) throws ModelException {
+	public static Set<Record> getAll(Map<String, ? extends Object> properties, Set<String> fields, Map<String, String> keyMap, String defaultKey) throws InternalServerException {
 		return Model.getAll(Record.class, collection, properties, fields);
 	}*/
 	
-	public static void set(ObjectId recordId, String field, Object value) throws ModelException {
+	public static void set(ObjectId recordId, String field, Object value) throws InternalServerException {
 		Model.set(Record.class, collection, recordId, field, value);
 	}
 
-	public static void add(Record record) throws ModelException {
+	public static void add(Record record) throws InternalServerException {
 		Model.insert(collection, record);
 
 		// also index the data for the text search
@@ -123,16 +123,16 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 		try {
 			Search.add(record.owner, "record", record._id, record.name, record.description);
 		} catch (SearchException e) {
-			throw new ModelException(e);
+			throw new InternalServerException(e);
 		}
 		*/
 	}
 	
-	public static void upsert(Record record) throws ModelException {
+	public static void upsert(Record record) throws InternalServerException {
 		Model.upsert(collection, record);
 	}
 
-	public static void delete(ObjectId ownerId, ObjectId recordId) throws ModelException {
+	public static void delete(ObjectId ownerId, ObjectId recordId) throws InternalServerException {
 		// also remove from search index
 		Search.delete(ownerId, "record", recordId);
 

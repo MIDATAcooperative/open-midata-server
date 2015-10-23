@@ -39,7 +39,7 @@ import utils.access.RecordSharing;
 import utils.collections.CollectionConversion;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

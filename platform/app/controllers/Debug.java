@@ -17,7 +17,7 @@ import utils.access.EncryptedAPS;
 import utils.auth.AnyRoleSecured;
 import utils.auth.RecordToken;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 

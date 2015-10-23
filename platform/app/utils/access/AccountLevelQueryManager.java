@@ -12,7 +12,7 @@ import org.bson.types.ObjectId;
 
 import utils.collections.Sets;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 
 import models.Circle;

@@ -12,13 +12,14 @@ import models.Record;
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 
-import utils.exceptions.ModelException;
+import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 import com.mongodb.BasicDBList;
 
 public class APSEntry {
 
-	public static List<BasicBSONObject> findMatchingRowsForQuery(Map<String, Object> permissions, Query q) throws ModelException {
+	public static List<BasicBSONObject> findMatchingRowsForQuery(Map<String, Object> permissions, Query q) throws AppException {
 		List<BasicBSONObject> result = new ArrayList<BasicBSONObject>();
 		
 		BasicBSONList lst = (BasicBSONList) permissions.get("p");
@@ -47,7 +48,7 @@ public class APSEntry {
 		return result;
 	}
 	
-	public static BasicBSONObject findMatchingRowForRecord(Map<String, Object> permissions, Record record, boolean create) throws ModelException {
+	public static BasicBSONObject findMatchingRowForRecord(Map<String, Object> permissions, Record record, boolean create) throws InternalServerException {
 				
 		BasicBSONList lst = (BasicBSONList) permissions.get("p");		
 		

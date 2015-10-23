@@ -31,7 +31,7 @@ import utils.collections.Sets;
 import utils.db.FileStorage;
 import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -103,7 +103,7 @@ public class GenomeDataConverter extends Controller {
 			if (!Plugin.exists(appProperties)) {
 				return "Invalid authToken.";
 			}
-		} catch (ModelException e) {
+		} catch (InternalServerException e) {
 			return e.getMessage();
 		}
 
@@ -112,7 +112,7 @@ public class GenomeDataConverter extends Controller {
 			if (Member.getByIdAndApp(appToken.userId,  appToken.appId, Sets.create()) == null) {
 				return "Invalid authToken.";
 			}
-		} catch (ModelException e) {
+		} catch (InternalServerException e) {
 			return e.getMessage();
 		}
 		return null;

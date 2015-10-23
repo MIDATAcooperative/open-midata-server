@@ -17,7 +17,7 @@ import org.junit.Test;
 
 import utils.collections.ChainedMap;
 import utils.db.DBLayer;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import com.mongodb.DBCollection;
 
@@ -36,7 +36,7 @@ public class SpaceTest {
 	}
 
 	@Test
-	public void exists() throws ModelException {
+	public void exists() throws InternalServerException {
 		DBCollection spaces = DBLayer.getCollection("spaces");
 		assertEquals(0, spaces.count());
 		Space space = new Space();
@@ -53,7 +53,7 @@ public class SpaceTest {
 	}
 
 	@Test
-	public void notExists() throws ModelException {
+	public void notExists() throws InternalServerException {
 		DBCollection spaces = DBLayer.getCollection("spaces");
 		assertEquals(0, spaces.count());
 		Space space = new Space();
@@ -70,7 +70,7 @@ public class SpaceTest {
 	}
 
 	@Test
-	public void add() throws ModelException {
+	public void add() throws InternalServerException {
 		DBCollection spaces = DBLayer.getCollection("spaces");
 		assertEquals(0, spaces.count());
 		Space space = new Space();
@@ -87,7 +87,7 @@ public class SpaceTest {
 	}
 
 	@Test
-	public void delete() throws ModelException {
+	public void delete() throws InternalServerException {
 		DBCollection spaces = DBLayer.getCollection("spaces");
 		assertEquals(0, spaces.count());
 		Space space = new Space();

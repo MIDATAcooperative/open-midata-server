@@ -12,7 +12,7 @@ import models.Record;
 import org.bson.BasicBSONObject;
 
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 public class BlackListQM extends QueryManager {
 

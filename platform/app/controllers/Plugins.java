@@ -37,7 +37,8 @@ import utils.collections.ChainedSet;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
-import utils.exceptions.ModelException;
+import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -55,20 +56,20 @@ public class Plugins extends APIController {
 	 * @param userId id of user to check
 	 * @param fields plugin fields to be returned
 	 * @return requested Plugin object
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 * @throws AuthException
 	 */
-    protected static Plugin getPluginAndCheckIfInstalled(ObjectId pluginId, ObjectId userId, Set<String> fields) throws ModelException, AuthException {
+    protected static Plugin getPluginAndCheckIfInstalled(ObjectId pluginId, ObjectId userId, Set<String> fields) throws AppException {
     	            
 		Plugin app = Plugin.getById(pluginId, fields);
-		if (app == null) throw new ModelException("error.unknownplugin", "Unknown Plugin");
+		if (app == null) throw new BadRequestException("error.unknownplugin", "Unknown Plugin");
 
 		return app;
 		
 		// Currently we do not check if installed because we have some "public" plugins 
 		/*
 		User user = User.getById(userId, Sets.create("role", "apps", "visualizations"));
-		if (user == null) throw new ModelException("error.internal", "Unknown User");
+		if (user == null) throw new InternalServerException("error.internal", "Unknown User");
 		
 		if (user.apps != null && user.apps.contains(pluginId)) return app;
 		if (user.visualizations != null && user.visualizations.contains(pluginId)) return app;
@@ -80,7 +81,7 @@ public class Plugins extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result get() throws JsonValidationException, ModelException, AuthException {
+	public static Result get() throws JsonValidationException, InternalServerException, AuthException {
 		// validate json
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "properties", "fields");
@@ -163,7 +164,7 @@ public class Plugins extends APIController {
 			user.apps.remove(new ObjectId(visualizationIdString));
 			User.set(userId, "visualizations", user.visualizations);
 			User.set(userId, "apps", user.apps);
-		} catch (ModelException e) {
+		} catch (InternalServerException e) {
 			return badRequest(e.getMessage());
 		}
 		return ok();
@@ -171,7 +172,7 @@ public class Plugins extends APIController {
 
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result isInstalled(String visualizationIdString) throws ModelException {
+	public static Result isInstalled(String visualizationIdString) throws InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId visualizationId = new ObjectId(visualizationIdString);		
 		boolean isInstalled = Member.getByIdAndVisualization(userId, visualizationId, Sets.create()) != null
@@ -182,7 +183,7 @@ public class Plugins extends APIController {
 	
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result isAuthorized(String visualizationIdString) throws ModelException {
+	public static Result isAuthorized(String visualizationIdString) throws InternalServerException {
 		ObjectId userId = new ObjectId(request().username());				
 			
 		User me = User.getById(userId, Sets.create("tokens"));
@@ -194,7 +195,7 @@ public class Plugins extends APIController {
 
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result getUrl(String visualizationIdString) throws ModelException {
+	public static Result getUrl(String visualizationIdString) throws InternalServerException {
 		ObjectId visualizationId = new ObjectId(visualizationIdString);
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", visualizationId).get();
 		Set<String> fields = new ChainedSet<String>().add("filename").add("url").get();
@@ -207,7 +208,7 @@ public class Plugins extends APIController {
 	
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result getRequestTokenOAuth1(String appIdString) throws ModelException {
+	public static Result getRequestTokenOAuth1(String appIdString) throws InternalServerException {
 		// get app details
 		ObjectId appId = new ObjectId(appIdString);
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", appId).get();
@@ -229,7 +230,7 @@ public class Plugins extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result requestAccessTokenOAuth1(String appIdString) throws JsonValidationException, ModelException {
+	public static Result requestAccessTokenOAuth1(String appIdString) throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "code");
@@ -281,7 +282,7 @@ public class Plugins extends APIController {
 		Plugin app;
 		try {
 			app = Plugin.get(properties, fields);
-		} catch (final ModelException e) {
+		} catch (final InternalServerException e) {
 			return Promise.promise(new Function0<Result>() {
 				public Result apply() {
 					return internalServerError(e.getMessage());
@@ -306,7 +307,7 @@ public class Plugins extends APIController {
 						Map<String, String> tokens = new ChainedMap<String, String>().put("accessToken", accessToken)
 								.put("refreshToken", refreshToken).get();
 						Users.setTokens(userId, appId, tokens);
-					} catch (ModelException e) {
+					} catch (InternalServerException e) {
 						return badRequest(e.getMessage());
 					}
 					return ok();

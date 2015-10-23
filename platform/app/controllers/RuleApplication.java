@@ -13,7 +13,7 @@ import org.bson.types.ObjectId;
 
 import utils.access.AccessLog;
 import utils.collections.Sets;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import utils.rules.Rule;
 
@@ -38,13 +38,13 @@ public class RuleApplication {
 	}
 	
 	/*
-	public boolean qualifiesFor(Record record, FilterRule filterRule) throws ModelException {
+	public boolean qualifiesFor(Record record, FilterRule filterRule) throws InternalServerException {
 		Rule rule = rulecache.get(filterRule.name);
-		if (rule == null) throw new ModelException("Unknown rule: "+filterRule.name);
+		if (rule == null) throw new InternalServerException("Unknown rule: "+filterRule.name);
 		return filterRule.negate ? !rule.qualifies(record, filterRule.params) : rule.qualifies(record, filterRule.params);
 	}
 
-	public void applyRules(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws ModelException {
+	public void applyRules(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws InternalServerException {
 		AccessLog.debug("BEGIN APPLY RULES");
 		Collection<Record> records = RecordSharing.instance.list(userId, sourceaps, RecordSharing.FULLAPS_FLAT_OWNER, RecordSharing.COMPLETE_META);
 		Set<ObjectId> result = applyRules(records, filterRules);		
@@ -62,7 +62,7 @@ public class RuleApplication {
 		
 	}
 	
-	public Set<ObjectId> applyRules(Collection<Record> records, List<FilterRule> filterRules) throws ModelException {
+	public Set<ObjectId> applyRules(Collection<Record> records, List<FilterRule> filterRules) throws InternalServerException {
         Set<ObjectId> result = new HashSet<ObjectId>();
 	    		
 		for (Record record : records) {
@@ -75,7 +75,7 @@ public class RuleApplication {
 		return result;
 	}
 	
-	public boolean applyRules(Record record, List<FilterRule> filterRules) throws ModelException {
+	public boolean applyRules(Record record, List<FilterRule> filterRules) throws InternalServerException {
 		// TODO Apply correctly
 		if (filterRules == null || filterRules.size() == 0) return false;
 		
@@ -88,7 +88,7 @@ public class RuleApplication {
 		return qualifies;
 	}
 	
-	public void applyRules(ObjectId executingPerson, ObjectId userId, Record record, ObjectId useAps) throws ModelException {
+	public void applyRules(ObjectId executingPerson, ObjectId userId, Record record, ObjectId useAps) throws InternalServerException {
 		Member member = Member.getById(userId, Sets.create("rules"));
 		if (member.rules!=null) {
 			for (String key : member.rules.keySet()) {
@@ -104,19 +104,19 @@ public class RuleApplication {
 		}
 	}
 	
-	public void merge(List<FilterRule> target , List<FilterRule> add_rules) throws ModelException {
+	public void merge(List<FilterRule> target , List<FilterRule> add_rules) throws InternalServerException {
 		for (FilterRule rule : add_rules) {
 			for (FilterRule srule : target) {
 				if (rule.name.equals(srule.name)) {
 					Rule r = rulecache.get(srule.name);
-					if (r == null) throw new ModelException("Unknown rule: "+srule.name);
+					if (r == null) throw new InternalServerException("Unknown rule: "+srule.name);
 				    r.merge(srule.params, rule.params);
 				}
 			}
 		}
 	}
 	
-	public void setupRules(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws ModelException {
+	public void setupRules(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws InternalServerException {
 		if (filterRules.size() == 0) {
 			removeRules(userId, targetaps);
 			return;
@@ -134,13 +134,13 @@ public class RuleApplication {
 			
 	}
 	
-	public List<FilterRule> getRules(ObjectId userId, ObjectId apsId) throws ModelException {
+	public List<FilterRule> getRules(ObjectId userId, ObjectId apsId) throws InternalServerException {
 		Member member = Member.getById(userId, Sets.create("rules"));
 		if (member.rules!=null) return member.rules.get(apsId.toString());
 		return null;
 	}
 	
-	public void removeRules(ObjectId userId, ObjectId targetaps) throws ModelException {
+	public void removeRules(ObjectId userId, ObjectId targetaps) throws InternalServerException {
         Member member = Member.getById(userId, Sets.create("rules"));
 		
 		if (member.rules == null) return;
@@ -152,7 +152,7 @@ public class RuleApplication {
 	    }
 	}
 	
-    public void setupRulesForSpace(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws ModelException {				
+    public void setupRulesForSpace(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws InternalServerException {				
 		Map<String, Object> query = queryFromRules(filterRules);						
 		RecordSharing.instance.shareByQuery(userId, sourceaps, targetaps, query);
 	}
@@ -201,13 +201,13 @@ public class RuleApplication {
 		}	
 	}
 	
-	public Map<String, Object> queryFromRules(List<FilterRule> filterRules) throws ModelException {
+	public Map<String, Object> queryFromRules(List<FilterRule> filterRules) throws InternalServerException {
         Map<String, Object> query = new HashMap<String, Object>();
         Map<String, Object> exclude = null;
 		
 		for (FilterRule filterRule : filterRules) {
 			Rule rule = rulecache.get(filterRule.name);
-			if (rule == null) throw new ModelException("Unknown rule: "+filterRule.name);
+			if (rule == null) throw new InternalServerException("Unknown rule: "+filterRule.name);
 			
 			if (filterRule.negate) {
 			   if (exclude==null) {

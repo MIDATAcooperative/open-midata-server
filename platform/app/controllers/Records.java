@@ -49,7 +49,8 @@ import utils.db.FileStorage;
 import utils.db.FileStorage.FileData;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -263,12 +264,12 @@ public class Records extends APIController {
 	 * automatically share all records created in a space into a consent. Used for tasks
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result share() throws JsonValidationException, ModelException {
+	public static Result share() throws JsonValidationException, InternalServerException {
 	
 		JsonNode json = request().body().asJson();
 		
@@ -356,7 +357,7 @@ public class Records extends APIController {
         	if (consent == null) {
         		Space space = Space.getByIdAndOwner(start, userId, Sets.create("_id"));
         		if (space == null) {
-        		  throw new ModelException("error.unknown.consent", "Consent not found");
+        		  throw new BadRequestException("error.unknown.consent", "Consent not found");
         		}
         	} else {        	
         	  ConsentType type = consent.type;
@@ -384,7 +385,7 @@ public class Records extends APIController {
         	if (consent == null) {
         		Space space = Space.getByIdAndOwner(start, userId, Sets.create("_id"));
         		if (space == null) {
-        		  throw new ModelException("error.unknown.consent", "Consent not found");
+        		  throw new BadRequestException("error.unknown.consent", "Consent not found");
         		}
         	} else {        	
         	  ConsentType type = consent.type;

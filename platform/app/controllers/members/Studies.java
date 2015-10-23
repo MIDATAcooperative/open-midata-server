@@ -38,7 +38,7 @@ import utils.auth.Rights;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -60,11 +60,11 @@ public class Studies extends APIController {
 	 * search for consents of a user related to studies
 	 * @return list of consents (StudyParticipation)
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public static Result list() throws JsonValidationException, ModelException {
+	public static Result list() throws JsonValidationException, InternalServerException {
 	   ObjectId user = new ObjectId(request().username());
 	   
 	   Set<String> fields = Sets.create("study","studyName", "pstatus");
@@ -77,13 +77,13 @@ public class Studies extends APIController {
 	 * search for studies matching some criteria
 	 * @return list of studies
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 * @throws AuthException
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result search() throws JsonValidationException, ModelException, AuthException {
+	public static Result search() throws JsonValidationException, InternalServerException, AuthException {
 	   ObjectId user = new ObjectId(request().username());
 	   
 	   JsonNode json = request().body().asJson();
@@ -102,12 +102,12 @@ public class Studies extends APIController {
 	 * join study by participation code. NEEDS TO BE REWRITTEN. USES WRONG CONCEPT OF PARTICIPATION CODES
 	 * @return
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result enterCode() throws JsonValidationException, ModelException {
+	public static Result enterCode() throws JsonValidationException, InternalServerException {
         JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "code");
@@ -208,10 +208,10 @@ public class Studies extends APIController {
 	 * @param member Member who may participate
 	 * @param code ParticipationCode used (NEEDS REWRITE)
 	 * @return StudyParticipation consent
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	
-	public static StudyParticipation createStudyParticipation(Study study, Member member, ParticipationCode code) throws ModelException {
+	public static StudyParticipation createStudyParticipation(Study study, Member member, ParticipationCode code) throws InternalServerException {
 		StudyParticipation part = new StudyParticipation();
 		part._id = new ObjectId();
 		part.study = study._id;
@@ -263,11 +263,11 @@ public class Studies extends APIController {
 	 * @param id ID of study
 	 * @return Study, Research Organization and Consent
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result get(String id) throws JsonValidationException, ModelException {
+	public static Result get(String id) throws JsonValidationException, InternalServerException {
 	   ObjectId userId = new ObjectId(request().username());	
 	   ObjectId studyId = new ObjectId(id);
 	   	   
@@ -292,11 +292,11 @@ public class Studies extends APIController {
 	 * @param id ID of study
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public static Result requestParticipation(String id) throws JsonValidationException, ModelException {
+	public static Result requestParticipation(String id) throws JsonValidationException, InternalServerException {
 		ObjectId userId = new ObjectId(request().username());		
 		ObjectId studyId = new ObjectId(id);
 		
@@ -326,11 +326,11 @@ public class Studies extends APIController {
 	 * @param id ID of study
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public static Result noParticipation(String id) throws JsonValidationException, ModelException {
+	public static Result noParticipation(String id) throws JsonValidationException, InternalServerException {
 		ObjectId userId = new ObjectId(request().username());		
 		ObjectId studyId = new ObjectId(id);
 					

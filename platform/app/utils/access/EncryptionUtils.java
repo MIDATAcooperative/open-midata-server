@@ -25,7 +25,7 @@ import controllers.KeyManager;
 import utils.auth.CodeGenerator;
 import utils.auth.EncryptionNotSupportedException;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 public class EncryptionUtils {
 	
@@ -42,7 +42,7 @@ public class EncryptionUtils {
 		}
 	}
 	
-	public static BSONObject decryptBSON(SecretKey key, byte[] encrypted) throws ModelException {
+	public static BSONObject decryptBSON(SecretKey key, byte[] encrypted) throws InternalServerException {
 		try {
 			Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
 			c.init(Cipher.DECRYPT_MODE, key);
@@ -53,20 +53,20 @@ public class EncryptionUtils {
 	    	return BSON.decode(bson);
 	    			    	
 		} catch (InvalidKeyException e) {
-			throw new ModelException("error.internal.cryptography", e);
+			throw new InternalServerException("error.internal.cryptography", e);
 		} catch (NoSuchPaddingException e2) {
-			throw new ModelException("error.internal.cryptography",e2);
+			throw new InternalServerException("error.internal.cryptography",e2);
 		} catch (NoSuchAlgorithmException e3) {
-			throw new ModelException("error.internal.cryptography",e3);
+			throw new InternalServerException("error.internal.cryptography",e3);
 		} catch (BadPaddingException e4) {
-			throw new ModelException("error.internal.cryptography",e4);
+			throw new InternalServerException("error.internal.cryptography",e4);
 		} catch (IllegalBlockSizeException e5) {
-			throw new ModelException("error.internal.cryptography",e5);
+			throw new InternalServerException("error.internal.cryptography",e5);
 		} 
 
 	}
 	
-	public static byte[] encryptBSON(SecretKey key, BSONObject obj) throws ModelException {
+	public static byte[] encryptBSON(SecretKey key, BSONObject obj) throws InternalServerException {
 		try {
 			Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
 			c.init(Cipher.ENCRYPT_MODE, key);
@@ -76,20 +76,20 @@ public class EncryptionUtils {
 							
 	    	return cipherText;
 		} catch (InvalidKeyException e) {
-			throw new ModelException("error.internal.cryptography", e);
+			throw new InternalServerException("error.internal.cryptography", e);
 		} catch (NoSuchPaddingException e2) {
-			throw new ModelException("error.internal.cryptography", e2);
+			throw new InternalServerException("error.internal.cryptography", e2);
 		} catch (NoSuchAlgorithmException e3) {
-			throw new ModelException("error.internal.cryptography", e3);
+			throw new InternalServerException("error.internal.cryptography", e3);
 		} catch (BadPaddingException e4) {
-			throw new ModelException("error.internal.cryptography", e4);
+			throw new InternalServerException("error.internal.cryptography", e4);
 		} catch (IllegalBlockSizeException e5) {
-			throw new ModelException("error.internal.cryptography", e5);
+			throw new InternalServerException("error.internal.cryptography", e5);
 		} 
 	
 	}
 	
-	public static InputStream encryptStream(SecretKey key, InputStream in) throws ModelException {
+	public static InputStream encryptStream(SecretKey key, InputStream in) throws InternalServerException {
 		try {
 			Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
 			c.init(Cipher.ENCRYPT_MODE, key);
@@ -97,16 +97,16 @@ public class EncryptionUtils {
 		    return new CipherInputStream(in, c);
 								    	
 		} catch (InvalidKeyException e) {
-			throw new ModelException("error.internal.cryptography", e);
+			throw new InternalServerException("error.internal.cryptography", e);
 		} catch (NoSuchPaddingException e2) {
-			throw new ModelException("error.internal.cryptography", e2);
+			throw new InternalServerException("error.internal.cryptography", e2);
 		} catch (NoSuchAlgorithmException e3) {
-			throw new ModelException("error.internal.cryptography", e3);
+			throw new InternalServerException("error.internal.cryptography", e3);
 		}
 	
 	}
 	
-	public static InputStream decryptStream(SecretKey key, InputStream in) throws ModelException {
+	public static InputStream decryptStream(SecretKey key, InputStream in) throws InternalServerException {
 		try {
 			Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
 			c.init(Cipher.DECRYPT_MODE, key);
@@ -114,11 +114,11 @@ public class EncryptionUtils {
 		    return new CipherInputStream(in, c);
 								    	
 		} catch (InvalidKeyException e) {
-			throw new ModelException("error.internal.cryptography", e);
+			throw new InternalServerException("error.internal.cryptography", e);
 		} catch (NoSuchPaddingException e2) {
-			throw new ModelException("error.internal.cryptography", e2);
+			throw new InternalServerException("error.internal.cryptography", e2);
 		} catch (NoSuchAlgorithmException e3) {
-			throw new ModelException("error.internal.cryptography", e3);
+			throw new InternalServerException("error.internal.cryptography", e3);
 		}
 	
 	}

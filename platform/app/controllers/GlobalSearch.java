@@ -21,7 +21,7 @@ import utils.auth.AnyRoleSecured;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.search.CompletionResult;
 import utils.search.Search;
 import utils.search.SearchResult;

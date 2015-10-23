@@ -17,7 +17,7 @@ import org.junit.Test;
 
 import utils.collections.ChainedMap;
 import utils.db.DBLayer;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import com.mongodb.DBCollection;
 
@@ -36,7 +36,7 @@ public class CircleTest {
 	}
 
 	@Test
-	public void exists() throws ModelException {
+	public void exists() throws InternalServerException {
 		DBCollection circles = DBLayer.getCollection("circles");
 		assertEquals(0, circles.count());
 		Circle circle = new Circle();
@@ -53,7 +53,7 @@ public class CircleTest {
 	}
 
 	@Test
-	public void notExists() throws ModelException {
+	public void notExists() throws InternalServerException {
 		DBCollection circles = DBLayer.getCollection("circles");
 		assertEquals(0, circles.count());
 		Circle circle = new Circle();
@@ -71,7 +71,7 @@ public class CircleTest {
 
 	// not testing order any further, has already been done in SpaceTest
 	@Test
-	public void add() throws ModelException {
+	public void add() throws InternalServerException {
 		DBCollection circles = DBLayer.getCollection("circles");
 		assertEquals(0, circles.count());
 		Circle circle = new Circle();
@@ -88,7 +88,7 @@ public class CircleTest {
 	}
 
 	@Test
-	public void delete() throws ModelException {
+	public void delete() throws InternalServerException {
 		DBCollection circles = DBLayer.getCollection("circles");
 		assertEquals(0, circles.count());
 		Circle circle = new Circle();
@@ -106,7 +106,7 @@ public class CircleTest {
 	}
 
 	@Test
-	public void getMaxOrder() throws ModelException {
+	public void getMaxOrder() throws InternalServerException {
 		DBCollection circles = DBLayer.getCollection("circles");
 		assertEquals(0, circles.count());
 		Circle circle = new Circle();

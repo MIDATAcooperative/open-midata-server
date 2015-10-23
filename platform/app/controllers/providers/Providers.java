@@ -32,7 +32,7 @@ import utils.auth.ProviderSecured;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -57,11 +57,11 @@ public class Providers extends APIController {
 	 * register a new healthcare provider
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result register() throws JsonValidationException, ModelException {
+	public static Result register() throws JsonValidationException, InternalServerException {
 		JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "name", "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
@@ -127,11 +127,11 @@ public class Providers extends APIController {
 	 * healthcare provider login
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result login() throws JsonValidationException, ModelException {
+	public static Result login() throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -159,12 +159,12 @@ public class Providers extends APIController {
 	 * healthcare provider search for MIDATA members by MIDATAID and birthday.
 	 * @return Member and list of consents
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@Security.Authenticated(ProviderSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result search() throws JsonValidationException, ModelException {
+	public static Result search() throws JsonValidationException, InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
 		JsonNode json = request().body().asJson();
 			
@@ -191,11 +191,11 @@ public class Providers extends APIController {
      * return list of all patients of current healthcare provider	
      * @return list of Members
      * @throws JsonValidationException
-     * @throws ModelException
+     * @throws InternalServerException
      */
 	@Security.Authenticated(ProviderSecured.class)	
 	@APICall
-	public static Result list() throws JsonValidationException, ModelException {
+	public static Result list() throws JsonValidationException, InternalServerException {
 		
 		ObjectId userId = new ObjectId(request().username());
 
@@ -213,11 +213,11 @@ public class Providers extends APIController {
 	 * @param id ID of member
 	 * @return Member, Consents with current Healthcare Provider, Consent for Healthcare Provider to share data with patient.  
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@Security.Authenticated(ProviderSecured.class)	
 	@APICall
-	public static Result getMember(String id) throws JsonValidationException, ModelException {
+	public static Result getMember(String id) throws JsonValidationException, InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId memberId = new ObjectId(id);
 		
@@ -241,12 +241,12 @@ public class Providers extends APIController {
 	 * TODO check functionality
 	 * @return
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@Security.Authenticated(ProviderSecured.class)
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result getVisualizationToken() throws JsonValidationException, ModelException {
+	public static Result getVisualizationToken() throws JsonValidationException, InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
 		JsonNode json = request().body().asJson();
 						

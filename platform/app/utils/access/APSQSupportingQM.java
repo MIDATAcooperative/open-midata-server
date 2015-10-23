@@ -16,7 +16,7 @@ import org.bson.types.ObjectId;
 import utils.collections.Sets;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import com.mongodb.BasicDBObject;
 
@@ -118,7 +118,7 @@ public class APSQSupportingQM extends QueryManager {
 		return result;
 	}
 	
-	public static Map<String, Object> combineQuery(Map<String,Object> properties, Map<String,Object> query) throws ModelException {
+	public static Map<String, Object> combineQuery(Map<String,Object> properties, Map<String,Object> query) throws InternalServerException {
 		//Object fq = properties.get("format");
 		//if (fq != null && fq.equals(Query.STREAM_TYPE)) return properties;
 		Map<String, Object> combined = new HashMap<String,Object>();

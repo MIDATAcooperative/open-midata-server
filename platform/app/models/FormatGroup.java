@@ -10,7 +10,7 @@ import java.util.Set;
 
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 public class FormatGroup extends Model {
 	
@@ -24,21 +24,21 @@ public class FormatGroup extends Model {
 	public @NotMaterialized List<FormatGroup> children;
 	public @NotMaterialized List<String> formats;
 	
-	public static void add(FormatGroup record) throws ModelException {
+	public static void add(FormatGroup record) throws InternalServerException {
 		Model.insert(collection, record);
 	}
 	
-	public static FormatGroup getByName(String name) throws ModelException {
+	public static FormatGroup getByName(String name) throws InternalServerException {
 		if (cache == null) load();
 		return cache.get(name);
 	}
 	
-	public static Collection<FormatGroup> getAll() throws ModelException {
+	public static Collection<FormatGroup> getAll() throws InternalServerException {
 		if (cache == null) load();
 		return cache.values();
 	}
 	
-	public static void load() throws ModelException {
+	public static void load() throws InternalServerException {
 		Set<FormatGroup> groups = Model.getAll(FormatGroup.class, collection, Collections.EMPTY_MAP, Sets.create("name", "label", "parent"));
 		
 		cache = new HashMap<String, FormatGroup>();

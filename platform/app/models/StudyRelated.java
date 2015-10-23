@@ -7,7 +7,7 @@ import models.enums.ConsentType;
 import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 
 
@@ -20,11 +20,11 @@ public class StudyRelated extends Consent {
 		this.type = ConsentType.STUDYRELATED;
 	}
 	
-	public void add() throws ModelException {
+	public void add() throws InternalServerException {
 		Model.insert(collection, this);	
 	}
 	
-	public static StudyRelated getByGroupAndStudy(String group, ObjectId studyId, Set<String> fields) throws ModelException {
+	public static StudyRelated getByGroupAndStudy(String group, ObjectId studyId, Set<String> fields) throws InternalServerException {
 		return Model.get(StudyRelated.class, collection, CMaps.map("type", ConsentType.STUDYRELATED).map("group", group).map("study", studyId), fields);
 	}
 	

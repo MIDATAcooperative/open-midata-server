@@ -30,7 +30,7 @@ import utils.auth.Rights;
 import utils.auth.MemberSecured;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -45,11 +45,11 @@ public class HealthProvider extends APIController {
 	/**
 	 * returns all consents of a member with health providers 
 	 * @return list of consents (MemberKeys)
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public static Result list() throws ModelException {
+	public static Result list() throws InternalServerException {
 	      
 		ObjectId userId = new ObjectId(request().username());	
 		Set<MemberKey> memberkeys = MemberKey.getByOwner(userId);
@@ -91,12 +91,12 @@ public class HealthProvider extends APIController {
 	/**
 	 * accept a consent created by a health provider
 	 * @return status ok
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 * @throws JsonValidationException
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public static Result confirmConsent() throws ModelException, JsonValidationException {
+	public static Result confirmConsent() throws InternalServerException, JsonValidationException {
 		
 		ObjectId userId = new ObjectId(request().username());
 		JsonNode json = request().body().asJson();
@@ -115,12 +115,12 @@ public class HealthProvider extends APIController {
 	/**
 	 * reject a consent created by a health provider
 	 * @return
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 * @throws JsonValidationException
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public static Result rejectConsent() throws ModelException, JsonValidationException {
+	public static Result rejectConsent() throws InternalServerException, JsonValidationException {
 		
 		ObjectId userId = new ObjectId(request().username());
 		JsonNode json = request().body().asJson();

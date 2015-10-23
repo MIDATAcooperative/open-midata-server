@@ -14,7 +14,7 @@ import utils.collections.Sets;
 import utils.db.DatabaseException;
 import utils.db.NotMaterialized;
 import utils.db.OrderOperations;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.search.Search;
 import utils.search.SearchException;
 
@@ -37,48 +37,48 @@ public class Circle extends Consent implements Comparable<Circle> {
 		this.type = ConsentType.CIRCLE;
 	}
 
-	public static boolean exists(Map<String, ? extends Object> properties) throws ModelException {
+	public static boolean exists(Map<String, ? extends Object> properties) throws InternalServerException {
 		return Model.exists(Circle.class, collection, properties);
 	}
 		
 
-	public static Circle get(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
+	public static Circle get(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.get(Circle.class, collection, properties, fields);
 	}
 	
-	public static Circle getByIdAndOwner(ObjectId circleId, ObjectId ownerId, Set<String> fields) throws ModelException {
+	public static Circle getByIdAndOwner(ObjectId circleId, ObjectId ownerId, Set<String> fields) throws InternalServerException {
 		return Model.get(Circle.class, collection, CMaps.map("_id", circleId).map("owner", ownerId), fields);
 	}
 
 
-	public static Set<Circle> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws ModelException {
+	public static Set<Circle> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.getAll(Circle.class, collection, properties, fields);
 	}
 	
-	public static Set<Circle> getAllByOwner(ObjectId owner) throws ModelException {
+	public static Set<Circle> getAllByOwner(ObjectId owner) throws InternalServerException {
 		return Model.getAll(Circle.class, collection, CMaps.map("owner", owner).map("type",  ConsentType.CIRCLE), Sets.create("name", "authorized", "order"));
 	}
 	
-	public static Set<Circle> getAllByMember(ObjectId member) throws ModelException {
+	public static Set<Circle> getAllByMember(ObjectId member) throws InternalServerException {
 		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  ConsentType.CIRCLE), Sets.create("name", "order", "owner"));
 	}
 
-	public static void set(ObjectId circleId, String field, Object value) throws ModelException {
+	public static void set(ObjectId circleId, String field, Object value) throws InternalServerException {
 		Model.set(Circle.class, collection, circleId, field, value);
 	}
 
-	public void add() throws ModelException {
+	public void add() throws InternalServerException {
 		Model.insert(collection, this);
 
 		// also add this circle to the user's search index
 		try {
 			Search.add(this.owner, "circle", this._id, this.name);
 		} catch (SearchException e) {
-			throw new ModelException("error.internal", e);
+			throw new InternalServerException("error.internal", e);
 		}
 	}
 
-	public static void delete(ObjectId ownerId, ObjectId circleId) throws ModelException {
+	public static void delete(ObjectId ownerId, ObjectId circleId) throws InternalServerException {
 		// find order first
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", circleId).get();
 		Circle circle = get(properties, new ChainedSet<String>().add("order").get());
@@ -87,7 +87,7 @@ public class Circle extends Consent implements Comparable<Circle> {
 		try {
 			OrderOperations.decrement(collection, ownerId, circle.order, 0);
 		} catch (DatabaseException e) {
-			throw new ModelException("error.internal", e);
+			throw new InternalServerException("error.internal", e);
 		}
 
 		// also remove from search index

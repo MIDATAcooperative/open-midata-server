@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import models.Circle;
 import models.Consent;
@@ -16,7 +16,7 @@ public class ReferenceTool {
 
 	private static Set<String> fullName = Sets.create("firstname", "lastname");
 	
-	public static void resolveOwners(Collection<Record> records, boolean owners, boolean creators) throws ModelException {
+	public static void resolveOwners(Collection<Record> records, boolean owners, boolean creators) throws InternalServerException {
 		Map<String, String> members = new HashMap<String, String>();		
 		
 		for (Record record : records) {
@@ -47,7 +47,7 @@ public class ReferenceTool {
 		}
 	}
 	
-	public static void resolveOwners(Collection<? extends Consent> circles, boolean owners) throws ModelException {
+	public static void resolveOwners(Collection<? extends Consent> circles, boolean owners) throws InternalServerException {
 		Map<String, String> members = new HashMap<String, String>();		
 		
 		for (Consent circle : circles) {

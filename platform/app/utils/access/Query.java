@@ -11,7 +11,9 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 
 import utils.collections.Sets;
-import utils.exceptions.ModelException;
+import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
 
 
 public class Query {
@@ -90,7 +92,7 @@ public class Query {
 		return giveKey;
 	}
 	
-	public Set<String> getRestriction(String name) throws ModelException {
+	public Set<String> getRestriction(String name) throws BadRequestException {
 		Object v = properties.get(name);
 		if (v instanceof String) {
 			return Collections.singleton((String) v);
@@ -102,10 +104,10 @@ public class Query {
 			Set<String> results = new HashSet<String>();
 			results.addAll((Collection<String>) v);
 			return results;											
-		} else throw new ModelException("error.badquery","Bad Restriction 1: "+name);
+		} else throw new BadRequestException("error.badquery","Bad Restriction 1: "+name);
 	}
 	
-	public Set<ObjectId> getObjectIdRestriction(String name) throws ModelException {
+	public Set<ObjectId> getObjectIdRestriction(String name) throws BadRequestException {
 		Object v = properties.get(name);
 		if (v instanceof ObjectId) {
 			return Collections.singleton((ObjectId) v);
@@ -117,7 +119,7 @@ public class Query {
 			return results;		
 		} else if (v instanceof String && ObjectId.isValid((String) v)) {
 			return Collections.singleton( new ObjectId((String) v));
-		} else throw new ModelException("error.badquery", "Bad Restriction 2: "+name);
+		} else throw new BadRequestException("error.badquery", "Bad Restriction 2: "+name);
 	}
 	
 	public boolean restrictedBy(String field) {

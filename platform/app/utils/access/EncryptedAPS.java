@@ -26,7 +26,7 @@ import utils.auth.EncryptionNotSupportedException;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 import controllers.KeyManager;
 
@@ -43,19 +43,19 @@ public class EncryptedAPS {
 	
 	public final static String KEY_ALGORITHM = "AES";
 		
-	public EncryptedAPS(ObjectId apsId, ObjectId who) throws ModelException {
+	public EncryptedAPS(ObjectId apsId, ObjectId who) throws InternalServerException {
 		this.apsId = apsId;		
 		this.who = who;
 		this.owner = null;
 	}
 	
-	public EncryptedAPS(ObjectId apsId, ObjectId who, ObjectId owner) throws ModelException {
+	public EncryptedAPS(ObjectId apsId, ObjectId who, ObjectId owner) throws InternalServerException {
 		this.apsId = apsId;		
 		this.who = who;
 		this.owner = owner;
 	}
 	
-	public EncryptedAPS(ObjectId apsId, ObjectId who, byte[] enckey, ObjectId owner) throws ModelException {
+	public EncryptedAPS(ObjectId apsId, ObjectId who, byte[] enckey, ObjectId owner) throws InternalServerException {
 		this.apsId = apsId;		
 		this.who = who;
 		this.owner = owner;
@@ -63,7 +63,7 @@ public class EncryptedAPS {
 		keyProvided = true;
 	}
 			
-	public EncryptedAPS(ObjectId apsId, ObjectId who, ObjectId owner, APSSecurityLevel lvl, byte[] encKey) throws ModelException {
+	public EncryptedAPS(ObjectId apsId, ObjectId who, ObjectId owner, APSSecurityLevel lvl, byte[] encKey) throws InternalServerException {
 		this.apsId = apsId;
 		this.aps = new AccessPermissionSet();
 		this.who = who;
@@ -112,7 +112,7 @@ public class EncryptedAPS {
 		return who;
 	}
 	
-	public boolean isDirect() throws ModelException {
+	public boolean isDirect() throws InternalServerException {
 		if (!isLoaded()) load();
 		return aps.direct;
 	}
@@ -121,13 +121,13 @@ public class EncryptedAPS {
 		return apsId;
 	}
 	
-	public APSSecurityLevel getSecurityLevel() throws ModelException {
+	public APSSecurityLevel getSecurityLevel() throws InternalServerException {
 		if (!isLoaded()) load();
 		return aps.security;
 	}
 	
-	public void setSecurityLevel(APSSecurityLevel lvl) throws ModelException {
-		if (!notStored) throw new ModelException("error.internal", "APS already stored. Cannot change security.");
+	public void setSecurityLevel(APSSecurityLevel lvl) throws InternalServerException {
+		if (!notStored) throw new InternalServerException("error.internal", "APS already stored. Cannot change security.");
 		aps.security = lvl;		
 	}
 	
@@ -136,22 +136,22 @@ public class EncryptedAPS {
 		return encryptionKey;
 	}
 	
-	public long getVersion() throws ModelException {
+	public long getVersion() throws InternalServerException {
 		if (!isLoaded()) load();
 		return aps.version;
 	}
 	
-	public void setKey(String name, byte[] key) throws ModelException {
+	public void setKey(String name, byte[] key) throws InternalServerException {
 		if (!isLoaded()) load();
 		aps.keys.put(name,  key);
 	}
 	
-	public void removeKey(String name) throws ModelException {
+	public void removeKey(String name) throws InternalServerException {
 		if (!isLoaded()) load();
 		aps.keys.remove(name);
 	}
 	
-	public void updateKeys() throws ModelException, LostUpdateException {
+	public void updateKeys() throws InternalServerException, LostUpdateException {
 		if (!isLoaded()) return;
 		if (notStored) {
 			create(); 
@@ -160,12 +160,12 @@ public class EncryptedAPS {
 		}
 	}
 	
-	public byte[] getKey(String name) throws ModelException {
+	public byte[] getKey(String name) throws InternalServerException {
 		if (!isLoaded()) load();
 		return aps.keys.get(name);
 	}
 	
-	public boolean hasKey(String name) throws ModelException {
+	public boolean hasKey(String name) throws InternalServerException {
 		if (!isLoaded()) load();
 		return aps.keys.containsKey(name);
 	}
@@ -223,8 +223,8 @@ public class EncryptedAPS {
         return aps.permissions;
 	}
 	
-	public void create() throws ModelException {
-		if (!notStored) throw new ModelException("error.internal", "APS is already created");
+	public void create() throws InternalServerException {
+		if (!notStored) throw new InternalServerException("error.internal", "APS is already created");
 		if (!aps.security.equals(APSSecurityLevel.NONE)) {
 			encodeAPS();
 			aps.permissions = null;
@@ -233,7 +233,7 @@ public class EncryptedAPS {
 		notStored = false;
 	}
 	
-	public void savePermissions() throws ModelException, LostUpdateException {
+	public void savePermissions() throws InternalServerException, LostUpdateException {
 		if (!isLoaded()) return;
 		
 		if (sublists != null) {
@@ -252,7 +252,7 @@ public class EncryptedAPS {
 		}
 	}
 	
-	public void reload() throws ModelException {
+	public void reload() throws InternalServerException {
 		load();
 	}
 	
@@ -299,7 +299,7 @@ public class EncryptedAPS {
 		}
 	}
 	
-	private void load() throws ModelException {
+	private void load() throws InternalServerException {
 		this.aps = AccessPermissionSet.getById(this.apsId);
 		if (this.aps == null) {
 			AccessLog.debug("APS does not exist: aps="+this.apsId.toString());
@@ -324,12 +324,12 @@ public class EncryptedAPS {
 				if (aps.keys.containsKey(who.toString())) return;						
 				if (aps.keys.get("owner") instanceof byte[]) {
 					if (Arrays.equals(who.toByteArray(), aps.keys.get("owner"))) { this.owner = who; return; }
-					throw new ModelException("error.internal", "APS not readable by user");
+					throw new InternalServerException("error.internal", "APS not readable by user");
 				} else this.owner = who; // Old version support			
 			} else {		
 				byte[] key = aps.keys.get(who.toString());
 				if (key==null) { key = aps.keys.get("owner"); this.owner = who; } 
-			    if (key==null /*|| ! key.startsWith("key"+who.toString())*/) throw new ModelException("error.internal", "APS not readable by user");
+			    if (key==null /*|| ! key.startsWith("key"+who.toString())*/) throw new InternalServerException("error.internal", "APS not readable by user");
 			    		 
 			    byte[] decryptedKey = KeyManager.instance.decryptKey(who, key);
 			    encryptionKey = new SecretKeySpec(decryptedKey, KEY_ALGORITHM);// SecretKeyFactory.getInstance(KEY_ALGORITHM).key.substring(key.indexOf(':'));
@@ -343,7 +343,7 @@ public class EncryptedAPS {
 		if (aps.unmerged != null) merge();
 	}
 	
-	public boolean isAccessable() throws ModelException {
+	public boolean isAccessable() throws InternalServerException {
 		if (who.equals(owner)) return true;
 		if (apsId.equals(who)) return true;
 		if (!isLoaded()) load();	
@@ -353,7 +353,7 @@ public class EncryptedAPS {
 	
 	 
 			
-	private void decodeAPS() throws ModelException  {
+	private void decodeAPS() throws InternalServerException  {
 		if (aps.permissions == null && aps.encrypted != null) {
 			try {
 			    BSONObject decrypted = EncryptionUtils.decryptBSON(encryptionKey, aps.encrypted);
@@ -361,7 +361,7 @@ public class EncryptedAPS {
 		    	//AccessLog.debug("decoded:"+decrypted.toString());
 		    	if (aps.permissions == null) throw new NullPointerException();
 		    	aps.encrypted = null;
-			} catch (ModelException e) {
+			} catch (InternalServerException e) {
 				AccessLog.debug("Error decoding APS="+apsId.toString()+" user="+who.toString());
 				throw e;
 			}
@@ -375,7 +375,7 @@ public class EncryptedAPS {
 		}
 	}
 	
-	private void patchOldFormat() throws ModelException, LostUpdateException {
+	private void patchOldFormat() throws InternalServerException, LostUpdateException {
 		aps.permissions.put("p", new BasicDBList());
 		for (String key : aps.permissions.keySet()) {
 			if (key.equals("p") || (key.startsWith("_") && !key.toLowerCase().startsWith("stream"))) continue;
@@ -414,7 +414,7 @@ public class EncryptedAPS {
 		savePermissions();
 	}
 			
-	private void encodeAPS() throws ModelException {
+	private void encodeAPS() throws InternalServerException {
 		if (aps.permissions != null && !aps.security.equals(APSSecurityLevel.NONE)) {											
 		   aps.encrypted = EncryptionUtils.encryptBSON(encryptionKey, new BasicBSONObject(aps.permissions));				
 	    }

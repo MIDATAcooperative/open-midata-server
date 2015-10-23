@@ -49,7 +49,7 @@ import utils.auth.ResearchSecured;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -72,12 +72,12 @@ public class Studies extends APIController {
 	 * create a new study 
 	 * @return Study
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result create() throws JsonValidationException, ModelException {
+	public static Result create() throws JsonValidationException, InternalServerException {
 		JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "name", "description");
@@ -171,11 +171,11 @@ public class Studies extends APIController {
 	 * list all studies of current research organization	
 	 * @return list of studies
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result list() throws JsonValidationException, ModelException {
+	public static Result list() throws JsonValidationException, InternalServerException {
 	   ObjectId owner = new ObjectId(session().get("org"));
 	   
 	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus");
@@ -189,11 +189,11 @@ public class Studies extends APIController {
 	 * @param id ID of study
 	 * @return Study
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result get(String id) throws JsonValidationException, ModelException {
+	public static Result get(String id) throws JsonValidationException, InternalServerException {
        
 	   ObjectId studyid = new ObjectId(id);
 	   ObjectId owner = new ObjectId(session().get("org"));
@@ -209,12 +209,12 @@ public class Studies extends APIController {
 	 * @param id
 	 * @return
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result generateCodes(String id) throws JsonValidationException, ModelException {
+	public static Result generateCodes(String id) throws JsonValidationException, InternalServerException {
        
        JsonNode json = request().body().asJson();
 		
@@ -266,11 +266,11 @@ public class Studies extends APIController {
 	 * @param id
 	 * @return
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result listCodes(String id) throws JsonValidationException, ModelException {
+	public static Result listCodes(String id) throws JsonValidationException, InternalServerException {
 	   ObjectId userId = new ObjectId(request().username());
 	   ObjectId owner = new ObjectId(session().get("org"));
 	   ObjectId studyid = new ObjectId(id);
@@ -290,11 +290,11 @@ public class Studies extends APIController {
 	 * @param id ID of study
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result startValidation(String id) throws JsonValidationException, ModelException {
+	public static Result startValidation(String id) throws JsonValidationException, InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId owner = new ObjectId(session().get("org"));
 		ObjectId studyid = new ObjectId(id);
@@ -317,11 +317,11 @@ public class Studies extends APIController {
 	 * @param id ID of study
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result startParticipantSearch(String id) throws JsonValidationException, ModelException {
+	public static Result startParticipantSearch(String id) throws JsonValidationException, InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId owner = new ObjectId(session().get("org"));
 		ObjectId studyid = new ObjectId(id);
@@ -345,11 +345,11 @@ public class Studies extends APIController {
 	 * @param id ID of study
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result endParticipantSearch(String id) throws JsonValidationException, ModelException {
+	public static Result endParticipantSearch(String id) throws JsonValidationException, InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId owner = new ObjectId(session().get("org"));
 		ObjectId studyid = new ObjectId(id);
@@ -372,11 +372,11 @@ public class Studies extends APIController {
 	 * @param id ID of study
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result startExecution(String id) throws JsonValidationException, ModelException {
+	public static Result startExecution(String id) throws JsonValidationException, InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId owner = new ObjectId(session().get("org"));
 		ObjectId studyid = new ObjectId(id);
@@ -495,11 +495,11 @@ public class Studies extends APIController {
 	 * @param id ID of study
 	 * @return list of Consents (StudyParticipation)
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result listParticipants(String id) throws JsonValidationException, ModelException {
+	public static Result listParticipants(String id) throws JsonValidationException, InternalServerException {
 	   ObjectId userId = new ObjectId(request().username());
 	   ObjectId owner = new ObjectId(session().get("org"));
 	   ObjectId studyid = new ObjectId(id);
@@ -520,11 +520,11 @@ public class Studies extends APIController {
 	 * @param memberidstr
 	 * @return
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result getParticipant(String studyidstr, String memberidstr) throws JsonValidationException, ModelException {
+	public static Result getParticipant(String studyidstr, String memberidstr) throws JsonValidationException, InternalServerException {
 	   //ObjectId userId = new ObjectId(request().username());	
 	   ObjectId owner = new ObjectId(session().get("org"));
 	   ObjectId studyId = new ObjectId(studyidstr);
@@ -560,12 +560,12 @@ public class Studies extends APIController {
 	 * @param id ID of member
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result approveParticipation(String id) throws JsonValidationException, ModelException {
+	public static Result approveParticipation(String id) throws JsonValidationException, InternalServerException {
 		JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "member");
@@ -596,12 +596,12 @@ public class Studies extends APIController {
 	 * @param id ID of study
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result rejectParticipation(String id) throws JsonValidationException, ModelException {
+	public static Result rejectParticipation(String id) throws JsonValidationException, InternalServerException {
 		JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "member");
@@ -632,12 +632,12 @@ public class Studies extends APIController {
 	 * @param id ID of study
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result updateParticipation(String id) throws JsonValidationException, ModelException {
+	public static Result updateParticipation(String id) throws JsonValidationException, InternalServerException {
 		JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "member", "group");
@@ -666,7 +666,7 @@ public class Studies extends APIController {
 	
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result getRequiredInformationSetup(String id) throws JsonValidationException, ModelException {
+	public static Result getRequiredInformationSetup(String id) throws JsonValidationException, InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId owner = new ObjectId(session().get("org"));
 		ObjectId studyid = new ObjectId(id);
@@ -684,7 +684,7 @@ public class Studies extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result setRequiredInformationSetup(String id) throws JsonValidationException, ModelException {
+	public static Result setRequiredInformationSetup(String id) throws JsonValidationException, InternalServerException {
         JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "identity", "assistance");
@@ -712,7 +712,7 @@ public class Studies extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result update(String id) throws JsonValidationException, ModelException {
+	public static Result update(String id) throws JsonValidationException, InternalServerException {
         JsonNode json = request().body().asJson();
 		
 		//JsonValidation.validate(json, "groups");

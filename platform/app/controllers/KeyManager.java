@@ -29,7 +29,7 @@ import utils.auth.CodeGenerator;
 import utils.auth.EncryptionNotSupportedException;
 import utils.collections.Sets;
 import utils.exceptions.AuthException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 
 public class KeyManager {
@@ -41,7 +41,7 @@ public class KeyManager {
 	
 	private Map<String, byte[]> pks = new HashMap<String, byte[]>();
 	
-	public byte[] encryptKey(ObjectId target, byte[] keyToEncrypt) throws EncryptionNotSupportedException, ModelException {		
+	public byte[] encryptKey(ObjectId target, byte[] keyToEncrypt) throws EncryptionNotSupportedException, InternalServerException {		
 			User user = User.getById(target, Sets.create("publicKey"));
 			
 			if (user.publicKey == null) throw new EncryptionNotSupportedException();			
@@ -49,7 +49,7 @@ public class KeyManager {
 	}
 	
 	
-	public byte[] encryptKey(byte[] publicKey, byte[] keyToEncrypt) throws EncryptionNotSupportedException, ModelException {
+	public byte[] encryptKey(byte[] publicKey, byte[] keyToEncrypt) throws EncryptionNotSupportedException, InternalServerException {
 		try {						
 			X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKey);
 			
@@ -64,21 +64,21 @@ public class KeyManager {
 			
 			return cipherText;
 		} catch (NoSuchAlgorithmException e) {
-			throw new ModelException("error.internal.cryptography", e);		
+			throw new InternalServerException("error.internal.cryptography", e);		
 		} catch (NoSuchPaddingException e2) {
-			throw new ModelException("error.internal.cryptography", e2);
+			throw new InternalServerException("error.internal.cryptography", e2);
 		} catch (InvalidKeyException e3) {
-			throw new ModelException("error.internal.cryptography", e3);
+			throw new InternalServerException("error.internal.cryptography", e3);
 		} catch (InvalidKeySpecException e4) {
-			throw new ModelException("error.internal.cryptography", e4);
+			throw new InternalServerException("error.internal.cryptography", e4);
 		} catch (BadPaddingException e5) {
-			throw new ModelException("error.internal.cryptography", e5);
+			throw new InternalServerException("error.internal.cryptography", e5);
 		} catch (IllegalBlockSizeException e6) {
-			throw new ModelException("error.internal.cryptography", e6);
+			throw new InternalServerException("error.internal.cryptography", e6);
 		} 
 	}
 	
-	public byte[] decryptKey(ObjectId target, byte[] keyToDecrypt) throws ModelException, AuthException {
+	public byte[] decryptKey(ObjectId target, byte[] keyToDecrypt) throws InternalServerException, AuthException {
 		try {
 			
 			byte key[] = pks.get(target.toString());
@@ -101,25 +101,25 @@ public class KeyManager {
 						
 			return CodeGenerator.derandomize(cipherText);
 		} catch (NoSuchAlgorithmException e) {
-			throw new ModelException("error.internal.cryptography", e);		
+			throw new InternalServerException("error.internal.cryptography", e);		
 		} catch (NoSuchPaddingException e2) {
-			throw new ModelException("error.internal.cryptography", e2);
+			throw new InternalServerException("error.internal.cryptography", e2);
 		} catch (InvalidKeyException e3) {
-			throw new ModelException("error.internal.cryptography", e3);
+			throw new InternalServerException("error.internal.cryptography", e3);
 		} catch (InvalidKeySpecException e4) {
-			throw new ModelException("error.internal.cryptography", e4);
+			throw new InternalServerException("error.internal.cryptography", e4);
 		} catch (BadPaddingException e5) {
-			throw new ModelException("error.internal.cryptography", e5);
+			throw new InternalServerException("error.internal.cryptography", e5);
 		} catch (IllegalBlockSizeException e6) {
-			throw new ModelException("error.internal.cryptography", e6);
+			throw new InternalServerException("error.internal.cryptography", e6);
 		} 
 	}
 	
-	public byte[] generateKeypairAndReturnPublicKey(ObjectId target) throws ModelException {
+	public byte[] generateKeypairAndReturnPublicKey(ObjectId target) throws InternalServerException {
 		return generateKeypairAndReturnPublicKey(target, null);
 	}
 	
-	public byte[] generateKeypairAndReturnPublicKey(ObjectId target, String passphrase) throws ModelException {
+	public byte[] generateKeypairAndReturnPublicKey(ObjectId target, String passphrase) throws InternalServerException {
 		try {
 		   KeyPairGenerator generator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
 		   
@@ -139,11 +139,11 @@ public class KeyManager {
 		   
 		   return pub.getEncoded();
 		} catch (NoSuchAlgorithmException e) {
-			throw new ModelException("error.internal.cryptography", e);
+			throw new InternalServerException("error.internal.cryptography", e);
 		}
 	}
 	
-	public void unlock(ObjectId target, String password) throws ModelException {
+	public void unlock(ObjectId target, String password) throws InternalServerException {
 		KeyInfo inf = KeyInfo.getById(target);
 		if (inf == null) pks.put(target.toString(), null);
 		else {
@@ -153,7 +153,7 @@ public class KeyManager {
 		}
 	}
 	
-	public void lock(ObjectId target) throws ModelException {
+	public void lock(ObjectId target) throws InternalServerException {
 		pks.remove(target.toString());
 	}
 	

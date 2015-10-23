@@ -22,7 +22,7 @@ import utils.DateTimeUtils;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import models.ContentInfo;
 import models.Record;
 import models.RecordsInfo;
@@ -177,7 +177,7 @@ public class ComplexQueryManager {
     	return result;
     }
     
-    protected static List<Record> findRecordsDirectlyInDB(Query q) throws ModelException {
+    protected static List<Record> findRecordsDirectlyInDB(Query q) throws InternalServerException {
     	List<Record> result = null;
     	
     	if (q.restrictedBy("_id")) result = lookupRecordsById(q);			
@@ -186,7 +186,7 @@ public class ComplexQueryManager {
     	return result;
     }
     
-    protected static void fetchFromDB(Query q, Record record) throws ModelException {
+    protected static void fetchFromDB(Query q, Record record) throws InternalServerException {
     	if (record.encrypted == null) {
 			Record r2 = Record.getById(record._id, q.getFieldsFromDB());			
 			record.encrypted = r2.encrypted;
@@ -321,7 +321,7 @@ public class ComplexQueryManager {
     	return result;
     }
     
-    protected static List<Record> lookupRecordsById(Query q) throws ModelException {    	
+    protected static List<Record> lookupRecordsById(Query q) throws InternalServerException {    	
 			Map<String, Object> query = new HashMap<String, Object>();
 			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "direct");
 			queryFields.addAll(q.getFieldsFromDB());
@@ -330,7 +330,7 @@ public class ComplexQueryManager {
 			return new ArrayList<Record>(Record.getAll(query, queryFields));		
     }
     
-    protected static List<Record> lookupRecordsByDocument(Query q) throws ModelException {    	
+    protected static List<Record> lookupRecordsByDocument(Query q) throws InternalServerException {    	
 			Map<String, Object> query = new HashMap<String, Object>();
 			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "encrypted");
 			queryFields.addAll(q.getFieldsFromDB());

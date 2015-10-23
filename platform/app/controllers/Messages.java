@@ -24,7 +24,7 @@ import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -45,7 +45,7 @@ public class Messages extends Controller {
 	@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result get() throws JsonValidationException, ModelException {
+	public static Result get() throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();
 	
@@ -63,7 +63,7 @@ public class Messages extends Controller {
 	@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result send() throws JsonValidationException, ModelException {
+	public static Result send() throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -96,7 +96,7 @@ public class Messages extends Controller {
 			try {
 				User.set(user._id, "messages.inbox", user.messages.get("inbox"));
 				Search.add(user._id, "message", message._id, message.title, message.content);
-			} catch (ModelException e) {
+			} catch (InternalServerException e) {
 				return badRequest(e.getMessage());
 			} catch (SearchException e) {
 				return badRequest(e.getMessage());
@@ -107,7 +107,7 @@ public class Messages extends Controller {
 
 	@Security.Authenticated(AnyRoleSecured.class)	
 	@APICall
-	public static Result move(String messageIdString, String from, String to) throws ModelException {
+	public static Result move(String messageIdString, String from, String to) throws InternalServerException {
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId messageId = new ObjectId(messageIdString);
@@ -115,7 +115,7 @@ public class Messages extends Controller {
 			if (!User.exists(new ChainedMap<String, ObjectId>().put("_id", userId).put("messages." + from, messageId).get())) {
 				return badRequest("No message with this id exists.");
 			}
-		} catch (ModelException e) {
+		} catch (InternalServerException e) {
 			return internalServerError(e.getMessage());
 		}
 
@@ -131,7 +131,7 @@ public class Messages extends Controller {
 
 	@Security.Authenticated(AnyRoleSecured.class)	
 	@APICall
-	public static Result remove(String messageIdString) throws ModelException {
+	public static Result remove(String messageIdString) throws InternalServerException {
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId messageId = new ObjectId(messageIdString);
@@ -151,7 +151,7 @@ public class Messages extends Controller {
 
 	@Security.Authenticated(AnyRoleSecured.class)	
 	@APICall
-	public static Result delete(String messageIdString) throws ModelException {
+	public static Result delete(String messageIdString) throws InternalServerException {
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId messageId = new ObjectId(messageIdString);

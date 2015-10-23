@@ -28,7 +28,7 @@ import play.mvc.Security;
 import utils.auth.AnyRoleSecured;
 import utils.auth.Rights;
 import utils.exceptions.AuthException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -50,13 +50,13 @@ public class Studies extends APIController {
 	 * search for studies matching some criteria
 	 * @return list of studies
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 * @throws AuthException
 	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result search() throws JsonValidationException, ModelException, AuthException {
+	public static Result search() throws JsonValidationException, InternalServerException, AuthException {
 	   ObjectId user = new ObjectId(request().username());	   
 	   JsonNode json = request().body().asJson();
 	   JsonValidation.validate(json, "properties", "fields");

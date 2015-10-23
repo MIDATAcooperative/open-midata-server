@@ -22,7 +22,7 @@ import play.mvc.Result;
 import utils.access.RecordSharing;
 import utils.auth.CodeGenerator;
 import utils.collections.Sets;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
@@ -39,11 +39,11 @@ public class Developers extends APIController {
 	 * register a new developer
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result register() throws JsonValidationException, ModelException {
+	public static Result register() throws JsonValidationException, InternalServerException {
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
 							
@@ -95,11 +95,11 @@ public class Developers extends APIController {
 	 * login a developer or admin
 	 * @return status ok / returns "admin" if person logged in is an admin
 	 * @throws JsonValidationException
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result login() throws JsonValidationException, ModelException {
+	public static Result login() throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		

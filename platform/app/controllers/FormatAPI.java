@@ -8,7 +8,7 @@ import models.FormatGroup;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 /**
  * used by portal to retrieve data groups
@@ -20,10 +20,10 @@ public class FormatAPI extends Controller {
 	/**
 	 * public function to get a list of data groups
 	 * @return
-	 * @throws ModelException
+	 * @throws InternalServerException
 	 */
 	@APICall
-	public static Result listGroups() throws ModelException {
+	public static Result listGroups() throws InternalServerException {
 	    Collection<FormatGroup> groups = FormatGroup.getAll();
 	    return ok(Json.toJson(groups));
 	}

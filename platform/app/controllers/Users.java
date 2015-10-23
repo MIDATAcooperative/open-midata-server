@@ -28,7 +28,7 @@ import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -117,11 +117,11 @@ public class Users extends APIController {
      * text search for users
      * @param query search string
      * @return list of users (json)
-     * @throws ModelException
+     * @throws InternalServerException
      */
 	@Security.Authenticated(MemberSecured.class)
 	@APICall
-	public static Result search(String query) throws ModelException {
+	public static Result search(String query) throws InternalServerException {
 		// TODO use caching/incremental retrieval of results (scrolls)
 		List<SearchResult> searchResults = Search.search(Type.USER, query);
 		Set<ObjectId> userIds = new HashSet<ObjectId>();
@@ -147,7 +147,7 @@ public class Users extends APIController {
 	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result loadContacts() throws ModelException {
+	public static Result loadContacts() throws InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
 		Set<ObjectId> contactIds = new HashSet<ObjectId>();
 		Set<Member> contacts;
@@ -186,7 +186,7 @@ public class Users extends APIController {
 	/**
 	 * Get a user's authorization tokens for an app.
 	 */
-	protected static Map<String, String> getTokens(ObjectId userId, ObjectId appId) throws ModelException {
+	protected static Map<String, String> getTokens(ObjectId userId, ObjectId appId) throws InternalServerException {
 		Member user = Member.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>().add("tokens").get());
 		if (user.tokens.containsKey(appId.toString())) {
 			return user.tokens.get(appId.toString());
@@ -198,7 +198,7 @@ public class Users extends APIController {
 	/**
 	 * Set authorization tokens, namely the access and refresh token.
 	 */
-	protected static void setTokens(ObjectId userId, ObjectId appId, Map<String, String> tokens) throws ModelException {
+	protected static void setTokens(ObjectId userId, ObjectId appId, Map<String, String> tokens) throws InternalServerException {
 		Member user = Member.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>().add("tokens").get());
 		user.tokens.put(appId.toString(), tokens);
 		Member.set(userId, "tokens", user.tokens);

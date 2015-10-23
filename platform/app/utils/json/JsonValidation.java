@@ -6,17 +6,19 @@ import java.util.Date;
 
 import org.bson.types.ObjectId;
 
+import utils.exceptions.BadRequestException;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class JsonValidation {
 
 	public static void validate(JsonNode json, String... requiredFields) throws JsonValidationException {
 		if (json == null) {
-			throw new JsonValidationException("No json found.");
+			throw new JsonValidationException("error.validation.nojson", "No json found.");
 		} else {
 			for (String requiredField : requiredFields) {
 				if (!json.has(requiredField)) {
-					throw new JsonValidationException("Request parameter '" + requiredField + "' not found.");
+					throw new JsonValidationException("error.validation.fieldmissing", "Request parameter '" + requiredField + "' not found.");
 				}
 			}
 		}
@@ -42,14 +44,14 @@ public class JsonValidation {
 	}
 	
 	public static int getInteger(JsonNode json, String field, int lowest, int highest) throws JsonValidationException {
-		if (! json.path(field).isInt()) throw new JsonValidationException(field, "nonumber", "Integer value expected.");
+		if (! json.path(field).isInt()) throw new JsonValidationException("error.validation.integer", field, "nonumber", "Integer value expected.");
 		int val = json.path(field).intValue();
-		if (val < lowest) throw new JsonValidationException(field, "toolow", "Value must be " + lowest+" at minimum.");
-		if (val > highest) throw new JsonValidationException(field, "toohigh", "Value may be " + lowest+" at maximum.");
+		if (val < lowest) throw new JsonValidationException("error.validation.integer.toolow", field, "toolow", "Value must be " + lowest+" at minimum.");
+		if (val > highest) throw new JsonValidationException("error.validation.integer.toohigh", field, "toohigh", "Value may be " + lowest+" at maximum.");
 		return val;
 	}
 	public static long getLong(JsonNode json, String field) throws JsonValidationException {
-		if (! json.path(field).canConvertToLong()) throw new JsonValidationException(field, "nonumber", "Long value expected.");
+		if (! json.path(field).canConvertToLong()) throw new JsonValidationException("error.validation.long", field, "nonumber", "Long value expected.");
 		return json.path(field).longValue();		
 	}
 	
@@ -59,7 +61,7 @@ public class JsonValidation {
 	
 	public static String getPassword(JsonNode json, String field) throws JsonValidationException {
 		String pw = json.path(field).asText();
-		if (pw.length() < 5) throw new JsonValidationException("Password is too weak. It must be 5 characters at minimum.");
+		if (pw.length() < 5) throw new JsonValidationException("error.validation.password.weak", "Password is too weak. It must be 5 characters at minimum.");
 		return pw;
 	}
 	
@@ -78,7 +80,7 @@ public class JsonValidation {
           Date result = formatter.parse(dateStr);
           return result;
 		} catch (ParseException e) {
-		  throw new JsonValidationException("Date must have format year-month-day.");
+		  throw new JsonValidationException("error.validation.date", "Date must have format year-month-day.");
 		}
 	}
 	
@@ -88,24 +90,24 @@ public class JsonValidation {
 		  T result = (T) Enum.valueOf(en, val);
 		  return result;
 		} catch (IllegalArgumentException e) {
-		  throw new JsonValidationException("Value of parameter '" + field + "' has none of the valid values.");		
+		  throw new JsonValidationException("error.validation.enum", "Value of parameter '" + field + "' has none of the valid values.");		
 		}
 	}
 	
 
-	public static class JsonValidationException extends Exception {
+	public static class JsonValidationException extends BadRequestException {
 
 		private static final long serialVersionUID = 1L;
 		
 		private String field;
 		private String type;
 
-		public JsonValidationException(String message) {
-			super(message);
+		public JsonValidationException(String localeKey, String message) {
+			super(localeKey, message);
 		}
 		
-		public JsonValidationException(String field, String type, String message) {
-			super(message);
+		public JsonValidationException(String localeKey, String field, String type, String message) {
+			super(localeKey, message);
 			this.field = field;
 			this.type = type;
 		}

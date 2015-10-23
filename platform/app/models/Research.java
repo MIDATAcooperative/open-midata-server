@@ -7,7 +7,7 @@ import org.bson.types.ObjectId;
 import com.fasterxml.jackson.annotation.JsonFilter;
 
 import utils.collections.CMaps;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 import utils.search.Search;
 import utils.search.SearchException;
 import utils.search.Search.Type;
@@ -20,15 +20,15 @@ public class Research extends Model {
 	 public String name;
 	 public String description;
 	 
-	 public static void add(Research research) throws ModelException {
+	 public static void add(Research research) throws InternalServerException {
 			Model.insert(collection, research);
   	 }
 	 
-	 public static boolean existsByName(String name) throws ModelException {
+	 public static boolean existsByName(String name) throws InternalServerException {
 		 return Model.exists(Research.class, collection, CMaps.map("name", name));
 	 }
 	 
-	 public static Research getById(ObjectId researchid, Set<String> fields) throws ModelException {
+	 public static Research getById(ObjectId researchid, Set<String> fields) throws InternalServerException {
 			return Model.get(Research.class, collection, CMaps.map("_id", researchid), fields);
 		}
 	 

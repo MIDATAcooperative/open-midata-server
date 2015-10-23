@@ -11,7 +11,7 @@ import org.bson.types.ObjectId;
 
 import utils.DateTimeUtils;
 import utils.collections.CMaps;
-import utils.exceptions.ModelException;
+import utils.exceptions.InternalServerException;
 
 public class Admin extends User {
 
@@ -28,23 +28,23 @@ public class Admin extends User {
 		history = new ArrayList<History>();
 	}
 
-	public static boolean existsByEMail(String email) throws ModelException {
+	public static boolean existsByEMail(String email) throws InternalServerException {
 		return Model.exists(Admin.class, collection, CMaps.map("email", email)
 				.map("role", UserRole.ADMIN));
 	}
 
 	public static Admin getByEmail(String email, Set<String> fields)
-			throws ModelException {
+			throws InternalServerException {
 		return Model.get(Admin.class, collection, CMaps.map("email", email)
 				.map("role", UserRole.ADMIN), fields);
 	}
 
 	public static Admin getById(ObjectId id, Set<String> fields)
-			throws ModelException {
+			throws InternalServerException {
 		return Model.get(Admin.class, collection, CMaps.map("_id", id), fields);
 	}
 
-	public static void add(Admin user) throws ModelException {
+	public static void add(Admin user) throws InternalServerException {
 		Model.insert(collection, user);
 	}
 
