@@ -28,7 +28,7 @@ import models.Record;
 import models.RecordsInfo;
 import models.enums.APSSecurityLevel;
 
-public class ComplexQueryManager {
+public class QueryEngine {
 
 	public static List<Record> list(APSCache cache, ObjectId aps, Map<String, Object> properties, Set<String> fields) throws AppException {
 		return fullQuery(new Query(properties, fields, cache, aps), aps);
@@ -43,7 +43,7 @@ public class ComplexQueryManager {
 	}
 	
 	public static List<Record> isContainedInAps(APSCache cache, ObjectId aps, List<Record> candidates) throws AppException {
-		return onlyWithKey((new APSQSupportingQM(cache.getAPS(aps)).lookup(candidates, new Query(CMaps.map(RecordSharing.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps))));
+		return onlyWithKey((new Feature_QueryRedirect(cache.getAPS(aps)).lookup(candidates, new Query(CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps))));
 	}
 		
 	public static boolean isInQuery(Map<String, Object> properties, Record record) throws AppException {
@@ -53,7 +53,7 @@ public class ComplexQueryManager {
 	}
 	
 	public static List<Record> listFromMemory(Map<String, Object> properties, List<Record> records) throws AppException {
-		QueryManager qm = new FormatGroupHandling(new ContentFilterQM(new InMemoryQM(records)));
+		Feature qm = new Feature_FormatGroups(new Feature_ContentFilter(new Feature_InMemoryQuery(records)));
 		Query query = new Query(properties, Sets.create(), null, null, true);
 		return postProcessRecords(qm, query, qm.query(query));		
 	}
@@ -79,7 +79,7 @@ public class ComplexQueryManager {
 		}
 		
 		
-		QueryManager qm = new BlackListQM(q, new APSQSupportingQM(new AccountLevelQueryManager(new FormatGroupHandling(new StreamQueryManager()))));
+		Feature qm = new Feature_BlackList(q, new Feature_QueryRedirect(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Streams()))));
 		
 		boolean checkDates = q.uses("created");
 		List<Record> recs = qm.query(q);
@@ -147,7 +147,7 @@ public class ComplexQueryManager {
     	List<Record> result;
     	
     	
-    	QueryManager qm = new BlackListQM(q, new APSQSupportingQM(new AccountLevelQueryManager(new FormatGroupHandling(new StreamQueryManager()))));
+    	Feature qm = new Feature_BlackList(q, new Feature_QueryRedirect(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Streams()))));
     									
 		result = findRecordsDirectlyInDB(q);
     	
@@ -164,14 +164,14 @@ public class ComplexQueryManager {
 		return postProcessRecords(qm, q, result);
 	}
     
-    protected static void addFullIdField(Query q, SingleAPSManager source, List<Record> result) {
+    protected static void addFullIdField(Query q, APS source, List<Record> result) {
     	if (q.returns("id")) {
 			for (Record record : result) record.id = record._id.toString()+"."+source.getId().toString();
 		}
     }
     
-    protected static List<Record> scanForRecordsInMultipleAPS(Query q, Set<SingleAPSManager> apses, List<Record> result) throws AppException {
-    	for (SingleAPSManager aps : apses) {
+    protected static List<Record> scanForRecordsInMultipleAPS(Query q, Set<APS> apses, List<Record> result) throws AppException {
+    	for (APS aps : apses) {
     		result.addAll(aps.query(q));
     	}
     	return result;
@@ -227,7 +227,7 @@ public class ComplexQueryManager {
     	return filteredresult;
     }
     
-    protected static List<Record> postProcessRecords(QueryManager qm, Query q, List<Record> result) throws AppException {    	
+    protected static List<Record> postProcessRecords(Feature qm, Query q, List<Record> result) throws AppException {    	
     	result = duplicateElimination(result); 
 			
     	boolean postFilter = q.getMinDate() != null || q.getMaxDate() != null || q.restrictedBy("creator") || (q.restrictedBy("format") && q.restrictedBy("document"));
@@ -237,7 +237,7 @@ public class ComplexQueryManager {
 			for (Record record : result) {
 				fetchFromDB(q, record);
 				if (minTime == 0 || record.time ==0 || record.time >= minTime) {
-				  SingleAPSManager.decryptRecord(record);
+				  RecordEncryption.decryptRecord(record);
 				  if (record.creator == null) record.creator = record.owner;
 				} else compress++;				
 				if (!q.getGiveKey()) record.clearSecrets();

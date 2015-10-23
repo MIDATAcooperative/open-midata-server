@@ -22,7 +22,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import utils.access.RecordSharing;
+import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.AppToken;
 import utils.auth.SpaceToken;
@@ -72,7 +72,7 @@ public class Spaces extends Controller {
 		
 		if (fields.contains("query")) {
 			for (Space space : spaces) {
-				BSONObject q = RecordSharing.instance.getMeta(userId, space._id, "_query");
+				BSONObject q = RecordManager.instance.getMeta(userId, space._id, "_query");
 				if (q != null) space.query = q.toMap();
 			}
 		}
@@ -117,10 +117,10 @@ public class Spaces extends Controller {
 		Space space = add(userId, name, visualizationId, appId, context);
 		
 		if (query != null) {
-			RecordSharing.instance.shareByQuery(userId, userId, space._id, query);		
+			RecordManager.instance.shareByQuery(userId, userId, space._id, query);		
 		}
 		if (config != null) {
-			RecordSharing.instance.setMeta(userId, space._id, "_config", config);
+			RecordManager.instance.setMeta(userId, space._id, "_config", config);
 		}
 				
 		return ok(JsonOutput.toJson(space, "Space", Space.ALL));
@@ -147,7 +147,7 @@ public class Spaces extends Controller {
 		space.visualization = visualizationId;
 		space.context = context;
 		space.app = appId;
-		RecordSharing.instance.createPrivateAPS(userId, space._id);
+		RecordManager.instance.createPrivateAPS(userId, space._id);
 		
 		Space.add(space);		
 		return space;
@@ -206,7 +206,7 @@ public class Spaces extends Controller {
 			return badRequest("No space with this id exists.");
 		}
 		
-		RecordSharing.instance.deleteAPS(space._id, userId);
+		RecordManager.instance.deleteAPS(space._id, userId);
 
 		// delete space		
 		Space.delete(userId, spaceId);
@@ -243,7 +243,7 @@ public class Spaces extends Controller {
 		
 		// add records to space (implicit: if not already present)
 		Set<ObjectId> recordIds = ObjectIdConversion.castToObjectIds(JsonExtraction.extractSet(json.get("records")));		
-		RecordSharing.instance.share(userId, owner.myaps, space._id, recordIds, true);
+		RecordManager.instance.share(userId, owner.myaps, space._id, recordIds, true);
 						
 		return ok();
 	}

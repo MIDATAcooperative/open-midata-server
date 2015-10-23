@@ -11,11 +11,11 @@ import models.FormatGroup;
 import models.ContentInfo;
 import models.Record;
 
-public class FormatGroupHandling extends QueryManager {
+public class Feature_FormatGroups extends Feature {
 
-	private QueryManager next;
+	private Feature next;
 	
-	public FormatGroupHandling(QueryManager next) {
+	public Feature_FormatGroups(Feature next) {
 		this.next = next;
 	}
 	

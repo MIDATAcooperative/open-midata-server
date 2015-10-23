@@ -35,8 +35,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import scala.NotImplementedError;
-import utils.access.RecordSharing;
-import utils.access.SingleAPSManager;
+import utils.access.RecordManager;
+import utils.access.APS;
 import utils.auth.AnyRoleSecured;
 import utils.auth.RecordToken;
 import utils.auth.MemberSecured;
@@ -115,7 +115,7 @@ public class Records extends APIController {
 		ObjectId userId = new ObjectId(request().username());
 		
 		// execute
-		Record target = RecordSharing.instance.fetch(userId, tk);
+		Record target = RecordManager.instance.fetch(userId, tk);
 						
 		return ok(JsonOutput.toJson(target, "Record", Record.ALL_PUBLIC));
 	}		
@@ -142,7 +142,7 @@ public class Records extends APIController {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 					
-	    records.addAll(RecordSharing.instance.list(userId, aps, properties, fields));	
+	    records.addAll(RecordManager.instance.list(userId, aps, properties, fields));	
 				
 		Collections.sort(records);
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
@@ -168,7 +168,7 @@ public class Records extends APIController {
 		if (aps == null) aps = userId;		
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));			
 		
-	    Collection<RecordsInfo> result = RecordSharing.instance.info(userId, aps, properties);	
+	    Collection<RecordsInfo> result = RecordManager.instance.info(userId, aps, properties);	
 						
 		return ok(Json.toJson(result));
 	}
@@ -187,10 +187,10 @@ public class Records extends APIController {
 				
 		Map<String, Object> query = Circles.getQueries(userId, apsId);
 		if (query == null) {			
-			BSONObject b = RecordSharing.instance.getMeta(userId, apsId, SingleAPSManager.QUERY);
+			BSONObject b = RecordManager.instance.getMeta(userId, apsId, APS.QUERY);
 			if (b!=null) query = b.toMap();
 		}
-		Set<String> recordsIds = RecordSharing.instance.listRecordIds(userId, apsId);
+		Set<String> recordsIds = RecordManager.instance.listRecordIds(userId, apsId);
 		
 		ObjectNode result = Json.newObject();
 		
@@ -251,9 +251,9 @@ public class Records extends APIController {
 				
 		for (Space space : spaces) {
 		  if (spaceIds.contains(space._id)) {
-			  RecordSharing.instance.share(userId, owner.myaps, space._id, recordIds, false);			
+			  RecordManager.instance.share(userId, owner.myaps, space._id, recordIds, false);			
 		  } else {
-			  RecordSharing.instance.unshare(userId, space._id, recordIds);				
+			  RecordManager.instance.unshare(userId, space._id, recordIds);				
 		  }
 		}
 		
@@ -310,7 +310,7 @@ public class Records extends APIController {
 		RecordToken tk = getRecordTokenFromString(id);
 		ObjectId userId = new ObjectId(request().username());
 		
-		RecordSharing.instance.deleteRecord(userId, tk);
+		RecordManager.instance.deleteRecord(userId, tk);
 		return ok();
 	}
 	
@@ -365,15 +365,15 @@ public class Records extends APIController {
         	}        	         	
         	        	
         	for (String sourceAps :records.keySet()) {        	  
-        	  RecordSharing.instance.share(userId, new ObjectId(sourceAps), start, ObjectIdConversion.toObjectIds(records.get(sourceAps)), withMember);
+        	  RecordManager.instance.share(userId, new ObjectId(sourceAps), start, ObjectIdConversion.toObjectIds(records.get(sourceAps)), withMember);
         	}    
         	
         	if (query != null) {
         		if (consent == null) {
-        		  RecordSharing.instance.shareByQuery(userId, userId, start, query);
+        		  RecordManager.instance.shareByQuery(userId, userId, start, query);
         		} else {
         		  Circles.setQuery(userId, start, query);        		          		  
-	        	  RecordSharing.instance.applyQuery(userId, query, userId, start, withMember);	        	  
+	        	  RecordManager.instance.applyQuery(userId, query, userId, start, withMember);	        	  
         		}
         	}
         }
@@ -393,15 +393,15 @@ public class Records extends APIController {
         	}        	         	
         	        	
         	for (String sourceAps :records.keySet()) {        	  
-        	  RecordSharing.instance.unshare(userId, start, ObjectIdConversion.toObjectIds(records.get(sourceAps)));
+        	  RecordManager.instance.unshare(userId, start, ObjectIdConversion.toObjectIds(records.get(sourceAps)));
         	}    
         	
         	if (query != null) {
         		if (consent == null) {
-        		  RecordSharing.instance.shareByQuery(userId, userId, start, query);
+        		  RecordManager.instance.shareByQuery(userId, userId, start, query);
         		} else {
         		  Circles.setQuery(userId, start, query);        		          		  
-	        	  RecordSharing.instance.applyQuery(userId, query, userId, start, withMember);	        	  
+	        	  RecordManager.instance.applyQuery(userId, query, userId, start, withMember);	        	  
         		}
         	}
         	        	
@@ -417,7 +417,7 @@ public class Records extends APIController {
 		ObjectId userId = new ObjectId(request().username());
 		RecordToken tk = Records.getRecordTokenFromString(recordIdString);
 		
-		Record record = RecordSharing.instance.fetch(userId, tk, Sets.create("format","created"));
+		Record record = RecordManager.instance.fetch(userId, tk, Sets.create("format","created"));
 		if (record == null) return badRequest("Record not found!");
 		if (record.format == null) return ok();
 		
@@ -450,7 +450,7 @@ public class Records extends APIController {
 						
 		if (tk==null) return badRequest("Bad token");
 				
-		FileData fileData = RecordSharing.instance.fetchFile(userId, tk);
+		FileData fileData = RecordManager.instance.fetchFile(userId, tk);
 		response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
 		return ok(fileData.inputStream);
 	}

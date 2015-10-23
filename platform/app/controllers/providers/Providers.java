@@ -26,7 +26,7 @@ import models.enums.Gender;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
-import utils.access.RecordSharing;
+import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
 import utils.auth.ProviderSecured;
 import utils.auth.SpaceToken;
@@ -113,7 +113,7 @@ public class Providers extends APIController {
 		
 		KeyManager.instance.unlock(user._id, "12345");
 		
-		RecordSharing.instance.createPrivateAPS(user._id, user._id);		
+		RecordManager.instance.createPrivateAPS(user._id, user._id);		
 		
 		session().clear();
 		session("id", user._id.toString());

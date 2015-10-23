@@ -25,7 +25,7 @@ import play.Routes;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import utils.DateTimeUtils;
-import utils.access.RecordSharing;
+import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
 import utils.auth.PasswordResetToken;
 import utils.collections.Sets;
@@ -271,7 +271,7 @@ public class Application extends APIController {
 		
 		KeyManager.instance.unlock(user._id, "12345");
 		
-		user.myaps = RecordSharing.instance.createPrivateAPS(user._id, user._id);
+		user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
 		Member.set(user._id, "myaps", user.myaps);
 		
 		session().clear();

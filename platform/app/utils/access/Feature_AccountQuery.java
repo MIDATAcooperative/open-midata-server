@@ -20,11 +20,11 @@ import models.Consent;
 import models.Record;
 import models.StudyParticipation;
 
-public class AccountLevelQueryManager extends QueryManager {
+public class Feature_AccountQuery extends Feature {
 
-	private QueryManager next;
+	private Feature next;
 
-	public AccountLevelQueryManager(QueryManager next) {
+	public Feature_AccountQuery(Feature next) {
 		this.next = next;
 	}
 

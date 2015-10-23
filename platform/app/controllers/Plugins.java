@@ -29,7 +29,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import utils.access.RecordSharing;
+import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.Rights;
 import utils.collections.ChainedMap;
@@ -140,9 +140,9 @@ public class Plugins extends APIController {
 					
 					if (json.has("query")) {
 					  Map<String, Object> query = JsonExtraction.extractMap(json.get("query"));
-					  RecordSharing.instance.shareByQuery(userId, userId, space._id, query);
+					  RecordManager.instance.shareByQuery(userId, userId, space._id, query);
 					} else {					
-					  RecordSharing.instance.shareByQuery(userId, userId, space._id, visualization.defaultQuery);
+					  RecordManager.instance.shareByQuery(userId, userId, space._id, visualization.defaultQuery);
 					  
 					}
 				}

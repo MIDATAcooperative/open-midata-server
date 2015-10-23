@@ -46,18 +46,18 @@ public class RuleApplication {
 
 	public void applyRules(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws InternalServerException {
 		AccessLog.debug("BEGIN APPLY RULES");
-		Collection<Record> records = RecordSharing.instance.list(userId, sourceaps, RecordSharing.FULLAPS_FLAT_OWNER, RecordSharing.COMPLETE_META);
+		Collection<Record> records = RecordManager.instance.list(userId, sourceaps, RecordManager.FULLAPS_FLAT_OWNER, RecordManager.COMPLETE_META);
 		Set<ObjectId> result = applyRules(records, filterRules);		
-		RecordSharing.instance.share(userId, sourceaps, targetaps, result, ownerInformation);
+		RecordManager.instance.share(userId, sourceaps, targetaps, result, ownerInformation);
 		
-		Collection<Record> streams = RecordSharing.instance.list(userId, targetaps, RecordSharing.STREAMS_ONLY_OWNER, RecordSharing.COMPLETE_META);
+		Collection<Record> streams = RecordManager.instance.list(userId, targetaps, RecordManager.STREAMS_ONLY_OWNER, RecordManager.COMPLETE_META);
 		AccessLog.debug("UNSHARE STREAMS CANDIDATES = "+streams.size());
 		Set<ObjectId> remove = new HashSet<ObjectId>();
 		for (Record stream : streams) {
 			if (!applyRules(stream, filterRules)) remove.add(stream._id);
 		}
 		AccessLog.debug("UNSHARE STREAMS QUALIFIED = "+remove.size());
-		RecordSharing.instance.unshare(userId, targetaps, remove);
+		RecordManager.instance.unshare(userId, targetaps, remove);
 		AccessLog.debug("END APPLY RULES");
 		
 	}
@@ -95,7 +95,7 @@ public class RuleApplication {
 				List<FilterRule> rules = member.rules.get(key);
 				if (applyRules(record, rules)) {
 					try {
-					  RecordSharing.instance.share(executingPerson, useAps, new ObjectId(key), Collections.singleton(record._id), true);
+					  RecordManager.instance.share(executingPerson, useAps, new ObjectId(key), Collections.singleton(record._id), true);
 					} catch (APSNotExistingException e) {
 						
 					}
@@ -154,7 +154,7 @@ public class RuleApplication {
 	
     public void setupRulesForSpace(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws InternalServerException {				
 		Map<String, Object> query = queryFromRules(filterRules);						
-		RecordSharing.instance.shareByQuery(userId, sourceaps, targetaps, query);
+		RecordManager.instance.shareByQuery(userId, sourceaps, targetaps, query);
 	}
 
 	public List<FilterRule> createRulesFromQuery(Map<String, Object> query) {

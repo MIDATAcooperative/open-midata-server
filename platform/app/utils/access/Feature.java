@@ -9,7 +9,7 @@ import utils.exceptions.InternalServerException;
 import models.Record;
 import models.RecordsInfo;
 
-public abstract class QueryManager {
+public abstract class Feature {
 
 		
 	protected abstract List<Record> lookup(List<Record> record, Query q) throws AppException;

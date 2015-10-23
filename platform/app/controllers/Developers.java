@@ -19,7 +19,7 @@ import org.bson.types.ObjectId;
 
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import utils.access.RecordSharing;
+import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
 import utils.collections.Sets;
 import utils.exceptions.InternalServerException;
@@ -80,7 +80,7 @@ public class Developers extends APIController {
 		user.security = AccountSecurityLevel.KEY;
 				
 		Developer.add(user);
-		RecordSharing.instance.createPrivateAPS(user._id, user._id);
+		RecordManager.instance.createPrivateAPS(user._id, user._id);
 		
 		KeyManager.instance.unlock(user._id, "12345");
 		
@@ -131,7 +131,7 @@ public class Developers extends APIController {
 						
 		KeyManager.instance.unlock(user._id, "12345");
 		
-		if (AccessPermissionSet.getById(user._id) == null) RecordSharing.instance.createPrivateAPS(user._id, user._id);
+		if (AccessPermissionSet.getById(user._id) == null) RecordManager.instance.createPrivateAPS(user._id, user._id);
 				
 		// user authenticated
 		session().clear();

@@ -10,7 +10,7 @@ import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 import utils.access.AccessLog;
-import utils.access.RecordSharing;
+import utils.access.RecordManager;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -56,7 +56,7 @@ public class APICallAction extends Action<APICall> {
 		} catch (InternalServerException e2) {			
 			return F.Promise.pure((Result) internalServerError(e2.getMessage()));			
 		} finally {
-			RecordSharing.instance.clear();
+			RecordManager.instance.clear();
 		}
     }
 }

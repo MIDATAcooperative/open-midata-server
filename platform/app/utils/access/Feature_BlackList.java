@@ -14,12 +14,12 @@ import org.bson.BasicBSONObject;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
-public class BlackListQM extends QueryManager {
+public class Feature_BlackList extends Feature {
 
-    private QueryManager next;
+    private Feature next;
     private Set<String> blacklist; 
 	
-	public BlackListQM(Query q, QueryManager next) throws AppException {
+	public Feature_BlackList(Query q, Feature next) throws AppException {
 		this.next = next;
 		initBlacklist(q);
 	}

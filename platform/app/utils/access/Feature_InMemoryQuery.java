@@ -7,11 +7,11 @@ import utils.exceptions.InternalServerException;
 
 import models.Record;
 
-public class InMemoryQM extends QueryManager {
+public class Feature_InMemoryQuery extends Feature {
 	
 	private List<Record> contents;
 	
-	public InMemoryQM(List<Record> contents) {
+	public Feature_InMemoryQuery(List<Record> contents) {
 		this.contents = contents;
 	}
 			

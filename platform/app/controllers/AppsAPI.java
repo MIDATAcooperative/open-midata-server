@@ -35,7 +35,7 @@ import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import utils.DateTimeUtils;
-import utils.access.RecordSharing;
+import utils.access.RecordManager;
 import utils.auth.AppToken;
 import utils.auth.Rights;
 import utils.auth.SpaceToken;
@@ -165,7 +165,7 @@ public class AppsAPI extends Controller {
 		}
 				
 		// get record data	
-		Collection<Record> records = RecordSharing.instance.list(spaceToken.userId, spaceToken.spaceId, properties, fields);
+		Collection<Record> records = RecordManager.instance.list(spaceToken.userId, spaceToken.spaceId, properties, fields);
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		return ok(JsonOutput.toJson(records, "Record", fields));
 		
@@ -256,12 +256,12 @@ public class AppsAPI extends Controller {
 		record.name = name;
 		record.description = description;
 		
-		RecordSharing.instance.addRecord(executor._id, record, targetAps);
+		RecordManager.instance.addRecord(executor._id, record, targetAps);
 		
 		/*if (targetAps != null) {
 			Set<ObjectId> records = new HashSet<ObjectId>();
 			records.add(record._id);
-			RecordSharing.instance.share(targetUser._id, targetUser.myaps, targetAps, records, true);
+			RecordManager.instance.share(targetUser._id, targetUser.myaps, targetAps, records, true);
 		}*/
 		
 		ObjectNode obj = Json.newObject();
@@ -327,7 +327,7 @@ public class AppsAPI extends Controller {
 
 		// save file with file storage utility
 		    try {
-			  RecordSharing.instance.addRecord(owner._id, record, new FileInputStream(file), filename, contentType);
+			  RecordManager.instance.addRecord(owner._id, record, new FileInputStream(file), filename, contentType);
 		    } catch (FileNotFoundException e) {
 		    	throw new InternalServerException("error.internal",e);
 		    }

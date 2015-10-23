@@ -7,11 +7,11 @@ import utils.exceptions.InternalServerException;
 
 import models.Record;
 
-public class ContentFilterQM extends QueryManager {
+public class Feature_ContentFilter extends Feature {
 
-	private QueryManager next;
+	private Feature next;
 	
-	public ContentFilterQM(QueryManager next) {
+	public Feature_ContentFilter(Feature next) {
 		this.next = next;
 	}
 		
@@ -24,7 +24,7 @@ public class ContentFilterQM extends QueryManager {
 	@Override
 	protected List<Record> postProcess(List<Record> records, Query q)
 			throws AppException {
-		return ComplexQueryManager.filterByFormat(records, q.restrictedBy("format") ? q.getRestriction("format") : null, q.restrictedBy("content") ? q.getRestriction("content") : null, q.restrictedBy("content/*") ? q.getRestriction("content/*") : null);	
+		return QueryEngine.filterByFormat(records, q.restrictedBy("format") ? q.getRestriction("format") : null, q.restrictedBy("content") ? q.getRestriction("content") : null, q.restrictedBy("content/*") ? q.getRestriction("content/*") : null);	
 	}
 
 	@Override

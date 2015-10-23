@@ -29,7 +29,7 @@ import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
 import models.enums.StudyValidationStatus;
-import utils.access.RecordSharing;
+import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.MemberSecured;
@@ -176,7 +176,7 @@ public class Studies extends APIController {
 				part.providers.add(providerId);	
 				part.authorized.add(providerId);
 			}
-			RecordSharing.instance.shareAPS(part._id, memberId, newProviders);
+			RecordManager.instance.shareAPS(part._id, memberId, newProviders);
 			
 			StudyParticipation.set(part._id, "providers", part.providers);
 			StudyParticipation.set(part._id, "authorized", part.authorized);
@@ -193,7 +193,7 @@ public class Studies extends APIController {
 				part.providers.remove(providerId);	
 				part.authorized.remove(providerId);
 			}
-			RecordSharing.instance.unshareAPS(part._id, memberId, newProviders);
+			RecordManager.instance.unshareAPS(part._id, memberId, newProviders);
 			
 			StudyParticipation.set(part._id, "providers", part.providers);
 			StudyParticipation.set(part._id, "authorized", part.authorized);
@@ -246,7 +246,7 @@ public class Studies extends APIController {
 		part.providers = new HashSet<ObjectId>();
 		part.authorized = new HashSet<ObjectId>();		
 		
-		RecordSharing.instance.createAnonymizedAPS(member._id, study.createdBy, part._id);
+		RecordManager.instance.createAnonymizedAPS(member._id, study.createdBy, part._id);
 		
 		if (code != null) {
 		  History codedentererd = new History(EventType.CODE_ENTERED, part, null); 

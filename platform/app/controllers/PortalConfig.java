@@ -13,7 +13,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import utils.access.RecordSharing;
+import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.SpaceToken;
 import utils.collections.Sets;
@@ -47,7 +47,7 @@ public class PortalConfig extends APIController {
 	    Space config = Space.getByOwnerSpecialContext(userId, "portal", Sets.create("name"));
 	    if (config == null) return ok();
 	    
-		BSONObject meta = RecordSharing.instance.getMeta(userId, config._id, "_config");		
+		BSONObject meta = RecordManager.instance.getMeta(userId, config._id, "_config");		
 		if (meta != null) return ok(Json.toJson(meta.toMap()));
 		
 		return ok();
@@ -76,7 +76,7 @@ public class PortalConfig extends APIController {
 		
 		Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));
 		
-		RecordSharing.instance.setMeta(userId, configspace._id, "_config", config);
+		RecordManager.instance.setMeta(userId, configspace._id, "_config", config);
 						
 		return ok();
 	}

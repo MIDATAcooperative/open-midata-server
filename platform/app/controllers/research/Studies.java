@@ -42,7 +42,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
-import utils.access.RecordSharing;
+import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.ResearchSecured;
@@ -137,7 +137,7 @@ public class Studies extends APIController {
 
 		 Set<String> fields = Sets.create("id", "ownerName",
 					"app", "creator", "created", "name", "format", "content", "description", "data", "group"); 
-		 List<Record> allRecords = RecordSharing.instance.list(executorId, executorId, CMaps.map("study",  study._id), fields);
+		 List<Record> allRecords = RecordManager.instance.list(executorId, executorId, CMaps.map("study",  study._id), fields);
 		 		
 		 
 		 return ok(JsonOutput.toJson(allRecords, "Record" , fields));
@@ -426,7 +426,7 @@ public class Studies extends APIController {
 			consent.authorized = new HashSet<ObjectId>();
 			consent.status = ConsentStatus.ACTIVE;
 						
-			RecordSharing.instance.createAnonymizedAPS(userId, userId, consent._id);			
+			RecordManager.instance.createAnonymizedAPS(userId, userId, consent._id);			
 			consent.add();
 		}
 		
@@ -436,7 +436,7 @@ public class Studies extends APIController {
 		
 		consent.authorized.addAll(participants);
 		StudyRelated.set(consent._id, "authorized", consent.authorized);
-		RecordSharing.instance.shareAPS(consent._id, userId, participants);
+		RecordManager.instance.shareAPS(consent._id, userId, participants);
 				
 		return ok(JsonOutput.toJson(consent, "Consent", Sets.create("_id", "authorized")));		
 	}

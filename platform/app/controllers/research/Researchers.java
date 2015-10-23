@@ -27,7 +27,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result; 
-import utils.access.RecordSharing;
+import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
@@ -100,7 +100,7 @@ public class Researchers extends APIController {
 		
 		KeyManager.instance.unlock(user._id, "12345");
 		
-		RecordSharing.instance.createPrivateAPS(user._id, user._id);		
+		RecordManager.instance.createPrivateAPS(user._id, user._id);		
 		
 		session().clear();
 		session("id", user._id.toString());

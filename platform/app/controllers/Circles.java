@@ -26,7 +26,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.PasswordHash;
-import utils.access.RecordSharing;
+import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.MemberSecured;
 import utils.auth.Rights;
@@ -177,12 +177,12 @@ public class Circles extends APIController {
 		consent.status = userId.equals(executorId) ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;
 		if (! userId.equals(executorId)) consent.authorized.add(executorId);
 							
-		RecordSharing.instance.createAnonymizedAPS(userId, executorId, consent._id);
+		RecordManager.instance.createAnonymizedAPS(userId, executorId, consent._id);
 		
 		if (passcode != null) {			  
 			  byte[] pubkey = KeyManager.instance.generateKeypairAndReturnPublicKey(consent._id, passcode);
-		      RecordSharing.instance.shareAPS(consent._id, userId, consent._id, pubkey);
-		      RecordSharing.instance.setMeta(userId, consent._id, "_config", CMaps.map("passcode", passcode));			  		
+		      RecordManager.instance.shareAPS(consent._id, userId, consent._id, pubkey);
+		      RecordManager.instance.setMeta(userId, consent._id, "_config", CMaps.map("passcode", passcode));			  		
 		}
 		
 		consent.add();
@@ -215,7 +215,7 @@ public class Circles extends APIController {
 		   if (consent == null) return badRequest("Bad passcode");
 		   
 		   KeyManager.instance.unlock(consent._id, passcode);		  
-		   RecordSharing.instance.shareAPS(consent._id, consent._id, Collections.singleton(executorId));		   
+		   RecordManager.instance.shareAPS(consent._id, consent._id, Collections.singleton(executorId));		   
 		   consent.authorized.add(executorId);
 		   Consent.set(consent._id, "authorized", consent.authorized);
 		
@@ -248,7 +248,7 @@ public class Circles extends APIController {
 		if (consent.type != ConsentType.CIRCLE) return badRequest("Operation not supported");
 		
 		// Remove APS
-		RecordSharing.instance.deleteAPS(consent._id, consent.owner);
+		RecordManager.instance.deleteAPS(consent._id, consent.owner);
 		
 		// Remove Rules
 		removeQueries(userId, circleId);
@@ -292,7 +292,7 @@ public class Circles extends APIController {
 		consent.authorized.addAll(newMemberIds);
 		Consent.set(consent._id, "authorized", consent.authorized);
 		
-		RecordSharing.instance.shareAPS(consent._id, userId, newMemberIds);
+		RecordManager.instance.shareAPS(consent._id, userId, newMemberIds);
 					
 		return ok();
 	}
@@ -326,7 +326,7 @@ public class Circles extends APIController {
 		Set<ObjectId> memberIds = new HashSet<ObjectId>();
 		memberIds.add(memberId);
 		
-		RecordSharing.instance.unshareAPS(consent._id, userId, memberIds);
+		RecordManager.instance.unshareAPS(consent._id, userId, memberIds);
 		
 		return ok();
 	}
@@ -361,7 +361,7 @@ public class Circles extends APIController {
 		if (query.containsKey("exclude-ids")) {
 			Map<String, Object> ids = new HashMap<String,Object>();
 			ids.put("ids", query.get("exclude-ids"));
-			RecordSharing.instance.setMeta(userId, apsId, "_exclude", ids);
+			RecordManager.instance.setMeta(userId, apsId, "_exclude", ids);
 		}
 	}
 			

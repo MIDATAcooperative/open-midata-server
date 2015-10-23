@@ -35,7 +35,7 @@ import org.elasticsearch.search.suggest.SuggestBuilder.SuggestionBuilder;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 
 import play.libs.Json;
-import utils.access.RecordSharing;
+import utils.access.RecordManager;
 import utils.collections.CollectionConversion;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
@@ -337,7 +337,7 @@ public class Search {
 	   Map<String, Set<ObjectId>> map = new HashMap<String, Set<ObjectId>>();
 	   
 	   for (Circle circle : circles) {
-		   Set<String> sharedids = RecordSharing.instance.listRecordIds(userId, circle._id);
+		   Set<String> sharedids = RecordManager.instance.listRecordIds(userId, circle._id);
 		   map.put(circle.owner.toString(), ObjectIdConversion.toObjectIds(sharedids));		   
 	   }
 	   
@@ -382,7 +382,7 @@ public class Search {
 		   Map<String, Set<ObjectId>> map = new HashMap<String, Set<ObjectId>>();
 		   
 		   for (Circle circle : circles) {
-			   Set<String> sharedids = RecordSharing.instance.listRecordIds(userId, circle._id);
+			   Set<String> sharedids = RecordManager.instance.listRecordIds(userId, circle._id);
 			   map.put(circle.owner.toString(), ObjectIdConversion.toObjectIds(sharedids));		   
 		   }
 		   

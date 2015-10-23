@@ -22,7 +22,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import utils.DateTimeUtils;
-import utils.access.RecordSharing;
+import utils.access.RecordManager;
 import utils.auth.AppToken;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
@@ -85,7 +85,7 @@ public class GenomeDataConverter extends Controller {
 		}
 		
 		Set<String> fields = Sets.create("name");
-		List<Record> records = RecordSharing.instance.list(appToken.userId, appToken.userId, CMaps.map("format", "Attachment"), fields);
+		List<Record> records = RecordManager.instance.list(appToken.userId, appToken.userId, CMaps.map("format", "Attachment"), fields);
 		
 		Collections.sort(records);
 		return ok(JsonOutput.toJson(records, "Record", fields));
@@ -171,7 +171,7 @@ public class GenomeDataConverter extends Controller {
 		LargeRecord.add(owner, record, map);
 		
 		/*
-		RecordSharing.instance.addRecord(owner, record);
+		RecordManager.instance.addRecord(owner, record);
 		
 		for (String key : map.keySet()) {
 			Record part = new Record();
@@ -186,7 +186,7 @@ public class GenomeDataConverter extends Controller {
 			part.part = key;
 			part.data = new BasicDBObject();
 			part.data.put(key, map.get(key));
-			RecordSharing.instance.addRecord(owner, part);
+			RecordManager.instance.addRecord(owner, part);
 		}
 		*/
 		return ok();

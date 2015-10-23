@@ -24,7 +24,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import utils.access.RecordSharing;
+import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -96,7 +96,7 @@ public class Tasking extends APIController {
 			case YEARLY: cal.set(Calendar.DAY_OF_YEAR, 1);dateLimit = cal.getTime(); break;
 			case ONCE: dateLimit = task.createdAt;
 			}
-			RecordsInfo info = RecordsInfo.merge(RecordSharing.instance.info(who, task.shareBackTo, task.confirmQuery));
+			RecordsInfo info = RecordsInfo.merge(RecordManager.instance.info(who, task.shareBackTo, task.confirmQuery));
 			if (info.count > 0 && info.newest.after(dateLimit)) task.done = true;
 		}
 	}
@@ -155,9 +155,9 @@ public class Tasking extends APIController {
 		}
 		
 		if (task.pluginQuery != null) {			  
-			  RecordSharing.instance.shareByQuery(userId, userId, space._id, task.pluginQuery);
+			  RecordManager.instance.shareByQuery(userId, userId, space._id, task.pluginQuery);
 		} else {					
-			  RecordSharing.instance.shareByQuery(userId, userId, space._id, plugin.defaultQuery);			  
+			  RecordManager.instance.shareByQuery(userId, userId, space._id, plugin.defaultQuery);			  
 		}
 				
 		return ok(Json.toJson(space));

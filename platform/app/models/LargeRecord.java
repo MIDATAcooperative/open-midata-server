@@ -12,7 +12,7 @@ import java.util.TreeMap;
 
 import org.bson.types.ObjectId;
 
-import utils.access.RecordSharing;
+import utils.access.RecordManager;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
@@ -48,7 +48,7 @@ public class LargeRecord  {
 	public static List<Record> getAll(ObjectId who, ObjectId aps, Map<String, Object> properties, Set<String> fields) throws AppException {
 		Set<String> tempFields = new HashSet<String>(fields);
 		tempFields.add("data.type");
-		List<Record> records = RecordSharing.instance.list(who, aps, properties, tempFields);
+		List<Record> records = RecordManager.instance.list(who, aps, properties, tempFields);
 		if (fields.contains("data")) {
 		for (Record record : records) {
 			// get the data from the chunks for large records
@@ -78,7 +78,7 @@ public class LargeRecord  {
 
 		// get ids chunks
 		Set<ObjectId> chunksToFetch = getChunkIds(masterRecord, dataFields);
-		List<Record> chunksData = RecordSharing.instance.list(who, aps, CMaps.map("_id", chunksToFetch), fields);
+		List<Record> chunksData = RecordManager.instance.list(who, aps, CMaps.map("_id", chunksToFetch), fields);
 
 		// replace data in master record
 		masterRecord.data = new BasicDBObject();
@@ -189,7 +189,7 @@ public class LargeRecord  {
 		masterRecord.data.put("chunks", chunks);
 
 		// insert the master record as a normal record
-		RecordSharing.instance.addDocumentRecord(owner._id, masterRecord, recs);
+		RecordManager.instance.addDocumentRecord(owner._id, masterRecord, recs);
 	}
 
 	/**

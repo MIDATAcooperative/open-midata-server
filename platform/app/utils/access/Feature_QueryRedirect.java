@@ -25,11 +25,11 @@ import controllers.RuleApplication;
 import models.FilterRule;
 import models.Record;
 
-public class APSQSupportingQM extends QueryManager {
+public class Feature_QueryRedirect extends Feature {
 
-    private QueryManager next;
+    private Feature next;
 	
-	public APSQSupportingQM(QueryManager next) {
+	public Feature_QueryRedirect(Feature next) {
 		this.next = next;
 	}
 	
@@ -39,7 +39,7 @@ public class APSQSupportingQM extends QueryManager {
 		List<Record> result = next.lookup(record, q);
 		// Add Filter
 		
-		BasicBSONObject query = q.getCache().getAPS(q.getApsId()).getMeta(SingleAPSManager.QUERY);    	
+		BasicBSONObject query = q.getCache().getAPS(q.getApsId()).getMeta(APS.QUERY);    	
     	// Ignores queries in main APS 
 		if (query != null && !q.getApsId().equals(q.getCache().getOwner())) {			
 						
@@ -62,7 +62,7 @@ public class APSQSupportingQM extends QueryManager {
 	@Override
 	protected List<Record> query(Query q) throws AppException {
 		
-		BasicBSONObject query = q.getCache().getAPS(q.getApsId()).getMeta(SingleAPSManager.QUERY);    	
+		BasicBSONObject query = q.getCache().getAPS(q.getApsId()).getMeta(APS.QUERY);    	
     	// Ignores queries in main APS 
 		if (query != null && !q.getApsId().equals(q.getCache().getOwner())) {			
 			List<Record> result = next.query(q);
@@ -94,7 +94,7 @@ public class APSQSupportingQM extends QueryManager {
 		List<Record> result = next.query(new Query(combined, q.getFields(), q.getCache(), new ObjectId(targetAPSId.toString())));
 		
 		if (query.containsField("_exclude") && result.size() > 0) {			
-			List<Record> excluded = ComplexQueryManager.listFromMemory((Map<String, Object>) query.get("_exclude"), result);
+			List<Record> excluded = QueryEngine.listFromMemory((Map<String, Object>) query.get("_exclude"), result);
             result.removeAll(excluded);						
 		} 
 		
@@ -108,10 +108,10 @@ public class APSQSupportingQM extends QueryManager {
 			return Collections.emptyList();
 		}
 		
-		List<Record> result = ComplexQueryManager.listFromMemory(combined, results); 
+		List<Record> result = QueryEngine.listFromMemory(combined, results); 
 									
 		if (query.containsField("_exclude") && result.size() > 0) {			
-			List<Record> excluded = ComplexQueryManager.listFromMemory((Map<String, Object>) query.get("_exclude"), result);
+			List<Record> excluded = QueryEngine.listFromMemory((Map<String, Object>) query.get("_exclude"), result);
             result.removeAll(excluded);						
 		} 
 		
@@ -163,8 +163,8 @@ public class APSQSupportingQM extends QueryManager {
 	}
 	
 	public static void setQuery(APSCache cache, ObjectId apsId, Map<String, Object> query) throws AppException {		
-		SingleAPSManager aps = cache.getAPS(apsId);
-		aps.setMeta(SingleAPSManager.QUERY, query);
+		APS aps = cache.getAPS(apsId);
+		aps.setMeta(APS.QUERY, query);
 		
 		//List<Record> r = FormatHandling.findStreams(new Query(query, Sets.create("_id","key"),  cache, true);
 	}

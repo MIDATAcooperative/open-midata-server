@@ -15,11 +15,11 @@ import utils.exceptions.InternalServerException;
 import models.APSNotExistingException;
 import models.Record;
 
-public class StreamQueryManager extends QueryManager {
+public class Feature_Streams extends Feature {
 
 	
 	
-	public StreamQueryManager() {
+	public Feature_Streams() {
 		
 	}
 	
@@ -27,7 +27,7 @@ public class StreamQueryManager extends QueryManager {
 	@Override
 	protected List<Record> lookup(List<Record> records, Query q)
 			throws AppException {
-		QueryManager next = q.getCache().getAPS(q.getApsId());
+		APS next = q.getCache().getAPS(q.getApsId());
 		
 		List<Record> result = (next != null) ? next.lookup(records, q) : null;
 		
@@ -39,7 +39,7 @@ public class StreamQueryManager extends QueryManager {
 				if (isStrict) {
 					Record stream = new Record();
 					stream._id = record.stream;
-					if (!((SingleAPSManager) next).lookupSingle(stream, q)) lookup = false; 
+					if (!((APS) next).lookupSingle(stream, q)) lookup = false; 
 				}
 				
 				boolean found = lookup && q.getCache().getAPS(record.stream).lookupSingle(record, q);
@@ -61,7 +61,7 @@ public class StreamQueryManager extends QueryManager {
 	
 	@Override
 	protected List<Record> query(Query q) throws AppException {		
-		SingleAPSManager next = q.getCache().getAPS(q.getApsId());
+		APS next = q.getCache().getAPS(q.getApsId());
 		List<Record> records = new ArrayList<Record>();
 		boolean restrictedByStream = q.restrictedBy("stream");
 		

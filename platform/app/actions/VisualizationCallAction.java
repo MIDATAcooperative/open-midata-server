@@ -6,7 +6,7 @@ import play.libs.Json;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
-import utils.access.RecordSharing;
+import utils.access.RecordManager;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation.JsonValidationException;
@@ -57,7 +57,7 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
 		} catch (InternalServerException e2) {			
 			return F.Promise.pure((Result) internalServerError(e2.getMessage()));			
 		} finally {
-			RecordSharing.instance.clear();
+			RecordManager.instance.clear();
 		}
     }
 }

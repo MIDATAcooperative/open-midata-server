@@ -74,9 +74,9 @@ import models.enums.APSSecurityLevel;
  * access to records
  *
  */
-public class RecordSharing {
+public class RecordManager {
 
-	public static RecordSharing instance = new RecordSharing();
+	public static RecordManager instance = new RecordManager();
 
 	public final static Map<String, Object> FULLAPS = new HashMap<String, Object>();
 	public final static Map<String, Object> FULLAPS_WITHSTREAMS = CMaps.map("streams", "true");
@@ -203,7 +203,7 @@ public class RecordSharing {
 	public void shareAPS(ObjectId apsId, ObjectId ownerId,
 			Set<ObjectId> targetUsers) throws AppException {
 
-		SingleAPSManager apswrapper = getCache(ownerId).getAPS(apsId);
+		APS apswrapper = getCache(ownerId).getAPS(apsId);
 		try {
 			apswrapper.addAccess(targetUsers);
 		} catch (EncryptionNotSupportedException e) {
@@ -214,7 +214,7 @@ public class RecordSharing {
 	
 	public void shareAPS(ObjectId apsId, ObjectId ownerId,
 			ObjectId targetId, byte[] publickey) throws AppException {
-		SingleAPSManager apswrapper = getCache(ownerId).getAPS(apsId);
+		APS apswrapper = getCache(ownerId).getAPS(apsId);
 		try {
 			apswrapper.addAccess(targetId, publickey);
 		} catch (EncryptionNotSupportedException e) {
@@ -226,7 +226,7 @@ public class RecordSharing {
 	public void unshareAPS(ObjectId apsId, ObjectId ownerId,
 			Set<ObjectId> targetUsers) throws InternalServerException {
 
-		SingleAPSManager apswrapper = getCache(ownerId).getAPS(apsId);
+		APS apswrapper = getCache(ownerId).getAPS(apsId);
 		apswrapper.removeAccess(targetUsers);
 
 	}
@@ -235,12 +235,12 @@ public class RecordSharing {
 			Set<ObjectId> records, boolean withOwnerInformation)
 			throws AppException {
         AccessLog.debug("share: who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString()+" count="+(records!=null ? records.size() : "?"));
-		SingleAPSManager apswrapper = getCache(who).getAPS(toAPS);
-		List<Record> recordEntries = ComplexQueryManager.listInternal(getCache(who), fromAPS,
-				records != null ? CMaps.map("_id", records) : RecordSharing.FULLAPS_FLAT,
+		APS apswrapper = getCache(who).getAPS(toAPS);
+		List<Record> recordEntries = QueryEngine.listInternal(getCache(who), fromAPS,
+				records != null ? CMaps.map("_id", records) : RecordManager.FULLAPS_FLAT,
 				Sets.create("_id", "key", "owner", "format", "content", "created", "name", "isStream"));
 		
-		List<Record> alreadyContained = ComplexQueryManager.isContainedInAps(getCache(who), toAPS, recordEntries);
+		List<Record> alreadyContained = QueryEngine.isContainedInAps(getCache(who), toAPS, recordEntries);
 		AccessLog.debug("to-share: "+recordEntries.size()+" already="+alreadyContained.size());
         if (alreadyContained.size() == recordEntries.size()) return;
         if (alreadyContained.size() == 0) {		
@@ -261,7 +261,7 @@ public class RecordSharing {
 			Map<String, Object> query) throws AppException {
         AccessLog.debug("shareByQuery who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString());
 		if (toAPS.equals(who)) throw new BadRequestException("error.internal", "Bad call to shareByQuery. target APS may not be user APS!");
-        SingleAPSManager apswrapper = getCache(who).getAPS(toAPS);
+        APS apswrapper = getCache(who).getAPS(toAPS);
 
         query.remove("aps");
         if (query.isEmpty()) {
@@ -275,8 +275,8 @@ public class RecordSharing {
 	public void unshare(ObjectId who, ObjectId apsId, Set<ObjectId> records)
 			throws AppException {
 
-		SingleAPSManager apswrapper = getCache(who).getAPS(apsId);
-		List<Record> recordEntries = ComplexQueryManager.list(getCache(who), apsId,
+		APS apswrapper = getCache(who).getAPS(apsId);
+		List<Record> recordEntries = QueryEngine.list(getCache(who), apsId,
 				CMaps.map("_id", records), Sets.create("_id", "format", "content"));
 		for (Record r : recordEntries) {
 			AccessLog.debug("remove perm cnt="+r.content+" fmt="+r.format);
@@ -319,7 +319,7 @@ public class RecordSharing {
 		List<Record> result = list(who, apsId,
 				CMaps.map("format", format)
 				     .map("content", content)
-					 .map("streams", "only"), RecordSharing.INTERNALIDONLY);
+					 .map("streams", "only"), RecordManager.INTERNALIDONLY);
 		if (result.isEmpty())
 			return null;
 		return result.get(0)._id;
@@ -418,18 +418,18 @@ public class RecordSharing {
 		if (!record.isStream) {
 		  if (record.stream == null) {
 			  if (getCache(executingPerson).getAPS(record.owner, record.owner).eaps.isAccessable()) {		 
-			     record.stream = RecordSharing.instance.getStreamByFormatContent(executingPerson, record.owner, record.format, record.content);
+			     record.stream = RecordManager.instance.getStreamByFormatContent(executingPerson, record.owner, record.format, record.content);
 			  } else if (alternateAps != null) {
-				 record.stream = RecordSharing.instance.getStreamByFormatContent(executingPerson, alternateAps, record.format, record.content);
+				 record.stream = RecordManager.instance.getStreamByFormatContent(executingPerson, alternateAps, record.format, record.content);
 			  }
 		  }
 		  if (record.stream == null && record.format != null) {
 			 ContentInfo content = ContentInfo.getByName(record.content);
 			 if (getCache(executingPerson).getAPS(record.owner, record.owner).eaps.isAccessable()) {
-			    Record stream = RecordSharing.instance.createStream(executingPerson, record.owner, record.owner, record.content, record.format, content.security.equals(APSSecurityLevel.MEDIUM));			 			
+			    Record stream = RecordManager.instance.createStream(executingPerson, record.owner, record.owner, record.content, record.format, content.security.equals(APSSecurityLevel.MEDIUM));			 			
 			    record.stream = stream._id;
 			 } else if (alternateAps != null) {
- 			    Record stream = RecordSharing.instance.createStream(executingPerson, record.owner, alternateAps, record.content, record.format, content.security.equals(APSSecurityLevel.MEDIUM));
+ 			    Record stream = RecordManager.instance.createStream(executingPerson, record.owner, alternateAps, record.content, record.format, content.security.equals(APSSecurityLevel.MEDIUM));
 				record.stream = stream._id;
 				//getCache(executingPerson).getAPS(record.owner, record.owner).addPermission(stream, true);				
 			 }
@@ -443,7 +443,7 @@ public class RecordSharing {
 		Record orig = record;
 		record = record.clone();
 		
-		SingleAPSManager apswrapper = null;
+		APS apswrapper = null;
 		
 		boolean apsDirect = false;
 		
@@ -471,7 +471,7 @@ public class RecordSharing {
 			record.key = apswrapper.eaps.getAPSKey() != null ? apswrapper.eaps.getAPSKey().getEncoded() : null;		
 		} else if (!documentPart) {
 			if (record.document != null) {
-				List<Record> doc = ComplexQueryManager.listInternal(getCache(executingPerson), record.owner, CMaps.map("_id", record.document.toString()), Sets.create("key"));
+				List<Record> doc = QueryEngine.listInternal(getCache(executingPerson), record.owner, CMaps.map("_id", record.document.toString()), Sets.create("key"));
 				if (doc.size() == 1) record.key = doc.get(0).key;
 				else throw new InternalServerException("error.internal", "Document not identified");
 				documentPart = true;
@@ -489,11 +489,11 @@ public class RecordSharing {
 		
 		Record unecrypted = record.clone();
 				
-		SingleAPSManager.encryptRecord(record, apswrapper.eaps.getSecurityLevel());		
+		RecordEncryption.encryptRecord(record, apswrapper.eaps.getSecurityLevel());		
 	    if (upsert) { Record.upsert(record); } else { Record.add(record); }	  
 	    		
 		if (unecrypted.isStream) {
-			RecordSharing.instance.createAPSForRecord(executingPerson, unecrypted.owner, unecrypted._id, unecrypted.key, apsDirect);
+			RecordManager.instance.createAPSForRecord(executingPerson, unecrypted.owner, unecrypted._id, unecrypted.key, apsDirect);
 		}
 		
 		if (alternateAps != null && record.stream == null) {
@@ -509,20 +509,20 @@ public class RecordSharing {
 		AccessLog.debug("BEGIN APPLY QUERY");
 		
 		
-		List<Record> records = RecordSharing.instance.list(userId, sourceaps, RecordSharing.FULLAPS_FLAT_OWNER, RecordSharing.COMPLETE_META);
+		List<Record> records = RecordManager.instance.list(userId, sourceaps, RecordManager.FULLAPS_FLAT_OWNER, RecordManager.COMPLETE_META);
 		AccessLog.debug("SHARE CANDIDATES:"+records.size());
-		records = ComplexQueryManager.listFromMemory(query, records);
+		records = QueryEngine.listFromMemory(query, records);
 		AccessLog.debug("SHARE QUALIFIED:"+records.size());
 		if (records.size() > 0) {
 			Set<ObjectId> ids = new HashSet<ObjectId>();
 			for (Record record : records) ids.add(record._id);
-			RecordSharing.instance.share(userId, sourceaps, targetaps, ids, ownerInformation);
+			RecordManager.instance.share(userId, sourceaps, targetaps, ids, ownerInformation);
 		}
 		
-		List<Record> streams = RecordSharing.instance.list(userId, targetaps, RecordSharing.STREAMS_ONLY_OWNER, RecordSharing.COMPLETE_META);
+		List<Record> streams = RecordManager.instance.list(userId, targetaps, RecordManager.STREAMS_ONLY_OWNER, RecordManager.COMPLETE_META);
 		AccessLog.debug("UNSHARE STREAMS CANDIDATES = "+streams.size());
 		
-		List<Record> stillOkay = ComplexQueryManager.listFromMemory(query, streams);
+		List<Record> stillOkay = QueryEngine.listFromMemory(query, streams);
 		streams.removeAll(stillOkay);		
 		Set<ObjectId> remove = new HashSet<ObjectId>();
 		for (Record stream : streams) {
@@ -530,7 +530,7 @@ public class RecordSharing {
 		}
 		
 		AccessLog.debug("UNSHARE STREAMS QUALIFIED = "+remove.size());
-		RecordSharing.instance.unshare(userId, targetaps, remove);
+		RecordManager.instance.unshare(userId, targetaps, remove);
 		AccessLog.debug("END APPLY RULES");
 		
 	}
@@ -540,9 +540,9 @@ public class RecordSharing {
 		if (member.queries!=null) {
 			for (String key : member.queries.keySet()) {
 				Map<String, Object> query = member.queries.get(key);
-				if (ComplexQueryManager.isInQuery(query, record)) {
+				if (QueryEngine.isInQuery(query, record)) {
 					try {
-					  RecordSharing.instance.share(executingPerson, useAps, new ObjectId(key), Collections.singleton(record._id), true);
+					  RecordManager.instance.share(executingPerson, useAps, new ObjectId(key), Collections.singleton(record._id), true);
 					} catch (APSNotExistingException e) {
 						
 					}
@@ -561,7 +561,7 @@ public class RecordSharing {
 	public List<Record> list(ObjectId who, ObjectId apsId,
 			Map<String, Object> properties, Set<String> fields)
 			throws AppException {
-		return ComplexQueryManager.list(getCache(who), apsId, properties, fields);
+		return QueryEngine.list(getCache(who), apsId, properties, fields);
 	}
 	
 	public Collection<RecordsInfo> info(ObjectId who, ObjectId aps, Map<String, Object> properties) throws AppException {
@@ -571,15 +571,15 @@ public class RecordSharing {
 		nproperties.put("flat", "true");
 		if (properties.containsKey("owner")) nproperties.put("owner", properties.get("owner"));
 		if (properties.containsKey("study")) nproperties.put("study", properties.get("study"));
-		return ComplexQueryManager.info(getCache(who), aps, nproperties);
+		return QueryEngine.info(getCache(who), aps, nproperties);
 	}
 
 	public Record fetch(ObjectId who, RecordToken token) throws AppException {
-		return fetch(who, token, RecordSharing.COMPLETE_DATA);
+		return fetch(who, token, RecordManager.COMPLETE_DATA);
 	}
 	
 	public FileData fetchFile(ObjectId who, RecordToken token) throws AppException {		
-		List<Record> result = ComplexQueryManager.listInternal(getCache(who), new ObjectId(token.apsId), CMaps.map("_id", new ObjectId(token.recordId)), Sets.create("key"));
+		List<Record> result = QueryEngine.listInternal(getCache(who), new ObjectId(token.apsId), CMaps.map("_id", new ObjectId(token.recordId)), Sets.create("key"));
 				
 		if (result.size() != 1) throw new InternalServerException("error.internal.notfound", "Unknown Record");
 		Record rec = result.get(0);
@@ -606,7 +606,7 @@ public class RecordSharing {
 	public Record fetch(ObjectId who, ObjectId aps, ObjectId recordId)
 			throws AppException {
 		List<Record> result = list(who, aps, CMaps.map("_id", recordId),
-				RecordSharing.COMPLETE_DATA);
+				RecordManager.COMPLETE_DATA);
 		if (result.isEmpty())
 			return null;
 		else
@@ -615,13 +615,13 @@ public class RecordSharing {
 
 	public Set<String> listRecordIds(ObjectId who, ObjectId apsId)
 			throws AppException {
-		return listRecordIds(who, apsId, RecordSharing.FULLAPS);
+		return listRecordIds(who, apsId, RecordManager.FULLAPS);
 	}
 
 	public Set<String> listRecordIds(ObjectId who, ObjectId apsId,
 			Map<String, Object> properties) throws AppException {
 		List<Record> result = list(who, apsId, properties,
-				RecordSharing.INTERNALIDONLY);
+				RecordManager.INTERNALIDONLY);
 		Set<String> ids = new HashSet<String>();
 		for (Record record : result)
 			ids.add(record._id.toString());
@@ -629,7 +629,7 @@ public class RecordSharing {
 	}
 	
 	public void changeFormatName(ObjectId owner, String oldName, String newContent, String newFormat) throws AppException {
-		List<Record> records = ComplexQueryManager.listInternal(getCache(owner), owner, CMaps.map("format", oldName).map("owner", "self"), RecordSharing.COMPLETE_DATA);
+		List<Record> records = QueryEngine.listInternal(getCache(owner), owner, CMaps.map("format", oldName).map("owner", "self"), RecordManager.COMPLETE_DATA);
 		List<Record> patchedRecords = new ArrayList<Record>();
 		for (Record record : records) {
 			Record patched = record.clone();

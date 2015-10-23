@@ -28,7 +28,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.DateTimeUtils;
 import utils.access.AccessLog;
-import utils.access.RecordSharing;
+import utils.access.RecordManager;
 import utils.auth.AppToken;
 import utils.auth.RecordToken;
 import utils.auth.Rights;
@@ -85,7 +85,7 @@ public class PluginsAPI extends Controller {
 		}
 		
 		
-		Set<ObjectId> tokens = ObjectIdConversion.toObjectIds(RecordSharing.instance.listRecordIds(spaceToken.userId, spaceToken.spaceId));		
+		Set<ObjectId> tokens = ObjectIdConversion.toObjectIds(RecordManager.instance.listRecordIds(spaceToken.userId, spaceToken.spaceId));		
 		return ok(Json.toJson(tokens));
 	}
 
@@ -109,7 +109,7 @@ public class PluginsAPI extends Controller {
 		   return ok(result);
 		}
 		
-		BSONObject meta = RecordSharing.instance.getMeta(spaceToken.userId, spaceToken.spaceId, "_config");
+		BSONObject meta = RecordManager.instance.getMeta(spaceToken.userId, spaceToken.spaceId, "_config");
 		
 		if (meta != null) return ok(Json.toJson(meta.toMap()));
 		
@@ -132,7 +132,7 @@ public class PluginsAPI extends Controller {
 		}
 		Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));
 		
-		RecordSharing.instance.setMeta(spaceToken.userId, spaceToken.spaceId, "_config", config);
+		RecordManager.instance.setMeta(spaceToken.userId, spaceToken.spaceId, "_config", config);
 						
 		return ok();
 	}
@@ -157,7 +157,7 @@ public class PluginsAPI extends Controller {
 		
 		Space space = Spaces.add(spaceToken.userId, name, current.visualization, current.app, current.context);
 		
-		BSONObject bquery = RecordSharing.instance.getMeta(spaceToken.userId, spaceToken.spaceId, "_query");		
+		BSONObject bquery = RecordManager.instance.getMeta(spaceToken.userId, spaceToken.spaceId, "_query");		
 		Map<String, Object> query;
 		if (bquery != null) {
 			query = bquery.toMap();
@@ -165,9 +165,9 @@ public class PluginsAPI extends Controller {
 			/*if (json.has("query")) {
 				
 			}*/
-			RecordSharing.instance.shareByQuery(spaceToken.userId, spaceToken.userId, space._id, query);
+			RecordManager.instance.shareByQuery(spaceToken.userId, spaceToken.userId, space._id, query);
 		}		
-		RecordSharing.instance.setMeta(spaceToken.userId, space._id, "_config", config);
+		RecordManager.instance.setMeta(spaceToken.userId, space._id, "_config", config);
 						
 		return ok();
 	}
@@ -209,13 +209,13 @@ public class PluginsAPI extends Controller {
 		   // Search for convertable
 		   Map<String, Object> extended = new HashMap<String,Object>(properties);
 		   extended.remove("format");
-		   Set<String> candidates = RecordSharing.instance.listRecordIds(authToken.userId, authToken.spaceId, extended);
+		   Set<String> candidates = RecordManager.instance.listRecordIds(authToken.userId, authToken.spaceId, extended);
 		   if (properties.containsKey("format")) {
 			   // extended.put("format", properties.get("format"));
 			   extended.put("part", properties.get("format"));
 		   }
 		   extended.put("document", ObjectIdConversion.toObjectIds(candidates));		   		 
-		   records.addAll(RecordSharing.instance.list(authToken.userId, authToken.spaceId, extended, fields));
+		   records.addAll(RecordManager.instance.list(authToken.userId, authToken.spaceId, extended, fields));
 		   		   
 		} else {*/
 		   records = LargeRecord.getAll(authToken.userId, authToken.spaceId, properties, fields);		  
@@ -241,7 +241,7 @@ public class PluginsAPI extends Controller {
 		
 		ObjectId recordId = JsonValidation.getObjectId(json, "_id");
 			
-		FileData fileData = RecordSharing.instance.fetchFile(authToken.userId, new RecordToken(recordId.toString(), authToken.spaceId.toString()));
+		FileData fileData = RecordManager.instance.fetchFile(authToken.userId, new RecordToken(recordId.toString(), authToken.spaceId.toString()));
 		if (fileData == null) return badRequest();
 		//response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
 		return ok(fileData.inputStream);
@@ -316,17 +316,17 @@ public class PluginsAPI extends Controller {
 		record.name = name;
 		record.description = description;
 		
-		RecordSharing.instance.addRecord(targetUser._id, record);
+		RecordManager.instance.addRecord(targetUser._id, record);
 				
 		Set<ObjectId> records = new HashSet<ObjectId>();
 		records.add(record._id);
-		RecordSharing.instance.share(targetUser._id, targetUser._id, targetAps, records, false);
+		RecordManager.instance.share(targetUser._id, targetUser._id, targetAps, records, false);
 		
 		if (space.autoShare != null && !space.autoShare.isEmpty()) {
 			for (ObjectId autoshareAps : space.autoShare) {
 				Consent consent = Consent.getByIdAndOwner(autoshareAps, targetUser._id, Sets.create("type"));
 				if (consent != null) { 
-				  RecordSharing.instance.share(targetUser._id, targetUser._id, autoshareAps, records, true);
+				  RecordManager.instance.share(targetUser._id, targetUser._id, autoshareAps, records, true);
 				}
 			}
 		}
