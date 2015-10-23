@@ -3,7 +3,6 @@ package actions;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import controllers.RecordSharing;
 
 import play.libs.F;
 import play.libs.Json;
@@ -11,6 +10,7 @@ import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 import utils.access.AccessLog;
+import utils.access.RecordSharing;
 import utils.exceptions.AuthException;
 import utils.exceptions.ModelException;
 import utils.json.JsonValidation.JsonValidationException;

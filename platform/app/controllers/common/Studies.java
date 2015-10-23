@@ -40,9 +40,19 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import controllers.APIController;
 
+/**
+ * functions about studies.
+ *
+ */
 public class Studies extends APIController {
 	
-	
+	/**
+	 * search for studies matching some criteria
+	 * @return list of studies
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 * @throws AuthException
+	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)

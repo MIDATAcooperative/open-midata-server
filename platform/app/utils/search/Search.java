@@ -35,6 +35,7 @@ import org.elasticsearch.search.suggest.SuggestBuilder.SuggestionBuilder;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 
 import play.libs.Json;
+import utils.access.RecordSharing;
 import utils.collections.CollectionConversion;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
@@ -42,7 +43,6 @@ import utils.exceptions.ModelException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import controllers.RecordSharing;
 
 public class Search {
 

@@ -1,4 +1,4 @@
-package controllers;
+package utils.access;
 
 import java.io.FileInputStream;
 import java.security.InvalidKeyException;
@@ -38,15 +38,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
+import controllers.KeyManager;
+
 import utils.DateTimeUtils;
-import utils.access.APSCache;
-import utils.access.APSQSupportingQM;
-import utils.access.AccessLog;
-import utils.access.ComplexQueryManager;
-import utils.access.EncryptedAPS;
-import utils.access.EncryptionUtils;
-import utils.access.Query;
-import utils.access.SingleAPSManager;
 import utils.auth.EncryptionNotSupportedException;
 import utils.auth.RecordToken;
 import utils.collections.CMaps;
@@ -75,6 +69,10 @@ import models.Study;
 import models.StudyParticipation;
 import models.enums.APSSecurityLevel;
 
+/**
+ * access to records
+ *
+ */
 public class RecordSharing {
 
 	public static RecordSharing instance = new RecordSharing();

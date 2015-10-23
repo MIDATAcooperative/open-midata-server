@@ -29,6 +29,7 @@ import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
 import models.enums.StudyValidationStatus;
+import utils.access.RecordSharing;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.MemberSecured;
@@ -45,13 +46,22 @@ import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
 import play.libs.Json;
 import controllers.APIController;
-import controllers.RecordSharing;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+/**
+ * functions about studies for members
+ *
+ */
 public class Studies extends APIController {
 
+	/**
+	 * search for consents of a user related to studies
+	 * @return list of consents (StudyParticipation)
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result list() throws JsonValidationException, ModelException {
@@ -63,6 +73,13 @@ public class Studies extends APIController {
 	   return ok(JsonOutput.toJson(participation, "Consent", fields));
 	}
 	
+	/**
+	 * search for studies matching some criteria
+	 * @return list of studies
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 * @throws AuthException
+	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
@@ -81,6 +98,12 @@ public class Studies extends APIController {
 	   return ok(JsonOutput.toJson(studies, "Study", fields));
 	}
 	
+	/**
+	 * join study by participation code. NEEDS TO BE REWRITTEN. USES WRONG CONCEPT OF PARTICIPATION CODES
+	 * @return
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
@@ -123,6 +146,13 @@ public class Studies extends APIController {
 		return ok(result);
 	}
 	
+	/**
+	 * change study participation of current member. add or remove a health professional to the study participation.
+	 * @param id ID of study
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws AppException
+	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
@@ -172,7 +202,14 @@ public class Studies extends APIController {
 		return ok();
 	}
 	
-	
+	/**
+	 * helper function to create a study participation consent.
+	 * @param study Study to participate
+	 * @param member Member who may participate
+	 * @param code ParticipationCode used (NEEDS REWRITE)
+	 * @return StudyParticipation consent
+	 * @throws ModelException
+	 */
 	
 	public static StudyParticipation createStudyParticipation(Study study, Member member, ParticipationCode code) throws ModelException {
 		StudyParticipation part = new StudyParticipation();
@@ -221,6 +258,13 @@ public class Studies extends APIController {
 		
 	}
 	
+	/**
+	 * retrieve information about a study, the organization that does the study and the participation consent (if exists) for the current user 
+	 * @param id ID of study
+	 * @return Study, Research Organization and Consent
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result get(String id) throws JsonValidationException, ModelException {
@@ -243,6 +287,13 @@ public class Studies extends APIController {
 	   return ok(obj);
 	}
 	
+	/**
+	 * request study participation of current member for a given study
+	 * @param id ID of study
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result requestParticipation(String id) throws JsonValidationException, ModelException {
@@ -270,13 +321,19 @@ public class Studies extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * reject study participation (by member)
+	 * @param id ID of study
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result noParticipation(String id) throws JsonValidationException, ModelException {
 		ObjectId userId = new ObjectId(request().username());		
 		ObjectId studyId = new ObjectId(id);
-		
-		User user = Member.getById(userId, Sets.create("firstname","lastname"));		
+					
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history", "memberName"));		
 		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		

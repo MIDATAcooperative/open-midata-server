@@ -9,6 +9,8 @@ import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import controllers.APIController;
+
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -19,8 +21,18 @@ import utils.exceptions.ModelException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
-public class Administration extends Controller {
+/**
+ * functions for user administration. May only be used by the MIDATA admin.
+ *
+ */
+public class Administration extends APIController {
 
+	/**
+	 * change status of target user
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)

@@ -26,6 +26,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.PasswordHash;
+import utils.access.RecordSharing;
 import utils.auth.AnyRoleSecured;
 import utils.auth.MemberSecured;
 import utils.auth.Rights;

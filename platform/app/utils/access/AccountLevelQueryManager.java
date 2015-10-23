@@ -14,7 +14,6 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.ModelException;
 
-import controllers.RecordSharing;
 
 import models.Circle;
 import models.Consent;

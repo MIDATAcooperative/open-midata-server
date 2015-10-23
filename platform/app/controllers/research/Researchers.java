@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.APIController;
 import controllers.KeyManager;
-import controllers.RecordSharing;
 import controllers.routes;
 
 import actions.APICall; 
@@ -28,6 +27,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result; 
+import utils.access.RecordSharing;
 import utils.auth.CodeGenerator;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
@@ -36,8 +36,18 @@ import utils.exceptions.ModelException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
+/**
+ * login and registration functions for researchers
+ *
+ */
 public class Researchers extends APIController {
 
+	/**
+	 * register a new researcher
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result register() throws JsonValidationException, ModelException {
@@ -100,6 +110,12 @@ public class Researchers extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * login a researcher
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result login() throws JsonValidationException, ModelException {

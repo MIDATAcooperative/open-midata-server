@@ -6,12 +6,12 @@ import play.libs.Json;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
+import utils.access.RecordSharing;
 import utils.exceptions.ModelException;
 import utils.json.JsonValidation.JsonValidationException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import controllers.RecordSharing;
 
 /**
  * Default wrapper for requests done by plugins

@@ -22,6 +22,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import utils.DateTimeUtils;
+import utils.access.RecordSharing;
 import utils.auth.AppToken;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
@@ -40,7 +41,6 @@ import actions.APICall;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mongodb.BasicDBObject;
 
-import controllers.RecordSharing;
 
 //Not secured, accessible from app server
 public class GenomeDataConverter extends Controller {

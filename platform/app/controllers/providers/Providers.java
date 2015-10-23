@@ -26,6 +26,7 @@ import models.enums.Gender;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
+import utils.access.RecordSharing;
 import utils.auth.CodeGenerator;
 import utils.auth.ProviderSecured;
 import utils.auth.SpaceToken;
@@ -38,7 +39,6 @@ import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
 import controllers.APIController;
 import controllers.KeyManager;
-import controllers.RecordSharing;
 import controllers.routes;
 import actions.APICall; 
 import play.libs.Json;
@@ -47,9 +47,18 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
-
+/**
+ * functions for healthcare providers
+ *
+ */
 public class Providers extends APIController {
 
+	/**
+	 * register a new healthcare provider
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result register() throws JsonValidationException, ModelException {
@@ -114,6 +123,12 @@ public class Providers extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * healthcare provider login
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result login() throws JsonValidationException, ModelException {
@@ -140,6 +155,12 @@ public class Providers extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * healthcare provider search for MIDATA members by MIDATAID and birthday.
+	 * @return Member and list of consents
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@Security.Authenticated(ProviderSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
@@ -166,14 +187,18 @@ public class Providers extends APIController {
 		return ok(Json.toJson(obj));
 	}
 	
-	@Security.Authenticated(ProviderSecured.class)
-	@BodyParser.Of(BodyParser.Json.class)
+    /**
+     * return list of all patients of current healthcare provider	
+     * @return list of Members
+     * @throws JsonValidationException
+     * @throws ModelException
+     */
+	@Security.Authenticated(ProviderSecured.class)	
 	@APICall
 	public static Result list() throws JsonValidationException, ModelException {
-		JsonNode json = request().body().asJson();
 		
 		ObjectId userId = new ObjectId(request().username());
-		//JsonValidation.validate(json, "midataID", "birthday");
+
 		Set<MemberKey> memberKeys = MemberKey.getByAuthorizedPerson(userId, Sets.create("owner"));
 		Set<ObjectId> ids = new HashSet<ObjectId>();
 		for (MemberKey key : memberKeys) ids.add(key.owner);
@@ -183,6 +208,13 @@ public class Providers extends APIController {
 		return ok(JsonOutput.toJson(result, "User", fields));
 	}
 	
+	/**
+	 * retrieve information about a specific patient (Member) of the current healthcare provider
+	 * @param id ID of member
+	 * @return Member, Consents with current Healthcare Provider, Consent for Healthcare Provider to share data with patient.  
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@Security.Authenticated(ProviderSecured.class)	
 	@APICall
 	public static Result getMember(String id) throws JsonValidationException, ModelException {
@@ -205,7 +237,12 @@ public class Providers extends APIController {
 		return ok(obj);
 	}
 	
-	
+	/**
+	 * TODO check functionality
+	 * @return
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@Security.Authenticated(ProviderSecured.class)
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)

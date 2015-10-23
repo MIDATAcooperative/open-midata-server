@@ -28,6 +28,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.DateTimeUtils;
 import utils.access.AccessLog;
+import utils.access.RecordSharing;
 import utils.auth.AppToken;
 import utils.auth.RecordToken;
 import utils.auth.Rights;

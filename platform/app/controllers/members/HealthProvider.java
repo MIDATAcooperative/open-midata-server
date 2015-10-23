@@ -36,8 +36,17 @@ import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
+/**
+ * functions about interaction with health providers
+ *
+ */
 public class HealthProvider extends APIController {
 		
+	/**
+	 * returns all consents of a member with health providers 
+	 * @return list of consents (MemberKeys)
+	 * @throws ModelException
+	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result list() throws ModelException {
@@ -48,6 +57,12 @@ public class HealthProvider extends APIController {
 		return ok(JsonOutput.toJson(memberkeys, "Consent", Sets.create("owner", "organization", "authorized", "status", "confirmDate", "aps", "comment", "name")));
 	}
 	
+	/**
+	 * search for health providers matching some criteria
+	 * @return list of users
+	 * @throws AppException
+	 * @throws JsonValidationException
+	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
@@ -73,6 +88,12 @@ public class HealthProvider extends APIController {
 		return ok(JsonOutput.toJson(users, "User", fields));
 	}
 	
+	/**
+	 * accept a consent created by a health provider
+	 * @return status ok
+	 * @throws ModelException
+	 * @throws JsonValidationException
+	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result confirmConsent() throws ModelException, JsonValidationException {
@@ -91,6 +112,12 @@ public class HealthProvider extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * reject a consent created by a health provider
+	 * @return
+	 * @throws ModelException
+	 * @throws JsonValidationException
+	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result rejectConsent() throws ModelException, JsonValidationException {

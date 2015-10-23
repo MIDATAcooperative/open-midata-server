@@ -22,6 +22,11 @@ import models.FilterRule;
 import models.Member;
 import models.Record;
 
+/**
+ * functions for finding candidates for studies. Currently not used.
+ * @author alexander
+ *
+ */
 public class RuleApplication {
 
 	public static RuleApplication instance = new RuleApplication();

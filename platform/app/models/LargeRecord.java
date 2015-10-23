@@ -12,6 +12,7 @@ import java.util.TreeMap;
 
 import org.bson.types.ObjectId;
 
+import utils.access.RecordSharing;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
@@ -22,7 +23,6 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
-import controllers.RecordSharing;
 
 /**
  * Custom implementation of GridFS for large records which exceed the document size limit of 16 MB. Allows to

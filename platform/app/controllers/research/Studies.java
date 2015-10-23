@@ -42,6 +42,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.access.RecordSharing;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.ResearchSecured;
@@ -60,11 +61,19 @@ import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import controllers.APIController;
-import controllers.RecordSharing;
 
-
+/**
+ * functions about studies to be used by researchers
+ *
+ */
 public class Studies extends APIController {
 
+	/**
+	 * create a new study 
+	 * @return Study
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
@@ -102,30 +111,19 @@ public class Studies extends APIController {
 		study.assistance = AssistanceType.NONE;
 		study.groups = new ArrayList<StudyGroup>();		
 				
-		study.studyKeywords = new HashSet<ObjectId>();
+		study.studyKeywords = new HashSet<ObjectId>();			
 		
-		/*StudyGroup defaultGroup = new StudyGroup();
-		defaultGroup.name = "default";
-		defaultGroup.description="One group for all participants.";
-		study.groups*/
-		
-		Study.add(study);
-		
-		/*StudyRelated consent = new StudyRelated();
-		consent._id = study._id;
-		consent.type = ConsentType.STUDYRELATED;
-		consent.name = "Study: "+study.name;
-		consent.owner = userId;
-		consent.status = ConsentStatus.ACTIVE;
-		consent.authorized = new HashSet<ObjectId>();
-		consent.add();
-		
-		RecordSharing.instance.createAnonymizedAPS(userId, userId, consent._id);*/
+		Study.add(study);			
 		
 		return ok(JsonOutput.toJson(study, "Study", Study.ALL));
 	}
 	
-	
+	/**
+	 * download data about a study of the current research organization
+	 * @param id ID of study
+	 * @return not yet: (ZIP file) 
+	 * @throws AppException
+	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result download(String id) throws AppException {
@@ -169,7 +167,12 @@ public class Studies extends APIController {
 		 */
 	}
 	
-		
+	/**
+	 * list all studies of current research organization	
+	 * @return list of studies
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result list() throws JsonValidationException, ModelException {
@@ -180,7 +183,14 @@ public class Studies extends APIController {
 	   
 	   return ok(JsonOutput.toJson(studies, "Study", fields));
 	}
-		
+
+	/**
+	 * retrieve one study of current research organization
+	 * @param id ID of study
+	 * @return Study
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result get(String id) throws JsonValidationException, ModelException {
@@ -194,6 +204,13 @@ public class Studies extends APIController {
 	   return ok(JsonOutput.toJson(study, "Study", fields));
 	}
 	
+	/**
+	 * generates participation codes. NEEDS REWRITE
+	 * @param id
+	 * @return
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
@@ -244,6 +261,13 @@ public class Studies extends APIController {
 	   return ok();
 	}
 	
+	/**
+	 * list participation codes. NEEDS REWRITE
+	 * @param id
+	 * @return
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result listCodes(String id) throws JsonValidationException, ModelException {
@@ -261,7 +285,13 @@ public class Studies extends APIController {
 	   return ok(Json.toJson(codes));
 	}
 	
-	
+	/**
+	 * start study validation
+	 * @param id ID of study
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result startValidation(String id) throws JsonValidationException, ModelException {
@@ -282,7 +312,13 @@ public class Studies extends APIController {
 		return ok();
 	}
 	
-	//@BodyParser.Of(BodyParser.Json.class)
+	/**
+	 * start participant search phase
+	 * @param id ID of study
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result startParticipantSearch(String id) throws JsonValidationException, ModelException {
@@ -304,6 +340,13 @@ public class Studies extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * end participant search phase of a study
+	 * @param id ID of study
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result endParticipantSearch(String id) throws JsonValidationException, ModelException {
@@ -324,6 +367,13 @@ public class Studies extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * start execution phase of status
+	 * @param id ID of study
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result startExecution(String id) throws JsonValidationException, ModelException {
@@ -345,6 +395,13 @@ public class Studies extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * share records with a group of participants of a study
+	 * @param id ID of study
+	 * @param group name of group 
+	 * @return Consent that authorizes participants to view records
+	 * @throws AppException
+	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result shareWithGroup(String id, String group) throws AppException {
@@ -384,6 +441,14 @@ public class Studies extends APIController {
 		return ok(JsonOutput.toJson(consent, "Consent", Sets.create("_id", "authorized")));		
 	}
 	
+	/**
+	 * add a task for all participants of a group of a study
+	 * @param id ID of study
+	 * @param group name of group
+	 * @return status ok
+	 * @throws AppException
+	 * @throws JsonValidationException
+	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
@@ -425,7 +490,13 @@ public class Studies extends APIController {
 	}
 	
 	
-	
+	/**
+	 * list participation consents of all participants of a study
+	 * @param id ID of study
+	 * @return list of Consents (StudyParticipation)
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result listParticipants(String id) throws JsonValidationException, ModelException {
@@ -443,10 +514,18 @@ public class Studies extends APIController {
 	   return ok(JsonOutput.toJson(participants, "Consent", fields));
 	}
 	
+	/**
+	 * retrieve information about a participant of a study of the current research organization
+	 * @param studyidstr ID of study
+	 * @param memberidstr
+	 * @return
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result getParticipant(String studyidstr, String memberidstr) throws JsonValidationException, ModelException {
-	   ObjectId userId = new ObjectId(request().username());	
+	   //ObjectId userId = new ObjectId(request().username());	
 	   ObjectId owner = new ObjectId(session().get("org"));
 	   ObjectId studyId = new ObjectId(studyidstr);
 	   ObjectId memberId = new ObjectId(memberidstr);
@@ -476,6 +555,13 @@ public class Studies extends APIController {
 	   return ok(obj);
 	}
 	
+	/**
+	 * approve participation of member in study by researcher
+	 * @param id ID of member
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
@@ -505,6 +591,13 @@ public class Studies extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * reject participation of member in study
+	 * @param id ID of study
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
@@ -534,6 +627,13 @@ public class Studies extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * update participation information of member in study by researcher. (Currently changes only group)
+	 * @param id ID of study
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws ModelException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
@@ -570,8 +670,7 @@ public class Studies extends APIController {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId owner = new ObjectId(session().get("org"));
 		ObjectId studyid = new ObjectId(id);
-		
-		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
+			
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation", "assistance"));
 		
 		if (study == null) return badRequest("Study does not belong to organization.");	    
