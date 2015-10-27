@@ -25,6 +25,11 @@ import controllers.RuleApplication;
 import models.FilterRule;
 import models.Record;
 
+/**
+ * allows access permission sets not only to have a list of records but also a link to another
+ * APS with a filter-query 
+ *
+ */
 public class Feature_QueryRedirect extends Feature {
 
     private Feature next;
@@ -131,27 +136,23 @@ public class Feature_QueryRedirect extends Feature {
 				if (val1 instanceof Collection<?>) {
 				 if (val2 instanceof Collection<?>) {
 					((Collection<?>) val1).retainAll((Collection<?>) val2);
-					if (((Collection<?>) val1).isEmpty()) {
-						//AccessLog.debug("A");
+					if (((Collection<?>) val1).isEmpty()) {						
 						return null;
 					}
 				 } else {
 					 if ( ((Collection<?>) val1).contains(val2)) {
 						 combined.put(key, val2);
-					 } else {
-						 //AccessLog.debug("B");
+					 } else {						 
 						 return null;
 					 }
 				 }
 				} else {
 					if (val2 instanceof Collection<?>) {
 						if ( ((Collection<?>) val2).contains(val1)) continue;
-						else {
-							//AccessLog.debug("C: "+val2.toString()+" v:"+val1.toString());
+						else {						
 							return null;
 						}
-					} else {
-						//AccessLog.debug("D");
+					} else {					
 						return null;
 					}
 				}

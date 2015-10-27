@@ -63,6 +63,10 @@ public class StudyParticipation extends Consent {
 		return Model.get(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("owner", member), fields);
 	}
 	
+	public static boolean existsByStudyAndMemberName(ObjectId study, String name) throws InternalServerException {
+		return Model.exists(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("ownerName", name));
+	}
+	
 	public static StudyParticipation getByStudyAndId(ObjectId study, ObjectId id, Set<String> fields) throws InternalServerException {
 		return Model.get(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("_id", id).map("study", study), fields);
 	}

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -23,13 +24,16 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 
 import utils.auth.EncryptionNotSupportedException;
+import utils.auth.KeyManager;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
 
-import controllers.KeyManager;
-
+/**
+ * wrapper around the raw data of an access permission set. Handles encryption. 
+ * Class should not be public. Is only public for debugging.
+ */
 public class EncryptedAPS {
 	private AccessPermissionSet aps;
 	private ObjectId apsId;
@@ -40,13 +44,12 @@ public class EncryptedAPS {
 	private boolean keyProvided = false;
 	private boolean notStored = false;
 	private List<EncryptedAPS> sublists;
+	private AccessPermissionSet acc_aps;
 	
 	public final static String KEY_ALGORITHM = "AES";
 		
 	public EncryptedAPS(ObjectId apsId, ObjectId who) throws InternalServerException {
-		this.apsId = apsId;		
-		this.who = who;
-		this.owner = null;
+		this(apsId, who, null);
 	}
 	
 	public EncryptedAPS(ObjectId apsId, ObjectId who, ObjectId owner) throws InternalServerException {
@@ -62,7 +65,11 @@ public class EncryptedAPS {
 		this.encryptionKey = (enckey != null) ? new SecretKeySpec(enckey, KEY_ALGORITHM) : null;
 		keyProvided = true;
 	}
-			
+
+	public EncryptedAPS(ObjectId apsId, ObjectId who, ObjectId owner, APSSecurityLevel lvl) throws InternalServerException {
+	  this(apsId, who, owner, lvl, null);
+	}
+	
 	public EncryptedAPS(ObjectId apsId, ObjectId who, ObjectId owner, APSSecurityLevel lvl, byte[] encKey) throws InternalServerException {
 		this.apsId = apsId;
 		this.aps = new AccessPermissionSet();
@@ -89,6 +96,13 @@ public class EncryptedAPS {
 		this.aps = subset;
 		this.apsId = subset._id;
 		this.who = who;
+	}
+	
+	protected EncryptedAPS createChild() throws AppException {
+		EncryptedAPS result = new EncryptedAPS(new ObjectId(), getAccessor(), getOwner(), getSecurityLevel(), EncryptionUtils.generateKey(KEY_ALGORITHM).getEncoded());
+		if (this.aps.unmerged == null) this.aps.unmerged = new ArrayList<AccessPermissionSet>(); 
+		aps.unmerged.add(result.aps);
+		return result;
 	}
 	
 	public boolean isLoaded() {
@@ -131,7 +145,7 @@ public class EncryptedAPS {
 		aps.security = lvl;		
 	}
 	
-	public SecretKey getAPSKey() throws AppException {
+	protected SecretKey getAPSKey() throws AppException {
 		if (!keyProvided && !isValidated) validate();
 		return encryptionKey;
 	}
@@ -160,6 +174,10 @@ public class EncryptedAPS {
 		}
 	}
 	
+	public Set<String> keyNames() throws InternalServerException {
+		if (!isLoaded()) load();
+		return aps.keys.keySet();
+	}
 	public byte[] getKey(String name) throws InternalServerException {
 		if (!isLoaded()) load();
 		return aps.keys.get(name);
@@ -171,57 +189,46 @@ public class EncryptedAPS {
 	}
 	
 	public Map<String, Object> getPermissions() throws AppException {
-		if (owner!=null && !isAccessable()) return getPermissions(owner);
+		if (acc_aps != aps) return acc_aps.permissions;
+		//if (owner!=null && !isAccessable()) return getPermissions(owner);
 		if (!isValidated) validate();		
-		return aps.permissions;
+		return acc_aps.permissions;
 	}
 	
-	public Map<String, Object> getPermissions(ObjectId owner) throws AppException {
-		if (!isLoaded()) load();	
-		if (!isValidated && (getKey(who.toString()) != null || owner.equals(who) )) validate();
-		if (!isValidated) {
-			if (aps.unmerged == null) aps.unmerged = new ArrayList<AccessPermissionSet>();
-			
-			EncryptedAPS wrapper = null;
-			
-			for (AccessPermissionSet a : aps.unmerged) {
-					if (a.keys.get(who.toString()) != null) {
-						wrapper = new EncryptedAPS(a, who);
-						wrapper.validate();
-						break;
-					}
-			}
-			
-			if (wrapper == null) {		
-			   AccessLog.debug("split:" + apsId.toString());
-			 	   
-			   wrapper = new EncryptedAPS(new ObjectId(), who, owner, aps.security, EncryptionUtils.generateKey(KEY_ALGORITHM).getEncoded());
-			   aps.unmerged.add(wrapper.aps);
-			   for (String ckey : aps.keys.keySet()) {
-				   try {					 
-					 if (aps.security.equals(APSSecurityLevel.NONE)) {
-						if (ckey.equals("owner")) wrapper.setKey("owner", owner.toByteArray());
-						else wrapper.setKey(ckey, null);
-					 } else {
-						ObjectId person = ckey.equals("owner") ? owner : new ObjectId(ckey);
-				        wrapper.setKey(ckey, KeyManager.instance.encryptKey(person, wrapper.getAPSKey().getEncoded()));
-					 }
-				   } catch (EncryptionNotSupportedException e) {}
-				   
-			   }
-			   try {
-				 if (wrapper.getSecurityLevel().equals(APSSecurityLevel.NONE)) {
-					wrapper.setKey(who.toString(), null);
-				 } else wrapper.setKey(who.toString(), KeyManager.instance.encryptKey(who, wrapper.getAPSKey().getEncoded()));
-			   } catch (EncryptionNotSupportedException e) {}
-			} else { AccessLog.debug("use existing split:" + apsId.toString()); };
-			
-			if (sublists == null) sublists = new ArrayList<EncryptedAPS>();
-			sublists.add(wrapper);
-			return wrapper.aps.permissions;
-		} 
-        return aps.permissions;
+	protected void useAccessibleSubset(EncryptedAPS subeaps) {
+		if (sublists == null) sublists = new ArrayList<EncryptedAPS>();
+		sublists.add(subeaps);
+		acc_aps = subeaps.aps;
 	}
+	
+	protected boolean findAndselectAccessibleSubset() throws AppException {
+		if (isAccessable()) return true;
+		if (aps.unmerged == null) return false;
+		for (AccessPermissionSet a : aps.unmerged) {
+			if (a.keys.get(who.toString()) != null) {
+				EncryptedAPS wrapper = new EncryptedAPS(a, who);
+				wrapper.validate();
+				useAccessibleSubset(wrapper);
+				return true;
+			}
+	    }
+		return false;
+	}
+	
+	protected List<EncryptedAPS> getAllUnmerged() throws AppException {
+		List<EncryptedAPS> result = new ArrayList<EncryptedAPS>();
+		for (AccessPermissionSet subaps : aps.unmerged) {				
+		   EncryptedAPS encsubaps = new EncryptedAPS(subaps, who);
+		   encsubaps.validate();
+		   result.add(encsubaps);
+		}	
+		return result;
+	}
+	
+	protected void clearUnmerged() {
+		aps.unmerged = null;
+		sublists = null;
+	}		
 	
 	public void create() throws InternalServerException {
 		if (!notStored) throw new InternalServerException("error.internal", "APS is already created");
@@ -255,60 +262,14 @@ public class EncryptedAPS {
 	public void reload() throws InternalServerException {
 		load();
 	}
-	
-	public void merge() throws AppException {
-		try {
-		if (aps.unmerged != null) {
-			AccessLog.debug("merge:" + apsId.toString());
-			Record dummy = new Record();
-			for (AccessPermissionSet subaps : aps.unmerged) {
-				EncryptedAPS encsubaps = new EncryptedAPS(subaps, who);
-				encsubaps.validate();
-				Map<String, Object> props = encsubaps.getPermissions();												
-				BasicBSONList lst = (BasicBSONList) props.get("p");
-				
-				for (Object row : lst) {
-					BasicBSONObject crit = (BasicBSONObject) row;
-					BasicBSONObject entries = APSEntry.getEntries(crit);
-                    APSEntry.populateRecord(crit, dummy);										
-				    for (String key : entries.keySet()) {
-					   BasicBSONObject copyVal = (BasicBSONObject) entries.get(key);
-					   
-					   BasicBSONObject targetRow = APSEntry.findMatchingRowForRecord(aps.permissions, dummy, true);
-					   BasicBSONObject targetEntries = APSEntry.getEntries(targetRow);
-					   
-					   if (!targetEntries.containsField(key)) {
-						  targetEntries.put(key, new BasicBSONObject());
-					   }
-					   BasicBSONObject targetVals = (BasicBSONObject) targetEntries.get(key);
-					
-					   for (String v : copyVal.keySet()) {
-						  targetVals.put(v, copyVal.get(v));
-					   }
-				    }
-				}
-				
-			}
-			aps.unmerged = null;
-			savePermissions();
-		}
-		} catch (LostUpdateException e) {
-			reload();
-			validate();
-			//merge();
-		}
-	}
-	
+		
 	private void load() throws InternalServerException {
-		this.aps = AccessPermissionSet.getById(this.apsId);
+		this.aps = AccessPermissionSet.getById(this.apsId);		
 		if (this.aps == null) {
 			AccessLog.debug("APS does not exist: aps="+this.apsId.toString());
-			throw new APSNotExistingException(this.apsId, "APS does not exist:"+this.apsId.toString());
-			/*this.aps = new AccessPermissionSet();
-			aps.permissions = new HashMap<String, BasicBSONObject>();
-			aps.keys = new HashMap<String, byte[]>();*/
-			
+			throw new APSNotExistingException(this.apsId, "APS does not exist:"+this.apsId.toString());						
 		}
+		this.acc_aps = this.aps;
 		isValidated = false;
 	}
 				
@@ -339,8 +300,7 @@ public class EncryptedAPS {
 		} else {
 			if (!aps.security.equals(APSSecurityLevel.NONE)) { decodeAPS(); }
 		}
-		isValidated = true;
-		if (aps.unmerged != null) merge();
+		isValidated = true;		
 	}
 	
 	public boolean isAccessable() throws InternalServerException {
@@ -351,8 +311,11 @@ public class EncryptedAPS {
 		return false;
 	}
 	
-	 
-			
+	public boolean needsMerge() throws InternalServerException{
+		if (!isLoaded()) load();		
+		return isAccessable() && (aps.unmerged != null && aps.unmerged.size() > 0);
+	}
+		 		
 	private void decodeAPS() throws InternalServerException  {
 		if (aps.permissions == null && aps.encrypted != null) {
 			try {
@@ -365,55 +328,11 @@ public class EncryptedAPS {
 				AccessLog.debug("Error decoding APS="+apsId.toString()+" user="+who.toString());
 				throw e;
 			}
-	    }
-		if (!aps.permissions.containsKey("p")) {
-			try {
-			patchOldFormat();
-			} catch (LostUpdateException e) {
-				throw new NullPointerException("Lost Update!!");
-			}
-		}
+	    }		
 	}
 	
-	private void patchOldFormat() throws InternalServerException, LostUpdateException {
-		aps.permissions.put("p", new BasicDBList());
-		for (String key : aps.permissions.keySet()) {
-			if (key.equals("p") || (key.startsWith("_") && !key.toLowerCase().startsWith("stream"))) continue;
-			
-			BasicBSONObject entries = (BasicBSONObject) aps.permissions.get(key);
-			for (String id : entries.keySet()) {
-				BasicBSONObject obj = (BasicBSONObject) entries.get(id);
-				Record record = new Record();
-				record._id = new ObjectId(id);
-				
-				if (obj.get("key") instanceof String) record.key = null; // For old version support
-				else record.key = (byte[]) obj.get("key");	
-				
-				record.format = key;
-				if (key.toLowerCase().startsWith("stream")) {
-					record.isStream = true;
-					record.format = obj.getString("name");
-				}
-				record.content = "other";
-				
-				String owner = obj.getString("owner");
-			    if (owner!=null) record.owner = new ObjectId(owner); 
-			    
-			    BasicBSONObject obj2 = APSEntry.findMatchingRowForRecord(aps.permissions, record, true);
-				obj2 = APSEntry.getEntries(obj2);	
-				// add entry
-				BasicBSONObject entry = new BasicDBObject();
-				entry.put("key", record.key);
-				if (record.isStream) entry.put("s", true);
-				if (record.owner!=null) entry.put("owner", record.owner);				
-				obj2.put(record._id.toString(), entry);
-			}
-			
-			
-		}
-		savePermissions();
-	}
-			
+	
+	
 	private void encodeAPS() throws InternalServerException {
 		if (aps.permissions != null && !aps.security.equals(APSSecurityLevel.NONE)) {											
 		   aps.encrypted = EncryptionUtils.encryptBSON(encryptionKey, new BasicBSONObject(aps.permissions));				

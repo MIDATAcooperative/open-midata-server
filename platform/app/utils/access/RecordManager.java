@@ -38,10 +38,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
-import controllers.KeyManager;
 
 import utils.DateTimeUtils;
 import utils.auth.EncryptionNotSupportedException;
+import utils.auth.KeyManager;
 import utils.auth.RecordToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -71,7 +71,7 @@ import models.StudyParticipation;
 import models.enums.APSSecurityLevel;
 
 /**
- * access to records
+ * Access to records. Manages authorizations using access permission sets.
  *
  */
 public class RecordManager {
@@ -91,17 +91,17 @@ public class RecordManager {
 			"data", "group");
 	//public final static String STREAM_TYPE = "Stream";
 	public final static Map<String, Object> STREAMS_ONLY = CMaps.map("streams", "only").map("flat", "true");
-	public final static Map<String, Object> STREAMS_ONLY_OWNER = CMaps.map("streams", "only").map("flat", "true").map("owner", "self");
-	public final static String QUERY = "_query";
-
-	public final static String KEY_ALGORITHM = "AES";
-	public final static String CIPHER_ALGORITHM = "AES";
-
-	public Random rand = new Random(System.currentTimeMillis());
+	public final static Map<String, Object> STREAMS_ONLY_OWNER = CMaps.map("streams", "only").map("flat", "true").map("owner", "self");	
 
 	private static ThreadLocal<APSCache> apsCache = new ThreadLocal<APSCache>();
 
-	public APSCache getCache(ObjectId who) throws InternalServerException {
+	/**
+	 * returns intra-request cache
+	 * @param who person who does the current request
+	 * @return APSCache
+	 * @throws InternalServerException
+	 */
+	protected APSCache getCache(ObjectId who) throws InternalServerException {
 		if (apsCache.get() == null)
 			apsCache.set(new APSCache(who));
 		APSCache result = apsCache.get();
@@ -109,126 +109,91 @@ public class RecordManager {
 		return result;
 	}
 	
+	/**
+	 * clears APS cache. Is automatically called after each request.
+	 */
 	public void clear() {
 		if (apsCache.get() != null) apsCache.set(null);
 	}
 
+	/**
+	 * create a new access permission where only the owner has access
+	 * @param who ID of APS owner
+	 * @param proposedId ID of APS to be created
+	 * @return ID of APS
+	 * @throws AppException
+	 */
 	public ObjectId createPrivateAPS(ObjectId who, ObjectId proposedId)
-			throws InternalServerException {
-
-		SecretKey encryptionKey = EncryptionUtils.generateKey(KEY_ALGORITHM);
-
-		EncryptedAPS eaps = new EncryptedAPS(proposedId, who, who,
-				APSSecurityLevel.HIGH, encryptionKey.getEncoded());
-
-		try {
-			eaps.setKey(
-					"owner",
-					KeyManager.instance.encryptKey(who,
-							encryptionKey.getEncoded()));
-			eaps.setSecurityLevel(APSSecurityLevel.HIGH);
-		} catch (EncryptionNotSupportedException e) {
-			eaps.setSecurityLevel(APSSecurityLevel.NONE);
-			eaps.setKey("owner", who.toByteArray());
-		}
-
+			throws AppException {
+		
+		EncryptedAPS eaps = new EncryptedAPS(proposedId, who, who, APSSecurityLevel.HIGH);
+		EncryptionUtils.addKey(who, eaps);		
 		eaps.create();
 
 		return eaps.getId();
 	}
 
+	/**
+	 * creates an access permission set where the owner and one other person have access
+	 * @param owner ID of APS owner
+	 * @param other ID of other person
+	 * @param proposedId ID of APS to be created
+	 * @return ID of APS
+	 * @throws AppException
+	 */
 	public ObjectId createAnonymizedAPS(ObjectId owner, ObjectId other,
-			ObjectId proposedId) throws InternalServerException {
+			ObjectId proposedId) throws AppException {
 
-		SecretKey encryptionKey = EncryptionUtils.generateKey(KEY_ALGORITHM);
-
-		EncryptedAPS eaps = new EncryptedAPS(proposedId, owner, owner,
-				APSSecurityLevel.HIGH, encryptionKey.getEncoded());
-
-		try {
-			eaps.setKey(
-					"owner",
-					KeyManager.instance.encryptKey(owner,
-							encryptionKey.getEncoded()));
-			if (! owner.equals(other)) {
-				try {
-					eaps.setKey(
-							other.toString(),
-							KeyManager.instance.encryptKey(other,
-									encryptionKey.getEncoded()));
-				} catch (EncryptionNotSupportedException e2) {
-					throw new InternalServerException("error.internal.cryptography", "NOT POSSIBLE ENCRYPTION REQUIRED");
-				}
-			}
-		} catch (EncryptionNotSupportedException e) {
-			eaps.setKey("owner", owner.toByteArray());
-			if (! owner.equals(other)) eaps.setKey(other.toString(), null);
-			eaps.setSecurityLevel(APSSecurityLevel.NONE);
-		}
-
+		EncryptedAPS eaps = new EncryptedAPS(proposedId, owner, owner, APSSecurityLevel.HIGH);
+		EncryptionUtils.addKey(owner, eaps);
+		EncryptionUtils.addKey(other, eaps);		
 		eaps.create();
 
 		return eaps.getId();
 
 	}
 
+	/**
+	 * create an APS for a record.
+	 * @param executingPerson ID of person who does this request
+	 * @param owner ID of owner of future APS
+	 * @param recordId ID of record
+	 * @param key key this record is encrypted with
+	 * @param direct true for an access permission set which encrypts all records with the APS key
+	 * @return ID of APS
+	 * @throws InternalServerException
+	 */
 	public ObjectId createAPSForRecord(ObjectId executingPerson, ObjectId owner, ObjectId recordId,
-			byte[] key, boolean direct) throws InternalServerException {
-
-		byte[] encryptionKey = key != null ? key : EncryptionUtils.generateKey(
-				KEY_ALGORITHM).getEncoded();
-
+			byte[] key, boolean direct) throws AppException {
+		
 		EncryptedAPS eaps = new EncryptedAPS(recordId, executingPerson, owner,
-				direct ? APSSecurityLevel.MEDIUM : APSSecurityLevel.HIGH,
-				encryptionKey);
-
-		if (key == null) {
-			eaps.setKey("owner", owner.toByteArray());
-			eaps.setSecurityLevel(APSSecurityLevel.NONE);
-		} else {
-			try {
-				eaps.setKey("owner",
-						KeyManager.instance.encryptKey(owner, encryptionKey));
-			} catch (EncryptionNotSupportedException e) {
-				eaps.setKey("owner", owner.toByteArray());
-				eaps.setSecurityLevel(APSSecurityLevel.NONE);
-			}
-		}
-
+				direct ? APSSecurityLevel.MEDIUM : APSSecurityLevel.HIGH, key);
+        EncryptionUtils.addKey(owner, eaps);				
 		eaps.create();
 
 		return eaps.getId();
 	}
 
+	/**
+	 * share access permission set content with other users
+	 * @param apsId ID of APS
+	 * @param ownerId ID of owner of APS
+	 * @param targetUsers IDs of user to share APS with
+	 * @throws AppException
+	 */
 	public void shareAPS(ObjectId apsId, ObjectId ownerId,
 			Set<ObjectId> targetUsers) throws AppException {
-
-		APS apswrapper = getCache(ownerId).getAPS(apsId);
-		try {
-			apswrapper.addAccess(targetUsers);
-		} catch (EncryptionNotSupportedException e) {
-			throw new InternalServerException("error.internal.cryptography", "Encryption Problem");
-		}
-
+		getCache(ownerId).getAPS(apsId).addAccess(targetUsers);		
 	}
 	
 	public void shareAPS(ObjectId apsId, ObjectId ownerId,
 			ObjectId targetId, byte[] publickey) throws AppException {
-		APS apswrapper = getCache(ownerId).getAPS(apsId);
-		try {
-			apswrapper.addAccess(targetId, publickey);
-		} catch (EncryptionNotSupportedException e) {
-			throw new InternalServerException("error.internal.cryptography", "Encryption Problem");
-		}
-
+		getCache(ownerId).getAPS(apsId).addAccess(targetId, publickey);		
 	}
 
 	public void unshareAPS(ObjectId apsId, ObjectId ownerId,
 			Set<ObjectId> targetUsers) throws InternalServerException {
-
-		APS apswrapper = getCache(ownerId).getAPS(apsId);
-		apswrapper.removeAccess(targetUsers);
-
+		getCache(ownerId).getAPS(apsId).removeAccess(targetUsers);
 	}
 
 	public void share(ObjectId who, ObjectId fromAPS, ObjectId toAPS,
@@ -282,18 +247,7 @@ public class RecordManager {
 			AccessLog.debug("remove perm cnt="+r.content+" fmt="+r.format);
 		}
 		apswrapper.removePermission(recordEntries);
-		
-		/*BasicBSONObject query =  apswrapper.getMeta("_query");
-		if (query != null) {
-			if (!query.containsField("_exclude")) query.put("_exclude", new BasicBSONObject());
-			BasicBSONObject exclude = (BasicBSONObject) query.get("_exclude");
-			if (!exclude.containsField("_id")) exclude.put("_id", new ArrayList());
-			Collection ids = (Collection) exclude.get("_id");
-			for (Record r : recordEntries) {
-				ids.add(r._id.toString());
-			}
-			apswrapper.setMeta("_query", query);
-		}*/
+			
 	}
 
 	public Record createStream(ObjectId executingPerson, ObjectId owner, ObjectId targetAPS, String content, String format,
@@ -323,14 +277,7 @@ public class RecordManager {
 		if (result.isEmpty())
 			return null;
 		return result.get(0)._id;
-	}
-
-	/*public Set<String> getStreamsByFormatContent(ObjectId who, ObjectId apsId,
-			Collection<String> formats) throws InternalServerException {
-		return listRecordIds(who, apsId,
-				CMaps.map("format", formats)
-						.map("streams", "only"));
-	}*/
+	}	
 	
 	public BSONObject getMeta(ObjectId who, ObjectId apsId, String key) throws AppException {
 		return getCache(who).getAPS(apsId).getMeta(key);
@@ -339,11 +286,6 @@ public class RecordManager {
 	public void setMeta(ObjectId who, ObjectId apsId, String key, Map<String,Object> data) throws AppException {
 		getCache(who).getAPS(apsId).setMeta(key, data);
 	}
-
-	/*
-	 * private int getTimeFromDate(Date dt) { return (int) (dt.getTime() / 1000
-	 * / 60 / 60 / 24 / 7); }
-	 */
 
 	public void addDocumentRecord(ObjectId owner, Record record,
 			Collection<Record> parts) throws AppException {
@@ -417,7 +359,7 @@ public class RecordManager {
 	private byte[] addRecordIntern(ObjectId executingPerson, Record record, boolean documentPart, ObjectId alternateAps, boolean upsert) throws AppException {		
 		if (!record.isStream) {
 		  if (record.stream == null) {
-			  if (getCache(executingPerson).getAPS(record.owner, record.owner).eaps.isAccessable()) {		 
+			  if (getCache(executingPerson).getAPS(record.owner, record.owner).isAccessible()) {		 
 			     record.stream = RecordManager.instance.getStreamByFormatContent(executingPerson, record.owner, record.format, record.content);
 			  } else if (alternateAps != null) {
 				 record.stream = RecordManager.instance.getStreamByFormatContent(executingPerson, alternateAps, record.format, record.content);
@@ -425,7 +367,7 @@ public class RecordManager {
 		  }
 		  if (record.stream == null && record.format != null) {
 			 ContentInfo content = ContentInfo.getByName(record.content);
-			 if (getCache(executingPerson).getAPS(record.owner, record.owner).eaps.isAccessable()) {
+			 if (getCache(executingPerson).getAPS(record.owner, record.owner).isAccessible()) {
 			    Record stream = RecordManager.instance.createStream(executingPerson, record.owner, record.owner, record.content, record.format, content.security.equals(APSSecurityLevel.MEDIUM));			 			
 			    record.stream = stream._id;
 			 } else if (alternateAps != null) {
@@ -438,9 +380,8 @@ public class RecordManager {
 		AccessLog.debug("Add Record execPerson="+executingPerson.toString()+" format="+record.format+" stream="+(record.stream != null ? record.stream.toString() : "null"));	
 		byte[] usedKey = null;
 		if (record.created == null) return null;
-		record.time = Query.getTimeFromDate(record.created); //System.currentTimeMillis() / 1000 / 60 / 60 / 24 / 7;
-		
-		Record orig = record;
+		record.time = Query.getTimeFromDate(record.created);
+				
 		record = record.clone();
 		
 		APS apswrapper = null;
@@ -450,12 +391,19 @@ public class RecordManager {
 		if (record.owner.equals(record.creator)) record.creator = null;
 		
 		if (record.stream != null) {
-		  apswrapper = getCache(executingPerson).getAPS(record.stream, record.owner);
-		  record.direct = apswrapper.eaps.isDirect();
-		  
+		  apswrapper = getCache(executingPerson).getAPS(record.stream, record.owner);		  		  		  
 		} else {		
 			if (alternateAps != null) apswrapper = getCache(executingPerson).getAPS(alternateAps);
 			else apswrapper = getCache(executingPerson).getAPS(record.owner, record.owner);
+		}
+		
+		if (!documentPart) {
+			if (record.document != null) {
+				List<Record> doc = QueryEngine.listInternal(getCache(executingPerson), record.owner, CMaps.map("_id", record.document.toString()), Sets.create("key"));
+				if (doc.size() == 1) record.key = doc.get(0).key;
+				else throw new InternalServerException("error.internal", "Document not identified");
+				documentPart = true;
+			} else apswrapper.provideRecordKey(record);
 		}
 	
 		if (record.isStream) {
@@ -464,19 +412,6 @@ public class RecordManager {
 			record.direct = false;
 		}
 		
-		if (apswrapper.eaps.getSecurityLevel().equals(APSSecurityLevel.NONE) || apswrapper.eaps.getSecurityLevel().equals(APSSecurityLevel.LOW)) {
-			record.key = null;
-			if (record.document != null) documentPart = true;
-		} else if (record.direct) {
-			record.key = apswrapper.eaps.getAPSKey() != null ? apswrapper.eaps.getAPSKey().getEncoded() : null;		
-		} else if (!documentPart) {
-			if (record.document != null) {
-				List<Record> doc = QueryEngine.listInternal(getCache(executingPerson), record.owner, CMaps.map("_id", record.document.toString()), Sets.create("key"));
-				if (doc.size() == 1) record.key = doc.get(0).key;
-				else throw new InternalServerException("error.internal", "Document not identified");
-				documentPart = true;
-			} else  record.key = EncryptionUtils.generateKey(KEY_ALGORITHM).getEncoded();
-		}
 	    usedKey = record.key;
 	    
 		try {
@@ -489,7 +424,7 @@ public class RecordManager {
 		
 		Record unecrypted = record.clone();
 				
-		RecordEncryption.encryptRecord(record, apswrapper.eaps.getSecurityLevel());		
+		RecordEncryption.encryptRecord(record, apswrapper.getSecurityLevel());		
 	    if (upsert) { Record.upsert(record); } else { Record.add(record); }	  
 	    		
 		if (unecrypted.isStream) {
@@ -553,8 +488,7 @@ public class RecordManager {
 	
 
 	public void deleteAPS(ObjectId apsId, ObjectId ownerId)
-			throws InternalServerException {
-		// AccessPermissionSet aps = AccessPermissionSet.getById(apsId);
+			throws InternalServerException {		
 		AccessPermissionSet.delete(apsId);
 	}
 
@@ -628,6 +562,7 @@ public class RecordManager {
 		return ids;
 	}
 	
+	/*
 	public void changeFormatName(ObjectId owner, String oldName, String newContent, String newFormat) throws AppException {
 		List<Record> records = QueryEngine.listInternal(getCache(owner), owner, CMaps.map("format", oldName).map("owner", "self"), RecordManager.COMPLETE_DATA);
 		List<Record> patchedRecords = new ArrayList<Record>();
@@ -654,5 +589,6 @@ public class RecordManager {
 			addRecordIntern(owner, newRecord, false, null, true);			
 		}
 	}
+	*/
 
 }

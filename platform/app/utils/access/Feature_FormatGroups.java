@@ -11,6 +11,10 @@ import models.FormatGroup;
 import models.ContentInfo;
 import models.Record;
 
+/**
+ * filter records by group. add group information to record while querying
+ *
+ */
 public class Feature_FormatGroups extends Feature {
 
 	private Feature next;

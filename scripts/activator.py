@@ -37,7 +37,7 @@ class Activator(Product):
 		password = getpass.getpass("Please enter the password for the Java KeyStore: ")
 		# workaround: use the stage task as the start command doesn't work with HTTPS for now...
 		Command.execute('{0} stage'.format(self.bin), self.code)
-		Command.execute('{0} -Dhttp.port=9001 -Dhttps.port=9000 -Dhttps.keyStore={1} -Dhttps.keyStorePassword={2} &'
+		Command.execute('{0} -Dhttp.port=9001 -Dhttps.keyStore={1} -Dhttps.keyStorePassword={2} &'
 			.format(self.app, self.keystore, password), redirect=os.path.join(self.parent, 'logs', 'activator.log'))
 
 	def run(self):

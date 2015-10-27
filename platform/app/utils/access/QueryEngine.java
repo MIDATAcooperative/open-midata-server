@@ -28,7 +28,11 @@ import models.Record;
 import models.RecordsInfo;
 import models.enums.APSSecurityLevel;
 
-public class QueryEngine {
+/**
+ * query engine for records. Is called by RecordManager.
+ *
+ */
+class QueryEngine {
 
 	public static List<Record> list(APSCache cache, ObjectId aps, Map<String, Object> properties, Set<String> fields) throws AppException {
 		return fullQuery(new Query(properties, fields, cache, aps), aps);
@@ -191,19 +195,7 @@ public class QueryEngine {
 			Record r2 = Record.getById(record._id, q.getFieldsFromDB());			
 			record.encrypted = r2.encrypted;
 			record.encryptedData = r2.encryptedData;	
-			
-			// may be removed if encryption is working
-			/*
-			record.app = r2.app;		
-			record.creator = r2.creator;	
-			record.created = r2.created;
-			record.name = r2.name;						
-			record.description = r2.description;
-			record.data = r2.data;
-			record.time = r2.time;
-			
-			record.createdOld = r2.createdOld;
-			*/
+						
 		}
     }
     
@@ -257,14 +249,11 @@ public class QueryEngine {
 		if (qm!=null) result = qm.postProcess(result, q);     	
 								
 		// 8 Post filter records if necessary		
-		Set<ObjectId> creators = null;
-		FormatMatching formats = null;
+		Set<ObjectId> creators = null;		
 		if (q.restrictedBy("creator")) {
 			creators = q.getObjectIdRestriction("creator");			
 		}
-		if (q.restrictedBy("document") && q.restrictedBy("format")) {
-			formats = new FormatMatching(q.getRestriction("format"));				
-		}
+		
 					
 		if (postFilter) {
 			Date minDate = q.getMinDate();
@@ -276,7 +265,7 @@ public class QueryEngine {
 				if (minDate != null && record.created.before(minDate)) continue;
 				if (maxDate != null && record.created.after(maxDate)) continue;
 				if (creators != null && !creators.contains(record.creator)) continue;	
-				if (formats != null && !formats.matches(record.format)) continue;
+				
 				filteredResult.add(record);
 			}
 			result = filteredResult;
@@ -300,12 +289,10 @@ public class QueryEngine {
     	AccessLog.debug("filterByContents:" + contents);
     	AccessLog.debug("filterByContentsWC:" + contentsWC);*/
     	List<Record> filteredResult = new ArrayList<Record>(input.size());
-    	for (Record record : input) {
-    		//AccessLog.debug("test:"+record.content);
+    	for (Record record : input) {    	
     		if (formats!= null && !formats.contains(record.format)) continue;
     		if (contents!= null && !contents.contains(record.content)) continue;
-    		if (contentsWC!=null && !contentsWC.contains(ContentInfo.getWildcardName(record.content))) continue;
-    		//AccessLog.debug("add:"+record.content);
+    		if (contentsWC!=null && !contentsWC.contains(ContentInfo.getWildcardName(record.content))) continue;    		
     		filteredResult.add(record);
     	}
     	
@@ -334,7 +321,7 @@ public class QueryEngine {
 			Map<String, Object> query = new HashMap<String, Object>();
 			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "encrypted");
 			queryFields.addAll(q.getFieldsFromDB());
-			query.put("document", /*new ObjectId("55686c8be4b08b543c12b847")*/ q.getProperties().get("document") );
+			query.put("document", q.getProperties().get("document") );
 			q.addMongoTimeRestriction(query);
 			if (q.restrictedBy("part"))	query.put("part", q.getProperties().get("part"));		
 			return new ArrayList<Record>(Record.getAll(query, queryFields));						

@@ -107,7 +107,7 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result enterCode() throws JsonValidationException, InternalServerException {
+	public static Result enterCode() throws AppException {
         JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "code");
@@ -211,7 +211,7 @@ public class Studies extends APIController {
 	 * @throws InternalServerException
 	 */
 	
-	public static StudyParticipation createStudyParticipation(Study study, Member member, ParticipationCode code) throws InternalServerException {
+	public static StudyParticipation createStudyParticipation(Study study, Member member, ParticipationCode code) throws AppException {
 		StudyParticipation part = new StudyParticipation();
 		part._id = new ObjectId();
 		part.study = study._id;
@@ -224,7 +224,9 @@ public class Studies extends APIController {
 		if (study.requiredInformation == InformationType.DEMOGRAPHIC) {
 			userName = member.lastname+", "+member.firstname;	
 		} else {
-			userName = "Part. " + CodeGenerator.nextUniqueCode();
+			do {
+			  userName = "Part. " + CodeGenerator.nextUniqueCode();
+			} while (StudyParticipation.existsByStudyAndMemberName(study._id, userName));
 		}
 				
 		part.ownerName = userName;
@@ -296,7 +298,7 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public static Result requestParticipation(String id) throws JsonValidationException, InternalServerException {
+	public static Result requestParticipation(String id) throws AppException {
 		ObjectId userId = new ObjectId(request().username());		
 		ObjectId studyId = new ObjectId(id);
 		

@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -20,16 +21,22 @@ import org.bson.BSON;
 import org.bson.BSONObject;
 import org.bson.types.ObjectId;
 
-import controllers.KeyManager;
 
 import utils.auth.CodeGenerator;
 import utils.auth.EncryptionNotSupportedException;
+import utils.auth.KeyManager;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
+/**
+ * utility functions for encrypting and decrypting data 
+ *
+ */
 public class EncryptionUtils {
 	
 	public final static String CIPHER_ALGORITHM = "AES";
+	
+	private static SecureRandom random = new SecureRandom();
 
 	public static SecretKey generateKey(String keyAlgorithm) {
 		try {
@@ -48,7 +55,7 @@ public class EncryptionUtils {
 			c.init(Cipher.DECRYPT_MODE, key);
 
 			byte[] cipherText = encrypted; 
-			byte[] bson = CodeGenerator.derandomize(c.doFinal(cipherText));
+			byte[] bson = EncryptionUtils.derandomize(c.doFinal(cipherText));
 		   												
 	    	return BSON.decode(bson);
 	    			    	
@@ -72,7 +79,7 @@ public class EncryptionUtils {
 			c.init(Cipher.ENCRYPT_MODE, key);
 
 		    byte[] bson = BSON.encode(obj);
-			byte[] cipherText = c.doFinal(CodeGenerator.randomize(bson));
+			byte[] cipherText = c.doFinal(EncryptionUtils.randomize(bson));
 							
 	    	return cipherText;
 		} catch (InvalidKeyException e) {
@@ -123,7 +130,7 @@ public class EncryptionUtils {
 	
 	}
 	
-	public static void addKey(ObjectId target, EncryptedAPS eaps) throws AppException, EncryptionNotSupportedException {
+	public static void addKey(ObjectId target, EncryptedAPS eaps) throws AppException {
 		if (eaps.getSecurityLevel().equals(APSSecurityLevel.NONE) || eaps.getAPSKey() == null) {
 			if (target.equals(eaps.getOwner())) {
 				eaps.setKey("owner", eaps.getOwner().toByteArray());
@@ -152,6 +159,25 @@ public class EncryptionUtils {
 		} catch (UnsupportedEncodingException e) {
 			throw new NullPointerException();
 		}
+	}
+
+	public final static String KEY_ALGORITHM = "AES";
+
+	public static byte[] randomize(byte[] source) {
+		byte[] key = new byte[4];
+		random.nextBytes(key);
+		byte[] result = new byte[source.length + 4];
+				
+		for (int i=0;i<4;i++) result[i] = key[i];
+		for (int i=0;i<source.length;i++) result[i+4] = (byte) (source[i] ^ result[i]);
+				
+		return result;
+	}
+
+	public static byte[] derandomize(byte[] source) {
+		byte[] result = new byte[source.length-4];
+		for (int i=4;i<source.length;i++) result[i-4] = (byte) (source[i] ^ source[i-4]);
+		return result;
 	}
 	
 }

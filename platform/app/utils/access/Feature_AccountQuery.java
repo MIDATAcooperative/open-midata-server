@@ -20,6 +20,11 @@ import models.Consent;
 import models.Record;
 import models.StudyParticipation;
 
+/**
+ * queries made to the access permission set of a user 
+ * also query his other access permission sets based on the query parameters.
+ *
+ */
 public class Feature_AccountQuery extends Feature {
 
 	private Feature next;

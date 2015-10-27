@@ -116,7 +116,7 @@ public class User extends Model implements Comparable<User> {
 	public static boolean exists(Map<String, ? extends Object> properties) throws InternalServerException {
 		return Model.exists(User.class, collection, properties);
 	}
-	
+			
 	public void set(String field, Object value) throws InternalServerException {
 		Model.set(this.getClass(), getCollection(), this._id, field, value);
 	}

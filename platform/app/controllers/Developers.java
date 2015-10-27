@@ -21,7 +21,10 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
+import utils.auth.KeyManager;
 import utils.collections.Sets;
+import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -43,7 +46,7 @@ public class Developers extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result register() throws JsonValidationException, InternalServerException {
+	public static Result register() throws AppException {
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
 							
@@ -94,12 +97,11 @@ public class Developers extends APIController {
 	/**
 	 * login a developer or admin
 	 * @return status ok / returns "admin" if person logged in is an admin
-	 * @throws JsonValidationException
-	 * @throws InternalServerException
+	 * @throws AppException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result login() throws JsonValidationException, InternalServerException {
+	public static Result login() throws AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -107,7 +109,7 @@ public class Developers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		Developer user = Developer.getByEmail(email, Sets.create("email","password","provider"));
+		Developer user = Developer.getByEmail(email, Sets.create("email","password","provider","status"));
 		
 		if (user == null) {
 			Admin adminuser = Admin.getByEmail(email, Sets.create("email","password"));
@@ -128,7 +130,8 @@ public class Developers extends APIController {
 		if (!Developer.authenticationValid(password, user.password)) {
 			return badRequest("Invalid user or password.");
 		}
-						
+		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.userblocked", "User is not allowed to log in.");
+							
 		KeyManager.instance.unlock(user._id, "12345");
 		
 		if (AccessPermissionSet.getById(user._id) == null) RecordManager.instance.createPrivateAPS(user._id, user._id);

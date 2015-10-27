@@ -28,17 +28,19 @@ import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
+import utils.auth.KeyManager;
 import utils.auth.ProviderSecured;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
 import controllers.APIController;
-import controllers.KeyManager;
 import controllers.routes;
 import actions.APICall; 
 import play.libs.Json;
@@ -61,7 +63,7 @@ public class Providers extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result register() throws JsonValidationException, InternalServerException {
+	public static Result register() throws AppException {
 		JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "name", "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
@@ -126,12 +128,11 @@ public class Providers extends APIController {
 	/**
 	 * healthcare provider login
 	 * @return status ok
-	 * @throws JsonValidationException
-	 * @throws InternalServerException
+	 * @throws AppException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result login() throws JsonValidationException, InternalServerException {
+	public static Result login() throws AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -139,13 +140,14 @@ public class Providers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		HPUser user = HPUser.getByEmail(email, Sets.create("email","password","provider"));
+		HPUser user = HPUser.getByEmail(email, Sets.create("email","password","provider","status"));
 		
 		if (user == null) return badRequest("Invalid user or password.");
 		if (!HPUser.authenticationValid(password, user.password)) {
 			return badRequest("Invalid user or password.");
 		}
-		
+		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.userblocked", "User is not allowed to log in.");
+				
 		KeyManager.instance.unlock(user._id, "12345");
 		// user authenticated
 		session().clear();

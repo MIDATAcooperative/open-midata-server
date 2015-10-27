@@ -1,11 +1,21 @@
 package utils.json;
 
+import java.io.IOException;
+
 import org.bson.types.ObjectId;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
+/**
+ * JSON mapper with ObjectId support
+ *
+ */
 public class CustomObjectMapper extends ObjectMapper {
 
 	private static final long serialVersionUID = 1L;
@@ -31,4 +41,17 @@ public class CustomObjectMapper extends ObjectMapper {
 	}
 
 	
+}
+
+class ObjectIdSerializer extends JsonSerializer<ObjectId> {
+
+	@Override
+	public void serialize(ObjectId id, JsonGenerator generator, SerializerProvider provider) throws IOException,
+			JsonProcessingException {
+	    generator.writeStartObject();
+		generator.writeFieldName("$oid");
+		generator.writeString(id.toString());
+		generator.writeEndObject();
+	}
+
 }

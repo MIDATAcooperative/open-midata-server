@@ -7,6 +7,10 @@ import utils.exceptions.InternalServerException;
 
 import models.Record;
 
+/**
+ * filter records by format
+ *
+ */
 public class Feature_ContentFilter extends Feature {
 
 	private Feature next;

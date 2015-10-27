@@ -7,6 +7,10 @@ import utils.exceptions.InternalServerException;
 
 import models.Record;
 
+/**
+ * query a preselected list of records in memory
+ *
+ */
 public class Feature_InMemoryQuery extends Feature {
 	
 	private List<Record> contents;

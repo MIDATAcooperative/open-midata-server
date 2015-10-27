@@ -9,6 +9,10 @@ import utils.exceptions.InternalServerException;
 import models.Record;
 import models.RecordsInfo;
 
+/**
+ * abstract super-class for additional features of the query engine
+ *
+ */
 public abstract class Feature {
 
 		

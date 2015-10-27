@@ -14,6 +14,11 @@ import org.bson.BasicBSONObject;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
+/**
+ * access permission sets may contain a blacklist of record IDs that are never contained in this APS.
+ * (makes only sense with query based access permission sets)
+ *
+ */
 public class Feature_BlackList extends Feature {
 
     private Feature next;

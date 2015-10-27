@@ -15,6 +15,10 @@ import utils.exceptions.InternalServerException;
 import models.APSNotExistingException;
 import models.Record;
 
+/**
+ * organizes records into "streams". these are access permission sets that contain only records of one type.
+ *
+ */
 public class Feature_Streams extends Feature {
 
 	

@@ -17,7 +17,11 @@ import utils.exceptions.InternalServerException;
 
 import com.mongodb.BasicDBList;
 
-public class APSEntry {
+/**
+ * functions for reading and manipulation of entries of an access permission set.
+ *
+ */
+class APSEntry {
 
 	public static List<BasicBSONObject> findMatchingRowsForQuery(Map<String, Object> permissions, Query q) throws AppException {
 		List<BasicBSONObject> result = new ArrayList<BasicBSONObject>();
@@ -85,6 +89,32 @@ public class APSEntry {
 		fmt = row.getString("content");
 		if (fmt != null) record.content = fmt;
 		//AccessLog.debug("populate:"+record.format+"/"+record.content);
+	}
+	 
+	public static void mergeAllInto(Map<String, Object> props, Map<String, Object> targetPermissions) throws InternalServerException {
+		BasicBSONList lst = (BasicBSONList) props.get("p");
+		Record dummy = new Record();
+		
+		for (Object row : lst) {
+			BasicBSONObject crit = (BasicBSONObject) row;
+			BasicBSONObject entries = APSEntry.getEntries(crit);
+            APSEntry.populateRecord(crit, dummy);										
+		    for (String key : entries.keySet()) {
+			   BasicBSONObject copyVal = (BasicBSONObject) entries.get(key);
+			   
+			   BasicBSONObject targetRow = APSEntry.findMatchingRowForRecord(targetPermissions, dummy, true);
+			   BasicBSONObject targetEntries = APSEntry.getEntries(targetRow);
+			   
+			   if (!targetEntries.containsField(key)) {
+				  targetEntries.put(key, new BasicBSONObject());
+			   }
+			   BasicBSONObject targetVals = (BasicBSONObject) targetEntries.get(key);
+			
+			   for (String v : copyVal.keySet()) {
+				  targetVals.put(v, copyVal.get(v));
+			   }
+		    }
+		}
 	}
 		
 }

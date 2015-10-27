@@ -15,7 +15,10 @@ import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 
-
+/**
+ * parameters for a single query for records
+ *
+ */
 public class Query {
 
 	private Map<String, Object> properties;

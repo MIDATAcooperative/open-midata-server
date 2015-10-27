@@ -10,6 +10,10 @@ import utils.exceptions.BadRequestException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * functions for validating JSON input
+ *
+ */
 public class JsonValidation {
 
 	public static void validate(JsonNode json, String... requiredFields) throws JsonValidationException {

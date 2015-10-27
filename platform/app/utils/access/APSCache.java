@@ -12,7 +12,11 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
-public class APSCache {
+/**
+ * caches access permission sets during a request. No inter-request caching. 
+ *
+ */
+class APSCache {
 
 	private Map<String, APS> cache;
 	private ObjectId ownerId;
@@ -29,7 +33,7 @@ public class APSCache {
 	public APS getAPS(ObjectId apsId) throws InternalServerException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) {
-			result = new APS(new EncryptedAPS(apsId, ownerId));
+			result = new APSImplementation(new EncryptedAPS(apsId, ownerId));
 			cache.put(apsId.toString(), result);
 		}
 		return result;
@@ -38,7 +42,7 @@ public class APSCache {
 	public APS getAPS(ObjectId apsId, ObjectId owner) throws InternalServerException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) {
-			result = new APS(new EncryptedAPS(apsId, ownerId, owner));
+			result = new APSImplementation(new EncryptedAPS(apsId, ownerId, owner));
 			cache.put(apsId.toString(), result);
 		}	
 		return result;
@@ -47,8 +51,8 @@ public class APSCache {
 	public APS getAPS(ObjectId apsId, byte[] unlockKey, ObjectId owner) throws AppException, EncryptionNotSupportedException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) { 
-			result = new APS(new EncryptedAPS(apsId, ownerId, unlockKey, owner));
-			if (!result.eaps.isOwner()) result.addAccess(Collections.<ObjectId>singleton(ownerId));
+			result = new APSImplementation(new EncryptedAPS(apsId, ownerId, unlockKey, owner));
+			if (!result.isAccessible()) result.addAccess(Collections.<ObjectId>singleton(ownerId));
 			cache.put(apsId.toString(), result);
 		}
 		return result;

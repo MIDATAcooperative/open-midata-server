@@ -53,6 +53,7 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
 import actions.APICall;
+import actions.AppsCall;
 import actions.VisualizationCall;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -84,7 +85,7 @@ public class AppsAPI extends Controller {
 	
 	
 	@BodyParser.Of(BodyParser.Json.class)
-	@VisualizationCall
+	@AppsCall
 	public static Result authenticateExternalApp() throws JsonValidationException, InternalServerException {
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		
@@ -133,7 +134,7 @@ public class AppsAPI extends Controller {
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
-	@VisualizationCall
+	@AppsCall
 	public static Result getRecords() throws JsonValidationException, AppException {	
 		response().setHeader("Access-Control-Allow-Origin", "*");
 		// validate json
@@ -173,7 +174,7 @@ public class AppsAPI extends Controller {
 	
 
 	@BodyParser.Of(BodyParser.Json.class)
-	@VisualizationCall
+	@AppsCall
 	public static Result createRecord() throws AppException, JsonValidationException {
 		// allow cross origin request from app server
 		//String appServer = Play.application().configuration().getString("apps.server");

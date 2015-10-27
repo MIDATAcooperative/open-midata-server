@@ -42,6 +42,10 @@ public class Member extends User {
 		return Model.exists(Member.class, collection, CMaps.map("email", email).map("role",  UserRole.MEMBER));
 	}
 	
+	public static boolean existsByMidataID(String midataID) throws InternalServerException {
+		return Model.exists(User.class, collection, CMaps.map("midataID", midataID));
+	}
+	
 	public static Member getByEmail(String email, Set<String> fields) throws InternalServerException {
 		return Model.get(Member.class, collection, CMaps.map("email", email).map("role", UserRole.MEMBER), fields);
 	}

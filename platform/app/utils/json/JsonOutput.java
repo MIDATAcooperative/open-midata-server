@@ -10,6 +10,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
+/**
+ * functions for serialization JSON so that only requested fields are returned
+ *
+ */
 public class JsonOutput {
 	
 	public static String toJson(Object o, String filtered, Set<String> fields) throws InternalServerException {	   	    

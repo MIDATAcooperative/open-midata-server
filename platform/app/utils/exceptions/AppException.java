@@ -1,5 +1,9 @@
 package utils.exceptions;
 
+/**
+ * common superclass for application specific exceptions. Has some support for localisation.
+ *
+ */
 public class AppException extends Exception {
 
 	private String localeKey;

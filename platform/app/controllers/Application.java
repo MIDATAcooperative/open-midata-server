@@ -27,9 +27,12 @@ import play.mvc.Result;
 import utils.DateTimeUtils;
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
+import utils.auth.KeyManager;
 import utils.auth.PasswordResetToken;
 import utils.collections.Sets;
 import utils.evolution.AccountPatches;
+import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -164,12 +167,11 @@ public class Application extends APIController {
 	/**
 	 * login function for MIDATA members
 	 * @return status ok
-	 * @throws JsonValidationException
-	 * @throws InternalServerException
+	 * @throws AppException
 	 */
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result authenticate() throws JsonValidationException, InternalServerException {
+	public static Result authenticate() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "password");	
@@ -182,7 +184,7 @@ public class Application extends APIController {
 		if (!Member.authenticationValid(password, user.password)) {
 			return badRequest("Invalid user or password.");
 		}
-		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) return badRequest("User is not allowed to log in.");
+		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.userblocked", "User is not allowed to log in.");
 			    	    	
 		// execute
 		session().clear();
@@ -204,7 +206,7 @@ public class Application extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result register() throws JsonValidationException, InternalServerException {
+	public static Result register() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1");				
@@ -225,7 +227,9 @@ public class Application extends APIController {
 		user.name = firstName + " " + lastName;
 		
 		user.password = Member.encrypt(password);
-		user.midataID = CodeGenerator.nextUniqueCode();
+		do {
+		  user.midataID = CodeGenerator.nextUniqueCode();
+		} while (Member.existsByMidataID(user.midataID));
 		user.role = UserRole.MEMBER;
 		
 		user.address1 = JsonValidation.getString(json, "address1");

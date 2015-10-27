@@ -19,7 +19,11 @@ import utils.DateTimeUtils;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
-public class RecordEncryption {
+/**
+ * utility functions for encrypting and decryption records.
+ *
+ */
+class RecordEncryption {
 
 	public static void encryptRecord(Record record, APSSecurityLevel lvl) throws AppException {
 		if (lvl.equals(APSSecurityLevel.NONE) || lvl.equals(APSSecurityLevel.LOW)) {
@@ -51,18 +55,8 @@ public class RecordEncryption {
 	}
 
 	protected static void decryptRecord(Record record) throws AppException {
-		if (record.created != null) return;
-		
-		// Convert old format into new
-		if (record.createdOld != null) {
-			record.created = DateTimeUtils.toDate(record.createdOld);
-			record.time = Query.getTimeFromDate(record.created);
-			Record.set(record._id, "created", record.created);
-			Record.set(record._id, "time", record.time);
-			//Record.set(record._id, "createdOld", null);
-			return;
-		}
-		
+		//if (record.created != null) return;
+				
 		if (record.encrypted == null && record.encryptedData == null) return;
 		if (record.key == null) AccessLog.decryptFailure(record._id);
 		

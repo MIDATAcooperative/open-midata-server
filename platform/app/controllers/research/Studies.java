@@ -92,7 +92,9 @@ public class Studies extends APIController {
 				
 		study._id = new ObjectId();
 		study.name = name;
-		study.code = CodeGenerator.nextUniqueCode();
+		do {
+		  study.code = CodeGenerator.nextUniqueCode();
+		} while (Study.existsByCode(study.code));
 		study.description = JsonValidation.getString(json, "description");
 		
 		study.createdAt = new Date();

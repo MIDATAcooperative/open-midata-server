@@ -1,4 +1,4 @@
-package controllers;
+package utils.auth;
 
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -25,8 +25,6 @@ import models.User;
 import org.bson.types.ObjectId;
 
 import utils.access.EncryptionUtils;
-import utils.auth.CodeGenerator;
-import utils.auth.EncryptionNotSupportedException;
 import utils.collections.Sets;
 import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
@@ -44,7 +42,7 @@ public class KeyManager {
 	public byte[] encryptKey(ObjectId target, byte[] keyToEncrypt) throws EncryptionNotSupportedException, InternalServerException {		
 			User user = User.getById(target, Sets.create("publicKey"));
 			
-			if (user.publicKey == null) throw new EncryptionNotSupportedException();			
+			if (user.publicKey == null) throw new EncryptionNotSupportedException("User has no public key");			
 			return encryptKey(user.publicKey , keyToEncrypt);								 
 	}
 	
@@ -59,7 +57,7 @@ public class KeyManager {
 			Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
 			c.init(Cipher.ENCRYPT_MODE, pubKey);
 		    
-			byte[] cipherText = c.doFinal(CodeGenerator.randomize(keyToEncrypt));
+			byte[] cipherText = c.doFinal(EncryptionUtils.randomize(keyToEncrypt));
 			//c.doFinal(keyToEncrypt, 0, keyToEncrypt.length, cipherText);
 			
 			return cipherText;
@@ -99,7 +97,7 @@ public class KeyManager {
 		    
 			byte[] cipherText = c.doFinal(keyToDecrypt);
 						
-			return CodeGenerator.derandomize(cipherText);
+			return EncryptionUtils.derandomize(cipherText);
 		} catch (NoSuchAlgorithmException e) {
 			throw new InternalServerException("error.internal.cryptography", e);		
 		} catch (NoSuchPaddingException e2) {

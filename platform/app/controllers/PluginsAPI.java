@@ -1,53 +1,41 @@
 package controllers;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import models.Consent;
-import models.HPUser;
 import models.LargeRecord;
 import models.Member;
 import models.Record;
 import models.Space;
-import models.User;
 import models.enums.UserRole;
 
 import org.bson.BSONObject;
 import org.bson.types.ObjectId;
 
-import play.Play;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
-import play.mvc.Security;
 import utils.DateTimeUtils;
 import utils.access.AccessLog;
 import utils.access.RecordManager;
-import utils.auth.AppToken;
 import utils.auth.RecordToken;
 import utils.auth.Rights;
 import utils.auth.SpaceToken;
-import utils.collections.ChainedMap;
-import utils.collections.ChainedSet;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
-import utils.db.FileStorage;
-import utils.db.ObjectIdConversion;
 import utils.db.FileStorage.FileData;
+import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-
-import actions.APICall;
 import actions.VisualizationCall;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -59,43 +47,50 @@ import com.mongodb.util.JSONParseException;
 // not secured, accessible from visualizations server (only with valid authToken)
 public class PluginsAPI extends Controller {
 
+	/**
+	 * handle OPTIONS requests. 
+	 * @return status ok
+	 */
 	@VisualizationCall
-	public static Result checkPreflight() {
-		// allow cross-origin request from visualizations server
-		/*String visualizationsServer = Play.application().configuration().getString("visualizations.server");
-		response().setHeader("Access-Control-Allow-Origin", "https://" + visualizationsServer);
-		response().setHeader("Access-Control-Allow-Methods", "POST");
-		response().setHeader("Access-Control-Allow-Headers", "Content-Type");*/
+	public static Result checkPreflight() {		
 		return ok();
 	}
  
+	/**
+	 * return IDs of all records current plugin has access to. Deprecated. Use getRecords instead.
+	 * @return list of object IDs
+	 * @throws AppException
+	 * @throws JsonValidationException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result getIds() throws AppException, JsonValidationException  {
-		
+	public static Result getIds() throws AppException, JsonValidationException  {		
 		// validate json
-		JsonNode json = request().body().asJson();
-		
+		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken");
 		
-		// decrypt authToken and check whether space with corresponding owner exists
+		// decrypt authToken 
 		SpaceToken spaceToken = SpaceToken.decrypt(json.get("authToken").asText());
 		if (spaceToken == null) {
 			return badRequest("Invalid authToken.");
 		}
-		
-		
+				
 		Set<ObjectId> tokens = ObjectIdConversion.toObjectIds(RecordManager.instance.listRecordIds(spaceToken.userId, spaceToken.spaceId));		
 		return ok(Json.toJson(tokens));
 	}
 
+	/**
+	 * retrieve configuration json for a space. 
+	 * @return json previously stored with setConfig
+	 * @throws JsonValidationException
+	 * @throws AppException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
 	public static Result getConfig() throws JsonValidationException, AppException {
 		
 		// validate json
-		JsonNode json = request().body().asJson();
-		
+		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken");
 		
 		// decrypt authToken and check whether space with corresponding owner exists
@@ -116,6 +111,12 @@ public class PluginsAPI extends Controller {
 		return ok();
 	}
 	
+	/**
+	 * store configuration json for a space
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws AppException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
 	public static Result setConfig() throws JsonValidationException, AppException {
@@ -125,7 +126,7 @@ public class PluginsAPI extends Controller {
 		
 		JsonValidation.validate(json, "authToken", "config");
 		
-		// decrypt authToken and check whether space with corresponding owner exists
+		// decrypt authToken 
 		SpaceToken spaceToken = SpaceToken.decrypt(json.get("authToken").asText());
 		if (spaceToken == null) {
 			return badRequest("Invalid authToken.");
@@ -137,6 +138,12 @@ public class PluginsAPI extends Controller {
 		return ok();
 	}
 	
+	/**
+	 * clone current space with a different confuguration
+	 * @return
+	 * @throws JsonValidationException
+	 * @throws AppException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
 	public static Result cloneAs() throws JsonValidationException, AppException {
@@ -146,7 +153,7 @@ public class PluginsAPI extends Controller {
 		
 		JsonValidation.validate(json, "authToken", "name", "config");
 		
-		// decrypt authToken and check whether space with corresponding owner exists
+		// decrypt authToken 
 		SpaceToken spaceToken = SpaceToken.decrypt(json.get("authToken").asText());
 		if (spaceToken == null) {
 			return badRequest("Invalid authToken.");
@@ -154,28 +161,30 @@ public class PluginsAPI extends Controller {
 		Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));
 		String name = JsonValidation.getString(json, "name");
 		Space current = Space.getByIdAndOwner(spaceToken.spaceId, spaceToken.userId, Sets.create("context", "visualization", "app"));
+		if (current == null) throw new BadRequestException("error.space.missing", "The current space does no longer exist.");
 		
-		Space space = Spaces.add(spaceToken.userId, name, current.visualization, current.app, current.context);
-		
+		Space space = Spaces.add(spaceToken.userId, name, current.visualization, current.app, current.context);		
 		BSONObject bquery = RecordManager.instance.getMeta(spaceToken.userId, spaceToken.spaceId, "_query");		
 		Map<String, Object> query;
 		if (bquery != null) {
 			query = bquery.toMap();
-			
-			/*if (json.has("query")) {
-				
-			}*/
+						
 			RecordManager.instance.shareByQuery(spaceToken.userId, spaceToken.userId, space._id, query);
 		}		
 		RecordManager.instance.setMeta(spaceToken.userId, space._id, "_config", config);
 						
 		return ok();
 	}
-	
+
+	/**
+	 * retrieve records current space has access to matching some criteria
+	 * @return list of Records
+	 * @throws JsonValidationException
+	 * @throws AppException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Result getRecords() throws JsonValidationException, AppException {
-		
+	public static Result getRecords() throws JsonValidationException, AppException {		
 		// validate json
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken", "properties", "fields");
@@ -185,46 +194,31 @@ public class PluginsAPI extends Controller {
 		
 		Rights.chk("getRecords", UserRole.ANY, fields);
 
-		// decrypt authToken and check whether space with corresponding owner exists
+		// decrypt authToken
 		SpaceToken authToken = SpaceToken.decrypt(json.get("authToken").asText());
 		if (authToken == null) {
 			return badRequest("Invalid authToken.");
 		}
-	
-		
-		/*if (properties.containsKey("owner")) {
-			if (properties.get("owner").equals("self")) properties.put("owner", authToken.userId.toString());
-		}*/
-		
+			
 		if (authToken.recordId != null) properties.put("_id", authToken.recordId);
 
 		// get record data
 		Collection<Record> records = null;
 		
 		AccessLog.debug("NEW QUERY");
-		/*if (properties.containsKey("convert")) {
-		   // Load direct result
-		   records = LargeRecord.getAll(authToken.userId, authToken.spaceId, properties, fields);
-		   
-		   // Search for convertable
-		   Map<String, Object> extended = new HashMap<String,Object>(properties);
-		   extended.remove("format");
-		   Set<String> candidates = RecordManager.instance.listRecordIds(authToken.userId, authToken.spaceId, extended);
-		   if (properties.containsKey("format")) {
-			   // extended.put("format", properties.get("format"));
-			   extended.put("part", properties.get("format"));
-		   }
-		   extended.put("document", ObjectIdConversion.toObjectIds(candidates));		   		 
-		   records.addAll(RecordManager.instance.list(authToken.userId, authToken.spaceId, extended, fields));
-		   		   
-		} else {*/
-		   records = LargeRecord.getAll(authToken.userId, authToken.spaceId, properties, fields);		  
-		//}
 		
+		records = LargeRecord.getAll(authToken.userId, authToken.spaceId, properties, fields);		  
+				
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		return ok(JsonOutput.toJson(records, "Record", fields));
 	}
 	
+	/**
+	 * retrieve a file record current space has access to
+	 * @return file
+	 * @throws AppException
+	 * @throws JsonValidationException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall	
 	public static Result getFile() throws AppException, JsonValidationException {
@@ -239,25 +233,28 @@ public class PluginsAPI extends Controller {
 			return badRequest("Invalid authToken.");
 		}
 		
-		ObjectId recordId = JsonValidation.getObjectId(json, "_id");
-			
+		ObjectId recordId = JsonValidation.getObjectId(json, "_id");			
 		FileData fileData = RecordManager.instance.fetchFile(authToken.userId, new RecordToken(recordId.toString(), authToken.spaceId.toString()));
 		if (fileData == null) return badRequest();
 		//response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
 		return ok(fileData.inputStream);
 	}
 	
+	/**
+	 * create a new record. The current space will automatically have access to it.
+	 * @return
+	 * @throws AppException
+	 * @throws JsonValidationException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
 	public static Result createRecord() throws AppException, JsonValidationException {
-		//response().setHeader("Access-Control-Allow-Origin", "*");
-		
+				
 		// check whether the request is complete
-		JsonNode json = request().body().asJson();
-		
+		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken", "data", "name", "description", "format", "content");
 		
-		// decrypt authToken and check whether space with corresponding owner exists
+		// decrypt authToken 
 		SpaceToken authToken = SpaceToken.decrypt(json.get("authToken").asText());
 		if (authToken == null) {
 			return badRequest("Invalid authToken.");
@@ -266,6 +263,7 @@ public class PluginsAPI extends Controller {
 		if (authToken.recordId != null) return badRequest("This view is readonly.");
 		
 		Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.userId, Sets.create("visualization", "app", "aps", "autoShare"));
+		if (space == null) throw new BadRequestException("error.space.missing", "The current space does no longer exist.");
 		
 		ObjectId appId = space.visualization;
 				

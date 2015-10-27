@@ -1,5 +1,9 @@
 package utils.exceptions;
 
+/**
+ * exception that is thrown if the user is not authorized to do the current action or read requested data
+ *
+ */
 public class AuthException extends AppException {
 
 	private static final long serialVersionUID = 1L;

@@ -28,6 +28,7 @@ import play.mvc.Security;
 import utils.PasswordHash;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
+import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
 import utils.auth.Rights;
 import utils.collections.CMaps;

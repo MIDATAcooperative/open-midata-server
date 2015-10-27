@@ -5,6 +5,10 @@ import play.Play;
 import com.typesafe.plugin.MailerPlugin;
 import com.typesafe.plugin.MailerAPI;
 
+/**
+ * function for sending mails
+ *
+ */
 public class MailUtils {
 
 	public static void sendTextMail(String email, String fullname, String subject, Object content) {

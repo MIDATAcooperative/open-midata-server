@@ -136,7 +136,7 @@ public class Spaces extends Controller {
 	 * @return
 	 * @throws InternalServerException
 	 */
-	public static Space add(ObjectId userId, String name, ObjectId visualizationId, ObjectId appId, String context) throws InternalServerException {
+	public static Space add(ObjectId userId, String name, ObjectId visualizationId, ObjectId appId, String context) throws AppException {
 						
 		// create new space
 		Space space = new Space();
@@ -155,7 +155,7 @@ public class Spaces extends Controller {
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result getPreviewUrlFromSetup() throws InternalServerException, JsonValidationException {
+	public static Result getPreviewUrlFromSetup() throws AppException {
 		// validate json
 		JsonNode json = request().body().asJson();				
 		JsonValidation.validate(json, "name", "visualization", "context", "rules");

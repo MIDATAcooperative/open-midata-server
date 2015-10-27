@@ -19,7 +19,6 @@ import models.enums.UserStatus;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.APIController;
-import controllers.KeyManager;
 import controllers.routes;
 
 import actions.APICall; 
@@ -29,9 +28,12 @@ import play.mvc.Controller;
 import play.mvc.Result; 
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
+import utils.auth.KeyManager;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
+import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -50,7 +52,7 @@ public class Researchers extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result register() throws JsonValidationException, InternalServerException {
+	public static Result register() throws AppException {
 		JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "name", "email", "description", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
@@ -113,12 +115,11 @@ public class Researchers extends APIController {
 	/**
 	 * login a researcher
 	 * @return status ok
-	 * @throws JsonValidationException
-	 * @throws InternalServerException
+	 * @throws AppException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result login() throws JsonValidationException, InternalServerException {
+	public static Result login() throws AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -126,12 +127,13 @@ public class Researchers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		ResearchUser user = ResearchUser.getByEmail(email, Sets.create("email","password","organization"));
+		ResearchUser user = ResearchUser.getByEmail(email, Sets.create("email","password","organization","status"));
 		
 		if (user == null) return badRequest("Invalid user or password.");
 		if (!ResearchUser.authenticationValid(password, user.password)) {
 			return badRequest("Invalid user or password.");
 		}
+		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.userblocked", "User is not allowed to log in.");
 		
 		// user authenticated
 		KeyManager.instance.unlock(user._id, "12345");

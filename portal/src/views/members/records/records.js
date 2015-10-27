@@ -193,6 +193,7 @@ angular.module('portal')
 		    var group = record.group;
 		    var groupItem = getOrCreateGroup(group);
 		    groupItem.records.push(record);
+		    if (!record.name) record.name="no name";
 		});
 		angular.forEach($scope.tree, function(t) { countRecords(t); });
 	};

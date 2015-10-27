@@ -11,4 +11,4 @@ Folder structure
 - manual: Some helper files to change database or load database content into the search server.
 - project: Dependencies, versions.
 - public: Resources.
-- test: Unit tests.
+- apitest: API tests.

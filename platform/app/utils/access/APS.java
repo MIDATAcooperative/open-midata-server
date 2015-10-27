@@ -15,9 +15,9 @@ import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
 
-import controllers.KeyManager;
 
 import utils.auth.EncryptionNotSupportedException;
+import utils.auth.KeyManager;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
@@ -26,338 +26,60 @@ import models.Record;
 import models.RecordsInfo;
 import models.enums.APSSecurityLevel;
 
-public class APS extends Feature {
+/**
+ * abstract interface for an access permission set
+ *
+ */
+public abstract class APS extends Feature {
 
-	public EncryptedAPS eaps;
-	 
 	public final static String QUERY = "_query";
-	public Random rand = new Random(System.currentTimeMillis());
 	
-	public APS(EncryptedAPS eaps) {
-		this.eaps = eaps;
-	}
+	public abstract ObjectId getId();
 	
-	public ObjectId getId() {
-		return eaps.getId();
-	}
+	public abstract boolean isAccessible() throws AppException;
+		
+	public abstract APSSecurityLevel getSecurityLevel() throws InternalServerException;
 	
-	public void addAccess(Set<ObjectId> targets) throws AppException,EncryptionNotSupportedException {
-		try {
-		  boolean changed = false;
-		  if (eaps.getSecurityLevel().equals(APSSecurityLevel.NONE)) {
-			  for (ObjectId target : targets)
-		      if (!eaps.hasKey(target.toString())) {
-		    	  eaps.setKey(target.toString(), null);
-		    	  changed = true;
-		      }
-		  } else {
-			  for (ObjectId target : targets)
-			  if (eaps.getKey(target.toString()) == null) {			 
-				 eaps.setKey(target.toString(), KeyManager.instance.encryptKey(target, eaps.getAPSKey().getEncoded()));
-				 changed = true;
-			  }
-		  }
-		  if (changed) eaps.updateKeys();
-		} catch (LostUpdateException e) {
-			try {
-				  Thread.sleep(rand.nextInt(1000));
-			} catch (InterruptedException e2) {}
-			eaps.reload();
-			addAccess(targets);
-		}
-	}
+	public abstract void provideRecordKey(Record record) throws AppException;
 	
-	public void addAccess(ObjectId target, byte[] publickey) throws AppException,EncryptionNotSupportedException {
-		try {
-		  boolean changed = false;
-		  if (eaps.getSecurityLevel().equals(APSSecurityLevel.NONE)) {		
-		      if (!eaps.hasKey(target.toString())) {
-		    	  eaps.setKey(target.toString(), null);
-		    	  changed = true;
-		      }
-		  } else {			  
-			  if (eaps.getKey(target.toString()) == null) {			 
-				 eaps.setKey(target.toString(), KeyManager.instance.encryptKey(publickey, eaps.getAPSKey().getEncoded()));
-				 changed = true;
-			  }
-		  }
-		  if (changed) eaps.updateKeys();
-		} catch (LostUpdateException e) {
-			try {
-				  Thread.sleep(rand.nextInt(1000));
-			} catch (InterruptedException e2) {}
-			eaps.reload();
-			addAccess(target, publickey);
-		}
-	}
-	
-	public void removeAccess(Set<ObjectId> targets) throws InternalServerException {
-		try {
-			  boolean changed = false;
-			  for (ObjectId target : targets)
-			  if (eaps.hasKey(target.toString())) {
-				 eaps.removeKey(target.toString());
-				 changed = true;
-			  }
-			  if (changed) eaps.updateKeys();
-			} catch (LostUpdateException e) {
-				try {
-					  Thread.sleep(rand.nextInt(1000));
-				} catch (InterruptedException e2) {}
-				eaps.reload();
-				removeAccess(targets);
-			}
-	}
-	
-	public void setMeta(String key, Map<String, Object> data) throws AppException {
-		try {			
-			eaps.getPermissions().put(key, new BasicDBObject(data));
-			eaps.savePermissions();
-		} catch (LostUpdateException e) {
-			eaps.reload();
-			setMeta(key, data);
-		}
-	} 
-	
-	public void removeMeta(String key) throws AppException {
-		try {			
-			if (eaps.getPermissions().containsKey(key)) {
-				eaps.getPermissions().remove(key);
-				eaps.savePermissions();
-			}
-		} catch (LostUpdateException e) {
-			eaps.reload();
-			removeMeta(key);
-		}
-	}
-	
-	
+	public abstract void addAccess(Set<ObjectId> targets) throws AppException,EncryptionNotSupportedException;
 
-	public BasicBSONObject getMeta(String key) throws AppException {
-		return (BasicBSONObject) eaps.getPermissions().get(key);
-	}
+	public abstract void addAccess(ObjectId target, byte[] publickey) throws AppException,EncryptionNotSupportedException;
 	
-	public List<Record> query(Query q) throws AppException {		
-		//AccessLog.logLocalQuery(eaps.getId(), q.getProperties(), q.getFields() );
-		List<Record> result = new ArrayList<Record>();
-		boolean withOwner = q.returns("owner");	
+	public abstract void removeAccess(Set<ObjectId> targets) throws InternalServerException;
+	
+	public abstract void setMeta(String key, Map<String, Object> data) throws AppException;
+	
+	public abstract void removeMeta(String key) throws AppException;
 		
-		if (eaps.isDirect()) {
-			if (q.isStreamOnlyQuery()) return result;
+	public abstract BasicBSONObject getMeta(String key) throws AppException;
 			
-			AccessLog.debug("direct query stream="+eaps.getId());
-			Map<String, Object> query = new HashMap<String, Object>();
-			query.put("stream", eaps.getId());
-			query.put("direct", Boolean.TRUE);
-			q.addMongoTimeRestriction(query);
-			List<Record> directResult = new ArrayList<Record>(Record.getAll(query, q.getFieldsFromDB()));
-			for (Record record : directResult) {
-				record.key = eaps.getAPSKey() != null ? eaps.getAPSKey().getEncoded() : null;
-				if (withOwner) record.owner = eaps.getOwner();					
-			}
-			result.addAll(directResult);
-			return result;
-		}
-								
-		// 4 restricted by time? has APS time restriction? load other APS -> APS (4,5,6) APS LIST -> Records			
+	protected abstract boolean lookupSingle(Record input, Query q) throws AppException;
+							
+	public abstract void addPermission(Record record, boolean withOwner) throws AppException;
 		
-		// 5 Create list format -> Permission List (maybe load other APS)
-		Map<String, Object> permissions = eaps.getPermissions();
-		List<BasicBSONObject> rows = APSEntry.findMatchingRowsForQuery(permissions, q);
-		        			
-		// 6 Each permission list : apply filters -> Records
-		boolean restrictedById = q.restrictedBy("_id");			
-		if (restrictedById) {
-			for (ObjectId id : q.getObjectIdRestriction("_id")) {
-				for (BasicBSONObject row : rows) {
-					   BasicBSONObject map = APSEntry.getEntries(row);					   
-					   BasicBSONObject target = (BasicBSONObject) map.get(id.toString());
-					   if (target!=null && satisfies(target, q)) {
-						  result.add(createRecordFromAPSEntry(id.toString(), row, target, withOwner));
-					   }					   
-				}
-			}			
-		}  else {
-			for (BasicBSONObject row : rows) {								
-				BasicBSONObject map =APSEntry.getEntries(row);
-				//AccessLog.debug("format:" + format+" map="+map.toString());			    
-				for (String id : map.keySet()) {
-				    	BasicBSONObject target = (BasicBSONObject) map.get(id);
-				    	if (satisfies(target,q )) {
-				    	  result.add(createRecordFromAPSEntry(id , row, target, withOwner));
-				    	}
-				}			    
-			}
-		}		
-		return result;
-	}
-	
-	protected boolean satisfies(BasicBSONObject entry, Query q) {
-		if (q.getMinDate() != null) {
-			Date created  = entry.getDate("created");
-			if (created != null && created.before(q.getMinDate())) return false;
-		}
-		if (q.getMaxDate() != null) {
-			Date created  = entry.getDate("created");
-			if (created != null && created.after(q.getMinDate())) return false;
-		}
-		return true;
-	}
-	
-	protected boolean lookupSingle(Record input, Query q) throws AppException {
-		//AccessLog.lookupSingle(eaps.getId(), input._id, q.getProperties());
-		if (eaps.isDirect()) {
-			input.key = eaps.getAPSKey() != null ? eaps.getAPSKey().getEncoded() : null;
-			input.owner = eaps.getOwner();			
-			return true;
-		}
+	public abstract void addPermission(Collection<Record> records, boolean withOwner) throws AppException;
 		
-		Map<String, Object> permissions = eaps.getPermissions();
-		
-		List<BasicBSONObject> rows = APSEntry.findMatchingRowsForQuery(permissions, q);
-		        
-		//AccessLog.logMap(formats);
-		
-		for (BasicBSONObject row : rows) {
-			   BasicBSONObject map = APSEntry.getEntries(row);			   
-			   BasicBSONObject target = (BasicBSONObject) map.get(input._id.toString());
-			   if (target==null && input.document!=null) target = (BasicBSONObject) map.get(input.document.toString());
-			   if (target!=null) {
-				   Object k = target.get("key");
-				   input.key = (k instanceof String) ? null : (byte[]) k; // Old version support
-				   APSEntry.populateRecord(row, input);
-				   input.isStream = target.getBoolean("s");
-				   if (input.owner == null) {
-					   String owner = target.getString("owner");
-					   if (owner!=null) input.owner = new ObjectId(owner); else input.owner = eaps.getOwner();
-				   }	
-				   //AccessLog.identified(eaps.getId(), input._id);
-				   return true;
-			   }
-		}
-		
-		return false;
-	}
-	
-	private Record createRecordFromAPSEntry(String id, BasicBSONObject row, BasicBSONObject entry, boolean withOwner) throws AppException {
-		Record record = new Record();
-		record._id = new ObjectId(id);
-		APSEntry.populateRecord(row, record);		
-		record.isStream = entry.getBoolean("s");
-		
-		if (entry.get("key") instanceof String) record.key = null; // For old version support
-		else record.key = (byte[]) entry.get("key");			
-				
-		if (withOwner || record.isStream) {
-			String owner = entry.getString("owner");
-		    if (owner!=null) record.owner = new ObjectId(owner); else record.owner = eaps.getOwner();
-		}
-		
-		record.created = entry.getDate("created");
-						
-		return record;
-	}
-		
-		
-	private void addPermissionInternal(Record record, boolean withOwner) throws AppException {
-						
-			if (record.key == null) throw new InternalServerException("error.internal", "Record with NULL key: Record:"+record.name+"/"+record.content+"/"+record.isStream);
-			// resolve Format
-			BasicBSONObject obj = APSEntry.findMatchingRowForRecord(eaps.getPermissions(), record, true);
-			obj = APSEntry.getEntries(obj);	
-			// add entry
-			BasicBSONObject entry = new BasicDBObject();
-			entry.put("key", record.key);
-			if (record.isStream) entry.put("s", true);
-			if (record.owner!=null && withOwner) entry.put("owner", record.owner);
-			if (record.created != null && !record.isStream) entry.put("created",record.created);
-			//if (record.format.equals(Query.STREAM_TYPE)) entry.put("name", record.name);
-			obj.put(record._id.toString(), entry);
-						
-		}
-						
-		public void addPermission(Record record, boolean withOwner) throws AppException {
-			try {
-				addPermissionInternal(record, withOwner);								
-				eaps.savePermissions();
-			} catch (LostUpdateException e) {
-				recoverFromLostUpdate();
-				addPermission(record,  withOwner);
-			}
-		}
-		
-		public void addPermission(Collection<Record> records, boolean withOwner) throws AppException {
-			try {
-			   for (Record record : records) addPermissionInternal(record, withOwner);					
-			   eaps.savePermissions();
-			} catch (LostUpdateException e) {
-				recoverFromLostUpdate();
-				addPermission(records,  withOwner);
-			}
-		}
-		
-		private void recoverFromLostUpdate() throws InternalServerException {
-			try {
-			   Thread.sleep(rand.nextInt(1000));
-			} catch (InterruptedException e) {};
 			
-			eaps.reload();			
-		}
+	public abstract boolean removePermission(Record record) throws AppException;
 		
-		private boolean removePermissionInternal(Record record) throws AppException {
-						
-			// resolve Format
-			BasicBSONObject obj = APSEntry.findMatchingRowForRecord(eaps.getPermissions(), record, false);
-			if (obj == null) return false;
-			obj = APSEntry.getEntries(obj);	
-			// remove entry			
-			boolean result = obj.containsField(record._id.toString());
-			obj.remove(record._id.toString());
+	public abstract void removePermission(Collection<Record> records) throws AppException;
 
-			return result;
-		}
-		
-		public boolean removePermission(Record record) throws AppException {
-			try {
-			  boolean success = removePermissionInternal(record);
-			
-			  // Store
-			  if (success) eaps.savePermissions();
-			  return success;
-			} catch (LostUpdateException e) {
-				recoverFromLostUpdate();
-				return removePermission(record);
-			}
-		}
-		
-		public void removePermission(Collection<Record> records) throws AppException {
-			try {
-			  for (Record record : records) removePermissionInternal(record);
-			
-			  // Store
-			  eaps.savePermissions();
-			} catch (LostUpdateException e) {
-				recoverFromLostUpdate();
-				removePermission(records);
-			}
-		}
+	@Override
+	protected List<Record> postProcess(List<Record> records, Query q)
+			throws InternalServerException {			
+		return records;
+	}
 
-		@Override
-		protected List<Record> postProcess(List<Record> records, Query q)
-				throws InternalServerException {			
-			return records;
+	@Override
+	protected List<Record> lookup(List<Record> input, Query q)
+			throws AppException {
+		List<Record> filtered = new ArrayList<Record>(input.size());
+		for (Record record : input) { 
+			if (lookupSingle(record, q)) { filtered.add(record); }			
 		}
-
-		@Override
-		protected List<Record> lookup(List<Record> input, Query q)
-				throws AppException {
-			List<Record> filtered = new ArrayList<Record>(input.size());
-			for (Record record : input) { 
-				if (lookupSingle(record, q)) { filtered.add(record); }			
-			}
-			return filtered;
-		}
+		return filtered;
+	}
 		
-		
-		
+			
 }

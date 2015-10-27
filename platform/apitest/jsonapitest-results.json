@@ -1,0 +1,243 @@
+[
+  {
+    "suite": "Member browse pages",
+    "test": "login",
+    "api_call": {
+      "request": {
+        "headers": {
+          "Accept": "application/json, text/plain, */*",
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "params": {
+          "email": "test1@example.com",
+          "password": "secret"
+        },
+        "url": "https://demo.midata.coop:9000/members/api/login"
+      },
+      "status": 200,
+      "save": {
+        "session": "headers.set-cookie"
+      }
+    },
+    "errors": [],
+    "response": {
+      "status": 200,
+      "headers": {
+        "server": "nginx/1.4.6 (Ubuntu)",
+        "date": "Tue, 27 Oct 2015 15:51:48 GMT",
+        "content-length": "0",
+        "connection": "keep-alive",
+        "access-control-allow-credentials": "true",
+        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie",
+        "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
+        "allow": "*",
+        "set-cookie": [
+          "PLAY_SESSION=\"462ea774cf14434fbee9d3e95e9421724eb26064-id=55eff6fce4b0b767e88f92ba&role=MEMBER\"; Path=/; HTTPOnly"
+        ]
+      },
+      "body": "",
+      "response_time": 251
+    },
+    "test_description": "login user"
+  },
+  {
+    "suite": "Member browse pages",
+    "test": "get user id",
+    "api_call": {
+      "request": {
+        "headers": {
+          "Accept": "application/json, text/plain, */*",
+          "Cookie": [
+            "PLAY_SESSION=\"462ea774cf14434fbee9d3e95e9421724eb26064-id=55eff6fce4b0b767e88f92ba&role=MEMBER\"; Path=/; HTTPOnly"
+          ]
+        },
+        "method": "GET",
+        "url": "https://demo.midata.coop:9000/shared/api/users/current"
+      },
+      "status": 200,
+      "save": {
+        "member.id": "body.$oid"
+      }
+    },
+    "errors": [],
+    "response": {
+      "status": 200,
+      "headers": {
+        "server": "nginx/1.4.6 (Ubuntu)",
+        "date": "Tue, 27 Oct 2015 15:51:49 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "35",
+        "connection": "keep-alive",
+        "access-control-allow-credentials": "true",
+        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie",
+        "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
+        "allow": "*"
+      },
+      "body": {
+        "$oid": "55eff6fce4b0b767e88f92ba"
+      },
+      "response_time": 219
+    },
+    "test_description": "try to get current user id"
+  },
+  {
+    "suite": "Member browse pages",
+    "test": "get config",
+    "api_call": {
+      "request": {
+        "headers": {
+          "Accept": "application/json, text/plain, */*",
+          "Cookie": [
+            "PLAY_SESSION=\"462ea774cf14434fbee9d3e95e9421724eb26064-id=55eff6fce4b0b767e88f92ba&role=MEMBER\"; Path=/; HTTPOnly"
+          ]
+        },
+        "method": "GET",
+        "url": "https://demo.midata.coop:9000/portal/config"
+      },
+      "status": 200
+    },
+    "errors": [],
+    "response": {
+      "status": 200,
+      "headers": {
+        "server": "nginx/1.4.6 (Ubuntu)",
+        "date": "Tue, 27 Oct 2015 15:51:49 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "316",
+        "connection": "keep-alive",
+        "access-control-allow-credentials": "true",
+        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie",
+        "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
+        "allow": "*"
+      },
+      "body": {
+        "questions": {
+          "qself": {
+            "weight": true,
+            "steps": true
+          },
+          "share": {
+            "family": true,
+            "doctor": true
+          },
+          "devices": {
+            "fitbit": true
+          },
+          "general": {
+            "protocol": true,
+            "compare": true,
+            "manage": true
+          }
+        },
+        "dashboards": {
+          "me": {
+            "remove": [
+              "help_welcome"
+            ],
+            "add": [
+              "charts",
+              "weight-watcher",
+              "entry"
+            ]
+          },
+          "mydata": {
+            "remove": [],
+            "add": [
+              "fitbit",
+              "fileupload"
+            ]
+          }
+        }
+      },
+      "response_time": 221
+    },
+    "test_description": "try to get config"
+  },
+  {
+    "suite": "Member browse pages",
+    "test": "list tasks",
+    "api_call": {
+      "request": {
+        "headers": {
+          "Accept": "application/json, text/plain, */*",
+          "Cookie": [
+            "PLAY_SESSION=\"462ea774cf14434fbee9d3e95e9421724eb26064-id=55eff6fce4b0b767e88f92ba&role=MEMBER\"; Path=/; HTTPOnly"
+          ]
+        },
+        "method": "POST",
+        "url": "https://demo.midata.coop:9000/shared/api/tasks/list"
+      },
+      "status": 200
+    },
+    "errors": [],
+    "response": {
+      "status": 200,
+      "headers": {
+        "server": "nginx/1.4.6 (Ubuntu)",
+        "date": "Tue, 27 Oct 2015 15:51:49 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "2",
+        "connection": "keep-alive",
+        "access-control-allow-credentials": "true",
+        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie",
+        "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
+        "allow": "*"
+      },
+      "body": [],
+      "response_time": 219
+    },
+    "test_description": "list tasks of user"
+  },
+  {
+    "suite": "Member browse pages",
+    "test": "list spaces",
+    "api_call": {
+      "request": {
+        "headers": {
+          "Accept": "application/json, text/plain, */*",
+          "Cookie": [
+            "PLAY_SESSION=\"462ea774cf14434fbee9d3e95e9421724eb26064-id=55eff6fce4b0b767e88f92ba&role=MEMBER\"; Path=/; HTTPOnly"
+          ],
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "params": {
+          "properties": {
+            "owner": {
+              "$oid": "55eff6fce4b0b767e88f92ba"
+            },
+            "context": "me"
+          },
+          "fields": [
+            "name",
+            "records",
+            "visualization",
+            "app",
+            "order"
+          ]
+        },
+        "url": "https://demo.midata.coop:9000/members/api/spaces/get"
+      },
+      "status": 200
+    },
+    "errors": [],
+    "response": {
+      "status": 200,
+      "headers": {
+        "server": "nginx/1.4.6 (Ubuntu)",
+        "date": "Tue, 27 Oct 2015 15:51:49 GMT",
+        "content-type": "text/plain; charset=utf-8",
+        "content-length": "123",
+        "connection": "keep-alive",
+        "access-control-allow-credentials": "true",
+        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie",
+        "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
+        "allow": "*"
+      },
+      "body": "[{\"_id\":{\"$oid\":\"55ffb38ce4b0eab7a7529d4c\"},\"name\":\"Charts\",\"visualization\":{\"$oid\":\"5571700fe4b0c309cbc949ce\"},\"order\":2}]",
+      "response_time": 224
+    },
+    "test_description": "list spaces of user"
+  }
+]

@@ -52,6 +52,10 @@ public class Study extends Model {
 	   return Model.exists(Study.class, collection, CMaps.map("name", name));
     }
     
+    public static boolean existsByCode(String code) throws InternalServerException {
+ 	   return Model.exists(Study.class, collection, CMaps.map("code", code));
+     }
+    
     public static Set<Study> getByOwner(ObjectId research, Set<String> fields) throws InternalServerException {
 		return Model.getAll(Study.class, collection, CMaps.map("owner", research), fields);
 	}
