@@ -161,6 +161,11 @@ public class Query {
 		return minDate;
 	}
 	
+	public long getMinTimestamp() {
+		if (minDate != null) return minDate.getTime();
+		return 0;
+	}
+	
 	public Date getMaxDate() {
 		return maxDate;
 	}

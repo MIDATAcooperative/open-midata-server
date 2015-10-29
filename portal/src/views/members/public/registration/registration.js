@@ -3,7 +3,7 @@ angular.module('portal')
 	
 	$scope.registration = {};
 	$scope.error = null;
-	$scope.status = new status(false);
+	$scope.status = new status(false, $scope);
 	
 	// register new user
 	$scope.register = function() {		
@@ -27,11 +27,7 @@ angular.module('portal')
 		// send the request
 		var data = $scope.registration;		
 		$scope.status.doAction("register", server.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
-		then(function() { $state.go("member.overview"); },
-			 function(err) { 
-				$scope.error = err;
-				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);				
-			});
+		then(function() { $state.go("member.overview"); });
 	};
 	
 	$scope.days = [];

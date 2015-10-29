@@ -149,7 +149,7 @@ public class GenomeDataConverter extends Controller {
 		if (owner == null) return badRequest("Invalid authToken.");
 
 		// parse the file
-		FileData fileData = FileStorage.retrieve(new ObjectId(json.get("id").asText()));
+		FileData fileData = FileStorage.retrieve(JsonValidation.getObjectId(json, "id"));
 		TreeMap<String, Object> map = new TreeMap<String, Object>();
 		errorMessage = parseInput(fileData.inputStream, map);
 		if (errorMessage != null) {
@@ -163,8 +163,8 @@ public class GenomeDataConverter extends Controller {
 		record.created = DateTimeUtils.now();
 		record.creator = appToken.userId;
 		record.owner = appToken.userId;
-		record.name = json.get("name").asText();
-		record.description = json.get("description").asText();
+		record.name = JsonValidation.getString(json, "name");
+		record.description = JsonValidation.getString(json, "description");
 		record.format = "Genome"; //json.get("format").asText();
 		record.data = null;
 		

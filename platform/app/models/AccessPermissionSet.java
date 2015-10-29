@@ -69,6 +69,14 @@ public class AccessPermissionSet extends Model {
 		}		
 	}
 	
+	public void updateVersionOnly() throws LostUpdateException, InternalServerException {
+		try {
+		   DBLayer.secureUpdate(this, collection, "version");
+		} catch (DatabaseException e) {
+				throw new InternalServerException("error.internal.db", e);
+		}		
+	}
+	
 	public static void delete(ObjectId appsId) throws InternalServerException {	
 		Model.delete(AccessPermissionSet.class, collection, new ChainedMap<String, ObjectId>().put("_id", appsId).get());
 	}

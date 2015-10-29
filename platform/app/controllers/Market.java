@@ -124,8 +124,8 @@ public class Market extends Controller {
 
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
-		String filename = json.get("filename").asText();
-		String name = json.get("name").asText();
+		String filename = JsonValidation.getString(json ,"filename");
+		String name = JsonValidation.getString(json, "name");
 		try {
 			if (Plugin.exists(new ChainedMap<String, String>().put("filename", filename).get())) {
 				return badRequest("A visualization with the same filename already exists.");

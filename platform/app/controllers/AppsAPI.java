@@ -175,15 +175,10 @@ public class AppsAPI extends Controller {
 
 	@BodyParser.Of(BodyParser.Json.class)
 	@AppsCall
-	public static Result createRecord() throws AppException, JsonValidationException {
-		// allow cross origin request from app server
-		//String appServer = Play.application().configuration().getString("apps.server");
-		//response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
-		response().setHeader("Access-Control-Allow-Origin", "*");
+	public static Result createRecord() throws AppException, JsonValidationException {		
 		
 		// check whether the request is complete
-		JsonNode json = request().body().asJson();
-		
+		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken", "data", "name", "description", "format", "content");
 		
 
@@ -223,9 +218,9 @@ public class AppsAPI extends Controller {
 		
 		Map<String,String> tokens = targetUser.tokens.get(appToken.appId.toString());		
 		
-		String data = json.get("data").asText();
-		String name = json.get("name").asText();
-		String description = json.get("description").asText();
+		String data = JsonValidation.getString(json, "data");
+		String name = JsonValidation.getString(json, "name");
+		String description = JsonValidation.getString(json, "description");
 		String format = JsonValidation.getString(json, "format");
 		String content = JsonValidation.getString(json, "content");
 		ObjectId document = JsonValidation.getObjectId(json, "document");

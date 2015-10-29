@@ -21,6 +21,8 @@
 							  <formrow myid="password" label="Password"> 
 							    <input type="password" class="form-control" id="password" name="password" placeholder="Password" ng-model="registration.password" required>
 							    <formerror myid="password" type="compare" message="Password and password repetition do not match!"></formerror>  
+							    <formerror myid="password" type="tooshort" message="Passwords must be at least 8 characters long."></formerror>
+							    <formerror myid="password" type="tooweak" message="Passwords should contain of a mix of upper/lower case letters, numbers and special characters."></formerror>
 							  </formrow>
 							  <formrow myid="password2" label="Repeat Password"><input type="password" class="form-control" id="password2" name="password2" placeholder="Password" ng-model="registration.password2" required></formrow>
 							  <formrow myid="firstname" label="First Name"><input type="text" class="form-control" id="firstname" name="firstname" placeholder="First Name" ng-model="registration.firstname" required></formrow>

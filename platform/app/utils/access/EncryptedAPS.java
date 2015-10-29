@@ -259,6 +259,11 @@ public class EncryptedAPS {
 		}
 	}
 	
+	public void touch() throws InternalServerException, LostUpdateException {
+		if (!isLoaded()) load();
+		aps.updateVersionOnly();
+	}
+	
 	public void reload() throws InternalServerException {
 		load();
 	}

@@ -10,6 +10,7 @@ public class RecordsInfo {
 	public int count;
 	public Date oldest;
 	public Date newest;
+	public Date calculated;
 	public Set<String> formats;
 	public Set<String> contents;
 	public ObjectId newestRecord;

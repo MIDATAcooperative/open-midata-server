@@ -56,11 +56,14 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 			var familyName = patientDOM.querySelector("name family");
 			var givenName = patientDOM.querySelector("name given");
 			//var birthtime = patientDOM.querySelector("birthTime");
-						
+			
+			var title = $scope.doc.querySelector("title");
 						
 			$scope.patient = { 
 					name: txt(givenName)+" "+txt(familyName)
 			}
+			
+			$scope.record.name = $scope.title = txt(title);
 			
 			//$scope.convert(null, $scope.doc);
 			

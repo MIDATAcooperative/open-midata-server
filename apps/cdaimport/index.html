@@ -31,6 +31,10 @@
 		    <div class="form-group" ng-show="patient">
 		      <label for="patient">Patient:</label>
 		      <span>{{ patient.name }}</span>
+		    </div>	
+		    <div class="form-group" ng-show="title">
+		      <label for="title">Document Title:</label>
+		      <span>{{ title }}</span>
 		    </div>		    		   
 		    <input type="hidden" name="authToken" ng-value="authToken" />
 		    <input type="hidden" name="name" ng-value="record.name" />

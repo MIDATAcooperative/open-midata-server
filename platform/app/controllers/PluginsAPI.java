@@ -282,9 +282,9 @@ public class PluginsAPI extends Controller {
 		
 		Map<String,String> tokens = targetUser.tokens.get(appId.toString());		
 		
-		String data = json.get("data").asText();
-		String name = json.get("name").asText();
-		String description = json.get("description").asText();
+		String data = JsonValidation.getString(json, "data");
+		String name = JsonValidation.getString(json, "name");
+		String description = JsonValidation.getString(json, "description");
 		String format = JsonValidation.getString(json, "format");
 		if (format==null) format = "application/json";
 		String content = JsonValidation.getString(json, "content");

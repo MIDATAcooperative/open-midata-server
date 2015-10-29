@@ -186,16 +186,40 @@ public class RecordManager {
 		getCache(ownerId).getAPS(apsId).addAccess(targetUsers);		
 	}
 	
+	/**
+	 * share access permission set content with another entity that has a public key
+	 * @param apsId ID of APS
+	 * @param ownerId ID of owner of APS
+	 * @param targetId ID of target entity
+	 * @param publickey public key of target entity
+	 * @throws AppException
+	 */
 	public void shareAPS(ObjectId apsId, ObjectId ownerId,
 			ObjectId targetId, byte[] publickey) throws AppException {
 		getCache(ownerId).getAPS(apsId).addAccess(targetId, publickey);		
 	}
 
+	/**
+	 * remove access permissions of given users from an APS
+	 * @param apsId ID of APS
+	 * @param ownerId ID of APS owner
+	 * @param targetUsers set of IDs of target users
+	 * @throws InternalServerException
+	 */
 	public void unshareAPS(ObjectId apsId, ObjectId ownerId,
 			Set<ObjectId> targetUsers) throws InternalServerException {
 		getCache(ownerId).getAPS(apsId).removeAccess(targetUsers);
 	}
 
+	/**
+	 * share records contained in an APS to another APS
+	 * @param who ID of executing person
+	 * @param fromAPS ID of source APS
+	 * @param toAPS ID of target APS
+	 * @param records set of record IDs or null for complete APS
+	 * @param withOwnerInformation 
+	 * @throws AppException
+	 */
 	public void share(ObjectId who, ObjectId fromAPS, ObjectId toAPS,
 			Set<ObjectId> records, boolean withOwnerInformation)
 			throws AppException {
@@ -420,7 +444,9 @@ public class RecordManager {
 			throw new InternalServerException("error.internal", e);
 		}
 		
+		
 		if (!record.direct && !documentPart) apswrapper.addPermission(record, alternateAps != null && !alternateAps.equals(record.owner) && record.stream == null);
+		else apswrapper.touch();
 		
 		Record unecrypted = record.clone();
 				
@@ -560,6 +586,19 @@ public class RecordManager {
 		for (Record record : result)
 			ids.add(record._id.toString());
 		return ids;
+	}
+	
+	/**
+	 * for debugging only: remove all "info" objects from all APSs so that they are recomputed next time.
+	 * @param who
+	 * @throws AppException
+	 */
+	public void resetInfo(ObjectId who) throws AppException {
+		List<Record> result = list(who, who, RecordManager.STREAMS_ONLY_OWNER, Sets.create("_id", "owner"));
+		for (Record stream : result) {
+			AccessLog.debug("reset stream:"+stream._id.toString());
+			getCache(who).getAPS(stream._id, stream.owner).removeMeta("_info");
+		}
 	}
 	
 	/*

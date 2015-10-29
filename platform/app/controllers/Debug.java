@@ -14,6 +14,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.access.EncryptedAPS;
+import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.RecordToken;
 import utils.exceptions.AppException;
@@ -28,6 +29,13 @@ import utils.json.JsonValidation.JsonValidationException;
  */
 public class Debug extends Controller {
 
+	/**
+	 * return APS content for debugging 
+	 * @param id ID of APS
+	 * @return
+	 * @throws JsonValidationException
+	 * @throws AppException
+	 */
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result get(String id) throws JsonValidationException, AppException {
@@ -39,4 +47,18 @@ public class Debug extends Controller {
 								   			
 		return ok(Json.toJson(enc.getPermissions()));
 	}
+	
+	/**
+	 * remove all "info" objects from APS so that they are recomputed next time.
+	 * @return status ok
+	 * @throws AppException
+	 */
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result resetInfo() throws AppException {
+		ObjectId userId = new ObjectId(request().username());
+		RecordManager.instance.resetInfo(userId);
+		return ok();
+	}
+	
 }

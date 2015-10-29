@@ -62,6 +62,23 @@ class APSImplementation extends APS {
 		}
 		
 	}
+	
+	public void touch() throws AppException {
+		try {
+		   eaps.touch();
+		} catch (LostUpdateException e) {
+			try {
+				Thread.sleep(rand.nextInt(1000));
+			} catch (InterruptedException e2) {
+			}
+			eaps.reload();
+			touch();
+		}
+	}
+	
+	public long getLastChanged() throws AppException {
+		return eaps.getVersion();
+	}
 
 	public void addAccess(Set<ObjectId> targets) throws AppException, EncryptionNotSupportedException {
 		try {
@@ -174,7 +191,7 @@ class APSImplementation extends APS {
 			if (q.isStreamOnlyQuery())
 				return result;
 
-			AccessLog.debug("direct query stream=" + eaps.getId());
+			
 			Map<String, Object> query = new HashMap<String, Object>();
 			query.put("stream", eaps.getId());
 			query.put("direct", Boolean.TRUE);
@@ -185,6 +202,7 @@ class APSImplementation extends APS {
 				if (withOwner)
 					record.owner = eaps.getOwner();
 			}
+			AccessLog.debug("direct query stream=" + eaps.getId()+" #size="+directResult.size());
 			result.addAll(directResult);
 			return result;
 		}
@@ -460,5 +478,7 @@ class APSImplementation extends APS {
 			merge();		
 		}
 	}
+
+
 
 }

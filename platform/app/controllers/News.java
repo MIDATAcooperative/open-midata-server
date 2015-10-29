@@ -73,9 +73,9 @@ public class News extends Controller {
 		item._id = new ObjectId();
 		item.creator = new ObjectId(request().username());
 		item.created = DateTimeUtils.now();
-		item.title = json.get("title").asText();
-		item.content = json.get("content").asText();
-		item.broadcast = json.get("broadcast").asBoolean();
+		item.title = JsonValidation.getString(json, "title");
+		item.content = JsonValidation.getString(json, "content");
+		item.broadcast = JsonValidation.getBoolean(json, "broadcast");
 		try {
 			NewsItem.add(item);
 		} catch (InternalServerException e) {

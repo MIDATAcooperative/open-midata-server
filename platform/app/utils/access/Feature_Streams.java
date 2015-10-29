@@ -105,7 +105,10 @@ public class Feature_Streams extends Feature {
 			for (Record r : records) {
 				if (r.isStream) {
 					try {
-					  filtered.addAll(q.getCache().getAPS(r._id, r.key, r.owner).query(q));
+					  APS streamaps = q.getCache().getAPS(r._id, r.key, r.owner);
+					  if (q.getMinTimestamp() <= streamaps.getLastChanged()) {						
+					    filtered.addAll(streamaps.query(q));
+					  }
 					} catch (EncryptionNotSupportedException e) { throw new InternalServerException("error.internal", "Encryption not supported."); }
 				    if (includeStreams) filtered.add(r);	
 				} else filtered.add(r);

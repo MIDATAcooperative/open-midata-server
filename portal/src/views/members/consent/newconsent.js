@@ -15,7 +15,7 @@ angular.module('portal')
 	                 ];
 	
 	
-	$scope.status = new status(true);
+	$scope.status = new status(true, $scope);
 	$scope.authpersons = [];
 	views.reset();
 	
@@ -82,11 +82,7 @@ angular.module('portal')
 				$state.go("^.recordsharing", { selectedType : "circles", selected : data.data._id.$oid });
 			}
 			 
-		 },
-			 function(err) { 
-				$scope.error = err;
-				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);				
-		});
+		 });
 				
 	};
 	

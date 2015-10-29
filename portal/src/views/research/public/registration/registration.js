@@ -1,9 +1,10 @@
 angular.module('portal')
-.controller('ResearchRegistrationCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
+.controller('ResearchRegistrationCtrl', ['$scope', '$state', 'server', 'status', function($scope, $state, server, status) {
 	
 	$scope.registration = {};
 	$scope.error = null;
 	$scope.submitted = false;
+	$scope.status = new status(true, $scope);
 	
 	// register new user
 	$scope.register = function() {
@@ -19,12 +20,8 @@ angular.module('portal')
 		// send the request
 		var data = $scope.registration;		
 		
-		server.post(jsRoutes.controllers.research.Researchers.register().url, JSON.stringify(data)).
-			success(function(url) { $state.go('research.studies'); }).
-			error(function(err) {
-				$scope.error = err;
-				if (err.field && err.type) $scope.myform[err.field].$setValidity(err.type, false);		
-			});
+		$scope.status.doAction("submit", server.post(jsRoutes.controllers.research.Researchers.register().url, JSON.stringify(data)))
+		.then(function() { $state.go('research.studies'); });
 	};
 	
 }]);

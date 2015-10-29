@@ -1,20 +1,21 @@
 angular.module('services')
 .factory('status', ['$q', function($q) {
-	return function(showerrors) {		
+	return function(showerrors, scope) {		
 		this.loading = 0;
 		this.isBusy = true;
 		this.action = null;
 		this.error = null;
+		this.scope = scope;
 		this.showerrors = showerrors;
 		this.start = function() { this.loading++; this.isBusy = true; if (this.loading==1) this.error = null; };
 		this.end = function() { this.loading--; if (this.loading<=0) { this.isBusy = false; this.action=null; } };		
 		this.startAction = function(action) { this.loading++; this.action = action; if (this.loading==1) this.error = null; };		
-		this.fail = function(msg) { 
+		this.fail = function(msg, noerror) { 
 			   console.log(msg);
 			   this.loading--; 
 			   this.error = msg; 
 			   if (this.loading<=0) { this.isBusy = false; }
-			   if (this.showerrors) alert("An error "+msg.status+" occured:"+msg.data);
+			   if (this.showerrors && !noerror) alert("An error "+msg.status+" occured:"+msg.data);
 		};
 		this.doBusy = function(call) {
 			var me = this;
@@ -24,7 +25,15 @@ angular.module('services')
 		this.doAction = function(action, call) {
 			var me = this;
 		   	me.startAction(action);
-		   	return call.then(function(result) { me.end();return result; }, function(err) { me.fail(err);return $q.reject(err); });		     
+		   	return call.then(function(result) { me.end();return result; }, function(err) { 		   		
+		   		if (err.data && err.data.field && err.data.type && me.scope && me.scope.myform) {
+		   			me.scope.myform[err.data.field].$setValidity(err.data.type, false);
+		   			me.fail(err, true);
+		   		} else {
+		   			me.fail(err);
+		   		}
+		   		return $q.reject(err); 
+		    });		     
 		};
 		this.doSilent = function(call) {
 			var me = this;

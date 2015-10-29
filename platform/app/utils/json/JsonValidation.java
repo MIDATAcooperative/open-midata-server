@@ -3,6 +3,7 @@ package utils.json;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import org.bson.types.ObjectId;
 
@@ -41,9 +42,10 @@ public class JsonValidation {
 		return res;
 	}
 	
-	public static ObjectId getObjectId(JsonNode json, String field) {
+	public static ObjectId getObjectId(JsonNode json, String field) throws JsonValidationException {
 		String id = json.path(field).asText();
 		if (id == null || id.trim().equals("") || id.equals("null")) return null;
+		if (!ObjectId.isValid(id)) throw new JsonValidationException("error.validation.objectid", field, "noobjectid", "ObjectID expected.");
 		return new ObjectId(id);
 	}
 	
@@ -54,6 +56,7 @@ public class JsonValidation {
 		if (val > highest) throw new JsonValidationException("error.validation.integer.toohigh", field, "toohigh", "Value may be " + lowest+" at maximum.");
 		return val;
 	}
+	
 	public static long getLong(JsonNode json, String field) throws JsonValidationException {
 		if (! json.path(field).canConvertToLong()) throw new JsonValidationException("error.validation.long", field, "nonumber", "Long value expected.");
 		return json.path(field).longValue();		
@@ -63,16 +66,22 @@ public class JsonValidation {
 		return json.path(field).asBoolean();		
 	}
 	
+	private final static Pattern NUMBER = Pattern.compile("[0-9]");
+	private final static Pattern LC = Pattern.compile("[a-z]");
+	private final static Pattern UC = Pattern.compile("[A-Z]");
+	
 	public static String getPassword(JsonNode json, String field) throws JsonValidationException {
 		String pw = json.path(field).asText();
-		if (pw.length() < 5) throw new JsonValidationException("error.validation.password.weak", "Password is too weak. It must be 5 characters at minimum.");
+		if (pw.length() < 8) throw new JsonValidationException("error.validation.password.tooshort", field, "tooshort", "Password is too weak. It must be 8 characters at minimum.");
+		if (!NUMBER.matcher(pw).find()) throw new JsonValidationException("error.validation.password.weak", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
+		if (!LC.matcher(pw).find()) throw new JsonValidationException("error.validation.password.weak", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
+		if (!UC.matcher(pw).find()) throw new JsonValidationException("error.validation.password.weak", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
 		return pw;
 	}
 	
-	public static String getEMail(JsonNode json, String field) {
+	public static String getEMail(JsonNode json, String field) throws JsonValidationException {
 		String email = json.path(field).asText();
-		//TODO Validation
-		
+		if (!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) throw new JsonValidationException("error.validation.email", field, "noemail", "Please enter a valid email address.");
 		return email;
 	}
 	

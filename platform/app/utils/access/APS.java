@@ -37,6 +37,10 @@ public abstract class APS extends Feature {
 	public abstract ObjectId getId();
 	
 	public abstract boolean isAccessible() throws AppException;
+	
+	public abstract void touch() throws AppException;
+	
+	public abstract long getLastChanged() throws AppException;
 		
 	public abstract APSSecurityLevel getSecurityLevel() throws InternalServerException;
 	

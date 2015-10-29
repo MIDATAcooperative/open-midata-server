@@ -175,8 +175,8 @@ public class Application extends APIController {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "password");	
-		String email = json.get("email").asText();
-		String password = json.get("password").asText();
+		String email = JsonValidation.getEMail(json, "email");
+		String password = JsonValidation.getString(json, "password");
 		
 		// check status
 		Member user = Member.getByEmail(email , Sets.create("password", "status", "accountVersion"));
@@ -210,10 +210,10 @@ public class Application extends APIController {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1");				
-		String email = json.get("email").asText();
-		String firstName = json.get("firstname").asText();
-		String lastName = json.get("lastname").asText();
-		String password = json.get("password").asText();
+		String email = JsonValidation.getEMail(json, "email");
+		String firstName = JsonValidation.getString(json, "firstname");
+		String lastName = JsonValidation.getString(json, "lastname");
+		String password = JsonValidation.getPassword(json, "password");
 
 		// check status
 		if (Member.existsByEMail(email)) {

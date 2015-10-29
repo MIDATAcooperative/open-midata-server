@@ -509,7 +509,7 @@ public class Studies extends APIController {
 	   Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
 	   if (study == null) return badRequest("Study does not belong to organization.");
 	   
-       Set<String> fields = Sets.create("ownerName", "owner", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth"); 
+       Set<String> fields = Sets.create("ownerName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth"); 
 	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, fields);
 	   
 	   
@@ -519,24 +519,24 @@ public class Studies extends APIController {
 	/**
 	 * retrieve information about a participant of a study of the current research organization
 	 * @param studyidstr ID of study
-	 * @param memberidstr
+	 * @param partidstr ID of participation
 	 * @return
 	 * @throws JsonValidationException
 	 * @throws InternalServerException
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result getParticipant(String studyidstr, String memberidstr) throws JsonValidationException, InternalServerException {
+	public static Result getParticipant(String studyidstr, String partidstr) throws JsonValidationException, InternalServerException {
 	   //ObjectId userId = new ObjectId(request().username());	
 	   ObjectId owner = new ObjectId(session().get("org"));
 	   ObjectId studyId = new ObjectId(studyidstr);
-	   ObjectId memberId = new ObjectId(memberidstr);
+	   ObjectId partId = new ObjectId(partidstr);
 	   	   
 	   Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords"));
 	   if (study == null) return badRequest("Study does not belong to organization");
 	   	   
 	   Set<String> participationFields = Sets.create("pstatus", "group", "history","ownerName", "gender", "country", "yearOfBirth", "owner"); 
-	   StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, participationFields);
+	   StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, participationFields);
 	   if (participation == null) return badRequest("Member does not participate in study");
 	   if (participation.pstatus == ParticipationStatus.CODE || 
 		   participation.pstatus == ParticipationStatus.MATCH || 
@@ -549,7 +549,7 @@ public class Studies extends APIController {
 	    
 	   if (study.requiredInformation == InformationType.DEMOGRAPHIC) {
 		 Set<String> memberFields = Sets.create("_id", "firstname","lastname","address1","address2","city","zip","country","email", "phone","mobile"); 
-	     Member member = Member.getById(memberId, memberFields);
+	     Member member = Member.getById(participation.owner, memberFields);
 	     if (member == null) return badRequest("Member does not exist");
 	     obj.put("member", JsonOutput.toJsonNode(member, "User", memberFields));
 	   }
@@ -574,12 +574,12 @@ public class Studies extends APIController {
 		
 		ObjectId userId = new ObjectId(request().username());		
 		ObjectId studyId = new ObjectId(id);
-		ObjectId memberId = new ObjectId(JsonValidation.getString(json, "member"));
+		ObjectId partId = new ObjectId(JsonValidation.getString(json, "member"));
 		ObjectId owner = new ObjectId(session().get("org"));
 		String comment = JsonValidation.getString(json, "comment");
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));				
-		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, Sets.create("pstatus", "history", "memberName"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("pstatus", "history", "memberName"));		
 		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
 		if (study == null) return badRequest("Study does not exist.");		
@@ -610,12 +610,12 @@ public class Studies extends APIController {
 		
 		ObjectId userId = new ObjectId(request().username());		
 		ObjectId studyId = new ObjectId(id);
-		ObjectId memberId = new ObjectId(JsonValidation.getString(json, "member"));
+		ObjectId partId = new ObjectId(JsonValidation.getString(json, "member"));
 		ObjectId owner = new ObjectId(session().get("org"));
 		String comment = JsonValidation.getString(json, "comment");
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));					
-		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, Sets.create("pstatus", "history", "memberName"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("pstatus", "history", "memberName"));		
 		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
 		if (study == null) return badRequest("Study does not exist.");		
@@ -646,12 +646,12 @@ public class Studies extends APIController {
 		
 		ObjectId userId = new ObjectId(request().username());		
 		ObjectId studyId = new ObjectId(id);
-		ObjectId memberId = new ObjectId(JsonValidation.getString(json, "member"));
+		ObjectId partId = new ObjectId(JsonValidation.getString(json, "member"));
 		ObjectId owner = new ObjectId(session().get("org"));
 		String comment = JsonValidation.getString(json, "comment");
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));					
-		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, memberId, Sets.create("pstatus", "history", "memberName"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("pstatus", "history", "memberName"));		
 		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
 		if (study == null) return badRequest("Study does not exist.");		

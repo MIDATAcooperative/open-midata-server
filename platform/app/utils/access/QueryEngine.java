@@ -67,7 +67,8 @@ class QueryEngine {
 		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
 		
 		if (cached) {
-			BasicBSONObject obj = q.getCache().getAPS(aps).getMeta("_info");
+			APS myaps = q.getCache().getAPS(aps);
+			BasicBSONObject obj = myaps.getMeta("_info");
 			if (obj != null) {
 				
 				RecordsInfo inf = new RecordsInfo();
@@ -76,9 +77,15 @@ class QueryEngine {
 				inf.newest = obj.getDate("newest");
 				inf.oldest = obj.getDate("oldest");
 				inf.newestRecord = obj.getObjectId("newestRecord");
+				inf.calculated = obj.getDate("calculated");
 				result.put(inf.group, inf);
-				q = new Query(q, CMaps.map("created-after", new Date(inf.newest.getTime() + 1 /*+ 1000 * 60 * 60* 24*60 */)));
+				Date from = inf.calculated != null ? new Date(inf.calculated.getTime() - 1000) : new Date(inf.newest.getTime() + 1);
+				q = new Query(q, CMaps.map("created-after", from));
 			
+				long diff = myaps.getLastChanged() - from.getTime();
+				AccessLog.debug("DIFF:"+diff);
+				
+				if (diff < 1200) return result.values();
 			}
 		}
 		
@@ -118,6 +125,7 @@ class QueryEngine {
 					ri.newest = record.created;
 					ri.oldest = record.created;
 					ri.newestRecord = record._id;
+					ri.calculated = new Date(System.currentTimeMillis());
 					}
 					result.put(record.group, ri);				
 				}
@@ -142,6 +150,7 @@ class QueryEngine {
 			r.put("newest", inf.newest);
 			r.put("oldest", inf.oldest);
 			r.put("newestRecord", inf.newestRecord);
+			r.put("calculated", inf.calculated);
 			q.getCache().getAPS(aps).setMeta("_info", r);
 		}
 		return result.values();

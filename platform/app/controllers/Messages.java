@@ -85,8 +85,8 @@ public class Messages extends Controller {
 		message.sender = new ObjectId(request().username());
 		message.receivers = receiverIds;
 		message.created = DateTimeUtils.now();
-		message.title = json.get("title").asText();
-		message.content = json.get("content").asText();
+		message.title = JsonValidation.getString(json, "title");
+		message.content = JsonValidation.getString(json, "content");
 		
 		Message.add(message);
 		
