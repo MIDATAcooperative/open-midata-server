@@ -49,7 +49,7 @@ class Lighttpd(Product):
 	def start(self):
 		print 'Skipping Lighttpd for apps and visualizations...'
 
-	def startdevelop(self):
+	def run(self):
 		print 'Starting Lighttpd for apps...'
 		Command.execute('lighttpd -f ' + os.path.join(self.base, 'lighttpd-apps.conf'), self.parent)
 		print 'Starting Lighttpd for visualizations...'

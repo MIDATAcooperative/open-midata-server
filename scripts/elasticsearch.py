@@ -44,6 +44,9 @@ class ElasticSearch(Product):
 		print 'Starting ElasticSearch...'
 		Command.execute('{0} -d; sleep 1; {0} -d'.format(os.path.join(self.bin, 'elasticsearch')), self.parent)
 
+	def run(self):
+		ElasticSearch.start(self)
+
 	def stop(self):
 		print 'Shutting down ElasticSearch...'
 		Command.execute('pkill -f elasticsearch')

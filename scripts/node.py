@@ -47,3 +47,6 @@ class Node(Product):
 
 	def reset(self):
 		pass
+
+	def run(self):
+		Node.start(self)

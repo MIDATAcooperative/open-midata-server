@@ -24,3 +24,7 @@ class Product:
 	@abstractmethod
 	def reset(self):
 		pass
+
+	@abstractmethod
+	def run(self):
+		pass

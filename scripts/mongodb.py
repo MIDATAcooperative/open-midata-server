@@ -42,6 +42,9 @@ class MongoDB(Product):
 		Command.execute('{0} --config {1}'.format(os.path.join(self.bin, 'mongod'), 
 			os.path.join(self.base, 'mongod.conf')), self.parent)
 
+	def run(self):
+		MongoDB.start(self)
+		
 	def stop(self):
 		print 'Shutting down MongoDB...'
 		Command.execute('pkill mongod')

@@ -35,4 +35,7 @@ class SSLCertificate(Product):
 
 	def reset(self):
 		pass
+		
+	def run(self):
+		pass
 	
