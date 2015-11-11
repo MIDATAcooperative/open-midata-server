@@ -44,8 +44,8 @@ angular.module('chartApp')
 				  angular.forEach(lst, function(entry) {
 					  var e = {
 							  value : (Number(entry.value) || Number(entry.amount) || Number(entry[content])),
-							  unit : entry.unit,
-							  content : content,
+							  unit : entry.unit,							  
+							  content : record.content,
 							  context : entry.context,
 							  dateTime : (entry.dateTime || entry.date || record.created),
 							  owner : record.ownerName
@@ -67,31 +67,31 @@ angular.module('chartApp')
 			  aTime[entry.dateTime] = true;
 			  aOwner[entry.owner] = true;
 			  aContext[entry.context] = true;
-			  aFormat[entry.format] = true;
+			  aFormat[entry.content] = true;
 			  aUnit[entry.unit] = true;
 		  });
 		  var result = {
 				  dateTime : [],
 		          owner : [],
 		          context : [],
-		          format : [],
+		          content : [],
 		          units : []
 		  };
 		  angular.forEach(aTime, function(v,k) { result.dateTime.push(k); });
           angular.forEach(aOwner, function(v,k) { result.owner.push(k); });
           angular.forEach(aContext , function(v,k) { result.context.push(k); });
-          angular.forEach(aFormat , function(v,k) { result.format.push(k); });
+          angular.forEach(aFormat , function(v,k) { result.content.push(k); });
           angular.forEach(aUnit , function(v,k) { result.units.push(k); });
           
           result.dateTime.sort();
           result.owner.sort();
           result.context.sort();
-          result.format.sort();
+          result.content.sort();
           
           result.hasMultipleDates = result.dateTime.length > 1;
           result.hasMultipleOwners = result.owner.length > 1;
           result.hasMultipleContexts = result.context.length > 1;
-          result.hasMultipleFormats = result.format.length > 1;
+          result.hasMultipleFormats = result.content.length > 1;
 		  return result;
 	  };
 	  
@@ -106,6 +106,7 @@ angular.module('chartApp')
 	  };
 	  
 	  $scope.build = function(labelAxis, seriesAxis, info, entries, alg) {
+		  console.log("build");
 		  if (info.units.length == 1) { $scope.unit = info.units[0]; } else { $scope.unit = ""; }
 		  
 		  if (alg == "first") {
@@ -197,8 +198,8 @@ angular.module('chartApp')
 	  $scope.update = function() {
 		  console.log("update");
 		  console.log($scope.report);
-		  var filteredEntries = $scope.report.filter2 ? $scope.doFilter($scope.entries1, $scope.report.filter2, $scope.selectedFilter2) : $scope.entries1;
-		  var filteredInfo = $scope.report.filter2 ? $scope.buildAxes(filteredEntries) : $scope.info1;
+		  var filteredEntries = $scope.report.filter2 != null ? $scope.doFilter($scope.entries1, $scope.report.filter2, $scope.selectedFilter2) : $scope.entries1;
+		  var filteredInfo = $scope.report.filter2 != null ? $scope.buildAxes(filteredEntries) : $scope.info1;
 		  $scope.build($scope.report.label, $scope.report.series, filteredInfo, filteredEntries, $scope.report.alg);
 		  console.log(filteredEntries);
 		  console.log(filteredInfo);

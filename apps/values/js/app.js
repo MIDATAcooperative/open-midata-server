@@ -16,7 +16,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 		   {
 			   label : "Height",
 			   unit : "cm",
-			   format : "body/height",
+			   content : "body/height",
 			   objkey : "height"
 		   },
 		   {
