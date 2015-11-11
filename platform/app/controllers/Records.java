@@ -335,6 +335,7 @@ public class Records extends APIController {
 		Set<ObjectId> stopped = ObjectIdConversion.toObjectIds(JsonExtraction.extractStringSet(json.get("stopped")));
 		Set<String> recordIds = JsonExtraction.extractStringSet(json.get("records"));		
 		Map<String, Object> query = json.has("query") ? JsonExtraction.extractMap(json.get("query")) : null;
+		if (query.isEmpty()) query = null;
 		
 		// get owner
 		User owner = User.getById(userId, Sets.create("myaps"));

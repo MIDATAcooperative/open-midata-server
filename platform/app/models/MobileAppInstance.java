@@ -1,21 +1,26 @@
 package models;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
 import utils.exceptions.InternalServerException;
+import models.enums.ConsentStatus;
+import models.enums.ConsentType;
 import models.enums.SpaceType;
 
-public class MobileAppInstance extends Space {
+public class MobileAppInstance extends Consent {
 
 	public byte[] publicKey;
+	public ObjectId applicationId;
 	public ObjectId appInstance;
 	
 	public MobileAppInstance() {
-		this.type = SpaceType.MOBILEAPP;
-		this.context = "mobile";
+		this.type = ConsentType.EXTERNALSERVICE;
+		this.status = ConsentStatus.UNCONFIRMED;
+		this.authorized = new HashSet<ObjectId>();
 	}
 	
 	public static void add(MobileAppInstance space) throws InternalServerException {

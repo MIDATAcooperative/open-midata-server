@@ -13,6 +13,7 @@
       <p class="form-control-static" ng-show="consent.type == 'CIRCLE'">This consent shares data with other MIDATA members.</p>
       <p class="form-control-static" ng-show="consent.type == 'HEALTHCARE'">This consent shares data with healthcare professionals.</p>
       <p class="form-control-static" ng-show="consent.type == 'STUDYPARTICIPATION'">This consent shares data with research for use in a study..</p>    
+      <p class="form-control-static" ng-show="consent.type == 'EXTERNALSERVICE'">This consent shares data with a mobile app or external service.</p>
     </formrow>
     <formrow id="status" label="Status of Consent">
       <p class="form-control-static" ng-show="consent.status == 'ACTIVE'">This consent is active.</p>
@@ -24,7 +25,7 @@
       <p class="form-control-static">{{ consent.passcode }}</p>
     </formrow>    
     
-   <formrow id="share" label="With which persons(s) do you want to share data?">
+   <formrow id="share" label="With which persons(s) do you want to share data?" ng-show="consent.type != 'EXTERNALSERVICE'">
 		<div class="well well-sm" ng-repeat="person in authpersons">
 		  <button type="button" ng-click="deletePerson(person)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>	
 		  <address>
@@ -40,7 +41,7 @@
 		</div>
 		<button type="button" class="btn btn-default" ng-click="addPeople();">Add More People</button>
 	</formrow>
-	<formrow id="reshare" label="3rd party access?">
+	<formrow id="reshare" label="3rd party access?" ng-show="consent.type != 'EXTERNALSERVICE'">
 	  <div class="checkbox">
 	    <label>
 	      <input type="checkbox" ng-model="consent.reshare">The person(s) authorized with this consent may reshare the data I gave them access to.

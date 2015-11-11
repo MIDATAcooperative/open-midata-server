@@ -115,10 +115,15 @@ public class MobileAPI extends Controller {
 		if (!Member.authenticationValid(password, member.password)) return badRequest("Unknown user or bad password");
 						
 		MobileAppInstance appInstance = MobileAppInstance.getByInstanceAndOwner(appToken.instanceId, member._id, Sets.create("owner"));
-		if (appInstance == null) {					
+		if (appInstance == null) {		
+			
+			Plugin app = Plugin.getById(appToken.appId, Sets.create("name"));
+			if (app == null) throw new InternalServerException("error.internal", "Plugin not found.");
+			
 			appInstance = new MobileAppInstance();
 			appInstance._id = new ObjectId();
-			appInstance.visualization = appToken.appId;		
+			appInstance.name = "Mobile: "+ app.name;
+			appInstance.applicationId = appToken.appId;		
             appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, appToken.phrase);
         	appInstance.owner = member._id;
    		    MobileAppInstance.add(appInstance);	
@@ -226,12 +231,12 @@ public class MobileAPI extends Controller {
 			return badRequest("Invalid authToken.");
 		}
 					
-		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "visualization", "autoShare"));
+		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare"));
         if (appInstance == null) return badRequest("Invalid authToken.");
 
         KeyManager.instance.unlock(appInstance._id, authToken.passphrase);
         
-		ObjectId appId = appInstance.visualization;
+		ObjectId appId = appInstance.applicationId;
 				
 		Member targetUser;
 		ObjectId targetAps = appInstance._id;
@@ -285,7 +290,8 @@ public class MobileAPI extends Controller {
 		Set<ObjectId> records = new HashSet<ObjectId>();
 		records.add(record._id);
 		//RecordManager.instance.share(targetUser._id, targetUser._id, targetAps, records, false);
-		
+
+		/*
 		if (appInstance.autoShare != null && !appInstance.autoShare.isEmpty()) {
 			for (ObjectId autoshareAps : appInstance.autoShare) {
 				Consent consent = Consent.getByIdAndOwner(autoshareAps, targetUser._id, Sets.create("type"));
@@ -294,6 +300,7 @@ public class MobileAPI extends Controller {
 				}
 			}
 		}
+		*/
 				
 		return ok();
 	}

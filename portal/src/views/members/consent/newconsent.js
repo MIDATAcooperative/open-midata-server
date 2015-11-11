@@ -4,7 +4,8 @@ angular.module('portal')
 	$scope.types = [
 	                { value : "CIRCLE", label : "Other MIDATA Members"},
 	                { value : "HEALTHCARE", label : "Healthcare Providers" },
-	                { value : "STUDYPARTICIPATION", label : "Research" }
+	                { value : "STUDYPARTICIPATION", label : "Research" },
+	                { value : "EXTERNALSERVICE", label : "Mobile App / External Service" }
 	               ];
 			
 	
