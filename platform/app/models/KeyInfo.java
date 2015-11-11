@@ -6,11 +6,12 @@ import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
 public class KeyInfo extends Model {
 
-	protected static final String collection = "keys";
+	protected @NotMaterialized static final String collection = "keys";
 	
 	public byte[] privateKey;
 	public int type;

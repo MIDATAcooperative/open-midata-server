@@ -20,6 +20,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.ShortBufferException;
 
 import models.KeyInfo;
+import models.MobileAppInstance;
 import models.User;
 
 import org.bson.types.ObjectId;
@@ -37,13 +38,23 @@ public class KeyManager {
 	public final static String KEY_ALGORITHM = "RSA";
 	public final static String CIPHER_ALGORITHM = "RSA/ECB/PKCS1Padding";
 	
-	private Map<String, byte[]> pks = new HashMap<String, byte[]>();
+	private Map<String, byte[]> pks = new HashMap<String, byte[]>();	
 	
-	public byte[] encryptKey(ObjectId target, byte[] keyToEncrypt) throws EncryptionNotSupportedException, InternalServerException {		
+	public byte[] encryptKey(ObjectId target, byte[] keyToEncrypt) throws EncryptionNotSupportedException, InternalServerException {
+				    		
 			User user = User.getById(target, Sets.create("publicKey"));
+			if (user != null) {			
+				if (user.publicKey == null) throw new EncryptionNotSupportedException("User has no public key");			
+				return encryptKey(user.publicKey , keyToEncrypt);
+			}
 			
-			if (user.publicKey == null) throw new EncryptionNotSupportedException("User has no public key");			
-			return encryptKey(user.publicKey , keyToEncrypt);								 
+			MobileAppInstance mai = MobileAppInstance.getById(target, Sets.create("publicKey"));
+			if (mai != null) {
+				if (mai.publicKey == null) throw new EncryptionNotSupportedException("No public key");			
+				return encryptKey(mai.publicKey , keyToEncrypt);
+			}
+			
+			throw new EncryptionNotSupportedException("No public key");	
 	}
 	
 	
@@ -80,11 +91,7 @@ public class KeyManager {
 		try {
 			
 			byte key[] = pks.get(target.toString());
-			
-			/*
-			KeyInfo inf = KeyInfo.getById(target);
-			byte key[] = inf.privateKey;
-			*/
+						
 			if (key == null) throw new AuthException("error.auth.relogin", "Authorization Failure");
 			
 			PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(key);

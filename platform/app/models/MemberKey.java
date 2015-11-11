@@ -17,7 +17,7 @@ import utils.exceptions.InternalServerException;
 public class MemberKey extends Consent {
 		
 
-	public final static Set<String> ALL = Sets.create("_id", "name", "owner", "organization", "authorized", "type", "status", "confirmDate", "comment");
+	public @NotMaterialized final static Set<String> ALL = Sets.create("_id", "name", "owner", "organization", "authorized", "type", "status", "confirmDate", "comment");
 	public ObjectId organization;	
 	//public Map<String,String> key; //key used to identify this member
 	public Date confirmDate;

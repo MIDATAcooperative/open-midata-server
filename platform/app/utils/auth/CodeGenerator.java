@@ -21,4 +21,8 @@ public class CodeGenerator {
 	public static String nextUniqueCode() {
 		return nextCode();
 	}
+	
+	public static String generatePassphrase() {
+		return new BigInteger(130, random).toString(32);
+	}
 }

@@ -18,8 +18,8 @@ import utils.exceptions.InternalServerException;
 @JsonFilter("Consent")
 public class Consent extends Model {
 
-	protected static final String collection = "consents";
-	public final static Set<String> ALL = Sets.create("owner", "name", "authorized", "type", "status");
+	protected @NotMaterialized static final String collection = "consents";
+	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "name", "authorized", "type", "status");
 	
 	public ObjectId owner;	
 	public String name;	

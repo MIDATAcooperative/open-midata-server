@@ -140,6 +140,7 @@ public class Market extends Controller {
 		Plugin plugin = new Plugin();
 		plugin._id = new ObjectId();
 		
+		plugin.creator = userId;
 		plugin.version = JsonValidation.getLong(json, "version");		
 		plugin.filename = JsonValidation.getStringOrNull(json, "filename");
 		plugin.name = JsonValidation.getStringOrNull(json, "name");

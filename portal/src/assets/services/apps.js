@@ -34,7 +34,7 @@ angular.module('services')
     };
     
     service.registerPlugin = function(plugin) {
-    	return server.post(jsRoutes.controllers.Market.registerPlugin(plugin._id.$oid).url, JSON.stringify(plugin));
+    	return server.post(jsRoutes.controllers.Market.registerPlugin().url, JSON.stringify(plugin));
     };
     
     service.installPlugin = function(appId, options) {    	

@@ -3,7 +3,7 @@ angular.module('portal')
 	
 	// init
 	$scope.error = null;
-	$scope.app = {};
+	$scope.app = { version:0, tags:[] };
 	$scope.targetUserRoles = [
         { value : "ANY", label : "Any Role" },
 	    { value : "MEMBER", label : "MIDATA Members" },
@@ -21,8 +21,7 @@ angular.module('portal')
 	$scope.tags = [
 	    "Analysis", "Import", "Planning", "Tools", "Fitbit", "Jawbone"
     ];
-	
-	
+			
 	$scope.loadApp = function(appId) {
 		apps.getApps({ "_id" : { "$oid" :  appId }}, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","url","developmentServer","version"])
 		.then(function(data) { 
@@ -32,7 +31,7 @@ angular.module('portal')
 	};
 	
 	// register app
-	$scope.updateApp = function(type) {
+	$scope.updateApp = function() {
 		if ($scope.app.defaultQueryStr != null && $scope.app.defaultQueryStr !== "") {
 		  $scope.app.defaultQuery = JSON.parse($scope.app.defaultQueryStr);
 		} else {
@@ -40,17 +39,17 @@ angular.module('portal')
 		}
 		
 		// check whether url contains ":authToken"
-		if (type !== "mobile" && $scope.app.url.indexOf(":authToken") < 0) {
+		if ($scope.app.type !== "mobile" && $scope.app.url.indexOf(":authToken") < 0) {
 			$scope.error = "Url must contain ':authToken' to receive the authorization token required to create records.";
 			return;
 		}
 		
-		if (! $scope.app._id) {
+		if ($scope.app._id == null) {
 			apps.registerPlugin($scope.app)
-			.then(function(data) { $scope.loadApp(data.data._id.$oid); });
+			.then(function(data) { $state.go("^.yourapps"); });
 		} else {			
 		    apps.updatePlugin($scope.app)
-		    .then(function() { $scope.loadApp($scope.app._id.$oid); });
+		    .then(function() { $scope.loadApp(data.data._id.$oid); });
 		}
 	};
 	

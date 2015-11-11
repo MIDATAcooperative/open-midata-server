@@ -1,61 +1,17 @@
 package utils.access;
 
 import java.io.FileInputStream;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.ShortBufferException;
 import javax.crypto.spec.SecretKeySpec;
-
-import org.bson.BSON;
-import org.bson.BSONObject;
-import org.bson.BasicBSONObject;
-import org.bson.types.ObjectId;
-
-import play.libs.Json;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-
-
-import utils.DateTimeUtils;
-import utils.auth.EncryptionNotSupportedException;
-import utils.auth.KeyManager;
-import utils.auth.RecordToken;
-import utils.collections.CMaps;
-import utils.collections.Sets;
-import utils.db.DatabaseException;
-import utils.db.FileStorage;
-import utils.db.LostUpdateException;
-import utils.db.NotMaterialized;
-import utils.db.ObjectIdConversion;
-import utils.db.FileStorage.FileData;
-import utils.exceptions.AppException;
-import utils.exceptions.BadRequestException;
-import utils.exceptions.InternalServerException;
-import utils.search.Search;
-import utils.search.SearchException;
 
 import models.APSNotExistingException;
 import models.AccessPermissionSet;
@@ -66,9 +22,27 @@ import models.MemberKey;
 import models.Record;
 import models.RecordsInfo;
 import models.Space;
-import models.Study;
 import models.StudyParticipation;
 import models.enums.APSSecurityLevel;
+
+import org.bson.BSONObject;
+import org.bson.BasicBSONObject;
+import org.bson.types.ObjectId;
+
+import utils.DateTimeUtils;
+import utils.auth.RecordToken;
+import utils.collections.CMaps;
+import utils.collections.Sets;
+import utils.db.DatabaseException;
+import utils.db.FileStorage;
+import utils.db.FileStorage.FileData;
+import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
+import utils.search.Search;
+import utils.search.SearchException;
+
+import com.mongodb.BasicDBObject;
 
 /**
  * Access to records. Manages authorizations using access permission sets.
@@ -168,7 +142,8 @@ public class RecordManager {
 		
 		EncryptedAPS eaps = new EncryptedAPS(recordId, executingPerson, owner,
 				direct ? APSSecurityLevel.MEDIUM : APSSecurityLevel.HIGH, key);
-        EncryptionUtils.addKey(owner, eaps);				
+        EncryptionUtils.addKey(owner, eaps);
+        if (!executingPerson.equals(owner)) EncryptionUtils.addKey(executingPerson, eaps);
 		eaps.create();
 
 		return eaps.getId();
@@ -274,34 +249,7 @@ public class RecordManager {
 			
 	}
 
-	public Record createStream(ObjectId executingPerson, ObjectId owner, ObjectId targetAPS, String content, String format,
-			boolean direct) throws AppException {
-		AccessLog.debug("Create Stream: who="+executingPerson.toString()+" content="+content+" format="+format+" direct="+direct+" into="+targetAPS);
-		Record result = new Record();
-		result._id = new ObjectId();
-		result.name = content;
-		result.owner = owner;
-		result.direct = direct;
-		result.format = format;
-		result.content = content;
-		result.isStream = true;
-		result.created = DateTimeUtils.now();
-		result.data = new BasicDBObject();
-
-		addRecord(executingPerson, result, targetAPS);
-		return result;
-	}
-
-	public ObjectId getStreamByFormatContent(ObjectId who, ObjectId apsId, String format, String content)
-			throws AppException {
-		List<Record> result = list(who, apsId,
-				CMaps.map("format", format)
-				     .map("content", content)
-					 .map("streams", "only"), RecordManager.INTERNALIDONLY);
-		if (result.isEmpty())
-			return null;
-		return result.get(0)._id;
-	}	
+	
 	
 	public BSONObject getMeta(ObjectId who, ObjectId apsId, String key) throws AppException {
 		return getCache(who).getAPS(apsId).getMeta(key);
@@ -381,46 +329,19 @@ public class RecordManager {
 	}
 
 	private byte[] addRecordIntern(ObjectId executingPerson, Record record, boolean documentPart, ObjectId alternateAps, boolean upsert) throws AppException {		
-		if (!record.isStream) {
-		  if (record.stream == null) {
-			  if (getCache(executingPerson).getAPS(record.owner, record.owner).isAccessible()) {		 
-			     record.stream = RecordManager.instance.getStreamByFormatContent(executingPerson, record.owner, record.format, record.content);
-			  } else if (alternateAps != null) {
-				 record.stream = RecordManager.instance.getStreamByFormatContent(executingPerson, alternateAps, record.format, record.content);
-			  }
-		  }
-		  if (record.stream == null && record.format != null) {
-			 ContentInfo content = ContentInfo.getByName(record.content);
-			 if (getCache(executingPerson).getAPS(record.owner, record.owner).isAccessible()) {
-			    Record stream = RecordManager.instance.createStream(executingPerson, record.owner, record.owner, record.content, record.format, content.security.equals(APSSecurityLevel.MEDIUM));			 			
-			    record.stream = stream._id;
-			 } else if (alternateAps != null) {
- 			    Record stream = RecordManager.instance.createStream(executingPerson, record.owner, alternateAps, record.content, record.format, content.security.equals(APSSecurityLevel.MEDIUM));
-				record.stream = stream._id;
-				//getCache(executingPerson).getAPS(record.owner, record.owner).addPermission(stream, true);				
-			 }
-		  }
-		}
+		
+		Feature_Streams.placeNewRecordInStream(executingPerson, record, alternateAps);
+		 		
 		AccessLog.debug("Add Record execPerson="+executingPerson.toString()+" format="+record.format+" stream="+(record.stream != null ? record.stream.toString() : "null"));	
 		byte[] usedKey = null;
-		if (record.created == null) return null;
-		record.time = Query.getTimeFromDate(record.created);
-				
+		if (record.created == null) throw new InternalServerException("error.internal", "Missing creation date");
+		
+		record.time = Query.getTimeFromDate(record.created);				
 		record = record.clone();
-		
-		APS apswrapper = null;
-		
-		boolean apsDirect = false;
-		
 		if (record.owner.equals(record.creator)) record.creator = null;
 		
-		if (record.stream != null) {
-		  apswrapper = getCache(executingPerson).getAPS(record.stream, record.owner);		  		  		  
-		} else {		
-			if (alternateAps != null) apswrapper = getCache(executingPerson).getAPS(alternateAps);
-			else apswrapper = getCache(executingPerson).getAPS(record.owner, record.owner);
-		}
-		
+		APS apswrapper = getCache(executingPerson).getAPS(record.stream, record.owner);				
+												
 		if (!documentPart) {
 			if (record.document != null) {
 				List<Record> doc = QueryEngine.listInternal(getCache(executingPerson), record.owner, CMaps.map("_id", record.document.toString()), Sets.create("key"));
@@ -429,40 +350,17 @@ public class RecordManager {
 				documentPart = true;
 			} else apswrapper.provideRecordKey(record);
 		}
-	
-		if (record.isStream) {
-			apsDirect = record.direct;
-			record.stream = null;			
-			record.direct = false;
-		}
-		
+					
 	    usedKey = record.key;
-	    
-		try {
-		    if (!documentPart) Search.add(record.owner, "record", record._id, record.name, record.description);
-		} catch (SearchException e) {
-			throw new InternalServerException("error.internal", e);
-		}
-		
-		
-		if (!record.direct && !documentPart) apswrapper.addPermission(record, alternateAps != null && !alternateAps.equals(record.owner) && record.stream == null);
+	    	    		
+		if (!record.direct && !documentPart) apswrapper.addPermission(record, false);
 		else apswrapper.touch();
 		
-		Record unecrypted = record.clone();
-				
+		if (apswrapper.getSecurityLevel().equals(APSSecurityLevel.HIGH)) record.time = 0;
+								
 		RecordEncryption.encryptRecord(record, apswrapper.getSecurityLevel());		
 	    if (upsert) { Record.upsert(record); } else { Record.add(record); }	  
-	    		
-		if (unecrypted.isStream) {
-			RecordManager.instance.createAPSForRecord(executingPerson, unecrypted.owner, unecrypted._id, unecrypted.key, apsDirect);
-		}
-		
-		if (alternateAps != null && record.stream == null) {
-			getCache(executingPerson).getAPS(record.owner, record.owner).addPermission(unecrypted, false);
-		}
-		
-		if (unecrypted.stream == null) { applyQueries(executingPerson, unecrypted.owner, unecrypted, alternateAps != null ? alternateAps : unecrypted.owner); }
-		
+	    				
 		return usedKey;	
 	}
 	

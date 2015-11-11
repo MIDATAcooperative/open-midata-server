@@ -24,8 +24,8 @@ import utils.search.SearchException;
 @JsonFilter("Space")
 public class Space extends Model implements Comparable<Space> {
 
-	private static final String collection = "spaces";
-	public static final Set<String> ALL = Sets.create("_id", "name","owner", "visualization", "app", "order", "type", "context", "autoShare");
+	protected @NotMaterialized static final String collection = "spaces";
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name","owner", "visualization", "app", "order", "type", "context", "autoShare");
 
 	public String name;
 	public ObjectId owner;

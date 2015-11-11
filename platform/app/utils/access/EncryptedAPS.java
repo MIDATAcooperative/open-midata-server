@@ -72,7 +72,7 @@ public class EncryptedAPS {
 	
 	public EncryptedAPS(ObjectId apsId, ObjectId who, ObjectId owner, APSSecurityLevel lvl, byte[] encKey) throws InternalServerException {
 		this.apsId = apsId;
-		this.aps = new AccessPermissionSet();
+		this.acc_aps = this.aps = new AccessPermissionSet();
 		this.who = who;
 		this.owner = owner;
 						
@@ -93,7 +93,7 @@ public class EncryptedAPS {
 	}
 	
 	protected EncryptedAPS(AccessPermissionSet subset, ObjectId who) {
-		this.aps = subset;
+		this.acc_aps = this.aps = subset;
 		this.apsId = subset._id;
 		this.who = who;
 	}
@@ -118,6 +118,7 @@ public class EncryptedAPS {
 	
 	public ObjectId getOwner() throws AppException {
 		if (apsId.equals(who)) return who;
+		if (owner != null) return owner;
 		if (!isValidated) validate();
 		return owner;
 	}
@@ -202,10 +203,15 @@ public class EncryptedAPS {
 	}
 	
 	protected boolean findAndselectAccessibleSubset() throws AppException {
-		if (isAccessable()) return true;
+		if (isAccessable()) {
+			AccessLog.debug("isAccessable");
+			return true;
+		}
+		AccessLog.debug("notAccessable");
 		if (aps.unmerged == null) return false;
 		for (AccessPermissionSet a : aps.unmerged) {
 			if (a.keys.get(who.toString()) != null) {
+				AccessLog.debug("using accessible subset for user: "+who.toString()+" aps: "+apsId.toString());
 				EncryptedAPS wrapper = new EncryptedAPS(a, who);
 				wrapper.validate();
 				useAccessibleSubset(wrapper);
@@ -243,10 +249,13 @@ public class EncryptedAPS {
 	public void savePermissions() throws InternalServerException, LostUpdateException {
 		if (!isLoaded()) return;
 		
-		if (sublists != null) {
-			for (EncryptedAPS subeaps : sublists) {
-				subeaps.encodeAPS();
-			}		
+		if (!aps.security.equals(APSSecurityLevel.NONE)) {
+			if (sublists != null) {
+				for (EncryptedAPS subeaps : sublists) {
+					subeaps.encodeAPS();
+					subeaps.aps.permissions = null;
+				}		
+			}
 		}
 		
 		if (notStored) {

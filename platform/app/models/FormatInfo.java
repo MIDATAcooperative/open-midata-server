@@ -8,12 +8,13 @@ import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
 public class FormatInfo extends Model {
 
-	private static final String collection = "formatinfo";
-	private static final Set<String> ALL = Sets.create("format","visualization");
+	private @NotMaterialized static final String collection = "formatinfo";
+	private @NotMaterialized static final Set<String> ALL = Sets.create("format","visualization");
 	
 	public String format;
 	public ObjectId visualization;

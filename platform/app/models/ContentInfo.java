@@ -7,14 +7,15 @@ import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
 import models.enums.APSSecurityLevel;
 
 public class ContentInfo extends Model {
 
-	private static final String collection = "contentinfo";
-	private static final Set<String> ALL = Sets.create("content","security","group");
+	private @NotMaterialized static final String collection = "contentinfo";
+	private @NotMaterialized static final Set<String> ALL = Sets.create("content","security","group");
 	
 	public String content;	
 	public APSSecurityLevel security;

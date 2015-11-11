@@ -301,6 +301,7 @@ class APSImplementation extends APS {
 		record._id = new ObjectId(id);
 		APSEntry.populateRecord(row, record);
 		record.isStream = entry.getBoolean("s");
+		record.isReadOnly = entry.getBoolean("ro");
 
 		if (entry.get("key") instanceof String)
 			record.key = null; // For old version support
@@ -330,10 +331,12 @@ class APSImplementation extends APS {
 		// add entry
 		BasicBSONObject entry = new BasicDBObject();
 		entry.put("key", record.key);
-		if (record.isStream)
+		if (record.isStream) 
 			entry.put("s", true);
+		if (record.isReadOnly) 
+			entry.put("ro", true);
 		if (record.owner != null && withOwner)
-			entry.put("owner", record.owner);
+			entry.put("owner", record.owner.toString());
 		if (record.created != null && !record.isStream)
 			entry.put("created", record.created);
 		// if (record.format.equals(Query.STREAM_TYPE)) entry.put("name",
@@ -437,9 +440,10 @@ class APSImplementation extends APS {
 	
 	protected void forceAccessibleSubset() throws AppException {
 		if (eaps.findAndselectAccessibleSubset()) return; 
-				
-		EncryptedAPS wrapper = eaps.createChild();
 
+		AccessLog.debug("creating accessible subset for user: "+eaps.getAccessor().toString()+" aps: "+eaps.getId().toString());		
+		
+		EncryptedAPS wrapper = eaps.createChild();		
 	   for (String ckey : eaps.keyNames()) {
 		   try {					 
 			 if (eaps.getSecurityLevel().equals(APSSecurityLevel.NONE)) {

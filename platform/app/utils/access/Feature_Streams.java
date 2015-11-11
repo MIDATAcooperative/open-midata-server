@@ -6,6 +6,9 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 
+import com.mongodb.BasicDBObject;
+
+import utils.DateTimeUtils;
 import utils.auth.EncryptionNotSupportedException;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -13,7 +16,9 @@ import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
 import models.APSNotExistingException;
+import models.ContentInfo;
 import models.Record;
+import models.enums.APSSecurityLevel;
 
 /**
  * organizes records into "streams". these are access permission sets that contain only records of one type.
@@ -95,8 +100,14 @@ public class Feature_Streams extends Feature {
 		boolean streamsOnly = q.isStreamOnlyQuery();
 		if (streamsOnly) {
 			List<Record> filtered = new ArrayList<Record>(records.size());
-			for (Record r : records) {
-			  if (r.isStream) filtered.add(r);
+			if (q.restrictedBy("writeable") && q.getProperties().get("writeable").equals("true")) {
+				for (Record r : records) {
+				  if (r.isStream && !r.isReadOnly) filtered.add(r);
+				}
+			} else {
+				for (Record r : records) {
+				  if (r.isStream) filtered.add(r);
+				}
 			}
 			return filtered;
 		} else
@@ -132,7 +143,84 @@ public class Feature_Streams extends Feature {
 		return records;
 	}
 
+	public static void placeNewRecordInStream(ObjectId executingPerson, Record record, ObjectId alternateAps) throws AppException {
+		 if (record.stream == null) {
+			  if (RecordManager.instance.getCache(executingPerson).getAPS(record.owner, record.owner).isAccessible()) {		 
+			     record.stream = getStreamByFormatContent(executingPerson, record.owner, record.format, record.content, true);
+			  } else if (alternateAps != null) {
+				 record.stream = getStreamByFormatContent(executingPerson, alternateAps, record.format, record.content, true);
+			  }
+		  }
+		  if (record.stream == null && record.format != null) {
+			 ContentInfo content = ContentInfo.getByName(record.content);
+			 if (RecordManager.instance.getCache(executingPerson).getAPS(record.owner, record.owner).isAccessible()) {
+			    Record stream = createStream(executingPerson, record.owner, record.owner, record.content, record.format, content.security.equals(APSSecurityLevel.MEDIUM));			 			
+			    record.stream = stream._id;
+			 } else if (alternateAps != null) {
+			    Record stream = createStream(executingPerson, record.owner, alternateAps, record.content, record.format, content.security.equals(APSSecurityLevel.MEDIUM));
+				record.stream = stream._id;				
+			 }
+		  }
+	}
 	
+	private static Record createStream(ObjectId executingPerson, ObjectId owner, ObjectId targetAPS, String content, String format,
+			boolean direct) throws AppException {
+		AccessLog.debug("Create Stream: who="+executingPerson.toString()+" content="+content+" format="+format+" direct="+direct+" into="+targetAPS);
+		Record result = new Record();
+		result._id = new ObjectId();
+		result.name = content;
+		result.owner = owner;
+		result.direct = direct;
+		result.format = format;
+		result.content = content;
+		result.isStream = true;
+		result.created = DateTimeUtils.now();
+		result.data = new BasicDBObject();
+		result.time = 0;
+		result.creator = null;
+		
+		APS apswrapper = null;
+		
+		if (targetAPS != null) apswrapper = RecordManager.instance.getCache(executingPerson).getAPS(targetAPS);
+		else apswrapper = RecordManager.instance.getCache(executingPerson).getAPS(result.owner, result.owner);
 
+		apswrapper.provideRecordKey(result);
+				
+		boolean apsDirect = result.direct;
+		result.stream = null;			
+		result.direct = false;
+		
+		apswrapper.addPermission(result, targetAPS != null && !targetAPS.equals(result.owner));
+								
+		Record unecrypted = result.clone();
+				
+		RecordEncryption.encryptRecord(result, apswrapper.getSecurityLevel());		
+	    Record.add(result);	  
+	    				
+		RecordManager.instance.createAPSForRecord(executingPerson, unecrypted.owner, unecrypted._id, unecrypted.key, apsDirect);
+				
+		if (targetAPS != null) {
+			unecrypted.isReadOnly = true;
+			RecordManager.instance.getCache(executingPerson).getAPS(result.owner, result.owner).addPermission(unecrypted, false);
+		}
+		
+		RecordManager.instance.applyQueries(executingPerson, unecrypted.owner, unecrypted, targetAPS != null ? targetAPS : unecrypted.owner);
+					
+		return result;
+	}
+
+	private static ObjectId getStreamByFormatContent(ObjectId who, ObjectId apsId, String format, String content, boolean writeableOnly)
+			throws AppException {
+		List<Record> result = QueryEngine.listInternal(RecordManager.instance.getCache(who), apsId, 
+				CMaps.map("format", format)
+				     .map("content", content)
+					 .map("streams", "only")
+					 .map("writeable", writeableOnly ? "true" : "false"), RecordManager.INTERNALIDONLY);
+		if (result.isEmpty())
+			return null;
+		Record streamRec = result.get(0);
+		RecordManager.instance.getCache(who).getAPS(streamRec._id, streamRec.key, streamRec.owner);
+		return streamRec._id;
+	}	
     
 }

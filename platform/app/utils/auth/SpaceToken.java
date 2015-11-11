@@ -32,7 +32,7 @@ public class SpaceToken {
 	}
 
 	public String encrypt() {
-		Map<String, String> map = new ChainedMap<String, String>().put("spaceId", spaceId.toString()).put("userId", userId.toString())
+		Map<String, String> map = new ChainedMap<String, String>().put("instanceId", spaceId.toString()).put("userId", userId.toString())
 				.get();
 		if (recordId != null) map.put("recordId", recordId.toString());
 		String json = Json.stringify(Json.toJson(map));
@@ -47,7 +47,7 @@ public class SpaceToken {
 			// decryptAES can throw DecoderException, but there is no way to catch it; catch all exceptions for now...
 			String plaintext = Crypto.decryptAES(unsafeSecret);
 			JsonNode json = Json.parse(plaintext);
-			ObjectId spaceId = new ObjectId(json.get("spaceId").asText());
+			ObjectId spaceId = new ObjectId(json.get("instanceId").asText());
 			ObjectId userId = new ObjectId(json.get("userId").asText());
 			ObjectId recordId = json.has("recordId") ? new ObjectId(json.get("recordId").asText()) : null;
 			return new SpaceToken(spaceId, userId, recordId);

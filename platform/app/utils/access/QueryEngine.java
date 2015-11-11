@@ -322,7 +322,7 @@ class QueryEngine {
 			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "direct");
 			queryFields.addAll(q.getFieldsFromDB());
 			query.put("_id", q.getProperties().get("_id"));
-			q.addMongoTimeRestriction(query);			
+			//q.addMongoTimeRestriction(query);			
 			return new ArrayList<Record>(Record.getAll(query, queryFields));		
     }
     
@@ -331,7 +331,7 @@ class QueryEngine {
 			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "encrypted");
 			queryFields.addAll(q.getFieldsFromDB());
 			query.put("document", q.getProperties().get("document") );
-			q.addMongoTimeRestriction(query);
+			//q.addMongoTimeRestriction(query);
 			if (q.restrictedBy("part"))	query.put("part", q.getProperties().get("part"));		
 			return new ArrayList<Record>(Record.getAll(query, queryFields));						
     }

@@ -14,8 +14,8 @@ import utils.exceptions.InternalServerException;
 
 public class FormatGroup extends Model {
 	
-	private static final String collection = "formatgroups";
-	private static Map<String, FormatGroup> cache;
+	private @NotMaterialized static final String collection = "formatgroups";
+	private @NotMaterialized static Map<String, FormatGroup> cache;
 		
 	public String name;
 	public String label;
