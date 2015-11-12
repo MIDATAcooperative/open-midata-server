@@ -302,10 +302,7 @@ public class PluginsAPI extends Controller {
 		
 		record.format = format;
 		record.content = content;
-		
-		String stream = tokens!=null ? tokens.get("stream") : null;
-		if (stream!=null) { record.stream = new ObjectId(stream); record.direct = true; }
-		
+					
 		try {
 			record.data = (DBObject) JSON.parse(data);
 		} catch (JSONParseException e) {

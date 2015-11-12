@@ -79,7 +79,7 @@
 		  </formrow>
 		  <formrow myid="x" label="">
 		    <button type="submit" class="btn btn-primary">Submit</button>
-		    <button class="btn btn-default" ng-click="doInstall()">Install</button>
+		    <button class="btn btn-default" ng-click="doInstall()" ng-hide="app.type == 'mobile'" ng-disabled="app.id == null">Install</button>
 		  </formrow>
 	     </form>	  
 		  

@@ -24,6 +24,7 @@ import models.RecordsInfo;
 import models.Space;
 import models.StudyParticipation;
 import models.enums.APSSecurityLevel;
+import models.enums.AggregationType;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
@@ -422,14 +423,17 @@ public class RecordManager {
 		return QueryEngine.list(getCache(who), apsId, properties, fields);
 	}
 	
-	public Collection<RecordsInfo> info(ObjectId who, ObjectId aps, Map<String, Object> properties) throws AppException {
+	public Collection<RecordsInfo> info(ObjectId who, ObjectId aps, Map<String, Object> properties, AggregationType aggrType) throws AppException {
 		// Only allow specific properties as results are materialized
 		Map<String, Object> nproperties = new HashMap<String, Object>();
 		nproperties.put("streams", "true");
 		nproperties.put("flat", "true");
 		if (properties.containsKey("owner")) nproperties.put("owner", properties.get("owner"));
 		if (properties.containsKey("study")) nproperties.put("study", properties.get("study"));
-		return QueryEngine.info(getCache(who), aps, nproperties);
+		if (properties.containsKey("format")) nproperties.put("format", properties.get("format"));
+		if (properties.containsKey("content")) nproperties.put("content", properties.get("content"));
+		if (properties.containsKey("group")) nproperties.put("group", properties.get("group"));
+		return QueryEngine.info(getCache(who), aps, nproperties, aggrType);
 	}
 
 	public Record fetch(ObjectId who, RecordToken token) throws AppException {

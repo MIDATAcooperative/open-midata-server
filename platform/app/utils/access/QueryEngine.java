@@ -27,6 +27,7 @@ import models.ContentInfo;
 import models.Record;
 import models.RecordsInfo;
 import models.enums.APSSecurityLevel;
+import models.enums.AggregationType;
 
 /**
  * query engine for records. Is called by RecordManager.
@@ -42,8 +43,8 @@ class QueryEngine {
 		return fullQuery(new Query(properties, fields, cache, aps, true), aps);
 	}
 	
-	public static Collection<RecordsInfo> info(APSCache cache, ObjectId aps, Map<String, Object> properties) throws AppException {
-		return infoQuery(new Query(properties, Sets.create("created", "group"), cache, aps), aps, false);
+	public static Collection<RecordsInfo> info(APSCache cache, ObjectId aps, Map<String, Object> properties, AggregationType aggrType) throws AppException {
+		return infoQuery(new Query(properties, Sets.create("created", "group", "content", "format", "owner"), cache, aps, true), aps, false, aggrType);
 	}
 	
 	public static List<Record> isContainedInAps(APSCache cache, ObjectId aps, List<Record> candidates) throws AppException {
@@ -62,23 +63,37 @@ class QueryEngine {
 		return postProcessRecords(qm, query, qm.query(query));		
 	}
 	
-	public static Collection<RecordsInfo> infoQuery(Query q, ObjectId aps, boolean cached) throws AppException {
+	private static String getInfoKey(AggregationType aggrType, String group, String content, String format) {
+		switch (aggrType) {
+		case ALL: return "";
+		case GROUP: return group;
+		case CONTENT: return content;
+		case FORMAT: return format;
+		default: return content+"/"+format;
+		}
+	}
+	
+	public static Collection<RecordsInfo> infoQuery(Query q, ObjectId aps, boolean cached, AggregationType aggrType) throws AppException {
 		AccessLog.debug("infoQuery aps="+aps+" cached="+cached);
 		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
 		
 		if (cached) {
 			APS myaps = q.getCache().getAPS(aps);
 			BasicBSONObject obj = myaps.getMeta("_info");
-			if (obj != null) {
+			if (obj != null && obj.containsField("formats")) { // check for formats to remove date from older software version
 				
 				RecordsInfo inf = new RecordsInfo();
-				inf.count = obj.getInt("count");
-				inf.group = obj.getString("group");
+				inf.count = obj.getInt("count");				
 				inf.newest = obj.getDate("newest");
 				inf.oldest = obj.getDate("oldest");
-				inf.newestRecord = obj.getObjectId("newestRecord");
+				inf.newestRecord = obj.getObjectId("newestRecord");				
+				inf.groups.add(obj.getString("groups"));
+				inf.formats.add(obj.getString("formats"));
+				inf.contents.add(obj.getString("contents"));
 				inf.calculated = obj.getDate("calculated");
-				result.put(inf.group, inf);
+				String k = getInfoKey(aggrType, obj.getString("groups"), obj.getString("contents"), obj.getString("formats"));
+				
+				result.put(k, inf);
 				Date from = inf.calculated != null ? new Date(inf.calculated.getTime() - 1000) : new Date(inf.newest.getTime() + 1);
 				q = new Query(q, CMaps.map("created-after", from));
 			
@@ -91,65 +106,49 @@ class QueryEngine {
 		
 		
 		Feature qm = new Feature_BlackList(q, new Feature_QueryRedirect(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Streams()))));
-		
-		boolean checkDates = q.uses("created");
+				
 		List<Record> recs = qm.query(q);
 		recs = postProcessRecords(qm, q, recs);
 		
 		for (Record record : recs) {
 			if (record.isStream) {
-				Collection<RecordsInfo> streaminfo = infoQuery(new Query(q, CMaps.map("stream", record._id)), record._id, true);
+				q.getCache().getAPS(record._id, record.key, record.owner); // Called to make sure stream is accessible
+				
+				Collection<RecordsInfo> streaminfo = infoQuery(new Query(q, CMaps.map("stream", record._id)), record._id, true, aggrType);
 				
 				for (RecordsInfo inf : streaminfo) {
-					RecordsInfo here = result.get(inf.group);
+					String k = getInfoKey(aggrType, inf.groups.iterator().next(), inf.contents.iterator().next(), inf.formats.iterator().next());
+					RecordsInfo here = result.get(k);					
 					if (here == null) {
-						result.put(inf.group, inf);
+						result.put(k, inf);
 					} else {
-						here.count += inf.count;
-						if (inf.newest.after(here.newest)) {
-							here.newest = inf.newest;
-							here.newestRecord = inf.newestRecord;
-						}
-						if (inf.oldest.before(here.oldest)) {
-							here.oldest = inf.oldest;
-						}
+						here.merge(inf);						
 					}
 				}
-			} else {
-			
-				RecordsInfo ri = result.get(record.group);
-				if (ri == null) {
-					ri = new RecordsInfo();
-					ri.group = record.group;
-					if (checkDates) {
-					ri.newest = record.created;
-					ri.oldest = record.created;
-					ri.newestRecord = record._id;
-					ri.calculated = new Date(System.currentTimeMillis());
-					}
-					result.put(record.group, ri);				
-				}
-				ri.count++;
-				if (checkDates) {
-					if (record.created.after(ri.newest)) {
-						ri.newest = record.created;
-						ri.newestRecord = record._id;
-					}
-					if (record.created.before(ri.oldest)) ri.oldest = record.created;
-				}
+			} else {			
+				String k = getInfoKey(aggrType, record.group, record.content, record.format);
+				RecordsInfo existing = result.get(k);
+				RecordsInfo newentry = new RecordsInfo(record);					
+				if (existing == null) {
+					result.put(k, newentry);
+				} else {
+					existing.merge(newentry);
+				} 				
 			}
 						
 		}
 		
-		AccessLog.debug("infoQuery result: cached="+cached+" records="+recs.size()+" result="+result.size()+" checkDates="+checkDates);
-		if (cached && recs.size()>0 && result.size() == 1 && checkDates) {
-			RecordsInfo inf = result.get(recs.get(0).group);
+		AccessLog.debug("infoQuery result: cached="+cached+" records="+recs.size()+" result="+result.size());
+		if (cached && recs.size()>0 && result.size() == 1) {
+			RecordsInfo inf = result.values().iterator().next();
 			BasicBSONObject r = new BasicBSONObject();
-			r.put("group", inf.group);
+			r.put("groups", inf.groups.iterator().next());
+			r.put("formats", inf.formats.iterator().next());
+			r.put("contents", inf.contents.iterator().next());			
 			r.put("count", inf.count);
 			r.put("newest", inf.newest);
 			r.put("oldest", inf.oldest);
-			r.put("newestRecord", inf.newestRecord);
+			r.put("newestRecord", inf.newestRecord.toString());
 			r.put("calculated", inf.calculated);
 			q.getCache().getAPS(aps).setMeta("_info", r);
 		}

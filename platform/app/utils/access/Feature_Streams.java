@@ -131,7 +131,7 @@ public class Feature_Streams extends Feature {
 				if (!record.isStream) filtered.add(record);
 			}
 			records = filtered;
-		}
+		}  
 							
 		return records;
 		

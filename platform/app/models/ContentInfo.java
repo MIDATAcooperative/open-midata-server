@@ -1,16 +1,13 @@
 package models;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
-
+import models.enums.APSSecurityLevel;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
-
-import models.enums.APSSecurityLevel;
 
 public class ContentInfo extends Model {
 
@@ -42,5 +39,9 @@ public class ContentInfo extends Model {
 	
 	public static Set<ContentInfo> getByGroups(Set<String> group) throws InternalServerException {
 		return Model.getAll(ContentInfo.class, collection, CMaps.map("group", group), ALL);
+	}
+	
+	public static Set<ContentInfo> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
+		return Model.getAll(ContentInfo.class, collection, properties, fields);
 	}
 }

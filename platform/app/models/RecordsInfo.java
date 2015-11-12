@@ -2,6 +2,7 @@ package models;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
@@ -13,36 +14,48 @@ public class RecordsInfo {
 	public Date calculated;
 	public Set<String> formats;
 	public Set<String> contents;
-	public ObjectId newestRecord;
-	public String group;
+	public Set<String> groups;
+	public ObjectId newestRecord;	
 
-	@Override
-	public boolean equals(Object obj) {
-		return group.equals(((RecordsInfo) obj).group);
-	}
-
-	@Override
-	public int hashCode() {
-		return group.hashCode();
-	}
 	
-	public static RecordsInfo merge(Collection<RecordsInfo> items) {
-		RecordsInfo result = null;
-		for (RecordsInfo item : items) {
-			if (result == null) {
-				result = item;
-			} else {
-				result.count += item.count;
-				if (item.newest.after(result.newest)) {
-					result.newest = item.newest;
-					result.newestRecord = item.newestRecord;
-				}
-				if (item.oldest.before(result.oldest)) {
-					result.oldest = item.oldest;
-				}
-			}
+    public RecordsInfo() {
+    	formats = new HashSet<String>();
+    	contents = new HashSet<String>();
+    	groups = new HashSet<String>();
+    }
+    
+    public RecordsInfo(Record rec) {
+    	formats = new HashSet<String>();
+    	contents = new HashSet<String>();
+    	groups = new HashSet<String>();
+    	
+    	formats.add(rec.format);
+    	contents.add(rec.content);
+    	groups.add(rec.group);
+    	
+    	count = 1;
+    	oldest = rec.created;
+    	newest = rec.created;
+    	newestRecord = rec._id;
+    	
+    	calculated = new Date(System.currentTimeMillis());
+    }
+		
+    
+	
+	public void merge(RecordsInfo item) {
+		this.count += item.count;
+		if (item.newest.after(this.newest)) {
+			this.newest = item.newest;
+			this.newestRecord = item.newestRecord;
 		}
-		return result;
+		if (item.oldest.before(this.oldest)) {
+			this.oldest = item.oldest;
+		}
+		this.groups.addAll(item.groups);
+		this.contents.addAll(item.contents);
+		this.formats.addAll(item.formats);
+
 	}
 
 }

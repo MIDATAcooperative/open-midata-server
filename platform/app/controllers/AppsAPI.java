@@ -241,9 +241,6 @@ public class AppsAPI extends Controller {
 		record.document = document;
 		record.part = part;
 		
-		String stream = tokens!=null ? tokens.get("stream") : null;
-		if (stream!=null) { record.stream = new ObjectId(stream); record.direct = true; }
-		
 		try {
 			record.data = (DBObject) JSON.parse(data);
 		} catch (JSONParseException e) {

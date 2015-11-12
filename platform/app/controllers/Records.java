@@ -11,18 +11,14 @@ import java.util.Set;
 
 import models.Circle;
 import models.Consent;
-import models.FilterRule;
-import models.ContentInfo;
 import models.FormatInfo;
-import models.LargeRecord;
-import models.MemberKey;
+import models.Member;
 import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
 import models.Space;
-import models.Member;
-import models.StudyParticipation;
 import models.User;
+import models.enums.AggregationType;
 import models.enums.ConsentType;
 
 import org.bson.BSONObject;
@@ -31,21 +27,16 @@ import org.bson.types.ObjectId;
 import play.Play;
 import play.libs.Json;
 import play.mvc.BodyParser;
-import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import scala.NotImplementedError;
-import utils.access.RecordManager;
 import utils.access.APS;
+import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
-import utils.auth.RecordToken;
 import utils.auth.MemberSecured;
+import utils.auth.RecordToken;
 import utils.auth.SpaceToken;
-import utils.collections.ChainedMap;
-import utils.collections.ChainedSet;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
-import utils.db.FileStorage;
 import utils.db.FileStorage.FileData;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
@@ -58,8 +49,6 @@ import utils.json.JsonValidation.JsonValidationException;
 import utils.search.Search;
 import utils.search.SearchResult;
 import views.html.dialogs.authorized;
-
-
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -168,7 +157,7 @@ public class Records extends APIController {
 		if (aps == null) aps = userId;		
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));			
 		
-	    Collection<RecordsInfo> result = RecordManager.instance.info(userId, aps, properties);	
+	    Collection<RecordsInfo> result = RecordManager.instance.info(userId, aps, properties, AggregationType.GROUP);	
 						
 		return ok(Json.toJson(result));
 	}

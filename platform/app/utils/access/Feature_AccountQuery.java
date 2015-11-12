@@ -81,7 +81,7 @@ public class Feature_AccountQuery extends Feature {
 				} else
 					result = new ArrayList<Record>();
 
-				if (sets.contains("all") || sets.contains("other") || sets.contains("members")) {
+				if (sets.contains("all") || sets.contains("other") || sets.contains("shared")) {
 					Set<Consent> consents = null;
 					if (sets.contains("shared"))
 						consents = new HashSet<Consent>(Circle.getAllByMember(q.getCache().getOwner()));

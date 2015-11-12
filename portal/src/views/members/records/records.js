@@ -202,7 +202,7 @@ angular.module('portal')
 		$scope.tree = [];
 		groups = {};
 		angular.forEach($scope.infos, function(info) {		    
-		    var group = info.group;
+		    var group = info.groups[0];
 		    var groupItem = getOrCreateGroup(group);
 		    groupItem.infoCount = info.count;
 		    groupItem.records = [];

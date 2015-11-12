@@ -11,7 +11,9 @@ import models.Member;
 import models.MobileAppInstance;
 import models.Plugin;
 import models.Record;
+import models.RecordsInfo;
 import models.Space;
+import models.enums.AggregationType;
 import models.enums.UserRole;
 
 import org.bson.BSONObject;
@@ -21,9 +23,11 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 import utils.DateTimeUtils;
 import utils.access.AccessLog;
 import utils.access.RecordManager;
+import utils.auth.AnyRoleSecured;
 import utils.auth.AppToken;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
@@ -43,6 +47,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import actions.APICall;
 import actions.AppsCall;
 import actions.MobileCall;
 import actions.VisualizationCall;
@@ -93,8 +98,10 @@ public class MobileAPI extends Controller {
 		String passphrase = CodeGenerator.generatePassphrase();
 		
 		MobileAppToken appToken = new MobileAppToken(app._id, appInstance, passphrase);
-				
-		return ok(appToken.encrypt());
+			
+		ObjectNode obj = Json.newObject();								
+		obj.put("instanceToken", appToken.encrypt()); 
+		return ok(obj);
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
@@ -102,9 +109,9 @@ public class MobileAPI extends Controller {
 	public static Result authenticate() throws AppException {
 				
         JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "apptoken", "username", "password");
+		JsonValidation.validate(json, "instanceToken", "username", "password");
 		
-		MobileAppToken appToken = MobileAppToken.decrypt(JsonValidation.getString(json, "apptoken"));		
+		MobileAppToken appToken = MobileAppToken.decrypt(JsonValidation.getString(json, "instanceToken"));		
 		String username = JsonValidation.getEMail(json, "username");
 		String password = JsonValidation.getString(json, "password");
 		
@@ -272,10 +279,7 @@ public class MobileAPI extends Controller {
 		}
 		
 		record.format = format;
-		record.content = content;
-		
-		String stream = tokens!=null ? tokens.get("stream") : null;
-		if (stream!=null) { record.stream = new ObjectId(stream); record.direct = true; }
+		record.content = content;				
 		
 		try {
 			record.data = (DBObject) JSON.parse(data);
@@ -303,5 +307,40 @@ public class MobileAPI extends Controller {
 		*/
 				
 		return ok();
+	}
+	
+	/**
+	 * retrieve aggregated information about records matching some criteria
+	 * @return record info json
+	 * @throws AppException
+	 * @throws JsonValidationException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@MobileCall
+	public static Result getInfo() throws AppException, JsonValidationException {
+ 	
+		// check whether the request is complete
+		JsonNode json = request().body().asJson();				
+		JsonValidation.validate(json, "authToken", "properties", "summarize");
+		
+		// decrypt authToken 
+		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(json.get("authToken").asText());
+		if (authToken == null) {
+			return badRequest("Invalid authToken.");
+		}
+					
+		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare"));
+        if (appInstance == null) return badRequest("Invalid authToken.");
+
+        KeyManager.instance.unlock(appInstance._id, authToken.passphrase);
+        		
+		ObjectId targetAps = appInstance._id;
+				
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		AggregationType aggrType = JsonValidation.getEnum(json, "summarize", AggregationType.class);
+		
+	    Collection<RecordsInfo> result = RecordManager.instance.info(appInstance._id, targetAps, properties, aggrType);	
+						
+		return ok(Json.toJson(result));
 	}
 }

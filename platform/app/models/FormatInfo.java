@@ -1,8 +1,7 @@
 package models;
 
+import java.util.Map;
 import java.util.Set;
-
-import models.enums.APSSecurityLevel;
 
 import org.bson.types.ObjectId;
 
@@ -28,6 +27,10 @@ public class FormatInfo extends Model {
 			r.visualization = null;			
 		}
 		return r;
+	}
+	
+	public static Set<FormatInfo> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
+		return Model.getAll(FormatInfo.class, collection, properties, fields);
 	}
 		
 }

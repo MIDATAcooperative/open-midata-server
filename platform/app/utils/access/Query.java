@@ -33,9 +33,6 @@ public class Query {
 	private APSCache cache;
 	private ObjectId apsId;
 	private boolean giveKey;	
-	
-	
-	//public final static String STREAM_TYPE = "Stream";
 		
 	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, ObjectId apsId) {
 		this.properties = properties;
@@ -230,6 +227,11 @@ public class Query {
 		 if (properties.containsKey("created-after")) {				
 				minDate = (Date) properties.get("created-after");
 				minTime = getTimeFromDate(minDate);
+		 }
+		 
+		 if (properties.containsKey("created-before")) {				
+				maxDate = (Date) properties.get("created-before");
+				maxTime = getTimeFromDate(minDate);
 		 }
 	}
 	

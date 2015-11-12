@@ -338,6 +338,8 @@ public class Application extends APIController {
 				controllers.routes.javascript.Messages.remove(),
 				controllers.routes.javascript.Messages.delete(),
 				controllers.routes.javascript.FormatAPI.listGroups(),
+				controllers.routes.javascript.FormatAPI.listFormats(),
+				controllers.routes.javascript.FormatAPI.listContents(),
 				
 				// Records					
 				controllers.routes.javascript.Records.get(),				
