@@ -87,9 +87,9 @@ angular.module('portal')
 				
 	};
 	
-	$scope.removeMember = function(person) {
-		if ($scope.params.consentId) {
-		server.post(jsRoutes.controllers.Circles.removeMember($scope.consent._id.$oid, person._id.$oid).url).
+	$scope.removePerson = function(person) {
+		if ($scope.consentId) {
+		server.delete(jsRoutes.controllers.Circles.removeMember($scope.consent._id.$oid, person._id.$oid).url).
 			success(function() {				
 				$scope.authpersons.splice($scope.authpersons.indexOf(person), 1);
 			}).
@@ -101,12 +101,30 @@ angular.module('portal')
 	};
 	
 	var addPerson = function(person) {
-		$scope.authpersons.push(person);
-		//$scope.consent.authorized.push(person._id.$oid);
+		console.log("ADD:");
+		console.log(person);
+		if (person.length) {
+			angular.forEach(person, function(p) { 
+				$scope.authpersons.push(p); 
+				$scope.consent.authorized.push(p._id);
+			});
+		} else {
+		    $scope.authpersons.push(person);
+		    $scope.consent.authorized.push(person._id);
+		}
+		
+		if ($scope.consentId) {
+			circles.addUsers($scope.consentId, $scope.consent.authorized );
+		}
+				
+	};
+	
+	$scope.confirmPeopleChange = function() {
+		$scope.confirmNeeded = false;
 	};
 	
 	$scope.addPeople = function() {
-		if ($scope.consent.type == "HEALTHCARE") {
+		if ($scope.consent.type != "CIRCLE") {
 		  views.setView("providersearch", { callback : addPerson });	
 		} else {
 		  views.setView("addusers", { consent : $scope.consent, callback : addPerson });

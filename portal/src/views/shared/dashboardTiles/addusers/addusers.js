@@ -5,6 +5,7 @@ angular.module('views')
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
 	$scope.status = new status(true);
 	$scope.crit = {};
+	$scope.userNames = {};
 
 	
 	// get names for users in circles
@@ -65,6 +66,14 @@ angular.module('views')
 		var userIds = _.map(usersToAdd, function(user) { return user._id; });
 		userIds = _.uniq(userIds, false, function(userId) { return userId.$oid; });
 		
+		if ($scope.view.setup.callback) {
+		   $scope.view.setup.callback(usersToAdd);
+		   $scope.error = null;
+			$scope.foundUsers = [];
+			_.each($scope.contacts, function(contact) { contact.checked = false; });			
+			_.each(usersToAdd, function(user) { $scope.userNames[user._id.$oid] = user.name; });
+		} else {
+		
 		var data = {"users": userIds};
 		server.post(jsRoutes.controllers.Circles.addUsers(circle._id.$oid).url, JSON.stringify(data)).
 			success(function() {
@@ -75,6 +84,7 @@ angular.module('views')
 				_.each(usersToAdd, function(user) { $scope.userNames[user._id.$oid] = user.name; });
 			}).
 			error(function(err) { $scope.error = "Failed to add users: " + err; });
+		}
 	};
 	
 	$scope.$watch('view.setup', function() { $scope.reload(); });	

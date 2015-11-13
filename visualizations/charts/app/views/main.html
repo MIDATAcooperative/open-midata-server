@@ -1,7 +1,7 @@
 <div>
 
 <form class="form-inline">
-  <div class="form-group" ng-show="reports.length">
+  <div class="form-group" ng-show="reports.length > 1">
     <label for="report">Report:</label>
     <select id="report" class="form-control" ng-model="report" ng-options="report.name for report in reports" ng-change="prepareReport()"></select>
   </div>

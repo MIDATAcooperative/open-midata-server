@@ -86,7 +86,7 @@ class QueryEngine {
 				inf.count = obj.getInt("count");				
 				inf.newest = obj.getDate("newest");
 				inf.oldest = obj.getDate("oldest");
-				inf.newestRecord = obj.getObjectId("newestRecord");				
+				inf.newestRecord = new ObjectId(obj.getString("newestRecord"));				
 				inf.groups.add(obj.getString("groups"));
 				inf.formats.add(obj.getString("formats"));
 				inf.contents.add(obj.getString("contents"));
