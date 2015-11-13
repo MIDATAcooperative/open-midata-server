@@ -21,7 +21,7 @@ angular.module('mealApp')
         // get the records
         function getRecords(recordIds) {
             data.properties = {"_id": recordIds};
-            data.fields = ["data", "data.data"];
+            data.fields = ["data"];
             $http.post("https://" + window.location.hostname +
                 ":9000/api/visualizations/records", JSON.stringify(data)).
                 success(function(records) {

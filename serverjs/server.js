@@ -3,12 +3,12 @@
  */
 
 // required modules
-var https = require("https");
+var http = require("http");
 var settings = require("./settings");
 var router = require("./router");
 
 // create the server
-https.createServer(settings.sslOptions, function(request, response) {
+http.createServer(function(request, response) {
 	if (request.method === "OPTIONS") {
 		// allow cross-origin requests from web application and plugin servers
 		var origin = request.headers.origin; // origin looks like: 'https://localhost:9000'

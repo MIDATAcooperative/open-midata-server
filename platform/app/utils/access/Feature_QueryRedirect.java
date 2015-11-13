@@ -40,10 +40,11 @@ public class Feature_QueryRedirect extends Feature {
 	
 	@Override
 	protected List<Record> lookup(List<Record> record, Query q)
-			throws AppException {
+			throws AppException {		
 		List<Record> result = next.lookup(record, q);
-		// Add Filter
 		
+		// Add Filter
+				
 		BasicBSONObject query = q.getCache().getAPS(q.getApsId()).getMeta(APS.QUERY);    	
     	// Ignores queries in main APS 
 		if (query != null && !q.getApsId().equals(q.getCache().getOwner())) {			
@@ -59,7 +60,7 @@ public class Feature_QueryRedirect extends Feature {
 				return memoryQuery(q, query, result);
 			}															
 		}
-						
+					
 		return result;
 	}
 		

@@ -159,7 +159,7 @@ class QueryEngine {
     	List<Record> result;
     	
     	
-    	Feature qm = new Feature_BlackList(q, new Feature_QueryRedirect(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Streams()))));
+    	Feature qm = new Feature_BlackList(q, new Feature_QueryRedirect(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams())))));
     									
 		result = findRecordsDirectlyInDB(q);
     	
@@ -195,6 +195,7 @@ class QueryEngine {
     	if (q.restrictedBy("_id")) result = lookupRecordsById(q);			
 		else if (q.restrictedBy("document")) result = lookupRecordsByDocument(q);
 	    
+    	if (result != null) AccessLog.debug("found directly :"+result.size());
     	return result;
     }
     

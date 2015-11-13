@@ -24,6 +24,7 @@ import play.mvc.Result;
 import utils.DateTimeUtils;
 import utils.access.RecordManager;
 import utils.auth.AppToken;
+import utils.auth.RecordToken;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
@@ -85,7 +86,7 @@ public class GenomeDataConverter extends Controller {
 		}
 		
 		Set<String> fields = Sets.create("name");
-		List<Record> records = RecordManager.instance.list(appToken.userId, appToken.userId, CMaps.map("format", "Attachment"), fields);
+		List<Record> records = RecordManager.instance.list(appToken.userId, appToken.userId, CMaps.map("format", "application/octet-stream"), fields);
 		
 		Collections.sort(records);
 		return ok(JsonOutput.toJson(records, "Record", fields));
@@ -149,7 +150,7 @@ public class GenomeDataConverter extends Controller {
 		if (owner == null) return badRequest("Invalid authToken.");
 
 		// parse the file
-		FileData fileData = FileStorage.retrieve(JsonValidation.getObjectId(json, "id"));
+		FileData fileData = RecordManager.instance.fetchFile(appToken.userId, new RecordToken(JsonValidation.getObjectId(json, "id").toString(), appToken.userId.toString()));
 		TreeMap<String, Object> map = new TreeMap<String, Object>();
 		errorMessage = parseInput(fileData.inputStream, map);
 		if (errorMessage != null) {
@@ -165,7 +166,8 @@ public class GenomeDataConverter extends Controller {
 		record.owner = appToken.userId;
 		record.name = JsonValidation.getString(json, "name");
 		record.description = JsonValidation.getString(json, "description");
-		record.format = "Genome"; //json.get("format").asText();
+		record.content = "genome-data";
+		record.format = "23-and-me"; //json.get("format").asText();
 		record.data = null;
 		
 		LargeRecord.add(owner, record, map);

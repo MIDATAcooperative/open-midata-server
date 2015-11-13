@@ -261,8 +261,8 @@ class APSImplementation extends APS {
 			input.key = eaps.getAPSKey() != null ? eaps.getAPSKey().getEncoded() : null;
 			input.owner = eaps.getOwner();
 			return true;
-		}
-
+		}		
+		
 		Map<String, Object> permissions = eaps.getPermissions();
 
 		List<BasicBSONObject> rows = APSEntry.findMatchingRowsForQuery(permissions, q);
@@ -331,14 +331,19 @@ class APSImplementation extends APS {
 		// add entry
 		BasicBSONObject entry = new BasicDBObject();
 		entry.put("key", record.key);
-		if (record.isStream) 
+		if (record.isStream) {
 			entry.put("s", true);
-		if (record.isReadOnly) 
+		}
+		if (record.isReadOnly && !record.isStream) throw new InternalServerException("error.internal", "readonly only supported for streams!!");
+		if (record.isReadOnly) { 
 			entry.put("ro", true);
-		if (record.owner != null && withOwner)
+		}
+		if (record.owner != null && withOwner) {
 			entry.put("owner", record.owner.toString());
-		if (record.created != null && !record.isStream)
+		}
+		if (record.created != null && !record.isStream) {
 			entry.put("created", record.created);
+		}
 		// if (record.format.equals(Query.STREAM_TYPE)) entry.put("name",
 		// record.name);
 		obj.put(record._id.toString(), entry);

@@ -10,8 +10,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.bson.BasicBSONObject;
+import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
 
+import utils.access.AccessLog;
 import utils.access.RecordManager;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
@@ -77,9 +80,9 @@ public class LargeRecord  {
 		}
 
 		// get ids chunks
-		Set<ObjectId> chunksToFetch = getChunkIds(masterRecord, dataFields);
-		List<Record> chunksData = RecordManager.instance.list(who, aps, CMaps.map("_id", chunksToFetch), fields);
-
+		Set<ObjectId> chunksToFetch = getChunkIds(masterRecord, dataFields);		
+		List<Record> chunksData = RecordManager.instance.list(who, aps, CMaps.map("stream", masterRecord.stream).map("_id", chunksToFetch), fields);		
+		
 		// replace data in master record
 		masterRecord.data = new BasicDBObject();
 		for (Record chunkData : chunksData) {
@@ -96,12 +99,12 @@ public class LargeRecord  {
 	 */
 	private static Set<ObjectId> getChunkIds(Record masterRecord, Set<String> dataFields) {
 		// create an array of strings from the head keys, and a map from keys to ids to retrieve them later
-		BasicDBList chunks = (BasicDBList) masterRecord.data.get("chunks");
+		BasicBSONList chunks = (BasicBSONList) masterRecord.data.get("chunks");
 		String[] headKeys = new String[chunks.size()];
 		Map<String, ObjectId> keysToIds = new HashMap<String, ObjectId>();
 		int index = 0;
 		for (Object chunk : chunks) {
-			DBObject chunkInfo = (DBObject) chunk;
+			BasicBSONObject chunkInfo = (BasicBSONObject) chunk;
 			ObjectId chunkId = (ObjectId) chunkInfo.get("_id");
 			String chunkHead = (String) chunkInfo.get("head");
 			headKeys[index++] = chunkHead;
@@ -152,7 +155,8 @@ public class LargeRecord  {
 			Record chunk = new Record();
 			chunk._id = new ObjectId();
 			chunk.document = masterRecord._id;
-			chunk.format = "Chunk";
+			chunk.format = "chunk";
+			chunk.content = masterRecord.content;
 			chunk.app = masterRecord.app;
 			chunk.created = masterRecord.created;
 			chunk.creator = masterRecord.creator;

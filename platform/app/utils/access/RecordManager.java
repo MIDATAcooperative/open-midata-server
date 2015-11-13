@@ -331,7 +331,7 @@ public class RecordManager {
 
 	private byte[] addRecordIntern(ObjectId executingPerson, Record record, boolean documentPart, ObjectId alternateAps, boolean upsert) throws AppException {		
 		
-		Feature_Streams.placeNewRecordInStream(executingPerson, record, alternateAps);
+		if (!documentPart) Feature_Streams.placeNewRecordInStream(executingPerson, record, alternateAps);
 		 		
 		AccessLog.debug("Add Record execPerson="+executingPerson.toString()+" format="+record.format+" stream="+(record.stream != null ? record.stream.toString() : "null"));	
 		byte[] usedKey = null;
@@ -340,26 +340,30 @@ public class RecordManager {
 		record.time = Query.getTimeFromDate(record.created);				
 		record = record.clone();
 		if (record.owner.equals(record.creator)) record.creator = null;
-		
-		APS apswrapper = getCache(executingPerson).getAPS(record.stream, record.owner);				
-												
+																	
 		if (!documentPart) {
+			APS apswrapper = getCache(executingPerson).getAPS(record.stream, record.owner);	
+			
 			if (record.document != null) {
 				List<Record> doc = QueryEngine.listInternal(getCache(executingPerson), record.owner, CMaps.map("_id", record.document.toString()), Sets.create("key"));
 				if (doc.size() == 1) record.key = doc.get(0).key;
 				else throw new InternalServerException("error.internal", "Document not identified");
 				documentPart = true;
 			} else apswrapper.provideRecordKey(record);
+			
+			usedKey = record.key;
+    		
+			if (!record.direct && !documentPart) apswrapper.addPermission(record, false);
+			else apswrapper.touch();
+			
+			if (apswrapper.getSecurityLevel().equals(APSSecurityLevel.HIGH)) record.time = 0;
+			
+		} else {
+			record.time = 0;
+			usedKey = record.key;
 		}
-					
-	    usedKey = record.key;
-	    	    		
-		if (!record.direct && !documentPart) apswrapper.addPermission(record, false);
-		else apswrapper.touch();
-		
-		if (apswrapper.getSecurityLevel().equals(APSSecurityLevel.HIGH)) record.time = 0;
 								
-		RecordEncryption.encryptRecord(record, apswrapper.getSecurityLevel());		
+		RecordEncryption.encryptRecord(record, record.key != null ? APSSecurityLevel.HIGH : APSSecurityLevel.NONE);		
 	    if (upsert) { Record.upsert(record); } else { Record.add(record); }	  
 	    				
 		return usedKey;	

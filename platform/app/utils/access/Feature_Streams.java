@@ -42,7 +42,7 @@ public class Feature_Streams extends Feature {
 		
 		boolean isStrict = q.restrictedBy("strict");
 		
-		for (Record record : records) {
+		for (Record record : records) {			
 			if (record.stream != null && record.key == null) {
 				boolean lookup = true;
 				if (isStrict) {
@@ -118,7 +118,10 @@ public class Feature_Streams extends Feature {
 					try {
 					  APS streamaps = q.getCache().getAPS(r._id, r.key, r.owner);
 					  if (q.getMinTimestamp() <= streamaps.getLastChanged()) {						
-					    filtered.addAll(streamaps.query(q));
+					    for (Record r2 : streamaps.query(q)) {
+					    	r2.stream = r._id;
+					    	filtered.add(r2);
+					    }
 					  }
 					} catch (EncryptionNotSupportedException e) { throw new InternalServerException("error.internal", "Encryption not supported."); }
 				    if (includeStreams) filtered.add(r);	
@@ -180,6 +183,8 @@ public class Feature_Streams extends Feature {
 		result.creator = null;
 		
 		APS apswrapper = null;
+		
+		if (targetAPS != null && targetAPS.equals(owner)) targetAPS = null; // That is what we expect anyway
 		
 		if (targetAPS != null) apswrapper = RecordManager.instance.getCache(executingPerson).getAPS(targetAPS);
 		else apswrapper = RecordManager.instance.getCache(executingPerson).getAPS(result.owner, result.owner);

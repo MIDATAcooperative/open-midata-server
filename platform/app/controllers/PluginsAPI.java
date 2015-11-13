@@ -192,7 +192,13 @@ public class PluginsAPI extends Controller {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
-		Rights.chk("getRecords", UserRole.ANY, fields);
+		// Do not check for fields that query for parts of the data.
+		Set<String> chkFields = new HashSet<String>();
+		for (String f : fields) {
+			if (!f.startsWith("data.")) chkFields.add(f);
+		}
+		
+		Rights.chk("getRecords", UserRole.ANY, chkFields);
 
 		// decrypt authToken
 		SpaceToken authToken = SpaceToken.decrypt(json.get("authToken").asText());
