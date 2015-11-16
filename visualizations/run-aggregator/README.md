@@ -1,4 +1,4 @@
 run-aggregator
 ==============
 
-HDC visualization for aggregating running records.
+MIDATA visualization for aggregating running records.

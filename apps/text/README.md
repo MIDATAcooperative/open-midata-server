@@ -1,4 +1,4 @@
 text
 ====
 
-HDC app for creating plain text records (with a title and content).
+MIDATA app for creating plain text records (with a title and content).

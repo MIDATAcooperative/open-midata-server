@@ -1,4 +1,4 @@
 cda-viewer
 ===========
 
-HDC visualization displaying CDA files
+MIDATA visualization displaying CDA files

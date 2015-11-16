@@ -1,4 +1,4 @@
 record-list
 ===========
 
-HDC visualization displaying records in a list.
+MIDATA visualization displaying records in a list.

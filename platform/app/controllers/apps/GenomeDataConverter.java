@@ -120,7 +120,7 @@ public class GenomeDataConverter extends Controller {
 	}
 
 	/**
-	 * Convert a 23andMe file to the HDC format.
+	 * Convert a 23andMe file to the MIDATA format.
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
