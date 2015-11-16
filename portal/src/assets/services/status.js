@@ -27,6 +27,7 @@ angular.module('services')
 		   	me.startAction(action);
 		   	return call.then(function(result) { me.end();return result; }, function(err) { 		   		
 		   		if (err.data && err.data.field && err.data.type && me.scope && me.scope.myform) {
+		   			me.scope.error = err.data;
 		   			me.scope.myform[err.data.field].$setValidity(err.data.type, false);
 		   			me.fail(err, true);
 		   		} else {
