@@ -1,0 +1,64 @@
+server {
+        listen 3000;
+        server_name demo.midata.coop;
+
+        ssl on;
+        ssl_certificate /etc/myssls/demo_midata_coop_2015.pem;
+        ssl_certificate_key /etc/myssls/demo_midata_coop_2015.key;
+
+        #ssl_session_timeout 5m;
+
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        #ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
+        #ssl_prefer_server_ciphers on;
+
+        root /hdc/apps;
+        
+        location / {
+        }                 
+}
+
+server {
+        listen 4000;
+        server_name demo.midata.coop;
+
+        ssl on;
+        ssl_certificate /etc/myssls/demo_midata_coop_2015.pem;
+        ssl_certificate_key /etc/myssls/demo_midata_coop_2015.key;
+
+        #ssl_session_timeout 5m;
+
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        #ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
+        #ssl_prefer_server_ciphers on;
+
+        root /hdc/visualizations;
+
+        location / {
+        }
+}
+
+server {
+        listen 5000;
+        server_name demo.midata.coop;
+
+        ssl on;
+        ssl_certificate /etc/myssls/demo_midata_coop_2015.pem;
+        ssl_certificate_key /etc/myssls/demo_midata_coop_2015.key;
+
+        #ssl_session_timeout 5m;
+
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        #ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
+        #ssl_prefer_server_ciphers on;
+
+        root /hdc/visualizations;
+
+        location / {
+           proxy_pass http://localhost:5001;
+           proxy_set_header Host $host;
+           proxy_http_version 1.0;
+        }
+
+}
+

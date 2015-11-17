@@ -1,0 +1,35 @@
+server {
+        listen 9000;
+        server_name demo.midata.coop;
+
+        ssl on;
+        ssl_certificate /etc/myssls/demo_midata_coop_2015.pem;
+        ssl_certificate_key /etc/myssls/demo_midata_coop_2015.key;
+
+        #ssl_session_timeout 5m;
+
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        #ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
+        #ssl_prefer_server_ciphers on;
+
+        root /hdc/portal/dest;
+
+        #ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
+        #ssl_prefer_server_ciphers on;
+
+        
+        location / {
+           proxy_pass http://localhost:9001;
+           proxy_set_header Host $host;
+           proxy_http_version 1.1;
+        }
+
+        location /api/apps/upload {
+           proxy_pass http://localhost:9001;
+           proxy_set_header Host $host;
+           proxy_http_version 1.1;
+           client_max_body_size 100M;
+        }
+
+}
+
