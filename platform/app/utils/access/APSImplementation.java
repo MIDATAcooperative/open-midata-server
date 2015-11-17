@@ -81,6 +81,7 @@ class APSImplementation extends APS {
 	}
 
 	public void addAccess(Set<ObjectId> targets) throws AppException, EncryptionNotSupportedException {
+		merge();
 		try {
 			boolean changed = false;
 			if (eaps.getSecurityLevel().equals(APSSecurityLevel.NONE)) {
@@ -109,6 +110,7 @@ class APSImplementation extends APS {
 	}
 
 	public void addAccess(ObjectId target, byte[] publickey) throws AppException, EncryptionNotSupportedException {
+		merge();
 		try {
 			boolean changed = false;
 			if (eaps.getSecurityLevel().equals(APSSecurityLevel.NONE)) {
