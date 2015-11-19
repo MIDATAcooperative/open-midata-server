@@ -20,7 +20,7 @@ recordList.controller('RecordListCtrl', ['$scope', '$http', '$location',
 		getRecords = function() {
 			data.properties = { format : [ "demo-card/part1", "demo-card/part2" ] };
 			data.fields = ["data", "content", "format", "created", "owner", "ownerName"];
-			$http.post("https://" + window.location.hostname + ":9000/api/visualizations/records", JSON.stringify(data)).
+			$http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/search", JSON.stringify(data)).
 				success(function(records) {
 					$scope.buildView(records);
 					$scope.loading = false;

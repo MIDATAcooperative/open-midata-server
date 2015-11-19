@@ -21,7 +21,7 @@ hdcSnpSnip.controller('SnpSnipCtrl', ['$scope', '$http', '$sce', '$location', 'm
 
 		// get record ids
 		var data = {"authToken": authToken};
-		/*$http.post("https://" + window.location.hostname + ":9000/api/visualizations/ids", JSON.stringify(data)).
+		/*$http.post("https://" + window.location.hostname + ":9000/v1/plugins/ids", JSON.stringify(data)).
 			success(function(recordIds) {
 				$scope.recordIds = recordIds;
 				
@@ -86,7 +86,7 @@ hdcSnpSnip.controller('SnpSnipCtrl', ['$scope', '$http', '$sce', '$location', 'm
 			var data = {"authToken": authToken};
 			data.properties = { /* "_id": $scope.recordIds */ };
 			data.fields = ["name", "data" , "data.date", "data.build", "data.buildUrl" ];
-			$http.post("https://" + window.location.hostname + ":9000/api/visualizations/records", JSON.stringify(data)).
+			$http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/search", JSON.stringify(data)).
 				success(function(records) {
 					for (i in records) {
 						var curId = records[i]._id.$oid;
@@ -110,7 +110,7 @@ hdcSnpSnip.controller('SnpSnipCtrl', ['$scope', '$http', '$sce', '$location', 'm
 			var data = {"authToken": authToken};
 			data.properties = { "_id" : $scope.selectedRecord._id };
 			data.fields = ["data", "data." + rsNumber];
-			$http.post("https://" + window.location.hostname + ":9000/api/visualizations/records", JSON.stringify(data)).
+			$http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/search", JSON.stringify(data)).
 				success(function(records) {
 					for (i in records) {
 						var curId = records[i]._id.$oid;

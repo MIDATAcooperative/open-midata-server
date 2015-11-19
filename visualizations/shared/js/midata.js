@@ -15,7 +15,7 @@ midata.factory('midataServer', [ '$http', function($http) {
 		};
 		
 		// submit to server
-		return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/create", data);
+		return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/create", data);
 	};
 	
 	/*
@@ -39,22 +39,22 @@ midata.factory('midataServer', [ '$http', function($http) {
 	
 	service.getRecords = function(authToken, properties,fields) {
 		 var data = { "authToken" : authToken, "properties" : properties, fields : fields };		
-		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/records", data);
+		 return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/search", data);
 	};
 	
 	service.getConfig = function(authToken) {
 		 var data = { "authToken" : authToken  };		
-		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/getconfig", data);
+		 return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/config/get", data);
 	};
 	
 	service.setConfig = function(authToken, config) {
 		 var data = { "authToken" : authToken, "config" : config  };		
-		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/setconfig", data);
+		 return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/config/set", data);
 	};
 	
 	service.cloneAs = function(authToken, name, config) {
 		 var data = { "authToken" : authToken, "name" : name, "config" : config };		
-		 return $http.post("https://" + window.location.hostname + ":9000/api/visualizations/clone", data);
+		 return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/clone", data);
 	};
 	
 	return service;	

@@ -153,7 +153,7 @@ angular.module('energyMeterApp')
           data.properties = {"_id": recordIds};
           data.fields = ["data"];
           $http.post("https://" + window.location.hostname +
-              ":9000/api/visualizations/records", JSON.stringify(data)).
+              ":9000/v1/plugin_api/records/search", JSON.stringify(data)).
               success(function(records) {
                 preprocessRecords(records);
               }).
@@ -166,7 +166,7 @@ angular.module('energyMeterApp')
       // get the ids of the records assigned to this space
       var data = {"authToken": $routeParams.authToken};
       $http.post("https://" + window.location.hostname +
-          ":9000/api/visualizations/ids", JSON.stringify(data)).
+          ":9000/v1/plugin_api/records/ids", JSON.stringify(data)).
           success(function(recordIds) {
               getRecords(recordIds);
           }).
