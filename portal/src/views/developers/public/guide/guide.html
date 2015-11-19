@@ -10,7 +10,7 @@
 					<li ng-class="{ 'active' : tab=='accounts' }"><a href="javascript:" ng-click="tab='accounts';">Developer Accounts</a></li>
 					<li ng-class="{ 'active' : tab=='architecture' }"><a href="javascript:" ng-click="tab='architecture';">Architecture</a></li>
 					<li ng-class="{ 'active' : tab=='apps' }"><a href="javascript:" ng-click="tab='apps';">( Forms )</a></li>
-					<li ng-class="{ 'active' : tab=='visualizations' }"><a href="javascript:" ng-click="tab='visualizations';">( Visualizations )</a></li>
+					<li ng-class="{ 'active' : tab=='visualizations' }"><a href="javascript:" ng-click="tab='visualizations';">Plugins</a></li>
 					<li ng-class="{ 'active' : tab=='mobile' }"><a href="javascript:" ng-click="tab='mobile';">Mobile Apps</a></li>
 					<li ng-class="{ 'active' : tab=='formats' }"><a href="javascript:" ng-click="tab='formats';">Format List</a></li>
 				</ul>
@@ -63,89 +63,74 @@
 						   deployed by us on the plugin server.</p>
 					</div>
 					<div id="apps" class="tab-pane fade" ng-class="{ 'active in' : tab=='apps' }">
-						<h2>Forms</h2>
-						<p>A form provides the functionality to let the user create or import a 
-						record and to give a detailed view of a single instance of a record
-						created or imported by that form. Two REST endpoints, whose address is
-						specified when registering the app on the market, expose the interface
-						to the web application server.</p>
-						<h3>Registration on the market</h3>
-						<p>An app has to specify a name and a textual description, that describe
-						what it does. Additionally, addresses relative to the app's base directory
-						state the endpoints that are called when creating or importing a new 
-						record, or when displaying the details of a single record.</p>
-						<h4>URL to create records</h4>
-						<p>This URL will be called when a user wants to create or import a new
-						record. The web page behind that address should either give users the
-						possibility to enter data themselves, or allow them to import data from
-						the source where it was originally created.</p>
-						<p>The URL can be chosen arbitrarily, but it has to include a part with 
-						the string <code>:replyTo</code>. This part will be replaced with a Base64
-						encoded string representing the URL that the newly created record should
-						be sent to. A possible URL could be:</p>
-						<pre>create/:replyTo</pre>
-						<h4>URL to detailed record view</h4>
-						<p>The page at this address provides the user with a close look at a single
-						record. This is necessary when the name of the record does not include 
-						sufficient information for the user to decide what to do with it, and 
-						closer inspection is required.</p>
-						<p>The URL for this request is again arbitrary, but must contain a part 
-						with <code>:record</code>, that will be replaced with a Base64 encoded 
-						representation of the record's data field. An example might look like
-						this:</p>
-						<pre>details/:record</pre>
-						<h3>Creation/Import of a new record</h3>
-						<p>This is how the data gets onto the platform. The GET request to the 
-						specified URL includes the address that the reply should be directed to.
-						When the user entered an AJAX request is sent to that address containing
-						the following parameters:</p>
-						<ul>
-							<li>"data": A JSON string with the data to be stored.</li>
-							<li>"name": A name for the record that is displayed in the record list
-							and as a title of a search result.</li>
-							<li>"description": A textual description of the record that is indexed
-							by the search server. It is used when the user conducts a fulltext 
-							search.</li>
-						</ul>
-						<h3>Detailed view of a single record</h3>
-						<p>After the record has been pushed onto the platform and into a user's 
-						account, the user must have a way to check the contents of that record.
-						Since in the beginning, only the app knows how the record looks like, it
-						must also give a view of a single record, that displays the important 
-						facts of the record, so that the user can manage it accordingly, i.e.
-						decide whether to share it and in which spaces to put it.</p>
+						<h2>Forms / Importers</h2>
+						<p>A form or import form provides the functionality to create or import  
+						records. This type of plugin may access external resources but may not read records from the platform.</p>
+						<p>The API and API documentation for forms will be updated soon</p>
 					</div>
 					<div id="visualizations" class="tab-pane fade" ng-class="{ 'active in' : tab=='visualizations' }">
-						<h2>Visualizations</h2>
-						<p>Visualizations aggregate a set of records and display interesting 
-						characteristics to the user. It is called with the set of records, that
-						the user determined, at the address given when the app was registered in
-						the market.</p>
-						<h3>Registration on the market</h3>
-						<p>When registering a visualization on the market, the developer has to
-						give a name and a textual description. This is shown to the user and 
-						should capture the purpose and capabilities of the visualization best.</p>
+						<h2>Plugins</h2>
+						<p>Plugins run in the browser and have read and write access to a set of records. The set of records
+						available may be changed by the user. The application developer can propose a query that - if accepted by the user - 
+						determines the initially available set of records.
+						</p>
+					    <h3>Registration using the developer account</h3>					
+						<p>Each plugin needs to have an internal name that is used by the platform to identify that app.
+						The plugin developer also needs to specify a public name for the marked place and a textual description, that describe
+						what it does. This is shown to the user and 
+						should capture the purpose and capabilities of the visualization best. </p>
+						<p>To register your plugin, log in into your developer account. On the "Your Plugins" page click on "Register a new plugin" and fill out the form.
+						   Choose "Visualization" as "type" of the plugin. 						   
+						   Click on "Submit" when you are done.
+						</p>
+												
 						<h4>URL</h4>
 						<p>The third property that has to be specified is the URL that will be 
 						called with the records selected to be displayed by the app. The URL is 
 						relative to the visualization's base directory and can be chosen 
 						arbitrarily. It only has to include a part that contains the string
-						<code>:records</code>. This part will be replaced with a Base64 encoded 
-						JSON string containing the records passed to the visualization. An example
-						of a visualization URL could look like this:</p>
-						<pre>view/:records</pre>
-						<h3>Data passed to the visualization</h3>
-						<p>The records come as a Base64 encoded JSON string,
-						representing an array of the data fields of the assigned records.
-						The data field contains exactly what was passed to the platform at
-						creation/import time (cf. Apps section, "Creation/Import of a new
-						record").</p>
-						<h3>Handling of heterogeneous records</h3>
-						<p>It is the visualization's responsibility to check that the records
-						passed to it are in the correct format. The users are free to assign any 
-						records to a visualization, and can therefore also include records the
-						visualization might not understand. It is up to the devloper's 
-						implementation to decide on how to handle these cases.</p>
+						<code>:authToken</code>. This part will be replaced with an authentication token that needs
+						to be passed to the server with every API request.</p>
+						<p>So if the main file in located in a 'dist' subdirectory and is called index.html your URL may look like this:</p>
+						<pre>dist/index.html#:authToken</pre>
+						<h3>Creating new Records</h3>
+						<p>The Endpoint is at:</p>
+						<pre><i>POST</i> /v1/plugin_api/records/create</pre>
+						<p>For a detailed description of the parameters see <a ng-click="tab='mobile'">Mobile API</a>.</p>
+						<h3>Retrieving existing records</h3>
+						<p>The Endpoint is at:</p>
+						<pre><i>POST</i> /v1/plugin_api/records/search</pre>
+						<p>For a detailed description of the parameters see <a ng-click="tab='mobile'">Mobile API</a>.</p>
+						<h3>Writing a configuration object</h3>
+						<p>Each plugin may store a configuration JSON on the server. This piece of information may only be read by the plugin itself and is updateable.
+						To store a configuration call:
+						</p>
+						<pre><i>POST</i> /v1/plugins_api/config/set</pre>
+						<p>Pass these parameters as JSON body:</p>
+<pre>{
+  "authToken" : The authentication token you got
+  "config" : A JSON object you want to store as your configration
+}</pre>
+                        <p>You will receive an empty status 200 response.</p>
+						<h3>Reading your configuration object</h3>
+						<p>To read a configutation object previously stored, call:</p>
+						<pre><i>POST</i> /v1/plugins_api/config/get</pre>
+						<p>with this JSON body:</p>
+<pre>{
+  "authToken" : The authentication token you got
+}</pre>						
+                        <p>As response you will receive your configuration JSON back. If no configuration
+                        has been stored you will receive an empty status 200 response.</p>						
+						<h3>Cloning your plugin with a different configuration</h3>
+						<p>Your plugin may clone itself with a different configuration and dashboard tile title. To do this call:
+						<pre><i>POST</i> /v1/plugins_api/clone</pre>
+						<p>Use these parameters as JSON body:</p>
+<pre>{
+  "authToken" : The authentication token you got
+  "name" : A title for the new dashboard tile
+  "config" : A JSON object you want to store as configration for the new plugin instance
+}</pre>						
+						
 					</div>
 					<div id="mobile" class="tab-pane fade" ng-class="{ 'active in' : tab=='mobile' }">
 						<h2>Mobile Apps</h2>
@@ -165,7 +150,7 @@
 						   the app on the smartphone and is required during authentication. If the instance token is lost and 
 						   a new one is requested the app will loose access to all data shared with it.</p>
 						<p>To request the app instance token this request is needed:</p>
-						<pre><i>POST</i> /api/mobile/init</pre>
+						<pre><i>POST</i> /v1/init</pre>
 						<p>with these parameters as JSON body:</p>
 <pre>{
   "appname" : internal name of the application,
@@ -178,7 +163,7 @@
                         <h3>Authentication (Login)</h3>						
 						<p>A mobile app needs to authenticate using a users credentials to the platform before providing or querying records.
 						To authenticate call:</p> 
-						<pre><i>POST</i> /api/mobile/auth</pre>
+						<pre><i>POST</i> /v1/auth</pre>
 						<p>with these parameters as JSON body:</p>
 <pre>{ 
 	  "instanceToken" : the token the app had received from the "init" request, 	  
@@ -197,7 +182,7 @@
                         </p>  
 						<h3>Creating new records</h3>
 						<p>To create a new record call this endpoint:</p>
-						<pre><i>POST</i> /api/mobile/records/create</pre>
+						<pre><i>POST</i> /v1/records/create</pre>
 						<p>The request needs a JSON body with these parameters:</p>
 <pre>{
      "authToken" : the token from the authentication request, 
@@ -213,7 +198,7 @@
 
                         <h3>Retrieving existing records</h3>
                         <p>To retrieve records call this endpoint:</p>
-                        <pre><i>POST</i> /api/mobile/records/search</pre>
+                        <pre><i>POST</i> /v1/records/search</pre>
                         <p>The request needs a JSON body with these parameters:</p>
 <pre>{
      "authToken": the token from the authentication request,
@@ -287,7 +272,7 @@ In the array case each record must match one entry in the array to qualify for t
      they are a summary query may help. Please note that on larger data sets a summary query will be executed much faster than
      a regular query.</p>
   <p>For a summary query call this endpoint:</p>
-  <pre><i>POST</i> /api/mobile/records/summary</pre>
+  <pre><i>POST</i> /v1/records/summary</pre>
                         <p>The request needs a JSON body with these parameters:</p>
 <pre>{
      "authToken": the token from the authentication request,
