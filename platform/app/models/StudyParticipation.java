@@ -15,10 +15,12 @@ import utils.collections.Sets;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
+/**
+ * A consent that shares data from a MIDATA member with a study.
+ * 
+ */
 public class StudyParticipation extends Consent {
-	
-	//private static final String collection = "participation";
-	
+		
 	public String ownerName;
 	public ObjectId study; //study that the member is related to
 	public String studyName; // replication of study name
@@ -28,8 +30,6 @@ public class StudyParticipation extends Consent {
 	public String recruiterName; // replication of recruiter name
 	public Set<ObjectId> providers; // (Optional) List of healthcare providers monitoring the member for this study.
 	public List<History> history; // History of participation process
-	//public ObjectId aps;
-	//public Set<ObjectId> shared; // Records of member shared for this study
 	
 	public int yearOfBirth;
 	public String country;

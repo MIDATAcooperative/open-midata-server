@@ -14,6 +14,10 @@ import utils.json.JsonValidation.JsonValidationException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * request wrapper for requests from external services
+ *
+ */
 public class MobileCallAction extends Action<MobileCall> {
 
     public F.Promise<Result> call(Http.Context ctx) throws Throwable { 

@@ -1,9 +1,20 @@
 package models;
 
+/**
+ * Tags that describe studies. Currently not used
+ *
+ */
 public class StudyKeyword extends Model {
 	
 	private static final String collection = "studykeywords";
 	
-	public String name; //unique. Keyword
-	public String description; //Description to be shown to users to make choice easier.
+	/**
+	 * name of unique keyword
+	 */
+	public String name; 
+	
+	/**
+	 * textual description of the meaning of the keyword
+	 */
+	public String description; 
 }

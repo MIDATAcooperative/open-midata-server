@@ -44,7 +44,10 @@ import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import com.mongodb.util.JSONParseException;
 
-// not secured, accessible from visualizations server (only with valid authToken)
+/**
+ * API functions to be used by MIDATA plugins
+ *
+ */
 public class PluginsAPI extends Controller {
 
 	/**

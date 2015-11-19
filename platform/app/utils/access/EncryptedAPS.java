@@ -80,8 +80,7 @@ public class EncryptedAPS {
 		aps.security = lvl;
 		aps.permissions = new HashMap<String, Object>();
 		aps.permissions.put("p", new BasicBSONList());
-		aps.keys = new HashMap<String, byte[]>();
-		aps.direct = lvl.equals(APSSecurityLevel.MEDIUM);
+		aps.keys = new HashMap<String, byte[]>();		
 		
 		if (! lvl.equals(APSSecurityLevel.NONE)) {
 		  encryptionKey = (encKey != null) ? new SecretKeySpec(encKey, KEY_ALGORITHM) : EncryptionUtils.generateKey(KEY_ALGORITHM);		  
@@ -129,7 +128,7 @@ public class EncryptedAPS {
 	
 	public boolean isDirect() throws InternalServerException {
 		if (!isLoaded()) load();
-		return aps.direct;
+		return aps.security.equals(APSSecurityLevel.MEDIUM);
 	}
 	
 	public ObjectId getId() {

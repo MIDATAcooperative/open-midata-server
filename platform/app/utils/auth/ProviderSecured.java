@@ -6,6 +6,10 @@ import play.mvc.Security;
 import play.mvc.Http.Context;
 import controllers.routes;
 
+/**
+ * This authenticator allows only health provider users
+ *
+ */
 public class ProviderSecured extends Security.Authenticator {
 
 	@Override

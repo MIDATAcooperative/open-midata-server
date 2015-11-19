@@ -12,8 +12,15 @@ import utils.db.DatabaseConversionException;
 import utils.db.DatabaseException;
 import utils.exceptions.InternalServerException;
 
+/**
+ * Abstract base class for all classes that are stored in the mongo database.
+ *
+ */
 public abstract class Model implements JsonSerializable {
 
+	/**
+	 * The unique _id field from the mongo record
+	 */
 	public ObjectId _id;
 
 	@Override

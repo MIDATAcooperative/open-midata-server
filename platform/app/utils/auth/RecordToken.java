@@ -10,8 +10,20 @@ import utils.collections.ChainedMap;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * A token to identify a record including its access permission set
+ *
+ */
 public class RecordToken {
+	
+	/**
+	 * id of record
+	 */
 	public String recordId;
+	
+	/**
+	 * id of APS that allows access to the record
+	 */
 	public String apsId;
 
 	public RecordToken(String recordId, String apsId) {

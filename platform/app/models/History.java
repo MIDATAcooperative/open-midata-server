@@ -7,13 +7,40 @@ import org.bson.types.ObjectId;
 import models.enums.EventType;
 import models.enums.UserRole;
 
+/**
+ * Several classes store their modification history. This class encapsulates a single history entry.
+ *
+ */
 public class History implements JsonSerializable {
 
+	/**
+	 * the type of event this history entry documents
+	 */
 	public EventType event;
+	
+	/**
+	 * when did the event occur
+	 */
 	public Date timestamp;
+	
+	/**
+	 * id of person triggering the event
+	 */
 	public ObjectId who;
+	
+	/**
+	 * public name of person triggering the event. This may be not the persons real name but a pseudonym for studies.
+	 */
 	public String whoName;
+	
+	/**
+	 * the role of the person triggering the event
+	 */
 	public UserRole whoRole;
+	
+	/**
+	 * a string further describing the event
+	 */
 	public String message;
 	
 	public History() {}

@@ -17,8 +17,15 @@ import utils.search.Search;
 import utils.search.SearchException;
 import utils.search.Search.Type;
 
+/**
+ * data model class for a researcher.
+ *
+ */
 public class ResearchUser extends User {
 			
+	/**
+	 * id of organization this researcher belongs to.
+	 */
 	public ObjectId organization;
 	
 	public ResearchUser() { }

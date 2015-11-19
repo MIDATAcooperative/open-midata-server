@@ -261,8 +261,8 @@ public class Application extends APIController {
 		user.messages.put("trash", new HashSet<ObjectId>());
 		user.login = DateTimeUtils.now();
 		user.news = new HashSet<ObjectId>();
-		user.pushed = new HashSet<ObjectId>();
-		user.shared = new HashSet<ObjectId>();
+		//user.pushed = new HashSet<ObjectId>();
+		//user.shared = new HashSet<ObjectId>();
 		
 		user.security = AccountSecurityLevel.KEY;
 		
@@ -405,7 +405,7 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Studies.setRequiredInformationSetup(),
 				
 				controllers.members.routes.javascript.Studies.list(),
-				controllers.common.routes.javascript.Studies.search(),
+				controllers.routes.javascript.Studies.search(),
 				controllers.members.routes.javascript.Studies.enterCode(),
 				controllers.members.routes.javascript.Studies.get(),
 				controllers.members.routes.javascript.Studies.requestParticipation(),

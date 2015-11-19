@@ -15,19 +15,53 @@ import utils.collections.Sets;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
+/**
+ * Data model class for a MIDATA consent. A consent shares a set of records of the owner of the consent
+ * with other entities (users or mobile apps).
+ *
+ */
 @JsonFilter("Consent")
 public class Consent extends Model {
 
 	protected @NotMaterialized static final String collection = "consents";
+	/**
+	 * constant for all fields of a consent
+	 */
 	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "name", "authorized", "type", "status");
 	
-	public ObjectId owner;	
+	/**
+	 * id of owner of this consent. The owner is the person who shares data.
+	 */
+	public ObjectId owner;
+	
+	/**
+	 * a public name for this consent
+	 */
 	public String name;	
+	
+	/**
+	 * a set containing the ids of all entities that are authorized to access the data shared with this consent.
+	 */
 	public Set<ObjectId> authorized;
+	
+	/**
+	 * the type of this consent.
+	 */
 	public ConsentType type;
+	
+	/**
+	 * the status of this consent. Whether it has been confirmed by the user or is expired.
+	 */
 	public ConsentStatus status;
+	
+	/**
+	 * firstname and lastname of the owner of this consent. Not materialized.
+	 */
 	public @NotMaterialized String ownerName;
 	
+	/**
+	 * passcode that can be given away by the owner to healthcare providers in order to add those to the consent.
+	 */
 	public String passcode;
 	
 	public static Consent getByIdAndOwner(ObjectId consentId, ObjectId ownerId, Set<String> fields) throws InternalServerException {

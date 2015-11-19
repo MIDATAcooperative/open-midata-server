@@ -11,14 +11,38 @@ import utils.exceptions.InternalServerException;
 import utils.search.Search;
 import utils.search.SearchException;
 
+/**
+ * data model for a message sent from one user to another
+ * Currently not used. Messaging lacks encryption.
+ *
+ */
 public class Message extends Model implements Comparable<Message> {
 
 	private static final String collection = "messages";
 
+	/**
+	 * id of sender of message
+	 */
 	public ObjectId sender;
+	
+	/**
+	 * ids of recievers of the message
+	 */
 	public Set<ObjectId> receivers;
+	
+	/**
+	 * date of creation
+	 */
 	public Date created;
+	
+	/**
+	 * title of this message
+	 */
 	public String title;
+	
+	/**
+	 * body of this message
+	 */
 	public String content;
 
 	@Override

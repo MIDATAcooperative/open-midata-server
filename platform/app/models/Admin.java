@@ -13,6 +13,10 @@ import utils.DateTimeUtils;
 import utils.collections.CMaps;
 import utils.exceptions.InternalServerException;
 
+/**
+ * Data model for admin users.
+ *
+ */
 public class Admin extends User {
 
 	public Admin() {

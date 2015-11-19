@@ -12,17 +12,34 @@ import utils.collections.Sets;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
+/**
+ * data model for record groups. The "group" of a record determines where it is located in the tree of records.
+ *
+ */
 public class FormatGroup extends Model {
 	
 	private @NotMaterialized static final String collection = "formatgroups";
 	private @NotMaterialized static Map<String, FormatGroup> cache;
-		
+
+	/**
+	 * the internal name of this group
+	 */
 	public String name;
+	
+	/**
+	 * the public label that should be shown in the frontend
+	 */
 	public String label;
+	
+	/**
+	 * the internal name of the parent of this group. This information is used to build the tree.
+	 */
 	public String parent;
 	
-	public @NotMaterialized List<FormatGroup> children;
-	public @NotMaterialized List<String> formats;
+	/**
+	 * list of children of this group. The list is derived from the parent field.
+	 */
+	public @NotMaterialized List<FormatGroup> children;		
 	
 	public static void add(FormatGroup record) throws InternalServerException {
 		Model.insert(collection, record);

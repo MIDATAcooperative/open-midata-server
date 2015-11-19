@@ -1,8 +1,27 @@
 package models.enums;
 
+/**
+ * Security level of a user account
+ *
+ */
 public enum AccountSecurityLevel {
-	NONE,            // Account is not protected by keypair
-	KEY,             // Account is protected by key in keystore
-	KEY_PASSPHRASE,  // Account is protected by key in keystore and passphrase
-	KEY_FILE         // Account is protected by externally stored keyfile	
+	/**
+	 *  Account is not protected by keypair
+	 */
+	NONE,            
+	
+	/**
+	 * Account is protected by key in keystore
+	 */
+	KEY,             
+	
+	/**
+	 * Account is protected by key in keystore and passphrase
+	 */
+	KEY_PASSPHRASE,  
+	
+	/**
+	 * Account is protected by externally stored keyfile (currently not supported)
+	 */
+	KEY_FILE         	
 }

@@ -13,7 +13,10 @@ import utils.DateTimeUtils;
 import utils.collections.CMaps;
 import utils.exceptions.InternalServerException;
 
-
+/**
+ * data model class for a MIDATA developer.
+ *
+ */
 public class Developer extends User {
 					
     public Developer() { }

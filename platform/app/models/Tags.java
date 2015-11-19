@@ -1,9 +1,20 @@
 package models;
 
+/**
+ * Tags that describe members. Currently not used
+ *
+ */
 public class Tags {
 
     private static final String collection = "tags";
 	
-	public String name; //unique. Keyword
-	public String description; //Description to be shown to users to make choice easier.
+    /**
+     * public unique name of tag
+     */
+	public String name;
+	
+	/**
+	 * textual description of task meaning
+	 */
+	public String description; 
 }

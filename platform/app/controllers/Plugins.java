@@ -48,6 +48,10 @@ import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * functions for managing MIDATA plugins
+ *
+ */
 public class Plugins extends APIController {
 	
 	/**

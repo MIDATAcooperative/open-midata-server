@@ -22,18 +22,47 @@ import utils.exceptions.InternalServerException;
 import utils.search.Search;
 import utils.search.Search.Type;
 
+/**
+ * Data model class for an access permission set.
+ *
+ */
 public class AccessPermissionSet extends Model {
 
 	private static final String collection = "aps";
 	
-	public boolean direct;
+	/**
+	 * security level of this APS.
+	 * NONE : APS not encrypted, records not encrypted
+	 * MEDIUM : APS is encrypted and all containing records are encrypted with the APS key
+	 * HIGH : APS is encrypted and each record is encrypted with its own key
+	 */
 	public APSSecurityLevel security = APSSecurityLevel.NONE;
+	
+	/**
+	 * timestamp of last change
+	 */
 	public long version;
 	
+	/**
+	 * key table. one entry for each entity that has access to this APS.
+	 * map keys are the object ids of the entities and the word "owner" for the owner of the APS.
+	 * each map value is the RSA encrypted AES key of this APS.
+	 */
 	public Map<String, byte[]> keys;
+	
+	/**
+	 * the encrypted body of this APS
+	 */
 	public byte[] encrypted;
+	
+	/**
+	 * the unencrypted body of this APS.
+	 */
 	public Map<String, Object> permissions;
 	
+	/**
+	 * additional blocks of data for this APS that need to be merged into this part (the main part)
+	 */
 	public List<AccessPermissionSet> unmerged;
 	
 	public static void add(AccessPermissionSet aps) throws InternalServerException {

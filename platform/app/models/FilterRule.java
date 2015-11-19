@@ -9,6 +9,11 @@ import utils.db.NotMaterialized;
 
 import models.enums.FilterRuleType;
 
+/**
+ * data model for a filter rule that is used to find participants for a study.
+ * Currently not used.
+ *
+ */
 public class FilterRule implements JsonSerializable {			
 	public FilterRuleType type; //Does this filter select data records or members from the database?
 	public String name; //Name of filter class implementation to use in order to evaluate this filter

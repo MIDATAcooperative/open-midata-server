@@ -9,12 +9,27 @@ import utils.collections.CMaps;
 import utils.exceptions.InternalServerException;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
-import models.enums.SpaceType;
 
+/**
+ * data model class for a consent between a MIDATA member and a mobile application.
+ *
+ */
 public class MobileAppInstance extends Consent {
 
+	/**
+	 * public key of the application instance
+	 */
 	public byte[] publicKey;
+	
+	/**
+	 * id of the plugin
+	 */
 	public ObjectId applicationId;
+	
+	/**
+	 * id of the application instance. There is no corresponding database object. 
+	 * application instances ids are used in tokens
+	 */
 	public ObjectId appInstance;
 	
 	public MobileAppInstance() {

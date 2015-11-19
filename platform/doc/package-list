@@ -3,7 +3,6 @@ actions
 controllers
 controllers.admin
 controllers.apps
-controllers.common
 controllers.members
 controllers.providers
 controllers.research

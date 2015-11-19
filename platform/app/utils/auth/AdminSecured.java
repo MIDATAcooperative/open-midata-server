@@ -5,6 +5,10 @@ import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Security;
 
+/**
+ * This authenticator allows only ADMIN users
+ *
+ */
 public class AdminSecured extends Security.Authenticator {
 
 	@Override

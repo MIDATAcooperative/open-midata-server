@@ -16,8 +16,19 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public class AppToken {
 
+	/**
+	 * id of authorized app
+	 */
 	public ObjectId appId;
+	
+	/**
+	 * id of authorized user
+	 */
 	public ObjectId userId;
+	
+	/**
+	 * id of consent this form may push data into
+	 */
 	public ObjectId consentId;
 
 	public AppToken(ObjectId appId, ObjectId userId) {

@@ -10,7 +10,10 @@ import utils.collections.CMaps;
 import utils.exceptions.InternalServerException;
 
 
-
+/**
+ * A consent that shares data from a study to a group of study participants.
+ *
+ */
 public class StudyRelated extends Consent {
 
 	public ObjectId study;

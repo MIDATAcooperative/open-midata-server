@@ -17,8 +17,19 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public class PasswordResetToken {
 
+	/**
+	 * the id of the user
+	 */
 	public ObjectId userId;
+	
+	/**
+	 * the token
+	 */
 	public String token;
+	
+	/**
+	 * the role of the user
+	 */
 	public String role;
 	
 	static SecureRandom random = new SecureRandom();

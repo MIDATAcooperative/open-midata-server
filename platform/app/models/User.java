@@ -28,49 +28,175 @@ import utils.search.Search;
 import utils.search.Search.Type;
 import utils.search.SearchException;
 
+/**
+ * Data model class for any user of the platform.
+ *
+ */
 @JsonFilter("User")
 public class User extends Model implements Comparable<User> {
 
 	protected static final String collection = "users";
 	
-	public String email; // must be unique
+	/**
+	 * Email address of the user
+	 * 
+	 * (email, role) must be unique
+	 */
+	public String email; 
+	
+	/**
+	 * firstname lastname of the user
+	 * 
+	 * This field is not stored in the database but computed from firstname and lastname fields.
+	 */
 	public @NotMaterialized String name;
+	
+	/**
+	 * The password of the user.
+	 * 
+	 * Only a salted hash of the password is stored in the database.
+	 */
 	public String password;
+	
+	/**
+	 * The role of the user
+	 */
 	public UserRole role;
 	
+	/**
+	 * Account version timestamp. May be used for schema evolution
+	 */
 	public int accountVersion;
 	
+	/**
+	 * Message inbox. Currently not used. May be removed in the future.
+	 */
 	public Map<String, Set<ObjectId>> messages; // keys (folders) are: inbox, archive, trash
-	public Date login; // timestamp of last login
-	public Date registeredAt; // Date of registration
+	
+	/**
+	 * Timestamp of last login
+	 */
+	public Date login;
+	
+	/**
+	 * Timestamp of registration
+	 */
+	public Date registeredAt; 
 			
-	public String resettoken; // token to reset password
+	/**
+	 * Token for password reset.
+	 * 
+	 * Is only set if a reset token has been requested.
+	 */
+	public String resettoken; 
 	
-	public long resettokenTs; // timestamp of password reset token
+	/**
+	 * Timestamp of password reset token request
+	 */
+	public long resettokenTs; 
 	
-	public UserStatus status; //enum: new, active, blocked, deleted	1	-	new: account is new and match with real person is not yet confirmed
-    public ContractStatus contractStatus; //enum: new, printed, signed	1	-	
-    public String confirmationCode; //code needed to confirm account
+	/**
+	 * Status of user account
+	 */
+	public UserStatus status;
 	
-    public String firstname;	 
-	public String lastname;	 
-	public Gender gender;	 
+	/**
+	 * Status of contract of user with MIDATA
+	 */
+    public ContractStatus contractStatus; //enum: new, printed, signed	1	-
+    
+    /**
+     * Code needed to confirm account. Currently not used
+     */
+    public String confirmationCode; 
+	
+    /**
+     * First name of user
+     */
+    public String firstname;
+    
+    /**
+     * Last name of user
+     */
+	public String lastname;
+	
+	/**
+	 * Gender of user
+	 */
+	public Gender gender;
+	
+	/**
+	 * City of user address
+	 */
 	public String city;	 
+	
+	/**
+	 * Zip code of user address
+	 */
 	public String zip;	 
+	
+	/**
+	 * Country of user address
+	 */
 	public String country;
+	
+	/**
+	 * Address line 1 (Street) of user address
+	 */
 	public String address1;
+	
+	/**
+	 * Address line 2 of user address
+	 */
 	public String address2;
+	
+	/**
+	 * Phone number of user
+	 */
 	public String phone;
+	
+	/**
+	 * Mobile phone number of user
+	 */
 	public String mobile;
 	
+	/**
+	 * Security level of user account
+	 */
 	public AccountSecurityLevel security = AccountSecurityLevel.NONE;
+	
+	/**
+	 * Public key of user
+	 */
 	public byte[] publicKey;
 	
+	/**
+	 * History of important changes to user account
+	 */
 	public List<History> history;
 	
+	/**
+	 * Set of ids of installed forms/importers of the user
+	 */
 	public Set<ObjectId> apps; // installed apps
+	
+	/**
+	 * Security token map
+	 * 
+	 * Map is from plugin id to Map token name to token value
+	 */
 	public Map<String, Map<String, String>> tokens; // map from apps to app details
+	
+	/**
+	 * Set of ids of installed plugins
+	 */
 	public Set<ObjectId> visualizations; // installed visualizations
+	
+	/**
+	 * Queries for sharing records with consents
+	 * 
+	 * Map consent id to query map.
+	 */
 	public Map<String, Map<String, Object>> queries;
 
 	@Override

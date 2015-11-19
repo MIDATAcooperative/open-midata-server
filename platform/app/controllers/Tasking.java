@@ -13,7 +13,6 @@ import models.Space;
 import models.Task;
 import models.enums.AggregationType;
 import models.enums.Frequency;
-import models.enums.SpaceType;
 
 import org.bson.types.ObjectId;
 

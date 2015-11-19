@@ -4,6 +4,10 @@ import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Security;
 
+/**
+ * This authenticator allows all users that are logged in
+ *
+ */
 public class AnyRoleSecured extends Security.Authenticator {
 
 	@Override

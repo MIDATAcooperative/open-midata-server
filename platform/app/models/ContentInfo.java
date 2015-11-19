@@ -9,13 +9,28 @@ import utils.collections.Sets;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
+/**
+ * data model for data content types.
+ *
+ */
 public class ContentInfo extends Model {
 
 	private @NotMaterialized static final String collection = "contentinfo";
 	private @NotMaterialized static final Set<String> ALL = Sets.create("content","security","group");
 	
+	/**
+	 * the name of the content type this class describes
+	 */
 	public String content;	
+	
+	/**
+	 * the level of security this consent type should be handeled with
+	 */
 	public APSSecurityLevel security;
+	
+	/**
+	 * the name of the group where records with this content types should be placed in in the record tree
+	 */
 	public String group;
 	
 	public static String getWildcardName(String name) {

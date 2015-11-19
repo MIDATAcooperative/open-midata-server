@@ -12,15 +12,39 @@ import utils.search.Search;
 import utils.search.Search.Type;
 import utils.search.SearchException;
 
+/**
+ * Data model for a news item.
+ * Currently not used.
+ *
+ */
 public class NewsItem extends Model implements Comparable<NewsItem> {
 
 	private static final String collection = "news";
 
+	/**
+	 * the creator of the news item
+	 */
 	public ObjectId creator;
+	
+	/**
+	 * The date of creation of this news item
+	 */
 	public Date created;
+	
+	/**
+	 * The title of this news item
+	 */
 	public String title;
+	
+	/**
+	 * The content (text) of this news item
+	 */
 	public String content;
-	public boolean broadcast; // broadcast to all users
+	
+	/**
+	 * whether this should be broadcast to all users
+	 */
+	public boolean broadcast; 
 
 	@Override
 	public int compareTo(NewsItem other) {

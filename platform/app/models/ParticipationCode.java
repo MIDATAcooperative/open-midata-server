@@ -11,17 +11,48 @@ import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.InternalServerException;
 
+/**
+ * data model for a study participation code.
+ * Participation codes need to be remodelled.
+ *
+ */
 public class ParticipationCode extends Model {
 	
 	private static final String collection = "codes";
 	
+	/**
+	 * the code that needs to be entered 
+	 */
 	public String code; // unique code that needs to be entered by member to participate in study
+	
+	/**
+	 * the id of the study this code belongs to
+	 */
 	public ObjectId study; // references Study.	study this code belongs to
+	
+	/**
+	 * the id of the recruiter
+	 */
 	public ObjectId recruiter; // references User. recruiter who owns this code and may give this code to someone
+	
+	/**
+	 * firstname and lastname of the recruiter
+	 */
 	public String recruiterName; // replication of recruiter name
-	//public String recruiterName; //replicated for performance
+
+	/**
+	 * group of participants where the member should be added to
+	 */
 	public String group; // If study has separate groups of participants
-	public ParticipationCodeStatus status; 
+	
+	/**
+	 * status of this code
+	 */
+	public ParticipationCodeStatus status;
+	
+	/**
+	 * date of creation of this code
+	 */
 	public Date createdAt;
 	
 	public static void add(ParticipationCode participationCode) throws InternalServerException {

@@ -12,12 +12,23 @@ import utils.search.Search;
 import utils.search.SearchException;
 import utils.search.Search.Type;
 
+/**
+ * data model class for a research organization
+ *
+ */
 @JsonFilter("Research")
 public class Research extends Model {
 
 	 private static final String collection = "research";
 	
+	 /**
+	  * name of the research organization
+	  */
 	 public String name;
+	 
+	 /**
+	  * description text of the research organization
+	  */
 	 public String description;
 	 
 	 public static void add(Research research) throws InternalServerException {

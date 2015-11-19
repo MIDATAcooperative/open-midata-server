@@ -11,10 +11,28 @@ import utils.collections.ChainedMap;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * Mobile app instance token
+ * 
+ * This token is used to uniquely identify an application instance.
+ * This token can be exchanged into a session token when the user logs in on his mobile device
+ *
+ */
 public class MobileAppToken {
 
+	/**
+	 * the id of the application instance
+	 */
 	public ObjectId instanceId;
+	
+	/**
+	 * the id of the application
+	 */
 	public ObjectId appId;
+	
+	/**
+	 * the secret passphrase of the application instance
+	 */
 	public String phrase;	
 
 	public MobileAppToken(ObjectId appId, ObjectId instanceId, String phrase) {

@@ -16,46 +16,200 @@ import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 import utils.search.Search;
 
+/**
+ * data model for a record
+ *
+ */
 @JsonFilter("Record")
 public class Record extends Model implements Comparable<Record>, Cloneable {
 
 	private static final String collection = "records";
+	
+	/**
+	 * constant containing the set of all public field names
+	 */
 	public @NotMaterialized final static Set<String> ALL_PUBLIC = Sets.create("_id", "id", "owner",
 			"app", "creator", "created", "name", "format", "content", "description", "data", "group");
 
 	// Not encrypted part
-	public ObjectId stream; // series this record belongs to
+	
+	/**
+	 * the id of the stream this record belongs to.
+	 * 
+	 * This field is null for stream records.
+	 * This field is not encrypted but stored in the database
+	 */
+	public ObjectId stream; 
+	
+	/**
+	 * a rounded timestamp
+	 * 
+	 * This field is only set for records stored in MEDIUM security streams, otherwise it is 0.
+	 * This field is not encrypted but stored in the database.
+	 */
 	public long time;
+	
+	/**
+	 * the id of the document record this record belongs to.
+	 * 
+	 * This field is null for all records that are not part of a document
+	 * This field is not encrypted but stored in the database.
+	 * 
+	 */
 	public ObjectId document;
+	
+	/**
+	 * a part name for records that are part of a document,
+	 * 
+	 * This field is null for all records that are not part of a document
+	 * This field is not encrypted but stored in the database
+	 */
 	public String part;
+	
+	/**
+	 * the encrypted meta data of this record
+	 */
 	public byte[] encrypted;
+	
+	/**
+	 * the encrypted "data" field of this record
+	 */
 	public byte[] encryptedData;
+	
+	/**
+	 * this field is true for records stored in medium security streams
+	 */
 	public boolean direct;
 	
-	// Not materialized part (derived from APS)
+	/**
+	 * an alternative ID for this record that has the access permission set ID also encoded in the ID.
+	 * 
+	 * This field is computed upon request and is neither stored in the database nor contained in the encrypted part
+	 */
 	public @NotMaterialized String id;
+	
+	/**
+	 * the id of the owner of this record. 
+	 * 
+	 * The owner is the person the data of this record belongs to.
+	 * This field is neither stored in the database nor contained in the encrypted part of the record.
+	 * The owner information is derived from information of the APS this record is stored in or 
+	 * from the owner of the stream this record is stored in.
+	 */
 	public @NotMaterialized ObjectId owner; // person the record is about
+	
+	/**
+	 * firstname lastname of the owner of this record.
+	 * 
+	 * This field is neither stored in the database nor contained in the encrypted part of the record.
+	 * This field is computed upon request from the owner field
+	 */
 	public @NotMaterialized String ownerName;
+	
+	/**
+	 * firstname lastname of the creator of this record
+	 * 
+	 * This field is neither stored in the database nor contained in the encrypted part of the record.
+	 * This field is computed upon request from the creator field
+	 */
 	public @NotMaterialized String creatorName;
+	
+	/**
+	 * The AES key that is used to encrypt/decrypt this record
+	 * 
+	 * This field is neither stored in the database nor contained in the encrypted part of the record.
+	 * This field is stored in the APS this record is stored in
+	 * This field MUST be cleared by the RecordManager if the record is returned outside of the RecordManager. 
+	 */
 	public @NotMaterialized byte[] key;
-	public String format; // format of record
+	
+	/**
+	 * The format of the records data.
+	 * 
+	 * This is the syntactical data format.
+	 * This field is contained in the encrypted part of the record.
+	 */
+	public String format;
+	
+	/**
+	 * The content type of the records data.
+	 * 
+	 * This is the semantical data format.
+	 * This field is contained in the encrypted part of the record. 
+	 */
 	public String content;
+	
+	/**
+	 * The group name where the record will be placed in the record tree
+	 * 
+	 * This field is neither stored in the database nor contained in the encrypted part of the record.
+	 */
 	public @NotMaterialized String group;
 	
+	/**
+	 * Is this record a stream record?
+	 * 
+	 * This field is neither stored in the database nor contained in the encrypted part of the record.
+	 * This field is only internally used.
+	 */
 	public @NotMaterialized boolean isStream;
+	
+	/**
+	 * Is this record
+	 */
 	public @NotMaterialized boolean isReadOnly;
 	
 	// Encrypted part
-	public  ObjectId app; // app that created the record		
-	public  ObjectId creator; // user that imported the record	
-	public  Date created; // date + time created 
-	public  String createdOld; // date + time created TODO change to date
-	public  String name; // used to display a record and for autocompletion	
-	public  String description; // this will be indexed in the search cluster
-	public  Set<String> tags; // Optional tags describing the record
+	/**
+	 * the id of the plugin that created this record
+	 * 
+	 * The contents of this field is stored in the encrypted part of this record
+	 */
+	public  ObjectId app; 
 	
-	// Contents
-	public BSONObject data; // arbitrary json data
+	/**
+	 * the id of the user that created this record
+	 * 
+	 * The contents of this field is stored in the encrypted part of this record.
+	 * If the creator is the same as the owner the creator is not stored 	
+	 */
+	public  ObjectId creator; 
+	
+	/**
+	 * record creation timestamp
+	 * 
+	 * The contents of this field is stored in the encrypted part of this record
+	 */
+	public  Date created;  	
+	
+	/**
+	 * the title for this record
+	 * 
+	 * The contents of this field is stored in the encrypted part of this record
+	 */
+	public  String name; // used to display a record and for autocompletion
+	
+	/**
+	 * textual description of this record
+	 * 
+	 * The contents of this field is stored in the encrypted part of this record
+	 */
+	public  String description; 
+	
+	/**
+	 * optional set of tags describing the record
+	 * 
+	 * The contents of this field is stored in the encrypted part of this record
+	 */
+	public  Set<String> tags; 
+	
+	/**
+	 * the unencrypted record data. 
+	 * 
+	 * May be any JSON data.
+	 * The contents of this field is encrypted into encryptedData field and not directly stored in the database.
+	 */
+	public BSONObject data; 
 
 	@Override
 	public int compareTo(Record other) {

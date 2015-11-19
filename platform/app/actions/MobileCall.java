@@ -7,6 +7,10 @@ import java.lang.annotation.Target;
 
 import play.mvc.With;
 
+/**
+ * Annotation for use of the request wrapper for calls from external services
+ *
+ */
 @With(MobileCallAction.class)
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

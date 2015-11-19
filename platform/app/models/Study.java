@@ -21,28 +21,105 @@ import utils.collections.Sets;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
+/**
+ * data model class for a study
+ *
+ */
 @JsonFilter("Study")
 public class Study extends Model {
 	
 	private static final String collection = "studies";
+	
+	/**
+	 * constant set containing all fields
+	 */
 	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history", "groups");
 	
+	/**
+	 * name of study
+	 */
 	public String name;
+	
+	/**
+	 * code of study (currently not used)
+	 */
 	public String code;
-	public ObjectId owner; // references Research
-	public ObjectId createdBy; // references ResearchUser	 
+	
+	/**
+	 * id of research organization which does the study
+	 */
+	public ObjectId owner;
+	
+	/**
+	 * id of researcher who created the study
+	 */
+	public ObjectId createdBy; // references ResearchUser
+	
+	/**
+	 * date of creation of the study
+	 */
 	public Date createdAt;	 
-	public String description; //short public description of goals of study
+	
+	/**
+	 * textual description of the study
+	 */
+	public String description; 
+	
+	/**
+	 * additional informations about the study
+	 */
 	public List<Info> infos;
-	public Set<ObjectId> studyKeywords; //references StudyKeyword. Used to identify members as candidates if their participationInterest is set to 'some'
-	public Set<FilterRule> participantRules; //List of rules that members must satisfy to become participants
-	public Map<String, Object> recordQuery; // Query that determines which records a member must share during study execution	
+	
+	/**
+	 * ids of keywords describing the study
+	 * 
+	 * Used to identify members as candidates if their participationInterest is set to 'some' 
+	 */
+	public Set<ObjectId> studyKeywords; 
+	
+	/**
+	 * Filter rules that a members account must satisfy to become participant in this study
+	 */
+	public Set<FilterRule> participantRules; 
+	
+	/**
+	 * Query that determines which records a member must share during study execution 
+	 */
+	public Map<String, Object> recordQuery; 
+	
+	/**
+	 * Level of information required
+	 */
 	public InformationType requiredInformation;
+	
+	/**
+	 * Type of member assistance required
+	 */
 	public AssistanceType assistance;
-	public StudyValidationStatus validationStatus;	
+	
+	/**
+	 * Status of validation process
+	 */
+	public StudyValidationStatus validationStatus;
+	
+	/**
+	 * Status of participant search process
+	 */
 	public ParticipantSearchStatus participantSearchStatus;
+	
+	/**
+	 * Status of study execution
+	 */
 	public StudyExecutionStatus executionStatus;
+	
+	/**
+	 * Study change history
+	 */
     public List<History> history;
+    
+    /**
+     * Definition of groups of participants
+     */
     public List<StudyGroup> groups;
     
     public static void add(Study study) throws InternalServerException {

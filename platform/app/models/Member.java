@@ -16,18 +16,40 @@ import utils.search.Search;
 import utils.search.SearchException;
 import utils.search.Search.Type;
 
+/**
+ * data model class for a MIDATA member
+ *
+ */
 public class Member extends User {
 	
-	//public Map<String, Set<ObjectId>> visible; // map from users (DBObject requires string) to their shared records	
-	
-	public Set<ObjectId> news; // visible news items
-	public Set<ObjectId> pushed; // records pushed by apps (since last login)
-	public Set<ObjectId> shared; // records shared by users (since last login)
+	/**
+	 * ids of visible news items. Currently not used.
+	 */
+	public Set<ObjectId> news;
 		
+	/**
+	 * the public id of this member. The member may give this ID (together with the birthday) to a healthcare professional for identification.
+	 */
 	public String midataID;
+	
+	/**
+	 * the birthday of this member.
+	 */
 	public Date birthday;
-	public String ssn; // social security number
+	
+	/**
+	 * social security number. To be removed
+	 */
+	public String ssn; 
+	
+	/**
+	 * general level of interest in study participation
+	 */
 	public ParticipationInterest partInterest;
+	
+	/**
+	 * id of main APS. Is the same as the id of this object. Will be removed.
+	 */
 	public ObjectId myaps;
 	
 	public Member() {

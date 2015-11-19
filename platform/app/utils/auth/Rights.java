@@ -29,6 +29,10 @@ import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
 import models.enums.UserRole;
 
+/**
+ * class that defines which user role is allowed to do which actions and to query which fields
+ *
+ */
 public class Rights {
 
 	private static Map<String, Map<UserRole, Set<String>>> allowed;

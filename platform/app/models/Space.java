@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import models.enums.SpaceType;
-
 import org.bson.types.ObjectId;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
@@ -21,23 +19,66 @@ import utils.exceptions.InternalServerException;
 import utils.search.Search;
 import utils.search.SearchException;
 
+/**
+ * data model class for a "Space".
+ * 
+ * A Space is a tile in the frontend of a user that belongs to one plugin. 
+ * Each space has its own access permissions.
+ *
+ */
 @JsonFilter("Space")
 public class Space extends Model implements Comparable<Space> {
 
 	protected @NotMaterialized static final String collection = "spaces";
+	/**
+	 * constant set containing all fields of this class
+	 */
 	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name","owner", "visualization", "app", "order", "type", "context", "autoShare");
 
+	/**
+	 * the name of the space.
+	 * 
+	 * This is displayed as title for the tile in the dashboard
+	 */
 	public String name;
+	
+	/**
+	 * The id of the owner of the space.
+	 */
 	public ObjectId owner;
+	
+	/**
+	 * The id of the plugin that is used for displaying the contents of this space.
+	 */
 	public ObjectId visualization;
+	
+	/**
+	 * The id of the input form/importer that is used with this space. May be removed in the future.
+	 */
 	public ObjectId app;
+	
+	/**
+	 * The display order 
+	 */
 	public int order;
-	public SpaceType type;
+	
+	/**
+	 * The internal name of the dashboard where this space is displayed
+	 */
 	public String context;
+	
+	/**
+	 * a list of consent ids into which new records created in this space are automatically shared
+	 */
 	public Set<ObjectId> autoShare;
+	
+	/**
+	 * the filter query that is applied to the users main APS when querying data using this space.
+	 * 
+	 * This field is not directly stored in the database but in the APS that belongs to this space.
+	 */
 	public @NotMaterialized Map<String, Object> query;
 	
-	//public Set<ObjectId> records;
 
 	@Override
 	public int compareTo(Space other) {

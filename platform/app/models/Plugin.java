@@ -22,52 +22,153 @@ import utils.search.Search;
 import utils.search.SearchException;
 import utils.search.Search.Type;
 
+/**
+ * data model for a MIDATA plugin. This is the definition of a plugin.
+ *
+ */
 @JsonFilter("Plugin")
 public class Plugin extends Model implements Comparable<Plugin> {
 
 	private static final String collection = "plugins";
+	
+	/**
+	 * constant containing all fields visible to a developer
+	 */
 	public @NotMaterialized final static Set<String> ALL_DEVELOPER = 
 			 Sets.create("_id", "version", "creator", "filename", "name", "description", "tags", 
 	                     "targetUserRole", "spotlighted", "url", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret",
 	                     "requestTokenUrl", "scopeParameters", "secret", "developmentServer");
+	
+	/**
+	 * constant containing all fields visible to anyone
+	 */
 	public @NotMaterialized final static Set<String> ALL_PUBLIC = 
 			 Sets.create("_id", "version", "creator", "filename", "name", "description", "tags", 
 	                     "targetUserRole", "spotlighted", "url", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "consumerKey", "scopeParameters");
 	
+	/**
+	 * timestamp of last change. Used to prevent lost updates.
+	 */
 	public long version;
+	
+	/**
+	 * id of creator of this plugin
+	 */
 	public ObjectId creator;
+	
+	/**
+	 * internal name for this plugin
+	 */
 	public String filename;
+	
+	/**
+	 * public name of this plugin
+	 */
 	public String name;
+	
+	/**
+	 * description text of this plugin
+	 */
 	public String description;
+	
+	/**
+	 * set of tags that determine for which categories this plugin should be displayed in the market
+	 */
 	public Set<String> tags;
+	
+	/**
+	 * required role for users using this plugin. May be ANY. Developers may always test their own plugin.
+	 */
 	public UserRole targetUserRole;
+	
+	/**
+	 * Is this plugin displayed in the market
+	 */
 	public boolean spotlighted;
 	
+	/**
+	 * The URL from which this plugin is served. 
+	 * null for mobile apps
+	 */
 	public String url;
+	
+	/**
+	 * The URL from which a preview tile of this plugin is served.
+	 * null for all plugins that do not have a preview tile implemented
+	 */
 	public String previewUrl;
+	
+	/**
+	 * The default title for the tile where this plugin is displayed.
+	 * null for mobile apps
+	 */
 	public String defaultSpaceName;
+	
+	/**
+	 * The name of the default dashboard where this plugin should be added.
+	 * null for mobile apps
+	 */
 	public String defaultSpaceContext;
+	
+	/**
+	 * The default query to be executed to find records
+	 */
 	public Map<String, Object> defaultQuery;
 	
-	public String type; // type can be one of: visualization, create, oauth1, oauth2, mobile
+	/**
+	 * the type of the plugin
+	 * 
+	 * type can be one of: visualization, create, oauth1, oauth2, mobile
+	 */
+	public String type;
 		
+	/**
+	 * list of ids of other plugins that a user may like if he likes this plugin
+	 */
 	public List<ObjectId> recommendedPlugins;	
 	
-	// oauth 1.0/2.0 app
+	/**
+	 * for OAUTH 1.0 and 2.0 : authorization URL
+	 */
 	public String authorizationUrl;
+	
+	/**
+	 * for OAUTH 1.0 and 2.0 : access token URL
+	 */
 	public String accessTokenUrl;
+	
+	/**
+	 * for OAUTH 1.0 and 2.0 : consumer key
+	 */
 	public String consumerKey;
+	
+	/**
+	 * for OAUTH 1.0 and 2.0 : consumer secret
+	 */
 	public String consumerSecret;
-	// oauth 1.0 app
+	
+	/**
+	 * for OAUTH 1.0 only : request token URL
+	 */
 	public String requestTokenUrl;
-	// oauth 2.0 app
+	
+	/**
+	 * for OAUTH 2.0 only : scope parameters
+	 */
 	public String scopeParameters;
-	// mobile app
+	
+	/**
+	 * for mobile apps : secret needed for "init" request
+	 */
 	public String secret;
+	
+	/**
+	 * for development: localhost-URL-prefix to be used instead of plugin server domain for testing on local machine 
+	 */
 	public String developmentServer;
 
 	@Override

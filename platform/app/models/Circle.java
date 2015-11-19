@@ -18,11 +18,16 @@ import utils.exceptions.InternalServerException;
 import utils.search.Search;
 import utils.search.SearchException;
 
+/**
+ * Data model for "Circles". Circles are consents between members.
+ *
+ */
 public class Circle extends Consent implements Comparable<Circle> {
-		
-	public int order;
 	
-	//public ObjectId aps;
+	/**
+	 * display order field
+	 */
+	public int order;	
 
 	@Override
 	public int compareTo(Circle other) {

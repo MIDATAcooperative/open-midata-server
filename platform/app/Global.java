@@ -6,6 +6,10 @@ import utils.db.DatabaseException;
 import utils.json.CustomObjectMapper;
 import utils.search.Search;
 
+/**
+ * Actions that need to be done on application start and stop.
+ *
+ */
 public class Global extends GlobalSettings {
 
 	@Override

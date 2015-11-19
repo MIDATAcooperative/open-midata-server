@@ -7,6 +7,10 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 import play.Logger;
 
+/**
+ * Currently only used for debugging 
+ *
+ */
 public class AccessLog {
 
 	public static void apsAccess(ObjectId aps, ObjectId who) {

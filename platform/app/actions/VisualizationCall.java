@@ -7,6 +7,10 @@ import java.lang.annotation.Target;
 
 import play.mvc.With;
 
+/**
+ * Annotation for using the wrapper for plugin calls
+ *
+ */
 @With(VisualizationCallAction.class)
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

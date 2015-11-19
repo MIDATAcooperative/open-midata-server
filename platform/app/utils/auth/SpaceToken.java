@@ -11,12 +11,23 @@ import utils.collections.ChainedMap;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * Authorization token for visualizations to access a user's records assigned to a space.
+ * Authorization token for plugins to access a user's records assigned to a space.
  */
 public class SpaceToken {
 
+	/**
+	 * id of space
+	 */
 	public ObjectId spaceId;
+		
+	/**
+	 * id of user
+	 */
 	public ObjectId userId;
+	
+	/**
+	 * optional id of record if only access to a single record is allowed
+	 */
 	public ObjectId recordId;
 
 	public SpaceToken(ObjectId spaceId, ObjectId userId) {

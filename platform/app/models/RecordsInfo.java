@@ -7,14 +7,50 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 
+/**
+ * result of a summary query.
+ *
+ */
 public class RecordsInfo {
+	
+	/**
+	 * number of records summarized in this entry
+	 */
 	public int count;
+	
+	/**
+	 * creation time of oldest record summarized in this entry
+	 */
 	public Date oldest;
+	
+	/**
+	 * creation time of newest record summarized in this entry
+	 */
 	public Date newest;
+	
+	/**
+	 * calculation timestamp.
+	 */
 	public Date calculated;
+	
+	/**
+	 * set of all record formats of all records summarized in this entry
+	 */
 	public Set<String> formats;
+	
+	/**
+	 * set of all record content types of all records summarized in this entry
+	 */
 	public Set<String> contents;
+	
+	/**
+	 * set of all groups of all records summarized in this entry
+	 */
 	public Set<String> groups;
+	
+	/**
+	 * _id of newest record summarized in this entry
+	 */
 	public ObjectId newestRecord;	
 
 	

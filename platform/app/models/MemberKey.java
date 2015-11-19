@@ -14,13 +14,30 @@ import utils.collections.Sets;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
+/**
+ * data model for a consent between a MIDATA member and a healthcare professional.
+ *
+ */
 public class MemberKey extends Consent {
 		
-
+    /**
+     * constant with a fields of this type of consent
+     */
 	public @NotMaterialized final static Set<String> ALL = Sets.create("_id", "name", "owner", "organization", "authorized", "type", "status", "confirmDate", "comment");
+	
+	/**
+	 * id of organization of the healthcare provider
+	 */
 	public ObjectId organization;	
-	//public Map<String,String> key; //key used to identify this member
+
+	/**
+	 * date of confirmation of this consent
+	 */
 	public Date confirmDate;
+	
+	/**
+	 * comment about this consent
+	 */
 	public String comment;	
 	
 	public MemberKey() {

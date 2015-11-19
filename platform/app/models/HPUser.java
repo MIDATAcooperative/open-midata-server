@@ -18,10 +18,20 @@ import utils.search.Search;
 import utils.search.SearchException;
 import utils.search.Search.Type;
 
+/**
+ * data model class for a health professional (person)
+ *
+ */
 public class HPUser extends User {
 	
-			
+	/**
+	 * id of corresponding healthcare provider		
+	 */
 	public ObjectId provider;
+	
+	/**
+	 * sub role (doctor, nurse, monitor,...)
+	 */
 	public SubUserRole subrole;
 	
     public HPUser() { }

@@ -6,6 +6,10 @@ import play.mvc.Security;
 import play.mvc.Http.Context;
 import controllers.routes;
 
+/**
+ * This authenticator allows only researchers as users
+ *
+ */
 public class ResearchSecured extends Security.Authenticator {
 
 	@Override

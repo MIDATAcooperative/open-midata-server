@@ -11,10 +11,25 @@ import utils.collections.CMaps;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * Session authentication token for mobile apps
+ *
+ */
 public class MobileAppSessionToken {
 
+	/**
+	 * the id of the application instance
+	 */
 	public ObjectId appInstanceId;
+	
+	/**
+	 * the secret passphrase for this application instance
+	 */
 	public String passphrase;
+	
+	/**
+	 * the creation timestamp of the token
+	 */
 	public long created;
 
 	public MobileAppSessionToken(ObjectId appInstanceId, String phrase, long created) {
