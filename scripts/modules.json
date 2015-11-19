@@ -9,6 +9,11 @@
 		"class": "MongoDB",
 		"startOrder": 1
 	},
+	"plugins": {
+		"module": "scripts.plugins",
+		"class": "Plugins",
+		"startOrder": 1
+	},
 	"elasticsearch": {
 		"module": "scripts.elasticsearch",
 		"class": "ElasticSearch",
