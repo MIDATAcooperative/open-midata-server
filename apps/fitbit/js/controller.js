@@ -155,6 +155,26 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 
 		// get authorization token
 		var authToken = $location.path().split("/")[1];
+		
+		$scope.initForm = function() {
+			var data = {
+				"authToken": authToken,
+				"url": baseUrl + "/1/user/-/profile.json"
+			};
+									
+			$http.post("https://" + window.location.hostname + ":9000/api/apps/oauth2", data).
+			success(function(response) {
+			  console.log(response);
+			  if (response.user && response.user.memberSince) {
+				  $("#fromDate").datepicker("setDate", new Date(response.user.memberSince));
+				  
+				  var yesterday = new Date();
+				  yesterday.setDate(yesterday.getDate() - 1);
+				  $("#toDate").datepicker("setDate", yesterday); 
+			  }
+			});
+			
+		};
 
 		// start the importing of records
 		$scope.startImport = function() {
@@ -188,7 +208,46 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 			$scope.saving = true;
 			$scope.saved = 0;
 
+			var formattedFromDate = fromDate.getFullYear() + "-" + twoDigit(fromDate.getMonth() + 1) + "-" + twoDigit(fromDate.getDate());
+			var formattedEndDate = toDate.getFullYear() + "-" + twoDigit(toDate.getMonth() + 1) + "-" + twoDigit(toDate.getDate());
+			
+			var data = {
+					"authToken": authToken,
+					"url": baseUrl + $scope.measure.endpoint.replace("{date}", formattedFromDate).replace("1d", formattedEndDate)
+			};
+			
+			
+			$scope.requested += 1;
+			$http.post("https://" + window.location.hostname + ":9000/api/apps/oauth2", data).
+			success(function(response) {
+					// check if an error was returned
+				if (response.errors) {
+					errorMessage("Failed to import data on " + formattedDate + ": " + response.errors[0].message + ".");
+				} else {
+					console.log(response);
+					angular.forEach(response, function(v,dataName) {
+						var grouped = {};
+						
+						angular.forEach(v, function(itm) {							
+						  var recDate = itm.dateTime || itm.date;
+						  if (grouped[recDate] == null) grouped[recDate] = [];
+						  grouped[recDate].push(itm);						
+						});						
+						
+						angular.forEach(grouped, function(itms, date) {
+							var rec = {};
+							rec[dataName] = itms;
+							saveRecord($scope.measure.title, $scope.measure.content, date, rec);
+						});
+					});				
+				}
+			}).
+			error(function(err) {
+					errorMessage("Failed to import data on " + formattedDate + ": " + err);
+			});
+			
 			// import records explicitly for each day (we want to store it in that granularity)
+			/*
 			for (var curDate = fromDate; curDate <= toDate; curDate.setDate(curDate.getDate() + 1)) {
 				// capture loop variable 'curDate'
 				(function(date) {
@@ -198,7 +257,7 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 						"url": baseUrl + $scope.measure.endpoint.replace("{date}", formattedDate)
 					};
 					$scope.requested += 1;
-					$http.post("https://" + window.location.hostname + ":9000/api/apps/oauth1", data).
+					$http.post("https://" + window.location.hostname + ":9000/api/apps/oauth2", data).
 						success(function(response) {
 							// check if an error was returned
 							if (response.errors) {
@@ -212,6 +271,9 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 						});
 					})(curDate);
 			}
+			*/
+			
+			
 			$scope.requesting = false;
 		}
 
@@ -257,5 +319,7 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 				$scope.saving = false;
 			}
 		}
+		
+		$scope.initForm();
 	}
 ]);
