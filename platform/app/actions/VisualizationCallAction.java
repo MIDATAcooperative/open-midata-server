@@ -6,6 +6,7 @@ import play.libs.Json;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
+import utils.access.AccessLog;
 import utils.access.RecordManager;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -25,9 +26,10 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
     	  JsonNode json = ctx.request().body().asJson();
     	  ctx.args.put("json", json);
     	  String host = ctx.request().getHeader("Origin");
+    	  AccessLog.debug("VA:"+host);
     	  String visualizationsServer = "https://" + Play.application().configuration().getString("visualizations.server");
     	  if (host != null) {
-	  		  if (host.startsWith("https://localhost:") || host.startsWith("http://localhost:") || host.equals(visualizationsServer)) {
+	  		  if (host.startsWith("https://localhost:") || host.startsWith("http://localhost:") || host.equals("https://demo.midata.coop") || host.equals(visualizationsServer)) {
 	  		    ctx.response().setHeader("Access-Control-Allow-Origin", host);
 	  		  } else ctx.response().setHeader("Access-Control-Allow-Origin", visualizationsServer);
     	  }

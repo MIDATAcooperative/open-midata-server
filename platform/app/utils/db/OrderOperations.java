@@ -8,6 +8,10 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoException;
 
+/**
+ * Helper functions for ordered objects
+ *
+ */
 public class OrderOperations {
 
 	/**

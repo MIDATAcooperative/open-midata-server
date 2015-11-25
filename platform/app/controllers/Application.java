@@ -67,7 +67,7 @@ public class Application extends APIController {
 	 */
 	public static Result checkPreflight(String all) {		
 		String host = request().getHeader("Origin");		
-		if (host.startsWith("http://localhost:") || host.equals("https://demo.midata.coop")) {
+		if (host.startsWith("http://localhost:") || host.equals("https://demo.midata.coop") || host.equals("https://demo.midata.coop:9002")) {
 		    response().setHeader("Access-Control-Allow-Origin", host);
 		} else response().setHeader("Access-Control-Allow-Origin", "https://demo.midata.coop");
         response().setHeader("Allow", "*");
@@ -316,7 +316,7 @@ public class Application extends APIController {
 				// Apps								
 				controllers.routes.javascript.Apps.getUrl(),
 				controllers.routes.javascript.Apps.getPreviewUrl(),
-				controllers.routes.javascript.Apps.getUrlForConsent(),
+				controllers.routes.javascript.Plugins.getUrlForConsent(),
 				controllers.routes.javascript.Plugins.requestAccessTokenOAuth2(),
 				controllers.routes.javascript.Plugins.getRequestTokenOAuth1(),
 				controllers.routes.javascript.Plugins.requestAccessTokenOAuth1(),

@@ -257,9 +257,7 @@ public class MobileAPI extends Controller {
 		if (!json.get("data").isTextual() || !json.get("name").isTextual() || !json.get("description").isTextual()) {
 			return badRequest("At least one request parameter is of the wrong type.");
 		}
-		
-		Map<String,String> tokens = targetUser.tokens.get(appId.toString());		
-		
+				
 		String data = JsonValidation.getString(json, "data");
 		String name = JsonValidation.getString(json, "name");
 		String description = JsonValidation.getString(json, "description");

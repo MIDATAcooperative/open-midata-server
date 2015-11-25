@@ -8,9 +8,10 @@ angular.module('services')
 		return server.post(jsRoutes.controllers.Records.getRecords().url, JSON.stringify(data));
 	};
 	
-	service.getInfos = function(aps, properties) {
+	service.getInfos = function(aps, properties, summarize) {
 		var data = {"properties": properties};
 		if (aps != null) data.aps = aps;
+		if (summarize != null) data.summarize = summarize;
 		return server.post(jsRoutes.controllers.Records.getInfo().url, JSON.stringify(data));
 	};
 	

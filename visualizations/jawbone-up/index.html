@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Import Jawbone Data</title>
+		<link rel="stylesheet" href="css/datepicker3.css">
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+		<!-- jQuery needed for Bootstrap's JavaScript plugins -->
+		<script type="text/javascript" src="//code.jquery.com/jquery-2.0.2.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
+		<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js" defer></script>
+		<!-- Ignoring locales for now -->
+		<script type="text/javascript" src="js/bootstrap-datepicker.js" defer></script>
+		<script type="text/javascript" src="js/controller.js" defer></script>
+	</head>
+	<body>
+		<div ng-app="jawbone-up" ng-controller="ImportCtrl" ng-cloak>
+			<div class="page-header">
+				<h1>Import a record</h1>
+			</div>
+			<div class="alert alert-danger alert-dismissable" ng-show="error.message || error.messages.length">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+				<p>{{error.message}}</p>
+				<ul>
+					<li ng-repeat="err in error.messages">{{err}}</li>
+				</ul>
+			</div>
+			<p ng-show="status">{{status}}</p>
+			<form class="form-inline">
+				<div class="form-group" ng-class="{'has-error': error.measure}">
+					<select class="form-control" ng-model="measure" ng-options="measurement.name for measurement in measurements">
+						<option value="">Choose a category</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<div id="datepicker" class="input-daterange input-group" ng-class="{'has-error': error.date}">
+						<input type="text" id="fromDate" class="form-control" placeholder="start" ng-model="fromDate" />
+						<span class="input-group-addon">to</span>
+						<input type="text" id="toDate" class="form-control" placeholder="end" ng-model="toDate" />
+					</div>
+				</div>
+				<button type="button" class="btn btn-primary" ng-click="startImport()" ng-disabled="saving">Import data</button>
+			</form>
+			<p ng-show="saving">Requested {{requested}} records from Jawbone. {{saved}} records saved to database.</p>
+		</div>
+	</body>
+</html>

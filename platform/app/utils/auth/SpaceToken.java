@@ -29,11 +29,23 @@ public class SpaceToken {
 	 * optional id of record if only access to a single record is allowed
 	 */
 	public ObjectId recordId;
+	
+	/**
+	 * optional id of plugin
+	 */
+	public ObjectId pluginId;
 
 	public SpaceToken(ObjectId spaceId, ObjectId userId) {
 		this.spaceId = spaceId;
 		this.userId = userId;
 		this.recordId = null;
+	}
+	
+	public SpaceToken(ObjectId spaceId, ObjectId userId, ObjectId recordId, ObjectId pluginId) {
+		this.spaceId = spaceId;
+		this.userId = userId;
+		this.recordId = recordId;
+		this.pluginId = pluginId;
 	}
 	
 	public SpaceToken(ObjectId spaceId, ObjectId userId, ObjectId recordId) {
@@ -45,7 +57,8 @@ public class SpaceToken {
 	public String encrypt() {
 		Map<String, String> map = new ChainedMap<String, String>().put("instanceId", spaceId.toString()).put("userId", userId.toString())
 				.get();
-		if (recordId != null) map.put("recordId", recordId.toString());
+		if (recordId != null) map.put("r", recordId.toString());
+		if (pluginId != null) map.put("p", pluginId.toString());
 		String json = Json.stringify(Json.toJson(map));
 		return Crypto.encryptAES(json);
 	}
@@ -60,8 +73,9 @@ public class SpaceToken {
 			JsonNode json = Json.parse(plaintext);
 			ObjectId spaceId = new ObjectId(json.get("instanceId").asText());
 			ObjectId userId = new ObjectId(json.get("userId").asText());
-			ObjectId recordId = json.has("recordId") ? new ObjectId(json.get("recordId").asText()) : null;
-			return new SpaceToken(spaceId, userId, recordId);
+			ObjectId recordId = json.has("r") ? new ObjectId(json.get("r").asText()) : null;
+			ObjectId pluginId = json.has("p") ? new ObjectId(json.get("p").asText()) : null;
+			return new SpaceToken(spaceId, userId, recordId, pluginId);
 		} catch (Exception e) {
 			return null;
 		}

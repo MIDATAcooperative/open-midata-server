@@ -138,7 +138,7 @@ public class Tasking extends APIController {
 		ObjectId taskId = new ObjectId(taskIdStr);
 		
 		Task task = Task.getByIdAndOwner(taskId, userId, Sets.create("owner", "createdBy", "plugin", "shareBackTo", "createdAt", "deadline", "context", "title", "description", "pluginQuery", "confirmQuery", "frequency", "done"));
-		Plugin plugin = Plugin.getById(task.plugin, Sets.create("defaultQuery"));
+		Plugin plugin = Plugin.getById(task.plugin, Sets.create("defaultQuery", "type"));
 		if (plugin == null) return badRequest("Unknown plugin in task.");
 		
 		Set<Space> spaces = Space.getAll(CMaps.map("owner", userId).map("context", task.context).map("visualization", task.plugin).map("autoShare", task.shareBackTo), Sets.create("name", "owner", "visualization", "app", "order", "type", "context", "autoShare"));
@@ -147,7 +147,7 @@ public class Tasking extends APIController {
 		Space space = null;
 		if (!spaces.isEmpty()) space = spaces.iterator().next();
 		
-		if (space == null) space = Spaces.add(userId, task.title, task.plugin, null, task.context);
+		if (space == null) space = Spaces.add(userId, task.title, task.plugin, plugin.type, task.context);
 		
 		if (task.shareBackTo != null) {
 			if (space.autoShare == null) space.autoShare = new HashSet<ObjectId>();

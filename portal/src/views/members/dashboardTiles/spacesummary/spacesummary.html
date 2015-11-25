@@ -2,16 +2,22 @@
 
   <loader busy="status.isBusy !== false">
  
-  <div ng-show="!url" class="body">
+  <div ng-show="!url && previewType=='visualization'" class="body">
      <div class="text-center lead"><span class="bignumber">{{ count }}</span> Records to view.</div> 
      <div ng-show="last" class="text-center">Last entry at <b>{{ last | date }}</b>.</div>
      <div class="extraspace"></div>     
   </div>
   
+  <div ng-show="!url && (previewType=='oauth2' || previewType=='oauth2' || previewType=='create') " class="body body-center">
+     <div ng-hide="last" class="text-center lead">No entries yet</div>     
+     <div ng-show="last" class="text-center lead">Newest entry from</div>
+     <div ng-show="last" class="text-center lead"><b>{{ last | date }}</b>.</div>
+     <div class="extraspace"></div>     
+  </div>
+  
   <div ng-if="url" class="body"><div class="preview"><iframe class="frame" ng-src="{{url}}" ng-cloak></iframe></div></div>
 
-  <div class="footer text-center"> 
-      <button ng-show="view.setup.appId" class="btn btn-default" ng-click="showCreate()">Add</button>
+  <div ng-if="!url || previewType != 'create'" class="footer text-center">      
       <button class="btn btn-default" ng-click="showSpace()">View</button>
   </div>
   </loader>

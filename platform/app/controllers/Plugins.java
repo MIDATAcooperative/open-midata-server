@@ -1,5 +1,7 @@
 package controllers;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,9 +14,11 @@ import models.User;
 import models.Space;
 import models.enums.UserRole;
 
+import org.bson.BSONObject;
 import org.bson.types.ObjectId;
 
 import play.Play;
+import play.libs.F;
 import play.libs.Json;
 import play.libs.F.Function;
 import play.libs.F.Function0;
@@ -29,9 +33,13 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.access.AccessLog;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
+import utils.auth.AppToken;
 import utils.auth.Rights;
+import utils.auth.SpaceToken;
+import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
@@ -47,6 +55,7 @@ import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * functions for managing MIDATA plugins
@@ -113,7 +122,7 @@ public class Plugins extends APIController {
 		boolean applyRules = JsonValidation.getBoolean(json, "applyRules");
 		//boolean createSpace = JsonValidation.getBoolean(json, "createSpace");
 		
-		Plugin visualization = Plugin.getById(visualizationId, Sets.create("defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator"));
+		Plugin visualization = Plugin.getById(visualizationId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator"));
 		if (visualization == null) return badRequest("Unknown visualization");
 		
 		User user = User.getById(userId, Sets.create("visualizations","apps", "role"));
@@ -124,7 +133,7 @@ public class Plugins extends APIController {
 			return badRequest("Visualization is for a different role."+user.role);
 		}
 		
-		if (visualization.type.equals("visualization")) {
+		if (visualization.type.equals("visualization") ) {
 			user.visualizations.add(visualizationId);
 			User.set(userId, "visualizations", user.visualizations);
 		} else {
@@ -134,13 +143,14 @@ public class Plugins extends APIController {
 		
 		String context = json.has("context") ? JsonValidation.getString(json, "context") : visualization.defaultSpaceContext;
 		
-		if (visualization.type.equals("visualization")) { 
-					
-			if (spaceName!=null && !spaceName.equals("")) {
-				Space space = null;
-				space = Spaces.add(userId, spaceName, visualizationId, null, context);
+		if (!visualization.type.equals("mobile")) { 
+		    if (spaceName == null || spaceName.equals("")) spaceName = visualization.name;
+			
+			
+			Space space = null;
+			space = Spaces.add(userId, spaceName, visualizationId, visualization.type, context);
 
-				if (applyRules && space!=null) {
+			if (applyRules && space!=null) {
 					
 					if (json.has("query")) {
 					  Map<String, Object> query = JsonExtraction.extractMap(json.get("query"));
@@ -149,8 +159,8 @@ public class Plugins extends APIController {
 					  RecordManager.instance.shareByQuery(userId, userId, space._id, visualization.defaultQuery);
 					  
 					}
-				}
 			}
+			
 	
 		} 
 						
@@ -185,17 +195,22 @@ public class Plugins extends APIController {
 		return ok(Json.toJson(isInstalled));
 	}
 	
+	
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result isAuthorized(String visualizationIdString) throws InternalServerException {
+	public static Promise<Result> isAuthorized(String spaceIdString) throws AppException {
 		ObjectId userId = new ObjectId(request().username());				
-			
-		User me = User.getById(userId, Sets.create("tokens"));
-		if (me == null) return badRequest("User not found");
-		boolean isInstalled = me.tokens.containsKey(visualizationIdString);			
-	
-		return ok(Json.toJson(isInstalled));
+							
+		BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new ObjectId(spaceIdString), "_oauth");
+		if (oauthmeta == null) return F.Promise.pure((Result) ok(Json.toJson(false))); 
+		 		
+	    if (oauthmeta.containsField("refreshToken")) {
+	      return requestAccessTokenOAuth2FromRefreshToken(spaceIdString, oauthmeta.toMap(), (Result) ok(Json.toJson(true)));
+	    } else {		
+		  return F.Promise.pure((Result) ok(Json.toJson(true)));
+	    }
 	}
+	
 
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
@@ -207,6 +222,35 @@ public class Plugins extends APIController {
 		
 		String visualizationServer = Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename;
 		String url = "https://" + visualizationServer  + "/" + visualization.url;
+		return ok(url);
+	}
+	
+	/**
+     * retrieve URL to be used for an input form that may add data to the data set of a specific consent. Includes access token for this input form and user	
+     * @param appIdString - ID of input form
+     * @param consentIdString - ID of consent
+     * @return URL
+     */
+	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
+	public static Result getUrlForConsent(String appIdString, String consentIdString) throws AppException {
+		// get app
+		ObjectId appId = new ObjectId(appIdString);
+		ObjectId consentId = new ObjectId(consentIdString);
+		ObjectId userId = new ObjectId(request().username());				
+		Plugin app = Plugins.getPluginAndCheckIfInstalled(appId, userId, Sets.create("filename", "type", "url", "creator"));
+		
+		// create encrypted authToken
+		SpaceToken appToken = new SpaceToken(consentId, userId, null, appId);
+		String authToken = appToken.encrypt();
+
+        boolean testing = session().get("role").equals(UserRole.DEVELOPER.toString()) && app.creator.equals(userId) && app.developmentServer != null && app.developmentServer.length()> 0;
+		
+		String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + app.filename;
+		if (testing) visualizationServer = app.developmentServer;
+		String url =  visualizationServer  + "/" + app.url;
+		url = url.replace(":authToken", appToken.encrypt());
+		
 		return ok(url);
 	}
 	
@@ -234,16 +278,21 @@ public class Plugins extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result requestAccessTokenOAuth1(String appIdString) throws JsonValidationException, InternalServerException {
+	public static Result requestAccessTokenOAuth1(String spaceIdString) throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "code");
-		
+						
 		// get app details
-		final ObjectId appId = new ObjectId(appIdString);
+		final ObjectId spaceId = new ObjectId(spaceIdString);
 		final ObjectId userId = new ObjectId(request().username());
-		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", appId).get();
-		Set<String> fields = new ChainedSet<String>().add("accessTokenUrl").add("consumerKey").add("consumerSecret").get();
+		
+		Space space  = Space.getByIdAndOwner(spaceId, userId, Sets.create("visualization", "type"));
+		if (space == null) throw new InternalServerException("error.internal", "Unknown Space");
+		if (!space.type.equals("oauth1")) throw new InternalServerException("error.internal", "Wrong type");
+				
+		Map<String, Object> properties = CMaps.map("_id", space.visualization);
+		Set<String> fields = Sets.create("accessTokenUrl", "consumerKey", "consumerSecret");
 		Plugin app = Plugin.get(properties, fields);
 		
 		// request access token
@@ -254,10 +303,11 @@ public class Plugins extends APIController {
 		RequestToken accessToken = client.retrieveAccessToken(requestToken, json.get("code").asText());
 
 		// save token and secret to database
-		
-		Map<String, String> tokens = new ChainedMap<String, String>().put("oauthToken", accessToken.token)
-			.put("oauthTokenSecret", accessToken.secret).get();
-		Users.setTokens(userId, appId, tokens);
+				
+		Map<String, Object> tokens = CMaps.map("appId",space.visualization)
+				                          .map("oauthToken", accessToken.token)
+			                              .map("oauthTokenSecret", accessToken.secret);
+		RecordManager.instance.setMeta(userId, spaceId, "_oauth", tokens);
 		
 		return ok();
 	}
@@ -265,7 +315,7 @@ public class Plugins extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Promise<Result> requestAccessTokenOAuth2(String appIdString) {
+	public static Promise<Result> requestAccessTokenOAuth2(String spaceIdString) throws AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		try {
@@ -278,28 +328,29 @@ public class Plugins extends APIController {
 			});
 		}
 
-		// get app details
-		final ObjectId appId = new ObjectId(appIdString);
+		// get app details			
+		final ObjectId spaceId = new ObjectId(spaceIdString);
 		final ObjectId userId = new ObjectId(request().username());
-		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", appId).get();
-		Set<String> fields = new ChainedSet<String>().add("accessTokenUrl").add("consumerKey").add("consumerSecret").get();
-		Plugin app;
-		try {
-			app = Plugin.get(properties, fields);
-		} catch (final InternalServerException e) {
-			return Promise.promise(new Function0<Result>() {
-				public Result apply() {
-					return internalServerError(e.getMessage());
-				}
-			});
-		} 
-
-		// request access token
-		Promise<WSResponse> promise = WS.url(app.accessTokenUrl).setQueryParameter("client_id", app.consumerKey)
-				.setQueryParameter("client_secret", app.consumerSecret).setQueryParameter("grant_type", "authorization_code")
-				.setQueryParameter("code", json.get("code").asText()).get();
+				
+		Space space  = Space.getByIdAndOwner(spaceId, userId, Sets.create("visualization", "type"));
+		if (space == null) throw new InternalServerException("error.internal", "Unknown Space");
+		if (!space.type.equals("oauth2")) throw new InternalServerException("error.internal", "Wrong type");
+					
+		final ObjectId appId = space.visualization;
+		Map<String, Object> properties = CMaps.map("_id", space.visualization);
+		Set<String> fields = Sets.create("accessTokenUrl", "consumerKey", "consumerSecret");
+		Plugin app = Plugin.get(properties, fields);
+				
+        try {
+		// request access token	
+		Promise<WSResponse> promise = WS
+		   .url(app.accessTokenUrl)
+		   .setAuth(app.consumerKey, app.consumerSecret)
+		   .setContentType("application/x-www-form-urlencoded; charset=utf-8")
+		   .post("client_id="+app.consumerKey+"&grant_type=authorization_code&code="+json.get("code").asText()+"&redirect_uri="+URLEncoder.encode("https://demo.midata.coop/authorized.html", "UTF-8"));
 		return promise.map(new Function<WSResponse, Result>() {
-			public Result apply(WSResponse response) {
+			public Result apply(WSResponse response) throws AppException {
+				AccessLog.debug(response.getBody());
 				JsonNode jsonNode = response.asJson();
 				if (jsonNode.has("access_token") && jsonNode.get("access_token").isTextual()) {
 					String accessToken = jsonNode.get("access_token").asText();
@@ -307,18 +358,86 @@ public class Plugins extends APIController {
 					if (jsonNode.has("refresh_token") && jsonNode.get("refresh_token").isTextual()) {
 						refreshToken = jsonNode.get("refresh_token").asText();
 					}
-					try {
-						Map<String, String> tokens = new ChainedMap<String, String>().put("accessToken", accessToken)
-								.put("refreshToken", refreshToken).get();
-						Users.setTokens(userId, appId, tokens);
-					} catch (InternalServerException e) {
-						return badRequest(e.getMessage());
-					}
+					
+					Map<String, Object> tokens = CMaps.map("appId", appId)
+							                          .map("accessToken", accessToken)
+							                          .map("refreshToken", refreshToken);
+					RecordManager.instance.setMeta(userId, spaceId, "_oauth", tokens);
+					
 					return ok();
 				} else {
 					return badRequest("Access token not found.");
 				}
 			}
 		});
+        } catch (UnsupportedEncodingException e) { return null; }
+	}
+	
+	public static Result oauthInfo(Plugin plugin) {
+		ObjectNode result = Json.newObject();
+		result.put("appId", plugin._id.toString());
+		result.put("name", plugin.name);
+		result.put("type", plugin.type);
+		result.put("authorizationUrl", plugin.authorizationUrl);
+		result.put("consumerKey", plugin.consumerKey);
+		result.put("scopeParameters", plugin.scopeParameters);					
+		return ok(result);
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
+	public static Promise<Result> requestAccessTokenOAuth2FromRefreshToken(String spaceIdStr, Map<String, Object> tokens1, final Result result) {
+	
+		final Map<String, Object> tokens = tokens1;
+		
+		// get app details
+		final ObjectId appId = new ObjectId(tokens.get("appId").toString());
+		final ObjectId userId = new ObjectId(request().username());
+		final ObjectId spaceId = new ObjectId(spaceIdStr);
+		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", appId).get();
+		Set<String> fields = Sets.create("name", "accessTokenUrl", "consumerKey", "consumerSecret", "type");
+		
+		try {
+			final Plugin app = Plugin.get(properties, fields);
+			
+		
+		String refreshToken = tokens.get("refreshToken").toString();
+       
+		// request access token	
+		Promise<WSResponse> promise = WS
+		   .url(app.accessTokenUrl)
+		   .setAuth(app.consumerKey, app.consumerSecret)
+		   .setContentType("application/x-www-form-urlencoded; charset=utf-8")
+		   .post("client_id="+app.consumerKey+"&grant_type=refresh_token&refresh_token="+refreshToken);
+		return promise.map(new Function<WSResponse, Result>()  {
+			public Result apply(WSResponse response) throws AppException {
+				AccessLog.debug(response.getBody());
+				JsonNode jsonNode = response.asJson();
+				if (jsonNode.has("access_token") && jsonNode.get("access_token").isTextual()) {
+					String accessToken = jsonNode.get("access_token").asText();
+					if (jsonNode.has("refresh_token") && jsonNode.get("refresh_token").isTextual()) {
+						tokens.put("refreshToken", jsonNode.get("refresh_token").asText());
+					}
+					try {
+						tokens.put("accessToken", accessToken);
+						RecordManager.instance.setMeta(userId, spaceId, "_oauth", tokens);						
+					} catch (InternalServerException e) {
+						return badRequest(e.getMessage());
+					}
+					return result;
+				} else {
+					return oauthInfo(app);
+				}
+			}
+		});
+     
+		} catch (final InternalServerException e) {
+			return Promise.promise(new Function0<Result>() {
+				public Result apply() {
+					return internalServerError(e.getMessage());
+				}
+			});
+		}
 	}
 }

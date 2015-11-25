@@ -2,7 +2,7 @@ angular.module('portal')
 .config(function($stateProvider) {
 	   $stateProvider
 	    .state('member.importrecords', {
-	      url: '/import/:appId',
+	      url: '/import/:spaceId',
 	      templateUrl: 'views/members/importrecords/importrecords.html'
 	    });
 });

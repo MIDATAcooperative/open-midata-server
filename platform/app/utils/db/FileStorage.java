@@ -12,6 +12,10 @@ import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
 
+/**
+ * Access to GridFS for records with attached file data
+ *
+ */
 public class FileStorage {
 
 	private static final String FILE_STORAGE = "fs";

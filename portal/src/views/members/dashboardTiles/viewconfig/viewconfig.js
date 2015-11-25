@@ -67,7 +67,7 @@ angular.module('views')
 	    	   active : true,
 	    	   position : "small",
 	    	   actions : { /*big : "/members/spaces/" + space._id.$oid,*/ remove : { space : space._id.$oid } },
-	    	   setup : { allowSelection : false, spaceId : space._id.$oid, appId : (space.app ? space.app.$oid : null) }
+	    	   setup : { allowSelection : false, spaceId : space._id.$oid, spaceType : space.type }
 	     };
 	     views.layout.small.push(views.def(spacedef)); 
     };

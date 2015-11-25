@@ -1,5 +1,8 @@
 package controllers;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -8,6 +11,7 @@ import java.util.Set;
 import models.Consent;
 import models.LargeRecord;
 import models.Member;
+import models.Plugin;
 import models.Record;
 import models.Space;
 import models.enums.UserRole;
@@ -16,18 +20,33 @@ import org.bson.BSONObject;
 import org.bson.types.ObjectId;
 
 import play.libs.Json;
+import play.libs.F.Function;
+import play.libs.F.Function0;
+import play.libs.F.Promise;
+import play.libs.oauth.OAuth.ConsumerKey;
+import play.libs.oauth.OAuth.OAuthCalculator;
+import play.libs.oauth.OAuth.RequestToken;
+import play.libs.ws.WS;
+import play.libs.ws.WSRequestHolder;
+import play.libs.ws.WSResponse;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Http.MultipartFormData;
+import play.mvc.Http.MultipartFormData.FilePart;
 import utils.DateTimeUtils;
 import utils.access.AccessLog;
 import utils.access.RecordManager;
+import utils.auth.AppToken;
+import utils.auth.ExecutionInfo;
 import utils.auth.RecordToken;
 import utils.auth.Rights;
 import utils.auth.SpaceToken;
+import utils.collections.ChainedMap;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.db.FileStorage.FileData;
+import utils.db.DatabaseException;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -40,6 +59,7 @@ import actions.VisualizationCall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import com.mongodb.util.JSONParseException;
@@ -166,7 +186,7 @@ public class PluginsAPI extends Controller {
 		Space current = Space.getByIdAndOwner(spaceToken.spaceId, spaceToken.userId, Sets.create("context", "visualization", "app"));
 		if (current == null) throw new BadRequestException("error.space.missing", "The current space does no longer exist.");
 		
-		Space space = Spaces.add(spaceToken.userId, name, current.visualization, current.app, current.context);		
+		Space space = Spaces.add(spaceToken.userId, name, current.visualization, current.type, current.context);		
 		BSONObject bquery = RecordManager.instance.getMeta(spaceToken.userId, spaceToken.spaceId, "_query");		
 		Map<String, Object> query;
 		if (bquery != null) {
@@ -263,34 +283,17 @@ public class PluginsAPI extends Controller {
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken", "data", "name", "description", "format", "content");
 		
-		// decrypt authToken 
-		SpaceToken authToken = SpaceToken.decrypt(json.get("authToken").asText());
-		if (authToken == null) {
-			return badRequest("Invalid authToken.");
-		}
-		
+		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(json.get("authToken").asText());
+				
 		if (authToken.recordId != null) return badRequest("This view is readonly.");
-		
-		Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.userId, Sets.create("visualization", "app", "aps", "autoShare"));
-		if (space == null) throw new BadRequestException("error.space.missing", "The current space does no longer exist.");
-		
-		ObjectId appId = space.visualization;
-				
-		Member targetUser;
-		ObjectId targetAps = space._id;
-				
-		targetUser = Member.getById(authToken.userId, Sets.create("myaps", "tokens"));
-		if (targetUser == null) return badRequest("Invalid authToken.");
-		//owner = targetUser;
-		
-							
+								
+		ObjectId targetAps = authToken.targetAPS;
+															
 		// save new record with additional metadata
 		if (!json.get("data").isTextual() || !json.get("name").isTextual() || !json.get("description").isTextual()) {
 			return badRequest("At least one request parameter is of the wrong type.");
 		}
-		
-		Map<String,String> tokens = targetUser.tokens.get(appId.toString());		
-		
+							
 		String data = JsonValidation.getString(json, "data");
 		String name = JsonValidation.getString(json, "name");
 		String description = JsonValidation.getString(json, "description");
@@ -300,9 +303,9 @@ public class PluginsAPI extends Controller {
 		if (content==null) content = "other";
 		Record record = new Record();
 		record._id = new ObjectId();
-		record.app = appId;
-		record.owner = authToken.userId;
-		record.creator = authToken.userId;
+		record.app = authToken.pluginId;
+		record.owner = authToken.ownerId;
+		record.creator = authToken.executorId;
 		record.created = DateTimeUtils.now();
 		
 		if (json.has("created-override")) {
@@ -320,21 +323,211 @@ public class PluginsAPI extends Controller {
 		record.name = name;
 		record.description = description;
 		
-		RecordManager.instance.addRecord(targetUser._id, record);
+		if (authToken.space != null) {				
+		    RecordManager.instance.addRecord(authToken.executorId, record);
 				
-		Set<ObjectId> records = new HashSet<ObjectId>();
-		records.add(record._id);
-		RecordManager.instance.share(targetUser._id, targetUser._id, targetAps, records, false);
-		
-		if (space.autoShare != null && !space.autoShare.isEmpty()) {
-			for (ObjectId autoshareAps : space.autoShare) {
-				Consent consent = Consent.getByIdAndOwner(autoshareAps, targetUser._id, Sets.create("type"));
-				if (consent != null) { 
-				  RecordManager.instance.share(targetUser._id, targetUser._id, autoshareAps, records, true);
+			Set<ObjectId> records = new HashSet<ObjectId>();
+			records.add(record._id);
+			RecordManager.instance.share(authToken.executorId, authToken.ownerId, targetAps, records, false);
+			
+			if (authToken.space != null && authToken.space.autoShare != null && !authToken.space.autoShare.isEmpty()) {
+				for (ObjectId autoshareAps : authToken.space.autoShare) {
+					Consent consent = Consent.getByIdAndOwner(autoshareAps, authToken.ownerId, Sets.create("type"));
+					if (consent != null) { 
+					  RecordManager.instance.share(authToken.executorId, authToken.ownerId, autoshareAps, records, true);
+					}
 				}
 			}
+			
+		} else {
+			RecordManager.instance.addRecord(authToken.executorId, record, authToken.targetAPS);
 		}
-				
+							
 		return ok();
+	}
+	
+	/**
+	 * Helper method for OAuth 1.0 apps: Need to compute signature based on consumer secret, which should stay in the backend.
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@VisualizationCall
+	public static Promise<Result> oAuth1Call() throws AppException {
+	
+		// check whether the request is complete
+		JsonNode json = request().body().asJson();
+		try {
+			JsonValidation.validate(json, "authToken", "url");
+		} catch (JsonValidationException e) {
+			return badRequestPromise(e.getMessage());
+		}
+
+		// decrypt authToken and check whether a user exists who has the app installed
+		SpaceToken appToken = SpaceToken.decrypt(json.get("authToken").asText());
+		if (appToken == null) {
+			return badRequestPromise("Invalid authToken.");
+		}
+		
+		Map<String, String> tokens = RecordManager.instance.getMeta(appToken.userId, appToken.spaceId, "_oauth").toMap();
+				
+		String oauthToken, oauthTokenSecret, appId;
+		
+		oauthToken = tokens.get("oauthToken");
+		oauthTokenSecret = tokens.get("oauthTokenSecret");
+		appId = tokens.get("appId");
+		
+
+		// also get the consumer key and secret
+				
+		Plugin app;
+		try {			
+				app = Plugin.getById(new ObjectId(appId), Sets.create("consumerKey", "consumerSecret"));
+				if (app == null) return badRequestPromise("Invalid authToken");			
+		} catch (InternalServerException e) {
+			return badRequestPromise(e.getMessage());
+		}
+
+		// perform the api call
+		ConsumerKey key = new ConsumerKey(app.consumerKey, app.consumerSecret);
+		RequestToken token = new RequestToken(oauthToken, oauthTokenSecret);
+		return WS.url(json.get("url").asText()).sign(new OAuthCalculator(key, token)).get().map(new Function<WSResponse, Result>() {
+			public Result apply(WSResponse response) {
+				return ok(response.asJson());
+			}
+		});
+	}
+	
+	/**
+	 * Helper method for OAuth 2.0 apps: API calls can sometimes only be done from the backend. Uses the
+	 * "Authorization: Bearer [accessToken]" header.
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@VisualizationCall
+	public static Promise<Result> oAuth2Call() throws AppException {
+		
+		// check whether the request is complete
+		JsonNode json = request().body().asJson();
+		try {
+			JsonValidation.validate(json, "authToken", "url");
+		} catch (JsonValidationException e) {
+			return badRequestPromise(e.getMessage());
+		}
+
+		// decrypt authToken and check whether a user exists who has the app installed
+		SpaceToken appToken = SpaceToken.decrypt(json.get("authToken").asText());
+		if (appToken == null) {
+			return badRequestPromise("Invalid authToken.");
+		}
+		
+		Map<String, String> tokens = RecordManager.instance.getMeta(appToken.userId, appToken.spaceId, "_oauth").toMap();
+				
+		String accessToken;
+		accessToken = tokens.get("accessToken");
+					
+		// perform OAuth API call on behalf of the app
+		WSRequestHolder holder = WS.url(json.get("url").asText());
+		holder.setHeader("Authorization", "Bearer " + accessToken);
+		Promise<Result> promise = holder.get().map(new Function<WSResponse, Result>() {
+			public Result apply(WSResponse response) {
+				return ok(response.asJson());
+			}
+		});
+		return promise;
+	}
+	
+	/**
+	 * Accepts and stores files up to sizes of 2GB.
+	 */
+	public static Result uploadFile() throws AppException {
+		// allow cross origin request from app server
+		//String appServer = Play.application().configuration().getString("apps.server");
+		//response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
+		response().setHeader("Access-Control-Allow-Origin", "*");
+
+		// check meta data
+		MultipartFormData formData = request().body().asMultipartFormData();
+		Map<String, String[]> metaData = formData.asFormUrlEncoded();
+		if (!metaData.containsKey("authToken") || !metaData.containsKey("name") || !metaData.containsKey("description")) {
+			return badRequest("At least one request parameter is missing.");
+		}
+
+		// decrypt authToken and check whether a user exists who has the app installed
+		if (metaData.get("authToken").length != 1) {
+			return badRequest("Invalid authToken.");
+		}
+	
+		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(metaData.get("authToken")[0]);
+		
+		if (authToken.recordId != null) return badRequest("This view is readonly.");
+			try {
+							
+			// extract file from data
+			FilePart fileData = formData.getFile("file");
+			if (fileData == null) {
+				return badRequest("No file found.");
+			}
+			File file = fileData.getFile();
+			String filename = fileData.getFilename();
+			String contentType = fileData.getContentType();
+	
+			// create record
+			Record record = new Record();
+			record._id = new ObjectId();
+			record.app = authToken.pluginId;
+			record.owner = authToken.ownerId;
+			record.creator = authToken.executorId;
+			record.created = DateTimeUtils.now();
+			record.name = metaData.get("name")[0];
+			record.description = metaData.get("description")[0];
+			String[] formats = metaData.get("format");
+			record.format = (formats != null && formats.length == 1) ? formats[0] : (contentType != null) ? contentType : "application/octet-stream";
+			String[] contents = metaData.get("contents");
+			record.content =  (contents != null && contents.length == 1) ? contents[0] : "other";
+						
+			record.data = new BasicDBObject(new ChainedMap<String, String>().put("type", "file").put("name", filename)
+					.put("contentType", contentType).get());
+
+		// save file with file storage utility
+			
+			if (authToken.space != null) {				
+			    try {
+					  RecordManager.instance.addRecord(authToken.executorId, record, new FileInputStream(file), filename, contentType);
+			    } catch (FileNotFoundException e) {
+				    	throw new InternalServerException("error.internal",e);
+			    }
+					
+				Set<ObjectId> records = new HashSet<ObjectId>();
+				records.add(record._id);
+				RecordManager.instance.share(authToken.executorId, authToken.ownerId, authToken.targetAPS, records, false);
+				
+				if (authToken.space != null && authToken.space.autoShare != null && !authToken.space.autoShare.isEmpty()) {
+					for (ObjectId autoshareAps : authToken.space.autoShare) {
+						Consent consent = Consent.getByIdAndOwner(autoshareAps, authToken.ownerId, Sets.create("type"));
+						if (consent != null) { 
+						  RecordManager.instance.share(authToken.executorId, authToken.ownerId, autoshareAps, records, true);
+						}
+					}
+				}
+				
+			} else {
+				RecordManager.instance.addRecord(authToken.executorId, record, authToken.targetAPS);
+			}
+											
+			ObjectNode obj = Json.newObject();
+			obj.put("_id", record._id.toString());
+			return ok(obj);
+		} catch (AppException e) {
+			return badRequest(e.getMessage());
+		} catch (DatabaseException e) {
+			return badRequest(e.getMessage());
+		}
+		
+	}
+
+	private static Promise<Result> badRequestPromise(final String errorMessage) {
+		return Promise.promise(new Function0<Result>() {
+			public Result apply() {
+				return badRequest(errorMessage);
+			}
+		});
 	}
 }

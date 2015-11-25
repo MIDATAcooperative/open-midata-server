@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('Spaces2Ctrl', ['$scope', '$state', 'server', '$sce', 'status', 'spaces', 'views', function($scope, $state, server, $sce, status, spaces, views) {
+.controller('Spaces2Ctrl', ['$scope', '$state', 'server', '$sce', 'status', 'spaces', 'views', 'session', function($scope, $state, server, $sce, status, spaces, views, session) {
 	
 	// init
 	$scope.error = null;
@@ -10,14 +10,12 @@ angular.module('portal')
 	
 	
 	// get current user
-	server.get(jsRoutes.controllers.Users.getCurrentUser().url).
-		success(function(userId) {
+	session.currentUser
+	.then(function(userId) {
 			$scope.userId = userId;
 			getAuthToken($scope.space);
-		});
-		
-	
-	
+	});
+			
 	// get the authorization token for the current space
 	getAuthToken = function(space) {
 		

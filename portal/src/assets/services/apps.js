@@ -9,9 +9,7 @@ angular.module('services')
     
     service.getAppsOfUser = function(types, fields) {
 		var appIds = session.user.apps;
-		var properties2 = { "_id": session.user.apps, "type" : types };
-		console.log("HH");
-		console.log(session.user.apps);
+		var properties2 = { "_id": session.user.apps, "type" : types };		
 		return service.getApps(properties2, fields);			
     };
     

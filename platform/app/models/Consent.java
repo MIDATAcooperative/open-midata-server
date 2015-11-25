@@ -68,6 +68,10 @@ public class Consent extends Model {
 		return Model.get(Consent.class, collection, CMaps.map("_id", consentId).map("owner", ownerId), fields);
 	}
 	
+	public static Consent getByIdAndAuthorized(ObjectId consentId, ObjectId executorId, Set<String> fields) throws InternalServerException {
+		return Model.get(Consent.class, collection, CMaps.map("_id", consentId).map("authorized", executorId), fields);
+	}
+	
 	public static Consent getByOwnerAndPasscode(ObjectId ownerId, String passcode, Set<String> fields) throws InternalServerException {
 		return Model.get(Consent.class, collection, CMaps.map("owner", ownerId).map("passcode", passcode), fields);
 	}

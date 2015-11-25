@@ -17,6 +17,10 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
+/**
+ * Converter between data model classes and BSON objects
+ *
+ */
 public class DatabaseConversion {
 	
 	private Object resolveEnums(Class type, Object source) {

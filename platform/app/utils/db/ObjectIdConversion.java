@@ -5,6 +5,10 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 
+/**
+ * Helper functions for converting object ids to string and back
+ *
+ */
 public class ObjectIdConversion {
 
 	public static Set<ObjectId> toObjectIds(Set<String> strings) {

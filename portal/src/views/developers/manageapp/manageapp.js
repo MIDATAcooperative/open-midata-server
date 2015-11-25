@@ -49,7 +49,7 @@ angular.module('portal')
 			.then(function(data) { $state.go("^.yourapps"); });
 		} else {			
 		    apps.updatePlugin($scope.app)
-		    .then(function() { $scope.loadApp(data.data._id.$oid); });
+		    .then(function() { $scope.loadApp($scope.app._id.$oid); });
 		}
 	};
 	

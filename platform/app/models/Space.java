@@ -33,7 +33,7 @@ public class Space extends Model implements Comparable<Space> {
 	/**
 	 * constant set containing all fields of this class
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name","owner", "visualization", "app", "order", "type", "context", "autoShare");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name","owner", "visualization", "type", "order", "type", "context", "autoShare");
 
 	/**
 	 * the name of the space.
@@ -55,7 +55,7 @@ public class Space extends Model implements Comparable<Space> {
 	/**
 	 * The id of the input form/importer that is used with this space. May be removed in the future.
 	 */
-	public ObjectId app;
+	public String type;
 	
 	/**
 	 * The display order 
@@ -127,13 +127,7 @@ public class Space extends Model implements Comparable<Space> {
 
 	public static void add(Space space) throws InternalServerException {
 		Model.insert(collection, space);
-
-		// also add this space to the user's search index
-		try {
-			Search.add(space.owner, "space", space._id, space.name);
-		} catch (SearchException e) {
-			throw new InternalServerException("error.internal", e);
-		}
+		
 	}
 
 	public static void delete(ObjectId ownerId, ObjectId spaceId) throws InternalServerException {
@@ -147,9 +141,7 @@ public class Space extends Model implements Comparable<Space> {
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal", e);
 		}
-
-		// also remove from search index
-		Search.delete(ownerId, "space", spaceId);
+		
 		Model.delete(Space.class, collection, properties);
 	}
 

@@ -84,54 +84,6 @@ public class AppsAPI extends Controller {
 	}
 	
 	
-	@BodyParser.Of(BodyParser.Json.class)
-	@AppsCall
-	public static Result authenticateExternalApp() throws JsonValidationException, InternalServerException {
-		response().setHeader("Access-Control-Allow-Origin", "*");
-		
-        JsonNode json = request().body().asJson();
-		
-		JsonValidation.validate(json, "appname", "secret", "username", "password");
-		
-		String name = JsonValidation.getString(json, "appname");
-		String secret = JsonValidation.getString(json,"secret");
-		String username = JsonValidation.getEMail(json, "username");
-		String password = JsonValidation.getString(json, "password");
-		
-		Plugin app = Plugin.getByFilenameAndSecret(name, secret, Sets.create("type"));
-		if (app == null) return badRequest("Unknown app");
-		if (!app.type.equals("mobile")) return internalServerError("Wrong app type");
-		
-		Member member = Member.getByEmail(username, Sets.create("password","apps","tokens","myaps"));
-		if (member == null) return badRequest("Unknown user or bad password");
-		
-		// check password
-		if (!Member.authenticationValid(password, member.password)) return badRequest("Unknown user or bad password");
-		
-		// check that app is installed
-		if (!member.apps.contains(app._id)) return badRequest("App is not installed with portal");
-				
-		// create encrypted authToken
-		AppToken appToken = new AppToken(app._id, member._id);
-		String authToken = appToken.encrypt();
-
-		ObjectNode obj = Json.newObject();
-		obj.put("authToken", authToken);
-				
-		Map<String, String> tokens = member.tokens.get(app._id.toString());
-		if (tokens!=null) {
-			String space = tokens.get("space");
-			if (space!=null) {
-				obj.put("aps", new SpaceToken(new ObjectId(space),member._id).encrypt());		
-			} 
-		} else {
-			// XXX incsecure remove
-			obj.put("aps", new SpaceToken(member.myaps, member._id).encrypt());
-		}
-										
-		// return authtoken		
-		return ok(obj);
-	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@AppsCall

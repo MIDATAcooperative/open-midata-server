@@ -222,6 +222,18 @@ public class RecordManager {
 				
 	}
 
+	/**
+	 * set a query that dynamically shares records from one APS to another APS.
+	 *  
+	 * this operation will only work if all accessors of the target APS also have access to the source APS
+	 * so this is only useful for APS of spaces
+	 *  
+	 * @param who id of user who must be owner and executing person 
+	 * @param fromAPS id of APS to share records from
+	 * @param toAPS id of APS to share records into
+	 * @param query the query to be applied to the records
+	 * @throws AppException
+	 */
 	public void shareByQuery(ObjectId who, ObjectId fromAPS, ObjectId toAPS,
 			Map<String, Object> query) throws AppException {
         AccessLog.debug("shareByQuery who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString());
@@ -237,6 +249,13 @@ public class RecordManager {
         }
 	}
 
+	/**
+	 * remove records from an APS
+	 * @param who id of executing person
+	 * @param apsId id of target APS
+	 * @param records set of record ids to remove from APS
+	 * @throws AppException
+	 */
 	public void unshare(ObjectId who, ObjectId apsId, Set<ObjectId> records)
 			throws AppException {
 
@@ -250,12 +269,26 @@ public class RecordManager {
 			
 	}
 
-	
-	
+	/**
+	 * read a meta data object from an APS
+	 * @param who id of executing person
+	 * @param apsId id of APS to read from
+	 * @param key unique name of meta data object
+	 * @return
+	 * @throws AppException
+	 */
 	public BSONObject getMeta(ObjectId who, ObjectId apsId, String key) throws AppException {
 		return getCache(who).getAPS(apsId).getMeta(key);
 	}
 	
+	/**
+	 * store a meta data object into an APS
+	 * @param who id of executing person
+	 * @param apsId id of APS to save into
+	 * @param key unique name of meta data object
+	 * @param data key,value map containing the data to be stored
+	 * @throws AppException
+	 */
 	public void setMeta(ObjectId who, ObjectId apsId, String key, Map<String,Object> data) throws AppException {
 		getCache(who).getAPS(apsId).setMeta(key, data);
 	}
@@ -272,11 +305,27 @@ public class RecordManager {
 		}
 	}
 
+	/**
+	 * add a new record to the database 
+	 * @param executingPerson id of executing person
+	 * @param record the record to be saved
+	 * @throws AppException
+	 */
 	public void addRecord(ObjectId executingPerson, Record record) throws AppException {
 		addRecordIntern(executingPerson, record, false, null, false);
 		record.key = null;
 	}
 	
+	/**
+	 * Add a new record containing an attachment to the database
+	 * @param executingPerson id of executing person
+	 * @param record the record to be saved
+	 * @param data a file input stream containing the file to be stored as attachment
+	 * @param fileName the name of the attached file
+	 * @param contentType the mime type of the attached file
+	 * @throws DatabaseException
+	 * @throws AppException
+	 */
 	public void addRecord(ObjectId executingPerson, Record record, FileInputStream data, String fileName, String contentType) throws DatabaseException, AppException {
 		byte[] kdata = addRecordIntern(executingPerson, record, false, null, false);
 		SecretKey key = new SecretKeySpec(kdata, EncryptedAPS.KEY_ALGORITHM);
@@ -284,15 +333,29 @@ public class RecordManager {
 		record.key = null;
 	}
 	
+	/**
+	 * Add a new record to the database and give access not only to the owner APS but to a second APS
+	 * 
+	 * This function is useful if a record needs to be added by another person that does not have 
+	 * access to the record owners APS. By adding the record to a second APS that the adding person has access
+	 * to it is guaranteed that the executing person does not loose access to the new record.
+	 * 
+	 * @param executingPerson id of executing person
+	 * @param record the record to be added
+	 * @param alternateAps an APS where the executing person has access to. (a consent APS for example)
+	 * @throws AppException
+	 */
 	public void addRecord(ObjectId executingPerson, Record record, ObjectId alternateAps) throws AppException {
 		addRecordIntern(executingPerson, record, false, alternateAps, false);
 		record.key = null;
 	}
 	
-	/*public void addRecord(ObjectId executingPerson, Record record, ObjectId alternateAps) throws InternalServerException {
-		addRecordIntern(executingPerson, record, false, alternateAps, false);
-		record.key = null;
-	}*/
+	/**
+	 * Delete a record from the system. Currently only used for debugging purposes.
+	 * @param executingPerson id of executing person
+	 * @param tk a token for the record to be deleted.
+	 * @throws AppException
+	 */
 	
 	public void deleteRecord(ObjectId executingPerson, RecordToken tk) throws AppException {
 		Record record = fetch(executingPerson, tk);
@@ -369,6 +432,15 @@ public class RecordManager {
 		return usedKey;	
 	}
 	
+	/**
+	 * Share stream records from one APS to another by applying a query once.
+	 * @param userId id of executing user
+	 * @param query to query to be applied
+	 * @param sourceaps the source APS id
+	 * @param targetaps the target APS id
+	 * @param ownerInformation include owner information?
+	 * @throws AppException
+	 */
 	public void applyQuery(ObjectId userId, Map<String, Object> query, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws AppException {
 		AccessLog.debug("BEGIN APPLY QUERY");
 		
@@ -415,18 +487,44 @@ public class RecordManager {
 		}
 	}
 	
-
+    /**
+     * Delete an access permission set
+     * @param apsId id of APS
+     * @param ownerId id of owner of APS
+     * @throws InternalServerException
+     */
 	public void deleteAPS(ObjectId apsId, ObjectId ownerId)
 			throws InternalServerException {		
 		AccessPermissionSet.delete(apsId);
 	}
 
+	/**
+	 * Query for records matching some criteria.
+	 * In the result list only those fields of the record need to be filled out that have been requested.
+	 * Additional fields may be set if they were needed to processing the query.
+	 * 
+	 * @param who id of executing person
+	 * @param apsId id of APS to access
+	 * @param properties key,value map containing the restrictions
+	 * @param fields set of fields to return from the query
+	 * @return list of records matching properties
+	 * @throws AppException
+	 */
 	public List<Record> list(ObjectId who, ObjectId apsId,
 			Map<String, Object> properties, Set<String> fields)
 			throws AppException {
 		return QueryEngine.list(getCache(who), apsId, properties, fields);
 	}
 	
+	/**
+	 * computes a summary of records
+	 * @param who id of executing person
+	 * @param aps id of APS to access
+	 * @param properties key,value map containing restrictions
+	 * @param aggrType level of aggreagtion
+	 * @return list of RecordsInfo objects containing a summary of the records
+	 * @throws AppException
+	 */
 	public Collection<RecordsInfo> info(ObjectId who, ObjectId aps, Map<String, Object> properties, AggregationType aggrType) throws AppException {
 		// Only allow specific properties as results are materialized
 		Map<String, Object> nproperties = new HashMap<String, Object>();
@@ -440,10 +538,24 @@ public class RecordManager {
 		return QueryEngine.info(getCache(who), aps, nproperties, aggrType);
 	}
 
+	/**
+	 * Lookup a single record by providing a RecordToken 
+	 * @param who id of executing person
+	 * @param token token with id of record to return 
+	 * @return the complete record (no attachment)
+	 * @throws AppException
+	 */
 	public Record fetch(ObjectId who, RecordToken token) throws AppException {
 		return fetch(who, token, RecordManager.COMPLETE_DATA);
 	}
 	
+	/**
+	 * Lookup a single record by providing a RecordToken and return the attachment of the record
+	 * @param who id of executing person
+	 * @param token token with the id of the record
+	 * @return the attachment content
+	 * @throws AppException
+	 */
 	public FileData fetchFile(ObjectId who, RecordToken token) throws AppException {		
 		List<Record> result = QueryEngine.listInternal(getCache(who), new ObjectId(token.apsId), CMaps.map("_id", new ObjectId(token.recordId)), Sets.create("key"));
 				
@@ -459,6 +571,14 @@ public class RecordManager {
 		return fileData;
 	}
 
+	/**
+	 * Lookup a single record by providing a RecordToken and return only requested fields
+	 * @param who id of executing person
+	 * @param token token with the id of the record
+	 * @param fields set of field names that are required
+	 * @return the record to be returned
+	 * @throws AppException
+	 */
 	public Record fetch(ObjectId who, RecordToken token, Set<String> fields)
 			throws AppException {
 		List<Record> result = list(who, new ObjectId(token.apsId),
@@ -469,6 +589,14 @@ public class RecordManager {
 			return result.get(0);
 	}
 
+	/**
+	 * Lookup a single record by providing its id and the APS from where it is accessible
+	 * @param who id of executing person
+	 * @param aps id of APS 
+	 * @param recordId id of record
+	 * @return the record to be returned
+	 * @throws AppException
+	 */
 	public Record fetch(ObjectId who, ObjectId aps, ObjectId recordId)
 			throws AppException {
 		List<Record> result = list(who, aps, CMaps.map("_id", recordId),
@@ -479,11 +607,26 @@ public class RecordManager {
 			return result.get(0);
 	}
 
+	/**
+	 * Return a set with all record ids accessible from an APS
+	 * @param who id of executing person
+	 * @param apsId id of APS to search
+	 * @return set with record ids as strings
+	 * @throws AppException
+	 */
 	public Set<String> listRecordIds(ObjectId who, ObjectId apsId)
 			throws AppException {
 		return listRecordIds(who, apsId, RecordManager.FULLAPS);
 	}
 
+	/**
+	 * Return a set with all record ids of records matching some criteria accessible from an APS
+	 * @param who id of executing person
+	 * @param apsId id of APS to search
+	 * @param properties key,value map containing query
+	 * @return set with record ids as strings
+	 * @throws AppException
+	 */
 	public Set<String> listRecordIds(ObjectId who, ObjectId apsId,
 			Map<String, Object> properties) throws AppException {
 		List<Record> result = list(who, apsId, properties,

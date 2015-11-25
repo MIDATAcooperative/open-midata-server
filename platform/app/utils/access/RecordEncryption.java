@@ -25,6 +25,12 @@ import utils.exceptions.InternalServerException;
  */
 class RecordEncryption {
 
+	/**
+	 * encrypt a record using the key in record.key
+	 * @param record the record to encrypt
+	 * @param lvl the security level of the APS where the record will be added
+	 * @throws AppException
+	 */
 	public static void encryptRecord(Record record, APSSecurityLevel lvl) throws AppException {
 		if (lvl.equals(APSSecurityLevel.NONE) || lvl.equals(APSSecurityLevel.LOW)) {
 			record.clearSecrets();
@@ -54,6 +60,11 @@ class RecordEncryption {
 		record.clearEncryptedFields();
 	}
 
+	/**
+	 * decrypt a record using the key in record.key
+	 * @param record the record to decrypt
+	 * @throws AppException
+	 */
 	protected static void decryptRecord(Record record) throws AppException {
 		//if (record.created != null) return;
 				

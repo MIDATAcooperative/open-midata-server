@@ -21,6 +21,12 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
 import com.mongodb.WriteConcern;
 
+/**
+ * Main database access class
+ * 
+ * This class is called from the data model classes to insert, update or search data classes
+ *
+ */
 public class DBLayer {
 		
 	private static Map<String,Database> dbnameToDB;

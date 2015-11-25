@@ -139,7 +139,7 @@ public class LargeRecord  {
 	/**
 	 * Creates chunks from the data and saves the index information in the master record.
 	 */
-	public static void add(Member owner, Record masterRecord, TreeMap<String, Object> data) throws AppException {
+	public static void add(ObjectId owner, Record masterRecord, TreeMap<String, Object> data) throws AppException {
 		// initialize data and set the type to 'largeRecord'
 		masterRecord.data = new BasicDBObject();
 		masterRecord.data.put("type", "largeRecord");
@@ -193,7 +193,7 @@ public class LargeRecord  {
 		masterRecord.data.put("chunks", chunks);
 
 		// insert the master record as a normal record
-		RecordManager.instance.addDocumentRecord(owner._id, masterRecord, recs);
+		RecordManager.instance.addDocumentRecord(owner, masterRecord, recs);
 	}
 
 	/**

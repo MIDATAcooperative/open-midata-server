@@ -13,7 +13,7 @@ angular.module('portal')
 	//console.log($scope.memberUrl);
 	
 	// get app url
-	server.get(jsRoutes.controllers.Apps.getUrlForConsent(appId, consentId).url).
+	server.get(jsRoutes.controllers.Plugins.getUrlForConsent(appId, consentId).url).
 		success(function(url) {
 			$scope.error = null;
 			$scope.url = $sce.trustAsResourceUrl(url);

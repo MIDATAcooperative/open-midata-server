@@ -4,7 +4,7 @@ angular.module('services')
 
 	service.getSpacesOfUser = function(userId) {
        var properties = {"owner": userId};
-       var fields = ["name", "records", "visualization", "app", "order"];
+       var fields = ["name", "records", "visualization", "type", "order"];
        var data = {"properties": properties, "fields": fields};
        return server.post(jsRoutes.controllers.Spaces.get().url, JSON.stringify(data));
 	};
@@ -14,7 +14,7 @@ angular.module('services')
 	};
 	service.getSpacesOfUserContext = function(userId, context) {
 	   var properties = {"owner": userId, "context" : context };
-	   var fields = ["name", "records", "visualization", "app", "order"];
+	   var fields = ["name", "records", "visualization", "type", "order"];
 	   var data = {"properties": properties, "fields": fields};
 	   return server.post(jsRoutes.controllers.Spaces.get().url, JSON.stringify(data));
 	};

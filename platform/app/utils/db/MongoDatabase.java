@@ -21,6 +21,10 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
 import com.mongodb.WriteConcern;
 
+/**
+ * Connection to a mongoDB database
+ *
+ */
 public class MongoDatabase extends Database {
 	
 	private String host;

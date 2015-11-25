@@ -1,5 +1,9 @@
 package utils.db;
 
+/**
+ * Defines which data model class is stored in which database
+ *
+ */
 public class Schema {
 
 	public static void init() {

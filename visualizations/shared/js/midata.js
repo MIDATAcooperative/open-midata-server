@@ -1,7 +1,11 @@
 var midata = angular.module('midata', []);
-midata.factory('midataServer', [ '$http', function($http) {
+midata.factory('midataServer', [ '$http', '$q', function($http, $q) {
 	
 	var service = {};
+	
+	var actionDef = $q.defer();
+	var actionChain = actionDef.promise;
+	actionDef.resolve();
 	
 	service.createRecord = function(authToken, name, description, content, format, data) {
 		// construct json
@@ -15,7 +19,9 @@ midata.factory('midataServer', [ '$http', function($http) {
 		};
 		
 		// submit to server
-		return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/create", data);
+		var f = function() { return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/create", data); };
+		actionChain = actionChain.then(f);	
+		return actionChain;
 	};
 	
 	/*
@@ -55,6 +61,11 @@ midata.factory('midataServer', [ '$http', function($http) {
 	service.cloneAs = function(authToken, name, config) {
 		 var data = { "authToken" : authToken, "name" : name, "config" : config };		
 		 return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/clone", data);
+	};
+	
+	service.oauth2Request = function(authToken, url) {	
+		var data = { "authToken": authToken, "url": url };		
+	    return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/request/oauth2", data);
 	};
 	
 	return service;	

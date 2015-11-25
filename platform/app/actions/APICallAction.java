@@ -29,9 +29,9 @@ public class APICallAction extends Action<APICall> {
     	  JsonNode json = ctx.request().body().asJson();
     	  ctx.args.put("json", json);
     	  String host = ctx.request().getHeader("Origin");
-    	  //AccessLog.debug(host);
+    	  AccessLog.debug(host);
     	  if (host != null) {
-	  		  if (host.startsWith("http://localhost:") || host.equals("https://demo.midata.coop")) {
+	  		  if (host.startsWith("http://localhost:") || host.equals("https://demo.midata.coop") || host.equals("https://demo.midata.coop:9002")) {
 	  		    ctx.response().setHeader("Access-Control-Allow-Origin", host);
 	  		  } else ctx.response().setHeader("Access-Control-Allow-Origin", "https://demo.midata.coop");
     	  }

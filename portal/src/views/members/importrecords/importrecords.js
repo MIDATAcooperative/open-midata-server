@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ImportRecordsCtrl', ['$scope', '$state', 'server', '$sce', 'session', 'status', function($scope, $state, server, $sce, session, status) {
+.controller('ImportRecordsCtrl', ['$scope', '$state', 'server', '$sce', 'session', 'status', 'spaces', function($scope, $state, server, $sce, session, status, spaces) {
 	
 	// init
 	$scope.error = null;
@@ -9,65 +9,58 @@ angular.module('portal')
 	$scope.authorized = false;
 	$scope.finished = false;
 	$scope.status = new status(true);
-	var app = {};
-	var authorizationUrl = null;
-	var authWindow = null;
-	var userId = null;
+	$scope.spaceId = $state.params.spaceId;
+	$scope.space = { "_id" : { "$oid" : $scope.spaceId } };
 	
-	// get app id (format: /records/import/:appId)
-	var appId = $state.params.appId;
 	
 	// get current user
 	session.currentUser
-	.then(function(uId) {
-			userId = uId.$oid;
-			checkAuthorized();
+	.then(function(userId) {
+			$scope.userId = userId;
+			getAuthToken($scope.space);
 	});
+		
 	
-	// check whether we have been authorized already
-	checkAuthorized = function() {
-		var properties = {"_id": {"$oid": userId}};
-		var fields = ["tokens." + appId];
-		var data = {"properties": properties, "fields": fields};
-		$scope.status.doBusy(server.get(jsRoutes.controllers.Plugins.isAuthorized(appId).url)).
-		then(function(results) {
-			    console.log(results);
-				if(results.data == "true") {
-					$scope.authorized = true;
-					$scope.message = "Loading app...";					
-					loadApp();
-				} else {
-					loadAppDetails();
-				}
-			});
-	};
 	
-	// get the app information
-	loadAppDetails = function() {
-		var properties = {"_id": {"$oid": appId}};
-		var fields = ["filename", "name", "type", "authorizationUrl", "consumerKey", "scopeParameters"];
-		var data = {"properties": properties, "fields": fields};
-		$scope.status.doBusy(server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data)))
-		.then(function(results) {				
-				app = results.data[0];
-				$scope.appName = app.name;
-				$scope.message = "The app is not authorized to import data on your behalf yet.";
-				
+	var app = {};
+	var authorizationUrl = null;
+	var authWindow = null;
+	
+	var spaceId = $state.params.spaceId;
+		
+	// get the authorization token for the current space
+	getAuthToken = function(space) {
+		
+		$scope.status.doBusy(spaces.getUrl(space._id.$oid))
+		.then(function(result) {
+			if (result.data && result.data.type) {
+		      app = result.data;
+			  $scope.appName = result.data.name;
+			  $scope.message = "The app is not authorized to import data on your behalf yet.";			  
+			} else {
+			  space.trustedUrl = $sce.trustAsResourceUrl(result.data);
+			  
+			  $scope.error = null;
+			  $scope.message = null;
+			  $scope.url = $sce.trustAsResourceUrl(result.data);
+			  $scope.loaded = true;
+			  $scope.authorized = true;
+			}
 		});
 	};
-
+	
 	// start authorization procedure
 	$scope.authorize = function() {
 		$scope.authorizing = true;
 		$scope.message = "Authorization in progress...";
-		var redirectUri = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port +"/authorized.html";
+		var redirectUri = window.location.protocol + "//" + window.location.hostname + /*":" + window.location.port + */ "/authorized.html";
 		if (app.type === "oauth2") {
 			var parameters = "?response_type=code" + "&client_id=" + app.consumerKey + "&scope=" + app.scopeParameters +
 				"&redirect_uri=" + redirectUri;
 			authWindow = window.open(app.authorizationUrl + encodeURI(parameters));
 			window.addEventListener("message", onAuthorized);
 		} else if (app.type === "oauth1") {
-			$scope.status.doBusy(server.get(jsRoutes.controllers.Plugins.getRequestTokenOAuth1(appId).url))
+			$scope.status.doBusy(server.get(jsRoutes.controllers.Plugins.getRequestTokenOAuth1($scope.spaceId).url))
 			.then(function(results) {
 					authorizationUrl = results.data;
 					$scope.authorizingOAuth1 = true;
@@ -105,9 +98,7 @@ angular.module('portal')
 			} else {
 				error = "An unknown error occured while requesting authorization. Please try again.";
 			}
-		} else {
-			error = "User authorization failed. Please try again.";
-		}
+		} 
 		
 		// update message with scope.apply because angular doesn't recognize the change 
 		$scope.$apply(function() {
@@ -125,33 +116,21 @@ angular.module('portal')
 		var data = {"code": code};
 		var requestTokensUrl = null; 
 		if (app.type === "oauth2") {
-			requestTokensUrl = jsRoutes.controllers.Plugins.requestAccessTokenOAuth2(appId).url;
+			requestTokensUrl = jsRoutes.controllers.Plugins.requestAccessTokenOAuth2($scope.spaceId).url;
 		} else if (app.type === "oauth1") {
-			requestTokensUrl = jsRoutes.controllers.Plugins.requestAccessTokenOAuth1(appId).url;
+			requestTokensUrl = jsRoutes.controllers.Plugins.requestAccessTokenOAuth1($scope.spaceId).url;
 		}
 		server.post(requestTokensUrl, JSON.stringify(data)).
 			success(function() {
 				$scope.authorized = true;
 				$scope.authorizing = false;
 				$scope.message = "Loading app...";
-				loadApp();
+				getAuthToken();
 			}).
 			error(function(err) {
 				$scope.error = "Requesting access token failed: " + err;
 				$scope.authorizing = false;
 			});
 	};
-	
-	// load the app into the iframe
-	loadApp = function() {
-		// get app url
-		server.get(jsRoutes.controllers.Apps.getUrl(appId).url).
-			success(function(url) {
-				$scope.error = null;
-				$scope.message = null;
-				$scope.url = $sce.trustAsResourceUrl(url);
-				$scope.loaded = true;
-			}).
-			error(function(err) { $scope.error = "Failed to load app: " + err; });
-	};
+		
 }]);

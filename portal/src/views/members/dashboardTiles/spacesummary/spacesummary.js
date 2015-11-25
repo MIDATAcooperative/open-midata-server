@@ -14,13 +14,16 @@ angular.module('views')
     	
     	$scope.status.doBusy(recordId ? records.getUrl(recordId) : ($scope.view.setup.nopreview ? spaces.getUrl(spaceId) : spaces.getPreviewUrl(spaceId))).
 		then(function(results) {
-			if (results.data) {
-			  $scope.url = $sce.trustAsResourceUrl(results.data);
-			} else {
-			  $scope.status.doBusy(records.getRecords(spaceId, {}, ["created"])).
-			  then(function(results) {
-				 $scope.count = results.data.length;		
-				 $scope.last = $scope.count > 0 ? _.chain(results.data).pluck('created').max().value() : null;
+			$scope.previewType = results.data.type || "visualization";
+			if (results.data.url) {			  
+			  $scope.url = $sce.trustAsResourceUrl(results.data.url);
+			} else {			  
+			  $scope.status.doBusy(records.getInfos(spaceId, {}, "ALL")).
+			  then(function(results) {				 
+				 if (results.data.length > 0) {
+					 $scope.count = results.data[0].count;				 
+					 $scope.last = results.data[0].newest;
+				 }
 			  });						
 			}
 		});
@@ -28,8 +31,16 @@ angular.module('views')
     };
         
     $scope.showSpace = function() {
-    	$state.go('^.spaces', { spaceId : $scope.view.setup.spaceId });
+    	if ($scope.view.setup.spaceType == "oauth1" || $scope.view.setup.spaceType == "oauth2") {
+    	  $state.go('^.importrecords', { spaceId : $scope.view.setup.spaceId });
+    	//} else if ($scope.view.setup.spaceType == "create") {
+        //  $state.go('^.createrecord', { spaceId : $scope.view.setup.spaceId });
+    	} else {
+    	  $state.go('^.spaces', { spaceId : $scope.view.setup.spaceId });
+    	}
     };
+    
+    $scope.view.makeBig = $scope.showSpace;
     
     $scope.showCreate = function() {    	
     	$state.go('^.createrecord', { appId : $scope.view.setup.appId });    		

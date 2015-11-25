@@ -1,7 +1,6 @@
 package controllers.apps;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -12,35 +11,30 @@ import java.util.TreeMap;
 import models.LargeRecord;
 import models.Plugin;
 import models.Record;
-import models.Member;
+import models.Space;
 
 import org.bson.types.ObjectId;
 
 import play.Play;
-import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import utils.DateTimeUtils;
 import utils.access.RecordManager;
-import utils.auth.AppToken;
 import utils.auth.RecordToken;
+import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
-import utils.collections.ChainedSet;
 import utils.collections.Sets;
-import utils.db.FileStorage;
 import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-
-import actions.APICall;
+import actions.VisualizationCall;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.mongodb.BasicDBObject;
 
 
 //Not secured, accessible from app server
@@ -50,12 +44,8 @@ public class GenomeDataConverter extends Controller {
 	private static final String buildTag = "reference human assembly build";
 	private static final String buildUrlTag = "# http://www.ncbi.nlm.nih.gov";
 
-	public static Result checkPreflight() {
-		// allow cross-origin request from app server
-		String appServer = Play.application().configuration().getString("apps.server");
-		response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
-		response().setHeader("Access-Control-Allow-Methods", "POST");
-		response().setHeader("Access-Control-Allow-Headers", "Content-Type");
+	@VisualizationCall
+	public static Result checkPreflight() {				
 		return ok();
 	}
 
@@ -63,7 +53,7 @@ public class GenomeDataConverter extends Controller {
 	 * Gets all the files of the user.
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
-	@APICall
+	@VisualizationCall
 	public static Result getFiles() throws AppException, JsonValidationException {
 		// allow cross origin request from app server
 		String appServer = Play.application().configuration().getString("apps.server");
@@ -74,7 +64,7 @@ public class GenomeDataConverter extends Controller {
 		JsonValidation.validate(json, "authToken");
 		
 		// decrypt authToken
-		AppToken appToken = AppToken.decrypt(json.get("authToken").asText());
+		SpaceToken appToken = SpaceToken.decrypt(json.get("authToken").asText());
 		if (appToken == null) {
 			return badRequest("Invalid authToken.");
 		}
@@ -96,11 +86,16 @@ public class GenomeDataConverter extends Controller {
 	 * Check authenticity of request, i.e. whether it is performed by the 23andMe Converter app.
 	 * @return An error message if a validity check failed, null otherwise.
 	 */
-	private static String checkAuthToken(AppToken appToken) {
-		// check whether the app is the 23andMe Converter app
-		Map<String, Object> appProperties = new ChainedMap<String, Object>().put("_id", appToken.appId)
-				.put("filename", "23andme-converter").get();
+	private static String checkAuthToken(SpaceToken appToken) {
+		
 		try {
+			Space space = Space.getByIdAndOwner(appToken.spaceId, appToken.userId, Sets.create("visualization"));
+			if (space == null) return "Invalid authToken.";
+			
+			// check whether the app is the 23andMe Converter app
+			Map<String, Object> appProperties = new ChainedMap<String, Object>().put("_id", space.visualization)
+					.put("filename", "23andme-converter").get();
+			
 			if (!Plugin.exists(appProperties)) {
 				return "Invalid authToken.";
 			}
@@ -108,14 +103,7 @@ public class GenomeDataConverter extends Controller {
 			return e.getMessage();
 		}
 
-		// check whether there exists a user with the app installed		
-		try {
-			if (Member.getByIdAndApp(appToken.userId,  appToken.appId, Sets.create()) == null) {
-				return "Invalid authToken.";
-			}
-		} catch (InternalServerException e) {
-			return e.getMessage();
-		}
+		
 		return null;
 	}
 
@@ -123,7 +111,7 @@ public class GenomeDataConverter extends Controller {
 	 * Convert a 23andMe file to the MIDATA format.
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
-	@APICall
+	@VisualizationCall
 	public static Result convert() throws JsonValidationException, AppException {
 		// allow cross origin request from app server
 		String appServer = Play.application().configuration().getString("apps.server");
@@ -135,7 +123,7 @@ public class GenomeDataConverter extends Controller {
 		
 
 		// decrypt authToken
-		AppToken appToken = AppToken.decrypt(json.get("authToken").asText());
+		SpaceToken appToken = SpaceToken.decrypt(json.get("authToken").asText());
 		if (appToken == null) {
 			return badRequest("Invalid authToken.");
 		}
@@ -146,8 +134,10 @@ public class GenomeDataConverter extends Controller {
 			return badRequest(errorMessage);
 		}
 		
-		Member owner = Member.getByIdAndApp(appToken.userId, appToken.appId, Sets.create("myaps", "tokens"));
-		if (owner == null) return badRequest("Invalid authToken.");
+		Space space = Space.getByIdAndOwner(appToken.spaceId, appToken.userId, Sets.create("visualization"));
+		
+		//Member owner = Member.getByIdAndApp(appToken.userId, appToken.appId, Sets.create("myaps", "tokens"));
+		//if (owner == null) return badRequest("Invalid authToken.");
 
 		// parse the file
 		FileData fileData = RecordManager.instance.fetchFile(appToken.userId, new RecordToken(JsonValidation.getObjectId(json, "id").toString(), appToken.userId.toString()));
@@ -160,7 +150,7 @@ public class GenomeDataConverter extends Controller {
 		// create record
 		Record record = new Record();
 		record._id = new ObjectId();
-		record.app = appToken.appId;
+		record.app = space.visualization;
 		record.created = DateTimeUtils.now();
 		record.creator = appToken.userId;
 		record.owner = appToken.userId;
@@ -170,27 +160,8 @@ public class GenomeDataConverter extends Controller {
 		record.format = "23-and-me"; //json.get("format").asText();
 		record.data = null;
 		
-		LargeRecord.add(owner, record, map);
-		
-		/*
-		RecordManager.instance.addRecord(owner, record);
-		
-		for (String key : map.keySet()) {
-			Record part = new Record();
-			part._id = new ObjectId();
-			part.app = appToken.appId;
-			part.created = DateTimeUtils.now();
-			part.creator = appToken.userId;
-			part.owner = appToken.userId;
-			part.name = key;
-			part.format = "GenomePart";
-			part.document = record._id;
-			part.part = key;
-			part.data = new BasicDBObject();
-			part.data.put(key, map.get(key));
-			RecordManager.instance.addRecord(owner, part);
-		}
-		*/
+		LargeRecord.add(appToken.userId, record, map);
+				
 		return ok();
 	}
 

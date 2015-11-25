@@ -107,6 +107,7 @@ angular.module('portal')
 		    	   active : true,
 		    	   position : "small"
 		    },
+		    /*
 		    {
 		    	   id : "createrecord",
 		    	   template : "/views/members/dashboardTiles/createrecord/createrecord.html",
@@ -115,6 +116,7 @@ angular.module('portal')
 		    	   position : "small",		    	   		    	   
 		    	   setup : { allowSelection : true }
 		    },
+		    */
 			{
 			    id: "myviews",
 			    title: "My Views",
@@ -232,6 +234,7 @@ angular.module('portal')
 		    	teaser : "There are no new records. Visit the records page to browser all of your records.",
 		    	setup : { properties : { "max-age" : 86400 * 31, "limit" : 7 } , fields : [ "ownerName", "created", "id", "name" ], allowBrowse : true}
 		    },
+		    /*
 		    {
 		    	   id : "createrecord",
 		    	   template : "/views/members/dashboardTiles/createrecord/createrecord.html",
@@ -240,7 +243,7 @@ angular.module('portal')
 		    	   position : "small",		    	   
 		    	   teaser : { link : "^.market", button : "Visit Market", text : "To get started we recommend to install some applications from our market place!" },
 		    	   setup : { allowSelection : true }
-		     },
+		     },*/
 		     {
 				    id: "myaccount",
 				    title: "My Account Data",
@@ -723,6 +726,7 @@ angular.module('portal')
                 	teaser : "There are no new records. Visit the records page to browser all of your records.",
                 	setup : { properties : { "max-age" : 86400 * 31, "limit" : 7 } , fields : [ "ownerName", "created", "id", "name" ], allowBrowse : true}
                 },
+                /*
                 {
                 	id : "createrecord",
                 	template : "/views/members/dashboardTiles/createrecord/createrecord.html",
@@ -731,7 +735,8 @@ angular.module('portal')
                 	position : "small",		    	   
                 	teaser : { link : "^.yourapps", button : "Your Apps", text : "Install Plugins you developed." },
                 	setup : { allowSelection : true }
-                },  	 			       
+                },  
+                */	 			       
                 {
                 	id: "myviews",
                 	title: "My Views",
@@ -745,7 +750,7 @@ angular.module('portal')
                 }
                 ],
                 "workspace" : [
-             
+             /*
               {
             	  id : "createrecord",
             	  template : "/views/members/dashboardTiles/createrecord/createrecord.html",
@@ -754,7 +759,7 @@ angular.module('portal')
             	  position : "small",		    	   
             	  teaser : { link : "^.market({ context : 'workspace' })", button : "Install", text : "Install Plugins" },
             	  setup : { allowSelection : true }
-              },  	 			       
+              },*/  	 			       
               {
             	  id: "myviews",
             	  title: "Work Views",
@@ -823,9 +828,13 @@ angular.module('portal')
 	   });
 	   
 	   $scope.makeBig = function(view) {
-		 $scope.layout.small.splice($scope.layout.small.indexOf(view), 1);
-		 $scope.layout.full.push(view);
-		 view.position = "full";
+		 if (view.makeBig != null) {
+			 view.makeBig();
+		 } else {		   
+			 $scope.layout.small.splice($scope.layout.small.indexOf(view), 1);
+			 $scope.layout.full.push(view);
+			 view.position = "full";
+		 }
 	   };
 	   
 	   $scope.makeSmall = function(view) {

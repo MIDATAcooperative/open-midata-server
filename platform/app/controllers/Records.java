@@ -157,7 +157,8 @@ public class Records extends APIController {
 		if (aps == null) aps = userId;		
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));			
 		
-	    Collection<RecordsInfo> result = RecordManager.instance.info(userId, aps, properties, AggregationType.GROUP);	
+		AggregationType aggrType = json.has("summarize") ? JsonValidation.getEnum(json, "summarize", AggregationType.class) : AggregationType.GROUP;
+	    Collection<RecordsInfo> result = RecordManager.instance.info(userId, aps, properties, aggrType);	
 						
 		return ok(Json.toJson(result));
 	}

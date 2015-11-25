@@ -17,6 +17,8 @@ import org.bson.BSONObject;
 import org.bson.types.ObjectId;
 
 import play.Play;
+import play.libs.F;
+import play.libs.F.Promise;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
@@ -40,6 +42,7 @@ import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * functions for managing spaces (instances of plugins)
@@ -96,8 +99,7 @@ public class Spaces extends Controller {
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
 		String name = JsonValidation.getString(json, "name");		
-		ObjectId visualizationId = JsonValidation.getObjectId(json, "visualization" );		
-		ObjectId appId = JsonValidation.getObjectId(json,  "app");		
+		ObjectId visualizationId = JsonValidation.getObjectId(json, "visualization" );					
 		String context = JsonValidation.getString(json, "context");
 		
 		Map<String, Object> query = null;
@@ -106,15 +108,10 @@ public class Spaces extends Controller {
 		if (json.has("query")) query = JsonExtraction.extractMap(json.get("query"));
 		if (json.has("config")) config = JsonExtraction.extractMap(json.get("config"));
 		
-		// check
-		/* spaces are no longer identified by their name
-		if (Space.existsByNameAndOwner(name, userId)) {
-			return badRequest("A space with this name already exists.");
-		}
-		*/
+		Plugin plg = Plugin.getById(visualizationId, Sets.create("type"));
 				
 		// execute		
-		Space space = add(userId, name, visualizationId, appId, context);
+		Space space = add(userId, name, visualizationId, plg.type, context);
 		
 		if (query != null) {
 			RecordManager.instance.shareByQuery(userId, userId, space._id, query);		
@@ -136,7 +133,7 @@ public class Spaces extends Controller {
 	 * @return
 	 * @throws InternalServerException
 	 */
-	public static Space add(ObjectId userId, String name, ObjectId visualizationId, ObjectId appId, String context) throws AppException {
+	public static Space add(ObjectId userId, String name, ObjectId visualizationId, String type, String context) throws AppException {
 						
 		// create new space
 		Space space = new Space();
@@ -146,7 +143,7 @@ public class Spaces extends Controller {
 		space.order = Space.getMaxOrder(userId) + 1;
 		space.visualization = visualizationId;
 		space.context = context;
-		space.app = appId;
+		space.type = type;
 		RecordManager.instance.createPrivateAPS(userId, space._id);
 		
 		Space.add(space);		
@@ -168,12 +165,12 @@ public class Spaces extends Controller {
 		
 		// execute
 		Space space = Space.getByOwnerVisualizationContext(userId, visualizationId, context, Sets.create("aps"));
-		Plugin visualization = Plugin.getById(visualizationId, Sets.create("filename", "previewUrl"));		
+		Plugin visualization = Plugin.getById(visualizationId, Sets.create("filename", "previewUrl", "type"));		
 		if (space==null) {
 		   Member member = Member.getByIdAndVisualization(userId, visualizationId, Sets.create("aps"));
 		   if (member == null) return badRequest("Not installed");
 		
-		   space = Spaces.add(userId, name, visualizationId, null, context);
+		   space = Spaces.add(userId, name, visualizationId, visualization.type, context);
 		   		   
 		}
 						
@@ -265,21 +262,21 @@ public class Spaces extends Controller {
 	}
 	
 	@APICall
-	public static Result getUrl(String spaceIdString) throws InternalServerException {
+	public static Promise<Result> getUrl(String spaceIdString) throws AppException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId spaceId = new ObjectId(spaceIdString);
 		
-		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps", "visualization"));
+		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps", "visualization", "type"));
 		
 		if (space==null) {
-		  return badRequest("No space with this id exists.");
+		  throw new InternalServerException("error.internal", "No space with this id exists.");
 		}
 		
-		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "filename", "url", "creator", "developmentServer"));
+		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "name", "filename", "url", "creator", "developmentServer", "authorizationUrl", "consumerKey", "scopeParameters"));
 
 		boolean testing = session().get("role").equals(UserRole.DEVELOPER.toString()) && visualization.creator.equals(userId) && visualization.developmentServer != null && visualization.developmentServer.length()> 0;
 		
-		if (visualization.type.equals("visualization")) {
+		//if (visualization.type.equals("visualization")) {
 			// create encrypted authToken
 			SpaceToken spaceToken = new SpaceToken(space._id, userId);
 			
@@ -287,8 +284,20 @@ public class Spaces extends Controller {
 			if (testing) visualizationServer = visualization.developmentServer;
 			String url =  visualizationServer  + "/" + visualization.url;
 			url = url.replace(":authToken", spaceToken.encrypt());
-			return ok(url);	
-		} else {
+			
+			
+		if (visualization.type != null && visualization.type.equals("oauth2")) {
+  		  BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new ObjectId(spaceIdString), "_oauth");  		  
+		  if (oauthmeta == null) return F.Promise.pure((Result) Plugins.oauthInfo(visualization)); 
+			 		
+		  if (oauthmeta.containsField("refreshToken")) {					
+		    return Plugins.requestAccessTokenOAuth2FromRefreshToken(spaceIdString, oauthmeta.toMap(), (Result) ok(url));
+		  }
+		} 
+			
+		return F.Promise.pure((Result) ok(url));
+		//}
+		/*} else {
 		    // create encrypted authToken
 			AppToken appToken = new AppToken(visualization._id, userId);
 			String authToken = appToken.encrypt();
@@ -298,7 +307,7 @@ public class Spaces extends Controller {
 			if (testing) appServer = visualization.developmentServer;
 			String url = visualization.url.replace(":authToken", authToken);
 			return ok( appServer  + "/" + url);
-		}
+		}*/
 	}
 	
 	@APICall
@@ -313,11 +322,15 @@ public class Spaces extends Controller {
 		}
 		
 		Plugin visualization = Plugin.getById(space.visualization, Sets.create("filename", "previewUrl", "type", "creator", "developmentServer"));
+		ObjectNode result = Json.newObject();
+		result.put("type", visualization.type);
 		
-		if (visualization.previewUrl == null || visualization.previewUrl.equals("")) return ok();
+		if (visualization.previewUrl == null || visualization.previewUrl.equals("")) {						
+			return ok(result);
+		}
 
 		boolean testing = session().get("role").equals(UserRole.DEVELOPER.toString()) && visualization.creator.equals(userId) && visualization.developmentServer != null && visualization.developmentServer.length()> 0;
-		if (visualization.type.equals("visualization")) {
+		//if (visualization.type.equals("visualization")) {
 		// create encrypted authToken
 			SpaceToken spaceToken = new SpaceToken(space._id, userId);
 			
@@ -325,8 +338,10 @@ public class Spaces extends Controller {
 			if (testing) visualizationServer = visualization.developmentServer;
 			String url = visualizationServer  + "/" + visualization.previewUrl;
 			url = url.replace(":authToken", spaceToken.encrypt());
-			return ok(url);						
+			result.put("url", url);
+			return ok(result);						
 		
+			/*
 		} else {
 		
 		       // create encrypted authToken
@@ -338,7 +353,7 @@ public class Spaces extends Controller {
 				if (testing) appServer = visualization.developmentServer;
 				String url = visualization.previewUrl.replace(":authToken", authToken);
 				return ok( appServer + "/" + url);
-		}
+		}*/
 	}
 	
 	
