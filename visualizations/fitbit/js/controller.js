@@ -6,7 +6,7 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 	    
 		$scope.error = {};
 		$scope.status = null;
-		$scope.requesting = false;
+		$scope.requesting = 0;
 		$scope.requested = 0;
 		$scope.saving = false;
 		$scope.saved = 0;
@@ -158,36 +158,53 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 		
 		$scope.initForm = function() {
 			
+		if ($scope.user == null) {
 			midataServer.oauth2Request(authToken, baseUrl + "/1/user/-/profile.json")			
 			.success(function(response) {
 			  console.log(response);
+			  $scope.user = response.user;
 			  if (response.user && response.user.memberSince) {
-				  $("#fromDate").datepicker("setDate", new Date(response.user.memberSince));
+				  var since = new Date(response.user.memberSince);				  
 				  
 				  var yesterday = new Date();
 				  yesterday.setDate(yesterday.getDate() - 1);
-				  $("#toDate").datepicker("setDate", yesterday); 
+				  
+				  angular.forEach($scope.measurements, function(measurement) {
+					if (measurement.from == null || measurement.from < since) measurement.from = since;
+					measurement.to = yesterday;
+				  });
+				  
+				  //$("#toDate").datepicker("setDate", yesterday); 
 			  }
 			});
+		}
+			
+		  midataServer.getSummary(authToken, "content" , { "format" : "measurements" , "app" : "fitbit" })
+		  .then(function(response) {
+			var map = {};
+			angular.forEach($scope.measurements, function(measurement) {
+			  map[measurement.content] = measurement;
+			});
+			angular.forEach(response.data, function(entry) {
+				var measurement = map[entry.contents[0]];
+				if (measurement != null) {
+					var newestDate = new Date(entry.newest);
+					
+					measurement.imported = entry.count;
+					if (measurement.from == null || measurement.from < newestDate) measurement.from = newestDate;
+				}
+			});
+		  });
 			
 		};
 
 		// start the importing of records
-		$scope.startImport = function() {
-			var fromDate = $("#fromDate").datepicker("getDate");
-			var toDate = $("#toDate").datepicker("getDate");
-			$scope.error.measure = !$scope.measure;
-			$scope.error.date = (!isValidDate(fromDate) || !isValidDate(toDate));
-			if ($scope.error.measure || $scope.error.date) {
-				$scope.error.message = "Please fill in all fields.";
-				return;
-			} else if (fromDate > toDate) {
-				$scope.error.date = true;
-				$scope.error.message = "Start date must be before end date.";
-				return;
-			}
+		$scope.startImport = function() {			
 			$scope.error.message = null;
-			importRecords(fromDate, toDate);
+			$scope.error.messages = [];
+			angular.forEach($scope.measurements, function(measure) {
+				if (measure.import) importRecords(measure);
+			});			
 		}
 
 		// checks whether the given date is valid
@@ -196,20 +213,24 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 		}
 		
 		// import records, one main record and possibly a detailed record for each day
-		importRecords = function(fromDate, toDate) {
-			$scope.error.messages = [];
-			$scope.status = "Importing data from Fitbit...";
-			$scope.requesting = true;
+		importRecords = function(measure) {
+		
+			var fromDate = measure.from;
+			var toDate = measure.to;
+			
+			if (fromDate > toDate) return;
+			
+			$scope.status = "Importing data from Fitbit...";			
+
+			$scope.requesting++;
 			$scope.requested = 0;
 			$scope.saving = true;
 			$scope.saved = 0;
-
+			
 			var formattedFromDate = fromDate.getFullYear() + "-" + twoDigit(fromDate.getMonth() + 1) + "-" + twoDigit(fromDate.getDate());
 			var formattedEndDate = toDate.getFullYear() + "-" + twoDigit(toDate.getMonth() + 1) + "-" + twoDigit(toDate.getDate());
-						
-			
-			$scope.requested += 1;
-			midataServer.oauth2Request(authToken, baseUrl + $scope.measure.endpoint.replace("{date}", formattedFromDate).replace("1d", formattedEndDate))
+												
+			midataServer.oauth2Request(authToken, baseUrl + measure.endpoint.replace("{date}", formattedFromDate).replace("1d", formattedEndDate))
 			.success(function(response) {
 					// check if an error was returned
 				if (response.errors) {
@@ -228,44 +249,19 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 						angular.forEach(grouped, function(itms, date) {
 							var rec = {};
 							rec[dataName] = itms;
-							saveRecord($scope.measure.title, $scope.measure.content, date, rec);
+							$scope.requested += 1;
+							saveRecord(measure.title, measure.content, date, rec);							
 						});
 					});				
 				}
+				
+				$scope.requesting--;
 			}).
 			error(function(err) {
 					errorMessage("Failed to import data on " + formattedDate + ": " + err);
 			});
-			
-			// import records explicitly for each day (we want to store it in that granularity)
-			/*
-			for (var curDate = fromDate; curDate <= toDate; curDate.setDate(curDate.getDate() + 1)) {
-				// capture loop variable 'curDate'
-				(function(date) {
-					var formattedDate = date.getFullYear() + "-" + twoDigit(date.getMonth() + 1) + "-" + twoDigit(date.getDate());
-					var data = {
-						"authToken": authToken,
-						"url": baseUrl + $scope.measure.endpoint.replace("{date}", formattedDate)
-					};
-					$scope.requested += 1;
-					$http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/request/oauth2", data).
-						success(function(response) {
-							// check if an error was returned
-							if (response.errors) {
-								errorMessage("Failed to import data on " + formattedDate + ": " + response.errors[0].message + ".");
-							} else {
-								saveRecord($scope.measure.title, $scope.measure.content, formattedDate, response);
-							}
-						}).
-						error(function(err) {
-							errorMessage("Failed to import data on " + formattedDate + ": " + err);
-						});
-					})(curDate);
-			}
-			*/
-			
-			
-			$scope.requesting = false;
+						
+			//$scope.requesting = false;
 		}
 
 		// make a two digit string out of a given number
@@ -294,14 +290,20 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 
 		// update application state at the end of an import
 		finish = function() {
-			if (!$scope.requesting && $scope.requested === $scope.saved + $scope.error.messages.length) {
+			if ($scope.requesting === 0 && $scope.requested === $scope.saved + $scope.error.messages.length) {
 				$scope.status = "Imported " + $scope.saved + " records.";
 				if ($scope.error.messages.length > 0) {
 					$scope.status = "Imported " + $scope.saved + " of " + $scope.requested + " records. For failures see error messages.";
 				}
 				$scope.saving = false;
+				$scope.initForm();
 			}
 		}
+		
+		$scope.progress = function() {
+			var r = $scope.requested > 0 ? $scope.requested : 1;
+			return { 'width' : ($scope.saved * 100 / r)+"%" };
+		};
 		
 		$scope.initForm();
 	}

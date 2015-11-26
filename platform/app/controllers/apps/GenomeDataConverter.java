@@ -55,10 +55,7 @@ public class GenomeDataConverter extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
 	public static Result getFiles() throws AppException, JsonValidationException {
-		// allow cross origin request from app server
-		String appServer = Play.application().configuration().getString("apps.server");
-		response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
-
+		
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken");
@@ -113,10 +110,7 @@ public class GenomeDataConverter extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
 	public static Result convert() throws JsonValidationException, AppException {
-		// allow cross origin request from app server
-		String appServer = Play.application().configuration().getString("apps.server");
-		response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
-
+		
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken", "id", "name", "description");

@@ -29,14 +29,14 @@ angular.module('portal')
 	var spaceId = $state.params.spaceId;
 		
 	// get the authorization token for the current space
-	getAuthToken = function(space) {
-		
-		$scope.status.doBusy(spaces.getUrl(space._id.$oid))
-		.then(function(result) {
+	getAuthToken = function(space, again) {
+		var func = again ? $scope.status.doBusy(spaces.regetUrl(space._id.$oid)) : $scope.status.doBusy(spaces.getUrl(space._id.$oid));
+		func.then(function(result) {
 			if (result.data && result.data.type) {
 		      app = result.data;
 			  $scope.appName = result.data.name;
-			  $scope.message = "The app is not authorized to import data on your behalf yet.";			  
+			  $scope.authorized = false;
+			  $scope.message = null;			  
 			} else {
 			  space.trustedUrl = $sce.trustAsResourceUrl(result.data);
 			  
@@ -45,6 +45,7 @@ angular.module('portal')
 			  $scope.url = $sce.trustAsResourceUrl(result.data);
 			  $scope.loaded = true;
 			  $scope.authorized = true;
+			  console.log("LOADED");
 			}
 		});
 	};
@@ -125,7 +126,7 @@ angular.module('portal')
 				$scope.authorized = true;
 				$scope.authorizing = false;
 				$scope.message = "Loading app...";
-				getAuthToken();
+				getAuthToken($scope.space, true);
 			}).
 			error(function(err) {
 				$scope.error = "Requesting access token failed: " + err;

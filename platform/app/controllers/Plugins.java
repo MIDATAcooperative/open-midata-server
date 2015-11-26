@@ -36,7 +36,6 @@ import play.mvc.Security;
 import utils.access.AccessLog;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
-import utils.auth.AppToken;
 import utils.auth.Rights;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;

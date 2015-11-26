@@ -313,9 +313,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Application.register(),
 				controllers.routes.javascript.Application.requestPasswordResetToken(),
 				controllers.routes.javascript.Application.setPasswordWithToken(),
-				// Apps								
-				controllers.routes.javascript.Apps.getUrl(),
-				controllers.routes.javascript.Apps.getPreviewUrl(),
+				// Apps										
 				controllers.routes.javascript.Plugins.getUrlForConsent(),
 				controllers.routes.javascript.Plugins.requestAccessTokenOAuth2(),
 				controllers.routes.javascript.Plugins.getRequestTokenOAuth1(),
@@ -367,6 +365,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Spaces.addRecords(),
 				controllers.routes.javascript.Spaces.getToken(),
 				controllers.routes.javascript.Spaces.getUrl(),
+				controllers.routes.javascript.Spaces.regetUrl(),
 				controllers.routes.javascript.Spaces.getPreviewUrl(),
 				controllers.routes.javascript.Spaces.getPreviewUrlFromSetup(),
 				// Users

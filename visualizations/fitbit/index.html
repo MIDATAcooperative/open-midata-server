@@ -6,6 +6,9 @@
 		<link rel="stylesheet" href="/shared/css/app.css">
 		<link rel="stylesheet" href="css/datepicker3.css">
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+		<style>
+		  table .checkbox { margin:0px; }
+		</style>
 		<!-- jQuery needed for Bootstrap's JavaScript plugins -->
 		<script type="text/javascript" src="//code.jquery.com/jquery-2.0.2.min.js"></script>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
@@ -18,7 +21,44 @@
 	<body>
 		<div ng-app="fitbit" ng-controller="ImportCtrl" ng-cloak>
 		   <div class="container">
-			<p>Import Records from your Fitbit Account</p>
+			<p class="lead">Import Records from your Fitbit Account</p>
+			
+			<hr>
+			<div class="row">
+			<span class="col-sm-3">Fitbit Account:</span><span><b>{{ user.fullName }}</b></</span>
+			</div><div class="row">
+			<span class="col-sm-3">Member since:</span><span><b>{{ user.memberSince | date }}</b></span>
+			</div> 
+			<hr>
+			<p>Please select which measurements you want to import:</p>			
+			<form class="form">
+			  <table class="table">
+			  <tr>
+			    <th>Measurement</th>
+			    <th>Imported</th>
+			    <th>From Date</th>
+			    <th>To Date</th>
+			  </tr>
+			  <tr ng-repeat="measurement in measurements" ng-class="{ 'success' : measurement.from > measurement.to }">
+			  <td>
+			  <div class="checkbox"  >
+			    <label><input type="checkbox" ng-model="measurement.import">{{ measurement.name }}</label>			  
+			  </div>
+			  </td>
+			  <td>
+			   {{ measurement.imported }}
+			  </td>
+			  <td>
+			    {{ measurement.from | date }}
+			  </td>
+			  <td>
+			    {{ measurement.to | date }}
+			  </td>
+			  </tr>
+			  </table>
+ 			<button type="button" class="btn btn-primary" ng-click="startImport()" ng-disabled="saving">Import data</button>
+			</form>
+			<hr>
 			<div class="alert alert-danger alert-dismissable" ng-show="error.message || error.messages.length">
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 				<p>{{error.message}}</p>
@@ -26,24 +66,16 @@
 					<li ng-repeat="err in error.messages">{{err}}</li>
 				</ul>
 			</div>
-			<p ng-show="status">{{status}}</p>
-			<form class="form-inline">
-				<div class="form-group" ng-class="{'has-error': error.measure}">
-					<select class="form-control" ng-model="measure" ng-options="measurement.name for measurement in measurements">
-						<option value="">Choose a category</option>
-					</select>
-				</div>
-				<div class="form-group">
-					<div id="datepicker" class="input-daterange input-group" ng-class="{'has-error': error.date}">
-						<input type="text" id="fromDate" class="form-control" placeholder="start" ng-model="fromDate" />
-						<span class="input-group-addon">to</span>
-						<input type="text" id="toDate" class="form-control" placeholder="end" ng-model="toDate" />
-					</div>
-				</div>
-				<button type="button" class="btn btn-primary" ng-click="startImport()" ng-disabled="saving">Import data</button>
-			</form>
-			<p ng-show="saving">Requested {{requested}} records from Fitbit. {{saved}} records saved to database.</p>
-			<div style="height:300px"></div>
+			<p ng-show="status" class="alert alert-info">{{status}}</p>
+			
+			<div ng-show="saving" class="progress">
+			  <div class="progress-bar" role="progressbar" ng-style="progress()">
+			    <span class="sr-only"></span>
+			  </div>
+			</div>
+			<p ng-show="saving">
+			  Requested {{requested}} records from Fitbit. {{saved}} records saved to database.
+			</p>			
 		</div>
 		</div>
 	</body>

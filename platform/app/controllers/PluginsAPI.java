@@ -11,9 +11,12 @@ import java.util.Set;
 import models.Consent;
 import models.LargeRecord;
 import models.Member;
+import models.MobileAppInstance;
 import models.Plugin;
 import models.Record;
+import models.RecordsInfo;
 import models.Space;
+import models.enums.AggregationType;
 import models.enums.UserRole;
 
 import org.bson.BSONObject;
@@ -37,8 +40,9 @@ import play.mvc.Http.MultipartFormData.FilePart;
 import utils.DateTimeUtils;
 import utils.access.AccessLog;
 import utils.access.RecordManager;
-import utils.auth.AppToken;
 import utils.auth.ExecutionInfo;
+import utils.auth.KeyManager;
+import utils.auth.MobileAppSessionToken;
 import utils.auth.RecordToken;
 import utils.auth.Rights;
 import utils.auth.SpaceToken;
@@ -55,6 +59,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import actions.MobileCall;
 import actions.VisualizationCall;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -240,6 +245,36 @@ public class PluginsAPI extends Controller {
 				
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		return ok(JsonOutput.toJson(records, "Record", fields));
+	}
+	
+	/**
+	 * retrieve aggregated information about records matching some criteria
+	 * @return record info json
+	 * @throws AppException
+	 * @throws JsonValidationException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@VisualizationCall
+	public static Result getInfo() throws AppException, JsonValidationException {
+ 	
+		// check whether the request is complete
+		JsonNode json = request().body().asJson();				
+		JsonValidation.validate(json, "authToken", "properties", "summarize");
+		
+		// decrypt authToken 
+		SpaceToken authToken = SpaceToken.decrypt(json.get("authToken").asText());
+		if (authToken == null) {
+			return badRequest("Invalid authToken.");
+		}
+					
+		ObjectId targetAps = authToken.spaceId;
+				
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		AggregationType aggrType = JsonValidation.getEnum(json, "summarize", AggregationType.class);
+		
+	    Collection<RecordsInfo> result = RecordManager.instance.info(authToken.userId, targetAps, properties, aggrType);	
+						
+		return ok(Json.toJson(result));
 	}
 	
 	/**

@@ -2,12 +2,10 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import models.FilterRule;
 import models.Member;
 import models.Plugin;
 import models.Space;
@@ -26,10 +24,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
-import utils.auth.AppToken;
 import utils.auth.SpaceToken;
-import utils.collections.ChainedMap;
-import utils.collections.ChainedSet;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
@@ -38,7 +33,6 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -263,6 +257,16 @@ public class Spaces extends Controller {
 	
 	@APICall
 	public static Promise<Result> getUrl(String spaceIdString) throws AppException {
+		return getUrl(spaceIdString, true);
+	}
+	
+	@APICall
+	public static Promise<Result> regetUrl(String spaceIdString) throws AppException {
+		return getUrl(spaceIdString, false);
+	}
+	
+		
+	public static Promise<Result> getUrl(String spaceIdString, boolean auth) throws AppException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId spaceId = new ObjectId(spaceIdString);
 		

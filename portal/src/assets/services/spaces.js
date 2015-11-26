@@ -23,6 +23,10 @@ angular.module('services')
 	   return server.get(jsRoutes.controllers.Spaces.getUrl(spaceId).url);
 	};
 	
+	service.regetUrl = function(spaceId) {
+	   return server.get(jsRoutes.controllers.Spaces.regetUrl(spaceId).url);
+	};
+	
 	service.getPreviewUrl = function(spaceId) {
 	   return server.get(jsRoutes.controllers.Spaces.getPreviewUrl(spaceId).url);
 	};

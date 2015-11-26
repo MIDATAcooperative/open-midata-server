@@ -12,10 +12,15 @@
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 				<p>{{error}}</p>
 			</div>
-			
-				<p ng-show="message">{{message}}</p>
-				<button id="authorize" type="button" class="btn btn-success" ng-hide="authorized || authorizingOAuth1" ng-class="{'disabled': authorizing}" ng-click="authorize()">Authorize</button>
+							
+				<p ng-hide="authorized">
+				  The MIDATA plugin called <b>{{ appName }}</b> needs authorization for access to an external site to import data on your behalf.
+				  <br><br>
+				  After clicking on "Authorize Now" you will be redirected to an external login page.
+				</p>
+				<button id="authorize" type="button" class="btn btn-success" ng-hide="authorized || authorizingOAuth1" ng-class="{'disabled': authorizing}" ng-click="authorize()">Authorize Now</button>
 				<button type="button" class="btn btn-success" ng-show="authorizingOAuth1" ng-click="authorizeOAuth1()">Sign in with {{appName}} and authorize access</button>
+				<p ng-show="message" class="alert alert-info">{{message}}</p>
 				<div ng-if="authorized">			      	
 				  <pluginframe id="myframe" mysrc="{{url}}" height="600px" width="100%" ></pluginframe>				  
 				</div>
