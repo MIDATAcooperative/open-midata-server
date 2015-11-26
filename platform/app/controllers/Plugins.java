@@ -395,7 +395,7 @@ public class Plugins extends APIController {
 		final ObjectId userId = new ObjectId(request().username());
 		final ObjectId spaceId = new ObjectId(spaceIdStr);
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", appId).get();
-		Set<String> fields = Sets.create("name", "accessTokenUrl", "consumerKey", "consumerSecret", "type");
+		Set<String> fields = Sets.create("name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "type");
 		
 		try {
 			final Plugin app = Plugin.get(properties, fields);

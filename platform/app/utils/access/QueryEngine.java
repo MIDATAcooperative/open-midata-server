@@ -149,7 +149,7 @@ class QueryEngine {
 			r.put("newest", inf.newest);
 			r.put("oldest", inf.oldest);
 			r.put("newestRecord", inf.newestRecord.toString());
-			r.put("calculated", inf.calculated);
+			r.put("calculated", new Date());
 			q.getCache().getAPS(aps).setMeta("_info", r);
 		}
 		return result.values();

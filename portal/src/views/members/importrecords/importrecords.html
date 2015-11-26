@@ -20,6 +20,7 @@
 				</p>
 				<button id="authorize" type="button" class="btn btn-success" ng-hide="authorized || authorizingOAuth1" ng-class="{'disabled': authorizing}" ng-click="authorize()">Authorize Now</button>
 				<button type="button" class="btn btn-success" ng-show="authorizingOAuth1" ng-click="authorizeOAuth1()">Sign in with {{appName}} and authorize access</button>
+				<div class="extraspace"></div>				
 				<p ng-show="message" class="alert alert-info">{{message}}</p>
 				<div ng-if="authorized">			      	
 				  <pluginframe id="myframe" mysrc="{{url}}" height="600px" width="100%" ></pluginframe>				  

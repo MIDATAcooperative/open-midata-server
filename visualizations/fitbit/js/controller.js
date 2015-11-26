@@ -12,35 +12,24 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 		$scope.saved = 0;
 		$scope.measure = null;
 		$scope.measurements = [
-				{
-					"name": "Water",
-					"title": "Fitbit water consumption {date}",
-					"endpoint": "/1/user/-/foods/log/water/date/{date}.json",
-					"content" : "food/water-consumption"
-				},
-				{
-					"name": "Body Weight",
-					"title": "Fitbit body weight {date}",
-					"endpoint": "/1/user/-/body/log/weight/date/{date}.json",
-					"content" : "body/weight"
-				},
+							
 				{
 					"name": "Food - Calories Intake",
 					"title": "Fitbit food (calories intake) {date}",
 					"endpoint": "/1/user/-/foods/log/caloriesIn/date/{date}/1d.json",
-					"content" : "food/calories-intake"
+					"content" : "food/calories-in"
 				},
 				{
 					"name": "Food - Water Consumption",
 					"title": "Fitbit food (water consumption) {date}",
 					"endpoint": "/1/user/-/foods/log/water/date/{date}/1d.json",
-					"content" : "food/water-consumption"
+					"content" : "food/water"
 				},
 				{
 					"name": "Activities - Calories Burned",
 					"title": "Fitbit activities (calories burned) {date}",
 					"endpoint": "/1/user/-/activities/calories/date/{date}/1d.json",
-					"content" : "activities/calories-burned"
+					"content" : "activities/calories"
 				},
 				{
 					"name": "Activities - Steps",
@@ -58,7 +47,7 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 					"name": "Activities - Floors Climbed",
 					"title": "Fitbit activities (floors climbed) {date}",
 					"endpoint": "/1/user/-/activities/floors/date/{date}/1d.json",
-					"content" : "activities/floors-climbed"
+					"content" : "activities/floors"
 				},
 				{
 					"name": "Activities - Elevation",
@@ -70,31 +59,31 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 					"name": "Activities - Minutes Sedentary",
 					"title": "Fitbit activities (minutes sedentary) {date}",
 					"endpoint": "/1/user/-/activities/minutesSedentary/date/{date}/1d.json",
-					"content" : "activities/sedentary"
+					"content" : "activities/minutes-sedentary"
 				},
 				{
 					"name": "Activities - Minutes Lightly Active",
 					"title": "Fitbit activities (minutes lightly active) {date}",
 					"endpoint": "/1/user/-/activities/minutesLightlyActive/date/{date}/1d.json",
-					"content" : "activities/minutes-active"
+					"content" : "activities/minutes-lightly-active"
 				},
 				{
 					"name": "Activities - Minutes Fairly Active",
 					"title": "Fitbit activities (minutes fairly active) {date}",
 					"endpoint": "/1/user/-/activities/minutesFairlyActive/date/{date}/1d.json",
-					"content" : "activities/minutes-active"
+					"content" : "activities/minutes-fairly-active"
 				},
 				{
 					"name": "Activities - Minutes Very Active",
 					"title": "Fitbit activities (minutes very active) {date}",
 					"endpoint": "/1/user/-/activities/minutesVeryActive/date/{date}/1d.json",
-					"content" : "activities/minutes-active"
+					"content" : "activities/minutes-very-active"
 				},
 				{
 					"name": "Activities - Calories Burned in Activities",
 					"title": "Fitbit activities (calories burned in activities) {date}",
 					"endpoint": "/1/user/-/activities/activityCalories/date/{date}/1d.json",
-					"content" : "activities/calories-burned"
+					"content" : "activities/activity-calories"
 				},
 				{
 					"name": "Sleep - Time in Bed",

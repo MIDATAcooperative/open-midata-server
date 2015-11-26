@@ -303,6 +303,7 @@ public class Application extends APIController {
 	 * retrieves a list of URLs to all functions used by the MIDATA portal
 	 * @return javascript file with URL routes
 	 */
+	@APICall
 	public static Result javascriptRoutes() {
 		response().setContentType("text/javascript");
 		return ok(Routes.javascriptRouter(
