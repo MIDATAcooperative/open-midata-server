@@ -3,6 +3,7 @@ package controllers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -46,6 +47,7 @@ import utils.auth.MobileAppSessionToken;
 import utils.auth.RecordToken;
 import utils.auth.Rights;
 import utils.auth.SpaceToken;
+import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
@@ -268,14 +270,22 @@ public class PluginsAPI extends Controller {
 		}
 					
 		ObjectId targetAps = authToken.spaceId;
-				
+		
+		Collection<RecordsInfo> result;
+
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = json.has("fields") ? JsonExtraction.extractStringSet(json.get("fields")) : Sets.create();
 		
-		AggregationType aggrType = JsonValidation.getEnum(json, "summarize", AggregationType.class);
-		
-	    Collection<RecordsInfo> result = RecordManager.instance.info(authToken.userId, targetAps, properties, aggrType);	
+		if (authToken.recordId != null) {
+			Collection<Record> record = RecordManager.instance.list(authToken.userId, authToken.spaceId, CMaps.map("_id", authToken.recordId), Sets.create("owner", "content", "format", "group"));
+			result = new ArrayList<RecordsInfo>();
+			for (Record r : record) result.add(new RecordsInfo(r));			
+		} else {
+							
+			AggregationType aggrType = JsonValidation.getEnum(json, "summarize", AggregationType.class);		
+		    result = RecordManager.instance.info(authToken.userId, targetAps, properties, aggrType);	
 
+		}
 	    if (fields.contains("ownerName")) ReferenceTool.resolveOwnersForRecordsInfo(result, true);
 		return ok(Json.toJson(result));
 	}
