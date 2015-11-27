@@ -182,6 +182,7 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 				  angular.forEach($scope.measurements, function(measurement) {
 					if (measurement.from == null || measurement.from < since) measurement.from = since;
 					measurement.to = yesterday;
+					measurement.import = true;
 				  });
 				  
 				  //$("#toDate").datepicker("setDate", yesterday); 
