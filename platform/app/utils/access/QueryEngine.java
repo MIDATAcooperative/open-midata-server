@@ -44,7 +44,7 @@ class QueryEngine {
 	}
 	
 	public static Collection<RecordsInfo> info(APSCache cache, ObjectId aps, Map<String, Object> properties, AggregationType aggrType) throws AppException {
-		return infoQuery(new Query(properties, Sets.create("created", "group", "content", "format", "owner"), cache, aps, true), aps, false, aggrType);
+		return infoQuery(new Query(properties, Sets.create("created", "group", "content", "format", "owner"), cache, aps, true), aps, false, aggrType, null);
 	}
 	
 	public static List<Record> isContainedInAps(APSCache cache, ObjectId aps, List<Record> candidates) throws AppException {
@@ -63,17 +63,18 @@ class QueryEngine {
 		return postProcessRecords(qm, query, qm.query(query));		
 	}
 	
-	private static String getInfoKey(AggregationType aggrType, String group, String content, String format) {
+	private static String getInfoKey(AggregationType aggrType, String group, String content, String format, ObjectId owner) {
 		switch (aggrType) {
 		case ALL: return "";
 		case GROUP: return group;
 		case CONTENT: return content;
+		case CONTENT_PER_OWNER : return content+"/"+(owner != null ? owner.toString() : "?");
 		case FORMAT: return format;
-		default: return content+"/"+format;
+		default: return content+"/"+format+"/"+(owner != null ? owner.toString() : "?");
 		}
 	}
 	
-	public static Collection<RecordsInfo> infoQuery(Query q, ObjectId aps, boolean cached, AggregationType aggrType) throws AppException {
+	public static Collection<RecordsInfo> infoQuery(Query q, ObjectId aps, boolean cached, AggregationType aggrType, ObjectId owner) throws AppException {
 		AccessLog.debug("infoQuery aps="+aps+" cached="+cached);
 		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
 		
@@ -90,8 +91,9 @@ class QueryEngine {
 				inf.groups.add(obj.getString("groups"));
 				inf.formats.add(obj.getString("formats"));
 				inf.contents.add(obj.getString("contents"));
+				if (owner != null) inf.owners.add(owner.toString());
 				inf.calculated = obj.getDate("calculated");
-				String k = getInfoKey(aggrType, obj.getString("groups"), obj.getString("contents"), obj.getString("formats"));
+				String k = getInfoKey(aggrType, obj.getString("groups"), obj.getString("contents"), obj.getString("formats"), owner);
 				
 				result.put(k, inf);
 				Date from = inf.calculated != null ? new Date(inf.calculated.getTime() - 1000) : new Date(inf.newest.getTime() + 1);
@@ -114,10 +116,11 @@ class QueryEngine {
 			if (record.isStream) {
 				q.getCache().getAPS(record._id, record.key, record.owner); // Called to make sure stream is accessible
 				
-				Collection<RecordsInfo> streaminfo = infoQuery(new Query(q, CMaps.map("stream", record._id)), record._id, true, aggrType);
+				Collection<RecordsInfo> streaminfo = infoQuery(new Query(q, CMaps.map("stream", record._id)), record._id, true, aggrType, record.owner);
 				
 				for (RecordsInfo inf : streaminfo) {
-					String k = getInfoKey(aggrType, inf.groups.iterator().next(), inf.contents.iterator().next(), inf.formats.iterator().next());
+					if (record.owner != null) inf.owners.add(record.owner.toString());
+					String k = getInfoKey(aggrType, inf.groups.iterator().next(), inf.contents.iterator().next(), inf.formats.iterator().next(), record.owner);
 					RecordsInfo here = result.get(k);					
 					if (here == null) {
 						result.put(k, inf);
@@ -126,7 +129,7 @@ class QueryEngine {
 					}
 				}
 			} else {			
-				String k = getInfoKey(aggrType, record.group, record.content, record.format);
+				String k = getInfoKey(aggrType, record.group, record.content, record.format, record.owner);
 				RecordsInfo existing = result.get(k);
 				RecordsInfo newentry = new RecordsInfo(record);					
 				if (existing == null) {

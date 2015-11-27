@@ -2,8 +2,11 @@ package utils.collections;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.bson.types.ObjectId;
 
 import utils.exceptions.InternalServerException;
 
@@ -11,6 +14,7 @@ import models.Circle;
 import models.Consent;
 import models.Member;
 import models.Record;
+import models.RecordsInfo;
 
 public class ReferenceTool {
 
@@ -44,6 +48,29 @@ public class ReferenceTool {
 				}
 				record.creatorName = name;
 			}
+		}
+	}
+	
+	public static void resolveOwnersForRecordsInfo(Collection<RecordsInfo> recordinfos, boolean owners) throws InternalServerException {
+		Map<String, String> members = new HashMap<String, String>();		
+		
+		for (RecordsInfo info : recordinfos) {
+			if (owners && (info.owners != null)) {
+				info.ownerNames = new HashSet<String>();
+				for (String key : info.owners) {
+					
+					String name = members.get(key);
+					if (name == null) {
+						Member member = Member.getById(new ObjectId(key), fullName);
+						if (member != null) {
+							name = member.lastname + ", " + member.firstname;
+							members.put(key, name);
+						}
+					}
+					info.ownerNames.add(name);
+				}
+			}
+			
 		}
 	}
 	

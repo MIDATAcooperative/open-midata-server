@@ -20,11 +20,31 @@ angular.module('chartApp')
 	  $scope.unit = null;
 	  $scope.name = "";
 	  $scope.config = {};
+	  $scope.timeUnit = "";
+	  $scope.timeUnits = [ { name : "" }, { name : "month"}, {name : "year" }];
 	  
 	  $scope.saving = false;
 	  $scope.saving2 = false;
 	  $scope.readonly = false;
+	  
+	  $scope.ownerNameToOwner = {};
 	  midataPortal.autoresize();
+	  
+	  $scope.reloadSummary = function() {
+		  var p = { format : "measurements" };
+		  midataServer.getSummary($scope.authToken, "SINGLE", p, ["ownerName" ])
+		  .then(function(results) {
+			  var entries = results.data;
+			  console.log(entries);		 
+			  var info = $scope.buildAxesFromSummary(entries);
+			  $scope.info = info;			
+			  console.log(info);
+			  $scope.showBest(info);
+              $scope.prepareReport();			  				
+		  });
+	  };
+	  
+	 
 	  
 	  $scope.reload = function() {
 		  var p = { };
@@ -38,24 +58,41 @@ angular.module('chartApp')
 	  
 	  $scope.extractData = function(records) {
 		  var entries = [];
+		  var idx = 0;
 		  angular.forEach(records, function(record) {
 			  var cdate = new Date(record.created).toISOString();
 			  angular.forEach(record.data, function(lst, content) {
 				  angular.forEach(lst, function(entry) {
+					  var dateTime = (entry.dateTime || entry.date || new Date(record.created));
+			
 					  var e = {
 							  value : (Number(entry.value) || Number(entry.amount) || Number(entry[content])),
 							  unit : entry.unit,							  
 							  content : record.content,
 							  context : entry.context,
-							  dateTime : (entry.dateTime || entry.date || record.created),
+							  dateTime : dateTime,							  
 							  owner : record.ownerName
 					  };
-					  if (Number.isFinite(e.value)) entries.push(e);
+					  if (Number.isFinite(e.value)) entries[idx++] = e;
 				  });
 			  });
 		  });
 		  return entries;
 	  };
+	  
+	  $scope.makeSimpleTime = function(entries, granularity) {
+		  if (granularity == "year") {
+			  angular.forEach(entries, function(entry) {
+				  entry.dateTime = new Date(entry.dateTime).getFullYear();				   
+			  });
+		  } else if (granularity == "month"){
+			  angular.forEach(entries, function(entry) {
+				  var dt = new Date(entry.dateTime);
+				  var year = dt.getFullYear();
+				  entry.dateTime = year+"-"+dt.getMonth();  
+			  });
+	      }
+	  }
 	  
 	  $scope.buildAxes = function(entries) {
 		  var aTime = {};
@@ -77,15 +114,60 @@ angular.module('chartApp')
 		          content : [],
 		          units : []
 		  };
-		  angular.forEach(aTime, function(v,k) { result.dateTime.push(k); });
-          angular.forEach(aOwner, function(v,k) { result.owner.push(k); });
-          angular.forEach(aContext , function(v,k) { result.context.push(k); });
-          angular.forEach(aFormat , function(v,k) { result.content.push(k); });
-          angular.forEach(aUnit , function(v,k) { result.units.push(k); });
+		  var dateTimeIdx = 0, ownerIdx = 0, contextIdx = 0, contentIdx = 0, unitIdx = 0;
+		  angular.forEach(aTime, function(v,k) { result.dateTime[dateTimeIdx++] = k; });
+          angular.forEach(aOwner, function(v,k) { result.owner[ownerIdx++] = k; });
+          angular.forEach(aContext , function(v,k) { result.context[contextIdx++] = k; });
+          angular.forEach(aFormat , function(v,k) { result.content[contentIdx++] = k; });
+          angular.forEach(aUnit , function(v,k) { result.units[unitIdx++] = k; });
           
           result.dateTime.sort();
           result.owner.sort();
           result.context.sort();
+          result.content.sort();
+          
+          result.hasMultipleDates = result.dateTime.length > 1;
+          result.hasMultipleOwners = result.owner.length > 1;
+          result.hasMultipleContexts = result.context.length > 1;
+          result.hasMultipleFormats = result.content.length > 1;
+		  return result;
+	  };
+	  
+	  $scope.buildAxesFromSummary = function(info) {
+		  var aTime = {};
+		  var aOwner = {};
+		  var aContext = {};
+		  var aFormat = {};
+		  var aUnit = {};
+		  angular.forEach(info, function(entry) {
+			  aTime[entry.oldest] = true;
+			  aTime[entry.newest] = true;
+			  
+			  $scope.ownerNameToOwner[entry.ownerNames[0]] = entry.owners[0];
+			  
+			  angular.forEach(entry.ownerNames, function(on) { aOwner[on] = true; });
+			  angular.forEach(entry.contents, function(on) { aFormat[on] = true; });
+			  //aContext[entry.context] = true;
+			  //aFormat[entry.content] = true;
+			  //aUnit[entry.unit] = true;
+		  });
+		  var result = {
+				  dateTime : [],
+		          owner : [],
+		          context : [],
+		          content : [],
+		          units : []
+		  };
+		  var dateTimeIdx = 0, ownerIdx = 0, contextIdx = 0, contentIdx = 0, unitIdx = 0;
+		  angular.forEach(aTime, function(v,k) { result.dateTime[dateTimeIdx++] = k; });
+          angular.forEach(aOwner, function(v,k) { result.owner[ownerIdx++] = k; });
+          //angular.forEach(aContext , function(v,k) { result.context.push(k); });
+          angular.forEach(aFormat , function(v,k) { result.content[contentIdx++] = k; });
+          //angular.forEach(aUnit , function(v,k) { result.units.push(k); });
+          
+          result.dateTime.sort();
+          result.owner.sort();
+          //result.context.sort();
           result.content.sort();
           
           result.hasMultipleDates = result.dateTime.length > 1;
@@ -145,15 +227,30 @@ angular.module('chartApp')
 				  }
 			  });
 		  } else if (alg == "avg") {
-			  // TODO
+			  angular.forEach($scope.series, function() { 
+				  d.push(new Array($scope.labels.length).fill(0));
+				  h.push(new Array($scope.labels.length));
+			  });
+			  angular.forEach(entries, function(entry) {
+				  var s = seriesMap[entry[seriesAxis]];
+				  var l = labelMap[entry[labelAxis]];
+				  var hx = h[s][l];
+				  if (!hx) {
+				    d[s][l] = entry.value;
+				    h[s][l] = [ entry.value, 1 ];
+				  } else {
+					h[s][l] = [hx[0] + entry.value, hx[1] + 1];
+					d[s][l] = hx[0] / hx[1];
+				  }
+			  });
 		  }
 		  console.log(alg);
-		  console.log(d);
+		  //console.log(d);
 	  };
 	  		 
 	  $scope.prepare = function() {
 		 var entries = $scope.extractData($scope.raw);
-		 console.log(entries);		 
+		 //console.log(entries);		 
 		 var info = $scope.buildAxes(entries);
 		 $scope.info = info;
 		 $scope.entries = entries;
@@ -161,7 +258,7 @@ angular.module('chartApp')
 			 $scope.chartType = "none";
 			 return;
 		 }
-		 console.log(info);
+		 //console.log(info);
 		 $scope.showBest(info);
 		 console.log($scope.report);
 				 
@@ -171,20 +268,42 @@ angular.module('chartApp')
 	  $scope.prepareReport = function() {
 		  console.log("prepareReport");
 		  $scope.chartType = $scope.report.type;
-		  
+		  console.log($scope.report);
+				
+			
 		  if ($scope.report.filter) {
-		    $scope.filter = $scope.info[$scope.report.filter];
-		    $scope.selectedFilter = $scope.config.filter != null ? $scope.config.filter : $scope.filter[0];
+				 $scope.filter = $scope.info[$scope.report.filter];
+				 $scope.selectedFilter = $scope.config.filter != null ? $scope.config.filter : $scope.filter[0];
 		  }
+				  
+		  $scope.prepareFilter();			  
 		  
-		  $scope.prepareFilter();
+		  
+		  		  
 	  };
 	  
 	  $scope.prepareFilter = function() {
+          var p = { };
+          $scope.chartType = "calculation";
+		  if ($scope.report.filter != null && $scope.report.filter == "content") p.content = $scope.selectedFilter;
+		  if ($scope.report.filter != null && $scope.report.filter == "owner") p.owner = $scope.ownerNameToOwner[$scope.selectedFilter];
+		  
+		  if (document.location.href.indexOf("/preview") >= 0) p = { "limit" : 100 };
+		  midataServer.getRecords($scope.authToken, p, ["owner", "created", "ownerName", "content", "format", "data"])
+		  .then(function(results) {
+			  $scope.raw = results.data;
+			  $scope.entries = $scope.extractData($scope.raw);
+	          console.log($scope.timeUnit);
+			  if ($scope.timeUnit != "") {
+				  $scope.makeSimpleTime($scope.entries, $scope.timeUnit);
+			  }
+			  $scope.chartType = $scope.report.type;
+		  
+		  
 		  console.log("prepareFilter");
 		  		  
 		  var filteredEntries = $scope.report.filter ? $scope.doFilter($scope.entries, $scope.report.filter, $scope.selectedFilter) : $scope.entries;
-		  var filteredInfo = $scope.report.filter ? $scope.buildAxes(filteredEntries) : $scope.info;
+		  var filteredInfo = $scope.report.filter ? $scope.buildAxes(filteredEntries) : $scope.buildAxes($scope.entries);
 		  if ($scope.report.filter2) {
 			 $scope.filter2 = filteredInfo[$scope.report.filter2];
 			 $scope.selectedFilter2 = $scope.config.filter2 != null ? $scope.config.filter2 : $scope.filter2[0];
@@ -193,6 +312,8 @@ angular.module('chartApp')
 		  $scope.info1 = filteredInfo;
 		  
 		  $scope.update();
+		  
+		  });
 	  };
 	  
 	  $scope.update = function() {
@@ -200,29 +321,31 @@ angular.module('chartApp')
 		  console.log($scope.report);
 		  var filteredEntries = $scope.report.filter2 != null ? $scope.doFilter($scope.entries1, $scope.report.filter2, $scope.selectedFilter2) : $scope.entries1;
 		  var filteredInfo = $scope.report.filter2 != null ? $scope.buildAxes(filteredEntries) : $scope.info1;
-		  $scope.build($scope.report.label, $scope.report.series, filteredInfo, filteredEntries, $scope.report.alg);
-		  console.log(filteredEntries);
-		  console.log(filteredInfo);
-		  console.log($scope.series);
+		  var alg = $scope.report.alg;
+		  if (alg == "simple" && $scope.timeUnit != "") alg = "avg";
+		  $scope.build($scope.report.label, $scope.report.series, filteredInfo, filteredEntries, alg);
+		  //console.log(filteredEntries);
+		  //console.log(filteredInfo);
+		  //console.log($scope.series);
 	  };
 	  
 	  $scope.showBest = function(info) {
 		 var r = [];
 		 if (info.hasMultipleDates) {
 			 if (info.hasMultipleOwners) {
-			    r.push( { name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", filter: info.hasMultipleFormats ? "content" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null } );
+			    r.push( { name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", filter: info.hasMultipleFormats ? "content" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null, timeUnits : true } );
 			 }
 			 
 			 if (info.hasMultipleFormats) {
-				r.push( { name:"Time Series per Measure", type : "line", label : "dateTime", series : "content", filter: info.hasMultipleOwners ? "owner" : null, filterLabel: info.hasMultipleOwners ? "Person" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null } );
+				r.push( { name:"Time Series per Measure", type : "line", label : "dateTime", series : "content", filter: info.hasMultipleOwners ? "owner" : null, filterLabel: info.hasMultipleOwners ? "Person" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null, timeUnits : true } );
 			 }
 			 
 			 if (info.hasMultipleContexts) {
-   			    r.push( { name:"Time Series per Context", type : "line", label : "dateTime", series : "context", filter: info.hasMultipleFormats ? "content" : null , filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleOwners ? "owner" : null, filterLabel2: info.hasMultipleOwners ? "Person" : null } );				 
+   			    r.push( { name:"Time Series per Context", type : "line", label : "dateTime", series : "context", filter: info.hasMultipleFormats ? "content" : null , filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleOwners ? "owner" : null, filterLabel2: info.hasMultipleOwners ? "Person" : null, timeUnits : true } );				 
 			 }
 			 
 			 if (!info.hasMultipleOwners) {
-				 r.push( { name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", filter: info.hasMultipleFormats ? "content" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null } ); 
+				 r.push( { name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", filter: info.hasMultipleFormats ? "content" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null, timeUnits : true } ); 
 			 }
 		 }
 		 
@@ -260,25 +383,26 @@ angular.module('chartApp')
 					$scope.readonly = true;
 				} else {
 				    $scope.config = result.data;
+				    $scope.timeUnit = result.data.timeUnit || "";
 				}
 				/*$scope.report = result.report;
 				$scope.selectedFilter = result.filter;
 				$scope.selectedFilter2 = result.filter2;*/
 			}  
-			$scope.reload();
+			$scope.reloadSummary();
 		  });
 		  
 	  };
 	  
 	  $scope.saveConfig = function() {
-		 var config = { report : $scope.report, filter : $scope.selectedFilter, filter2: $scope.selectedFilter2 };
+		 var config = { report : $scope.report, filter : $scope.selectedFilter, filter2: $scope.selectedFilter2, timeUnit : $scope.timeUnit };
 		 $scope.saving = true;
 		 midataServer.setConfig($scope.authToken, config)
 		 .then(function() { $scope.saving = false; });
 	  };
 	  
 	  $scope.add = function(name) {
-		 var config = { report : $scope.report, filter : $scope.selectedFilter, filter2: $scope.selectedFilter2 };
+		 var config = { report : $scope.report, filter : $scope.selectedFilter, filter2: $scope.selectedFilter2, timeUnit : $scope.timeUnit };
 		 $scope.saving2 = true;
 		 midataServer.cloneAs($scope.authToken, name, config)
 		 .then(function() { $scope.saving2 = false; });;

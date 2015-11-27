@@ -48,8 +48,8 @@ midata.factory('midataServer', [ '$http', '$q', function($http, $q) {
 		 return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/search", data);
 	};
 	
-	service.getSummary = function(authToken, level, properties) {
-		 var data = { "authToken" : authToken, "properties" : ( properties || {} ), "summarize" : level.toUpperCase() };		
+	service.getSummary = function(authToken, level, properties, fields) {
+		 var data = { "authToken" : authToken, "properties" : ( properties || {} ), "summarize" : level.toUpperCase(), "fields" : (fields || [])  };		
 		 return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/summary", data);
 	};
 	

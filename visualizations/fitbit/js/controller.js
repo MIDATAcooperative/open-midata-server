@@ -17,97 +17,113 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 					"name": "Food - Calories Intake",
 					"title": "Fitbit food (calories intake) {date}",
 					"endpoint": "/1/user/-/foods/log/caloriesIn/date/{date}/1d.json",
-					"content" : "food/calories-in"
+					"content" : "food/calories-in",
+					"unit" : "kcal"
 				},
 				{
 					"name": "Food - Water Consumption",
 					"title": "Fitbit food (water consumption) {date}",
 					"endpoint": "/1/user/-/foods/log/water/date/{date}/1d.json",
-					"content" : "food/water"
+					"content" : "food/water",
+					"unit" : "ml"
 				},
 				{
 					"name": "Activities - Calories Burned",
 					"title": "Fitbit activities (calories burned) {date}",
 					"endpoint": "/1/user/-/activities/calories/date/{date}/1d.json",
-					"content" : "activities/calories"
+					"content" : "activities/calories",
+					"unit" : "kcal"
 				},
 				{
 					"name": "Activities - Steps",
 					"title": "Fitbit activities (steps) {date}",
 					"endpoint": "/1/user/-/activities/steps/date/{date}/1d.json",
-					"content" : "activities/steps"
+					"content" : "activities/steps",
+					"unit" : "steps"
 				},
 				{
 					"name": "Activities - Distance",
 					"title": "Fitbit activities (distance) {date}",
 					"endpoint": "/1/user/-/activities/distance/date/{date}/1d.json",
-					"content" : "activities/distance"
+					"content" : "activities/distance",
+					"unit" : "km"
 				},
 				{
 					"name": "Activities - Floors Climbed",
 					"title": "Fitbit activities (floors climbed) {date}",
 					"endpoint": "/1/user/-/activities/floors/date/{date}/1d.json",
-					"content" : "activities/floors"
+					"content" : "activities/floors",
+					"unit" : "floors"
 				},
 				{
 					"name": "Activities - Elevation",
 					"title": "Fitbit activities (elevation) {date}",
 					"endpoint": "/1/user/-/activities/elevation/date/{date}/1d.json",
-					"content" : "activities/elevation"
+					"content" : "activities/elevation",
+					"unit" : "m"
 				},
 				{
 					"name": "Activities - Minutes Sedentary",
 					"title": "Fitbit activities (minutes sedentary) {date}",
 					"endpoint": "/1/user/-/activities/minutesSedentary/date/{date}/1d.json",
-					"content" : "activities/minutes-sedentary"
+					"content" : "activities/minutes-sedentary",
+					"unit" : "min"
 				},
 				{
 					"name": "Activities - Minutes Lightly Active",
 					"title": "Fitbit activities (minutes lightly active) {date}",
 					"endpoint": "/1/user/-/activities/minutesLightlyActive/date/{date}/1d.json",
-					"content" : "activities/minutes-lightly-active"
+					"content" : "activities/minutes-lightly-active",
+					"unit" : "min"
 				},
 				{
 					"name": "Activities - Minutes Fairly Active",
 					"title": "Fitbit activities (minutes fairly active) {date}",
 					"endpoint": "/1/user/-/activities/minutesFairlyActive/date/{date}/1d.json",
-					"content" : "activities/minutes-fairly-active"
+					"content" : "activities/minutes-fairly-active",
+					"unit" : "min"
 				},
 				{
 					"name": "Activities - Minutes Very Active",
 					"title": "Fitbit activities (minutes very active) {date}",
 					"endpoint": "/1/user/-/activities/minutesVeryActive/date/{date}/1d.json",
-					"content" : "activities/minutes-very-active"
+					"content" : "activities/minutes-very-active",
+					"unit" : "min"
 				},
 				{
 					"name": "Activities - Calories Burned in Activities",
 					"title": "Fitbit activities (calories burned in activities) {date}",
 					"endpoint": "/1/user/-/activities/activityCalories/date/{date}/1d.json",
-					"content" : "activities/activity-calories"
+					"content" : "activities/activity-calories",
+					"unit" : "kcal"
 				},
 				{
 					"name": "Sleep - Time in Bed",
 					"title": "Fitbit sleep (time in bed) {date}",
 					"endpoint": "/1/user/-/sleep/timeInBed/date/{date}/1d.json",
-					"content" : "sleep/time-in-bed"
+					"content" : "sleep/time-in-bed",
+					"unit" : "min"
 				},
 				{
 					"name": "Sleep - Minutes Asleep",
 					"title": "Fitbit sleep (minutes asleep) {date}",
 					"endpoint": "/1/user/-/sleep/minutesAsleep/date/{date}/1d.json",
-					"content" : "sleep/minutes-asleep"
+					"content" : "sleep/minutes-asleep",
+					"unit" : "min"
 				},
 				{
 					"name": "Sleep - Minutes Awake",
 					"title": "Fitbit sleep (minutes awake) {date}",
 					"endpoint": "/1/user/-/sleep/minutesAwake/date/{date}/1d.json",
-					"content" : "sleep/minutes-awake"
+					"content" : "sleep/minutes-awake",
+					"unit" : "min"
 				},
 				{
 					"name": "Sleep - Minutes to Fall Asleep",
 					"title": "Fitbit sleep (minutes to fall asleep) {date}",
 					"endpoint": "/1/user/-/sleep/minutesToFallAsleep/date/{date}/1d.json",
-					"content" : "sleep/minutes-to-fall-asleep"
+					"content" : "sleep/minutes-to-fall-asleep",
+					"unit" : "min"
 				},
 				{
 					"name": "Sleep - Efficiency",
@@ -119,28 +135,32 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 					"name": "Body - Weight",
 					"title": "Fitbit body (weight) {date}",
 					"endpoint": "/1/user/-/body/weight/date/{date}/1d.json",
-				    "content" : "body/weight"
+				    "content" : "body/weight",
+				    "unit" : "kg"
 				},
 				{
 					"name": "Body - BMI",
 					"title": "Fitbit body (BMI) {date}",
 					"endpoint": "/1/user/-/body/bmi/date/{date}/1d.json",
-					"content" : "body/bmi"
+					"content" : "body/bmi",
+					"unit" : "kg/m2"
 				},
 				{
 					"name": "Body - Fat",
 					"title": "Fitbit body (fat) {date}",
 					"endpoint": "/1/user/-/body/fat/date/{date}/1d.json",
-					"content" : "body/fat"
-				}
+					"content" : "body/fat",	
+					"unit" : "%"
+				}						
+				
 		];
 		var baseUrl = "https://api.fitbit.com";
 
 		// init datepicker
-		$("#datepicker").datepicker({
+		/*$("#datepicker").datepicker({
 			"format": "M d, yyyy",
 			"todayHighlight": true
-		});
+		});*/
 
 		// get authorization token
 		var authToken = $location.path().split("/")[1];
@@ -157,6 +177,7 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 				  
 				  var yesterday = new Date();
 				  yesterday.setDate(yesterday.getDate() - 1);
+				  yesterday.setHours(1,1,1,1);
 				  
 				  angular.forEach($scope.measurements, function(measurement) {
 					if (measurement.from == null || measurement.from < since) measurement.from = since;
@@ -178,7 +199,7 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 				var measurement = map[entry.contents[0]];
 				if (measurement != null) {
 					var newestDate = new Date(entry.newest);
-					
+					newestDate.setHours(1,1,1,1);
 					measurement.imported = entry.count;
 					if (measurement.from == null || measurement.from < newestDate) measurement.from = newestDate;
 				}
@@ -229,10 +250,14 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 					angular.forEach(response, function(v,dataName) {
 						var grouped = {};
 						
-						angular.forEach(v, function(itm) {							
-						  var recDate = itm.dateTime || itm.date;
-						  if (grouped[recDate] == null) grouped[recDate] = [];
-						  grouped[recDate].push(itm);						
+						angular.forEach(v, function(itm) {
+						  var val = itm.value || itm.amount;
+						  if (val != 0) {
+							  var recDate = itm.dateTime || itm.date;
+							  if (measure.unit != null && itm.unit == null) itm.unit = measure.unit;
+							  if (grouped[recDate] == null) grouped[recDate] = [];
+							  grouped[recDate].push(itm);
+						  }
 						});						
 						
 						angular.forEach(grouped, function(itms, date) {
@@ -245,6 +270,7 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 				}
 				
 				$scope.requesting--;
+				finish();
 			}).
 			error(function(err) {
 					errorMessage("Failed to import data on " + formattedDate + ": " + err);

@@ -49,6 +49,16 @@ public class RecordsInfo {
 	public Set<String> groups;
 	
 	/**
+	 * set of all owner ids of all records summarized in this entry
+	 */
+	public Set<String> owners;
+	
+	/**
+	 * set of all owner names of all records summarized in this entry
+	 */
+	public Set<String> ownerNames;
+	
+	/**
 	 * _id of newest record summarized in this entry
 	 */
 	public ObjectId newestRecord;	
@@ -58,16 +68,22 @@ public class RecordsInfo {
     	formats = new HashSet<String>();
     	contents = new HashSet<String>();
     	groups = new HashSet<String>();
+    	owners = new HashSet<String>();
+    	
     }
     
     public RecordsInfo(Record rec) {
     	formats = new HashSet<String>();
     	contents = new HashSet<String>();
     	groups = new HashSet<String>();
+    	owners = new HashSet<String>();
+    	
     	
     	formats.add(rec.format);
     	contents.add(rec.content);
     	groups.add(rec.group);
+    	if (rec.owner != null) owners.add(rec.owner.toString());
+    	
     	
     	count = 1;
     	oldest = rec.created;
@@ -91,6 +107,8 @@ public class RecordsInfo {
 		this.groups.addAll(item.groups);
 		this.contents.addAll(item.contents);
 		this.formats.addAll(item.formats);
+		this.owners.addAll(item.owners);
+		
 
 	}
 

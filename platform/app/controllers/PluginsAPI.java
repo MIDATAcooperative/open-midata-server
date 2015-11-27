@@ -270,10 +270,13 @@ public class PluginsAPI extends Controller {
 		ObjectId targetAps = authToken.spaceId;
 				
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		Set<String> fields = json.has("fields") ? JsonExtraction.extractStringSet(json.get("fields")) : Sets.create();
+		
 		AggregationType aggrType = JsonValidation.getEnum(json, "summarize", AggregationType.class);
 		
 	    Collection<RecordsInfo> result = RecordManager.instance.info(authToken.userId, targetAps, properties, aggrType);	
-						
+
+	    if (fields.contains("ownerName")) ReferenceTool.resolveOwnersForRecordsInfo(result, true);
 		return ok(Json.toJson(result));
 	}
 	

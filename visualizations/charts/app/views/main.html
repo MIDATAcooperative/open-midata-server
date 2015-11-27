@@ -5,6 +5,10 @@
     <label for="report">Report:</label>
     <select id="report" class="form-control" ng-model="report" ng-options="report.name for report in reports" ng-change="prepareReport()"></select>
   </div>
+  <div class="form-group" ng-show="report.timeUnits">
+     <label for="timeUnit">Time Unit:</label>
+     <select id="timeUnit"  class="form-control" ng-model="timeUnit" ng-options="tu.name as tu.name for tu in timeUnits" ng-change="prepareFilter()"></select>
+  </div>
   <div class="form-group" ng-show="report.filter">
      <label for="filter">{{ report.filterLabel }}</label>
      <select id="filter"  class="form-control" ng-model="selectedFilter" ng-options="f for f in filter" ng-change="prepareFilter()"></select>
@@ -31,6 +35,11 @@
 <div ng-show="entries.length==0" class="alert alert-warning">
   <strong>Nothing to display!</strong> There must be at least one record with known format assigned to this visualization.  
 </div>
+
+<div class="alert alert-info" ng-show="chartType=='calculation'">
+  Please wait, chart is calculated... 
+</div>
+
 
 <div ng-if="chartType=='line'">
 <canvas id="line" class="chart chart-line" data="data"
