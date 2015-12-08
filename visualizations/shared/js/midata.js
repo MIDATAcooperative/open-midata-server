@@ -68,9 +68,19 @@ midata.factory('midataServer', [ '$http', '$q', function($http, $q) {
 		 return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/clone", data);
 	};
 	
+	service.searchCoding = function(authToken, properties, fields) {
+		 var data = { "authToken" : authToken, "properties" : properties, "fields" : fields };		
+		 return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/coding/search", data);
+	};
+	
 	service.oauth2Request = function(authToken, url) {	
 		var data = { "authToken": authToken, "url": url };		
 	    return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/request/oauth2", data);
+	};
+	
+	service.run = function(authToken) {	
+		var data = { "authToken": authToken  };		
+	    return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/run", data);
 	};
 	
 	return service;	

@@ -97,8 +97,7 @@ module.exports = function (grunt) {
 
     // Make sure code styles are up to par and there are no obvious mistakes
     jshint: {
-      options: {
-        jshintrc: '.jshintrc',
+      options: {       
         reporter: require('jshint-stylish')
       },
       all: [
@@ -106,9 +105,7 @@ module.exports = function (grunt) {
         '<%= yeoman.app %>/scripts/{,*/}*.js'
       ],
       test: {
-        options: {
-          jshintrc: 'test/.jshintrc'
-        },
+       
         src: ['test/spec/{,*/}*.js']
       }
     },
@@ -276,12 +273,18 @@ module.exports = function (grunt) {
             'templates/{,*/}*.tpl.html',
             'images/{,*/}*.{webp}',
             'fonts/*'
+            
           ]
         }, {
           expand: true,
           cwd: '.tmp/images',
           dest: '<%= yeoman.dist %>/images',
           src: ['generated/*']
+        }, {
+        	expand : true,
+        	cwd: 'bower_components/bootstrap/dist',
+        	dest: '<%= yeoman.dist %>',
+        	src : 'fonts/*'
         }]
       },
       styles: {

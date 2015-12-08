@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('chartApp', ['ngRoute', 'midata', 'chart.js'])
+angular.module('chartApp', ['ngRoute', 'midata', 'chart.js', 'ui.bootstrap'])
   /**
    * Configure a single route to the app when the authorization token is
    * passed through the URL.

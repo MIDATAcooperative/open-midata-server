@@ -1,23 +1,15 @@
 <div>
 
-<form class="form-inline">
+<form>
+  <div class="form-inline extraspace">
   <div class="form-group" ng-show="reports.length > 1">
-    <label for="report">Report:</label>
+    <label for="report">Report: </label>
+    
     <select id="report" class="form-control" ng-model="report" ng-options="report.name for report in reports" ng-change="prepareReport()"></select>
+    
   </div>
-  <div class="form-group" ng-show="report.timeUnits">
-     <label for="timeUnit">Time Unit:</label>
-     <select id="timeUnit"  class="form-control" ng-model="timeUnit" ng-options="tu.name as tu.name for tu in timeUnits" ng-change="prepareFilter()"></select>
-  </div>
-  <div class="form-group" ng-show="report.filter">
-     <label for="filter">{{ report.filterLabel }}</label>
-     <select id="filter"  class="form-control" ng-model="selectedFilter" ng-options="f for f in filter" ng-change="prepareFilter()"></select>
-  </div>
-  <div class="form-group" ng-show="report.filter2">
-     <label for="filter2">{{ report.filterLabel2 }}</label>
-     <select id="filter2" class="form-control" ng-model="selectedFilter2" ng-options="f for f in filter2" ng-change="update()"></select>
-  </div>
-  <div style="margin-left:5px" class="form-group" ng-show="!readonly && (reports.length > 1 || report.filter || report.filter2)">
+ 
+  <div style="margin-left:5px" class="separator form-group" ng-show="!readonly && (reports.length > 1 || report.filter || report.filter2)">
     <button class="btn btn-default" ng-hide="saving" ng-click="saveConfig()">Save Setting</button>    
     <button class="btn btn-default" disabled="true" ng-show="saving">Saving...</button>
   </div>
@@ -30,6 +22,78 @@
     </div>
     </div>    
   </div>
+  
+  </div>
+  <div class="form-inline extraspace" ng-hide="chartType=='simple'">
+  
+  <div class="btn-group" ng-if="report.seriesName">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      {{ report.seriesName }} <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+     <li ng-repeat="f in allSeries">
+      <a href="javascript:" ng-click="toggleSeriesSelection(f);$event.stopPropagation();">
+       <input type="checkbox" ng-checked="isSelectedSeries(f)" >
+       {{ getLabel(report.series, f) }}
+      </a>
+     </li>
+    </ul>    
+ </div>
+ 
+ 
+ 
+ <div class="btn-group separator" ng-if="report.labelsName">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      {{ report.labelsName }} <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+     <li ng-repeat="f in allLabels">
+      <a href="javascript:" ng-click="toggleLabelSelection(f);$event.stopPropagation();">
+       <input type="checkbox" ng-checked="isSelectedLabel(f)" >
+       {{ getLabel(report.label, f) }}
+      </a>
+     </li>
+    </ul>    
+ </div>
+ 
+  <div class="form-group separator" ng-show="report.filter">
+     <label for="filter">{{ report.filterLabel }}:</label>
+     <select id="filter"  class="form-control" ng-model="selectedFilter" ng-options="f as getLabel(report.filter,f) for f in filter" ng-change="prepareFilter()"></select>
+  </div>
+  <div class="form-group separator" ng-show="report.filter2">
+     <label for="filter2">{{ report.filterLabel2 }}:</label>
+     <select id="filter2" class="form-control" ng-model="selectedFilter2" ng-options="f for f in filter2" ng-change="update()"></select>
+  </div>
+ 
+  </div>
+  <div class="form-inline extraspace"  ng-hide="chartType=='simple'">
+  <div class="form-group">
+  <label for="minDate">From: </label>
+  </div><div class="form-group">
+  <div class="input-group">
+     <input id="minDate" type="text" class="form-control" uib-datepicker-popup="dd.MM.yyyy" ng-change="delayedUpdate();" ng-model="minDate" is-open="datePickers.fromTimeOpened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+     <span class="input-group-btn">
+        <button type="button" class="btn btn-default" ng-click="datePickers.fromTimeOpened=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+     </span>
+  </div>
+  </div>
+  
+  <div class="form-group separator">
+  <label for="maxDate">To: </label>
+  </div><div class="form-group">
+  <div class="input-group">
+     <input id="maxDate" type="text" class="form-control" uib-datepicker-popup="dd.MM.yyyy" ng-change="delayedUpdate();" ng-model="maxDate" is-open="datePickers.toTimeOpened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+     <span class="input-group-btn">
+        <button type="button" class="btn btn-default" ng-click="datePickers.toTimeOpened=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+     </span>
+  </div>
+  </div>
+  
+  <div class="form-group separator" ng-show="report.timeUnits">
+     <label for="timeUnit">Time Unit:</label>
+     <select id="timeUnit"  class="form-control" ng-model="timeUnit" ng-options="tu.name as tu.name for tu in timeUnits" ng-change="delayedUpdate()"></select>
+  </div>
+ </div>
 </form>
 <p ng-show="report.unit">Unit: {{ report.unit }}</p>
 <div ng-show="entries.length==0" class="alert alert-warning">
