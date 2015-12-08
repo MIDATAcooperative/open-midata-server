@@ -81,6 +81,8 @@ class MongoDB(Product):
 			os.path.join(self.parent, 'json', 'formatinfo.json')), self.parent)
 	   Command.execute('{0} -d user -c plugins -o {1}'.format(os.path.join(self.bin, 'mongoexport'), 
 			os.path.join(self.parent, 'json', 'plugins.json')), self.parent)	   
+	   Command.execute('{0} -d user -c coding -o {1}'.format(os.path.join(self.bin, 'mongoexport'), 
+			os.path.join(self.parent, 'json', 'coding.json')), self.parent)	   
 
 	def reimport(self):
 	   print 'Importing metadata'
@@ -92,3 +94,5 @@ class MongoDB(Product):
 			os.path.join(self.parent, 'json', 'formatinfo.json')), self.parent)
 	   Command.execute('{0} -d user -c plugins --file {1} --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
 			os.path.join(self.parent, 'json', 'plugins.json')), self.parent)	   
+	   Command.execute('{0} -d user -c coding --file {1} --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
+			os.path.join(self.parent, 'json', 'coding.json')), self.parent)

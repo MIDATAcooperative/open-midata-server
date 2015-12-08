@@ -1,0 +1,21 @@
+
+{ "system" : "urn:internal", "display": "Calories Intake","code" : "food/calories-in"}
+{ "system" : "urn:internal", "display": "Water Consumption", "code" : "food/water" }
+{ "system" : "urn:internal", "display": "Calories Burned", "code" : "activities/calories" }
+{ "system" : "urn:internal", "display": "Steps", "code" : "activities/steps"}
+{ "system" : "urn:internal", "display": "Distance","code" : "activities/distance"}
+{ "system" : "urn:internal", "display": "Floors Climbed","code" : "activities/floors"}
+{ "system" : "urn:internal","display": "Elevation","code" : "activities/elevation"}
+{ "system" : "urn:internal","display": "Minutes Sedentary","code" : "activities/minutes-sedentary"}
+{ "system" : "urn:internal","display": "Minutes Lightly Active","code" : "activities/minutes-lightly-active"}
+{ "system" : "urn:internal","display": "Minutes Fairly Active","code" : "activities/minutes-fairly-active"}
+{ "system" : "urn:internal","display": "Minutes Very Active","code" : "activities/minutes-very-active"}
+{ "system" : "urn:internal","display": "Calories Burned in Activities","code" : "activities/activity-calories"}
+{ "system" : "urn:internal","display": "Time in Bed","code" : "sleep/time-in-bed"}
+{ "system" : "urn:internal","display": "Minutes Asleep","code" : "sleep/minutes-asleep"}
+{ "system" : "urn:internal","display": "Minutes Awake","code" : "sleep/minutes-awake"}
+{ "system" : "urn:internal","display": "Minutes to Fall Asleep","code" : "sleep/minutes-to-fall-asleep"}
+{ "system" : "urn:internal","display": "Efficiency","code" : "sleep/efficiency"}
+{ "system" : "urn:internal","display": "Weight","code" : "body/weight"}
+{ "system" : "urn:internal","display": "BMI","code" : "body/bmi"}
+{ "system" : "urn:internal","display": "Fat","code" : "body/fat"}  

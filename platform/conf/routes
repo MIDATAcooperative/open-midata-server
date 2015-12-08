@@ -8,6 +8,7 @@ GET     /test                                            controllers.Application
 GET     /test2                                           controllers.Application.test2()
 GET     /debug/aps/:id                                   controllers.Debug.get(id: String)
 GET     /debug/resetinfo                                 controllers.Debug.resetInfo()
+GET     /debug/test                                 controllers.Debug.test()
 
 # Home page
 
@@ -208,6 +209,11 @@ OPTIONS /v1/plugin_api/config/get      controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/config/get      controllers.PluginsAPI.getConfig()
 OPTIONS /v1/plugin_api/clone           controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/clone           controllers.PluginsAPI.cloneAs()
+OPTIONS /v1/plugin_api/run             controllers.PluginsAPI.checkPreflight()
+POST    /v1/plugin_api/run             controllers.PluginsAPI.run()
+
+OPTIONS /v1/plugin_api/coding/search   controllers.PluginsAPI.checkPreflight()
+POST    /v1/plugin_api/coding/search   controllers.FormatAPI.searchCoding()
 
 OPTIONS /v1/plugin_api/request/oauth2            controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/request/oauth2            controllers.PluginsAPI.oAuth2Call()
