@@ -21,6 +21,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.sandbox.Scripting;
 
 /**
  * used for debugging. MUST be removed in productive system
@@ -59,6 +60,14 @@ public class Debug extends Controller {
 		ObjectId userId = new ObjectId(request().username());
 		RecordManager.instance.resetInfo(userId);
 		return ok();
+	}
+	
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result test() throws AppException {
+		ObjectId userId = new ObjectId(request().username());
+		Object res = Scripting.instance.eval(userId);
+		return ok(res.toString());
 	}
 	
 }

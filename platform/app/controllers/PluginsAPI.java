@@ -11,8 +11,6 @@ import java.util.Set;
 
 import models.Consent;
 import models.LargeRecord;
-import models.Member;
-import models.MobileAppInstance;
 import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
@@ -23,10 +21,10 @@ import models.enums.UserRole;
 import org.bson.BSONObject;
 import org.bson.types.ObjectId;
 
-import play.libs.Json;
 import play.libs.F.Function;
 import play.libs.F.Function0;
 import play.libs.F.Promise;
+import play.libs.Json;
 import play.libs.oauth.OAuth.ConsumerKey;
 import play.libs.oauth.OAuth.OAuthCalculator;
 import play.libs.oauth.OAuth.RequestToken;
@@ -35,15 +33,13 @@ import play.libs.ws.WSRequestHolder;
 import play.libs.ws.WSResponse;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
-import play.mvc.Result;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
+import play.mvc.Result;
 import utils.DateTimeUtils;
 import utils.access.AccessLog;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
-import utils.auth.KeyManager;
-import utils.auth.MobileAppSessionToken;
 import utils.auth.RecordToken;
 import utils.auth.Rights;
 import utils.auth.SpaceToken;
@@ -51,8 +47,8 @@ import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
-import utils.db.FileStorage.FileData;
 import utils.db.DatabaseException;
+import utils.db.FileStorage.FileData;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -61,7 +57,8 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import actions.MobileCall;
+import utils.sandbox.FitbitImport;
+import utils.sandbox.MidataServer;
 import actions.VisualizationCall;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -221,32 +218,43 @@ public class PluginsAPI extends Controller {
 		
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+						
+		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(json.get("authToken").asText());
 		
+		Collection<Record> records = getRecords(inf, properties, fields);
+				
+		return ok(JsonOutput.toJson(records, "Record", fields));
+	}
+	
+	/**
+	 * helper function to retrieve records matching some criteria
+	 * @param inf execution info manages access rights
+	 * @param properties key-value map containing restrictions
+	 * @param fields set of field names to return
+	 * @return collection of records matching given criteria where executor has access to 
+	 * @throws AppException
+	 */
+	public static Collection<Record> getRecords(ExecutionInfo inf, Map<String,Object> properties, Set<String> fields) throws AppException {
 		// Do not check for fields that query for parts of the data.
 		Set<String> chkFields = new HashSet<String>();
 		for (String f : fields) {
-			if (!f.startsWith("data.")) chkFields.add(f);
+			  if (!f.startsWith("data.")) chkFields.add(f);
 		}
-		
+						
 		Rights.chk("getRecords", UserRole.ANY, chkFields);
-
-		// decrypt authToken
-		SpaceToken authToken = SpaceToken.decrypt(json.get("authToken").asText());
-		if (authToken == null) {
-			return badRequest("Invalid authToken.");
-		}
-			
-		if (authToken.recordId != null) properties.put("_id", authToken.recordId);
+					
+		if (inf.recordId != null) properties.put("_id", inf.recordId);
 
 		// get record data
 		Collection<Record> records = null;
-		
+				
 		AccessLog.debug("NEW QUERY");
 		
-		records = LargeRecord.getAll(authToken.userId, authToken.spaceId, properties, fields);		  
-				
+		records = LargeRecord.getAll(inf.executorId, inf.targetAPS, properties, fields);		  
+						
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
-		return ok(JsonOutput.toJson(records, "Record", fields));
+		
+		return records;
 	}
 	
 	/**
@@ -334,9 +342,7 @@ public class PluginsAPI extends Controller {
 		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(json.get("authToken").asText());
 				
 		if (authToken.recordId != null) return badRequest("This view is readonly.");
-								
-		ObjectId targetAps = authToken.targetAPS;
-															
+																								
 		// save new record with additional metadata
 		if (!json.get("data").isTextual() || !json.get("name").isTextual() || !json.get("description").isTextual()) {
 			return badRequest("At least one request parameter is of the wrong type.");
@@ -346,9 +352,10 @@ public class PluginsAPI extends Controller {
 		String name = JsonValidation.getString(json, "name");
 		String description = JsonValidation.getString(json, "description");
 		String format = JsonValidation.getString(json, "format");
-		if (format==null) format = "application/json";
+		
 		String content = JsonValidation.getString(json, "content");
-		if (content==null) content = "other";
+		
+		
 		Record record = new Record();
 		record._id = new ObjectId();
 		record.app = authToken.pluginId;
@@ -371,27 +378,40 @@ public class PluginsAPI extends Controller {
 		record.name = name;
 		record.description = description;
 		
-		if (authToken.space != null) {				
-		    RecordManager.instance.addRecord(authToken.executorId, record);
+		createRecord(authToken, record);
+									
+		return ok();
+	}
+	
+	/**
+	 * Helper function to create a record
+	 * @param inf execution context
+	 * @param record record to add to the database
+	 * @throws AppException
+	 */
+	public static void createRecord(ExecutionInfo inf, Record record) throws AppException  {
+		if (record.format==null) record.format = "application/json";
+		if (record.content==null) record.content = "other";
+		
+		if (inf.space != null) {				
+		    RecordManager.instance.addRecord(inf.executorId, record);
 				
 			Set<ObjectId> records = new HashSet<ObjectId>();
 			records.add(record._id);
-			RecordManager.instance.share(authToken.executorId, authToken.ownerId, targetAps, records, false);
+			RecordManager.instance.share(inf.executorId, inf.ownerId, inf.targetAPS, records, false);
 			
-			if (authToken.space != null && authToken.space.autoShare != null && !authToken.space.autoShare.isEmpty()) {
-				for (ObjectId autoshareAps : authToken.space.autoShare) {
-					Consent consent = Consent.getByIdAndOwner(autoshareAps, authToken.ownerId, Sets.create("type"));
+			if (inf.space != null && inf.space.autoShare != null && !inf.space.autoShare.isEmpty()) {
+				for (ObjectId autoshareAps : inf.space.autoShare) {
+					Consent consent = Consent.getByIdAndOwner(autoshareAps, inf.ownerId, Sets.create("type"));
 					if (consent != null) { 
-					  RecordManager.instance.share(authToken.executorId, authToken.ownerId, autoshareAps, records, true);
+					  RecordManager.instance.share(inf.executorId, inf.ownerId, autoshareAps, records, true);
 					}
 				}
 			}
 			
 		} else {
-			RecordManager.instance.addRecord(authToken.executorId, record, authToken.targetAPS);
+			RecordManager.instance.addRecord(inf.executorId, record, inf.targetAPS);
 		}
-							
-		return ok();
 	}
 	
 	/**
@@ -460,26 +480,37 @@ public class PluginsAPI extends Controller {
 			return badRequestPromise(e.getMessage());
 		}
 
-		// decrypt authToken and check whether a user exists who has the app installed
-		SpaceToken appToken = SpaceToken.decrypt(json.get("authToken").asText());
-		if (appToken == null) {
-			return badRequestPromise("Invalid authToken.");
-		}
+		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(json.get("authToken").asText());
 		
-		Map<String, String> tokens = RecordManager.instance.getMeta(appToken.userId, appToken.spaceId, "_oauth").toMap();
-				
-		String accessToken;
-		accessToken = tokens.get("accessToken");
-					
-		// perform OAuth API call on behalf of the app
-		WSRequestHolder holder = WS.url(json.get("url").asText());
-		holder.setHeader("Authorization", "Bearer " + accessToken);
-		Promise<Result> promise = holder.get().map(new Function<WSResponse, Result>() {
+		Promise<WSResponse> response = oAuth2Call(inf, json.get("url").asText());	
+		
+		Promise<Result> promise = response.map(new Function<WSResponse, Result>() {
 			public Result apply(WSResponse response) {
 				return ok(response.asJson());
 			}
 		});
 		return promise;
+	}
+	
+	/**
+	 * Helper method for OAuth 2.0 apps
+	 * @param inf execution context
+	 * @param url URL to call
+	 * @return result of oauth request
+	 * @throws AppException
+	 */
+    public static Promise<WSResponse> oAuth2Call(ExecutionInfo inf, String url) throws AppException {
+				
+		Map<String, String> tokens = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_oauth").toMap();				
+		String accessToken;
+		accessToken = tokens.get("accessToken");
+					
+		// perform OAuth API call on behalf of the app
+		WSRequestHolder holder = WS.url(url);
+		holder.setHeader("Authorization", "Bearer " + accessToken);
+		
+		return holder.get();
+				
 	}
 	
 	/**
@@ -570,6 +601,32 @@ public class PluginsAPI extends Controller {
 		}
 		
 	}
+	
+	/**
+	 * NOT FINISHED, EXPERIMENTAL CODE : Run a java plugin in a secure sandbox. 
+	 * @return
+	 * @throws JsonValidationException
+	 * @throws AppException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@VisualizationCall
+	public static Result run() throws JsonValidationException, AppException {		
+		// validate json
+		JsonNode json = request().body().asJson();		
+		//JsonValidation.validate(json, "authToken", "properties", "fields");
+		
+		//Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		//Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+						
+		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(json.get("authToken").asText());
+		
+		MidataServer midataServer = new MidataServer(inf);
+		FitbitImport test = new FitbitImport();
+		test.run(midataServer);
+						
+		return ok();
+	}
+	
 
 	private static Promise<Result> badRequestPromise(final String errorMessage) {
 		return Promise.promise(new Function0<Result>() {

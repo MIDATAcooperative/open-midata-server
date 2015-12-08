@@ -34,8 +34,13 @@ public class ExecutionInfo {
 		
 		ExecutionInfo result = new ExecutionInfo();
 		result.executorId = authToken.userId;
-				
-		if (authToken.pluginId == null) {							
+			
+		if (authToken.recordId != null) {
+			result.targetAPS = authToken.spaceId;
+			result.recordId = authToken.recordId;
+			result.executorId = authToken.userId;
+			result.ownerId = authToken.userId;
+		} else if (authToken.pluginId == null) {							
 			Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.userId, Sets.create("visualization", "app", "aps", "autoShare"));
 			if (space == null) throw new BadRequestException("error.space.missing", "The current space does no longer exist.");
 				

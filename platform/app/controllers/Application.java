@@ -50,12 +50,18 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public class Application extends APIController {
 
-	// For debugging only
+	/**
+	 * for debugging only : displays API call test page
+	 * @return
+	 */
 	public static Result test() {
 		return ok(tester.render());
 	}
 
-	// For debugging only
+	/**
+	 * for debugging : displays APS viewer
+	 * @return
+	 */
 	public static Result test2() {
 		return ok(apstest.render());
 	} 
@@ -201,8 +207,7 @@ public class Application extends APIController {
 	/**
 	 * register a new MIDATA member
 	 * @return status ok
-	 * @throws JsonValidationException
-	 * @throws InternalServerException
+	 * @throws AppException	
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall

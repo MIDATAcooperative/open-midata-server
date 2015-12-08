@@ -72,7 +72,7 @@ public class Feature_AccountQuery extends Feature {
 				}
 			} else {
 
-				if (sets.contains("self") || sets.contains("all")) {
+				if (sets.contains("self") || sets.contains("all") || sets.contains(q.getApsId().toString())) {
 					result = next.query(q);
 					if (q.returns("id")) {
 						for (Record record : result)

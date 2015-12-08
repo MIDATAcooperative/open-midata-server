@@ -1,7 +1,6 @@
 package actions;
 
 import play.Logger;
-import play.Play;
 import play.libs.F;
 import play.libs.Json;
 import play.mvc.Action;

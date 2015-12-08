@@ -383,23 +383,33 @@ public class Plugins extends APIController {
 		return ok(result);
 	}
 	
+	
+	public static Promise<Result> requestAccessTokenOAuth2FromRefreshToken(String spaceIdStr, Map<String, Object> tokens1, final Result result) throws AppException {		
+		final ObjectId appId = new ObjectId(tokens1.get("appId").toString());
+		final ObjectId userId = new ObjectId(request().username());
+		
+		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", appId).get();
+		Set<String> fields = Sets.create("name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "type");
+			
+		final Plugin app = Plugin.get(properties, fields);
+	
+		return requestAccessTokenOAuth2FromRefreshToken(userId, app, spaceIdStr, tokens1).map(new Function<Boolean, Result>()  {
+			public Result apply(Boolean success) throws AppException {
+				if (success) return result;
+				return oauthInfo(app);
+			}
+		});
+	}
+	
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Promise<Result> requestAccessTokenOAuth2FromRefreshToken(String spaceIdStr, Map<String, Object> tokens1, final Result result) {
-	
+	public static Promise<Boolean> requestAccessTokenOAuth2FromRefreshToken(final ObjectId userId, final Plugin app, String spaceIdStr, Map<String, Object> tokens1) {
+
 		final Map<String, Object> tokens = tokens1;
-		
-		// get app details
-		final ObjectId appId = new ObjectId(tokens.get("appId").toString());
-		final ObjectId userId = new ObjectId(request().username());
 		final ObjectId spaceId = new ObjectId(spaceIdStr);
-		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", appId).get();
-		Set<String> fields = Sets.create("name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "type");
-		
-		try {
-			final Plugin app = Plugin.get(properties, fields);
-			
+		// get app details
+					
 		
 		String refreshToken = tokens.get("refreshToken").toString();
        
@@ -409,8 +419,8 @@ public class Plugins extends APIController {
 		   .setAuth(app.consumerKey, app.consumerSecret)
 		   .setContentType("application/x-www-form-urlencoded; charset=utf-8")
 		   .post("client_id="+app.consumerKey+"&grant_type=refresh_token&refresh_token="+refreshToken);
-		return promise.map(new Function<WSResponse, Result>()  {
-			public Result apply(WSResponse response) throws AppException {
+		return promise.map(new Function<WSResponse, Boolean>()  {
+			public Boolean apply(WSResponse response) throws AppException {
 				AccessLog.debug(response.getBody());
 				JsonNode jsonNode = response.asJson();
 				if (jsonNode.has("access_token") && jsonNode.get("access_token").isTextual()) {
@@ -422,21 +432,21 @@ public class Plugins extends APIController {
 						tokens.put("accessToken", accessToken);
 						RecordManager.instance.setMeta(userId, spaceId, "_oauth", tokens);						
 					} catch (InternalServerException e) {
-						return badRequest(e.getMessage());
+						return false;
 					}
-					return result;
+					return true;
 				} else {
-					return oauthInfo(app);
+					return false;
 				}
 			}
 		});
-     
+     /*
 		} catch (final InternalServerException e) {
 			return Promise.promise(new Function0<Result>() {
 				public Result apply() {
 					return internalServerError(e.getMessage());
 				}
 			});
-		}
+		}*/
 	}
 }

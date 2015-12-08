@@ -20,9 +20,7 @@ import models.enums.ConsentType;
 
 import org.bson.types.ObjectId;
 
-import play.libs.Json;
 import play.mvc.BodyParser;
-import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.PasswordHash;
@@ -42,7 +40,6 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -53,6 +50,13 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public class Circles extends APIController {	
 
+	/**
+	 * list either all Circles of a user or all consents of others where the user is authorized 
+	 * @return list of circles
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */
+	@Deprecated
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
@@ -256,7 +260,8 @@ public class Circles extends APIController {
 		
 		// delete circle		
 		switch (consent.type) {
-		case CIRCLE: Circle.delete(userId, circleId);break;		
+		case CIRCLE: Circle.delete(userId, circleId);break;	
+		default:break;
 		}
 		
 		

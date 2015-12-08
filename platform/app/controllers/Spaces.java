@@ -280,14 +280,13 @@ public class Spaces extends Controller {
 
 		boolean testing = session().get("role").equals(UserRole.DEVELOPER.toString()) && visualization.creator.equals(userId) && visualization.developmentServer != null && visualization.developmentServer.length()> 0;
 		
-		//if (visualization.type.equals("visualization")) {
-			// create encrypted authToken
-			SpaceToken spaceToken = new SpaceToken(space._id, userId);
+		
+	    SpaceToken spaceToken = new SpaceToken(space._id, userId);
 			
-			String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename;
-			if (testing) visualizationServer = visualization.developmentServer;
-			String url =  visualizationServer  + "/" + visualization.url;
-			url = url.replace(":authToken", spaceToken.encrypt());
+		String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename;
+		if (testing) visualizationServer = visualization.developmentServer;
+		String url =  visualizationServer  + "/" + visualization.url;
+		url = url.replace(":authToken", spaceToken.encrypt());
 			
 			
 		if (visualization.type != null && visualization.type.equals("oauth2")) {
@@ -300,19 +299,10 @@ public class Spaces extends Controller {
 		} 
 			
 		return F.Promise.pure((Result) ok(url));
-		//}
-		/*} else {
-		    // create encrypted authToken
-			AppToken appToken = new AppToken(visualization._id, userId);
-			String authToken = appToken.encrypt();
- 
-			// put together url to load in iframe
-			String appServer = "https://" + Play.application().configuration().getString("apps.server") + "/" + visualization.filename;
-			if (testing) appServer = visualization.developmentServer;
-			String url = visualization.url.replace(":authToken", authToken);
-			return ok( appServer  + "/" + url);
-		}*/
+	
 	}
+	
+	
 	
 	@APICall
 	public static Result getPreviewUrl(String spaceIdString) throws InternalServerException {
