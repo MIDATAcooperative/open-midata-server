@@ -133,5 +133,10 @@ angular.module('portal')
 				$scope.authorizing = false;
 			});
 	};
+	
+	$scope.goBack = function() {
+		   spaces.get({ "_id" :  { $oid : $scope.spaceId } }, ["context"]).
+		   then(function(result) { $state.go('^.dashboard', { dashId : result.data[0].context }); });
+	};
 		
 }]);

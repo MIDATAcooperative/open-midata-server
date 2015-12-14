@@ -459,7 +459,7 @@ angular.module('portal')
 				   title : "Records shared with this circle:",
 				   active : false,
 				   position : "full",
-				   links : { "shareFrom" : "share", "record" : "details" }
+				   links : { "record" : "details" }
 				   
 			},			
 		    {                        

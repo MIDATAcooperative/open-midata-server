@@ -118,6 +118,8 @@ public class Market extends Controller {
 					"consumerKey", "consumerSecret", "scopeParameters");
 		} else if (type.equals("mobile")) {
 			JsonValidation.validate(json, "filename", "name", "description", "secret");
+		} else if (type.equals("visualization")) {
+			JsonValidation.validate(json, "filename", "name", "description", "url");
 		} else {
 			return badRequest("Unknown app type.");
 		}
