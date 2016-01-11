@@ -191,30 +191,6 @@ public class Records extends APIController {
 		
 	}
 
-	@APICall
-	@Security.Authenticated(MemberSecured.class)
-	public static Result search(String query) throws AppException {
-		// get the visible records
-		ObjectId userId = new ObjectId(request().username());
-		
-		
-		Member user = Member.getById(userId, Sets.create("myaps"));	
-		
-		Set<Circle> circles = Circle.getAllByMember(userId);
-		
-		// TODO use caching/incremental retrieval of results (scrolls)
-		List<SearchResult> searchResults = Search.searchRecords(userId, circles, query);
-		Set<ObjectId> recordIds = new HashSet<ObjectId>();
-		for (SearchResult searchResult : searchResults) {
-			recordIds.add(new ObjectId(searchResult.id));
-		}
-		
-		Set<String> fields = Sets.create("app","owner","creator","created","name","data");
-		List<Record> records = new ArrayList<Record>(Record.getAllByIds(recordIds, fields));
-		
-		Collections.sort(records);
-		return ok(JsonOutput.toJson(records, "Record", fields));
-	}
 	
 
 	/**

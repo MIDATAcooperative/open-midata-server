@@ -31,7 +31,7 @@ class RecordEncryption {
 	 * @param lvl the security level of the APS where the record will be added
 	 * @throws AppException
 	 */
-	public static void encryptRecord(Record record, APSSecurityLevel lvl) throws AppException {
+	public static void encryptRecord(DBRecord record, APSSecurityLevel lvl) throws AppException {
 		if (lvl.equals(APSSecurityLevel.NONE) || lvl.equals(APSSecurityLevel.LOW)) {
 			record.clearSecrets();
 			return;
@@ -41,20 +41,10 @@ class RecordEncryption {
 		
 		SecretKey encKey = new SecretKeySpec(record.key, EncryptedAPS.KEY_ALGORITHM);
 		
-		if (record.format == null) throw new InternalServerException("error.internal", "Missing format in record!");
-		if (record.content == null) throw new InternalServerException("error.internal", "Missing content in record!");
-		
-		Map<String, Object> meta = new HashMap<String, Object>();
-		meta.put("app", record.app);
-		meta.put("creator", record.creator);
-		meta.put("name", record.name);
-		meta.put("created", record.created);
-		meta.put("description", record.description);
-		meta.put("tags", record.tags);
-		meta.put("format", record.format);
-		meta.put("content", record.content);
-		
-		record.encrypted = EncryptionUtils.encryptBSON(encKey, new BasicBSONObject(meta));
+		if (!record.meta.containsField("format")) throw new InternalServerException("error.internal", "Missing format in record!");
+		if (!record.meta.containsField("content")) throw new InternalServerException("error.internal", "Missing content in record!");
+				
+		record.encrypted = EncryptionUtils.encryptBSON(encKey, record.meta);
 		record.encryptedData = EncryptionUtils.encryptBSON(encKey, record.data);
 													
 		record.clearEncryptedFields();
@@ -65,7 +55,7 @@ class RecordEncryption {
 	 * @param record the record to decrypt
 	 * @throws AppException
 	 */
-	protected static void decryptRecord(Record record) throws AppException {
+	protected static void decryptRecord(DBRecord record) throws AppException {
 		//if (record.created != null) return;
 				
 		if (record.encrypted == null && record.encryptedData == null) return;
@@ -74,19 +64,7 @@ class RecordEncryption {
 		SecretKey encKey = new SecretKeySpec(record.key, EncryptedAPS.KEY_ALGORITHM);
 		if (record.encrypted != null) {
 			try {
-		    BSONObject meta = EncryptionUtils.decryptBSON(encKey, record.encrypted);
-		    
-		    record.app = (ObjectId) meta.get("app");
-			record.creator = (ObjectId) meta.get("creator");
-			record.name = (String) meta.get("name");				
-			record.created = (Date) meta.get("created");
-			record.description = (String) meta.get("description");
-			String format = (String) meta.get("format");
-			if (format!=null) record.format = format;
-			String content = (String) meta.get("content");				
-			if (content!=null) record.content = content;
-			//AccessLog.debug("decrypt cnt="+content+" fmt="+format);
-			record.tags = (Set<String>) meta.get("tags");
+		       record.meta = EncryptionUtils.decryptBSON(encKey, record.encrypted);		    		    
 			} catch (InternalServerException e) {
 				AccessLog.debug("Error decrypting record: id="+record._id.toString());
 				//throw e;
@@ -102,7 +80,6 @@ class RecordEncryption {
 			}
 		}
 		
-		//if (!record.encrypted.equals("enc"+record.key)) throw new InternalServerException("Cannot decrypt");
 	}
 
 }

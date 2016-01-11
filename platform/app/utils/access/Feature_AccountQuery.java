@@ -34,37 +34,37 @@ public class Feature_AccountQuery extends Feature {
 	}
 
 	@Override
-	protected List<Record> lookup(List<Record> record, Query q) throws AppException {
+	protected List<DBRecord> lookup(List<DBRecord> record, Query q) throws AppException {
 		return next.lookup(record, q);
 	}
 
 	@Override
-	protected List<Record> query(Query q) throws AppException {
+	protected List<DBRecord> query(Query q) throws AppException {
 
 		if (q.getApsId().equals(q.getCache().getOwner())) {
 			Set<String> sets = q.restrictedBy("owner") ? q.getRestriction("owner") : Collections.singleton("all");
 			Set<ObjectId> studies = q.restrictedBy("study") ? q.getObjectIdRestriction("study") : null;
 
-			List<Record> result = null;
+			List<DBRecord> result = null;
 
 			if (studies != null) {
-				result = new ArrayList<Record>();
+				result = new ArrayList<DBRecord>();
 
 				Set<StudyParticipation> consents = new HashSet<StudyParticipation>();
 				for (ObjectId studyId : studies)
 					consents.addAll(StudyParticipation.getParticipantsByStudy(studyId, Sets.create("pstatus", "ownerName")));
 
 				for (StudyParticipation sp : consents) {
-					List<Record> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), sp._id));
+					List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), sp._id));
 
 					if (q.returns("owner") || q.returns("ownerName")) {
-						for (Record record : consentRecords) {
+						for (DBRecord record : consentRecords) {
 							record.owner = sp._id;
-							record.ownerName = sp.ownerName;
+							record.meta.put("ownerName", sp.ownerName);
 						}
 					}
 					if (q.returns("id")) {
-						for (Record record : consentRecords)
+						for (DBRecord record : consentRecords)
 							record.id = record._id.toString() + "." + sp._id.toString();
 					}
 
@@ -75,11 +75,11 @@ public class Feature_AccountQuery extends Feature {
 				if (sets.contains("self") || sets.contains("all") || sets.contains(q.getApsId().toString())) {
 					result = next.query(q);
 					if (q.returns("id")) {
-						for (Record record : result)
+						for (DBRecord record : result)
 							record.id = record._id.toString() + "." + q.getApsId().toString();
 					}
 				} else
-					result = new ArrayList<Record>();
+					result = new ArrayList<DBRecord>();
 
 				if (sets.contains("all") || sets.contains("other") || sets.contains("shared")) {
 					Set<Consent> consents = null;
@@ -88,10 +88,10 @@ public class Feature_AccountQuery extends Feature {
 					else
 						consents = Consent.getAllByAuthorized(q.getCache().getOwner());
 					for (Consent circle : consents) {
-						List<Record> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id));
+						List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id));
 
 						if (q.returns("id")) {
-							for (Record record : consentRecords)
+							for (DBRecord record : consentRecords)
 								record.id = record._id.toString() + "." + circle._id.toString();
 						}
 
@@ -107,10 +107,10 @@ public class Feature_AccountQuery extends Feature {
 
 					Set<Consent> consents = Consent.getAllByAuthorizedAndOwners(q.getCache().getOwner(), owners);
 					for (Consent circle : consents) {
-						List<Record> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id));
+						List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id));
 
 						if (q.returns("id")) {
-							for (Record record : consentRecords)
+							for (DBRecord record : consentRecords)
 								record.id = record._id.toString() + "." + circle._id.toString();
 						}
 
@@ -123,10 +123,10 @@ public class Feature_AccountQuery extends Feature {
 
 			return result;
 		} else {
-			List<Record> result = next.query(q);
+			List<DBRecord> result = next.query(q);
 
 			if (q.returns("id")) {
-				for (Record record : result)
+				for (DBRecord record : result)
 					record.id = record._id.toString() + "." + q.getApsId().toString();
 			}
 			return result;
@@ -134,7 +134,7 @@ public class Feature_AccountQuery extends Feature {
 	}
 
 	@Override
-	protected List<Record> postProcess(List<Record> records, Query q) throws AppException {
+	protected List<DBRecord> postProcess(List<DBRecord> records, Query q) throws AppException {
 		return next.postProcess(records, q);
 
 	}

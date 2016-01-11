@@ -12,6 +12,7 @@ import models.Record;
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
@@ -23,6 +24,8 @@ import com.mongodb.BasicDBList;
  */
 class APSEntry {
 
+	public static final Set<String> groupingFields = Sets.create("format", "content");
+	
 	public static List<BasicBSONObject> findMatchingRowsForQuery(Map<String, Object> permissions, Query q) throws AppException {
 		List<BasicBSONObject> result = new ArrayList<BasicBSONObject>();
 		
@@ -52,7 +55,7 @@ class APSEntry {
 		return result;
 	}
 	
-	public static BasicBSONObject findMatchingRowForRecord(Map<String, Object> permissions, Record record, boolean create) throws InternalServerException {
+	public static BasicBSONObject findMatchingRowForRecord(Map<String, Object> permissions, DBRecord record, boolean create) throws InternalServerException {
 				
 		BasicBSONList lst = (BasicBSONList) permissions.get("p");		
 		
@@ -60,19 +63,19 @@ class APSEntry {
 			BasicBSONObject crit = (BasicBSONObject) row;
 			boolean match = true;
 			
-			String fmt = crit.getString("format");
-			if (fmt != null && !record.format.equals(fmt)) match = false; 
-						
-			fmt = crit.getString("content");
-			if (fmt != null && !record.content.equals(fmt)) match = false; 
-			
+			for (String field : groupingFields) {			
+			  String val = crit.getString(field);
+			  if (val != null && !record.meta.get(field).equals(val)) match = false;
+			}
+												
 			if (match) return crit;			
 		}
         if (!create) return null;		
 		
 		BasicBSONObject newentry = new BasicBSONObject();
-		newentry.put("format", record.format);
-		newentry.put("content", record.content);
+		for (String field : groupingFields) {
+		  newentry.put(field, record.meta.get(field));
+		}
 		newentry.put("r", new BasicBSONObject());
 		lst.add(newentry);
 		return newentry;
@@ -82,18 +85,16 @@ class APSEntry {
 		return (BasicBSONObject) row.get("r");
 	}
 	
-	public static void populateRecord(BasicBSONObject row, Record record) {
-		String fmt = row.getString("format");
-		if (fmt != null) record.format = fmt;
-		
-		fmt = row.getString("content");
-		if (fmt != null) record.content = fmt;
-		//AccessLog.debug("populate:"+record.format+"/"+record.content);
+	public static void populateRecord(BasicBSONObject row, DBRecord record) {
+		for (String field : groupingFields) {		
+		  String val = row.getString(field);
+		  if (val != null) record.meta.put(field, val);
+		}
 	}
 	 
 	public static void mergeAllInto(Map<String, Object> props, Map<String, Object> targetPermissions) throws InternalServerException {
 		BasicBSONList lst = (BasicBSONList) props.get("p");
-		Record dummy = new Record();
+		DBRecord dummy = new DBRecord();		
 		
 		for (Object row : lst) {
 			BasicBSONObject crit = (BasicBSONObject) row;

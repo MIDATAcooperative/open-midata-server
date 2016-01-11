@@ -42,30 +42,30 @@ public class Feature_BlackList extends Feature {
 	
 	
 	@Override
-	protected List<Record> lookup(List<Record> record, Query q)
+	protected List<DBRecord> lookup(List<DBRecord> record, Query q)
 			throws AppException {
-		List<Record> result = next.lookup(record, q);
+		List<DBRecord> result = next.lookup(record, q);
 		return filter(result);
 	}
 	
-	private List<Record> filter(List<Record> input) {		
+	private List<DBRecord> filter(List<DBRecord> input) {		
 		if (blacklist.isEmpty()) return input;
-		List<Record> filtered = new ArrayList<Record>(input.size());
-		for (Record record : input) {
+		List<DBRecord> filtered = new ArrayList<DBRecord>(input.size());
+		for (DBRecord record : input) {
 			if (!blacklist.contains(record._id.toString())) filtered.add(record);
 		}
 		return filtered;
 	}
 
 	@Override
-	protected List<Record> query(Query q) throws AppException {		
-		List<Record> result = next.query(q);
+	protected List<DBRecord> query(Query q) throws AppException {		
+		List<DBRecord> result = next.query(q);
 		return filter(result);
 	}
 	
 
 	@Override
-	protected List<Record> postProcess(List<Record> records, Query q)
+	protected List<DBRecord> postProcess(List<DBRecord> records, Query q)
 			throws AppException {
 		return next.postProcess(records, q);		
 	}

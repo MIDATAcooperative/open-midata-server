@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -201,20 +202,20 @@ public class RecordManager {
 			throws AppException {
         AccessLog.debug("share: who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString()+" count="+(records!=null ? records.size() : "?"));
 		APS apswrapper = getCache(who).getAPS(toAPS);
-		List<Record> recordEntries = QueryEngine.listInternal(getCache(who), fromAPS,
+		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(who), fromAPS,
 				records != null ? CMaps.map("_id", records) : RecordManager.FULLAPS_FLAT,
 				Sets.create("_id", "key", "owner", "format", "content", "created", "name", "isStream"));
 		
-		List<Record> alreadyContained = QueryEngine.isContainedInAps(getCache(who), toAPS, recordEntries);
+		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(getCache(who), toAPS, recordEntries);
 		AccessLog.debug("to-share: "+recordEntries.size()+" already="+alreadyContained.size());
         if (alreadyContained.size() == recordEntries.size()) return;
         if (alreadyContained.size() == 0) {		
 		    apswrapper.addPermission(recordEntries, withOwnerInformation);
         } else {
         	Set<ObjectId> contained = new HashSet<ObjectId>();
-        	for (Record rec : alreadyContained) contained.add(rec._id);
-        	List<Record> filtered = new ArrayList<Record>(recordEntries.size());
-        	for (Record rec : recordEntries) {
+        	for (DBRecord rec : alreadyContained) contained.add(rec._id);
+        	List<DBRecord> filtered = new ArrayList<DBRecord>(recordEntries.size());
+        	for (DBRecord rec : recordEntries) {
         		if (!contained.contains(rec._id)) filtered.add(rec);
         	}
         	apswrapper.addPermission(filtered, withOwnerInformation);
@@ -260,11 +261,8 @@ public class RecordManager {
 			throws AppException {
 
 		APS apswrapper = getCache(who).getAPS(apsId);
-		List<Record> recordEntries = QueryEngine.list(getCache(who), apsId,
-				CMaps.map("_id", records), Sets.create("_id", "format", "content"));
-		for (Record r : recordEntries) {
-			AccessLog.debug("remove perm cnt="+r.content+" fmt="+r.format);
-		}
+		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(who), apsId,
+				CMaps.map("_id", records), Sets.create("_id", "format", "content"));		
 		apswrapper.removePermission(recordEntries);
 			
 	}
@@ -295,13 +293,15 @@ public class RecordManager {
 
 	public void addDocumentRecord(ObjectId owner, Record record,
 			Collection<Record> parts) throws AppException {
-		byte[] key = addRecordIntern(owner, record, false, null, false);
+		DBRecord dbrecord = RecordConversion.instance.toDB(record);
+		byte[] key = addRecordIntern(owner, dbrecord, false, null, false);
 		if (key == null)
 			throw new NullPointerException("no key");
 		for (Record rec : parts) {
-			rec.document = record._id;
-			rec.key = key;
-			addRecordIntern(owner, rec, true, null, false);
+			DBRecord dbrec = RecordConversion.instance.toDB(rec);
+			dbrec.document = record._id;
+			dbrec.key = key;
+			addRecordIntern(owner, dbrec, true, null, false);
 		}
 	}
 
@@ -312,8 +312,8 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public void addRecord(ObjectId executingPerson, Record record) throws AppException {
-		addRecordIntern(executingPerson, record, false, null, false);
-		record.key = null;
+		DBRecord dbrecord = RecordConversion.instance.toDB(record);
+		addRecordIntern(executingPerson, dbrecord, false, null, false);		
 	}
 	
 	/**
@@ -327,10 +327,10 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public void addRecord(ObjectId executingPerson, Record record, FileInputStream data, String fileName, String contentType) throws DatabaseException, AppException {
-		byte[] kdata = addRecordIntern(executingPerson, record, false, null, false);
+		DBRecord dbrecord = RecordConversion.instance.toDB(record);
+		byte[] kdata = addRecordIntern(executingPerson, dbrecord, false, null, false);
 		SecretKey key = new SecretKeySpec(kdata, EncryptedAPS.KEY_ALGORITHM);
-		FileStorage.store(EncryptionUtils.encryptStream(key, data), record._id, fileName, contentType);
-		record.key = null;
+		FileStorage.store(EncryptionUtils.encryptStream(key, data), record._id, fileName, contentType);		
 	}
 	
 	/**
@@ -346,8 +346,8 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public void addRecord(ObjectId executingPerson, Record record, ObjectId alternateAps) throws AppException {
-		addRecordIntern(executingPerson, record, false, alternateAps, false);
-		record.key = null;
+		DBRecord dbrecord = RecordConversion.instance.toDB(record);
+		addRecordIntern(executingPerson, dbrecord, false, alternateAps, false);		
 	}
 	
 	/**
@@ -358,8 +358,8 @@ public class RecordManager {
 	 */
 	
 	public void deleteRecord(ObjectId executingPerson, RecordToken tk) throws AppException {
-		Record record = fetch(executingPerson, tk);
-		
+		DBRecord record = RecordConversion.instance.toDB(fetch(executingPerson, tk));
+				
 		if (!record.owner.equals(executingPerson)) throw new BadRequestException("error.internal", "Not owner of record!");
 		APSCache cache = getCache(executingPerson);
 		Set<Circle> circles = Circle.getAllByOwner(executingPerson);
@@ -389,26 +389,26 @@ public class RecordManager {
 		
 		cache.getAPS(executingPerson, executingPerson).removePermission(record);
 		
-		Record.delete(record.owner, record._id);
+		DBRecord.delete(record.owner, record._id);
 	}
 
-	private byte[] addRecordIntern(ObjectId executingPerson, Record record, boolean documentPart, ObjectId alternateAps, boolean upsert) throws AppException {		
+	private byte[] addRecordIntern(ObjectId executingPerson, DBRecord record, boolean documentPart, ObjectId alternateAps, boolean upsert) throws AppException {		
 		
 		if (!documentPart) Feature_Streams.placeNewRecordInStream(executingPerson, record, alternateAps);
 		 		
-		AccessLog.debug("Add Record execPerson="+executingPerson.toString()+" format="+record.format+" stream="+(record.stream != null ? record.stream.toString() : "null"));	
+		AccessLog.debug("Add Record execPerson="+executingPerson.toString()+" format="+record.meta.get("format")+" stream="+(record.stream != null ? record.stream.toString() : "null"));	
 		byte[] usedKey = null;
-		if (record.created == null) throw new InternalServerException("error.internal", "Missing creation date");
+		if (record.meta.get("created") == null) throw new InternalServerException("error.internal", "Missing creation date");
 		
-		record.time = Query.getTimeFromDate(record.created);				
+		record.time = Query.getTimeFromDate((Date) record.meta.get("created"));				
 		record = record.clone();
-		if (record.owner.equals(record.creator)) record.creator = null;
+		if (record.owner.equals(record.meta.get("creator"))) record.meta.removeField("creator");
 																	
 		if (!documentPart) {
 			APS apswrapper = getCache(executingPerson).getAPS(record.stream, record.owner);	
 			
 			if (record.document != null) {
-				List<Record> doc = QueryEngine.listInternal(getCache(executingPerson), record.owner, CMaps.map("_id", record.document.toString()), Sets.create("key"));
+				List<DBRecord> doc = QueryEngine.listInternal(getCache(executingPerson), record.owner, CMaps.map("_id", record.document.toString()), Sets.create("key"));
 				if (doc.size() == 1) record.key = doc.get(0).key;
 				else throw new InternalServerException("error.internal", "Document not identified");
 				documentPart = true;
@@ -427,7 +427,7 @@ public class RecordManager {
 		}
 								
 		RecordEncryption.encryptRecord(record, record.key != null ? APSSecurityLevel.HIGH : APSSecurityLevel.NONE);		
-	    if (upsert) { Record.upsert(record); } else { Record.add(record); }	  
+	    if (upsert) { DBRecord.upsert(record); } else { DBRecord.add(record); }	  
 	    				
 		return usedKey;	
 	}
@@ -445,23 +445,23 @@ public class RecordManager {
 		AccessLog.debug("BEGIN APPLY QUERY");
 		
 		
-		List<Record> records = RecordManager.instance.list(userId, sourceaps, RecordManager.FULLAPS_FLAT_OWNER, RecordManager.COMPLETE_META);
+		List<DBRecord> records = QueryEngine.listInternal(getCache(userId), sourceaps, RecordManager.FULLAPS_FLAT_OWNER, RecordManager.COMPLETE_META);
 		AccessLog.debug("SHARE CANDIDATES:"+records.size());
 		records = QueryEngine.listFromMemory(query, records);
 		AccessLog.debug("SHARE QUALIFIED:"+records.size());
 		if (records.size() > 0) {
 			Set<ObjectId> ids = new HashSet<ObjectId>();
-			for (Record record : records) ids.add(record._id);
+			for (DBRecord record : records) ids.add(record._id);
 			RecordManager.instance.share(userId, sourceaps, targetaps, ids, ownerInformation);
 		}
 		
-		List<Record> streams = RecordManager.instance.list(userId, targetaps, RecordManager.STREAMS_ONLY_OWNER, RecordManager.COMPLETE_META);
+		List<DBRecord> streams = QueryEngine.listInternal(getCache(userId), targetaps, RecordManager.STREAMS_ONLY_OWNER, RecordManager.COMPLETE_META);
 		AccessLog.debug("UNSHARE STREAMS CANDIDATES = "+streams.size());
 		
-		List<Record> stillOkay = QueryEngine.listFromMemory(query, streams);
+		List<DBRecord> stillOkay = QueryEngine.listFromMemory(query, streams);
 		streams.removeAll(stillOkay);		
 		Set<ObjectId> remove = new HashSet<ObjectId>();
-		for (Record stream : streams) {
+		for (DBRecord stream : streams) {
 			remove.add(stream._id);
 		}
 		
@@ -471,7 +471,7 @@ public class RecordManager {
 		
 	}
 	
-	public void applyQueries(ObjectId executingPerson, ObjectId userId, Record record, ObjectId useAps) throws AppException {
+	protected void applyQueries(ObjectId executingPerson, ObjectId userId, DBRecord record, ObjectId useAps) throws AppException {
 		Member member = Member.getById(userId, Sets.create("queries"));
 		if (member.queries!=null) {
 			for (String key : member.queries.keySet()) {
@@ -557,10 +557,10 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public FileData fetchFile(ObjectId who, RecordToken token) throws AppException {		
-		List<Record> result = QueryEngine.listInternal(getCache(who), new ObjectId(token.apsId), CMaps.map("_id", new ObjectId(token.recordId)), Sets.create("key"));
+		List<DBRecord> result = QueryEngine.listInternal(getCache(who), new ObjectId(token.apsId), CMaps.map("_id", new ObjectId(token.recordId)), Sets.create("key"));
 				
 		if (result.size() != 1) throw new InternalServerException("error.internal.notfound", "Unknown Record");
-		Record rec = result.get(0);
+		DBRecord rec = result.get(0);
 		
 		if (rec.key == null) throw new InternalServerException("error.internal", "Missing key for record:"+rec._id.toString());
 		FileData fileData = FileStorage.retrieve(new ObjectId(token.recordId));

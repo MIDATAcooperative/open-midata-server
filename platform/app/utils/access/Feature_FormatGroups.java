@@ -26,7 +26,7 @@ public class Feature_FormatGroups extends Feature {
 	
 	
 	@Override
-	protected List<Record> lookup(List<Record> input, Query q)
+	protected List<DBRecord> lookup(List<DBRecord> input, Query q)
 			throws AppException {
 		Set<String> contents = prepareFilter(q);
 		if (contents != null) q.getProperties().put("content/*", contents);
@@ -80,18 +80,18 @@ public class Feature_FormatGroups extends Feature {
 	}
 
 	@Override
-	protected List<Record> query(Query q) throws AppException {
+	protected List<DBRecord> query(Query q) throws AppException {
 		Set<String> contents = prepareFilter(q);
 		if (contents != null) q.getProperties().put("content/*", contents);			
 		return next.query(q);		
 	}
 
 	@Override
-	protected List<Record> postProcess(List<Record> records, Query q) throws AppException {
-		List<Record> result = next.postProcess(records, q);
+	protected List<DBRecord> postProcess(List<DBRecord> records, Query q) throws AppException {
+		List<DBRecord> result = next.postProcess(records, q);
 		if (q.returns("group")) {
-			for (Record record : result) {
-				ContentInfo fi = ContentInfo.getByName(record.content);
+			for (DBRecord record : result) {
+				ContentInfo fi = ContentInfo.getByName((String) record.meta.get("content"));
 	    		record.group = fi.group;
 			}
 		}	

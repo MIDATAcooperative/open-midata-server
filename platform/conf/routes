@@ -42,7 +42,6 @@ POST    /members/api/records/info                        controllers.Records.get
 GET     /members/api/records/:id/view                    controllers.Records.getRecordUrl(id: String)
 GET     /members/api/records/shared/:apsId               controllers.Records.getSharingDetails(apsId: String)
 GET     /records/redirect/:appId                         controllers.Records.onAuthorized(appId: String)
-GET     /members/api/records/search/:query               controllers.Records.search(query: String)
 POST    /members/api/records/shared                      controllers.Records.updateSharing()
 POST    /members/api/records/share                       controllers.Records.share()
 
@@ -211,6 +210,10 @@ OPTIONS /v1/plugin_api/clone           controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/clone           controllers.PluginsAPI.cloneAs()
 OPTIONS /v1/plugin_api/run             controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/run             controllers.PluginsAPI.run()
+OPTIONS /v1/plugin_api/records/newId    controllers.PluginsAPI.checkPreflight()
+POST    /v1/plugin_api/records/newId    controllers.PluginsAPI.generateId()
+
+
 
 OPTIONS /v1/plugin_api/coding/search   controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/coding/search   controllers.FormatAPI.searchCoding()

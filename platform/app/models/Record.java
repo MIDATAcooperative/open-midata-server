@@ -31,23 +31,6 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	public @NotMaterialized final static Set<String> ALL_PUBLIC = Sets.create("_id", "id", "owner",
 			"app", "creator", "created", "name", "format", "content", "description", "data", "group");
 
-	// Not encrypted part
-	
-	/**
-	 * the id of the stream this record belongs to.
-	 * 
-	 * This field is null for stream records.
-	 * This field is not encrypted but stored in the database
-	 */
-	public ObjectId stream; 
-	
-	/**
-	 * a rounded timestamp
-	 * 
-	 * This field is only set for records stored in MEDIUM security streams, otherwise it is 0.
-	 * This field is not encrypted but stored in the database.
-	 */
-	public long time;
 	
 	/**
 	 * the id of the document record this record belongs to.
@@ -58,6 +41,8 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 */
 	public ObjectId document;
 	
+	public ObjectId stream;
+	
 	/**
 	 * a part name for records that are part of a document,
 	 * 
@@ -65,28 +50,16 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * This field is not encrypted but stored in the database
 	 */
 	public String part;
-	
-	/**
-	 * the encrypted meta data of this record
-	 */
-	public byte[] encrypted;
-	
-	/**
-	 * the encrypted "data" field of this record
-	 */
-	public byte[] encryptedData;
-	
-	/**
-	 * this field is true for records stored in medium security streams
-	 */
-	public boolean direct;
+		
 	
 	/**
 	 * an alternative ID for this record that has the access permission set ID also encoded in the ID.
 	 * 
 	 * This field is computed upon request and is neither stored in the database nor contained in the encrypted part
 	 */
-	public @NotMaterialized String id;
+	public String id;
+	
+	public String version;
 	
 	/**
 	 * the id of the owner of this record. 
@@ -96,7 +69,7 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * The owner information is derived from information of the APS this record is stored in or 
 	 * from the owner of the stream this record is stored in.
 	 */
-	public @NotMaterialized ObjectId owner; // person the record is about
+	public ObjectId owner; // person the record is about
 	
 	/**
 	 * firstname lastname of the owner of this record.
@@ -104,7 +77,7 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * This field is neither stored in the database nor contained in the encrypted part of the record.
 	 * This field is computed upon request from the owner field
 	 */
-	public @NotMaterialized String ownerName;
+	public String ownerName;
 	
 	/**
 	 * firstname lastname of the creator of this record
@@ -112,17 +85,8 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * This field is neither stored in the database nor contained in the encrypted part of the record.
 	 * This field is computed upon request from the creator field
 	 */
-	public @NotMaterialized String creatorName;
-	
-	/**
-	 * The AES key that is used to encrypt/decrypt this record
-	 * 
-	 * This field is neither stored in the database nor contained in the encrypted part of the record.
-	 * This field is stored in the APS this record is stored in
-	 * This field MUST be cleared by the RecordManager if the record is returned outside of the RecordManager. 
-	 */
-	public @NotMaterialized byte[] key;
-	
+	public String creatorName;
+			
 	/**
 	 * The format of the records data.
 	 * 
@@ -144,7 +108,7 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * 
 	 * This field is neither stored in the database nor contained in the encrypted part of the record.
 	 */
-	public @NotMaterialized String group;
+	public String group;
 	
 	/**
 	 * Is this record a stream record?
@@ -152,14 +116,8 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * This field is neither stored in the database nor contained in the encrypted part of the record.
 	 * This field is only internally used.
 	 */
-	public @NotMaterialized boolean isStream;
+	public boolean isStream;
 	
-	/**
-	 * Is this record
-	 */
-	public @NotMaterialized boolean isReadOnly;
-	
-	// Encrypted part
 	/**
 	 * the id of the plugin that created this record
 	 * 
@@ -180,14 +138,21 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * 
 	 * The contents of this field is stored in the encrypted part of this record
 	 */
-	public  Date created;  	
+	public  Date created;
+	
+	/**
+	 * record update timestamp
+	 * 
+	 * The contents of this field is stored in the encrypted part of this record
+	 */
+	public  Date lastUpdated;  
 	
 	/**
 	 * the title for this record
 	 * 
 	 * The contents of this field is stored in the encrypted part of this record
 	 */
-	public  String name; // used to display a record and for autocompletion
+	public  String name; 
 	
 	/**
 	 * textual description of this record
@@ -204,7 +169,7 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	public  Set<String> tags; 
 	
 	/**
-	 * the unencrypted record data. 
+	 * the record data. 
 	 * 
 	 * May be any JSON data.
 	 * The contents of this field is encrypted into encryptedData field and not directly stored in the database.
@@ -221,81 +186,6 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 		}
 	}
 	
-	public void clearEncryptedFields() {
-		this.app = null;		
-		this.creator = null;	
-		this.created = null;
-		this.name = null;
-		this.format = null;
-		this.content = null;
-		this.description = null;	
-		this.data = null;
-	}
-	
-	public void clearSecrets() {
-		this.key = null;
-		this.encrypted = null;
-		this.encryptedData = null;
-	}
-
-	public static boolean exists(Map<String, ? extends Object> properties) throws InternalServerException {
-		return Model.exists(Record.class, collection, properties);
-	}
-
-	
-	public static Record get(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
-		return Model.get(Record.class, collection, properties, fields);
-	}
-	
-	public static Record getById(ObjectId id, Set<String> fields) throws InternalServerException {
-		return Model.get(Record.class, collection, CMaps.map("_id", id), fields);
-	}
-
-	public static Set<Record> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
-		return Model.getAll(Record.class, collection, properties, fields);
-	}
-	
-	public static Set<Record> getAllByIds(Set<ObjectId> ids, Set<String> fields) throws InternalServerException {
-		return Model.getAll(Record.class, collection, CMaps.map("_id", ids), fields);
-	}
-	
-	/*public static Record getById(ObjectId id, String encKey, Set<String> fields) throws InternalServerException {
-		return Model.get(Record.class, collection, CMaps.map("_id", id), fields);
-	}
-	
-	public static Set<Record> getAll(Map<String, ? extends Object> properties, Set<String> fields, Map<String, String> keyMap, String defaultKey) throws InternalServerException {
-		return Model.getAll(Record.class, collection, properties, fields);
-	}*/
-	
-	public static void set(ObjectId recordId, String field, Object value) throws InternalServerException {
-		Model.set(Record.class, collection, recordId, field, value);
-	}
-
-	public static void add(Record record) throws InternalServerException {
-		Model.insert(collection, record);
-
-		// also index the data for the text search
-		/*
-		try {
-			Search.add(record.owner, "record", record._id, record.name, record.description);
-		} catch (SearchException e) {
-			throw new InternalServerException(e);
-		}
-		*/
-	}
-	
-	public static void upsert(Record record) throws InternalServerException {
-		Model.upsert(collection, record);
-	}
-
-	public static void delete(ObjectId ownerId, ObjectId recordId) throws InternalServerException {
-		// also remove from search index
-		Search.delete(ownerId, "record", recordId);
-
-		// TODO remove from spaces and circles
-		Model.delete(Record.class, collection, new ChainedMap<String, ObjectId>().put("_id", recordId).get());
-	}
-
 	@Override
 	public Record clone() {	
 		try {

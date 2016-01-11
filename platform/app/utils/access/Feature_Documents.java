@@ -16,20 +16,20 @@ public class Feature_Documents extends Feature {
 	}
 
 	@Override
-	protected List<Record> lookup(List<Record> records, Query q) throws AppException {
+	protected List<DBRecord> lookup(List<DBRecord> records, Query q) throws AppException {
 
-		List<Record> result = next.lookup(records, q);
+		List<DBRecord> result = next.lookup(records, q);
 
 		if (result.size() < records.size()) {
-			for (Record rec : records) {
+			for (DBRecord rec : records) {
 				if (rec.key == null && rec.document != null && rec.stream == null) {
-					List<Record> docs = QueryEngine.listInternal(q.getCache(), q.getApsId(), CMaps.map("_id", rec.document), Sets.create("stream"));
+					List<DBRecord> docs = QueryEngine.listInternal(q.getCache(), q.getApsId(), CMaps.map("_id", rec.document), Sets.create("stream"));
 					if (docs.size() == 1) {
-						Record doc = docs.get(0);
+						DBRecord doc = docs.get(0);
 						rec.key = doc.key;
 						rec.owner = doc.owner;
-						rec.format = doc.format; //TODO or it is filtered out by QueryRedirect
-						rec.content = doc.content; //TODO or it is filtered out by QueryRedirect
+						rec.meta.put("format", doc.meta.get("format")); //TODO or it is filtered out by QueryRedirect
+						rec.meta.put("content", doc.meta.get("content")); //TODO or it is filtered out by QueryRedirect
 						result.add(rec);
 					}
 				}
@@ -40,12 +40,12 @@ public class Feature_Documents extends Feature {
 	}
 
 	@Override
-	protected List<Record> query(Query q) throws AppException {
+	protected List<DBRecord> query(Query q) throws AppException {
 		return next.query(q);
 	}
 
 	@Override
-	protected List<Record> postProcess(List<Record> records, Query q) throws AppException {
+	protected List<DBRecord> postProcess(List<DBRecord> records, Query q) throws AppException {
 		return next.postProcess(records, q);
 	}
 

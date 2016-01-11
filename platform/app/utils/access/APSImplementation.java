@@ -50,7 +50,7 @@ class APSImplementation extends APS {
 		return eaps.getSecurityLevel();
 	}
 	
-	public void provideRecordKey(Record record) throws AppException {
+	public void provideRecordKey(DBRecord record) throws AppException {
 		record.direct = eaps.isDirect();
 		
 		if (eaps.getSecurityLevel().equals(APSSecurityLevel.NONE) || eaps.getSecurityLevel().equals(APSSecurityLevel.LOW)) {
@@ -182,11 +182,11 @@ class APSImplementation extends APS {
 		return (BasicBSONObject) eaps.getPermissions().get(key);
 	}
 
-	public List<Record> query(Query q) throws AppException {
+	public List<DBRecord> query(Query q) throws AppException {
 		merge();
 		// AccessLog.logLocalQuery(eaps.getId(), q.getProperties(),
 		// q.getFields() );
-		List<Record> result = new ArrayList<Record>();
+		List<DBRecord> result = new ArrayList<DBRecord>();
 		boolean withOwner = q.returns("owner");
 
 		if (eaps.isDirect()) {
@@ -198,8 +198,8 @@ class APSImplementation extends APS {
 			query.put("stream", eaps.getId());
 			query.put("direct", Boolean.TRUE);
 			q.addMongoTimeRestriction(query);
-			List<Record> directResult = new ArrayList<Record>(Record.getAll(query, q.getFieldsFromDB()));
-			for (Record record : directResult) {
+			List<DBRecord> directResult = new ArrayList<DBRecord>(DBRecord.getAll(query, q.getFieldsFromDB()));
+			for (DBRecord record : directResult) {
 				record.key = eaps.getAPSKey() != null ? eaps.getAPSKey().getEncoded() : null;
 				if (withOwner)
 					record.owner = eaps.getOwner();
@@ -257,7 +257,7 @@ class APSImplementation extends APS {
 		return true;
 	}
 
-	protected boolean lookupSingle(Record input, Query q) throws AppException {
+	protected boolean lookupSingle(DBRecord input, Query q) throws AppException {
 		// AccessLog.lookupSingle(eaps.getId(), input._id, q.getProperties());
 		if (eaps.isDirect()) {
 			input.key = eaps.getAPSKey() != null ? eaps.getAPSKey().getEncoded() : null;
@@ -298,8 +298,9 @@ class APSImplementation extends APS {
 		return false;
 	}
 
-	private Record createRecordFromAPSEntry(String id, BasicBSONObject row, BasicBSONObject entry, boolean withOwner) throws AppException {
-		Record record = new Record();
+	private DBRecord createRecordFromAPSEntry(String id, BasicBSONObject row, BasicBSONObject entry, boolean withOwner) throws AppException {
+		DBRecord record = new DBRecord();		
+		
 		record._id = new ObjectId(id);
 		APSEntry.populateRecord(row, record);
 		record.isStream = entry.getBoolean("s");
@@ -318,15 +319,15 @@ class APSImplementation extends APS {
 				record.owner = eaps.getOwner();
 		}
 
-		record.created = entry.getDate("created");
+		record.meta.put("created", entry.getDate("created"));
 
 		return record;
 	}
 
-	private void addPermissionInternal(Record record, boolean withOwner) throws AppException {
+	private void addPermissionInternal(DBRecord record, boolean withOwner) throws AppException {
 
 		if (record.key == null)
-			throw new InternalServerException("error.internal", "Record with NULL key: Record:" + record.name + "/" + record.content + "/" + record.isStream);
+			throw new InternalServerException("error.internal", "Record with NULL key: Record:" + record._id.toString() + "/" + record.isStream);
 		// resolve Format
 		BasicBSONObject obj = APSEntry.findMatchingRowForRecord(eaps.getPermissions(), record, true);
 		obj = APSEntry.getEntries(obj);
@@ -343,8 +344,8 @@ class APSImplementation extends APS {
 		if (record.owner != null && withOwner) {
 			entry.put("owner", record.owner.toString());
 		}
-		if (record.created != null && !record.isStream) {
-			entry.put("created", record.created);
+		if (!record.isStream) {
+			entry.put("created", record.meta.get("created"));
 		}
 		// if (record.format.equals(Query.STREAM_TYPE)) entry.put("name",
 		// record.name);
@@ -352,7 +353,7 @@ class APSImplementation extends APS {
 
 	}
 
-	public void addPermission(Record record, boolean withOwner) throws AppException {
+	public void addPermission(DBRecord record, boolean withOwner) throws AppException {
 		try {
 			forceAccessibleSubset();
 			addPermissionInternal(record, withOwner);
@@ -363,10 +364,10 @@ class APSImplementation extends APS {
 		}
 	}
 
-	public void addPermission(Collection<Record> records, boolean withOwner) throws AppException {
+	public void addPermission(Collection<DBRecord> records, boolean withOwner) throws AppException {
 		try {
 			forceAccessibleSubset();
-			for (Record record : records)
+			for (DBRecord record : records)
 				addPermissionInternal(record, withOwner);
 			eaps.savePermissions();
 		} catch (LostUpdateException e) {
@@ -385,7 +386,7 @@ class APSImplementation extends APS {
 		eaps.reload();
 	}
 
-	private boolean removePermissionInternal(Record record) throws AppException {
+	private boolean removePermissionInternal(DBRecord record) throws AppException {
 
 		// resolve Format
 		BasicBSONObject obj = APSEntry.findMatchingRowForRecord(eaps.getPermissions(), record, false);
@@ -399,7 +400,7 @@ class APSImplementation extends APS {
 		return result;
 	}
 
-	public boolean removePermission(Record record) throws AppException {
+	public boolean removePermission(DBRecord record) throws AppException {
 		try {
 			boolean success = removePermissionInternal(record);
 
@@ -413,9 +414,9 @@ class APSImplementation extends APS {
 		}
 	}
 
-	public void removePermission(Collection<Record> records) throws AppException {
+	public void removePermission(Collection<DBRecord> records) throws AppException {
 		try {
-			for (Record record : records)
+			for (DBRecord record : records)
 				removePermissionInternal(record);
 
 			// Store
@@ -427,15 +428,15 @@ class APSImplementation extends APS {
 	}
 
 	@Override
-	protected List<Record> postProcess(List<Record> records, Query q) throws InternalServerException {
+	protected List<DBRecord> postProcess(List<DBRecord> records, Query q) throws InternalServerException {
 		return records;
 	}
 
 	@Override
-	protected List<Record> lookup(List<Record> input, Query q) throws AppException {
+	protected List<DBRecord> lookup(List<DBRecord> input, Query q) throws AppException {
 		merge();
-		List<Record> filtered = new ArrayList<Record>(input.size());
-		for (Record record : input) {
+		List<DBRecord> filtered = new ArrayList<DBRecord>(input.size());
+		for (DBRecord record : input) {
 			if (lookupSingle(record, q)) {
 				filtered.add(record);
 			}

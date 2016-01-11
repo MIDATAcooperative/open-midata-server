@@ -13,29 +13,29 @@ import models.Record;
  */
 public class Feature_InMemoryQuery extends Feature {
 	
-	private List<Record> contents;
+	private List<DBRecord> contents;
 	
-	public Feature_InMemoryQuery(List<Record> contents) {
+	public Feature_InMemoryQuery(List<DBRecord> contents) {
 		this.contents = contents;
 	}
 			
 	@Override
-	protected List<Record> lookup(List<Record> input, Query q)
+	protected List<DBRecord> lookup(List<DBRecord> input, Query q)
 			throws InternalServerException {
-		List<Record> result = new ArrayList<Record>();
-		for (Record record : input) {
+		List<DBRecord> result = new ArrayList<DBRecord>();
+		for (DBRecord record : input) {
 			if (contents.contains(record)) result.add(record);
 		}
 		return result;
 	}
 
 	@Override
-	protected List<Record> query(Query q) throws InternalServerException {	
+	protected List<DBRecord> query(Query q) throws InternalServerException {	
 		return contents;
 	}
 
 	@Override
-	protected List<Record> postProcess(List<Record> records, Query q)
+	protected List<DBRecord> postProcess(List<DBRecord> records, Query q)
 			throws InternalServerException {
 		return records;
 	}

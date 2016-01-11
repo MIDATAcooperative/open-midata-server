@@ -127,14 +127,7 @@ public class LargeRecord  {
 		}
 		return chunksWithData;
 	}
-
-	/*public static void set(Record masterRecord, String field, Object value) throws InternalServerException {
-		Set<ObjectId> chunkIds = getChunkIds(masterRecord, new ChainedSet<String>().add("field").get());
-		if (chunkIds.size() == 1) {
-			ObjectId chunkId = chunkIds.iterator().next();
-			LargeRecordChunk.set(chunkId, field, value);
-		}
-	}*/
+	
 
 	/**
 	 * Creates chunks from the data and saves the index information in the master record.

@@ -357,7 +357,11 @@ public class PluginsAPI extends Controller {
 		
 		
 		Record record = new Record();
-		record._id = new ObjectId();
+		if (json.has("_id")) {
+			record._id = JsonValidation.getObjectId(json, "_id");			
+		} else {
+		    record._id = new ObjectId();
+		}
 		record.app = authToken.pluginId;
 		record.owner = authToken.ownerId;
 		record.creator = authToken.executorId;
@@ -625,6 +629,14 @@ public class PluginsAPI extends Controller {
 		test.run(midataServer);
 						
 		return ok();
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@VisualizationCall
+	public static Result generateId() throws JsonValidationException, AppException {
+		JsonNode json = request().body().asJson();		
+		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(json.get("authToken").asText());									
+		return ok(new ObjectId().toString());
 	}
 	
 

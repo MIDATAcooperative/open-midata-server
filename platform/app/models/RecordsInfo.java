@@ -7,6 +7,9 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 
+import utils.access.DBRecord;
+import utils.access.RecordConversion;
+
 /**
  * result of a summary query.
  *
@@ -73,21 +76,25 @@ public class RecordsInfo {
     }
     
     public RecordsInfo(Record rec) {
+    	this(RecordConversion.instance.toDB(rec));
+    }
+    
+    public RecordsInfo(DBRecord rec) {
     	formats = new HashSet<String>();
     	contents = new HashSet<String>();
     	groups = new HashSet<String>();
     	owners = new HashSet<String>();
     	
     	
-    	formats.add(rec.format);
-    	contents.add(rec.content);
+    	formats.add((String) rec.meta.get("format"));
+    	contents.add((String) rec.meta.get("content"));
     	groups.add(rec.group);
     	if (rec.owner != null) owners.add(rec.owner.toString());
     	
     	
     	count = 1;
-    	oldest = rec.created;
-    	newest = rec.created;
+    	oldest = (Date) rec.meta.get("created");
+    	newest = (Date) rec.meta.get("created");
     	newestRecord = rec._id;
     	
     	calculated = new Date(System.currentTimeMillis());

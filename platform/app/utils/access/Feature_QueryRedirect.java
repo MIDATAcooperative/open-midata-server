@@ -39,9 +39,9 @@ public class Feature_QueryRedirect extends Feature {
 	}
 	
 	@Override
-	protected List<Record> lookup(List<Record> record, Query q)
+	protected List<DBRecord> lookup(List<DBRecord> record, Query q)
 			throws AppException {		
-		List<Record> result = next.lookup(record, q);
+		List<DBRecord> result = next.lookup(record, q);
 		
 		// Add Filter
 				
@@ -51,7 +51,7 @@ public class Feature_QueryRedirect extends Feature {
 						
 			if (query.containsField("$or")) {
 				Collection queryparts = (Collection) query.get("$or");
-				List<Record> filteredResult = new ArrayList<Record>(result.size());
+				List<DBRecord> filteredResult = new ArrayList<DBRecord>(result.size());
 				for (Object part : queryparts) {
 					filteredResult.addAll(memoryQuery(q, (BasicBSONObject) part, result));
 				}
@@ -66,12 +66,12 @@ public class Feature_QueryRedirect extends Feature {
 		
 
 	@Override
-	protected List<Record> query(Query q) throws AppException {
+	protected List<DBRecord> query(Query q) throws AppException {
 		
 		BasicBSONObject query = q.getCache().getAPS(q.getApsId()).getMeta(APS.QUERY);    	
     	// Ignores queries in main APS 
 		if (query != null && !q.getApsId().equals(q.getCache().getOwner())) {			
-			List<Record> result = next.query(q);
+			List<DBRecord> result = next.query(q);
 			
 			if (query.containsField("$or")) {
 				Collection queryparts = (Collection) query.get("$or");
@@ -89,7 +89,7 @@ public class Feature_QueryRedirect extends Feature {
 		return next.query(q);		
 	}
 	
-	private void query(Query q, BasicBSONObject query, List<Record> results) throws AppException {
+	private void query(Query q, BasicBSONObject query, List<DBRecord> results) throws AppException {
 		Map<String, Object> combined = combineQuery(q.getProperties(), query);
 		if (combined == null) {
 			AccessLog.debug("combine empty:");			
@@ -97,27 +97,27 @@ public class Feature_QueryRedirect extends Feature {
 		}
 		Object targetAPSId = query.get("aps");
 		AccessLog.debug("Redirect to Query:");
-		List<Record> result = next.query(new Query(combined, q.getFields(), q.getCache(), new ObjectId(targetAPSId.toString())));
+		List<DBRecord> result = next.query(new Query(combined, q.getFields(), q.getCache(), new ObjectId(targetAPSId.toString())));
 		
 		if (query.containsField("_exclude") && result.size() > 0) {			
-			List<Record> excluded = QueryEngine.listFromMemory((Map<String, Object>) query.get("_exclude"), result);
+			List<DBRecord> excluded = QueryEngine.listFromMemory((Map<String, Object>) query.get("_exclude"), result);
             result.removeAll(excluded);						
 		} 
 		
 		results.addAll(result);
 	}
 	
-	private List<Record> memoryQuery(Query q, BasicBSONObject query, List<Record> results) throws AppException {
+	private List<DBRecord> memoryQuery(Query q, BasicBSONObject query, List<DBRecord> results) throws AppException {
 		Map<String, Object> combined = combineQuery(q.getProperties(), query);
 		if (combined == null) {
 			AccessLog.debug("combine empty:");			
 			return Collections.emptyList();
 		}
 		
-		List<Record> result = QueryEngine.listFromMemory(combined, results); 
+		List<DBRecord> result = QueryEngine.listFromMemory(combined, results); 
 									
 		if (query.containsField("_exclude") && result.size() > 0) {			
-			List<Record> excluded = QueryEngine.listFromMemory((Map<String, Object>) query.get("_exclude"), result);
+			List<DBRecord> excluded = QueryEngine.listFromMemory((Map<String, Object>) query.get("_exclude"), result);
             result.removeAll(excluded);						
 		} 
 		
@@ -167,11 +167,11 @@ public class Feature_QueryRedirect extends Feature {
 		APS aps = cache.getAPS(apsId);
 		aps.setMeta(APS.QUERY, query);
 		
-		//List<Record> r = FormatHandling.findStreams(new Query(query, Sets.create("_id","key"),  cache, true);
+		//List<DBRecord> r = FormatHandling.findStreams(new Query(query, Sets.create("_id","key"),  cache, true);
 	}
 
 	@Override
-	protected List<Record> postProcess(List<Record> records, Query q)
+	protected List<DBRecord> postProcess(List<DBRecord> records, Query q)
 			throws AppException {
 		return next.postProcess(records, q);
 		

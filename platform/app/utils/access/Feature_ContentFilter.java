@@ -21,18 +21,22 @@ public class Feature_ContentFilter extends Feature {
 		
 
 	@Override
-	protected List<Record> query(Query q) throws AppException {		
+	protected List<DBRecord> query(Query q) throws AppException {		
 		return next.query(q);
 	}
 
 	@Override
-	protected List<Record> postProcess(List<Record> records, Query q)
+	protected List<DBRecord> postProcess(List<DBRecord> records, Query q)
 			throws AppException {
-		return QueryEngine.filterByFormat(records, q.restrictedBy("format") ? q.getRestriction("format") : null, q.restrictedBy("content") ? q.getRestriction("content") : null, q.restrictedBy("content/*") ? q.getRestriction("content/*") : null);	
+		List<DBRecord> result = records;
+		if (q.restrictedBy("format")) result = QueryEngine.filterByMetaSet(result, "format", q.getRestriction("format"));
+		if (q.restrictedBy("content")) result = QueryEngine.filterByMetaSet(result, "content", q.getRestriction("content"));
+		if (q.restrictedBy("content/*")) result = QueryEngine.filterByWCFormat(result, q.getRestriction("content/*"));
+		return result;	
 	}
 
 	@Override
-	protected List<Record> lookup(List<Record> record, Query q)
+	protected List<DBRecord> lookup(List<DBRecord> record, Query q)
 			throws AppException {		
 		return next.lookup(record, q);
 	}

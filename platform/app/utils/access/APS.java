@@ -44,7 +44,7 @@ public abstract class APS extends Feature {
 		
 	public abstract APSSecurityLevel getSecurityLevel() throws InternalServerException;
 	
-	public abstract void provideRecordKey(Record record) throws AppException;
+	public abstract void provideRecordKey(DBRecord record) throws AppException;
 	
 	public abstract void addAccess(Set<ObjectId> targets) throws AppException,EncryptionNotSupportedException;
 
@@ -58,28 +58,28 @@ public abstract class APS extends Feature {
 		
 	public abstract BasicBSONObject getMeta(String key) throws AppException;
 			
-	protected abstract boolean lookupSingle(Record input, Query q) throws AppException;
+	protected abstract boolean lookupSingle(DBRecord input, Query q) throws AppException;
 							
-	public abstract void addPermission(Record record, boolean withOwner) throws AppException;
+	public abstract void addPermission(DBRecord record, boolean withOwner) throws AppException;
 		
-	public abstract void addPermission(Collection<Record> records, boolean withOwner) throws AppException;
+	public abstract void addPermission(Collection<DBRecord> records, boolean withOwner) throws AppException;
 		
 			
-	public abstract boolean removePermission(Record record) throws AppException;
+	public abstract boolean removePermission(DBRecord record) throws AppException;
 		
-	public abstract void removePermission(Collection<Record> records) throws AppException;
+	public abstract void removePermission(Collection<DBRecord> records) throws AppException;
 
 	@Override
-	protected List<Record> postProcess(List<Record> records, Query q)
+	protected List<DBRecord> postProcess(List<DBRecord> records, Query q)
 			throws InternalServerException {			
 		return records;
 	}
 
 	@Override
-	protected List<Record> lookup(List<Record> input, Query q)
+	protected List<DBRecord> lookup(List<DBRecord> input, Query q)
 			throws AppException {
-		List<Record> filtered = new ArrayList<Record>(input.size());
-		for (Record record : input) { 
+		List<DBRecord> filtered = new ArrayList<DBRecord>(input.size());
+		for (DBRecord record : input) { 
 			if (lookupSingle(record, q)) { filtered.add(record); }			
 		}
 		return filtered;
