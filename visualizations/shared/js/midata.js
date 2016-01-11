@@ -7,7 +7,7 @@ midata.factory('midataServer', [ '$http', '$q', function($http, $q) {
 	var actionChain = actionDef.promise;
 	actionDef.resolve();
 	
-	service.createRecord = function(authToken, name, description, content, format, data) {
+	service.createRecord = function(authToken, name, description, content, format, data, id) {
 		// construct json
 		var data = {
 			"authToken": authToken,
@@ -17,6 +17,7 @@ midata.factory('midataServer', [ '$http', '$q', function($http, $q) {
 			"format" : format,
 			"description": (description || "")
 		};
+		if (id) data._id = id;
 		
 		// submit to server
 		var f = function() { return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/create", data); };
@@ -81,6 +82,11 @@ midata.factory('midataServer', [ '$http', '$q', function($http, $q) {
 	service.run = function(authToken) {	
 		var data = { "authToken": authToken  };		
 	    return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/run", data);
+	};
+	
+	service.newId = function(authToken) {	
+		var data = { "authToken": authToken  };		
+	    return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/newId", data);
 	};
 	
 	return service;	
