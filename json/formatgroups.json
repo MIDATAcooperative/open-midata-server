@@ -6,7 +6,7 @@
 { "_id" : { "$oid" : "55ae5a08f351efda91eadc81" }, "name" : "movement", "label" : "Movement", "parent" : "lifestyle" }
 { "_id" : { "$oid" : "55ae5a08f351efda91eadc82" }, "name" : "sleep", "label" : "Sleep", "parent" : "lifestyle" }
 { "_id" : { "$oid" : "55ae5a08f351efda91eadc83" }, "name" : "health", "label" : "Health", "parent" : "all" }
-{ "_id" : { "$oid" : "55ae5a08f351efda91eadc84" }, "name" : "alergies", "label" : "Alergies", "parent" : "health" }
+{ "_id" : { "$oid" : "55ae5a08f351efda91eadc84" }, "name" : "allergies", "label" : "Allergies", "parent" : "health" }
 { "_id" : { "$oid" : "55ae5a08f351efda91eadc85" }, "name" : "lab", "label" : "Lab results", "parent" : "health" }
 { "_id" : { "$oid" : "55ae5a08f351efda91eadc86" }, "name" : "studies", "label" : "Studies", "parent" : "health" }
 { "_id" : { "$oid" : "55ae5a08f351efda91eadc87" }, "name" : "medication", "label" : "Medication", "parent" : "health" }
@@ -17,3 +17,14 @@
 { "_id" : { "$oid" : "55ae5a08f351efda91eadc8c" }, "name" : "diary", "label" : "Diary", "parent" : "other" }
 { "_id" : { "$oid" : "55ae5a08f351efda91eadc8d" }, "name" : "account", "label" : "External Accounts", "parent" : "other" }
 { "_id" : { "$oid" : "55b5fe1ca69243d780682795" }, "name" : "templates", "label" : "Templates", "parent" : "other" }
+{ "name" : "otherhealth", "label" : "Other Health-related", "parent" : "health" }
+{ "name" : "care", "label" : "Care", "parent" : "health" }
+{ "name" : "billing", "label" : "Billing", "parent" : "other" }
+{ "name" : "encounters", "label" : "Encounters", "parent" : "health" }
+{ "name" : "entities", "label" : "Entities", "parent" : "other" }
+{ "name" : "healthworkflow", "label" : "Workflow", "parent" : "health" }
+{ "name" : "healthdocuments", "label" : "Health Documents", "parent" : "health" }
+{ "name" : "relatedpersons", "label" : "Related Persons", "parent" : "other" }
+{ "name" : "diagnostics", "label" : "Family", "parent" : "other" }
+
+
