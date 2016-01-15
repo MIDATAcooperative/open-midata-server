@@ -9,6 +9,7 @@ GET     /test2                                           controllers.Application
 GET     /debug/aps/:id                                   controllers.Debug.get(id: String)
 GET     /debug/resetinfo                                 controllers.Debug.resetInfo()
 GET     /debug/test                                 controllers.Debug.test()
+GET     /fhir/*all                                       controllers.FHIR.get(all)
 
 # Home page
 
@@ -200,6 +201,8 @@ OPTIONS /v1/plugin_api/records/file    controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/records/file    controllers.PluginsAPI.getFile()
 OPTIONS /v1/plugin_api/records/create  controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/records/create  controllers.PluginsAPI.createRecord()
+OPTIONS /v1/plugin_api/records/update  controllers.PluginsAPI.checkPreflight()
+POST    /v1/plugin_api/records/update  controllers.PluginsAPI.updateRecord()
 OPTIONS /v1/plugin_api/records/upload  controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/records/upload  controllers.PluginsAPI.uploadFile()
 OPTIONS /v1/plugin_api/config/set      controllers.PluginsAPI.checkPreflight()

@@ -469,6 +469,67 @@ public class PluginsAPI extends Controller {
 	}
 	
 	/**
+	 * update a record. 
+	 * @return
+	 * @throws AppException
+	 * @throws JsonValidationException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@VisualizationCall
+	public static Result updateRecord() throws AppException, JsonValidationException {
+				
+		// check whether the request is complete
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "authToken", "data", "_id");
+		
+		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(json.get("authToken").asText());
+				
+		if (authToken.recordId != null) return badRequest("This view is readonly.");
+																								
+		// save new record with additional metadata
+		if (!json.get("data").isTextual() /* || !json.get("name").isTextual() || !json.get("description").isTextual() */) {
+			return badRequest("At least one request parameter is of the wrong type.");
+		}
+							
+		String data = JsonValidation.getString(json, "data");
+		
+		//String name = JsonValidation.getString(json, "name");
+		//String description = JsonValidation.getString(json, "description");
+		//String format = JsonValidation.getString(json, "format");
+		
+		//String content = JsonValidation.getString(json, "content");
+				
+		Record record = new Record();
+		
+		record._id = JsonValidation.getObjectId(json, "_id");			
+		
+		//record.app = authToken.pluginId;
+		//record.owner = authToken.ownerId;
+		record.creator = authToken.executorId;
+		record.created = DateTimeUtils.now();
+							
+		try {
+			record.data = (DBObject) JSON.parse(data);
+		} catch (JSONParseException e) {
+			return badRequest("Record data is invalid JSON.");
+		}
+				
+		updateRecord(authToken, record);
+									
+		return ok();
+	}
+	
+	/**
+	 * Helper function to update a record
+	 * @param inf execution context
+	 * @param record record to add to the database
+	 * @throws AppException
+	 */
+	public static void updateRecord(ExecutionInfo inf, Record record) throws AppException  {
+		RecordManager.instance.updateRecord(inf.executorId, inf.targetAPS, record);				
+	}
+	
+	/**
 	 * Helper method for OAuth 2.0 apps: API calls can sometimes only be done from the backend. Uses the
 	 * "Authorization: Bearer [accessToken]" header.
 	 */

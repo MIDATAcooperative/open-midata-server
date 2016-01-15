@@ -351,6 +351,23 @@ public class RecordManager {
 	}
 	
 	/**
+	 * update a record in the database 
+	 * @param executingPerson id of executing person
+	 * @param record the record to be updated
+	 * @throws AppException
+	 */
+	public void updateRecord(ObjectId executingPerson, ObjectId apsId, Record record) throws AppException {
+		List<DBRecord> result = QueryEngine.listInternal(getCache(executingPerson), apsId, CMaps.map("_id", record._id), RecordManager.COMPLETE_DATA);	
+		if (result.size() != 1) throw new InternalServerException("error.internal.notfound", "Unknown Record");
+		
+		DBRecord rec = result.get(0);		
+	    rec.data = record.data;
+		
+		RecordEncryption.encryptRecord(rec, rec.key != null ? APSSecurityLevel.HIGH : APSSecurityLevel.NONE);		
+	    DBRecord.upsert(rec); 	  					
+	}
+	
+	/**
 	 * Delete a record from the system. Currently only used for debugging purposes.
 	 * @param executingPerson id of executing person
 	 * @param tk a token for the record to be deleted.

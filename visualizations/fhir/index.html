@@ -17,7 +17,10 @@
 		
 		<!-- Ignoring locales for now -->		
 		<script type="text/javascript" src="/shared/js/midata.js" defer></script>
+		<script type="text/javascript" src="js/app.js" defer></script>
+		<script type="text/javascript" src="js/fhir.js" defer></script>
 		<script type="text/javascript" src="js/controller.js" defer></script>
+		
 	</head>
 	<body>	
 		<div ng-app="fhir" ng-controller="FHIRCtrl" ng-cloak>
@@ -40,29 +43,42 @@
         </script>
 				
 		<script type="text/ng-template"  id="string.html">
-           <input type="text" class="form-control" ng-model="access[idx]" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}">                         
+           <input type="text" class="form-control" ng-change="change()" ng-model="access[idx]" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}">                         
         </script>
                         
         <script type="text/ng-template"  id="dateTime.html">
-           <input type="text" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}" class="form-control" ng-model="access[idx]">           
+           <input type="text" tooltip-animation="false" ng-change="change()" tooltip-placement="top" tooltip="{{ field.description }}" class="form-control" ng-model="access[idx]">           
         </script>
         
         <script type="text/ng-template"  id="date.html">           
-           <input type="text" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}" class="form-control" ng-model="access[idx]">           
+           <input type="text" tooltip-animation="false" ng-change="change()" tooltip-placement="top" tooltip="{{ field.description }}" class="form-control" ng-model="access[idx]">           
         </script>
         
         <script type="text/ng-template"  id="code.html">           
-           <select class="form-control" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}" ng-model="access[idx]" ng-options="v.code as v.display for v in getOptions(field)">
+           <select class="form-control" tooltip-animation="false" ng-change="change()" tooltip-placement="top" tooltip="{{ field.description }}" ng-model="access[idx]" ng-options="v.code as v.display for v in getOptions(field)">
            </select>           
         </script>
         
         <script type="text/ng-template"  id="CodeableConceptVS.html">           
-           <select class="form-control" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}" ng-model="access[idx].$$fhirSelected" ng-change="chooseOption(access[idx]);" ng-options="v as v.display for v in getOptions(field)">
+           <select class="form-control" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}" ng-model="access[idx].$$fhirSelected" ng-init="initOption(access[idx], getOptions(field))" ng-change="chooseOption(access[idx]);change();" ng-options="v as v.display for v in getOptions(field)">
            </select>          
         </script>
         
+        <script type="text/ng-template"  id="CodeableConceptFS.html">  
+           <div class="input-group">         
+             <span class="input-group-addon">{{ access[idx].coding[0].system }}:{{ access[idx].coding[0].code }}</span>           
+             <input type="text" class="form-control" ng-change="change()" ng-model="access[idx].text" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}">
+             <div class="input-group-btn">
+               <button class="btn btn-default" ng-click="searchCoding(access[idx], field);">search</button>
+             </div>
+           </div>
+           <ul>
+            <li ng-repeat="sel in access[idx].$$fhirSearch"><a href="javascript:" ng-click="chooseOption(access[idx], false, sel)">{{ sel.code }}</a>: {{ sel.display }}</li>
+           </ul>           
+        </script>
+        
         <script type="text/ng-template"  id="CodeableConcept.html">
-           <input type="text" class="form-control" ng-change="chooseOption(access[idx], true)" ng-model="access[idx].text" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}">                               
+           <input type="text" class="form-control" ng-change="chooseOption(access[idx], true);change();" ng-model="access[idx].text" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}">                               
         </script>
         
         <script type="text/ng-template"  id="Period.html">
@@ -70,41 +86,57 @@
            <div class="col-sm-5" >
              <div class="input-group">
                 <span class="input-group-addon">Start</span>
-                <input type="text" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}" class="form-control" ng-model="resource[field.field].start">
+                <input type="text" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}" ng-change="change()" class="form-control" ng-model="resource[field.field].start">
              </div>
            </div><div class="col-sm-5">
              <div class="input-group">
                 <span class="input-group-addon">End</span>
-                <input type="text" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}" class="form-control" ng-model="resource[field.field].end">
+                <input type="text" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}" ng-change="change()" class="form-control" ng-model="resource[field.field].end">
              </div>              
+           </div>
+        </script>
+        
+         <script type="text/ng-template"  id="Quantity.html">
+           <label class="col-sm-2 control-label">{{ field.label }}</label>
+           <div class="col-sm-3" >             
+             <select class="form-control" tooltip-animation="false" ng-change="change()" tooltip-placement="top" tooltip="{{ field.description }}" ng-model="resource[field.field].comparator" ng-options="v.code as v.display for v in getOptions('http://hl7.org/fhir/ValueSet/quantity-comparator')">
+             </select> 
+           </div><div class="col-sm-4">
+             <input type="text" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}" ng-change="change()" class="form-control" ng-model="resource[field.field].value">                          
+           </div><div class="col-sm-3">
+             <input type="text" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}" ng-change="change()" class="form-control" ng-model="resource[field.field].unit">                          
            </div>
         </script>
         
         <script type="text/ng-template"  id="boolean.html">           
            <div class="checkbox">
              <label tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}">
-                <input type="checkbox" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}"ng-model="access[idx]">
+                <input type="checkbox" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}" ng-change="change()" ng-model="access[idx]">
                 {{ field.label }}
              </label>
            </div>                      
         </script>
         
         <script type="text/ng-template"  id="subform.html">                     
-             <div class="form-horizontal" ng-init="currentDefinition = getDefinition(field); resource=getResource(resource, field)">
+             <div class="form-horizontal">
+                <button type="button" class="close" aria-label="Close" ng-click="removeResource(resource, field);change();"><span aria-hidden="true">&times;</span></button>
+                <div class="clearfix"></div>
+                <div ng-init="currentDefinition = getDefinition(field); resource=getResource(resource, field)">
                   <div ng-repeat="field in currentDefinition.fields">
 		            <div class="form-group" ng-if="!isEmpty(resource, field)" ng-include="getTemplate(field, resource)">                   
                     </div>
 		          </div>
                   <span ng-repeat="field in currentDefinition.fields">
                     <button tooltip="{{ field.description }}" tooltip-animation="false" tooltip-placement="top" ng-show="isEmpty(resource, field)" class="btn btn-default btn-xs" ng-click="addResource(resource, field)">{{ field.label }}</button> 
-                  </span>
+                  </span> 
+                </div>
              </div>
         </script>
         
         <script type="text/ng-template"  id="msubform.html">          
            <div ng-init="parentResource = resource">                        
              <div ng-repeat="resource in resource[field.field]" class="well well-sm">           
-                <button type="button" class="close" aria-label="Close" ng-click="removeResource(parentResource, field, resource)"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" aria-label="Close" ng-click="removeResource(parentResource, field, resource);change();"><span aria-hidden="true">&times;</span></button>
                 <div class="clearfix"></div>                              
                 <div class="form-horizontal" ng-init="currentDefinition = getDefinition(field)">                                                                           
                   <div ng-repeat="field in currentDefinition.fields">
@@ -116,7 +148,7 @@
                   </span>
                 </div>
              </div>
-             <p ng-show="mayAddResource(resource, field)"><button ng-click="addResource(resource, field)" class="btn btn-default btn-xs">add</button></p>            
+             <p ng-show="mayAddResource(resource, field)"><button ng-click="addResource(resource, field);change();" class="btn btn-default btn-xs">add</button></p>            
            </div>
         </script>
         
@@ -136,7 +168,7 @@
                   </div>
                 </div>
              </div>
-             <p ng-show="mayAddResource(resource, field)"><button uib-tooltip="test" ng-click="addResource(resource, field)" class="btn btn-default btn-xs">add more</button></p>            
+             <p ng-show="mayAddResource(resource, field)"><button uib-tooltip="test" ng-click="addResource(resource, field);change();" class="btn btn-default btn-xs">add more</button></p>            
            </div>
         </script>
         
@@ -146,15 +178,15 @@
                 <input type="text" class="form-control" ng-model="access[idx].display" tooltip-animation="false" tooltip-placement="top" tooltip="{{ field.description }}">
                 <span class="input-group-btn">
                   <button ng-show="access[idx].reference" ng-click="followReference(access[idx], field)" class="btn btn-default">follow</button>
-                  <button ng-show="access[idx].reference" ng-click="clearReference(access[idx], field)" class="btn btn-danger">clear</button>
+                  <button ng-show="access[idx].reference" ng-click="clearReference(access[idx], field);change();" class="btn btn-danger">clear</button>
                   <div class="btn-group" ng-hide="access[idx].reference">
                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                          Set <span class="caret"></span>
                      </button>
                      <ul class="dropdown-menu">
-                       <li ng-repeat="type in field.resource"><a href="#" ng-click="createReference(access[idx], field, type)">{{ uriCache[type].resourceType }}</a></li>
+                       <li ng-repeat="type in field.resource"><a href="#" ng-click="createReference(access[idx], field, type);change();">{{ makeLabel(uriCache[type].resourceType) }}</a></li>
                        <li role="separator" class="divider"></li>
-                       <li ng-repeat="res in pools(field.resource)"><a href="#" ng-click="setReference(access[idx], field, res.id)">{{ makeHRName(res) }} ({{ res.resourceType }})</a></li>                       
+                       <li ng-repeat="res in pools(field.resource)"><a href="#" ng-click="setReference(access[idx], field, res.resourceType+'/'+res.id);change();">{{ makeHRName(res) }} ({{ makeLabel(res.resourceType) }})</a></li>                       
                      </ul>
                   </div>
 
@@ -167,7 +199,7 @@
 		
 		   <div class="container">
 		     <div ng-if="currentDefinition">
-		     <h3>{{ currentDefinition.resourceType }}</h3>
+		     <h3>{{ makeLabel(currentDefinition.resourceType) }}</h3>
 		     <form class="form-horizontal">
 		       <div ng-repeat="field in currentDefinition.fields">
 		          <div class="form-group" ng-if="!isEmpty(resource, field)" ng-include="getTemplate(field, resource)">                   

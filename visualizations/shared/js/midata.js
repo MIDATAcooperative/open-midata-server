@@ -25,6 +25,20 @@ midata.factory('midataServer', [ '$http', '$q', function($http, $q) {
 		return actionChain;
 	};
 	
+	service.updateRecord = function(authToken, id, data) {
+		// construct json
+		var data = {
+			"authToken": authToken,
+			"_id" : id,
+			"data": angular.toJson(data)
+		};
+				
+		// submit to server
+		var f = function() { return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/update", data); };
+		actionChain = actionChain.then(f);	
+		return actionChain;
+	};
+	
 	/*
 	service.createConversion = function(authToken, name, description, content, format, data, appendToId) {
 		// construct json

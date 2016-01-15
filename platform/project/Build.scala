@@ -15,7 +15,9 @@ object ApplicationBuild extends Build {
     javaCore,
     javaWs,
     "org.mongodb" % "mongo-java-driver" % "2.12.2",
-    "org.elasticsearch" % "elasticsearch" % "1.2.1"  
+    "org.elasticsearch" % "elasticsearch" % "1.2.1",
+    "ca.uhn.hapi.fhir" % "hapi-fhir-base" % "1.3",
+    "ca.uhn.hapi.fhir" % "hapi-fhir-structures-dstu2" % "1.3"  	    
   )
 
 
@@ -26,7 +28,7 @@ object ApplicationBuild extends Build {
   	Keys.excludeFilter in (Assets, LessKeys.less) := "_*.less",
   	libraryDependencies ++= appDependencies,
   	libraryDependencies ++= Seq(
-  	  "com.typesafe.play.plugins" %% "play-plugins-mailer" % "2.3.1"
+  	  "com.typesafe.play.plugins" %% "play-plugins-mailer" % "2.3.1"  	  
   	)  	 
   )
 

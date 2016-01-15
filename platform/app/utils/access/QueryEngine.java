@@ -18,7 +18,11 @@ import org.bson.BasicBSONObject;
 import org.bson.types.ObjectId;
 
 
+import scala.NotImplementedError;
 import utils.DateTimeUtils;
+import utils.access.op.Condition;
+import utils.access.op.EqualsSingleValueCondition;
+import utils.access.op.ObjectCondition;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -265,7 +269,8 @@ class QueryEngine {
 		if (q.restrictedBy("created")) result = filterByMetaSet(result, "created", q.getObjectIdRestriction("created"));
 		if (q.restrictedBy("app")) result = filterByMetaSet(result, "app", q.getObjectIdRestriction("app"));
 		if (q.restrictedBy("name")) result = filterByMetaSet(result, "name", q.getRestriction("name"));
-				
+		if (q.restrictedBy("data"))	result = filterByDataQuery(result, (Map<String,Object>) q.getProperties().get("data"));
+		
 		if (postFilter) {
 			Date minDate = q.getMinDate();
 			Date maxDate = q.getMaxDate();
@@ -302,6 +307,25 @@ class QueryEngine {
     		filteredResult.add(record);
     	}    	
     	return filteredResult;
+    }
+    
+    protected static List<DBRecord> filterByDataQuery(List<DBRecord> input, Map<String, Object> query) {    	
+    	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());    	
+    	Condition condition = new ObjectCondition(query);
+    	
+    	for (DBRecord record : input) {
+            Object accessVal = record.data;                        
+            if (condition.satisfiedBy(accessVal)) filteredResult.add(record);    		
+    	}    	
+    	return filteredResult;
+    }
+    
+    protected static Object access(Object obj, String path) {
+    	if (obj == null) return null;
+    	if (obj instanceof BSONObject) {
+    		return ((BSONObject) obj).get(path);
+    	}
+    	return null;
     }
             
     protected static List<DBRecord> filterByDateRange(List<DBRecord> input, String property, Date minDate, Date maxDate) {    	

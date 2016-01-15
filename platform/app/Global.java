@@ -1,10 +1,17 @@
+import javax.servlet.ServletException;
+
+import controllers.FHIR;
 import play.Application;
 import play.GlobalSettings;
 import play.libs.Json;
 import utils.db.DBLayer;
 import utils.db.DatabaseException;
+import utils.fhir.FHIRServlet;
+import utils.fhir.ResourceProvider;
 import utils.json.CustomObjectMapper;
 import utils.search.Search;
+import utils.servlet.PlayHttpServletConfig;
+import utils.servlet.PlayHttpServletContext;
 
 /**
  * Actions that need to be done on application start and stop.
@@ -26,6 +33,16 @@ public class Global extends GlobalSettings {
 
 		// Set custom object mapper for Json
 		Json.setObjectMapper(new CustomObjectMapper());
+		
+		// Init FHIR
+		FHIR.servlet = new FHIRServlet();
+		
+		try {
+		  FHIR.servlet.setFhirContext(ResourceProvider.ctx);
+		  FHIR.servlet.init(new PlayHttpServletConfig());
+		} catch (ServletException e) {
+		  throw new NullPointerException();
+		}
 	}
 
 	@Override

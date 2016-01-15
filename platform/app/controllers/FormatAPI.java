@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -14,6 +15,7 @@ import models.Coding;
 import models.ContentInfo;
 import models.FormatGroup;
 import models.FormatInfo;
+import models.Loinc;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
@@ -80,7 +82,24 @@ public class FormatAPI extends Controller {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));						
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
-	    Collection<Coding> contents = Coding.getAll(properties, fields);
-	    return ok(Json.toJson(contents));
+		// http://loinc.org
+		// http://unitsofmeasure.org
+		
+		if (properties.containsKey("$text")) {
+		  properties.remove("system");
+		  Collection<Loinc> loincCodes = Loinc.getAll(properties, Sets.create("LOINC_NUM","LONG_COMMON_NAME"));
+		  Collection<Coding> results = new ArrayList<Coding>(loincCodes.size());
+		  for (Loinc loinc : loincCodes) {
+			  Coding code = new Coding();
+			  code.system = "http://loinc.org";
+			  code.code = loinc.LOINC_NUM;
+			  code.display = loinc.LONG_COMMON_NAME;
+			  results.add(code);
+		  }
+		  return ok(Json.toJson(results));
+		} else {		
+	      Collection<Coding> contents = Coding.getAll(properties, fields);
+	      return ok(Json.toJson(contents));
+		}
 	}
 }
