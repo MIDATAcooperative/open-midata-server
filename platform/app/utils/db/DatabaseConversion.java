@@ -75,6 +75,9 @@ public class DatabaseConversion {
 				throw new DatabaseConversionException(e);
 			}
 		}
+		if (modelObject instanceof Model) {
+			dbObject.put("_id", ((Model) modelObject).get_id()); 
+		}
 		return dbObject;
 	}
 	
@@ -109,6 +112,9 @@ public class DatabaseConversion {
 					throw new DatabaseConversionException(e);
 				}
 			}
+		}
+		if (modelObject instanceof Model) {
+			((Model) modelObject).set_id(dbObject.get("_id"));
 		}
 		return modelObject;
 	}

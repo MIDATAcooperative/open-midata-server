@@ -115,7 +115,7 @@ public class MongoDatabase extends Database {
 		try {
 			dbObject = conversion.toDBObject(modelObject);
 			DBObject query = new BasicDBObject();
-			query.put("_id", modelObject._id);
+			query.put("_id", modelObject.get_id());
 			getCollection(collection).update(query, dbObject);			
 		} catch (DatabaseConversionException e) {
 			throw new DatabaseException(e);
@@ -192,7 +192,7 @@ public class MongoDatabase extends Database {
 	/**
 	 * Set the given field of the object with the given id.
 	 */
-	public <T extends Model> void set(Class<T> model, String collection, ObjectId modelId, String field, Object value) throws DatabaseException {
+	public <T extends Model> void set(Class<T> model, String collection, Object modelId, String field, Object value) throws DatabaseException {
 		try {
 			DBObject query = new BasicDBObject("_id", modelId);
 			DBObject update = new BasicDBObject("$set", conversion.toDBObject(field, value));
@@ -211,7 +211,7 @@ public class MongoDatabase extends Database {
 	public <T extends Model> void secureUpdate(T model, String collection, String timestampField, String[] fields) throws LostUpdateException, DatabaseException {
 		try {
 			DBObject query = new BasicDBObject();
-			query.put("_id", model._id);
+			query.put("_id", model.get_id());
 			query.put(timestampField, model.getClass().getField(timestampField).get(model));
 			
 			DBObject updateContent = new BasicDBObject();

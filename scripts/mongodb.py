@@ -96,6 +96,6 @@ class MongoDB(Product):
 			os.path.join(self.parent, 'json', 'plugins.json')), self.parent)	   
 	   Command.execute('{0} -d user -c coding --file {1} --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
 			os.path.join(self.parent, 'json', 'coding.json')), self.parent)
-	   Command.execute('{0} -d user -c loinc --type csv --headerline --file {1}'.format(os.path.join(self.bin, 'mongoimport'), 
+	   Command.execute('{0} -d user -c loinc --type csv --drop --headerline --file {1}'.format(os.path.join(self.bin, 'mongoimport'), 
 			os.path.join(self.parent, 'json', 'loinc.csv')), self.parent)
 						

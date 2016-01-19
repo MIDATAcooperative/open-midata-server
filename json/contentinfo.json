@@ -11,98 +11,97 @@
 { "_id" : { "$oid" : "55b5fdb5a69243d780682793" }, "content" : "survey", "security" : "HIGH", "group" : "studies" }
 { "_id" : { "$oid" : "55b5fddaa69243d780682794" }, "content" : "templates", "security" : "HIGH", "group" : "templates" }
 { "_id" : { "$oid" : "55f81dd8cb01db2880c769e9" }, "content" : "other", "security" : "HIGH", "group" : "other" }
-{ "content" : "AllergyIntolerance", "security" : "HIGH", "group" : "allergies" }
-{ "content" : "Appointment", "security" : "MEDIUM", "group" : "calendar" }
-{ "content" : "AppointmentResponse", "security" : "MEDIUM", "group" : "calendar" }   
-{ "content" : "AuditEvent", "security" : "HIGH", "group" : "other" }
-{ "content" : "Basic", "security" : "HIGH", "group" : "other" }   
-{ "content" : "Binary", "security" : "HIGH", "group" : "other" }    
-{ "content" : "BodySite", "security" : "HIGH", "group" : "otherhealth" }       
-{ "content" : "Bundle", "security" : "HIGH", "group" : "other" }   
-{ "content" : "CarePlan", "security" : "HIGH", "group" : "care" }   
-{ "content" : "Claim", "security" : "MEDIUM", "group" : "billing" }    
-{ "content" : "ClaimResponse", "security" : "MEDIUM", "group" : "billing" }    
-{ "content" : "ClinicalImpression", "security" : "HIGH", "group" : "encounters" }    
-{ "content" : "Communication", "security" : "MEDIUM", "group" : "encounters" }    
-{ "content" : "CommunicationRequest", "security" : "MEDIUM", "group" : "healthworkflow" }    
-{ "content" : "Composition", "security" : "MEDIUM", "group" : "healthdocuments" }
-{ "content" : "ConceptMap", "security" : "MEDIUM", "group" : "other" }    
-{ "content" : "Condition", "security" : "MEDIUM", "group" : "encounters" }    
-{ "content" : "Conformance", "security" : "MEDIUM", "group" : "other" }    
-{ "content" : "Contract", "security" : "MEDIUM", "group" : "entities" }    
-{ "content" : "DetectedIssue", "security" : "MEDIUM", "group" : "encounters" }
-{ "content" : "Coverage", "security" : "MEDIUM", "group" : "billing" }    
-{ "content" : "DataElement", "security" : "MEDIUM", "group" : "other" }    
-{ "content" : "Device", "security" : "MEDIUM", "group" : "otherhealth" }    
-{ "content" : "DeviceComponent", "security" : "MEDIUM", "group" : "otherhealth" }    
-{ "content" : "DeviceMetric", "security" : "MEDIUM", "group" : "otherhealth" }    
-{ "content" : "DeviceUseRequest", "security" : "MEDIUM", "group" : "healthworkflow" }    
-{ "content" : "DeviceUseStatement", "security" : "MEDIUM", "group" : "healthworkflow" }   
-{ "content" : "DiagnosticOrder", "security" : "MEDIUM", "group" : "diagnostics" }    
-{ "content" : "DiagnosticReport", "security" : "HIGH", "group" : "diagnostics" }    
-{ "content" : "DocumentManifest", "security" : "HIGH", "group" : "healthdocuments" }    
-{ "content" : "DocumentReference", "security" : "HIGH", "group" : "healthdocuments" }   
-{ "content" : "EligibilityRequest", "security" : "MEDIUM", "group" : "billing" }    
-{ "content" : "EligibilityResponse", "security" : "MEDIUM", "group" : "billing" }
-{ "content" : "Encounter", "security" : "MEDIUM", "group" : "encounters" }    
-{ "content" : "EnrollmentRequest", "security" : "MEDIUM", "group" : "billing" }    
-{ "content" : "EnrollmentResponse", "security" : "MEDIUM", "group" : "billing" }
-{ "content" : "EpisodeOfCare", "security" : "MEDIUM", "group" : "encounters" }   
-{ "content" : "ExplanationOfBenefit", "security" : "MEDIUM", "group" : "billing" }    
-{ "content" : "FamilyMemberHistory", "security" : "MEDIUM", "group" : "relatedpersons" }    
-{ "content" : "Flag", "security" : "MEDIUM", "group" : "encounters" }    
-{ "content" : "Goal", "security" : "MEDIUM", "group" : "care" } 
-{ "content" : "Group", "security" : "MEDIUM", "group" : "entities" }    
-{ "content" : "HealthcareService", "security" : "MEDIUM", "group" : "entities" }    
-{ "content" : "ImagingObjectSelection", "security" : "MEDIUM", "group" : "diagnostics" }    
-{ "content" : "ImagingStudy", "security" : "MEDIUM", "group" : "diagnostics" }  
-{ "content" : "Immunization", "security" : "MEDIUM", "group" : "allergies" }
-{ "content" : "ImmunizationRecommendation", "security" : "MEDIUM", "group" : "allergies" }
-{ "content" : "ImplementationGuide", "security" : "MEDIUM", "group" : "other" }    
-{ "content" : "List", "security" : "MEDIUM", "group" : "other" }    
-{ "content" : "Location", "security" : "MEDIUM", "group" : "entities" }    
-{ "content" : "Media", "security" : "MEDIUM", "group" : "other" }    
-{ "content" : "Medication", "security" : "MEDIUM", "group" : "medication" }   
-{ "content" : "MedicationAdministration", "security" : "MEDIUM", "group" : "medication" }    
-{ "content" : "MedicationDispense", "security" : "MEDIUM", "group" : "medication" }    
-{ "content" : "MedicationOrder", "security" : "MEDIUM", "group" : "medication" }    
-{ "content" : "MedicationStatement", "security" : "MEDIUM", "group" : "medication" }
-{ "content" : "MessageHeader", "security" : "MEDIUM", "group" : "other" }    
-{ "content" : "NamingSystem", "security" : "MEDIUM", "group" : "other" }    
-{ "content" : "NutritionOrder", "security" : "MEDIUM", "group" : "care" }   
-{ "content" : "Observation", "security" : "MEDIUM", "group" : "diagnostics" }    
-{ "content" : "OperationDefinition", "security" : "MEDIUM", "group" : "other" }    
-{ "content" : "OperationOutcome", "security" : "MEDIUM", "group" : "other" }   
-{ "content" : "Order", "security" : "MEDIUM", "group" : "healthworkflow" }    
-{ "content" : "OrderResponse", "security" : "MEDIUM", "group" : "healthworkflow" }    
-{ "content" : "Organization", "security" : "MEDIUM", "group" : "entities" }    
-{ "content" : "Parameters", "security" : "MEDIUM", "group" : "other" }
-{ "content" : "Patient", "security" : "HIGH", "group" : "relatedpersons" }    
-{ "content" : "PaymentNotice", "security" : "HIGH", "group" : "billing" }   
-{ "content" : "PaymentReconciliation", "security" : "HIGH", "group" : "billing" }  
-{ "content" : "Person", "security" : "HIGH", "group" : "entities" }    
-{ "content" : "Practitioner", "security" : "HIGH", "group" : "entities" }    
-{ "content" : "Procedure", "security" : "HIGH", "group" : "healthworkflow" }
-{ "content" : "ProcessRequest", "security" : "HIGH", "group" : "healthworkflow" }	
-{ "content" : "ProcessResponse", "security" : "HIGH", "group" : "healthworkflow" }
-{ "content" : "ProcedureRequest", "security" : "HIGH", "group" : "care" }
-{ "content" : "Provenance", "security" : "HIGH", "group" : "other" }    
-{ "content" : "Questionnaire", "security" : "HIGH", "group" : "studies" }    
-{ "content" : "QuestionnaireResponse", "security" : "HIGH", "group" : "studies" }    
-{ "content" : "ReferralRequest", "security" : "HIGH", "group" : "care" }    
-{ "content" : "RelatedPerson", "security" : "HIGH", "group" : "relatedpersons" }    
-{ "content" : "RiskAssessment", "security" : "HIGH", "group" : "otherhealth" }    
-{ "content" : "Schedule", "security" : "MEDIUM", "group" : "calendar" }    
-{ "content" : "SearchParameter", "security" : "HIGH", "group" : "other" }    
-{ "content" : "Slot", "security" : "MEDIUM", "group" : "calendar" }    
-{ "content" : "Specimen", "security" : "MEDIUM", "group" : "otherhealth" }   
-{ "content" : "StructureDefinition", "security" : "HIGH", "group" : "other" }       
-{ "content" : "Subscription", "security" : "HIGH", "group" : "other" }    
-{ "content" : "Substance", "security" : "HIGH", "group" : "entities" }
-{ "content" : "SupplyRequest", "security" : "HIGH", "group" : "healthworkflow" }
-{ "content" : "SupplyDelivery", "security" : "HIGH", "group" : "healthworkflow" }       
-{ "content" : "Substance", "security" : "MEDIUM", "group" : "otherhealth" }    
-{ "content" : "TestScript", "security" : "MEDIUM", "group" : "other" }    
-{ "content" : "ValueSet", "security" : "MEDIUM", "group" : "other" }
-{ "content" : "VisionPrescription", "security" : "HIGH", "group" : "care" }    
- 
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdd3" }, "content" : "AllergyIntolerance", "security" : "HIGH", "group" : "allergies" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdd4" }, "content" : "Appointment", "security" : "MEDIUM", "group" : "calendar" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdd5" }, "content" : "AppointmentResponse", "security" : "MEDIUM", "group" : "calendar" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdd6" }, "content" : "AuditEvent", "security" : "HIGH", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdd7" }, "content" : "Basic", "security" : "HIGH", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdd8" }, "content" : "Binary", "security" : "HIGH", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdd9" }, "content" : "BodySite", "security" : "HIGH", "group" : "otherhealth" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdda" }, "content" : "Bundle", "security" : "HIGH", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecddb" }, "content" : "CarePlan", "security" : "HIGH", "group" : "care" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecddc" }, "content" : "Claim", "security" : "MEDIUM", "group" : "billing" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecddd" }, "content" : "ClaimResponse", "security" : "MEDIUM", "group" : "billing" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdde" }, "content" : "ClinicalImpression", "security" : "HIGH", "group" : "encounters" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecddf" }, "content" : "Communication", "security" : "MEDIUM", "group" : "encounters" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecde0" }, "content" : "CommunicationRequest", "security" : "MEDIUM", "group" : "healthworkflow" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecde1" }, "content" : "Composition", "security" : "MEDIUM", "group" : "healthdocuments" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecde2" }, "content" : "ConceptMap", "security" : "MEDIUM", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecde3" }, "content" : "Condition", "security" : "MEDIUM", "group" : "encounters" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecde4" }, "content" : "Conformance", "security" : "MEDIUM", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecde5" }, "content" : "Contract", "security" : "MEDIUM", "group" : "entities" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecde6" }, "content" : "DetectedIssue", "security" : "MEDIUM", "group" : "encounters" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecde7" }, "content" : "Coverage", "security" : "MEDIUM", "group" : "billing" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecde8" }, "content" : "DataElement", "security" : "MEDIUM", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecde9" }, "content" : "Device", "security" : "MEDIUM", "group" : "otherhealth" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdea" }, "content" : "DeviceComponent", "security" : "MEDIUM", "group" : "otherhealth" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdeb" }, "content" : "DeviceMetric", "security" : "MEDIUM", "group" : "otherhealth" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdec" }, "content" : "DeviceUseRequest", "security" : "MEDIUM", "group" : "healthworkflow" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecded" }, "content" : "DeviceUseStatement", "security" : "MEDIUM", "group" : "healthworkflow" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdee" }, "content" : "DiagnosticOrder", "security" : "MEDIUM", "group" : "diagnostics" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdef" }, "content" : "DiagnosticReport", "security" : "HIGH", "group" : "diagnostics" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdf0" }, "content" : "DocumentManifest", "security" : "HIGH", "group" : "healthdocuments" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdf1" }, "content" : "DocumentReference", "security" : "HIGH", "group" : "healthdocuments" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdf2" }, "content" : "EligibilityRequest", "security" : "MEDIUM", "group" : "billing" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdf3" }, "content" : "EligibilityResponse", "security" : "MEDIUM", "group" : "billing" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdf4" }, "content" : "Encounter", "security" : "MEDIUM", "group" : "encounters" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdf5" }, "content" : "EnrollmentRequest", "security" : "MEDIUM", "group" : "billing" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdf6" }, "content" : "EnrollmentResponse", "security" : "MEDIUM", "group" : "billing" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdf7" }, "content" : "EpisodeOfCare", "security" : "MEDIUM", "group" : "encounters" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdf8" }, "content" : "ExplanationOfBenefit", "security" : "MEDIUM", "group" : "billing" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdf9" }, "content" : "FamilyMemberHistory", "security" : "MEDIUM", "group" : "relatedpersons" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdfa" }, "content" : "Flag", "security" : "MEDIUM", "group" : "encounters" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdfb" }, "content" : "Goal", "security" : "MEDIUM", "group" : "care" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdfc" }, "content" : "Group", "security" : "MEDIUM", "group" : "entities" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdfd" }, "content" : "HealthcareService", "security" : "MEDIUM", "group" : "entities" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdfe" }, "content" : "ImagingObjectSelection", "security" : "MEDIUM", "group" : "diagnostics" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdff" }, "content" : "ImagingStudy", "security" : "MEDIUM", "group" : "diagnostics" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece00" }, "content" : "Immunization", "security" : "MEDIUM", "group" : "allergies" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece01" }, "content" : "ImmunizationRecommendation", "security" : "MEDIUM", "group" : "allergies" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece02" }, "content" : "ImplementationGuide", "security" : "MEDIUM", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece03" }, "content" : "List", "security" : "MEDIUM", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece04" }, "content" : "Location", "security" : "MEDIUM", "group" : "entities" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece05" }, "content" : "Media", "security" : "MEDIUM", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece06" }, "content" : "Medication", "security" : "MEDIUM", "group" : "medication" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece07" }, "content" : "MedicationAdministration", "security" : "MEDIUM", "group" : "medication" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece08" }, "content" : "MedicationDispense", "security" : "MEDIUM", "group" : "medication" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece09" }, "content" : "MedicationOrder", "security" : "MEDIUM", "group" : "medication" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece0a" }, "content" : "MedicationStatement", "security" : "MEDIUM", "group" : "medication" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece0b" }, "content" : "MessageHeader", "security" : "MEDIUM", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece0c" }, "content" : "NamingSystem", "security" : "MEDIUM", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece0d" }, "content" : "NutritionOrder", "security" : "MEDIUM", "group" : "care" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece0e" }, "content" : "Observation", "security" : "MEDIUM", "group" : "diagnostics" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece0f" }, "content" : "OperationDefinition", "security" : "MEDIUM", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece10" }, "content" : "OperationOutcome", "security" : "MEDIUM", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece11" }, "content" : "Order", "security" : "MEDIUM", "group" : "healthworkflow" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece12" }, "content" : "OrderResponse", "security" : "MEDIUM", "group" : "healthworkflow" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece13" }, "content" : "Organization", "security" : "MEDIUM", "group" : "entities" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece14" }, "content" : "Parameters", "security" : "MEDIUM", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece15" }, "content" : "Patient", "security" : "HIGH", "group" : "relatedpersons" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece16" }, "content" : "PaymentNotice", "security" : "HIGH", "group" : "billing" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece17" }, "content" : "PaymentReconciliation", "security" : "HIGH", "group" : "billing" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece18" }, "content" : "Person", "security" : "HIGH", "group" : "entities" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece19" }, "content" : "Practitioner", "security" : "HIGH", "group" : "entities" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece1a" }, "content" : "Procedure", "security" : "HIGH", "group" : "healthworkflow" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece1b" }, "content" : "ProcessRequest", "security" : "HIGH", "group" : "healthworkflow" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece1c" }, "content" : "ProcessResponse", "security" : "HIGH", "group" : "healthworkflow" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece1d" }, "content" : "ProcedureRequest", "security" : "HIGH", "group" : "care" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece1e" }, "content" : "Provenance", "security" : "HIGH", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece1f" }, "content" : "Questionnaire", "security" : "HIGH", "group" : "studies" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece20" }, "content" : "QuestionnaireResponse", "security" : "HIGH", "group" : "studies" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece21" }, "content" : "ReferralRequest", "security" : "HIGH", "group" : "care" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece22" }, "content" : "RelatedPerson", "security" : "HIGH", "group" : "relatedpersons" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece23" }, "content" : "RiskAssessment", "security" : "HIGH", "group" : "otherhealth" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece24" }, "content" : "Schedule", "security" : "MEDIUM", "group" : "calendar" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece25" }, "content" : "SearchParameter", "security" : "HIGH", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece26" }, "content" : "Slot", "security" : "MEDIUM", "group" : "calendar" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece27" }, "content" : "Specimen", "security" : "MEDIUM", "group" : "otherhealth" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece28" }, "content" : "StructureDefinition", "security" : "HIGH", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece29" }, "content" : "Subscription", "security" : "HIGH", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece2a" }, "content" : "Substance", "security" : "HIGH", "group" : "entities" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece2b" }, "content" : "SupplyRequest", "security" : "HIGH", "group" : "healthworkflow" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece2c" }, "content" : "SupplyDelivery", "security" : "HIGH", "group" : "healthworkflow" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece2d" }, "content" : "Substance", "security" : "MEDIUM", "group" : "otherhealth" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece2e" }, "content" : "TestScript", "security" : "MEDIUM", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece2f" }, "content" : "ValueSet", "security" : "MEDIUM", "group" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ece30" }, "content" : "VisionPrescription", "security" : "HIGH", "group" : "care" }

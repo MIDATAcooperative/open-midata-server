@@ -167,10 +167,10 @@ angular.module('fhir')
 	    $scope.saveAllModified = fhirModule.saveAllModified;
 	    
 	    $scope.load = function() {
-	    	midataServer.getRecords(authToken, { format : "fhir" }, ["_id", "name", "data"])
+	    	midataServer.getRecords(authToken, { format : "fhir" }, ["_id", "name", "created", "lastUpdated", "version", "data"])
 	    	.then(function(results) {
-	    		angular.forEach(results.data, function(rec) {	
-	    			fhirModule.addToPool(rec.data);
+	    		angular.forEach(results.data, function(rec) {		    			
+	    			fhirModule.addToPool(rec.data, rec);
 	    			//$scope.pool[rec._id.$oid] = rec.data;
 	    			rec.data.$$fhirUnchanged = true;
 	    		});

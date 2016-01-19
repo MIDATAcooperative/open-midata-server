@@ -12,4 +12,5 @@ lighttpd
 node
 node*/
 ssl-certificate/
-
+portal/node_modules
+portal/dest

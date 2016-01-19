@@ -64,7 +64,7 @@ class RecordEncryption {
 		SecretKey encKey = new SecretKeySpec(record.key, EncryptedAPS.KEY_ALGORITHM);
 		if (record.encrypted != null) {
 			try {
-		       record.meta = EncryptionUtils.decryptBSON(encKey, record.encrypted);		    		    
+		       record.meta = (BasicBSONObject) EncryptionUtils.decryptBSON(encKey, record.encrypted);		    		    
 			} catch (InternalServerException e) {
 				AccessLog.debug("Error decrypting record: id="+record._id.toString());
 				//throw e;

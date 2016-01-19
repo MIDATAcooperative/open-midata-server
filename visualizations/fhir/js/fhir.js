@@ -43,7 +43,15 @@ angular.module('fhir')
 	    	return fhirModule.makeLabel(name);
 	    };
 	    
-	    fhirModule.addToPool = function(newResource) {
+	    fhirModule.addToPool = function(newResource, origRecord) {
+	    	if (origRecord) {
+	    		if (!newResource.meta) {
+	    			newResource.meta = {};
+	    		}
+	    		newResource.meta.versionId = origRecord.version;
+	    	    newResource.meta.lastUpdated = origRecord.lastUpdated || origRecord.created;	    		
+	    	}
+	    	
 	    	fhirModule.pool[newResource.resourceType+"/"+newResource.id] = newResource;
 	    	if (newResource.resourceType != null) {
 	    		var p = fhirModule.poolByType[newResource.resourceType];
@@ -65,7 +73,7 @@ angular.module('fhir')
 	    
 	    fhirModule.processResource = function(res) {
 	    	if (!res.meta) res.meta = {};
-	    	res.meta.versionId = new Date().getTime();
+	    	//res.meta.versionId = new Date().getTime();
 	    	
 	    	if (res.resourceType != null) {
 		    	if (!res.text) {
@@ -460,7 +468,7 @@ angular.module('fhir')
 	    		 if (res.$$fhirIsNew) {
 	    		    midataServer.createRecord(fhirModule.authToken, fhirModule.makeLabel(res.resourceType), "fhir resource", res.resourceType, "fhir", res, res.id);
 	    		 } else {
-      			    midataServer.updateRecord(fhirModule.authToken, res.id, res);
+      			    midataServer.updateRecord(fhirModule.authToken, res.id, res.meta.versionId, res);
 	    		 }
 	    	 }  
 	       });	

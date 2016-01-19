@@ -25,11 +25,12 @@ midata.factory('midataServer', [ '$http', '$q', function($http, $q) {
 		return actionChain;
 	};
 	
-	service.updateRecord = function(authToken, id, data) {
+	service.updateRecord = function(authToken, id, version, data) {
 		// construct json
 		var data = {
 			"authToken": authToken,
 			"_id" : id,
+			"version" : version,
 			"data": angular.toJson(data)
 		};
 				

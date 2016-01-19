@@ -17,14 +17,12 @@
 { "_id" : { "$oid" : "55ae5a08f351efda91eadc8c" }, "name" : "diary", "label" : "Diary", "parent" : "other" }
 { "_id" : { "$oid" : "55ae5a08f351efda91eadc8d" }, "name" : "account", "label" : "External Accounts", "parent" : "other" }
 { "_id" : { "$oid" : "55b5fe1ca69243d780682795" }, "name" : "templates", "label" : "Templates", "parent" : "other" }
-{ "name" : "otherhealth", "label" : "Other Health-related", "parent" : "health" }
-{ "name" : "care", "label" : "Care", "parent" : "health" }
-{ "name" : "billing", "label" : "Billing", "parent" : "other" }
-{ "name" : "encounters", "label" : "Encounters", "parent" : "health" }
-{ "name" : "entities", "label" : "Entities", "parent" : "other" }
-{ "name" : "healthworkflow", "label" : "Workflow", "parent" : "health" }
-{ "name" : "healthdocuments", "label" : "Health Documents", "parent" : "health" }
-{ "name" : "relatedpersons", "label" : "Related Persons", "parent" : "other" }
-{ "name" : "diagnostics", "label" : "Family", "parent" : "other" }
-
-
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdca" }, "name" : "otherhealth", "label" : "Other Health-related", "parent" : "health" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdcb" }, "name" : "care", "label" : "Care", "parent" : "health" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdcc" }, "name" : "billing", "label" : "Billing", "parent" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdcd" }, "name" : "encounters", "label" : "Encounters", "parent" : "health" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdce" }, "name" : "entities", "label" : "Entities", "parent" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdcf" }, "name" : "healthworkflow", "label" : "Workflow", "parent" : "health" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdd0" }, "name" : "healthdocuments", "label" : "Health Documents", "parent" : "health" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdd1" }, "name" : "relatedpersons", "label" : "Related Persons", "parent" : "other" }
+{ "_id" : { "$oid" : "569915fc6281a61a232ecdd2" }, "name" : "diagnostics", "label" : "Family", "parent" : "other" }

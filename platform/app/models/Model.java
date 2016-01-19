@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import utils.db.DBLayer;
 import utils.db.DatabaseConversionException;
 import utils.db.DatabaseException;
+import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -21,7 +22,24 @@ public abstract class Model implements JsonSerializable {
 	/**
 	 * The unique _id field from the mongo record
 	 */
+	@NotMaterialized
 	public ObjectId _id;
+	
+	/**
+	 * getter for _id field
+	 * @return
+	 */
+	public Object get_id() {
+		return _id;
+	}
+	
+	/**
+	 * setter for _id field
+	 * @param _id value of _id field
+	 */
+	public void set_id(Object _id) {
+		_id = (ObjectId) _id;
+	}
 
 	@Override
 	public boolean equals(Object other) {
