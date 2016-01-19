@@ -113,7 +113,7 @@ public class GenomeDataConverter extends Controller {
 		
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "authToken", "id", "name", "description");
+		JsonValidation.validate(json, "authToken", "id", "name");
 		
 
 		// decrypt authToken

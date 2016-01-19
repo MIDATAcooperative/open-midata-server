@@ -59,6 +59,9 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 */
 	public String id;
 	
+	/**
+	 * version of this document
+	 */
 	public String version;
 	
 	/**
@@ -69,7 +72,7 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * The owner information is derived from information of the APS this record is stored in or 
 	 * from the owner of the stream this record is stored in.
 	 */
-	public ObjectId owner; // person the record is about
+	public ObjectId owner; 
 	
 	/**
 	 * firstname lastname of the owner of this record.

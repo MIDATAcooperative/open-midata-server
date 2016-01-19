@@ -10,10 +10,19 @@ import org.bson.types.BasicBSONList;
 
 import scala.NotImplementedError;
 
+/**
+ * Tests if a target object satisfies the mongo query passed to the constructor
+ *
+ */
 public class ObjectCondition implements Condition {
 
 	private List<AbstractMap.SimpleEntry<String[], Condition>> checks;
 	
+	/**
+	 * Constructor. 
+	 * @param restrictions Part of mongo query to be matched with target object
+	 */
+	@SuppressWarnings("unchecked")
 	public ObjectCondition(Map<String, Object> restrictions) {
 	   checks = new ArrayList<AbstractMap.SimpleEntry<String[],Condition>>();
 	   for (String accessKey : restrictions.keySet()) {
@@ -56,6 +65,12 @@ public class ObjectCondition implements Condition {
 		return true;
 	}
 	
+	/**
+	 * access field of provided object
+	 * @param obj object to access. May be null.
+	 * @param path Name of field to access
+	 * @return field of object or null if field does not exist on given object
+	 */
 	protected Object access(Object obj, String path) {
     	if (obj == null) return null;
     	if (obj instanceof BSONObject) {

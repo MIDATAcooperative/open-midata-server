@@ -24,6 +24,7 @@ public class RecordConversion {
 		record.name = (String) dbrecord.meta.get("name");				
 		record.created = (Date) dbrecord.meta.get("created");
 		record.description = (String) dbrecord.meta.get("description");
+		record.version = (String) dbrecord.meta.get("version");
 		record.format = (String) dbrecord.meta.get("format");						
 		record.content = (String) dbrecord.meta.get("content");
 		record.owner = dbrecord.owner;
@@ -59,6 +60,7 @@ public class RecordConversion {
 		meta.put("name", record.name);
 		meta.put("created", record.created);
 		meta.put("description", record.description);
+		meta.put("version", record.version);
 		meta.put("tags", record.tags);
 		meta.put("format", record.format);
 		meta.put("content", record.content);

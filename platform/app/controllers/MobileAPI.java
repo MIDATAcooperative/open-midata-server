@@ -92,6 +92,11 @@ public class MobileAPI extends Controller {
 		return ok(obj);
 	}
 	
+	/**
+	 * Authentication function for mobile apps
+	 * @return json with authToken
+	 * @throws AppException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall
 	public static Result authenticate() throws AppException {
@@ -218,7 +223,7 @@ public class MobileAPI extends Controller {
 				
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "authToken", "data", "name", "description", "format", "content");
+		JsonValidation.validate(json, "authToken", "data", "name", "format", "content");
 		
 		// decrypt authToken 
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(json.get("authToken").asText());

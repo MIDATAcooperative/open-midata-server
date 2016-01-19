@@ -6,6 +6,9 @@ import org.bson.types.ObjectId;
 
 import actions.APICall;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.model.dstu2.resource.Patient;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import play.libs.Json;
@@ -69,5 +72,8 @@ public class Debug extends Controller {
 		Object res = Scripting.instance.eval(userId);
 		return ok(res.toString());
 	}
+	
+	
+	
 	
 }

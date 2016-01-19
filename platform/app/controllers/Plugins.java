@@ -30,7 +30,6 @@ import play.libs.oauth.OAuth.ServiceInfo;
 import play.libs.ws.WS;
 import play.libs.ws.WSResponse;
 import play.mvc.BodyParser;
-import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.access.AccessLog;
@@ -76,20 +75,16 @@ public class Plugins extends APIController {
 		Plugin app = Plugin.getById(pluginId, fields);
 		if (app == null) throw new BadRequestException("error.unknownplugin", "Unknown Plugin");
 
-		return app;
-		
-		// Currently we do not check if installed because we have some "public" plugins 
-		/*
-		User user = User.getById(userId, Sets.create("role", "apps", "visualizations"));
-		if (user == null) throw new InternalServerException("error.internal", "Unknown User");
-		
-		if (user.apps != null && user.apps.contains(pluginId)) return app;
-		if (user.visualizations != null && user.visualizations.contains(pluginId)) return app;
-		
-		throw new AuthException("error", "User is not authorized to use plugin.");
-		*/    	
+		return app;				
     }
 	
+    /**
+     * retrieve information about plugins
+     * @return list of plugins
+     * @throws JsonValidationException
+     * @throws InternalServerException
+     * @throws AuthException
+     */
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
@@ -109,6 +104,12 @@ public class Plugins extends APIController {
 		return ok(JsonOutput.toJson(visualizations, "Plugin", fields));
 	}
 
+	/**
+	 * install a new plugin for the current user
+	 * @param visualizationIdString id of plugin to add to user account
+	 * @return status ok
+	 * @throws AppException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
@@ -166,6 +167,11 @@ public class Plugins extends APIController {
 		return ok();
 	}
 
+	/**
+	 * uninstall a plugin for the current user
+	 * @param visualizationIdString id of plugin to uninstall
+	 * @return
+	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Result uninstall(String visualizationIdString) {
@@ -183,6 +189,12 @@ public class Plugins extends APIController {
 		return ok();
 	}
 
+	/**
+	 * check if a plugin is installed
+	 * @param visualizationIdString id of plugin to check
+	 * @return boolean result
+	 * @throws InternalServerException
+	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Result isInstalled(String visualizationIdString) throws InternalServerException {
@@ -194,7 +206,12 @@ public class Plugins extends APIController {
 		return ok(Json.toJson(isInstalled));
 	}
 	
-	
+	/**
+	 * check if an import plugin is authorized to query its endpoint
+	 * @param spaceIdString id of space which uses plugin
+	 * @return boolean result
+	 * @throws AppException
+	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Promise<Result> isAuthorized(String spaceIdString) throws AppException {
@@ -210,7 +227,12 @@ public class Plugins extends APIController {
 	    }
 	}
 	
-
+    /**
+     * retrieve URL for plugin
+     * @param visualizationIdString id of plugin
+     * @return URL
+     * @throws InternalServerException
+     */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Result getUrl(String visualizationIdString) throws InternalServerException {
@@ -228,6 +250,7 @@ public class Plugins extends APIController {
      * retrieve URL to be used for an input form that may add data to the data set of a specific consent. Includes access token for this input form and user	
      * @param appIdString - ID of input form
      * @param consentIdString - ID of consent
+     * @throws AppException
      * @return URL
      */
 	@Security.Authenticated(AnyRoleSecured.class)
@@ -240,8 +263,7 @@ public class Plugins extends APIController {
 		Plugin app = Plugins.getPluginAndCheckIfInstalled(appId, userId, Sets.create("filename", "type", "url", "creator"));
 		
 		// create encrypted authToken
-		SpaceToken appToken = new SpaceToken(consentId, userId, null, appId);
-		String authToken = appToken.encrypt();
+		SpaceToken appToken = new SpaceToken(consentId, userId, null, appId);		
 
         boolean testing = session().get("role").equals(UserRole.DEVELOPER.toString()) && app.creator.equals(userId) && app.developmentServer != null && app.developmentServer.length()> 0;
 		

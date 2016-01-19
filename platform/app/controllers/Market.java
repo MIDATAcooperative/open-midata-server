@@ -22,7 +22,6 @@ import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import play.libs.Json;
 
 /**
  * functions for controlling the "market" of plugins

@@ -210,8 +210,7 @@ class QueryEngine {
     	if (record.encrypted == null) {
 			DBRecord r2 = DBRecord.getById(record._id, q.getFieldsFromDB());			
 			record.encrypted = r2.encrypted;
-			record.encryptedData = r2.encryptedData;
-			record.encryptedVersions = r2.encryptedVersions;						
+			record.encryptedData = r2.encryptedData;							
 		}
     }
     

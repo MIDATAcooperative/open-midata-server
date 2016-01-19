@@ -53,7 +53,7 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	 */
 	public String part;
 
-	public BSONObject meta;
+	public BasicBSONObject meta;
 		
 	/**
 	 * the encrypted meta data of this record
@@ -68,10 +68,7 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	 * The contents of this field is encrypted into encryptedData field and not directly stored in the database.
 	 */
 	public BSONObject data; 
-	
-	public Map<String, BSONObject> versions;
-	
-	public Map<String, byte[]> encryptedVersions;
+		
 	
 	/**
 	 * the encrypted "data" field of this record
@@ -133,16 +130,14 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	public DBRecord() { meta = new BasicBSONObject(); }			
 	
 	public void clearEncryptedFields() {
-		this.meta = null;		
-		this.versions = null;			
+		this.meta = null;					
 		this.data = null;
 	}
 	
 	public void clearSecrets() {
 		this.key = null;
 		this.encrypted = null;
-		this.encryptedData = null;
-		this.encryptedVersions = null;
+		this.encryptedData = null;		
 	}
 
 	public static boolean exists(Map<String, ? extends Object> properties) throws InternalServerException {

@@ -337,14 +337,14 @@ public class PluginsAPI extends Controller {
 				
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "authToken", "data", "name", "description", "format", "content");
+		JsonValidation.validate(json, "authToken", "data", "name", "format", "content");
 		
 		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(json.get("authToken").asText());
 				
 		if (authToken.recordId != null) return badRequest("This view is readonly.");
 																								
 		// save new record with additional metadata
-		if (!json.get("data").isTextual() || !json.get("name").isTextual() || !json.get("description").isTextual()) {
+		if (!json.get("data").isTextual() || !json.get("name").isTextual()) {
 			return badRequest("At least one request parameter is of the wrong type.");
 		}
 							
@@ -501,12 +501,13 @@ public class PluginsAPI extends Controller {
 				
 		Record record = new Record();
 		
-		record._id = JsonValidation.getObjectId(json, "_id");			
-		
+		record._id = JsonValidation.getObjectId(json, "_id");	
+		record.version = JsonValidation.getStringOrNull(json, "version");
+		 		
 		//record.app = authToken.pluginId;
 		//record.owner = authToken.ownerId;
 		record.creator = authToken.executorId;
-		record.created = DateTimeUtils.now();
+		record.lastUpdated = DateTimeUtils.now();		
 							
 		try {
 			record.data = (DBObject) JSON.parse(data);
@@ -590,7 +591,7 @@ public class PluginsAPI extends Controller {
 		// check meta data
 		MultipartFormData formData = request().body().asMultipartFormData();
 		Map<String, String[]> metaData = formData.asFormUrlEncoded();
-		if (!metaData.containsKey("authToken") || !metaData.containsKey("name") || !metaData.containsKey("description")) {
+		if (!metaData.containsKey("authToken") || !metaData.containsKey("name")) {
 			return badRequest("At least one request parameter is missing.");
 		}
 
@@ -621,7 +622,7 @@ public class PluginsAPI extends Controller {
 			record.creator = authToken.executorId;
 			record.created = DateTimeUtils.now();
 			record.name = metaData.get("name")[0];
-			record.description = metaData.get("description")[0];
+			record.description = metaData.containsKey("description") ? metaData.get("description")[0] : null;
 			String[] formats = metaData.get("format");
 			record.format = (formats != null && formats.length == 1) ? formats[0] : (contentType != null) ? contentType : "application/octet-stream";
 			String[] contents = metaData.get("contents");

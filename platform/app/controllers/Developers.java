@@ -25,9 +25,7 @@ import utils.auth.KeyManager;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
-import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation;
-import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -41,8 +39,7 @@ public class Developers extends APIController {
 	/**
 	 * register a new developer
 	 * @return status ok
-	 * @throws JsonValidationException
-	 * @throws InternalServerException
+	 * @throws AppException	
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
