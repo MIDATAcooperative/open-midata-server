@@ -15,6 +15,12 @@
 				<p class="col-sm-10">{{user.email}}</p>
 			</div>
 			
+			<div class="row" ng-show="isSelf">
+			  <div class="col-sm-12">
+			     <a class="btn btn-default" href="javascript:" ui-sref="^.changepassword">Change Password</a>
+			     <a class="btn btn-default" href="javascript:" ui-sref="^.changepassphrase">Change Passphrase</a>
+			  </div>
+			</div>
 			</loader>
 		</div>
 		</div>

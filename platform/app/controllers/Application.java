@@ -13,6 +13,7 @@ import models.ResearchUser;
 import models.User;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
+import models.enums.EMailStatus;
 import models.enums.Gender;
 import models.enums.ParticipationInterest;
 import models.enums.UserRole;
@@ -22,16 +23,21 @@ import org.bson.types.ObjectId;
 
 import play.Play;
 import play.Routes;
+import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
+import play.mvc.Security;
 import utils.DateTimeUtils;
 import utils.access.RecordManager;
+import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.auth.PasswordResetToken;
+import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.evolution.AccountPatches;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation;
@@ -40,9 +46,12 @@ import utils.mails.MailUtils;
 import views.html.apstest;
 import views.html.tester;
 import views.txt.mails.lostpwmail;
+import views.txt.mails.welcome;
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Member login, registration and password reset functions 
@@ -101,10 +110,10 @@ public class Application extends APIController {
 		// execute
 		User user = null;
 		switch (role) {
-		case "member" : user = Member.getByEmail(email, Sets.create("name","email","password"));break;
-		case "research" : user = ResearchUser.getByEmail(email, Sets.create("name","email","password"));break;
-		case "provider" : user = HPUser.getByEmail(email, Sets.create("name","email","password"));break;
-		case "developer" : user = Developer.getByEmail(email, Sets.create("name","email","password"));break;
+		case "member" : user = Member.getByEmail(email, Sets.create("firstname", "lastname","email","password"));break;
+		case "research" : user = ResearchUser.getByEmail(email, Sets.create("firstname", "lastname","email","password"));break;
+		case "provider" : user = HPUser.getByEmail(email, Sets.create("firstname", "lastname","email","password"));break;
+		case "developer" : user = Developer.getByEmail(email, Sets.create("firstname", "lastname","email","password"));break;
 		default: break;		
 		}
 		if (user != null) {							  
@@ -113,8 +122,8 @@ public class Application extends APIController {
 		  user.set("resettokenTs", System.currentTimeMillis());
 		  String encrypted = token.encrypt();
 			   
-		  String site = "https://" + Play.application().configuration().getString("platform.server");
-		  String url = site + "/setpw#?token=" + encrypted;
+		  String site = "https://" + Play.application().configuration().getString("portal.server");
+		  String url = site + "/#/portal/setpw?token=" + encrypted;
 			   
 		  MailUtils.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url));
 		}
@@ -123,6 +132,118 @@ public class Application extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * request sending the welcome mail
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */	
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result requestWelcomeMail() throws JsonValidationException, InternalServerException {
+		
+		// execute
+		ObjectId userId = new ObjectId(request().username());
+		User user = User.getById(userId, Sets.create("firstname", "lastname", "email", "emailStatus", "status", "role"));
+		
+		if (user != null && user.emailStatus.equals(EMailStatus.UNVALIDATED)) {							  
+		   sendWelcomeMail(user);
+		}
+			
+		// response
+		return ok();
+	}
+	
+	/**
+	 * Helper function to send welcome mail
+	 * @param user user record which sould receive the mail
+	 */
+	public static void sendWelcomeMail(User user) throws InternalServerException {
+	   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString());
+	   user.set("resettoken", token.token);
+	   user.set("resettokenTs", System.currentTimeMillis());
+	   String encrypted = token.encrypt();
+			   
+	   String site = "https://" + Play.application().configuration().getString("portal.server");
+	   String url1 = site + "/#/portal/confirm/" + encrypted;
+	   String url2 = site + "/#/portal/reject/" + encrypted;
+			   
+  	   MailUtils.sendTextMail(user.email, user.firstname+" "+user.lastname, "Welcome to MIDATA", welcome.render(site, url1, url2));
+	}
+	
+	/**
+	 * confirms a email account for a new MIDATA user
+	 * @return status ok
+	 * @throws AppException	 
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public static Result confirmAccountEmail() throws AppException {
+		// validate 
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "token" ,"mode");
+		EMailStatus wanted = JsonValidation.getEnum(json, "mode", EMailStatus.class);
+		
+		// check status
+		PasswordResetToken passwordResetToken = PasswordResetToken.decrypt(json.get("token").asText());
+		if (passwordResetToken == null) return badRequest("Missing or bad token.");
+		
+		// execute
+		ObjectId userId = passwordResetToken.userId;
+		String token = passwordResetToken.token;
+		String role = passwordResetToken.role;		
+		
+		User user = User.getById(userId, Sets.create("status", "role", "contractStatus", "emailStatus", "confirmationCode", "resettoken","password","resettokenTs"));
+		
+		if (user!=null && !user.emailStatus.equals(EMailStatus.VALIDATED)) {							
+		       if (user.resettoken != null 		    		    
+		    		   && user.resettoken.equals(token)
+		    		   && System.currentTimeMillis() - user.resettokenTs < 1000 * 60 * 15) {	   
+			   
+		           user.set("resettoken", null);	
+		           user.emailStatus = wanted;
+			       user.set("emailStatus", wanted);			       
+		       } else return badRequest("Token has already expired. Please request a new one.");
+		       
+		       return loginHelper(user);
+		} else if (user != null) {
+			return badRequest("E-Mail has already been verified.");
+		}
+					
+		// response
+		return ok();		
+	}
+	
+	/**
+	 * confirms a postal address for a new MIDATA user and activates the account
+	 * @return status ok
+	 * @throws AppException	
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result confirmAccountAddress() throws AppException {
+		// validate 
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "confirmationCode");
+				
+		ObjectId userId = new ObjectId(request().username());
+		String confirmationCode = JsonValidation.getString(json, "confirmationCode");
+		
+		User user = User.getById(userId, Sets.create("firstname", "lastname", "email", "confirmationCode", "emailStatus", "contractStatus", "status", "role"));
+		
+		if (user!=null && user.confirmationCode != null && user.emailStatus.equals(EMailStatus.VALIDATED) && user.contractStatus.equals(ContractStatus.SIGNED) && user.status.equals(UserStatus.NEW)) {							
+		       if (user.confirmationCode.equals(confirmationCode)) {
+		    	   user.status = UserStatus.ACTIVE;
+		           user.set("status", user.status);			           			       
+		       } else return badRequest("Bad confirmation code");
+		}
+					
+		// response
+		return loginHelper(user);		
+	}
+	
+
 
 	/**
 	 * set a new password for a user account by using a password reset token
@@ -171,6 +292,63 @@ public class Application extends APIController {
 	}
 	
 	/**
+	 * set a new password for a user account by providing the old password
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result changePassword() throws JsonValidationException, InternalServerException {
+		// validate 
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "oldPassword", "password");
+		ObjectId userId = new ObjectId(request().username());
+		
+		String oldPassword = JsonValidation.getString(json, "oldPassword");
+		String password = JsonValidation.getPassword(json, "password");
+		
+		User user = User.getById(userId, Sets.create("password"));
+		if (!Member.authenticationValid(oldPassword, user.password)) return badRequest("Bad password.");
+		
+		user.set("password", Member.encrypt(password));
+		       			
+		// response
+		return ok();		
+	}
+	
+	/**
+	 * sets or changes a passphrase for a user
+	 * @return
+	 * @throws AppException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result changePassphrase() throws AppException {
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "oldPassphrase", "passphrase");
+		ObjectId userId = new ObjectId(request().username());
+		
+		String oldPassphrase = JsonValidation.getStringOrNull(json, "oldPassphrase");
+		String passphrase = JsonValidation.getPassword(json, "passphrase");
+		
+		KeyManager.instance.unlock(userId, oldPassphrase);
+		
+		// This is a dummy query to check if provided passphrase works
+		try {
+		  RecordManager.instance.list(userId, userId, CMaps.map("format","zzzzzz"), Sets.create("name"));
+		} catch (InternalServerException e) { return badRequest("Old passphrase not correct."); }
+		
+		KeyManager.instance.changePassphrase(userId, passphrase);
+		
+		return ok();
+	}
+	
+	
+	
+	/**
 	 * login function for MIDATA members
 	 * @return status ok
 	 * @throws AppException
@@ -185,19 +363,79 @@ public class Application extends APIController {
 		String password = JsonValidation.getString(json, "password");
 		
 		// check status
-		Member user = Member.getByEmail(email , Sets.create("password", "status", "accountVersion"));
+		Member user = Member.getByEmail(email , Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "role"));
 		if (user == null) return badRequest("Invalid user or password.");
 		if (!Member.authenticationValid(password, user.password)) {
 			return badRequest("Invalid user or password.");
 		}
+			 
+		return loginHelper(user);
+	
+	}
+	
+	/**
+	 * Helper function for all login / registration type functions.
+	 * Returns correct response to login request
+	 * @param user the user to be logged in. May have any role.
+	 * @return
+	 * @throws BadRequestException
+	 */
+	public static Result loginHelper(User user) throws BadRequestException, InternalServerException {
 		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.userblocked", "User is not allowed to log in.");
-			    	    	
-		// execute
-		session().clear();
-		session("id", user._id.toString());
-		session("role", UserRole.MEMBER.toString());
-		KeyManager.instance.unlock(user._id, "12345");
 		
+		session().clear();						
+		session("id", user._id.toString());
+		session("role", user.role.toString());
+		
+		if (user instanceof HPUser) {
+		  session("org", ((HPUser) user).provider.toString());
+		} else if (user instanceof ResearchUser) {
+		  session("org", ((ResearchUser) user).organization.toString());
+		}
+		
+		ObjectNode obj = Json.newObject();
+		
+		if (!user.status.equals(UserStatus.ACTIVE) && !Play.application().configuration().getBoolean("demoserver", false)) {
+		  obj.put("status", user.status.toString());
+		  obj.put("contractStatus", user.contractStatus.toString());
+		  obj.put("emailStatus", user.emailStatus.toString());
+		  obj.put("confirmationCode", user.confirmationCode == null);
+		} else {						
+		  int keytype = KeyManager.instance.unlock(user._id, null);		
+		  if (keytype == 0) AccountPatches.check(user);
+				
+		  obj.put("keyType", keytype);
+		  obj.put("role", user.role.toString().toLowerCase());
+		}
+	
+		return ok(obj);
+	}
+	
+	/**
+	 * provide passphrase
+	 * @return status ok
+	 * @throws AppException
+	 */
+	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result providePassphrase() throws AppException {
+		// validate 
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "passphrase");
+		ObjectId userId = new ObjectId(request().username());
+		
+		String passphrase = JsonValidation.getString(json, "passphrase");
+		
+		KeyManager.instance.unlock(userId, passphrase);
+		
+		try {
+		  RecordManager.instance.list(userId, userId, CMaps.map("format","zzzzzzz"), Sets.create("name"));
+		} catch (InternalServerException e) {
+		  return badRequest("Bad Passphrase");
+		}
+					
+		User user = User.getById(userId , Sets.create("status", "accountVersion"));
 		AccountPatches.check(user);
 		
 		// response
@@ -253,7 +491,8 @@ public class Application extends APIController {
 		user.registeredAt = new Date();		
 		
 		user.status = UserStatus.NEW;		
-		user.contractStatus = ContractStatus.NEW;		
+		user.contractStatus = ContractStatus.NEW;	
+		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		user.partInterest = ParticipationInterest.UNSET;
 							
@@ -278,17 +517,14 @@ public class Application extends APIController {
 						
 		Member.add(user);
 		
-		KeyManager.instance.unlock(user._id, "12345");
+		KeyManager.instance.unlock(user._id, null);
 		
 		user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
 		Member.set(user._id, "myaps", user.myaps);
 		
-		session().clear();
-		session("id", user._id.toString());
-		session("role",UserRole.MEMBER.toString());
+		sendWelcomeMail(user);
 		
-		// reponse
-		return ok();
+		return loginHelper(user);		
 	}
 
 	/**
@@ -297,6 +533,7 @@ public class Application extends APIController {
 	 */
 	@APICall
 	public static Result logout() {
+		
 		// execute
 		session().clear();
 		
@@ -319,6 +556,13 @@ public class Application extends APIController {
 				controllers.routes.javascript.Application.register(),
 				controllers.routes.javascript.Application.requestPasswordResetToken(),
 				controllers.routes.javascript.Application.setPasswordWithToken(),
+				controllers.routes.javascript.Application.changePassword(),
+				controllers.routes.javascript.Application.changePassphrase(),
+				controllers.routes.javascript.Application.providePassphrase(),
+				controllers.routes.javascript.Application.confirmAccountEmail(),
+				controllers.routes.javascript.Application.confirmAccountAddress(),
+				controllers.routes.javascript.Application.requestWelcomeMail(),
+				
 				// Apps										
 				controllers.routes.javascript.Plugins.getUrlForConsent(),
 				controllers.routes.javascript.Plugins.requestAccessTokenOAuth2(),

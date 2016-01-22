@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('UserCtrl', ['$scope', '$state', 'users', 'status', function($scope, $state, users, status) {
+.controller('UserCtrl', ['$scope', '$state', 'users', 'status', 'session', function($scope, $state, users, status, session) {
 	// init
 	$scope.status = new status(true);
 	$scope.user = {};
@@ -10,6 +10,11 @@ angular.module('portal')
 	$scope.status.doBusy(users.getMembers({"_id": {"$oid": userId}}, ["name", "email"]))
 	.then(function(results) {
 		$scope.user = results.data[0];
+	});
+	
+	session.currentUser.then(function(myUserId) { 
+		$scope.isSelf = myUserId.$oid == userId;
+		console.log(myUserId);
 	});
 	
 }]);

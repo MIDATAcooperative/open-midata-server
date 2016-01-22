@@ -1,0 +1,32 @@
+
+	<div class="container" ng-app="lostpw" ng-controller="PassphraseCtrl" ng-cloak>
+		<div class="row">
+			
+			<div class="col-sm-12">
+				<div class="panel-container" style="max-width:600px; padding-top:120px; margin:0 auto;">
+					<div class="panel panel-primary">
+		            	<div class="panel-heading">
+		              		<h3 class="panel-title">Enter Passphrase</h3>
+		            	</div>
+		            	<div class="panel-body">
+			            	<div class="alert alert-danger" ng-show="error">
+								<p>{{error}}</p>
+							</div>
+							
+							<p>Your account is protected with a passphrase.</p>
+							<form name="form" ng-submit="submit()" role="form">
+							   <input type="text" style="display: none" id="fakeUsername" name="fakeUsername" value="" />
+                               <input type="password" style="display: none" id="fakePassword" name="fakePassword" value="" />
+							
+								<input type="password" class="form-control" placeholder="Passphrase" ng-model="passphrase.passphrase" style="margin-bottom:5px;" autofocus>
+								<button type="submit" class="btn btn-primary btn-block">Continue</button>
+							</form>
+							<div class="extraspace"></div>
+							<p>If you lost your passphrase contact support@midata.coop</p>
+		            	</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+	</div>

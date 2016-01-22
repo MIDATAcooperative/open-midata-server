@@ -1,0 +1,34 @@
+<div ng-controller="MemberAddressCtrl">
+
+	<div class="panel panel-primary">
+		<div class="panel-heading">Member Address</div>
+		<div class="body">		    		           
+            <loader busy="status.isBusy !== false">              
+              <address>
+              {{ member.firstname }} {{ member.lastname }}<br>            
+			  {{ member.address1 }}<br>
+			  {{ member.address2 }}<br>
+			  {{ member.zip }} {{ member.city }}<br>
+			  {{ member.country }}<br><br>
+			  Email: {{ member.email }}<br>
+			  Phone: {{ member.phone }}
+			  </address>
+			  <table class="table table-striped table-bordered">
+			  <tr>
+			  <td>MIDATA-ID</td><td>{{ member.midataID }}</td>
+			  </tr><tr>
+			  <td>Role</td><td>{{ member.role }}</td>
+			  </tr><tr>
+			  <td>Status:</td><td><select ng-change="changeUser(member);" ng-model="member.status" class="form-control" ng-options="status for status in stati"></select></td>
+			  </tr><tr>
+			  <td>Contract Status:</td><td><select ng-change="changeUser(member);" ng-model="member.contractStatus" class="form-control" ng-options="status for status in contractStati"></select></td>
+			  </tr><tr>
+			  <td>EMail Status:</td><td>{{ member.emailStatus }}</td>
+			  </tr><tr>
+			  <td>Confirmation Code:</td><td><b>{{ member.confirmationCode }}</b></td></tr>
+			  </table>
+			  <button ui-sref="^.members" class="btn btn-default">Back</button>
+			</loader>
+		</div>
+	</div>
+</div>

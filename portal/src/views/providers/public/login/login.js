@@ -17,9 +17,16 @@ angular.module('portal')
 		
 		// send the request
 		var data = {"email": $scope.login.email, "password": $scope.login.password};
-		server.post(jsRoutes.controllers.providers.Providers.login().url, JSON.stringify(data)).
-			success(function(url) { $state.go('provider.patientsearch'); }).
-			error(function(err) { $scope.error = err; });
+		server.post(jsRoutes.controllers.providers.Providers.login().url, JSON.stringify(data))
+		.then(function(result) {
+				if (result.data.status) {
+					  $state.go("public.postregister", { progress : result.data }, { location : false });			
+				} else if (result.data.keyType == 1) {
+					  $state.go('public_provider.passphrase');
+					} else {
+					  $state.go('provider.patientsearch');
+					}
+				}).catch(function(err) { $scope.error = err; });
 	};
 	
 }]);

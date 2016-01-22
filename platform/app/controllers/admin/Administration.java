@@ -1,6 +1,7 @@
 package controllers.admin;
 
 import models.User;
+import models.enums.ContractStatus;
 import models.enums.UserStatus;
 
 import org.bson.types.ObjectId;
@@ -8,6 +9,7 @@ import org.bson.types.ObjectId;
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 
 import controllers.APIController;
 
@@ -46,11 +48,16 @@ public class Administration extends APIController {
 		ObjectId userId = JsonValidation.getObjectId(json, "user");
 		UserStatus status = JsonValidation.getEnum(json, "status", UserStatus.class);
 		
-		User user = User.getById(userId, Sets.create("status"));
+		User user = User.getById(userId, Sets.create("status", "contractStatus"));
 		if (user == null) return badRequest("Unknown user");
 		
 		user.status = status;
 		User.set(user._id, "status", user.status);
+		
+		if (json.has("contractStatus")) {
+			user.contractStatus = JsonValidation.getEnum(json, "contractStatus", ContractStatus.class);			
+			User.set(user._id, "contractStatus", user.contractStatus);
+		}
 		
 		return ok();
 	}

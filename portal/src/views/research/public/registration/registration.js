@@ -21,7 +21,7 @@ angular.module('portal')
 		var data = $scope.registration;		
 		
 		$scope.status.doAction("submit", server.post(jsRoutes.controllers.research.Researchers.register().url, JSON.stringify(data)))
-		.then(function() { $state.go('research.studies'); });
+		.then(function(data) { $state.go("public.postregister", { progress : data.data }, { location : false }); });
 	};
 	
 }]);

@@ -48,7 +48,7 @@ angular.module('portal')
 			var consent = $scope.backwards[0];
 			addDataConsent(consent);
 		} else {
-			circles.createNew({ type : "HCRELATED", name : $scope.member.firstname+" "+$scope.member.surname })
+			circles.createNew({ type : "HCRELATED", name : $scope.member.firstname+" "+$scope.member.lastname })
 			.then(function(data) {
 				circles.addUsers(data.data._id.$oid, [ { "$oid" : $scope.memberid } ])
 				.then(function(xdata) {

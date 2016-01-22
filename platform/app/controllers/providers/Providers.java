@@ -22,6 +22,7 @@ import models.MemberKey;
 import models.Space;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
+import models.enums.EMailStatus;
 import models.enums.Gender;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
@@ -33,6 +34,7 @@ import utils.auth.ProviderSecured;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.evolution.AccountPatches;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -41,6 +43,7 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
 import controllers.APIController;
+import controllers.Application;
 import controllers.routes;
 import actions.APICall; 
 import play.libs.Json;
@@ -99,7 +102,8 @@ public class Providers extends APIController {
 		user.registeredAt = new Date();		
 		
 		user.status = UserStatus.NEW;		
-		user.contractStatus = ContractStatus.NEW;		
+		user.contractStatus = ContractStatus.NEW;	
+		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		
 		user.apps = new HashSet<ObjectId>();
@@ -113,16 +117,13 @@ public class Providers extends APIController {
 		user.provider = provider._id;
 		HPUser.add(user);
 		
-		KeyManager.instance.unlock(user._id, "12345");
+		KeyManager.instance.unlock(user._id, null);
 		
 		RecordManager.instance.createPrivateAPS(user._id, user._id);		
 		
-		session().clear();
-		session("id", user._id.toString());
-		session("role", UserRole.PROVIDER.toString());
-		session("org", provider._id.toString());
+		Application.sendWelcomeMail(user);
 		
-		return ok();
+		return Application.loginHelper(user);		
 	}
 	
 	/**
@@ -140,21 +141,15 @@ public class Providers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		HPUser user = HPUser.getByEmail(email, Sets.create("email","password","provider","status"));
+		HPUser user = HPUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "provider", "role"));
 		
 		if (user == null) return badRequest("Invalid user or password.");
 		if (!HPUser.authenticationValid(password, user.password)) {
 			return badRequest("Invalid user or password.");
 		}
 		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.userblocked", "User is not allowed to log in.");
-				
-		KeyManager.instance.unlock(user._id, "12345");
-		// user authenticated
-		session().clear();
-		session("id", user._id.toString());
-		session("role", UserRole.PROVIDER.toString());
-		session("org", user.provider.toString());
-		return ok();
+						
+		return Application.loginHelper(user);					
 	}
 	
 	/**

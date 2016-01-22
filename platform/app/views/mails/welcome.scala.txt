@@ -1,0 +1,12 @@
+@(website: String)(confirmlink: String, rejectlink: String)
+Welcome to MIDATA.
+
+You have just registered to @website.
+
+click on the link below to confirm your email address.
+
+@confirmlink
+
+If you did not register to MIDATA, click here:
+
+@rejectlink

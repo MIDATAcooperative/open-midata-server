@@ -10,10 +10,12 @@ import java.util.Set;
 
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
+import models.enums.EMailStatus;
 import models.enums.Gender;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 
+import org.bson.BSONObject;
 import org.bson.types.ObjectId;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
@@ -103,7 +105,12 @@ public class User extends Model implements Comparable<User> {
 	/**
 	 * Status of contract of user with MIDATA
 	 */
-    public ContractStatus contractStatus; //enum: new, printed, signed	1	-
+    public ContractStatus contractStatus; //enum: new, printed, signed	1	
+    
+    /**
+     * Status of email validation
+     */
+    public EMailStatus emailStatus;
     
     /**
      * Code needed to confirm account. Currently not used
@@ -159,6 +166,11 @@ public class User extends Model implements Comparable<User> {
 	 * Mobile phone number of user
 	 */
 	public String mobile;
+	
+	/**
+	 * FHIR: Person
+	 */
+	public BSONObject person;
 	
 	/**
 	 * Security level of user account

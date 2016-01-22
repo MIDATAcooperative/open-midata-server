@@ -21,7 +21,7 @@
 				<li ui-sref-active="active"><a ui-sref="research.records">Data</a></li>			
 			</ul>
 			<ul class="nav navbar-nav navbar-right" ng-cloak>
-				<li><a>{{user.name}}</a></li>
+				<li><a ui-sref=".user({ userId : user._id.$oid})">{{user.name}}</a></li>
 				<li><a ng-click="logout()" href="javascript:">
 					<span class="glyphicon glyphicon-off"></span> Sign out
 				</a></li>

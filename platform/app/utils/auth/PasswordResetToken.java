@@ -47,7 +47,7 @@ public class PasswordResetToken {
 	}
 
 	public String encrypt() {
-		Map<String, Object> map = CMaps.map("userId", userId.toString()).map("token", token);
+		Map<String, Object> map = CMaps.map("userId", userId.toString()).map("token", token).map("role", role);
 		String json = Json.stringify(Json.toJson(map));
 		return Crypto.encryptAES(json);
 	}

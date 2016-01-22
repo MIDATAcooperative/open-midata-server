@@ -17,7 +17,15 @@ angular.module('portal')
 		// send the request
 		var data = {"email": $scope.login.email, "password": $scope.login.password};
 		$scope.status.doAction("login", server.post(jsRoutes.controllers.Application.authenticate().url, JSON.stringify(data))).
-		then(function() { $state.go('member.overview'); }).
+		then(function(result) {
+			if (result.data.status) {
+			  $state.go("public.postregister", { progress : result.data }, { location : false });	
+			} else if (result.data.keyType == 1) {
+			  $state.go('public.passphrase');
+			} else {
+			  $state.go('member.overview');
+			}
+		}).
 		catch(function(err) { $scope.error = err.data; });
 	};
 }]);

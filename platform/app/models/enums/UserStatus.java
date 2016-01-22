@@ -9,7 +9,7 @@ public enum UserStatus {
    * This is a new user account. It is not fully usable yet.
    */
   NEW,
-  
+    
   /**
    * This user account has been validated and may be used.
    */
@@ -21,7 +21,7 @@ public enum UserStatus {
   BLOCKED,
   
   /**
-   * THis user account has been deleted.
+   * This user account has been deleted.
    */
   DELETED
 }

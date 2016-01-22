@@ -25,12 +25,15 @@ angular.module('services')
 		this.doAction = function(action, call) {
 			var me = this;
 		   	me.startAction(action);
-		   	return call.then(function(result) { me.end();return result; }, function(err) { 		   		
+		   	return call.then(function(result) { me.end();return result; }, function(err) { 		 
+		   		console.log(err);
 		   		if (err.data && err.data.field && err.data.type && me.scope && me.scope.myform) {
+		   			console.log("QUAL");
 		   			me.scope.error = err.data;
 		   			me.scope.myform[err.data.field].$setValidity(err.data.type, false);
 		   			me.fail(err, true);
 		   		} else {
+		   			if (me.scope) me.scope.error = err.data;
 		   			me.fail(err);
 		   		}
 		   		return $q.reject(err); 

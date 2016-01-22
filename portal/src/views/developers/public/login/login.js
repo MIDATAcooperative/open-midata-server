@@ -18,11 +18,19 @@ angular.module('portal')
 		var data = {"email": $scope.login.email, "password": $scope.login.password};
 		$scope.status.doAction("login", server.post(jsRoutes.controllers.Developers.login().url, JSON.stringify(data))).
 		then(function(result) {
-			if (result.data == "admin") {
-			  $state.go('admin.members');
+			if (result.data.status) {
+				  $state.go("public.postregister", { progress : result.data }, { location : false });			
+			} else if (result.data.role == "admin") {
+				if (result.data.keyType == 1) {
+					$state.go('public_developer.passphrase_admin');
+				} else {
+					$state.go('admin.members');	
+				}
+			} else if (result.data.keyType == 1) {
+				$state.go('public_developer.passphrase');
 			} else {
-			  $state.go('developer.yourapps');
-			}
+   			    $state.go('developer.yourapps');	
+			} 
 		}).
 		catch(function(err) { $scope.error = err.data; });
 	};

@@ -20,5 +20,9 @@ angular.module('portal')
 	      url: '/lostpw',
 	      templateUrl: 'views/shared/public/lostpw/lostpw.html',
 		  data : { role : "developer" }
+	    })
+	    .state('public.setpw', {
+	      url: '/setpw',
+	      templateUrl: 'views/shared/public/lostpw/setpw.html'
 	    });
 });

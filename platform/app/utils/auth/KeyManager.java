@@ -51,6 +51,17 @@ public class KeyManager {
 	 */
 	public final static String CIPHER_ALGORITHM = "RSA/ECB/PKCS1Padding";
 	
+	/**
+	 * private key is not protected
+	 */
+	public final static int KEYPROTECTION_NONE = 0;
+	
+	/**
+	 * private key is protected by passphrase
+	 */
+	public final static int KEYPROTECTION_PASSPHRASE = 1;
+		
+	
 	private Map<String, byte[]> pks = new HashMap<String, byte[]>();	
 	
 	/**
@@ -194,9 +205,10 @@ public class KeyManager {
 		   keyinfo._id = target;
 		   if (passphrase == null) {
 		     keyinfo.privateKey = priv.getEncoded();
+		     keyinfo.type = KEYPROTECTION_NONE;
 		   } else {
 			 keyinfo.privateKey = EncryptionUtils.applyKey(priv.getEncoded(), passphrase); 
-			 keyinfo.type = 1;
+			 keyinfo.type = KEYPROTECTION_PASSPHRASE;
 		   }
 		   KeyInfo.add(keyinfo);
 		   
@@ -207,6 +219,24 @@ public class KeyManager {
 	}
 	
 	/**
+	 * Sets a new passphrase for a private key
+	 * @param target id of key to be changed
+	 * @param newPassphrase new passphrase to be applied
+	 * @throws InternalServerException
+	 * @throws AuthException
+	 */
+	public void changePassphrase(ObjectId target, String newPassphrase) throws InternalServerException, AuthException {
+		byte[] oldKey = pks.get(target.toString());
+		if (oldKey == null) throw new AuthException("error.auth.relogin", "Authorization Failure");		
+		KeyInfo keyinfo = KeyInfo.getById(target);
+		if (keyinfo == null) throw new InternalServerException("error.internal.cryptography", "Private key info not found.");
+		
+		keyinfo.privateKey = EncryptionUtils.applyKey(oldKey, newPassphrase);
+		keyinfo.type = KEYPROTECTION_PASSPHRASE;
+		KeyInfo.update(keyinfo);
+	}
+	
+	/**
 	 * Unlock a user or app instance account
 	 * 
 	 * The account stays unlocked until lock is called for the account
@@ -214,13 +244,22 @@ public class KeyManager {
 	 * @param passphrase the passphrase for the private key or null if no passphrase has been applied 
 	 * @throws InternalServerException
 	 */
-	public void unlock(ObjectId target, String passphrase) throws InternalServerException {
+	public int unlock(ObjectId target, String passphrase) throws InternalServerException {
 		KeyInfo inf = KeyInfo.getById(target);
-		if (inf == null) pks.put(target.toString(), null);
+		if (inf == null) {
+			pks.put(target.toString(), null);
+			return -1;
+		}
 		else {
-			if (inf.type == 1) {
-				pks.put(target.toString(), EncryptionUtils.applyKey(inf.privateKey, passphrase));
-			} else pks.put(target.toString(), inf.privateKey);
+			if (inf.type == KEYPROTECTION_PASSPHRASE) {
+				if (passphrase != null) {
+ 				   pks.put(target.toString(), EncryptionUtils.applyKey(inf.privateKey, passphrase));
+				}
+				return KEYPROTECTION_PASSPHRASE;
+			} else {
+				pks.put(target.toString(), inf.privateKey);
+				return KEYPROTECTION_NONE;
+			}
 		}
 	}
 	
@@ -233,6 +272,16 @@ public class KeyManager {
 	public void lock(ObjectId target) throws InternalServerException {
 		pks.remove(target.toString());
 	}
-	
+
+	/**
+	 * Retrieves type of key protection applied
+	 * @param target id of key
+	 * @return type of key protection (0=none, 1=passphrase)
+	 * @throws InternalServerException
+	 */
+	public int getKeyType(ObjectId target) throws InternalServerException {
+		KeyInfo inf = KeyInfo.getById(target);
+		return inf.type;
+	}
 	
 }

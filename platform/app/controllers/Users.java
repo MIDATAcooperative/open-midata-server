@@ -91,7 +91,11 @@ public class Users extends APIController {
 		
 		if (postcheck) {
 			for (Member mem : users) {
-				Rights.chk("Users.get"+mem.getRole().toString(), getRole(), properties, fields);
+				if (Rights.existsAction("Users.get"+mem.getRole().toString(), getRole())) {
+				  Rights.chk("Users.get"+mem.getRole().toString(), getRole(), properties, fields);
+				}  else {
+				  Rights.chk("Users.get", getRole(), properties, fields);
+				}
 			}
 		}
 		

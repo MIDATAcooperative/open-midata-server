@@ -36,4 +36,8 @@ public class KeyInfo extends Model {
 	public static void add(KeyInfo keyinfo) throws InternalServerException {
 		Model.insert(collection, keyinfo);
 	}
+	
+	public static void update(KeyInfo keyinfo) throws InternalServerException {
+		Model.upsert(collection, keyinfo);
+	}
 }

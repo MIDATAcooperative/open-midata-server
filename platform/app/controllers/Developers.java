@@ -11,24 +11,28 @@ import models.Developer;
 
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
+import models.enums.EMailStatus;
 import models.enums.Gender;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 
 import org.bson.types.ObjectId;
 
+import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.collections.Sets;
+import utils.evolution.AccountPatches;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.json.JsonValidation;
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * login and registration for developers
@@ -70,6 +74,7 @@ public class Developers extends APIController {
 		
 		user.status = UserStatus.NEW;		
 		user.contractStatus = ContractStatus.NEW;		
+		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		
 		user.apps = new HashSet<ObjectId>();
@@ -80,15 +85,13 @@ public class Developers extends APIController {
 		user.security = AccountSecurityLevel.KEY;
 				
 		Developer.add(user);
+		
+		KeyManager.instance.unlock(user._id, null);
 		RecordManager.instance.createPrivateAPS(user._id, user._id);
 		
-		KeyManager.instance.unlock(user._id, "12345");
+		Application.sendWelcomeMail(user);
 		
-		session().clear();
-		session("id", user._id.toString());
-		session("role", UserRole.DEVELOPER.toString());		
-		
-		return ok();
+		return Application.loginHelper(user);		
 	}
 	
 	/**
@@ -106,20 +109,29 @@ public class Developers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		Developer user = Developer.getByEmail(email, Sets.create("email","password","provider","status"));
+		Developer user = Developer.getByEmail(email, Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "role"));
 		
 		if (user == null) {
-			Admin adminuser = Admin.getByEmail(email, Sets.create("email","password"));
+			Admin adminuser = Admin.getByEmail(email, Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "role"));
 			if (adminuser != null) {
 				if (!Admin.authenticationValid(password, adminuser.password)) {
 					return badRequest("Invalid user or password.");
 				}
-				
-				KeyManager.instance.unlock(adminuser._id, "12345");
+						
+				return Application.loginHelper(adminuser);
+				/*
 				session().clear();
 				session("id", adminuser._id.toString());
-				session("role", UserRole.ADMIN.toString());		
-				return ok("admin");
+				session("role", UserRole.ADMIN.toString());
+				
+				int keytype = KeyManager.instance.unlock(adminuser._id, null);
+				
+				ObjectNode obj = Json.newObject();
+				obj.put("keyType", keytype);
+				obj.put("role", "admin");
+				// response
+				return ok(obj);
+					*/			
 			}
 		}
 		
@@ -128,15 +140,9 @@ public class Developers extends APIController {
 			return badRequest("Invalid user or password.");
 		}
 		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.userblocked", "User is not allowed to log in.");
-							
-		KeyManager.instance.unlock(user._id, "12345");
-		
-		if (AccessPermissionSet.getById(user._id) == null) RecordManager.instance.createPrivateAPS(user._id, user._id);
-				
-		// user authenticated
-		session().clear();
-		session("id", user._id.toString());
-		session("role", UserRole.DEVELOPER.toString());		
-		return ok();
+						
+		return Application.loginHelper(user);
+						
+		// if (keytype == 0 && AccessPermissionSet.getById(user._id) == null) RecordManager.instance.createPrivateAPS(user._id, user._id);		
 	}
 }

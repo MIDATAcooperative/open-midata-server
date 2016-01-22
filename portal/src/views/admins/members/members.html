@@ -4,11 +4,14 @@
 		<div class="panel-heading">Member List</div>
 		<div class="body">
 		    <form class="css-form form-horizontal">
-		      <formrow myid="role" label="Role">
-		        <select class="form-control" id="role" ng-change="reload();" ng-model="criteria.role" ng-options="role for role in roles"></select>
+		      <formrow myid="search" label="Search">
+		        <select class="form-control" id="search" ng-change="reload(search);" ng-model="search" ng-options="search as search.name for search in searches"></select>
 		      </formrow>
-		      <formrow myid="status" label="Status">
-		        <select class="form-control" id="status" ng-change="reload();" ng-model="criteria.status" ng-options="status for status in stati"></select>
+		      <formrow myid="role" label="Role" ng-show="search.changeable">
+		        <select  class="form-control" id="role" ng-change="reload();" ng-model="search.criteria.role" ng-options="role for role in roles"></select>
+		      </formrow>
+		      <formrow myid="status" label="Status" ng-show="search.changeable">
+		        <select  class="form-control" id="status" ng-change="reload();" ng-model="search.criteria.status" ng-options="status for status in stati"></select>
 		      </formrow>
 		    </form>
 		            
@@ -27,7 +30,7 @@
 				</tr>
 								
 				<tr ng-repeat="member in members">
-					<td><a href="javascript:">{{ member.midataID }}</a></td>
+					<td><a href="javascript:" ui-sref="^.address({ userId : member._id.$oid })">{{ member.midataID || 'none' }}</a></td>
 					<td>{{ member.firstname }}</td>
 					<td>{{ member.lastname }}</td>
 					<td>{{ member.email }}</td>

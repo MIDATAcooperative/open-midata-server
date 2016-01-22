@@ -12,13 +12,16 @@ import models.Research;
 import models.ResearchUser;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
+import models.enums.EMailStatus;
 import models.enums.Gender;
 import models.enums.UserRole;
 import models.enums.UserStatus;
  
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import controllers.APIController;
+import controllers.Application;
 import controllers.routes;
 
 import actions.APICall; 
@@ -32,6 +35,7 @@ import utils.auth.KeyManager;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
+import utils.evolution.AccountPatches;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -87,7 +91,8 @@ public class Researchers extends APIController {
 		user.registeredAt = new Date();		
 		
 		user.status = UserStatus.NEW;		
-		user.contractStatus = ContractStatus.NEW;		
+		user.contractStatus = ContractStatus.NEW;
+		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
@@ -100,16 +105,13 @@ public class Researchers extends APIController {
 		user.organization = research._id;
 		ResearchUser.add(user);
 		
-		KeyManager.instance.unlock(user._id, "12345");
+		KeyManager.instance.unlock(user._id, null);
 		
 		RecordManager.instance.createPrivateAPS(user._id, user._id);		
 		
-		session().clear();
-		session("id", user._id.toString());
-		session("role", UserRole.RESEARCH.toString());
-		session("org", research._id.toString());
+		Application.sendWelcomeMail(user);
 		
-		return ok();
+		return Application.loginHelper(user);		
 	}
 	
 	/**
@@ -127,7 +129,7 @@ public class Researchers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		ResearchUser user = ResearchUser.getByEmail(email, Sets.create("email","password","organization","status"));
+		ResearchUser user = ResearchUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "organization", "role"));
 		
 		if (user == null) return badRequest("Invalid user or password.");
 		if (!ResearchUser.authenticationValid(password, user.password)) {
@@ -135,14 +137,8 @@ public class Researchers extends APIController {
 		}
 		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.userblocked", "User is not allowed to log in.");
 		
-		// user authenticated
-		KeyManager.instance.unlock(user._id, "12345");
-		
-		session().clear();
-		session("id", user._id.toString());
-		session("role", UserRole.RESEARCH.toString());
-		session("org", user.organization.toString());
-		return ok();
+		return Application.loginHelper(user); 
+				
 	}
 		
 }

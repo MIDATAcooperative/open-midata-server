@@ -27,7 +27,7 @@ angular.module('portal')
 		// send the request
 		var data = $scope.registration;		
 		$scope.status.doAction("register", server.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
-		then(function() { $state.go("member.overview"); });
+		then(function(data) { $state.go("public.postregister", { progress : data.data }, { location : false }); });
 	};
 	
 	$scope.days = [];

@@ -1,0 +1,52 @@
+
+	<div class="container" ng-controller="PostRegisterCtrl" ng-cloak>
+		<div class="row">
+			
+			<div class="col-sm-12">
+				<div class="panel-container" style="max-width:600px; padding-top:20px; margin:0 auto;">
+					<div class="panel panel-primary">
+		            	<div class="panel-heading">
+		              		<h3 class="panel-title">Welcome to MIDATA</h3>
+		            	</div>
+		            	<div class="panel-body">
+		            	    <p ng-show="resentSuccess" class="alert alert-success">Welcome mail has been resent.</p>
+		            	    <p ng-show="codeSuccess" class="alert alert-success">Address has been confirmed.</p>
+		            	    <p ng-show="mailSuccess" class="alert alert-success">E-Mail address has been confirmed.</p>
+			            	
+			            							
+							<p>Before you can use your account your identity needs to be verified:</p>
+							<ul class="list-group">
+							  <li class="list-group-item" ng-class="{ 'list-group-item-success' : progress.emailStatus == 'VALIDATED', 'list-group-item-warning' : progress.emailStatus=='UNVALIDATED' }"><span ng-show="progress.emailStatus == 'VALIDATED'" class="glyphicon glyphicon-ok"></span><span ng-hide="progress.emailStatus == 'VALIDATED'" class="glyphicon glyphicon-remove"></span> E-Mail confirmed</li>
+							  <li class="list-group-item" ng-class="{ 'list-group-item-success' : progress.contractStatus == 'SIGNED', 'list-group-item-warning' : progress.contractStatus!='SIGNED' }"><span ng-show="progress.contractStatus=='SIGNED'" class="glyphicon glyphicon-ok"></span><span ng-hide="progress.contractStatus=='SIGNED'" class="glyphicon glyphicon-remove"></span> Contract signed and sent back?</li>
+							  <li class="list-group-item" ng-class="{ 'list-group-item-success' : progress.confirmationCode, 'list-group-item-warning' : !progress.confirmationCode }"><span ng-show="progress.confirmationCode" class="glyphicon glyphicon-ok"></span><span ng-hide="progress.confirmationCode" class="glyphicon glyphicon-remove"></span> Confirmation Code entered?</li>							  
+							</ul>
+							
+							<p>1. Your email address needs to be confirmed. An activation mail has been sent to your account. 
+							      Just click on the link in this mail to confirm your email address.
+							   
+							</p>
+							<button ng-show="progress.emailStatus=='UNVALIDATED'" class="btn btn-default" ng-click="resend()">Resend eMail</button>
+							<div class="extraspace"></div>
+							<p>2. A contract has been sent to your postal address. Return it signed to MIDATA.
+                            </p>
+                            <div class="extraspace"></div>		
+							<p>3. A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform. 							  
+							</p>
+							<p ng-show="error" class="alert alert-danger">{{ error.message || error }}</p>
+							<div class="alert alert-info" ng-hide="progress.emailStatus=='VALIDATED' && progress.contractStatus=='SIGNED'">
+							  Confirmation code may be entered here after signed contract has arrived at MIDATA office.
+							</div>	
+							<div class="input-group" ng-show="progress.emailStatus=='VALIDATED' && progress.contractStatus=='SIGNED'">
+							 <input class="form-control" ng-model="passphrase.passphrase" type="text">
+							 <div class="input-group-btn">
+							   <button class="btn btn-primary" ng-click="sendCode()">Enter now</button>
+							 </div>							 
+							</div>
+							
+		            	</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
