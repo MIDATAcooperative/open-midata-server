@@ -39,7 +39,11 @@ public class APICallAction extends Action<APICall> {
     	  ctx.response().setHeader("Access-Control-Allow-Credentials", "true");
     	  ctx.response().setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH");
     	  ctx.response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie");
-          return delegate.call(ctx);
+    	  try {
+            return delegate.call(ctx);
+    	  } catch (RuntimeException ex) {
+    		  if (ex.getCause() != null) throw ex.getCause(); else throw ex;
+    	  }
     	} catch (JsonValidationException e) {
     		if (e.getField() != null) {
     		  return F.Promise.pure((Result) badRequest(
