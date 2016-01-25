@@ -48,7 +48,7 @@ angular.module('chartApp')
       midataPortal.autoresize();
       
       $scope.reloadSummary = function() {
-          var p = { format : "measurements" };
+          var p = { format : ["measurements", "fhir/Observation" ] };
           midataServer.getSummary($scope.authToken, "SINGLE", p, ["ownerName" ])
           .then(function(results) {
               var entries = results.data;
@@ -87,6 +87,19 @@ angular.module('chartApp')
           var idx = 0;
           angular.forEach(records, function(record) {
               var cdate = new Date(record.created).toISOString();
+              if (record.data.resourceType == "Observation") {
+            	  var q = record.data.valueQuantity || {};
+            	  var dateTime = record.data.effectiveDateTime || cdate;
+            	  var e = {
+                          value : Number(q.value),
+                          unit : q.unit,                              
+                          content : record.content /*record.data.code.coding[0].code */,
+                          context : "",
+                          dateTime : dateTime,                              
+                          owner : record.owner ? record.owner.$oid : "?"
+                  };
+                  if (Number.isFinite(e.value)) entries[idx++] = e;   
+              } else {
               angular.forEach(record.data, function(lst, content) {
                   angular.forEach(lst, function(entry) {
                       var dateTime = entry.dateTime || entry.date || new Date(record.created);
@@ -102,6 +115,7 @@ angular.module('chartApp')
                       if (Number.isFinite(e.value)) entries[idx++] = e;
                   });
               });
+              }
           });
           return entries;
       };
