@@ -153,7 +153,7 @@ angular.module('fhir')
 	    		newResource = false;
 	    	} else if (fielddef.type == "positiveInt" || fielddef.type == "integer" || fielddef.type == "decimal" || fielddef.type == "unsignedInt") {
 	    		newResource = 1;
-	    	} else if (fielddef.type == "dateTime" || fielddef.type == "date") {
+	    	} else if (fielddef.type == "dateTime" || fielddef.type == "date" || fielddef.type == "instant") {
 	    		newResource = "";
 	    	} else if (fielddef.type == "CodeableConcept" && fielddef.valueSet != null) {
 	    		var systems = fhirModule.getOptionCodeSystem(fielddef);
@@ -466,7 +466,7 @@ angular.module('fhir')
 	    	   console.log(res);
 	    	 if (!res.$$fhirUnchanged) {
 	    		 if (res.$$fhirIsNew) {
-	    		    midataServer.createRecord(fhirModule.authToken, fhirModule.makeLabel(res.resourceType), "fhir resource", res.resourceType, "fhir", res, res.id);
+	    		    midataServer.createRecord(fhirModule.authToken, fhirModule.makeLabel(res.resourceType), "fhir resource", res.resourceType, "fhir/"+res.resourceType, res, res.id);
 	    		 } else {
       			    midataServer.updateRecord(fhirModule.authToken, res.id, res.meta.versionId, res);
 	    		 }

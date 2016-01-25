@@ -31,7 +31,7 @@ angular.module('fhir')
 	    	}
 	    	//if (definitions[fielddef.type]) return "single.html";
 	    	var t = fielddef.type;
-	    	if (fielddef.max == "*" && (t=="string" || t=="uri" || t=="code" || t=="dateTime" || t == "date" || t=="positiveInt" || t=="CodeableConcept" || t=="Reference")) return "multi.html";
+	    	if (fielddef.max == "*" && (t=="string" || t=="uri" || t=="code" || t=="dateTime" || t == "date" || t=="instant" || t=="positiveInt" || t=="CodeableConcept" || t=="Reference")) return "multi.html";
 	    	return "single.html";
 	    };
 	    		    
@@ -41,7 +41,7 @@ angular.module('fhir')
 	    	}
 	    	if (fielddef.type == "boolean") return "boolean.html";
 	    	if (fielddef.type == "code") return "code.html";
-	    	if (fielddef.type == "dateTime") return "dateTime.html";
+	    	if (fielddef.type == "dateTime" || fielddef.type == "instant") return "dateTime.html";
 	    	if (fielddef.type == "date") return "date.html";
 	    	if (fielddef.type == "positiveInt" || fielddef.type == "unsignedInt" || fielddef.type == "integer" || fielddef.type == "decimal" ) return "string.html";	  
 	    	if (fielddef.type == "CodeableConcept") {
@@ -167,7 +167,7 @@ angular.module('fhir')
 	    $scope.saveAllModified = fhirModule.saveAllModified;
 	    
 	    $scope.load = function() {
-	    	midataServer.getRecords(authToken, { format : "fhir" }, ["_id", "name", "created", "lastUpdated", "version", "data"])
+	    	midataServer.getRecords(authToken, { "format/*" : "fhir" }, ["_id", "name", "created", "lastUpdated", "version", "data"])
 	    	.then(function(results) {
 	    		angular.forEach(results.data, function(rec) {		    			
 	    			fhirModule.addToPool(rec.data, rec);
@@ -181,7 +181,7 @@ angular.module('fhir')
 	    	fhirModule.loadResources()
 	    	.then(function() {
 	    		$scope.allResources = fhirModule.resourceList(
-	    		  ["AllergyIntolerance","Appointment","AppointmentRespone","CarePlan","Claim","ClaimResponse","ClinicalImpression","Communication","CommunicationRequest","Condition","Contract","Coverage","DetectedIssue","DeviceUseRequest","DeviceUseStatement","DiagnosticOrder","DiagnosticReport","Encounter","EpisodeOfCare","FamilyMemberHistory","Flag","Goal","Immunization","ImmunizationRecommendation","Media","MedicationAdministration","MedicationDispense","MedicationOrder","MedicationStatement","NutritionOrder","Observation","Patient","Procedure","ProcedureRequest","Questionnaire","QuestionnaireResponse","ReferralRequest","RelatedPerson","Schedule","VisionPrescription"]
+	    		  ["AllergyIntolerance","Appointment","AppointmentRespone","CarePlan","Claim","ClaimResponse","ClinicalImpression","Communication","CommunicationRequest","Condition","Contract","Coverage","DetectedIssue","DeviceUseRequest","DeviceUseStatement","DiagnosticOrder","DiagnosticReport","DocumentReference","Encounter","EpisodeOfCare","FamilyMemberHistory","Flag","Goal","Immunization","ImmunizationRecommendation","Media","MedicationAdministration","MedicationDispense","MedicationOrder","MedicationStatement","NutritionOrder","Observation","Patient","Procedure","ProcedureRequest","Questionnaire","QuestionnaireResponse","ReferralRequest","RelatedPerson","Schedule","VisionPrescription"]
 	    		);		
 	    	});
 	    }	    
