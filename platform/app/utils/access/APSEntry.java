@@ -31,6 +31,7 @@ class APSEntry {
 		
 		BasicBSONList lst = (BasicBSONList) permissions.get("p");
 		Set<String> formats = q.restrictedBy("format") ? q.getRestriction("format") : null;
+		Set<String> formatsWC = q.restrictedBy("format/*") ? q.getRestriction("format/*") : null;
 		Set<String> contents = q.restrictedBy("content") ? q.getRestriction("content") : null;
 		Set<String> contentsWC = q.restrictedBy("content/*") ? q.getRestriction("content/*") : null;
 		
@@ -49,6 +50,10 @@ class APSEntry {
   			  String fmt = crit.getString("content");
 			  if (fmt != null && !contentsWC.contains(ContentInfo.getWildcardName(fmt))) match = false;
 			}
+			if (formatsWC != null) {
+	  			  String fmt = crit.getString("format");
+				  if (fmt != null && !formatsWC.contains(ContentInfo.getWildcardName(fmt))) match = false;
+		    }
 			if (match) result.add(crit);			
 		}
 		
