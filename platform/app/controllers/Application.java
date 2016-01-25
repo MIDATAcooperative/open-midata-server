@@ -232,11 +232,19 @@ public class Application extends APIController {
 		
 		User user = User.getById(userId, Sets.create("firstname", "lastname", "email", "confirmationCode", "emailStatus", "contractStatus", "status", "role"));
 		
-		if (user!=null && user.confirmationCode != null && user.emailStatus.equals(EMailStatus.VALIDATED) && user.contractStatus.equals(ContractStatus.SIGNED) && user.status.equals(UserStatus.NEW)) {							
-		       if (user.confirmationCode.equals(confirmationCode)) {
-		    	   user.status = UserStatus.ACTIVE;
-		           user.set("status", user.status);			           			       
-		       } else return badRequest("Bad confirmation code");
+		
+		if (user!=null && user.confirmationCode != null && user.emailStatus.equals(EMailStatus.VALIDATED) && user.contractStatus.equals(ContractStatus.SIGNED) && user.status.equals(UserStatus.NEW)) {
+			if (user.role.equals(UserRole.PROVIDER)) {
+				user = HPUser.getById(userId, Sets.create("firstname", "lastname", "email", "confirmationCode", "emailStatus", "contractStatus", "status", "role", "provider"));
+			} else if (user.role.equals(UserRole.RESEARCH)) {
+				user = ResearchUser.getById(userId, Sets.create("firstname", "lastname", "email", "confirmationCode", "emailStatus", "contractStatus", "status", "role", "organization"));
+			}
+			
+		
+	       if (user.confirmationCode.equals(confirmationCode)) {
+	    	   user.status = UserStatus.ACTIVE;
+	           user.set("status", user.status);			           			       
+	       } else return badRequest("Bad confirmation code");
 		}
 					
 		// response

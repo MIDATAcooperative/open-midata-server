@@ -24,7 +24,7 @@ angular.module('portal')
 					} else {
 					  $state.go('research.studies');
 					}
-				}).catch(function(err) { $scope.error = err; });
+				}).catch(function(err) { $scope.error = err.data; });
 	};
 	
 }]);

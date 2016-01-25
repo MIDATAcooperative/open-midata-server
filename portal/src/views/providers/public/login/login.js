@@ -26,7 +26,7 @@ angular.module('portal')
 					} else {
 					  $state.go('provider.patientsearch');
 					}
-				}).catch(function(err) { $scope.error = err; });
+				}).catch(function(err) { $scope.error = err.data; });
 	};
 	
 }]);
