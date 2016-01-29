@@ -321,7 +321,7 @@ public class PluginsAPI extends Controller {
 		ObjectId recordId = JsonValidation.getObjectId(json, "_id");			
 		FileData fileData = RecordManager.instance.fetchFile(authToken.userId, new RecordToken(recordId.toString(), authToken.spaceId.toString()));
 		if (fileData == null) return badRequest();
-		//response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
+		response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
 		return ok(fileData.inputStream);
 	}
 	
@@ -628,8 +628,14 @@ public class PluginsAPI extends Controller {
 			String[] contents = metaData.get("contents");
 			record.content =  (contents != null && contents.length == 1) ? contents[0] : "other";
 						
-			record.data = new BasicDBObject(new ChainedMap<String, String>().put("type", "file").put("name", filename)
-					.put("contentType", contentType).get());
+			record.data = new BasicDBObject(CMaps
+					.map("type", "file")
+					.map("title", filename)
+					.map("contentType", contentType)
+			        .map("size", file.length())
+			);
+			 			 						
+			
 
 		// save file with file storage utility
 			

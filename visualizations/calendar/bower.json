@@ -1,0 +1,15 @@
+{
+  "name": "calendar",
+  "version": "0.0.1",
+  "dependencies": {
+    "angular": "1.2.25",
+    "bootstrap": "~3.0.3",
+    "angular-route": "1.2.25",
+    "angular-bootstrap": "~0.14.3",
+    "angular-ui-calendar": "~1.0.1"
+  },
+  "devDependencies": {},
+  "resolutions": {
+    "angular": ">=1.3.0"
+  }
+}

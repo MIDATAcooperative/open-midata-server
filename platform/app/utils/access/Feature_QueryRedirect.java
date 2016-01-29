@@ -47,17 +47,23 @@ public class Feature_QueryRedirect extends Feature {
 				
 		BasicBSONObject query = q.getCache().getAPS(q.getApsId()).getMeta(APS.QUERY);    	
     	// Ignores queries in main APS 
-		if (query != null && !q.getApsId().equals(q.getCache().getOwner())) {			
-						
+		if (query != null && !q.getApsId().equals(q.getCache().getOwner()) && result.size() < record.size()) {						
+			
+			Object targetAPSId = query.get("aps");
+			List<DBRecord> result2 = next.lookup(record, new Query(q.getProperties(), q.getFields(), q.getCache(), new ObjectId(targetAPSId.toString())));
+			//List<DBRecord> result2 = next.lookup(record, new Query(q.getProperties(), q.getFields(), q.getCache(), new ObjectId(targetAPSId.toString()));
+			
 			if (query.containsField("$or")) {
 				Collection queryparts = (Collection) query.get("$or");
-				List<DBRecord> filteredResult = new ArrayList<DBRecord>(result.size());
+				//List<DBRecord> filteredResult = new ArrayList<DBRecord>(result2.size());
 				for (Object part : queryparts) {
-					filteredResult.addAll(memoryQuery(q, (BasicBSONObject) part, result));
+					result.addAll(memoryQuery(q, (BasicBSONObject) part, result2));
 				}
-				return filteredResult;
+
+				return result;
 			} else {
-				return memoryQuery(q, query, result);
+				result.addAll(memoryQuery(q, query, result2));
+				return result;
 			}															
 		}
 					

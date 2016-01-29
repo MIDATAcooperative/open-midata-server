@@ -273,6 +273,7 @@ class APSImplementation extends APS {
 
 		for (BasicBSONObject row : rows) {
 			BasicBSONObject map = APSEntry.getEntries(row);
+			//AccessLog.debug(getId()+":"+row.toString());
 			BasicBSONObject target = (BasicBSONObject) map.get(input._id.toString());
 			if (target == null && input.document != null)
 				target = (BasicBSONObject) map.get(input.document.toString());

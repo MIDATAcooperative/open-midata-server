@@ -42,6 +42,7 @@ public class Feature_AccountQuery extends Feature {
 	protected List<DBRecord> query(Query q) throws AppException {
 
 		if (q.getApsId().equals(q.getCache().getOwner())) {
+			if (AccessLog.detailedLog) AccessLog.logBegin("Begin process owner aps");
 			Set<String> sets = q.restrictedBy("owner") ? q.getRestriction("owner") : Collections.singleton("all");
 			Set<ObjectId> studies = q.restrictedBy("study") ? q.getObjectIdRestriction("study") : null;
 
@@ -120,7 +121,7 @@ public class Feature_AccountQuery extends Feature {
 
 				}
 			}
-
+			if (AccessLog.detailedLog) AccessLog.logEnd("End process owner aps");
 			return result;
 		} else {
 			List<DBRecord> result = next.query(q);

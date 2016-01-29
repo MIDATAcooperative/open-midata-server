@@ -245,28 +245,34 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 			.success(function(response) {
 					// check if an error was returned
 				if (response.errors) {
-					errorMessage("Failed to import data on " + formattedDate + ": " + response.errors[0].message + ".");
+					errorMessage("Failed to import data on " + formattedFromDate + ": " + response.errors[0].message + ".");
 				} else {
 					console.log(response);
-					angular.forEach(response, function(v,dataName) {
-						var grouped = {};
+					angular.forEach(response, function(v,dataName) {						
 						
 						angular.forEach(v, function(itm) {
 						  var val = itm.value || itm.amount;
 						  if (val != 0) {
 							  var recDate = itm.dateTime || itm.date;
 							  if (measure.unit != null && itm.unit == null) itm.unit = measure.unit;
-							  if (grouped[recDate] == null) grouped[recDate] = [];
-							  grouped[recDate].push(itm);
+							  							  
+							  var rec = {
+								resourceType : "Observation",
+								status : "final",
+								code : { coding : [ { system : "http://midata.coop", code : measure.content, display : measure.name } ] },
+								effectiveDateTime : recDate,
+								valueQuantity : {
+									value : val,
+									unit : itm.unit
+								}
+							  };
+							  
+							  $scope.requested += 1;
+							  saveRecord(measure.title, measure.content, recDate, rec);		
+							  
 						  }
 						});						
-						
-						angular.forEach(grouped, function(itms, date) {
-							var rec = {};
-							rec[dataName] = itms;
-							$scope.requested += 1;
-							saveRecord(measure.title, measure.content, date, rec);							
-						});
+												
 					});				
 				}
 				
@@ -288,7 +294,7 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 		// save a single record to the database
 		saveRecord = function(title, content, formattedDate, record) {
 			var name = title.replace("{date}", formattedDate);			
-			midataServer.createRecord(authToken, name, name, content, "measurements", record)
+			midataServer.createRecord(authToken, name, name, content, "fhir/Observation/Quantity", record)
 			.then(function() {
 					$scope.saved += 1;
 					finish();

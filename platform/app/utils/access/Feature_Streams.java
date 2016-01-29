@@ -54,10 +54,11 @@ public class Feature_Streams extends Feature {
 					DBRecord stream = new DBRecord();					
 					stream._id = record.stream;
 					if (!((APS) next).lookupSingle(stream, q)) lookup = false; 
+					if (!lookup) AccessLog.debug("failed to find stream "+record.stream.toString()+" in "+q.getApsId().toString());
 				}
 				
 				boolean found = lookup && q.getCache().getAPS(record.stream).lookupSingle(record, q);
-				AccessLog.debug("looked for:"+record._id.toString()+" found="+found+" key="+(record.key != null));                			
+				AccessLog.debug("looked for:"+record._id.toString()+" in "+record.stream.toString()+" found="+found+" key="+(record.key != null));                			
 				if (found) {
 					result.add(record);
 					

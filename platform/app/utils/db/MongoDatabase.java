@@ -10,6 +10,7 @@ import models.Model;
 import org.bson.types.ObjectId;
 
 import play.Play;
+import utils.access.AccessLog;
 import utils.collections.CollectionConversion;
 
 import com.mongodb.BasicDBObject;
@@ -33,6 +34,8 @@ public class MongoDatabase extends Database {
 	
 	private MongoClient mongoClient; // mongo client is already a connection pool
 	private DatabaseConversion conversion = new DatabaseConversion();
+	
+	private boolean logQueries = true;
 	
 	public MongoDatabase(String host, int port, String database) {
 		this.host = host;
@@ -145,6 +148,7 @@ public class MongoDatabase extends Database {
 		try {
 			DBObject query = toDBObject(model, properties);
 			DBObject projection = new BasicDBObject("_id", 1);
+			if (logQueries) AccessLog.logDB("exists "+collection+" "+query.toString());
 			return getCollection(collection).findOne(query, projection) != null;
 		} catch (MongoException e) {
 			throw new DatabaseException(e);
@@ -162,6 +166,7 @@ public class MongoDatabase extends Database {
 			DBObject query = toDBObject(modelClass, properties);
 			DBObject projection = toDBObject(fields);
 			DBObject dbObject = getCollection(collection).findOne(query, projection);
+			if (logQueries) AccessLog.logDB("single "+collection+" "+query.toString());
 			if (dbObject == null) return null;
 			return conversion.toModel(modelClass, dbObject);
 		} catch (MongoException e) {
@@ -179,6 +184,7 @@ public class MongoDatabase extends Database {
 		try {
 			DBObject query = toDBObject(modelClass, properties);
 			DBObject projection = toDBObject(fields);
+			if (logQueries) AccessLog.logDB("all "+collection+" "+query.toString());
 			DBCursor cursor = getCollection(collection).find(query, projection);
 			Set<DBObject> dbObjects = CollectionConversion.toSet(cursor);
 			return conversion.toModel(modelClass, dbObjects);

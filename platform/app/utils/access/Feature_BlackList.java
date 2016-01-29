@@ -50,10 +50,12 @@ public class Feature_BlackList extends Feature {
 	
 	private List<DBRecord> filter(List<DBRecord> input) {		
 		if (blacklist.isEmpty()) return input;
+		if (AccessLog.detailedLog) AccessLog.logBegin("Begin apply blacklist #recs="+input.size());
 		List<DBRecord> filtered = new ArrayList<DBRecord>(input.size());
 		for (DBRecord record : input) {
 			if (!blacklist.contains(record._id.toString())) filtered.add(record);
 		}
+		if (AccessLog.detailedLog) AccessLog.logEnd("End apply blacklist #recs="+filtered.size());
 		return filtered;
 	}
 

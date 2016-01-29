@@ -41,8 +41,19 @@ textRecords.controller('CreateCtrl', ['$scope', '$http', '$location', 'midataSer
 			// construct json
 			
 			$scope.loading = true;
+			
+			var rec = {
+				resourceType : "Observation",
+				status : "final",
+				code : {
+					coding : [ { system : "http://midata.coop" , code : "diary", display : "Diary" } ]
+				},
+				effectiveDateTime : $scope.date,
+				valueString : $scope.content
+				
+			};
 			// submit to server
-			midataServer.createRecord(authToken, $scope.title, $scope.content, "diary", "text-app", {"title": $scope.title, "content": $scope.content})
+			midataServer.createRecord(authToken, $scope.title, $scope.content, "diary", "fhir/Observation", {"title": $scope.title, "content": $scope.content})
 			.then(function() {
 					$scope.success = "Record created successfully.";
 					$scope.error = null;

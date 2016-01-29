@@ -424,7 +424,7 @@ public class RecordManager {
 		
 		if (!documentPart) Feature_Streams.placeNewRecordInStream(executingPerson, record, alternateAps);
 		 		
-		AccessLog.debug("Add Record execPerson="+executingPerson.toString()+" format="+record.meta.get("format")+" stream="+(record.stream != null ? record.stream.toString() : "null"));	
+		AccessLog.logBegin("Begin Add Record execPerson="+executingPerson.toString()+" format="+record.meta.get("format")+" stream="+(record.stream != null ? record.stream.toString() : "null"));	
 		byte[] usedKey = null;
 		if (record.meta.get("created") == null) throw new InternalServerException("error.internal", "Missing creation date");
 		
@@ -456,7 +456,7 @@ public class RecordManager {
 								
 		RecordEncryption.encryptRecord(record, record.key != null ? APSSecurityLevel.HIGH : APSSecurityLevel.NONE);		
 	    if (upsert) { DBRecord.upsert(record); } else { DBRecord.add(record); }	  
-	    				
+	    AccessLog.logEnd("End Add Record");				
 		return usedKey;	
 	}
 	
@@ -561,7 +561,9 @@ public class RecordManager {
 		if (properties.containsKey("owner")) nproperties.put("owner", properties.get("owner"));
 		if (properties.containsKey("study")) nproperties.put("study", properties.get("study"));
 		if (properties.containsKey("format")) nproperties.put("format", properties.get("format"));
+		if (properties.containsKey("format/*")) nproperties.put("format/*", properties.get("format/*"));
 		if (properties.containsKey("content")) nproperties.put("content", properties.get("content"));
+		if (properties.containsKey("content/*")) nproperties.put("content/*", properties.get("content/*"));
 		if (properties.containsKey("group")) nproperties.put("group", properties.get("group"));
 		return QueryEngine.info(getCache(who), aps, nproperties, aggrType);
 	}

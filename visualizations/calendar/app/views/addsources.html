@@ -1,0 +1,17 @@
+<div>  
+  <h2>Add Data Sources</h2>
+  <div class="">
+    <div ng-repeat="source in sources | orderBy : mlabel" class="">
+      <label class="checkbox"><input type="checkbox" ng-model="source.selected" >{{ valuesToLabel.content[source.id] || source.label }} <a ng-click="source.tlb = !source.tlb;" href="javascript:">tlb</a></label> 
+      <div class="row" ng-show="source.tlb">
+        <span class="col-xs-1">
+          <select class="form-control" ng-model="source.operator" ng-options="op for op in operators"></select>
+        </span><span class="col-xs-4">
+           <input type="number" class="form-control" ng-model="source.limit">
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="extraspace"></div>
+  <button ng-click="submit()" class="btn btn-primary">Add</button>
+</div>

@@ -48,7 +48,7 @@ angular.module('chartApp')
       midataPortal.autoresize();
       
       $scope.reloadSummary = function() {
-          var p = { format : ["measurements", "fhir/Observation" ] };
+          var p = { format : ["measurements", "fhir/Observation/Quantity" ] };
           midataServer.getSummary($scope.authToken, "SINGLE", p, ["ownerName" ])
           .then(function(results) {
               var entries = results.data;

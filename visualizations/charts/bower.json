@@ -1,6 +1,6 @@
 {
-  "name": "time-series",
-  "version": "0.0.0",
+  "name": "charts",
+  "version": "1.0.0",
   "dependencies": {
     "angular": "1.2.25",
     "json3": "~3.2.6",

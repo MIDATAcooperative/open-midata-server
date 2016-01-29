@@ -1,6 +1,6 @@
 var recordList = angular.module('recordList', [ 'midata' ]);
-recordList.controller('RecordListCtrl', ['$scope', '$http', '$location', 'midataServer', 'midataPortal',
-	function($scope, $http, $location, midataServer, midataPortal) {
+recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'midataServer', 'midataPortal',
+	function($scope, $filter, $location, midataServer, midataPortal) {
 		
 	    midataPortal.autoresize();
 	    
@@ -17,12 +17,12 @@ recordList.controller('RecordListCtrl', ['$scope', '$http', '$location', 'midata
 		// get the data for the records in this space
 		$scope.getRecords = function() {
 	
-			midataServer.getRecords(authToken, { "format" : "text-app" }, ["data"])
+			midataServer.getRecords(authToken, { "format" : "fhir/Observation/String", content : "diary" }, ["name", "data"])
 			.then(function(results) {
 				    var records = results.data;
 					for (var i = 0; i < records.length; i++) {
 						try {
-							$scope.records.push(records[i].data);
+							$scope.records.push(records[i]);
 							$scope.records[$scope.records.length - 1].id = $scope.records.length - 1;
 						} catch(parsingError) {
 							// skip this record
@@ -66,17 +66,30 @@ recordList.controller('RecordListCtrl', ['$scope', '$http', '$location', 'midata
 			// construct json
 			
 			$scope.loading = true;
-			var record = {"title": $scope.title, "content": $scope.content};
+			
+			var record = {
+					resourceType : "Observation",
+					status : "final",
+					code : {
+						coding : [ { system : "http://midata.coop" , code : "diary", display : "Diary" } ]
+					},
+					effectiveDateTime : new Date($scope.date).toJSON(),
+					valueString : $scope.content
+					
+			};
+						
 			// submit to server
-			midataServer.createRecord(authToken, $scope.title, $scope.content, "diary", "text-app", record)
+			midataServer.createRecord(authToken, $scope.title, $scope.content, "diary", "fhir/Observation/String", record)
 			.then(function() {
 					$scope.success = "Record created successfully.";
-					$scope.error = null;
+					$scope.records.push({ name : $scope.title, data : record });
+					
 					$scope.title = null;
+					$scope.error = null;					
 					$scope.content = null;
 					$scope.loading = false;
 					$scope.mode = "view";
-					$scope.records.push(record);
+					
 			}, function(err) {
 					$scope.success = null;
 					$scope.error = err.data;
@@ -86,6 +99,7 @@ recordList.controller('RecordListCtrl', ['$scope', '$http', '$location', 'midata
 		
 		$scope.newEntry = function() {
 			$scope.mode = "create";
+			$scope.date = $filter('date')(new Date(), "yyyy-MM-dd");
 		};
 		
 		$scope.cancel = function() {

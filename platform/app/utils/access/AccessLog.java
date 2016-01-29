@@ -13,12 +13,14 @@ import play.Logger;
  */
 public class AccessLog {
 
+	public static boolean detailedLog = true;
+	
 	public static void apsAccess(ObjectId aps, ObjectId who) {
 		Logger.debug("Access APS:"+(aps != null ? aps.toString() : "null")+" from user:"+(who!=null?who.toString():"null"));
 	}
 	
 	public static void debug(String txt) {
-		Logger.debug(txt);
+		Logger.debug("                                            ".substring(0,ident)+txt);
 	}
 	
 	public static void logQuery(Map<String,Object> properties, Set<String> fields) {
@@ -37,8 +39,25 @@ public class AccessLog {
 		   s.append(" ");
 	   }
 	   s.append(")");
-	   Logger.debug("New Full Query:"+s.toString());
+	   Logger.debug("                                            ".substring(0,ident)+"Query:"+s.toString());
 	}
+	
+	public static void logDB(String msg) {
+	   Logger.debug("                                            ".substring(0,ident)+"DB:"+msg);
+	}
+	
+	private static int ident = 0;
+	
+	public static void logBegin(String txt) {
+		Logger.debug("                                            ".substring(0,ident)+txt);
+		ident += 2;
+	}
+	
+	public static void logEnd(String txt) {
+		ident -= 2;
+		Logger.debug("                                            ".substring(0,ident)+txt);		
+	}
+	
 	/*
 	public static void logLocalQuery(ObjectId aps, Map<String,Object> properties, Set<String> fields) {
 		   StringBuilder s = new StringBuilder();

@@ -86,15 +86,15 @@ class MongoDB(Product):
 
 	def reimport(self):
 	   print 'Importing metadata'
-	   Command.execute('{0} -d user -c formatgroups --file {1} --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
+	   Command.execute('{0} -d user -c formatgroups --file {1} --drop --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
 			os.path.join(self.parent, 'json', 'formatgroups.json')), self.parent)		
-	   Command.execute('{0} -d user -c contentinfo --file {1} --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
+	   Command.execute('{0} -d user -c contentinfo --file {1} --drop --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
 			os.path.join(self.parent, 'json', 'contentinfo.json')), self.parent)
-	   Command.execute('{0} -d user -c formatinfo --file {1} --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
+	   Command.execute('{0} -d user -c formatinfo --file {1} --drop --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
 			os.path.join(self.parent, 'json', 'formatinfo.json')), self.parent)
-	   Command.execute('{0} -d user -c plugins --file {1} --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
+	   Command.execute('{0} -d user -c plugins --file {1} --drop --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
 			os.path.join(self.parent, 'json', 'plugins.json')), self.parent)	   
-	   Command.execute('{0} -d user -c coding --file {1} --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
+	   Command.execute('{0} -d user -c coding --file {1} --drop --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
 			os.path.join(self.parent, 'json', 'coding.json')), self.parent)
 	   Command.execute('{0} -d user -c loinc --type csv --drop --headerline --file {1}'.format(os.path.join(self.bin, 'mongoimport'), 
 			os.path.join(self.parent, 'json', 'loinc.csv')), self.parent)

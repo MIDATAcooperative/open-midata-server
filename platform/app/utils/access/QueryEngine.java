@@ -20,9 +20,9 @@ import org.bson.types.ObjectId;
 
 import scala.NotImplementedError;
 import utils.DateTimeUtils;
+import utils.access.op.AndCondition;
 import utils.access.op.Condition;
 import utils.access.op.EqualsSingleValueCondition;
-import utils.access.op.ObjectCondition;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -52,7 +52,22 @@ class QueryEngine {
 	}
 	
 	public static List<DBRecord> isContainedInAps(APSCache cache, ObjectId aps, List<DBRecord> candidates) throws AppException {
-		return onlyWithKey((new Feature_QueryRedirect(cache.getAPS(aps)).lookup(candidates, new Query(CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps))));
+		List<DBRecord> clearedCandidates = new ArrayList<DBRecord>(candidates.size());
+		for (DBRecord candidate : candidates) {
+			DBRecord clone = new DBRecord();
+			clone._id = candidate._id;
+			clone.stream = candidate.stream;
+			clone.document = candidate.document;
+			clone.part = candidate.part;
+			clone.time = candidate.time;
+			clearedCandidates.add(clone);
+		}
+		if (AccessLog.detailedLog) AccessLog.logBegin("Begin check contained in aps #recs="+clearedCandidates.size());		
+		List<DBRecord> result = onlyWithKey((new Feature_QueryRedirect(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams())))).lookup(clearedCandidates, new Query(CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps))));
+		if (AccessLog.detailedLog) AccessLog.logEnd("End check contained in aps #recs="+result.size());
+		return result;
+				
+		//return onlyWithKey((new Feature_QueryRedirect(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams())))).lookup(candidates, new Query(CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps))));
 	}
 		
 	public static boolean isInQuery(Map<String, Object> properties, DBRecord record) throws AppException {
@@ -62,9 +77,15 @@ class QueryEngine {
 	}
 	
 	public static List<DBRecord> listFromMemory(Map<String, Object> properties, List<DBRecord> records) throws AppException {
+		if (AccessLog.detailedLog) AccessLog.logBegin("Begin list from memory #recs="+records.size());
+		
 		Feature qm = new Feature_FormatGroups(new Feature_ContentFilter(new Feature_InMemoryQuery(records)));
-		Query query = new Query(properties, Sets.create(), null, null, true);
-		return postProcessRecords(qm, query, qm.query(query));		
+		Query query = new Query(properties, Sets.create("_id"), null, null, true);
+		List<DBRecord> recs = qm.query(query);
+		AccessLog.debug("list from memory pre postprocess size = "+recs.size());
+		List<DBRecord> result = postProcessRecords(qm, query, recs);		
+		if (AccessLog.detailedLog) AccessLog.logEnd("End list from memory #recs="+result.size());
+		return result;
 	}
 	
 	private static String getInfoKey(AggregationType aggrType, String group, String content, String format, ObjectId owner) {
@@ -288,11 +309,11 @@ class QueryEngine {
     
     
     
-    protected static List<DBRecord> filterByWCFormat(List<DBRecord> input, Set<String> contentsWC) {
+    protected static List<DBRecord> filterByWCFormat(List<DBRecord> input, String name, Set<String> contentsWC) {
     	if (contentsWC == null) return input;    	
     	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());
     	for (DBRecord record : input) {    	    		
-    		if (!contentsWC.contains(ContentInfo.getWildcardName((String) record.meta.get("content")))) continue;    		
+    		if (!contentsWC.contains(ContentInfo.getWildcardName((String) record.meta.get(name)))) continue;    		
     		filteredResult.add(record);
     	}
     	
@@ -310,7 +331,7 @@ class QueryEngine {
     
     protected static List<DBRecord> filterByDataQuery(List<DBRecord> input, Map<String, Object> query) {    	
     	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());    	
-    	Condition condition = new ObjectCondition(query);
+    	Condition condition = new AndCondition(query);
     	
     	for (DBRecord record : input) {
             Object accessVal = record.data;                        

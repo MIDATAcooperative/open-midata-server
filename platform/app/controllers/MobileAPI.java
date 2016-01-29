@@ -1,7 +1,10 @@
 package controllers;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,11 +14,15 @@ import models.MobileAppInstance;
 import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
+import models.Space;
+import models.User;
 import models.enums.AggregationType;
 import models.enums.UserRole;
 
+import org.bson.BSONObject;
 import org.bson.types.ObjectId;
 
+import play.Play;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
@@ -29,6 +36,8 @@ import utils.auth.MobileAppSessionToken;
 import utils.auth.MobileAppToken;
 import utils.auth.RecordToken;
 import utils.auth.Rights;
+import utils.auth.SpaceToken;
+import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.db.FileStorage.FileData;
@@ -38,6 +47,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import actions.APICall;
 import actions.MobileCall;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -90,6 +100,57 @@ public class MobileAPI extends Controller {
 		ObjectNode obj = Json.newObject();								
 		obj.put("instanceToken", appToken.encrypt()); 
 		return ok(obj);
+	}
+	
+	/**
+	 * login function for MIDATA app
+	 * @return status ok
+	 * @throws AppException
+	 */
+	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
+	public static Result midataLogin() throws AppException {
+		// validate 
+		JsonNode json = request().body().asJson();	
+		User user;
+		String passphrase = null;
+		
+		if (json.has("email")) {		
+		  JsonValidation.validate(json, "email", "password");	
+		  String email = JsonValidation.getEMail(json, "email");
+		  String password = JsonValidation.getString(json, "password");
+		  passphrase = JsonValidation.getStringOrNull(json, "passphrase");
+		
+		  // check status
+		  user = Member.getByEmail(email , Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "role"));
+		  if (user == null) return badRequest("Invalid user or password.");
+		  if (!Member.authenticationValid(password, user.password)) {
+			return badRequest("Invalid user or password.");
+		  }
+		} else {
+		  JsonValidation.validate(json, "token");
+		  MobileAppToken test = MobileAppToken.decrypt(JsonValidation.getString(json, "token"));
+		  user = User.getById(test.appId , Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "role"));
+		  passphrase = test.phrase;
+		}
+			 
+		KeyManager.instance.unlock(user._id, passphrase);
+	    Set<Space> spaces = Space.getAll(CMaps.map("owner", user._id).map("context", "mobile"), Space.ALL);
+	    
+	    for (Space space : spaces) {
+	       SpaceToken spaceToken = new SpaceToken(space._id, user._id);
+	       Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "name", "filename", "url", "creator", "developmentServer", "accessTokenUrl", "authorizationUrl", "consumerKey", "scopeParameters"));
+	       String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename;
+	 	   String url =  visualizationServer  + "/" + visualization.url;
+	 	   url = url.replace(":authToken", spaceToken.encrypt());
+	 	   space.context = url;
+	    }
+	    
+	    ObjectNode obj = Json.newObject();
+	    obj.put("spaces", JsonOutput.toJsonNode(spaces, "Space", Sets.create("name", "context")));
+	    obj.put("token", new MobileAppToken(user._id, user._id, passphrase).encrypt());
+		return ok(obj);
+	
 	}
 	
 	/**

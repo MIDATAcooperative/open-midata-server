@@ -30,6 +30,8 @@ class APSEntry {
 		List<BasicBSONObject> result = new ArrayList<BasicBSONObject>();
 		
 		BasicBSONList lst = (BasicBSONList) permissions.get("p");
+		//AccessLog.debug("ALL:"+lst.toString());
+		
 		Set<String> formats = q.restrictedBy("format") ? q.getRestriction("format") : null;
 		Set<String> formatsWC = q.restrictedBy("format/*") ? q.getRestriction("format/*") : null;
 		Set<String> contents = q.restrictedBy("content") ? q.getRestriction("content") : null;

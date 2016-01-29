@@ -154,7 +154,7 @@ angular.module('fhir')
 	    	var cs = fhirModule.getOptionCodeSystem(fielddef.valueSet);
 	    	console.log(field.text);
 	    	console.log(cs);
-	    	midataServer.searchCoding(authToken, { system : cs, "$text" : { "$search" : field.text } }, ["system", "code", "version", "display"])
+	    	midataServer.searchCoding(authToken, { system : cs, "$text" : { "$search" : '"'+field.text.replace('"','')+'"' } }, ["system", "code", "version", "display"])
 	    	.then(function(res) {
 	    		field.$$fhirSearch = res.data;
 	    	});

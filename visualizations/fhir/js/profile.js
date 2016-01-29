@@ -1,6 +1,6 @@
 angular.module('fhir')
 .constant('profile', {
-  publicResources : ["AllergyIntolerance","Appointment","AppointmentRespone","CarePlan","Claim","ClaimResponse","ClinicalImpression","Communication","CommunicationRequest","Condition","Contract","Coverage","DetectedIssue","DeviceUseRequest","DeviceUseStatement","DiagnosticOrder","DiagnosticReport","Encounter","EpisodeOfCare","FamilyMemberHistory","Flag","Goal","Immunization","ImmunizationRecommendation","Media","MedicationAdministration","MedicationDispense","MedicationOrder","MedicationStatement","NutritionOrder","Observation","Patient","Procedure","ProcedureRequest","Questionnaire","QuestionnaireResponse","ReferralRequest","RelatedPerson","Schedule","VisionPrescription"],
+  publicResources : ["AllergyIntolerance","Appointment","AppointmentRespone","CarePlan","Claim","ClaimResponse","ClinicalImpression","Communication","CommunicationRequest","Condition","Contract","Coverage","DetectedIssue","DeviceUseRequest","DeviceUseStatement","DiagnosticOrder","DiagnosticReport","Encounter","EpisodeOfCare","FamilyMemberHistory","Flag","Goal","Immunization","ImmunizationRecommendation","Media","MedicationAdministration","MedicationDispense","MedicationOrder","MedicationStatement","NutritionOrder","Observation","Patient","Procedure","ProcedureRequest","Questionnaire","QuestionnaireResponse","ReferralRequest","RelatedPerson","Schedule","VisionPrescription","DocumentReference"],
   modify : {
 	  "Patient.identifier" : { min : 1 },
 	  "Patient.name" : { min : 1 },

@@ -52,7 +52,17 @@
 			              <li ng-repeat="format in params">{{ format }}</li>
 			            </ul> 
 			          </span>
+			          <span ng-if="rule == 'format/*'">Records that have format:
+			            <ul>
+			              <li ng-repeat="format in params">{{ format }}</li>
+			            </ul> 
+			          </span>
 			          <span ng-if="rule == 'content'">Records that have content:
+			            <ul>
+			              <li ng-repeat="content in params">{{ content }}</li>
+			            </ul> 
+			          </span>
+			          <span ng-if="rule == 'content/*'">Records that have content:
 			            <ul>
 			              <li ng-repeat="content in params">{{ content }}</li>
 			            </ul> 
