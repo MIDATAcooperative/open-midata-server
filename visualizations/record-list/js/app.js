@@ -21,12 +21,10 @@ recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'mida
 			.then(function(results) {
 				    var records = results.data;
 					for (var i = 0; i < records.length; i++) {
-						try {
+						
 							$scope.records.push(records[i]);
 							$scope.records[$scope.records.length - 1].id = $scope.records.length - 1;
-						} catch(parsingError) {
-							// skip this record
-						}
+						
 					}
 					$scope.mode = "view";
 				}, function(err) {
