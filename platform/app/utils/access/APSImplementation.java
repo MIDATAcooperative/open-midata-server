@@ -54,11 +54,14 @@ class APSImplementation extends APS {
 		record.direct = eaps.isDirect();
 		
 		if (eaps.getSecurityLevel().equals(APSSecurityLevel.NONE) || eaps.getSecurityLevel().equals(APSSecurityLevel.LOW)) {
-			record.key = null;			
+			record.key = null;	
+			record.security = APSSecurityLevel.NONE;
 		} else if (record.direct) {
-			record.key = eaps.getAPSKey() != null ? eaps.getAPSKey().getEncoded() : null;		
+			record.key = eaps.getAPSKey() != null ? eaps.getAPSKey().getEncoded() : null;
+			record.security = eaps.getSecurityLevel();
 		} else {
 			record.key = EncryptionUtils.generateKey(EncryptionUtils.KEY_ALGORITHM).getEncoded();
+			record.security = APSSecurityLevel.HIGH;
 		}
 		
 	}
@@ -201,6 +204,7 @@ class APSImplementation extends APS {
 			List<DBRecord> directResult = new ArrayList<DBRecord>(DBRecord.getAll(query, q.getFieldsFromDB()));
 			for (DBRecord record : directResult) {
 				record.key = eaps.getAPSKey() != null ? eaps.getAPSKey().getEncoded() : null;
+				record.security = eaps.getSecurityLevel();
 				if (withOwner)
 					record.owner = eaps.getOwner();
 			}
@@ -244,14 +248,14 @@ class APSImplementation extends APS {
 	}
 
 	protected boolean satisfies(BasicBSONObject entry, Query q) {
-		if (q.getMinDate() != null) {
+		if (q.getMinDateCreated() != null) {
 			Date created = entry.getDate("created");
-			if (created != null && created.before(q.getMinDate()))
+			if (created != null && created.before(q.getMinDateCreated()))
 				return false;
 		}
-		if (q.getMaxDate() != null) {
+		if (q.getMaxDateCreated() != null) {
 			Date created = entry.getDate("created");
-			if (created != null && created.after(q.getMinDate()))
+			if (created != null && created.after(q.getMinDateCreated()))
 				return false;
 		}
 		return true;
@@ -261,6 +265,7 @@ class APSImplementation extends APS {
 		// AccessLog.lookupSingle(eaps.getId(), input._id, q.getProperties());
 		if (eaps.isDirect()) {
 			input.key = eaps.getAPSKey() != null ? eaps.getAPSKey().getEncoded() : null;
+			input.security = eaps.getSecurityLevel();
 			input.owner = eaps.getOwner();
 			return true;
 		}		
@@ -279,9 +284,9 @@ class APSImplementation extends APS {
 				target = (BasicBSONObject) map.get(input.document.toString());
 			if (target != null) {
 				Object k = target.get("key");
-				input.key = (k instanceof String) ? null : (byte[]) k; // Old
-																		// version
-																		// support
+				input.key = (k instanceof String) ? null : (byte[]) k; // Old version support
+				input.security = input.key != null ? eaps.getSecurityLevel() : APSSecurityLevel.NONE;														
+				
 				APSEntry.populateRecord(row, input);
 				input.isStream = target.getBoolean("s");
 				if (input.owner == null) {
@@ -302,15 +307,18 @@ class APSImplementation extends APS {
 	private DBRecord createRecordFromAPSEntry(String id, BasicBSONObject row, BasicBSONObject entry, boolean withOwner) throws AppException {
 		DBRecord record = new DBRecord();		
 		
-		record._id = new ObjectId(id);
+		record._id = new ObjectId(id);		
 		APSEntry.populateRecord(row, record);
 		record.isStream = entry.getBoolean("s");
 		record.isReadOnly = entry.getBoolean("ro");
 
-		if (entry.get("key") instanceof String)
+		if (entry.get("key") instanceof String) {
 			record.key = null; // For old version support
-		else
+			record.security = APSSecurityLevel.NONE;
+		} else {
 			record.key = (byte[]) entry.get("key");
+			record.security = record.key != null ? getSecurityLevel() : APSSecurityLevel.NONE;
+		}
 
 		if (withOwner || record.isStream) {
 			String owner = entry.getString("owner");
@@ -327,7 +335,7 @@ class APSImplementation extends APS {
 
 	private void addPermissionInternal(DBRecord record, boolean withOwner) throws AppException {
 
-		if (record.key == null)
+		if (record.key == null && !record.security.equals(APSSecurityLevel.NONE))
 			throw new InternalServerException("error.internal", "Record with NULL key: Record:" + record._id.toString() + "/" + record.isStream);
 		// resolve Format
 		BasicBSONObject obj = APSEntry.findMatchingRowForRecord(eaps.getPermissions(), record, true);
@@ -477,7 +485,7 @@ class APSImplementation extends APS {
 	protected void merge() throws AppException {
 		try {
 		if (eaps.needsMerge()) {
-			AccessLog.debug("merge:" + eaps.getId().toString());
+			AccessLog.logBegin("begin merge:" + eaps.getId().toString());
 			
 			for (EncryptedAPS encsubaps : eaps.getAllUnmerged()) {													
 				APSEntry.mergeAllInto(encsubaps.getPermissions(), eaps.getPermissions());								
@@ -485,11 +493,17 @@ class APSImplementation extends APS {
 			
 			eaps.clearUnmerged();
 			eaps.savePermissions();
+			AccessLog.logEnd("end merge");
 		}
 		} catch (LostUpdateException e) {
 			eaps.reload();
 			merge();		
 		}
+	}
+
+	@Override
+	public boolean isReady() throws AppException {
+		return eaps.isLoaded();
 	}
 
 

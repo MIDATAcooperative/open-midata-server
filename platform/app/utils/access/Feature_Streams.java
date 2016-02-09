@@ -2,6 +2,7 @@ package utils.access;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,11 +15,13 @@ import com.mongodb.BasicDBObject;
 import utils.DateTimeUtils;
 import utils.auth.EncryptionNotSupportedException;
 import utils.collections.CMaps;
+import utils.collections.NChainedMap;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
 import models.APSNotExistingException;
+import models.AccessPermissionSet;
 import models.ContentInfo;
 import models.Record;
 import models.enums.APSSecurityLevel;
@@ -48,7 +51,7 @@ public class Feature_Streams extends Feature {
 		boolean isStrict = q.restrictedBy("strict");
 		
 		for (DBRecord record : records) {			
-			if (record.stream != null && record.key == null) {
+			if (record.stream != null && record.security == null) {
 				boolean lookup = true;
 				if (isStrict) {
 					DBRecord stream = new DBRecord();					
@@ -81,7 +84,7 @@ public class Feature_Streams extends Feature {
 		boolean restrictedByStream = q.restrictedBy("stream");
 		
 		if (restrictedByStream) {
-			  AccessLog.debug("single stream query");
+			  AccessLog.logBegin("begin single stream query");
 			  //Set<String> streams1 = q.getRestriction("stream");
 			  
 			  List<DBRecord> streams = next.query(new Query(CMaps.map("_id", q.getProperties().get("stream")), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId(), true ));
@@ -97,6 +100,7 @@ public class Feature_Streams extends Feature {
 				  }
 			  }				
 			  			  			  
+			  AccessLog.logEnd("end single stream query");
 			  return records;
 		}
         		
@@ -119,19 +123,39 @@ public class Feature_Streams extends Feature {
 		} else
 		if (q.deepQuery()) {
 			List<DBRecord> filtered = new ArrayList<DBRecord>(records.size());
+			List<DBRecord> streams = new ArrayList<DBRecord>();
+			Map<ObjectId, DBRecord> streamsToFetch = new HashMap<ObjectId, DBRecord>();
+			
 			for (DBRecord r : records) {
 				if (r.isStream) {
-					try {
-					  APS streamaps = q.getCache().getAPS(r._id, r.key, r.owner);
-					  if (q.getMinTimestamp() <= streamaps.getLastChanged()) {						
-					    for (DBRecord r2 : streamaps.query(q)) {
-					    	r2.stream = r._id;
-					    	filtered.add(r2);
-					    }
-					  }
-					} catch (EncryptionNotSupportedException e) { throw new InternalServerException("error.internal", "Encryption not supported."); }
-				    if (includeStreams) filtered.add(r);	
+					if (!q.getCache().hasAPS(r._id)) streamsToFetch.put(r._id, r);
+					else streams.add(r);
 				} else filtered.add(r);
+			}
+			
+			if (!streamsToFetch.isEmpty()) {
+				NChainedMap<String, Object> restriction = CMaps.map("_id", streamsToFetch.keySet());
+				if (q.getMinUpdatedTimestamp() > 0) restriction = restriction.map("version", CMaps.map("$gt", q.getMinUpdatedTimestamp()));
+				Set<AccessPermissionSet> rsets = AccessPermissionSet.getAll(restriction, AccessPermissionSet.ALL_FIELDS);
+				for (AccessPermissionSet set : rsets) {
+					DBRecord r = streamsToFetch.get(set._id);
+					streams.add(r);
+					q.getCache().getAPS(r._id, r.key, r.owner, set);
+				}
+			}
+				
+			for (DBRecord r : streams) {										
+				try {
+				  APS streamaps = q.getCache().getAPS(r._id, r.key, r.owner);
+				  if (q.getMinUpdatedTimestamp() <= streamaps.getLastChanged() && q.getMinCreatedTimestamp() <= streamaps.getLastChanged()) {						
+				    for (DBRecord r2 : streamaps.query(q)) {
+				    	r2.stream = r._id;
+				    	filtered.add(r2);
+				    }
+				    if (includeStreams) filtered.add(r);
+				  }
+				} catch (EncryptionNotSupportedException e) { throw new InternalServerException("error.internal", "Encryption not supported."); }					 	
+			 				
 			}
 			records = filtered;
 		} else if (!includeStreams) {
@@ -176,7 +200,7 @@ public class Feature_Streams extends Feature {
 	
 	private static DBRecord createStream(ObjectId executingPerson, ObjectId owner, ObjectId targetAPS, Map<String, Object> properties,
 			boolean direct) throws AppException {
-		AccessLog.debug("Create Stream: who="+executingPerson.toString()+" direct="+direct+" into="+targetAPS);
+		AccessLog.logBegin("begin create Stream: who="+executingPerson.toString()+" direct="+direct+" into="+targetAPS);
 		DBRecord result = new DBRecord();
 		result._id = new ObjectId();
 		result.owner = owner;
@@ -204,7 +228,7 @@ public class Feature_Streams extends Feature {
 								
 		DBRecord unecrypted = result.clone();
 				
-		RecordEncryption.encryptRecord(result, apswrapper.getSecurityLevel());		
+		RecordEncryption.encryptRecord(result);		
 	    DBRecord.add(result);	  
 	    				
 		RecordManager.instance.createAPSForRecord(executingPerson, unecrypted.owner, unecrypted._id, unecrypted.key, apsDirect);
@@ -215,7 +239,8 @@ public class Feature_Streams extends Feature {
 		}
 		
 		RecordManager.instance.applyQueries(executingPerson, unecrypted.owner, unecrypted, targetAPS != null ? targetAPS : unecrypted.owner);
-					
+				
+		AccessLog.logEnd("end create stream");
 		return result;
 	}
 

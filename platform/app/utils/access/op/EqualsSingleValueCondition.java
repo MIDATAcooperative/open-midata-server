@@ -20,6 +20,11 @@ public class EqualsSingleValueCondition implements Condition {
 	public boolean satisfiedBy(Object obj) {
 		return val.equals(obj);
 	}
+
+	@Override
+	public Condition optimize() {
+		return this;
+	}
 	
 	
 }

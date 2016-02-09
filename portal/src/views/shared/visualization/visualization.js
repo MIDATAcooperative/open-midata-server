@@ -7,6 +7,27 @@ angular.module('portal')
 	$scope.options = {};
 	$scope.params = $state.params;
 	$scope.status = new status(true);
+	if ($state.params.context == "workspace") {
+		$scope.contexts = [
+		         		  { value : "workspace", label : "Workspace" },
+		         		  { value : "mobile", label : "MIDATA Mobile App" }
+		                  ];
+	} else if ($state.params.context == "research" || $state.params.context == "sandbox") {
+		$scope.contexts = [		         	
+		         		  { value : "research", label : "Research Dashboard" },
+		         		  { value : "sandbox", label : "Workspace" },		         	
+		         		  { value : "mobile", label : "MIDATA Mobile App" }
+	                    	];
+	} else {
+		$scope.contexts = [
+		  { value : "me", label : "Me Page" },
+		  { value : "mydata", label : "My Data Dashboard" },
+		  { value : "social", label : "Social Dashboard" },
+		  { value : "providers", label : "Health Dashboard" },
+		  { value : "studies", label : "Research Dashboard" },		
+		  { value : "mobile", label : "MIDATA Mobile App" }
+	    ];
+	}
 	
 	
 	// parse visualization id (format: /visualizations/:id) and load the visualization

@@ -65,6 +65,17 @@ public class EncryptedAPS {
 		this.encryptionKey = (enckey != null) ? new SecretKeySpec(enckey, KEY_ALGORITHM) : null;
 		keyProvided = true;
 	}
+	
+	public EncryptedAPS(ObjectId apsId, ObjectId who, byte[] enckey, ObjectId owner, AccessPermissionSet set) throws InternalServerException {
+		this.apsId = apsId;		
+		this.who = who;
+		this.owner = owner;
+		this.encryptionKey = (enckey != null) ? new SecretKeySpec(enckey, KEY_ALGORITHM) : null;
+		this.aps = set;
+		this.acc_aps = this.aps;
+		isValidated = false;
+		keyProvided = true;
+	}
 
 	public EncryptedAPS(ObjectId apsId, ObjectId who, ObjectId owner, APSSecurityLevel lvl) throws InternalServerException {
 	  this(apsId, who, owner, lvl, null);
@@ -202,8 +213,7 @@ public class EncryptedAPS {
 	}
 	
 	protected boolean findAndselectAccessibleSubset() throws AppException {
-		if (isAccessable()) {
-			AccessLog.debug("isAccessable");
+		if (isAccessable()) {			
 			return true;
 		}
 		AccessLog.debug("notAccessable");

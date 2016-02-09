@@ -3,6 +3,7 @@ package utils.access;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -68,19 +69,26 @@ public class Feature_AccountQuery extends Feature {
 						for (DBRecord record : consentRecords)
 							record.id = record._id.toString() + "." + sp._id.toString();
 					}
+					if (q.returns("consentAps")) {
+						for (DBRecord record : consentRecords) record.consentAps = sp._id;
+					}
 
 					result.addAll(consentRecords);
 				}
 			} else {
 
-				if (sets.contains("self") || sets.contains("all") || sets.contains(q.getApsId().toString())) {
+				if ((sets.contains("self") || sets.contains("all") || sets.contains(q.getApsId().toString())) && !q.restrictedBy("consent-after")) {
 					result = next.query(q);
 					if (q.returns("id")) {
 						for (DBRecord record : result)
 							record.id = record._id.toString() + "." + q.getApsId().toString();
 					}
-				} else
+					if (q.returns("consentAps")) {
+						for (DBRecord record : result) record.consentAps = q.getApsId();
+					}
+				} else {
 					result = new ArrayList<DBRecord>();
+				}
 
 				if (sets.contains("all") || sets.contains("other") || sets.contains("shared")) {
 					Set<Consent> consents = null;
@@ -88,12 +96,28 @@ public class Feature_AccountQuery extends Feature {
 						consents = new HashSet<Consent>(Circle.getAllByMember(q.getCache().getOwner()));
 					else
 						consents = Consent.getAllByAuthorized(q.getCache().getOwner());
+					
+					if (q.restrictedBy("consent-after") && !consents.isEmpty()) {
+						long consentDate = ((Date) q.getProperties().get("consent-after")).getTime();
+						Set<Consent> filtered = new HashSet<Consent>(consents.size());
+						for (Consent consent : consents) {
+						   APS consentaps = q.getCache().getAPS(consent._id, consent.owner);
+						   if (consentDate < consentaps.getLastChanged()) {
+							   filtered.add(consent);
+						   }	
+						}
+						consents = filtered;
+					}
+					
 					for (Consent circle : consents) {
 						List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id));
 
 						if (q.returns("id")) {
 							for (DBRecord record : consentRecords)
 								record.id = record._id.toString() + "." + circle._id.toString();
+						}
+						if (q.returns("consentAps")) {
+							for (DBRecord record : consentRecords) record.consentAps = circle._id;
 						}
 
 						result.addAll(consentRecords);
@@ -105,18 +129,37 @@ public class Feature_AccountQuery extends Feature {
 						if (ObjectId.isValid(owner))
 							owners.add(new ObjectId(owner));
 					}
+					if (!owners.isEmpty()) {
 
-					Set<Consent> consents = Consent.getAllByAuthorizedAndOwners(q.getCache().getOwner(), owners);
-					for (Consent circle : consents) {
-						List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id));
-
-						if (q.returns("id")) {
-							for (DBRecord record : consentRecords)
-								record.id = record._id.toString() + "." + circle._id.toString();
+						Set<Consent> consents = Consent.getAllByAuthorizedAndOwners(q.getCache().getOwner(), owners);
+						
+						if (q.restrictedBy("consent-after") && !consents.isEmpty()) {
+							long consentDate = ((Date) q.getProperties().get("consent-after")).getTime();
+							Set<Consent> filtered = new HashSet<Consent>(consents.size());
+							for (Consent consent : consents) {
+							   APS consentaps = q.getCache().getAPS(consent._id, consent.owner);
+							   if (consentDate < consentaps.getLastChanged()) {
+								   filtered.add(consent);
+							   }	
+							}
+							consents = filtered;
 						}
-
-						result.addAll(consentRecords);
-
+						
+						for (Consent circle : consents) {
+														
+							List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id));
+	
+							if (q.returns("id")) {
+								for (DBRecord record : consentRecords)
+									record.id = record._id.toString() + "." + circle._id.toString();
+							}
+							if (q.returns("consentAps")) {
+								for (DBRecord record : consentRecords) record.consentAps = circle._id;
+							}
+	
+							result.addAll(consentRecords);
+	
+						}
 					}
 
 				}
@@ -129,6 +172,9 @@ public class Feature_AccountQuery extends Feature {
 			if (q.returns("id")) {
 				for (DBRecord record : result)
 					record.id = record._id.toString() + "." + q.getApsId().toString();
+			}
+			if (q.returns("consentAps")) {
+				for (DBRecord record : result) record.consentAps = q.getApsId();
 			}
 			return result;
 		}

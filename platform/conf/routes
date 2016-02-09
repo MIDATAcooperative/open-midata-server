@@ -7,7 +7,6 @@
 GET     /test                                            controllers.Application.test()
 GET     /test2                                           controllers.Application.test2()
 GET     /debug/aps/:id                                   controllers.Debug.get(id: String)
-GET     /debug/resetinfo                                 controllers.Debug.resetInfo()
 GET     /debug/test                                 controllers.Debug.test()
 GET     /fhir/*all                                       controllers.FHIR.get(all)
 
@@ -51,6 +50,7 @@ GET     /members/api/records/shared/:apsId               controllers.Records.get
 GET     /records/redirect/:appId                         controllers.Records.onAuthorized(appId: String)
 POST    /members/api/records/shared                      controllers.Records.updateSharing()
 POST    /members/api/records/share                       controllers.Records.share()
+POST    /members/api/records/fix                         controllers.Records.fixAccount()
 
 GET     /records/:id/file                                controllers.Records.getFile(id: String)
 

@@ -18,6 +18,7 @@ import utils.collections.Sets;
 import utils.db.DBLayer;
 import utils.db.DatabaseException;
 import utils.db.LostUpdateException;
+import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 import utils.search.Search;
 import utils.search.Search.Type;
@@ -29,6 +30,7 @@ import utils.search.Search.Type;
 public class AccessPermissionSet extends Model {
 
 	private static final String collection = "aps";
+	public @NotMaterialized static final Set<String> ALL_FIELDS = Sets.create("keys", "version", "direct" ,"permissions", "encrypted", "security", "unmerged");
 	
 	/**
 	 * security level of this APS.
@@ -70,7 +72,11 @@ public class AccessPermissionSet extends Model {
 	}
 	
 	public static AccessPermissionSet getById(ObjectId id) throws InternalServerException {
-		return Model.get(AccessPermissionSet.class, collection, CMaps.map("_id", id), Sets.create("keys", "version", "direct" ,"permissions", "encrypted", "security", "unmerged"));
+		return Model.get(AccessPermissionSet.class, collection, CMaps.map("_id", id), ALL_FIELDS);
+	}
+	
+	public static Set<AccessPermissionSet> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
+		return Model.getAll(AccessPermissionSet.class, collection, properties, fields);
 	}
 		
 	

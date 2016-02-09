@@ -102,7 +102,7 @@ public class Feature_QueryRedirect extends Feature {
 			return;
 		}
 		Object targetAPSId = query.get("aps");
-		AccessLog.debug("Redirect to Query:");
+		AccessLog.logBegin("begin redirect to Query:");
 		List<DBRecord> result = next.query(new Query(combined, q.getFields(), q.getCache(), new ObjectId(targetAPSId.toString())));
 		
 		if (query.containsField("_exclude") && result.size() > 0) {			
@@ -111,6 +111,7 @@ public class Feature_QueryRedirect extends Feature {
 		} 
 		
 		results.addAll(result);
+		AccessLog.logEnd("end redirect");
 	}
 	
 	private List<DBRecord> memoryQuery(Query q, BasicBSONObject query, List<DBRecord> results) throws AppException {

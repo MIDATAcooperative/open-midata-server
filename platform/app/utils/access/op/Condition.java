@@ -11,4 +11,10 @@ public interface Condition {
 	 * @return true if the condition is satisfied
 	 */
 	public boolean satisfiedBy(Object obj);
+	
+	/**
+	 * returns an optimized version of the condition
+	 * @return optimized version of condition (may be same object)
+	 */
+	public Condition optimize();
 }

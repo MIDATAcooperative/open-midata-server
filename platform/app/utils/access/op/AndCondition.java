@@ -1,22 +1,25 @@
 package utils.access.op;
 
-import java.util.AbstractMap;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.bson.BSONObject;
-import org.bson.types.BasicBSONList;
-
 import scala.NotImplementedError;
 
+/**
+ * "And" operator for mongo expressions
+ *
+ */
 public class AndCondition implements Condition {
-	
-	/**
-	 * Constructor. 	
-	 */
+		
     private List<Condition> checks;
 
+    /**
+     * Constructor
+     * @param restrictions map with remainder of "and" expression
+     */
+	@SuppressWarnings("unchecked")
 	public AndCondition(Map<String, Object> restrictions) {
 	   checks = new ArrayList<Condition>();
 	   for (String accessKey : restrictions.keySet()) {		  		  
@@ -39,7 +42,22 @@ public class AndCondition implements Condition {
 	   }
 	}
 	
-	public Condition parseRemaining(Object fragment) {
+	@Override
+	public Condition optimize() {
+		if (checks.size() == 1) return checks.get(0).optimize();
+		for (int i=0;i<checks.size();i++) {
+			checks.set(i, checks.get(i).optimize());
+		}
+		return this;
+	}
+	
+	/**
+	 * parses a (part of a) json mongo expression. 
+	 * @param fragment may be a map(json object) or a constant
+	 * @return expression parsed into a condition object
+	 */
+	@SuppressWarnings("unchecked")
+	public static Condition parseRemaining(Object fragment) {
 		if (fragment instanceof String) {	    	   
 	       return new EqualsSingleValueCondition(fragment);
 	    } else if (fragment instanceof Map) {

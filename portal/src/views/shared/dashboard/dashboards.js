@@ -197,7 +197,7 @@ angular.module('portal')
 		        	 icon : "/images/icons/help.png",
 		        	 button : "View"
 		         }
-			},
+			}/*,
 			{
 			     id: "training",
 			     title: "Training",
@@ -210,7 +210,7 @@ angular.module('portal')
 		        	 icon : "/images/icons/training.png",
 		        	 button : "View"
 		         }
-			}
+			}*/
 		  ],
 		"help" : 
 			  [

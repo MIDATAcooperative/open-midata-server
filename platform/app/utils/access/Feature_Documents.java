@@ -22,11 +22,12 @@ public class Feature_Documents extends Feature {
 
 		if (result.size() < records.size()) {
 			for (DBRecord rec : records) {
-				if (rec.key == null && rec.document != null && rec.stream == null) {
+				if (rec.security == null && rec.document != null && rec.stream == null) {
 					List<DBRecord> docs = QueryEngine.listInternal(q.getCache(), q.getApsId(), CMaps.map("_id", rec.document), Sets.create("stream"));
 					if (docs.size() == 1) {
 						DBRecord doc = docs.get(0);
 						rec.key = doc.key;
+						rec.security = doc.security;
 						rec.owner = doc.owner;
 						rec.meta.put("format", doc.meta.get("format")); //TODO or it is filtered out by QueryRedirect
 						rec.meta.put("content", doc.meta.get("content")); //TODO or it is filtered out by QueryRedirect

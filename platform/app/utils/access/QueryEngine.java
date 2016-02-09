@@ -100,7 +100,7 @@ class QueryEngine {
 	}
 	
 	public static Collection<RecordsInfo> infoQuery(Query q, ObjectId aps, boolean cached, AggregationType aggrType, ObjectId owner) throws AppException {
-		AccessLog.debug("infoQuery aps="+aps+" cached="+cached);
+		AccessLog.logBegin("begin infoQuery aps="+aps+" cached="+cached);
 		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
 		
 		if (cached) {
@@ -127,7 +127,10 @@ class QueryEngine {
 				long diff = myaps.getLastChanged() - from.getTime();
 				AccessLog.debug("DIFF:"+diff);
 				
-				if (diff < 1200) return result.values();
+				if (diff < 1200) {
+					AccessLog.logEnd("end infoQuery from cache");
+					return result.values();
+				}
 			}
 		}
 		
@@ -166,7 +169,7 @@ class QueryEngine {
 						
 		}
 		
-		AccessLog.debug("infoQuery result: cached="+cached+" records="+recs.size()+" result="+result.size());
+		AccessLog.logEnd("end infoQuery result: cached="+cached+" records="+recs.size()+" result="+result.size());
 		if (cached && recs.size()>0 && result.size() == 1) {
 			RecordsInfo inf = result.values().iterator().next();
 			BasicBSONObject r = new BasicBSONObject();
@@ -184,10 +187,11 @@ class QueryEngine {
 	}
 	
     public static List<DBRecord> fullQuery(Query q, ObjectId aps) throws AppException {
+    	AccessLog.logBegin("begin full query");
     	List<DBRecord> result;
     	
     	
-    	Feature qm = new Feature_BlackList(q, new Feature_QueryRedirect(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams())))));
+    	Feature qm = new Feature_BlackList(q, new Feature_QueryRedirect(new Feature_Indexes(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams()))))));
     									
 		result = findRecordsDirectlyInDB(q);
     	
@@ -201,7 +205,10 @@ class QueryEngine {
 		}
 		AccessLog.debug("Pre Postprocess result size:"+result.size());
 				
-		return postProcessRecords(qm, q, result);
+		result = postProcessRecords(qm, q, result);
+		AccessLog.logEnd("end full query");
+		
+		return result;
 	}
     
     protected static void addFullIdField(Query q, APS source, List<DBRecord> result) {
@@ -235,6 +242,14 @@ class QueryEngine {
 		}
     }
     
+    private static final Set<String> DATA_ONLY = Sets.create("_id", "encryptedData");
+    protected static DBRecord loadData(DBRecord input) throws AppException {
+    	DBRecord r2 = DBRecord.getById(input._id, DATA_ONLY);					
+		input.encryptedData = r2.encryptedData;
+		RecordEncryption.decryptRecord(input);
+		return input;
+    }
+    
     protected static List<DBRecord> duplicateElimination(List<DBRecord> input) {
     	Set<ObjectId> used = new HashSet<ObjectId>(input.size());
     	List<DBRecord> filteredresult = new ArrayList<DBRecord>(input.size());
@@ -250,17 +265,19 @@ class QueryEngine {
     protected static List<DBRecord> onlyWithKey(List<DBRecord> input) {    	
     	List<DBRecord> filteredresult = new ArrayList<DBRecord>(input.size());
     	for (DBRecord r : input) {
-    		if (r.key != null) filteredresult.add(r);
+    		if (r.security != null) filteredresult.add(r);
     	}
     	return filteredresult;
     }
     
-    protected static List<DBRecord> postProcessRecords(Feature qm, Query q, List<DBRecord> result) throws AppException {    	
+    protected static List<DBRecord> postProcessRecords(Feature qm, Query q, List<DBRecord> result) throws AppException {
+    	if (result.size() > 0) {
+    	
     	result = duplicateElimination(result); 
-			
-    	boolean postFilter = q.getMinDate() != null || q.getMaxDate() != null;
+			    	
     	int minTime = q.getMinTime();
-    	int compress = 0;
+    	int compress = 0;    	
+    	
     	if (q.getFetchFromDB()) {				
 			for (DBRecord record : result) {
 				fetchFromDB(q, record);
@@ -270,10 +287,28 @@ class QueryEngine {
 				} else {compress++;record.meta=null;}				
 				//if (!q.getGiveKey()) record.clearSecrets();
 			}
-		} else {
+    	} else {
+    		Set<String> check = q.mayNeedFromDB(); 
+    		if (!check.isEmpty()) {
+    			for (DBRecord record : result) {
+    				boolean fetch = false;
+    				for (String k : check) if (!record.meta.containsField(k)) {
+    					AccessLog.debug("need: "+k);
+    					fetch = true; 
+    				}
+    				if (fetch) {
+    					fetchFromDB(q, record);
+    					if (minTime == 0 || record.time ==0 || record.time >= minTime) {
+    					  RecordEncryption.decryptRecord(record);
+    					  if (!record.meta.containsField("creator")) record.meta.put("creator", record.owner);
+    					} else {compress++;record.meta=null;}
+    				}
+    			}
+    	    }
+    			
 		   if (!q.getGiveKey()) for (DBRecord record : result) record.clearSecrets();
 		}
-    	AccessLog.debug("compress: "+compress+ "minTime="+minTime);
+    	
     	if (compress > 0) {
     		List<DBRecord> result_new = new ArrayList<DBRecord>(result.size() - compress);
     		for (DBRecord r : result) {
@@ -291,15 +326,15 @@ class QueryEngine {
 		if (q.restrictedBy("name")) result = filterByMetaSet(result, "name", q.getRestriction("name"));
 		if (q.restrictedBy("data"))	result = filterByDataQuery(result, (Map<String,Object>) q.getProperties().get("data"));
 		
-		if (postFilter) {
-			Date minDate = q.getMinDate();
-			Date maxDate = q.getMaxDate();
-			result = filterByDateRange(result, "created", minDate, maxDate);			
-		}
+		result = filterByDateRange(result, "created", q.getMinDateCreated(), q.getMaxDateCreated());			
+		result = filterByDateRange(result, "lastUpdated", q.getMinDateUpdated(), q.getMaxDateUpdated());
+		
 		// 9 Order records
 	    Collections.sort(result);
 	    
 	    result = limitResultSize(q, result);
+	    
+    	}
 	    
 	    AccessLog.debug("END Full Query, result size="+result.size());
 	    
@@ -331,7 +366,7 @@ class QueryEngine {
     
     protected static List<DBRecord> filterByDataQuery(List<DBRecord> input, Map<String, Object> query) {    	
     	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());    	
-    	Condition condition = new AndCondition(query);
+    	Condition condition = new AndCondition(query).optimize();
     	
     	for (DBRecord record : input) {
             Object accessVal = record.data;                        
@@ -348,10 +383,12 @@ class QueryEngine {
     	return null;
     }
             
-    protected static List<DBRecord> filterByDateRange(List<DBRecord> input, String property, Date minDate, Date maxDate) {    	
+    protected static List<DBRecord> filterByDateRange(List<DBRecord> input, String property, Date minDate, Date maxDate) {
+    	if (minDate == null && maxDate == null) return input;
     	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());
     	for (DBRecord record : input) {
     		Date cmp = (Date) record.meta.get(property);
+    		if (cmp == null) cmp = (Date) record.meta.get("created"); //Fallback for lastUpdated
     		if (minDate != null && cmp.before(minDate)) continue;
 			if (maxDate != null && cmp.after(maxDate)) continue;    		    		    	
     		filteredResult.add(record);

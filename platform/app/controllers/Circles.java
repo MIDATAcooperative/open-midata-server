@@ -368,6 +368,8 @@ public class Circles extends APIController {
 			Map<String, Object> ids = new HashMap<String,Object>();
 			ids.put("ids", query.get("exclude-ids"));
 			RecordManager.instance.setMeta(userId, apsId, "_exclude", ids);
+		} else {
+			RecordManager.instance.removeMeta(userId, apsId, "_exclude");
 		}
 	}
 			

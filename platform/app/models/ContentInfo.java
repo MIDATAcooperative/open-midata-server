@@ -1,7 +1,9 @@
 package models;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import models.enums.APSSecurityLevel;
 import utils.collections.CMaps;
@@ -39,16 +41,23 @@ public class ContentInfo extends Model {
 		return name;
 	}
 	
+	private static Map<String, ContentInfo> byName = new ConcurrentHashMap<String, ContentInfo>();
 	public static ContentInfo getByName(String name) throws InternalServerException {
 		int p = name.indexOf("/");
 		if (p>=0) name = name.substring(0, p);
-		ContentInfo r = Model.get(ContentInfo.class, collection, CMaps.map("content", name), ALL);
+		
+		ContentInfo r = byName.get(name);
+		if (r != null) return r;
+		
+		r = Model.get(ContentInfo.class, collection, CMaps.map("content", name), ALL);
 		if (r == null) {
 			r = new ContentInfo();
 			r.content = name;
 			r.security = APSSecurityLevel.HIGH;			
 			r.group = "other";
 		}
+		byName.put(name, r);
+		
 		return r;
 	}
 	

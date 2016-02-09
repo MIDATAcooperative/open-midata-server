@@ -35,6 +35,7 @@ import utils.auth.AnyRoleSecured;
 import utils.auth.MemberSecured;
 import utils.auth.RecordToken;
 import utils.auth.SpaceToken;
+import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.db.FileStorage.FileData;
@@ -269,14 +270,22 @@ public class Records extends APIController {
 	@Security.Authenticated(MemberSecured.class)
 	public static Result delete() throws JsonValidationException, AppException {
         JsonNode json = request().body().asJson();
+        ObjectId userId = new ObjectId(request().username());
+        
 		
-		JsonValidation.validate(json, "_id");
 		
+		if (json.has("_id")) {
 		String id = JsonValidation.getString(json, "_id");
-		RecordToken tk = getRecordTokenFromString(id);
-		ObjectId userId = new ObjectId(request().username());
-		
+		RecordToken tk = getRecordTokenFromString(id);				
 		RecordManager.instance.deleteRecord(userId, tk);
+		} else if (json.has("group")) {
+			String group = JsonValidation.getString(json, "group");
+			List<Record> recs = RecordManager.instance.list(userId, userId, CMaps.map("group", group).map("owner",  "self"), Sets.create("_id"));
+			for (Record r : recs) RecordManager.instance.deleteRecord(userId, new RecordToken(r._id.toString(), userId.toString()));
+			
+			List<Record> streams = RecordManager.instance.list(userId, userId, CMaps.map("group", group).map("owner", "self").map("streams", "only"), Sets.create("_id"));
+			for (Record r : streams) RecordManager.instance.deleteRecord(userId, new RecordToken(r._id.toString(), userId.toString()));
+		}
 		return ok();
 	}
 	
@@ -420,5 +429,20 @@ public class Records extends APIController {
 		FileData fileData = RecordManager.instance.fetchFile(userId, tk);
 		response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
 		return ok(fileData.inputStream);
+	}
+	
+	/**
+	 * Check account tries to fix a broken account by removing indexes and precalculated results 
+	 * @return
+	 * @throws AppException
+	 */
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result fixAccount() throws AppException {
+		ObjectId userId = new ObjectId(request().username());
+		
+		RecordManager.instance.fixAccount(userId);
+		
+		return ok();
 	}
 }

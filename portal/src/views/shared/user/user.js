@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('UserCtrl', ['$scope', '$state', 'users', 'status', 'session', function($scope, $state, users, status, session) {
+.controller('UserCtrl', ['$scope', '$state', 'users', 'status', 'session', 'server', function($scope, $state, users, status, session, server) {
 	// init
 	$scope.status = new status(true);
 	$scope.user = {};
@@ -16,5 +16,9 @@ angular.module('portal')
 		$scope.isSelf = myUserId.$oid == userId;
 		console.log(myUserId);
 	});
+	
+	$scope.fixAccount = function() {
+		server.post(jsRoutes.controllers.Records.fixAccount().url);
+	};
 	
 }]);

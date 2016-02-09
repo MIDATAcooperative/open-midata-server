@@ -219,6 +219,14 @@ angular.module('portal')
 		});
 	};
 	
+	$scope.deleteGroup = function(group) {
+		server.post(jsRoutes.controllers.Records["delete"]().url, { "group" : group }).
+		success(function(data) {
+			$scope.loadGroups();
+			$scope.getInfos($scope.userId, "self");
+		});
+	};
+	
 	
 	// go to record creation/import dialog
 	$scope.createOrImport = function(app) {

@@ -4,8 +4,10 @@ import java.util.Date;
 
 import org.joda.time.format.ISODateTimeFormat;
 
-import utils.access.AccessLog;
-
+/**
+ * A comparison operator for mongo expressions
+ *
+ */
 public class CompareCondition implements Condition {
 
     private Comparable<Object> val;
@@ -18,8 +20,9 @@ public class CompareCondition implements Condition {
 
 
 	/**
-	 * Constructor
-	 * @param val value to compare target object with
+	 * Constructor.
+	 * @param val a value to that the record fields should be compared with 
+	 * @param op comparison operator. 
 	 */
 	public CompareCondition(Comparable<Object> val, CompareOperator op) {
 		this.val = val;
@@ -39,6 +42,11 @@ public class CompareCondition implements Condition {
 		case LT:return val.compareTo(obj) > 0;
 		}
 		return false;
+	}
+
+	@Override
+	public Condition optimize() {
+		return this;
 	}
 	
 

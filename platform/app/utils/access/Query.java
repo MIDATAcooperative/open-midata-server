@@ -24,10 +24,13 @@ public class Query {
 	private Map<String, Object> properties;
 	private Set<String> fields;		
 	private Set<String> fieldsFromDB;
+	private Set<String> mayNeedFromDB;
 	private int minTime;
 	private int maxTime;
-	private Date minDate;
-	private Date maxDate;
+	private Date minDateCreated;
+	private Date maxDateCreated;
+	private Date minDateUpdated;
+	private Date maxDateUpdated;
 	private boolean fetchFromDB;
 	private boolean restrictedOnTime;
 	private APSCache cache;
@@ -84,12 +87,20 @@ public class Query {
 		return fieldsFromDB;
 	}
 	
+	public Set<String> mayNeedFromDB() {
+		return mayNeedFromDB;
+	}
+	
 	public boolean getFetchFromDB() {
 		return fetchFromDB;
 	}
 	
 	public boolean getGiveKey() {
 		return giveKey;
+	}
+	
+	public boolean isRestrictedOnTime() {
+		return restrictedOnTime;
 	}
 	
 	public Set<String> getRestriction(String name) throws BadRequestException {
@@ -154,17 +165,30 @@ public class Query {
 		return maxTime;
 	}
 	
-	public Date getMinDate() {
-		return minDate;
+	public Date getMinDateCreated() {
+		return minDateCreated;
 	}
 	
-	public long getMinTimestamp() {
-		if (minDate != null) return minDate.getTime();
+	public Date getMinDateUpdated() {
+		return minDateUpdated;
+	}
+	
+	public long getMinCreatedTimestamp() {
+		if (minDateCreated != null) return minDateCreated.getTime();
 		return 0;
 	}
 	
-	public Date getMaxDate() {
-		return maxDate;
+	public long getMinUpdatedTimestamp() {
+		if (minDateUpdated != null) return minDateUpdated.getTime();
+		return 0;
+	}
+	
+	public Date getMaxDateCreated() {
+		return maxDateCreated;
+	}
+	
+	public Date getMaxDateUpdated() {
+		return maxDateUpdated;
 	}
 	
 	public void addMongoTimeRestriction(Map<String, Object> properties) {
@@ -175,7 +199,7 @@ public class Query {
 			    Map<String, Integer> restriction = new HashMap<String, Integer>();
 			    if (minTime!=0) {
 			    	restriction.put("$gte", minTime);
-			    	AccessLog.debug("$gte:"+minTime);
+			    	//AccessLog.debug("$gte:"+minTime);
 			    }
 			    if (maxTime!=0) restriction.put("$lte", maxTime);
 			    properties.put("time", restriction);
@@ -188,24 +212,28 @@ public class Query {
 		
 		 fetchFromDB = fields.contains("data") ||
 	              fields.contains("app") || 
-	              fields.contains("creator") || 
-	              fields.contains("created") || 
+	              fields.contains("creator") || 	             
 	              fields.contains("name") || 
 	              fields.contains("description") || 
-	              fields.contains("tags") ||
-	              fields.contains("content") ||
-	              fields.contains("format") ||
+	              fields.contains("tags") ||	              
+	              fields.contains("watches") ||
 	              properties.containsKey("app") ||
 	              properties.containsKey("creator") ||
-	              properties.containsKey("created") ||
+	              
 	              properties.containsKey("name");
 		 
 		 restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age") || properties.containsKey("created-after");
 		 
          fieldsFromDB = Sets.create("createdOld");
+         mayNeedFromDB = new HashSet<String>();
+         if (fields.contains("format")) mayNeedFromDB.add("format");
+         if (fields.contains("content")) mayNeedFromDB.add("content");
+         if (fields.contains("created")) mayNeedFromDB.add("created");
+         
          if (restrictedOnTime) fieldsFromDB.add("time");
 		 if (fetchFromDB) fieldsFromDB.add("encrypted");
 		 if (fields.contains("data")) fieldsFromDB.add("encryptedData");
+		 if (fields.contains("watches")) fieldsFromDB.add("encWatches");
 				
 		 // TODO Remove later
 		 if (fields.contains("data")) fieldsFromDB.add("data");
@@ -213,25 +241,35 @@ public class Query {
 		 if (fields.contains("format")) fieldsFromDB.add("format");
 		 if (fields.contains("content")) fieldsFromDB.add("content");
 		 if (uses("creator")) fieldsFromDB.add("creator");
-		 if (fields.contains("created") || restrictedOnTime) fieldsFromDB.add("created");
+		 //if (fields.contains("created") || restrictedOnTime) fieldsFromDB.add("created");
 		 if (fields.contains("name")) fieldsFromDB.add("name");
 		 if (fields.contains("description")) fieldsFromDB.add("description");
 		 if (fields.contains("tags")) fieldsFromDB.add("tags");
 		 
 		 if (properties.containsKey("max-age")) {
 			Number maxAge = Long.parseLong(properties.get("max-age").toString());
-			minDate = new Date(System.currentTimeMillis() - 1000 * maxAge.longValue());
-			minTime = getTimeFromDate(minDate);
+			minDateCreated = new Date(System.currentTimeMillis() - 1000 * maxAge.longValue());
+			minTime = getTimeFromDate(minDateCreated);
 		 }
 		 
 		 if (properties.containsKey("created-after")) {				
-				minDate = (Date) properties.get("created-after");
-				minTime = getTimeFromDate(minDate);
+				minDateCreated = (Date) properties.get("created-after");
+				minTime = getTimeFromDate(minDateCreated);
+		 }
+		 
+		 if (properties.containsKey("updated-after")) {				
+				minDateUpdated = (Date) properties.get("updated-after");
+				minTime = getTimeFromDate(minDateUpdated); 
 		 }
 		 
 		 if (properties.containsKey("created-before")) {				
-				maxDate = (Date) properties.get("created-before");
-				maxTime = getTimeFromDate(minDate);
+				maxDateCreated = (Date) properties.get("created-before");
+				// maxTime = getTimeFromDate(maxDate); NO lastUpdated also changes maxTime entry
+		 }
+		 
+		 if (properties.containsKey("updated-before")) {				
+				maxDateUpdated = (Date) properties.get("updated-before");
+				maxTime = getTimeFromDate(maxDateUpdated);
 		 }
 	}
 	

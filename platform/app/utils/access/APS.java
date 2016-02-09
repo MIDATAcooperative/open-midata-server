@@ -36,6 +36,8 @@ public abstract class APS extends Feature {
 	
 	public abstract ObjectId getId();
 	
+	public abstract boolean isReady() throws AppException;
+	
 	public abstract boolean isAccessible() throws AppException;
 	
 	public abstract void touch() throws AppException;

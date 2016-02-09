@@ -28,13 +28,13 @@
 			<div class="row">
 			    <p class="col-xs-2">Tile Name:</p>
 			    <p class="col-xs-10">			      
-			      <input type="text" ng-model="options.spaceName" />			
+			      <input class="form-control" type="text" ng-model="options.spaceName" />			
                 </p>			    			        
 			</div>
 			<div class="row">
 			    <p class="col-xs-2">Location:</p>
 			    <p class="col-xs-10">			      
-			      <input type="text" ng-model="options.context" />			
+			      <select class="form-control" ng-model="options.context" ng-options="context.value as context.label for context in contexts"/>			
                 </p>			    			        
 			</div>
 			<div ng-if="options.query" class="row">

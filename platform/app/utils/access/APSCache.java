@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+import models.AccessPermissionSet;
+
 import org.bson.types.ObjectId;
 
 import utils.auth.EncryptionNotSupportedException;
@@ -30,6 +32,12 @@ class APSCache {
 		return ownerId;
 	}
 	
+	public boolean hasAPS(ObjectId apsId) throws AppException {
+		APS result = cache.get(apsId.toString());
+		if (result == null) return false;
+		return result.isReady();
+	}
+	
 	public APS getAPS(ObjectId apsId) throws InternalServerException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) {
@@ -53,6 +61,16 @@ class APSCache {
 		if (result == null) { 
 			result = new APSImplementation(new EncryptedAPS(apsId, ownerId, unlockKey, owner));
 			if (!result.isAccessible()) result.addAccess(Collections.<ObjectId>singleton(ownerId));
+			cache.put(apsId.toString(), result);
+		}
+		return result;
+	}
+	
+	public APS getAPS(ObjectId apsId, byte[] unlockKey, ObjectId owner, AccessPermissionSet set) throws AppException, EncryptionNotSupportedException {
+		APS result = cache.get(apsId.toString());
+		if (result == null) { 
+			result = new APSImplementation(new EncryptedAPS(apsId, ownerId, unlockKey, owner, set));
+			//if (!result.isAccessible()) result.addAccess(Collections.<ObjectId>singleton(ownerId));
 			cache.put(apsId.toString(), result);
 		}
 		return result;

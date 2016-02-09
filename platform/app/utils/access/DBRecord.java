@@ -6,9 +6,11 @@ import java.util.Set;
 
 import models.Model;
 import models.Record;
+import models.enums.APSSecurityLevel;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
+import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
@@ -46,6 +48,16 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	public ObjectId document;
 	
 	/**
+	 * id of consent/owner aps this record has been found in. Only set if queried for field "consentAps"
+	 */
+	public @NotMaterialized ObjectId consentAps;
+	
+	/**
+	 * creation date as stored in aps
+	 */
+	public @NotMaterialized Date createdFromAps;
+	
+	/**
 	 * a part name for records that are part of a document,
 	 * 
 	 * This field is null for all records that are not part of a document
@@ -74,6 +86,16 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	 * the encrypted "data" field of this record
 	 */
 	public byte[] encryptedData;
+	
+	/**
+	 * encrypted "watches" list of this record
+	 */
+	public byte[] encWatches;
+	
+	/**
+	 * list of aps that need to be notified upon changes of this record
+	 */
+	public BasicBSONList watches;
 	
 	/**
 	 * this field is true for records stored in medium security streams
@@ -123,6 +145,11 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	public @NotMaterialized boolean isStream;
 	
 	/**
+	 * Level of security applied to this record
+	 */
+	public @NotMaterialized APSSecurityLevel security;
+	
+	/**
 	 * Is this record
 	 */
 	public @NotMaterialized boolean isReadOnly;
@@ -132,12 +159,15 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	public void clearEncryptedFields() {
 		this.meta = null;					
 		this.data = null;
+		this.watches = null;
 	}
 	
 	public void clearSecrets() {
 		this.key = null;
+		this.security = null;
 		this.encrypted = null;
 		this.encryptedData = null;		
+		this.encWatches = null;
 	}
 
 	public static boolean exists(Map<String, ? extends Object> properties) throws InternalServerException {
@@ -189,6 +219,7 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	
 	@Override
 	public int compareTo(DBRecord other) {
+				
 		Date dme = (Date) this.meta.get("created");
 		Date dother = (Date) other.meta.get("created");
 		if (dme != null && dother != null) {

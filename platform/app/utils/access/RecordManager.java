@@ -29,6 +29,7 @@ import models.enums.AggregationType;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
+import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
 
 import utils.DateTimeUtils;
@@ -61,10 +62,13 @@ public class RecordManager {
 	
 	public final static Set<String> INTERNALIDONLY = Sets.create("_id");
 	public final static Set<String> COMPLETE_META = Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format", "content", "description", "isStream");
+			"app", "creator", "created", "name", "format", "content", "description", "isStream", "lastUpdated");
 	public final static Set<String> COMPLETE_DATA = Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format", "content", "description", "isStream",
+			"app", "creator", "created", "name", "format", "content", "description", "isStream", "lastUpdated",
 			"data", "group");
+	public final static Set<String> COMPLETE_DATA_WITH_WATCHES = Sets.create("id", "owner",
+			"app", "creator", "created", "name", "format", "content", "description", "isStream", "lastUpdated",
+			"data", "group", "watches");
 	//public final static String STREAM_TYPE = "Stream";
 	public final static Map<String, Object> STREAMS_ONLY = CMaps.map("streams", "only").map("flat", "true");
 	public final static Map<String, Object> STREAMS_ONLY_OWNER = CMaps.map("streams", "only").map("flat", "true").map("owner", "self");	
@@ -200,7 +204,7 @@ public class RecordManager {
 	public void share(ObjectId who, ObjectId fromAPS, ObjectId toAPS,
 			Set<ObjectId> records, boolean withOwnerInformation)
 			throws AppException {
-        AccessLog.debug("share: who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString()+" count="+(records!=null ? records.size() : "?"));
+        AccessLog.logBegin("begin share: who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString()+" count="+(records!=null ? records.size() : "?"));
 		APS apswrapper = getCache(who).getAPS(toAPS);
 		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(who), fromAPS,
 				records != null ? CMaps.map("_id", records) : RecordManager.FULLAPS_FLAT,
@@ -211,6 +215,9 @@ public class RecordManager {
         if (alreadyContained.size() == recordEntries.size()) return;
         if (alreadyContained.size() == 0) {		
 		    apswrapper.addPermission(recordEntries, withOwnerInformation);
+		    for (DBRecord rec : recordEntries) {		    	
+		    	RecordLifecycle.addWatchingAps(rec, toAPS);
+		    }
         } else {
         	Set<ObjectId> contained = new HashSet<ObjectId>();
         	for (DBRecord rec : alreadyContained) contained.add(rec._id);
@@ -219,8 +226,9 @@ public class RecordManager {
         		if (!contained.contains(rec._id)) filtered.add(rec);
         	}
         	apswrapper.addPermission(filtered, withOwnerInformation);
+        	for (DBRecord rec : filtered) RecordLifecycle.addWatchingAps(rec, toAPS);
         }
-				
+        AccessLog.logEnd("end share");
 	}
 
 	/**
@@ -259,12 +267,15 @@ public class RecordManager {
 	 */
 	public void unshare(ObjectId who, ObjectId apsId, Set<ObjectId> records)
 			throws AppException {
-
+		if (records.size() == 0) return;
+		
+        AccessLog.logBegin("begin unshare who="+who.toString()+" aps="+apsId.toString()+" #recs="+records.size());
 		APS apswrapper = getCache(who).getAPS(apsId);
 		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(who), apsId,
-				CMaps.map("_id", records), Sets.create("_id", "format", "content"));		
+				CMaps.map("_id", records), Sets.create("_id", "format", "content", "watches"));		
 		apswrapper.removePermission(recordEntries);
-			
+		for (DBRecord rec : recordEntries) RecordLifecycle.removeWatchingAps(rec, apsId);
+		AccessLog.logEnd("end unshare");
 	}
 
 	/**
@@ -289,6 +300,17 @@ public class RecordManager {
 	 */
 	public void setMeta(ObjectId who, ObjectId apsId, String key, Map<String,Object> data) throws AppException {
 		getCache(who).getAPS(apsId).setMeta(key, data);
+	}
+	
+	/**
+	 * remove a meta data object from an APS
+	 * @param who id of executing person
+	 * @param apsId id of APS to save into
+	 * @param key unique name of meta data object	
+	 * @throws AppException
+	 */
+	public void removeMeta(ObjectId who, ObjectId apsId, String key) throws AppException {
+		getCache(who).getAPS(apsId).removeMeta(key);
 	}
 
 	public void addDocumentRecord(ObjectId owner, Record record,
@@ -357,7 +379,7 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public void updateRecord(ObjectId executingPerson, ObjectId apsId, Record record) throws AppException {
-		List<DBRecord> result = QueryEngine.listInternal(getCache(executingPerson), apsId, CMaps.map("_id", record._id), RecordManager.COMPLETE_DATA);	
+		List<DBRecord> result = QueryEngine.listInternal(getCache(executingPerson), apsId, CMaps.map("_id", record._id), RecordManager.COMPLETE_DATA_WITH_WATCHES);	
 		if (result.size() != 1) throw new InternalServerException("error.internal.notfound", "Unknown Record");
 		
 		DBRecord rec = result.get(0);
@@ -367,15 +389,20 @@ public class RecordManager {
 		if (!providedVersion.equals(storedVersion)) throw new BadRequestException("error.concurrent", "Concurrent update");
 		
 		VersionedDBRecord vrec = new VersionedDBRecord(rec);
-		RecordEncryption.encryptRecord(vrec, vrec.key != null ? APSSecurityLevel.HIGH : APSSecurityLevel.NONE);
+		RecordEncryption.encryptRecord(vrec);
 		VersionedDBRecord.add(vrec);
 				
 	    rec.data = record.data;
 	    rec.meta.put("lastUpdated", record.lastUpdated);
+	    rec.time = Query.getTimeFromDate(record.lastUpdated);		
 	    rec.meta.put("version", Long.toString(System.currentTimeMillis()));
 		
-		RecordEncryption.encryptRecord(rec, rec.key != null ? APSSecurityLevel.HIGH : APSSecurityLevel.NONE);		
-	    DBRecord.upsert(rec); 	  					
+	    DBRecord clone = rec.clone();
+	    
+		RecordEncryption.encryptRecord(rec);		
+	    DBRecord.upsert(rec); 	  	
+	    
+	    RecordLifecycle.notifyOfChange(clone, getCache(executingPerson));
 	}
 	
 	/**
@@ -417,6 +444,10 @@ public class RecordManager {
 		
 		cache.getAPS(executingPerson, executingPerson).removePermission(record);
 		
+		if (record.isStream) {
+			AccessPermissionSet.delete(record._id);
+		}
+		
 		DBRecord.delete(record.owner, record._id);
 	}
 
@@ -437,7 +468,10 @@ public class RecordManager {
 			
 			if (record.document != null) {
 				List<DBRecord> doc = QueryEngine.listInternal(getCache(executingPerson), record.owner, CMaps.map("_id", record.document.toString()), Sets.create("key"));
-				if (doc.size() == 1) record.key = doc.get(0).key;
+				if (doc.size() == 1) {
+					record.key = doc.get(0).key;
+					record.security = doc.get(0).security;
+				}
 				else throw new InternalServerException("error.internal", "Document not identified");
 				documentPart = true;
 			} else apswrapper.provideRecordKey(record);
@@ -454,7 +488,7 @@ public class RecordManager {
 			usedKey = record.key;
 		}
 								
-		RecordEncryption.encryptRecord(record, record.key != null ? APSSecurityLevel.HIGH : APSSecurityLevel.NONE);		
+		RecordEncryption.encryptRecord(record);		
 	    if (upsert) { DBRecord.upsert(record); } else { DBRecord.add(record); }	  
 	    AccessLog.logEnd("End Add Record");				
 		return usedKey;	
@@ -470,12 +504,16 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public void applyQuery(ObjectId userId, Map<String, Object> query, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws AppException {
-		AccessLog.debug("BEGIN APPLY QUERY");
+		AccessLog.logBegin("BEGIN APPLY QUERY");
 		
 		
-		List<DBRecord> records = QueryEngine.listInternal(getCache(userId), sourceaps, RecordManager.FULLAPS_FLAT_OWNER, RecordManager.COMPLETE_META);
-		AccessLog.debug("SHARE CANDIDATES:"+records.size());
-		records = QueryEngine.listFromMemory(query, records);
+		//List<DBRecord> records = QueryEngine.listInternal(getCache(userId), sourceaps, RecordManager.FULLAPS_FLAT_OWNER, RecordManager.COMPLETE_META);
+		//AccessLog.debug("SHARE CANDIDATES:"+records.size());
+		//records = QueryEngine.listFromMemory(query, records);
+		
+		Map<String, Object> selectionQuery = CMaps.map(query).map("streams", "true").map("flat", "true").map("owner", "self");		
+		List<DBRecord> records = QueryEngine.listInternal(getCache(userId), sourceaps, selectionQuery, RecordManager.COMPLETE_META);
+		
 		AccessLog.debug("SHARE QUALIFIED:"+records.size());
 		if (records.size() > 0) {
 			Set<ObjectId> ids = new HashSet<ObjectId>();
@@ -495,7 +533,7 @@ public class RecordManager {
 		
 		AccessLog.debug("UNSHARE STREAMS QUALIFIED = "+remove.size());
 		RecordManager.instance.unshare(userId, targetaps, remove);
-		AccessLog.debug("END APPLY RULES");
+		AccessLog.logEnd("END APPLY RULES");
 		
 	}
 	
@@ -592,11 +630,14 @@ public class RecordManager {
 		if (result.size() != 1) throw new InternalServerException("error.internal.notfound", "Unknown Record");
 		DBRecord rec = result.get(0);
 		
-		if (rec.key == null) throw new InternalServerException("error.internal", "Missing key for record:"+rec._id.toString());
+		if (rec.security == null) throw new InternalServerException("error.internal", "Missing key for record:"+rec._id.toString());
 		FileData fileData = FileStorage.retrieve(new ObjectId(token.recordId));
 				
-		
-		fileData.inputStream = EncryptionUtils.decryptStream(new SecretKeySpec(rec.key, EncryptedAPS.KEY_ALGORITHM), fileData.inputStream);
+		if (rec.security.equals(APSSecurityLevel.NONE) || rec.security.equals(APSSecurityLevel.LOW)) {
+		  fileData.inputStream = fileData.inputStream;			
+		} else {
+		  fileData.inputStream = EncryptionUtils.decryptStream(new SecretKeySpec(rec.key, EncryptedAPS.KEY_ALGORITHM), fileData.inputStream);
+		}
 		
 		return fileData;
 	}
@@ -672,12 +713,37 @@ public class RecordManager {
 	 * @param who
 	 * @throws AppException
 	 */
-	public void resetInfo(ObjectId who) throws AppException {
+	private void resetInfo(ObjectId who) throws AppException {
+		AccessLog.logBegin("start reset info user="+who.toString());
 		List<Record> result = list(who, who, RecordManager.STREAMS_ONLY_OWNER, Sets.create("_id", "owner"));
 		for (Record stream : result) {
 			AccessLog.debug("reset stream:"+stream._id.toString());
 			getCache(who).getAPS(stream._id, stream.owner).removeMeta("_info");
 		}
+		AccessLog.logEnd("end reset info user="+who.toString());
+	}
+
+	/**
+	 * removes info objects and all indexes for the current account
+	 * @param userId id of user
+	 * @throws AppException
+	 */
+	public void fixAccount(ObjectId userId) throws AppException {
+		
+		resetInfo(userId);		
+		IndexManager.instance.clearIndexes(getCache(userId), userId);
+		
+		AccessLog.logBegin("start search for missing records");
+		APSCache cache = getCache(userId);
+		List<DBRecord> recs = QueryEngine.listInternal(cache, userId, CMaps.map("owner", "self").map("streams", "true"), Sets.create("_id"));
+		Set<String> idOnly = Sets.create("_id");
+		for (DBRecord rec : recs) {
+			if (DBRecord.getById(rec._id, idOnly) == null) {
+				if (rec.stream != null) cache.getAPS(rec.stream, userId).removePermission(rec);
+				else cache.getAPS(userId).removePermission(rec);
+			}
+		}
+		AccessLog.logEnd("end search for missing records");
 	}
 	
 	/*

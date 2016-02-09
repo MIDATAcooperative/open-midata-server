@@ -1,15 +1,22 @@
 package utils.access.op;
 
-import java.util.AbstractMap;
-
 import org.bson.BSONObject;
 import org.bson.types.BasicBSONList;
 
+/**
+ * Field access operator for mongo conditions
+ *
+ */
 public class FieldAccess implements Condition {
 
 	private String field;
 	private Condition cond;
 	
+	/**
+	 * Constructor 
+	 * @param field name of field that should be accessed on the data object
+	 * @param cond sub condition that will be applied
+	 */
 	public FieldAccess(String field, Condition cond) {
 		this.field = field;
 		this.cond = cond;
@@ -47,5 +54,11 @@ public class FieldAccess implements Condition {
     	}
     	return null;
     }
+
+	@Override
+	public Condition optimize() {
+		cond = cond.optimize();
+		return this;
+	}
 
 }

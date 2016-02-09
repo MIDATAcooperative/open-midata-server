@@ -57,7 +57,9 @@ public class EncryptionUtils {
 			byte[] cipherText = encrypted; 
 			byte[] bson = EncryptionUtils.derandomize(c.doFinal(cipherText));
 		   												
-	    	return BSON.decode(bson);
+	    	BSONObject obj =BSON.decode(bson);
+	    	
+	    	return obj;
 	    			    	
 		} catch (InvalidKeyException e) {
 			throw new InternalServerException("error.internal.cryptography", e);
