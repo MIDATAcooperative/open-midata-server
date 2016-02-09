@@ -190,7 +190,7 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer',
 			});
 		}
 			
-		  midataServer.getSummary(authToken, "content" , { "format" : "measurements" , "app" : "fitbit" })
+		  midataServer.getSummary(authToken, "content" , { "format" : "fhir/Observation/Quantity" , "app" : "fitbit" })
 		  .then(function(response) {
 			var map = {};
 			angular.forEach($scope.measurements, function(measurement) {
