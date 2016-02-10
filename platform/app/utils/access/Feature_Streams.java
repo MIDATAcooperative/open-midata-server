@@ -92,7 +92,18 @@ public class Feature_Streams extends Feature {
 			  for (DBRecord r : streams) {
 				  if (r.isStream) {
 					  try {
-					      records.addAll(q.getCache().getAPS(r._id, r.key, r.owner).query(q));
+						  APS myAps = q.getCache().getAPS(r._id, r.key, r.owner);
+					      records.addAll(myAps.query(q));
+					      
+					      if (myAps.getSecurityLevel().equals(APSSecurityLevel.MEDIUM)) {
+					    	  for (DBRecord r2 : records) {
+						    	for (String field : streamFields) {
+						    		Object val = r.meta.get(field);
+						    		if (val!=null) r2.meta.put(field, val);
+						    	}
+					    	  }
+					      }
+					      
 					  } catch (EncryptionNotSupportedException e) { throw new InternalServerException("error.internal", "Encryption not supported."); }
 					  catch (APSNotExistingException e2) {
 						  next.removePermission(r);
@@ -147,9 +158,16 @@ public class Feature_Streams extends Feature {
 			for (DBRecord r : streams) {										
 				try {
 				  APS streamaps = q.getCache().getAPS(r._id, r.key, r.owner);
+				  boolean medium = streamaps.getSecurityLevel().equals(APSSecurityLevel.MEDIUM);
 				  if (q.getMinUpdatedTimestamp() <= streamaps.getLastChanged() && q.getMinCreatedTimestamp() <= streamaps.getLastChanged()) {						
 				    for (DBRecord r2 : streamaps.query(q)) {
 				    	r2.stream = r._id;
+				    	if (medium) {
+					    	for (String field : streamFields) {
+					    		Object val = r.meta.get(field);
+					    		if (val!=null) r2.meta.put(field, val);
+					    	}
+				    	}
 				    	filtered.add(r2);
 				    }
 				    if (includeStreams) filtered.add(r);
@@ -218,9 +236,9 @@ public class Feature_Streams extends Feature {
 		if (targetAPS != null) apswrapper = RecordManager.instance.getCache(executingPerson).getAPS(targetAPS);
 		else apswrapper = RecordManager.instance.getCache(executingPerson).getAPS(result.owner, result.owner);
 
+		boolean apsDirect = direct;
 		apswrapper.provideRecordKey(result);
-				
-		boolean apsDirect = result.direct;
+						
 		result.stream = null;			
 		result.direct = false;
 		
@@ -249,6 +267,7 @@ public class Feature_Streams extends Feature {
 		List<DBRecord> result = QueryEngine.listInternal(RecordManager.instance.getCache(who), apsId, 
 				CMaps.map(properties)				     
 					 .map("streams", "only")
+					 .map("owner", "self")
 					 .map("writeable", writeableOnly ? "true" : "false"), RecordManager.INTERNALIDONLY);
 		if (result.isEmpty())
 			return null;

@@ -224,7 +224,7 @@ public class Query {
 		 
 		 restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age") || properties.containsKey("created-after");
 		 
-         fieldsFromDB = Sets.create("createdOld");
+         fieldsFromDB = Sets.create("createdOld", "encrypted");
          mayNeedFromDB = new HashSet<String>();
          if (fields.contains("format")) mayNeedFromDB.add("format");
          if (fields.contains("content")) mayNeedFromDB.add("content");

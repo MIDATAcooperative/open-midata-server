@@ -4,6 +4,8 @@ package utils.access;
 import java.util.Map;
 import java.util.Set;
 
+import models.enums.APSSecurityLevel;
+
 import org.bson.types.ObjectId;
 import play.Logger;
 
@@ -15,8 +17,8 @@ public class AccessLog {
 
 	public static boolean detailedLog = true;
 	
-	public static void apsAccess(ObjectId aps, ObjectId who) {
-		Logger.debug("Access APS:"+(aps != null ? aps.toString() : "null")+" from user:"+(who!=null?who.toString():"null"));
+	public static void apsAccess(ObjectId aps, ObjectId who, APSSecurityLevel lvl) {
+		Logger.debug("Access APS:"+(aps != null ? aps.toString() : "null")+" from user:"+(who!=null?who.toString():"null")+" security:"+lvl.toString());
 	}
 	
 	public static void debug(String txt) {

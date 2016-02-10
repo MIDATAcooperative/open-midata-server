@@ -298,7 +298,7 @@ public class EncryptedAPS {
 				
 	private void validate() throws AppException {
 		if (!isLoaded()) load();		
-		AccessLog.apsAccess(aps._id, who);
+		AccessLog.apsAccess(aps._id, who, aps.security);
 		if (aps.keys == null) { isValidated = true; return;} // Old version support
 		
 		if (!keyProvided) 

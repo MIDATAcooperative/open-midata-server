@@ -199,7 +199,7 @@ class APSImplementation extends APS {
 			
 			Map<String, Object> query = new HashMap<String, Object>();
 			query.put("stream", eaps.getId());
-			query.put("direct", Boolean.TRUE);
+			//query.put("direct", Boolean.TRUE);
 			q.addMongoTimeRestriction(query);
 			List<DBRecord> directResult = new ArrayList<DBRecord>(DBRecord.getAll(query, q.getFieldsFromDB()));
 			for (DBRecord record : directResult) {
