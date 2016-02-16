@@ -2,6 +2,7 @@ package utils.access.index;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 import javax.crypto.SecretKey;
 
@@ -65,6 +66,7 @@ public class IndexPage {
 	
 	public void flush() throws InternalServerException, LostUpdateException {
 		if (changed) {
+			AccessLog.debug("Flushing index");
 			encrypt();
 			model.update();			
 			changed = false;
@@ -81,6 +83,7 @@ public class IndexPage {
 			model.unencrypted = new BasicBSONObject();
 			BasicBSONList entries = new BasicBSONList();
 			model.unencrypted.put("e", entries);
+			model.unencrypted.put("ts", new BasicBSONObject());
 			changed = true;
 		}
 	}
@@ -91,6 +94,7 @@ public class IndexPage {
 	
 	private void decrypt() throws InternalServerException {
 		model.unencrypted = EncryptionUtils.decryptBSON(key, model.enc);
+		if (model.unencrypted.get("ts") == null) throw new InternalServerException("error.internal", "Failed to load index");		
 	}
 	
 	private BasicBSONObject findEntry(Object[] key) {
@@ -128,6 +132,28 @@ public class IndexPage {
 			}
 		}
 		return result;
+	}
+	
+	protected void removeFromEntries(Condition[] key, Set<String> ids) {
+				
+		BasicBSONList lst = (BasicBSONList) model.unencrypted.get("e");
+		for (Object entry : lst) {
+			BasicBSONObject row = (BasicBSONObject) entry;
+			BasicBSONList rowkey = (BasicBSONList) row.get("k");
+			boolean match = conditionCompare(key, rowkey);						
+			if (match) {
+				BasicBSONList objs = (BasicBSONList) row.get("e");
+				
+				for (int i=0;i<objs.size();i++) {
+					BasicBSONObject e = (BasicBSONObject) objs.get(i);
+					if (ids.contains(e.getString("t"))) {
+						objs.remove(i);
+						i--;
+						changed = true;
+					}
+				}
+			}
+		}		
 	}
 	
 	private boolean keyCompare(Object[] key, BasicBSONList idxKey) {
@@ -175,6 +201,18 @@ public class IndexPage {
 	  entry.put("t", target.toString());
 	  entry.put("a", aps.toString());
 	  entries.add(entry);
+	}
+	
+	protected void setTimestamp(String key, long value) {
+	   BasicBSONObject tslist = (BasicBSONObject) model.unencrypted.get("ts");
+	   tslist.put(key, value);
+	}
+	
+	protected long getTimestamp(String key) {
+		BasicBSONObject tslist = (BasicBSONObject) model.unencrypted.get("ts");				
+		Object v = tslist.get(key);
+		if (v == null) return -1;
+		return ((Long) v);
 	}
 	
 	

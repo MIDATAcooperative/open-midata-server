@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +35,8 @@ import utils.exceptions.InternalServerException;
 public class IndexManager {
 
 	public static IndexManager instance = new IndexManager();
+	
+	private static long UPDATE_TIME = 1000 * 10;
 
 	public String getIndexPseudonym(ObjectId user) throws AppException {
 		BSONObject obj = RecordManager.instance.getMeta(user, user, "_pseudo");
@@ -80,27 +83,28 @@ public class IndexManager {
 		return ((APSImplementation) aps).eaps.getAPSKey();
 	}
 	
-	protected void addRecords(IndexRoot index, Collection<DBRecord> records) throws AppException {
+	protected void addRecords(IndexRoot index, ObjectId aps, Collection<DBRecord> records) throws AppException {
 		for (DBRecord record : records) {
 			QueryEngine.loadData(record);
-			index.addEntry(record.consentAps, record);
+			index.addEntry(aps != null ? aps : record.consentAps, record);
 		}
 	}
 	
-	protected void scanStreamNewEntries(APSCache cache, IndexRoot index, ObjectId executor, ObjectId stream, Date updatedAfter) throws AppException {
+	/*protected void scanStreamNewEntries(APSCache cache, IndexRoot index, ObjectId executor, ObjectId stream, Date updatedAfter) throws AppException {
 		Map<String, Object> restrictions = new HashMap<String, Object>();
 		if (updatedAfter != null) restrictions.put("updated-after", updatedAfter);
 		Collection<DBRecord> recs = QueryEngine.listInternal(cache, stream, restrictions, Sets.create("_id"));
 		addRecords(index, recs);
-    }
+    }*/
+	
 	
 	protected void indexAll(APSCache cache, IndexRoot index, ObjectId executor) throws AppException {
 		try {
-			Map<String, Object> restrictions = new HashMap<String, Object>();
+			/*Map<String, Object> restrictions = new HashMap<String, Object>();
 			restrictions.put("format", index.getFormats());
 			if (index.restrictedToSelf()) restrictions.put("owner", "self");
 			Collection<DBRecord> recs = QueryEngine.listInternal(cache, executor, restrictions, Sets.create("_id", "consentAps"));
-			addRecords(index, recs);
+			addRecords(index, recs);*/
 			index.flush();
 		} catch (LostUpdateException e) {
 			index.reload();
@@ -108,25 +112,43 @@ public class IndexManager {
 		}
 	}
 	
-	protected void indexUpdate(APSCache cache, IndexRoot index, ObjectId executor) throws AppException {
+	protected void indexUpdate(APSCache cache, IndexRoot index, ObjectId executor, Set<ObjectId> targetAps) throws AppException {
 		AccessLog.logBegin("start index update");
 		try {
-			Map<String, Object> restrictions = new HashMap<String, Object>();
-			restrictions.put("format", index.getFormats());
-			if (index.restrictedToSelf()) restrictions.put("owner", "self");
-			restrictions.put("updated-after", new Date(index.getVersion()));
-			Collection<DBRecord> recs = QueryEngine.listInternal(cache, executor, restrictions, Sets.create("_id", "consentAps"));
-			addRecords(index, recs);
 			
-			restrictions.put("consent-after", new Date(index.getVersion()));
-			restrictions.remove("updated-after");
-			recs = QueryEngine.listInternal(cache, executor, restrictions, Sets.create("_id", "consentAps"));
-			addRecords(index, recs);
+			
+			for (ObjectId aps : targetAps) {
+				Map<String, Object> restrictions = new HashMap<String, Object>();
+				restrictions.put("format", index.getFormats());
+				if (aps.equals(executor)) restrictions.put("owner", "self");
+				
+			    AccessLog.debug("Checking aps:"+aps.toString());
+				// Records that have been updated or created
+				Date limit = new Date(index.getVersion(aps) - UPDATE_TIME);
+				long now = System.currentTimeMillis();
+				 
+				restrictions.put("updated-after", limit);								
+				Collection<DBRecord> recs = QueryEngine.listInternal(cache, aps, restrictions, Sets.create("_id"));
+				addRecords(index, aps, recs);
+				
+				// Records that have been freshly shared
+				if (limit.getTime() > 0) {
+					restrictions.remove("updated-after");
+					restrictions.put("shared-after", limit);
+					Collection<DBRecord> recs2 = QueryEngine.listInternal(cache, aps, restrictions, Sets.create("_id", "key"));
+					addRecords(index, aps, recs2);
+					AccessLog.logDB("Add index from sharing="+recs2.size());
+				}
+				
+				index.setVersion(aps, now);
+				AccessLog.logDB("Add index: from updated="+recs.size());
+				
+			}
 			
 			index.flush();
 		} catch (LostUpdateException e) {
 			index.reload();
-			indexAll(cache, index, executor);
+			indexUpdate(cache, index, executor, targetAps);
 		}
 		AccessLog.logEnd("end index update");
 	}
@@ -156,14 +178,16 @@ public class IndexManager {
 	 * @param values
 	 * @return
 	 */
-	public Collection<IndexMatch> queryIndex(APSCache cache, ObjectId user, IndexDefinition idx, Condition[] values) throws AppException {
-		
-		IndexRoot root = new IndexRoot(getIndexKey(cache, user), idx, false);
-		indexUpdate(cache, root, user);
-		
+	public Collection<IndexMatch> queryIndex(IndexRoot root, Condition[] values) throws AppException {						
 		Collection<IndexMatch> matches = root.lookup(values);
 		if (matches == null) matches = new ArrayList<IndexMatch>();
-		return matches;
+		return matches;		
+	}
+	
+	public IndexRoot getIndexRootAndUpdate(APSCache cache, ObjectId user, IndexDefinition idx, Set<ObjectId> targetAps) throws AppException {
+		IndexRoot root = new IndexRoot(getIndexKey(cache, user), idx, false);		
+		indexUpdate(cache, root, user, targetAps);		
+		return root;
 	}
 	
 	public IndexDefinition findIndex(APSCache cache, ObjectId user, Set<String> format, List<String> pathes) throws AppException {
@@ -186,6 +210,34 @@ public class IndexManager {
 		cache.getAPS(user).removeMeta("_pseudo");
 		AccessLog.logEnd("end clear indexes");
 	}
+
+	public void revalidate(List<DBRecord> validatedResult, IndexRoot root, Map<String, Object> indexQuery, Condition[] cond) throws AppException {		
+		if (validatedResult.size() == 0) return;
+					
+		for (DBRecord r : validatedResult) QueryEngine.loadData(r);
+		List<DBRecord> stillValid;
+		if (validatedResult.size()> 0) stillValid = QueryEngine.filterByDataQuery(validatedResult, indexQuery);
+		else stillValid = validatedResult;
+		
+		AccessLog.debug("Index found records:"+validatedResult.size()+" still valid:"+stillValid.size());
+		if (validatedResult.size() > stillValid.size()) {			
+			Set<String> ids = new HashSet<String>();
+			for (DBRecord rec : validatedResult) ids.add(rec._id.toString());
+			for (DBRecord rec : stillValid) ids.remove(rec._id.toString());
+			AccessLog.debug("Removing "+ids.size()+" records from index.");
+			removeRecords(root, cond, ids);			
+		}				 
+	}
 	
+	private void removeRecords(IndexRoot root, Condition[] cond, Set<String> ids) throws InternalServerException {
+		try {
+		  root.removeRecords(cond, ids);
+		  root.flush();
+		} catch (LostUpdateException e) {
+			root.reload();
+			removeRecords(root, cond, ids);
+		}
+	}
+			
 	
 }

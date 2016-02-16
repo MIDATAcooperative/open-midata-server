@@ -13,6 +13,7 @@ import org.bson.types.ObjectId;
 
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 
 
@@ -65,119 +66,88 @@ public class Feature_AccountQuery extends Feature {
 							record.meta.put("ownerName", sp.ownerName);
 						}
 					}
-					if (q.returns("id")) {
-						for (DBRecord record : consentRecords)
-							record.id = record._id.toString() + "." + sp._id.toString();
-					}
-					if (q.returns("consentAps")) {
-						for (DBRecord record : consentRecords) record.consentAps = sp._id;
-					}
-
+					setIdAndConsentField(q, sp._id, consentRecords);							
 					result.addAll(consentRecords);
 				}
 			} else {
 
 				if ((sets.contains("self") || sets.contains("all") || sets.contains(q.getApsId().toString())) && !q.restrictedBy("consent-after")) {
 					result = next.query(q);
-					if (q.returns("id")) {
-						for (DBRecord record : result)
-							record.id = record._id.toString() + "." + q.getApsId().toString();
-					}
-					if (q.returns("consentAps")) {
-						for (DBRecord record : result) record.consentAps = q.getApsId();
-					}
+					setIdAndConsentField(q, q.getApsId(), result);						
 				} else {
 					result = new ArrayList<DBRecord>();
 				}
 
-				if (sets.contains("all") || sets.contains("other") || sets.contains("shared")) {
-					Set<Consent> consents = null;
-					if (sets.contains("shared"))
-						consents = new HashSet<Consent>(Circle.getAllByMember(q.getCache().getOwner()));
-					else
-						consents = Consent.getAllByAuthorized(q.getCache().getOwner());
-					
-					if (q.restrictedBy("consent-after") && !consents.isEmpty()) {
-						long consentDate = ((Date) q.getProperties().get("consent-after")).getTime();
-						Set<Consent> filtered = new HashSet<Consent>(consents.size());
-						for (Consent consent : consents) {
-						   APS consentaps = q.getCache().getAPS(consent._id, consent.owner);
-						   if (consentDate < consentaps.getLastChanged()) {
-							   filtered.add(consent);
-						   }	
-						}
-						consents = filtered;
-					}
-					
-					for (Consent circle : consents) {
-						List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id));
-
-						if (q.returns("id")) {
-							for (DBRecord record : consentRecords)
-								record.id = record._id.toString() + "." + circle._id.toString();
-						}
-						if (q.returns("consentAps")) {
-							for (DBRecord record : consentRecords) record.consentAps = circle._id;
-						}
-
-						result.addAll(consentRecords);
-
-					}
-				} else {
-					Set<ObjectId> owners = new HashSet<ObjectId>();
-					for (String owner : sets) {
-						if (ObjectId.isValid(owner))
-							owners.add(new ObjectId(owner));
-					}
-					if (!owners.isEmpty()) {
-
-						Set<Consent> consents = Consent.getAllByAuthorizedAndOwners(q.getCache().getOwner(), owners);
-						
-						if (q.restrictedBy("consent-after") && !consents.isEmpty()) {
-							long consentDate = ((Date) q.getProperties().get("consent-after")).getTime();
-							Set<Consent> filtered = new HashSet<Consent>(consents.size());
-							for (Consent consent : consents) {
-							   APS consentaps = q.getCache().getAPS(consent._id, consent.owner);
-							   if (consentDate < consentaps.getLastChanged()) {
-								   filtered.add(consent);
-							   }	
-							}
-							consents = filtered;
-						}
-						
-						for (Consent circle : consents) {
-														
-							List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id));
-	
-							if (q.returns("id")) {
-								for (DBRecord record : consentRecords)
-									record.id = record._id.toString() + "." + circle._id.toString();
-							}
-							if (q.returns("consentAps")) {
-								for (DBRecord record : consentRecords) record.consentAps = circle._id;
-							}
-	
-							result.addAll(consentRecords);
-	
-						}
-					}
-
-				}
+				Set<Consent> consents = getConsentsForQuery(q);
+										
+				for (Consent circle : consents) {
+				   List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id));
+				   setIdAndConsentField(q, circle._id, consentRecords);							
+				   result.addAll(consentRecords);
+				}				
+				
 			}
 			if (AccessLog.detailedLog) AccessLog.logEnd("End process owner aps");
 			return result;
 		} else {
 			List<DBRecord> result = next.query(q);
 
-			if (q.returns("id")) {
-				for (DBRecord record : result)
-					record.id = record._id.toString() + "." + q.getApsId().toString();
-			}
-			if (q.returns("consentAps")) {
-				for (DBRecord record : result) record.consentAps = q.getApsId();
-			}
+			setIdAndConsentField(q, q.getApsId(), result);
+			
 			return result;
 		}
+	}
+	
+	private void setIdAndConsentField(Query q, ObjectId sourceAps, List<DBRecord> targetRecords) {
+		if (q.returns("id")) {
+			for (DBRecord record : targetRecords)
+				record.id = record._id.toString() + "." + sourceAps.toString();
+		}
+		if (q.returns("consentAps")) {
+			for (DBRecord record : targetRecords) record.consentAps = sourceAps;
+		}
+	}
+	
+	private static Set<Consent> applyConsentTimeFilter(Query q, Set<Consent> consents) throws AppException {
+		if (q.restrictedBy("consent-after") && !consents.isEmpty()) {
+			long consentDate = ((Date) q.getProperties().get("consent-after")).getTime();
+			Set<Consent> filtered = new HashSet<Consent>(consents.size());
+			for (Consent consent : consents) {
+			   APS consentaps = q.getCache().getAPS(consent._id, consent.owner);
+			   if (consentDate < consentaps.getLastChanged()) {
+				   filtered.add(consent);
+			   }	
+			}
+			return filtered;
+		}
+		return consents;
+	}
+	
+	protected static boolean mainApsIncluded(Query q) throws BadRequestException {
+		if (!q.restrictedBy("owner")) return true;
+		Set<String> sets = q.getRestriction("owner");
+		return sets.contains("self") || sets.contains("all") || sets.contains(q.getApsId().toString());
+	}
+	protected static Set<Consent> getConsentsForQuery(Query q) throws AppException {
+		Set<Consent> consents = Collections.EMPTY_SET;
+		Set<String> sets = q.restrictedBy("owner") ? q.getRestriction("owner") : Collections.singleton("all");
+		if (sets.contains("all") || sets.contains("other") || sets.contains("shared")) {			
+			if (sets.contains("shared"))
+				consents = new HashSet<Consent>(Circle.getAllByMember(q.getCache().getOwner()));
+			else
+				consents = Consent.getAllByAuthorized(q.getCache().getOwner());																
+		} else {
+			Set<ObjectId> owners = new HashSet<ObjectId>();
+			for (String owner : sets) {
+				if (ObjectId.isValid(owner))
+					owners.add(new ObjectId(owner));
+			}
+			if (!owners.isEmpty()) {
+				consents = Consent.getAllByAuthorizedAndOwners(q.getCache().getOwner(), owners);						
+			}
+		}
+		consents = applyConsentTimeFilter(q, consents);
+		return consents;
 	}
 
 	@Override

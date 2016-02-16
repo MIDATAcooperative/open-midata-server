@@ -2,6 +2,8 @@ package utils.access.index;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.crypto.SecretKey;
 
@@ -36,6 +38,14 @@ public class IndexRoot {
 	
 	public long getVersion() {
 		return rootPage.getVersion();
+	}
+	
+	public long getVersion(ObjectId aps) {
+		return rootPage.getTimestamp(aps.toString());
+	}
+	
+	public void setVersion(ObjectId aps, long now) {
+		rootPage.setTimestamp(aps.toString(), now);	
 	}
 	
 	public void flush() throws InternalServerException, LostUpdateException {
@@ -91,4 +101,10 @@ public class IndexRoot {
 	public Collection<IndexMatch> lookup(Condition[] key) {
 		return rootPage.lookup(key);
 	}
+
+	public void removeRecords(Condition[] key, Set<String> ids) {
+		rootPage.removeFromEntries(key, ids);				
+	}
+
+	
 }

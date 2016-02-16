@@ -70,6 +70,8 @@ public abstract class APS extends Feature {
 	public abstract boolean removePermission(DBRecord record) throws AppException;
 		
 	public abstract void removePermission(Collection<DBRecord> records) throws AppException;
+	
+	public abstract List<DBRecord> historyQuery(long minUpd, boolean removes) throws AppException;
 
 	@Override
 	protected List<DBRecord> postProcess(List<DBRecord> records, Query q)

@@ -191,7 +191,7 @@ class QueryEngine {
     	List<DBRecord> result;
     	
     	
-    	Feature qm = new Feature_BlackList(q, new Feature_QueryRedirect(new Feature_Indexes(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams()))))));
+    	Feature qm = new Feature_BlackList(q, new Feature_QueryRedirect(new Feature_Indexes(new Feature_AccountQuery(new Feature_Consents(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams())))))));
     									
 		result = findRecordsDirectlyInDB(q);
     	
@@ -244,8 +244,10 @@ class QueryEngine {
     
     private static final Set<String> DATA_ONLY = Sets.create("_id", "encryptedData");
     protected static DBRecord loadData(DBRecord input) throws AppException {
-    	DBRecord r2 = DBRecord.getById(input._id, DATA_ONLY);					
-		input.encryptedData = r2.encryptedData;
+    	if (input.data == null && input.encryptedData == null) {
+    	   DBRecord r2 = DBRecord.getById(input._id, DATA_ONLY);					
+		   input.encryptedData = r2.encryptedData;
+    	}
 		RecordEncryption.decryptRecord(input);
 		return input;
     }

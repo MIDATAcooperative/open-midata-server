@@ -126,7 +126,8 @@ public class RecordManager {
 
 		EncryptedAPS eaps = new EncryptedAPS(proposedId, owner, owner, APSSecurityLevel.HIGH);
 		EncryptionUtils.addKey(owner, eaps);
-		EncryptionUtils.addKey(other, eaps);		
+		EncryptionUtils.addKey(other, eaps);	
+		eaps.getPermissions().put("_history", new BasicBSONList()); // Init with history
 		eaps.create();
 
 		return eaps.getId();
@@ -410,8 +411,7 @@ public class RecordManager {
 	 * @param executingPerson id of executing person
 	 * @param tk a token for the record to be deleted.
 	 * @throws AppException
-	 */
-	
+	 */	
 	public void deleteRecord(ObjectId executingPerson, RecordToken tk) throws AppException {
 		DBRecord record = RecordConversion.instance.toDB(fetch(executingPerson, tk));
 				

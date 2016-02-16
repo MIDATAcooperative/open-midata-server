@@ -13,6 +13,7 @@ import models.Record;
 import models.enums.APSSecurityLevel;
 
 import org.bson.BasicBSONObject;
+import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
 
 import utils.auth.EncryptionNotSupportedException;
@@ -359,6 +360,7 @@ class APSImplementation extends APS {
 		// if (record.format.equals(Query.STREAM_TYPE)) entry.put("name",
 		// record.name);
 		obj.put(record._id.toString(), entry);
+		addHistory(record._id, record.isStream, false);
 
 	}
 
@@ -406,6 +408,7 @@ class APSImplementation extends APS {
 		boolean result = obj.containsField(record._id.toString());
 		obj.remove(record._id.toString());
 
+		addHistory(record._id, record.isStream, true);
 		return result;
 	}
 
@@ -488,7 +491,8 @@ class APSImplementation extends APS {
 			AccessLog.logBegin("begin merge:" + eaps.getId().toString());
 			
 			for (EncryptedAPS encsubaps : eaps.getAllUnmerged()) {													
-				APSEntry.mergeAllInto(encsubaps.getPermissions(), eaps.getPermissions());								
+				APSEntry.mergeAllInto(encsubaps.getPermissions(), eaps.getPermissions());
+				mergeHistory(encsubaps);
 			}
 			
 			eaps.clearUnmerged();
@@ -505,7 +509,41 @@ class APSImplementation extends APS {
 	public boolean isReady() throws AppException {
 		return eaps.isLoaded();
 	}
-
-
+	
+	private void addHistory(ObjectId recordId, boolean isStream, boolean isRemove) throws AppException {
+		BasicBSONList history = (BasicBSONList) eaps.getPermissions().get("_history");
+		if (history != null) {
+			BasicBSONObject newEntry = new BasicBSONObject();
+			newEntry.put("r", recordId);
+			if (isStream) newEntry.put("s", isStream);
+			newEntry.put("ts", System.currentTimeMillis());
+			if (isRemove) newEntry.put("d", true);
+			history.add(newEntry);
+		}
+	}
+	
+	private void mergeHistory(EncryptedAPS subaps) throws AppException {
+		BasicBSONList history = (BasicBSONList) eaps.getPermissions().get("_history");
+		BasicBSONList history2 = (BasicBSONList) subaps.getPermissions().get("_history");
+		if (history != null && history2 != null) {
+			history.addAll(history2);
+		}
+	}
+    
+	public List<DBRecord> historyQuery(long minUpd, boolean removes) throws AppException {
+		BasicBSONList history = (BasicBSONList) eaps.getPermissions().get("_history");
+		if (history == null) return new ArrayList<DBRecord>();
+		List<DBRecord> result = new ArrayList<DBRecord>();		
+		for (Object entry1 : history) {
+			BasicBSONObject entry = (BasicBSONObject) entry1;
+			if (entry.getLong("ts") >= minUpd && (entry.containsField("d") == removes)) {
+				DBRecord r = new DBRecord();
+				r._id = new ObjectId(entry.getString("r"));
+				r.isStream = entry.containsField("s");				
+				result.add(r);
+			}
+		}
+		return result;
+	}
 
 }

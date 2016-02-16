@@ -57,6 +57,17 @@ public class Query {
 		AccessLog.logQuery(properties, fields);
 	}
 	
+	public Query(Query q, Map<String, Object> properties, ObjectId aps) {
+		this.properties = new HashMap<String, Object>(q.getProperties());
+		this.properties.putAll(properties);
+		this.fields = q.getFields();
+		this.cache = q.getCache();
+		this.apsId = aps;
+		this.giveKey = q.giveKey;
+		process();
+		AccessLog.logQuery(properties, fields);
+	}
+	
 	protected Query(Map<String, Object> properties, Set<String> fields, APSCache cache,  ObjectId apsId, boolean giveKey) {
 		this.properties = properties;
 		this.fields = fields;
@@ -103,6 +114,13 @@ public class Query {
 		return restrictedOnTime;
 	}
 	
+	public boolean isRestrictedToSelf() throws BadRequestException {
+		if (!restrictedBy("owner")) return false;
+		Set<String> owner = getRestriction("owner");
+		if (owner.size() == 1 && (owner.contains("self") || owner.contains(cache.getOwner().toString()))) return true;
+		return false;
+	}
+	
 	public Set<String> getRestriction(String name) throws BadRequestException {
 		Object v = properties.get(name);
 		if (v instanceof String) {
@@ -135,6 +153,10 @@ public class Query {
 	
 	public boolean restrictedBy(String field) {
 		return properties.containsKey(field);
+	}
+	
+	public Date getDateRestriction(String field) {
+		return (Date) properties.get(field);
 	}
 	
 	public boolean returns(String field) {

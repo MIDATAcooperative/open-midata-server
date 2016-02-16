@@ -8,12 +8,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import models.Consent;
+
 import org.bson.types.ObjectId;
 
 import utils.access.index.IndexDefinition;
 import utils.access.index.IndexMatch;
+import utils.access.index.IndexRoot;
 import utils.access.op.AndCondition;
 import utils.access.op.Condition;
+import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
@@ -49,41 +53,69 @@ private Feature next;
 												
 			IndexDefinition index = IndexManager.instance.findIndex(q.getCache(),  q.getCache().getOwner(), q.getRestriction("format"), pathes);
 			
-			if (index == null) { // TODO Restriction to self or not
+			if (index == null) { 
 				AccessLog.logBegin("start index creation");
-				index = IndexManager.instance.createIndex(q.getCache(), q.getCache().getOwner(), q.getRestriction("format"), true, pathes);
+				index = IndexManager.instance.createIndex(q.getCache(), q.getCache().getOwner(), q.getRestriction("format"), q.isRestrictedToSelf(), pathes);
 				AccessLog.logEnd("end index creation");
 			}
 			
-			List<DBRecord> result = new ArrayList<DBRecord>();
-			Collection<IndexMatch> matches = IndexManager.instance.queryIndex(q.getCache(), q.getCache().getOwner(), index, condition);
-			
-			Map<String, Object> readRecs = new HashMap<String, Object>();
-			
-			if (matches.size() > 5) {
-				Map<String, Object> props = new HashMap<String, Object>();
-				props.putAll(q.getProperties());
-				props.put("streams", "only");
-				List<DBRecord> matchStreams = next.query(new Query(props, Sets.create("_id"), q.getCache(), q.getApsId()));
-				AccessLog.debug("index query streams "+matchStreams.size()+" matches.");
-				Set<ObjectId> streams = new HashSet<ObjectId>();
-				for (DBRecord r : matchStreams) streams.add(r._id);
-				readRecs.put("stream", streams);
-			}
-			
-			AccessLog.debug("index query found "+matches.size()+" matches.");
-			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "direct");
-			queryFields.addAll(q.getFieldsFromDB());
-			Set<ObjectId> recIds = new HashSet<ObjectId>();
-			
-			for (IndexMatch match : matches) {
-				recIds.add(match.recordId);				
-			}
-			readRecs.put("_id", recIds);
+			Set<Consent> consents = Feature_AccountQuery.getConsentsForQuery(q);			
+			Set<ObjectId> targetAps = new HashSet<ObjectId>();
+			if (Feature_AccountQuery.mainApsIncluded(q)) targetAps.add(q.getApsId());
+			for (Consent consent : consents) targetAps.add(consent._id);
 						
-			result = new ArrayList(DBRecord.getAll(readRecs, queryFields));
+			List<DBRecord> result = new ArrayList<DBRecord>();
+			IndexRoot root = IndexManager.instance.getIndexRootAndUpdate(q.getCache(), q.getCache().getOwner(), index, targetAps);
+			Collection<IndexMatch> matches = IndexManager.instance.queryIndex(root, condition);
 			
-			result = next.lookup(result, q);			
+			Map<ObjectId, Set<ObjectId>> filterMatches = new HashMap<ObjectId, Set<ObjectId>>();
+			for (IndexMatch match : matches) {
+				if (targetAps.contains(match.apsId)) {
+					Set<ObjectId> ids = filterMatches.get(match.apsId);
+					if (ids == null) {
+						ids = new HashSet<ObjectId>();
+						filterMatches.put(match.apsId, ids);
+					}
+					ids.add(match.recordId);				
+				}
+			}
+			
+			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "direct", "encryptedData");
+			queryFields.addAll(q.getFieldsFromDB());
+			
+			for (Map.Entry<ObjectId, Set<ObjectId>> entry : filterMatches.entrySet()) {				
+			   ObjectId aps = entry.getKey();
+			   AccessLog.logDB("Now processing aps:"+aps.toString());
+			   Set<ObjectId> ids = entry.getValue();
+			   Map<String, Object> readRecs = new HashMap<String, Object>();
+			   if (ids.size() > 5) {
+				    Map<String, Object> props = new HashMap<String, Object>();
+					props.putAll(q.getProperties());
+					props.put("streams", "only");
+					List<DBRecord> matchStreams = next.query(new Query(props, Sets.create("_id"), q.getCache(), aps));
+					AccessLog.debug("index query streams "+matchStreams.size()+" matches.");
+					Set<ObjectId> streams = new HashSet<ObjectId>();
+					for (DBRecord r : matchStreams) streams.add(r._id);
+					readRecs.put("stream", streams);
+			   }
+			   readRecs.put("_id", ids);
+				
+			   List<DBRecord> partresult = new ArrayList(DBRecord.getAll(readRecs, queryFields));
+				
+				Query q3 = new Query(q, CMaps.map("strict", "true"), aps);
+				partresult = next.lookup(partresult, q3);
+				
+	            Query q2 = new Query(q, CMaps.map("_id", ids));
+	            List<DBRecord> additional = next.query(q2);
+	            AccessLog.logDB("looked up directly="+partresult.size()+" additionally="+additional.size());
+	            result.addAll(partresult);
+				result.addAll(additional);
+			}
+
+			AccessLog.debug("index query found "+matches.size()+" matches, "+result.size()+" in correct aps.");
+																													
+			IndexManager.instance.revalidate(result, root, indexQuery, condition);
+			
 			AccessLog.logEnd("end index query "+result.size()+" matches.");
 			return result;
 			
