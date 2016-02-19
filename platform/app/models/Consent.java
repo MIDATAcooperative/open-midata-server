@@ -96,5 +96,10 @@ public class Consent extends Model {
 		return Model.exists(Consent.class, collection, CMaps.map("owner", owner).map("name", name));
 	}
 	
+	public void setStatus(ConsentStatus status) throws InternalServerException {
+		this.status = status;
+		Model.set(Consent.class, collection, this._id, "status", status);
+	}
+	
 	public void add() throws InternalServerException {}
 }

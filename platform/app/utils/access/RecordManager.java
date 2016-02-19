@@ -184,13 +184,29 @@ public class RecordManager {
 	/**
 	 * remove access permissions of given users from an APS
 	 * @param apsId ID of APS
-	 * @param ownerId ID of APS owner
+	 * @param executorId ID of executing person
 	 * @param targetUsers set of IDs of target users
 	 * @throws InternalServerException
 	 */
-	public void unshareAPS(ObjectId apsId, ObjectId ownerId,
+	public void unshareAPS(ObjectId apsId, ObjectId executorId,
 			Set<ObjectId> targetUsers) throws InternalServerException {
-		getCache(ownerId).getAPS(apsId).removeAccess(targetUsers);
+		getCache(executorId).getAPS(apsId).removeAccess(targetUsers);
+	}
+	
+	/**
+	 * remove access permissions of given users from an APS and all streams contained in it.
+	 * access to streams may be regained if accessable from another APS
+	 * @param apsId ID of APS
+	 * @param executorId ID of executing person
+	 * @param targetUsers set of IDs of target users
+	 * @throws AppException
+	 */
+	public void unshareAPSRecursive(ObjectId apsId, ObjectId executorId,
+			Set<ObjectId> targetUsers) throws AppException {
+		if (!getCache(executorId).getAPS(apsId).isAccessible()) return;
+		List<DBRecord> to_unshare = QueryEngine.listInternal(getCache(executorId), apsId, CMaps.map("streams", "only"), Sets.create("_id"));
+		for (DBRecord rec : to_unshare) unshareAPS(rec._id, executorId, targetUsers);
+		getCache(executorId).getAPS(apsId).removeAccess(targetUsers);
 	}
 
 	/**

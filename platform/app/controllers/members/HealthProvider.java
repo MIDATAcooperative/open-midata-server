@@ -12,6 +12,7 @@ import org.bson.types.ObjectId;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.APIController;
+import controllers.Circles;
 
 import models.HPUser;
 import models.Member;
@@ -91,12 +92,12 @@ public class HealthProvider extends APIController {
 	/**
 	 * accept a consent created by a health provider
 	 * @return status ok
-	 * @throws InternalServerException
+	 * @throws AppException
 	 * @throws JsonValidationException
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public static Result confirmConsent() throws InternalServerException, JsonValidationException {
+	public static Result confirmConsent() throws AppException, JsonValidationException {
 		
 		ObjectId userId = new ObjectId(request().username());
 		JsonNode json = request().body().asJson();
@@ -107,6 +108,7 @@ public class HealthProvider extends APIController {
 		if (target.status.equals(ConsentStatus.UNCONFIRMED)) {
 			target.setConfirmDate(new Date());
 			target.setStatus(ConsentStatus.ACTIVE);
+			Circles.consentStatusChange(userId, target);
 		} else return badRequest("Wrong status");
 	
 		return ok();
@@ -115,12 +117,12 @@ public class HealthProvider extends APIController {
 	/**
 	 * reject a consent created by a health provider
 	 * @return
-	 * @throws InternalServerException
+	 * @throws AppException
 	 * @throws JsonValidationException
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public static Result rejectConsent() throws InternalServerException, JsonValidationException {
+	public static Result rejectConsent() throws AppException, JsonValidationException {
 		
 		ObjectId userId = new ObjectId(request().username());
 		JsonNode json = request().body().asJson();
@@ -131,6 +133,7 @@ public class HealthProvider extends APIController {
 		if (target.status.equals(ConsentStatus.UNCONFIRMED)) {
 			target.setConfirmDate(new Date());
 			target.setStatus(ConsentStatus.REJECTED);
+			Circles.consentStatusChange(userId, target);
 		} else return badRequest("Wrong status");
 	
 		return ok();

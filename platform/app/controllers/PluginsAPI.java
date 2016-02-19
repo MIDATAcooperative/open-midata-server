@@ -5,16 +5,19 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import models.Admin;
 import models.Consent;
 import models.LargeRecord;
 import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
 import models.Space;
+import models.User;
 import models.enums.AggregationType;
 import models.enums.UserRole;
 
@@ -151,16 +154,31 @@ public class PluginsAPI extends Controller {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "authToken", "config");
+		JsonValidation.validate(json, "authToken");
 		
 		// decrypt authToken 
 		SpaceToken spaceToken = SpaceToken.decrypt(json.get("authToken").asText());
 		if (spaceToken == null) {
 			return badRequest("Invalid authToken.");
 		}
-		Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));
 		
-		RecordManager.instance.setMeta(spaceToken.userId, spaceToken.spaceId, "_config", config);
+		if (json.has("config")) {
+		   Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));		
+		   RecordManager.instance.setMeta(spaceToken.userId, spaceToken.spaceId, "_config", config);
+		}
+		if (json.has("autoimport")) {
+			boolean auto = JsonValidation.getBoolean(json, "autoimport");
+			Space space = Space.getByIdAndOwner(spaceToken.spaceId, spaceToken.userId, Sets.create("autoImport", "owner"));
+			if (auto) {				
+				User autoRunner = Admin.getByEmail("autorun-service", Sets.create("_id"));
+				RecordManager.instance.shareAPS(space._id, space.owner, Collections.singleton(autoRunner._id));
+				Space.set(space._id, "autoImport", auto);
+			} else {
+				User autoRunner = Admin.getByEmail("autorun-service", Sets.create("_id"));
+				RecordManager.instance.unshareAPS(space._id, space.owner, Collections.singleton(autoRunner._id));
+				Space.set(space._id, "autoImport", auto);
+			}
+		}
 						
 		return ok();
 	}

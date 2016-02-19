@@ -67,11 +67,7 @@ public class MemberKey extends Consent {
 	public void add() throws InternalServerException {
 		Model.insert(collection, this);
 	}
-	
-	public void setStatus(ConsentStatus status) throws InternalServerException {
-		this.status = status;
-		Model.set(MemberKey.class, collection, this._id, "status", status);
-	}
+		
 	
 	public void setConfirmDate(Date confirmDate) throws InternalServerException {
 		this.confirmDate = confirmDate;

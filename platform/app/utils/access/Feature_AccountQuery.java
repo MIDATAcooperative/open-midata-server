@@ -139,8 +139,10 @@ public class Feature_AccountQuery extends Feature {
 		} else {
 			Set<ObjectId> owners = new HashSet<ObjectId>();
 			for (String owner : sets) {
-				if (ObjectId.isValid(owner))
-					owners.add(new ObjectId(owner));
+				if (ObjectId.isValid(owner)) {
+					ObjectId id = new ObjectId(owner);
+					if (!id.equals(q.getCache().getOwner())) owners.add(id);
+				}
 			}
 			if (!owners.isEmpty()) {
 				consents = Consent.getAllByAuthorizedAndOwners(q.getCache().getOwner(), owners);						

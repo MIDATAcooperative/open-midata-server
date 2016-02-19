@@ -46,6 +46,7 @@ import utils.json.JsonValidation.JsonValidationException;
 import actions.APICall;
 import play.libs.Json;
 import controllers.APIController;
+import controllers.Circles;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -318,8 +319,10 @@ public class Studies extends APIController {
 		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) return badRequest("Wrong participation status.");
 		
 		participation.setPStatus(ParticipationStatus.REQUEST);
+		participation.setStatus(ConsentStatus.UNCONFIRMED);
 		participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, null));
-						
+		Circles.consentStatusChange(userId, participation);				
+		
 		return ok();
 	}
 	
@@ -328,11 +331,11 @@ public class Studies extends APIController {
 	 * @param id ID of study
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws InternalServerException
+	 * @throws AppException
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public static Result noParticipation(String id) throws JsonValidationException, InternalServerException {
+	public static Result noParticipation(String id) throws JsonValidationException, AppException {
 		ObjectId userId = new ObjectId(request().username());		
 		ObjectId studyId = new ObjectId(id);
 					
@@ -344,7 +347,9 @@ public class Studies extends APIController {
 		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH && participation.pstatus != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
 		
 		participation.setPStatus(ParticipationStatus.MEMBER_REJECTED);
+		participation.setStatus(ConsentStatus.REJECTED);
 		participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, null));
+		Circles.consentStatusChange(userId, participation);
 						
 		return ok();
 	}

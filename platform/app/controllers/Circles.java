@@ -237,11 +237,11 @@ public class Circles extends APIController {
 	 * @param circleIdString ID of consent
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws InternalServerException
+	 * @throws AppException
 	 */
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
-	public static Result delete(String circleIdString) throws JsonValidationException, InternalServerException {
+	public static Result delete(String circleIdString) throws JsonValidationException, AppException {
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId circleId = new ObjectId(circleIdString);
@@ -253,6 +253,8 @@ public class Circles extends APIController {
 		if (consent.type != ConsentType.CIRCLE) return badRequest("Operation not supported");
 		
 		// Remove APS
+		consent.setStatus(ConsentStatus.EXPIRED);
+		consentStatusChange(userId, consent);
 		RecordManager.instance.deleteAPS(consent._id, consent.owner);
 		
 		// Remove Rules
@@ -309,11 +311,11 @@ public class Circles extends APIController {
 	 * @param memberIdString ID of user
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws InternalServerException
+	 * @throws AppException
 	 */
 	@Security.Authenticated(MemberSecured.class)
 	@APICall
-	public static Result removeMember(String circleIdString, String memberIdString) throws JsonValidationException, InternalServerException {
+	public static Result removeMember(String circleIdString, String memberIdString) throws JsonValidationException, AppException {
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId circleId = new ObjectId(circleIdString);
@@ -332,9 +334,20 @@ public class Circles extends APIController {
 		Set<ObjectId> memberIds = new HashSet<ObjectId>();
 		memberIds.add(memberId);
 		
-		RecordManager.instance.unshareAPS(consent._id, userId, memberIds);
+		RecordManager.instance.unshareAPSRecursive(consent._id, userId, memberIds);
 		
 		return ok();
+	}
+	
+	public static void consentStatusChange(ObjectId executor, Consent consent) throws AppException {
+		boolean active = consent.status.equals(ConsentStatus.ACTIVE);
+		if (active) {
+			RecordManager.instance.shareAPS(consent._id, consent.owner, consent.authorized);
+		} else {
+			Set<ObjectId> auth = consent.authorized;
+			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }
+			RecordManager.instance.unshareAPSRecursive(consent._id, consent.owner, consent.authorized);
+		}
 	}
 	
 	/**

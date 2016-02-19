@@ -61,6 +61,7 @@ import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import controllers.APIController;
+import controllers.Circles;
 
 /**
  * functions about studies to be used by researchers
@@ -603,7 +604,7 @@ public class Studies extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result rejectParticipation(String id) throws JsonValidationException, InternalServerException {
+	public static Result rejectParticipation(String id) throws JsonValidationException, AppException {
 		JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "member");
@@ -624,7 +625,9 @@ public class Studies extends APIController {
 		if (participation.pstatus != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
 		
 		participation.setPStatus(ParticipationStatus.RESEARCH_REJECTED);
+		participation.setStatus(ConsentStatus.REJECTED);
 		participation.addHistory(new History(EventType.PARTICIPATION_REJECTED, user, comment));
+		Circles.consentStatusChange(userId, participation);
 						
 		return ok();
 	}

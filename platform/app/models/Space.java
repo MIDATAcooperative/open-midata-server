@@ -73,6 +73,11 @@ public class Space extends Model implements Comparable<Space> {
 	public Set<ObjectId> autoShare;
 	
 	/**
+	 * automatically run import
+	 */
+	public boolean autoImport;
+	
+	/**
 	 * the filter query that is applied to the users main APS when querying data using this space.
 	 * 
 	 * This field is not directly stored in the database but in the APS that belongs to this space.

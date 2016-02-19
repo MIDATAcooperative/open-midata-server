@@ -9,6 +9,7 @@ GET     /test2                                           controllers.Application
 GET     /debug/aps/:id                                   controllers.Debug.get(id: String)
 GET     /debug/test                                 controllers.Debug.test()
 GET     /fhir/*all                                       controllers.FHIR.get(all)
+GET     /test/autorun                                    controllers.AutoRun.run()
 
 # Home page
 
