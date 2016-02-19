@@ -28,7 +28,13 @@ angular.module('chartApp')
       $scope.config = {};
       $scope.timeUnit = "";
       $scope.timeUnits = [ { name : "" }, { name : "month"}, {name : "year" }];
-      
+      $scope.timings = [
+         { value : 7, label : "Last 7 days"},
+         { value : 30, label : "Last 30 days"},
+         { value : 90, label : "Last 90 days"},
+         { value : 365, label : "Last 365 days"},
+         { value : 0, label : "User defined" }
+      ];             
       $scope.saving = false;
       $scope.saving2 = false;
       $scope.readonly = false;
@@ -44,6 +50,8 @@ angular.module('chartApp')
       $scope.minDate = null;
       $scope.maxDate = null;
       $scope.nextUpdate = null;
+      $scope.lastDataDate = null;
+      $scope.timing = 30;
       
       midataPortal.autoresize();
       
@@ -65,10 +73,11 @@ angular.module('chartApp')
       };
       
       $scope.delayedUpdate = function() {
+    	  if ($scope.timing > 0 && $scope.timing < 90) $scope.timeUnit = "";
     	   if ($scope.nextUpdate != null) {
     		   $timeout.cancel($scope.nextUpdate);
     	   }
-    	   $scope.nextUpdate = $timeout(function() { $scope.nextUpdate=null;$scope.prepareFilter(); }, 4000);
+    	   $scope.nextUpdate = $timeout(function() { $scope.nextUpdate=null;$scope.prepareFilter(); }, 3000);
       };
       
       /*
@@ -373,8 +382,8 @@ angular.module('chartApp')
     	  console.log($scope.info);
           var p = { };
           $scope.chartType = "calculation";
-          if ($scope.report.filter != null && $scope.report.filter == "content") p.content = $scope.selectedFilter;
-          if ($scope.report.filter != null && $scope.report.filter == "owner") p.owner = $scope.selectedFilter;
+          if ($scope.report.filter != null && $scope.report.filter == "content") p.content = [ $scope.selectedFilter ];
+          if ($scope.report.filter != null && $scope.report.filter == "owner") p.owner = [ $scope.selectedFilter ];
           if ($scope.report.series == "content") {
               p.content = $scope.selectedSeries;
           } else if ($scope.report.series == "owner") {
@@ -396,13 +405,29 @@ angular.module('chartApp')
               });
           }
           
-          if (document.location.href.indexOf("/preview") >= 0) p = { "limit" : 100 };
+          if (document.location.href.indexOf("/preview") >= 0) {
+        	  if ($scope.timeUnit == "" && $scope.timing==0) p.limit = 100;        	  
+          }
+          var min = $scope.minDate;
+          var max = $scope.maxDate;
+          if ($scope.timing != 0) {
+        	max = new Date();
+        	min = new Date(max.getTime() - 1000 * 60 *60*24*$scope.timing);
+          }
+          var divisor = (p.content ? p.content.length : 1) * (p.owner ? p.owner.length : 1);
+          if (divisor == 0) divisor = 1;
+          
           midataServer.getRecords($scope.authToken, p, ["owner", "created", "ownerName", "content", "format", "data"])
           .then(function(results) {
               $scope.raw = results.data;
               $scope.entries = $scope.extractData($scope.raw);
-              $scope.entries = $scope.dateFilter($scope.entries, $scope.minDate, $scope.maxDate);
+              $scope.entries = $scope.dateFilter($scope.entries, min, max);
               console.log($scope.timeUnit);
+              console.log("Divisor:"+divisor);
+              console.log("Entries:"+$scope.entries.length);
+              console.log("Ratio:"+ ($scope.entries.length/divisor));
+              if ($scope.timeUnit == "" && $scope.entries.length / divisor > 60) $scope.timeUnit = "month";
+              
               if ($scope.timeUnit != "") {
                   $scope.makeSimpleTime($scope.entries, $scope.timeUnit);
               }
@@ -494,6 +519,7 @@ angular.module('chartApp')
                 } else {
                     $scope.config = result.data;
                     $scope.timeUnit = result.data.timeUnit || "";
+                    $scope.timing = Number(result.data.timing) || 30;
                 }
                 /*$scope.report = result.report;
                 $scope.selectedFilter = result.filter;
@@ -505,14 +531,14 @@ angular.module('chartApp')
       };
       
       $scope.saveConfig = function() {
-         var config = { report : $scope.report, filter : $scope.selectedFilter, filter2: $scope.selectedFilter2, timeUnit : $scope.timeUnit, selectedSeries : $scope.selectedSeries, selectedLabels : $scope.selectedLabels };
+         var config = { report : $scope.report, filter : $scope.selectedFilter, filter2: $scope.selectedFilter2, timeUnit : $scope.timeUnit, timing : $scope.timing, selectedSeries : $scope.selectedSeries, selectedLabels : $scope.selectedLabels };
          $scope.saving = true;
          midataServer.setConfig($scope.authToken, config)
          .then(function() { $scope.saving = false; });
       };
       
       $scope.add = function(name) {
-         var config = { report : $scope.report, filter : $scope.selectedFilter, filter2: $scope.selectedFilter2, timeUnit : $scope.timeUnit, selectedSeries : $scope.selectedSeries, selectedLabels : $scope.selectedLabels };
+         var config = { report : $scope.report, filter : $scope.selectedFilter, filter2: $scope.selectedFilter2, timeUnit : $scope.timeUnit, timing : $scope.timing, selectedSeries : $scope.selectedSeries, selectedLabels : $scope.selectedLabels };
          $scope.saving2 = true;
          midataServer.cloneAs($scope.authToken, name, config)
          .then(function() { $scope.saving2 = false; });

@@ -68,8 +68,12 @@
   </div>
   <div class="form-inline extraspace"  ng-hide="chartType=='simple'">
   <div class="form-group">
+     <label for="timing">Time</label>
+     <select id="timing"  class="form-control" ng-model="timing" ng-options="t.value as t.label for t in timings" ng-change="delayedUpdate();"></select>
+  </div>
+  <div class="form-group" ng-show="timing==0">
   <label for="minDate">From: </label>
-  </div><div class="form-group">
+  </div><div class="form-group" ng-show="timing==0">
   <div class="input-group">
      <input id="minDate" type="text" class="form-control" uib-datepicker-popup="dd.MM.yyyy" ng-change="delayedUpdate();" ng-model="minDate" is-open="datePickers.fromTimeOpened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
      <span class="input-group-btn">
@@ -78,9 +82,9 @@
   </div>
   </div>
   
-  <div class="form-group separator">
+  <div class="form-group separator" ng-show="timing==0">
   <label for="maxDate">To: </label>
-  </div><div class="form-group">
+  </div><div class="form-group" ng-show="timing==0">
   <div class="input-group">
      <input id="maxDate" type="text" class="form-control" uib-datepicker-popup="dd.MM.yyyy" ng-change="delayedUpdate();" ng-model="maxDate" is-open="datePickers.toTimeOpened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
      <span class="input-group-btn">
