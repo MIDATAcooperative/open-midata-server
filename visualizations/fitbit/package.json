@@ -1,0 +1,16 @@
+{
+  "name": "Fitbit",
+  "version": "1.0.0",
+  "description": "Fitbit Importer",
+  "main": "server.js",
+  "dependencies": {
+    "benv": "~3.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Alexander Kreutz",
+  "license": "BSD-2-Clause"
+}
