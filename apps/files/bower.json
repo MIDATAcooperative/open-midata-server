@@ -1,7 +1,0 @@
-{
-  "name": "files",
-  "version": "0.0.0",
-  "dependencies": {
-    "angular-file-upload": "~1.1.5"
-  }
-}
