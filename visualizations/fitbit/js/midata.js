@@ -92,8 +92,7 @@ midata.factory('midataServer', [ '$http', '$q', function($http, $q) {
 	};
 	
 	service.oauth2Request = function(authToken, url) {	
-		var data = { "authToken": authToken, "url": url };		
-	
+		var data = { "authToken": authToken, "url": url };			
 	    return $http.post("https://" + baseurl + ":9000/v1/plugin_api/request/oauth2", data);
 	};
 	

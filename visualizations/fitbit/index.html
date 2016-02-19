@@ -25,9 +25,9 @@
 			
 			<hr>
 			<div class="row">
-			<span class="col-sm-3">Fitbit Account:</span><span><b>{{ user.fullName }}</b></</span>
+			<span class="col-sm-3">Fitbit Account:</span><span><b>{{ importer.user.fullName }}</b></</span>
 			</div><div class="row">
-			<span class="col-sm-3">Member since:</span><span><b>{{ user.memberSince | date }}</b></span>
+			<span class="col-sm-3">Member since:</span><span><b>{{ importer.user.memberSince | date }}</b></span>
 			</div> 
 			<hr>
 			<p>Please select which measurements you want to import:</p>			
@@ -39,7 +39,7 @@
 			    <th>From Date</th>
 			    <th>To Date</th>
 			  </tr>
-			  <tr ng-repeat="measurement in measurements" ng-class="{ 'success' : measurement.from > measurement.to }">
+			  <tr ng-repeat="measurement in importer.measurements" ng-class="{ 'success' : measurement.from > measurement.to }">
 			  <td>
 			  <div class="checkbox"  >
 			    <label><input type="checkbox" ng-model="measurement.import">{{ measurement.name }}</label>			  
@@ -55,26 +55,34 @@
 			    {{ measurement.to | date }}
 			  </td>
 			  </tr>
+			  <tr>
+			    <td>
+				    <div class="checkbox"  >
+				      <label><input type="checkbox" ng-model="importer.autoimport">Automatically import measurements once per day</label>			  
+				    </div>
+			    </td>
+			    <td colspan="3"></td>
+			  </tr>
 			  </table>
- 			<button type="button" class="btn btn-primary" ng-click="startImport()" ng-disabled="saving">Import data</button>
+ 			<button type="button" class="btn btn-primary" ng-click="submit()" ng-disabled="saving">Import data</button>
 			</form>
 			<hr>
-			<div class="alert alert-danger alert-dismissable" ng-show="error.message || error.messages.length">
+			<div class="alert alert-danger alert-dismissable" ng-show="importer.error.message || importer.error.messages.length">
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-				<p>{{error.message}}</p>
+				<p>{{importer.error.message}}</p>
 				<ul>
-					<li ng-repeat="err in error.messages">{{err}}</li>
+					<li ng-repeat="err in importer.error.messages">{{err}}</li>
 				</ul>
 			</div>
-			<p ng-show="status" class="alert alert-info">{{status}}</p>
+			<p ng-show="importer.status" class="alert alert-info">{{importer.status}}</p>
 			
-			<div ng-show="saving" class="progress">
+			<div ng-show="importer.saving" class="progress">
 			  <div class="progress-bar" role="progressbar" ng-style="progress()">
 			    <span class="sr-only"></span>
 			  </div>
 			</div>
-			<p ng-show="saving">
-			  Requested {{requested}} records from Fitbit. {{saved}} records saved to database.
+			<p ng-show="importer.saving">
+			  Requested {{importer.requested}} records from Fitbit. {{importer.saved}} records saved to database.
 			</p>			
 		</div>
 		</div>
