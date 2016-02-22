@@ -418,15 +418,18 @@ public class PluginsAPI extends Controller {
 		if (inf.space != null) {				
 		    RecordManager.instance.addRecord(inf.executorId, record, inf.space._id);
 				
-			Set<ObjectId> records = new HashSet<ObjectId>();
+		    Set<ObjectId> records = new HashSet<ObjectId>();
 			records.add(record._id);
-			RecordManager.instance.share(inf.executorId, inf.ownerId, inf.targetAPS, records, false);
+			
+		    if (inf.executorId.equals(inf.ownerId)) {				
+				RecordManager.instance.share(inf.executorId, inf.ownerId, inf.targetAPS, records, false);
+		    }
 			
 			if (inf.space != null && inf.space.autoShare != null && !inf.space.autoShare.isEmpty()) {
 				for (ObjectId autoshareAps : inf.space.autoShare) {
 					Consent consent = Consent.getByIdAndOwner(autoshareAps, inf.ownerId, Sets.create("type"));
 					if (consent != null) { 
-					  RecordManager.instance.share(inf.executorId, inf.ownerId, autoshareAps, records, true);
+					  RecordManager.instance.share(inf.executorId, inf.space._id, autoshareAps, records, true);
 					}
 				}
 			}
