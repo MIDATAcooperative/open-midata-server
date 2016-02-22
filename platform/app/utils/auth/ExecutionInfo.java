@@ -33,12 +33,11 @@ public class ExecutionInfo {
 		}
 		
 		ExecutionInfo result = new ExecutionInfo();
-		result.executorId = authToken.userId;
+		result.executorId = authToken.executorId;
 			
 		if (authToken.recordId != null) {
 			result.targetAPS = authToken.spaceId;
-			result.recordId = authToken.recordId;
-			result.executorId = authToken.userId;
+			result.recordId = authToken.recordId;			
 			result.ownerId = authToken.userId;
 		} else if (authToken.pluginId == null) {							
 			Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.userId, Sets.create("visualization", "app", "aps", "autoShare"));
