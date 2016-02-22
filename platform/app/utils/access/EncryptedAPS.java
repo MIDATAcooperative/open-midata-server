@@ -300,7 +300,7 @@ public class EncryptedAPS {
 		if (!isLoaded()) load();		
 		AccessLog.apsAccess(aps._id, who, aps.security);
 		if (aps.keys == null) { isValidated = true; return;} // Old version support
-		
+		try {
 		if (!keyProvided) 
 		{
 			if (aps.security.equals(APSSecurityLevel.NONE)) {			
@@ -323,7 +323,11 @@ public class EncryptedAPS {
 		} else {
 			if (!aps.security.equals(APSSecurityLevel.NONE)) { decodeAPS(); }
 		}
-		isValidated = true;		
+		isValidated = true;	
+		} catch (AuthException e) {
+			AccessLog.decryptFailure(e);
+			throw e;
+		}
 	}
 	
 	public boolean isAccessable() throws InternalServerException {

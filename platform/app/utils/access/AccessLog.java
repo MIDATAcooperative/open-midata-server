@@ -8,6 +8,7 @@ import models.enums.APSSecurityLevel;
 
 import org.bson.types.ObjectId;
 import play.Logger;
+import utils.exceptions.AuthException;
 
 /**
  * Currently only used for debugging 
@@ -68,5 +69,9 @@ public class AccessLog {
 
 	public static void decryptFailure(ObjectId record) {
 		 Logger.debug("Decrypt Failure Record="+record.toString());
+	}
+	
+	public static void decryptFailure(AuthException e) {
+		 Logger.error("APS Access failure", e);
 	}
 }

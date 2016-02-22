@@ -461,7 +461,7 @@ class APSImplementation extends APS {
 	protected void forceAccessibleSubset() throws AppException {
 		if (eaps.findAndselectAccessibleSubset()) return; 
 
-		AccessLog.debug("creating accessible subset for user: "+eaps.getAccessor().toString()+" aps: "+eaps.getId().toString());		
+		AccessLog.logBegin("start creating accessible subset for user: "+eaps.getAccessor().toString()+" aps: "+eaps.getId().toString());		
 		
 		EncryptedAPS wrapper = eaps.createChild();		
 	   for (String ckey : eaps.keyNames()) {
@@ -482,7 +482,9 @@ class APSImplementation extends APS {
 		 } else wrapper.setKey(eaps.getAccessor().toString(), KeyManager.instance.encryptKey(eaps.getAccessor(), wrapper.getAPSKey().getEncoded()));
 	   } catch (EncryptionNotSupportedException e) {}
 								
-		eaps.useAccessibleSubset(wrapper);        
+		eaps.useAccessibleSubset(wrapper);
+		
+		AccessLog.logEnd("end creating accessible subset");
 	}
 	
 	protected void merge() throws AppException {
