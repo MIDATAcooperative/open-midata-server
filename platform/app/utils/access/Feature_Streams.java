@@ -237,10 +237,15 @@ public class Feature_Streams extends Feature {
 		else apswrapper = RecordManager.instance.getCache(executingPerson).getAPS(result.owner, result.owner);
 
 		boolean apsDirect = direct;
+		
+		AccessLog.logDB("provide key by "+apswrapper.getId().toString());
+		
 		apswrapper.provideRecordKey(result);
 						
 		result.stream = null;			
 		result.direct = false;
+		
+		AccessLog.logDB("adding permission");
 		
 		apswrapper.addPermission(result, targetAPS != null && !targetAPS.equals(result.owner));
 								
@@ -248,14 +253,17 @@ public class Feature_Streams extends Feature {
 				
 		RecordEncryption.encryptRecord(result);		
 	    DBRecord.add(result);	  
-	    				
+
+	    AccessLog.logDB("create aps for stream");
+	    
 		RecordManager.instance.createAPSForRecord(executingPerson, unecrypted.owner, unecrypted._id, unecrypted.key, apsDirect);
 				
 		if (targetAPS != null) {
+			AccessLog.logDB("add permission for owner");
 			unecrypted.isReadOnly = true;
 			RecordManager.instance.getCache(executingPerson).getAPS(result.owner, result.owner).addPermission(unecrypted, false);
 		}
-		
+				
 		RecordManager.instance.applyQueries(executingPerson, unecrypted.owner, unecrypted, targetAPS != null ? targetAPS : unecrypted.owner);
 				
 		AccessLog.logEnd("end create stream");

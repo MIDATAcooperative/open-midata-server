@@ -52,6 +52,7 @@ class QueryEngine {
 	}
 	
 	public static List<DBRecord> isContainedInAps(APSCache cache, ObjectId aps, List<DBRecord> candidates) throws AppException {
+		
 		List<DBRecord> clearedCandidates = new ArrayList<DBRecord>(candidates.size());
 		for (DBRecord candidate : candidates) {
 			DBRecord clone = new DBRecord();
@@ -62,6 +63,8 @@ class QueryEngine {
 			clone.time = candidate.time;
 			clearedCandidates.add(clone);
 		}
+		if (!cache.getAPS(aps).isAccessible()) return new ArrayList<DBRecord>();
+		
 		if (AccessLog.detailedLog) AccessLog.logBegin("Begin check contained in aps #recs="+clearedCandidates.size());		
 		List<DBRecord> result = onlyWithKey((new Feature_QueryRedirect(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams())))).lookup(clearedCandidates, new Query(CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps))));
 		if (AccessLog.detailedLog) AccessLog.logEnd("End check contained in aps #recs="+result.size());

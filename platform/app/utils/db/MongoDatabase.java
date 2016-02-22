@@ -101,6 +101,7 @@ public class MongoDatabase extends Database {
 	public <T extends Model> void insert(String collection, T modelObject) throws DatabaseException {
 		DBObject dbObject;
 		try {
+			if (logQueries) AccessLog.logDB("insert into "+collection);
 			dbObject = conversion.toDBObject(modelObject);
 			getCollection(collection).insert(dbObject);			
 		} catch (DatabaseConversionException e) {
@@ -116,6 +117,7 @@ public class MongoDatabase extends Database {
 	public <T extends Model> void upsert(String collection, T modelObject) throws DatabaseException {
 		DBObject dbObject;
 		try {
+			if (logQueries) AccessLog.logDB("upsert "+collection+ " "+modelObject.get_id().toString());
 			dbObject = conversion.toDBObject(modelObject);
 			DBObject query = new BasicDBObject();
 			query.put("_id", modelObject.get_id());
@@ -132,6 +134,7 @@ public class MongoDatabase extends Database {
 	 */
 	public void delete(Class model, String collection, Map<String, ? extends Object> properties) throws DatabaseException {		
 		try {
+			if (logQueries) AccessLog.logDB("delete "+collection+ " "+properties.toString());
 			DBObject query = toDBObject(model, properties);
 			getCollection(collection).remove(query);
 		} catch (MongoException e) {
@@ -216,6 +219,7 @@ public class MongoDatabase extends Database {
 	 */
 	public <T extends Model> void secureUpdate(T model, String collection, String timestampField, String[] fields) throws LostUpdateException, DatabaseException {
 		try {
+			if (logQueries) AccessLog.logDB("secure update "+collection+ " "+model.get_id().toString());
 			DBObject query = new BasicDBObject();
 			query.put("_id", model.get_id());
 			query.put(timestampField, model.getClass().getField(timestampField).get(model));

@@ -204,6 +204,7 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 					measurement.import = true;
 				 });
 			 }
+			 reqDone();
 		  }, function() { reqDone(); });
 		
 		  midataServer.getSummary(authToken, "content" , { "format" : "fhir/Observation/Quantity" , "app" : "fitbit" })

@@ -554,6 +554,7 @@ public class RecordManager {
 	}
 	
 	protected void applyQueries(ObjectId executingPerson, ObjectId userId, DBRecord record, ObjectId useAps) throws AppException {
+		AccessLog.logBegin("start applying queries");
 		Member member = Member.getById(userId, Sets.create("queries"));
 		if (member.queries!=null) {
 			for (String key : member.queries.keySet()) {
@@ -567,6 +568,7 @@ public class RecordManager {
 				}
 			}
 		}
+		AccessLog.logEnd("end applying queries");
 	}
 	
     /**
