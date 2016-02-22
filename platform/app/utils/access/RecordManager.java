@@ -561,7 +561,9 @@ public class RecordManager {
 				Map<String, Object> query = member.queries.get(key);
 				if (QueryEngine.isInQuery(query, record)) {
 					try {
-					  RecordManager.instance.share(executingPerson, useAps, new ObjectId(key), Collections.singleton(record._id), true);
+					  ObjectId targetAps = new ObjectId(key);
+					  getCache(executingPerson).getAPS(targetAps, userId);
+					  RecordManager.instance.share(executingPerson, useAps, targetAps, Collections.singleton(record._id), true);
 					} catch (APSNotExistingException e) {
 						
 					}
