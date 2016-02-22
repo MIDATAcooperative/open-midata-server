@@ -72,7 +72,7 @@ public class SpaceToken {
 				.get();
 		if (recordId != null) map.put("r", recordId.toString());
 		if (pluginId != null) map.put("p", pluginId.toString());
-		if (executorId != null) map.put("e", executorId.toString());
+		if (executorId != null && !executorId.equals(userId)) map.put("e", executorId.toString());
 		String json = Json.stringify(Json.toJson(map));
 		return Crypto.encryptAES(json);
 	}
@@ -89,7 +89,7 @@ public class SpaceToken {
 			ObjectId userId = new ObjectId(json.get("userId").asText());
 			ObjectId recordId = json.has("r") ? new ObjectId(json.get("r").asText()) : null;
 			ObjectId pluginId = json.has("p") ? new ObjectId(json.get("p").asText()) : null;
-			ObjectId executorId = json.has("e") ? new ObjectId(json.get("e").asText()) : null;
+			ObjectId executorId = json.has("e") ? new ObjectId(json.get("e").asText()) : userId;
 			return new SpaceToken(spaceId, userId, recordId, pluginId, executorId);
 		} catch (Exception e) {
 			return null;

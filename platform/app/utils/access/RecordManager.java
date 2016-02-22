@@ -159,26 +159,26 @@ public class RecordManager {
 	/**
 	 * share access permission set content with other users
 	 * @param apsId ID of APS
-	 * @param ownerId ID of owner of APS
+	 * @param executorId ID of executor having permission of APS
 	 * @param targetUsers IDs of user to share APS with
 	 * @throws AppException
 	 */
-	public void shareAPS(ObjectId apsId, ObjectId ownerId,
+	public void shareAPS(ObjectId apsId, ObjectId executorId,
 			Set<ObjectId> targetUsers) throws AppException {
-		getCache(ownerId).getAPS(apsId).addAccess(targetUsers);		
+		getCache(executorId).getAPS(apsId).addAccess(targetUsers);		
 	}
 	
 	/**
 	 * share access permission set content with another entity that has a public key
 	 * @param apsId ID of APS
-	 * @param ownerId ID of owner of APS
+	 * @param executorId ID of executor having permission of APS
 	 * @param targetId ID of target entity
 	 * @param publickey public key of target entity
 	 * @throws AppException
 	 */
-	public void shareAPS(ObjectId apsId, ObjectId ownerId,
+	public void shareAPS(ObjectId apsId, ObjectId executorId,
 			ObjectId targetId, byte[] publickey) throws AppException {
-		getCache(ownerId).getAPS(apsId).addAccess(targetId, publickey);		
+		getCache(executorId).getAPS(apsId).addAccess(targetId, publickey);		
 	}
 
 	/**

@@ -105,7 +105,7 @@ public class PluginsAPI extends Controller {
 			return badRequest("Invalid authToken.");
 		}
 				
-		Set<ObjectId> tokens = ObjectIdConversion.toObjectIds(RecordManager.instance.listRecordIds(spaceToken.userId, spaceToken.spaceId));		
+		Set<ObjectId> tokens = ObjectIdConversion.toObjectIds(RecordManager.instance.listRecordIds(spaceToken.executorId, spaceToken.spaceId));		
 		return ok(Json.toJson(tokens));
 	}
 
@@ -134,7 +134,7 @@ public class PluginsAPI extends Controller {
 		   return ok(result);
 		}
 		
-		BSONObject meta = RecordManager.instance.getMeta(spaceToken.userId, spaceToken.spaceId, "_config");
+		BSONObject meta = RecordManager.instance.getMeta(spaceToken.executorId, spaceToken.spaceId, "_config");
 		
 		if (meta != null) return ok(Json.toJson(meta.toMap()));
 		
@@ -164,18 +164,18 @@ public class PluginsAPI extends Controller {
 		
 		if (json.has("config")) {
 		   Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));		
-		   RecordManager.instance.setMeta(spaceToken.userId, spaceToken.spaceId, "_config", config);
+		   RecordManager.instance.setMeta(spaceToken.executorId, spaceToken.spaceId, "_config", config);
 		}
 		if (json.has("autoimport")) {
 			boolean auto = JsonValidation.getBoolean(json, "autoimport");
 			Space space = Space.getByIdAndOwner(spaceToken.spaceId, spaceToken.userId, Sets.create("autoImport", "owner"));
 			if (auto) {				
 				User autoRunner = Admin.getByEmail("autorun-service", Sets.create("_id"));
-				RecordManager.instance.shareAPS(space._id, space.owner, Collections.singleton(autoRunner._id));
+				RecordManager.instance.shareAPS(space._id, spaceToken.executorId, Collections.singleton(autoRunner._id));
 				Space.set(space._id, "autoImport", auto);
 			} else {
 				User autoRunner = Admin.getByEmail("autorun-service", Sets.create("_id"));
-				RecordManager.instance.unshareAPS(space._id, space.owner, Collections.singleton(autoRunner._id));
+				RecordManager.instance.unshareAPS(space._id, spaceToken.executorId, Collections.singleton(autoRunner._id));
 				Space.set(space._id, "autoImport", auto);
 			}
 		}
@@ -209,14 +209,14 @@ public class PluginsAPI extends Controller {
 		if (current == null) throw new BadRequestException("error.space.missing", "The current space does no longer exist.");
 		
 		Space space = Spaces.add(spaceToken.userId, name, current.visualization, current.type, current.context);		
-		BSONObject bquery = RecordManager.instance.getMeta(spaceToken.userId, spaceToken.spaceId, "_query");		
+		BSONObject bquery = RecordManager.instance.getMeta(spaceToken.executorId, spaceToken.spaceId, "_query");		
 		Map<String, Object> query;
 		if (bquery != null) {
 			query = bquery.toMap();
 						
-			RecordManager.instance.shareByQuery(spaceToken.userId, spaceToken.userId, space._id, query);
+			RecordManager.instance.shareByQuery(spaceToken.executorId, spaceToken.userId, space._id, query);
 		}		
-		RecordManager.instance.setMeta(spaceToken.userId, space._id, "_config", config);
+		RecordManager.instance.setMeta(spaceToken.executorId, space._id, "_config", config);
 						
 		return ok();
 	}
@@ -303,13 +303,13 @@ public class PluginsAPI extends Controller {
 		Set<String> fields = json.has("fields") ? JsonExtraction.extractStringSet(json.get("fields")) : Sets.create();
 		
 		if (authToken.recordId != null) {
-			Collection<Record> record = RecordManager.instance.list(authToken.userId, authToken.spaceId, CMaps.map("_id", authToken.recordId), Sets.create("owner", "content", "format", "group"));
+			Collection<Record> record = RecordManager.instance.list(authToken.executorId, authToken.spaceId, CMaps.map("_id", authToken.recordId), Sets.create("owner", "content", "format", "group"));
 			result = new ArrayList<RecordsInfo>();
 			for (Record r : record) result.add(new RecordsInfo(r));			
 		} else {
 							
 			AggregationType aggrType = JsonValidation.getEnum(json, "summarize", AggregationType.class);		
-		    result = RecordManager.instance.info(authToken.userId, targetAps, properties, aggrType);	
+		    result = RecordManager.instance.info(authToken.executorId, targetAps, properties, aggrType);	
 
 		}
 	    if (fields.contains("ownerName")) ReferenceTool.resolveOwnersForRecordsInfo(result, true);
@@ -337,7 +337,7 @@ public class PluginsAPI extends Controller {
 		}
 		
 		ObjectId recordId = JsonValidation.getObjectId(json, "_id");			
-		FileData fileData = RecordManager.instance.fetchFile(authToken.userId, new RecordToken(recordId.toString(), authToken.spaceId.toString()));
+		FileData fileData = RecordManager.instance.fetchFile(authToken.executorId, new RecordToken(recordId.toString(), authToken.spaceId.toString()));
 		if (fileData == null) return badRequest();
 		response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
 		return ok(fileData.inputStream);
@@ -457,7 +457,7 @@ public class PluginsAPI extends Controller {
 			return badRequestPromise("Invalid authToken.");
 		}
 		
-		Map<String, String> tokens = RecordManager.instance.getMeta(appToken.userId, appToken.spaceId, "_oauth").toMap();
+		Map<String, String> tokens = RecordManager.instance.getMeta(appToken.executorId, appToken.spaceId, "_oauth").toMap();
 				
 		String oauthToken, oauthTokenSecret, appId;
 		
