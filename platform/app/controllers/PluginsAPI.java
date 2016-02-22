@@ -416,7 +416,7 @@ public class PluginsAPI extends Controller {
 		if (record.content==null) record.content = "other";
 		
 		if (inf.space != null) {				
-		    RecordManager.instance.addRecord(inf.executorId, record);
+		    RecordManager.instance.addRecord(inf.executorId, record, inf.space._id);
 				
 			Set<ObjectId> records = new HashSet<ObjectId>();
 			records.add(record._id);
