@@ -104,7 +104,7 @@ public class HealthProvider extends APIController {
 		JsonValidation.validate(json, "consent");
 		
 		ObjectId consentId = JsonValidation.getObjectId(json, "consent");
-		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Sets.create("status", "confirmDate"));
+		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Sets.create("status", "owner", "authorized", "confirmDate"));
 		if (target.status.equals(ConsentStatus.UNCONFIRMED)) {
 			target.setConfirmDate(new Date());
 			target.setStatus(ConsentStatus.ACTIVE);
@@ -129,7 +129,7 @@ public class HealthProvider extends APIController {
 		JsonValidation.validate(json, "consent");
 		
 		ObjectId consentId = JsonValidation.getObjectId(json, "consent");
-		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Sets.create("status", "confirmDate"));
+		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Sets.create("owner", "authorized", "status", "confirmDate"));
 		if (target.status.equals(ConsentStatus.UNCONFIRMED)) {
 			target.setConfirmDate(new Date());
 			target.setStatus(ConsentStatus.REJECTED);

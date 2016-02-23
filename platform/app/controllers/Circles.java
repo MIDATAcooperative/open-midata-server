@@ -246,11 +246,11 @@ public class Circles extends APIController {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId circleId = new ObjectId(circleIdString);
 		
-		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("authorized", "type"));
+		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("owner", "authorized", "type"));
 		if (consent == null) {
 			return badRequest("No consent with this id exists.");
 		}
-		if (consent.type != ConsentType.CIRCLE) return badRequest("Operation not supported");
+		if (consent.type != ConsentType.CIRCLE && consent.type != ConsentType.EXTERNALSERVICE) return badRequest("Operation not supported");
 		
 		// Remove APS
 		consent.setStatus(ConsentStatus.EXPIRED);
@@ -262,7 +262,8 @@ public class Circles extends APIController {
 		
 		// delete circle		
 		switch (consent.type) {
-		case CIRCLE: Circle.delete(userId, circleId);break;	
+		case CIRCLE: Circle.delete(userId, circleId);break;
+		case EXTERNALSERVICE: Circle.delete(userId, circleId);break;
 		default:break;
 		}
 		

@@ -185,12 +185,10 @@ OPTIONS /apps/gdconverter/convert   controllers.apps.GenomeDataConverter.checkPr
 POST    /apps/gdconverter/convert   controllers.apps.GenomeDataConverter.convert()
 
 # Mobile Public API
-OPTIONS /v1/init            controllers.MobileAPI.checkPreflight()
-POST    /v1/init            controllers.MobileAPI.init()
 OPTIONS /v1/auth            controllers.MobileAPI.checkPreflight()
 POST    /v1/auth            controllers.MobileAPI.authenticate()
-OPTIONS /v1/midata            controllers.MobileAPI.checkPreflight()
-POST    /v1/midata            controllers.MobileAPI.midataLogin()
+#OPTIONS /v1/midata            controllers.MobileAPI.checkPreflight()
+#POST    /v1/midata            controllers.MobileAPI.midataLogin()
 OPTIONS /v1/records/create  controllers.MobileAPI.checkPreflight()
 POST    /v1/records/create  controllers.MobileAPI.createRecord()
 OPTIONS /v1/records/search  controllers.MobileAPI.checkPreflight()

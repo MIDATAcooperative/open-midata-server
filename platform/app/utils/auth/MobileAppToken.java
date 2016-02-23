@@ -23,7 +23,7 @@ public class MobileAppToken {
 	/**
 	 * the id of the application instance
 	 */
-	public ObjectId instanceId;
+	public ObjectId appInstanceId;
 	
 	/**
 	 * the id of the application
@@ -31,18 +31,30 @@ public class MobileAppToken {
 	public ObjectId appId;
 	
 	/**
+	 * the id of the owner of the application instance
+	 */
+	public ObjectId ownerId;
+	
+	/**
 	 * the secret passphrase of the application instance
 	 */
-	public String phrase;	
+	public String phrase;
+	
+	/**
+	 * creation time
+	 */
+	public long created;
 
-	public MobileAppToken(ObjectId appId, ObjectId instanceId, String phrase) {
-		this.instanceId = instanceId;
+	public MobileAppToken(ObjectId appId, ObjectId instanceId, ObjectId ownerId, String phrase, long created) {
+		this.appInstanceId = instanceId;
 		this.appId = appId;
-		this.phrase = phrase;		
+		this.ownerId = ownerId;
+		this.phrase = phrase;
+		this.created = created;
 	}
 	
 	public String encrypt() {
-		Map<String, Object> map = CMaps.map("i", instanceId.toString()).map("a", appId.toString()).map("p", phrase);						
+		Map<String, Object> map = CMaps.map("i", appInstanceId.toString()).map("a", appId.toString()).map("p", phrase).map("c", created).map("o", ownerId.toString());						
 		String json = Json.stringify(Json.toJson(map));
 		return Crypto.encryptAES(json);
 	}
@@ -57,8 +69,10 @@ public class MobileAppToken {
 			JsonNode json = Json.parse(plaintext);
 			ObjectId appId = new ObjectId(json.get("a").asText());
 			ObjectId instanceId = new ObjectId(json.get("i").asText());
-			String phrase = json.get("p").asText();			
-			return new MobileAppToken(appId, instanceId, phrase);
+			ObjectId ownerId = new ObjectId(json.get("o").asText());
+			String phrase = json.get("p").asText();		
+			long created = json.get("c").asLong();
+			return new MobileAppToken(appId, instanceId, ownerId, phrase, created);
 		} catch (Exception e) {
 			return null;
 		}

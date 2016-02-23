@@ -304,7 +304,7 @@ public class Studies extends APIController {
 		ObjectId studyId = new ObjectId(id);
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "birthday", "gender", "country"));		
-		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history", "memberName"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history", "memberName", "owner", "authorized"));		
 		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history", "owner", "createdBy", "name"));
 		
 		if (study == null) return badRequest("Study does not exist.");
@@ -339,7 +339,7 @@ public class Studies extends APIController {
 		ObjectId userId = new ObjectId(request().username());		
 		ObjectId studyId = new ObjectId(id);
 					
-		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history", "memberName"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history", "memberName", "owner", "authorized"));		
 		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
 		if (study == null) return badRequest("Study does not exist.");

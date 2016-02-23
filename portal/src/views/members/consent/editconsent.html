@@ -60,7 +60,7 @@
 	<a  ui-sref="^.circles" class="btn btn-default">Back to consent list</a>
 	<button type="button" ng-click="confirmConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-primary">Confirm this Consent</button>
 	<button type="button" ng-click="rejectConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-danger">Reject this Consent</button>
-    <button type="button" ng-click="deleteConsent();" ng-show="consent.status == 'ACTIVE'" class="btn btn-danger">Delete this Consent</button>
+    <button type="button" ng-click="deleteConsent();" ng-show="consent.status == 'ACTIVE' || consent.status == 'REJECTED'" class="btn btn-danger">Delete this Consent</button>
   </form>	
   </loader>		
 </div>

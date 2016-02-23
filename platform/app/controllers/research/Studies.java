@@ -616,7 +616,7 @@ public class Studies extends APIController {
 		String comment = JsonValidation.getString(json, "comment");
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));					
-		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("pstatus", "history", "memberName"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("pstatus", "history", "memberName", "owner", "authorized"));		
 		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
 		if (study == null) return badRequest("Study does not exist.");		

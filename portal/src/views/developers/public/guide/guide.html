@@ -143,43 +143,46 @@
 						   Choose "Mobile App" as "type" of the plugin. 
 						   <i>In the current release do not select "Spotlight in Market". (will be removed)</i>
 						   Click on "Submit" when you are done.
-						</p>
-						<h3>Initialization of the app</h3>
-						<p>After the mobile app has been installed on a smartphone it needs to register with the
-						   MIDATA server and receive an app instance token ONCE. That instance token must be stored by
-						   the app on the smartphone and is required during authentication. If the instance token is lost and 
-						   a new one is requested the app will loose access to all data shared with it.</p>
-						<p>To request the app instance token this request is needed:</p>
-						<pre><i>POST</i> /v1/init</pre>
-						<p>with these parameters as JSON body:</p>
-<pre>{
-  "appname" : internal name of the application,
-  "secret" : the secret key that has been chosen on the development portal
-}</pre>
-                        <p>In response you will receive a JSON with the instance token like this:</p>
-<pre>{
-  "instanceToken" : "6c333a3b42e64220...8f49a49a19af46"
-}</pre>
+						</p>						
                         <h3>Authentication (Login)</h3>						
 						<p>A mobile app needs to authenticate using a users credentials to the platform before providing or querying records.
 						To authenticate call:</p> 
 						<pre><i>POST</i> /v1/auth</pre>
 						<p>with these parameters as JSON body:</p>
 <pre>{ 
-	  "instanceToken" : the token the app had received from the "init" request, 	  
-	  "username" : the email of the user, 
-	  "password" : password of user 
+      "appname" : internal name of the application,
+      "secret" : the secret key that has been chosen on the development portal  
+      "username" : the email of the user, 
+      "password" : password of user 
 }</pre>						
 					    <p>As result you either get a 400 status with an error message or a session tokens that can be used for further requests.</p>
 						<p>An example response looks like this:</p>
 <pre>{
-  "authToken":"014760..."
+      "authToken":"014760...",
+      "refreshToken":"6756756756...."
 }</pre>
-                        <p>After the first login of a user using the mobile app a new "consent" is automatically created in the users MIDATA account.
+                        <p>After the first login of a user using the mobile app a new "<b>consent</b>" is automatically created in the users MIDATA account.
                            This consent may be used by the user to select which data he/she wants to share with your mobile app.
-                           Initially this consent does not share any data so that your app will see a blank account. However the app is allowed to create
-                           records and is automatically granted access to the records it has created.
+                           As long as this consent has not been accepted by the member it does not share any data so that your app will see a blank account. The app is not allowed to create
+                           records until the consent is confirmed.
                         </p>  
+                        <p>The "<code>password</code>" may be choosen freely during the first login. It does not need to be the same password as for the portal.
+                           For all subsequent logins the same password must be used. If the password is lost the user may log into the portal and delete the consent to freely choose a new password.
+                           A password recovery function for apps will be integrated into the portal.                            
+                        </p>
+                        <p>The "<code>authToken</code>" needs to be passed to all other API functions for authentication. The "<code>refreshToken</code>" may be used to skip the login process the next time.
+                        To reauthenticate issue this request:</p>
+                        <pre><i>POST</i> /v1/auth</pre>
+						<p>with these parameters as JSON body:</p>
+<pre>{ 
+      "appname" : internal name of the application,
+      "secret" : the secret key that has been chosen on the development portal  
+      "refreshToken" : the refresh token from last login 	  
+}</pre>                
+                        <p>The result is the same as for the initial login. Please note that a new refreshToken will be returned every call to /v1/auth and only the last returned token is valid.
+                           Previously returned refreshTokens are invalidated.
+                        </p>   
+                                              
 						<h3>Creating new records</h3>
 						<p>To create a new record call this endpoint:</p>
 						<pre><i>POST</i> /v1/records/create</pre>

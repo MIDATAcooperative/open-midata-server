@@ -3,6 +3,7 @@ package controllers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import models.RecordsInfo;
 import models.Space;
 import models.User;
 import models.enums.AggregationType;
+import models.enums.ConsentStatus;
 import models.enums.UserRole;
 
 import org.bson.BSONObject;
@@ -71,42 +73,13 @@ public class MobileAPI extends Controller {
 		return ok();
 	}
  	
-	/**
-	 * assigns a new mobile app instance a security token
-	 * @return mobile app token
-	 * @throws JsonValidationException
-	 * @throws AppException
-	 */
-	@BodyParser.Of(BodyParser.Json.class)
-	@MobileCall
-	public static Result init() throws JsonValidationException, AppException {        		
-        JsonNode json = request().body().asJson();
-		
-		JsonValidation.validate(json, "appname", "secret");
-		
-		String name = JsonValidation.getString(json, "appname");
-		String secret = JsonValidation.getString(json,"secret");
-				
-		Plugin app = Plugin.getByFilenameAndSecret(name, secret, Sets.create("type"));
-		if (app == null) return badRequest("Unknown app");
-		if (!app.type.equals("mobile")) return internalServerError("Wrong app type");
-		
-		ObjectId appInstance = new ObjectId();
-						
-		String passphrase = CodeGenerator.generatePassphrase();
-		
-		MobileAppToken appToken = new MobileAppToken(app._id, appInstance, passphrase);
-			
-		ObjectNode obj = Json.newObject();								
-		obj.put("instanceToken", appToken.encrypt()); 
-		return ok(obj);
-	}
+	
 	
 	/**
 	 * login function for MIDATA app
 	 * @return status ok
 	 * @throws AppException
-	 */
+	
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result midataLogin() throws AppException {
@@ -152,6 +125,18 @@ public class MobileAPI extends Controller {
 		return ok(obj);
 	
 	}
+	 */
+		
+	
+	private static boolean verifyAppInstance(MobileAppInstance appInstance, ObjectId ownerId, ObjectId applicationId) {
+		if (appInstance == null) return false;
+        if (!appInstance.owner.equals(ownerId)) return false;
+        if (!appInstance.applicationId.equals(applicationId)) return false;
+        
+        if (appInstance.status.equals(ConsentStatus.EXPIRED) || appInstance.status.equals(ConsentStatus.REJECTED)) return false;
+        
+        return true;
+	}
 	
 	/**
 	 * Authentication function for mobile apps
@@ -163,41 +148,81 @@ public class MobileAPI extends Controller {
 	public static Result authenticate() throws AppException {
 				
         JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "instanceToken", "username", "password");
+		JsonValidation.validate(json, "appname", "secret");
+		if (!json.has("refreshToken")) JsonValidation.validate(json, "username", "password");
+					
+		String name = JsonValidation.getString(json, "appname");
+		String secret = JsonValidation.getString(json,"secret");
+				
+	    // Validate Mobile App	
+		Plugin app = Plugin.getByFilenameAndSecret(name, secret, Sets.create("type", "name"));
+		if (app == null) return badRequest("Unknown app");
+		if (!app.type.equals("mobile")) return internalServerError("Wrong app type");
+	
+		ObjectId appInstanceId = null;
+		MobileAppInstance appInstance = null;
+		String phrase;
+		Map<String, Object> meta = null;
 		
-		MobileAppToken appToken = MobileAppToken.decrypt(JsonValidation.getString(json, "instanceToken"));		
-		String username = JsonValidation.getEMail(json, "username");
-		String password = JsonValidation.getString(json, "password");
-		
-		Member member = Member.getByEmail(username, Sets.create("password","visualizations","tokens"));
-		if (member == null) return badRequest("Unknown user or bad password");
-		
-		// check password
-		if (!Member.authenticationValid(password, member.password)) return badRequest("Unknown user or bad password");
+		if (json.has("refreshToken")) {
+			MobileAppToken refreshToken = MobileAppToken.decrypt(JsonValidation.getString(json, "refreshToken"));
+			appInstanceId = refreshToken.appInstanceId;
+			
+			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "applicationId", "status"));
+			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) return badRequest("Bad refresh token.");            
+            if (!refreshToken.appId.equals(app._id)) return badRequest("Bad refresh token.");
+            
+            phrase = refreshToken.phrase;
+            KeyManager.instance.unlock(appInstance._id, phrase);	
+            meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
+                        
+            if (refreshToken.created != ((Long) meta.get("created")).longValue()) {
+            	return status(UNAUTHORIZED);
+            }
+		} else {
+			String username = JsonValidation.getEMail(json, "username");
+			phrase = JsonValidation.getString(json, "password");
+				
+			Member member = Member.getByEmail(username, Sets.create("visualizations","tokens"));
+			if (member == null) return badRequest("Unknown user or bad password");
+			
+			appInstance = MobileAppInstance.getByApplicationAndOwner(app._id, member._id, Sets.create("owner", "applicationId", "status"));
+			
+			if (appInstance == null) {									
+				appInstance = new MobileAppInstance();
+				appInstance._id = new ObjectId();
+				appInstance.name = "Mobile: "+ app.name;
+				appInstance.applicationId = app._id;		
+	            appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, phrase);
+	        	appInstance.owner = member._id;
+	   		    MobileAppInstance.add(appInstance);	
+	   		    
+	   		    KeyManager.instance.unlock(appInstance._id, phrase);	   		    
+	   		    RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id);
+	   		    
+	   		    meta = new HashMap<String, Object>();
+	   		    meta.put("phrase", phrase);
+	   		    
+			} else {
+				if (!verifyAppInstance(appInstance, member._id, app._id)) return badRequest("Access denied");
+				KeyManager.instance.unlock(appInstance._id, phrase);
+				meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
+			}
+		}
+				
+		if (!phrase.equals(meta.get("phrase"))) return internalServerError("Internal error while validating consent");
 						
-		MobileAppInstance appInstance = MobileAppInstance.getByInstanceAndOwner(appToken.instanceId, member._id, Sets.create("owner"));
-		if (appInstance == null) {		
-			
-			Plugin app = Plugin.getById(appToken.appId, Sets.create("name"));
-			if (app == null) throw new InternalServerException("error.internal", "Plugin not found.");
-			
-			appInstance = new MobileAppInstance();
-			appInstance._id = new ObjectId();
-			appInstance.name = "Mobile: "+ app.name;
-			appInstance.applicationId = appToken.appId;		
-            appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, appToken.phrase);
-        	appInstance.owner = member._id;
-   		    MobileAppInstance.add(appInstance);	
-   		    
-   		    KeyManager.instance.unlock(appInstance._id, appToken.phrase);
-   		    
-   		    RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id);   		       		    
-		} 
-								
+		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis()); 
+        MobileAppToken refresh = new MobileAppToken(app._id, appInstance._id, appInstance.owner, phrase, System.currentTimeMillis());
+		
+        meta.put("created", refresh.created);
+        RecordManager.instance.setMeta(appInstance._id, appInstance._id, "_app", meta);
+        
 		// create encrypted authToken		
 		ObjectNode obj = Json.newObject();								
-		obj.put("authToken", new MobileAppSessionToken(appInstance._id, appToken.phrase, System.currentTimeMillis()).encrypt());
-												
+		obj.put("authToken", session.encrypt());
+		obj.put("refreshToken", refresh.encrypt());
+															
 		return ok(obj);
 	}
 	

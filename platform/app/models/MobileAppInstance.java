@@ -25,12 +25,7 @@ public class MobileAppInstance extends Consent {
 	 * id of the plugin
 	 */
 	public ObjectId applicationId;
-	
-	/**
-	 * id of the application instance. There is no corresponding database object. 
-	 * application instances ids are used in tokens
-	 */
-	public ObjectId appInstance;
+		
 	
 	public MobileAppInstance() {
 		this.type = ConsentType.EXTERNALSERVICE;
@@ -46,7 +41,7 @@ public class MobileAppInstance extends Consent {
 		return Model.get(MobileAppInstance.class, collection, CMaps.map("_id", id), fields);
 	}
 	
-	public static MobileAppInstance getByInstanceAndOwner(ObjectId instanceId, ObjectId owner, Set<String> fields) throws InternalServerException {
-		return Model.get(MobileAppInstance.class, collection, CMaps.map("appInstance", instanceId).map("owner", owner), fields);
+	public static MobileAppInstance getByApplicationAndOwner(ObjectId applicationId, ObjectId owner, Set<String> fields) throws InternalServerException {
+		return Model.get(MobileAppInstance.class, collection, CMaps.map("applicationId", applicationId).map("owner", owner), fields);
 	}
 }
