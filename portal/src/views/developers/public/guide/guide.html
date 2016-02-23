@@ -180,8 +180,9 @@
       "refreshToken" : the refresh token from last login 	  
 }</pre>                
                         <p>The result is the same as for the initial login. Please note that a new refreshToken will be returned every call to /v1/auth and only the last returned token is valid.
-                           Previously returned refreshTokens are invalidated.
+                           Previously returned refreshTokens are invalidated.                           
                         </p>   
+                        <p>API calls will return a status code of <code>401</code> if a relogin is required.</p>
                                               
 						<h3>Creating new records</h3>
 						<p>To create a new record call this endpoint:</p>
