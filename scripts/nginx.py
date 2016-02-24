@@ -23,7 +23,9 @@ class Nginx(Product):
 		print 'Reading instance config...'
 		with open(os.path.join(self.parent, 'config', 'instance.json'), 'r') as reader:
 			instance = json.load(reader, 'utf8')		
-						
+		print 'Creating folder...'
+		if not os.path.exists(self.target):
+			os.mkdir(self.target)						
 		print 'Setting paths in config file...'
 		for f in ['plugins', 'portal_api', 'webpages']:			
 			with open(os.path.join(self.source, f), 'r') as configFile:				
