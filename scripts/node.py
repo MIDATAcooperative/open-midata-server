@@ -4,7 +4,7 @@ Configuration of Node.
 @author amarfurt
 '''
 
-import os
+import os, json
 from product import Product
 from command import Command
 from sslcert import SSLCertificate
@@ -27,10 +27,12 @@ class Node(Product):
 		print 'Setting symlink...'
 		Command.execute('ln -s node-v{0}-linux-x64 node'.format(version), self.parent)
 		print 'Setting paths in settings file...'
-		with open(os.path.join(self.code, 'settings.js'), 'r') as configFile:
+		with open(os.path.join(self.parent, 'config', 'instance.json'), 'r') as reader:
+			instance = json.load(reader, 'utf8')		
+		
+		with open(os.path.join(self.code, 'settings.js.in'), 'r') as configFile:
 			config = configFile.read()
-			config = config.replace('NODE_SSL_SERVER_KEY', os.path.join(self.ssl, 'server.pem'))
-			config = config.replace('NODE_SSL_SERVER_CERT', os.path.join(self.ssl, 'server.pem'))
+			config = config.replace('NODE_INTERNAL_PORT', instance['node']['port'])
 		with open(os.path.join(self.code, 'settings.js'), 'w') as configFile:
 			configFile.write(config)
 		print 'Cleaning up...'

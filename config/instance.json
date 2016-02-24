@@ -2,8 +2,8 @@
   "name" : "demo",
   "domain" : "demo.midata.coop",
   "certificate" : {
-    "pem" : "/etc/myssls/demo_midata_coop_2015.pem",
-    "key" : "/etc/myssls/demo_midata_coop_2015.key"
+    "pem" : "ROOTDIR/ssl-certificate/server.pem",
+    "key" : "ROOTDIR/ssl-certificate/server.pem"
    },
   "platform" : {
      "port" : "9001"

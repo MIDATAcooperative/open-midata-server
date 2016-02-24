@@ -75,13 +75,13 @@ mongo.mapping.database=mapping
 
 ## Server configuration
 # ~~~~~
-portal.server="demo.midata.coop"
-platform.server="localhost:9000"
-apps.server="localhost:3000"
-visualizations.server="localhost:4000"
-visualizations.path="/home/alexander/projects/hdc/visualizations"
-node.server="localhost:5000"
-node.path="/home/alexander/.nvm/versions/node/v5.0.0/bin/node"
+portal.server="DOMAIN"
+platform.server="DOMAIN:9000"
+apps.server="DOMAIN:3000"
+visualizations.server="DOMAIN:4000"
+visualizations.path="ROOTDIR/visualizations"
+node.server="DOMAIN:5000"
+node.path="/usr/bin/node"
 
 # Evolutions
 # ~~~~~
