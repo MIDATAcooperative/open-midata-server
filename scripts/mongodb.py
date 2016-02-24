@@ -37,6 +37,10 @@ class MongoDB(Product):
 		print 'Cleaning up...'
 		Command.execute('rm mongodb-linux-x86_64-{0}.tgz'.format(version), self.parent)
 
+	def build(self):
+		pass
+
+
 	def start(self):
 		print 'Starting MongoDB...'
 		Command.execute('{0} --config {1}'.format(os.path.join(self.bin, 'mongod'), 

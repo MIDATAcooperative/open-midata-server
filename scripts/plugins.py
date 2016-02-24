@@ -16,6 +16,9 @@ class Plugins(Product):
 		self.plugins = os.path.join(self.parent, 'visualizations')		
 
 	def setup(self):
+		pass
+
+	def build(self):
 		print 'Installing Apps...'		
 		Command.execute('for f in *; do cd $f; [ -e "package.json" ] && npm install; cd ..; done', self.apps)
 		Command.execute('for f in *; do cd $f; [ -e "bower.json" ] && bower install; cd ..; done', self.apps)

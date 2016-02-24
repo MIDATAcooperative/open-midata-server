@@ -27,6 +27,9 @@ class SSLCertificate(Product):
 		print 'Creating PEM-formatted version of private key and certificate...' # for Lighttpd and Node.js
 		Command.execute('openssl pkcs12 -nodes -in server.p12 -out server.pem', self.base)
 
+	def build(self):
+		pass
+
 	def start(self):
 		pass
 

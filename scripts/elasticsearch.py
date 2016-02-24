@@ -40,6 +40,9 @@ class ElasticSearch(Product):
 		print 'Cleaning up...'
 		Command.execute('rm elasticsearch-{0}.tar.gz'.format(version), self.parent)
 
+	def build(self):
+		pass
+
 	def start(self):
 		print 'Starting ElasticSearch...'
 		Command.execute('{0} -d; sleep 1; {0} -d'.format(os.path.join(self.bin, 'elasticsearch')), self.parent)

@@ -50,5 +50,8 @@ class Activator(Product):
 		print 'Shutting down Activator...'
 		Command.execute('pkill -f typesafe')
 
+	def build(self):
+		pass
+
 	def reset(self):
 		pass

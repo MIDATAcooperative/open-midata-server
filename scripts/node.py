@@ -45,6 +45,10 @@ class Node(Product):
 		print 'Shutting down Node...'
 		Command.execute('pkill node')
 
+	def build(self):
+		pass
+
+
 	def reset(self):
 		pass
 

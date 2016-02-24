@@ -46,6 +46,9 @@ class Lighttpd(Product):
 		with open(os.path.join(self.base, 'lighttpd-visualizations.conf'), 'w') as configFile:
 			configFile.write(config)
 
+	def build(self):
+		pass
+
 	def start(self):
 		print 'Skipping Lighttpd for apps and visualizations...'
 

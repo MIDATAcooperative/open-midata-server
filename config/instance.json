@@ -1,0 +1,14 @@
+{
+  "name" : "demo",
+  "domain" : "demo.midata.coop",
+  "certificate" : {
+    "pem" : "/etc/myssls/demo_midata_coop_2015.pem",
+    "key" : "/etc/myssls/demo_midata_coop_2015.key"
+   },
+  "platform" : {
+     "port" : "9001"
+   },
+  "node" : {
+     "port" : "5001"
+  }
+}

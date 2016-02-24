@@ -13,6 +13,10 @@ class Product:
 	def setup(self, version):
 		pass
 
+    @abstractmethod
+	def build(self):
+		pass
+
 	@abstractmethod
 	def start(self):
 		pass

@@ -1,10 +1,10 @@
 server {
         listen 3000;
-        server_name demo.midata.coop;
+        server_name DOMAIN;
 
         ssl on;
-        ssl_certificate /etc/myssls/demo_midata_coop_2015.pem;
-        ssl_certificate_key /etc/myssls/demo_midata_coop_2015.key;
+        ssl_certificate CERTIFICATE_PEM;
+        ssl_certificate_key CERTIFICATE_KEY;
 
         #ssl_session_timeout 5m;
 
@@ -12,7 +12,7 @@ server {
         #ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
         #ssl_prefer_server_ciphers on;
 
-        root /hdc/apps;
+        root ROOTDIR/apps;
         
         location / {
         }                 
@@ -20,11 +20,11 @@ server {
 
 server {
         listen 4000;
-        server_name demo.midata.coop;
+        server_name DOMAIN;
 
         ssl on;
-        ssl_certificate /etc/myssls/demo_midata_coop_2015.pem;
-        ssl_certificate_key /etc/myssls/demo_midata_coop_2015.key;
+        ssl_certificate CERTIFICATE_PEM;
+        ssl_certificate_key CERTIFICATE_KEY;
 
         #ssl_session_timeout 5m;
 
@@ -32,7 +32,7 @@ server {
         #ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
         #ssl_prefer_server_ciphers on;
 
-        root /hdc/visualizations;
+        root ROOTDIR/visualizations;
 
         location / {
         }
@@ -40,11 +40,11 @@ server {
 
 server {
         listen 5000;
-        server_name demo.midata.coop;
+        server_name DOMAIN;
 
         ssl on;
-        ssl_certificate /etc/myssls/demo_midata_coop_2015.pem;
-        ssl_certificate_key /etc/myssls/demo_midata_coop_2015.key;
+        ssl_certificate CERTIFICATE_PEM;
+        ssl_certificate_key CERTIFICATE_KEY;
 
         #ssl_session_timeout 5m;
 
@@ -52,10 +52,10 @@ server {
         #ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
         #ssl_prefer_server_ciphers on;
 
-        root /hdc/visualizations;
+        root ROOTDIR/visualizations;
 
         location / {
-           proxy_pass http://localhost:5001;
+           proxy_pass http://localhost:NODE_INTERNAL_PORT;
            proxy_set_header Host $host;
            proxy_http_version 1.0;
         }

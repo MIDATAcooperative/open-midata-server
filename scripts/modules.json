@@ -14,6 +14,11 @@
 		"class": "Plugins",
 		"startOrder": 1
 	},
+	"portal": {
+		"module": "scripts.portal",
+		"class": "Portal",
+		"startOrder": 1
+	},
 	"elasticsearch": {
 		"module": "scripts.elasticsearch",
 		"class": "ElasticSearch",
@@ -27,6 +32,11 @@
 	"node": {
 		"module": "scripts.node",
 		"class": "Node",
+		"startOrder": 1
+	},
+	"nginx": {
+		"module": "scripts.nginx",
+		"class": "Nginx",
 		"startOrder": 1
 	},
 	"activator": {
