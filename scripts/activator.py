@@ -68,16 +68,19 @@ class Activator(Product):
 			print('Reencrypting configuration file')
 			Command.execute('{0} /dev/shm/secret.conf -z -a rijndael-128 -m cbc'.format(self.mcrypt), self.conf)
 			copyfile('/dev/shm/secret.conf.gz.nc', os.path.join(self.conf, 'secret.conf.gz.nc'))
-			Command.execute('{0} -zun 0 /dev/shm/secret.conf'.format(self.shred), self.conf)						
+			Command.execute('{0} -zun 0 /dev/shm/secret.conf'.format(self.shred), self.conf)												
 		elif (os.path.isfile(os.path.join(self.conf, 'secret.conf.gz.nc'))):
 			print('Decrypting existing configuration file')
 			copyfile(os.path.join(self.conf, 'secret.conf.gz.nc'), '/dev/shm/secret.conf.gz.nc')
-			Command.execute('{0} /dev/shm/secret.conf.gz.nc -z -a rijndael-128 -m cbc -d'.format(self.mcrypt), self.conf)
+			Command.execute('{0} /dev/shm/secret.conf.gz.nc -z -a rijndael-128 -m cbc -d'.format(self.mcrypt), self.conf)			
 			print('Now edit your configuration in /dev/shm/secret.conf and call python main.py configure activator again')
+			print('')
 		else:
+			Command.execute('{0} play-generate-secret'.format(os.path.join('..', 'activator', 'activator')), self.code)
 			print('Starting new configuration. Edit configuration at /dev/shm/secret.conf then call	python main.py configure activator again')
-			copyfile(os.path.join(self.conf, 'secret.conf.template'), '/dev/shm/secret.conf')
-		
+			copyfile(os.path.join(self.conf, 'secret.conf.template'), '/dev/shm/secret.conf')			
+			print('')
+			print('Please include the above displayed application secret into the configuration file')		
 
 	def reset(self):
 		pass
