@@ -4,8 +4,10 @@ import controllers.FHIR;
 import play.Application;
 import play.GlobalSettings;
 import play.libs.Json;
+import setup.MinimalSetup;
 import utils.db.DBLayer;
 import utils.db.DatabaseException;
+import utils.exceptions.AppException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
 import utils.json.CustomObjectMapper;
@@ -41,7 +43,13 @@ public class Global extends GlobalSettings {
 		  FHIR.servlet.setFhirContext(ResourceProvider.ctx);
 		  FHIR.servlet.init(new PlayHttpServletConfig());
 		} catch (ServletException e) {
-		  throw new NullPointerException();
+		   throw new NullPointerException();
+		}
+		
+		try {
+		MinimalSetup.dosetup();
+		} catch (AppException e) {
+			throw new NullPointerException();
 		}
 	}
 

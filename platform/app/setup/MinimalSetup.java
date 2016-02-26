@@ -1,10 +1,14 @@
 package setup;
 
-import static play.test.Helpers.fakeApplication;
-import static play.test.Helpers.fakeGlobal;
-import static play.test.Helpers.start;
+
+import java.util.ArrayList;
+import java.util.Date;
+
+import org.bson.types.ObjectId;
+
 import models.Admin;
 import models.Developer;
+import models.History;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
@@ -13,29 +17,16 @@ import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
-import utils.db.DBLayer;
-import utils.search.Search;
+import utils.collections.Sets;
+import utils.exceptions.AppException;
 
 /**
  * Minimal setup that is necessary to start a fresh MIDATA platform.
  */
 public class MinimalSetup {
 
-	public static void main(String[] args) throws Exception {
+	public static void dosetup() throws AppException {
 		System.out.println("Starting to create minimal setup for MIDATA platform.");
-
-		// connecting
-		System.out.print("Connecting to MongoDB...");
-		start(fakeApplication(fakeGlobal()));
-		DBLayer.connect();
-		System.out.println("done.");
-		System.out.print("Connecting to ElasticSearch...");
-		Search.connect();
-		System.out.println("done.");
-
-		// initializing
-		System.out.print("Setting up MongoDB...");
-		DBLayer.initialize();
 		
 		if (Admin.getByEmail("admin@midata.coop", Sets.create("_id")) == null) {
 			Admin admin = new Admin();
@@ -84,18 +75,7 @@ public class MinimalSetup {
 			
 			KeyManager.instance.unlock(developer._id, null);
 			RecordManager.instance.createPrivateAPS(developer._id, developer._id);
-		}
-						
-		System.out.println("done.");
-		System.out.print("Setting up ElasticSearch...");
-		Search.initialize();
-		System.out.println("done.");
-
-		// terminating
-		System.out.println("Shutting down...");
-		DBLayer.close();
-		Search.close();
-		System.out.println("Minimal setup complete.");
+		}						
 	}
 
 }
