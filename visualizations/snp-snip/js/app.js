@@ -107,6 +107,7 @@ hdcSnpSnip.controller('SnpSnipCtrl', ['$scope', '$http', '$sce', '$location', 'm
 
 		getData = function(rsNumber) {
 			$scope.loadingRecordDataFailed = false;
+			if ($scope.selectedRecord != null) {
 			var data = {"authToken": authToken};
 			data.properties = { "_id" : $scope.selectedRecord._id };
 			data.fields = ["data", "data." + rsNumber];
@@ -122,6 +123,7 @@ hdcSnpSnip.controller('SnpSnipCtrl', ['$scope', '$http', '$sce', '$location', 'm
 				error(function(err) {
 					$scope.loadingRecordDataFailed = true;
 				});
+			}
 		}
 
 		prepareSearchResults = function(rs) {
