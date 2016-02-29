@@ -14,3 +14,5 @@ node*/
 ssl-certificate/
 portal/node_modules
 portal/dest
+platform/conf/application.conf
+platform/conf/secret.conf.gz.nc
