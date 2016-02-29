@@ -1,10 +1,13 @@
 {
-  "name" : "demo",
-  "domain" : "demo.midata.coop",
+  "name" : "test",
+  "domain" : "localhost",
   "certificate" : {
     "pem" : "ROOTDIR/ssl-certificate/server.pem",
     "key" : "ROOTDIR/ssl-certificate/server.pem"
    },
+  "portal" : {
+     "origin" : "https://localhost:9002"
+  },
   "platform" : {
      "port" : "9001"
    },

@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  *
  */
 public class VisualizationCallAction extends Action<VisualizationCall> {
-
+	
     public F.Promise<Result> call(Http.Context ctx) throws Throwable { 
     	try {
     	  JsonNode json = ctx.request().body().asJson();
@@ -29,7 +29,7 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
     	  AccessLog.debug("VA:"+host);
     	  String visualizationsServer = "https://" + Play.application().configuration().getString("visualizations.server");
     	  if (host != null) {
-	  		  if (host.startsWith("https://localhost:") || host.startsWith("http://localhost:") || host.equals("https://demo.midata.coop") || host.equals(visualizationsServer)) {
+	  		  if (host.startsWith("https://localhost:") || host.startsWith("http://localhost:") || host.equals(visualizationsServer)) {
 	  		    ctx.response().setHeader("Access-Control-Allow-Origin", host);
 	  		  } else ctx.response().setHeader("Access-Control-Allow-Origin", visualizationsServer);
     	  }
@@ -37,13 +37,7 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
     	  ctx.response().setHeader("Access-Control-Allow-Credentials", "true");
     	  ctx.response().setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH");
     	  ctx.response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie");
-
-    	  /*ctx.response().setHeader("Access-Control-Allow-Origin", "http://localhost:9002");
-    	  ctx.response().setHeader("Allow", "*");
-    	  ctx.response().setHeader("Access-Control-Allow-Credentials", "true");
-    	  ctx.response().setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
-    	  ctx.response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie");
-    	  */
+    
           return delegate.call(ctx);
     	} catch (JsonValidationException e) {
     		if (e.getField() != null) {

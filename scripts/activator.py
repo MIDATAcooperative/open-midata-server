@@ -62,6 +62,9 @@ class Activator(Product):
 
 	def build(self):
 		pass
+	
+	def newsecret(self):
+		Command.execute('{0} play-generate-secret'.format(os.path.join('..', 'activator', 'activator')), self.code)	    
 
 	def configure(self):
 		if (os.path.isfile('/dev/shm/secret.conf')):
@@ -77,7 +80,6 @@ class Activator(Product):
 			print('')
 		else:						
 			copyfile(os.path.join(self.conf, 'secret.conf.template'), '/dev/shm/secret.conf')
-			Command.execute('{0} play-generate-secret'.format(os.path.join('..', 'activator', 'activator')), self.code)
 			print('Starting new configuration. Edit configuration at /dev/shm/secret.conf then call	python main.py configure activator again')									
 			print('')
 			print('Please include the above displayed application secret into the configuration file')		

@@ -80,15 +80,8 @@ public class Application extends APIController {
 	 * @param all dummy parameter
 	 * @return status ok
 	 */
-	public static Result checkPreflight(String all) {		
-		String host = request().getHeader("Origin");		
-		if (host.startsWith("http://localhost:") || host.equals("https://demo.midata.coop") || host.equals("https://demo.midata.coop:9002")) {
-		    response().setHeader("Access-Control-Allow-Origin", host);
-		} else response().setHeader("Access-Control-Allow-Origin", "https://demo.midata.coop");
-        response().setHeader("Allow", "*");
-        response().setHeader("Access-Control-Allow-Credentials", "true");
-        response().setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH");
-        response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie");
+	@APICall
+	public static Result checkPreflight(String all) {				
 		return ok();
 	}
 

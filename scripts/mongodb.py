@@ -92,7 +92,7 @@ class MongoDB(Product):
 		with open(os.path.join(self.base, 'mongod.conf'), 'w') as configFile:
 			configFile.write(config)
 		print 'Cleaning up...'
-		Command.execute('rm mongodb-linux-x86_64-{0}.tgz'.format(version), self.parent)
+		Command.execute('rm mongodb-linux-x86_64-{0}.tgz'.format(version), self.parent)		
 
 	def build(self):
 		MongoDB.readconf(self)
@@ -116,7 +116,7 @@ class MongoDB(Product):
 			self.record_port, 
 			self.record_database,
 			self.record_username,
-			self.record_password), self.parent)					 					
+			self.record_password), self.parent)								 					
 
 	def start(self):
 		print 'Starting MongoDB...'

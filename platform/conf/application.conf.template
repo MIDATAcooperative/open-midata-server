@@ -27,6 +27,7 @@ application.langs="en"
 
 ## Server configuration
 # ~~~~~
+portal.originUrl="PORTAL_ORIGIN"
 portal.server="DOMAIN"
 platform.server="DOMAIN:9000"
 apps.server="DOMAIN:3000"

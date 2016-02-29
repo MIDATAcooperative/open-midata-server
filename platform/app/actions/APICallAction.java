@@ -4,6 +4,7 @@ package actions;
 import com.fasterxml.jackson.databind.JsonNode;
 
 
+import play.Play;
 import play.libs.F;
 import play.libs.Json;
 import play.mvc.Action;
@@ -22,6 +23,7 @@ import utils.json.JsonValidation.JsonValidationException;
  */
 public class APICallAction extends Action<APICall> {
 
+	private static final String defaultHost = Play.application().configuration().getString("portal.originUrl");
     public F.Promise<Result> call(Http.Context ctx) throws Throwable { 
     	try {
     		
@@ -30,11 +32,12 @@ public class APICallAction extends Action<APICall> {
     	  ctx.args.put("json", json);
     	  String host = ctx.request().getHeader("Origin");
     	  AccessLog.debug(host);
-    	  if (host != null) {
+    	  /*if (host != null) {
 	  		  if (host.startsWith("https://localhost") || host.startsWith("http://localhost") || host.equals("https://demo.midata.coop") || host.equals("https://demo.midata.coop:9002")) {
 	  		    ctx.response().setHeader("Access-Control-Allow-Origin", host);
-	  		  } else ctx.response().setHeader("Access-Control-Allow-Origin", "https://demo.midata.coop");
-    	  }
+	  		  } else 
+    	  }*/
+    	  ctx.response().setHeader("Access-Control-Allow-Origin", defaultHost);
     	  ctx.response().setHeader("Allow", "*");
     	  ctx.response().setHeader("Access-Control-Allow-Credentials", "true");
     	  ctx.response().setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH");
