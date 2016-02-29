@@ -326,7 +326,7 @@ class QueryEngine {
 								
 		// 8 Post filter records if necessary		
 						
-		if (q.restrictedBy("created")) result = filterByMetaSet(result, "created", q.getObjectIdRestriction("created"));
+		if (q.restrictedBy("creator")) result = filterByMetaSet(result, "creator", q.getObjectIdRestriction("creator"));
 		if (q.restrictedBy("app")) result = filterByMetaSet(result, "app", q.getObjectIdRestriction("app"));
 		if (q.restrictedBy("name")) result = filterByMetaSet(result, "name", q.getRestriction("name"));
 		if (q.restrictedBy("data"))	result = filterByDataQuery(result, (Map<String,Object>) q.getProperties().get("data"));

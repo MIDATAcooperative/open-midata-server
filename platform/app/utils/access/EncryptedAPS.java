@@ -335,6 +335,16 @@ public class EncryptedAPS {
 		if (apsId.equals(who)) return true;
 		if (!isLoaded()) load();	
 		if (aps.keys.containsKey(who.toString())) return true;
+		if (owner == null) {
+			if (!isValidated) {
+				try {
+				  validate();
+				} catch (AppException e) {
+					return false;
+				}
+			}
+			if (owner!= null && owner.equals(who)) return true;			
+		}
 		return false;
 	}
 	

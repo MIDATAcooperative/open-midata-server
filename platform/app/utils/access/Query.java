@@ -244,7 +244,7 @@ public class Query {
 	              
 	              properties.containsKey("name");
 		 
-		 restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age") || properties.containsKey("created-after");
+		 restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age") || properties.containsKey("created-after") || properties.containsKey("updated-after") || properties.containsKey("updated-before");
 		 
          fieldsFromDB = Sets.create("createdOld", "encrypted");
          mayNeedFromDB = new HashSet<String>();
@@ -258,16 +258,15 @@ public class Query {
 		 if (fields.contains("watches")) fieldsFromDB.add("encWatches");
 				
 		 // TODO Remove later
-		 if (fields.contains("data")) fieldsFromDB.add("data");
+		 /*if (fields.contains("data")) fieldsFromDB.add("data");
 		 if (fields.contains("app")) fieldsFromDB.add("app");
 		 if (fields.contains("format")) fieldsFromDB.add("format");
 		 if (fields.contains("content")) fieldsFromDB.add("content");
-		 if (uses("creator")) fieldsFromDB.add("creator");
-		 //if (fields.contains("created") || restrictedOnTime) fieldsFromDB.add("created");
+		 if (uses("creator")) fieldsFromDB.add("creator");	
 		 if (fields.contains("name")) fieldsFromDB.add("name");
 		 if (fields.contains("description")) fieldsFromDB.add("description");
 		 if (fields.contains("tags")) fieldsFromDB.add("tags");
-		 
+		 */
 		 if (properties.containsKey("max-age")) {
 			Number maxAge = Long.parseLong(properties.get("max-age").toString());
 			minDateCreated = new Date(System.currentTimeMillis() - 1000 * maxAge.longValue());
@@ -282,6 +281,7 @@ public class Query {
 		 if (properties.containsKey("updated-after")) {				
 				minDateUpdated = (Date) properties.get("updated-after");
 				minTime = getTimeFromDate(minDateUpdated); 
+				fetchFromDB = true;
 		 }
 		 
 		 if (properties.containsKey("created-before")) {				
@@ -292,6 +292,7 @@ public class Query {
 		 if (properties.containsKey("updated-before")) {				
 				maxDateUpdated = (Date) properties.get("updated-before");
 				maxTime = getTimeFromDate(maxDateUpdated);
+				fetchFromDB = true;
 		 }
 	}
 	
