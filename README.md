@@ -17,14 +17,83 @@ MIDATA platform and plugins
 ===========================
 
 
-Scripts
+Installation
 -------
-The main.py python script covers the basic tasks: setup, start, stop and resetting the database to an example state. It's been tested under Ubuntu. Required software:
-- JDK 1.7+ (required by ElasticSearch)
-- Python 2.7
-- curl
-- openssl (built on or after Apr 7, 2014)
-- keytool
+ 
+To install all required software on ubuntu run:
+```
+sudo apt-get install git curl openssl python openjdk-7-jdk nginx mcrypt
+curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+sudo apt-get install -y nodejs
+sudo npm install -g bower grunt-cli
+```
+
+Then clone this repository into a directory of your choice. 
+```
+git clone https://github.com/amarfurt/hdc.git
+cd hdc
+```
+
+Then check the config/instance.json file if all settings are correct for your system:
+```
+nano config/instance.json
+```
+
+To download dependend software packages and generate configuration files depending on your instance.json file run once:
+```
+python main.py setup
+```
+This will ask you to select a keystore password which you need to repeat several times.
+
+Next configure the database connections for the instance:
+```
+python main.py configure activator
+nano /dev/shm/secret.conf
+python main.py configure activator
+```
+The first call to 'configure activator' will place an example configuration file at /dev/shm/secret.conf. Edit the database
+configuration in that file. When you run 'configure activator' for the second time you will be asked a 'Mantra' that will be
+used to encrypt the configuration. You will need to reenter that Mantra whenever access to the database configuration is required.
+If you repeat the 3 commands you will need to enter the (previously chosen) mantra also for decryption of the existing configuration.
+You can then choose a new mantra for reencryption. 
+
+To populate the database with initial data run:
+```
+python main.py start mongodb
+python main.py reimport mongodb
+```
+The first command will start mongodb only (without the rest of the server). The second command will load non-user related data into the database.
+
+To prepare all components for startup run (while mongodb is still running)
+```
+python main.py build
+```
+This will download software for all plugins, build all plugins and create required database indexes.
+
+Finally stop mongodb before starting the platform
+```
+python main.py start mongodb
+```
+
+Startup in development mode:
+You need 2 terminals as the calls do not return.
+```
+# Terminal 1; end with Ctrl-D
+python main.py run
+
+# Terminal 2; end with Ctrl-C
+cd portal
+grunt server
+```
+
+To stop the system:
+```
+python main.py stop
+```
+
+Script
+------
+The main.py python script covers the basic tasks: setup, start, stop and resetting the database to an example state. It's been tested under Ubuntu.
 
 The script is called with
 ```
