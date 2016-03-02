@@ -14,7 +14,7 @@ object ApplicationBuild extends Build {
     // Add your project dependencies here
     javaCore,
     javaWs,
-    "org.mongodb" % "mongo-java-driver" % "2.12.2",
+    "org.mongodb" % "mongo-java-driver" % "3.2.2",
     "org.elasticsearch" % "elasticsearch" % "1.2.1",
     "ca.uhn.hapi.fhir" % "hapi-fhir-base" % "1.3",
     "ca.uhn.hapi.fhir" % "hapi-fhir-structures-dstu2" % "1.3"  	    

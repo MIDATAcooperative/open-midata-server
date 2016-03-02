@@ -50,13 +50,13 @@ public class MongoDatabase extends Database {
 		//String host = Play.application().configuration().getString("mongo.host");
 		//int port = Play.application().configuration().getInt("mongo.port");
 		//database = Play.application().configuration().getString("mongo.database");
-		try {
+		//try {
 			mongoClient = new MongoClient(host, port);
 			mongoClient.setWriteConcern(WriteConcern.ACKNOWLEDGED);
-		} catch (UnknownHostException e) {	
+		/*} catch (UnknownHostException e) {	
 			e.printStackTrace();
 			throw new DatabaseException(e);
-		}
+		}*/
 	}
 	
 	/**

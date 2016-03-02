@@ -28,7 +28,7 @@ public class Feature_ContentFilter extends Feature {
 	@Override
 	protected List<DBRecord> postProcess(List<DBRecord> records, Query q)
 			throws AppException {
-		List<DBRecord> result = records;
+		List<DBRecord> result = next.postProcess(records, q);
 		if (q.restrictedBy("format")) result = QueryEngine.filterByMetaSet(result, "format", q.getRestriction("format"));
 		if (q.restrictedBy("content")) result = QueryEngine.filterByMetaSet(result, "content", q.getRestriction("content"));
 		if (q.restrictedBy("format/*")) result = QueryEngine.filterByWCFormat(result, "format", q.getRestriction("format/*"));
