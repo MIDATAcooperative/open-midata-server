@@ -4,7 +4,7 @@ Configuration of Activator for the Play Framework.
 @author amarfurt
 '''
 
-import os, getpass
+import os, getpass, urllib2, time
 from product import Product
 from command import Command
 from sslcert import SSLCertificate
@@ -36,23 +36,36 @@ class Activator(Product):
 		print 'Cleaning up...'
 		Command.execute('rm typesafe-activator-{0}-minimal.zip'.format(version), self.parent)
 
+	def readconf(self):
+		copyfile(os.path.join(self.conf, 'secret.conf.gz.nc'), '/dev/shm/secret.conf.gz.nc')
+		Command.execute('{0} /dev/shm/secret.conf.gz.nc -z -a rijndael-128 -m cbc -d'.format(self.mcrypt), self.conf)
+		with open('/dev/shm/secret.conf', 'a') as fout:
+			with open(os.path.join(self.conf, 'application.conf'),'r') as fi:
+				fout.write(fi.read())
+	
+
 	def start(self):
 		print 'Starting Activator...'
 		password = getpass.getpass("Please enter the password for the Java KeyStore: ")
 		# workaround: use the stage task as the start command doesn't work with HTTPS for now...		
-		copyfile(os.path.join(self.conf, 'secret.conf.gz.nc'), '/dev/shm/secret.conf.gz.nc')
-		Command.execute('{0} /dev/shm/secret.conf.gz.nc -z -a rijndael-128 -m cbc -d'.format(self.mcrypt), self.conf)
+		Activator.readconf(self)
 		Command.execute('{0} stage'.format(self.bin), self.code)
-		Command.execute('{0} -Dhttp.port=9001 -Dhttps.keyStore={1} -Dhttps.keyStorePassword={2} &'
+		Command.execute('{0} -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 -Dhttps.keyStore={1} -Dhttps.keyStorePassword={2} &'
 			.format(self.app, self.keystore, password), redirect=os.path.join(self.parent, 'logs', 'activator.log'))
+		print 'Waiting for startup...'		
+		time.sleep(10)
+		print 'Fetching Page'
+		t = urllib2.urlopen('http://localhost:9001/test')		
+		t.read()		
+		t.close()		
 		Command.execute('{0} -zun 0 /dev/shm/secret.conf'.format(self.shred), self.conf)
+		print 'Done startup activator'
 
 	def run(self):
 		print 'Running Activator...'
 		password = getpass.getpass("Please enter the password for the Java KeyStore: ")
-		copyfile(os.path.join(self.conf, 'secret.conf.gz.nc'), '/dev/shm/secret.conf.gz.nc')
-		Command.execute('{0} /dev/shm/secret.conf.gz.nc -z -a rijndael-128 -m cbc -d'.format(self.mcrypt), self.conf)		
-		Command.execute('{0} run -Dhttp.port=9001 -Dhttps.port=9000 -Dhttps.keyStore={1} -Dhttps.keyStorePassword={2}'
+		Activator.readconf(self)
+		Command.execute('{0} run -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 -Dhttps.port=9000 -Dhttps.keyStore={1} -Dhttps.keyStorePassword={2}'
 			.format(self.bin, self.keystore, password), self.code)
 		Command.execute('{0} -zun 0 /dev/shm/secret.conf'.format(self.shred), self.conf)
 

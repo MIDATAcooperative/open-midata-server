@@ -67,4 +67,3 @@ parsers.text.maxLength=1024K
 
 demoserver=true
 
-include "/dev/shm/secret.conf"

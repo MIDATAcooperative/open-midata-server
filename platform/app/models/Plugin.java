@@ -217,16 +217,16 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		Model.insert(collection, plugin);
 
 		// add to search index
-		try {
+		/*try {
 			Search.add(Type.VISUALIZATION, plugin._id, plugin.name, plugin.description);
 		} catch (SearchException e) {
 			throw new InternalServerException("error.internal.db", e);
-		}
+		}*/
 	}
 
 	public static void delete(ObjectId pluginId) throws InternalServerException {
 		// remove from search index
-		Search.delete(Type.VISUALIZATION, pluginId);
+		//Search.delete(Type.VISUALIZATION, pluginId);
 
 		// TODO only hide or remove from all users (including deleting their spaces associated with it)?
 		Model.delete(Plugin.class, collection, new ChainedMap<String, ObjectId>().put("_id", pluginId).get());

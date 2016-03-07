@@ -92,15 +92,7 @@ public class Messages extends Controller {
 		
 		// add to inbox and search index of receivers
 		for (User user : users) {
-			user.messages.get("inbox").add(message._id);
-			try {
-				User.set(user._id, "messages.inbox", user.messages.get("inbox"));
-				Search.add(user._id, "message", message._id, message.title, message.content);
-			} catch (InternalServerException e) {
-				return badRequest(e.getMessage());
-			} catch (SearchException e) {
-				return badRequest(e.getMessage());
-			}
+			user.messages.get("inbox").add(message._id);			
 		}
 		return ok();
 	}

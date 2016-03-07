@@ -76,13 +76,13 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 		Model.insert(collection, newsItem);
 
 		// add broadcasts to public search index
-		if (newsItem.broadcast) {
+		/*if (newsItem.broadcast) {
 			try {
 				Search.add(Type.NEWS, newsItem._id, newsItem.title, newsItem.content);
 			} catch (SearchException e) {
 				throw new InternalServerException("error.internal", e);
 			}
-		}
+		}*/
 	}
 
 	public static void delete(ObjectId receiverId, ObjectId newsItemId, boolean broadcast) throws InternalServerException {

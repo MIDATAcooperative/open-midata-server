@@ -73,15 +73,7 @@ public class Message extends Model implements Comparable<Message> {
 
 	public static void add(Message message) throws InternalServerException {
 		Model.insert(collection, message);
-
-		// also add this message to each receiver's search index
-		for (ObjectId receiver : message.receivers) {
-			try {
-				Search.add(receiver, "message", message._id, message.title, message.content);
-			} catch (SearchException e) {
-				throw new InternalServerException("error.internal", e);
-			}
-		}
+		
 	}
 
 	public static void delete(ObjectId receiverId, ObjectId messageId) throws InternalServerException {
