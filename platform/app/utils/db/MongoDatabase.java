@@ -2,6 +2,7 @@ package utils.db;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,7 +20,9 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
 import com.mongodb.MongoException;
+import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
 
 /**
@@ -34,13 +37,17 @@ public class MongoDatabase extends Database {
 	
 	private MongoClient mongoClient; // mongo client is already a connection pool
 	private DatabaseConversion conversion = new DatabaseConversion();
+	private MongoCredential credential;
 	
 	private boolean logQueries = true;
 	
-	public MongoDatabase(String host, int port, String database) {
+	public MongoDatabase(String host, int port, String database, String user, String password) {
 		this.host = host;
 		this.port = port;
 		this.database = database;
+		if (user != null && password != null) {
+		  this.credential = MongoCredential.createCredential(user, database, password.toCharArray());
+		}
 	}
 
 	/**
@@ -51,7 +58,10 @@ public class MongoDatabase extends Database {
 		//int port = Play.application().configuration().getInt("mongo.port");
 		//database = Play.application().configuration().getString("mongo.database");
 		//try {
-			mongoClient = new MongoClient(host, port);
+		
+		if (credential != null) {		
+			mongoClient = new MongoClient(new ServerAddress(host, port), Arrays.asList(this.credential));
+		} else mongoClient = new MongoClient(new ServerAddress(host, port));
 			mongoClient.setWriteConcern(WriteConcern.ACKNOWLEDGED);
 		/*} catch (UnknownHostException e) {	
 			e.printStackTrace();

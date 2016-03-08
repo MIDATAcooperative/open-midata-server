@@ -46,25 +46,33 @@ public class DBLayer {
 		String host = Play.application().configuration().getString("mongo.user.host");
 		int port = Play.application().configuration().getInt("mongo.user.port");
 		String database = Play.application().configuration().getString("mongo.user.database");
-		dbnameToDB.put(DB_USER, new MongoDatabase(host, port, database));
+		String user = Play.application().configuration().getString("mongo.user.username", null);
+		String password = Play.application().configuration().getString("mongo.user.password", null);
+		dbnameToDB.put(DB_USER, new MongoDatabase(host, port, database, user, password));
 		
 		// Mapping database
 		host = Play.application().configuration().getString("mongo.mapping.host");
 		port = Play.application().configuration().getInt("mongo.mapping.port");
 		database = Play.application().configuration().getString("mongo.mapping.database");
-		dbnameToDB.put(DB_MAPPING, new MongoDatabase(host, port, database));		
+		user = Play.application().configuration().getString("mongo.mapping.username", null);
+		password = Play.application().configuration().getString("mongo.mapping.password", null);
+		dbnameToDB.put(DB_MAPPING, new MongoDatabase(host, port, database, user, password));		
 		
 		// Record database
 		host = Play.application().configuration().getString("mongo.record.host");
 		port = Play.application().configuration().getInt("mongo.record.port");
 		database = Play.application().configuration().getString("mongo.record.database");
-		dbnameToDB.put(DB_RECORD, new MongoDatabase(host, port, database));
+		user = Play.application().configuration().getString("mongo.record.username", null);
+		password = Play.application().configuration().getString("mongo.record.password", null);
+		dbnameToDB.put(DB_RECORD, new MongoDatabase(host, port, database, user, password));
 		
 		// Access database
 		host = Play.application().configuration().getString("mongo.access.host");
 		port = Play.application().configuration().getInt("mongo.access.port");
 		database = Play.application().configuration().getString("mongo.access.database");
-		dbnameToDB.put(DB_ACCESS, new MongoDatabase(host, port, database));
+		user = Play.application().configuration().getString("mongo.access.username", null);
+		password = Play.application().configuration().getString("mongo.access.password", null);
+		dbnameToDB.put(DB_ACCESS, new MongoDatabase(host, port, database, user, password));
 				
 		// Log database
 		
