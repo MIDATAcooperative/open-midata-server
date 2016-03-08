@@ -32,11 +32,13 @@ module.exports = function(grunt) {
         },
 
         dev: {
-            NODE_ENV : 'DEVELOPMENT'
+            NODE_ENV : 'DEVELOPMENT',
+            BACKEND : instance.portal.backend
         },
 
         prod : {
-            NODE_ENV : 'PRODUCTION'
+            NODE_ENV : 'PRODUCTION',
+            BACKEND : instance.portal.backend
         }
     },
     

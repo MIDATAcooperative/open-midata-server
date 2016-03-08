@@ -25,8 +25,14 @@
 		<script src="http://localhost:35729/livereload.js"></script>
 		<script type="text/javascript" src="https://localhost:9000/assets/javascripts/routes" defer></script>
 		<!-- @endif -->
-		<!-- @if NODE_ENV == 'PRODUCTION' -->
+		<!-- @if BACKEND == 'https://demo.midata.coop:9000' -->
 		<script type="text/javascript" src="https://demo.midata.coop:9000/assets/javascripts/routes" defer></script>
+		<!-- @endif -->
+		<!-- @if BACKEND == 'https://test.midata.coop:9000' -->
+		<script type="text/javascript" src="https://test.midata.coop:9000/assets/javascripts/routes" defer></script>
+		<!-- @endif -->
+		<!-- @if BACKEND == 'https://ch.midata.coop:9000' -->
+		<script type="text/javascript" src="https://ch.midata.coop:9000/assets/javascripts/routes" defer></script>
 		<!-- @endif -->
 		<script type="text/javascript" src="components/jquery/dist/jquery.js" defer></script>	
 		<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js" defer></script>		
