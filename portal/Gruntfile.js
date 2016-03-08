@@ -1,5 +1,5 @@
 module.exports = function(grunt) {
-  var instance = grunt.file.readJSON('../config/instance.json')
+  var instance = grunt.file.readJSON('../config/instance.json');
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
