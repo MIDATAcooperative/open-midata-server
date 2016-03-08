@@ -6,7 +6,8 @@
     "key" : "ROOTDIR/ssl-certificate/server.pem"
    },
   "portal" : {
-     "origin" : "https://localhost:9002"
+     "origin" : "https://localhost:9002",
+     "backend" : "https://localhost:9000"
   },
   "platform" : {
      "port" : "9001"

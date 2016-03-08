@@ -1,5 +1,5 @@
 module.exports = function(grunt) {
-
+  var instance = grunt.file.readJSON('../config/instance.json')
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -175,7 +175,7 @@ module.exports = function(grunt) {
     	    constants: {
     	      ENV: {
     	        name: 'development',
-    	        apiurl: 'https://localhost:9000'
+    	        apiurl: instance.portal.backend
     	      }
     	    }
     	  },
@@ -186,7 +186,7 @@ module.exports = function(grunt) {
     	    constants: {
     	      ENV: {
     	        name: 'production',
-    	        apiurl: 'https://demo.midata.coop:9000'
+    	        apiurl: instance.portal.backend
     	      }
     	    }
     	  }
