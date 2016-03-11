@@ -193,6 +193,7 @@ public class Market extends APIController {
 		plugin.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
 		plugin.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		plugin.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
+		plugin.status = PluginStatus.DEVELOPMENT;
 
 		// fill in specific fields
 		if (plugin.type.equals("oauth1") || plugin.type.equals("oauth2")) {

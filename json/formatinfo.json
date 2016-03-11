@@ -1,10 +1,10 @@
-{ "_id" : { "$oid" : "55ae59d0f351efda91eadc72" }, "format" : "23-and-me", "visName" : "SNP-Snip", "visualization" : { "$oid" : "541c25f222f153b77f6a70f8" } }
-{ "_id" : { "$oid" : "55ae59d0f351efda91eadc73" }, "format" : "cda", "visName" : "CDA-Viewer", "visualization" : { "$oid" : "556c007fe4b06e7275af0f19" } }
-{ "_id" : { "$oid" : "55ae59d0f351efda91eadc74" }, "format" : "credentials-manager", "visName" : "Credentials Manager", "visualization" : { "$oid" : "54450c48e4b0a1a96b5ff54c" } }
-{ "_id" : { "$oid" : "55ae59d0f351efda91eadc75" }, "format" : "demo-card/part1", "visName" : "Demo kardiologische Risikoauswertung", "visualization" : { "$oid" : "54f9c2b8e4b0a71e0368d8e9" } }
-{ "_id" : { "$oid" : "55ae59d0f351efda91eadc76" }, "format" : "demo-card/part2", "visName" : "Demo kardiologische Risikoauswertung", "visualization" : { "$oid" : "54f9c2b8e4b0a71e0368d8e9" } }
-{ "_id" : { "$oid" : "55ae59d0f351efda91eadc77" }, "format" : "measurements", "visName" : "Charts", "visualization" : { "$oid" : "5571700fe4b0c309cbc949ce" } }
-{ "_id" : { "$oid" : "55ae59d0f351efda91eadc78" }, "format" : "jawbone/summary", "visName" : "Jawbone Activity Clock", "visualization" : { "$oid" : "543d2c14e4b0f34f43670afa" } }
-{ "_id" : { "$oid" : "55ae59d0f351efda91eadc79" }, "format" : "jawbone/ticks", "visName" : "Jawbone Activity Clock", "visualization" : { "$oid" : "543d2c14e4b0f34f43670afa" } }
-{ "_id" : { "$oid" : "55ae59d0f351efda91eadc7a" }, "format" : "text-app", "visName" : "Text Record List", "visualization" : { "$oid" : "5280bd5ee4b0660aab2a423d" } }
-{ "_id" : { "$oid" : "55ae59d0f351efda91eadc7b" }, "format" : "training-app", "visName" : "Training Editor", "visualization" : { "$oid" : "554c867de4b08413ff37d6f5" } }
+{"_id":{"$oid":"55ae59d0f351efda91eadc72"},"format":"23-and-me","visName":"SNP-Snip","visualization":{"$oid":"541c25f222f153b77f6a70f8"}}
+{"_id":{"$oid":"55ae59d0f351efda91eadc73"},"format":"cda","visName":"CDA-Viewer","visualization":{"$oid":"556c007fe4b06e7275af0f19"}}
+{"_id":{"$oid":"55ae59d0f351efda91eadc74"},"format":"credentials-manager","visName":"Credentials Manager","visualization":{"$oid":"54450c48e4b0a1a96b5ff54c"}}
+{"_id":{"$oid":"55ae59d0f351efda91eadc75"},"format":"demo-card/part1","visName":"Demo kardiologische Risikoauswertung","visualization":{"$oid":"54f9c2b8e4b0a71e0368d8e9"}}
+{"_id":{"$oid":"55ae59d0f351efda91eadc76"},"format":"demo-card/part2","visName":"Demo kardiologische Risikoauswertung","visualization":{"$oid":"54f9c2b8e4b0a71e0368d8e9"}}
+{"_id":{"$oid":"55ae59d0f351efda91eadc77"},"format":"measurements","visName":"Charts","visualization":{"$oid":"5571700fe4b0c309cbc949ce"}}
+{"_id":{"$oid":"55ae59d0f351efda91eadc78"},"format":"jawbone/summary","visName":"Jawbone Activity Clock","visualization":{"$oid":"543d2c14e4b0f34f43670afa"}}
+{"_id":{"$oid":"55ae59d0f351efda91eadc79"},"format":"jawbone/ticks","visName":"Jawbone Activity Clock","visualization":{"$oid":"543d2c14e4b0f34f43670afa"}}
+{"_id":{"$oid":"55ae59d0f351efda91eadc7a"},"format":"text-app","visName":"Text Record List","visualization":{"$oid":"5280bd5ee4b0660aab2a423d"}}
+{"_id":{"$oid":"55ae59d0f351efda91eadc7b"},"format":"training-app","visName":"Training Editor","visualization":{"$oid":"554c867de4b08413ff37d6f5"}}

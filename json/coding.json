@@ -1,20 +1,20 @@
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292bd" }, "system" : "urn:internal", "display" : "Calories Intake", "code" : "food/calories-in" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292be" }, "system" : "urn:internal", "display" : "Water Consumption", "code" : "food/water" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292bf" }, "system" : "urn:internal", "display" : "Calories Burned", "code" : "activities/calories" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292c0" }, "system" : "urn:internal", "display" : "Steps", "code" : "activities/steps" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292c1" }, "system" : "urn:internal", "display" : "Distance", "code" : "activities/distance" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292c2" }, "system" : "urn:internal", "display" : "Floors Climbed", "code" : "activities/floors" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292c3" }, "system" : "urn:internal", "display" : "Elevation", "code" : "activities/elevation" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292c4" }, "system" : "urn:internal", "display" : "Minutes Sedentary", "code" : "activities/minutes-sedentary" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292c5" }, "system" : "urn:internal", "display" : "Minutes Lightly Active", "code" : "activities/minutes-lightly-active" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292c6" }, "system" : "urn:internal", "display" : "Minutes Fairly Active", "code" : "activities/minutes-fairly-active" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292c7" }, "system" : "urn:internal", "display" : "Minutes Very Active", "code" : "activities/minutes-very-active" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292c8" }, "system" : "urn:internal", "display" : "Calories Burned in Activities", "code" : "activities/activity-calories" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292c9" }, "system" : "urn:internal", "display" : "Time in Bed", "code" : "sleep/time-in-bed" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292ca" }, "system" : "urn:internal", "display" : "Minutes Asleep", "code" : "sleep/minutes-asleep" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292cb" }, "system" : "urn:internal", "display" : "Minutes Awake", "code" : "sleep/minutes-awake" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292cc" }, "system" : "urn:internal", "display" : "Minutes to Fall Asleep", "code" : "sleep/minutes-to-fall-asleep" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292cd" }, "system" : "urn:internal", "display" : "Efficiency", "code" : "sleep/efficiency" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292ce" }, "system" : "urn:internal", "display" : "Weight", "code" : "body/weight" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292cf" }, "system" : "urn:internal", "display" : "BMI", "code" : "body/bmi" }
-{ "_id" : { "$oid" : "5666a53faa4c3cbdf82292d0" }, "system" : "urn:internal", "display" : "Fat", "code" : "body/fat" }
+{"_id":{"$oid":"5666a53faa4c3cbdf82292bd"},"system":"urn:internal","display":"Calories Intake","code":"food/calories-in"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292be"},"system":"urn:internal","display":"Water Consumption","code":"food/water"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292bf"},"system":"urn:internal","display":"Calories Burned","code":"activities/calories"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c0"},"system":"urn:internal","display":"Steps","code":"activities/steps"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c1"},"system":"urn:internal","display":"Distance","code":"activities/distance"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c2"},"system":"urn:internal","display":"Floors Climbed","code":"activities/floors"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c3"},"system":"urn:internal","display":"Elevation","code":"activities/elevation"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c4"},"system":"urn:internal","display":"Minutes Sedentary","code":"activities/minutes-sedentary"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c5"},"system":"urn:internal","display":"Minutes Lightly Active","code":"activities/minutes-lightly-active"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c6"},"system":"urn:internal","display":"Minutes Fairly Active","code":"activities/minutes-fairly-active"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c7"},"system":"urn:internal","display":"Minutes Very Active","code":"activities/minutes-very-active"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c8"},"system":"urn:internal","display":"Calories Burned in Activities","code":"activities/activity-calories"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c9"},"system":"urn:internal","display":"Time in Bed","code":"sleep/time-in-bed"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292ca"},"system":"urn:internal","display":"Minutes Asleep","code":"sleep/minutes-asleep"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292cb"},"system":"urn:internal","display":"Minutes Awake","code":"sleep/minutes-awake"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292cc"},"system":"urn:internal","display":"Minutes to Fall Asleep","code":"sleep/minutes-to-fall-asleep"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292cd"},"system":"urn:internal","display":"Efficiency","code":"sleep/efficiency"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292ce"},"system":"urn:internal","display":"Weight","code":"body/weight"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292cf"},"system":"urn:internal","display":"BMI","code":"body/bmi"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292d0"},"system":"urn:internal","display":"Fat","code":"body/fat"}
