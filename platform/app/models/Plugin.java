@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import models.enums.PluginStatus;
 import models.enums.UserRole;
 
 import org.bson.types.ObjectId;
@@ -39,7 +40,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "targetUserRole", "spotlighted", "url", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret",
-	                     "requestTokenUrl", "scopeParameters", "secret", "developmentServer");
+	                     "requestTokenUrl", "scopeParameters", "secret", "developmentServer", "status");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -48,13 +49,17 @@ public class Plugin extends Model implements Comparable<Plugin> {
 			 Sets.create("_id", "version", "creator", "filename", "name", "description", "tags", 
 	                     "targetUserRole", "spotlighted", "url", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
-	                     "authorizationUrl", "consumerKey", "scopeParameters");
+	                     "authorizationUrl", "consumerKey", "scopeParameters", "status");
 	
 	/**
 	 * timestamp of last change. Used to prevent lost updates.
 	 */
 	public long version;
 	
+	/**
+	 * status of plugin
+	 */
+	public PluginStatus status;
 	/**
 	 * id of creator of this plugin
 	 */
@@ -206,7 +211,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	
 	public void update() throws InternalServerException, LostUpdateException {
 		try {
-			   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","url","developmentServer" );
+			   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","url","developmentServer", "status" );
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal.db", e);
 		}

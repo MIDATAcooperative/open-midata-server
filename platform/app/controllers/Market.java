@@ -1,14 +1,18 @@
 package controllers;
 
 import models.Plugin;
+import models.enums.PluginStatus;
 import models.enums.UserRole;
 
 import org.bson.types.ObjectId;
 
+import play.Play;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.auth.AdminSecured;
+import utils.auth.AnyRoleSecured;
 import utils.auth.DeveloperSecured;
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
@@ -27,9 +31,8 @@ import com.fasterxml.jackson.databind.JsonNode;
  * functions for controlling the "market" of plugins
  *
  */
-@Security.Authenticated(DeveloperSecured.class)
-public class Market extends Controller {
-		
+public class Market extends APIController {
+			
 	/**
 	 * update a plugins meta data
 	 * @param pluginIdStr ID of plugin to update
@@ -39,7 +42,9 @@ public class Market extends Controller {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)	
 	public static Result updatePlugin(String pluginIdStr) throws JsonValidationException, InternalServerException {
+		if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		// validate json
 		JsonNode json = request().body().asJson();
 			
@@ -47,16 +52,15 @@ public class Market extends Controller {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId pluginId = new ObjectId(pluginIdStr);
 		
-		Plugin app = Plugin.getById(pluginId, Sets.create("creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","url","developmentServer"));
+		Plugin app = Plugin.getById(pluginId, Sets.create("creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","url","developmentServer", "status"));
 		if (app == null) return badRequest("Unknown plugin");
 		
-		if (!app.creator.equals(userId)) return badRequest("Not your plugin!");
+		if (!app.creator.equals(userId) && !getRole().equals(UserRole.ADMIN)) return badRequest("Not your plugin!");
 		
 		app.version = JsonValidation.getLong(json, "version");		
 		app.filename = JsonValidation.getString(json, "filename");
 		app.name = JsonValidation.getString(json, "name");
-		app.description = JsonValidation.getStringOrNull(json, "description");
-		app.spotlighted = JsonValidation.getBoolean(json, "spotlighted");
+		app.description = JsonValidation.getStringOrNull(json, "description");		
 		app.type = JsonValidation.getString(json, "type");
 		app.url = JsonValidation.getStringOrNull(json, "url");
 		app.previewUrl = JsonValidation.getStringOrNull(json, "previewUrl");
@@ -83,6 +87,39 @@ public class Market extends Controller {
 			app.secret = JsonValidation.getStringOrNull(json, "secret");
 		}
 		 
+		try {
+		   app.update();
+		} catch (LostUpdateException e) {
+			return badRequest("Concurrent updates. Reload page and try again.");
+		}
+		
+		return ok();
+	}
+	
+	/**
+	 * update a plugins status
+	 * @param pluginIdStr ID of plugin to update
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public static Result updatePluginStatus(String pluginIdStr) throws JsonValidationException, InternalServerException {
+		// validate json
+		JsonNode json = request().body().asJson();
+			
+		// validate request		
+		ObjectId pluginId = new ObjectId(pluginIdStr);
+		
+		Plugin app = Plugin.getById(pluginId, Sets.create("creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","url","developmentServer", "status"));
+		if (app == null) return badRequest("Unknown plugin");
+						
+		app.version = JsonValidation.getLong(json, "version");		
+		app.spotlighted = JsonValidation.getBoolean(json, "spotlighted");
+		app.status = JsonValidation.getEnum(json, "status", PluginStatus.class);
+				 
 		try {
 		   app.update();
 		} catch (LostUpdateException e) {

@@ -27,7 +27,7 @@
 		</div>
 		
 		<div class="row" ng-cloak>
-			<div class="col-md-6">
+			<div ng-class="{ 'col-md-6' : beta, 'col-md-12' : !beta }">
 			  <div class="panel panel-primary">
 				<div class="panel-heading">{{ tag || 'Spotlight' }}</div>
 				<div class="panel-body">
@@ -44,7 +44,7 @@
 				</div>
 				</div>
 			</div>
-			<div class="col-md-6">
+			<div ng-show="beta" class="col-md-6">
 			    <div class="panel panel-primary">
 				<div class="panel-heading">Plugins you may like</div>
 				<div class="panel-body">

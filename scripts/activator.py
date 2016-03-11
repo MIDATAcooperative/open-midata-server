@@ -53,7 +53,7 @@ class Activator(Product):
 		Command.execute('{0} -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 -Dhttps.keyStore={1} -Dhttps.keyStorePassword={2} &'
 			.format(self.app, self.keystore, password), redirect=os.path.join(self.parent, 'logs', 'activator.log'))
 		print 'Waiting for startup...'		
-		time.sleep(10)
+		time.sleep(30)
 		print 'Fetching Page'
 		t = urllib2.urlopen('http://localhost:9001/test')		
 		t.read()		

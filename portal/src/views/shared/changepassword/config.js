@@ -12,5 +12,13 @@ angular.module('portal')
 	    .state('research.changepassword', {
 	      url: '/changepassword',
 	      templateUrl: 'views/shared/changepassword/changepassword.html' 
+	    })
+	    .state('admin.changepassword', {
+	      url: '/changepassword',
+	      templateUrl: 'views/shared/changepassword/changepassword.html' 
+	    })
+	    .state('developer.changepassword', {
+	      url: '/changepassword',
+	      templateUrl: 'views/shared/changepassword/changepassword.html' 
 	    });	    
 });

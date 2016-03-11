@@ -1,9 +1,11 @@
 angular.module('portal')
-.controller('ProviderLoginCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
+.controller('ProviderLoginCtrl', ['$scope', '$state', 'server', 'session', function($scope, $state, server, session) {
 	
 	// init
 	$scope.login = {};
 	$scope.error = null;
+	
+	$scope.offline = (window.jsRoutes == undefined) || (window.jsRoutes.controllers == undefined);
 	
 	// login
 	$scope.dologin = function() {
@@ -19,14 +21,8 @@ angular.module('portal')
 		var data = {"email": $scope.login.email, "password": $scope.login.password};
 		server.post(jsRoutes.controllers.providers.Providers.login().url, JSON.stringify(data))
 		.then(function(result) {
-				if (result.data.status) {
-					  $state.go("public.postregister", { progress : result.data }, { location : false });			
-				} else if (result.data.keyType == 1) {
-					  $state.go('public_provider.passphrase');
-					} else {
-					  $state.go('provider.patientsearch');
-					}
-				}).catch(function(err) { $scope.error = err.data; });
+			    session.postLogin(result, $state);
+		}).catch(function(err) { $scope.error = err.data; });
 	};
 	
 }]);

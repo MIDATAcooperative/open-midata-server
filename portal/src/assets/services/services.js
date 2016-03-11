@@ -6,6 +6,42 @@ angular.module('services')
 		user : null,
 		cache : {},
 			
+		postLogin : function(result, $state) {
+			if (result.data.status) {
+				  $state.go("public.postregister", { progress : result.data }, { location : false });			
+			} else if (result.data.role == "admin") {
+				if (result.data.keyType == 1) {
+					$state.go('public_developer.passphrase_admin');
+				} else {
+					$state.go('admin.members');	
+				}
+			} else if (result.data.role == "developer") {
+				if (result.data.keyType == 1) {			
+				  $state.go('public_developer.passphrase');
+			    } else {
+ 			      $state.go('developer.yourapps');	
+			    }
+			} else if (result.data.role == "member") {
+				if (result.data.keyType == 1) {
+				  $state.go('public.passphrase');
+				} else {
+				  $state.go('member.overview');
+				}
+			} else if (result.data.role == "provider") {
+				if (result.data.keyType == 1) {
+				  $state.go('public_provider.passphrase');
+				} else {
+				  $state.go('provider.patientsearch');
+				}
+			} else if (result.data.role == "research") {
+				if (result.data.keyType == 1) {
+				  $state.go('public_research.passphrase');
+				} else {
+				  $state.go('research.studies');
+				}
+			}
+		},
+		
 		login : function() {			
 			var def  = $q.defer();		
 			server.get(jsRoutes.controllers.Users.getCurrentUser().url).

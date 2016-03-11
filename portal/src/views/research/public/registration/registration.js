@@ -1,9 +1,10 @@
 angular.module('portal')
-.controller('ResearchRegistrationCtrl', ['$scope', '$state', 'server', 'status', function($scope, $state, server, status) {
+.controller('ResearchRegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', function($scope, $state, server, status, session) {
 	
 	$scope.registration = {};
 	$scope.error = null;
 	$scope.submitted = false;
+	$scope.offline = (window.jsRoutes == undefined) || (window.jsRoutes.controllers == undefined);
 	$scope.status = new status(true, $scope);
 	
 	// register new user
@@ -21,7 +22,7 @@ angular.module('portal')
 		var data = $scope.registration;		
 		
 		$scope.status.doAction("submit", server.post(jsRoutes.controllers.research.Researchers.register().url, JSON.stringify(data)))
-		.then(function(data) { $state.go("public.postregister", { progress : data.data }, { location : false }); });
+		.then(function(data) { session.postLogin(data, $state); });
 	};
 	
 }]);

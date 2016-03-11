@@ -31,6 +31,10 @@ angular.module('services')
     	return server.put(jsRoutes.controllers.Market.updatePlugin(plugin._id.$oid).url, JSON.stringify(plugin));
     };
     
+    service.updatePluginStatus = function(plugin) {
+    	return server.put(jsRoutes.controllers.Market.updatePluginStatus(plugin._id.$oid).url, JSON.stringify(plugin));
+    };
+    
     service.registerPlugin = function(plugin) {
     	return server.post(jsRoutes.controllers.Market.registerPlugin().url, JSON.stringify(plugin));
     };

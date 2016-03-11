@@ -12,5 +12,13 @@ angular.module('portal')
 	    .state('research.user', {
 	      url: '/user/:userId',
 	      templateUrl: 'views/shared/user/user.html' 
+	    })
+	    .state('admin.user', {
+	      url: '/user/:userId',
+	      templateUrl: 'views/shared/user/user.html' 
+	    })
+	    .state('developer.user', {
+	      url: '/user/:userId',
+	      templateUrl: 'views/shared/user/user.html' 
 	    });	    
 });

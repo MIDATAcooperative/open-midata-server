@@ -117,10 +117,17 @@ angular.module('portal')
 		
 	};
 	
+	$scope.addAllGroups = function() {
+		angular.forEach($scope.gi, function(grp) {
+			getOrCreateGroup(grp.name);
+		});
+	};
+	
 	$scope.loadGroups = function() {
 		formats.listGroups().
 		then(function(result) { 
-			$scope.gi = result.data;
+			$scope.gi = result.data;			
+			console.log($scope.gi);
 			if ($scope.infos.length > 0) $scope.prepareInfos();	
 			if ($scope.records.length > 0) $scope.prepareRecords();	
 		});
@@ -201,6 +208,7 @@ angular.module('portal')
 	$scope.prepareInfos = function() {
 		$scope.tree = [];
 		groups = {};
+		$scope.addAllGroups();
 		angular.forEach($scope.infos, function(info) {		    
 		    var group = info.groups[0];
 		    var groupItem = getOrCreateGroup(group);

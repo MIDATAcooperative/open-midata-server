@@ -1,9 +1,10 @@
 angular.module('portal')
-.controller('MarketCtrl', ['$scope', 'server', '$state', function($scope, server, $state) {
+.controller('MarketCtrl', ['$scope', 'server', '$state', 'ENV', function($scope, server, $state, ENV) {
 	
 	var pathsegment = window.location.pathname.split("/")[1];
 	// init
 	$scope.error = null;
+	$scope.beta = ENV.beta;
 	$scope.targetRole = $state.params.context == "PROVIDER" ? "PROVIDER" : "MEMBER"; 
 	/*$scope.apps = {};
 	$scope.apps.spotlighted = [];
@@ -14,7 +15,8 @@ angular.module('portal')
 	$scope.tags = [ "Analysis", "Import", "Planning", "Tools", "Fitbit", "Jawbone" ];
 	
 	// get apps and visualizations
-	var properties = {"spotlighted": true, "targetUserRole" : [ $scope.targetRole, "ANY"] };
+	var stati = ENV.beta ? [ "ACTIVE", "BETA" ] : "ACTIVE";
+	var properties = {"spotlighted": true, "targetUserRole" : [ $scope.targetRole, "ANY"], "status" : stati };
 	var fields = ["name", "type", "description", "tags"];
 	var data = {"properties": properties, "fields": fields};
 	server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data)).

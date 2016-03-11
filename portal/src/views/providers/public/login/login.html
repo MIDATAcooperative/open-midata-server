@@ -11,7 +11,8 @@
 		            	<div class="panel-body">
 		            		<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 	                          {{ error.message || error }}
-	                        </p>				
+	                        </p>
+	                        <p ng-show="offline" class="alert alert-danger">The backend is currently offline! Come back later.</p>				
 							<form name="form" novalidate class="css-form form-horizontal" ng-submit="dologin()" role="form">							  
 							  <formrow myid="email" label="Email"><input type="email" class="form-control" id="email" placeholder="Email" ng-model="login.email" required></formrow>
 							  <formrow myid="password" label="Password"><input type="password" class="form-control" id="password" placeholder="Password" ng-model="login.password" required></formrow>							  

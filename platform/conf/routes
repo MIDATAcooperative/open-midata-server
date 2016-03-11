@@ -82,6 +82,7 @@ DELETE  /members/api/circles/:id/users/:userId           controllers.Circles.rem
 
 POST    /developers/api/plugins                          controllers.Market.registerPlugin()
 PUT     /developers/api/plugins/:appId                   controllers.Market.updatePlugin(appId: String)
+PUT     /admins/api/plugins/:appId            	         controllers.Market.updatePluginStatus(appId: String)
 # Search
 GET     /members/api/search/run/:query                   controllers.GlobalSearch.search(query: String)
 GET     /members/api/search/complete/:query              controllers.GlobalSearch.complete(query: String)

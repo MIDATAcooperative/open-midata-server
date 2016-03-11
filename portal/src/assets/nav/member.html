@@ -16,7 +16,7 @@
 		<div class="collapse navbar-collapse navbar-ex1-collapse">
 			<ul class="nav navbar-nav">
 			    <li ui-sref-active="active"><a ui-sref="member.overview">Me</a></li>
-            	<li ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'overview' })">Overview</a></li>
+            	<li ng-show="beta" ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'overview' })">Overview</a></li>
 				<!-- <li ui-sref-active="active"><a ui-sref="member.messages">Messages</a></li> -->				
 				<li ui-sref-active="active"><a ui-sref="member.records">My Data</a></li>				
 				<li ui-sref-active="active"><a ui-sref="member.circles">Consents</a></li>

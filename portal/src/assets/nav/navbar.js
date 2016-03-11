@@ -1,8 +1,9 @@
 angular.module('portal')
-.controller('NavbarCtrl', ['$scope', '$state', 'server', 'session', function($scope, $state, server, session) {
+.controller('NavbarCtrl', ['$scope', '$state', 'server', 'session', 'ENV', function($scope, $state, server, session, ENV) {
 	
 	// init
 	$scope.user = {};	
+	$scope.beta = ENV.beta;
 	session.viewHeight = "600px";
 	session.login();
 	

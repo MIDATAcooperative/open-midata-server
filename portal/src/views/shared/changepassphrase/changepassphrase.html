@@ -38,7 +38,7 @@
 				<input type="password" class="form-control" id="passphrase2" name="passphrase2" placeholder="Passphrase" ng-model="pw.passphrase2"
 					required autocomplete="off"></formrow>
 				
-				<button type="submit" ng-disabled="status.isBusy=='changePassphrase'" class="btn btn-primary">Confirm Passphrase</button>				
+				<button type="submit" ng-disabled="status.action=='changePassphrase'" class="btn btn-primary">Confirm Passphrase</button>				
 				
 			</form>
             <p ng-show="phase==2">Your passphrase has been updated. </p>

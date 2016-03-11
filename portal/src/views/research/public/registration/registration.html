@@ -10,7 +10,8 @@
 		            	<div class="panel-body">
 		            		<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 	                          {{ error.message || error }}
-	                        </p>						
+	                        </p>	
+	                        <p ng-show="offline" class="alert alert-danger">The backend is currently offline! Come back later.</p>					
 							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="register()" role="form">
 							 <h3>Research Organisation</h3>
 							  <formrow myid="name" label="Name"> 

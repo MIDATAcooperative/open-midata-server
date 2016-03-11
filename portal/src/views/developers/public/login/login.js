@@ -1,10 +1,12 @@
 angular.module('portal')
-.controller('DeveloperLoginCtrl', ['$scope', 'server', '$state', 'status', function($scope, server, $state, status) {
+.controller('DeveloperLoginCtrl', ['$scope', 'server', '$state', 'status', 'session', function($scope, server, $state, status, session) {
 	
 	// init
 	$scope.login = {};	
 	$scope.error = null;
 	$scope.status = new status(false);
+	
+	$scope.offline = (window.jsRoutes == undefined) || (window.jsRoutes.controllers == undefined);
 	
 	// login
 	$scope.login = function() {
@@ -18,19 +20,7 @@ angular.module('portal')
 		var data = {"email": $scope.login.email, "password": $scope.login.password};
 		$scope.status.doAction("login", server.post(jsRoutes.controllers.Developers.login().url, JSON.stringify(data))).
 		then(function(result) {
-			if (result.data.status) {
-				  $state.go("public.postregister", { progress : result.data }, { location : false });			
-			} else if (result.data.role == "admin") {
-				if (result.data.keyType == 1) {
-					$state.go('public_developer.passphrase_admin');
-				} else {
-					$state.go('admin.members');	
-				}
-			} else if (result.data.keyType == 1) {
-				$state.go('public_developer.passphrase');
-			} else {
-   			    $state.go('developer.yourapps');	
-			} 
+			session.postLogin(result, $state);			 
 		}).
 		catch(function(err) { $scope.error = err.data; });
 	};

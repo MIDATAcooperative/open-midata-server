@@ -92,6 +92,7 @@ public class Rights {
 		action("Plugins.get");
 		role(UserRole.ANY, Plugin.ALL_PUBLIC);
 		role(UserRole.DEVELOPER, Plugin.ALL_DEVELOPER);
+		role(UserRole.ADMIN, Plugin.ALL_DEVELOPER);
 
 	}
 	

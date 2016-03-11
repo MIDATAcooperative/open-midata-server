@@ -11,7 +11,8 @@
 		            	<div class="panel-body">
 		            		<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 	                          {{ error.message || error }}
-	                        </p>						
+	                        </p>	
+	                        <p ng-show="offline" class="alert alert-danger">The backend is currently offline! Come back later.</p>					
 							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="register()" role="form">								  
 							  <formrow myid="email" label="Email">
 							    <input type="email" class="form-control" id="email" name="email" placeholder="Email" ng-model="registration.email" required>
@@ -49,7 +50,7 @@
                               <formrow myid="phone" label="Phone"><input type="text" class="form-control" id="phone" name="phone" placeholder="Phone" ng-model="registration.phone"></formrow>
                               <formrow myid="mobile" label="Mobile Phone"><input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile Phone" ng-model="registration.mobile"></formrow>
                              
-                             <button type="submit" ng-disabled="status.isBusy=='register'" class="btn btn-lg btn-primary btn-block">Sign up</button>
+                             <button type="submit" ng-disabled="status.action=='register'" class="btn btn-lg btn-primary btn-block">Sign up</button>
                             </form>
 		            	</div>
 					</div>

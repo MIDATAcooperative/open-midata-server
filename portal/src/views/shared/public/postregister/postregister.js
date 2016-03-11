@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('PostRegisterCtrl', ['$scope', '$state', '$stateParams', 'status', 'server', function($scope, $state, $stateParams, status, server) {
+.controller('PostRegisterCtrl', ['$scope', '$state', '$stateParams', 'status', 'server', 'session',function($scope, $state, $stateParams, status, server, session) {
 	
 	// init
 	$scope.passphrase = {};
@@ -27,13 +27,7 @@ angular.module('portal')
 	    .then(function(result) { 
 	    	$scope.codeSuccess = true;
 	    	$scope.progress.confirmationCode = true;
-			switch (result.data.role) {
-			case "member": $state.go('member.overview');break;
-			case "hpuser": $state.go('member.overview');break;
-			case "research": $state.go('research.studies');break;
-			case "developer": $state.go('developer.yourapps');break;	
-			case "admin" : $state.go('admin.members');break;
-			}
+	    	session.postLogin(result, $state);
 		});	    
 		}
 	};

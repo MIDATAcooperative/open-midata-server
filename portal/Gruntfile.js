@@ -177,7 +177,8 @@ module.exports = function(grunt) {
     	    constants: {
     	      ENV: {
     	        name: 'development',
-    	        apiurl: instance.portal.backend
+    	        apiurl: instance.portal.backend,
+    	        beta : instance.portal.beta
     	      }
     	    }
     	  },
@@ -188,7 +189,8 @@ module.exports = function(grunt) {
     	    constants: {
     	      ENV: {
     	        name: 'production',
-    	        apiurl: instance.portal.backend
+    	        apiurl: instance.portal.backend,
+    	        beta : instance.portal.beta
     	      }
     	    }
     	  }

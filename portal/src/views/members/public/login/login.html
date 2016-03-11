@@ -5,7 +5,7 @@
 			<div class="col-sm-12 text-center" style="margin-top:100px">			
 			  <h1>Manage your health data yourself!</h1>
 			  <h1>Now you are in control of your data!</h1>
-			  <a ui-sref="public.registration" class="btn btn-primary">Register Now</a>			 
+			  <a ui-sref="public.registration" class="btn btn-primary" ng-hide="offline">Register Now</a>			 
 			</div>
 		</div><div class="row">
 			<div class="col-sm-12">
@@ -18,7 +18,8 @@
 			            	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 	                           {{ error.message || error }}
 	                        </p>
-							<form ng-submit="login()" role="form">
+	                        <p ng-show="offline" class="alert alert-danger">The backend is currently offline! Come back later.</p>
+							<form ng-submit="login()" role="form" ng-hide="offline">
 								<input type="email" class="form-control" placeholder="Email address" ng-model="login.email" style="margin-bottom:5px;" autofocus>
 								<input type="password" class="form-control" placeholder="Password" ng-model="login.password" style="margin-bottom:5px;">
 								<!-- TODO -->
@@ -27,7 +28,7 @@
 										<input type="checkbox" value="remember-me"> Remember me
 									</label>
 								</div>
-								<button type="submit" ng-disabled="status.isBusy=='login'" class="btn btn-lg btn-primary btn-block">Sign in</button>
+								<button type="submit" ng-disabled="status.action=='login'" class="btn btn-lg btn-primary btn-block">Sign in</button>
 								<div class="margin-top">
 								  <a ui-sref='public.lostpw'>Forgot your password?</a>
 								</div>

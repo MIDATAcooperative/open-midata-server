@@ -1,9 +1,11 @@
 angular.module('portal')
-.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', function($scope, $state, server, status) {
+.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', function($scope, $state, server, status, session) {
 	
 	$scope.registration = {};
 	$scope.error = null;
 	$scope.status = new status(false, $scope);
+	
+	$scope.offline = (window.jsRoutes == undefined) || (window.jsRoutes.controllers == undefined);
 	
 	// register new user
 	$scope.register = function() {		
@@ -27,7 +29,7 @@ angular.module('portal')
 		// send the request
 		var data = $scope.registration;		
 		$scope.status.doAction("register", server.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
-		then(function(data) { $state.go("public.postregister", { progress : data.data }, { location : false }); });
+		then(function(data) { session.postLogin(data, $state); });
 	};
 	
 	$scope.days = [];
