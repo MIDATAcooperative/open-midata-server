@@ -6,7 +6,7 @@ angular.module('portal')
 	// get circles and make either given or first circle active
 	loadConsents = function(userId) {
 		
-		$scope.status.doBusy(circles.listConsents({ }, [ "name", "authorized", "type", "status" ]))
+		$scope.status.doBusy(circles.listConsents({ }, [ "name", "authorized", "type", "status", "records" ]))
 		.then(function(data) {
 			$scope.consents = data.data;						
 		});

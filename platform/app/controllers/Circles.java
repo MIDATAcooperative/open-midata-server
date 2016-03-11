@@ -3,6 +3,7 @@ package controllers;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,6 +16,8 @@ import models.Consent;
 import models.HCRelated;
 import models.Member;
 import models.MemberKey;
+import models.RecordsInfo;
+import models.enums.AggregationType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 
@@ -82,13 +85,13 @@ public class Circles extends APIController {
 	 * list either all consents of a user or all consents of others where the user is authorized 
 	 * @return list of consents
 	 * @throws JsonValidationException
-	 * @throws InternalServerException
+	 * @throws AppException
 	 * @throws AuthException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result listConsents() throws JsonValidationException, InternalServerException, AuthException {
+	public static Result listConsents() throws JsonValidationException, AppException, AuthException {
 		// validate json
 		JsonNode json = request().body().asJson();					
 		JsonValidation.validate(json, "properties", "fields");
@@ -108,6 +111,14 @@ public class Circles extends APIController {
 		}
 		
 		if (fields.contains("ownerName")) ReferenceTool.resolveOwners(consents, true);
+		
+		if (fields.contains("records")) {
+			Map<String, Object> all = new HashMap<String,Object>();
+			for (Consent consent : consents) {
+				Collection<RecordsInfo> summary = RecordManager.instance.info(owner, consent._id, all, AggregationType.ALL);
+				if (summary.isEmpty()) consent.records = 0; else consent.records = summary.iterator().next().count;
+			}
+		}
 		
 		//Collections.sort(circles);
 		return ok(JsonOutput.toJson(consents, "Consent", fields));

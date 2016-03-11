@@ -64,6 +64,11 @@ public class Consent extends Model {
 	 */
 	public String passcode;
 	
+	/**
+	 * The number of records in this consent. Calculated on request only
+	 */
+	public @NotMaterialized int records;
+	
 	public static Consent getByIdAndOwner(ObjectId consentId, ObjectId ownerId, Set<String> fields) throws InternalServerException {
 		return Model.get(Consent.class, collection, CMaps.map("_id", consentId).map("owner", ownerId), fields);
 	}

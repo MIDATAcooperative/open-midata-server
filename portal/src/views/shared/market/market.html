@@ -10,16 +10,14 @@
 		</div>
 			
 		<!-- Visualizations -->
+		<div ng-show="beta">
 		<div class="page-header">
 			<h1><small>Categories</small></h1>
 		</div>
 		
-		<div class="row" ng-cloak>
-		  
-		    
-		    <div class="col-sm-2" ng-repeat="tag in tags"><a class="btn btn-default btn-block" href="javascript:" ng-click="setTag(tag);">{{ tag }}</a></div>
-		    
-		 
+		<div class="row" ng-cloak>		 		   
+		    <div class="col-sm-2" ng-repeat="tag in tags"><a class="btn btn-default btn-block" href="javascript:" ng-click="setTag(tag);">{{ tag }}</a></div>		    		
+		</div>
 		</div>
 		
 		<div class="page-header">

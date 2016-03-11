@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('status', ['$q', function($q) {
+.factory('status', ['$q', '$state', function($q, $state) {
 	return function(showerrors, scope) {		
 		this.loading = 0;
 		this.isBusy = true;
@@ -15,7 +15,12 @@ angular.module('services')
 			   this.loading--; 
 			   this.error = msg; 
 			   if (this.loading<=0) { this.isBusy = false; }
-			   if (this.showerrors && !noerror) alert("An error "+msg.status+" occured:"+msg.data);
+			   if (msg.status == 403) {
+				   alert("Please relogin. Your session has expired.");
+				   $state.go("public.login");
+			   } else {
+			     if (this.showerrors && !noerror) alert("An error "+msg.status+" occured:"+msg.data);
+			   }
 		};
 		this.doBusy = function(call) {
 			var me = this;
@@ -27,8 +32,7 @@ angular.module('services')
 		   	me.startAction(action);
 		   	return call.then(function(result) { me.end();return result; }, function(err) { 		 
 		   		console.log(err);
-		   		if (err.data && err.data.field && err.data.type && me.scope && me.scope.myform) {
-		   			console.log("QUAL");
+		   		if (err.data && err.data.field && err.data.type && me.scope && me.scope.myform) {		   			
 		   			me.scope.error = err.data;
 		   			me.scope.myform[err.data.field].$setValidity(err.data.type, false);
 		   			me.fail(err, true);
