@@ -5,7 +5,7 @@ angular.module('portal')
 	$scope.login = {};
 	$scope.error = null;
 	
-	$scope.offline = (window.jsRoutes == undefined) || (window.jsRoutes.controllers == undefined);
+	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
 	
 	// login
 	$scope.dologin = function() {

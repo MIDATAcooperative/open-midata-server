@@ -5,7 +5,7 @@ angular.module('portal')
 	$scope.error = null;
 	$scope.status = new status(false, $scope);
 	
-	$scope.offline = (window.jsRoutes == undefined) || (window.jsRoutes.controllers == undefined);
+	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
 	
 	// register new user
 	$scope.register = function() {		
