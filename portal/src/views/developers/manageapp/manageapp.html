@@ -72,7 +72,7 @@
 		    <input type="text" id="developmentServer" class="form-control" placeholder="http://localhost:9000" ng-model="app.developmentServer">
 		  </formrow>
 		  <formrow myid="x" label="">
-		    <button type="submit" class="btn btn-primary">Submit</button>
+		    <button type="submit" ng-disabled="status.action=='submit'" class="btn btn-primary">Submit</button>
 		    <button class="btn btn-default" ng-click="doInstall()" ng-hide="app.type == 'mobile'" ng-disabled="app.id == null">Install</button>
 		  </formrow>
 	     </form>	  

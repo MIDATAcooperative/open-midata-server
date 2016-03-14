@@ -137,6 +137,7 @@ public class Market extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
+	@Security.Authenticated(DeveloperSecured.class)
 	public static Result registerPlugin() throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();

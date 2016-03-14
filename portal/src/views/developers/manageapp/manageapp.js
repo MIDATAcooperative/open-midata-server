@@ -1,9 +1,10 @@
 angular.module('portal')
-.controller('ManageAppCtrl', ['$scope', '$state', 'server', 'apps', function($scope, $state, server, apps) {
+.controller('ManageAppCtrl', ['$scope', '$state', 'server', 'apps', 'status', function($scope, $state, server, apps, status) {
 	
 	// init
 	$scope.error = null;
 	$scope.app = { version:0, tags:[] };
+	$scope.status = new status(true);
 	$scope.targetUserRoles = [
         { value : "ANY", label : "Any Role" },
 	    { value : "MEMBER", label : "MIDATA Members" },
@@ -23,7 +24,7 @@ angular.module('portal')
     ];
 			
 	$scope.loadApp = function(appId) {
-		apps.getApps({ "_id" : { "$oid" :  appId }}, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","url","developmentServer","version"])
+		$scope.status.doBusy(apps.getApps({ "_id" : { "$oid" :  appId }}, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","url","developmentServer","version"]))
 		.then(function(data) { 
 			$scope.app = data.data[0];
 			$scope.app.defaultQueryStr = JSON.stringify($scope.app.defaultQuery);
@@ -45,11 +46,11 @@ angular.module('portal')
 		}
 		
 		if ($scope.app._id == null) {
-			apps.registerPlugin($scope.app)
+			$scope.status.doAction('submit', apps.registerPlugin($scope.app))
 			.then(function(data) { $state.go("^.yourapps"); });
 		} else {			
-		    apps.updatePlugin($scope.app)
-		    .then(function() { $scope.loadApp($scope.app._id.$oid); });
+		    $scope.status.doAction('submit', apps.updatePlugin($scope.app))
+		    .then(function() { $state.go("^.yourapps"); });
 		}
 	};
 	
@@ -62,5 +63,6 @@ angular.module('portal')
 		$state.go("^.visualization", { visualizationId : $scope.app._id.$oid, context : "sandbox" });
 	};
 	
-	if ($state.params.appId != null) $scope.loadApp($state.params.appId);
+	if ($state.params.appId != null) { $scope.loadApp($state.params.appId); }
+	else { $scope.status.isBusy = false; }
 }]);
