@@ -7,6 +7,8 @@ package utils.exceptions;
 public class BadRequestException extends AppException {	
 	
 	private static final long serialVersionUID = 1L;
+	
+	private int statusCode = 400;
 
 	public BadRequestException(String localeKey, Throwable cause) {
 		super(localeKey, cause);
@@ -14,5 +16,14 @@ public class BadRequestException extends AppException {
 	
 	public BadRequestException(String localeKey, String msg) {
 		super(localeKey, msg);
+	}
+	
+	public BadRequestException(String localeKey, String msg, int statusCode) {
+		super(localeKey, msg);
+		this.statusCode = statusCode;
+	}
+	
+	public int getStatusCode() {
+		return statusCode;
 	}
 }

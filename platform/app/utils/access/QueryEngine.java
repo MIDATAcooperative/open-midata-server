@@ -227,7 +227,7 @@ class QueryEngine {
     	return result;
     }
     
-    protected static List<DBRecord> findRecordsDirectlyInDB(Query q) throws InternalServerException {
+    protected static List<DBRecord> findRecordsDirectlyInDB(Query q) throws AppException {
     	List<DBRecord> result = null;
     	
     	if (q.restrictedBy("_id")) result = lookupRecordsById(q);			
@@ -412,11 +412,11 @@ class QueryEngine {
     	return result;
     }
     
-    protected static List<DBRecord> lookupRecordsById(Query q) throws InternalServerException {    	
+    protected static List<DBRecord> lookupRecordsById(Query q) throws AppException {    	
 			Map<String, Object> query = new HashMap<String, Object>();
 			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "direct");
 			queryFields.addAll(q.getFieldsFromDB());
-			query.put("_id", q.getProperties().get("_id"));
+			query.put("_id", q.getObjectIdRestriction("_id"));
 			//q.addMongoTimeRestriction(query);			
 			return new ArrayList<DBRecord>(DBRecord.getAll(query, queryFields));		
     }

@@ -33,6 +33,7 @@ import utils.DateTimeUtils;
 import utils.access.AccessLog;
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
+import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.auth.MobileAppSessionToken;
 import utils.auth.MobileAppToken;
@@ -260,7 +261,7 @@ public class MobileAPI extends Controller {
 		
 		AccessLog.debug("NEW QUERY");
 		
-		records = LargeRecord.getAll(appInstance.owner, appInstance._id, properties, fields);		  
+		records = LargeRecord.getAll(appInstance._id, appInstance._id, properties, fields);		  
 				
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		return ok(JsonOutput.toJson(records, "Record", fields));
@@ -368,8 +369,8 @@ public class MobileAPI extends Controller {
 		
 		RecordManager.instance.addRecord(appInstance._id, record, targetAps);
 				
-		Set<ObjectId> records = new HashSet<ObjectId>();
-		records.add(record._id);
+		//Set<ObjectId> records = new HashSet<ObjectId>();
+		//records.add(record._id);
 		//RecordManager.instance.share(targetUser._id, targetUser._id, targetAps, records, false);
 
 		/*
@@ -385,6 +386,45 @@ public class MobileAPI extends Controller {
 				
 		return ok();
 	}
+	
+	/**
+	 * update a record.
+	 * @return
+	 * @throws AppException
+	 * @throws JsonValidationException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@MobileCall
+	public static Result updateRecord() throws AppException, JsonValidationException {
+				
+		// check whether the request is complete
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "authToken", "data", "_id", "version");
+		
+		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText());
+			
+        String data = JsonValidation.getJsonString(json, "data");
+						
+		Record record = new Record();
+		
+		record._id = JsonValidation.getObjectId(json, "_id");	
+		record.version = JsonValidation.getStringOrNull(json, "version");
+		 				
+		record.creator = inf.executorId;
+		record.lastUpdated = DateTimeUtils.now();		
+							
+		try {
+			record.data = (DBObject) JSON.parse(data);
+		} catch (JSONParseException e) {
+			return badRequest("Record data is invalid JSON.");
+		}
+				
+		String version = PluginsAPI.updateRecord(inf, record);
+		ObjectNode obj = Json.newObject();		
+		obj.put("version", version);		
+		return ok(obj);
+	}
+	
 	
 	/**
 	 * retrieve aggregated information about records matching some criteria

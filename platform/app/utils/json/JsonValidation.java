@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import org.bson.types.ObjectId;
 
+import utils.access.AccessLog;
 import utils.exceptions.BadRequestException;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -35,6 +36,15 @@ public class JsonValidation {
 		return res;
 	}
 	
+	public static String getJsonString(JsonNode json, String field) throws JsonValidationException {
+		JsonNode data = json.path(field);
+		if (data.isTextual()) return data.asText().trim();
+		if (data.isObject()) {
+			return data.toString();
+		}
+		throw new JsonValidationException("error.validation.fieldmissing", "Request parameter '" + field + "' does not contain JSON.");
+	}
+	
 	public static String getStringOrNull(JsonNode json, String field) {
 		String res = json.path(field).asText();
 		if (res != null) res = res.trim();
@@ -43,7 +53,9 @@ public class JsonValidation {
 	}
 	
 	public static ObjectId getObjectId(JsonNode json, String field) throws JsonValidationException {
-		String id = json.path(field).asText();
+		JsonNode n = json.path(field);		
+		if (n.isObject() && n.has("$oid")) n = n.path("$oid");
+		String id = n.asText();		
 		if (id == null || id.trim().equals("") || id.equals("null")) return null;
 		if (!ObjectId.isValid(id)) throw new JsonValidationException("error.validation.objectid", field, "noobjectid", "ObjectID expected.");
 		return new ObjectId(id);

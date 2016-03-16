@@ -94,6 +94,7 @@
 						<p>So if the main file in located in a 'dist' subdirectory and is called index.html your URL may look like this:</p>
 						<pre>dist/index.html#:authToken</pre>
 						<h3>Creating new Records</h3>
+						<p class="alert alert-info">Please note that the API runs at <strong>{{ENV.apiurl}}</strong></p>
 						<p>The Endpoint is at:</p>
 						<pre><i>POST</i> /v1/plugin_api/records/create</pre>
 						<p>For a detailed description of the parameters see <a ng-click="tab='mobile'">Mobile API</a>.</p>
@@ -143,7 +144,8 @@
 						   Choose "Mobile App" as "type" of the plugin. 
 						   <i>In the current release do not select "Spotlight in Market". (will be removed)</i>
 						   Click on "Submit" when you are done.
-						</p>						
+						</p>		
+						<p class="alert alert-info">Please note that the API runs at <strong>{{ENV.apiurl}}</strong></p>										
                         <h3>Authentication (Login)</h3>						
 						<p>A mobile app needs to authenticate using a users credentials to the platform before providing or querying records.
 						To authenticate call:</p> 
@@ -197,8 +199,25 @@
      "data" : JSON string containing the record itself 
 }</pre>						
 
-
-
+						<h3>Updating an existing record</h3>
+						<p>In order to update an existing record call this endpoint:</p>
+						<pre><i>POST</i> /v1/records/update</pre>
+						<p>The request needs a JSON body with these parameters:</p>
+<pre>{
+     "authToken" : the token from the authentication request, 
+     "_id" : the identifier of the record you want to change, 
+     "version" : the version field of the record that you have read before     
+     "data" : JSON string containing the new content of the record itself 
+}</pre>						
+                        <p>To update a record you first need to read it, so that you know the <code>_id</code> and <code>version</code> of the particular record. 
+                           During the update a new version is assigned to the record. The update operation will fail with a HTTP status code of <code>409</code>(Conflict) if the records version field does not match the version field stored in the database. 
+                           So the call will fail if the record has been modified by another API call since your last read.
+                        </p>
+                        <p>Only the data of a record may be changed. The other fields as format or name are immutable.</p> 
+                        <p>After a successful update the new version string will be returned together with HTTP status <code>200</code>:</p>
+<pre>{
+     "version" : "12345"
+}</pre>                        
 
                         <h3>Retrieving existing records</h3>
                         <p>To retrieve records call this endpoint:</p>
@@ -224,6 +243,7 @@
     <li><code>name</code> - the name of this record</li>
     <li><code>description</code> - the description of this record</li>
     <li><code>tags</code> - an array of tags for this record</li>
+    <li><code>version</code> - a string identifying the current version of this record</li>
     <li><code>data</code> - the data of this record as string or json</li>
  </ul>
 <p>Each key in the properties map restricts the returned records by one criteria.</p>

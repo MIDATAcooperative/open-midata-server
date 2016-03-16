@@ -27,6 +27,7 @@ import models.StudyParticipation;
 import models.enums.APSSecurityLevel;
 import models.enums.AggregationType;
 
+import org.apache.http.HttpStatus;
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
@@ -394,16 +395,18 @@ public class RecordManager {
 	 * @param executingPerson id of executing person
 	 * @param record the record to be updated
 	 * @throws AppException
+	 * @return the new version string of the record
 	 */
-	public void updateRecord(ObjectId executingPerson, ObjectId apsId, Record record) throws AppException {
+	public String updateRecord(ObjectId executingPerson, ObjectId apsId, Record record) throws AppException {
 		List<DBRecord> result = QueryEngine.listInternal(getCache(executingPerson), apsId, CMaps.map("_id", record._id), RecordManager.COMPLETE_DATA_WITH_WATCHES);	
 		if (result.size() != 1) throw new InternalServerException("error.internal.notfound", "Unknown Record");
+		if (record.data == null) throw new BadRequestException("error.internal", "Missing data");
 		
 		DBRecord rec = result.get(0);
 		String storedVersion = rec.meta.getString("version");
 		if (storedVersion == null) storedVersion = VersionedDBRecord.INITIAL_VERSION;
 		String providedVersion = record.version != null ? record.version : VersionedDBRecord.INITIAL_VERSION; 
-		if (!providedVersion.equals(storedVersion)) throw new BadRequestException("error.concurrent", "Concurrent update");
+		if (!providedVersion.equals(storedVersion)) throw new BadRequestException("error.concurrent", "Concurrent update", HttpStatus.SC_CONFLICT);
 		
 		VersionedDBRecord vrec = new VersionedDBRecord(rec);
 		RecordEncryption.encryptRecord(vrec);
@@ -412,7 +415,9 @@ public class RecordManager {
 	    rec.data = record.data;
 	    rec.meta.put("lastUpdated", record.lastUpdated);
 	    rec.time = Query.getTimeFromDate(record.lastUpdated);		
-	    rec.meta.put("version", Long.toString(System.currentTimeMillis()));
+	    
+	    String version = Long.toString(System.currentTimeMillis());
+	    rec.meta.put("version", version);
 		
 	    DBRecord clone = rec.clone();
 	    
@@ -420,6 +425,8 @@ public class RecordManager {
 	    DBRecord.upsert(rec); 	  	
 	    
 	    RecordLifecycle.notifyOfChange(clone, getCache(executingPerson));
+	    
+	    return version;
 	}
 	
 	/**

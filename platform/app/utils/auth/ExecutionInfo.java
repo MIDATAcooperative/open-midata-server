@@ -2,6 +2,7 @@ package utils.auth;
 
 import models.Consent;
 import models.Member;
+import models.MobileAppInstance;
 import models.Space;
 import models.User;
 
@@ -61,6 +62,27 @@ public class ExecutionInfo {
 		}
 				
 	   return result;	
+		
+	}
+	
+	public static ExecutionInfo checkMobileToken(String token) throws AppException {		
+		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(token);
+		if (authToken == null) {
+			throw new BadRequestException("error.internal", "Invalid authToken.");
+		}
+					
+		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare"));
+        if (appInstance == null) throw new BadRequestException("error.internal", "Invalid authToken.");
+
+        KeyManager.instance.unlock(appInstance._id, authToken.passphrase);
+                
+        ExecutionInfo result = new ExecutionInfo();
+		result.executorId = appInstance._id;
+		result.ownerId = appInstance.owner;
+		result.pluginId = appInstance.applicationId;
+		result.targetAPS = appInstance._id;
+		
+        return result;						
 		
 	}
 }

@@ -60,7 +60,10 @@ class APSCache {
 		APS result = cache.get(apsId.toString());
 		if (result == null) { 
 			result = new APSImplementation(new EncryptedAPS(apsId, ownerId, unlockKey, owner));
-			if (!result.isAccessible()) result.addAccess(Collections.<ObjectId>singleton(ownerId));
+			if (!result.isAccessible()) {
+				AccessLog.logDB("Adding missing access for "+ownerId.toString()+" APS:"+apsId.toString());
+				result.addAccess(Collections.<ObjectId>singleton(ownerId));
+			}
 			cache.put(apsId.toString(), result);
 		}
 		return result;
@@ -70,7 +73,7 @@ class APSCache {
 		APS result = cache.get(apsId.toString());
 		if (result == null) { 
 			result = new APSImplementation(new EncryptedAPS(apsId, ownerId, unlockKey, owner, set));
-			//if (!result.isAccessible()) result.addAccess(Collections.<ObjectId>singleton(ownerId));
+			if (!result.isAccessible()) result.addAccess(Collections.<ObjectId>singleton(ownerId));
 			cache.put(apsId.toString(), result);
 		}
 		return result;

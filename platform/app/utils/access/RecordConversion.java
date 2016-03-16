@@ -25,6 +25,7 @@ public class RecordConversion {
 		record.created = (Date) dbrecord.meta.get("created");
 		record.description = (String) dbrecord.meta.get("description");
 		record.version = (String) dbrecord.meta.get("version");
+		if (record.version == null) record.version = VersionedDBRecord.INITIAL_VERSION;
 		record.format = (String) dbrecord.meta.get("format");						
 		record.content = (String) dbrecord.meta.get("content");
 		record.owner = dbrecord.owner;

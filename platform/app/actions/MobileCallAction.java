@@ -40,7 +40,7 @@ public class MobileCallAction extends Action<MobileCall> {
     		  return F.Promise.pure((Result) badRequest(e.getMessage()));
     		}
     	} catch (BadRequestException e3) {
-    		return F.Promise.pure((Result) badRequest(e3.getMessage()));
+    		return F.Promise.pure((Result) status(e3.getStatusCode(), e3.getMessage()));
 		} catch (InternalServerException e2) {
 			Logger.debug("ierror", e2);
 			return F.Promise.pure((Result) internalServerError(e2.getMessage()));			

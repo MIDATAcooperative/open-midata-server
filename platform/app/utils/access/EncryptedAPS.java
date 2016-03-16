@@ -336,7 +336,7 @@ public class EncryptedAPS {
 		if (!isLoaded()) load();	
 		if (aps.keys.containsKey(who.toString())) return true;
 		if (owner == null) {
-			if (!isValidated) {
+			if (!isValidated && !keyProvided) {
 				try {
 				  validate();
 				} catch (AppException e) {

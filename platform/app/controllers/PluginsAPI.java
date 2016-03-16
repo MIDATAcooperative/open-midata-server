@@ -546,9 +546,10 @@ public class PluginsAPI extends Controller {
 	 * @param inf execution context
 	 * @param record record to add to the database
 	 * @throws AppException
+	 * @return the new version string of the record
 	 */
-	public static void updateRecord(ExecutionInfo inf, Record record) throws AppException  {
-		RecordManager.instance.updateRecord(inf.executorId, inf.targetAPS, record);				
+	public static String updateRecord(ExecutionInfo inf, Record record) throws AppException  {
+		return RecordManager.instance.updateRecord(inf.executorId, inf.targetAPS, record);				
 	}
 	
 	/**
