@@ -116,6 +116,7 @@ public class AutoRun extends APIController {
 		    	final Plugin plugin = Plugin.getById(space.visualization, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret"));
 				SpaceToken token = new SpaceToken(space._id, space.owner, null, null, autorunner);
 				final String tokenstr = token.encrypt();
+				final ActorRef sender = getSender();
 	
 				if (plugin.type != null && plugin.type.equals("oauth2")) {
 					BSONObject oauthmeta = RecordManager.instance.getMeta(autorunner, space._id, "_oauth");
@@ -129,19 +130,19 @@ public class AutoRun extends APIController {
 										Process p = new ProcessBuilder(nodepath, visPath+"/"+plugin.filename+"/server.js", tokenstr).inheritIO().start();
 										try {
 										  p.waitFor();
-										  getSender().tell(new ImportResult(p.exitValue()), getSelf());
+										  sender.tell(new ImportResult(p.exitValue()), getSelf());
 										} catch (InterruptedException e) {
-											getSender().tell(new ImportResult(-2), getSelf());
+											sender.tell(new ImportResult(-2), getSelf());
 										}
 									} else {
-										getSender().tell(new ImportResult(-1), getSelf());
+										sender.tell(new ImportResult(-1), getSelf());
 									}
 									
 								}
 							});
 	
 						} else {
-							getSender().tell(new ImportResult(-1), getSelf());
+							sender.tell(new ImportResult(-1), getSelf());
 						}
 					} else {}
 				}
