@@ -361,14 +361,16 @@ public class Plugins extends APIController {
 		Map<String, Object> properties = CMaps.map("_id", space.visualization);
 		Set<String> fields = Sets.create("accessTokenUrl", "consumerKey", "consumerSecret");
 		Plugin app = Plugin.get(properties, fields);
-				
+		
+		String authPage = Play.application().configuration().getString("portal.originUrl")+"/authorized.html";
+		
         try {
 		// request access token	
 		Promise<WSResponse> promise = WS
 		   .url(app.accessTokenUrl)
 		   .setAuth(app.consumerKey, app.consumerSecret)
 		   .setContentType("application/x-www-form-urlencoded; charset=utf-8")
-		   .post("client_id="+app.consumerKey+"&grant_type=authorization_code&code="+json.get("code").asText()+"&redirect_uri="+URLEncoder.encode("https://demo.midata.coop/authorized.html", "UTF-8"));
+		   .post("client_id="+app.consumerKey+"&grant_type=authorization_code&code="+json.get("code").asText()+"&redirect_uri="+URLEncoder.encode(authPage, "UTF-8"));
 		return promise.map(new Function<WSResponse, Result>() {
 			public Result apply(WSResponse response) throws AppException {
 				AccessLog.debug(response.getBody());
