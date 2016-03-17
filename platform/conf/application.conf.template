@@ -65,5 +65,20 @@ logger.application=DEBUG
 # ~~~~~
 parsers.text.maxLength=1024K
 
+play {
+  akka {
+    event-handlers = ["akka.event.slf4j.Slf4jEventHandler"]
+    loglevel = WARNING
+    actor {
+      default-dispatcher = {
+        fork-join-executor {
+          parallelism-min = 300
+          parallelism-max = 300
+        }
+      }
+    }
+  }
+}
+
 demoserver=true
 

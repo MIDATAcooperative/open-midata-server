@@ -1,5 +1,6 @@
 import javax.servlet.ServletException;
 
+import controllers.AutoRun;
 import controllers.FHIR;
 import play.Application;
 import play.GlobalSettings;
@@ -51,10 +52,14 @@ public class Global extends GlobalSettings {
 		} catch (AppException e) {
 			throw new NullPointerException();
 		}
+		
+		AutoRun.init();
 	}
 
 	@Override
 	public void onStop(Application app) {
+		AutoRun.shutdown();
+		
 		// Close connection to database
 		DBLayer.close();
 
