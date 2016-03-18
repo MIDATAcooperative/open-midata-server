@@ -36,7 +36,9 @@ angular.module('views')
 	};
 	
 	$scope.addRecords = function() {
-		views.updateLinked($scope.view, "shareFrom", 
+		$state.go("^.recordsharing", { selectedType : "circles", selected : $scope.view.setup.aps });
+		
+		/*views.updateLinked($scope.view, "shareFrom", 
 				 { aps : null, 
 			       properties:{}, 
 			       fields : $scope.view.setup.fields, 
@@ -44,7 +46,7 @@ angular.module('views')
 			       allowShare : true,
 			       type : $scope.view.setup.type,
 			       sharedRecords : $scope.records
-			      });
+			      });*/
 	};
 	
 	$scope.$watch('view.setup', function() { $scope.reload(); });	

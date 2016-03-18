@@ -132,7 +132,7 @@ public class Studies extends APIController {
 			code.status != ParticipationCodeStatus.SHARED && 
 			code.status != ParticipationCodeStatus.REUSEABLE) return inputerror("code","alreadyused","Participation code has expired.");
 		
-		Study study = Study.getByIdFromMember(code.study, Sets.create("name", "participantSearchStatus", "owner", "createdBy"));
+		Study study = Study.getByIdFromMember(code.study, Sets.create("name", "participantSearchStatus", "owner", "createdBy", "recordQuery"));
 				
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return inputerror("code", "notsearching", "Study is not searching for participants.");
 		
@@ -248,6 +248,7 @@ public class Studies extends APIController {
 		part.history = new ArrayList<History>();
 		part.providers = new HashSet<ObjectId>();
 		part.authorized = new HashSet<ObjectId>();		
+		part.authorized.add(study.createdBy);
 		
 		RecordManager.instance.createAnonymizedAPS(member._id, study.createdBy, part._id);
 		
@@ -256,6 +257,8 @@ public class Studies extends APIController {
 		  part.history.add(codedentererd);
 		} 
 		StudyParticipation.add(part);
+		Circles.setQuery(member._id, part._id, study.recordQuery);
+		RecordManager.instance.applyQuery(member._id, study.recordQuery, member._id, part._id, study.requiredInformation.equals(InformationType.DEMOGRAPHIC));
 		
 		return part;
 		
@@ -305,21 +308,23 @@ public class Studies extends APIController {
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "birthday", "gender", "country"));		
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history", "memberName", "owner", "authorized"));		
-		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history", "owner", "createdBy", "name"));
+		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history", "owner", "createdBy", "name", "recordQuery", "requiredInformation"));
 		
 		if (study == null) return badRequest("Study does not exist.");
 		if (participation == null) {
 			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return inputerror("code", "notsearching", "Study is not searching for participants.");
 			
 			participation = createStudyParticipation(study, user, null);
-						
-			//return badRequest("Member is not allowed to participate in study.");		
+										
 		}
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return badRequest("Study is not searching for participants anymore.");
 		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) return badRequest("Wrong participation status.");
 		
 		participation.setPStatus(ParticipationStatus.REQUEST);
-		participation.setStatus(ConsentStatus.UNCONFIRMED);
+		
+		// participation.setStatus(ConsentStatus.UNCONFIRMED); // Needs more thought on process!
+		participation.setStatus(ConsentStatus.ACTIVE);
+		
 		participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, null));
 		Circles.consentStatusChange(userId, participation);				
 		

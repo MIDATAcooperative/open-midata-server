@@ -54,18 +54,26 @@ public class Feature_AccountQuery extends Feature {
 				result = new ArrayList<DBRecord>();
 
 				Set<StudyParticipation> consents = new HashSet<StudyParticipation>();
-				for (ObjectId studyId : studies)
-					consents.addAll(StudyParticipation.getParticipantsByStudy(studyId, Sets.create("pstatus", "ownerName")));
+				
+				if (q.restrictedBy("study-group")) {
+					Set<String> groups = q.getRestriction("study-group");
+					for (ObjectId studyId : studies) {
+						for (String grp : groups) {
+							consents.addAll(StudyParticipation.getParticipantsByStudyAndGroup(studyId, grp, Sets.create("pstatus", "ownerName")));
+						}
+					}
+					
+				} else {				
+					for (ObjectId studyId : studies) {
+						consents.addAll(StudyParticipation.getParticipantsByStudy(studyId, Sets.create("pstatus", "ownerName")));
+					}
+				}
 
 				for (StudyParticipation sp : consents) {
 					List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), sp._id));
 
-					if (q.returns("owner") || q.returns("ownerName")) {
-						for (DBRecord record : consentRecords) {
-							record.owner = sp._id;
-							record.meta.put("ownerName", sp.ownerName);
-						}
-					}
+					
+					setOwnerField(q, sp, consentRecords);
 					setIdAndConsentField(q, sp._id, consentRecords);							
 					result.addAll(consentRecords);
 				}
@@ -82,6 +90,7 @@ public class Feature_AccountQuery extends Feature {
 										
 				for (Consent circle : consents) {
 				   List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id));
+				   setOwnerField(q, circle, consentRecords);
 				   setIdAndConsentField(q, circle._id, consentRecords);							
 				   result.addAll(consentRecords);
 				}				
@@ -105,6 +114,17 @@ public class Feature_AccountQuery extends Feature {
 		}
 		if (q.returns("consentAps")) {
 			for (DBRecord record : targetRecords) record.consentAps = sourceAps;
+		}
+	}
+	
+	private void setOwnerField(Query q, Consent c, List<DBRecord> targetRecords) {
+		if (q.returns("owner") || q.returns("ownerName")) {
+			for (DBRecord record : targetRecords) {
+				if (record.owner == null) {
+					record.owner = c._id;
+					record.meta.put("ownerName", c.ownerName);
+				}
+			}
 		}
 	}
 	
@@ -145,7 +165,8 @@ public class Feature_AccountQuery extends Feature {
 				}
 			}
 			if (!owners.isEmpty()) {
-				consents = Consent.getAllByAuthorizedAndOwners(q.getCache().getOwner(), owners);						
+				consents = Consent.getAllByAuthorizedAndOwners(q.getCache().getOwner(), owners);
+				if (consents.size() < owners.size()) consents.addAll(Consent.getByIdsAndAuthorized(owners, q.getCache().getOwner(), Sets.create("name", "order", "owner", "type", "ownerName")));
 			}
 		}
 		consents = applyConsentTimeFilter(q, consents);

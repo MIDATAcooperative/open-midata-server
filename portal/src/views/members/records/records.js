@@ -143,6 +143,8 @@ angular.module('portal')
 	   	console.log(newgroup);
 	   	newgroup.children = [];
 	   	newgroup.records = [];
+	   	newgroup.infoCount = 0;
+	   	
 	   	if (newgroup.parent == null) {
 	   		newgroup.fullLabel = newgroup.label;
 	   		$scope.tree.push(newgroup);

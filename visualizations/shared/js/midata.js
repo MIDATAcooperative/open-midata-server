@@ -6,7 +6,7 @@ midata.factory('midataServer', [ '$http', '$q', function($http, $q) {
 	var actionDef = $q.defer();
 	var actionChain = actionDef.promise;
 	actionDef.resolve();
-	var baseurl = window.location.hostname || "demo.midata.coop";
+	var baseurl =  window.location.hostname ? ("https://"+window.location.hostname+":9000") : "http://localhost:9001";
 	
 	service.createRecord = function(authToken, name, description, content, format, data, id) {
 		// construct json

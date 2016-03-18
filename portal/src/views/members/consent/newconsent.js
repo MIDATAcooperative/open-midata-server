@@ -31,9 +31,13 @@ angular.module('portal')
 				$scope.consent = $scope.myform = data.data[0];				
 				views.setView("1", { aps : $state.params.consentId, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowRemove : true, allowAdd : false, type : "circles" });
 
-                var role = ($scope.consent.type === "CIRCLE") ? "MEMBER" : "PROVIDER";				
+                var role = ($scope.consent.type === "HEALTHCARE") ? "PROVIDER" : null;				
 				angular.forEach($scope.consent.authorized, function(p) {					
-					$scope.authpersons.push(session.resolve(p.$oid, function() { return users.getMembers({ "_id" : p, "role" : role }, (role == "PROVIDER" ? users.ALLPUBLIC : users.MINIMAL )); }));
+					$scope.authpersons.push(session.resolve(p.$oid, function() {
+						var res = { "_id" : p };
+						if (role) res.role = role;
+						return users.getMembers(res, (role == "PROVIDER" ? users.ALLPUBLIC : users.MINIMAL )); 
+					}));
 				});				
 				
 			});
@@ -144,6 +148,10 @@ angular.module('portal')
 	
 	$scope.confirmConsent = function() {
 		hc.confirm($scope.consent._id.$oid).then(function() { $scope.init(); });	
+	};
+	
+	$scope.showStudyDetails = function() {
+		$state.go('^.studydetails', { studyId : $scope.consent._id.$oid });		
 	};
 	
 	$scope.init();

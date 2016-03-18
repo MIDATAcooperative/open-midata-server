@@ -15,6 +15,7 @@ import models.Consent;
 import models.Member;
 import models.Record;
 import models.RecordsInfo;
+import models.StudyParticipation;
 
 public class ReferenceTool {
 
@@ -65,6 +66,12 @@ public class ReferenceTool {
 						if (member != null) {
 							name = member.lastname + ", " + member.firstname;
 							members.put(key, name);
+						} else {
+							StudyParticipation p = StudyParticipation.getById(new ObjectId(key), Sets.create("ownerName"));
+							if (p != null) {
+								name = p.ownerName;
+								members.put(key, name);
+							}
 						}
 					}
 					info.ownerNames.add(name);

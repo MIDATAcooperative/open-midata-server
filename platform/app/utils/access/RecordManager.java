@@ -625,6 +625,7 @@ public class RecordManager {
 		nproperties.put("flat", "true");
 		if (properties.containsKey("owner")) nproperties.put("owner", properties.get("owner"));
 		if (properties.containsKey("study")) nproperties.put("study", properties.get("study"));
+		if (properties.containsKey("study-group")) nproperties.put("study-group", properties.get("study-group"));
 		if (properties.containsKey("format")) nproperties.put("format", properties.get("format"));
 		if (properties.containsKey("format/*")) nproperties.put("format/*", properties.get("format/*"));
 		if (properties.containsKey("content")) nproperties.put("content", properties.get("content"));

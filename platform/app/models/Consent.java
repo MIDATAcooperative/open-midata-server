@@ -77,6 +77,10 @@ public class Consent extends Model {
 		return Model.get(Consent.class, collection, CMaps.map("_id", consentId).map("authorized", executorId), fields);
 	}
 	
+	public static Set<Consent> getByIdsAndAuthorized(Set<ObjectId> consentIds, ObjectId executorId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map("_id", consentIds).map("authorized", executorId), fields);
+	}
+	
 	public static Consent getByOwnerAndPasscode(ObjectId ownerId, String passcode, Set<String> fields) throws InternalServerException {
 		return Model.get(Consent.class, collection, CMaps.map("owner", ownerId).map("passcode", passcode), fields);
 	}
@@ -86,12 +90,14 @@ public class Consent extends Model {
 	}
 	
 	public static Set<Consent> getAllByAuthorized(ObjectId member) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member), Sets.create("name", "order", "owner"));
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member), Sets.create("name", "order", "owner", "type"));
 	}
 	
 	public static Set<Consent> getAllByAuthorizedAndOwners(ObjectId member, Set<ObjectId> owners) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owners), Sets.create("name", "order", "owner"));
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owners), Sets.create("name", "order", "owner", "type"));
 	}
+	
+	
 	
 	public static void set(ObjectId consentId, String field, Object value) throws InternalServerException {
 		Model.set(Consent.class, collection, consentId, field, value);

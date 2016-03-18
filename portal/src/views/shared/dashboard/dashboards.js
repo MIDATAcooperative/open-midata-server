@@ -451,12 +451,29 @@ angular.module('portal')
 	    	   position : "small"
 	       }
 	     ],
-	
+	     "studiessmall" : [
+	       	       {
+	       	    	   id : "yourstudies",
+	       	    	   template : "/views/members/dashboardTiles/yourstudies/yourstudies.html",
+	       	    	   title : "Studies you are involved:",
+	       	    	   active : true,
+	       	    	   teaser : "This tile lists the studies you participated in.",
+	       	    	   position : "small"
+	       	       },
+	       	       {
+	       	    	   id : "newstudies",
+	       	    	   template : "/views/shared/dashboardTiles/flexiblestudies/flexiblestudies.html",
+	       	    	   title : "New Studies",
+	       	    	   active : true,
+	       	    	   position : "small",
+	       	    	   setup : { properties : { }, fields : ["name"] }
+	       	       }
+	     ],
 	 "circles" : [
 			{
 				   id : "1",
 				   template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
-				   title : "Records shared with this circle:",
+				   title : "Records shared with this consent:",
 				   active : false,
 				   position : "full",
 				   links : { "record" : "details" }
