@@ -29,8 +29,8 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
+import utils.AccessLog;
 import utils.DateTimeUtils;
-import utils.access.AccessLog;
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
 import utils.auth.ExecutionInfo;
@@ -259,7 +259,7 @@ public class MobileAPI extends Controller {
 		// get record data
 		Collection<Record> records = null;
 		
-		AccessLog.debug("NEW QUERY");
+		AccessLog.log("NEW QUERY");
 		
 		records = LargeRecord.getAll(appInstance._id, appInstance._id, properties, fields);		  
 				

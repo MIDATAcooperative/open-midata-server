@@ -10,7 +10,7 @@ import org.bson.types.ObjectId;
 
 import models.Record;
 
-import utils.access.AccessLog;
+import utils.AccessLog;
 import utils.access.RecordManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -31,14 +31,14 @@ public class Scripting {
 			
 			//Collection<Record> recs = RecordManager.instance.list(who, apsId, properties, fields) 
 		Object res = engine.eval(s);//"var x = { 'a' : 'b' }; JSON.stringify(x)");
-		AccessLog.debug(res.toString());
-		AccessLog.debug(res.getClass().getName());
+		AccessLog.log(res.toString());
+		AccessLog.log(res.getClass().getName());
 		
 		
 		//engine.enew InputStreamReader(getClass().getResourceAsStream(name));
 		return res;
 		} catch (ScriptException e) {
-			AccessLog.debug(e.toString());
+			AccessLog.log(e.toString());
 			return null;
 		}
 	}

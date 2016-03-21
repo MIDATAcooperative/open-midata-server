@@ -29,7 +29,7 @@ import play.libs.Akka;
 import play.libs.F.Callback;
 import play.mvc.Result;
 import scala.concurrent.duration.Duration;
-import utils.access.AccessLog;
+import utils.AccessLog;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
 import utils.auth.SpaceToken;
@@ -124,9 +124,9 @@ public class AutoRun extends APIController {
 						if (oauthmeta.containsField("refreshToken")) {							                        				
 							Plugins.requestAccessTokenOAuth2FromRefreshToken(autorunner, plugin, space._id.toString(), oauthmeta.toMap()).onRedeem(new Callback<Boolean>() {
 								public void invoke(Boolean success) throws AppException, IOException {
-									AccessLog.logDB("Auth:"+success);
+									AccessLog.log("Auth:"+success);
 									if (success) {
-										AccessLog.debug(nodepath+" "+visPath+"/"+plugin.filename+"/server.js"+" "+tokenstr);
+										AccessLog.log(nodepath+" "+visPath+"/"+plugin.filename+"/server.js"+" "+tokenstr);
 										Process p = new ProcessBuilder(nodepath, visPath+"/"+plugin.filename+"/server.js", tokenstr).inheritIO().start();
 										try {
 										  p.waitFor();
@@ -176,7 +176,7 @@ public class AutoRun extends APIController {
 		@Override
 		public void onReceive(Object message) throws Exception {
 			if (message instanceof StartImport) {
-				AccessLog.debug("Starting Autoimport...");
+				AccessLog.log("Starting Autoimport...");
 				User autorunner = Admin.getByEmail("autorun-service", Sets.create("_id"));
 				KeyManager.instance.unlock(autorunner._id, null);
 				Set<Space> autoImports = Space.getAll(CMaps.map("autoImport", true), Sets.create("_id", "owner", "visualization"));
@@ -185,11 +185,11 @@ public class AutoRun extends APIController {
 			       workerRouter.route(new ImportRequest(autorunner._id, space), getSelf());
 			    }
 				
-				AccessLog.debug("Done scheduling Autoimport size="+autoImports.size());
+				AccessLog.log("Done scheduling Autoimport size="+autoImports.size());
 			} else if (message instanceof ImportResult) {
 				ImportResult result = (ImportResult) message;
 				if (result.exitCode == 0) numberSuccess++; else numberFailure++;
-				AccessLog.logDB("Autoimport success="+numberSuccess+" fail="+numberFailure);
+				AccessLog.log("Autoimport success="+numberSuccess+" fail="+numberFailure);
 			} else {
 			    unhandled(message);
 		    }			

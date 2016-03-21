@@ -14,7 +14,7 @@ import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
 
-import utils.access.AccessLog;
+import utils.AccessLog;
 import utils.access.RecordManager;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;

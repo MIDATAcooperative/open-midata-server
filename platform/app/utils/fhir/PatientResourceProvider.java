@@ -8,7 +8,7 @@ import java.util.Map;
 
 import models.Record;
 
-import utils.access.AccessLog;
+import utils.AccessLog;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
@@ -104,7 +104,7 @@ public class PatientResourceProvider extends ResourceProvider implements IResour
         return patients;
         
     	} catch (AppException e) {
-    		AccessLog.debug("ERROR");
+    		AccessLog.log("ERROR");
     		return null;
     	}
     }

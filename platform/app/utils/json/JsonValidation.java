@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import org.bson.types.ObjectId;
 
-import utils.access.AccessLog;
+import utils.AccessLog;
 import utils.exceptions.BadRequestException;
 
 import com.fasterxml.jackson.databind.JsonNode;

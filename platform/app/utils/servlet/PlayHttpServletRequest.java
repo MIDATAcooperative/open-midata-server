@@ -31,7 +31,7 @@ import javax.servlet.http.Part;
 import play.mvc.Http;
 
 import scala.NotImplementedError;
-import utils.access.AccessLog;
+import utils.AccessLog;
 
 public class PlayHttpServletRequest implements HttpServletRequest {
 
@@ -371,7 +371,7 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 		String uri = request.uri();
 		int i = uri.indexOf('?');
 		result.append(i >= 0 ? uri.substring(0,i) : uri);
-		AccessLog.debug(result.toString());
+		AccessLog.log(result.toString());
 		return result;
 	}
 

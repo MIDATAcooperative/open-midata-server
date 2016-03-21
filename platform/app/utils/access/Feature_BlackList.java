@@ -11,6 +11,7 @@ import models.Record;
 
 import org.bson.BasicBSONObject;
 
+import utils.AccessLog;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 

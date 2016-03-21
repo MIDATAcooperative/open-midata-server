@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import models.Record;
-import utils.access.AccessLog;
+import utils.AccessLog;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
@@ -84,7 +84,7 @@ public class ObservationResourceProvider extends ResourceProvider implements IRe
         return patients;
         
     	} catch (AppException e) {
-    		AccessLog.debug("ERROR");
+    		AccessLog.log("ERROR");
     		return null;
     	}
     }

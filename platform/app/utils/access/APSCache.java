@@ -9,6 +9,7 @@ import models.AccessPermissionSet;
 
 import org.bson.types.ObjectId;
 
+import utils.AccessLog;
 import utils.auth.EncryptionNotSupportedException;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -61,7 +62,7 @@ class APSCache {
 		if (result == null) { 
 			result = new APSImplementation(new EncryptedAPS(apsId, ownerId, unlockKey, owner));
 			if (!result.isAccessible()) {
-				AccessLog.logDB("Adding missing access for "+ownerId.toString()+" APS:"+apsId.toString());
+				AccessLog.log("Adding missing access for "+ownerId.toString()+" APS:"+apsId.toString());
 				result.addAccess(Collections.<ObjectId>singleton(ownerId));
 			}
 			cache.put(apsId.toString(), result);

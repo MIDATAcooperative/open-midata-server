@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 
+import utils.AccessLog;
 import utils.collections.CMaps;
 import utils.exceptions.AppException;
 
@@ -33,7 +34,7 @@ public class Feature_Consents extends Feature {
 			
 			recs = next.lookup(recs, q);
 			List<DBRecord> result = new ArrayList<DBRecord>(recs.size());
-			AccessLog.logDB("found "+recs.size()+" history entries");
+			AccessLog.log("found "+recs.size()+" history entries");
 			if (recs.size() > 0) {
 			/*  Set<ObjectId> ids = new HashSet<ObjectId>();
 			  for (DBRecord r : recs) ids.add(r._id);

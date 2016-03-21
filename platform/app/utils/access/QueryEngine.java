@@ -19,6 +19,7 @@ import org.bson.types.ObjectId;
 
 
 import scala.NotImplementedError;
+import utils.AccessLog;
 import utils.DateTimeUtils;
 import utils.access.op.AndCondition;
 import utils.access.op.Condition;
@@ -85,7 +86,7 @@ class QueryEngine {
 		Feature qm = new Feature_FormatGroups(new Feature_ContentFilter(new Feature_InMemoryQuery(records)));
 		Query query = new Query(properties, Sets.create("_id"), null, null, true);
 		List<DBRecord> recs = qm.query(query);
-		AccessLog.debug("list from memory pre postprocess size = "+recs.size());
+		AccessLog.log("list from memory pre postprocess size = "+recs.size());
 		List<DBRecord> result = postProcessRecords(qm, query, recs);		
 		if (AccessLog.detailedLog) AccessLog.logEnd("End list from memory #recs="+result.size());
 		return result;
@@ -128,7 +129,7 @@ class QueryEngine {
 				q = new Query(q, CMaps.map("created-after", from));
 			
 				long diff = myaps.getLastChanged() - from.getTime();
-				AccessLog.debug("DIFF:"+diff);
+				AccessLog.log("DIFF:"+diff);
 				
 				if (diff < 1200) {
 					AccessLog.logEnd("end infoQuery from cache");
@@ -204,9 +205,9 @@ class QueryEngine {
 		   result = qm.query(q);			
 		}
 		if (result == null) {
-			AccessLog.debug("NULL result");
+			AccessLog.log("NULL result");
 		}
-		AccessLog.debug("Pre Postprocess result size:"+result.size());
+		AccessLog.log("Pre Postprocess result size:"+result.size());
 				
 		result = postProcessRecords(qm, q, result);
 		AccessLog.logEnd("end full query");
@@ -233,7 +234,7 @@ class QueryEngine {
     	if (q.restrictedBy("_id")) result = lookupRecordsById(q);			
 		else if (q.restrictedBy("document")) result = lookupRecordsByDocument(q);
 	    
-    	if (result != null) AccessLog.debug("found directly :"+result.size());
+    	if (result != null) AccessLog.log("found directly :"+result.size());
     	return result;
     }
     
@@ -298,7 +299,7 @@ class QueryEngine {
     			for (DBRecord record : result) {
     				boolean fetch = false;
     				for (String k : check) if (!record.meta.containsField(k)) {
-    					AccessLog.debug("need: "+k);
+    					AccessLog.log("need: "+k);
     					fetch = true; 
     				}
     				if (fetch) {
@@ -341,7 +342,7 @@ class QueryEngine {
 	    
     	}
 	    
-	    AccessLog.debug("END Full Query, result size="+result.size());
+	    AccessLog.log("END Full Query, result size="+result.size());
 	    
 		return result;
     }

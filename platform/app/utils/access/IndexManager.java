@@ -17,6 +17,7 @@ import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.ObjectId;
 
+import utils.AccessLog;
 import utils.access.index.IndexDefinition;
 import utils.access.index.IndexMatch;
 import utils.access.index.IndexRoot;
@@ -122,7 +123,7 @@ public class IndexManager {
 				restrictions.put("format", index.getFormats());
 				if (aps.equals(executor)) restrictions.put("owner", "self");
 				
-			    AccessLog.debug("Checking aps:"+aps.toString());
+			    AccessLog.log("Checking aps:"+aps.toString());
 				// Records that have been updated or created
 				Date limit = new Date(index.getVersion(aps) - UPDATE_TIME);
 				long now = System.currentTimeMillis();
@@ -137,11 +138,11 @@ public class IndexManager {
 					restrictions.put("shared-after", limit);
 					Collection<DBRecord> recs2 = QueryEngine.listInternal(cache, aps, restrictions, Sets.create("_id", "key"));
 					addRecords(index, aps, recs2);
-					AccessLog.logDB("Add index from sharing="+recs2.size());
+					AccessLog.log("Add index from sharing="+recs2.size());
 				}
 				
 				index.setVersion(aps, now);
-				AccessLog.logDB("Add index: from updated="+recs.size());
+				AccessLog.log("Add index: from updated="+recs.size());
 				
 			}
 			
@@ -219,12 +220,12 @@ public class IndexManager {
 		if (validatedResult.size()> 0) stillValid = QueryEngine.filterByDataQuery(validatedResult, indexQuery);
 		else stillValid = validatedResult;
 		
-		AccessLog.debug("Index found records:"+validatedResult.size()+" still valid:"+stillValid.size());
+		AccessLog.log("Index found records:"+validatedResult.size()+" still valid:"+stillValid.size());
 		if (validatedResult.size() > stillValid.size()) {			
 			Set<String> ids = new HashSet<String>();
 			for (DBRecord rec : validatedResult) ids.add(rec._id.toString());
 			for (DBRecord rec : stillValid) ids.remove(rec._id.toString());
-			AccessLog.debug("Removing "+ids.size()+" records from index.");
+			AccessLog.log("Removing "+ids.size()+" records from index.");
 			removeRecords(root, cond, ids);			
 		}				 
 	}

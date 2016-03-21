@@ -36,6 +36,10 @@ visualizations.path="ROOTDIR/visualizations"
 node.server="DOMAIN:5000"
 node.path="/usr/bin/node"
 
+errorreports.targetemail="security@midata.coop"
+errorreports.targetname="Security Officer"
+
+
 # Evolutions
 # ~~~~~
 # You can disable evolutions if needed

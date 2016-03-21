@@ -6,6 +6,8 @@ import play.libs.Json;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
+import utils.AccessLog;
+import utils.ErrorReporter;
 import utils.access.RecordManager;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -41,11 +43,12 @@ public class MobileCallAction extends Action<MobileCall> {
     		}
     	} catch (BadRequestException e3) {
     		return F.Promise.pure((Result) status(e3.getStatusCode(), e3.getMessage()));
-		} catch (InternalServerException e2) {
-			Logger.debug("ierror", e2);
+		} catch (Exception e2) {			
+			ErrorReporter.report("Mobile API", ctx, e2);
 			return F.Promise.pure((Result) internalServerError(e2.getMessage()));			
 		} finally {
 			RecordManager.instance.clear();
+			AccessLog.newRequest();	
 		}
     }
 }

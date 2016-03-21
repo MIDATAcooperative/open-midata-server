@@ -9,7 +9,7 @@ import actions.MobileCall;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
-import utils.access.AccessLog;
+import utils.AccessLog;
 import utils.auth.ExecutionInfo;
 import utils.exceptions.AppException;
 import utils.fhir.FHIRServlet;
@@ -51,7 +51,7 @@ public class FHIR extends Controller {
         
         ResourceProvider.setExecutionInfo(info);
         
-		AccessLog.debug(req.getRequestURI());
+		AccessLog.log(req.getRequestURI());
 		servlet.doGet(req, res);
 		
 		if (res.getResponseWriter() != null) {

@@ -33,6 +33,7 @@ import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
 
+import utils.AccessLog;
 import utils.DateTimeUtils;
 import utils.auth.RecordToken;
 import utils.collections.CMaps;
@@ -106,11 +107,11 @@ public class RecordManager {
 	 */
 	public ObjectId createPrivateAPS(ObjectId who, ObjectId proposedId)
 			throws AppException {
-		
+		AccessLog.logBegin("begin createPrivateAPS who="+who.toString()+" id="+proposedId.toString());
 		EncryptedAPS eaps = new EncryptedAPS(proposedId, who, who, APSSecurityLevel.HIGH);
 		EncryptionUtils.addKey(who, eaps);		
 		eaps.create();
-
+        AccessLog.logEnd("end createPrivateAPS");
 		return eaps.getId();
 	}
 
@@ -124,13 +125,14 @@ public class RecordManager {
 	 */
 	public ObjectId createAnonymizedAPS(ObjectId owner, ObjectId other,
 			ObjectId proposedId) throws AppException {
-
+        AccessLog.logBegin("begin createAnonymizedAPS owner="+owner.toString()+" other="+other.toString()+" id="+proposedId.toString());
 		EncryptedAPS eaps = new EncryptedAPS(proposedId, owner, owner, APSSecurityLevel.HIGH);
 		EncryptionUtils.addKey(owner, eaps);
 		EncryptionUtils.addKey(other, eaps);	
 		eaps.getPermissions().put("_history", new BasicBSONList()); // Init with history
 		eaps.create();
-
+ 
+		AccessLog.logEnd("end createAnonymizedAPS");
 		return eaps.getId();
 
 	}
@@ -147,6 +149,7 @@ public class RecordManager {
 	 */
 	public ObjectId createAPSForRecord(ObjectId executingPerson, ObjectId owner, ObjectId recordId,
 			byte[] key, boolean direct) throws AppException {
+		AccessLog.logBegin("begin createAPSForRecord exec="+executingPerson.toString()+" owner="+owner.toString()+" record="+recordId.toString());
 		
 		EncryptedAPS eaps = new EncryptedAPS(recordId, executingPerson, owner,
 				direct ? APSSecurityLevel.MEDIUM : APSSecurityLevel.HIGH, key);
@@ -154,6 +157,7 @@ public class RecordManager {
         if (!executingPerson.equals(owner)) EncryptionUtils.addKey(executingPerson, eaps);
 		eaps.create();
 
+		AccessLog.logEnd("end createAPSForRecord");
 		return eaps.getId();
 	}
 
@@ -166,7 +170,9 @@ public class RecordManager {
 	 */
 	public void shareAPS(ObjectId apsId, ObjectId executorId,
 			Set<ObjectId> targetUsers) throws AppException {
-		getCache(executorId).getAPS(apsId).addAccess(targetUsers);		
+		AccessLog.logBegin("begin shareAPS aps="+apsId.toString()+" executor="+executorId.toString()+" #targetUsers="+targetUsers.size());
+		getCache(executorId).getAPS(apsId).addAccess(targetUsers);
+		AccessLog.logEnd("end shareAPS");
 	}
 	
 	/**
@@ -179,7 +185,9 @@ public class RecordManager {
 	 */
 	public void shareAPS(ObjectId apsId, ObjectId executorId,
 			ObjectId targetId, byte[] publickey) throws AppException {
-		getCache(executorId).getAPS(apsId).addAccess(targetId, publickey);		
+		AccessLog.logBegin("begin shareAPS aps="+apsId.toString()+" executor="+executorId+" target="+targetId.toString());
+		getCache(executorId).getAPS(apsId).addAccess(targetId, publickey);
+		AccessLog.logEnd("end shareAPS");
 	}
 
 	/**
@@ -191,7 +199,9 @@ public class RecordManager {
 	 */
 	public void unshareAPS(ObjectId apsId, ObjectId executorId,
 			Set<ObjectId> targetUsers) throws InternalServerException {
+		AccessLog.logBegin("begin unshareAPS aps="+apsId.toString()+" executor="+executorId.toString()+" #targets="+targetUsers.size());
 		getCache(executorId).getAPS(apsId).removeAccess(targetUsers);
+		AccessLog.logEnd("end unshareAPS");
 	}
 	
 	/**
@@ -204,10 +214,13 @@ public class RecordManager {
 	 */
 	public void unshareAPSRecursive(ObjectId apsId, ObjectId executorId,
 			Set<ObjectId> targetUsers) throws AppException {
-		if (!getCache(executorId).getAPS(apsId).isAccessible()) return;
-		List<DBRecord> to_unshare = QueryEngine.listInternal(getCache(executorId), apsId, CMaps.map("streams", "only"), Sets.create("_id"));
-		for (DBRecord rec : to_unshare) unshareAPS(rec._id, executorId, targetUsers);
-		getCache(executorId).getAPS(apsId).removeAccess(targetUsers);
+		AccessLog.logBegin("begin unshareAPSRecursive aps="+apsId.toString()+" executor="+executorId.toString()+" #targets="+targetUsers.size());
+		if (getCache(executorId).getAPS(apsId).isAccessible()) {
+			List<DBRecord> to_unshare = QueryEngine.listInternal(getCache(executorId), apsId, CMaps.map("streams", "only"), Sets.create("_id"));
+			for (DBRecord rec : to_unshare) unshareAPS(rec._id, executorId, targetUsers);
+			getCache(executorId).getAPS(apsId).removeAccess(targetUsers);
+		}
+		AccessLog.logEnd("end unshareAPSRecursive");
 	}
 
 	/**
@@ -229,7 +242,7 @@ public class RecordManager {
 				Sets.create("_id", "key", "owner", "format", "content", "created", "name", "isStream"));
 		
 		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(getCache(who), toAPS, recordEntries);
-		AccessLog.debug("to-share: "+recordEntries.size()+" already="+alreadyContained.size());
+		AccessLog.log("to-share: "+recordEntries.size()+" already="+alreadyContained.size());
         if (alreadyContained.size() == recordEntries.size()) return;
         if (alreadyContained.size() == 0) {		
 		    apswrapper.addPermission(recordEntries, withOwnerInformation);
@@ -263,7 +276,7 @@ public class RecordManager {
 	 */
 	public void shareByQuery(ObjectId who, ObjectId fromAPS, ObjectId toAPS,
 			Map<String, Object> query) throws AppException {
-        AccessLog.debug("shareByQuery who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString());
+        AccessLog.log("shareByQuery who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString());
 		if (toAPS.equals(who)) throw new BadRequestException("error.internal", "Bad call to shareByQuery. target APS may not be user APS!");
         APS apswrapper = getCache(who).getAPS(toAPS);
 
@@ -305,7 +318,10 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public BSONObject getMeta(ObjectId who, ObjectId apsId, String key) throws AppException {
-		return getCache(who).getAPS(apsId).getMeta(key);
+		AccessLog.logBegin("begin getMeta who="+who.toString()+" aps="+apsId.toString()+" key="+key);
+		BSONObject result = getCache(who).getAPS(apsId).getMeta(key);
+		AccessLog.logEnd("end getMeta");
+		return result;
 	}
 	
 	/**
@@ -317,7 +333,9 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public void setMeta(ObjectId who, ObjectId apsId, String key, Map<String,Object> data) throws AppException {
+		AccessLog.logBegin("begin setMeta who="+who.toString()+" aps="+apsId.toString()+" key="+key);
 		getCache(who).getAPS(apsId).setMeta(key, data);
+		AccessLog.logEnd("end setMeta");
 	}
 	
 	/**
@@ -328,7 +346,9 @@ public class RecordManager {
 	 * @throws AppException
 	 */
 	public void removeMeta(ObjectId who, ObjectId apsId, String key) throws AppException {
+		AccessLog.logBegin("begin removeMeta who="+who.toString()+" aps="+apsId.toString()+" key="+key);
 		getCache(who).getAPS(apsId).removeMeta(key);
+		AccessLog.logEnd("end removeMeta");
 	}
 
 	public void addDocumentRecord(ObjectId owner, Record record,
@@ -398,6 +418,7 @@ public class RecordManager {
 	 * @return the new version string of the record
 	 */
 	public String updateRecord(ObjectId executingPerson, ObjectId apsId, Record record) throws AppException {
+		AccessLog.logBegin("begin updateRecord executor="+executingPerson.toString()+" aps="+apsId.toString()+" record="+record._id.toString());
 		List<DBRecord> result = QueryEngine.listInternal(getCache(executingPerson), apsId, CMaps.map("_id", record._id), RecordManager.COMPLETE_DATA_WITH_WATCHES);	
 		if (result.size() != 1) throw new InternalServerException("error.internal.notfound", "Unknown Record");
 		if (record.data == null) throw new BadRequestException("error.internal", "Missing data");
@@ -425,7 +446,8 @@ public class RecordManager {
 	    DBRecord.upsert(rec); 	  	
 	    
 	    RecordLifecycle.notifyOfChange(clone, getCache(executingPerson));
-	    
+
+	    AccessLog.logEnd("end updateRecord");
 	    return version;
 	}
 	
@@ -436,6 +458,7 @@ public class RecordManager {
 	 * @throws AppException
 	 */	
 	public void deleteRecord(ObjectId executingPerson, RecordToken tk) throws AppException {
+		AccessLog.logBegin("begin deleteRecord executor="+executingPerson.toString()+" record="+tk.recordId.toString());
 		DBRecord record = RecordConversion.instance.toDB(fetch(executingPerson, tk));
 				
 		if (!record.owner.equals(executingPerson)) throw new BadRequestException("error.internal", "Not owner of record!");
@@ -472,6 +495,8 @@ public class RecordManager {
 		}
 		
 		DBRecord.delete(record.owner, record._id);
+		
+		AccessLog.logEnd("end deleteRecord");
 	}
 
 	private byte[] addRecordIntern(ObjectId executingPerson, DBRecord record, boolean documentPart, ObjectId alternateAps, boolean upsert) throws AppException {		
@@ -537,7 +562,7 @@ public class RecordManager {
 		Map<String, Object> selectionQuery = CMaps.map(query).map("streams", "true").map("flat", "true").map("owner", "self");		
 		List<DBRecord> records = QueryEngine.listInternal(getCache(userId), sourceaps, selectionQuery, RecordManager.COMPLETE_META);
 		
-		AccessLog.debug("SHARE QUALIFIED:"+records.size());
+		AccessLog.log("SHARE QUALIFIED:"+records.size());
 		if (records.size() > 0) {
 			Set<ObjectId> ids = new HashSet<ObjectId>();
 			for (DBRecord record : records) ids.add(record._id);
@@ -545,7 +570,7 @@ public class RecordManager {
 		}
 		
 		List<DBRecord> streams = QueryEngine.listInternal(getCache(userId), targetaps, RecordManager.STREAMS_ONLY_OWNER, RecordManager.COMPLETE_META);
-		AccessLog.debug("UNSHARE STREAMS CANDIDATES = "+streams.size());
+		AccessLog.log("UNSHARE STREAMS CANDIDATES = "+streams.size());
 		
 		List<DBRecord> stillOkay = QueryEngine.listFromMemory(query, streams);
 		streams.removeAll(stillOkay);		
@@ -554,7 +579,7 @@ public class RecordManager {
 			remove.add(stream._id);
 		}
 		
-		AccessLog.debug("UNSHARE STREAMS QUALIFIED = "+remove.size());
+		AccessLog.log("UNSHARE STREAMS QUALIFIED = "+remove.size());
 		RecordManager.instance.unshare(userId, targetaps, remove);
 		AccessLog.logEnd("END APPLY RULES");
 		
@@ -587,8 +612,10 @@ public class RecordManager {
      * @throws InternalServerException
      */
 	public void deleteAPS(ObjectId apsId, ObjectId ownerId)
-			throws InternalServerException {		
+			throws InternalServerException {
+		AccessLog.logBegin("begin deleteAPS aps="+apsId.toString()+" owner="+ownerId.toString());
 		AccessPermissionSet.delete(apsId);
+		AccessLog.logEnd("end deleteAPS");
 	}
 
 	/**
@@ -745,7 +772,7 @@ public class RecordManager {
 		AccessLog.logBegin("start reset info user="+who.toString());
 		List<Record> result = list(who, who, RecordManager.STREAMS_ONLY_OWNER, Sets.create("_id", "owner"));
 		for (Record stream : result) {
-			AccessLog.debug("reset stream:"+stream._id.toString());
+			AccessLog.log("reset stream:"+stream._id.toString());
 			getCache(who).getAPS(stream._id, stream.owner).removeMeta("_info");
 		}
 		AccessLog.logEnd("end reset info user="+who.toString());
@@ -774,33 +801,5 @@ public class RecordManager {
 		AccessLog.logEnd("end search for missing records");
 	}
 	
-	/*
-	public void changeFormatName(ObjectId owner, String oldName, String newContent, String newFormat) throws AppException {
-		List<Record> records = QueryEngine.listInternal(getCache(owner), owner, CMaps.map("format", oldName).map("owner", "self"), RecordManager.COMPLETE_DATA);
-		List<Record> patchedRecords = new ArrayList<Record>();
-		for (Record record : records) {
-			Record patched = record.clone();
-			patched.content = newContent;
-			patched.format = newFormat;
-			patched.stream = null;
-			patched.key = null;
-			patched.clearSecrets();
-			patchedRecords.add(patched);
-		}
-		patch(owner, records, patchedRecords);		
-	}
-	
-	public void patch(ObjectId owner, List<Record> old, List<Record> patched) throws AppException {
-		Iterator<Record> oldIt = old.iterator();
-		for (Record newRecord : patched) {
-			Record oldRecord = oldIt.next();
-			if (!newRecord._id.equals(oldRecord._id)) throw new InternalServerException("error.internal", "Patch error: Bad record _ids");
-			if (!oldRecord.owner.equals(owner)) throw new InternalServerException("error.internal", "Can only patch own records.");
-			ObjectId sourceAPS =  oldRecord.stream != null ? oldRecord.stream : owner;
-			getCache(owner).getAPS(sourceAPS, owner).removePermission(oldRecord);
-			addRecordIntern(owner, newRecord, false, null, true);			
-		}
-	}
-	*/
 
 }

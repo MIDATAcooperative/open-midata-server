@@ -12,6 +12,7 @@ import models.Consent;
 
 import org.bson.types.ObjectId;
 
+import utils.AccessLog;
 import utils.access.index.IndexDefinition;
 import utils.access.index.IndexMatch;
 import utils.access.index.IndexRoot;
@@ -85,7 +86,7 @@ private Feature next;
 			
 			for (Map.Entry<ObjectId, Set<ObjectId>> entry : filterMatches.entrySet()) {				
 			   ObjectId aps = entry.getKey();
-			   AccessLog.logDB("Now processing aps:"+aps.toString());
+			   AccessLog.log("Now processing aps:"+aps.toString());
 			   Set<ObjectId> ids = entry.getValue();
 			   Map<String, Object> readRecs = new HashMap<String, Object>();
 			   if (ids.size() > 5) {
@@ -93,7 +94,7 @@ private Feature next;
 					props.putAll(q.getProperties());
 					props.put("streams", "only");
 					List<DBRecord> matchStreams = next.query(new Query(props, Sets.create("_id"), q.getCache(), aps));
-					AccessLog.debug("index query streams "+matchStreams.size()+" matches.");
+					AccessLog.log("index query streams "+matchStreams.size()+" matches.");
 					Set<ObjectId> streams = new HashSet<ObjectId>();
 					for (DBRecord r : matchStreams) streams.add(r._id);
 					readRecs.put("stream", streams);
@@ -107,12 +108,12 @@ private Feature next;
 				
 	            Query q2 = new Query(q, CMaps.map("_id", ids));
 	            List<DBRecord> additional = next.query(q2);
-	            AccessLog.logDB("looked up directly="+partresult.size()+" additionally="+additional.size());
+	            AccessLog.log("looked up directly="+partresult.size()+" additionally="+additional.size());
 	            result.addAll(partresult);
 				result.addAll(additional);
 			}
 
-			AccessLog.debug("index query found "+matches.size()+" matches, "+result.size()+" in correct aps.");
+			AccessLog.log("index query found "+matches.size()+" matches, "+result.size()+" in correct aps.");
 																													
 			IndexManager.instance.revalidate(result, root, indexQuery, condition);
 			

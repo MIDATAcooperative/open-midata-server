@@ -10,7 +10,7 @@ import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
 
-import utils.access.AccessLog;
+import utils.AccessLog;
 import utils.access.EncryptionUtils;
 import utils.access.op.Condition;
 import utils.db.LostUpdateException;
@@ -41,7 +41,7 @@ public class IndexPage {
 	    if (entry == null) {
 	    	entry = addEntry(key);
 	    }
-	    AccessLog.debug("add to="+entry.toString()+" key="+key[0].toString());
+	    AccessLog.log("add to="+entry.toString()+" key="+key[0].toString());
 	    if (!containsRecord(entry, target)) {
 	    	addRecord(entry, aps, target);
 	    	changed = true;
@@ -66,7 +66,7 @@ public class IndexPage {
 	
 	public void flush() throws InternalServerException, LostUpdateException {
 		if (changed) {
-			AccessLog.debug("Flushing index");
+			AccessLog.log("Flushing index");
 			encrypt();
 			model.update();			
 			changed = false;

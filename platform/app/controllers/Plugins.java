@@ -32,7 +32,7 @@ import play.libs.ws.WSResponse;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
-import utils.access.AccessLog;
+import utils.AccessLog;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.Rights;
@@ -373,7 +373,7 @@ public class Plugins extends APIController {
 		   .post("client_id="+app.consumerKey+"&grant_type=authorization_code&code="+json.get("code").asText()+"&redirect_uri="+URLEncoder.encode(authPage, "UTF-8"));
 		return promise.map(new Function<WSResponse, Result>() {
 			public Result apply(WSResponse response) throws AppException {
-				AccessLog.debug(response.getBody());
+				AccessLog.log(response.getBody());
 				JsonNode jsonNode = response.asJson();
 				if (jsonNode.has("access_token") && jsonNode.get("access_token").isTextual()) {
 					String accessToken = jsonNode.get("access_token").asText();
@@ -445,7 +445,7 @@ public class Plugins extends APIController {
 		   .post("client_id="+app.consumerKey+"&grant_type=refresh_token&refresh_token="+refreshToken);
 		return promise.map(new Function<WSResponse, Boolean>()  {
 			public Boolean apply(WSResponse response) throws AppException {
-				AccessLog.debug(response.getBody());
+				AccessLog.log(response.getBody());
 				JsonNode jsonNode = response.asJson();
 				if (jsonNode.has("access_token") && jsonNode.get("access_token").isTextual()) {
 					String accessToken = jsonNode.get("access_token").asText();

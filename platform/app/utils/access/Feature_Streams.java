@@ -12,6 +12,7 @@ import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
 
+import utils.AccessLog;
 import utils.DateTimeUtils;
 import utils.auth.EncryptionNotSupportedException;
 import utils.collections.CMaps;
@@ -57,11 +58,11 @@ public class Feature_Streams extends Feature {
 					DBRecord stream = new DBRecord();					
 					stream._id = record.stream;
 					if (!((APS) next).lookupSingle(stream, q)) lookup = false; 
-					if (!lookup) AccessLog.debug("failed to find stream "+record.stream.toString()+" in "+q.getApsId().toString());
+					if (!lookup) AccessLog.log("failed to find stream "+record.stream.toString()+" in "+q.getApsId().toString());
 				}
 				
 				boolean found = lookup && q.getCache().getAPS(record.stream).lookupSingle(record, q);
-				AccessLog.debug("looked for:"+record._id.toString()+" in "+record.stream.toString()+" found="+found+" key="+(record.key != null));                			
+				AccessLog.log("looked for:"+record._id.toString()+" in "+record.stream.toString()+" found="+found+" key="+(record.key != null));                			
 				if (found) {
 					result.add(record);
 					
@@ -238,14 +239,14 @@ public class Feature_Streams extends Feature {
 
 		boolean apsDirect = direct;
 		
-		AccessLog.logDB("provide key by "+apswrapper.getId().toString());
+		AccessLog.log("provide key by "+apswrapper.getId().toString());
 		
 		apswrapper.provideRecordKey(result);
 						
 		result.stream = null;			
 		result.direct = false;
 		
-		AccessLog.logDB("adding permission");
+		AccessLog.log("adding permission");
 		
 		apswrapper.addPermission(result, targetAPS != null && !targetAPS.equals(result.owner));
 								
@@ -254,12 +255,12 @@ public class Feature_Streams extends Feature {
 		RecordEncryption.encryptRecord(result);		
 	    DBRecord.add(result);	  
 
-	    AccessLog.logDB("create aps for stream");
+	    AccessLog.log("create aps for stream");
 	    
 		RecordManager.instance.createAPSForRecord(executingPerson, unecrypted.owner, unecrypted._id, unecrypted.key, apsDirect);
 				
 		if (targetAPS != null) {
-			AccessLog.logDB("add permission for owner");
+			AccessLog.log("add permission for owner");
 			unecrypted.isReadOnly = true;
 			RecordManager.instance.getCache(executingPerson).getAPS(result.owner, result.owner).addPermission(unecrypted, false);
 		}

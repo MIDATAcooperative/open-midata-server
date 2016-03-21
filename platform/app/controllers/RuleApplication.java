@@ -11,7 +11,7 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 
-import utils.access.AccessLog;
+import utils.AccessLog;
 import utils.collections.Sets;
 import utils.exceptions.InternalServerException;
 

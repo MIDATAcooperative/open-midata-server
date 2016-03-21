@@ -10,7 +10,8 @@ import play.libs.Json;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
-import utils.access.AccessLog;
+import utils.AccessLog;
+import utils.ErrorReporter;
 import utils.access.RecordManager;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
@@ -26,12 +27,11 @@ public class APICallAction extends Action<APICall> {
 	private static final String defaultHost = Play.application().configuration().getString("portal.originUrl");
     public F.Promise<Result> call(Http.Context ctx) throws Throwable { 
     	try {
-    		
-    	  //Thread.sleep(500);	
+    		    	
     	  JsonNode json = ctx.request().body().asJson();
     	  ctx.args.put("json", json);
     	  String host = ctx.request().getHeader("Origin");
-    	  AccessLog.debug(host);
+    	  //AccessLog.debug(host);
     	  /*if (host != null) {
 	  		  if (host.startsWith("https://localhost") || host.startsWith("http://localhost") || host.equals("https://demo.midata.coop") || host.equals("https://demo.midata.coop:9002")) {
 	  		    ctx.response().setHeader("Access-Control-Allow-Origin", host);
@@ -59,11 +59,14 @@ public class APICallAction extends Action<APICall> {
     	} catch (BadRequestException e5) {
     		return F.Promise.pure((Result) badRequest(e5.getMessage()));
     	} catch (AuthException e3) {
+    		ErrorReporter.report("Portal", ctx, e3);	
     		return F.Promise.pure((Result) forbidden(e3.getMessage()));    
-		} catch (InternalServerException e2) {			
+		} catch (Exception e2) {	
+			ErrorReporter.report("Portal", ctx, e2);					
 			return F.Promise.pure((Result) internalServerError(e2.getMessage()));			
 		} finally {
 			RecordManager.instance.clear();
+			AccessLog.newRequest();	
 		}
     }
 }

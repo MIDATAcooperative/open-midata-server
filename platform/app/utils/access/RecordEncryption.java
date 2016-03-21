@@ -16,6 +16,7 @@ import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
 
+import utils.AccessLog;
 import utils.DateTimeUtils;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
@@ -72,7 +73,7 @@ class RecordEncryption {
 			try {
 		       record.meta = (BasicBSONObject) EncryptionUtils.decryptBSON(encKey, record.encrypted);		    		    
 			} catch (InternalServerException e) {
-				AccessLog.debug("Error decrypting record: id="+record._id.toString());
+				AccessLog.log("Error decrypting record: id="+record._id.toString());
 				//throw e;
 			}
 		}
@@ -81,7 +82,7 @@ class RecordEncryption {
 			try {
 			record.data = EncryptionUtils.decryptBSON(encKey, record.encryptedData);
 			} catch (InternalServerException e) {
-				AccessLog.debug("Error decrypting data of record: id="+record._id.toString());
+				AccessLog.log("Error decrypting data of record: id="+record._id.toString());
 				//throw e;
 			}
 		}
@@ -92,7 +93,7 @@ class RecordEncryption {
 			   record.watches = new BasicBSONList();
 			   record.watches.putAll(r);
 			} catch (InternalServerException e) {
-				AccessLog.debug("Error decrypting watches of record: id="+record._id.toString());
+				AccessLog.log("Error decrypting watches of record: id="+record._id.toString());
 					//throw e;
 			}
 		}

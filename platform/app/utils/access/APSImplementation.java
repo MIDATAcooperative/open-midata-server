@@ -16,6 +16,7 @@ import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
 
+import utils.AccessLog;
 import utils.auth.EncryptionNotSupportedException;
 import utils.auth.KeyManager;
 import utils.db.LostUpdateException;
@@ -209,7 +210,7 @@ class APSImplementation extends APS {
 				if (withOwner)
 					record.owner = eaps.getOwner();
 			}
-			AccessLog.debug("direct query stream=" + eaps.getId()+" #size="+directResult.size());
+			AccessLog.log("direct query stream=" + eaps.getId()+" #size="+directResult.size());
 			result.addAll(directResult);
 			return result;
 		}

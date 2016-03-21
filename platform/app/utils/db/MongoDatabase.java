@@ -11,7 +11,7 @@ import models.Model;
 import org.bson.types.ObjectId;
 
 import play.Play;
-import utils.access.AccessLog;
+import utils.AccessLog;
 import utils.collections.CollectionConversion;
 
 import com.mongodb.BasicDBObject;

@@ -6,7 +6,7 @@ import java.io.InputStream;
 
 import org.bson.types.ObjectId;
 
-import utils.access.AccessLog;
+import utils.AccessLog;
 
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
@@ -24,7 +24,7 @@ public class FileStorage {
 	 * Stores an input file with GridFS, which automatically divides a file into chunks of 265 kB.
 	 */
 	public static void store(InputStream file, ObjectId id, String filename, String contentType) throws DatabaseException {
-		AccessLog.debug("store id = "+id+" filename="+filename);
+		AccessLog.log("store id = "+id+" filename="+filename);
 		GridFS fileSystem = new GridFS(DBLayer.getFSDB(), FILE_STORAGE);
 		GridFSInputFile inputFile;
 		

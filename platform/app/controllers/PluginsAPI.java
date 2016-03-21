@@ -39,8 +39,8 @@ import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
+import utils.AccessLog;
 import utils.DateTimeUtils;
-import utils.access.AccessLog;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.auth.RecordToken;
@@ -266,7 +266,7 @@ public class PluginsAPI extends Controller {
 		// get record data
 		Collection<Record> records = null;
 				
-		AccessLog.debug("NEW QUERY");
+		AccessLog.log("NEW QUERY");
 		
 		records = LargeRecord.getAll(inf.executorId, inf.targetAPS, properties, fields);		  
 						

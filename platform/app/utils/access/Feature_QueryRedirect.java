@@ -13,6 +13,7 @@ import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.ObjectId;
 
+import utils.AccessLog;
 import utils.collections.Sets;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
@@ -98,7 +99,7 @@ public class Feature_QueryRedirect extends Feature {
 	private void query(Query q, BasicBSONObject query, List<DBRecord> results) throws AppException {
 		Map<String, Object> combined = combineQuery(q.getProperties(), query);
 		if (combined == null) {
-			AccessLog.debug("combine empty:");			
+			AccessLog.log("combine empty:");			
 			return;
 		}
 		Object targetAPSId = query.get("aps");
@@ -117,7 +118,7 @@ public class Feature_QueryRedirect extends Feature {
 	private List<DBRecord> memoryQuery(Query q, BasicBSONObject query, List<DBRecord> results) throws AppException {
 		Map<String, Object> combined = combineQuery(q.getProperties(), query);
 		if (combined == null) {
-			AccessLog.debug("combine empty:");			
+			AccessLog.log("combine empty:");			
 			return Collections.emptyList();
 		}
 		
