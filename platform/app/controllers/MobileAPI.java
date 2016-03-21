@@ -31,6 +31,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.DateTimeUtils;
+import utils.PasswordHash;
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
 import utils.auth.ExecutionInfo;
@@ -187,7 +188,7 @@ public class MobileAPI extends Controller {
 			Member member = Member.getByEmail(username, Sets.create("visualizations","tokens"));
 			if (member == null) return badRequest("Unknown user or bad password");
 			
-			appInstance = MobileAppInstance.getByApplicationAndOwner(app._id, member._id, Sets.create("owner", "applicationId", "status"));
+			appInstance = MobileAppInstance.getByApplicationAndOwner(app._id, member._id, Sets.create("owner", "applicationId", "status", "passcode"));
 			
 			if (appInstance == null) {									
 				appInstance = new MobileAppInstance();
@@ -196,6 +197,7 @@ public class MobileAPI extends Controller {
 				appInstance.applicationId = app._id;		
 	            appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, phrase);
 	        	appInstance.owner = member._id;
+	        	appInstance.passcode = Member.encrypt(phrase);
 	   		    MobileAppInstance.add(appInstance);	
 	   		    
 	   		    KeyManager.instance.unlock(appInstance._id, phrase);	   		    
@@ -205,6 +207,7 @@ public class MobileAPI extends Controller {
 	   		    meta.put("phrase", phrase);
 	   		    
 			} else {
+				if (appInstance.passcode != null && !Member.authenticationValid(phrase, appInstance.passcode)) return badRequest("Wrong password.");
 				if (!verifyAppInstance(appInstance, member._id, app._id)) return badRequest("Access denied");
 				KeyManager.instance.unlock(appInstance._id, phrase);
 				meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
