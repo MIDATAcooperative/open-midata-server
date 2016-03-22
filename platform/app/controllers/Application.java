@@ -683,6 +683,7 @@ public class Application extends APIController {
 				// Market				
 				controllers.routes.javascript.Market.registerPlugin(),
 				controllers.routes.javascript.Market.updatePlugin(),
+				controllers.routes.javascript.Market.deletePlugin(),
 				controllers.routes.javascript.Market.updatePluginStatus(),
 				// Global search				
 				controllers.routes.javascript.GlobalSearch.search(),

@@ -35,6 +35,10 @@ angular.module('services')
     	return server.put(jsRoutes.controllers.Market.updatePluginStatus(plugin._id.$oid).url, JSON.stringify(plugin));
     };
     
+    service.deletePlugin = function(plugin) {
+    	return server.delete(jsRoutes.controllers.Market.deletePlugin(plugin._id.$oid).url);
+    };
+    
     service.registerPlugin = function(plugin) {
     	return server.post(jsRoutes.controllers.Market.registerPlugin().url, JSON.stringify(plugin));
     };

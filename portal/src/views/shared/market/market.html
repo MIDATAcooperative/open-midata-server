@@ -1,9 +1,8 @@
 
 	<div ng-app="market" ng-controller="MarketCtrl">
-		<div class="page-header">			
-			<h1>Market</h1>
-		</div>
-		
+		<div class="extraspace">
+	      <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span>Back</button>
+	    </div>	
 		<div class="alert alert-danger alert-dismissable" ng-show="error" ng-cloak>
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			<p>{{error}}</p>
@@ -18,16 +17,16 @@
 		<div class="row" ng-cloak>		 		   
 		    <div class="col-sm-2" ng-repeat="tag in tags"><a class="btn btn-default btn-block" href="javascript:" ng-click="setTag(tag);">{{ tag }}</a></div>		    		
 		</div>
-		</div>
 		
 		<div class="page-header">
 			<h1><small>Plugins</small></h1>
 		</div>
-		
+		</div>
+						
 		<div class="row" ng-cloak>
 			<div ng-class="{ 'col-md-6' : beta, 'col-md-12' : !beta }">
 			  <div class="panel panel-primary">
-				<div class="panel-heading">{{ tag || 'Spotlight' }}</div>
+				<div class="panel-heading">{{ tag || 'Available Plugins' }}</div>
 				<div class="panel-body">
 				<p ng-hide="visualizations.spotlighted.length">There are no spotlighted plugins yet.</p>
 				<div class="media" ng-repeat="visualization in visualizations.spotlighted | filter : hasTag">

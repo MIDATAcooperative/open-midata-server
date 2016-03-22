@@ -205,8 +205,8 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		Model.set(Plugin.class, collection, pluginId, field, value);
 	}
 	
-	public static Plugin getByFilenameAndSecret(String name, String secret, Set<String> fields) throws InternalServerException {
-		return Model.get(Plugin.class, collection, CMaps.map("filename", name).map("secret", secret), fields);
+	public static Plugin getByFilename(String name, Set<String> fields) throws InternalServerException {
+		return Model.get(Plugin.class, collection, CMaps.map("filename", name), fields);
 	}
 	
 	public void update() throws InternalServerException, LostUpdateException {

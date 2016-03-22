@@ -830,6 +830,7 @@ angular.module('portal')
 		  
 		  _.each(conf.add, function(add) {
 			 var tile = tiles[add];
+			 tile.name = add;
 			 if (tile.template != null) {
 				console.log("ADD VIEW:"+tile);
 			   $scope.layout[tile.position].push(views.def(tile));
@@ -872,7 +873,7 @@ angular.module('portal')
 		   } 
 		   
 		   if (view.actions.remove === "config") {
-			   portal.remove(views.context, view.id);
+			   portal.remove(views.context, view.name);
 		   }
 	   };
 	   

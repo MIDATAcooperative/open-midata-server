@@ -44,6 +44,7 @@ angular.module('views')
     	
     	var teaser = {
 				id : "vis"+vis.id,
+				name : vis.name,
 				template : "/views/shared/dashboardTiles/summary/summary.html",
 				title : vis.title,
 				position : "small",
@@ -53,6 +54,9 @@ angular.module('views')
 		        	link : lnk,
 		        	icon : "/images/icons/add.png",
 		        	button : "Info + Install"
+				},
+				actions : {
+					remove : "config"
 				}
 		};	
 		views.layout.small.push(views.def(teaser));

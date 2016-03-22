@@ -5,6 +5,7 @@ angular.module('portal')
 	$scope.error = null;
 	$scope.app = { version:0, tags:[] };
 	$scope.status = new status(true);
+	$scope.allowDelete = $state.current.allowDelete;
 	$scope.targetUserRoles = [
         { value : "ANY", label : "Any Role" },
 	    { value : "MEMBER", label : "MIDATA Members" },
@@ -61,6 +62,11 @@ angular.module('portal')
 	
 	$scope.doInstall = function() {
 		$state.go("^.visualization", { visualizationId : $scope.app._id.$oid, context : "sandbox" });
+	};
+	
+	$scope.doDelete = function() {
+		$scope.status.doAction('delete', apps.deletePlugin($scope.app))
+		.then(function(data) { $state.go("^.plugins"); });
 	};
 	
 	if ($state.params.appId != null) { $scope.loadApp($state.params.appId); }

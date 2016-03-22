@@ -14,6 +14,16 @@ angular.module('services')
 	
 	service.remove = function(context, view) {
 		console.log("remove context:"+context+" view="+view);
+		service.getConfig().then(function(res) {
+			var d =res.data.dashboards[context];
+			if (d != null && d.add != null) {
+			 var idx = d.add.indexOf(view);
+			 if (idx >= 0) {
+				 d.add.splice(idx, 1);
+				 service.setConfig(res.data);
+			 }
+			}
+		});
 	};
 	
 	return service;

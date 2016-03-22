@@ -184,5 +184,9 @@ public class Study extends Model {
     	this.history.add(newhistory);
     	Model.set(Study.class, collection, this._id, "history", this.history);
     }
+    
+    public static void delete(ObjectId studyId) throws InternalServerException {	
+		Model.delete(Study.class, collection, CMaps.map("_id", studyId));
+	}
 	
 }

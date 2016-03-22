@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('StudyDetailCtrl', ['$scope', '$state', 'server', 'views', 'session', 'users', 'studies', function($scope, $state, server, views, session, users, studies) {
+.controller('StudyDetailCtrl', ['$scope', '$state', 'server', 'views', 'session', 'users', 'studies', '$window', function($scope, $state, server, views, session, users, studies, $window) {
 	
 	$scope.studyid = $state.params.studyId;
 	$scope.study = {};
@@ -99,5 +99,9 @@ angular.module('portal')
 	};
 	
 	$scope.reload();
+	
+	$scope.goBack = function() {
+		$window.history.back();
+	};
 	
 }]);

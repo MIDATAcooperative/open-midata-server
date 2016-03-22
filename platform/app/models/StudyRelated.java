@@ -31,5 +31,12 @@ public class StudyRelated extends Consent {
 		return Model.get(StudyRelated.class, collection, CMaps.map("type", ConsentType.STUDYRELATED).map("group", group).map("study", studyId), fields);
 	}
 	
+	public static Set<StudyRelated> getByStudy(ObjectId studyId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(StudyRelated.class, collection, CMaps.map("type", ConsentType.STUDYRELATED).map("study", studyId), fields);
+	}
+	
+	public static void delete(ObjectId studyId, ObjectId partId) throws InternalServerException {	
+		Model.delete(StudyRelated.class, collection, CMaps.map("_id", partId).map("study", studyId));
+	}
 	
 }

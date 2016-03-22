@@ -217,5 +217,28 @@ public class Market extends APIController {
 		
 		return ok(JsonOutput.toJson(plugin, "Plugin", Plugin.ALL_DEVELOPER));
 	}
+	
+	/**
+	 * delete a plugin
+	 * @param pluginIdStr ID of plugin to delete
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public static Result deletePlugin(String pluginIdStr) throws JsonValidationException, InternalServerException {
+		// validate json
+		JsonNode json = request().body().asJson();
+			
+		// validate request		
+		ObjectId pluginId = new ObjectId(pluginIdStr);
+		
+		Plugin app = Plugin.getById(pluginId, Sets.create("filename", "status"));
+		if (app == null) return badRequest("Unknown plugin");
 
+		Plugin.delete(pluginId);
+		return ok();
+	}
 }

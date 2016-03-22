@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('VisualizationCtrl', ['$scope', 'apps', '$state', 'status', 'users', 'session', function($scope, apps, $state, status, users, session) {
+.controller('VisualizationCtrl', ['$scope', 'apps', '$state', 'status', 'users', 'session', '$window', function($scope, apps, $state, status, users, session, $window) {
 	// init
 	$scope.error = null;
 	$scope.success = false;
@@ -92,6 +92,10 @@ angular.module('portal')
 			session.login();
 			$scope.success = false;
 		});		
+	};
+	
+	$scope.goBack = function() {
+		$window.history.back();
 	};
 	
 }]);

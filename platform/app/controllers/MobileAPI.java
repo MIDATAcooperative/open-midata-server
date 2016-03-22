@@ -157,8 +157,9 @@ public class MobileAPI extends Controller {
 		String secret = JsonValidation.getString(json,"secret");
 				
 	    // Validate Mobile App	
-		Plugin app = Plugin.getByFilenameAndSecret(name, secret, Sets.create("type", "name"));
+		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "secret"));
 		if (app == null) return badRequest("Unknown app");
+		if (!app.secret.equals(secret)) return badRequest("Unknown app");
 		if (!app.type.equals("mobile")) return internalServerError("Wrong app type");
 	
 		ObjectId appInstanceId = null;

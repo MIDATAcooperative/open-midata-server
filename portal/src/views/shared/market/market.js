@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('MarketCtrl', ['$scope', 'server', '$state', 'ENV', function($scope, server, $state, ENV) {
+.controller('MarketCtrl', ['$scope', 'server', '$state', 'ENV', '$window', function($scope, server, $state, ENV, $window) {
 	
 	var pathsegment = window.location.pathname.split("/")[1];
 	// init
@@ -53,6 +53,10 @@ angular.module('portal')
 	$scope.hasTag = function(visualization) {
 		if ($scope.tag == null) return true;
 		return visualization.tags.indexOf($scope.tag) >= 0;
+	};
+	
+	$scope.goBack = function() {
+		$window.history.back();
 	};
 	
 }]);

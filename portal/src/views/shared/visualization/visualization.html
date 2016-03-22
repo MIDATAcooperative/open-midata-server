@@ -1,9 +1,11 @@
 
 	<div ng-controller="VisualizationCtrl">
+		<div class="extraspace">
+			  <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span>Back</button>
+		</div>
 		
-		
-		<div ng-cloak class="panel panel-primary">
-		  <div class="panel-heading">Market</div>
+		<div ng-cloak class="panel panel-primary">	
+		  <div class="panel-heading">Plugin Information</div>	
 		  <div class="panel-body">
 		    <loader busy="status.isBusy !== false">
 			<div class="alert alert-danger alert-dismissable" ng-show="error">
@@ -31,7 +33,7 @@
 			      <input class="form-control" type="text" ng-model="options.spaceName" />			
                 </p>			    			        
 			</div>
-			<div class="row">
+			<div class="row" ng-show="beta">
 			    <p class="col-xs-2">Location:</p>
 			    <p class="col-xs-10">			      
 			      <select class="form-control" ng-model="options.context" ng-options="context.value as context.label for context in contexts"/>			

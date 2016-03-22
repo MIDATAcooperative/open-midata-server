@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RecordCtrl', ['$scope', '$state', 'server', '$sce', 'records', 'status', 'ENV', function($scope, $state, server, $sce, records, status, ENV) {
+.controller('RecordCtrl', ['$scope', '$state', 'server', '$sce', 'records', 'status', 'ENV', '$window', function($scope, $state, server, $sce, records, status, ENV, $window) {
 	// init
 	$scope.error = null;
 	$scope.record = {};
@@ -46,6 +46,9 @@ angular.module('portal')
 			error(function(err) { $scope.error = "Failed to load app name: " + err; });
 	};
 		
+	$scope.goBack = function() {
+		$window.history.back();
+	};
 	
 	
 }]);

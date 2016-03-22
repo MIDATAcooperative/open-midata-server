@@ -753,4 +753,42 @@ public class Studies extends APIController {
         return ok();
 	}
 	
+	/**
+	 * delete a Study
+	 * @return 200 ok
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)
+	public static Result delete(String id) throws JsonValidationException, AppException {
+		ObjectId userId = new ObjectId(request().username());
+		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId studyid = new ObjectId(id);
+		
+		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
+		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
+		
+		if (study == null) return badRequest("Study does not belong to organization.");
+		//if (study.validationStatus != StudyValidationStatus.VALIDATED) return badRequest("Study must be validated before.");
+		//if (study.participantSearchStatus != ParticipantSearchStatus.CLOSED) return badRequest("Participant search must be closed before.");
+		//if (study.executionStatus != StudyExecutionStatus.PRE) return badRequest("Wrong study execution status.");
+	
+		Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(study._id, Sets.create("_id", "owner"));
+		for (StudyParticipation part : participants) {
+			RecordManager.instance.deleteAPS(part._id, part.owner);
+			StudyParticipation.delete(study._id, part._id);
+		}
+		
+		Set<StudyRelated> related = StudyRelated.getByStudy(studyid, Sets.create("authorized"));
+		for (StudyRelated studyRelated : related) {
+			RecordManager.instance.deleteAPS(studyRelated._id, study._id);
+			StudyRelated.delete(study._id, studyRelated._id);
+		}
+		
+		Study.delete(study._id);
+	
+		return ok();
+	}
 }

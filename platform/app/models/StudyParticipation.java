@@ -1,6 +1,7 @@
 package models;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import models.enums.ConsentType;
@@ -11,9 +12,14 @@ import models.enums.ParticipationStatus;
 import org.bson.types.ObjectId;
 
 import utils.collections.CMaps;
+import utils.collections.ChainedMap;
+import utils.collections.ChainedSet;
 import utils.collections.Sets;
+import utils.db.DatabaseException;
 import utils.db.NotMaterialized;
+import utils.db.OrderOperations;
 import utils.exceptions.InternalServerException;
+import utils.search.Search;
 
 /**
  * A consent that shares data from a MIDATA member with a study.
@@ -79,4 +85,9 @@ public class StudyParticipation extends Consent {
     	this.history.add(newhistory);
     	Model.set(StudyParticipation.class, collection, this._id, "history", this.history);
     }
+    
+    public static void delete(ObjectId studyId, ObjectId partId) throws InternalServerException {	
+		Model.delete(StudyParticipation.class, collection, CMaps.map("_id", partId).map("study", studyId));
+	}
+
 }
