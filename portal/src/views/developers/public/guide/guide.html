@@ -197,7 +197,12 @@
      "format" : a string describing the technical data format,
      "content" : a string describing the data content
      "data" : JSON string containing the record itself 
-}</pre>						
+}</pre>		
+                        <p>If the operation is successful the API call will return with status code <code>200</code> and a JSON body like this:</p>
+<pre>{
+     "_id": the id of the new record
+     "created": the creation timestamp of the new record (in milliseconds after 01.Jan.1970 UTC)
+}</pre>                         				
 
 						<h3>Updating an existing record</h3>
 						<p>In order to update an existing record call this endpoint:</p>

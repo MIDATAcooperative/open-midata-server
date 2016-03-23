@@ -144,6 +144,7 @@ angular.module('portal')
 	   	newgroup.children = [];
 	   	newgroup.records = [];
 	   	newgroup.infoCount = 0;
+	   	newgroup.countShared = 0;
 	   	
 	   	if (newgroup.parent == null) {
 	   		newgroup.fullLabel = newgroup.label;
@@ -179,19 +180,16 @@ angular.module('portal')
 	};
 		
 	
-	var countShared = function(group, sh) {
-		var s = 0;	
-		//var alls = $scope.isSharedGroup(group);
-		
-		if (!group.loaded) {
-		  if ($scope.isSharedGroup(group) && group.infoCount) s += group.infoCount;	
-		} else {
-		  angular.forEach(group.records, function(r) { if ($scope.isShared(r)) s++; });
-		}
-		angular.forEach(group.children, function(g) { s+= countShared(g); });
-		
-		group.countShared = s;
-		return s;
+	var countShared = function(group) {
+		var s = 0;			
+		angular.forEach(group.children, function(g) { s+= countShared(g); });		
+		group.countShared += s;
+		return group.countShared;
+	};
+	
+	var resetShared = function(group) {		
+		angular.forEach(group.children, function(g) { resetShared(g); });		
+		group.countShared = 0;		
 	};
 	
 	$scope.prepareRecords = function() {
@@ -292,7 +290,11 @@ angular.module('portal')
 		    	if ($scope.sharing.query["group-exclude"] && !angular.isArray($scope.sharing.query["group-exclude"])) { $scope.sharing.query["group-exclude"] = [ $scope.sharing.query["group-exclude"] ]; }
 		    	if ($scope.sharing.query.group && !angular.isArray($scope.sharing.query.group)) { $scope.sharing.query.group = [ $scope.sharing.query.group ]; }
 		    }
-		    angular.forEach($scope.sharing.records, function(r) { $scope.sharing.ids[r] = true; });
+		    angular.forEach($scope.sharing.records, function(r) { $scope.sharing.ids[r] = true; });		 
+		    angular.forEach($scope.tree, function(t) { resetShared(t); });
+		    angular.forEach($scope.sharing.summary, function(s) {
+		    	getOrCreateGroup(s.groups[0]).countShared = s.count;
+		    });
 		    angular.forEach($scope.tree, function(t) { countShared(t); });
 		});
 	};

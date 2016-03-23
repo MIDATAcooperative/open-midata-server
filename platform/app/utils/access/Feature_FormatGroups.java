@@ -35,12 +35,14 @@ public class Feature_FormatGroups extends Feature {
 
 	private void addChildren(String group, Set<String> groups, Set<String> exclude) throws InternalServerException {		
 			FormatGroup grp = FormatGroup.getByName(group);
-		    for (FormatGroup child : grp.children) {
-		    	if (!groups.contains(child.name) && !exclude.contains(child.name)) {
-		    		groups.add(child.name);
-		    		addChildren(child.name, groups, exclude);
-		    	}
-		    }		
+			if (grp != null) {
+			    for (FormatGroup child : grp.children) {
+			    	if (!groups.contains(child.name) && !exclude.contains(child.name)) {
+			    		groups.add(child.name);
+			    		addChildren(child.name, groups, exclude);
+			    	}
+			    }		
+			}
 	}
 	
 	private Set<String> prepareFilter(Query q) throws AppException {		

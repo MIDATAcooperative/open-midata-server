@@ -334,15 +334,9 @@ public class MobileAPI extends Controller {
 				
 		targetUser = Member.getById(appInstance.owner, Sets.create("myaps", "tokens"));
 		if (targetUser == null) return badRequest("Invalid authToken.");
-		//owner = targetUser;
-		
-							
-		// save new record with additional metadata
-		if (!json.get("data").isTextual() || !json.get("name").isTextual() || !json.get("description").isTextual()) {
-			return badRequest("At least one request parameter is of the wrong type.");
-		}
+		//owner = targetUser;											
 				
-		String data = JsonValidation.getString(json, "data");
+		String data = JsonValidation.getJsonString(json, "data");
 		String name = JsonValidation.getString(json, "name");
 		String description = JsonValidation.getString(json, "description");
 		String format = JsonValidation.getString(json, "format");
@@ -388,7 +382,9 @@ public class MobileAPI extends Controller {
 		}
 		*/
 				
-		return ok();
+		ObjectNode obj = Json.newObject();		
+		obj.put("_id", record._id.toString());		
+		return ok(JsonOutput.toJson(record, "Record", Sets.create("_id", "created", "version")));
 	}
 	
 	/**

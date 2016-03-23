@@ -107,10 +107,12 @@ class QueryEngine {
 		AccessLog.logBegin("begin infoQuery aps="+aps+" cached="+cached);
 		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
 		
+		boolean doNotCache = q.getCache().getAPS(aps).getMeta("_exclude") != null;
+		
 		if (cached) {
 			APS myaps = q.getCache().getAPS(aps);
 			BasicBSONObject obj = myaps.getMeta("_info");
-			if (obj != null && obj.containsField("formats")) { // check for formats to remove date from older software version
+			if (obj != null) { 
 				
 				RecordsInfo inf = new RecordsInfo();
 				inf.count = obj.getInt("count");				
@@ -148,7 +150,7 @@ class QueryEngine {
 			if (record.isStream) {
 				q.getCache().getAPS(record._id, record.key, record.owner); // Called to make sure stream is accessible
 				
-				Collection<RecordsInfo> streaminfo = infoQuery(new Query(q, CMaps.map("stream", record._id)), record._id, true, aggrType, record.owner);
+				Collection<RecordsInfo> streaminfo = infoQuery(new Query(q, CMaps.map("stream", record._id)), record._id, !doNotCache, aggrType, record.owner);
 				
 				for (RecordsInfo inf : streaminfo) {
 					if (record.owner != null) inf.owners.add(record.owner.toString());
