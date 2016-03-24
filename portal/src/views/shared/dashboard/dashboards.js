@@ -15,16 +15,11 @@ angular.module('portal')
 	   id :  "543fd403e4b0722020c54b10", 
 	   title : "Jawbone Meals", 
 	   teaser : "See your nutritional habits in a nutshell."
-   },
-   'credentials_store' : { 
-	   id :  "54413bd1e4b009ab2b06716e", 
-	   title : "Credentials Manager", 
-	   teaser : "Store your username/password combinations, encrypted with your passphrase."
-   },
+   },  
    'credentials' : { 
 	   id :  "54450c48e4b0a1a96b5ff54c", 
 	   title : "Credentials Manager",
-	   teaser : "Look up the credentials you stored and encrypted with the Credentials Manager app."
+	   teaser : "Manage your credentials for other sites."
    },
    'energy-meter' : { 
 	   id :  "54467fe0e4b066dcca1a3dc5", 
@@ -87,6 +82,11 @@ angular.module('portal')
 	   id :  "55af6055e4b044f0420c9bf2", 
 	   title : "Surveys", 
 	   teaser : "Allows participation in surveys."
+   },
+   'calendar' : {
+	   id :  "56a8897ee4b0d31bf38cacdf", 
+	   title : "Calendar", 
+	   teaser : "Display your data in a calendar."
    }
 })
 .constant("dashboards",

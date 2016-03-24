@@ -64,20 +64,25 @@ angular.module('views')
 		var q = $scope.config.questions;
 		
 		add('charts','me', true);
+		add('calendar','me', true);
 		add('entry','me', q.qself.weight || q.qself.sleep);
 		
-		add('jawboneupimport','me', q.devices.jawbone);
-		add('clock','me', q.devices.jawbone && (q.qself.steps || q.qself.sleep));
-		add('meal','me', q.devices.jawbone && q.qself.nutrition);
-		//add('credentials_store','me', true);
-		//add('credentials','me', true);
-		add('energy-meter','me', q.devices.jawbone && (q.qself.steps || q.qself.nutrition));
+		// add('jawboneupimport','me', q.devices.jawbone);
+		// add('clock','me', q.devices.jawbone && (q.qself.steps || q.qself.sleep));
+		// add('meal','me', q.devices.jawbone && q.qself.nutrition);
+			
+		add('credentials','me', q.general.protocol);
+		// add('energy-meter','me', q.devices.jawbone && (q.qself.steps || q.qself.nutrition));
 		add('fitbit','me', q.devices.fitbit);
-		add('water-meter','me', q.devices.fitbit && q.qself.water);
-		add('weight-watcher','me', q.devices.fitbit && q.qself.weight);
+		
+		//add('water-meter','me', q.devices.fitbit && q.qself.water);
+		//add('weight-watcher','me', q.devices.fitbit && q.qself.weight);
+		
 		add('fileupload','mydata', q.general.manage || q.general.protocol);
-		add('trainingeditor','me', q.general.planning);
-		add('trainingdiary','me', q.general.planning);
+		
+		//add('trainingeditor','me', q.general.planning);
+		//add('trainingdiary','me', q.general.planning);
+		
 		//add('cdaimport','me', true);
 		//add('cdaviewer','me', q.general.manage);
 		

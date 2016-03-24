@@ -154,6 +154,13 @@ angular.module('portal')
 		$state.go('^.studydetails', { studyId : $scope.consent._id.$oid });		
 	};
 	
+	$scope.showPasscode = function() {
+		$scope.status.doAction('passcode', circles.listConsents({ "_id" : { "$oid" : $state.params.consentId } }, ["type", "passcode" ]))
+		.then(function(data) {
+			$scope.consent.passcode = data.data[0].passcode;
+		});
+	};
+	
 	$scope.init();
 }]);
 	

@@ -20,10 +20,17 @@
       <p class="form-control-static" ng-show="consent.status == 'EXPIRED'">This consent is expired. Data is no longer shared.</p>
       <p class="form-control-static" ng-show="consent.status == 'UNCONFIRMED'">This consent needs confirmation by its owner.</p>    
       <p class="form-control-static" ng-show="consent.status == 'REJECTED'">This consent has been rejected by its owner.</p>
-    </formrow>      
-    <formrow id="passcode" label="Passcode?" ng-show="consent.passcode">
-      <p class="form-control-static">{{ consent.passcode }}</p>
-    </formrow>    
+    </formrow> 
+    
+     <formrow myid="passcode" label="Password" ng-show="consent.type == 'EXTERNALSERVICE'">
+       <p class="form-control-static" ng-hide="consent.passcode">
+         A password has been set if you need to relogin with the app.
+         <button type="button" class="btn btn-default btn-sm" ng-disabled="status.action == 'passcode'" ng-click="showPasscode()">Show password</button>
+       </p>
+       <p class="form-control-static" ng-show="consent.passcode">
+         Use your email address and this password for login: <strong>{{ consent.passcode }}</strong>
+       </p>
+    </formrow>            
     
    <formrow id="share" label="With which persons(s) do you want to share data?" ng-show="consent.type != 'EXTERNALSERVICE'">
 		<div class="well well-sm" ng-repeat="person in authpersons">

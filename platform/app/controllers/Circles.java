@@ -21,6 +21,7 @@ import models.enums.AggregationType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 
+import org.bson.BSONObject;
 import org.bson.types.ObjectId;
 
 import play.mvc.BodyParser;
@@ -117,6 +118,19 @@ public class Circles extends APIController {
 			for (Consent consent : consents) {
 				Collection<RecordsInfo> summary = RecordManager.instance.info(owner, consent._id, all, AggregationType.ALL);
 				if (summary.isEmpty()) consent.records = 0; else consent.records = summary.iterator().next().count;
+			}
+		}
+		
+		if (fields.contains("passcode") && !properties.containsKey("member")) {
+			for (Consent consent : consents) {
+				if (consent.type == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
+				   BSONObject obj = RecordManager.instance.getMeta(owner, consent._id, "_app");
+				   if (obj != null) consent.passcode = obj.get("phrase").toString();
+				}
+				if (consent.type == null || consent.type.equals(ConsentType.HEALTHCARE)) {
+				   BSONObject obj = RecordManager.instance.getMeta(owner, consent._id, "_config");
+				   if (obj != null) consent.passcode = obj.get("passcode").toString();
+				}
 			}
 		}
 		

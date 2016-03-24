@@ -69,4 +69,8 @@ angular.module('calendarApp')
       $scope.init();
     
       
-    }]);
+    }])
+     .controller('PreviewCtrl', ['$scope', 
+    function ($scope) {;
+      $scope.today = new Date();
+     }]);

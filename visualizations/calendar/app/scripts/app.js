@@ -21,7 +21,7 @@ angular.module('calendarApp', ['ngRoute', 'midata', 'ui.bootstrap', 'ui.calendar
     })
     .when('/preview/:authToken', {
             templateUrl: 'views/preview.html',
-            controller: 'MainCtrl'
+            controller: 'PreviewCtrl'
     })
     .otherwise({
       redirectTo: '/'

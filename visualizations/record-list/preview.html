@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Record List</title>
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+		<link rel="stylesheet" href="/shared/css/app.css">
+		<!-- jQuery needed for Bootstrap's JavaScript plugins -->
+		<script type="text/javascript" src="//code.jquery.com/jquery-2.0.2.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
+		<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js" defer></script>
+		<script type="text/javascript" src="/shared/js/midata.js" defer></script>
+		<script type="text/javascript" src="js/app.js" defer></script>
+	</head>
+	<body>
+		<div class="container" style="max-height:250px;overflow:auto"ng-app="recordList" ng-controller="RecordListPreviewCtrl" ng-cloak>
+			 <div class="text-center lead">{{ summary.count }} Entries</div> 
+             <div ng-show="summary.newest" class="text-center">Last entry at <b>{{ summary.newest | date }}</b>.</div>
+             <hr/>		
+             <div ng-show="summary.count === 0">
+               <p><strong>Start taking notes now!</strong></p>
+               <p>Use this as a diary or to document whatever you want.</p>
+               <p>Your notes may also be viewed using the calendar.</p> 
+             </div>
+			 <strong>{{record.name}}</strong>							
+			 <div style="white-space: pre-line;">{{record.data.valueString}}</div>
+						
+		</div>
+	</body>
+</html>
