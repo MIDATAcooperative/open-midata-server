@@ -47,7 +47,7 @@ angular.module('calendarApp')
 		  };
 		  
 		  if (criteria.content.length > 0) {
-		  midataServer.getRecords(authToken, { "format" : ["fhir/Observation/Quantity", "fhir/Observation/String"], content: criteria.content, "index" : { "effectiveDateTime" : { "$gt" : new Date(start.calendar()), "$lt" : new Date(end.calendar()) } } }, ["created", "data", "content" ])
+		  midataServer.getRecords(authToken, { "format" : ["fhir/Observation"], content: criteria.content, "index" : { "effectiveDateTime" : { "$gt" : new Date(start.calendar()), "$lt" : new Date(end.calendar()) } } }, ["created", "data", "content" ])
 	     	 .then(function(results) {
 	     		var entries = [];
 	     		var idx = 0;

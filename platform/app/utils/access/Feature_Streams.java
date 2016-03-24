@@ -39,7 +39,7 @@ public class Feature_Streams extends Feature {
 		
 	}
 	
-	public final static Set<String> streamFields = Sets.create("content", "format");
+	public final static Set<String> streamFields = Sets.create("content", "format", "subformat");
 	
 	
 	@Override

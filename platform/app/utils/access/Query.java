@@ -251,6 +251,7 @@ public class Query {
          mayNeedFromDB = new HashSet<String>();
          if (fields.contains("format") || properties.containsKey("format") || properties.containsKey("group")) mayNeedFromDB.add("format");
          if (fields.contains("content") || properties.containsKey("content") || properties.containsKey("group")) mayNeedFromDB.add("content");
+         if (fields.contains("subformat") || properties.containsKey("subformat") || properties.containsKey("group")) mayNeedFromDB.add("subformat");
          if (fields.contains("created")) mayNeedFromDB.add("created");
          
          if (restrictedOnTime) fieldsFromDB.add("time");

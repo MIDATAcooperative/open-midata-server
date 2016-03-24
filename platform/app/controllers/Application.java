@@ -379,9 +379,9 @@ public class Application extends APIController {
 	 * Returns correct response to login request
 	 * @param user the user to be logged in. May have any role.
 	 * @return
-	 * @throws BadRequestException
+	 * @throws AppException
 	 */
-	public static Result loginHelper(User user) throws BadRequestException, InternalServerException {
+	public static Result loginHelper(User user) throws AppException {
 		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.userblocked", "User is not allowed to log in.");
 		
 		session().clear();						

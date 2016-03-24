@@ -467,7 +467,7 @@ angular.module('fhir')
 	    	   console.log(res);
 	    	 if (!res.$$fhirUnchanged) {
 	    		 if (res.$$fhirIsNew) {
-	    		    midataServer.createRecord(fhirModule.authToken, fhirModule.makeLabel(res.resourceType), "fhir resource", res.resourceType, "fhir/"+res.resourceType, res, res.id);
+	    		    midataServer.createRecord(fhirModule.authToken, { "name" : fhirModule.makeLabel(res.resourceType), "content" : res.resourceType, "format" : "fhir/"+res.resourceType }, res, res.id);
 	    		 } else {
       			    midataServer.updateRecord(fhirModule.authToken, res.id, res.meta.versionId, res);
 	    		 }

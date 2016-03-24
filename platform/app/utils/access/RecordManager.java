@@ -64,12 +64,12 @@ public class RecordManager {
 	
 	public final static Set<String> INTERNALIDONLY = Sets.create("_id");
 	public final static Set<String> COMPLETE_META = Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format", "content", "description", "isStream", "lastUpdated");
+			"app", "creator", "created", "name", "format", "subformat", "content", "description", "isStream", "lastUpdated");
 	public final static Set<String> COMPLETE_DATA = Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format", "content", "description", "isStream", "lastUpdated",
+			"app", "creator", "created", "name", "format", "subformat", "content", "description", "isStream", "lastUpdated",
 			"data", "group");
 	public final static Set<String> COMPLETE_DATA_WITH_WATCHES = Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format", "content", "description", "isStream", "lastUpdated",
+			"app", "creator", "created", "name", "format", "subformat", "content", "description", "isStream", "lastUpdated",
 			"data", "group", "watches");
 	//public final static String STREAM_TYPE = "Stream";
 	public final static Map<String, Object> STREAMS_ONLY = CMaps.map("streams", "only").map("flat", "true");
@@ -239,7 +239,7 @@ public class RecordManager {
 		APS apswrapper = getCache(who).getAPS(toAPS);
 		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(who), fromAPS,
 				records != null ? CMaps.map("_id", records) : RecordManager.FULLAPS_FLAT,
-				Sets.create("_id", "key", "owner", "format", "content", "created", "name", "isStream"));
+				Sets.create("_id", "key", "owner", "format", "subformat", "content", "created", "name", "isStream"));
 		
 		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(getCache(who), toAPS, recordEntries);
 		AccessLog.log("to-share: "+recordEntries.size()+" already="+alreadyContained.size());
@@ -303,7 +303,7 @@ public class RecordManager {
         AccessLog.logBegin("begin unshare who="+who.toString()+" aps="+apsId.toString()+" #recs="+records.size());
 		APS apswrapper = getCache(who).getAPS(apsId);
 		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(who), apsId,
-				CMaps.map("_id", records), Sets.create("_id", "format", "content", "watches"));		
+				CMaps.map("_id", records), Sets.create("_id", "format", "subformat", "content", "watches"));		
 		apswrapper.removePermission(recordEntries);
 		for (DBRecord rec : recordEntries) RecordLifecycle.removeWatchingAps(rec, apsId);
 		AccessLog.logEnd("end unshare");
@@ -657,6 +657,7 @@ public class RecordManager {
 		if (properties.containsKey("format/*")) nproperties.put("format/*", properties.get("format/*"));
 		if (properties.containsKey("content")) nproperties.put("content", properties.get("content"));
 		if (properties.containsKey("content/*")) nproperties.put("content/*", properties.get("content/*"));
+		if (properties.containsKey("subformat")) nproperties.put("subformat", properties.get("subformat"));
 		if (properties.containsKey("group")) nproperties.put("group", properties.get("group"));
 		return QueryEngine.info(getCache(who), aps, nproperties, aggrType);
 	}

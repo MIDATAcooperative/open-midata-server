@@ -390,6 +390,7 @@ public class PluginsAPI extends Controller {
 		}
 		
 		record.format = format;
+		record.subformat = JsonValidation.getStringOrNull(json, "subformat");
 		record.content = content;
 					
 		try {
@@ -647,7 +648,9 @@ public class PluginsAPI extends Controller {
 			record.description = metaData.containsKey("description") ? metaData.get("description")[0] : null;
 			String[] formats = metaData.get("format");
 			record.format = (formats != null && formats.length == 1) ? formats[0] : (contentType != null) ? contentType : "application/octet-stream";
-			String[] contents = metaData.get("contents");
+			String[] contents = metaData.get("content");
+			String[] subformats = metaData.get("subformat");
+			record.subformat = (subformats != null && subformats.length == 1) ? subformats[0] : null;
 			record.content =  (contents != null && contents.length == 1) ? contents[0] : "other";
 						
 			record.data = new BasicDBObject(CMaps

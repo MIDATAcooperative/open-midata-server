@@ -72,7 +72,7 @@ public class ObservationResourceProvider extends ResourceProvider implements IRe
     	    	
     	
     	AccessLog.logQuery(criteria, Sets.create("data"));
-    	List<Record> result = RecordManager.instance.list(info.executorId, info.targetAPS, CMaps.map("format","fhir").map("content", "Observation").map("data", criteria), Sets.create("data"));
+    	List<Record> result = RecordManager.instance.list(info.executorId, info.targetAPS, CMaps.map("format","fhir/Observation").map("content", "Observation").map("data", criteria), Sets.create("data"));
     	List<Observation> patients = new ArrayList<Observation>();
     	IParser parser = ctx().newJsonParser();    	
     	for (Record rec : result) {

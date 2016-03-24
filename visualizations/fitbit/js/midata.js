@@ -6,19 +6,15 @@ midata.factory('midataServer', [ '$http', '$q', function($http, $q) {
 	var actionDef = $q.defer();
 	var actionChain = actionDef.promise;
 	actionDef.resolve();
+	var baseurl =  window.location.hostname ? ("https://"+window.location.hostname+":9000") : "http://localhost:9001";
 	
-	var baseurl = window.location.hostname ? ("https://"+window.location.hostname+":9000") : "http://localhost:9001";
-	
-	service.createRecord = function(authToken, name, description, content, format, data, id) {
+	service.createRecord = function(authToken, meta, data, id) {
 		// construct json
 		var data = {
 			"authToken": authToken,
-			"data": angular.toJson(data),
-			"name": name,
-			"content" : content,
-			"format" : format,
-			"description": (description || "")
+			"data": angular.toJson(data)
 		};
+		angular.forEach(meta, function(v,k) { data[k] = v; });
 		if (id) data._id = id;
 		
 		// submit to server
@@ -93,7 +89,8 @@ midata.factory('midataServer', [ '$http', '$q', function($http, $q) {
 	};
 	
 	service.oauth2Request = function(authToken, url) {	
-		var data = { "authToken": authToken, "url": url };			
+		var data = { "authToken": authToken, "url": url };		
+	
 	    return $http.post(baseurl + "/v1/plugin_api/request/oauth2", data);
 	};
 	

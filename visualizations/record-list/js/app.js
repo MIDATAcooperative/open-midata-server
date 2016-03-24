@@ -17,7 +17,7 @@ recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'mida
 		// get the data for the records in this space
 		$scope.getRecords = function() {
 	
-			midataServer.getRecords(authToken, { "format" : "fhir/Observation/String", content : "diary" }, ["name", "data"])
+			midataServer.getRecords(authToken, { "format" : "fhir/Observation", subformat : "String", content : "diary" }, ["name", "data"])
 			.then(function(results) {
 				    var records = results.data;
 					for (var i = 0; i < records.length; i++) {
@@ -77,7 +77,7 @@ recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'mida
 			};
 						
 			// submit to server
-			midataServer.createRecord(authToken, $scope.title, $scope.content, "diary", "fhir/Observation/String", record)
+			midataServer.createRecord(authToken, { "name" : $scope.title, "content" : "diary", "subformat" : "String", "format" : "fhir/Observation" }, record)
 			.then(function() {
 					$scope.success = "Record created successfully.";
 					$scope.records.push({ name : $scope.title, data : record });
@@ -124,13 +124,13 @@ recordList.controller('RecordListPreviewCtrl', ['$scope', '$filter', '$location'
  				
  		// get the data for the records in this space
  		$scope.getInfos = function() {
- 	        midataServer.getSummary(authToken, "ALL", { "format" : "fhir/Observation/String", content : "diary" })
+ 	        midataServer.getSummary(authToken, "ALL", { "format" : "fhir/Observation", subformat : "String", content : "diary" })
  	        .then(function(result) {
  	        	if (result.data && result.data.length > 0) {
  	        	   $scope.summary = result.data[0]; 	
  	        	   console.log($scope.summary);
  	        	   var newestId = $scope.summary.newestRecord.$oid;
- 	        	   midataServer.getRecords(authToken, { "_id" : newestId, "format" : "fhir/Observation/String", content : "diary" }, ["name", "data"])
+ 	        	   midataServer.getRecords(authToken, { "_id" : newestId, "format" : "fhir/Observation", content : "diary" }, ["name", "data"])
  	        	   .then(function(result2) {
  	        		   $scope.record = result2.data[0];
  	        	   });

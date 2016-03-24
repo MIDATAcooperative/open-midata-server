@@ -23,7 +23,7 @@ planCreator.controller('TrainingCtrl', ['$scope', '$http', '$location', '$filter
 				if (record.changed) {
 					$scope.saving++;
 					record.changed = false;
-					midataServer.createRecord($scope.authToken, record.name, "Created using plan "+plan.name, record.content, "measurements", record.data)
+					midataServer.createRecord($scope.authToken, { "name" : record.name, description : "Created using plan "+plan.name, content : record.content, format : "measurements" }, record.data)
 					.then(function() { $scope.saving--; });		
 				}
 			});

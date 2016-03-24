@@ -185,7 +185,7 @@ surveys.controller('SurveyCtrl', ['$scope', '$http', '$location', '$filter', 'mi
 		};
 		
 		$scope.saveResults = function(survey, result) {
-			return midataServer.createRecord($scope.authToken, survey.title, "Answers to survey", "survey", "survey/answers", result);
+			return midataServer.createRecord($scope.authToken, { name : survey.title, description : "Answers to survey", content : "survey", format : "survey/answers" }, result);
 		};
 		
 		$scope.isChecked = function(vals, val) {
@@ -304,7 +304,7 @@ surveys.controller('SurveyCtrl', ['$scope', '$http', '$location', '$filter', 'mi
 				   });
 			   }
 			});
-			midataServer.createRecord($scope.authToken, $scope.activeSurvey.title, "Survey", "templates/survey", "survey/questions", $scope.activeSurvey)
+			midataServer.createRecord($scope.authToken, { name : $scope.activeSurvey.title, content: "templates/survey", format : "survey/questions" }, $scope.activeSurvey)
 			.then(function() { $scope.cancel; });
 			
 			$scope.cancel();

@@ -355,6 +355,7 @@ public class MobileAPI extends Controller {
 		}
 		
 		record.format = format;
+		record.subformat = JsonValidation.getStringOrNull(json, "subformat");
 		record.content = content;				
 		
 		try {

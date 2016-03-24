@@ -26,7 +26,8 @@ public class RecordConversion {
 		record.description = (String) dbrecord.meta.get("description");
 		record.version = (String) dbrecord.meta.get("version");
 		if (record.version == null) record.version = VersionedDBRecord.INITIAL_VERSION;
-		record.format = (String) dbrecord.meta.get("format");						
+		record.format = (String) dbrecord.meta.get("format");		
+		record.subformat = (String) dbrecord.meta.get("subformat");
 		record.content = (String) dbrecord.meta.get("content");
 		record.owner = dbrecord.owner;
 		record.ownerName = (String) dbrecord.meta.get("ownerName");
@@ -64,6 +65,7 @@ public class RecordConversion {
 		meta.put("version", record.version);
 		meta.put("tags", record.tags);
 		meta.put("format", record.format);
+		if (record.subformat != null) meta.put("subformat", record.subformat);
 		meta.put("content", record.content);
 		dbrecord.data = record.data;
 		return dbrecord;

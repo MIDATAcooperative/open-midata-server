@@ -57,7 +57,7 @@ planCreator.controller('PlanEditorCtrl', ['$scope', '$http', '$location', '$filt
 		
 		$scope.save = function(plan) {	
 			$scope.saving++;
-			midataServer.createRecord($scope.authToken, plan.name, plan.description, "calendar/trainingplan", "training-app", plan.data)
+			midataServer.createRecord($scope.authToken, { name : plan.name, description : plan.description, content : "calendar/trainingplan", format : "training-app" }, plan.data)
 			.then(function() { $scope.saving--; });
 		};
 		

@@ -139,7 +139,7 @@ public class Studies extends APIController {
 		 if (study == null) return badRequest("Unknown Study");
 
 		 Set<String> fields = Sets.create("id", "ownerName",
-					"app", "creator", "created", "name", "format", "content", "description", "data", "group"); 
+					"app", "creator", "created", "name", "format", "subformat", "content", "description", "data", "group"); 
 		 List<Record> allRecords = RecordManager.instance.list(executorId, executorId, CMaps.map("study",  study._id), fields);
 		 		
 		 

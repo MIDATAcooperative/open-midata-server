@@ -181,7 +181,7 @@ credentials.controller('CredentialsCtrl', ['$scope', '$http', '$location', 'mida
 				});
 			}
 
-			midataServer.createRecord(authToken, $scope.title, $scope.title + " created with the credentials app on " + formattedDate, "account/credentials", "credentials-manager", record)
+			midataServer.createRecord(authToken, { "name" : $scope.title, "description" : $scope.title + " created with the credentials app on " + formattedDate, "content" : "account/credentials", "format" : "credentials-manager" }, record)
 			.then(function() {					
 					$scope.title = null;
 					$scope.description = null;

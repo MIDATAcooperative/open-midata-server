@@ -6,21 +6,19 @@ midata.factory('midataServer', [ '$http', '$q', function($http, $q) {
 	var actionDef = $q.defer();
 	var actionChain = actionDef.promise;
 	actionDef.resolve();
+	var baseurl =  window.location.hostname ? ("https://"+window.location.hostname+":9000") : "http://localhost:9001";
 	
-	service.createRecord = function(authToken, name, description, content, format, data, id) {
+	service.createRecord = function(authToken, meta, data, id) {
 		// construct json
 		var data = {
 			"authToken": authToken,
-			"data": angular.toJson(data),
-			"name": name,
-			"content" : content,
-			"format" : format,
-			"description": (description || "")
+			"data": angular.toJson(data)
 		};
+		angular.forEach(meta, function(v,k) { data[k] = v; });
 		if (id) data._id = id;
 		
 		// submit to server
-		var f = function() { return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/create", data); };
+		var f = function() { return $http.post(baseurl + "/v1/plugin_api/records/create", data); };
 		actionChain = actionChain.then(f);	
 		return actionChain;
 	};
@@ -35,7 +33,7 @@ midata.factory('midataServer', [ '$http', '$q', function($http, $q) {
 		};
 				
 		// submit to server
-		var f = function() { return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/update", data); };
+		var f = function() { return $http.post(baseurl + "/v1/plugin_api/records/update", data); };
 		actionChain = actionChain.then(f);	
 		return actionChain;
 	};
@@ -55,53 +53,55 @@ midata.factory('midataServer', [ '$http', '$q', function($http, $q) {
 		};
 		
 		// submit to server
-		return $http.post("https://" + window.location.hostname + ":9000/api/apps/create", data);
+		return $http.post("https://" + baseurl + ":9000/api/apps/create", data);
 	};
 	*/
 	
 	service.getRecords = function(authToken, properties,fields) {
 		 var data = { "authToken" : authToken, "properties" : properties, fields : fields };		
-		 return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/search", data);
+		 return $http.post(baseurl + "/v1/plugin_api/records/search", data);
 	};
 	
 	service.getSummary = function(authToken, level, properties, fields) {
 		 var data = { "authToken" : authToken, "properties" : ( properties || {} ), "summarize" : level.toUpperCase(), "fields" : (fields || [])  };		
-		 return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/summary", data);
+		 return $http.post(baseurl + "/v1/plugin_api/records/summary", data);
 	};
 	
 	service.getConfig = function(authToken) {
 		 var data = { "authToken" : authToken  };		
-		 return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/config/get", data);
+		 return $http.post(baseurl + "/v1/plugin_api/config/get", data);
 	};
 	
-	service.setConfig = function(authToken, config) {
-		 var data = { "authToken" : authToken, "config" : config  };		
-		 return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/config/set", data);
+	service.setConfig = function(authToken, config, autoimport) {
+		 var data = { "authToken" : authToken, "config" : config  };
+		 if (autoimport !== undefined) data.autoimport = autoimport;
+		 return $http.post(baseurl + "/v1/plugin_api/config/set", data);
 	};
 	
 	service.cloneAs = function(authToken, name, config) {
 		 var data = { "authToken" : authToken, "name" : name, "config" : config };		
-		 return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/clone", data);
+		 return $http.post(baseurl + "/v1/plugin_api/clone", data);
 	};
 	
 	service.searchCoding = function(authToken, properties, fields) {
 		 var data = { "authToken" : authToken, "properties" : properties, "fields" : fields };		
-		 return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/coding/search", data);
+		 return $http.post(baseurl + "/v1/plugin_api/coding/search", data);
 	};
 	
 	service.oauth2Request = function(authToken, url) {	
 		var data = { "authToken": authToken, "url": url };		
-	    return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/request/oauth2", data);
+	
+	    return $http.post(baseurl + "/v1/plugin_api/request/oauth2", data);
 	};
 	
 	service.run = function(authToken) {	
 		var data = { "authToken": authToken  };		
-	    return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/run", data);
+	    return $http.post(baseurl + "/v1/plugin_api/run", data);
 	};
 	
 	service.newId = function(authToken) {	
 		var data = { "authToken": authToken  };		
-	    return $http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/newId", data);
+	    return $http.post(baseurl + "/v1/plugin_api/records/newId", data);
 	};
 	
 	return service;	

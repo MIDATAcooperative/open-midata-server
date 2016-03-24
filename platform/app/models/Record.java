@@ -29,7 +29,7 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * constant containing the set of all public field names
 	 */
 	public @NotMaterialized final static Set<String> ALL_PUBLIC = Sets.create("_id", "id", "owner",
-			"app", "creator", "created", "name", "format", "content", "description", "data", "group");
+			"app", "creator", "created", "name", "format", "subformat", "content", "description", "data", "group");
 
 	
 	/**
@@ -97,6 +97,11 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * This field is contained in the encrypted part of the record.
 	 */
 	public String format;
+	
+	/**
+	 * (Optional) subformat of record
+	 */
+	public String subformat;
 	
 	/**
 	 * The content type of the records data.

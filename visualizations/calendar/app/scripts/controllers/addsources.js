@@ -10,7 +10,7 @@ angular.module('calendarApp')
 	  $scope.valuesToLabel = { content : {} };
 	  
 	  $scope.reloadSummary = function() {
-          var p = { "format" : ["fhir/Observation/Quantity", "fhir/Observation/String" ] };
+          var p = { "format" : ["fhir/Observation" ] };
           midataServer.getSummary(eventProvider.authToken, "SINGLE", p, ["ownerName" ])
           .then(function(results) {
               var entries = results.data;

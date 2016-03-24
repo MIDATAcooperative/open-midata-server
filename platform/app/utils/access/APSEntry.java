@@ -24,7 +24,7 @@ import com.mongodb.BasicDBList;
  */
 class APSEntry {
 
-	public static final Set<String> groupingFields = Sets.create("format", "content");
+	public static final Set<String> groupingFields = Sets.create("format", "content", "subformat");
 	
 	public static List<BasicBSONObject> findMatchingRowsForQuery(Map<String, Object> permissions, Query q) throws AppException {
 		List<BasicBSONObject> result = new ArrayList<BasicBSONObject>();
@@ -36,6 +36,7 @@ class APSEntry {
 		Set<String> formatsWC = q.restrictedBy("format/*") ? q.getRestriction("format/*") : null;
 		Set<String> contents = q.restrictedBy("content") ? q.getRestriction("content") : null;
 		Set<String> contentsWC = q.restrictedBy("content/*") ? q.getRestriction("content/*") : null;
+		Set<String> subformats = q.restrictedBy("subformat") ? q.getRestriction("subformat") : null;
 		
 		for (Object row : lst) {
 			BasicBSONObject crit = (BasicBSONObject) row;
@@ -47,6 +48,10 @@ class APSEntry {
 			if (contents != null) {
 			  String fmt = crit.getString("content");
 			  if (fmt != null && !contents.contains(fmt)) match = false;  
+			}
+			if (subformats != null) {
+				String fmt = crit.getString("subformat");
+				if (fmt != null && !subformats.contains(fmt)) match = false;  
 			}
 			if (contentsWC != null) {
   			  String fmt = crit.getString("content");
@@ -72,7 +77,8 @@ class APSEntry {
 			
 			for (String field : groupingFields) {			
 			  String val = crit.getString(field);
-			  if (val != null && !record.meta.get(field).equals(val)) match = false;
+			  String oval = record.meta.getString(field);
+			  if (val != null && oval !=null && !oval.equals(val)) match = false;
 			}
 												
 			if (match) return crit;			

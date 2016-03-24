@@ -31,6 +31,7 @@ public class Feature_Documents extends Feature {
 						rec.owner = doc.owner;
 						rec.meta.put("format", doc.meta.get("format")); //TODO or it is filtered out by QueryRedirect
 						rec.meta.put("content", doc.meta.get("content")); //TODO or it is filtered out by QueryRedirect
+						rec.meta.put("subformat", doc.meta.get("subformat")); //TODO or it is filtered out by QueryRedirect
 						result.add(rec);
 					}
 				}

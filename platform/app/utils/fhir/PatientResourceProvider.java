@@ -92,7 +92,7 @@ public class PatientResourceProvider extends ResourceProvider implements IResour
     	}
     	
     	AccessLog.logQuery(criteria, Sets.create("data"));
-    	List<Record> result = RecordManager.instance.list(info.executorId, info.targetAPS, CMaps.map("format","fhir").map("content", "Patient").map("data", criteria), Sets.create("data"));
+    	List<Record> result = RecordManager.instance.list(info.executorId, info.targetAPS, CMaps.map("format","fhir/Observation").map("content", "Patient").map("data", criteria), Sets.create("data"));
     	List<Patient> patients = new ArrayList<Patient>();
     	IParser parser = ctx().newJsonParser();    	
     	for (Record rec : result) {

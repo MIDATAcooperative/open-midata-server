@@ -207,7 +207,7 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 			 reqDone();
 		  }, function() { reqDone(); });
 		
-		  midataServer.getSummary(authToken, "content" , { "format" : "fhir/Observation/Quantity" , "app" : "fitbit" })
+		  midataServer.getSummary(authToken, "content" , { "format" : "fhir/Observation" , "subformat" : "Quantity", "app" : "fitbit" })
 		  .then(function(response) {
 			var map = {};
 			angular.forEach($scope.measurements, function(measurement) {
@@ -308,7 +308,7 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 		// save a single record to the database
 		var saveRecord = function(title, content, formattedDate, record) {
 			var name = title.replace("{date}", formattedDate);			
-			midataServer.createRecord($scope.authToken, name, name, content, "fhir/Observation/Quantity", record)
+			midataServer.createRecord($scope.authToken, { "name" : name, "content" : content, "format" : "fhir/Observation", subformat : "Quantity" }, record)
 			.then(function() {
 					$scope.saved += 1;
 					finish();
