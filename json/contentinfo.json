@@ -8,6 +8,7 @@
 {"_id":{"$oid":"55ae59bef351efda91eadc6f"},"content":"sleep","security":"MEDIUM","group":"sleep"}
 {"_id":{"$oid":"55ae59bef351efda91eadc70"},"content":"calendar","security":"MEDIUM","group":"calendar"}
 {"_id":{"$oid":"55ae59bef351efda91eadc71"},"content":"diary","security":"MEDIUM","group":"diary"}
+{"_id":{"$oid":"56fa3f4f6c19d1e1e9d2536f"},"content":"mood","security":"MEDIUM","group":"mood"}
 {"_id":{"$oid":"55b5fdb5a69243d780682793"},"content":"survey","security":"HIGH","group":"studies"}
 {"_id":{"$oid":"55b5fddaa69243d780682794"},"content":"templates","security":"HIGH","group":"templates"}
 {"_id":{"$oid":"55f81dd8cb01db2880c769e9"},"content":"other","security":"HIGH","group":"other"}

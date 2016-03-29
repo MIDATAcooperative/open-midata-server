@@ -54,7 +54,7 @@ public class ContentInfo extends Model {
 			r = new ContentInfo();
 			r.content = name;
 			r.security = APSSecurityLevel.HIGH;			
-			r.group = "other";
+			r.group = "unknown";
 		}
 		byName.put(name, r);
 		

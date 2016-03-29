@@ -8,7 +8,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
+import org.joda.time.format.ISODateTimeFormat;
 
 import utils.AccessLog;
 import utils.collections.Sets;
@@ -38,7 +40,7 @@ public class Query {
 	private ObjectId apsId;
 	private boolean giveKey;	
 		
-	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, ObjectId apsId) {
+	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, ObjectId apsId) throws BadRequestException {
 		this.properties = properties;
 		this.fields = fields;
 		this.cache = cache;
@@ -47,7 +49,7 @@ public class Query {
 		AccessLog.logQuery(properties, fields);
 	}
 	
-	public Query(Query q, Map<String, Object> properties) {
+	public Query(Query q, Map<String, Object> properties) throws BadRequestException {
 		this.properties = new HashMap<String, Object>(q.getProperties());
 		this.properties.putAll(properties);
 		this.fields = q.getFields();
@@ -58,7 +60,7 @@ public class Query {
 		AccessLog.logQuery(properties, fields);
 	}
 	
-	public Query(Query q, Map<String, Object> properties, ObjectId aps) {
+	public Query(Query q, Map<String, Object> properties, ObjectId aps) throws BadRequestException {
 		this.properties = new HashMap<String, Object>(q.getProperties());
 		this.properties.putAll(properties);
 		this.fields = q.getFields();
@@ -69,7 +71,7 @@ public class Query {
 		AccessLog.logQuery(properties, fields);
 	}
 	
-	protected Query(Map<String, Object> properties, Set<String> fields, APSCache cache,  ObjectId apsId, boolean giveKey) {
+	protected Query(Map<String, Object> properties, Set<String> fields, APSCache cache,  ObjectId apsId, boolean giveKey) throws BadRequestException {
 		this.properties = properties;
 		this.fields = fields;
 		this.cache = cache;
@@ -153,12 +155,8 @@ public class Query {
 	}
 	
 	public boolean restrictedBy(String field) {
-		return properties.containsKey(field);
-	}
-	
-	public Date getDateRestriction(String field) {
-		return (Date) properties.get(field);
-	}
+		return properties.get(field) != null;
+	}		
 	
 	public boolean returns(String field) {
 		return fields.contains(field);
@@ -230,7 +228,30 @@ public class Query {
 		}
 	}
 	
-	private void process() {
+	public Date getDateRestriction(String name) throws BadRequestException {
+		Object restriction = properties.get(name);
+		if (restriction == null) return null;
+		if (restriction instanceof Date) return (Date) restriction;
+		if (restriction instanceof Long || restriction instanceof Integer) {
+			return new Date((long) restriction);
+		}
+		String resStr = restriction.toString();
+		Date date;
+		if (resStr.length() == 0) throw new BadRequestException("error.date", "Cannot restrict date field '"+name+"' to empty string.");
+		if (StringUtils.isNumeric(resStr)) {
+			date = new Date(Long.parseLong(resStr));
+		} else {
+			try {
+		    date = ISODateTimeFormat.dateTimeParser().parseDateTime(restriction.toString()).toDate();
+			} catch (IllegalArgumentException e) {
+				throw new BadRequestException("error.date", "Bad date restriction on field '"+name+"': "+e.getMessage());
+			}
+		}
+		properties.put(name, date);
+		return date;
+	}
+	
+	private void process() throws BadRequestException {
 		 if (fields.contains("group")) fields.add("content");
 		
 		 fetchFromDB = fields.contains("data") ||
@@ -276,23 +297,23 @@ public class Query {
 		 }
 		 
 		 if (properties.containsKey("created-after")) {				
-				minDateCreated = (Date) properties.get("created-after");
+				minDateCreated = getDateRestriction("created-after");
 				minTime = getTimeFromDate(minDateCreated);
 		 }
 		 
 		 if (properties.containsKey("updated-after")) {				
-				minDateUpdated = (Date) properties.get("updated-after");
+				minDateUpdated = getDateRestriction("updated-after");
 				minTime = getTimeFromDate(minDateUpdated); 
 				fetchFromDB = true;
 		 }
 		 
 		 if (properties.containsKey("created-before")) {				
-				maxDateCreated = (Date) properties.get("created-before");
+				maxDateCreated = getDateRestriction("created-before");
 				// maxTime = getTimeFromDate(maxDate); NO lastUpdated also changes maxTime entry
 		 }
 		 
 		 if (properties.containsKey("updated-before")) {				
-				maxDateUpdated = (Date) properties.get("updated-before");
+				maxDateUpdated = getDateRestriction("updated-before");
 				maxTime = getTimeFromDate(maxDateUpdated);
 				fetchFromDB = true;
 		 }

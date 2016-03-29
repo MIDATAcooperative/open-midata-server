@@ -74,17 +74,18 @@ class QueryEngine {
 		//return onlyWithKey((new Feature_QueryRedirect(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams())))).lookup(candidates, new Query(CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps))));
 	}
 		
-	public static boolean isInQuery(Map<String, Object> properties, DBRecord record) throws AppException {
+	public static boolean isInQuery(APSCache cache, Map<String, Object> properties, DBRecord record) throws AppException {
 		List<DBRecord> results = new ArrayList<DBRecord>(1);
 		results.add(record);
-		return listFromMemory(properties, results).size() > 0;		
+		return listFromMemory(cache, properties, results).size() > 0;		
 	}
 	
-	public static List<DBRecord> listFromMemory(Map<String, Object> properties, List<DBRecord> records) throws AppException {
+	public static List<DBRecord> listFromMemory(APSCache cache, Map<String, Object> properties, List<DBRecord> records) throws AppException {
 		if (AccessLog.detailedLog) AccessLog.logBegin("Begin list from memory #recs="+records.size());
-		
-		Feature qm = new Feature_FormatGroups(new Feature_ContentFilter(new Feature_InMemoryQuery(records)));
-		Query query = new Query(properties, Sets.create("_id"), null, null, true);
+		APS inMemory = new Feature_InMemoryQuery(records);
+		cache.addAPS(inMemory);
+		Feature qm = new Feature_FormatGroups(new Feature_ContentFilter(inMemory));
+		Query query = new Query(properties, Sets.create("_id"), cache, inMemory.getId(), true);
 		List<DBRecord> recs = qm.query(query);
 		AccessLog.log("list from memory pre postprocess size = "+recs.size());
 		List<DBRecord> result = postProcessRecords(qm, query, recs);		

@@ -25,6 +25,7 @@ import utils.PasswordHash;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.db.NotMaterialized;
+import utils.evolution.AccountPatches;
 import utils.exceptions.InternalServerException;
 import utils.search.Search;
 import utils.search.Search.Type;
@@ -68,7 +69,7 @@ public class User extends Model implements Comparable<User> {
 	/**
 	 * Account version timestamp. May be used for schema evolution
 	 */
-	public int accountVersion;
+	public int accountVersion = AccountPatches.currentAccountVersion;
 	
 	/**
 	 * Message inbox. Currently not used. May be removed in the future.

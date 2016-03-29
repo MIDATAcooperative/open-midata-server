@@ -107,7 +107,7 @@ public class Feature_QueryRedirect extends Feature {
 		List<DBRecord> result = next.query(new Query(combined, q.getFields(), q.getCache(), new ObjectId(targetAPSId.toString())));
 		
 		if (query.containsField("_exclude") && result.size() > 0) {			
-			List<DBRecord> excluded = QueryEngine.listFromMemory((Map<String, Object>) query.get("_exclude"), result);
+			List<DBRecord> excluded = QueryEngine.listFromMemory(q.getCache(), (Map<String, Object>) query.get("_exclude"), result);
             result.removeAll(excluded);						
 		} 
 		
@@ -122,10 +122,10 @@ public class Feature_QueryRedirect extends Feature {
 			return Collections.emptyList();
 		}
 		
-		List<DBRecord> result = QueryEngine.listFromMemory(combined, results); 
+		List<DBRecord> result = QueryEngine.listFromMemory(q.getCache(), combined, results); 
 									
 		if (query.containsField("_exclude") && result.size() > 0) {			
-			List<DBRecord> excluded = QueryEngine.listFromMemory((Map<String, Object>) query.get("_exclude"), result);
+			List<DBRecord> excluded = QueryEngine.listFromMemory(q.getCache(), (Map<String, Object>) query.get("_exclude"), result);
             result.removeAll(excluded);						
 		} 
 		

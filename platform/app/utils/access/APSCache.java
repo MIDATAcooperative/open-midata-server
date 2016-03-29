@@ -80,5 +80,9 @@ class APSCache {
 		return result;
 	}
 	
+	public void addAPS(APS aps) {		
+		cache.put(aps.getId().toString(), aps);
+	}
+	
 	
 }

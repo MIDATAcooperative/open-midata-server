@@ -30,6 +30,7 @@ import play.libs.F.Callback;
 import play.mvc.Result;
 import scala.concurrent.duration.Duration;
 import utils.AccessLog;
+import utils.ErrorReporter;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
 import utils.auth.SpaceToken;
@@ -106,6 +107,7 @@ public class AutoRun extends APIController {
 		@Override
 		public void onReceive(Object message) throws Exception {
 		    if (message instanceof ImportRequest) {
+		    	try {
 		    	ImportRequest request = (ImportRequest) message;
 		    	ObjectId autorunner = request.autorunner;
 		    	Space space = request.space;
@@ -146,7 +148,13 @@ public class AutoRun extends APIController {
 						}
 					} else {}
 				}
-		    			    			    			    			       
+		    	} catch (Exception e) {
+		    		ErrorReporter.report("Autorun-Service", null, e);	
+		    		throw e;
+		    	} finally {
+		    		RecordManager.instance.clear();
+					AccessLog.newRequest();	
+		    	}
 		      } else {
 		        unhandled(message);
 		      }			
@@ -175,6 +183,7 @@ public class AutoRun extends APIController {
 		
 		@Override
 		public void onReceive(Object message) throws Exception {
+			try {
 			if (message instanceof StartImport) {
 				AccessLog.log("Starting Autoimport...");
 				User autorunner = Admin.getByEmail("autorun-service", Sets.create("_id"));
@@ -192,7 +201,14 @@ public class AutoRun extends APIController {
 				AccessLog.log("Autoimport success="+numberSuccess+" fail="+numberFailure);
 			} else {
 			    unhandled(message);
-		    }			
+		    }	
+			} catch (Exception e) {
+				ErrorReporter.report("Autorun-Service", null, e);	
+				throw e;
+			} finally {
+				RecordManager.instance.clear();
+				AccessLog.newRequest();	
+			}
 		}
 		
 	}

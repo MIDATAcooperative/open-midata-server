@@ -26,3 +26,4 @@
 {"_id":{"$oid":"569915fc6281a61a232ecdd0"},"name":"healthdocuments","label":"Health Documents","parent":"health"}
 {"_id":{"$oid":"569915fc6281a61a232ecdd1"},"name":"relatedpersons","label":"Related Persons","parent":"other"}
 {"_id":{"$oid":"569915fc6281a61a232ecdd2"},"name":"diagnostics","label":"Family","parent":"other"}
+{"_id":{"$oid":"56fa3f4f6c19d1e1e9d2536e"},"name":"unknown","label":"Unknown Content","parent":"other"}

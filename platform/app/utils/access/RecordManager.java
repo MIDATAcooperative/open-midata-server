@@ -572,7 +572,7 @@ public class RecordManager {
 		List<DBRecord> streams = QueryEngine.listInternal(getCache(userId), targetaps, RecordManager.STREAMS_ONLY_OWNER, RecordManager.COMPLETE_META);
 		AccessLog.log("UNSHARE STREAMS CANDIDATES = "+streams.size());
 		
-		List<DBRecord> stillOkay = QueryEngine.listFromMemory(query, streams);
+		List<DBRecord> stillOkay = QueryEngine.listFromMemory(getCache(userId), query, streams);
 		streams.removeAll(stillOkay);		
 		Set<ObjectId> remove = new HashSet<ObjectId>();
 		for (DBRecord stream : streams) {
@@ -591,7 +591,7 @@ public class RecordManager {
 		if (member.queries!=null) {
 			for (String key : member.queries.keySet()) {
 				Map<String, Object> query = member.queries.get(key);
-				if (QueryEngine.isInQuery(query, record)) {
+				if (QueryEngine.isInQuery(getCache(executingPerson), query, record)) {
 					try {
 					  ObjectId targetAps = new ObjectId(key);
 					  getCache(executingPerson).getAPS(targetAps, userId);

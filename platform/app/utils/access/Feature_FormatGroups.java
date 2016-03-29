@@ -1,15 +1,23 @@
 package utils.access;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.bson.types.ObjectId;
+
+import utils.AccessLog;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
 import models.FormatGroup;
 import models.ContentInfo;
 import models.Record;
+import models.RecordsInfo;
+import models.enums.AggregationType;
 
 /**
  * filter records by group. add group information to record while querying
@@ -18,6 +26,11 @@ import models.Record;
 public class Feature_FormatGroups extends Feature {
 
 	private Feature next;
+	
+	/**
+	 * name of the group that contains all records that cannot be mapped into a group successfully
+	 */
+	private final static String UNKNOWN_GROUP_NAME = "unknown";
 	
 	public Feature_FormatGroups(Feature next) {
 		this.next = next;
@@ -45,6 +58,18 @@ public class Feature_FormatGroups extends Feature {
 			}
 	}
 	
+	private Set<String> resolveTheUnknownGroup(Query q) throws AppException {
+		AccessLog.logBegin("begin resolve 'unknown' group");
+		Map<String, Object> p = new HashMap<String, Object>();
+		Collection<RecordsInfo> res = QueryEngine.info(q.getCache(), q.getApsId(), p, AggregationType.GROUP);
+		Set<String> result = new HashSet<String>();
+		for (RecordsInfo r : res) {
+			if (r.groups.contains(UNKNOWN_GROUP_NAME)) result = r.contents;
+		}		
+		AccessLog.logEnd("end resolve 'unknown' group size="+result.size());
+		return result;
+	}
+	
 	private Set<String> prepareFilter(Query q) throws AppException {		
 		
 		if (q.restrictedBy("group")) {
@@ -63,6 +88,7 @@ public class Feature_FormatGroups extends Feature {
 			
 		    Set<ContentInfo> qualified = ContentInfo.getByGroups(groups);		    
 		    for (ContentInfo fi : qualified) contents.add(fi.content);
+		    if (groups.contains(UNKNOWN_GROUP_NAME)) contents.addAll(resolveTheUnknownGroup(q));
 		    
 		    return contents;
 		} else if (q.restrictedBy("group-strict")) {
@@ -74,6 +100,7 @@ public class Feature_FormatGroups extends Feature {
 									
 		    Set<ContentInfo> qualified = ContentInfo.getByGroups(groups);		    
 		    for (ContentInfo fi : qualified) contents.add(fi.content);
+		    if (groups.contains(UNKNOWN_GROUP_NAME)) contents.addAll(resolveTheUnknownGroup(q));
 		    
 		    return contents;
 		}

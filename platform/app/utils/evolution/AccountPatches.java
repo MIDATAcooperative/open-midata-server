@@ -17,6 +17,8 @@ import models.User;
 
 public class AccountPatches {
 
+	public static final int currentAccountVersion = 20160324;
+	
 	public static void check(User user) throws AppException {
 		if (user.accountVersion < 20160324) { formatPatch20160324(user); }					
 	}
@@ -39,10 +41,12 @@ public class AccountPatches {
 		   RecordManager.instance.addRecord(user._id, r);
 		   RecordManager.instance.deleteRecord(user._id, new RecordToken(oldId.toString(), user._id.toString()));
 	   }
-	   Set<Space> spaces = Space.getAllByOwner(user._id, Sets.create("_id"));
+	   Set<Space> spaces = Space.getAllByOwner(user._id, Sets.create("_id", "type"));
 	   for (Space space : spaces) {	   					
-		  RecordManager.instance.deleteAPS(space._id, user._id);
-		  Space.delete(user._id, space._id);
+		   if (space.type != null && space.type.equals("visualization")) {
+			  RecordManager.instance.deleteAPS(space._id, user._id);
+			  Space.delete(user._id, space._id);
+		   }
 	   }	   
 	   RecordManager.instance.fixAccount(user._id);
 	   makeCurrent(user, 20160324);
