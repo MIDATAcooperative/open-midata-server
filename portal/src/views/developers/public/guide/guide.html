@@ -375,27 +375,35 @@ In the array case each record must match one entry in the array to qualify for t
 						<p>The list of supported data formats is directly queried from the server and may be extended any time.</p>
 						<h3>Format</h3>
 						<p>These technical data formats are currently recognized by the server. The list contains development artifacts and may be cleaned up in the future.</p>
-						<ul>
-						  <li ng-repeat="format in formats">
-						    <code>{{ format.format }}</code>
-						  </li>
-						</ul>
+						<table width="100%">		
+						  <tr>
+						    <th>Format Name</th>
+						    <th>Comment</th>
+						    <th>Default Plugin used</th>
+						  </tr>
+						  <tr ng-repeat="format in formats | orderBy : 'format'">
+						    <td><code>{{ format.format }}</code></td>
+						    <td>{{ format.comment }}</td>
+						    <td>{{ format.visName }}</td>
+						  </tr>
+						</table>
 						<h3>Content</h3>
-						<p>All semantical data types start with one of the following prefixes and a more detailed name after the slash. The prefix is used to place the record into a group. 
-						   The assignment of content types to groups may be changed in the future.</p>
-						<p> An example full content name (from Fitbit) is <code>activities/fairly-active</code>
-						    with format <code>measurements</code>. 
-						</p> 
+						<p>All semantical data types have the format "&lt;system&gt; &lt;code&gt;" where <i>system</i> is the name of the code system used and <i>code</i> is a code from the system.</p>
+						<p>The values for the special <code>http://midata.coop</code> code system may consist of two parts: A prefixes and a more detailed name after the slash. Only the prefix is used to place the record into a group.</p> 
+						<p>The codes of other systems like <code>http://loinc.org</code> need to be preregistered into the platform in order to be accepted.</p>
+						<p>For downward compatibility: If no code system is given the midata.coop code system will be assumed.</p>
+						 						
 						<table width="100%">						 
 						  <tr>
-						    <th>Prefix</th>
+						    <th>Code</th>						    
 						    <th>Placed in group</th>
-						    <th>Level of security applied</th>
+						    <th>Comment</th>
+						    
 						  </tr>
-						  <tr ng-repeat="content in contents">
-						    <td><code>{{ content.content }}/...</code></td>
-						    <td>{{ content.group }}</td>
-						    <td>{{ content.security }}</td>
+						  <tr ng-repeat="content in contents | orderBy : 'code'">
+						    <td><code>{{ content.code }}</code></td>
+						    <td>{{ getGroupLabel(content.group) }}</td>
+						    <td>{{ content.comment }}</td>
 						  </tr>
 						</table>
 					</div>

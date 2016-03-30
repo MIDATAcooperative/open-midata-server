@@ -71,7 +71,9 @@
 {"_id":{"$oid":"569915fc6281a61a232ece0b"},"content":"MessageHeader","security":"MEDIUM","group":"other"}
 {"_id":{"$oid":"569915fc6281a61a232ece0c"},"content":"NamingSystem","security":"MEDIUM","group":"other"}
 {"_id":{"$oid":"569915fc6281a61a232ece0d"},"content":"NutritionOrder","security":"MEDIUM","group":"care"}
-{"_id":{"$oid":"569915fc6281a61a232ece0e"},"content":"Observation","security":"MEDIUM","group":"diagnostics"}
+{"_id":{"$oid":"56fb890b1911127c0c2cc641"},"content":"http://loinc.org 3141-9","comment":"Body Weight","alias":"body/weight","security":"MEDIUM","group":"qself"}
+{"_id":{"$oid":"56fb890b1911127c0c2cc642"},"content":"subjective-condition","comment":"Subjective Condition","security":"MEDIUM","group":"mood"}
+{"_id":{"$oid":"56fb890b1911127c0c2cc643"},"content":"http://loinc.org 61150-9","comment":"Patient Diary","alias":"diary","security":"MEDIUM","group":"diary"}
 {"_id":{"$oid":"569915fc6281a61a232ece0f"},"content":"OperationDefinition","security":"MEDIUM","group":"other"}
 {"_id":{"$oid":"569915fc6281a61a232ece10"},"content":"OperationOutcome","security":"MEDIUM","group":"other"}
 {"_id":{"$oid":"569915fc6281a61a232ece11"},"content":"Order","security":"MEDIUM","group":"healthworkflow"}

@@ -352,7 +352,7 @@ class QueryEngine {
     
     
     
-    
+    /*
     protected static List<DBRecord> filterByWCFormat(List<DBRecord> input, String name, Set<String> contentsWC) {
     	if (contentsWC == null) return input;    	
     	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());
@@ -362,7 +362,7 @@ class QueryEngine {
     	}
     	
     	return filteredResult;
-    }
+    }*/
     
     protected static List<DBRecord> filterByMetaSet(List<DBRecord> input, String property, Set values) {    	
     	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());

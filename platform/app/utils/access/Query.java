@@ -126,6 +126,10 @@ public class Query {
 	
 	public Set<String> getRestriction(String name) throws BadRequestException {
 		Object v = properties.get(name);
+		return getRestriction(v, name);		
+	}
+	
+	public static Set<String> getRestriction(Object v, String name) throws BadRequestException {		
 		if (v instanceof String) {
 			return Collections.singleton((String) v);
 		} else if (v instanceof ObjectId) {

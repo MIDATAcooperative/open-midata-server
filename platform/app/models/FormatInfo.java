@@ -29,6 +29,16 @@ public class FormatInfo extends Model {
 	 */
 	public ObjectId visualization;
 	
+	/**
+	 * Used for comments
+	 */
+	public String comment;
+	
+	/**
+	 * Name of default visualization
+	 */
+	public String visName;
+	
 	public static FormatInfo getByName(String name) throws InternalServerException {
 	
 		FormatInfo r = Model.get(FormatInfo.class, collection, CMaps.map("format", name), ALL);

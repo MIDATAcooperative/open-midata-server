@@ -32,8 +32,8 @@ public class Feature_ContentFilter extends Feature {
 		if (q.restrictedBy("format")) result = QueryEngine.filterByMetaSet(result, "format", q.getRestriction("format"));
 		if (q.restrictedBy("content")) result = QueryEngine.filterByMetaSet(result, "content", q.getRestriction("content"));
 		if (q.restrictedBy("subformat")) result = QueryEngine.filterByMetaSet(result, "subformat", q.getRestriction("subformat"));
-		if (q.restrictedBy("format/*")) result = QueryEngine.filterByWCFormat(result, "format", q.getRestriction("format/*"));
-		if (q.restrictedBy("content/*")) result = QueryEngine.filterByWCFormat(result, "content", q.getRestriction("content/*"));
+		//if (q.restrictedBy("format/*")) result = QueryEngine.filterByWCFormat(result, "format", q.getRestriction("format/*"));
+		//if (q.restrictedBy("content/*")) result = QueryEngine.filterByWCFormat(result, "content", q.getRestriction("content/*"));
 		return result;	
 	}
 

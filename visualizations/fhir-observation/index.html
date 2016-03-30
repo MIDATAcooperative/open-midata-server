@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>FHIR</title>
+		<link rel="stylesheet" href="/shared/css/app.css">
+		
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+		<style>
+		  table .checkbox { margin:0px; }
+		</style>
+		<!-- jQuery needed for Bootstrap's JavaScript plugins -->
+		
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>	    		
+		<!-- Ignoring locales for now -->		
+		<script type="text/javascript" src="/shared/js/midata.js" defer></script>
+		<script type="text/javascript" src="js/app.js" defer></script>
+			
+	</head>
+	<body>	
+		<div ng-app="fhir" ng-controller="ObservationCtrl" ng-cloak class="container">		
+		  <div ng-repeat="record in records">		   
+		    <div class="text-center" ng-show="record.data.category">Category: <b>{{ getCodeableConcept(record.data.category)  }}</b></div>		    
+		    <div class="text-center text-primary"><b>{{ getCodeableConcept(record.data.code)  }}</b></div>                       
+            <div class="text-center lead" ng-show="record.data.valueQuantity"><span style="color: #1c4982;display: block;font-size: 100px;">{{ record.data.valueQuantity.value }}</span>{{ record.data.valueQuantity.unit }}</div>
+            <div class="row" ng-show="record.data.valueString"><div class="well text-center"><b>{{ record.data.valueString }}</b></div></div>
+            <div class="text-center lead" ng-show="record.data.valueCodeableConcept"><span style="color: #1c4982;display: block;">{{ getCodeableConcept(record.data.valueCodeableConcept) }}</span></div>
+            <div class="text-center">Date: <strong>{{ record.data.effectiveDateTime | date }}</strong></div>
+            <div class="text-center" ng-show="record.data.status">Status: <b>{{ record.data.status }}</b></div>
+            <hr ng-hide="$last">  
+          </div>
+		</div>
+	</body>
+</html>

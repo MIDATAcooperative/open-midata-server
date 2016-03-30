@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import models.ContentInfo;
 import models.LargeRecord;
 import models.Member;
 import models.MobileAppInstance;
@@ -32,6 +33,7 @@ import play.mvc.Result;
 import utils.AccessLog;
 import utils.DateTimeUtils;
 import utils.PasswordHash;
+import utils.access.Query;
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
 import utils.auth.ExecutionInfo;
@@ -265,6 +267,17 @@ public class MobileAPI extends Controller {
 		
 		AccessLog.log("NEW QUERY");
 		
+		if (properties.containsKey("content")) {
+			Set<String> contents = Query.getRestriction(properties.get("content"), "content");
+			Set<String> add = new HashSet<String>();
+			for (String c : contents) {
+				ContentInfo cinf = ContentInfo.getByName(c);
+				if (cinf.alias != null) add.add(cinf.alias);
+			}
+			add.addAll(contents);
+			properties.put("content", add);
+		}
+		
 		records = LargeRecord.getAll(appInstance._id, appInstance._id, properties, fields);		  
 				
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
@@ -356,6 +369,9 @@ public class MobileAPI extends Controller {
 		
 		record.format = format;
 		record.subformat = JsonValidation.getStringOrNull(json, "subformat");
+		
+		ContentInfo info = ContentInfo.getByName(content);
+		if (info.alias != null) content = info.alias;
 		record.content = content;				
 		
 		try {

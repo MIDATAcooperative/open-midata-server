@@ -1,6 +1,7 @@
 package utils.access;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 
 import utils.AccessLog;
+import utils.collections.CMaps;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
@@ -26,12 +29,7 @@ import models.enums.AggregationType;
 public class Feature_FormatGroups extends Feature {
 
 	private Feature next;
-	
-	/**
-	 * name of the group that contains all records that cannot be mapped into a group successfully
-	 */
-	private final static String UNKNOWN_GROUP_NAME = "unknown";
-	
+		
 	public Feature_FormatGroups(Feature next) {
 		this.next = next;
 	}
@@ -42,8 +40,13 @@ public class Feature_FormatGroups extends Feature {
 	protected List<DBRecord> lookup(List<DBRecord> input, Query q)
 			throws AppException {
 		Set<String> contents = prepareFilter(q);
-		if (contents != null) q.getProperties().put("content/*", contents);
-		return next.lookup(input, q);
+		if (contents != null) {
+			Map<String, Object> combined = Feature_QueryRedirect.combineQuery(q.getProperties(), CMaps.map("content", contents));
+			if (combined == null) return Collections.EMPTY_LIST;
+		  	return next.lookup(input, new Query(q, combined));
+		} else {
+		  return next.lookup(input, q);
+		}
 	}
 
 	private void addChildren(String group, Set<String> groups, Set<String> exclude) throws InternalServerException {		
@@ -57,24 +60,24 @@ public class Feature_FormatGroups extends Feature {
 			    }		
 			}
 	}
-	
-	private Set<String> resolveTheUnknownGroup(Query q) throws AppException {
-		AccessLog.logBegin("begin resolve 'unknown' group");
-		Map<String, Object> p = new HashMap<String, Object>();
-		Collection<RecordsInfo> res = QueryEngine.info(q.getCache(), q.getApsId(), p, AggregationType.GROUP);
+		
+	private Set<String> resolveContentNames(Query q, Set<String> groups) throws AppException {
+		List<DBRecord> records = next.query(new Query(CMaps.map(q.getProperties()).map("streams", "true").map("flat", "true"), Sets.create("content"), q.getCache(), q.getApsId(), true ));
 		Set<String> result = new HashSet<String>();
-		for (RecordsInfo r : res) {
-			if (r.groups.contains(UNKNOWN_GROUP_NAME)) result = r.contents;
-		}		
-		AccessLog.logEnd("end resolve 'unknown' group size="+result.size());
+		for (DBRecord rec : records) {
+			String content = (String) rec.meta.get("content");
+			ContentInfo fi = ContentInfo.getByName(content);
+            if (groups.contains(fi.group)) {
+            	result.add(content);            	
+            }
+		}	
 		return result;
 	}
 	
 	private Set<String> prepareFilter(Query q) throws AppException {		
 		
 		if (q.restrictedBy("group")) {
-			Set<String> contents = new HashSet<String>();
-			
+						
 			Set<String> groups = new HashSet<String>();
 			Set<String> included = q.getRestriction("group"); 
 			groups.addAll(included);
@@ -86,23 +89,16 @@ public class Feature_FormatGroups extends Feature {
 				addChildren(group, groups, exclude);				
 			}
 			
-		    Set<ContentInfo> qualified = ContentInfo.getByGroups(groups);		    
-		    for (ContentInfo fi : qualified) contents.add(fi.content);
-		    if (groups.contains(UNKNOWN_GROUP_NAME)) contents.addAll(resolveTheUnknownGroup(q));
+			return resolveContentNames(q, groups);
+		    		  		    
 		    
-		    return contents;
-		} else if (q.restrictedBy("group-strict")) {
-            Set<String> contents = new HashSet<String>();
+		} else if (q.restrictedBy("group-strict")) {           
 			
 			Set<String> groups = new HashSet<String>();
 			Set<String> included = q.getRestriction("group-strict"); 
 			groups.addAll(included);
 									
-		    Set<ContentInfo> qualified = ContentInfo.getByGroups(groups);		    
-		    for (ContentInfo fi : qualified) contents.add(fi.content);
-		    if (groups.contains(UNKNOWN_GROUP_NAME)) contents.addAll(resolveTheUnknownGroup(q));
-		    
-		    return contents;
+			return resolveContentNames(q, groups);			
 		}
 		
 		return null;
@@ -111,8 +107,13 @@ public class Feature_FormatGroups extends Feature {
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
 		Set<String> contents = prepareFilter(q);
-		if (contents != null) q.getProperties().put("content/*", contents);			
-		return next.query(q);		
+		if (contents != null) {
+			Map<String, Object> combined = Feature_QueryRedirect.combineQuery(q.getProperties(), CMaps.map("content", contents));
+			if (combined == null) return Collections.EMPTY_LIST;
+		  	return next.query(new Query(q, combined));					
+		} else {
+		   return next.query(q);
+		}
 	}
 
 	@Override

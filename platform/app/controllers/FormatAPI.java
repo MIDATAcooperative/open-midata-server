@@ -51,7 +51,7 @@ public class FormatAPI extends Controller {
 	 */
 	@APICall
 	public static Result listFormats() throws InternalServerException {
-	    Collection<FormatInfo> formats = FormatInfo.getAll(Collections.<String, String> emptyMap(), Sets.create("format"));
+	    Collection<FormatInfo> formats = FormatInfo.getAll(Collections.<String, String> emptyMap(), Sets.create("format", "comment", "visName"));
 	    return ok(Json.toJson(formats));
 	}
 	
@@ -62,7 +62,7 @@ public class FormatAPI extends Controller {
 	 */
 	@APICall
 	public static Result listContents() throws InternalServerException {
-	    Collection<ContentInfo> contents = ContentInfo.getAll(Collections.<String, String> emptyMap(), Sets.create("content", "group", "security"));
+	    Collection<ContentInfo> contents = ContentInfo.getAll(Collections.<String, String> emptyMap(), Sets.create("content", "group", "security", "comment"));
 	    return ok(Json.toJson(contents));
 	}
 	
@@ -99,6 +99,8 @@ public class FormatAPI extends Controller {
 		  return ok(Json.toJson(results));
 		} else {		
 	      Collection<Coding> contents = Coding.getAll(properties, fields);
+	      
+	      
 	      return ok(Json.toJson(contents));
 		}
 	}

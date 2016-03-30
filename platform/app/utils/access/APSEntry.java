@@ -33,9 +33,9 @@ class APSEntry {
 		//AccessLog.debug("ALL:"+lst.toString());
 		
 		Set<String> formats = q.restrictedBy("format") ? q.getRestriction("format") : null;
-		Set<String> formatsWC = q.restrictedBy("format/*") ? q.getRestriction("format/*") : null;
+		//Set<String> formatsWC = q.restrictedBy("format/*") ? q.getRestriction("format/*") : null;
 		Set<String> contents = q.restrictedBy("content") ? q.getRestriction("content") : null;
-		Set<String> contentsWC = q.restrictedBy("content/*") ? q.getRestriction("content/*") : null;
+		//Set<String> contentsWC = q.restrictedBy("content/*") ? q.getRestriction("content/*") : null;
 		Set<String> subformats = q.restrictedBy("subformat") ? q.getRestriction("subformat") : null;
 		
 		for (Object row : lst) {
@@ -53,14 +53,14 @@ class APSEntry {
 				String fmt = crit.getString("subformat");
 				if (fmt != null && !subformats.contains(fmt)) match = false;  
 			}
-			if (contentsWC != null) {
+			/*if (contentsWC != null) {
   			  String fmt = crit.getString("content");
 			  if (fmt != null && !contentsWC.contains(ContentInfo.getWildcardName(fmt))) match = false;
 			}
 			if (formatsWC != null) {
 	  			  String fmt = crit.getString("format");
 				  if (fmt != null && !formatsWC.contains(ContentInfo.getWildcardName(fmt))) match = false;
-		    }
+		    }*/
 			if (match) result.add(crit);			
 		}
 		
