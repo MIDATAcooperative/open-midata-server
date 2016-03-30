@@ -271,10 +271,8 @@ public class MobileAPI extends Controller {
 			Set<String> contents = Query.getRestriction(properties.get("content"), "content");
 			Set<String> add = new HashSet<String>();
 			for (String c : contents) {
-				ContentInfo cinf = ContentInfo.getByName(c);
-				if (cinf.alias != null) add.add(cinf.alias);
-			}
-			add.addAll(contents);
+				add.add(ContentInfo.getNormalizedName(c));				
+			}			
 			properties.put("content", add);
 		}
 		
@@ -369,10 +367,8 @@ public class MobileAPI extends Controller {
 		
 		record.format = format;
 		record.subformat = JsonValidation.getStringOrNull(json, "subformat");
-		
-		ContentInfo info = ContentInfo.getByName(content);
-		if (info.alias != null) content = info.alias;
-		record.content = content;				
+				
+		record.content = ContentInfo.getNormalizedName(content);				
 		
 		try {
 			record.data = (DBObject) JSON.parse(data);

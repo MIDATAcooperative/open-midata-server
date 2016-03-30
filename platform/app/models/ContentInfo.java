@@ -91,6 +91,12 @@ public class ContentInfo extends Model {
 				
 	}
 	
+	public static String getNormalizedName(String content) throws AppException {
+		ContentInfo ci = getByName(content);
+		if (ci.alias != null) return ci.alias;
+		return ci.content;
+	}
+	
 	public static Set<ContentInfo> getByGroups(Set<String> group) throws InternalServerException {
 		return Model.getAll(ContentInfo.class, collection, CMaps.map("group", group), ALL);
 	}
