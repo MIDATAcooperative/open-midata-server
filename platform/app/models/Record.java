@@ -189,9 +189,10 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 		if (this.created != null && other.created != null) {
 			// newest first
 			return -this.created.compareTo(other.created);
-		} else {
+		} else if (this.created == null && other.created == null ){
 			return super.compareTo(other);
-		}
+		} else if (this.created == null) return 1;
+		else return -1;
 	}
 	
 	@Override

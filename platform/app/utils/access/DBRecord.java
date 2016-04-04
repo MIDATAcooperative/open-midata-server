@@ -225,9 +225,9 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 		if (dme != null && dother != null) {
 			// newest first
 			return -dme.compareTo(dother);
-		} else {
-			return super.compareTo(other);
-		}
+		} else if (dme == null && dother == null) return super.compareTo(other);
+		else if (dme == null) return 1;
+		else return -1;		
 	}
 
 }

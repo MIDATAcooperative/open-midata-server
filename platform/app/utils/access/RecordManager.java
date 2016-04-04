@@ -497,6 +497,8 @@ public class RecordManager {
 		DBRecord.delete(record.owner, record._id);
 		
 		AccessLog.logEnd("end deleteRecord");
+		
+		fixAccount(executingPerson);
 	}
 
 	private byte[] addRecordIntern(ObjectId executingPerson, DBRecord record, boolean documentPart, ObjectId alternateAps, boolean upsert) throws AppException {		

@@ -374,6 +374,8 @@ public class MobileAPI extends Controller {
 			record.data = (DBObject) JSON.parse(data);
 		} catch (JSONParseException e) {
 			return badRequest("Record data is invalid JSON.");
+		} catch (ClassCastException e2) {
+			return badRequest("Record data is invalid JSON.");
 		}
 		record.name = name;
 		record.description = description;
