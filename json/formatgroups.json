@@ -1,29 +1,29 @@
-{"_id":{"$oid":"55ae5a08f351efda91eadc7c"},"name":"all","label":"Personal Data","parent":null}
-{"_id":{"$oid":"55ae5a08f351efda91eadc7d"},"name":"lifestyle","label":"Lifestyle","parent":"all"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc7e"},"name":"nutrition","label":"Nutrition","parent":"lifestyle"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc7f"},"name":"mood","label":"Mood","parent":"lifestyle"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc80"},"name":"qself","label":"Quantified self","parent":"lifestyle"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc81"},"name":"movement","label":"Movement","parent":"lifestyle"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc82"},"name":"sleep","label":"Sleep","parent":"lifestyle"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc83"},"name":"health","label":"Health","parent":"all"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc84"},"name":"allergies","label":"Allergies","parent":"health"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc85"},"name":"lab","label":"Lab results","parent":"health"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc86"},"name":"studies","label":"Studies","parent":"health"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc87"},"name":"medication","label":"Medication","parent":"health"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc88"},"name":"genome","label":"Genome","parent":"health"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc89"},"name":"desease","label":"Desease specific","parent":"health"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc8a"},"name":"other","label":"Other","parent":"all"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc8b"},"name":"calendar","label":"Calendar","parent":"other"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc8c"},"name":"diary","label":"Diary","parent":"other"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc8d"},"name":"account","label":"External Accounts","parent":"other"}
-{"_id":{"$oid":"55b5fe1ca69243d780682795"},"name":"templates","label":"Templates","parent":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ecdca"},"name":"otherhealth","label":"Other Health-related","parent":"health"}
-{"_id":{"$oid":"569915fc6281a61a232ecdcb"},"name":"care","label":"Care","parent":"health"}
-{"_id":{"$oid":"569915fc6281a61a232ecdcc"},"name":"billing","label":"Billing","parent":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ecdcd"},"name":"encounters","label":"Encounters","parent":"health"}
-{"_id":{"$oid":"569915fc6281a61a232ecdce"},"name":"entities","label":"Entities","parent":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ecdcf"},"name":"healthworkflow","label":"Workflow","parent":"health"}
-{"_id":{"$oid":"569915fc6281a61a232ecdd0"},"name":"healthdocuments","label":"Health Documents","parent":"health"}
-{"_id":{"$oid":"569915fc6281a61a232ecdd1"},"name":"relatedpersons","label":"Related Persons","parent":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ecdd2"},"name":"diagnostics","label":"Family","parent":"other"}
-{"_id":{"$oid":"56fa3f4f6c19d1e1e9d2536e"},"name":"unknown","label":"Unknown Content","parent":"other"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc7c"},"system":"v1","name":"all","label":{"en":"Personal Data"},"parent":null}
+{"_id":{"$oid":"55ae5a08f351efda91eadc7d"},"system":"v1","name":"lifestyle","label":{"en":"Lifestyle"},"parent":"all"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc7e"},"system":"v1","name":"nutrition","label":{"en":"Nutrition"},"contents":["food","food/water","food/calories-in"],"parent":"lifestyle"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc7f"},"system":"v1","name":"mood","label":{"en":"Mood"},"contents":["mood","subjective-condition"],"parent":"lifestyle"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc80"},"system":"v1","name":"qself","label":{"en":"Quantified self"},"contents":["body/height","body","body/bmi","body/temperature","body/weight","body/blood/systolic","http://loinc.org 3141-9","body/fat","body/blood/diastolic","activities/heartrate"],"parent":"lifestyle"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc81"},"system":"v1","name":"movement","label":{"en":"Movement"},"contents":["activities/minutes-very-active","activities/steps","activities/elevation","activities/minutes-fairly-active","activities/distance","activities/minutes-lightly-active","activities/activity-calories","activities/floors","activities","activities/minutes-sedentary","activities/calories"],"parent":"lifestyle"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc82"},"system":"v1","name":"sleep","label":{"en":"Sleep"},"contents":["sleep/minutes-to-fall-asleep","sleep/time-in-bed","sleep/minutes-awake","sleep/minutes-asleep","sleep/efficiency","sleep"],"parent":"lifestyle"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc83"},"system":"v1","name":"health","label":{"en":"Health"},"contents":[],"parent":"all"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc84"},"system":"v1","name":"allergies","label":{"en":"Allergies"},"contents":["ImmunizationRecommendation","AllergyIntolerance","Immunization"],"parent":"health"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc85"},"system":"v1","name":"lab","label":{"en":"Lab results"},"contents":[],"parent":"health"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc86"},"system":"v1","name":"studies","label":{"en":"Studies"},"contents":["survey","QuestionnaireResponse","Questionnaire"],"parent":"health"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc87"},"system":"v1","name":"medication","label":{"en":"Medication"},"contents":["Medication","medical","MedicationDispense","MedicationAdministration","MedicationStatement","MedicationOrder"],"parent":"health"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc88"},"system":"v1","name":"genome","label":{"en":"Genome"},"contents":["genome-data"],"parent":"health"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc89"},"system":"v1","name":"desease","label":{"en":"Desease specific"},"contents":[],"parent":"health"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc8a"},"system":"v1","name":"other","label":{"en":"Other"},"contents":[],"parent":"all"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc8b"},"system":"v1","name":"calendar","label":{"en":"Calendar"},"contents":["Appointment","Schedule","Slot","AppointmentResponse","calendar"],"parent":"other"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc8c"},"system":"v1","name":"diary","label":{"en":"Diary"},"contents":["diary","http://loinc.org 61150-9"],"parent":"other"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc8d"},"system":"v1","name":"account","label":{"en":"External Accounts"},"contents":["account/credentials","account"],"parent":"other"}
+{"_id":{"$oid":"55b5fe1ca69243d780682795"},"system":"v1","name":"templates","label":{"en":"Templates"},"contents":["templates"],"parent":"other"}
+{"_id":{"$oid":"569915fc6281a61a232ecdca"},"system":"v1","name":"otherhealth","label":{"en":"Other Health-related"},"contents":["observation/cardio","BodySite","Specimen","Device","DeviceComponent","RiskAssessment","DeviceMetric","Substance"],"parent":"health"}
+{"_id":{"$oid":"569915fc6281a61a232ecdcb"},"system":"v1","name":"care","label":{"en":"Care"},"contents":["CarePlan","ReferralRequest","ProcedureRequest","VisionPrescription","Goal","NutritionOrder"],"parent":"health"}
+{"_id":{"$oid":"569915fc6281a61a232ecdcc"},"system":"v1","name":"billing","label":{"en":"Billing"},"contents":["ClaimResponse","Coverage","Claim","EligibilityRequest","EnrollmentResponse","EnrollmentRequest","PaymentNotice","PaymentReconciliation","ExplanationOfBenefit","EligibilityResponse"],"parent":"other"}
+{"_id":{"$oid":"569915fc6281a61a232ecdcd"},"system":"v1","name":"encounters","label":{"en":"Encounters"},"contents":["Condition","ClinicalImpression","Flag","DetectedIssue","Encounter","Communication","EpisodeOfCare"],"parent":"health"}
+{"_id":{"$oid":"569915fc6281a61a232ecdce"},"system":"v1","name":"entities","label":{"en":"Entities"},"contents":["Organization","HealthcareService","Location","Substance","Contract","Practitioner","Group","Person"],"parent":"other"}
+{"_id":{"$oid":"569915fc6281a61a232ecdcf"},"system":"v1","name":"healthworkflow","label":{"en":"Workflow"},"contents":["ProcessResponse","SupplyDelivery","CommunicationRequest","OrderResponse","Order","SupplyRequest","Procedure","ProcessRequest","DeviceUseRequest","DeviceUseStatement"],"parent":"health"}
+{"_id":{"$oid":"569915fc6281a61a232ecdd0"},"system":"v1","name":"healthdocuments","label":{"en":"Health Documents"},"contents":["DocumentManifest","DocumentReference","Composition"],"parent":"health"}
+{"_id":{"$oid":"569915fc6281a61a232ecdd1"},"system":"v1","name":"relatedpersons","label":{"en":"Related Persons"},"contents":["FamilyMemberHistory","Patient","RelatedPerson"],"parent":"other"}
+{"_id":{"$oid":"569915fc6281a61a232ecdd2"},"system":"v1","name":"diagnostics","label":{"en":"Family"},"contents":["ImagingStudy","DiagnosticReport","ImagingObjectSelection","DiagnosticOrder"],"parent":"other"}
+{"_id":{"$oid":"56fa3f4f6c19d1e1e9d2536e"},"system":"v1","name":"unknown","label":{"en":"Unknown Content"},"contents":["Conformance","Provenance","Parameters","NamingSystem","Media","Binary","StructureDefinition","unknown","ValueSet","Bundle","Basic","MessageHeader","DataElement","Subscription","AuditEvent","ConceptMap","TestScript","List","ImplementationGuide","OperationDefinition","OperationOutcome","SearchParameter"],"parent":"other"}

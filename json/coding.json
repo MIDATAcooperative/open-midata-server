@@ -1,23 +1,33 @@
-{"_id":{"$oid":"5666a53faa4c3cbdf82292bd"},"system":"http://midata.coop","display":"Calories Intake","code":"food/calories-in"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292be"},"system":"http://midata.coop","display":"Water Consumption","code":"food/water"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292bf"},"system":"http://midata.coop","display":"Calories Burned","code":"activities/calories"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292c0"},"system":"http://midata.coop","display":"Steps","code":"activities/steps"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292c1"},"system":"http://midata.coop","display":"Distance","code":"activities/distance"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292c2"},"system":"http://midata.coop","display":"Floors Climbed","code":"activities/floors"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292c3"},"system":"http://midata.coop","display":"Elevation","code":"activities/elevation"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292c4"},"system":"http://midata.coop","display":"Minutes Sedentary","code":"activities/minutes-sedentary"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292c5"},"system":"http://midata.coop","display":"Minutes Lightly Active","code":"activities/minutes-lightly-active"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292c6"},"system":"http://midata.coop","display":"Minutes Fairly Active","code":"activities/minutes-fairly-active"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292c7"},"system":"http://midata.coop","display":"Minutes Very Active","code":"activities/minutes-very-active"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292c8"},"system":"http://midata.coop","display":"Calories Burned in Activities","code":"activities/activity-calories"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292c9"},"system":"http://midata.coop","display":"Time in Bed","code":"sleep/time-in-bed"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292ca"},"system":"http://midata.coop","display":"Minutes Asleep","code":"sleep/minutes-asleep"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292cb"},"system":"http://midata.coop","display":"Minutes Awake","code":"sleep/minutes-awake"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292cc"},"system":"http://midata.coop","display":"Minutes to Fall Asleep","code":"sleep/minutes-to-fall-asleep"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292cd"},"system":"http://midata.coop","display":"Efficiency","code":"sleep/efficiency"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292ce"},"system":"http://midata.coop","display":"Weight","code":"body/weight"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292cf"},"system":"http://midata.coop","display":"BMI","code":"body/bmi"}
-{"_id":{"$oid":"5666a53faa4c3cbdf82292d0"},"system":"http://midata.coop","display":"Fat","code":"body/fat"}
-{"_id":{"$oid":"56fba579116010661a49ad2c"},"system":"http://midata.coop","display":"Subjective Condition","code":"subjective-condition"}
-{"_id":{"$oid":"56fba579116010661a49ad2d"},"system":"http://midata.coop","display":"Height","code":"body/height"}
-{"_id":{"$oid":"56fba579116010661a49ad2e"},"system":"http://midata.coop","display":"Diary","code":"diary"}
+{"_id":{"$oid":"57052bfb270f4e53a042b674"},"system":"http://midata.coop","display":"Demo: Kardio Record","code":"observation/cardio","content":"observation/cardio"}
+{"_id":{"$oid":"57052bfb270f4e53a042b675"},"system":"http://midata.coop","display":"Credentials","code":"account/credentials","content":"account/credentials"}
+{"_id":{"$oid":"57052bfb270f4e53a042b676"},"system":"http://midata.coop","display":"Unknown","code":"unknown","content":"unknown"}
+{"_id":{"$oid":"57052bfb270f4e53a042b677"},"system":"http://loinc.org","code":"8867-4","display":"Heart Rate","content":"activities/heartrate"}
+{"_id":{"$oid":"57052bfb270f4e53a042b678"},"system":"http://loinc.org","code":"8310-5","display":"Body Temperature","content":"body/temperature"}
+{"_id":{"$oid":"57052bfb270f4e53a042b679"},"system":"http://loinc.org","code":"39156-5","display":"Body mass index (BMI) [Ratio]","content":"body/bmi"}
+{"_id":{"$oid":"57052bfb270f4e53a042b67a"},"system":"http://loinc.org","code":"8480-6","display":"Systolic blood pressure","content":"body/blood/systolic"}
+{"_id":{"$oid":"57052bfb270f4e53a042b67b"},"system":"http://loinc.org","code":"8462-4","display":"Diastolic blood pressure","content":"body/blood/diastolic"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292bd"},"system":"http://midata.coop","display":"Calories Intake","code":"food/calories-in","content":"food/calories-in"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292be"},"system":"http://midata.coop","display":"Water Consumption","code":"food/water","content":"food/water"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292bf"},"system":"http://midata.coop","display":"Calories Burned","code":"activities/calories","content":"activities/calories"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c0"},"system":"http://midata.coop","display":"Steps","code":"activities/steps","content":"activities/steps"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c1"},"system":"http://midata.coop","display":"Distance","code":"activities/distance","content":"activities/distance"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c2"},"system":"http://midata.coop","display":"Floors Climbed","code":"activities/floors","content":"activities/floors"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c3"},"system":"http://midata.coop","display":"Elevation","code":"activities/elevation","content":"activities/elevation"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c4"},"system":"http://midata.coop","display":"Minutes Sedentary","code":"activities/minutes-sedentary","content":"activities/minutes-sedentary"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c5"},"system":"http://midata.coop","display":"Minutes Lightly Active","code":"activities/minutes-lightly-active","content":"activities/minutes-lightly-active"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c6"},"system":"http://midata.coop","display":"Minutes Fairly Active","code":"activities/minutes-fairly-active","content":"activities/minutes-fairly-active"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c7"},"system":"http://midata.coop","display":"Minutes Very Active","code":"activities/minutes-very-active","content":"activities/minutes-very-active"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c8"},"system":"http://midata.coop","display":"Calories Burned in Activities","code":"activities/activity-calories","content":"activities/activity-calories"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292c9"},"system":"http://midata.coop","display":"Time in Bed","code":"sleep/time-in-bed","content":"sleep/time-in-bed"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292ca"},"system":"http://midata.coop","display":"Minutes Asleep","code":"sleep/minutes-asleep","content":"sleep/minutes-asleep"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292cb"},"system":"http://midata.coop","display":"Minutes Awake","code":"sleep/minutes-awake","content":"sleep/minutes-awake"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292cc"},"system":"http://midata.coop","display":"Minutes to Fall Asleep","code":"sleep/minutes-to-fall-asleep","content":"sleep/minutes-to-fall-asleep"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292cd"},"system":"http://midata.coop","display":"Efficiency","code":"sleep/efficiency","content":"sleep/efficiency"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292ce"},"system":"http://midata.coop","display":"Weight","code":"body/weight","content":"body/weight"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292cf"},"system":"http://midata.coop","display":"BMI","code":"body/bmi","content":"body/bmi"}
+{"_id":{"$oid":"5666a53faa4c3cbdf82292d0"},"system":"http://midata.coop","display":"Fat","code":"body/fat","content":"body/fat"}
+{"_id":{"$oid":"56fba579116010661a49ad2c"},"system":"http://midata.coop","display":"Subjective Condition","code":"subjective-condition","content":"subjective-condition"}
+{"_id":{"$oid":"56fba579116010661a49ad2d"},"system":"http://midata.coop","display":"Height","code":"body/height","content":"body/height"}
+{"_id":{"$oid":"56fba579116010661a49ad2e"},"system":"http://midata.coop","display":"Diary","code":"diary","content":"diary"}
+{"_id":{"$oid":"56fb890b1911127c0c2cc641"},"system":"http://loinc.org","code":"3141-9","display":"Body Weight","content":"body/weight"}
+{"_id":{"$oid":"56fb890b1911127c0c2cc643"},"system":"http://loinc.org","code":"61150-9","comment":"Patient Diary","display":"Patient Diary","content":"diary"}

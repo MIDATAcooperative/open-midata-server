@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import models.ContentCode;
 import models.ContentInfo;
 import models.LargeRecord;
 import models.Member;
@@ -267,14 +268,14 @@ public class MobileAPI extends Controller {
 		
 		AccessLog.log("NEW QUERY");
 		
-		if (properties.containsKey("content")) {
+		/*if (properties.containsKey("content")) {
 			Set<String> contents = Query.getRestriction(properties.get("content"), "content");
 			Set<String> add = new HashSet<String>();
 			for (String c : contents) {
 				add.add(ContentInfo.getNormalizedName(c));				
 			}			
 			properties.put("content", add);
-		}
+		}*/
 		
 		records = LargeRecord.getAll(appInstance._id, appInstance._id, properties, fields);		  
 				
@@ -325,7 +326,8 @@ public class MobileAPI extends Controller {
 				
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "authToken", "data", "name", "format", "content");
+		JsonValidation.validate(json, "authToken", "data", "name", "format");
+		if (!json.has("content") && !json.has("code")) new JsonValidationException("error.validation.fieldmissing", "Request parameter 'content' or 'code' not found.");
 		
 		// decrypt authToken 
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(json.get("authToken").asText());
@@ -352,8 +354,9 @@ public class MobileAPI extends Controller {
 		String description = JsonValidation.getString(json, "description");
 		String format = JsonValidation.getString(json, "format");
 		if (format==null) format = "application/json";
-		String content = JsonValidation.getString(json, "content");
-		if (content==null) content = "other";
+		String content = JsonValidation.getStringOrNull(json, "content");
+		Set<String> code = JsonExtraction.extractStringSet(json.get("code"));
+				
 		Record record = new Record();
 		record._id = new ObjectId();
 		record.app = appId;
@@ -367,9 +370,9 @@ public class MobileAPI extends Controller {
 		
 		record.format = format;
 		record.subformat = JsonValidation.getStringOrNull(json, "subformat");
+			
+		ContentInfo.setRecordCodeAndContent(record, code, content);
 				
-		record.content = ContentInfo.getNormalizedName(content);				
-		
 		try {
 			record.data = (DBObject) JSON.parse(data);
 		} catch (JSONParseException e) {

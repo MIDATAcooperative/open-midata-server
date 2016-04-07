@@ -12,6 +12,7 @@ import java.util.Set;
 
 import models.Admin;
 import models.Consent;
+import models.ContentInfo;
 import models.LargeRecord;
 import models.Plugin;
 import models.Record;
@@ -355,7 +356,9 @@ public class PluginsAPI extends Controller {
 				
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "authToken", "data", "name", "format", "content");
+		JsonValidation.validate(json, "authToken", "data", "name", "format");
+		if (!json.has("content") && !json.has("code")) new JsonValidationException("error.validation.fieldmissing", "Request parameter 'content' or 'code' not found.");
+		
 		
 		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(json.get("authToken").asText());
 				
@@ -371,7 +374,8 @@ public class PluginsAPI extends Controller {
 		String description = JsonValidation.getString(json, "description");
 		String format = JsonValidation.getString(json, "format");
 		
-		String content = JsonValidation.getString(json, "content");
+		String content = JsonValidation.getStringOrNull(json, "content");
+		Set<String> code = JsonExtraction.extractStringSet(json.get("code"));
 		
 		
 		Record record = new Record();
@@ -391,7 +395,8 @@ public class PluginsAPI extends Controller {
 		
 		record.format = format;
 		record.subformat = JsonValidation.getStringOrNull(json, "subformat");
-		record.content = content;
+		
+		ContentInfo.setRecordCodeAndContent(record, code, content);		
 					
 		try {
 			record.data = (DBObject) JSON.parse(data);

@@ -17,6 +17,7 @@ import javax.crypto.spec.SecretKeySpec;
 import models.APSNotExistingException;
 import models.AccessPermissionSet;
 import models.Circle;
+import models.ContentCode;
 import models.ContentInfo;
 import models.Member;
 import models.MemberKey;
@@ -64,12 +65,12 @@ public class RecordManager {
 	
 	public final static Set<String> INTERNALIDONLY = Sets.create("_id");
 	public final static Set<String> COMPLETE_META = Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format", "subformat", "content", "description", "isStream", "lastUpdated");
+			"app", "creator", "created", "name", "format", "subformat", "content", "code", "description", "isStream", "lastUpdated");
 	public final static Set<String> COMPLETE_DATA = Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format", "subformat", "content", "description", "isStream", "lastUpdated",
+			"app", "creator", "created", "name", "format", "subformat", "content", "code", "description", "isStream", "lastUpdated",
 			"data", "group");
 	public final static Set<String> COMPLETE_DATA_WITH_WATCHES = Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format", "subformat", "content", "description", "isStream", "lastUpdated",
+			"app", "creator", "created", "name", "format", "subformat", "content", "code", "description", "isStream", "lastUpdated",
 			"data", "group", "watches");
 	//public final static String STREAM_TYPE = "Stream";
 	public final static Map<String, Object> STREAMS_ONLY = CMaps.map("streams", "only").map("flat", "true");
@@ -652,6 +653,8 @@ public class RecordManager {
 		Map<String, Object> nproperties = new HashMap<String, Object>();
 		nproperties.put("streams", "true");
 		nproperties.put("flat", "true");
+		nproperties.put("group-system", "v1");
+		if (properties.containsKey("group-system")) nproperties.put("group-system", properties.get("group-system"));
 		if (properties.containsKey("owner")) nproperties.put("owner", properties.get("owner"));
 		if (properties.containsKey("study")) nproperties.put("study", properties.get("study"));
 		if (properties.containsKey("study-group")) nproperties.put("study-group", properties.get("study-group"));
@@ -802,6 +805,32 @@ public class RecordManager {
 			}
 		}
 		AccessLog.logEnd("end search for missing records");
+	}
+
+	public void patch20160407(ObjectId who) throws AppException {
+		List<DBRecord> all = QueryEngine.listInternal(getCache(who), who, CMaps.map("owner", "self"), RecordManager.COMPLETE_META);
+		for (DBRecord r : all) {
+			if (!r.meta.containsField("code")) { 
+				String content = r.meta.getString("content");
+				AccessLog.log(content);
+				if (content == null || content.equals("hugo")) {
+					RecordManager.instance.deleteRecord(who, new RecordToken(r._id.toString(), who.toString()));
+					continue;
+				}
+												
+				if (ContentInfo.isCoding(content)) {
+				   r.meta.put("code", content);
+				   String content2 = ContentCode.getContentForSystemCode(content);
+				   if (content2 == null) throw new InternalServerException("error.internal", "Unknown code '"+content+"' in convert.");
+				   r.meta.put("content", content2);
+				} else {
+				   r.meta.put("code", ContentInfo.getByName(r.meta.getString("content")).defaultCode);
+				}
+			    RecordEncryption.encryptRecord(r);
+			    DBRecord.set(r._id, "encrypted", r.encrypted);
+			}
+		}
+		
 	}
 	
 

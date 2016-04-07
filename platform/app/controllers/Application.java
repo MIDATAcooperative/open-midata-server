@@ -589,6 +589,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.FormatAPI.listGroups(),
 				controllers.routes.javascript.FormatAPI.listFormats(),
 				controllers.routes.javascript.FormatAPI.listContents(),
+				controllers.routes.javascript.FormatAPI.listCodes(),
 				
 				// Records					
 				controllers.routes.javascript.Records.get(),				

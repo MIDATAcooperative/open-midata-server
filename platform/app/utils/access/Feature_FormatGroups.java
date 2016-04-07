@@ -14,9 +14,10 @@ import utils.AccessLog;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 
-import models.FormatGroup;
+import models.RecordGroup;
 import models.ContentInfo;
 import models.Record;
 import models.RecordsInfo;
@@ -49,19 +50,19 @@ public class Feature_FormatGroups extends Feature {
 		}
 	}
 
-	private void addChildren(String group, Set<String> groups, Set<String> exclude) throws InternalServerException {		
-			FormatGroup grp = FormatGroup.getByName(group);
+	private static void addChildren(String groupSystem, String group, Set<String> groups, Set<String> exclude) throws InternalServerException {		
+			RecordGroup grp = RecordGroup.getBySystemPlusName(groupSystem, group);
 			if (grp != null) {
-			    for (FormatGroup child : grp.children) {
+			    for (RecordGroup child : grp.children) {
 			    	if (!groups.contains(child.name) && !exclude.contains(child.name)) {
 			    		groups.add(child.name);
-			    		addChildren(child.name, groups, exclude);
+			    		addChildren(groupSystem, child.name, groups, exclude);
 			    	}
 			    }		
 			}
 	}
 		
-	private Set<String> resolveContentNames(Query q, Set<String> groups) throws AppException {
+	/*private Set<String> resolveContentNames(Query q, Set<String> groups) throws AppException {
 		List<DBRecord> records = next.query(new Query(CMaps.map(q.getProperties()).map("streams", "true").map("flat", "true"), Sets.create("content"), q.getCache(), q.getApsId(), true ));
 		Set<String> result = new HashSet<String>();
 		for (DBRecord rec : records) {
@@ -72,33 +73,132 @@ public class Feature_FormatGroups extends Feature {
             }
 		}	
 		return result;
+	}*/
+	
+	public static Set<String> resolveContentNames(String groupSystem, Set<String> groups) throws AppException {
+		
+		Set<String> result = new HashSet<String>();
+		for (String grp : groups) {
+			RecordGroup recGroup = RecordGroup.getBySystemPlusName(groupSystem,grp);
+			if (recGroup == null) throw new BadRequestException("error.group", "Unknown group:'"+grp+"', group-system:'"+groupSystem+"'");
+			if (recGroup.contents != null) result.addAll(recGroup.contents);
+		}	
+		
+		return result;
 	}
 	
+    public static Set<String> resolveContentNames(String groupSystem, Set<String> included, Set<String> exclude) throws AppException {
+		
+		Set<String> groups = new HashSet<String>();		
+		groups.addAll(included);
+				
+		
+		for (String group : included) {
+			addChildren(groupSystem, group, groups, exclude);				
+		}
+		
+		return resolveContentNames(groupSystem, groups);
+	}
+    
+    public static void convertQueryToContents(String groupSystem, Map<String, Object> properties) throws BadRequestException, AppException {
+    	if (properties.containsKey("group")) {
+    		Set<String> include = Query.getRestriction(properties.get("group"), "group");
+    		Set<String> exclude;
+    		if (properties.containsKey("group-exclude")) {
+    			exclude = Query.getRestriction(properties.get("group-exclude"), "group-exclude");
+    		} else {
+    			exclude = new HashSet<String>();
+    		}
+    		Set<String> contents = resolveContentNames(groupSystem, include, exclude);
+    		properties.put("content", contents);
+    		properties.remove("group");
+    		properties.remove("group-exclude");
+    	}    			    	
+    }
+    
+    public static void convertQueryToGroups(String groupSystem, Map<String, Object> properties) throws BadRequestException, InternalServerException {
+    	if (properties.containsKey("content")) {
+    		Set<String> contents = Query.getRestriction(properties.get("content"), "content");
+    		Set<String> include = new HashSet<String>();
+    		
+    		Map<String, Integer> counts = new HashMap<String, Integer>();
+    		for (String content : contents) {
+    			String group =  RecordGroup.getGroupForSystemAndContent(groupSystem, content);
+    			if (counts.containsKey(group)) {
+    				counts.put(group, counts.get(group) + 1);
+    			} else {
+    				counts.put(group, 1);
+    			}
+    		}
+    		
+    		for (String grp : counts.keySet()) {
+    			RecordGroup group = RecordGroup.getBySystemPlusName(groupSystem, grp);
+    			if (group.contents != null && group.contents.size() == counts.get(grp)) {
+    				include.add(grp);
+    			}
+    		}
+    		
+    		int cancel = 10;
+    		boolean redo = false;
+    		do {
+    			
+    		redo = false;
+    		cancel--;
+    		
+    		counts.clear();
+    		
+    		for (String grp : include) {
+    			RecordGroup group = RecordGroup.getBySystemPlusName(groupSystem, grp);
+    			if (group.parent != null) {
+    				if (counts.containsKey(group.parent)) {
+        				counts.put(group.parent, counts.get(group.parent) + 1);
+        			} else {
+        				counts.put(group.parent, 1);
+        			}	
+    			}
+    		}
+    		
+    		for (String grp : counts.keySet()) {
+    			RecordGroup group = RecordGroup.getBySystemPlusName(groupSystem, grp);
+    			if (group.children != null && group.children.size() == counts.get(grp)) {
+    				AccessLog.log("add group:"+grp);
+    				AccessLog.log("remove:"+group.children.toString());
+    				include.add(grp);
+    				for (RecordGroup g : group.children) include.remove(g.name);
+    				redo = true;
+    			}
+    		}
+    		
+    		} while (redo && cancel > 0);
+    		if (cancel <= 0) properties.put("error", "true");
+    		
+    		properties.put("group", include);
+    		properties.put("group-system", groupSystem);
+    		properties.remove("content");
+    	}
+    }
+		
 	private Set<String> prepareFilter(Query q) throws AppException {		
 		
 		if (q.restrictedBy("group")) {
-						
-			Set<String> groups = new HashSet<String>();
-			Set<String> included = q.getRestriction("group"); 
-			groups.addAll(included);
+			String groupSystem = q.getStringRestriction("group-system");
+			if (groupSystem == null) groupSystem = "v1";
 			
 			Set<String> exclude = new HashSet<String>();
 			if (q.restrictedBy("group-exclude")) exclude.addAll(q.getRestriction("group-exclude"));
-			
-			for (String group : included) {
-				addChildren(group, groups, exclude);				
-			}
-			
-			return resolveContentNames(q, groups);
+									
+			return resolveContentNames(groupSystem, q.getRestriction("group"), exclude);
 		    		  		    
 		    
 		} else if (q.restrictedBy("group-strict")) {           
+			String groupSystem = q.getStringRestriction("group-system");
+			if (groupSystem == null) groupSystem = "v1";
 			
 			Set<String> groups = new HashSet<String>();
 			Set<String> included = q.getRestriction("group-strict"); 
 			groups.addAll(included);
 									
-			return resolveContentNames(q, groups);			
+			return resolveContentNames(groupSystem, groups);			
 		}
 		
 		return null;
@@ -120,12 +220,15 @@ public class Feature_FormatGroups extends Feature {
 	protected List<DBRecord> postProcess(List<DBRecord> records, Query q) throws AppException {
 		List<DBRecord> result = next.postProcess(records, q);
 		if (q.returns("group")) {
+			String system = q.getStringRestriction("group-system");
+			if (system == null) system = "v1";
+			
 			for (DBRecord record : result) {
-				ContentInfo fi = ContentInfo.getByName((String) record.meta.get("content"));
-	    		record.group = fi.group;
+	    		record.group = RecordGroup.getGroupForSystemAndContent(system, (String) record.meta.get("content"));
 			}
 		}	
 		return result;
 	}	
 
+	
 }

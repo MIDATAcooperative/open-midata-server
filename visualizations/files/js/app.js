@@ -101,7 +101,7 @@ files.controller('FilesCtrl', ['$scope', '$http', '$location', 'FileUploader', '
 				"name": $scope.title,
 				"description": $scope.description,
 				"format" : "application/octet-stream",
-				"content" : "other"
+				"content" : "unknown"
 			}];
 
 			// upload the current queue (1 file)

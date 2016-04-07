@@ -5,6 +5,7 @@ angular.module('portal')
 	$scope.error = null;
 		
 	$scope.userId = null;
+	$scope.lang = "en";
 	
 	$scope.records = [];
 	$scope.infos = [];
@@ -50,7 +51,10 @@ angular.module('portal')
 		var properties = {};
 		if (owner) properties.owner = owner;
 		if (study) properties.study = study;
-		if (group) properties["group-strict"] = group;
+		if (group) {
+			properties["group-strict"] = group;
+			properties["group-system"] = "v1";
+		}
 		if ($scope.debug) properties.streams = "true";
 		return $scope.status.doAction("load", records.getRecords(userId, properties, ["id", "owner", "ownerName", "content", "created", "name", "group"])).
 		then(function(results) {
@@ -147,12 +151,12 @@ angular.module('portal')
 	   	newgroup.countShared = 0;
 	   	
 	   	if (newgroup.parent == null) {
-	   		newgroup.fullLabel = newgroup.label;
+	   		newgroup.fullLabel = newgroup.label[$scope.lang];
 	   		$scope.tree.push(newgroup);
 	   	} else {
 	   		var prt = getOrCreateGroup(newgroup.parent);
-	   		if (prt.parent != null) newgroup.fullLabel = prt.label + " / "+newgroup.label;
-	   		else newgroup.fullLabel = newgroup.label;
+	   		if (prt.parent != null) newgroup.fullLabel = prt.label[$scope.lang] + " / "+newgroup.label[$scope.lang];
+	   		else newgroup.fullLabel = newgroup.label[$scope.lang];
 	   		prt.children.push(newgroup);
 	   	}
 	   	

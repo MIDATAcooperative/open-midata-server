@@ -8,6 +8,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import models.ContentCode;
+import models.Plugin;
+
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.joda.time.format.ISODateTimeFormat;
@@ -40,7 +43,7 @@ public class Query {
 	private ObjectId apsId;
 	private boolean giveKey;	
 		
-	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, ObjectId apsId) throws BadRequestException {
+	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, ObjectId apsId) throws BadRequestException, InternalServerException {
 		this.properties = properties;
 		this.fields = fields;
 		this.cache = cache;
@@ -49,7 +52,7 @@ public class Query {
 		AccessLog.logQuery(properties, fields);
 	}
 	
-	public Query(Query q, Map<String, Object> properties) throws BadRequestException {
+	public Query(Query q, Map<String, Object> properties) throws BadRequestException, InternalServerException {
 		this.properties = new HashMap<String, Object>(q.getProperties());
 		this.properties.putAll(properties);
 		this.fields = q.getFields();
@@ -60,7 +63,7 @@ public class Query {
 		AccessLog.logQuery(properties, fields);
 	}
 	
-	public Query(Query q, Map<String, Object> properties, ObjectId aps) throws BadRequestException {
+	public Query(Query q, Map<String, Object> properties, ObjectId aps) throws BadRequestException, InternalServerException {
 		this.properties = new HashMap<String, Object>(q.getProperties());
 		this.properties.putAll(properties);
 		this.fields = q.getFields();
@@ -71,7 +74,7 @@ public class Query {
 		AccessLog.logQuery(properties, fields);
 	}
 	
-	protected Query(Map<String, Object> properties, Set<String> fields, APSCache cache,  ObjectId apsId, boolean giveKey) throws BadRequestException {
+	protected Query(Map<String, Object> properties, Set<String> fields, APSCache cache,  ObjectId apsId, boolean giveKey) throws BadRequestException, InternalServerException {
 		this.properties = properties;
 		this.fields = fields;
 		this.cache = cache;
@@ -255,19 +258,27 @@ public class Query {
 		return date;
 	}
 	
-	private void process() throws BadRequestException {
+	public String getStringRestriction(String name) throws BadRequestException {
+		Object restriction = properties.get(name);
+		if (restriction == null) return null;
+		if (restriction instanceof String) return (String) restriction;
+		throw new BadRequestException("error.string", "Restriction on field '"+name+"' must be string.");		
+	}
+	
+	private void process() throws BadRequestException, InternalServerException {
 		 if (fields.contains("group")) fields.add("content");
 		
 		 fetchFromDB = fields.contains("data") ||
 	              fields.contains("app") || 
 	              fields.contains("creator") || 	             
-	              fields.contains("name") || 
+	              fields.contains("name") ||
+	              fields.contains("code") || 
 	              fields.contains("description") || 
 	              fields.contains("tags") ||	              
 	              fields.contains("watches") ||
 	              properties.containsKey("app") ||
 	              properties.containsKey("creator") ||
-	              
+	              properties.containsKey("code") ||
 	              properties.containsKey("name");
 		 
 		 restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age") || properties.containsKey("created-after") || properties.containsKey("updated-after") || properties.containsKey("updated-before");
@@ -320,6 +331,29 @@ public class Query {
 				maxDateUpdated = getDateRestriction("updated-before");
 				maxTime = getTimeFromDate(maxDateUpdated);
 				fetchFromDB = true;
+		 }
+		 
+		 if (properties.containsKey("app")) {
+			 Set<String> apps = getRestriction("app");
+			 Set<ObjectId> resolved = new HashSet<ObjectId>();
+			 for (String app : apps) {
+				 if (!ObjectId.isValid(app)) {
+					 Plugin p = Plugin.getByFilename(app, Sets.create("_id"));	
+					 if (p!=null) resolved.add(p._id);
+				 } else resolved.add(new ObjectId(app));
+			 }
+			 properties.put("app", resolved);
+		 }
+		 
+		 if (properties.containsKey("code") && !properties.containsKey("content")) {
+			 Set<String> codes = getRestriction("code");
+			 Set<String> contents = new HashSet<String>();
+			 for (String code : codes) {
+				 String content = ContentCode.getContentForSystemCode(code);
+				 if (content == null) throw new BadRequestException("error.code", "Unknown code '"+code+"' in restriction.");
+				 contents.add(content);
+			 }
+			 properties.put("content", contents);
 		 }
 	}
 	

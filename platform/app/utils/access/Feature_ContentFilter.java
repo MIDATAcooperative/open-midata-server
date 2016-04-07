@@ -43,4 +43,5 @@ public class Feature_ContentFilter extends Feature {
 		return next.lookup(record, q);
 	}
 
+	
 }

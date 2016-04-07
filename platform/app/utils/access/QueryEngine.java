@@ -30,6 +30,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import models.ContentInfo;
 import models.Record;
+import models.RecordGroup;
 import models.RecordsInfo;
 import models.enums.APSSecurityLevel;
 import models.enums.AggregationType;
@@ -84,7 +85,7 @@ class QueryEngine {
 		if (AccessLog.detailedLog) AccessLog.logBegin("Begin list from memory #recs="+records.size());
 		APS inMemory = new Feature_InMemoryQuery(records);
 		cache.addAPS(inMemory);
-		Feature qm = new Feature_FormatGroups(new Feature_ContentFilter(inMemory));
+		Feature qm = new Feature_ProcessFilters(new Feature_FormatGroups(new Feature_ContentFilter(inMemory)));
 		Query query = new Query(properties, Sets.create("_id"), cache, inMemory.getId(), true);
 		List<DBRecord> recs = qm.query(query);
 		AccessLog.log("list from memory pre postprocess size = "+recs.size());
@@ -108,9 +109,27 @@ class QueryEngine {
 		AccessLog.logBegin("begin infoQuery aps="+aps+" cached="+cached);
 		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
 		
-		boolean doNotCache = q.getCache().getAPS(aps).getMeta("_exclude") != null;
+		boolean doNotCacheInStreams = q.getCache().getAPS(aps).getMeta("_exclude") != null;
+		boolean doNotQueryPerStream = false;
+		
+		if (!doNotCacheInStreams) {
+		  BasicBSONObject query = q.getCache().getAPS(aps).getMeta(APS.QUERY);
+		  if (query != null) {
+			  Map<String, Object> queryMap = query.toMap();
+			  if (queryMap.containsKey("app")) {
+				  doNotCacheInStreams = true;
+				  doNotQueryPerStream = true;
+			  }
+		  }
+		}
+		
+		if (doNotQueryPerStream) {			
+			q.getProperties().remove("streams");
+			q.getProperties().remove("flat");
+		}
 		
 		if (cached) {
+			String groupSystem = q.getStringRestriction("group-system");
 			APS myaps = q.getCache().getAPS(aps);
 			BasicBSONObject obj = myaps.getMeta("_info");
 			if (obj != null) { 
@@ -119,10 +138,10 @@ class QueryEngine {
 				inf.count = obj.getInt("count");				
 				inf.newest = obj.getDate("newest");
 				inf.oldest = obj.getDate("oldest");
-				inf.newestRecord = new ObjectId(obj.getString("newestRecord"));				
-				inf.groups.add(obj.getString("groups"));
+				inf.newestRecord = new ObjectId(obj.getString("newestRecord"));								
 				inf.formats.add(obj.getString("formats"));
 				inf.contents.add(obj.getString("contents"));
+				for (String content : inf.contents) inf.groups.add(RecordGroup.getGroupForSystemAndContent(groupSystem, content));
 				if (owner != null) inf.owners.add(owner.toString());
 				inf.calculated = obj.getDate("calculated");
 				String k = getInfoKey(aggrType, obj.getString("groups"), obj.getString("contents"), obj.getString("formats"), owner);
@@ -142,16 +161,16 @@ class QueryEngine {
 		}
 		
 		
-		Feature qm = new Feature_BlackList(q, new Feature_QueryRedirect(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Streams()))));
+		Feature qm = new Feature_BlackList(q, new Feature_QueryRedirect(new Feature_ProcessFilters(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Streams())))));
 				
 		List<DBRecord> recs = qm.query(q);
 		recs = postProcessRecords(qm, q, recs);
 		
 		for (DBRecord record : recs) {
-			if (record.isStream) {
+			if (record.isStream) {				
 				q.getCache().getAPS(record._id, record.key, record.owner); // Called to make sure stream is accessible
 				
-				Collection<RecordsInfo> streaminfo = infoQuery(new Query(q, CMaps.map("stream", record._id)), record._id, !doNotCache, aggrType, record.owner);
+				Collection<RecordsInfo> streaminfo = infoQuery(new Query(q, CMaps.map("stream", record._id)), record._id, !doNotCacheInStreams, aggrType, record.owner);
 				
 				for (RecordsInfo inf : streaminfo) {
 					if (record.owner != null) inf.owners.add(record.owner.toString());
@@ -179,8 +198,7 @@ class QueryEngine {
 		AccessLog.logEnd("end infoQuery result: cached="+cached+" records="+recs.size()+" result="+result.size());
 		if (cached && recs.size()>0 && result.size() == 1) {
 			RecordsInfo inf = result.values().iterator().next();
-			BasicBSONObject r = new BasicBSONObject();
-			r.put("groups", inf.groups.iterator().next());
+			BasicBSONObject r = new BasicBSONObject();			
 			r.put("formats", inf.formats.iterator().next());
 			r.put("contents", inf.contents.iterator().next());			
 			r.put("count", inf.count);
@@ -198,7 +216,7 @@ class QueryEngine {
     	List<DBRecord> result;
     	
     	
-    	Feature qm = new Feature_BlackList(q, new Feature_QueryRedirect(new Feature_Indexes(new Feature_AccountQuery(new Feature_Consents(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams())))))));
+    	Feature qm = new Feature_BlackList(q, new Feature_QueryRedirect(new Feature_ProcessFilters(new Feature_Indexes(new Feature_AccountQuery(new Feature_Consents(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams()))))))));
     									
 		result = findRecordsDirectlyInDB(q);
     	
@@ -210,8 +228,7 @@ class QueryEngine {
 		if (result == null) {
 			AccessLog.log("NULL result");
 		}
-		AccessLog.log("Pre Postprocess result size:"+result.size());
-				
+					
 		result = postProcessRecords(qm, q, result);
 		AccessLog.logEnd("end full query");
 		
@@ -282,12 +299,22 @@ class QueryEngine {
     
     protected static List<DBRecord> postProcessRecords(Feature qm, Query q, List<DBRecord> result) throws AppException {
     	if (result.size() > 0) {
-    	
-    	result = duplicateElimination(result); 
+    	   result = duplicateElimination(result); 
+	       Collections.sort(result);	    
+	       result = limitResultSize(q, result);	    
+    	}
+	    
+	    AccessLog.log("END Full Query, result size="+result.size());
+	    
+		return result;
+    }
+    
+    protected static List<DBRecord> postProcessRecordsFilter(Feature qm, Query q, List<DBRecord> result) throws AppException {
+    	if (result.size() > 0) {
+    	AccessLog.logBegin("begin process filters size="+result.size());    	
 			    	
     	int minTime = q.getMinTime();
-    	int compress = 0;    	
-    	
+    	int compress = 0;    	    	
     	if (q.getFetchFromDB()) {				
 			for (DBRecord record : result) {
 				fetchFromDB(q, record);
@@ -334,23 +361,17 @@ class QueryEngine {
 		if (q.restrictedBy("creator")) result = filterByMetaSet(result, "creator", q.getObjectIdRestriction("creator"));
 		if (q.restrictedBy("app")) result = filterByMetaSet(result, "app", q.getObjectIdRestriction("app"));
 		if (q.restrictedBy("name")) result = filterByMetaSet(result, "name", q.getRestriction("name"));
+		if (q.restrictedBy("code")) result = filterByMetaSet(result, "code", q.getRestriction("code"));
 		if (q.restrictedBy("data"))	result = filterByDataQuery(result, (Map<String,Object>) q.getProperties().get("data"));
 		
 		result = filterByDateRange(result, "created", q.getMinDateCreated(), q.getMaxDateCreated());			
 		result = filterByDateRange(result, "lastUpdated", q.getMinDateUpdated(), q.getMaxDateUpdated());
-		
-		// 9 Order records
-	    Collections.sort(result);
-	    
-	    result = limitResultSize(q, result);
+		AccessLog.logEnd("end process filters size="+result.size());
 	    
     	}
-	    
-	    AccessLog.log("END Full Query, result size="+result.size());
-	    
+	    	    	    
 		return result;
     }
-    
     
     
     /*
@@ -365,10 +386,32 @@ class QueryEngine {
     	return filteredResult;
     }*/
     
-    protected static List<DBRecord> filterByMetaSet(List<DBRecord> input, String property, Set values) {    	
+    protected static List<DBRecord> filterByMetaSet(List<DBRecord> input, String property, Set values) {
+    	AccessLog.log("filter by meta-set: "+property);
     	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());
     	for (DBRecord record : input) {
     		if (!values.contains(record.meta.get(property))) continue;    		    		
+    		filteredResult.add(record);
+    	}    	
+    	return filteredResult;
+    }
+    
+    protected static List<DBRecord> filterSetByMetaSet(List<DBRecord> input, String property, Set values) {
+    	AccessLog.log("filter set by meta-set: "+property);
+    	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());
+    	for (DBRecord record : input) {
+    		Object v = record.meta.get(property);
+    		if (v == null) continue;
+    		if (v instanceof String) {
+    		   if (!values.contains((String) v)) continue;	
+    		} else {
+    		  boolean any = false;
+    		  for (String vi : (Collection<String>) v) {
+    			  if (values.contains(vi)) any = true;
+    		  }
+    		  if (!any) continue;
+    		}
+    		    		    		
     		filteredResult.add(record);
     	}    	
     	return filteredResult;

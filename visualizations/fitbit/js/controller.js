@@ -272,7 +272,16 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 							  							  
 							  var rec = {
 								resourceType : "Observation",
-								status : "final",
+								status : "preliminary",
+								category : {
+									  coding : [
+									    {
+									      system : "http://hl7.org/fhir/observation-category",
+									      code : "vital-signs",
+									      display : "Vital Signs"
+									   }
+									  ]
+								},
 								code : { coding : [ { system : "http://midata.coop", code : measure.content, display : measure.name } ] },
 								effectiveDateTime : recDate,
 								valueQuantity : {

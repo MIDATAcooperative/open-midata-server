@@ -30,6 +30,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.access.APS;
+import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.MemberSecured;
@@ -179,8 +180,11 @@ public class Records extends APIController {
 		Map<String, Object> query = Circles.getQueries(userId, apsId);
 		if (query == null) {			
 			BSONObject b = RecordManager.instance.getMeta(userId, apsId, APS.QUERY);
-			if (b!=null) query = b.toMap();
+			if (b!=null) {
+				query = b.toMap();				
+			}
 		}
+		if (query != null) Feature_FormatGroups.convertQueryToGroups("v1", query);
 		Set<String> recordsIds = RecordManager.instance.listRecordIds(userId, apsId);
 		
 		Map<String, Object> props = new HashMap<String, Object>();
@@ -314,6 +318,15 @@ public class Records extends APIController {
 		Set<ObjectId> stopped = ObjectIdConversion.toObjectIds(JsonExtraction.extractStringSet(json.get("stopped")));
 		Set<String> recordIds = JsonExtraction.extractStringSet(json.get("records"));		
 		Map<String, Object> query = json.has("query") ? JsonExtraction.extractMap(json.get("query")) : null;
+		String groupSystem = null;
+		if (query != null) {
+			if (query.containsKey("group-system")) {
+			  groupSystem = query.get("group-system").toString();
+			} else {
+			  groupSystem = "v1";
+			}
+		}
+		
 		if (query.isEmpty()) query = null;
 		
 		// get owner
@@ -349,6 +362,8 @@ public class Records extends APIController {
         	}    
         	
         	if (query != null) {
+        		Feature_FormatGroups.convertQueryToContents(groupSystem, query);
+        		
         		if (consent == null) {
         		  RecordManager.instance.shareByQuery(userId, userId, start, query);
         		} else {
@@ -377,6 +392,8 @@ public class Records extends APIController {
         	}    
         	
         	if (query != null) {
+        		Feature_FormatGroups.convertQueryToContents(groupSystem, query);
+        		
         		if (consent == null) {
         		  RecordManager.instance.shareByQuery(userId, userId, start, query);
         		} else {

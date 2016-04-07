@@ -1,7 +1,10 @@
 package utils.access;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -29,6 +32,10 @@ public class RecordConversion {
 		record.format = (String) dbrecord.meta.get("format");		
 		record.subformat = (String) dbrecord.meta.get("subformat");
 		record.content = (String) dbrecord.meta.get("content");
+		Object code = dbrecord.meta.get("code");
+		if (code != null) {
+		  record.code = (code instanceof String) ? Collections.singleton(code) : new HashSet((Collection) code);
+		}
 		record.owner = dbrecord.owner;
 		record.ownerName = (String) dbrecord.meta.get("ownerName");
 		record.tags = (Set<String>) dbrecord.meta.get("tags");
@@ -67,6 +74,11 @@ public class RecordConversion {
 		meta.put("format", record.format);
 		if (record.subformat != null) meta.put("subformat", record.subformat);
 		meta.put("content", record.content);
+		if (record.code != null && record.code.size() == 1) {
+		   meta.put("code", record.code.iterator().next());
+		} else {
+		   meta.put("code", record.code);
+		}
 		dbrecord.data = record.data;
 		return dbrecord;
 	}

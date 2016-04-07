@@ -11,9 +11,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import actions.APICall;
 import actions.VisualizationCall;
 
-import models.Coding;
+import models.ContentCode;
 import models.ContentInfo;
-import models.FormatGroup;
+import models.RecordGroup;
 import models.FormatInfo;
 import models.Loinc;
 import play.libs.Json;
@@ -40,7 +40,7 @@ public class FormatAPI extends Controller {
 	 */
 	@APICall
 	public static Result listGroups() throws InternalServerException {
-	    Collection<FormatGroup> groups = FormatGroup.getAll();
+	    Collection<RecordGroup> groups = RecordGroup.getAll();
 	    return ok(Json.toJson(groups));
 	}
 	
@@ -56,14 +56,25 @@ public class FormatAPI extends Controller {
 	}
 	
 	/**
-	 * public function to get a list of content type prefixes supported by the platform
+	 * public function to get a list of content types supported by the platform
 	 * @return
 	 * @throws InternalServerException
 	 */
 	@APICall
 	public static Result listContents() throws InternalServerException {
-	    Collection<ContentInfo> contents = ContentInfo.getAll(Collections.<String, String> emptyMap(), Sets.create("content", "group", "security", "comment"));
+	    Collection<ContentInfo> contents = ContentInfo.getAll(Collections.<String, String> emptyMap(), Sets.create("content", "security", "comment", "label", "defaultCode"));
 	    return ok(Json.toJson(contents));
+	}
+	
+	/**
+	 * public function to get a list of all codes supported by the platform
+	 * @return
+	 * @throws InternalServerException
+	 */
+	@APICall
+	public static Result listCodes() throws InternalServerException {
+	    Collection<ContentCode> codes = ContentCode.getAll(Collections.<String, String> emptyMap(), Sets.create("system", "code", "display", "content"));
+	    return ok(Json.toJson(codes));
 	}
 	
 	/**
@@ -88,9 +99,9 @@ public class FormatAPI extends Controller {
 		if (properties.containsKey("$text")) {
 		  properties.remove("system");
 		  Collection<Loinc> loincCodes = Loinc.getAll(properties, Sets.create("LOINC_NUM","LONG_COMMON_NAME"));
-		  Collection<Coding> results = new ArrayList<Coding>(loincCodes.size());
+		  Collection<ContentCode> results = new ArrayList<ContentCode>(loincCodes.size());
 		  for (Loinc loinc : loincCodes) {
-			  Coding code = new Coding();
+			  ContentCode code = new ContentCode();
 			  code.system = "http://loinc.org";
 			  code.code = loinc.LOINC_NUM;
 			  code.display = loinc.LONG_COMMON_NAME;
@@ -98,7 +109,7 @@ public class FormatAPI extends Controller {
 		  }
 		  return ok(Json.toJson(results));
 		} else {		
-	      Collection<Coding> contents = Coding.getAll(properties, fields);
+	      Collection<ContentCode> contents = ContentCode.getAll(properties, fields);
 	      
 	      
 	      return ok(Json.toJson(contents));

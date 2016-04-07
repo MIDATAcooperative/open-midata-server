@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -12,6 +13,7 @@ import utils.db.NotMaterialized;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.json.JsonValidation.JsonValidationException;
 
 /**
  * data model for data content types.
@@ -20,7 +22,7 @@ import utils.exceptions.InternalServerException;
 public class ContentInfo extends Model {
 
 	private @NotMaterialized static final String collection = "contentinfo";
-	private @NotMaterialized static final Set<String> ALL = Sets.create("content","security","group","alias");
+	private @NotMaterialized static final Set<String> ALL = Sets.create("content", "defaultCode", "security","label", "comment");
 	
 	/**
 	 * the name of the content type this class describes
@@ -28,19 +30,25 @@ public class ContentInfo extends Model {
 	public String content;	
 	
 	/**
+	 * the default system + code used for this content type
+	 */
+	public String defaultCode;
+	
+	/**
 	 * the level of security this consent type should be handeled with
 	 */
 	public APSSecurityLevel security;
 	
 	/**
-	 * the name of the group where records with this content types should be placed in in the record tree
+	 * a map from language to label containing a label for each supported language
 	 */
-	public String group;
+	public Map<String, String> label;
 	
 	/**
-	 * a name of another content value with the same meaning;
+	 * Deprecated: the name of the group where records with this content types should be placed in in the record tree
 	 */
-	public String alias;
+	public String group;
+		
 	
 	/**
 	 * a comment
@@ -48,19 +56,13 @@ public class ContentInfo extends Model {
 	public String comment;
 	
 	
-	/*public static String getWildcardName(String name) {
-		int p = name.indexOf("/");
-		if (p>=0) name = name.substring(0, p);
-		return name;
-	}*/
-	
 	private static Map<String, ContentInfo> byName = new ConcurrentHashMap<String, ContentInfo>();
 	
 	public static ContentInfo getByName(String name) throws AppException {
-		if (name.startsWith("http://midata.coop ")) name = name.substring("http://midata.coop ".length());
+		//if (name.startsWith("http://midata.coop ")) name = name.substring("http://midata.coop ".length());
 		
-		if (!name.startsWith("http:")) { 
-		//name = name.toLowerCase();
+		/*if (!name.startsWith("http:")) { 
+		
 		int p = name.indexOf("/");
 		if (p>=0) name = name.substring(0, p);
 		
@@ -76,7 +78,7 @@ public class ContentInfo extends Model {
 		}
 		byName.put(name, r);
         return r;		
-		} else {
+		} else {*/
 			ContentInfo r = byName.get(name);
 			//if (r!=null && r.alias != null) return getByName(r.alias);
 			if (r != null) return r;
@@ -87,21 +89,58 @@ public class ContentInfo extends Model {
 			byName.put(name, r);
 			//if (r.alias != null) return getByName(r.alias);
 			return r;
-		}
+		//}
 				
 	}
 	
+	public static void setRecordCodeAndContent(Record record, Set<String> code, String content) throws JsonValidationException, AppException {
+		if (content != null && ContentInfo.isCoding(content)) {
+			code = Collections.singleton(content);
+			content = null;
+		}
+		if (code != null && !code.isEmpty()) {
+			content = null;
+			for (String c : code) {
+			  String ncontent = ContentCode.getContentForSystemCode(c);
+			  if (ncontent != null) {
+				  if (content == null) content = ncontent;
+				  else if (!content.equals(ncontent)) throw new JsonValidationException("error.field", "Record codes do not provide same content '"+code.toString()+"'!");
+			  }
+			}
+			if (content == null) throw new JsonValidationException("error.field", "Unknown record codes '"+code.toString()+"'!");
+		} else {
+			ContentInfo ci = ContentInfo.getByName(content);
+			content = ci.content;
+			code = Collections.singleton(ci.defaultCode);			
+		}
+		record.code = code;
+		record.content = content;
+	}
+	
+	public static boolean isCoding(String name) {
+		return name.indexOf(' ')>0;
+	}
+	
+	/*
 	public static String getNormalizedName(String content) throws AppException {
 		ContentInfo ci = getByName(content);
 		if (ci.alias != null) return ci.alias;
-		return ci.content;
+		if (content.startsWith("http://midata.coop ")) content = content.substring("http://midata.coop ".length());
+		return content;
 	}
+	*/
 	
+	/*
 	public static Set<ContentInfo> getByGroups(Set<String> group) throws InternalServerException {
 		return Model.getAll(ContentInfo.class, collection, CMaps.map("group", group), ALL);
 	}
+	*/
 	
 	public static Set<ContentInfo> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.getAll(ContentInfo.class, collection, properties, fields);
+	}
+	
+	public static void add(ContentInfo ci) throws InternalServerException {
+		Model.insert(collection, ci);				
 	}
 }

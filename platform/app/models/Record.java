@@ -28,8 +28,8 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	/**
 	 * constant containing the set of all public field names
 	 */
-	public @NotMaterialized final static Set<String> ALL_PUBLIC = Sets.create("_id", "id", "owner",
-			"app", "creator", "created", "name", "format", "subformat", "content", "description", "data", "group");
+	public @NotMaterialized final static Set<String> ALL_PUBLIC = Sets.create("_id", "id", "version", "owner",
+			"app", "creator", "created", "name", "format", "subformat", "content", "code", "description", "data", "group");
 
 	
 	/**
@@ -100,6 +100,7 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	
 	/**
 	 * (Optional) subformat of record
+	 * This field is contained in the encrypted part of the record.
 	 */
 	public String subformat;
 	
@@ -110,6 +111,14 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * This field is contained in the encrypted part of the record. 
 	 */
 	public String content;
+	
+	/**
+	 * The content system+code of the records data.
+	 * 
+	 * This is the semantical data format expressed as a code system + code pair.
+	 * This field is contained in the encrypted part of the record. 
+	 */
+	public Set<String> code;
 	
 	/**
 	 * The group name where the record will be placed in the record tree

@@ -11,16 +11,18 @@ import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
+import models.ContentInfo;
 import models.Record;
 import models.Space;
 import models.User;
 
 public class AccountPatches {
 
-	public static final int currentAccountVersion = 20160324;
+	public static final int currentAccountVersion = 20160407;
 	
 	public static void check(User user) throws AppException {
-		if (user.accountVersion < 20160324) { formatPatch20160324(user); }					
+		if (user.accountVersion < 20160324) { formatPatch20160324(user); }	
+		if (user.accountVersion < 20160407) { formatPatch20160407(user); }
 	}
 	
 	public static void makeCurrent(User user, int currentAccountVersion) throws AppException {
@@ -50,6 +52,12 @@ public class AccountPatches {
 	   }	   
 	   RecordManager.instance.fixAccount(user._id);
 	   makeCurrent(user, 20160324);
+	}
+	
+	public static void formatPatch20160407(User user) throws AppException {		   
+		   RecordManager.instance.patch20160407(user._id); 		      
+		   RecordManager.instance.fixAccount(user._id);
+		   makeCurrent(user, 20160407);
 	}
 		
 }

@@ -38,13 +38,13 @@
 		  <formrow myid="previewUrl" label="Dashboard Tile URL" ng-hide="app.type == 'mobile'">
 		    <input type="text" id="previewUrl" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" ng-model="app.previewUrl">
 		  </formrow>
-		  <formrow myid="defaultSpaceName" label="Tile Name" ng-show="app.type == 'visualization'">
+		  <formrow myid="defaultSpaceName" label="Tile Name" ng-show="app.type != 'mobile'">
 		    <input type="text" id="defaultSpaceName" class="form-control" placeholder="Tile Name" ng-model="app.defaultSpaceName">
 		  </formrow>
-		  <formrow myid="defaultSpaceContext" label="Default Dashboard" ng-show="app.type == 'visualization'">
+		  <formrow myid="defaultSpaceContext" label="Default Dashboard" ng-show="app.type != 'mobile'">
 		    <input type="text" id="defaultSpaceContext" class="form-control" placeholder="Dashboard Name" ng-model="app.defaultSpaceContext">
 		  </formrow>
-		  <formrow myid="defaultQuery" label="Access Query(JSON)" ng-show="app.type == 'visualization'">
+		  <formrow myid="defaultQuery" label="Access Query(JSON)">
 		    <textarea rows="5" id="defaultQuery" class="form-control" placeholder="Description" ng-model="app.defaultQueryStr"></textarea>
 		  </formrow>		 
 		  <formrow myid="authorizationUrl" label="Authorization URL" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">

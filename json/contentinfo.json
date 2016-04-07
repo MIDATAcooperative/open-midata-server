@@ -1,110 +1,124 @@
-{"_id":{"$oid":"55ae59bef351efda91eadc68"},"content":"genome-data","security":"HIGH","group":"genome"}
-{"_id":{"$oid":"55ae59bef351efda91eadc69"},"content":"medical","security":"HIGH","group":"health"}
-{"_id":{"$oid":"55ae59bef351efda91eadc6a"},"content":"observation","security":"HIGH","group":"health"}
-{"_id":{"$oid":"55ae59bef351efda91eadc6b"},"content":"account","security":"HIGH","group":"other"}
-{"_id":{"$oid":"55ae59bef351efda91eadc6c"},"content":"body","security":"MEDIUM","group":"qself"}
-{"_id":{"$oid":"55ae59bef351efda91eadc6d"},"content":"food","security":"MEDIUM","group":"nutrition"}
-{"_id":{"$oid":"55ae59bef351efda91eadc6e"},"content":"activities","security":"MEDIUM","group":"movement"}
-{"_id":{"$oid":"55ae59bef351efda91eadc6f"},"content":"sleep","security":"MEDIUM","group":"sleep"}
-{"_id":{"$oid":"55ae59bef351efda91eadc70"},"content":"calendar","security":"MEDIUM","group":"calendar"}
-{"_id":{"$oid":"55ae59bef351efda91eadc71"},"content":"diary","security":"MEDIUM","group":"diary"}
-{"_id":{"$oid":"56fa3f4f6c19d1e1e9d2536f"},"content":"mood","security":"MEDIUM","group":"mood"}
-{"_id":{"$oid":"55b5fdb5a69243d780682793"},"content":"survey","security":"HIGH","group":"studies"}
-{"_id":{"$oid":"55b5fddaa69243d780682794"},"content":"templates","security":"HIGH","group":"templates"}
-{"_id":{"$oid":"55f81dd8cb01db2880c769e9"},"content":"other","security":"HIGH","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ecdd3"},"content":"AllergyIntolerance","security":"HIGH","group":"allergies"}
-{"_id":{"$oid":"569915fc6281a61a232ecdd4"},"content":"Appointment","security":"MEDIUM","group":"calendar"}
-{"_id":{"$oid":"569915fc6281a61a232ecdd5"},"content":"AppointmentResponse","security":"MEDIUM","group":"calendar"}
-{"_id":{"$oid":"569915fc6281a61a232ecdd6"},"content":"AuditEvent","security":"HIGH","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ecdd7"},"content":"Basic","security":"HIGH","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ecdd8"},"content":"Binary","security":"HIGH","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ecdd9"},"content":"BodySite","security":"HIGH","group":"otherhealth"}
-{"_id":{"$oid":"569915fc6281a61a232ecdda"},"content":"Bundle","security":"HIGH","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ecddb"},"content":"CarePlan","security":"HIGH","group":"care"}
-{"_id":{"$oid":"569915fc6281a61a232ecddc"},"content":"Claim","security":"MEDIUM","group":"billing"}
-{"_id":{"$oid":"569915fc6281a61a232ecddd"},"content":"ClaimResponse","security":"MEDIUM","group":"billing"}
-{"_id":{"$oid":"569915fc6281a61a232ecdde"},"content":"ClinicalImpression","security":"HIGH","group":"encounters"}
-{"_id":{"$oid":"569915fc6281a61a232ecddf"},"content":"Communication","security":"MEDIUM","group":"encounters"}
-{"_id":{"$oid":"569915fc6281a61a232ecde0"},"content":"CommunicationRequest","security":"MEDIUM","group":"healthworkflow"}
-{"_id":{"$oid":"569915fc6281a61a232ecde1"},"content":"Composition","security":"MEDIUM","group":"healthdocuments"}
-{"_id":{"$oid":"569915fc6281a61a232ecde2"},"content":"ConceptMap","security":"MEDIUM","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ecde3"},"content":"Condition","security":"MEDIUM","group":"encounters"}
-{"_id":{"$oid":"569915fc6281a61a232ecde4"},"content":"Conformance","security":"MEDIUM","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ecde5"},"content":"Contract","security":"MEDIUM","group":"entities"}
-{"_id":{"$oid":"569915fc6281a61a232ecde6"},"content":"DetectedIssue","security":"MEDIUM","group":"encounters"}
-{"_id":{"$oid":"569915fc6281a61a232ecde7"},"content":"Coverage","security":"MEDIUM","group":"billing"}
-{"_id":{"$oid":"569915fc6281a61a232ecde8"},"content":"DataElement","security":"MEDIUM","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ecde9"},"content":"Device","security":"MEDIUM","group":"otherhealth"}
-{"_id":{"$oid":"569915fc6281a61a232ecdea"},"content":"DeviceComponent","security":"MEDIUM","group":"otherhealth"}
-{"_id":{"$oid":"569915fc6281a61a232ecdeb"},"content":"DeviceMetric","security":"MEDIUM","group":"otherhealth"}
-{"_id":{"$oid":"569915fc6281a61a232ecdec"},"content":"DeviceUseRequest","security":"MEDIUM","group":"healthworkflow"}
-{"_id":{"$oid":"569915fc6281a61a232ecded"},"content":"DeviceUseStatement","security":"MEDIUM","group":"healthworkflow"}
-{"_id":{"$oid":"569915fc6281a61a232ecdee"},"content":"DiagnosticOrder","security":"MEDIUM","group":"diagnostics"}
-{"_id":{"$oid":"569915fc6281a61a232ecdef"},"content":"DiagnosticReport","security":"HIGH","group":"diagnostics"}
-{"_id":{"$oid":"569915fc6281a61a232ecdf0"},"content":"DocumentManifest","security":"HIGH","group":"healthdocuments"}
-{"_id":{"$oid":"569915fc6281a61a232ecdf1"},"content":"DocumentReference","security":"HIGH","group":"healthdocuments"}
-{"_id":{"$oid":"569915fc6281a61a232ecdf2"},"content":"EligibilityRequest","security":"MEDIUM","group":"billing"}
-{"_id":{"$oid":"569915fc6281a61a232ecdf3"},"content":"EligibilityResponse","security":"MEDIUM","group":"billing"}
-{"_id":{"$oid":"569915fc6281a61a232ecdf4"},"content":"Encounter","security":"MEDIUM","group":"encounters"}
-{"_id":{"$oid":"569915fc6281a61a232ecdf5"},"content":"EnrollmentRequest","security":"MEDIUM","group":"billing"}
-{"_id":{"$oid":"569915fc6281a61a232ecdf6"},"content":"EnrollmentResponse","security":"MEDIUM","group":"billing"}
-{"_id":{"$oid":"569915fc6281a61a232ecdf7"},"content":"EpisodeOfCare","security":"MEDIUM","group":"encounters"}
-{"_id":{"$oid":"569915fc6281a61a232ecdf8"},"content":"ExplanationOfBenefit","security":"MEDIUM","group":"billing"}
-{"_id":{"$oid":"569915fc6281a61a232ecdf9"},"content":"FamilyMemberHistory","security":"MEDIUM","group":"relatedpersons"}
-{"_id":{"$oid":"569915fc6281a61a232ecdfa"},"content":"Flag","security":"MEDIUM","group":"encounters"}
-{"_id":{"$oid":"569915fc6281a61a232ecdfb"},"content":"Goal","security":"MEDIUM","group":"care"}
-{"_id":{"$oid":"569915fc6281a61a232ecdfc"},"content":"Group","security":"MEDIUM","group":"entities"}
-{"_id":{"$oid":"569915fc6281a61a232ecdfd"},"content":"HealthcareService","security":"MEDIUM","group":"entities"}
-{"_id":{"$oid":"569915fc6281a61a232ecdfe"},"content":"ImagingObjectSelection","security":"MEDIUM","group":"diagnostics"}
-{"_id":{"$oid":"569915fc6281a61a232ecdff"},"content":"ImagingStudy","security":"MEDIUM","group":"diagnostics"}
-{"_id":{"$oid":"569915fc6281a61a232ece00"},"content":"Immunization","security":"MEDIUM","group":"allergies"}
-{"_id":{"$oid":"569915fc6281a61a232ece01"},"content":"ImmunizationRecommendation","security":"MEDIUM","group":"allergies"}
-{"_id":{"$oid":"569915fc6281a61a232ece02"},"content":"ImplementationGuide","security":"MEDIUM","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ece03"},"content":"List","security":"MEDIUM","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ece04"},"content":"Location","security":"MEDIUM","group":"entities"}
-{"_id":{"$oid":"569915fc6281a61a232ece05"},"content":"Media","security":"MEDIUM","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ece06"},"content":"Medication","security":"MEDIUM","group":"medication"}
-{"_id":{"$oid":"569915fc6281a61a232ece07"},"content":"MedicationAdministration","security":"MEDIUM","group":"medication"}
-{"_id":{"$oid":"569915fc6281a61a232ece08"},"content":"MedicationDispense","security":"MEDIUM","group":"medication"}
-{"_id":{"$oid":"569915fc6281a61a232ece09"},"content":"MedicationOrder","security":"MEDIUM","group":"medication"}
-{"_id":{"$oid":"569915fc6281a61a232ece0a"},"content":"MedicationStatement","security":"MEDIUM","group":"medication"}
-{"_id":{"$oid":"569915fc6281a61a232ece0b"},"content":"MessageHeader","security":"MEDIUM","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ece0c"},"content":"NamingSystem","security":"MEDIUM","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ece0d"},"content":"NutritionOrder","security":"MEDIUM","group":"care"}
-{"_id":{"$oid":"56fb890b1911127c0c2cc641"},"content":"http://loinc.org 3141-9","comment":"Body Weight","alias":"body/weight","security":"MEDIUM","group":"qself"}
-{"_id":{"$oid":"56fb890b1911127c0c2cc642"},"content":"subjective-condition","comment":"Subjective Condition","security":"MEDIUM","group":"mood"}
-{"_id":{"$oid":"56fb890b1911127c0c2cc643"},"content":"http://loinc.org 61150-9","comment":"Patient Diary","alias":"diary","security":"MEDIUM","group":"diary"}
-{"_id":{"$oid":"569915fc6281a61a232ece0f"},"content":"OperationDefinition","security":"MEDIUM","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ece10"},"content":"OperationOutcome","security":"MEDIUM","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ece11"},"content":"Order","security":"MEDIUM","group":"healthworkflow"}
-{"_id":{"$oid":"569915fc6281a61a232ece12"},"content":"OrderResponse","security":"MEDIUM","group":"healthworkflow"}
-{"_id":{"$oid":"569915fc6281a61a232ece13"},"content":"Organization","security":"MEDIUM","group":"entities"}
-{"_id":{"$oid":"569915fc6281a61a232ece14"},"content":"Parameters","security":"MEDIUM","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ece15"},"content":"Patient","security":"HIGH","group":"relatedpersons"}
-{"_id":{"$oid":"569915fc6281a61a232ece16"},"content":"PaymentNotice","security":"HIGH","group":"billing"}
-{"_id":{"$oid":"569915fc6281a61a232ece17"},"content":"PaymentReconciliation","security":"HIGH","group":"billing"}
-{"_id":{"$oid":"569915fc6281a61a232ece18"},"content":"Person","security":"HIGH","group":"entities"}
-{"_id":{"$oid":"569915fc6281a61a232ece19"},"content":"Practitioner","security":"HIGH","group":"entities"}
-{"_id":{"$oid":"569915fc6281a61a232ece1a"},"content":"Procedure","security":"HIGH","group":"healthworkflow"}
-{"_id":{"$oid":"569915fc6281a61a232ece1b"},"content":"ProcessRequest","security":"HIGH","group":"healthworkflow"}
-{"_id":{"$oid":"569915fc6281a61a232ece1c"},"content":"ProcessResponse","security":"HIGH","group":"healthworkflow"}
-{"_id":{"$oid":"569915fc6281a61a232ece1d"},"content":"ProcedureRequest","security":"HIGH","group":"care"}
-{"_id":{"$oid":"569915fc6281a61a232ece1e"},"content":"Provenance","security":"HIGH","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ece1f"},"content":"Questionnaire","security":"HIGH","group":"studies"}
-{"_id":{"$oid":"569915fc6281a61a232ece20"},"content":"QuestionnaireResponse","security":"HIGH","group":"studies"}
-{"_id":{"$oid":"569915fc6281a61a232ece21"},"content":"ReferralRequest","security":"HIGH","group":"care"}
-{"_id":{"$oid":"569915fc6281a61a232ece22"},"content":"RelatedPerson","security":"HIGH","group":"relatedpersons"}
-{"_id":{"$oid":"569915fc6281a61a232ece23"},"content":"RiskAssessment","security":"HIGH","group":"otherhealth"}
-{"_id":{"$oid":"569915fc6281a61a232ece24"},"content":"Schedule","security":"MEDIUM","group":"calendar"}
-{"_id":{"$oid":"569915fc6281a61a232ece25"},"content":"SearchParameter","security":"HIGH","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ece26"},"content":"Slot","security":"MEDIUM","group":"calendar"}
-{"_id":{"$oid":"569915fc6281a61a232ece27"},"content":"Specimen","security":"MEDIUM","group":"otherhealth"}
-{"_id":{"$oid":"569915fc6281a61a232ece28"},"content":"StructureDefinition","security":"HIGH","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ece29"},"content":"Subscription","security":"HIGH","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ece2a"},"content":"Substance","security":"HIGH","group":"entities"}
-{"_id":{"$oid":"569915fc6281a61a232ece2b"},"content":"SupplyRequest","security":"HIGH","group":"healthworkflow"}
-{"_id":{"$oid":"569915fc6281a61a232ece2c"},"content":"SupplyDelivery","security":"HIGH","group":"healthworkflow"}
-{"_id":{"$oid":"569915fc6281a61a232ece2d"},"content":"Substance","security":"MEDIUM","group":"otherhealth"}
-{"_id":{"$oid":"569915fc6281a61a232ece2e"},"content":"TestScript","security":"MEDIUM","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ece2f"},"content":"ValueSet","security":"MEDIUM","group":"other"}
-{"_id":{"$oid":"569915fc6281a61a232ece30"},"content":"VisionPrescription","security":"HIGH","group":"care"}
+{"_id":{"$oid":"57052bfb270f4e53a042b66d"},"content":"observation/cardio","security":"HIGH","group":"otherhealth","defaultCode":"http://midata.coop observation/cardio","label":{"en":"Demo: Cardio Observation"}}
+{"_id":{"$oid":"57052bfb270f4e53a042b66e"},"content":"account/credentials","security":"HIGH","group":"account","defaultCode":"http://midata.coop account/credentials","label":{"en":"Credentials"}}
+{"_id":{"$oid":"57052bfb270f4e53a042b66f"},"content":"unknown","security":"HIGH","group":"unknown","defaultCode":"http://midata.coop unknown","label":{"en":"Unknown Content"}}
+{"_id":{"$oid":"57052bfb270f4e53a042b670"},"content":"activities/heartrate","security":"MEDIUM","group":"qself","defaultCode":"http://loinc.org 8867-4","label":{"en":"Heart Rate"}}
+{"_id":{"$oid":"57052bfb270f4e53a042b671"},"content":"body/blood/systolic","security":"MEDIUM","group":"qself","defaultCode":"http://loinc.org 8480-6","label":{"en":"Systolic Blood Pressure"}}
+{"_id":{"$oid":"57052bfb270f4e53a042b672"},"content":"body/blood/diastolic","security":"MEDIUM","group":"qself","defaultCode":"http://loinc.org 8462-4","label":{"en":"Diastolic Blood Pressure"}}
+{"_id":{"$oid":"57052bfb270f4e53a042b673"},"content":"body/temperature","security":"MEDIUM","group":"qself","defaultCode":"http://loinc.org 8310-5","label":{"en":"Body Temperature"}}
+{"_id":{"$oid":"55ae59bef351efda91eadc68"},"content":"genome-data","security":"HIGH","group":"genome","defaultCode":"http://midata.coop genome-data","label":{"en":"genome-data"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdd3"},"content":"AllergyIntolerance","security":"HIGH","group":"allergies","defaultCode":"http://midata.coop AllergyIntolerance","label":{"en":"AllergyIntolerance"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdd4"},"content":"Appointment","security":"MEDIUM","group":"calendar","defaultCode":"http://midata.coop Appointment","label":{"en":"Appointment"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdd5"},"content":"AppointmentResponse","security":"MEDIUM","group":"calendar","defaultCode":"http://midata.coop AppointmentResponse","label":{"en":"AppointmentResponse"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdd6"},"content":"AuditEvent","security":"HIGH","group":"unknown","defaultCode":"http://midata.coop AuditEvent","label":{"en":"AuditEvent"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdd7"},"content":"Basic","security":"HIGH","group":"unknown","defaultCode":"http://midata.coop Basic","label":{"en":"Basic"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdd8"},"content":"Binary","security":"HIGH","group":"unknown","defaultCode":"http://midata.coop Binary","label":{"en":"Binary"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdd9"},"content":"BodySite","security":"HIGH","group":"otherhealth","defaultCode":"http://midata.coop BodySite","label":{"en":"BodySite"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdda"},"content":"Bundle","security":"HIGH","group":"unknown","defaultCode":"http://midata.coop Bundle","label":{"en":"Bundle"}}
+{"_id":{"$oid":"569915fc6281a61a232ecddb"},"content":"CarePlan","security":"HIGH","group":"care","defaultCode":"http://midata.coop CarePlan","label":{"en":"CarePlan"}}
+{"_id":{"$oid":"569915fc6281a61a232ecddc"},"content":"Claim","security":"MEDIUM","group":"billing","defaultCode":"http://midata.coop Claim","label":{"en":"Claim"}}
+{"_id":{"$oid":"569915fc6281a61a232ecddd"},"content":"ClaimResponse","security":"MEDIUM","group":"billing","defaultCode":"http://midata.coop ClaimResponse","label":{"en":"ClaimResponse"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdde"},"content":"ClinicalImpression","security":"HIGH","group":"encounters","defaultCode":"http://midata.coop ClinicalImpression","label":{"en":"ClinicalImpression"}}
+{"_id":{"$oid":"569915fc6281a61a232ecddf"},"content":"Communication","security":"MEDIUM","group":"encounters","defaultCode":"http://midata.coop Communication","label":{"en":"Communication"}}
+{"_id":{"$oid":"569915fc6281a61a232ecde0"},"content":"CommunicationRequest","security":"MEDIUM","group":"healthworkflow","defaultCode":"http://midata.coop CommunicationRequest","label":{"en":"CommunicationRequest"}}
+{"_id":{"$oid":"569915fc6281a61a232ecde1"},"content":"Composition","security":"MEDIUM","group":"healthdocuments","defaultCode":"http://midata.coop Composition","label":{"en":"Composition"}}
+{"_id":{"$oid":"569915fc6281a61a232ecde2"},"content":"ConceptMap","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop ConceptMap","label":{"en":"ConceptMap"}}
+{"_id":{"$oid":"569915fc6281a61a232ecde3"},"content":"Condition","security":"MEDIUM","group":"encounters","defaultCode":"http://midata.coop Condition","label":{"en":"Condition"}}
+{"_id":{"$oid":"569915fc6281a61a232ecde4"},"content":"Conformance","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop Conformance","label":{"en":"Conformance"}}
+{"_id":{"$oid":"569915fc6281a61a232ecde5"},"content":"Contract","security":"MEDIUM","group":"entities","defaultCode":"http://midata.coop Contract","label":{"en":"Contract"}}
+{"_id":{"$oid":"569915fc6281a61a232ecde6"},"content":"DetectedIssue","security":"MEDIUM","group":"encounters","defaultCode":"http://midata.coop DetectedIssue","label":{"en":"DetectedIssue"}}
+{"_id":{"$oid":"569915fc6281a61a232ecde7"},"content":"Coverage","security":"MEDIUM","group":"billing","defaultCode":"http://midata.coop Coverage","label":{"en":"Coverage"}}
+{"_id":{"$oid":"569915fc6281a61a232ecde8"},"content":"DataElement","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop DataElement","label":{"en":"DataElement"}}
+{"_id":{"$oid":"569915fc6281a61a232ecde9"},"content":"Device","security":"MEDIUM","group":"otherhealth","defaultCode":"http://midata.coop Device","label":{"en":"Device"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdea"},"content":"DeviceComponent","security":"MEDIUM","group":"otherhealth","defaultCode":"http://midata.coop DeviceComponent","label":{"en":"DeviceComponent"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdeb"},"content":"DeviceMetric","security":"MEDIUM","group":"otherhealth","defaultCode":"http://midata.coop DeviceMetric","label":{"en":"DeviceMetric"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdec"},"content":"DeviceUseRequest","security":"MEDIUM","group":"healthworkflow","defaultCode":"http://midata.coop DeviceUseRequest","label":{"en":"DeviceUseRequest"}}
+{"_id":{"$oid":"569915fc6281a61a232ecded"},"content":"DeviceUseStatement","security":"MEDIUM","group":"healthworkflow","defaultCode":"http://midata.coop DeviceUseStatement","label":{"en":"DeviceUseStatement"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdee"},"content":"DiagnosticOrder","security":"MEDIUM","group":"diagnostics","defaultCode":"http://midata.coop DiagnosticOrder","label":{"en":"DiagnosticOrder"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdef"},"content":"DiagnosticReport","security":"HIGH","group":"diagnostics","defaultCode":"http://midata.coop DiagnosticReport","label":{"en":"DiagnosticReport"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdf0"},"content":"DocumentManifest","security":"HIGH","group":"healthdocuments","defaultCode":"http://midata.coop DocumentManifest","label":{"en":"DocumentManifest"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdf1"},"content":"DocumentReference","security":"HIGH","group":"healthdocuments","defaultCode":"http://midata.coop DocumentReference","label":{"en":"DocumentReference"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdf2"},"content":"EligibilityRequest","security":"MEDIUM","group":"billing","defaultCode":"http://midata.coop EligibilityRequest","label":{"en":"EligibilityRequest"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdf3"},"content":"EligibilityResponse","security":"MEDIUM","group":"billing","defaultCode":"http://midata.coop EligibilityResponse","label":{"en":"EligibilityResponse"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdf4"},"content":"Encounter","security":"MEDIUM","group":"encounters","defaultCode":"http://midata.coop Encounter","label":{"en":"Encounter"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdf5"},"content":"EnrollmentRequest","security":"MEDIUM","group":"billing","defaultCode":"http://midata.coop EnrollmentRequest","label":{"en":"EnrollmentRequest"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdf6"},"content":"EnrollmentResponse","security":"MEDIUM","group":"billing","defaultCode":"http://midata.coop EnrollmentResponse","label":{"en":"EnrollmentResponse"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdf7"},"content":"EpisodeOfCare","security":"MEDIUM","group":"encounters","defaultCode":"http://midata.coop EpisodeOfCare","label":{"en":"EpisodeOfCare"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdf8"},"content":"ExplanationOfBenefit","security":"MEDIUM","group":"billing","defaultCode":"http://midata.coop ExplanationOfBenefit","label":{"en":"ExplanationOfBenefit"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdf9"},"content":"FamilyMemberHistory","security":"MEDIUM","group":"relatedpersons","defaultCode":"http://midata.coop FamilyMemberHistory","label":{"en":"FamilyMemberHistory"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdfa"},"content":"Flag","security":"MEDIUM","group":"encounters","defaultCode":"http://midata.coop Flag","label":{"en":"Flag"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdfb"},"content":"Goal","security":"MEDIUM","group":"care","defaultCode":"http://midata.coop Goal","label":{"en":"Goal"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdfc"},"content":"Group","security":"MEDIUM","group":"entities","defaultCode":"http://midata.coop Group","label":{"en":"Group"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdfd"},"content":"HealthcareService","security":"MEDIUM","group":"entities","defaultCode":"http://midata.coop HealthcareService","label":{"en":"HealthcareService"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdfe"},"content":"ImagingObjectSelection","security":"MEDIUM","group":"diagnostics","defaultCode":"http://midata.coop ImagingObjectSelection","label":{"en":"ImagingObjectSelection"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdff"},"content":"ImagingStudy","security":"MEDIUM","group":"diagnostics","defaultCode":"http://midata.coop ImagingStudy","label":{"en":"ImagingStudy"}}
+{"_id":{"$oid":"569915fc6281a61a232ece00"},"content":"Immunization","security":"MEDIUM","group":"allergies","defaultCode":"http://midata.coop Immunization","label":{"en":"Immunization"}}
+{"_id":{"$oid":"569915fc6281a61a232ece01"},"content":"ImmunizationRecommendation","security":"MEDIUM","group":"allergies","defaultCode":"http://midata.coop ImmunizationRecommendation","label":{"en":"ImmunizationRecommendation"}}
+{"_id":{"$oid":"569915fc6281a61a232ece02"},"content":"ImplementationGuide","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop ImplementationGuide","label":{"en":"ImplementationGuide"}}
+{"_id":{"$oid":"569915fc6281a61a232ece03"},"content":"List","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop List","label":{"en":"List"}}
+{"_id":{"$oid":"569915fc6281a61a232ece04"},"content":"Location","security":"MEDIUM","group":"entities","defaultCode":"http://midata.coop Location","label":{"en":"Location"}}
+{"_id":{"$oid":"569915fc6281a61a232ece05"},"content":"Media","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop Media","label":{"en":"Media"}}
+{"_id":{"$oid":"569915fc6281a61a232ece06"},"content":"Medication","security":"MEDIUM","group":"medication","defaultCode":"http://midata.coop Medication","label":{"en":"Medication"}}
+{"_id":{"$oid":"569915fc6281a61a232ece07"},"content":"MedicationAdministration","security":"MEDIUM","group":"medication","defaultCode":"http://midata.coop MedicationAdministration","label":{"en":"MedicationAdministration"}}
+{"_id":{"$oid":"569915fc6281a61a232ece08"},"content":"MedicationDispense","security":"MEDIUM","group":"medication","defaultCode":"http://midata.coop MedicationDispense","label":{"en":"MedicationDispense"}}
+{"_id":{"$oid":"569915fc6281a61a232ece09"},"content":"MedicationOrder","security":"MEDIUM","group":"medication","defaultCode":"http://midata.coop MedicationOrder","label":{"en":"MedicationOrder"}}
+{"_id":{"$oid":"569915fc6281a61a232ece0a"},"content":"MedicationStatement","security":"MEDIUM","group":"medication","defaultCode":"http://midata.coop MedicationStatement","label":{"en":"MedicationStatement"}}
+{"_id":{"$oid":"569915fc6281a61a232ece0b"},"content":"MessageHeader","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop MessageHeader","label":{"en":"MessageHeader"}}
+{"_id":{"$oid":"569915fc6281a61a232ece0c"},"content":"NamingSystem","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop NamingSystem","label":{"en":"NamingSystem"}}
+{"_id":{"$oid":"569915fc6281a61a232ece0d"},"content":"NutritionOrder","security":"MEDIUM","group":"care","defaultCode":"http://midata.coop NutritionOrder","label":{"en":"NutritionOrder"}}
+{"_id":{"$oid":"569915fc6281a61a232ece0f"},"content":"OperationDefinition","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop OperationDefinition","label":{"en":"OperationDefinition"}}
+{"_id":{"$oid":"569915fc6281a61a232ece10"},"content":"OperationOutcome","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop OperationOutcome","label":{"en":"OperationOutcome"}}
+{"_id":{"$oid":"569915fc6281a61a232ece11"},"content":"Order","security":"MEDIUM","group":"healthworkflow","defaultCode":"http://midata.coop Order","label":{"en":"Order"}}
+{"_id":{"$oid":"569915fc6281a61a232ece12"},"content":"OrderResponse","security":"MEDIUM","group":"healthworkflow","defaultCode":"http://midata.coop OrderResponse","label":{"en":"OrderResponse"}}
+{"_id":{"$oid":"569915fc6281a61a232ece13"},"content":"Organization","security":"MEDIUM","group":"entities","defaultCode":"http://midata.coop Organization","label":{"en":"Organization"}}
+{"_id":{"$oid":"569915fc6281a61a232ece14"},"content":"Parameters","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop Parameters","label":{"en":"Parameters"}}
+{"_id":{"$oid":"569915fc6281a61a232ece15"},"content":"Patient","security":"HIGH","group":"relatedpersons","defaultCode":"http://midata.coop Patient","label":{"en":"Patient"}}
+{"_id":{"$oid":"569915fc6281a61a232ece16"},"content":"PaymentNotice","security":"HIGH","group":"billing","defaultCode":"http://midata.coop PaymentNotice","label":{"en":"PaymentNotice"}}
+{"_id":{"$oid":"569915fc6281a61a232ece17"},"content":"PaymentReconciliation","security":"HIGH","group":"billing","defaultCode":"http://midata.coop PaymentReconciliation","label":{"en":"PaymentReconciliation"}}
+{"_id":{"$oid":"569915fc6281a61a232ece18"},"content":"Person","security":"HIGH","group":"entities","defaultCode":"http://midata.coop Person","label":{"en":"Person"}}
+{"_id":{"$oid":"569915fc6281a61a232ece19"},"content":"Practitioner","security":"HIGH","group":"entities","defaultCode":"http://midata.coop Practitioner","label":{"en":"Practitioner"}}
+{"_id":{"$oid":"569915fc6281a61a232ece1a"},"content":"Procedure","security":"HIGH","group":"healthworkflow","defaultCode":"http://midata.coop Procedure","label":{"en":"Procedure"}}
+{"_id":{"$oid":"569915fc6281a61a232ece1b"},"content":"ProcessRequest","security":"HIGH","group":"healthworkflow","defaultCode":"http://midata.coop ProcessRequest","label":{"en":"ProcessRequest"}}
+{"_id":{"$oid":"569915fc6281a61a232ece1c"},"content":"ProcessResponse","security":"HIGH","group":"healthworkflow","defaultCode":"http://midata.coop ProcessResponse","label":{"en":"ProcessResponse"}}
+{"_id":{"$oid":"569915fc6281a61a232ece1d"},"content":"ProcedureRequest","security":"HIGH","group":"care","defaultCode":"http://midata.coop ProcedureRequest","label":{"en":"ProcedureRequest"}}
+{"_id":{"$oid":"569915fc6281a61a232ece1e"},"content":"Provenance","security":"HIGH","group":"unknown","defaultCode":"http://midata.coop Provenance","label":{"en":"Provenance"}}
+{"_id":{"$oid":"569915fc6281a61a232ece1f"},"content":"Questionnaire","security":"HIGH","group":"studies","defaultCode":"http://midata.coop Questionnaire","label":{"en":"Questionnaire"}}
+{"_id":{"$oid":"569915fc6281a61a232ece20"},"content":"QuestionnaireResponse","security":"HIGH","group":"studies","defaultCode":"http://midata.coop QuestionnaireResponse","label":{"en":"QuestionnaireResponse"}}
+{"_id":{"$oid":"569915fc6281a61a232ece21"},"content":"ReferralRequest","security":"HIGH","group":"care","defaultCode":"http://midata.coop ReferralRequest","label":{"en":"ReferralRequest"}}
+{"_id":{"$oid":"569915fc6281a61a232ece22"},"content":"RelatedPerson","security":"HIGH","group":"relatedpersons","defaultCode":"http://midata.coop RelatedPerson","label":{"en":"RelatedPerson"}}
+{"_id":{"$oid":"569915fc6281a61a232ece23"},"content":"RiskAssessment","security":"HIGH","group":"otherhealth","defaultCode":"http://midata.coop RiskAssessment","label":{"en":"RiskAssessment"}}
+{"_id":{"$oid":"569915fc6281a61a232ece24"},"content":"Schedule","security":"MEDIUM","group":"calendar","defaultCode":"http://midata.coop Schedule","label":{"en":"Schedule"}}
+{"_id":{"$oid":"569915fc6281a61a232ece25"},"content":"SearchParameter","security":"HIGH","group":"unknown","defaultCode":"http://midata.coop SearchParameter","label":{"en":"SearchParameter"}}
+{"_id":{"$oid":"569915fc6281a61a232ece26"},"content":"Slot","security":"MEDIUM","group":"calendar","defaultCode":"http://midata.coop Slot","label":{"en":"Slot"}}
+{"_id":{"$oid":"569915fc6281a61a232ece27"},"content":"Specimen","security":"MEDIUM","group":"otherhealth","defaultCode":"http://midata.coop Specimen","label":{"en":"Specimen"}}
+{"_id":{"$oid":"569915fc6281a61a232ece28"},"content":"StructureDefinition","security":"HIGH","group":"unknown","defaultCode":"http://midata.coop StructureDefinition","label":{"en":"StructureDefinition"}}
+{"_id":{"$oid":"569915fc6281a61a232ece29"},"content":"Subscription","security":"HIGH","group":"unknown","defaultCode":"http://midata.coop Subscription","label":{"en":"Subscription"}}
+{"_id":{"$oid":"569915fc6281a61a232ece2a"},"content":"Substance","security":"HIGH","group":"entities","defaultCode":"http://midata.coop Substance","label":{"en":"Substance"}}
+{"_id":{"$oid":"569915fc6281a61a232ece2b"},"content":"SupplyRequest","security":"HIGH","group":"healthworkflow","defaultCode":"http://midata.coop SupplyRequest","label":{"en":"SupplyRequest"}}
+{"_id":{"$oid":"569915fc6281a61a232ece2c"},"content":"SupplyDelivery","security":"HIGH","group":"healthworkflow","defaultCode":"http://midata.coop SupplyDelivery","label":{"en":"SupplyDelivery"}}
+{"_id":{"$oid":"569915fc6281a61a232ece2d"},"content":"Substance","security":"MEDIUM","group":"otherhealth","defaultCode":"http://midata.coop Substance","label":{"en":"Substance"}}
+{"_id":{"$oid":"569915fc6281a61a232ece2e"},"content":"TestScript","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop TestScript","label":{"en":"TestScript"}}
+{"_id":{"$oid":"569915fc6281a61a232ece2f"},"content":"ValueSet","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop ValueSet","label":{"en":"ValueSet"}}
+{"_id":{"$oid":"569915fc6281a61a232ece30"},"content":"VisionPrescription","security":"HIGH","group":"care","defaultCode":"http://midata.coop VisionPrescription","label":{"en":"VisionPrescription"}}
+{"_id":{"$oid":"5703b84caed6451f597570da"},"content":"activities/steps","group":"movement","defaultCode":"http://midata.coop activities/steps","security":"MEDIUM","label":{"en":"Steps"}}
+{"_id":{"$oid":"5703b84caed6451f597570db"},"content":"sleep/efficiency","group":"sleep","defaultCode":"http://midata.coop sleep/efficiency","security":"MEDIUM","label":{"en":"Efficiency"}}
+{"_id":{"$oid":"5703b84caed6451f597570dc"},"content":"diary","group":"diary","defaultCode":"http://midata.coop diary","security":"MEDIUM","label":{"en":"Diary"}}
+{"_id":{"$oid":"5703b84caed6451f597570dd"},"content":"body/weight","group":"qself","defaultCode":"http://loinc.org 3141-9","security":"MEDIUM","label":{"en":"Body Weight"}}
+{"_id":{"$oid":"5703b84caed6451f597570de"},"content":"food/water","group":"nutrition","defaultCode":"http://midata.coop food/water","security":"MEDIUM","label":{"en":"Water Consumption"}}
+{"_id":{"$oid":"5703b84caed6451f597570df"},"content":"activities/activity-calories","group":"movement","defaultCode":"http://midata.coop activities/activity-calories","security":"MEDIUM","label":{"en":"Calories Burned in Activities"}}
+{"_id":{"$oid":"5703b84caed6451f597570e0"},"content":"activities/distance","group":"movement","defaultCode":"http://midata.coop activities/distance","security":"MEDIUM","label":{"en":"Distance"}}
+{"_id":{"$oid":"5703b84caed6451f597570e1"},"content":"activities/minutes-fairly-active","group":"movement","defaultCode":"http://midata.coop activities/minutes-fairly-active","security":"MEDIUM","label":{"en":"Minutes Fairly Active"}}
+{"_id":{"$oid":"5703b84caed6451f597570e2"},"content":"body/height","group":"qself","defaultCode":"http://midata.coop body/height","security":"MEDIUM","label":{"en":"Height"}}
+{"_id":{"$oid":"5703b84caed6451f597570e3"},"content":"activities/elevation","group":"movement","defaultCode":"http://midata.coop activities/elevation","security":"MEDIUM","label":{"en":"Elevation"}}
+{"_id":{"$oid":"5703b84caed6451f597570e4"},"content":"sleep/minutes-awake","group":"sleep","defaultCode":"http://midata.coop sleep/minutes-awake","security":"MEDIUM","label":{"en":"Minutes Awake"}}
+{"_id":{"$oid":"5703b84caed6451f597570e5"},"content":"activities/floors","group":"movement","defaultCode":"http://midata.coop activities/floors","security":"MEDIUM","label":{"en":"Floors Climbed"}}
+{"_id":{"$oid":"5703b84caed6451f597570e6"},"content":"body/bmi","group":"qself","defaultCode":"http://midata.coop body/bmi","security":"MEDIUM","label":{"en":"BMI"}}
+{"_id":{"$oid":"5703b84caed6451f597570e7"},"content":"sleep/time-in-bed","group":"sleep","defaultCode":"http://midata.coop sleep/time-in-bed","security":"MEDIUM","label":{"en":"Time in Bed"}}
+{"_id":{"$oid":"5703b84caed6451f597570e8"},"content":"activities/calories","group":"movement","defaultCode":"http://midata.coop activities/calories","security":"MEDIUM","label":{"en":"Calories Burned"}}
+{"_id":{"$oid":"5703b84caed6451f597570e9"},"content":"subjective-condition","group":"mood","defaultCode":"http://midata.coop subjective-condition","security":"MEDIUM","label":{"en":"Subjective Condition"}}
+{"_id":{"$oid":"5703b84caed6451f597570ea"},"content":"sleep/minutes-to-fall-asleep","group":"sleep","defaultCode":"http://midata.coop sleep/minutes-to-fall-asleep","security":"MEDIUM","label":{"en":"Minutes to Fall Asleep"}}
+{"_id":{"$oid":"5703b84caed6451f597570eb"},"content":"activities/minutes-lightly-active","group":"movement","defaultCode":"http://midata.coop activities/minutes-lightly-active","security":"MEDIUM","label":{"en":"Minutes Lightly Active"}}
+{"_id":{"$oid":"5703b84caed6451f597570ec"},"content":"body/fat","group":"qself","defaultCode":"http://midata.coop body/fat","security":"MEDIUM","label":{"en":"Fat"}}
+{"_id":{"$oid":"5703b84caed6451f597570ed"},"content":"sleep/minutes-asleep","group":"sleep","defaultCode":"http://midata.coop sleep/minutes-asleep","security":"MEDIUM","label":{"en":"Minutes Asleep"}}
+{"_id":{"$oid":"5703b84caed6451f597570ee"},"content":"food/calories-in","group":"nutrition","defaultCode":"http://midata.coop food/calories-in","security":"MEDIUM","label":{"en":"Calories Intake"}}
+{"_id":{"$oid":"5703b84caed6451f597570ef"},"content":"activities/minutes-very-active","group":"movement","defaultCode":"http://midata.coop activities/minutes-very-active","security":"MEDIUM","label":{"en":"Minutes Very Active"}}
+{"_id":{"$oid":"5703b84caed6451f597570f0"},"content":"activities/minutes-sedentary","group":"movement","defaultCode":"http://midata.coop activities/minutes-sedentary","security":"MEDIUM","label":{"en":"Minutes Sedentary"}}

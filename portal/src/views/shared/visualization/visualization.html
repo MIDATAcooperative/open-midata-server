@@ -49,6 +49,11 @@
 			      <div class="alert alert-info">
 			      <ul>
 			        <li ng-repeat="(rule, params) in options.query">
+			         <span ng-if="rule == 'app'">Records created by plugin:
+			            <ul>
+			              <li ng-repeat="app in params">{{ app }}</li>
+			            </ul> 
+			          </span>
 			          <span ng-if="rule == 'format'">Records that have format:
 			            <ul>
 			              <li ng-repeat="format in params">{{ format }}</li>

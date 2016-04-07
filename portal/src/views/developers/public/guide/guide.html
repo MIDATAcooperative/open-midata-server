@@ -12,7 +12,7 @@
 					<li ng-class="{ 'active' : tab=='apps' }"><a href="javascript:" ng-click="tab='apps';">( Forms )</a></li>
 					<li ng-class="{ 'active' : tab=='visualizations' }"><a href="javascript:" ng-click="tab='visualizations';">Plugins</a></li>
 					<li ng-class="{ 'active' : tab=='mobile' }"><a href="javascript:" ng-click="tab='mobile';">Mobile Apps</a></li>
-					<li ng-class="{ 'active' : tab=='formats' }"><a href="javascript:" ng-click="tab='formats';">Format List</a></li>
+					<li ng-class="{ 'active' : tab=='formats' }"><a href="javascript:" ng-click="tab='formats';">Format/Content List</a></li>
 				</ul>
 			</div>
 			<div class="col-md-10">
@@ -194,10 +194,11 @@
      "authToken" : the token from the authentication request, 
      "name" : a name for the record, 
      "description" : a description for the record,
-     "format" : a string describing the technical data format,
-     "content" : a string describing the data content
+     "format" : a string describing the technical data format,   
+     "code" : a string or an array of strings describing the data content (each string contains system and code)
      "data" : JSON string containing the record itself 
 }</pre>		
+<p>For a list of available values for code see <a href="javascript:" ng-click="tab='formats';">Format/Content List</a>
                         <p>If the operation is successful the API call will return with status code <code>200</code> and a JSON body like this:</p>
 <pre>{
      "_id": the id of the new record
@@ -241,7 +242,8 @@
     <li><code>creator</code> - the id of the creator of the record (or null if not public)</li>
     <li><code>creatorName</code> - the creator of the record as string (firstname lastname)</li>
     <li><code>format</code> - the technical format of the record</li>
-    <li><code>content</code> - the semantical format of the record</li>
+    <li><code>content</code> - the semantical format of the record (see <a href="javascript:" ng-click="tab='formats';">Format/Content List</a>)</li>
+    <li><code>code</code> - the exact codes using a codesystem for the semantical format of the record (example "http://loinc.org 3141-9")</li>
     <li><code>group</code> - the name of the group where this record is listed in the data tree</li>
     <li><code>app</code> - the id of the app that created this record</li>
     <li><code>created</code> - the date of creation of this record</li>
@@ -267,7 +269,9 @@ In the array case each record must match one entry in the array to qualify for t
     </li>       
      -->
     <li><code>format</code> - (string) the technical format of the record</li>
-    <li><code>content</code> - (string) the semantical format of the record</li>
+    <li><code>content</code> - (string) the semantical format of the record (similar values use same name, example: <i>"body/weight"</i>)</li>
+    <li><code>code</code> - (string) the semantical format code of the record (example: <i>"http://loinc.org 3141-9"</i>)</li>
+    <li><code>app</code> - (id or string) the id or internal name of the app that created the record.</li>
     <li><code>group</code> - (string) the group of the record may be one of the given groups or a child of those.</li>
     <li><code>group-strict</code> - (string) the group of the record must be one of the given groups.</li>
     <li><code>group-exclude</code> - (string) the group of the record must NOT be one of the given groups or a child of those.</li>    
@@ -371,9 +375,9 @@ In the array case each record must match one entry in the array to qualify for t
                                    
 					</div>
 					<div id="formats" class="tab-pane fade" ng-class="{ 'active in' : tab=='formats' }">
-						<h2>List of data formats</h2>
+						<h2>List of formats, contents and codes</h2>
 						<p>The list of supported data formats is directly queried from the server and may be extended any time.</p>
-						<h3>Format</h3>
+						<h3>Possible value for "format" field</h3>
 						<p>These technical data formats are currently recognized by the server. The list contains development artifacts and may be cleaned up in the future.</p>
 						<table width="100%">		
 						  <tr>
@@ -387,23 +391,37 @@ In the array case each record must match one entry in the array to qualify for t
 						    <td>{{ format.visName }}</td>
 						  </tr>
 						</table>
-						<h3>Content</h3>
-						<p>All semantical data types have the format "&lt;system&gt; &lt;code&gt;" where <i>system</i> is the name of the code system used and <i>code</i> is a code from the system.</p>
-						<p>The values for the special <code>http://midata.coop</code> code system may consist of two parts: A prefixes and a more detailed name after the slash. Only the prefix is used to place the record into a group.</p> 
-						<p>The codes of other systems like <code>http://loinc.org</code> need to be preregistered into the platform in order to be accepted.</p>
-						<p>For downward compatibility: If no code system is given the midata.coop code system will be assumed.</p>
+						<h3>Possible values for "code" fields</h3>
+						<p>All content codes have the format "&lt;system&gt; &lt;code&gt;" where <i>system</i> is the name of the code system used and <i>code</i> is a code from the system.</p>
+						<p>Codes need to be preregistered into the platform to be accepted.</p> 
 						 						
 						<table width="100%">						 
 						  <tr>
+						    <th>System</th>
 						    <th>Code</th>						    
-						    <th>Placed in group</th>
-						    <th>Comment</th>
+						    <th>Midata Content Type</th>
+						    <th>Display Name</th>
 						    
 						  </tr>
-						  <tr ng-repeat="content in contents | orderBy : 'code'">
-						    <td><code>{{ content.code }}</code></td>
-						    <td>{{ getGroupLabel(content.group) }}</td>
-						    <td>{{ content.comment }}</td>
+						  <tr ng-repeat="code in codes | orderBy : 'code'">
+						    <td><code>{{ code.system }}</code></td>
+						    <td><code>{{ code.code }}</code></td>
+						    <td>{{ code.content }}</td>
+						    <td>{{ code.display }}</td>
+						  </tr>
+						</table>
+						
+						<h3>Possible values for "content" fields</h3>
+						<table width="100%">						 
+						  <tr>
+						    <th>Name</th>						    
+						    <th>Label</th>
+						    <th>Default Code</th>						    
+						  </tr>
+						  <tr ng-repeat="content in contents | orderBy : 'content'">
+						    <td><code>{{ content.content }}</code></td>
+						    <td>{{ content.label["en"] }}</td>
+						    <td>{{ content.defaultCode }}</td>
 						  </tr>
 						</table>
 					</div>

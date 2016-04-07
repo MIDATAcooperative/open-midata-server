@@ -1,5 +1,6 @@
 package utils.json;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,6 +18,8 @@ public class JsonExtraction {
 	 * Extracts a set with elements guaranteed to be strings.
 	 */
 	public static Set<String> extractStringSet(JsonNode json) {
+		if (json == null) return null;
+		if (json.isTextual()) return Collections.singleton(json.asText());
 		Set<String> set = new HashSet<String>();
 		for (JsonNode jsonNode : json) {
 			set.add(jsonNode.asText());

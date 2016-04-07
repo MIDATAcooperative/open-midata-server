@@ -125,6 +125,7 @@ POST    /common/api/studies                              controllers.Studies.sea
 GET     /common/api/groups                               controllers.FormatAPI.listGroups()
 GET     /common/api/formats                              controllers.FormatAPI.listFormats()
 GET     /common/api/contents                             controllers.FormatAPI.listContents()
+GET     /common/api/codes                                controllers.FormatAPI.listCodes()
 GET     /members/api/participation                       controllers.members.Studies.list()
 GET     /members/api/participation/:study                controllers.members.Studies.get(study: String)
 POST    /members/api/participation/:study/request        controllers.members.Studies.requestParticipation(study: String)

@@ -64,7 +64,7 @@ public class EncryptedAPS {
 		this.who = who;
 		this.owner = owner;
 		this.encryptionKey = (enckey != null) ? new SecretKeySpec(enckey, KEY_ALGORITHM) : null;
-		keyProvided = true;
+		keyProvided = enckey != null;
 	}
 	
 	public EncryptedAPS(ObjectId apsId, ObjectId who, byte[] enckey, ObjectId owner, AccessPermissionSet set) throws InternalServerException {
