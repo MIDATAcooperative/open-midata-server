@@ -21,6 +21,8 @@ import org.bson.BSON;
 import org.bson.BSONObject;
 import org.bson.types.ObjectId;
 
+import akka.japi.Pair;
+
 
 import utils.auth.CodeGenerator;
 import utils.auth.EncryptionNotSupportedException;
@@ -162,6 +164,27 @@ public class EncryptionUtils {
 			throw new NullPointerException();
 		}
 	}
+	
+	public static Pair<byte[], byte[]> splitKey(byte[] data) {		
+			byte[] b1 = new byte[data.length];
+			byte[] b2 = new byte[data.length];
+			
+			random.nextBytes(b1);
+			for (int i=0;i<data.length;i++) {				
+				b2[i] = (byte) (data[i] ^ b1[i]);
+			}
+			return new Pair<byte[], byte[]>(b1, b2);		
+	}
+	
+	public static byte[] joinKey(byte[] b1, byte[] b2) throws InternalServerException {		
+		if (b1.length != b2.length) throw new InternalServerException("error.internal", "Key length mismatch");
+		
+		byte[] result = new byte[b1.length];
+		for (int i=0;i<b1.length;i++) {				
+			result[i] = (byte) (b1[i] ^ b2[i]);
+		}
+		return result;		
+   }
 
 	public final static String KEY_ALGORITHM = "AES";
 

@@ -288,6 +288,17 @@ public class RecordManager {
 		   query.put("aps", fromAPS.toString());
 		   apswrapper.setMeta("_query", query);
         }
+        
+        if (query.containsKey("exclude-ids")) {
+			Map<String, Object> ids = new HashMap<String,Object>();
+			ids.put("ids", query.get("exclude-ids"));
+			apswrapper.setMeta("_exclude", ids);
+		} else {
+			apswrapper.removeMeta("_exclude");
+		}
+        
+        List<DBRecord> doubles = QueryEngine.listInternal(getCache(who), toAPS, CMaps.map(query).map("ignore-redirect", "true").map("flat", "true").map("streams", "true"), APSEntry.groupingFields);
+        apswrapper.removePermission(doubles);        
 	}
 
 	/**
@@ -811,9 +822,8 @@ public class RecordManager {
 		List<DBRecord> all = QueryEngine.listInternal(getCache(who), who, CMaps.map("owner", "self"), RecordManager.COMPLETE_META);
 		for (DBRecord r : all) {
 			if (!r.meta.containsField("code")) { 
-				String content = r.meta.getString("content");
-				AccessLog.log(content);
-				if (content == null || content.equals("hugo")) {
+				String content = r.meta.getString("content");				
+				if (content == null) {
 					RecordManager.instance.deleteRecord(who, new RecordToken(r._id.toString(), who.toString()));
 					continue;
 				}

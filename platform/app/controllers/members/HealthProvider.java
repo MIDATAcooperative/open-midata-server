@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import controllers.APIController;
 import controllers.Circles;
+import controllers.MobileAPI;
 
 import models.HPUser;
 import models.Member;
@@ -104,8 +105,11 @@ public class HealthProvider extends APIController {
 		JsonValidation.validate(json, "consent");
 		
 		ObjectId consentId = JsonValidation.getObjectId(json, "consent");
-		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Sets.create("status", "owner", "authorized", "confirmDate"));
+		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Sets.create("status", "owner", "authorized", "confirmDate", "type"));
 		if (target.status.equals(ConsentStatus.UNCONFIRMED)) {
+			if (target.type.equals(ConsentType.EXTERNALSERVICE)) {
+				MobileAPI.confirmMobileConsent(userId, consentId);
+			}			
 			target.setConfirmDate(new Date());
 			target.setStatus(ConsentStatus.ACTIVE);
 			Circles.consentStatusChange(userId, target);

@@ -25,6 +25,8 @@ import models.User;
 
 import org.bson.types.ObjectId;
 
+import akka.japi.Pair;
+
 import utils.access.EncryptionUtils;
 import utils.collections.Sets;
 import utils.exceptions.AuthException;
@@ -60,6 +62,11 @@ public class KeyManager {
 	 * private key is protected by passphrase
 	 */
 	public final static int KEYPROTECTION_PASSPHRASE = 1;
+	
+	/**
+	 * private key is split into two parts
+	 */
+	public final static int KEYPROTECTION_SPLITKEY = 2;
 		
 	
 	private Map<String, byte[]> pks = new HashMap<String, byte[]>();	
@@ -264,6 +271,27 @@ public class KeyManager {
 	}
 	
 	/**
+	 * Unlock a user account using an alias and split key
+	 * 
+	 * The account stays unlocked until lock is called for the account
+	 * @param target id of user or app instance to unlock
+	 * @param source id of alias
+	 * @param splitkey keyfragment used to unlock the account 
+	 * @throws InternalServerException
+	 */
+	public void unlock(ObjectId target, ObjectId source, byte[] splitkey) throws InternalServerException {
+		KeyInfo inf = KeyInfo.getById(source);
+		if (inf == null) {			
+			throw new InternalServerException("error.internal.cryptography", "Private key info not found.");
+		}
+		
+		if (inf.type != KEYPROTECTION_SPLITKEY) {
+			throw new InternalServerException("error.internal.cryptography", "Private key has wrong type.");
+		}
+		pks.put(target.toString(), EncryptionUtils.joinKey(inf.privateKey, splitkey) );		
+	}
+	
+	/**
 	 * Remove a private key from memory
 	 * 
 	 * @param target id of user or app instance for which the private key should be cleared
@@ -284,4 +312,22 @@ public class KeyManager {
 		return inf.type;
 	}
 	
+	/**
+	 * Generates a key duplicate encoded with another key
+	 */
+	public byte[] generateAlias(ObjectId source, ObjectId target) throws AuthException, InternalServerException {
+		byte key[] = pks.get(source.toString());
+		
+		if (key == null) throw new AuthException("error.auth.relogin", "Authorization Failure");
+	
+		Pair<byte[], byte[]> split = EncryptionUtils.splitKey(key);
+		KeyInfo keyinfo = new KeyInfo();
+		keyinfo._id = target;		 
+		keyinfo.privateKey = split.second();
+		keyinfo.type = KEYPROTECTION_SPLITKEY;		   
+		KeyInfo.add(keyinfo);
+		
+		return split.first();
+		
+	}
 }

@@ -24,6 +24,7 @@ import models.enums.ConsentStatus;
 import models.enums.UserRole;
 
 import org.bson.BSONObject;
+import org.bson.BasicBSONObject;
 import org.bson.types.ObjectId;
 
 import play.Play;
@@ -230,10 +231,33 @@ public class MobileAPI extends Controller {
 		ObjectNode obj = Json.newObject();								
 		obj.put("authToken", session.encrypt());
 		obj.put("refreshToken", refresh.encrypt());
+		obj.put("status", appInstance.status.toString());
 															
 		return ok(obj);
 	}
 	
+	private static ObjectId prepareMobileExecutor(MobileAppInstance appInstance, MobileAppSessionToken tk) throws AppException {
+		KeyManager.instance.unlock(tk.appInstanceId, tk.passphrase);
+		Map<String, Object> appobj = RecordManager.instance.getMeta(tk.appInstanceId, tk.appInstanceId, "_app").toMap();
+		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
+			ObjectId alias = new ObjectId(appobj.get("alias").toString());
+			byte[] key = (byte[]) appobj.get("aliaskey");
+			KeyManager.instance.unlock(appInstance.owner, alias, key);
+			RecordManager.instance.clear();
+			return appInstance.owner;
+		}
+		return tk.appInstanceId;
+	}
+	
+	public static void confirmMobileConsent(ObjectId userId, ObjectId consentId) throws AppException {
+		BSONObject meta = RecordManager.instance.getMeta(userId, consentId, "_app");
+		if (meta == null) throw new InternalServerException("error.internal", "_app object not found,");
+		ObjectId alias = new ObjectId();
+		byte[] key = KeyManager.instance.generateAlias(userId, alias);
+		meta.put("alias", alias.toString());
+		meta.put("aliaskey", key);
+		RecordManager.instance.setMeta(userId, consentId, "_app", meta.toMap());
+	}
 
 	/**
 	 * retrieve records current mobile app has access to matching some criteria
@@ -262,7 +286,7 @@ public class MobileAPI extends Controller {
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner"));
         if (appInstance == null) return badRequest("Invalid authToken.");
 		
-        KeyManager.instance.unlock(appInstance._id, authToken.passphrase);
+        ObjectId executor = prepareMobileExecutor(appInstance, authToken);
 		// get record data
 		Collection<Record> records = null;
 		
@@ -277,7 +301,7 @@ public class MobileAPI extends Controller {
 			properties.put("content", add);
 		}*/
 		
-		records = LargeRecord.getAll(appInstance._id, appInstance._id, properties, fields);		  
+		records = LargeRecord.getAll(executor, appInstance._id, properties, fields);		  
 				
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		return ok(JsonOutput.toJson(records, "Record", fields));
@@ -305,10 +329,10 @@ public class MobileAPI extends Controller {
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner"));
         if (appInstance == null) return badRequest("Invalid authToken.");
 	
-        KeyManager.instance.unlock(appInstance._id, authToken.passphrase);
+        ObjectId executor = prepareMobileExecutor(appInstance, authToken);
 		
 		ObjectId recordId = JsonValidation.getObjectId(json, "_id");			
-		FileData fileData = RecordManager.instance.fetchFile(appInstance.owner, new RecordToken(recordId.toString(), appInstance._id.toString()));
+		FileData fileData = RecordManager.instance.fetchFile(executor, new RecordToken(recordId.toString(), appInstance._id.toString()));
 		if (fileData == null) return badRequest();
 		//response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
 		return ok(fileData.inputStream);
@@ -335,10 +359,11 @@ public class MobileAPI extends Controller {
 			return badRequest("Invalid authToken.");
 		}
 					
-		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare"));
+		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare","status"));
         if (appInstance == null) return badRequest("Invalid authToken.");
+        if (!appInstance.status.equals(ConsentStatus.ACTIVE)) return badRequest("Consent needs to be confirmed before creating records!");
 
-        KeyManager.instance.unlock(appInstance._id, authToken.passphrase);
+        ObjectId executor = prepareMobileExecutor(appInstance, authToken);
         
 		ObjectId appId = appInstance.applicationId;
 				
@@ -383,11 +408,11 @@ public class MobileAPI extends Controller {
 		record.name = name;
 		record.description = description;
 		
-		RecordManager.instance.addRecord(appInstance._id, record, targetAps);
-				
-		//Set<ObjectId> records = new HashSet<ObjectId>();
-		//records.add(record._id);
-		//RecordManager.instance.share(targetUser._id, targetUser._id, targetAps, records, false);
+		RecordManager.instance.addRecord(executor, record, targetAps);
+						
+		Set<ObjectId> records = new HashSet<ObjectId>();
+		records.add(record._id);
+		RecordManager.instance.share(executor, appInstance.owner, targetAps, records, false);
 
 		/*
 		if (appInstance.autoShare != null && !appInstance.autoShare.isEmpty()) {
@@ -467,14 +492,14 @@ public class MobileAPI extends Controller {
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare"));
         if (appInstance == null) return badRequest("Invalid authToken.");
 
-        KeyManager.instance.unlock(appInstance._id, authToken.passphrase);
+        ObjectId executor = prepareMobileExecutor(appInstance, authToken);
         		
 		ObjectId targetAps = appInstance._id;
 				
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		AggregationType aggrType = JsonValidation.getEnum(json, "summarize", AggregationType.class);
 		
-	    Collection<RecordsInfo> result = RecordManager.instance.info(appInstance._id, targetAps, properties, aggrType);	
+	    Collection<RecordsInfo> result = RecordManager.instance.info(executor, targetAps, properties, aggrType);
 						
 		return ok(Json.toJson(result));
 	}

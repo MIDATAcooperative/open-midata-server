@@ -336,11 +336,11 @@ public class Query {
 		 if (properties.containsKey("app")) {
 			 Set<String> apps = getRestriction("app");
 			 Set<ObjectId> resolved = new HashSet<ObjectId>();
-			 for (String app : apps) {
-				 if (!ObjectId.isValid(app)) {
-					 Plugin p = Plugin.getByFilename(app, Sets.create("_id"));	
+			 for (Object app : apps) {
+				 if (!ObjectId.isValid(app.toString())) {
+					 Plugin p = Plugin.getByFilename(app.toString(), Sets.create("_id"));	
 					 if (p!=null) resolved.add(p._id);
-				 } else resolved.add(new ObjectId(app));
+				 } else resolved.add(new ObjectId(app.toString()));
 			 }
 			 properties.put("app", resolved);
 		 }

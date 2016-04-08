@@ -364,7 +364,7 @@ public class Records extends APIController {
         	if (query != null) {
         		Feature_FormatGroups.convertQueryToContents(groupSystem, query);
         		
-        		if (consent == null) {
+        		if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
         		  RecordManager.instance.shareByQuery(userId, userId, start, query);
         		} else {
         		  Circles.setQuery(userId, start, query);        		          		  
@@ -394,7 +394,7 @@ public class Records extends APIController {
         	if (query != null) {
         		Feature_FormatGroups.convertQueryToContents(groupSystem, query);
         		
-        		if (consent == null) {
+        		if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
         		  RecordManager.instance.shareByQuery(userId, userId, start, query);
         		} else {
         		  Circles.setQuery(userId, start, query);        		          		  

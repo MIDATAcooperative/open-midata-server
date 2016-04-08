@@ -1,5 +1,7 @@
 package utils.auth;
 
+import java.util.Map;
+
 import models.Consent;
 import models.Member;
 import models.MobileAppInstance;
@@ -8,6 +10,7 @@ import models.User;
 
 import org.bson.types.ObjectId;
 
+import utils.access.RecordManager;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -75,9 +78,19 @@ public class ExecutionInfo {
         if (appInstance == null) throw new BadRequestException("error.internal", "Invalid authToken.");
 
         KeyManager.instance.unlock(appInstance._id, authToken.passphrase);
-                
+        
         ExecutionInfo result = new ExecutionInfo();
 		result.executorId = appInstance._id;
+        
+		Map<String, Object> appobj = RecordManager.instance.getMeta(authToken.appInstanceId, authToken.appInstanceId, "_app").toMap();
+		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
+			ObjectId alias = new ObjectId(appobj.get("alias").toString());
+			byte[] key = (byte[]) appobj.get("userkey");
+			KeyManager.instance.unlock(appInstance.owner, alias, key);
+			RecordManager.instance.clear();
+			result.executorId = appInstance.owner;
+		}
+                                                
 		result.ownerId = appInstance.owner;
 		result.pluginId = appInstance.applicationId;
 		result.targetAPS = appInstance._id;

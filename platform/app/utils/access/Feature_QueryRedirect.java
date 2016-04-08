@@ -76,7 +76,7 @@ public class Feature_QueryRedirect extends Feature {
 		
 		BasicBSONObject query = q.getCache().getAPS(q.getApsId()).getMeta(APS.QUERY);    	
     	// Ignores queries in main APS 
-		if (query != null && !q.getApsId().equals(q.getCache().getOwner())) {			
+		if (query != null && !q.getApsId().equals(q.getCache().getOwner()) && !q.restrictedBy("ignore-redirect")) {			
 			List<DBRecord> result = next.query(q);
 			
 			if (query.containsField("$or")) {
@@ -108,7 +108,7 @@ public class Feature_QueryRedirect extends Feature {
 		/*if (query.containsField("_exclude") && result.size() > 0) {			
 			List<DBRecord> excluded = QueryEngine.listFromMemory(q.getCache(), (Map<String, Object>) query.get("_exclude"), result);
             result.removeAll(excluded);						
-		}*/ 
+		}*/
 		
 		results.addAll(result);
 		AccessLog.logEnd("end redirect");

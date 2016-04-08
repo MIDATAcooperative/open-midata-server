@@ -32,7 +32,8 @@ angular.module('portal')
 			
 			$scope.getAvailableSets(userId);
 			$scope.loadGroups();
-			$scope.getInfos(userId, "self")
+			var what = ($state.params.selected != null) ? null : "self";
+			$scope.getInfos(userId, what)
 			.then(function() {
 			
 				if ($state.params.selected != null) {										 
