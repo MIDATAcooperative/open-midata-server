@@ -270,7 +270,7 @@ public class Plugins extends APIController {
 		String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + app.filename;
 		if (testing) visualizationServer = app.developmentServer;
 		String url =  visualizationServer  + "/" + app.url;
-		url = url.replace(":authToken", appToken.encrypt());
+		url = url.replace(":authToken", appToken.encrypt(request()));
 		
 		return ok(url);
 	}

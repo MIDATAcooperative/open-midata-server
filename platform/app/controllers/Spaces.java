@@ -174,7 +174,7 @@ public class Spaces extends Controller {
 		SpaceToken spaceToken = new SpaceToken(space._id, userId);		
 		String visualizationServer = Play.application().configuration().getString("visualizations.server");
 		String url = "https://" + visualizationServer + "/" + visualization.filename + "/" + visualization.previewUrl;
-		url = url.replace(":authToken", spaceToken.encrypt());
+		url = url.replace(":authToken", spaceToken.encrypt(request()));
 		return ok(url);		
 				
 	}
@@ -252,7 +252,7 @@ public class Spaces extends Controller {
 
 		// create encrypted authToken
 		SpaceToken spaceToken = new SpaceToken(space._id, userId);
-		return ok(spaceToken.encrypt());
+		return ok(spaceToken.encrypt(request()));
 	}
 	
 	@APICall
@@ -286,7 +286,7 @@ public class Spaces extends Controller {
 		String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename;
 		if (testing) visualizationServer = visualization.developmentServer;
 		String url =  visualizationServer  + "/" + visualization.url;
-		url = url.replace(":authToken", spaceToken.encrypt());
+		url = url.replace(":authToken", spaceToken.encrypt(request()));
 			
 			
 		if (visualization.type != null && visualization.type.equals("oauth2")) {
@@ -321,7 +321,7 @@ public class Spaces extends Controller {
 		
 		if (visualization.previewUrl == null || visualization.previewUrl.equals("")) {						
 			return ok(result);
-		}
+		}	
 
 		boolean testing = session().get("role").equals(UserRole.DEVELOPER.toString()) && visualization.creator.equals(userId) && visualization.developmentServer != null && visualization.developmentServer.length()> 0;
 		//if (visualization.type.equals("visualization")) {
@@ -331,7 +331,7 @@ public class Spaces extends Controller {
 			String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename;
 			if (testing) visualizationServer = visualization.developmentServer;
 			String url = visualizationServer  + "/" + visualization.previewUrl;
-			url = url.replace(":authToken", spaceToken.encrypt());
+			url = url.replace(":authToken", spaceToken.encrypt(request()));
 			result.put("url", url);
 			return ok(result);						
 		

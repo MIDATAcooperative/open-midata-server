@@ -101,7 +101,7 @@ public class PluginsAPI extends Controller {
 		JsonValidation.validate(json, "authToken");
 		
 		// decrypt authToken 
-		SpaceToken spaceToken = SpaceToken.decrypt(json.get("authToken").asText());
+		SpaceToken spaceToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
 		if (spaceToken == null) {
 			return badRequest("Invalid authToken.");
 		}
@@ -125,7 +125,7 @@ public class PluginsAPI extends Controller {
 		JsonValidation.validate(json, "authToken");
 		
 		// decrypt authToken and check whether space with corresponding owner exists
-		SpaceToken spaceToken = SpaceToken.decrypt(json.get("authToken").asText());
+		SpaceToken spaceToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
 		if (spaceToken == null) {
 			return badRequest("Invalid authToken.");
 		}
@@ -158,7 +158,7 @@ public class PluginsAPI extends Controller {
 		JsonValidation.validate(json, "authToken");
 		
 		// decrypt authToken 
-		SpaceToken spaceToken = SpaceToken.decrypt(json.get("authToken").asText());
+		SpaceToken spaceToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
 		if (spaceToken == null) {
 			return badRequest("Invalid authToken.");
 		}
@@ -200,7 +200,7 @@ public class PluginsAPI extends Controller {
 		JsonValidation.validate(json, "authToken", "name", "config");
 		
 		// decrypt authToken 
-		SpaceToken spaceToken = SpaceToken.decrypt(json.get("authToken").asText());
+		SpaceToken spaceToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
 		if (spaceToken == null) {
 			return badRequest("Invalid authToken.");
 		}
@@ -238,7 +238,7 @@ public class PluginsAPI extends Controller {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 						
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(json.get("authToken").asText());
+		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
 		
 		Collection<Record> records = getRecords(inf, properties, fields);
 				
@@ -291,7 +291,7 @@ public class PluginsAPI extends Controller {
 		JsonValidation.validate(json, "authToken", "properties", "summarize");
 		
 		// decrypt authToken 
-		SpaceToken authToken = SpaceToken.decrypt(json.get("authToken").asText());
+		SpaceToken authToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
 		if (authToken == null) {
 			return badRequest("Invalid authToken.");
 		}
@@ -332,7 +332,7 @@ public class PluginsAPI extends Controller {
 		JsonValidation.validate(json, "authToken", "_id");		
 		
 		// decrypt authToken and check whether space with corresponding owner exists
-		SpaceToken authToken = SpaceToken.decrypt(json.get("authToken").asText());
+		SpaceToken authToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
 		if (authToken == null) {
 			return badRequest("Invalid authToken.");
 		}
@@ -360,7 +360,7 @@ public class PluginsAPI extends Controller {
 		if (!json.has("content") && !json.has("code")) new JsonValidationException("error.validation.fieldmissing", "Request parameter 'content' or 'code' not found.");
 		
 		
-		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(json.get("authToken").asText());
+		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
 				
 		if (authToken.recordId != null) return badRequest("This view is readonly.");
 																								
@@ -461,7 +461,7 @@ public class PluginsAPI extends Controller {
 		}
 
 		// decrypt authToken and check whether a user exists who has the app installed
-		SpaceToken appToken = SpaceToken.decrypt(json.get("authToken").asText());
+		SpaceToken appToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
 		if (appToken == null) {
 			return badRequestPromise("Invalid authToken.");
 		}
@@ -509,7 +509,7 @@ public class PluginsAPI extends Controller {
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken", "data", "_id");
 		
-		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(json.get("authToken").asText());
+		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
 				
 		if (authToken.recordId != null) return badRequest("This view is readonly.");
 																								
@@ -574,7 +574,7 @@ public class PluginsAPI extends Controller {
 			return badRequestPromise(e.getMessage());
 		}
 
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(json.get("authToken").asText());
+		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
 		
 		Promise<WSResponse> response = oAuth2Call(inf, json.get("url").asText());	
 		
@@ -628,7 +628,7 @@ public class PluginsAPI extends Controller {
 			return badRequest("Invalid authToken.");
 		}
 	
-		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(metaData.get("authToken")[0]);
+		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request(), metaData.get("authToken")[0]);
 		
 		if (authToken.recordId != null) return badRequest("This view is readonly.");
 			try {
@@ -720,7 +720,7 @@ public class PluginsAPI extends Controller {
 		//Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		//Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 						
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(json.get("authToken").asText());
+		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
 		
 		MidataServer midataServer = new MidataServer(inf);
 		FitbitImport test = new FitbitImport();
@@ -733,7 +733,7 @@ public class PluginsAPI extends Controller {
 	@VisualizationCall
 	public static Result generateId() throws JsonValidationException, AppException {
 		JsonNode json = request().body().asJson();		
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(json.get("authToken").asText());									
+		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());									
 		return ok(new ObjectId().toString());
 	}
 	

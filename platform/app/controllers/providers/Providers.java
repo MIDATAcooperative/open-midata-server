@@ -255,7 +255,7 @@ public class Providers extends APIController {
 
 		// create encrypted authToken
 		SpaceToken spaceToken = new SpaceToken(consentId, userId);
-		return ok(spaceToken.encrypt());
+		return ok(spaceToken.encrypt(request()));
 	}
 	
 }

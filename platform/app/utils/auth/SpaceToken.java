@@ -6,6 +6,8 @@ import org.bson.types.ObjectId;
 
 import play.libs.Crypto;
 import play.libs.Json;
+import play.mvc.Http.Request;
+import utils.AccessLog;
 import utils.collections.ChainedMap;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -14,6 +16,8 @@ import com.fasterxml.jackson.databind.JsonNode;
  * Authorization token for plugins to access a user's records assigned to a space.
  */
 public class SpaceToken {
+	
+	public final static long LIFETIME = 1000 * 60 * 60 * 8;
 
 	/**
 	 * id of space
@@ -34,6 +38,16 @@ public class SpaceToken {
 	 * optional id of plugin
 	 */
 	public ObjectId pluginId;
+	
+	/**
+	 * Creation time of token
+	 */
+	public long created;
+	
+	/**
+	 * IP Address for which the token is valid
+	 */
+	public String remoteAddress = "127.0.0.1";
 	
 	/**
 	 * Different executing person
@@ -58,7 +72,17 @@ public class SpaceToken {
 		this.userId = userId;
 		this.recordId = recordId;
 		this.pluginId = pluginId;
+		this.executorId = executorId;	
+	}
+	
+	public SpaceToken(ObjectId spaceId, ObjectId userId, ObjectId recordId, ObjectId pluginId, ObjectId executorId, long created, String remoteAddr) {
+		this.spaceId = spaceId;
+		this.userId = userId;
+		this.recordId = recordId;
+		this.pluginId = pluginId;
 		this.executorId = executorId;
+		this.created = created;
+		this.remoteAddress = remoteAddr;
 	}
 	
 	public SpaceToken(ObjectId spaceId, ObjectId userId, ObjectId recordId) {
@@ -66,13 +90,28 @@ public class SpaceToken {
 		this.userId = userId;
 		this.recordId = recordId;
 	}
+	
+	private static String remoteAddr(Request req) {
+		if (req.hasHeader("X-Real-IP")) {
+			return req.getHeader("X-Real-IP");
+		}
+		return req.remoteAddress();
+	}
 
-	public String encrypt() {
+	public String encrypt(Request req) {
+		this.created = System.currentTimeMillis();
+		this.remoteAddress = remoteAddr(req);
+		return encrypt();
+	}
+	
+	public String encrypt() {		
 		Map<String, String> map = new ChainedMap<String, String>().put("instanceId", spaceId.toString()).put("userId", userId.toString())
 				.get();
 		if (recordId != null) map.put("r", recordId.toString());
 		if (pluginId != null) map.put("p", pluginId.toString());
 		if (executorId != null && !executorId.equals(userId)) map.put("e", executorId.toString());
+		map.put("c", Long.toString(this.created));
+		map.put("i", this.remoteAddress);
 		String json = Json.stringify(Json.toJson(map));
 		return Crypto.encryptAES(json);
 	}
@@ -80,7 +119,7 @@ public class SpaceToken {
 	/**
 	 * The secret passed here can be an arbitrary string, so check all possible exceptions.
 	 */
-	public static SpaceToken decrypt(String unsafeSecret) {
+	public static SpaceToken decrypt(Request request, String unsafeSecret) {
 		try {
 			// decryptAES can throw DecoderException, but there is no way to catch it; catch all exceptions for now...
 			String plaintext = Crypto.decryptAES(unsafeSecret);
@@ -90,7 +129,13 @@ public class SpaceToken {
 			ObjectId recordId = json.has("r") ? new ObjectId(json.get("r").asText()) : null;
 			ObjectId pluginId = json.has("p") ? new ObjectId(json.get("p").asText()) : null;
 			ObjectId executorId = json.has("e") ? new ObjectId(json.get("e").asText()) : userId;
-			return new SpaceToken(spaceId, userId, recordId, pluginId, executorId);
+			long created = json.get("c").asLong();
+			String remoteAddr = json.get("i").asText();
+			
+			if (System.currentTimeMillis() > created + LIFETIME) return null;
+			if (!remoteAddr(request).equals(remoteAddr)) return null;
+			
+			return new SpaceToken(spaceId, userId, recordId, pluginId, executorId, created, remoteAddr);
 		} catch (Exception e) {
 			return null;
 		}

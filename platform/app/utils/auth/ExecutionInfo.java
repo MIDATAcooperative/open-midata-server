@@ -10,6 +10,8 @@ import models.User;
 
 import org.bson.types.ObjectId;
 
+import play.mvc.Http.Request;
+
 import utils.access.RecordManager;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -29,9 +31,9 @@ public class ExecutionInfo {
 	
 	public Space space;
 	
-	public static ExecutionInfo checkSpaceToken(String token) throws AppException {
+	public static ExecutionInfo checkSpaceToken(Request request, String token) throws AppException {
 		// decrypt authToken 
-		SpaceToken authToken = SpaceToken.decrypt(token);
+		SpaceToken authToken = SpaceToken.decrypt(request, token);
 		if (authToken == null) {
 			throw new BadRequestException("error.token", "Invalid authToken.");
 		}

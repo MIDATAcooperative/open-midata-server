@@ -47,7 +47,7 @@ public class FHIR extends Controller {
 		
 		if (param == null) param = "1026725e5e3e3330e73429258e0c786e8cdda484ee1ec4071ad7335f941b85c871fc0494377191203f047c757088612daa04d255ff62e1e2bbdd0b377e96c84c6d4536722e1eb71fa9f52615bf9084e0"; 
 		
-        ExecutionInfo info = ExecutionInfo.checkSpaceToken(param);
+        ExecutionInfo info = ExecutionInfo.checkSpaceToken(request(), param);
         
         ResourceProvider.setExecutionInfo(info);
         

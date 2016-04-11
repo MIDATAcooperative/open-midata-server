@@ -428,7 +428,7 @@ public class Records extends APIController {
 		
 		String visualizationServer = Play.application().configuration().getString("visualizations.server");
 		String url = "https://" + visualizationServer + "/" + visualization.filename + "/" + visualization.url;
-		url = url.replace(":authToken", spaceToken.encrypt());
+		url = url.replace(":authToken", spaceToken.encrypt(request()));
 		return ok(url);						
 	}
 
