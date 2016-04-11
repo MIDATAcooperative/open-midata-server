@@ -114,7 +114,12 @@ public class Users extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Result getCurrentUser() {
-		return ok(Json.toJson(new ObjectId(request().username())));
+						
+		ObjectNode obj = Json.newObject();								
+		obj.put("role", session().get("role"));
+		obj.put("user", request().username());
+																
+		return ok(obj);
 	}
 
     /**

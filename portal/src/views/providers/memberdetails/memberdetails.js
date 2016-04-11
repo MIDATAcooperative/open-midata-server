@@ -78,8 +78,8 @@ angular.module('portal')
 	
 	
 	// get current user
-	server.get(jsRoutes.controllers.Users.getCurrentUser().url).
-		success(function(userId) {
+	session.currentUser.then(
+		function(userId) {
 			$scope.userId = userId;
 			$scope.getApps(userId);			
 		});

@@ -4,8 +4,8 @@ angular.module('portal')
 	// init
 	$scope.user = {};	
 	$scope.beta = ENV.beta;
-	session.viewHeight = "600px";
-	session.login();
+	session.viewHeight = "600px";	
+	session.login($state.current.data.role);
 	
 	// get current user
 	session.currentUser.then(function(userId) {

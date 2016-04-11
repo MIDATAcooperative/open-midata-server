@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('session', ['$q', 'server', function($q, server) {
+.factory('session', ['$q', 'server', '$cookies', function($q, server, $cookies) {
 	
 	var session = {
 		currentUser : null,
@@ -42,10 +42,17 @@ angular.module('services')
 			}
 		},
 		
-		login : function() {			
+		login : function(requiredRole) {			
 			var def  = $q.defer();		
 			server.get(jsRoutes.controllers.Users.getCurrentUser().url).
-			success(function(userId) {	
+			success(function(result) {
+				var userId = result.user;
+				if (requiredRole && result.role != requiredRole) {
+				   document.location.href="/#/public/login";
+				   return;
+				}
+				$cookies.put("session", userId);
+				session.storedCookie = userId;
 				console.log("GOT USERID");
 				var data = {"properties": { "_id" : userId }, "fields": ["email", "firstname", "lastname", "visualizations", "apps", "midataID", "name"] };
 				server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data))
@@ -61,6 +68,7 @@ angular.module('services')
 		
 		logout : function() {
 			session.currentUser = null;
+			session.storedCookie = null;
 			session.cache = {};
 		},
 		

@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('MessagesCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
+.controller('MessagesCtrl', ['$scope', '$state', 'server', 'session', function($scope, $state, server, session) {
 	
 	// init
 	$scope.error = null;
@@ -12,8 +12,8 @@ angular.module('portal')
 	$scope.tab = 'inbox';
 	
 	// get current user
-	server.get(jsRoutes.controllers.Users.getCurrentUser().url).
-		success(function(userId) { getFolders(userId); });
+	session.currentUser.then(
+		function(userId) { getFolders(userId); });
 	
 	// get messages
 	getFolders = function(userId) {
