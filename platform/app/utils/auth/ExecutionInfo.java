@@ -85,7 +85,7 @@ public class ExecutionInfo {
 		Map<String, Object> appobj = RecordManager.instance.getMeta(authToken.appInstanceId, authToken.appInstanceId, "_app").toMap();
 		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
 			ObjectId alias = new ObjectId(appobj.get("alias").toString());
-			byte[] key = (byte[]) appobj.get("userkey");
+			byte[] key = (byte[]) appobj.get("aliaskey");
 			KeyManager.instance.unlock(appInstance.owner, alias, key);
 			RecordManager.instance.clear();
 			result.executorId = appInstance.owner;
