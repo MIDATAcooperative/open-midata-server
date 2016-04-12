@@ -831,7 +831,10 @@ public class RecordManager {
 				if (ContentInfo.isCoding(content)) {
 				   r.meta.put("code", content);
 				   String content2 = ContentCode.getContentForSystemCode(content);
-				   if (content2 == null) throw new InternalServerException("error.internal", "Unknown code '"+content+"' in convert.");
+				   if (content2 == null) {
+					   RecordManager.instance.deleteRecord(who, new RecordToken(r._id.toString(), who.toString()));
+					   continue;
+				   }
 				   r.meta.put("content", content2);
 				} else {
 				   r.meta.put("code", ContentInfo.getByName(r.meta.getString("content")).defaultCode);
