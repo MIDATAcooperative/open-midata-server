@@ -47,7 +47,7 @@ public class SpaceToken {
 	/**
 	 * IP Address for which the token is valid
 	 */
-	public String remoteAddress = "127.0.0.1";
+	public String remoteAddress = "all";
 	
 	/**
 	 * Different executing person
@@ -73,6 +73,7 @@ public class SpaceToken {
 		this.recordId = recordId;
 		this.pluginId = pluginId;
 		this.executorId = executorId;	
+		this.created = System.currentTimeMillis();
 	}
 	
 	public SpaceToken(ObjectId spaceId, ObjectId userId, ObjectId recordId, ObjectId pluginId, ObjectId executorId, long created, String remoteAddr) {
@@ -133,7 +134,9 @@ public class SpaceToken {
 			String remoteAddr = json.get("i").asText();
 			
 			if (System.currentTimeMillis() > created + LIFETIME) return null;
-			if (!remoteAddr(request).equals(remoteAddr)) return null;
+			if (!remoteAddr.equals("all")) {
+			  if (!remoteAddr(request).equals(remoteAddr)) return null;
+			}
 			
 			return new SpaceToken(spaceId, userId, recordId, pluginId, executorId, created, remoteAddr);
 		} catch (Exception e) {
