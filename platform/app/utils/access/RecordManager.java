@@ -297,6 +297,26 @@ public class RecordManager {
         List<DBRecord> doubles = QueryEngine.listInternal(getCache(who), toAPS, CMaps.map(query).map("ignore-redirect", "true").map("flat", "true").map("streams", "true"), APSEntry.groupingFields);
         apswrapper.removePermission(doubles);        
 	}
+	
+	/**
+	 * Materialize the query results of an APS into the APS and remove the query
+	 * @param who executing person
+	 * @param targetAPS the APS with a query redirect
+	 * @throws AppException
+	 */
+	public void materialize(ObjectId who, ObjectId targetAPS) throws AppException {
+		APS apswrapper = getCache(who).getAPS(targetAPS);
+		if (apswrapper.getMeta("_query") != null) {
+			AccessLog.logBegin("start materialize query APS="+targetAPS.toString());
+			Set<String> fields = Sets.create("owner");
+			fields.addAll(APSEntry.groupingFields);
+			List<DBRecord> content = QueryEngine.listInternal(getCache(who), targetAPS, CMaps.map("redirect-only", "true"), fields);
+			
+			apswrapper.addPermission(content, true);
+			apswrapper.removeMeta("_query");
+			AccessLog.logEnd("end materialize query");
+		}
+	}
 
 	/**
 	 * remove records from an APS
@@ -833,7 +853,12 @@ public class RecordManager {
 				   }
 				   r.meta.put("content", content2);
 				} else {
-				   r.meta.put("code", ContentInfo.getByName(r.meta.getString("content")).defaultCode);
+				   try {
+				      r.meta.put("code", ContentInfo.getByName(r.meta.getString("content")).defaultCode);
+				   } catch (BadRequestException e) {
+					  RecordManager.instance.deleteRecord(who, new RecordToken(r._id.toString(), who.toString()));
+					  continue;
+				   }
 				}
 			    RecordEncryption.encryptRecord(r);
 			    DBRecord.set(r._id, "encrypted", r.encrypted);

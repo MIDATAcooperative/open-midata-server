@@ -76,16 +76,24 @@ public class Feature_QueryRedirect extends Feature {
 		
 		BasicBSONObject query = q.getCache().getAPS(q.getApsId()).getMeta(APS.QUERY);    	
     	// Ignores queries in main APS 
-		if (query != null && !q.getApsId().equals(q.getCache().getOwner()) && !q.restrictedBy("ignore-redirect")) {			
-			List<DBRecord> result = next.query(q);
+		if (query != null && !q.getApsId().equals(q.getCache().getOwner())) {			
+			List<DBRecord> result;
 			
-			if (query.containsField("$or")) {
-				Collection queryparts = (Collection) query.get("$or");
-				for (Object part : queryparts) {
-					query(q, (BasicBSONObject) part, result);
-				}
+			if (q.restrictedBy("redirect-only")) {
+			  result = new ArrayList<DBRecord>();	
 			} else {
-				query(q, query, result);
+			  result = next.query(q);
+			}
+			
+			if (!q.restrictedBy("ignore-redirect")) {
+				if (query.containsField("$or")) {
+					Collection queryparts = (Collection) query.get("$or");
+					for (Object part : queryparts) {
+						query(q, (BasicBSONObject) part, result);
+					}
+				} else {
+					query(q, query, result);
+				}
 			}
 						
 			return result;

@@ -173,6 +173,7 @@ public class PluginsAPI extends Controller {
 			if (auto) {				
 				User autoRunner = Admin.getByEmail("autorun-service", Sets.create("_id"));
 				RecordManager.instance.shareAPS(space._id, spaceToken.executorId, Collections.singleton(autoRunner._id));
+				RecordManager.instance.materialize(spaceToken.executorId, space._id);
 				Space.set(space._id, "autoImport", auto);
 			} else {
 				User autoRunner = Admin.getByEmail("autorun-service", Sets.create("_id"));
