@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 import models.APSNotExistingException;
 import models.AccessPermissionSet;
@@ -20,8 +18,6 @@ import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
 
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
 
 import utils.AccessLog;
 import utils.auth.EncryptionNotSupportedException;
@@ -40,14 +36,12 @@ public class EncryptedAPS {
 	private ObjectId apsId;
 	private ObjectId who;
 	private ObjectId owner;
-	private SecretKey encryptionKey;	
+	private byte[] encryptionKey;	
 	private boolean isValidated = false;
 	private boolean keyProvided = false;
 	private boolean notStored = false;
 	private List<EncryptedAPS> sublists;
-	private AccessPermissionSet acc_aps;
-	
-	public final static String KEY_ALGORITHM = "AES";
+	private AccessPermissionSet acc_aps;		
 		
 	public EncryptedAPS(ObjectId apsId, ObjectId who) throws InternalServerException {
 		this(apsId, who, null);
@@ -63,7 +57,7 @@ public class EncryptedAPS {
 		this.apsId = apsId;		
 		this.who = who;
 		this.owner = owner;
-		this.encryptionKey = (enckey != null) ? new SecretKeySpec(enckey, KEY_ALGORITHM) : null;
+		this.encryptionKey = enckey;
 		keyProvided = enckey != null;
 	}
 	
@@ -71,7 +65,7 @@ public class EncryptedAPS {
 		this.apsId = apsId;		
 		this.who = who;
 		this.owner = owner;
-		this.encryptionKey = (enckey != null) ? new SecretKeySpec(enckey, KEY_ALGORITHM) : null;
+		this.encryptionKey = enckey;
 		this.aps = set;
 		this.acc_aps = this.aps;
 		isValidated = false;
@@ -95,7 +89,7 @@ public class EncryptedAPS {
 		aps.keys = new HashMap<String, byte[]>();		
 		
 		if (! lvl.equals(APSSecurityLevel.NONE)) {
-		  encryptionKey = (encKey != null) ? new SecretKeySpec(encKey, KEY_ALGORITHM) : EncryptionUtils.generateKey(KEY_ALGORITHM);		  
+		  encryptionKey = (encKey != null) ? encKey : EncryptionUtils.generateKey();		  
 		}
 		
 		keyProvided = true;
@@ -110,7 +104,7 @@ public class EncryptedAPS {
 	}
 	
 	protected EncryptedAPS createChild() throws AppException {
-		EncryptedAPS result = new EncryptedAPS(new ObjectId(), getAccessor(), getOwner(), getSecurityLevel(), EncryptionUtils.generateKey(KEY_ALGORITHM).getEncoded());
+		EncryptedAPS result = new EncryptedAPS(new ObjectId(), getAccessor(), getOwner(), getSecurityLevel(), EncryptionUtils.generateKey());
 		if (this.aps.unmerged == null) this.aps.unmerged = new ArrayList<AccessPermissionSet>(); 
 		aps.unmerged.add(result.aps);
 		return result;
@@ -157,7 +151,7 @@ public class EncryptedAPS {
 		aps.security = lvl;		
 	}
 	
-	protected SecretKey getAPSKey() throws AppException {
+	protected byte[] getAPSKey() throws AppException {
 		if (!keyProvided && !isValidated) validate();
 		return encryptionKey;
 	}
@@ -315,9 +309,8 @@ public class EncryptedAPS {
 				byte[] key = aps.keys.get(who.toString());
 				if (key==null) { key = aps.keys.get("owner"); this.owner = who; } 
 			    if (key==null /*|| ! key.startsWith("key"+who.toString())*/) throw new InternalServerException("error.internal", "APS not readable by user");
-			    		 
-			    byte[] decryptedKey = KeyManager.instance.decryptKey(who, key);
-			    encryptionKey = new SecretKeySpec(decryptedKey, KEY_ALGORITHM);// SecretKeyFactory.getInstance(KEY_ALGORITHM).key.substring(key.indexOf(':'));
+			    		 			    
+			    encryptionKey = KeyManager.instance.decryptKey(who, key);
 			    
 			    decodeAPS();
 			}

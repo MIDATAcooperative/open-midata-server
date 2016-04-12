@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.crypto.SecretKey;
-
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
@@ -25,9 +23,9 @@ public class IndexRoot {
 
 	private IndexDefinition model;
 	private IndexPage rootPage;
-	private SecretKey key;
+	private byte[] key;
 	
-	public IndexRoot(SecretKey key, IndexDefinition def, boolean isnew) throws InternalServerException {
+	public IndexRoot(byte[] key, IndexDefinition def, boolean isnew) throws InternalServerException {
 		this.key = key;
 		this.model = def;
 		this.rootPage = new IndexPage(this.key, def);		

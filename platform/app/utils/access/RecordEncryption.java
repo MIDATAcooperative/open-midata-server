@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
 import models.Record;
 import models.enums.APSSecurityLevel;
 
@@ -42,16 +39,14 @@ class RecordEncryption {
 		}
 		
 		if (record.key == null) throw new InternalServerException("error.internal", "Cannot encrypt");
-		
-		SecretKey encKey = new SecretKeySpec(record.key, EncryptedAPS.KEY_ALGORITHM);
-		
+						
 		if (record.meta != null) {
 			if (!record.meta.containsField("format")) throw new InternalServerException("error.internal", "Missing format in record!");
 		    if (!record.meta.containsField("content")) throw new InternalServerException("error.internal", "Missing content in record!");			
-		    record.encrypted = EncryptionUtils.encryptBSON(encKey, record.meta);
+		    record.encrypted = EncryptionUtils.encryptBSON(record.key, record.meta);
 		} else record.encrypted = null;
-		record.encryptedData = record.data != null ? EncryptionUtils.encryptBSON(encKey, record.data): null;
-		record.encWatches = record.watches != null ? EncryptionUtils.encryptBSON(encKey, record.watches) : null;
+		record.encryptedData = record.data != null ? EncryptionUtils.encryptBSON(record.key, record.data): null;
+		record.encWatches = record.watches != null ? EncryptionUtils.encryptBSON(record.key, record.watches) : null;
 													
 		record.clearEncryptedFields();
 	}
@@ -67,11 +62,10 @@ class RecordEncryption {
 		if (record.encrypted == null && record.encryptedData == null && record.encWatches == null) return;
 		if (record.security != null && record.security.equals(APSSecurityLevel.NONE)) return;
 		if (record.key == null) AccessLog.decryptFailure(record._id);
-		
-		SecretKey encKey = new SecretKeySpec(record.key, EncryptedAPS.KEY_ALGORITHM);
+				
 		if (record.encrypted != null) {
 			try {
-		       record.meta = (BasicBSONObject) EncryptionUtils.decryptBSON(encKey, record.encrypted);		    		    
+		       record.meta = (BasicBSONObject) EncryptionUtils.decryptBSON(record.key, record.encrypted);		    		    
 			} catch (InternalServerException e) {
 				AccessLog.log("Error decrypting record: id="+record._id.toString());
 				//throw e;
@@ -80,7 +74,7 @@ class RecordEncryption {
 		
 		if (record.encryptedData != null) {
 			try {
-			record.data = EncryptionUtils.decryptBSON(encKey, record.encryptedData);
+			record.data = EncryptionUtils.decryptBSON(record.key, record.encryptedData);
 			} catch (InternalServerException e) {
 				AccessLog.log("Error decrypting data of record: id="+record._id.toString());
 				//throw e;
@@ -89,7 +83,7 @@ class RecordEncryption {
 		
 		if (record.encWatches != null) {
 			try {
-			   BSONObject r = EncryptionUtils.decryptBSON(encKey, record.encWatches);
+			   BSONObject r = EncryptionUtils.decryptBSON(record.key, record.encWatches);
 			   record.watches = new BasicBSONList();
 			   record.watches.putAll(r);
 			} catch (InternalServerException e) {

@@ -51,7 +51,9 @@ public class KeyManager {
 	/**
 	 * cipher algorithm used
 	 */
-	public final static String CIPHER_ALGORITHM = "RSA/ECB/PKCS1Padding";
+	public final static String CIPHERS[] = new String[] { "RSA/ECB/PKCS1Padding", "RSA/ECB/OAEPWithSHA-256AndMGF1Padding" };
+	
+	public final static byte DEFAULT_CIPHER_ALG = 1;
 	
 	/**
 	 * private key is not protected
@@ -111,13 +113,16 @@ public class KeyManager {
 			KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
 			PublicKey pubKey = keyFactory.generatePublic(spec);
 			 
-			Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
+			Cipher c = Cipher.getInstance(CIPHERS[DEFAULT_CIPHER_ALG]);
 			c.init(Cipher.ENCRYPT_MODE, pubKey);
 		    
 			byte[] cipherText = c.doFinal(EncryptionUtils.randomize(keyToEncrypt));
 			//c.doFinal(keyToEncrypt, 0, keyToEncrypt.length, cipherText);
-			
-			return cipherText;
+			byte[] result = new byte[cipherText.length+4];
+			result[0] = DEFAULT_CIPHER_ALG;
+			result[1] = result[2] = result[3] = 0;
+			System.arraycopy(cipherText, 0, result, 4, cipherText.length);
+			return result;
 		} catch (NoSuchAlgorithmException e) {
 			throw new InternalServerException("error.internal.cryptography", e);		
 		} catch (NoSuchPaddingException e2) {
@@ -156,10 +161,16 @@ public class KeyManager {
 			KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
 			PrivateKey privKey = keyFactory.generatePrivate(spec);
 			 
-			Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
+			byte algorithm = 0;
+			int offset = 0;
+			if (keyToDecrypt[1] == 0 && keyToDecrypt[2] == 0 && keyToDecrypt[3] == 0) {
+				algorithm = keyToDecrypt[0];
+				offset = 4;
+			}
+			Cipher c = Cipher.getInstance(CIPHERS[algorithm]);
 			c.init(Cipher.DECRYPT_MODE, privKey);
 		    
-			byte[] cipherText = c.doFinal(keyToDecrypt);
+			byte[] cipherText = c.doFinal(keyToDecrypt, offset, keyToDecrypt.length - offset);
 						
 			return EncryptionUtils.derandomize(cipherText);
 		} catch (NoSuchAlgorithmException e) {

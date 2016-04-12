@@ -59,10 +59,10 @@ class APSImplementation extends APS {
 			record.key = null;	
 			record.security = APSSecurityLevel.NONE;
 		} else if (record.direct) {
-			record.key = eaps.getAPSKey() != null ? eaps.getAPSKey().getEncoded() : null;
+			record.key = eaps.getAPSKey() != null ? eaps.getAPSKey() : null;
 			record.security = eaps.getSecurityLevel();
 		} else {
-			record.key = EncryptionUtils.generateKey(EncryptionUtils.KEY_ALGORITHM).getEncoded();
+			record.key = EncryptionUtils.generateKey();
 			record.security = APSSecurityLevel.HIGH;
 		}
 		
@@ -98,7 +98,7 @@ class APSImplementation extends APS {
 			} else {
 				for (ObjectId target : targets)
 					if (eaps.getKey(target.toString()) == null) {
-						eaps.setKey(target.toString(), KeyManager.instance.encryptKey(target, eaps.getAPSKey().getEncoded()));
+						eaps.setKey(target.toString(), KeyManager.instance.encryptKey(target, eaps.getAPSKey()));
 						changed = true;
 					}
 			}
@@ -125,7 +125,7 @@ class APSImplementation extends APS {
 				}
 			} else {
 				if (eaps.getKey(target.toString()) == null) {
-					eaps.setKey(target.toString(), KeyManager.instance.encryptKey(publickey, eaps.getAPSKey().getEncoded()));
+					eaps.setKey(target.toString(), KeyManager.instance.encryptKey(publickey, eaps.getAPSKey()));
 					changed = true;
 				}
 			}
@@ -205,7 +205,7 @@ class APSImplementation extends APS {
 			q.addMongoTimeRestriction(query);
 			List<DBRecord> directResult = new ArrayList<DBRecord>(DBRecord.getAll(query, q.getFieldsFromDB()));
 			for (DBRecord record : directResult) {
-				record.key = eaps.getAPSKey() != null ? eaps.getAPSKey().getEncoded() : null;
+				record.key = eaps.getAPSKey() != null ? eaps.getAPSKey() : null;
 				record.security = eaps.getSecurityLevel();
 				if (withOwner)
 					record.owner = eaps.getOwner();
@@ -266,7 +266,7 @@ class APSImplementation extends APS {
 	protected boolean lookupSingle(DBRecord input, Query q) throws AppException {
 		// AccessLog.lookupSingle(eaps.getId(), input._id, q.getProperties());
 		if (eaps.isDirect()) {
-			input.key = eaps.getAPSKey() != null ? eaps.getAPSKey().getEncoded() : null;
+			input.key = eaps.getAPSKey() != null ? eaps.getAPSKey() : null;
 			input.security = eaps.getSecurityLevel();
 			input.owner = eaps.getOwner();
 			return true;
@@ -472,7 +472,7 @@ class APSImplementation extends APS {
 				else wrapper.setKey(ckey, null);
 			 } else {
 				ObjectId person = ckey.equals("owner") ? eaps.getOwner() : new ObjectId(ckey);
-		        wrapper.setKey(ckey, KeyManager.instance.encryptKey(person, wrapper.getAPSKey().getEncoded()));
+		        wrapper.setKey(ckey, KeyManager.instance.encryptKey(person, wrapper.getAPSKey()));
 			 }
 		   } catch (EncryptionNotSupportedException e) {}
 		   
@@ -480,7 +480,7 @@ class APSImplementation extends APS {
 	   try {
 		 if (wrapper.getSecurityLevel().equals(APSSecurityLevel.NONE)) {
 			wrapper.setKey(eaps.getAccessor().toString(), null);
-		 } else wrapper.setKey(eaps.getAccessor().toString(), KeyManager.instance.encryptKey(eaps.getAccessor(), wrapper.getAPSKey().getEncoded()));
+		 } else wrapper.setKey(eaps.getAccessor().toString(), KeyManager.instance.encryptKey(eaps.getAccessor(), wrapper.getAPSKey()));
 	   } catch (EncryptionNotSupportedException e) {}
 								
 		eaps.useAccessibleSubset(wrapper);

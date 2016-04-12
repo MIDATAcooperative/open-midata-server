@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.crypto.SecretKey;
-
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.ObjectId;
@@ -79,7 +77,7 @@ public class IndexManager {
 		return indexDef;
 	}
 	
-	private SecretKey getIndexKey(APSCache cache, ObjectId user) throws AppException {
+	private byte[] getIndexKey(APSCache cache, ObjectId user) throws AppException {
 		APS aps = cache.getAPS(user, user);
 		return ((APSImplementation) aps).eaps.getAPSKey();
 	}

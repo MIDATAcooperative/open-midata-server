@@ -13,10 +13,12 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import models.AccessPermissionSet;
 import models.enums.APSSecurityLevel;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.bson.BSON;
 import org.bson.BSONObject;
 import org.bson.types.ObjectId;
@@ -24,6 +26,7 @@ import org.bson.types.ObjectId;
 import akka.japi.Pair;
 
 
+import utils.AccessLog;
 import utils.auth.CodeGenerator;
 import utils.auth.EncryptionNotSupportedException;
 import utils.auth.KeyManager;
@@ -36,25 +39,61 @@ import utils.exceptions.InternalServerException;
  */
 public class EncryptionUtils {
 	
-	public final static String CIPHER_ALGORITHM = "AES";
+	public final static byte DEFAULT_CIPHER_ALGORITHM = 0;
+	public final static byte DEFAULT_KEY_ALGORITHM = 0;
+	
+	public final static String[] KEY_ALG = new String[] { "AES" };
+	public final static String[] CIPHER_ALG = new String[] { "AES" };
 	
 	private static SecureRandom random = new SecureRandom();
+	
+	private static SecretKeySpec getKeySpec(byte[] key) {
+		if (key.length == 16) {
+			return new SecretKeySpec(key, KEY_ALG[0]);
+		}
+		byte version = key[0];		
+		
+		return new SecretKeySpec(key, 4, key.length-4, KEY_ALG[version]);
+	}
+	
+	private static byte getCipherAlg(byte[] key) {
+		if (key.length == 16) return 0;
+		return key[1];
+	}
+	
+	private static byte[] getKey(byte cipherVersion, SecretKey spec) {
+		int version = ArrayUtils.indexOf(KEY_ALG, spec.getAlgorithm());
+		byte[] enc = spec.getEncoded();
+		byte[] result = new byte[enc.length+4];
+		result[0] = (byte) version;
+		result[1] = cipherVersion;
+		result[2] = 0;
+		result[3] = 0;
+		System.arraycopy(enc, 0, result, 4, enc.length);
+		return result;
+	}
 
-	public static SecretKey generateKey(String keyAlgorithm) {
+	public static byte[] generateKey(byte keyAlgorithm, byte cipherAlg) {
 		try {
-			KeyGenerator keygen = KeyGenerator.getInstance(keyAlgorithm);
+			KeyGenerator keygen = KeyGenerator.getInstance(KEY_ALG[keyAlgorithm]);
 		    SecretKey aesKey = keygen.generateKey();
 			
-			return aesKey;
+			return getKey(cipherAlg, aesKey);
 		} catch (NoSuchAlgorithmException e) {
 			throw new NullPointerException("CRYPTO BROKEN");
 		}
 	}
 	
-	public static BSONObject decryptBSON(SecretKey key, byte[] encrypted) throws InternalServerException {
+	public static byte[] generateKey() {
+		return generateKey(DEFAULT_KEY_ALGORITHM, DEFAULT_CIPHER_ALGORITHM);
+	}
+	
+	public static BSONObject decryptBSON(byte[] key, byte[] encrypted) throws InternalServerException {
 		try {
-			Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
-			c.init(Cipher.DECRYPT_MODE, key);
+			SecretKey keySpec = getKeySpec(key);
+			String ciperAlg = CIPHER_ALG[getCipherAlg(key)];
+			Cipher c = Cipher.getInstance(ciperAlg);
+			c.init(Cipher.DECRYPT_MODE, keySpec);
 
 			byte[] cipherText = encrypted; 
 			byte[] bson = EncryptionUtils.derandomize(c.doFinal(cipherText));
@@ -77,10 +116,13 @@ public class EncryptionUtils {
 
 	}
 	
-	public static byte[] encryptBSON(SecretKey key, BSONObject obj) throws InternalServerException {
+	public static byte[] encryptBSON(byte[] key, BSONObject obj) throws InternalServerException {
 		try {
-			Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
-			c.init(Cipher.ENCRYPT_MODE, key);
+			SecretKey keySpec = getKeySpec(key);
+			String ciperAlg = CIPHER_ALG[getCipherAlg(key)];
+			
+			Cipher c = Cipher.getInstance(ciperAlg);
+			c.init(Cipher.ENCRYPT_MODE, keySpec);
 
 		    byte[] bson = BSON.encode(obj);
 			byte[] cipherText = c.doFinal(EncryptionUtils.randomize(bson));
@@ -100,10 +142,13 @@ public class EncryptionUtils {
 	
 	}
 	
-	public static InputStream encryptStream(SecretKey key, InputStream in) throws InternalServerException {
+	public static InputStream encryptStream(byte[] key, InputStream in) throws InternalServerException {
 		try {
-			Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
-			c.init(Cipher.ENCRYPT_MODE, key);
+			SecretKey keySpec = getKeySpec(key);
+			String ciperAlg = CIPHER_ALG[getCipherAlg(key)];
+			
+			Cipher c = Cipher.getInstance(ciperAlg);
+			c.init(Cipher.ENCRYPT_MODE, keySpec);
 
 		    return new CipherInputStream(in, c);
 								    	
@@ -117,10 +162,13 @@ public class EncryptionUtils {
 	
 	}
 	
-	public static InputStream decryptStream(SecretKey key, InputStream in) throws InternalServerException {
+	public static InputStream decryptStream(byte[] key, InputStream in) throws InternalServerException {
 		try {
-			Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
-			c.init(Cipher.DECRYPT_MODE, key);
+			SecretKey keySpec = getKeySpec(key);
+			String ciperAlg = CIPHER_ALG[getCipherAlg(key)];
+			
+			Cipher c = Cipher.getInstance(ciperAlg);						
+			c.init(Cipher.DECRYPT_MODE, keySpec);
 
 		    return new CipherInputStream(in, c);
 								    	
@@ -143,9 +191,9 @@ public class EncryptionUtils {
 			}
 		} else {
 		   if (target.equals(eaps.getOwner())) {
-			   eaps.setKey("owner", KeyManager.instance.encryptKey(target, eaps.getAPSKey().getEncoded()));
+			   eaps.setKey("owner", KeyManager.instance.encryptKey(target, eaps.getAPSKey()));
 		   } else {
-			   eaps.setKey(target.toString(), KeyManager.instance.encryptKey(target, eaps.getAPSKey().getEncoded()));	
+			   eaps.setKey(target.toString(), KeyManager.instance.encryptKey(target, eaps.getAPSKey()));	
 		   }
 		}
 		
@@ -186,7 +234,7 @@ public class EncryptionUtils {
 		return result;		
    }
 
-	public final static String KEY_ALGORITHM = "AES";
+	
 
 	public static byte[] randomize(byte[] source) {
 		byte[] key = new byte[4];

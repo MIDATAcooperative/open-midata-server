@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-import javax.crypto.SecretKey;
-
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
@@ -23,10 +21,10 @@ import utils.exceptions.InternalServerException;
 public class IndexPage {
 
 	private IndexPageModel model;
-	private SecretKey key;
+	private byte[] key;
 	private boolean changed;
 	
-	public IndexPage(SecretKey key, IndexPageModel model) throws InternalServerException {
+	public IndexPage(byte[] key, IndexPageModel model) throws InternalServerException {
 		this.key = key;
 		this.model = model;
 		if (model.enc != null) decrypt();

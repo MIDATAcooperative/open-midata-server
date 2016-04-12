@@ -11,9 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
 import models.APSNotExistingException;
 import models.AccessPermissionSet;
 import models.Circle;
@@ -400,9 +397,8 @@ public class RecordManager {
 	 */
 	public void addRecord(ObjectId executingPerson, Record record, FileInputStream data, String fileName, String contentType) throws DatabaseException, AppException {
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
-		byte[] kdata = addRecordIntern(executingPerson, dbrecord, false, null, false);
-		SecretKey key = new SecretKeySpec(kdata, EncryptedAPS.KEY_ALGORITHM);
-		FileStorage.store(EncryptionUtils.encryptStream(key, data), record._id, fileName, contentType);		
+		byte[] kdata = addRecordIntern(executingPerson, dbrecord, false, null, false);		
+		FileStorage.store(EncryptionUtils.encryptStream(kdata, data), record._id, fileName, contentType);		
 	}
 	
 	/**
@@ -708,7 +704,7 @@ public class RecordManager {
 		if (rec.security.equals(APSSecurityLevel.NONE) || rec.security.equals(APSSecurityLevel.LOW)) {
 		  fileData.inputStream = fileData.inputStream;			
 		} else {
-		  fileData.inputStream = EncryptionUtils.decryptStream(new SecretKeySpec(rec.key, EncryptedAPS.KEY_ALGORITHM), fileData.inputStream);
+		  fileData.inputStream = EncryptionUtils.decryptStream(rec.key, fileData.inputStream);
 		}
 		
 		return fileData;
