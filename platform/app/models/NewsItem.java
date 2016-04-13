@@ -87,9 +87,9 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 
 	public static void delete(ObjectId receiverId, ObjectId newsItemId, boolean broadcast) throws InternalServerException {
 		// also remove from the search index if it was a broadcast
-		if (broadcast) {
+		/*if (broadcast) {
 			Search.delete(Type.NEWS, newsItemId);
-		}
+		}*/
 		Model.delete(NewsItem.class, collection, new ChainedMap<String, ObjectId>().put("_id", newsItemId).get());
 	}
 

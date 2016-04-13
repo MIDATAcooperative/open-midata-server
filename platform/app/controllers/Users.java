@@ -131,22 +131,15 @@ public class Users extends APIController {
 	@Security.Authenticated(MemberSecured.class)
 	@APICall
 	public static Result search(String query) throws InternalServerException {
-		// TODO use caching/incremental retrieval of results (scrolls)
-		List<SearchResult> searchResults = Search.search(Type.USER, query);
-		Set<ObjectId> userIds = new HashSet<ObjectId>();
-		for (SearchResult searchResult : searchResults) {
-			userIds.add(new ObjectId(searchResult.id));
-		}
-
-		// remove own entry, if present
-		userIds.remove(new ObjectId(request().username()));
-
-		// get name for ids
-		Map<String, Set<ObjectId>> properties = new ChainedMap<String, Set<ObjectId>>().put("_id", userIds).get();
-		Set<String> fields = Sets.create("name", "firstname", "lastname");
-		List<Member> users = new ArrayList<Member>(Member.getAll(properties, fields));		
-		for (User user : users) user.name = (user.firstname + " "+ user.lastname).trim();
 		
+		Set<String> fields =  Sets.create("firstname", "lastname", "name");
+		Set<Member> result = Member.getAll(CMaps.map("email", query), fields);
+		
+		for (Member member : result) {
+			member.name = member.firstname+" "+member.lastname;
+		}
+		
+		List<Member> users = new ArrayList<Member>(result);
 		Collections.sort(users);
 		return ok(JsonOutput.toJson(users, "User", fields));
 	}
@@ -188,7 +181,7 @@ public class Users extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Result complete(String query) {
-		return ok(Json.toJson(Search.complete(Type.USER, query)));
+		return ok(Json.toJson(Collections.EMPTY_LIST)); //Search.complete(Type.USER, query)));
 	}
 
 

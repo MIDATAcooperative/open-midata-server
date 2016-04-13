@@ -76,11 +76,11 @@ public class Circle extends Consent implements Comparable<Circle> {
 		Model.insert(collection, this);
 
 		// also add this circle to the user's search index
-		try {
+		/*try {
 			Search.add(this.owner, "circle", this._id, this.name);
 		} catch (SearchException e) {
 			throw new InternalServerException("error.internal", e);
-		}
+		}*/
 	}
 
 	public static void delete(ObjectId ownerId, ObjectId circleId) throws InternalServerException {
@@ -96,7 +96,7 @@ public class Circle extends Consent implements Comparable<Circle> {
 		}
 
 		// also remove from search index
-		Search.delete(ownerId, "circle", circleId);
+		//Search.delete(ownerId, "circle", circleId);
 		Model.delete(Circle.class, collection, properties);
 	}
 

@@ -136,7 +136,7 @@ public class Messages extends Controller {
 		User user = User.getById(userId, Sets.create("messages.trash"));
 		user.messages.get("trash").remove(messageId);
 		User.set(userId, "messages.trash", user.messages.get("trash"));
-		Search.delete(userId, "message", messageId);
+		//Search.delete(userId, "message", messageId);
 		
 		return ok();
 	}

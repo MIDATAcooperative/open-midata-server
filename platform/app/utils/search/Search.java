@@ -59,6 +59,7 @@ public class Search {
 	private static Node node;
 	private static Client client;
 
+	/*
 	public static void connect() {
 		// start a client node (holds no data)
 		Settings settings = ImmutableSettings.settingsBuilder().put("http.enabled", "false").put("transcport.tcp.port", "9300-9400")
@@ -77,10 +78,10 @@ public class Search {
 			node.close();
 		}
 	}
-
+*/
 	/**
 	 * Create global indices.
-	 */
+	 *//*
 	public static void initialize() throws SearchException {
 		// return if not connected
 		if (client == null) {
@@ -91,11 +92,11 @@ public class Search {
 		if (!client.admin().indices().prepareExists(PUBLIC).execute().actionGet().isExists()) {
 			client.admin().indices().prepareCreate(PUBLIC).execute().actionGet();
 		}
-	}
+	}*/
 
 	/**
 	 * Delete all indices.
-	 */
+	 *//*
 	public static void destroy() {
 		// return if not connected
 		if (client == null) {
@@ -104,11 +105,11 @@ public class Search {
 
 		client.admin().indices().prepareDelete("_all").execute().actionGet();
 		client.admin().indices().prepareClearCache().execute().actionGet();
-	}
+	}*/
 
 	/**
 	 * Create a user's index.
-	 */
+	 *//*
 	private static void createIndex(ObjectId userId) throws SearchException {
 		// return if not connected
 		if (client == null) {
@@ -118,11 +119,11 @@ public class Search {
 		if (!client.admin().indices().prepareExists(userId.toString()).execute().actionGet().isExists()) {
 			client.admin().indices().prepareCreate(userId.toString()).execute().actionGet();
 		}
-	}
+	}*/
 
 	/**
 	 * Delete a user's index.
-	 */
+	 *//*
 	private static void deleteIndex(ObjectId userId) {
 		// return if not connected
 		if (client == null) {
@@ -133,8 +134,8 @@ public class Search {
 			client.admin().indices().prepareDelete(userId.toString()).execute().actionGet();
 			client.admin().indices().prepareClearCache(userId.toString()).execute().actionGet();
 		}
-	}
-
+	}*/
+/*
 	private static String getType(Type type) {
 		switch (type) {
 		case USER:
@@ -149,14 +150,16 @@ public class Search {
 			throw new NoSuchElementException("There is no such type.");
 		}
 	}
-
+*/
+	/*
 	public static void add(ObjectId userId, String type, ObjectId modelId, String title) throws SearchException {
 		add(userId, type, modelId, title, null);
 	}
-
+*/
 	/**
 	 * Add document to search index. Title is used for autocompletion, content for full-text search.
 	 */
+	/*
 	public static void add(ObjectId userId, String type, ObjectId modelId, String title, String content) throws SearchException {
 		add(userId.toString(), type, modelId.toString(), title, content);
 	}
@@ -219,17 +222,17 @@ public class Search {
 
 		client.prepareDelete(index, type, id).execute().actionGet();
 	}
-
+    */
 	/**
 	 * Suggest completions within the user's index.
-	 */
+	 *//*
 	public static Map<String, List<CompletionResult>> complete(ObjectId userId, String query) {
 		return complete(userId.toString(), query);
-	}
+	}*/
 
 	/**
 	 * Suggest completions of the given type within the public index.
-	 */
+	 *//*
 	public static List<CompletionResult> complete(Type type, String query) {
 		Map<String, List<CompletionResult>> results = complete(PUBLIC, query);
 		if (results.containsKey(getType(type))) {
@@ -237,8 +240,8 @@ public class Search {
 		} else {
 			return new ArrayList<CompletionResult>();
 		}
-	}
-
+	}*/
+/*
 	private static Map<String, List<CompletionResult>> complete(String index, String query) {
 		Map<String, List<CompletionResult>> results = new HashMap<String, List<CompletionResult>>();
 
@@ -342,11 +345,11 @@ public class Search {
 	   }
 	   
 	   return searchRecords(userId, map, query);
-	}
+	}*/
 	
 	/**
 	 * Search in all the user's data and all visible records.
-	 */
+	 *//*
 	public static Map<String, List<SearchResult>> search(ObjectId userId, Map<String, Set<ObjectId>> visibleRecords, String query) {
 		// return if not connected
 		if (client == null) {
@@ -402,12 +405,12 @@ public class Search {
 		SearchRequestBuilder builder = client.prepareSearch(PUBLIC).setQuery(QueryBuilders.multiMatchQuery(query, TITLE, CONTENT));
 		return addHighlighting(builder);
 	}
-
+*/
 	/**
 	 * Builds the search request for other users' visible records.
 	 * 
 	 * @param visibleRecords Key: User id, Value: Set of record ids of records that are visible
-	 */
+	 *//*
 	private static SearchRequestBuilder searchVisibleRecords(Map<String, Set<ObjectId>> visibleRecords, String query) {
 		List<String> queriedIndices = new ArrayList<String>();
 		Set<ObjectId> visibleRecordIds = new HashSet<ObjectId>();
@@ -466,5 +469,5 @@ public class Search {
 		}
 		map.get(key).add(value);
 	}
-
+*/
 }

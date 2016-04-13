@@ -150,6 +150,10 @@ public class Study extends Model {
 		return Model.get(Study.class, collection, CMaps.map("_id", studyid), fields);
 	}
     
+    public static Study getByCodeFromMember(String code, Set<String> fields) throws InternalServerException {
+		return Model.get(Study.class, collection, CMaps.map("code", code), fields);
+	}
+    
     public void setValidationStatus(StudyValidationStatus newstatus) throws InternalServerException {
 		Model.set(Study.class, collection, this._id, "validationStatus", newstatus);
 	}

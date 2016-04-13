@@ -1,0 +1,65 @@
+
+	<div class="container" ng-controller="QuickRegistrationCtrl" ng-cloak>
+		<div class="row">
+			<!-- Registration -->
+			<div class="col-sm-12">
+				<div class="panel-container" style="max-width:630px; padding-top:120px; margin:0 auto;">
+					<div class="panel panel-primary">
+		            	<div class="panel-heading">
+		              		<h3 class="panel-title">Sign up</h3>
+		            	</div>
+		            	<div class="panel-body">
+		            		<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	                          {{ error.message || error }}
+	                        </p>	
+	                        <p ng-show="offline" class="alert alert-danger">The backend is currently offline! Come back later.</p>					
+							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="register()" role="form">
+							  <formrow myid="study" label="Study"><input type="text" class="form-control" id="study" name="study" placeholder="Study" ng-model="registration.study" required></formrow>
+							  <formrow myid="app" label="App to be used"><input type="text" class="form-control" id="app" name="app" placeholder="App" ng-model="registration.app" required></formrow>
+							  <formrow myid="phrase" label="Password for app"><input type="text" class="form-control" id="phrase" name="phrase" placeholder="Password" ng-model="registration.phrase" required></formrow>
+															  
+							  <formrow myid="email" label="Email">
+							    <input type="email" class="form-control" id="email" name="email" placeholder="Email" ng-model="registration.email" required>
+							    <formerror myid="email" type="email" message="Please enter a valid email address." ></formerror> 
+							    <formerror myid="email" type="exists" message="A user with this email is already registered."></formerror> 
+							  </formrow>
+							  <formrow myid="password" label="Account Password"> 
+							    <input type="password" class="form-control" id="password" name="password" placeholder="Password" ng-model="registration.password" required>
+							    <formerror myid="password" type="compare" message="Password and password repetition do not match!"></formerror>  
+							    <formerror myid="password" type="tooshort" message="Passwords must be at least 8 characters long."></formerror>
+							    <formerror myid="password" type="tooweak" message="Passwords should contain of a mix of upper/lower case letters, numbers and special characters."></formerror>
+							  </formrow>
+							  <formrow myid="password2" label="Repeat Account Password"><input type="password" class="form-control" id="password2" name="password2" placeholder="Password" ng-model="registration.password2" required></formrow>
+							  <formrow myid="firstname" label="First Name"><input type="text" class="form-control" id="firstname" name="firstname" placeholder="First Name" ng-model="registration.firstname" required></formrow>
+							  <formrow myid="lastname" label="Surname"><input type="text" class="form-control" id="lastname" name="lastname" placeholder="Surname" ng-model="registration.lastname" required></formrow>
+							  
+							  <formrow myid="gender" label="Gender"><select class="form-control" id="gender" name="gender" ng-model="registration.gender"><option value="FEMALE">female</option><option value="MALE">male</option></select></formrow>
+							  <formrow myid="birthday" label="Birthday">  
+							    <div class="input-group">
+							    <div class="input-group-addon">Day</div>
+							    <select class="form-control " id="birthday" name="birthday" ng-model="registration.birthdayDay" ><option ng-repeat="day in days">{{ day }}</option></select>
+							    <div class="input-group-addon">Month</div>
+							    <select class="form-control" id="birthdayMonth" name="birthdayMonth" ng-model="registration.birthdayMonth"><option ng-repeat="month in months">{{ month }}</option></select>
+							    <div class="input-group-addon">Year</div>
+							    <select class="form-control" id="birthdayYear" name="birthdayYear" ng-model="registration.birthdayYear"><option ng-repeat="year in years">{{ year }}</option></select>
+							    </div>
+							  </formrow>							  
+							  
+							  <formrow myid="address1" label="Address"><input type="text" class="form-control" id="address1" name="address1" placeholder="Enter your address here" ng-model="registration.address1" required></formrow>
+							  <formrow myid="address2" label=""><input type="text" class="form-control" id="address2" name="address2" placeholder="Second line for address" ng-model="registration.address2"></formrow>
+							  <formrow myid="city" label="City"><input type="text" class="form-control" id="city" name="city" placeholder="City" ng-model="registration.city" required></formrow>
+							  <formrow myid="zip" label="Zip"><input type="text" class="form-control" id="zip" name="zip" placeholder="Zip Code" ng-model="registration.zip" required></formrow>
+							  <formrow myid="country" label="Country"><select class="form-control" id="country" name="country" ng-model="registration.country" required><option value="CH">Switzerland</option></select></formrow>
+                             
+                              <formrow myid="phone" label="Phone"><input type="text" class="form-control" id="phone" name="phone" placeholder="Phone" ng-model="registration.phone"></formrow>
+                              <formrow myid="mobile" label="Mobile Phone"><input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile Phone" ng-model="registration.mobile"></formrow>
+                             
+                             <button type="submit" ng-disabled="status.action=='register'" class="btn btn-lg btn-primary btn-block">Sign up</button>
+                            </form>
+		            	</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	

@@ -104,16 +104,17 @@ public class Member extends User {
 		Model.insert(collection, user);
 
 		// add to search index (email is document's content, so that it is searchable as well)
+		/*
 		try {
 			Search.add(Type.USER, user._id, user.firstname + " " + user.lastname, user.email);
 		} catch (SearchException e) {
 			throw new InternalServerException("error.internal", e);
-		}
+		}*/
 	}
 
 	public static void delete(ObjectId userId) throws InternalServerException {
 		// remove from search index
-		Search.delete(Type.USER, userId);
+		//Search.delete(Type.USER, userId);
 
 		// TODO remove all the user's messages, records, spaces, circles, apps (if published, ask whether to leave it in
 		// the marketplace), ...

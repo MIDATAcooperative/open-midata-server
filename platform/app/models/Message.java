@@ -78,7 +78,7 @@ public class Message extends Model implements Comparable<Message> {
 
 	public static void delete(ObjectId receiverId, ObjectId messageId) throws InternalServerException {
 		// also remove from the search index
-		Search.delete(receiverId, "message", messageId);
+		//Search.delete(receiverId, "message", messageId);
 		Model.delete(Message.class, collection, new ChainedMap<String, ObjectId>().put("_id", messageId).get());
 	}
 }

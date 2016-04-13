@@ -124,6 +124,8 @@ public class Plugins extends APIController {
 		
 		Plugin visualization = Plugin.getById(visualizationId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator"));
 		if (visualization == null) return badRequest("Unknown visualization");
+		String context = json.has("context") ? JsonValidation.getString(json, "context") : visualization.defaultSpaceContext;
+		
 		
 		User user = User.getById(userId, Sets.create("visualizations","apps", "role"));
 
@@ -141,7 +143,6 @@ public class Plugins extends APIController {
 			User.set(userId, "apps", user.apps);
 		}
 		
-		String context = json.has("context") ? JsonValidation.getString(json, "context") : visualization.defaultSpaceContext;
 		
 		if (!visualization.type.equals("mobile")) { 
 		    if (spaceName == null || spaceName.equals("")) spaceName = visualization.name;
@@ -160,8 +161,7 @@ public class Plugins extends APIController {
 					  
 					}
 			}
-			
-	
+				
 		} 
 						
 		return ok();

@@ -32,6 +32,7 @@ import utils.auth.Rights;
 import utils.auth.MemberSecured;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -104,7 +105,13 @@ public class HealthProvider extends APIController {
 		JsonNode json = request().body().asJson();
 		JsonValidation.validate(json, "consent");
 		
-		ObjectId consentId = JsonValidation.getObjectId(json, "consent");
+		ObjectId consentId = JsonValidation.getObjectId(json, "consent");		
+		confirmConsent(userId, consentId);				
+		return ok();
+	}
+	
+    public static void confirmConsent(ObjectId userId, ObjectId consentId) throws AppException, JsonValidationException {
+										
 		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Sets.create("status", "owner", "authorized", "confirmDate", "type"));
 		if (target.status.equals(ConsentStatus.UNCONFIRMED)) {
 			if (target.type.equals(ConsentType.EXTERNALSERVICE)) {
@@ -113,10 +120,9 @@ public class HealthProvider extends APIController {
 			target.setConfirmDate(new Date());
 			target.setStatus(ConsentStatus.ACTIVE);
 			Circles.consentStatusChange(userId, target);
-		} else return badRequest("Wrong status");
-	
-		return ok();
+		} else throw new BadRequestException("error.status", "Wrong status");			
 	}
+	
 	
 	/**
 	 * reject a consent created by a health provider

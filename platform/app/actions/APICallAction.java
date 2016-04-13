@@ -31,8 +31,8 @@ public class APICallAction extends Action<APICall> {
     	  JsonNode json = ctx.request().body().asJson();
     	  ctx.args.put("json", json);
     	  String host = ctx.request().getHeader("Origin");
-    	  AccessLog.log(ctx.request().remoteAddress());
-    	  AccessLog.log(ctx.request().getHeader("X-Real-IP"));
+    	  //AccessLog.log(ctx.request().remoteAddress());
+    	  //AccessLog.log(ctx.request().getHeader("X-Real-IP"));
     	  /*if (host != null) {
 	  		  if (host.startsWith("https://localhost") || host.startsWith("http://localhost") || host.equals("https://demo.midata.coop") || host.equals("https://demo.midata.coop:9002")) {
 	  		    ctx.response().setHeader("Access-Control-Allow-Origin", host);

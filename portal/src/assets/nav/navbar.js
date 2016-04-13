@@ -17,11 +17,7 @@ angular.module('portal')
 		server.get('/logout')
 		.then(function() { session.logout(); document.location.href="/#/public/login"; });
 	};
-	
-	$scope.search = function(value) {
-		return server.get(jsRoutes.controllers.GlobalSearch.complete(value).url)
-		.then(function(response) { return response.data; });
-	};
+		
 					
 	// start a search
 	$scope.startSearch = function() {

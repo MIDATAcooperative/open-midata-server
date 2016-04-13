@@ -555,6 +555,7 @@ public class Application extends APIController {
 				
 				controllers.routes.javascript.Application.authenticate(),
 				controllers.routes.javascript.Application.register(),
+				controllers.routes.javascript.QuickRegistration.register(),
 				controllers.routes.javascript.Application.requestPasswordResetToken(),
 				controllers.routes.javascript.Application.setPasswordWithToken(),
 				controllers.routes.javascript.Application.changePassword(),
@@ -687,8 +688,8 @@ public class Application extends APIController {
 				controllers.routes.javascript.Market.deletePlugin(),
 				controllers.routes.javascript.Market.updatePluginStatus(),
 				// Global search				
-				controllers.routes.javascript.GlobalSearch.search(),
-				controllers.routes.javascript.GlobalSearch.complete(),
+				//controllers.routes.javascript.GlobalSearch.search(),
+				//controllers.routes.javascript.GlobalSearch.complete(),
 		        // Portal
 		        controllers.routes.javascript.PortalConfig.getConfig(),
 		        controllers.routes.javascript.PortalConfig.setConfig()));

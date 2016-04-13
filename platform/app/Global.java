@@ -32,7 +32,7 @@ public class Global extends GlobalSettings {
 		}
 		  
   		// Connect to search cluster
-		Search.connect();
+		//Search.connect();
 
 		// Set custom object mapper for Json
 		Json.setObjectMapper(new CustomObjectMapper());
@@ -64,7 +64,7 @@ public class Global extends GlobalSettings {
 		DBLayer.close();
 
 		// Close connection to search cluster
-		Search.close();
+		//Search.close();
 	}
 
 }

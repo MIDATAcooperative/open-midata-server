@@ -16,6 +16,7 @@ GET     /test/autorun                                    controllers.AutoRun.run
 GET     /logout                                          controllers.Application.logout()
 
 POST    /members/api/registration                        controllers.Application.register()
+POST    /members/api/join                                controllers.QuickRegistration.register()
 POST    /members/api/login                               controllers.Application.authenticate()
 POST    /common/api/passphrase                           controllers.Application.providePassphrase()
 POST    /common/api/passphrase/change                    controllers.Application.changePassphrase()
@@ -86,8 +87,8 @@ PUT     /admins/api/plugins/:appId            	         controllers.Market.updat
 DELETE  /admins/api/plugins/:appId            	         controllers.Market.deletePlugin(appId: String)
 
 # Search
-GET     /members/api/search/run/:query                   controllers.GlobalSearch.search(query: String)
-GET     /members/api/search/complete/:query              controllers.GlobalSearch.complete(query: String)
+#GET     /members/api/search/run/:query                   controllers.GlobalSearch.search(query: String)
+#GET     /members/api/search/complete/:query              controllers.GlobalSearch.complete(query: String)
 # Users
 
 POST    /members/api/users/get                           controllers.Users.get()

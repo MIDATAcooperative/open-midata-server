@@ -38,6 +38,7 @@ import utils.auth.Rights;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -304,21 +305,25 @@ public class Studies extends APIController {
 	@Security.Authenticated(MemberSecured.class)
 	public static Result requestParticipation(String id) throws AppException {
 		ObjectId userId = new ObjectId(request().username());		
-		ObjectId studyId = new ObjectId(id);
-		
+		ObjectId studyId = new ObjectId(id);		
+		requestParticipation(userId, studyId);		
+		return ok();
+	}
+	
+	public static void requestParticipation(ObjectId userId, ObjectId studyId) throws AppException {				
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "birthday", "gender", "country"));		
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history", "memberName", "owner", "authorized"));		
 		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history", "owner", "createdBy", "name", "recordQuery", "requiredInformation"));
 		
-		if (study == null) return badRequest("Study does not exist.");
+		if (study == null) throw new BadRequestException("error.studydoesnotexist", "Study does not exist.");
 		if (participation == null) {
-			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return inputerror("code", "notsearching", "Study is not searching for participants.");
+			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.notsearching", "code", "notsearching", "Study is not searching for participants.");
 			
 			participation = createStudyParticipation(study, user, null);
 										
 		}
-		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return badRequest("Study is not searching for participants anymore.");
-		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) return badRequest("Wrong participation status.");
+		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new BadRequestException("error.studynotsearching", "Study is not searching for participants anymore.");
+		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) throw new BadRequestException("error.wrongparticipationstatus", "Wrong participation status.");
 		
 		participation.setPStatus(ParticipationStatus.REQUEST);
 		
@@ -327,8 +332,7 @@ public class Studies extends APIController {
 		
 		participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, null));
 		Circles.consentStatusChange(userId, participation);				
-		
-		return ok();
+				
 	}
 	
 	/**

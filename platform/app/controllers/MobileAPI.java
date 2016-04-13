@@ -21,6 +21,7 @@ import models.Space;
 import models.User;
 import models.enums.AggregationType;
 import models.enums.ConsentStatus;
+import models.enums.ConsentType;
 import models.enums.UserRole;
 
 import org.bson.BSONObject;
@@ -35,6 +36,7 @@ import play.mvc.Result;
 import utils.AccessLog;
 import utils.DateTimeUtils;
 import utils.PasswordHash;
+import utils.access.Feature_FormatGroups;
 import utils.access.Query;
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
@@ -196,21 +198,8 @@ public class MobileAPI extends Controller {
 			appInstance = MobileAppInstance.getByApplicationAndOwner(app._id, member._id, Sets.create("owner", "applicationId", "status", "passcode"));
 			
 			if (appInstance == null) {									
-				appInstance = new MobileAppInstance();
-				appInstance._id = new ObjectId();
-				appInstance.name = "Mobile: "+ app.name;
-				appInstance.applicationId = app._id;		
-	            appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, phrase);
-	        	appInstance.owner = member._id;
-	        	appInstance.passcode = Member.encrypt(phrase);
-	   		    MobileAppInstance.add(appInstance);	
-	   		    
-	   		    KeyManager.instance.unlock(appInstance._id, phrase);	   		    
-	   		    RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id);
-	   		    
-	   		    meta = new HashMap<String, Object>();
-	   		    meta.put("phrase", phrase);
-	   		    
+				appInstance = installApp(appInstance._id, app, member, phrase);				
+	   		    meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
 			} else {
 				if (appInstance.passcode != null && !Member.authenticationValid(phrase, appInstance.passcode)) return badRequest("Wrong password.");
 				if (!verifyAppInstance(appInstance, member._id, app._id)) return badRequest("Access denied");
@@ -234,6 +223,40 @@ public class MobileAPI extends Controller {
 		obj.put("status", appInstance.status.toString());
 															
 		return ok(obj);
+	}
+	
+	public static MobileAppInstance installApp(ObjectId executor, Plugin app, User member, String phrase) throws AppException {		
+		MobileAppInstance appInstance = new MobileAppInstance();
+		appInstance._id = new ObjectId();
+		appInstance.name = "Mobile: "+ app.name;
+		appInstance.applicationId = app._id;		
+        appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, phrase);
+    	appInstance.owner = member._id;
+    	appInstance.passcode = Member.encrypt(phrase);
+		MobileAppInstance.add(appInstance);	
+		    
+		KeyManager.instance.unlock(appInstance._id, phrase);	   		    
+		RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id);
+		    
+		Map<String, Object> meta = new HashMap<String, Object>();
+		meta.put("phrase", phrase);
+		RecordManager.instance.setMeta(executor, appInstance._id, "_app", meta);
+		
+		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {
+			String groupSystem = null;
+			if (app.defaultQuery != null) {
+				if (app.defaultQuery.containsKey("group-system")) {
+				  groupSystem = app.defaultQuery.get("group-system").toString();
+				} else {
+				  groupSystem = "v1";
+				}
+			}
+		    Feature_FormatGroups.convertQueryToContents(groupSystem, app.defaultQuery);
+				
+		    RecordManager.instance.shareByQuery(executor, member._id, appInstance._id, app.defaultQuery);
+		}
+				
+		return appInstance;
 	}
 	
 	private static ObjectId prepareMobileExecutor(MobileAppInstance appInstance, MobileAppSessionToken tk) throws AppException {
@@ -286,6 +309,10 @@ public class MobileAPI extends Controller {
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner"));
         if (appInstance == null) return badRequest("Invalid authToken.");
 		
+        if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {
+        	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Record", fields));
+        }
+        
         ObjectId executor = prepareMobileExecutor(appInstance, authToken);
 		// get record data
 		Collection<Record> records = null;
@@ -492,6 +519,10 @@ public class MobileAPI extends Controller {
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare"));
         if (appInstance == null) return badRequest("Invalid authToken.");
 
+        if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {
+        	return ok(Json.toJson(Collections.EMPTY_LIST));
+        }
+        
         ObjectId executor = prepareMobileExecutor(appInstance, authToken);
         		
 		ObjectId targetAps = appInstance._id;

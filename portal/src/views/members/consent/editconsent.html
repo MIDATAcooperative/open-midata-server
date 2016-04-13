@@ -57,7 +57,7 @@
 	</formrow>
 	<formrow id="what" label="What data is shared?">
 	  <p class="form-control-static" ng-show="sharing.records.length == 0 && !sharing.query.group.length">This consent does not share any data at the moment.</p>
-	  <div class="well well-sm" ng-show="sharing.records.length">
+	  <div class="well well-sm" ng-show="sharing.records.length || sharing.query.group.length">
 	  <p class="form-control-static" ng-show="sharing.records.length">This consent shares {{ sharing.records.length }} records.</p>
 	  <div ng-repeat="group in sharing.query.group">Shares all records belonging to group: {{ group }}</div>
 	  <div ng-repeat="group in sharing.query['group-exclude']">Excluded are records belonging to group: {{ group }}</div>

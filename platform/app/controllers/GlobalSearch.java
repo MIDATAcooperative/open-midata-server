@@ -32,7 +32,7 @@ public class GlobalSearch extends Controller {
 
 	/**
 	 * Search in all the user's accessible data.
-	 */
+	 *//*
 	@APICall
 	public static Result search(String query) throws AppException {
 		ObjectId userId = new ObjectId(request().username());
@@ -40,11 +40,11 @@ public class GlobalSearch extends Controller {
 		Set<Circle> circles = Circle.getAllByMember(userId);
 		Map<String, List<SearchResult>> searchResults = Search.search(userId, circles, query);
 		return ok(Json.toJson(searchResults));
-	}
+	}*/
 
 	/**
 	 * Suggests completions for the given query.
-	 */
+	 *//*
 	 @APICall
 	public static Result complete(String query) {
 		Map<String, List<CompletionResult>> completions = Search.complete(new ObjectId(request().username()), query);
@@ -54,5 +54,5 @@ public class GlobalSearch extends Controller {
 		}
 		Collections.sort(results);
 		return ok(Json.toJson(results));
-	}
+	}*/
 }

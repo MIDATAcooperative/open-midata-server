@@ -70,11 +70,11 @@ public class HPUser extends User {
 		Model.insert(collection, user);	
 		
 		// add to search index (email is document's content, so that it is searchable as well)
-		try {
+		/*try {
 			Search.add(Type.USER, user._id, user.firstname + " " + user.lastname, user.email);
 		} catch (SearchException e) {
 			throw new InternalServerException("error.internal", e);
-		}
+		}*/
 	}
 	
 	protected String getCollection() {
