@@ -306,7 +306,7 @@ public class MobileAPI extends Controller {
 			return badRequest("Invalid authToken.");
 		}
 					
-		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner"));
+		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "status"));
         if (appInstance == null) return badRequest("Invalid authToken.");
 		
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {
@@ -516,7 +516,7 @@ public class MobileAPI extends Controller {
 			return badRequest("Invalid authToken.");
 		}
 					
-		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare"));
+		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare", "status"));
         if (appInstance == null) return badRequest("Invalid authToken.");
 
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {
