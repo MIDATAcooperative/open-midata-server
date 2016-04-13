@@ -198,7 +198,7 @@ public class MobileAPI extends Controller {
 			appInstance = MobileAppInstance.getByApplicationAndOwner(app._id, member._id, Sets.create("owner", "applicationId", "status", "passcode"));
 			
 			if (appInstance == null) {									
-				appInstance = installApp(appInstance._id, app, member, phrase);				
+				appInstance = installApp(null, app, member, phrase);				
 	   		    meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
 			} else {
 				if (appInstance.passcode != null && !Member.authenticationValid(phrase, appInstance.passcode)) return badRequest("Wrong password.");
@@ -240,6 +240,7 @@ public class MobileAPI extends Controller {
 		    
 		Map<String, Object> meta = new HashMap<String, Object>();
 		meta.put("phrase", phrase);
+		if (executor == null) executor = appInstance._id;
 		RecordManager.instance.setMeta(executor, appInstance._id, "_app", meta);
 		
 		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {
