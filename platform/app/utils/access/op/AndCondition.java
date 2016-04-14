@@ -29,6 +29,10 @@ public class AndCondition implements Condition {
 			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.GT));
 		   } else if (accessKey.equals("$lt")) {
 			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.LT));
+		   } else if (accessKey.equals("$le")) {
+			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.LE));
+		   } else if (accessKey.equals("$ge")) {
+			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.GE));
 		   } else {		   
 			   String[] paths = accessKey.split("\\.");
 			   

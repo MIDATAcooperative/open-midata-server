@@ -8,6 +8,7 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 	$scope.requested = 0;
 	$scope.saving = false;
 	$scope.saved = 0;
+	$scope.totalImport = 0;
 	$scope.measure = null;
 	$scope.alldone = null;
 	$scope.repeat = false;
@@ -184,6 +185,11 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 			if (done == 3) deferred.resolve();
 		};
 		
+		angular.forEach($scope.measurements, function(measurement) {
+			measurement.from == null;
+			measurement.to == null;		
+		});
+		
 		$scope.authToken = authToken;
 		if ($scope.user == null) {
 			midataServer.oauth2Request(authToken, baseUrl + "/1/user/-/profile.json")			
@@ -250,6 +256,9 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 		$scope.startImport = function() {			
 			$scope.error.message = null;
 			$scope.error.messages = [];
+			$scope.requested = 0;
+			$scope.saved = 0;
+			
 			angular.forEach($scope.measurements, function(measure) {
 				if (measure.import) importRecords(measure);
 			});			
@@ -264,11 +273,9 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 			if (fromDate > toDate) return;
 			
 			$scope.status = "Importing data from Fitbit...";			
-
-			$scope.requesting++;
-			$scope.requested = 0;
+			$scope.requesting++;			
 			$scope.saving = true;
-			$scope.saved = 0;
+			
 			
 			var formattedFromDate = fromDate.getFullYear() + "-" + twoDigit(fromDate.getMonth() + 1) + "-" + twoDigit(fromDate.getDate());
 			var formattedEndDate = toDate.getFullYear() + "-" + twoDigit(toDate.getMonth() + 1) + "-" + twoDigit(toDate.getDate());
@@ -356,10 +363,11 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 			if ($scope.requesting === 0 && $scope.requested === $scope.saved + $scope.error.messages.length) {
 				if ($scope.repeat) {
 					$scope.repeat = false;
+					$scope.totalImport += $scope.saved;
 					setToDate(true);
 					$scope.startImport();
 				} else {							
-					$scope.status = "Imported " + $scope.saved + " records.";
+					$scope.status = "Imported " + ($scope.saved+$scope.totalImport) + " records.";
 					if ($scope.error.messages.length > 0) {
 						$scope.status = "Imported " + $scope.saved + " of " + $scope.requested + " records. For failures see error messages.";
 					}

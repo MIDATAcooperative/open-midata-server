@@ -115,4 +115,26 @@ public class FormatAPI extends Controller {
 	      return ok(Json.toJson(contents));
 		}
 	}
+	
+	/**
+	 * function used by plugins to lookup information for coded values
+	 * @return
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@VisualizationCall
+	public static Result searchContent() throws JsonValidationException, InternalServerException {
+		JsonNode json = request().body().asJson();
+		
+        JsonValidation.validate(json, "properties", "fields");		
+		// get parameters
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));						
+		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+		
+				
+	    Collection<ContentInfo> contents = ContentInfo.getAll(properties, fields);
+	      	      
+	    return ok(Json.toJson(contents));		
+	}
 }

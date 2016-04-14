@@ -30,10 +30,10 @@ angular.module('calendarApp')
             	  codes.push(k);
               });   
               
-             midataServer.searchCoding($scope.authToken, { code : codes }, [ "code", "display" ])
+             midataServer.searchContent($scope.authToken, { content : codes }, [ "content", "label" ])
          	 .then(function(result) {
          		angular.forEach(result.data, function(d) {
-         			$scope.valuesToLabel.content[d.code] = d.display;
+         			$scope.valuesToLabel.content[d.content] = d.label["en"];
          		});
          	 });
           });

@@ -158,7 +158,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 					category : {
 						coding : [{
 						  system : "http://hl7.org/fhir/observation-category",
-						  value : "vital-signs",
+						  code : "vital-signs",
 						  display : "Vital Signs"
 						}],
 						text : "Vital Signs"

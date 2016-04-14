@@ -97,6 +97,11 @@
      <label for="timeUnit">Time Unit:</label>
      <select id="timeUnit"  class="form-control" ng-model="timeUnit" ng-options="tu.name as tu.name for tu in timeUnits" ng-change="delayedUpdate()"></select>
   </div>
+  
+  <div class="form-group separator">
+     <label for="alg">Calculate:</label>
+     <select id="alg"  class="form-control" ng-model="report.alg" ng-options="alg.value as alg.name for alg in algs" ng-change="delayedUpdate()"></select>
+  </div>
  </div>
 </form>
 <p ng-show="report.unit">Unit: {{ report.unit }}</p>
@@ -108,6 +113,11 @@
   Please wait, chart is calculated... 
 </div>
 
+<div ng-if="chartType=='update'">
+  <div style="min-height:500px">
+    <button class="btn btn-primary" ng-click="doDelayedUpdate();">Update now</button>
+  </div>
+</div>
 
 <div ng-if="chartType=='line'">
 <canvas id="line" class="chart chart-line" data="data"
@@ -130,7 +140,7 @@
    
 <div ng-if="chartType=='simple' && entries.length>0">
   <div class="text-center text-primary">Measure: <b>{{ entry.format }}</b></div>
-  <div ng-show="entry.context" class="text-center">Context: <i>{{ entry.context }}</i></div>
+  <div ng-show="entry.context" class="text-center">Code: <i>{{ entry.context }}</i></div>
   <div class="text-center lead"><span style="color: #1c4982;display: block;font-size: 100px;">{{ entry.value }}</span>{{ entry.unit }}</div>
   <div class="text-center">Date: <strong>{{ entry.dateTime }}</strong></div>
 </div>

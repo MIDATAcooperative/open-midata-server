@@ -234,6 +234,9 @@ POST    /v1/plugin_api/records/newId    controllers.PluginsAPI.generateId()
 
 OPTIONS /v1/plugin_api/coding/search   controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/coding/search   controllers.FormatAPI.searchCoding()
+OPTIONS /v1/plugin_api/content/search   controllers.PluginsAPI.checkPreflight()
+POST    /v1/plugin_api/content/search   controllers.FormatAPI.searchContent()
+
 
 OPTIONS /v1/plugin_api/request/oauth2            controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/request/oauth2            controllers.PluginsAPI.oAuth2Call()

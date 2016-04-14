@@ -88,6 +88,11 @@ midata.factory('midataServer', [ '$http', '$q', function($http, $q) {
 		 return $http.post(baseurl + "/v1/plugin_api/coding/search", data);
 	};
 	
+	service.searchContent = function(authToken, properties, fields) {
+		 var data = { "authToken" : authToken, "properties" : properties, "fields" : fields };		
+		 return $http.post(baseurl + "/v1/plugin_api/content/search", data);
+	};
+	
 	service.oauth2Request = function(authToken, url) {	
 		var data = { "authToken": authToken, "url": url };		
 	

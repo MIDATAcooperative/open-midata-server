@@ -58,6 +58,7 @@ angular.module('calendarApp')
 	              	  var q = null;
 	              	  if (record.data.valueQuantity) q = record.data.valueQuantity.value;
 	              	  if (record.data.valueString) q = shortStr(record.data.valueString); 
+	              	  if (record.data.valueCodeableConcept) q = shortStr(record.data.valueCodeableConcept.text || record.data.valueCodeableConcept.coding[0].display);
 	              	  var dateTime = record.data.effectiveDateTime || cdate;
 	              	  var title = record.data.code.text || record.data.code.coding[0].display; 
 	              	  var color = "#707070";
