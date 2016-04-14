@@ -199,7 +199,7 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 					if (measurement.from == null || measurement.from < since) measurement.from = since;					
 				  });
 				  
-				  setTodate(false);
+				  setToDate(false);
 				  
 				  //$("#toDate").datepicker("setDate", yesterday); 
 			  }
