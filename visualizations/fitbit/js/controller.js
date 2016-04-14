@@ -10,6 +10,7 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 	$scope.saved = 0;
 	$scope.measure = null;
 	$scope.alldone = null;
+	$scope.repeat = false;
 	$scope.measurements = [
 						
 			{
@@ -154,6 +155,26 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 			
 	];
 	var baseUrl = "https://api.fitbit.com";
+	
+	var setToDate = function(amendFrom) {
+		 var yesterday = new Date();
+		 yesterday.setDate(yesterday.getDate() - 1);
+		 yesterday.setHours(1,1,1,1);
+		 
+		 angular.forEach($scope.measurements, function(measurement) {
+			if (amendFrom) {
+				measurement.from = new Date(measurement.to.getTime());
+				measurement.from.setDate(measurement.from.getDate() + 1);
+			}
+			 
+			measurement.to = yesterday;
+				
+			if (measurement.to.getTime() - measurement.from.getTime() > 1000 * 60 * 60 * 24 * 365) {
+			  measurement.to = new Date(measurement.from.getTime() + 1000 * 60 * 60 * 24 * 365);
+			  $scope.repeat = true;
+			}
+		 });		 
+	};
 
 	$scope.initForm = function(authToken) {
 		var deferred = $q.defer();
@@ -173,15 +194,12 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 			  
 			  if (response.user && response.user.memberSince) {
 				  var since = new Date(response.user.memberSince);				  
-				  
-				  var yesterday = new Date();
-				  yesterday.setDate(yesterday.getDate() - 1);
-				  yesterday.setHours(1,1,1,1);
-				  
+				  				  				  
 				  angular.forEach($scope.measurements, function(measurement) {
-					if (measurement.from == null || measurement.from < since) measurement.from = since;
-					measurement.to = yesterday;				
+					if (measurement.from == null || measurement.from < since) measurement.from = since;					
 				  });
+				  
+				  setTodate(false);
 				  
 				  //$("#toDate").datepicker("setDate", yesterday); 
 			  }
@@ -336,15 +354,21 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 		// update application state at the end of an import
 		var finish = function() {
 			if ($scope.requesting === 0 && $scope.requested === $scope.saved + $scope.error.messages.length) {
-				$scope.status = "Imported " + $scope.saved + " records.";
-				if ($scope.error.messages.length > 0) {
-					$scope.status = "Imported " + $scope.saved + " of " + $scope.requested + " records. For failures see error messages.";
-				}
-				$scope.saving = false;
-				if ($scope.alldone != null) {
-					$scope.alldone.resolve();
-				} else {
-				    $scope.initForm($scope.authToken);
+				if ($scope.repeat) {
+					$scope.repeat = false;
+					setToDate(true);
+					$scope.startImport();
+				} else {							
+					$scope.status = "Imported " + $scope.saved + " records.";
+					if ($scope.error.messages.length > 0) {
+						$scope.status = "Imported " + $scope.saved + " of " + $scope.requested + " records. For failures see error messages.";
+					}
+					$scope.saving = false;
+					if ($scope.alldone != null) {
+						$scope.alldone.resolve();
+					} else {
+					    $scope.initForm($scope.authToken);
+					}
 				}
 			}
 		};
