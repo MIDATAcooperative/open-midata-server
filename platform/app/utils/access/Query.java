@@ -9,7 +9,10 @@ import java.util.Map;
 import java.util.Set;
 
 import models.ContentCode;
+import models.ContentInfo;
+import models.FormatInfo;
 import models.Plugin;
+import models.RecordGroup;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
@@ -359,5 +362,40 @@ public class Query {
 	
 	public static int getTimeFromDate(Date dt) {
 		return (int) (dt.getTime() / 1000 / 60 / 60 / 24 / 7);
+	}
+	
+	public static void validate(Map<String, Object> query) throws AppException {
+		if (query.containsKey("group")) {
+			Object system = query.get("group-system");
+			if (system == null || ! (system instanceof String)) throw new BadRequestException("error.groupsystem", "Missing group-system for query");
+			Set<String> groups = Query.getRestriction(query.get("group"), "group"); 
+			query.put("group", groups);
+			for (String group : groups) if (RecordGroup.getBySystemPlusName(system.toString(), group) == null) throw new BadRequestException("error.group",  "Unknown group'"+group+"' for system '"+system.toString()+"'.");
+		}
+		if (query.containsKey("group-strict")) {
+			Object system = query.get("group-system");
+			if (system == null || ! (system instanceof String)) throw new BadRequestException("error.groupsystem", "Missing group-system for query");
+			Set<String> groups = Query.getRestriction(query.get("group-strict"), "group");
+			query.put("group-strict", groups);
+			for (String group : groups) if (RecordGroup.getBySystemPlusName(system.toString(), group) == null) throw new BadRequestException("error.group",  "Unknown group'"+group+"' for system '"+system.toString()+"'.");
+		}
+		if (query.containsKey("content")) {
+			Set<String> contents = Query.getRestriction(query.get("content"), "content");
+			for (String content : contents) ContentInfo.getByName(content);
+			query.put("content", contents);
+		}
+		if (query.containsKey("code")) {
+			Set<String> codes = Query.getRestriction(query.get("code"), "code");
+			for (String code : codes) if (ContentCode.getBySystemCode(code) == null) throw new BadRequestException("error.code","Unknown code '"+code+"' in query.");
+			query.put("code", codes);
+		}
+		if (query.containsKey("format")) {
+			Set<String> formats = Query.getRestriction(query.get("format"), "format");
+			for (String format : formats) FormatInfo.getByName(format);
+			query.put("format", formats);
+		}
+		if (query.containsKey("app")) {
+			query.put("app", Query.getRestriction(query.get("app"), "app"));
+		}
 	}
 }

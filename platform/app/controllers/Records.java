@@ -328,7 +328,7 @@ public class Records extends APIController {
 			}
 		}
 		
-		if (query.isEmpty()) query = null;
+		if (query != null && query.isEmpty()) query = null;
 		
 		// get owner
 		User owner = User.getById(userId, Sets.create("myaps"));
@@ -355,6 +355,9 @@ public class Records extends APIController {
         		}
         	} else {        	
         	  ConsentType type = consent.type;
+        	  
+        	  if (type.equals(ConsentType.STUDYPARTICIPATION)) return badRequest("Consents for studies may not be altered.");
+        	  
         	  withMember = !type.equals(ConsentType.STUDYPARTICIPATION);
         	}        	         	
         	        	
@@ -385,6 +388,9 @@ public class Records extends APIController {
         		}
         	} else {        	
         	  ConsentType type = consent.type;
+        	  
+        	  if (type.equals(ConsentType.STUDYPARTICIPATION)) return badRequest("Consents for studies may not be altered.");
+        	  
         	  withMember = !type.equals(ConsentType.STUDYPARTICIPATION);
         	}        	         	
         	        	

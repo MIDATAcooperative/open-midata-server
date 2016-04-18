@@ -12,6 +12,8 @@ import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.ObjectId;
 
+import utils.AccessLog;
+
 import models.Record;
 
 public class RecordConversion {
@@ -37,7 +39,7 @@ public class RecordConversion {
 		  record.code = (code instanceof String) ? Collections.singleton(code) : new HashSet((Collection) code);
 		}
 		record.owner = dbrecord.owner;
-		record.ownerName = (String) dbrecord.meta.get("ownerName");
+		record.ownerName = (String) dbrecord.meta.get("ownerName");		
 		record.tags = (Set<String>) dbrecord.meta.get("tags");
 		record.document = dbrecord.document;
 		record.group = dbrecord.group;

@@ -63,7 +63,7 @@ class RecordEncryption {
 		if (record.security != null && record.security.equals(APSSecurityLevel.NONE)) return;
 		if (record.key == null) AccessLog.decryptFailure(record._id);
 				
-		if (record.encrypted != null) {
+		if (record.encrypted != null && !record.meta.containsField("name")) {
 			try {
 		       record.meta = (BasicBSONObject) EncryptionUtils.decryptBSON(record.key, record.encrypted);		    		    
 			} catch (InternalServerException e) {
@@ -91,6 +91,7 @@ class RecordEncryption {
 					//throw e;
 			}
 		}
+		
 		
 	}
 

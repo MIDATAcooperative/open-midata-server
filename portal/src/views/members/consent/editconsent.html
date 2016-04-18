@@ -62,7 +62,7 @@
 	  <div ng-repeat="group in sharing.query.group">Shares all records belonging to group: {{ group }}</div>
 	  <div ng-repeat="group in sharing.query['group-exclude']">Excluded are records belonging to group: {{ group }}</div>
 	  </div>
-	  <button class="btn btn-default" ui-sref="^.recordsharing({ selected : consentId, selectedType : 'circles' })">Change data selection</button>
+	  <button class="btn btn-default" ui-sref="^.recordsharing({ selected : consentId, selectedType : 'circles' })">View/Change data selection</button>
 	</formrow>
 	<a  ui-sref="^.circles" class="btn btn-default">Back to consent list</a>
 	<button type="button" ng-click="confirmConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-primary">Confirm this Consent</button>

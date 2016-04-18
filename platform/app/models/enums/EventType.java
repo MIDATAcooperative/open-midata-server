@@ -71,6 +71,16 @@ public enum EventType {
 	STUDY_STARTED,
 	
 	/**
+	 * a study has been finished
+	 */
+	STUDY_FINISHED,
+	
+	/**
+	 * a study has been aborted
+	 */
+	STUDY_ABORTED,
+	
+	/**
 	 * the required information for a study has been changed
 	 */
 	REQUIRED_INFORMATION_CHANGED,

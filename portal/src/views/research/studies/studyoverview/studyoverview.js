@@ -30,10 +30,20 @@ angular.module('portal')
 		return $scope.study.validationStatus == "VALIDATED" && $scope.study.participantSearchStatus == "SEARCHING";
 	};
 	
+	$scope.readyForDelete = function() {
+		return $scope.study.executionStatus == "PRE";
+	};
+	
 	$scope.readyForStartExecution = function() {
 		return $scope.study.validationStatus == "VALIDATED" && 
 		       $scope.study.participantSearchStatus == "CLOSED" &&
 		       $scope.study.executionStatus == "PRE";
+	};
+	
+	$scope.readyForFinishExecution = function() {
+		return $scope.study.validationStatus == "VALIDATED" && 
+		       $scope.study.participantSearchStatus == "CLOSED" &&
+		       $scope.study.executionStatus == "RUNNING";
 	};
 	
 	$scope.startValidation = function() {
@@ -78,6 +88,30 @@ angular.module('portal')
 		server.post(jsRoutes.controllers.research.Studies.startExecution($scope.studyid).url).
 		success(function(data) { 				
 		    $scope.reload();
+		}).
+		error(function(err) {
+			$scope.error = err;			
+		});
+	};
+	
+	$scope.finishExecution = function() {
+		$scope.error = null;
+		
+		server.post(jsRoutes.controllers.research.Studies.finishExecution($scope.studyid).url).
+		success(function(data) { 				
+		    $scope.reload();
+		}).
+		error(function(err) {
+			$scope.error = err;			
+		});
+	};
+	
+	$scope.delete = function() {
+		$scope.error = null;
+		
+		server.post(jsRoutes.controllers.research.Studies.delete($scope.studyid).url).
+		success(function(data) { 				
+		    $state.go("research.studies");
 		}).
 		error(function(err) {
 			$scope.error = err;			

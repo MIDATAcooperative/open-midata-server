@@ -118,15 +118,21 @@ public class Feature_AccountQuery extends Feature {
 		}
 	}
 	
-	private void setOwnerField(Query q, Consent c, List<DBRecord> targetRecords) {
-		if (q.returns("owner") || q.returns("ownerName")) {
+	private void setOwnerField(Query q, Consent c, List<DBRecord> targetRecords) throws AppException {
+		boolean oname = q.returns("ownerName");
+		if (q.returns("owner") || oname) {
 			for (DBRecord record : targetRecords) {
-				if (record.owner == null) {
+				//if (record.owner == null) {
 					record.owner = c._id;
-					record.meta.put("ownerName", c.ownerName);
-				}
+					
+					if (oname) {
+						QueryEngine.fetchFromDB(q, record);
+						RecordEncryption.decryptRecord(record);						
+						record.meta.put("ownerName", c.ownerName);
+					}					
+				//}
 			}
-		}
+		}		
 	}
 	
 	private static Set<Consent> applyConsentTimeFilter(Query q, Set<Consent> consents) throws AppException {
