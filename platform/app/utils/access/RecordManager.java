@@ -645,10 +645,20 @@ public class RecordManager {
 		AccessLog.logBegin("begin deleteAPS aps="+apsId.toString()+" executor="+executorId.toString());
 		
 		APS apswrapper = getCache(executorId).getAPS(apsId);
+		try {
 		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(executorId), apsId, new HashMap<String, Object>(),
 				Sets.create("_id", "watches"));		
 		
-		for (DBRecord rec : recordEntries) RecordLifecycle.removeWatchingAps(rec, apsId);
+			for (DBRecord rec : recordEntries) {
+				try {
+				  RecordLifecycle.removeWatchingAps(rec, apsId);
+				} catch (AppException e) {
+				  AccessLog.logException("error while deleting APS during remove watch", e);
+				}
+			}
+		} catch (AppException e) {
+			AccessLog.logException("error while deleting APS", e);
+		}
 		
 		AccessPermissionSet.delete(apsId);
 		AccessLog.logEnd("end deleteAPS");
