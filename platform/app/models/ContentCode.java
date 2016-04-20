@@ -78,5 +78,13 @@ public class ContentCode extends Model  {
 		  ContentCode result = Model.get(ContentCode.class, collection, CMaps.map("system", system).map("code", code), Sets.create("content"));
 		  return result;
 	  }
+	  
+	  public static void add(ContentCode cc) throws InternalServerException {
+		  Model.insert(collection, cc);
+	  }
+	  
+	  public static void upsert(ContentCode cc) throws InternalServerException {
+		  Model.upsert(collection, cc);
+	  }
 	  	  	 
 }

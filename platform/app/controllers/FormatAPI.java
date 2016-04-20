@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import org.bson.types.ObjectId;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
@@ -20,7 +22,11 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
+import utils.auth.AdminSecured;
+import utils.auth.AnyRoleSecured;
 import utils.collections.Sets;
+import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
@@ -28,7 +34,6 @@ import utils.json.JsonValidation.JsonValidationException;
 
 /**
  * used by portal to retrieve data groups
- * @author alexander
  *
  */
 public class FormatAPI extends Controller {
@@ -75,6 +80,23 @@ public class FormatAPI extends Controller {
 	public static Result listCodes() throws InternalServerException {
 	    Collection<ContentCode> codes = ContentCode.getAll(Collections.<String, String> emptyMap(), Sets.create("system", "code", "display", "content"));
 	    return ok(Json.toJson(codes));
+	}
+	
+	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AdminSecured.class)
+	public static Result createCode() throws AppException {
+		JsonNode json = request().body().asJson();
+		ContentCode cc = new ContentCode();
+		cc._id = new ObjectId();
+		cc.code = JsonValidation.getString(json, "code");
+		cc.content = JsonValidation.getString(json, "content");
+		cc.display = JsonValidation.getString(json, "display");
+		cc.system = JsonValidation.getString(json, "system");
+		
+		ContentCode.add(cc);
+		
+		return ok();
 	}
 	
 	/**

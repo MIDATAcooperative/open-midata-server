@@ -2,8 +2,12 @@ package utils.access.op;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import scala.NotImplementedError;
 
@@ -25,14 +29,16 @@ public class AndCondition implements Condition {
 	   for (String accessKey : restrictions.keySet()) {		  		  
 		   Object value = restrictions.get(accessKey);
 		   		   
-		   if (accessKey.equals("$gt")) {
+		   if (accessKey.equals("$gt") || accessKey.equals("!!!gt")) {
 			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.GT));
-		   } else if (accessKey.equals("$lt")) {
+		   } else if (accessKey.equals("$lt") || accessKey.equals("!!!lt")) {
 			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.LT));
-		   } else if (accessKey.equals("$le")) {
+		   } else if (accessKey.equals("$le") || accessKey.equals("!!!le")) {
 			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.LE));
-		   } else if (accessKey.equals("$ge")) {
+		   } else if (accessKey.equals("$ge") || accessKey.equals("!!!ge")) {
 			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.GE));
+		   } else if (accessKey.equals("$in") || accessKey.equals("!!!in")) {			   
+			  checks.add(new InCondition(makeSet(value)));
 		   } else {		   
 			   String[] paths = accessKey.split("\\.");
 			   
@@ -69,6 +75,18 @@ public class AndCondition implements Condition {
 	    } else {
 	       throw new NotImplementedError();
 	    }
+	}
+	
+	/**
+	 * creates a set from a part of a mongo expression
+	 * @param fragment
+	 * @return
+	 */
+	public static Set<Object> makeSet(Object fragment) {
+		if (fragment instanceof Set) return (Set) fragment;
+		if (fragment instanceof Collection) return new HashSet<Object>((Collection) fragment);
+		if (fragment instanceof String) return Collections.singleton(fragment);
+		throw new NotImplementedError();
 	}
 			
 	@Override

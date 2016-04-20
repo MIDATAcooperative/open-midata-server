@@ -183,10 +183,10 @@ public class Spaces extends Controller {
 	 * delete a space of the current user
 	 * @param spaceIdString ID of space
 	 * @return status ok
-	 * @throws InternalServerException
+	 * @throws AppException
 	 */
 	@APICall
-	public static Result delete(String spaceIdString) throws InternalServerException {
+	public static Result delete(String spaceIdString) throws AppException {
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId spaceId = new ObjectId(spaceIdString);

@@ -1,0 +1,107 @@
+
+<div ng-controller="ContentEditorCtrl">
+		
+  <div class="panel panel-primary">
+    <div class="panel-heading">Content Types Editor</div>
+    <div class="body">
+      <loader busy="status.isBusy !== false">
+         <button class="btn btn-primary" ng-click="newCode();">New Code</button>
+         <button class="btn btn-primary" ng-click="save();">Save Changes</button>
+         <div ng-repeat="group in groups | orderBy : 'name'">
+           <h3 ng-style="getStyle(group)">{{ group.name }}, {{ group.label[lang] }} <small>{{ getParents(group.parent) }}</small></h3><button class="btn btn-xs btn-default" ng-click="editGroup(group)">edit</button>
+         <ul>
+         <li ng-repeat="contentEntry in group.contentEntries | orderBy : 'content'">
+           <b ng-style="getStyle(contentEntry)">{{ contentEntry.content }}</b>
+           {{ contentEntry.label[lang] }}
+           ({{ contentEntry.security }})	           
+	       <button class="btn btn-xs btn-default" ng-click="addCode(contentEntry);">add</button>
+	       <button class="btn btn-xs btn-default" ng-click="editContent(contentEntry);">edit</button>
+	           
+           <ul>
+             <li ng-repeat="code in codes | filter : { content : contentEntry.content } | orderBy : 'code' ">
+               {{ code.system }} {{ code.version }} : <b ng-style="getStyle(code)">{{ code.code }}</b> = {{ code.display }}
+               <button class="btn btn-xs btn-default" ng-click="editCode(code);">edit</button>
+               <button ng-disabled="isDefaultFor(code, contentEntry)" class="btn btn-xs btn-default" ng-click="makeDefaultCode(code, contentEntry);">default</button>
+             </li>
+           </ul>
+                    
+         </li>
+         </ul>
+         </div>
+            
+         <modal viewid="editCode">
+            <div ng-controller="EditCodeCtrl">
+              <form class="form-horizontal">
+              <formrow myid="system" label="System">
+                <input name="system" class="form-control" type="text" ng-model="code.system" >
+              </formrow>
+              <formrow myid="version" label="Version">
+                <input name="version" class="form-control" type="text" ng-model="code.version" >
+              </formrow>
+              <formrow myid="code" label="Code">
+                <input name="code" class="form-control" type="text" ng-model="code.code" >
+              </formrow>
+              <formrow myid="display" label="Display">
+                 <input name="display" class="form-control" type="text" ng-model="code.display" >
+              </formrow>
+              <formrow myid="content" label="MIDATA Content">
+                <input name="content" class="form-control" type="text" ng-model="code.content" >
+              </formrow>
+              <formrow myid="x" label="">
+                <button class="btn btn-primary" ng-click="submit()">Submit</button>
+              </formrow>
+              </form>
+            </div>
+         </modal>
+         
+          <modal viewid="editContent">
+            <div ng-controller="EditContentCtrl">
+              <form class="form-horizontal">
+                <formrow myid="content" label="MIDATA Content">
+	             <input class="form-control" type="text" ng-model="contentEntry.content">
+	           </formrow>
+	           <formrow myid="label" label="Label">
+	             <input class="form-control" type="text" ng-model="contentEntry.label[lang]">
+	           </formrow>
+	           <formrow myid="security" label="Security">
+	             <select class="form-control" type="text" ng-model="contentEntry.security" ng-options="sec for sec in security"></select>
+	           </formrow>
+              <formrow myid="group" label="Group">
+	             <select class="form-control" type="text" ng-model="contentEntry.group" ng-options="grp.name as grp.name for grp in groups | orderBy : 'name'"></select>
+	           </formrow>
+	           <formrow myid="x" label="">
+	             <button class="btn btn-default" ng-click="submit()">Submit</button>
+	             <button class="btn btn-default" ng-click="addGroup()">Add Group</button>
+	           </formrow>
+              </form>
+            </div>
+          </modal>
+          
+          <modal viewid="editGroup">
+            <div ng-controller="EditGroupCtrl">
+              <form class="form-horizontal">
+                <formrow myid="name" label="Name">
+	             <input class="form-control" type="text" ng-model="group.name">
+	           </formrow>
+	           <formrow myid="label" label="Label">
+	             <input class="form-control" type="text" ng-model="group.label[lang]">
+	           </formrow>
+	           <formrow myid="parent" label="Parent">
+	             <select class="form-control" type="text" ng-model="group.parent" ng-options="grp.name as grp.label[lang] for grp in groups"></select>
+	           </formrow>
+	           <formrow myid="system" label="Group System">
+	             <input class="form-control" type="text" ng-model="group.system">
+	           </formrow>
+	           <formrow myid="x" label="">
+	             <button class="btn btn-default" ng-click="submit()">Submit</button>
+	           </formrow>
+              </form>
+            </div>
+          </modal>
+      </loader>		
+    </div>
+  </div>		
+
+		  	
+</div>
+	

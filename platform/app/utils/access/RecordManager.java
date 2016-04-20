@@ -641,9 +641,15 @@ public class RecordManager {
      * @param ownerId id of owner of APS
      * @throws InternalServerException
      */
-	public void deleteAPS(ObjectId apsId, ObjectId ownerId)
-			throws InternalServerException {
-		AccessLog.logBegin("begin deleteAPS aps="+apsId.toString()+" owner="+ownerId.toString());
+	public void deleteAPS(ObjectId apsId, ObjectId executorId) throws AppException {
+		AccessLog.logBegin("begin deleteAPS aps="+apsId.toString()+" executor="+executorId.toString());
+		
+		APS apswrapper = getCache(executorId).getAPS(apsId);
+		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(executorId), apsId, new HashMap<String, Object>(),
+				Sets.create("_id", "watches"));		
+		
+		for (DBRecord rec : recordEntries) RecordLifecycle.removeWatchingAps(rec, apsId);
+		
 		AccessPermissionSet.delete(apsId);
 		AccessLog.logEnd("end deleteAPS");
 	}

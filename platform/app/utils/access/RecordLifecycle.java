@@ -1,10 +1,13 @@
 package utils.access;
 
+import models.APSNotExistingException;
+
 import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBList;
 
+import utils.AccessLog;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
@@ -65,7 +68,11 @@ public class RecordLifecycle {
 		if (rec.stream != null) cache.getAPS(rec.stream).touch();
 		if (rec.watches == null) return;
 		for (Object watch : rec.watches) {
-			cache.getAPS(new ObjectId(watch.toString())).touch();
+			try {
+			   cache.getAPS(new ObjectId(watch.toString())).touch();
+			} catch (APSNotExistingException e) {
+				AccessLog.log("APS not existing in notify of change:"+watch.toString());
+			}
 		}
 	}
 

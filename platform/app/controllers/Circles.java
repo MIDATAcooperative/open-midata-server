@@ -280,7 +280,7 @@ public class Circles extends APIController {
 		// Remove APS
 		consent.setStatus(ConsentStatus.EXPIRED);
 		consentStatusChange(userId, consent);
-		RecordManager.instance.deleteAPS(consent._id, consent.owner);
+		RecordManager.instance.deleteAPS(consent._id, userId);
 		
 		// Remove Rules
 		removeQueries(userId, circleId);

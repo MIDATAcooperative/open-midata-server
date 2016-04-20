@@ -856,13 +856,13 @@ public class Studies extends APIController {
 	
 		Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(study._id, Sets.create("_id", "owner"));
 		for (StudyParticipation part : participants) {
-			RecordManager.instance.deleteAPS(part._id, part.owner);
+			RecordManager.instance.deleteAPS(part._id, userId);
 			StudyParticipation.delete(study._id, part._id);
 		}
 		
 		Set<StudyRelated> related = StudyRelated.getByStudy(studyid, Sets.create("authorized"));
 		for (StudyRelated studyRelated : related) {
-			RecordManager.instance.deleteAPS(studyRelated._id, study._id);
+			RecordManager.instance.deleteAPS(studyRelated._id, userId);
 			StudyRelated.delete(study._id, studyRelated._id);
 		}
 		
