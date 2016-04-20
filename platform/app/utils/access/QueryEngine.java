@@ -359,6 +359,12 @@ class QueryEngine {
 		if (q.restrictedBy("app")) result = filterByMetaSet(result, "app", q.getObjectIdRestriction("app"));
 		if (q.restrictedBy("name")) result = filterByMetaSet(result, "name", q.getRestriction("name"));
 		if (q.restrictedBy("code")) result = filterByMetaSet(result, "code", q.getRestriction("code"));
+		
+		if (q.restrictedBy("index") && !q.getApsId().equals(q.getCache().getOwner())) {
+			AccessLog.log("Manually applying index query aps="+q.getApsId().toString());
+			result = QueryEngine.filterByDataQuery(result, (Map<String,Object>) q.getProperties().get("index"));
+		}
+		
 		if (q.restrictedBy("data"))	result = filterByDataQuery(result, (Map<String,Object>) q.getProperties().get("data"));
 		
 		result = filterByDateRange(result, "created", q.getMinDateCreated(), q.getMaxDateCreated());			
