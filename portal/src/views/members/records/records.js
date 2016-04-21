@@ -13,6 +13,7 @@ angular.module('portal')
 	$scope.compare = [];
 	$scope.selectedAps = null;
 	$scope.status = new status(true);
+	$scope.allowDelete = $state.current.allowDelete;
 	
 	
 	// get current user

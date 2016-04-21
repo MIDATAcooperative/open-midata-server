@@ -2,6 +2,7 @@ package utils.access;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -9,6 +10,7 @@ import java.util.Set;
 import models.ContentInfo;
 import models.Record;
 
+import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 
@@ -92,6 +94,19 @@ class APSEntry {
 		newentry.put("r", new BasicBSONObject());
 		lst.add(newentry);
 		return newentry;
+	}
+	
+	public static void cleanupRows(Map<String, Object> permissions) {
+        BasicBSONList lst = (BasicBSONList) permissions.get("p");		
+		
+        ListIterator<Object> it = lst.listIterator();
+        while (it.hasNext()) {
+		   Object row = it.next();
+		   if (row instanceof BSONObject) {
+			   BasicBSONObject r = (BasicBSONObject) ((BSONObject) row).get("r");
+			   if (r.isEmpty()) it.remove();
+		   } else it.remove();			
+		}
 	}
 	
 	public static BasicBSONObject getEntries(BasicBSONObject row) {

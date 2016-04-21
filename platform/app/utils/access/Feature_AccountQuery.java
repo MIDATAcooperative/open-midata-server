@@ -22,6 +22,7 @@ import models.Circle;
 import models.Consent;
 import models.Record;
 import models.StudyParticipation;
+import models.enums.ConsentType;
 
 /**
  * queries made to the access permission set of a user 
@@ -122,15 +123,15 @@ public class Feature_AccountQuery extends Feature {
 		boolean oname = q.returns("ownerName");
 		if (q.returns("owner") || oname) {
 			for (DBRecord record : targetRecords) {
-				//if (record.owner == null) {
-					record.owner = c._id;
+				
+					record.owner = c.type.equals(ConsentType.STUDYPARTICIPATION) ? c._id : c.owner;
 					
 					if (oname) {
 						QueryEngine.fetchFromDB(q, record);
 						RecordEncryption.decryptRecord(record);						
 						record.meta.put("ownerName", c.ownerName);
 					}					
-				//}
+				
 			}
 		}		
 	}

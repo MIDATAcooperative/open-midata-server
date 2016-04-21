@@ -408,6 +408,8 @@ class APSImplementation extends APS {
 		// remove entry
 		boolean result = obj.containsField(record._id.toString());
 		obj.remove(record._id.toString());
+		
+		if (obj.isEmpty()) APSEntry.cleanupRows(eaps.getPermissions());
 
 		addHistory(record._id, record.isStream, true);
 		return result;

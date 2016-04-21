@@ -14,6 +14,7 @@ import java.util.Set;
 import models.APSNotExistingException;
 import models.AccessPermissionSet;
 import models.Circle;
+import models.Consent;
 import models.ContentCode;
 import models.ContentInfo;
 import models.Member;
@@ -480,53 +481,67 @@ public class RecordManager {
 	}
 	
 	/**
-	 * Delete a record from the system. Currently only used for debugging purposes.
+	 * Wipe records from the system. Currently only used for debugging purposes.
 	 * @param executingPerson id of executing person
 	 * @param tk a token for the record to be deleted.
 	 * @throws AppException
 	 */	
-	public void deleteRecord(ObjectId executingPerson, RecordToken tk) throws AppException {
-		AccessLog.logBegin("begin deleteRecord executor="+executingPerson.toString()+" record="+tk.recordId.toString());
-		DBRecord record = RecordConversion.instance.toDB(fetch(executingPerson, tk));
-				
-		if (!record.owner.equals(executingPerson)) throw new BadRequestException("error.internal", "Not owner of record!");
+	public void wipe(ObjectId executingPerson, Map<String, Object> query) throws AppException {
+		AccessLog.logBegin("begin deletingRecords executor="+executingPerson.toString());
+		
+		Set<String> fields = new HashSet<String>();
+		fields.add("owner");
+		fields.addAll(APSEntry.groupingFields);
 		APSCache cache = getCache(executingPerson);
-		Set<Circle> circles = Circle.getAllByOwner(executingPerson);
+		query.put("owner", "self");
+		List<DBRecord> recs = QueryEngine.listInternal(cache, executingPerson, query, fields);
 		
-		for (Circle c : circles) {
-			cache.getAPS(c._id).removePermission(record);
-		}
-		
-		Set<StudyParticipation> parts = StudyParticipation.getAllByMember(executingPerson, Sets.create("_id"));
-		for (StudyParticipation part : parts) {
-			cache.getAPS(part._id, executingPerson).removePermission(record);
-		}
-		
-		Set<MemberKey> mkeys = MemberKey.getByOwner(executingPerson);
-		for (MemberKey mk : mkeys) {
-			cache.getAPS(mk._id, executingPerson).removePermission(record);
-		}
-		
-		Set<Space> spaces = Space.getAllByOwner(executingPerson, Sets.create("_id"));
-		for (Space s : spaces) {
-			cache.getAPS(s._id, executingPerson).removePermission(record);
-		}
-		
-		if (record.stream != null) {
-			cache.getAPS(record.stream, executingPerson).removePermission(record);
-		}
-		
-		cache.getAPS(executingPerson, executingPerson).removePermission(record);
-		
-		if (record.isStream) {
-			AccessPermissionSet.delete(record._id);
-		}
-		
-		DBRecord.delete(record.owner, record._id);
+		wipe(executingPerson, recs);		
+		fixAccount(executingPerson);
 		
 		AccessLog.logEnd("end deleteRecord");
+	}
+	
+	private void wipe(ObjectId executingPerson, List<DBRecord> recs) throws AppException {
+		APSCache cache = getCache(executingPerson);
+		if (recs.size() == 0) return;
 		
-		fixAccount(executingPerson);
+		AccessLog.logBegin("begin wipe #records="+recs.size());
+		for (DBRecord record : recs) {			
+		   if (record.owner == null) throw new InternalServerException("error.internal", "Owner of record is null.");
+		   if (!record.owner.equals(executingPerson)) throw new BadRequestException("error.internal", "Not owner of record!");
+		}
+					
+		Set<Consent> consents = Consent.getAllByOwner(executingPerson, new HashMap<String, Object>(), Sets.create("_id"));
+		
+		for (Consent c : consents) {
+			cache.getAPS(c._id).removePermission(recs);		
+		}
+						
+		Set<Space> spaces = Space.getAllByOwner(executingPerson, Sets.create("_id"));
+		for (Space s : spaces) {
+			cache.getAPS(s._id, executingPerson).removePermission(recs);			
+		}
+		
+		for (DBRecord record : recs) {
+			if (record.stream != null) {
+				cache.getAPS(record.stream, executingPerson).removePermission(record);
+			}
+		}
+		
+		cache.getAPS(executingPerson, executingPerson).removePermission(recs);
+		
+		for (DBRecord record : recs) {
+			if (record.isStream) {
+				AccessPermissionSet.delete(record._id);
+			}
+		}
+		
+		for (DBRecord record : recs) { 
+		  DBRecord.delete(record.owner, record._id);
+		}
+		
+		AccessLog.logEnd("end wipe #records="+recs.size());				
 	}
 
 	private byte[] addRecordIntern(ObjectId executingPerson, DBRecord record, boolean documentPart, ObjectId alternateAps, boolean upsert) throws AppException {		
@@ -848,15 +863,35 @@ public class RecordManager {
 			}
 		}
 		AccessLog.logEnd("end search for missing records");
+		
+		AccessLog.logBegin("start searching for empty streams");
+		
+		Set<String> fields = new HashSet<String>();
+		fields.add("owner");
+		fields.addAll(APSEntry.groupingFields);
+		List<DBRecord> streams = QueryEngine.listInternal(cache, userId, CMaps.map("owner", "self").map("streams", "only").map("flat", "true"), fields);
+		List<DBRecord> emptyStreams = new ArrayList<DBRecord>();
+		for (DBRecord str : streams) {
+			List<DBRecord> testRec = QueryEngine.listInternal(cache, str._id, CMaps.map("limit", 1), Sets.create("_id"));
+			if (testRec.size() == 0) {
+				emptyStreams.add(str);
+			}
+		}
+		if (emptyStreams.size() > 0) {
+			wipe(userId, emptyStreams);
+		}
+		
+		AccessLog.logEnd("end searching for empty streams");
 	}
 
 	public void patch20160407(ObjectId who) throws AppException {
 		List<DBRecord> all = QueryEngine.listInternal(getCache(who), who, CMaps.map("owner", "self"), RecordManager.COMPLETE_META);
+		List<DBRecord> toWipe = new ArrayList<DBRecord>();
 		for (DBRecord r : all) {
 			if (!r.meta.containsField("code")) { 
 				String content = r.meta.getString("content");				
 				if (content == null) {
-					RecordManager.instance.deleteRecord(who, new RecordToken(r._id.toString(), who.toString()));
+					toWipe.add(r);					
 					continue;
 				}
 												
@@ -864,7 +899,7 @@ public class RecordManager {
 				   r.meta.put("code", content);
 				   String content2 = ContentCode.getContentForSystemCode(content);
 				   if (content2 == null) {
-					   RecordManager.instance.deleteRecord(who, new RecordToken(r._id.toString(), who.toString()));
+					   toWipe.add(r);					   
 					   continue;
 				   }
 				   r.meta.put("content", content2);
@@ -872,7 +907,7 @@ public class RecordManager {
 				   try {
 				      r.meta.put("code", ContentInfo.getByName(r.meta.getString("content")).defaultCode);
 				   } catch (BadRequestException e) {
-					  RecordManager.instance.deleteRecord(who, new RecordToken(r._id.toString(), who.toString()));
+					   toWipe.add(r);					  
 					  continue;
 				   }
 				}
@@ -880,6 +915,7 @@ public class RecordManager {
 			    DBRecord.set(r._id, "encrypted", r.encrypted);
 			}
 		}
+		wipe(who, toWipe);
 		
 	}
 	

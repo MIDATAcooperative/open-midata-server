@@ -279,22 +279,17 @@ public class Records extends APIController {
 	public static Result delete() throws JsonValidationException, AppException {
         JsonNode json = request().body().asJson();
         ObjectId userId = new ObjectId(request().username());
-        
-		/* DO NOT ALLOW ANYMORE
-		
+        		
 		if (json.has("_id")) {
-		String id = JsonValidation.getString(json, "_id");
-		RecordToken tk = getRecordTokenFromString(id);				
-		RecordManager.instance.deleteRecord(userId, tk);
+			String id = JsonValidation.getString(json, "_id");
+			RecordToken tk = getRecordTokenFromString(id);				
+			RecordManager.instance.wipe(userId, CMaps.map("_id", tk.recordId));
 		} else if (json.has("group")) {
 			String group = JsonValidation.getString(json, "group");
-			List<Record> recs = RecordManager.instance.list(userId, userId, CMaps.map("group", group).map("owner",  "self"), Sets.create("_id"));
-			for (Record r : recs) RecordManager.instance.deleteRecord(userId, new RecordToken(r._id.toString(), userId.toString()));
 			
-			List<Record> streams = RecordManager.instance.list(userId, userId, CMaps.map("group", group).map("owner", "self").map("streams", "only"), Sets.create("_id"));
-			for (Record r : streams) RecordManager.instance.deleteRecord(userId, new RecordToken(r._id.toString(), userId.toString()));
+			RecordManager.instance.wipe(userId,  CMaps.map("group", group));			
 		}
-		*/
+		
 		return ok();
 	}
 	

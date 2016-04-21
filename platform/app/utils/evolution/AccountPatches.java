@@ -45,8 +45,9 @@ public class AccountPatches {
 		   try {
 		     RecordManager.instance.addRecord(user._id, r);
 		   } catch (AppException e) {}
-		   RecordManager.instance.deleteRecord(user._id, new RecordToken(oldId.toString(), user._id.toString()));
+		   
 	   }
+	   RecordManager.instance.wipe(user._id, CMaps.map("format", formats).map("owner", "self"));
 	   Set<Space> spaces = Space.getAllByOwner(user._id, Sets.create("_id", "type"));
 	   for (Space space : spaces) {	   					
 		   if (space.type != null && space.type.equals("visualization")) {
