@@ -129,17 +129,18 @@ public class IndexManager {
 				restrictions.put("updated-after", limit);								
 				Collection<DBRecord> recs = QueryEngine.listInternal(cache, aps, restrictions, Sets.create("_id"));
 				addRecords(index, aps, recs);
-				
+				boolean updateTs = recs.size() > 0;
 				// Records that have been freshly shared
 				if (limit.getTime() > 0) {
 					restrictions.remove("updated-after");
 					restrictions.put("shared-after", limit);
 					Collection<DBRecord> recs2 = QueryEngine.listInternal(cache, aps, restrictions, Sets.create("_id", "key"));
 					addRecords(index, aps, recs2);
+					if (recs2.size()>0) updateTs = true;
 					AccessLog.log("Add index from sharing="+recs2.size());
 				}
 				
-				index.setVersion(aps, now);
+				if (updateTs) index.setVersion(aps, now);
 				AccessLog.log("Add index: from updated="+recs.size());
 				
 			}

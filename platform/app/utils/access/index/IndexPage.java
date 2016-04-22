@@ -204,6 +204,7 @@ public class IndexPage {
 	protected void setTimestamp(String key, long value) {
 	   BasicBSONObject tslist = (BasicBSONObject) model.unencrypted.get("ts");
 	   tslist.put(key, value);
+	   changed = true;
 	}
 	
 	protected long getTimestamp(String key) {
