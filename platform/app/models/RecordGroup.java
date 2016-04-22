@@ -72,19 +72,19 @@ public class RecordGroup extends Model {
 	    Model.delete(RecordGroup.class, collection, CMaps.map("_id", recordGroupId));
 	}
 	
-	public static RecordGroup getBySystemPlusName(String system, String name) throws InternalServerException {
+	public static RecordGroup getBySystemPlusName(String system, String name) throws AppException {
 		if (cache == null) load();		
 		return cache.get(system+":"+name);
 	}
 	
-	public static String getGroupForSystemAndContent(String groupSystem, String content) throws InternalServerException {
+	public static String getGroupForSystemAndContent(String groupSystem, String content) throws AppException {
 		if (cache == null) load();
 		Map<String, String> contentToGroup = systemToContentToGroup.get(groupSystem);
 		if (contentToGroup == null) return null;
 		return contentToGroup.get(content);
 	}
 	
-	public static Collection<RecordGroup> getAll() throws InternalServerException {
+	public static Collection<RecordGroup> getAll() throws AppException {
 		if (cache == null) load();
 		return cache.values();
 	}
@@ -93,8 +93,8 @@ public class RecordGroup extends Model {
 		cache = null;
 	}
 	
-	public static void load() throws InternalServerException {
-		
+	public static void load() throws AppException {
+		/*
 		Set<ContentCode> ccs = ContentCode.getAll(new HashMap<String, Object>(), Sets.create("display", "content","system","code"));
 		for (ContentCode cc : ccs) {
 			try {
@@ -108,7 +108,7 @@ public class RecordGroup extends Model {
 			  ci.label.put("en", cc.display);
 			  ContentInfo.add(ci);
 			}
-		}
+		}*/
 		
 		systemToContentToGroup = new HashMap<String, Map<String, String>>();
 				
@@ -158,7 +158,8 @@ public class RecordGroup extends Model {
 				systemToContentToGroup.put(group.system, contentToGroup);
 			}
 			if (group.contents != null) {
-				for (String content : group.contents) {
+				for (String content : group.contents) {					
+					ContentInfo.getByName(content);					
 					contentToGroup.put(content, group.name);
 				}
 			}

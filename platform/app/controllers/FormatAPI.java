@@ -42,10 +42,10 @@ public class FormatAPI extends Controller {
 	/**
 	 * public function to get a list of data groups
 	 * @return
-	 * @throws InternalServerException
+	 * @throws AppException
 	 */
 	@APICall
-	public static Result listGroups() throws InternalServerException {
+	public static Result listGroups() throws AppException {
 	    Collection<RecordGroup> groups = RecordGroup.getAll();
 	    return ok(Json.toJson(groups));
 	}

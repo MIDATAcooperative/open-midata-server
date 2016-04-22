@@ -50,7 +50,7 @@ public class Feature_FormatGroups extends Feature {
 		}
 	}
 
-	private static void addChildren(String groupSystem, String group, Set<String> groups, Set<String> exclude) throws InternalServerException {		
+	private static void addChildren(String groupSystem, String group, Set<String> groups, Set<String> exclude) throws AppException {		
 			RecordGroup grp = RecordGroup.getBySystemPlusName(groupSystem, group);
 			if (grp != null) {
 			    for (RecordGroup child : grp.children) {
@@ -116,7 +116,7 @@ public class Feature_FormatGroups extends Feature {
     	}    			    	
     }
     
-    public static void convertQueryToGroups(String groupSystem, Map<String, Object> properties) throws BadRequestException, InternalServerException {
+    public static void convertQueryToGroups(String groupSystem, Map<String, Object> properties) throws BadRequestException, AppException {
     	if (properties.containsKey("content")) {
     		Set<String> contents = Query.getRestriction(properties.get("content"), "content");
     		Set<String> include = new HashSet<String>();
@@ -124,10 +124,12 @@ public class Feature_FormatGroups extends Feature {
     		Map<String, Integer> counts = new HashMap<String, Integer>();
     		for (String content : contents) {
     			String group =  RecordGroup.getGroupForSystemAndContent(groupSystem, content);
-    			if (counts.containsKey(group)) {
-    				counts.put(group, counts.get(group) + 1);
-    			} else {
-    				counts.put(group, 1);
+    			if (group != null) {
+	    			if (counts.containsKey(group)) {
+	    				counts.put(group, counts.get(group) + 1);
+	    			} else {
+	    				counts.put(group, 1);
+	    			}
     			}
     		}
     		
@@ -148,6 +150,7 @@ public class Feature_FormatGroups extends Feature {
     		counts.clear();
     		
     		for (String grp : include) {
+    			AccessLog.log("included group:"+grp);
     			RecordGroup group = RecordGroup.getBySystemPlusName(groupSystem, grp);
     			if (group.parent != null) {
     				if (counts.containsKey(group.parent)) {
@@ -162,9 +165,12 @@ public class Feature_FormatGroups extends Feature {
     			RecordGroup group = RecordGroup.getBySystemPlusName(groupSystem, grp);
     			if (group.children != null && group.children.size() == counts.get(grp)) {
     				AccessLog.log("add group:"+grp);
-    				AccessLog.log("remove:"+group.children.toString());
+    				
     				include.add(grp);
-    				for (RecordGroup g : group.children) include.remove(g.name);
+    				for (RecordGroup g : group.children) {
+    					AccessLog.log("remove:"+g.name);
+    					include.remove(g.name);
+    				}
     				redo = true;
     			}
     		}
