@@ -4,7 +4,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 	function($scope, $http, $location, $filter, $timeout, midataServer, midataPortal) {
 		console.log("INIT!!");
 		// init
-		$scope.errors = {};
+		$scope.errors = null;
 				
 		$scope.formats = [
 		   {
@@ -150,7 +150,12 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 		
 		$scope.add = function() {
 			$scope.success = false;
-			console.log("Add");
+			$scope.error = null;
+			var theDate = new Date($scope.newentry.date);
+			if (isNaN(theDate)) {
+				$scope.error = "Please enter a valid date! (YYYY-MM-DD)";
+				return
+			}
 			
 			var data = { 
 					resourceType : "Observation",

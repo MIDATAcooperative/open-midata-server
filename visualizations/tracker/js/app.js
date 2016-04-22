@@ -4,18 +4,38 @@ tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$t
 	function($scope, $http, $location, $filter, $timeout, midataServer, midataPortal) {
 		
 		// init
-		$scope.errors = {};
+		$scope.error = null;
 				
 		$scope.codes = [
 		   {			    
 				display : "Headache",
-				system : "urn:uuid:1234",
+				system : "urn:uuid:817a5c29-b5da-4074-81bf-92d6978759f4",
 				code : "headache"
 		   },
+		   {			    
+				display : "Feeling sick",
+				system : "urn:uuid:817a5c29-b5da-4074-81bf-92d6978759f4",
+				code : "feeling-sick"
+		   },
 		   {
-			   display : "Tired",
-			   system : "urn:uuid:1234",
-			   code : "tired"
+			   display : "Beginning of menstruation",
+			   system : "urn:uuid:817a5c29-b5da-4074-81bf-92d6978759f4",
+			   code : "beginning-of-menstruation"
+		   },		   
+		   {
+			   display : "Ate more than I wanted",
+			   system : "urn:uuid:817a5c29-b5da-4074-81bf-92d6978759f4",
+			   code : "ate-more-than-i-wanted"
+		   },
+		   {			    
+				display : "Thunderstorm outside",
+				system : "urn:uuid:817a5c29-b5da-4074-81bf-92d6978759f4",
+				code : "thunderstorm-outside"
+		   },
+		   {			    
+				display : "Click 'Edit Event List' and change this list into something useful for you!",
+				system : "urn:uuid:817a5c29-b5da-4074-81bf-92d6978759f4",
+				code : "dummy"
 		   }
 		];
 		
@@ -28,11 +48,12 @@ tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$t
 		$scope.isValid = true;
 		$scope.isBusy = 0;
 		$scope.success = false;
+		$scope.today = $filter('date')(new Date(), "yyyy-MM-dd");
 		midataPortal.autoresize();
 		
 		$scope.reset = function() {
 			$scope.newentry = { 									
-					date : $filter('date')(new Date(), "yyyy-MM-dd")
+					date : $scope.today
 			};	
 			$scope.newcode = { display:"" };
 			
@@ -42,14 +63,22 @@ tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$t
 					$scope.codes = response.data.codes;
 				}
 			});
+						
 			
 			$scope.mode = '';
 			
 		};
+		
+		
 				
 		$scope.add = function() {
 			$scope.success = false;
-			console.log("Add");
+			$scope.error = null;
+			var theDate = new Date($scope.newentry.date);
+			if (isNaN(theDate)) {
+				$scope.error = "Please enter a valid date! (YYYY-MM-DD)";
+				return
+			}
 			
 			angular.forEach($scope.codes, function(code) {
 				if (!code.selected) return;
@@ -79,7 +108,7 @@ tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$t
 					  }],
 					  text : code.display
 					},
-					effectiveDateTime : $scope.newentry.date,					
+					effectiveDateTime : theDate.toJSON(),					
 					valueCodeableConcept : {						
 					    coding : [{
 						   system : "http://hl7.org/fhir/v2/0136",
@@ -105,7 +134,7 @@ tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$t
 		$scope.addCode = function() {
 			var code = $scope.newcode.display.toLowerCase();
 			code = code.replace(' ','-');
-			$scope.codes.push({ system:"urn:uuid:1234", display : $scope.newcode.display, code : code })
+			$scope.codes.push({ system:"urn:uuid:817a5c29-b5da-4074-81bf-92d6978759f4", display : $scope.newcode.display, code : code })
 			$scope.newcode = {};
 		};
 		
@@ -114,6 +143,10 @@ tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$t
 		};
 		
 		$scope.saveCodes = function() {
+			$scope.error = null;
+			if (! $scope.editForm.$valid) return;
+			angular.forEach($scope.codes, function(code) { code.selected = false; });
+			
 			midataServer.setConfig(authToken, { codes : $scope.codes })
 			.then(function() { $scope.mode=''; });
 		};
@@ -121,4 +154,28 @@ tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$t
 		$scope.reset();
 								
 	}
-]);
+])
+.controller('PreviewCtrl', ['$scope', '$http', '$location', '$filter', '$timeout', 'midataServer', 'midataPortal',
+    function($scope, $http, $location, $filter, $timeout, midataServer, midataPortal) {
+
+	var authToken = $location.path().split("/")[1];
+	 
+	$scope.authToken = authToken;			
+	$scope.today = $filter('date')(new Date(), "yyyy-MM-dd");
+	$scope.tracked = [];
+	midataPortal.autoresize();
+	
+	$scope.preview = function() {
+		$scope.tracked = [];
+		midataServer.getRecords(authToken, { "format" : "fhir/Observation", "code" : "http://midata.coop user-observation", "index" : { "effectiveDateTime" : { "$ge" : $scope.today }} }, ["data"])
+		.then(function(results) {
+		  angular.forEach(results.data, function(dat) {
+			 if (dat.data.effectiveDateTime && dat.data.code && dat.data.code.coding && dat.data.status && (dat.data.status == "final" || dat.data.status=="preliminary" )) {
+				 $scope.tracked.push(dat.data);
+			 } 
+		  });
+		});
+	};
+	
+	$scope.preview();
+}]);

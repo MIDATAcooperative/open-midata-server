@@ -47,14 +47,13 @@
 			    </button>
 		   </div>	
            <h1 ng-class="{ 'text-success' : isSharedGroup(data), 'format': data.type == 'content', 'nodata' : data.count == 0 }"><span ng-click="setOpen(data,true);" ng-hide="data.open" class="treehandle glyphicon glyphicon-plus"></span><span ng-show="data.open && !data.type" ng-click="setOpen(data,false);" class="treehandle glyphicon glyphicon-minus"></span>{{data.fullLabel}} <small>(<span ng-show="selectedAps">{{ data.countShared }} / </span>{{ data.count }})</small><button class="btn btn-xs btn-danger" ng-show="allowDelete" ng-dblclick="deleteGroup(data.name)">delete all</button></h1>
-           <div ng-show="data.open">
-
+           <div ng-show="data.open">          
            <div ng-if="data.records.length > 10">
-              <dir-pagination-controls pagination-id="data.name"></dir-pagination-controls>
+              <dir-pagination-controls pagination-id="data.id"></dir-pagination-controls>
             </div>
 
            <ul class="list-group" ng-if="data.records.length > 0">
-				<li class="list-group-item" dir-paginate="record in data.records | itemsPerPage : 10" pagination-id="data.name" ng-class="{ 'list-group-item-success' : ( isShared(record)) }">
+				<li class="list-group-item" dir-paginate="record in data.records | itemsPerPage : 10" pagination-id="data.id" ng-class="{ 'list-group-item-success' : ( isShared(record)) }">
 					<span class="label label-info">{{record.created | date}}</span>
 					<span ng-show="record.owner.$oid != userId.$oid" class="label label-info">{{ record.ownerName }}</span>
 					<a href="javascript:;" ng-click="showDetails(record)">{{record.name}}</a>

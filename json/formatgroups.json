@@ -2,21 +2,18 @@
 {"_id":{"$oid":"55ae5a08f351efda91eadc7d"},"system":"v1","name":"lifestyle","label":{"en":"Lifestyle"},"parent":"all"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc7e"},"system":"v1","name":"nutrition","label":{"en":"Nutrition"},"contents":["food","food/water","food/calories-in"],"parent":"lifestyle"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc7f"},"system":"v1","name":"mood","label":{"en":"Mood"},"contents":["mood","subjective-condition"],"parent":"lifestyle"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc80"},"system":"v1","name":"qself","label":{"en":"Quantified self"},"contents":["body/height","body","body/bmi","body/temperature","body/weight","body/blood/systolic","http://loinc.org 3141-9","body/fat","body/blood/diastolic","activities/heartrate"],"parent":"lifestyle"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc81"},"system":"v1","name":"movement","label":{"en":"Movement"},"contents":["activities/minutes-very-active","activities/steps","activities/elevation","activities/minutes-fairly-active","activities/distance","activities/minutes-lightly-active","activities/activity-calories","activities/floors","activities","activities/minutes-sedentary","activities/calories"],"parent":"lifestyle"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc80"},"system":"v1","name":"qself","label":{"en":"Quantified self"},"parent":"lifestyle","contents":["body","http://loinc.org 3141-9"]}
+{"_id":{"$oid":"55ae5a08f351efda91eadc81"},"system":"v1","name":"activities","label":{"en":"Activities"},"parent":"lifestyle","contents":["activities"]}
 {"_id":{"$oid":"55ae5a08f351efda91eadc82"},"system":"v1","name":"sleep","label":{"en":"Sleep"},"contents":["sleep/minutes-to-fall-asleep","sleep/time-in-bed","sleep/minutes-awake","sleep/minutes-asleep","sleep/efficiency","sleep"],"parent":"lifestyle"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc83"},"system":"v1","name":"health","label":{"en":"Health"},"contents":[],"parent":"all"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc84"},"system":"v1","name":"allergies","label":{"en":"Allergies"},"contents":["ImmunizationRecommendation","AllergyIntolerance","Immunization"],"parent":"health"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc85"},"system":"v1","name":"lab","label":{"en":"Lab results"},"contents":[],"parent":"health"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc86"},"system":"v1","name":"studies","label":{"en":"Studies"},"contents":["survey","QuestionnaireResponse","Questionnaire"],"parent":"health"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc87"},"system":"v1","name":"medication","label":{"en":"Medication"},"contents":["Medication","medical","MedicationDispense","MedicationAdministration","MedicationStatement","MedicationOrder"],"parent":"health"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc88"},"system":"v1","name":"genome","label":{"en":"Genome"},"contents":["genome-data"],"parent":"health"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc89"},"system":"v1","name":"desease","label":{"en":"Desease specific"},"contents":[],"parent":"health"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc8a"},"system":"v1","name":"other","label":{"en":"Other"},"contents":[],"parent":"all"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc8b"},"system":"v1","name":"calendar","label":{"en":"Calendar"},"contents":["Appointment","Schedule","Slot","AppointmentResponse","calendar"],"parent":"other"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc8c"},"system":"v1","name":"diary","label":{"en":"Diary"},"contents":["diary","http://loinc.org 61150-9"],"parent":"other"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc8d"},"system":"v1","name":"account","label":{"en":"External Accounts"},"contents":["account/credentials","account"],"parent":"other"}
-{"_id":{"$oid":"55b5fe1ca69243d780682795"},"system":"v1","name":"templates","label":{"en":"Templates"},"contents":["templates"],"parent":"other"}
 {"_id":{"$oid":"569915fc6281a61a232ecdca"},"system":"v1","name":"otherhealth","label":{"en":"Other Health-related"},"contents":["observation/cardio","BodySite","Specimen","Device","DeviceComponent","RiskAssessment","DeviceMetric","Substance"],"parent":"health"}
 {"_id":{"$oid":"569915fc6281a61a232ecdcb"},"system":"v1","name":"care","label":{"en":"Care"},"contents":["CarePlan","ReferralRequest","ProcedureRequest","VisionPrescription","Goal","NutritionOrder"],"parent":"health"}
 {"_id":{"$oid":"569915fc6281a61a232ecdcc"},"system":"v1","name":"billing","label":{"en":"Billing"},"contents":["ClaimResponse","Coverage","Claim","EligibilityRequest","EnrollmentResponse","EnrollmentRequest","PaymentNotice","PaymentReconciliation","ExplanationOfBenefit","EligibilityResponse"],"parent":"other"}
@@ -27,3 +24,14 @@
 {"_id":{"$oid":"569915fc6281a61a232ecdd1"},"system":"v1","name":"relatedpersons","label":{"en":"Related Persons"},"contents":["FamilyMemberHistory","Patient","RelatedPerson"],"parent":"other"}
 {"_id":{"$oid":"569915fc6281a61a232ecdd2"},"system":"v1","name":"diagnostics","label":{"en":"Family"},"contents":["ImagingStudy","DiagnosticReport","ImagingObjectSelection","DiagnosticOrder"],"parent":"other"}
 {"_id":{"$oid":"56fa3f4f6c19d1e1e9d2536e"},"system":"v1","name":"unknown","label":{"en":"Unknown Content"},"contents":["Conformance","Provenance","Parameters","NamingSystem","Media","Binary","StructureDefinition","unknown","ValueSet","Bundle","Basic","MessageHeader","DataElement","Subscription","AuditEvent","ConceptMap","TestScript","List","ImplementationGuide","OperationDefinition","OperationOutcome","SearchParameter"],"parent":"other"}
+{"_id":{"$oid":"5718f43aaed645098e8cee26"},"system":"v1","name":"activities/calories","label":{"en":"Calories Burned in Activities"},"parent":"activities","contents":["activities/activity-calories","activities/calories"]}
+{"_id":{"$oid":"5718f43aaed645098e8cee27"},"system":"v1","name":"movement","label":{"en":"Movement"},"parent":"activities","contents":["activities/steps","activities/distance"]}
+{"_id":{"$oid":"5718f43aaed645098e8cee28"},"system":"v1","name":"activities/minutes","label":{"en":"Time-Info about Activities"},"parent":"activities","contents":["activities/minutes-very-active","activities/minutes-fairly-active","activities/minutes-lightly-active","activities/minutes-sedentary"]}
+{"_id":{"$oid":"5718f43aaed645098e8cee29"},"system":"v1","name":"movement/height","label":{"en":"Vertical Movement"},"parent":"activities","contents":["activities/elevation","activities/floors"]}
+{"_id":{"$oid":"5718f577aed645098e8cee2a"},"system":"v1","name":"body/height","label":{"en":"Height"},"parent":"qself","contents":["body/height"]}
+{"_id":{"$oid":"5718f577aed645098e8cee2b"},"system":"v1","name":"body/weight","label":{"en":"Body Weight"},"parent":"qself","contents":["body/weight"]}
+{"_id":{"$oid":"5718f577aed645098e8cee2c"},"system":"v1","name":"user-observation","label":{"en":"User Observations"},"parent":"qself","contents":["user-observation"]}
+{"_id":{"$oid":"5719d3d0aed64509b3d0930b"},"system":"v1","name":"body/bmi","label":{"en":"BMI and Fat"},"parent":"qself","contents":["body/bmi","body/fat"]}
+{"_id":{"$oid":"5719d3d0aed64509b3d0930c"},"system":"v1","name":"activities/heartrate","label":{"en":"Heart Rate"},"parent":"qself","contents":["activities/heartrate"]}
+{"_id":{"$oid":"5719d46aaed64509b3d0930d"},"system":"v1","name":"body/temperature","label":{"en":"Body Temperature"},"parent":"qself","contents":["body/temperature"]}
+{"_id":{"$oid":"5719d46aaed64509b3d0930e"},"system":"v1","name":"body/blood","label":{"en":"Blood Pressure"},"parent":"qself","contents":["body/blood/systolic","body/blood/diastolic"]}

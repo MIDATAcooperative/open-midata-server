@@ -151,6 +151,7 @@ angular.module('portal')
 	   	newgroup.records = [];
 	   	newgroup.infoCount = 0;
 	   	newgroup.countShared = 0;
+	   	newgroup.id = newgroup.name.replace(/[/\-]/g,'_');
 	   	
 	   	if (newgroup.parent == null) {
 	   		newgroup.fullLabel = newgroup.label[$scope.lang];

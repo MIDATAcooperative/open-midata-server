@@ -127,9 +127,19 @@ POST    /research/api/studies/:study/task/:group         controllers.research.St
 
 POST    /common/api/studies                              controllers.Studies.search()
 GET     /common/api/groups                               controllers.FormatAPI.listGroups()
+POST    /common/api/groups                               controllers.FormatAPI.createGroup
+POST    /common/api/groups/:group                        controllers.FormatAPI.updateGroup(group: String)
+DELETE  /common/api/groups/:group                        controllers.FormatAPI.deleteGroup(group: String)
 GET     /common/api/formats                              controllers.FormatAPI.listFormats()
 GET     /common/api/contents                             controllers.FormatAPI.listContents()
+POST    /common/api/contents                             controllers.FormatAPI.createContent()
+POST    /common/api/contents/:content                    controllers.FormatAPI.updateContent(content: String)
+DELETE  /common/api/contents/:content                    controllers.FormatAPI.deleteContent(content: String)
 GET     /common/api/codes                                controllers.FormatAPI.listCodes()
+POST    /common/api/codes                                controllers.FormatAPI.createCode()
+POST    /common/api/codes/:code                          controllers.FormatAPI.updateCode(code: String)
+DELETE  /common/api/codes/:code                          controllers.FormatAPI.deleteCode(code: String)
+
 GET     /members/api/participation                       controllers.members.Studies.list()
 GET     /members/api/participation/:study                controllers.members.Studies.get(study: String)
 POST    /members/api/participation/:study/request        controllers.members.Studies.requestParticipation(study: String)

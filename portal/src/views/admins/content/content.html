@@ -6,9 +6,10 @@
     <div class="body">
       <loader busy="status.isBusy !== false">
          <button class="btn btn-primary" ng-click="newCode();">New Code</button>
+         <button class="btn btn-primary" ng-click="addGroup();">New Group</button>
          <button class="btn btn-primary" ng-click="save();">Save Changes</button>
          <div ng-repeat="group in groups | orderBy : 'name'">
-           <h3 ng-style="getStyle(group)">{{ group.name }}, {{ group.label[lang] }} <small>{{ getParents(group.parent) }}</small></h3><button class="btn btn-xs btn-default" ng-click="editGroup(group)">edit</button>
+           <h3 ng-style="getStyle(group)">{{ group.name }}, {{ group.label[lang] }} <span class="badge" style="background-color:red" ng-show="group.problem">{{ group.problem }}</span><small>{{ getParents(group.parent) }}</small></h3><button class="btn btn-xs btn-default" ng-click="editGroup(group)">edit</button><button class="btn btn-xs btn-default" ng-click="deleteGroup(group)">delete</button>
          <ul>
          <li ng-repeat="contentEntry in group.contentEntries | orderBy : 'content'">
            <b ng-style="getStyle(contentEntry)">{{ contentEntry.content }}</b>
@@ -16,12 +17,14 @@
            ({{ contentEntry.security }})	           
 	       <button class="btn btn-xs btn-default" ng-click="addCode(contentEntry);">add</button>
 	       <button class="btn btn-xs btn-default" ng-click="editContent(contentEntry);">edit</button>
+	       <button class="btn btn-xs btn-default" ng-click="deleteContent(contentEntry);">delete</button>
 	           
            <ul>
-             <li ng-repeat="code in codes | filter : { content : contentEntry.content } | orderBy : 'code' ">
+             <li ng-repeat="code in codes | filter : { content : contentEntry.content } : true | orderBy : 'code' ">
                {{ code.system }} {{ code.version }} : <b ng-style="getStyle(code)">{{ code.code }}</b> = {{ code.display }}
                <button class="btn btn-xs btn-default" ng-click="editCode(code);">edit</button>
                <button ng-disabled="isDefaultFor(code, contentEntry)" class="btn btn-xs btn-default" ng-click="makeDefaultCode(code, contentEntry);">default</button>
+               <button class="btn btn-xs btn-default" ng-click="deleteCode(code);">delete</button>
              </li>
            </ul>
                     

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Tracker</title>
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="/shared/css/app.css">
+		<!-- jQuery needed for Bootstrap's JavaScript plugins -->
+		<script type="text/javascript" src="//code.jquery.com/jquery-2.0.2.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
+		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" defer></script>
+		<script type="text/javascript" src="/shared/js/midata.js" defer></script>
+		<script type="text/javascript" src="js/app.js" defer></script>
+	</head>
+	<body>
+		<div class="container" ng-app="tracker" ng-controller="PreviewCtrl" ng-cloak>		  
+		
+		  <form class="form-horizontal">
+		    
+		    <div class="form-group"> 
+		        <label>Events tracked today:</label>
+		        <div class="form-control-static" ng-hide="tracked.length">
+		          <p>No events tracked yet for today.</p>
+		          <p>Click on the 'view' button below to open the tracker plugin.</p>
+		        </div>
+		        <ul>
+		        <li ng-repeat="code in tracked | limitTo : 9">		        
+		          {{ code.code.text }}
+		        </li>
+		        <li ng-show="tracked.length > 9">{{ tracked.length - 9 }} more</li>
+		        </ul>		        		      
+		    </div>
+		     	
+		  	   
+		  </form>
+		  
+	   </div>		
+	</body>
+</html>

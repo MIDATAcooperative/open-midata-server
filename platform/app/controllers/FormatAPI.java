@@ -18,6 +18,7 @@ import models.ContentInfo;
 import models.RecordGroup;
 import models.FormatInfo;
 import models.Loinc;
+import models.enums.APSSecurityLevel;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
@@ -96,6 +97,121 @@ public class FormatAPI extends Controller {
 		
 		ContentCode.add(cc);
 		
+		return ok();
+	}
+	
+	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AdminSecured.class)
+	public static Result updateCode(String id) throws AppException {
+		JsonNode json = request().body().asJson();
+		ContentCode cc = new ContentCode();
+		cc._id = new ObjectId(id);
+		cc.code = JsonValidation.getString(json, "code");
+		cc.content = JsonValidation.getString(json, "content");
+		cc.display = JsonValidation.getString(json, "display");
+		cc.system = JsonValidation.getString(json, "system");
+		
+		ContentCode.upsert(cc);
+		
+		return ok();
+	}
+	
+	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AdminSecured.class)
+	public static Result deleteCode(String id) throws AppException {
+		ContentCode.delete(new ObjectId(id));				
+		return ok();
+	}
+	
+	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AdminSecured.class)
+	public static Result createContent() throws AppException {
+		JsonNode json = request().body().asJson();
+		ContentInfo cc = new ContentInfo();
+		cc._id = new ObjectId();
+		cc.defaultCode = JsonValidation.getString(json, "defaultCode");
+		cc.content = JsonValidation.getString(json, "content");
+		cc.security = JsonValidation.getEnum(json, "security",  APSSecurityLevel.class);
+		cc.label = JsonExtraction.extractStringMap(json.get("label"));
+		
+		ContentInfo.add(cc);
+		RecordGroup.invalidate();
+		
+		return ok();
+	}
+	
+	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AdminSecured.class)
+	public static Result updateContent(String id) throws AppException {
+		JsonNode json = request().body().asJson();
+		ContentInfo cc = new ContentInfo();
+		cc._id = new ObjectId(id);
+		cc.defaultCode = JsonValidation.getString(json, "defaultCode");
+		cc.content = JsonValidation.getString(json, "content");
+		cc.security = JsonValidation.getEnum(json, "security",  APSSecurityLevel.class);
+		cc.label = JsonExtraction.extractStringMap(json.get("label"));
+		
+		ContentInfo.upsert(cc);
+		RecordGroup.invalidate();
+		
+		return ok();
+	}
+	
+	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AdminSecured.class)
+	public static Result deleteContent(String id) throws AppException {
+		ContentInfo.delete(new ObjectId(id));				
+		return ok();
+	}
+	
+	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AdminSecured.class)
+	public static Result createGroup() throws AppException {
+		JsonNode json = request().body().asJson();
+		RecordGroup cc = new RecordGroup();
+		cc._id = new ObjectId();
+		cc.name = JsonValidation.getString(json, "name");
+		cc.system = JsonValidation.getString(json, "system");
+		cc.parent = JsonValidation.getString(json, "parent");
+		cc.contents = JsonExtraction.extractStringSet(json.get("contents"));
+		cc.label = JsonExtraction.extractStringMap(json.get("label"));
+		
+		RecordGroup.add(cc);
+		RecordGroup.invalidate();
+		
+		return ok();
+	}
+	
+	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AdminSecured.class)
+	public static Result updateGroup(String id) throws AppException {
+		JsonNode json = request().body().asJson();
+		RecordGroup cc = new RecordGroup();
+		cc._id = new ObjectId(id);
+		cc.name = JsonValidation.getString(json, "name");
+		cc.system = JsonValidation.getString(json, "system");
+		cc.parent = JsonValidation.getString(json, "parent");
+		cc.contents = JsonExtraction.extractStringSet(json.get("contents"));
+		cc.label = JsonExtraction.extractStringMap(json.get("label"));
+		
+		RecordGroup.upsert(cc);
+		RecordGroup.invalidate();
+		return ok();
+	}
+	
+	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AdminSecured.class)
+	public static Result deleteGroup(String id) throws AppException {
+		RecordGroup.delete(new ObjectId(id));	
+		RecordGroup.invalidate();
 		return ok();
 	}
 	

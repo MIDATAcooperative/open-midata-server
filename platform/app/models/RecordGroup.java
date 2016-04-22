@@ -9,9 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bson.types.ObjectId;
+
 import models.enums.APSSecurityLevel;
 
 import utils.AccessLog;
+import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
 import utils.exceptions.AppException;
@@ -24,7 +27,7 @@ import utils.exceptions.InternalServerException;
 public class RecordGroup extends Model {
 	
 	private @NotMaterialized static final String collection = "formatgroups";
-	private @NotMaterialized static Map<String, RecordGroup> cache;
+	private @NotMaterialized static volatile Map<String, RecordGroup> cache;
 	private @NotMaterialized static Map<String, Map<String, String>> systemToContentToGroup;
 
 	/**
@@ -57,8 +60,16 @@ public class RecordGroup extends Model {
 	 */
 	public @NotMaterialized List<RecordGroup> children;		
 	
-	public static void add(RecordGroup record) throws InternalServerException {
-		Model.insert(collection, record);
+	public static void add(RecordGroup recordGroup) throws InternalServerException {
+		Model.insert(collection, recordGroup);
+	}
+			
+	public static void upsert(RecordGroup recordGroup) throws InternalServerException {
+	    Model.upsert(collection, recordGroup);
+	}
+	  
+	public static void delete(ObjectId recordGroupId) throws InternalServerException {			
+	    Model.delete(RecordGroup.class, collection, CMaps.map("_id", recordGroupId));
 	}
 	
 	public static RecordGroup getBySystemPlusName(String system, String name) throws InternalServerException {
@@ -76,6 +87,10 @@ public class RecordGroup extends Model {
 	public static Collection<RecordGroup> getAll() throws InternalServerException {
 		if (cache == null) load();
 		return cache.values();
+	}
+	
+	public static void invalidate() {
+		cache = null;
 	}
 	
 	public static void load() throws InternalServerException {
@@ -124,7 +139,7 @@ public class RecordGroup extends Model {
 				   Model.set(ContentInfo.class, "contentinfo", ci._id, "label", ci.label);
 			   }
 			}
-			
+			/*
 			String group = ci.group;
 			if (group == null) throw new NullPointerException("content: "+ci.content);
 			RecordGroup grp = getBySystemPlusName("v1", group);
@@ -133,7 +148,7 @@ public class RecordGroup extends Model {
 			if (!grp.contents.contains(ci.content)) {
 			  grp.contents.add(ci.content);
 			  Model.set(RecordGroup.class, collection, grp._id, "contents", grp.contents);
-			}			
+			}*/			
 		}
 		
 		for (RecordGroup group : groups) {		

@@ -50,6 +50,20 @@ public class JsonExtraction {
 		}
 		return map;
 	}
+	
+	/**
+	 * Extracts a general map.
+	 */
+	public static Map<String, String> extractStringMap(JsonNode json) {
+		Map<String, String> map = new HashMap<String, String>();
+		Iterator<Entry<String, JsonNode>> iterator = json.fields();
+		while (iterator.hasNext()) {
+			Entry<String, JsonNode> cur = iterator.next();
+			map.put(cur.getKey(), cur.getValue().asText());
+		}
+		return map;
+	}
+
 
 	/**
 	 * Extracts a general set.

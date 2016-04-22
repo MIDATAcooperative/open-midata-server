@@ -19,6 +19,9 @@
 			<button type="button" class="close" ng-click="success=false" aria-hidden="true">&times;</button>
 			Data successfully added.
 		  </div>
+		  <div class="alert alert-danger" ng-show="error">
+			{{ error }}			
+		  </div>
 		  <form class="form-horizontal">
 		    <div class="form-group"> 
 		      <label class="col-sm-4 control-label" for="what">What:</label>
