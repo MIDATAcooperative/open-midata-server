@@ -278,7 +278,7 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 				if (measure.import) {					
 					importRecords(measure);
 				}
-			  }
+			  });
 			});
 		};
 		
