@@ -268,7 +268,7 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 						
 			angular.forEach($scope.measurements, function(measure) {
 				if (measure.import) {
-					var f = function() { getPrevRecords(measure); };
+					var f = function() { return getPrevRecords(measure); };
 					actionChain = actionChain.then(f);					
 				}
 			});			
@@ -283,7 +283,7 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 		};
 		
 		var getPrevRecords = function(measure) {
-		   return midataServer.getRecords($scope.authToken, { "format" :"fhir/Observation", "app" : "fitbit", "content" : measure.content, "index" : { "effectiveDateTime" : { "$ge" : measure.from }} }, ["version", "content", "data"])
+		   return midataServer.getRecords($scope.authToken, { "format" :"fhir/Observation", "content" : measure.content, "index" : { "effectiveDateTime" : { "!!!ge" : measure.from }} }, ["version", "content", "data"])
 		   .then(function(results) {
 			   angular.forEach(results.data, function(rec) {
 				 stored[rec.content+rec.data.effectiveDateTime] = rec;  
