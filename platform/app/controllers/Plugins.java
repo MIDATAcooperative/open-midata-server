@@ -373,6 +373,7 @@ public class Plugins extends APIController {
 		   .post("client_id="+app.consumerKey+"&grant_type=authorization_code&code="+json.get("code").asText()+"&redirect_uri="+URLEncoder.encode(authPage, "UTF-8"));
 		return promise.map(new Function<WSResponse, Result>() {
 			public Result apply(WSResponse response) throws AppException {
+				try {
 				AccessLog.log(response.getBody());
 				JsonNode jsonNode = response.asJson();
 				if (jsonNode.has("access_token") && jsonNode.get("access_token").isTextual()) {
@@ -390,6 +391,10 @@ public class Plugins extends APIController {
 					return ok();
 				} else {
 					return badRequest("Access token not found.");
+				}
+				} finally {
+					RecordManager.instance.clear();
+					AccessLog.newRequest();	
 				}
 			}
 		});
@@ -457,6 +462,9 @@ public class Plugins extends APIController {
 						RecordManager.instance.setMeta(userId, spaceId, "_oauth", tokens);						
 					} catch (InternalServerException e) {
 						return false;
+					} finally {
+						RecordManager.instance.clear();
+						AccessLog.newRequest();	
 					}
 					return true;
 				} else {

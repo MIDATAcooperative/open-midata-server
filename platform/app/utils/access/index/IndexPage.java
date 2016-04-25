@@ -35,6 +35,8 @@ public class IndexPage {
 	}
 	
 	public void addEntry(Object[] key, ObjectId aps, ObjectId target) {
+		if (key[0] == null) return;
+		
 	    BasicBSONObject entry = findEntry(key);
 	    if (entry == null) {
 	    	entry = addEntry(key);
@@ -156,7 +158,7 @@ public class IndexPage {
 	
 	private boolean keyCompare(Object[] key, BasicBSONList idxKey) {
 		for (int i=0;i<key.length;i++) {
-			if (!key[i].equals(idxKey.get(i))) return false;
+			if ((key[i] != null) ? (!key[i].equals(idxKey.get(i))) : (idxKey.get(i) != null)) return false;
 		}		
 		return true;
 	}

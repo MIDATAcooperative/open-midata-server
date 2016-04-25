@@ -19,7 +19,7 @@ angular.module('calendarApp')
 	            center: 'title',
 	            right: 'today prev,next'
 	          },
-	          dayClick: $scope.dayClick,
+	          eventClick: $scope.eventClick,
 	          eventDrop: $scope.alertOnDrop,
 	          eventResize: $scope.alertOnResize,
 	          viewRender: function(view, element) {
@@ -27,6 +27,23 @@ angular.module('calendarApp')
 	          }
 	        }
 	      };
+      };
+	    
+      $scope.load = function() {
+	      midataServer.getConfig(eventProvider.authToken)
+	      .then(function(result) {
+	    	 if (result.data && result.data.sources) {
+	    		 var add = [];
+	    		 angular.forEach(result.data.sources, function(source) { 
+	        		 if (source.selected) { 
+	        			 add.push(source.id);
+	        			 if (source.tlb) eventProvider.setTlb(source); else eventProvider.clearTlb(source.id);
+	        		 }
+	        	  });
+	        	 eventProvider.setContents(add);
+	    	 } 
+	    	 $scope.init();
+	      });
       };
       
       $scope.loadTest = function( start, end, timezone, callback ) { 
@@ -54,19 +71,13 @@ angular.module('calendarApp')
       ];
             
       
-      $scope.dayClick = function(date, jsEvent, view) {
-
-          //alert('Clicked on: ' + date.format());
-
-          //alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-
-          //alert('Current view: ' + view.name);
-
-          // change the day's background color just for fun
-          //$(this).css('background-color', 'red');
+      $scope.eventClick = function(event, jsEvent, view) {
+    	  console.log(event);
+    	  $scope.selectedEvent = event;
+          $("#details").modal("show");          
       };
       
-      $scope.init();
+      $scope.load();
     
       
     }])

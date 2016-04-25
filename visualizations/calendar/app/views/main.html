@@ -2,4 +2,31 @@
   <div ui-calendar="uiConfig.calendar" ng-model="eventSources"></div>
   <div class="extraspace"></div>
   <a class="btn btn-primary" href="#/cal/add">Add Data</a>
+  
+  <div id="details" data-backdrop="false" class="modal fade"> 
+    <div class="modal-dialog"> 
+      <div class="modal-content"> 
+        <div class="modal-header"> 
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> 
+           <h4 class="modal-title">{{ selectedEvent.title }}</h4> 
+        </div> 
+        <div class="modal-body">
+          <table class="table">
+            <tr>
+              <td>Event</td>
+	          <td>{{ selectedEvent.what }}</td>
+	        </tr><tr>
+	        <td>Person(s)</td><td>{{ selectedEvent.who }}</td>
+	        </tr><tr>        
+	        <td>Date</td><td>{{ selectedEvent.start.toDate() | date }}</td>
+	        </tr><tr>
+	        <td>Details</td><td>{{ selectedEvent.details }}</td>
+	        </tr>
+	      </table>
+	      <button data-dismiss="modal" type="button" class="btn btn-primary">Close</button>
+        </div>
+      </div> 
+    </div> 
+ </div>
+  
 </div>

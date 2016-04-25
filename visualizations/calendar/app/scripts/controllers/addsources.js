@@ -56,6 +56,7 @@ angular.module('calendarApp')
     		 }
     	  });
     	 eventProvider.setContents(add);
+    	 midataServer.setConfig(eventProvider.authToken, { sources : $scope.sources });
     	 $location.path("/cal/display");
       };
             

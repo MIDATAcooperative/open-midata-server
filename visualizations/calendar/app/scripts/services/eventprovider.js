@@ -47,7 +47,7 @@ angular.module('calendarApp')
 		  };
 		  
 		  if (criteria.content.length > 0) {
-		  midataServer.getRecords(authToken, { "format" : ["fhir/Observation"], content: criteria.content, "index" : { "effectiveDateTime" : { "$gt" : new Date(start.calendar()), "$lt" : new Date(end.calendar()) } } }, ["created", "data", "content" ])
+		  midataServer.getRecords(authToken, { "format" : ["fhir/Observation"], content: criteria.content, "index" : { "effectiveDateTime" : { "$gt" : new Date(start.calendar()), "$lt" : new Date(end.calendar()) } } }, ["created", "data", "content", "owner", "ownerName" ])
 	     	 .then(function(results) {
 	     		var entries = [];
 	     		var idx = 0;
@@ -56,7 +56,8 @@ angular.module('calendarApp')
 	                var cdate = new Date(record.created).toISOString();
 	                if (record.data.resourceType == "Observation") {
 	              	  var q = null;
-	              	  if (record.data.valueQuantity) q = record.data.valueQuantity.value;
+	              	  var u = "";
+	              	  if (record.data.valueQuantity) { q = record.data.valueQuantity.value; u = record.data.valueQuantity.unit } 
 	              	  if (record.data.valueString) q = shortStr(record.data.valueString); 
 	              	  if (record.data.valueCodeableConcept) q = shortStr(record.data.valueCodeableConcept.text || record.data.valueCodeableConcept.coding[0].display);
 	              	  var dateTime = record.data.effectiveDateTime || cdate;
@@ -66,14 +67,17 @@ angular.module('calendarApp')
 	              	  if (tlbdef) color = (tlbdef.operator) == ">" ? 
 	              			      ( (q > tlbdef.limit) ? "#00a000" : "#a00000" ) :
 	              			      ( (q < tlbdef.limit) ? "#00a000" : "#a00000" );
-	              	  
+	              	  if (q == "Yes") q = null;
 	              	  var e = {
 	              		  id : record._id.$oid,
 	              	      title : shorten(title)+((q != null) ? (":"+q) : ""),
 	              	      allDay : true, 	
 	              	      start : dateTime,	              	       
 	              	      editable : false, 	
-	              	      color : color, 	
+	              	      color : color,
+	              	      what : title,
+	              	      who : record.ownerName,
+	              	      details : ((q!=null) ? q : "")+" "+u,
 	              	      textColor : "#ffffff"	                            
 	                  };
 	                  entries[idx++] = e;   

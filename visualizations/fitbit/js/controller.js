@@ -261,6 +261,7 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 			$scope.error.messages = [];
 			$scope.requested = 0;
 			$scope.saved = 0;
+			$scope.status = "Importing data from Fitbit...";
 			
 			var actionDef = $q.defer();
 			var actionChain = actionDef.promise;
