@@ -3,6 +3,7 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 	var $scope = {};
 	
 	$scope.error = {};
+	$scope.reimport = 7;
 	$scope.status = null;
 	$scope.requesting = 0;
 	$scope.requested = 0;
@@ -156,6 +157,7 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 			
 	];
 	var baseUrl = "https://api.fitbit.com";
+	var stored = {};
 	
 	var setToDate = function(amendFrom) {
 		 var yesterday = new Date();
@@ -242,6 +244,7 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 				if (measurement != null) {
 					var newestDate = new Date(entry.newest);
 					newestDate.setHours(1,1,1,1);
+					newestDate.setDate(newestDate.getDate() - $scope.reimport);
 					measurement.imported = entry.count;
 					if (measurement.from == null || measurement.from < newestDate) measurement.from = newestDate;
 				}
@@ -259,9 +262,33 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 			$scope.requested = 0;
 			$scope.saved = 0;
 			
+			var actionDef = $q.defer();
+			var actionChain = actionDef.promise;
+			actionDef.resolve();
+						
 			angular.forEach($scope.measurements, function(measure) {
-				if (measure.import) importRecords(measure);
+				if (measure.import) {
+					var f = function() { getPrevRecords(measure); };
+					actionChain = actionChain.then(f);					
+				}
 			});			
+			
+			actionChain.then(function() {
+			  angular.forEach($scope.measurements, function(measure) {
+				if (measure.import) {					
+					importRecords(measure);
+				}
+			  }
+			});
+		};
+		
+		var getPrevRecords = function(measure) {
+		   return midataServer.getRecords($scope.authToken, { "format" :"fhir/Observation", "app" : "fitbit", "content" : measure.content, "index" : { "effectiveDateTime" : { "$ge" measure.from }} }, ["version", "content", "data"])
+		   .then(function(results) {
+			   angular.forEach(results.data, function(rec) {
+				 stored[rec.content+rec.data.effectiveDateTime] = rec;  
+			   });
+		   });
 		};
 				
 		// import records, one main record and possibly a detailed record for each day
@@ -316,7 +343,7 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 							  };
 							  
 							  $scope.requested += 1;
-							  saveRecord(measure.title, measure.content, recDate, rec);		
+							  saveOrUpdateRecord(measure.title, measure.content, recDate, rec);		
 							  
 						  }
 						});						
@@ -340,9 +367,35 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 		};
 
 		// save a single record to the database
+		var saveOrUpdateRecord = function(title, content, formattedDate, record) {
+			var existing = stored[content+formattedDate];
+			if (existing) {
+				if (existing.data.valueQuantity.value != record.valueQuantity.value) {
+					updateRecord(existing._id.$oid, existing.version, record);
+				} else { 
+					$scope.saved += 1; 
+				}			
+			} else {
+				saveRecord(title, content, formattedDate, record);
+			} 
+		};
+			
+		// save a single record to the database
 		var saveRecord = function(title, content, formattedDate, record) {
 			var name = title.replace("{date}", formattedDate);			
 			midataServer.createRecord($scope.authToken, { "name" : name, "content" : content, "format" : "fhir/Observation", subformat : "Quantity" }, record)
+			.then(function() {
+					$scope.saved += 1;
+					finish();
+			})
+			.catch(function(err) {
+					errorMessage("Failed to save record '" + name + "' to database: " + err);
+			});
+		};
+		
+		var updateRecord = function(id, version, record) {
+			var name = title.replace("{date}", formattedDate);			
+			midataServer.updateRecord($scope.authToken, id, version, record)
 			.then(function() {
 					$scope.saved += 1;
 					finish();
