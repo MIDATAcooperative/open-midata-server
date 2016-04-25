@@ -393,15 +393,14 @@ fitbit.factory('importer', ['$http' , 'midataServer', '$q', function($http, mida
 			});
 		};
 		
-		var updateRecord = function(id, version, record) {
-			var name = title.replace("{date}", formattedDate);			
+		var updateRecord = function(id, version, record) {			
 			midataServer.updateRecord($scope.authToken, id, version, record)
 			.then(function() {
 					$scope.saved += 1;
 					finish();
 			})
 			.catch(function(err) {
-					errorMessage("Failed to save record '" + name + "' to database: " + err);
+					errorMessage("Failed to update record to database: " + err);
 			});
 		};
 
