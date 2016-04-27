@@ -3,6 +3,7 @@ angular.module('portal')
 	// init
 	$scope.status = new status(true);
 	$scope.user = {};
+	$scope.msg = null;
 	
 	// parse user id (format: /users/:id) and load the user details
 	var userId = $state.params.userId;	
@@ -18,7 +19,9 @@ angular.module('portal')
 	});
 	
 	$scope.fixAccount = function() {
-		server.post(jsRoutes.controllers.Records.fixAccount().url);
+		$scope.msg = "Please wait...";
+		server.post(jsRoutes.controllers.Records.fixAccount().url)
+		.then(function() { $scope.msg = "Your account has been repaired."; });
 	};
 	
 }]);

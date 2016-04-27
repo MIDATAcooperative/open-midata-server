@@ -74,6 +74,7 @@ tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$t
 		$scope.add = function() {
 			$scope.success = false;
 			$scope.error = null;
+			$scope.isBusy = 0;
 			var theDate = new Date($scope.newentry.date);
 			if (isNaN(theDate)) {
 				$scope.error = "Please enter a valid date! (YYYY-MM-DD)";
@@ -123,7 +124,7 @@ tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$t
 			.then(function() { 
 				$scope.isBusy--; 
 				if ($scope.isBusy == 0) {
-				  success = true; 
+				  $scope.success = true; 
 				  $scope.reset(); 
 				  $timeout(function() { $scope.success = false; }, 2000); 
 			    }
@@ -167,7 +168,7 @@ tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$t
 	
 	$scope.preview = function() {
 		$scope.tracked = [];
-		midataServer.getRecords(authToken, { "format" : "fhir/Observation", "code" : "http://midata.coop user-observation", "index" : { "effectiveDateTime" : { "$ge" : $scope.today }} }, ["data"])
+		midataServer.getRecords(authToken, { "format" : "fhir/Observation", "code" : "http://midata.coop user-observation", "index" : { "effectiveDateTime" : { "!!!ge" : $scope.today }} }, ["data"])
 		.then(function(results) {
 		  angular.forEach(results.data, function(dat) {
 			 if (dat.data.effectiveDateTime && dat.data.code && dat.data.code.coding && dat.data.status && (dat.data.status == "final" || dat.data.status=="preliminary" )) {

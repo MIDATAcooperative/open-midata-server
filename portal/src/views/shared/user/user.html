@@ -19,10 +19,12 @@
 			  <div class="col-sm-12">
 			     <a class="btn btn-default" href="javascript:" ui-sref="^.changepassword">Change Password</a>
 			     <a class="btn btn-default" href="javascript:" ui-sref="^.changepassphrase">Change Passphrase</a>
-			     <a class="btn btn-default" href="javascript:" ng-click="fixAccount();">Fix Account</a>
+			     <a class="btn btn-default" href="javascript:" ng-disabled="msg" ng-click="fixAccount();">Repair Account</a>
 			     <a class="btn btn-default" href="javascript:" ui-sref="^.delete_records">Delete Records</a>
-			  </div>
+			  </div>			  
 			</div>
+			<div class="extraspace"></div>
+			<div ng-show="msg" class="alert alert-info">{{ msg }}</div>
 			</loader>
 		</div>
 		</div>
