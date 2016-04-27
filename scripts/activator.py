@@ -50,7 +50,7 @@ class Activator(Product):
 		# workaround: use the stage task as the start command doesn't work with HTTPS for now...		
 		Activator.readconf(self)
 		Command.execute('{0} stage'.format(self.bin), self.code)
-		Command.execute('{0} -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 -Dhttps.keyStore={1} -Dhttps.keyStorePassword={2} &'
+		Command.execute('{0} -Dpidfile.path=/dev/shm/play.pid -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 -Dhttps.keyStore={1} -Dhttps.keyStorePassword={2} &'
 			.format(self.app, self.keystore, password), redirect=os.path.join(self.parent, 'logs', 'activator.log'))
 		print 'Waiting for startup...'		
 		time.sleep(30)
@@ -65,7 +65,7 @@ class Activator(Product):
 		print 'Running Activator...'
 		password = getpass.getpass("Please enter the password for the Java KeyStore: ")
 		Activator.readconf(self)
-		Command.execute('{0} run -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 -Dhttps.port=9000 -Dhttps.keyStore={1} -Dhttps.keyStorePassword={2}'
+		Command.execute('{0} run -Dpidfile.path=/dev/shm/play.pid -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 -Dhttps.port=9000 -Dhttps.keyStore={1} -Dhttps.keyStorePassword={2}'
 			.format(self.bin, self.keystore, password), self.code)
 		Command.execute('{0} -zun 0 /dev/shm/secret.conf'.format(self.shred), self.conf)
 
