@@ -68,8 +68,7 @@ public class Debug extends Controller {
 	 * @return
 	 * @throws AppException
 	 */
-	@APICall
-	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall	
 	public static Result ping() throws AppException {
 	  if (Admin.getByEmail("autorun-service", Sets.create("_id")) == null) throw new InternalServerException("error.db", "Database error");
 	  return ok();
