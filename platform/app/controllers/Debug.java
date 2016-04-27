@@ -1,5 +1,6 @@
 package controllers;
 
+import models.Admin;
 import models.Record;
 
 import org.bson.types.ObjectId;
@@ -20,6 +21,7 @@ import utils.access.EncryptedAPS;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.RecordToken;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation;
@@ -61,7 +63,16 @@ public class Debug extends Controller {
 		return ok(res.toString());
 	}
 	
-	
-	
+	/**
+	 * Do a database access for testing
+	 * @return
+	 * @throws AppException
+	 */
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result ping() throws AppException {
+	  if (Admin.getByEmail("autorun-service", Sets.create("_id")) == null) throw new InternalServerException("error.db", "Database error");
+	  return ok();
+	}
 	
 }
