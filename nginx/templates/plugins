@@ -33,8 +33,7 @@ server {
         #ssl_prefer_server_ciphers on;
 
         root ROOTDIR/visualizations;
-
-        add_header 'X-Frame-Options' 'ALLOW-FROM: DOMAIN';
+       
         add_header 'X-XSS-Protection' "1; mode=block"; 
         add_header 'X-Content-Type-Options' 'nosniff';
         add_header 'Strict-Transport-Security' "max-age=31536000";  
