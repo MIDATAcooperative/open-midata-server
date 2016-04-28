@@ -9,6 +9,7 @@ import org.bson.types.ObjectId;
 import play.libs.Crypto;
 import play.libs.Json;
 import utils.collections.CMaps;
+import utils.exceptions.InternalServerException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -46,10 +47,10 @@ public class PasswordResetToken {
 	    this.token = new BigInteger(130, random).toString(32);
 	}
 
-	public String encrypt() {
+	public String encrypt() throws InternalServerException {
 		Map<String, Object> map = CMaps.map("userId", userId.toString()).map("token", token).map("role", role);
 		String json = Json.stringify(Json.toJson(map));
-		return Crypto.encryptAES(json);
+		return TokenCrypto.encryptToken(json);
 	}
 
 	/**
@@ -58,7 +59,7 @@ public class PasswordResetToken {
 	public static PasswordResetToken decrypt(String unsafeSecret) {
 		try {
 			// decryptAES can throw DecoderException, but there is no way to catch it; catch all exceptions for now...
-			String plaintext = Crypto.decryptAES(unsafeSecret);
+			String plaintext = TokenCrypto.decryptToken(unsafeSecret);
 			JsonNode json = Json.parse(plaintext);
 			ObjectId userId = new ObjectId(json.get("userId").asText());
 			String token = json.get("token").asText();

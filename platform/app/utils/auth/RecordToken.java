@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import play.libs.Crypto;
 import play.libs.Json;
 import utils.collections.ChainedMap;
+import utils.exceptions.InternalServerException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -31,9 +32,9 @@ public class RecordToken {
 		this.apsId = apsId;
 	}
 
-	public String encrypt() {		
+	public String encrypt() throws InternalServerException {		
 		String json = Json.stringify(Json.toJson(this));
-		return Crypto.encryptAES(json);
+		return TokenCrypto.encryptToken(json);
 	}
 
 	/**
@@ -42,7 +43,7 @@ public class RecordToken {
 	public static RecordToken decrypt(String unsafeSecret) {
 		try {
 			// decryptAES can throw DecoderException, but there is no way to catch it; catch all exceptions for now...
-			String plaintext = Crypto.decryptAES(unsafeSecret);
+			String plaintext = TokenCrypto.decryptToken(unsafeSecret);
 			JsonNode json = Json.parse(plaintext);
 			String appId = json.get("recordId").asText();
 			String userId = json.get("apsId").asText();

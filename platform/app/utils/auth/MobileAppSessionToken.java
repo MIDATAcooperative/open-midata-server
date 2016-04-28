@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 import play.libs.Crypto;
 import play.libs.Json;
 import utils.collections.CMaps;
+import utils.exceptions.InternalServerException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -38,10 +39,10 @@ public class MobileAppSessionToken {
 		this.created = created;
 	}
 	
-	public String encrypt() {
+	public String encrypt() throws InternalServerException {
 		Map<String, Object> map = CMaps.map("a", appInstanceId.toString()).map("p", passphrase).map("c", created);						
 		String json = Json.stringify(Json.toJson(map));
-		return Crypto.encryptAES(json);
+		return TokenCrypto.encryptToken(json);
 	}
 
 	/**
@@ -50,7 +51,7 @@ public class MobileAppSessionToken {
 	public static MobileAppSessionToken decrypt(String unsafeSecret) {
 		try {
 			// decryptAES can throw DecoderException, but there is no way to catch it; catch all exceptions for now...
-			String plaintext = Crypto.decryptAES(unsafeSecret);
+			String plaintext = TokenCrypto.decryptToken(unsafeSecret);
 			JsonNode json = Json.parse(plaintext);
 			ObjectId appInstanceId = new ObjectId(json.get("a").asText());
 			String phrase = json.get("p").asText();	

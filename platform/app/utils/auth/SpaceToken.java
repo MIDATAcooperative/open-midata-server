@@ -9,6 +9,7 @@ import play.libs.Json;
 import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.collections.ChainedMap;
+import utils.exceptions.InternalServerException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -99,13 +100,13 @@ public class SpaceToken {
 		return req.remoteAddress();
 	}
 
-	public String encrypt(Request req) {
+	public String encrypt(Request req) throws InternalServerException {
 		this.created = System.currentTimeMillis();
 		this.remoteAddress = remoteAddr(req);
 		return encrypt();
 	}
 	
-	public String encrypt() {		
+	public String encrypt() throws InternalServerException  {		
 		Map<String, String> map = new ChainedMap<String, String>().put("instanceId", spaceId.toString()).put("userId", userId.toString())
 				.get();
 		if (recordId != null) map.put("r", recordId.toString());
@@ -114,7 +115,7 @@ public class SpaceToken {
 		map.put("c", Long.toString(this.created));
 		map.put("i", this.remoteAddress);
 		String json = Json.stringify(Json.toJson(map));
-		return Crypto.encryptAES(json);
+		return TokenCrypto.encryptToken(json);
 	}
 
 	/**
@@ -123,7 +124,7 @@ public class SpaceToken {
 	public static SpaceToken decrypt(Request request, String unsafeSecret) {
 		try {
 			// decryptAES can throw DecoderException, but there is no way to catch it; catch all exceptions for now...
-			String plaintext = Crypto.decryptAES(unsafeSecret);
+			String plaintext = TokenCrypto.decryptToken(unsafeSecret);
 			JsonNode json = Json.parse(plaintext);
 			ObjectId spaceId = new ObjectId(json.get("instanceId").asText());
 			ObjectId userId = new ObjectId(json.get("userId").asText());

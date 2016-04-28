@@ -8,6 +8,7 @@ import play.libs.Crypto;
 import play.libs.Json;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
+import utils.exceptions.InternalServerException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -53,10 +54,10 @@ public class MobileAppToken {
 		this.created = created;
 	}
 	
-	public String encrypt() {
+	public String encrypt() throws InternalServerException {
 		Map<String, Object> map = CMaps.map("i", appInstanceId.toString()).map("a", appId.toString()).map("p", phrase).map("c", created).map("o", ownerId.toString());						
 		String json = Json.stringify(Json.toJson(map));
-		return Crypto.encryptAES(json);
+		return TokenCrypto.encryptToken(json);
 	}
 
 	/**
@@ -65,7 +66,7 @@ public class MobileAppToken {
 	public static MobileAppToken decrypt(String unsafeSecret) {
 		try {
 			// decryptAES can throw DecoderException, but there is no way to catch it; catch all exceptions for now...
-			String plaintext = Crypto.decryptAES(unsafeSecret);
+			String plaintext = TokenCrypto.decryptToken(unsafeSecret);
 			JsonNode json = Json.parse(plaintext);
 			ObjectId appId = new ObjectId(json.get("a").asText());
 			ObjectId instanceId = new ObjectId(json.get("i").asText());
