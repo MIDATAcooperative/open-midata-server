@@ -452,7 +452,7 @@ angular.module('chartApp')
           if (divisor == 0) divisor = 1;
           
           if (min!= null && max!=null) {
-        	  p.index = { "effectiveDateTime" : { "$ge" : min, "$le" : max }};
+        	  p.index = { "effectiveDateTime" : { "!!!ge" : min, "!!!le" : max }};
           }
           console.log(p);
           midataServer.getRecords($scope.authToken, p, ["owner", "created", "ownerName", "content", "format", "data"])
