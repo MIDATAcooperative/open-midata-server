@@ -20,7 +20,7 @@ angular.module('views')
 		$scope.status.doBusy(spaces.get({ "_id" : { "$oid" : $scope.view.setup.space  }}, [ "query" ]))
 		.then(function(result) {
 			if (result.data) {  
-				$scope.rules = result.data[0].query;
+				$scope.rules = result.data[0].query || {};
 				delete $scope.rules.aps;				
 			}
 		});

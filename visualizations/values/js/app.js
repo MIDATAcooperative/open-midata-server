@@ -2,7 +2,7 @@ var jsonRecords = angular.module('jsonRecords', [ 'midata' ]);
 
 jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$timeout', 'midataServer', 'midataPortal',
 	function($scope, $http, $location, $filter, $timeout, midataServer, midataPortal) {
-		console.log("INIT!!");
+		
 		// init
 		$scope.errors = null;
 				
@@ -137,23 +137,28 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 		$scope.isBusy = false;
 		$scope.success = false;
 		
+		midataPortal.autoresize();
+		
 		$scope.reset = function() {
 			$scope.newentry = { 
 					format : preselectFormat,
 					value : 0,
 					context : "",
 					date : $filter('date')(new Date(), "yyyy-MM-dd")
-			};
-			midataPortal.autoresize();			
+			};			
 		};
 		
 		
 		$scope.add = function() {
 			$scope.success = false;
-			$scope.error = null;
+			$scope.error = $scope.errorValue = null;
 			var theDate = new Date($scope.newentry.date);
 			if (isNaN(theDate)) {
 				$scope.error = "Please enter a valid date! (YYYY-MM-DD)";
+				return
+			}
+			if (! ($scope.newentry.value > 0)) {
+				$scope.errorValue = "Please enter a valid value!";
 				return
 			}
 			

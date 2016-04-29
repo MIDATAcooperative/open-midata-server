@@ -79,10 +79,7 @@ angular.module('portal')
 		server.delete(jsRoutes.controllers.Spaces["delete"](space._id.$oid).url).
 			success(function() {
 				$scope.error = null;
-				$scope.spaces.splice($scope.spaces.indexOf(space), 1);
-				if ($scope.spaces.length > 0) {
-					$scope.spaces[0].active = true;
-				}
+				$state.go('^.dashboard', { dashId : "me" });
 			}).
 			error(function(err) { $scope.error = "Failed to delete space '" + space.name + "': " + err; });
 	};

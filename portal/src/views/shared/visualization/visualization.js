@@ -61,14 +61,11 @@ angular.module('portal')
 				$scope.options.query = JSON.parse(decodeURIComponent($scope.params.query));
 				$scope.options.applyRules = true;
 			}
-			isInstalled();
+			
 			getCreatorName();
 		});
 	
-	isInstalled = function() {
-		 apps.isVisualizationInstalled($scope.visualization._id.$oid)
-		 .then(function(installed) { $scope.visualization.installed = installed.data; });			
-	};
+	
 	
 	getCreatorName = function() {
 		users.getMembers({"_id": $scope.visualization.creator}, ["name"])
@@ -84,15 +81,7 @@ angular.module('portal')
 				$state.go('^.dashboard', { dashId : $scope.options.context }); 
 		});			
 	};
-	
-	$scope.uninstall = function() {	  
-		$scope.status.doAction("uninstall", apps.uninstallPlugin($scope.visualization._id.$oid))
-		.then(function() {
-			$scope.visualization.installed = false;
-			session.login();
-			$scope.success = false;
-		});		
-	};
+		
 	
 	$scope.goBack = function() {
 		$window.history.back();

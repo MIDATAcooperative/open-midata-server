@@ -11,6 +11,7 @@ angular.module('calendarApp')
 	  
 	  scope.setContents = function(contents) {
 		criteria.content = contents;
+		scope.inited = true;
 	  };
 	  
 	  scope.setTlb = function(def) {

@@ -30,20 +30,24 @@ angular.module('calendarApp')
       };
 	    
       $scope.load = function() {
-	      midataServer.getConfig(eventProvider.authToken)
-	      .then(function(result) {
-	    	 if (result.data && result.data.sources) {
-	    		 var add = [];
-	    		 angular.forEach(result.data.sources, function(source) { 
-	        		 if (source.selected) { 
-	        			 add.push(source.id);
-	        			 if (source.tlb) eventProvider.setTlb(source); else eventProvider.clearTlb(source.id);
-	        		 }
-	        	  });
-	        	 eventProvider.setContents(add);
-	    	 } 
-	    	 $scope.init();
-	      });
+    	  if (eventProvider.inited) {
+    		  $scope.init();
+    	  } else {
+		      midataServer.getConfig(eventProvider.authToken)
+		      .then(function(result) {
+		    	 if (result.data && result.data.sources) {
+		    		 var add = [];
+		    		 angular.forEach(result.data.sources, function(source) { 
+		        		 if (source.selected) { 
+		        			 add.push(source.id);
+		        			 if (source.tlb) eventProvider.setTlb(source); else eventProvider.clearTlb(source.id);
+		        		 }
+		        	  });
+		        	 eventProvider.setContents(add);
+		    	 } 
+		    	 $scope.init();
+		      });
+    	  }
       };
       
       $scope.loadTest = function( start, end, timezone, callback ) { 
