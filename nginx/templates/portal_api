@@ -26,22 +26,22 @@ server {
         if (-f ROOTDIR/apilock) {
           set $test  "${test}L";
         }
-        
-        if ($test = OL) {
-		   add_header Access-Control-Allow-Origin "*";
-		   add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS";
-		   add_header Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie";
-		   add_header Access-Control-Allow-Credentials "true";
-		   add_header Content-Length 0;
-		   add_header Content-Type text/plain;
-		   return 200;
-        }
-        
+                        
         if ($test = L) {
             return 503;
         }
         
         location / {
+	       if ($test = OL) {
+			   add_header Access-Control-Allow-Origin "*";
+			   add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS";
+			   add_header Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie";
+			   add_header Access-Control-Allow-Credentials "true";
+			   add_header Content-Length 0;
+			   add_header Content-Type text/plain;
+			   return 200;
+	       }
+                
            proxy_pass http://localhost:PLATFORM_INTERNAL_PORT;
            proxy_set_header Host $host;
            proxy_set_header X-Real-IP $remote_addr;
