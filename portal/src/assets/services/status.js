@@ -18,6 +18,8 @@ angular.module('services')
 			   if (msg.status == 403) {
 				   alert("Please relogin. Your session has expired.");
 				   $state.go("public.login");
+			   } else if (msg.status == 503) {
+				   document.location.href="/maintenance.html";
 			   } else {
 			     if (this.showerrors && !noerror) alert("An error "+msg.status+" occured:"+msg.data);
 			   }
