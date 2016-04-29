@@ -19,6 +19,10 @@ server {
         add_header 'X-Content-Type-Options' 'nosniff';
         add_header 'Strict-Transport-Security' "max-age=31536000";       
         
+        if (-f ROOTDIR/apilock) {
+            return 503;
+        }
+        
         location / {
            proxy_pass http://localhost:PLATFORM_INTERNAL_PORT;
            proxy_set_header Host $host;

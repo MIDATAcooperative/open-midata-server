@@ -12,6 +12,18 @@ server {
         #ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
         #ssl_prefer_server_ciphers on;
     
+    
+        if (-f ROOTDIR/lock) {
+            return 503;
+        }
+
+        error_page 503 @maintenance;
+
+        location @maintenance {
+          root ROOTDIR/portal/dest;
+          try_files /maintenance.html 404;
+        }
+    
         location / { 
           root ROOTDIR/portal/dest;
           add_header 'X-Frame-Options' 'DENY';
