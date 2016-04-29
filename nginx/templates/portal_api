@@ -18,34 +18,12 @@ server {
         add_header 'X-XSS-Protection' "1; mode=block"; 
         add_header 'X-Content-Type-Options' 'nosniff';
         add_header 'Strict-Transport-Security' "max-age=31536000";       
-        
-        if ($request_method = OPTIONS ) {
-          set $test O;
-        }
-        
+                     
         if (-f ROOTDIR/apilock) {
-          set $test  "${test}L";
+          return 503;
         }
                                        
-        location / {
-          if ($test = L) {
-            add_header Access-Control-Allow-Origin "*" always;
-			add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
-			add_header Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie" always;
-			add_header Access-Control-Allow-Credentials "true" always;			
-            return 503;
-          }
-        
-	       if ($test = OL) {
-			   add_header Access-Control-Allow-Origin "*";
-			   add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS";
-			   add_header Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie";
-			   add_header Access-Control-Allow-Credentials "true";
-			   add_header Content-Length 0;
-			   add_header Content-Type text/plain;
-			   return 200;
-	       }
-                
+        location / {                      
            proxy_pass http://localhost:PLATFORM_INTERNAL_PORT;
            proxy_set_header Host $host;
            proxy_set_header X-Real-IP $remote_addr;
