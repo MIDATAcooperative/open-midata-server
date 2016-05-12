@@ -3,12 +3,13 @@
   "domain" : "localhost",
   "certificate" : {
     "pem" : "ROOTDIR/ssl-certificate/server.pem",
-    "key" : "ROOTDIR/ssl-certificate/server.pem"
-   },
+    "key" : "ROOTDIR/ssl-certificate/server.pem",
+    "dhparams" : "ROOTDIR/ssl-certificate/dhparams.pem"
+  },
   "portal" : {
      "origin" : "https://localhost:9002",
      "backend" : "https://localhost:9000",
-     "beta" : false
+     "beta" : true
   },
   "platform" : {
      "port" : "9001"

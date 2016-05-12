@@ -26,7 +26,9 @@ class SSLCertificate(Product):
 		Command.execute('keytool -importkeystore -deststoretype PKCS12 -srckeystore server.keystore -destkeystore server.p12', self.base)
 		print 'Creating PEM-formatted version of private key and certificate...' # for Lighttpd and Node.js
 		Command.execute('openssl pkcs12 -nodes -in server.p12 -out server.pem', self.base)
-
+		print 'Generating DHPARAMS file'
+		Command.execute('openssl dhparam -out dhparams.pem 2048', self.base)
+		
 	def build(self):
 		pass
 
