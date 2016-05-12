@@ -450,7 +450,7 @@ public class Records extends APIController {
 		if (tk==null) return badRequest("Bad token");
 				
 		FileData fileData = RecordManager.instance.fetchFile(userId, tk);
-		response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
+		setAttachmentContentDisposition(fileData.filename);		
 		return ok(fileData.inputStream);
 	}
 	

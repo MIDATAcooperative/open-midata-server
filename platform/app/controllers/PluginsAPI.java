@@ -3,6 +3,7 @@ package controllers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -76,7 +77,7 @@ import com.mongodb.util.JSONParseException;
  * API functions to be used by MIDATA plugins
  *
  */
-public class PluginsAPI extends Controller {
+public class PluginsAPI extends APIController {
 
 	/**
 	 * handle OPTIONS requests. 
@@ -341,7 +342,7 @@ public class PluginsAPI extends Controller {
 		ObjectId recordId = JsonValidation.getObjectId(json, "_id");			
 		FileData fileData = RecordManager.instance.fetchFile(authToken.executorId, new RecordToken(recordId.toString(), authToken.spaceId.toString()));
 		if (fileData == null) return badRequest();
-		response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
+		setAttachmentContentDisposition(fileData.filename);		
 		return ok(fileData.inputStream);
 	}
 	

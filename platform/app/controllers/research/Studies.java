@@ -149,7 +149,7 @@ public class Studies extends APIController {
 
 		 if (study == null) return badRequest("Unknown Study");
 
-		 response().setHeader("Content-Disposition", "attachment; filename=study.zip");
+		 setAttachmentContentDisposition("study.zip");
 				 		 		
 		 ByteArrayOutputStream servletOutputStream = new ByteArrayOutputStream();
 			    ZipOutputStream zos = new ZipOutputStream(servletOutputStream); // create a ZipOutputStream from servletOutputStream

@@ -32,5 +32,10 @@ public abstract class APIController extends Controller {
 		return UserRole.valueOf(session().get("role"));
 	}
 	
+	public static void setAttachmentContentDisposition(String filename) {
+		String fn = filename == null ? "file" : filename.replaceAll("[^a-zA-Z0-9_\\-\\.]", "_");
+		response().setHeader("Content-Disposition", "attachment; filename=\"" + fn+"\"");
+	}
+	
 	
 }
