@@ -33,7 +33,7 @@ public abstract class APIController extends Controller {
 	}
 	
 	public static void setAttachmentContentDisposition(String filename) {
-		String fn = filename == null ? "file" : filename.replaceAll("[^a-zA-Z0-9_\\-\\.]", "_");
+		String fn = filename == null ? "file" : filename.replaceAll("[^a-zA-Z0-9_\\-\\.üöäßÜÖÄ \\[\\]\\(\\)]", "");
 		response().setHeader("Content-Disposition", "attachment; filename=\"" + fn+"\"");
 	}
 	
