@@ -51,8 +51,8 @@ angular.module('calendarApp')
       };
       
       $scope.loadTest = function( start, end, timezone, callback ) { 
-     	 console.log(start.calendar());
-     	 console.log(end.calendar());
+     	 console.log(start.toDate());
+     	 console.log(end.toDate());
      	 console.log(timezone);
      	 console.log(callback);
      	 
