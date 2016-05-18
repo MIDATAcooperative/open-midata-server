@@ -7,9 +7,14 @@ midata.factory('midataServer', [ '$http', '$q', function($http, $q) {
 	var actionChain = actionDef.promise;
 	actionDef.resolve();
 	console.log(document.referrer);
-	var host = window.location.hostname || "localhost";
+	var domain = function(url) {
+	   return url.split("/")[2];
+	}
 	
-	var baseurl =  window.location.hostname ? ("https://"+window.location.hostname+":9000") : "http://localhost:9001";
+	var host = window.location.hostname || "localhost";
+	var targetDomain = (host == "localhost") ? domain(document.referrer) : host; 
+	
+	var baseurl =  window.location.hostname ? ("https://"+targetDomain+":9000") : "http://localhost:9001";
 	
 	service.createRecord = function(authToken, meta, data, id) {
 		// construct json

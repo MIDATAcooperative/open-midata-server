@@ -14,9 +14,13 @@ public class AnyRoleSecured extends Security.Authenticator {
 	
 	@Override
 	public String getUsername(Context ctx) {
-		long ts = Long.parseLong(ctx.session().get("ts"));
-		long now = System.currentTimeMillis();
-		if (now - ts > MAX_SESSION || now - ts < 0) return null;
+		try {
+			long ts = Long.parseLong(ctx.session().get("ts"));
+			long now = System.currentTimeMillis();
+			if (now - ts > MAX_SESSION || now - ts < 0) return null;
+		} catch (NumberFormatException e) {
+			return null;
+		}
 		// id is the user id in String form
 		return ctx.session().get("id");
 	}

@@ -1,8 +1,14 @@
-var recordList = angular.module('recordList', [ 'midata' ]);
+var recordList = angular.module('recordList', [ 'midata', 'ui.bootstrap' ]);
 recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'midataServer', 'midataPortal',
 	function($scope, $filter, $location, midataServer, midataPortal) {
 		
 	    midataPortal.autoresize();
+	    
+	    $scope.datePickers = {};
+	    $scope.dateOptions = {
+	       formatYear: 'yy',
+	       startingDay: 1
+	    };
 	    
 		// init
 		$scope.mode = 'loading';

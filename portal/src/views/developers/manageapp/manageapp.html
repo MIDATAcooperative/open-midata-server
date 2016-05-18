@@ -68,12 +68,12 @@
 		  <formrow myid="secret" label="Application Secret" ng-show="app.type == 'mobile'">
 		    <input type="text" id="secret" class="form-control" placeholder="Secret" ng-model="app.secret">
 		  </formrow>
-		   <formrow myid="developmentServer" label="Development Server" ng-hide="app.type == 'mobile'">
-		    <input type="text" id="developmentServer" class="form-control" placeholder="http://localhost:9000" ng-model="app.developmentServer">
+		   <formrow myid="developmentServer" label="Development Server" ng-hide="app.type == 'mobile' || !app.developmentServer">
+		    <p class="form-control-static">{{ app.developmentServer }}</p>
 		  </formrow>
 		  <formrow myid="x" label="">
 		    <button type="submit" ng-disabled="status.action=='submit'" class="btn btn-primary">Submit</button>
-		    <button type="button" class="btn btn-default" ng-click="doInstall()" ng-hide="app.type == 'mobile'" ng-disabled="app._id == null">Install</button>
+		    <button type="button" class="btn btn-default" ng-click="doInstall()" ng-hide="app.type == 'mobile'" ng-disabled="app._id == null">Install from localhost</button>
 		    <button type="button" class="btn btn-danger" ng-show="allowDelete" ng-click="doDelete()" ng-disabled="status.action=='delete'">Delete</button>
 		  </formrow>
 	     </form>	  

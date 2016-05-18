@@ -64,7 +64,8 @@ public class Market extends APIController {
 		app.type = JsonValidation.getString(json, "type");
 		app.url = JsonValidation.getStringOrNull(json, "url");
 		app.previewUrl = JsonValidation.getStringOrNull(json, "previewUrl");
-		app.developmentServer = JsonValidation.getStringOrNull(json, "developmentServer");
+		app.developmentServer = "https://localhost:9004/"+app.filename;
+		//app.developmentServer = JsonValidation.getStringOrNull(json, "developmentServer");
 		app.tags = JsonExtraction.extractStringSet(json.get("tags"));
 		app.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
 		app.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
@@ -188,7 +189,7 @@ public class Market extends APIController {
 		plugin.type = JsonValidation.getString(json, "type");
 		plugin.url = JsonValidation.getStringOrNull(json, "url");
 		plugin.previewUrl = JsonValidation.getStringOrNull(json, "previewUrl");
-		plugin.developmentServer = JsonValidation.getStringOrNull(json, "developmentServer");
+		plugin.developmentServer = "https://localhost:9004/"+plugin.filename; //JsonValidation.getStringOrNull(json, "developmentServer");
 		plugin.tags = JsonExtraction.extractStringSet(json.get("tags"));
 		plugin.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
 		plugin.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");

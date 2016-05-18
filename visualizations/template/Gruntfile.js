@@ -45,7 +45,7 @@ module.exports = function(grunt) {
     
     useminPrepare: {
       html: 'tmp/*.html',
-      options : { 
+      options : {     	 
     	  dest : 'tmp'
       }
     },
@@ -62,17 +62,18 @@ module.exports = function(grunt) {
         },
         src: {
           files: ['src/**/*.{html,png,jpg,jpeg,gif,webp,svg}' ],
-          tasks: ['copy','preprocess'],
+          tasks: ['preprocess', 'copy:dev'],
           options: { livereload: true }
         },
         js : {
           files : 'src/**/*.js',
-          tasks : ['concat:js'],
+          tasks : ['jshint', 'concat', 'copy:dev'],
           options: { livereload: true }
         },
         css: {
           files : 'src/**/*.less',
-          tasks : ['concat:css', 'less']
+          tasks : ['concat', 'less', 'copy:dev'],
+          options: { livereload: true }
         }
     },
     
@@ -104,9 +105,9 @@ module.exports = function(grunt) {
       	files : [
       	 { expand : true, cwd: 'src/', src: ['**/*.html','**/*.js'], dest: 'dev/'+midataName+'/dist' },
       	 { expand : true, cwd: 'tmp/', src: ['**/*.html','**/*.min.js','**/*.css'], dest: 'dev/'+midataName+'/dist' },
-      	 { expand : true, cwd: 'bower_components/', src: '**', dest: 'dev/'+midataName+'/dist/components' },
+      	 { expand : true, cwd: 'tmp/', src: 'components/**', dest: 'dev/'+midataName+'/dist' },
       	 { expand : true, cwd: 'src/assets/images/', src : '**/*', dest : 'dev/'+midataName+'/dist' },
-      	 { expand : true, flatten:true, cwd: 'dist/components/', src: ['**/*.ttf','**/*.woff','**/*.woff2'], dest: 'dev/'+midataName+'/dist' }
+      	 { expand : true, flatten:true, cwd: 'bower_components/', src: ['**/*.ttf','**/*.woff','**/*.woff2'], dest: 'dev/'+midataName+'/dist/fonts' }
         ]
       },
       devdist: {    
@@ -114,7 +115,7 @@ module.exports = function(grunt) {
         	 { expand : true, cwd: 'src/', src: '**/*.html', dest: 'dev/'+midataName+'/dist' },
         	 { expand : true, cwd: 'tmp/', src: ['**/*.html','**/*.min.js','**/*.css'], dest: 'dev/'+midataName+'/dist' },        	 
         	 { expand : true, cwd: 'src/assets/images/', src : '**/*', dest : 'dev/'+midataName+'/dist' },
-        	 { expand : true, flatten:true, cwd: 'dist/components/', src: ['**/*.ttf','**/*.woff','**/*.woff2'], dest: 'dev/'+midataName+'/dist' }
+        	 { expand : true, flatten:true, cwd: 'bower_components/', src: ['**/*.ttf','**/*.woff','**/*.woff2'], dest: 'dev/'+midataName+'/dist/fonts' }
           ]
      }
     },
