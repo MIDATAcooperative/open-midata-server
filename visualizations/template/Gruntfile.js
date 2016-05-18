@@ -1,5 +1,6 @@
 module.exports = function(grunt) {
   
+	var midataName = "template";
 	
   // Project configuration.
   grunt.initConfig({
@@ -25,21 +26,32 @@ module.exports = function(grunt) {
     preprocess : {
         all : {
         	files : {
-               'src/index.html' : 'dist/index.html',
-               'src/preview.html' : 'dist/preview.html'
+               'tmp/index.html' : 'src/index.html',
+               'tmp/preview.html' : 'src/preview.html'
         	}
         }
     },
     
+    bower : {
+    	
+       install : {
+    	   
+       },
+       options : {
+    	   targetDir : 'tmp/components',
+    	   layout : 'byComponent'
+       }
+    },
+    
     useminPrepare: {
-      html: 'dist/*.html',
+      html: 'tmp/*.html',
       options : { 
-    	  dest : 'dist'
+    	  dest : 'tmp'
       }
     },
     
     usemin: {
-      html: 'dist/*.html'      
+      html: 'tmp/*.html'
     },
     
     // Which files to watch
@@ -66,7 +78,7 @@ module.exports = function(grunt) {
     
     // What files to clean
     clean: {
-       build: ["dist/*", "!dist/components/**" ]    	  
+       build: ["dist/*", "dev/*", "tmp/*" ]    	  
     },
     
     // Check syntax
@@ -80,25 +92,41 @@ module.exports = function(grunt) {
     
     // Copy files
     copy: {
-      main: {    
+      dist: {    
     	files : [
     	 { expand : true, cwd: 'src/', src: '**/*.html', dest: 'dist/' },
+    	 { expand : true, cwd: 'tmp/', src: ['**/*.html','**/*.min.js','**/*.min.css'], dest: 'dist' },
     	 { expand : true, cwd: 'src/assets/images/', src : '**/*', dest : 'dist/images' },
-    	 { expand : true, flatten:true, cwd: 'dist/components/', src: ['**/*.ttf','**/*.woff','**/*.woff2'], dest: 'dist/fonts' }
+    	 { expand : true, flatten:true, cwd: 'bower_components/', src: ['**/*.ttf','**/*.woff','**/*.woff2'], dest: 'dist/fonts' }
         ]
-      }
+      },
+      dev: {    
+      	files : [
+      	 { expand : true, cwd: 'src/', src: ['**/*.html','**/*.js'], dest: 'dev/'+midataName+'/dist' },
+      	 { expand : true, cwd: 'tmp/', src: ['**/*.html','**/*.min.js','**/*.css'], dest: 'dev/'+midataName+'/dist' },
+      	 { expand : true, cwd: 'bower_components/', src: '**', dest: 'dev/'+midataName+'/dist/components' },
+      	 { expand : true, cwd: 'src/assets/images/', src : '**/*', dest : 'dev/'+midataName+'/dist' },
+      	 { expand : true, flatten:true, cwd: 'dist/components/', src: ['**/*.ttf','**/*.woff','**/*.woff2'], dest: 'dev/'+midataName+'/dist' }
+        ]
+      },
+      devdist: {    
+        	files : [
+        	 { expand : true, cwd: 'src/', src: '**/*.html', dest: 'dev/'+midataName+'/dist' },
+        	 { expand : true, cwd: 'tmp/', src: ['**/*.html','**/*.min.js','**/*.css'], dest: 'dev/'+midataName+'/dist' },        	 
+        	 { expand : true, cwd: 'src/assets/images/', src : '**/*', dest : 'dev/'+midataName+'/dist' },
+        	 { expand : true, flatten:true, cwd: 'dist/components/', src: ['**/*.ttf','**/*.woff','**/*.woff2'], dest: 'dev/'+midataName+'/dist' }
+          ]
+     }
     },
     
     // Concat javascript and css files
     concat: {
-        
-        js: {
-          src: ['src/app.js', 'src/**/*.js'],
-          dest: 'dist/app.js'
-        },
-        css : {
-          src : ['src/**/*.css' , 'src/**/*.less'],
-          dest: 'dist/app.less'
+                
+        all: {
+        	files : {
+        		'tmp/app.js' : ['src/app.js', 'src/**/*.js'],
+        		'tmp/app.less' : ['src/**/*.css' , 'src/**/*.less']
+        	}          
         }
      },
      
@@ -109,7 +137,7 @@ module.exports = function(grunt) {
          },
          app: {
              files: {
-                 'dist/app.js': ['dist/app.js']                
+                 'tmp/app.js': ['tmp/app.js']                
              }
          }
      },
@@ -119,7 +147,7 @@ module.exports = function(grunt) {
         server: {
           options: {
             port: 9004,
-            base: 'dist',
+            base: 'dev',
             protocol : 'https'
           }
           
@@ -132,7 +160,7 @@ module.exports = function(grunt) {
     	      paths: []
     	 },
     	 files: {
-    	      "dist/app.css": "dist/app.less"
+    	      "tmp/app.css": "tmp/app.less"
     	 }
       }
      }
@@ -186,13 +214,13 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-usemin');
   grunt.loadNpmTasks('grunt-env');
   grunt.loadNpmTasks('grunt-preprocess');
+  grunt.loadNpmTasks('grunt-bower-task');
   //grunt.loadNpmTasks('connect-livereload');
 
   // Default task(s).
-  grunt.registerTask('default', ['deploy']);
+  grunt.registerTask('default', ['build']);
   grunt.registerTask('webserver', ['connect', 'watch']);
-  grunt.registerTask('bundle', [ 'copy', 'preprocess', 'jshint', 'concat', 'less' ]);
-  grunt.registerTask('build', [
+  grunt.registerTask('min', [
                                'ngAnnotate',
                                'useminPrepare',
                                'concat:generated',
@@ -200,7 +228,8 @@ module.exports = function(grunt) {
                                'uglify:generated',
                                'usemin'
   ]);
-  grunt.registerTask('server'           , ['clean', 'bundle','webserver']); 
-  grunt.registerTask('deploy', ['clean', 'bundle', 'build']);
+  grunt.registerTask('server-dist', ['clean', 'jshint', 'bower', 'preprocess', 'concat', 'less', 'min', 'copy:devdist', 'webserver']); 
+  grunt.registerTask('server', ['clean', 'jshint', 'bower', 'preprocess', 'concat', 'less', 'copy:dev', 'webserver']); 
+  grunt.registerTask('build', ['clean', 'jshint', 'bower', 'preprocess', 'concat', 'less', 'min', 'copy:dist']);
   
 };

@@ -17,7 +17,8 @@
     "grunt-ng-annotate": "~1.0.1",
     "grunt-ng-constant": "~1.1.0",
     "grunt-preprocess": "~5.0.1",
-    "grunt-env": "~0.4.4"
+    "grunt-env": "~0.4.4",
+    "grunt-bower-task": "~0.4.0"
   },
   "dependencies": {
     "grunt-env": "~0.4.4"

@@ -12,5 +12,12 @@
   },
   "resolutions": {
     "angular": "~1.5.3"
+  },
+  "exportsOverride": {
+    "bootstrap": {
+       "js" : "dist/js/bootstrap.js",
+       "css" : "dist/css/bootstrap.css",
+       "fonts" : "dist/fonts/*" 
+    }
   }
 }

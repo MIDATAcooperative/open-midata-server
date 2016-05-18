@@ -6,6 +6,9 @@ midata.factory('midataServer', [ '$http', '$q', function($http, $q) {
 	var actionDef = $q.defer();
 	var actionChain = actionDef.promise;
 	actionDef.resolve();
+	console.log(document.referrer);
+	var host = window.location.hostname || "localhost";
+	
 	var baseurl =  window.location.hostname ? ("https://"+window.location.hostname+":9000") : "http://localhost:9001";
 	
 	service.createRecord = function(authToken, meta, data, id) {
