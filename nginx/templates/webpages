@@ -31,9 +31,9 @@ server {
           add_header 'X-XSS-Protection' "1; mode=block";
           add_header 'X-Content-Type-Options' 'nosniff';
           add_header 'Strict-Transport-Security' "max-age=31536000";             
-          add_header 'Content-Security-Policy' "default-src 'none'; script-src 'self' https://DOMAIN:9000; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; frame-src 'self' https://DOMAIN:4000; font-src 'self'; connect-src 'self' https://DOMAIN:9000";
-          add_header 'X-Content-Security-Policy' "default-src 'none'; script-src 'self' https://DOMAIN:9000; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; frame-src 'self' https://DOMAIN:4000; font-src 'self'; connect-src 'self' https://DOMAIN:9000";
-          add_header 'X-WebKit-CSP' "default-src 'none'; script-src 'self' https://DOMAIN:9000; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; frame-src 'self' https://DOMAIN:4000; font-src 'self'; connect-src 'self' https://DOMAIN:9000";            
+          add_header 'Content-Security-Policy' "default-src 'none'; script-src 'self' https://DOMAIN:9000; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; frame-src 'self' https://DOMAIN:4000 https://localhost:9004; font-src 'self'; connect-src 'self' https://DOMAIN:9000";
+          add_header 'X-Content-Security-Policy' "default-src 'none'; script-src 'self' https://DOMAIN:9000; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; frame-src 'self' https://DOMAIN:4000 https://localhost:9004; font-src 'self'; connect-src 'self' https://DOMAIN:9000";
+          add_header 'X-WebKit-CSP' "default-src 'none'; script-src 'self' https://DOMAIN:9000; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; media-src 'none'; frame-src 'self' https://DOMAIN:4000 https://localhost:9004; font-src 'self'; connect-src 'self' https://DOMAIN:9000";            
         }
 
         location /doc {
