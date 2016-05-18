@@ -10,19 +10,13 @@ import controllers.routes;
  * This authenticator allows only researchers as users
  *
  */
-public class ResearchSecured extends Security.Authenticator {
+public class ResearchSecured extends AnyRoleSecured {
 
 	@Override
 	public String getUsername(Context ctx) {
 		String role = ctx.session().get("role");
 		if (! UserRole.RESEARCH.toString().equals(role)) return null;
-		// id is the user id in String form
-		return ctx.session().get("id");
+		return super.getUsername(ctx);
 	}
-
-	@Override
-	public Result onUnauthorized(Context ctx) {
-		return unauthorized();
-	}
-
+	
 }

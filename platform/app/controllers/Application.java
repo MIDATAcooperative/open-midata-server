@@ -387,6 +387,7 @@ public class Application extends APIController {
 		session().clear();						
 		session("id", user._id.toString());
 		session("role", user.role.toString());
+		session("ts", Long.toString(System.currentTimeMillis()));
 		
 		if (user instanceof HPUser) {
 		  session("org", ((HPUser) user).provider.toString());

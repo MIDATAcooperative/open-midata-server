@@ -9,19 +9,13 @@ import play.mvc.Security;
  * This authenticator allows only ADMIN users
  *
  */
-public class AdminSecured extends Security.Authenticator {
+public class AdminSecured extends AnyRoleSecured {
 
 	@Override
 	public String getUsername(Context ctx) {
 		String role = ctx.session().get("role");
-		if (! UserRole.ADMIN.toString().equals(role)) return null;
-		// id is the user id in String form
-		return ctx.session().get("id");
-	}
-
-	@Override
-	public Result onUnauthorized(Context ctx) {
-		return unauthorized();
+		if (! UserRole.ADMIN.toString().equals(role)) return null;		
+		return super.getUsername(ctx);
 	}
 
 }

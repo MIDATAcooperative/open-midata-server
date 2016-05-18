@@ -10,8 +10,13 @@ import play.mvc.Security;
  */
 public class AnyRoleSecured extends Security.Authenticator {
 
+	public final static long MAX_SESSION = 1000 * 60 * 60 * 8;
+	
 	@Override
-	public String getUsername(Context ctx) {		
+	public String getUsername(Context ctx) {
+		long ts = Long.parseLong(ctx.session().get("ts"));
+		long now = System.currentTimeMillis();
+		if (now - ts > MAX_SESSION || now - ts < 0) return null;
 		// id is the user id in String form
 		return ctx.session().get("id");
 	}
