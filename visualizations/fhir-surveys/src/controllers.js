@@ -7,7 +7,7 @@ angular.module('surveys')
 		var path = $location.path().split("/");
 		console.log(path[2]);
 		$scope.authToken = path[1];
-		$scope.edit = true; //path.length > 2 ? path[2] == "editor" : false;
+		$scope.edit = false; //path.length > 2 ? path[2] == "editor" : false;
 		console.log($scope.edit);
 		
 		$scope.nav = { status : "pick" };
@@ -16,12 +16,19 @@ angular.module('surveys')
 ])
 .controller('PickSurveyCtrl', ['$scope', 'midataServer', 'currentSurvey', 'surveys',
 	function($scope, midataServer, currentSurvey, surveys) {
+	    var fhir = function(record) {
+	       var result = record.data;
+	       result.id = record._id.$oid;
+	       result.meta = { version : record.version };
+	       return result;
+	    };
+	
 	    $scope.loadSurveys = function() {
-			midataServer.getRecords($scope.authToken, { format:"fhir/Questionnaire" }, ["name", "created", "data"])
+			midataServer.getRecords($scope.authToken, { format:"fhir/Questionnaire" }, ["name", "created", "version", "data"])
 			.then(function(results) {
 			   $scope.surveys = [];
-			   angular.forEach(results.data, function(d) { $scope.surveys.push(d.data); });
-			   //$scope.loadAnswers();   			   		  
+			   angular.forEach(results.data, function(d) { $scope.surveys.push(fhir(d)); });
+			   $scope.loadAnswers();   			   		  
 			});
      	};
      	
@@ -45,10 +52,10 @@ angular.module('surveys')
      		currentSurvey.setSurvey(surveys.newSurvey());
      		$scope.nav.status = "editsurvey";
      	};
-     	
+     	     	     	
      	$scope.startSurvey = function(survey) {
      		currentSurvey.setSurvey(survey);
-     		$scope.nav.status = "editsurvey";
+     		$scope.nav.status = $scope.edit ? "editsurvey" : "answer";
      	};
      	
      	$scope.loadSurveys();
@@ -77,19 +84,21 @@ angular.module('surveys')
 	    };
 	    
 	    $scope.save = function() {
-	    	
-	    	/*angular.forEach($scope.activeSurvey.steps, function(step) {
-				   step.result = undefined;
-				   if (step.items != null) {
-					   angular.forEach(step.items, function(item) {
-						 item.result = undefined;  
-					   });
-				   }
-				});*/
+	    		    	
 	    	currentSurvey.activeSurvey.answered = undefined;
 	    	
-			midataServer.createRecord($scope.authToken, { "name" : currentSurvey.activeSurvey.group.title, content :"Questionnaire", format : "fhir/Questionnaire" }, currentSurvey.activeSurvey)
-			.then(function() { $scope.exit(); });
+	    	if (currentSurvey.activeSurvey.id) {
+	    		var version = currentSurvey.activeSurvey.meta.version;
+	    		delete currentSurvey.activeSurvey.meta;
+	    		midataServer.updateRecord($scope.authToken, currentSurvey.activeSurvey.id, version, currentSurvey.activeSurvey)
+	    		.then(function() { $scope.exit(); });
+	    		
+	    	} else {
+	    	
+				midataServer.createRecord($scope.authToken, { "name" : currentSurvey.activeSurvey.group.title, content :"Questionnaire", format : "fhir/Questionnaire" }, currentSurvey.activeSurvey)
+				.then(function() { $scope.exit(); });
+			
+	    	}
 			
 	    };
 	    
@@ -98,7 +107,7 @@ angular.module('surveys')
 	    };
 	    
 	    $scope.addQuestion = function() {
-	    	var q = surveys.newQuestion(currentSurvey.activeSurvey.group, "last");
+	    	var q = surveys.newQuestion(currentSurvey.activeGroup, "last");
 	    	currentSurvey.setQuestion(q);
 	    	$scope.nav.status = "editquestion";
 	    };
@@ -106,6 +115,44 @@ angular.module('surveys')
 	    $scope.editQuestion = function(question) {
 	    	currentSurvey.setQuestion(question);
 	    	$scope.nav.status = "editquestion";
+	    };
+	    
+	    $scope.addGroup = function() {
+	    	var g = surveys.newGroup(currentSurvey.activeGroup, "last");
+	    	currentSurvey.setGroup(g);
+	    	$scope.nav.status = "editgroup";
+	    };
+	    
+	    $scope.editGroup = function(group) {
+	    	currentSurvey.setGroup(group);
+	    	$scope.nav.status = "editgroup";
+	    };
+	    
+	    $scope.selectGroup = function(group) {
+	    	currentSurvey.setGroup(group);	    	
+	    };
+	    
+	    $scope.selectQuestion = function(question) {
+	    	currentSurvey.setQuestion(question);	    	
+	    };
+	    
+	    $scope.edit = function() {
+	    	console.log(currentSurvey.activeSurvey);
+	    	if (currentSurvey.activeQuestion != null) {
+	    		$scope.editQuestion(currentSurvey.activeQuestion);
+	    	} else {
+	    		$scope.editGroup(currentSurvey.activeGroup);
+	    	}
+	    };
+	    
+	    $scope.delete = function() {
+	    	if (currentSurvey.activeQuestion != null) {
+	    		surveys.deleteQuestion(currentSurvey.activeQuestion, currentSurvey.activeSurvey.group);
+	    		currentSurvey.setGroup(currentSurvey.activeSurvey.group);
+	    	} else {
+	    		surveys.deleteGroup(currentSurvey.activeGroup, currentSurvey.activeSurvey.group);
+	    		currentSurvey.setGroup(currentSurvey.activeSurvey.group);
+	    	}
 	    };
      }
 ])
@@ -136,28 +183,77 @@ angular.module('surveys')
 	    	$scope.nav.status = "editsurvey";
 	    };
 	    
+	    $scope.hasOptions = function() {
+	    	return currentSurvey.activeQuestion.type == "choice" || currentSurvey.activeQuestion.type == "open-choice"; 
+	    };
+	    
+	    $scope.hasRepeats = function() {
+	    	return currentSurvey.activeQuestion.type == "choice" || currentSurvey.activeQuestion.type == "open-choice"; 
+	    };
+	    
+	   	$scope.addOption = function() {
+	   		if (!currentSurvey.activeQuestion.option) currentSurvey.activeQuestion.option = [];
+	   		currentSurvey.activeQuestion.option.push({ system : "", code : "", display : "" });
+	   	};  
+	   	
+	   	$scope.deleteOption = function(option) {
+	   		var idx = currentSurvey.activeQuestion.option.indexOf(option);
+	   		if (idx >= 0) {
+	   			currentSurvey.activeQuestion.option.splice(idx, 1);
+	   		}
+	   	}; 
+	    
+     }
+])
+.controller('EditGroupCtrl', ['$scope', 'midataServer', 'currentSurvey', 'surveys',
+     function($scope, midataServer, currentSurvey, surveys) {
+	   	    
+	    	    
+	    $scope.currentSurvey = currentSurvey;
+	   	   
+	    $scope.exit = function() {
+	       $scope.nav.status = "editsurvey";
+	    };
+	    
+	    $scope.ok = function() {
+	    	$scope.nav.status = "editsurvey";
+	    };
+	    
 	   	    	   
      }
 ])
 .controller('AnswerSurveyCtrl', ['$scope', 'midataServer', 'currentSurvey', 'surveys',
      function($scope, midataServer, currentSurvey, surveys) {
-	   	    	    	   
+	   	    	
+	    $scope.dateOptions = {
+		       formatYear: 'yy',
+		       startingDay: 1
+		};
+	
 	    $scope.currentSurvey = currentSurvey;
 	    currentSurvey.startAnswer();
 	    	    
 	    $scope.next = function() {
 	    	if (!currentSurvey.next()) {
-	    		$scope.nav.status = "editsurvey";
+	    		$scope.nav.status = $scope.edit ? "editsurvey" : "saveanswer";
+	    		console.log($scope.nav.status);
 	    	}
 	    };
 	    
 	    $scope.skip = function() {
-	    	currentSurvey.next();
+	    	if (!currentSurvey.next()) {
+	    		$scope.nav.status = $scope.edit ? "editsurvey" : "saveanswer";
+	    		console.log($scope.nav.status);
+	    	}
+	    };
+	    
+	    $scope.cancel = function() {
+	    	$scope.nav.status = $scope.edit ? "editsurvey" : "pick";
 	    };
 	    
 	    $scope.prev = function() {
 	    	if (!currentSurvey.prev()) {
-	    		$scope.nav.status = "editsurvey";
+	    		$scope.nav.status = $scope.edit ? "editsurvey" : "pick";
 	    	}
 	    };
 	    
@@ -195,12 +291,26 @@ angular.module('surveys')
       function($scope, midataServer, currentSurvey, surveys) {
 	
 	$scope.success = false;
-	midataServer.createRecord($scope.authToken, { name : currentSurvey.activeSurvey.group.title, content : "QuestionnaireResponse", format : "fhir/QuestionnaireResponse" }, currentSurvey.activeResponse)
-	.then(function() {
-		$scope.success = true;
-	});
+	$scope.record = currentSurvey.activeResponse;
+	
+	var response = currentSurvey.activeResponse;
+	
+	if (response.id) {
+		var version = response.meta.version;
+		delete response.meta; 
+		midataServer.updateRecord($scope.authToken, response.id, version, response)
+		.then(function() {
+			$scope.success = true;			
+		});
+	} else {
+		midataServer.createRecord($scope.authToken, { name : currentSurvey.activeSurvey.group.title, content : "QuestionnaireResponse", format : "fhir/QuestionnaireResponse" }, response)
+		.then(function() {
+			$scope.success = true;			
+		});
+	}
 	
 	$scope.back = function() {
+		currentSurvey.reset();
 		$scope.nav.status = "pick";
 	};
 }]);

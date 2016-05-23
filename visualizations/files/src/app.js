@@ -50,7 +50,7 @@ files.controller('FilesCtrl', ['$scope', '$http', '$location', 'FileUploader', '
 			if (progress === 100) {
 				$scope.uploadComplete = true;
 			}
-		}
+		};
 		
 		// controller functions
 		$scope.validate = function() {
@@ -80,7 +80,7 @@ files.controller('FilesCtrl', ['$scope', '$http', '$location', 'FileUploader', '
 			if (!$scope.description) {
 				$scope.errors.description = "Please provide a brief description of the record.";
 			}
-		}
+		};
 		
 		var validateFile = function() {
 			$scope.errors.file = null;
@@ -106,11 +106,11 @@ files.controller('FilesCtrl', ['$scope', '$http', '$location', 'FileUploader', '
 
 			// upload the current queue (1 file)
 			uploader.uploadAll();
-		}
+		};
 
 		$scope.cancel = function() {
 			uploader.cancelAll();
-		}
+		};
 		
 	}
 ]);

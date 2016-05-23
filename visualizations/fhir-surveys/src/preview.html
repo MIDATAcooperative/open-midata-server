@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Surveys</title>
+		
+		<!-- build:css assets/app.min.css -->
+		<link rel="stylesheet" href="components/bootstrap/css/bootstrap.css">
+		<link rel="stylesheet" href="components/midata-css/index.css">
+		<!-- endbuild -->
+		
+		<!-- build:js assets/app.min.js -->
+		<script type="text/javascript" src="components/jquery/jquery.js" defer></script>
+		<script type="text/javascript" src="components/bootstrap/js/bootstrap.js" defer></script>
+		<script type="text/javascript" src="components/angular/angular.js" defer></script>
+		<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>		
+		<script type="text/javascript" src="components/midata-js/index.js" defer></script>
+		<script type="text/javascript" src="app.js" defer></script>
+		<!-- endbuild -->
+		
+	</head>
+	<body>
+		<div class="" ng-app="surveys" ng-controller="PreviewCtrl" ng-cloak>			  
+		      <p class="text-center" ng-show="surveys.length == 0">No surveys found</p>		 		     
+			  <ul class="list-group">
+				  <li class="list-group-item" ng-repeat="survey in surveys | limitTo:5">
+				    {{ survey.name }}				    
+				    <span class="badge" ng-show="survey.answered">{{ survey.answered.created | date }}</span>				    
+				  </li>
+				  
+			  </ul>
+		</div>
+	</body>
+</html>

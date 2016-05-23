@@ -54,8 +54,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 				      }
 				    ]
 			  }
-		   }
-		   ,		  
+		   },		  
 		   {
 			   label : "Body Temperature",
 			   unit : "Cel",
@@ -71,8 +70,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 				      }
 				    ]
 			   }
-		   }
-		   ,		  
+		   },		  
 		   {
 			   label : "Body Mass Index",
 			   unit : "kg/m2",
@@ -88,8 +86,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 				      }
 				    ]
 			   }
-		   }
-		   ,		  
+		   },		  
 		   {
 			   label : "Systolic blood pressure",
 			   unit : "mm[Hg]",
@@ -105,8 +102,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 				      }
 				    ]
 				  }
-		   }
-		   ,		  
+		   },		  
 		   {
 			   label : "Diastolic blood pressure",
 			   unit : "mm[Hg]",
@@ -130,7 +126,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 		var authToken = $location.path().split("/")[1];
 		var preselect = $location.path().split("/")[2];
 		var preselectFormat = $filter('filter')($scope.formats,{ format : preselect });
-		if (preselectFormat.length == 0) preselectFormat = $scope.formats[0]; else preselectFormat = preselectFormat[0]; 
+		if (preselectFormat.length === 0) preselectFormat = $scope.formats[0]; else preselectFormat = preselectFormat[0]; 
 		console.log(authToken);
 		$scope.authToken = authToken;		
 		$scope.isValid = true;
@@ -155,11 +151,11 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 			var theDate = new Date($scope.newentry.date);
 			if (isNaN(theDate)) {
 				$scope.error = "Please enter a valid date! (YYYY-MM-DD)";
-				return
+				return;
 			}
-			if (! ($scope.newentry.value > 0)) {
+			if ($scope.newentry.value > 0) { } else {
 				$scope.errorValue = "Please enter a valid value!";
-				return
+				return;
 			}
 			
 			var data = { 
@@ -181,7 +177,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 					}
 			};
 			
-			if ($scope.newentry.context != null && $scope.newentry.context != "") data.context = $scope.newentry.context;
+			if ($scope.newentry.context != null && $scope.newentry.context !== "") data.context = $scope.newentry.context;
 			
 			var envelope = data;
 			//envelope[$scope.newentry.format.objkey] = [ data ];

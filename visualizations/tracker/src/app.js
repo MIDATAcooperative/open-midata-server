@@ -1,10 +1,15 @@
-var tracker = angular.module('tracker', [ 'midata' ]);
+var tracker = angular.module('tracker', [ 'midata', 'ui.bootstrap' ]);
 
 tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$timeout', 'midataServer', 'midataPortal',
 	function($scope, $http, $location, $filter, $timeout, midataServer, midataPortal) {
 		
 		// init
 		$scope.error = null;
+		$scope.datePickers = {};
+	    $scope.dateOptions = {
+	       formatYear: 'yy',
+	       startingDay: 1
+	    };
 				
 		$scope.codes = [
 		   {			    
@@ -78,7 +83,7 @@ tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$t
 			var theDate = new Date($scope.newentry.date);
 			if (isNaN(theDate)) {
 				$scope.error = "Please enter a valid date! (YYYY-MM-DD)";
-				return
+				return;
 			}
 			
 			angular.forEach($scope.codes, function(code) {
@@ -123,7 +128,7 @@ tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$t
 			midataServer.createRecord(authToken, { "name" : code.display, "content" : "user-observation", format : "fhir/Observation", subformat : "CodeableConcept" }, data)
 			.then(function() { 
 				$scope.isBusy--; 
-				if ($scope.isBusy == 0) {
+				if ($scope.isBusy === 0) {
 				  $scope.success = true; 
 				  $scope.reset(); 
 				  $timeout(function() { $scope.success = false; }, 2000); 
@@ -135,7 +140,7 @@ tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$t
 		$scope.addCode = function() {
 			var code = $scope.newcode.display.toLowerCase();
 			code = code.replace(' ','-');
-			$scope.codes.push({ system:"urn:uuid:817a5c29-b5da-4074-81bf-92d6978759f4", display : $scope.newcode.display, code : code })
+			$scope.codes.push({ system:"urn:uuid:817a5c29-b5da-4074-81bf-92d6978759f4", display : $scope.newcode.display, code : code });
 			$scope.newcode = {};
 		};
 		

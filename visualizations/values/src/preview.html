@@ -3,14 +3,20 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Data Entry</title>
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-		<link rel="stylesheet" href="/shared/css/app.css">
-		<!-- jQuery needed for Bootstrap's JavaScript plugins -->
-		<script type="text/javascript" src="//code.jquery.com/jquery-2.0.2.min.js"></script>
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
-		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" defer></script>
-		<script type="text/javascript" src="/shared/js/midata.js" defer></script>
-		<script type="text/javascript" src="js/app.js" defer></script>
+		
+		<!-- build:css assets/app.min.css -->
+		<link rel="stylesheet" href="components/bootstrap/css/bootstrap.css">
+		<link rel="stylesheet" href="components/midata-css/index.css">
+		<!-- endbuild -->
+		
+		<!-- build:js assets/app.min.js -->
+		<script type="text/javascript" src="components/jquery/jquery.js" defer></script>
+		<script type="text/javascript" src="components/bootstrap/js/bootstrap.js" defer></script>
+		<script type="text/javascript" src="components/angular/angular.js" defer></script>
+		<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>		
+		<script type="text/javascript" src="components/midata-js/index.js" defer></script>
+		<script type="text/javascript" src="app.js" defer></script>
+		<!-- endbuild -->
 	</head>
 	<body>
 	  <div ng-app="jsonRecords" ng-controller="CreateCtrl" ng-cloak>
@@ -39,7 +45,7 @@
 		    <div class="form-group">
 		      <label class="col-sm-4 control-label" for="date">Date: <span class="text-danger">{{error}}</span></label>
 		      <div class="col-sm-8">
-		         <input id="date" class="form-control" ng-model="newentry.date" type="date">
+		         <input id="date" class="form-control" ng-model="newentry.date" type="text">
 		      </div>
 		    </div>		    
 		    		   		    
