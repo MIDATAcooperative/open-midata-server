@@ -21,6 +21,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.DateTimeUtils;
 import utils.auth.AnyRoleSecured;
+import utils.auth.PortalSessionToken;
 import utils.auth.Rights;
 import utils.auth.MemberSecured;
 import utils.collections.CMaps;
@@ -116,8 +117,8 @@ public class Users extends APIController {
 	public static Result getCurrentUser() {
 						
 		ObjectNode obj = Json.newObject();								
-		obj.put("role", session().get("role"));
-		obj.put("user", request().username());
+		obj.put("role", PortalSessionToken.session().getRole().toString());
+		obj.put("user", PortalSessionToken.session().getUserId().toString());
 																
 		return ok(obj);
 	}

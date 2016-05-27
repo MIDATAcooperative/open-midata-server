@@ -55,6 +55,7 @@ import utils.access.Query;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
+import utils.auth.PortalSessionToken;
 import utils.auth.ResearchSecured;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -98,7 +99,7 @@ public class Studies extends APIController {
 		if (Study.existsByName(name)) return inputerror("name", "exists", "A study with this name already exists.");
 		
 		ObjectId userId = new ObjectId(request().username());
-		ObjectId research = new ObjectId(session().get("org"));
+		ObjectId research = PortalSessionToken.session().getOrg();
 				
 		Study study = new Study();
 				
@@ -142,7 +143,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result download(String id) throws AppException, IOException {
 		 ObjectId studyid = new ObjectId(id);
-		 ObjectId owner = new ObjectId(session().get("org"));
+		 ObjectId owner = PortalSessionToken.session().getOrg();
 		 ObjectId executorId = new ObjectId(request().username());
 		   
 		 Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("executionStatus","participantSearchStatus","validationStatus","history","owner","groups"));
@@ -199,7 +200,7 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result list() throws JsonValidationException, InternalServerException {
-	   ObjectId owner = new ObjectId(session().get("org"));
+	   ObjectId owner = PortalSessionToken.session().getOrg();
 	   
 	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus");
 	   Set<Study> studies = Study.getByOwner(owner, fields);
@@ -219,7 +220,7 @@ public class Studies extends APIController {
 	public static Result get(String id) throws JsonValidationException, InternalServerException {
        
 	   ObjectId studyid = new ObjectId(id);
-	   ObjectId owner = new ObjectId(session().get("org"));
+	   ObjectId owner = PortalSessionToken.session().getOrg();
 
 	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "assistance"); 
 	   Study study = Study.getByIdFromOwner(studyid, owner, fields);
@@ -244,7 +245,7 @@ public class Studies extends APIController {
 	   JsonValidation.validate(json, "count", "reuseable");
 	
 	   ObjectId userId = new ObjectId(request().username());
-	   ObjectId owner = new ObjectId(session().get("org"));
+	   ObjectId owner = PortalSessionToken.session().getOrg();
 	   ObjectId studyid = new ObjectId(id);
 	   
 	   User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
@@ -295,7 +296,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result listCodes(String id) throws JsonValidationException, InternalServerException {
 	   ObjectId userId = new ObjectId(request().username());
-	   ObjectId owner = new ObjectId(session().get("org"));
+	   ObjectId owner = PortalSessionToken.session().getOrg();
 	   ObjectId studyid = new ObjectId(id);
 	   
 	   Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
@@ -319,7 +320,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result startValidation(String id) throws JsonValidationException, InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
-		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
@@ -350,7 +351,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result startParticipantSearch(String id) throws JsonValidationException, InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
-		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
@@ -378,7 +379,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result endParticipantSearch(String id) throws JsonValidationException, InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
-		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
@@ -405,7 +406,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result startExecution(String id) throws JsonValidationException, InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
-		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
@@ -433,7 +434,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result finishExecution(String id) throws JsonValidationException, InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
-		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
@@ -460,7 +461,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result abortExecution(String id) throws JsonValidationException, InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
-		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
@@ -486,7 +487,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result shareWithGroup(String id, String group) throws AppException {
 		ObjectId userId = new ObjectId(request().username());
-		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
 		
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history", "name"));
@@ -534,7 +535,7 @@ public class Studies extends APIController {
 	@APICall
 	public static Result addTask(String id, String group) throws AppException, JsonValidationException {
 		ObjectId userId = new ObjectId(request().username());
-		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
 		
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history", "name"));
@@ -581,7 +582,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result listParticipants(String id) throws JsonValidationException, InternalServerException {
 	   ObjectId userId = new ObjectId(request().username());
-	   ObjectId owner = new ObjectId(session().get("org"));
+	   ObjectId owner = PortalSessionToken.session().getOrg();
 	   ObjectId studyid = new ObjectId(id);
 	   
 	   Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
@@ -606,7 +607,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result getParticipant(String studyidstr, String partidstr) throws JsonValidationException, InternalServerException {
 	   //ObjectId userId = new ObjectId(request().username());	
-	   ObjectId owner = new ObjectId(session().get("org"));
+	   ObjectId owner = PortalSessionToken.session().getOrg();
 	   ObjectId studyId = new ObjectId(studyidstr);
 	   ObjectId partId = new ObjectId(partidstr);
 	   	   
@@ -653,7 +654,7 @@ public class Studies extends APIController {
 		ObjectId userId = new ObjectId(request().username());		
 		ObjectId studyId = new ObjectId(id);
 		ObjectId partId = new ObjectId(JsonValidation.getString(json, "member"));
-		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId owner = PortalSessionToken.session().getOrg();
 		String comment = JsonValidation.getString(json, "comment");
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));				
@@ -689,7 +690,7 @@ public class Studies extends APIController {
 		ObjectId userId = new ObjectId(request().username());		
 		ObjectId studyId = new ObjectId(id);
 		ObjectId partId = new ObjectId(JsonValidation.getString(json, "member"));
-		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId owner = PortalSessionToken.session().getOrg();
 		String comment = JsonValidation.getString(json, "comment");
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));					
@@ -727,7 +728,7 @@ public class Studies extends APIController {
 		ObjectId userId = new ObjectId(request().username());		
 		ObjectId studyId = new ObjectId(id);
 		ObjectId partId = new ObjectId(JsonValidation.getString(json, "member"));
-		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId owner = PortalSessionToken.session().getOrg();
 		String comment = JsonValidation.getString(json, "comment");
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));					
@@ -750,7 +751,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result getRequiredInformationSetup(String id) throws JsonValidationException, InternalServerException {
 		ObjectId userId = new ObjectId(request().username());
-		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
 			
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation", "assistance"));
@@ -775,7 +776,7 @@ public class Studies extends APIController {
 		AssistanceType assist = JsonValidation.getEnum(json, "assistance", AssistanceType.class);
 		
 		ObjectId userId = new ObjectId(request().username());
-		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
@@ -800,7 +801,7 @@ public class Studies extends APIController {
 		//JsonValidation.validate(json, "groups");
 						
 		ObjectId userId = new ObjectId(request().username());
-		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
@@ -843,7 +844,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(ResearchSecured.class)
 	public static Result delete(String id) throws JsonValidationException, AppException {
 		ObjectId userId = new ObjectId(request().username());
-		ObjectId owner = new ObjectId(session().get("org"));
+		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));

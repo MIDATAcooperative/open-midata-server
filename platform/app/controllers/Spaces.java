@@ -24,6 +24,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
+import utils.auth.PortalSessionToken;
 import utils.auth.SpaceToken;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
@@ -278,7 +279,7 @@ public class Spaces extends Controller {
 		
 		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "name", "filename", "url", "creator", "developmentServer", "accessTokenUrl", "authorizationUrl", "consumerKey", "scopeParameters"));
 
-		boolean testing = session().get("role").equals(UserRole.DEVELOPER.toString()) && visualization.creator.equals(userId) && visualization.developmentServer != null && visualization.developmentServer.length()> 0;
+		boolean testing = PortalSessionToken.session().getRole().equals(UserRole.DEVELOPER) && visualization.creator.equals(userId) && visualization.developmentServer != null && visualization.developmentServer.length()> 0;
 		
 		
 	    SpaceToken spaceToken = new SpaceToken(space._id, userId);
@@ -323,7 +324,7 @@ public class Spaces extends Controller {
 			return ok(result);
 		}	
 
-		boolean testing = session().get("role").equals(UserRole.DEVELOPER.toString()) && visualization.creator.equals(userId) && visualization.developmentServer != null && visualization.developmentServer.length()> 0;
+		boolean testing = PortalSessionToken.session().getRole().equals(UserRole.DEVELOPER) && visualization.creator.equals(userId) && visualization.developmentServer != null && visualization.developmentServer.length()> 0;
 		//if (visualization.type.equals("visualization")) {
 		// create encrypted authToken
 			SpaceToken spaceToken = new SpaceToken(space._id, userId);

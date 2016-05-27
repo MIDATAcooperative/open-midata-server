@@ -14,9 +14,12 @@ public class ProviderSecured extends AnyRoleSecured {
 
 	@Override
 	public String getUsername(Context ctx) {
-		String role = ctx.session().get("role");
-		if (! UserRole.PROVIDER.toString().equals(role)) return null;
-		return super.getUsername(ctx);
+		String result = super.getUsername(ctx);
+		if (result != null) {
+		  UserRole role = PortalSessionToken.session().getRole();
+		  if (! UserRole.PROVIDER.equals(role)) return null;				  
+		}
+		return result;
 	}
 
 

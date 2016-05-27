@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('session', ['$q', 'server', '$cookies', function($q, server, $cookies) {
+.factory('session', ['$q', 'server', function($q, server) {
 	
 	var session = {
 		currentUser : null,
@@ -7,6 +7,9 @@ angular.module('services')
 		cache : {},
 			
 		postLogin : function(result, $state) {
+			if (result.data.sessionToken) {
+				sessionStorage.token = result.data.sessionToken;
+			}
 			if (result.data.status) {
 				  $state.go("public.postregister", { progress : result.data }, { location : false });			
 			} else if (result.data.role == "admin") {
@@ -51,8 +54,8 @@ angular.module('services')
 				   document.location.href="/#/public/login";
 				   return;
 				}
-				$cookies.put("session", userId);
-				session.storedCookie = userId;
+				//$cookies.put("session", userId);
+				//session.storedCookie = userId;
 				userId = { "$oid" : userId };
 				console.log("GOT USERID");
 				var data = {"properties": { "_id" : userId }, "fields": ["email", "firstname", "lastname", "visualizations", "apps", "midataID", "name"] };
@@ -69,7 +72,7 @@ angular.module('services')
 		
 		logout : function() {
 			session.currentUser = null;
-			session.storedCookie = null;
+			sessionStorage.token = null;
 			session.cache = {};
 		},
 		

@@ -52,7 +52,7 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
    $urlRouterProvider
    .otherwise('/portal/login');
 }])
-.run(['$state', '$cookies', '$rootScope', 'session', function($state, $cookies, $rootScope, session) {
+/*.run(['$state', '$cookies', '$rootScope', 'session', function($state, $cookies, $rootScope, session) {
     $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {    	
     	var sc = $cookies.get("session");
     	if (sc != null && session.storedCookie != null && sc!=session.storedCookie) {    
@@ -61,4 +61,4 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
     		e.preventDefault();
     	}    	
     });
-}]);
+}])*/;

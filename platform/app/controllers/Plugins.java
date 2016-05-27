@@ -35,6 +35,7 @@ import play.mvc.Security;
 import utils.AccessLog;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
+import utils.auth.PortalSessionToken;
 import utils.auth.Rights;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
@@ -265,7 +266,7 @@ public class Plugins extends APIController {
 		// create encrypted authToken
 		SpaceToken appToken = new SpaceToken(consentId, userId, null, appId);		
 
-        boolean testing = session().get("role").equals(UserRole.DEVELOPER.toString()) && app.creator.equals(userId) && app.developmentServer != null && app.developmentServer.length()> 0;
+        boolean testing = PortalSessionToken.session().getRole().equals(UserRole.DEVELOPER) && app.creator.equals(userId) && app.developmentServer != null && app.developmentServer.length()> 0;
 		
 		String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + app.filename;
 		if (testing) visualizationServer = app.developmentServer;

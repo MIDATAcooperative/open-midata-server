@@ -119,19 +119,7 @@ public class Developers extends APIController {
 				}
 						
 				return Application.loginHelper(adminuser);
-				/*
-				session().clear();
-				session("id", adminuser._id.toString());
-				session("role", UserRole.ADMIN.toString());
 				
-				int keytype = KeyManager.instance.unlock(adminuser._id, null);
-				
-				ObjectNode obj = Json.newObject();
-				obj.put("keyType", keytype);
-				obj.put("role", "admin");
-				// response
-				return ok(obj);
-					*/			
 			}
 		}
 		

@@ -4,6 +4,7 @@ import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+import utils.auth.PortalSessionToken;
 
 /**
  * Baseclass for controller classes
@@ -29,7 +30,7 @@ public abstract class APIController extends Controller {
 	}
 	
 	public static UserRole getRole() {
-		return UserRole.valueOf(session().get("role"));
+		return PortalSessionToken.session().getRole();
 	}
 	
 	public static void setAttachmentContentDisposition(String filename) {

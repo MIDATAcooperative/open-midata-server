@@ -13,10 +13,12 @@ public class MemberSecured extends Security.Authenticator {
 
 	@Override
 	public String getUsername(Context ctx) {
-		String role = ctx.session().get("role");
-		if (! UserRole.MEMBER.toString().equals(role)) return null;
-		// id is the user id in String form
-		return ctx.session().get("id");
+		String result = super.getUsername(ctx);
+		if (result != null) {
+		  UserRole role = PortalSessionToken.session().getRole();
+		  if (! UserRole.MEMBER.equals(role)) return null;				  
+		}
+		return result;
 	}
 
 	@Override

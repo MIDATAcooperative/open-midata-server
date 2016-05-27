@@ -5,6 +5,7 @@ import java.util.Date;
 
 import play.Play;
 import play.mvc.Http;
+import utils.auth.PortalSessionToken;
 import utils.mails.MailUtils;
 import views.txt.mails.welcome;
 
@@ -22,7 +23,10 @@ public class ErrorReporter {
 		String user = "none";
 		if (ctx != null) {
 		   path = "["+ctx.request().method()+"] "+ctx.request().host()+ctx.request().path();
-		   user = ctx.session().get("role")+" "+ctx.session().get("id");
+		   PortalSessionToken tsk = PortalSessionToken.session();
+		   if (tsk != null) {
+		     user = tsk.getRole().toString()+" "+tsk.getUserId().toString();
+		   } 
 		} 
 		String timeStamp = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss").format(new Date());
 		if (e!=null) AccessLog.logException("Uncatched Exception:", e);

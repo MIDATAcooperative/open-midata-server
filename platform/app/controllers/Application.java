@@ -33,6 +33,7 @@ import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.auth.PasswordResetToken;
+import utils.auth.PortalSessionToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.evolution.AccountPatches;
@@ -383,19 +384,19 @@ public class Application extends APIController {
 	 */
 	public static Result loginHelper(User user) throws AppException {
 		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.userblocked", "User is not allowed to log in.");
-		
-		session().clear();						
-		session("id", user._id.toString());
-		session("role", user.role.toString());
-		session("ts", Long.toString(System.currentTimeMillis()));
+				
+		PortalSessionToken token = null;
 		
 		if (user instanceof HPUser) {
-		  session("org", ((HPUser) user).provider.toString());
+		   token = new PortalSessionToken(user._id, user.role, ((HPUser) user).provider);		  
 		} else if (user instanceof ResearchUser) {
-		  session("org", ((ResearchUser) user).organization.toString());
+		   token = new PortalSessionToken(user._id, user.role, ((ResearchUser) user).organization);		  
+		} else {
+		   token = new PortalSessionToken(user._id, user.role, null);
 		}
 		
 		ObjectNode obj = Json.newObject();
+		obj.put("sessionToken", token.encrypt(request()));
 		
 		if (!user.status.equals(UserStatus.ACTIVE) && !Play.application().configuration().getBoolean("demoserver", false)) {
 		  obj.put("status", user.status.toString());
@@ -537,7 +538,7 @@ public class Application extends APIController {
 	public static Result logout() {
 		
 		// execute
-		session().clear();
+		//session().clear();
 		
 		// reponse
 		return ok();		
