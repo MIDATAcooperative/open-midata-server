@@ -61,13 +61,13 @@ public class Feature_AccountQuery extends Feature {
 					Set<String> groups = q.getRestriction("study-group");
 					for (ObjectId studyId : studies) {
 						for (String grp : groups) {
-							consents.addAll(StudyParticipation.getParticipantsByStudyAndGroup(studyId, grp, Sets.create("pstatus", "ownerName")));
+							consents.addAll(StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, grp, Sets.create("pstatus", "ownerName")));
 						}
 					}
 					
 				} else {				
 					for (ObjectId studyId : studies) {
-						consents.addAll(StudyParticipation.getParticipantsByStudy(studyId, Sets.create("pstatus", "ownerName")));
+						consents.addAll(StudyParticipation.getActiveParticipantsByStudy(studyId, Sets.create("pstatus", "ownerName")));
 					}
 				}
 
@@ -161,9 +161,9 @@ public class Feature_AccountQuery extends Feature {
 		Set<String> sets = q.restrictedBy("owner") ? q.getRestriction("owner") : Collections.singleton("all");
 		if (sets.contains("all") || sets.contains("other") || sets.contains("shared")) {			
 			if (sets.contains("shared"))
-				consents = new HashSet<Consent>(Circle.getAllByMember(q.getCache().getOwner()));
+				consents = new HashSet<Consent>(Circle.getAllActiveByMember(q.getCache().getOwner()));
 			else
-				consents = Consent.getAllByAuthorized(q.getCache().getOwner());																
+				consents = Consent.getAllActiveByAuthorized(q.getCache().getOwner());																
 		} else {
 			Set<ObjectId> owners = new HashSet<ObjectId>();
 			for (String owner : sets) {
@@ -173,7 +173,7 @@ public class Feature_AccountQuery extends Feature {
 				}
 			}
 			if (!owners.isEmpty()) {
-				consents = Consent.getAllByAuthorizedAndOwners(q.getCache().getOwner(), owners);
+				consents = Consent.getAllActiveByAuthorizedAndOwners(q.getCache().getOwner(), owners);
 				if (consents.size() < owners.size()) consents.addAll(Consent.getByIdsAndAuthorized(owners, q.getCache().getOwner(), Sets.create("name", "order", "owner", "type", "ownerName")));
 			}
 		}

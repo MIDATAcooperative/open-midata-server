@@ -5,6 +5,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,7 @@ import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 
 import org.bson.BSONObject;
+import org.bson.BasicBSONObject;
 import org.bson.types.ObjectId;
 
 import play.mvc.BodyParser;
@@ -121,6 +123,16 @@ public class Circles extends APIController {
 			}
 		}
 		
+		if (fields.contains("createdBefore") || fields.contains("validUntil")) {
+			for (Consent consent : consents) {
+				BasicBSONObject obj = (BasicBSONObject) RecordManager.instance.getMeta(owner, consent._id, "_filter");
+				if (obj != null) {
+					consent.validUntil = obj.getDate("valid-until");
+					consent.createdBefore = obj.getDate("created-before");
+				}
+			}
+		}
+		
 		if (fields.contains("passcode") && !properties.containsKey("member")) {
 			for (Consent consent : consents) {
 				if (consent.type == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
@@ -170,6 +182,9 @@ public class Circles extends APIController {
 		  return badRequest("Only owner may create consent with passcode");
 		}
 		
+		Date validUntil = JsonValidation.getDate(json, "validUntil");
+		Date createdBefore = JsonValidation.getDate(json, "createdBefore");
+		
 		Consent consent;
 		switch (type) {
 		case CIRCLE : 
@@ -205,6 +220,8 @@ public class Circles extends APIController {
 		consent.name = name;		
 		consent.authorized = new HashSet<ObjectId>();
 		consent.status = userId.equals(executorId) ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;
+		consent.validUntil = validUntil;
+		consent.createdBefore = createdBefore;
 		if (! userId.equals(executorId)) consent.authorized.add(executorId);
 							
 		RecordManager.instance.createAnonymizedAPS(userId, executorId, consent._id);
@@ -214,7 +231,8 @@ public class Circles extends APIController {
 		      RecordManager.instance.shareAPS(consent._id, userId, consent._id, pubkey);
 		      RecordManager.instance.setMeta(userId, consent._id, "_config", CMaps.map("passcode", passcode));			  		
 		}
-		
+						
+		consentSettingChange(executorId, consent);
 		consent.add();
 				
 		return ok(JsonOutput.toJson(consent, "Consent", Consent.ALL));
@@ -374,6 +392,23 @@ public class Circles extends APIController {
 			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }
 			RecordManager.instance.unshareAPSRecursive(consent._id, consent.owner, consent.authorized);
 		}
+	}
+	
+	public static void consentSettingChange(ObjectId executor, Consent consent) throws AppException {
+		BasicBSONObject dat = (BasicBSONObject) RecordManager.instance.getMeta(executor, consent._id, "_filter");
+		Map<String, Object> restrictions = (dat == null) ? new HashMap<String, Object>() : dat.toMap();
+		if (consent.validUntil != null) {
+			restrictions.put("valid-until", consent.validUntil);
+		} else {
+			restrictions.remove("valid-until");
+		}
+		if (consent.createdBefore != null) {
+			restrictions.put("created-before", consent.createdBefore);
+		} else {
+			restrictions.remove("created-before");
+		}
+		
+		RecordManager.instance.setMeta(executor, consent._id, "_filter", restrictions);				
 	}
 	
 	/**

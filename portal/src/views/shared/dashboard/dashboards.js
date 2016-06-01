@@ -619,7 +619,7 @@ angular.module('portal')
 				   id : "1",
 				   template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
 				   title : "Shared records:",
-				   active : true,
+				   active : false,
 				   position : "full",
 				   links : { "record" : "details" }
 				   

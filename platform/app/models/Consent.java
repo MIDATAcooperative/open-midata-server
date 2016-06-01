@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -69,6 +70,16 @@ public class Consent extends Model {
 	 */
 	public @NotMaterialized int records;
 	
+	/**
+	 * The expiration date of this consent
+	 */
+	public @NotMaterialized Date validUntil;
+	
+	/**
+	 * Exclude all data created after this date
+	 */
+	public @NotMaterialized Date createdBefore;
+	
 	public static Consent getByIdAndOwner(ObjectId consentId, ObjectId ownerId, Set<String> fields) throws InternalServerException {
 		return Model.get(Consent.class, collection, CMaps.map("_id", consentId).map("owner", ownerId), fields);
 	}
@@ -89,16 +100,18 @@ public class Consent extends Model {
 		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("owner", owner), fields);
 	}
 	
+	public static Set<Consent> getAllActiveByAuthorized(ObjectId member) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", ConsentStatus.ACTIVE), Sets.create("name", "order", "owner", "type"));
+	}
+	
 	public static Set<Consent> getAllByAuthorized(ObjectId member) throws InternalServerException {
 		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member), Sets.create("name", "order", "owner", "type"));
 	}
 	
-	public static Set<Consent> getAllByAuthorizedAndOwners(ObjectId member, Set<ObjectId> owners) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owners), Sets.create("name", "order", "owner", "type"));
+	public static Set<Consent> getAllActiveByAuthorizedAndOwners(ObjectId member, Set<ObjectId> owners) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owners).map("status",  ConsentStatus.ACTIVE), Sets.create("name", "order", "owner", "type"));
 	}
-	
-	
-	
+		
 	public static void set(ObjectId consentId, String field, Object value) throws InternalServerException {
 		Model.set(Consent.class, collection, consentId, field, value);
 	}

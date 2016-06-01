@@ -317,6 +317,27 @@ public class RecordManager {
 			apswrapper.removeMeta("_query");
 			AccessLog.logEnd("end materialize query");
 		}
+		if (apswrapper.getMeta("_filter") != null) {
+			AccessLog.logBegin("start materialize consent APS="+targetAPS.toString());
+			Set<String> fields = Sets.create("owner");
+			fields.addAll(APSEntry.groupingFields);
+			List<DBRecord> content = QueryEngine.listInternal(getCache(who), targetAPS, CMaps.map(), fields);
+			apswrapper.clearPermissions();
+			apswrapper.addPermission(content, true);
+			
+			Member member = Member.getById(who, Sets.create("queries"));
+			
+			if (member.queries != null) {			 
+			  String key = targetAPS.toString();
+		      if (member.queries.containsKey(key)) {
+		    	  member.queries.remove(key);
+		    	  Member.set(who, "queries", member.queries);
+		      }
+			}
+			
+			apswrapper.removeMeta("_filter");
+			AccessLog.logEnd("end materialize query");
+		}
 	}
 
 	/**

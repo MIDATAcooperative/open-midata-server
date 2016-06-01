@@ -55,6 +55,24 @@
 	    </label>
 	  </div>
 	</formrow>
+	<!-- 
+	<formrow myid="validUntil" label="Consent expiration date:">
+	  <div class="input-group">
+        <input id="validUntil" ng-disabled="true" type="text" class="form-control" placeholder="Leave empty if none" uib-datepicker-popup="dd.MM.yyyy" ng-model="consent.validUntil" is-open="datePickers.validUntil" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+        <span class="input-group-btn">
+           <button type="button" ng-disabled="true" class="btn btn-default" ng-click="datePickers.validUntil=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+        </span>
+      </div>
+	</formrow>
+	<formrow myid="createdBefore" label="Shares only data created before:">
+	  <div class="input-group">
+        <input id="createdBefore" ng-disabled="true" type="text" class="form-control" placeholder="Leave empty if none" uib-datepicker-popup="dd.MM.yyyy" ng-model="consent.createdBefore" is-open="datePickers.createdBefore" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+        <span class="input-group-btn">
+           <button type="button" ng-disabled="true" class="btn btn-default" ng-click="datePickers.createdBefore=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+        </span>
+      </div>
+	</formrow>
+	 -->
 	<formrow id="what" label="What data is shared?">
 	  <p class="form-control-static" ng-show="sharing.records.length == 0 && !sharing.query.group.length">This consent does not share any data at the moment.</p>
 	  <div class="well well-sm" ng-show="sharing.records.length || sharing.query.group.length">

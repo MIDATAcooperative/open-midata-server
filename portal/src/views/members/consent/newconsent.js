@@ -18,6 +18,11 @@ angular.module('portal')
 	
 	$scope.status = new status(true, $scope);
 	$scope.authpersons = [];
+	$scope.datePickers = {  };
+	$scope.dateOptions = {
+	  	 formatYear: 'yy',
+	  	 startingDay: 1
+	};
 	views.reset();
 	
 	$scope.init = function() {
@@ -25,7 +30,7 @@ angular.module('portal')
 		if ($state.params.consentId) {
 			$scope.consentId = $state.params.consentId;
 			
-			$scope.status.doBusy(circles.listConsents({ "_id" : { "$oid" : $state.params.consentId } }, ["name", "type", "status", "authorized" ]))
+			$scope.status.doBusy(circles.listConsents({ "_id" : { "$oid" : $state.params.consentId } }, ["name", "type", "status", "authorized","createdBefore", "validUntil" ]))
 			.then(function(data) {
 				
 				$scope.consent = $scope.myform = data.data[0];				

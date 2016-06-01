@@ -14,6 +14,10 @@ angular.module('portal')
 	      url: '/records/:selectedType/:selected',
 	      templateUrl: 'views/members/records/records.html' 
 	    })
+	    .state('provider.recordsharing', {
+	      url: '/records/:selectedType/:selected',
+	      templateUrl: 'views/members/records/records.html' 
+	    })
 	    .state('developer.delete_records', {
 	      url: '/records-delete',
 		  templateUrl: 'views/members/records/records.html',

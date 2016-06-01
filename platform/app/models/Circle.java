@@ -3,6 +3,7 @@ package models;
 import java.util.Map;
 import java.util.Set;
 
+import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 
 import org.bson.types.ObjectId;
@@ -66,6 +67,10 @@ public class Circle extends Consent implements Comparable<Circle> {
 	
 	public static Set<Circle> getAllByMember(ObjectId member) throws InternalServerException {
 		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  ConsentType.CIRCLE), Sets.create("name", "order", "owner"));
+	}
+	
+	public static Set<Circle> getAllActiveByMember(ObjectId member) throws InternalServerException {
+		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  ConsentType.CIRCLE).map("status", ConsentStatus.ACTIVE), Sets.create("name", "order", "owner"));
 	}
 
 	public static void set(ObjectId circleId, String field, Object value) throws InternalServerException {

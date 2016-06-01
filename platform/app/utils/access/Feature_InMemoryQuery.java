@@ -151,6 +151,11 @@ public class Feature_InMemoryQuery extends APS {
 	public List<DBRecord> historyQuery(long minUpd, boolean removes) throws AppException {
 		throw new NotImplementedError();
 	}
+
+	@Override
+	public void clearPermissions() throws AppException {
+		throw new NotImplementedError();		
+	}
 	
 	
 

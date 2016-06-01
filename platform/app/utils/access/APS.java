@@ -70,6 +70,8 @@ public abstract class APS extends Feature {
 	public abstract boolean removePermission(DBRecord record) throws AppException;
 		
 	public abstract void removePermission(Collection<DBRecord> records) throws AppException;
+
+	public abstract void clearPermissions() throws AppException;
 	
 	public abstract List<DBRecord> historyQuery(long minUpd, boolean removes) throws AppException;
 
@@ -78,8 +80,7 @@ public abstract class APS extends Feature {
 			throws InternalServerException {			
 		return records;
 	}
-
-	@Override
+	
 	protected List<DBRecord> lookup(List<DBRecord> input, Query q)
 			throws AppException {
 		List<DBRecord> filtered = new ArrayList<DBRecord>(input.size());
@@ -88,6 +89,8 @@ public abstract class APS extends Feature {
 		}
 		return filtered;
 	}
+
+	
 		
 			
 }

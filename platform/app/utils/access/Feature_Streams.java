@@ -41,8 +41,7 @@ public class Feature_Streams extends Feature {
 	
 	public final static Set<String> streamFields = Sets.create("content", "format", "subformat");
 	
-	
-	@Override
+		
 	protected List<DBRecord> lookup(List<DBRecord> records, Query q)
 			throws AppException {
 		APS next = q.getCache().getAPS(q.getApsId());
@@ -67,7 +66,7 @@ public class Feature_Streams extends Feature {
 					result.add(record);
 					
 					if (q.returns("owner") && record.owner == null) {
-						List<DBRecord> stream = next.query(new Query(CMaps.map("_id", record.stream), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId(), true ));
+						List<DBRecord> stream = next.query(new Query(CMaps.map("_id", record.stream), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId() ));
 						if (stream.size() > 0) record.owner = stream.get(0).owner;
 					}                    					
 				}
@@ -88,7 +87,7 @@ public class Feature_Streams extends Feature {
 			  AccessLog.logBegin("begin single stream query");
 			  //Set<String> streams1 = q.getRestriction("stream");
 			  
-			  List<DBRecord> streams = next.query(new Query(CMaps.map("_id", q.getProperties().get("stream")), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId(), true ));
+			  List<DBRecord> streams = next.query(new Query(CMaps.map("_id", q.getProperties().get("stream")), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId() ));
 				
 			  for (DBRecord r : streams) {
 				  if (r.isStream) {

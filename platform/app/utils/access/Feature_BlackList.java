@@ -10,6 +10,7 @@ import java.util.Set;
 import models.Record;
 
 import org.bson.BasicBSONObject;
+import org.bson.types.ObjectId;
 
 import utils.AccessLog;
 import utils.exceptions.AppException;
@@ -25,14 +26,14 @@ public class Feature_BlackList extends Feature {
     private Feature next;
     private Set<String> blacklist; 
 	
-	public Feature_BlackList(Query q, Feature next) throws AppException {
+	public Feature_BlackList(APS target, Feature next) throws AppException {
 		this.next = next;
-		initBlacklist(q);
+		initBlacklist(target);
 	}
 	
-	private void initBlacklist(Query q) throws AppException {
+	private void initBlacklist(APS target) throws AppException {
 		blacklist = new HashSet<String>();
-		BasicBSONObject list = q.getCache().getAPS(q.getApsId()).getMeta("_exclude");
+		BasicBSONObject list = target.getMeta("_exclude");
 		if (list != null) {
 			Collection idlist = (Collection) list.get("ids");
 			for (Object id : idlist) {

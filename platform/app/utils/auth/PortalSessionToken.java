@@ -85,6 +85,12 @@ public class PortalSessionToken {
 		this.remoteAddress = remoteAddr(req);
 		return encrypt();
 	}
+	
+	public String encrypt(Request req, long timeout) throws InternalServerException {
+		this.created = System.currentTimeMillis() - LIFETIME + timeout;
+		this.remoteAddress = remoteAddr(req);
+		return encrypt();
+	}
 
 	public String encrypt() throws InternalServerException {
 		Map<String, String> map = new ChainedMap<String, String>().put("u", userId.toString()).put("r", role.toString()).get();
@@ -102,6 +108,10 @@ public class PortalSessionToken {
 	public static PortalSessionToken decrypt(Request request) {
 		try {
 			String secret = request.getHeader("X-Session-Token");
+			if (secret == null || secret.length()==0) {
+				String[] token = request.queryString().get("token");
+				if (token!=null && token.length == 1) secret = token[0];
+			}
 			if (secret == null || secret.length()==0) return null;
 			
 			String plaintext = TokenCrypto.decryptToken(secret);		

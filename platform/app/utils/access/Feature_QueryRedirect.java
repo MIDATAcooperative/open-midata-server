@@ -50,7 +50,7 @@ public class Feature_QueryRedirect extends Feature {
 		if (query != null && !q.getApsId().equals(q.getCache().getOwner()) && result.size() < record.size()) {						
 			
 			Object targetAPSId = query.get("aps");
-			List<DBRecord> result2 = next.lookup(record, new Query(q.getProperties(), q.getFields(), q.getCache(), new ObjectId(targetAPSId.toString()), q.getGiveKey()));
+			List<DBRecord> result2 = next.lookup(record, new Query(q.getProperties(), q.getFields(), q.getCache(), new ObjectId(targetAPSId.toString())));
 			//List<DBRecord> result2 = next.lookup(record, new Query(q.getProperties(), q.getFields(), q.getCache(), new ObjectId(targetAPSId.toString()));
 			
 			if (query.containsField("$or")) {
@@ -111,7 +111,7 @@ public class Feature_QueryRedirect extends Feature {
 		}
 		Object targetAPSId = query.get("aps");
 		AccessLog.logBegin("begin redirect to Query:");
-		List<DBRecord> result = next.query(new Query(combined, q.getFields(), q.getCache(), new ObjectId(targetAPSId.toString()), q.getGiveKey()));
+		List<DBRecord> result = next.query(new Query(combined, q.getFields(), q.getCache(), new ObjectId(targetAPSId.toString())));
 		
 		/*if (query.containsField("_exclude") && result.size() > 0) {			
 			List<DBRecord> excluded = QueryEngine.listFromMemory(q.getCache(), (Map<String, Object>) query.get("_exclude"), result);

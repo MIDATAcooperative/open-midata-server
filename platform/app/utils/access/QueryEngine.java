@@ -39,15 +39,15 @@ import models.enums.AggregationType;
 class QueryEngine {
 
 	public static List<Record> list(APSCache cache, ObjectId aps, Map<String, Object> properties, Set<String> fields) throws AppException {
-		return RecordConversion.instance.currentVersionFromDB(fullQuery(new Query(properties, fields, cache, aps), aps));
+		return RecordConversion.instance.currentVersionFromDB(fullQuery(properties, fields, aps, cache));
 	}
 	
 	public static List<DBRecord> listInternal(APSCache cache, ObjectId aps, Map<String, Object> properties, Set<String> fields) throws AppException {
-		return fullQuery(new Query(properties, fields, cache, aps, true), aps);
+		return fullQuery(properties, fields, aps, cache);
 	}
 	
 	public static Collection<RecordsInfo> info(APSCache cache, ObjectId aps, Map<String, Object> properties, AggregationType aggrType) throws AppException {
-		return infoQuery(new Query(properties, Sets.create("created", "group", "content", "format", "owner"), cache, aps, true), aps, false, aggrType, null);
+		return infoQuery(new Query(properties, Sets.create("created", "group", "content", "format", "owner"), cache, aps), aps, false, aggrType, null);
 	}
 	
 	public static List<DBRecord> isContainedInAps(APSCache cache, ObjectId aps, List<DBRecord> candidates) throws AppException {
@@ -83,10 +83,10 @@ class QueryEngine {
 		APS inMemory = new Feature_InMemoryQuery(records);
 		cache.addAPS(inMemory);
 		Feature qm = new Feature_ProcessFilters(new Feature_FormatGroups(new Feature_ContentFilter(inMemory)));
-		Query query = new Query(properties, Sets.create("_id"), cache, inMemory.getId(), true);
+		Query query = new Query(properties, Sets.create("_id"), cache, inMemory.getId());
 		List<DBRecord> recs = qm.query(query);
 		AccessLog.log("list from memory pre postprocess size = "+recs.size());
-		List<DBRecord> result = postProcessRecords(qm, query, recs);		
+		List<DBRecord> result = postProcessRecords(qm, query.getProperties(), recs);		
 		if (AccessLog.detailedLog) AccessLog.logEnd("End list from memory #recs="+result.size());
 		return result;
 	}
@@ -106,11 +106,12 @@ class QueryEngine {
 		AccessLog.logBegin("begin infoQuery aps="+aps+" cached="+cached);
 		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
 		
-		boolean doNotCacheInStreams = q.getCache().getAPS(aps).getMeta("_exclude") != null;
+		APS myaps = q.getCache().getAPS(aps);
+		boolean doNotCacheInStreams = myaps.getMeta("_exclude") != null;
 		boolean doNotQueryPerStream = false;
 		
 		if (!doNotCacheInStreams) {
-		  BasicBSONObject query = q.getCache().getAPS(aps).getMeta(APS.QUERY);
+		  BasicBSONObject query = myaps.getMeta(APS.QUERY);
 		  if (query != null) {
 			  Map<String, Object> queryMap = query.toMap();
 			  if (queryMap.containsKey("app")) {
@@ -126,8 +127,7 @@ class QueryEngine {
 		}
 		
 		if (cached) {
-			String groupSystem = q.getStringRestriction("group-system");
-			APS myaps = q.getCache().getAPS(aps);
+			String groupSystem = q.getStringRestriction("group-system");			
 			BasicBSONObject obj = myaps.getMeta("_info");
 			if (obj != null) { 
 				
@@ -158,10 +158,10 @@ class QueryEngine {
 		}
 		
 		
-		Feature qm = new Feature_BlackList(q, new Feature_QueryRedirect(new Feature_ProcessFilters(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Streams())))));
+		Feature qm = new Feature_Prefetch(new Feature_BlackList(myaps, new Feature_QueryRedirect(new Feature_ProcessFilters(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_FormatGroups(new Feature_Streams())))))));
 				
 		List<DBRecord> recs = qm.query(q);
-		recs = postProcessRecords(qm, q, recs);
+		recs = postProcessRecords(qm, q.getProperties(), recs);
 		
 		for (DBRecord record : recs) {
 			if (record.isStream) {				
@@ -208,29 +208,56 @@ class QueryEngine {
 		return result.values();
 	}
 	
-    public static List<DBRecord> fullQuery(Query q, ObjectId aps) throws AppException {
+    public static List<DBRecord> fullQuery(Map<String, Object> properties, Set<String> fields, ObjectId apsId, APSCache cache) throws AppException {
     	AccessLog.logBegin("begin full query");
-    	List<DBRecord> result;
+    	    	
+    	APS target = cache.getAPS(apsId);
+    	Feature qm = new Feature_Prefetch(new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_ProcessFilters(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams()))))))))));
     	
+    	List<DBRecord> result = query(properties, fields, apsId, cache, qm);
     	
-    	Feature qm = new Feature_BlackList(q, new Feature_QueryRedirect(new Feature_ProcessFilters(new Feature_Indexes(new Feature_AccountQuery(new Feature_Consents(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams()))))))));
-    									
-		result = findRecordsDirectlyInDB(q);
-    	
-		if (result != null) {												
-		   result = qm.lookup(result, q);															
-		} else {												
-		   result = qm.query(q);			
-		}
 		if (result == null) {
 			AccessLog.log("NULL result");
 		}
 					
-		result = postProcessRecords(qm, q, result);
+		result = postProcessRecords(qm, properties, result);
 		AccessLog.logEnd("end full query");
 		
 		return result;
 	}
+             
+    protected static List<DBRecord> query(Map<String, Object> properties, Set<String> fields, ObjectId apsId, APSCache cache, Feature qm) throws AppException {
+      if (properties.containsKey("$or")) {
+    	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
+    	  List<DBRecord> result = new ArrayList<DBRecord>();
+    	  for (Map<String, Object> prop : col) {
+    		  result.addAll(qm.query(new Query(prop, fields, cache, apsId)));
+    	  }
+    	  return result;
+      } else {
+    	  return qm.query(new Query(properties, fields, cache, apsId));
+      }
+    }
+    
+    protected static List<DBRecord> combine(Query query, Map<String, Object> properties, Feature qm) throws AppException {
+    	if (properties.containsKey("$or")) {
+      	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
+      	  List<DBRecord> result = new ArrayList<DBRecord>();
+      	  for (Map<String, Object> prop : col) {
+      		  Map<String, Object> comb = Feature_QueryRedirect.combineQuery(prop, query.getProperties());
+      		  if (comb != null) {
+      		    result.addAll(qm.query(new Query(comb, query.getFields(), query.getCache(), query.getApsId())));
+      		  }
+      	  }
+      	  return result;
+        } else {
+          Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties());
+    	  if (comb != null) {
+    		  return qm.query(new Query(comb, query.getFields(), query.getCache(), query.getApsId()));
+    	  }
+      	  return new ArrayList<DBRecord>();
+        }
+    }
     
     protected static void addFullIdField(Query q, APS source, List<DBRecord> result) {
     	if (q.returns("id")) {
@@ -243,17 +270,7 @@ class QueryEngine {
     		result.addAll(aps.query(q));
     	}
     	return result;
-    }
-    
-    protected static List<DBRecord> findRecordsDirectlyInDB(Query q) throws AppException {
-    	List<DBRecord> result = null;
-    	
-    	if (q.restrictedBy("_id")) result = lookupRecordsById(q);			
-		else if (q.restrictedBy("document")) result = lookupRecordsByDocument(q);
-	    
-    	if (result != null) AccessLog.log("found directly :"+result.size());
-    	return result;
-    }
+    }       
     
     protected static void fetchFromDB(Query q, DBRecord record) throws InternalServerException {
     	if (record.encrypted == null) {
@@ -294,11 +311,11 @@ class QueryEngine {
     	return filteredresult;
     }
     
-    protected static List<DBRecord> postProcessRecords(Feature qm, Query q, List<DBRecord> result) throws AppException {
+    protected static List<DBRecord> postProcessRecords(Feature qm, Map<String, Object> properties, List<DBRecord> result) throws AppException {
     	if (result.size() > 0) {
     	   result = duplicateElimination(result); 
 	       Collections.sort(result);	    
-	       result = limitResultSize(q, result);	    
+	       result = limitResultSize(properties, result);	    
     	}
 	    
 	    AccessLog.log("END Full Query, result size="+result.size());
@@ -339,8 +356,7 @@ class QueryEngine {
     				}
     			}
     	    }
-    			
-		   if (!q.getGiveKey()) for (DBRecord record : result) record.clearSecrets();
+    					   
 		}
     	
     	if (compress > 0) {
@@ -454,9 +470,9 @@ class QueryEngine {
     
     
     
-    protected static List<DBRecord> limitResultSize(Query q, List<DBRecord> result) {
-    	if (q.restrictedBy("limit")) {
-	    	Object limitObj = q.getProperties().get("limit");
+    protected static List<DBRecord> limitResultSize(Map<String, Object> properties, List<DBRecord> result) {
+    	if (properties.containsKey("limit")) {
+	    	Object limitObj = properties.get("limit");
 	    	int limit = Integer.parseInt(limitObj.toString());
 	    	if (result.size() > limit) result = result.subList(0, limit);
 	    }
@@ -472,7 +488,7 @@ class QueryEngine {
 			return new ArrayList<DBRecord>(DBRecord.getAll(query, queryFields));		
     }
     
-    protected static List<DBRecord> lookupRecordsByDocument(Query q) throws InternalServerException {    	
+    /*protected static List<DBRecord> lookupRecordsByDocument(Query q) throws InternalServerException {    	
 			Map<String, Object> query = new HashMap<String, Object>();
 			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "encrypted");
 			queryFields.addAll(q.getFieldsFromDB());
@@ -480,7 +496,7 @@ class QueryEngine {
 			//q.addMongoTimeRestriction(query);
 			if (q.restrictedBy("part"))	query.put("part", q.getProperties().get("part"));		
 			return new ArrayList<DBRecord>(DBRecord.getAll(query, queryFields));						
-    }
+    }*/
    
  
 }

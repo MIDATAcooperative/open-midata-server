@@ -21,6 +21,10 @@ angular.module('services')
 	service.delete = function(url, body) {
 		return $http.delete(ENV.apiurl + url, body, { headers : { "X-Session-Token" : sessionStorage.token } });
 	};
+	
+	service.token = function() {
+		return service.post(jsRoutes.controllers.Application.downloadToken().url);
+	};
 				 	
 	return service;
 }]);

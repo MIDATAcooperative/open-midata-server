@@ -23,6 +23,7 @@ import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 
 /**
@@ -187,8 +188,9 @@ class APSImplementation extends APS {
 		return (BasicBSONObject) eaps.getPermissions().get(key);
 	}
 
-	public List<DBRecord> query(Query q) throws AppException {
-		merge();
+	@Override
+	public List<DBRecord> query(Query q) throws AppException {		
+		merge();		 
 		// AccessLog.logLocalQuery(eaps.getId(), q.getProperties(),
 		// q.getFields() );
 		List<DBRecord> result = new ArrayList<DBRecord>();
@@ -441,6 +443,19 @@ class APSImplementation extends APS {
 			removePermission(records);
 		}
 	}
+		
+	public void clearPermissions() throws AppException {
+		try {
+			eaps.getPermissions().put("p", new BasicDBList());		
+			eaps.savePermissions();
+		} catch (LostUpdateException e) {
+			recoverFromLostUpdate();
+			clearPermissions();
+		}
+
+		
+	}
+	
 
 	@Override
 	protected List<DBRecord> postProcess(List<DBRecord> records, Query q) throws InternalServerException {
@@ -550,7 +565,6 @@ class APSImplementation extends APS {
 		}
 		return result;
 	}
-	
-	
+
 
 }

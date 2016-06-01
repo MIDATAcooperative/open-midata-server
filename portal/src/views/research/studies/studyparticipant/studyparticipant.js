@@ -8,9 +8,8 @@ angular.module('portal')
 	$scope.loading = true;
 	
 	views.reset();
-	views.link("1", "record", "record");
-	views.setView("1", { aps : $scope.memberid, properties : { } , fields : [ "ownerName", "created", "id", "name" ]});
-
+	views.disableView("1");
+	
 	$scope.reload = function() {
 					
 		
@@ -19,8 +18,12 @@ angular.module('portal')
 				$scope.participation = data.participation;
 				$scope.member = data.member;
 				$scope.loading = false;
-				console.log("A");
-					console.log("B");
+				if (data.participation && data.participation.status == "ACTIVE") {
+					views.link("1", "record", "record");
+					views.setView("1", { aps : $scope.memberid, properties : { } , fields : [ "ownerName", "created", "id", "name" ]});				
+				} else {
+					views.disableView("1");
+				}
 											
 			}).
 			error(function(err) {

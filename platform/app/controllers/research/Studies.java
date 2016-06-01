@@ -160,7 +160,7 @@ public class Studies extends APIController {
 
 		        Writer output = new OutputStreamWriter(zos);			   
 			    for (StudyGroup group : study.groups) {
-					 Set<StudyParticipation> parts = StudyParticipation.getParticipantsByStudyAndGroup(study._id, group.name, Sets.create("ownerName", "yearOfBirth", "country", "gender", "group"));
+					 Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(study._id, group.name, Sets.create("ownerName", "yearOfBirth", "country", "gender", "group"));
 					 			 			 
 					 //for (StudyParticipation part : parts) {						 
 					 output.append(JsonOutput.toJson(parts, "Consent", Sets.create("ownerName", "yearOfBirth", "country", "gender", "group")));						 						 						 			
@@ -511,7 +511,7 @@ public class Studies extends APIController {
 			consent.add();
 		}
 		
-		Set<StudyParticipation> parts = StudyParticipation.getParticipantsByStudyAndGroup(studyid, group, Sets.create());
+		Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyid, group, Sets.create());
 		Set<ObjectId> participants = new HashSet<ObjectId>();
 		for (StudyParticipation part : parts) { participants.add(part.owner); }
 		
@@ -547,7 +547,7 @@ public class Studies extends APIController {
 		JsonNode json = request().body().asJson();	
 		JsonValidation.validate(json, "plugin", "context", "title", "description", "pluginQuery", "frequency");
 
-		Set<StudyParticipation> parts = StudyParticipation.getParticipantsByStudyAndGroup(studyid, group, Sets.create());
+		Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyid, group, Sets.create());
 		
 		for (StudyParticipation part : parts) {		
 			Task task = new Task();
@@ -614,7 +614,7 @@ public class Studies extends APIController {
 	   Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords"));
 	   if (study == null) return badRequest("Study does not belong to organization");
 	   	   
-	   Set<String> participationFields = Sets.create("pstatus", "group", "history","ownerName", "gender", "country", "yearOfBirth", "owner"); 
+	   Set<String> participationFields = Sets.create("pstatus", "status", "group", "history","ownerName", "gender", "country", "yearOfBirth", "owner"); 
 	   StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, participationFields);
 	   if (participation == null) return badRequest("Member does not participate in study");
 	   if (participation.pstatus == ParticipationStatus.CODE || 

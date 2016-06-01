@@ -9,7 +9,7 @@ import play.mvc.Security;
  * This authenticator allows only MIDATA member users
  *
  */
-public class MemberSecured extends Security.Authenticator {
+public class MemberSecured extends AnyRoleSecured {
 
 	@Override
 	public String getUsername(Context ctx) {

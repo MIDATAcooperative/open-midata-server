@@ -10,5 +10,15 @@ angular.module('portal')
 	      url: '/consent/:consentId',	      
 	      templateUrl: 'views/members/consent/editconsent.html',
 	      dashId : 'circles'
+	    })
+	    .state('provider.newconsent', {
+	      url: '/newconsent?authorize',	      
+	      templateUrl: 'views/members/consent/newconsent.html',
+	      dashId : 'circles'
+	    })
+	    .state('provider.editconsent', {
+	      url: '/consent/:consentId',	      
+	      templateUrl: 'views/members/consent/editconsent.html',
+	      dashId : 'circles'
 	    });
 });

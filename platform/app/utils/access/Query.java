@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,8 +44,7 @@ public class Query {
 	private boolean fetchFromDB;
 	private boolean restrictedOnTime;
 	private APSCache cache;
-	private ObjectId apsId;
-	private boolean giveKey;	
+	private ObjectId apsId;		
 		
 	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, ObjectId apsId) throws BadRequestException, InternalServerException {
 		this.properties = properties;
@@ -56,14 +56,7 @@ public class Query {
 	}
 	
 	public Query(Query q, Map<String, Object> properties) throws BadRequestException, InternalServerException {
-		this.properties = new HashMap<String, Object>(q.getProperties());
-		this.properties.putAll(properties);
-		this.fields = q.getFields();
-		this.cache = q.getCache();
-		this.apsId = q.getApsId();
-		this.giveKey = q.giveKey;
-		process();
-		AccessLog.logQuery(properties, fields);
+		this(q, properties, q.getApsId());
 	}
 	
 	public Query(Query q, Map<String, Object> properties, ObjectId aps) throws BadRequestException, InternalServerException {
@@ -71,21 +64,10 @@ public class Query {
 		this.properties.putAll(properties);
 		this.fields = q.getFields();
 		this.cache = q.getCache();
-		this.apsId = aps;
-		this.giveKey = q.giveKey;
+		this.apsId = aps;			
 		process();
 		AccessLog.logQuery(properties, fields);
-	}
-	
-	protected Query(Map<String, Object> properties, Set<String> fields, APSCache cache,  ObjectId apsId, boolean giveKey) throws BadRequestException, InternalServerException {
-		this.properties = properties;
-		this.fields = fields;
-		this.cache = cache;
-		this.apsId = apsId;
-		this.giveKey = giveKey;
-		process();
-		AccessLog.logQuery(properties, fields);
-	}
+	}		
 	
 	public Map<String, Object> getProperties() {
 		return properties;
@@ -114,10 +96,7 @@ public class Query {
 	public boolean getFetchFromDB() {
 		return fetchFromDB;
 	}
-	
-	public boolean getGiveKey() {
-		return giveKey;
-	}
+		
 	
 	public boolean isRestrictedOnTime() {
 		return restrictedOnTime;

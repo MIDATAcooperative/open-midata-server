@@ -5,5 +5,10 @@ angular.module('portal')
 	      url: '/circles?circleId',
 	      templateUrl: 'views/members/consents/consents.html',	      
 	      dashId : 'circles'
+	    })
+	    .state('provider.circles', {
+	      url: '/circles?circleId',
+	      templateUrl: 'views/members/consents/consents.html',	      
+	      dashId : 'circles'
 	    });
 });
