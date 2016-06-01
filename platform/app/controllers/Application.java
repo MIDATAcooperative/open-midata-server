@@ -414,6 +414,18 @@ public class Application extends APIController {
 		return ok(obj);
 	}
 	
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result downloadToken() throws AppException {
+		PortalSessionToken current = PortalSessionToken.session();
+		PortalSessionToken token = new PortalSessionToken(current.getUserId(), current.getRole(), current.getOrg());
+		
+		ObjectNode obj = Json.newObject();
+		obj.put("token", token.encrypt(request(), 1000 * 10));
+		
+		return ok(obj);
+	}
+	
 	/**
 	 * provide passphrase
 	 * @return status ok
@@ -566,6 +578,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Application.confirmAccountEmail(),
 				controllers.routes.javascript.Application.confirmAccountAddress(),
 				controllers.routes.javascript.Application.requestWelcomeMail(),
+				controllers.routes.javascript.Application.downloadToken(),
 				
 				// Apps										
 				controllers.routes.javascript.Plugins.getUrlForConsent(),

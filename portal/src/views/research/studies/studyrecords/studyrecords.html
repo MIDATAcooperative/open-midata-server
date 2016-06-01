@@ -14,7 +14,7 @@
 	      <td>{{ info.count }}</td>
       </tr>
       </table>
-	  <a ng-href="{{downloadUrl}}" ng-show="infos.length" class="btn btn-primary" target="_blank">Download</a>
+	  <button ng-disabled="status.action == 'download'" ng-click="download()" href="javascript:" ng-show="infos.length" class="btn btn-primary">Download</button>
 	  </loader>
 	</div>	
 </div>

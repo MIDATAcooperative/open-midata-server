@@ -27,7 +27,12 @@ angular.module('portal')
 		$scope.downloadUrl = ENV.apiurl + jsRoutes.controllers.research.Studies.download($scope.studyId).url;
 	};
 	
-	
+	$scope.download = function() {
+		$scope.status.doAction("download", server.token())
+		.then(function(response) {
+		  document.location.href = ENV.apiurl + jsRoutes.controllers.research.Studies.download($scope.studyId).url + "?token=" + encodeURIComponent(response.data.token);
+		});
+	};
 	
 	$scope.reload();
 	

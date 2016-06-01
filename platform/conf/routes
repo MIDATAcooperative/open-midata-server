@@ -24,6 +24,7 @@ POST    /common/api/password/change                      controllers.Application
 POST    /common/api/account/email/confirm                controllers.Application.confirmAccountEmail()
 POST    /common/api/account/email/request                controllers.Application.requestWelcomeMail()
 POST    /common/api/account/address/confirm              controllers.Application.confirmAccountAddress()
+POST    /common/api/token/get                            controllers.Application.downloadToken()
 
 
 POST    /common/api/password/lost                        controllers.Application.requestPasswordResetToken()

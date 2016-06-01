@@ -40,7 +40,7 @@
 				<p class="col-sm-2">Format:</p>
 				<p class="col-sm-10">{{record.format}}</p>
 			</div>		
-			<a href="{{downloadLink}}" target="_self" class="btn btn-primary" ng-show="record.data.type === 'file'">Download</a>
+			<button href="javascript:" ng-click="download()" class="btn btn-primary" ng-show="record.data.type === 'file'">Download</button>
 			</loader>
 		 </div></div>
 		 <div  class="panel panel-primary">

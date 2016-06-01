@@ -20,7 +20,7 @@ angular.module('portal')
 			$scope.record = records.data;
 			$scope.record.json = JSON.stringify($scope.record.data, null, "\t");
 			if (_.has($scope.record.data, "type") && $scope.record.data.type === "file") {
-				$scope.downloadLink = ENV.apiurl + jsRoutes.controllers.Records.getFile(recordId).url;
+				$scope.downloadLink = true;
 			}
 			loadUserNames();
 			loadAppName();										    	    	
@@ -50,6 +50,12 @@ angular.module('portal')
 		$window.history.back();
 	};
 	
+	$scope.download = function() {
+		$scope.status.doAction("download", server.token())
+		.then(function(response) {
+		  document.location.href = ENV.apiurl + jsRoutes.controllers.Records.getFile(recordId).url + "?token=" + encodeURIComponent(response.data.token);
+		});
+	};
 	
 }]);
 
