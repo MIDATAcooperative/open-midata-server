@@ -25,7 +25,7 @@
 {"_id":{"$oid":"569915fc6281a61a232ecdd2"},"system":"v1","name":"diagnostics","label":{"en":"Family"},"contents":["ImagingStudy","DiagnosticReport","ImagingObjectSelection","DiagnosticOrder"],"parent":"other"}
 {"_id":{"$oid":"56fa3f4f6c19d1e1e9d2536e"},"system":"v1","name":"unknown","label":{"en":"Unknown Content"},"contents":["Conformance","Provenance","Parameters","NamingSystem","Media","Binary","StructureDefinition","unknown","ValueSet","Bundle","Basic","MessageHeader","DataElement","Subscription","AuditEvent","ConceptMap","TestScript","List","ImplementationGuide","OperationDefinition","OperationOutcome","SearchParameter"],"parent":"other"}
 {"_id":{"$oid":"5718f43aaed645098e8cee26"},"system":"v1","name":"activities/calories","label":{"en":"Calories Burned in Activities"},"parent":"activities","contents":["activities/activity-calories","activities/calories"]}
-{"_id":{"$oid":"5718f43aaed645098e8cee27"},"system":"v1","name":"movement","label":{"en":"Movement"},"parent":"activities","contents":["activities/steps","activities/distance"]}
+{"_id":{"$oid":"5718f43aaed645098e8cee27"},"system":"v1","name":"movement","label":{"en":"Movement"},"parent":"activities","contents":[]}
 {"_id":{"$oid":"5718f43aaed645098e8cee28"},"system":"v1","name":"activities/minutes","label":{"en":"Time-Info about Activities"},"parent":"activities","contents":["activities/minutes-very-active","activities/minutes-fairly-active","activities/minutes-lightly-active","activities/minutes-sedentary"]}
 {"_id":{"$oid":"5718f43aaed645098e8cee29"},"system":"v1","name":"movement/height","label":{"en":"Vertical Movement"},"parent":"activities","contents":["activities/elevation","activities/floors"]}
 {"_id":{"$oid":"5718f577aed645098e8cee2a"},"system":"v1","name":"body/height","label":{"en":"Height"},"parent":"qself","contents":["body/height"]}
@@ -35,3 +35,5 @@
 {"_id":{"$oid":"5719d3d0aed64509b3d0930c"},"system":"v1","name":"activities/heartrate","label":{"en":"Heart Rate"},"parent":"qself","contents":["activities/heartrate"]}
 {"_id":{"$oid":"5719d46aaed64509b3d0930d"},"system":"v1","name":"body/temperature","label":{"en":"Body Temperature"},"parent":"qself","contents":["body/temperature"]}
 {"_id":{"$oid":"5719d46aaed64509b3d0930e"},"system":"v1","name":"body/blood","label":{"en":"Blood Pressure"},"parent":"qself","contents":["body/blood/systolic","body/blood/diastolic"]}
+{"_id":{"$oid":"57285570aed6450be5bfeb5d"},"system":"v1","name":"activities/steps","label":{"en":"Steps"},"parent":"movement","contents":["activities/steps"]}
+{"_id":{"$oid":"57285570aed6450be5bfeb5e"},"system":"v1","name":"activities/distance","label":{"en":"Distance"},"parent":"movement","contents":["activities/distance"]}
