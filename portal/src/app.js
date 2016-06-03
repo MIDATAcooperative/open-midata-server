@@ -17,7 +17,7 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
        'en_*': 'en',
        'de_*': 'de'
      })
-     //.fallbackLanguage('en')
+     .fallbackLanguage('en')
      .determinePreferredLanguage();
    
    $stateProvider

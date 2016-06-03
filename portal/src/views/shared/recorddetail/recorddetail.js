@@ -36,14 +36,14 @@ angular.module('portal')
 					if ($scope.record.creator.$oid === user._id.$oid) { $scope.record.creator = (user.firstname+" "+user.lastname).trim(); }
 				});
 			}).
-			error(function(err) { $scope.error = "Failed to load names: " + err; });
+			error(function(err) { $scope.error = { code : "error.internal" }; } );
 	};
 	
 	var loadAppName = function() {
 		var data = {"properties": {"_id": $scope.record.app}, "fields": ["name"]};
 		server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data)).
 			success(function(apps) { $scope.record.app = apps[0].name; }).
-			error(function(err) { $scope.error = "Failed to load app name: " + err; });
+			error(function(err) { $scope.error = { code : "error.internal" }; });
 	};
 		
 	$scope.goBack = function() {

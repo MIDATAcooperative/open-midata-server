@@ -23,11 +23,8 @@ angular.module('portal')
 		success(function(apps) { 
 			$scope.visualizations.spotlighted = apps;			
 		}).
-		error(function(err) { $scope.error = "Failed to load apps: " + err; });
-	/*server.post(jsRoutes.controllers.Visualizations.get().url, JSON.stringify(data)).
-		success(function(visualizations) { $scope.visualizations.spotlighted = visualizations; }).
-		error(function(err) { $scope.error = "Failed to load visualizations: " + err; });
-	*/
+		error(function(err) { $scope.error = { "code" : "error.internal" }; });
+
 	// show app details
 	$scope.showAppDetails = function(app) {		
 		$state.go("^.app", { appId : app._id.$oid, context : $state.params.context, next : $state.params.next });

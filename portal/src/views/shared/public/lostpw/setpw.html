@@ -11,14 +11,14 @@
 			            	<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
 	                        </p>
 							<div class="alert alert-success" ng-show="setpw.success">
-								<p>You have successfully set a new password for your account.</p>
-								<p><a ui-sref="^.login">Go back to login page.</a></p>
+								<p translate="setpw.success"></p>
+								<p><a ui-sref="^.login" translate="setpw.back_to_login"></a></p>
 							</div>
-							<p>Please enter a new password for your account.</p>
+							<p translate="setpw.enter_new"></p>
 							<form ng-submit="submit()" role="form">
-								<input type="password" class="form-control" placeholder="New password" ng-model="setpw.password" style="margin-bottom:5px;" autofocus>								
-								<input type="password" class="form-control" placeholder="Password repetition" ng-model="setpw.passwordRepeat" style="margin-bottom:5px;">
-								<button type="submit" class="btn btn-primary btn-block">Set New Password</button>
+								<input type="password" class="form-control" translate translate-attr-placeholder="setpw.new_password" ng-model="setpw.password" style="margin-bottom:5px;" autofocus>								
+								<input type="password" class="form-control" translate trnaslate-attr-placeholder="setpw.new_password_repetition" ng-model="setpw.passwordRepeat" style="margin-bottom:5px;">
+								<button type="submit" class="btn btn-primary btn-block" translate="setpw.set_new_btn">Set New Password</button>
 							</form>
 		            	</div>
 					</div>

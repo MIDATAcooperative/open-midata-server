@@ -2,46 +2,41 @@
 <div ng-controller="ChangePassphraseCtrl">
 
 	<div ng-cloak class="panel panel-primary">
-		<div class="panel-heading">Change Passphrase</div>
+		<div class="panel-heading" translate="changepassphrase.title"></div>
 		<div class="panel-body">
-			<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
-	            {{ error.message || error }}
+			<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	            
 	        </p>	
-	        <div class="alert alert-success" ng-show="success">
-			   Passphrase has been successfully changed!
+	        <div class="alert alert-success" ng-show="success" translate="changepassphrase.success">			   
 			</div>
 			<form ng-show="phase==0" name="myform" novalidate class="css-form form-horizontal" ng-submit="preparePassphrase()" role="form">
 			   <input type="text" style="display: none" id="fakeUsername" name="fakeUsername" value="" />
                <input type="password" style="display: none" id="fakePassword" name="fakePassword" value="" />
-			   <p>A passphrase is an additional protection for your data. It is not stored on our servers but is required for decrypting your data.
-			     It is impossible to read your records (unless shared with another account) if the passphrase is not provided.			   
-			   </p>
-			   <p>If your account is not yet protected by a passphrase leave the old passphrase field empty.</p> 
-			   <p class="alert alert-info">Please keep your passphrase at a save place as there is no recovery function for it. If you ever loose your passphrase you need to contact support@midata.coop.</p>
+			   <p translate="changepassphrase.description"></p>
+			   <p translate="changepassphrase.if_unprotected"></p> 
+			   <p class="alert alert-info" translate="changepassphrase.keep_passphrase_safe"></p>
 				<formrow myid="oldPassphrase" label="Old Passphrase">
-				<input type="password" class="form-control" id="oldPassphrase" name="oldPassphrase" placeholder="Old Passphrase" ng-model="pw.oldPassphrase"
+				<input type="password" class="form-control" id="oldPassphrase" name="oldPassphrase" translate translate-attr-placeholder="changepassphrase.old_passphrase" ng-model="pw.oldPassphrase"
 					autocomplete="off"></formrow>
-				<formrow myid="passphrase" label="New Passphrase"> <input type="password" class="form-control" id="passphrase" name="passphrase"
-					placeholder="Passphrase" ng-model="pw.passphrase" required autocomplete="off"> <formerror myid="passphrase" type="compare"
-					message="Passphrase and passphrase repetition do not match!"></formerror> <formerror myid="passphrase" type="tooshort"
-					message="Passphrases must be at least 8 characters long."></formerror> <formerror myid="passphrase" type="tooweak"
-					message="Passphrases should contain of a mix of upper/lower case letters, numbers and special characters."></formerror> </formrow>
+				<formrow myid="passphrase" label="changepassphrase.new_passphrase"> <input type="password" class="form-control" id="passphrase" name="passphrase"
+					translate translate-attr-placeholder="changepassphrase.new_passphrase" ng-model="pw.passphrase" required autocomplete="off"> 
+					<formerror myid="passphrase" type="compare"	message="error.invalid.passphrase_repetition"></formerror>
+					<formerror myid="passphrase" type="tooshort" message="error.tooshort.passphrase"></formerror>
+					<formerror myid="passphrase" type="tooweak"	message="error.tooweak.passphrase"></formerror> </formrow>
 								
-				<button type="submit" class="btn btn-primary">Change Passphrase</button>				
+				<button type="submit" class="btn btn-primary" translate="changepassphrase.change_passphrase_btn"></button>				
 				
 			</form>
 			<form ng-show="phase==1" name="myform2" novalidate class="css-form form-horizontal" ng-submit="changePassphrase()" role="form">
 			   <input type="text" style="display: none" id="fakeUsername" name="fakeUsername" value="" />
                <input type="password" style="display: none" id="fakePassword" name="fakePassword" value="" />
-               <p>By repeating your new passphrase you make the change final.</p>			
-					<formrow myid="passphrase2" label="Repeat New Passphrase">
-				<input type="password" class="form-control" id="passphrase2" name="passphrase2" placeholder="Passphrase" ng-model="pw.passphrase2"
+               <p translate="changepassphrase.repeat_finalizes"></p>			
+					<formrow myid="passphrase2" label="changepassphrase.repeat_passphrase">
+				<input type="password" class="form-control" id="passphrase2" name="passphrase2" translate translate-attr-placeholder="changepassphrase.repeat_passphrase" ng-model="pw.passphrase2"
 					required autocomplete="off"></formrow>
 				
-				<button type="submit" ng-disabled="status.action=='changePassphrase'" class="btn btn-primary">Confirm Passphrase</button>				
+				<button type="submit" ng-disabled="status.action=='changePassphrase'" class="btn btn-primary" translate="changepassphrase.confirm_btn"></button>				
 				
-			</form>
-            <p ng-show="phase==2">Your passphrase has been updated. </p>
+			</form>            
 		</div>
 	</div>
 </div>

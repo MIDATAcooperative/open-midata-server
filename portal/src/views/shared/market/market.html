@@ -1,17 +1,17 @@
 
 	<div ng-app="market" ng-controller="MarketCtrl">
 		<div class="extraspace">
-	      <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span>Back</button>
+	      <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span><span translate="common.back_btn"></span></button>
 	    </div>	
 		<div class="alert alert-danger alert-dismissable" ng-show="error" ng-cloak>
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-			<p>{{error}}</p>
+			<p translate="{{ error.code }}"></p>
 		</div>
 			
 		<!-- Visualizations -->
 		<div ng-show="beta">
 		<div class="page-header">
-			<h1><small>Categories</small></h1>
+			<h1><small translate="market.categories"></small></h1>
 		</div>
 		
 		<div class="row" ng-cloak>		 		   
@@ -19,7 +19,7 @@
 		</div>
 		
 		<div class="page-header">
-			<h1><small>Plugins</small></h1>
+			<h1><small translate="market.plugins"></small></h1>
 		</div>
 		</div>
 						
@@ -28,7 +28,7 @@
 			  <div class="panel panel-primary">
 				<div class="panel-heading">{{ tag || 'Available Plugins' }}</div>
 				<div class="panel-body">
-				<p ng-hide="visualizations.spotlighted.length">There are no spotlighted plugins yet.</p>
+				<p ng-hide="visualizations.spotlighted.length" translate="market.no_spotlighted_plugins"></p>
 				<div class="media" ng-repeat="visualization in visualizations.spotlighted | filter : hasTag">
 					<a class="pull-left" href="javascript:;" ng-click="showVisualizationDetails(visualization)">
 						<img class="media-object" ng-src="{{ getVisualizationImage(visualization) }}" alt="Icon">
@@ -43,9 +43,9 @@
 			</div>
 			<div ng-show="beta" class="col-md-6">
 			    <div class="panel panel-primary">
-				<div class="panel-heading">Plugins you may like</div>
+				<div class="panel-heading" translate="market.plugins_you_may_like"></div>
 				<div class="panel-body">
-				<p ng-hide="visualizations.suggested.length">We have no recommendations for you yet.</p>
+				<p ng-hide="visualizations.suggested.length" translate="market.no_recommendations"></p>
 				<div class="media" ng-repeat="visualization in visualizations.suggested">
 					<a class="pull-left" href="javascript:;" ng-click="showVisualizationDetails(visualization)">
 						<img class="media-object" ng-src="{{ getVisualizationImage(visualization) }}" alt="Icon">

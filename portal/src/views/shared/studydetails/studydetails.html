@@ -1,50 +1,49 @@
 
 <div ng-controller="StudyDetailCtrl" ng-cloak>
 	<div class="extraspace">
-	  <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span>Back</button>
+	  <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span><span translate="common.back_btn"></span></button>
 	</div>
 	<div class="panel panel-primary">
-		<div class="panel-heading">Study</div>
+		<div class="panel-heading" translate="studydetails.study"></div>
 		<div class="panel-body">
-			<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
-				{{ error.message || error }}</p>
+			<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert"></p>
 			<p>{{ study.name }}</p>
 			<p>{{ study.description }}</p>
 		</div>
 	</div>
 	<div class="panel panel-primary">
-		<div class="panel-heading">Organisation</div>
+		<div class="panel-heading" translate="studydetails.organization"></div>
 		<div class="panel-body">
 			<p>{{ research.name }}</p>
 			<p>{{ research.description }}</p>
 		</div>
 	</div>
 	<div class="panel panel-primary" ng-show="participation && study.assistance=='HCPROFESSIONAL'">
-		<div class="panel-heading">Healthcare Providers monitoring the study</div>
+		<div class="panel-heading" translate="studydetails.providers_monitoring"></div>
 		<div class="panel-body">
-		    <p ng-show="providers.length == 0">None</p>
+		    <p ng-show="providers.length == 0" translate="studydetails.no_providers">None</p>
 			<div ng-repeat="prov in providers">
 				<address>
 					<strong>{{ prov.firstname }} {{ prov.lastname }}</strong><br>
 					 {{ prov.address1 }}<br>
 					 {{ prov.address2 }}<br> 
-					 {{ prov.zip }} {{ prov.city }}<br> {{ prov.country }}<br> <span ng-show="prov.phone">Phone: {{ prov.phone }}</span><br>
-					<span ng-show="prov.mobile">Mobile: {{ prov.mobile }}</span><br>
-					<span ng-show="prov.email">Email: {{ prov.email }}</span><br>
+					 {{ prov.zip }} {{ prov.city }}<br> {{ 'enum.country'+prov.country | translate }}<br> <span ng-show="prov.phone"><span translate="common.user.phone"></span>: {{ prov.phone }}</span><br>
+					<span ng-show="prov.mobile"><span translate="common.user.mobile_phone"></span>: {{ prov.mobile }}</span><br>
+					<span ng-show="prov.email"><span translate="common.user.email"></span>: {{ prov.email }}</span><br>
 				</address>
-				<button class="btn btn-danger btn-xs" ng-click="removeProvider(prov);">remove</button>
+				<button class="btn btn-danger btn-xs" ng-click="removeProvider(prov);" translate="studydetails.provider_remove_btn"></button>
 			</div>
 			<div class="extraspace"></div>
-			<button class="btn btn-default" ng-click="addProvider()">Add</button>
+			<button class="btn btn-default" ng-click="addProvider()" translate="studydetails.provider_add_btn"></button>
 		</div>
 	</div>
 	<div class="panel panel-primary">
-		<div class="panel-heading">Information that must be shared for participation</div>
+		<div class="panel-heading" translate="studydetails.information_that_needs_sharing"></div>
 		<div class="panel-body">
 
 			<ul>
-				<li ng-show="needs('RESTRICTED')">Your gender, year of birth and country</li>
-				<li ng-show="needs('DEMOGRAPHIC')">Your name, birthday and contact information (address, email, phone)</li>
+				<li ng-show="needs('RESTRICTED')" translate="studydetails.information_restricted"></li>
+				<li ng-show="needs('DEMOGRAPHIC')" translate="studydetails.information_demographic"></li>
 				
 				<li ng-repeat="(rule, params) in study.recordQuery">
 			          <span ng-if="rule == 'format'">Records that have format:

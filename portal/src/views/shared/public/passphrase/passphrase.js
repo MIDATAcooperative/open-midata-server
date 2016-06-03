@@ -9,7 +9,7 @@ angular.module('portal')
 	$scope.submit = function() {
 		// check user input
 		if (!$scope.passphrase.passphrase) {
-			$scope.error = "Please provide your passphrase.";
+			$scope.error = { code : "error.missing.passphrase" };
 			return;
 		}
 		

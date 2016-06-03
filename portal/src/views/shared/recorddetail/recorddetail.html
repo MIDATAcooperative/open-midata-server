@@ -1,59 +1,55 @@
 
 	<div ng-controller="RecordCtrl">
 		<div class="extraspace">
-			  <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span>Back</button>
+			  <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span><span translate="common.back"></span></button>
 		</div>
 		<div class="panel panel-primary">
-		  <div class="panel-heading">Meta Information</div>
+		  <div class="panel-heading" translate="recorddetail.meta"></div>
 		  <div class="panel-body">
 			<loader busy="status.isBusy !== false">
-			<div class="alert alert-warning alert-dismissable" ng-show="record.data.type === 'largeRecord'">
-				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-				<p>This is a very large record which has been divided into chunks internally. Only the index information is shown here.</p>
-			</div>
-			
+						
 			<div class="row">
-				<p class="col-sm-2">Name:</p>
+				<p class="col-sm-2" translate="recorddetail.name"></p>
 				<p class="col-sm-10">{{record.name}}</p>
 			</div>
 			<div class="row">
-				<p class="col-sm-2">Owned by:</p>
+				<p class="col-sm-2" translate="recorddetail.owned_by"></p>
 				<p class="col-sm-10">{{record.owner}}</p>
 			</div>
 			<div class="row">
-				<p class="col-sm-2">Created by:</p>
+				<p class="col-sm-2" translate="recorddetail.created_by"></p>
 				<p class="col-sm-10">{{record.creator}}</p>
 			</div>
 			<div class="row">
-				<p class="col-sm-2">Created with:</p>
+				<p class="col-sm-2" translate="recorddetail.created_with"></p>
 				<p class="col-sm-10">{{record.app}}</p>
 			</div>
 			<div class="row">
-				<p class="col-sm-2">Created on:</p>
+				<p class="col-sm-2" translate="recorddetail.creaton_on"></p>
 				<p class="col-sm-10">{{record.created | date}}</p>
 			</div>
 			<div class="row">
-				<p class="col-sm-2">Content:</p>
+				<p class="col-sm-2" translate="recorddetail.content"></p>
 				<p class="col-sm-10">{{record.content}}</p>
 			</div>
 			<div class="row">
-				<p class="col-sm-2">Format:</p>
+				<p class="col-sm-2" translate="recorddetail.format"></p>
 				<p class="col-sm-10">{{record.format}}</p>
 			</div>		
-			<button href="javascript:" ng-click="download()" class="btn btn-primary" ng-show="record.data.type === 'file'">Download</button>
+			<button href="javascript:" ng-click="download()" class="btn btn-primary" ng-show="record.data.type === 'file'" translate="recorddetail.download_btn">Download</button>
 			</loader>
 		 </div></div>
 		 <div  class="panel panel-primary">
-		    <div class="panel-heading">Content Visualization</div>
+		    <div class="panel-heading" translate="recorddetail.content_visualization"></div>
 		    <div class="panel-body">
 		      <loader busy="status.isBusy !== false">
-		      <div ng-hide="url" class="body">No visualization available for this record.</div>
+		      <div ng-hide="url" class="body" translate="recorddetail.no_visualization"></div>
 			  <div ng-show="url" class="body"><div class=""><pluginframe id="myframe" mysrc="{{url}}" width="100%" height="600px"></pluginframe></div></div>
 			  </loader>	
 			</div>
 		 </div>
 		 <div ng-cloak class="panel panel-primary">
-		    <div class="panel-heading">RAW Data</div>
+		    <div class="panel-heading" translate="recorddetail.raw_data">RAW Data</div>
 		    <div class="panel-body">
 			  <div style="white-space: pre-wrap;" ng-show="record.json">{{record.json}}</div>		
 		    </div>

@@ -16,18 +16,22 @@
    },
    
    "error" : {
-     "offline" : "The backend is currently offline! Come back later.",
+     "offline" : "The backend is currently offline! Please contact support@midata.coop if the problem persists.",
+     "internal" : "An internal error occured. Please contact support@midata.coop if the problem persists.",
      
      "invalid" : {
        "email" : "Please enter a valid email address",
        "credentials" : "Invalid username or password.",
-       "password_repetition" : "Password and password repetition do not match!"
+       "password_repetition" : "Password and password repetition do not match!",
+       "passphrase_repetition" : "Passphrase and passphrase repetition do not match!"
      },
      
      "missing" : {
        "credentials" : "Please provide a username  and a password.",
+       "email" : "Please fill out your email address.",
        "input_field" : "Please fill out this input field.",
-       "newpassword" : "Please enter a new password!"
+       "newpassword" : "Please enter a new password!",
+       "passphrase" : "Please provide your passphrase."
      },
      
      "exists" : {
@@ -35,11 +39,13 @@
      },
      
      "tooshort" : {
-       "password" : "Passwords must be at least 8 characters long."       
+       "password" : "Passwords must be at least 8 characters long.",
+       "passphrase" : "Passphrases must be at least 8 characters long."       
      },
      
      "tooweak" : {
-       "password" : "Passwords should contain of a mix of upper/lower case letters, numbers and special characters."
+       "password" : "Passwords should contain of a mix of upper/lower case letters, numbers and special characters.",
+       "passphrase" : "Passphrases should contain of a mix of upper/lower case letters, numbers and special characters."
      }
              
    },
@@ -54,6 +60,23 @@
        "CH" : "Switzerland"
      }
    },
+   
+  "common" : {
+    "back_btn" : "Back",
+    "search_btn" : "Search",
+    
+    "user" : {
+      "lastname" : "Surname",
+	  "firstname" : "Firstname",
+	  "zip" : "ZIP",
+	  "city" : "City",
+	  "street" : "Street",
+	  "phone" : "Phone",
+	  "mobile_phone" : "Mobile",
+	  "email" : "Email"
+	}
+	
+  },
    
   "registration" : {
     "sign_up" : "Sign Up",
@@ -87,6 +110,103 @@
   },
   
   "setpw" : {
-    "title" : "Password Assistance - Step 2"
+    "title" : "Password Assistance - Step 2",    
+    "new_password" : "New password",
+    "new_password_repeat" : "Password repetition",
+    "enter_new" : "Please enter a new password for your account.",
+    "set_new_btn" : "Set New Password",
+    "success" : "You have successfully set a new password for your account.",
+    "back_to_login" : "Go back to login page."
+  },
+  
+  "passphrase" : {
+    "title" : "Enter Passphrase",
+    "description" : "Your account is protected with a passphrase.",
+    "passphrase" : "Passphrase",
+    "continue_btn" : "Continue",
+    "if_lost" : "If you lost your passphrase contact support@midata.coop"
+  },
+  
+  "postregister" : {
+    "title" : "Welcome to MIDATA",
+    "description" : "Before you can use your account your identity needs to be verified:",
+    "email_confirmed" : "E-Mail confirmed?",
+    "contract_signed" : "Contract signed and sent back?",
+    "resent_success" : "Welcome mail has been resent.",
+    "address_success" : "Address has been confirmed.",
+    "code_entered" : "Confirmation Code entered?",
+    "email_instructions" : "1. Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.",
+    "resend_btn" : "Resend eMail",
+    "contract_instructions" : "2. A contract has been sent to your postal address. Return it signed to MIDATA.",
+    "code_intructions" : "3. A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
+    "code_later" : "Confirmation code may be entered here after signed contract has arrived at MIDATA office.",
+    "enter_now_btn" : "Enter now",
+    "email_success" : "E-Mail address has been confirmed."
+  },
+  
+  "changepassphrase" : {
+    "title" : "Change Passphrase",
+    "description" : "A passphrase is an additional protection for your data. It is not stored on our servers but is required for decrypting your data. It is impossible to read your records (unless shared with another account) if the passphrase is not provided.",
+    "if_unprotected" : "If your account is not yet protected by a passphrase leave the old passphrase field empty.",
+    "keep_passphrase_safe" : "Please keep your passphrase at a save place as there is no recovery function for it. If you ever loose your passphrase you need to contact support@midata.coop.",
+    "old_passphrase" : "Old Passphrase",
+    "new_passphrase" : "New Passphrase",
+    "change_passphrase_btn" : "Change Passphrase",
+    "repeat_finalizes" : "By repeating your new passphrase you make the change final.",
+    "repeat_passphrase" : "Repeat New Passphrase",
+    "confirm_btn" : "Confirm Passphrase",
+    "success" : "Passphrase has been successfully changed!"
+  },
+  
+  "changepassword" : {
+    "title" : "Change Password",
+    "old_password" : "Old Password",
+    "new_password" : "New Password",
+    "repeat_password" : "Repeat New Password",
+    "change_btn" : "Change Password",
+    "success" : "Password has been successfully changed!"
+  },
+  
+  "market" : {
+    "categories" : "Categories",
+    "plugins" : "Plugins",
+    "no_spotlighted_plugins" : "There are no spotlighted plugins yet.",
+    "plugins_you_may_like" : "Plugins you may like",
+    "no_recommendations" : "We have no recommendations for you yet."
+  },
+  
+  "providersearch" : {
+    "title" : "Provider search",
+    "name" : "Name",
+    "city_or_zip" : "City / Zip",
+    "only_with_contact" : "Search only healthcare providers you already had contact with.",
+    "empty_result" : "No providers found.",
+    "add_consent_btn" : "Add Consent"
+  },
+  
+  "recorddetail" : {
+    "meta" : "Meta Information",
+    "name" :"Name:",
+	"owned_by" : "Owned by:",
+	"created_by" : "Created by:",
+    "created_with" : "Created with:",
+    "creaton_on" : "Created on:",
+    "content" : "Content:",
+    "format" : "Format:",
+    "download_btn" : "Download",
+    "content_visualization" : "Content Visualization",
+    "no_visualization" : "No visualization available for this record.",
+    "raw_data" : "RAW Data"
+  },
+  
+  "studydetails" : {
+    "study" : "Study",
+    "organization" : "Organization",
+    "providers_monitoring" : "Healthcare Providers monitoring the study",
+    "no_providers" : "None",
+    "provider_remove_btn" : "remove",
+    "provider_add_btn" : "Add",
+    "information_that_needs_sharing" : "Information that must be shared for participation",
+    "information_restricted" : "Your gender, year of birth and country"
   }
 }
