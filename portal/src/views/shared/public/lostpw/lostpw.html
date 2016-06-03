@@ -6,19 +6,19 @@
 				<div class="panel-container" style="max-width:600px; padding-top:120px; margin:0 auto;">
 					<div class="panel panel-primary">
 		            	<div class="panel-heading">
-		              		<h3 class="panel-title">Password Assistance - Step 1</h3>
+		              		<h3 class="panel-title" translate="lostpw.title"></h3>
 		            	</div>
 		            	<div class="panel-body">
 			            	<div class="alert alert-danger" ng-show="lostpw.error">
-								<p>{{lostpw.error}}</p>
+								<p translate="{{ lostpw.error.code }}"></p>
 							</div>
 							<div class="alert alert-success" ng-show="lostpw.success">
-								<p>We have sent you an email with instructions on how to reset your password.</p>
+								<p translate="lostpw.success"></p>
 							</div>
-							<p>Enter the e-mail address associated with your account, then click Continue. We'll email you a link to a page where you can easily create a new password.</p>
+							<p translate="lostpw.description"></p>
 							<form name="form" ng-submit="submit()" role="form">
-								<input type="email" class="form-control" placeholder="Email address" ng-model="lostpw.email" style="margin-bottom:5px;" autofocus>
-								<button type="submit" class="btn btn-primary btn-block">Continue</button>
+								<input type="email" class="form-control" translate translate-attr-placeholder="lostpw.email" ng-model="lostpw.email" style="margin-bottom:5px;" autofocus>
+								<button type="submit" class="btn btn-primary btn-block" translate="lostpw.continue"></button>
 							</form>
 		            	</div>
 					</div>

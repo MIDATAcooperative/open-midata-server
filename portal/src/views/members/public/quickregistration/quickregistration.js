@@ -18,7 +18,7 @@ angular.module('portal')
 		if (! $scope.myform.$valid) return;
 		
 		if ($scope.registration.password !=  $scope.registration.password2) {
-			$scope.error = "Password and password repetition do not match!";
+			$scope.error = { code : "error.invalid.password_repetition" };
 			return;
 		}
 		        

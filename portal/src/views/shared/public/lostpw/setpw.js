@@ -13,11 +13,11 @@ angular.module('portal')
 	$scope.submit = function() {
 		// check user input
 		if (!$scope.setpw.password) {
-			$scope.error = "Please set a new password.";
+			$scope.error = { code : "error.missing.newpassword" };
 			return;
 		}
 		if (!$scope.setpw.passwordRepeat || $scope.setpw.passwordRepeat !== $scope.setpw.password) {
-			$scope.error = "Password and its repetition do not match.";
+			$scope.error = { code : "error.invalid.password_repetition" };
 			return;
 		}
 		

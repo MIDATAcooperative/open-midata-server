@@ -1,0 +1,12 @@
+{
+  "member_login" : {
+    "teaser": "MEINE DATEN - UNSERE GESUNDHEIT!",
+    "register_now" : "Jetzt Registrieren",
+    "sign_in" : "Einloggen",    
+    "email_address" : "Email Addresse",
+    "password" : "Passwort",
+    "remember_me" : "Merken",
+    "sign_in_btn" : "Einloggen",    
+    "forgot_your_password" : "Passwort vergessen?"
+  }
+}

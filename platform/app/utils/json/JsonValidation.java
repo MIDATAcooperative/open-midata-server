@@ -20,11 +20,11 @@ public class JsonValidation {
 
 	public static void validate(JsonNode json, String... requiredFields) throws JsonValidationException {
 		if (json == null) {
-			throw new JsonValidationException("error.validation.nojson", "No json found.");
+			throw new JsonValidationException("error.missing.json", "No json found.");
 		} else {
 			for (String requiredField : requiredFields) {
 				if (!json.has(requiredField)) {
-					throw new JsonValidationException("error.validation.fieldmissing", "Request parameter '" + requiredField + "' not found.");
+					throw new JsonValidationException("error.missing.field", "Request parameter '" + requiredField + "' not found.");
 				}
 			}
 		}
@@ -42,7 +42,7 @@ public class JsonValidation {
 		if (data.isObject()) {
 			return data.toString();
 		}
-		throw new JsonValidationException("error.validation.fieldmissing", "Request parameter '" + field + "' does not contain JSON.");
+		throw new JsonValidationException("error.missing.field", "Request parameter '" + field + "' does not contain JSON.");
 	}
 	
 	public static String getStringOrNull(JsonNode json, String field) {
@@ -57,20 +57,20 @@ public class JsonValidation {
 		if (n.isObject() && n.has("$oid")) n = n.path("$oid");
 		String id = n.asText();		
 		if (id == null || id.trim().equals("") || id.equals("null")) return null;
-		if (!ObjectId.isValid(id)) throw new JsonValidationException("error.validation.objectid", field, "noobjectid", "ObjectID expected.");
+		if (!ObjectId.isValid(id)) throw new JsonValidationException("error.invalid.objectid", field, "noobjectid", "ObjectID expected.");
 		return new ObjectId(id);
 	}
 	
 	public static int getInteger(JsonNode json, String field, int lowest, int highest) throws JsonValidationException {
-		if (! json.path(field).isInt()) throw new JsonValidationException("error.validation.integer", field, "nonumber", "Integer value expected.");
+		if (! json.path(field).isInt()) throw new JsonValidationException("error.invalid.integer", field, "nonumber", "Integer value expected.");
 		int val = json.path(field).intValue();
-		if (val < lowest) throw new JsonValidationException("error.validation.integer.toolow", field, "toolow", "Value must be " + lowest+" at minimum.");
-		if (val > highest) throw new JsonValidationException("error.validation.integer.toohigh", field, "toohigh", "Value may be " + lowest+" at maximum.");
+		if (val < lowest) throw new JsonValidationException("error.invalid.integer.toolow", field, "toolow", "Value must be " + lowest+" at minimum.");
+		if (val > highest) throw new JsonValidationException("error.invalid.integer.toohigh", field, "toohigh", "Value may be " + lowest+" at maximum.");
 		return val;
 	}
 	
 	public static long getLong(JsonNode json, String field) throws JsonValidationException {
-		if (! json.path(field).canConvertToLong()) throw new JsonValidationException("error.validation.long", field, "nonumber", "Long value expected.");
+		if (! json.path(field).canConvertToLong()) throw new JsonValidationException("error.invalid.long", field, "nonumber", "Long value expected.");
 		return json.path(field).longValue();		
 	}
 	
@@ -84,16 +84,16 @@ public class JsonValidation {
 	
 	public static String getPassword(JsonNode json, String field) throws JsonValidationException {
 		String pw = json.path(field).asText();
-		if (pw.length() < 8) throw new JsonValidationException("error.validation.password.tooshort", field, "tooshort", "Password is too weak. It must be 8 characters at minimum.");
-		if (!NUMBER.matcher(pw).find()) throw new JsonValidationException("error.validation.password.weak", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
-		if (!LC.matcher(pw).find()) throw new JsonValidationException("error.validation.password.weak", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
-		if (!UC.matcher(pw).find()) throw new JsonValidationException("error.validation.password.weak", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
+		if (pw.length() < 8) throw new JsonValidationException("error.invalid.password.tooshort", field, "tooshort", "Password is too weak. It must be 8 characters at minimum.");
+		if (!NUMBER.matcher(pw).find()) throw new JsonValidationException("error.invalid.password.weak", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
+		if (!LC.matcher(pw).find()) throw new JsonValidationException("error.invalid.password.weak", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
+		if (!UC.matcher(pw).find()) throw new JsonValidationException("error.invalid.password.weak", field, "tooweak", "Password is too weak. It must container numbers and a mix of upper/lowercase letters.");
 		return pw;
 	}
 	
 	public static String getEMail(JsonNode json, String field) throws JsonValidationException {
 		String email = json.path(field).asText();
-		if (!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) throw new JsonValidationException("error.validation.email", field, "noemail", "Please enter a valid email address.");
+		if (!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) throw new JsonValidationException("error.invalid.email", field, "noemail", "Please enter a valid email address.");
 		return email;
 	}
 	
@@ -105,7 +105,7 @@ public class JsonValidation {
           Date result = formatter.parse(dateStr);
           return result;
 		} catch (ParseException e) {
-		  throw new JsonValidationException("error.validation.date", "Date must have format year-month-day.");
+		  throw new JsonValidationException("error.invalid.date", "Date must have format year-month-day.");
 		}
 	}
 	

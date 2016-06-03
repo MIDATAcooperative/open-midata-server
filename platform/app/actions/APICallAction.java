@@ -53,12 +53,16 @@ public class APICallAction extends Action<APICall> {
     		  return F.Promise.pure((Result) badRequest(
     				    Json.newObject().put("field", e.getField())
                                         .put("type", e.getType())
+                                        .put("code", e.getLocaleKey())
                                         .put("message", e.getMessage())));
     		} else {
     		  return F.Promise.pure((Result) badRequest(e.getMessage()));
     		}
     	} catch (BadRequestException e5) {
-    		return F.Promise.pure((Result) badRequest(e5.getMessage()));
+    		return F.Promise.pure((Result) badRequest(
+				    Json.newObject()
+                    .put("code", e5.getLocaleKey())
+                    .put("message", e5.getMessage())));
     	} catch (AuthException e3) {
     		ErrorReporter.report("Portal", ctx, e3);	
     		return F.Promise.pure((Result) forbidden(e3.getMessage()));    

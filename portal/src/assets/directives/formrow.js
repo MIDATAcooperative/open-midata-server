@@ -5,10 +5,10 @@ angular.module('portal')
     	  return '<div class="form-group" ng-class="{ \'has-error\' :  myform.' +
     	          attrs.myid + 
     	          '.$invalid && (myform.' + attrs.myid + '.$dirty || submitted) }">'+
-                  '<label for="'+attrs.myid+'" class="col-sm-4 control-label">'+attrs.label+'</label>'+
+                  '<label for="'+attrs.myid+'" class="col-sm-4 control-label" translate="'+attrs.label+'"></label>'+
                   '<div class="col-sm-8"><div class="" ng-transclude></div>'+
-                  '<p ng-show="myform.'+attrs.myid+'.$error.required && (myform.'+attrs.myid+'.$dirty || submitted)" class="help-block">'+
-                  'Please fill out this input field.</p></div></div>';
+                  '<p ng-show="myform.'+attrs.myid+'.$error.required && (myform.'+attrs.myid+'.$dirty || submitted)" class="help-block" translate="error.missing.input_field">'+
+                  '</p></div></div>';
       },
       restrict: 'E',
       transclude: true,

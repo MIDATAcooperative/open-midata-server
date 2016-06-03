@@ -5,11 +5,10 @@
 				<div class="panel-container" style="max-width:600px; padding-top:120px; margin:0 auto;">
 					<div class="panel panel-primary">
 		            	<div class="panel-heading">
-		              		<h3 class="panel-title">Password Assistance - Step 2</h3>
+		              		<h3 class="panel-title" translate="setpw.title"></h3>
 		            	</div>
 		            	<div class="panel-body">
-			            	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
-	                          {{ error.message || error }}
+			            	<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
 	                        </p>
 							<div class="alert alert-success" ng-show="setpw.success">
 								<p>You have successfully set a new password for your account.</p>

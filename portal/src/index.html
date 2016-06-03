@@ -53,6 +53,10 @@
 		<!-- build:js app.min.js -->				
         <script type="text/javascript" src="components/angular/angular.js" defer></script>
         <script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap.js" defer></script>
+        <script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
+        <script type="text/javascript" src="components/angular-translate-loader-partial/angular-translate-loader-partial.js" defer></script>
+        <script type="text/javascript" src="components/angular-translate-storage-cookie/angular-translate-storage-cookie.js" defer></script>
+        <script type="text/javascript" src="components/angular-translate-storage-local/angular-translate-storage-local.js" defer></script>
         <script type="text/javascript" src="components/angular-cookies/angular-cookies.js" defer></script>
         <script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>
         <script type="text/javascript" src="components/angular-ui-router/release/angular-ui-router.js" defer></script> 
@@ -95,13 +99,13 @@
 	  <div id="maincontent" ui-view class="ng-cloak"></div>
 	  <footer id="footer">
 		 <div class="container">
-			<p>(c) 2015 ETH Zürich</p>
-			<p><strong>Midata Portals:</strong></p>
+			<p translate="footer.copyright"></p>
+			<p><strong transplate="footer.portals"></strong></p>
 			   <ul>			     
-			      <li><a ui-sref="public.login">For Members of the Cooperative</a></li>
-			      <li><a ui-sref="public_research.login">For Research Organizations</a></li>
-			      <li><a ui-sref="public_provider.login">For Healthcare Providers</a></li>
-			      <li><a ui-sref="public_developer.guide">For Developers</a></li>
+			      <li><a ui-sref="public.login" translate="footer.for_members">For Members of the Cooperative</a></li>
+			      <li><a ui-sref="public_research.login" translate="footer.for_researchers">For Research Organizations</a></li>
+			      <li><a ui-sref="public_provider.login" translate="footer.for_providers">For Healthcare Providers</a></li>
+			      <li><a ui-sref="public_developer.guide" translate="footer.for_developers">For Developers</a></li>
 			   </ul>	    
 		 </div>
 	  </footer>

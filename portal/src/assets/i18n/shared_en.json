@@ -1,0 +1,92 @@
+{
+
+   "footer" : {
+     "copyright" : "(c) 2015-2016 ETH Zürich",
+     "portals" : "Midata Portals:",
+     "for_members" : "For Members of the Cooperative",
+	 "for_researchers" : "For Research Organizations",
+	 "for_providers" : "For Healthcare Providers",
+	 "for_developers" : "For Developers"
+   },
+   
+   "navbar" : {
+	  "toggle_navigation": "Toggle navigation",
+	  "login" : "Login",
+	  "sign_up" : "Sign Up"
+   },
+   
+   "error" : {
+     "offline" : "The backend is currently offline! Come back later.",
+     
+     "invalid" : {
+       "email" : "Please enter a valid email address",
+       "credentials" : "Invalid username or password.",
+       "password_repetition" : "Password and password repetition do not match!"
+     },
+     
+     "missing" : {
+       "credentials" : "Please provide a username  and a password.",
+       "input_field" : "Please fill out this input field.",
+       "newpassword" : "Please enter a new password!"
+     },
+     
+     "exists" : {
+       "member" : "A person with this email is already registered."
+     },
+     
+     "tooshort" : {
+       "password" : "Passwords must be at least 8 characters long."       
+     },
+     
+     "tooweak" : {
+       "password" : "Passwords should contain of a mix of upper/lower case letters, numbers and special characters."
+     }
+             
+   },
+   
+   "enum" : {
+     "gender" : {
+       "MALE" : "male",
+       "FEMALE" : "female",
+       "OTHER" : "other"
+     },
+     "country" : {
+       "CH" : "Switzerland"
+     }
+   },
+   
+  "registration" : {
+    "sign_up" : "Sign Up",
+    "email" : "EMail",
+    "password" : "Password",
+    "password_repetition" : "Repeat Password",
+    "firstname" : "First Name",
+    "lastname" : "Surname",
+    "gender" : "Gender",
+    "birthday" : "Birthday",
+    "day" : "Day",
+    "month" : "Month",
+    "year" : "Year",
+    "address" : "Address",
+    "address_line1" : "Enter your address here",
+    "address_line2" : "Second line for address",
+    "city" : "City",
+    "zip" : "Zip Code",
+    "country" : "Country",
+    "phone" : "Phone",
+    "mobile_phone" : "Mobile Phone",
+    "sign_up_btn" : "Sign Up"
+  },
+  
+  "lostpw" : {
+    "title" : "Password Assistance - Step 1",
+    "description" : "Enter the e-mail address associated with your account, then click Continue. We'll email you a link to a page where you can easily create a new password.",
+    "email" : "Email address",
+    "continue" : "Continue",
+    "success" : "We have sent you an email with instructions on how to reset your password."
+  },
+  
+  "setpw" : {
+    "title" : "Password Assistance - Step 2"
+  }
+}

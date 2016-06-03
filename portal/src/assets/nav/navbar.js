@@ -1,9 +1,12 @@
 angular.module('portal')
-.controller('NavbarCtrl', ['$scope', '$state', 'server', 'session', 'ENV', function($scope, $state, server, session, ENV) {
+.controller('NavbarCtrl', ['$scope', '$state', '$translate', '$translatePartialLoader', 'server', 'session', 'ENV', function($scope, $state, $translate, $translatePartialLoader, server, session, ENV) {
 	
 	// init
 	$scope.user = {};	
 	$scope.beta = ENV.beta;
+	
+	$translatePartialLoader.addPart($state.current.data.locales);
+	
 	session.viewHeight = "600px";	
 	session.login($state.current.data.role);
 	
@@ -18,16 +21,15 @@ angular.module('portal')
 		.then(function() { session.logout(); document.location.href="/#/public/login"; });
 	};
 		
-					
-	// start a search
-	$scope.startSearch = function() {
-		
-		$state.go('^.search', { query : $scope.query });		
-	};
-	
-	
+	$scope.changeLanguage = function(lang) {
+		$translate.use(lang);
+	};				
 	
 }])
-.controller('PublicNavbarCtrl', ['$scope', '$state', 'server', 'session', function($scope, $state, server, session) {	
+.controller('PublicNavbarCtrl', ['$scope', '$state', '$translate', '$translatePartialLoader', 'session', function($scope, $state, $translate, $translatePartialLoader, session) {	
 	session.logout();
+	$translatePartialLoader.addPart($state.current.data.locales);	
+	$scope.changeLanguage = function(lang) {
+		$translate.use(lang);
+	};
 }]);

@@ -1,0 +1,23 @@
+{
+  "member_login" : {
+    "teaser": "MY DATA - OUR HEALTH!",
+    "register_now" : "Register Now",
+    "sign_in" : "Sign in",
+    "email_address" : "Email address",
+    "password" : "Password",
+    "remember_me" : "Remember Me",
+    "sign_in_btn" : "Sign in",
+    "forgot_your_password" : "Forgot your password?"
+  },
+  
+  "member_quickregistration" : {
+    "sign_up" : "Sign up",
+    "study" : "Study",
+    "app" : "App to be used",
+    "app_password" : "Password for app",
+    "account_password" : "Account Password",
+    "repeat_account_password" : "Repeat Account Password"
+  }
+  
+ 
+}

@@ -28,6 +28,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
 import utils.auth.Rights;
 import utils.auth.MemberSecured;
 import utils.collections.Sets;
@@ -70,9 +71,10 @@ public class HealthProvider extends APIController {
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result search() throws AppException, JsonValidationException {
+		AccessLog.log("A");
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "properties", "fields");
-		
+		AccessLog.log("B");
 		// get users
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		properties.put("role", UserRole.PROVIDER);

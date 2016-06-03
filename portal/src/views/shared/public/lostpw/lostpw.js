@@ -9,7 +9,7 @@ angular.module('portal')
 	$scope.submit = function() {
 		// check user input
 		if (!$scope.lostpw.email) {
-			$scope.error = "Please provide your email address.";
+			$scope.error = { code : "error.missing.email" };
 			return;
 		}
 		
