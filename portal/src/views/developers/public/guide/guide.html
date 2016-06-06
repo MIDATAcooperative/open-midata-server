@@ -8,8 +8,7 @@
 				<ul class="nav nav-pills nav-stacked">
 					<li ng-init="tab='home'" ng-class="{ 'active' : tab=='home' }"><a href="javascript:" ng-click="tab='home';">Home</a></li>
 					<li ng-class="{ 'active' : tab=='accounts' }"><a href="javascript:" ng-click="tab='accounts';">Developer Accounts</a></li>
-					<li ng-class="{ 'active' : tab=='architecture' }"><a href="javascript:" ng-click="tab='architecture';">Architecture</a></li>
-					<li ng-class="{ 'active' : tab=='apps' }"><a href="javascript:" ng-click="tab='apps';">( Forms )</a></li>
+					<li ng-class="{ 'active' : tab=='architecture' }"><a href="javascript:" ng-click="tab='architecture';">Architecture</a></li>					
 					<li ng-class="{ 'active' : tab=='visualizations' }"><a href="javascript:" ng-click="tab='visualizations';">Plugins</a></li>
 					<li ng-class="{ 'active' : tab=='mobile' }"><a href="javascript:" ng-click="tab='mobile';">Mobile Apps</a></li>
 					<li ng-class="{ 'active' : tab=='formats' }"><a href="javascript:" ng-click="tab='formats';">Format/Content List</a></li>
@@ -61,13 +60,7 @@
 							therefore especially not to the internet.</p>
 						<p>Plugins may be registered via your developer account but the final code version needs to be
 						   deployed by us on the plugin server.</p>
-					</div>
-					<div id="apps" class="tab-pane fade" ng-class="{ 'active in' : tab=='apps' }">
-						<h2>Forms / Importers</h2>
-						<p>A form or import form provides the functionality to create or import  
-						records. This type of plugin may access external resources but may not read records from the platform.</p>
-						<p>The API and API documentation for forms will be updated soon</p>
-					</div>
+					</div>					
 					<div id="visualizations" class="tab-pane fade" ng-class="{ 'active in' : tab=='visualizations' }">
 						<h2>Plugins</h2>
 						<p>Plugins run in the browser and have read and write access to a set of records. The set of records
@@ -155,9 +148,17 @@
       "appname" : internal name of the application,
       "secret" : the secret key that has been chosen on the development portal  
       "username" : the email of the user, 
-      "password" : password of user 
+      "password" : password of user,
+      "role" : the role of the user (optional, default is "member") 
 }</pre>						
 					    <p>As result you either get a 400 status with an error message or a session tokens that can be used for further requests.</p>
+					    <p>Possible values for <code>role</code> are:
+					    <ul>
+					      <li><code>member</code> for members of the cooperative (default value)</li>
+					      <li><code>provider</code> for healthcare providers</li>
+					      <li><code>developer</code> for developers</li>
+					      <li><code>research</code> for researchers</li>
+					    </ul>
 						<p>An example response looks like this:</p>
 <pre>{
       "authToken":"014760...",
@@ -195,7 +196,8 @@
      "name" : a name for the record, 
      "description" : a description for the record,
      "format" : a string describing the technical data format,   
-     "code" : a string or an array of strings describing the data content (each string contains system and code)
+     "code" : a string or an array of strings describing the data content (each string contains system and code),
+     "owner" : the id of the owner of the record. (optional, default is "self")
      "data" : JSON string containing the record itself 
 }</pre>		
 <p>For a list of available values for code see <a href="javascript:" ng-click="tab='formats';">Format/Content List</a>
@@ -203,7 +205,14 @@
 <pre>{
      "_id": the id of the new record
      "created": the creation timestamp of the new record (in milliseconds after 01.Jan.1970 UTC)
-}</pre>                         				
+}</pre>
+<p>In order to create a record for another account than the logged in used these conditions must be met:
+  <ul>
+    <li>The id of the user the record should be created for must be passed as "owner" field</li>
+    <li>The logged in user must have role "provider", e.g it must be a healthcare provider</li>
+    <li>The "owner" of the record must have an active consent with the logged in healthcare provider</li> 
+  </ul>
+</p>                         				
 
 						<h3>Updating an existing record</h3>
 						<p>In order to update an existing record call this endpoint:</p>
@@ -258,16 +267,14 @@
 In the array case each record must match one entry in the array to qualify for the query.</p>
 <p>Possible keys for <code>properties</code> are: (only those listed that are currently supported)
   <ul>  
-    <li><code>_id</code> - (id) restrict by id of the record</li>
-    <!--     
+    <li><code>_id</code> - (id) restrict by id of the record</li>        
     <li><code>owner</code> - (id/string) restrict by owner id of the record. The following special string values are allowed as value for this restriction:
        <ul>
          <li><code>self</code> - only records from the account owner</li>
          <li><code>other</code> - only records not from the account owner</li>
          <li><code>shared</code> - only records from the account owner that have been shared</li>         
        </ul>
-    </li>       
-     -->
+    </li>           
     <li><code>format</code> - (string) the technical format of the record</li>
     <li><code>content</code> - (string) the semantical format of the record (similar values use same name, example: <i>"body/weight"</i>)</li>
     <li><code>code</code> - (string) the semantical format code of the record (example: <i>"http://loinc.org 3141-9"</i>)</li>
@@ -279,14 +286,58 @@ In the array case each record must match one entry in the array to qualify for t
     <li><code>created-before</code> - (date) only records created earlier than the given date/time</li>
     <li><code>max-age</code> - (integer) only records not older than the given amount of seconds</li>
     <li><code>creator</code> - (id) only records with a specific creator</li>
-    <li><code>limit</code> - (integer) the maximum count of records you want to receive</li>    
+    <li><code>limit</code> - (integer) the maximum count of records you want to receive</li>
+    <li><code>data</code> - (JSON expression) restriction on the record content</li>
+    <li><code>index</code> - (JSON expression) restriction on the record content, backed up by an index    
  </ul>
  <p>The response to the query is an array of records having only the fields you requested.</p>  
-   
-
-
-
-
+ <p>You directly restrict on the content of the record using the "<code>data</code>" or "<code>index</code>" property. As value for the property pass
+ an expression like a mongoDB query.</p>
+ <p>Example: select records with "format"="fhir/Observation" who belong to the users account and have content with a
+  field "status" with value either "final" or "preliminary" and a field "valueQuantity" with an object with field "value" which
+  needs to have a value greater than 1000.</p> 
+ <pre>{
+     "authToken": "absdfsdfsef2456",
+     "fields" : ["name", "data"],     
+     "properties" : { 
+        "format" : "fhir/Observation",
+        "owner" : "self",
+        "data" : {
+          "status" : { "$in" : ["final", "preliminary"] },
+          "valueQuantity" : { "value" : { "$gt" : 1000 } }
+        }
+     } 
+}  
+ </pre>   
+ <p>Supported operators are a subset of operators supported by mongoDB. Currently working operators are:
+ <ul>
+   <li><code>$gt</code> - greater than</li>
+   <li><code>$ge</code> - greater or equal</li> 
+   <li><code>$lt</code> - less than</li>
+   <li><code>$le</code> - less or equal</li>
+   <li><code>$ge</code> - greater or equal</li>
+   <li><code>$in</code> - one of the values in the array</li>
+ </ul>
+ Please tell us if you need another operator from mongoDB. 
+ </p>
+<p>If you need to search a probably large number of records try to use the "index" property for the restriction instead of the "data" property. This will
+use or create an index. <b>This feature is still experimental, contact us on how you want to use it.</b>
+</p>
+<p>Example query using index: (get records with format=fhir/Observation with a field "effectiveDateTime" with a date between 01.01.2015 and 01.01.2016(excluded) and a field status with values "preliminary" or "final". Use an index for "effectiveDateTime")</p>
+<pre>{
+     "authToken": "absdfsdfsef2456",
+     "fields" : ["name", "data"],     
+     "properties" : { 
+        "format" : "fhir/Observation",       
+        "index" : {
+          "effectiveDateTime" : { "$ge" : "2015-01-01", "$lt" : "2016-01-01" }          
+        },
+        "data" : {
+          "status" : { "$in" : ["final", "preliminary"] },
+        }
+     } 
+}  
+ </pre>   
 
 
 

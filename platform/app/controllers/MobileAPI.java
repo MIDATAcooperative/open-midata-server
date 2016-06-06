@@ -9,14 +9,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import models.Consent;
 import models.ContentCode;
 import models.ContentInfo;
+import models.HPUser;
 import models.LargeRecord;
 import models.Member;
 import models.MobileAppInstance;
 import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
+import models.ResearchUser;
 import models.Space;
 import models.User;
 import models.enums.AggregationType;
@@ -52,6 +55,7 @@ import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -191,18 +195,24 @@ public class MobileAPI extends Controller {
 		} else {
 			String username = JsonValidation.getEMail(json, "username");
 			phrase = JsonValidation.getString(json, "password");
-				
-			Member member = Member.getByEmail(username, Sets.create("visualizations","tokens"));
-			if (member == null) return badRequest("Unknown user or bad password");
+			UserRole role = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;
 			
-			appInstance = MobileAppInstance.getByApplicationAndOwner(app._id, member._id, Sets.create("owner", "applicationId", "status", "passcode"));
+				
+			User user = null;
+			switch (role) {
+			case MEMBER : user = Member.getByEmail(username, Sets.create("visualizations","tokens"));break;
+			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("visualizations","tokens"));break;
+			}
+			if (user == null) return badRequest("Unknown user or bad password");
+			
+			appInstance = MobileAppInstance.getByApplicationAndOwner(app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode"));
 			
 			if (appInstance == null) {									
-				appInstance = installApp(null, app, member, phrase);				
+				appInstance = installApp(null, app, user, phrase);				
 	   		    meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
 			} else {
-				if (appInstance.passcode != null && !Member.authenticationValid(phrase, appInstance.passcode)) return badRequest("Wrong password.");
-				if (!verifyAppInstance(appInstance, member._id, app._id)) return badRequest("Access denied");
+				if (appInstance.passcode != null && !User.authenticationValid(phrase, appInstance.passcode)) return badRequest("Wrong password.");
+				if (!verifyAppInstance(appInstance, user._id, app._id)) return badRequest("Access denied");
 				KeyManager.instance.unlock(appInstance._id, phrase);
 				meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
 			}
@@ -409,11 +419,19 @@ public class MobileAPI extends Controller {
 		if (format==null) format = "application/json";
 		String content = JsonValidation.getStringOrNull(json, "content");
 		Set<String> code = JsonExtraction.extractStringSet(json.get("code"));
+		
+		ObjectId owner = appInstance.owner;
+		ObjectId ownerOverride = JsonValidation.getObjectId(json, "owner");
+		if (ownerOverride != null && !ownerOverride.equals(owner)) {
+			Set<Consent> consent = Consent.getHealthcareActiveByAuthorizedAndOwner(executor, ownerOverride);
+			if (consent == null || consent.isEmpty()) throw new BadRequestException("error.noconsent", "No active consent that allows to add data for target person.");
+			owner = ownerOverride;
+		}
 				
 		Record record = new Record();
 		record._id = new ObjectId();
 		record.app = appId;
-		record.owner = appInstance.owner;
+		record.owner = owner;
 		record.creator = appInstance.owner;
 		record.created = DateTimeUtils.now();
 		
@@ -534,5 +552,40 @@ public class MobileAPI extends Controller {
 	    Collection<RecordsInfo> result = RecordManager.instance.info(executor, targetAps, properties, aggrType);
 						
 		return ok(Json.toJson(result));
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@MobileCall
+	public static Result getConsents() throws JsonValidationException, AppException {		
+		// validate json
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "authToken", "properties", "fields");
+		
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+		
+		//Rights.chk("getRecords", UserRole.ANY, fields);
+
+		// decrypt authToken
+		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(json.get("authToken").asText());
+		if (authToken == null) {
+			return badRequest("Invalid authToken.");
+		}
+					
+		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "status"));
+        if (appInstance == null) return badRequest("Invalid authToken.");
+		
+        if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {
+        	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Consent", fields));
+        }
+        
+        ObjectId executor = prepareMobileExecutor(appInstance, authToken);
+		// get record data
+		Collection<Consent> consents = Consent.getAllActiveByAuthorized(executor);
+		
+		if (fields.contains("ownerName")) ReferenceTool.resolveOwners(consents, true);
+		
+		
+		return ok(JsonOutput.toJson(consents, "Consent", fields));
 	}
 }

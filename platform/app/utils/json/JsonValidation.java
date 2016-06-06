@@ -110,7 +110,7 @@ public class JsonValidation {
 	}
 	
 	public static <T extends Enum> T getEnum(JsonNode json, String field, Class<T> en) throws JsonValidationException {
-		String val = json.path(field).asText();
+		String val = json.path(field).asText().toUpperCase();
 		try {
 		  T result = (T) Enum.valueOf(en, val);
 		  return result;

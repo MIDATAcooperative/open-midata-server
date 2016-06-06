@@ -111,6 +111,10 @@ public class Consent extends Model {
 	public static Set<Consent> getAllActiveByAuthorizedAndOwners(ObjectId member, Set<ObjectId> owners) throws InternalServerException {
 		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owners).map("status",  ConsentStatus.ACTIVE), Sets.create("name", "order", "owner", "type"));
 	}
+	
+	public static Set<Consent> getHealthcareActiveByAuthorizedAndOwner(ObjectId member, ObjectId owner) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  ConsentStatus.ACTIVE).map("type",  ConsentType.HEALTHCARE), Sets.create("name", "order", "owner", "type"));
+	}
 		
 	public static void set(ObjectId consentId, String field, Object value) throws InternalServerException {
 		Model.set(Consent.class, collection, consentId, field, value);

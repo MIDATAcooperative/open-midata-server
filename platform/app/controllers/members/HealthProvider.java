@@ -29,6 +29,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
+import utils.auth.AnyRoleSecured;
 import utils.auth.Rights;
 import utils.auth.MemberSecured;
 import utils.collections.Sets;
@@ -100,7 +101,7 @@ public class HealthProvider extends APIController {
 	 * @throws JsonValidationException
 	 */
 	@APICall
-	@Security.Authenticated(MemberSecured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result confirmConsent() throws AppException, JsonValidationException {
 		
 		ObjectId userId = new ObjectId(request().username());
@@ -133,7 +134,7 @@ public class HealthProvider extends APIController {
 	 * @throws JsonValidationException
 	 */
 	@APICall
-	@Security.Authenticated(MemberSecured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result rejectConsent() throws AppException, JsonValidationException {
 		
 		ObjectId userId = new ObjectId(request().username());
