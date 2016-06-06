@@ -7,8 +7,7 @@
     "angular-bootstrap": "~0.14.3",
     "angular-route": "1.2.25",
     "bootstrap": "3.3.5",
-    "midata-js" : "https://test.midata.coop:4000/shared/js/midata.js",
-    "midata-css" : "https://test.midata.coop:4000/shared/css/app.css"
+    "midata" : "git://github.com/Alexander-Kreutz/midata_shared.git"       
   },
   "resolutions": {
     "angular": "~1.5.3"
