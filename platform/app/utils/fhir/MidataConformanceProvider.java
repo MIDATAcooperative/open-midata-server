@@ -2,6 +2,8 @@ package utils.fhir;
 
 import javax.servlet.http.HttpServletRequest;
 
+import play.Play;
+
 import ca.uhn.fhir.model.api.ExtensionDt;
 import ca.uhn.fhir.model.dstu2.resource.Conformance;
 import ca.uhn.fhir.model.primitive.UriDt;
@@ -29,8 +31,10 @@ public class MidataConformanceProvider extends ServerConformanceProvider {
 		*/
 		
 		ExtensionDt dt = conformance.getRestFirstRep().getSecurity().addUndeclaredExtension(false, "http://fhir-registry.smarthealthit.org/StructureDefinition/oauth-uris");
-		dt.addUndeclaredExtension(false, "token", new UriDt("https://localhost:9000/v1/token"));
-		dt.addUndeclaredExtension(false, "authorize", new UriDt("https://localhost:9002/#/portal/oauth2"));
+		String tokenUrl = "https://"+Play.application().configuration().getString("platform.server")+"/v1/token";
+		dt.addUndeclaredExtension(false, "token", new UriDt(tokenUrl));
+		String authUrl = Play.application().configuration().getString("portal.originUrl")+"/#/portal/oauth2";		
+		dt.addUndeclaredExtension(false, "authorize", new UriDt(authUrl));
 		
 		return conformance;
 	}
