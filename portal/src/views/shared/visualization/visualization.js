@@ -9,23 +9,23 @@ angular.module('portal')
 	$scope.status = new status(true);
 	if ($state.params.context == "workspace") {
 		$scope.contexts = [
-		         		  { value : "workspace", label : "Workspace" },
-		         		  { value : "mobile", label : "MIDATA Mobile App" }
+		         		  { value : "workspace", label : "visualization.location.workspace" },
+		         		  { value : "mobile", label : "visualization.location.mobile" }
 		                  ];
 	} else if ($state.params.context == "research" || $state.params.context == "sandbox") {
 		$scope.contexts = [		         	
-		         		  { value : "research", label : "Research Dashboard" },
-		         		  { value : "sandbox", label : "Workspace" },		         	
-		         		  { value : "mobile", label : "MIDATA Mobile App" }
+		         		  { value : "research", label : "visualization.location.research" },
+		         		  { value : "sandbox", label : "visualization.location.sandbox" },		         	
+		         		  { value : "mobile", label : "visualization.location.mobile" }
 	                    	];
 	} else {
 		$scope.contexts = [
-		  { value : "me", label : "Me Page" },
-		  { value : "mydata", label : "My Data Dashboard" },
-		  { value : "social", label : "Social Dashboard" },
-		  { value : "providers", label : "Health Dashboard" },
-		  { value : "studies", label : "Research Dashboard" },		
-		  { value : "mobile", label : "MIDATA Mobile App" }
+		  { value : "me", label : "visualization.location.me" },
+		  { value : "mydata", label : "visualization.location.mydata" },
+		  { value : "social", label : "visualization.location.social" },
+		  { value : "providers", label : "visualization.location.providers" },
+		  { value : "studies", label : "visualization.location.studies" },		
+		  { value : "mobile", label : "visualization.location.mobile" }
 	    ];
 	}
 	
@@ -44,8 +44,7 @@ angular.module('portal')
 				  $scope.options.query = $scope.visualization.defaultQuery;
 				  $scope.options.applyRules = true;
 				  console.log($scope.options.query);
-			  } else {
-				  console.log("XXX");
+			  } else {				 
 				  console.log($scope.visualization);
 			  }
 			}

@@ -104,6 +104,21 @@ public class Plugins extends APIController {
 		Collections.sort(visualizations);
 		return ok(JsonOutput.toJson(visualizations, "Plugin", fields));
 	}
+	
+	@BodyParser.Of(BodyParser.Json.class)	
+	@APICall
+	public static Result getInfo() throws JsonValidationException, InternalServerException, AuthException {
+		// validate json
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "name");
+		
+		String name = JsonValidation.getString(json, "name");
+		
+		Set<String> fields = Sets.create("name", "description");
+		Plugin plugin = Plugin.get(CMaps.map("filename", name).map("type", "mobile"), fields);
+				
+		return ok(JsonOutput.toJson(plugin, "Plugin", fields));
+	}
 
 	/**
 	 * install a new plugin for the current user

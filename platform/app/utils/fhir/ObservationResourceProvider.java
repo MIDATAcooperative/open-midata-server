@@ -10,6 +10,7 @@ import utils.AccessLog;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
+import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import ca.uhn.fhir.model.dstu2.resource.Observation;
@@ -17,6 +18,7 @@ import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.model.dstu2.valueset.AdministrativeGenderEnum;
 import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.model.primitive.UriDt;
+import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
@@ -65,20 +67,29 @@ public class ObservationResourceProvider extends ResourceProvider implements IRe
     	ExecutionInfo info = info();
     	
     	Map<String, Object> criteria = new HashMap<String, Object>();
+    	Map<String, Object> accountCriteria = CMaps.map("format","fhir/Observation");
     	
     	if (thePatient != null) {
-    		addRestriction(criteria, "Patient", thePatient, "subject", "reference");
+    		accountCriteria.put("owner", thePatient.getIdPart());
+    		//addRestriction(criteria, "Patient", thePatient, "subject", "reference");
     	}
     	    	
     	
     	AccessLog.logQuery(criteria, Sets.create("data"));
-    	List<Record> result = RecordManager.instance.list(info.executorId, info.targetAPS, CMaps.map("format","fhir/Observation").map("content", "Observation").map("data", criteria), Sets.create("data"));
+    	List<Record> result = RecordManager.instance.list(info.executorId, info.targetAPS, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
+    	ReferenceTool.resolveOwners(result, true, false);
     	List<Observation> patients = new ArrayList<Observation>();
     	IParser parser = ctx().newJsonParser();    	
     	for (Record rec : result) {
-    		
+    		try {
     		Observation p = parser.parseResource(Observation.class, rec.data.toString());
+    		processResource(rec, p);
+    		if (p.getSubject().isEmpty()) {
+    		  p.getSubject().setReference(new IdDt("Patient", rec.owner.toString()));
+    		  p.getSubject().setDisplay(rec.ownerName);
+    		}
     		patients.add(p);
+    		} catch (DataFormatException e) {}
     	}
        
         return patients;

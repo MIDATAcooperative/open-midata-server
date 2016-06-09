@@ -58,7 +58,89 @@
      },
      "country" : {
        "CH" : "Switzerland"
-     }
+     },
+     "eventtype" : {
+       "CODE_ENTERED" : "Code entered",
+	   "PARTICIPATION_REQUESTED" : "Participation requested",
+	   "NO_PARTICIPATION" : "No participation",
+	   "PARTICIPATION_REJECTED" : "Participation rejected",
+	   "PARTICIPATION_APPROVED" : "Participation approved",
+	   "GROUP_ASSIGNED" : "Group assigned",
+	   "VALIDATION_REQUESTED" : "Validation requested",
+	   "STUDY_VALIDATED" : "Study validated",
+	   "STUDY_REJECTED" : "Study rejected",
+	   "PARTICIPANT_SEARCH_STARTED" : "Participant search started",
+	   "PARTICIPANT_SEARCH_CLOSED" : "Participant search closed",
+	   "CODES_GENERATED" : "Codes generated",
+	   "STUDY_STARTED" : "Study started",
+	   "STUDY_FINISHED" : "Study finished",
+	   "STUDY_ABORTED" : "Study aborted",
+	   "REQUIRED_INFORMATION_CHANGED" : "Required information changed",
+	   "STUDY_SETUP_CHANGED" : "Study setup changed"
+	 },
+	 "consentstatus" : {
+	   "ACTIVE" : "Active",
+	   "EXPIRED" : "Expired",
+	   "REJECTED" : "Rejected",
+	   "UNCONFIRMED" : "Unconfirmed"
+	 },
+	 "consenttype" : {
+	   "CIRCLE" : "Other MIDATA Members",
+	   "EXTERNALSERVICE" : "External Application",
+	   "HCRELATED" : "Healthcare",
+	   "HEALTHCARE" : "Doctor / Hospital",
+	   "STUDYPARTICIPATION" : "Study",
+	   "STUDYRELATED" : "Study" 
+	 },
+	 "contractstatus" : {
+	   "NEW" : "New",
+	   "PRINTED" : "Contract printed",
+	   "SIGNED" : "Contract signed"
+	 },
+	 "emailstatus" : {
+	   "REJECTED" : "Rejected",
+	   "UNVALIDATED" : "Not confirmed yet",
+	   "VALIDATED" : "Confirmed"
+	 },
+	 "participantsearchstatus" : {
+	   "CLOSED" : "Closed",
+	   "PRE" : "Not yet started",
+	   "SEARCHING" : "Currently searching"
+	 },
+	 "participationstatus" : {
+	   "ACCEPTED" : "Participation accepted",
+	   "CODE" : "Participation code entered",
+	   "MATCH" : "Possible match",
+	   "MEMBER_REJECTED" : "MIDATA member rejected",
+	   "REQUEST" : "Participation requested",
+	   "RESEARCH_REJECTED" : "Rejected by researcher"
+	 },
+	 "studyexecutionstatus" : {
+	   "ABORTED" : "Execution aborted",
+	   "FINISHED" : "Study finished",
+	   "PRE" : "Not yet started",
+	   "RUNNING" : "Study currently running"
+	 },
+	 "studyvalidationstatus" : {
+	   "DRAFT" : "Validation not requested yet",
+	   "REJECTED" : "Study rejected by MIDATA",
+	   "VALIDATED" : "Study has been validated",
+	   "VALIDATION" : "Validation running"
+	 },
+	 "userrole" : {
+	   "ADMIN" : "Admin",
+	   "ANY" : "Any Role",
+	   "DEVELOPER" : "Developer",
+	   "MEMBER" : "MIDATA member",
+	   "PROVIDER" : "Healthcare provider",
+	   "RESEARCH" : "Researcher"
+	 },
+	 "userstatus" : {
+	   "ACTIVE" : "Active",
+	   "BLOCKED" : "Blocked",
+	   "DELETED" : "Deleted",
+	   "NEW" : "New"
+	 }
    },
    
   "common" : {
@@ -207,6 +289,91 @@
     "provider_remove_btn" : "remove",
     "provider_add_btn" : "Add",
     "information_that_needs_sharing" : "Information that must be shared for participation",
-    "information_restricted" : "Your gender, year of birth and country"
+    "information_restricted" : "Your gender, year of birth and country",
+    "records_with_format" : "Records that have format:",
+    "records_with_content" : "Records that have content:",
+    "records_with_group" : "Records that belong to group:",
+    "participation_history" : "Participation History",
+    "history_event" : "Event",
+	"history_who" : "Who",
+	"history_when" : "When",
+	"history_comment" : "Comment",
+	"request_participation_btn" : "Request Participation",
+	"do_not_participate_btn" : "Do not participate"
+  },
+  
+  "user" : {
+    "user" : "User",
+    "name" : "Name:",
+    "email" : "EMail:",
+    "change_password_btn" : "Change Password",
+ 	"change_passphrase_btn" : "Change Passphrase",
+	"repair_account_btn" : "Repair Account",
+	"delete_records_btn" : "Delete Records",
+	"account_repaired" : "Your account has been repaired."
+  },
+  
+  "visualization" : {
+    "title" : "Plugin Information",
+    "success" : "You have successfully installed a new plugin.",
+    "created_by" : "Created by:",
+    "description" : "Description:",
+    "tile_name" : "Tile Name:",
+    "install_location" : "Location:",
+    "grant_access" : "Grant this plugin access to:",
+    "install_btn" : "Add Plugin",
+    "location" : {
+      "workspace" : "Workspace",
+      "mobile" : "MIDATA Mobile App",
+      "research" : "Research Dashboard",
+      "sandbox" : "Workspace",		         	
+      "mobile" : "MIDATA Mobile App",
+      "me" : "Me Page",
+	  "mydata" : "My Data Dashboard",
+	  "social" : "Social Dashboard",
+	  "providers" : "Health Dashboard",
+      "studies" : "Research Dashboard"		
+    }		  
+  },
+  
+  "newconsent" : {
+    "title" : "Create a new consent",
+    "name" : "How should this consent be named?",
+    "type" : "What type of consent do you want to create?",
+    "share_with_members" : "I want to share data with other MIDATA members.",
+    "share_with_provider" : "I want to share data with a health professional.",
+    "use_passcode" : "Include a passcode?",
+    "use_passcode2" : "I do not know yet to whom I want to share the data. Please add a passcode to this consent that I can give to a health professional of my choice.",
+    "choose_passcode" : "Choose a secure passcode",
+    "which_persons" : "With which persons(s) do you want to share data?",
+    "add_person_btn" : "Add New Person",
+    "reshare" : "3rd party access?",
+    "reshare2" : "The person(s) authorized with this consent may reshare the data I gave them access to.",
+    "expiration_date" : "Consent expiration date:",
+    "created_before" : "Shares only data created before:",
+    "share_what" : "What data do you want to share?",
+    "consent_empty" : "This consent is empty at the beginning. You can select the data you want to share with this consent afterwards.",
+    "create_btn" : "Create and Data Selection"
+  },
+  
+  "editconsent" : {
+    "title" : "Consent",
+    "name" : "Name of Consent",
+    "type" : "Type of Consent",
+    "status" : "Status of Consent",
+    "password_exists" : "A password has been set if you need to relogin with the app.",
+    "password_shown" : "Use your email address and this password for login:",
+    "people" : "With which persons(s) do you want to share data?",
+    "add_people_btn" : "Add More People",
+    "reshare" : "@:newconsent.reshare",
+    "reshare2" : "@:newconsent.reshare2",
+    "expiration_date" : "Consent expiration date:",
+    "created_before" : "Shares only data created before:",
+    "what_is_shared" : "What data is shared?",
+    "consent_empty" : "This consent does not share any data at the moment."
+  },
+  
+  "oauth2" : {
+    "requesting_app" : "This application requests access:"
   }
 }

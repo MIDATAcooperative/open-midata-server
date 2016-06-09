@@ -28,6 +28,11 @@ public class FHIR extends Controller {
 	 */
 	public static FHIRServlet servlet;
 	
+	@MobileCall
+	public static Result checkPreflight(String all) {		
+		return ok();
+	}
+	
 	/**
 	 * generic handler for all FHIR get requests.
 	 * requests will be forwarded to the FHIR servlet.
@@ -43,13 +48,12 @@ public class FHIR extends Controller {
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
 		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
 				
-		String param = req.getParameter("authToken");
-		
-		if (param == null) param = "1026725e5e3e3330e73429258e0c786e8cdda484ee1ec4071ad7335f941b85c871fc0494377191203f047c757088612daa04d255ff62e1e2bbdd0b377e96c84c6d4536722e1eb71fa9f52615bf9084e0"; 
-		
-        ExecutionInfo info = ExecutionInfo.checkSpaceToken(request(), param);
-        
-        ResourceProvider.setExecutionInfo(info);
+		String param = req.getHeader("Authorization");
+				
+		if (param != null && param.startsWith("Bearer ")) {
+          ExecutionInfo info = ExecutionInfo.checkMobileToken(param.substring("Bearer ".length()));        
+          ResourceProvider.setExecutionInfo(info);
+		}
         
 		AccessLog.log(req.getRequestURI());
 		servlet.doGet(req, res);

@@ -7,6 +7,11 @@ angular.module('services')
 	   return server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data));
     };
     
+    service.getAppInfo = function(name) {
+    	   var data = { "name": name };
+ 	   return server.post(jsRoutes.controllers.Plugins.getInfo().url, JSON.stringify(data));
+     };
+    
     service.getAppsOfUser = function(types, fields) {
 		var appIds = session.user.apps;
 		var properties2 = { "_id": session.user.apps, "type" : types };		

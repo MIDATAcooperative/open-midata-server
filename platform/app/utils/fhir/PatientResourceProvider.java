@@ -3,9 +3,15 @@ package utils.fhir;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.bson.types.ObjectId;
+
+import models.Consent;
+import models.Member;
 import models.Record;
 
 import utils.AccessLog;
@@ -17,6 +23,7 @@ import utils.exceptions.AppException;
 
 import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.model.dstu2.valueset.AdministrativeGenderEnum;
+import ca.uhn.fhir.model.dstu2.valueset.ContactPointSystemEnum;
 import ca.uhn.fhir.model.dstu2.valueset.IdentifierUseEnum;
 import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.model.primitive.UriDt;
@@ -55,16 +62,13 @@ public class PatientResourceProvider extends ResourceProvider implements IResour
      *    Returns a resource matching this identifier, or null if none exists.
      */
     @Read()
-    public Patient getResourceById(@IdParam IdDt theId) {    	
+    public Patient getResourceById(@IdParam IdDt theId) throws AppException {    	
     	    
-        Patient patient = new Patient();
-        patient.addIdentifier();
-        patient.getIdentifier().get(0).setSystem(new UriDt("urn:hapitest:mrns"));
-        patient.getIdentifier().get(0).setValue("00002");
-        patient.addName().addFamily("Test");
-        patient.getName().get(0).addGiven("PatientOne");
-        patient.setGender(AdministrativeGenderEnum.FEMALE);
-        return patient;
+    	String id = theId.getIdPart();
+    	ObjectId targetId = new ObjectId(id);
+    	
+    	List<Patient> result = patientsFromUserAccounts(CMaps.map("_id", targetId));    	
+        return result.iterator().next();
     }
  
    
@@ -77,7 +81,7 @@ public class PatientResourceProvider extends ResourceProvider implements IResour
     	try {
     	ExecutionInfo info = info();
     	
-    	Map<String, Object> criteria = new HashMap<String, Object>();
+    	/*Map<String, Object> criteria = new HashMap<String, Object>();
     	
     	if (theName != null) {
     		addRestriction(criteria, theName, "name", "family");
@@ -93,13 +97,15 @@ public class PatientResourceProvider extends ResourceProvider implements IResour
     	
     	AccessLog.logQuery(criteria, Sets.create("data"));
     	List<Record> result = RecordManager.instance.list(info.executorId, info.targetAPS, CMaps.map("format","fhir/Observation").map("content", "Patient").map("data", criteria), Sets.create("data"));
-    	List<Patient> patients = new ArrayList<Patient>();
-    	IParser parser = ctx().newJsonParser();    	
+    	*/
+    	List<Patient> patients = getAllAccessiblePatients(info.executorId);
+    	
+    	/*IParser parser = ctx().newJsonParser();    	
     	for (Record rec : result) {
     		
     		Patient p = parser.parseResource(Patient.class, rec.data.toString());
     		patients.add(p);
-    	}
+    	}*/
        
         return patients;
         
@@ -107,6 +113,41 @@ public class PatientResourceProvider extends ResourceProvider implements IResour
     		AccessLog.log("ERROR");
     		return null;
     	}
+    }
+    
+    private List<Patient> patientsFromUserAccounts(Map<String, Object> properties) throws AppException {
+    	Set<Member> members = Member.getAll(properties, Sets.create("_id", "email", "firstname", "lastname", "gender", "birthday", "midataID", "phone", "city", "country", "zip", "address1", "address2"));
+    	List<Patient> result = new ArrayList<Patient>();
+    	for (Member member : members) {
+    		Patient p = new Patient();
+    		p.setId(member._id.toString());
+    		p.addName().addFamily(member.lastname).addGiven(member.firstname);
+    		p.setBirthDateWithDayPrecision(member.birthday);
+    		p.addIdentifier().setSystem("http://midata.coop/midataID").setValue(member.midataID);
+    		p.setGender(AdministrativeGenderEnum.valueOf(member.gender.toString()));
+    		p.addTelecom().setSystem(ContactPointSystemEnum.EMAIL).setValue(member.email);
+    		if (member.phone != null && member.phone.length()>0) {
+    			p.addTelecom().setSystem(ContactPointSystemEnum.PHONE).setValue(member.phone);
+    		}
+    		p.addAddress().setCity(member.city).setCountry(member.country).setPostalCode(member.zip).addLine(member.address1).addLine(member.address2);
+    		result.add(p);
+    	}
+    	return result;
+    }
+    
+    private Set<ObjectId> accessableAccounts(ObjectId executor) throws AppException {
+    	Set<Consent> consents = Consent.getAllActiveByAuthorized(executor);
+    	Set<ObjectId> result = new HashSet<ObjectId>();
+    	for (Consent consent : consents) {
+    		result.add(consent.owner);
+    	}
+    	return result;
+    }
+    
+    private List<Patient> getAllAccessiblePatients(ObjectId executor) throws AppException {
+       Set<ObjectId> acc = accessableAccounts(executor);
+       acc.add(executor);
+       return patientsFromUserAccounts(CMaps.map("_id", acc));
     }
  
 }

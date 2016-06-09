@@ -1,21 +1,20 @@
 <div ng-controller="NewConsentCtrl">
  <div class="panel panel-primary">
-  <div class="panel-heading">
-    Consent
+  <div class="panel-heading" translate="editconsent.title">    
   </div>
   <div class="panel-body">
   <loader busy="status.isBusy !== false">
   <form name="myform" class="css-form form-horizontal" ng-submit="create()" novalidate role="form">
-    <formrow id="name" label="Name of Consent">
+    <formrow id="name" label="editconsent.name">
       <p class="form-control-static">{{ consent.name }}</p>
     </formrow>
-    <formrow id="type" label="Type of Consent">
+    <formrow id="type" label="editconsent.type">
       <p class="form-control-static" ng-show="consent.type == 'CIRCLE'">This consent shares data with other MIDATA members.</p>
       <p class="form-control-static" ng-show="consent.type == 'HEALTHCARE'">This consent shares data with healthcare professionals.</p>
       <p class="form-control-static" ng-show="consent.type == 'STUDYPARTICIPATION'">This consent shares data with research for use in a study..</p>    
       <p class="form-control-static" ng-show="consent.type == 'EXTERNALSERVICE'">This consent shares data with a mobile app or external service.</p>
     </formrow>
-    <formrow id="status" label="Status of Consent">
+    <formrow id="status" label="editconsent.status">
       <p class="form-control-static" ng-show="consent.status == 'ACTIVE'">This consent is active.</p>
       <p class="form-control-static" ng-show="consent.status == 'EXPIRED'">This consent is expired. Data is no longer shared.</p>
       <p class="form-control-static" ng-show="consent.status == 'UNCONFIRMED'">This consent needs confirmation by its owner.</p>    
@@ -24,15 +23,15 @@
     
      <formrow myid="passcode" label="Password" ng-show="consent.type == 'EXTERNALSERVICE'">
        <p class="form-control-static" ng-hide="consent.passcode">
-         A password has been set if you need to relogin with the app.
+         <span translate="editconsent.password_exists"></span>
          <button type="button" class="btn btn-default btn-sm" ng-disabled="status.action == 'passcode'" ng-click="showPasscode()">Show password</button>
        </p>
        <p class="form-control-static" ng-show="consent.passcode">
-         Use your email address and this password for login: <strong>{{ consent.passcode }}</strong>
+         <span translate="editconsent.password_shown"></span> <strong>{{ consent.passcode }}</strong>
        </p>
     </formrow>            
     
-   <formrow id="share" label="With which persons(s) do you want to share data?" ng-show="consent.type != 'EXTERNALSERVICE'">
+   <formrow id="share" label="editconsent.people" ng-show="consent.type != 'EXTERNALSERVICE'">
 		<div class="well well-sm" ng-repeat="person in authpersons">
 		  <button type="button" ng-click="removePerson(person)" class="close" aria-label="Delete" ng-show="consent.type != 'STUDYPARTICIPATION'"><span aria-hidden="true">&times;</span></button>	
 		  <address>
@@ -43,20 +42,20 @@
 			{{ person.zip }} {{ person.city }}<br>
 			{{ person.country }}<br>
 			</span>
-			<span ng-show="person.email">Email: {{ member.email }}<br></span>
+			<span ng-show="person.email"><span translate="common.user.email"></span>: {{ member.email }}<br></span>
 		  </address>
 		</div>
-		<button type="button" class="btn btn-default" ng-click="addPeople();">Add More People</button>		
+		<button type="button" class="btn btn-default" ng-click="addPeople();" translate="editconsent.add_people_btn"></button>		
 	</formrow>
-	<formrow id="reshare" label="3rd party access?" ng-show="consent.type != 'EXTERNALSERVICE'">
+	<formrow id="reshare" label="editconsent.reshare" ng-show="consent.type != 'EXTERNALSERVICE'">
 	  <div class="checkbox">
 	    <label>
-	      <input type="checkbox" ng-model="consent.reshare">The person(s) authorized with this consent may reshare the data I gave them access to.
+	      <input type="checkbox" ng-model="consent.reshare" translate="editconsent.reshare2">
 	    </label>
 	  </div>
 	</formrow>
 	<!-- 
-	<formrow myid="validUntil" label="Consent expiration date:">
+	<formrow myid="validUntil" label="editconsent.expiration_date">
 	  <div class="input-group">
         <input id="validUntil" ng-disabled="true" type="text" class="form-control" placeholder="Leave empty if none" uib-datepicker-popup="dd.MM.yyyy" ng-model="consent.validUntil" is-open="datePickers.validUntil" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
         <span class="input-group-btn">
@@ -64,7 +63,7 @@
         </span>
       </div>
 	</formrow>
-	<formrow myid="createdBefore" label="Shares only data created before:">
+	<formrow myid="createdBefore" label="editconsent.created_before">
 	  <div class="input-group">
         <input id="createdBefore" ng-disabled="true" type="text" class="form-control" placeholder="Leave empty if none" uib-datepicker-popup="dd.MM.yyyy" ng-model="consent.createdBefore" is-open="datePickers.createdBefore" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
         <span class="input-group-btn">
@@ -73,16 +72,16 @@
       </div>
 	</formrow>
 	 -->
-	<formrow id="what" label="What data is shared?">
-	  <p class="form-control-static" ng-show="sharing.records.length == 0 && !sharing.query.group.length">This consent does not share any data at the moment.</p>
+	<formrow id="what" label="editconsent.what_is_shared">
+	  <p class="form-control-static" ng-show="sharing.records.length == 0 && !sharing.query.group.length" translate="editconsent.consent_empty"></p>
 	  <div class="well well-sm" ng-show="sharing.records.length || sharing.query.group.length">
-	  <p class="form-control-static" ng-show="sharing.records.length">This consent shares {{ sharing.records.length }} records.</p>
+	  <p class="form-control-static" ng-show="sharing.records.length" >This consent shares {{ sharing.records.length }} records.</p>
 	  <div ng-repeat="group in sharing.query.group">Shares all records belonging to group: {{ group }}</div>
 	  <div ng-repeat="group in sharing.query['group-exclude']">Excluded are records belonging to group: {{ group }}</div>
 	  </div>
 	  <button class="btn btn-default" ui-sref="^.recordsharing({ selected : consentId, selectedType : 'circles' })">View/Change data selection</button>
 	</formrow>
-	<a  ui-sref="^.circles" class="btn btn-default">Back to consent list</a>
+	<a  ui-sref="^.circles" class="btn btn-default" translate="common.back_btn"></a>
 	<button type="button" ng-click="confirmConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-primary">Confirm this Consent</button>
 	<button type="button" ng-click="rejectConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-danger">Reject this Consent</button>
     <button type="button" ng-click="deleteConsent();" ng-show="(consent.status == 'ACTIVE' || consent.status == 'REJECTED') && consent.type != 'STUDYPARTICIPATION'" class="btn btn-danger">Delete this Consent</button>

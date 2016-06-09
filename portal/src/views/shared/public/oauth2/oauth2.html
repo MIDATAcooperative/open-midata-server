@@ -1,0 +1,64 @@
+   
+   	<div class="welcome" ng-controller="OAuth2LoginCtrl" ng-cloak >	 
+		<div id="mainheader"><div class="container"><div class="row">
+		   <div class="col-sm-12">
+				<div class="panel-container" style="max-width:330px; padding-top:30px; margin:0 auto;">
+					<div class="panel panel-primary">
+		            	<div class="panel-heading">
+		              		<h3 class="panel-title" translate="oauth2.requesting_app"></h3>
+		            	</div>
+		            	<div class="panel-body">
+		            	  <p><strong>{{ app.name }}</strong></p>
+		            	  <p>{{ app.description }}</p>
+		            	  
+		            	</div>
+		            </div>
+		         </div>
+		    </div>
+			<!-- Login -->
+			<!--  <div class="col-sm-12 text-center" style="margin-top:90px;margin-bottom:40px;font-family:Sans-serif;color:white">	
+			
+			
+              <b style="font-size:9rem">MIDATA<span style="font-size:50%">.COOP</span></b>
+              <h1 style="color:white;margin-bottom:30px" translate="member_login.teaser"></h1>
+											
+			  <a ui-sref="public.registration" class="btn btn-primary" ng-hide="offline" translate="member_login.register_now"></a>			 
+			</div>
+			</div>
+			-->
+			
+		  </div>
+		</div>
+		<div class="container"><div class="row">
+			<div class="col-sm-12">
+				<div class="panel-container" style="max-width:330px; padding-top:30px; margin:0 auto;">
+					<div class="panel panel-primary">
+		            	<div class="panel-heading">
+		              		<h3 class="panel-title" translate="member_login.sign_in"></h3>
+		            	</div>
+		            	<div class="panel-body">
+			            	<p translate="{{ error.code }}" ng-show="error" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                           
+	                        </p>
+	                        <p ng-show="offline" class="alert alert-danger" translate="error.offline"></p>
+							<form ng-submit="dologin()" role="form" ng-hide="offline">
+								<input type="email" class="form-control" translate translate-attr-placeholder="member_login.email_address" ng-model="login.email" style="margin-bottom:5px;" autofocus>
+								<input type="password" class="form-control" translate translate-attr-placeholder="member_login.password" ng-model="login.password" style="margin-bottom:5px;">
+								<select class="form-control" ng-model="login.role" ng-options="role.value as role.name | translate for role in roles"></select>
+								<div class="extraspace"></div>
+								<button type="submit" ng-disabled="status.action=='login'" class="btn btn-lg btn-primary btn-block" translate="member_login.sign_in_btn"></button>
+								<div class="margin-top">
+								  <a ui-sref='public.lostpw' translate="member_login.forgot_your_password"></a>
+								</div>
+							</form>
+		            	</div>
+					</div>
+				</div>
+				<pre>{{ params | json }}</pre> 
+			</div>
+		
+			
+		</div>
+	  </div>
+	 
+	</div>		
+

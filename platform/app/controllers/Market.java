@@ -52,7 +52,7 @@ public class Market extends APIController {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId pluginId = new ObjectId(pluginIdStr);
 		
-		Plugin app = Plugin.getById(pluginId, Sets.create("creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","url","developmentServer", "status"));
+		Plugin app = Plugin.getById(pluginId, Sets.create("creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status"));
 		if (app == null) return badRequest("Unknown plugin");
 		
 		if (!app.creator.equals(userId) && !getRole().equals(UserRole.ADMIN)) return badRequest("Not your plugin!");
@@ -86,6 +86,7 @@ public class Market extends APIController {
 		}
 		if (app.type.equals("mobile")) {
 			app.secret = JsonValidation.getStringOrNull(json, "secret");
+			app.redirectUri = JsonValidation.getStringOrNull(json, "redirectUri");
 		}
 		 
 		try {
@@ -211,6 +212,7 @@ public class Market extends APIController {
 		}
 		if (plugin.type.equals("mobile")) {
 			plugin.secret = JsonValidation.getStringOrNull(json, "secret");
+			plugin.redirectUri = JsonValidation.getStringOrNull(json, "redirectUri");
 		}
 		
 			

@@ -2,29 +2,29 @@
 	<div  ng-controller="UserCtrl">		
 		
 		<div ng-cloak class="panel panel-primary">
-		  <div class="panel-heading">User</div>
+		  <div class="panel-heading" translate="user.user"></div>
 		  <div class="panel-body">
 			<loader busy="status.isBusy !== false">
 			
 			<div class="row">
-				<p class="col-sm-2">Name:</p>
+				<p class="col-sm-2" translate="user.name"></p>
 				<p class="col-sm-10">{{user.name}}</p>
 			</div>
 			<div class="row">
-				<p class="col-sm-2">Email:</p>
+				<p class="col-sm-2" translate="user.email"></p>
 				<p class="col-sm-10">{{user.email}}</p>
 			</div>
 			
 			<div class="row" ng-show="isSelf">
 			  <div class="col-sm-12">
-			     <a class="btn btn-default" href="javascript:" ui-sref="^.changepassword">Change Password</a>
-			     <a class="btn btn-default" href="javascript:" ui-sref="^.changepassphrase">Change Passphrase</a>
-			     <a class="btn btn-default" href="javascript:" ng-disabled="msg" ng-click="fixAccount();">Repair Account</a>
-			     <a class="btn btn-default" href="javascript:" ui-sref="^.delete_records">Delete Records</a>
+			     <a class="btn btn-default" href="javascript:" ui-sref="^.changepassword" translate="user.change_password_btn"></a>
+			     <a class="btn btn-default" href="javascript:" ui-sref="^.changepassphrase" translate="user.change_passphrase_btn"></a>
+			     <a class="btn btn-default" href="javascript:" ng-disabled="msg" ng-click="fixAccount();" translate="user.repair_account_btn"></a>
+			     <a class="btn btn-default" href="javascript:" ui-sref="^.delete_records" translate="user.delete_records_btn"></a>
 			  </div>			  
 			</div>
 			<div class="extraspace"></div>
-			<div ng-show="msg" class="alert alert-info">{{ msg }}</div>
+			<div ng-show="msg" class="alert alert-info" translate="{{ msg }}"></div>
 			</loader>
 		</div>
 		</div>

@@ -587,6 +587,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Plugins.requestAccessTokenOAuth1(),
 				// Visualizations				
 				controllers.routes.javascript.Plugins.get(),
+				controllers.routes.javascript.Plugins.getInfo(),
 				controllers.routes.javascript.Plugins.install(),
 				controllers.routes.javascript.Plugins.uninstall(),
 				controllers.routes.javascript.Plugins.isInstalled(),

@@ -2,17 +2,17 @@ angular.module('portal')
 .controller('NewConsentCtrl', ['$scope', '$state', 'server', 'status', 'circles', 'hc', 'views', 'session', 'users', function($scope, $state, server, status, circles, hc, views, session, users) {
 	
 	$scope.types = [
-	                { value : "CIRCLE", label : "Other MIDATA Members"},
-	                { value : "HEALTHCARE", label : "Healthcare Providers" },
-	                { value : "STUDYPARTICIPATION", label : "Research" },
-	                { value : "EXTERNALSERVICE", label : "Mobile App / External Service" }
+	                { value : "CIRCLE", label : "enum.consenttype.CIRCLE"},
+	                { value : "HEALTHCARE", label : "enum.consenttype.HEALTHCARE" },
+	                { value : "STUDYPARTICIPATION", label : "enum.consenttype.STUDYPARTICIPATION" },
+	                { value : "EXTERNALSERVICE", label : "enum.consenttype.EXTERNALSERVICE" }
 	               ];
 			
 	
 	$scope.stati = [
-	                { value : "ACTIVE", label : "Active" },
-	                { value : "UNCONFIRMED", label : "Unconfirmed, needs confirmation" },
-	                { value : "EXPIRED", label : "Expired" }
+	                { value : "ACTIVE", label : "enum.consent.ACTIVE" },
+	                { value : "UNCONFIRMED", label : "enum.consent.UNCONFIRMED" },
+	                { value : "EXPIRED", label : "enum.consent.EXPIRED" }
 	                 ];
 	
 	
@@ -102,16 +102,13 @@ angular.module('portal')
 			success(function() {				
 				$scope.authpersons.splice($scope.authpersons.indexOf(person), 1);
 			}).
-			error(function(err) { $scope.error = "Failed to remove the selected member from circle '" + circle.name + "': " + err; });
+			error(function(err) { $scope.error = { code : "error.internal" }; });
 		} else {
-			$scope.authpersons.splice($scope.authpersons.indexOf(person), 1);
-			//$scope.consent.authorized.splice($scope.consent.authorized.indexOf(person._id.$oid), 1);
+			$scope.authpersons.splice($scope.authpersons.indexOf(person), 1);			
 		}
 	};
 	
-	var addPerson = function(person) {
-		console.log("ADD:");
-		console.log(person);
+	var addPerson = function(person) {			
 		if (person.length) {
 			angular.forEach(person, function(p) { 
 				$scope.authpersons.push(p); 

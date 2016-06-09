@@ -9,11 +9,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import play.Play;
+
 import utils.servlet.PlayHttpServletContext;
 
+import ca.uhn.fhir.narrative.DefaultThymeleafNarrativeGenerator;
 import ca.uhn.fhir.rest.server.HardcodedServerAddressStrategy;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
+
+// https://demo.careevolution.com/PDemo/PDemo.html?iss=https://localhost:9000/fhir
 
 @WebServlet(urlPatterns= {"/fhir/*"}, displayName="FHIR Server")
 public class FHIRServlet extends RestfulServer {
@@ -28,8 +33,10 @@ public class FHIRServlet extends RestfulServer {
    @Override
    protected void initialize() throws ServletException {
 	   
-	   String serverBaseUrl = "https://demo.midata.coop:9000/fhir";
+	   String serverBaseUrl = "https://"+Play.application().configuration().getString("platform.server")+"/fhir";
        setServerAddressStrategy(new HardcodedServerAddressStrategy(serverBaseUrl));
+       this.setServerConformanceProvider(new MidataConformanceProvider());
+       //ResourceProvider.ctx.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());
 	   
       /*
        * The servlet defines any number of resource providers, and

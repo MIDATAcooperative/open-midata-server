@@ -23,13 +23,14 @@ public class MobileCallAction extends Action<MobileCall> {
 
     public F.Promise<Result> call(Http.Context ctx) throws Throwable { 
     	try {
+    	  AccessLog.log("MOBILE");
     	  JsonNode json = ctx.request().body().asJson();
     	  ctx.args.put("json", json);
     	  ctx.response().setHeader("Access-Control-Allow-Origin", "*");    	  
     	  ctx.response().setHeader("Allow", "*");
     	  ctx.response().setHeader("Access-Control-Allow-Credentials", "true");
     	  ctx.response().setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH");
-    	  ctx.response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie");
+    	  ctx.response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, Authorization");
     	
           return delegate.call(ctx);
     	} catch (JsonValidationException e) {

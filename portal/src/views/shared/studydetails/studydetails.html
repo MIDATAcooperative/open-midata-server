@@ -46,27 +46,27 @@
 				<li ng-show="needs('DEMOGRAPHIC')" translate="studydetails.information_demographic"></li>
 				
 				<li ng-repeat="(rule, params) in study.recordQuery">
-			          <span ng-if="rule == 'format'">Records that have format:
+			          <span ng-if="rule == 'format'"><span translate="studydetails.records_with_format"></span>
 			            <ul>
 			              <li ng-repeat="format in params">{{ format }}</li>
 			            </ul> 
 			          </span>
-			          <span ng-if="rule == 'format/*'">Records that have format:
+			          <span ng-if="rule == 'format/*'"><span translate="studydetails.records_with_format"></span>
 			            <ul>
 			              <li ng-repeat="format in params">{{ format }}</li>
 			            </ul> 
 			          </span>
-			          <span ng-if="rule == 'content'">Records that have content:
+			          <span ng-if="rule == 'content'"><span translate="sutdydetails.records_with_content"></span>
 			            <ul>
 			              <li ng-repeat="content in params">{{ content }}</li>
 			            </ul> 
 			          </span>
-			          <span ng-if="rule == 'content/*'">Records that have content:
+			          <span ng-if="rule == 'content/*'"><span translate="sutdydetails.records_with_content"></span>
 			            <ul>
 			              <li ng-repeat="content in params">{{ content }}</li>
 			            </ul> 
 			          </span>
-			          <span ng-if="rule == 'group'">Records that belong to group:
+			          <span ng-if="rule == 'group'"><span translate="sutdydetails.records_with_group"></span>
 			            <ul>
 			              <li ng-repeat="group in params">{{ group }}</li>
 			            </ul> 
@@ -78,19 +78,19 @@
 		</div>
 	</div>
 	<div ng-show="participation.history.length" class="panel panel-primary">
-		<div class="panel-heading">Participation History</div>
+		<div class="panel-heading" translate="studydetails.participation_history"></div>
 		<table class="table">
 			<thead>
 				<tr>
-					<th>Event</th>
-					<th>Who</th>
-					<th>When</th>
-					<th>Comment</th>
+					<th translate="studydetails.history_event"></th>
+					<th translate="studydetails.history_who"></th>
+					<th translate="studydetails.history_when"></th>
+					<th translate="studydetails.history_comment"></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="entry in participation.history">
-					<td>{{ entry.event }}</td>
+					<td translate="{{ 'enum.eventtype.'+entry.event }}"></td>
 					<td>{{ entry.whoName }}</td>
 					<td>{{ entry.timestamp | date }}</td>
 					<td>{{ entry.message }}</td>
@@ -101,8 +101,8 @@
 	
 
 
-	<button ng-show="mayRequestParticipation()" ng-click="requestParticipation()" class="btn btn-success">Request Participation</button>
-	<button ng-show="mayDeclineParticipation()" ng-click="noParticipation()" class="btn btn-danger">Do not participate</button>
+	<button ng-show="mayRequestParticipation()" ng-click="requestParticipation()" class="btn btn-success" translate="studydetails.request_participation_btn"></button>
+	<button ng-show="mayDeclineParticipation()" ng-click="noParticipation()" class="btn btn-danger" translate="studydetails.do_not_participate_btn"></button>
 
     <div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
 

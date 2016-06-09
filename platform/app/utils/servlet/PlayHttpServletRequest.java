@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
@@ -36,6 +37,7 @@ import utils.AccessLog;
 public class PlayHttpServletRequest implements HttpServletRequest {
 
 	private Http.Request request;
+	private Map<String, Object> attribs = new HashMap<String, Object>();
 	
 	public PlayHttpServletRequest(Http.Request request) {
 	   this.request = request;	
@@ -49,8 +51,7 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public Object getAttribute(String arg0) {
-		if (true) throw new NotImplementedError();
-		return null;
+		return attribs.get(arg0);
 	}
 
 	@Override
@@ -231,14 +232,13 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public void removeAttribute(String arg0) {
-		if (true) throw new NotImplementedError();
+		attribs.remove(arg0);
 		
 	}
 
 	@Override
 	public void setAttribute(String arg0, Object arg1) {
-		if (true) throw new NotImplementedError();
-		
+		attribs.put(arg0,  arg1);				
 	}
 
 	@Override

@@ -40,7 +40,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "targetUserRole", "spotlighted", "url", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret",
-	                     "requestTokenUrl", "scopeParameters", "secret", "developmentServer", "status");
+	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -172,6 +172,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	public String secret;
 	
 	/**
+	 * for SMART ON FHIR apps : oauth redirect uri
+	 */
+	public String redirectUri;
+	
+	/**
 	 * for development: localhost-URL-prefix to be used instead of plugin server domain for testing on local machine 
 	 */
 	public String developmentServer;
@@ -211,7 +216,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	
 	public void update() throws InternalServerException, LostUpdateException {
 		try {
-			   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","url","developmentServer", "status" );
+			   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status" );
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal.db", e);
 		}

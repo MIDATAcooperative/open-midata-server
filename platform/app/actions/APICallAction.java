@@ -27,7 +27,7 @@ public class APICallAction extends Action<APICall> {
 	private static final String defaultHost = Play.application().configuration().getString("portal.originUrl");
     public F.Promise<Result> call(Http.Context ctx) throws Throwable { 
     	try {
-    		    	
+    		AccessLog.log("API");    	
     	  JsonNode json = ctx.request().body().asJson();
     	  ctx.args.put("json", json);
     	  String host = ctx.request().getHeader("Origin");

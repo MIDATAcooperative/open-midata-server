@@ -225,8 +225,7 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public void setHeader(String arg0, String arg1) {
-		if (true) throw new NotImplementedError();
-		
+		response.setHeader(arg0, arg1);		
 	}
 
 	@Override

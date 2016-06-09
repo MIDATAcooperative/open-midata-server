@@ -8,6 +8,7 @@ GET     /test                                            controllers.Application
 GET     /test2                                           controllers.Application.test2()
 GET     /debug/aps/:id                                   controllers.Debug.get(id: String)
 GET     /ping                                            controllers.Debug.ping()
+OPTIONS /fhir/*all                                       controllers.FHIR.checkPreflight(all)
 GET     /fhir/*all                                       controllers.FHIR.get(all)
 GET     /test/autorun                                    controllers.AutoRun.run()
 
@@ -181,6 +182,7 @@ GET     /apps/:id/request/oauth1    controllers.Plugins.getRequestTokenOAuth1(id
 POST    /apps/:id/access/oauth1     controllers.Plugins.requestAccessTokenOAuth1(id: String)
 # Visualizations
 POST    /plugins                    controllers.Plugins.get()
+POST    /plugins/info               controllers.Plugins.getInfo()
 PUT     /plugins/:id                controllers.Plugins.install(id: String)
 DELETE  /plugins/:id                controllers.Plugins.uninstall(id: String)
 GET     /plugins/:id/installed      controllers.Plugins.isInstalled(id: String)
@@ -206,6 +208,11 @@ POST    /apps/gdconverter/convert   controllers.apps.GenomeDataConverter.convert
 # Mobile Public API
 OPTIONS /v1/auth            controllers.MobileAPI.checkPreflight()
 POST    /v1/auth            controllers.MobileAPI.authenticate()
+
+POST    /v1/authorize            controllers.OAuth2.login()
+OPTIONS /v1/token            controllers.OAuth2.checkPreflight()
+POST    /v1/token            controllers.OAuth2.authenticate()
+
 #OPTIONS /v1/midata            controllers.MobileAPI.checkPreflight()
 #POST    /v1/midata            controllers.MobileAPI.midataLogin()
 OPTIONS /v1/records/create  controllers.MobileAPI.checkPreflight()

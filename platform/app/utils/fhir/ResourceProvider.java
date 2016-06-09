@@ -3,8 +3,13 @@ package utils.fhir;
 import java.util.HashMap;
 import java.util.Map;
 
+import models.Record;
+
 import utils.auth.ExecutionInfo;
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.model.api.ResourceMetadataKeyEnum;
+import ca.uhn.fhir.model.dstu2.resource.BaseResource;
+import ca.uhn.fhir.model.primitive.InstantDt;
 import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringParam;
@@ -54,5 +59,11 @@ public class ResourceProvider {
 			}
 			addRestriction((Map<String, Object>) subCrit, content, path, idx + 1);
 		}
+	}
+	
+	public static void processResource(Record record, BaseResource resource) {
+		resource.setId(record._id.toString());	
+		ResourceMetadataKeyEnum.VERSION.put(resource, record.version);
+		ResourceMetadataKeyEnum.UPDATED.put(resource, new InstantDt(record.lastUpdated));
 	}
 }

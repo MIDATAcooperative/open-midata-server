@@ -25,7 +25,7 @@ angular.module('portal')
     ];
 			
 	$scope.loadApp = function(appId) {
-		$scope.status.doBusy(apps.getApps({ "_id" : { "$oid" :  appId }}, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","url","developmentServer","version"]))
+		$scope.status.doBusy(apps.getApps({ "_id" : { "$oid" :  appId }}, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version"]))
 		.then(function(data) { 
 			$scope.app = data.data[0];
 			$scope.app.defaultQueryStr = JSON.stringify($scope.app.defaultQuery);

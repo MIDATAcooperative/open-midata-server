@@ -68,6 +68,9 @@
 		  <formrow myid="secret" label="Application Secret" ng-show="app.type == 'mobile'">
 		    <input type="text" id="secret" class="form-control" placeholder="Secret" ng-model="app.secret">
 		  </formrow>
+		  <formrow myid="redirectUri" label="Redirect URI (optional, required for OAuth2 login)" ng-show="app.type == 'mobile'">
+		    <input type="text" id="redirectUri" class="form-control" placeholder="Redirect URI" ng-model="app.redirectUri">
+		  </formrow>
 		   <formrow myid="developmentServer" label="Development Server" ng-hide="app.type == 'mobile' || !app.developmentServer">
 		    <p class="form-control-static">{{ app.developmentServer }}</p>
 		  </formrow>
