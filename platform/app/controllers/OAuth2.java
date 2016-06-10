@@ -188,7 +188,7 @@ public class OAuth2 extends Controller {
 		obj.put("scope", "XXX");
 		
 		//obj.put("expires_in", MobileAppSessionToken.);
-		obj.put("id_token", appInstance.owner.toString());
+		obj.put("patient", appInstance.owner.toString());
 		obj.put("refresh_token", refresh.encrypt());
 				
 		response().setHeader("Cache-Control", "no-store");
