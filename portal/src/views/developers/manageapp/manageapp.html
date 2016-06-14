@@ -12,12 +12,44 @@
 		  <formrow myid="filename" label="Internal Name">
 		    <input type="text" id="filename" class="form-control" placeholder="Filename" ng-model="app.filename" autofocus>
 		  </formrow>
+		  <formrow myid="targetUserRole" label="Target Role">
+		    <select id="targetUserRole" class="form-control" ng-model="app.targetUserRole" ng-options="role.value as role.label for role in targetUserRoles"></select>
+		  </formrow>
+		  <formrow myid="type" label="Type">
+		    <select id="type" class="form-control" ng-model="app.type" ng-options="type.value as type.label for type in types"></select>
+		  </formrow>		  		  
+		  <hr>
 		  <formrow myid="name" label="Name">
 		    <input type="text" id="name" class="form-control" placeholder="Name" ng-model="app.name">
 		  </formrow>
 		  <formrow myid="description" label="Description">
 		    <textarea rows="5" id="description" class="form-control" placeholder="Description" ng-model="app.description"></textarea>
 		  </formrow>
+		  <formrow myid="defaultSpaceName" label="Tile Name" ng-show="app.type != 'mobile'">
+		    <input type="text" id="defaultSpaceName" class="form-control" placeholder="Tile Name" ng-model="app.defaultSpaceName">
+		  </formrow>
+		 
+		  <hr>
+		  <formrow myid="x" label="Multi Language Support">
+		    <div class="help-block">
+		    <span ng-repeat="l in languages">
+		      <span ng-show="app.i18n[l].name"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{{l}} </span>		      
+		    </span>
+		    </div>
+		  </formrow>
+		  <formrow myid="type" label="I18n Language Selection">
+		    <select id="type" class="form-control" ng-model="sel.lang" ng-options="lang for lang in languages"></select>		    
+		  </formrow>
+		  <formrow myid="name_i18n" label="I18n Name">		    
+		    <input type="text" id="name_i18n" class="form-control" placeholder="Name" ng-model="app.i18n[sel.lang].name">
+		  </formrow>
+		  <formrow myid="description_i18n" label="I18n Description">
+		    <textarea rows="5" id="description_i18n" class="form-control" placeholder="Description" ng-model="app.i18n[sel.lang].description"></textarea>
+		  </formrow>
+		  <formrow myid="defaultSpaceName_i18n" label="I18n Tile Name" ng-show="app.type != 'mobile'">		    
+		    <input type="text" id="defaultSpaceName_i18n" class="form-control" placeholder="Tile Name" ng-model="app.i18n[sel.lang].defaultSpaceName">
+		  </formrow>
+		  <hr>		  
 		  <formrow myid="tags" label="Tags">
 		    <div class="checkbox" ng-repeat="tagdef in tags">
 		      <label>
@@ -25,22 +57,13 @@
 		        {{ tagdef }}
 		      </label>
 		    </div>
-		  </formrow>
-		  <formrow myid="targetUserRole" label="Target Role">
-		    <select id="targetUserRole" class="form-control" ng-model="app.targetUserRole" ng-options="role.value as role.label for role in targetUserRoles"></select>
-		  </formrow>
-		  <formrow myid="type" label="Type">
-		    <select id="type" class="form-control" ng-model="app.type" ng-options="type.value as type.label for type in types"></select>
-		  </formrow>		
+		  </formrow>  		
 		  <formrow myid="url" label="URL" ng-hide="app.type == 'mobile'">
 		    <input type="text" id="url" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" ng-model="app.url">
 		  </formrow>
 		  <formrow myid="previewUrl" label="Dashboard Tile URL" ng-hide="app.type == 'mobile'">
 		    <input type="text" id="previewUrl" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" ng-model="app.previewUrl">
-		  </formrow>
-		  <formrow myid="defaultSpaceName" label="Tile Name" ng-show="app.type != 'mobile'">
-		    <input type="text" id="defaultSpaceName" class="form-control" placeholder="Tile Name" ng-model="app.defaultSpaceName">
-		  </formrow>
+		  </formrow>		 
 		  <formrow myid="defaultSpaceContext" label="Default Dashboard" ng-show="app.type != 'mobile'">
 		    <input type="text" id="defaultSpaceContext" class="form-control" placeholder="Dashboard Name" ng-model="app.defaultSpaceContext">
 		  </formrow>

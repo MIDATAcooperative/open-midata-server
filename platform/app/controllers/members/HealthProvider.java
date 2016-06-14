@@ -123,7 +123,7 @@ public class HealthProvider extends APIController {
 			target.setConfirmDate(new Date());
 			target.setStatus(ConsentStatus.ACTIVE);
 			Circles.consentStatusChange(userId, target);
-		} else throw new BadRequestException("error.status", "Wrong status");			
+		} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");			
 	}
 	
 	

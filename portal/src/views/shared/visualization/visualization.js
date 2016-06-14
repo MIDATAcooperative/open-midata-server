@@ -39,7 +39,7 @@ angular.module('portal')
 			$scope.visualization = visualizations[0];
 			if ($scope.visualization.defaultSpaceName!=null) {
 			  $scope.options.createSpace = true;
-			  $scope.options.spaceName = $scope.params.name || $scope.visualization.defaultSpaceName;
+			  $scope.options.spaceName = $scope.params.name ||  $scope.visualization.defaultSpaceName;
 			  if ($scope.visualization.defaultQuery != null) {
 				  $scope.options.query = $scope.visualization.defaultQuery;
 				  $scope.options.applyRules = true;

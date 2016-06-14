@@ -6,6 +6,8 @@ angular.module('portal')
 	$scope.app = { version:0, tags:[] };
 	$scope.status = new status(true);
 	$scope.allowDelete = $state.current.allowDelete;
+	$scope.languages = ['en', 'de', 'fr', 'it'];
+	$scope.sel = { lang : 'de' };
 	$scope.targetUserRoles = [
         { value : "ANY", label : "Any Role" },
 	    { value : "MEMBER", label : "MIDATA Members" },
@@ -25,7 +27,7 @@ angular.module('portal')
     ];
 			
 	$scope.loadApp = function(appId) {
-		$scope.status.doBusy(apps.getApps({ "_id" : { "$oid" :  appId }}, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version"]))
+		$scope.status.doBusy(apps.getApps({ "_id" : { "$oid" :  appId }}, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n"]))
 		.then(function(data) { 
 			$scope.app = data.data[0];
 			$scope.app.defaultQueryStr = JSON.stringify($scope.app.defaultQuery);
@@ -39,6 +41,12 @@ angular.module('portal')
 		} else {
 		  $scope.app.defaultQuery = null;	
 		}
+		
+		angular.forEach($scope.languages, function(lang) {
+			if ($scope.app.i18n[lang] && $scope.app.i18n[lang].name == "") {
+			   delete $scope.app.i18n[lang];
+			} 
+		});
 		
 		// check whether url contains ":authToken"
 		if ($scope.app.type !== "mobile" && $scope.app.url.indexOf(":authToken") < 0) {

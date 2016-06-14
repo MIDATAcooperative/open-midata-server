@@ -1,15 +1,15 @@
 
 	<div ng-controller="ImportRecordsCtrl">
 	  <div class="extraspace">
-		 <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span>Back</button>
+		 <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span><span translate="common.back_btn"></span></button>
 	  </div>	  
 	  <div class="panel panel-primary">
-	  <div class="panel-heading">Import</div>
+	  <div class="panel-heading" translate="importrecords.title">Import</div>
 	  <div class="panel-body">		    
 		<loader busy="status.isBusy !== false">
 			<div class="alert alert-danger alert-dismissable" ng-show="error">
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-				<p>{{error}}</p>
+				<p translate="{{ error.code }}"></p>
 			</div>
 							
 				<p ng-hide="authorized">
@@ -17,7 +17,7 @@
 				  <br><br>
 				  After clicking on "Authorize Now" you will be redirected to an external login page.
 				</p>
-				<button id="authorize" type="button" class="btn btn-success" ng-hide="authorized || authorizingOAuth1" ng-class="{'disabled': authorizing}" ng-click="authorize()">Authorize Now</button>
+				<button id="authorize" type="button" class="btn btn-success" ng-hide="authorized || authorizingOAuth1" ng-class="{'disabled': authorizing}" ng-click="authorize()" translate="importrecords.authorize_btn"></button>
 				<button type="button" class="btn btn-success" ng-show="authorizingOAuth1" ng-click="authorizeOAuth1()">Sign in with {{appName}} and authorize access</button>
 				<div class="extraspace"></div>				
 				<p ng-show="message" class="alert alert-info">{{message}}</p>

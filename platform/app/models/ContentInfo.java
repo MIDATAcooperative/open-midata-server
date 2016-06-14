@@ -86,7 +86,7 @@ public class ContentInfo extends Model {
 			if (r != null) return r;
 			r = Model.get(ContentInfo.class, collection, CMaps.map("content", name), ALL);
 			if (r == null) {
-				throw new BadRequestException("error.content.unknown", "Content '"+name+"' is not registered with the platform.");
+				throw new BadRequestException("error.unknown.content", "Content '"+name+"' is not registered with the platform.");
 			}
 			byName.put(name, r);
 			//if (r.alias != null) return getByName(r.alias);

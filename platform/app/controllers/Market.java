@@ -1,6 +1,10 @@
 package controllers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import models.Plugin;
+import models.Plugin_i18n;
 import models.enums.PluginStatus;
 import models.enums.UserRole;
 
@@ -17,6 +21,8 @@ import utils.auth.DeveloperSecured;
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
 import utils.db.LostUpdateException;
+import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -43,7 +49,7 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)	
-	public static Result updatePlugin(String pluginIdStr) throws JsonValidationException, InternalServerException {
+	public static Result updatePlugin(String pluginIdStr) throws JsonValidationException, AppException {
 		if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
 		// validate json
 		JsonNode json = request().body().asJson();
@@ -53,9 +59,9 @@ public class Market extends APIController {
 		ObjectId pluginId = new ObjectId(pluginIdStr);
 		
 		Plugin app = Plugin.getById(pluginId, Sets.create("creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status"));
-		if (app == null) return badRequest("Unknown plugin");
+		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
-		if (!app.creator.equals(userId) && !getRole().equals(UserRole.ADMIN)) return badRequest("Not your plugin!");
+		if (!app.creator.equals(userId) && !getRole().equals(UserRole.ADMIN)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");
 		
 		app.version = JsonValidation.getLong(json, "version");		
 		app.filename = JsonValidation.getString(json, "filename");
@@ -71,6 +77,17 @@ public class Market extends APIController {
 		app.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
 		app.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
+		app.i18n = new HashMap<String, Plugin_i18n>();
+		Map<String,Object> i18n = JsonExtraction.extractMap(json.get("i18n"));
+		for (String lang : i18n.keySet()) {
+			Map<String, Object> entry = (Map<String, Object>) i18n.get(lang);
+			Plugin_i18n plugin_i18n = new Plugin_i18n();
+			plugin_i18n.name = (String) entry.get("name");
+			plugin_i18n.description = (String) entry.get("description");
+			plugin_i18n.defaultSpaceName = (String) entry.get("defaultSpaceName");
+			app.i18n.put(lang, plugin_i18n);
+		}
+		
 
 		// fill in specific fields
 		if (app.type.equals("oauth1") || app.type.equals("oauth2")) {
@@ -92,7 +109,7 @@ public class Market extends APIController {
 		try {
 		   app.update();
 		} catch (LostUpdateException e) {
-			return badRequest("Concurrent updates. Reload page and try again.");
+			throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
 		}
 		
 		return ok();
@@ -108,7 +125,7 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public static Result updatePluginStatus(String pluginIdStr) throws JsonValidationException, InternalServerException {
+	public static Result updatePluginStatus(String pluginIdStr) throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 			
@@ -116,7 +133,7 @@ public class Market extends APIController {
 		ObjectId pluginId = new ObjectId(pluginIdStr);
 		
 		Plugin app = Plugin.getById(pluginId, Sets.create("creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","url","developmentServer", "status"));
-		if (app == null) return badRequest("Unknown plugin");
+		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 						
 		app.version = JsonValidation.getLong(json, "version");		
 		app.spotlighted = JsonValidation.getBoolean(json, "spotlighted");
@@ -125,7 +142,7 @@ public class Market extends APIController {
 		try {
 		   app.update();
 		} catch (LostUpdateException e) {
-			return badRequest("Concurrent updates. Reload page and try again.");
+			throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
 		}
 		
 		return ok();
@@ -140,7 +157,7 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(DeveloperSecured.class)
-	public static Result registerPlugin() throws JsonValidationException, InternalServerException {
+	public static Result registerPlugin() throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -160,7 +177,7 @@ public class Market extends APIController {
 		} else if (type.equals("visualization")) {
 			JsonValidation.validate(json, "filename", "name", "description", "url");
 		} else {
-			return badRequest("Unknown app type.");
+			throw new BadRequestException("error.internal", "Unknown app type.");
 		}
 
 		// validate request
@@ -169,9 +186,9 @@ public class Market extends APIController {
 		String name = JsonValidation.getString(json, "name");
 		try {
 			if (Plugin.exists(new ChainedMap<String, String>().put("filename", filename).get())) {
-				return badRequest("A visualization with the same filename already exists.");
+				throw new BadRequestException("error.exists.plugin", "A plugin with the same filename already exists.");
 			} else if (Plugin.exists(new ChainedMap<String, Object>().put("creator", userId).put("name", name).get())) {
-				return badRequest("A visualization with the same name already exists.");
+				throw new BadRequestException("error.exists.plugin", "A plugin with the same name already exists.");
 			}
 		} catch (InternalServerException e) {
 			return internalServerError(e.getMessage());
@@ -197,6 +214,15 @@ public class Market extends APIController {
 		plugin.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		plugin.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 		plugin.status = PluginStatus.DEVELOPMENT;
+		Map<String,Object> i18n = JsonExtraction.extractMap(json.get("i18n"));
+		for (String lang : i18n.keySet()) {
+			Map<String, Object> entry = (Map<String, Object>) i18n.get(lang);
+			Plugin_i18n plugin_i18n = new Plugin_i18n();
+			plugin_i18n.name = (String) entry.get("name");
+			plugin_i18n.description = (String) entry.get("description");
+			plugin_i18n.defaultSpaceName = (String) entry.get("defaultSpaceName");
+			plugin.i18n.put(lang, plugin_i18n);
+		}
 
 		// fill in specific fields
 		if (plugin.type.equals("oauth1") || plugin.type.equals("oauth2")) {
@@ -231,7 +257,7 @@ public class Market extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public static Result deletePlugin(String pluginIdStr) throws JsonValidationException, InternalServerException {
+	public static Result deletePlugin(String pluginIdStr) throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 			
@@ -239,7 +265,7 @@ public class Market extends APIController {
 		ObjectId pluginId = new ObjectId(pluginIdStr);
 		
 		Plugin app = Plugin.getById(pluginId, Sets.create("filename", "status"));
-		if (app == null) return badRequest("Unknown plugin");
+		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 
 		Plugin.delete(pluginId);
 		return ok();

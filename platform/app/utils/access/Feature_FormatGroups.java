@@ -80,7 +80,7 @@ public class Feature_FormatGroups extends Feature {
 		Set<String> result = new HashSet<String>();
 		for (String grp : groups) {
 			RecordGroup recGroup = RecordGroup.getBySystemPlusName(groupSystem,grp);
-			if (recGroup == null) throw new BadRequestException("error.group", "Unknown group:'"+grp+"', group-system:'"+groupSystem+"'");
+			if (recGroup == null) throw new BadRequestException("error.unknown.group", "Unknown group:'"+grp+"', group-system:'"+groupSystem+"'");
 			if (recGroup.contents != null) result.addAll(recGroup.contents);
 		}	
 		

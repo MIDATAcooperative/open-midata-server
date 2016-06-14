@@ -1,37 +1,28 @@
 package utils.fhir;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
-
 import models.Consent;
 import models.Member;
-import models.Record;
+
+import org.bson.types.ObjectId;
 
 import utils.AccessLog;
-import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
-
 import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.model.dstu2.valueset.AdministrativeGenderEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointSystemEnum;
-import ca.uhn.fhir.model.dstu2.valueset.IdentifierUseEnum;
 import ca.uhn.fhir.model.primitive.IdDt;
-import ca.uhn.fhir.model.primitive.UriDt;
-import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
-import ca.uhn.fhir.rest.annotation.RequiredParam;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.StringParam;

@@ -84,7 +84,7 @@ public class AccessPermissionSet extends Model {
 		try {
 		   DBLayer.secureUpdate(this, collection, "version", "permissions", "unmerged");
 		} catch (DatabaseException e) {
-			throw new InternalServerException("error.internal.db", e);
+			throw new InternalServerException("error.internal_db", e);
 		}
 	}
 	
@@ -92,7 +92,7 @@ public class AccessPermissionSet extends Model {
 		try {
 		   DBLayer.secureUpdate(this, collection, "version", "encrypted", "unmerged");
 		} catch (DatabaseException e) {
-			throw new InternalServerException("error.internal.db", e);
+			throw new InternalServerException("error.internal_db", e);
 		}
 	}
 	
@@ -100,7 +100,7 @@ public class AccessPermissionSet extends Model {
 		try {
 		   DBLayer.secureUpdate(this, collection, "version", "keys");
 		} catch (DatabaseException e) {
-				throw new InternalServerException("error.internal.db", e);
+				throw new InternalServerException("error.internal_db", e);
 		}		
 	}
 	
@@ -108,7 +108,7 @@ public class AccessPermissionSet extends Model {
 		try {
 		   DBLayer.secureUpdate(this, collection, "version");
 		} catch (DatabaseException e) {
-				throw new InternalServerException("error.internal.db", e);
+				throw new InternalServerException("error.internal_db", e);
 		}		
 	}
 	

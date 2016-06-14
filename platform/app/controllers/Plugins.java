@@ -74,7 +74,7 @@ public class Plugins extends APIController {
     protected static Plugin getPluginAndCheckIfInstalled(ObjectId pluginId, ObjectId userId, Set<String> fields) throws AppException {
     	            
 		Plugin app = Plugin.getById(pluginId, fields);
-		if (app == null) throw new BadRequestException("error.unknownplugin", "Unknown Plugin");
+		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown Plugin");
 
 		return app;				
     }
@@ -114,7 +114,7 @@ public class Plugins extends APIController {
 		
 		String name = JsonValidation.getString(json, "name");
 		
-		Set<String> fields = Sets.create("name", "description");
+		Set<String> fields = Sets.create("name", "description", "i18n");
 		Plugin plugin = Plugin.get(CMaps.map("filename", name).map("type", "mobile"), fields);
 				
 		return ok(JsonOutput.toJson(plugin, "Plugin", fields));

@@ -180,7 +180,7 @@ public class Application extends APIController {
 		
 		// check status
 		PasswordResetToken passwordResetToken = PasswordResetToken.decrypt(json.get("token").asText());
-		if (passwordResetToken == null) return badRequest("Missing or bad token.");
+		if (passwordResetToken == null) throw new BadRequestException("error.missing.token", "Missing or bad token.");
 		
 		// execute
 		ObjectId userId = passwordResetToken.userId;
@@ -197,11 +197,11 @@ public class Application extends APIController {
 		           user.set("resettoken", null);	
 		           user.emailStatus = wanted;
 			       user.set("emailStatus", wanted);			       
-		       } else return badRequest("Token has already expired. Please request a new one.");
+		       } else throw new BadRequestException("error.expired.token", "Token has already expired. Please request a new one.");
 		       
 		       return loginHelper(user);
 		} else if (user != null) {
-			return badRequest("E-Mail has already been verified.");
+			throw new BadRequestException("error.already_done.email_verification", "E-Mail has already been verified.");
 		}
 					
 		// response
@@ -238,7 +238,7 @@ public class Application extends APIController {
 	       if (user.confirmationCode.equals(confirmationCode)) {
 	    	   user.status = UserStatus.ACTIVE;
 	           user.set("status", user.status);			           			       
-	       } else return badRequest("Bad confirmation code");
+	       } else throw new BadRequestException("error.invalid.confirmation_code", "Bad confirmation code");
 		}
 					
 		// response
@@ -255,14 +255,14 @@ public class Application extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	public static Result setPasswordWithToken() throws JsonValidationException, InternalServerException {
+	public static Result setPasswordWithToken() throws JsonValidationException, AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "token", "password");
 		
 		// check status
 		PasswordResetToken passwordResetToken = PasswordResetToken.decrypt(json.get("token").asText());
-		if (passwordResetToken == null) return badRequest("Missing or bad password token.");
+		if (passwordResetToken == null) throw new BadRequestException("error.missing.token", "Missing or bad password token.");
 		
 		// execute
 		ObjectId userId = passwordResetToken.userId;
@@ -286,7 +286,7 @@ public class Application extends APIController {
 			   
 		           user.set("resettoken", null);		       
 			       user.set("password", Member.encrypt(password));
-		       } else return badRequest("Password reset token has already expired.");
+		       } else throw new BadRequestException("error.expired.token", "Password reset token has already expired.");
 		}
 					
 		// response
@@ -302,7 +302,7 @@ public class Application extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result changePassword() throws JsonValidationException, InternalServerException {
+	public static Result changePassword() throws JsonValidationException, AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "oldPassword", "password");
@@ -312,7 +312,7 @@ public class Application extends APIController {
 		String password = JsonValidation.getPassword(json, "password");
 		
 		User user = User.getById(userId, Sets.create("password"));
-		if (!Member.authenticationValid(oldPassword, user.password)) return badRequest("Bad password.");
+		if (!Member.authenticationValid(oldPassword, user.password)) throw new BadRequestException("error.invalid.password_old","Bad password.");
 		
 		user.set("password", Member.encrypt(password));
 		       			
@@ -341,7 +341,7 @@ public class Application extends APIController {
 		// This is a dummy query to check if provided passphrase works
 		try {
 		  RecordManager.instance.list(userId, userId, CMaps.map("format","zzzzzz"), Sets.create("name"));
-		} catch (InternalServerException e) { return badRequest("Old passphrase not correct."); }
+		} catch (InternalServerException e) { throw new BadRequestException("error.passphrase_old", "Old passphrase not correct."); }
 		
 		KeyManager.instance.changePassphrase(userId, passphrase);
 		
@@ -383,7 +383,7 @@ public class Application extends APIController {
 	 * @throws AppException
 	 */
 	public static Result loginHelper(User user) throws AppException {
-		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.userblocked", "User is not allowed to log in.");
+		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 				
 		PortalSessionToken token = null;
 		
@@ -447,7 +447,7 @@ public class Application extends APIController {
 		try {
 		  RecordManager.instance.list(userId, userId, CMaps.map("format","zzzzzzz"), Sets.create("name"));
 		} catch (InternalServerException e) {
-		  return badRequest("Bad Passphrase");
+		  throw new BadRequestException("error.invalid.passphrase", "Bad Passphrase");
 		}
 					
 		User user = User.getById(userId , Sets.create("status", "accountVersion"));
@@ -475,7 +475,7 @@ public class Application extends APIController {
 
 		// check status
 		if (Member.existsByEMail(email)) {
-		  return badRequest("A user with this email address already exists.");
+		  throw new BadRequestException("error.exists.user", "A user with this email address already exists.");
 		}
 		
 		// create the user

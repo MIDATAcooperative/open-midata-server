@@ -69,7 +69,7 @@ public abstract class Model implements JsonSerializable {
 		try {
 			DBLayer.upsert(collection, modelObject);
 		} catch (DatabaseException e) {
-			throw new InternalServerException("error.internal.db", e);
+			throw new InternalServerException("error.internal_db", e);
 		}
 	}
 
@@ -77,7 +77,7 @@ public abstract class Model implements JsonSerializable {
 		try {
 			DBLayer.delete(modelClass, collection, properties);
 		} catch (DatabaseException e) {
-			throw new InternalServerException("error.internal.db", e);
+			throw new InternalServerException("error.internal_db", e);
 		}
 	}
 
@@ -85,7 +85,7 @@ public abstract class Model implements JsonSerializable {
 		try {
 			return DBLayer.exists(modelClass, collection, properties);
 		} catch (DatabaseException e) {
-			throw new InternalServerException("error.internal.db", e);
+			throw new InternalServerException("error.internal_db", e);
 		}
 	}
 
@@ -94,7 +94,7 @@ public abstract class Model implements JsonSerializable {
 		try {
 			return DBLayer.get(modelClass, collection, properties, fields);
 		} catch (DatabaseException e) {
-			throw new InternalServerException("error.internal.db", e);
+			throw new InternalServerException("error.internal_db", e);
 		}
 	}
 
@@ -103,7 +103,7 @@ public abstract class Model implements JsonSerializable {
 		try {
 			return DBLayer.getAll(modelClass, collection, properties, fields);
 		} catch (DatabaseException e) {
-			throw new InternalServerException("error.internal.db", e);
+			throw new InternalServerException("error.internal_db", e);
 		}
 	}
 
@@ -111,7 +111,7 @@ public abstract class Model implements JsonSerializable {
 		try {
 			DBLayer.set(model, collection, modelId, field, value);
 		} catch (DatabaseException e) {
-			throw new InternalServerException("error.internal.db", e);
+			throw new InternalServerException("error.internal_db", e);
 		}
 	}
 

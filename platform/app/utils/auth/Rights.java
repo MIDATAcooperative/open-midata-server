@@ -115,12 +115,12 @@ public class Rights {
 		
 		Set<String> isallowed = ac.get(role);
 		if (isallowed == null) isallowed = ac.get(UserRole.ANY);
-		if (isallowed == null) throw new AuthException("error.notauthorized", "Role is not allowed to perform action.");
+		if (isallowed == null) throw new AuthException("error.notauthorized.action", "Role is not allowed to perform action.");
 		
 		if (!isallowed.containsAll(fields)) {		
 			Set<String> missing = new HashSet<String>(fields);
 			missing.removeAll(isallowed);
-			throw new AuthException("error.notauthorized.field", "Security: Role is not allowed to query provided fields: "+missing.toString());
+			throw new AuthException("error.notauthorized.fields", "Security: Role is not allowed to query provided fields: "+missing.toString());
 		}
 	}
 

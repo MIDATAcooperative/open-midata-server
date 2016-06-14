@@ -34,8 +34,8 @@
 						<img class="media-object" ng-src="{{ getVisualizationImage(visualization) }}" alt="Icon">
 					</a>
 					<div class="media-body">
-						<a href="javascript:;" ng-click="showVisualizationDetails(visualization)">{{visualization.name}}</a>
-						<p>{{visualization.description}}</p>
+						<a href="javascript:;" ng-click="showVisualizationDetails(visualization)">{{ visualization.i18n[translate.use()].name || visualization.name}}</a>
+						<p>{{visualization.i18n[translate.use()].description || visualization.description}}</p>
 					</div>
 				</div>
 				</div>
@@ -51,8 +51,8 @@
 						<img class="media-object" ng-src="{{ getVisualizationImage(visualization) }}" alt="Icon">
 					</a>
 					<div class="media-body">
-						<a href="javascript:;" ng-click="showVisualizationDetails(visualization)">{{visualization.name}}</a>
-						<p>{{visualization.description}}</p>
+						<a href="javascript:;" ng-click="showVisualizationDetails(visualization)">{{ visualization.i18n[translate.use()].name || visualization.name}}</a>
+						<p>{{visualization.i18n[translate.use()].description || visualization.description}}</p>
 					</div>
 				</div>
 				</div>

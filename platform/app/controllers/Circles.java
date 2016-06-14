@@ -41,6 +41,7 @@ import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -175,11 +176,11 @@ public class Circles extends APIController {
 		String passcode = json.has("passcode") ? JsonValidation.getPassword(json, "passcode") : null;
 						
 		if (Consent.existsByOwnerAndName(userId, name)) {
-		  return badRequest("A consent with this name already exists.");
+		  throw new BadRequestException("error.exists.consent",  "A consent with this name already exists.");
 		}
 		
 		if (passcode != null && !executorId.equals(userId)) {
-		  return badRequest("Only owner may create consent with passcode");
+		  throw new BadRequestException("error.internal", "Only owner may create consent with passcode");
 		}
 		
 		Date validUntil = JsonValidation.getDate(json, "validUntil");
@@ -198,7 +199,7 @@ public class Circles extends APIController {
 			consent = new HCRelated();
 			break;		
 		default :
-			return badRequest("Unsupported consent type");
+			throw new BadRequestException("error.internal", "Unsupported consent type");
 		}
 		
 		if (passcode != null) {
@@ -206,12 +207,12 @@ public class Circles extends APIController {
 				String hpasscode = PasswordHash.createHashGivenSalt(passcode.toCharArray(), userId.toByteArray());
 				consent.passcode = hpasscode;
 				if (Consent.getByOwnerAndPasscode(userId, hpasscode, Sets.create("name")) != null) {
-					return badRequest("Please choose a different passcode!");
+					throw new BadRequestException("error.exists.passcode", "Please choose a different passcode!");
 				}
 			}  catch (NoSuchAlgorithmException e) {
-				throw new InternalServerException("error.internal.cryptography", e);
+				throw new InternalServerException("error.internal", e);
 			} catch (InvalidKeySpecException e) {
-				throw new InternalServerException("error.internal.cryptography", e);
+				throw new InternalServerException("error.internal", e);
 			}
 		}
 			
@@ -260,7 +261,7 @@ public class Circles extends APIController {
 		   String hpasscode = PasswordHash.createHashGivenSalt(passcode.toCharArray(), ownerId.toByteArray());
 		   
 		   Consent consent = Consent.getByOwnerAndPasscode(ownerId, hpasscode, Sets.create("name","authorized"));
-		   if (consent == null) return badRequest("Bad passcode");
+		   if (consent == null) throw new BadRequestException("error.invalid.passcode", "Bad passcode");
 		   
 		   KeyManager.instance.unlock(consent._id, passcode);		  
 		   RecordManager.instance.shareAPS(consent._id, consent._id, Collections.singleton(executorId));		   
@@ -269,9 +270,9 @@ public class Circles extends APIController {
 		
 		   return ok(JsonOutput.toJson(consent, "Consent", Sets.create("_id", "authorized")));
 		} catch (NoSuchAlgorithmException e) {
-	    	throw new InternalServerException("error.internal.cryptography", e);
+	    	throw new InternalServerException("error.internal", e);
 	    } catch (InvalidKeySpecException e) {
-	    	throw new InternalServerException("error.internal.cryptography", e);
+	    	throw new InternalServerException("error.internal", e);
 	    }
 	}
 
@@ -291,9 +292,9 @@ public class Circles extends APIController {
 		
 		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("owner", "authorized", "type"));
 		if (consent == null) {
-			return badRequest("No consent with this id exists.");
+			throw new BadRequestException("error.unknown.consent", "No consent with this id exists.");
 		}
-		if (consent.type != ConsentType.CIRCLE && consent.type != ConsentType.EXTERNALSERVICE) return badRequest("Operation not supported");
+		if (consent.type != ConsentType.CIRCLE && consent.type != ConsentType.EXTERNALSERVICE) throw new BadRequestException("error.unsupported", "Operation not supported");
 		
 		// Remove APS
 		consent.setStatus(ConsentStatus.EXPIRED);
@@ -335,7 +336,7 @@ public class Circles extends APIController {
 		
 		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("authorized","type"));
 		if (consent == null) {
-			return badRequest("No consent with this id belonging to user exists.");
+			throw new BadRequestException("error.unknown.consent", "No consent with this id belonging to user exists.");
 		}
 		
 		// add users to circle (implicit: if not already present)
@@ -366,7 +367,7 @@ public class Circles extends APIController {
 		
 		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("authorized","type"));
 		if (consent == null) {
-			return badRequest("No consent with this id exists.");
+			throw new BadRequestException("error.unknown.consent", "No consent with this id exists.");
 		}
 		
 		// remove member from circle (implicit: if present)

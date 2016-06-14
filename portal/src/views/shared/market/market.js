@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('MarketCtrl', ['$scope', 'server', '$state', 'ENV', '$window', function($scope, server, $state, ENV, $window) {
+.controller('MarketCtrl', ['$scope', '$translate', 'server', '$state', 'ENV', '$window', function($scope, $translate, server, $state, ENV, $window) {
 	
 	var pathsegment = window.location.pathname.split("/")[1];
 	// init
@@ -12,6 +12,7 @@ angular.module('portal')
 	$scope.visualizations = {};
 	$scope.visualizations.spotlighted = [];
 	$scope.visualizations.suggested = [];
+	$scope.translate = $translate;
 	$scope.tags = [ "Analysis", "Import", "Planning", "Tools", "Fitbit", "Jawbone" ];
 	
 	// get apps and visualizations

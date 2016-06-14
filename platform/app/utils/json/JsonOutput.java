@@ -30,7 +30,7 @@ public class JsonOutput {
 	      String json = mapper.writer(fProvider).writeValueAsString(o);
 	      return json;
 	    } catch (JsonProcessingException e) {
-	    	throw new InternalServerException("error.internal.json", e);
+	    	throw new InternalServerException("error.internal", e);
 	    }
 	}
 	

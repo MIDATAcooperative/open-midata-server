@@ -124,17 +124,17 @@ public class KeyManager {
 			System.arraycopy(cipherText, 0, result, 4, cipherText.length);
 			return result;
 		} catch (NoSuchAlgorithmException e) {
-			throw new InternalServerException("error.internal.cryptography", e);		
+			throw new InternalServerException("error.internal", e);		
 		} catch (NoSuchPaddingException e2) {
-			throw new InternalServerException("error.internal.cryptography", e2);
+			throw new InternalServerException("error.internal", e2);
 		} catch (InvalidKeyException e3) {
-			throw new InternalServerException("error.internal.cryptography", e3);
+			throw new InternalServerException("error.internal", e3);
 		} catch (InvalidKeySpecException e4) {
-			throw new InternalServerException("error.internal.cryptography", e4);
+			throw new InternalServerException("error.internal", e4);
 		} catch (BadPaddingException e5) {
-			throw new InternalServerException("error.internal.cryptography", e5);
+			throw new InternalServerException("error.internal", e5);
 		} catch (IllegalBlockSizeException e6) {
-			throw new InternalServerException("error.internal.cryptography", e6);
+			throw new InternalServerException("error.internal", e6);
 		} 
 	}
 	
@@ -154,7 +154,7 @@ public class KeyManager {
 			
 			byte key[] = pks.get(target.toString());
 						
-			if (key == null) throw new AuthException("error.auth.relogin", "Authorization Failure");
+			if (key == null) throw new AuthException("error.relogin", "Authorization Failure");
 			
 			PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(key);
 			
@@ -174,17 +174,17 @@ public class KeyManager {
 						
 			return EncryptionUtils.derandomize(cipherText);
 		} catch (NoSuchAlgorithmException e) {
-			throw new InternalServerException("error.internal.cryptography", e);		
+			throw new InternalServerException("error.internal", e);		
 		} catch (NoSuchPaddingException e2) {
-			throw new InternalServerException("error.internal.cryptography", e2);
+			throw new InternalServerException("error.internal", e2);
 		} catch (InvalidKeyException e3) {
-			throw new InternalServerException("error.internal.cryptography", e3);
+			throw new InternalServerException("error.internal", e3);
 		} catch (InvalidKeySpecException e4) {
-			throw new InternalServerException("error.internal.cryptography", e4);
+			throw new InternalServerException("error.internal", e4);
 		} catch (BadPaddingException e5) {
-			throw new InternalServerException("error.internal.cryptography", e5);
+			throw new InternalServerException("error.internal", e5);
 		} catch (IllegalBlockSizeException e6) {
-			throw new InternalServerException("error.internal.cryptography", e6);
+			throw new InternalServerException("error.internal", e6);
 		} 
 	}
 	
@@ -232,7 +232,7 @@ public class KeyManager {
 		   
 		   return pub.getEncoded();
 		} catch (NoSuchAlgorithmException e) {
-			throw new InternalServerException("error.internal.cryptography", e);
+			throw new InternalServerException("error.internal", e);
 		}
 	}
 	
@@ -245,9 +245,9 @@ public class KeyManager {
 	 */
 	public void changePassphrase(ObjectId target, String newPassphrase) throws InternalServerException, AuthException {
 		byte[] oldKey = pks.get(target.toString());
-		if (oldKey == null) throw new AuthException("error.auth.relogin", "Authorization Failure");		
+		if (oldKey == null) throw new AuthException("error.relogin", "Authorization Failure");		
 		KeyInfo keyinfo = KeyInfo.getById(target);
-		if (keyinfo == null) throw new InternalServerException("error.internal.cryptography", "Private key info not found.");
+		if (keyinfo == null) throw new InternalServerException("error.internal", "Private key info not found.");
 		
 		keyinfo.privateKey = EncryptionUtils.applyKey(oldKey, newPassphrase);
 		keyinfo.type = KEYPROTECTION_PASSPHRASE;
@@ -293,11 +293,11 @@ public class KeyManager {
 	public void unlock(ObjectId target, ObjectId source, byte[] splitkey) throws InternalServerException {
 		KeyInfo inf = KeyInfo.getById(source);
 		if (inf == null) {			
-			throw new InternalServerException("error.internal.cryptography", "Private key info not found.");
+			throw new InternalServerException("error.internal", "Private key info not found.");
 		}
 		
 		if (inf.type != KEYPROTECTION_SPLITKEY) {
-			throw new InternalServerException("error.internal.cryptography", "Private key has wrong type.");
+			throw new InternalServerException("error.internal", "Private key has wrong type.");
 		}
 		pks.put(target.toString(), EncryptionUtils.joinKey(inf.privateKey, splitkey) );		
 	}
@@ -329,7 +329,7 @@ public class KeyManager {
 	public byte[] generateAlias(ObjectId source, ObjectId target) throws AuthException, InternalServerException {
 		byte key[] = pks.get(source.toString());
 		
-		if (key == null) throw new AuthException("error.auth.relogin", "Authorization Failure");
+		if (key == null) throw new AuthException("error.relogin", "Authorization Failure");
 	
 		Pair<byte[], byte[]> split = EncryptionUtils.splitKey(key);
 		KeyInfo keyinfo = new KeyInfo();

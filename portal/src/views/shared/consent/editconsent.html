@@ -9,22 +9,22 @@
       <p class="form-control-static">{{ consent.name }}</p>
     </formrow>
     <formrow id="type" label="editconsent.type">
-      <p class="form-control-static" ng-show="consent.type == 'CIRCLE'">This consent shares data with other MIDATA members.</p>
-      <p class="form-control-static" ng-show="consent.type == 'HEALTHCARE'">This consent shares data with healthcare professionals.</p>
-      <p class="form-control-static" ng-show="consent.type == 'STUDYPARTICIPATION'">This consent shares data with research for use in a study..</p>    
-      <p class="form-control-static" ng-show="consent.type == 'EXTERNALSERVICE'">This consent shares data with a mobile app or external service.</p>
+      <p class="form-control-static" ng-show="consent.type == 'CIRCLE'" translate="editconsent.type_circle"></p>
+      <p class="form-control-static" ng-show="consent.type == 'HEALTHCARE'" translate="editconsent.type_healthcare"></p>
+      <p class="form-control-static" ng-show="consent.type == 'STUDYPARTICIPATION'" translate="editconsent.type_studyparticipation"></p>    
+      <p class="form-control-static" ng-show="consent.type == 'EXTERNALSERVICE'" translate="editconsent.type_externalservice"></p>
     </formrow>
     <formrow id="status" label="editconsent.status">
-      <p class="form-control-static" ng-show="consent.status == 'ACTIVE'">This consent is active.</p>
-      <p class="form-control-static" ng-show="consent.status == 'EXPIRED'">This consent is expired. Data is no longer shared.</p>
-      <p class="form-control-static" ng-show="consent.status == 'UNCONFIRMED'">This consent needs confirmation by its owner.</p>    
-      <p class="form-control-static" ng-show="consent.status == 'REJECTED'">This consent has been rejected by its owner.</p>
+      <p class="form-control-static" ng-show="consent.status == 'ACTIVE'" translate="editconsent.status_active"></p>
+      <p class="form-control-static" ng-show="consent.status == 'EXPIRED'" translate="editconsent.status_expired"></p>
+      <p class="form-control-static" ng-show="consent.status == 'UNCONFIRMED'" translate="editconsent.status_unconfirmed"></p>    
+      <p class="form-control-static" ng-show="consent.status == 'REJECTED'" translate="editconsent.status_rejected"></p>
     </formrow> 
     
-     <formrow myid="passcode" label="Password" ng-show="consent.type == 'EXTERNALSERVICE'">
+     <formrow myid="passcode" label="editconsent.password" ng-show="consent.type == 'EXTERNALSERVICE'">
        <p class="form-control-static" ng-hide="consent.passcode">
          <span translate="editconsent.password_exists"></span>
-         <button type="button" class="btn btn-default btn-sm" ng-disabled="status.action == 'passcode'" ng-click="showPasscode()">Show password</button>
+         <button type="button" class="btn btn-default btn-sm" ng-disabled="status.action == 'passcode'" ng-click="showPasscode()" transplate="editconsent.show_password"></button>
        </p>
        <p class="form-control-static" ng-show="consent.passcode">
          <span translate="editconsent.password_shown"></span> <strong>{{ consent.passcode }}</strong>
@@ -75,16 +75,16 @@
 	<formrow id="what" label="editconsent.what_is_shared">
 	  <p class="form-control-static" ng-show="sharing.records.length == 0 && !sharing.query.group.length" translate="editconsent.consent_empty"></p>
 	  <div class="well well-sm" ng-show="sharing.records.length || sharing.query.group.length">
-	  <p class="form-control-static" ng-show="sharing.records.length" >This consent shares {{ sharing.records.length }} records.</p>
-	  <div ng-repeat="group in sharing.query.group">Shares all records belonging to group: {{ group }}</div>
-	  <div ng-repeat="group in sharing.query['group-exclude']">Excluded are records belonging to group: {{ group }}</div>
+	  <p class="form-control-static" ng-show="sharing.records.length" translate="editconsent.shares_records" translate-value-count="{{ sharing.records.length }}"  ></p>
+	  <div ng-repeat="group in sharing.query.group" translate="editconsent.shares_group" translate-value-group="{{ group }}"></div>
+	  <div ng-repeat="group in sharing.query['group-exclude']" translate="editconsent.excludes_group" translate-value-group="{{ group }}"></div>
 	  </div>
-	  <button class="btn btn-default" ui-sref="^.recordsharing({ selected : consentId, selectedType : 'circles' })">View/Change data selection</button>
+	  <button class="btn btn-default" ui-sref="^.recordsharing({ selected : consentId, selectedType : 'circles' })" translate="editconsent.view_change_selection_btn"></button>
 	</formrow>
 	<a  ui-sref="^.circles" class="btn btn-default" translate="common.back_btn"></a>
-	<button type="button" ng-click="confirmConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-primary">Confirm this Consent</button>
-	<button type="button" ng-click="rejectConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-danger">Reject this Consent</button>
-    <button type="button" ng-click="deleteConsent();" ng-show="(consent.status == 'ACTIVE' || consent.status == 'REJECTED') && consent.type != 'STUDYPARTICIPATION'" class="btn btn-danger">Delete this Consent</button>
+	<button type="button" ng-click="confirmConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-primary" translate="editconsent.confirm_btn"></button>
+	<button type="button" ng-click="rejectConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-danger" translate="editconsent.reject_btn"></button>
+    <button type="button" ng-click="deleteConsent();" ng-show="(consent.status == 'ACTIVE' || consent.status == 'REJECTED') && consent.type != 'STUDYPARTICIPATION'" class="btn btn-danger" translate="editconsent.delete_btn"></button>
     <!--  <button type="button" ng-click="showStudyDetails();" ng-show="consent.type == 'STUDYPARTICIPATION'" class="btn btn-default">Show Study</button> -->
   </form>	
   </loader>		

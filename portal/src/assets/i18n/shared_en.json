@@ -18,12 +18,35 @@
    "error" : {
      "offline" : "The backend is currently offline! Please contact support@midata.coop if the problem persists.",
      "internal" : "An internal error occured. Please contact support@midata.coop if the problem persists.",
+     "internal_db" : "An internal database error occured. Please contact support@midata.coop if the problem persists.",
+     "relogin" : "Please relogin",
+     "noconsent" : "No active consent that allows to add data for target person.",
+     "unsupported" : "Operation not supported",
+     
+     "notauthorized" : {
+       "action" : "You are not authorized to do this action",
+       "fields" : "You are not authorized to query provided fields",
+       "not_plugin_owner" : "This is not your plugin."      
+     },
+          
      
      "invalid" : {
        "email" : "Please enter a valid email address",
        "credentials" : "Invalid username or password.",
        "password_repetition" : "Password and password repetition do not match!",
-       "passphrase_repetition" : "Passphrase and passphrase repetition do not match!"
+       "passphrase_repetition" : "Passphrase and passphrase repetition do not match!",
+       "passphrase_old" : "Old passphrase not correct.",
+       "password_old" : "Old password not correct.",
+       "confirmation_code" :"Bad confirmation code",
+       "code" : "Unknown code for study.",
+       "appcode" : "Unknown code for app.",
+       "status_transition" : "Invalid status change",
+       "date" : "Invalid value for date field",
+       "string" : "Field must be of type string",
+       "token" : "Invalid authorization token. Please relogin.",
+       "json" : "Invalid JSON provided",
+       "passphrase" : "Bad passphrase",
+       "passcode": "Bad passcode"
      },
      
      "missing" : {
@@ -31,11 +54,35 @@
        "email" : "Please fill out your email address.",
        "input_field" : "Please fill out this input field.",
        "newpassword" : "Please enter a new password!",
-       "passphrase" : "Please provide your passphrase."
+       "passphrase" : "Please provide your passphrase.",
+       "groupsystem" : "Group system must be provided.",
+       "token" : "Missing or bad token."
+     },
+         
+     "unknown" : {
+       "plugin" : "Unknown Plugin",
+       "app" : "Unknown application",
+       "space" : "The requested space does no longer exist.",
+       "consent" : "Consent not found",
+       "study" : "Study does not exist.",
+       "content" : "Record Content-Type is not registered with the platform.",
+       "group" : "Unknown group name",
+       "code" : "Unknown code"
      },
      
      "exists" : {
-       "member" : "A person with this email is already registered."
+       "member" : "A person with this email is already registered.",
+       "passcode" : "Please choose a different passcode!",
+       "plugin" : "A plugin with the same name already exists."
+     },
+     
+     
+     "blocked" : {
+       "user" : "User is not allowed to log in. Contact support@midata.coop for help."
+     },
+     
+     "closed" : {
+       "study" : "Study not searching for members."
      },
      
      "tooshort" : {
@@ -46,6 +93,18 @@
      "tooweak" : {
        "password" : "Passwords should contain of a mix of upper/lower case letters, numbers and special characters.",
        "passphrase" : "Passphrases should contain of a mix of upper/lower case letters, numbers and special characters."
+     },
+     
+     "concurrent" : {
+       "update" : "Concurrent update. Please try again."
+     },
+     
+     "expired" : {
+       "token" : "Token has already expired. Please request a new one."
+     },
+     
+     "already_done" : {
+       "email_verification" : "E-Mail has already been verified."
      }
              
    },
@@ -361,7 +420,9 @@
     "name" : "Name of Consent",
     "type" : "Type of Consent",
     "status" : "Status of Consent",
+    "password" : "Password",
     "password_exists" : "A password has been set if you need to relogin with the app.",
+    "show_password" : "Show password",
     "password_shown" : "Use your email address and this password for login:",
     "people" : "With which persons(s) do you want to share data?",
     "add_people_btn" : "Add More People",
@@ -370,7 +431,52 @@
     "expiration_date" : "Consent expiration date:",
     "created_before" : "Shares only data created before:",
     "what_is_shared" : "What data is shared?",
-    "consent_empty" : "This consent does not share any data at the moment."
+    "consent_empty" : "This consent does not share any data at the moment.",
+    "type_circle" : "This consent shares data with other MIDATA members.",
+    "type_healthcare" : "This consent shares data with healthcare professionals.",
+    "type_studyparticipation" : "This consent shares data with research for use in a study.",    
+    "type_externalservice" : "This consent shares data with a mobile app or external service.",
+    "status_active" : "This consent is active.",
+    "status_expired" : "This consent is expired. Data is no longer shared.",
+    "status_unconfirmed" : "This consent needs confirmation by its owner.",    
+    "status_rejected" : "This consent has been rejected by its owner.",
+    "shares_records" : "This consent shares {{count}} records.",
+    "shares_group" : "Shares all records belonging to group: {{ group }}",
+	"excludes_group" : "Excluded are records belonging to group: {{ group }}",
+	"view_change_selection_btn" : "View/Change data selection",
+	"confirm_btn" : "Confirm this Consent",
+	"reject_btn" : "Reject this Consent",
+    "delete_btn" : "Delete this Consent"
+  },
+  
+  "consents" : {
+    "title" : "Consents",
+    "description" : "Using consents you can grant others (healthcare professionals, friends, research...) access to some of your data. Use this page to manage your existing consents or to create a new one.",
+    "count" : "You have {{ count }} consents:",
+    "name" : "Name",
+    "type" : "Type",
+	"status" : "Status",
+	"number_of_people" : "# People",
+	"number_of_records" : "# Records",
+	"add_new_btn" : "Add new consent"
+  },
+  
+  "importrecords" : {
+    "title" : "Import",
+    "authorize_btn" : "Authorize Now"
+  },
+  
+  "spaces" : {
+    "title" : "MIDATA Plugin",
+    "delete_btn" : "Delete this space",
+    "used_btn" : "Used records..",
+    "share_btn" : "Share...",
+    "finish_comparing_btn" : "Finished comparing",
+    "compare_btn" : "Compare"
+  },
+  
+  "records" : {
+    "title" : "My Data"
   },
   
   "oauth2" : {

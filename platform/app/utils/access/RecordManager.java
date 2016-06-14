@@ -477,7 +477,7 @@ public class RecordManager {
 		String storedVersion = rec.meta.getString("version");
 		if (storedVersion == null) storedVersion = VersionedDBRecord.INITIAL_VERSION;
 		String providedVersion = record.version != null ? record.version : VersionedDBRecord.INITIAL_VERSION; 
-		if (!providedVersion.equals(storedVersion)) throw new BadRequestException("error.concurrent", "Concurrent update", HttpStatus.SC_CONFLICT);
+		if (!providedVersion.equals(storedVersion)) throw new BadRequestException("error.concurrent.update", "Concurrent update", HttpStatus.SC_CONFLICT);
 		
 		VersionedDBRecord vrec = new VersionedDBRecord(rec);
 		RecordEncryption.encryptRecord(vrec);

@@ -35,7 +35,7 @@ public class ExecutionInfo {
 		// decrypt authToken 
 		SpaceToken authToken = SpaceToken.decrypt(request, token);
 		if (authToken == null) {
-			throw new BadRequestException("error.token", "Invalid authToken.");
+			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 		
 		ExecutionInfo result = new ExecutionInfo();
@@ -47,7 +47,7 @@ public class ExecutionInfo {
 			result.ownerId = authToken.userId;
 		} else if (authToken.pluginId == null) {							
 			Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.userId, Sets.create("visualization", "app", "aps", "autoShare"));
-			if (space == null) throw new BadRequestException("error.space.missing", "The current space does no longer exist.");
+			if (space == null) throw new BadRequestException("error.unknown.space", "The current space does no longer exist.");
 				
 			result.pluginId = space.visualization;
 			result.targetAPS = space._id;
@@ -59,7 +59,7 @@ public class ExecutionInfo {
 		} else {
 			
 			Consent consent = Consent.getByIdAndAuthorized(authToken.spaceId, authToken.userId, Sets.create("owner"));
-			if (consent == null) throw new BadRequestException("error.consent.missing", "The current consent does no longer exist.");
+			if (consent == null) throw new BadRequestException("error.unknown.consent", "The current consent does no longer exist.");
 			
 			result.pluginId = authToken.pluginId;
 			result.targetAPS = consent._id;
@@ -73,11 +73,11 @@ public class ExecutionInfo {
 	public static ExecutionInfo checkMobileToken(String token) throws AppException {		
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(token);
 		if (authToken == null) {
-			throw new BadRequestException("error.internal", "Invalid authToken.");
+			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 					
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare"));
-        if (appInstance == null) throw new BadRequestException("error.internal", "Invalid authToken.");
+        if (appInstance == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 
         KeyManager.instance.unlock(appInstance._id, authToken.passphrase);
         

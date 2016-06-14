@@ -13,26 +13,21 @@ import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import ca.uhn.fhir.model.dstu2.resource.MedicationOrder;
 import ca.uhn.fhir.model.dstu2.resource.Observation;
-import ca.uhn.fhir.model.dstu2.resource.Patient;
-import ca.uhn.fhir.model.dstu2.valueset.AdministrativeGenderEnum;
 import ca.uhn.fhir.model.primitive.IdDt;
-import ca.uhn.fhir.model.primitive.UriDt;
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.Search;
-import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.ReferenceOrListParam;
-import ca.uhn.fhir.rest.param.ReferenceParam;
-import ca.uhn.fhir.rest.param.StringParam;
+import ca.uhn.fhir.rest.param.StringOrListParam;
 import ca.uhn.fhir.rest.param.TokenOrListParam;
-import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 
-public class ObservationResourceProvider extends ResourceProvider implements IResourceProvider {
+public class MedicationOrderResourceProvider extends ResourceProvider implements IResourceProvider {
  
     /**
      * The getResourceType method comes from IResourceProvider, and must
@@ -40,8 +35,8 @@ public class ObservationResourceProvider extends ResourceProvider implements IRe
      * supplies.
      */
     @Override
-    public Class<Observation> getResourceType() {
-        return Observation.class;
+    public Class<MedicationOrder> getResourceType() {
+        return MedicationOrder.class;
     }
      
     /**
@@ -56,43 +51,38 @@ public class ObservationResourceProvider extends ResourceProvider implements IRe
      *    Returns a resource matching this identifier, or null if none exists.
      */
     @Read()
-    public Observation getResourceById(@IdParam IdDt theId) {    	
+    public MedicationOrder getResourceById(@IdParam IdDt theId) {    	
     	    
         return null;
     }
  
     @Search()
-    public List<Observation> getObservation(
-    		@OptionalParam(name = Observation.SP_PATIENT) ReferenceOrListParam thePatient,
-    		@OptionalParam(name = Observation.SP_CODE) TokenOrListParam theCode
+    public List<MedicationOrder> getMedicationOrder(
+    		@OptionalParam(name = MedicationOrder.SP_PATIENT) ReferenceOrListParam thePatient,
+    		@OptionalParam(name = MedicationOrder.SP_STATUS) StringOrListParam theCode
     		) throws AppException {
     	try {
     	ExecutionInfo info = info();
     	
     	Map<String, Object> criteria = new HashMap<String, Object>();
-    	Map<String, Object> accountCriteria = CMaps.map("format","fhir/Observation");
+    	Map<String, Object> accountCriteria = CMaps.map("format","fhir/MedicationOrder");
     	
     	if (thePatient != null) {    		
     		accountCriteria.put("owner", refsToObjectIds(thePatient));
     	}
-    	
-    	if (theCode != null) {
-    		accountCriteria.put("code", tokensToStrings(theCode));    		
-    	}
-    	    	
-    	
+    	    	    	    	
     	AccessLog.logQuery(criteria, Sets.create("data"));
     	List<Record> result = RecordManager.instance.list(info.executorId, info.targetAPS, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
     	ReferenceTool.resolveOwners(result, true, false);
-    	List<Observation> patients = new ArrayList<Observation>();
+    	List<MedicationOrder> patients = new ArrayList<MedicationOrder>();
     	IParser parser = ctx().newJsonParser();    	
     	for (Record rec : result) {
     		try {
-    		Observation p = parser.parseResource(Observation.class, rec.data.toString());
+    		MedicationOrder p = parser.parseResource(MedicationOrder.class, rec.data.toString());
     		processResource(rec, p);
-    		if (p.getSubject().isEmpty()) {
-    		  p.getSubject().setReference(new IdDt("Patient", rec.owner.toString()));
-    		  p.getSubject().setDisplay(rec.ownerName);
+    		if (p.getPatient().isEmpty()) {
+    		  p.getPatient().setReference(new IdDt("Patient", rec.owner.toString()));
+    		  p.getPatient().setDisplay(rec.ownerName);
     		}
     		patients.add(p);
     		} catch (DataFormatException e) {}

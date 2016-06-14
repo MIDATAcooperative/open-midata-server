@@ -23,6 +23,7 @@ import utils.auth.MobileAppToken;
 import utils.auth.OAuthCodeToken;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.json.JsonValidation;
 import actions.APICall;
 import actions.MobileCall;
@@ -122,18 +123,18 @@ public class OAuth2 extends Controller {
         String phrase = null;
         ObjectNode obj = Json.newObject();	
         
-        if (!data.containsKey("grant_type")) return badRequest("Missing grant_type");
+        if (!data.containsKey("grant_type")) throw new BadRequestException("error.internal", "Missing grant_type");
         
         String grant_type = data.get("grant_type")[0];
         if (grant_type.equals("refresh_token")) {
-        	if (!data.containsKey("refresh_token")) return badRequest("Missing refresh_token");
+        	if (!data.containsKey("refresh_token")) throw new BadRequestException("error.internal", "Missing refresh_token");
         	String refresh_token = data.get("refresh_token")[0];
         	
         	MobileAppToken refreshToken = MobileAppToken.decrypt(refresh_token);
 			appInstanceId = refreshToken.appInstanceId;
 			
 			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "applicationId", "status"));
-			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) return badRequest("Bad refresh token.");                        
+			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.internal", "Bad refresh token.");                        
             
             phrase = refreshToken.phrase;
             KeyManager.instance.unlock(appInstance._id, phrase);	
@@ -143,9 +144,9 @@ public class OAuth2 extends Controller {
             	return status(UNAUTHORIZED);
             }
         } else if (grant_type.equals("authorization_code")) {
-        	if (!data.containsKey("redirect_uri")) return badRequest("Missing redirect_uri");
-            if (!data.containsKey("client_id")) return badRequest("Missing client_id");
-            if (!data.containsKey("code")) return badRequest("Missing code");
+        	if (!data.containsKey("redirect_uri")) throw new BadRequestException("error.internal", "Missing redirect_uri");
+            if (!data.containsKey("client_id")) throw new BadRequestException("error.internal", "Missing client_id");
+            if (!data.containsKey("code")) throw new BadRequestException("error.internal", "Missing code");
             
                             
             String code = data.get("code")[0];

@@ -1,7 +1,11 @@
 package utils.fhir;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
+import org.bson.types.ObjectId;
 
 import models.Record;
 
@@ -11,8 +15,10 @@ import ca.uhn.fhir.model.api.ResourceMetadataKeyEnum;
 import ca.uhn.fhir.model.dstu2.resource.BaseResource;
 import ca.uhn.fhir.model.primitive.InstantDt;
 import ca.uhn.fhir.rest.param.DateParam;
+import ca.uhn.fhir.rest.param.ReferenceOrListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringParam;
+import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 
 public class ResourceProvider {
@@ -59,6 +65,24 @@ public class ResourceProvider {
 			}
 			addRestriction((Map<String, Object>) subCrit, content, path, idx + 1);
 		}
+	}
+	
+	public static Set<String> refsToObjectIds(ReferenceOrListParam params) {
+		Set<String> result = new HashSet<String>();
+		for (ReferenceParam p : params.getValuesAsQueryTokens()) {
+			result.add(p.getIdPart());
+		}
+		return result;
+	}
+	
+	public static Set<String> tokensToStrings(TokenOrListParam params) {
+		Set<String> result = new HashSet<String>();
+		for (TokenParam p : params.getValuesAsQueryTokens()) {
+			if (p.getSystem() != null) {
+			  result.add(p.getSystem()+" "+p.getValue());
+			} else result.add("http://loinc.org "+p.getValue());
+		}
+		return result;
 	}
 	
 	public static void processResource(Record record, BaseResource resource) {

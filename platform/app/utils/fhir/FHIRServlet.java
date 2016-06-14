@@ -19,6 +19,10 @@ import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
 
 // https://demo.careevolution.com/PDemo/PDemo.html?iss=https://localhost:9000/fhir
+// https://demo.careevolution.com/PDemo/PDemo.html?iss=https://test.midata.coop:9000/fhir
+// https://sap.modulemd.com/SmartFhirPortal/?iss=https://test.midata.coop:9000/fhir
+// http://pillbox.medapptech.com/initapp/launch.html?iss=https://test.midata.coop:9000/fhir
+// https://apps-dstu2.smarthealthit.org/cardiac-risk/launch.html?iss=https://test.midata.coop:9000/fhir
 
 @WebServlet(urlPatterns= {"/fhir/*"}, displayName="FHIR Server")
 public class FHIRServlet extends RestfulServer {
@@ -36,7 +40,7 @@ public class FHIRServlet extends RestfulServer {
 	   String serverBaseUrl = "https://"+Play.application().configuration().getString("platform.server")+"/fhir";
        setServerAddressStrategy(new HardcodedServerAddressStrategy(serverBaseUrl));
        this.setServerConformanceProvider(new MidataConformanceProvider());
-       //ResourceProvider.ctx.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());
+       ResourceProvider.ctx.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());
 	   
       /*
        * The servlet defines any number of resource providers, and
@@ -46,6 +50,7 @@ public class FHIRServlet extends RestfulServer {
       List<IResourceProvider> resourceProviders = new ArrayList<IResourceProvider>();
       resourceProviders.add(new PatientResourceProvider());
       resourceProviders.add(new ObservationResourceProvider());   
+      resourceProviders.add(new MedicationOrderResourceProvider());
       setResourceProviders(resourceProviders);
           
    }

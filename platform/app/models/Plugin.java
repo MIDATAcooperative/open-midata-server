@@ -40,7 +40,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "targetUserRole", "spotlighted", "url", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret",
-	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status");
+	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -49,7 +49,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 			 Sets.create("_id", "version", "creator", "filename", "name", "description", "tags", 
 	                     "targetUserRole", "spotlighted", "url", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
-	                     "authorizationUrl", "consumerKey", "scopeParameters", "status");
+	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang");
 	
 	/**
 	 * timestamp of last change. Used to prevent lost updates.
@@ -81,6 +81,17 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	public String description;
 	
 	/**
+	 * The default title for the tile where this plugin is displayed.
+	 * null for mobile apps
+	 */
+	public String defaultSpaceName;
+	
+	/**
+	 * Internationalization support
+	 */
+	public Map<String, Plugin_i18n> i18n;
+		
+	/**
 	 * set of tags that determine for which categories this plugin should be displayed in the market
 	 */
 	public Set<String> tags;
@@ -107,12 +118,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 */
 	public String previewUrl;
 	
-	/**
-	 * The default title for the tile where this plugin is displayed.
-	 * null for mobile apps
-	 */
-	public String defaultSpaceName;
-	
+		
 	/**
 	 * The name of the default dashboard where this plugin should be added.
 	 * null for mobile apps
@@ -216,9 +222,9 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	
 	public void update() throws InternalServerException, LostUpdateException {
 		try {
-			   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status" );
+			   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n" );
 		} catch (DatabaseException e) {
-			throw new InternalServerException("error.internal.db", e);
+			throw new InternalServerException("error.internal_db", e);
 		}
 	}
 
@@ -240,5 +246,14 @@ public class Plugin extends Model implements Comparable<Plugin> {
 
 		// TODO only hide or remove from all users (including deleting their spaces associated with it)?
 		Model.delete(Plugin.class, collection, new ChainedMap<String, ObjectId>().put("_id", pluginId).get());
+	}
+	
+	public void setLanguage(String lang) {
+		Plugin_i18n in = i18n.get(lang);
+		if (in != null) {
+			this.name = in.name;
+			this.description = in.description;
+			this.defaultSpaceName = in.defaultSpaceName;
+		}
 	}
 }

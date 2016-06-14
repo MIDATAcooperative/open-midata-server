@@ -55,12 +55,12 @@ public class QuickRegistration extends APIController {
 		String phrase = JsonValidation.getString(json, "phrase");
 		
 		Study study = Study.getByCodeFromMember(studyCode, Study.ALL);
-		if (study == null) throw new BadRequestException("error.badcode", "Unknown code for study.");
+		if (study == null) throw new BadRequestException("error.invalid.code", "Unknown code for study.");
 		
-		if (!study.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING)) throw new BadRequestException("error.badcode", "Study not searching for members.");
+		if (!study.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING)) throw new BadRequestException("error.closed.study", "Study not searching for members.");
 		
 		Plugin app = Plugin.getByFilename(appName, Plugin.ALL_PUBLIC);
-		if (app == null) throw new BadRequestException("error.badcode", "Unknown code for app.");
+		if (app == null) throw new BadRequestException("error.invalid.appcode", "Unknown code for app.");
 		
 		String email = JsonValidation.getEMail(json, "email");
 		String firstName = JsonValidation.getString(json, "firstname");

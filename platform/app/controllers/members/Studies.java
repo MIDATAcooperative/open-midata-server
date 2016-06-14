@@ -315,15 +315,15 @@ public class Studies extends APIController {
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history", "memberName", "owner", "authorized"));		
 		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history", "owner", "createdBy", "name", "recordQuery", "requiredInformation"));
 		
-		if (study == null) throw new BadRequestException("error.studydoesnotexist", "Study does not exist.");
+		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		if (participation == null) {
 			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.notsearching", "code", "notsearching", "Study is not searching for participants.");
 			
 			participation = createStudyParticipation(study, user, null);
 										
 		}
-		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new BadRequestException("error.studynotsearching", "Study is not searching for participants anymore.");
-		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) throw new BadRequestException("error.wrongparticipationstatus", "Wrong participation status.");
+		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new BadRequestException("error.closed.study", "Study is not searching for participants anymore.");
+		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
 		
 		participation.setPStatus(ParticipationStatus.REQUEST);
 		

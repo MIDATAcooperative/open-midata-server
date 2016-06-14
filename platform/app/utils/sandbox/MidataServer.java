@@ -48,7 +48,7 @@ public class MidataServer {
 		try {
 			record.data = (DBObject) JSON.parse(data);
 		} catch (JSONParseException e) {
-			throw new BadRequestException("error.json", "Record data is invalid JSON.");
+			throw new BadRequestException("error.invalid.json", "Record data is invalid JSON.");
 		}
 		record.name = name;
 		record.description = description;

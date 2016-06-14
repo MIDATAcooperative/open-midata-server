@@ -17,14 +17,14 @@
 				<p translate="visualization.success"></p>
 			</div>
 			
-			<p class="lead">{{visualization.name}}</p>
+			<p class="lead">{{ visualization.i18n[translate.use()].name || visualization.name}}</p>
 			<div class="row">
 				<p class="col-xs-2" translate="visualization.created_by"></p>
 				<p class="col-xs-10">{{visualization.creator}}</p>
 			</div>
 			<div class="row">
 				<p class="col-xs-2" translate="visualization.description"></p>
-				<p class="col-xs-10">{{visualization.description}}</p>
+				<p class="col-xs-10">{{ visualization.i18n[translate.use()].description || visualization.description}}</p>
 			</div>
 		
 			<div class="row">

@@ -1,31 +1,31 @@
 <div ng-controller="ConsentsCtrl">
 
 	<div class="panel panel-primary">
-		<div class="panel-heading">Consents</div>
+		<div class="panel-heading" translate="consents.title"></div>
 		<div class="body">
-            <p>Using consents you can grant others (healthcare professionals, friends, research...) access to some of your data. Use this page to manage your existing consents or to create a new one.</p>
+            <p translate="consents.description"></p>
             <loader busy="status.isBusy !== false">
-			<p>You have {{ consents.length }} consents:</p>
+			<p translate="consents.count" translate-value-count="{{ consents.length }}"></p>
 
 			<table class="table table-striped" ng-show="consents.length">
 
 				<tr>
-					<th>Name</th>
-					<th>Type</th>
-					<th>Status</th>
-					<th># People</th>
-					<th># Records</th>
+					<th translate="consents.name"></th>
+					<th translate="consents.type"></th>
+					<th translate="consents.status"></th>
+					<th translate="consents.number_of_people"></th>
+					<th translate="consents.number_of_records"></th>
 				</tr>
 				<tr ng-repeat="consent in consents">
 					<td><a ng-click="editConsent(consent);" href="javascript:">{{ consent.name }}</a></td>
-					<td>{{ consent.type }}</td>
-					<td>{{ consent.status }}</td>
+					<td translate="{{ 'enum.consenttype.'+consent.type }}"></td>
+					<td translate="{{ 'enum.consentstatus.'+consent.status }}"></td>
 					<td>{{ consent.authorized.length }}</td>
 					<td>{{ consent.records }}</td>
 				</tr>
 			</table>
 
-			<button class="btn btn-primary" ng-click="addConsent();">Add new consent</button>
+			<button class="btn btn-primary" ng-click="addConsent();" translate="consents.add_new_btn"></button>
 			</loader>
 		</div>
 	</div>

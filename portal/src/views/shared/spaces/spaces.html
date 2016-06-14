@@ -4,10 +4,10 @@
 		
 		<div ng-cloak>
 		    <div class="extraspace">
-			  <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span>Back</button>
+			  <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span><span translate="common.back_btn"></span></button>
 			</div>
 			<div class="panel panel-primary">
-			  <div class="panel-heading">MIDATA Plugin</div>
+			  <div class="panel-heading" translate="spaces.title"></div>
 			  <div class="panel-body">	
 			
 						<div class="row">
@@ -31,22 +31,19 @@
 						
 						<!-- Space controls -->
 						<button class="btn btn-default" ng-hide="space.compare" ng-click="startCompare(space)">
-							<span class="glyphicon glyphicon-adjust"></span> Compare
+							<span class="glyphicon glyphicon-adjust"></span> <span translate="spaces.compare_btn"></span>
 						</button>
 						<button class="btn btn-default" ng-show="space.compare" ng-click="endCompare(space)">
-							<span class="glyphicon glyphicon-ban-circle"></span> Finished comparing
+							<span class="glyphicon glyphicon-ban-circle"></span> <span translate="spaces.finish_comparing_btn"></span>
 						</button>
-						<!-- <button data-toggle="modal" data-target="#recordModal-{{space._id.$oid}}" class="btn btn-primary">
-							<span class="glyphicon glyphicon-plus-sign"></span> Add a record to this space
-						</button> -->
 						<button class="btn btn-danger" ng-click="deleteSpace(space)">
-							<span class="glyphicon glyphicon-remove-sign"></span> Delete this space
+							<span class="glyphicon glyphicon-remove-sign"></span> <span translate="spaces.delete_btn"></span>
 						</button>
 						<a class="btn btn-primary" ui-sref="^.recordsharing({ selectedType : 'spaces', selected : space._id.$oid})">
-						    <span class="glyphicon glyphicon-share"></span>Used records...
+						    <span class="glyphicon glyphicon-share"></span> <span translate="spaces.used_btn"></span>
 						</a>
 						<button class="btn btn-primary" ng-hide="space.compare" ng-click="startShare(space)">
-						    <span class="glyphicon glyphicon-share"></span>Share...
+						    <span class="glyphicon glyphicon-share"></span><span translate="spaces.share_btn"></span>
 						</button> 
 						
 				</div>

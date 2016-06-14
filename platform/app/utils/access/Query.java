@@ -125,7 +125,7 @@ public class Query {
 			Set<String> results = new HashSet<String>();
 			results.addAll((Collection<String>) v);
 			return results;											
-		} else throw new BadRequestException("error.badquery","Bad Restriction 1: "+name);
+		} else throw new BadRequestException("error.internal","Bad Restriction 1: "+name);
 	}
 	
 	public Set<ObjectId> getObjectIdRestriction(String name) throws BadRequestException {
@@ -140,7 +140,7 @@ public class Query {
 			return results;		
 		} else if (v instanceof String && ObjectId.isValid((String) v)) {
 			return Collections.singleton( new ObjectId((String) v));
-		} else throw new BadRequestException("error.badquery", "Bad Restriction 2: "+name);
+		} else throw new BadRequestException("error.internal", "Bad Restriction 2: "+name);
 	}
 	
 	public boolean restrictedBy(String field) {
@@ -226,14 +226,14 @@ public class Query {
 		}
 		String resStr = restriction.toString();
 		Date date;
-		if (resStr.length() == 0) throw new BadRequestException("error.date", "Cannot restrict date field '"+name+"' to empty string.");
+		if (resStr.length() == 0) throw new BadRequestException("error.invalid.date", "Cannot restrict date field '"+name+"' to empty string.");
 		if (StringUtils.isNumeric(resStr)) {
 			date = new Date(Long.parseLong(resStr));
 		} else {
 			try {
 		    date = ISODateTimeFormat.dateTimeParser().parseDateTime(restriction.toString()).toDate();
 			} catch (IllegalArgumentException e) {
-				throw new BadRequestException("error.date", "Bad date restriction on field '"+name+"': "+e.getMessage());
+				throw new BadRequestException("error.invalid.date", "Bad date restriction on field '"+name+"': "+e.getMessage());
 			}
 		}
 		properties.put(name, date);
@@ -244,7 +244,7 @@ public class Query {
 		Object restriction = properties.get(name);
 		if (restriction == null) return null;
 		if (restriction instanceof String) return (String) restriction;
-		throw new BadRequestException("error.string", "Restriction on field '"+name+"' must be string.");		
+		throw new BadRequestException("error.invalid.string", "Restriction on field '"+name+"' must be string.");		
 	}
 	
 	private void process() throws BadRequestException, InternalServerException {
@@ -332,7 +332,7 @@ public class Query {
 			 Set<String> contents = new HashSet<String>();
 			 for (String code : codes) {
 				 String content = ContentCode.getContentForSystemCode(code);
-				 if (content == null) throw new BadRequestException("error.code", "Unknown code '"+code+"' in restriction.");
+				 if (content == null) throw new BadRequestException("error.unknown.code", "Unknown code '"+code+"' in restriction.");
 				 contents.add(content);
 			 }
 			 properties.put("content", contents);
@@ -346,17 +346,17 @@ public class Query {
 	public static void validate(Map<String, Object> query) throws AppException {
 		if (query.containsKey("group")) {
 			Object system = query.get("group-system");
-			if (system == null || ! (system instanceof String)) throw new BadRequestException("error.groupsystem", "Missing group-system for query");
+			if (system == null || ! (system instanceof String)) throw new BadRequestException("error.missing.groupsystem", "Missing group-system for query");
 			Set<String> groups = Query.getRestriction(query.get("group"), "group"); 
 			query.put("group", groups);
 			for (String group : groups) if (RecordGroup.getBySystemPlusName(system.toString(), group) == null) throw new BadRequestException("error.group",  "Unknown group'"+group+"' for system '"+system.toString()+"'.");
 		}
 		if (query.containsKey("group-strict")) {
 			Object system = query.get("group-system");
-			if (system == null || ! (system instanceof String)) throw new BadRequestException("error.groupsystem", "Missing group-system for query");
+			if (system == null || ! (system instanceof String)) throw new BadRequestException("error.missing.groupsystem", "Missing group-system for query");
 			Set<String> groups = Query.getRestriction(query.get("group-strict"), "group");
 			query.put("group-strict", groups);
-			for (String group : groups) if (RecordGroup.getBySystemPlusName(system.toString(), group) == null) throw new BadRequestException("error.group",  "Unknown group'"+group+"' for system '"+system.toString()+"'.");
+			for (String group : groups) if (RecordGroup.getBySystemPlusName(system.toString(), group) == null) throw new BadRequestException("error.unknown.group",  "Unknown group'"+group+"' for system '"+system.toString()+"'.");
 		}
 		if (query.containsKey("content")) {
 			Set<String> contents = Query.getRestriction(query.get("content"), "content");
@@ -365,7 +365,7 @@ public class Query {
 		}
 		if (query.containsKey("code")) {
 			Set<String> codes = Query.getRestriction(query.get("code"), "code");
-			for (String code : codes) if (ContentCode.getBySystemCode(code) == null) throw new BadRequestException("error.code","Unknown code '"+code+"' in query.");
+			for (String code : codes) if (ContentCode.getBySystemCode(code) == null) throw new BadRequestException("error.unknown.code","Unknown code '"+code+"' in query.");
 			query.put("code", codes);
 		}
 		if (query.containsKey("format")) {

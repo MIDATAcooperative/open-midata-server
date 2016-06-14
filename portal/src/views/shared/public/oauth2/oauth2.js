@@ -1,11 +1,12 @@
 angular.module('portal')
-.controller('OAuth2LoginCtrl', ['$scope', '$location', 'server', '$state', 'status', 'session', 'apps', function($scope, $location, server, $state, status, session, apps) {
+.controller('OAuth2LoginCtrl', ['$scope', '$location', '$translate', 'server', '$state', 'status', 'session', 'apps', function($scope, $location, $translate, server, $state, status, session, apps) {
 	
 	// init
 	$scope.login = { role : "MEMBER"};	
 	$scope.error = null;
 	$scope.status = new status(false);
 	$scope.params = $location.search();
+	$scope.translate = $translate;
 	$scope.roles = [
 		{ value : "MEMBER", name : "enum.userrole.MEMBER" },
 		{ value : "PROVIDER" , name : "enum.userrole.PROVIDER "}

@@ -115,7 +115,7 @@ public class Developers extends APIController {
 			Admin adminuser = Admin.getByEmail(email, Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "role"));
 			if (adminuser != null) {
 				if (!Admin.authenticationValid(password, adminuser.password)) {
-					return badRequest("Invalid user or password.");
+					throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 				}
 						
 				return Application.loginHelper(adminuser);
@@ -123,11 +123,11 @@ public class Developers extends APIController {
 			}
 		}
 		
-		if (user == null) return badRequest("Invalid user or password.");
+		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		if (!Developer.authenticationValid(password, user.password)) {
-			return badRequest("Invalid user or password.");
+			throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		}
-		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.userblocked", "User is not allowed to log in.");
+		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 						
 		return Application.loginHelper(user);
 						

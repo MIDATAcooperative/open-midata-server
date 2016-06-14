@@ -147,7 +147,7 @@ public class Providers extends APIController {
 		if (!HPUser.authenticationValid(password, user.password)) {
 			return badRequest("Invalid user or password.");
 		}
-		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.userblocked", "User is not allowed to log in.");
+		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 						
 		return Application.loginHelper(user);					
 	}
