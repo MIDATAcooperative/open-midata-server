@@ -314,11 +314,11 @@ public class MobileAPI extends Controller {
 		// decrypt authToken
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(json.get("authToken").asText());
 		if (authToken == null) {
-			return badRequest("Invalid authToken.");
+			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 					
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "status"));
-        if (appInstance == null) return badRequest("Invalid authToken.");
+        if (appInstance == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {
         	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Record", fields));
@@ -505,7 +505,7 @@ public class MobileAPI extends Controller {
 		try {
 			record.data = (DBObject) JSON.parse(data);
 		} catch (JSONParseException e) {
-			return badRequest("Record data is invalid JSON.");
+			throw new BadRequestException("error.invalid.json", "Record data is invalid JSON.");
 		}
 				
 		String version = PluginsAPI.updateRecord(inf, record);
@@ -532,11 +532,11 @@ public class MobileAPI extends Controller {
 		// decrypt authToken 
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(json.get("authToken").asText());
 		if (authToken == null) {
-			return badRequest("Invalid authToken.");
+			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 					
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare", "status"));
-        if (appInstance == null) return badRequest("Invalid authToken.");
+        if (appInstance == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {
         	return ok(Json.toJson(Collections.EMPTY_LIST));

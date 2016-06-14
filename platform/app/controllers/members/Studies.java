@@ -165,7 +165,7 @@ public class Studies extends APIController {
 		
 		
 		StudyParticipation part = StudyParticipation.getByStudyAndMember(studyId, memberId, Sets.create("history", "providers", "authorized"));
-		if (part == null) return badRequest("Study Participation not found.");
+		if (part == null) throw new BadRequestException("error.unknown.participation", "Study Participation not found.");
 		
 		JsonNode add = json.get("add");
 		if (add != null) {
@@ -351,9 +351,9 @@ public class Studies extends APIController {
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history", "memberName", "owner", "authorized"));		
 		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
-		if (study == null) return badRequest("Study does not exist.");
-		if (participation == null) return badRequest("Member is not allowed to participate in study.");				
-		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH && participation.pstatus != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
+		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
+		if (participation == null) throw new BadRequestException("error.blocked.participation", "Member is not allowed to participate in study.");				
+		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH && participation.pstatus != ParticipationStatus.REQUEST) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
 		
 		participation.setPStatus(ParticipationStatus.MEMBER_REJECTED);
 		participation.setStatus(ConsentStatus.REJECTED);

@@ -69,7 +69,7 @@ public class QuickRegistration extends APIController {
 
 		// check status
 		if (Member.existsByEMail(email)) {
-		  return badRequest("A user with this email address already exists.");
+		  throw new BadRequestException("error.exists.user", "A user with this email address already exists.");
 		}
 		
 		// create the user

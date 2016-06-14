@@ -24,6 +24,7 @@ import utils.auth.OAuthCodeToken;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation;
 import actions.APICall;
 import actions.MobileCall;
@@ -71,9 +72,9 @@ public class OAuth2 extends Controller {
 					
 	    // Validate Mobile App	
 		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri"));
-		if (app == null) return badRequest("Unknown app");		
-		if (!app.type.equals("mobile")) return internalServerError("Wrong app type");
-		if (!redirectUri.equals(app.redirectUri)) return internalServerError("Wrong redirect uri");
+		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");		
+		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
+		if (!redirectUri.equals(app.redirectUri)) throw new InternalServerException("error.internal", "Wrong redirect uri");
 		
 		MobileAppInstance appInstance = null;		
 		Map<String, Object> meta = null;
@@ -89,7 +90,7 @@ public class OAuth2 extends Controller {
 			case MEMBER : user = Member.getByEmail(username, Sets.create("visualizations","tokens"));break;
 			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("visualizations","tokens"));break;
 			}
-			if (user == null) return badRequest("Unknown user or bad password");
+			if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
 			
 			appInstance = MobileAppInstance.getByApplicationAndOwner(app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode"));
 			
@@ -97,13 +98,13 @@ public class OAuth2 extends Controller {
 				appInstance = MobileAPI.installApp(null, app, user, phrase);				
 	   		    meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
 			} else {
-				if (appInstance.passcode != null && !User.authenticationValid(phrase, appInstance.passcode)) return badRequest("Wrong password.");
-				if (!verifyAppInstance(appInstance, user._id, app._id)) return badRequest("Access denied");
+				if (appInstance.passcode != null && !User.authenticationValid(phrase, appInstance.passcode)) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
+				if (!verifyAppInstance(appInstance, user._id, app._id)) throw new BadRequestException("error.expired.token", "Access denied");
 				KeyManager.instance.unlock(appInstance._id, phrase);
 				meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
 			}
 					
-		if (!phrase.equals(meta.get("phrase"))) return internalServerError("Internal error while validating consent");
+		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
 		
 		OAuthCodeToken tk = new OAuthCodeToken(appInstance._id, phrase, System.currentTimeMillis(), state);
 					

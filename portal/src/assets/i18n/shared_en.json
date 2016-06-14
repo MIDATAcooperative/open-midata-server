@@ -26,6 +26,7 @@
      "notauthorized" : {
        "action" : "You are not authorized to do this action",
        "fields" : "You are not authorized to query provided fields",
+       "account" : "You are not authorized to access this account",
        "not_plugin_owner" : "This is not your plugin."      
      },
           
@@ -46,7 +47,8 @@
        "token" : "Invalid authorization token. Please relogin.",
        "json" : "Invalid JSON provided",
        "passphrase" : "Bad passphrase",
-       "passcode": "Bad passcode"
+       "passcode": "Bad passcode",
+       "plugin" : "Plugin is only for a different role"
      },
      
      "missing" : {
@@ -67,7 +69,10 @@
        "study" : "Study does not exist.",
        "content" : "Record Content-Type is not registered with the platform.",
        "group" : "Unknown group name",
-       "code" : "Unknown code"
+       "code" : "Unknown code",
+       "record" : "Unknown record",
+       "user" : "User does not exist",
+       "participation" : "Study Participation not found."
      },
      
      "exists" : {
@@ -78,7 +83,8 @@
      
      
      "blocked" : {
-       "user" : "User is not allowed to log in. Contact support@midata.coop for help."
+       "user" : "User is not allowed to log in. Contact support@midata.coop for help.",
+       "participation" : "Member is not allowed to participate in study."
      },
      
      "closed" : {
@@ -105,6 +111,10 @@
      
      "already_done" : {
        "email_verification" : "E-Mail has already been verified."
+     },
+     
+     "no_alter" : {
+       "consent" : "Consents for studies may not be altered."
      }
              
    },

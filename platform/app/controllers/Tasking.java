@@ -29,6 +29,7 @@ import utils.auth.AnyRoleSecured;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
@@ -139,7 +140,7 @@ public class Tasking extends APIController {
 		
 		Task task = Task.getByIdAndOwner(taskId, userId, Sets.create("owner", "createdBy", "plugin", "shareBackTo", "createdAt", "deadline", "context", "title", "description", "pluginQuery", "confirmQuery", "frequency", "done"));
 		Plugin plugin = Plugin.getById(task.plugin, Sets.create("defaultQuery", "type"));
-		if (plugin == null) return badRequest("Unknown plugin in task.");
+		if (plugin == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin in task.");
 		
 		Set<Space> spaces = Space.getAll(CMaps.map("owner", userId).map("context", task.context).map("visualization", task.plugin).map("autoShare", task.shareBackTo), Sets.create("name", "owner", "visualization", "app", "order", "type", "context", "autoShare"));
 		

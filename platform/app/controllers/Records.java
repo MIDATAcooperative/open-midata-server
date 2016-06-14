@@ -102,7 +102,7 @@ public class Records extends APIController {
 		// get parameters
 		String id = JsonValidation.getString(json, "_id");
 		RecordToken tk = getRecordTokenFromString(id);								   		
-		if (tk==null) return badRequest("Bad token");
+		if (tk==null) throw new BadRequestException("error.invalid.token", "Bad token");
 		ObjectId userId = new ObjectId(request().username());
 		
 		// execute
@@ -244,7 +244,7 @@ public class Records extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result share() throws JsonValidationException, InternalServerException {
+	public static Result share() throws JsonValidationException, AppException {
 	
 		JsonNode json = request().body().asJson();
 		
@@ -255,10 +255,10 @@ public class Records extends APIController {
 		ObjectId toConsent = JsonValidation.getObjectId(json, "toConsent");
 		
 		Space space = Space.getByIdAndOwner(fromSpace, userId, Sets.create("autoShare"));
-		if (space == null) return badRequest("Bad space.");
+		if (space == null) throw new BadRequestException("error.unknown.space", "Bad space.");
 		
 		Consent consent = Consent.getByIdAndOwner(toConsent, userId, Sets.create("type"));
-		if (consent == null) return badRequest("Bad consent.");
+		if (consent == null) throw new BadRequestException("error.unknown.consent", "Bad consent.");
 		
 		if (space.autoShare == null) space.autoShare = new HashSet<ObjectId>();
 		space.autoShare.add(toConsent);
@@ -351,7 +351,7 @@ public class Records extends APIController {
         	} else {        	
         	  ConsentType type = consent.type;
         	  
-        	  if (type.equals(ConsentType.STUDYPARTICIPATION)) return badRequest("Consents for studies may not be altered.");
+        	  if (type.equals(ConsentType.STUDYPARTICIPATION)) throw new BadRequestException("error.no_alter.consent", "Consents for studies may not be altered.");
         	  
         	  withMember = !type.equals(ConsentType.STUDYPARTICIPATION);
         	}        	         	
@@ -384,7 +384,7 @@ public class Records extends APIController {
         	} else {        	
         	  ConsentType type = consent.type;
         	  
-        	  if (type.equals(ConsentType.STUDYPARTICIPATION)) return badRequest("Consents for studies may not be altered.");
+        	  if (type.equals(ConsentType.STUDYPARTICIPATION)) throw new BadRequestException("error.no_alter.consent", "Consents for studies may not be altered.");
         	  
         	  withMember = !type.equals(ConsentType.STUDYPARTICIPATION);
         	}        	         	
@@ -417,7 +417,7 @@ public class Records extends APIController {
 		RecordToken tk = Records.getRecordTokenFromString(recordIdString);
 		
 		Record record = RecordManager.instance.fetch(userId, tk, Sets.create("format","created"));
-		if (record == null) return badRequest("Record not found!");
+		if (record == null) throw new BadRequestException("error.unknown.record", "Record not found!");
 		if (record.format == null) return ok();
 		
 		FormatInfo format = FormatInfo.getByName(record.format);
@@ -447,7 +447,7 @@ public class Records extends APIController {
 		RecordToken tk = getRecordTokenFromString(id);
 		ObjectId userId = new ObjectId(request().username());
 						
-		if (tk==null) return badRequest("Bad token");
+		if (tk==null) throw new BadRequestException("error.invalid.token", "Bad token");
 				
 		FileData fileData = RecordManager.instance.fetchFile(userId, tk);
 		setAttachmentContentDisposition(fileData.filename);		

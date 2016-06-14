@@ -29,6 +29,7 @@ import utils.auth.SpaceToken;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -163,7 +164,7 @@ public class Spaces extends Controller {
 		Plugin visualization = Plugin.getById(visualizationId, Sets.create("filename", "previewUrl", "type"));		
 		if (space==null) {
 		   Member member = Member.getByIdAndVisualization(userId, visualizationId, Sets.create("aps"));
-		   if (member == null) return badRequest("Not installed");
+		   if (member == null) throw new BadRequestException("error.internal", "Not installed");
 		
 		   space = Spaces.add(userId, name, visualizationId, visualization.type, context);
 		   		   
@@ -195,7 +196,7 @@ public class Spaces extends Controller {
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps"));
 		
 		if (space == null) {
-			return badRequest("No space with this id exists.");
+			throw new BadRequestException("error.unknown.space", "Space does not exist");
 		}
 		
 		RecordManager.instance.deleteAPS(space._id, userId);
@@ -227,10 +228,10 @@ public class Spaces extends Controller {
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps"));
 		Member owner = Member.getById(userId, Sets.create("myaps"));
 		if (owner == null) {
-			return badRequest("Member does not exist");
+			throw new BadRequestException("error.unknown.user", "Member does not exist");
 		}		
 		if (space == null) {
-			return badRequest("No space with this id exists.");
+			throw new BadRequestException("error.unknown.space", "Space does not exist");
 		}
 		
 		// add records to space (implicit: if not already present)
@@ -241,14 +242,14 @@ public class Spaces extends Controller {
 	}
 
 	@APICall
-	public static Result getToken(String spaceIdString) throws InternalServerException {
+	public static Result getToken(String spaceIdString) throws AppException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId spaceId = new ObjectId(spaceIdString);
 		
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps"));
 		
 		if (space==null) {
-		  return badRequest("No space with this id exists.");
+			throw new BadRequestException("error.unknown.space", "Space does not exist");
 		}
 
 		// create encrypted authToken
@@ -306,14 +307,14 @@ public class Spaces extends Controller {
 	
 	
 	@APICall
-	public static Result getPreviewUrl(String spaceIdString) throws InternalServerException {
+	public static Result getPreviewUrl(String spaceIdString) throws AppException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId spaceId = new ObjectId(spaceIdString);
 		
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps", "visualization"));
 		
 		if (space==null) {
-		  return badRequest("No space with this id exists.");
+			throw new BadRequestException("error.unknown.space", "Space does not exist");
 		}
 		
 		Plugin visualization = Plugin.getById(space.visualization, Sets.create("filename", "previewUrl", "type", "creator", "developmentServer"));

@@ -104,7 +104,7 @@ public class PluginsAPI extends APIController {
 		// decrypt authToken 
 		SpaceToken spaceToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
 		if (spaceToken == null) {
-			return badRequest("Invalid authToken.");
+			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 				
 		Set<ObjectId> tokens = ObjectIdConversion.toObjectIds(RecordManager.instance.listRecordIds(spaceToken.executorId, spaceToken.spaceId));		
@@ -128,7 +128,7 @@ public class PluginsAPI extends APIController {
 		// decrypt authToken and check whether space with corresponding owner exists
 		SpaceToken spaceToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
 		if (spaceToken == null) {
-			return badRequest("Invalid authToken.");
+			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 		if (spaceToken.recordId != null)  {
 		   ObjectNode result = Json.newObject();
@@ -161,7 +161,7 @@ public class PluginsAPI extends APIController {
 		// decrypt authToken 
 		SpaceToken spaceToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
 		if (spaceToken == null) {
-			return badRequest("Invalid authToken.");
+			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 		
 		if (json.has("config")) {
@@ -295,7 +295,7 @@ public class PluginsAPI extends APIController {
 		// decrypt authToken 
 		SpaceToken authToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
 		if (authToken == null) {
-			return badRequest("Invalid authToken.");
+			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 					
 		ObjectId targetAps = authToken.spaceId;
@@ -336,7 +336,7 @@ public class PluginsAPI extends APIController {
 		// decrypt authToken and check whether space with corresponding owner exists
 		SpaceToken authToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
 		if (authToken == null) {
-			return badRequest("Invalid authToken.");
+			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 		
 		ObjectId recordId = JsonValidation.getObjectId(json, "_id");			
@@ -364,14 +364,9 @@ public class PluginsAPI extends APIController {
 		
 		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
 				
-		if (authToken.recordId != null) return badRequest("This view is readonly.");
-																								
-		// save new record with additional metadata
-		if (!json.get("data").isTextual() || !json.get("name").isTextual()) {
-			return badRequest("At least one request parameter is of the wrong type.");
-		}
-							
-		String data = JsonValidation.getString(json, "data");
+		if (authToken.recordId != null) throw new BadRequestException("error.internal", "This view is readonly.");
+																														
+		String data = JsonValidation.getJsonString(json, "data");
 		String name = JsonValidation.getString(json, "name");
 		String description = JsonValidation.getString(json, "description");
 		String format = JsonValidation.getString(json, "format");
@@ -403,7 +398,7 @@ public class PluginsAPI extends APIController {
 		try {
 			record.data = (DBObject) JSON.parse(data);
 		} catch (JSONParseException e) {
-			return badRequest("Record data is invalid JSON.");
+			throw new BadRequestException("error.invalid.json", "Record data is invalid JSON.");
 		}
 		record.name = name;
 		record.description = description;
@@ -513,14 +508,9 @@ public class PluginsAPI extends APIController {
 		
 		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
 				
-		if (authToken.recordId != null) return badRequest("This view is readonly.");
-																								
-		// save new record with additional metadata
-		if (!json.get("data").isTextual() /* || !json.get("name").isTextual() || !json.get("description").isTextual() */) {
-			return badRequest("At least one request parameter is of the wrong type.");
-		}
-							
-		String data = JsonValidation.getString(json, "data");
+		if (authToken.recordId != null) throw new BadRequestException("error.internal", "This view is readonly.");
+																																	
+		String data = JsonValidation.getJsonString(json, "data");
 		
 		//String name = JsonValidation.getString(json, "name");
 		//String description = JsonValidation.getString(json, "description");
@@ -541,7 +531,7 @@ public class PluginsAPI extends APIController {
 		try {
 			record.data = (DBObject) JSON.parse(data);
 		} catch (JSONParseException e) {
-			return badRequest("Record data is invalid JSON.");
+			throw new BadRequestException("error.invalid.json", "Record data is invalid JSON.");
 		}
 				
 		updateRecord(authToken, record);
@@ -622,23 +612,23 @@ public class PluginsAPI extends APIController {
 		MultipartFormData formData = request().body().asMultipartFormData();
 		Map<String, String[]> metaData = formData.asFormUrlEncoded();
 		if (!metaData.containsKey("authToken") || !metaData.containsKey("name")) {
-			return badRequest("At least one request parameter is missing.");
+			throw new BadRequestException("error.internal", "At least one request parameter is missing.");
 		}
 
 		// decrypt authToken and check whether a user exists who has the app installed
 		if (metaData.get("authToken").length != 1) {
-			return badRequest("Invalid authToken.");
+			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 	
 		ExecutionInfo authToken = ExecutionInfo.checkSpaceToken(request(), metaData.get("authToken")[0]);
 		
-		if (authToken.recordId != null) return badRequest("This view is readonly.");
+		if (authToken.recordId != null) throw new BadRequestException("error.internal", "This view is readonly.");
 			try {
 							
 			// extract file from data
 			FilePart fileData = formData.getFile("file");
 			if (fileData == null) {
-				return badRequest("No file found.");
+				throw new BadRequestException("error.internal", "No file found.");
 			}
 			File file = fileData.getFile();
 			String filename = fileData.getFilename();

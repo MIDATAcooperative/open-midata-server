@@ -143,9 +143,9 @@ public class Providers extends APIController {
 		String password = JsonValidation.getString(json, "password");
 		HPUser user = HPUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "provider", "role"));
 		
-		if (user == null) return badRequest("Invalid user or password.");
+		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		if (!HPUser.authenticationValid(password, user.password)) {
-			return badRequest("Invalid user or password.");
+			throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		}
 		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 						
@@ -214,18 +214,18 @@ public class Providers extends APIController {
 	 */
 	@Security.Authenticated(ProviderSecured.class)	
 	@APICall
-	public static Result getMember(String id) throws JsonValidationException, InternalServerException {
+	public static Result getMember(String id) throws JsonValidationException, AppException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId memberId = new ObjectId(id);
 		
 		Set<MemberKey> memberKeys = MemberKey.getByOwnerAndAuthorizedPerson(memberId, userId);
-		if (memberKeys.isEmpty()) return badRequest("You are not authorized.");
+		if (memberKeys.isEmpty()) throw new BadRequestException("error.notauthorized.account", "You are not authorized.");
 		
 		Set<HCRelated> backconsent = HCRelated.getByAuthorizedAndOwner(memberId,  userId);
 		
 		Set<String> memberFields = Sets.create("_id", "firstname","birthday", "lastname","city","zip","country","email","phone","mobile","ssn","address1","address2");
 		Member result = Member.getById(memberId, memberFields);
-		if (result==null) return badRequest("Member does not exist.");
+		if (result==null) throw new BadRequestException("error.unknown.user", "Member does not exist.");
 		
 		ObjectNode obj = Json.newObject();
 		obj.put("member", JsonOutput.toJsonNode(result, "User", memberFields));

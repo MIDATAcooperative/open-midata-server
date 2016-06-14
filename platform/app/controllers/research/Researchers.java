@@ -131,9 +131,9 @@ public class Researchers extends APIController {
 		String password = JsonValidation.getString(json, "password");
 		ResearchUser user = ResearchUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "organization", "role"));
 		
-		if (user == null) return badRequest("Invalid user or password.");
+		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		if (!ResearchUser.authenticationValid(password, user.password)) {
-			return badRequest("Invalid user or password.");
+			throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		}
 		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 		

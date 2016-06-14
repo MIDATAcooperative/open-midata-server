@@ -28,6 +28,7 @@ import utils.collections.ChainedMap;
 import utils.collections.Sets;
 import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -83,11 +84,11 @@ public class GenomeDataConverter extends Controller {
 	 * Check authenticity of request, i.e. whether it is performed by the 23andMe Converter app.
 	 * @return An error message if a validity check failed, null otherwise.
 	 */
-	private static String checkAuthToken(SpaceToken appToken) {
+	private static String checkAuthToken(SpaceToken appToken) throws AppException {
 		
-		try {
+		
 			Space space = Space.getByIdAndOwner(appToken.spaceId, appToken.userId, Sets.create("visualization"));
-			if (space == null) return "Invalid authToken.";
+			if (space == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 			
 			// check whether the app is the 23andMe Converter app
 			Map<String, Object> appProperties = new ChainedMap<String, Object>().put("_id", space.visualization)
@@ -96,10 +97,7 @@ public class GenomeDataConverter extends Controller {
 			if (!Plugin.exists(appProperties)) {
 				return "Invalid authToken.";
 			}
-		} catch (InternalServerException e) {
-			return e.getMessage();
-		}
-
+		
 		
 		return null;
 	}
@@ -119,7 +117,7 @@ public class GenomeDataConverter extends Controller {
 		// decrypt authToken
 		SpaceToken appToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
 		if (appToken == null) {
-			return badRequest("Invalid authToken.");
+			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 
 		// perform checks whether the auth token is valid and issued by the 23andMe Converter app

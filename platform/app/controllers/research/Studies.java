@@ -459,7 +459,7 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result abortExecution(String id) throws JsonValidationException, InternalServerException {
+	public static Result abortExecution(String id) throws JsonValidationException, AppException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
@@ -468,7 +468,7 @@ public class Studies extends APIController {
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
 		
 		if (study == null) return badRequest("Study does not belong to organization.");			
-		if (study.executionStatus != StudyExecutionStatus.RUNNING) return badRequest("Wrong study execution status.");
+		if (study.executionStatus != StudyExecutionStatus.RUNNING) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 		
 		study.setExecutionStatus(StudyExecutionStatus.ABORTED);
 		study.addHistory(new History(EventType.STUDY_ABORTED, user, null));

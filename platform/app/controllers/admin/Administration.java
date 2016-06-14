@@ -19,6 +19,8 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.auth.AdminSecured;
 import utils.collections.Sets;
+import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
@@ -38,7 +40,7 @@ public class Administration extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
-	public static Result changeStatus() throws JsonValidationException, InternalServerException {
+	public static Result changeStatus() throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
@@ -49,7 +51,7 @@ public class Administration extends APIController {
 		UserStatus status = JsonValidation.getEnum(json, "status", UserStatus.class);
 		
 		User user = User.getById(userId, Sets.create("status", "contractStatus"));
-		if (user == null) return badRequest("Unknown user");
+		if (user == null) throw new BadRequestException("error.unknown.user", "Unknown user");
 		
 		user.status = status;
 		User.set(user._id, "status", user.status);

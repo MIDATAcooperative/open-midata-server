@@ -139,7 +139,7 @@ public class Plugins extends APIController {
 		//boolean createSpace = JsonValidation.getBoolean(json, "createSpace");
 		
 		Plugin visualization = Plugin.getById(visualizationId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator"));
-		if (visualization == null) return badRequest("Unknown visualization");
+		if (visualization == null) throw new BadRequestException("error.unknown.plugin", "Unknown visualization");
 		String context = json.has("context") ? JsonValidation.getString(json, "context") : visualization.defaultSpaceContext;
 		
 		
@@ -148,7 +148,7 @@ public class Plugins extends APIController {
 		boolean testing = user.role.equals(UserRole.DEVELOPER) && visualization.creator.equals(user._id);
 		
 		if (!user.role.equals(visualization.targetUserRole) && !visualization.targetUserRole.equals(UserRole.ANY) && !testing) {
-			return badRequest("Visualization is for a different role."+user.role);
+			throw new BadRequestException("error.invalid.plugin", "Visualization is for a different role."+user.role);
 		}
 		
 		if (visualization.type.equals("visualization") ) {
@@ -190,18 +190,16 @@ public class Plugins extends APIController {
 	 */
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result uninstall(String visualizationIdString) {
+	public static Result uninstall(String visualizationIdString) throws InternalServerException {
 		ObjectId userId = new ObjectId(request().username());		
 		Set<String> fields = Sets.create("visualizations", "apps");
-		try {
-			User user = User.getById(userId, fields);
-			user.visualizations.remove(new ObjectId(visualizationIdString));
-			user.apps.remove(new ObjectId(visualizationIdString));
-			User.set(userId, "visualizations", user.visualizations);
-			User.set(userId, "apps", user.apps);
-		} catch (InternalServerException e) {
-			return badRequest(e.getMessage());
-		}
+		
+		User user = User.getById(userId, fields);
+		user.visualizations.remove(new ObjectId(visualizationIdString));
+		user.apps.remove(new ObjectId(visualizationIdString));
+		User.set(userId, "visualizations", user.visualizations);
+		User.set(userId, "apps", user.apps);
+		
 		return ok();
 	}
 
