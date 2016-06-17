@@ -7,6 +7,7 @@ fhir.controller('ObservationCtrl', ['$scope', '$filter', '$location', 'midataSer
  		$scope.records = [];
  		
  		var authToken = $location.path().split("/")[1];
+ 		console.log(authToken);
  				
  		$scope.getRecords = function() { 	
  			midataServer.getRecords(authToken, { "format" : "fhir/Observation" }, ["name", "data"])

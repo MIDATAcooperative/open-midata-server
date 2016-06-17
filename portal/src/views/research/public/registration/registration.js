@@ -1,7 +1,8 @@
 angular.module('portal')
-.controller('ResearchRegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', function($scope, $state, server, status, session) {
+.controller('ResearchRegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', function($scope, $state, server, status, session, $translate, languages) {
 	
-	$scope.registration = {};
+	$scope.registration = { language : $translate.use() };
+	$scope.languages = languages.all;
 	$scope.error = null;
 	$scope.submitted = false;
 	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
@@ -25,4 +26,7 @@ angular.module('portal')
 		.then(function(data) { session.postLogin(data, $state); });
 	};
 	
+	$scope.changeLanguage = function(lang) {
+		$translate.use(lang);
+	};
 }]);

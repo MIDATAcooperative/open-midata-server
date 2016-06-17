@@ -1,7 +1,8 @@
 angular.module('portal')
-.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', function($scope, $state, server, status, session) {
+.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', function($scope, $state, server, status, session, $translate, languages) {
 	
-	$scope.registration = {};
+	$scope.registration = { language : $translate.use() };
+	$scope.languages = languages.all;
 	$scope.error = null;
 	$scope.status = new status(false, $scope);
 	
@@ -30,6 +31,10 @@ angular.module('portal')
 		var data = $scope.registration;		
 		$scope.status.doAction("register", server.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
 		then(function(data) { session.postLogin(data, $state); });
+	};
+	
+	$scope.changeLanguage = function(lang) {
+		$translate.use(lang);
 	};
 	
 	$scope.days = [];

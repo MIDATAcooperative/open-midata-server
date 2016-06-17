@@ -467,7 +467,7 @@ public class Application extends APIController {
 	public static Result register() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1");				
+		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language");
 		String email = JsonValidation.getEMail(json, "email");
 		String firstName = JsonValidation.getString(json, "firstname");
 		String lastName = JsonValidation.getString(json, "lastname");
@@ -501,6 +501,7 @@ public class Application extends APIController {
 		user.lastname = JsonValidation.getString(json, "lastname");
 		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
 		user.birthday = JsonValidation.getDate(json, "birthday");
+		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");
 						
 		user.registeredAt = new Date();		

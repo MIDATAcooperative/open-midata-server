@@ -66,7 +66,7 @@ angular.module('views')
     	 var spacedef =
 	     {
 	    	   id : "space"+space._id.$oid,
-	    	   template : "/views/members/dashboardTiles/spacesummary/spacesummary.html",
+	    	   template : "/views/shared/dashboardTiles/spacesummary/spacesummary.html",
 	    	   title : space.name,
 	    	   active : true,
 	    	   position : "small",
@@ -100,14 +100,13 @@ angular.module('views')
     		  views.layout.small.push(views.def({
     			id : "addmore",
     			order : 1000,
-  				template : "/views/shared/dashboardTiles/simpleadd/simpleadd.html",
-  				title : "Add more",
+  				template : "/views/shared/dashboardTiles/simpleadd/simpleadd.html",  				
   				position : "small",
   				active : true,
   				setup : {  					
   		        	link : "^.market({ next : '"+document.location.href+"', context : '"+$scope.view.setup.context+"'})",
   		        	icon : "/images/icons/add.png",
-  		        	button : "Install from Market"
+  		        	button : "dashboard.install_btn"
   				}
     		  }));  
     	  }

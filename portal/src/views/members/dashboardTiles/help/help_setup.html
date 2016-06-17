@@ -1,36 +1,36 @@
 <div ng-controller="HelpSetupCtrl" class="autosize" ng-cloak>
   <div class="panel panel-primary">
     <div class="panel-body">   
-    <p>The answers to the following questions are only used to setup your account according to your needs.</p>
+    <p translate="help_setup.description"></p>
        
     <form name="myform" novalidate class="" ng-submit="setConfig()" role="form">
-      <formrow myid="qself" label="Which of these general tasks do you plan to do with MIDATA?"> 
-        <div class="checkbox"><label><input type="checkbox" ng-model="questions.general.manage">Manage your health records</label></div>
-        <div class="checkbox"><label><input type="checkbox" ng-model="questions.general.protocol">Protocol data about yourself.</label></div>
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.general.compare">Compare yourself with others</label></div>		 
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.general.planning">Do planning</label></div>
+      <formrow myid="qself" label="help_setup.question_tasks"> 
+        <div class="checkbox"><label><input type="checkbox" ng-model="questions.general.manage"><span translate="help_setup.question_tasks_answer1"></span></label></div>
+        <div class="checkbox"><label><input type="checkbox" ng-model="questions.general.protocol"><span translate="help_setup.question_tasks_answer2"></span></label></div>
+		<div class="checkbox"><label><input type="checkbox" ng-model="questions.general.compare"><span translate="help_setup.question_tasks_answer3"></span></label></div>		 
+		<div class="checkbox"><label><input type="checkbox" ng-model="questions.general.planning"><span translate="help_setup.question_tasks_answer4"></span></label></div>
       </formrow>
     
-      <formrow myid="qself" label="Are you interested in gathering quantified self data? If yes, which?"> 
-        <div class="checkbox"><label><input type="checkbox" ng-model="questions.qself.steps">Steps / Activities</label></div>
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.qself.sleep">Sleep</label></div>		 
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.qself.weight">Weight</label></div>
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.qself.water">Water Consumption</label></div>
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.qself.nutrition">Nutrition</label></div>
+      <formrow myid="qself" label="help_setup.question_qself"> 
+        <div class="checkbox"><label><input type="checkbox" ng-model="questions.qself.steps"><span translate="help_setup.question_qself_answer1"></label></div>
+		<div class="checkbox"><label><input type="checkbox" ng-model="questions.qself.sleep"><span translate="help_setup.question_qself_answer2"></label></div>		 
+		<div class="checkbox"><label><input type="checkbox" ng-model="questions.qself.weight"><span translate="help_setup.question_qself_answer3"></label></div>
+		<div class="checkbox"><label><input type="checkbox" ng-model="questions.qself.water"><span translate="help_setup.question_qself_answer4"></label></div>
+		<div class="checkbox"><label><input type="checkbox" ng-model="questions.qself.nutrition"><span translate="help_setup.question_qself_answer5"></label></div>
       </formrow>
-      <formrow myid="devices" label="Do use any of these devices?"> 
-        <div class="checkbox"><label><input type="checkbox" ng-model="questions.devices.fitbit">Fitbit</label></div>
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.devices.jawbone">Jawbone</label></div>		 
+      <formrow myid="devices" label="help_setup.question_devices"> 
+        <div class="checkbox"><label><input type="checkbox" ng-model="questions.devices.fitbit"><span translate="help_setup.question_devices_answer1"></label></div>
+		<div class="checkbox"><label><input type="checkbox" ng-model="questions.devices.jawbone"><span translate="help_setup.question_devices_answer2"></label></div>		 
       </formrow>	
-      <formrow myid="sharing" label="Do you plan to share some of your data with others?"> 
-        <div class="checkbox"><label><input type="checkbox" ng-model="questions.share.family">Family</label></div>
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.share.friends">Friends</label></div>		 		
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.share.doctor">Doctor / Hospital</label></div>
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.share.research">Research (Study participation)</label></div>
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.share.other">Other people</label></div>
+      <formrow myid="sharing" label="help_setup.question_share"> 
+        <div class="checkbox"><label><input type="checkbox" ng-model="questions.share.family"><span translate="help_setup.question_share_answer1"></label></div>
+		<div class="checkbox"><label><input type="checkbox" ng-model="questions.share.friends"><span translate="help_setup.question_share_answer2"></label></div>		 		
+		<div class="checkbox"><label><input type="checkbox" ng-model="questions.share.doctor"><span translate="help_setup.question_share_answer3"></label></div>
+		<div class="checkbox"><label><input type="checkbox" ng-model="questions.share.research"><span translate="help_setup.question_share_answer4"></label></div>
+		<div class="checkbox"><label><input type="checkbox" ng-model="questions.share.other"><span translate="help_setup.question_share_answer5"></label></div>
       </formrow>
-      <p>You can always come back and change these settings by visiting the "Help" page.</p>
-      <button type="submit" class="btn btn-primary">Done</button>
+      <p translate="help_setup.come_back"></p>
+      <button type="submit" class="btn btn-primary" translate="help_setup.done_btn"></button>
     </form>
     </div>
   </div>

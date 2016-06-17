@@ -48,7 +48,7 @@ public class QuickRegistration extends APIController {
 	public static Result register() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "study", "app", "phrase");
+		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "study", "app", "phrase", "language");
 		
 		String studyCode = JsonValidation.getString(json, "study");
 		String appName = JsonValidation.getString(json, "app");
@@ -95,6 +95,7 @@ public class QuickRegistration extends APIController {
 		user.lastname = JsonValidation.getString(json, "lastname");
 		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
 		user.birthday = JsonValidation.getDate(json, "birthday");
+		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");
 						
 		user.registeredAt = new Date();		

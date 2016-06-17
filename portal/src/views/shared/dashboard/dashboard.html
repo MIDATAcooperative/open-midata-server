@@ -4,7 +4,7 @@
    
       <div class="panel panel-primary" ng-show="def.active">
 	    <div class="panel-heading">
-	      <span ng-click="makeSmall(def)">{{ def.title }}</span>
+	      <span ng-click="makeSmall(def)" translate="{{ def.title }}"></span>
 	      <a ng-show="def.actions.remove" ng-click="remove(def)" class="pull-right"><span class="glyphicon glyphicon-remove-circle"></span></a>
 	      <a ng-show="def.actions.big" ng-href="{{def.actions.big}}" class="pull-right"><span class="glyphicon glyphicon-plus-sign"></span></a>
 	    </div>
@@ -19,7 +19,7 @@
 	        <div class="col-lg-4 col-md-6" ng-show="def.active">        
 		      <div class="panel panel-primary">
 			    <div class="panel-heading">
-			      <span ng-click="makeBig(def)">{{ def.title }}</span>
+			      <span ng-click="makeBig(def)" translate="{{ def.title }}"></span>
 			      <a ng-show="def.actions.remove" ng-click="remove(def)" href="javascript:" class="pull-right"><span class="glyphicon glyphicon-remove-circle"></span></a>
 			      <a ng-show="def.actions.big" ng-href="{{def.actions.big}}" class="pull-right"><span class="glyphicon glyphicon-plus-sign"></span></a>
 			    </div>

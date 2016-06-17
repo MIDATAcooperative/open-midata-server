@@ -30,6 +30,7 @@ angular.module('portal')
 		$scope.status.doBusy(apps.getApps({ "_id" : { "$oid" :  appId }}, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n"]))
 		.then(function(data) { 
 			$scope.app = data.data[0];
+			if (!$scope.app.i18n) { $scope.app.i18n = {}; }
 			$scope.app.defaultQueryStr = JSON.stringify($scope.app.defaultQuery);
 		});
 	};
@@ -41,9 +42,9 @@ angular.module('portal')
 		} else {
 		  $scope.app.defaultQuery = null;	
 		}
-		
+						
 		angular.forEach($scope.languages, function(lang) {
-			if ($scope.app.i18n[lang] && $scope.app.i18n[lang].name == "") {
+			if ($scope.app.i18n[lang] && $scope.app.i18n[lang].name === "") {
 			   delete $scope.app.i18n[lang];
 			} 
 		});

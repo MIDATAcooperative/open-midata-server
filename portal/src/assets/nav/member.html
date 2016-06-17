@@ -4,7 +4,7 @@
 	  <div class="container-fluid">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-				<span class="sr-only">Toggle navigation</span>
+				<span class="sr-only" translate="navbar.toggle_navigation"></span>
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
@@ -15,13 +15,13 @@
 		</div>
 		<div class="collapse navbar-collapse navbar-ex1-collapse">
 			<ul class="nav navbar-nav">
-			    <li ui-sref-active="active"><a ui-sref="member.overview">Me</a></li>
-            	<li ng-show="beta" ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'overview' })">Overview</a></li>            	
+			    <li ui-sref-active="active"><a ui-sref="member.overview" translate="navbar.me">Me</a></li>
+            	<li ng-show="beta" ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'overview' })" translate="navbar.overview">Overview</a></li>            	
 				<!-- <li ui-sref-active="active"><a ui-sref="member.messages">Messages</a></li> -->				
-				<li ui-sref-active="active"><a ui-sref="member.records">My Data</a></li>				
-				<li ui-sref-active="active"><a ui-sref="member.circles">Consents</a></li>
-				<li ng-hide="beta" ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'studiessmall' })">Research</a></li>
-				<li ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'help' })">Help</a></li>				
+				<li ui-sref-active="active"><a ui-sref="member.records" translate="navbar.my_data">My Data</a></li>				
+				<li ui-sref-active="active"><a ui-sref="member.circles" translate="navbar.consents">Consents</a></li>
+				<li ng-hide="beta" ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'studiessmall' })" translate="navbar.research">Research</a></li>
+				<li ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'help' })" translate="navbar.help">Help</a></li>				
 			</ul>
 			<!-- 
 			<form class="navbar-form navbar-left" ng-submit="startSearch()">
@@ -35,7 +35,7 @@
 			    <li><a>{{user.midataID}}</a></li>
 				<li><a ui-sref=".user({ userId : user._id.$oid})">{{user.name}}</a></li>
 				<li><a ng-click="logout()" href="javascript:">
-					<span class="glyphicon glyphicon-off"></span> Sign out
+					<span class="glyphicon glyphicon-off"></span> <span translate="navbar.sign_out"></span>
 				</a></li>
 			</ul>
 		</div><!--/.nav-collapse -->

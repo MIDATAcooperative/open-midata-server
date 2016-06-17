@@ -6,51 +6,51 @@
 				<div class="panel-container" style="max-width:630px; padding-top:30px; margin:0 auto;">
 					<div class="panel panel-primary">
 		            	<div class="panel-heading">
-		              		<h3 class="panel-title">Sign up</h3>
+		              		<h3 class="panel-title" translate="developer_registration.sign_up"></h3>
 		            	</div>
 		            	<div class="panel-body">
-		            		<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
-	                          {{ error.message || error }}
+		            		<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
 	                        </p>	
-	                        <p ng-show="offline" class="alert alert-danger">The backend is currently offline! Come back later.</p>					
+	                        <p ng-show="offline" class="alert alert-danger" translate="error.offline"></p>					
 							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="register()" role="form">								  
-							  <formrow myid="email" label="Email">
-							    <input type="email" class="form-control" id="email" name="email" placeholder="Email" ng-model="registration.email" required>
-							    <formerror myid="email" type="email" message="Please enter a valid email address." ></formerror> 
-							    <formerror myid="email" type="exists" message="A user with this email is already registered."></formerror> 
+							  <formrow myid="email" label="registration.email">
+							    <input type="email" class="form-control" id="email" name="email" translate translate-attr-placeholder="registration.email" ng-model="registration.email" required>
+							    <formerror myid="email" type="email" message="error.invalid.email" ></formerror> 
+							    <formerror myid="email" type="exists" message="error.exists.member"></formerror> 
 							  </formrow>
-							  <formrow myid="password" label="Password"> 
-							    <input type="password" class="form-control" id="password" name="password" placeholder="Password" ng-model="registration.password" required>
-							    <formerror myid="password" type="compare" message="Password and password repetition do not match!"></formerror>
-							    <formerror myid="password" type="tooshort" message="Passwords must be at least 8 characters long."></formerror>
-							    <formerror myid="password" type="tooweak" message="Passwords should contain of a mix of upper/lower case letters, numbers and special characters."></formerror>  
+							  <formrow myid="password" label="registration.password"> 
+							    <input type="password" class="form-control" id="password" name="password" translate translate-attr-placeholder="registration.password" ng-model="registration.password" required>
+							    <formerror myid="password" type="compare" message="error.invalid.password_repetition"></formerror>  
+							    <formerror myid="password" type="tooshort" message="error.tooshort.password"></formerror>
+							    <formerror myid="password" type="tooweak" message="error.tooweak.password"></formerror>
 							  </formrow>
-							  <formrow myid="password2" label="Repeat Password"><input type="password" class="form-control" id="password2" name="password2" placeholder="Password" ng-model="registration.password2" required></formrow>
-							  <formrow myid="firstname" label="First Name"><input type="text" class="form-control" id="firstname" name="firstname" placeholder="First Name" ng-model="registration.firstname" required></formrow>
-							  <formrow myid="lastname" label="Surname"><input type="text" class="form-control" id="lastname" name="lastname" placeholder="Surname" ng-model="registration.lastname" required></formrow>
+							  <formrow myid="password2" label="registration.password_repetition"><input type="password" class="form-control" id="password2" name="password2" translate translate-attr-placeholder="registration.password" ng-model="registration.password2" required></formrow>
+							  <formrow myid="firstname" label="registration.firstname"><input type="text" class="form-control" id="firstname" name="firstname" translate translate-attr-placeholder="registration.firstname" ng-model="registration.firstname" required></formrow>
+							  <formrow myid="lastname" label="registration.lastname"><input type="text" class="form-control" id="lastname" name="lastname" translate translate-attr-placeholder="registration.lastname" ng-model="registration.lastname" required></formrow>
 							  
-							  <formrow myid="gender" label="Gender"><select class="form-control" id="gender" name="gender" ng-model="registration.gender"><option value="FEMALE">female</option><option value="MALE">male</option></select></formrow>
-							  <formrow myid="birthday" label="Birthday">  
+							  <formrow myid="gender" label="registration.gender"><select class="form-control" id="gender" name="gender" ng-model="registration.gender"><option value="FEMALE" translate="enum.gender.FEMALE">female</option><option value="MALE" translate="enum.gender.MALE"></option><option value="OTHER" translate="enum.gender.OTHER"></option></select></formrow>
+							  <formrow myid="birthday" label="registration.birthday">  
 							    <div class="input-group">
-							    <div class="input-group-addon">Day</div>
+							    <div class="input-group-addon" translate="registration.day"></div>
 							    <select class="form-control " id="birthday" name="birthday" ng-model="registration.birthdayDay" ><option ng-repeat="day in days">{{ day }}</option></select>
-							    <div class="input-group-addon">Month</div>
+							    <div class="input-group-addon" translate="registration.month"></div>
 							    <select class="form-control" id="birthdayMonth" name="birthdayMonth" ng-model="registration.birthdayMonth"><option ng-repeat="month in months">{{ month }}</option></select>
-							    <div class="input-group-addon">Year</div>
+							    <div class="input-group-addon" translate="registration.year"></div>
 							    <select class="form-control" id="birthdayYear" name="birthdayYear" ng-model="registration.birthdayYear"><option ng-repeat="year in years">{{ year }}</option></select>
 							    </div>
-							  </formrow>
+							  </formrow>							  
+							  <formrow myid="language" label="registration.language"><select class="form-control" id="language" ng-model="registration.language" ng-change="changeLanguage(registration.language);" ng-options="lang.value as lang.name | translate for lang in languages"></select></formrow>
 							  
-							  <formrow myid="address1" label="Address"><input type="text" class="form-control" id="address1" name="address1" placeholder="Enter your address here" ng-model="registration.address1" required></formrow>
-							  <formrow myid="address2" label=""><input type="text" class="form-control" id="address2" name="address2" placeholder="Second line for address" ng-model="registration.address2"></formrow>
-							  <formrow myid="city" label="City"><input type="text" class="form-control" id="city" name="city" placeholder="City" ng-model="registration.city" required></formrow>
-							  <formrow myid="zip" label="Zip"><input type="text" class="form-control" id="zip" name="zip" placeholder="Zip Code" ng-model="registration.zip" required></formrow>
-							  <formrow myid="country" label="Country"><select class="form-control" id="country" name="country" ng-model="registration.country" required><option value="CH">Switzerland</option></select></formrow>
+							  <formrow myid="address1" label="registration.address"><input type="text" class="form-control" id="address1" name="address1" translate translate-attr-placeholder="registration.address_line1" ng-model="registration.address1" required></formrow>
+							  <formrow myid="address2" label=""><input type="text" class="form-control" id="address2" name="address2" translate translate-attr-placeholder="registration.address_line2" ng-model="registration.address2"></formrow>
+							  <formrow myid="city" label="registration.city"><input type="text" class="form-control" id="city" name="city" translate translate-attr-placeholder="registration.city" ng-model="registration.city" required></formrow>
+							  <formrow myid="zip" label="registration.zip"><input type="text" class="form-control" id="zip" name="zip" translate translate-attr-placeholder="registration.zip" ng-model="registration.zip" required></formrow>
+							  <formrow myid="country" label="registration.country"><select class="form-control" id="country" name="country" ng-model="registration.country" required><option value="CH" translate="enum.country.CH"></option></select></formrow>
                              
-                              <formrow myid="phone" label="Phone"><input type="text" class="form-control" id="phone" name="phone" placeholder="Phone" ng-model="registration.phone"></formrow>
-                              <formrow myid="mobile" label="Mobile Phone"><input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile Phone" ng-model="registration.mobile"></formrow>
+                              <formrow myid="phone" label="registration.phone"><input type="text" class="form-control" id="phone" name="phone" translate translate-attr-placeholder="registration.phone" ng-model="registration.phone"></formrow>
+                              <formrow myid="mobile" label="registration.mobile_phone"><input type="text" class="form-control" id="mobile" name="mobile" translate translate-attr-placeholder="registration.mobile_phone" ng-model="registration.mobile"></formrow>
                              
-                             <button type="submit" ng-disabled="status.action=='register'" class="btn btn-lg btn-primary btn-block">Sign up</button>
+                             <button type="submit" ng-disabled="status.action=='register'" class="btn btn-lg btn-primary btn-block" translate="registration.sign_up_btn"></button>
                             </form>
 		            	</div>
 					</div>

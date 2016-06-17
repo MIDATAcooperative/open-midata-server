@@ -7,7 +7,7 @@ angular.module('portal')
 	$scope.data = { consent : null };
 		
 	views.reset();
-	views.link("1", "record", "record");
+	views.link("patient_records", "record", "record");
 	$scope.reload = function() {
 			
 		$scope.status.doBusy(server.get(jsRoutes.controllers.providers.Providers.getMember($scope.memberid).url))
@@ -19,9 +19,9 @@ angular.module('portal')
 				console.log(data);
 				$scope.memberkey = data.memberkey;
 				if (data.memberkey) {
-				  views.setView("1", { aps : $scope.memberkey._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd: false, type : "memberkeys"});
+				  views.setView("patient_records", { aps : $scope.memberkey._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd: false, type : "memberkeys"});
 				} else {
-				  views.disableView("1");
+				  views.disableView("patient_records");
 				}
 			});
 	};
@@ -31,16 +31,16 @@ angular.module('portal')
 		$scope.consent = consent;
 		console.log($scope.consent);
 		if ($scope.consent != null) {
-			views.setView("1", { aps : $scope.consent._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : false, type : "memberkeys" });			
+			views.setView("patient_records", { aps : $scope.consent._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : false, type : "memberkeys" });			
 		} else {
-			views.disableView("1");
+			views.disableView("patient_records");
 		}
 	};
 	
 	var addDataConsent = function(backConsent) {
 		$scope.data.consent = $scope.consent = null;
 		$scope.hideAdd = true;
-		views.setView("1", { aps : backConsent._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type : "hcrelated" });
+		views.setView("patient_records", { aps : backConsent._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type : "hcrelated" });
 	};
 	
 	$scope.addData = function() {

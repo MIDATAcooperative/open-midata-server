@@ -69,7 +69,7 @@ public class Providers extends APIController {
 	public static Result register() throws AppException {
 		JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "name", "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
+		JsonValidation.validate(json, "name", "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language");
 					
 		String name = JsonValidation.getString(json, "name");
 		if (HealthcareProvider.existsByName(name)) return inputerror("name", "exists", "A healthcare provider with this name already exists.");
@@ -95,6 +95,7 @@ public class Providers extends APIController {
 		user.firstname = JsonValidation.getString(json, "firstname"); 
 		user.lastname = JsonValidation.getString(json, "lastname");
 		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
+		user.language = JsonValidation.getString(json, "language");
 		user.phone = JsonValidation.getString(json, "phone");
 		user.mobile = JsonValidation.getString(json, "mobile");
 		

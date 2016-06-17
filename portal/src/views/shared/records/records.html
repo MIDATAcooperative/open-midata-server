@@ -8,28 +8,28 @@
 		  <div style="margin:10px">
 		  
 		  <div class="alert alert-info" ng-show="consent">
-		    Please use the 'share' and 'unshare' buttons to select which records you want to share with consent <strong>{{ consent.name }}</strong>.<br>
-		    This consent currently shares data with <strong>{{ consent.authorized.length }}</strong> people.<br><br>	
+		    <span translate="records.share_instructions"></span><strong>{{ consent.name }}</strong>.<br>
+		    <span translate="records.share_instructions2"></span><strong>{{ consent.authorized.length }}</strong> <span translate="records.share_instructions3"></span><br><br>	
 		    <a class="btn btn-default btn-sm" ui-sref="^.editconsent({ consentId : selectedAps._id.$oid })">Done</a>	     
 		  </div>
 		  
 		  <div class="alert alert-info" ng-show="allowDelete">
-		    <p>In order to permanently <b>delete</b> a record <b>double-click</b> on the delete button to the right of the record.</p>
-		    <p>In order to permanently delete all records of a certain category double click on the delete button to the right of the category.</p>	     
+		    <p><span translate="records.delete_instructions1"></span> <b translate="records.delete_instructions2">delete</b> <span translate="records.delete_instructions3"></span> <b translate="records.delete_instructions4"></b> <span translate="records.delete_instructions5"></span></p>
+		    <p translate="records.delete_instructions6"></p>	     
 		  </div>
 		  		  
 		<div class="row">	
 			<div class="pull-right col-sm-4" ng-show="displayAps.owner && compare!=null">
-			   <label for="selectedAps">Shared With:</label>
-			  <select class="form-control" id="selectedAps" ng-model="selectedAps" ng-options="c.name for c in compare" ng-change="loadSharingDetails()"></select>
+			   <label for="selectedAps" translate="records.shared_with"></label>
+			  <select class="form-control" id="selectedAps" ng-model="selectedAps" ng-options="c.name as c.i18n | translate:{ name : c.name } for c in compare" ng-change="loadSharingDetails()"></select>
 	        </div>	
 	        <div class="pull-right col-sm-4" ng-show="compare==null && selectedAps!=null && selectedType=='spaces'">
-			  <label for="selectedAps">Records used for app</label>	
-			  <a class="btn btn-default" ui-sref="^.spaces({ spaceId : selectedAps._id.$oid })">Back to Visualization</a>		  
+			  <label for="selectedAps" translate="records.records_used_for_app"></label>	
+			  <a class="btn btn-default" ui-sref="^.spaces({ spaceId : selectedAps._id.$oid })" translate="records.back_to_plugin"></a>		  
 	        </div>		        
 	        <div class="col-sm-4">
-	           <label for="owner" ng-dblclick="showDebug()">Show:</label>
-	           <select class="form-control" id="owner" ng-model="displayAps" ng-options="c.name for c in availableAps" ng-change="selectSet()"></select>
+	           <label for="owner" ng-dblclick="showDebug()" translate="records.show"></label>
+	           <select class="form-control" id="owner" ng-model="displayAps" ng-options="c.name as c.i18n | translate:{ name : c.name } for c in availableAps" ng-change="selectSet()"></select>
 	        </div>			
         </div>	
         </div>
@@ -37,10 +37,10 @@
 		<script type="text/ng-template"  id="tree_item_renderer.html">
            <div class="pull-right sharebox" ng-show="selectedAps">	                				  
 				<button class="btn btn-xs btn-primary" ng-disabled="status.isBusy" ng-click="unshareGroup(data);" ng-show="isSharedGroup(data)">
-					<span class="glyphicon glyphicon-picture"></span>unshare
+					<span class="glyphicon glyphicon-picture"></span><span translate="records.unshare"></span>
 				</button>
 				<button class="btn btn-xs btn-primary" ng-disabled="status.isBusy" ng-hide="isSharedGroup(data)" ng-click="shareGroup(data);">
-					<span class="glyphicon glyphicon-share"></span>share
+					<span class="glyphicon glyphicon-share"></span><span translate="records.share"></span>
 			    </button>
 		   </div>	
            <h1 ng-class="{ 'text-success' : isSharedGroup(data), 'format': data.type == 'content', 'nodata' : data.count == 0 }"><span ng-click="setOpen(data,true);" ng-hide="data.open" class="treehandle glyphicon glyphicon-plus"></span><span ng-show="data.open && !data.type" ng-click="setOpen(data,false);" class="treehandle glyphicon glyphicon-minus"></span>{{data.fullLabel}} <small>(<span ng-show="selectedAps">{{ data.countShared }} / </span>{{ data.count }})</small><button class="btn btn-xs btn-danger" ng-show="allowDelete" ng-dblclick="deleteGroup(data.name)">delete all</button></h1>
@@ -54,13 +54,13 @@
 					<span class="label label-info">{{record.created | date}}</span>
 					<span ng-show="record.owner.$oid != userId.$oid" class="label label-info">{{ record.ownerName }}</span>
 					<a href="javascript:;" ng-click="showDetails(record)">{{record.name}}</a>
-                    <button ng-show="allowDelete && isOwnRecord(record)" ng-dblclick="deleteRecord(record, data)" class="btn btn-danger btn-xs">delete</button>
+                    <button ng-show="allowDelete && isOwnRecord(record)" ng-dblclick="deleteRecord(record, data)" class="btn btn-danger btn-xs" translate="records.delete"></button>
                     <div class="pull-right" ng-hide="selectedAps==null">					   
 						<button class="btn btn-xs btn-primary" ng-disabled="status.isBusy" ng-click="unshare(record, data);" ng-show="isShared(record)">
-							<span class="glyphicon glyphicon-picture"></span>unshare
+							<span class="glyphicon glyphicon-picture"></span><span translate="records.unshare"></span>
 						</button>
 						<button class="btn btn-xs btn-primary" ng-disabled="status.isBusy" ng-hide="isShared(record)" ng-class="{'disabled': !isOwnRecord(record)}" ng-click="share(record, data);">
-							<span class="glyphicon glyphicon-share"></span>share
+							<span class="glyphicon glyphicon-share"></span><span translate="records.share"></span>
 						</button>
 					</div>										
 				</li>
@@ -76,7 +76,7 @@
 			
 			<!-- Records -->
 			
-			<div class="panel-body" ng-show="tree.length === 0">No available records found.</div>
+			<div class="panel-body" ng-show="tree.length === 0" translate="records.empty"></div>
 			
 			</loader>
 	             	</div>

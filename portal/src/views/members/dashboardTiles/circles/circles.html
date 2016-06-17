@@ -1,7 +1,7 @@
 <div class="ignore autosize" ng-controller="SmallCirclesCtrl">
     <loader busy="status.isBusy !== false">
-    <div ng-show="circles.length" class="body"><span class="dashnumber">{{ circles.length }}</span> Circles available:</div>
-    <div class="body text-center" ng-show="!status.isBusy && circles.length == 0">You do not have any circles.</div>
+    <div ng-show="circles.length" class="body"><span class="dashnumber">{{ circles.length }}</span> <span translate="member_circles.number_available"></span></div>
+    <div class="body text-center" ng-show="!status.isBusy && circles.length == 0" translate="member_circles.empty"></div>
     <p ng-hide="status.isBusy || circles.length" class="body teaser">{{ view.teaser }}</p>
     <ul class="list-group" ng-show="!status.isBusy && circles.length > 0">
 		<li class="list-group-item rotate truncate" ng-repeat="circle in circles | limitTo : limit">
@@ -22,12 +22,12 @@
 	   <div class="input-group" >
           <input type="text" class="form-control" ng-model="form.newCircleName" placeholder="Circle Name">          
           <span class="input-group-btn">
-             <button ng-click="createCircle();" class="btn btn-default" type="button">Add</button>
+             <button ng-click="createCircle();" class="btn btn-default" type="button" translate="member_circles.add_btn"></button>
           </span>          
        </div>       
        </div>
 	   <div class="col-xs-4">
-	     <a class="btn btn-default" ui-sref="^.circles">Manage</a>
+	     <a class="btn btn-default" ui-sref="^.circles" translate="member_circles.manage_btn"></a>
 	   </div>
 	  </div>
 	</div>

@@ -8,8 +8,8 @@ angular.module('portal')
 	$scope.loading = true;
 	$scope.error = null;
 		
-	views.link("1", "record", "record");
-	views.link("1", "shareFrom", "share");
+	views.link("shared_with_study", "record", "record");
+	views.link("shared_with_study", "shareFrom", "share");
 	views.link("share", "record", "record");
 	
 	$scope.reload = function() {
@@ -32,9 +32,9 @@ angular.module('portal')
 				}
 				
 				if ($scope.participation && !($scope.participation.status == "CODE" || $scope.participation.status == "MATCH" )) {
-				  views.setView("1", { aps : $scope.participation._id.$oid, properties : { } , type:"participations", allowAdd : true, allowRemove : false, fields : [ "ownerName", "created", "id", "name" ]});
+				  views.setView("shared_with_study", { aps : $scope.participation._id.$oid, properties : { } , type:"participations", allowAdd : true, allowRemove : false, fields : [ "ownerName", "created", "id", "name" ]});
 				} else {
-				  views.disableView("1");
+				  views.disableView("shared_with_study");
 				}
 			}).
 			error(function(err) {

@@ -7,6 +7,7 @@ angular.module('portal')
     $scope.nameToGroup = {};
     $scope.nameToContent = {};
     $scope.groupSystem = "v1";
+    $scope.languages = ["en","de","it","fr"];
 	
 	$scope.init = function() {		
 		  $scope.status.doBusy(formats.listCodes())
@@ -85,7 +86,11 @@ angular.module('portal')
 	
 	$scope.editGroup = function(group) {				
 		views.setView("editGroup", { group : group }, "Group: "+group.name);				
-	};	
+	};
+	
+	$scope.translate = function() {				
+		views.setView("translate", {  }, "Translate");				
+	};
 	
 	$scope.addGroup = function() {
 		var newGroup = { name : "", label : {}, contents : [], contentEntries : [], system:$scope.groupSystem, action:"create" };
@@ -276,6 +281,25 @@ angular.module('portal')
 		$scope.nameToGroup[$scope.group.name] = $scope.group;
 		$scope.checkGroupValid($scope.group);
 		views.disableView("editGroup");
+	};
+	
+	$scope.$watch('view.setup', function() { $scope.reload(); });
+}])
+.controller('TranslateCtrl', ['$scope', '$state', 'views', 'session', 'formats', 'status', function($scope, $state, views, session, formats, status) {
+	$scope.view = views.getView("translate");
+	
+	$scope.reload = function() {
+		if (!$scope.view.active) return;		
+	};
+	
+	$scope.submit = function() {
+		
+		
+		views.disableView("translate");
+	};
+	
+	$scope.changed = function(itm) {
+		itm.action = itm.action || "update";
 	};
 	
 	$scope.$watch('view.setup', function() { $scope.reload(); });

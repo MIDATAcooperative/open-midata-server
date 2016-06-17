@@ -197,7 +197,7 @@ public class FormatAPI extends Controller {
 		cc._id = new ObjectId(id);
 		cc.name = JsonValidation.getString(json, "name");
 		cc.system = JsonValidation.getString(json, "system");
-		cc.parent = JsonValidation.getString(json, "parent");
+		cc.parent = JsonValidation.getStringOrNull(json, "parent");
 		cc.contents = JsonExtraction.extractStringSet(json.get("contents"));
 		cc.label = JsonExtraction.extractStringMap(json.get("label"));
 		

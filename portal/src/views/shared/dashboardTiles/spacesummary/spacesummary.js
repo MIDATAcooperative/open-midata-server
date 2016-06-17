@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('SpaceSummaryCtrl', ['$scope', '$state', 'server', '$attrs', '$sce', 'records', 'views', 'status', 'spaces', function($scope, $state, server, $attrs, $sce, records, views, status, spaces) {
+.controller('SpaceSummaryCtrl', ['$scope', '$state', '$translate', 'server', '$attrs', '$sce', 'records', 'views', 'status', 'spaces', function($scope, $state, $translate, server, $attrs, $sce, records, views, status, spaces) {
 	
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
     $scope.status = new status(true);
@@ -15,8 +15,10 @@ angular.module('views')
     	$scope.status.doBusy(recordId ? records.getUrl(recordId) : ($scope.view.setup.nopreview ? spaces.getUrl(spaceId) : spaces.getPreviewUrl(spaceId))).
 		then(function(results) {
 			$scope.previewType = results.data.type || "visualization";
-			if (results.data.url) {			  
-			  $scope.url = $sce.trustAsResourceUrl(results.data.url);
+			if (results.data.url) {	
+			  var url = results.data.url;
+			  if (url.indexOf("?")>0) url+="&lang="+encodeURIComponent($translate.use()); else url+="?lang="+encodeURIComponent($translate.use());
+			  $scope.url = $sce.trustAsResourceUrl(url);
 			} else {			  
 			  $scope.status.doBusy(records.getInfos(spaceId, {}, "ALL")).
 			  then(function(results) {				 

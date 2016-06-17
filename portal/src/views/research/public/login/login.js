@@ -11,7 +11,7 @@ angular.module('portal')
 	$scope.dologin = function() {
 		// check user input
 		if (!$scope.login.email || !$scope.login.password) {
-			$scope.error = "Please provide an email address and a password.";
+			$scope.error = { code : "error.missing.credentials" };
 			return;
 		}
 		

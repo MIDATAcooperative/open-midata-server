@@ -1,5 +1,22 @@
-var jsonRecords = angular.module('jsonRecords', [ 'midata' ]);
+var jsonRecords = angular.module('jsonRecords', [ 'midata', 'pascalprecht.translate' ]);
+jsonRecords.config(['$translateProvider', function($translateProvider) {
+	     console.log("test1");
+			    
+		$translateProvider
+		.useSanitizeValueStrategy('escape')	   	    
+		.registerAvailableLanguageKeys(['en', 'de'], {
+		  'en_*': 'en',
+		  'de_*': 'de'
+		})
+		.translations('en', en)
+		.translations('de', de)
+		.fallbackLanguage('en');	
 
+}]);
+jsonRecords.run(['$translate', 'midataPortal', function($translate, midataPortal) {
+ 	console.log("Language: "+midataPortal.language);
+	$translate.use(midataPortal.language);	   	  
+}]);
 jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$timeout', 'midataServer', 'midataPortal',
 	function($scope, $http, $location, $filter, $timeout, midataServer, midataPortal) {
 		

@@ -1,7 +1,8 @@
 angular.module('portal')
-.controller('DeveloperRegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', function($scope, $state, server, status, session) {
+.controller('DeveloperRegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', function($scope, $state, server, status, session, $translate, languages) {
 	
-	$scope.registration = {};
+	$scope.registration = { language : $translate.use() };
+	$scope.languages = languages.all;
 	$scope.error = null;
 	$scope.status = new status(false, $scope);
 	
@@ -18,7 +19,7 @@ angular.module('portal')
 		if (! $scope.myform.$valid) return;
 		
 		if ($scope.registration.password !=  $scope.registration.password2) {
-			$scope.error = "Password and password repetition do not match!";
+			$scope.error = { code : "error.invalid.password_repetition" };
 			return;
 		}
 		        
@@ -30,6 +31,10 @@ angular.module('portal')
 		var data = $scope.registration;		
 		$scope.status.doAction("register", server.post(jsRoutes.controllers.Developers.register().url, JSON.stringify(data))).
 		then(function(data) { session.postLogin(data, $state); });
+	};
+	
+	$scope.changeLanguage = function(lang) {
+		$translate.use(lang);
 	};
 	
 	$scope.days = [];

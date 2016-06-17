@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('Spaces2Ctrl', ['$scope', '$state', 'server', '$sce', 'status', 'spaces', 'views', 'session', function($scope, $state, server, $sce, status, spaces, views, session) {
+.controller('Spaces2Ctrl', ['$scope', '$state', '$translate','server', '$sce', 'status', 'spaces', 'views', 'session', function($scope, $state, $translate, server, $sce, status, spaces, views, session) {
 	
 	// init
 	$scope.error = null;
@@ -20,8 +20,11 @@ angular.module('portal')
 	getAuthToken = function(space) {
 		
 		spaces.getUrl(space._id.$oid)
-		.then(function(result) {		
-			space.trustedUrl = $sce.trustAsResourceUrl(result.data);
+		.then(function(result) {
+            var lang = $translate.use();			 
+			var url = result.data;
+			if (url.indexOf("?")>=0) url+="&lang="+encodeURIComponent(lang); else url+="?lang="+encodeURIComponent(lang);
+			space.trustedUrl = $sce.trustAsResourceUrl(url);
 		});
 	};
 	

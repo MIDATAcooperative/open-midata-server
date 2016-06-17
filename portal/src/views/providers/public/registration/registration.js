@@ -1,7 +1,8 @@
 angular.module('portal')
-.controller('ProviderRegistrationCtrl', ['$scope', '$state', 'server', 'status' , 'session', function($scope, $state, server, status, session) {
+.controller('ProviderRegistrationCtrl', ['$scope', '$state', 'server', 'status' , 'session', '$translate', 'languages', function($scope, $state, server, status, session, $translate, languages) {
 	
-	$scope.registration = {};
+	$scope.registration = { language : $translate.use() };
+	$scope.languages = languages.all;
 	$scope.error = null;
 	$scope.submitted = false;
 	
@@ -24,6 +25,10 @@ angular.module('portal')
 		$scope.status.doAction("register", server.post(jsRoutes.controllers.providers.Providers.register().url, JSON.stringify(data)))
 		.then(function(data) { session.postLogin(data, $state); });
 			
+	};
+	
+	$scope.changeLanguage = function(lang) {
+		$translate.use(lang);
 	};
 	
 }]);

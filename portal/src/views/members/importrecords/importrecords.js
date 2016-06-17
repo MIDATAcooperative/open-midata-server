@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ImportRecordsCtrl', ['$scope', '$state', 'server', '$sce', 'session', 'status', 'spaces', function($scope, $state, server, $sce, session, status, spaces) {
+.controller('ImportRecordsCtrl', ['$scope', '$state', '$translate', 'server', '$sce', 'session', 'status', 'spaces', function($scope, $state, $translate, server, $sce, session, status, spaces) {
 	
 	// init
 	$scope.error = null;
@@ -38,7 +38,9 @@ angular.module('portal')
 			  $scope.authorized = false;
 			  $scope.message = null;			  
 			} else {
-			  space.trustedUrl = $sce.trustAsResourceUrl(result.data);
+			  var url = results.data.url;
+			  if (url.indexOf("?")>0) url+="&lang="+encodeURIComponent($translate.use()); else url+="?lang="+encodeURIComponent($translate.use());
+			  space.trustedUrl = $sce.trustAsResourceUrl(url);
 			  
 			  $scope.error = null;
 			  $scope.message = null;

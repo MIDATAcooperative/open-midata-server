@@ -6,7 +6,7 @@
 				<div class="panel-container" style="max-width:630px; padding-top:30px; margin:0 auto;">
 					<div class="panel panel-primary">
 		            	<div class="panel-heading">
-		              		<h3 class="panel-title" translate="member_quickregistration.sign_up">Sign up</h3>
+		              		<h3 class="panel-title" translate="member_quickregistration.sign_up"></h3>
 		            	</div>
 		            	<div class="panel-body">
 		            		<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
@@ -43,6 +43,7 @@
 							    <select class="form-control" id="birthdayYear" name="birthdayYear" ng-model="registration.birthdayYear"><option ng-repeat="year in years">{{ year }}</option></select>
 							    </div>
 							  </formrow>							  
+							  <formrow myid="language" label="registration.language"><select class="form-control" id="language" ng-model="registration.language" ng-change="changeLanguage(registration.language);" ng-options="lang.value as lang.name | translate for lang in languages"></select></formrow>
 							  
 							  <formrow myid="address1" label="registration.address"><input type="text" class="form-control" id="address1" name="address1" translate translate-attr-placeholder="registration.address_line1" ng-model="registration.address1" required></formrow>
 							  <formrow myid="address2" label=""><input type="text" class="form-control" id="address2" name="address2" translate translate-attr-placeholder="registration.address_line2" ng-model="registration.address2"></formrow>

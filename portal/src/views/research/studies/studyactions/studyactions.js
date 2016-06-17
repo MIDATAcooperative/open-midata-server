@@ -21,7 +21,7 @@ angular.module('portal')
 		.then(function(result) {
 			
 		   $scope.aps = result.data._id.$oid;
-		   views.setView("1", { aps : $scope.aps, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type : "studyrelated" });		   
+		   views.setView("group_records", { aps : $scope.aps, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type : "studyrelated" });		   
 		});
 		
 		

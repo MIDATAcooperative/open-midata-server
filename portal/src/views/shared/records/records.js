@@ -1,11 +1,11 @@
 angular.module('portal')
-.controller('RecordsCtrl', ['$scope', '$state', 'server',  '$filter', 'dateService', 'records', 'circles', 'formats', 'apps', 'status', 'studies', 'session', 'spaces', function($scope, $state, server, $filter, dateService, records, circles, formats, apps, status, studies, session, spaces) {
+.controller('RecordsCtrl', ['$scope', '$state', '$translate', 'server',  '$filter', 'dateService', 'records', 'circles', 'formats', 'apps', 'status', 'studies', 'session', 'spaces', function($scope, $state, $translate, server, $filter, dateService, records, circles, formats, apps, status, studies, session, spaces) {
 	
 	// init
 	$scope.error = null;
 		
 	$scope.userId = null;
-	$scope.lang = "en";
+	$scope.lang = $translate.use();
 	
 	$scope.records = [];
 	$scope.infos = [];
@@ -20,7 +20,7 @@ angular.module('portal')
 	session.currentUser
 	.then(function(userId) {		
 			$scope.userId = userId;
-			$scope.availableAps = [{ name : "My Data", aps:userId, owner : "self"  }, { name : "All Data", aps:userId, owner : "all"}];
+			$scope.availableAps = [{ i18n : "records.my_data" , name : "My Data", aps:userId, owner : "self"  }, { i18n:"records.all_data", name : "All Data", aps:userId, owner : "all"}];
 			$scope.displayAps = $scope.availableAps[0];
 			
 			if ($state.params.selected != null) {	
@@ -94,7 +94,7 @@ angular.module('portal')
 			studies.research.list()
 			.then(function(results) {
 				angular.forEach(results.data, function(study) { 
-					$scope.availableAps.push({ name:"Study "+study.name, aps:userId, study : study._id.$oid });
+					$scope.availableAps.push({ i18n:"records.study", name:study.name, aps:userId, study : study._id.$oid });
 				});
 			});
 			
@@ -104,7 +104,7 @@ angular.module('portal')
 			.then(function(results) {
 				//$scope.availableAps = [{ name : "Your Data", aps:userId, owner : "self"  }, { name : "All Data", aps:userId, owner : "all"}];
 				angular.forEach(results.data, function(circle) { 
-					$scope.availableAps.push({ name:"Shared by "+circle.ownerName, aps:circle._id.$oid });
+					$scope.availableAps.push({ i18n:"records.shared", name:circle.ownerName, aps:circle._id.$oid });
 				});
 			});
 		}
@@ -153,13 +153,13 @@ angular.module('portal')
 	   	newgroup.countShared = 0;
 	   	newgroup.id = newgroup.name.replace(/[/\-]/g,'_');
 	   	
-	   	if (newgroup.parent == null) {
-	   		newgroup.fullLabel = newgroup.label[$scope.lang];
+	   	if (newgroup.parent == null || newgroup.parent === "") {
+	   		newgroup.fullLabel = newgroup.label[$scope.lang] || newgroup.name;
 	   		$scope.tree.push(newgroup);
 	   	} else {
 	   		var prt = getOrCreateGroup(newgroup.parent);
-	   		if (prt.parent != null) newgroup.fullLabel = prt.label[$scope.lang] + " / "+newgroup.label[$scope.lang];
-	   		else newgroup.fullLabel = newgroup.label[$scope.lang];
+	   		if (prt.parent != null) newgroup.fullLabel = (prt.label[$scope.lang] || prt.name) + " / "+(newgroup.label[$scope.lang] || newgroup.name);
+	   		else newgroup.fullLabel = newgroup.label[$scope.lang] || newgroup.name;
 	   		prt.children.push(newgroup);
 	   	}
 	   	
@@ -270,18 +270,10 @@ angular.module('portal')
                 $scope.loadingSharing = false;				
 				$scope.compare = [];
 				angular.forEach(results.data, function(entry) { 
+					entry.i18n = "records.just_name";
 					$scope.compare.push(entry);
 				});
-								
-				/*
-				angular.forEach($scope.circles, function(circle) { circle.type="circles"; $scope.compare.push(circle); });
-				angular.forEach($scope.participations, function(part) { 
-					part.type="participations";
-					if (!part.name) part.name = "Study:"+part.studyName;
-					$scope.compare.push(part);
-				});
-				angular.forEach($scope.memberkeys, function(mk) { mk.type="memberkeys"; $scope.compare.push(mk); });
-				*/
+											
 			});		
 		} 
 	};

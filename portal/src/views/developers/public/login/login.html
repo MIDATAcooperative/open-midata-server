@@ -6,19 +6,18 @@
 				<div class="panel-container" style="max-width:630px; padding-top:120px; margin:0 auto;">
 					<div class="panel panel-primary">
 		            	<div class="panel-heading">
-		              		<h3 class="panel-title">Developer Login</h3>
+		              		<h3 class="panel-title" translate="developer_login.title"></h3>
 		            	</div>
 		            	<div class="panel-body">
-		            		<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
-	                          {{ error.message || error }}
+		            		<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 	                        </p>				
 							<form name="form" novalidate class="css-form form-horizontal" ng-submit="login()" role="form">							  
-							  <formrow myid="email" label="Email"><input type="email" class="form-control" id="email" placeholder="Email" ng-model="login.email" required></formrow>
-							  <formrow myid="password" label="Password"><input type="password" class="form-control" id="password" placeholder="Password" ng-model="login.password" required></formrow>							  
-                             <button type="submit" class="btn btn-lg btn-primary btn-block">Login</button>
+							  <input type="email" class="form-control" translate translate-attr-placeholder="login.email_address" ng-model="login.email" style="margin-bottom:5px;" autofocus>
+								<input type="password" class="form-control" translate translate-attr-placeholder="login.password" ng-model="login.password" style="margin-bottom:5px;">
+                             <button type="submit" class="btn btn-lg btn-primary btn-block" translate="login.login_btn"></button>
                             </form>
                             <div class="margin-top">
-							   <a ui-sref="public_developer.lostpw">Forgot your password?</a>							   
+							   <a ui-sref="public_developer.lostpw" translate="login.forgot_your_password"></a>							   
 							</div>
 		            	</div>
 					</div>

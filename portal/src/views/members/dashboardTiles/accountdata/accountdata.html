@@ -1,8 +1,8 @@
 <div ng-controller="AccountDataCtrl" class="ignore autosize">        
   <div class="body">
      <loader busy="status.isBusy !== false">
-     <span>Midata ID: </span><strong>{{ member.midataID }}</strong><br/>
-     <span>Birthday: </span><strong>{{ member.birthday | date }}</strong><br/><br/>
+     <span translate="accountdata.midata_id"></span> <strong>{{ member.midataID }}</strong><br/>
+     <span translate="accountdata.birthday"></span> <strong>{{ member.birthday | date }}</strong><br/><br/>
      <address>     
      <strong>{{ member.firstname }} {{ member.lastname }}</strong><br/>
      {{ member.address1 }}<br/>
@@ -12,7 +12,7 @@
      </loader>
   </div>
   <div class="footer">
-    <button class="btn btn-default">Change</button>
+    <button class="btn btn-default" translate="accountdata.change_btn"></button>
   </div>
 
 </div>

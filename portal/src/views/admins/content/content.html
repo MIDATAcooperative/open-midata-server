@@ -5,9 +5,11 @@
     <div class="panel-heading">Content Types Editor</div>
     <div class="body">
       <loader busy="status.isBusy !== false">
+         <select ng-model="lang" ng-options="l for l in languages"></select>
          <button class="btn btn-primary" ng-click="newCode();">New Code</button>
          <button class="btn btn-primary" ng-click="addGroup();">New Group</button>
          <button class="btn btn-primary" ng-click="save();">Save Changes</button>
+         <button class="btn btn-primary" ng-click="translate()">Translate</button>
          <div ng-repeat="group in groups | orderBy : 'name'">
            <h3 ng-style="getStyle(group)">{{ group.name }}, {{ group.label[lang] }} <span class="badge" style="background-color:red" ng-show="group.problem">{{ group.problem }}</span><small>{{ getParents(group.parent) }}</small></h3><button class="btn btn-xs btn-default" ng-click="editGroup(group)">edit</button><button class="btn btn-xs btn-default" ng-click="deleteGroup(group)">delete</button>
          <ul>
@@ -99,6 +101,34 @@
 	             <button class="btn btn-default" ng-click="submit()">Submit</button>
 	           </formrow>
               </form>
+            </div>
+          </modal>
+          
+          <modal viewid="translate">
+            <div ng-controller="TranslateCtrl" style="overflow:scroll;max-height:700px">
+             <table class="table table-striped">
+               <tr>
+                 <th>Group</th>
+                 <th>EN Label</th>
+                 <th>Label</th>
+               </tr>
+               <tr ng-repeat="group in groups | orderBy : 'name'">
+                 <td>{{ group.name }}</td>
+                 <td>{{ group.label['en'] }}</td>
+                 <td><input class="form-control" type="text" ng-change="changed(group)" ng-model="group.label[lang]"></td>
+               </tr>
+               <tr>
+                 <th>Content</th>
+                 <th>EN Label</th>
+                 <th>Label</th>
+               </tr>
+                <tr ng-repeat="content in contents | orderBy : 'content'">
+                 <td>{{ content.content }}</td>
+                 <td>{{ content.label['en'] }}</td>
+                 <td><input class="form-control" type="text" ng-change="changed(content)" ng-model="content.label[lang]"></td>
+               </tr>
+             </table>
+              <button class="btn btn-default" ng-click="submit()">Submit</button>
             </div>
           </modal>
       </loader>		

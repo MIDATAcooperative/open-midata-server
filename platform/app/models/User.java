@@ -169,6 +169,11 @@ public class User extends Model implements Comparable<User> {
 	public String mobile;
 	
 	/**
+	 * Language to be used
+	 */
+	public String language;
+	
+	/**
 	 * FHIR: Person
 	 */
 	public BSONObject person;

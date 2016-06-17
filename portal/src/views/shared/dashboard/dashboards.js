@@ -94,8 +94,7 @@ angular.module('portal')
 	  "me" : 
 		  [
 		   {
-			    id: "help_welcome",
-			    title: "Welcome to MIDATA",
+			    id: "help_welcome",			
 			    template : "/views/members/dashboardTiles/help/help_welcome.html",
 			    active : true,
 			    position : "full"			    
@@ -103,7 +102,7 @@ angular.module('portal')
 		    {
 		    	   id : "tasks",
 		    	   template : "/views/shared/dashboardTiles/tasks/tasks.html",
-		    	   title : "Tasks",
+		    	 
 		    	   active : true,
 		    	   position : "small"
 		    },
@@ -119,8 +118,8 @@ angular.module('portal')
 		    */
 			{
 			    id: "myviews",
-			    title: "My Views",
-			    template : "/views/members/dashboardTiles/viewconfig/viewconfig.html",
+			
+			    template : "/views/shared/dashboardTiles/viewconfig/viewconfig.html",
 			    active : true,
 			    position : "small",
 			    setup : {	
@@ -134,73 +133,73 @@ angular.module('portal')
 		  [
 			{
 			    id: "mydata",
-			    title: "My personal data",
+			
 			    template : "/views/shared/dashboardTiles/summary/summary.html",
 			    active : true,
 			    position : "small",
 			    setup : {
-			   	 text : "Manage your health data. Enter new data and visualize existing data.",
+			   	 text : "dashboard.mydata_text",
 			   	 link : "member.dashboard({ dashId : 'mydata'})",
 			   	 icon : "/images/icons/health.png",			   	 
-			   	 button : "View"
+			   	 button : "dashboard.view_btn"
 			    }
 			},
 		    {
 		     id: "social",
-		     title: "Social",
+		  
 		     template : "/views/shared/dashboardTiles/summary/summary.html",
 	         active : true,
 	         position : "small",
 	         setup : {
-	        	 text : "Share your data with friends. Communicate with people sharing your health situation. Motivate yourself by competition with others.",
+	        	 text : "dashboard.social_text",
 	        	 icon : "/images/icons/social.png",
 	        	 link : "member.dashboard({ dashId : 'social'})",	        	 
-	        	 button : "View"
+	        	 button : "dashboard.view_btn"
 	         }
 		    },
 		    {
 			     id: "research",
-			     title: "Research",
+			
 			     template : "/views/shared/dashboardTiles/summary/summary.html",
 		         active : true,
 		         position : "small",
 		         setup : {
-		        	 text : "Participate in studies. Inform yourself about ongoing research.",
+		        	 text : "dashboard.research_text",
 		        	 link : "member.dashboard({ dashId : 'studies'})",
 		        	 icon : "/images/icons/research.png",
-		        	 button : "View"
+		        	 button : "dashboard.view_btn"
 		         }
 			},
 			
 			{
 			     id: "health",
-			     title: "Health",
+			   
 			     template : "/views/shared/dashboardTiles/summary/summary.html",
 		         active : true,
 		         position : "small",
 		         setup : {
-		        	 text : "Share data with your doctor. Search for health professionals.",
+		        	 text : "dashboard.health_text",
 		        	 link : "member.dashboard({ dashId : 'providers'})",		        	 
 		        	 icon : "/images/icons/empower.png",
-		        	 button : "View"
+		        	 button : "dashboard.view_btn"
 		         }
 			},
 			{
 			     id: "help",
-			     title: "Help",
+			  
 			     template : "/views/shared/dashboardTiles/summary/summary.html",
 		         active : true,
 		         position : "small",
 		         setup : {
-		        	 text : "Get help about MIDATA functions",
+		        	 text : "dashboard.help_text",
 		        	 link : "member.dashboard({ dashId : 'help'})",
 		        	 icon : "/images/icons/help.png",
-		        	 button : "View"
+		        	 button : "dashboard.view_btn"
 		         }
 			}/*,
 			{
 			     id: "training",
-			     title: "Training",
+			   
 			     template : "/views/shared/dashboardTiles/summary/summary.html",
 		         active : true,
 		         position : "small",
@@ -208,7 +207,7 @@ angular.module('portal')
 		        	 text : "Manage your personal training!",
 		        	 link : "member.dashboard({ dashId : 'training'})",
 		        	 icon : "/images/icons/training.png",
-		        	 button : "View"
+		        	 button : "dashboard.view_btn"
 		         }
 			}*/
 		  ],
@@ -216,7 +215,7 @@ angular.module('portal')
 			  [
 			   {
 				    id: "help_welcome",
-				    title: "Welcome to MIDATA",
+				   
 				    template : "/views/members/dashboardTiles/help/help_welcome.html",
 				    active : true,
 				    position : "full"			    
@@ -227,11 +226,11 @@ angular.module('portal')
 		    {
 		    	id : "newrecords",
 		    	template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
-		    	title : "Newest records added this month:",
+		    	
 		    	active : true,
 		    	position : "small",
 		    	actions : { remove : "config" },
-		    	teaser : "There are no new records. Visit the records page to browser all of your records.",
+		    	teaser : "dashboard.newrecords_teaser",
 		    	setup : { properties : { "max-age" : 86400 * 31, "limit" : 7 } , fields : [ "ownerName", "created", "id", "name" ], allowBrowse : true}
 		    },
 		    /*
@@ -246,15 +245,15 @@ angular.module('portal')
 		     },*/
 		     {
 				    id: "myaccount",
-				    title: "My Account Data",
+				   
 				    template : "/views/members/dashboardTiles/accountdata/accountdata.html",
 				    active : true,
 				    position : "small"			    
 			},   
 			{
 			    id: "myviews",
-			    title: "My Views",
-			    template : "/views/members/dashboardTiles/viewconfig/viewconfig.html",
+			  
+			    template : "/views/shared/dashboardTiles/viewconfig/viewconfig.html",
 			    active : true,
 			    position : "small",
 			    setup : {	
@@ -267,21 +266,21 @@ angular.module('portal')
             {
             	id : "newsharedrecords",
 		    	template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
-		    	title : "New records shared with you",
+		    
 		    	active : true,
 		    	position : "small",
-		    	teaser : "Other MIDATA members may share their data with you.",
+		    	teaser : "dashboard.newsharedrecords_teaser",
 		    	actions : { remove : "config" },
 		    	setup : { properties : { "max-age" : 86400 * 31, "owner" : "members" } , fields : [ "ownerName", "owner", "created", "id", "name" ], allowBrowse : true }
 		
 		    },		    
 			 {
 			     id: "circles",
-			     title: "Member of Circles",
+			  
 			     template : "/views/members/dashboardTiles/othercircles/othercircles.html",
 		         active : true,
 		         position : "small",
-		         teaser : "Ask others to add you to their circles.",
+		         teaser : "dashboard.circles_teaser",
 		         setup : {
 		        	 properties : { member : true },
 		        	 instances : true
@@ -289,11 +288,11 @@ angular.module('portal')
 			 },
 			 {
 			     id: "circles2",
-			     title: "Your Circles",
+			   
 			     template : "/views/members/dashboardTiles/circles/circles.html",
 		         active : true,
 		         position : "small",
-		         teaser : "Create Circles to share your data with others. Share with friends, family or others.",
+		         teaser : "dashboard.circles2_teaser",
 		         setup : {
 		        	 properties : { owner : true }
 		         }
@@ -330,8 +329,8 @@ angular.module('portal')
 			},
 			{
 			    id: "myviews",
-			    title: "My Views",
-			    template : "/views/members/dashboardTiles/viewconfig/viewconfig.html",
+			  
+			    template : "/views/shared/dashboardTiles/viewconfig/viewconfig.html",
 			    active : true,
 			    position : "small",
 			    setup : {	
@@ -344,27 +343,27 @@ angular.module('portal')
 		  [
 		   {
 	    	 id : "providers",
-	    	 title:"Your Health Consents",                 
+	    	            
 	         template : "/views/members/dashboardTiles/providers/providers.html",
 	         active : true,
 	         position : "small",
-	         teaser : "Search for healthcare providers and add them to your list in order to share data with them.",
+	         teaser : "dashboard.providers_teaser",
 	         links : { "click-provider" : "records" }
 	       },
 	       {
 			     id: "providersearch",
-			     title: "Search for Health Providers",
+			 
 			     template : "/views/shared/dashboardTiles/providersearch/providersearch.html",
 		         active : true,
 		         position : "small",
 		         setup : {
-		        	 text : "Search function for healthcare providers.",
+		        	 text : "dashboard.providersearch_text",
 		        	 icon : "/images/icons/search.png"
 		         }
 			},
 	       {
 	    	 id : "hcrecords",
-	    	 title : "Newest Records from your healthcare providers",
+	    	
 	    	 template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
 	    	 active : false,
 	    	 position : "small",
@@ -373,15 +372,15 @@ angular.module('portal')
 	       {                        
 	         id : "records",
 	         template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
-	         title : "Records",
+	       
 	         position : "modal",
 	         active : false,
 	         links : { "shareFrom" : "share", "record" : "details" }
 	       },
 	       {
 			    id: "myviews",
-			    title: "My Views",
-			    template : "/views/members/dashboardTiles/viewconfig/viewconfig.html",
+			 
+			    template : "/views/shared/dashboardTiles/viewconfig/viewconfig.html",
 			    active : true,
 			    position : "small",
 			    setup : {	
@@ -392,7 +391,7 @@ angular.module('portal')
 	       {                        
 		      id : "share",
 		      template : "/views/members/dashboardTiles/addrecords/search.html",
-		      title : "Share",
+		    
 		      position : "modal",
 		      active : false,
 		      links : { "record" : "details" },
@@ -401,7 +400,7 @@ angular.module('portal')
 		   {                        
 			  id : "details",
 			  template : "/views/shared/dashboardTiles/recorddetail/recorddetail.html",
-			  title : "Details",
+			 
 			  active : false,
 			  position : "modal"			 
 		   }
@@ -410,35 +409,35 @@ angular.module('portal')
 	       {
 	    	   id : "yourstudies",
 	    	   template : "/views/members/dashboardTiles/yourstudies/yourstudies.html",
-	    	   title : "Studies you are involved:",
+	    	  
 	    	   active : true,
-	    	   teaser : "If you want to participate in research configure your research settings. You will be contacted in this tile if you match a studies requirements.",
+	    	   teaser : "dashboard.studies_teaser",
 	    	   position : "small"
 	       },
 	       {
 	    	   id : "newstudies",
 	    	   template : "/views/shared/dashboardTiles/flexiblestudies/flexiblestudies.html",
-	    	   title : "New Studies",
+	    	 
 	    	   active : true,
 	    	   position : "small",
 	    	   setup : { properties : { }, fields : ["name"] }
 	       },
 	       {
 			     id: "researchnews",
-			     title: "Research News",
+			   
 			     template : "/views/shared/dashboardTiles/summary/summary.html",
 		         active : true,
 		         position : "small",
 		         setup : {
-			         text : "Search for new health research publications.",
+			         text : "dashboard.researchnews_text",
 		        	 icon : "/images/icons/info.png",
 		        	 link : "http://scholar.google.de/scholar?q=Health+study+publications",	        	 
-		        	 button : "Search for News"
+		        	 button : "dashboard.researchnews_btn"
 		         }
 			},
 	       {
 			     id: "studysettings",
-			     title: "My Research Settings",
+			   
 			     template : "/views/members/dashboardTiles/researchsettings/researchsettings.html",
 		         active : true,
 		         position : "small"		         
@@ -446,7 +445,7 @@ angular.module('portal')
 	       {
 	    	   id :"entercode",
 	    	   template : "/views/members/dashboardTiles/entercode/entercode.html",
-	    	   title : "Join by participation code",
+	    	 
 	    	   active : true,
 	    	   position : "small"
 	       }
@@ -455,15 +454,15 @@ angular.module('portal')
 	       	       {
 	       	    	   id : "yourstudies",
 	       	    	   template : "/views/members/dashboardTiles/yourstudies/yourstudies.html",
-	       	    	   title : "Studies you are involved:",
+	       	    	 
 	       	    	   active : true,
-	       	    	   teaser : "This tile lists the studies you participated in.",
+	       	    	   teaser : "dashboard.yourstudies_teaser",
 	       	    	   position : "small"
 	       	       },
 	       	       {
 	       	    	   id : "newstudies",
 	       	    	   template : "/views/shared/dashboardTiles/flexiblestudies/flexiblestudies.html",
-	       	    	   title : "New Studies",
+	       	    	 
 	       	    	   active : true,
 	       	    	   position : "small",
 	       	    	   setup : { properties : { }, fields : ["name"] }
@@ -471,9 +470,9 @@ angular.module('portal')
 	     ],
 	 "circles" : [
 			{
-				   id : "1",
+				   id : "records_shared",
 				   template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
-				   title : "Records shared with this consent:",
+				
 				   active : false,
 				   position : "full",
 				   links : { "record" : "details" }
@@ -482,30 +481,30 @@ angular.module('portal')
 		    {                        
 			      id : "share",
 			      template : "/views/members/dashboardTiles/addrecords/search.html",
-			      title : "Share",
+			  
 			      position : "modal",
 			      active : false,
 			      links : { "record" : "details" },
-			      dependend : [ "1" ]
+			      dependend : [ "records_shared" ]
 			},
 			{                        
 				  id : "details",
 				  template : "/views/shared/dashboardTiles/recorddetail/recorddetail.html",
-				  title : "Details",
+				 
 				  active : false,
 				  position : "modal"			 
 			},
 			{                        
 				  id : "addusers",
 				  template : "/views/shared/dashboardTiles/addusers/addusers.html",
-				  title : "Add Users to Consent",
+				 
 				  active : false,
 				  position : "modal"			 
 			},
 			{                        
 				  id : "providersearch",
 				  template : "/views/shared/providersearch/providersearch.html",
-				  title : "Add Health Providers to Consent",
+				
 				  active : false,
 				  position : "modal"			 
 			}
@@ -513,9 +512,9 @@ angular.module('portal')
 	 ],
 	 "studydetails" : [
 	        {
-				   id : "1",
+				   id : "shared_with_study",
 				   template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
-				   title : "Shared Records:",
+				 
 				   active : false,
 				   position : "full",
 				   links : { "shareFrom" : "share", "record" : "details" }
@@ -524,23 +523,23 @@ angular.module('portal')
 		    {                        
 			      id : "share",
 			      template : "/views/members/dashboardTiles/addrecords/search.html",
-			      title : "Share",
+			    
 			      position : "modal",
 			      active : false,
 			      links : { "record" : "details" },
-			      dependend : [ "1" ]
+			      dependend : [ "shared_with_study" ]
 			},
 			{                        
 				  id : "details",
 				  template : "/views/shared/dashboardTiles/recorddetail/recorddetail.html",
-				  title : "Details",
+				 
 				  active : false,
 				  position : "modal"			 
 			},
 			{                        
 				  id : "providersearch",
 				  template : "/views/shared/providersearch/providersearch.html",
-				  title : "Provider to Add",
+				
 				  active : false,
 				  position : "modal"			 
 			}
@@ -548,9 +547,9 @@ angular.module('portal')
 	 ],
 	 "memberdetails" : [
 			{
-				   id : "1",
+				   id : "patient_records",
 				   template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
-				   title : "Records of this patient:",
+				 
 				   active : false,
 				   position : "full",
 				   links : { "shareFrom" : "share" }				   
@@ -559,32 +558,32 @@ angular.module('portal')
 			 {                        
 			      id : "share",
 			      template : "/views/members/dashboardTiles/addrecords/search.html",
-			      title : "Share",
+			    
 			      position : "modal",
 			      active : false,
 			      links : { "record" : "details" },
-			      dependend : [ "1" ]
+			      dependend : [ "patient_records" ]
 			},
 			{                        
 				  id : "details",
 				  template : "/views/shared/dashboardTiles/recorddetail/recorddetail.html",
-				  title : "Details",
+				
 				  active : false,
 				  position : "modal"			 
 			},
 			{                        
 				  id : "addtask",
 				  template : "/views/shared/dashboardTiles/addtask/addtask.html",
-				  title : "Add Task",
+				
 				  active : false,
 				  position : "modal"			 
 			}              
 	 ],
 	 "studyactions" : [
 	        			{
-	        				   id : "1",
+	        				   id : "group_records",
 	        				   template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
-	        				   title : "Records of this group:",
+	        				  
 	        				   active : false,
 	        				   position : "full",
 	        				   links : { "shareFrom" : "share", "record" : "details" }				   
@@ -593,7 +592,7 @@ angular.module('portal')
 	        			 {                        
 	        			      id : "share",
 	        			      template : "/views/members/dashboardTiles/addrecords/search.html",
-	        			      title : "Share",
+	        			  
 	        			      position : "modal",
 	        			      active : false,
 	        			      links : { "record" : "details" },
@@ -602,23 +601,23 @@ angular.module('portal')
 	        			{                        
 	        				  id : "details",
 	        				  template : "/views/shared/dashboardTiles/recorddetail/recorddetail.html",
-	        				  title : "Details",
+	        				
 	        				  active : false,
 	        				  position : "modal"			 
 	        			},
 	        			{                        
 	        				  id : "addtask",
 	        				  template : "/views/shared/dashboardTiles/addtask/addtask.html",
-	        				  title : "Add Task",
+	        				 
 	        				  active : false,
 	        				  position : "modal"			 
 	        			}              
 	        	 ],
 	 "studyparticipant" : [
 			{
-				   id : "1",
+				   id : "study_records",
 				   template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
-				   title : "Shared records:",
+				  
 				   active : false,
 				   position : "full",
 				   links : { "record" : "details" }
@@ -627,7 +626,7 @@ angular.module('portal')
 			{                        
 				  id : "details",
 				  template : "/views/shared/dashboardTiles/recorddetail/recorddetail.html",
-				  title : "Details",
+				
 				  active : false,
 				  position : "modal"			 
 			}   
@@ -636,7 +635,7 @@ angular.module('portal')
 	 			{
 	 			    id: "editor",
 	 			    title: "Plan Editor",
-	 			    template : "/views/members/dashboardTiles/viewconfig/viewconfig.html",
+	 			    template : "/views/shared/dashboardTiles/viewconfig/viewconfig.html",
 	 			    active : true,
 	 			    position : "small",
 	 			    setup : {
@@ -697,7 +696,7 @@ angular.module('portal')
 	      	 			{
 	      	 			    id: "editor",
 	      	 			    title: "Quantified Self",
-	      	 			    template : "/views/members/dashboardTiles/viewconfig/viewconfig.html",
+	      	 			    template : "/views/shared/dashboardTiles/viewconfig/viewconfig.html",
 	      	 			    active : true,
 	      	 			    position : "small",
 	      	 			    setup : {
@@ -713,22 +712,22 @@ angular.module('portal')
   	 	       {
   	 	    	   id : "newstudies",
   	 	    	   template : "/views/shared/dashboardTiles/flexiblestudies/flexiblestudies.html",
-  	 	    	   title : "New Studies",
+  	 	    	
   	 	    	   active : true,
   	 	    	   position : "small",
   	 	    	   setup : { properties : { }, fields : ["name"] }
   	 	       },
   	 	       {
   	 			     id: "researchnews",
-  	 			     title: "Research News",
+  	 			  
   	 			     template : "/views/shared/dashboardTiles/summary/summary.html",
   	 		         active : true,
   	 		         position : "small",
   	 		         setup : {
-  	 			         text : "Search for new health research publications.",
+  	 			         text : "dashboard.researchnews_text",
   	 		        	 icon : "/images/icons/info.png",
   	 		        	 link : "http://scholar.google.de/scholar?q=Health+study+publications",	        	 
-  	 		        	 button : "Search for News"
+  	 		        	 button : "dashboard.researchnews_btn"
   	 		         }
   	 			}  	 	      
   	 	       ],
@@ -737,10 +736,10 @@ angular.module('portal')
                 {
                 	id : "newrecords",
                 	template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
-                	title : "Newest records",
+                	
                 	active : true,
                 	position : "small",  	 			    	
-                	teaser : "There are no new records. Visit the records page to browser all of your records.",
+                	teaser : "dashboard.newrecords_teaser",
                 	setup : { properties : { "max-age" : 86400 * 31, "limit" : 7 } , fields : [ "ownerName", "created", "id", "name" ], allowBrowse : true}
                 },
                 /*
@@ -756,8 +755,8 @@ angular.module('portal')
                 */	 			       
                 {
                 	id: "myviews",
-                	title: "My Views",
-                	template : "/views/members/dashboardTiles/viewconfig/viewconfig.html",
+                
+                	template : "/views/shared/dashboardTiles/viewconfig/viewconfig.html",
                 	active : true,
                 	position : "small",
                 	setup : {	
@@ -779,8 +778,8 @@ angular.module('portal')
               },*/  	 			       
               {
             	  id: "myviews",
-            	  title: "Work Views",
-            	  template : "/views/members/dashboardTiles/viewconfig/viewconfig.html",
+            	
+            	  template : "/views/shared/dashboardTiles/viewconfig/viewconfig.html",
             	  active : true,
             	  position : "small",
             	  setup : {	

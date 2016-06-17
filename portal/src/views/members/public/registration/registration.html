@@ -39,6 +39,7 @@
 							    <select class="form-control" id="birthdayYear" name="birthdayYear" ng-model="registration.birthdayYear"><option ng-repeat="year in years">{{ year }}</option></select>
 							    </div>
 							  </formrow>							  
+							  <formrow myid="language" label="registration.language"><select class="form-control" id="language" ng-model="registration.language" ng-change="changeLanguage(registration.language);" ng-options="lang.value as lang.name | translate for lang in languages"></select></formrow>
 							  
 							  <formrow myid="address1" label="registration.address"><input type="text" class="form-control" id="address1" name="address1" translate translate-attr-placeholder="registration.address_line1" ng-model="registration.address1" required></formrow>
 							  <formrow myid="address2" label=""><input type="text" class="form-control" id="address2" name="address2" translate translate-attr-placeholder="registration.address_line2" ng-model="registration.address2"></formrow>

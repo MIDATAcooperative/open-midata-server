@@ -1,16 +1,16 @@
 <div ng-controller="HelpCtrl" class="autosize" ng-cloak>
   <div class="body">
     
-    <p>The menu above contains these links:</p>
+    <p translate="help_welcome.menu"></p>
     <ul>
-      <li><b>Me</b>: Your personal dashboard where you can place whatever functionality you need most.</li>
-      <li><b>Overview</b>: An overview over all functions provided by the MIDATA platform.</li>      
-      <li><b>My Data</b>: A list of all data records that MIDATA has stored about you.</li>
-      <li><b>Consents</b>: Manage data sharing with others.</li>
+      <li><b translate="help_welcome.menu_me"></b>: <span translate="help_welcome.menu_me_text"></span></li>
+      <li><b translate="help_welcome.menu_overview"></b>: <span translate="help_welcome.menu_overview_text"></span></li>      
+      <li><b translate="help_welcome.menu_my_data"></b>: <span translate="help_welcome.menu_my_data_text"></span></li>
+      <li><b translate="help_welcome.menu_consents"></b>: <span translate="help_welcome.menu_consents_text"></span></li>
     </ul>   
-    <p>In order to get started we recommend that you answer us some questions. We will preconfigure your account based on your answers.</p>
+    <p translate="help_welcome.answer_questions"></p>
   </div>
   <div class="footer center-block">
-    <a ui-sref="^.setupquestions" class="btn btn-primary">Answer Setup Questions Now</a>
+    <a ui-sref="^.setupquestions" class="btn btn-primary" translate="help_welcome.answer_btn"></a>
   </div>
 </div>

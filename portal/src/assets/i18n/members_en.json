@@ -2,13 +2,8 @@
   "member_login" : {
     "teaser": "MY DATA - OUR HEALTH!",
     "register_now" : "Register Now",
-    "sign_in" : "Sign in",
-    "email_address" : "Email address",
-    "password" : "Password",
-    "remember_me" : "Remember Me",
-    "sign_in_btn" : "Sign in",
-    "forgot_your_password" : "Forgot your password?"
-  },
+    "sign_in" : "Sign in"
+  },   
   
   "member_quickregistration" : {
     "sign_up" : "Sign up",
@@ -17,6 +12,64 @@
     "app_password" : "Password for app",
     "account_password" : "Account Password",
     "repeat_account_password" : "Repeat Account Password"
+  },
+  
+  "help_welcome" : {
+    "menu" : "The menu above contains these links:",
+    "menu_me" : "Me",
+    "menu_me_text" : "Your personal dashboard where you can place whatever functionality you need most.",
+    "menu_overview" : "Overview",
+    "menu_overview_text" : "An overview over all functions provided by the MIDATA platform.",      
+    "menu_my_data" : "My Data",
+    "menu_my_data_text" : "A list of all data records that MIDATA has stored about you.",
+    "menu_consents" : "Consents",
+    "menu_consents_text" : "Manage data sharing with others.",
+    "answer_questions" : "In order to get started we recommend that you answer us some questions. We will preconfigure your account based on your answers.",
+    "answer_btn" : "Answer Setup Questions Now"
+  },
+  
+  "help_setup" : {
+    "description" : "The answers to the following questions are only used to setup your account according to your needs.",
+    "question_tasks" : "Which of these general tasks do you plan to do with MIDATA?", 
+    "question_tasks_answer1" : "Manage your health records",
+    "question_tasks_answer2" : "Protocol data about yourself.",
+	"question_tasks_answer3" : "Compare yourself with others.",		 
+	"question_tasks_answer4" : "Do planning",
+    "question_qself" : "Are you interested in gathering quantified self data? If yes, which?", 
+    "question_qself_answer1" : "Steps / Activities",
+	"question_qself_answer2" : "Sleep",		 
+	"question_qself_answer3" : "Weight",
+	"question_qself_answer4" : "Water Consumption",
+	"question_qself_answer5" : "Nutrition",
+    "question_devices" : "Do use any of these devices?", 
+    "question_devices_answer1" : "Fitbit",
+	"question_devices_answer2" : "Jawbone",		 
+    "question_share" : "Do you plan to share some of your data with others?", 
+    "question_share_answer1" : "Family",
+	"question_share_answer2" : "Friends",		 		
+	"question_share_answer3" : "Doctor / Hospital",
+	"question_share_answer4" : "Research (Study participation)",
+	"question_share_answer5" : "Other people",
+    "come_back" : "You can always come back and change these settings by visiting the \"Help\" page.",
+    "done_btn" : "Done"
+  },
+  
+  "accountdata" : {
+     "midata_id" : "Midata ID:",
+     "birthday" : "Birthday:",
+     "change_btn" : "Change"
+  },
+  
+  "member_circles" : {
+    "number_available" : "Circles available:",
+    "empty" : "You do not have any circles.",
+    "add_btn" : "Add",
+    "manage_btn" : "Manage"
+  },
+  
+  "member_othercircles" : {
+    "number_available" : "Circles available:",
+    "empty" : "No MIDATA members share data with you."
   }
   
  

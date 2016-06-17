@@ -3,9 +3,9 @@
   <div ng-if="view.setup.icon" class="pull-left themeicon">
     <img ng-src="{{ view.setup.icon }}" >
   </div>		  
-  <p class="">{{ view.setup.text }}</p>
+  <p class="" translate="{{ view.setup.text }}"></p>
   </div>
    <div ng-if="view.setup.link" class="footer">			  
-	  <a ui-sref="{{ view.setup.link }}" class="btn btn-default">{{ view.setup.button }}</a>
+	  <a ui-sref="{{ view.setup.link }}" class="btn btn-default" translate="{{ view.setup.button }}"></a>
   </div>			  
 </div>

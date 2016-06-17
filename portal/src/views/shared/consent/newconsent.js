@@ -34,7 +34,7 @@ angular.module('portal')
 			.then(function(data) {
 				
 				$scope.consent = $scope.myform = data.data[0];				
-				views.setView("1", { aps : $state.params.consentId, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowRemove : false, allowAdd : false, type : "circles" });
+				views.setView("records_shared", { aps : $state.params.consentId, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowRemove : false, allowAdd : false, type : "circles" });
 
                 var role = ($scope.consent.type === "HEALTHCARE") ? "PROVIDER" : null;				
 				angular.forEach($scope.consent.authorized, function(p) {					
@@ -57,7 +57,7 @@ angular.module('portal')
 			});
 		} else {
 			$scope.consent = $scope.myform = { type : "CIRCLE", status : "ACTIVE", authorized : [] };
-			views.disableView("1");
+			views.disableView("records_shared");
 		}
 		
 		if ($state.params.authorize != null) {

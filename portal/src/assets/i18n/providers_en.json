@@ -1,0 +1,12 @@
+{
+  "provider_registration" : {
+    "sign_up" : "Healthcare Provider Sign up",
+    "provider" : "Healthcare Provider",
+    "user" : "User",
+    "name" : "Name"
+  },
+  
+  "provider_login" : {
+    "title" : "Healthcare Provider Login"
+  }
+}

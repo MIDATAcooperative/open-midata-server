@@ -12,7 +12,15 @@
    "navbar" : {
 	  "toggle_navigation": "Toggle navigation",
 	  "login" : "Login",
-	  "sign_up" : "Sign Up"
+	  "sign_up" : "Sign Up",
+	  "sign_out" : "Sign out",
+	  "me" : "Me",
+      "overview" : "Overview",            	
+	  "messages" : "Messages",				
+	  "my_data" : "My Data",				
+	  "consents" : "Consents",
+	  "research" : "Research",
+	  "help" : "Help"
    },
    
    "error" : {
@@ -77,11 +85,12 @@
      
      "exists" : {
        "member" : "A person with this email is already registered.",
+       "provider" : "A healthcare provider with this name already exists.",
+       "research" : "A research organisation with this name already exists.",
        "passcode" : "Please choose a different passcode!",
        "plugin" : "A plugin with the same name already exists."
      },
-     
-     
+          
      "blocked" : {
        "user" : "User is not allowed to log in. Contact support@midata.coop for help.",
        "participation" : "Member is not allowed to participate in study."
@@ -209,6 +218,12 @@
 	   "BLOCKED" : "Blocked",
 	   "DELETED" : "Deleted",
 	   "NEW" : "New"
+	 },
+	 "language" : {
+	   "EN" : "English",
+	   "DE" : "German",
+	   "IT" : "Italian",
+	   "FR" : "Frensh"
 	 }
    },
    
@@ -238,6 +253,7 @@
     "lastname" : "Surname",
     "gender" : "Gender",
     "birthday" : "Birthday",
+    "language" : "Preferred Language",
     "day" : "Day",
     "month" : "Month",
     "year" : "Year",
@@ -250,6 +266,15 @@
     "phone" : "Phone",
     "mobile_phone" : "Mobile Phone",
     "sign_up_btn" : "Sign Up"
+  },
+  
+  "login" : {
+    "email_address" : "Email address",
+    "password" : "Password",
+    "remember_me" : "Remember Me",
+    "sign_in_btn" : "Sign in",
+    "forgot_your_password" : "Forgot your password?",
+    "login_btn" : "Login"
   },
   
   "lostpw" : {
@@ -486,10 +511,95 @@
   },
   
   "records" : {
-    "title" : "My Data"
+    "title" : "My Data",
+    "share_instructions1" : "Please use the 'share' and 'unshare' buttons to select which records you want to share with consent ",
+    "share_instructions2" : "This consent currently shares data with ",
+    "share_instructions3" : "people.",
+    "delete_instructions1" : "In order to permanently ",
+    "delete_instructions2" : "delete",
+    "delete_instructions3" : "a record ",
+    "delete_instructions4" : "double-click",
+    "delete_instructions5" : "on the delete button to the right of the record.",
+	"delete_instructions6" : "In order to permanently delete all records of a certain category double click on the delete button to the right of the category.",
+	"shared_with" : "Shared With:",
+	"records_used_for_app" : "Records used for app",
+	"back_to_plugin" : "Back to Visualization",
+	"show" : "Show:",
+	"my_data" : "My Data",
+	"all_data" : "All Data",
+	"study" : "Study: {{name}}",
+	"shared" : "Shared by: {{name}}",
+	"just_name" : "{{name}}",
+	"share" : "share",
+	"unshare" : "unshare",
+	"delete" : "delete",
+	"empty" : "No available records found."
+			
   },
   
   "oauth2" : {
     "requesting_app" : "This application requests access:"
+  },
+  
+  "dashboard" : {
+    "help_welcome" : "Welcome to MIDATA",
+    "tasks" : "Tasks",
+    "myviews" : "My Views",
+    "mydata" : "My personal data",
+    "mydata_text" : "Manage your health data. Enter new data and visualize existing data.",
+	"social" : "Social",
+    "social_text" : "Share your data with friends. Communicate with people sharing your health situation. Motivate yourself by competition with others.",
+	"research" : "Research",
+	"research_text" : "Participate in studies. Inform yourself about ongoing research.",
+    "health" : "Health",
+ 	"health_text" : "Share data with your doctor. Search for health professionals.",
+    "help" : "Help",
+    "help_text" : "Get help about MIDATA functions",
+	"training" : "Training",
+	"training_text" : "Manage your personal training!",
+	"newrecords" : "Newest records added this month:",
+	"newrecords_teaser" : "There are no new records. Visit the records page to browser all of your records.",
+	"myaccount" : "My Account Data",
+    "newsharedrecords" : "New records shared with you",
+    "newsharedrecords_teaser" :  "Other MIDATA members may share their data with you.",		    
+    "circles" : "Member of Circles",
+    "circles_teaser" : "Ask others to add you to their circles.",
+	"circles2" : "Your Circles",
+	"circles2_teaser" : "Create Circles to share your data with others. Share with friends, family or others.",
+	"providers" : "Your Health Consents",
+	"providers_teaser" : "Search for healthcare providers and add them to your list in order to share data with them.",
+	"providersearch" : "Search for Health Providers",
+	"providersearch_text" : "Search function for healthcare providers.",
+	"hcrecords" : "Newest Records from your healthcare providers",
+	"records" : "Records",                      
+    "share" : "Share",
+    "details" : "Details",
+    "yourstudies" : "Studies you are involved:",
+	"yourstudies_teaser" : "If you want to participate in research configure your research settings. You will be contacted in this tile if you match a studies requirements.",
+	"newstudies" : "New Studies",
+	"researchnews" : "Research News",
+	"researchnews_text" : "Search for new health research publications.",
+	"researchnews_btn" : "Search for News",
+	"studysettings" : "My Research Settings",
+    "entercode" : "Join by participation code",
+	"records_shared" : "Records shared with this consent:",
+	"addusers" : "Add Users to Consent",
+	"shared_with_study" : "Shared Records:",
+	"patient_records" : "Records of this patient:",
+	"addtask" : "Add Task",
+	"group_records" : "Records of this group:",
+	"study_records" : "Shared records:",
+	"addmore" : "Add more",
+	"view_btn" : "View",
+	"install_btn" : "Install new plugin"
+   },
+  
+  
+  "spacesummary" : {
+    "records_to_view" : "Records to view.", 
+    "last_entry_at" : "Last entry at",
+    "no_entries_yet" : "No entries yet",     
+    "newest_entry_from" : "Newest entry from",
+    "view_btn" : "View"
   }
 }

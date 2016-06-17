@@ -1,0 +1,9 @@
+{
+  "developer_registration" : {
+    "sign_up" : "Developer Sign Up"
+  },
+  
+  "developer_login" : {
+    "title" : "Developer Login"
+  }
+}

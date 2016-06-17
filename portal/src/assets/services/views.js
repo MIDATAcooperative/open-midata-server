@@ -28,7 +28,7 @@ angular.module('services')
 	service.getView = function (id) {
 		var r = mapping[id];
 		if (r == null) {
-		   r = { active: false, setup:null, title:"no title", links:{}, dependend:[], order : 0 };
+		   r = { active: false, setup:null, title:"dashboard."+id, links:{}, dependend:[], order : 0 };
 		   mapping[id] = r;
 		} 
 		return r;
