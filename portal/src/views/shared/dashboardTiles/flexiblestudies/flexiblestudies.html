@@ -1,9 +1,9 @@
  <div class="ignore autosize" ng-controller="FlexibleStudiesCtrl">
   <loader busy="status.isBusy !== false">
-  <div class="body body-center text-center" ng-show="studies.length == 0">Empty</div>
+  <div class="body body-center text-center" ng-show="studies.length == 0" translate="flexiblestudies.empty"></div>
   <div ng-show="studies.length" class="body clearfix">   
      <div class="pull-left themeicon"><img src="/images/icons/research.png"></div>     
-     <p><span class="dashnumber">{{ studies.length }}</span> Studies found:</p>
+     <p><span class="dashnumber">{{ studies.length }}</span> <span translate="flexiblestudies.studies_found"></span></p>
    </div>
   
   <ul class="list-group" ng-show="studies.length > 0">

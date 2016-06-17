@@ -1,8 +1,8 @@
 <div class="ignore autosize" ng-controller="FlexibleRecordListCtrl">
     <loader busy="status.isBusy !== false">
-    <div ng-show="records.length" class="body"><span class="dashnumber">{{ records.length }}</span> Records available:</div>
-    <div class="body text-center" ng-show="records.length == 0">Empty</div>
-    <p ng-hide="records.length" class="body teaser">{{ view.teaser }}</p>
+    <div ng-show="records.length" class="body"><span class="dashnumber">{{ records.length }}</span> <span translate="flexiblerecords.records_available"></span></div>
+    <div class="body text-center" ng-show="records.length == 0" translate="flexiblerecords.empty"></div>
+    <p ng-hide="records.length" class="body teaser" translate="{{ view.teaser }}"></p>
     
     
     <ul class="list-group" ng-show="records.length > 0">
@@ -22,9 +22,9 @@
 	</ul>
 	
 	<div class="footer" ng-if="view.setup.allowBrowse || view.setup.allowAdd || view.setup.allowShare">
-	<a ui-sref="^.records" ng-if="view.setup.allowBrowse" class="btn btn-default">Browse Records</a>
-	<button ng-click="addRecords()" ng-if="view.setup.allowAdd" class="btn btn-primary">Add Records...</button>
-	<button ng-click="shareRecords()" ng-if="view.setup.allowShare" class="btn btn-primary">Share</button>
+	<a ui-sref="^.records" ng-if="view.setup.allowBrowse" class="btn btn-default" translate="flexiblerecords.browse_btn"></a>
+	<button ng-click="addRecords()" ng-if="view.setup.allowAdd" class="btn btn-primary" translate="flexiblerecords.add_btn"></button>
+	<button ng-click="shareRecords()" ng-if="view.setup.allowShare" class="btn btn-primary" translate="flexiblerecords.share_btn"></button>
 	</div>
 	</loader>
 </div>

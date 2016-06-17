@@ -70,7 +70,27 @@
   "member_othercircles" : {
     "number_available" : "Circles available:",
     "empty" : "No MIDATA members share data with you."
-  }
+  },
   
- 
+  "yourstudies" : {
+    "study" : "Study",
+    "status" : "Status",
+    "empty" : "You do not participate in any study."
+  },
+  
+  "entercode" : {
+    "title" : "Join a research study by entering a participation code.",
+    "description" : "Join a study by entering a code:",
+    "code" : "Participation Code",
+    "continue_btn" : "Continue"
+  },
+  
+  "providers" : {
+    "name" : "Name",
+	"status" : "Status",
+	"confirmation_date" : "Confirmation Date",
+    "confirm_btn" : "confirm",
+    "reject_btn" : "reject",
+    "empty" : "You do not have a registered contact to a healthcare provider." 
+  }
 }

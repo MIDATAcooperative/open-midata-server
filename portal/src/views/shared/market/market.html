@@ -15,7 +15,7 @@
 		</div>
 		
 		<div class="row" ng-cloak>		 		   
-		    <div class="col-sm-2" ng-repeat="tag in tags"><a class="btn btn-default btn-block" href="javascript:" ng-click="setTag(tag);">{{ tag }}</a></div>		    		
+		    <div class="col-sm-2" ng-repeat="tag in tags"><a class="btn btn-default btn-block" href="javascript:" ng-click="setTag(tag);" translate="{{ 'enum.tags.'+tag }}"></a></div>		    		
 		</div>
 		
 		<div class="page-header">
@@ -26,7 +26,7 @@
 		<div class="row" ng-cloak>
 			<div ng-class="{ 'col-md-6' : beta, 'col-md-12' : !beta }">
 			  <div class="panel panel-primary">
-				<div class="panel-heading">{{ tag || 'Available Plugins' }}</div>
+				<div class="panel-heading" translate="{{ 'enum.tags.'+(tag || 'Available') }}"></div>
 				<div class="panel-body">
 				<p ng-hide="visualizations.spotlighted.length" translate="market.no_spotlighted_plugins"></p>
 				<div class="media" ng-repeat="visualization in visualizations.spotlighted | filter : hasTag">

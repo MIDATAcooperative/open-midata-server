@@ -4,21 +4,20 @@
 	<table class="table table-hover">
 	  <thead>
 	    <tr>
-	      <th>Study</th>
-	      <th>Status</th>	      	     
+	      <th translate="yourstudies.study"></th>
+	      <th translate="yourstudies.status"></th>	      	     
 	    </tr>
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="study in results">
 	      <td><a ui-sref="^.studydetails({ studyId : study.study.$oid })">{{ study.studyName }}</a></td>	  
-	      <td>{{ study.pstatus }}</td>	      	         
+	      <td translate="{{ 'enum.studyparticipation.'+study.pstatus }}"></td>	      	         
 	    </tr>
 	  </tbody>
 	</table>
 	</div>
-	<p ng-show="results.length == 0">
-	  You do not participate in any study.
+	<p ng-show="results.length == 0" translate="yourstudies.empty">	  
 	</p>	
-	 <p ng-hide="results.length" class="body teaser">{{ view.teaser }}</p>
+	 <p ng-hide="results.length" class="body teaser" translate="{{ view.teaser }}"></p>
 	 </loader>
 </div>

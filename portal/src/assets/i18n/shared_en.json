@@ -115,7 +115,8 @@
      },
      
      "expired" : {
-       "token" : "Token has already expired. Please request a new one."
+       "token" : "Token has already expired. Please request a new one.",
+       "code" : "Participation code has expired."
      },
      
      "already_done" : {
@@ -224,6 +225,15 @@
 	   "DE" : "German",
 	   "IT" : "Italian",
 	   "FR" : "Frensh"
+	 },
+	 "tags" : {
+	   "Analysis" : "Analysis", 
+	   "Import" : "Import",
+	   "Planning" : "Planning",
+	   "Tools" : "Tools",
+	   "Fitbit" : "Fitbit",
+	   "Jawbone" : "Jawbone",
+	   "Available" : "Available Plugins" 
 	 }
    },
    
@@ -533,6 +543,7 @@
 	"share" : "share",
 	"unshare" : "unshare",
 	"delete" : "delete",
+	"delete_all_btn" : "delete all",
 	"empty" : "No available records found."
 			
   },
@@ -601,5 +612,18 @@
     "no_entries_yet" : "No entries yet",     
     "newest_entry_from" : "Newest entry from",
     "view_btn" : "View"
+  },
+  
+  "flexiblerecords" : {
+    "records_available" : "Records available:",
+    "empty" : "Empty",
+    "browse_btn" : "Browse Records",
+	"add_btn" : "Add Records...",
+	"share_btn" : "Share"
+  },
+  
+  "flexiblestudies" : {
+    "empty" : "Empty",
+    "studies_found" : "Studies found:"
   }
 }
