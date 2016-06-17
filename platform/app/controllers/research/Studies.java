@@ -148,7 +148,7 @@ public class Studies extends APIController {
 		   
 		 Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("executionStatus","participantSearchStatus","validationStatus","history","owner","groups"));
 
-		 if (study == null) return badRequest("Unknown Study");
+		 if (study == null) throw new BadRequestException("error.unknown.study", "Unknown Study");
 
 		 setAttachmentContentDisposition("study.zip");
 				 		 		
@@ -238,7 +238,7 @@ public class Studies extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result generateCodes(String id) throws JsonValidationException, InternalServerException {
+	public static Result generateCodes(String id) throws JsonValidationException, AppException {
        
        JsonNode json = request().body().asJson();
 		
@@ -258,9 +258,9 @@ public class Studies extends APIController {
 	   Date now = new Date();
 	   	   
 	   Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
-	   if (study == null) return badRequest("Study does not belong to organization.");
-	   if (study.validationStatus != StudyValidationStatus.VALIDATED) return badRequest("Study must be validated before.");
-	   if (study.participantSearchStatus == ParticipantSearchStatus.CLOSED) return badRequest("Study participant search already closed.");
+	   if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
+	   if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
+	   if (study.participantSearchStatus == ParticipantSearchStatus.CLOSED) throw new BadRequestException("error.closed.study", "Study participant search already closed.");
 	   	   	   
 	   for (int num=1 ; num <= count; num++) {
 		  ParticipationCode code = new ParticipationCode();
@@ -294,13 +294,13 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result listCodes(String id) throws JsonValidationException, InternalServerException {
+	public static Result listCodes(String id) throws JsonValidationException, AppException {
 	   ObjectId userId = new ObjectId(request().username());
 	   ObjectId owner = PortalSessionToken.session().getOrg();
 	   ObjectId studyid = new ObjectId(id);
 	   
 	   Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
-	   if (study == null) return badRequest("Study does not belong to organization.");
+	   if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 	   if (study.validationStatus != StudyValidationStatus.VALIDATED) return statusWarning("study_not_validated", "Study must be validated before.");
 	   if (study.participantSearchStatus == ParticipantSearchStatus.CLOSED) return statusWarning("participant_search_closed", "Study participant search already closed.");
 	 
@@ -318,7 +318,7 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result startValidation(String id) throws JsonValidationException, InternalServerException {
+	public static Result startValidation(String id) throws JsonValidationException, AppException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
@@ -326,7 +326,7 @@ public class Studies extends APIController {
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history","groups","recordQuery"));
 		
-		if (study == null) return badRequest("Study does not belong to organization.");
+		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		if (study.validationStatus == StudyValidationStatus.VALIDATED) return badRequest("Study has already been validated.");
 		if (study.validationStatus == StudyValidationStatus.VALIDATION) return badRequest("Validation is already in progress.");
 		
@@ -349,7 +349,7 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result startParticipantSearch(String id) throws JsonValidationException, InternalServerException {
+	public static Result startParticipantSearch(String id) throws JsonValidationException, AppException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
@@ -357,8 +357,8 @@ public class Studies extends APIController {
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
 		
-		if (study == null) return badRequest("Study does not belong to organization.");
-		if (study.validationStatus != StudyValidationStatus.VALIDATED) return badRequest("Study must be validated before.");
+		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
+		if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
 		if (study.executionStatus != StudyExecutionStatus.PRE) return badRequest("Participants can only be searched as long as study has not stared.");
 		if (study.participantSearchStatus != ParticipantSearchStatus.PRE && study.participantSearchStatus != ParticipantSearchStatus.CLOSED) return badRequest("Study participant search already started.");
 		
@@ -377,7 +377,7 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result endParticipantSearch(String id) throws JsonValidationException, InternalServerException {
+	public static Result endParticipantSearch(String id) throws JsonValidationException, AppException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
@@ -385,9 +385,9 @@ public class Studies extends APIController {
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
 		
-		if (study == null) return badRequest("Study does not belong to organization.");
-		if (study.validationStatus != StudyValidationStatus.VALIDATED) return badRequest("Study must be validated before.");
-		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return badRequest("Study is not searching for participants.");
+		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
+		if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
+		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new BadRequestException("error.closed.study", "Study participant search already closed.");
 		
 		study.setParticipantSearchStatus(ParticipantSearchStatus.CLOSED);
 		study.addHistory(new History(EventType.PARTICIPANT_SEARCH_CLOSED, user, null));
@@ -404,7 +404,7 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result startExecution(String id) throws JsonValidationException, InternalServerException {
+	public static Result startExecution(String id) throws JsonValidationException, AppException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
@@ -412,10 +412,10 @@ public class Studies extends APIController {
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
 		
-		if (study == null) return badRequest("Study does not belong to organization.");
-		if (study.validationStatus != StudyValidationStatus.VALIDATED) return badRequest("Study must be validated before.");
+		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
+		if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
 		if (study.participantSearchStatus != ParticipantSearchStatus.CLOSED) return badRequest("Participant search must be closed before.");
-		if (study.executionStatus != StudyExecutionStatus.PRE) return badRequest("Wrong study execution status.");
+		if (study.executionStatus != StudyExecutionStatus.PRE) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 		
 		study.setExecutionStatus(StudyExecutionStatus.RUNNING);
 		study.addHistory(new History(EventType.STUDY_STARTED, user, null));
@@ -432,7 +432,7 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result finishExecution(String id) throws JsonValidationException, InternalServerException {
+	public static Result finishExecution(String id) throws JsonValidationException, AppException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
@@ -440,9 +440,9 @@ public class Studies extends APIController {
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
 		
-		if (study == null) return badRequest("Study does not belong to organization.");
-		if (study.validationStatus != StudyValidationStatus.VALIDATED) return badRequest("Study must be validated before.");		
-		if (study.executionStatus != StudyExecutionStatus.RUNNING) return badRequest("Wrong study execution status.");
+		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
+		if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");		
+		if (study.executionStatus != StudyExecutionStatus.RUNNING) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 		
 		study.setExecutionStatus(StudyExecutionStatus.FINISHED);
 		study.addHistory(new History(EventType.STUDY_FINISHED, user, null));
@@ -467,7 +467,7 @@ public class Studies extends APIController {
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
 		
-		if (study == null) return badRequest("Study does not belong to organization.");			
+		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");		
 		if (study.executionStatus != StudyExecutionStatus.RUNNING) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 		
 		study.setExecutionStatus(StudyExecutionStatus.ABORTED);
@@ -491,9 +491,9 @@ public class Studies extends APIController {
 		ObjectId studyid = new ObjectId(id);
 		
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history", "name"));
-		if (study == null) return badRequest("Study does not belong to organization.");
-		if (study.validationStatus != StudyValidationStatus.VALIDATED) return badRequest("Study must be validated before.");
-		if (study.executionStatus != StudyExecutionStatus.RUNNING) return badRequest("Wrong study execution status.");
+		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
+		if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
+		if (study.executionStatus != StudyExecutionStatus.RUNNING) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 		
 		StudyRelated consent = StudyRelated.getByGroupAndStudy(group, studyid, Sets.create("authorized"));
 		
@@ -539,9 +539,9 @@ public class Studies extends APIController {
 		ObjectId studyid = new ObjectId(id);
 		
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history", "name"));
-		if (study == null) return badRequest("Study does not belong to organization.");
-		if (study.validationStatus != StudyValidationStatus.VALIDATED) return badRequest("Study must be validated before.");
-		if (study.executionStatus != StudyExecutionStatus.RUNNING) return badRequest("Wrong study execution status.");
+		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
+		if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
+		if (study.executionStatus != StudyExecutionStatus.RUNNING) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 		
 		// validate json
 		JsonNode json = request().body().asJson();	
@@ -580,13 +580,13 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result listParticipants(String id) throws JsonValidationException, InternalServerException {
+	public static Result listParticipants(String id) throws JsonValidationException, AppException {
 	   ObjectId userId = new ObjectId(request().username());
 	   ObjectId owner = PortalSessionToken.session().getOrg();
 	   ObjectId studyid = new ObjectId(id);
 	   
 	   Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
-	   if (study == null) return badRequest("Study does not belong to organization.");
+	   if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 	   
        Set<String> fields = Sets.create("ownerName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth"); 
 	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, fields);
@@ -605,21 +605,21 @@ public class Studies extends APIController {
 	 */
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result getParticipant(String studyidstr, String partidstr) throws JsonValidationException, InternalServerException {
+	public static Result getParticipant(String studyidstr, String partidstr) throws JsonValidationException, AppException {
 	   //ObjectId userId = new ObjectId(request().username());	
 	   ObjectId owner = PortalSessionToken.session().getOrg();
 	   ObjectId studyId = new ObjectId(studyidstr);
 	   ObjectId partId = new ObjectId(partidstr);
 	   	   
 	   Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords"));
-	   if (study == null) return badRequest("Study does not belong to organization");
+	   if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 	   	   
 	   Set<String> participationFields = Sets.create("pstatus", "status", "group", "history","ownerName", "gender", "country", "yearOfBirth", "owner"); 
 	   StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, participationFields);
-	   if (participation == null) return badRequest("Member does not participate in study");
+	   if (participation == null) throw new BadRequestException("error.unknown.participant", "Member does not participate in study");
 	   if (participation.pstatus == ParticipationStatus.CODE || 
 		   participation.pstatus == ParticipationStatus.MATCH || 
-		   participation.pstatus == ParticipationStatus.MEMBER_REJECTED) return badRequest("Member does not participate in study");
+		   participation.pstatus == ParticipationStatus.MEMBER_REJECTED) throw new BadRequestException("error.unknown.participant", "Member does not participate in study");
 	   
 	   if (study.requiredInformation != InformationType.DEMOGRAPHIC) { participation.owner = null; }
 	   
@@ -646,7 +646,7 @@ public class Studies extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result approveParticipation(String id) throws JsonValidationException, InternalServerException {
+	public static Result approveParticipation(String id) throws JsonValidationException, AppException {
 		JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "member");
@@ -661,9 +661,9 @@ public class Studies extends APIController {
 		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("pstatus", "history", "memberName"));		
 		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
-		if (study == null) return badRequest("Study does not exist.");		
-		if (participation == null) return badRequest("Member is not allowed to participate in study.");		
-		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return badRequest("Study is not searching for participants anymore.");
+		if (study == null) throw new BadRequestException("error.unknown.study", "Unknown Study");	
+		if (participation == null) throw new BadRequestException("error.unknown.participant", "Member does not participate in study");	
+		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new BadRequestException("error.closed.study", "Study participant search already closed.");
 		if (participation.pstatus != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
 		
 		participation.setPStatus(ParticipationStatus.ACCEPTED);
@@ -697,9 +697,9 @@ public class Studies extends APIController {
 		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("pstatus", "history", "memberName", "owner", "authorized"));		
 		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
-		if (study == null) return badRequest("Study does not exist.");		
-		if (participation == null) return badRequest("Member is not allowed to participate in study.");		
-		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) return badRequest("Study is not searching for participants anymore.");
+		if (study == null) throw new BadRequestException("error.unknown.study", "Unknown Study");	
+		if (participation == null) throw new BadRequestException("error.unknown.participant", "Member does not participate in study");	
+		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new BadRequestException("error.closed.study", "Study participant search already closed.");
 		if (participation.pstatus != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
 		
 		participation.setPStatus(ParticipationStatus.RESEARCH_REJECTED);
@@ -720,7 +720,7 @@ public class Studies extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result updateParticipation(String id) throws JsonValidationException, InternalServerException {
+	public static Result updateParticipation(String id) throws JsonValidationException, AppException {
 		JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "member", "group");
@@ -735,8 +735,8 @@ public class Studies extends APIController {
 		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("pstatus", "history", "memberName"));		
 		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
-		if (study == null) return badRequest("Study does not exist.");		
-		if (participation == null) return badRequest("Member is not allowed to participate in study.");		
+		if (study == null) throw new BadRequestException("error.unknown.study", "Unknown Study");
+		if (participation == null) throw new BadRequestException("error.unknown.participant", "Member does not participate in study");	
 		if (study.executionStatus != StudyExecutionStatus.PRE) return badRequest("Study is already running.");
 						
 		participation.group = JsonValidation.getString(json, "group");
@@ -749,14 +749,14 @@ public class Studies extends APIController {
 	
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result getRequiredInformationSetup(String id) throws JsonValidationException, InternalServerException {
+	public static Result getRequiredInformationSetup(String id) throws JsonValidationException, AppException {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId owner = PortalSessionToken.session().getOrg();
 		ObjectId studyid = new ObjectId(id);
 			
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "requiredInformation", "assistance"));
 		
-		if (study == null) return badRequest("Study does not belong to organization.");	    
+		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");  
 		
 		ObjectNode result = Json.newObject();
 		result.put("identity", study.requiredInformation.toString());
@@ -767,7 +767,7 @@ public class Studies extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(ResearchSecured.class)
-	public static Result setRequiredInformationSetup(String id) throws JsonValidationException, InternalServerException {
+	public static Result setRequiredInformationSetup(String id) throws JsonValidationException, AppException {
         JsonNode json = request().body().asJson();
 		
 		JsonValidation.validate(json, "identity", "assistance");
@@ -782,7 +782,7 @@ public class Studies extends APIController {
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history", "requiredInformation"));
 			
-		if (study == null) return badRequest("Study does not belong to organization.");
+		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		if (study.validationStatus != StudyValidationStatus.DRAFT) return badRequest("Setup can only be changed as long as study is in draft phase.");
         				
 		study.setRequiredInformation(inf);
@@ -807,7 +807,7 @@ public class Studies extends APIController {
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history", "requiredInformation"));
 			
-		if (study == null) return badRequest("Study does not belong to organization.");
+		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		if (study.validationStatus != StudyValidationStatus.DRAFT) return badRequest("Setup can only be changed as long as study is in draft phase.");
         				
 		if (json.has("groups")) {
@@ -850,10 +850,10 @@ public class Studies extends APIController {
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
 		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
 		
-		if (study == null) return badRequest("Study does not belong to organization.");
+		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		//if (study.validationStatus != StudyValidationStatus.VALIDATED) return badRequest("Study must be validated before.");
 		//if (study.participantSearchStatus != ParticipantSearchStatus.CLOSED) return badRequest("Participant search must be closed before.");
-		if (study.executionStatus != StudyExecutionStatus.PRE) return badRequest("Wrong study execution status.");
+		if (study.executionStatus != StudyExecutionStatus.PRE) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 	
 		Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(study._id, Sets.create("_id", "owner"));
 		for (StudyParticipation part : participants) {

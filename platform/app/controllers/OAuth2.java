@@ -158,24 +158,24 @@ public class OAuth2 extends Controller {
     				
     	    // Validate Mobile App	
     		Plugin app = Plugin.getByFilename(client_id, Sets.create("type", "name", "secret"));
-    		if (app == null) return badRequest("Unknown app");		
-    		if (!app.type.equals("mobile")) return internalServerError("Wrong app type");
+    		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");		
+    		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
     		
     		appInstance = MobileAppInstance.getById(tk.appInstanceId, Sets.create("owner", "applicationId", "status", "passcode"));
     		phrase = tk.passphrase;
     		obj.put("state", tk.state);
-        } else return badRequest("Unknown grant_type");
+        } else throw new BadRequestException("error.internal", "Unknown grant_type");
                				
 		if (appInstance == null) throw new NullPointerException();									
 			
-		if (appInstance.passcode != null && !User.authenticationValid(phrase, appInstance.passcode)) return badRequest("Wrong password.");
+		if (appInstance.passcode != null && !User.authenticationValid(phrase, appInstance.passcode)) throw new BadRequestException("error.invalid.credentials", "Wrong password.");
 		//	if (!verifyAppInstance(appInstance, user._id, app._id)) return badRequest("Access denied");
 		KeyManager.instance.unlock(appInstance._id, phrase);
 		meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
 			
 		//}
 				
-		if (!phrase.equals(meta.get("phrase"))) return internalServerError("Internal error while validating consent");
+		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
 						
 		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis()); 
         MobileAppToken refresh = new MobileAppToken(appInstance.applicationId, appInstance._id, appInstance.owner, phrase, System.currentTimeMillis());

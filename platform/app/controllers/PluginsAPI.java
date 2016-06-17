@@ -204,7 +204,7 @@ public class PluginsAPI extends APIController {
 		// decrypt authToken 
 		SpaceToken spaceToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
 		if (spaceToken == null) {
-			return badRequest("Invalid authToken.");
+			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 		Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));
 		String name = JsonValidation.getString(json, "name");

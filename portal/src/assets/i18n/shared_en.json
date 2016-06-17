@@ -35,6 +35,7 @@
        "action" : "You are not authorized to do this action",
        "fields" : "You are not authorized to query provided fields",
        "account" : "You are not authorized to access this account",
+       "study" : "You are not authorized to access this study.",
        "not_plugin_owner" : "This is not your plugin."      
      },
           
@@ -98,6 +99,10 @@
      
      "closed" : {
        "study" : "Study not searching for members."
+     },
+     
+     "notvalidated" : {
+       "study" : "Study must be validated before."
      },
      
      "tooshort" : {
