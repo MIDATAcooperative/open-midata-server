@@ -24,7 +24,7 @@ class Plugins(Product):
 		Command.execute('for f in *; do cd $f; [ -e "bower.json" ] && bower install; cd ..; done', self.apps)
 		print 'Installing Plugins...'		
 		Command.execute('for f in *; do cd $f; [ -e "package.json" ] && npm install; cd ..; done', self.plugins)
-		Command.execute('for f in *; do cd $f; [ -e "bower.json" ] && bower install; cd ..; done', self.plugins)						
+		Command.execute('for f in *; do cd $f; [ -e "bower.json" ] && bower update; cd ..; done', self.plugins)						
 		print 'Building Apps...'		
 		Command.execute('for f in *; do cd $f; [ -e "Gruntfile.js" ] && grunt build; cd ..; done', self.apps)
 		print 'Building Plugins...'		
