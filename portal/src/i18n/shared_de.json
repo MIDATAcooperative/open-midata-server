@@ -3,10 +3,6 @@
 
     "footer" : {
         "copyright" : "(c) 2015-2016 ETH Zürich",
-
-        // TODO CHANGED
-        // OLD: All Midata Portals:
-        // NEW: Midata Portals:
         "portals" : "Midata Portale:",
         "for_members" : "Für Mitglieder der Genossenschaft",
         "for_researchers" : "Für Forschungseinrichtungen",
@@ -16,31 +12,32 @@
 
     "navbar" : {
         "toggle_navigation" : "Navigation an/aus",
-
-        // TODO CHANGED
-        // OLD: Lets Login
-        // NEW: Login
-        "login" : "Lasst uns Einloggen",
+        "login" : "Einloggen",
         "sign_up" : "Registrieren",
 
         // TODO NEW: Sign out
         "sign_out" : "Sign out",
-        "me" : "Ich",
-        "overview" : "Übersicht",
-        "messages" : "Nachrichten",
+
+        // TODO NEW: Me
+        "me" : "Me",
+
+        // TODO NEW: Overview
+        "overview" : "Overview",
+
+        // TODO NEW: Messages
+        "messages" : "Messages",
+
+        // TODO NEW: My Data
         "my_data" : "My Data",
 
-        // TODO CHANGED
-        // OLD: Consents
-        // NEW: All Consents
-        // TODO CHANGED
-        // OLD: All Consents
-        // NEW: Consents
+        // TODO NEW: Consents
         "consents" : "Consents",
 
         // TODO NEW: Research
         "research" : "Research",
-        "help" : "Hilfe"
+
+        // TODO NEW: Help
+        "help" : "Help"
     },
 
     "error" : {

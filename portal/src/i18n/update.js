@@ -1,8 +1,7 @@
 fs = require('fs');
 jsonminify = require("jsonminify");
 
-var files = ["shared"];
-var languages = ["de"];
+var files = ["shared", "admins", "developers", "members", "providers", "researchers"];
 
 function prepare(name, language) {
 	return {
@@ -17,23 +16,34 @@ function prepare(name, language) {
 
 function load(info) {
 	var done = 0;
-	fs.readFile(info.nameSrc, 'utf8', function (err,data) {		  
+	fs.readFile(info.nameSrc, 'utf8', function (err,data) {	
+	   if (err) {
+		   console.log("file: "+info.nameSrc+" error:"+err);
+	   }
 	   info.src.text = data.split("\n");	 
 	   info.src.json = JSON.parse(JSON.minify(data));
 	   done++;
-	   if (done == 3) process(info);
+	   if (done == 3) doprocess(info);
 	});
 	fs.readFile(info.nameTarget, 'utf8', function(err,data) {
-	   info.target.text = data.split("\n");
-	   info.target.json = JSON.parse(JSON.minify(data));
+	   if (err) {
+		   console.log("file: "+info.nameTarget+" error:"+err);
+	   } 		   
+	 
+	   info.target.text = (data || "").split("\n");
+	   info.target.json = JSON.parse(JSON.minify(data || '{ "a" : "b" }'));
+	   
 	   done++;
-	   if (done == 3) process(info);
+	   if (done == 3) doprocess(info);
 	});
 	fs.readFile(info.nameRef, 'utf8', function(err,data) {
+	   if (err) {
+		   console.log("file: "+info.nameRef+" error:"+err);
+	   }
 	   info.ref.text = (data || "").split("\n");
-	   info.ref.json = JSON.parse(JSON.minify(data || "{}"));
+	   info.ref.json = JSON.parse(JSON.minify(data || '{ "a" : "b" }'));
 	   done++;
-	   if (done == 3) process(info);
+	   if (done == 3) doprocess(info);
 	});
 }
 
@@ -99,8 +109,12 @@ function fetch(part, path) {
   return r;
 }
 
+function esc(str) {
+	return str.replace(/"/g,'\\"');
+}
+
  
-function process(info) {
+function doprocess(info) {
 	var output = [];
 	var comments = {};
 	var wsIdx = 4;
@@ -137,33 +151,33 @@ function process(info) {
 		  if (!targetVal) {		
 			  output.push("");
 			  output.push(spaces(wsIdx)+"// TODO NEW: "+srcVal);
-			  output.push(spaces(wsIdx)+'"'+srcLine.key+'" : "'+srcVal+'"'+(srcLine.komma ? "," : ""));
+			  output.push(spaces(wsIdx)+'"'+srcLine.key+'" : "'+esc(srcVal)+'"'+(srcLine.komma ? "," : ""));
 		  } else if (srcVal === refVal) {
 			  addcmt(srcLine.full, targetVal != srcVal);
-			  output.push(spaces(wsIdx)+'"'+srcLine.key+'" : "'+targetVal+'"'+(srcLine.komma ? "," : ""));
+			  output.push(spaces(wsIdx)+'"'+srcLine.key+'" : "'+esc(targetVal)+'"'+(srcLine.komma ? "," : ""));
 		  } else {
 			  addcmt(srcLine.full);
 			  output.push("");
 			  output.push(spaces(wsIdx)+"// TODO CHANGED");
 			  output.push(spaces(wsIdx)+"// OLD: "+refVal);
 			  output.push(spaces(wsIdx)+"// NEW: "+srcVal);
-			  output.push(spaces(wsIdx)+'"'+srcLine.key+'" : "'+targetVal+'"'+(srcLine.komma ? "," : ""));
+			  output.push(spaces(wsIdx)+'"'+srcLine.key+'" : "'+esc(targetVal)+'"'+(srcLine.komma ? "," : ""));
 		  }
 		}
 		srcLine = nextLine(info.src);	
 	} while (srcLine.type !== 0);
-	output.push("}");		
-	console.log(output);	
+	output.push("}");			
 	
 	fs.writeFileSync(info.nameTarget, output.join("\n"));
 	fs.writeFileSync(info.nameRef, info.src.text.join("\n"));
+	console.log("done: "+info.nameTarget);
 }
 
-
+var languages = process.argv.slice(2);
+console.log(languages);
 for (var i=0;i<files.length;i++) {
 	for (var j=0;j<languages.length;j++) {
-		var p = prepare(files[i], languages[j]);
-		console.log(p);
+		var p = prepare(files[i], languages[j]);		
 		load(p);
 	}
 }

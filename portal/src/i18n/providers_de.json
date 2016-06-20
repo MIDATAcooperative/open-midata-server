@@ -1,2 +1,23 @@
 {
+
+    "provider_registration" : {
+
+        // TODO NEW: Healthcare Provider Sign up
+        "sign_up" : "Healthcare Provider Sign up",
+
+        // TODO NEW: Healthcare Provider
+        "provider" : "Healthcare Provider",
+
+        // TODO NEW: User
+        "user" : "User",
+
+        // TODO NEW: Name
+        "name" : "Name"
+    },
+
+    "provider_login" : {
+
+        // TODO NEW: Healthcare Provider Login
+        "title" : "Healthcare Provider Login"
+    }
 }

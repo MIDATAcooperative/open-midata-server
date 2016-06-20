@@ -100,12 +100,19 @@ module.exports = function(grunt) {
     copy: {
       main: {    
     	files : [
-    	 { expand : true, cwd: 'src/', src: '**/*.html', dest: 'dest/' },
-    	 { expand : true, flatten:true , cwd: 'src/', src: '**/*.json', dest: 'dest/i18n/' },
+    	 { expand : true, cwd: 'src/', src: '**/*.html', dest: 'dest/' },    	 
     	 { expand : true, cwd: 'src/assets/images/', src : '**/*', dest : 'dest/images' },
     	 { expand : true, flatten:true, cwd: 'dest/components/', src: ['**/*.ttf','**/*.woff','**/*.woff2'], dest: 'dest/fonts' }
         ]
       }
+    },
+    
+    jsonmin : {
+    	main: {    
+        	files : [        	
+        	   { expand : true, flatten:true , cwd: 'src/', src: '**/*.json', dest: 'dest/i18n/' },        	
+            ]
+        }	
     },
     
     // Concat javascript files
@@ -212,6 +219,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-ng-annotate');
   grunt.loadNpmTasks('grunt-ng-constant');
   grunt.loadNpmTasks('grunt-usemin');
+  grunt.loadNpmTasks('grunt-jsonmin');
   grunt.loadNpmTasks('grunt-env');
   grunt.loadNpmTasks('grunt-preprocess');
   //grunt.loadNpmTasks('connect-livereload');
@@ -219,7 +227,7 @@ module.exports = function(grunt) {
   // Default task(s).
   grunt.registerTask('default', ['deploy']);
   grunt.registerTask('webserver', ['connect', 'watch']);
-  grunt.registerTask('bundle', [ 'copy', 'preprocess', 'jshint', 'concat', 'less' ]);
+  grunt.registerTask('bundle', [ 'copy', 'jsonmin', 'preprocess', 'jshint', 'concat', 'less' ]);
   grunt.registerTask('build', [
                                'ngAnnotate',
                                'useminPrepare',

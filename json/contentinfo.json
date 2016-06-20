@@ -98,7 +98,7 @@
 {"_id":{"$oid":"569915fc6281a61a232ece2e"},"content":"TestScript","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop TestScript","label":{"en":"TestScript"}}
 {"_id":{"$oid":"569915fc6281a61a232ece2f"},"content":"ValueSet","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop ValueSet","label":{"en":"ValueSet"}}
 {"_id":{"$oid":"569915fc6281a61a232ece30"},"content":"VisionPrescription","security":"HIGH","group":"care","defaultCode":"http://midata.coop VisionPrescription","label":{"en":"VisionPrescription"}}
-{"_id":{"$oid":"5703b84caed6451f597570da"},"content":"activities/steps","defaultCode":"http://midata.coop activities/steps","security":"MEDIUM","label":{"en":"Steps"}}
+{"_id":{"$oid":"5703b84caed6451f597570da"},"content":"activities/steps","defaultCode":"http://midata.coop activities/steps","security":"MEDIUM","label":{"de":"Schritte","en":"Steps"}}
 {"_id":{"$oid":"5703b84caed6451f597570db"},"content":"sleep/efficiency","group":"sleep","defaultCode":"http://midata.coop sleep/efficiency","security":"MEDIUM","label":{"en":"Efficiency"}}
 {"_id":{"$oid":"5703b84caed6451f597570dc"},"content":"diary","group":"diary","defaultCode":"http://midata.coop diary","security":"MEDIUM","label":{"en":"Diary"}}
 {"_id":{"$oid":"5703b84caed6451f597570dd"},"content":"body/weight","defaultCode":"http://loinc.org 3141-9","security":"MEDIUM","label":{"en":"Body Weight"}}

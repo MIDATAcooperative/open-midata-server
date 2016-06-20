@@ -1,4 +1,4 @@
-{"_id":{"$oid":"55ae5a08f351efda91eadc7c"},"system":"v1","name":"all","label":{"en":"Personal Data"},"parent":null}
+{"_id":{"$oid":"55ae5a08f351efda91eadc7c"},"system":"v1","name":"all","label":{"de":"Persönliche Daten","en":"Personal Data"}}
 {"_id":{"$oid":"55ae5a08f351efda91eadc7d"},"system":"v1","name":"lifestyle","label":{"en":"Lifestyle"},"parent":"all"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc7e"},"system":"v1","name":"nutrition","label":{"en":"Nutrition"},"contents":["food/water","food/calories-in"],"parent":"lifestyle"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc7f"},"system":"v1","name":"mood","label":{"en":"Mood"},"contents":["subjective-condition"],"parent":"lifestyle"}
@@ -29,7 +29,7 @@
 {"_id":{"$oid":"5718f43aaed645098e8cee28"},"system":"v1","name":"activities/minutes","label":{"en":"Time-Info about Activities"},"parent":"activities","contents":["activities/minutes-very-active","activities/minutes-fairly-active","activities/minutes-lightly-active","activities/minutes-sedentary"]}
 {"_id":{"$oid":"5718f43aaed645098e8cee29"},"system":"v1","name":"movement/height","label":{"en":"Vertical Movement"},"parent":"activities","contents":["activities/elevation","activities/floors"]}
 {"_id":{"$oid":"5718f577aed645098e8cee2a"},"system":"v1","name":"body/height","label":{"en":"Height"},"parent":"qself","contents":["body/height"]}
-{"_id":{"$oid":"5718f577aed645098e8cee2b"},"system":"v1","name":"body/weight","label":{"en":"Body Weight"},"parent":"qself","contents":["body/weight"]}
+{"_id":{"$oid":"5718f577aed645098e8cee2b"},"system":"v1","name":"body/weight","label":{"de":"Gewicht","en":"Body Weight"},"parent":"qself","contents":["body/weight"]}
 {"_id":{"$oid":"5718f577aed645098e8cee2c"},"system":"v1","name":"user-observation","label":{"en":"User Observations"},"parent":"qself","contents":["user-observation"]}
 {"_id":{"$oid":"5719d3d0aed64509b3d0930b"},"system":"v1","name":"body/bmi","label":{"en":"BMI and Fat"},"parent":"qself","contents":["body/bmi","body/fat"]}
 {"_id":{"$oid":"5719d3d0aed64509b3d0930c"},"system":"v1","name":"activities/heartrate","label":{"en":"Heart Rate"},"parent":"qself","contents":["activities/heartrate"]}

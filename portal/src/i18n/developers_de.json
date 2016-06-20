@@ -1,2 +1,14 @@
 {
+
+    "developer_registration" : {
+
+        // TODO NEW: Developer Sign Up
+        "sign_up" : "Developer Sign Up"
+    },
+
+    "developer_login" : {
+
+        // TODO NEW: Developer Login
+        "title" : "Developer Login"
+    }
 }

@@ -13,11 +13,13 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
      .useLoader('$translatePartialLoader', {
         urlTemplate: '/i18n/{part}_{lang}.json'
       })   
-     .registerAvailableLanguageKeys(['en', 'de'], {
+     .registerAvailableLanguageKeys(['en', 'de', 'fr', 'it'], {
        'en_*': 'en',
-       'de_*': 'de'
+       'de_*': 'de',
+       'fr_*': 'fr',
+       'it_*': 'it'
      })
-     //.fallbackLanguage('en')
+     .fallbackLanguage('en')
      .determinePreferredLanguage();
    
    $stateProvider

@@ -1,2 +1,8 @@
 {
+
+    "admin_address" : {
+
+        // TODO NEW: Member Address
+        "title" : "Member Address"
+    }
 }
