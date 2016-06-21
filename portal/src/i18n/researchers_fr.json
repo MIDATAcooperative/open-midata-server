@@ -1,0 +1,26 @@
+{
+
+    "researcher_registration" : {
+
+        // TODO NEW: Research Sign up
+        "sign_up" : "Research Sign up",
+
+        // TODO NEW: Research Organization
+        "research_organization" : "Research Organization",
+
+        // TODO NEW: Name
+        "name" : "Name",
+
+        // TODO NEW: Description
+        "description" : "Description",
+
+        // TODO NEW: Research User
+        "research_user" : "Research User"
+    },
+
+    "researcher_login" : {
+
+        // TODO NEW: Research Login
+        "title" : "Research Login"
+    }
+}

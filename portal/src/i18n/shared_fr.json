@@ -2,18 +2,36 @@
 
 
     "footer" : {
+
+        // TODO NEW: (c) 2015-2016 ETH Zürich
         "copyright" : "(c) 2015-2016 ETH Zürich",
-        "portals" : "Midata Portale:",
-        "for_members" : "Für Mitglieder der Genossenschaft",
-        "for_researchers" : "Für Forschungseinrichtungen",
-        "for_providers" : "Für Ärtze",
-        "for_developers" : "Für Entwickler"
+
+        // TODO NEW: Midata Portals:
+        "portals" : "Midata Portals:",
+
+        // TODO NEW: For Members of the Cooperative
+        "for_members" : "For Members of the Cooperative",
+
+        // TODO NEW: For Research Organizations
+        "for_researchers" : "For Research Organizations",
+
+        // TODO NEW: For Healthcare Providers
+        "for_providers" : "For Healthcare Providers",
+
+        // TODO NEW: For Developers
+        "for_developers" : "For Developers"
     },
 
     "navbar" : {
-        "toggle_navigation" : "Navigation an/aus",
-        "login" : "Einloggen",
-        "sign_up" : "Registrieren",
+
+        // TODO NEW: Toggle navigation
+        "toggle_navigation" : "Toggle navigation",
+
+        // TODO NEW: Login
+        "login" : "Login",
+
+        // TODO NEW: Sign Up
+        "sign_up" : "Sign Up",
 
         // TODO NEW: Sign out
         "sign_out" : "Sign out",
@@ -23,7 +41,9 @@
 
         // TODO NEW: Overview
         "overview" : "Overview",
-        "messages" : "Nachrichten",
+
+        // TODO NEW: Messages
+        "messages" : "Messages",
 
         // TODO NEW: My Data
         "my_data" : "My Data",
@@ -39,7 +59,9 @@
     },
 
     "error" : {
-        "offline" : "The backend is currently offline! Come back later.",
+
+        // TODO NEW: The backend is currently offline! Please contact support@midata.coop if the problem persists.
+        "offline" : "The backend is currently offline! Please contact support@midata.coop if the problem persists.",
 
         // TODO NEW: An internal error occured. Please contact support@midata.coop if the problem persists.
         "internal" : "An internal error occured. Please contact support@midata.coop if the problem persists.",
@@ -76,9 +98,15 @@
 
 
         "invalid" : {
-            "email" : "Bitte eine gültige Email-Addresse eingeben.",
-            "credentials" : "Ungültiger Benutzername oder Passwort!",
-            "password_repetition" : "Passwort und Passwortwiederholung stimmen nicht überein!",
+
+            // TODO NEW: Please enter a valid email address
+            "email" : "Please enter a valid email address",
+
+            // TODO NEW: Invalid username or password.
+            "credentials" : "Invalid username or password.",
+
+            // TODO NEW: Password and password repetition do not match!
+            "password_repetition" : "Password and password repetition do not match!",
 
             // TODO NEW: Passphrase and passphrase repetition do not match!
             "passphrase_repetition" : "Passphrase and passphrase repetition do not match!",
@@ -124,7 +152,9 @@
         },
 
         "missing" : {
-            "credentials" : "Bitte Benutzernamen und Passwort eingeben!",
+
+            // TODO NEW: Please provide a username  and a password.
+            "credentials" : "Please provide a username  and a password.",
 
             // TODO NEW: Please fill out your email address.
             "email" : "Please fill out your email address.",
@@ -1247,22 +1277,22 @@
         // TODO NEW: My Data
         "title" : "My Data",
 
-        // TODO NEW: Please use the 'share' and 'unshare' buttons to select which records you want to share with consent
+        // TODO NEW: Please use the 'share' and 'unshare' buttons to select which records you want to share with consent 
         "share_instructions1" : "Please use the 'share' and 'unshare' buttons to select which records you want to share with consent ",
 
-        // TODO NEW: This consent currently shares data with
+        // TODO NEW: This consent currently shares data with 
         "share_instructions2" : "This consent currently shares data with ",
 
         // TODO NEW: people.
         "share_instructions3" : "people.",
 
-        // TODO NEW: In order to permanently
+        // TODO NEW: In order to permanently 
         "delete_instructions1" : "In order to permanently ",
 
         // TODO NEW: delete
         "delete_instructions2" : "delete",
 
-        // TODO NEW: a record
+        // TODO NEW: a record 
         "delete_instructions3" : "a record ",
 
         // TODO NEW: double-click
