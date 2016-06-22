@@ -10,11 +10,11 @@
 		<!-- endbuild -->
 		
 		<!-- build:js assets/app.min.js -->
-		<script type="text/javascript" src="components/jquery/jquery.js" defer></script>
-		<script type="text/javascript" src="components/bootstrap/js/bootstrap.js" defer></script>
 		<script type="text/javascript" src="components/angular/angular.js" defer></script>
+		<script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
 		<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>		
 		<script type="text/javascript" src="components/midata/js/midata.js" defer></script>
+		<script type="text/javascript" src="i18n.js" defer></script>
 		<script type="text/javascript" src="app.js" defer></script>
 		<!-- endbuild -->
 	</head>
@@ -22,16 +22,15 @@
 		<div class="container" ng-app="tracker" ng-controller="CreateCtrl" ng-cloak>		  
 		  <div class="alert alert-success alert-dismissable" ng-show="success">
 			<button type="button" class="close" ng-click="success=false" aria-hidden="true">&times;</button>
-			Data successfully added.
+			<span translate="data_added"></span>
 		  </div>
-		  <div class="alert alert-danger" ng-show="error">			
-			{{ error }}
+		  <div class="alert alert-danger" ng-show="error" translate="{{ error }}">						
 		  </div>
-		  <form class="form-horizontal" ng-hide="mode=='edit'">
+		  <form class="form-horizontal" ng-hide="status.mode=='edit'">
 		    <div style="min-height:365px">
-		    <p>Which of the events you want to track happend today?</p>
+		    <p translate="prompt"></p>
 		    <div class="form-group">
-		      <label class="col-sm-4 control-label" for="date">Date of events</label>
+		      <label class="col-sm-4 control-label" for="date" translate="date"></label>
 		      <div class="col-sm-8">
 		         <div class="input-group">
 				    <input type="text" id="date" is-open="datePickers.dateOpened" datepicker-options="dateOptions" close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" placeholder="Date" autofocus ng-model="newentry.date">
@@ -42,9 +41,9 @@
 		      </div>
 		    </div>		
 		    <div class="form-group"> 
-		      <label class="col-sm-4 control-label" for="what">Events/Observations:</label>
+		      <label class="col-sm-4 control-label" for="what" translate="events"></label>
 		      <div class="col-sm-8">
-		        <p class="form-control-static" ng-hide="codes.length">Empty! Please click the '<i>Edit Event List</i>' button to add event types.</p>
+		        <p class="form-control-static" ng-hide="codes.length"><span translate="empty1"></span> '<i translate="empty2"></i>' <span translate="empty3"></span></p>
 		        <div ng-repeat="code in codes">
 		          <label class="checkbox">
 		            <input type="checkbox" ng-model="code.selected" >{{ code.display }}
@@ -55,33 +54,33 @@
 		     	
 		    <div class="extraspace"></div>    
 		    		   		    
-		    <button class="btn btn-primary" ng-disabled="isBusy || !isValid" ng-click="add()">Add</button>
-		    <button class="btn btn-default" ng-disabled="isBusy || !isValid" ng-click="mode='edit'">Edit Event List</button>
+		    <button class="btn btn-primary" ng-disabled="isBusy || !isValid" ng-click="add()" translate="add_btn"></button>
+		    <button class="btn btn-default" ng-disabled="isBusy || !isValid" ng-click="status.mode='edit';" translate="edit_events_btn"></button>
 		    
 		    </div>
 		  </form>
 		  
-		  <form name="editForm" novalidate class="form-horizontal" ng-show="mode=='edit'" ng-submit="saveCodes()">
-		    <p>Edit list of available events:</p>	
-		    <p><b>Event/Observation Title</b>	    		      
+		  <form name="editForm" novalidate class="form-horizontal" ng-show="status.mode=='edit'" ng-submit="saveCodes()">
+		    <p translate="available"></p>	
+		    <p><b translate="available_title"></b>	    		      
 		        <div class="form-group" ng-class="{ 'has-error' : !code.display }"ng-repeat="code in codes">		        
 		          <div class="col-sm-8">  
 		            <input type="text" required ng-model="code.display" class="form-control">
 		          </div>		        
 		          <div class="col-sm-4">
-		            <button class="btn btn-default" ng-click="removeCode($index)">Remove</button>
+		            <button class="btn btn-default" ng-click="removeCode($index)" translate="remove_btn"></button>
 		          </div>  
 		        </div>		        		      
 		        <div class="form-group">
 		        <div class="col-sm-8">  
-		            <input type="text" ng-model="newcode.display" placeholder="Name of event to track" class="form-control">
+		            <input type="text" ng-model="newcode.display" translate translate-attr-placeholder="name_of_event" class="form-control">
 		          </div>		        
 		          <div class="col-sm-4">
-		            <button type="button" class="btn btn-default" ng-disabled="!newcode.display" ng-click="addCode()">Add</button>
+		            <button type="button" class="btn btn-default" ng-disabled="!newcode.display" ng-click="addCode()" translate="add_btn"></button>
 		          </div>
 		        </div>
-		      <button type="submit" class="btn btn-primary" ng-disabled="isBusy || !isValid" >Done</button>
-		      <button type="button" class="btn btn-default" ng-disabled="isBusy || !isValid" ng-click="reset()">Cancel</button>
+		      <button type="submit" class="btn btn-primary" ng-disabled="isBusy || !isValid" translate="done_btn"></button>
+		      <button type="button" class="btn btn-default" ng-disabled="isBusy || !isValid" ng-click="reset()" translate="cancel_btn"></button>
 		  </form>
 		</div>		
 	</body>

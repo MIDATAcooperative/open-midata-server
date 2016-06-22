@@ -10,11 +10,11 @@
 		<!-- endbuild -->
 		
 		<!-- build:js assets/app.min.js -->
-		<script type="text/javascript" src="components/jquery/jquery.js" defer></script>
-		<script type="text/javascript" src="components/bootstrap/js/bootstrap.js" defer></script>
 		<script type="text/javascript" src="components/angular/angular.js" defer></script>
+		<script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
 		<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>		
 		<script type="text/javascript" src="components/midata/js/midata.js" defer></script>
+		<script type="text/javascript" src="i18n.js" defer></script>
 		<script type="text/javascript" src="app.js" defer></script>
 		<!-- endbuild -->
 	</head>
@@ -24,16 +24,16 @@
 		  <form class="form-horizontal">
 		    
 		    <div class="form-group"> 
-		        <label>Events tracked today:</label>
+		        <label translate="events_today"></label>
 		        <div class="form-control-static" ng-hide="tracked.length">
-		          <p>No events tracked yet for today.</p>
-		          <p>Click on the 'view' button below to open the tracker plugin.</p>
+		          <p translate="today_empty"></p>
+		          <p translate="click_view"></p>
 		        </div>
 		        <ul>
 		        <li ng-repeat="code in tracked | limitTo : 9">		        
 		          {{ code.code.text }}
 		        </li>
-		        <li ng-show="tracked.length > 9">{{ tracked.length - 9 }} more</li>
+		        <li ng-show="tracked.length > 9" translate="more" translate-value-count="{{ tracked.length - 9 }}"></li>
 		        </ul>		        		      
 		    </div>
 		     	

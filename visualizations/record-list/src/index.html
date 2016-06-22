@@ -3,99 +3,101 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Record List</title>
-		
-		<!-- build:css assets/app.min.css -->
+	        <!-- build:css assets/app.min.css -->
 		<link rel="stylesheet" href="components/bootstrap/css/bootstrap.css">
 		<link rel="stylesheet" href="components/midata/css/app.css">
 		<!-- endbuild -->
 		
 		<!-- build:js assets/app.min.js -->
-		<script type="text/javascript" src="components/jquery/jquery.js" defer></script>
-		<script type="text/javascript" src="components/bootstrap/js/bootstrap.js" defer></script>
 		<script type="text/javascript" src="components/angular/angular.js" defer></script>
 		<script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
 		<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>		
-		<script type="text/javascript" src="components/midata/js/midata.js" defer></script>		
-		<!-- endbuild -->
+		<script type="text/javascript" src="components/midata/js/midata.js" defer></script>
+		<script type="text/javascript" src="i18n.js" defer></script>
 		<script type="text/javascript" src="app.js" defer></script>
-		
+		<!-- endbuild -->
 	</head>
 	<body>
-		<div class="container" ng-app="recordList" ng-controller="RecordListCtrl" ng-cloak>
+		<div class="container" ng-app="recordList" ng-controller="RecordListCtrl" ng-cloak style="min-height:400px">
 			<div class="alert alert-danger alert-dismissable" ng-show="error">
 				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 				<p>{{error}}</p>
 			</div>
 			<div ng-show="mode=='loading'">
-				<p>Loading records...</p>
+				<p translate="loading"></p>
 			</div>
+			
 			<div ng-show="mode=='create'">
 			<div class="col-xs-10 col-xs-offset-2 page-header">
-				<p class="head">Create a new text record</p>
+				<p class="head" translate="create_title"></p>
 			</div>
 			<div class="col-xs-10 col-xs-offset-2">
 				<div class="alert alert-success alert-dismissable" ng-show="success">
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-					{{success}}
+					{{success | translate }}
 				</div>
 				<div class="alert alert-danger alert-dismissable" ng-show="error">
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-					<p>{{error}}</p>
+					<p translate="{{error}}"></p>
 				</div>
 			</div>
 			<form class="form-horizontal">
 			    <div class="form-group" ng-class="{'has-error': errors.date}">
-					<label for="date" class="col-xs-2 control-label">Date</label>
+					<label for="date" class="col-xs-2 control-label" translate="date"></label>
 					<div class="col-xs-10">
-					   <div class="input-group">
-						<input type="text" id="date" is-open="datePickers.dateOpened" datepicker-options="dateOptions" close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" placeholder="Date" autofocus ng-model="date">
-						<span class="input-group-btn">
-                          <button type="button" class="btn btn-default" ng-click="datePickers.dateOpened=true;"><i class="glyphicon glyphicon-calendar"></i></button>
-                        </span>
-                      </div>
+												
+					    <div class="input-group">
+				           <input type="text" id="date" is-open="datePickers.dateOpened" datepicker-options="dateOptions" close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" autofocus ng-model="newentry.date">
+					       <span class="input-group-btn">
+                              <button type="button" class="btn btn-default" ng-click="datePickers.dateOpened=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+                           </span>
+                        </div>	
+						
 					</div>
+					
+					
+					
 				</div>
 				<div class="form-group" ng-class="{'has-error': errors.title}">
-					<label for="title" class="col-xs-2 control-label">Title</label>
+					<label for="title" class="col-xs-2 control-label" translate="title"></label>
 					<div class="col-xs-10">
-						<input type="text" id="title" class="form-control" placeholder="Title" autofocus ng-model="title">
+						<input type="text" id="title" class="form-control" translate translate-attr-placeholder="title" autofocus ng-model="title">
 					</div>
 				</div>
 				<div class="form-group" ng-class="{'has-error': errors.content}">
-					<label for="content" class="col-xs-2 control-label">Content</label>
+					<label for="content" class="col-xs-2 control-label" translate="content"></label>
 					<div class="col-xs-10">
-						<textarea rows="5" id="content" class="form-control" placeholder="Enter your content here." ng-model="content"></textarea>
+						<textarea rows="5" id="content" class="form-control" translate translate-attr-placeholder="content2" ng-model="content"></textarea>
 					</div>
 				</div>
 				<div class="col-xs-10 col-xs-offset-2">
-					<a href="javascript:" class="btn btn-primary" ng-class="{disabled: loading}" ng-click="validate()">Create</a>
-					<a href="javascript:" class="btn btn-default" ng-class="{disabled: loading}" ng-click="cancel()">Cancel</a>
+					<a href="javascript:" class="btn btn-primary" ng-class="{disabled: loading}" ng-click="validate()" translate="create_btn"></a>
+					<a href="javascript:" class="btn btn-default" ng-class="{disabled: loading}" ng-click="cancel()" translate="cancel_btn"></a>
 				</div>
 			</form>
-			<div style="min-height:100px"></div>
 			</div>
 			
 			
 			<div ng-show="mode=='view'">
-			    <button class="btn btn-primary" ng-click="newEntry()">New Entry</button>
+			    <button class="btn btn-primary" ng-click="newEntry()" translate="new_entry"></button>
 			    <div class="extraspace"></div>
-				<p ng-hide="records.length">There are no records to display.</p>
+				<p ng-hide="records.length" translate="empty"></p>
 				<div class="panel-group" ng-show="records.length">
 					<div class="panel panel-primary" ng-repeat="record in records | orderBy : record.data.effectiveDateTime">
 						<div class="panel-heading">
 							<h4 class="panel-title">
-								<a data-toggle="collapse" data-target="#collapse-{{record.id}}">
+								<a ng-click="record.open = !record.open;">
 									{{ record.data.effectiveDateTime | date }} : {{record.name}}
 								</a>
 							</h4>
 						</div>
-						<div id="collapse-{{record.id}}" class="panel-collapse collapse">
+						<div uib-collapse="!record.open" class="panel-collapse">
 							<div class="panel-body" style="white-space: pre-line;">{{record.data.valueString}}</div>
 						</div>
 					</div>
 				</div>
-				<div class="extraspace"></div>
-			</div>			
+			</div>
+			<div class="extraspace"></div>
 		</div>
 	</body>
 </html>

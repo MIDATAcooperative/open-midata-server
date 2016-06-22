@@ -554,7 +554,8 @@
   },
   
   "oauth2" : {
-    "requesting_app" : "This application requests access:"
+    "requesting_app" : "This application requests access:",
+    "sign_in_btn" : "Sign In"
   },
   
   "dashboard" : {

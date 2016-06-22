@@ -33,7 +33,7 @@ angular.module('calendarApp')
              midataServer.searchContent($scope.authToken, { content : codes }, [ "content", "label" ])
          	 .then(function(result) {
          		angular.forEach(result.data, function(d) {
-         			$scope.valuesToLabel.content[d.content] = d.label["en"];
+         			$scope.valuesToLabel.content[d.content] = d.label[midataPortal.language] || d.label['en'];
          		});
          	 });
           });

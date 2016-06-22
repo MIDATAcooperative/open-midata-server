@@ -1,5 +1,5 @@
 <div>  
-  <h2>Add Data Sources</h2>
+  <h2 translate="add_sources_title"></h2>
   <div class="">
     <div ng-repeat="source in sources | orderBy : mlabel" class="">
       <label class="checkbox"><input type="checkbox" ng-model="source.selected" >{{ valuesToLabel.content[source.id] || source.label }} <a ng-click="source.tlb = !source.tlb;" href="javascript:">tlb</a></label> 
@@ -13,5 +13,5 @@
     </div>
   </div>
   <div class="extraspace"></div>
-  <button ng-click="submit()" class="btn btn-primary">Add</button>
+  <button ng-click="submit()" class="btn btn-primary" translate="add_sources_add_btn"></button>
 </div>

@@ -2,6 +2,7 @@ import javax.servlet.ServletException;
 
 import controllers.AutoRun;
 import controllers.FHIR;
+import controllers.Market;
 import play.Application;
 import play.GlobalSettings;
 import play.libs.Json;
@@ -48,9 +49,15 @@ public class Global extends GlobalSettings {
 		}
 		
 		try {
-		MinimalSetup.dosetup();
+		  MinimalSetup.dosetup();
 		} catch (AppException e) {
-			throw new NullPointerException();
+		  throw new NullPointerException();
+		}
+		
+		try {
+		  Market.correctOwners();
+		} catch (AppException e) {
+		  throw new NullPointerException();
 		}
 		
 		AutoRun.init();

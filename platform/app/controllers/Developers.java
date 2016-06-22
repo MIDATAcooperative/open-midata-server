@@ -91,6 +91,7 @@ public class Developers extends APIController {
 		RecordManager.instance.createPrivateAPS(user._id, user._id);
 		
 		Application.sendWelcomeMail(user);
+		Market.correctOwners();
 		
 		return Application.loginHelper(user);		
 	}

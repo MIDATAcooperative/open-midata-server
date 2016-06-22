@@ -1,8 +1,30 @@
-var recordList = angular.module('recordList', [ 'midata' ]);
+var recordList = angular.module('recordList', [ 'midata', 'ui.bootstrap', 'pascalprecht.translate' ]);
+recordList.config(['$translateProvider', function($translateProvider) {	    
+    
+	$translateProvider
+	.useSanitizeValueStrategy('escape')	   	    
+	.registerAvailableLanguageKeys(['en', 'de', 'it', 'fr'], {
+	  'en_*': 'en',
+	  'de_*': 'de',
+	  'fr_*': 'fr',
+	  'it_*': 'it',
+	})
+	.translations('en', en)
+	.translations('de', de)
+	.translations('it', it)
+	.translations('fr', fr)
+	.fallbackLanguage('en');
+}]);
 recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'midataServer', 'midataPortal',
 	function($scope, $filter, $location, midataServer, midataPortal) {
 		
 	    midataPortal.autoresize();
+	    
+		$scope.datePickers = {};
+	    $scope.dateOptions = {
+	       formatYear: 'yy',
+	       startingDay: 1
+	    };
 	    
 		// init
 		$scope.mode = 'loading';
@@ -28,7 +50,7 @@ recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'mida
 					}
 					$scope.mode = "view";
 				}, function(err) {
-					$scope.error = "Failed to load records: " + err.data;
+					$scope.error = "failed";
 					$scope.mode = "view";
 				});
 		};
@@ -39,7 +61,7 @@ recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'mida
 			$scope.validateTitle();
 			$scope.validateContent();
 			if(!$scope.errors.title && !$scope.errors.content) {
-				$scope.submit()
+				$scope.submit();
 			}
 			
 		};
@@ -47,16 +69,16 @@ recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'mida
 		$scope.validateTitle = function() {
 			$scope.errors.title = null;
 			if (!$scope.title) {
-				$scope.errors.title = "No title provided";
+				$scope.errors.title = "no_title_error";
 			} else if ($scope.title.length > 50) {
-				$scope.errors.title = "Title too long.";
+				$scope.errors.title = "title_too_long_error"; 
 			}
 		};
 		
 		$scope.validateContent = function() {
 			$scope.errors.content = null;
 			if (!$scope.content) {
-				$scope.errors.content = "No content provided.";
+				$scope.errors.content = "no_content_error"; 
 			}
 		};
 		
@@ -71,7 +93,7 @@ recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'mida
 					code : {
 						coding : [ { system : "http://midata.coop" , code : "diary", display : "Diary" } ]
 					},
-					effectiveDateTime : new Date($scope.date).toJSON(),
+					effectiveDateTime : new Date($scope.newentry.date).toJSON(),
 					valueString : $scope.content
 					
 			};
@@ -79,7 +101,7 @@ recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'mida
 			// submit to server
 			midataServer.createRecord(authToken, { "name" : $scope.title, "content" : "diary", "subformat" : "String", "format" : "fhir/Observation" }, record)
 			.then(function() {
-					$scope.success = "Record created successfully.";
+					$scope.success = "success";
 					$scope.records.push({ name : $scope.title, data : record });
 					
 					$scope.title = null;
@@ -97,7 +119,7 @@ recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'mida
 		
 		$scope.newEntry = function() {
 			$scope.mode = "create";
-			$scope.date = $filter('date')(new Date(), "yyyy-MM-dd");
+			$scope.newentry = { date : $filter('date')(new Date(), "yyyy-MM-dd") };
 		};
 		
 		$scope.cancel = function() {

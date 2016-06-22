@@ -1,8 +1,11 @@
 package controllers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import models.Developer;
 import models.Plugin;
 import models.Plugin_i18n;
 import models.enums.PluginStatus;
@@ -18,6 +21,7 @@ import play.mvc.Security;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.auth.DeveloperSecured;
+import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
 import utils.db.LostUpdateException;
@@ -182,6 +186,9 @@ public class Market extends APIController {
 
 		// validate request
 		ObjectId userId = new ObjectId(request().username());
+		
+		Developer dev = Developer.getById(userId, Sets.create("email"));
+		
 		String filename = JsonValidation.getString(json ,"filename");
 		String name = JsonValidation.getString(json, "name");
 		try {
@@ -198,7 +205,10 @@ public class Market extends APIController {
 		Plugin plugin = new Plugin();
 		plugin._id = new ObjectId();
 		
+				
 		plugin.creator = userId;
+		plugin.creatorLogin = dev.email;
+		
 		plugin.version = JsonValidation.getLong(json, "version");		
 		plugin.filename = JsonValidation.getStringOrNull(json, "filename");
 		plugin.name = JsonValidation.getStringOrNull(json, "name");
@@ -269,5 +279,23 @@ public class Market extends APIController {
 
 		Plugin.delete(pluginId);
 		return ok();
+	}
+	
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public static Result correctOwners() throws AppException {
+	   Set<Plugin> plugins = Plugin.getAll(CMaps.map(), Sets.create("_id", "creator", "creatorLogin"));
+	   
+	   for (Plugin plg : plugins) {
+		   Developer u = Developer.getById(plg.creator, Sets.create("email"));
+		   if (u == null && plg.creatorLogin != null) {
+			   u = Developer.getByEmail(plg.creatorLogin, Sets.create("_id", "email"));
+			   if (u != null) {
+				   Plugin.set(plg._id, "creator", u._id);
+			   }
+		   }
+	   }
+	   
+	   return ok();
 	}
 }

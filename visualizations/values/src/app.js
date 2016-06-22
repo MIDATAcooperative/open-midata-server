@@ -1,15 +1,18 @@
 var jsonRecords = angular.module('jsonRecords', [ 'midata', 'pascalprecht.translate' ]);
-jsonRecords.config(['$translateProvider', function($translateProvider) {
-	     console.log("test1");
+jsonRecords.config(['$translateProvider', function($translateProvider) {	    
 			    
 		$translateProvider
 		.useSanitizeValueStrategy('escape')	   	    
-		.registerAvailableLanguageKeys(['en', 'de'], {
+		.registerAvailableLanguageKeys(['en', 'de', 'it', 'fr'], {
 		  'en_*': 'en',
-		  'de_*': 'de'
+		  'de_*': 'de',
+		  'fr_*': 'fr',
+		  'it_*': 'it',
 		})
 		.translations('en', en)
 		.translations('de', de)
+		.translations('it', it)
+		.translations('fr', fr)
 		.fallbackLanguage('en');	
 
 }]);
@@ -136,8 +139,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 				    ]
 				}
 		   }
-		];
-		
+		];		
 				
 		// get authorization token
 		var authToken = $location.path().split("/")[1];

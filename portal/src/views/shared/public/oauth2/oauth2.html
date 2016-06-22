@@ -45,7 +45,7 @@
 								<input type="password" class="form-control" translate translate-attr-placeholder="member_login.password" ng-model="login.password" style="margin-bottom:5px;">
 								<select class="form-control" ng-model="login.role" ng-options="role.value as role.name | translate for role in roles"></select>
 								<div class="extraspace"></div>
-								<button type="submit" ng-disabled="status.action=='login'" class="btn btn-lg btn-primary btn-block" translate="member_login.sign_in_btn"></button>
+								<button type="submit" ng-disabled="status.action=='login'" class="btn btn-lg btn-primary btn-block" translate="oauth2.sign_in_btn"></button>
 								<div class="margin-top">
 								  <a ui-sref='public.lostpw' translate="member_login.forgot_your_password"></a>
 								</div>

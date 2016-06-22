@@ -1,48 +1,72 @@
-var tracker = angular.module('tracker', [ 'midata', 'ui.bootstrap' ]);
-
-tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$timeout', 'midataServer', 'midataPortal',
-	function($scope, $http, $location, $filter, $timeout, midataServer, midataPortal) {
+var tracker = angular.module('tracker', [ 'midata', 'ui.bootstrap', 'pascalprecht.translate' ]);
+tracker.config(['$translateProvider', function($translateProvider) {	    
+			    
+		$translateProvider
+		.useSanitizeValueStrategy('escape')	   	    
+		.registerAvailableLanguageKeys(['en', 'de', 'it', 'fr'], {
+		  'en_*': 'en',
+		  'de_*': 'de',
+		  'fr_*': 'fr',
+		  'it_*': 'it',
+		})
+		.translations('en', en)
+		.translations('de', de)
+		.translations('it', it)
+		.translations('fr', fr)
+		.fallbackLanguage('en');
+}]);
+tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$timeout', '$translate', 'midataServer', 'midataPortal',
+	function($scope, $http, $location, $filter, $timeout, $translate, midataServer, midataPortal) {
 		
 		// init
 		$scope.error = null;
+		$scope.status = { mode : "view "};
 		$scope.datePickers = {};
 	    $scope.dateOptions = {
 	       formatYear: 'yy',
 	       startingDay: 1
 	    };
-				
+	    
+	    var create_code = function(display) {
+	    	var code = display.toLowerCase();
+			return code.replace(' ','-');			
+	    };
+
+	    $translate(["example1", "example2", "example3", "example4", "example5", "example6" ])
+	    .then(function(t) {
 		$scope.codes = [
 		   {			    
-				display : "Headache",
+				display : t.example1,
 				system : "urn:uuid:817a5c29-b5da-4074-81bf-92d6978759f4",
-				code : "headache"
+				code : create_code(t.example1)
 		   },
 		   {			    
-				display : "Feeling sick",
+				display : t.example2,
 				system : "urn:uuid:817a5c29-b5da-4074-81bf-92d6978759f4",
-				code : "feeling-sick"
-		   },
-		   {
-			   display : "Beginning of menstruation",
-			   system : "urn:uuid:817a5c29-b5da-4074-81bf-92d6978759f4",
-			   code : "beginning-of-menstruation"
-		   },		   
-		   {
-			   display : "Ate more than I wanted",
-			   system : "urn:uuid:817a5c29-b5da-4074-81bf-92d6978759f4",
-			   code : "ate-more-than-i-wanted"
+				code : create_code(t.example2)
 		   },
 		   {			    
-				display : "Thunderstorm outside",
+				display : t.example3,
 				system : "urn:uuid:817a5c29-b5da-4074-81bf-92d6978759f4",
-				code : "thunderstorm-outside"
+				code : create_code(t.example3)
 		   },
 		   {			    
-				display : "Click 'Edit Event List' and change this list into something useful for you!",
+				display : t.example4,
 				system : "urn:uuid:817a5c29-b5da-4074-81bf-92d6978759f4",
-				code : "dummy"
+				code : create_code(t.example4)
+		   },
+		   {			    
+				display : t.example5,
+				system : "urn:uuid:817a5c29-b5da-4074-81bf-92d6978759f4",
+				code : create_code(t.example5)
+		   },
+		   {			    
+				display : t.example6,
+				system : "urn:uuid:817a5c29-b5da-4074-81bf-92d6978759f4",
+				code : create_code(t.example6)
 		   }
 		];
+	    });
 		
 				
 		// get authorization token
@@ -70,7 +94,7 @@ tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$t
 			});
 						
 			
-			$scope.mode = '';
+			$scope.status.mode = '';
 			
 		};
 		
@@ -154,7 +178,7 @@ tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$t
 			angular.forEach($scope.codes, function(code) { code.selected = false; });
 			
 			midataServer.setConfig(authToken, { codes : $scope.codes })
-			.then(function() { $scope.mode=''; });
+			.then(function() { $scope.status.mode=''; });
 		};
 					
 		$scope.reset();

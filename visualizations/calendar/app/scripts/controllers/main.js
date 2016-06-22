@@ -24,7 +24,8 @@ angular.module('calendarApp')
 	          eventResize: $scope.alertOnResize,
 	          viewRender: function(view, element) {
 	              console.log("View Changed: ", view.visStart, view.visEnd, view.start, view.end);
-	          }
+	          },
+	          lang : midataPortal.language
 	        }
 	      };
       };

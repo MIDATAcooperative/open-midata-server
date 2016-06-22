@@ -60,10 +60,16 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * status of plugin
 	 */
 	public PluginStatus status;
+	
 	/**
 	 * id of creator of this plugin
 	 */
 	public ObjectId creator;
+	
+	/**
+	 * the login of the creator of the plugin
+	 */
+	public String creatorLogin;
 	
 	/**
 	 * internal name for this plugin
