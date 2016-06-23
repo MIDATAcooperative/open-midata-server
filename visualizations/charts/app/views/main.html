@@ -3,22 +3,22 @@
 <form>
   <div class="form-inline extraspace">
   <div class="form-group" ng-show="reports.length > 1">
-    <label for="report">Report: </label>
+    <label for="report" translate="report"></label>
     
-    <select id="report" class="form-control" ng-model="report" ng-options="report.name for report in reports" ng-change="prepareReport()"></select>
+    <select id="report" class="form-control" ng-model="report" ng-options="report as report.id | translate for report in reports" ng-change="prepareReport()"></select>
     
   </div>
  
   <div style="margin-left:5px" class="separator form-group" ng-show="!readonly && (reports.length > 1 || report.filter || report.filter2)">
-    <button class="btn btn-default" ng-hide="saving" ng-click="saveConfig()">Save Setting</button>    
-    <button class="btn btn-default" disabled="true" ng-show="saving">Saving...</button>
+    <button class="btn btn-default" ng-hide="saving" ng-click="saveConfig()" translate="save_setting_btn"></button>    
+    <button class="btn btn-default" disabled="true" ng-show="saving" translate="saving"></button>
   </div>
   <div class="form-group" ng-show="!readonly && (reports.length > 1 || report.filter || report.filter2)">
     <div class="input-group">
-    <input class="form-control" type="text" ng-model="name" placeholder="Name for new chart">
+    <input class="form-control" type="text" ng-model="name" translate translate-attr-placeholder="chart_name">
     <div class="input-group-btn">
-      <button ng-click="add(name)" ng-disabled="!name" ng-hide="saving2" class="btn btn-default">Add</button>
-      <button class="btn btn-default" disabled="true" ng-show="saving2">Saving...</button>
+      <button ng-click="add(name)" ng-disabled="!name" ng-hide="saving2" class="btn btn-default" translate="add_btn"></button>
+      <button class="btn btn-default" disabled="true" ng-show="saving2" translate="saving"></button>
     </div>
     </div>    
   </div>
@@ -28,13 +28,13 @@
   
   <div class="btn-group" ng-if="report.seriesName">
     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      {{ report.seriesName }} <span class="caret"></span>
+      {{ report.seriesName | translate }} <span class="caret"></span>
     </button>
     <ul class="dropdown-menu">
      <li ng-repeat="f in allSeries">
       <a href="javascript:" ng-click="toggleSeriesSelection(f);$event.stopPropagation();">
        <input type="checkbox" ng-checked="isSelectedSeries(f)" >
-       {{ getLabel(report.series, f) }}
+       {{ getLabel(report.series, f) | translate }}
       </a>
      </li>
     </ul>    
@@ -44,35 +44,35 @@
  
  <div class="btn-group separator" ng-if="report.labelsName">
     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      {{ report.labelsName }} <span class="caret"></span>
+      {{ report.labelsName | translate }} <span class="caret"></span>
     </button>
     <ul class="dropdown-menu">
      <li ng-repeat="f in allLabels">
       <a href="javascript:" ng-click="toggleLabelSelection(f);$event.stopPropagation();">
        <input type="checkbox" ng-checked="isSelectedLabel(f)" >
-       {{ getLabel(report.label, f) }}
+       {{ getLabel(report.label, f) | translate }}
       </a>
      </li>
     </ul>    
  </div>
  
   <div class="form-group separator" ng-show="report.filter">
-     <label for="filter">{{ report.filterLabel }}:</label>
-     <select id="filter"  class="form-control" ng-model="selectedFilter" ng-options="f as getLabel(report.filter,f) for f in filter" ng-change="prepareFilter()"></select>
+     <label for="filter">{{ report.filterLabel | translate }}:</label>
+     <select id="filter"  class="form-control" ng-model="selectedFilter" ng-options="f as getLabel(report.filter,f) | translate for f in filter" ng-change="prepareFilter()"></select>
   </div>
   <div class="form-group separator" ng-show="report.filter2">
-     <label for="filter2">{{ report.filterLabel2 }}:</label>
+     <label for="filter2">{{ report.filterLabel2 | translate }}:</label>
      <select id="filter2" class="form-control" ng-model="selectedFilter2" ng-options="f for f in filter2" ng-change="update()"></select>
   </div>
  
   </div>
   <div class="form-inline extraspace"  ng-hide="chartType=='simple'">
   <div class="form-group">
-     <label for="timing">Time</label>
-     <select id="timing"  class="form-control" ng-model="timing" ng-options="t.value as t.label for t in timings" ng-change="delayedUpdate();"></select>
+     <label for="timing" translate="time"></label>
+     <select id="timing"  class="form-control" ng-model="timing" ng-options="t.value as t.label | translate for t in timings" ng-change="delayedUpdate();"></select>
   </div>
   <div class="form-group" ng-show="timing==0">
-  <label for="minDate">From: </label>
+  <label for="minDate" translate="from"></label>
   </div><div class="form-group" ng-show="timing==0">
   <div class="input-group">
      <input id="minDate" type="text" class="form-control" uib-datepicker-popup="dd.MM.yyyy" ng-change="delayedUpdate();" ng-model="minDate" is-open="datePickers.fromTimeOpened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
@@ -83,7 +83,7 @@
   </div>
   
   <div class="form-group separator" ng-show="timing==0">
-  <label for="maxDate">To: </label>
+  <label for="maxDate" translate="to"></label>
   </div><div class="form-group" ng-show="timing==0">
   <div class="input-group">
      <input id="maxDate" type="text" class="form-control" uib-datepicker-popup="dd.MM.yyyy" ng-change="delayedUpdate();" ng-model="maxDate" is-open="datePickers.toTimeOpened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
@@ -94,28 +94,27 @@
   </div>
   
   <div class="form-group separator" ng-show="report.timeUnits">
-     <label for="timeUnit">Time Unit:</label>
-     <select id="timeUnit"  class="form-control" ng-model="timeUnit" ng-options="tu.name as tu.name for tu in timeUnits" ng-change="delayedUpdate()"></select>
+     <label for="timeUnit" translate="time_unit"></label>
+     <select id="timeUnit"  class="form-control" ng-model="timeUnit" ng-options="tu.name as tu.name | translate for tu in timeUnits" ng-change="delayedUpdate()"></select>
   </div>
   
   <div class="form-group separator">
-     <label for="alg">Calculate:</label>
-     <select id="alg"  class="form-control" ng-model="report.alg" ng-options="alg.value as alg.name for alg in algs" ng-change="delayedUpdate()"></select>
+     <label for="alg" translate="calculate"></label>
+     <select id="alg"  class="form-control" ng-model="report.alg" ng-options="alg.value as alg.value | translate for alg in algs" ng-change="delayedUpdate()"></select>
   </div>
  </div>
 </form>
-<p ng-show="report.unit">Unit: {{ report.unit }}</p>
+<p ng-show="report.unit"><span translate="unit"></span>: {{ report.unit }}</p>
 <div ng-show="entries.length==0" class="alert alert-warning">
-  <strong>Nothing to display!</strong> There must be at least one record with known format assigned to this visualization.  
+  <strong translate="empty"></strong>  
 </div>
 
-<div class="alert alert-info" ng-show="chartType=='calculation'">
-  Please wait, chart is calculated... 
+<div class="alert alert-info" ng-show="chartType=='calculation'" translate="wait">  
 </div>
 
 <div ng-if="chartType=='update'">
   <div style="min-height:500px">
-    <button class="btn btn-primary" ng-click="doDelayedUpdate();">Update now</button>
+    <button class="btn btn-primary" ng-click="doDelayedUpdate();" translate="update_btn"></button>
   </div>
 </div>
 
@@ -139,9 +138,9 @@
 </div>
    
 <div ng-if="chartType=='simple' && entries.length>0">
-  <div class="text-center text-primary">Measure: <b>{{ entry.format }}</b></div>
-  <div ng-show="entry.context" class="text-center">Code: <i>{{ entry.context }}</i></div>
+  <div class="text-center text-primary"><span translate="measure"></span>: <b>{{ entry.format }}</b></div>
+  <div ng-show="entry.context" class="text-center"><span translate="code"></span>: <i>{{ entry.context }}</i></div>
   <div class="text-center lead"><span style="color: #1c4982;display: block;font-size: 100px;">{{ entry.value }}</span>{{ entry.unit }}</div>
-  <div class="text-center">Date: <strong>{{ entry.dateTime }}</strong></div>
+  <div class="text-center"><span translate="date"></span>: <strong>{{ entry.dateTime }}</strong></div>
 </div>
 </div>

@@ -11,9 +11,10 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css styles/vendor.css -->
     <!-- bower:css -->
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="../bower_components/angular-chart.js/dist/angular-chart.css" />
     <!-- endbower -->
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="../bower_components/midata/css/app.css" />
     <!-- endbuild -->
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">  
@@ -45,13 +46,15 @@
     <script src="../bower_components/Chart.js/Chart.js"></script>
     <script src="../bower_components/angular-chart.js/dist/angular-chart.js"></script>
     <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="../bower_components/angular-translate/angular-translate.js"></script>
     <!-- endbower -->
+     <script src="../bower_components/midata/js/midata.js"></script>
     <!-- endbuild -->
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
-        <script src="scripts/controllers/main.js"></script>                
-        <script src="scripts/services/midata.js"></script>
+        <script src="scripts/i18n.js"></script>
+        <script src="scripts/controllers/main.js"></script>                      
         <!-- endbuild -->
 </body>
 </html>

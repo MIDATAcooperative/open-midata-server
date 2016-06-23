@@ -13,6 +13,7 @@
 		<script type="text/javascript" src="components/jquery/jquery.js" defer></script>
 		<script type="text/javascript" src="components/bootstrap/js/bootstrap.js" defer></script>
 		<script type="text/javascript" src="components/angular/angular.js" defer></script>
+		<script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
 		<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>		
 		<script type="text/javascript" src="components/midata/js/midata.js" defer></script>
 		<script type="text/javascript" src="components/angular-file-upload/angular-file-upload.min.js" defer></script>
@@ -23,44 +24,44 @@
 	<body>
 		<div class="container" ng-app="files" ng-controller="FilesCtrl" ng-cloak>
 			<div class="col-xs-10 col-xs-offset-2 page-header">
-				<p>Upload a file of your choice.</p>
+				<p translate="intro_description"></p>
 			</div>
 			<div class="col-xs-10 col-xs-offset-2">
 				<div class="alert alert-success alert-dismissable" ng-show="success">
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-					{{success}}
+					<span translate="{{success}}"></span>
 				</div>
 				<div class="alert alert-danger alert-dismissable" ng-show="errors.server">
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-					<p>{{errors.server}}</p>
+					<p translate="{{errors.server}}"></p>
 				</div>
 			</div>
 			<form class="form-horizontal" ng-submit="validate()">
 				<div class="form-group" ng-class="{'has-error has-feedback': errors.title}">
-					<label for="title" class="col-xs-2 control-label">Title</label>
+					<label for="title" class="col-xs-2 control-label" translate="title"></label>
 					<div class="col-xs-10">
-						<input type="text" id="title" class="form-control" placeholder="Title" ng-model="title" autofocus>
-						<span class="glyphicon glyphicon-question-sign form-control-feedback" data-toggle="tooltip" title="{{errors.title}}" ng-show="errors.title"></span>
+						<input type="text" id="title" class="form-control" translate translate-attr-placeholder="title" ng-model="title" autofocus>
+						<span class="glyphicon glyphicon-question-sign form-control-feedback" data-toggle="tooltip" title="{{errors.title | translate}}" ng-show="errors.title"></span>
 					</div>
 				</div>
 				<div class="form-group" ng-class="{'has-error has-feedback': errors.description}">
-					<label for="description" class="col-xs-2 control-label">Description</label>
+					<label for="description" class="col-xs-2 control-label" translate="description"></label>
 					<div class="col-xs-10">
-						<textarea rows="5" id="description" class="form-control" placeholder="Brief description of your record. This is used when you search for the record." ng-model="description"></textarea>
-						<span class="glyphicon glyphicon-question-sign form-control-feedback" data-toggle="tooltip" title="{{errors.description}}" ng-show="errors.description"></span>
+						<textarea rows="5" id="description" class="form-control" translate translate-attr-placeholder="description2" ng-model="description"></textarea>
+						<span class="glyphicon glyphicon-question-sign form-control-feedback" data-toggle="tooltip" title="{{errors.description | translate}}" ng-show="errors.description"></span>
 					</div>
 				</div>
 				<div class="form-group" ng-class="{'has-error has-feedback': errors.file}">
-					<label for="file" class="col-xs-2 control-label">File</label>
+					<label for="file" class="col-xs-2 control-label" translate="file"></label>
 					<div class="col-xs-10">
 						<input type="file" id="file" nv-file-select="" uploader="uploader">
-						<span class="glyphicon glyphicon-question-sign form-control-feedback" data-toggle="tooltip" title="{{errors.file}}" ng-show="errors.file"></span>
+						<span class="glyphicon glyphicon-question-sign form-control-feedback" data-toggle="tooltip" title="{{errors.file | translate}}" ng-show="errors.file"></span>
 					</div>
 				</div>
 				<div ng-hide="uploading">
 					<div class="row">
 						<div class="col-xs-10 col-xs-offset-2">
-							<a href="" class="btn btn-primary" ng-class="{disabled: loading}" ng-click="validate()">Save</a>
+							<a href="" class="btn btn-primary" ng-class="{disabled: loading}" ng-click="validate()" translate="save_btn"></a>
 						</div>
 					</div>
 				</div>
@@ -74,9 +75,9 @@
 							</div>
 						</div>
 						<div class="col-xs-2" ng-hide="uploadComplete">
-							<a href="" class="btn btn-danger" ng-click="cancel()">Cancel</a>
+							<a href="" class="btn btn-danger" ng-click="cancel()" translate="cancel_btn"></a>
 						</div>
-						<div class="col-xs-2" ng-show="uploadComplete">Saving file...</div>
+						<div class="col-xs-2" ng-show="uploadComplete" translate="saving"></div>
 					</div>
 				</div>
 			</form>

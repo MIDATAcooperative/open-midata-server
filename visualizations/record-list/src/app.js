@@ -15,6 +15,10 @@ recordList.config(['$translateProvider', function($translateProvider) {
 	.translations('fr', fr)
 	.fallbackLanguage('en');
 }]);
+recordList.run(['$translate', 'midataPortal', function($translate, midataPortal) {
+ 	console.log("Language: "+midataPortal.language);
+	$translate.use(midataPortal.language);	   	  
+}]);
 recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'midataServer', 'midataPortal',
 	function($scope, $filter, $location, midataServer, midataPortal) {
 		

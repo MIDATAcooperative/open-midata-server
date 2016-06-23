@@ -1,7 +1,7 @@
 <div>
 
 
-<p class="text-center"><strong>{{ report.name }}</strong></p>
+<p class="text-center"><strong translate="{{ report.id }}"></strong></p>
 <div ng-if="chartType=='line'">
 <canvas id="line" class="chart chart-line" data="data"
   labels="labels" legend="false" series="series"
@@ -29,6 +29,6 @@
 </div>
 
 <div ng-show="entries.length==0" class="text-center">
-  <strong>Nothing to display!</strong>   
+  <strong translate="empty"></strong>   
 </div>
 </div>

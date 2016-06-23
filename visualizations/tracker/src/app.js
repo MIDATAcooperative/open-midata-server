@@ -15,6 +15,10 @@ tracker.config(['$translateProvider', function($translateProvider) {
 		.translations('fr', fr)
 		.fallbackLanguage('en');
 }]);
+tracker.run(['$translate', 'midataPortal', function($translate, midataPortal) {
+ 	console.log("Language: "+midataPortal.language);
+	$translate.use(midataPortal.language);	   	  
+}]);
 tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$timeout', '$translate', 'midataServer', 'midataPortal',
 	function($scope, $http, $location, $filter, $timeout, $translate, midataServer, midataPortal) {
 		

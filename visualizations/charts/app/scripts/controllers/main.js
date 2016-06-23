@@ -28,13 +28,13 @@ angular.module('chartApp')
       $scope.config = {};
       $scope.timeUnit = "";
       $scope.timeUnits = [ { name : "" }, { name : "month"}, {name : "year" }];
-      $scope.algs = [ { name : "-", value:"simple" }, { name : "Average", value:"avg" }, { name : "Newest", value : "newest"}, { name : "Count", value :"count"}, { name : "Sum", value : "sum" }];
+      $scope.algs = [ { value:"simple" }, { value:"avg" }, { value : "newest"}, { value :"count"}, { value : "sum" }];
       $scope.timings = [
-         { value : 7, label : "Last 7 days"},
-         { value : 30, label : "Last 30 days"},
-         { value : 90, label : "Last 90 days"},
-         { value : 365, label : "Last 365 days"},
-         { value : 0, label : "User defined" }
+         { value : 7, label : "last7"},
+         { value : 30, label : "last30"},
+         { value : 90, label : "last90"},
+         { value : 365, label : "last365"},
+         { value : 0, label : "user_defined" }
       ];             
       $scope.saving = false;
       $scope.saving2 = false;
@@ -238,7 +238,7 @@ angular.module('chartApp')
     	 return midataServer.searchContent($scope.authToken, { content : info.content }, [ "content", "label" ])
     	 .then(function(result) {
     		angular.forEach(result.data, function(d) {
-    			$scope.valuesToLabel.content[d.content] = d.label["en"];
+    			$scope.valuesToLabel.content[d.content] = d.label[midataPortal.language] || d.label["en"];
     		});
     	 });
       };
@@ -513,42 +513,42 @@ angular.module('chartApp')
          var r = [];
          if (info.hasMultipleDates) {
              if (info.hasMultipleOwners) {
-                r.push( { name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", seriesName : "People", filter: info.hasMultipleFormats ? "content" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null, timeUnits : true } );
+                r.push( { id : "report_ts_person", name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", seriesName : "people", filter: info.hasMultipleFormats ? "content" : null, filterLabel: info.hasMultipleFormats ? "measure" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "detail" : null, timeUnits : true } );
              }
              
              if (info.hasMultipleFormats) {
-                r.push( { name:"Time Series per Measure", type : "line", label : "dateTime", series : "content", seriesName : "Measures", filter: info.hasMultipleOwners ? "owner" : null, filterLabel: info.hasMultipleOwners ? "Person" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null, timeUnits : true } );
+                r.push( { id : "report_ts_measure", name:"Time Series per Measure", type : "line", label : "dateTime", series : "content", seriesName : "measures", filter: info.hasMultipleOwners ? "owner" : null, filterLabel: info.hasMultipleOwners ? "person" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "detail" : null, timeUnits : true } );
              }
              
              if (info.hasMultipleContexts) {
-                   r.push( { name:"Time Series per Context", type : "line", label : "dateTime", series : "context", seriesName : "Measures", filter: info.hasMultipleFormats ? "content" : null , filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleOwners ? "owner" : null, filterLabel2: info.hasMultipleOwners ? "Person" : null, timeUnits : true } );                 
+                   r.push( { id : "report_ts_detail", name:"Time Series per Context", type : "line", label : "dateTime", series : "context", seriesName : "measures", filter: info.hasMultipleFormats ? "content" : null , filterLabel: info.hasMultipleFormats ? "measure" : null, filter2: info.hasMultipleOwners ? "owner" : null, filterLabel2: info.hasMultipleOwners ? "person" : null, timeUnits : true } );                 
              }
              
              if (!info.hasMultipleOwners) {
-                 r.push( { name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", seriesName : "People", filter: info.hasMultipleFormats ? "content" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "Context" : null, timeUnits : true } ); 
+                 r.push( { id : "report_ts_person", name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", seriesName : "people", filter: info.hasMultipleFormats ? "content" : null, filterLabel: info.hasMultipleFormats ? "measure" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "detail" : null, timeUnits : true } ); 
              }
          }
          
          if (info.hasMultipleFormats) {
              if (info.hasMultiplePersons) {                 
-                 r.push( { name:"Radar-Chart: Format/Person", type : "radar", label : "content", labelsName : "Measures", series : "owner", seriesName : "People", filter: null, filterLabel: null, alg : "newest" } );
+                 r.push( { id : "report_rc_measure_person", name:"Radar-Chart: Format/Person", type : "radar", label : "content", labelsName : "measures", series : "owner", seriesName : "people", filter: null, filterLabel: null, alg : "newest" } );
              }
-             r.push( { name:"Bar-Chart: Format/Person", type : "bar", label : "content", labelsName : "Measures", series : "owner", seriesName : "People", filter: null, filterLabel: null, alg : "newest" } );            
+             r.push( { id : "report_bc_measure_person", name:"Bar-Chart: Format/Person", type : "bar", label : "content", labelsName : "measures", series : "owner", seriesName : "people", filter: null, filterLabel: null, alg : "newest" } );            
          }
          
          if (info.hasMultipleContexts) {
              if (info.hasMultiplePersons) {                 
-                 r.push( { name:"Radar-Chart: Context/Person", type : "radar", label : "context", labelsName : "Contexts", series : "owner", seriesName : "People", filter: info.hasMultipleFormats ? "content" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, alg : "newest" } );
+                 r.push( { id : "report_rc_detail_person", name:"Radar-Chart: Context/Person", type : "radar", label : "context", labelsName : "details", series : "owner", seriesName : "people", filter: info.hasMultipleFormats ? "content" : null, filterLabel: info.hasMultipleFormats ? "measure" : null, alg : "newest" } );
              }
-             r.push( { name:"Bar-Chart: Context/Person", type : "bar", label : "context", labelsName : "Contexts", series : "owner", seriesName : "People", filter: info.hasMultipleFormats ? "content" : null, filterLabel: info.hasMultipleFormats ? "Measure" : null, alg : "newest" });                          
+             r.push( { id : "report_bc_detail_person", name:"Bar-Chart: Context/Person", type : "bar", label : "context", labelsName : "details", series : "owner", seriesName : "people", filter: info.hasMultipleFormats ? "content" : null, filterLabel: info.hasMultipleFormats ? "measure" : null, alg : "newest" });                          
          }
          
          if (info.hasMultiplePersons && !info.hasMultipleFormats && !info.hasMultipleContexts) {
-             r.push( { name:"Bar-Chart: Persons", type : "bar", label : "owner", labelsName : "People", series : "content", seriesName : "Contexts", filter: null, filterLabel: null, alg : "newest" });
+             r.push( { id : "report_bc_person", name:"Bar-Chart: Persons", type : "bar", label : "owner", labelsName : "People", series : "content", seriesName : "details", filter: null, filterLabel: null, alg : "newest" });
          }
          
          if (r.length==0) {
-             r.push( { name:"Single Value", type:"simple", label:"content", series:"owner", filter:null, filterLabel : null, alg : "first" });
+             r.push( { id : "report_single", name:"Single Value", type:"simple", label:"content", series:"owner", filter:null, filterLabel : null, alg : "first" });
          }
          
          

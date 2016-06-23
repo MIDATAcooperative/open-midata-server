@@ -3,20 +3,20 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Import Fitbit Data</title>
-		<link rel="stylesheet" href="/shared/css/app.css">
-		<link rel="stylesheet" href="css/datepicker3.css">
-		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-		<style>
-		  table .checkbox { margin:0px; }
-		</style>
-		<!-- jQuery needed for Bootstrap's JavaScript plugins -->
-		<script type="text/javascript" src="//code.jquery.com/jquery-2.0.2.min.js"></script>
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
-		<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js" defer></script>
-		<!-- Ignoring locales for now -->
-		<script type="text/javascript" src="js/bootstrap-datepicker.js" defer></script>
-		<script type="text/javascript" src="/shared/js/midata.js" defer></script>
-		<script type="text/javascript" src="js/controller.js" defer></script>
+	
+	    <!-- build:css assets/app.min.css -->
+		<link rel="stylesheet" href="components/bootstrap/css/bootstrap.css">
+		<link rel="stylesheet" href="components/midata/css/app.css">
+		<!-- endbuild -->
+		
+		<!-- build:js assets/app.min.js -->
+		<script type="text/javascript" src="components/angular/angular.js" defer></script>
+		<script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
+		<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>		
+		<script type="text/javascript" src="components/midata/js/midata.js" defer></script>
+		<script type="text/javascript" src="i18n.js" defer></script>
+		<script type="text/javascript" src="app.js" defer></script>
+		<!-- endbuild -->
 	</head>
 	<body>
 		<div ng-app="fitbit" ng-controller="ImportCtrl" ng-cloak>

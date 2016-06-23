@@ -1,4 +1,24 @@
-var files = angular.module('files', ['angularFileUpload', 'midata']);
+var files = angular.module('files', ['angularFileUpload', 'midata', 'pascalprecht.translate']);
+files.config(['$translateProvider', function($translateProvider) {	    
+    
+	$translateProvider
+	.useSanitizeValueStrategy('escape')	   	    
+	.registerAvailableLanguageKeys(['en', 'de', 'it', 'fr'], {
+	  'en_*': 'en',
+	  'de_*': 'de',
+	  'fr_*': 'fr',
+	  'it_*': 'it',
+	})
+	.translations('en', en)
+	.translations('de', de)
+	.translations('it', it)
+	.translations('fr', fr)
+	.fallbackLanguage('en');
+}]);
+files.run(['$translate', 'midataPortal', function($translate, midataPortal) {
+	console.log("Language: "+midataPortal.language);
+$translate.use(midataPortal.language);	   	  
+}]);
 files.controller('FilesCtrl', ['$scope', '$http', '$location', 'FileUploader', 'midataPortal',
 	function($scope, $http, $location, FileUploader, midataPortal) {
 		
@@ -26,7 +46,7 @@ files.controller('FilesCtrl', ['$scope', '$http', '$location', 'FileUploader', '
 
 		// register callbacks
 		uploader.onSuccessItem = function() {
-			$scope.success = "File upload complete.";
+			$scope.success = "success";
 			$scope.title = null;
 			$scope.description = null;
 			$("#file").val("");
@@ -69,25 +89,25 @@ files.controller('FilesCtrl', ['$scope', '$http', '$location', 'FileUploader', '
 		var validateTitle = function() {
 			$scope.errors.title = null;
 			if (!$scope.title) {
-				$scope.errors.title = "Please provide a title for your record.";
+				$scope.errors.title = "missing_title";
 			} else if ($scope.title.length > 50) {
-				$scope.errors.title = "Please provide a title with fewer than 50 characters.";
+				$scope.errors.title = "shorter_title"; 
 			}
 		};
 
 		var validateDescription = function() {
 			$scope.errors.description = null;
 			if (!$scope.description) {
-				$scope.errors.description = "Please provide a brief description of the record.";
+				$scope.errors.description = "missing_description";
 			}
 		};
 		
 		var validateFile = function() {
 			$scope.errors.file = null;
 			if (uploader.queue.length === 0) {
-				$scope.errors.file = "Please choose a file to upload.";
+				$scope.errors.file = "choose"; 
 			} else if (uploader.queue.length > 1) {
-				$scope.errors.file = "An unexpected error occurred. Please reload the page and try again.";
+				$scope.errors.file = "internal";
 			}
 		};
 

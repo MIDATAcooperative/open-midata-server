@@ -41,4 +41,8 @@ angular.module('calendarApp', ['ngRoute', 'midata', 'ui.bootstrap', 'ui.calendar
     .otherwise({
       redirectTo: '/'
     });
-  }]);
+  }])
+.run(['$translate', 'midataPortal', function($translate, midataPortal) {
+ 	console.log("Language: "+midataPortal.language);
+	$translate.use(midataPortal.language);	   	  
+}]);
