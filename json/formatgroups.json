@@ -12,7 +12,7 @@
 {"_id":{"$oid":"55ae5a08f351efda91eadc88"},"system":"v1","name":"genome","label":{"en":"Genome"},"contents":["genome-data"],"parent":"health"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc8a"},"system":"v1","name":"other","label":{"en":"Other"},"contents":[],"parent":"all"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc8b"},"system":"v1","name":"calendar","label":{"en":"Calendar"},"contents":["Appointment","Schedule","Slot","AppointmentResponse"],"parent":"other"}
-{"_id":{"$oid":"55ae5a08f351efda91eadc8c"},"system":"v1","name":"diary","label":{"en":"Diary"},"contents":["diary"],"parent":"other"}
+{"_id":{"$oid":"55ae5a08f351efda91eadc8c"},"system":"v1","name":"diary","label":{"de":"Tagebuch","en":"Diary"},"parent":"other","contents":["diary"]}
 {"_id":{"$oid":"55ae5a08f351efda91eadc8d"},"system":"v1","name":"account","label":{"en":"External Accounts"},"contents":["account/credentials"],"parent":"other"}
 {"_id":{"$oid":"569915fc6281a61a232ecdca"},"system":"v1","name":"otherhealth","label":{"en":"Other Health-related"},"contents":["observation/cardio","BodySite","Specimen","Device","DeviceComponent","RiskAssessment","DeviceMetric","Substance"],"parent":"health"}
 {"_id":{"$oid":"569915fc6281a61a232ecdcb"},"system":"v1","name":"care","label":{"en":"Care"},"contents":["CarePlan","ReferralRequest","ProcedureRequest","VisionPrescription","Goal","NutritionOrder"],"parent":"health"}
