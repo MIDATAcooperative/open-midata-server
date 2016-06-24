@@ -337,7 +337,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 						
 						angular.forEach(v, function(itm) {
 						  var val = itm.value || itm.amount;
-						  if (val && val !== 0 && val !== 0.0) {
+						  if (val != 0 ) { // jshint ignore:line
 							  var recDate = itm.dateTime || itm.date;
 							  if (measure.unit != null && itm.unit == null) itm.unit = measure.unit;
 							  							  
