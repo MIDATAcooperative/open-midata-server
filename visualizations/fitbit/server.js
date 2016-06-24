@@ -9,12 +9,10 @@ benv.setup(function () {
   require('./bower_components/midata/js/midata.js');
   require('./src/i18n.js');
   require('./src/controller.js');  
-  var injector = angular.injector(['ng', 'fitbit']);
-  var portal = injector.get('midataPortal');
-  portal.language = process.argv[3];
+  var injector = angular.injector(['ng', 'fitbit']);  
   var importer = injector.get('importer');
   console.log("prerun");
-  importer.automatic(process.argv[2])
+  importer.automatic(process.argv[2], process.argv[3])
   .then(function() {
 	  console.log("success");
   });

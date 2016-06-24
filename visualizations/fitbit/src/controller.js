@@ -1,5 +1,5 @@
-var fitbit = angular.module('fitbit', [ 'midata', 'pascalprecht.translate', 'i18n' ]);
-fitbit.config(['$translateProvider', 'i18n', function($translateProvider, i18n) {	    
+var fitbit = angular.module('fitbit', [ 'midata', 'pascalprecht.translate', 'fitbiti18n' ]);
+fitbit.config(['$translateProvider', 'i18nc', function($translateProvider, i18nc) {	    
     
 	$translateProvider
 	.useSanitizeValueStrategy('escape')	   	    
@@ -9,15 +9,11 @@ fitbit.config(['$translateProvider', 'i18n', function($translateProvider, i18n) 
 	  'fr_*': 'fr',
 	  'it_*': 'it',
 	})
-	.translations('en', i18n.en)
-	.translations('de', i18n.de)
-	.translations('it', i18n.it)
-	.translations('fr', i18n.fr)
+	.translations('en', i18nc.en)
+	.translations('de', i18nc.de)
+	.translations('it', i18nc.it)
+	.translations('fr', i18nc.fr)
 	.fallbackLanguage('en');
-}]);
-fitbit.run(['$translate', 'midataPortal', function($translate, midataPortal) {
-	console.log("Language: "+midataPortal.language);
-    $translate.use(midataPortal.language);	   	  
 }]);
 fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', function($http, $translate, midataServer, $q) {
 	var $scope = {};
@@ -456,8 +452,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			}
 		};
 		
-		$scope.automatic = function(authToken) {
+		$scope.automatic = function(authToken, lang) {
 			console.log("run automatic");
+			$translate.use(lang);
 			$scope.alldone = $q.defer();
 			$scope.initForm(authToken)
 			.then(function() {
@@ -478,10 +475,11 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 	
 	return $scope;	
 }]);
-fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', 'midataServer', 'midataPortal', 'importer',  
-	function($scope, $http, $location, midataServer, midataPortal, importer) {
+fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', '$translate', 'midataServer', 'midataPortal', 'importer',  
+	function($scope, $http, $location, $translate, midataServer, midataPortal, importer) {
 		// init
 	    midataPortal.autoresize();
+	    $translate.use(midataPortal.language);
         $scope.importer = importer;	    
 					
 		// get authorization token

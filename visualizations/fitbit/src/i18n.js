@@ -1,5 +1,5 @@
-angular.module('i18n', [])
-.constant('i18n', {
+angular.module('fitbiti18n', [])
+.constant('i18nc', {
   en : {
   "title" : "Import Records from your Fitbit Account",
   "account" : "Fitbit Account:",
