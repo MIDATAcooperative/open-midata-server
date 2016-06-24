@@ -117,6 +117,8 @@ public class AutoRun extends APIController {
 						    	
 		    	final Plugin plugin = Plugin.getById(space.visualization, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret"));
 				SpaceToken token = new SpaceToken(space._id, space.owner, null, null, autorunner);
+				User tuser = User.getById(space.owner, Sets.create("language"));
+				final String lang = tuser.language != null ? tuser.language : "en";
 				final String tokenstr = token.encrypt();
 				final ActorRef sender = getSender();
 	
@@ -128,8 +130,8 @@ public class AutoRun extends APIController {
 								public void invoke(Boolean success) throws AppException, IOException {
 									AccessLog.log("Auth:"+success);
 									if (success) {
-										AccessLog.log(nodepath+" "+visPath+"/"+plugin.filename+"/server.js"+" "+tokenstr);
-										Process p = new ProcessBuilder(nodepath, visPath+"/"+plugin.filename+"/server.js", tokenstr).inheritIO().start();
+										AccessLog.log(nodepath+" "+visPath+"/"+plugin.filename+"/server.js"+" "+tokenstr+" "+lang);
+										Process p = new ProcessBuilder(nodepath, visPath+"/"+plugin.filename+"/server.js", tokenstr, lang).inheritIO().start();
 										try {
 										  p.waitFor();
 										  sender.tell(new ImportResult(p.exitValue()), getSelf());

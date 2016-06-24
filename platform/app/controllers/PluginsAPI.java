@@ -651,6 +651,7 @@ public class PluginsAPI extends APIController {
 			record.content =  (contents != null && contents.length == 1) ? contents[0] : "other";
 						
 			record.data = new BasicDBObject(CMaps
+					.map("resourceType", "Binary")
 					.map("type", "file")
 					.map("title", filename)
 					.map("contentType", contentType)

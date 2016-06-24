@@ -9,6 +9,8 @@ benv.setup(function () {
   require('./bower_components/midata/js/midata.js');
   require('./src/controller.js');  
   var injector = angular.injector(['ng', 'fitbit']);
+  var portal = injector.get('midataPortal');
+  portal.language = process.argv[3];
   var importer = injector.get('importer');
   console.log("prerun");
   importer.automatic(process.argv[2])

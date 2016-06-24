@@ -40,14 +40,14 @@
 				<div class="form-group" ng-class="{'has-error has-feedback': errors.title}">
 					<label for="title" class="col-xs-2 control-label" translate="title"></label>
 					<div class="col-xs-10">
-						<input type="text" id="title" class="form-control" translate translate-attr-placeholder="title" ng-model="title" autofocus>
+						<input type="text" id="title" class="form-control" translate translate-attr-placeholder="title" ng-model="data.title" autofocus>
 						<span class="glyphicon glyphicon-question-sign form-control-feedback" data-toggle="tooltip" title="{{errors.title | translate}}" ng-show="errors.title"></span>
 					</div>
 				</div>
 				<div class="form-group" ng-class="{'has-error has-feedback': errors.description}">
 					<label for="description" class="col-xs-2 control-label" translate="description"></label>
 					<div class="col-xs-10">
-						<textarea rows="5" id="description" class="form-control" translate translate-attr-placeholder="description2" ng-model="description"></textarea>
+						<textarea rows="5" id="description" class="form-control" translate translate-attr-placeholder="description2" ng-model="data.description"></textarea>
 						<span class="glyphicon glyphicon-question-sign form-control-feedback" data-toggle="tooltip" title="{{errors.description | translate}}" ng-show="errors.description"></span>
 					</div>
 				</div>

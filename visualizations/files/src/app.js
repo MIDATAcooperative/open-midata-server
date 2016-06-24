@@ -26,6 +26,7 @@ files.controller('FilesCtrl', ['$scope', '$http', '$location', 'FileUploader', '
 	    
 		// init
 		$scope.errors = {};
+		$scope.data = {};
 		$scope.uploading = false;
 		$scope.uploadComplete = false;
 
@@ -47,8 +48,8 @@ files.controller('FilesCtrl', ['$scope', '$http', '$location', 'FileUploader', '
 		// register callbacks
 		uploader.onSuccessItem = function() {
 			$scope.success = "success";
-			$scope.title = null;
-			$scope.description = null;
+			$scope.data.title = null;
+			$scope.data.description = null;
 			$("#file").val("");
 			$scope.uploading = false;
 			$scope.loading = false;
@@ -88,16 +89,16 @@ files.controller('FilesCtrl', ['$scope', '$http', '$location', 'FileUploader', '
 		
 		var validateTitle = function() {
 			$scope.errors.title = null;
-			if (!$scope.title) {
+			if (!$scope.data.title) {
 				$scope.errors.title = "missing_title";
-			} else if ($scope.title.length > 50) {
+			} else if ($scope.data.title.length > 50) {
 				$scope.errors.title = "shorter_title"; 
 			}
 		};
 
 		var validateDescription = function() {
 			$scope.errors.description = null;
-			if (!$scope.description) {
+			if (!$scope.data.description) {
 				$scope.errors.description = "missing_description";
 			}
 		};
@@ -118,8 +119,8 @@ files.controller('FilesCtrl', ['$scope', '$http', '$location', 'FileUploader', '
 			// additional form data (specific to the current file)
 			uploader.queue[0].formData = [{
 				"authToken": authToken,
-				"name": $scope.title,
-				"description": $scope.description,
+				"name": $scope.data.title,
+				"description": $scope.data.description,
 				"format" : "application/octet-stream",
 				"content" : "unknown"
 			}];
