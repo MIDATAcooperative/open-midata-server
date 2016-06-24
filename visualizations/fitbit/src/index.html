@@ -42,7 +42,7 @@
 			  <tr ng-repeat="measurement in importer.measurements" ng-class="{ 'success' : measurement.from > measurement.to }">
 			  <td>
 			  <div class="checkbox"  >
-			    <label><input type="checkbox" ng-model="measurement.import"><span translate="{{ measurement.name }}"></span></label>			  
+			    <label><input type="checkbox" ng-model="measurement.import"><span translate="{{ measurement.id }}"></span></label>			  
 			  </div>
 			  </td>
 			  <td>
