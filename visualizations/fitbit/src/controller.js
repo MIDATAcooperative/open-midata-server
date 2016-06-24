@@ -1,5 +1,5 @@
-var fitbit = angular.module('fitbit', [ 'midata', 'pascalprecht.translate' ]);
-fitbit.config(['$translateProvider', function($translateProvider) {	    
+var fitbit = angular.module('fitbit', [ 'midata', 'pascalprecht.translate', 'i18n' ]);
+fitbit.config(['$translateProvider', 'i18n', function($translateProvider, i18n) {	    
     
 	$translateProvider
 	.useSanitizeValueStrategy('escape')	   	    
@@ -9,10 +9,10 @@ fitbit.config(['$translateProvider', function($translateProvider) {
 	  'fr_*': 'fr',
 	  'it_*': 'it',
 	})
-	.translations('en', en)
-	.translations('de', de)
-	.translations('it', it)
-	.translations('fr', fr)
+	.translations('en', i18n.en)
+	.translations('de', i18n.de)
+	.translations('it', i18n.it)
+	.translations('fr', i18n.fr)
 	.fallbackLanguage('en');
 }]);
 fitbit.run(['$translate', 'midataPortal', function($translate, midataPortal) {
@@ -341,7 +341,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 						
 						angular.forEach(v, function(itm) {
 						  var val = itm.value || itm.amount;
-						  if (val && val !== 0) {
+						  if (val && val !== 0 && val !== 0.0) {
 							  var recDate = itm.dateTime || itm.date;
 							  if (measure.unit != null && itm.unit == null) itm.unit = measure.unit;
 							  							  

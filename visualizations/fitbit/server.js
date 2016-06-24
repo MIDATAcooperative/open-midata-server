@@ -7,6 +7,7 @@ benv.setup(function () {
   });
   require('./bower_components/angular-translate/angular-translate.min.js');
   require('./bower_components/midata/js/midata.js');
+  require('./src/i18n.js');
   require('./src/controller.js');  
   var injector = angular.injector(['ng', 'fitbit']);
   var portal = injector.get('midataPortal');

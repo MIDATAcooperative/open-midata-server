@@ -1,4 +1,6 @@
-var en = {
+angular.module('i18n', [])
+.constant('i18n', {
+  en : {
   "title" : "Import Records from your Fitbit Account",
   "account" : "Fitbit Account:",
   "member_since" : "Member since:",
@@ -61,7 +63,7 @@ var en = {
 	  
   
 },
-de = {
+de : {
 	  "title" : "Import aus ihrem Fitbit Account",
 	  "account" : "Fitbit Account:",
 	  "member_since" : "Mitglied seit:",
@@ -122,9 +124,10 @@ de = {
 	     "body_fat" : "Fitbit Körper (Fett) {date}"
 	  }					
 },
-it = {
+it : {
 		
 },
-fr = {
+fr : {
 		
-};
+}
+});
