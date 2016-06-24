@@ -318,6 +318,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			var fromDate = measure.from;
 			var toDate = measure.to;
 			$translate("titles."+measure.id).then(function(t) { measure.title = t; });
+			$translate(measure.id).then(function(t) { measure.name_translated = t; });
 			
 			if (fromDate > toDate) return;
 			
@@ -356,7 +357,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 									   }
 									  ]
 								},
-								code : { coding : [ { system : "http://midata.coop", code : measure.content, display : measure.name } ] },
+								code : { coding : [ { system : "http://midata.coop", code : measure.content, display : measure.name_translated } ] },
 								effectiveDateTime : recDate,
 								valueQuantity : {
 									value : val,
