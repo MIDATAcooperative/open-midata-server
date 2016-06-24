@@ -1,0 +1,1 @@
+window.opener.postMessage(window.location.search.split("?")[1], window.location.protocol + "//" + window.location.hostname + ":" + window.location.port);

@@ -85,6 +85,7 @@
      },
      
      "exists" : {
+       "user" : "A person with this email is already registered.",
        "member" : "A person with this email is already registered.",
        "provider" : "A healthcare provider with this name already exists.",
        "research" : "A research organisation with this name already exists.",

@@ -101,6 +101,7 @@ module.exports = function(grunt) {
       main: {    
     	files : [
     	 { expand : true, cwd: 'src/', src: '**/*.html', dest: 'dest/' },    	 
+    	 { expand : true, cwd: 'src/', src: 'auth.js', dest: 'dest/' },
     	 { expand : true, cwd: 'src/assets/images/', src : '**/*', dest : 'dest/images' },
     	 { expand : true, flatten:true, cwd: 'dest/components/', src: ['**/*.ttf','**/*.woff','**/*.woff2'], dest: 'dest/fonts' }
         ]

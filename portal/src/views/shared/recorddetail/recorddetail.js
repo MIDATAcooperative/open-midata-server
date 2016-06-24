@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RecordCtrl', ['$scope', '$state', 'server', '$sce', 'records', 'status', 'ENV', '$window', function($scope, $state, server, $sce, records, status, ENV, $window) {
+.controller('RecordCtrl', ['$scope', '$state', '$translate', 'server', '$sce', 'records', 'status', 'ENV', '$window', function($scope, $state, $translate, server, $sce, records, status, ENV, $window) {
 	// init
 	$scope.error = null;
 	$scope.record = {};
@@ -11,7 +11,9 @@ angular.module('portal')
 	$scope.status.doBusy(records.getUrl(recordId)).
 	then(function(results) {
 		if (results.data) {
-		  $scope.url = $sce.trustAsResourceUrl(results.data);
+          var url = results.data;
+          if (url.indexOf("?")>0) url+="&lang="+encodeURIComponent($translate.use()); else url+="?lang="+encodeURIComponent($translate.use());
+		  $scope.url = $sce.trustAsResourceUrl(url);
 		}
 	});
 		
