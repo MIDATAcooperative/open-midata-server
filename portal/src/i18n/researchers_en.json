@@ -9,5 +9,11 @@
   
   "researcher_login" : {
     "title" : "Research Login"
+  },
+  
+  "researcher_navbar" : {
+    "studies" : "Studies",
+    "workspace" : "Workspace",
+    "data" : "Data"
   }
 }

@@ -1,4 +1,24 @@
-var fhir = angular.module('fhir', [ 'midata' ]);
+var fhir = angular.module('fhir', [ 'midata', 'pascalprecht.translate' ]);
+fhir.config(['$translateProvider', function($translateProvider) {	    
+    
+	$translateProvider
+	.useSanitizeValueStrategy('escape')	   	    
+	.registerAvailableLanguageKeys(['en', 'de', 'it', 'fr'], {
+	  'en_*': 'en',
+	  'de_*': 'de',
+	  'fr_*': 'fr',
+	  'it_*': 'it',
+	})
+	.translations('en', en)
+	.translations('de', de)
+	.translations('it', it)
+	.translations('fr', fr)
+	.fallbackLanguage('en');
+}]);
+fhir.run(['$translate', 'midataPortal', function($translate, midataPortal) {
+	console.log("Language: "+midataPortal.language);
+    $translate.use(midataPortal.language);	   	  
+}]);
 fhir.controller('ObservationCtrl', ['$scope', '$filter', '$location', 'midataServer', 'midataPortal',
  	function($scope, $filter, $location, midataServer, midataPortal) {
  		

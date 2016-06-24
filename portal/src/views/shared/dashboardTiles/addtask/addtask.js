@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('AddTaskCtrl', ['$scope', '$state', 'server', '$attrs', 'views', 'tasking', 'status', 'session', function($scope, $state, server, $attrs, views, tasking, status, session) {
+.controller('AddTaskCtrl', ['$scope', '$state', '$translate', 'server', '$attrs', 'views', 'tasking', 'status', 'session', function($scope, $state, $translate, server, $attrs, views, tasking, status, session) {
 			
 
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
@@ -7,9 +7,9 @@ angular.module('views')
 	$scope.task = { frequency:"ONCE"};
 	
 	$scope.tasks = [{
-		name : "Fill out survey",
-		description : "Please fill out the surveys I shared with your account.",
-		title : "Fill out survey",
+		id : "survey",
+		name : "addtask.survey_name",
+		
 		plugin : "55af6055e4b044f0420c9bf2",
 		context : "me",
 		pluginQuery : {
@@ -31,8 +31,8 @@ angular.module('views')
 	};
 	
 	$scope.prepare = function(tasktemplate) {
-		$scope.task.title = tasktemplate.title;
-		$scope.task.description = tasktemplate.description;
+		$translate("addtask."+tasktemplate.id+"_title").then(function(t) { $scope.task.title = t; });
+		$translate("addtask."+tasktemplate.id+"_description").then(function(t) { $scope.task.description = t; });						
 		$scope.task.plugin = tasktemplate.plugin;
 		$scope.task.context = tasktemplate.context;
 		$scope.task.pluginQuery = tasktemplate.pluginQuery;

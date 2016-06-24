@@ -6,19 +6,19 @@
        <p class="lead">{{ task.description }}</p>
        <div class="clearfix"></div>
        <div class="row">
-		  <p class="col-sm-3">Created by:</p>
+		  <p class="col-sm-3" translate="taskdetails.created_by"></p>
 	  	  <p class="col-sm-9"><b>{{ creator.firstname }} {{ creator.lastname }}</b></p>
 	   </div>
 	   <div class="row">
-		  <p class="col-sm-3">How often:</p>
+		  <p class="col-sm-3" translate="taskdetails.frequency"></p>
 	  	  <p class="col-sm-9"><b>{{ task.frequency }}</b></p>
 	   </div>
 	   <div class="row">
-		  <p class="col-sm-3">Plugin:</p>
+		  <p class="col-sm-3" translate="taskdetails.plugin"></p>
 	  	  <p class="col-sm-9"><b>{{ plugin.name }}</b></p>
 	   </div>
 	   	   
   </div>
-  <div class="footer"><button ng-click="showDetails(task);" class="btn btn-primary">Do now</button></div>
+  <div class="footer"><button ng-click="showDetails(task);" class="btn btn-primary" translate="taskdetails.do_now_btn">Do now</button></div>
   </loader>
 </div>

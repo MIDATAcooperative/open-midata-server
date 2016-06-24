@@ -11,10 +11,7 @@ angular.module('views')
 	   then(function(result) {
 			$scope.record = result.data;
 			$scope.record.json = JSON.stringify($scope.record.data, null, "\t");
-			if (_.has($scope.record.data, "type") && $scope.record.data.type === "file") {
-				$scope.downloadLink = jsRoutes.controllers.Records.getFile(recordId).url;
-			}
-			
+						
 			loadUserNames();
 			
 			apps.getApps({"_id": $scope.record.app}, ["name"]).

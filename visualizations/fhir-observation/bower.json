@@ -7,7 +7,8 @@
     "angular-bootstrap": "~0.14.3",
     "angular-route": "1.2.25",
     "bootstrap": "3.3.5",
-    "midata" : "git://github.com/Alexander-Kreutz/midata_shared.git"    
+    "midata" : "git://github.com/Alexander-Kreutz/midata_shared.git",
+    "angular-translate": "^2.11.0"  
   },
   "resolutions": {
     "angular": "~1.5.3"

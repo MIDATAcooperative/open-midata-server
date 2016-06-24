@@ -1,9 +1,9 @@
  <div class="ignore autosize" ng-controller="TasksCtrl">
   <loader busy="status.isBusy !== false">
-  <div class="body body-center text-center" ng-show="tasks.length == 0">Empty</div>
+  <div class="body body-center text-center" ng-show="tasks.length == 0" translate="tasks.empty"></div>
   <div ng-show="tasks.length" class="body clearfix">   
      <div class="pull-left themeicon"><img src="/images/icons/task-todo.png"></div>     
-     <p><span class="dashnumber">{{ tasks.length }}</span> Tasks found:</p>
+     <p><span class="dashnumber">{{ tasks.length }}</span> <span translate="tasks.tasks_found"></span></p>
    </div>
   
   <ul class="list-group" ng-show="tasks.length > 0">
@@ -11,6 +11,6 @@
 	   <a href="javascript:;" ng-click="showDetails(task)">{{task.title}}</a>										
   	</li>
   </ul>
-  <div class="footer"><button class="btn btn-default">More...</button></div>
+  <div class="footer"><button class="btn btn-default" translate="tasks.more_btn"></button></div>
   </loader>
 </div>

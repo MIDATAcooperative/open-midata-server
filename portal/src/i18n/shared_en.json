@@ -226,6 +226,13 @@
 	   "DELETED" : "Deleted",
 	   "NEW" : "New"
 	 },
+	 "frequency" : {
+	   "ONCE" : "Einmalig",
+	   "DAILY" : "Daily",
+	   "WEEKLY" : "Once a week",
+	   "MONTHLY" : "Once a month",
+	   "YEARLY" : "Once a year"	
+	 },
 	 "language" : {
 	   "EN" : "English",
 	   "DE" : "German",
@@ -246,6 +253,9 @@
   "common" : {
     "back_btn" : "Back",
     "search_btn" : "Search",
+    "add_btn" : "Add",
+    "cancel_btn" : "Cancel",
+    "view_btn" : "View",
     
     "user" : {
       "lastname" : "Surname",
@@ -632,5 +642,39 @@
   "flexiblestudies" : {
     "empty" : "Empty",
     "studies_found" : "Studies found:"
+  },
+  
+  "addtask" : {
+    "task_type" : "Task Type",
+    "task_title" : "Task Title",
+    "description" : "Description",
+    "frequency" : "Frequency",
+  
+    "survey_name" : "Fill out survey",
+    "survey_description" : "Please fill out the surveys I shared with your account.",
+	"survey_title" : "Fill out survey"    
+  },
+  
+  "taskdetails" : {
+    "created_by" : "Created by:",
+    "frequency" : "How often:",
+    "plugin" : "Plugin:"
+  },
+  
+  "tasks" : {
+    "empty" : "Empty",
+    "tasks_found" : "Tasks found:",
+    "tasks.more_btn" : "More..."
+  },
+  
+  "addusers" : {
+    "contacts" : "Contacts",
+    "all_users" : "All users",
+    "no_contacts" : "You have no users in your circles yet.",
+    "no_contacts_to_add" : "No contacts can be added to this circle.",
+    "search_user" : "Search for a user",
+    "searching" : "Searching...",
+    "no_matching_users" : "No users matched your search.",
+    "no_new_found" : "All found users are already members of this circle."
   }
 }

@@ -16,7 +16,21 @@ var en = {
 	"success" : "File upload complete."
 },
 de = {
-		
+	"intro_description" : "Eine Datei nach Wahl hochladen.",
+	"title" : "Titel",
+	"description" : "Beschreibung",
+	"description2" : "Kurze Beschreibung des Datensatzes",
+	"file" : "Datei",
+	"cancel_btn" : "Abbruch",
+	"save_btn" : "Speichern",
+	"saving" : "Speichere Datei...",
+	"missing_title" : "Bitte einen Titel eingeben.",
+	"shorter_title" : "Bitte einen Titel mit weniger als 50 Zeichen eingeben.",
+	"missing_description" : "Bitte eine kurze Beschreibung eingeben.",
+	"choose" : "Bitte eine Datei zum Hochladen wählen",
+	"internal" : "Ein unerwarteter Fehler ist aufgetreten. Bitte Seite erneut laden und nochmals versuchen.",
+	
+	"success" : "Hochladen der Datei abgeschlossen."		
 },
 it = {
 		

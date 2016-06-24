@@ -21,7 +21,7 @@
 	<div class="panel panel-primary" ng-show="participation && study.assistance=='HCPROFESSIONAL'">
 		<div class="panel-heading" translate="studydetails.providers_monitoring"></div>
 		<div class="panel-body">
-		    <p ng-show="providers.length == 0" translate="studydetails.no_providers">None</p>
+		    <p ng-show="providers.length == 0" translate="studydetails.no_providers"></p>
 			<div ng-repeat="prov in providers">
 				<address>
 					<strong>{{ prov.firstname }} {{ prov.lastname }}</strong><br>

@@ -16,15 +16,15 @@
 		<nav class="collapse navbar-collapse navbar-ex1-collapse">
 			<ul class="nav navbar-nav">            	
 				<!-- <li ui-sref-active="active"><a ui-sref="developer.messages">Messages</a></li> -->
-				<li ui-sref-active="active"><a ui-sref="developer.yourapps">Your Plugins</a></li>
-				<li ui-sref-active="active"><a ui-sref="developer.sandbox">Sandbox</a></li>
-				<li ui-sref-active="active"><a ui-sref="developer.records">Test Records</a></li>
+				<li ui-sref-active="active"><a ui-sref="developer.yourapps" translate="developer_navbar.yourapps"></a></li>
+				<li ui-sref-active="active"><a ui-sref="developer.sandbox" translate="developer_navbar.sandbox"></a></li>
+				<li ui-sref-active="active"><a ui-sref="developer.records" translate="developer_navbar.records"></a></li>
 				
 			</ul>
 			<ul class="nav navbar-nav navbar-right" ng-cloak>
 				<li><a ui-sref=".user({ userId : user._id.$oid})">{{user.name}}</a></li>
 				<li><a ng-click="logout()" href="javascript:">
-					<span class="glyphicon glyphicon-off"></span> Sign out
+					<span class="glyphicon glyphicon-off"></span> <span translate="navbar.sign_out"></span>
 				</a></li>
 		    </ul>
 	    </nav>	    

@@ -16,14 +16,14 @@
 		<nav class="collapse navbar-collapse navbar-ex1-collapse">
 			<ul class="nav navbar-nav">            	
 				<!-- <li ui-sref-active="active"><a ui-sref="research.messages">Messages</a></li>  -->
-				<li ui-sref-active="active"><a ui-sref="research.studies">Studies</a></li>
-				<li ui-sref-active="active"><a ui-sref="research.dashboard({ dashId : 'workspace' })">Workspace</a></li>	
-				<li ui-sref-active="active"><a ui-sref="research.records">Data</a></li>			
+				<li ui-sref-active="active"><a ui-sref="research.studies" translate="researcher_navbar.studies"></a></li>
+				<li ui-sref-active="active"><a ui-sref="research.dashboard({ dashId : 'workspace' })" translate="researcher_navbar.workspace"></a></li>	
+				<li ui-sref-active="active"><a ui-sref="research.records" translate="researcher_navbar.data"></a></li>			
 			</ul>
 			<ul class="nav navbar-nav navbar-right" ng-cloak>
 				<li><a ui-sref=".user({ userId : user._id.$oid})">{{user.name}}</a></li>
 				<li><a ng-click="logout()" href="javascript:">
-					<span class="glyphicon glyphicon-off"></span> Sign out
+					<span class="glyphicon glyphicon-off"></span> <span translate="navbar.sign_out"></span>
 				</a></li>
 		    </ul>
 	    </nav>	    

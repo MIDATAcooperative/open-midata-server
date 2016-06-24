@@ -50,7 +50,54 @@ var en = {
       
 },
 de = {
-		
+   "report" : "Report: ",
+   "save_setting_btn" : "Einstellungen speichern",
+   "saving" : "Speichere...",
+   "chart_name" : "Name für neuen Chart",
+   "add_btn" : "Hinzufügen",
+   "time" : "Zeit",
+   "from" : "Von: ",
+   "to" : "Bis: ",
+   "time_unit" : "Zeiteinheit:",
+   "calculate" : "Berechnen:",
+   "unit" : "Einheit",
+   "empty" : "Nichts darzustellen!",
+   "wait" : "Bitte warten, Grafik wird berechnet...",
+   "update_btn" : "Aktualisieren",
+   
+   "person" : "Person",
+   "people" : "Personen",
+   "measure" : "Messung",
+   "measures" : "Messungen",
+   "detail" : "Detail",
+   "details" : "Details",
+   "code" : "Code",
+   "date" : "Datum",
+   
+   "last7" : "Letzte 7 Tage",
+   "last30" : "Letzte 30 Tage",
+   "last90" : "Letzte 90 Tage",
+   "last365" :"Letzte 365 Tage",
+   "user_defined" : "Benutzerdefiniert",
+   
+   "month" : "Monat",
+   "year" : "Jahr",
+   
+   "simple" : "-",
+   "avg" : "Durchschnitt",
+   "newest" : "Neuester Eintrag",
+   "count" : "Anzahl Einträge",
+   "sum" : "Summe", 
+   
+   "report_ts_person" : "Zeitserie pro Person",
+   "report_ts_measure" : "Zeitserie pro Messung",
+   "report_ts_detail" : "Zeitserie pro Detail",
+   "report_rc_measure_person" : "Radar-Chart: Messung/Person",
+   "report_rc_detail_person" : "Radar-Chart: Detail/Person",
+   "report_bc_measure_person" : "Bar-Chart: Messung/Person",
+   "report_bc_detail_person" : "Bar-Chart: Detail/Person",
+   "report_bc_person" : "Bar-Chart: Personen",
+   "report_single" : "Einzelner Wert"		
 },
 it = {
 		

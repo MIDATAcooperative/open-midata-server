@@ -15,11 +15,11 @@ angular.module('services')
 	};
 	
 	service.frequencies = [
-	  { value : "ONCE", label : "Once" },
-	  { value : "DAILY", label : "Daily" },
-	  { value : "WEEKLY", label : "Every Week" },
-	  { value : "MONTHLY", label : "Every Month" },
-	  { value : "YEARLY", label : "Every Year" }	 
+	  { value : "ONCE", label : "enum.frequency.ONCE" },
+	  { value : "DAILY", label : "enum.frequency.DAILY" },
+	  { value : "WEEKLY", label : "enum.frequency.WEEKLY" },
+	  { value : "MONTHLY", label : "enum.frequency.MONTHLY" },
+	  { value : "YEARLY", label : "enum.frequency.YEARLY" }	 
 	];
 			
 	return service;

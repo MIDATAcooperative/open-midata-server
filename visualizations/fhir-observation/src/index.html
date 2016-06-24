@@ -4,17 +4,17 @@
 		<meta charset="utf-8">
 		<title>FHIR</title>
 		
-		<!-- build:css assets/app.min.css -->
+	   <!-- build:css assets/app.min.css -->
 		<link rel="stylesheet" href="components/bootstrap/css/bootstrap.css">
 		<link rel="stylesheet" href="components/midata/css/app.css">
 		<!-- endbuild -->
 		
 		<!-- build:js assets/app.min.js -->
-		<script type="text/javascript" src="components/jquery/jquery.js" defer></script>
-		<script type="text/javascript" src="components/bootstrap/js/bootstrap.js" defer></script>
 		<script type="text/javascript" src="components/angular/angular.js" defer></script>
+		<script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
 		<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>		
 		<script type="text/javascript" src="components/midata/js/midata.js" defer></script>
+		<script type="text/javascript" src="i18n.js" defer></script>
 		<script type="text/javascript" src="app.js" defer></script>
 		<!-- endbuild -->
 						
@@ -26,13 +26,13 @@
 	<body>	
 		<div ng-app="fhir" ng-controller="ObservationCtrl" ng-cloak class="container">		
 		  <div ng-repeat="record in records">		   
-		    <div class="text-center" ng-show="record.data.category">Category: <b>{{ getCodeableConcept(record.data.category)  }}</b></div>		    
+		    <div class="text-center" ng-show="record.data.category"><span translate="category"></span> <b>{{ getCodeableConcept(record.data.category)  }}</b></div>		    
 		    <div class="text-center text-primary"><b>{{ getCodeableConcept(record.data.code)  }}</b></div>                       
             <div class="text-center lead" ng-show="record.data.valueQuantity"><span style="color: #1c4982;display: block;font-size: 100px;">{{ record.data.valueQuantity.value }}</span>{{ record.data.valueQuantity.unit }}</div>
             <div class="row" ng-show="record.data.valueString"><div class="well text-center"><b>{{ record.data.valueString }}</b></div></div>
             <div class="text-center lead" ng-show="record.data.valueCodeableConcept"><span style="color: #1c4982;display: block;">{{ getCodeableConcept(record.data.valueCodeableConcept) }}</span></div>
-            <div class="text-center">Date: <strong>{{ record.data.effectiveDateTime | date }}</strong></div>
-            <div class="text-center" ng-show="record.data.status">Status: <b>{{ record.data.status }}</b></div>
+            <div class="text-center"><span translate="date"></span> <strong>{{ record.data.effectiveDateTime | date }}</strong></div>
+            <div class="text-center" ng-show="record.data.status"><span translate="status"></span> <b translate="{{ record.data.status }}"></b></div>
             <hr ng-hide="$last">  
           </div>
 		</div>
