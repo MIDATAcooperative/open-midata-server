@@ -38,7 +38,7 @@ angular.module('portal')
 			  $scope.authorized = false;
 			  $scope.message = null;			  
 			} else {
-			  var url = results.data.url;
+			  var url = result.data.url;
 			  if (url.indexOf("?")>0) url+="&lang="+encodeURIComponent($translate.use()); else url+="?lang="+encodeURIComponent($translate.use());
 			  space.trustedUrl = $sce.trustAsResourceUrl(url);
 			  
