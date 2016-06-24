@@ -38,13 +38,17 @@ angular.module('portal')
 			  $scope.authorized = false;
 			  $scope.message = null;			  
 			} else {
-			  var url = result.data.url;
-			  if (url.indexOf("?")>0) url+="&lang="+encodeURIComponent($translate.use()); else url+="?lang="+encodeURIComponent($translate.use());
+			  var url = result.data;
+			  if (url.indexOf("?")>0) {
+				  url+="&lang="+encodeURIComponent($translate.use()); 
+			  } else {
+				  url+="?lang="+encodeURIComponent($translate.use());
+			  }
 			  space.trustedUrl = $sce.trustAsResourceUrl(url);
 			  
 			  $scope.error = null;
 			  $scope.message = null;
-			  $scope.url = $sce.trustAsResourceUrl(result.data);
+			  $scope.url = $sce.trustAsResourceUrl(url);
 			  $scope.loaded = true;
 			  $scope.authorized = true;
 			  console.log("LOADED");
