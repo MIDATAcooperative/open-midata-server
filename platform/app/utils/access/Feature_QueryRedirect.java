@@ -153,12 +153,6 @@ public class Feature_QueryRedirect extends Feature {
 		//List<DBRecord> r = FormatHandling.findStreams(new Query(query, Sets.create("_id","key"),  cache, true);
 	}
 
-	@Override
-	protected List<DBRecord> postProcess(List<DBRecord> records, Query q)
-			throws AppException {
-		return next.postProcess(records, q);
-		
-	}
 
 	
 

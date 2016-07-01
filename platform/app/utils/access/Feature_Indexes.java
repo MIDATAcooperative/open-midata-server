@@ -117,11 +117,7 @@ private Feature next;
 			
 		} else return next.query(q);
 	}
-
-	@Override
-	protected List<DBRecord> postProcess(List<DBRecord> records, Query q) throws AppException {		
-		return next.postProcess(records, q);
-	}
+	
 
 	
 }

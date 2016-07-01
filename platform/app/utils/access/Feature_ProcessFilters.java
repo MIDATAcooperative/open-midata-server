@@ -21,13 +21,8 @@ public class Feature_ProcessFilters extends Feature {
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
 		List<DBRecord> result = next.query(q);
-		return QueryEngine.postProcessRecordsFilter(next, q, result);
-	}
-
-	@Override
-	protected List<DBRecord> postProcess(List<DBRecord> records, Query q) throws AppException {
-		return records;
+		return QueryEngine.postProcessRecordsFilter(q, result);
 	}
 	
-	 
+		
 }

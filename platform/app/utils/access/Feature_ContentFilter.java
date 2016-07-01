@@ -22,19 +22,11 @@ public class Feature_ContentFilter extends Feature {
 
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {		
-		return next.query(q);
-	}
-
-	@Override
-	protected List<DBRecord> postProcess(List<DBRecord> records, Query q)
-			throws AppException {
-		List<DBRecord> result = next.postProcess(records, q);
+		List<DBRecord> result = next.query(q);
 		if (q.restrictedBy("format")) result = QueryEngine.filterByMetaSet(result, "format", q.getRestriction("format"));
 		if (q.restrictedBy("content")) result = QueryEngine.filterByMetaSet(result, "content", q.getRestriction("content"));
-		if (q.restrictedBy("subformat")) result = QueryEngine.filterByMetaSet(result, "subformat", q.getRestriction("subformat"));
-		//if (q.restrictedBy("format/*")) result = QueryEngine.filterByWCFormat(result, "format", q.getRestriction("format/*"));
-		//if (q.restrictedBy("content/*")) result = QueryEngine.filterByWCFormat(result, "content", q.getRestriction("content/*"));
-		return result;	
+		if (q.restrictedBy("subformat")) result = QueryEngine.filterByMetaSet(result, "subformat", q.getRestriction("subformat"));	
+		return result;
 	}
-		
+			
 }

@@ -151,12 +151,7 @@ public class Feature_Streams extends Feature {
 		return records;
 		
 	}
-
-	@Override
-	protected List<DBRecord> postProcess(List<DBRecord> records, Query q)
-			throws InternalServerException {		
-		return records;
-	}
+	
 
 	public static void placeNewRecordInStream(ObjectId executingPerson, DBRecord record, ObjectId alternateAps) throws AppException {
 		 Map<String, Object> props = new HashMap<String, Object>();

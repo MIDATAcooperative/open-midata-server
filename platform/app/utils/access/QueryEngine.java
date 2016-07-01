@@ -55,7 +55,7 @@ class QueryEngine {
 		if (!cache.getAPS(aps).isAccessible()) return new ArrayList<DBRecord>();
 
 		if (AccessLog.detailedLog) AccessLog.logBegin("Begin check contained in aps #recs="+candidates.size());
-		List<DBRecord> result = Feature_Prefetch.lookup(new Query(CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps), candidates, new Feature_QueryRedirect(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams())))));
+		List<DBRecord> result = Feature_Prefetch.lookup(new Query(CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps), candidates, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_Documents(new Feature_Streams())))));
 		if (AccessLog.detailedLog) AccessLog.logEnd("End check contained in aps #recs="+result.size());
 		
 		return result;						
@@ -71,7 +71,7 @@ class QueryEngine {
 		if (AccessLog.detailedLog) AccessLog.logBegin("Begin list from memory #recs="+records.size());
 		APS inMemory = new Feature_InMemoryQuery(records);
 		cache.addAPS(inMemory);
-		Feature qm = new Feature_ProcessFilters(new Feature_FormatGroups(new Feature_ContentFilter(inMemory)));
+		Feature qm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_ContentFilter(inMemory)));
 		Query query = new Query(properties, Sets.create("_id"), cache, inMemory.getId());
 		List<DBRecord> recs = qm.query(query);
 		AccessLog.log("list from memory pre postprocess size = "+recs.size());
@@ -147,7 +147,7 @@ class QueryEngine {
 		}
 		
 		
-		Feature qm = new Feature_Prefetch(new Feature_BlackList(myaps, new Feature_QueryRedirect(new Feature_ProcessFilters(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_FormatGroups(new Feature_Streams())))))));
+		Feature qm = new Feature_Prefetch(new Feature_BlackList(myaps, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Streams())))))));
 				
 		List<DBRecord> recs = qm.query(q);
 		recs = postProcessRecords(qm, q.getProperties(), recs);
@@ -201,7 +201,7 @@ class QueryEngine {
     	AccessLog.logBegin("begin full query");
     	    	
     	APS target = cache.getAPS(apsId);
-    	Feature qm = new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_ProcessFilters(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams()))))))))));
+    	Feature qm = new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Documents(new Feature_Streams()))))))))));
     	
     	List<DBRecord> result = query(properties, fields, apsId, cache, qm);
     	
@@ -312,7 +312,7 @@ class QueryEngine {
 		return result;
     }
     
-    protected static List<DBRecord> postProcessRecordsFilter(Feature qm, Query q, List<DBRecord> result) throws AppException {
+    protected static List<DBRecord> postProcessRecordsFilter(Query q, List<DBRecord> result) throws AppException {
     	if (result.size() > 0) {
     	AccessLog.logBegin("begin process filters size="+result.size());    	
 			    	
@@ -356,7 +356,7 @@ class QueryEngine {
     		result = result_new;    		
     	}
     	
-		if (qm!=null) result = qm.postProcess(result, q);     	
+		//if (qm!=null) result = qm.postProcess(result, q);     	
 								
 		// 8 Post filter records if necessary		
 						

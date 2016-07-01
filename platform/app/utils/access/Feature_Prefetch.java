@@ -54,12 +54,7 @@ public class Feature_Prefetch extends Feature {
 		AccessLog.logEnd("end lookup #found="+results.size());
 		return results;
 	}
-	
-	@Override
-	protected List<DBRecord> postProcess(List<DBRecord> records, Query q)
-			throws AppException {
-		return next.postProcess(records, q);		
-	}
+		
 
 
 }

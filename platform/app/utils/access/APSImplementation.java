@@ -418,12 +418,7 @@ class APSImplementation extends APS {
 
 		
 	}
-	
-
-	@Override
-	protected List<DBRecord> postProcess(List<DBRecord> records, Query q) throws InternalServerException {
-		return records;
-	}
+		
 	
 	//-----------
 	

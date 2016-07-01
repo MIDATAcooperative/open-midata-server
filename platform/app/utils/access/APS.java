@@ -76,10 +76,5 @@ public abstract class APS extends Feature {
 	
 	public abstract List<DBRecord> historyQuery(long minUpd, boolean removes) throws AppException;
 
-	@Override
-	protected List<DBRecord> postProcess(List<DBRecord> records, Query q)
-			throws InternalServerException {			
-		return records;
-	}
-						
+					
 }

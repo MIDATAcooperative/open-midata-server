@@ -200,18 +200,15 @@ public class Feature_FormatGroups extends Feature {
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
 		Set<String> contents = prepareFilter(q);
+		List<DBRecord> result = null;
 		if (contents != null) {
 			Map<String, Object> combined = Feature_QueryRedirect.combineQuery(q.getProperties(), CMaps.map("content", contents));
 			if (combined == null) return Collections.EMPTY_LIST;
-		  	return next.query(new Query(q, combined));					
+		  	result = next.query(new Query(q, combined));					
 		} else {
-		   return next.query(q);
+		   result = next.query(q);
 		}
-	}
-
-	@Override
-	protected List<DBRecord> postProcess(List<DBRecord> records, Query q) throws AppException {
-		List<DBRecord> result = next.postProcess(records, q);
+		
 		if (q.returns("group")) {
 			String system = q.getStringRestriction("group-system");
 			if (system == null) system = "v1";
@@ -222,6 +219,5 @@ public class Feature_FormatGroups extends Feature {
 		}	
 		return result;
 	}	
-
 	
 }

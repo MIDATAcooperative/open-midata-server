@@ -59,15 +59,5 @@ public class Feature_BlackList extends Feature {
 		List<DBRecord> result = next.query(q);
 		return filter(result);
 	}
-	
-
-	@Override
-	protected List<DBRecord> postProcess(List<DBRecord> records, Query q)
-			throws AppException {
-		return next.postProcess(records, q);		
-	}
-
-	
-	
-
+		
 }

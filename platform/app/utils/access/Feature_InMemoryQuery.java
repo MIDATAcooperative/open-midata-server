@@ -41,12 +41,7 @@ public class Feature_InMemoryQuery extends APS {
 		  return result;
 		} else return contents;
 	}
-
-	@Override
-	protected List<DBRecord> postProcess(List<DBRecord> records, Query q)
-			throws InternalServerException {
-		return records;
-	}
+	
 
 	@Override
 	public ObjectId getId() {

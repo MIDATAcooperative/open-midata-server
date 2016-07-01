@@ -36,10 +36,6 @@ public class Feature_ConsentRestrictions extends Feature {
 		} 
 		return next.query(q);		
 	}
-
-	@Override
-	protected List<DBRecord> postProcess(List<DBRecord> records, Query q) throws AppException {
-		return next.postProcess(records, q);
-	}
+	
 	
 }

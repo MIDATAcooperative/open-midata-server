@@ -176,13 +176,6 @@ public class Feature_AccountQuery extends Feature {
 		consents = applyConsentTimeFilter(q, consents);
 		return consents;
 	}
-
-	@Override
-	protected List<DBRecord> postProcess(List<DBRecord> records, Query q) throws AppException {
-		return next.postProcess(records, q);
-
-	}
-
 	
 
 }

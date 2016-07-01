@@ -66,10 +66,6 @@ public class Feature_Consents extends Feature {
 		
 	}
 
-	@Override
-	protected List<DBRecord> postProcess(List<DBRecord> records, Query q) throws AppException {
-		return next.postProcess(records, q);
-	}
 
 	
 }
