@@ -41,14 +41,7 @@ public class Feature_BlackList extends Feature {
 			}
 		}
 	}
-	
-	
-	@Override
-	protected List<DBRecord> lookup(List<DBRecord> record, Query q)
-			throws AppException {
-		List<DBRecord> result = next.lookup(record, q);
-		return filter(result);
-	}
+			
 	
 	private List<DBRecord> filter(List<DBRecord> input) {		
 		if (blacklist.isEmpty()) return input;

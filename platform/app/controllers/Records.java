@@ -363,6 +363,11 @@ public class Records extends APIController {
         	if (query != null) {
         		Feature_FormatGroups.convertQueryToContents(groupSystem, query);
         		
+        		List<Record> recs = RecordManager.instance.list(userId, start, CMaps.map(query).map("flat", "true"), Sets.create("_id"));
+        		Set<ObjectId> remove = new HashSet<ObjectId>();
+        		for (Record r : recs) remove.add(r._id);
+        		RecordManager.instance.unshare(userId, start, remove);
+        		
         		if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
         		  RecordManager.instance.shareByQuery(userId, userId, start, query);
         		} else {

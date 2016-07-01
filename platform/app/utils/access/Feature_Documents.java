@@ -14,7 +14,7 @@ public class Feature_Documents extends Feature {
 	public Feature_Documents(Feature next) throws AppException {
 		this.next = next;
 	}
-
+/*
 	@Override
 	protected List<DBRecord> lookup(List<DBRecord> records, Query q) throws AppException {
 
@@ -40,7 +40,7 @@ public class Feature_Documents extends Feature {
 
 		return result;
 	}
-
+*/
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
 		return next.query(q);

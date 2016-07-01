@@ -17,12 +17,7 @@ public class Feature_ProcessFilters extends Feature {
 		this.next = next;
 	}
 	
-	@Override
-	protected List<DBRecord> lookup(List<DBRecord> record, Query q) throws AppException {
-		List<DBRecord> result = next.lookup(record, q);
-		return QueryEngine.postProcessRecordsFilter(next, q, result);
-	}
-
+	
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
 		List<DBRecord> result = next.query(q);

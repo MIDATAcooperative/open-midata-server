@@ -86,6 +86,7 @@ public class EncryptedAPS {
 		aps.security = lvl;
 		aps.permissions = new HashMap<String, Object>();
 		aps.permissions.put("p", new BasicBSONList());
+		aps.permissions.put("owner", owner.toString());
 		aps.keys = new HashMap<String, byte[]>();		
 		
 		if (! lvl.equals(APSSecurityLevel.NONE)) {
@@ -317,7 +318,16 @@ public class EncryptedAPS {
 		} else {
 			if (!aps.security.equals(APSSecurityLevel.NONE)) { decodeAPS(); }
 		}
-		isValidated = true;	
+		isValidated = true;
+		
+		// Lazily patch old version APS
+		if (!aps.permissions.containsKey("owner") && owner != null) {
+			aps.permissions.put("owner", owner.toString());
+			try {
+ 			  savePermissions();
+			} catch (LostUpdateException e) {}
+		}
+		
 		} catch (AuthException e) {
 			AccessLog.decryptFailure(e);
 			throw e;

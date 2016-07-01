@@ -57,10 +57,11 @@ public abstract class APS extends Feature {
 	public abstract void setMeta(String key, Map<String, Object> data) throws AppException;
 	
 	public abstract void removeMeta(String key) throws AppException;
+	
+	public abstract ObjectId getStoredOwner() throws AppException;
 		
 	public abstract BasicBSONObject getMeta(String key) throws AppException;
-			
-	protected abstract boolean lookupSingle(DBRecord input, Query q) throws AppException;
+				
 							
 	public abstract void addPermission(DBRecord record, boolean withOwner) throws AppException;
 		
@@ -80,17 +81,5 @@ public abstract class APS extends Feature {
 			throws InternalServerException {			
 		return records;
 	}
-	
-	protected List<DBRecord> lookup(List<DBRecord> input, Query q)
-			throws AppException {
-		List<DBRecord> filtered = new ArrayList<DBRecord>(input.size());
-		for (DBRecord record : input) { 
-			if (lookupSingle(record, q)) { filtered.add(record); }			
-		}
-		return filtered;
-	}
-
-	
-		
-			
+						
 }

@@ -36,19 +36,6 @@ public class Feature_FormatGroups extends Feature {
 	}
 	
 	
-	
-	@Override
-	protected List<DBRecord> lookup(List<DBRecord> input, Query q)
-			throws AppException {
-		Set<String> contents = prepareFilter(q);
-		if (contents != null) {
-			Map<String, Object> combined = Feature_QueryRedirect.combineQuery(q.getProperties(), CMaps.map("content", contents));
-			if (combined == null) return Collections.EMPTY_LIST;
-		  	return next.lookup(input, new Query(q, combined));
-		} else {
-		  return next.lookup(input, q);
-		}
-	}
 
 	private static void addChildren(String groupSystem, String group, Set<String> groups, Set<String> exclude) throws AppException {		
 			RecordGroup grp = RecordGroup.getBySystemPlusName(groupSystem, group);

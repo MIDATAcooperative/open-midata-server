@@ -20,11 +20,7 @@ public class Feature_Consents extends Feature {
 		this.next = next;
 	}
 	
-	@Override
-	protected List<DBRecord> lookup(List<DBRecord> record, Query q) throws AppException {
-		return next.lookup(record, q);
-	}
-
+	
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
 		if (q.restrictedBy("shared-after")) {			
@@ -32,7 +28,7 @@ public class Feature_Consents extends Feature {
 			AccessLog.logBegin("start history query after="+after.toString());
 			List<DBRecord> recs = q.getCache().getAPS(q.getApsId()).historyQuery(after.getTime(), false);			
 			
-			recs = next.lookup(recs, q);
+			recs = Feature_Prefetch.lookup(q, recs, next);
 			List<DBRecord> result = new ArrayList<DBRecord>(recs.size());
 			AccessLog.log("found "+recs.size()+" history entries");
 			if (recs.size() > 0) {

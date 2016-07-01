@@ -48,12 +48,13 @@
     	   
         $scope.server = "https://localhost:9000";
         $scope.aps = "-";
+        $scope.token = "";
         
         $scope.dosubmit = function() {
             var url = $scope.server + "/debug/aps/"+$scope.aps;
             //window.localStorage.extra = $scope.extra;
             console.log(url);            
-            $http({ method: "GET", url: url })
+            $http({ method: "GET", url: url, headers : { "X-Session-Token" : $scope.token }  })
             .success(function(data) { $scope.data = data; })
             .error(function(x,p) { $scope.data = JSON.stringify(x); });
           };

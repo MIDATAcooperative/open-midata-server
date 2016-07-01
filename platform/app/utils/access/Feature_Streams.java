@@ -39,43 +39,7 @@ public class Feature_Streams extends Feature {
 		
 	}
 	
-	public final static Set<String> streamFields = Sets.create("content", "format", "subformat");
-	
-		
-	protected List<DBRecord> lookup(List<DBRecord> records, Query q)
-			throws AppException {
-		APS next = q.getCache().getAPS(q.getApsId());
-		
-		List<DBRecord> result = (next != null) ? next.lookup(records, q) : null;
-		
-		boolean isStrict = q.restrictedBy("strict");
-		
-		for (DBRecord record : records) {			
-			if (record.stream != null && record.security == null) {
-				boolean lookup = true;
-				if (isStrict) {
-					DBRecord stream = new DBRecord();					
-					stream._id = record.stream;
-					if (!((APS) next).lookupSingle(stream, q)) lookup = false; 
-					if (!lookup) AccessLog.log("failed to find stream "+record.stream.toString()+" in "+q.getApsId().toString());
-				}
-				
-				boolean found = lookup && q.getCache().getAPS(record.stream).lookupSingle(record, q);
-				AccessLog.log("looked for:"+record._id.toString()+" in "+record.stream.toString()+" found="+found+" key="+(record.key != null));                			
-				if (found) {
-					result.add(record);
-					
-					if (q.returns("owner") && record.owner == null) {
-						List<DBRecord> stream = next.query(new Query(CMaps.map("_id", record.stream), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId() ));
-						if (stream.size() > 0) record.owner = stream.get(0).owner;
-					}                    					
-				}
-			}
-		}
-		
-		return result;
-	}
-	
+	public final static Set<String> streamFields = Sets.create("content", "format", "subformat");					
 	
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {		

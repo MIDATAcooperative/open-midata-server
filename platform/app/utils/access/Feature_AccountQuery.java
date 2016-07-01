@@ -37,11 +37,7 @@ public class Feature_AccountQuery extends Feature {
 		this.next = next;
 	}
 
-	@Override
-	protected List<DBRecord> lookup(List<DBRecord> record, Query q) throws AppException {
-		return next.lookup(record, q);
-	}
-
+	
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
 
@@ -98,7 +94,7 @@ public class Feature_AccountQuery extends Feature {
 				}				
 				
 			}
-			if (AccessLog.detailedLog) AccessLog.logEnd("End process owner aps");
+			if (AccessLog.detailedLog) AccessLog.logEnd("End process owner aps #size="+result.size());
 			return result;
 		} else {
 			List<DBRecord> result = next.query(q);

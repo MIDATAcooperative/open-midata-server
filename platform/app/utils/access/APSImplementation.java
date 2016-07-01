@@ -187,6 +187,11 @@ class APSImplementation extends APS {
 	public BasicBSONObject getMeta(String key) throws AppException {
 		return (BasicBSONObject) eaps.getPermissions().get(key);
 	}
+	
+	public ObjectId getStoredOwner() throws AppException {
+		String ownerStr = (String) eaps.getPermissions().get("owner");
+		if (ownerStr != null) return new ObjectId(ownerStr); else return null;
+	}
 
 	@Override
 	public List<DBRecord> query(Query q) throws AppException {		
@@ -199,10 +204,10 @@ class APSImplementation extends APS {
 		if (eaps.isDirect()) {
 			if (q.isStreamOnlyQuery())
 				return result;
-
 			
 			Map<String, Object> query = new HashMap<String, Object>();
 			query.put("stream", eaps.getId());
+			if (q.restrictedBy("_id")) query.put("_id", q.getObjectIdRestriction("_id"));
 			//query.put("direct", Boolean.TRUE);
 			q.addMongoTimeRestriction(query);
 			List<DBRecord> directResult = new ArrayList<DBRecord>(DBRecord.getAll(query, q.getFieldsFromDB()));
@@ -248,6 +253,7 @@ class APSImplementation extends APS {
 				}
 			}
 		}
+		AccessLog.log("query APS=" + eaps.getId()+" #size="+result.size());
 		return result;
 	}
 
@@ -263,49 +269,6 @@ class APSImplementation extends APS {
 				return false;
 		}
 		return true;
-	}
-
-	protected boolean lookupSingle(DBRecord input, Query q) throws AppException {
-		// AccessLog.lookupSingle(eaps.getId(), input._id, q.getProperties());
-		if (eaps.isDirect()) {
-			input.key = eaps.getAPSKey() != null ? eaps.getAPSKey() : null;
-			input.security = eaps.getSecurityLevel();
-			input.owner = eaps.getOwner();
-			return true;
-		}		
-		
-		Map<String, Object> permissions = eaps.getPermissions();
-
-		List<BasicBSONObject> rows = APSEntry.findMatchingRowsForQuery(permissions, q);
-
-		// AccessLog.logMap(formats);
-
-		for (BasicBSONObject row : rows) {
-			BasicBSONObject map = APSEntry.getEntries(row);
-			//AccessLog.debug(getId()+":"+row.toString());
-			BasicBSONObject target = (BasicBSONObject) map.get(input._id.toString());
-			if (target == null && input.document != null)
-				target = (BasicBSONObject) map.get(input.document.toString());
-			if (target != null) {
-				Object k = target.get("key");
-				input.key = (k instanceof String) ? null : (byte[]) k; // Old version support
-				input.security = input.key != null ? eaps.getSecurityLevel() : APSSecurityLevel.NONE;														
-				
-				APSEntry.populateRecord(row, input);
-				input.isStream = target.getBoolean("s");
-				if (input.owner == null) {
-					String owner = target.getString("owner");
-					if (owner != null)
-						input.owner = new ObjectId(owner);
-					else
-						input.owner = eaps.getOwner();
-				}
-				// AccessLog.identified(eaps.getId(), input._id);
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	private DBRecord createRecordFromAPSEntry(String id, BasicBSONObject row, BasicBSONObject entry, boolean withOwner) throws AppException {
@@ -460,18 +423,6 @@ class APSImplementation extends APS {
 	@Override
 	protected List<DBRecord> postProcess(List<DBRecord> records, Query q) throws InternalServerException {
 		return records;
-	}
-
-	@Override
-	protected List<DBRecord> lookup(List<DBRecord> input, Query q) throws AppException {
-		merge();
-		List<DBRecord> filtered = new ArrayList<DBRecord>(input.size());
-		for (DBRecord record : input) {
-			if (lookupSingle(record, q)) {
-				filtered.add(record);
-			}
-		}
-		return filtered;
 	}
 	
 	//-----------

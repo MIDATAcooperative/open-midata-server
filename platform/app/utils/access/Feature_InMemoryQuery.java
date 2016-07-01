@@ -29,20 +29,17 @@ public class Feature_InMemoryQuery extends APS {
 	public Feature_InMemoryQuery(List<DBRecord> contents) {
 		this.contents = contents;
 	}
-			
+				
 	@Override
-	protected List<DBRecord> lookup(List<DBRecord> input, Query q)
-			throws InternalServerException {
-		List<DBRecord> result = new ArrayList<DBRecord>();
-		for (DBRecord record : input) {
-			if (contents.contains(record)) result.add(record);
-		}
-		return result;
-	}
-
-	@Override
-	protected List<DBRecord> query(Query q) throws InternalServerException {	
-		return contents;
+	protected List<DBRecord> query(Query q) throws AppException {
+		if (q.restrictedBy("_id")) {
+		  Set<ObjectId> ids = q.getObjectIdRestriction("_id");
+		  List<DBRecord> result = new ArrayList<DBRecord>();
+		  for (DBRecord record : contents) {
+			  if (ids.contains(record._id)) result.add(record);
+		  }
+		  return result;
+		} else return contents;
 	}
 
 	@Override
@@ -116,15 +113,7 @@ public class Feature_InMemoryQuery extends APS {
 	public BasicBSONObject getMeta(String key) throws AppException {		
 		return null;
 	}
-
-	@Override
-	protected boolean lookupSingle(DBRecord input, Query q) throws AppException {		
-		for (DBRecord record : contents) {
-			if (record._id.equals(input._id)) return true;
-		}
-		return false;
-	}
-
+	
 	@Override
 	public void addPermission(DBRecord record, boolean withOwner) throws AppException {
 		throw new NotImplementedError();
@@ -155,6 +144,11 @@ public class Feature_InMemoryQuery extends APS {
 	@Override
 	public void clearPermissions() throws AppException {
 		throw new NotImplementedError();		
+	}
+
+	@Override
+	public ObjectId getStoredOwner() throws AppException {		
+		throw new NotImplementedError();	
 	}
 	
 	

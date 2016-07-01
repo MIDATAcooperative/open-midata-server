@@ -14,10 +14,7 @@ import models.RecordsInfo;
  *
  */
 public abstract class Feature {
-
-		
-	protected abstract List<DBRecord> lookup(List<DBRecord> record, Query q) throws AppException;
-	
+				
 	protected abstract List<DBRecord> query(Query q) throws AppException;
 	
 	protected abstract List<DBRecord> postProcess(List<DBRecord> records, Query q) throws AppException;

@@ -36,12 +36,5 @@ public class Feature_ContentFilter extends Feature {
 		//if (q.restrictedBy("content/*")) result = QueryEngine.filterByWCFormat(result, "content", q.getRestriction("content/*"));
 		return result;	
 	}
-
-	@Override
-	protected List<DBRecord> lookup(List<DBRecord> record, Query q)
-			throws AppException {		
-		return next.lookup(record, q);
-	}
-
-	
+		
 }

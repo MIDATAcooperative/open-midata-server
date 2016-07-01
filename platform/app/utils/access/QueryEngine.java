@@ -52,24 +52,13 @@ class QueryEngine {
 	
 	public static List<DBRecord> isContainedInAps(APSCache cache, ObjectId aps, List<DBRecord> candidates) throws AppException {
 		
-		List<DBRecord> clearedCandidates = new ArrayList<DBRecord>(candidates.size());
-		for (DBRecord candidate : candidates) {
-			DBRecord clone = new DBRecord();
-			clone._id = candidate._id;
-			clone.stream = candidate.stream;
-			clone.document = candidate.document;
-			clone.part = candidate.part;
-			clone.time = candidate.time;
-			clearedCandidates.add(clone);
-		}
 		if (!cache.getAPS(aps).isAccessible()) return new ArrayList<DBRecord>();
-		
-		if (AccessLog.detailedLog) AccessLog.logBegin("Begin check contained in aps #recs="+clearedCandidates.size());		
-		List<DBRecord> result = onlyWithKey((new Feature_QueryRedirect(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams())))).lookup(clearedCandidates, new Query(CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps))));
+
+		if (AccessLog.detailedLog) AccessLog.logBegin("Begin check contained in aps #recs="+candidates.size());
+		List<DBRecord> result = Feature_Prefetch.lookup(new Query(CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps), candidates, new Feature_QueryRedirect(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams())))));
 		if (AccessLog.detailedLog) AccessLog.logEnd("End check contained in aps #recs="+result.size());
-		return result;
-				
-		//return onlyWithKey((new Feature_QueryRedirect(new Feature_AccountQuery(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams())))).lookup(candidates, new Query(CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps))));
+		
+		return result;						
 	}
 		
 	public static boolean isInQuery(APSCache cache, Map<String, Object> properties, DBRecord record) throws AppException {
@@ -108,7 +97,7 @@ class QueryEngine {
 		
 		APS myaps = q.getCache().getAPS(aps);
 		boolean doNotCacheInStreams = myaps.getMeta("_exclude") != null;
-		boolean doNotQueryPerStream = false;
+		boolean doNotQueryPerStream = myaps.getMeta("_exclude") != null;
 		
 		if (!doNotCacheInStreams) {
 		  BasicBSONObject query = myaps.getMeta(APS.QUERY);
@@ -212,7 +201,7 @@ class QueryEngine {
     	AccessLog.logBegin("begin full query");
     	    	
     	APS target = cache.getAPS(apsId);
-    	Feature qm = new Feature_Prefetch(new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_ProcessFilters(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams()))))))))));
+    	Feature qm = new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_ProcessFilters(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_FormatGroups(new Feature_Documents(new Feature_Streams()))))))))));
     	
     	List<DBRecord> result = query(properties, fields, apsId, cache, qm);
     	

@@ -32,11 +32,6 @@ private Feature next;
 	
 	
 	@Override
-	protected List<DBRecord> lookup(List<DBRecord> record, Query q) throws AppException {
-		return next.lookup(record, q);
-	}
-
-	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
 		if (q.restrictedBy("index") && q.getApsId().equals(q.getCache().getOwner())) {
 			AccessLog.logBegin("start index query");
@@ -104,7 +99,7 @@ private Feature next;
 			   List<DBRecord> partresult = new ArrayList(DBRecord.getAll(readRecs, queryFields));
 				
 				Query q3 = new Query(q, CMaps.map("strict", "true"), aps);
-				partresult = next.lookup(partresult, q3);
+				partresult = Feature_Prefetch.lookup(q3, partresult, next);
 				
 	            Query q2 = new Query(q, CMaps.map("_id", ids));
 	            List<DBRecord> additional = next.query(q2);

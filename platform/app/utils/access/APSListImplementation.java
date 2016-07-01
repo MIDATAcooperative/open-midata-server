@@ -27,12 +27,6 @@ public class APSListImplementation extends APSImplementation {
 		return 0;
 	}
 		
-	
-	@Override
-	protected boolean lookupSingle(DBRecord input, Query q) throws AppException {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public void addPermission(DBRecord record, boolean withOwner) throws AppException {
