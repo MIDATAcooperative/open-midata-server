@@ -8,7 +8,7 @@
 		  <div style="margin:10px">
 		  
 		  <div class="alert alert-info" ng-show="consent">
-		    <span translate="records.share_instructions"></span><strong>{{ consent.name }}</strong>.<br>
+		    <span translate="records.share_instructions1"></span><strong>{{ consent.name }}</strong>.<br>
 		    <span translate="records.share_instructions2"></span><strong>{{ consent.authorized.length }}</strong> <span translate="records.share_instructions3"></span><br><br>	
 		    <a class="btn btn-default btn-sm" ui-sref="^.editconsent({ consentId : selectedAps._id.$oid })">Done</a>	     
 		  </div>
@@ -21,7 +21,7 @@
 		<div class="row">	
 			<div class="pull-right col-sm-4" ng-show="displayAps.owner && compare!=null">
 			   <label for="selectedAps" translate="records.shared_with"></label>
-			  <select class="form-control" id="selectedAps" ng-model="selectedAps" ng-options="c.name as c.i18n | translate:{ name : c.name } for c in compare" ng-change="loadSharingDetails()"></select>
+			  <select class="form-control" id="selectedAps" ng-model="selectedAps" ng-options="c as c.i18n | translate:{ name : c.name } for c in compare" ng-change="loadSharingDetails()"></select>
 	        </div>	
 	        <div class="pull-right col-sm-4" ng-show="compare==null && selectedAps!=null && selectedType=='spaces'">
 			  <label for="selectedAps" translate="records.records_used_for_app"></label>	
@@ -29,7 +29,7 @@
 	        </div>		        
 	        <div class="col-sm-4">
 	           <label for="owner" ng-dblclick="showDebug()" translate="records.show"></label>
-	           <select class="form-control" id="owner" ng-model="displayAps" ng-options="c.name as c.i18n | translate:{ name : c.name } for c in availableAps" ng-change="selectSet()"></select>
+	           <select class="form-control" id="owner" ng-model="displayAps" ng-options="c as c.i18n | translate:{ name : c.name } for c in availableAps" ng-change="selectSet()"></select>
 	        </div>			
         </div>	
         </div>
