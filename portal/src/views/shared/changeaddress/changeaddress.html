@@ -1,0 +1,34 @@
+
+<div ng-controller="ChangeAddressCtrl">
+
+	<div ng-cloak class="panel panel-primary">
+		<div class="panel-heading" translate="changeaddress.title"></div>
+		<div class="panel-body">
+			<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
+            </p>	
+            <p ng-show="offline" class="alert alert-danger" translate="error.offline"></p>					
+			<form name="myform" novalidate class="css-form form-horizontal" ng-submit="changeAddress()" role="form">								  
+			  <formrow myid="email" label="registration.email">
+			    <input type="email" class="form-control" id="email" name="email" translate translate-attr-placeholder="registration.email" ng-model="registration.email" required>
+			    <formerror myid="email" type="email" message="error.invalid.email" ></formerror> 
+			    <formerror myid="email" type="exists" message="error.exists.member"></formerror> 
+			  </formrow>
+			  <formrow myid="firstname" label="registration.firstname"><input type="text" class="form-control" id="firstname" name="firstname" translate translate-attr-placeholder="registration.firstname" ng-model="registration.firstname" required></formrow>
+			  <formrow myid="lastname" label="registration.lastname"><input type="text" class="form-control" id="lastname" name="lastname" translate translate-attr-placeholder="registration.lastname" ng-model="registration.lastname" required></formrow>
+			  
+			  <formrow myid="gender" label="registration.gender"><select class="form-control" id="gender" name="gender" ng-model="registration.gender"><option value="FEMALE" translate="enum.gender.FEMALE">female</option><option value="MALE" translate="enum.gender.MALE"></option><option value="OTHER" translate="enum.gender.OTHER"></option></select></formrow>
+			   
+			  <formrow myid="address1" label="registration.address"><input type="text" class="form-control" id="address1" name="address1" translate translate-attr-placeholder="registration.address_line1" ng-model="registration.address1" required></formrow>
+			  <formrow myid="address2" label=""><input type="text" class="form-control" id="address2" name="address2" translate translate-attr-placeholder="registration.address_line2" ng-model="registration.address2"></formrow>
+			  <formrow myid="city" label="registration.city"><input type="text" class="form-control" id="city" name="city" translate translate-attr-placeholder="registration.city" ng-model="registration.city" required></formrow>
+			  <formrow myid="zip" label="registration.zip"><input type="text" class="form-control" id="zip" name="zip" translate translate-attr-placeholder="registration.zip" ng-model="registration.zip" required></formrow>
+			  <formrow myid="country" label="registration.country"><select class="form-control" id="country" name="country" ng-model="registration.country" required><option value="CH" translate="enum.country.CH"></option></select></formrow>
+                         
+              <formrow myid="phone" label="registration.phone"><input type="text" class="form-control" id="phone" name="phone" translate translate-attr-placeholder="registration.phone" ng-model="registration.phone"></formrow>
+              <formrow myid="mobile" label="registration.mobile_phone"><input type="text" class="form-control" id="mobile" name="mobile" translate translate-attr-placeholder="registration.mobile_phone" ng-model="registration.mobile"></formrow>
+                         
+              <button type="submit" ng-disabled="status.action=='changeAddress'" class="btn btn-primary" translate="changeaddress.update_btn"></button>
+
+		</div>
+	</div>
+</div>

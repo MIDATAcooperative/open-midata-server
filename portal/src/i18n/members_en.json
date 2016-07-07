@@ -30,26 +30,12 @@
   
   "help_setup" : {
     "description" : "The answers to the following questions are only used to setup your account according to your needs.",
-    "question_tasks" : "Which of these general tasks do you plan to do with MIDATA?", 
-    "question_tasks_answer1" : "Manage your health records",
-    "question_tasks_answer2" : "Protocol data about yourself.",
-	"question_tasks_answer3" : "Compare yourself with others.",		 
-	"question_tasks_answer4" : "Do planning",
-    "question_qself" : "Are you interested in gathering quantified self data? If yes, which?", 
-    "question_qself_answer1" : "Steps / Activities",
-	"question_qself_answer2" : "Sleep",		 
-	"question_qself_answer3" : "Weight",
-	"question_qself_answer4" : "Water Consumption",
-	"question_qself_answer5" : "Nutrition",
+    "question_measures" : "Which measures do you want to view in the portal?",
+   
     "question_devices" : "Do use any of these devices?", 
     "question_devices_answer1" : "Fitbit",
 	"question_devices_answer2" : "Jawbone",		 
-    "question_share" : "Do you plan to share some of your data with others?", 
-    "question_share_answer1" : "Family",
-	"question_share_answer2" : "Friends",		 		
-	"question_share_answer3" : "Doctor / Hospital",
-	"question_share_answer4" : "Research (Study participation)",
-	"question_share_answer5" : "Other people",
+   
     "come_back" : "You can always come back and change these settings by visiting the \"Help\" page.",
     "done_btn" : "Done"
   },

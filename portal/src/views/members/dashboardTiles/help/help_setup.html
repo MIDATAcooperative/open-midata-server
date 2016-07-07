@@ -4,31 +4,15 @@
     <p translate="help_setup.description"></p>
        
     <form name="myform" novalidate class="" ng-submit="setConfig()" role="form">
-      <formrow myid="qself" label="help_setup.question_tasks"> 
-        <div class="checkbox"><label><input type="checkbox" ng-model="questions.general.manage"><span translate="help_setup.question_tasks_answer1"></span></label></div>
-        <div class="checkbox"><label><input type="checkbox" ng-model="questions.general.protocol"><span translate="help_setup.question_tasks_answer2"></span></label></div>
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.general.compare"><span translate="help_setup.question_tasks_answer3"></span></label></div>		 
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.general.planning"><span translate="help_setup.question_tasks_answer4"></span></label></div>
-      </formrow>
-    
-      <formrow myid="qself" label="help_setup.question_qself"> 
-        <div class="checkbox"><label><input type="checkbox" ng-model="questions.qself.steps"><span translate="help_setup.question_qself_answer1"></label></div>
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.qself.sleep"><span translate="help_setup.question_qself_answer2"></label></div>		 
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.qself.weight"><span translate="help_setup.question_qself_answer3"></label></div>
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.qself.water"><span translate="help_setup.question_qself_answer4"></label></div>
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.qself.nutrition"><span translate="help_setup.question_qself_answer5"></label></div>
+          
+      <formrow myid="measures" label="help_setup.question_measures"> 
+        <div class="checkbox" ng-repeat="measure in measures"><label><input type="checkbox" ng-model="questions.measures[measure.id]"><span translate="{{measure.i18n || 'measure.'+measure.id }}"></label></div>
       </formrow>
       <formrow myid="devices" label="help_setup.question_devices"> 
         <div class="checkbox"><label><input type="checkbox" ng-model="questions.devices.fitbit"><span translate="help_setup.question_devices_answer1"></label></div>
 		<div class="checkbox"><label><input type="checkbox" ng-model="questions.devices.jawbone"><span translate="help_setup.question_devices_answer2"></label></div>		 
       </formrow>	
-      <formrow myid="sharing" label="help_setup.question_share"> 
-        <div class="checkbox"><label><input type="checkbox" ng-model="questions.share.family"><span translate="help_setup.question_share_answer1"></label></div>
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.share.friends"><span translate="help_setup.question_share_answer2"></label></div>		 		
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.share.doctor"><span translate="help_setup.question_share_answer3"></label></div>
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.share.research"><span translate="help_setup.question_share_answer4"></label></div>
-		<div class="checkbox"><label><input type="checkbox" ng-model="questions.share.other"><span translate="help_setup.question_share_answer5"></label></div>
-      </formrow>
+      
       <p translate="help_setup.come_back"></p>
       <button type="submit" class="btn btn-primary" translate="help_setup.done_btn"></button>
     </form>

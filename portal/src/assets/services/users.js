@@ -20,6 +20,15 @@ angular.module('services')
 		}
 		return dinfo;
 	};
+	
+	service.updateSettings = function(user) {
+		var data = {"language": user.language, "searchable": user.searchable };
+		return server.post(jsRoutes.controllers.Users.updateSettings().url, JSON.stringify(data));
+	};
+	
+	service.updateAddress = function(user) {		
+		return server.post(jsRoutes.controllers.Users.updateAddress().url, JSON.stringify(user));
+	};
 		
 	return service;
 	

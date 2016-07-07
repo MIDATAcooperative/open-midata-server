@@ -98,6 +98,9 @@ GET     /shared/api/users/current                        controllers.Users.getCu
 GET     /shared/api/users/contacts                      controllers.Users.loadContacts()
 GET     /members/api/users/search/:query                 controllers.Users.search(query: String)
 GET     /shared/api/users/complete/:query                controllers.Users.complete(query: String)
+POST    /shared/api/users/updateAddress                  controllers.Users.updateAddress()
+POST    /shared/api/users/updateSettings                 controllers.Users.updateSettings()
+
 # Research
 
 POST    /research/api/register                           controllers.research.Researchers.register()

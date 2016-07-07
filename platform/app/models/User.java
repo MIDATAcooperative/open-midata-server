@@ -174,6 +174,11 @@ public class User extends Model implements Comparable<User> {
 	public String language;
 	
 	/**
+	 * User may be found by a user search function
+	 */
+	public boolean searchable;
+	
+	/**
 	 * FHIR: Person
 	 */
 	public BSONObject person;
@@ -280,5 +285,6 @@ public class User extends Model implements Comparable<User> {
 	public static void set(ObjectId userId, String field, Object value) throws InternalServerException {
 		Model.set(User.class, collection, userId, field, value);
 	}
+		
 	
 }

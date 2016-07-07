@@ -2,6 +2,7 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,7 +12,13 @@ import java.util.Set;
 import models.Circle;
 import models.Member;
 import models.User;
+import models.enums.AccountSecurityLevel;
+import models.enums.ContractStatus;
+import models.enums.EMailStatus;
+import models.enums.Gender;
+import models.enums.ParticipationInterest;
 import models.enums.UserRole;
+import models.enums.UserStatus;
 
 import org.bson.types.ObjectId;
 
@@ -20,7 +27,10 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.DateTimeUtils;
+import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
+import utils.auth.CodeGenerator;
+import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
 import utils.auth.Rights;
 import utils.auth.MemberSecured;
@@ -29,6 +39,8 @@ import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -70,6 +82,10 @@ public class Users extends APIController {
 		
 		// check authorization
 		boolean postcheck = false;		
+		if (!getRole().equals(UserRole.ADMIN) && !properties.containsKey("email") && !properties.containsKey("midataID") && !properties.containsKey("_id")) {
+			throw new AuthException("error.notauthorized.action", "Search must be restricted");
+		}
+		
 		if (properties.containsKey("_id") && properties.get("_id").toString().equals(request().username())) {
 		  Rights.chk("Users.getSelf", getRole(), properties, fields);
 		} else if (properties.containsKey("role")) {
@@ -79,11 +95,14 @@ public class Users extends APIController {
 		  } else {
 			Rights.chk("Users.get", getRole(), properties, fields);
 		  }
+		  properties.put("searchable", true);
 		} else if (fields.contains("role")) {
 			// Check later
 			postcheck = true;
+			properties.put("searchable", true);
 		} else {		
 		  Rights.chk("Users.get", getRole(), properties, fields);
+		  properties.put("searchable", true);
 		}
 
 		// execute		
@@ -205,5 +224,57 @@ public class Users extends APIController {
 		Member user = Member.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>().add("tokens").get());
 		user.tokens.put(appId.toString(), tokens);
 		Member.set(userId, "tokens", user.tokens);
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result updateAddress() throws AppException {
+		// validate 
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1");
+		String email = JsonValidation.getEMail(json, "email");
+		String firstName = JsonValidation.getString(json, "firstname");
+		String lastName = JsonValidation.getString(json, "lastname");
+		
+		ObjectId userId = new ObjectId(request().username());
+				
+		User user = User.getById(userId, Sets.create("_id")); 
+		
+		User.set(user._id, "email", email);
+		User.set(user._id, "name", firstName + " " + lastName);
+		User.set(user._id, "address1", JsonValidation.getString(json, "address1"));
+		User.set(user._id, "address2", JsonValidation.getString(json, "address2"));
+		User.set(user._id, "city", JsonValidation.getString(json, "city"));
+		User.set(user._id, "zip", JsonValidation.getString(json, "zip"));
+		User.set(user._id, "phone", JsonValidation.getString(json, "phone"));
+		User.set(user._id, "mobile", JsonValidation.getString(json, "mobile"));
+		User.set(user._id, "country", JsonValidation.getString(json, "country"));
+		User.set(user._id, "firstname", JsonValidation.getString(json, "firstname"));
+		User.set(user._id, "lastname", JsonValidation.getString(json, "lastname"));
+		User.set(user._id, "gender", JsonValidation.getEnum(json, "gender", Gender.class));		
+		
+		return ok();		
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result updateSettings() throws AppException {
+		// validate 
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "language");
+		
+		boolean searchable = JsonValidation.getBoolean(json, "searchable");
+		String language = JsonValidation.getString(json, "language");
+					
+		ObjectId userId = new ObjectId(request().username());
+				
+		User user = User.getById(userId, Sets.create("_id")); 
+		
+		User.set(user._id, "searchable", searchable);
+		User.set(user._id, "language", language);
+		
+		return ok();		
 	}
 }

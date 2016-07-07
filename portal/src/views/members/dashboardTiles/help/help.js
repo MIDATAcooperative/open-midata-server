@@ -2,7 +2,9 @@ angular.module('views')
 .controller('HelpCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
 		
 }])
-.controller('HelpSetupCtrl', ['$scope', '$state', 'portal', function($scope, $state, portal) {
+.controller('HelpSetupCtrl', ['$scope', '$state', 'portal', 'apps', 'spaces', 'session', function($scope, $state, portal, apps, spaces, session) {
+	
+	$scope.isInstalled = {};
 	
 	$scope.init = function() {
 		portal.getConfig()
@@ -24,7 +26,61 @@ angular.module('views')
 				$scope.questions = $scope.config.questions;
 			}
 		});
+		
+		session.currentUser.then(function(userId) {
+		spaces.getSpacesOfUser(userId)
+		.then(function(data) {
+			$scope.isInstalled = {};
+			angular.forEach(data.data, function(space) {
+			  $scope.isInstalled[space.name] = true;
+			});
+		});
+		});
 	};
+
+	var obsPlugin = function(type) {
+		return { 
+			plugin : "fhir-observation", 
+			name : "measure."+type.replace("/","_"), 
+			query : { format : "fhir/Observation", content : type }, 
+			config : { measure : type, owner : "self" } 		
+		};
+	};
+	$scope.measures = [
+      { id : "body_weight", install : 
+    	[ 
+           obsPlugin("body/weight")
+        ] 
+      },
+      { id : "steps", install : 
+    	[
+    	   obsPlugin("activities/steps")
+    	]
+      },    	  
+      { id : "diary", install : 
+    	[ 
+    	  { plugin : "record-list", name : "measure.diary" } 
+    	] 
+      },
+      { id : "subjective_condition", install : [ { plugin : "fhir-observation", content : "subjective-condition" } ] },
+      { id : "heart", install : 
+    	[
+    	   
+    	]
+      },
+      { id : "documents", install : 
+    	[ 
+        ] 
+      },
+      { id : "appointments", install : 
+    	[ 
+    	] 
+      },
+      { id : "sleep", install : 
+    	[ 
+    	] 
+      }
+	];
 	
 	var add = function(id, dashboard, cond) {
 		if (cond) {
@@ -56,6 +112,14 @@ angular.module('views')
 		}
 	};
 	
+	var install = function(id, name, where, query, config) {
+		if ($scope.isInstalled[name]) return;
+		var options = { spaceName : name, applyRules : true, context : where };
+		if (query) options.query = query;
+		if (config) options.config = config;
+		return apps.installPlugin(id, options);			
+	};
+	
 	$scope.setConfig = function() {
 		if ($scope.config.dashboards == null) {
 			$scope.config.dashboards = {};
@@ -63,31 +127,14 @@ angular.module('views')
 		
 		var q = $scope.config.questions;
 		
-		add('charts','me', true);
-		add('calendar','me', true);
-		add('entry','me', q.qself.weight || q.qself.sleep);
-		
-		// add('jawboneupimport','me', q.devices.jawbone);
-		// add('clock','me', q.devices.jawbone && (q.qself.steps || q.qself.sleep));
-		// add('meal','me', q.devices.jawbone && q.qself.nutrition);
-			
-		add('credentials','me', q.general.protocol);
-		// add('energy-meter','me', q.devices.jawbone && (q.qself.steps || q.qself.nutrition));
-		add('fitbit','me', q.devices.fitbit);
-		
-		//add('water-meter','me', q.devices.fitbit && q.qself.water);
-		//add('weight-watcher','me', q.devices.fitbit && q.qself.weight);
-		
-		add('fileupload','mydata', q.general.manage || q.general.protocol);
-		
-		//add('trainingeditor','me', q.general.planning);
-		//add('trainingdiary','me', q.general.planning);
-		
-		//add('cdaimport','me', true);
-		//add('cdaviewer','me', q.general.manage);
-		
-		//add('surveys','me', true); 
-		
+		angular.forEach($scope.measures, function(measure) {
+		  if (q.measures[measure.id]) {
+			 angular.forEach(measure.install, function(toInstall) {
+			   install(toInstall.plugin, toInstall.name, toInstall.dashId || "me", toInstall.query, toInstall.config);  
+			 });
+		  }
+		});
+				
 		remove('help_welcome', 'me', true);
 		
 		portal.setConfig($scope.config)

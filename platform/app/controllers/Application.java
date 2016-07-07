@@ -653,6 +653,8 @@ public class Application extends APIController {
 				controllers.routes.javascript.Users.search(),
 				controllers.routes.javascript.Users.loadContacts(),
 				controllers.routes.javascript.Users.complete(),
+				controllers.routes.javascript.Users.updateSettings(),
+				controllers.routes.javascript.Users.updateAddress(),
 				
 				controllers.routes.javascript.Tasking.add(),
 				controllers.routes.javascript.Tasking.list(),

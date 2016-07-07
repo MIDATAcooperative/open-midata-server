@@ -2,7 +2,7 @@
 	<div  ng-controller="UserCtrl">		
 		
 		<div ng-cloak class="panel panel-primary">
-		  <div class="panel-heading" translate="user.user"></div>
+		  <div class="panel-heading" translate="user.account"></div>
 		  <div class="panel-body">
 			<loader busy="status.isBusy !== false">
 			
@@ -13,7 +13,7 @@
 			<div class="row">
 				<p class="col-sm-2" translate="user.email"></p>
 				<p class="col-sm-10">{{user.email}}</p>
-			</div>
+			</div> 
 			
 			<div class="row" ng-show="isSelf">
 			  <div class="col-sm-12">
@@ -25,8 +25,55 @@
 			</div>
 			<div class="extraspace"></div>
 			<div ng-show="msg" class="alert alert-info" translate="{{ msg }}"></div>
+			
 			</loader>
+		  </div>
 		</div>
+		
+		
+		<div ng-cloak class="panel panel-primary">
+		  <div class="panel-heading" translate="user.address"></div>
+		  <div class="panel-body">
+			<loader busy="status.isBusy !== false">
+		
+			
+			<address>     
+     		<strong>{{ user.firstname }} {{ user.lastname }}</strong><br/>
+     		{{ user.address1 }}<br/>
+     		{{ user.address2 }}<br/>
+     		{{ user.zip }} {{ user.city }}
+     		</address>  
+			<a class="btn btn-default" href="javascript:" ui-sref="^.changeaddress" translate="user.change_address_btn"></a>
+								
+			</loader>
+		  </div>
 		</div>
+		
+		<div ng-cloak class="panel panel-primary">
+		  <div class="panel-heading" translate="user.settings"></div>
+		  <div class="panel-body">
+			<loader busy="status.isBusy !== false">
+			
+			
+			<div class="row">
+				<p class="col-sm-2" translate="user.searchable"></p>
+				<p class="col-sm-10"><input type="checkbox" ng-model="user.searchable"></p>
+			</div>
+			<div class="row">
+				<p class="col-sm-2" translate="registration.language"></p>
+				<p class="col-sm-10"><select ng-model="user.language" class="form-control" ng-options="lang.value as lang.name | translate for lang in languages"></select></p>
+			</div>
+			<button class="btn btn-default" ng-disabled="status.action == 'changesettings'" ng-click="updateSettings();" translate="user.change_settings_btn"></button>
+			
+			<div class="extraspace"></div>
+			<div ng-show="msgSettings" class="alert alert-info" translate="{{ msgSettings }}"></div>
+		
+			</loader>
+		  </div>
+		</div>
+		
+	
+		
+		
 	</div>
 	

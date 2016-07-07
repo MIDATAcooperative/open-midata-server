@@ -1,7 +1,11 @@
 var en = {
+	"person" : "Person:",
+	"measure" : "Measure:",
 	"category" : "Category:",
 	"date" : "Date:",
 	"status" : "Status:",
+	"add_btn" : "Add",
+	"back_btn" : "Back",
 	
 	"registered" : "Registered",
 	"preliminary" : "Preliminary",

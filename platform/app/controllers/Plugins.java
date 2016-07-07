@@ -132,17 +132,25 @@ public class Plugins extends APIController {
 	public static Result install(String visualizationIdString) throws AppException {
 		JsonNode json = request().body().asJson();
 		ObjectId userId = new ObjectId(request().username());
-		ObjectId visualizationId = new ObjectId(visualizationIdString);
+		ObjectId visualizationId = null;
+		Plugin visualization = null;
+		if (ObjectId.isValid(visualizationIdString)) {
+			visualizationId = new ObjectId(visualizationIdString);
+			visualization = Plugin.getById(visualizationId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator"));
+		}
+		else {
+            visualization = Plugin.getByFilename(visualizationIdString, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator"));            
+		}
 
 		String spaceName = JsonValidation.getString(json, "spaceName");
-		boolean applyRules = JsonValidation.getBoolean(json, "applyRules");
+		boolean applyRules = JsonValidation.getBoolean(json, "applyRules");		
 		//boolean createSpace = JsonValidation.getBoolean(json, "createSpace");
 		
-		Plugin visualization = Plugin.getById(visualizationId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator"));
 		if (visualization == null) throw new BadRequestException("error.unknown.plugin", "Unknown visualization");
+		visualizationId = visualization._id;
+		
 		String context = json.has("context") ? JsonValidation.getString(json, "context") : visualization.defaultSpaceContext;
-		
-		
+				
 		User user = User.getById(userId, Sets.create("visualizations","apps", "role"));
 
 		boolean testing = user.role.equals(UserRole.DEVELOPER) && visualization.creator.equals(user._id);
@@ -177,9 +185,14 @@ public class Plugins extends APIController {
 					  
 					}
 			}
+			
+			if (json.has("config")) {
+				Map<String, Object> config = JsonExtraction.extractMap(json.get("config"));		
+				RecordManager.instance.setMeta(userId, space._id, "_config", config);
+			}
 				
-		} 
-						
+		}
+										
 		return ok();
 	}
 
