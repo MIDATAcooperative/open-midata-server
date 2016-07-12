@@ -18,9 +18,10 @@
 			    <li ui-sref-active="active"><a ui-sref="member.overview" translate="navbar.me"></a></li>
             	<li ng-show="beta" ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'overview' })" translate="navbar.overview"></a></li>            	
 				<!-- <li ui-sref-active="active"><a ui-sref="member.messages">Messages</a></li> -->				
-				<li ui-sref-active="active"><a ui-sref="member.records" translate="navbar.my_data"></a></li>				
+				<li ng-show="beta" ui-sref-active="active"><a ui-sref="member.records" translate="navbar.my_data"></a></li>				
 				<li ui-sref-active="active"><a ui-sref="member.circles" translate="navbar.consents"></a></li>
 				<li ng-hide="beta" ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'studiessmall' })" translate="navbar.research"></a></li>
+				<li ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'config' })" translate="navbar.config"></a></li>
 				<li ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'help' })" translate="navbar.help"></a></li>				
 			</ul>
 			<!-- 

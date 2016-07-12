@@ -115,6 +115,8 @@ public class Feature_QueryRedirect extends Feature {
 			if (combined.containsKey(key)) {
 				Object val1 = combined.get(key);
 				Object val2 = query.get(key);
+				if (val1 instanceof ObjectId) val1 = val1.toString();
+				if (val2 instanceof ObjectId) val2 = val2.toString();
 				if (val1.equals(val2)) continue;
 				if (val1 instanceof Collection<?>) {
 				 if (val2 instanceof Collection<?>) {

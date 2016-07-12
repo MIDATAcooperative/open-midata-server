@@ -7,6 +7,9 @@ var en = {
 	"add_btn" : "Add",
 	"back_btn" : "Back",
 	
+	"empty" : "No measurements found.",
+	"data_added" : "Observation added",
+	
 	"registered" : "Registered",
 	"preliminary" : "Preliminary",
 	"final" : "Final",

@@ -1,0 +1,16 @@
+<div ng-controller="NewsConfigCtrl" class="ignore autosize">        
+
+  <loader busy="status.isBusy !== false">
+  <div class="body">
+  
+  <div ng-if="view.setup.icon" class="pull-left themeicon">
+    <img ng-src="{{ view.setup.icon }}" >
+  </div>		  
+  <p class="">{{ view.setup.text }}</p>
+  <p><a ng-href="{{ view.setup.url }}">{{ view.setup.urlText }}</a></p>
+  </div>
+   <div ng-if="view.setup.link" class="footer">			  
+	  <a ui-sref="{{ view.setup.link }}" class="btn btn-primary">{{ view.setup.button }}</a>
+  </div>	
+  </loader>
+</div>

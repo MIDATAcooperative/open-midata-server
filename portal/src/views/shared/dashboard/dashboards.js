@@ -211,7 +211,17 @@ angular.module('portal')
 		         }
 			}*/
 		  ],
-		"help" : 
+      "help" : 
+    	  [
+				{
+				    id: "help_welcome",
+				   
+				    template : "/views/members/dashboardTiles/help/help_welcome.html",
+				    active : true,
+				    position : "full"			    
+				}
+    	  ],
+	  "config" : 
 			  [
 			   {
 				    id: "help_welcome",
@@ -219,7 +229,18 @@ angular.module('portal')
 				    template : "/views/members/dashboardTiles/help/help_welcome.html",
 				    active : true,
 				    position : "full"			    
-			    }
+			    },
+			    {
+				    id: "myviews",
+				  
+				    template : "/views/shared/dashboardTiles/viewconfig/viewconfig.html",
+				    active : true,
+				    position : "small",
+				    setup : {	
+				    	 context : "config",		        	 
+			        	 always : false
+			        }
+				}
 			  ],  
       "mydata" : [
 			 
@@ -451,20 +472,28 @@ angular.module('portal')
 	       }
 	     ],
 	     "studiessmall" : [
+				  {
+					   id : "newsconfig",
+					   template : "/views/shared/dashboardTiles/newsconfig/newsconfig.html",					 
+					   active : true,
+					   teaser : "dashboard.newsconfig_teaser",
+					   position : "full",
+					   setup : {}
+				   },
 	       	       {
 	       	    	   id : "yourstudies",
 	       	    	   template : "/views/members/dashboardTiles/yourstudies/yourstudies.html",
 	       	    	 
 	       	    	   active : true,
 	       	    	   teaser : "dashboard.yourstudies_teaser",
-	       	    	   position : "small"
+	       	    	   position : "full"
 	       	       },
 	       	       {
 	       	    	   id : "newstudies",
 	       	    	   template : "/views/shared/dashboardTiles/flexiblestudies/flexiblestudies.html",
 	       	    	 
 	       	    	   active : true,
-	       	    	   position : "small",
+	       	    	   position : "full",
 	       	    	   setup : { properties : { }, fields : ["name"] }
 	       	       }
 	     ],
@@ -795,7 +824,7 @@ angular.module('portal')
 	  views.reset();
 	  views.isreset = false;
 	   views.layout = $scope.layout = {
-	     full: [], small:[], modal:[]
+	     full: [], small:[], modal:[], line:[]
 	   };
 	   var dashid = $state.params.dashId || $state.current.dashId;
 	   views.context = dashid;

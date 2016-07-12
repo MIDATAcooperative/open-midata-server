@@ -25,14 +25,15 @@ angular.module('portal')
 		  { value : "social", label : "visualization.location.social" },
 		  { value : "providers", label : "visualization.location.providers" },
 		  { value : "studies", label : "visualization.location.studies" },		
-		  { value : "mobile", label : "visualization.location.mobile" }
+		  { value : "mobile", label : "visualization.location.mobile" },
+		  { value : "config", label : "visualization.location.config" },
 	    ];
 	}
 	
 	
 	// parse visualization id (format: /visualizations/:id) and load the visualization
 	var visualizationId = $state.params.visualizationId;	
-	$scope.status.doBusy(apps.getApps({"_id": {"$oid": visualizationId}}, ["name", "creator", "description", "defaultSpaceName", "defaultQuery"]))
+	$scope.status.doBusy(apps.getApps({"_id": {"$oid": visualizationId}}, ["name", "creator", "description", "defaultSpaceContext", "defaultSpaceName", "defaultQuery"]))
 	.then(function(results) {
 		   var visualizations = results.data;
 			$scope.error = null;
@@ -53,6 +54,7 @@ angular.module('portal')
 			} else { 
 				$scope.options.context = "mydata"; 
 			}
+			if ($scope.visualization.defaultSpaceContext == "config") $scope.options.context = "config"; 
 			if ($scope.params && $scope.params.name) {
 				$scope.options.spaceName = $scope.params.name;
 			}

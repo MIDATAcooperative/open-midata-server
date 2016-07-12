@@ -32,7 +32,17 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 	public Date created;
 	
 	/**
-	 * The title of this news item
+	 * The expiration date of this news item
+	 */
+	public Date expires;
+	
+	/**
+	 * The language this news is written in
+	 */
+	public String language;
+	
+	/**
+	 * The title of this news item (internationalized)
 	 */
 	public String title;
 	
@@ -40,6 +50,16 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 	 * The content (text) of this news item
 	 */
 	public String content;
+	
+	/**
+	 * (optional) An external URL containing details of this news message
+	 */
+	public String url;
+	
+	/**
+	 * (optional) id of study this news item is about
+	 */
+	public ObjectId studyId;
 	
 	/**
 	 * whether this should be broadcast to all users
@@ -73,23 +93,10 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 	}
 
 	public static void add(NewsItem newsItem) throws InternalServerException {
-		Model.insert(collection, newsItem);
-
-		// add broadcasts to public search index
-		/*if (newsItem.broadcast) {
-			try {
-				Search.add(Type.NEWS, newsItem._id, newsItem.title, newsItem.content);
-			} catch (SearchException e) {
-				throw new InternalServerException("error.internal", e);
-			}
-		}*/
+		Model.insert(collection, newsItem);		
 	}
 
-	public static void delete(ObjectId receiverId, ObjectId newsItemId, boolean broadcast) throws InternalServerException {
-		// also remove from the search index if it was a broadcast
-		/*if (broadcast) {
-			Search.delete(Type.NEWS, newsItemId);
-		}*/
+	public static void delete(ObjectId newsItemId) throws InternalServerException {
 		Model.delete(NewsItem.class, collection, new ChainedMap<String, ObjectId>().put("_id", newsItemId).get());
 	}
 

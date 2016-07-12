@@ -125,3 +125,4 @@
 {"_id":{"$oid":"5718ec14aed645098e8cee1b"},"system":"http://midata.coop","code":"DataElement","display":"DataElement","content":"DataElement"}
 {"_id":{"$oid":"5718ec14aed645098e8cee1c"},"system":"http://midata.coop","code":"Conformance","display":"Conformance","content":"Conformance"}
 {"_id":{"$oid":"5718ec14aed645098e8cee1d"},"system":"http://midata.coop","code":"Device","display":"Device","content":"Device"}
+{"_id":{"$oid":"57837400aed6450bf92d095e"},"system":"http://loinc.org","code":"55417-0","display":"Blood Pressure","content":"body/bloodpressure"}

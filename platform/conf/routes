@@ -32,10 +32,9 @@ POST    /common/api/password/lost                        controllers.Application
 POST    /common/api/password/set                         controllers.Application.setPasswordWithToken()
 
 
-POST    /members/api/news                                controllers.News.add()
+POST    /members/api/news/add                            controllers.News.add()
 POST    /members/api/news/get                            controllers.News.get()
-PUT     /members/api/news/:id                            controllers.News.hide(id: String)
-DELETE  /members/api/news/:id                            controllers.News.delete(id: String)
+POST    /admin/api/news/delete/:id                       controllers.News.delete(id: String)
 
 
 POST    /shared/api/messages/get                         controllers.Messages.get()

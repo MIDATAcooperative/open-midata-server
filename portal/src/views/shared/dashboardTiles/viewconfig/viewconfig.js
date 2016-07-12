@@ -69,11 +69,11 @@ angular.module('views')
 	    	   template : "/views/shared/dashboardTiles/spacesummary/spacesummary.html",
 	    	   title : space.name,
 	    	   active : true,
-	    	   position : "small",
+	    	   position : $scope.view.position,
 	    	   actions : { /*big : "/members/spaces/" + space._id.$oid,*/ remove : { space : space._id.$oid } },
 	    	   setup : { allowSelection : false, spaceId : space._id.$oid, spaceType : space.type }
 	     };
-	     views.layout.small.push(views.def(spacedef)); 
+	     views.layout[$scope.view.position].push(views.def(spacedef)); 
     };
     
     $scope.reload = function() {

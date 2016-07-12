@@ -49,7 +49,7 @@ public class ContentInfo extends Model {
 	/**
 	 * Deprecated: the name of the group where records with this content types should be placed in in the record tree
 	 */
-	public String group;
+	//public String group;
 		
 	
 	/**

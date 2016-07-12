@@ -597,7 +597,8 @@ public class Application extends APIController {
 				
 				// News
 				controllers.routes.javascript.News.get(),
-				controllers.routes.javascript.News.hide(),
+				controllers.routes.javascript.News.add(),
+				controllers.routes.javascript.News.delete(),
 				// Messages				
 				controllers.routes.javascript.Messages.get(),
 				controllers.routes.javascript.Messages.send(),

@@ -1,5 +1,31 @@
 {
+  "admin_navbar" : {
+    "members" : "Members",
+    "news" : "News",
+    "plugins" : "Plugins",
+	"content" : "Content"
+  },
+
   "admin_address" : {
     "title" : "Member Address"
+  },
+  
+  "admin_news" : {
+    "created" : "Created",
+    "language" : "Language",
+    "title" : "Title",
+    "expires" : "Expiration Date",
+    "delete_btn" : "Delete",
+    "empty" : "No News-Items found"
+  },
+  
+  "admin_managenews" : {
+    "title1" : "Add a new news message",
+    "title2" : "Modify news message",
+    "title" : "News title",
+    "language" : "News language",
+    "content" : "Content",
+    "url" : "URL of full message",
+    "expires" : "Expiration date of message"
   }
 }

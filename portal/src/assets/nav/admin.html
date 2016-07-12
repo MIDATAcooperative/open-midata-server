@@ -16,9 +16,10 @@
 		<nav class="collapse navbar-collapse navbar-ex1-collapse">
 			<ul class="nav navbar-nav">            	
 				<!--  <li ui-sref-active="active"><a ui-sref="admin.messages">Messages</a></li>  -->
-				<li ui-sref-active="active"><a ui-sref="admin.members">Members</a></li>
-				<li ui-sref-active="active"><a ui-sref="admin.plugins">Plugins</a></li>
-				<li ui-sref-active="active"><a ui-sref="admin.content">Content</a></li>								
+				<li ui-sref-active="active"><a ui-sref="admin.members" translate="admin_navbar.members">Members</a></li>
+				<li ui-sref-active="active"><a ui-sref="admin.news" translate="admin_navbar.news"></a></li>
+				<li ui-sref-active="active"><a ui-sref="admin.plugins" translate="admin_navbar.plugins">Plugins</a></li>
+				<li ui-sref-active="active"><a ui-sref="admin.content" translate="admin_navbar.content">Content</a></li>								
 			</ul>
 			<ul class="nav navbar-nav navbar-right" ng-cloak>
 				<li><a ui-sref=".user({ userId : user._id.$oid})">{{user.name}}</a></li>

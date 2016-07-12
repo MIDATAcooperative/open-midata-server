@@ -243,6 +243,8 @@ class QueryEngine {
           Map<String, Object> comb = Feature_QueryRedirect.combineQuery(properties, query.getProperties());
     	  if (comb != null) {
     		  return qm.query(new Query(comb, query.getFields(), query.getCache(), query.getApsId()));
+    	  } else {
+    		  AccessLog.log("empty combine");
     	  }
       	  return new ArrayList<DBRecord>();
         }

@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RecordsCtrl', ['$scope', '$state', '$translate', 'server',  '$filter', 'dateService', 'records', 'circles', 'formats', 'apps', 'status', 'studies', 'session', 'spaces', function($scope, $state, $translate, server, $filter, dateService, records, circles, formats, apps, status, studies, session, spaces) {
+.controller('RecordsCtrl', ['$scope', '$state', '$translate', '$timeout', 'server',  '$filter', 'dateService', 'records', 'circles', 'formats', 'apps', 'status', 'studies', 'session', 'spaces', function($scope, $state, $translate, $timeout, server, $filter, dateService, records, circles, formats, apps, status, studies, session, spaces) {
 	
 	// init
 	$scope.error = null;
@@ -48,19 +48,20 @@ angular.module('portal')
 	
 	
 	// get records
-	$scope.getRecords = function(userId, owner, group, study) {
+	$scope.getRecords = function(userId, owner, group, study, groupObj) {
 		//$scope.loadingRecords = true;
 		var properties = {};
 		if (owner) properties.owner = owner;
 		if (study) properties.study = study;
 		if (group) {
-			properties["group-strict"] = group;
+			properties.group = group;
 			properties["group-system"] = "v1";
 		}
 		if ($scope.debug) properties.streams = "true";
 		return $scope.status.doAction("load", records.getRecords(userId, properties, ["id", "owner", "ownerName", "content", "created", "name", "group"])).
 		then(function(results) {
 			$scope.records = results.data;
+			if (groupObj) groupObj.allRecords = results.data;
 			if ($scope.gi != null) $scope.prepareRecords();				
 		});
 	};
@@ -80,10 +81,10 @@ angular.module('portal')
 	
 	$scope.setOpen = function(group, open) {
 		group.open = open;
-		if (open && !group.loaded) {
+		/*if (open && !group.loaded) {
 			group.loaded = true;
 			$scope.getRecords($scope.displayAps.aps, $scope.displayAps.owner, group.name, $scope.displayAps.study);
-		}
+		}*/
 	};
 	
 	
@@ -130,7 +131,7 @@ angular.module('portal')
 	};
 	
 	$scope.loadGroups = function() {
-		formats.listGroups().
+		$scope.status.doBusy(formats.listGroups()).
 		then(function(result) { 
 			$scope.gi = result.data;			
 			console.log($scope.gi);
@@ -158,8 +159,8 @@ angular.module('portal')
 	   		$scope.tree.push(newgroup);
 	   	} else {
 	   		var prt = getOrCreateGroup(newgroup.parent);
-	   		if (prt.parent != null) newgroup.fullLabel = (prt.label[$scope.lang] || prt.name) + " / "+(newgroup.label[$scope.lang] || newgroup.name);
-	   		else newgroup.fullLabel = newgroup.label[$scope.lang] || newgroup.name;
+	   		/*if (prt.parent != null) newgroup.fullLabel = (prt.label[$scope.lang] || prt.name) + " / "+(newgroup.label[$scope.lang] || newgroup.name);
+	   		else*/ newgroup.fullLabel = newgroup.label[$scope.lang] || newgroup.name;
 	   		prt.children.push(newgroup);
 	   	}
 	   	
@@ -254,7 +255,17 @@ angular.module('portal')
 	
 	// show record details
 	$scope.showDetails = function(record) {
-		$state.go('^.recorddetail', { recordId : record.id });
+		$("#recdetailmodal").modal('hide');
+		$timeout(function() { $state.go('^.recorddetail', { recordId : record.id }); },500);
+	};
+	
+	$scope.showRecords = function(group) {
+		$scope.selectedData = group;
+		if (!group.loaded) {
+			group.loaded = true;
+			$scope.getRecords($scope.displayAps.aps, $scope.displayAps.owner, group.name, $scope.displayAps.study, group);
+		}
+		$("#recdetailmodal").modal('show');
 	};
 	
 	// check whether the user is the owner of the record

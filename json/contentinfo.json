@@ -122,3 +122,4 @@
 {"_id":{"$oid":"5703b84caed6451f597570ef"},"content":"activities/minutes-very-active","defaultCode":"http://midata.coop activities/minutes-very-active","security":"MEDIUM","label":{"en":"Minutes Very Active"}}
 {"_id":{"$oid":"5703b84caed6451f597570f0"},"content":"activities/minutes-sedentary","defaultCode":"http://midata.coop activities/minutes-sedentary","security":"MEDIUM","label":{"en":"Minutes Sedentary"}}
 {"_id":{"$oid":"570e5ca3d8041f8d40e306c3"},"content":"user-observation","defaultCode":"http://midata.coop user-observation","security":"MEDIUM","label":{"en":"User Observation"}}
+{"_id":{"$oid":"57837400aed6450bf92d095d"},"content":"body/bloodpressure","defaultCode":"http://loinc.org 55417-0","security":"MEDIUM","label":{"en":"Blood Pressure"}}

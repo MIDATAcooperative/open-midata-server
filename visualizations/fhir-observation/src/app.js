@@ -56,12 +56,11 @@ angular.module('fhir', [ 'midata', 'ui.bootstrap', 'chart.js', 'pascalprecht.tra
 .factory('fhirinfo', ['$q', 'midataServer', function($q, midataServer) {
    var result = {};
    
-   result.getInfo = function(contentType) {
-	   console.log("ct:");
-	   console.log(contentType);
-	   var inf = {
+   result.meta = {
+	  "body/weight" :  
+	  {
 			label : "Weight",
-			content : contentType,
+			content : "body/weight",
 			type : "Quantity",
 			code : {
 			    "text": "Body weight Measured",
@@ -76,9 +75,137 @@ angular.module('fhir', [ 'midata', 'ui.bootstrap', 'chart.js', 'pascalprecht.tra
 			valueQuantity : {		   
 			   unit : "kg"
 			}    							
-	  };
-	  
-	  return $q.when(inf);		 
+	 },
+	 "activities/steps" :
+	 {
+		   label : "Step Count",		   
+		   content : "activities/steps",
+		   type : "Quantity",
+		   code : {
+			  "text": "Step Count",
+			  "coding": [
+			      {
+			        "system": "http://loinc.org",
+			        "display": "Step Count",
+			        "code": "55423-8"
+			      }
+			  ]
+		  },
+		  valueQuantity : {
+			  
+		  }
+	 },
+	 "body/height" :
+	 {
+		   label : "Height",		   
+		   content : "body/height",
+		   type : "Quantity",
+		   code : {
+			  "text": "Body height",
+			  "coding": [
+			      {
+			        "system": "http://loinc.org",
+			        "display": "Body height",
+			        "code": "8302-2"
+			      }
+			  ]
+		  },
+		  valueQuantity : {		   
+			   unit : "cm"
+		  }   
+	   },		 
+	   "activities/heartrate" :
+	   {
+		   label : "Heartrate",		  
+		   content : "activities/heartrate",	
+		   type : "Quantity",
+		   code : {
+			    "text": "Heart rate",
+			    "coding": [
+			      {
+			        "system": "http://loinc.org",
+			        "display": "Heart rate",
+			        "code": "8867-4"
+			      }
+			    ]
+		  },
+		  valueQuantity : {		   
+			   unit : "{beats}/min"
+		  } 
+	   },
+	   "body/temperature" :
+	   {
+		   label : "Body Temperature",		   
+		   content : "body/temperature",
+		   type : "Quantity",
+		   code : {
+			    "text": "Body temperature",
+			    "coding": [
+			      {
+			        "system": "http://loinc.org",
+			        "display": "Body temperature",
+			        "code": "8310-5"
+			      }
+			    ]
+		   },
+		  valueQuantity : {		   
+			   unit : "Cel"
+		  } 
+	   },		  
+	   "body/bloodpressure" :	  
+	   {
+		   label : "Blood pressure",
+		   content : "body/bloodpressure",
+		   type : "component",
+		   code : {
+			    "text": "Blood pressure",
+			    "coding": [
+			      {
+			        "system": "http://loinc.org",
+			        "display": "Blood pressure",
+			        "code": "55417-0"
+			      }
+			    ]
+		   },
+		   component : [
+			 {
+				 code : {
+				    "text": "Systolic blood pressure",
+				    "coding": [
+				      {
+				        "system": "http://loinc.org",
+				        "display": "Systolic blood pressure",
+				        "code": "8480-6"
+				      }
+				    ]
+				},
+				valueQuantity : {
+					unit : "mm[Hg]"
+				}
+			 },
+			 {
+				 code : {
+					    "text": "Diastolic blood pressure",
+					    "coding": [
+					      {
+					        "system": "http://loinc.org",
+					        "display": "Diastolic blood pressure",
+					        "code": "8462-4"
+					      }
+					    ]
+				 },
+				 valueQuantity : {
+					unit : "mm[Hg]"
+				 }
+			 }
+		   ]
+	   }
+   };
+   
+   result.getInfo = function(contentType) {
+	   console.log("ct:");
+	   console.log(contentType);	   	  
+	  return $q.when(result.meta[contentType]);		 
    };
    
    
@@ -164,9 +291,25 @@ angular.module('fhir', [ 'midata', 'ui.bootstrap', 'chart.js', 'pascalprecht.tra
  				data.loadLabels(configuration.measure);
  				data.getRecords(configuration.config)
  				.then(function() {
- 					if (data.records.length == 1) $scope.mode = "record";
+ 					if (data.records.length == 1) {
+ 						$scope.mode = "record";
+ 						$scope.record = data.records[0];
+ 					}
  					$scope.ready.resolve(); 
  				});
+ 			}); 			 		
+ 		};
+ 		
+ 		$scope.loadBySummary = function() {
+ 			 
+ 	        midataServer.getSummary(midataServer.authToken, "ALL", { format : ["fhir/Observation"], owner : "self" }) 			
+ 			.then(function(sumResult) {
+ 				var x = sumResult.data[0].newestEntry;
+ 				midataServer.getRecords(midataServer.authToken, { "_id" : x },["name", "data"])
+ 				.then(function(result) {
+ 					$scope.record = result.data[0];
+ 					$scope.mode = "record";
+ 				}); 				 				
  			}); 			 		
  		};
  		
@@ -196,8 +339,11 @@ angular.module('fhir', [ 'midata', 'ui.bootstrap', 'chart.js', 'pascalprecht.tra
  		$scope.getCodeableConcept = data.getCodeableConcept;
         $scope.data = data;
         
- 		 	
- 		$scope.getConfig();
+        if (document.location.href.indexOf("/preview") >= 0) {
+          $scope.loadBySummary();
+        } else {
+ 		  $scope.getConfig();
+        }
  		
 }])
 .controller('PersonChangeCtrl', ['$scope', 'midataServer', 'configuration', 'data', function($scope, midataServer, configuration, data) {
@@ -236,20 +382,32 @@ angular.module('fhir', [ 'midata', 'ui.bootstrap', 'chart.js', 'pascalprecht.tra
 	   $scope.extractData = function(records) {
 	          var entries = [];
 	          var idx = 0;
+	          
+	          var addEntry = function(record,cmp,cdate) {
+	        	  var q = cmp.valueQuantity || { value : 1 };
+            	  var cnt = "";
+            	  if (cmp.code && cmp.code.coding && cmp.code.coding[0].display) cnt = cmp.code.coding[0].display; 
+            	  var dateTime = record.data.effectiveDateTime || cdate;
+            	  var e = {
+                          value : Number(q.value),
+                          unit : q.unit,	                          
+                          context : cnt,
+                          dateTime : dateTime,                              	                         
+                  };
+                  if (Number.isFinite(e.value)) entries[idx++] = e;
+	          };
+	          
 	          angular.forEach(records, function(record) {
 	              var cdate = new Date(record.created).toISOString();
 	              if (record.data.resourceType == "Observation") {
-	            	  var q = record.data.valueQuantity || { value : 1 };
-	            	  var cnt = "";
-	            	  if (record.data.code && record.data.code.coding && record.data.code.coding[0].display) cnt = record.data.code.coding[0].display; 
-	            	  var dateTime = record.data.effectiveDateTime || cdate;
-	            	  var e = {
-	                          value : Number(q.value),
-	                          unit : q.unit,	                          
-	                          context : cnt,
-	                          dateTime : dateTime,                              	                         
-	                  };
-	                  if (Number.isFinite(e.value)) entries[idx++] = e;   
+	            	  if (record.data.component) {
+		            	  angular.forEach(record.data.component, function(comp) {
+		            		  addEntry(record, comp, cdate);
+		            	  });
+	            	  } else {
+	            		  addEntry(record, record.data, cdate);
+	            	  }
+	            	  	            	    
 	              } 
 	          });
 	        return entries;
@@ -341,122 +499,7 @@ angular.module('fhir', [ 'midata', 'ui.bootstrap', 'chart.js', 'pascalprecht.tra
 	    $scope.datePopupOptions = {	 	       
 	 	   popupPlacement : "auto top-right"
 	 	};
-				
-		$scope.formats = [
-		   {
-				label : "Weight",
-				unit : "kg",
-				content : "body/weight",
-				objkey : "weight",
-				code : {
-				    "text": "Body weight Measured",
-				    "coding": [
-				      {
-				        "system": "http://loinc.org",
-				        "display": "Body weight Measured",
-				        "code": "3141-9"
-				      }
-				    ]
-				}
-		   },
-		   {
-			   label : "Height",
-			   unit : "cm",
-			   content : "body/height",
-			   objkey : "height",
-			   code : {
-				  "text": "Body height",
-				  "coding": [
-				      {
-				        "system": "http://loinc.org",
-				        "display": "Body height",
-				        "code": "8302-2"
-				      }
-				  ]
-			  }
-		   },		  
-		   {
-			   label : "Heartrate",
-			   unit : "{beats}/min",
-			   content : "activities/heartrate",
-			   objkey : "heartrate",
-			   code : {
-				    "text": "Heart rate",
-				    "coding": [
-				      {
-				        "system": "http://loinc.org",
-				        "display": "Heart rate",
-				        "code": "8867-4"
-				      }
-				    ]
-			  }
-		   },		  
-		   {
-			   label : "Body Temperature",
-			   unit : "Cel",
-			   content : "body/temperature",
-			   objkey : "temperature",
-			   code : {
-				    "text": "Body temperature",
-				    "coding": [
-				      {
-				        "system": "http://loinc.org",
-				        "display": "Body temperature",
-				        "code": "8310-5"
-				      }
-				    ]
-			   }
-		   },		  
-		   {
-			   label : "Body Mass Index",
-			   unit : "kg/m2",
-			   content : "body/bmi",
-			   objkey : "bmi",
-			   code : {
-				    "text": "Body mass index (BMI) [Ratio]",
-				    "coding": [
-				      {
-				        "system": "http://loinc.org",
-				        "display": "Body mass index (BMI) [Ratio]",
-				        "code": "39156-5"
-				      }
-				    ]
-			   }
-		   },		  
-		   {
-			   label : "Systolic blood pressure",
-			   unit : "mm[Hg]",
-			   content : "body/blood/systolic",
-			   objkey : "bmi",
-			   code : {
-				    "text": "Systolic blood pressure",
-				    "coding": [
-				      {
-				        "system": "http://loinc.org",
-				        "display": "Systolic blood pressure",
-				        "code": "8480-6"
-				      }
-				    ]
-				  }
-		   },		  
-		   {
-			   label : "Diastolic blood pressure",
-			   unit : "mm[Hg]",
-			   content : "body/blood/diastolic",
-			   objkey : "bmi",
-			   code : {
-				    "text": "Diastolic blood pressure",
-				    "coding": [
-				      {
-				        "system": "http://loinc.org",
-				        "display": "Diastolic blood pressure",
-				        "code": "8462-4"
-				      }
-				    ]
-				}
-		   }
-		];		
-							
+											
 		$scope.isValid = true;
 		$scope.isBusy = false;
 		$scope.success = false;
@@ -476,19 +519,28 @@ angular.module('fhir', [ 'midata', 'ui.bootstrap', 'chart.js', 'pascalprecht.tra
 					resourceType : "Observation",
 					status : "preliminary",
 					category : {
-						coding : [{
+						coding : [
+				           {
+				             "system": "http://hl7.org/fhir/observation-category",
+				             "code": "fitness",
+				             "display": "Fitness Data"
+				           }
+						],
+/*						coding : [{
 						  system : "http://hl7.org/fhir/observation-category",
 						  code : "vital-signs",
 						  display : "Vital Signs"
-						}],
-						text : "Vital Signs"
+						}],*/
+						text : "Fitness Data"
 					},
 					code : $scope.format.code,
-					effectiveDateTime : $filter('date')(new Date(), "yyyy-MM-dd")
+					effectiveDateTime : new Date() /*$filter('date')(new Date(), "yyyy-MM-dd")*/
 			}; 
-			if ($scope.format.type == "Quantity") {
-				$scope.newentry.valueQuantity = $scope.format.valueQuantity;
-			}							
+			switch ($scope.format.type) {
+			  case "Quantity" : $scope.newentry.valueQuantity = $scope.format.valueQuantity;break;
+			  case "component" :  $scope.newentry.component = $scope.format.component;break;
+			} 
+			console.log($scope.newentry);
 		};
 		
 		
@@ -500,10 +552,10 @@ angular.module('fhir', [ 'midata', 'ui.bootstrap', 'chart.js', 'pascalprecht.tra
 				$scope.error = "Please enter a valid date! (YYYY-MM-DD)";
 				return;
 			}
-			if ($scope.newentry.valueQuantity.value > 0) { } else {
+			/*if ($scope.newentry.valueQuantity.value > 0) { } else {
 				$scope.errorValue = "Please enter a valid value!";
 				return;
-			}
+			}*/
 																					
 			$scope.isBusy = true;
 			midataServer.createRecord(midataServer.authToken, { "name" : $scope.format.label, "content" : $scope.format.content, format : "fhir/Observation", subformat : $scope.format.type }, $scope.newentry )

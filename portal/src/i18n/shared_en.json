@@ -18,8 +18,9 @@
       "overview" : "Overview",            	
 	  "messages" : "Messages",				
 	  "my_data" : "My Data",				
-	  "consents" : "Consents",
+	  "consents" : "Sharing",
 	  "research" : "Research",
+	  "config" : "Config",
 	  "help" : "Help"
    },
    
@@ -256,6 +257,7 @@
     "add_btn" : "Add",
     "cancel_btn" : "Cancel",
     "view_btn" : "View",
+    "submit_btn" : "Submit",
     
     "user" : {
       "lastname" : "Surname",
@@ -461,6 +463,7 @@
       "sandbox" : "Workspace",		         	
       "mobile" : "MIDATA Mobile App",
       "me" : "Me Page",
+      "config" : "Config Dashboard",
 	  "mydata" : "My Data Dashboard",
 	  "social" : "Social Dashboard",
 	  "providers" : "Health Dashboard",
@@ -572,8 +575,8 @@
 	"unshare" : "unshare",
 	"delete" : "delete",
 	"delete_all_btn" : "delete all",
-	"empty" : "No available records found."
-			
+	"empty" : "No available records found.",
+	"close_btn" : "Close"		
   },
   
   "oauth2" : {
@@ -617,6 +620,8 @@
     "yourstudies" : "Studies you are involved:",
 	"yourstudies_teaser" : "If you want to participate in research configure your research settings. You will be contacted in this tile if you match a studies requirements.",
 	"newstudies" : "New Studies",
+	"newsconfig" : "News",
+	"newsconfig_teaser" : "There are currently no announcements",
 	"researchnews" : "Research News",
 	"researchnews_text" : "Search for new health research publications.",
 	"researchnews_btn" : "Search for News",
@@ -636,14 +641,21 @@
    
    "measure" : {
      "body_weight" : "Body Weight",
-     "steps" : "Steps",
+     "activities_steps" : "Steps",
      "diary" : "Personal Diary",
      "subjective_condition" : "Mood",
      "heart" : "Heart Rate and Blood Pressure",
      "documents" : "Health Documents",
      "appointments" : "Appointments",
-     "sleep" : "Sleep Data"
+     "sleep" : "Sleep Data",
+     "activities_heartrate" : "Heart Rate",
+     "body_bloodpressure" : "Blood Pressure",
+     "files" : "Documents"
    },  
+   
+   "config" : {
+     "fitbit" : "Fitbit Configuration"
+   },
   
   "spacesummary" : {
     "records_to_view" : "Records to view.", 

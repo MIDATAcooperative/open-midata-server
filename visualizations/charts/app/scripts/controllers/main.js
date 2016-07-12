@@ -97,22 +97,36 @@ angular.module('chartApp')
       $scope.extractData = function(records) {
           var entries = [];
           var idx = 0;
+          
+          var addEntry = function(record,cmp,cdate) {
+        	  var q = cmp.valueQuantity || { value : 1 };
+        	  var cnt = "";
+        	  if (cmp.code && cmp.code.coding && cmp.code.coding[0].display) cnt = cmp.code.coding[0].display; 
+        	  var dateTime = record.data.effectiveDateTime || cdate;
+        	  var e = {
+                      value : Number(q.value),
+                      unit : q.unit,	
+                      content : record.content,
+                      context : cnt,
+                      dateTime : dateTime,  
+                      owner : record.owner ? record.owner.$oid : "?"
+              };
+              if (Number.isFinite(e.value)) entries[idx++] = e;
+          };
+          
           angular.forEach(records, function(record) {
               var cdate = new Date(record.created).toISOString();
               if (record.data.resourceType == "Observation") {
-            	  var q = record.data.valueQuantity || { value : 1 };
-            	  var cnt = "";
-            	  if (record.data.code && record.data.code.coding && record.data.code.coding[0].display) cnt = record.data.code.coding[0].display; 
-            	  var dateTime = record.data.effectiveDateTime || cdate;
-            	  var e = {
-                          value : Number(q.value),
-                          unit : q.unit,                              
-                          content : record.content,
-                          context : cnt,
-                          dateTime : dateTime,                              
-                          owner : record.owner ? record.owner.$oid : "?"
-                  };
-                  if (Number.isFinite(e.value)) entries[idx++] = e;   
+            	  
+            	  
+            	  if (record.data.component) {
+	            	  angular.forEach(record.data.component, function(comp) {
+	            		  addEntry(record, comp, cdate);
+	            	  });
+            	  } else {
+            		  addEntry(record, record.data, cdate);
+            	  }
+            	              	
               } else {
               angular.forEach(record.data, function(lst, content) {
                   angular.forEach(lst, function(entry) {

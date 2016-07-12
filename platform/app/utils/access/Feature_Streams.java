@@ -79,8 +79,9 @@ public class Feature_Streams extends Feature {
 			  return records;
 		}
         		
-		
+		AccessLog.logBegin("start query on target APS");
 		records = next.query(q);
+		AccessLog.logEnd("end query on target APS #res="+records.size());
 		boolean includeStreams = q.includeStreams();
 		boolean streamsOnly = q.isStreamOnlyQuery();
 		if (streamsOnly) {
@@ -123,7 +124,8 @@ public class Feature_Streams extends Feature {
 				try {
 				  APS streamaps = q.getCache().getAPS(r._id, r.key, r.owner);
 				  boolean medium = streamaps.getSecurityLevel().equals(APSSecurityLevel.MEDIUM);
-				  if (q.getMinUpdatedTimestamp() <= streamaps.getLastChanged() && q.getMinCreatedTimestamp() <= streamaps.getLastChanged()) {						
+				  if (q.getMinUpdatedTimestamp() <= streamaps.getLastChanged() && q.getMinCreatedTimestamp() <= streamaps.getLastChanged()) {
+					AccessLog.logBegin("start query on stream APS:"+streamaps.getId());
 				    for (DBRecord r2 : streamaps.query(q)) {
 				    	r2.stream = r._id;
 				    	if (medium) {
@@ -135,6 +137,7 @@ public class Feature_Streams extends Feature {
 				    	filtered.add(r2);
 				    }
 				    if (includeStreams) filtered.add(r);
+				    AccessLog.logEnd("end query on stream APS");
 				  }
 				} catch (EncryptionNotSupportedException e) { throw new InternalServerException("error.internal", "Encryption not supported."); }					 	
 			 				

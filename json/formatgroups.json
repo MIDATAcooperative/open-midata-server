@@ -34,6 +34,6 @@
 {"_id":{"$oid":"5719d3d0aed64509b3d0930b"},"system":"v1","name":"body/bmi","label":{"en":"BMI and Fat"},"parent":"qself","contents":["body/bmi","body/fat"]}
 {"_id":{"$oid":"5719d3d0aed64509b3d0930c"},"system":"v1","name":"activities/heartrate","label":{"en":"Heart Rate"},"parent":"qself","contents":["activities/heartrate"]}
 {"_id":{"$oid":"5719d46aaed64509b3d0930d"},"system":"v1","name":"body/temperature","label":{"en":"Body Temperature"},"parent":"qself","contents":["body/temperature"]}
-{"_id":{"$oid":"5719d46aaed64509b3d0930e"},"system":"v1","name":"body/blood","label":{"en":"Blood Pressure"},"parent":"qself","contents":["body/blood/systolic","body/blood/diastolic"]}
+{"_id":{"$oid":"5719d46aaed64509b3d0930e"},"system":"v1","name":"body/bloodpressure","label":{"en":"Blood Pressure"},"parent":"qself","contents":["body/blood/systolic","body/blood/diastolic","body/bloodpressure"]}
 {"_id":{"$oid":"57285570aed6450be5bfeb5d"},"system":"v1","name":"activities/steps","label":{"en":"Steps"},"parent":"movement","contents":["activities/steps"]}
 {"_id":{"$oid":"57285570aed6450be5bfeb5e"},"system":"v1","name":"activities/distance","label":{"en":"Distance"},"parent":"movement","contents":["activities/distance"]}

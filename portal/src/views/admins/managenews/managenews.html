@@ -1,0 +1,46 @@
+
+	<div  ng-controller="ManageNewsCtrl">
+		
+		<div class="panel panel-primary">
+		<div class="panel-heading">
+		  	<p ng-hide="newsItem._id" translate="admin_managenews.title1"></p>
+			<p ng-show="newsItem._id" translate="admin_managenews.title2"></p>
+		</div>
+		<div class="body">
+		
+		<form class="form-horizontal" ng-submit="updateNews()">
+		  <formrow myid="title" label="admin_managenews.title">
+		    <input type="text" id="title" class="form-control" ng-model="newsItem.title" autofocus>
+		  </formrow>
+		
+		  <formrow myid="language" label="admin_managenews.language">
+		    <select id="language" class="form-control" ng-model="newsItem.language" ng-options="lang for lang in languages"></select>		    
+		  </formrow>
+		
+		  <formrow myid="content" label="admin_managenews.content">
+		    <textarea rows="5" id="content" class="form-control" ng-model="newsItem.content"></textarea>
+		  </formrow>
+		  
+		  <formrow myid="url" label="admin_managenews.url">
+		    <input type="text" id="url" class="form-control" ng-model="newsItem.url">
+		  </formrow>
+		  
+		  <formrow myid="expires" label="admin_managenews.expires">
+		      <div class="input-group">
+				  <input type="text" id="date" is-open="datePickers.dateOpened" datepicker-options="dateOptions" close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" placeholder="Date" autofocus ng-model="newsItem.expires">
+				  <span class="input-group-btn">
+                      <button type="button" class="btn btn-default" ng-click="datePickers.dateOpened=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+                  </span>
+               </div>				  		  
+		  </formrow>
+		  
+		
+		  <formrow myid="x" label="">
+		    <button type="submit" ng-disabled="status.action=='submit'" class="btn btn-primary" translate="common.submit_btn"></button>		    
+		    <button type="button" class="btn btn-danger" ng-show="allowDelete" ng-click="doDelete()" ng-disabled="status.action=='delete'" translate="common.delete_btn"></button>
+		  </formrow>
+	     </form>	  
+		  
+		
+	</div>
+	</div></div>

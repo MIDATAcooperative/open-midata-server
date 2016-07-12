@@ -1,0 +1,33 @@
+
+<div ng-controller="AdminNewsCtrl">
+		
+  <div class="panel panel-primary">
+    <div class="body">
+      <loader busy="status.isBusy !== false">
+      <table class="table" ng-show="news.length > 0">
+        <tr>
+          <th translate="admin_news.created"></th>
+          <th translate="admin_news.language"></th>
+          <th translate="admin_news.title"></th>
+          <th translate="admin_news.expires"></th>  
+          <th></th>        
+        </tr>
+        <tr ng-repeat="item in news">
+          <td>{{ item.created | date }}</td>
+          <td>{{ item.language }}</td>
+          <td><a ui-sref="^.managenews({ newsId : item._id.$oid })">{{  item.title }}</a></td>
+          <td>{{ item.expires | date }}</td>
+          <td><button class="btn btn-danger btn-xs" translate="admin_news.delete_btn" ng-click="deleteNews(item)"></button></td>          
+        </tr>
+      </table>
+      <p ng-show="news.length == 0" translate="admin_news.empty"></p>
+      
+      <a class="btn btn-primary" translate="common.add_btn" ui-sref="^.newnews"></a> 
+            
+      </loader>		
+    </div>
+  </div>		
+
+		  	
+</div>
+	

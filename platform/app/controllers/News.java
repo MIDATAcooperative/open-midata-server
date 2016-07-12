@@ -17,6 +17,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.DateTimeUtils;
+import utils.auth.AdminSecured;
+import utils.auth.AnyRoleSecured;
 import utils.auth.MemberSecured;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
@@ -25,68 +27,64 @@ import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
+import actions.APICall;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * functions for a "news" system. Not used.
+ * functions for a "news" system. 
  *
  */
-@Security.Authenticated(MemberSecured.class)
 public class News extends Controller {
 
 
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result get() {
+	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall
+	public static Result get() throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();
-		try {
-			JsonValidation.validate(json, "properties", "fields");
-		} catch (JsonValidationException e) {
-			return badRequest(e.getMessage());
-		}
-
+		
+		JsonValidation.validate(json, "properties", "fields");
+		
 		// get news items
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		List<NewsItem> newsItems;
-		try {
-			newsItems = new ArrayList<NewsItem>(NewsItem.getAll(properties, fields));
-		} catch (InternalServerException e) {
-			return badRequest(e.getMessage());
-		}
+		
+		newsItems = new ArrayList<NewsItem>(NewsItem.getAll(properties, fields));
+		
 		Collections.sort(newsItems);
 		return ok(Json.toJson(newsItems));
 	}
 
 	@BodyParser.Of(BodyParser.Json.class)
-	public static Result add() {
+	@Security.Authenticated(AdminSecured.class)
+	@APICall
+	public static Result add() throws JsonValidationException, InternalServerException {
 		// validate json
 		JsonNode json = request().body().asJson();
-		try {
-			JsonValidation.validate(json, "title", "content", "broadcast");
-		} catch (JsonValidationException e) {
-			return badRequest(e.getMessage());
-		}
+		
+		JsonValidation.validate(json, "title", "content", "expires");		
 
 		// create new news item
 		NewsItem item = new NewsItem();
 		item._id = new ObjectId();
 		item.creator = new ObjectId(request().username());
 		item.created = DateTimeUtils.now();
+		item.expires = JsonValidation.getDate(json, "expires");
 		item.title = JsonValidation.getString(json, "title");
 		item.content = JsonValidation.getString(json, "content");
-		item.broadcast = JsonValidation.getBoolean(json, "broadcast");
-		try {
-			NewsItem.add(item);
-		} catch (InternalServerException e) {
-			return badRequest(e.getMessage());
-		}
+		item.language = JsonValidation.getString(json, "language");
+		item.url = JsonValidation.getStringOrNull(json, "url");
+		item.broadcast = true; /*JsonValidation.getBoolean(json, "broadcast");*/
+		
+		NewsItem.add(item);
+		
 		return ok();
 	}
 
-	/**
-	 * Hide a news item from the current user's news stream.
-	 */
+	/*
 	public static Result hide(String newsItemIdString) {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId newsItemId = new ObjectId(newsItemIdString);
@@ -99,28 +97,28 @@ public class News extends Controller {
 			return badRequest(e.getMessage());
 		}
 		return ok();
-	}
+	}*/
 
-	public static Result delete(String newsItemIdString) {
-		// validate request
-		ObjectId userId = new ObjectId(request().username());
+	/**
+	 * Delete a news item
+	 * @param newsItemIdString id of news item to delete
+	 * @return status 200
+	 * @throws InternalServerException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AdminSecured.class)
+	@APICall
+	public static Result delete(String newsItemIdString) throws InternalServerException {
+			
 		ObjectId newsItemId = new ObjectId(newsItemIdString);
-		try {
-			if (!NewsItem.exists(new ChainedMap<String, ObjectId>().put("_id", newsItemId).put("creator", userId).get())) {
+		
+		/*if (!NewsItem.exists(new ChainedMap<String, ObjectId>().put("_id", newsItemId).put("creator", userId).get())) {
 				return badRequest("No news item with this id exists.");
-			}
-		} catch (InternalServerException e) {
-			return internalServerError(e.getMessage());
-		}
+		}*/
+		
 
-		// delete news item
-		try {
-			NewsItem item = NewsItem.get(new ChainedMap<String, ObjectId>().put("_id", newsItemId).get(),
-					new ChainedSet<String>().add("broadcast").get());
-			NewsItem.delete(userId, newsItemId, item.broadcast);
-		} catch (InternalServerException e) {
-			return badRequest(e.getMessage());
-		}
+		NewsItem.delete(newsItemId);
+	
 		return ok();
 	}
 

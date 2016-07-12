@@ -72,16 +72,16 @@ recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'mida
 		
 		$scope.validateTitle = function() {
 			$scope.errors.title = null;
-			if (!$scope.title) {
+			if (!$scope.newentry.title) {
 				$scope.errors.title = "no_title_error";
-			} else if ($scope.title.length > 50) {
+			} else if ($scope.newentry.title.length > 50) {
 				$scope.errors.title = "title_too_long_error"; 
 			}
 		};
 		
 		$scope.validateContent = function() {
 			$scope.errors.content = null;
-			if (!$scope.content) {
+			if (!$scope.newentry.content) {
 				$scope.errors.content = "no_content_error"; 
 			}
 		};
@@ -98,15 +98,15 @@ recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'mida
 						coding : [ { system : "http://midata.coop" , code : "diary", display : "Diary" } ]
 					},
 					effectiveDateTime : new Date($scope.newentry.date).toJSON(),
-					valueString : $scope.content
+					valueString : $scope.newentry.content
 					
 			};
 						
 			// submit to server
-			midataServer.createRecord(authToken, { "name" : $scope.title, "content" : "diary", "subformat" : "String", "format" : "fhir/Observation" }, record)
+			midataServer.createRecord(authToken, { "name" : $scope.newentry.title, "content" : "diary", "subformat" : "String", "format" : "fhir/Observation" }, record)
 			.then(function() {
 					$scope.success = "success";
-					$scope.records.push({ name : $scope.title, data : record });
+					$scope.records.push({ name : $scope.newentry.title, data : record });
 					
 					$scope.title = null;
 					$scope.error = null;					
@@ -123,7 +123,7 @@ recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'mida
 		
 		$scope.newEntry = function() {
 			$scope.mode = "create";
-			$scope.newentry = { date : $filter('date')(new Date(), "yyyy-MM-dd") };
+			$scope.newentry = { content:"", title:"", date : $filter('date')(new Date(), "yyyy-MM-dd") };
 		};
 		
 		$scope.cancel = function() {

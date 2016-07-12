@@ -52,7 +52,7 @@ angular.module('views')
            obsPlugin("body/weight")
         ] 
       },
-      { id : "steps", install : 
+      { id : "activities_steps", install : 
     	[
     	   obsPlugin("activities/steps")
     	]
@@ -62,14 +62,18 @@ angular.module('views')
     	  { plugin : "record-list", name : "measure.diary" } 
     	] 
       },
-      { id : "subjective_condition", install : [ { plugin : "fhir-observation", content : "subjective-condition" } ] },
+      { id : "subjective_condition", install : 
+    	[ 
+    	  { plugin : "fhir-observation", content : "subjective-condition" } ] },
       { id : "heart", install : 
     	[
-    	   
+          obsPlugin("activities/heartrate"),
+          obsPlugin("body/bloodpressure"),
     	]
       },
       { id : "documents", install : 
     	[ 
+			{ plugin : "files", name : "measure.files" }
         ] 
       },
       { id : "appointments", install : 
@@ -134,12 +138,14 @@ angular.module('views')
 			 });
 		  }
 		});
+		
+		if (q.devices.fitbit) install("fitbit", "config.fitbit", "config");
 				
 		remove('help_welcome', 'me', true);
 		
 		portal.setConfig($scope.config)
 		.then(function() {
-			$state.go("^.dashboard", { dashId : 'me' });
+			$state.go("^.dashboard", { dashId : 'config' });
 		});
 	};
 	
