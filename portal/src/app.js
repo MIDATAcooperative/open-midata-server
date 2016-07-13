@@ -1,6 +1,6 @@
 var services = angular.module('services', []);
 var views = angular.module('views', ['services']);
-angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services', 'views', 'config', 'ngPostMessage', 'angularUtils.directives.dirPagination', 'pascalprecht.translate'])
+angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services', 'views', 'config', 'ngPostMessage', 'angularUtils.directives.dirPagination', 'pascalprecht.translate', 'ngSanitize'])
 .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider', function($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider) {
    //$httpProvider.defaults.useXDomain = true;
    $httpProvider.defaults.withCredentials = true;
@@ -50,7 +50,7 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
     })
     .state('research', {
       url: '/research',
-      data : { role : 'RESEARCH', locales : 'researches' },
+      data : { role : 'RESEARCH', locales : 'researchers' },
       templateUrl: 'assets/nav/research.html'
     })
     .state('provider', {

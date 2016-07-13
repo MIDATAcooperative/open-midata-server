@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import models.Admin;
 import models.Consent;
 import models.FilterRule;
 import models.History;
@@ -53,6 +54,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.access.Query;
 import utils.access.RecordManager;
+import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.PortalSessionToken;
@@ -207,6 +209,22 @@ public class Studies extends APIController {
 	   
 	   return ok(JsonOutput.toJson(studies, "Study", fields));
 	}
+	
+	/**
+	 * list all studies waiting for validation	
+	 * @return list of studies
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public static Result listAdmin() throws JsonValidationException, InternalServerException {
+	   	   
+	   Set<String> fields = Sets.create("createdAt","createdBy","description","name");
+	   Set<Study> studies = Study.getAll(null, CMaps.map("validationStatus", StudyValidationStatus.VALIDATION), fields);
+	   
+	   return ok(JsonOutput.toJson(studies, "Study", fields));
+	}
 
 	/**
 	 * retrieve one study of current research organization
@@ -226,6 +244,28 @@ public class Studies extends APIController {
 	   Study study = Study.getByIdFromOwner(studyid, owner, fields);
 	   	   	   
 	   return ok(JsonOutput.toJson(study, "Study", fields));
+	}
+	
+	/**
+	 * retrieve one study (for validation by admin)
+	 * @param id ID of study
+	 * @return Study
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public static Result getAdmin(String id) throws JsonValidationException, InternalServerException {
+       
+	   ObjectId studyid = new ObjectId(id);
+	   
+	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "assistance"); 
+	   Study study = Study.getByIdFromMember(studyid, fields);
+	   	   	   
+	   ObjectNode result = Json.newObject();
+	   result.put("study", JsonOutput.toJsonNode(study, "Study", fields));
+	   
+	   return ok(result);	   
 	}
 	
 	/**
@@ -334,8 +374,33 @@ public class Studies extends APIController {
 		if (study.recordQuery == null || study.recordQuery.isEmpty()) return badRequest("Please define record sharing query before validation!");
 		
 		
-		study.setValidationStatus(StudyValidationStatus.VALIDATED); // TODO to be changed to VALIDATION
+		study.setValidationStatus(StudyValidationStatus.VALIDATION); // TODO to be changed to VALIDATION
 		study.addHistory(new History(EventType.VALIDATION_REQUESTED, user, null));
+						
+		return ok();
+	}
+	
+	/**
+	 * end study validation
+	 * @param id ID of study
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public static Result endValidation(String id) throws JsonValidationException, AppException {
+		ObjectId userId = new ObjectId(request().username());		
+		ObjectId studyid = new ObjectId(id);
+		
+		User user = Admin.getById(userId, Sets.create("firstname","lastname"));
+		Study study = Study.getByIdFromMember(studyid, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history","groups","recordQuery"));
+		
+		if (study == null) throw new BadRequestException("error.missing.study", "Study does not exist");
+		if (!study.validationStatus.equals(StudyValidationStatus.VALIDATION)) return badRequest("Study has already been validated.");
+							
+		study.setValidationStatus(StudyValidationStatus.VALIDATED); 
+		study.addHistory(new History(EventType.STUDY_VALIDATED, user, null));
 						
 		return ok();
 	}

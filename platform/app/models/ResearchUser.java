@@ -32,6 +32,7 @@ public class ResearchUser extends User {
 	
 	public ResearchUser(String email) {		
 		this.email = email;
+		this.emailLC = email.toLowerCase();
 		messages = new HashMap<String, Set<ObjectId>>();
 		messages.put("inbox", new HashSet<ObjectId>());
 		messages.put("archive", new HashSet<ObjectId>());
@@ -41,11 +42,11 @@ public class ResearchUser extends User {
 	}
 	
 	public static boolean existsByEMail(String email) throws InternalServerException {
-		return Model.exists(ResearchUser.class, collection, CMaps.map("email", email).map("role", UserRole.RESEARCH));
+		return Model.exists(ResearchUser.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.RESEARCH));
 	}
 	
 	public static ResearchUser getByEmail(String email, Set<String> fields) throws InternalServerException {
-		return Model.get(ResearchUser.class, collection, CMaps.map("email", email).map("role", UserRole.RESEARCH), fields);
+		return Model.get(ResearchUser.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.RESEARCH), fields);
 	}
 	
 	public static ResearchUser getById(ObjectId id, Set<String> fields) throws InternalServerException {

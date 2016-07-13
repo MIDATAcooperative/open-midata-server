@@ -11,7 +11,7 @@
 		            	<div class="panel-body">
 		            		<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
 	                        </p>				
-							<form name="form" novalidate class="css-form form-horizontal" ng-submit="login()" role="form">							  
+							<form name="form" novalidate class="css-form form-horizontal" ng-submit="dologin()" role="form">							  
 							  <input type="email" class="form-control" translate translate-attr-placeholder="login.email_address" ng-model="login.email" style="margin-bottom:5px;" autofocus>
 								<input type="password" class="form-control" translate translate-attr-placeholder="login.password" ng-model="login.password" style="margin-bottom:5px;">
                              <button type="submit" class="btn btn-lg btn-primary btn-block" translate="login.login_btn"></button>

@@ -58,8 +58,8 @@ public class Rights {
 		role(UserRole.MEMBER, "_id", "role", "firstname", "lastname", "name");
 		role(UserRole.RESEARCH, "_id", "role", "firstname", "lastname", "name");
 		role(UserRole.DEVELOPER, "_id", "role", "firstname", "lastname", "name");
-		role(UserRole.ADMIN, "_id", "address1", "address2", "city", "contractStatus", "country", "email", "firstname", "gender", "history", "lastname", "login", "mobile", "name", "phone", "registeredAt", "role", "security", "status", "zip", "midataID", "birthday", "confirmationCode", "emailStatus");
-		role(UserRole.PROVIDER, "_id", "address1", "address2", "city", "contractStatus", "country", "email", "firstname", "gender", "lastname", "login", "mobile", "name", "phone", "role", "status", "zip", "midataID", "birthday");
+		role(UserRole.ADMIN, "_id", "address1", "address2", "city", "contractStatus", "country", "email", "emailLC", "firstname", "gender", "history", "lastname", "login", "mobile", "name", "phone", "registeredAt", "role", "security", "status", "zip", "midataID", "birthday", "confirmationCode", "emailStatus");
+		role(UserRole.PROVIDER, "_id", "address1", "address2", "city", "contractStatus", "country", "email", "emailLC", "firstname", "gender", "lastname", "login", "mobile", "name", "phone", "role", "status", "zip", "midataID", "birthday");
 		
 		action("Users.getPROVIDER");
 		role(UserRole.MEMBER  , "_id", "address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "phone", "mobile", "name", "role", "status", "zip");

@@ -3,7 +3,8 @@
     "members" : "Members",
     "news" : "News",
     "plugins" : "Plugins",
-	"content" : "Content"
+	"content" : "Content",
+	"studies" : "Studies"
   },
 
   "admin_address" : {

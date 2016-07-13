@@ -365,7 +365,7 @@ public class Application extends APIController {
 		String password = JsonValidation.getString(json, "password");
 		
 		// check status
-		Member user = Member.getByEmail(email , Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "role"));
+		Member user = Member.getByEmail(email , Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "login"));
 		if (user == null) throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
 		if (!Member.authenticationValid(password, user.password)) {
 			throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
@@ -409,8 +409,9 @@ public class Application extends APIController {
 				
 		  obj.put("keyType", keytype);
 		  obj.put("role", user.role.toString().toLowerCase());
+		  obj.put("lastLogin", Json.toJson(user.login));
 		}
-	
+	    User.set(user._id, "login", new Date());
 		return ok(obj);
 	}
 	
@@ -482,6 +483,7 @@ public class Application extends APIController {
 		Member user = new Member();
 		user._id = new ObjectId();
 		user.email = email;
+		user.emailLC = email.toLowerCase();
 		user.name = firstName + " " + lastName;
 		
 		user.password = Member.encrypt(password);
@@ -599,6 +601,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.News.get(),
 				controllers.routes.javascript.News.add(),
 				controllers.routes.javascript.News.delete(),
+				controllers.routes.javascript.News.update(),
 				// Messages				
 				controllers.routes.javascript.Messages.get(),
 				controllers.routes.javascript.Messages.send(),
@@ -666,7 +669,9 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Researchers.login(),
 				controllers.research.routes.javascript.Studies.create(),
 				controllers.research.routes.javascript.Studies.list(),
+				controllers.research.routes.javascript.Studies.listAdmin(),
 				controllers.research.routes.javascript.Studies.get(),
+				controllers.research.routes.javascript.Studies.getAdmin(),
 				controllers.research.routes.javascript.Studies.update(),
 				controllers.research.routes.javascript.Studies.updateParticipation(),
 				controllers.research.routes.javascript.Studies.download(),

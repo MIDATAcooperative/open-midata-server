@@ -12,6 +12,11 @@ angular.module('views')
     	var spaceId = $scope.view.setup.spaceId;
     	var recordId = $scope.view.setup.recordId;
     	
+    	if ($scope.view.setup.url) {
+    	  $scope.url = $sce.trustAsResourceUrl($scope.view.setup.url);
+    	  $scope.status.isBusy = false;
+    	} else {
+    	
     	$scope.status.doBusy(recordId ? records.getUrl(recordId) : ($scope.view.setup.nopreview ? spaces.getUrl(spaceId) : spaces.getPreviewUrl(spaceId))).
 		then(function(results) {
 			$scope.previewType = results.data.type || "visualization";
@@ -29,6 +34,8 @@ angular.module('views')
 			  });						
 			}
 		});
+    	
+    	}
     	    	    				
     };
         

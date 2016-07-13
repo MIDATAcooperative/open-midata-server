@@ -76,6 +76,7 @@ public class QuickRegistration extends APIController {
 		Member user = new Member();
 		user._id = new ObjectId();
 		user.email = email;
+		user.emailLC = email.toLowerCase();
 		user.name = firstName + " " + lastName;
 		
 		user.password = Member.encrypt(password);

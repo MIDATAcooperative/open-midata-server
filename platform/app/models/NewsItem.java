@@ -7,6 +7,8 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 
 import utils.collections.ChainedMap;
+import utils.collections.Sets;
+import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 import utils.search.Search;
 import utils.search.Search.Type;
@@ -20,6 +22,9 @@ import utils.search.SearchException;
 public class NewsItem extends Model implements Comparable<NewsItem> {
 
 	private static final String collection = "news";
+	
+	@NotMaterialized
+	public final static Set<String> ALL = Sets.create("creator", "created", "expires", "language", "title", "content", "url", "studyId", "broadcast");
 
 	/**
 	 * the creator of the news item
@@ -94,6 +99,10 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 
 	public static void add(NewsItem newsItem) throws InternalServerException {
 		Model.insert(collection, newsItem);		
+	}
+	
+	public static void update(NewsItem newsItem) throws InternalServerException {
+		Model.upsert(collection, newsItem);		
 	}
 
 	public static void delete(ObjectId newsItemId) throws InternalServerException {

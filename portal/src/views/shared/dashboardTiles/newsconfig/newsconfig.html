@@ -6,7 +6,7 @@
   <div ng-if="view.setup.icon" class="pull-left themeicon">
     <img ng-src="{{ view.setup.icon }}" >
   </div>		  
-  <p class="">{{ view.setup.text }}</p>
+  <div ng-bind-html="view.setup.text"></div>
   <p><a ng-href="{{ view.setup.url }}">{{ view.setup.urlText }}</a></p>
   </div>
    <div ng-if="view.setup.link" class="footer">			  

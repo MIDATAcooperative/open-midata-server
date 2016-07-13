@@ -193,12 +193,20 @@ public class MongoDatabase extends Database {
 	 * Return the given fields of all objects that have the given properties.
 	 */
 	public <T extends Model> Set<T> getAll(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
-			Set<String> fields) throws DatabaseException {		
+			Set<String> fields) throws DatabaseException {	
+	   return getAll(modelClass, collection, properties, fields, 0);
+	}
+	/**
+	 * Return the given fields of all objects that have the given properties.
+	 */
+	public <T extends Model> Set<T> getAll(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
+			Set<String> fields, int limit) throws DatabaseException {		
 		try {
 			DBObject query = toDBObject(modelClass, properties);
 			DBObject projection = toDBObject(fields);
 			if (logQueries) AccessLog.logDB("all "+collection+" "+query.toString());
 			DBCursor cursor = getCollection(collection).find(query, projection);
+			if (limit!=0) cursor = cursor.limit(limit);
 			Set<DBObject> dbObjects = CollectionConversion.toSet(cursor);
 			return conversion.toModel(modelClass, dbObjects);
 		} catch (MongoException e) {

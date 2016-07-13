@@ -1,0 +1,27 @@
+
+<div ng-controller="AdminListStudiesCtrl" ng-cloak>
+    <div class="panel panel-primary">
+		<div class="panel-heading">Studies</div>
+		<div class="body">
+	<loader busy="status.isBusy !== false">	
+	<table ng-show="results.length > 0" class="table table-hover">
+	  <thead>
+	    <tr>
+	      <th>Name</th>
+	      
+	      <th>Created</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr ng-repeat="study in results">
+	      <td><a ui-sref="^.study({ studyId : study._id.$oid})">{{ study.name }}</a></td>	  
+	      
+	      <td>{{ study.createdAt | date }}</td>	         
+	    </tr>
+	  </tbody>
+	</table>
+	<p ng-hide="results.length">No studies are waiting for validation.</p>	
+	</loader>
+	</div>
+	</div>
+</div>	

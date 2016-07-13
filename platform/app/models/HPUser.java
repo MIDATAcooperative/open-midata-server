@@ -38,6 +38,7 @@ public class HPUser extends User {
 	
 	public HPUser(String email) {		
 		this.email = email;
+		this.emailLC = email.toLowerCase();
 		messages = new HashMap<String, Set<ObjectId>>();
 		messages.put("inbox", new HashSet<ObjectId>());
 		messages.put("archive", new HashSet<ObjectId>());
@@ -47,11 +48,11 @@ public class HPUser extends User {
 	}
 	
 	public static boolean existsByEMail(String email) throws InternalServerException {
-		return Model.exists(HPUser.class, collection, CMaps.map("email", email).map("role", UserRole.PROVIDER));
+		return Model.exists(HPUser.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.PROVIDER));
 	}
 	
 	public static HPUser getByEmail(String email, Set<String> fields) throws InternalServerException {
-		return Model.get(HPUser.class, collection, CMaps.map("email", email).map("role", UserRole.PROVIDER), fields);
+		return Model.get(HPUser.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.PROVIDER), fields);
 	}
 	
 	public static HPUser getById(ObjectId id, Set<String> fields) throws InternalServerException {

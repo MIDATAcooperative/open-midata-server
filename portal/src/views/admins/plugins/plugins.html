@@ -4,6 +4,7 @@
   <div class="panel panel-primary">
     <div class="body">
       <loader busy="status.isBusy !== false">
+      <dir-pagination-controls pagination-id="plugintable"></dir-pagination-controls>
       <table class="table" ng-show="apps.length > 0">
         <tr>
           <th>Name</th>
@@ -12,7 +13,7 @@
           <th>Spotlighted</th>
           <th>Status</th>
         </tr>
-        <tr ng-repeat="app in apps">
+        <tr dir-paginate="app in apps | itemsPerPage : 10" pagination-id="plugintable">
           <td><a ui-sref="^.manageapp({ appId : app._id.$oid })">{{  app.name }}</a></td>
           <td>{{ app.type }}</td>
           <td>{{ app.targetUserRole }}</td>

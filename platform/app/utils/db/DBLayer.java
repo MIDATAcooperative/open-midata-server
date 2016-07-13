@@ -188,6 +188,14 @@ public class DBLayer {
 			Set<String> fields) throws DatabaseException {
 		return getDatabaseForCollection(collection).getAll(modelClass, collection, properties, fields);
 	}
+	
+	/**
+	 * Return the given fields of all objects that have the given properties.
+	 */
+	public static <T extends Model> Set<T> getAll(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
+			Set<String> fields, int limit) throws DatabaseException {
+		return getDatabaseForCollection(collection).getAll(modelClass, collection, properties, fields, limit);
+	}
 
 	/**
 	 * Set the given field of the object with the given id.

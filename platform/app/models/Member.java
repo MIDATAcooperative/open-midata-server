@@ -61,7 +61,7 @@ public class Member extends User {
 	}
 	
 	public static boolean existsByEMail(String email) throws InternalServerException {
-		return Model.exists(Member.class, collection, CMaps.map("email", email).map("role",  UserRole.MEMBER));
+		return Model.exists(Member.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role",  UserRole.MEMBER));
 	}
 	
 	public static boolean existsByMidataID(String midataID) throws InternalServerException {
@@ -69,7 +69,7 @@ public class Member extends User {
 	}
 	
 	public static Member getByEmail(String email, Set<String> fields) throws InternalServerException {
-		return Model.get(Member.class, collection, CMaps.map("email", email).map("role", UserRole.MEMBER), fields);
+		return Model.get(Member.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.MEMBER), fields);
 	}
 	
 	public static Member getById(ObjectId id, Set<String> fields) throws InternalServerException {
@@ -92,6 +92,10 @@ public class Member extends User {
 		return Model.get(Member.class, collection, properties, fields);
 	}
 
+	public static Set<Member> getAll(Map<String, ? extends Object> properties, Set<String> fields, int limit) throws InternalServerException {
+		return Model.getAll(Member.class, collection, properties, fields, limit);
+	}
+	
 	public static Set<Member> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.getAll(Member.class, collection, properties, fields);
 	}

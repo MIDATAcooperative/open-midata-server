@@ -17,14 +17,21 @@ angular.module('portal')
 		name : "Overview",
 		criteria : { role : "MEMBER", status : "NEW" },
 	    changeable : true
+	  },
+	  {
+		name : "Specific User",
+		criteria : { },
+		searchable : "lastname"
 	  }
 	];
 	$scope.search = $scope.searches[0];
     
-	$scope.reload = function(search) {
-		console.log(search);
-		console.log($scope.search);
+	$scope.reload = function(search) {		
 		if (search) $scope.search = search;
+		console.log($scope.search);
+		if ($scope.search.searchable && !$scope.search.criteria.lastname && !$scope.search.criteria.email) return;
+		if (!$scope.search.criteria.lastname) { delete $scope.search.criteria.lastname; }
+		if (!$scope.search.criteria.email) { delete $scope.search.criteria.email; }
 		$scope.status.doBusy(users.getMembers($scope.search.criteria, [ "midataID", "firstname", "lastname", "email", "role", "status" ]))
 		.then(function(data) {
 			$scope.members = data.data;						

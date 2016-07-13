@@ -14,7 +14,8 @@
     "bootstrap": "3.3.5",
     "angular-translate": "^2.11.0",
     "angular-translate-storage-local": "^2.11.0",
-    "angular-translate-loader-partial": "^2.11.0"
+    "angular-translate-loader-partial": "^2.11.0",
+    "angular-sanitize": "1.5.3"
   },
   "resolutions": {
     "angular": "1.5.3"

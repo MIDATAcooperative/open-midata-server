@@ -258,6 +258,7 @@
     "cancel_btn" : "Cancel",
     "view_btn" : "View",
     "submit_btn" : "Submit",
+    "delete_btn" : "Delete",
     
     "user" : {
       "lastname" : "Surname",

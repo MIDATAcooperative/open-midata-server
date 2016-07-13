@@ -32,6 +32,7 @@ public class MinimalSetup {
 			Admin admin = new Admin();
 			admin._id = new ObjectId("5608f881e4b0f992a4e197b3");
 			admin.email = "admin@midata.coop";
+			admin.emailLC = admin.email;
 			admin.password = "1000:baef51f211e1d5c0df67ca748933a76ce9e6bb4f1d51813f:85a273f66396793a5bcc09fe1e8d8062c25b118f65651c7e";
 			admin.role = UserRole.ADMIN;
 			admin.status = UserStatus.ACTIVE;
@@ -56,6 +57,7 @@ public class MinimalSetup {
 			Developer developer = new Developer();
 			developer._id = new ObjectId("55eff624e4b0b767e88f92b9");
 			developer.email = "development@midata.coop";
+			developer.emailLC = developer.email.toLowerCase();
 			developer.password = "1000:25156cb392d80c023e57290637e96b4bb6674fa50f329f6e:c27fd59cb2b9ce964cfa194655cb83930bc6a762ace15290";
 			developer.role = UserRole.DEVELOPER;
 			developer.registeredAt = new Date();
@@ -81,6 +83,7 @@ public class MinimalSetup {
 			Admin admin = new Admin();
 			admin._id = new ObjectId();
 			admin.email = "autorun-service";
+			admin.emailLC = admin.email.toLowerCase();
 			admin.password = null;
 			admin.role = UserRole.ADMIN;
 			admin.status = UserStatus.ACTIVE;

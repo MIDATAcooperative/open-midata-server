@@ -20,6 +20,7 @@ import utils.DateTimeUtils;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.auth.MemberSecured;
+import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.exceptions.InternalServerException;
@@ -80,6 +81,31 @@ public class News extends Controller {
 		item.broadcast = true; /*JsonValidation.getBoolean(json, "broadcast");*/
 		
 		NewsItem.add(item);
+		
+		return ok();
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@Security.Authenticated(AdminSecured.class)
+	@APICall
+	public static Result update() throws JsonValidationException, InternalServerException {
+		// validate json
+		JsonNode json = request().body().asJson();
+		
+		JsonValidation.validate(json, "_id", "title", "content", "expires");		
+
+		// create new news item
+		NewsItem item = NewsItem.get(CMaps.map("_id", JsonValidation.getObjectId(json, "_id")), NewsItem.ALL);
+		item.creator = new ObjectId(request().username());
+		
+		item.expires = JsonValidation.getDate(json, "expires");
+		item.title = JsonValidation.getString(json, "title");
+		item.content = JsonValidation.getString(json, "content");
+		item.language = JsonValidation.getString(json, "language");
+		item.url = JsonValidation.getStringOrNull(json, "url");
+		item.broadcast = true; /*JsonValidation.getBoolean(json, "broadcast");*/
+		
+		NewsItem.update(item);
 		
 		return ok();
 	}

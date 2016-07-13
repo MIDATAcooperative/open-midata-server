@@ -874,13 +874,13 @@ angular.module('portal')
 	   });
 	   
 	   $scope.makeBig = function(view) {
-		 if (view.makeBig != null) {
+		 /*if (view.makeBig != null) {
 			 view.makeBig();
-		 } else {		   
+		 } else {*/		   
 			 $scope.layout.small.splice($scope.layout.small.indexOf(view), 1);
 			 $scope.layout.full.push(view);
 			 view.position = "full";
-		 }
+		 //}
 	   };
 	   
 	   $scope.makeSmall = function(view) {
@@ -910,4 +910,25 @@ angular.module('portal')
 		        return index++ % 2 == 1;
 		    };
 	   };
+	   
+	   $scope.$on('$messageIncoming', function (event, data){		
+  		 if (data && data.type=="link") {
+  			console.log("link");
+  		   	console.log(data.pos);
+  		    console.log(data.url);
+  			var pos = data.pos;  	    	 
+  	    	var spacedef =
+  		     {
+  		    	   id : "test",
+  		    	   template : "/views/shared/dashboardTiles/spacesummary/spacesummary.html",
+  		    	   title : "Test",
+  		    	   active : true,
+  		    	   position : pos,
+  		    	   actions : {  },
+  		    	   setup : { allowSelection : false, url : data.url }
+  		     };
+  		     views.layout[pos].push(views.def(spacedef));   			
+  			
+  		 }
+  	  });
 }]);

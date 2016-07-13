@@ -142,7 +142,7 @@ public class Providers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		HPUser user = HPUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "provider", "role"));
+		HPUser user = HPUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "provider", "role", "login"));
 		
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		if (!HPUser.authenticationValid(password, user.password)) {
@@ -201,7 +201,7 @@ public class Providers extends APIController {
 		Set<ObjectId> ids = new HashSet<ObjectId>();
 		for (MemberKey key : memberKeys) ids.add(key.owner);
 		Set<String> fields = Sets.create("_id", "firstname","birthday", "lastname"); 
-		Set<Member> result = Member.getAll(CMaps.map("_id", ids), fields);
+		Set<Member> result = Member.getAll(CMaps.map("_id", ids), fields, 0);
 		
 		return ok(JsonOutput.toJson(result, "User", fields));
 	}

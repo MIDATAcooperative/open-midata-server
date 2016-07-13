@@ -23,6 +23,7 @@ public class Developer extends User {
 	
 	public Developer(String email) {		
 		this.email = email;
+		this.emailLC = email.toLowerCase();
 		messages = new HashMap<String, Set<ObjectId>>();
 		messages.put("inbox", new HashSet<ObjectId>());
 		messages.put("archive", new HashSet<ObjectId>());
@@ -32,11 +33,11 @@ public class Developer extends User {
 	}
 	
 	public static boolean existsByEMail(String email) throws InternalServerException {
-		return Model.exists(Developer.class, collection, CMaps.map("email", email).map("role", UserRole.DEVELOPER));
+		return Model.exists(Developer.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.DEVELOPER));
 	}
 	
 	public static Developer getByEmail(String email, Set<String> fields) throws InternalServerException {
-		return Model.get(Developer.class, collection, CMaps.map("email", email).map("role", UserRole.DEVELOPER), fields);
+		return Model.get(Developer.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.DEVELOPER), fields);
 	}
 	
 	public static Developer getById(ObjectId id, Set<String> fields) throws InternalServerException {

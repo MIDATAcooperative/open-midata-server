@@ -34,6 +34,7 @@ POST    /common/api/password/set                         controllers.Application
 
 POST    /members/api/news/add                            controllers.News.add()
 POST    /members/api/news/get                            controllers.News.get()
+POST    /admin/api/news/update                           controllers.News.update()
 POST    /admin/api/news/delete/:id                       controllers.News.delete(id: String)
 
 
@@ -107,7 +108,9 @@ POST    /research/api/login                              controllers.research.Re
 
 POST    /research/api/studies                            controllers.research.Studies.create()
 GET     /research/api/studies                            controllers.research.Studies.list()
+GET     /admin/api/studies                               controllers.research.Studies.listAdmin()
 GET     /research/api/studies/:study                     controllers.research.Studies.get(study: String)
+GET     /admin/api/studies/:study                        controllers.research.Studies.getAdmin(study: String)
 PUT     /research/api/studies/:study                     controllers.research.Studies.update(study: String)
 GET     /research/api/studies/:study/download            controllers.research.Studies.download(study: String)
 GET     /research/api/studies/:study/codes               controllers.research.Studies.listCodes(study: String)
@@ -115,6 +118,7 @@ POST    /research/api/studies/:study/codes               controllers.research.St
 GET     /research/api/studies/:study/requiredinfo        controllers.research.Studies.getRequiredInformationSetup(study: String)
 POST    /research/api/studies/:study/requiredinfo        controllers.research.Studies.setRequiredInformationSetup(study: String)
 POST    /research/api/studies/:study/status/validate     controllers.research.Studies.startValidation(study: String)
+POST    /admin/api/studies/:study/status/validate        controllers.research.Studies.endValidation(study: String)
 POST    /research/api/studies/:study/status/startsearch  controllers.research.Studies.startParticipantSearch(study: String)
 POST    /research/api/studies/:study/status/endsearch    controllers.research.Studies.endParticipantSearch(study: String)
 POST    /research/api/studies/:study/status/start        controllers.research.Studies.startExecution(study: String)

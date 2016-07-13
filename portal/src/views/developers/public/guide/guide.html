@@ -8,9 +8,10 @@
 				<ul class="nav nav-pills nav-stacked">
 					<li ng-init="tab='home'" ng-class="{ 'active' : tab=='home' }"><a href="javascript:" ng-click="tab='home';">Home</a></li>
 					<li ng-class="{ 'active' : tab=='accounts' }"><a href="javascript:" ng-click="tab='accounts';">Developer Accounts</a></li>
-					<li ng-class="{ 'active' : tab=='architecture' }"><a href="javascript:" ng-click="tab='architecture';">Architecture</a></li>					
-					<li ng-class="{ 'active' : tab=='visualizations' }"><a href="javascript:" ng-click="tab='visualizations';">Plugins</a></li>
-					<li ng-class="{ 'active' : tab=='mobile' }"><a href="javascript:" ng-click="tab='mobile';">Mobile Apps</a></li>
+					<li ng-class="{ 'active' : tab=='mobile' }"><a href="javascript:" ng-click="tab='mobile';">Mobile Apps / External Apps</a></li>	
+					<li ng-class="{ 'active' : tab=='visualizations' }"><a href="javascript:" ng-click="tab='visualizations';">Plugins</a></li>										
+					<li ng-class="{ 'active' : tab=='fhir' }"><a href="javascript:" ng-click="tab='fhir';">FHIR API</a></li>
+					<li ng-class="{ 'active' : tab=='midata' }"><a href="javascript:" ng-click="tab='midata';">MIDATA API</a></li>								
 					<li ng-class="{ 'active' : tab=='formats' }"><a href="javascript:" ng-click="tab='formats';">Format/Content List</a></li>
 				</ul>
 			</div>
@@ -19,26 +20,21 @@
 					<div id="home" class="tab-pane fade" ng-class="{ 'active in' : tab=='home' }">
 						<h2>Overview</h2>
 						<p>The developer's guide explains the general architecture of the
-							platform, how plugins (forms and visualizations) interact with it, how
-							mobile apps may connect with the MIDATA platform
-							and how plugins and mobile apps bring in and display data.
+							platform, how mobile apps and plugins interact with it and 
+							how plugins and mobile apps bring in and display data.
 						</p>
-						<p><em style="font-weight:bold;">Forms</em> connect data sources to
-							the platform. They are built to bring data onto the platform, by
-							giving the users the possibility to either create a record
-							themselves, or importing it from another where it has originally
-							been created. Forms may connect to other domains to fetch data but are
-							not allowed to read records from the platform.
+						
+						<p>For any type of development you need a <b>Developer Account</b> first.</p>
+						
+						<p>If you want to develop a SMART on FHIR app, please read
+						  <a href="javascript:" ng-click="tab='mobile';">Mobile Apps / External Apps</a> and <a href="javascript:" ng-click="tab='fhir';">FHIR API</a>. You may need to look at the <a href="javascript:" ng-click="tab='formats';">Format/Content List</a>.
 						</p>
-						<p><em style="font-weight:bold;">Visualizations</em> display an
-							aggregated view of the records that are passed to them. The
-							purpose of visualizations is to foster the users' understanding of
-							their own data. Visualizations may read and write records from and to the
-							MIDATA platform but they may not connect to external domains.
+						
+						<p>For mobile or desktop apps in general, please read
+						  <a href="javascript:" ng-click="tab='mobile';">Mobile Apps / External Apps</a>, <a href="javascript:" ng-click="tab='midata';">MIDATA API</a>, <a href="javascript:" ng-click="tab='fhir';">FHIR API</a> and <a href="javascript:" ng-click="tab='formats';">Format/Content List</a>.
 						</p>
-						<p><em style="font-weight:bold;">Mobile Apps</em> may connect to the MIDATA platform
-						    in behalf of a user and write records to the users account. It may also read records
-						    but only those created by the app itself and those the user has granted access to.
+						
+						<p>If you want to develop a plugin for the MIDATA platform please contact us for additional information.
 						</p>
 					</div>
 					<div id="accounts" class="tab-pane fade" ng-class="{ 'active in' : tab=='accounts' }">
@@ -52,14 +48,17 @@
 						   and final integration.
 						</p> 
 					</div>
-					<div id="architecture" class="tab-pane fade" ng-class="{ 'active in' : tab=='architecture' }">
-						<h2>Architecture</h2>
-						<p>The platform promises not to give data out. To adhere to that 
-							promise, plugins run on an isolated and sandboxed application 
-							server, that can only connect to the web application server, and 
-							therefore especially not to the internet.</p>
-						<p>Plugins may be registered via your developer account but the final code version needs to be
-						   deployed by us on the plugin server.</p>
+					<div id="fhir" class="tab-pane fade" ng-class="{ 'active in' : tab=='fhir' }">
+						<h2>FHIR API</h2>
+						<p class="alert alert-info">Please note that the API runs at <strong>{{ENV.apiurl}}/fhir</strong></p>
+						<p>The platform currently implements a limited version of the <a target="_blank" href="https://www.hl7.org/fhir">FHIR</a> API and supports <a target="_blank" href="http://docs.smarthealthit.org/">SMART on FHIR</a> authentication using the <b>public standalone</b> launch sequence.</p>
+						<p>Here are some links that may help you during development:</p>
+						<ul>
+						  <li><a target="_blank" href="https://www.hl7.org/fhir/http.html">RESTful API description from hl7</a></li>
+						  <li><a target="_blank" href="https://www.hl7.org/fhir/resourcelist.html">FHIR resources list from hl7</a></li>
+						  <li><a target="_blank" href="http://docs.smarthealthit.org/authorization/">SMART App Authorization Guide</a></li>
+						</ul>
+						<p>Here is a link to the conformance statement of the platform: <a target="_blank" ng-href="{{ENV.apiurl}}/fhir/metadata">Conformance Statement</a></p>
 					</div>					
 					<div id="visualizations" class="tab-pane fade" ng-class="{ 'active in' : tab=='visualizations' }">
 						<h2>Plugins</h2>
@@ -67,6 +66,10 @@
 						available may be changed by the user. The application developer can propose a query that - if accepted by the user - 
 						determines the initially available set of records.
 						</p>
+						<p>The platform promises not to give data out. To adhere to that 
+							promise, plugins may only connect to the web application server and not to other domains of the internet. 
+						</p>
+					
 					    <h3>Registration using the developer account</h3>					
 						<p>Each plugin needs to have an internal name that is used by the platform to identify that app.
 						The plugin developer also needs to specify a public name for the marked place and a textual description, that describe
@@ -76,7 +79,8 @@
 						   Choose "Visualization" as "type" of the plugin. 						   
 						   Click on "Submit" when you are done.
 						</p>
-												
+						<p>Plugins may be registered via your developer account but the final code version needs to be
+						   deployed by us on the plugin server.</p>					
 						<h4>URL</h4>
 						<p>The third property that has to be specified is the URL that will be 
 						called with the records selected to be displayed by the app. The URL is 
@@ -90,11 +94,11 @@
 						<p class="alert alert-info">Please note that the API runs at <strong>{{ENV.apiurl}}</strong></p>
 						<p>The Endpoint is at:</p>
 						<pre><i>POST</i> /v1/plugin_api/records/create</pre>
-						<p>For a detailed description of the parameters see <a ng-click="tab='mobile'">Mobile API</a>.</p>
+						<p>For a detailed description of the parameters see <a ng-click="tab='midata'">MIDATA API</a>.</p>
 						<h3>Retrieving existing records</h3>
 						<p>The Endpoint is at:</p>
 						<pre><i>POST</i> /v1/plugin_api/records/search</pre>
-						<p>For a detailed description of the parameters see <a ng-click="tab='mobile'">Mobile API</a>.</p>
+						<p>For a detailed description of the parameters see <a ng-click="tab='midata'">MIDATA API</a>.</p>
 						<h3>Writing a configuration object</h3>
 						<p>Each plugin may store a configuration JSON on the server. This piece of information may only be read by the plugin itself and is updateable.
 						To store a configuration call:
@@ -127,17 +131,30 @@
 						
 					</div>
 					<div id="mobile" class="tab-pane fade" ng-class="{ 'active in' : tab=='mobile' }">
-						<h2>Mobile Apps</h2>
+						<h2>Mobile Apps / External Apps</h2>
 						<p>Mobile Apps are external applications that provide and/or query records from the platform.</p>
 						<h3>Registration using the developer account</h3>					
 						<p>Each app needs to have an internal name that is used by the platform to identify that app.
 						The app developer also needs to specify a public name for the marked place and a textual description, that describe
 						what it does. Also a secret key needs to be entered that is known to the mobile app but should not be made public.</p>
 						<p>To register your app, log in into your developer account. On the "Your Plugins" page click on "Register a new plugin" and fill out the form.
-						   Choose "Mobile App" as "type" of the plugin. 
-						   <i>In the current release do not select "Spotlight in Market". (will be removed)</i>
+						   Choose "Mobile App" as "type" of the plugin. 						   
 						   Click on "Submit" when you are done.
+						</p>
+						<p>If you want to use SMART on FHIR authentication the <b>Internal Name</b> must match the <code>client_id</code> parameter your app will send during authentication. For the MIDATA API it must match the <code>appname</code> parameter during authentication.</p>
+						<p>The <b>Application Secret</b> is required for authentication with the MIDATA API and for SMART on FHIR <b>confidential</b> launch.
+						You can choose the secret freely.
+						</p>
+						<p>The <b>Redirect URI</b> is used for the SMART on FHIR <b>public</b> launch sequence. The redirect URI must match the redirect URI your app will provide during authentication.</p>				
+						<h3>API</h3>
+						<p>
+						  For the development of mobile/external apps you may use the <a href="javascript:" ng-click="tab='fhir';">FHIR API</a> and/or the <a href="javascript:" ng-click="tab='midata';">MIDATA API</a>. 
+						  The session and refresh tokens obtained from the SMART on FHIR authentication are also useable the the MIDATA API and
+						  tokens obtained from the MIDATA API are useable with the FHIR API.
 						</p>		
+					</div>
+					<div id="midata" class="tab-pane fade" ng-class="{ 'active in' : tab=='midata' }">
+					    <h2>MIDATA API</h2>
 						<p class="alert alert-info">Please note that the API runs at <strong>{{ENV.apiurl}}</strong></p>										
                         <h3>Authentication (Login)</h3>						
 						<p>A mobile app needs to authenticate using a users credentials to the platform before providing or querying records.

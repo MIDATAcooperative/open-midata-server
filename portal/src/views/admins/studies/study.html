@@ -1,0 +1,89 @@
+
+<div ng-controller="AdminStudyCtrl" ng-cloak>
+
+	<div class="panel panel-primary">
+		<div class="panel-heading">Study</div>
+		<div class="body">
+	<loader busy="status.isBusy !== false">
+	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+	   {{ error.message || error }}
+	</p>
+	<table class="table">
+	  <tr>
+	    <td>Name</td>
+	    <td>{{ study.name }}</td>
+	  </tr>
+	  <tr>
+        <td>Created At:</td>
+        <td>{{ study.createdAt | date }}</td>
+      </tr>   
+      <tr>
+        <td>Description</td>
+        <td>{{ study.description }}</td>
+      </tr>      
+      <tr>
+	    <td>Code</td>
+	    <td>{{ study.code }}</td>
+	  </tr>    
+    </table>	
+    </loader>
+    </div>
+    </div>
+        
+    <div class="panel panel-primary">
+		<div class="panel-heading">Required Information</div>
+		<div class="body">
+		  <p>Required Information: <b>{{ study.requiredInformation }}</b></p>
+		  <p>Required Assistance: <b>{{ study.assistance }}</b></p>
+		  <p>Sharing Query:</p>
+		  <pre>{{ study.recordQuery | json }}
+		  </pre>
+		</div>
+	</div>
+	
+	 <div class="panel panel-primary">
+		<div class="panel-heading">Groups</div>
+		<div class="body">
+		  <table class="table table-striped">
+		      <tr>
+		        <th>Group Name</th>
+		        <th>Description</th>		        
+		      </tr>
+		      <tr ng-repeat="group in study.groups">
+		        <td>{{ group.name }}</td>
+		        <td>{{ group.description }}</td>		        
+		      </tr>
+         </table>
+		</div>
+	</div>
+    
+    <div ng-show="study.history.length" class="panel panel-primary">
+    <div class="panel-heading">History</div>
+    <div class="panel-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>Who</th>
+          <th>When</th>
+          <th>Comment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="entry in study.history">
+          <td>{{ entry.event }}</td>
+          <td>{{ entry.whoName }}</td>
+          <td>{{ entry.timestamp | date }}</td>
+          <td>{{ entry.message }}</td>
+        </tr>
+      </tbody>
+    </table>    
+    </div>
+    </div>
+    
+  
+    <a class="btn btn-default" ui-sref="admin.studies">Back</a> 
+    <button class="btn btn-primary" ng-click="endValidation()">End Validation</button>    
+    <button ng-show="readyForDelete()" class="btn btn-danger" ng-click="delete()">Delete Study</button>
+    
+</div>

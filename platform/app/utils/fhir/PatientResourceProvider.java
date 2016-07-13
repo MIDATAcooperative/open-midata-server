@@ -107,7 +107,7 @@ public class PatientResourceProvider extends ResourceProvider implements IResour
     }
     
     private List<Patient> patientsFromUserAccounts(Map<String, Object> properties) throws AppException {
-    	Set<Member> members = Member.getAll(properties, Sets.create("_id", "email", "firstname", "lastname", "gender", "birthday", "midataID", "phone", "city", "country", "zip", "address1", "address2"));
+    	Set<Member> members = Member.getAll(properties, Sets.create("_id", "email", "firstname", "lastname", "gender", "birthday", "midataID", "phone", "city", "country", "zip", "address1", "address2"), 0);
     	List<Patient> result = new ArrayList<Patient>();
     	for (Member member : members) {
     		Patient p = new Patient();

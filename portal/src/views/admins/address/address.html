@@ -25,7 +25,12 @@
 			  </tr><tr>
 			  <td>EMail Status:</td><td>{{ member.emailStatus }}</td>
 			  </tr><tr>
-			  <td>Confirmation Code:</td><td><b>{{ member.confirmationCode }}</b></td></tr>
+			  <td>Confirmation Code:</td><td><b>{{ member.confirmationCode }}</b></td>
+			  </tr><tr>
+			  <td>Registration Date:</td><td>{{ member.registeredAt | date }}</td>
+			  </tr><tr>
+			  <td>Last login:</td><td>{{ member.login | date }}</td>
+			  </tr>
 			  </table>
 			  <button ui-sref="^.members" class="btn btn-default">Back</button>
 			</loader>

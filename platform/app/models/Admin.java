@@ -24,6 +24,7 @@ public class Admin extends User {
 
 	public Admin(String email) {
 		this.email = email;
+		this.emailLC = email.toLowerCase();
 		messages = new HashMap<String, Set<ObjectId>>();
 		messages.put("inbox", new HashSet<ObjectId>());
 		messages.put("archive", new HashSet<ObjectId>());
@@ -33,13 +34,13 @@ public class Admin extends User {
 	}
 
 	public static boolean existsByEMail(String email) throws InternalServerException {
-		return Model.exists(Admin.class, collection, CMaps.map("email", email)
+		return Model.exists(Admin.class, collection, CMaps.map("emailLC", email.toLowerCase())
 				.map("role", UserRole.ADMIN));
 	}
 
 	public static Admin getByEmail(String email, Set<String> fields)
 			throws InternalServerException {
-		return Model.get(Admin.class, collection, CMaps.map("email", email)
+		return Model.get(Admin.class, collection, CMaps.map("emailLC", email.toLowerCase())
 				.map("role", UserRole.ADMIN), fields);
 	}
 

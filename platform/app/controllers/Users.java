@@ -95,19 +95,25 @@ public class Users extends APIController {
 		  } else {
 			Rights.chk("Users.get", getRole(), properties, fields);
 		  }
-		  properties.put("searchable", true);
+		  if (!getRole().equals(UserRole.ADMIN)) properties.put("searchable", true);
 		} else if (fields.contains("role")) {
 			// Check later
 			postcheck = true;
-			properties.put("searchable", true);
+			if (!getRole().equals(UserRole.ADMIN)) properties.put("searchable", true);
 		} else {		
 		  Rights.chk("Users.get", getRole(), properties, fields);
-		  properties.put("searchable", true);
+		  if (!getRole().equals(UserRole.ADMIN)) properties.put("searchable", true);
 		}
 
 		// execute		
-		if (fields.contains("name")) { fields.add("firstname"); fields.add("lastname"); }		
-		List<Member> users = new ArrayList<Member>(Member.getAll(properties, fields));
+		if (fields.contains("name")) { fields.add("firstname"); fields.add("lastname"); }	
+		
+		if (properties.containsKey("email")) {
+			properties.put("emailLC", properties.get("email").toString().toLowerCase());
+			properties.remove("email");
+		}
+		
+		List<Member> users = new ArrayList<Member>(Member.getAll(properties, fields, 100));
 		
 		if (postcheck) {
 			for (Member mem : users) {
@@ -242,6 +248,7 @@ public class Users extends APIController {
 		User user = User.getById(userId, Sets.create("_id")); 
 		
 		User.set(user._id, "email", email);
+		User.set(user._id, "emailLC", email.toLowerCase());
 		User.set(user._id, "name", firstName + " " + lastName);
 		User.set(user._id, "address1", JsonValidation.getString(json, "address1"));
 		User.set(user._id, "address2", JsonValidation.getString(json, "address2"));

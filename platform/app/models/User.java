@@ -48,6 +48,11 @@ public class User extends Model implements Comparable<User> {
 	public String email; 
 	
 	/**
+	 * Email address of the user in lower case
+	 */
+	public String emailLC;
+	
+	/**
 	 * firstname lastname of the user
 	 * 
 	 * This field is not stored in the database but computed from firstname and lastname fields.

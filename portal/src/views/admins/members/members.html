@@ -13,12 +13,31 @@
 		      <formrow myid="status" label="Status" ng-show="search.changeable">
 		        <select  class="form-control" id="status" ng-change="reload();" ng-model="search.criteria.status" ng-options="status for status in stati"></select>
 		      </formrow>
+		      <formrow myid="lastname" label="Lastname" ng-show="search.searchable">
+		        <div class="input-group">
+		        <input type="text" class="form-control" id="lastname" ng-model="search.criteria.lastname" >
+		        <div class="input-group-btn">
+		          <button class="btn btn-primary" ng-click="reload()">Search</button>
+		        </div>
+		        </div>
+		      </formrow>
+		      <formrow myid="email" label="EMail" ng-show="search.searchable">
+		        <div class="input-group">
+		        <input type="text" class="form-control" id="email" ng-model="search.criteria.email" >
+		        <div class="input-group-btn">
+		          <button class="btn btn-primary" ng-click="reload()">Search</button>
+		        </div>
+		        </div>
+		      </formrow>
 		    </form>
 		            
             <loader busy="status.isBusy !== false">
 			
+			<div ng-if="members.length > 10">
+              <dir-pagination-controls pagination-id="membertable"></dir-pagination-controls>
+             </div>
 
-			<table class="table table-striped">
+			<table class="table table-striped" ng-show="members.length">
 
 				<tr>
 					<th>midataID</th>
@@ -29,7 +48,7 @@
 					<th>Status</th>
 				</tr>
 								
-				<tr ng-repeat="member in members">
+				<tr dir-paginate="member in members | itemsPerPage : 10" pagination-id="membertable">
 					<td><a href="javascript:" ui-sref="^.address({ userId : member._id.$oid })">{{ member.midataID || 'none' }}</a></td>
 					<td>{{ member.firstname }}</td>
 					<td>{{ member.lastname }}</td>
@@ -39,6 +58,7 @@
 				</tr>
 			</table>
 
+            <p ng-show="members.length === 0">No matching users found.</p>
 			
 			</loader>
 		</div>
