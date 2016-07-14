@@ -3,17 +3,16 @@
    <div class="tab-content">
     <div class="tab-pane active">
 	<loader busy="status.isBusy !== false">
-	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
-	   {{ error.message || error }}
+	<p ng-show="error && !error.field" translate="{{error.code}}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
 	</p>
 	<div ng-show="results.length > 0">
 	<table class="table table-hover">
 	  <thead>
 	    <tr>
-	      <th>Name</th>
-	      <th>Group</th>
-	      <th>Status</th>
-	      <th>Recruiter</th>
+	      <th translate="studyparticipants.name"></th>
+	      <th translate="studyparticipants.group"></th>
+	      <th translate="studyparticipants.status"></th>
+	      <th translate="studyparticipants.recruiter"></th>
 	      <th></th>	      	     
 	    </tr>
 	  </thead>
@@ -21,18 +20,17 @@
 	    <tr ng-repeat="participant in results">
 	      <td><a ui-sref="research.study.participant({ studyId : studyid, participantId : participant._id.$oid})">{{ participant.ownerName }}</a></td>	  
 	      <td><select ng-model="participant.group" class="form-control" ng-change="changeGroup(participant)" ng-options="group.name as group.name for group in study.groups"></select></td>
-	      <td>{{ participant.pstatus }}</td>
+	      <td translate="{{ 'enum.participationstatus.'+ participant.pstatus }}"></td>
 	      <td>{{ participant.recruiterName }}</td>
 	      <td>
-	        <button ng-show="mayApproveParticipation(participant)" ng-click="approveParticipation(participant)" class="btn btn-success btn-xs">Accept</button>
-	        <button ng-show="mayRejectParticipation(participant)" ng-click="rejectParticipation(participant)" class="btn btn-danger btn-xs">Reject</button>
+	        <button ng-show="mayApproveParticipation(participant)" ng-click="approveParticipation(participant)" class="btn btn-success btn-xs" translate="studyparticipants.accept_btn"></button>
+	        <button ng-show="mayRejectParticipation(participant)" ng-click="rejectParticipation(participant)" class="btn btn-danger btn-xs" translate="studyparticipants.reject_btn"></button>
 	      </td>	      	        
 	    </tr>
 	  </tbody>
 	</table>
 	</div>
-	<p ng-show="results.length == 0">
-	  This study does not have any participants yet.
+	<p ng-show="results.length == 0" translate="studyparticipants.empty">	  
 	</p>
 	</loader>
 	</div>	

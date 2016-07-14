@@ -5,16 +5,16 @@
 	<div ng-app="studies" ng-controller="StudyRulesCtrl" ng-cloak>
 	<loader busy="status.isBusy !== false">
 	
-	<h2>Study Rules</h2>
-	<p class="alert alert-info" ng-hide="error">This setup cannot be changed anymore after Study has been validated.</p>
-	<p class="alert alert-danger" ng-show="error">{{ error }}</p>
+	<h2 translate="studyrules.title"></h2>
+	<p class="alert alert-info" ng-hide="error" translate="studyrules.no_change_warning"></p>
+	<p class="alert alert-danger" ng-show="error" translate="{{ error.code }}"></p>
 	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="submit()" role="form">
-	  <formrow myid="recordQuery" label="Sharing Query (JSON)">
+	  <formrow myid="recordQuery" label="studyrules.sharing_query">
 	     <textarea class="form-control" ng-model="study.recordQueryStr"></textarea>
       </formrow>
        
       <formrow myid="x" label="">
-        <button type="submit" ng-disabled="status.action == 'update'" class="btn btn-primary">Change</button>
+        <button type="submit" ng-disabled="status.action == 'update'" class="btn btn-primary" translate="common.change_btn"></button>
       </formrow>
     </form>
     </loader>

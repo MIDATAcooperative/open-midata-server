@@ -91,7 +91,8 @@
        "provider" : "A healthcare provider with this name already exists.",
        "research" : "A research organisation with this name already exists.",
        "passcode" : "Please choose a different passcode!",
-       "plugin" : "A plugin with the same name already exists."
+       "plugin" : "A plugin with the same name already exists.",
+       "study" : "A study with this name already exists."
      },
           
      "blocked" : {
@@ -203,12 +204,12 @@
 	 },
 	 "studyexecutionstatus" : {
 	   "ABORTED" : "Execution aborted",
-	   "FINISHED" : "Study finished",
+	   "FINISHED" : "Finished",
 	   "PRE" : "Not yet started",
-	   "RUNNING" : "Study currently running"
+	   "RUNNING" : "Currently running"
 	 },
 	 "studyvalidationstatus" : {
-	   "DRAFT" : "Validation not requested yet",
+	   "DRAFT" : "Draft (Not Validated)",
 	   "REJECTED" : "Study rejected by MIDATA",
 	   "VALIDATED" : "Study has been validated",
 	   "VALIDATION" : "Validation running"
@@ -255,6 +256,8 @@
     "back_btn" : "Back",
     "search_btn" : "Search",
     "add_btn" : "Add",
+    "create_btn" : "Create",
+    "change_btn" : "Change",
     "cancel_btn" : "Cancel",
     "view_btn" : "View",
     "submit_btn" : "Submit",

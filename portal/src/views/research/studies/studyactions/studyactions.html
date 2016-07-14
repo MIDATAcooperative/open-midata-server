@@ -4,7 +4,7 @@
 	    <div class="tab-pane active">	
 	       <loader busy="status.isBusy !== false">
 	       
-	       <p class="alert alert-info">When the study is running you can share data with participants and have them complete tasks. (Like fill out a form)</p>
+	       <p class="alert alert-info" translate="studyactions.description"></p>
 	       
 	       <div ng-show="study.executionStatus == 'RUNNING'">
 	       <form class="form-vertical">
@@ -14,8 +14,8 @@
 	       </form>
 		   
 		   
-		   <button class="btn btn-default" ng-click="setGroup();">Select Group</button>		  
-           <button class="btn btn-default" ng-click="addTask();" ng-disabled="group == null">Add Task for Participants</button>
+		   <button class="btn btn-default" ng-click="setGroup();" translate="studyactions.select_group_btn"></button>	  
+           <button class="btn btn-default" ng-click="addTask();" ng-disabled="group == null" translate="studyactions.add_task_btn"></button>
            </div>
    		   </loader>
 		</div>	

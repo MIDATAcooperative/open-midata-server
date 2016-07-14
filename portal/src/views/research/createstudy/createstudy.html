@@ -3,21 +3,20 @@
     <h1>Studies</h1>
   </div>
   <div ng-controller="CreateStudyCtrl" ng-cloak class="panel panel-primary">
-	<div class="panel-heading">Create new study</div>
+	<div class="panel-heading" translate="createstudy.title"></div>
 	<div class="panel-body">
-	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
-	   {{ error.message || error }}
+	<p ng-show="error && !error.field" translate="{{error.code}}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
 	</p>
 	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="createstudy()" role="form">
-	  <formrow myid="name" label="Study name"> 
-		<input type="text" class="form-control" id="name" name="name" placeholder="Study Name" ng-model="study.name" ng-required="true">
-		<formerror myid="name" type="exists" message="A study with this name already exists."></formerror> 
+	  <formrow myid="name" label="createstudy.study_name"> 
+		<input type="text" class="form-control" id="name" name="name" placeholder="createstudy.study_name" ng-model="study.name" ng-required="true">
+		<formerror myid="name" type="exists" message="error.exists.study"></formerror> 
       </formrow>
-      <formrow myid="description" label="Study description">
+      <formrow myid="description" label="createstudy.study_description">
         <textarea class="form-control" id="description" name="description" rows="5" ng-model="study.description" ng-required="true"></textarea>
       </formrow>
       <formrow myid="x" label="">
-        <button type="submit" class="btn btn-primary">Create</button>
+        <button type="submit" class="btn btn-primary" translate="common.create_btn"></button>
       </formrow>
     </form>	
     </div>

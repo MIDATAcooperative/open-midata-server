@@ -4,40 +4,39 @@
 	<div class="tab-content">	
 	<div class="tab-pane active">
 	<loader busy="status.isBusy !== false">
-	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
-	   {{ error.message || error }}
+	<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
 	</p>
 	<table class="table">
 	  <tr>
-	    <td>Name</td>
+	    <td translate="studyoverview.name"></td>
 	    <td>{{ study.name }}</td>
 	  </tr>
 	  <tr>
-        <td>Created At:</td>
+        <td translate="studyoverview.created_at"></td>
         <td>{{ study.createdAt | date }}</td>
       </tr>
       <tr>
-        <td>Created By:</td>
+        <td translate="studyoverview.created_by"></td>
         <td></td>
       </tr>
       <tr>
-        <td>Description</td>
+        <td translate="studyoverview.description"></td>
         <td>{{ study.description }}</td>
       </tr>      
       <tr>
-	    <td>Code</td>
+	    <td translate="studyoverview.code"></td>
 	    <td>{{ study.code }}</td>
 	  </tr>
       <tr>
-        <td>Validation Status</td>
+        <td translate="studyoverview.validation_status"></td>
         <td>{{ study.validationStatus }}</td>
       </tr>
       <tr>
-        <td>Participant Search Status</td>
+        <td translate="studyoverview.participant_search_status"></td>
         <td>{{ study.participantSearchStatus }}</td>
       </tr>
       <tr>
-        <td>Execution Status</td>
+        <td translate="studyoverview.execution_status"></td>
         <td>{{ study.executionStatus }}</td>
       </tr>
     </table>	
@@ -45,20 +44,20 @@
     </div>
     </div>
     <div ng-show="study.history.length" class="panel panel-primary">
-    <div class="panel-heading">History</div>
+    <div class="panel-heading" translate="studyoverview.history"></div>
     <div class="panel-body">
     <table class="table">
       <thead>
         <tr>
-          <th>Event</th>
-          <th>Who</th>
-          <th>When</th>
-          <th>Comment</th>
+          <th translate="studyoverview.event"></th>
+          <th translate="studyoverview.who"></th>
+          <th translate="studyoverview.when"></th>
+          <th translate="studyoverview.comment"></th>
         </tr>
       </thead>
       <tbody>
         <tr ng-repeat="entry in study.history">
-          <td>{{ entry.event }}</td>
+          <td translate="{{ 'enum.eventtype.'+entry.event }}"></td>
           <td>{{ entry.whoName }}</td>
           <td>{{ entry.timestamp | date }}</td>
           <td>{{ entry.message }}</td>
@@ -69,12 +68,12 @@
     </div>
     
   
-    <a class="btn btn-default" ui-sref="research.studies">Back</a> 
-    <button ng-show="readyForValidation()" class="btn btn-primary" ng-click="startValidation()">Request Study Validation</button>
-    <button ng-show="readyForParticipantSearch()" class="btn btn-primary" ng-click="startParticipantSearch()">Start to search for participants</button>
-    <button ng-show="readyForEndParticipantSearch()" class="btn btn-primary" ng-click="endParticipantSearch()">End Participant Search</button>
-    <button ng-show="readyForStartExecution()" class="btn btn-primary" ng-click="startExecution()">Start Study Execution</button>
-    <button ng-show="readyForFinishExecution()" class="btn btn-primary" ng-click="finishExecution()">Finish Study</button>
-    <button ng-show="readyForDelete()" class="btn btn-danger" ng-click="delete()">Delete Study</button>
+    <a class="btn btn-default" ui-sref="research.studies" translate="common.back_btn"></a> 
+    <button ng-show="readyForValidation()" class="btn btn-primary" ng-click="startValidation()" translate="studyoverview.start_validation_btn"></button>
+    <button ng-show="readyForParticipantSearch()" class="btn btn-primary" ng-click="startParticipantSearch()" translate="studyoverview.start_participant_search_btn"></button>
+    <button ng-show="readyForEndParticipantSearch()" class="btn btn-primary" ng-click="endParticipantSearch()" translate="studyoverview.end_participant_search_btn"></button>
+    <button ng-show="readyForStartExecution()" class="btn btn-primary" ng-click="startExecution()" translate="studyoverview.start_study_execution_btn"></button>
+    <button ng-show="readyForFinishExecution()" class="btn btn-primary" ng-click="finishExecution()" translate="studyoverview.finish_study_btn"></button>
+    <button ng-show="readyForDelete()" class="btn btn-danger" ng-click="delete()" translate="studyoverview.delete_study_btn"></button>
     
 </div>

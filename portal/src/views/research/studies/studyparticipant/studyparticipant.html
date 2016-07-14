@@ -3,14 +3,13 @@
    <div class="panel-heading">{{ participation.ownerName }}</div>
    <div class="panel-body">
 	
-	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
-	   {{ error.message || error }}
+	<p ng-show="error && !error.field" translate="{{error.code}}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
 	</p>
 	<div>
-	Participant: {{ participation.ownerName }}<br>
-	Gender: {{ participation.gender }}<br>
-	Year of Birth: {{ participation.yearOfBirth }}<br>
-	Country: {{ participation.country }}<br>
+	<span translate="studyparticipant.participant"></span> {{ participation.ownerName }}<br>
+	<span translate="studyparticipant.gender"></span> {{ participation.gender }}<br>
+	<span translate="studyparticipant.year"></span> {{ participation.yearOfBirth }}<br>
+	<span translate="studyparticipant.country"></span> <span translate="{{ 'enum.country.'+participation.country }}"></span><br>
 	</div>
 	<div ng-show="member">
 	<address>	
@@ -19,29 +18,29 @@
 	{{ member.address2 }}<br>
 	{{ member.zip }} {{ member.city }}<br>
 	{{ member.country }}<br>
-	  <span ng-show="member.phone">Phone: {{ member.phone }}</span><br>
-	  <span ng-show="member.mobile">Mobile: {{ member.mobile }}</span><br>
+	  <span ng-show="member.phone"><span translate="common.user.phone"></span>: {{ member.phone }}</span><br>
+	  <span ng-show="member.mobile"><span translate="common.user.mobile"></span>: {{ member.mobile }}</span><br>
     </address>		
     </div>
-    <p>Status: {{ participation.pstatus }}</p>
-    <p>Group: {{ participation.group }}</p>
+    <p><span translate="studyparticipant.status"></span> <span translate="{{ 'enum.participationstatus.'+participation.pstatus }}"></span></p>
+    <p><span translate="studyparticipant.group"></span>{{ participation.group }}</p>
     </div>
     </div>	
     <div ng-show="participation.history.length" class="panel panel-primary">
-	    <div class="panel-heading">Participation History</div>
+	    <div class="panel-heading" translate="studyparticipant.history"></div>
 	    
 	    <table class="table">
 	      <thead>
 	        <tr>
-	          <th>Event</th>
-	          <th>Who</th>
-	          <th>When</th>
-	          <th>Comment</th>
+	          <th translate="studyoverview.event"></th>
+              <th translate="studyoverview.who"></th>
+              <th translate="studyoverview.when"></th>
+              <th translate="studyoverview.comment"></th>
 	        </tr>
 	      </thead>
 	      <tbody>
 	        <tr ng-repeat="entry in participation.history">
-	          <td>{{ entry.event }}</td>
+	          <td translate="{{ 'enum.eventtype.'+entry.event }}"></td>
 	          <td>{{ entry.whoName }}</td>
 	          <td>{{ entry.timestamp | date }}</td>
 	          <td>{{ entry.message }}</td>
@@ -52,5 +51,5 @@
     
     <div ng-include="'/views/shared/dashboard/dashboard.html'"></div> 
     
-    <a ui-sref="research.study.participants" class="btn btn-default">Back</a>
+    <a ui-sref="research.study.participants" class="btn btn-default" translate="common.back_btn"></a>
 </div>
