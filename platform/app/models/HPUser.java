@@ -1,6 +1,7 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -29,10 +30,7 @@ public class HPUser extends User {
 	 */
 	public ObjectId provider;
 	
-	/**
-	 * sub role (doctor, nurse, monitor,...)
-	 */
-	public SubUserRole subrole;
+	
 	
     public HPUser() { }
 	
@@ -45,6 +43,7 @@ public class HPUser extends User {
 		messages.put("trash", new HashSet<ObjectId>());
 		login = DateTimeUtils.now();	
 		history = new ArrayList<History>();
+		subroles = EnumSet.noneOf(SubUserRole.class);
 	}
 	
 	public static boolean existsByEMail(String email) throws InternalServerException {

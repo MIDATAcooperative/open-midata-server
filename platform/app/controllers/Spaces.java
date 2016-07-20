@@ -146,6 +146,7 @@ public class Spaces extends Controller {
 		return space;
 	}
 	
+	/*
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result getPreviewUrlFromSetup() throws AppException {
@@ -180,6 +181,7 @@ public class Spaces extends Controller {
 		return ok(url);		
 				
 	}
+	*/
 
 	/**
 	 * delete a space of the current user
@@ -272,13 +274,13 @@ public class Spaces extends Controller {
 		ObjectId userId = new ObjectId(request().username());
 		ObjectId spaceId = new ObjectId(spaceIdString);
 		
-		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps", "visualization", "type"));
+		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps", "visualization", "type", "name"));
 		
 		if (space==null) {
 		  throw new InternalServerException("error.internal", "No space with this id exists.");
 		}
 		
-		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "name", "filename", "url", "creator", "developmentServer", "accessTokenUrl", "authorizationUrl", "consumerKey", "scopeParameters"));
+		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "name", "filename", "url", "previewUrl", "creator", "developmentServer", "accessTokenUrl", "authorizationUrl", "consumerKey", "scopeParameters"));
 
 		boolean testing = PortalSessionToken.session().getRole().equals(UserRole.DEVELOPER) && visualization.creator.equals(userId) && visualization.developmentServer != null && visualization.developmentServer.length()> 0;
 		
@@ -287,70 +289,27 @@ public class Spaces extends Controller {
 			
 		String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename;
 		if (testing) visualizationServer = visualization.developmentServer;
-		String url =  visualizationServer  + "/" + visualization.url;
-		url = url.replace(":authToken", spaceToken.encrypt(request()));
-			
-			
+					
+		ObjectNode obj = Json.newObject();
+		obj.put("base", visualizationServer+"/");
+		obj.put("token", spaceToken.encrypt(request()));
+		obj.put("preview", visualization.previewUrl);
+		obj.put("add", visualization.addDataUrl);
+		obj.put("main", visualization.url);
+		obj.put("type", visualization.type);
+		obj.put("name", space.name);
+		
 		if (visualization.type != null && visualization.type.equals("oauth2")) {
   		  BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new ObjectId(spaceIdString), "_oauth");  		  
 		  if (oauthmeta == null) return F.Promise.pure((Result) Plugins.oauthInfo(visualization)); 
 			 		
 		  if (oauthmeta.containsField("refreshToken")) {					
-		    return Plugins.requestAccessTokenOAuth2FromRefreshToken(spaceIdString, oauthmeta.toMap(), (Result) ok(url));
+		    return Plugins.requestAccessTokenOAuth2FromRefreshToken(spaceIdString, oauthmeta.toMap(), (Result) ok(obj));
 		  }
-		} 
-			
-		return F.Promise.pure((Result) ok(url));
+		} 				
+					
+		return F.Promise.pure((Result) ok(obj));
 	
 	}
-	
-	
-	
-	@APICall
-	public static Result getPreviewUrl(String spaceIdString) throws AppException {
-		ObjectId userId = new ObjectId(request().username());
-		ObjectId spaceId = new ObjectId(spaceIdString);
-		
-		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps", "visualization"));
-		
-		if (space==null) {
-			throw new BadRequestException("error.unknown.space", "Space does not exist");
-		}
-		
-		Plugin visualization = Plugin.getById(space.visualization, Sets.create("filename", "previewUrl", "type", "creator", "developmentServer"));
-		ObjectNode result = Json.newObject();
-		result.put("type", visualization.type);
-		
-		if (visualization.previewUrl == null || visualization.previewUrl.equals("")) {						
-			return ok(result);
-		}	
-
-		boolean testing = PortalSessionToken.session().getRole().equals(UserRole.DEVELOPER) && visualization.creator.equals(userId) && visualization.developmentServer != null && visualization.developmentServer.length()> 0;
-		//if (visualization.type.equals("visualization")) {
-		// create encrypted authToken
-			SpaceToken spaceToken = new SpaceToken(space._id, userId);
-			
-			String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename;
-			if (testing) visualizationServer = visualization.developmentServer;
-			String url = visualizationServer  + "/" + visualization.previewUrl;
-			url = url.replace(":authToken", spaceToken.encrypt(request()));
-			result.put("url", url);
-			return ok(result);						
-		
-			/*
-		} else {
-		
-		       // create encrypted authToken
-				AppToken appToken = new AppToken(visualization._id, userId);
-				String authToken = appToken.encrypt();
-
-				// put together url to load in iframe
-				String appServer = "https://" + Play.application().configuration().getString("apps.server") + "/" + visualization.filename;
-				if (testing) appServer = visualization.developmentServer;
-				String url = visualization.previewUrl.replace(":authToken", authToken);
-				return ok( appServer + "/" + url);
-		}*/
-	}
-	
 	
 }

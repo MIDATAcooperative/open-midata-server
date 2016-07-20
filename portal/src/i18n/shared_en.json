@@ -181,6 +181,7 @@
 	 },
 	 "contractstatus" : {
 	   "NEW" : "New",
+	   "REQUESTED" : "Contract requested",
 	   "PRINTED" : "Contract printed",
 	   "SIGNED" : "Contract signed"
 	 },
@@ -221,6 +222,21 @@
 	   "MEMBER" : "MIDATA member",
 	   "PROVIDER" : "Healthcare provider",
 	   "RESEARCH" : "Researcher"
+	 },
+	 "subuserrole" : {
+	   "DOCTOR" : "Doctor",
+	   "NURSE" : "Nurse",
+	   "MANAGER" : "Manager",
+	   "MONITOR" : "Monitor",
+	   "USERADMIN" : "User Admin",
+	   "STUDYADMIN" : "Study Admin",
+	   "CONTENTADMIN" : "Content Admin",
+	   "PLUGINADMIN" : "Plugin Admin",
+	   "NEWSWRITER" : "News Author",
+	   "SUPERADMIN" : "Super Admin",
+	   "TRIALUSER" : "Trial User",
+	   "STUDYPARTICIPANT" : "Study Participant",
+	   "MEMBEROFCOOPERATIVE" : "Member of Cooperative"
 	 },
 	 "userstatus" : {
 	   "ACTIVE" : "Active",
@@ -666,7 +682,8 @@
     "last_entry_at" : "Last entry at",
     "no_entries_yet" : "No entries yet",     
     "newest_entry_from" : "Newest entry from",
-    "view_btn" : "View"
+    "view_btn" : "View",
+    "add_btn" : "Add"
   },
   
   "flexiblerecords" : {

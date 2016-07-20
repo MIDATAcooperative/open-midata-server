@@ -12,6 +12,11 @@ public enum ContractStatus {
   NEW,
   
   /**
+   * the contract has been requested to be sent by the user
+   */
+  REQUESTED,
+  
+  /**
    * the contract has been printed and sent by MIDATA
    */
   PRINTED,

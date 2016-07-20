@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bson.types.ObjectId;
 
@@ -22,6 +23,7 @@ import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import ca.uhn.fhir.model.api.IDatatype;
+import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.ResourceMetadataKeyEnum;
 import ca.uhn.fhir.model.dstu2.composite.CodingDt;
 import ca.uhn.fhir.model.dstu2.composite.QuantityDt;
@@ -40,6 +42,7 @@ import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.Create;
 import ca.uhn.fhir.rest.annotation.IdParam;
+import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
@@ -54,7 +57,7 @@ import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 
-public class ObservationResourceProvider extends ResourceProvider implements IResourceProvider {
+public class ObservationResourceProvider extends ResourceProvider<Observation> implements IResourceProvider {
 
 	/**
 	 * The getResourceType method comes from IResourceProvider, and must be
@@ -64,30 +67,16 @@ public class ObservationResourceProvider extends ResourceProvider implements IRe
 	public Class<Observation> getResourceType() {				
 		return Observation.class;
 	}
-
-	/**
-	 * The "@Read" annotation indicates that this method supports the read
-	 * operation. Read operations should return a single resource instance.
-	 * 
-	 * @param theId
-	 *            The read operation takes one parameter, which must be of type
-	 *            IdDt and must be annotated with the "@Read.IdParam"
-	 *            annotation.
-	 * @return Returns a resource matching this identifier, or null if none
-	 *         exists.
-	 */
-	@Read()
-	public Observation getResourceById(@IdParam IdDt theId) throws AppException {
-		Record record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new ObjectId(theId.getIdPart()));
-		IParser parser = ctx().newJsonParser();
-		Observation p = parser.parseResource(Observation.class, record.data.toString());
-		processResource(record, p);		
-		return p;
-	}
+	
 
 	@Search()
-	public List<Observation> getObservation(@OptionalParam(name = Observation.SP_PATIENT) ReferenceOrListParam thePatient, @OptionalParam(name = Observation.SP_CODE) TokenOrListParam theCode)
-			throws AppException {
+	public List<Observation> getObservation(
+			@OptionalParam(name = Observation.SP_PATIENT) ReferenceOrListParam thePatient, 
+			@OptionalParam(name = Observation.SP_CODE) TokenOrListParam theCode,
+			@OptionalParam(name = Observation.SP_CATEGORY) TokenOrListParam theCategory,
+			
+			@IncludeParam(allow= { "Observation.patient" })	Set<Include> theIncludes
+			) throws AppException {
 		try {
 			ExecutionInfo info = info();
 
@@ -98,26 +87,28 @@ public class ObservationResourceProvider extends ResourceProvider implements IRe
 				accountCriteria.put("owner", refsToObjectIds(thePatient));
 			}
 
-			if (theCode != null) {
+			if (theCode != null) {				
 				accountCriteria.put("code", tokensToStrings(theCode));
 			}
-
-			AccessLog.logQuery(criteria, Sets.create("data"));
-			List<Record> result = RecordManager.instance.list(info.executorId, info.targetAPS, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
-			ReferenceTool.resolveOwners(result, true, false);
-			List<Observation> patients = new ArrayList<Observation>();
-			IParser parser = ctx().newJsonParser();
-			for (Record rec : result) {
-				try {
-					Observation p = parser.parseResource(Observation.class, rec.data.toString());
-					processResource(rec, p);
-					
-					patients.add(p);
-				} catch (DataFormatException e) {
-				}
+			
+			if (theCategory != null) {
+				addRestriction(criteria, theCategory, "category", "coding", "code");
 			}
-
-			return patients;
+			
+			List<Record> result = doRecordQuery(accountCriteria, criteria, null);		
+			List<Observation> observations = parse(result, Observation.class);
+			List<Observation> filtered = new ArrayList<Observation>(observations.size());		
+			for (Observation obs : observations) {
+				if (theCategory != null && !theCategory.doesCodingListMatch(obs.getCategory().getCoding())) continue;
+			    filtered.add(obs);
+			    
+			}
+			
+			for (Include inc : theIncludes) {
+				
+			}
+			
+			return filtered;
 
 		} catch (AppException e) {
 			AccessLog.log("ERROR");

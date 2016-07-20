@@ -58,7 +58,7 @@ angular.module('services')
 				//session.storedCookie = userId;
 				userId = { "$oid" : userId };
 				console.log("GOT USERID");
-				var data = {"properties": { "_id" : userId }, "fields": ["email", "firstname", "lastname", "visualizations", "apps", "midataID", "name"] };
+				var data = {"properties": { "_id" : userId }, "fields": ["email", "firstname", "lastname", "visualizations", "apps", "midataID", "name", "role", "subroles"] };
 				server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data))
 				.then(function(data) {
 				   session.user = data.data[0];

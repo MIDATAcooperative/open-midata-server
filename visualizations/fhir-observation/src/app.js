@@ -279,15 +279,22 @@ angular.module('fhir', [ 'midata', 'ui.bootstrap', 'chart.js', 'pascalprecht.tra
  	    midataPortal.autoresize();
  	     	 		
  		$scope.ready = $q.defer();
- 		$scope.mode = "chart";
+ 		$scope.mode = "chart"; 		
  		
  		var authToken = $location.path().split("/")[1];
+ 		var params = $location.search();
+ 		
+ 		$scope.showadd = !params.hideadd;
+ 		$scope.showdata = !params.hidedata;
  		midataServer.authToken = authToken;
  		console.log(authToken);
  		
  		$scope.getConfig = function() {
  			configuration.getConfig()
- 			.then(function() { 				
+ 			.then(function() { 			
+ 				if (params.measure) configuration.config.measure = params.measure;
+ 				
+ 					
  				data.loadLabels(configuration.measure);
  				data.getRecords(configuration.config)
  				.then(function() {
@@ -301,21 +308,36 @@ angular.module('fhir', [ 'midata', 'ui.bootstrap', 'chart.js', 'pascalprecht.tra
  		};
  		
  		$scope.loadBySummary = function() {
- 			 
- 	        midataServer.getSummary(midataServer.authToken, "ALL", { format : ["fhir/Observation"], owner : "self" }) 			
+ 			midataPortal.setLink("add", "modal", "dist/index.html#:authToken", { hidedata : true });
+	 		midataPortal.setLink("view", "page", "dist/index.html#:authToken", { });
+			 			  			 
+ 	        midataServer.getSummary(midataServer.authToken, "SINGLE", { format : ["fhir/Observation"], subformat : ["Quantity", "component"], owner : "self" }) 			
  			.then(function(sumResult) {
- 				var x = sumResult.data[0].newestEntry;
- 				midataServer.getRecords(midataServer.authToken, { "_id" : x },["name", "data"])
+ 				var ids = [];
+ 				angular.forEach(sumResult.data, function(entry) { ids.push(entry.newestRecord.$oid); }); 				
+ 				midataServer.getRecords(midataServer.authToken, { "_id" : ids },["name", "content", "data"])
  				.then(function(result) {
  					$scope.record = result.data[0];
+ 				    data.records = result.data;
  					$scope.mode = "record";
- 				}); 				 				
+ 				}); 		
+ 				
  			}); 			 		
  		};
  		
  		$scope.showSingle = function(record) {
  			$scope.record = record;
  			$scope.mode = "record";
+ 		};
+ 		
+ 		$scope.showDetailsPopup = function(record) {
+ 			console.log(record);
+ 			midataPortal.openLink("page", "dist/index.html#:authToken", { measure : record.content });
+ 		};
+ 		
+ 		$scope.showAddPopup = function(record) {
+ 			console.log(record);
+ 			midataPortal.openLink("modal", "dist/index.html#:authToken", { measure : record.content, hidedata : true });
  		};
  		
  		$scope.showAll = function() {
@@ -563,8 +585,8 @@ angular.module('fhir', [ 'midata', 'ui.bootstrap', 'chart.js', 'pascalprecht.tra
 				$scope.success = true; 
 				$scope.isBusy = false; 
 				$scope.reset(); 
-				$scope.getConfig();
-				$timeout(function() { $scope.success = false; }, 2000); 
+				$scope.getConfig();				
+				$timeout(function() { $scope.success = false;midataPortal.updateNotification();midataPortal.doneNotification(); }, 2000); 
 			});			
 		};
 														

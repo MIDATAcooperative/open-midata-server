@@ -6,20 +6,20 @@ angular.module('portal')
 	$scope.stati = [ "NEW", "ACTIVE", "BLOCKED", "DELETED" ];
 	$scope.searches = [ 
 	  { 
-		name : "Contract needs to be sent",
-		criteria : { status : "NEW", contractStatus : "NEW", emailStatus : "VALIDATED" }
+		name : "admin_members.contract_required",
+		criteria : { status : "NEW", contractStatus : "REQUESTED", emailStatus : "VALIDATED" }
 	  },
 	  {
-		name : "Signed contract needs to be confirmed",
+		name : "admin_members.contract_confirm_required",
 		criteria : { status : "NEW", contractStatus : "PRINTED" }
 	  },
 	  {
-		name : "Overview",
+		name : "admin_members.overview",
 		criteria : { role : "MEMBER", status : "NEW" },
 	    changeable : true
 	  },
 	  {
-		name : "Specific User",
+		name : "admin_members.specific_user",
 		criteria : { },
 		searchable : "lastname"
 	  }

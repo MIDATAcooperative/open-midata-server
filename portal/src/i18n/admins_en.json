@@ -4,11 +4,34 @@
     "news" : "News",
     "plugins" : "Plugins",
 	"content" : "Content",
-	"studies" : "Studies"
+	"studies" : "Studies",
+	"registration" : "Register Admin"
+  },
+  
+  "admin_members" : {
+    "title" : "Member List",
+    "search_type" : "Search",
+    "contract_required" : "Contract needs to be sent",
+    "contract_confirm_required" : "Signed contract needs to be confirmed",
+    "overview" : "Overview",
+    "specific_user" : "Specific User",
+    "role" : "Role",
+    "status" : "Status",
+    "midata_id" : "midataID",
+    "empty" : "No matching users found."
   },
 
   "admin_address" : {
-    "title" : "Member Address"
+    "title" : "Member Address",
+    "midata_id" : "MIDATA-ID",
+    "role" : "Role",
+    "subroles" : "Sub-Role(s)",
+    "status" : "Status:",
+    "contract_status" : "Contract Status:",
+    "email_status" : "EMail Status:",
+    "confirmation_code" : "Confirmation Code:",
+    "registration_date" : "Registration Date:",
+    "last_login" : "Last login:"    
   },
   
   "admin_news" : {
@@ -28,5 +51,9 @@
     "content" : "Content",
     "url" : "URL of full message",
     "expires" : "Expiration date of message"
+  },
+  
+  "admin_registration" : {
+    "sign_up" : "Register New Admin Account"
   }
 }

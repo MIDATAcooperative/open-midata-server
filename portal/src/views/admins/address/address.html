@@ -1,7 +1,7 @@
 <div ng-controller="MemberAddressCtrl">
 
 	<div class="panel panel-primary">
-		<div class="panel-heading">Member Address</div>
+		<div class="panel-heading" translate="admin_address.title">Member Address</div>
 		<div class="body">		    		           
             <loader busy="status.isBusy !== false">              
               <address>
@@ -10,29 +10,31 @@
 			  {{ member.address2 }}<br>
 			  {{ member.zip }} {{ member.city }}<br>
 			  {{ member.country }}<br><br>
-			  Email: {{ member.email }}<br>
-			  Phone: {{ member.phone }}
+			  <span translate="common.user.email"></span>: {{ member.email }}<br>
+			  <span translate="common.user.phone"></span>: {{ member.phone }}
 			  </address>
 			  <table class="table table-striped table-bordered">
 			  <tr>
-			  <td>MIDATA-ID</td><td>{{ member.midataID }}</td>
+			  <td translate="admin_address.midata_id"></td><td>{{ member.midataID }}</td>
 			  </tr><tr>
-			  <td>Role</td><td>{{ member.role }}</td>
+			  <td translate="admin_address.role"></td><td translate="{{ 'enum.userrole.'+ member.role }}"></td>
 			  </tr><tr>
-			  <td>Status:</td><td><select ng-change="changeUser(member);" ng-model="member.status" class="form-control" ng-options="status for status in stati"></select></td>
+			  <td translate="admin_address.subroles"></td><td><div ng-repeat="subrole in member.subroles" translate="{{ 'enum.subuserrole.'+subrole }}"></div></td>
 			  </tr><tr>
-			  <td>Contract Status:</td><td><select ng-change="changeUser(member);" ng-model="member.contractStatus" class="form-control" ng-options="status for status in contractStati"></select></td>
+			  <td translate="admin_address.status"></td><td><select ng-change="changeUser(member);" ng-model="member.status" class="form-control" ng-options="status as 'enum.userstatus.'+status | translate for status in stati"></select></td>
 			  </tr><tr>
-			  <td>EMail Status:</td><td>{{ member.emailStatus }}</td>
+			  <td translate="admin_address.contract_status"></td><td><select ng-change="changeUser(member);" ng-model="member.contractStatus" class="form-control" ng-options="status as 'enum.contractstatus.'+status | translate for status in contractStati"></select></td>
 			  </tr><tr>
-			  <td>Confirmation Code:</td><td><b>{{ member.confirmationCode }}</b></td>
+			  <td translate="admin_address.email_status"></td><td translate="{{ 'enum.emailstatus.'+member.emailStatus }}"></td>
 			  </tr><tr>
-			  <td>Registration Date:</td><td>{{ member.registeredAt | date }}</td>
+			  <td translate="admin_address.confirmation_code"></td><td><b>{{ member.confirmationCode }}</b></td>
 			  </tr><tr>
-			  <td>Last login:</td><td>{{ member.login | date }}</td>
+			  <td translate="admin_address.registration_date"></td><td>{{ member.registeredAt | date }}</td>
+			  </tr><tr>
+			  <td translate="admin_address.last_login"></td><td>{{ member.login | date }}</td>
 			  </tr>
 			  </table>
-			  <button ui-sref="^.members" class="btn btn-default">Back</button>
+			  <button ui-sref="^.members" class="btn btn-default" translate="common.back_btn"></button>
 			</loader>
 		</div>
 	</div>

@@ -433,10 +433,17 @@ public class Records extends APIController {
 		// create encrypted authToken
 		SpaceToken spaceToken = new SpaceToken(new ObjectId(tk.apsId), userId, new ObjectId(tk.recordId));
 		
-		String visualizationServer = Play.application().configuration().getString("visualizations.server");
-		String url = "https://" + visualizationServer + "/" + visualization.filename + "/" + visualization.url;
-		url = url.replace(":authToken", spaceToken.encrypt(request()));
-		return ok(url);						
+		String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename + "/";
+		
+		ObjectNode obj = Json.newObject();
+		obj.put("base", visualizationServer);
+		obj.put("token", spaceToken.encrypt(request()));
+		obj.put("preview", visualization.previewUrl);
+		obj.put("main", visualization.url);
+		obj.put("type", visualization.type);
+		obj.put("name", record.name);
+				
+		return ok(obj);						
 	}
 
 	/**

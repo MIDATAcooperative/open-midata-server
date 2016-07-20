@@ -1,31 +1,31 @@
 <div ng-controller="MembersListCtrl">
 
 	<div class="panel panel-primary">
-		<div class="panel-heading">Member List</div>
+		<div class="panel-heading" translate="admin_members.title"></div>
 		<div class="body">
 		    <form class="css-form form-horizontal">
-		      <formrow myid="search" label="Search">
-		        <select class="form-control" id="search" ng-change="reload(search);" ng-model="search" ng-options="search as search.name for search in searches"></select>
+		      <formrow myid="search" label="admin_members.search_type">
+		        <select class="form-control" id="search" ng-change="reload(search);" ng-model="search" ng-options="search as search.name | translate for search in searches"></select>
 		      </formrow>
-		      <formrow myid="role" label="Role" ng-show="search.changeable">
-		        <select  class="form-control" id="role" ng-change="reload();" ng-model="search.criteria.role" ng-options="role for role in roles"></select>
+		      <formrow myid="role" label="admin_members.role" ng-show="search.changeable">
+		        <select  class="form-control" id="role" ng-change="reload();" ng-model="search.criteria.role" ng-options="role as 'enum.userrole.'+role | translate for role in roles"></select>
 		      </formrow>
-		      <formrow myid="status" label="Status" ng-show="search.changeable">
-		        <select  class="form-control" id="status" ng-change="reload();" ng-model="search.criteria.status" ng-options="status for status in stati"></select>
+		      <formrow myid="status" label="admin_members.status" ng-show="search.changeable">
+		        <select  class="form-control" id="status" ng-change="reload();" ng-model="search.criteria.status" ng-options="status as 'enum.userstatus.'+status | translate for status in stati"></select>
 		      </formrow>
-		      <formrow myid="lastname" label="Lastname" ng-show="search.searchable">
+		      <formrow myid="lastname" label="common.user.lastname" ng-show="search.searchable">
 		        <div class="input-group">
 		        <input type="text" class="form-control" id="lastname" ng-model="search.criteria.lastname" >
 		        <div class="input-group-btn">
-		          <button class="btn btn-primary" ng-click="reload()">Search</button>
+		          <button class="btn btn-primary" ng-click="reload()" translate="common.search_btn"></button>
 		        </div>
 		        </div>
 		      </formrow>
-		      <formrow myid="email" label="EMail" ng-show="search.searchable">
+		      <formrow myid="email" label="common.user.email" ng-show="search.searchable">
 		        <div class="input-group">
 		        <input type="text" class="form-control" id="email" ng-model="search.criteria.email" >
 		        <div class="input-group-btn">
-		          <button class="btn btn-primary" ng-click="reload()">Search</button>
+		          <button class="btn btn-primary" ng-click="reload()" translate="common.search_btn"></button>
 		        </div>
 		        </div>
 		      </formrow>
@@ -40,12 +40,12 @@
 			<table class="table table-striped" ng-show="members.length">
 
 				<tr>
-					<th>midataID</th>
-					<th>Firstname</th>
-					<th>Lastname</th>
-					<th>EMail</th>
-					<th>Role</th>
-					<th>Status</th>
+					<th translate="admin_members.midata_id"></th>
+					<th translate="common.user.firstname"></th>
+					<th translate="common.user.lastname"></th>
+					<th translate="common.user.email"></th>
+					<th translate="admin_members.role"></th>
+					<th translate="admin_members.status"></th>
 				</tr>
 								
 				<tr dir-paginate="member in members | itemsPerPage : 10" pagination-id="membertable">
@@ -53,12 +53,12 @@
 					<td>{{ member.firstname }}</td>
 					<td>{{ member.lastname }}</td>
 					<td>{{ member.email }}</td>
-					<td>{{ member.role }}</td>
-					<td><select ng-change="changeUser(member);" ng-model="member.status" class="form-control" ng-options="status for status in stati"></select></td>
+					<td translate="{{ 'enum.userrole.'+member.role }}"></td>
+					<td><select ng-change="changeUser(member);" ng-model="member.status" class="form-control" ng-options="status as 'enum.userstatus.'+status | translate for status in stati"></select></td>
 				</tr>
 			</table>
 
-            <p ng-show="members.length === 0">No matching users found.</p>
+            <p ng-show="members.length === 0" translate="admin_members.empty"></p>
 			
 			</loader>
 		</div>

@@ -61,13 +61,10 @@ GET     /records/:id/file                                controllers.Records.get
 # Spaces
 POST    /members/api/spaces                              controllers.Spaces.add()
 POST    /members/api/spaces/get                          controllers.Spaces.get()
-POST    /members/api/spaces/preview                      controllers.Spaces.getPreviewUrlFromSetup()
 DELETE  /members/api/spaces/:id                          controllers.Spaces.delete(id: String)
 POST    /members/api/spaces/:id/records                  controllers.Spaces.addRecords(id: String)
-GET     /members/api/spaces/:id/token                    controllers.Spaces.getToken(id: String)
 GET     /members/api/spaces/:id/url                      controllers.Spaces.getUrl(id: String)
 GET     /members/api/spaces/:id/url/noauth               controllers.Spaces.regetUrl(id: String)
-GET     /members/api/spaces/:id/preview                  controllers.Spaces.getPreviewUrl(id: String)
 
 
 # Circles
@@ -173,6 +170,7 @@ POST    /developers/api/register                          controllers.Developers
 POST    /developers/api/login                             controllers.Developers.login()
 
 # Admins
+POST    /admins/api/register                             controllers.admin.Administration.register()
 POST    /admins/api/changeStatus                         controllers.admin.Administration.changeStatus()
 
 # Tasks

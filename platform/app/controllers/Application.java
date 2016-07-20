@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -16,6 +17,7 @@ import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
 import models.enums.ParticipationInterest;
+import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 
@@ -224,14 +226,14 @@ public class Application extends APIController {
 		ObjectId userId = new ObjectId(request().username());
 		String confirmationCode = JsonValidation.getString(json, "confirmationCode");
 		
-		User user = User.getById(userId, Sets.create("firstname", "lastname", "email", "confirmationCode", "emailStatus", "contractStatus", "status", "role"));
+		User user = User.getById(userId, Sets.create("firstname", "lastname", "email", "confirmationCode", "emailStatus", "contractStatus", "status", "role", "subroles"));
 		
 		
 		if (user!=null && user.confirmationCode != null && user.emailStatus.equals(EMailStatus.VALIDATED) && user.contractStatus.equals(ContractStatus.SIGNED) && user.status.equals(UserStatus.NEW)) {
 			if (user.role.equals(UserRole.PROVIDER)) {
-				user = HPUser.getById(userId, Sets.create("firstname", "lastname", "email", "confirmationCode", "emailStatus", "contractStatus", "status", "role", "provider"));
+				user = HPUser.getById(userId, Sets.create("firstname", "lastname", "email", "confirmationCode", "emailStatus", "contractStatus", "status", "role", "subroles", "provider"));
 			} else if (user.role.equals(UserRole.RESEARCH)) {
-				user = ResearchUser.getById(userId, Sets.create("firstname", "lastname", "email", "confirmationCode", "emailStatus", "contractStatus", "status", "role", "organization"));
+				user = ResearchUser.getById(userId, Sets.create("firstname", "lastname", "email", "confirmationCode", "emailStatus", "contractStatus", "status", "role", "subroles", "organization"));
 			}
 			
 		
@@ -365,7 +367,7 @@ public class Application extends APIController {
 		String password = JsonValidation.getString(json, "password");
 		
 		// check status
-		Member user = Member.getByEmail(email , Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "login"));
+		Member user = Member.getByEmail(email , Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login"));
 		if (user == null) throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
 		if (!Member.authenticationValid(password, user.password)) {
 			throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
@@ -409,6 +411,7 @@ public class Application extends APIController {
 				
 		  obj.put("keyType", keytype);
 		  obj.put("role", user.role.toString().toLowerCase());
+		  obj.put("subroles", Json.toJson(user.subroles));
 		  obj.put("lastLogin", Json.toJson(user.login));
 		}
 	    User.set(user._id, "login", new Date());
@@ -491,6 +494,7 @@ public class Application extends APIController {
 		  user.midataID = CodeGenerator.nextUniqueCode();
 		} while (Member.existsByMidataID(user.midataID));
 		user.role = UserRole.MEMBER;
+		user.subroles = EnumSet.of(SubUserRole.TRIALUSER);
 		
 		user.address1 = JsonValidation.getString(json, "address1");
 		user.address2 = JsonValidation.getString(json, "address2");
@@ -646,11 +650,8 @@ public class Application extends APIController {
 				controllers.routes.javascript.Spaces.add(),
 				controllers.routes.javascript.Spaces.delete(),
 				controllers.routes.javascript.Spaces.addRecords(),
-				controllers.routes.javascript.Spaces.getToken(),
 				controllers.routes.javascript.Spaces.getUrl(),
-				controllers.routes.javascript.Spaces.regetUrl(),
-				controllers.routes.javascript.Spaces.getPreviewUrl(),
-				controllers.routes.javascript.Spaces.getPreviewUrlFromSetup(),
+				controllers.routes.javascript.Spaces.regetUrl(),	
 				// Users
 				controllers.routes.javascript.Users.get(),		
 				controllers.routes.javascript.Users.getCurrentUser(),
@@ -718,6 +719,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.Developers.register(),
 				controllers.routes.javascript.Developers.login(),
 				
+				controllers.admin.routes.javascript.Administration.register(),
 				controllers.admin.routes.javascript.Administration.changeStatus(),
 				// Market				
 				controllers.routes.javascript.Market.registerPlugin(),

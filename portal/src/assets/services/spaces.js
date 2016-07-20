@@ -26,13 +26,25 @@ angular.module('services')
 	service.regetUrl = function(spaceId) {
 	   return server.get(jsRoutes.controllers.Spaces.regetUrl(spaceId).url);
 	};
-	
-	service.getPreviewUrl = function(spaceId) {
-	   return server.get(jsRoutes.controllers.Spaces.getPreviewUrl(spaceId).url);
+		
+	service.previewUrl = function(urlInfo, lang) {
+		if (!urlInfo.preview) return null;
+		return service.url(urlInfo, urlInfo.preview, null, lang);		
 	};
 	
-	service.getPreviewUrlFromSetup = function(setup) {
-	   return server.post(jsRoutes.controllers.Spaces.getPreviewUrlSetup(), JSON.stringify(setup));
+	service.mainUrl = function(urlInfo, lang) {		
+		return service.url(urlInfo, urlInfo.main, null, lang);		
+	};
+	
+	service.url = function(urlInfo, path, params, lang) {
+		var url = urlInfo.base + path.replace(":authToken", urlInfo.token);
+		if (url.indexOf("?")>=0) url += "&lang"+encodeURIComponent(lang); else url+="?lang="+encodeURIComponent(lang);
+		if (params) {
+			angular.forEach(params, function(v,k) {
+				url += "&"+k+"="+encodeURIComponent(v);
+			});
+		}
+		return url;
 	};
 	
 	service.add = function(def) {

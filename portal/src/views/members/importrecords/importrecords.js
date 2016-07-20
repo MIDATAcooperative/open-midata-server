@@ -32,18 +32,13 @@ angular.module('portal')
 	getAuthToken = function(space, again) {
 		var func = again ? $scope.status.doBusy(spaces.regetUrl(space._id.$oid)) : $scope.status.doBusy(spaces.getUrl(space._id.$oid));
 		func.then(function(result) {
-			if (result.data && result.data.type) {
+			if (result.data && result.data.authorizationUrl) {
 		      app = result.data;
 			  $scope.appName = result.data.name;
 			  $scope.authorized = false;
 			  $scope.message = null;			  
 			} else {
-			  var url = result.data;
-			  if (url.indexOf("?")>0) {
-				  url+="&lang="+encodeURIComponent($translate.use()); 
-			  } else {
-				  url+="?lang="+encodeURIComponent($translate.use());
-			  }
+			  var url = spaces.mainUrl(result.data, $translate.use());			  
 			  space.trustedUrl = $sce.trustAsResourceUrl(url);
 			  
 			  $scope.error = null;

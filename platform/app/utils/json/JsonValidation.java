@@ -3,6 +3,7 @@ package utils.json;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.regex.Pattern;
 
 import org.bson.types.ObjectId;
@@ -114,11 +115,25 @@ public class JsonValidation {
 		}
 	}
 	
-	public static <T extends Enum> T getEnum(JsonNode json, String field, Class<T> en) throws JsonValidationException {
+	public static <T extends Enum<T>> T getEnum(JsonNode json, String field, Class<T> en) throws JsonValidationException {
 		String val = json.path(field).asText().toUpperCase();
 		try {
 		  T result = (T) Enum.valueOf(en, val);
 		  return result;
+		} catch (IllegalArgumentException e) {
+		  throw new JsonValidationException("error.validation.enum", "Value of parameter '" + field + "' has none of the valid values.");		
+		}
+	}
+	
+	public static <T extends Enum<T>> EnumSet<T> getEnumSet(JsonNode json, String field, Class<T> en) throws JsonValidationException {
+		JsonNode val = json.path(field);
+		EnumSet<T> result = EnumSet.noneOf(en);
+		try {
+			for (JsonNode jsonNode : val) {
+				result.add((T) Enum.valueOf(en, jsonNode.asText().toUpperCase()));
+			}
+					  
+		    return result;
 		} catch (IllegalArgumentException e) {
 		  throw new JsonValidationException("error.validation.enum", "Value of parameter '" + field + "' has none of the valid values.");		
 		}

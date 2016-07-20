@@ -6,7 +6,7 @@ angular.module('portal')
             '<div class="modal-content">' + 
               '<div class="modal-header">' + 
                 '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' + 
-                '<h4 class="modal-title">{{ view.title }}</h4>' + 
+                '<h4 class="modal-title" translate="{{ view.title }}"></h4>' + 
               '</div>' + 
               '<div class="" ng-transclude></div>' + 
             '</div>' + 

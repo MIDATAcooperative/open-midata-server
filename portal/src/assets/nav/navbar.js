@@ -2,7 +2,7 @@ angular.module('portal')
 .controller('NavbarCtrl', ['$scope', '$state', '$translate', '$translatePartialLoader', 'server', 'session', 'ENV', function($scope, $state, $translate, $translatePartialLoader, server, session, ENV) {
 	
 	// init
-	$scope.user = {};	
+	$scope.user = { subroles:[] };	
 	$scope.beta = ENV.beta;
 	
 	$translatePartialLoader.addPart($state.current.data.locales);
@@ -23,7 +23,11 @@ angular.module('portal')
 		
 	$scope.changeLanguage = function(lang) {
 		$translate.use(lang);
-	};				
+	};	
+	
+	$scope.hasSubRole = function(subRole) {	
+		return $scope.user.subroles.indexOf(subRole) >= 0;
+	};
 	
 }])
 .controller('PublicNavbarCtrl', ['$scope', '$state', '$translate', '$translatePartialLoader', 'session', function($scope, $state, $translate, $translatePartialLoader, session) {	

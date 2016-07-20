@@ -2,7 +2,7 @@ angular.module('portal')
 .directive('pluginframe', [ function () {
     return {
       template: function(element, attrs) {
-    	  return '<iframe id="'+attrs.id+'" src="" height="'+attrs.height+'" width="'+attrs.width+'" ng-cloak></iframe>'; 
+    	  return '<iframe name="'+attrs.id+'" id="'+attrs.id+'" src="" height="'+attrs.height+'" width="'+attrs.width+'" ng-cloak></iframe>'; 
       },
       restrict: 'E',
       transclude: false,
@@ -15,7 +15,7 @@ angular.module('portal')
     		  }
     	  });
     	  scope.$on('$messageIncoming', function (event, data){		
-    		 if (data && data.viewHeight && data.viewHeight !== "0px") {
+    		 if (data && data.name == attrs.id && data.viewHeight && data.viewHeight !== "0px") {
     			 console.log("adjust height for "+attrs.id+" to:"+data.viewHeight);
     		   	document.getElementById(attrs.id).height = data.viewHeight;
     		 }

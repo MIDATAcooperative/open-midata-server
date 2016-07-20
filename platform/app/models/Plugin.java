@@ -37,7 +37,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 */
 	public @NotMaterialized final static Set<String> ALL_DEVELOPER = 
 			 Sets.create("_id", "version", "creator", "filename", "name", "description", "tags", 
-	                     "targetUserRole", "spotlighted", "url", "previewUrl", "defaultSpaceName",
+	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret",
 	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n");
@@ -47,7 +47,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 */
 	public @NotMaterialized final static Set<String> ALL_PUBLIC = 
 			 Sets.create("_id", "version", "creator", "filename", "name", "description", "tags", 
-	                     "targetUserRole", "spotlighted", "url", "previewUrl", "defaultSpaceName",
+	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang");
 	
@@ -117,6 +117,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * null for mobile apps
 	 */
 	public String url;
+	
+	/**
+	 * The URL from which an add data dialog for this plugin is served
+	 */
+	public String addDataUrl;
 	
 	/**
 	 * The URL from which a preview tile of this plugin is served.

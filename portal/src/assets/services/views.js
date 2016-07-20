@@ -64,6 +64,11 @@ angular.module('services')
 		var view = service.getView(id);
 		_.each(view.dependend, function(x) { service.getView(x).setup = _.clone(service.getView(x).setup); });
 	};
+	
+	service.update = function(id) {
+		var view = service.getView(id);
+		view.setup = _.clone(view.setup);
+	};
 		
 	return service;		
 	

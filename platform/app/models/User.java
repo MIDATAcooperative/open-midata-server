@@ -12,6 +12,7 @@ import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
+import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 
@@ -70,6 +71,11 @@ public class User extends Model implements Comparable<User> {
 	 * The role of the user
 	 */
 	public UserRole role;
+	
+	/**
+	 * sub role(s) (doctor, nurse, monitor,...)
+	 */
+	public Set<SubUserRole> subroles;
 	
 	/**
 	 * Account version timestamp. May be used for schema evolution

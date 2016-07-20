@@ -56,7 +56,10 @@ public class APICallAction extends Action<APICall> {
                                         .put("code", e.getLocaleKey())
                                         .put("message", e.getMessage())));
     		} else {
-    		  return F.Promise.pure((Result) badRequest(e.getMessage()));
+    			return F.Promise.pure((Result) badRequest(
+    				    Json.newObject()
+                        .put("code", e.getLocaleKey())
+                        .put("message", e.getMessage())));
     		}
     	} catch (BadRequestException e5) {
     		return F.Promise.pure((Result) badRequest(

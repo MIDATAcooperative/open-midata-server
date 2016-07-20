@@ -20,10 +20,9 @@ angular.module('portal')
 	getAuthToken = function(space) {
 		
 		spaces.getUrl(space._id.$oid)
-		.then(function(result) {
-            var lang = $translate.use();			 
-			var url = result.data;
-			if (url.indexOf("?")>=0) url+="&lang="+encodeURIComponent(lang); else url+="?lang="+encodeURIComponent(lang);
+		.then(function(result) {   
+			$scope.title = result.data.name;
+			var url = spaces.mainUrl(result.data, $translate.use());			
 			space.trustedUrl = $sce.trustAsResourceUrl(url);
 		});
 	};

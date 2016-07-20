@@ -824,7 +824,7 @@ angular.module('portal')
 	  views.reset();
 	  views.isreset = false;
 	   views.layout = $scope.layout = {
-	     full: [], small:[], modal:[], line:[]
+	     full: [], small:[], modal:[], line:[], page:[]
 	   };
 	   var dashid = $state.params.dashId || $state.current.dashId;
 	   views.context = dashid;
@@ -911,24 +911,51 @@ angular.module('portal')
 		    };
 	   };
 	   
-	   $scope.$on('$messageIncoming', function (event, data){		
-  		 if (data && data.type=="link") {
+	   $scope.$on('$messageIncoming', function (event, data){	
+		 if (data && data.viewHeight && data.viewHeight !== "0px") {
+			 if (views.getView(data.name).pos == "small") return;
+  			 console.log("adjust height for "+data.name+" to:"+data.viewHeight);
+  		   	 document.getElementById(data.name).style.height = data.viewHeight;
+  		 }
+		 else if (data && data.type==="link") {
+  			var vc = views.getView(data.name);
+  			 
   			console.log("link");
-  		   	console.log(data.pos);
-  		    console.log(data.url);
+  			console.log(data);
+  		   
   			var pos = data.pos;  	    	 
   	    	var spacedef =
   		     {
-  		    	   id : "test",
+  		    	   id : "gen"+(new Date()).getTime(),
   		    	   template : "/views/shared/dashboardTiles/spacesummary/spacesummary.html",
-  		    	   title : "Test",
+  		    	   title : vc.title,
   		    	   active : true,
   		    	   position : pos,
   		    	   actions : {  },
-  		    	   setup : { allowSelection : false, url : data.url }
+  		    	   setup : { allowSelection : false, info : vc.attach, url : data.url, params : data.params, showview:false, showadd:false }
   		     };
   		     views.layout[pos].push(views.def(spacedef));   			
   			
+  		 } else if (data && data.type==="set") {
+  			var vset = views.getView(data.name);
+  			var func = data.func;
+  			console.log("SET");
+  			console.log(data);
+  			vset.actions[func] = data;  			   			  			
   		 }
+		 else if (data && data.type==="close") {
+			views.disableView(data.name);
+		 } else if (data && data.type=="update") {
+			 console.log("UPDATE");
+			angular.forEach(views.layout.small, function(v) {
+				if (v.reload) v.reload();
+				//console.log(v.id);
+				//views.update(v.id);
+			});
+			angular.forEach(views.layout.full, function(v) {
+				if (v.reload) v.reload();
+				//views.update(v.id);
+			});
+		 }
   	  });
 }]);

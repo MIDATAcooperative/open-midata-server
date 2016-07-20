@@ -52,7 +52,7 @@ public class FHIRServlet extends RestfulServer {
       resourceProviders.add(new ObservationResourceProvider());   
       resourceProviders.add(new MedicationOrderResourceProvider());
       setResourceProviders(resourceProviders);
-          
+         
    }
 
 	@Override

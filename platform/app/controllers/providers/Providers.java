@@ -86,7 +86,7 @@ public class Providers extends APIController {
 		HPUser user = new HPUser(email);
 		user._id = new ObjectId();
 		user.role = UserRole.PROVIDER;		
-		user.subrole = SubUserRole.MANAGER;
+		user.subroles.add(SubUserRole.MANAGER);
 		user.address1 = JsonValidation.getString(json, "address1");
 		user.address2 = JsonValidation.getString(json, "address2");
 		user.city = JsonValidation.getString(json, "city");
@@ -103,7 +103,7 @@ public class Providers extends APIController {
 		user.registeredAt = new Date();		
 		
 		user.status = UserStatus.NEW;		
-		user.contractStatus = ContractStatus.NEW;	
+		user.contractStatus = ContractStatus.REQUESTED;	
 		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		
@@ -142,7 +142,7 @@ public class Providers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		HPUser user = HPUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "provider", "role", "login"));
+		HPUser user = HPUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "provider", "role", "subroles", "login"));
 		
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		if (!HPUser.authenticationValid(password, user.password)) {

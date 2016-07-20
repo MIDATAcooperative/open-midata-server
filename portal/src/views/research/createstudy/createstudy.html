@@ -9,7 +9,7 @@
 	</p>
 	<form name="myform" novalidate class="css-form form-horizontal" ng-submit="createstudy()" role="form">
 	  <formrow myid="name" label="createstudy.study_name"> 
-		<input type="text" class="form-control" id="name" name="name" placeholder="createstudy.study_name" ng-model="study.name" ng-required="true">
+		<input type="text" class="form-control" id="name" name="name" translate translate-attr-placeholder="createstudy.study_name" ng-model="study.name" ng-required="true">
 		<formerror myid="name" type="exists" message="error.exists.study"></formerror> 
       </formrow>
       <formrow myid="description" label="createstudy.study_description">

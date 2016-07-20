@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -16,6 +17,7 @@ import models.enums.EMailStatus;
 import models.enums.Gender;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationInterest;
+import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 
@@ -84,6 +86,7 @@ public class QuickRegistration extends APIController {
 		  user.midataID = CodeGenerator.nextUniqueCode();
 		} while (Member.existsByMidataID(user.midataID));
 		user.role = UserRole.MEMBER;
+		user.subroles = EnumSet.of(SubUserRole.STUDYPARTICIPANT);
 		
 		user.address1 = JsonValidation.getString(json, "address1");
 		user.address2 = JsonValidation.getString(json, "address2");
