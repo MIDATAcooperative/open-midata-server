@@ -1,5 +1,7 @@
 package utils.access.op;
 
+import java.util.Map;
+
 /**
  * Condition in a mongo query
  *
@@ -17,4 +19,8 @@ public interface Condition {
 	 * @return optimized version of condition (may be same object)
 	 */
 	public Condition optimize();
+	
+	public Condition indexValueExpression();
+	
+	public Map<String, Condition> indexExpression();
 }

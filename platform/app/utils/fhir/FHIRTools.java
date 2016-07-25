@@ -13,7 +13,7 @@ import com.mongodb.util.JSON;
 import utils.collections.Sets;
 import utils.exceptions.InternalServerException;
 
-import ca.uhn.fhir.model.dstu2.resource.Person;
+import org.hl7.fhir.dstu3.model.Person;
 import ca.uhn.fhir.parser.IParser;
 
 public class FHIRTools {

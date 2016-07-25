@@ -19,6 +19,22 @@ public class AndCondition implements Condition {
 		
     private List<Condition> checks;
 
+    public static Condition and(Condition cond1, Condition cond2) {
+    	if (cond1 == null) return cond2;
+    	if (cond2 == null) return cond1;
+    	if (cond1 instanceof AndCondition) {
+    		((AndCondition) cond1).checks.add(cond2);
+    		return (AndCondition) cond1;
+    	} else if (cond2 instanceof AndCondition) {
+    		((AndCondition) cond2).checks.add(cond1);
+    		return (AndCondition) cond2;
+    	} else {
+    		AndCondition result = new AndCondition(Collections.EMPTY_MAP);
+    		result.checks.add(cond1);
+    		result.checks.add(cond2);
+    		return result;
+    	}
+    }
     /**
      * Constructor
      * @param restrictions map with remainder of "and" expression
@@ -39,18 +55,21 @@ public class AndCondition implements Condition {
 			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.GE));
 		   } else if (accessKey.equals("$in") || accessKey.equals("!!!in")) {			   
 			  checks.add(new InCondition(makeSet(value)));
+		   } else if (accessKey.equals("$or") || accessKey.equals("!!!or")) {			   
+			  checks.add(new OrCondition(makeSet(value)));
+		   } else if (accessKey.equals("$and") || accessKey.equals("!!!and")) {			   
+			  for (Object obj : makeSet(value)) {
+				  checks.add(parseRemaining(obj));
+			  }
 		   } else {		   
-			   String[] paths = accessKey.split("\\.");
-			   
-			   Condition cond = parseRemaining(value);
-			   
-			   for (int i = paths.length-1;i>=0;i--) cond = new FieldAccess(paths[i], cond);
-			   
+			   			   
+			   Condition cond = FieldAccess.path(accessKey, parseRemaining(value));			   			   			   
 		       checks.add(cond);
 		   }
 	       	       		     
 	   }
 	}
+		
 	
 	@Override
 	public Condition optimize() {
@@ -95,6 +114,22 @@ public class AndCondition implements Condition {
 			if (!check.satisfiedBy(inputObj)) return false;           
 		}
 		return true;
+	}
+	
+	@Override
+	public Condition indexValueExpression() {
+		Condition result = null;
+		for (Condition c : checks) {
+			result = AndCondition.and(result, c.indexValueExpression());
+		}
+		return result;
+	}
+	
+	@Override
+	public Map<String, Condition> indexExpression() {
+		// TODO Implement to support multi field indexes
+		
+		return null;
 	}
 		
 

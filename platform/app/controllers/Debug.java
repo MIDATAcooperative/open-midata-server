@@ -1,33 +1,21 @@
 package controllers;
 
 import models.Admin;
-import models.Record;
 
 import org.bson.types.ObjectId;
 
-import actions.APICall;
-
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.model.dstu2.resource.Patient;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
 import play.Play;
 import play.libs.Json;
-import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.access.EncryptedAPS;
-import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
-import utils.auth.RecordToken;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
-import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import utils.sandbox.Scripting;
+import actions.APICall;
 
 /**
  * used for debugging. Reading of APS content is not allowed on productive system.

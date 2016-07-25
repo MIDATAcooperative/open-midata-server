@@ -17,7 +17,7 @@ object ApplicationBuild extends Build {
     "org.mongodb" % "mongo-java-driver" % "3.2.2",
     "org.elasticsearch" % "elasticsearch" % "1.2.1",
     "ca.uhn.hapi.fhir" % "hapi-fhir-base" % "1.5",
-    "ca.uhn.hapi.fhir" % "hapi-fhir-structures-dstu2" % "1.5",  	    
+    "ca.uhn.hapi.fhir" % "hapi-fhir-structures-dstu3" % "1.5",  	    
     "org.thymeleaf" % "thymeleaf" % "2.1.4.RELEASE"	    
   )
 

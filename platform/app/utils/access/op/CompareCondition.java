@@ -1,6 +1,7 @@
 package utils.access.op;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -14,7 +15,7 @@ public class CompareCondition implements Condition {
     private CompareOperator op;
 	private boolean isDate;
     
-    enum CompareOperator {
+    public enum CompareOperator {
     	GT, LT, LE, GE
     }
 
@@ -47,6 +48,16 @@ public class CompareCondition implements Condition {
 	@Override
 	public Condition optimize() {
 		return this;
+	}
+
+	@Override
+	public Condition indexValueExpression() {
+		return this;
+	}
+
+	@Override
+	public Map<String, Condition> indexExpression() {		
+		return null;
 	}
 	
 

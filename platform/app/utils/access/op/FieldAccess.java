@@ -1,5 +1,8 @@
 package utils.access.op;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.bson.BSONObject;
 import org.bson.types.BasicBSONList;
 
@@ -20,6 +23,22 @@ public class FieldAccess implements Condition {
 	public FieldAccess(String field, Condition cond) {
 		this.field = field;
 		this.cond = cond;
+	}
+	
+	public static Condition path(String accessKey, Condition cond) {
+		String[] paths = accessKey.split("\\.");
+		   		   		   
+		for (int i = paths.length-1;i>=0;i--) cond = new FieldAccess(paths[i], cond);
+		
+		return cond;
+	}
+	
+	public String getField() {
+		return field;
+	}
+	
+	public Condition getCondition() {
+		return cond;
 	}
 		
 	@Override
@@ -59,6 +78,26 @@ public class FieldAccess implements Condition {
 	public Condition optimize() {
 		cond = cond.optimize();
 		return this;
+	}
+
+	@Override
+	public Condition indexValueExpression() {		
+		return null;
+	}
+
+	@Override
+	public Map<String, Condition> indexExpression() {
+		String path = field;
+		Condition c = cond;
+		 
+		while (c instanceof FieldAccess) {
+			path += "."+((FieldAccess) c).field;
+			c = ((FieldAccess) c).cond;
+		}
+		c = c.indexValueExpression();
+		if (c == null) return null;
+		
+		return Collections.singletonMap(path, c); 
 	}
 
 }

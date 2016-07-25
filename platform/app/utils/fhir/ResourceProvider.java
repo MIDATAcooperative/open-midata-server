@@ -1,6 +1,7 @@
 package utils.fhir;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,20 +11,12 @@ import java.util.Set;
 import org.bson.types.ObjectId;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
-import models.Record;
+import org.hl7.fhir.dstu3.model.BaseResource;
+import org.hl7.fhir.dstu3.model.IdType;
+import org.hl7.fhir.dstu3.model.InstantType;
+import org.hl7.fhir.dstu3.model.Observation;
 
-import utils.access.RecordManager;
-import utils.auth.ExecutionInfo;
-import utils.collections.ReferenceTool;
-import utils.collections.Sets;
-import utils.exceptions.AppException;
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.api.ResourceMetadataKeyEnum;
-import ca.uhn.fhir.model.dstu2.resource.BaseResource;
-import ca.uhn.fhir.model.dstu2.resource.Observation;
-import ca.uhn.fhir.model.primitive.IdDt;
-import ca.uhn.fhir.model.primitive.InstantDt;
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.IdParam;
@@ -36,14 +29,28 @@ import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 
-public abstract class ResourceProvider<T extends BaseResource> implements IResourceProvider {
+import models.Record;
 
-	public static FhirContext ctx = FhirContext.forDstu2();
-	public static ThreadLocal<ExecutionInfo> tinfo = new ThreadLocal<ExecutionInfo>();
+import utils.AccessLog;
+import utils.access.RecordManager;
+import utils.auth.ExecutionInfo;
+import utils.collections.ReferenceTool;
+import utils.collections.Sets;
+import utils.exceptions.AppException;
+
+
+public  abstract class ResourceProvider<T extends BaseResource> implements IResourceProvider {
+
+	public static FhirContext ctx = FhirContext.forDstu3();
 	
 	public FhirContext ctx() {
 		return ctx;
 	}
+	
+	
+	public static ThreadLocal<ExecutionInfo> tinfo = new ThreadLocal<ExecutionInfo>();
+	
+	
 	
 	public static void setExecutionInfo(ExecutionInfo info) {
 		tinfo.set(info);
@@ -53,10 +60,11 @@ public abstract class ResourceProvider<T extends BaseResource> implements IResou
 		return tinfo.get();
 	}
 	
+	
 	public abstract Class<T> getResourceType();
 	
 	@Read()
-	public T getResourceById(@IdParam IdDt theId) throws AppException {
+	public T getResourceById(@IdParam IdType theId) throws AppException {
 		Record record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new ObjectId(theId.getIdPart()));
 		IParser parser = ctx().newJsonParser();
 		T p = parser.parseResource(getResourceType(), record.data.toString());
@@ -94,24 +102,29 @@ public abstract class ResourceProvider<T extends BaseResource> implements IResou
 		}
 	}
 	
-	public static Set<String> refsToObjectIds(ReferenceOrListParam params) {
-		Set<String> result = new HashSet<String>();
-		for (ReferenceParam p : params.getValuesAsQueryTokens()) {
-			
-			result.add(p.getIdPart());
-		}
-		return result;
+	public abstract List<Record> searchRaw(SearchParameterMap params) throws AppException;
+	
+	public List<T> search(SearchParameterMap params) {
+		try {									
+		   List<T> observations = parse(searchRaw(params), getResourceType());						
+		   return observations;
+
+	    } catch (AppException e) {
+		   AccessLog.log("ERROR");
+		   return null;
+	    }
+     }
+	
+	
+	public static Set<String> referencesToIds(Collection<ReferenceParam> refs) {
+		
+		Set<String> ids = new HashSet<String>();
+		for (ReferenceParam ref : refs)
+			ids.add(ref.getIdPart().toString());
+		return ids;				
 	}
 	
-	/*public static Set<String> resolve(ReferenceOrListParam params) {
-		Set<String> result = new HashSet<String>();
-		for (ReferenceParam p : params.getValuesAsQueryTokens()) {
-			String c = p.getChain();
-			
-			result.add(p.getIdPart());
-		}
-		return result;
-	}*/
+	
 	
 	public static Set<String> tokensToStrings(TokenOrListParam params) {
 		Set<String> result = new HashSet<String>();
@@ -130,19 +143,7 @@ public abstract class ResourceProvider<T extends BaseResource> implements IResou
 		}
 		return result;
 	}
-	
-	public static List<Record> doRecordQuery(Map<String, Object> accountCriteria, Map<String, Object> indexQuery, Map<String, Object> dataQuery) throws AppException {
-		if (indexQuery!=null && !indexQuery.isEmpty()) {
-			accountCriteria.put("index", indexQuery);
-		}
-		if (dataQuery!=null && !dataQuery.isEmpty()) {
-			accountCriteria.put("data", dataQuery);
-		}
-		ExecutionInfo info = info();
-		List<Record> result = RecordManager.instance.list(info.executorId, info.targetAPS, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
-		ReferenceTool.resolveOwners(result, true, false);
-		return result;
-	}
+		
 	
 	public <T extends BaseResource> List<T> parse(List<Record> result, Class<T> resultClass) {
 		ArrayList<T> parsed = new ArrayList<T>();	
@@ -160,8 +161,8 @@ public abstract class ResourceProvider<T extends BaseResource> implements IResou
 		
 	
 	public static void processResource(Record record, BaseResource resource) {
-		resource.setId(record._id.toString());	
-		ResourceMetadataKeyEnum.VERSION.put(resource, record.version);
-		ResourceMetadataKeyEnum.UPDATED.put(resource, new InstantDt(record.lastUpdated));
+		resource.setId(record._id.toString());
+		resource.getMeta().setVersionId(record.version);
+		resource.getMeta().setLastUpdated(record.lastUpdated);
 	}
 }

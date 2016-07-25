@@ -369,10 +369,10 @@ class QueryEngine {
 		
 		if (q.restrictedBy("index") && !q.getApsId().equals(q.getCache().getOwner())) {
 			AccessLog.log("Manually applying index query aps="+q.getApsId().toString());
-			result = QueryEngine.filterByDataQuery(result, (Map<String,Object>) q.getProperties().get("index"));
+			result = QueryEngine.filterByDataQuery(result, q.getProperties().get("index"));
 		}
 		
-		if (q.restrictedBy("data"))	result = filterByDataQuery(result, (Map<String,Object>) q.getProperties().get("data"));
+		if (q.restrictedBy("data"))	result = filterByDataQuery(result, q.getProperties().get("data"));
 		
 		result = filterByDateRange(result, "created", q.getMinDateCreated(), q.getMaxDateCreated());			
 		result = filterByDateRange(result, "lastUpdated", q.getMinDateUpdated(), q.getMaxDateUpdated());
@@ -427,9 +427,12 @@ class QueryEngine {
     	return filteredResult;
     }
     
-    protected static List<DBRecord> filterByDataQuery(List<DBRecord> input, Map<String, Object> query) {    	
+    protected static List<DBRecord> filterByDataQuery(List<DBRecord> input, Object query) throws InternalServerException {    	
     	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());    	
-    	Condition condition = new AndCondition(query).optimize();
+    	Condition condition = null;
+    	if (query instanceof Map<?, ?>) condition = new AndCondition((Map<String, Object>) query).optimize();
+    	else if (query instanceof Condition) condition = ((Condition) query).optimize();
+    	else throw new InternalServerException("error.internal", "Query type not implemented");
     	
     	for (DBRecord record : input) {
             Object accessVal = record.data;                        

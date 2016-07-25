@@ -1,5 +1,7 @@
 package utils.access.op;
 
+import java.util.Map;
+
 /**
  * check if object is equal to a fixed value
  *
@@ -24,6 +26,20 @@ public class EqualsSingleValueCondition implements Condition {
 	@Override
 	public Condition optimize() {
 		return this;
+	}
+	
+	public Object getValue() {
+		return val;
+	}
+
+	@Override
+	public Condition indexValueExpression() {
+		return this;
+	}
+
+	@Override
+	public Map<String, Condition> indexExpression() {		
+		return null;
 	}
 	
 	

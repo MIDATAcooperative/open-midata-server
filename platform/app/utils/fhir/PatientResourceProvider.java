@@ -10,16 +10,11 @@ import models.Consent;
 import models.Member;
 
 import org.bson.types.ObjectId;
+import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
+import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
+import org.hl7.fhir.dstu3.model.IdType;
+import org.hl7.fhir.dstu3.model.Patient;
 
-import utils.AccessLog;
-import utils.auth.ExecutionInfo;
-import utils.collections.CMaps;
-import utils.collections.Sets;
-import utils.exceptions.AppException;
-import ca.uhn.fhir.model.dstu2.resource.Patient;
-import ca.uhn.fhir.model.dstu2.valueset.AdministrativeGenderEnum;
-import ca.uhn.fhir.model.dstu2.valueset.ContactPointSystemEnum;
-import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
@@ -29,31 +24,24 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 
+import utils.AccessLog;
+import utils.auth.ExecutionInfo;
+import utils.collections.CMaps;
+import utils.collections.Sets;
+import utils.exceptions.AppException;
+
+
 public class PatientResourceProvider extends ResourceProvider implements IResourceProvider {
  
-    /**
-     * The getResourceType method comes from IResourceProvider, and must
-     * be overridden to indicate what type of resource this provider
-     * supplies.
-     */
+   
     @Override
     public Class<Patient> getResourceType() {
         return Patient.class;
     }
      
-    /**
-     * The "@Read" annotation indicates that this method supports the
-     * read operation. Read operations should return a single resource
-     * instance.
-     *
-     * @param theId
-     *    The read operation takes one parameter, which must be of type
-     *    IdDt and must be annotated with the "@Read.IdParam" annotation.
-     * @return
-     *    Returns a resource matching this identifier, or null if none exists.
-     */
+   
     @Read()
-    public Patient getResourceById(@IdParam IdDt theId) throws AppException {    	
+    public Patient getResourceById(@IdParam IdType theId) throws AppException {    	
     	    
     	String id = theId.getIdPart();
     	ObjectId targetId = new ObjectId(id);
@@ -72,31 +60,10 @@ public class PatientResourceProvider extends ResourceProvider implements IResour
     	try {
     	ExecutionInfo info = info();
     	
-    	/*Map<String, Object> criteria = new HashMap<String, Object>();
-    	
-    	if (theName != null) {
-    		addRestriction(criteria, theName, "name", "family");
-    	}
-    	
-    	if (theGender != null) {
-    		addRestriction(criteria, theGender, "gender");
-    	}
-    	
-    	if (theBirthdate != null) {
-    		addRestriction(criteria, theBirthdate, "birthDate");
-    	}
-    	
-    	AccessLog.logQuery(criteria, Sets.create("data"));
-    	List<Record> result = RecordManager.instance.list(info.executorId, info.targetAPS, CMaps.map("format","fhir/Observation").map("content", "Patient").map("data", criteria), Sets.create("data"));
-    	*/
+    
     	List<Patient> patients = getAllAccessiblePatients(info.executorId);
-    	
-    	/*IParser parser = ctx().newJsonParser();    	
-    	for (Record rec : result) {
-    		
-    		Patient p = parser.parseResource(Patient.class, rec.data.toString());
-    		patients.add(p);
-    	}*/
+    	AccessLog.log("# Patient="+patients.size());
+    
        
         return patients;
         
@@ -113,12 +80,12 @@ public class PatientResourceProvider extends ResourceProvider implements IResour
     		Patient p = new Patient();
     		p.setId(member._id.toString());
     		p.addName().addFamily(member.lastname).addGiven(member.firstname);
-    		p.setBirthDateWithDayPrecision(member.birthday);
+    		p.setBirthDate(member.birthday);
     		p.addIdentifier().setSystem("http://midata.coop/midataID").setValue(member.midataID);
-    		p.setGender(AdministrativeGenderEnum.valueOf(member.gender.toString()));
-    		p.addTelecom().setSystem(ContactPointSystemEnum.EMAIL).setValue(member.email);
+    		p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
+    		p.addTelecom().setSystem(ContactPointSystem.EMAIL).setValue(member.email);
     		if (member.phone != null && member.phone.length()>0) {
-    			p.addTelecom().setSystem(ContactPointSystemEnum.PHONE).setValue(member.phone);
+    			p.addTelecom().setSystem(ContactPointSystem.PHONE).setValue(member.phone);
     		}
     		p.addAddress().setCity(member.city).setCountry(member.country).setPostalCode(member.zip).addLine(member.address1).addLine(member.address2);
     		result.add(p);
@@ -140,5 +107,12 @@ public class PatientResourceProvider extends ResourceProvider implements IResour
        acc.add(executor);
        return patientsFromUserAccounts(CMaps.map("_id", acc));
     }
- 
+
+
+	@Override
+	public List searchRaw(SearchParameterMap params) throws AppException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
