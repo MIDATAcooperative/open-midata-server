@@ -2,7 +2,7 @@
 <div class="ignore autosize" ng-controller="AddUsersCtrl">
   <div class="body">
 	<tabset> 
-	<tab translate translate-attr-heading="addusers.contacts">
+	<tab heading="{{ 'addusers.contacts' | translate }}">
 	<p ng-show="contacts.length === 0" translate="addusers.no_contacts"></p>
 	<div ng-show="contacts.length > 0">
 		<div class="checkbox" ng-repeat="contact in filteredContacts = (contacts | filter:isntMember)">
@@ -12,7 +12,7 @@
 		<p ng-show="filteredContacts.length === 0" translate="addusers.no_contacts_to_add"></p>
 	</div>
 	</tab>
-	<tab translate translate-attr-heading="addusers.all_users">
+	<tab heading="{{ 'addusers.all_users' | translate }}">
 	<form class="form-horizontal" ng-submit="searchUsers()">
 		<div class="form-group">
 			<div class="col-xs-10">

@@ -3,7 +3,7 @@ angular.module('portal')
 	
 	// init
 	$scope.error = null;
-	$scope.app = { version:0, tags:[] };
+	$scope.app = { version:0, tags:[], i18n : {} };
 	$scope.status = new status(true);
 	$scope.allowDelete = $state.current.allowDelete;
 	$scope.languages = ['en', 'de', 'fr', 'it'];

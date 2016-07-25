@@ -5,223 +5,153 @@
         // TODO NEW: MY DATA - OUR HEALTH!
         "teaser" : "MY DATA - OUR HEALTH!",
 
-        // TODO NEW: Register Now
-        "register_now" : "Register Now",
-
-        // TODO NEW: Sign in
-        "sign_in" : "Sign in"
+        "register_now" : "Jetzt registrieren",
+        "sign_in" : "Anmelden"
     },
 
     "member_quickregistration" : {
-
-        // TODO NEW: Sign up
-        "sign_up" : "Sign up",
-
-        // TODO NEW: Study
-        "study" : "Study",
-
-        // TODO NEW: App to be used
-        "app" : "App to be used",
-
-        // TODO NEW: Password for app
-        "app_password" : "Password for app",
-
-        // TODO NEW: Account Password
-        "account_password" : "Account Password",
-
-        // TODO NEW: Repeat Account Password
-        "repeat_account_password" : "Repeat Account Password"
+        "sign_up" : "Registrieren",
+        "study" : "Studie",
+        "app" : "Benutzte App",
+        "app_password" : "Kennwort der App",
+        "account_password" : "Kennwort des Kontos",
+        "repeat_account_password" : "Kennwort des Kontos wiederholen"
     },
 
     "help_welcome" : {
 
         // TODO NEW: The menu above contains these links:
-        "menu" : "The menu above contains these links:",
+        "menu" : "Das oben stehende Menü enthält folgende Verknüpfungen:",
 
         // TODO NEW: Me
-        "menu_me" : "Me",
+        "menu_me" : "Mich",
 
         // TODO NEW: Your personal dashboard where you can place whatever functionality you need most.
-        "menu_me_text" : "Your personal dashboard where you can place whatever functionality you need most.",
+        "menu_me_text" : "Ihr persönliches Cockpit wo Sie Ihre Favoriten platzieren können.",
 
-        // TODO NEW: Overview
-        "menu_overview" : "Overview",
+        "menu_overview" : "Übersicht",
 
         // TODO NEW: An overview over all functions provided by the MIDATA platform.
-        "menu_overview_text" : "An overview over all functions provided by the MIDATA platform.",
+        "menu_overview_text" : "Eine Übersicht über alle Funktionen, die die MIDATA-Plattform anbietet.",
 
-        // TODO NEW: My Data
-        "menu_my_data" : "My Data",
+        "menu_my_data" : "Meine Daten",
 
         // TODO NEW: A list of all data records that MIDATA has stored about you.
-        "menu_my_data_text" : "A list of all data records that MIDATA has stored about you.",
+        "menu_my_data_text" : "Eine Liste aller Ihren Einträge, die in MIDATA gespeichert sind.",
 
         // TODO NEW: Consents
-        "menu_consents" : "Consents",
+        "menu_consents" : "Zustimmungen",
 
         // TODO NEW: Manage data sharing with others.
         "menu_consents_text" : "Manage data sharing with others.",
 
         // TODO NEW: In order to get started we recommend that you answer us some questions. We will preconfigure your account based on your answers.
-        "answer_questions" : "In order to get started we recommend that you answer us some questions. We will preconfigure your account based on your answers.",
+        "answer_questions" : "Zum Starten empfehlen wir Ihnen an einigen Fragen zu antworten. Ihr Konto wird an Hand Ihren Antworten vorkonfiguriert.",
 
         // TODO NEW: Answer Setup Questions Now
-        "answer_btn" : "Answer Setup Questions Now"
+        "answer_btn" : "Konfigurationsfragen jetzt beantworten"
     },
 
     "help_setup" : {
 
         // TODO NEW: The answers to the following questions are only used to setup your account according to your needs.
-        "description" : "The answers to the following questions are only used to setup your account according to your needs.",
+        "description" : "Die Antworten zu diesen Fragen dienen nur um Ihr Konto nach Ihren Bedürfnissen zu konfigurieren.",
 
         // TODO NEW: Which of these general tasks do you plan to do with MIDATA?
-        "question_tasks" : "Which of these general tasks do you plan to do with MIDATA?",
+        "question_tasks" : "Welche allgemeinen Aufgaben planen Sie mit MIDATA zu erledigen?",
 
         // TODO NEW: Manage your health records
-        "question_tasks_answer1" : "Manage your health records",
+        "question_tasks_answer1" : "Ihre Gesundheitsdaten zu verwalten",
 
         // TODO NEW: Protocol data about yourself.
-        "question_tasks_answer2" : "Protocol data about yourself.",
+        "question_tasks_answer2" : "Persönliche Daten zu erfassen",
 
         // TODO NEW: Compare yourself with others.
-        "question_tasks_answer3" : "Compare yourself with others.",
+        "question_tasks_answer3" : "Sich mit anderen Benutzern zu vergleichen",
 
         // TODO NEW: Do planning
-        "question_tasks_answer4" : "Do planning",
+        "question_tasks_answer4" : "Planen",
 
         // TODO NEW: Are you interested in gathering quantified self data? If yes, which?
-        "question_qself" : "Are you interested in gathering quantified self data? If yes, which?",
+        "question_qself" : "Planen Sie « quantified self » Daten zu sammeln? Wenn ja, welche?",
 
-        // TODO NEW: Steps / Activities
-        "question_qself_answer1" : "Steps / Activities",
-
-        // TODO NEW: Sleep
-        "question_qself_answer2" : "Sleep",
-
-        // TODO NEW: Weight
-        "question_qself_answer3" : "Weight",
-
-        // TODO NEW: Water Consumption
-        "question_qself_answer4" : "Water Consumption",
-
-        // TODO NEW: Nutrition
-        "question_qself_answer5" : "Nutrition",
+        "question_qself_answer1" : "Schritte / Aktivität",
+        "question_qself_answer2" : "Schlaf",
+        "question_qself_answer3" : "Gewicht",
+        "question_qself_answer4" : "Wasserverbrauch",
+        "question_qself_answer5" : "Ernährung",
 
         // TODO NEW: Do use any of these devices?
-        "question_devices" : "Do use any of these devices?",
+        "question_devices" : "Benutzen Sie eines dieser Produkte?",
 
-        // TODO NEW: Fitbit
         "question_devices_answer1" : "Fitbit",
-
-        // TODO NEW: Jawbone
         "question_devices_answer2" : "Jawbone",
 
         // TODO NEW: Do you plan to share some of your data with others?
-        "question_share" : "Do you plan to share some of your data with others?",
+        "question_share" : "Planen Sie Daten mit anderen Benutzern zu teilen?",
 
-        // TODO NEW: Family
-        "question_share_answer1" : "Family",
-
-        // TODO NEW: Friends
-        "question_share_answer2" : "Friends",
-
-        // TODO NEW: Doctor / Hospital
-        "question_share_answer3" : "Doctor / Hospital",
-
-        // TODO NEW: Research (Study participation)
-        "question_share_answer4" : "Research (Study participation)",
+        "question_share_answer1" : "Familie",
+        "question_share_answer2" : "Freunde",
+        "question_share_answer3" : "Arzt / Spital",
+        "question_share_answer4" : "Forschung (Teilnahme an einer Studie)",
 
         // TODO NEW: Other people
-        "question_share_answer5" : "Other people",
+        "question_share_answer5" : "Andere Personen",
 
         // TODO NEW: You can always come back and change these settings by visiting the "Help" page.
         "come_back" : "You can always come back and change these settings by visiting the \"Help\" page.",
 
-        // TODO NEW: Done
-        "done_btn" : "Done"
+        "done_btn" : "Fertig"
     },
 
     "accountdata" : {
-
-        // TODO NEW: Midata ID:
-        "midata_id" : "Midata ID:",
-
-        // TODO NEW: Birthday:
-        "birthday" : "Birthday:",
-
-        // TODO NEW: Change
-        "change_btn" : "Change"
+        "midata_id" : "MIDATA ID:",
+        "birthday" : "Geburtsdatum:",
+        "change_btn" : "Ändern"
     },
 
     "member_circles" : {
+        "number_available" : "Verfügbare Kreise:",
+        "empty" : "Sie besitzen keine Kreise.",
 
-        // TODO NEW: Circles available:
-        "number_available" : "Circles available:",
-
-        // TODO NEW: You do not have any circles.
-        "empty" : "You do not have any circles.",
-
-        // TODO NEW: Add
-        "add_btn" : "Add",
-
-        // TODO NEW: Manage
-        "manage_btn" : "Manage"
+        "add_btn" : "Hinzufügen",
+        "manage_btn" : "Verwalten"
     },
 
     "member_othercircles" : {
-
-        // TODO NEW: Circles available:
-        "number_available" : "Circles available:",
-
-        // TODO NEW: No MIDATA members share data with you.
-        "empty" : "No MIDATA members share data with you."
+        "number_available" : "Verfügbare Kreise:",
+        "empty" : "Kein MIDATA-Mitglied teilt Daten mit Ihnen."
     },
 
     "yourstudies" : {
-
-        // TODO NEW: Study
-        "study" : "Study",
-
-        // TODO NEW: Status
+        "study" : "Studie",
         "status" : "Status",
-
-        // TODO NEW: You do not participate in any study.
-        "empty" : "You do not participate in any study."
+        "empty" : "Sie nehmen an keiner Studie teil."
     },
 
     "entercode" : {
 
         // TODO NEW: Join a research study by entering a participation code.
-        "title" : "Join a research study by entering a participation code.",
+        "title" : "An Forschungsstudie mittels Teilnahmecode beitreten.",
 
         // TODO NEW: Join a study by entering a code:
-        "description" : "Join a study by entering a code:",
+        "description" : "An Studie mittels Code beitreten:",
 
-        // TODO NEW: Participation Code
-        "code" : "Participation Code",
-
-        // TODO NEW: Continue
-        "continue_btn" : "Continue"
+        "code" : "Teilnahmecode",
+        "continue_btn" : "Weiter"
     },
 
     "providers" : {
-
-        // TODO NEW: Name
         "name" : "Name",
-
-        // TODO NEW: Status
         "status" : "Status",
 
         // TODO NEW: Confirmation Date
-        "confirmation_date" : "Confirmation Date",
+        "confirmation_date" : "Bestätigungsdatum",
 
-        // TODO NEW: confirm
-        "confirm_btn" : "confirm",
-
-        // TODO NEW: reject
-        "reject_btn" : "reject",
+        "confirm_btn" : "bestätigen",
+        "reject_btn" : "zurückweisen",
 
         // TODO NEW: You do not have a registered contact to a healthcare provider.
-        "empty" : "You do not have a registered contact to a healthcare provider."
+        "empty" : "Sie haben keinen Kontakt zu einer Gesundheitsfachperson registriert."
     }
 }

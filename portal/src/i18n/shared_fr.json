@@ -2,24 +2,12 @@
 
 
     "footer" : {
-
-        // TODO NEW: (c) 2015-2016 ETH Zürich
         "copyright" : "(c) 2015-2016 ETH Zürich",
-
-        // TODO NEW: Midata Portals:
-        "portals" : "Midata Portals:",
-
-        // TODO NEW: For Members of the Cooperative
-        "for_members" : "For Members of the Cooperative",
-
-        // TODO NEW: For Research Organizations
-        "for_researchers" : "For Research Organizations",
-
-        // TODO NEW: For Healthcare Providers
-        "for_providers" : "For Healthcare Providers",
-
-        // TODO NEW: For Developers
-        "for_developers" : "For Developers"
+        "portals" : "Portails MIDATA:",
+        "for_members" : "Pour les membres de la coopérative",
+        "for_researchers" : "Pour les organismes de recherche",
+        "for_providers" : "Pour les professionnels de la santé",
+        "for_developers" : "Pour les développeurs"
     },
 
     "navbar" : {
@@ -27,35 +15,19 @@
         // TODO NEW: Toggle navigation
         "toggle_navigation" : "Toggle navigation",
 
-        // TODO NEW: Login
-        "login" : "Login",
-
-        // TODO NEW: Sign Up
-        "sign_up" : "Sign Up",
-
-        // TODO NEW: Sign out
-        "sign_out" : "Sign out",
+        "login" : "Connexion",
+        "sign_up" : "Inscription",
+        "sign_out" : "Déconnexion",
 
         // TODO NEW: Me
-        "me" : "Me",
+        "me" : "Moi",
 
-        // TODO NEW: Overview
-        "overview" : "Overview",
-
-        // TODO NEW: Messages
+        "overview" : "Vue d'ensemble",
         "messages" : "Messages",
-
-        // TODO NEW: My Data
-        "my_data" : "My Data",
-
-        // TODO NEW: Consents
-        "consents" : "Consents",
-
-        // TODO NEW: Research
-        "research" : "Research",
-
-        // TODO NEW: Help
-        "help" : "Help"
+        "my_data" : "Mes données",
+        "consents" : "Consentements",
+        "research" : "Recherche",
+        "help" : "Aide"
     },
 
     "error" : {
@@ -69,8 +41,7 @@
         // TODO NEW: An internal database error occured. Please contact support@midata.coop if the problem persists.
         "internal_db" : "An internal database error occured. Please contact support@midata.coop if the problem persists.",
 
-        // TODO NEW: Please relogin
-        "relogin" : "Please relogin",
+        "relogin" : "Veuillez vous reconnecter",
 
         // TODO NEW: No active consent that allows to add data for target person.
         "noconsent" : "No active consent that allows to add data for target person.",
@@ -1064,20 +1035,11 @@
 
     "newconsent" : {
 
-        // TODO NEW: Create a new consent
-        "title" : "Create a new consent",
-
-        // TODO NEW: How should this consent be named?
-        "name" : "How should this consent be named?",
-
-        // TODO NEW: What type of consent do you want to create?
-        "type" : "What type of consent do you want to create?",
-
-        // TODO NEW: I want to share data with other MIDATA members.
-        "share_with_members" : "I want to share data with other MIDATA members.",
-
-        // TODO NEW: I want to share data with a health professional.
-        "share_with_provider" : "I want to share data with a health professional.",
+        "title" : "Créer un nouveau consentement",
+        "name" : "Quel est le libellé de ce consentement ?",
+        "type" : "Quel type de consentement souhaitez-vous créer ?",
+        "share_with_members" : "Je veux partager des données avec d'autres membres MIDATA.",
+        "share_with_provider" : "Je veux partager des données avec un professionnel de la santé.",
 
         // TODO NEW: Include a passcode?
         "use_passcode" : "Include a passcode?",
@@ -1117,159 +1079,78 @@
     },
 
     "editconsent" : {
-
-        // TODO NEW: Consent
-        "title" : "Consent",
-
-        // TODO NEW: Name of Consent
-        "name" : "Name of Consent",
-
-        // TODO NEW: Type of Consent
-        "type" : "Type of Consent",
-
-        // TODO NEW: Status of Consent
-        "status" : "Status of Consent",
-
-        // TODO NEW: Password
-        "password" : "Password",
+        "title" : "Consentement",
+        "name" : "Libellé du consentement",
+        "type" : "Type de consentement",
+        "status" : "État du consentement",
+        "password" : "Mot de passe",
 
         // TODO NEW: A password has been set if you need to relogin with the app.
         "password_exists" : "A password has been set if you need to relogin with the app.",
 
-        // TODO NEW: Show password
-        "show_password" : "Show password",
+        "show_password" : "Afficher le mot de passe",
 
         // TODO NEW: Use your email address and this password for login:
         "password_shown" : "Use your email address and this password for login:",
 
-        // TODO NEW: With which persons(s) do you want to share data?
-        "people" : "With which persons(s) do you want to share data?",
-
-        // TODO NEW: Add More People
-        "add_people_btn" : "Add More People",
-
-        // TODO NEW: @:newconsent.reshare
+        "people" : "Avec quelle(s) personne(s) désirez-vous partager des données ?",
+        "add_people_btn" : "Ajouter d'autres personnes",
         "reshare" : "@:newconsent.reshare",
-
-        // TODO NEW: @:newconsent.reshare2
         "reshare2" : "@:newconsent.reshare2",
-
-        // TODO NEW: Consent expiration date:
-        "expiration_date" : "Consent expiration date:",
-
-        // TODO NEW: Shares only data created before:
-        "created_before" : "Shares only data created before:",
-
-        // TODO NEW: What data is shared?
-        "what_is_shared" : "What data is shared?",
-
-        // TODO NEW: This consent does not share any data at the moment.
-        "consent_empty" : "This consent does not share any data at the moment.",
-
-        // TODO NEW: This consent shares data with other MIDATA members.
-        "type_circle" : "This consent shares data with other MIDATA members.",
-
-        // TODO NEW: This consent shares data with healthcare professionals.
-        "type_healthcare" : "This consent shares data with healthcare professionals.",
-
-        // TODO NEW: This consent shares data with research for use in a study.
+        "expiration_date" : "Date d'expiration du consentement :",
+        "created_before" : "Ne partager que les données créées avant :",
+        "what_is_shared" : "Quelles données sont-elles partagées ?",
+        "consent_empty" : "Ce consentement ne partage actuellement aucunes données.",
+        "type_circle" : "Ce consentement partage des données avec d'autres membres MIDATA.",
+        "type_healthcare" : "Ce consentement partage des données avec des professionnels de la santé.",
         "type_studyparticipation" : "This consent shares data with research for use in a study.",
-
-        // TODO NEW: This consent shares data with a mobile app or external service.
-        "type_externalservice" : "This consent shares data with a mobile app or external service.",
-
-        // TODO NEW: This consent is active.
-        "status_active" : "This consent is active.",
-
-        // TODO NEW: This consent is expired. Data is no longer shared.
-        "status_expired" : "This consent is expired. Data is no longer shared.",
-
-        // TODO NEW: This consent needs confirmation by its owner.
-        "status_unconfirmed" : "This consent needs confirmation by its owner.",
-
-        // TODO NEW: This consent has been rejected by its owner.
-        "status_rejected" : "This consent has been rejected by its owner.",
-
-        // TODO NEW: This consent shares {{count}} records.
-        "shares_records" : "This consent shares {{count}} records.",
-
-        // TODO NEW: Shares all records belonging to group: {{ group }}
-        "shares_group" : "Shares all records belonging to group: {{ group }}",
-
-        // TODO NEW: Excluded are records belonging to group: {{ group }}
-        "excludes_group" : "Excluded are records belonging to group: {{ group }}",
+        "type_externalservice" : "Ce consentement partage des données avec une application mobile ou un service externe.",
+        "status_active" : "Ce consentement est actif.",
+        "status_expired" : "Ce consentement a expiré. Les données ne sont plus partagées.",
+        "status_unconfirmed" : "Ce consentement nécessite une confirmation par son propriétaire.",
+        "status_rejected" : "Ce consentement a été rejeté par son propriétaire.",
+        "shares_records" : "Ce consentement partage {{count}} enregistrements.",
+        "shares_group" : "Partage tous les enregistrements appartenant au groupe : {{ group }}",
+        "excludes_group" : "Les enregistrements appartenant au groupe {{ group }} sont exclus",
 
         // TODO NEW: View/Change data selection
         "view_change_selection_btn" : "View/Change data selection",
 
-        // TODO NEW: Confirm this Consent
-        "confirm_btn" : "Confirm this Consent",
-
-        // TODO NEW: Reject this Consent
-        "reject_btn" : "Reject this Consent",
-
-        // TODO NEW: Delete this Consent
-        "delete_btn" : "Delete this Consent"
+        "confirm_btn" : "Confirmer ce consentement",
+        "reject_btn" : "Rejeter ce consentement",
+        "delete_btn" : "Supprimer ce consentement"
     },
 
     "consents" : {
-
-        // TODO NEW: Consents
-        "title" : "Consents",
+        "title" : "Consentements",
 
         // TODO NEW: Using consents you can grant others (healthcare professionals, friends, research...) access to some of your data. Use this page to manage your existing consents or to create a new one.
         "description" : "Using consents you can grant others (healthcare professionals, friends, research...) access to some of your data. Use this page to manage your existing consents or to create a new one.",
 
-        // TODO NEW: You have {{ count }} consents:
-        "count" : "You have {{ count }} consents:",
-
-        // TODO NEW: Name
-        "name" : "Name",
-
-        // TODO NEW: Type
+        "count" : "Vous avez {{ count }} consentements :",
+        "name" : "Nom",
         "type" : "Type",
-
-        // TODO NEW: Status
-        "status" : "Status",
-
-        // TODO NEW: # People
-        "number_of_people" : "# People",
-
-        // TODO NEW: # Records
-        "number_of_records" : "# Records",
-
-        // TODO NEW: Add new consent
-        "add_new_btn" : "Add new consent"
+        "status" : "État",
+        "number_of_people" : "# personnes",
+        "number_of_records" : "# enregistrements",
+        "add_new_btn" : "Ajouter un consentement"
     },
 
     "importrecords" : {
-
-        // TODO NEW: Import
-        "title" : "Import",
-
-        // TODO NEW: Authorize Now
-        "authorize_btn" : "Authorize Now"
+        "title" : "Importer",
+        "authorize_btn" : "Autoriser maintenant"
     },
 
     "spaces" : {
-
-        // TODO NEW: MIDATA Plugin
-        "title" : "MIDATA Plugin",
-
-        // TODO NEW: Delete this space
-        "delete_btn" : "Delete this space",
+        "title" : "Plugin MIDATA",
+        "delete_btn" : "Supprimer cet espace",
 
         // TODO NEW: Used records..
         "used_btn" : "Used records..",
 
-        // TODO NEW: Share...
-        "share_btn" : "Share...",
-
-        // TODO NEW: Finished comparing
-        "finish_comparing_btn" : "Finished comparing",
-
-        // TODO NEW: Compare
-        "compare_btn" : "Compare"
+        "share_btn" : "Partager...",
+        "finish_comparing_btn" : "Comparaison terminée",
+        "compare_btn" : "Comparer"
     },
 
     "records" : {
@@ -1289,14 +1170,12 @@
         // TODO NEW: In order to permanently 
         "delete_instructions1" : "In order to permanently ",
 
-        // TODO NEW: delete
-        "delete_instructions2" : "delete",
+        "delete_instructions2" : "supprimer",
 
         // TODO NEW: a record 
-        "delete_instructions3" : "a record ",
+        "delete_instructions3" : "un enregistrement ",
 
-        // TODO NEW: double-click
-        "delete_instructions4" : "double-click",
+        "delete_instructions4" : "double clic",
 
         // TODO NEW: on the delete button to the right of the record.
         "delete_instructions5" : "on the delete button to the right of the record.",
@@ -1304,99 +1183,58 @@
         // TODO NEW: In order to permanently delete all records of a certain category double click on the delete button to the right of the category.
         "delete_instructions6" : "In order to permanently delete all records of a certain category double click on the delete button to the right of the category.",
 
-        // TODO NEW: Shared With:
-        "shared_with" : "Shared With:",
+        "shared_with" : "Partagé avec :",
 
         // TODO NEW: Records used for app
-        "records_used_for_app" : "Records used for app",
+        "records_used_for_app" : "Enregistrements utilisés pour l'app",
 
         // TODO NEW: Back to Visualization
         "back_to_plugin" : "Back to Visualization",
 
-        // TODO NEW: Show:
-        "show" : "Show:",
-
-        // TODO NEW: My Data
-        "my_data" : "My Data",
-
-        // TODO NEW: All Data
-        "all_data" : "All Data",
-
-        // TODO NEW: Study: {{name}}
-        "study" : "Study: {{name}}",
-
-        // TODO NEW: Shared by: {{name}}
-        "shared" : "Shared by: {{name}}",
-
-        // TODO NEW: {{name}}
+        "show" : "Afficher:",
+        "my_data" : "Mes données",
+        "all_data" : "Toutes les données",
+        "study" : "Étude : {{name}}",
+        "shared" : "Partagé par : {{name}}",
         "just_name" : "{{name}}",
-
-        // TODO NEW: share
-        "share" : "share",
-
-        // TODO NEW: unshare
-        "unshare" : "unshare",
-
-        // TODO NEW: delete
-        "delete" : "delete",
-
-        // TODO NEW: delete all
-        "delete_all_btn" : "delete all",
-
-        // TODO NEW: No available records found.
-        "empty" : "No available records found."
-
+        "share" : "partager",
+        "unshare" : "supprimer le partage",
+        "delete" : "supprimer",
+        "delete_all_btn" : "supprimer tout",
+        "empty" : "Aucun enregistrement trouvé."
     },
 
     "oauth2" : {
-
-        // TODO NEW: This application requests access:
-        "requesting_app" : "This application requests access:"
+        "requesting_app" : "Cette application demande l'accès :"
     },
 
     "dashboard" : {
-
-        // TODO NEW: Welcome to MIDATA
-        "help_welcome" : "Welcome to MIDATA",
-
-        // TODO NEW: Tasks
-        "tasks" : "Tasks",
-
-        // TODO NEW: My Views
-        "myviews" : "My Views",
-
-        // TODO NEW: My personal data
-        "mydata" : "My personal data",
+        "help_welcome" : "Bienvenue sur MIDATA",
+        "tasks" : "Tâches",
+        "myviews" : "Mes aperçus",
+        "mydata" : "Mes données personelles",
 
         // TODO NEW: Manage your health data. Enter new data and visualize existing data.
         "mydata_text" : "Manage your health data. Enter new data and visualize existing data.",
 
-        // TODO NEW: Social
         "social" : "Social",
 
         // TODO NEW: Share your data with friends. Communicate with people sharing your health situation. Motivate yourself by competition with others.
         "social_text" : "Share your data with friends. Communicate with people sharing your health situation. Motivate yourself by competition with others.",
 
-        // TODO NEW: Research
-        "research" : "Research",
+        "research" : "Recherche",
 
         // TODO NEW: Participate in studies. Inform yourself about ongoing research.
         "research_text" : "Participate in studies. Inform yourself about ongoing research.",
 
-        // TODO NEW: Health
-        "health" : "Health",
+        "health" : "Santé",
 
         // TODO NEW: Share data with your doctor. Search for health professionals.
         "health_text" : "Share data with your doctor. Search for health professionals.",
 
-        // TODO NEW: Help
-        "help" : "Help",
-
-        // TODO NEW: Get help about MIDATA functions
-        "help_text" : "Get help about MIDATA functions",
-
-        // TODO NEW: Training
-        "training" : "Training",
+        "help" : "Aide",
+        "help_text" : "Obtenir de l'aide à propos des fonctions MIDATA",
+        "training" : "Entraînement",
 
         // TODO NEW: Manage your personal training!
         "training_text" : "Manage your personal training!",
@@ -1416,14 +1254,12 @@
         // TODO NEW: Other MIDATA members may share their data with you.
         "newsharedrecords_teaser" : "Other MIDATA members may share their data with you.",
 
-        // TODO NEW: Member of Circles
-        "circles" : "Member of Circles",
+        "circles" : "Membre des Cercles",
 
         // TODO NEW: Ask others to add you to their circles.
         "circles_teaser" : "Ask others to add you to their circles.",
 
-        // TODO NEW: Your Circles
-        "circles2" : "Your Circles",
+        "circles2" : "Vos Cercles",
 
         // TODO NEW: Create Circles to share your data with others. Share with friends, family or others.
         "circles2_teaser" : "Create Circles to share your data with others. Share with friends, family or others.",
@@ -1443,32 +1279,18 @@
         // TODO NEW: Newest Records from your healthcare providers
         "hcrecords" : "Newest Records from your healthcare providers",
 
-        // TODO NEW: Records
-        "records" : "Records",
-
-        // TODO NEW: Share
-        "share" : "Share",
-
-        // TODO NEW: Details
-        "details" : "Details",
-
-        // TODO NEW: Studies you are involved:
-        "yourstudies" : "Studies you are involved:",
+        "records" : "Enregistrements",
+        "share" : "Partager",
+        "details" : "Détails",
+        "yourstudies" : "Études dans lesquelles vous êtes impliqué(e) :",
 
         // TODO NEW: If you want to participate in research configure your research settings. You will be contacted in this tile if you match a studies requirements.
         "yourstudies_teaser" : "If you want to participate in research configure your research settings. You will be contacted in this tile if you match a studies requirements.",
 
-        // TODO NEW: New Studies
-        "newstudies" : "New Studies",
-
-        // TODO NEW: Research News
-        "researchnews" : "Research News",
-
-        // TODO NEW: Search for new health research publications.
-        "researchnews_text" : "Search for new health research publications.",
-
-        // TODO NEW: Search for News
-        "researchnews_btn" : "Search for News",
+        "newstudies" : "Nouvelles études",
+        "researchnews" : "News dans le domaine de la recherche",
+        "researchnews_text" : "Rechercher des nouvelles publications dans le domaine de la recherche sur la santé.",
+        "researchnews_btn" : "Recherche des News",
 
         // TODO NEW: My Research Settings
         "studysettings" : "My Research Settings",
@@ -1477,34 +1299,22 @@
         "entercode" : "Join by participation code",
 
         // TODO NEW: Records shared with this consent:
-        "records_shared" : "Records shared with this consent:",
+        "records_shared" : "Enregistrements partagés avec ce consentement :",
 
         // TODO NEW: Add Users to Consent
         "addusers" : "Add Users to Consent",
 
-        // TODO NEW: Shared Records:
-        "shared_with_study" : "Shared Records:",
-
-        // TODO NEW: Records of this patient:
-        "patient_records" : "Records of this patient:",
-
-        // TODO NEW: Add Task
-        "addtask" : "Add Task",
-
-        // TODO NEW: Records of this group:
-        "group_records" : "Records of this group:",
-
-        // TODO NEW: Shared records:
-        "study_records" : "Shared records:",
+        "shared_with_study" : "Enregistrements partagés :",
+        "patient_records" : "Enregistrements de ce patient :",
+        "addtask" : "Ajouter une tâche",
+        "group_records" : "Enregistrements de ce groupe :",
+        "study_records" : "Enregistrements partagés :",
 
         // TODO NEW: Add more
         "addmore" : "Add more",
 
-        // TODO NEW: View
-        "view_btn" : "View",
-
-        // TODO NEW: Install new plugin
-        "install_btn" : "Install new plugin"
+        "view_btn" : "Afficher",
+        "install_btn" : "Installer un nouveau plugin"
     },
 
 
@@ -1527,29 +1337,15 @@
     },
 
     "flexiblerecords" : {
-
-        // TODO NEW: Records available:
-        "records_available" : "Records available:",
-
-        // TODO NEW: Empty
-        "empty" : "Empty",
-
-        // TODO NEW: Browse Records
-        "browse_btn" : "Browse Records",
-
-        // TODO NEW: Add Records...
-        "add_btn" : "Add Records...",
-
-        // TODO NEW: Share
-        "share_btn" : "Share"
+        "records_available" : "Enregistrements disponibles :",
+        "empty" : "Vide",
+        "browse_btn" : "Afficher les enregistrements",
+        "add_btn" : "Ajouter des enregistrements...",
+        "share_btn" : "Partager"
     },
 
     "flexiblestudies" : {
-
-        // TODO NEW: Empty
-        "empty" : "Empty",
-
-        // TODO NEW: Studies found:
-        "studies_found" : "Studies found:"
+        "empty" : "Vide",
+        "studies_found" : "Études trouvées :"
     }
 }

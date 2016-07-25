@@ -3,39 +3,31 @@
 
     "footer" : {
         "copyright" : "(c) 2015-2016 ETH Zürich",
-        "portals" : "Midata Portale:",
+        "portals" : "MIDATA Portale:",
         "for_members" : "Für Mitglieder der Genossenschaft",
         "for_researchers" : "Für Forschungseinrichtungen",
-        "for_providers" : "Für Ärtze",
+        "for_providers" : "Für Gesundheitsfachpersonen",
         "for_developers" : "Für Entwickler"
     },
 
     "navbar" : {
         "toggle_navigation" : "Navigation an/aus",
-        "login" : "Einloggen",
+        "login" : "Anmelden",
         "sign_up" : "Registrieren",
-
-        // TODO NEW: Sign out
-        "sign_out" : "Sign out",
+        "sign_out" : "Abmelden",
 
         // TODO NEW: Me
-        "me" : "Me",
+        "me" : "Mich",
 
-        // TODO NEW: Overview
-        "overview" : "Overview",
+        "overview" : "Übersicht",
         "messages" : "Nachrichten",
-
-        // TODO NEW: My Data
-        "my_data" : "My Data",
+        "my_data" : "Meine Daten",
 
         // TODO NEW: Consents
-        "consents" : "Consents",
+        "consents" : "Zustimmungen",
 
-        // TODO NEW: Research
-        "research" : "Research",
-
-        // TODO NEW: Help
-        "help" : "Help"
+        "research" : "Forschung",
+        "help" : "Hilfe"
     },
 
     "error" : {
@@ -47,8 +39,7 @@
         // TODO NEW: An internal database error occured. Please contact support@midata.coop if the problem persists.
         "internal_db" : "An internal database error occured. Please contact support@midata.coop if the problem persists.",
 
-        // TODO NEW: Please relogin
-        "relogin" : "Please relogin",
+        "relogin" : "Melden Sie sich bitte neu an",
 
         // TODO NEW: No active consent that allows to add data for target person.
         "noconsent" : "No active consent that allows to add data for target person.",
@@ -77,8 +68,8 @@
 
         "invalid" : {
             "email" : "Bitte eine gültige Email-Addresse eingeben.",
-            "credentials" : "Ungültiger Benutzername oder Passwort!",
-            "password_repetition" : "Passwort und Passwortwiederholung stimmen nicht überein!",
+            "credentials" : "Ungültiger Benutzername oder Kennwort!",
+            "password_repetition" : "Kennwort und Kennwortwiederholung stimmen nicht überein!",
 
             // TODO NEW: Passphrase and passphrase repetition do not match!
             "passphrase_repetition" : "Passphrase and passphrase repetition do not match!",
@@ -90,13 +81,13 @@
             "password_old" : "Old password not correct.",
 
             // TODO NEW: Bad confirmation code
-            "confirmation_code" : "Bad confirmation code",
+            "confirmation_code" : "Ungültiger Bestätigungscode",
 
             // TODO NEW: Unknown code for study.
             "code" : "Unknown code for study.",
 
             // TODO NEW: Unknown code for app.
-            "appcode" : "Unknown code for app.",
+            "appcode" : "Unbekannter App-Code.",
 
             // TODO NEW: Invalid status change
             "status_transition" : "Invalid status change",
@@ -1497,29 +1488,21 @@
     },
 
     "flexiblerecords" : {
-
-        // TODO NEW: Records available:
-        "records_available" : "Records available:",
-
-        // TODO NEW: Empty
-        "empty" : "Empty",
+        "records_available" : "Verfügbare Datensätze:",
+        "empty" : "Leer",
 
         // TODO NEW: Browse Records
-        "browse_btn" : "Browse Records",
+        "browse_btn" : "Datensätze durchblättern",
 
         // TODO NEW: Add Records...
-        "add_btn" : "Add Records...",
+        "add_btn" : "Datensätze hinzufügen...",
 
         // TODO NEW: Share
-        "share_btn" : "Share"
+        "share_btn" : "Teilen"
     },
 
     "flexiblestudies" : {
-
-        // TODO NEW: Empty
-        "empty" : "Empty",
-
-        // TODO NEW: Studies found:
-        "studies_found" : "Studies found:"
+        "empty" : "Leer",
+        "studies_found" : "Gefundene Studien:"
     }
 }
