@@ -32,7 +32,7 @@ import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringOrListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 
-public class MedicationOrderResourceProvider extends ResourceProvider implements IResourceProvider {
+public class MedicationOrderResourceProvider extends ResourceProvider<MedicationOrder> implements IResourceProvider {
  
  
     @Override

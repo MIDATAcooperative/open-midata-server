@@ -31,7 +31,7 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 
 
-public class PatientResourceProvider extends ResourceProvider implements IResourceProvider {
+public class PatientResourceProvider extends ResourceProvider<Patient> implements IResourceProvider {
  
    
     @Override

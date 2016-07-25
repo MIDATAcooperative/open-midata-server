@@ -1,10 +1,12 @@
 package utils.fhir;
 
+import org.hl7.fhir.dstu3.model.Person;
+
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import utils.exceptions.InternalServerException;
 
 
-public abstract class PersonResourceProvider extends ResourceProvider implements IResourceProvider {
+public abstract class PersonResourceProvider extends ResourceProvider<Person> implements IResourceProvider {
  
   /*
     @Override
