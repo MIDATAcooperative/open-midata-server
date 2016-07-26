@@ -941,7 +941,8 @@ angular.module('portal')
   			var func = data.func;
   			console.log("SET");
   			console.log(data);
-  			vset.actions[func] = data;  			   			  			
+  			vset.actions[func] = data;  
+  			if (data.func === "view" && data.pos === "hide") vset.setup.showview = false;
   		 }
 		 else if (data && data.type==="close") {
 			views.disableView(data.name);

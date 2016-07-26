@@ -38,7 +38,7 @@ angular.module('services')
 	
 	service.url = function(urlInfo, path, params, lang) {
 		var url = urlInfo.base + path.replace(":authToken", urlInfo.token);
-		if (url.indexOf("?")>=0) url += "&lang"+encodeURIComponent(lang); else url+="?lang="+encodeURIComponent(lang);
+		if (url.indexOf("?")>=0) url += "&lang="+encodeURIComponent(lang); else url+="?lang="+encodeURIComponent(lang);
 		if (params) {
 			angular.forEach(params, function(v,k) {
 				url += "&"+k+"="+encodeURIComponent(v);

@@ -40,10 +40,11 @@ angular.module('views')
 
 	var obsPlugin = function(type) {
 		return { 
-			plugin : "fhir-observation", 
-			name : "measure."+type.replace("/","_"), 
-			query : { format : "fhir/Observation", content : type }, 
-			config : { measure : type, owner : "self" } 		
+			plugin : "fhir-observation",
+			name : "Observations",
+			//name : "measure."+type.replace("/","_"), 
+			query : { format : "fhir/Observation"  }, 
+			config : { measures : [ type ], owner : "self" } 		
 		};
 	};
 	$scope.measures = [
@@ -64,7 +65,9 @@ angular.module('views')
       },
       { id : "subjective_condition", install : 
     	[ 
-    	  { plugin : "fhir-observation", content : "subjective-condition" } ] },
+    	 
+    	] 
+      },
       { id : "heart", install : 
     	[
           obsPlugin("activities/heartrate"),
@@ -130,14 +133,23 @@ angular.module('views')
 		}
 		
 		var q = $scope.config.questions;
-		
+		var obs = null;
 		angular.forEach($scope.measures, function(measure) {
 		  if (q.measures[measure.id]) {
 			 angular.forEach(measure.install, function(toInstall) {
-			   install(toInstall.plugin, toInstall.name, toInstall.dashId || "me", toInstall.query, toInstall.config);  
+				 console.log(toInstall);
+				if (toInstall.plugin === "fhir-observation") {
+				  if (obs==null) obs = toInstall; else obs.config.measures = obs.config.measures.concat(toInstall.config.measures);	
+				} else {
+				   install(toInstall.plugin, toInstall.name, toInstall.dashId || "me", toInstall.query, toInstall.config);
+				}
 			 });
 		  }
 		});
+		
+		if (obs != null) {
+			install(obs.plugin, obs.name, obs.dashId || "me", obs.query, obs.config);
+		}
 		
 		if (q.devices.fitbit) install("fitbit", "config.fitbit", "config");
 				

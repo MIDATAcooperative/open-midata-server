@@ -22,6 +22,8 @@ function load(info) {
 	   }
 	   info.src.text = data.split("\n");	 
 	   info.src.json = JSON.parse(JSON.minify(data));
+	   console.log("loaded: "+info.nameSrc+" #lines="+info.src.text.length);
+	   
 	   done++;
 	   if (done == 3) doprocess(info);
 	});
@@ -33,6 +35,7 @@ function load(info) {
 	   info.target.text = (data || "").split("\n");
 	   info.target.json = JSON.parse(JSON.minify(data || '{ "a" : "b" }'));
 	   
+	   console.log("loaded: "+info.nameTarget+" #lines="+info.target.text.length);
 	   done++;
 	   if (done == 3) doprocess(info);
 	});
@@ -43,6 +46,8 @@ function load(info) {
 	   info.ref.text = (data || "").split("\n");
 	   info.ref.json = JSON.parse(JSON.minify(data || '{ "a" : "b" }'));
 	   done++;
+	   
+	   console.log("loaded: "+info.nameRef+" #lines="+info.ref.text.length);
 	   if (done == 3) doprocess(info);
 	});
 }
@@ -148,6 +153,7 @@ function doprocess(info) {
 		  var srcVal = fetch(info.src, srcLine.full);
 		  var targetVal = fetch(info.target, srcLine.full);
 		  var refVal = fetch(info.ref, srcLine.full);
+		 
 		  if (!targetVal) {		
 			  output.push("");
 			  output.push(spaces(wsIdx)+"// TODO NEW: "+srcVal);
