@@ -1,0 +1,38 @@
+
+<div ng-controller="OverviewCtrl">
+
+	<table class="table table-condensed table-hover">
+		<tbody ng-repeat="category in categories">
+			<tr>
+				<th colspan="4" style=""><br>{{ category.label }}</th>
+			</tr>
+			<tr ng-repeat="record in category.records">
+				<td>{{ getCodeableConcept(record.data.code) }}</td>
+				<td>
+					<div ng-show="record.data.component">
+						<span ng-repeat="comp in record.data.component" alt="{{ getCodeableConcept(comp.code) }} "><b>{{ comp.valueQuantity.value
+								}} {{ comp.valueQuantity.unit }}</b> <span ng-hide="$last">/ </span> </span>
+					</div>
+					<div ng-show="record.data.valueQuantity">
+						<b>{{ record.data.valueQuantity.value }} {{ record.data.valueQuantity.unit }}</b>
+					</div>
+					<div ng-show="record.data.valueString">
+						<b>{{ record.data.valueString }}</b>
+					</div>
+					<div ng-show="record.data.valueCodeableConcept">
+						<b>{{ getCodeableConcept(record.data.valueCodeableConcept) }}</b>
+					</div>
+				</td>
+
+				<td>{{ record.data.effectiveDateTime | date }}</td>
+				<td><button class="btn btn-default btn-xs" ng-click="showAddPopup(record)">
+						<span class="glyphicon glyphicon-plus"></span> add
+					</button>
+					<button class="btn btn-default btn-xs" ng-click="showDetailsPopup(record)">
+						<span class="glyphicon glyphicon-search"></span> view
+					</button></td>
+			</tr>
+		</tbody>
+	</table>
+
+</div>

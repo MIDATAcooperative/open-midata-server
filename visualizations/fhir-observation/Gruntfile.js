@@ -26,9 +26,7 @@ module.exports = function(grunt) {
     preprocess : {
         all : {
         	files : {
-               'tmp/index.html' : 'src/index.html',
-               'tmp/preview.html' : 'src/preview.html',
-               'tmp/preview2.html' : 'src/preview2.html',
+               'tmp/index.html' : 'src/index.html'
         	}
         }
     },

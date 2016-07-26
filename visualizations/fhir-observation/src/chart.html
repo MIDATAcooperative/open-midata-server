@@ -1,0 +1,49 @@
+
+<div ng-controller="ObservationCtrl" class="container">
+
+
+	<div class="row">
+		<span class="col-sm-3" translate="person"></span> <span class="col-sm-9" ng-hide="changeperson"><b>{{ data.owners[configuration.owner] }}</b>
+			<button class="btn btn-default btn-xs" ng-click="changePerson()" translate="change"></button></span> <span class="col-sm-9" ng-if="changeperson">
+			<span ng-controller="PersonChangeCtrl"> <select ng-model="configuration.owner" ng-change="reload()"
+				ng-options="person as data.owners[person] for person in persons"></select>
+		</span>
+		</span>
+	</div>
+	<div class="row">
+		<span class="col-sm-3" translate="measure"></span> <span class="col-sm-9"><b>{{ getLabel(measure) }}</b></span>
+	</div>
+	<div ng-if="!records.length" class="row">
+		<div class="extraspace"></div>
+		<p class="col-sm-12" translate="empty"></p>
+	</div>
+
+	<div ng-if="records.length" class="row">
+		<div class="col-sm-8">
+
+			<canvas id="line" class="chart chart-bar" chart-data="chart" chart-labels="labels" legend="true" chart-series="series" chart-click="onClick">
+            </canvas>
+
+		</div>
+		<div class="col-sm-4">
+
+
+			<table class="table">
+				<tr ng-repeat="record in records | limitTo : 9">
+					<td><a href="javascript:" ng-click="showSingle(record);">{{ record.data.effectiveDateTime | date }}</a></td>
+					<td>
+						<div ng-show="record.data.component">
+							<span ng-repeat="comp in record.data.component">{{ comp.valueQuantity.value }} {{ comp.valueQuantity.unit }} </span>
+						</div>
+						<div ng-show="record.data.valueQuantity">{{ record.data.valueQuantity.value }} {{ record.data.valueQuantity.unit }}</div>
+						<div ng-show="record.data.valueString">{{ record.data.valueString }}</div>
+						<div ng-show="record.data.valueCodeableConcept">{{ getCodeableConcept(record.data.valueCodeableConcept) }}</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+
+
+</div>

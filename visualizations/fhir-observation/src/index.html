@@ -12,6 +12,7 @@
 		
 		<!-- build:js assets/app.min.js -->
 		<script type="text/javascript" src="components/angular/angular.js" defer></script>
+		<script type="text/javascript" src="components/angular-ui-router/angular-ui-router.js" defer></script>
 		<script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
 		<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>		
 		<script type="text/javascript" src="components/midata/js/midata.js" defer></script>
@@ -19,143 +20,22 @@
         <script type="text/javascript" src="components/angular-chart.js/angular-chart.js" defer></script>
 		<script type="text/javascript" src="i18n.js" defer></script>
 		<script type="text/javascript" src="app.js" defer></script>
+		<script type="text/javascript" src="chart.js" defer></script>
+		<script type="text/javascript" src="create.js" defer></script>
+		<script type="text/javascript" src="overview.js" defer></script>
+		<script type="text/javascript" src="single_record.js" defer></script>
 		<!-- endbuild -->
 						
 		<style>
 		  table .checkbox { margin:0px; }
+		  .table tbody tr th { border-top:none; }
+		  table { border-collapse : separate; }
 		</style>
 			
 	</head>
 	<body>	
-		<div ng-app="fhir" ng-cloak class="container">
-		 <div ng-controller="ObservationCtrl">
-		  <div ng-if="mode=='record'">
-		  	 
-		    <div class="text-center" ng-show="record.data.category"><span translate="category"></span> <b>{{ getCodeableConcept(record.data.category)  }}</b></div>		    
-		    <div ng-hide="record.data.component" class="text-center text-primary"><b>{{ getCodeableConcept(record.data.code)  }}</b></div>                       
-            <div class="text-center lead" ng-show="record.data.valueQuantity"><span style="color: #1c4982;display: block;font-size: 80px;">{{ record.data.valueQuantity.value }}</span>{{ record.data.valueQuantity.unit }}</div>
-            <div ng-show="record.data.component" class="row">
-               <div ng-repeat="comp in record.data.component" class="col-xs-6">
-                 <div class="text-center text-primary"><b>{{ getCodeableConcept(comp.code)  }}</b></div>
-                 <div class="text-center lead">
-                   <span style="color: #1c4982;display: block;font-size: 80px;">{{ comp.valueQuantity.value }}</span>{{ comp.valueQuantity.unit }}
-                 </div>
-               </div>
-            </div>
-            <div class="row" ng-show="record.data.valueString"><div class="well text-center"><b>{{ record.data.valueString }}</b></div></div>
-            <div class="text-center lead" ng-show="record.data.valueCodeableConcept"><span style="color: #1c4982;display: block;">{{ getCodeableConcept(record.data.valueCodeableConcept) }}</span></div>
-            <div class="text-center"><span translate="date"></span> <strong>{{ record.data.effectiveDateTime | date }}</strong></div>
-            <div class="text-center" ng-show="record.data.status"><span translate="status"></span> <b translate="{{ record.data.status }}"></b></div>            
-                        
-            <div class="btn btn-default" translate="back_btn" ng-click="showAll()"></div>
-          </div>
-		 
-		  <div ng-if="showdata && mode != 'record'">
-		  <div class="row">
-		    <span class="col-sm-3" translate="person"></span>
-		    <span class="col-sm-9" ng-hide="changeperson"><b>{{ getLabel("owner", configuration.config.owner) }}</b> <button class="btn btn-default btn-xs" ng-click="changePerson()" translate="change"></button></span>
-		    <span class="col-sm-9" ng-if="changeperson">
-		      <span ng-controller="PersonChangeCtrl">
-		        <select ng-model="configuration.config.owner" ng-change="update()" ng-options="person as getLabel('owner',person) for person in persons"></select>
-		      </span>
-		    </span>
-		  </div>
-		  <div class="row">
-		    <span class="col-sm-3" translate="measure"></span>
-		    <span class="col-sm-9"><b>{{ getLabel("content", configuration.config.measure) }}</b></span>		    
-		  </div>		  
-		  <div ng-if="mode=='chart' && !data.records.length" class="row">
-		    <div class="extraspace"></div>
-		    <p class="col-sm-12" translate="empty"></p>
-		  </div>
-		  
-		  <div ng-if="mode=='chart' && data.records.length" class="row">
-		  <div class="col-sm-8">
-		  <div ng-controller="ChartCtrl">		  
-            <canvas id="line" class="chart chart-bar" data="data"
-             labels="labels" legend="true" series="series"
-             click="onClick">
-            </canvas> 		  		  
-		  </div>
-          </div><div class="col-sm-4">		  		  		  		
-		  		  		  		  
-		  
-		    <table class="table">
-		      <tr ng-repeat="record in data.records | limitTo : 9">
-		        <td><a href="javascript:" ng-click="showSingle(record);">{{ record.data.effectiveDateTime | date }}</a></td>
-		        <td>
-		            <div ng-show="record.data.component">
-		              <span ng-repeat="comp in record.data.component">{{ comp.valueQuantity.value }} {{ comp.valueQuantity.unit }}
-		              </span>
-		            </div>
-		            <div ng-show="record.data.valueQuantity">{{ record.data.valueQuantity.value }} {{ record.data.valueQuantity.unit }}</div>
-                    <div ng-show="record.data.valueString">{{ record.data.valueString }}</div>
-                    <div ng-show="record.data.valueCodeableConcept">{{ getCodeableConcept(record.data.valueCodeableConcept) }}</div>
-                </td>      
-		      </tr>
-		    </table>
-		  </div>
-		  </div>
-		 
-		  
-		
-		
-		</div>
-		<hr ng-show="showadd && showdata">
-		<div ng-if="showadd && mode != 'record'">
-		<div ng-controller="CreateCtrl" ng-cloak>
-		  
-		  <div class="alert alert-success alert-dismissable" ng-show="success">
-			<button type="button" class="close" ng-click="success=false" aria-hidden="true">&times;</button>
-			<span translate="data_added"></span>
-		  </div>
-		  <div class="alert alert-danger" ng-show="error">
-			{{ error }}			
-		  </div>
-		  <form class="form">
-		    
-		    <div class="form-group col-sm-4">
-		       <label class="control-label" for="date" translate="date"></label>	
-		       
-		       <div class="input-group">
-				    <input type="text" id="date" is-open="datePickers.dateOpened" datepicker-options="dateOptions" popup-placement="top-right" close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" placeholder="Date" autofocus ng-model="newentry.effectiveDateTime">
-					<span class="input-group-btn">
-                          <button type="button" class="btn btn-default" ng-click="datePickers.dateOpened=true;"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-               </div>
-		       	   
-		      		   
-		    </div>	
-		    
-		     <div class="form-group col-sm-7" ng-if="newentry.valueQuantity">
-		        <label class="control-label" for="value">{{ getLabel("content", configuration.config.measure) }}</label>
-		     
-		        <div class="input-group">
-		           <input id="value" class="form-control" ng-model="newentry.valueQuantity.value" type="number">
-		           <span class="input-group-addon">{{ newentry.valueQuantity.unit }}</span>
-		        </div>
-		   
-		    </div>
-		    
-		    <div class="form-group col-sm-7" ng-if="newentry.component">
-		       <div ng-repeat="comp in newentry.component">
-		        <label class="control-label" for="value">{{ getCodeableConcept(comp.code) }}</label>
-		     
-		        <div class="input-group">
-		           <input id="value" class="form-control" ng-model="comp.valueQuantity.value" type="number">
-		           <span class="input-group-addon">{{ comp.valueQuantity.unit }}</span>
-		        </div>
-		      </div>
-		    </div>
-		   
-		 	<div class="col-sm-1">		
-		 	  <label class="control-label">&nbsp;</label>		         		   		   
-		      <button class="btn btn-primary" ng-disabled="isBusy || !isValid" ng-click="add()" translate="add_btn"></button>
-		    </div>
-		  </form>
-		</div>		
-	   </div>
-	   </div>
+		<div ng-app="fhirObservation" ng-cloak>		
+		   <div ui-view class="ng-cloak"></div>		 		
 	   </div>
 	</body>
 </html>

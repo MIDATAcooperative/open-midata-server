@@ -3,23 +3,24 @@
   "description": "MIDATA Plugin",
   "version": "1.0.0",
   "dependencies": {
-    "angular": "~1.5.3",
+    "angular": "~1.5.8",
+    "angular-ui-router": "~0.3.1",
     "angular-bootstrap": "~1.2.5",
-    "angular-route": "1.2.25",
-    "bootstrap": "3.3.5",
-    "midata" : "git://github.com/Alexander-Kreutz/midata_shared.git",
+    "bootstrap": "3.3.7",
+    "midata": "git://github.com/Alexander-Kreutz/midata_shared.git",
     "angular-translate": "^2.11.0",
-    "angular-chart.js": "~0.7.1",
+    "angular-chart.js": "~1.0.0",
     "Chart.js": "~1.0.2"
   },
   "resolutions": {
-    "angular": "~1.5.3"
+    "angular": "~1.5.3",
+    "Chart.js": "2.x"
   },
   "exportsOverride": {
     "bootstrap": {
-       "js" : "dist/js/bootstrap.js",
-       "css" : "dist/css/bootstrap.css",
-       "fonts" : "dist/fonts/*" 
+      "js": "dist/js/bootstrap.js",
+      "css": "dist/css/bootstrap.css",
+      "fonts": "dist/fonts/*"
     }
   }
 }
