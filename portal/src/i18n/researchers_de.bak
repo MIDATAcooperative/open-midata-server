@@ -9,5 +9,120 @@
   
   "researcher_login" : {
     "title" : "Research Login"
+  },
+  
+  "researcher_navbar" : {
+    "studies" : "Studies",
+    "workspace" : "Workspace",
+    "data" : "Data"
+  },
+  
+  "createstudy" : {
+    "title" : "Create new study",
+    "study_name" : "Study name",
+    "study_description" : "Study description"
+  },
+  
+  "studynav" : {
+    "overview" : "Overview",
+    "details" : "Details",
+    "rules" : "Rules",
+    "actions" : "Actions",
+    "participants" : "Participants",
+    "records" : "Records",
+    "results" : "Results"
+  },
+  
+  "studies" : {
+    "title" : "Studies",
+    "name" : "Name",
+    "validation" : "Validation",
+    "participants" : "Participants",
+    "execution" : "Execution",
+    "creation_date" : "Created",
+    "empty" : "No studies have been created yet for your organisation.",
+    "create_btn" : "Create new study"
+  },
+  
+  "studyactions" : {
+    "description" : "When the study is running you can share data with participants and have them complete tasks. (Like fill out a form)",
+    "select_group_btn" : "Select Group",
+    "add_task_btn" : "Add Task for Participants"
+  },
+  
+  "studyfields" : {
+    "required_data" : "Required data",
+    "no_change_warning" : "This setup cannot be changed anymore after Study has been validated.",
+    "member_identity" : "Member Identity",
+    "anonymous1" : "Anonymous Participation",
+    "anonymous2" : ", reveals anonymized ID, year of birth, gender and country",
+    "not_anonymous1" : "Not Anonymous",
+    "not_anonymous2" : ", requests member to share full name, birthday and contact Information (address, phone, eMail)",
+    "assistance" : "Assistance",
+    "no_assistance1" : "None",
+    "no_assistance2" : " - the MIDATA member participates alone.",
+    "assistance1" : "Health Professional",
+    "assistance2" : " - the MIDATA member needs assistance of a health professional.",
+    "groups" : "Participant Groups",
+    "groups_empty" : "No groups of participants have been defined yet.",
+    "group_name" : "Group Name",
+    "group_description" : "Description",
+    "add_group_btn" : "Add Group",
+    "save_changes_btn" : "Save Changes"
+  },
+  
+  "studyoverview" : {
+    "name" : "Name",
+    "created_at" : "Created At:",
+    "created_by" : "Created By:",
+    "description" : "Description",
+    "code" : "Code",
+    "validation_status" : "Validation Status",
+    "participant_search_status" : "Participant Search Status",
+    "execution_status" : "Execution Status",
+    "history" : "History",
+    "event" : "Event",
+    "who" : "Who",
+    "when" : "When",
+    "comment" : "Comment",
+    "start_validation_btn" : "Request Study Validation",
+    "start_participant_search_btn" : "Start to search for participants",
+    "end_participant_search_btn" : "End Participant Search",
+    "start_study_execution_btn" : "Start Study Execution",
+    "finish_study_btn" : "Finish Study",
+    "delete_study_btn" : "Delete Study"
+  },
+  
+  "studyparticipant" : {
+    "participant" : "Participant:",
+    "gender" : "Gender:",
+    "year" : "Year of Birth:",
+    "country" : "Country:",
+    "status" : "Status:",
+    "group" : "Group:",
+    "history" : "Participation History"
+  },
+  
+  "studyparticipants" : {
+    "name" : "Name",
+    "group" : "Group",
+    "status" : "Status",
+    "recruiter" : "Recruiter",
+    "accept_btn" : "Accept",
+    "reject_btn" : "Reject",
+    "empty" : "This study does not have any participants yet."
+  },
+  
+  "studyrecords" : {
+    "empty" : "Once data is available it can be downloaded here.",
+    "group" : "Data Group",
+    "number_of_records" : "# Records",
+    "download_btn" : "Download"
+  },
+  
+  "studyrules" : {
+    "title" : "Study Rules",
+    "no_change_warning" : "This setup cannot be changed anymore after Study has been validated.",
+    "sharing_query" : "Sharing Query (JSON)"
   }
 }

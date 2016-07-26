@@ -1,8 +1,140 @@
 {
 
+    "admin_navbar" : {
+
+        // TODO NEW: Members
+        "members" : "Members",
+
+        // TODO NEW: News
+        "news" : "News",
+
+        // TODO NEW: Plugins
+        "plugins" : "Plugins",
+
+        // TODO NEW: Content
+        "content" : "Content",
+
+        // TODO NEW: Studies
+        "studies" : "Studies",
+
+        // TODO NEW: Register Admin
+        "registration" : "Register Admin"
+    },
+
+    "admin_members" : {
+
+        // TODO NEW: Member List
+        "title" : "Member List",
+
+        // TODO NEW: Search
+        "search_type" : "Search",
+
+        // TODO NEW: Contract needs to be sent
+        "contract_required" : "Contract needs to be sent",
+
+        // TODO NEW: Signed contract needs to be confirmed
+        "contract_confirm_required" : "Signed contract needs to be confirmed",
+
+        // TODO NEW: Overview
+        "overview" : "Overview",
+
+        // TODO NEW: Specific User
+        "specific_user" : "Specific User",
+
+        // TODO NEW: Role
+        "role" : "Role",
+
+        // TODO NEW: Status
+        "status" : "Status",
+
+        // TODO NEW: midataID
+        "midata_id" : "midataID",
+
+        // TODO NEW: No matching users found.
+        "empty" : "No matching users found."
+    },
+
     "admin_address" : {
 
         // TODO NEW: Member Address
-        "title" : "Member Address"
+        "title" : "Member Address",
+
+        // TODO NEW: MIDATA-ID
+        "midata_id" : "MIDATA-ID",
+
+        // TODO NEW: Role
+        "role" : "Role",
+
+        // TODO NEW: Sub-Role(s)
+        "subroles" : "Sub-Role(s)",
+
+        // TODO NEW: Status:
+        "status" : "Status:",
+
+        // TODO NEW: Contract Status:
+        "contract_status" : "Contract Status:",
+
+        // TODO NEW: EMail Status:
+        "email_status" : "EMail Status:",
+
+        // TODO NEW: Confirmation Code:
+        "confirmation_code" : "Confirmation Code:",
+
+        // TODO NEW: Registration Date:
+        "registration_date" : "Registration Date:",
+
+        // TODO NEW: Last login:
+        "last_login" : "Last login:"
+    },
+
+    "admin_news" : {
+
+        // TODO NEW: Created
+        "created" : "Created",
+
+        // TODO NEW: Language
+        "language" : "Language",
+
+        // TODO NEW: Title
+        "title" : "Title",
+
+        // TODO NEW: Expiration Date
+        "expires" : "Expiration Date",
+
+        // TODO NEW: Delete
+        "delete_btn" : "Delete",
+
+        // TODO NEW: No News-Items found
+        "empty" : "No News-Items found"
+    },
+
+    "admin_managenews" : {
+
+        // TODO NEW: Add a new news message
+        "title1" : "Add a new news message",
+
+        // TODO NEW: Modify news message
+        "title2" : "Modify news message",
+
+        // TODO NEW: News title
+        "title" : "News title",
+
+        // TODO NEW: News language
+        "language" : "News language",
+
+        // TODO NEW: Content
+        "content" : "Content",
+
+        // TODO NEW: URL of full message
+        "url" : "URL of full message",
+
+        // TODO NEW: Expiration date of message
+        "expires" : "Expiration date of message"
+    },
+
+    "admin_registration" : {
+
+        // TODO NEW: Register New Admin Account
+        "sign_up" : "Register New Admin Account"
     }
 }

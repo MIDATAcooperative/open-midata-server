@@ -4,7 +4,6 @@
 
         // TODO NEW: MY DATA - OUR HEALTH!
         "teaser" : "MY DATA - OUR HEALTH!",
-
         "register_now" : "Jetzt registrieren",
         "sign_in" : "Anmelden"
     },
@@ -20,87 +19,52 @@
 
     "help_welcome" : {
 
-        // TODO NEW: The menu above contains these links:
         "menu" : "Das oben stehende Menü enthält folgende Verknüpfungen:",
 
-        // TODO NEW: Me
         "menu_me" : "Mich",
 
-        // TODO NEW: Your personal dashboard where you can place whatever functionality you need most.
         "menu_me_text" : "Ihr persönliches Cockpit wo Sie Ihre Favoriten platzieren können.",
-
         "menu_overview" : "Übersicht",
 
-        // TODO NEW: An overview over all functions provided by the MIDATA platform.
         "menu_overview_text" : "Eine Übersicht über alle Funktionen, die die MIDATA-Plattform anbietet.",
 
-        "menu_my_data" : "Meine Daten",
+        // TODO NEW: Config
+        "menu_config" : "Config",
 
-        // TODO NEW: A list of all data records that MIDATA has stored about you.
-        "menu_my_data_text" : "Eine Liste aller Ihren Einträge, die in MIDATA gespeichert sind.",
+        // TODO NEW: Configure your dashboard and data imports.
+        "menu_config_text" : "Configure your dashboard and data imports.",
 
-        // TODO NEW: Consents
+        // TODO NEW: News
+        "menu_research" : "News",
+
+        // TODO NEW: News and announcements about MIDATA, the platform and research projects
+        "menu_research_text" : "News and announcements about MIDATA, the platform and research projects",
+
         "menu_consents" : "Zustimmungen",
 
         // TODO NEW: Manage data sharing with others.
         "menu_consents_text" : "Manage data sharing with others.",
 
-        // TODO NEW: In order to get started we recommend that you answer us some questions. We will preconfigure your account based on your answers.
         "answer_questions" : "Zum Starten empfehlen wir Ihnen an einigen Fragen zu antworten. Ihr Konto wird an Hand Ihren Antworten vorkonfiguriert.",
 
-        // TODO NEW: Answer Setup Questions Now
         "answer_btn" : "Konfigurationsfragen jetzt beantworten"
     },
 
     "help_setup" : {
 
-        // TODO NEW: The answers to the following questions are only used to setup your account according to your needs.
         "description" : "Die Antworten zu diesen Fragen dienen nur um Ihr Konto nach Ihren Bedürfnissen zu konfigurieren.",
 
-        // TODO NEW: Which of these general tasks do you plan to do with MIDATA?
-        "question_tasks" : "Welche allgemeinen Aufgaben planen Sie mit MIDATA zu erledigen?",
+        // TODO NEW: Which measures do you want to view in the portal?
+        "question_measures" : "Which measures do you want to view in the portal?",
 
-        // TODO NEW: Manage your health records
-        "question_tasks_answer1" : "Ihre Gesundheitsdaten zu verwalten",
 
-        // TODO NEW: Protocol data about yourself.
-        "question_tasks_answer2" : "Persönliche Daten zu erfassen",
-
-        // TODO NEW: Compare yourself with others.
-        "question_tasks_answer3" : "Sich mit anderen Benutzern zu vergleichen",
-
-        // TODO NEW: Do planning
-        "question_tasks_answer4" : "Planen",
-
-        // TODO NEW: Are you interested in gathering quantified self data? If yes, which?
-        "question_qself" : "Planen Sie « quantified self » Daten zu sammeln? Wenn ja, welche?",
-
-        "question_qself_answer1" : "Schritte / Aktivität",
-        "question_qself_answer2" : "Schlaf",
-        "question_qself_answer3" : "Gewicht",
-        "question_qself_answer4" : "Wasserverbrauch",
-        "question_qself_answer5" : "Ernährung",
-
-        // TODO NEW: Do use any of these devices?
         "question_devices" : "Benutzen Sie eines dieser Produkte?",
-
         "question_devices_answer1" : "Fitbit",
         "question_devices_answer2" : "Jawbone",
 
-        // TODO NEW: Do you plan to share some of your data with others?
-        "question_share" : "Planen Sie Daten mit anderen Benutzern zu teilen?",
-
-        "question_share_answer1" : "Familie",
-        "question_share_answer2" : "Freunde",
-        "question_share_answer3" : "Arzt / Spital",
-        "question_share_answer4" : "Forschung (Teilnahme an einer Studie)",
-
-        // TODO NEW: Other people
-        "question_share_answer5" : "Andere Personen",
 
         // TODO NEW: You can always come back and change these settings by visiting the "Help" page.
         "come_back" : "You can always come back and change these settings by visiting the \"Help\" page.",
-
         "done_btn" : "Fertig"
     },
 
@@ -113,7 +77,6 @@
     "member_circles" : {
         "number_available" : "Verfügbare Kreise:",
         "empty" : "Sie besitzen keine Kreise.",
-
         "add_btn" : "Hinzufügen",
         "manage_btn" : "Verwalten"
     },
@@ -131,12 +94,9 @@
 
     "entercode" : {
 
-        // TODO NEW: Join a research study by entering a participation code.
         "title" : "An Forschungsstudie mittels Teilnahmecode beitreten.",
 
-        // TODO NEW: Join a study by entering a code:
         "description" : "An Studie mittels Code beitreten:",
-
         "code" : "Teilnahmecode",
         "continue_btn" : "Weiter"
     },
@@ -145,13 +105,10 @@
         "name" : "Name",
         "status" : "Status",
 
-        // TODO NEW: Confirmation Date
         "confirmation_date" : "Bestätigungsdatum",
-
         "confirm_btn" : "bestätigen",
         "reject_btn" : "zurückweisen",
 
-        // TODO NEW: You do not have a registered contact to a healthcare provider.
         "empty" : "Sie haben keinen Kontakt zu einer Gesundheitsfachperson registriert."
     }
 }

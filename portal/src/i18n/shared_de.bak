@@ -18,8 +18,9 @@
       "overview" : "Overview",            	
 	  "messages" : "Messages",				
 	  "my_data" : "My Data",				
-	  "consents" : "Consents",
-	  "research" : "Research",
+	  "consents" : "Sharing",
+	  "research" : "News",
+	  "config" : "Config",
 	  "help" : "Help"
    },
    
@@ -85,11 +86,13 @@
      },
      
      "exists" : {
+       "user" : "A person with this email is already registered.",
        "member" : "A person with this email is already registered.",
        "provider" : "A healthcare provider with this name already exists.",
        "research" : "A research organisation with this name already exists.",
        "passcode" : "Please choose a different passcode!",
-       "plugin" : "A plugin with the same name already exists."
+       "plugin" : "A plugin with the same name already exists.",
+       "study" : "A study with this name already exists."
      },
           
      "blocked" : {
@@ -178,6 +181,7 @@
 	 },
 	 "contractstatus" : {
 	   "NEW" : "New",
+	   "REQUESTED" : "Contract requested",
 	   "PRINTED" : "Contract printed",
 	   "SIGNED" : "Contract signed"
 	 },
@@ -201,12 +205,12 @@
 	 },
 	 "studyexecutionstatus" : {
 	   "ABORTED" : "Execution aborted",
-	   "FINISHED" : "Study finished",
+	   "FINISHED" : "Finished",
 	   "PRE" : "Not yet started",
-	   "RUNNING" : "Study currently running"
+	   "RUNNING" : "Currently running"
 	 },
 	 "studyvalidationstatus" : {
-	   "DRAFT" : "Validation not requested yet",
+	   "DRAFT" : "Draft (Not Validated)",
 	   "REJECTED" : "Study rejected by MIDATA",
 	   "VALIDATED" : "Study has been validated",
 	   "VALIDATION" : "Validation running"
@@ -219,11 +223,33 @@
 	   "PROVIDER" : "Healthcare provider",
 	   "RESEARCH" : "Researcher"
 	 },
+	 "subuserrole" : {
+	   "DOCTOR" : "Doctor",
+	   "NURSE" : "Nurse",
+	   "MANAGER" : "Manager",
+	   "MONITOR" : "Monitor",
+	   "USERADMIN" : "User Admin",
+	   "STUDYADMIN" : "Study Admin",
+	   "CONTENTADMIN" : "Content Admin",
+	   "PLUGINADMIN" : "Plugin Admin",
+	   "NEWSWRITER" : "News Author",
+	   "SUPERADMIN" : "Super Admin",
+	   "TRIALUSER" : "Trial User",
+	   "STUDYPARTICIPANT" : "Study Participant",
+	   "MEMBEROFCOOPERATIVE" : "Member of Cooperative"
+	 },
 	 "userstatus" : {
 	   "ACTIVE" : "Active",
 	   "BLOCKED" : "Blocked",
 	   "DELETED" : "Deleted",
 	   "NEW" : "New"
+	 },
+	 "frequency" : {
+	   "ONCE" : "Einmalig",
+	   "DAILY" : "Daily",
+	   "WEEKLY" : "Once a week",
+	   "MONTHLY" : "Once a month",
+	   "YEARLY" : "Once a year"	
 	 },
 	 "language" : {
 	   "EN" : "English",
@@ -245,6 +271,13 @@
   "common" : {
     "back_btn" : "Back",
     "search_btn" : "Search",
+    "add_btn" : "Add",
+    "create_btn" : "Create",
+    "change_btn" : "Change",
+    "cancel_btn" : "Cancel",
+    "view_btn" : "View",
+    "submit_btn" : "Submit",
+    "delete_btn" : "Delete",
     
     "user" : {
       "lastname" : "Surname",
@@ -358,6 +391,11 @@
     "success" : "Password has been successfully changed!"
   },
   
+  "changeaddress" : {
+    "title" : "Postal Address and Contact Information",
+    "update_btn" : "Update"
+  },
+  
   "market" : {
     "categories" : "Categories",
     "plugins" : "Plugins",
@@ -381,7 +419,7 @@
 	"owned_by" : "Owned by:",
 	"created_by" : "Created by:",
     "created_with" : "Created with:",
-    "creaton_on" : "Created on:",
+    "created_on" : "Created on:",
     "content" : "Content:",
     "format" : "Format:",
     "download_btn" : "Download",
@@ -412,6 +450,7 @@
   },
   
   "user" : {
+    "account" : "User Account",
     "user" : "User",
     "name" : "Name:",
     "email" : "EMail:",
@@ -419,7 +458,13 @@
  	"change_passphrase_btn" : "Change Passphrase",
 	"repair_account_btn" : "Repair Account",
 	"delete_records_btn" : "Delete Records",
-	"account_repaired" : "Your account has been repaired."
+	"account_repaired" : "Your account has been repaired.",
+	"settings" : "Settings",
+	"address" : "Address and Contact Info",
+	"change_address_btn" : "Change Address",
+	"searchable" : "Is your account visible for other MIDATA members?",
+	"change_settings_btn" : "Change Settings",
+	"change_settings_success" : "Settings have been updated"
   },
   
   "visualization" : {
@@ -438,6 +483,7 @@
       "sandbox" : "Workspace",		         	
       "mobile" : "MIDATA Mobile App",
       "me" : "Me Page",
+      "config" : "Config Dashboard",
 	  "mydata" : "My Data Dashboard",
 	  "social" : "Social Dashboard",
 	  "providers" : "Health Dashboard",
@@ -549,12 +595,13 @@
 	"unshare" : "unshare",
 	"delete" : "delete",
 	"delete_all_btn" : "delete all",
-	"empty" : "No available records found."
-			
+	"empty" : "No available records found.",
+	"close_btn" : "Close"		
   },
   
   "oauth2" : {
-    "requesting_app" : "This application requests access:"
+    "requesting_app" : "This application requests access:",
+    "sign_in_btn" : "Sign In"
   },
   
   "dashboard" : {
@@ -593,6 +640,8 @@
     "yourstudies" : "Studies you are involved:",
 	"yourstudies_teaser" : "If you want to participate in research configure your research settings. You will be contacted in this tile if you match a studies requirements.",
 	"newstudies" : "New Studies",
+	"newsconfig" : "News",
+	"newsconfig_teaser" : "There are currently no announcements",
 	"researchnews" : "Research News",
 	"researchnews_text" : "Search for new health research publications.",
 	"researchnews_btn" : "Search for News",
@@ -609,14 +658,32 @@
 	"view_btn" : "View",
 	"install_btn" : "Install new plugin"
    },
-  
+   
+   "measure" : {
+     "body_weight" : "Body Weight",
+     "activities_steps" : "Steps",
+     "diary" : "Personal Diary",
+     "subjective_condition" : "Mood",
+     "heart" : "Heart Rate and Blood Pressure",
+     "documents" : "Health Documents",
+     "appointments" : "Appointments",
+     "sleep" : "Sleep Data",
+     "activities_heartrate" : "Heart Rate",
+     "body_bloodpressure" : "Blood Pressure",
+     "files" : "Documents"
+   },  
+   
+   "config" : {
+     "fitbit" : "Fitbit Configuration"
+   },
   
   "spacesummary" : {
     "records_to_view" : "Records to view.", 
     "last_entry_at" : "Last entry at",
     "no_entries_yet" : "No entries yet",     
     "newest_entry_from" : "Newest entry from",
-    "view_btn" : "View"
+    "view_btn" : "View",
+    "add_btn" : "Add"
   },
   
   "flexiblerecords" : {
@@ -630,5 +697,39 @@
   "flexiblestudies" : {
     "empty" : "Empty",
     "studies_found" : "Studies found:"
+  },
+  
+  "addtask" : {
+    "task_type" : "Task Type",
+    "task_title" : "Task Title",
+    "description" : "Description",
+    "frequency" : "Frequency",
+  
+    "survey_name" : "Fill out survey",
+    "survey_description" : "Please fill out the surveys I shared with your account.",
+	"survey_title" : "Fill out survey"    
+  },
+  
+  "taskdetails" : {
+    "created_by" : "Created by:",
+    "frequency" : "How often:",
+    "plugin" : "Plugin:"
+  },
+  
+  "tasks" : {
+    "empty" : "Empty",
+    "tasks_found" : "Tasks found:",
+    "more_btn" : "More..."
+  },
+  
+  "addusers" : {
+    "contacts" : "Contacts",
+    "all_users" : "All users",
+    "no_contacts" : "You have no users in your circles yet.",
+    "no_contacts_to_add" : "No contacts can be added to this circle.",
+    "search_user" : "Search for a user",
+    "searching" : "Searching...",
+    "no_matching_users" : "No users matched your search.",
+    "no_new_found" : "All found users are already members of this circle."
   }
 }

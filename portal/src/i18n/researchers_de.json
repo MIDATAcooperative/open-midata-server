@@ -22,5 +22,284 @@
 
         // TODO NEW: Research Login
         "title" : "Research Login"
+    },
+
+    "researcher_navbar" : {
+
+        // TODO NEW: Studies
+        "studies" : "Studies",
+
+        // TODO NEW: Workspace
+        "workspace" : "Workspace",
+
+        // TODO NEW: Data
+        "data" : "Data"
+    },
+
+    "createstudy" : {
+
+        // TODO NEW: Create new study
+        "title" : "Create new study",
+
+        // TODO NEW: Study name
+        "study_name" : "Study name",
+
+        // TODO NEW: Study description
+        "study_description" : "Study description"
+    },
+
+    "studynav" : {
+
+        // TODO NEW: Overview
+        "overview" : "Overview",
+
+        // TODO NEW: Details
+        "details" : "Details",
+
+        // TODO NEW: Rules
+        "rules" : "Rules",
+
+        // TODO NEW: Actions
+        "actions" : "Actions",
+
+        // TODO NEW: Participants
+        "participants" : "Participants",
+
+        // TODO NEW: Records
+        "records" : "Records",
+
+        // TODO NEW: Results
+        "results" : "Results"
+    },
+
+    "studies" : {
+
+        // TODO NEW: Studies
+        "title" : "Studies",
+
+        // TODO NEW: Name
+        "name" : "Name",
+
+        // TODO NEW: Validation
+        "validation" : "Validation",
+
+        // TODO NEW: Participants
+        "participants" : "Participants",
+
+        // TODO NEW: Execution
+        "execution" : "Execution",
+
+        // TODO NEW: Created
+        "creation_date" : "Created",
+
+        // TODO NEW: No studies have been created yet for your organisation.
+        "empty" : "No studies have been created yet for your organisation.",
+
+        // TODO NEW: Create new study
+        "create_btn" : "Create new study"
+    },
+
+    "studyactions" : {
+
+        // TODO NEW: When the study is running you can share data with participants and have them complete tasks. (Like fill out a form)
+        "description" : "When the study is running you can share data with participants and have them complete tasks. (Like fill out a form)",
+
+        // TODO NEW: Select Group
+        "select_group_btn" : "Select Group",
+
+        // TODO NEW: Add Task for Participants
+        "add_task_btn" : "Add Task for Participants"
+    },
+
+    "studyfields" : {
+
+        // TODO NEW: Required data
+        "required_data" : "Required data",
+
+        // TODO NEW: This setup cannot be changed anymore after Study has been validated.
+        "no_change_warning" : "This setup cannot be changed anymore after Study has been validated.",
+
+        // TODO NEW: Member Identity
+        "member_identity" : "Member Identity",
+
+        // TODO NEW: Anonymous Participation
+        "anonymous1" : "Anonymous Participation",
+
+        // TODO NEW: , reveals anonymized ID, year of birth, gender and country
+        "anonymous2" : ", reveals anonymized ID, year of birth, gender and country",
+
+        // TODO NEW: Not Anonymous
+        "not_anonymous1" : "Not Anonymous",
+
+        // TODO NEW: , requests member to share full name, birthday and contact Information (address, phone, eMail)
+        "not_anonymous2" : ", requests member to share full name, birthday and contact Information (address, phone, eMail)",
+
+        // TODO NEW: Assistance
+        "assistance" : "Assistance",
+
+        // TODO NEW: None
+        "no_assistance1" : "None",
+
+        // TODO NEW:  - the MIDATA member participates alone.
+        "no_assistance2" : " - the MIDATA member participates alone.",
+
+        // TODO NEW: Health Professional
+        "assistance1" : "Health Professional",
+
+        // TODO NEW:  - the MIDATA member needs assistance of a health professional.
+        "assistance2" : " - the MIDATA member needs assistance of a health professional.",
+
+        // TODO NEW: Participant Groups
+        "groups" : "Participant Groups",
+
+        // TODO NEW: No groups of participants have been defined yet.
+        "groups_empty" : "No groups of participants have been defined yet.",
+
+        // TODO NEW: Group Name
+        "group_name" : "Group Name",
+
+        // TODO NEW: Description
+        "group_description" : "Description",
+
+        // TODO NEW: Add Group
+        "add_group_btn" : "Add Group",
+
+        // TODO NEW: Save Changes
+        "save_changes_btn" : "Save Changes"
+    },
+
+    "studyoverview" : {
+
+        // TODO NEW: Name
+        "name" : "Name",
+
+        // TODO NEW: Created At:
+        "created_at" : "Created At:",
+
+        // TODO NEW: Created By:
+        "created_by" : "Created By:",
+
+        // TODO NEW: Description
+        "description" : "Description",
+
+        // TODO NEW: Code
+        "code" : "Code",
+
+        // TODO NEW: Validation Status
+        "validation_status" : "Validation Status",
+
+        // TODO NEW: Participant Search Status
+        "participant_search_status" : "Participant Search Status",
+
+        // TODO NEW: Execution Status
+        "execution_status" : "Execution Status",
+
+        // TODO NEW: History
+        "history" : "History",
+
+        // TODO NEW: Event
+        "event" : "Event",
+
+        // TODO NEW: Who
+        "who" : "Who",
+
+        // TODO NEW: When
+        "when" : "When",
+
+        // TODO NEW: Comment
+        "comment" : "Comment",
+
+        // TODO NEW: Request Study Validation
+        "start_validation_btn" : "Request Study Validation",
+
+        // TODO NEW: Start to search for participants
+        "start_participant_search_btn" : "Start to search for participants",
+
+        // TODO NEW: End Participant Search
+        "end_participant_search_btn" : "End Participant Search",
+
+        // TODO NEW: Start Study Execution
+        "start_study_execution_btn" : "Start Study Execution",
+
+        // TODO NEW: Finish Study
+        "finish_study_btn" : "Finish Study",
+
+        // TODO NEW: Delete Study
+        "delete_study_btn" : "Delete Study"
+    },
+
+    "studyparticipant" : {
+
+        // TODO NEW: Participant:
+        "participant" : "Participant:",
+
+        // TODO NEW: Gender:
+        "gender" : "Gender:",
+
+        // TODO NEW: Year of Birth:
+        "year" : "Year of Birth:",
+
+        // TODO NEW: Country:
+        "country" : "Country:",
+
+        // TODO NEW: Status:
+        "status" : "Status:",
+
+        // TODO NEW: Group:
+        "group" : "Group:",
+
+        // TODO NEW: Participation History
+        "history" : "Participation History"
+    },
+
+    "studyparticipants" : {
+
+        // TODO NEW: Name
+        "name" : "Name",
+
+        // TODO NEW: Group
+        "group" : "Group",
+
+        // TODO NEW: Status
+        "status" : "Status",
+
+        // TODO NEW: Recruiter
+        "recruiter" : "Recruiter",
+
+        // TODO NEW: Accept
+        "accept_btn" : "Accept",
+
+        // TODO NEW: Reject
+        "reject_btn" : "Reject",
+
+        // TODO NEW: This study does not have any participants yet.
+        "empty" : "This study does not have any participants yet."
+    },
+
+    "studyrecords" : {
+
+        // TODO NEW: Once data is available it can be downloaded here.
+        "empty" : "Once data is available it can be downloaded here.",
+
+        // TODO NEW: Data Group
+        "group" : "Data Group",
+
+        // TODO NEW: # Records
+        "number_of_records" : "# Records",
+
+        // TODO NEW: Download
+        "download_btn" : "Download"
+    },
+
+    "studyrules" : {
+
+        // TODO NEW: Study Rules
+        "title" : "Study Rules",
+
+        // TODO NEW: This setup cannot be changed anymore after Study has been validated.
+        "no_change_warning" : "This setup cannot be changed anymore after Study has been validated.",
+
+        // TODO NEW: Sharing Query (JSON)
+        "sharing_query" : "Sharing Query (JSON)"
     }
 }

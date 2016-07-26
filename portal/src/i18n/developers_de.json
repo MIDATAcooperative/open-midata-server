@@ -10,5 +10,17 @@
 
         // TODO NEW: Developer Login
         "title" : "Developer Login"
+    },
+
+    "developer_navbar" : {
+
+        // TODO NEW: Your Plugins
+        "yourapps" : "Your Plugins",
+
+        // TODO NEW: Sandbox
+        "sandbox" : "Sandbox",
+
+        // TODO NEW: Test Records
+        "records" : "Test Records"
     }
 }

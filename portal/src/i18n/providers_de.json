@@ -19,5 +19,23 @@
 
         // TODO NEW: Healthcare Provider Login
         "title" : "Healthcare Provider Login"
+    },
+
+    "provider_navbar" : {
+
+        // TODO NEW: New Patient
+        "new_patient" : "New Patient",
+
+        // TODO NEW: Patients
+        "patients" : "Patients",
+
+        // TODO NEW: Research
+        "research" : "Research",
+
+        // TODO NEW: Workspace
+        "workspace" : "Workspace",
+
+        // TODO NEW: Market
+        "market" : "Market"
     }
 }

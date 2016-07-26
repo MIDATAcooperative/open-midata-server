@@ -4,7 +4,6 @@
 
         // TODO NEW: MY DATA - OUR HEALTH!
         "teaser" : "MY DATA - OUR HEALTH!",
-
         "register_now" : "S'inscrire maintenant",
         "sign_in" : "Connexion"
     },
@@ -24,8 +23,18 @@
         "menu_me_text" : "Votre tableau de bord personnel où vous pouvez placer vos favoris.",
         "menu_overview" : "Vue d'ensemble",
         "menu_overview_text" : "Une vue d'ensemble de toutes les fonctionnalités proposées par la plateforme MIDATA.",
-        "menu_my_data" : "Mes données",
-        "menu_my_data_text" : "Une liste de tous vos enregistrements stockés dans MIDATA.",
+
+        // TODO NEW: Config
+        "menu_config" : "Config",
+
+        // TODO NEW: Configure your dashboard and data imports.
+        "menu_config_text" : "Configure your dashboard and data imports.",
+
+        // TODO NEW: News
+        "menu_research" : "News",
+
+        // TODO NEW: News and announcements about MIDATA, the platform and research projects
+        "menu_research_text" : "News and announcements about MIDATA, the platform and research projects",
         "menu_consents" : "Consentements",
         "menu_consents_text" : "Gérez les données que vous partagez avec d'autres utilisateurs.",
         "answer_questions" : "Pour commencer, nous vous recommandons de répondre à quelques questions. Votre compte sera préconfiguré d'après vos réponses.",
@@ -34,26 +43,14 @@
 
     "help_setup" : {
         "description" : "Les réponses aux questions suivantes ne sont utilisées que pour configurer votre compte selon vos besoins.",
-        "question_tasks" : "Quelles tâches générales prévoyez-vous d'accomplir avec MIDATA ?",
-        "question_tasks_answer1" : "Gérer vos données de santé",
-        "question_tasks_answer2" : "Saisir des données personelles",
-        "question_tasks_answer3" : "Vous comparer avec d'autres utilisateurs",
-        "question_tasks_answer4" : "Faire de la planification",
-        "question_qself" : "Êtes-vous intéressé(e) à recueillir des données de « quantified self » ? Si oui, lesquelles ?",
-        "question_qself_answer1" : "Pas / Activité",
-        "question_qself_answer2" : "Sommeil",
-        "question_qself_answer3" : "Poids",
-        "question_qself_answer4" : "Consommation d'eau",
-        "question_qself_answer5" : "Alimentation",
+
+        // TODO NEW: Which measures do you want to view in the portal?
+        "question_measures" : "Which measures do you want to view in the portal?",
+
         "question_devices" : "Utilisez-vous l'un de ces produits ?",
         "question_devices_answer1" : "Fitbit",
         "question_devices_answer2" : "Jawbone",
-        "question_share" : "Pensez-vous partager certaines de vos données avec d'autres utilisateurs ?",
-        "question_share_answer1" : "Famille",
-        "question_share_answer2" : "Amis",
-        "question_share_answer3" : "Médecin / Hôpital",
-        "question_share_answer4" : "Recherche (participation à des études)",
-        "question_share_answer5" : "D'autres personnes",
+
         "come_back" : "Vous pouvez modifier votre configuration en tout temps en consultant la page \"Aide\".",
         "done_btn" : "Terminé"
     },
@@ -93,9 +90,7 @@
         "name" : "Nom",
         "status" : "État",
 
-        // TODO NEW: Confirmation Date
         "confirmation_date" : "Date de confirmation",
-        
         "confirm_btn" : "confirmer",
         "reject_btn" : "refuser",
         "empty" : "Vous n'avez pas enregistré de contact à un professionel de la santé."

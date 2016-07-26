@@ -5,5 +5,11 @@
   
   "developer_login" : {
     "title" : "Developer Login"
+  },
+  
+  "developer_navbar" : {
+    "yourapps" : "Your Plugins",
+	"sandbox" : "Sandbox",
+	"records" : "Test Records"
   }
 }

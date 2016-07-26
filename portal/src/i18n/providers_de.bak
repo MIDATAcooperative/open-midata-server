@@ -8,5 +8,13 @@
   
   "provider_login" : {
     "title" : "Healthcare Provider Login"
+  },
+  
+  "provider_navbar" : {
+    "new_patient" : "New Patient",
+    "patients" : "Patients",
+    "research" : "Research",
+    "workspace" : "Workspace",
+    "market" : "Market"
   }
 }

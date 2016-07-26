@@ -719,7 +719,7 @@
   "tasks" : {
     "empty" : "Empty",
     "tasks_found" : "Tasks found:",
-    "tasks.more_btn" : "More..."
+    "more_btn" : "More..."
   },
   
   "addusers" : {

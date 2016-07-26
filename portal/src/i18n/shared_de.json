@@ -16,17 +16,25 @@
         "sign_up" : "Registrieren",
         "sign_out" : "Abmelden",
 
-        // TODO NEW: Me
         "me" : "Mich",
-
         "overview" : "Übersicht",
         "messages" : "Nachrichten",
         "my_data" : "Meine Daten",
 
         // TODO NEW: Consents
+
+        // TODO CHANGED
+        // OLD: Consents
+        // NEW: Sharing
         "consents" : "Zustimmungen",
 
+        // TODO CHANGED
+        // OLD: Research
+        // NEW: News
         "research" : "Forschung",
+
+        // TODO NEW: Config
+        "config" : "Config",
         "help" : "Hilfe"
     },
 
@@ -38,7 +46,6 @@
 
         // TODO NEW: An internal database error occured. Please contact support@midata.coop if the problem persists.
         "internal_db" : "An internal database error occured. Please contact support@midata.coop if the problem persists.",
-
         "relogin" : "Melden Sie sich bitte neu an",
 
         // TODO NEW: No active consent that allows to add data for target person.
@@ -80,13 +87,11 @@
             // TODO NEW: Old password not correct.
             "password_old" : "Old password not correct.",
 
-            // TODO NEW: Bad confirmation code
             "confirmation_code" : "Ungültiger Bestätigungscode",
 
             // TODO NEW: Unknown code for study.
             "code" : "Unknown code for study.",
 
-            // TODO NEW: Unknown code for app.
             "appcode" : "Unbekannter App-Code.",
 
             // TODO NEW: Invalid status change
@@ -175,6 +180,9 @@
         "exists" : {
 
             // TODO NEW: A person with this email is already registered.
+            "user" : "A person with this email is already registered.",
+
+            // TODO NEW: A person with this email is already registered.
             "member" : "A person with this email is already registered.",
 
             // TODO NEW: A healthcare provider with this name already exists.
@@ -187,7 +195,10 @@
             "passcode" : "Please choose a different passcode!",
 
             // TODO NEW: A plugin with the same name already exists.
-            "plugin" : "A plugin with the same name already exists."
+            "plugin" : "A plugin with the same name already exists.",
+
+            // TODO NEW: A study with this name already exists.
+            "study" : "A study with this name already exists."
         },
 
         "blocked" : {
@@ -367,6 +378,9 @@
             // TODO NEW: New
             "NEW" : "New",
 
+            // TODO NEW: Contract requested
+            "REQUESTED" : "Contract requested",
+
             // TODO NEW: Contract printed
             "PRINTED" : "Contract printed",
 
@@ -421,17 +435,29 @@
             "ABORTED" : "Execution aborted",
 
             // TODO NEW: Study finished
+
+            // TODO CHANGED
+            // OLD: Study finished
+            // NEW: Finished
             "FINISHED" : "Study finished",
 
             // TODO NEW: Not yet started
             "PRE" : "Not yet started",
 
             // TODO NEW: Study currently running
+
+            // TODO CHANGED
+            // OLD: Study currently running
+            // NEW: Currently running
             "RUNNING" : "Study currently running"
         },
         "studyvalidationstatus" : {
 
             // TODO NEW: Validation not requested yet
+
+            // TODO CHANGED
+            // OLD: Validation not requested yet
+            // NEW: Draft (Not Validated)
             "DRAFT" : "Validation not requested yet",
 
             // TODO NEW: Study rejected by MIDATA
@@ -463,6 +489,47 @@
             // TODO NEW: Researcher
             "RESEARCH" : "Researcher"
         },
+        "subuserrole" : {
+
+            // TODO NEW: Doctor
+            "DOCTOR" : "Doctor",
+
+            // TODO NEW: Nurse
+            "NURSE" : "Nurse",
+
+            // TODO NEW: Manager
+            "MANAGER" : "Manager",
+
+            // TODO NEW: Monitor
+            "MONITOR" : "Monitor",
+
+            // TODO NEW: User Admin
+            "USERADMIN" : "User Admin",
+
+            // TODO NEW: Study Admin
+            "STUDYADMIN" : "Study Admin",
+
+            // TODO NEW: Content Admin
+            "CONTENTADMIN" : "Content Admin",
+
+            // TODO NEW: Plugin Admin
+            "PLUGINADMIN" : "Plugin Admin",
+
+            // TODO NEW: News Author
+            "NEWSWRITER" : "News Author",
+
+            // TODO NEW: Super Admin
+            "SUPERADMIN" : "Super Admin",
+
+            // TODO NEW: Trial User
+            "TRIALUSER" : "Trial User",
+
+            // TODO NEW: Study Participant
+            "STUDYPARTICIPANT" : "Study Participant",
+
+            // TODO NEW: Member of Cooperative
+            "MEMBEROFCOOPERATIVE" : "Member of Cooperative"
+        },
         "userstatus" : {
 
             // TODO NEW: Active
@@ -476,6 +543,23 @@
 
             // TODO NEW: New
             "NEW" : "New"
+        },
+        "frequency" : {
+
+            // TODO NEW: Einmalig
+            "ONCE" : "Einmalig",
+
+            // TODO NEW: Daily
+            "DAILY" : "Daily",
+
+            // TODO NEW: Once a week
+            "WEEKLY" : "Once a week",
+
+            // TODO NEW: Once a month
+            "MONTHLY" : "Once a month",
+
+            // TODO NEW: Once a year
+            "YEARLY" : "Once a year"
         },
         "language" : {
 
@@ -523,6 +607,27 @@
 
         // TODO NEW: Search
         "search_btn" : "Search",
+
+        // TODO NEW: Add
+        "add_btn" : "Add",
+
+        // TODO NEW: Create
+        "create_btn" : "Create",
+
+        // TODO NEW: Change
+        "change_btn" : "Change",
+
+        // TODO NEW: Cancel
+        "cancel_btn" : "Cancel",
+
+        // TODO NEW: View
+        "view_btn" : "View",
+
+        // TODO NEW: Submit
+        "submit_btn" : "Submit",
+
+        // TODO NEW: Delete
+        "delete_btn" : "Delete",
 
         "user" : {
 
@@ -802,6 +907,15 @@
         "success" : "Password has been successfully changed!"
     },
 
+    "changeaddress" : {
+
+        // TODO NEW: Postal Address and Contact Information
+        "title" : "Postal Address and Contact Information",
+
+        // TODO NEW: Update
+        "update_btn" : "Update"
+    },
+
     "market" : {
 
         // TODO NEW: Categories
@@ -859,7 +973,7 @@
         "created_with" : "Created with:",
 
         // TODO NEW: Created on:
-        "creaton_on" : "Created on:",
+        "created_on" : "Created on:",
 
         // TODO NEW: Content:
         "content" : "Content:",
@@ -939,6 +1053,9 @@
 
     "user" : {
 
+        // TODO NEW: User Account
+        "account" : "User Account",
+
         // TODO NEW: User
         "user" : "User",
 
@@ -961,7 +1078,25 @@
         "delete_records_btn" : "Delete Records",
 
         // TODO NEW: Your account has been repaired.
-        "account_repaired" : "Your account has been repaired."
+        "account_repaired" : "Your account has been repaired.",
+
+        // TODO NEW: Settings
+        "settings" : "Settings",
+
+        // TODO NEW: Address and Contact Info
+        "address" : "Address and Contact Info",
+
+        // TODO NEW: Change Address
+        "change_address_btn" : "Change Address",
+
+        // TODO NEW: Is your account visible for other MIDATA members?
+        "searchable" : "Is your account visible for other MIDATA members?",
+
+        // TODO NEW: Change Settings
+        "change_settings_btn" : "Change Settings",
+
+        // TODO NEW: Settings have been updated
+        "change_settings_success" : "Settings have been updated"
     },
 
     "visualization" : {
@@ -1008,6 +1143,9 @@
 
             // TODO NEW: Me Page
             "me" : "Me Page",
+
+            // TODO NEW: Config Dashboard
+            "config" : "Config Dashboard",
 
             // TODO NEW: My Data Dashboard
             "mydata" : "My Data Dashboard",
@@ -1305,14 +1443,19 @@
         "delete_all_btn" : "delete all",
 
         // TODO NEW: No available records found.
-        "empty" : "No available records found."
+        "empty" : "No available records found.",
 
+        // TODO NEW: Close
+        "close_btn" : "Close"
     },
 
     "oauth2" : {
 
         // TODO NEW: This application requests access:
-        "requesting_app" : "This application requests access:"
+        "requesting_app" : "This application requests access:",
+
+        // TODO NEW: Sign In
+        "sign_in_btn" : "Sign In"
     },
 
     "dashboard" : {
@@ -1422,6 +1565,12 @@
         // TODO NEW: New Studies
         "newstudies" : "New Studies",
 
+        // TODO NEW: News
+        "newsconfig" : "News",
+
+        // TODO NEW: There are currently no announcements
+        "newsconfig_teaser" : "There are currently no announcements",
+
         // TODO NEW: Research News
         "researchnews" : "Research News",
 
@@ -1468,6 +1617,47 @@
         "install_btn" : "Install new plugin"
     },
 
+    "measure" : {
+
+        // TODO NEW: Body Weight
+        "body_weight" : "Body Weight",
+
+        // TODO NEW: Steps
+        "activities_steps" : "Steps",
+
+        // TODO NEW: Personal Diary
+        "diary" : "Personal Diary",
+
+        // TODO NEW: Mood
+        "subjective_condition" : "Mood",
+
+        // TODO NEW: Heart Rate and Blood Pressure
+        "heart" : "Heart Rate and Blood Pressure",
+
+        // TODO NEW: Health Documents
+        "documents" : "Health Documents",
+
+        // TODO NEW: Appointments
+        "appointments" : "Appointments",
+
+        // TODO NEW: Sleep Data
+        "sleep" : "Sleep Data",
+
+        // TODO NEW: Heart Rate
+        "activities_heartrate" : "Heart Rate",
+
+        // TODO NEW: Blood Pressure
+        "body_bloodpressure" : "Blood Pressure",
+
+        // TODO NEW: Documents
+        "files" : "Documents"
+    },
+
+    "config" : {
+
+        // TODO NEW: Fitbit Configuration
+        "fitbit" : "Fitbit Configuration"
+    },
 
     "spacesummary" : {
 
@@ -1484,25 +1674,101 @@
         "newest_entry_from" : "Newest entry from",
 
         // TODO NEW: View
-        "view_btn" : "View"
+        "view_btn" : "View",
+
+        // TODO NEW: Add
+        "add_btn" : "Add"
     },
 
     "flexiblerecords" : {
         "records_available" : "Verfügbare Datensätze:",
         "empty" : "Leer",
 
-        // TODO NEW: Browse Records
         "browse_btn" : "Datensätze durchblättern",
 
-        // TODO NEW: Add Records...
         "add_btn" : "Datensätze hinzufügen...",
 
-        // TODO NEW: Share
         "share_btn" : "Teilen"
     },
 
     "flexiblestudies" : {
         "empty" : "Leer",
         "studies_found" : "Gefundene Studien:"
+    },
+
+    "addtask" : {
+
+        // TODO NEW: Task Type
+        "task_type" : "Task Type",
+
+        // TODO NEW: Task Title
+        "task_title" : "Task Title",
+
+        // TODO NEW: Description
+        "description" : "Description",
+
+        // TODO NEW: Frequency
+        "frequency" : "Frequency",
+
+
+        // TODO NEW: Fill out survey
+        "survey_name" : "Fill out survey",
+
+        // TODO NEW: Please fill out the surveys I shared with your account.
+        "survey_description" : "Please fill out the surveys I shared with your account.",
+
+        // TODO NEW: Fill out survey
+        "survey_title" : "Fill out survey"
+    },
+
+    "taskdetails" : {
+
+        // TODO NEW: Created by:
+        "created_by" : "Created by:",
+
+        // TODO NEW: How often:
+        "frequency" : "How often:",
+
+        // TODO NEW: Plugin:
+        "plugin" : "Plugin:"
+    },
+
+    "tasks" : {
+
+        // TODO NEW: Empty
+        "empty" : "Empty",
+
+        // TODO NEW: Tasks found:
+        "tasks_found" : "Tasks found:",
+
+        // TODO NEW: More...
+        "more_btn" : "More..."
+    },
+
+    "addusers" : {
+
+        // TODO NEW: Contacts
+        "contacts" : "Contacts",
+
+        // TODO NEW: All users
+        "all_users" : "All users",
+
+        // TODO NEW: You have no users in your circles yet.
+        "no_contacts" : "You have no users in your circles yet.",
+
+        // TODO NEW: No contacts can be added to this circle.
+        "no_contacts_to_add" : "No contacts can be added to this circle.",
+
+        // TODO NEW: Search for a user
+        "search_user" : "Search for a user",
+
+        // TODO NEW: Searching...
+        "searching" : "Searching...",
+
+        // TODO NEW: No users matched your search.
+        "no_matching_users" : "No users matched your search.",
+
+        // TODO NEW: All found users are already members of this circle.
+        "no_new_found" : "All found users are already members of this circle."
     }
 }
