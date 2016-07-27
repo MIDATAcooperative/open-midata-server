@@ -22,7 +22,7 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 	      templateUrl: 'single_record.html'
 	    })
 	    .state('chart', {
-	      url: '/chart?measure&authToken',	   
+	      url: '/chart?measure&authToken&limit',	   
 	      templateUrl: 'chart.html'
 	    })
 	    .state('overview', {
@@ -80,121 +80,15 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
    console.log("configuration");
    return result;
 }])
-.factory('fhirinfo', ['$q', 'midataServer', function($q, midataServer) {
+.factory('fhirinfo', ['$q', '$translate', 'midataServer', function($q, $translate, midataServer) {
    var result = {};
-      
+   var meta = {};   
    
-   var  meta = {
-	  "body/weight" :  
-	  {
-			label : "Weight",
-			content : "body/weight",
-			type : "Quantity",
-			code : {
-			    "text": "Body weight Measured",
-			    "coding": [
-			      {
-			        "system": "http://loinc.org",
-			        "display": "Body weight Measured",
-			        "code": "3141-9"
-			      }
-			    ]
-			},
-			valueQuantity : {		   
-			   unit : "kg"
-			}    							
-	 },
-	 "activities/steps" :
-	 {
-		   label : "Step Count",		   
-		   content : "activities/steps",
-		   type : "Quantity",
-		   code : {
-			  "text": "Step Count",
-			  "coding": [
-			      {
-			        "system": "http://loinc.org",
-			        "display": "Step Count",
-			        "code": "55423-8"
-			      }
-			  ]
-		  },
-		  valueQuantity : {
-			  
-		  }
-	 },
-	 "body/height" :
-	 {
-		   label : "Height",		   
-		   content : "body/height",
-		   type : "Quantity",
-		   code : {
-			  "text": "Body height",
-			  "coding": [
-			      {
-			        "system": "http://loinc.org",
-			        "display": "Body height",
-			        "code": "8302-2"
-			      }
-			  ]
-		  },
-		  valueQuantity : {		   
-			   unit : "cm"
-		  }   
-	   },		 
-	   "activities/heartrate" :
-	   {
-		   label : "Heartrate",		  
-		   content : "activities/heartrate",	
-		   type : "Quantity",
-		   code : {
-			    "text": "Heart rate",
-			    "coding": [
-			      {
-			        "system": "http://loinc.org",
-			        "display": "Heart rate",
-			        "code": "8867-4"
-			      }
-			    ]
-		  },
-		  valueQuantity : {		   
-			   unit : "{beats}/min"
-		  } 
-	   },
-	   "body/temperature" :
-	   {
-		   label : "Body Temperature",		   
-		   content : "body/temperature",
-		   type : "Quantity",
-		   code : {
-			    "text": "Body temperature",
-			    "coding": [
-			      {
-			        "system": "http://loinc.org",
-			        "display": "Body temperature",
-			        "code": "8310-5"
-			      }
-			    ]
-		   },
-		  valueQuantity : {		   
-			   unit : "Cel"
-		  } 
-	   },		  
+   var  override = {
+	 
 	   "body/bloodpressure" :	  
-	   {
-		   label : "Blood pressure",
-		   content : "body/bloodpressure",
-		   type : "component",
-		   code : {
-			    "text": "Blood pressure",
-			    "coding": [
-			      {
-			        "system": "http://loinc.org",
-			        "display": "Blood pressure",
-			        "code": "55417-0"
-			      }
-			    ]
-		   },
+	   {		  
+		   type : "component",		   
 		   component : [
 			 {
 				 code : {
@@ -230,8 +124,66 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 	   }
    };
    
-   result.getInfo = function(contentType) {	   	 
-	  return $q.when(meta[contentType]);		 
+   result.getInfos = function(language, contentTypes) {	 
+	  console.log(contentTypes);
+	  return midataServer.searchContent(midataServer.authToken, { content : contentTypes }, [ "content", "label", "defaultCode", "resourceType", "subType", "defaultUnit", "category" ])
+	  	 .then(function(res) {
+	  		var returnValues = [];
+	  		angular.forEach(res.data, function(d) {
+	  			
+	  			var label = d.label[language] || d.label.en;	  			
+	  			var codes = (d.defaultCode || "http://midata.coop unknown").split(" ");
+	  			var type = d.subType || "Quantity";
+	  			result.codeToLabel[d.content] = label;
+	  			
+	  			var newcontent = meta[d.content] =  {
+	  				   label : label,		   
+	  				   content : d.content,
+	  				   type : type,
+	  				   code : {
+	  					    "text": label,
+	  					    "coding": [
+	  					      {
+	  					        "system": codes[0],
+	  					        "display": label,
+	  					        "code": codes[1]
+	  					      }
+	  					    ]
+	  				   }
+	  			 };
+	  			if (type !== "component") {
+	  			  newcontent["value"+d.subType] = {};
+	  			  if (d.subType == "Quantity") newcontent["value"+d.subType].unit = (d.defaultUnit || ""); 
+	  			}
+	  			if (d.category) {
+	  				
+	  				newcontent.category = {
+							coding : [
+							           {
+							             "system": "http://hl7.org/fhir/observation-category",
+							             "code": d.category,
+							             "display": ""
+							           }
+							],		
+							text : ""
+					};
+	  				
+	  				$translate("category_names."+d.category).then(function(v) { newcontent.category.text = newcontent.category.coding[0].display = v; });
+	  			}
+	  			var overrideData = override[d.content];
+	  			if (overrideData) {
+	  				angular.extend(newcontent, overrideData);
+	  			}
+	  			
+	  			returnValues.push(newcontent);
+	  		});
+	  		
+	  		return returnValues;
+	  	 });
+	   
+	   
+	   
+	  //return $q.when(meta[contentType]);		 
    };
    
    var setcategory = {
@@ -247,15 +199,7 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
    };
    
    result.codeToLabel = {  };	
-   
-   result.loadLabels = function(language, types) {
-	  	 return midataServer.searchContent(midataServer.authToken, { content : types }, [ "content", "label" ])
-	  	 .then(function(res) {
-	  		angular.forEach(res.data, function(d) {
-	  			result.codeToLabel[d.content] = d.label[language] || d.label.en;
-	  		});
-	  	 });
-	};
+    
 	
 	result.getLabel = function(value) {	 	  	  	  
 	  	 return result.codeToLabel[value];
@@ -264,7 +208,7 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
    console.log("fhirinfo");
    return result;
 }])
-.factory('data', ['$q', 'fhirinfo', 'midataServer', 'midataPortal', function($q, fhirinfo, midataServer, midataPortal) {
+.factory('data', ['$q', '$filter', 'fhirinfo', 'midataServer', 'midataPortal', function($q, $filter, fhirinfo, midataServer, midataPortal) {
 		
 	var result = {};
 	
@@ -291,18 +235,20 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 		.then(function(sumResult) {
 			var ids = [];
 			var contents = {};
-			angular.forEach(sumResult.data, function(entry) { ids.push(entry.newestRecord.$oid);contents[entry.contents[0]] = true; }); 	
+			angular.forEach(sumResult.data, function(entry) { ids.push(entry.newestRecord.$oid);contents[entry.contents[0]] = entry.count; }); 	
 			
 			var res = [];
-			if (alwaysAddMeasures) {	
-				angular.forEach(alwaysAddMeasures , function(measure) {
-	 				if (!contents[measure]) {
-	 				   res.push(
-	 					   fhirinfo.getInfo(measure)
-	 					   .then(function(info) { return { content : measure, data : { code:info.code } }; }) 
-	 				   );
-	 				}
-	 		    });
+			if (alwaysAddMeasures) {
+				var measures = $filter('filter')(alwaysAddMeasures, function(measure) { return !contents[measure]; });
+				if (measures && measures.length > 0) {
+					res.push(fhirinfo.getInfos(midataPortal.language, measures)
+					.then(function(infos) {
+						var data = [];
+						angular.forEach(infos, function(info) { data.push({ content : info.content, data : { code:info.code } }); });
+						return data;
+					}));
+				}
+				
 	 		}
 			
 			res.push(result.getRecords({ ids : ids }));
@@ -317,6 +263,7 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 		if (params.content) query.content = params.content;
 		if (params.owner) query.owner = params.owner;
 		if (params.ids) query._id = params.ids;
+		if (params.after && param.before) query.index = { "effectiveDateTime" : { "!!!ge" : params.after, "!!!le" : params.before }};
 		console.log(params);
 		return midataServer.getRecords(midataServer.authToken, query, ["name", "created", "content", "data", "owner", "ownerName"])
 		.then(function(results) {

@@ -74,6 +74,18 @@
               <formrow myid="group" label="Group">
 	             <select class="form-control" type="text" ng-model="contentEntry.group" ng-options="grp.name as grp.name for grp in groups | orderBy : 'name'"></select>
 	           </formrow>
+	           <formrow myid="resourceType" label="FHIR Resource Type">
+	             <select class="form-control" type="text" ng-model="contentEntry.resourceType" ng-options="type for type in resourceTypes"></select>
+	           </formrow>
+	           <formrow myid="category" label="Category">
+	             <select class="form-control" type="text" ng-model="contentEntry.category" ng-options="category for category in categories"></select>
+	           </formrow>
+	           <formrow myid="subType" label="Sub-Type">
+	             <select class="form-control" type="text" ng-model="contentEntry.subType" ng-options="type for type in subTypes"></select>
+	           </formrow>
+	           <formrow myid="defaultUnit" label="Default Unit">
+	             <input type="text" class="form-control" ng-model="contentEntry.defaultUnit">
+	           </formrow>
 	           <formrow myid="x" label="">
 	             <button class="btn btn-default" ng-click="submit()">Submit</button>
 	             <button class="btn btn-default" ng-click="addGroup()">Add Group</button>

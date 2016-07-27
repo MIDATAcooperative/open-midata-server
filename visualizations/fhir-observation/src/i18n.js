@@ -16,7 +16,19 @@ var en = {
 	"amended" : "Amended",
 	"cancelled" : "Cancelled",
 	"entered-in-error" : "Entered in Error",
-	"unknown" : "Unknown Status"
+	"unknown" : "Unknown Status",
+	
+	"category_names" : {
+		"social-history" : "Social History",
+		"vital-signs" : "Vital Signs",
+		"imaging" : "Imaging",
+		"laboratory" : "Laboratory",
+		"procedure" : "Procedure",
+		"survey" : "Survey",
+		"exam" : "Exam",
+		"therapy" : "Therapy",
+		"fitness" : "Fitness Data"
+	}
 },
 de = {
 	"category" : "Kategorie:",

@@ -13,6 +13,13 @@
 	<div class="row">
 		<span class="col-sm-3" translate="measure"></span> <span class="col-sm-9"><b>{{ getLabel(measure) }}</b></span>
 	</div>
+	<div class="row" ng-show="timing">
+	    <span class="col-sm-2"><button class="btn btn-xs btn-default" translate="earlier" ng-click="shift(-1);"></button></span>
+		<span class="col-sm-6"><span translate="from"></span> {{ timing.fromDate | date }}</span>
+		<span class="col-sm-6"><span translate="to"></span> {{ timing.toDate | date }}</span>
+		<span class="col-sm-2"><button class="btn btn-xs btn-default" translate="later" ng-click="shift(1);"></button></span>
+	</div>
+	
 	<div ng-if="!records.length" class="row">
 		<div class="extraspace"></div>
 		<p class="col-sm-12" translate="empty"></p>

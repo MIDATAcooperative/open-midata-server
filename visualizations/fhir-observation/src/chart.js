@@ -5,8 +5,30 @@ angular.module('fhirObservation')
 	var measure = $scope.measure = $state.params.measure;
 	$scope.data = data;
 	
+	//$scope.timing = { dateFrom : null, dateTo : null, mode : '1M' };
+	
+	$scope.shift = function(factor) {		
+		switch($scope.timing.mode) {
+		case '1M': 
+			$scope.timing.dateFrom.setMonth($scope.timing.dateFrom.getMonth() + factor);
+			$scope.timing.dateTo.setTime($scope.timing.dateFrom.getTime());
+			$scope.timing.dateTo.setMonth($scope.timing.dateTo.getMonth() + factor);
+			break;
+		case '3M': $scope.timing.dateFrom.setMonth($scope.timing.dateFrom.getMonth() + 3*factor);
+		    $scope.timing.dateTo.setTime($scope.timing.dateFrom.getTime());
+		    $scope.timing.dateTo.setMonth($scope.timing.dateTo.getMonth()  + 3*factor);
+		    break;
+		case '1Y': $scope.timing.dateFrom.setFullYear($scope.timing.dateFrom.getFullYear() + factor);
+		    $scope.timing.dateTo.setTime($scope.timing.dateFrom.getTime());
+		    $scope.timing.dateTo.setFullYear($scope.timing.dateTo.getMonth() + factor);
+		    break;
+		}
+		dt.setTime(dt.getTime() - span*(24 * 60 * 60 * 1000));
+		
+	};
+	
 	$scope.init = function() {
-	   fhirinfo.loadLabels(midataPortal.language, measure);
+	   fhirinfo.getInfos(midataPortal.language, measure);
 	   if (!configuration.owner) configuration.owner = "self";
 		
 	   $scope.reload();

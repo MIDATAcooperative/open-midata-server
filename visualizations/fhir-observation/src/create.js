@@ -21,11 +21,11 @@ angular.module('fhirObservation')
 		
 		var measure = $scope.measure = $state.params.measure;
 		
-		fhirinfo.loadLabels(midataPortal.language, measure);
-		fhirinfo.getInfo(measure)
+		//fhirinfo.loadLabels(midataPortal.language, measure);
+		fhirinfo.getInfos(midataPortal.language, measure)
 		.then(function(format) {
 			  console.log(format);
-			  $scope.format = format;
+			  $scope.format = format[0];
 			  $scope.reset();
 		});
 				
@@ -33,25 +33,11 @@ angular.module('fhirObservation')
 		$scope.reset = function() {
 			$scope.newentry = { 
 					resourceType : "Observation",
-					status : "preliminary",
-					category : {
-						coding : [
-				           {
-				             "system": "http://hl7.org/fhir/observation-category",
-				             "code": "fitness",
-				             "display": "Fitness Data"
-				           }
-						],
-/*						coding : [{
-						  system : "http://hl7.org/fhir/observation-category",
-						  code : "vital-signs",
-						  display : "Vital Signs"
-						}],*/
-						text : "Fitness Data"
-					},
+					status : "preliminary",					
 					code : $scope.format.code,
-					effectiveDateTime : new Date() /*$filter('date')(new Date(), "yyyy-MM-dd")*/
+					effectiveDateTime : new Date()
 			}; 
+			if ($scope.format.category) $scope.newentry.category = $scope.format.category;
 			switch ($scope.format.type) {
 			  case "Quantity" : $scope.newentry.valueQuantity = $scope.format.valueQuantity;break;
 			  case "component" :  $scope.newentry.component = $scope.format.component;break;

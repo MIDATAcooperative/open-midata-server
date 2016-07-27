@@ -47,11 +47,25 @@ public class ContentInfo extends Model {
 	public Map<String, String> label;
 	
 	/**
-	 * Deprecated: the name of the group where records with this content types should be placed in in the record tree
+	 * default FHIR resource type if storable in FHIR
 	 */
-	//public String group;
-		
+	public String resourceType;
 	
+	/**
+	 * default subtype value
+	 */
+	public String subType;
+	
+	/**
+	 * (optional) default unit 
+	 */
+	public String defaultUnit;
+	
+	/**
+	 * category for FHIR types
+	 */
+	public String category;
+				
 	/**
 	 * a comment
 	 */

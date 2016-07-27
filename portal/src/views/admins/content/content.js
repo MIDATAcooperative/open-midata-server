@@ -8,6 +8,9 @@ angular.module('portal')
     $scope.nameToContent = {};
     $scope.groupSystem = "v1";
     $scope.languages = ["en","de","it","fr"];
+    $scope.resourceTypes = ["", "fhir/Observation"];
+    $scope.subTypes = ["", "Quantity", "CodeableConcept", "String", "Range", "Ratio", "SampledData", "Attachment", "Time", "DateTime", "Period", "component"];
+    $scope.categories = ["", "social-history", "vital-signs", "imaging", "laboratory", "procedure", "survey", "exam", "therapy", "fitness" ];
 	
 	$scope.init = function() {		
 		  $scope.status.doBusy(formats.listCodes())

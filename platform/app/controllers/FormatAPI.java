@@ -68,7 +68,7 @@ public class FormatAPI extends Controller {
 	 */
 	@APICall
 	public static Result listContents() throws InternalServerException {
-	    Collection<ContentInfo> contents = ContentInfo.getAll(Collections.<String, String> emptyMap(), Sets.create("content", "security", "comment", "label", "defaultCode"));
+	    Collection<ContentInfo> contents = ContentInfo.getAll(Collections.<String, String> emptyMap(), Sets.create("content", "security", "comment", "label", "defaultCode", "resourceType", "subType", "defaultUnit", "category"));
 	    return ok(Json.toJson(contents));
 	}
 	
@@ -154,6 +154,10 @@ public class FormatAPI extends Controller {
 		cc.content = JsonValidation.getString(json, "content");
 		cc.security = JsonValidation.getEnum(json, "security",  APSSecurityLevel.class);
 		cc.label = JsonExtraction.extractStringMap(json.get("label"));
+		cc.resourceType = JsonValidation.getStringOrNull(json,  "resourceType");
+		cc.subType = JsonValidation.getStringOrNull(json,  "subType");
+		cc.defaultUnit = JsonValidation.getStringOrNull(json,  "defaultUnit");
+		cc.category = JsonValidation.getStringOrNull(json,  "category");
 		
 		ContentInfo.upsert(cc);
 		RecordGroup.invalidate();
