@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -160,9 +161,11 @@ public class Plugins extends APIController {
 		}
 		
 		if (visualization.type.equals("visualization") ) {
+			if (user.visualizations == null) user.visualizations = new HashSet<ObjectId>();
 			user.visualizations.add(visualizationId);
 			User.set(userId, "visualizations", user.visualizations);
 		} else {
+			if (user.apps == null) user.apps = new HashSet<ObjectId>();
 			user.apps.add(visualizationId);
 			User.set(userId, "apps", user.apps);
 		}
