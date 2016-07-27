@@ -392,7 +392,9 @@ public class Plugins extends APIController {
 		Set<String> fields = Sets.create("accessTokenUrl", "consumerKey", "consumerSecret");
 		Plugin app = Plugin.get(properties, fields);
 		
-		String authPage = Play.application().configuration().getString("portal.originUrl")+"/authorized.html";
+		String origin = Play.application().configuration().getString("portal.originUrl");
+		if (origin.equals("https://demo.midata.coop:9002")) origin = "https://demo.midata.coop"; 
+		String authPage = origin +"/authorized.html";
 		
         try {
 		// request access token	
