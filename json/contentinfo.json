@@ -101,7 +101,7 @@
 {"_id":{"$oid":"5703b84caed6451f597570da"},"content":"activities/steps","defaultCode":"http://midata.coop activities/steps","security":"MEDIUM","label":{"de":"Schritte","en":"Steps"}}
 {"_id":{"$oid":"5703b84caed6451f597570db"},"content":"sleep/efficiency","group":"sleep","defaultCode":"http://midata.coop sleep/efficiency","security":"MEDIUM","label":{"en":"Efficiency"}}
 {"_id":{"$oid":"5703b84caed6451f597570dc"},"content":"diary","defaultCode":"http://midata.coop diary","security":"MEDIUM","label":{"de":"Tagebuch","en":"Diary"}}
-{"_id":{"$oid":"5703b84caed6451f597570dd"},"content":"body/weight","defaultCode":"http://loinc.org 3141-9","security":"MEDIUM","label":{"en":"Body Weight"}}
+{"_id":{"$oid":"5703b84caed6451f597570dd"},"content":"body/weight","defaultCode":"http://loinc.org 3141-9","security":"MEDIUM","label":{"en":"Body Weight"},"resourceType":"fhir/Observation","subType":"Quantity","defaultUnit":"kg","category":"vital-signs"}
 {"_id":{"$oid":"5703b84caed6451f597570de"},"content":"food/water","group":"nutrition","defaultCode":"http://midata.coop food/water","security":"MEDIUM","label":{"en":"Water Consumption"}}
 {"_id":{"$oid":"5703b84caed6451f597570df"},"content":"activities/activity-calories","defaultCode":"http://midata.coop activities/activity-calories","security":"MEDIUM","label":{"en":"Calories Burned in Activities"}}
 {"_id":{"$oid":"5703b84caed6451f597570e0"},"content":"activities/distance","defaultCode":"http://midata.coop activities/distance","security":"MEDIUM","label":{"en":"Distance"}}
