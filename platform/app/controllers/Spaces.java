@@ -306,7 +306,15 @@ public class Spaces extends Controller {
 		  if (oauthmeta.containsField("refreshToken")) {					
 		    return Plugins.requestAccessTokenOAuth2FromRefreshToken(spaceIdString, oauthmeta.toMap(), (Result) ok(obj));
 		  }
-		} 				
+		} 
+		if (visualization.type != null && visualization.type.equals("oauth1")) {
+	  		  BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new ObjectId(spaceIdString), "_oauth");  		  
+			  if (oauthmeta == null) return F.Promise.pure((Result) Plugins.oauthInfo(visualization)); 
+				 		
+			  /*if (oauthmeta.containsField("refreshToken")) {					
+			    return Plugins.requestAccessTokenOAuth2FromRefreshToken(spaceIdString, oauthmeta.toMap(), (Result) ok(obj));
+			  }*/
+		} 
 					
 		return F.Promise.pure((Result) ok(obj));
 	

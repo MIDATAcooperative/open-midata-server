@@ -62,17 +62,17 @@ module.exports = function(grunt) {
         src: {
           files: ['src/**/*.{html,png,jpg,jpeg,gif,webp,svg}' ],
           tasks: ['preprocess', 'copy:dev'],
-          options: { livereload: true }
+          options: { livereload: 35730 }
         },
         js : {
           files : 'src/**/*.js',
           tasks : ['jshint', 'concat', 'copy:dev'],
-          options: { livereload: true }
+          options: { livereload: 35730 }
         },
         css: {
           files : 'src/**/*.less',
           tasks : ['concat', 'less', 'copy:dev'],
-          options: { livereload: true }
+          options: { livereload: 35730 }
         }
     },
     

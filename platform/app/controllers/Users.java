@@ -81,6 +81,8 @@ public class Users extends APIController {
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
 		// check authorization
+		
+		if (!getRole().equals(UserRole.ADMIN) && !properties.containsKey("_id")) properties.put("searchable", true);
 		boolean postcheck = false;		
 		if (!getRole().equals(UserRole.ADMIN) && !properties.containsKey("email") && !properties.containsKey("midataID") && !properties.containsKey("_id")) {
 			throw new AuthException("error.notauthorized.action", "Search must be restricted");
@@ -94,15 +96,13 @@ public class Users extends APIController {
 		    Rights.chk("Users.get"+role.toString(), getRole(), properties, fields);
 		  } else {
 			Rights.chk("Users.get", getRole(), properties, fields);
-		  }
-		  if (!getRole().equals(UserRole.ADMIN)) properties.put("searchable", true);
+		  }		  
 		} else if (fields.contains("role")) {
 			// Check later
-			postcheck = true;
-			if (!getRole().equals(UserRole.ADMIN)) properties.put("searchable", true);
+			postcheck = true;			
 		} else {		
 		  Rights.chk("Users.get", getRole(), properties, fields);
-		  if (!getRole().equals(UserRole.ADMIN)) properties.put("searchable", true);
+		  
 		}
 
 		// execute		

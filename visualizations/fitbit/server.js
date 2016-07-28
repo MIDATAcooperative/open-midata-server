@@ -8,7 +8,7 @@ benv.setup(function () {
   require('./bower_components/angular-translate/angular-translate.min.js');
   require('./bower_components/midata/js/midata.js');
   require('./src/i18n.js');
-  require('./src/controller.js');  
+  require('./src/app.js');  
   var injector = angular.injector(['ng', 'fitbit']);  
   var importer = injector.get('importer');
   console.log("prerun");

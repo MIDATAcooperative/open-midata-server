@@ -458,12 +458,9 @@ public class PluginsAPI extends APIController {
 		}
 
 		// decrypt authToken and check whether a user exists who has the app installed
-		SpaceToken appToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
-		if (appToken == null) {
-			return badRequestPromise("Invalid authToken.");
-		}
-		
-		Map<String, String> tokens = RecordManager.instance.getMeta(appToken.executorId, appToken.spaceId, "_oauth").toMap();
+		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
+				
+		Map<String, String> tokens = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_oauth").toMap();
 				
 		String oauthToken, oauthTokenSecret, appId;
 		

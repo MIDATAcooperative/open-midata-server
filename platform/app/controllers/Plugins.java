@@ -307,9 +307,19 @@ public class Plugins extends APIController {
 	
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
-	public static Result getRequestTokenOAuth1(String appIdString) throws InternalServerException {
-		// get app details
-		ObjectId appId = new ObjectId(appIdString);
+	public static Result getRequestTokenOAuth1(String spaceIdString) throws AppException {
+		
+		
+		// get app details			
+		final ObjectId spaceId = new ObjectId(spaceIdString);
+		final ObjectId userId = new ObjectId(request().username());
+				
+		Space space  = Space.getByIdAndOwner(spaceId, userId, Sets.create("visualization", "type"));
+		if (space == null) throw new InternalServerException("error.internal", "Unknown Space");
+		if (!space.type.equals("oauth1")) throw new InternalServerException("error.internal", "Wrong type");
+
+		
+		ObjectId appId = space.visualization;
 		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", appId).get();
 		Set<String> fields = new ChainedSet<String>().add("consumerKey").add("consumerSecret").add("requestTokenUrl").add("accessTokenUrl")
 				.add("authorizationUrl").get();
@@ -321,8 +331,14 @@ public class Plugins extends APIController {
 		OAuth client = new OAuth(info);
 		RequestToken requestToken = client.retrieveRequestToken(routes.Records.onAuthorized(app._id.toString())
 				.absoluteURL(request(), true));
+		
+		
 		session("token", requestToken.token);
 		session("secret", requestToken.secret);
+		
+		Map<String, Object> tokens = CMaps.map("token",requestToken.token).map("secret", requestToken.secret);        
+        RecordManager.instance.setMeta(userId, space._id, "_oauth1", tokens);
+        
 		return ok(client.redirectUrl(requestToken.token));
 	}
 
@@ -345,12 +361,13 @@ public class Plugins extends APIController {
 		Map<String, Object> properties = CMaps.map("_id", space.visualization);
 		Set<String> fields = Sets.create("accessTokenUrl", "consumerKey", "consumerSecret");
 		Plugin app = Plugin.get(properties, fields);
+		Map<String, Object> reqTokens = RecordManager.instance.getMeta(userId, space._id, "_oauth1").toMap(); 
 		
 		// request access token
 		ConsumerKey key = new ConsumerKey(app.consumerKey, app.consumerSecret);
 		ServiceInfo info = new ServiceInfo(app.requestTokenUrl, app.accessTokenUrl, app.authorizationUrl, key);
 		OAuth client = new OAuth(info);
-		RequestToken requestToken = new RequestToken(session("token"), session("secret"));
+		RequestToken requestToken = new RequestToken(reqTokens.get("token").toString(), reqTokens.get("secret").toString());
 		RequestToken accessToken = client.retrieveAccessToken(requestToken, json.get("code").asText());
 
 		// save token and secret to database

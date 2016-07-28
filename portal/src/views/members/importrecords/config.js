@@ -4,5 +4,9 @@ angular.module('portal')
 	    .state('member.importrecords', {
 	      url: '/import/:spaceId',
 	      templateUrl: 'views/members/importrecords/importrecords.html'
+	    })
+	    .state('developer.importrecords', {
+	      url: '/import/:spaceId',
+	      templateUrl: 'views/members/importrecords/importrecords.html'
 	    });
 });

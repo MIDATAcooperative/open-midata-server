@@ -54,7 +54,7 @@ angular.module('portal')
 			} else { 
 				$scope.options.context = "mydata"; 
 			}
-			if ($scope.visualization.defaultSpaceContext == "config") $scope.options.context = "config"; 
+			if ($scope.visualization.defaultSpaceContext == "config" && $state.params.context !== "sandbox") $scope.options.context = "config"; 
 			if ($scope.params && $scope.params.name) {
 				$scope.options.spaceName = $scope.params.name;
 			}
