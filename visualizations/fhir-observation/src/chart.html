@@ -13,11 +13,10 @@
 	<div class="row">
 		<span class="col-sm-3" translate="measure"></span> <span class="col-sm-9"><b>{{ getLabel(measure) }}</b></span>
 	</div>
-	<div class="row" ng-show="timing">
-	    <span class="col-sm-2"><button class="btn btn-xs btn-default" translate="earlier" ng-click="shift(-1);"></button></span>
-		<span class="col-sm-6"><span translate="from"></span> {{ timing.fromDate | date }}</span>
-		<span class="col-sm-6"><span translate="to"></span> {{ timing.toDate | date }}</span>
-		<span class="col-sm-2"><button class="btn btn-xs btn-default" translate="later" ng-click="shift(1);"></button></span>
+	<div class="row" ng-show="timing.dateFrom">
+	    <span class="col-sm-2"><button class="btn btn-xs btn-default" translate="earlier" ng-click="shift(-1);reload();"></button></span>
+		<span class="col-sm-4">{{ timing.dateFrom | date }} - {{ timing.dateTo | date }}</span>
+		<span class="col-sm-2"><button class="btn btn-xs btn-default" translate="later" ng-click="shift(1);reload();"></button></span>
 	</div>
 	
 	<div ng-if="!records.length" class="row">
@@ -32,11 +31,10 @@
             </canvas>
 
 		</div>
-		<div class="col-sm-4">
-
-
+		<div class="col-sm-4" style="overflow:auto; max-height:300px">
+           
 			<table class="table">
-				<tr ng-repeat="record in records | limitTo : 9">
+				<tr ng-repeat="record in records">
 					<td><a href="javascript:" ng-click="showSingle(record);">{{ record.data.effectiveDateTime | date }}</a></td>
 					<td>
 						<div ng-show="record.data.component">

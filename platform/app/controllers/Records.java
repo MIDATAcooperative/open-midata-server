@@ -275,7 +275,7 @@ public class Records extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	@Security.Authenticated(MemberSecured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result delete() throws JsonValidationException, AppException {
         JsonNode json = request().body().asJson();
         ObjectId userId = new ObjectId(request().username());

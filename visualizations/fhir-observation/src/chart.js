@@ -3,39 +3,56 @@ angular.module('fhirObservation')
  	function($scope, $filter, $state, midataServer, midataPortal, configuration, data, fhirinfo) {
  		
 	var measure = $scope.measure = $state.params.measure;
+	
 	$scope.data = data;
 	
-	//$scope.timing = { dateFrom : null, dateTo : null, mode : '1M' };
+	$scope.timing = { dateFrom : null, dateTo : null, mode : '1M' };
 	
 	$scope.shift = function(factor) {		
 		switch($scope.timing.mode) {
 		case '1M': 
-			$scope.timing.dateFrom.setMonth($scope.timing.dateFrom.getMonth() + factor);
-			$scope.timing.dateTo.setTime($scope.timing.dateFrom.getTime());
 			$scope.timing.dateTo.setMonth($scope.timing.dateTo.getMonth() + factor);
+			$scope.timing.dateFrom.setTime($scope.timing.dateTo.getTime());
+			$scope.timing.dateFrom.setMonth($scope.timing.dateFrom.getMonth() - 1);
 			break;
-		case '3M': $scope.timing.dateFrom.setMonth($scope.timing.dateFrom.getMonth() + 3*factor);
-		    $scope.timing.dateTo.setTime($scope.timing.dateFrom.getTime());
-		    $scope.timing.dateTo.setMonth($scope.timing.dateTo.getMonth()  + 3*factor);
+		case '3M': $scope.timing.dateTo.setMonth($scope.timing.dateTo.getMonth() + 3*factor);
+		    $scope.timing.dateFrom.setTime($scope.timing.dateTo.getTime());
+		    $scope.timing.dateFrom.setMonth($scope.timing.dateFrom.getMonth()  - 3);
 		    break;
-		case '1Y': $scope.timing.dateFrom.setFullYear($scope.timing.dateFrom.getFullYear() + factor);
-		    $scope.timing.dateTo.setTime($scope.timing.dateFrom.getTime());
-		    $scope.timing.dateTo.setFullYear($scope.timing.dateTo.getMonth() + factor);
+		case '1Y': $scope.timing.dateRo.setFullYear($scope.timing.dateTo.getFullYear() + factor);
+		    $scope.timing.dateFrom.setTime($scope.timing.dateTo.getTime());
+		    $scope.timing.dateFrom.setFullYear($scope.timing.dateFrom.getMonth() - 1);
 		    break;
-		}
-		dt.setTime(dt.getTime() - span*(24 * 60 * 60 * 1000));
+		}		
 		
 	};
 	
 	$scope.init = function() {
-	   fhirinfo.getInfos(midataPortal.language, measure);
-	   if (!configuration.owner) configuration.owner = "self";
-		
-	   $scope.reload();
+	   fhirinfo.getInfos(midataPortal.language, measure)
+	   .then(function() {
+		   if (!configuration.owner) configuration.owner = "self";
+	
+		   midataServer.getSummary(midataServer.authToken, "SINGLE", { format : ["fhir/Observation"], content : measure,  owner : "self" }) 			
+		   .then(function(sumResult) {
+			  if (!sumResult.data || sumResult.data.length === 0) return;
+			  var entry = sumResult.data[0];
+			  if (entry.count < 30) {
+				$scope.timing.dateFrom = $scope.timing.dateTo = null;  
+			  } else {
+				$scope.timing.dateTo = new Date(entry.newest);
+				$scope.timing.dateFrom = new Date();
+				$scope.shift(0);
+			  }
+			  $scope.reload();   
+		   });	   
+	   });
 	};	  
 	
 	$scope.reload = function() {
-		data.getRecords({ content : measure, owner : configuration.owner })
+		var criteria = { content : measure, owner : configuration.owner };
+		if ($scope.timing.dateFrom) criteria.after = $scope.timing.dateFrom;
+		if ($scope.timing.dateTo) criteria.before = $scope.timing.dateTo;
+		data.getRecords(criteria)
 		   .then(function(records) {
 			  $scope.records = records; 
 			  if (records.length > 0) configuration.owner = records[0].owner.$oid;
@@ -63,10 +80,14 @@ angular.module('fhirObservation')
         var entries = [];
         var idx = 0;
         
-        var addEntry = function(record,cmp,cdate) {
+        var addEntry = function(record,cmp,cdate,measure) {
       	  var q = cmp.valueQuantity || { value : 1 };
       	  var cnt = "";
-      	  if (cmp.code && cmp.code.coding && cmp.code.coding[0].display) cnt = cmp.code.coding[0].display; 
+      	  if (measure) cnt = measure; 
+      	  else if (cmp.code && cmp.code.coding && cmp.code.coding[0].code) {
+      		  cnt = cmp.code.coding[0].code;
+      		  fhirinfo.codeToLabel[cnt] = fhirinfo.codeToLabel[cnt] || cmp.code.coding[0].display;
+      	  }
       	  var dateTime = record.data.effectiveDateTime || cdate;
       	  var e = {
                     value : Number(q.value),
@@ -85,7 +106,7 @@ angular.module('fhirObservation')
 	            		  addEntry(record, comp, cdate);
 	            	  });
           	  } else {
-          		  addEntry(record, record.data, cdate);
+          		  addEntry(record, record.data, cdate, measure);
           	  }
           	  	            	    
             } 
@@ -138,6 +159,7 @@ angular.module('fhirObservation')
 	       var r = [];
 	       angular.forEach(a, function(x) {
 	     	  //x = $scope.getLabel(dim, x);
+	    	  x = fhirinfo.codeToLabel[x] || x;
 	     	  if (x.length && x.length > 15) r.push(x.substr(0,13) + "..."); else r.push(x); 
 	       });
 	       return r;

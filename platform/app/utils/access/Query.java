@@ -327,6 +327,22 @@ public class Query {
 			 properties.put("app", resolved);
 		 }
 		 
+		 if (properties.containsKey("owner")) {
+			 Set<String> owners = getRestriction("owner");
+			 Set<Object> resolved = new HashSet<Object>();
+			 for (Object owner : owners) {
+				 AccessLog.log("check owner:"+owner.toString());
+				 if (ObjectId.isValid(owner.toString())) {
+					 resolved.add(owner);
+				 } else {
+					 if (owner.equals("self")) {
+						 resolved.add(cache.getOwner().toString());
+					 } else resolved.add(owner);
+				 }
+			 }
+			 properties.put("owner", resolved);
+		 }
+		 
 		 if (properties.containsKey("code") && !properties.containsKey("content")) {
 			 Set<String> codes = getRestriction("code");
 			 Set<String> contents = new HashSet<String>();

@@ -22,7 +22,7 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 	      templateUrl: 'single_record.html'
 	    })
 	    .state('chart', {
-	      url: '/chart?measure&authToken&limit',	   
+	      url: '/chart?measure&authToken&mode',	   
 	      templateUrl: 'chart.html'
 	    })
 	    .state('overview', {
@@ -263,7 +263,7 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 		if (params.content) query.content = params.content;
 		if (params.owner) query.owner = params.owner;
 		if (params.ids) query._id = params.ids;
-		if (params.after && param.before) query.index = { "effectiveDateTime" : { "!!!ge" : params.after, "!!!le" : params.before }};
+		if (params.after && params.before) query.index = { "effectiveDateTime" : { "!!!ge" : params.after, "!!!le" : params.before }};
 		console.log(params);
 		return midataServer.getRecords(midataServer.authToken, query, ["name", "created", "content", "data", "owner", "ownerName"])
 		.then(function(results) {
