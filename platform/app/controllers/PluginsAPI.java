@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -523,7 +524,7 @@ public class PluginsAPI extends APIController {
 		try {
 		String signed = calc.sign(json.get("url").asText());
 		AccessLog.log(signed);
-		WSRequestHolder wsh = WS.url(URLEncoder.encode(signed, "UTF-8"));
+		WSRequestHolder wsh = WS.url(URLDecoder.decode(signed, "UTF-8"));
 		//AccessLog.log("URL: "+wsh.getUrl());
 		//AccessLog.log("Params:"+wsh.getQueryParameters().toString());
 		
