@@ -523,8 +523,8 @@ public class PluginsAPI extends APIController {
 		String signed = calc.sign(json.get("url").asText());
 		AccessLog.log(signed);
 		WSRequestHolder wsh = WS.url(signed);
-		AccessLog.log("URL: "+wsh.getUrl());
-		AccessLog.log("Params:"+wsh.getQueryParameters().toString());
+		//AccessLog.log("URL: "+wsh.getUrl());
+		//AccessLog.log("Params:"+wsh.getQueryParameters().toString());
 		
 		return wsh.get().map(new Function<WSResponse, Result>() {
 			public Result apply(WSResponse response) {
