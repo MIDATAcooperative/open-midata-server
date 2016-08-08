@@ -521,7 +521,7 @@ public class PluginsAPI extends APIController {
 		OAuthCalculator calc = new OAuthCalculator(key, token);
 		try {
 		String signed = calc.sign(json.get("url").asText());
-		
+		AccessLog.log(signed);
 		WSRequestHolder wsh = WS.url(signed);
 		AccessLog.log("URL: "+wsh.getUrl());
 		AccessLog.log("Params:"+wsh.getQueryParameters().toString());
