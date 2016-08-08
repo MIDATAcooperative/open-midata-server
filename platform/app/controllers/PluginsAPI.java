@@ -460,20 +460,21 @@ public class PluginsAPI extends APIController {
 		// decrypt authToken and check whether a user exists who has the app installed
 		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
 				
-		Map<String, String> tokens = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_oauth").toMap();
+		Map<String, Object> tokens = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_oauth").toMap();
 				
-		String oauthToken, oauthTokenSecret, appId;
+		String oauthToken, oauthTokenSecret;
+		ObjectId appId;
 		
-		oauthToken = tokens.get("oauthToken");
-		oauthTokenSecret = tokens.get("oauthTokenSecret");
-		appId = tokens.get("appId");
+		oauthToken = (String) tokens.get("oauthToken");
+		oauthTokenSecret = (String) tokens.get("oauthTokenSecret");
+		appId = (ObjectId) tokens.get("appId");
 		
 
 		// also get the consumer key and secret
 				
 		Plugin app;
 		try {			
-				app = Plugin.getById(new ObjectId(appId), Sets.create("consumerKey", "consumerSecret"));
+				app = Plugin.getById(appId, Sets.create("consumerKey", "consumerSecret"));
 				if (app == null) return badRequestPromise("Invalid authToken");			
 		} catch (InternalServerException e) {
 			return badRequestPromise(e.getMessage());

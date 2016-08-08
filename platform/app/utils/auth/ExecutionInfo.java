@@ -10,6 +10,9 @@ import models.User;
 
 import org.bson.types.ObjectId;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import play.libs.Json;
 import play.mvc.Http.Request;
 
 import utils.access.RecordManager;
@@ -31,6 +34,19 @@ public class ExecutionInfo {
 	
 	public Space space;
 	
+	public static ExecutionInfo checkToken(Request request, String token) throws AppException {
+		String plaintext = TokenCrypto.decryptToken(token);
+		if (plaintext == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");	
+		JsonNode json = Json.parse(plaintext);
+		if (json == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
+		
+		if (json.has("instanceId")) {
+			return checkSpaceToken(SpaceToken.decrypt(request, json));
+		} else {
+			return checkMobileToken(MobileAppSessionToken.decrypt(json));
+		}
+	}
+	
 	public static ExecutionInfo checkSpaceToken(Request request, String token) throws AppException {
 		// decrypt authToken 
 		SpaceToken authToken = SpaceToken.decrypt(request, token);
@@ -38,6 +54,11 @@ public class ExecutionInfo {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 		
+		return checkSpaceToken(authToken);
+		
+	}
+	
+	public static ExecutionInfo checkSpaceToken(SpaceToken authToken) throws AppException {				
 		ExecutionInfo result = new ExecutionInfo();
 		result.executorId = authToken.executorId;
 			
@@ -75,7 +96,12 @@ public class ExecutionInfo {
 		if (authToken == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
-					
+			
+		return checkMobileToken(authToken);		
+	}
+	
+	public static ExecutionInfo checkMobileToken(MobileAppSessionToken authToken) throws AppException {		
+						
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare"));
         if (appInstance == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 

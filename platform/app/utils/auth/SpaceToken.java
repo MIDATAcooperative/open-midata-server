@@ -126,6 +126,14 @@ public class SpaceToken {
 			// decryptAES can throw DecoderException, but there is no way to catch it; catch all exceptions for now...
 			String plaintext = TokenCrypto.decryptToken(unsafeSecret);
 			JsonNode json = Json.parse(plaintext);
+			return decrypt(request, json);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public static SpaceToken decrypt(Request request, JsonNode json) {
+		try {
 			ObjectId spaceId = new ObjectId(json.get("instanceId").asText());
 			ObjectId userId = new ObjectId(json.get("userId").asText());
 			ObjectId recordId = json.has("r") ? new ObjectId(json.get("r").asText()) : null;

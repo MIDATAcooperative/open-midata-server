@@ -51,7 +51,7 @@ public class FHIR extends Controller {
 		String param = req.getHeader("Authorization");
 				
 		if (param != null && param.startsWith("Bearer ")) {
-          ExecutionInfo info = ExecutionInfo.checkMobileToken(param.substring("Bearer ".length()));        
+          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()));        
           ResourceProvider.setExecutionInfo(info);
 		}
         

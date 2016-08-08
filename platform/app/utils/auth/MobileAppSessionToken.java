@@ -53,6 +53,14 @@ public class MobileAppSessionToken {
 			// decryptAES can throw DecoderException, but there is no way to catch it; catch all exceptions for now...
 			String plaintext = TokenCrypto.decryptToken(unsafeSecret);
 			JsonNode json = Json.parse(plaintext);
+			return decrypt(json);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public static MobileAppSessionToken decrypt(JsonNode json) {
+		try {			
 			ObjectId appInstanceId = new ObjectId(json.get("a").asText());
 			String phrase = json.get("p").asText();	
 			long created = json.get("c").asLong();
