@@ -10,11 +10,10 @@
     "midata": "git://github.com/Alexander-Kreutz/midata_shared.git",
     "angular-translate": "^2.11.0",
     "angular-chart.js": "~1.0.0",
-    "Chart.js": "~1.0.2"
+    "Chart.js": "~2.0.2"
   },
   "resolutions": {
-    "angular": "~1.5.3",
-    "Chart.js": "2.x"
+    "angular": "~1.5.3"
   },
   "exportsOverride": {
     "bootstrap": {
