@@ -23,6 +23,10 @@ import models.User;
 import models.enums.AggregationType;
 import models.enums.UserRole;
 
+import oauth.signpost.exception.OAuthCommunicationException;
+import oauth.signpost.exception.OAuthExpectationFailedException;
+import oauth.signpost.exception.OAuthMessageSignerException;
+
 import org.bson.BSONObject;
 import org.bson.types.ObjectId;
 
@@ -510,8 +514,15 @@ public class PluginsAPI extends APIController {
 		// perform the api call
 		ConsumerKey key = new ConsumerKey(app.consumerKey, app.consumerSecret);
 		RequestToken token = new RequestToken(oauthToken, oauthTokenSecret);
+		AccessLog.log(app.consumerKey);
+		AccessLog.log(app.consumerSecret);
+		AccessLog.log(oauthToken);
+		AccessLog.log(oauthTokenSecret);
+		OAuthCalculator calc = new OAuthCalculator(key, token);
+		try {
+		String signed = calc.sign(json.get("url").asText());
 		
-		WSRequestHolder wsh = WS.url(json.get("url").asText()).sign(new OAuthCalculator(key, token));
+		WSRequestHolder wsh = WS.url(signed);
 		AccessLog.log("URL: "+wsh.getUrl());
 		AccessLog.log("Params:"+wsh.getQueryParameters().toString());
 		
@@ -520,6 +531,14 @@ public class PluginsAPI extends APIController {
 				return ok(response.asJson());
 			}
 		});
+		
+		} catch (OAuthCommunicationException e) {
+			throw new InternalServerException("error.internal", e);
+		} catch (OAuthExpectationFailedException e2) {
+			throw new InternalServerException("error.internal", e2);
+		} catch (OAuthMessageSignerException e3) {
+			throw new InternalServerException("error.internal", e3);
+		}
 	}
 	
 	/**
