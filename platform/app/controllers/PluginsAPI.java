@@ -3,6 +3,7 @@ package controllers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -522,7 +523,7 @@ public class PluginsAPI extends APIController {
 		try {
 		String signed = calc.sign(json.get("url").asText());
 		AccessLog.log(signed);
-		WSRequestHolder wsh = WS.url(signed);
+		WSRequestHolder wsh = WS.url(URLEncoder.encode(signed, "UTF-8"));
 		//AccessLog.log("URL: "+wsh.getUrl());
 		//AccessLog.log("Params:"+wsh.getQueryParameters().toString());
 		
@@ -538,6 +539,8 @@ public class PluginsAPI extends APIController {
 			throw new InternalServerException("error.internal", e2);
 		} catch (OAuthMessageSignerException e3) {
 			throw new InternalServerException("error.internal", e3);
+		} catch (UnsupportedEncodingException e4) {
+			throw new InternalServerException("error.internal", e4);
 		}
 	}
 	
