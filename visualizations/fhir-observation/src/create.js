@@ -61,7 +61,12 @@ angular.module('fhirObservation')
 				$scope.success = true; 
 				$scope.isBusy = false; 
 				$scope.reset(); 							
-				$timeout(function() { $scope.success = false;midataPortal.updateNotification();midataPortal.doneNotification(); }, 2000); 
+				$timeout(function() { 
+					$scope.success = false;
+					midataPortal.updateNotification();
+					midataPortal.doneNotification();
+					if ($scope.init) $scope.init();
+			   }, 2000); 
 			});			
 		};
 														

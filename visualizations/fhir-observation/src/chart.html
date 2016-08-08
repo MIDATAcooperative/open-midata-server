@@ -19,8 +19,9 @@
 		<span class="col-sm-2"><button class="btn btn-xs btn-default" translate="later" ng-click="shift(1);reload();"></button></span>
 	</div>
 	
-	<div ng-if="!records.length" class="row">
-		<div class="extraspace"></div>
+	<div class="extraspace"></div>
+	
+	<div ng-if="!records.length" class="row">		
 		<p class="col-sm-12" translate="empty"></p>
 	</div>
 
@@ -49,6 +50,6 @@
 		</div>
 	</div>
 
-
+    <div ng-include="'create.html'"></div>
 
 </div>

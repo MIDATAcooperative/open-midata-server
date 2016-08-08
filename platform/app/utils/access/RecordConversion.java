@@ -36,7 +36,7 @@ public class RecordConversion {
 		record.content = (String) dbrecord.meta.get("content");
 		Object code = dbrecord.meta.get("code");
 		if (code != null) {
-		  record.code = (code instanceof String) ? Collections.singleton(code) : new HashSet((Collection) code);
+		  record.code = (code instanceof String) ? Collections.singleton((String) code) : new HashSet((Collection) code);
 		}
 		record.owner = dbrecord.owner;
 		record.ownerName = (String) dbrecord.meta.get("ownerName");		

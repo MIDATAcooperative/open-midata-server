@@ -306,13 +306,15 @@ public class Plugins extends APIController {
 	}
 	
 	@Security.Authenticated(AnyRoleSecured.class)
-	@APICall
+	@APICall	
 	public static Result getRequestTokenOAuth1(String spaceIdString) throws AppException {
-		
-		
+				
 		// get app details			
 		final ObjectId spaceId = new ObjectId(spaceIdString);
 		final ObjectId userId = new ObjectId(request().username());
+		String origin = Play.application().configuration().getString("portal.originUrl");
+		if (origin.equals("https://demo.midata.coop:9002")) origin = "https://demo.midata.coop"; 
+		String authPage = origin +"/authorized.html";
 				
 		Space space  = Space.getByIdAndOwner(spaceId, userId, Sets.create("visualization", "type"));
 		if (space == null) throw new InternalServerException("error.internal", "Unknown Space");
@@ -329,9 +331,7 @@ public class Plugins extends APIController {
 		ConsumerKey key = new ConsumerKey(app.consumerKey, app.consumerSecret);
 		ServiceInfo info = new ServiceInfo(app.requestTokenUrl, app.accessTokenUrl, app.authorizationUrl, key);
 		OAuth client = new OAuth(info);
-		RequestToken requestToken = client.retrieveRequestToken(routes.Records.onAuthorized(app._id.toString())
-				.absoluteURL(request(), true));
-		
+		RequestToken requestToken = client.retrieveRequestToken(authPage);		
 		
 		session("token", requestToken.token);
 		session("secret", requestToken.secret);
@@ -349,7 +349,7 @@ public class Plugins extends APIController {
 		// validate json
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "code");
-						
+								
 		// get app details
 		final ObjectId spaceId = new ObjectId(spaceIdString);
 		final ObjectId userId = new ObjectId(request().username());

@@ -7,6 +7,10 @@ var en = {
 	"add_btn" : "Add",
 	"back_btn" : "Back",
 	
+	"later" : ">>",
+	"earlier" : "<<",
+	"change_btn" : "Change",
+	
 	"empty" : "No measurements found.",
 	"data_added" : "Observation added",
 	
