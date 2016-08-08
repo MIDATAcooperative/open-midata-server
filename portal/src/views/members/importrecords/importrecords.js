@@ -89,6 +89,7 @@ angular.module('portal')
 			var keys = _.map(arguments1, function(argument) { return argument.split("=")[0]; });
 			var values = _.map(arguments1, function(argument) { return argument.split("=")[1]; });
 			var params = _.object(keys, values);
+			
 			if (_.has(params, "error")) {
 				error = "The following error occurred: " + params.error + ". Please try again.";
 			} else if (_.has(params, "code")) {
@@ -96,7 +97,7 @@ angular.module('portal')
 				requestAccessToken(params.code);
 			} else if (_.has(params, "oauth_verifier")) {
 				message = "User authorization granted. Requesting access token...";
-				requestAccessToken(params.oauth_verifier);
+				requestAccessToken(params.oauth_verifier, params);
 			} else {
 				error = "An unknown error occured while requesting authorization. Please try again.";
 			}
@@ -114,8 +115,9 @@ angular.module('portal')
 	};
 	
 	// request access token
-	requestAccessToken = function(code) {
+	requestAccessToken = function(code, additional) {
 		var data = {"code": code};
+		if (additional) data.params = additional;
 		var requestTokensUrl = null; 
 		if (app.type === "oauth2") {
 			requestTokensUrl = jsRoutes.controllers.Plugins.requestAccessTokenOAuth2($scope.spaceId).url;

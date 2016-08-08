@@ -349,7 +349,10 @@ public class Plugins extends APIController {
 		// validate json
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "code");
-								
+				
+		Map<String, Object> additionalParams = Collections.EMPTY_MAP;
+		if (json.has("params")) additionalParams = JsonExtraction.extractMap(json.get("params"));
+		
 		// get app details
 		final ObjectId spaceId = new ObjectId(spaceIdString);
 		final ObjectId userId = new ObjectId(request().username());
@@ -369,12 +372,23 @@ public class Plugins extends APIController {
 		OAuth client = new OAuth(info);
 		RequestToken requestToken = new RequestToken(reqTokens.get("token").toString(), reqTokens.get("secret").toString());
 		RequestToken accessToken = client.retrieveAccessToken(requestToken, json.get("code").asText());
-
+         
 		// save token and secret to database
 				
 		Map<String, Object> tokens = CMaps.map("appId",space.visualization)
 				                          .map("oauthToken", accessToken.token)
 			                              .map("oauthTokenSecret", accessToken.secret);
+		for (String p : additionalParams.keySet()) {
+			if (p.equals("oauth_token") || p.equals("oauth_verifier") || p.equals("appId") || p.equals("oauthToken") || p.equals("oauthTokenSecret")) {
+				
+			} else tokens.put(p, additionalParams.get(p));					
+		}
+		additionalParams.remove("oauth_token");
+		additionalParams.remove("oauth_verifier");
+		if (!additionalParams.isEmpty()) {
+			RecordManager.instance.setMeta(userId, spaceId, "_oauthParams", additionalParams);
+		}
+		
 		RecordManager.instance.setMeta(userId, spaceId, "_oauth", tokens);
 		
 		return ok();

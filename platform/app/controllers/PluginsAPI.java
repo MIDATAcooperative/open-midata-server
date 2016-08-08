@@ -144,6 +144,33 @@ public class PluginsAPI extends APIController {
 	}
 	
 	/**
+	 * retrieve oauth extra json for a space. 
+	 * @return json previously stored with setConfig
+	 * @throws JsonValidationException
+	 * @throws AppException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@VisualizationCall
+	public static Result getOAuthParams() throws JsonValidationException, AppException {
+		
+		// validate json
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "authToken");
+		
+		// decrypt authToken and check whether space with corresponding owner exists
+		SpaceToken spaceToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
+		if (spaceToken == null) {
+			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
+		}
+		
+		BSONObject meta = RecordManager.instance.getMeta(spaceToken.executorId, spaceToken.spaceId, "_oauthParams");
+		
+		if (meta != null) return ok(Json.toJson(meta.toMap()));
+		
+		return ok();
+	}
+	
+	/**
 	 * store configuration json for a space
 	 * @return status ok
 	 * @throws JsonValidationException
