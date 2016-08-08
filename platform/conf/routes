@@ -10,6 +10,9 @@ GET     /debug/aps/:id                                   controllers.Debug.get(i
 GET     /ping                                            controllers.Debug.ping()
 OPTIONS /fhir/*all                                       controllers.FHIR.checkPreflight(all)
 GET     /fhir/*all                                       controllers.FHIR.get(all)
+POST    /fhir/*all                                       controllers.FHIR.post(all)
+PUT     /fhir/*all                                       controllers.FHIR.put(all)
+DELETE  /fhir/*all                                       controllers.FHIR.delete(all)
 GET     /test/autorun                                    controllers.AutoRun.run()
 
 # Home page

@@ -510,7 +510,12 @@ public class PluginsAPI extends APIController {
 		// perform the api call
 		ConsumerKey key = new ConsumerKey(app.consumerKey, app.consumerSecret);
 		RequestToken token = new RequestToken(oauthToken, oauthTokenSecret);
-		return WS.url(json.get("url").asText()).sign(new OAuthCalculator(key, token)).get().map(new Function<WSResponse, Result>() {
+		
+		WSRequestHolder wsh = WS.url(json.get("url").asText()).sign(new OAuthCalculator(key, token));
+		AccessLog.log("URL: "+wsh.getUrl());
+		AccessLog.log("Params:"+wsh.getQueryParameters().toString());
+		
+		return wsh.get().map(new Function<WSResponse, Result>() {
 			public Result apply(WSResponse response) {
 				return ok(response.asJson());
 			}

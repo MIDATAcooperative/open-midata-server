@@ -68,4 +68,112 @@ public class FHIR extends Controller {
 		
 		return status(res.getStatus());
 	}
+	
+	/**
+	 * generic handler for all FHIR post requests.
+	 * requests will be forwarded to the FHIR servlet.
+	 * @param all request path after /fhir
+	 * @return request result computed by servlet
+	 * @throws AppException
+	 * @throws IOException
+	 * @throws ServletException
+	 */
+	@MobileCall
+	@BodyParser.Of(BodyParser.Raw.class) 
+	public static Result post(String all) throws AppException, IOException, ServletException {
+		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
+		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
+				
+		String param = req.getHeader("Authorization");
+				
+		if (param != null && param.startsWith("Bearer ")) {
+          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()));        
+          ResourceProvider.setExecutionInfo(info);
+		}
+        
+		AccessLog.log(req.getRequestURI());
+		servlet.doPost(req, res);
+		
+		if (res.getResponseWriter() != null) {
+			return status(res.getStatus(), res.getResponseWriter().toString());		
+		}
+		
+		if (res.getResponseStream() != null) {
+			return status(res.getStatus(), res.getResponseStream().toByteArray());
+		}
+		
+		return status(res.getStatus());
+	}
+	
+	/**
+	 * generic handler for all FHIR put requests.
+	 * requests will be forwarded to the FHIR servlet.
+	 * @param all request path after /fhir
+	 * @return request result computed by servlet
+	 * @throws AppException
+	 * @throws IOException
+	 * @throws ServletException
+	 */
+	@MobileCall
+	@BodyParser.Of(BodyParser.Raw.class) 
+	public static Result put(String all) throws AppException, IOException, ServletException {
+		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
+		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
+				
+		String param = req.getHeader("Authorization");
+				
+		if (param != null && param.startsWith("Bearer ")) {
+          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()));        
+          ResourceProvider.setExecutionInfo(info);
+		}
+        
+		AccessLog.log(req.getRequestURI());
+		servlet.doPut(req, res);
+		
+		if (res.getResponseWriter() != null) {
+			return status(res.getStatus(), res.getResponseWriter().toString());		
+		}
+		
+		if (res.getResponseStream() != null) {
+			return status(res.getStatus(), res.getResponseStream().toByteArray());
+		}
+		
+		return status(res.getStatus());
+	}
+	
+	/**
+	 * generic handler for all FHIR delete requests.
+	 * requests will be forwarded to the FHIR servlet.
+	 * @param all request path after /fhir
+	 * @return request result computed by servlet
+	 * @throws AppException
+	 * @throws IOException
+	 * @throws ServletException
+	 */
+	@MobileCall
+	@BodyParser.Of(BodyParser.Raw.class) 
+	public static Result delete(String all) throws AppException, IOException, ServletException {
+		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
+		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
+				
+		String param = req.getHeader("Authorization");
+				
+		if (param != null && param.startsWith("Bearer ")) {
+          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()));        
+          ResourceProvider.setExecutionInfo(info);
+		}
+        
+		AccessLog.log(req.getRequestURI());
+		servlet.doDelete(req, res);
+		
+		if (res.getResponseWriter() != null) {
+			return status(res.getStatus(), res.getResponseWriter().toString());		
+		}
+		
+		if (res.getResponseStream() != null) {
+			return status(res.getStatus(), res.getResponseStream().toByteArray());
+		}
+		
+		return status(res.getStatus());
+	}
 }

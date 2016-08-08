@@ -59,6 +59,21 @@ public class FHIRServlet extends RestfulServer {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
 		super.doGet(request, response);
 	}
+	
+	@Override
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
+		super.doPost(request, response);
+	}
+	
+	@Override
+	public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
+		super.doPut(request, response);
+	}
+	
+	@Override
+	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
+		super.doDelete(request, response);
+	}
    
     
      
