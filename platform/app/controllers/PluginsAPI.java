@@ -522,14 +522,15 @@ public class PluginsAPI extends APIController {
 		AccessLog.log(oauthToken);
 		AccessLog.log(oauthTokenSecret);
 		OAuthCalculator calc = new OAuthCalculator(key, token);
-		try {
-		String signed = calc.sign(json.get("url").asText());
-		AccessLog.log(signed);
-		String part1 = signed.substring(0, signed.indexOf("?"));
-		String part2 = signed.substring(signed.indexOf("?")+1);
+		//try {
+		String url = json.get("url").asText();
+		//String signed = calc.sign(json.get("url").asText());
+		//AccessLog.log(signed);
+		String part1 = url.substring(0, url.indexOf("?"));
+		String part2 = url.substring(url.indexOf("?")+1);
 		AccessLog.log(part1);
 		AccessLog.log(part2);
-		WSRequestHolder wsh = WS.url(part1).setQueryString(part2);
+		WSRequestHolder wsh = WS.url(part1).setQueryString(part2).sign(calc);
 		AccessLog.log("URL: "+wsh.getUrl());
 		//AccessLog.log("Params:"+wsh.getQueryParameters().toString());
 		
@@ -539,13 +540,13 @@ public class PluginsAPI extends APIController {
 			}
 		});
 		
-		} catch (OAuthCommunicationException e) {
+		/*} catch (OAuthCommunicationException e) {
 			throw new InternalServerException("error.internal", e);
 		} catch (OAuthExpectationFailedException e2) {
 			throw new InternalServerException("error.internal", e2);
 		} catch (OAuthMessageSignerException e3) {
 			throw new InternalServerException("error.internal", e3);		
-		}
+		}*/
 	}
 	
 	/**
