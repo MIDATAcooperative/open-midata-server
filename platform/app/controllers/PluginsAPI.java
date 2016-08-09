@@ -535,7 +535,8 @@ public class PluginsAPI extends APIController {
 		HttpURLConnection con = (HttpURLConnection) target.openConnection();
 		con.connect();
 		InputStream str = con.getInputStream();
-		
+		response().setContentType(con.getContentType());
+		for (String hn : con.getHeaderFields().keySet()) response().setHeader(hn, con.getHeaderField(hn));		
 		return status(con.getResponseCode(), str);
 		
 		/*return wsh.get().map(new Function<WSResponse, Result>() {
