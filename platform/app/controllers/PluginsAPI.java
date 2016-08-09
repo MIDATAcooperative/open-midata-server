@@ -3,8 +3,13 @@ package controllers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -481,14 +486,14 @@ public class PluginsAPI extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall
-	public static Promise<Result> oAuth1Call() throws AppException {
+	public static Result oAuth1Call() throws AppException {
 	
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();
 		try {
 			JsonValidation.validate(json, "authToken", "url");
 		} catch (JsonValidationException e) {
-			return badRequestPromise(e.getMessage());
+			return badRequest(e.getMessage());
 		}
 
 		// decrypt authToken and check whether a user exists who has the app installed
@@ -509,9 +514,9 @@ public class PluginsAPI extends APIController {
 		Plugin app;
 		try {			
 				app = Plugin.getById(appId, Sets.create("consumerKey", "consumerSecret"));
-				if (app == null) return badRequestPromise("Invalid authToken");			
+				if (app == null) return badRequest("Invalid authToken");			
 		} catch (InternalServerException e) {
-			return badRequestPromise(e.getMessage());
+			return badRequest(e.getMessage());
 		}
 
 		// perform the api call
@@ -522,31 +527,34 @@ public class PluginsAPI extends APIController {
 		AccessLog.log(oauthToken);
 		AccessLog.log(oauthTokenSecret);
 		OAuthCalculator calc = new OAuthCalculator(key, token);
-		//try {
-		String url = json.get("url").asText();
-		//String signed = calc.sign(json.get("url").asText());
-		//AccessLog.log(signed);
-		String part1 = url.substring(0, url.indexOf("?"));
-		String part2 = url.substring(url.indexOf("?")+1);
-		AccessLog.log(part1);
-		AccessLog.log(part2);
-		WSRequestHolder wsh = WS.url(part1).setQueryString(part2).sign(calc);
-		AccessLog.log("URL: "+wsh.getUrl());
-		//AccessLog.log("Params:"+wsh.getQueryParameters().toString());
+		try {
+		String signed = calc.sign(json.get("url").asText());
+		AccessLog.log(signed);
+		URL target = new URL(signed);
 		
-		return wsh.get().map(new Function<WSResponse, Result>() {
+		HttpURLConnection con = (HttpURLConnection) target.openConnection();
+		con.connect();
+		InputStream str = con.getInputStream();
+		
+		return status(con.getResponseCode(), str);
+		
+		/*return wsh.get().map(new Function<WSResponse, Result>() {
 			public Result apply(WSResponse response) {
 				return ok(response.asJson());
 			}
-		});
+		});*/
 		
-		/*} catch (OAuthCommunicationException e) {
+		} catch (OAuthCommunicationException e) {
 			throw new InternalServerException("error.internal", e);
 		} catch (OAuthExpectationFailedException e2) {
 			throw new InternalServerException("error.internal", e2);
 		} catch (OAuthMessageSignerException e3) {
 			throw new InternalServerException("error.internal", e3);		
-		}*/
+		} catch (MalformedURLException e4) {
+			throw new InternalServerException("error.internal", e4);
+		} catch (IOException e5) {
+			throw new InternalServerException("error.internal", e5);
+		}
 	}
 	
 	/**
