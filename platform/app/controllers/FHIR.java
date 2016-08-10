@@ -33,6 +33,17 @@ public class FHIR extends Controller {
 		return ok();
 	}
 	
+	@MobileCall
+	public static Result checkPreflightRoot() {		
+		return ok();
+	}
+	
+	@MobileCall
+	@BodyParser.Of(BodyParser.Raw.class) 
+	public static Result getRoot() throws AppException, IOException, ServletException {
+		return get("/");
+	}
+	
 	/**
 	 * generic handler for all FHIR get requests.
 	 * requests will be forwarded to the FHIR servlet.
@@ -67,6 +78,13 @@ public class FHIR extends Controller {
 		}
 		
 		return status(res.getStatus());
+	}
+	
+	
+	@MobileCall
+	@BodyParser.Of(BodyParser.Raw.class) 
+	public static Result postRoot() throws AppException, IOException, ServletException {
+		return post("/");
 	}
 	
 	/**
@@ -105,6 +123,12 @@ public class FHIR extends Controller {
 		return status(res.getStatus());
 	}
 	
+	@MobileCall
+	@BodyParser.Of(BodyParser.Raw.class) 
+	public static Result putRoot() throws AppException, IOException, ServletException {
+		return put("/");
+	}
+	
 	/**
 	 * generic handler for all FHIR put requests.
 	 * requests will be forwarded to the FHIR servlet.
@@ -139,6 +163,12 @@ public class FHIR extends Controller {
 		}
 		
 		return status(res.getStatus());
+	}
+	
+	@MobileCall
+	@BodyParser.Of(BodyParser.Raw.class) 
+	public static Result deleteRoot() throws AppException, IOException, ServletException {
+		return delete("/");
 	}
 	
 	/**

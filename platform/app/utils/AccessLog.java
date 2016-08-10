@@ -40,7 +40,7 @@ public class AccessLog {
 	 */
 	public static void log(String txt) {
 		String msg = "                                            ".substring(0,ident.get())+txt;
-		if (logToFile) Logger.debug(msg);
+		//if (logToFile) Logger.debug(msg);
 		if (logForMail) msgs.get().writer.println(msg);
 	}
 	
@@ -78,7 +78,7 @@ public class AccessLog {
 	   }
 	   s.append(")");
 	   String msg = "                                            ".substring(0,ident.get())+"Query:"+s.toString();
-	   if (logToFile) Logger.debug(msg);
+	   //if (logToFile) Logger.debug(msg);
 	   if (logForMail) msgs.get().writer.println(msg);
 	}
 	
@@ -88,7 +88,7 @@ public class AccessLog {
 	 */
 	public static void logDB(String msg) {
 	   String msg1 = "                                            ".substring(0,ident.get())+"DB:"+msg; 
-	   if (logToFile) Logger.debug(msg1);
+	   //if (logToFile) Logger.debug(msg1);
 	   if (logForMail) msgs.get().writer.println(msg1);
 	}
 	
@@ -108,6 +108,9 @@ public class AccessLog {
 	 * start a new quest. Clears the currently stored information.
 	 */
 	public static void newRequest() {
+		if (logToFile) {
+		  Logger.debug(getReport());
+		}
 		ident.set(0);
 		msgs.set(new LogContext());
 	}

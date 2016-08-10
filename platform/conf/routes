@@ -13,6 +13,11 @@ GET     /fhir/*all                                       controllers.FHIR.get(al
 POST    /fhir/*all                                       controllers.FHIR.post(all)
 PUT     /fhir/*all                                       controllers.FHIR.put(all)
 DELETE  /fhir/*all                                       controllers.FHIR.delete(all)
+OPTIONS /fhir                                            controllers.FHIR.checkPreflightRoot()
+GET     /fhir                                            controllers.FHIR.getRoot()
+POST    /fhir                                            controllers.FHIR.postRoot()
+PUT     /fhir                                            controllers.FHIR.putRoot()
+DELETE  /fhir                                            controllers.FHIR.deleteRoot()
 GET     /test/autorun                                    controllers.AutoRun.run()
 
 # Home page

@@ -77,8 +77,9 @@ public class MedicationOrderResourceProvider extends ResourceProvider<Medication
 		return query.execute(info);	
 	}
 	
-	public static void processResource(Record record, MedicationOrder p) {
-		ResourceProvider.processResource(record, p);
+	@Override
+	public void processResource(Record record, MedicationOrder p) {
+		super.processResource(record, p);
 		if (p.getPatient().isEmpty()) {
 			p.getPatient().setReferenceElement(new IdType("Patient", record.owner.toString()));
 			p.getPatient().setDisplay(record.ownerName);

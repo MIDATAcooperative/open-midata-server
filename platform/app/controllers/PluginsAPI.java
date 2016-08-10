@@ -456,6 +456,14 @@ public class PluginsAPI extends APIController {
 	public static void createRecord(ExecutionInfo inf, Record record) throws AppException  {
 		if (record.format==null) record.format = "application/json";
 		if (record.content==null) record.content = "other";
+		if (record.owner==null) record.owner = inf.ownerId;
+		
+		//ObjectId targetConsent = null;
+		
+		if (!record.owner.equals(inf.ownerId)) {
+			Set<Consent> consent = Consent.getHealthcareActiveByAuthorizedAndOwner(inf.executorId, record.owner);
+			if (consent == null || consent.isEmpty()) throw new BadRequestException("error.noconsent", "No active consent that allows to add data for target person.");			
+		}
 		
 		if (inf.space != null) {				
 		    RecordManager.instance.addRecord(inf.executorId, record, inf.space._id);
@@ -478,6 +486,10 @@ public class PluginsAPI extends APIController {
 			
 		} else {
 			RecordManager.instance.addRecord(inf.executorId, record, inf.targetAPS);
+									
+			Set<ObjectId> records = new HashSet<ObjectId>();
+			records.add(record._id);
+			RecordManager.instance.share(inf.executorId, inf.ownerId, inf.targetAPS, records, false);
 		}
 	}
 	

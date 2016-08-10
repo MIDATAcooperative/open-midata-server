@@ -123,7 +123,7 @@ public class Query {
 			return (Set) v;
 		} else if (v instanceof Collection) {
 			Set<String> results = new HashSet<String>();
-			results.addAll((Collection<String>) v);
+			for (Object val : (Collection) v) { results.add(val.toString()); }			
 			return results;											
 		} else throw new BadRequestException("error.internal","Bad Restriction 1: "+name);
 	}

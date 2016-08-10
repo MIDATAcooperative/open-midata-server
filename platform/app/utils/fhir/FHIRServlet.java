@@ -2,7 +2,9 @@ package utils.fhir;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,6 +30,8 @@ import ca.uhn.fhir.rest.server.RestfulServer;
 public class FHIRServlet extends RestfulServer {
  
     private static final long serialVersionUID = 1L;
+    
+    public static Map<String, ResourceProvider> myProviders;
    
     /**
      * The initialize method is automatically called when the servlet is starting up, so it can
@@ -47,12 +51,17 @@ public class FHIRServlet extends RestfulServer {
        * configures itself to use them by calling
        * setResourceProviders()
        */
+      myProviders = new HashMap<String, ResourceProvider>();
       List<IResourceProvider> resourceProviders = new ArrayList<IResourceProvider>();
-      resourceProviders.add(new PatientResourceProvider());
-      resourceProviders.add(new ObservationResourceProvider());   
-      resourceProviders.add(new MedicationOrderResourceProvider());
+      
+      myProviders.put("Patient", new PatientResourceProvider());
+      myProviders.put("Observation",  new ObservationResourceProvider());   
+      myProviders.put("MedicationOrder",  new MedicationOrderResourceProvider());
+      
+      resourceProviders.addAll(myProviders.values());
       setResourceProviders(resourceProviders);
-         
+      
+      setPlainProviders(new Transactions());
    }
 
 	@Override

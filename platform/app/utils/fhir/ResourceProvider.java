@@ -2,6 +2,7 @@ package utils.fhir;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,17 +11,25 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.instance.model.api.IIdType;
 
 import org.hl7.fhir.dstu3.model.BaseResource;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.InstantType;
 import org.hl7.fhir.dstu3.model.Observation;
+import org.hl7.fhir.exceptions.FHIRException;
+
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
+
+import controllers.PluginsAPI;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.Read;
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.ReferenceOrListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
@@ -28,11 +37,17 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
+import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import ca.uhn.fhir.rest.server.exceptions.PreconditionFailedException;
+import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
+import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 
 import models.Record;
 
 import utils.AccessLog;
 import utils.access.RecordManager;
+import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
@@ -43,7 +58,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 
 	public static FhirContext ctx = FhirContext.forDstu3();
 	
-	public FhirContext ctx() {
+	public static FhirContext ctx() {
 		return ctx;
 	}
 	
@@ -145,7 +160,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	}
 		
 	
-	public <T extends BaseResource> List<T> parse(List<Record> result, Class<T> resultClass) {
+	public List<T> parse(List<Record> result, Class<T> resultClass) {
 		ArrayList<T> parsed = new ArrayList<T>();	
 	    IParser parser = ctx().newJsonParser();
 	    for (Record rec : result) {
@@ -160,9 +175,79 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	}
 		
 	
-	public static void processResource(Record record, BaseResource resource) {
+	public void processResource(Record record, T resource) {
 		resource.setId(record._id.toString());
 		resource.getMeta().setVersionId(record.version);
 		resource.getMeta().setLastUpdated(record.lastUpdated);
+	}
+	
+	public static Record newRecord(String format) {
+		Record record = new Record();
+		record._id = new ObjectId();
+		record.creator = info().executorId;
+		record.format = format;
+		record.app = info().pluginId;
+		record.created = new Date(System.currentTimeMillis());
+		record.code = new HashSet<String>();
+		record.owner = info().ownerId;
+		return record;
+	}
+	
+	public static Record fetchCurrent(IIdType theId)  {
+		try {
+			Record record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new ObjectId(theId.getIdPart()));
+			
+			if (record == null) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" not found."); 
+			if (!record.format.equals("fhir/"+theId.getResourceType())) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" has wrong resource type."); 
+			
+			String versionId = theId.getVersionIdPart();
+			if (versionId != null) {	  
+			   if (!versionId.equals(record.version)) {
+			     throw new ResourceVersionConflictException("Unexpected version");
+			   }
+			}		
+			return record;
+		} catch (AppException e) {
+			throw new InternalErrorException(e);
+		}
+	}
+	
+	public static void insertRecord(Record record, IBaseResource resource) {
+		try {
+			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
+			record.data = (DBObject) JSON.parse(encoded);
+			PluginsAPI.createRecord(info(), record);			
+		} catch (AppException e) {
+			throw new InternalErrorException(e);
+		}
+	}
+	
+	public static void updateRecord(Record record, IBaseResource resource) {
+		try {
+		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
+		record.data = (DBObject) JSON.parse(encoded);	  
+		RecordManager.instance.updateRecord(info().executorId, info().targetAPS, record);
+		} catch (AppException e) {
+			throw new InternalErrorException(e);
+		}
+	}
+	
+	public void clean(T resource) {
+		
+	}
+	
+	public void prepare(Record record, T theResource)  { }
+	
+	public Record init() { return null; }
+		
+	
+	
+	public MethodOutcome outcome(String type, Record record, IBaseResource resource) {
+		MethodOutcome retVal = new MethodOutcome();
+		String version = record.version;
+		if (version == null) version = VersionedDBRecord.INITIAL_VERSION;				
+		retVal.setId(new IdType(type, record._id.toString(), version));
+        retVal.setResource(resource);
+		return retVal;
 	}
 }

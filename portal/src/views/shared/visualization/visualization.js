@@ -38,7 +38,7 @@ angular.module('portal')
 		   var visualizations = results.data;
 			$scope.error = null;
 			$scope.visualization = visualizations[0];
-			if ($scope.visualization.defaultSpaceName!=null) {
+			if ($scope.visualization.type !== "mobile" && $scope.visualization.type !== "form") {
 			  $scope.options.createSpace = true;
 			  $scope.options.spaceName = $scope.params.name ||  $scope.visualization.defaultSpaceName;
 			  if ($scope.visualization.defaultQuery != null) {

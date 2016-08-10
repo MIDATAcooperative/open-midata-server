@@ -115,29 +115,33 @@ public class Feature_QueryRedirect extends Feature {
 			if (combined.containsKey(key)) {
 				Object val1 = combined.get(key);
 				Object val2 = query.get(key);
-				if (val1 instanceof ObjectId) val1 = val1.toString();
-				if (val2 instanceof ObjectId) val2 = val2.toString();
-				if (val1.equals(val2)) continue;
+				//if (val1 instanceof ObjectId) val1 = val1.toString();
+				//if (val2 instanceof ObjectId) val2 = val2.toString();
+				if (val1.equals(val2) || val1.toString().equals(val2.toString())) continue;
 				if (val1 instanceof Collection<?>) {
 				 if (val2 instanceof Collection<?>) {
 					((Collection<?>) val1).retainAll((Collection<?>) val2);
-					if (((Collection<?>) val1).isEmpty()) {						
+					if (((Collection<?>) val1).isEmpty()) {		
+						AccessLog.log("empty (col/col): "+key);
 						return null;
 					}
 				 } else {
-					 if ( ((Collection<?>) val1).contains(val2)) {
+					 if ( ((Collection<?>) val1).contains(val2) || ((Collection<?>) val1).contains(val2.toString())) {
 						 combined.put(key, val2);
 					 } else {						 
+						 AccessLog.log("empty (col/val): "+key);
 						 return null;
 					 }
 				 }
 				} else {
 					if (val2 instanceof Collection<?>) {
-						if ( ((Collection<?>) val2).contains(val1)) continue;
+						if ( ((Collection<?>) val2).contains(val1) || ((Collection<?>) val2).contains(val1.toString())) continue;
 						else {						
+							AccessLog.log("empty (val/col): "+key+" val1="+val1.toString()+" val2="+val2.toString());
 							return null;
 						}
 					} else {					
+						AccessLog.log("empty (val/val): "+key);
 						return null;
 					}
 				}
