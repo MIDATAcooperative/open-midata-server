@@ -11,24 +11,18 @@ angular.module('chartApp')
       $scope.data = [];
       $scope.raw = [];
       $scope.chartType = "none";
-      $scope.filter = [];
-      $scope.selectedFilter = null;
-      $scope.filter2 = [];
-      $scope.selectedFilter2 = null;
-      $scope.allSeries = [];
-      $scope.selectedSeries = [];
-      
-      $scope.allLabels = [];
-      $scope.selectedLabels = [];
+     
+     
       
       $scope.report = {};
       $scope.reports = [];
       $scope.unit = null;
       $scope.name = "";
       $scope.config = {};
-      $scope.timeUnit = "";
+      $scope.reportInfo = { owner:[], content:[], context:[], timing:30, timeUnit:"", alg: "simple" };
+  
       $scope.timeUnits = [ { name : "" }, { name : "month"}, {name : "year" }];
-      $scope.algs = [ { value:"simple" }, { value:"avg" }, { value : "newest"}, { value :"count"}, { value : "sum" }];
+      $scope.algs = [ { value:"simple" }, { value:"avg" }, { value : "newest"}, { value :"count"}, { value : "sum" }, { value : "max" }, { value : "min" }];
       $scope.timings = [
          { value : 7, label : "last7"},
          { value : 30, label : "last30"},
@@ -39,7 +33,8 @@ angular.module('chartApp')
       $scope.saving = false;
       $scope.saving2 = false;
       $scope.readonly = false;
-      $scope.contextCache = [];
+      $scope.unsaved = false;
+      $scope.noconfig = false;
       
       $scope.valuesToLabel = { owner : {}, content: {}, context:{} };
       //ownerNameToOwner = {};
@@ -49,38 +44,27 @@ angular.module('chartApp')
     	 formatYear: 'yy',
     	 startingDay: 1
       };
-      $scope.minDate = null;
-      $scope.maxDate = null;
-      $scope.nextUpdate = null;
-      $scope.lastDataDate = null;
-      $scope.timing = 30;
+    
+      $scope.lastDataDate = null;     
       
       midataPortal.autoresize();
       
       $scope.reloadSummary = function() {
           var p = { format : ["fhir/Observation"] /*, subformat : ["Quantity"] */ };
-          midataServer.getSummary($scope.authToken, "SINGLE", p, ["ownerName" ])
+          return midataServer.getSummary($scope.authToken, "SINGLE", p, ["ownerName" ])
           .then(function(results) {
               var entries = results.data;
               console.log(entries);         
               var info = $scope.buildAxesFromSummary(entries);
-              $scope.info = info;            
+              $scope.baseInfo = info;            
               console.log(info);
-              $scope.showBest(info);
-              $scope.loadLabels(info).then(function() { 
-            	  $scope.prepareReport(); 
-              });
-                          
+              //$scope.showBest(info);
+              return $scope.loadLabels(info);                          
           });
       };
       
-      $scope.delayedUpdate = function() {
-    	  if ($scope.timing > 0 && $scope.timing < 90) $scope.timeUnit = "";
-    	  $scope.chartType = "update";
-      };
-      
-      $scope.doDelayedUpdate = function() {
-    	 $scope.prepareFilter(); 
+      $scope.dontSave = function() {
+    	  $scope.unsaved = false;    	  
       };
       
       /*
@@ -296,7 +280,18 @@ angular.module('chartApp')
               $scope.entry = entries[0];
               return;
           }
+          
+          var dates = function(a) {
+     		 var r = [];
+     		 angular.forEach(a, function(x) {
+     			r.push($filter('date')(x, "dd.MM.yyyy")); 
+     		 });
+     		 return r;
+     	   };
+          
           var shorten = function(dim, a) {
+        	  if (dim == "dateTime" && (info.timeUnit !== "month" && info.timeUnit !== "year")) return dates(a);
+        	  
               var r = [];
               angular.forEach(a, function(x) {
             	  x = $scope.getLabel(dim, x);
@@ -312,12 +307,12 @@ angular.module('chartApp')
           var seriesMap = $scope.map(info[seriesAxis]);
           var d = $scope.data = [];
           var h = [];
-          if (alg == null || alg == "simple") {
+          if (alg == null || alg === "simple") {
               angular.forEach($scope.series, function() { d.push(new Array($scope.labels.length).fill(0)); });
               angular.forEach(entries, function(entry) {
                   d[seriesMap[entry[seriesAxis]]][labelMap[entry[labelAxis]]] = entry.value;
               });
-          } else if (alg == "newest") {
+          } else if (alg === "newest") {
               angular.forEach($scope.series, function() { 
                   d.push(new Array($scope.labels.length).fill(0));
                   h.push(new Array($scope.labels.length));
@@ -330,7 +325,7 @@ angular.module('chartApp')
                     h[s][l] = entry.dateTime;
                   }
               });
-          } else if (alg == "avg") {
+          } else if (alg === "avg") {
               angular.forEach($scope.series, function() { 
                   d.push(new Array($scope.labels.length).fill(0));
                   h.push(new Array($scope.labels.length));
@@ -347,7 +342,7 @@ angular.module('chartApp')
                     d[s][l] = hx[0] / hx[1];
                   }
               });
-          } else if (alg == "sum") {
+          } else if (alg === "sum") {
               angular.forEach($scope.series, function() { 
                   d.push(new Array($scope.labels.length).fill(0));
                   //h.push(new Array($scope.labels.length));
@@ -362,7 +357,7 @@ angular.module('chartApp')
                     d[s][l] = hx + entry.value;
                   }
               });
-          } else if (alg == "count") {
+          } else if (alg === "count") {
               angular.forEach($scope.series, function() { 
                   d.push(new Array($scope.labels.length).fill(0));
                   //h.push(new Array($scope.labels.length));
@@ -377,11 +372,43 @@ angular.module('chartApp')
                     d[s][l] = hx + 1;
                   }
               });
+          } else if (alg === "max") {
+              angular.forEach($scope.series, function() { 
+                  d.push(new Array($scope.labels.length).fill(0));
+                  //h.push(new Array($scope.labels.length));
+              });
+              angular.forEach(entries, function(entry) {
+                  var s = seriesMap[entry[seriesAxis]];
+                  var l = labelMap[entry[labelAxis]];
+                  var hx = d[s][l];
+                  if (!hx) {
+                    d[s][l] = entry.value;                    
+                  } else {                    
+                    d[s][l] = entry.value > hx ? entry.value : hx;;
+                  }
+              });
+          } else if (alg === "min") {
+              angular.forEach($scope.series, function() { 
+                  d.push(new Array($scope.labels.length).fill(0));
+                  //h.push(new Array($scope.labels.length));
+              });
+              angular.forEach(entries, function(entry) {
+                  var s = seriesMap[entry[seriesAxis]];
+                  var l = labelMap[entry[labelAxis]];
+                  var hx = d[s][l];
+                  if (!hx) {
+                    d[s][l] = entry.value;                    
+                  } else {                    
+                    d[s][l] = entry.value < hx ? entry.value : hx;;
+                  }
+              });
           }
+
           console.log(alg);
           //console.log(d);
       };
-               
+          
+      /*
       $scope.prepare = function() {
          var entries = $scope.extractData($scope.raw);
          //console.log(entries);         
@@ -397,7 +424,7 @@ angular.module('chartApp')
          console.log($scope.report);
                  
          $scope.prepareReport();
-      };
+      };*/
       
       $scope.initialSelection = function(all) {
     	if (all.length <= 5) return all.slice();
@@ -408,15 +435,16 @@ angular.module('chartApp')
           console.log("prepareReport");
           $scope.chartType = $scope.report.type;
           console.log($scope.report);
+          console.log($scope.reportInfo);
+          /*
           $scope.allSeries = $scope.info[$scope.report.series];   
           $scope.selectedSeries = $scope.config.selectedSeries != null ? $scope.config.selectedSeries : $scope.initialSelection($scope.allSeries);
           
           $scope.allLabels = $scope.info[$scope.report.label];   
           $scope.selectedLabels = $scope.config.selectedLabels != null ? $scope.config.selectedLabels : $scope.initialSelection($scope.allLabels);
-            
+          */
           if ($scope.report.filter) {
-                 $scope.filter = $scope.info[$scope.report.filter];
-                 $scope.selectedFilter = $scope.config.filter != null ? $scope.config.filter : $scope.filter[0];
+               $scope.reportInfo.filter = $scope.reportInfo[$scope.report.filter][0];                 
           }
                   
           $scope.prepareFilter();              
@@ -427,40 +455,40 @@ angular.module('chartApp')
       
       $scope.prepareFilter = function() {    	  
     	  
-    	  console.log($scope.info);
+    	  console.log($scope.reportInfo);
           var p = { };
           $scope.chartType = "calculation";
-          if ($scope.report.filter != null && $scope.report.filter == "content") p.content = [ $scope.selectedFilter ];
-          if ($scope.report.filter != null && $scope.report.filter == "owner") p.owner = [ $scope.selectedFilter ];
+          if ($scope.report.filter != null && $scope.report.filter == "content") p.content = [ $scope.reportInfo.filter ]; //[ $scope.selectedFilter ];
+          if ($scope.report.filter != null && $scope.report.filter == "owner") p.owner = [ $scope.reportInfo.filter ]; //[ $scope.selectedFilter ];
           if ($scope.report.series == "content") {
-              p.content = $scope.selectedSeries;
+              p.content = $scope.reportInfo.content;
           } else if ($scope.report.series == "owner") {
-              p.owner = [];
+              p.owner = $scope.reportInfo.owner; /*[];
               angular.forEach($scope.selectedSeries, function(owner) {
             	  var owref = owner;
             	  
             	  p.owner.push(owref); 
-              });
+              });*/
           }
           if ($scope.report.label == "content") {
-              p.content = $scope.selectedLabels;
+              p.content = $scope.reportInfo.content; //$scope.selectedLabels;
           } else if ($scope.report.label == "owner") {
-              p.owner = [];
+              p.owner = $scope.reportInfo.owner; /*[];
               angular.forEach($scope.selectedLabels, function(owner) {
             	  var owref = owner;
             	  
             	  p.owner.push(owref); 
-              });
+              });*/
           }
           
           if (document.location.href.indexOf("/preview") >= 0) {
-        	  if ($scope.timeUnit == "" && $scope.timing==0) p.limit = 100;        	  
+        	  if ($scope.reportInfo.timeUnit == "" && $scope.reportInfo.timing==0) p.limit = 100;        	  
           }
-          var min = $scope.minDate;
-          var max = $scope.maxDate;
-          if ($scope.timing != 0) {
+          var min = $scope.reportInfo.minDate;
+          var max = $scope.reportInfo.maxDate;
+          if ($scope.reportInfo.timing != 0) {
         	max = new Date();
-        	min = new Date(max.getTime() - 1000 * 60 *60*24*$scope.timing);
+        	min = new Date(max.getTime() - 1000 * 60 *60*24*$scope.reportInfo.timing);
           }
           var divisor = (p.content ? p.content.length : 1) * (p.owner ? p.owner.length : 1);
           if (divisor == 0) divisor = 1;
@@ -474,32 +502,31 @@ angular.module('chartApp')
               $scope.raw = results.data;
               $scope.entries = $scope.extractData($scope.raw);
               $scope.entries = $scope.dateFilter($scope.entries, min, max);
-              console.log($scope.timeUnit);
+              console.log($scope.reportInfo.timeUnit);
               console.log("Divisor:"+divisor);
               console.log("Entries:"+$scope.entries.length);
               console.log("Ratio:"+ ($scope.entries.length/divisor));
-              if ($scope.timeUnit == "" && $scope.entries.length / divisor > 60) $scope.timeUnit = "month";
+              if ($scope.reportInfo.timeUnit == "" && $scope.entries.length / divisor > 60) $scope.reportInfo.timeUnit = "month";
               
-              if ($scope.timeUnit != "") {
-                  $scope.makeSimpleTime($scope.entries, $scope.timeUnit);
+              if ($scope.reportInfo.timeUnit != "") {
+                  $scope.makeSimpleTime($scope.entries, $scope.reportInfo.timeUnit);
               }
               $scope.chartType = $scope.report.type;
           
           
           console.log("prepareFilter");
                     
-          var filteredEntries = $scope.report.filter ? $scope.doFilter($scope.entries, $scope.report.filter, $scope.selectedFilter) : $scope.entries;
+          var filteredEntries = $scope.report.filter ? $scope.doFilter($scope.entries, $scope.report.filter, $scope.reportInfo.filter) : $scope.entries;
           var filteredInfo = $scope.report.filter ? $scope.buildAxes(filteredEntries) : $scope.buildAxes($scope.entries);
           
-          $scope.info.context = filteredInfo.context;
-          $scope.info.hasMultipleContexts = filteredInfo.context.length > 1;
-          if ($scope.info.hasMultipleContexts) {
+          //$scope.info.context = filteredInfo.context;
+          //$scope.info.hasMultipleContexts = filteredInfo.context.length > 1;
+          /*if ($scope.info.hasMultipleContexts) {
         	  $scope.showBest($scope.info, true);
-          }
+          }*/
           
           if ($scope.report.filter2) {
-             $scope.filter2 = filteredInfo[$scope.report.filter2];
-             $scope.selectedFilter2 = $scope.config.filter2 != null ? $scope.config.filter2 : $scope.filter2[0];
+             $scope.reportInfo.filter2 = $scope.reportInfo[$scope.report.filter2][0];             
           }
           $scope.entries1 = filteredEntries;
           $scope.info1 = filteredInfo;
@@ -512,10 +539,10 @@ angular.module('chartApp')
       $scope.update = function() {
           console.log("update");
           console.log($scope.report);
-          var filteredEntries = $scope.report.filter2 != null ? $scope.doFilter($scope.entries1, $scope.report.filter2, $scope.selectedFilter2) : $scope.entries1;
+          var filteredEntries = $scope.report.filter2 != null ? $scope.doFilter($scope.entries1, $scope.report.filter2, $scope.reportInfo.filter2) : $scope.entries1;
           var filteredInfo = $scope.report.filter2 != null ? $scope.buildAxes(filteredEntries) : $scope.info1;
-          var alg = $scope.report.alg || "simple";
-          if (alg == "simple" && $scope.timeUnit != "") alg = "avg";
+          var alg = $scope.reportInfo.alg || "simple";
+          if (alg == "simple" && $scope.reportInfo.timeUnit != "") alg = "avg";
           $scope.build($scope.report.label, $scope.report.series, filteredInfo, filteredEntries, alg);
           //console.log(filteredEntries);
           //console.log(filteredInfo);
@@ -527,19 +554,19 @@ angular.module('chartApp')
          var r = [];
          if (info.hasMultipleDates) {
              if (info.hasMultipleOwners) {
-                r.push( { id : "report_ts_person", name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", seriesName : "people", filter: info.hasMultipleFormats ? "content" : null, filterLabel: info.hasMultipleFormats ? "measure" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "detail" : null, timeUnits : true } );
+                r.push( { id : "report_ts_person", name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", seriesName : "people", filter: "content", filterLabel: "measure", filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "detail" : null, timeUnits : true } );
              }
              
              if (info.hasMultipleFormats) {
-                r.push( { id : "report_ts_measure", name:"Time Series per Measure", type : "line", label : "dateTime", series : "content", seriesName : "measures", filter: info.hasMultipleOwners ? "owner" : null, filterLabel: info.hasMultipleOwners ? "person" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "detail" : null, timeUnits : true } );
+                r.push( { id : "report_ts_measure", name:"Time Series per Measure", type : "line", label : "dateTime", series : "content", seriesName : "measures", filter: "owner", filterLabel: "person" , filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "detail" : null, timeUnits : true } );
              }
              
              if (info.hasMultipleContexts) {
-                   r.push( { id : "report_ts_detail", name:"Time Series per Context", type : "line", label : "dateTime", series : "context", seriesName : "measures", filter: info.hasMultipleFormats ? "content" : null , filterLabel: info.hasMultipleFormats ? "measure" : null, filter2: info.hasMultipleOwners ? "owner" : null, filterLabel2: info.hasMultipleOwners ? "person" : null, timeUnits : true } );                 
+                   r.push( { id : "report_ts_detail", name:"Time Series per Context", type : "line", label : "dateTime", series : "context", seriesName : "measures", filter: "content" , filterLabel: "measure" , filter2: info.hasMultipleOwners ? "owner" : null, filterLabel2: info.hasMultipleOwners ? "person" : null, timeUnits : true } );                 
              }
              
              if (!info.hasMultipleOwners) {
-                 r.push( { id : "report_ts_person", name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", seriesName : "people", filter: info.hasMultipleFormats ? "content" : null, filterLabel: info.hasMultipleFormats ? "measure" : null, filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "detail" : null, timeUnits : true } ); 
+                 r.push( { id : "report_ts_person", name:"Time Series per Person", type : "line", label : "dateTime", series : "owner", seriesName : "people", filter: "content", filterLabel: "measure" , filter2: info.hasMultipleContexts ? "context" : null, filterLabel2: info.hasMultipleContexts ? "detail" : null, timeUnits : true } ); 
              }
          }
          
@@ -580,65 +607,126 @@ angular.module('chartApp')
       };
       
       $scope.loadConfig = function() {
+    	  $scope.noconfig = true;
           midataServer.getConfig($scope.authToken)
           .then(function (result) {
-            if (result.data) {
+            if (result.data) {            	
                 if (result.data && result.data.readonly) {
                     $scope.readonly = true;
                 } else {
                     $scope.config = result.data;
-                    $scope.timeUnit = result.data.timeUnit || "";
-                    $scope.timing = Number(result.data.timing) || 30;
+                    $scope.report = result.data.report;
+                    if ($scope.report.filter === "null") $scope.report.filter = null;
+                    if ($scope.report.filter2 === "null") $scope.report.filter2 = null;
+                    $scope.reportInfo = result.data.info;
+                    $scope.reportInfo.timing = Number($scope.reportInfo.timing);
+                    $scope.noconfig = false;
                 }
+                $scope.reloadSummary()
+                .then(function() { $scope.prepareReport(); });
                 /*$scope.report = result.report;
                 $scope.selectedFilter = result.filter;
                 $scope.selectedFilter2 = result.filter2;*/
-            }  
-            $scope.reloadSummary();
+            } else { $scope.reloadSummary();$scope.next("people"); }             
           });
           
       };
       
       $scope.saveConfig = function() {
-         var config = { report : $scope.report, filter : $scope.selectedFilter, filter2: $scope.selectedFilter2, timeUnit : $scope.timeUnit, timing : $scope.timing, selectedSeries : $scope.selectedSeries, selectedLabels : $scope.selectedLabels };
-         $scope.saving = true;
+         var config = { report : $scope.report, info : $scope.reportInfo };
+         $scope.saving = true;         
          midataServer.setConfig($scope.authToken, config)
-         .then(function() { $scope.saving = false; });
+         .then(function() { $scope.saving = false; $scope.unsaved = false; $scope.noconfig = false; });
       };
       
       $scope.add = function(name) {
-         var config = { report : $scope.report, filter : $scope.selectedFilter, filter2: $scope.selectedFilter2, timeUnit : $scope.timeUnit, timing : $scope.timing, selectedSeries : $scope.selectedSeries, selectedLabels : $scope.selectedLabels };
+         var config = { report : $scope.report, info : $scope.reportInfo };
          $scope.saving2 = true;
          midataServer.cloneAs($scope.authToken, name, config)
-         .then(function() { $scope.saving2 = false; });
+         .then(function() { $scope.saving2 = false; $scope.unsaved = false; });
       };
       
-      $scope.toggleSeriesSelection = function(what) {
-          var idx = $scope.selectedSeries.indexOf(what);
+    
+ 
+      $scope.toggleSelection = function(dim, what) {
+    	  var lst = $scope.reportInfo[dim];
+          var idx = lst.indexOf(what);
           if (idx >= 0) {
-              $scope.selectedSeries.splice(idx, 1);
+              lst.splice(idx, 1);
           } else {
-              $scope.selectedSeries.push(what);
-          }
-          $scope.delayedUpdate();
+              lst.push(what);
+          }          
       };
       
-      $scope.isSelectedSeries = function(what) {
-          return $scope.selectedSeries.indexOf(what) >= 0;
+      $scope.isSelected = function(dim, what) {
+          return $scope.reportInfo[dim].indexOf(what) >= 0;
       };
       
-      $scope.toggleLabelSelection = function(what) {
-          var idx = $scope.selectedLabels.indexOf(what);
-          if (idx >= 0) {
-              $scope.selectedLabels.splice(idx, 1);
-          } else {
-              $scope.selectedLabels.push(what);
-          }
-          $scope.delayedUpdate();
+      $scope.describe = function(report, info) {
+    	
+    	  var dimName = function(name, alsoone) {
+    		  if (!name) return null;
+    		  if (name === "dateTime") return "summary."+ (info.timeUnit || "day");
+    		  if (info[name].length > 1) return "summary."+name;
+    		  if (info[name].length == 1 && alsoone) return "summary."+name;
+    		  return null;
+    	  };
+    	  
+    	  
+    	  var result = [];
+    	  result.push("summary."+report.type+"_intro");
+    	  
+    	  var sn = dimName(report.series);
+    	  var ln = dimName(report.label);
+    	  if (sn) {
+    		  result.push("summary.per");
+    		  result.push(sn);
+    		  
+    		  if (ln && report.type !== "line") {
+	            result.push("summary.and");	           
+	            result.push(ln);
+              }
+    	  }
+    	  
+    	  var fn = dimName(report.filter, true);
+    	  if (fn) {
+    		  if (info[report.filter].length > 1) {
+    			result.push("/");
+    		    result.push("summary.shows_data_for_multi");
+    		    result.push(info[report.filter].length);
+    		    result.push(fn+"_p");
+    		  } else if (info[report.filter].length === 1) {
+    			result.push("/");
+    			result.push("summary.shows_data_for_single");
+    			result.push(fn);
+    			result.push($scope.getLabel(report.filter, info[report.filter][0]));
+    		  }
+    	  }
+    	  
+    	  return result;
       };
       
-      $scope.isSelectedLabel = function(what) {
-          return $scope.selectedLabels.indexOf(what) >= 0;
+      $scope.next = function(page, from) {
+    	if (page == "people") {
+    		$scope.selectedLabels = [];
+    		$scope.selectedSeries = [];
+    	} else if (page == "charttype") {
+    		$scope.reportInfo.hasMultipleOwners = $scope.reportInfo.owner.length > 1;
+    		$scope.reportInfo.hasMultipleFormats = $scope.reportInfo.content.length > 1;
+    		$scope.reportInfo.hasMultipleContexts = false;
+    		$scope.reportInfo.hasMultipleDates = true; //$scope.timing !== -1;    	          
+    		$scope.showBest($scope.reportInfo);
+    	} else if (!page) {
+    		$scope.report = $filter('filter')($scope.reports, function(r) { return r.id  == $scope.reportInfo.reportId; })[0];
+    		console.log($scope.reportInfo.reportId);
+    		console.log($scope.report);
+    		$scope.prepareReport();
+    		
+    	}
+    	$scope.wizard = page;
+    	$scope.unsaved = true;
+    	console.log($scope.baseInfo);
+    	console.log($scope.reportInfo);
       };
       
       $scope.loadConfig();

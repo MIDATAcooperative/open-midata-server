@@ -9,6 +9,7 @@ import org.hl7.fhir.dstu3.model.BaseResource;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryRequestComponent;
+import org.hl7.fhir.dstu3.model.Bundle.BundleEntryResponseComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleType;
 import org.hl7.fhir.dstu3.model.Bundle.HTTPVerb;
 import org.hl7.fhir.dstu3.model.IdType;
@@ -23,6 +24,7 @@ import utils.fhir.transactions.UpdateTransactionStep;
 
 import ca.uhn.fhir.rest.annotation.Transaction;
 import ca.uhn.fhir.rest.annotation.TransactionParam;
+import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import ca.uhn.fhir.util.FhirTerser;
 
@@ -52,14 +54,20 @@ public class Transactions {
 			 ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());		   
 			 steps.add(new UpdateTransactionStep(provider, (BaseResource) res));
 		   } else if (verb.equals(HTTPVerb.DELETE)) {
-			 
+			   throw new NotImplementedOperationException("Currently no support for DELETE");
 		   } else if (verb.equals(HTTPVerb.GET)) {
-			   
+			   throw new NotImplementedOperationException("Currently no support for GET");
 		   } else {
 			   throw new UnprocessableEntityException("Unknown HTTP Verb in transaction");
 		   }
 		   
 	   }
+	   
+	   /*
+	   BundleEntryComponent cmp = new BundleEntryComponent();
+	   BundleEntryResponseComponent res = new BundleEntryResponseComponent();	   
+	   cmp.setResponse(res);
+	   */
 	   
 	   if (type.equals(BundleType.TRANSACTION)) {
 		   for (TransactionStep step : steps) step.init();
@@ -77,6 +85,7 @@ public class Transactions {
 	   	   
 	   Bundle retVal = new Bundle();
 	   // Populate return bundle
+	   //retVal.addEntry(t)
 	   return retVal;
 	}
 	

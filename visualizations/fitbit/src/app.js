@@ -195,7 +195,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 		 });		 
 	};
 
-	$scope.initForm = function(authToken) {
+	$scope.initForm = function(authToken, nofitbitquery) {
 		var deferred = $q.defer();
 		var done = 0;
 		var reqDone = function() {
@@ -209,7 +209,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 		});
 		
 		$scope.authToken = authToken;
-		if ($scope.user == null) {
+		if (!nofitbitquery && $scope.user == null) {
 			midataServer.oauth2Request(authToken, baseUrl + "/1/user/-/profile.json")			
 			.then(function(res) {
 			  var response = res.data;
@@ -231,9 +231,10 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			}, function(err, v2) {
 				reqDone();
 			});
-		}
+		} else { reqDone(); }
 		midataServer.getConfig(authToken)
 		  .then(function(response) {
+			 $scope.countSelected = response.data.selected.length;
 			 if (response.data && response.data.selected) {
 				 $scope.autoimport = response.data.autoimport;
 				 angular.forEach($scope.measurements, function(measurement) {
@@ -259,6 +260,13 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				var measurement = map[entry.contents[0]];
 				if (measurement != null) {
 					var newestDate = new Date(entry.newest);
+					
+					if (!$scope.last) {
+						$scope.last = newestDate;
+					} else if ($scope.last < newestDate) {
+						$scope.last = newestDate;
+					}
+					
 					newestDate.setHours(1,1,1,1);
 					newestDate.setDate(newestDate.getDate() - $scope.reimport);
 					measurement.imported = entry.count;
@@ -496,5 +504,17 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', '$translate', '
 		   importer.saveConfig();
 		   importer.startImport();
 		};
+	}
+]);
+fitbit.controller('PreviewCtrl', ['$scope', '$http', '$location', '$translate', 'midataServer', 'midataPortal', 'importer',  
+	function($scope, $http, $location, $translate, midataServer, midataPortal, importer) {
+	    $translate.use(midataPortal.language);
+        $scope.importer = importer;	    
+					
+		// get authorization token
+		var authToken = $location.path().split("/")[1];
+
+		$scope.importer.initForm(authToken);
+		
 	}
 ]);

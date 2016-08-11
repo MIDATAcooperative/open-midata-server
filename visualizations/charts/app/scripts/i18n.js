@@ -1,9 +1,12 @@
 var en = {
    "report" : "Report: ",
-   "save_setting_btn" : "Save Setting",
+   "please_configure" : "Please configure this tile to see a useful chart.",
+   "save_question" : "Do you want to save this chart in your dashboard?",
+   "save_setting_btn" : "Save Chart",
    "saving" : "Saving...",
    "chart_name" : "Name for new chart",
-   "add_btn" : "Add",
+   "add_btn" : "Add New Chart",
+   "no_save_btn" : "Do not save",
    "time" : "Time",
    "from" : "From: ",
    "to" : "To: ",
@@ -12,16 +15,59 @@ var en = {
    "unit" : "Unit",
    "empty" : "Nothing to display!",
    "wait" : "Please wait, chart is calculated...",
+   "new_report_btn" : "New Chart",
    "update_btn" : "Update now",
+   "next_btn" : "Next",
    
    "person" : "Person",
-   "people" : "People",
+   "people" : {
+	   "people" : "People",
+	   "title" : "Show data about whom?",
+	   "description" : "You may select one or multiple persons to show data about."
+   },
    "measure" : "Measure",
-   "measures" : "Measures",
-   "detail" : "Detail",
-   "details" : "Details",
-   "code" : "Code",
-   "date" : "Date",
+   "measures" : {
+	   "measures" : "Measures",
+	   "title" : "Which measures should be shown?",
+	   "description" : "You may select one or multiple measures to be shown in the chart."
+   },
+   "timeframe" : {
+	   "title" : "Which span of time should be included in the chart?",
+	   "description" : "Please select the timespan from which data should be included.",
+	   "unit" : "Which time unit should be used?"
+   },
+   "aggregation" : {
+	   "title" : "What should be shown?",
+	   "description" : "Please choose a function to be shown."
+   },
+   "charttype" : {
+	   "title" : "What type of chart should be shown?",
+	   "description" : "Based on your previous choices these chart types are available:"
+   },
+   
+   "summary" : {
+	   "line" : "Line Chart",
+	   "line_intro" : "One line",
+	   "bar" : "Bar Chart",
+	   "bar_intro" : "One bar",
+	   "radar" : "Radar Chart",
+	   "radar_intro" : "One line",
+	   "per" : "per",
+	   "and" : "and",
+	   "shows_data_for_multi" : "At one time shows only data for 1 of",
+	   "shows_data_for_single" : "Shows data for",
+	   "detail" : "Detail",
+	   "details" : "Details",
+	   "code" : "Code",
+	   "date" : "Date",
+	   "owner" : "person",
+	   "owner_p" : "persons",
+	   "content" : "measure",
+	   "content_p" : "measures",
+	   "day" : "day",
+	   "month" : "month",
+	   "year" : "year"
+    },
    
    "last7" : "Last 7 days",
    "last30" : "Last 30 days",
@@ -29,6 +75,7 @@ var en = {
    "last365" :"Last 365 days",
    "user_defined" : "User defined",
    
+   "day" : "Day",
    "month" : "Month",
    "year" : "Year",
    
@@ -37,6 +84,8 @@ var en = {
    "newest" : "Newest Entry",
    "count" : "Entry Count",
    "sum" : "Sum", 
+   "min" : "Minimum",
+   "max" : "Maximum",
    
    "report_ts_person" : "Time Series per Person",
    "report_ts_measure" : "Time Series per Measure",
@@ -46,7 +95,9 @@ var en = {
    "report_bc_measure_person" : "Bar-Chart: Measure/Person",
    "report_bc_detail_person" : "Bar-Chart: Detail/Person",
    "report_bc_person" : "Bar-Chart: Persons",
-   "report_single" : "Single Value"
+   "report_single" : "Single Value",
+   
+   
       
 },
 de = {

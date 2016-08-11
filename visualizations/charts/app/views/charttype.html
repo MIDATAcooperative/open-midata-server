@@ -1,0 +1,15 @@
+ 
+ <div>
+   <h2 translate="charttype.title"></h2>
+   <p translate="charttype.description"></p>
+   
+   <div class="radio" ng-repeat="myreport in reports">
+     <label>
+       <input type="radio" name="report" ng-value="myreport.id" ng-model="reportInfo.reportId">
+       <strong translate="{{ 'summary.'+myreport.type }}"></strong> <span ng-repeat="w in describe(myreport, reportInfo)">{{ w | translate }}&nbsp;</span>
+     </label>
+   </div>  
+   
+   <button class="btn btn-primary" ng-disabled="!(reportInfo.reportId)" ng-click="next('aggregation', 'charttype')" translate="next_btn"></button>  
+      
+  </div>

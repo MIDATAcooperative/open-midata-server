@@ -1,12 +1,12 @@
 
-<div ng-controller="OverviewCtrl">
+<div ng-controller="OverviewCtrl" style="min-height:300px">
 
 	<table class="table table-condensed table-hover">
 		<tbody ng-repeat="category in categories">
 			<tr>
 				<th colspan="4" style=""><br>{{ category.label }}</th>
 			</tr>
-			<tr ng-repeat="record in category.records">
+			<tr ng-repeat="record in category.records | orderBy : 'label'">
 				<td>{{ getCodeableConcept(record.data.code) }}</td>
 				<td>
 					<div ng-show="record.data.component">

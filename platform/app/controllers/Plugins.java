@@ -251,7 +251,7 @@ public class Plugins extends APIController {
 		if (oauthmeta == null) return F.Promise.pure((Result) ok(Json.toJson(false))); 
 		 		
 	    if (oauthmeta.containsField("refreshToken")) {
-	      return requestAccessTokenOAuth2FromRefreshToken(spaceIdString, oauthmeta.toMap(), (Result) ok(Json.toJson(true)));
+	      return requestAccessTokenOAuth2FromRefreshToken(spaceIdString, oauthmeta.toMap(), Json.toJson(true));
 	    } else {		
 		  return F.Promise.pure((Result) ok(Json.toJson(true)));
 	    }
@@ -465,7 +465,11 @@ public class Plugins extends APIController {
 	}
 	
 	public static Result oauthInfo(Plugin plugin) {
-		ObjectNode result = Json.newObject();
+		return oauthInfo(plugin, null);
+	}
+	
+	public static Result oauthInfo(Plugin plugin, ObjectNode addTo) {
+		ObjectNode result = addTo != null ? addTo : Json.newObject();
 		result.put("appId", plugin._id.toString());
 		result.put("name", plugin.name);
 		result.put("type", plugin.type);
@@ -476,7 +480,7 @@ public class Plugins extends APIController {
 	}
 	
 	
-	public static Promise<Result> requestAccessTokenOAuth2FromRefreshToken(String spaceIdStr, Map<String, Object> tokens1, final Result result) throws AppException {		
+	public static Promise<Result> requestAccessTokenOAuth2FromRefreshToken(String spaceIdStr, Map<String, Object> tokens1, final JsonNode result) throws AppException {		
 		final ObjectId appId = new ObjectId(tokens1.get("appId").toString());
 		final ObjectId userId = new ObjectId(request().username());
 		
@@ -487,8 +491,9 @@ public class Plugins extends APIController {
 	
 		return requestAccessTokenOAuth2FromRefreshToken(userId, app, spaceIdStr, tokens1).map(new Function<Boolean, Result>()  {
 			public Result apply(Boolean success) throws AppException {
-				if (success) return result;
-				return oauthInfo(app);
+				if (success) return ok(result);
+				ObjectNode resultBase = result instanceof ObjectNode ? (ObjectNode) result : null;
+				return oauthInfo(app, resultBase);
 			}
 		});
 	}

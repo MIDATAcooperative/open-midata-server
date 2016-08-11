@@ -16,6 +16,13 @@ angular.module('fitbiti18n', [])
   "done" : "Finished import",
   "with_errors" : "Finished import with errors.",
   
+  "no_entries_yet" : "Fitbit Import not configured yet.",
+  "newest_entry_from" : "Newest entry:",
+  "measures_to_import" :"Measures to import",
+  "autoimport_status" : "Automatically import",
+  "on" : "ON",
+  "off" : "OFF",
+  
   
   "food_calories_intake": "Food - Calories Intake",
   "food_water_consumption" : "Food - Water Consumption",
@@ -78,6 +85,13 @@ de : {
 	  "importing" : "Importiere Daten von Fitbit...",
 	  "done" : "Import fertig",
 	  "with_errors" : "Import mit Fehlern abgeschlossen.",
+	  
+	  "no_entries_yet" : "Fitbit Import ist noch nicht konfiguriert.",
+	  "newest_entry_from" : "Neuester Eintrag:",
+	  "measures_to_import" :"Maße ausgewählt zum Importieren",
+	  "autoimport_status" : "Automatisch importieren",
+	  "on" : "AN",
+	  "off" : "AUS",
 	  
 	  
 	  "food_calories_intake": "Nahrung - Kalorien Einnahme",

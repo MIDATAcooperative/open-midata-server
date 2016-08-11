@@ -18,7 +18,7 @@
 				  After clicking on "Authorize Now" you will be redirected to an external login page.
 				</p>
 				<button id="authorize" type="button" class="btn btn-success" ng-hide="authorized || authorizingOAuth1" ng-class="{'disabled': authorizing}" ng-click="authorize()" translate="importrecords.authorize_btn"></button>
-				<button type="button" class="btn btn-success" ng-show="authorizingOAuth1" ng-click="authorizeOAuth1()">Sign in with {{appName}} and authorize access</button>
+				<!-- <button type="button" class="btn btn-success" ng-show="authorizingOAuth1" ng-click="authorizeOAuth1()">Sign in with {{appName}} and authorize access</button> -->
 				<div class="extraspace"></div>				
 				<p ng-show="message" class="alert alert-info">{{message}}</p>
 				<div ng-if="authorized">			      	

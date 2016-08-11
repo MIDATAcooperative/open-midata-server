@@ -1,5 +1,10 @@
 <div>
 
+<div ng-if="wizard">
+   <p class="body teaser" translate="please_configure"></p>
+</div>
+
+<div ng-if="!wizard">
 
 <p class="text-center"><strong translate="{{ report.id }}"></strong></p>
 <div ng-if="chartType=='line'">
@@ -30,5 +35,7 @@
 
 <div ng-show="entries.length==0" class="text-center">
   <strong translate="empty"></strong>   
+</div>
+
 </div>
 </div>

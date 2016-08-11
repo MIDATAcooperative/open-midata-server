@@ -1,0 +1,13 @@
+<div>
+    <h2 translate="people.title"></h2>
+    <p translate="people.description"></p>
+        
+     <div class="checkbox" ng-repeat="f in baseInfo.owner">
+      <label>
+       <input type="checkbox" ng-checked="isSelected('owner', f)" ng-click="toggleSelection('owner', f);" >
+       {{ getLabel("owner", f) | translate }}
+      </label>
+     </div>
+      
+    <button class="btn btn-primary" ng-disabled="reportInfo.owner.length===0" ng-click="next('measures', 'people')" translate="next_btn"></button>  
+ </div>

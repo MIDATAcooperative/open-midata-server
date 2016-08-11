@@ -1,5 +1,12 @@
     <div ng-cloak ng-controller="DashboardCtrl">
     
+    <div class="row" ng-if="layout.addmore">
+	  <div class="col-sm-12">
+	    <a ui-sref="{{ layout.addmore.link }}" class="btn btn-default pull-right"><span class="glyphicon glyphicon-plus"><span translate="{{ layout.addmore.button }}"></span></a>
+	  </div>	  
+	</div>
+	<div class="extraspace"></div>
+    
     <div ng-repeat="def in layout.page">
       <div class="extraspace">
 	     <button class="btn btn-default" ng-click="layout.page=[];"><span class="glyphicon glyphicon-chevron-left"></span><span translate="common.back_btn"></span></button>
@@ -58,6 +65,8 @@
 	     </div>
 	     </div>	  
 	</div>
+	
+	
 	
 	</div>
 	

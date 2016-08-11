@@ -7,11 +7,10 @@ angular.module('fhirObservation')
  			configuration.getConfig().then(function(config) {
  				data.loadSummary(config.measures).then(function(records) {
  					$scope.categories = data.groupByCategory(records);
+ 					midataPortal.setLink("view", "hide", "", { });	
  				}); 				
  			});
- 			
- 			midataPortal.setLink("view", "hide", "", { });			
-	 	
+ 			 						 	
  		};
  		
  		$scope.init(); 		 		
@@ -37,6 +36,7 @@ angular.module('fhirObservation')
  		
  		$scope.getLabel = data.getLabel; 		
  		$scope.getCodeableConcept = data.getCodeableConcept;
-        $scope.data = data;             
+        $scope.data = data; 
+                
  		
 }]);

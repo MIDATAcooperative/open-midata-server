@@ -99,18 +99,11 @@ angular.module('views')
     	  });
     	  }
     	  if ($scope.view.setup.always) {
-    		  views.layout.small.push(views.def({
-    			id : "addmore",
-    			order : 1000,
-  				template : "/views/shared/dashboardTiles/simpleadd/simpleadd.html",  				
-  				position : "small",
-  				active : true,
-  				setup : {  					
+    		  views.layout.addmore = {  					
   		        	link : "^.market({ next : '"+document.location.href+"', context : '"+$scope.view.setup.context+"'})",
   		        	icon : "/images/icons/add.png",
   		        	button : "dashboard.install_btn"
-  				}
-    		  }));  
+  			  };    		   
     	  }
     	});
     	    	

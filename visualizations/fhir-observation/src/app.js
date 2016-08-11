@@ -226,6 +226,7 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 				targetCategory = categories[cat] = { label : cat, records:[] };
 			}
 			targetCategory.records.push(record);
+			record.label = result.getCodeableConcept(record.data.code);
 		});
 		return categories;
 	};

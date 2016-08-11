@@ -66,6 +66,7 @@ angular.module('portal')
 			.then(function(results) {
 					authorizationUrl = results.data;
 					$scope.authorizingOAuth1 = true;
+					$scope.authorizeOAuth1();
 				});
 		} else {
 			$scope.error = "App type not supported yet.";
