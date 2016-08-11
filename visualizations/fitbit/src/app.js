@@ -514,7 +514,7 @@ fitbit.controller('PreviewCtrl', ['$scope', '$http', '$location', '$translate', 
 		// get authorization token
 		var authToken = $location.path().split("/")[1];
 
-		$scope.importer.initForm(authToken);
+		$scope.importer.initForm(authToken, true);
 		
 	}
 ]);
