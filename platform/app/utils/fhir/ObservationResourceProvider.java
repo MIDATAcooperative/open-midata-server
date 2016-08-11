@@ -59,14 +59,22 @@ import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
+import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.BooleanType;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
+import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.dstu3.model.Patient;
+import org.hl7.fhir.dstu3.model.Period;
 import org.hl7.fhir.dstu3.model.Quantity;
+import org.hl7.fhir.dstu3.model.Range;
+import org.hl7.fhir.dstu3.model.Ratio;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.SampledData;
 import org.hl7.fhir.dstu3.model.StringType;
+import org.hl7.fhir.dstu3.model.TimeType;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 public class ObservationResourceProvider extends ResourceProvider<Observation> implements IResourceProvider {
@@ -252,7 +260,13 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		}
 
 		builder.restriction("category", "category", "CodeableConcept", true);
-
+		builder.restriction("component-code", "component.code", "CodeableConcept", true);
+		builder.restriction("data-absent-reason", "dataAbsentReason", "CodeableConcept", true);
+		builder.restriction("identifier", "identifier", "CodeableConcept", true);
+		builder.restriction("related-type", "related.type", "code", false);
+		builder.restriction("status", "status", "code", false);
+		builder.restriction("value-concept", "valueCodeableConcept", "CodeableConcept", true);
+		
 		return query.execute(info);
 	}
 
@@ -264,6 +278,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		// insert
 		insertRecord(record, theObservation);
 
+		processResource(record, theObservation);
 		return outcome("Observation", record, theObservation);
 
 	}
@@ -313,6 +328,22 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 			record.subformat = "Quantity";
 		else if (valType instanceof BooleanType)
 			record.subformat = "Boolean";
+		else if (valType instanceof CodeableConcept)
+			record.subformat = "CodeableConcept";
+		else if (valType instanceof Range)
+			record.subformat = "Range";
+		else if (valType instanceof Ratio)
+			record.subformat = "Ratio";
+		else if (valType instanceof SampledData)
+			record.subformat = "SampledData";
+		else if (valType instanceof Attachment)
+			record.subformat = "Attachment";
+		else if (valType instanceof TimeType)
+			record.subformat = "Time";
+		else if (valType instanceof DateTimeType)
+			record.subformat = "DateTime";
+		else if (valType instanceof Period)
+			record.subformat = "Period";		  		  		  
 		else
 			throw new UnprocessableEntityException("Value Type not Implemented");
 

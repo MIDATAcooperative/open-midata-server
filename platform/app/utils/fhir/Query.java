@@ -22,7 +22,7 @@ public class Query {
 	
 	public Query() {
 		accountCriteria = new HashMap<String, Object>();
-		indexCriteria = new HashMap<String, Condition>();			
+		indexCriteria = null;			
 	}
 	
 	public void putAccount(String name, Object obj) {

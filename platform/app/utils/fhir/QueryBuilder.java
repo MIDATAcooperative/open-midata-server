@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import utils.AccessLog;
 import utils.access.op.Condition;
 
 import com.ctc.wstx.dtd.TokenModel;
@@ -56,6 +57,8 @@ public class QueryBuilder {
 				  
 				  if (type.equals("CodeableConcept")) {
 				    bld.addEq(path+".coding.code", tokenParam.getValue());
+				  } else if (type.equals("code")) {
+					bld.addEq(path, tokenParam.getValue());
 				  }
 				}
 			}
@@ -98,20 +101,26 @@ public class QueryBuilder {
 	}
 	
 	public Set<String> tokensToCodeSystemStrings(String name) {
-		TokenAndListParam paramsAnd = (TokenAndListParam) params.get(name);
+		List<List<? extends IQueryParameterType>> paramsAnd = params.get(name);
 		if (paramsAnd == null) return null;
 		
 		Set<String> result = new HashSet<String>();
-		for (TokenOrListParam paramsOr : paramsAnd.getValuesAsQueryTokens()) {
-		  for (TokenParam p : paramsOr.getValuesAsQueryTokens()) {		
-			if (p.getMissing()) return null;
+		for (List<? extends IQueryParameterType> paramsOr : paramsAnd) {
+		  if (paramsOr == null) continue;
+		  for (IQueryParameterType p2 : paramsOr) {
+			TokenParam p = (TokenParam) p2;
+			AccessLog.log("tp="+p);
+			AccessLog.log(p.toString());
+			if (p == null) continue;
+			//if (p.getMissing()) return null;
 			if (p.getModifier() != null) return null;
-			
+			AccessLog.log("A");
 			if (p.getSystem() != null && p.getValue() != null) {
 			  result.add(p.getSystem()+" "+p.getValue());
 			} else return null;
 		  }
 		}
+		AccessLog.log("B");
 		return result;
 	}
 }

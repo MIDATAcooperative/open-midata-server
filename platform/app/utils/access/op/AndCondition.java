@@ -91,6 +91,8 @@ public class AndCondition implements Condition {
 	       return new EqualsSingleValueCondition(fragment);
 	    } else if (fragment instanceof Map) {
 	       return new AndCondition((Map<String,Object>) fragment); 
+	    } else if (fragment instanceof Condition) {
+	    	return (Condition) fragment;
 	    } else {
 	       throw new NotImplementedError();
 	    }

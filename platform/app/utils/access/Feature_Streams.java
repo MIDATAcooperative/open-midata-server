@@ -57,7 +57,9 @@ public class Feature_Streams extends Feature {
 				  if (r.isStream) {
 					  try {
 						  APS myAps = q.getCache().getAPS(r._id, r.key, r.owner);
-					      records.addAll(myAps.query(q));
+						  List<DBRecord> rs = myAps.query(q);
+						  for (DBRecord r2 : rs) r2.owner = r.owner;
+					      records.addAll(rs);
 					      
 					      if (myAps.getSecurityLevel().equals(APSSecurityLevel.MEDIUM)) {
 					    	  for (DBRecord r2 : records) {
