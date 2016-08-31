@@ -14,6 +14,7 @@ import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Patient;
+import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
@@ -41,7 +42,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
      
    
     @Read()
-    public Patient getResourceById(@IdParam IdType theId) throws AppException {    	
+    public Patient getResourceById(@IdParam IIdType theId) throws AppException {    	
     	    
     	String id = theId.getIdPart();
     	ObjectId targetId = new ObjectId(id);

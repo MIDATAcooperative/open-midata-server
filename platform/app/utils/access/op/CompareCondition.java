@@ -33,7 +33,9 @@ public class CompareCondition implements Condition {
 	
 	@Override
 	public boolean satisfiedBy(Object obj) {
-		if (isDate) obj = ISODateTimeFormat.dateTimeParser().parseDateTime(obj.toString());
+		try {
+		  if (isDate) obj = ISODateTimeFormat.dateTimeParser().parseDateTime(obj.toString()).toDate();
+		} catch (IllegalArgumentException e) { return false; }
 		//AccessLog.debug(obj.toString()+" "+op.toString()+val.toString());
 		//AccessLog.debug(obj.getClass().getName()+" "+op.toString()+val.getClass().getName());
 		switch (op) {

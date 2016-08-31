@@ -58,7 +58,7 @@ public class Feature_Streams extends Feature {
 					  try {
 						  APS myAps = q.getCache().getAPS(r._id, r.key, r.owner);
 						  List<DBRecord> rs = myAps.query(q);
-						  for (DBRecord r2 : rs) r2.owner = r.owner;
+						  for (DBRecord r2 : rs) { r2.owner = r.owner;r2.stream = r._id; }
 					      records.addAll(rs);
 					      
 					      if (myAps.getSecurityLevel().equals(APSSecurityLevel.MEDIUM)) {
@@ -74,7 +74,7 @@ public class Feature_Streams extends Feature {
 					  catch (APSNotExistingException e2) {
 						  next.removePermission(r);
 					  }
-				  }
+				  } 
 			  }				
 			  			  			  
 			  AccessLog.logEnd("end single stream query");

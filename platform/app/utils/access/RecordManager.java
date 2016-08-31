@@ -238,7 +238,7 @@ public class RecordManager {
 		APS apswrapper = getCache(who).getAPS(toAPS);
 		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(who), fromAPS,
 				records != null ? CMaps.map("_id", records) : RecordManager.FULLAPS_FLAT,
-				Sets.create("_id", "key", "owner", "format", "subformat", "content", "created", "name", "isStream"));
+				Sets.create("_id", "key", "owner", "format", "subformat", "content", "created", "name", "isStream", "stream"));
 		
 		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(getCache(who), toAPS, recordEntries);
 		AccessLog.log("to-share: "+recordEntries.size()+" already="+alreadyContained.size());
@@ -275,7 +275,7 @@ public class RecordManager {
 	 */
 	public void shareByQuery(ObjectId who, ObjectId fromAPS, ObjectId toAPS,
 			Map<String, Object> query) throws AppException {
-        AccessLog.log("shareByQuery who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString());
+        AccessLog.log("shareByQuery who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString()+ "query="+query.toString());
 		if (toAPS.equals(who)) throw new BadRequestException("error.internal", "Bad call to shareByQuery. target APS may not be user APS!");
         APS apswrapper = getCache(who).getAPS(toAPS);
 
@@ -424,7 +424,34 @@ public class RecordManager {
 	 */
 	public void addRecord(ObjectId executingPerson, Record record) throws AppException {
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
-		addRecordIntern(executingPerson, dbrecord, false, null, false);		
+		byte[] enckey = addRecordIntern(executingPerson, dbrecord, false, null, false);	
+		createAndShareDependend(executingPerson, dbrecord, record.dependencies, enckey);
+		
+	}
+	
+	protected void createAndShareDependend(ObjectId executingPerson, DBRecord record, Set<ObjectId> dependencies, byte[] enckey) throws AppException {
+		if (dependencies != null && !dependencies.isEmpty()) {
+			createAPSForRecord(executingPerson, record.owner, record._id, enckey, false);
+			share(executingPerson, executingPerson, record._id, dependencies, false);
+			
+			AccessLog.logBegin("start applying queries");
+			Member member = Member.getById(record.owner, Sets.create("queries"));
+			if (member.queries!=null) {
+				for (String key : member.queries.keySet()) {
+					Map<String, Object> query = member.queries.get(key);
+					if (QueryEngine.isInQuery(getCache(executingPerson), query, record)) {
+						try {
+						  ObjectId targetAps = new ObjectId(key);
+						  getCache(executingPerson).getAPS(targetAps, record.owner);
+						  RecordManager.instance.share(executingPerson, record.owner, targetAps, Collections.singleton(record._id), true);
+						} catch (APSNotExistingException e) {
+							
+						}
+					}
+				}
+			}
+			AccessLog.logEnd("end applying queries");			
+		}
 	}
 	
 	/**
@@ -440,7 +467,8 @@ public class RecordManager {
 	public void addRecord(ObjectId executingPerson, Record record, FileInputStream data, String fileName, String contentType) throws DatabaseException, AppException {
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
 		byte[] kdata = addRecordIntern(executingPerson, dbrecord, false, null, false);		
-		FileStorage.store(EncryptionUtils.encryptStream(kdata, data), record._id, fileName, contentType);		
+		FileStorage.store(EncryptionUtils.encryptStream(kdata, data), record._id, fileName, contentType);
+		createAndShareDependend(executingPerson, dbrecord, record.dependencies, kdata);
 	}
 	
 	/**
@@ -457,7 +485,8 @@ public class RecordManager {
 	 */
 	public void addRecord(ObjectId executingPerson, Record record, ObjectId alternateAps) throws AppException {
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
-		addRecordIntern(executingPerson, dbrecord, false, alternateAps, false);		
+		byte[] kdata = addRecordIntern(executingPerson, dbrecord, false, alternateAps, false);	
+		createAndShareDependend(executingPerson, dbrecord, record.dependencies, kdata);
 	}
 	
 	/**
@@ -483,6 +512,8 @@ public class RecordManager {
 		RecordEncryption.encryptRecord(vrec);
 		VersionedDBRecord.add(vrec);
 				
+		record.lastUpdated = DateTimeUtils.now(); 
+		
 	    rec.data = record.data;
 	    rec.meta.put("lastUpdated", record.lastUpdated);
 	    rec.time = Query.getTimeFromDate(record.lastUpdated);		

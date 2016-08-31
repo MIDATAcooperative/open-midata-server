@@ -9,11 +9,15 @@ import java.util.Set;
 
 import utils.AccessLog;
 import utils.access.op.Condition;
+import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
 
 import com.ctc.wstx.dtd.TokenModel;
 
 import ca.uhn.fhir.model.api.IQueryParameterType;
+import ca.uhn.fhir.rest.param.DateParam;
+import ca.uhn.fhir.rest.param.ParamPrefixEnum;
 import ca.uhn.fhir.rest.param.ReferenceParam;
+import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
@@ -24,10 +28,10 @@ public class QueryBuilder {
 	private SearchParameterMap params;
 	private Query query;
 	
-	public QueryBuilder(SearchParameterMap params, Query query) {
+	public QueryBuilder(SearchParameterMap params, Query query, String format) {
 		this.params = params;
 		this.query = query;
-		
+		this.query.putAccount("format", format);
 		handleCommon();
 	}
 	
@@ -60,6 +64,39 @@ public class QueryBuilder {
 				  } else if (type.equals("code")) {
 					bld.addEq(path, tokenParam.getValue());
 				  }
+				} else if (param instanceof StringParam) {
+				  StringParam stringParam = (StringParam) param;
+				  
+				  if (stringParam.isExact()) {
+					  bld.addEq(path, stringParam.getValue());
+				  } else if (stringParam.isContains()) {
+					  bld.addEq(path, stringParam.getValue(), CompareCaseInsensitiveOperator.CONTAINS);
+				  } else {
+					  bld.addEq(path, stringParam.getValue(), CompareCaseInsensitiveOperator.STARTSWITH);
+				  }
+				} else if (param instanceof ReferenceParam) {
+					ReferenceParam referenceParam = (ReferenceParam) param;
+					String id = referenceParam.getIdPart();
+					String resType = referenceParam.getResourceType();					
+					if (id != null) {
+						if (resType != null) {
+							bld.addEq(path+".reference", resType+"/"+id);
+						} else {
+							bld.addEq(path+".reference", "/"+id, CompareCaseInsensitiveOperator.ENDSWITH);
+						}
+					}
+				} else if (param instanceof DateParam) {
+					DateParam dateParam = (DateParam) param;
+					Date comp = dateParam.getValue();
+					ParamPrefixEnum prefix = dateParam.getPrefix();
+					
+					switch (prefix) {
+					case GREATERTHAN: bld.addComp(path, ">", comp);break;
+					case LESSTHAN: bld.addComp(path,"<", comp);break;
+					case GREATERTHAN_OR_EQUALS: bld.addComp(path, ">=", comp);break;
+					case LESSTHAN_OR_EQUALS: bld.addComp(path,"<=", comp);break;
+					case EQUAL: bld.addEq(path, comp);break;
+					}
 				}
 			}
 		}

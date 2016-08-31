@@ -175,13 +175,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 			@IncludeParam(reverse = true) Set<Include> theRevIncludes,
 			@Description(shortDefinition = "Only return resources which were last updated as specified by the given range") @OptionalParam(name = "_lastUpdated") DateRangeParam theLastUpdated,
 
-			@IncludeParam(allow = { "Observation:device", "Observation:encounter", "Observation:patient", "Observation:performer", "Observation:related-target", "Observation:specimen",
-					"Observation:subject", "Observation:device", "Observation:encounter", "Observation:patient", "Observation:performer", "Observation:related-target", "Observation:specimen",
-					"Observation:subject", "Observation:device", "Observation:encounter", "Observation:patient", "Observation:performer", "Observation:related-target", "Observation:specimen",
-					"Observation:subject", "Observation:device", "Observation:encounter", "Observation:patient", "Observation:performer", "Observation:related-target", "Observation:specimen",
-					"Observation:subject", "Observation:device", "Observation:encounter", "Observation:patient", "Observation:performer", "Observation:related-target", "Observation:specimen",
-					"Observation:subject", "Observation:device", "Observation:encounter", "Observation:patient", "Observation:performer", "Observation:related-target", "Observation:specimen",
-					"Observation:subject", "Observation:device", "Observation:encounter", "Observation:patient", "Observation:performer", "Observation:related-target", "Observation:specimen",
+			@IncludeParam(allow = { "Observation:device", "Observation:encounter", "Observation:patient", "Observation:performer", "Observation:related-target", "Observation:specimen",				
 					"Observation:subject", "*" }) Set<Include> theIncludes,
 
 			@Sort SortSpec theSort,
@@ -243,8 +237,8 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
 		ExecutionInfo info = info();
 
-		Query query = new Query();
-		QueryBuilder builder = new QueryBuilder(params, query);
+		Query query = new Query();		
+		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Observation");
 
 		List<ReferenceParam> patients = builder.resolveReferences("patient", "Patient");
 		if (patients != null) {
@@ -259,6 +253,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 			builder.restriction("code", "code", "CodeableConcept", true);
 		}
 
+		builder.restriction("date", "effectiveDateTime", "DateTime", true);
 		builder.restriction("category", "category", "CodeableConcept", true);
 		builder.restriction("component-code", "component.code", "CodeableConcept", true);
 		builder.restriction("data-absent-reason", "dataAbsentReason", "CodeableConcept", true);
@@ -266,6 +261,16 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		builder.restriction("related-type", "related.type", "code", false);
 		builder.restriction("status", "status", "code", false);
 		builder.restriction("value-concept", "valueCodeableConcept", "CodeableConcept", true);
+		
+		builder.restriction("value-string", "valueString", "String", true);
+		builder.restriction("component-value-string", "component.valueString", "String", true);
+		
+		builder.restriction("device", "Reference", "device", true);
+		builder.restriction("encounter", "Reference", "encounter", true);
+		builder.restriction("performer", "Reference", "performer", true);
+		builder.restriction("related-target", "Reference", "related.target", true);
+		builder.restriction("specimen", "Reference", "specimen", true);
+		
 		
 		return query.execute(info);
 	}
@@ -295,7 +300,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 
 	public void prepare(Record record, Observation theObservation) {
 		// Set Record code and content
-		record.code.clear();
+		record.code = new HashSet<String>(); 
 		String display = null;
 		for (Coding coding : theObservation.getCode().getCoding()) {
 			if (coding.getDisplay() != null && display == null) display = coding.getDisplay();

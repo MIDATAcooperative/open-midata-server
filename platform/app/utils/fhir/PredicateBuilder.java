@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 
 import utils.access.op.AndCondition;
+import utils.access.op.CompareCaseInsensitive;
+import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
 import utils.access.op.CompareCondition;
 import utils.access.op.Condition;
 import utils.access.op.EqualsSingleValueCondition;
@@ -34,6 +36,10 @@ public class PredicateBuilder {
 	
 	public void addEq(String path, Object value) {
 	  add(FieldAccess.path(path, new EqualsSingleValueCondition(value)));
+	}
+	
+	public void addEq(String path, Object value, CompareCaseInsensitiveOperator op) {
+		  add(FieldAccess.path(path, new CompareCaseInsensitive(value, op)));
 	}
 	
 	public void and() {

@@ -120,8 +120,14 @@ public class Feature_QueryRedirect extends Feature {
 				if (val1.equals(val2) || val1.toString().equals(val2.toString())) continue;
 				if (val1 instanceof Collection<?>) {
 				 if (val2 instanceof Collection<?>) {
-					((Collection<?>) val1).retainAll((Collection<?>) val2);
-					if (((Collection<?>) val1).isEmpty()) {		
+					Collection<?> c1 = (Collection<?>) val1;
+					Collection<?> c2 = (Collection<?>) val2;
+					ArrayList<Object> comb = new ArrayList<Object>();
+					for (Object o : c1) {
+						if (c2.contains(o) || c2.contains(o.toString())) comb.add(o);
+					}
+					combined.put(key, comb);
+					if (comb.isEmpty()) {		
 						AccessLog.log("empty (col/col): "+key);
 						return null;
 					}

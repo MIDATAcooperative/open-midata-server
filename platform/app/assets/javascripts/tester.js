@@ -2,9 +2,10 @@
      
     phonecatApp.controller('TesterCtrl', function ($scope, $http) {
    
-       $scope.server = "https://195.65.191.10:9000";
+       $scope.server = "https://localhost:9000";
        $scope.url = "";
        $scope.body = "";
+       $scope.authheader = "";
        //$scope.extra = window.localStorage.extra;
        $scope.results = "empty";
        $scope.saved = [];
@@ -15,8 +16,10 @@
          var url = $scope.server + $scope.url;
          //window.localStorage.extra = $scope.extra;
          console.log(url);
+         var call = { method: $scope.type, url: url, data : JSON.parse($scope.body) }; 
+         if ($scope.authheader) call.headers = { "Authorization" : $scope.authheader };
          
-         $http({ method: $scope.type, url: url, data : JSON.parse($scope.body) })
+         $http(call)
          .success(function(data) { $scope.results = JSON.stringify(data); })
          .error(function(x,p) { $scope.results = p + ":" + JSON.stringify(x); });
        };

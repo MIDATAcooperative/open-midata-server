@@ -58,6 +58,11 @@ angular.module('portal')
 		});
 	};
 	
+	$scope.isFile = function() {
+		return $scope.record.data.resourceType == "Binary" || 
+		       ($scope.record.data.resourceType == "DocumentReference" && $scope.record.data.content);
+	};
+	
 }]);
 
 

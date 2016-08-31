@@ -13,6 +13,7 @@ import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -41,6 +42,7 @@ import org.bson.types.ObjectId;
 import play.libs.F.Function;
 import play.libs.F.Function0;
 import play.libs.F.Promise;
+import play.libs.F;
 import play.libs.Json;
 import play.libs.oauth.OAuth.ConsumerKey;
 import play.libs.oauth.OAuth.OAuthCalculator;
@@ -55,6 +57,7 @@ import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.DateTimeUtils;
+import utils.ErrorReporter;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.auth.RecordToken;
@@ -80,6 +83,7 @@ import actions.VisualizationCall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
@@ -368,17 +372,17 @@ public class PluginsAPI extends APIController {
 	@VisualizationCall	
 	public static Result getFile() throws AppException, JsonValidationException {
 		
-		// validate json
-		JsonNode json = request().body().asJson();				
-		JsonValidation.validate(json, "authToken", "_id");		
+	
+		String authTokenStr = request().getQueryString("authToken");
+		String id = request().getQueryString("id");
 		
 		// decrypt authToken and check whether space with corresponding owner exists
-		SpaceToken authToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
+		SpaceToken authToken = SpaceToken.decrypt(request(), authTokenStr);
 		if (authToken == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 		
-		ObjectId recordId = JsonValidation.getObjectId(json, "_id");			
+		ObjectId recordId = new ObjectId(id);			
 		FileData fileData = RecordManager.instance.fetchFile(authToken.executorId, new RecordToken(recordId.toString(), authToken.spaceId.toString()));
 		if (fileData == null) return badRequest();
 		setAttachmentContentDisposition(fileData.filename);		
@@ -684,6 +688,8 @@ public class PluginsAPI extends APIController {
 		// allow cross origin request from app server
 		//String appServer = Play.application().configuration().getString("apps.server");
 		//response().setHeader("Access-Control-Allow-Origin", "https://" + appServer);
+		try {
+		
 		response().setHeader("Access-Control-Allow-Origin", "*");
 
 		// check meta data
@@ -711,7 +717,7 @@ public class PluginsAPI extends APIController {
 			File file = fileData.getFile();
 			String filename = fileData.getFilename();
 			String contentType = fileData.getContentType();
-	
+							
 			// create record
 			Record record = new Record();
 			record._id = new ObjectId();
@@ -724,18 +730,38 @@ public class PluginsAPI extends APIController {
 			String[] formats = metaData.get("format");
 			record.format = (formats != null && formats.length == 1) ? formats[0] : (contentType != null) ? contentType : "application/octet-stream";
 			String[] contents = metaData.get("content");
+			String[] codes = metaData.get("code");
 			String[] subformats = metaData.get("subformat");
 			record.subformat = (subformats != null && subformats.length == 1) ? subformats[0] : null;
-			record.content =  (contents != null && contents.length == 1) ? contents[0] : "other";
+			
+			ContentInfo.setRecordCodeAndContent(record, codes != null ? new HashSet<String>(Arrays.asList(codes)) : null, contents != null ? contents[0] : null);					
 						
-			record.data = new BasicDBObject(CMaps
-					.map("resourceType", "Binary")
-					.map("type", "file")
-					.map("title", filename)
-					.map("contentType", contentType)
-			        .map("size", file.length())
-			);
-			 			 						
+			if (metaData.containsKey("data")) {
+				String data = metaData.get("data")[0];
+				try {
+					BasicDBObject att = new BasicDBObject(CMaps							
+							.map("title", filename)
+							.map("contentType", contentType)
+					        .map("size", file.length())
+					);
+					record.data = (DBObject) JSON.parse(data);
+					BasicDBList contentArray = new BasicDBList();
+					contentArray.add(att);
+					record.data.put("content", contentArray);
+				} catch (JSONParseException e) {
+					throw new BadRequestException("error.invalid.json", "Record data is invalid JSON.");
+				}
+			} else {
+			
+				record.data = new BasicDBObject(CMaps
+						.map("resourceType", "Binary")
+						.map("type", "file")
+						.map("title", filename)
+						.map("contentType", contentType)
+				        .map("size", file.length())
+				);
+			 		
+			}
 			
 
 		// save file with file storage utility
@@ -771,6 +797,14 @@ public class PluginsAPI extends APIController {
 			return badRequest(e.getMessage());
 		} catch (DatabaseException e) {
 			return badRequest(e.getMessage());
+		}
+			
+		} catch (Exception e2) {
+			ErrorReporter.report("Plugin API", ctx(), e2);
+			return internalServerError(e2.getMessage());			
+		} finally {
+			RecordManager.instance.clear();
+			AccessLog.newRequest();	
 		}
 		
 	}

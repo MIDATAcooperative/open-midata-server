@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
+import org.hl7.fhir.instance.model.api.IBaseReference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
@@ -17,6 +18,9 @@ import org.hl7.fhir.dstu3.model.BaseResource;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.InstantType;
 import org.hl7.fhir.dstu3.model.Observation;
+import org.hl7.fhir.dstu3.model.Property;
+import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.exceptions.FHIRException;
 
 import com.mongodb.DBObject;
@@ -25,6 +29,7 @@ import com.mongodb.util.JSON;
 import controllers.PluginsAPI;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.IdParam;
@@ -42,6 +47,7 @@ import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.PreconditionFailedException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
+import ca.uhn.fhir.util.FhirTerser;
 
 import models.Record;
 
@@ -79,7 +85,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	public abstract Class<T> getResourceType();
 	
 	@Read()
-	public T getResourceById(@IdParam IdType theId) throws AppException {
+	public T getResourceById(@IdParam IIdType theId) throws AppException {
 		Record record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new ObjectId(theId.getIdPart()));
 		IParser parser = ctx().newJsonParser();
 		T p = parser.parseResource(getResourceType(), record.data.toString());
@@ -121,10 +127,37 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	
 	public List<T> search(SearchParameterMap params) {
 		try {									
-		   List<T> observations = parse(searchRaw(params), getResourceType());						
+		   List<T> observations = parse(searchRaw(params), getResourceType());	
+		   
+		   if (!params.getIncludes().isEmpty()) {
+			   FhirTerser terser = ResourceProvider.ctx().newTerser();
+			   
+			   for (Include inc : params.getIncludes()) {
+				   for (T res : observations) {
+					   String type = inc.getParamType();
+					   String name = inc.getParamName();
+					   
+					   List<IBaseReference> refs = terser.getValues(res, type+"."+name, IBaseReference.class);
+					   if (refs != null) {
+						   for (IBaseReference r : refs) {
+							   IIdType refElem = r.getReferenceElement();
+							   IBaseResource result = FHIRServlet.myProviders.get(refElem.getResourceType()).getResourceById(refElem);
+							   AccessLog.log("added:"+result.toString());
+							   //r.setDisplay(null);
+							   //r.setReference(null);
+							   r.setResource(result);							  
+							   
+							   
+						   }
+					   }
+				   }
+			   }
+		   }
+		   
 		   return observations;
 
 	    } catch (AppException e) {
+	       AccessLog.logException("search", e);
 		   AccessLog.log("ERROR");
 		   return null;
 	    }
@@ -224,9 +257,10 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	
 	public static void updateRecord(Record record, IBaseResource resource) {
 		try {
-		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
-		record.data = (DBObject) JSON.parse(encoded);	  
-		RecordManager.instance.updateRecord(info().executorId, info().targetAPS, record);
+			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
+			record.data = (DBObject) JSON.parse(encoded);	
+			record.version = resource.getMeta().getVersionId();
+			RecordManager.instance.updateRecord(info().executorId, info().targetAPS, record);
 		} catch (AppException e) {
 			throw new InternalErrorException(e);
 		}

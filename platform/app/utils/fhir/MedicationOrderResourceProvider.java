@@ -67,7 +67,7 @@ public class MedicationOrderResourceProvider extends ResourceProvider<Medication
 		ExecutionInfo info = info();
     	
     	Query query = new Query();
-		QueryBuilder builder = new QueryBuilder(params, query);
+		QueryBuilder builder = new QueryBuilder(params, query, "fhir/MedicationOrder");
 		
         List<ReferenceParam> patients = builder.resolveReferences("patient", "Patient");
         if (patients != null) {

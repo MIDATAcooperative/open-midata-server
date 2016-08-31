@@ -192,6 +192,11 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * The contents of this field is encrypted into encryptedData field and not directly stored in the database.
 	 */
 	public BSONObject data; 
+	
+	/**
+	 * Other records that are referenced by this record
+	 */
+	public Set<ObjectId> dependencies;
 
 	@Override
 	public int compareTo(Record other) {

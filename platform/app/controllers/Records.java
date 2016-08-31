@@ -29,6 +29,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
 import utils.access.APS;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
@@ -361,13 +362,17 @@ public class Records extends APIController {
         	}    
         	
         	if (query != null) {
+        		
+        		AccessLog.log("QUERY1"+query.toString());
         		Feature_FormatGroups.convertQueryToContents(groupSystem, query);
+        		AccessLog.log("QUERY2"+query.toString());
+        		//query = Collections.unmodifiableMap(query);
         		
         		List<Record> recs = RecordManager.instance.list(userId, start, CMaps.map(query).map("flat", "true"), Sets.create("_id"));
         		Set<ObjectId> remove = new HashSet<ObjectId>();
         		for (Record r : recs) remove.add(r._id);
         		RecordManager.instance.unshare(userId, start, remove);
-        		
+        		AccessLog.log("QUERY3"+query.toString());
         		if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
         		  RecordManager.instance.shareByQuery(userId, userId, start, query);
         		} else {

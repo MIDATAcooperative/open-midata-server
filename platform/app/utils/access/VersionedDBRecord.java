@@ -1,5 +1,7 @@
 package utils.access;
 
+import java.util.Set;
+
 import models.Model;
 import models.Record;
 
@@ -7,6 +9,7 @@ import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.ObjectId;
 
+import utils.collections.CMaps;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
@@ -74,5 +77,9 @@ public class VersionedDBRecord extends DBRecord {
 	
 	public static void add(VersionedDBRecord record) throws InternalServerException {
 		Model.insert(collection, record);	
+	}
+	
+	public static Set<VersionedDBRecord> getAllById(Set<ObjectId> ids, Set<String> fields) throws InternalServerException {
+		return Model.getAll(VersionedDBRecord.class, collection, CMaps.map("_id", ids), fields);
 	}
 }

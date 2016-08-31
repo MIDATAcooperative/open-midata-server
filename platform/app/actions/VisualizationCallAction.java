@@ -40,6 +40,7 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
     	  ctx.response().setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH");
     	  ctx.response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie");
     
+    	  AccessLog.log("path: ["+ctx.request().method()+"] "+ctx.request().path());
     	  return delegate.call(ctx);
     	      	  
     	} catch (JsonValidationException e) {
