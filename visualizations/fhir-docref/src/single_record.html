@@ -1,0 +1,51 @@
+  <div ng-controller="SingleRecordController" class="container">
+    
+    <table class="table">
+      
+    
+    		    
+    <tr ng-hide="record.data.component">
+      <td><b>{{ getCodeableConcept(record.data.code)  }}</b></td>                       
+      <td>
+        <span class="lead" ng-show="record.data.valueQuantity">
+          {{ record.data.valueQuantity.value }} {{ record.data.valueQuantity.unit }}
+        </span>
+        <span ng-show="record.data.valueString">
+          <b>{{ record.data.valueString }}</b>
+        </span>
+        <span ng-show="record.data.valueCodeableConcept">
+          <b>{{ getCodeableConcept(record.data.valueCodeableConcept) }}</b>
+        </span>
+      </td>
+    </tr>
+       
+     <tr ng-repeat="comp in record.data.component">
+       <td><b>{{ getCodeableConcept(comp.code)  }}</b></td>
+       <td>
+          <b>{{ comp.valueQuantity.value }} {{ comp.valueQuantity.unit }}</b>
+       </td>         
+    </tr>
+    
+    <tr>
+      <td translate="date"></td>
+      <td>{{ record.data.effectiveDateTime | date }}</td>
+    </tr>
+    
+    <tr ng-show="record.ownerName">
+      <td translate="person"></td>
+      <td>{{ record.ownerName }}</td>
+    </tr>
+    
+    <tr ng-show="record.data.category">
+      <td translate="category"></td>
+      <td>{{ getCodeableConcept(record.data.category)  }}</td>
+    </tr>
+    
+    <tr ng-show="record.data.status">
+      <td translate="status"></td>
+      <td translate="{{ record.data.status }}"></td>
+    </tr>            
+         
+    </table>       
+    <div class="btn btn-default" ng-show="recordId" translate="back_btn" ng-click="showAll()"></div>
+</div>

@@ -1,0 +1,13 @@
+
+<div ng-controller="OverviewCtrl" class="container" style="min-height:300px">
+
+	<table class="table table-condensed table-hover">
+		<tr ng-repeat="record in records">
+		  <td>{{ record.data.description }}</td>
+		  <td>{{ getCodeableConcept(record.data.type) }}</td>
+		  <td><button ng-click="download(record)" translate="download" class="btn btn-xs btn-default"></button></td>
+		</tr>
+	</table>
+
+    <button class="btn btn-primary" ui-sref="^.create" translate="add"></button>
+</div>
