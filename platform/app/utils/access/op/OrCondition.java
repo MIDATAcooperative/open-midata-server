@@ -20,7 +20,7 @@ public class OrCondition implements Condition {
     	if (cond1 instanceof OrCondition) {
     		((OrCondition) cond1).checks.add(cond2);
     		return (OrCondition) cond1;
-    	} else if (cond2 instanceof AndCondition) {
+    	} else if (cond2 instanceof OrCondition) {
     		((OrCondition) cond2).checks.add(cond1);
     		return (OrCondition) cond2;
     	} else {
@@ -106,6 +106,17 @@ public class OrCondition implements Condition {
 	@Override
 	public Map<String, Condition> indexExpression() {		
 		return null;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder("{ $or : {");		
+		for (Condition check : checks) {
+			if (result.length() > 9) result.append(", ");
+			result.append(check.toString());
+		}
+		result.append("} }");
+		return result.toString();
 	}
 		
 

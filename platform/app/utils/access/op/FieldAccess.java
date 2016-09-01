@@ -100,4 +100,10 @@ public class FieldAccess implements Condition {
 		return Collections.singletonMap(path, c); 
 	}
 
+	@Override
+	public String toString() {		
+		return field + ":" + cond.toString();
+	}
+
+	
 }

@@ -265,11 +265,11 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		builder.restriction("value-string", "valueString", "String", true);
 		builder.restriction("component-value-string", "component.valueString", "String", true);
 		
-		builder.restriction("device", "Reference", "device", true);
-		builder.restriction("encounter", "Reference", "encounter", true);
-		builder.restriction("performer", "Reference", "performer", true);
-		builder.restriction("related-target", "Reference", "related.target", true);
-		builder.restriction("specimen", "Reference", "specimen", true);
+		builder.restriction("device", "Device", "device", true);
+		builder.restriction("encounter", "Encounter", "encounter", true);
+		builder.restriction("performer", "Performer", "performer", true);
+		builder.restriction("related-target", null, "related.target", true);
+		builder.restriction("specimen", "Specimen", "specimen", true);
 		
 		
 		return query.execute(info);

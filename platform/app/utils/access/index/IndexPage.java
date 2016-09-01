@@ -41,7 +41,7 @@ public class IndexPage {
 	    if (entry == null) {
 	    	entry = addEntry(key);
 	    }
-	    AccessLog.log("add to="+entry.toString()+" key="+key[0].toString());
+	    //AccessLog.log("add to="+entry.toString()+" key="+key[0].toString());
 	    if (!containsRecord(entry, target)) {
 	    	addRecord(entry, aps, target);
 	    	changed = true;

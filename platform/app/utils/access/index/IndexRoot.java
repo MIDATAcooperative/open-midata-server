@@ -92,7 +92,16 @@ public class IndexRoot {
 			   return extract((BasicBSONObject) access, remain);
 			} else return null;
 		} else {
-			return data.get(path);
+			Object res = data.get(path);
+			if (res instanceof BasicBSONList) {
+				BasicBSONList lst = (BasicBSONList) res;
+				if (lst.size() == 0) return null;
+				if (lst.size() == 1) {
+					return lst.get(0);
+				}
+			}
+			
+			return res;
 		}
 	}
 	

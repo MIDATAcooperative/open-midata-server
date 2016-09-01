@@ -74,9 +74,30 @@ public class AndCondition implements Condition {
 	@Override
 	public Condition optimize() {
 		if (checks.size() == 1) return checks.get(0).optimize();
+		
+		boolean allFieldAccess = true;	
+		String commonField = null;
+		
 		for (int i=0;i<checks.size();i++) {
-			checks.set(i, checks.get(i).optimize());
+			Condition c = checks.get(i).optimize();
+			if (c instanceof FieldAccess) {
+				String field = ((FieldAccess) c).getField();
+				if (commonField == null) commonField = field;
+				else if (!commonField.equals(field)) allFieldAccess = false;
+				
+			} else  {
+				allFieldAccess = false;			
+			} 
+			checks.set(i, c);
 		}
+		
+		if (allFieldAccess && commonField!=null) {
+			for (int i=0;i<checks.size();i++) {
+				checks.set(i, ((FieldAccess) checks.get(i)).getCondition());
+			}		    
+			return (new FieldAccess(commonField, this)).optimize();		    
+		}
+						
 		return this;
 	}
 	
@@ -133,6 +154,18 @@ public class AndCondition implements Condition {
 		
 		return null;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder("{ ");		
+		for (Condition check : checks) {
+			if (result.length() > 2) result.append(", ");
+			result.append(check.toString());
+		}
+		result.append("}");
+		return result.toString();
+	}
 		
+	
 
 }

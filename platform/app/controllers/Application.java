@@ -43,6 +43,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.PatientResourceProvider;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.mails.MailUtils;
@@ -543,6 +544,8 @@ public class Application extends APIController {
 		
 		user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
 		Member.set(user._id, "myaps", user.myaps);
+		
+		PatientResourceProvider.updatePatientForAccount(user._id);
 		
 		sendWelcomeMail(user);
 		

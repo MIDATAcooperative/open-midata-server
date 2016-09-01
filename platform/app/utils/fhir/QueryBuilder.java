@@ -1,5 +1,6 @@
 package utils.fhir;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -7,13 +8,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.BaseResource;
+
 import utils.AccessLog;
 import utils.access.op.Condition;
 import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
+import utils.access.op.CompareCondition.CompareOperator;
 
 import com.ctc.wstx.dtd.TokenModel;
 
 import ca.uhn.fhir.model.api.IQueryParameterType;
+import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.ParamPrefixEnum;
 import ca.uhn.fhir.rest.param.ReferenceParam;
@@ -53,9 +58,10 @@ public class QueryBuilder {
 		
 		PredicateBuilder bld = new PredicateBuilder();
 		for (List<? extends IQueryParameterType> paramsOr : paramsAnd) {
-			bld.and();
+						
 			for (IQueryParameterType param : paramsOr) {
-				bld.or();
+				
+				
 				if (param instanceof TokenParam) {
 				  TokenParam tokenParam = (TokenParam) param;
 				  
@@ -76,32 +82,73 @@ public class QueryBuilder {
 				  }
 				} else if (param instanceof ReferenceParam) {
 					ReferenceParam referenceParam = (ReferenceParam) param;
-					String id = referenceParam.getIdPart();
-					String resType = referenceParam.getResourceType();					
-					if (id != null) {
-						if (resType != null) {
-							bld.addEq(path+".reference", resType+"/"+id);
-						} else {
-							bld.addEq(path+".reference", "/"+id, CompareCaseInsensitiveOperator.ENDSWITH);
+					
+					if (referenceParam.getChain() != null) {
+						List<ReferenceParam> resolved = followChain(referenceParam, type);
+						for (ReferenceParam rp : resolved) {
+						   
+							String id = rp.getIdPart();
+							String resType = rp.getResourceType();					
+							if (id != null) {
+								if (resType != null) {
+									bld.addEq(path+".reference", resType+"/"+id);
+								} else {
+									bld.addEq(path+".reference", "/"+id, CompareCaseInsensitiveOperator.ENDSWITH);
+								}
+							}
+							
 						}
+					} else {
+					
+						String id = referenceParam.getIdPart();
+						String resType = referenceParam.getResourceType();					
+						if (id != null) {
+							if (resType != null) {
+								bld.addEq(path+".reference", resType+"/"+id);
+							} else {
+								bld.addEq(path+".reference", "/"+id, CompareCaseInsensitiveOperator.ENDSWITH);
+							}
+						} 
 					}
 				} else if (param instanceof DateParam) {
 					DateParam dateParam = (DateParam) param;
 					Date comp = dateParam.getValue();
 					ParamPrefixEnum prefix = dateParam.getPrefix();
+					TemporalPrecisionEnum precision = dateParam.getPrecision();
+					String compStr;
+					SimpleDateFormat format;
+					switch (precision) {					  
+					case SECOND: format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");break;
+					case MINUTE: format = new SimpleDateFormat("yyyy-MM-dd HH:mm");break;
+					//case HOURS: format = new SimpleDateFormat("yyyy-MM-dd HH");break;
+					case DAY: format = new SimpleDateFormat("yyyy-MM-dd");break;
+					case MONTH: format = new SimpleDateFormat("yyyy-MM");break;
+					case YEAR: format = new SimpleDateFormat("yyyy");break;
+					case MILLI:
+					default: format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");break;
+					}
+					compStr = format.format(comp); 
 					
 					switch (prefix) {
-					case GREATERTHAN: bld.addComp(path, ">", comp);break;
-					case LESSTHAN: bld.addComp(path,"<", comp);break;
-					case GREATERTHAN_OR_EQUALS: bld.addComp(path, ">=", comp);break;
-					case LESSTHAN_OR_EQUALS: bld.addComp(path,"<=", comp);break;
-					case EQUAL: bld.addEq(path, comp);break;
+					case GREATERTHAN: bld.addComp(path, CompareOperator.GT, compStr);break;
+					case LESSTHAN: bld.addComp(path,CompareOperator.LT, compStr);break;
+					case GREATERTHAN_OR_EQUALS: bld.addComp(path, CompareOperator.GE, compStr);break;
+					case LESSTHAN_OR_EQUALS: bld.addComp(path, CompareOperator.LE, compStr);break;
+					case EQUAL: 
+						bld.addComp(path, CompareOperator.GE, compStr);
+						bld.addComp(path, CompareOperator.LE, compStr);
+						break;
 					}
 				}
+			    bld.or();
 			}
+			bld.and();
 		}
 		
-		Condition dataCondition = bld.get().optimize();
+		Condition unOpt = bld.get();
+		AccessLog.log("Before opt: "+unOpt.toString());
+		Condition dataCondition = unOpt.optimize();
+		AccessLog.log("After opt: "+dataCondition.toString());
 		query.putDataCondition(dataCondition);
 		
 		if (indexing) {
@@ -110,31 +157,63 @@ public class QueryBuilder {
 		} 
 	}
 	
+	public List<ReferenceParam> followChain(ReferenceParam r, String targetType) {
+		SearchParameterMap params = new SearchParameterMap();		
+        params.add(r.getChain(), new StringParam(r.getValue()));
+        
+        List<BaseResource> resultList = FHIRServlet.myProviders.get(targetType).search(params);
+        List<ReferenceParam> result = new ArrayList<ReferenceParam>();
+        for (BaseResource br : resultList) {
+        	result.add(new ReferenceParam(br.getId()));
+        }
+        return result;
+	}
+	
 	public List<ReferenceParam> resolveReferences(String name, String targetType) {
 		List<List<? extends IQueryParameterType>> paramsAnd = params.get(name);
 		if (paramsAnd == null) return null;
 				
+		List<ReferenceParam> orResult = null;
+		Set<String> keep = null;
 		for (List<? extends IQueryParameterType> paramsOr : paramsAnd) {
 			
-			List<ReferenceParam> orResult = new ArrayList<ReferenceParam>();
+			if (orResult != null) {
+				keep = new HashSet<String>();
+				for (ReferenceParam r : orResult) keep.add(r.getIdPart());
+			}
+			
+			orResult = new ArrayList<ReferenceParam>();
 			
 			for (IQueryParameterType param : paramsOr) {				
 				if (param instanceof ReferenceParam) {
 					
 					ReferenceParam r = (ReferenceParam) param;
-					if (r.getIdPart() != null) orResult.add(r);					
-					else if (r.getChain() != null) {
-					   	
+					
+					if (r.getChain() != null) {
 						
+						SearchParameterMap params = new SearchParameterMap();						
+                        params.add(r.getChain(), new StringParam(r.getValue())); // XXX YOU DO NOT KNOW IF ITS STRING
+                        
+                        List<BaseResource> resultList = FHIRServlet.myProviders.get(targetType).search(params);
+                        for (BaseResource br : resultList) {
+                        	if (keep == null || keep.contains(br.getId())) orResult.add(new ReferenceParam(br.getId()));
+                        }
+						
+						/*AccessLog.log("RT:"+r.getResourceType());
+						AccessLog.log("CHAINXX"+r.getChain()); 	
+					   AccessLog.log("CHAINXV"+r.getValue());*/
+					} else
+					if (r.getIdPart() != null) {
+						if (keep == null || keep.contains(r.getIdPart())) orResult.add(r);					
 					}
+					
 				}
 			}
 			
-			// TODO AND SUPPOPT IS MISSING
-			return orResult;
+
 		}
 		
-		return null;		
+		return orResult;		
 	}
 	
 	public Set<String> tokensToCodeSystemStrings(String name) {

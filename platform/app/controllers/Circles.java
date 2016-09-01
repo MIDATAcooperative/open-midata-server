@@ -17,6 +17,7 @@ import models.Consent;
 import models.HCRelated;
 import models.Member;
 import models.MemberKey;
+import models.Record;
 import models.RecordsInfo;
 import models.enums.AggregationType;
 import models.enums.ConsentStatus;
@@ -119,8 +120,10 @@ public class Circles extends APIController {
 		if (fields.contains("records")) {
 			Map<String, Object> all = new HashMap<String,Object>();
 			for (Consent consent : consents) {
-				Collection<RecordsInfo> summary = RecordManager.instance.info(owner, consent._id, all, AggregationType.ALL);
-				if (summary.isEmpty()) consent.records = 0; else consent.records = summary.iterator().next().count;
+				if (!consent.status.equals(ConsentStatus.EXPIRED)) {
+				  Collection<RecordsInfo> summary = RecordManager.instance.info(owner, consent._id, all, AggregationType.ALL);
+				  if (summary.isEmpty()) consent.records = 0; else consent.records = summary.iterator().next().count;
+				} else consent.records = 0;
 			}
 		}
 		
@@ -236,7 +239,15 @@ public class Circles extends APIController {
 		consentSettingChange(executorId, consent);
 		consent.add();
 				
+		autosharePatientRecord(consent);
 		return ok(JsonOutput.toJson(consent, "Consent", Consent.ALL));
+	}
+	
+	public static void autosharePatientRecord(Consent consent) throws AppException {
+		List<Record> recs = RecordManager.instance.list(consent.owner, consent.owner, CMaps.map("owner", "self").map("format", "fhir/Patient"), Sets.create("_id"));
+		if (recs.size()>0) {
+		  RecordManager.instance.share(consent.owner, consent.owner, consent._id, Collections.singleton(recs.get(0)._id), true);
+		}
 	}
 	
 	/**

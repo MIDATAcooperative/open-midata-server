@@ -42,6 +42,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.PatientResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -245,7 +246,7 @@ public class Users extends APIController {
 		
 		ObjectId userId = new ObjectId(request().username());
 				
-		User user = User.getById(userId, Sets.create("_id")); 
+		User user = User.getById(userId, Sets.create("_id", "role")); 
 		
 		User.set(user._id, "email", email);
 		User.set(user._id, "emailLC", email.toLowerCase());
@@ -261,6 +262,9 @@ public class Users extends APIController {
 		User.set(user._id, "lastname", JsonValidation.getString(json, "lastname"));
 		User.set(user._id, "gender", JsonValidation.getEnum(json, "gender", Gender.class));		
 		
+		if (user.role.equals(UserRole.MEMBER)) {		  
+		  PatientResourceProvider.updatePatientForAccount(user._id);
+		}
 		return ok();		
 	}
 	

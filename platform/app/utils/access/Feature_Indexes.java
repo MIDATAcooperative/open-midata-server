@@ -30,6 +30,7 @@ private Feature next;
 		this.next = next;
 	}
 	
+	public final static int INDEX_REVERSE_USE = 300;
 	
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
@@ -83,29 +84,40 @@ private Feature next;
 			   ObjectId aps = entry.getKey();
 			   AccessLog.log("Now processing aps:"+aps.toString());
 			   Set<ObjectId> ids = entry.getValue();
-			   Map<String, Object> readRecs = new HashMap<String, Object>();
-			   if (ids.size() > 5) {
-				    Map<String, Object> props = new HashMap<String, Object>();
-					props.putAll(q.getProperties());
-					props.put("streams", "only");
-					List<DBRecord> matchStreams = next.query(new Query(props, Sets.create("_id"), q.getCache(), aps));
-					AccessLog.log("index query streams "+matchStreams.size()+" matches.");
-					Set<ObjectId> streams = new HashSet<ObjectId>();
-					for (DBRecord r : matchStreams) streams.add(r._id);
-					readRecs.put("stream", streams);
+			   
+			   if (ids.size() > INDEX_REVERSE_USE) {
+				   Query q4 = new Query(q, CMaps.map(), aps);
+				   List<DBRecord> unindexed = next.query(q4);
+				   for (DBRecord candidate : unindexed) {
+					   if (ids.contains(candidate._id)) result.add(candidate);
+				   }
+				   AccessLog.log("add unindexed ="+unindexed.size());
+				   //result.addAll(unindexed);
+			   } else {
+				   Map<String, Object> readRecs = new HashMap<String, Object>();
+				   if (ids.size() > 5) {
+					    Map<String, Object> props = new HashMap<String, Object>();
+						props.putAll(q.getProperties());
+						props.put("streams", "only");
+						List<DBRecord> matchStreams = next.query(new Query(props, Sets.create("_id"), q.getCache(), aps));
+						AccessLog.log("index query streams "+matchStreams.size()+" matches.");
+						Set<ObjectId> streams = new HashSet<ObjectId>();
+						for (DBRecord r : matchStreams) streams.add(r._id);
+						readRecs.put("stream", streams);
+				   }
+				   readRecs.put("_id", ids);
+					
+				   List<DBRecord> partresult = new ArrayList(DBRecord.getAll(readRecs, queryFields));
+					
+					Query q3 = new Query(q, CMaps.map("strict", "true"), aps);
+					partresult = Feature_Prefetch.lookup(q3, partresult, next);
+					
+		            Query q2 = new Query(q, CMaps.map("_id", ids));
+		            List<DBRecord> additional = next.query(q2);
+		            AccessLog.log("looked up directly="+partresult.size()+" additionally="+additional.size());
+		            result.addAll(partresult);
+					result.addAll(additional);
 			   }
-			   readRecs.put("_id", ids);
-				
-			   List<DBRecord> partresult = new ArrayList(DBRecord.getAll(readRecs, queryFields));
-				
-				Query q3 = new Query(q, CMaps.map("strict", "true"), aps);
-				partresult = Feature_Prefetch.lookup(q3, partresult, next);
-				
-	            Query q2 = new Query(q, CMaps.map("_id", ids));
-	            List<DBRecord> additional = next.query(q2);
-	            AccessLog.log("looked up directly="+partresult.size()+" additionally="+additional.size());
-	            result.addAll(partresult);
-				result.addAll(additional);
 			}
 
 			AccessLog.log("index query found "+matches.size()+" matches, "+result.size()+" in correct aps.");

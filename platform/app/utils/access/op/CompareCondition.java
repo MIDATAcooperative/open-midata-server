@@ -26,6 +26,7 @@ public class CompareCondition implements Condition {
 	 * @param op comparison operator. 
 	 */
 	public CompareCondition(Comparable<Object> val, CompareOperator op) {
+		if (val == null) throw new NullPointerException("Null argument for comparator");
 		this.val = val;
 		this.op = op;
 		this.isDate = ((Object) val) instanceof Date;
@@ -33,6 +34,7 @@ public class CompareCondition implements Condition {
 	
 	@Override
 	public boolean satisfiedBy(Object obj) {
+		if (obj == null) return false;
 		try {
 		  if (isDate) obj = ISODateTimeFormat.dateTimeParser().parseDateTime(obj.toString()).toDate();
 		} catch (IllegalArgumentException e) { return false; }
@@ -61,6 +63,13 @@ public class CompareCondition implements Condition {
 	public Map<String, Condition> indexExpression() {		
 		return null;
 	}
+
+	@Override
+	public String toString() {
+		return "$"+op+" : "+val.toString(); 
+	}
+	
+	
 	
 
 }

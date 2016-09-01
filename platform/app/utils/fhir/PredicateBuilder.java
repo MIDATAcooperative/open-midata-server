@@ -26,8 +26,7 @@ public class PredicateBuilder {
 	
 	private boolean indexable = true;
 	
-	public void addComp(String path, String pred, Object value) {
-		CompareOperator op = CompareOperator.LE;
+	public void addComp(String path, CompareOperator op, Object value) {		
 		Condition cond = new CompareCondition((Comparable<Object>) value, op);
 		add(FieldAccess.path(path, cond));
 	}
