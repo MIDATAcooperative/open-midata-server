@@ -57,7 +57,6 @@
 {"_id":{"$oid":"5718ec14aed645098e8cedd7"},"system":"http://midata.coop","code":"DiagnosticOrder","display":"DiagnosticOrder","content":"DiagnosticOrder"}
 {"_id":{"$oid":"5718ec14aed645098e8cedd8"},"system":"http://midata.coop","code":"MessageHeader","display":"MessageHeader","content":"MessageHeader"}
 {"_id":{"$oid":"5718ec14aed645098e8cedd9"},"system":"http://midata.coop","code":"Immunization","display":"Immunization","content":"Immunization"}
-{"_id":{"$oid":"5718ec14aed645098e8cedda"},"system":"http://midata.coop","code":"DocumentReference","display":"DocumentReference","content":"DocumentReference"}
 {"_id":{"$oid":"5718ec14aed645098e8ceddb"},"system":"http://midata.coop","code":"Location","display":"Location","content":"Location"}
 {"_id":{"$oid":"5718ec14aed645098e8ceddf"},"system":"http://midata.coop","code":"DeviceComponent","display":"DeviceComponent","content":"DeviceComponent"}
 {"_id":{"$oid":"5718ec14aed645098e8cedde"},"system":"http://midata.coop","code":"Substance","display":"Substance","content":"Substance"}
@@ -127,3 +126,4 @@
 {"_id":{"$oid":"5718ec14aed645098e8cee1d"},"system":"http://midata.coop","code":"Device","display":"Device","content":"Device"}
 {"_id":{"$oid":"57837400aed6450bf92d095e"},"system":"http://loinc.org","code":"55417-0","display":"Blood Pressure","content":"body/bloodpressure"}
 {"_id":{"$oid":"57ac268caed645128457f61f"},"system":"http://loinc.org","code":"8302-2","display":"Body Height","content":"body/height"}
+{"_id":{"$oid":"57c55b8baed6450e7affb2d9"},"system":"http://loinc.org","code":"11502-2","display":"Laboratory Report","content":"health/laboratory"}

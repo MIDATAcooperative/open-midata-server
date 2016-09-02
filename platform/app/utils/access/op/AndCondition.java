@@ -109,7 +109,7 @@ public class AndCondition implements Condition {
 	@SuppressWarnings("unchecked")
 	public static Condition parseRemaining(Object fragment) {
 		if (fragment instanceof String) {	    	   
-	       return new EqualsSingleValueCondition(fragment);
+	       return new EqualsSingleValueCondition((Comparable) fragment);
 	    } else if (fragment instanceof Map) {
 	       return new AndCondition((Map<String,Object>) fragment); 
 	    } else if (fragment instanceof Condition) {
@@ -164,6 +164,14 @@ public class AndCondition implements Condition {
 		}
 		result.append("}");
 		return result.toString();
+	}
+	
+	@Override
+	public boolean isInBounds(Object low, Object high) {
+		for (Condition check : checks) {
+			if (!check.isInBounds(low, high)) return false;           
+		}
+		return true;
 	}
 		
 	

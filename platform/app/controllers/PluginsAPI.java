@@ -745,8 +745,10 @@ public class PluginsAPI extends APIController {
 					        .map("size", file.length())
 					);
 					record.data = (DBObject) JSON.parse(data);
+					BasicDBObject attachment = new BasicDBObject();
+					attachment.put("attachment", att);
 					BasicDBList contentArray = new BasicDBList();
-					contentArray.add(att);
+					contentArray.add(attachment);
 					record.data.put("content", contentArray);
 				} catch (JSONParseException e) {
 					throw new BadRequestException("error.invalid.json", "Record data is invalid JSON.");

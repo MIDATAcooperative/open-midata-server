@@ -4,6 +4,9 @@
 {"_id":{"$oid":"55ae59d0f351efda91eadc75"},"format":"demo-card/part1","comment":"Demo only. Do not use!","visName":"Demo kardiologische Risikoauswertung","visualization":{"$oid":"54f9c2b8e4b0a71e0368d8e9"}}
 {"_id":{"$oid":"55ae59d0f351efda91eadc76"},"format":"demo-card/part2","comment":"Demo only. Do not use!","visName":"Demo kardiologische Risikoauswertung","visualization":{"$oid":"54f9c2b8e4b0a71e0368d8e9"}}
 {"_id":{"$oid":"55ae59d0f351efda91eadc77"},"format":"fhir/Observation","comment":"FHIR Observation Resource","visName":"Observation Viewer","visualization":{"$oid":"56fa6a44aed64539084d46ca"}}
+{"_id":{"$oid":"57c935873f4bb36b8d99794a"},"format":"fhir/Patient","comment":"FHIR Patient Resource","visName":"Patient Viewer"}
+{"_id":{"$oid":"57c935873f4bb36b8d99794b"},"format":"fhir/DocumentReference","comment":"FHIR DocumentReference Resource","visName":"Document Viewer"}
+{"_id":{"$oid":"57c935873f4bb36b8d99794c"},"format":"fhir/MedicationOrder","comment":"FHIR MedicationOrder Resource","visName":"Medication Viewer"}
 {"_id":{"$oid":"55ae59d0f351efda91eadc78"},"format":"jawbone/summary","comment":"Deprecated. Do not use.","visName":"Jawbone Activity Clock","visualization":{"$oid":"543d2c14e4b0f34f43670afa"}}
 {"_id":{"$oid":"55ae59d0f351efda91eadc79"},"format":"jawbone/ticks","comment":"Deprecated. Do not use.","visName":"Jawbone Activity Clock","visualization":{"$oid":"543d2c14e4b0f34f43670afa"}}
 {"_id":{"$oid":"55ae59d0f351efda91eadc7b"},"format":"training-app","comment":"Demo only. Do not use.","visName":"Training Editor","visualization":{"$oid":"554c867de4b08413ff37d6f5"}}

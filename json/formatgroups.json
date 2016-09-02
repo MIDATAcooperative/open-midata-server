@@ -37,3 +37,4 @@
 {"_id":{"$oid":"5719d46aaed64509b3d0930e"},"system":"v1","name":"body/bloodpressure","label":{"de":"Blutdruck","en":"Blood Pressure"},"parent":"qself","contents":["body/blood/diastolic","body/blood/systolic","body/bloodpressure"]}
 {"_id":{"$oid":"57285570aed6450be5bfeb5d"},"system":"v1","name":"activities/steps","label":{"de":"Schritte","en":"Steps"},"parent":"movement","contents":["activities/steps"]}
 {"_id":{"$oid":"57285570aed6450be5bfeb5e"},"system":"v1","name":"activities/distance","label":{"de":"Distanz","en":"Distance"},"parent":"movement","contents":["activities/distance"]}
+{"_id":{"$oid":"57c55b8baed6450e7affb2da"},"system":"v1","name":"health/laboratory","label":{"en":"Laboratory"},"parent":"health","contents":["health/laboratory"]}

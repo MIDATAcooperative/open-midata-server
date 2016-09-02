@@ -91,6 +91,14 @@ public class OrCondition implements Condition {
 		}
 		return false;
 	}
+	
+	@Override
+	public boolean isInBounds(Object low, Object high) {
+		for (Condition check : checks) {
+			if (check.isInBounds(low, high)) return true;           
+		}
+		return false;
+	}
 
 	@Override
 	public Condition indexValueExpression() {

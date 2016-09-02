@@ -23,4 +23,6 @@ public interface Condition {
 	public Condition indexValueExpression();
 	
 	public Map<String, Condition> indexExpression();
+	
+	public boolean isInBounds(Object low, Object high);
 }

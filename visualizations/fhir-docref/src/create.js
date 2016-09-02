@@ -1,6 +1,6 @@
 angular.module('fhirDocref')
-.controller('CreateCtrl', ['$scope', '$http', '$location', 'FileUploader', 'midataPortal', 'midataServer',
-   	function($scope, $http, $location, FileUploader, midataPortal, midataServer) {
+.controller('CreateCtrl', ['$scope', '$http', '$location', '$timeout', 'FileUploader', 'midataPortal', 'midataServer',
+   	function($scope, $http, $location, $timeout, FileUploader, midataPortal, midataServer) {
    		
    	  
    		// init
@@ -104,8 +104,8 @@ angular.module('fhirDocref')
    			
    			var fhirResource = {
    				"resourceType" : "DocumentReference",   			 
-   		        "type" : { coding : { system : "http://loinc.org", code : $scope.data.type } }, 
-   		        "class" : { coding : { system : "http://loinc.org", code : $scope.data.type } },   		     		 
+   		        "type" : { coding : [{ system : "http://loinc.org", code : $scope.data.type }] }, 
+   		        "class" : { coding : [{ system : "http://loinc.org", code : $scope.data.type }] },   		     		 
 	   		    "indexed" : new Date(),
 	   		    "status" : "current",   		   		 
 	   		    "description" : $scope.data.title   		  	   		     		  

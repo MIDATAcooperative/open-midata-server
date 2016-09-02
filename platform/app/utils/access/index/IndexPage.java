@@ -20,9 +20,9 @@ import utils.exceptions.InternalServerException;
  */
 public class IndexPage {
 
-	private IndexPageModel model;
-	private byte[] key;
-	private boolean changed;
+	protected IndexPageModel model;
+	protected byte[] key;
+	protected boolean changed;
 	
 	public IndexPage(byte[] key, IndexPageModel model) throws InternalServerException {
 		this.key = key;
@@ -34,7 +34,7 @@ public class IndexPage {
 		return model.version;
 	}
 	
-	public void addEntry(Object[] key, ObjectId aps, ObjectId target) {
+	public void addEntry(Comparable<Object>[] key, ObjectId aps, ObjectId target) throws InternalServerException {
 		if (key[0] == null) return;
 		
 	    BasicBSONObject entry = findEntry(key);
@@ -48,7 +48,7 @@ public class IndexPage {
 	    }
 	}
 	
-	public Collection<IndexMatch> lookup(Condition[] key) {
+	public Collection<IndexMatch> lookup(Condition[] key) throws InternalServerException  {
 				
 		BasicBSONList entries = findEntries(key);
 		if (entries == null) return null;
@@ -88,11 +88,11 @@ public class IndexPage {
 		}
 	}
 	
-	private void encrypt() throws InternalServerException {
+	protected void encrypt() throws InternalServerException {
 		model.enc = EncryptionUtils.encryptBSON(key, model.unencrypted);
 	}
 	
-	private void decrypt() throws InternalServerException {
+	protected void decrypt() throws InternalServerException {
 		model.unencrypted = EncryptionUtils.decryptBSON(key, model.enc);
 		if (model.unencrypted.get("ts") == null) throw new InternalServerException("error.internal", "Failed to load index");		
 	}
@@ -134,7 +134,7 @@ public class IndexPage {
 		return result;
 	}
 	
-	protected void removeFromEntries(Condition[] key, Set<String> ids) {
+	protected void removeFromEntries(Condition[] key, Set<String> ids) throws InternalServerException {
 				
 		BasicBSONList lst = (BasicBSONList) model.unencrypted.get("e");
 		for (Object entry : lst) {

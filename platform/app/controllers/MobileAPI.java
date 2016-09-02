@@ -57,6 +57,7 @@ import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.ResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -357,20 +358,18 @@ public class MobileAPI extends Controller {
 		
 		// validate json
 		JsonNode json = request().body().asJson();				
-		JsonValidation.validate(json, "authToken", "_id");		
+						
+		ExecutionInfo info = null;
 		
-		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(json.get("authToken").asText());
-		if (authToken == null) {
-			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
+		String param = request().getHeader("Authorization");		
+		if (param != null && param.startsWith("Bearer ")) {
+          info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()));                  
+		} else if (json != null && json.has("authToken")) {
+		  info = ExecutionInfo.checkToken(request(), JsonValidation.getString(json, "authToken"));
 		}
 					
-		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner"));
-        if (appInstance == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
-	
-        ObjectId executor = prepareMobileExecutor(appInstance, authToken);
-		
-		ObjectId recordId = JsonValidation.getObjectId(json, "_id");			
-		FileData fileData = RecordManager.instance.fetchFile(executor, new RecordToken(recordId.toString(), appInstance._id.toString()));
+		ObjectId recordId = json != null ? JsonValidation.getObjectId(json, "_id") : new ObjectId(request().getQueryString("_id"));			
+		FileData fileData = RecordManager.instance.fetchFile(info.executorId, new RecordToken(recordId.toString(), info.targetAPS.toString()));
 		if (fileData == null) return badRequest();
 		//response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
 		return ok(fileData.inputStream);

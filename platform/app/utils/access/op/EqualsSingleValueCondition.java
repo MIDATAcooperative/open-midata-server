@@ -8,13 +8,13 @@ import java.util.Map;
  */
 public class EqualsSingleValueCondition implements Condition {
 
-	private Object val;
+	private Comparable<Object> val;
 	
 	/**
 	 * Constructor
 	 * @param val value to compare target object with
 	 */
-	public EqualsSingleValueCondition(Object val) {
+	public EqualsSingleValueCondition(Comparable<Object> val) {
 		this.val = val;
 	}
 	
@@ -40,6 +40,11 @@ public class EqualsSingleValueCondition implements Condition {
 	@Override
 	public Map<String, Condition> indexExpression() {		
 		return null;
+	}
+
+	@Override
+	public boolean isInBounds(Object low, Object high) {
+		return (low == null || val.compareTo(low) >= 0) && (high == null || val.compareTo(high) < 0);
 	}
 	
 	

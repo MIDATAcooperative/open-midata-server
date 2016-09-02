@@ -68,6 +68,17 @@ public class CompareCondition implements Condition {
 	public String toString() {
 		return "$"+op+" : "+val.toString(); 
 	}
+
+	@Override
+	public boolean isInBounds(Object low, Object high) {
+		switch (op) {
+		case GT:return high == null || val.compareTo(high) < 0;
+		case GE:return high == null || val.compareTo(high) <= 0;
+		case LE:return low == null || val.compareTo(low) >= 0;
+		case LT:return low == null || val.compareTo(low) > 0;
+		}
+		return false;
+	}
 	
 	
 	

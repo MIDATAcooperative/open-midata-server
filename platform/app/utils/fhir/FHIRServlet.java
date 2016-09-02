@@ -33,6 +33,9 @@ public class FHIRServlet extends RestfulServer {
     
     public static Map<String, ResourceProvider> myProviders;
    
+    public static String getBaseUrl() {
+    	return "https://"+Play.application().configuration().getString("platform.server")+"/fhir";
+    }
     /**
      * The initialize method is automatically called when the servlet is starting up, so it can
      * be used to configure the servlet to define resource providers, or set up
@@ -41,7 +44,7 @@ public class FHIRServlet extends RestfulServer {
    @Override
    protected void initialize() throws ServletException {
 	   
-	   String serverBaseUrl = "https://"+Play.application().configuration().getString("platform.server")+"/fhir";
+	   String serverBaseUrl = getBaseUrl();
        setServerAddressStrategy(new HardcodedServerAddressStrategy(serverBaseUrl));
        this.setServerConformanceProvider(new MidataConformanceProvider());
        ResourceProvider.ctx.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());
@@ -57,6 +60,7 @@ public class FHIRServlet extends RestfulServer {
       myProviders.put("Patient", new PatientResourceProvider());
       myProviders.put("Observation",  new ObservationResourceProvider());   
       myProviders.put("MedicationOrder",  new MedicationOrderResourceProvider());
+      myProviders.put("DocumentReference",  new DocumentReferenceProvider());
       
       resourceProviders.addAll(myProviders.values());
       setResourceProviders(resourceProviders);

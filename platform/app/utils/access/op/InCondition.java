@@ -38,6 +38,11 @@ public class InCondition implements Condition {
 	public Map<String, Condition> indexExpression() {
 		return null;
 	}
+
+	@Override
+	public boolean isInBounds(Object low, Object high) {
+		return true;
+	}
 	
 	
 }

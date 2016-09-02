@@ -105,5 +105,10 @@ public class FieldAccess implements Condition {
 		return field + ":" + cond.toString();
 	}
 
+	@Override
+	public boolean isInBounds(Object low, Object high) {		
+		return false;
+	}
+
 	
 }
