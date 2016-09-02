@@ -5,6 +5,8 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 
+import controllers.Circles;
+
 import utils.AccessLog;
 import utils.access.RecordManager;
 import utils.auth.RecordToken;
@@ -12,10 +14,13 @@ import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.PatientResourceProvider;
+import models.Consent;
 import models.ContentInfo;
 import models.Record;
 import models.Space;
 import models.User;
+import models.enums.ConsentStatus;
 
 public class AccountPatches {
 
@@ -24,6 +29,7 @@ public class AccountPatches {
 	public static void check(User user) throws AppException {		
 		if (user.accountVersion < 20160324) { formatPatch20160324(user); }	
 		if (user.accountVersion < 20160407) { formatPatch20160407(user); }
+		if (user.accountVersion < 20160902) { formatPatch20160902(user); }
 	}
 	
 	public static void makeCurrent(User user, int currentAccountVersion) throws AppException {
@@ -66,6 +72,20 @@ public class AccountPatches {
 		RecordManager.instance.fixAccount(user._id);
 		makeCurrent(user, 20160407);
 		AccessLog.logEnd("end patch 2016 04 07");
+	}
+	
+	public static void formatPatch20160902(User user) throws AppException {
+		AccessLog.logBegin("start patch 2016 09 02");
+		
+		PatientResourceProvider.updatePatientForAccount(user._id);
+		
+		/*Set<Consent> consents = Consent.getAllByOwner(user._id, CMaps.map("type", ), Consent.ALL);
+		for (Consent consent : consents) {
+		  Circles.autosharePatientRecord(consent);
+		}*/
+				
+		makeCurrent(user, 20160902);
+		AccessLog.logEnd("end patch 2016 09 02");
 	}
 		
 }
