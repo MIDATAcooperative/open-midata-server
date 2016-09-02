@@ -180,7 +180,7 @@ public class IndexPage {
 	   return false;
 	}
 	
-	private BasicBSONObject addEntry(Object[] key) {
+	protected BasicBSONObject addEntry(Object[] key) {
 		BasicBSONList lst = (BasicBSONList) model.unencrypted.get("e");
 		BasicBSONObject entry = new BasicBSONObject();
 		BasicBSONList idxkey = new BasicBSONList();

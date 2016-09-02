@@ -62,11 +62,11 @@ public class IndexRoot {
 		return model.selfOnly;
 	}
 
-	public void addEntry(ObjectId aps, DBRecord record) {
-		Object[] key = new Object[model.fields.size()];
+	public void addEntry(ObjectId aps, DBRecord record) throws InternalServerException {
+		Comparable<Object>[] key = new Comparable[model.fields.size()];
 		int idx = 0;
 		for (String path : model.fields) {
-			key[idx] = extract(record.data, path);
+			key[idx] = (Comparable) extract(record.data, path);
 			idx++;
 		}
 		rootPage.addEntry(key, aps, record._id);
@@ -105,11 +105,11 @@ public class IndexRoot {
 		}
 	}
 	
-	public Collection<IndexMatch> lookup(Condition[] key) {
+	public Collection<IndexMatch> lookup(Condition[] key) throws InternalServerException {
 		return rootPage.lookup(key);
 	}
 
-	public void removeRecords(Condition[] key, Set<String> ids) {
+	public void removeRecords(Condition[] key, Set<String> ids) throws InternalServerException {
 		rootPage.removeFromEntries(key, ids);				
 	}
 

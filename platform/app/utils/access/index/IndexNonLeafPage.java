@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
@@ -28,13 +30,39 @@ public class IndexNonLeafPage extends IndexPage {
 			IndexNonLeafPage splitted = new IndexNonLeafPage(enckey, old);
 			//List<>
 			
+			// Create list with ordered map key -> entries
+			// split map in X parts
+			SortedMap<IndexKey, BasicBSONList> entries = new TreeMap<IndexKey, BasicBSONList>();
+			
 			
 			BasicBSONList lst = (BasicBSONList) old.unencrypted.get("e");
+			
 			for (Object entry : lst) {
 				BasicBSONObject row = (BasicBSONObject) entry;
 				BasicBSONList rowkey = (BasicBSONList) row.get("k");
-				
+				entries.put(new IndexKey(rowkey), (BasicBSONList) row.get("e"));
 			}
+			
+			int total = entries.size();
+			IndexPage current = new IndexPage(enckey, new IndexPageModel());
+			splitted.loadedChilds.put(current.model._id, current);
+			BasicBSONList low = null;
+			int idx = 0;
+			int limit = total / 10;
+			
+			for (Map.Entry<IndexKey, BasicBSONList> entry : entries.entrySet()) {
+				idx++;
+				if (idx > limit) {
+					splitted.addEntry(low, entry.getKey().getKey(), current.model._id);
+					current = new IndexPage(enckey, new IndexPageModel());
+					splitted.loadedChilds.put(current.model._id, current);
+					low = entry.getKey().getKey();
+					idx = 0;
+				}
+								
+				current.addEntry(entry.getKey().getKey().toArray()).put("e", entry.getValue());				
+			}
+			splitted.addEntry(low, null, current.model._id);
 			
 			splitted.flush();
 			
@@ -44,6 +72,15 @@ public class IndexNonLeafPage extends IndexPage {
 			return split(enckey, oldPage);
 		}
 		
+	}
+	
+	private void addEntry(BasicBSONList lk, BasicBSONList hk, ObjectId target) {
+		BasicBSONList lst = (BasicBSONList) model.unencrypted.get("e");
+		BasicBSONObject entry = new BasicBSONObject();		
+		entry.put("lk", lk);
+		entry.put("hk", hk);
+		entry.put("c", target.toString());
+		lst.add(entry);				
 	}
 
 	private Map<ObjectId, IndexPage> loadedChilds;
