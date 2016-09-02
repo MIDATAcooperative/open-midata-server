@@ -34,7 +34,7 @@ public class PredicateBuilder {
 	
 	
 	public void addEq(String path, Object value) {
-	  add(FieldAccess.path(path, new EqualsSingleValueCondition(value)));
+	  add(FieldAccess.path(path, new EqualsSingleValueCondition((Comparable) value)));
 	}
 	
 	public void addEq(String path, Object value, CompareCaseInsensitiveOperator op) {
