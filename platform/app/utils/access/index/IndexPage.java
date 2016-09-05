@@ -24,10 +24,31 @@ public class IndexPage {
 	protected byte[] key;
 	protected boolean changed;
 	
+	public final static int PAGE_LIMIT = 10000;
+	
+	protected IndexPage() {}
+	
 	public IndexPage(byte[] key, IndexPageModel model) throws InternalServerException {
 		this.key = key;
 		this.model = model;
 		if (model.enc != null) decrypt();
+	}
+	
+	
+	public IndexPage(byte[] key) throws InternalServerException {
+		this.key = key;
+		this.model = new IndexPageModel();
+		this.model._id = new ObjectId();
+		
+		init();				
+		encrypt();
+		
+		IndexPageModel.add(this.model);
+	}
+	
+	public void setRange(BasicBSONList lk, BasicBSONList hk) {
+		this.model.unencrypted.put("lk", lk);
+		this.model.unencrypted.put("hk", hk);
 	}
 	
 	public long getVersion() {
@@ -83,6 +104,7 @@ public class IndexPage {
 			model.unencrypted = new BasicBSONObject();
 			BasicBSONList entries = new BasicBSONList();
 			model.unencrypted.put("e", entries);
+			model.unencrypted.put("size", 0);
 			model.unencrypted.put("ts", new BasicBSONObject());
 			changed = true;
 		}
@@ -201,6 +223,8 @@ public class IndexPage {
 	  entry.put("t", target.toString());
 	  entry.put("a", aps.toString());
 	  entries.add(entry);
+	  
+	  model.unencrypted.put("size", ((BasicBSONObject) model.unencrypted).getInt("size") + 1);
 	}
 	
 	protected void setTimestamp(String key, long value) {
@@ -214,6 +238,15 @@ public class IndexPage {
 		Object v = tslist.get(key);
 		if (v == null) return -1;
 		return ((Long) v);
+	}
+	
+	public boolean needsSplit() {
+		return ((BasicBSONObject) model.unencrypted).getInt("size") > PAGE_LIMIT
+				&& ((BasicBSONList) model.unencrypted.get("e")).size() >= 10;
+	}
+	
+	public boolean isNonLeaf() {
+		return model.unencrypted.get("p") != null;
 	}
 	
 	

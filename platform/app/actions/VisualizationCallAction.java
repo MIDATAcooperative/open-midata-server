@@ -55,8 +55,9 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
     	} catch (BadRequestException e3) {
     		return F.Promise.pure((Result) badRequest(e3.getMessage()));
 		} catch (Exception e2) {
+			AccessLog.logException("VC", e2);
 			ErrorReporter.report("Plugin API", ctx, e2);
-			return F.Promise.pure((Result) internalServerError(e2.getMessage()));			
+			return F.Promise.pure((Result) internalServerError("err:"+e2.getMessage()));			
 		} finally {
 			RecordManager.instance.clear();
 			AccessLog.newRequest();	

@@ -32,6 +32,7 @@ public class IndexRoot {
 		if (isnew) {
 			this.rootPage.init();
 		}
+		if (this.rootPage.isNonLeaf()) this.rootPage = new IndexNonLeafPage(key, def);
 	}
 	
 	public long getVersion() {
@@ -70,6 +71,10 @@ public class IndexRoot {
 			idx++;
 		}
 		rootPage.addEntry(key, aps, record._id);
+		
+		if (rootPage.needsSplit()) rootPage = IndexNonLeafPage.split(this.key, rootPage);
+		
+		
 	}
 
 

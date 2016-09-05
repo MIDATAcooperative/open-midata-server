@@ -207,7 +207,24 @@ class APSImplementation extends APS {
 			
 			Map<String, Object> query = new HashMap<String, Object>();
 			query.put("stream", eaps.getId());
-			if (q.restrictedBy("_id")) query.put("_id", q.getObjectIdRestriction("_id"));
+			if (q.restrictedBy("_id")) {
+				Set<ObjectId> idRestriction = q.getObjectIdRestriction("_id");
+				if (q.restrictedBy("quick")) {
+					
+					DBRecord record = (DBRecord) q.getProperties().get("quick");		
+						
+							
+					record.key = eaps.getAPSKey() != null ? eaps.getAPSKey() : null;
+					record.security = eaps.getSecurityLevel();
+					if (withOwner)
+						record.owner = eaps.getOwner(); 
+
+					result.add(record);
+					
+					return result;
+				}
+				query.put("_id", idRestriction);
+			}
 			//query.put("direct", Boolean.TRUE);
 			q.addMongoTimeRestriction(query);
 			List<DBRecord> directResult = new ArrayList<DBRecord>(DBRecord.getAll(query, q.getFieldsFromDB()));

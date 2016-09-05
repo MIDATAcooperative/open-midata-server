@@ -77,6 +77,7 @@ public class AccountPatches {
 	public static void formatPatch20160902(User user) throws AppException {
 		AccessLog.logBegin("start patch 2016 09 02");
 		
+		RecordManager.instance.fixAccount(user._id);
 		PatientResourceProvider.updatePatientForAccount(user._id);
 		
 		/*Set<Consent> consents = Consent.getAllByOwner(user._id, CMaps.map("type", ), Consent.ALL);
