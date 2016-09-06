@@ -105,6 +105,8 @@ GET     /members/api/users/search/:query                 controllers.Users.searc
 GET     /shared/api/users/complete/:query                controllers.Users.complete(query: String)
 POST    /shared/api/users/updateAddress                  controllers.Users.updateAddress()
 POST    /shared/api/users/updateSettings                 controllers.Users.updateSettings()
+POST    /shared/api/users/requestMembership              controllers.Users.requestMembership()
+DELETE  /shared/api/users/wipe                           controllers.Users.accountWipe()
 
 # Research
 

@@ -687,6 +687,7 @@ public class RecordManager {
 		Member member = Member.getById(userId, Sets.create("queries"));
 		if (member.queries!=null) {
 			for (String key : member.queries.keySet()) {
+				try {
 				Map<String, Object> query = member.queries.get(key);
 				if (QueryEngine.isInQuery(getCache(executingPerson), query, record)) {
 					try {
@@ -697,6 +698,9 @@ public class RecordManager {
 						
 					}
 				}
+				} catch (BadRequestException e) {
+					AccessLog.logException("error while sharing", e);
+				}  
 			}
 		}
 		AccessLog.logEnd("end applying queries");

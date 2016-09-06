@@ -88,5 +88,11 @@ public enum EventType {
 	/**
 	 * the setup of a study has been changed
 	 */
-	STUDY_SETUP_CHANGED
+	STUDY_SETUP_CHANGED,
+	
+	
+	/**
+	 * a user has requested Membership
+	 */
+	MEMBERSHIP_REQUEST
 }

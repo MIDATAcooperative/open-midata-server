@@ -21,6 +21,7 @@
 			     <a class="btn btn-default" href="javascript:" ui-sref="^.changepassphrase" translate="user.change_passphrase_btn"></a>
 			     <a class="btn btn-default" href="javascript:" ng-disabled="msg" ng-click="fixAccount();" translate="user.repair_account_btn"></a>
 			     <a class="btn btn-default" href="javascript:" ui-sref="^.delete_records" translate="user.delete_records_btn"></a>
+			     <a class="btn btn-default" href="javascript:" ng-click="wipe()">test server: wipe account</a>
 			  </div>			  
 			</div>
 			<div class="extraspace"></div>
@@ -45,6 +46,23 @@
      		</address>  
 			<a class="btn btn-default" href="javascript:" ui-sref="^.changeaddress" translate="user.change_address_btn"></a>
 								
+			</loader>
+		  </div>
+		</div>
+		
+		<div ng-cloak class="panel panel-primary" ng-if="user.role == 'MEMBER'">
+		  <div class="panel-heading" translate="member_user.account_status"></div>
+		  <div class="panel-body">
+			<loader busy="status.isBusy !== false">
+			<p ng-show="user.subroles[0] === 'TRIALUSER'" translate="member_user.trialuser"></p>
+			<p ng-show="user.subroles[0] === 'MEMBEROFCOOPERATIVE'" translate="member_user.memberofcooperative"></p>
+			<p ng-show="user.subroles[0] === 'NONMEMBERUSER'" translate="member_user.nonmemberuser"></p>
+			<p ng-show="user.subroles[0] === 'STUDYPARTICIPANT'" translate="member_user.nonmemberuser"></p>
+		    <p ng-show="user.agbStatus === 'NEW'" translate="member_user.agb_not_requested"></p>
+		    <p ng-show="user.agbStatus === 'REQUESTED'" translate="member_user.agb_requested"></p>				 
+		    <p ng-show="user.agbStatus === 'PRINTED'" translate="member_user.agb_printed"></p>
+		    <p ng-show="user.agbStatus === 'SIGNED'" translate="member_user.agb_signed"></p>
+			<button ng-show="user.agbStatus === 'NEW' || user.contractStatus === 'NEW'" ng-disabled="status.action === 'requestmembership'" class="btn btn-primary" href="javascript:" ng-click="requestMembership()" translate="member_user.request_membership_btn"></button>								
 			</loader>
 		  </div>
 		</div>

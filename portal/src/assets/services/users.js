@@ -29,6 +29,10 @@ angular.module('services')
 	service.updateAddress = function(user) {		
 		return server.post(jsRoutes.controllers.Users.updateAddress().url, JSON.stringify(user));
 	};
+	
+	service.requestMembership = function(user) {		
+		return server.post(jsRoutes.controllers.Users.requestMembership().url, JSON.stringify(user));
+	};
 		
 	return service;
 	

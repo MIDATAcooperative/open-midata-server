@@ -10,8 +10,10 @@
          <button class="btn btn-primary" ng-click="addGroup();">New Group</button>
          <button class="btn btn-primary" ng-click="save();">Save Changes</button>
          <button class="btn btn-primary" ng-click="translate()">Translate</button>
-         <div ng-repeat="group in groups | orderBy : 'name'">
-           <h3 ng-style="getStyle(group)">{{ group.name }}, {{ group.label[lang] }} <span class="badge" style="background-color:red" ng-show="group.problem">{{ group.problem }}</span><small>{{ getParents(group.parent) }}</small></h3><button class="btn btn-xs btn-default" ng-click="editGroup(group)">edit</button><button class="btn btn-xs btn-default" ng-click="deleteGroup(group)">delete</button>
+         
+         <script type="text/ng-template"  id="item_renderer.html">
+         <div ng-repeat="group in groups | filter : { parent : fParent } | orderBy : 'name'">
+           <h3 ng-style="getStyle(group)">{{ group.name }}, {{ group.label[lang] }} <span class="badge" style="background-color:red" ng-show="group.problem">{{ group.problem }}</span><small>{{ getParents(group.parent) }}</small><button class="btn btn-xs btn-default" ng-click="editGroup(group)">edit</button><button class="btn btn-xs btn-default" ng-click="deleteGroup(group)">delete</button></h3>
          <ul>
          <li ng-repeat="contentEntry in group.contentEntries | orderBy : 'content'">
            <b ng-style="getStyle(contentEntry)">{{ contentEntry.content }}</b>
@@ -32,7 +34,10 @@
                     
          </li>
          </ul>
+           <div style="margin-left:20px" ng-include="'item_renderer.html'" ng-init="fParent=group.name;"></div>
          </div>
+         </script>
+         <div ng-include="'item_renderer.html'" ng-init="fParent='all';"></div>
             
          <modal viewid="editCode">
             <div ng-controller="EditCodeCtrl">

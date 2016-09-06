@@ -465,6 +465,7 @@
 	"searchable" : "Is your account visible for other MIDATA members?",
 	"change_settings_btn" : "Change Settings",
 	"change_settings_success" : "Settings have been updated"
+		
   },
   
   "visualization" : {

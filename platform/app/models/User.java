@@ -2,6 +2,7 @@ package models;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +26,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import utils.PasswordHash;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
+import utils.collections.ChainedSet;
+import utils.db.DatabaseException;
 import utils.db.NotMaterialized;
+import utils.db.OrderOperations;
 import utils.evolution.AccountPatches;
 import utils.exceptions.InternalServerException;
 import utils.search.Search;
@@ -117,7 +121,12 @@ public class User extends Model implements Comparable<User> {
 	/**
 	 * Status of contract of user with MIDATA
 	 */
-    public ContractStatus contractStatus; //enum: new, printed, signed	1	
+    public ContractStatus contractStatus; 
+    
+    /**
+     * Status of AGB of user with MIDATA
+     */
+    public ContractStatus agbStatus;
     
     /**
      * Status of email validation
@@ -296,6 +305,17 @@ public class User extends Model implements Comparable<User> {
 	public static void set(ObjectId userId, String field, Object value) throws InternalServerException {
 		Model.set(User.class, collection, userId, field, value);
 	}
+	
+	public void addHistory(History newhistory) throws InternalServerException {
+		if (history == null) history = new ArrayList<History>();
+    	this.history.add(newhistory);
+    	Model.set(User.class, collection, this._id, "history", this.history);
+    }
+	
+	public static void delete(ObjectId userId) throws InternalServerException {			
+		Model.delete(User.class, collection, CMaps.map("_id", userId));
+	}
+
 		
 	
 }

@@ -13,6 +13,10 @@ angular.module('portal')
 		name : "admin_members.contract_confirm_required",
 		criteria : { status : "NEW", contractStatus : "PRINTED" }
 	  },
+	  { 
+		name : "admin_members.trialusers",
+		criteria : { status : "ACTIVE", subroles : "TRIALUSER" }
+	  },
 	  {
 		name : "admin_members.overview",
 		criteria : { role : "MEMBER", status : "NEW" },

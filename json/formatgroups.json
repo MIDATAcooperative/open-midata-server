@@ -4,7 +4,7 @@
 {"_id":{"$oid":"55ae5a08f351efda91eadc7f"},"system":"v1","name":"mood","label":{"de":"Stimmung","en":"Mood"},"parent":"lifestyle","contents":["subjective-condition"]}
 {"_id":{"$oid":"55ae5a08f351efda91eadc80"},"system":"v1","name":"qself","label":{"en":"Quantified self"},"parent":"lifestyle","contents":[]}
 {"_id":{"$oid":"55ae5a08f351efda91eadc81"},"system":"v1","name":"activities","label":{"de":"Aktivitäten","en":"Activities"},"parent":"lifestyle","contents":[]}
-{"_id":{"$oid":"55ae5a08f351efda91eadc82"},"system":"v1","name":"sleep","label":{"de":"Schalf","en":"Sleep"},"parent":"lifestyle","contents":["sleep/minutes-to-fall-asleep","sleep/minutes-asleep","sleep/minutes-awake","sleep/efficiency","sleep/time-in-bed"]}
+{"_id":{"$oid":"55ae5a08f351efda91eadc82"},"system":"v1","name":"sleep","label":{"de":"Schalf","en":"Sleep"},"parent":"lifestyle","contents":["sleep/minutes-to-fall-asleep","sleep/minutes-asleep","sleep/minutes-light-sleep","sleep/wakeupcount","sleep/minutes-awake","sleep/efficiency","sleep/wakeup-duration","sleep/time-in-bed","sleep/rem"]}
 {"_id":{"$oid":"55ae5a08f351efda91eadc83"},"system":"v1","name":"health","label":{"de":"Gesundheit","en":"Health"},"parent":"all","contents":[]}
 {"_id":{"$oid":"55ae5a08f351efda91eadc84"},"system":"v1","name":"allergies","label":{"de":"Allergien","en":"Allergies"},"parent":"health","contents":["AllergyIntolerance","Immunization","ImmunizationRecommendation"]}
 {"_id":{"$oid":"55ae5a08f351efda91eadc86"},"system":"v1","name":"studies","label":{"de":"Studien","en":"Studies"},"parent":"health","contents":["Questionnaire","QuestionnaireResponse"]}
@@ -20,7 +20,7 @@
 {"_id":{"$oid":"569915fc6281a61a232ecdcd"},"system":"v1","name":"encounters","label":{"en":"Encounters"},"contents":["Condition","ClinicalImpression","Flag","DetectedIssue","Encounter","Communication","EpisodeOfCare"],"parent":"health"}
 {"_id":{"$oid":"569915fc6281a61a232ecdce"},"system":"v1","name":"entities","label":{"en":"Entities"},"contents":["Organization","HealthcareService","Location","Contract","Practitioner","Group","Person"],"parent":"other"}
 {"_id":{"$oid":"569915fc6281a61a232ecdcf"},"system":"v1","name":"healthworkflow","label":{"en":"Workflow"},"contents":["ProcessResponse","SupplyDelivery","CommunicationRequest","OrderResponse","Order","SupplyRequest","Procedure","ProcessRequest","DeviceUseRequest","DeviceUseStatement"],"parent":"health"}
-{"_id":{"$oid":"569915fc6281a61a232ecdd0"},"system":"v1","name":"healthdocuments","label":{"en":"Health Documents"},"contents":["DocumentManifest","DocumentReference","Composition"],"parent":"health"}
+{"_id":{"$oid":"569915fc6281a61a232ecdd0"},"system":"v1","name":"healthdocuments","label":{"en":"Health Documents"},"contents":["DocumentManifest","Composition"],"parent":"health"}
 {"_id":{"$oid":"569915fc6281a61a232ecdd1"},"system":"v1","name":"relatedpersons","label":{"en":"Related Persons"},"contents":["FamilyMemberHistory","Patient","RelatedPerson"],"parent":"other"}
 {"_id":{"$oid":"569915fc6281a61a232ecdd2"},"system":"v1","name":"diagnostics","label":{"en":"Family"},"contents":["ImagingStudy","DiagnosticReport","ImagingObjectSelection","DiagnosticOrder"],"parent":"other"}
 {"_id":{"$oid":"56fa3f4f6c19d1e1e9d2536e"},"system":"v1","name":"unknown","label":{"en":"Unknown Content"},"contents":["Conformance","Provenance","Parameters","NamingSystem","Media","Binary","StructureDefinition","unknown","ValueSet","Bundle","Basic","MessageHeader","DataElement","Subscription","AuditEvent","ConceptMap","TestScript","List","ImplementationGuide","OperationDefinition","OperationOutcome","SearchParameter"],"parent":"other"}
@@ -31,10 +31,11 @@
 {"_id":{"$oid":"5718f577aed645098e8cee2a"},"system":"v1","name":"body/height","label":{"de":"Größe","en":"Height"},"parent":"qself","contents":["body/height"]}
 {"_id":{"$oid":"5718f577aed645098e8cee2b"},"system":"v1","name":"body/weight","label":{"de":"Gewicht","en":"Body Weight"},"parent":"qself","contents":["body/weight"]}
 {"_id":{"$oid":"5718f577aed645098e8cee2c"},"system":"v1","name":"user-observation","label":{"en":"User Observations"},"parent":"qself","contents":["user-observation"]}
-{"_id":{"$oid":"5719d3d0aed64509b3d0930b"},"system":"v1","name":"body/bmi","label":{"de":"BMI und Fett","en":"BMI and Fat"},"parent":"qself","contents":["body/fat","body/bmi"]}
-{"_id":{"$oid":"5719d3d0aed64509b3d0930c"},"system":"v1","name":"activities/heartrate","label":{"de":"Herzfrequenz","en":"Heart Rate"},"parent":"qself","contents":["activities/heartrate"]}
+{"_id":{"$oid":"5719d3d0aed64509b3d0930b"},"system":"v1","name":"body/bmi","label":{"de":"BMI und Fett","en":"BMI and Fat"},"parent":"qself","contents":["body/fat_free_mass","body/muscle-total","body/fat","body/hydration","body/bmi","body/fat-total","body/bone_mass"]}
+{"_id":{"$oid":"5719d3d0aed64509b3d0930c"},"system":"v1","name":"activities/heartrate","label":{"de":"Herzfrequenz","en":"Heart Rate"},"parent":"qself","contents":["activities/pulse-wave-velocity","activities/heartrate"]}
 {"_id":{"$oid":"5719d46aaed64509b3d0930d"},"system":"v1","name":"body/temperature","label":{"de":"Temperatur","en":"Body Temperature"},"parent":"qself","contents":["body/temperature"]}
 {"_id":{"$oid":"5719d46aaed64509b3d0930e"},"system":"v1","name":"body/bloodpressure","label":{"de":"Blutdruck","en":"Blood Pressure"},"parent":"qself","contents":["body/blood/diastolic","body/blood/systolic","body/bloodpressure"]}
 {"_id":{"$oid":"57285570aed6450be5bfeb5d"},"system":"v1","name":"activities/steps","label":{"de":"Schritte","en":"Steps"},"parent":"movement","contents":["activities/steps"]}
 {"_id":{"$oid":"57285570aed6450be5bfeb5e"},"system":"v1","name":"activities/distance","label":{"de":"Distanz","en":"Distance"},"parent":"movement","contents":["activities/distance"]}
 {"_id":{"$oid":"57c55b8baed6450e7affb2da"},"system":"v1","name":"health/laboratory","label":{"en":"Laboratory"},"parent":"health","contents":["health/laboratory"]}
+{"_id":{"$oid":"57ce9368aed6451f80bc8c80"},"system":"v1","name":"body/general","label":{"en":"Body"},"parent":"qself","contents":["body/oxygen-saturation"]}

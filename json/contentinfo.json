@@ -123,3 +123,14 @@
 {"_id":{"$oid":"570e5ca3d8041f8d40e306c3"},"content":"user-observation","defaultCode":"http://midata.coop user-observation","security":"MEDIUM","label":{"en":"User Observation"}}
 {"_id":{"$oid":"57837400aed6450bf92d095d"},"content":"body/bloodpressure","defaultCode":"http://loinc.org 55417-0","security":"MEDIUM","label":{"en":"Blood Pressure"},"resourceType":"fhir/Observation","subType":"component","category":"vital-signs"}
 {"_id":{"$oid":"57c55b8baed6450e7affb2d8"},"content":"health/laboratory","defaultCode":"http://loinc.org 11502-2","security":"HIGH","label":{"en":"Laboratory Report"}}
+{"_id":{"$oid":"57ce804aaed6451b4abd1729"},"content":"body/fat-total","defaultCode":"http://loinc.org 73708-0","security":"MEDIUM","label":{"en":"Body fat [Mass] Calculated"}}
+{"_id":{"$oid":"57ce8439aed6451f80bc8c6e"},"content":"activities/pulse-wave-velocity","defaultCode":"http://loinc.org 77196-4","security":"MEDIUM","label":{"en":"Pulse wave velocity"}}
+{"_id":{"$oid":"57ce8439aed6451f80bc8c6f"},"content":"body/muscle-total","defaultCode":"http://loinc.org 73964-9","security":"MEDIUM","label":{"en":"Body muscle mass Calculated"}}
+{"_id":{"$oid":"57ce85b0aed6451f80bc8c72"},"content":"sleep/wakeup-duration","defaultCode":"http://loinc.org 65554-8","security":"MEDIUM","label":{"en":"Wake up duration"}}
+{"_id":{"$oid":"57ce85b0aed6451f80bc8c73"},"content":"sleep/rem","defaultCode":"http://midata.coop sleep/rem","security":"MEDIUM","label":{"en":"REM Sleep"}}
+{"_id":{"$oid":"57ce85b0aed6451f80bc8c74"},"content":"sleep/wakeupcount","defaultCode":"http://midata.coop sleep/wakeupcount","security":"MEDIUM","label":{"en":"Wake up count"}}
+{"_id":{"$oid":"57ce85b0aed6451f80bc8c76"},"content":"sleep/minutes-light-sleep","defaultCode":"http://midata.coop sleep/minutes-light-sleep","security":"MEDIUM","label":{"en":"Minutes Light Sleep"}}
+{"_id":{"$oid":"57ce8e53aed6451f80bc8c7a"},"content":"body/fat_free_mass","defaultCode":"http://midata.coop body/fat_free_mass","security":"MEDIUM","label":{"en":"Body Measures - Fat Free Mass"}}
+{"_id":{"$oid":"57ce8e53aed6451f80bc8c7b"},"content":"body/hydration","defaultCode":"http://midata.coop body/hydration","security":"MEDIUM","label":{"en":"Body Measures - Hydration"}}
+{"_id":{"$oid":"57ce8e53aed6451f80bc8c7c"},"content":"body/bone_mass","defaultCode":"http://midata.coop body/bone_mass","security":"MEDIUM","label":{"en":"Body Measures - Bone Mass"}}
+{"_id":{"$oid":"57ce9368aed6451f80bc8c81"},"content":"body/oxygen-saturation","defaultCode":"http://loinc.org 20564-1","security":"MEDIUM","label":{"en":"Oxygen saturation in Blood"}}

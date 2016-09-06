@@ -10,10 +10,13 @@ angular.module('portal')
 	// parse user id (format: /users/:id) and load the user details
 	var userId = $state.params.userId;	
 	
-	$scope.status.doBusy(users.getMembers({"_id": {"$oid": userId}}, ["name", "email", "searchable", "language", "address1", "address2", "zip", "city", "country", "firstname", "lastname", "mobile", "phone"]))
-	.then(function(results) {
-		$scope.user = results.data[0];
-	});
+	$scope.init = function() {
+		$scope.status.doBusy(users.getMembers({"_id": {"$oid": userId}}, ["name", "email", "searchable", "language", "address1", "address2", "zip", "city", "country", "firstname", "lastname", "mobile", "phone", "agbStatus", "contractStatus", "role", "subroles"]))
+		.then(function(results) {
+			$scope.user = results.data[0];
+		});
+	};
+	$scope.init();
 	
 	session.currentUser.then(function(myUserId) { 
 		$scope.isSelf = myUserId.$oid == userId;
@@ -32,6 +35,19 @@ angular.module('portal')
 		  $scope.msgSettings = "user.change_settings_success";
 		  $translate.use($scope.user.language);
 		});
+	};
+	
+	$scope.requestMembership = function() {
+		$scope.status.doAction("requestmembership", users.requestMembership($scope.user))
+		.then(function() {
+		   $scope.init();
+		});
+	};
+	
+	$scope.wipe = function() {
+	  server.delete("/shared/api/users/wipe").then(function() {
+		  document.location.href="/#/public/login"; 
+	  });	  
 	};
 	
 }]);

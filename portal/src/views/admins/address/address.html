@@ -23,6 +23,8 @@
 			  </tr><tr>
 			  <td translate="admin_address.status"></td><td><select ng-change="changeUser(member);" ng-model="member.status" class="form-control" ng-options="status as 'enum.userstatus.'+status | translate for status in stati"></select></td>
 			  </tr><tr>
+			  <td translate="admin_address.agb_status"></td><td><select ng-change="changeUser(member);" ng-model="member.agbStatus" class="form-control" ng-options="status as 'enum.contractstatus.'+status | translate for status in contractStati"></select></td>
+			  </tr><tr>
 			  <td translate="admin_address.contract_status"></td><td><select ng-change="changeUser(member);" ng-model="member.contractStatus" class="form-control" ng-options="status as 'enum.contractstatus.'+status | translate for status in contractStati"></select></td>
 			  </tr><tr>
 			  <td translate="admin_address.email_status"></td><td translate="{{ 'enum.emailstatus.'+member.emailStatus }}"></td>

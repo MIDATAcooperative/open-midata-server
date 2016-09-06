@@ -8,7 +8,7 @@ angular.module('portal')
     
 	$scope.reload = function() {
 		
-		$scope.status.doBusy(users.getMembers($scope.criteria, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "address1", "address2", "city", "confirmationCode", "contractStatus", "emailStatus", "country", "email", "gender", "phone", "zip", "registeredAt", "login" ]))
+		$scope.status.doBusy(users.getMembers($scope.criteria, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "address1", "address2", "city", "confirmationCode", "agbStatus", "contractStatus", "emailStatus", "country", "email", "gender", "phone", "zip", "registeredAt", "login" ]))
 		.then(function(data) {
 			$scope.member = data.data[0];						
 		});
@@ -16,7 +16,7 @@ angular.module('portal')
 	
 	$scope.changeUser = function(user) {
 		console.log(user);
-		administration.changeStatus(user._id.$oid, user.status, user.contractStatus);
+		administration.changeStatus(user._id.$oid, user.status, user.contractStatus, user.agbStatus);
 	};	
 	
 	$scope.reload();

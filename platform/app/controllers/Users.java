@@ -10,18 +10,24 @@ import java.util.Map;
 import java.util.Set;
 
 import models.Circle;
+import models.Consent;
+import models.History;
 import models.Member;
+import models.Space;
 import models.User;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
+import models.enums.EventType;
 import models.enums.Gender;
 import models.enums.ParticipationInterest;
+import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 
 import org.bson.types.ObjectId;
 
+import play.Play;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -287,5 +293,65 @@ public class Users extends APIController {
 		User.set(user._id, "language", language);
 		
 		return ok();		
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(MemberSecured.class)
+	public static Result requestMembership() throws AppException {
+		ObjectId userId = new ObjectId(request().username());
+		
+		Member user = Member.getById(userId, Sets.create("_id", "status", "role", "subroles", "history", "contractStatus", "agbStatus", "lastname", "firstname")); 
+		if (user == null) throw new InternalServerException("error.internal", "User record not found.");
+		if (user.subroles.contains(SubUserRole.TRIALUSER) || user.subroles.contains(SubUserRole.NONMEMBERUSER) || user.subroles.contains(SubUserRole.STUDYPARTICIPANT)) {
+			
+		} else throw new BadRequestException("invalid.status_transition", "No membership request required.");
+		
+		
+		if (user.contractStatus.equals(ContractStatus.NEW)) {
+			Member.set(user._id, "contractStatus", ContractStatus.REQUESTED);
+		}
+		if (user.agbStatus.equals(ContractStatus.NEW)) {
+			Member.set(user._id, "agbStatus", ContractStatus.REQUESTED);
+		}
+						
+		user.addHistory(new History(EventType.MEMBERSHIP_REQUEST, user, null));
+				
+		return ok();
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result accountWipe() throws AppException {
+		if (!Play.application().configuration().getBoolean("demoserver", false)) throw new InternalServerException("error.internal", "Only allowed on demo server");
+		
+		ObjectId userId = new ObjectId(request().username());
+		
+		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
+		for (Space space : spaces) {
+			RecordManager.instance.deleteAPS(space._id, userId);
+			Space.delete(userId, space._id);
+		}
+		
+		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map(), Consent.ALL);
+		for (Consent consent : consents) {
+			RecordManager.instance.deleteAPS(consent._id, userId);
+			Circle.delete(userId, consent._id);
+		}
+		
+		Set<Consent> consents2 = Consent.getAllByAuthorized(userId);
+		for (Consent consent : consents2) {
+			consent = Consent.getByIdAndAuthorized(consent._id, userId, Sets.create("authorized"));
+			consent.authorized.remove(userId);
+			Consent.set(consent._id, "authorized", consent.authorized);			
+		}
+		
+		RecordManager.instance.wipe(userId, CMaps.map("owner", "self"));
+		RecordManager.instance.wipe(userId, CMaps.map("owner", "self").map("streams", "true"));
+		
+		User.delete(userId);
+		
+		return ok();
 	}
 }

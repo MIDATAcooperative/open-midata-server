@@ -62,6 +62,11 @@ public enum SubUserRole {
    TRIALUSER,
    
    /**
+    * the user with UserRole MEMBER is a confirmed user who is no member of the cooperative
+    */
+   NONMEMBERUSER,
+   
+   /**
     * the user with UserRole MEMBER has been registered for participation in a specific study
     */
    STUDYPARTICIPANT,
@@ -70,6 +75,8 @@ public enum SubUserRole {
     * the user with UserRole MEMBER is a member of the cooperative
     */
    MEMBEROFCOOPERATIVE;
+   
+   
    
    public boolean mayManageAccounts() {
 	   return true;

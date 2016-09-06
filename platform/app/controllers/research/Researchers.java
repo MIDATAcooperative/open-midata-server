@@ -93,6 +93,7 @@ public class Researchers extends APIController {
 		
 		user.status = UserStatus.NEW;		
 		user.contractStatus = ContractStatus.REQUESTED;
+		user.agbStatus = ContractStatus.REQUESTED;
 		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		
@@ -130,7 +131,7 @@ public class Researchers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		ResearchUser user = ResearchUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "organization", "role", "subroles", "login"));
+		ResearchUser user = ResearchUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "organization", "role", "subroles", "login", "registeredAt"));
 		
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		if (!ResearchUser.authenticationValid(password, user.password)) {

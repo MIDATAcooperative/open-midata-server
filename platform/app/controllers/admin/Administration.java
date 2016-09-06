@@ -67,7 +67,7 @@ public class Administration extends APIController {
 		ObjectId userId = JsonValidation.getObjectId(json, "user");
 		UserStatus status = JsonValidation.getEnum(json, "status", UserStatus.class);
 		
-		User user = User.getById(userId, Sets.create("status", "contractStatus"));
+		User user = User.getById(userId, Sets.create("status", "contractStatus", "agbStatus", "subroles"));
 		if (user == null) throw new BadRequestException("error.unknown.user", "Unknown user");
 		
 		user.status = status;
@@ -77,6 +77,13 @@ public class Administration extends APIController {
 			user.contractStatus = JsonValidation.getEnum(json, "contractStatus", ContractStatus.class);			
 			User.set(user._id, "contractStatus", user.contractStatus);
 		}
+		
+		if (json.has("agbStatus")) {
+			user.agbStatus = JsonValidation.getEnum(json, "agbStatus", ContractStatus.class);			
+			User.set(user._id, "agbStatus", user.agbStatus);
+		}
+		
+		if ()
 		
 		return ok();
 	}
@@ -119,7 +126,8 @@ public class Administration extends APIController {
 		user.registeredAt = new Date();		
 		
 		user.status = UserStatus.NEW;		
-		user.contractStatus = ContractStatus.REQUESTED;		
+		user.contractStatus = ContractStatus.REQUESTED;	
+		user.agbStatus = ContractStatus.REQUESTED;
 		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		

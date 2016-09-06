@@ -74,7 +74,8 @@ public class Developers extends APIController {
 		user.registeredAt = new Date();		
 		
 		user.status = UserStatus.NEW;		
-		user.contractStatus = ContractStatus.REQUESTED;		
+		user.contractStatus = ContractStatus.REQUESTED;	
+		user.agbStatus = ContractStatus.REQUESTED;
 		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		
@@ -111,10 +112,10 @@ public class Developers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		Developer user = Developer.getByEmail(email, Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "role", "subroles", "login"));
+		Developer user = Developer.getByEmail(email, Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "role", "subroles", "login", "registeredAt"));
 		
 		if (user == null) {
-			Admin adminuser = Admin.getByEmail(email, Sets.create("password", "status", "contractStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "role", "subroles", "login"));
+			Admin adminuser = Admin.getByEmail(email, Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "role", "subroles", "login", "registeredAt"));
 			if (adminuser != null) {
 				if (!Admin.authenticationValid(password, adminuser.password)) {
 					throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");

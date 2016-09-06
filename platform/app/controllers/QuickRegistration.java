@@ -105,7 +105,8 @@ public class QuickRegistration extends APIController {
 		user.registeredAt = new Date();		
 		
 		user.status = UserStatus.ACTIVE;		
-		user.contractStatus = ContractStatus.NEW;	
+		user.contractStatus = ContractStatus.NEW;
+		user.agbStatus =ContractStatus.NEW;
 		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		user.partInterest = ParticipationInterest.UNSET;

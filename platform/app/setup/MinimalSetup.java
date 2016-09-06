@@ -39,7 +39,8 @@ public class MinimalSetup {
 			admin.role = UserRole.ADMIN;
 			admin.subroles = EnumSet.of(SubUserRole.SUPERADMIN, SubUserRole.CONTENTADMIN, SubUserRole.NEWSWRITER, SubUserRole.PLUGINADMIN, SubUserRole.STUDYADMIN, SubUserRole.USERADMIN);
 			admin.status = UserStatus.ACTIVE;
-			admin.contractStatus = ContractStatus.SIGNED;		
+			admin.contractStatus = ContractStatus.SIGNED;	
+			admin.agbStatus = ContractStatus.SIGNED;
 			admin.registeredAt = new Date();
 			admin.resettokenTs = 0;				
 			admin.confirmationCode = "B7M0-K7CR";
@@ -67,6 +68,7 @@ public class MinimalSetup {
 			developer.resettokenTs = 0;
 			developer.status = UserStatus.ACTIVE;
 			developer.contractStatus = ContractStatus.SIGNED;
+			developer.agbStatus = ContractStatus.SIGNED;
 			developer.confirmationCode = "Q8IV-EQBJ";
 			developer.firstname = "MIDATA";
 			developer.lastname = "Developer";
@@ -90,7 +92,8 @@ public class MinimalSetup {
 			admin.password = null;
 			admin.role = UserRole.ADMIN;
 			admin.status = UserStatus.ACTIVE;
-			admin.contractStatus = ContractStatus.SIGNED;		
+			admin.contractStatus = ContractStatus.SIGNED;
+			admin.agbStatus = ContractStatus.SIGNED;	
 			admin.registeredAt = new Date();
 			admin.resettokenTs = 0;				
 			admin.confirmationCode = "";

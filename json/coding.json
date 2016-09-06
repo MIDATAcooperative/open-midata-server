@@ -127,3 +127,15 @@
 {"_id":{"$oid":"57837400aed6450bf92d095e"},"system":"http://loinc.org","code":"55417-0","display":"Blood Pressure","content":"body/bloodpressure"}
 {"_id":{"$oid":"57ac268caed645128457f61f"},"system":"http://loinc.org","code":"8302-2","display":"Body Height","content":"body/height"}
 {"_id":{"$oid":"57c55b8baed6450e7affb2d9"},"system":"http://loinc.org","code":"11502-2","display":"Laboratory Report","content":"health/laboratory"}
+{"_id":{"$oid":"57ce804aaed6451b4abd172a"},"system":"http://loinc.org","code":"41982-0","display":"Percentage of body fat measured","content":"body/fat"}
+{"_id":{"$oid":"57ce804aaed6451b4abd172b"},"system":"http://loinc.org","code":"73708-0","display":"Body fat [Mass] Calculated","content":"body/fat-total"}
+{"_id":{"$oid":"57ce8439aed6451f80bc8c70"},"system":"http://loinc.org","code":"73964-9","display":"Body muscle mass Calculated","content":"body/muscle-total"}
+{"_id":{"$oid":"57ce8439aed6451f80bc8c71"},"system":"http://loinc.org","code":"77196-4","display":"Pulse wave velocity","content":"activities/pulse-wave-velocity"}
+{"_id":{"$oid":"57ce85b0aed6451f80bc8c75"},"system":"http://loinc.org","code":"65554-8","display":"Wake up duration","content":"sleep/wakeup-duration"}
+{"_id":{"$oid":"57ce85b0aed6451f80bc8c78"},"system":"http://midata.coop","code":"sleep/minutes-light-sleep","display":"Minutes Light Sleep","content":"sleep/minutes-light-sleep"}
+{"_id":{"$oid":"57ce85b0aed6451f80bc8c77"},"system":"http://midata.coop","code":"sleep/rem","display":"REM Sleep","content":"sleep/rem"}
+{"_id":{"$oid":"57ce85b0aed6451f80bc8c79"},"system":"http://midata.coop","code":"sleep/wakeupcount","display":"Wake up count","content":"sleep/wakeupcount"}
+{"_id":{"$oid":"57ce8e53aed6451f80bc8c7d"},"system":"http://midata.coop","code":"body/fat_free_mass","display":"Body Measures - Fat Free Mass","content":"body/fat_free_mass"}
+{"_id":{"$oid":"57ce8e53aed6451f80bc8c7e"},"system":"http://midata.coop","code":"body/hydration","display":"Body Measures - Hydration","content":"body/hydration"}
+{"_id":{"$oid":"57ce8e53aed6451f80bc8c7f"},"system":"http://midata.coop","code":"body/bone_mass","display":"Body Measures - Bone Mass","content":"body/bone_mass"}
+{"_id":{"$oid":"57ce9368aed6451f80bc8c82"},"system":"http://loinc.org","code":"20564-1","display":"Oxygen saturation in Blood","content":"body/oxygen-saturation"}
