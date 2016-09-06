@@ -83,7 +83,7 @@ public class Administration extends APIController {
 			User.set(user._id, "agbStatus", user.agbStatus);
 		}
 		
-		if ()
+		
 		
 		return ok();
 	}
