@@ -15,7 +15,7 @@
      <div class="extraspace"></div>     
   </div>
   
-  <div ng-if="url" class="body"><div class="preview"><iframe class="frame" id="{{view.id}}" name="{{view.id}}" ng-src="{{url}}" ng-cloak></iframe></div></div>
+  <div ng-if="url" class="body"><div class="preview" ng-bind-html="iframe"></div></div>
 
   <div ng-if="!url || (previewType != 'create' && (view.setup.showadd || view.setup.showview))" class="footer text-center">      
       <button class="btn btn-default" ng-show="view.setup.showadd || view.actions.add" ng-click="showAdd()" translate="spacesummary.add_btn"></button>

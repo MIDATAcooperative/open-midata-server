@@ -27,7 +27,8 @@ angular.module('views')
     	
     	if ($scope.view.setup.url) {
     	  $scope.view.attach = $scope.view.setup.info;
-    	  $scope.url = $sce.trustAsResourceUrl(spaces.url($scope.view.attach, $scope.view.setup.url, $scope.view.setup.params, $translate.use()));    	 
+    	  $scope.url = $sce.trustAsResourceUrl(spaces.url($scope.view.attach, $scope.view.setup.url, $scope.view.setup.params, $translate.use()));
+    	  $scope.createIFrame();
     	  $scope.status.isBusy = false;
     	} else {
     	
@@ -39,6 +40,7 @@ angular.module('views')
 			  $scope.view.attach = results.data;
 			  $scope.url = $sce.trustAsResourceUrl(url);			 
 			  if (results.data.add) $scope.view.showadd = true;
+			  $scope.createIFrame();
 			} else {			  
 			  $scope.status.doBusy(records.getInfos(spaceId, {}, "ALL")).
 			  then(function(results) {				 
@@ -66,6 +68,10 @@ angular.module('views')
     	    $state.go('^.spaces', { spaceId : $scope.view.setup.spaceId });
     	  }
     	}
+    };
+    
+    $scope.createIFrame = function() {
+    	$scope.iframe=$sce.trustAsHtml('<iframe class="frame" id="'+$scope.view.id+'" name="'+$scope.view.id+'" src="'+$scope.url+'"></iframe>');
     };
     
     $scope.showAdd = function() { 
