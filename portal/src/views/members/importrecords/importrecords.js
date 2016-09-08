@@ -39,7 +39,7 @@ angular.module('portal')
 			  $scope.message = null;	
 			  
 			  if (sessionStorage.authString) {	
-				  $scope.authorizing = true;;
+				  $scope.authorizing = true;
 				  onAuthorized(sessionStorage.authString);
 				  sessionStorage.removeItem("authString");
 				  sessionStorage.removeItem("returnTo");
