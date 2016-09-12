@@ -8,6 +8,7 @@ db.users.find({ emailLC : { $exists : false } }).forEach(function(e) { db.users.
 db.users.find({ role : "ADMIN", subroles : { $exists : false }}).forEach(function(e) { db.users.update({ _id : e._id }, { $set : { subroles : ["SUPERADMIN", "USERADMIN", "STUDYADMIN", "CONTENTADMIN", "PLUGINADMIN", "NEWSWRITER"] }})});
 db.users.find({ role : "MEMBER", subroles : { $exists : false }}).forEach(function(e) { db.users.update({ _id : e._id }, { $set : { subroles : ["STUDYPARTICIPANT"] }})});
 db.users.find({ subroles : { $exists : false }}).forEach(function(e) { db.users.update({ _id : e._id }, { $set : { subroles : [] }})});
+db.users.find({ agbStatus : { $exists : false }}).forEach(function(e) { db.users.update({ _id : e._id }, { $set : { agbStatus : "NEW" }})});
 
 db.users.createIndex({ "midataID" : 1 });
 

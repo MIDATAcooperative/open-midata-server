@@ -33,6 +33,7 @@
     "email_status" : "EMail Status:",
     "confirmation_code" : "Confirmation Code:",
     "registration_date" : "Registration Date:",
+    "confirmation_date" : "Confirmation Date:",
     "last_login" : "Last login:"    
   },
   

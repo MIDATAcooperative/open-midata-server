@@ -229,25 +229,53 @@ public class Application extends APIController {
 		ObjectId userId = new ObjectId(request().username());
 		String confirmationCode = JsonValidation.getString(json, "confirmationCode");
 		
-		User user = User.getById(userId, Sets.create("firstname", "lastname", "email", "confirmationCode", "emailStatus", "contractStatus", "agbStatus", "status", "role", "subroles", "registeredAt"));
+		User user = User.getById(userId, Sets.create("firstname", "lastname", "email", "confirmationCode", "emailStatus", "contractStatus", "agbStatus", "status", "role", "subroles", "registeredAt", "confirmedAt"));
 		
 		
-		if (user!=null && user.confirmationCode != null && user.emailStatus.equals(EMailStatus.VALIDATED) && user.agbStatus.equals(ContractStatus.SIGNED) && user.status.equals(UserStatus.NEW)) {
-			if (user.role.equals(UserRole.PROVIDER)) {
+		if (user!=null && user.confirmationCode != null && user.confirmedAt == null) {
+			/*if (user.role.equals(UserRole.PROVIDER)) {
 				user = HPUser.getById(userId, Sets.create("firstname", "lastname", "email", "confirmationCode", "emailStatus", "contractStatus", "agbStatus", "status", "role", "subroles", "provider"));
 			} else if (user.role.equals(UserRole.RESEARCH)) {
 				user = ResearchUser.getById(userId, Sets.create("firstname", "lastname", "email", "confirmationCode", "emailStatus", "contractStatus", "agbStatus", "status", "role", "subroles", "organization"));
-			}
+			}*/
 			
 		
 	       if (user.confirmationCode.equals(confirmationCode)) {
-	    	   user.status = UserStatus.ACTIVE;
-	           user.set("status", user.status);			           			       
+	    	   user.confirmedAt = new Date(System.currentTimeMillis());
+	    	   user.set("confirmedAt", user.confirmedAt);	    	   			           			       
 	       } else throw new BadRequestException("error.invalid.confirmation_code", "Bad confirmation code");
 		}
+		
+		checkAccount(user);
 					
 		// response
 		return loginHelper(user);		
+	}
+	
+	public static void checkAccount(User user) throws AppException {
+		if (user.subroles.contains(SubUserRole.TRIALUSER) && 
+			user.emailStatus.equals(EMailStatus.VALIDATED) &&
+			user.agbStatus.equals(ContractStatus.SIGNED) &&
+			user.confirmedAt != null) {
+			user.subroles.remove(SubUserRole.TRIALUSER);
+			user.subroles.add(SubUserRole.NONMEMBERUSER);
+			user.set("subroles", user.subroles);
+		}
+		
+		if (user.subroles.contains(SubUserRole.NONMEMBERUSER) &&
+			user.contractStatus.equals(ContractStatus.SIGNED)) {
+			user.subroles.remove(SubUserRole.NONMEMBERUSER);
+			user.subroles.add(SubUserRole.MEMBEROFCOOPERATIVE);
+			user.set("subroles", user.subroles);
+		}
+		
+		if (user.status.equals(UserStatus.NEW) && 
+			user.emailStatus.equals(EMailStatus.VALIDATED) &&
+			user.agbStatus.equals(ContractStatus.SIGNED)) {
+			user.status = UserStatus.ACTIVE;
+			user.set("status", user.status);
+		}
+				
 	}
 	
 

@@ -62,23 +62,33 @@ public class IndexRoot {
 	public boolean restrictedToSelf() {
 		return model.selfOnly;
 	}
+	
+	class EntryInfo {
+		ObjectId aps;
+		DBRecord record;
+		Comparable<Object>[] key;
+	}
 
 	public void addEntry(ObjectId aps, DBRecord record) throws InternalServerException {
-		Comparable<Object>[] key = new Comparable[model.fields.size()];
-		int idx = 0;
-		for (String path : model.fields) {
-			key[idx] = (Comparable) extract(record.data, path);
-			idx++;
-		}
-		rootPage.addEntry(key, aps, record._id);
-		
-		if (rootPage.needsSplit()) rootPage = IndexNonLeafPage.split(this.key, rootPage);
-		
-		
+		EntryInfo inf = new EntryInfo();
+		inf.aps = aps;
+		inf.record = record;
+		inf.key = new Comparable[model.fields.size()];		
+		extract(0, inf, null,null);				
+		if (rootPage.needsSplit()) rootPage = IndexNonLeafPage.split(this.key, rootPage);				
 	}
 
 
-	private Object extract(BSONObject data, String path) {
+	private void extract(int keyIdx, EntryInfo inf, BSONObject data, String path) throws InternalServerException {
+		if (data == null) {
+			if (keyIdx >= model.fields.size()) {
+				rootPage.addEntry(inf.key, inf.aps, inf.record._id);
+				return;
+			}			
+			data = inf.record.data;
+			path = model.fields.get(keyIdx);
+		}
+		
 		int i = path.indexOf('.');
 		if (i > 0) {
 			String prefix = path.substring(0, i);
@@ -86,27 +96,29 @@ public class IndexRoot {
 			Object access = data.get(prefix);
 			if (access instanceof BasicBSONList) {
 				BasicBSONList lst = (BasicBSONList) access;
-				if (lst.size() == 0) return null;
-				if (lst.size() == 1) {
-					return extract((BSONObject) lst.get(0), remain);
-				}
-				
-				// TODO Not Implemented for multiple entries
-                return null;
+				if (lst.size() == 0) return;
+				for (Object obj : lst) {
+					if (obj != null && obj instanceof BSONObject) {
+						extract(keyIdx, inf, (BSONObject) obj, remain);
+					}
+				}				
 			} else if (access instanceof BasicBSONObject) {
-			   return extract((BasicBSONObject) access, remain);
-			} else return null;
+			   extract(keyIdx, inf, (BasicBSONObject) access, remain);
+			} else return;
 		} else {
 			Object res = data.get(path);
 			if (res instanceof BasicBSONList) {
 				BasicBSONList lst = (BasicBSONList) res;
-				if (lst.size() == 0) return null;
-				if (lst.size() == 1) {
-					return lst.get(0);
-				}
+				if (lst.size() == 0) return;
+				for (Object obj : lst) {
+					inf.key[keyIdx] = (Comparable) obj;
+					extract(keyIdx+1, inf, null, null);
+					
+				}				
+			} else {
+			  inf.key[keyIdx] = (Comparable) res;
+			  extract(keyIdx+1, inf, null, null);
 			}
-			
-			return res;
 		}
 	}
 	

@@ -27,10 +27,10 @@ public class APICallAction extends Action<APICall> {
 	private static final String defaultHost = Play.application().configuration().getString("portal.originUrl");
     public F.Promise<Result> call(Http.Context ctx) throws Throwable { 
     	try {
-    		AccessLog.log("API");    	
+    		AccessLog.log("API: "+defaultHost);    	
     	  JsonNode json = ctx.request().body().asJson();
     	  ctx.args.put("json", json);
-    	  String host = ctx.request().getHeader("Origin");
+    	  String host = ctx.request().getHeader("Origin");    	  
     	  //AccessLog.log(ctx.request().remoteAddress());
     	  //AccessLog.log(ctx.request().getHeader("X-Real-IP"));
     	  /*if (host != null) {
@@ -71,7 +71,7 @@ public class APICallAction extends Action<APICall> {
     		return F.Promise.pure((Result) forbidden(e3.getMessage()));    
 		} catch (Exception e2) {	
 			ErrorReporter.report("Portal", ctx, e2);					
-			return F.Promise.pure((Result) internalServerError(e2.getMessage()));			
+			return F.Promise.pure((Result) internalServerError(""+e2.getMessage()));			
 		} finally {
 			RecordManager.instance.clear();
 			AccessLog.newRequest();	

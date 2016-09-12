@@ -92,6 +92,8 @@
 	"agb_requested" : "The AGB and contract have been requested by you. Your request has not been processed by the MIDATA office yet.",
 	"agb_printed" : "The AGB and contract have been requested by you and should arrive during the next days.",
 	"agb_signed" : "You have signed the AGB.",
+	"confirmed" : "Your postal address has been confirmed.",
+	"email_unvalidated" : "Your eMail address has not been validated yet. Please click on the link of the validation email you received in your email account!", 
 	"request_membership_btn" : "Request Contract"						
   }
 }

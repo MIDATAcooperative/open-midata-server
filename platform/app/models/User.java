@@ -134,9 +134,14 @@ public class User extends Model implements Comparable<User> {
     public EMailStatus emailStatus;
     
     /**
-     * Code needed to confirm account. Currently not used
+     * Code needed to confirm account. 
      */
     public String confirmationCode; 
+    
+    /**
+     * Date of confirmation
+     */
+    public Date confirmedAt;
 	
     /**
      * First name of user

@@ -16,7 +16,7 @@ public class CompareCondition implements Condition {
 	private boolean isDate;
     
     public enum CompareOperator {
-    	GT, LT, LE, GE
+    	GT, LT, LE, GE, EQ, NE
     }
 
 
@@ -41,6 +41,8 @@ public class CompareCondition implements Condition {
 		//AccessLog.debug(obj.toString()+" "+op.toString()+val.toString());
 		//AccessLog.debug(obj.getClass().getName()+" "+op.toString()+val.getClass().getName());
 		switch (op) {
+		case EQ:return val.compareTo(obj) == 0;
+		case NE:return val.compareTo(obj) != 0;
 		case GT:return val.compareTo(obj) < 0;
 		case GE:return val.compareTo(obj) <= 0;
 		case LE:return val.compareTo(obj) >= 0;

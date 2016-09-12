@@ -333,8 +333,9 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		  prepare(record, patient);		
 		  insertRecord(record, patient);
     	} else {
-    	  Patient patient = generatePatientForAccount(member);
+    	  Patient patient = generatePatientForAccount(member);    	  
     	  Record existing = allExisting.get(0);
+    	  patient.getMeta().setVersionId(existing.version);
     	  prepare(existing, patient);
     	  updateRecord(existing, patient);
     	}
