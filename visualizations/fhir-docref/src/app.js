@@ -76,9 +76,24 @@ angular.module('fhirDocref', [ 'midata', 'ui.router','ui.bootstrap', 'angularFil
    console.log("configuration");
    return result;
 }])
-.factory('fhirinfo', ['$q', '$translate', 'midataServer', function($q, $translate, midataServer) {
+.factory('fhirinfo', ['$q', '$translate', 'midataServer', 'midataPortal', function($q, $translate, midataServer, midataPortal) {
    var result = {};
-       
+      
+   result.types = midataServer.searchContent(midataServer.authToken, { resourceType : "fhir/DocumentReference" }, [ "content", "label", "defaultCode", "resourceType", "subType", "defaultUnit", "category", "source" ])
+   .then(function(res) {
+	 angular.forEach(res.data, function(item) {
+		switch(item.source) {
+		case 'doctor' : item.order = 1;break;
+		case 'specialist': item.order = 5;break;
+		case 'hospital': item.order = 4;break;
+		case 'patient': item.order = 2;break;
+		case 'other' : item.order = 3;break;
+		} 
+		item.labelTranslation = item.label[midataPortal.language] || item.label.en;
+	 });
+     return res.data;
+	});
+   
    return result;
 }])
 .factory('data', ['$q', '$filter', 'fhirinfo', 'midataServer', 'midataPortal', function($q, $filter, fhirinfo, midataServer, midataPortal) {

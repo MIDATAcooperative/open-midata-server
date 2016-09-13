@@ -139,3 +139,42 @@
 {"_id":{"$oid":"57ce8e53aed6451f80bc8c7e"},"system":"http://midata.coop","code":"body/hydration","display":"Body Measures - Hydration","content":"body/hydration"}
 {"_id":{"$oid":"57ce8e53aed6451f80bc8c7f"},"system":"http://midata.coop","code":"body/bone_mass","display":"Body Measures - Bone Mass","content":"body/bone_mass"}
 {"_id":{"$oid":"57ce9368aed6451f80bc8c82"},"system":"http://loinc.org","code":"20564-1","display":"Oxygen saturation in Blood","content":"body/oxygen-saturation"}
+{"_id":{"$oid":"57d6cba4aed64515c215a48d"},"system":"http://loinc.org","code":"57016-8","display":"Privacy policy acknowledgment document","content":"documents/privacy-policy-ack"}
+{"_id":{"$oid":"57d6cc62aed64515c215a490"},"system":"http://loinc.org","code":"75278-2","display":"Advance directive status","content":"documents/advance-directive-status"}
+{"_id":{"$oid":"57d6cc62aed64515c215a491"},"system":"http://loinc.org","code":"59284-0","display":"Patient Consent","content":"documents/patient-consent"}
+{"_id":{"$oid":"57d6cc62aed64515c215a493"},"system":"http://loinc.org","code":"60591-5","display":"Patient summary document","content":"documents/patient-summary"}
+{"_id":{"$oid":"57d6cd0caed64515c215a497"},"system":"http://loinc.org","code":"56445-0","display":"Medication summary document","content":"documents/medication-summary"}
+{"_id":{"$oid":"57d6cd0caed64515c215a498"},"system":"http://loinc.org","code":"57833-6","display":"Prescription For Medication Document","content":"documents/prescription"}
+{"_id":{"$oid":"57d6cd0caed64515c215a499"},"system":"http://loinc.org","code":"57830-2","display":"Admission request document","content":"documents/admission-request"}
+{"_id":{"$oid":"57d6cdc8aed64515c215a49b"},"system":"http://loinc.org","code":"18763-3","display":"Physician consulting initial evaluation note","content":"documents/physician-initial-evaluation"}
+{"_id":{"$oid":"57d7b783aed64511e8f4d411"},"system":"http://loinc.org","code":"34106-5","display":"Physician hospital discharge summary","content":"documents/physician-discharge-summary"}
+{"_id":{"$oid":"57d7b783aed64511e8f4d412"},"system":"http://loinc.org","code":"11490-0","display":"Physician discharge summary","content":"documents/physician-discharge-summary"}
+{"_id":{"$oid":"57d7b910aed64511e8f4d416"},"system":"http://loinc.org","code":"34745-0","display":"Nurse discharge summary","content":"documents/nurse-discharge-summary"}
+{"_id":{"$oid":"57d7b910aed64511e8f4d419"},"system":"http://loinc.org","code":"68558-6","display":"Obstetrics and Gynecology Discharge summary","content":"documents/obstetrics-discharge-summary"}
+{"_id":{"$oid":"57d7b910aed64511e8f4d41a"},"system":"http://loinc.org","code":"18761-7","display":"Transfer summary","content":"documents/transfer-summary"}
+{"_id":{"$oid":"57d7b910aed64511e8f4d41c"},"system":"http://loinc.org","code":"52521-2","display":"Overall Plan of Care","content":"documents/plan-of-care"}
+{"_id":{"$oid":"57d7b910aed64511e8f4d41d"},"system":"http://loinc.org","code":"57133-1","display":"Referral note","content":"documents/referral-note"}
+{"_id":{"$oid":"57d7b910aed64511e8f4d41e"},"system":"http://loinc.org","code":"55115-0","display":"Requested imaging studies information document","content":"documents/imaging-request"}
+{"_id":{"$oid":"57d7b910aed64511e8f4d41f"},"system":"http://loinc.org","code":"46208-5","display":"Advance Care Directives","content":"documents/care-directives"}
+{"_id":{"$oid":"57d7b9dcaed64511e8f4d422"},"system":"http://loinc.org","code":"11488-4","display":"Consult Note","content":"documents/consult-note"}
+{"_id":{"$oid":"57d7b9dcaed64511e8f4d424"},"system":"http://loinc.org","code":"27899-4","display":"Diagnostic studies (non-lab)","content":"documents/diagnostics"}
+{"_id":{"$oid":"57d7b9dcaed64511e8f4d426"},"system":"http://loinc.org","code":"18748-4","display":"Diagnostic Imaging Report","content":"documents/diagnostic-report"}
+{"_id":{"$oid":"57d7b9dcaed64511e8f4d428"},"system":"http://loinc.org","code":"27898-6","display":"Pathology studies","content":"documents/pathology-studies"}
+{"_id":{"$oid":"57d7c897aed64511e8f4d42f"},"system":"http://loinc.org","code":"33721-2","display":"Bone marrow pathology biopsy report","content":"documents/bone-biopsy-report"}
+{"_id":{"$oid":"57d7c897aed64511e8f4d430"},"system":"http://loinc.org","code":"66121-5","display":"Tissue pathology biopsy report","content":"documents/tissue-biopsy-report"}
+{"_id":{"$oid":"57d7c96eaed64511e8f4d434"},"system":"http://loinc.org","code":"18745-0","display":"Cardiac catherization study","content":"documents/cardiac-catherization"}
+{"_id":{"$oid":"57d7c96eaed64511e8f4d435"},"system":"http://loinc.org","code":"42148-7","display":"Heart US","content":"documents/heart-us"}
+{"_id":{"$oid":"57d7c96eaed64511e8f4d436"},"system":"http://loinc.org","code":"58477-1","display":"Pulmonary function report","content":"documents/pulmonary-function-report"}
+{"_id":{"$oid":"57d7c96eaed64511e8f4d437"},"system":"http://loinc.org","code":"34824-3","display":"Physical therapy consult note","content":"documents/physical-therapy-consult-note"}
+{"_id":{"$oid":"57d7ca08aed64511e8f4d43c"},"system":"http://loinc.org","code":"34750-0","display":"Anesthesiology Note","content":"documents/anesthesiology-note"}
+{"_id":{"$oid":"57d7ca08aed64511e8f4d43e"},"system":"http://loinc.org","code":"46215-0","display":"Wound care management note","content":"documents/wound-care-note"}
+{"_id":{"$oid":"57d7ca08aed64511e8f4d43d"},"system":"http://loinc.org","code":"11504-8","display":"Surgery surgical operation note","content":"documents/operation-note"}
+{"_id":{"$oid":"57d7cad6aed64511e8f4d442"},"system":"http://loinc.org","code":"15507-7","display":"ED Progress note","content":"documents/ed-progress-note"}
+{"_id":{"$oid":"57d7cad6aed64511e8f4d443"},"system":"http://loinc.org","code":"11506-3","display":"Progress note","content":"documents/progress-note"}
+{"_id":{"$oid":"57d7cad6aed64511e8f4d444"},"system":"http://loinc.org","code":"68472-0","display":"Cardiology Hospital Progress note","content":"documents/cardiology-progress-note"}
+{"_id":{"$oid":"57d7cad6aed64511e8f4d445"},"system":"http://loinc.org","code":"34126-3","display":"Intensive care unit progress note","content":"documents/intensive-care-progress-note"}
+{"_id":{"$oid":"57d7cc3aaed64511e8f4d44c"},"system":"http://loinc.org","code":"55110-1","display":"Conclusions (interpretation) document","content":"documents/conclusions"}
+{"_id":{"$oid":"57d7cc3aaed64511e8f4d44d"},"system":"http://loinc.org","code":"72170-4","display":"Photographic image (Unspecified body)","content":"documents/image"}
+{"_id":{"$oid":"57d7cc3aaed64511e8f4d44e"},"system":"http://loinc.org","code":"18726-0","display":"Radiology studies","content":"documents/radiology"}
+{"_id":{"$oid":"57d7cc3aaed64511e8f4d44f"},"system":"http://loinc.org","code":"71230-7","display":"Birth certificate","content":"documents/birth-certificate"}
+{"_id":{"$oid":"57d7cc3aaed64511e8f4d450"},"system":"http://loinc.org","code":"53247-3","display":"Eligibility acknowledgement","content":"documents/eligibility-acknowledgement"}

@@ -1,13 +1,16 @@
 
 <div ng-controller="OverviewCtrl" class="container" style="min-height:300px">
 
-	<table class="table table-condensed table-hover">
+	<table ng-show="records.length" class="table table-condensed table-hover">
 		<tr ng-repeat="record in records">
 		  <td>{{ record.data.description }}</td>
 		  <td>{{ getCodeableConcept(record.data.type) }}</td>
+		  <td>{{ record.data.indexed | date }}</td>
 		  <td><button ng-click="download(record)" translate="download" class="btn btn-xs btn-default"></button></td>
 		</tr>
 	</table>
+	
+	<p ng-show="records.length==0" translate="empty"></p>
 
-    <button class="btn btn-primary" ui-sref="^.create" translate="add"></button>
+    <button class="btn btn-primary" ui-sref="^.create" translate="add_btn"></button>
 </div>

@@ -24,7 +24,7 @@ import utils.json.JsonValidation.JsonValidationException;
 public class ContentInfo extends Model {
 
 	private @NotMaterialized static final String collection = "contentinfo";
-	private @NotMaterialized static final Set<String> ALL = Sets.create("content", "defaultCode", "security","label", "comment");
+	private @NotMaterialized static final Set<String> ALL = Sets.create("content", "defaultCode", "security","label", "comment", "source");
 	
 	/**
 	 * the name of the content type this class describes
@@ -65,6 +65,11 @@ public class ContentInfo extends Model {
 	 * category for FHIR types
 	 */
 	public String category;
+	
+	/**
+	 * (optional) source
+	 */
+	public String source;
 				
 	/**
 	 * a comment

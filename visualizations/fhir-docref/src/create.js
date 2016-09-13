@@ -1,6 +1,6 @@
 angular.module('fhirDocref')
-.controller('CreateCtrl', ['$scope', '$http', '$location', '$timeout', 'FileUploader', 'midataPortal', 'midataServer',
-   	function($scope, $http, $location, $timeout, FileUploader, midataPortal, midataServer) {
+.controller('CreateCtrl', ['$scope', '$http', '$location', '$timeout', 'fhirinfo', 'FileUploader', 'midataPortal', 'midataServer',
+   	function($scope, $http, $location, $timeout, fhirinfo, FileUploader, midataPortal, midataServer) {
    		
    	  
    		// init
@@ -8,10 +8,11 @@ angular.module('fhirDocref')
    		$scope.data = {};
    		$scope.uploading = false;
    		$scope.uploadComplete = false;
+   		$scope.lang = midataPortal.language;
    		
-   		$scope.types = [
-          "11502-2", "60001", "60002", "60003", "60004", "60005", "60006"
-        ];
+   		fhirinfo.types.then(function(types) {
+   			$scope.types = types;
+   		});   		
 
    		// set up the uploader
    		var uploader = null;
@@ -101,11 +102,13 @@ angular.module('fhirDocref')
    		var submit = function() {
    			$scope.uploadComplete = false;
    			$scope.uploading = true;
+   			var docType = $scope.data.type.defaultCode.split(" ");
+   			var label = $scope.data.type.labelTranslation; 
    			
    			var fhirResource = {
    				"resourceType" : "DocumentReference",   			 
-   		        "type" : { coding : [{ system : "http://loinc.org", code : $scope.data.type }] }, 
-   		        "class" : { coding : [{ system : "http://loinc.org", code : $scope.data.type }] },   		     		 
+   		        "type" : { coding : [{ system : docType[0], code : docType[1], display : label }] }, 
+   		           		 
 	   		    "indexed" : new Date(),
 	   		    "status" : "current",   		   		 
 	   		    "description" : $scope.data.title   		  	   		     		  
@@ -117,7 +120,7 @@ angular.module('fhirDocref')
    				"name": $scope.data.title,
    				"data": JSON.stringify(fhirResource),
    				"format" : "fhir/DocumentReference",
-   				"code" : "http://loinc.org "+$scope.data.type
+   				"code" : $scope.data.type.defaultCode
    			}];
 
    			// upload the current queue (1 file)
