@@ -460,7 +460,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			   "entry": actions
 			};
 			$scope.requested++;
-			midataServer.fhirTransaction(midataServer.authToken, request)
+			midataServer.fhirTransaction($scope.authToken, request)
 			.then(function() {
 				$scope.saved++;
 				finish();
