@@ -48,6 +48,7 @@ public class Transactions {
 		   if (req == null) throw new UnprocessableEntityException("No request in bundle");
 		   
 		   HTTPVerb verb = req.getMethod();
+		   if (verb == null) throw new UnprocessableEntityException("Missing HTTP Verb in transaction");
 		   if (verb.equals(HTTPVerb.POST)) {		   
 		     Resource res = nextEntry.getResource();
 		     ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());		   

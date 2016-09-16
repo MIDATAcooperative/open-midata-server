@@ -371,8 +371,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 									unit : itm.unit
 								}
 							  };
-							  							  
-							  actions.push(saveOrUpdateRecord(measure.title, measure.content, recDate, rec));		
+							  
+							  var action = saveOrUpdateRecord(measure.title, measure.content, recDate, rec);
+							  if (action !== null) actions.push(action);		
 							  
 						  }
 						});						
@@ -405,7 +406,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				if (existing.data.valueQuantity.value != record.valueQuantity.value) {
 					return updateRecord(existing._id.$oid, existing.version, record);
 				} else { 
-					//$scope.saved += 1; 
+					return null; 
 				}			
 			} else {
 				return saveRecord(title, content, formattedDate, record);
