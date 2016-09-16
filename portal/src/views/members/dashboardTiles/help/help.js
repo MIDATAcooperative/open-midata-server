@@ -1,10 +1,23 @@
 angular.module('views')
-.controller('HelpCtrl', ['$scope', '$state', 'server', function($scope, $state, server) {
+.controller('HelpCtrl', ['$scope', '$state', 'portal', function($scope, $state, portal) {
+	$scope.alreadyAnswered = false;
+	$scope.init = function() {
+		portal.getConfig()
+		.then(function(data) {			
+			if (data.data && data.data.questions) {
+				$scope.alreadyAnswered = true;								
+			} else {
+				$scope.alreadyAnswered = false;				
+			}
+		});
+	};
+	$scope.init();
 		
 }])
 .controller('HelpSetupCtrl', ['$scope', '$state', 'portal', 'apps', 'spaces', 'session', function($scope, $state, portal, apps, spaces, session) {
 	
 	$scope.isInstalled = {};
+	
 	
 	$scope.init = function() {
 		portal.getConfig()
@@ -12,8 +25,10 @@ angular.module('views')
 			console.log(data);
 			if (data.data && data.data.questions) {
 				$scope.config = data.data;
-				$scope.questions = $scope.config.questions;			
+				$scope.questions = $scope.config.questions;
+				
 			} else {
+			
 				$scope.config = 
 				    { 
 						questions : {

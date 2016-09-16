@@ -1,51 +1,46 @@
   <div ng-controller="SingleRecordController" class="container">
     
-    <table class="table">
+    <form class="form-horizontal">
+      <div class="form-group">
+         <label for="title" class="col-sm-2 control-label" translate="title"></label>
+         <div class="col-sm-10">
+           <input type="text" class="form-control" id="title" ng-model="record.data.description">
+         </div>
+      </div>
       
-    
-    		    
-    <tr ng-hide="record.data.component">
-      <td><b>{{ getCodeableConcept(record.data.code)  }}</b></td>                       
-      <td>
-        <span class="lead" ng-show="record.data.valueQuantity">
-          {{ record.data.valueQuantity.value }} {{ record.data.valueQuantity.unit }}
-        </span>
-        <span ng-show="record.data.valueString">
-          <b>{{ record.data.valueString }}</b>
-        </span>
-        <span ng-show="record.data.valueCodeableConcept">
-          <b>{{ getCodeableConcept(record.data.valueCodeableConcept) }}</b>
-        </span>
-      </td>
-    </tr>
-       
-     <tr ng-repeat="comp in record.data.component">
-       <td><b>{{ getCodeableConcept(comp.code)  }}</b></td>
-       <td>
-          <b>{{ comp.valueQuantity.value }} {{ comp.valueQuantity.unit }}</b>
-       </td>         
-    </tr>
-    
-    <tr>
-      <td translate="date"></td>
-      <td>{{ record.data.effectiveDateTime | date }}</td>
-    </tr>
-    
-    <tr ng-show="record.ownerName">
-      <td translate="person"></td>
-      <td>{{ record.ownerName }}</td>
-    </tr>
-    
-    <tr ng-show="record.data.category">
-      <td translate="category"></td>
-      <td>{{ getCodeableConcept(record.data.category)  }}</td>
-    </tr>
-    
-    <tr ng-show="record.data.status">
-      <td translate="status"></td>
-      <td translate="{{ record.data.status }}"></td>
-    </tr>            
-         
-    </table>       
-    <div class="btn btn-default" ng-show="recordId" translate="back_btn" ng-click="showAll()"></div>
+     <div class="form-group" ng-class="{'has-error has-feedback': errors.type}">
+		<label for="type" class="col-xs-2 control-label" translate="type"></label>
+		<div class="col-xs-10">
+			<div class="form-control-static">{{ getCodeableConcept(record.data.type) }}</div>
+		</div>
+     </div>
+     
+     <div class="form-group">
+		<label class="col-xs-2 control-label" for="created" translate="created"></label>
+            <div class="col-xs-10">
+			<div class="input-group">
+				<input type="text" id="date" is-open="datePickers.dateOpened" datepicker-options="dateOptions" popup-placement="bottom-right"
+					close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" placeholder="Date" autofocus
+					ng-model="record.data.created"> <span class="input-group-btn">
+					<button type="button" class="btn btn-default" ng-click="datePickers.dateOpened=true;">
+						<i class="glyphicon glyphicon-calendar"></i>
+					</button>
+				</span>
+			</div>
+			</div>
+
+
+		</div>
+	
+	 <div class="form-group">
+         <label for="indexed" class="col-sm-2 control-label" translate="indexed"></label>
+         <div class="col-sm-10">
+           <div class="form-control-static">{{ record.data.indexed | date }}</div>
+         </div>
+      </div>
+	
+	 <a class="btn btn-default" translate="back_btn" ui-sref="^.overview"></a>
+	 <button type="button" ng-click="download()" translate="download_btn" class="btn btn-default"></button>
+	 <button type="button" ng-click="update()" translate="update_btn" class="btn btn-default"></button>
+    </form> 
 </div>

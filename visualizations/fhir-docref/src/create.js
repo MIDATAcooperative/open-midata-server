@@ -65,7 +65,8 @@ angular.module('fhirDocref')
    		$scope.validate = function() {
    			$scope.loading = true;
    			$scope.errors = {};
-   			validateTitle();   			
+   			validateTitle();  
+   			validateType();
    			validateFile();
    			if(!$scope.errors.title && !$scope.errors.type && !$scope.errors.file) {
    				submit();
@@ -81,6 +82,13 @@ angular.module('fhirDocref')
    			} else if ($scope.data.title.length > 50) {
    				$scope.errors.title = "shorter_title"; 
    			}
+   		};
+   		
+   		var validateType = function() {
+   			$scope.errors.type = null;
+   			if (!$scope.data.type) {
+   				$scope.errors.type = "missing_type";
+   			} 
    		};
 
    		/*var validateDescription = function() {
@@ -130,6 +138,9 @@ angular.module('fhirDocref')
    		$scope.cancel = function() {
    			uploader.cancelAll();
    		};
-   		
+   	
+   		$scope.cancel2 = function() {
+   		  midataPortal.doneNotification();
+   		};
    	}
    ]);

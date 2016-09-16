@@ -37,8 +37,10 @@ recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'mida
 		$scope.records = [];
 
 		// parse the authorization token from the url
-		var authToken = $location.path().split("/")[1];
-
+		var paths = $location.path().split("/");
+		console.log(paths);
+		var authToken = paths[1];
+		
 				
 		// get the data for the records in this space
 		$scope.getRecords = function() {
@@ -132,7 +134,9 @@ recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'mida
 			$scope.content = null;
 		};
 		
-		$scope.getRecords();
+		if (paths.length > 2 && paths[2] === "create") {
+			$scope.mode = "create";
+		} else { $scope.getRecords(); }
 	}
 ]);
 recordList.controller('RecordListPreviewCtrl', ['$scope', '$filter', '$location', 'midataServer', 'midataPortal',
@@ -166,6 +170,7 @@ recordList.controller('RecordListPreviewCtrl', ['$scope', '$filter', '$location'
  	        }); 			 			
  		};
  		
+ 		midataPortal.setLink("add", "page", "dist/index.html#:authToken/create");
        		
  		$scope.getInfos();
  	}

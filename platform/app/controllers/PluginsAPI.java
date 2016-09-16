@@ -515,8 +515,10 @@ public class PluginsAPI extends APIController {
 		// decrypt authToken and check whether a user exists who has the app installed
 		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
 				
-		Map<String, Object> tokens = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_oauth").toMap();
-				
+		BSONObject oauthMeta = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_oauth");
+    	if (oauthMeta == null) throw new BadRequestException("error.notauthorized.action", "No valid oauth credentials.");
+		Map<String, Object> tokens = oauthMeta.toMap();	
+						
 		String oauthToken, oauthTokenSecret;
 		ObjectId appId;
 		
@@ -669,7 +671,9 @@ public class PluginsAPI extends APIController {
 	 */
     public static Promise<WSResponse> oAuth2Call(ExecutionInfo inf, String url) throws AppException {
 				
-		Map<String, String> tokens = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_oauth").toMap();				
+    	BSONObject oauthMeta = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_oauth");
+    	if (oauthMeta == null) throw new BadRequestException("error.notauthorized.action", "No valid oauth credentials.");
+		Map<String, String> tokens = oauthMeta.toMap();				
 		String accessToken;
 		accessToken = tokens.get("accessToken");
 					

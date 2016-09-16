@@ -9,9 +9,12 @@
       <li><b translate="help_welcome.menu_research"></b>: <span translate="help_welcome.menu_research_text"></span></li>
       <li><b translate="help_welcome.menu_config"></b>: <span translate="help_welcome.menu_config_text"></span></li>
     </ul>   
-    <p translate="help_welcome.answer_questions"></p>
+    <p ng-hide="alreadyAnswered" translate="help_welcome.answer_questions"></p>
+    <p ng-show="alreadyAnswered" translate="help_welcome.answered_questions"></p>
   </div>
   <div class="footer center-block">
-    <a ui-sref="^.setupquestions" class="btn btn-primary" translate="help_welcome.answer_btn"></a>
+    <a ng-hide="alreadyAnswered" ui-sref="^.setupquestions" class="btn btn-primary" translate="help_welcome.answer_btn"></a>
+    <a ng-show="alreadyAnswered" ui-sref="^.overview" class="btn btn-default" translate="help_welcome.dashboard_btn"></a>
+    <a ng-show="alreadyAnswered" ui-sref="^.setupquestions" class="btn btn-default" translate="help_welcome.answer_again_btn"></a>
   </div>
 </div>

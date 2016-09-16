@@ -233,9 +233,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			});
 		} else { reqDone(); }
 		midataServer.getConfig(authToken)
-		  .then(function(response) {
-			 $scope.countSelected = response.data.selected.length;
+		  .then(function(response) {			 
 			 if (response.data && response.data.selected) {
+				 $scope.countSelected = response.data.selected.length;
 				 $scope.autoimport = response.data.autoimport;
 				 angular.forEach($scope.measurements, function(measurement) {
 					 if (response.data.selected.indexOf(measurement.name) >= 0) {
@@ -246,6 +246,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				 angular.forEach($scope.measurements, function(measurement) {						
 					measurement.import = true;
 				 });
+				 //$scope.countSelected = 0;
 			 }
 			 reqDone();
 		  }, function() { reqDone(); });
@@ -337,6 +338,8 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			midataServer.oauth2Request($scope.authToken, baseUrl + measure.endpoint.replace("{date}", formattedFromDate).replace("1d", formattedEndDate))
 			.success(function(response) {
 					// check if an error was returned
+				var actions = [];
+				
 				if (response.errors) {
 					errorMessage("Failed to import data on " + formattedFromDate + ": " + response.errors[0].message + ".");
 				} else {
@@ -368,14 +371,16 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 									unit : itm.unit
 								}
 							  };
-							  
-							  $scope.requested += 1;
-							  saveOrUpdateRecord(measure.title, measure.content, recDate, rec);		
+							  							  
+							  actions.push(saveOrUpdateRecord(measure.title, measure.content, recDate, rec));		
 							  
 						  }
 						});						
 												
 					});				
+				}
+				if (actions.length > 0) {				  
+				  processTransaction(actions);
 				}
 				
 				$scope.requesting--;
@@ -398,18 +403,18 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			var existing = stored[content+formattedDate];
 			if (existing) {
 				if (existing.data.valueQuantity.value != record.valueQuantity.value) {
-					updateRecord(existing._id.$oid, existing.version, record);
+					return updateRecord(existing._id.$oid, existing.version, record);
 				} else { 
-					$scope.saved += 1; 
+					//$scope.saved += 1; 
 				}			
 			} else {
-				saveRecord(title, content, formattedDate, record);
+				return saveRecord(title, content, formattedDate, record);
 			} 
 		};
 			
 		// save a single record to the database
 		var saveRecord = function(title, content, formattedDate, record) {
-			var name = title.replace("{date}", formattedDate);			
+			/*var name = title.replace("{date}", formattedDate);			
 			midataServer.createRecord($scope.authToken, { "name" : name, "content" : content, "format" : "fhir/Observation", subformat : "Quantity" }, record)
 			.then(function() {
 					$scope.saved += 1;
@@ -417,20 +422,51 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			})
 			.catch(function(err) {
 					errorMessage("Failed to save record '" + name + "' to database: " + err);
-			});
+			});*/
+			
+			return {
+				"resource" : record,
+				"request" : {
+					"method" : "POST",
+					"url" : "Observation"
+				}
+			};
 		};
 		
 		var updateRecord = function(id, version, record) {			
-			midataServer.updateRecord($scope.authToken, id, version, record)
+			/*midataServer.updateRecord($scope.authToken, id, version, record)
 			.then(function() {
 					$scope.saved += 1;
 					finish();
 			})
 			.catch(function(err) {
 					errorMessage("Failed to update record to database: " + err);
+			});*/
+			
+			return {
+				"resource" : record,
+				"request" : {
+					"method" : "PUT",
+					"url" : "Observation/"+id
+				}
+			};
+		};
+		
+		var processTransaction = function(actions) {
+			var request = {
+			   "resourceType": "Bundle",
+			   "id": "bundle-transaction",
+			   "type": "transaction",
+			   "entry": actions
+			};
+			$scope.requested++;
+			midataServer.fhirTransaction(midataServer.authToken, request)
+			.then(function() {
+				$scope.saved++;
+				finish();
 			});
 		};
-
+			
 		// handle errors during import
 		var errorMessage = function(errMsg) {
 			$scope.error.messages.push(errMsg);

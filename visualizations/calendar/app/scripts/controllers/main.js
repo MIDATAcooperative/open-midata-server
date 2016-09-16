@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('calendarApp')
-  .controller('MainCtrl', ['$scope', '$filter', '$routeParams', '$timeout', 'midataServer', 'midataPortal', 'eventProvider',
-    function ($scope, $filter, $routeParams, $timeout, midataServer, midataPortal, eventProvider) {
+  .controller('MainCtrl', ['$scope', '$filter', '$routeParams', '$timeout', '$location', 'midataServer', 'midataPortal', 'eventProvider',
+    function ($scope, $filter, $routeParams, $timeout, $location, midataServer, midataPortal, eventProvider) {
       window.scope = $scope;
       var authToken = $routeParams.authToken;
       if (authToken) eventProvider.authToken = authToken;
@@ -45,8 +45,12 @@ angular.module('calendarApp')
 		        		 }
 		        	  });
 		        	 eventProvider.setContents(add);
-		    	 } 
-		    	 $scope.init();
+		        	 $scope.init();
+		    	 } else {
+		    		$scope.init();
+		    		$location.url('/cal/add'); 
+		    	 }
+		    	 
 		      });
     	  }
       };

@@ -25,6 +25,10 @@ angular.module('fhirDocref', [ 'midata', 'ui.router','ui.bootstrap', 'angularFil
 	      url: '/overview?lang&authToken',	   
 	      templateUrl: 'overview.html'
 	    })
+	    .state('preview', {
+	      url: '/preview?lang&authToken',	   
+	      templateUrl: 'preview.html'
+	    })
 	    .state('create', {
 	      url: '/create?measure&authToken',	    
 	      templateUrl: 'create.html'
@@ -118,33 +122,7 @@ angular.module('fhirDocref', [ 'midata', 'ui.router','ui.bootstrap', 'angularFil
 		});
 		return categories;
 	};
-	
-	result.loadSummary = function(alwaysAddMeasures) {
-		return midataServer.getSummary(midataServer.authToken, "SINGLE", { format : ["fhir/Observation"], subformat : ["Quantity", "component"], owner : "self" }) 			
-		.then(function(sumResult) {
-			var ids = [];
-			var contents = {};
-			angular.forEach(sumResult.data, function(entry) { ids.push(entry.newestRecord.$oid);contents[entry.contents[0]] = entry.count; }); 	
-			
-			var res = [];
-			if (alwaysAddMeasures) {
-				var measures = $filter('filter')(alwaysAddMeasures, function(measure) { return !contents[measure]; });
-				if (measures && measures.length > 0) {
-					res.push(fhirinfo.getInfos(midataPortal.language, measures)
-					.then(function(infos) {
-						var data = [];
-						angular.forEach(infos, function(info) { data.push({ content : info.content, data : { code:info.code } }); });
-						return data;
-					}));
-				}
-				
-	 		}
-			
-			res.push(result.getRecords({ ids : ids }));
-			
-			return $q.all(res).then(function(r) { return [].concat.apply([], r); });
-		});
-	};
+		
 	
 	result.getRecords = function(params) { 	
 		
@@ -154,7 +132,7 @@ angular.module('fhirDocref', [ 'midata', 'ui.router','ui.bootstrap', 'angularFil
 		if (params.ids) query._id = params.ids;
 		//if (params.after && params.before) query.index = { "effectiveDateTime" : { "!!!ge" : params.after, "!!!le" : params.before }};
 		console.log(params);
-		return midataServer.getRecords(midataServer.authToken, query, ["name", "created", "content", "data", "owner", "ownerName"])
+		return midataServer.getRecords(midataServer.authToken, query, ["name", "created", "content", "data", "owner", "ownerName", "version"])
 		.then(function(results) {
 			angular.forEach(results.data, function(rec) { result.owners[rec.owner.$oid] = rec.ownerName; });
 			console.log(result.owners);
