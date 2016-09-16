@@ -375,6 +375,12 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 							  var action = saveOrUpdateRecord(measure.title, measure.content, recDate, rec);
 							  if (action !== null) actions.push(action);		
 							  
+							  // Limit request size
+							  if (actions.length > 200) {
+								  processTransaction(actions);
+								  actions = [];
+							  }
+							  
 						  }
 						});						
 												
