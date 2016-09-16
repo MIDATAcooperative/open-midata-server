@@ -18,12 +18,14 @@ import org.hl7.fhir.instance.model.api.IBaseReference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
+import utils.ErrorReporter;
 import utils.fhir.transactions.CreateTransactionStep;
 import utils.fhir.transactions.TransactionStep;
 import utils.fhir.transactions.UpdateTransactionStep;
 
 import ca.uhn.fhir.rest.annotation.Transaction;
 import ca.uhn.fhir.rest.annotation.TransactionParam;
+import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import ca.uhn.fhir.util.FhirTerser;
@@ -33,6 +35,7 @@ public class Transactions {
 	@Transaction
 	public Bundle transaction(@TransactionParam Bundle theInput) {
 		
+	   try {
 	   BundleType type = theInput.getType();
 	   if (! (type.equals(BundleType.BATCH) || type.equals(BundleType.TRANSACTION))) {
 		   throw new UnprocessableEntityException("Unknown transaction type");
@@ -87,6 +90,12 @@ public class Transactions {
 	   // Populate return bundle
 	   //retVal.addEntry(t)
 	   return retVal;
+	   
+	   } catch (Exception e) {
+		   ErrorReporter.report("FHIR Transaction", null, e);
+		   throw new InternalErrorException(e);
+		   
+	   }
 	}
 	
 	
