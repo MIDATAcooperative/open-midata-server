@@ -242,7 +242,10 @@ public class RecordManager {
 		
 		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(getCache(who), toAPS, recordEntries);
 		AccessLog.log("to-share: "+recordEntries.size()+" already="+alreadyContained.size());
-        if (alreadyContained.size() == recordEntries.size()) return;
+        if (alreadyContained.size() == recordEntries.size()) {
+        	AccessLog.logEnd("end share");
+        	return;
+        }
         if (alreadyContained.size() == 0) {		
 		    apswrapper.addPermission(recordEntries, withOwnerInformation);
 		    for (DBRecord rec : recordEntries) {		    	
