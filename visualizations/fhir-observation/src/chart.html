@@ -35,7 +35,7 @@
 		<div class="col-sm-4" style="overflow:auto; max-height:300px">
            
 			<table class="table">
-				<tr ng-repeat="record in records">
+				<tr ng-repeat="record in records | orderBy : 'data.effectiveDateTime'">
 					<td><a href="javascript:" ng-click="showSingle(record);">{{ record.data.effectiveDateTime | date }}</a></td>
 					<td>
 						<div ng-show="record.data.component">

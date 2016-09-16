@@ -442,7 +442,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			.catch(function(err) {
 					errorMessage("Failed to update record to database: " + err);
 			});*/
-			
+			record.meta = { "version" : version };
 			return {
 				"resource" : record,
 				"request" : {
