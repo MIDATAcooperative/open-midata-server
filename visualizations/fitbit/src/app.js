@@ -450,6 +450,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 					errorMessage("Failed to update record to database: " + err);
 			});*/
 			record.meta = { "version" : version };
+			record.id = id;
 			return {
 				"resource" : record,
 				"request" : {
