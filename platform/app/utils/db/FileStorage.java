@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.AccessLog;
 
@@ -23,13 +23,13 @@ public class FileStorage {
 	/**
 	 * Stores an input file with GridFS, which automatically divides a file into chunks of 265 kB.
 	 */
-	public static void store(InputStream file, ObjectId id, String filename, String contentType) throws DatabaseException {
+	public static void store(InputStream file, MidataId id, String filename, String contentType) throws DatabaseException {
 		AccessLog.log("store id = "+id+" filename="+filename);
 		GridFS fileSystem = new GridFS(DBLayer.getFSDB(), FILE_STORAGE);
 		GridFSInputFile inputFile;
 		
 		inputFile = fileSystem.createFile(file, filename);		
-		inputFile.setId(id);
+		inputFile.setId(id.toObjectId());
 		inputFile.setFilename(filename);
 		inputFile.setContentType(contentType);
 		inputFile.save();
@@ -38,9 +38,9 @@ public class FileStorage {
 	/**
 	 * Returns an input stream from which the file can be read.
 	 */
-	public static FileData retrieve(ObjectId id) {
+	public static FileData retrieve(MidataId id) {
 		GridFS fileSystem = new GridFS(DBLayer.getFSDB(), FILE_STORAGE);
-		GridFSDBFile retrievedFile = fileSystem.findOne(id);
+		GridFSDBFile retrievedFile = fileSystem.findOne(id.toObjectId());
 		if (retrievedFile != null) return new FileData(retrievedFile.getInputStream(), retrievedFile.getFilename());
 		return null;
 	}

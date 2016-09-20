@@ -1,6 +1,6 @@
 package models;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.exceptions.InternalServerException;
 
@@ -12,14 +12,14 @@ public class APSNotExistingException extends InternalServerException {
 	
 	private static final long serialVersionUID = 1L;
 		
-	private ObjectId aps;
+	private MidataId aps;
 	
-	public APSNotExistingException(ObjectId aps, String msg) {	
+	public APSNotExistingException(MidataId aps, String msg) {	
 		super("error.internal.aps", msg);
 		this.aps = aps;		
 	}
 	
-	public ObjectId getAps() {
+	public MidataId getAps() {
 		return aps;
 	}
 	

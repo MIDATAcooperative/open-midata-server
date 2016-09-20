@@ -15,7 +15,7 @@ import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import actions.APICall;
 
@@ -58,8 +58,8 @@ public class Administration extends APIController {
 		
 		JsonValidation.validate(json, "user", "status");
 				
-		ObjectId executorId = new ObjectId(request().username());		
-		ObjectId userId = JsonValidation.getObjectId(json, "user");
+		MidataId executorId = new MidataId(request().username());		
+		MidataId userId = JsonValidation.getMidataId(json, "user");
 		UserStatus status = JsonValidation.getEnum(json, "status", UserStatus.class);
 		
 		User user = User.getById(userId, Sets.create("status", "contractStatus", "agbStatus", "subroles", "confirmedAt", "emailStatus"));
@@ -102,7 +102,7 @@ public class Administration extends APIController {
 				
 		
 		Admin user = new Admin(email);
-		user._id = new ObjectId();
+		user._id = new MidataId();
 		user.role = UserRole.ADMIN;		
 		user.subroles = JsonValidation.getEnumSet(json, "subroles", SubUserRole.class);
 		user.address1 = JsonValidation.getString(json, "address1");
@@ -126,9 +126,9 @@ public class Administration extends APIController {
 		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		
-		user.apps = new HashSet<ObjectId>();
+		user.apps = new HashSet<MidataId>();
 		user.tokens = new HashMap<String, Map<String, String>>();
-		user.visualizations = new HashSet<ObjectId>();
+		user.visualizations = new HashSet<MidataId>();
 		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
 		user.security = AccountSecurityLevel.KEY;

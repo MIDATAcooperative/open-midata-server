@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.AccessLog;
 import utils.collections.Sets;
@@ -44,7 +44,7 @@ public class Feature_AccountQuery extends Feature {
 		if (q.getApsId().equals(q.getCache().getOwner())) {
 			if (AccessLog.detailedLog) AccessLog.logBegin("Begin process owner aps");
 			Set<String> sets = q.restrictedBy("owner") ? q.getRestriction("owner") : Collections.singleton("all");
-			Set<ObjectId> studies = q.restrictedBy("study") ? q.getObjectIdRestriction("study") : null;
+			Set<MidataId> studies = q.restrictedBy("study") ? q.getMidataIdRestriction("study") : null;
 
 			List<DBRecord> result = null;
 
@@ -55,14 +55,14 @@ public class Feature_AccountQuery extends Feature {
 				
 				if (q.restrictedBy("study-group")) {
 					Set<String> groups = q.getRestriction("study-group");
-					for (ObjectId studyId : studies) {
+					for (MidataId studyId : studies) {
 						for (String grp : groups) {
 							consents.addAll(StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, grp, Sets.create("pstatus", "ownerName")));
 						}
 					}
 					
 				} else {				
-					for (ObjectId studyId : studies) {
+					for (MidataId studyId : studies) {
 						consents.addAll(StudyParticipation.getActiveParticipantsByStudy(studyId, Sets.create("pstatus", "ownerName")));
 					}
 				}
@@ -105,7 +105,7 @@ public class Feature_AccountQuery extends Feature {
 		}
 	}
 	
-	private void setIdAndConsentField(Query q, ObjectId sourceAps, List<DBRecord> targetRecords) {
+	private void setIdAndConsentField(Query q, MidataId sourceAps, List<DBRecord> targetRecords) {
 		if (q.returns("id")) {
 			for (DBRecord record : targetRecords)
 				record.id = record._id.toString() + "." + sourceAps.toString();
@@ -161,10 +161,10 @@ public class Feature_AccountQuery extends Feature {
 			else
 				consents = Consent.getAllActiveByAuthorized(q.getCache().getOwner());																
 		} else {
-			Set<ObjectId> owners = new HashSet<ObjectId>();
+			Set<MidataId> owners = new HashSet<MidataId>();
 			for (String owner : sets) {
-				if (ObjectId.isValid(owner)) {
-					ObjectId id = new ObjectId(owner);
+				if (MidataId.isValid(owner)) {
+					MidataId id = new MidataId(owner);
 					if (!id.equals(q.getCache().getOwner())) owners.add(id);
 				}
 			}

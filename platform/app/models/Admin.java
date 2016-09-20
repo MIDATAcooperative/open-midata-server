@@ -9,7 +9,7 @@ import java.util.Set;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.DateTimeUtils;
 import utils.collections.CMaps;
@@ -27,10 +27,10 @@ public class Admin extends User {
 	public Admin(String email) {
 		this.email = email;
 		this.emailLC = email.toLowerCase();
-		messages = new HashMap<String, Set<ObjectId>>();
-		messages.put("inbox", new HashSet<ObjectId>());
-		messages.put("archive", new HashSet<ObjectId>());
-		messages.put("trash", new HashSet<ObjectId>());
+		messages = new HashMap<String, Set<MidataId>>();
+		messages.put("inbox", new HashSet<MidataId>());
+		messages.put("archive", new HashSet<MidataId>());
+		messages.put("trash", new HashSet<MidataId>());
 		login = DateTimeUtils.now();
 		history = new ArrayList<History>();
 		subroles = EnumSet.noneOf(SubUserRole.class);
@@ -47,7 +47,7 @@ public class Admin extends User {
 				.map("role", UserRole.ADMIN), fields);
 	}
 
-	public static Admin getById(ObjectId id, Set<String> fields)
+	public static Admin getById(MidataId id, Set<String> fields)
 			throws InternalServerException {
 		return Model.get(Admin.class, collection, CMaps.map("_id", id), fields);
 	}

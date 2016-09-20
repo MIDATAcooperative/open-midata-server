@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -94,7 +94,7 @@ public class FormatAPI extends Controller {
 	public static Result createCode() throws AppException {
 		JsonNode json = request().body().asJson();
 		ContentCode cc = new ContentCode();
-		cc._id = new ObjectId();
+		cc._id = new MidataId();
 		cc.code = JsonValidation.getString(json, "code");
 		cc.content = JsonValidation.getString(json, "content");
 		cc.display = JsonValidation.getString(json, "display");
@@ -117,7 +117,7 @@ public class FormatAPI extends Controller {
 	public static Result updateCode(String id) throws AppException {
 		JsonNode json = request().body().asJson();
 		ContentCode cc = new ContentCode();
-		cc._id = new ObjectId(id);
+		cc._id = new MidataId(id);
 		cc.code = JsonValidation.getString(json, "code");
 		cc.content = JsonValidation.getString(json, "content");
 		cc.display = JsonValidation.getString(json, "display");
@@ -138,7 +138,7 @@ public class FormatAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	public static Result deleteCode(String id) throws AppException {
-		ContentCode.delete(new ObjectId(id));				
+		ContentCode.delete(new MidataId(id));				
 		return ok();
 	}
 	
@@ -153,7 +153,7 @@ public class FormatAPI extends Controller {
 	public static Result createContent() throws AppException {
 		JsonNode json = request().body().asJson();
 		ContentInfo cc = new ContentInfo();
-		cc._id = new ObjectId();
+		cc._id = new MidataId();
 		cc.defaultCode = JsonValidation.getString(json, "defaultCode");
 		cc.content = JsonValidation.getString(json, "content");
 		cc.security = JsonValidation.getEnum(json, "security",  APSSecurityLevel.class);
@@ -182,7 +182,7 @@ public class FormatAPI extends Controller {
 	public static Result updateContent(String id) throws AppException {
 		JsonNode json = request().body().asJson();
 		ContentInfo cc = new ContentInfo();
-		cc._id = new ObjectId(id);
+		cc._id = new MidataId(id);
 		cc.defaultCode = JsonValidation.getString(json, "defaultCode");
 		cc.content = JsonValidation.getString(json, "content");
 		cc.security = JsonValidation.getEnum(json, "security",  APSSecurityLevel.class);
@@ -209,7 +209,7 @@ public class FormatAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	public static Result deleteContent(String id) throws AppException {
-		ContentInfo.delete(new ObjectId(id));				
+		ContentInfo.delete(new MidataId(id));				
 		return ok();
 	}
 	
@@ -219,7 +219,7 @@ public class FormatAPI extends Controller {
 	public static Result createGroup() throws AppException {
 		JsonNode json = request().body().asJson();
 		RecordGroup cc = new RecordGroup();
-		cc._id = new ObjectId();
+		cc._id = new MidataId();
 		cc.name = JsonValidation.getString(json, "name");
 		cc.system = JsonValidation.getString(json, "system");
 		cc.parent = JsonValidation.getString(json, "parent");
@@ -238,7 +238,7 @@ public class FormatAPI extends Controller {
 	public static Result updateGroup(String id) throws AppException {
 		JsonNode json = request().body().asJson();
 		RecordGroup cc = new RecordGroup();
-		cc._id = new ObjectId(id);
+		cc._id = new MidataId(id);
 		cc.name = JsonValidation.getString(json, "name");
 		cc.system = JsonValidation.getString(json, "system");
 		cc.parent = JsonValidation.getStringOrNull(json, "parent");
@@ -254,7 +254,7 @@ public class FormatAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	public static Result deleteGroup(String id) throws AppException {
-		RecordGroup.delete(new ObjectId(id));	
+		RecordGroup.delete(new MidataId(id));	
 		RecordGroup.invalidate();
 		return ok();
 	}

@@ -1,6 +1,6 @@
 package models;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -24,7 +24,7 @@ public class HealthcareProvider extends Model {
 		Model.insert(collection, provider);
 	 }
  
-	public static HealthcareProvider getById(ObjectId id) throws InternalServerException {
+	public static HealthcareProvider getById(MidataId id) throws InternalServerException {
 		return Model.get(HealthcareProvider.class, collection, CMaps.map("_id", id), Sets.create("name"));
 	}
 	

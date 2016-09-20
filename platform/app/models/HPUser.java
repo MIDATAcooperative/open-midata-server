@@ -10,7 +10,7 @@ import java.util.Set;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.DateTimeUtils;
 import utils.collections.CMaps;
@@ -28,7 +28,7 @@ public class HPUser extends User {
 	/**
 	 * id of corresponding healthcare provider		
 	 */
-	public ObjectId provider;
+	public MidataId provider;
 	
 	
 	
@@ -37,10 +37,10 @@ public class HPUser extends User {
 	public HPUser(String email) {		
 		this.email = email;
 		this.emailLC = email.toLowerCase();
-		messages = new HashMap<String, Set<ObjectId>>();
-		messages.put("inbox", new HashSet<ObjectId>());
-		messages.put("archive", new HashSet<ObjectId>());
-		messages.put("trash", new HashSet<ObjectId>());
+		messages = new HashMap<String, Set<MidataId>>();
+		messages.put("inbox", new HashSet<MidataId>());
+		messages.put("archive", new HashSet<MidataId>());
+		messages.put("trash", new HashSet<MidataId>());
 		login = DateTimeUtils.now();	
 		history = new ArrayList<History>();
 		subroles = EnumSet.noneOf(SubUserRole.class);
@@ -54,11 +54,11 @@ public class HPUser extends User {
 		return Model.get(HPUser.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.PROVIDER), fields);
 	}
 	
-	public static HPUser getById(ObjectId id, Set<String> fields) throws InternalServerException {
+	public static HPUser getById(MidataId id, Set<String> fields) throws InternalServerException {
 		return Model.get(HPUser.class, collection, CMaps.map("_id", id), fields);
 	}
 	
-	public static HPUser getByIdAndApp(ObjectId id, ObjectId appId, Set<String> fields) throws InternalServerException {
+	public static HPUser getByIdAndApp(MidataId id, MidataId appId, Set<String> fields) throws InternalServerException {
 		return Model.get(HPUser.class, collection, CMaps.map("_id", id).map("apps", appId).map("role",  UserRole.PROVIDER), fields);
 	}
 	

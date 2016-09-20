@@ -3,7 +3,7 @@ package models;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -27,7 +27,7 @@ public class FormatInfo extends Model {
 	/**
 	 * the default plugin to use when displaying records with this format
 	 */
-	public ObjectId visualization;
+	public MidataId visualization;
 	
 	/**
 	 * Used for comments

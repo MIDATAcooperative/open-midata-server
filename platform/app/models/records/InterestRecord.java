@@ -2,11 +2,11 @@ package models.records;
 
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 
 public class InterestRecord {
 
-	public Set<ObjectId> studyKeywords; // Keywords for studies
-	public Set<ObjectId> tags; // Tags describing account
+	public Set<MidataId> studyKeywords; // Keywords for studies
+	public Set<MidataId> tags; // Tags describing account
 }

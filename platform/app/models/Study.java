@@ -12,7 +12,7 @@ import models.enums.ParticipationCodeStatus;
 import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
@@ -48,12 +48,12 @@ public class Study extends Model {
 	/**
 	 * id of research organization which does the study
 	 */
-	public ObjectId owner;
+	public MidataId owner;
 	
 	/**
 	 * id of researcher who created the study
 	 */
-	public ObjectId createdBy; // references ResearchUser
+	public MidataId createdBy; // references ResearchUser
 	
 	/**
 	 * date of creation of the study
@@ -75,7 +75,7 @@ public class Study extends Model {
 	 * 
 	 * Used to identify members as candidates if their participationInterest is set to 'some' 
 	 */
-	public Set<ObjectId> studyKeywords; 
+	public Set<MidataId> studyKeywords; 
 	
 	/**
 	 * Filter rules that a members account must satisfy to become participant in this study
@@ -134,19 +134,19 @@ public class Study extends Model {
  	   return Model.exists(Study.class, collection, CMaps.map("code", code));
      }
     
-    public static Set<Study> getByOwner(ObjectId research, Set<String> fields) throws InternalServerException {
+    public static Set<Study> getByOwner(MidataId research, Set<String> fields) throws InternalServerException {
 		return Model.getAll(Study.class, collection, CMaps.map("owner", research), fields);
 	}
     
-    public static Set<Study> getAll(ObjectId research, Map<String,Object> properties, Set<String> fields) throws InternalServerException {
+    public static Set<Study> getAll(MidataId research, Map<String,Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.getAll(Study.class, collection, properties, fields);
 	}
     
-    public static Study getByIdFromOwner(ObjectId studyid, ObjectId owner, Set<String> fields) throws InternalServerException {
+    public static Study getByIdFromOwner(MidataId studyid, MidataId owner, Set<String> fields) throws InternalServerException {
 		return Model.get(Study.class, collection, CMaps.map("_id", studyid).map("owner",  owner), fields);
 	}
     
-    public static Study getByIdFromMember(ObjectId studyid, Set<String> fields) throws InternalServerException {
+    public static Study getByIdFromMember(MidataId studyid, Set<String> fields) throws InternalServerException {
 		return Model.get(Study.class, collection, CMaps.map("_id", studyid), fields);
 	}
     
@@ -189,7 +189,7 @@ public class Study extends Model {
     	Model.set(Study.class, collection, this._id, "history", this.history);
     }
     
-    public static void delete(ObjectId studyId) throws InternalServerException {	
+    public static void delete(MidataId studyId) throws InternalServerException {	
 		Model.delete(Study.class, collection, CMaps.map("_id", studyId));
 	}
 	

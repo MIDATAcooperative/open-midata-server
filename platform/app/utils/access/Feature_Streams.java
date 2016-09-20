@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bson.BasicBSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.mongodb.BasicDBObject;
 
@@ -51,7 +51,7 @@ public class Feature_Streams extends Feature {
 			  AccessLog.logBegin("begin single stream query");
 			  //Set<String> streams1 = q.getRestriction("stream");
 			  
-			  List<DBRecord> streams = next.query(new Query(CMaps.map("_id", q.getProperties().get("stream")), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId() ));
+			  List<DBRecord> streams = next.query(new Query(CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId() ));
 				
 			  for (DBRecord r : streams) {
 				  if (r.isStream) {
@@ -102,7 +102,7 @@ public class Feature_Streams extends Feature {
 		if (q.deepQuery()) {
 			List<DBRecord> filtered = new ArrayList<DBRecord>(records.size());
 			List<DBRecord> streams = new ArrayList<DBRecord>();
-			Map<ObjectId, DBRecord> streamsToFetch = new HashMap<ObjectId, DBRecord>();
+			Map<MidataId, DBRecord> streamsToFetch = new HashMap<MidataId, DBRecord>();
 			
 			for (DBRecord r : records) {
 				if (r.isStream) {
@@ -158,7 +158,7 @@ public class Feature_Streams extends Feature {
 	}
 	
 
-	public static void placeNewRecordInStream(ObjectId executingPerson, DBRecord record, ObjectId alternateAps) throws AppException {
+	public static void placeNewRecordInStream(MidataId executingPerson, DBRecord record, MidataId alternateAps) throws AppException {
 		 Map<String, Object> props = new HashMap<String, Object>();
 		 if (record.stream == null) {
 			  for (String field : streamFields) props.put(field, record.meta.get(field));
@@ -180,11 +180,11 @@ public class Feature_Streams extends Feature {
 		  }
 	}
 	
-	private static DBRecord createStream(ObjectId executingPerson, ObjectId owner, ObjectId targetAPS, Map<String, Object> properties,
+	private static DBRecord createStream(MidataId executingPerson, MidataId owner, MidataId targetAPS, Map<String, Object> properties,
 			boolean direct) throws AppException {
 		AccessLog.logBegin("begin create Stream: who="+executingPerson.toString()+" direct="+direct+" into="+targetAPS);
 		DBRecord result = new DBRecord();
-		result._id = new ObjectId();
+		result._id = new MidataId();
 		result.owner = owner;
 		result.direct = direct;
 		result.meta = new BasicBSONObject(properties);		
@@ -234,7 +234,7 @@ public class Feature_Streams extends Feature {
 		return result;
 	}
 
-	private static ObjectId getStreamByProperties(ObjectId who, ObjectId apsId, Map<String, Object> properties, boolean writeableOnly)
+	private static MidataId getStreamByProperties(MidataId who, MidataId apsId, Map<String, Object> properties, boolean writeableOnly)
 			throws AppException {
 		List<DBRecord> result = QueryEngine.listInternal(RecordManager.instance.getCache(who), apsId, 
 				CMaps.map(properties)				     

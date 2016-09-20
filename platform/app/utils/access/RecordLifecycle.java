@@ -3,7 +3,7 @@ package utils.access;
 import models.APSNotExistingException;
 
 import org.bson.types.BasicBSONList;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.mongodb.BasicDBList;
 
@@ -24,7 +24,7 @@ public class RecordLifecycle {
 	 * @param aps id of aps that wants to watch for changes
 	 * @throws AppException
 	 */
-	public static void addWatchingAps(DBRecord rec, ObjectId aps) throws AppException {
+	public static void addWatchingAps(DBRecord rec, MidataId aps) throws AppException {
 		DBRecord record = DBRecord.getById(rec._id, Sets.create("encWatches"));
 		record.key = rec.key;
 		record.security = rec.security;
@@ -44,7 +44,7 @@ public class RecordLifecycle {
 	 * @param aps id of aps that no longer wants to watch for changes
 	 * @throws AppException
 	 */
-	public static void removeWatchingAps(DBRecord rec, ObjectId aps) throws AppException  {
+	public static void removeWatchingAps(DBRecord rec, MidataId aps) throws AppException  {
 		DBRecord record = DBRecord.getById(rec._id, Sets.create("encWatches"));
 		record.key = rec.key;
 		record.security = rec.security;
@@ -69,7 +69,7 @@ public class RecordLifecycle {
 		if (rec.watches == null) return;
 		for (Object watch : rec.watches) {
 			try {
-			   cache.getAPS(new ObjectId(watch.toString())).touch();
+			   cache.getAPS(new MidataId(watch.toString())).touch();
 			} catch (APSNotExistingException e) {
 				AccessLog.log("APS not existing in notify of change:"+watch.toString());
 			}

@@ -3,7 +3,7 @@ package utils.access;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.AccessLog;
 import utils.collections.CMaps;
@@ -35,7 +35,7 @@ public class Feature_Prefetch extends Feature {
 		  if (record.stream != null) {
 		    APS stream = q.getCache().getAPS(record.stream);
 		    if (stream.isAccessible()) {
-		    	ObjectId owner = stream.getStoredOwner();
+		    	MidataId owner = stream.getStoredOwner();
 		    	partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("owner", owner), next);			    	
 			    if (partResult.isEmpty()) {
 			    	partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("stream", record.stream).map("owner", owner).map("quick",  record), next);

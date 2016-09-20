@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.regex.Pattern;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.AccessLog;
 import utils.exceptions.BadRequestException;
@@ -53,13 +53,13 @@ public class JsonValidation {
 		return res;
 	}
 	
-	public static ObjectId getObjectId(JsonNode json, String field) throws JsonValidationException {
+	public static MidataId getMidataId(JsonNode json, String field) throws JsonValidationException {
 		JsonNode n = json.path(field);		
 		if (n.isObject() && n.has("$oid")) n = n.path("$oid");
 		String id = n.asText();		
 		if (id == null || id.trim().equals("") || id.equals("null")) return null;
-		if (!ObjectId.isValid(id)) throw new JsonValidationException("error.invalid.objectid", field, "noobjectid", "ObjectID expected.");
-		return new ObjectId(id);
+		if (!MidataId.isValid(id)) throw new JsonValidationException("error.invalid.MidataId", field, "noMidataId", "MidataId expected.");
+		return new MidataId(id);
 	}
 	
 	public static int getInteger(JsonNode json, String field, int lowest, int highest) throws JsonValidationException {

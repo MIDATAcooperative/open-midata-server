@@ -3,7 +3,7 @@ package models;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
@@ -93,7 +93,7 @@ public class ContentCode extends Model  {
 		  Model.upsert(collection, cc);
 	  }
 	  
-	  public static void delete(ObjectId ccId) throws InternalServerException {			
+	  public static void delete(MidataId ccId) throws InternalServerException {			
 		  Model.delete(ContentCode.class, collection, CMaps.map("_id", ccId));
 	  }
 

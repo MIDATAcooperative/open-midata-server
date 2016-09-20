@@ -10,6 +10,7 @@ import org.bson.types.ObjectId;
 import models.Admin;
 import models.Developer;
 import models.History;
+import models.MidataId;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
@@ -32,7 +33,7 @@ public class MinimalSetup {
 		
 		if (Admin.getByEmail("admin@midata.coop", Sets.create("_id")) == null) {
 			Admin admin = new Admin();
-			admin._id = new ObjectId("5608f881e4b0f992a4e197b3");
+			admin._id = new MidataId("5608f881e4b0f992a4e197b3");
 			admin.email = "admin@midata.coop";
 			admin.emailLC = admin.email;
 			admin.password = "1000:baef51f211e1d5c0df67ca748933a76ce9e6bb4f1d51813f:85a273f66396793a5bcc09fe1e8d8062c25b118f65651c7e";
@@ -59,7 +60,7 @@ public class MinimalSetup {
 		
 		if (Developer.getByEmail("development@midata.coop", Sets.create("_id")) == null) {
 			Developer developer = new Developer();
-			developer._id = new ObjectId("55eff624e4b0b767e88f92b9");
+			developer._id = new MidataId("55eff624e4b0b767e88f92b9");
 			developer.email = "development@midata.coop";
 			developer.emailLC = developer.email.toLowerCase();
 			developer.password = "1000:25156cb392d80c023e57290637e96b4bb6674fa50f329f6e:c27fd59cb2b9ce964cfa194655cb83930bc6a762ace15290";
@@ -86,7 +87,7 @@ public class MinimalSetup {
 		
 		if (Admin.getByEmail("autorun-service", Sets.create("_id")) == null) {
 			Admin admin = new Admin();
-			admin._id = new ObjectId();
+			admin._id = new MidataId();
 			admin.email = "autorun-service";
 			admin.emailLC = admin.email.toLowerCase();
 			admin.password = null;

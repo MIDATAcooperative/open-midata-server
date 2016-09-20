@@ -7,7 +7,7 @@ import models.Record;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.collections.CMaps;
 import utils.db.NotMaterialized;
@@ -79,7 +79,7 @@ public class VersionedDBRecord extends DBRecord {
 		Model.insert(collection, record);	
 	}
 	
-	public static Set<VersionedDBRecord> getAllById(Set<ObjectId> ids, Set<String> fields) throws InternalServerException {
+	public static Set<VersionedDBRecord> getAllById(Set<MidataId> ids, Set<String> fields) throws InternalServerException {
 		return Model.getAll(VersionedDBRecord.class, collection, CMaps.map("_id", ids), fields);
 	}
 }

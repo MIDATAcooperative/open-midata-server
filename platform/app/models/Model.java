@@ -3,7 +3,7 @@ package models;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
@@ -23,14 +23,14 @@ public abstract class Model implements JsonSerializable {
 	 * The unique _id field from the mongo record
 	 */
 	@NotMaterialized
-	public ObjectId _id;
+	public MidataId _id;
 	
 	/**
 	 * getter for _id field
 	 * @return
 	 */
-	public Object get_id() {
-		return _id;
+	public Object to_db_id() {
+		return _id.toObjectId();
 	}
 	
 	/**
@@ -38,7 +38,7 @@ public abstract class Model implements JsonSerializable {
 	 * @param _id value of _id field
 	 */
 	public void set_id(Object _id) {
-		_id = (ObjectId) _id;
+		_id = new MidataId(_id.toString());
 	}
 
 	@Override
@@ -116,9 +116,9 @@ public abstract class Model implements JsonSerializable {
 		}
 	}
 
-	protected static void set(Class model, String collection, ObjectId modelId, String field, Object value) throws InternalServerException {
+	protected static void set(Class model, String collection, MidataId modelId, String field, Object value) throws InternalServerException {
 		try {
-			DBLayer.set(model, collection, modelId, field, value);
+			DBLayer.set(model, collection, modelId.toObjectId(), field, value);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);
 		}

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import ca.uhn.fhir.model.api.IDatatype;
 import ca.uhn.fhir.model.api.Include;
@@ -378,8 +378,8 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 				String rt = target.getResourceType();
 				if (rt != null && rt.equals("Patient")) {
 					String tId = target.getIdPart();
-					if (! ObjectId.isValid(tId)) throw new UnprocessableEntityException("Subject Reference not valid");
-					record.owner = new ObjectId(tId);
+					if (! MidataId.isValid(tId)) throw new UnprocessableEntityException("Subject Reference not valid");
+					record.owner = new MidataId(tId);
 				} else cleanSubject = false;
 			}
 		}

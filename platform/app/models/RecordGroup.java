@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import models.enums.APSSecurityLevel;
 
@@ -68,7 +68,7 @@ public class RecordGroup extends Model {
 	    Model.upsert(collection, recordGroup);
 	}
 	  
-	public static void delete(ObjectId recordGroupId) throws InternalServerException {			
+	public static void delete(MidataId recordGroupId) throws InternalServerException {			
 	    Model.delete(RecordGroup.class, collection, CMaps.map("_id", recordGroupId));
 	}
 	

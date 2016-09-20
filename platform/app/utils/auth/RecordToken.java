@@ -2,7 +2,7 @@ package utils.auth;
 
 import java.util.Map;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.libs.Crypto;
 import play.libs.Json;

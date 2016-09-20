@@ -18,7 +18,7 @@ import models.enums.UserRole;
 import models.enums.UserStatus;
 
 import org.bson.BSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -89,7 +89,7 @@ public class User extends Model implements Comparable<User> {
 	/**
 	 * Message inbox. Currently not used. May be removed in the future.
 	 */
-	public Map<String, Set<ObjectId>> messages; // keys (folders) are: inbox, archive, trash
+	public Map<String, Set<MidataId>> messages; // keys (folders) are: inbox, archive, trash
 	
 	/**
 	 * Timestamp of last login
@@ -226,7 +226,7 @@ public class User extends Model implements Comparable<User> {
 	/**
 	 * Set of ids of installed forms/importers of the user
 	 */
-	public Set<ObjectId> apps; // installed apps
+	public Set<MidataId> apps; // installed apps
 	
 	/**
 	 * Security token map
@@ -238,7 +238,7 @@ public class User extends Model implements Comparable<User> {
 	/**
 	 * Set of ids of installed plugins
 	 */
-	public Set<ObjectId> visualizations; // installed visualizations
+	public Set<MidataId> visualizations; // installed visualizations
 	
 	/**
 	 * Queries for sharing records with consents
@@ -295,11 +295,11 @@ public class User extends Model implements Comparable<User> {
 		Model.set(this.getClass(), getCollection(), this._id, field, value);
 	}
 	
-	public static User getById(ObjectId id, Set<String> fields) throws InternalServerException {
+	public static User getById(MidataId id, Set<String> fields) throws InternalServerException {
 		return Model.get(User.class, collection, CMaps.map("_id", id), fields);
 	}
 	
-	public static User getByIdAndApp(ObjectId id, ObjectId appId, Set<String> fields) throws InternalServerException {
+	public static User getByIdAndApp(MidataId id, MidataId appId, Set<String> fields) throws InternalServerException {
 		return Model.get(User.class, collection, CMaps.map("_id", id).map("apps", appId), fields);
 	}
 	
@@ -307,7 +307,7 @@ public class User extends Model implements Comparable<User> {
 		return Model.getAll(User.class, collection, properties, fields);
 	}
 	
-	public static void set(ObjectId userId, String field, Object value) throws InternalServerException {
+	public static void set(MidataId userId, String field, Object value) throws InternalServerException {
 		Model.set(User.class, collection, userId, field, value);
 	}
 	
@@ -317,7 +317,7 @@ public class User extends Model implements Comparable<User> {
     	Model.set(User.class, collection, this._id, "history", this.history);
     }
 	
-	public static void delete(ObjectId userId) throws InternalServerException {			
+	public static void delete(MidataId userId) throws InternalServerException {			
 		Model.delete(User.class, collection, CMaps.map("_id", userId));
 	}
 

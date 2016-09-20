@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.exceptions.InternalServerException;
 
@@ -62,12 +62,12 @@ public class ReferenceTool {
 					
 					String name = members.get(key);
 					if (name == null) {
-						Member member = Member.getById(new ObjectId(key), fullName);
+						Member member = Member.getById(new MidataId(key), fullName);
 						if (member != null) {
 							name = member.lastname + ", " + member.firstname;
 							members.put(key, name);
 						} else {
-							StudyParticipation p = StudyParticipation.getById(new ObjectId(key), Sets.create("ownerName"));
+							StudyParticipation p = StudyParticipation.getById(new MidataId(key), Sets.create("ownerName"));
 							if (p != null) {
 								name = p.ownerName;
 								members.put(key, name);

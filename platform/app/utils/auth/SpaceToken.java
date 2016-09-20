@@ -2,7 +2,7 @@ package utils.auth;
 
 import java.util.Map;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.libs.Crypto;
 import play.libs.Json;
@@ -23,22 +23,22 @@ public class SpaceToken {
 	/**
 	 * id of space
 	 */
-	public ObjectId spaceId;
+	public MidataId spaceId;
 		
 	/**
 	 * id of user
 	 */
-	public ObjectId userId;
+	public MidataId userId;
 	
 	/**
 	 * optional id of record if only access to a single record is allowed
 	 */
-	public ObjectId recordId;
+	public MidataId recordId;
 	
 	/**
 	 * optional id of plugin
 	 */
-	public ObjectId pluginId;
+	public MidataId pluginId;
 	
 	/**
 	 * Creation time of token
@@ -53,22 +53,22 @@ public class SpaceToken {
 	/**
 	 * Different executing person
 	 */
-	public ObjectId executorId;
+	public MidataId executorId;
 
-	public SpaceToken(ObjectId spaceId, ObjectId userId) {
+	public SpaceToken(MidataId spaceId, MidataId userId) {
 		this.spaceId = spaceId;
 		this.userId = userId;
 		this.recordId = null;
 	}
 	
-	public SpaceToken(ObjectId spaceId, ObjectId userId, ObjectId recordId, ObjectId pluginId) {
+	public SpaceToken(MidataId spaceId, MidataId userId, MidataId recordId, MidataId pluginId) {
 		this.spaceId = spaceId;
 		this.userId = userId;
 		this.recordId = recordId;
 		this.pluginId = pluginId;
 	}
 	
-	public SpaceToken(ObjectId spaceId, ObjectId userId, ObjectId recordId, ObjectId pluginId, ObjectId executorId) {
+	public SpaceToken(MidataId spaceId, MidataId userId, MidataId recordId, MidataId pluginId, MidataId executorId) {
 		this.spaceId = spaceId;
 		this.userId = userId;
 		this.recordId = recordId;
@@ -77,7 +77,7 @@ public class SpaceToken {
 		this.created = System.currentTimeMillis();
 	}
 	
-	public SpaceToken(ObjectId spaceId, ObjectId userId, ObjectId recordId, ObjectId pluginId, ObjectId executorId, long created, String remoteAddr) {
+	public SpaceToken(MidataId spaceId, MidataId userId, MidataId recordId, MidataId pluginId, MidataId executorId, long created, String remoteAddr) {
 		this.spaceId = spaceId;
 		this.userId = userId;
 		this.recordId = recordId;
@@ -87,7 +87,7 @@ public class SpaceToken {
 		this.remoteAddress = remoteAddr;
 	}
 	
-	public SpaceToken(ObjectId spaceId, ObjectId userId, ObjectId recordId) {
+	public SpaceToken(MidataId spaceId, MidataId userId, MidataId recordId) {
 		this.spaceId = spaceId;
 		this.userId = userId;
 		this.recordId = recordId;
@@ -134,11 +134,11 @@ public class SpaceToken {
 	
 	public static SpaceToken decrypt(Request request, JsonNode json) {
 		try {
-			ObjectId spaceId = new ObjectId(json.get("instanceId").asText());
-			ObjectId userId = new ObjectId(json.get("userId").asText());
-			ObjectId recordId = json.has("r") ? new ObjectId(json.get("r").asText()) : null;
-			ObjectId pluginId = json.has("p") ? new ObjectId(json.get("p").asText()) : null;
-			ObjectId executorId = json.has("e") ? new ObjectId(json.get("e").asText()) : userId;
+			MidataId spaceId = new MidataId(json.get("instanceId").asText());
+			MidataId userId = new MidataId(json.get("userId").asText());
+			MidataId recordId = json.has("r") ? new MidataId(json.get("r").asText()) : null;
+			MidataId pluginId = json.has("p") ? new MidataId(json.get("p").asText()) : null;
+			MidataId executorId = json.has("e") ? new MidataId(json.get("e").asText()) : userId;
 			long created = json.get("c").asLong();
 			String remoteAddr = json.get("i").asText();
 			

@@ -2,7 +2,7 @@ package utils.auth;
 
 import java.util.Map;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.libs.Json;
 import utils.collections.CMaps;
@@ -14,7 +14,7 @@ public class OAuthCodeToken {
 	/**
 	 * the id of the application instance
 	 */
-	public ObjectId appInstanceId;
+	public MidataId appInstanceId;
 	
 	/**
 	 * the secret passphrase for this application instance
@@ -30,7 +30,7 @@ public class OAuthCodeToken {
 	
 	
 
-	public OAuthCodeToken(ObjectId appInstanceId, String phrase, long created, String state) {
+	public OAuthCodeToken(MidataId appInstanceId, String phrase, long created, String state) {
 		this.appInstanceId = appInstanceId;
 		this.passphrase = phrase;
 		this.created = created;
@@ -51,7 +51,7 @@ public class OAuthCodeToken {
 			// decryptAES can throw DecoderException, but there is no way to catch it; catch all exceptions for now...
 			String plaintext = TokenCrypto.decryptToken(unsafeSecret);
 			JsonNode json = Json.parse(plaintext);
-			ObjectId appInstanceId = new ObjectId(json.get("a").asText());
+			MidataId appInstanceId = new MidataId(json.get("a").asText());
 			String phrase = json.get("p").asText();	
 			long created = json.get("c").asLong();
 			String state = json.get("s").asText();

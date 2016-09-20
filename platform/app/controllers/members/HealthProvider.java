@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -56,7 +56,7 @@ public class HealthProvider extends APIController {
 	@Security.Authenticated(MemberSecured.class)
 	public static Result list() throws InternalServerException {
 	      
-		ObjectId userId = new ObjectId(request().username());	
+		MidataId userId = new MidataId(request().username());	
 		Set<MemberKey> memberkeys = MemberKey.getByOwner(userId);
 		
 		return ok(JsonOutput.toJson(memberkeys, "Consent", Sets.create("owner", "organization", "authorized", "status", "confirmDate", "aps", "comment", "name")));
@@ -104,16 +104,16 @@ public class HealthProvider extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result confirmConsent() throws AppException, JsonValidationException {
 		
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		JsonNode json = request().body().asJson();
 		JsonValidation.validate(json, "consent");
 		
-		ObjectId consentId = JsonValidation.getObjectId(json, "consent");		
+		MidataId consentId = JsonValidation.getMidataId(json, "consent");		
 		confirmConsent(userId, consentId);				
 		return ok();
 	}
 	
-    public static void confirmConsent(ObjectId userId, ObjectId consentId) throws AppException, JsonValidationException {
+    public static void confirmConsent(MidataId userId, MidataId consentId) throws AppException, JsonValidationException {
 										
 		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Sets.create("status", "owner", "authorized", "confirmDate", "type"));
 		if (target.status.equals(ConsentStatus.UNCONFIRMED)) {
@@ -137,11 +137,11 @@ public class HealthProvider extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result rejectConsent() throws AppException, JsonValidationException {
 		
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		JsonNode json = request().body().asJson();
 		JsonValidation.validate(json, "consent");
 		
-		ObjectId consentId = JsonValidation.getObjectId(json, "consent");
+		MidataId consentId = JsonValidation.getMidataId(json, "consent");
 		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Sets.create("owner", "authorized", "status", "confirmDate"));
 		if (target.status.equals(ConsentStatus.UNCONFIRMED)) {
 			target.setConfirmDate(new Date());

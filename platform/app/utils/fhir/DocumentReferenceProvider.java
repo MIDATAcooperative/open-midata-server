@@ -7,7 +7,7 @@ import java.util.Set;
 import models.ContentInfo;
 import models.Record;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 import org.hl7.fhir.dstu3.exceptions.FHIRException;
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.BooleanType;
@@ -139,8 +139,8 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 				String rt = target.getResourceType();
 				if (rt != null && rt.equals("Patient")) {
 					String tId = target.getIdPart();
-					if (! ObjectId.isValid(tId)) throw new UnprocessableEntityException("Subject Reference not valid");
-					record.owner = new ObjectId(tId);
+					if (! MidataId.isValid(tId)) throw new UnprocessableEntityException("Subject Reference not valid");
+					record.owner = new MidataId(tId);
 				} else cleanSubject = false;
 			}
 		}

@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.access.DBRecord;
 import utils.access.RecordConversion;
@@ -64,7 +64,7 @@ public class RecordsInfo {
 	/**
 	 * _id of newest record summarized in this entry
 	 */
-	public ObjectId newestRecord;	
+	public MidataId newestRecord;	
 
 	
     public RecordsInfo() {

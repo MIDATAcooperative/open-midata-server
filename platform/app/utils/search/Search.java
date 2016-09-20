@@ -1,47 +1,7 @@
 package utils.search;
 
-import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
-import models.Circle;
-
-import org.bson.types.ObjectId;
-import org.elasticsearch.action.ListenableActionFuture;
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.suggest.SuggestResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.text.Text;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.suggest.Suggest.Suggestion;
-import org.elasticsearch.search.suggest.Suggest.Suggestion.Entry;
-import org.elasticsearch.search.suggest.Suggest.Suggestion.Entry.Option;
-import org.elasticsearch.search.suggest.SuggestBuilder.SuggestionBuilder;
-import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
-
-import play.libs.Json;
-import utils.access.RecordManager;
-import utils.collections.CollectionConversion;
-import utils.db.ObjectIdConversion;
-import utils.exceptions.AppException;
-import utils.exceptions.InternalServerException;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 
 public class Search {
@@ -110,7 +70,7 @@ public class Search {
 	/**
 	 * Create a user's index.
 	 *//*
-	private static void createIndex(ObjectId userId) throws SearchException {
+	private static void createIndex(MidataId userId) throws SearchException {
 		// return if not connected
 		if (client == null) {
 			return;
@@ -124,7 +84,7 @@ public class Search {
 	/**
 	 * Delete a user's index.
 	 *//*
-	private static void deleteIndex(ObjectId userId) {
+	private static void deleteIndex(MidataId userId) {
 		// return if not connected
 		if (client == null) {
 			return;
@@ -152,7 +112,7 @@ public class Search {
 	}
 */
 	/*
-	public static void add(ObjectId userId, String type, ObjectId modelId, String title) throws SearchException {
+	public static void add(MidataId userId, String type, MidataId modelId, String title) throws SearchException {
 		add(userId, type, modelId, title, null);
 	}
 */
@@ -160,11 +120,11 @@ public class Search {
 	 * Add document to search index. Title is used for autocompletion, content for full-text search.
 	 */
 	/*
-	public static void add(ObjectId userId, String type, ObjectId modelId, String title, String content) throws SearchException {
+	public static void add(MidataId userId, String type, MidataId modelId, String title, String content) throws SearchException {
 		add(userId.toString(), type, modelId.toString(), title, content);
 	}
 
-	public static void add(Type type, ObjectId documentId, String title, String content) throws SearchException {
+	public static void add(Type type, MidataId documentId, String title, String content) throws SearchException {
 		add(PUBLIC, getType(type), documentId.toString(), title, content);
 		if (type == Type.USER) {
 			createIndex(documentId);
@@ -189,25 +149,25 @@ public class Search {
 		}
 	}
 
-	public static void update(ObjectId userId, String type, ObjectId modelId, String title) throws SearchException {
+	public static void update(MidataId userId, String type, MidataId modelId, String title) throws SearchException {
 		update(userId, type, modelId, title, null);
 	}
 
-	public static void update(ObjectId userId, String type, ObjectId modelId, String title, String content) throws SearchException {
+	public static void update(MidataId userId, String type, MidataId modelId, String title, String content) throws SearchException {
 		delete(userId, type, modelId);
 		add(userId, type, modelId, title, content);
 	}
 
-	public static void update(Type type, ObjectId documentId, String title, String content) throws SearchException {
+	public static void update(Type type, MidataId documentId, String title, String content) throws SearchException {
 		delete(type, documentId);
 		add(type, documentId, title, content);
 	}
 
-	public static void delete(ObjectId userId, String type, ObjectId modelId) {
+	public static void delete(MidataId userId, String type, MidataId modelId) {
 		delete(userId.toString(), type, modelId.toString());
 	}
 
-	public static void delete(Type type, ObjectId documentId) {
+	public static void delete(Type type, MidataId documentId) {
 		delete(PUBLIC, getType(type), documentId.toString());
 		if (type == Type.USER) {
 			deleteIndex(documentId);
@@ -226,7 +186,7 @@ public class Search {
 	/**
 	 * Suggest completions within the user's index.
 	 *//*
-	public static Map<String, List<CompletionResult>> complete(ObjectId userId, String query) {
+	public static Map<String, List<CompletionResult>> complete(MidataId userId, String query) {
 		return complete(userId.toString(), query);
 	}*/
 
@@ -309,7 +269,7 @@ public class Search {
 		return searchResults.get(getType(type));
 	}
 
-	public static List<SearchResult> searchRecords(ObjectId userId, Map<String, Set<ObjectId>> visibleRecords, String query) {
+	public static List<SearchResult> searchRecords(MidataId userId, Map<String, Set<MidataId>> visibleRecords, String query) {
 		// return if not connected
 		if (client == null) {
 			return null;
@@ -336,12 +296,12 @@ public class Search {
 		return searchResults.get("record");
 	}
 
-	public static List<SearchResult> searchRecords(ObjectId userId, Set<Circle> circles, String query) throws AppException {
-	   Map<String, Set<ObjectId>> map = new HashMap<String, Set<ObjectId>>();
+	public static List<SearchResult> searchRecords(MidataId userId, Set<Circle> circles, String query) throws AppException {
+	   Map<String, Set<MidataId>> map = new HashMap<String, Set<MidataId>>();
 	   
 	   for (Circle circle : circles) {
 		   Set<String> sharedids = RecordManager.instance.listRecordIds(userId, circle._id);
-		   map.put(circle.owner.toString(), ObjectIdConversion.toObjectIds(sharedids));		   
+		   map.put(circle.owner.toString(), MidataIdConversion.toMidataIds(sharedids));		   
 	   }
 	   
 	   return searchRecords(userId, map, query);
@@ -350,7 +310,7 @@ public class Search {
 	/**
 	 * Search in all the user's data and all visible records.
 	 *//*
-	public static Map<String, List<SearchResult>> search(ObjectId userId, Map<String, Set<ObjectId>> visibleRecords, String query) {
+	public static Map<String, List<SearchResult>> search(MidataId userId, Map<String, Set<MidataId>> visibleRecords, String query) {
 		// return if not connected
 		if (client == null) {
 			return null;
@@ -381,18 +341,18 @@ public class Search {
 		return searchResults;
 	}
 	
-	public static Map<String, List<SearchResult>> search(ObjectId userId, Set<Circle> circles, String query) throws AppException {
-		   Map<String, Set<ObjectId>> map = new HashMap<String, Set<ObjectId>>();
+	public static Map<String, List<SearchResult>> search(MidataId userId, Set<Circle> circles, String query) throws AppException {
+		   Map<String, Set<MidataId>> map = new HashMap<String, Set<MidataId>>();
 		   
 		   for (Circle circle : circles) {
 			   Set<String> sharedids = RecordManager.instance.listRecordIds(userId, circle._id);
-			   map.put(circle.owner.toString(), ObjectIdConversion.toObjectIds(sharedids));		   
+			   map.put(circle.owner.toString(), MidataIdConversion.toMidataIds(sharedids));		   
 		   }
 		   
 		   return search(userId, map, query);
 		}
 
-	private static SearchRequestBuilder searchPrivateIndex(ObjectId userId, String query, String... types) {
+	private static SearchRequestBuilder searchPrivateIndex(MidataId userId, String query, String... types) {
 		SearchRequestBuilder builder = client.prepareSearch(userId.toString()).setQuery(
 				QueryBuilders.multiMatchQuery(query, TITLE, CONTENT));
 		if (types != null) {
@@ -411,16 +371,16 @@ public class Search {
 	 * 
 	 * @param visibleRecords Key: User id, Value: Set of record ids of records that are visible
 	 *//*
-	private static SearchRequestBuilder searchVisibleRecords(Map<String, Set<ObjectId>> visibleRecords, String query) {
+	private static SearchRequestBuilder searchVisibleRecords(Map<String, Set<MidataId>> visibleRecords, String query) {
 		List<String> queriedIndices = new ArrayList<String>();
-		Set<ObjectId> visibleRecordIds = new HashSet<ObjectId>();
+		Set<MidataId> visibleRecordIds = new HashSet<MidataId>();
 		for (String curUserId : visibleRecords.keySet()) {
 			if (visibleRecords.get(curUserId).size() > 0) {
 				queriedIndices.add(curUserId);
 				visibleRecordIds.addAll(visibleRecords.get(curUserId));
 			}
 		}
-		Set<String> recordIdStrings = ObjectIdConversion.toStrings(visibleRecordIds);
+		Set<String> recordIdStrings = MidataIdConversion.toStrings(visibleRecordIds);
 		String[] recordIds = new String[recordIdStrings.size()];
 		recordIdStrings.toArray(recordIds);
 		String[] indicesArray = new String[queriedIndices.size()];

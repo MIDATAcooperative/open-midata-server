@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -67,7 +67,7 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result list() throws JsonValidationException, InternalServerException {
-	   ObjectId user = new ObjectId(request().username());
+	   MidataId user = new MidataId(request().username());
 	   
 	   Set<String> fields = Sets.create("study","studyName", "pstatus");
 	   Set<StudyParticipation> participation = StudyParticipation.getAllByMember(user, fields);
@@ -86,7 +86,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result search() throws JsonValidationException, InternalServerException, AuthException {
-	   ObjectId user = new ObjectId(request().username());
+	   MidataId user = new MidataId(request().username());
 	   
 	   JsonNode json = request().body().asJson();
 	   JsonValidation.validate(json, "properties", "fields");
@@ -114,7 +114,7 @@ public class Studies extends APIController {
 		
 		JsonValidation.validate(json, "code");
 		String codestr = JsonValidation.getString(json, "code");
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		
 		Member user = Member.getById(userId, Sets.create("firstname","lastname","birthday","country","gender"));
 				
@@ -160,8 +160,8 @@ public class Studies extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result updateParticipation(String id) throws JsonValidationException, AppException {
 		JsonNode json = request().body().asJson();
-		ObjectId studyId = new ObjectId(id);
-		ObjectId memberId = new ObjectId(request().username());
+		MidataId studyId = new MidataId(id);
+		MidataId memberId = new MidataId(request().username());
 		
 		
 		StudyParticipation part = StudyParticipation.getByStudyAndMember(studyId, memberId, Sets.create("history", "providers", "authorized"));
@@ -170,11 +170,11 @@ public class Studies extends APIController {
 		JsonNode add = json.get("add");
 		if (add != null) {
 			JsonNode providers = add.get("providers");
-			Set<ObjectId> newProviders = JsonExtraction.extractObjectIdSet(providers);
-			if (part.providers == null) part.providers = new HashSet<ObjectId>();
-			if (part.authorized == null) part.authorized = new HashSet<ObjectId>();
+			Set<MidataId> newProviders = JsonExtraction.extractMidataIdSet(providers);
+			if (part.providers == null) part.providers = new HashSet<MidataId>();
+			if (part.authorized == null) part.authorized = new HashSet<MidataId>();
 			
-			for (ObjectId providerId : newProviders) {				
+			for (MidataId providerId : newProviders) {				
 				part.providers.add(providerId);	
 				part.authorized.add(providerId);
 			}
@@ -187,11 +187,11 @@ public class Studies extends APIController {
 		JsonNode remove = json.get("remove");
 		if (remove != null) {
 			JsonNode providers = remove.get("providers");
-			Set<ObjectId> newProviders = JsonExtraction.extractObjectIdSet(providers);
-			if (part.providers == null) part.providers = new HashSet<ObjectId>();
-			if (part.authorized == null) part.authorized = new HashSet<ObjectId>();
+			Set<MidataId> newProviders = JsonExtraction.extractMidataIdSet(providers);
+			if (part.providers == null) part.providers = new HashSet<MidataId>();
+			if (part.authorized == null) part.authorized = new HashSet<MidataId>();
 			
-			for (ObjectId providerId : newProviders) {				
+			for (MidataId providerId : newProviders) {				
 				part.providers.remove(providerId);	
 				part.authorized.remove(providerId);
 			}
@@ -215,7 +215,7 @@ public class Studies extends APIController {
 	
 	public static StudyParticipation createStudyParticipation(Study study, Member member, ParticipationCode code) throws AppException {
 		StudyParticipation part = new StudyParticipation();
-		part._id = new ObjectId();
+		part._id = new MidataId();
 		part.study = study._id;
 		part.studyName = study.name;
 		part.name = "Study: "+study.name;
@@ -247,8 +247,8 @@ public class Studies extends APIController {
 		part.country = member.country;
 		
 		part.history = new ArrayList<History>();
-		part.providers = new HashSet<ObjectId>();
-		part.authorized = new HashSet<ObjectId>();		
+		part.providers = new HashSet<MidataId>();
+		part.authorized = new HashSet<MidataId>();		
 		part.authorized.add(study.createdBy);
 		
 		RecordManager.instance.createAnonymizedAPS(member._id, study.createdBy, part._id);
@@ -275,8 +275,8 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result get(String id) throws JsonValidationException, InternalServerException {
-	   ObjectId userId = new ObjectId(request().username());	
-	   ObjectId studyId = new ObjectId(id);
+	   MidataId userId = new MidataId(request().username());	
+	   MidataId studyId = new MidataId(id);
 	   	   
 	   Set<String> studyFields = Sets.create("_id", "createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords","requiredInformation","assistance");
 	   Set<String> consentFields = Sets.create("_id", "pstatus", "history","providers");
@@ -304,13 +304,13 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result requestParticipation(String id) throws AppException {
-		ObjectId userId = new ObjectId(request().username());		
-		ObjectId studyId = new ObjectId(id);		
+		MidataId userId = new MidataId(request().username());		
+		MidataId studyId = new MidataId(id);		
 		requestParticipation(userId, studyId);		
 		return ok();
 	}
 	
-	public static void requestParticipation(ObjectId userId, ObjectId studyId) throws AppException {				
+	public static void requestParticipation(MidataId userId, MidataId studyId) throws AppException {				
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "birthday", "gender", "country"));		
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history", "memberName", "owner", "authorized"));		
 		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history", "owner", "createdBy", "name", "recordQuery", "requiredInformation"));
@@ -345,8 +345,8 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result noParticipation(String id) throws JsonValidationException, AppException {
-		ObjectId userId = new ObjectId(request().username());		
-		ObjectId studyId = new ObjectId(id);
+		MidataId userId = new MidataId(request().username());		
+		MidataId studyId = new MidataId(id);
 					
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history", "memberName", "owner", "authorized"));		
 		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history"));

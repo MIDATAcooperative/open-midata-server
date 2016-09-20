@@ -8,9 +8,6 @@ import java.util.Set;
 
 import models.Model;
 
-import org.bson.types.ObjectId;
-
-import play.Play;
 import utils.AccessLog;
 import utils.collections.CollectionConversion;
 
@@ -127,10 +124,10 @@ public class MongoDatabase extends Database {
 	public <T extends Model> void upsert(String collection, T modelObject) throws DatabaseException {
 		DBObject dbObject;
 		try {
-			if (logQueries) AccessLog.logDB("upsert "+collection+ " "+modelObject.get_id().toString());
+			if (logQueries) AccessLog.logDB("upsert "+collection+ " "+modelObject.to_db_id().toString());
 			dbObject = conversion.toDBObject(modelObject);
 			DBObject query = new BasicDBObject();
-			query.put("_id", modelObject.get_id());
+			query.put("_id", modelObject.to_db_id());
 			getCollection(collection).update(query, dbObject);			
 		} catch (DatabaseConversionException e) {
 			throw new DatabaseException(e);
@@ -237,9 +234,9 @@ public class MongoDatabase extends Database {
 	 */
 	public <T extends Model> void secureUpdate(T model, String collection, String timestampField, String[] fields) throws LostUpdateException, DatabaseException {
 		try {
-			if (logQueries) AccessLog.logDB("secure update "+collection+ " "+model.get_id().toString());
+			if (logQueries) AccessLog.logDB("secure update "+collection+ " "+model.to_db_id().toString());
 			DBObject query = new BasicDBObject();
-			query.put("_id", model.get_id());
+			query.put("_id", model.to_db_id());
 			query.put(timestampField, model.getClass().getField(timestampField).get(model));
 			
 			DBObject updateContent = new BasicDBObject();

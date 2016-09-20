@@ -9,7 +9,7 @@ import java.util.Set;
 import models.NewsItem;
 import models.Member;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -70,8 +70,8 @@ public class News extends Controller {
 
 		// create new news item
 		NewsItem item = new NewsItem();
-		item._id = new ObjectId();
-		item.creator = new ObjectId(request().username());
+		item._id = new MidataId();
+		item.creator = new MidataId(request().username());
 		item.created = DateTimeUtils.now();
 		item.expires = JsonValidation.getDate(json, "expires");
 		item.title = JsonValidation.getString(json, "title");
@@ -95,8 +95,8 @@ public class News extends Controller {
 		JsonValidation.validate(json, "_id", "title", "content", "expires");		
 
 		// create new news item
-		NewsItem item = NewsItem.get(CMaps.map("_id", JsonValidation.getObjectId(json, "_id")), NewsItem.ALL);
-		item.creator = new ObjectId(request().username());
+		NewsItem item = NewsItem.get(CMaps.map("_id", JsonValidation.getMidataId(json, "_id")), NewsItem.ALL);
+		item.creator = new MidataId(request().username());
 		
 		item.expires = JsonValidation.getDate(json, "expires");
 		item.title = JsonValidation.getString(json, "title");
@@ -112,10 +112,10 @@ public class News extends Controller {
 
 	/*
 	public static Result hide(String newsItemIdString) {
-		ObjectId userId = new ObjectId(request().username());
-		ObjectId newsItemId = new ObjectId(newsItemIdString);
+		MidataId userId = new MidataId(request().username());
+		MidataId newsItemId = new MidataId(newsItemIdString);
 		try {
-			Member user = Member.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>()
+			Member user = Member.get(new ChainedMap<String, MidataId>().put("_id", userId).get(), new ChainedSet<String>()
 					.add("news").get());
 			user.news.remove(newsItemId);
 			Member.set(userId, "news", user.news);
@@ -136,9 +136,9 @@ public class News extends Controller {
 	@APICall
 	public static Result delete(String newsItemIdString) throws InternalServerException {
 			
-		ObjectId newsItemId = new ObjectId(newsItemIdString);
+		MidataId newsItemId = new MidataId(newsItemIdString);
 		
-		/*if (!NewsItem.exists(new ChainedMap<String, ObjectId>().put("_id", newsItemId).put("creator", userId).get())) {
+		/*if (!NewsItem.exists(new ChainedMap<String, MidataId>().put("_id", newsItemId).put("creator", userId).get())) {
 				return badRequest("No news item with this id exists.");
 		}*/
 		

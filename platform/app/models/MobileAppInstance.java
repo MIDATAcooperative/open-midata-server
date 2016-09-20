@@ -3,7 +3,7 @@ package models;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.collections.CMaps;
 import utils.exceptions.InternalServerException;
@@ -24,24 +24,24 @@ public class MobileAppInstance extends Consent {
 	/**
 	 * id of the plugin
 	 */
-	public ObjectId applicationId;
+	public MidataId applicationId;
 		
 	
 	public MobileAppInstance() {
 		this.type = ConsentType.EXTERNALSERVICE;
 		this.status = ConsentStatus.UNCONFIRMED;
-		this.authorized = new HashSet<ObjectId>();
+		this.authorized = new HashSet<MidataId>();
 	}
 	
 	public static void add(MobileAppInstance space) throws InternalServerException {
 		Model.insert(collection, space);		
 	}
 	
-	public static MobileAppInstance getById(ObjectId id, Set<String> fields) throws InternalServerException {
+	public static MobileAppInstance getById(MidataId id, Set<String> fields) throws InternalServerException {
 		return Model.get(MobileAppInstance.class, collection, CMaps.map("_id", id), fields);
 	}
 	
-	public static MobileAppInstance getByApplicationAndOwner(ObjectId applicationId, ObjectId owner, Set<String> fields) throws InternalServerException {
+	public static MobileAppInstance getByApplicationAndOwner(MidataId applicationId, MidataId owner, Set<String> fields) throws InternalServerException {
 		return Model.get(MobileAppInstance.class, collection, CMaps.map("applicationId", applicationId).map("owner", owner), fields);
 	}
 }

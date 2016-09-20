@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.AccessLog;
 import utils.collections.CMaps;
@@ -32,7 +32,7 @@ public class Feature_Consents extends Feature {
 			List<DBRecord> result = new ArrayList<DBRecord>(recs.size());
 			AccessLog.log("found "+recs.size()+" history entries");
 			if (recs.size() > 0) {
-			/*  Set<ObjectId> ids = new HashSet<ObjectId>();
+			/*  Set<MidataId> ids = new HashSet<MidataId>();
 			  for (DBRecord r : recs) ids.add(r._id);
 			  Query q2 = new Query(q, CMaps.map(q.getProperties()).map("_id", ids));
 			  result = next.query(q2); //next.lookup(recs, q);

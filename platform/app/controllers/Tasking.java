@@ -14,7 +14,7 @@ import models.Task;
 import models.enums.AggregationType;
 import models.enums.Frequency;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -53,15 +53,15 @@ public class Tasking extends APIController {
 	public static Result add() throws InternalServerException, JsonValidationException {
 		// validate json
 		JsonNode json = request().body().asJson();
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		JsonValidation.validate(json, "owner", "plugin", "shareBackTo", "context", "title", "description", "pluginQuery", "confirmQuery", "frequency");
 		
 		Task task = new Task();
-		task._id = new ObjectId();
-		task.owner = JsonValidation.getObjectId(json, "owner");
+		task._id = new MidataId();
+		task.owner = JsonValidation.getMidataId(json, "owner");
 		task.createdBy = userId;
-		task.plugin = JsonValidation.getObjectId(json, "plugin");
-		task.shareBackTo = JsonValidation.getObjectId(json, "shareBackTo");
+		task.plugin = JsonValidation.getMidataId(json, "plugin");
+		task.shareBackTo = JsonValidation.getMidataId(json, "shareBackTo");
 		task.createdAt = new Date(System.currentTimeMillis());
 		task.deadline = JsonValidation.getDate(json, "deadline");
 		task.context = JsonValidation.getString(json, "context");
@@ -82,7 +82,7 @@ public class Tasking extends APIController {
 	 * @param task task to be checked
 	 * @throws AppException
 	 */
-	public static void check(ObjectId who, Task task) throws AppException {
+	public static void check(MidataId who, Task task) throws AppException {
 		Date dateLimit = new Date(System.currentTimeMillis());
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -114,7 +114,7 @@ public class Tasking extends APIController {
 	@APICall
 	public static Result list() throws AppException {
 		
-		ObjectId userId = new ObjectId(request().username());		
+		MidataId userId = new MidataId(request().username());		
 		Set<Task> tasks = Task.getAllByOwner(userId, Sets.create("owner", "createdBy", "plugin", "shareBackTo", "createdAt", "deadline", "context", "title", "description", "pluginQuery", "confirmQuery", "frequency", "done"));
 		
 		for (Task task : tasks) {
@@ -135,8 +135,8 @@ public class Tasking extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Result execute(String taskIdStr) throws AppException {
-		ObjectId userId = new ObjectId(request().username());
-		ObjectId taskId = new ObjectId(taskIdStr);
+		MidataId userId = new MidataId(request().username());
+		MidataId taskId = new MidataId(taskIdStr);
 		
 		Task task = Task.getByIdAndOwner(taskId, userId, Sets.create("owner", "createdBy", "plugin", "shareBackTo", "createdAt", "deadline", "context", "title", "description", "pluginQuery", "confirmQuery", "frequency", "done"));
 		Plugin plugin = Plugin.getById(task.plugin, Sets.create("defaultQuery", "type"));
@@ -151,7 +151,7 @@ public class Tasking extends APIController {
 		if (space == null) space = Spaces.add(userId, task.title, task.plugin, plugin.type, task.context);
 		
 		if (task.shareBackTo != null) {
-			if (space.autoShare == null) space.autoShare = new HashSet<ObjectId>();
+			if (space.autoShare == null) space.autoShare = new HashSet<MidataId>();
 			if (!space.autoShare.contains(task.shareBackTo)) {
 				space.autoShare.add(task.shareBackTo);
 				Space.set(space._id, "autoShare", space.autoShare);

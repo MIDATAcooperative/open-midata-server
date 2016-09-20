@@ -3,7 +3,7 @@ package utils.auth;
 import java.util.Date;
 import java.util.Map;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.libs.Crypto;
 import play.libs.Json;
@@ -21,7 +21,7 @@ public class MobileAppSessionToken {
 	/**
 	 * the id of the application instance
 	 */
-	public ObjectId appInstanceId;
+	public MidataId appInstanceId;
 	
 	/**
 	 * the secret passphrase for this application instance
@@ -33,7 +33,7 @@ public class MobileAppSessionToken {
 	 */
 	public long created;
 
-	public MobileAppSessionToken(ObjectId appInstanceId, String phrase, long created) {
+	public MobileAppSessionToken(MidataId appInstanceId, String phrase, long created) {
 		this.appInstanceId = appInstanceId;
 		this.passphrase = phrase;
 		this.created = created;
@@ -61,7 +61,7 @@ public class MobileAppSessionToken {
 	
 	public static MobileAppSessionToken decrypt(JsonNode json) {
 		try {			
-			ObjectId appInstanceId = new ObjectId(json.get("a").asText());
+			MidataId appInstanceId = new MidataId(json.get("a").asText());
 			String phrase = json.get("p").asText();	
 			long created = json.get("c").asLong();
 			return new MobileAppSessionToken(appInstanceId, phrase, created);

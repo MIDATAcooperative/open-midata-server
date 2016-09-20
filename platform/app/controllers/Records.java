@@ -22,7 +22,7 @@ import models.enums.AggregationType;
 import models.enums.ConsentType;
 
 import org.bson.BSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.Play;
 import play.libs.Json;
@@ -81,7 +81,7 @@ public class Records extends APIController {
 		} else if (id.length()>25) {
 		   return RecordToken.decrypt(id);
 		} else {
-		   ObjectId userId = new ObjectId(request().username());
+		   MidataId userId = new MidataId(request().username());
 		   return new RecordToken(id, userId.toString());
 		}
 	}
@@ -104,7 +104,7 @@ public class Records extends APIController {
 		String id = JsonValidation.getString(json, "_id");
 		RecordToken tk = getRecordTokenFromString(id);								   		
 		if (tk==null) throw new BadRequestException("error.invalid.token", "Bad token");
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		
 		// execute
 		Record target = RecordManager.instance.fetch(userId, tk);
@@ -123,11 +123,11 @@ public class Records extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getRecords() throws AppException, JsonValidationException {
  	
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		JsonNode json = request().body().asJson();
 		JsonValidation.validate(json, "properties", "fields");
 						
-		ObjectId aps = JsonValidation.getObjectId(json, "aps");
+		MidataId aps = JsonValidation.getMidataId(json, "aps");
 		if (aps == null) aps = userId;
 		List<Record> records = new ArrayList<Record>();
 		
@@ -152,11 +152,11 @@ public class Records extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getInfo() throws AppException, JsonValidationException {
  	
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		JsonNode json = request().body().asJson();
 		JsonValidation.validate(json, "properties");
 						
-		ObjectId aps = JsonValidation.getObjectId(json, "aps");
+		MidataId aps = JsonValidation.getMidataId(json, "aps");
 		if (aps == null) aps = userId;		
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));			
 		
@@ -175,8 +175,8 @@ public class Records extends APIController {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getSharingDetails(String aps) throws AppException {
-		ObjectId userId = new ObjectId(request().username());
-		ObjectId apsId = new ObjectId(aps);
+		MidataId userId = new MidataId(request().username());
+		MidataId apsId = new MidataId(aps);
 				
 		Map<String, Object> query = Circles.getQueries(userId, apsId);
 		if (query == null) {			
@@ -216,10 +216,10 @@ public class Records extends APIController {
 		JsonValidation.validate(json, "spaces");
 		
 		// update spaces
-		ObjectId userId = new ObjectId(request().username());
-		ObjectId recordId = new ObjectId(recordIdString);		
-		Set<ObjectId> spaceIds = ObjectIdConversion.castToObjectIds(JsonExtraction.extractSet(json.get("spaces")));
-		Set<ObjectId> recordIds = new HashSet<ObjectId>();
+		MidataId userId = new MidataId(request().username());
+		MidataId recordId = new MidataId(recordIdString);		
+		Set<MidataId> spaceIds = ObjectIdConversion.castToMidataIds(JsonExtraction.extractSet(json.get("spaces")));
+		Set<MidataId> recordIds = new HashSet<MidataId>();
 		recordIds.add(recordId);
 		
 		Member owner = Member.getById(userId, Sets.create("myaps"));
@@ -251,9 +251,9 @@ public class Records extends APIController {
 		
 		JsonValidation.validate(json, "fromSpace", "toConsent");
 		
-		ObjectId userId = new ObjectId(request().username());
-		ObjectId fromSpace = JsonValidation.getObjectId(json, "fromSpace");
-		ObjectId toConsent = JsonValidation.getObjectId(json, "toConsent");
+		MidataId userId = new MidataId(request().username());
+		MidataId fromSpace = JsonValidation.getMidataId(json, "fromSpace");
+		MidataId toConsent = JsonValidation.getMidataId(json, "toConsent");
 		
 		Space space = Space.getByIdAndOwner(fromSpace, userId, Sets.create("autoShare"));
 		if (space == null) throw new BadRequestException("error.unknown.space", "Bad space.");
@@ -261,7 +261,7 @@ public class Records extends APIController {
 		Consent consent = Consent.getByIdAndOwner(toConsent, userId, Sets.create("type"));
 		if (consent == null) throw new BadRequestException("error.unknown.consent", "Bad consent.");
 		
-		if (space.autoShare == null) space.autoShare = new HashSet<ObjectId>();
+		if (space.autoShare == null) space.autoShare = new HashSet<MidataId>();
 		space.autoShare.add(toConsent);
 		Space.set(space._id, "autoShare", space.autoShare);
 								
@@ -279,7 +279,7 @@ public class Records extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result delete() throws JsonValidationException, AppException {
         JsonNode json = request().body().asJson();
-        ObjectId userId = new ObjectId(request().username());
+        MidataId userId = new MidataId(request().username());
         		
 		if (json.has("_id")) {
 			String id = JsonValidation.getString(json, "_id");
@@ -309,10 +309,10 @@ public class Records extends APIController {
 		JsonValidation.validate(json, "records", "started", "stopped");
 		
 		// validate request: record
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 						
-		Set<ObjectId> started = ObjectIdConversion.toObjectIds(JsonExtraction.extractStringSet(json.get("started")));
-		Set<ObjectId> stopped = ObjectIdConversion.toObjectIds(JsonExtraction.extractStringSet(json.get("stopped")));
+		Set<MidataId> started = ObjectIdConversion.toMidataIds(JsonExtraction.extractStringSet(json.get("started")));
+		Set<MidataId> stopped = ObjectIdConversion.toMidataIds(JsonExtraction.extractStringSet(json.get("stopped")));
 		Set<String> recordIds = JsonExtraction.extractStringSet(json.get("records"));		
 		Map<String, Object> query = json.has("query") ? JsonExtraction.extractMap(json.get("query")) : null;
 		String groupSystem = null;
@@ -340,7 +340,7 @@ public class Records extends APIController {
       	   recs.add(rt.recordId);      	  
       	}
 		
-        for (ObjectId start : started) {
+        for (MidataId start : started) {
         	
         	boolean withMember = false;
         	Consent consent = Consent.getByIdAndOwner(start, userId, Sets.create("type"));
@@ -358,7 +358,7 @@ public class Records extends APIController {
         	}        	         	
         	        	
         	for (String sourceAps :records.keySet()) {        	  
-        	  RecordManager.instance.share(userId, new ObjectId(sourceAps), start, ObjectIdConversion.toObjectIds(records.get(sourceAps)), withMember);
+        	  RecordManager.instance.share(userId, new MidataId(sourceAps), start, ObjectIdConversion.toMidataIds(records.get(sourceAps)), withMember);
         	}    
         	
         	if (query != null) {
@@ -369,7 +369,7 @@ public class Records extends APIController {
         		//query = Collections.unmodifiableMap(query);
         		
         		List<Record> recs = RecordManager.instance.list(userId, start, CMaps.map(query).map("flat", "true"), Sets.create("_id"));
-        		Set<ObjectId> remove = new HashSet<ObjectId>();
+        		Set<MidataId> remove = new HashSet<MidataId>();
         		for (Record r : recs) remove.add(r._id);
         		RecordManager.instance.unshare(userId, start, remove);
         		AccessLog.log("QUERY3"+query.toString());
@@ -382,7 +382,7 @@ public class Records extends APIController {
         	}
         }
         
-        for (ObjectId start : stopped) {
+        for (MidataId start : stopped) {
 
         	boolean withMember = false;
         	Consent consent = Consent.getByIdAndOwner(start, userId, Sets.create("type"));
@@ -400,7 +400,7 @@ public class Records extends APIController {
         	}        	         	
         	        	
         	for (String sourceAps :records.keySet()) {        	  
-        	  RecordManager.instance.unshare(userId, start, ObjectIdConversion.toObjectIds(records.get(sourceAps)));
+        	  RecordManager.instance.unshare(userId, start, ObjectIdConversion.toMidataIds(records.get(sourceAps)));
         	}    
         	
         	if (query != null) {
@@ -423,7 +423,7 @@ public class Records extends APIController {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getRecordUrl(String recordIdString) throws AppException {
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		RecordToken tk = Records.getRecordTokenFromString(recordIdString);
 		
 		Record record = RecordManager.instance.fetch(userId, tk, Sets.create("format","created"));
@@ -436,7 +436,7 @@ public class Records extends APIController {
 		Plugin visualization = Plugin.getById(format.visualization, Sets.create("filename", "url"));
 					
 		// create encrypted authToken
-		SpaceToken spaceToken = new SpaceToken(new ObjectId(tk.apsId), userId, new ObjectId(tk.recordId));
+		SpaceToken spaceToken = new SpaceToken(new MidataId(tk.apsId), userId, new MidataId(tk.recordId));
 		
 		String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename + "/";
 		
@@ -462,7 +462,7 @@ public class Records extends APIController {
 	public static Result getFile(String id) throws AppException {
 		
 		RecordToken tk = getRecordTokenFromString(id);
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 						
 		if (tk==null) throw new BadRequestException("error.invalid.token", "Bad token");
 				
@@ -479,7 +479,7 @@ public class Records extends APIController {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result fixAccount() throws AppException {
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		
 		RecordManager.instance.fixAccount(userId);
 		

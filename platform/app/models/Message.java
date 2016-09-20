@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.collections.ChainedMap;
 import utils.exceptions.InternalServerException;
@@ -23,12 +23,12 @@ public class Message extends Model implements Comparable<Message> {
 	/**
 	 * id of sender of message
 	 */
-	public ObjectId sender;
+	public MidataId sender;
 	
 	/**
 	 * ids of recievers of the message
 	 */
-	public Set<ObjectId> receivers;
+	public Set<MidataId> receivers;
 	
 	/**
 	 * date of creation
@@ -67,7 +67,7 @@ public class Message extends Model implements Comparable<Message> {
 		return Model.getAll(Message.class, collection, properties, fields);
 	}
 
-	public static void set(ObjectId messageId, String field, Object value) throws InternalServerException {
+	public static void set(MidataId messageId, String field, Object value) throws InternalServerException {
 		Model.set(Message.class, collection, messageId, field, value);
 	}
 
@@ -76,9 +76,9 @@ public class Message extends Model implements Comparable<Message> {
 		
 	}
 
-	public static void delete(ObjectId receiverId, ObjectId messageId) throws InternalServerException {
+	public static void delete(MidataId receiverId, MidataId messageId) throws InternalServerException {
 		// also remove from the search index
 		//Search.delete(receiverId, "message", messageId);
-		Model.delete(Message.class, collection, new ChainedMap<String, ObjectId>().put("_id", messageId).get());
+		Model.delete(Message.class, collection, new ChainedMap<String, MidataId>().put("_id", messageId).get());
 	}
 }

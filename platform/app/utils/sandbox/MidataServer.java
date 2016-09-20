@@ -7,7 +7,7 @@ import java.util.Set;
 import models.Record;
 import models.RecordsInfo;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.libs.F.Function;
 import play.libs.F.Promise;
@@ -36,7 +36,7 @@ public class MidataServer {
 
 	public void createRecord(String name, String description, String content, String format, String data) throws AppException {
 		Record record = new Record();
-		record._id = new ObjectId();
+		record._id = new MidataId();
 		record.app = inf.pluginId;
 		record.owner = inf.ownerId;
 		record.creator = inf.executorId;

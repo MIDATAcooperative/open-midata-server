@@ -7,7 +7,7 @@ import java.util.Set;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
@@ -33,7 +33,7 @@ public class Consent extends Model {
 	/**
 	 * id of owner of this consent. The owner is the person who shares data.
 	 */
-	public ObjectId owner;
+	public MidataId owner;
 	
 	/**
 	 * a public name for this consent
@@ -43,7 +43,7 @@ public class Consent extends Model {
 	/**
 	 * a set containing the ids of all entities that are authorized to access the data shared with this consent.
 	 */
-	public Set<ObjectId> authorized;
+	public Set<MidataId> authorized;
 	
 	/**
 	 * the type of this consent.
@@ -80,47 +80,47 @@ public class Consent extends Model {
 	 */
 	public @NotMaterialized Date createdBefore;
 	
-	public static Consent getByIdAndOwner(ObjectId consentId, ObjectId ownerId, Set<String> fields) throws InternalServerException {
+	public static Consent getByIdAndOwner(MidataId consentId, MidataId ownerId, Set<String> fields) throws InternalServerException {
 		return Model.get(Consent.class, collection, CMaps.map("_id", consentId).map("owner", ownerId), fields);
 	}
 	
-	public static Consent getByIdAndAuthorized(ObjectId consentId, ObjectId executorId, Set<String> fields) throws InternalServerException {
+	public static Consent getByIdAndAuthorized(MidataId consentId, MidataId executorId, Set<String> fields) throws InternalServerException {
 		return Model.get(Consent.class, collection, CMaps.map("_id", consentId).map("authorized", executorId), fields);
 	}
 	
-	public static Set<Consent> getByIdsAndAuthorized(Set<ObjectId> consentIds, ObjectId executorId, Set<String> fields) throws InternalServerException {
+	public static Set<Consent> getByIdsAndAuthorized(Set<MidataId> consentIds, MidataId executorId, Set<String> fields) throws InternalServerException {
 		return Model.getAll(Consent.class, collection, CMaps.map("_id", consentIds).map("authorized", executorId), fields);
 	}
 	
-	public static Consent getByOwnerAndPasscode(ObjectId ownerId, String passcode, Set<String> fields) throws InternalServerException {
+	public static Consent getByOwnerAndPasscode(MidataId ownerId, String passcode, Set<String> fields) throws InternalServerException {
 		return Model.get(Consent.class, collection, CMaps.map("owner", ownerId).map("passcode", passcode), fields);
 	}
 	
-	public static Set<Consent> getAllByOwner(ObjectId owner, Map<String, Object> properties,  Set<String> fields) throws InternalServerException {
+	public static Set<Consent> getAllByOwner(MidataId owner, Map<String, Object> properties,  Set<String> fields) throws InternalServerException {
 		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("owner", owner), fields);
 	}
 	
-	public static Set<Consent> getAllActiveByAuthorized(ObjectId member) throws InternalServerException {
+	public static Set<Consent> getAllActiveByAuthorized(MidataId member) throws InternalServerException {
 		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", ConsentStatus.ACTIVE), Sets.create("name", "order", "owner", "type"));
 	}
 	
-	public static Set<Consent> getAllByAuthorized(ObjectId member) throws InternalServerException {
+	public static Set<Consent> getAllByAuthorized(MidataId member) throws InternalServerException {
 		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member), Sets.create("name", "order", "owner", "type"));
 	}
 	
-	public static Set<Consent> getAllActiveByAuthorizedAndOwners(ObjectId member, Set<ObjectId> owners) throws InternalServerException {
+	public static Set<Consent> getAllActiveByAuthorizedAndOwners(MidataId member, Set<MidataId> owners) throws InternalServerException {
 		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owners).map("status",  ConsentStatus.ACTIVE), Sets.create("name", "order", "owner", "type"));
 	}
 	
-	public static Set<Consent> getHealthcareActiveByAuthorizedAndOwner(ObjectId member, ObjectId owner) throws InternalServerException {
+	public static Set<Consent> getHealthcareActiveByAuthorizedAndOwner(MidataId member, MidataId owner) throws InternalServerException {
 		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  ConsentStatus.ACTIVE).map("type",  ConsentType.HEALTHCARE), Sets.create("name", "order", "owner", "type"));
 	}
 		
-	public static void set(ObjectId consentId, String field, Object value) throws InternalServerException {
+	public static void set(MidataId consentId, String field, Object value) throws InternalServerException {
 		Model.set(Consent.class, collection, consentId, field, value);
 	}
 	
-	public static boolean existsByOwnerAndName(ObjectId owner, String name) throws InternalServerException {
+	public static boolean existsByOwnerAndName(MidataId owner, String name) throws InternalServerException {
 		return Model.exists(Consent.class, collection, CMaps.map("owner", owner).map("name", name));
 	}
 	

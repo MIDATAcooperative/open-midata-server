@@ -12,7 +12,7 @@ import java.util.TreeMap;
 
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.AccessLog;
 import utils.access.RecordManager;
@@ -48,7 +48,7 @@ public class LargeRecord  {
 	/**
 	 * Gets all records and substitutes the data from chunks for the records that are large records.
 	 */
-	public static List<Record> getAll(ObjectId who, ObjectId aps, Map<String, Object> properties, Set<String> fields) throws AppException {
+	public static List<Record> getAll(MidataId who, MidataId aps, Map<String, Object> properties, Set<String> fields) throws AppException {
 		Set<String> tempFields = new HashSet<String>(fields);
 		tempFields.add("data.type");
 		List<Record> records = RecordManager.instance.list(who, aps, properties, tempFields);
@@ -57,7 +57,7 @@ public class LargeRecord  {
 			// get the data from the chunks for large records
 			if (record.data.containsField("type") && record.data.get("type").equals("largeRecord")) {
 				// get chunks as well (do this here to not impact normal records)
-				//Map<String, ObjectId> recordProperties = new ChainedMap<String, ObjectId>().put("_id", record._id).get();
+				//Map<String, MidataId> recordProperties = new ChainedMap<String, MidataId>().put("_id", record._id).get();
 				//Set<String> chunksField = new ChainedSet<String>().add("data.chunks").get();
 				//record.data.put("chunks", Record.get(recordProperties, chunksField).data.get("chunks"));
 				replaceData(who, aps, record, fields);
@@ -70,7 +70,7 @@ public class LargeRecord  {
 	/**
 	 * Substitutes the data from the chunk for the base record's data.
 	 */
-	private static void replaceData(ObjectId who, ObjectId aps, Record masterRecord, Set<String> fields) throws AppException {
+	private static void replaceData(MidataId who, MidataId aps, Record masterRecord, Set<String> fields) throws AppException {
 		// extract only the fields concerning the data, and strip the "data." qualifier
 		Set<String> dataFields = new HashSet<String>();
 		for (String field : fields) {
@@ -80,7 +80,7 @@ public class LargeRecord  {
 		}
 
 		// get ids chunks
-		Set<ObjectId> chunksToFetch = getChunkIds(masterRecord, dataFields);		
+		Set<MidataId> chunksToFetch = getChunkIds(masterRecord, dataFields);		
 		List<Record> chunksData = RecordManager.instance.list(who, aps, CMaps.map("stream", masterRecord.stream).map("_id", chunksToFetch), fields);		
 		
 		// replace data in master record
@@ -97,22 +97,22 @@ public class LargeRecord  {
 	/**
 	 * Get the ids of the chunks that contain the data requested by 'dataFields'.
 	 */
-	private static Set<ObjectId> getChunkIds(Record masterRecord, Set<String> dataFields) {
+	private static Set<MidataId> getChunkIds(Record masterRecord, Set<String> dataFields) {
 		// create an array of strings from the head keys, and a map from keys to ids to retrieve them later
 		BasicBSONList chunks = (BasicBSONList) masterRecord.data.get("chunks");
 		String[] headKeys = new String[chunks.size()];
-		Map<String, ObjectId> keysToIds = new HashMap<String, ObjectId>();
+		Map<String, MidataId> keysToIds = new HashMap<String, MidataId>();
 		int index = 0;
 		for (Object chunk : chunks) {
 			BasicBSONObject chunkInfo = (BasicBSONObject) chunk;
-			ObjectId chunkId = (ObjectId) chunkInfo.get("_id");
+			MidataId chunkId = (MidataId) chunkInfo.get("_id");
 			String chunkHead = (String) chunkInfo.get("head");
 			headKeys[index++] = chunkHead;
 			keysToIds.put(chunkHead, chunkId);
 		}
 
 		// determine the chunks with the relevant data
-		Set<ObjectId> chunksWithData = new HashSet<ObjectId>();
+		Set<MidataId> chunksWithData = new HashSet<MidataId>();
 		for (String dataField : dataFields) {
 			int searchIndex = Arrays.binarySearch(headKeys, dataField);
 			// if field is a head element, index is non-negative and already correct
@@ -132,7 +132,7 @@ public class LargeRecord  {
 	/**
 	 * Creates chunks from the data and saves the index information in the master record.
 	 */
-	public static void add(ObjectId owner, Record masterRecord, TreeMap<String, Object> data) throws AppException {
+	public static void add(MidataId owner, Record masterRecord, TreeMap<String, Object> data) throws AppException {
 		// initialize data and set the type to 'largeRecord'
 		masterRecord.data = new BasicDBObject();
 		masterRecord.data.put("type", "largeRecord");
@@ -146,7 +146,7 @@ public class LargeRecord  {
 		Iterator<String> iterator = data.keySet().iterator();
 		for (int i = 1; i <= numChunks; i++) {
 			Record chunk = new Record();
-			chunk._id = new ObjectId();
+			chunk._id = new MidataId();
 			chunk.document = masterRecord._id;
 			chunk.format = "chunk";
 			chunk.content = masterRecord.content;
@@ -192,7 +192,7 @@ public class LargeRecord  {
 	/**
 	 * Deletes all chunks of the given master record.
 	 */
-	public static void delete(ObjectId masterRecordId) throws InternalServerException {
+	public static void delete(MidataId masterRecordId) throws InternalServerException {
 		//LargeRecordChunk.deleteAll(masterRecordId);
 	}
 }

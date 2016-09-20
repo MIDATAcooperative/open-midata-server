@@ -5,7 +5,7 @@ import java.util.Set;
 import models.Record;
 import models.User;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
@@ -21,7 +21,7 @@ public class FHIRTools {
 	private static Set<String> PERSON = Sets.create("person");
 	
 	public static Person getPersonRecordOfUser(String id) throws InternalServerException {
-		ObjectId mongoId = new ObjectId(id);
+		MidataId mongoId = new MidataId(id);
 		User user = User.getById(mongoId, PERSON);
 		IParser parser = ResourceProvider.ctx.newJsonParser();    	
     	Person p = parser.parseResource(Person.class, user.person.toString());
@@ -29,7 +29,7 @@ public class FHIRTools {
 	}
 	
 	public static void updatePersonRecordOfUser(String id, Person person) throws InternalServerException {
-		ObjectId mongoId = new ObjectId(id);
+		MidataId mongoId = new MidataId(id);
 		User user = User.getById(mongoId, PERSON);
 		IParser parser = ResourceProvider.ctx.newJsonParser();
 	    user.person = (DBObject) JSON.parse(parser.encodeResourceToString(person));

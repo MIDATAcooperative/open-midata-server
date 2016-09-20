@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -79,12 +79,12 @@ public class Providers extends APIController {
 		
 		HealthcareProvider provider = new HealthcareProvider();
 		
-		provider._id = new ObjectId();
+		provider._id = new MidataId();
 		provider.name = name;
 		//research.description = JsonValidation.getString(json, "description");
 		
 		HPUser user = new HPUser(email);
-		user._id = new ObjectId();
+		user._id = new MidataId();
 		user.role = UserRole.PROVIDER;		
 		user.subroles.add(SubUserRole.MANAGER);
 		user.address1 = JsonValidation.getString(json, "address1");
@@ -108,9 +108,9 @@ public class Providers extends APIController {
 		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		
-		user.apps = new HashSet<ObjectId>();
+		user.apps = new HashSet<MidataId>();
 		user.tokens = new HashMap<String, Map<String, String>>();
-		user.visualizations = new HashSet<ObjectId>();
+		user.visualizations = new HashSet<MidataId>();
 		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
 		user.security = AccountSecurityLevel.KEY;
@@ -164,7 +164,7 @@ public class Providers extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	public static Result search() throws JsonValidationException, InternalServerException {
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		JsonNode json = request().body().asJson();
 			
 		JsonValidation.validate(json, "midataID", "birthday");
@@ -196,10 +196,10 @@ public class Providers extends APIController {
 	@APICall
 	public static Result list() throws JsonValidationException, InternalServerException {
 		
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 
 		Set<MemberKey> memberKeys = MemberKey.getByAuthorizedPerson(userId, Sets.create("owner"));
-		Set<ObjectId> ids = new HashSet<ObjectId>();
+		Set<MidataId> ids = new HashSet<MidataId>();
 		for (MemberKey key : memberKeys) ids.add(key.owner);
 		Set<String> fields = Sets.create("_id", "firstname","birthday", "lastname"); 
 		Set<Member> result = Member.getAll(CMaps.map("_id", ids), fields, 0);
@@ -217,8 +217,8 @@ public class Providers extends APIController {
 	@Security.Authenticated(ProviderSecured.class)	
 	@APICall
 	public static Result getMember(String id) throws JsonValidationException, AppException {
-		ObjectId userId = new ObjectId(request().username());
-		ObjectId memberId = new ObjectId(id);
+		MidataId userId = new MidataId(request().username());
+		MidataId memberId = new MidataId(id);
 		
 		Set<MemberKey> memberKeys = MemberKey.getByOwnerAndAuthorizedPerson(memberId, userId);
 		if (memberKeys.isEmpty()) throw new BadRequestException("error.notauthorized.account", "You are not authorized.");
@@ -246,13 +246,13 @@ public class Providers extends APIController {
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result getVisualizationToken() throws JsonValidationException, InternalServerException {
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		JsonNode json = request().body().asJson();
 						
 		JsonValidation.validate(json, "consent");
 		
-		//ObjectId memberId = JsonValidation.getObjectId(json, "member");
-		ObjectId consentId = JsonValidation.getObjectId(json, "consent");
+		//MidataId memberId = JsonValidation.getMidataId(json, "member");
+		MidataId consentId = JsonValidation.getMidataId(json, "consent");
 		//MemberKey memberKey = MemberKey.getByIdAndOwner(consentId, memberId, Sets.create());
 
 		// create encrypted authToken

@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.AccessLog;
 
@@ -24,8 +24,8 @@ public class RecordConversion {
 		Record record = new Record();
 		
 		record._id = dbrecord._id;
-		record.app = (ObjectId) dbrecord.meta.get("app");
-		record.creator = (ObjectId) dbrecord.meta.get("creator");
+		record.app = MidataId.from(dbrecord.meta.get("app"));
+		record.creator = MidataId.from(dbrecord.meta.get("creator"));
 		record.name = (String) dbrecord.meta.get("name");				
 		record.created = (Date) dbrecord.meta.get("created");
 		record.description = (String) dbrecord.meta.get("description");
@@ -66,8 +66,8 @@ public class RecordConversion {
 		dbrecord.data = record.data;
 		dbrecord.owner = record.owner;
 		BSONObject meta = dbrecord.meta;		
-		meta.put("app", record.app);
-		meta.put("creator", record.creator);
+		meta.put("app", record.app.toDb());
+		meta.put("creator", record.creator.toDb());
 		meta.put("name", record.name);
 		meta.put("created", record.created);
 		meta.put("description", record.description);

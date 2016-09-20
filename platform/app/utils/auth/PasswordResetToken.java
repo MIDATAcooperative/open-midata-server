@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Map;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.libs.Crypto;
 import play.libs.Json;
@@ -21,7 +21,7 @@ public class PasswordResetToken {
 	/**
 	 * the id of the user
 	 */
-	public ObjectId userId;
+	public MidataId userId;
 	
 	/**
 	 * the token
@@ -35,13 +35,13 @@ public class PasswordResetToken {
 	
 	static SecureRandom random = new SecureRandom();
 
-	public PasswordResetToken(ObjectId userId, String role, String token) {		
+	public PasswordResetToken(MidataId userId, String role, String token) {		
 		this.userId = userId;
 		this.role = role;
 		this.token = token;
 	}
 	
-	public PasswordResetToken(ObjectId userId, String role) {
+	public PasswordResetToken(MidataId userId, String role) {
 		this.userId = userId;
 		this.role = role;
 	    this.token = new BigInteger(130, random).toString(32);
@@ -61,7 +61,7 @@ public class PasswordResetToken {
 			// decryptAES can throw DecoderException, but there is no way to catch it; catch all exceptions for now...
 			String plaintext = TokenCrypto.decryptToken(unsafeSecret);
 			JsonNode json = Json.parse(plaintext);
-			ObjectId userId = new ObjectId(json.get("userId").asText());
+			MidataId userId = new MidataId(json.get("userId").asText());
 			String token = json.get("token").asText();
 			String role = json.get("role").asText();
 			return new PasswordResetToken(userId, role, token);

@@ -5,7 +5,7 @@ import java.util.Set;
 
 import models.enums.ParticipationCodeStatus;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -28,12 +28,12 @@ public class ParticipationCode extends Model {
 	/**
 	 * the id of the study this code belongs to
 	 */
-	public ObjectId study; // references Study.	study this code belongs to
+	public MidataId study; // references Study.	study this code belongs to
 	
 	/**
 	 * the id of the recruiter
 	 */
-	public ObjectId recruiter; // references User. recruiter who owns this code and may give this code to someone
+	public MidataId recruiter; // references User. recruiter who owns this code and may give this code to someone
 	
 	/**
 	 * firstname and lastname of the recruiter
@@ -59,7 +59,7 @@ public class ParticipationCode extends Model {
 		Model.insert(collection, participationCode);
 	}
 	
-	public static Set<ParticipationCode> getByStudy(ObjectId study) throws InternalServerException {
+	public static Set<ParticipationCode> getByStudy(MidataId study) throws InternalServerException {
 		return Model.getAll(ParticipationCode.class, collection, CMaps.map("study", study), Sets.create("code", "group", "recruiter", "recruiterName", "status", "study", "createdAt"));
 	}
 	

@@ -11,7 +11,7 @@ import models.enums.APSSecurityLevel;
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
@@ -28,7 +28,7 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	 * This field is null for stream records.
 	 * This field is not encrypted but stored in the database
 	 */
-	public ObjectId stream; 
+	public MidataId stream; 
 	
 	/**
 	 * a rounded timestamp
@@ -45,12 +45,12 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	 * This field is not encrypted but stored in the database.
 	 * 
 	 */
-	public ObjectId document;
+	public MidataId document;
 	
 	/**
 	 * id of consent/owner aps this record has been found in. Only set if queried for field "consentAps"
 	 */
-	public @NotMaterialized ObjectId consentAps;
+	public @NotMaterialized MidataId consentAps;
 	
 	/**
 	 * creation date as stored in aps
@@ -117,7 +117,7 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	 * The owner information is derived from information of the APS this record is stored in or 
 	 * from the owner of the stream this record is stored in.
 	 */
-	public @NotMaterialized ObjectId owner; // person the record is about
+	public @NotMaterialized MidataId owner; // person the record is about
 			
 	
 	/**
@@ -179,7 +179,7 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 		return Model.get(DBRecord.class, collection, properties, fields);
 	}
 	
-	public static DBRecord getById(ObjectId id, Set<String> fields) throws InternalServerException {
+	public static DBRecord getById(MidataId id, Set<String> fields) throws InternalServerException {
 		return Model.get(DBRecord.class, collection, CMaps.map("_id", id), fields);
 	}
 
@@ -187,11 +187,11 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 		return Model.getAll(DBRecord.class, collection, properties, fields);
 	}
 	
-	public static Set<DBRecord> getAllByIds(Set<ObjectId> ids, Set<String> fields) throws InternalServerException {
+	public static Set<DBRecord> getAllByIds(Set<MidataId> ids, Set<String> fields) throws InternalServerException {
 		return Model.getAll(DBRecord.class, collection, CMaps.map("_id", ids), fields);
 	}		
 	
-	public static void set(ObjectId recordId, String field, Object value) throws InternalServerException {
+	public static void set(MidataId recordId, String field, Object value) throws InternalServerException {
 		Model.set(DBRecord.class, collection, recordId, field, value);
 	}
 
@@ -203,8 +203,8 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 		Model.upsert(collection, record);
 	}
 
-	public static void delete(ObjectId ownerId, ObjectId recordId) throws InternalServerException {			
-		Model.delete(DBRecord.class, collection, new ChainedMap<String, ObjectId>().put("_id", recordId).get());
+	public static void delete(MidataId ownerId, MidataId recordId) throws InternalServerException {			
+		Model.delete(DBRecord.class, collection, new ChainedMap<String, MidataId>().put("_id", recordId).get());
 	}
 
 	@Override

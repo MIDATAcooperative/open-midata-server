@@ -3,7 +3,7 @@ package utils.evolution;
 import java.util.List;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import controllers.Circles;
 
@@ -44,8 +44,8 @@ public class AccountPatches {
 	   Set<String> formats = Sets.create("fhir/Observation/String", "fhir/Observation/Quantity", "fhir/Observation/CodeableConcept");
 	   List<Record> recs = RecordManager.instance.list(user._id, user._id, CMaps.map("format", formats).map("owner", "self"), RecordManager.COMPLETE_DATA);
 	   for (Record r : recs) {
-		   ObjectId oldId = r._id;
-		   r._id = new ObjectId();
+		   MidataId oldId = r._id;
+		   r._id = new MidataId();
 		   r.subformat = r.format.substring(r.format.lastIndexOf('/')+1);
 		   r.format = "fhir/Observation";
 		   try {

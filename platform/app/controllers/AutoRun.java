@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.bson.BSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 import org.joda.time.DateTime;
 import org.joda.time.Seconds;
 
@@ -84,7 +84,7 @@ public class AutoRun extends APIController {
 	 *
 	 */
 	public static class ImportRequest {
-		private final ObjectId autorunner;
+		private final MidataId autorunner;
 		private final Space space;
 		
 		/**
@@ -92,7 +92,7 @@ public class AutoRun extends APIController {
 		 * @param autorunner id of executing "user". (There is one "autorun" user in the database)
 		 * @param space (id of space to run plugin)
 		 */
-		public ImportRequest(ObjectId autorunner, Space space) {
+		public ImportRequest(MidataId autorunner, Space space) {
 			this.autorunner = autorunner;
 			this.space = space;
 		}
@@ -101,7 +101,7 @@ public class AutoRun extends APIController {
 		 * Retrieve id of autorun user
 		 * @return id
 		 */
-		public ObjectId getAutorunner() {
+		public MidataId getAutorunner() {
 			return autorunner;
 		}
 		
@@ -160,7 +160,7 @@ public class AutoRun extends APIController {
 		    if (message instanceof ImportRequest) {
 		    	try {
 		    	ImportRequest request = (ImportRequest) message;
-		    	ObjectId autorunner = request.autorunner;
+		    	MidataId autorunner = request.autorunner;
 		    	Space space = request.space;
 		        
 		    	final String nodepath = Play.application().configuration().getString("node.path");

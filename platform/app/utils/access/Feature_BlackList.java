@@ -10,7 +10,7 @@ import java.util.Set;
 import models.Record;
 
 import org.bson.BasicBSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.AccessLog;
 import utils.exceptions.AppException;

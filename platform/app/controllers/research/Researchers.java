@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import models.Member;
 import models.Research;
@@ -69,12 +69,12 @@ public class Researchers extends APIController {
 		
 		Research research = new Research();
 		
-		research._id = new ObjectId();
+		research._id = new MidataId();
 		research.name = name;
 		research.description = JsonValidation.getString(json, "description");
 		
 		ResearchUser user = new ResearchUser(email);
-		user._id = new ObjectId();
+		user._id = new MidataId();
 		user.role = UserRole.RESEARCH;
 		user.address1 = JsonValidation.getString(json, "address1");
 		user.address2 = JsonValidation.getString(json, "address2");
@@ -99,9 +99,9 @@ public class Researchers extends APIController {
 		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
 		user.security = AccountSecurityLevel.KEY;
-		user.apps = new HashSet<ObjectId>();
+		user.apps = new HashSet<MidataId>();
 		user.tokens = new HashMap<String, Map<String, String>>();
-		user.visualizations = new HashSet<ObjectId>();
+		user.visualizations = new HashSet<MidataId>();
 		
 		Research.add(research);
 		user.organization = research._id;

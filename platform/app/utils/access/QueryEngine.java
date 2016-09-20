@@ -12,7 +12,7 @@ import java.util.Set;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 
 import scala.NotImplementedError;
@@ -38,19 +38,19 @@ import models.enums.AggregationType;
  */
 class QueryEngine {
 
-	public static List<Record> list(APSCache cache, ObjectId aps, Map<String, Object> properties, Set<String> fields) throws AppException {
+	public static List<Record> list(APSCache cache, MidataId aps, Map<String, Object> properties, Set<String> fields) throws AppException {
 		return RecordConversion.instance.currentVersionFromDB(fullQuery(properties, fields, aps, cache));
 	}
 	
-	public static List<DBRecord> listInternal(APSCache cache, ObjectId aps, Map<String, Object> properties, Set<String> fields) throws AppException {
+	public static List<DBRecord> listInternal(APSCache cache, MidataId aps, Map<String, Object> properties, Set<String> fields) throws AppException {
 		return fullQuery(properties, fields, aps, cache);
 	}
 	
-	public static Collection<RecordsInfo> info(APSCache cache, ObjectId aps, Map<String, Object> properties, AggregationType aggrType) throws AppException {
+	public static Collection<RecordsInfo> info(APSCache cache, MidataId aps, Map<String, Object> properties, AggregationType aggrType) throws AppException {
 		return infoQuery(new Query(properties, Sets.create("created", "group", "content", "format", "owner"), cache, aps), aps, false, aggrType, null);
 	}
 	
-	public static List<DBRecord> isContainedInAps(APSCache cache, ObjectId aps, List<DBRecord> candidates) throws AppException {
+	public static List<DBRecord> isContainedInAps(APSCache cache, MidataId aps, List<DBRecord> candidates) throws AppException {
 		
 		if (!cache.getAPS(aps).isAccessible()) return new ArrayList<DBRecord>();
 
@@ -80,7 +80,7 @@ class QueryEngine {
 		return result;
 	}
 	
-	private static String getInfoKey(AggregationType aggrType, String group, String content, String format, ObjectId owner) {
+	private static String getInfoKey(AggregationType aggrType, String group, String content, String format, MidataId owner) {
 		switch (aggrType) {
 		case ALL: return "";
 		case GROUP: return group;
@@ -91,7 +91,7 @@ class QueryEngine {
 		}
 	}
 	
-	public static Collection<RecordsInfo> infoQuery(Query q, ObjectId aps, boolean cached, AggregationType aggrType, ObjectId owner) throws AppException {
+	public static Collection<RecordsInfo> infoQuery(Query q, MidataId aps, boolean cached, AggregationType aggrType, MidataId owner) throws AppException {
 		AccessLog.logBegin("begin infoQuery aps="+aps+" cached="+cached);
 		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
 		
@@ -124,7 +124,7 @@ class QueryEngine {
 				inf.count = obj.getInt("count");				
 				inf.newest = obj.getDate("newest");
 				inf.oldest = obj.getDate("oldest");
-				inf.newestRecord = new ObjectId(obj.getString("newestRecord"));								
+				inf.newestRecord = new MidataId(obj.getString("newestRecord"));								
 				inf.formats.add(obj.getString("formats"));
 				inf.contents.add(obj.getString("contents"));
 				for (String content : inf.contents) inf.groups.add(RecordGroup.getGroupForSystemAndContent(groupSystem, content));
@@ -197,7 +197,7 @@ class QueryEngine {
 		return result.values();
 	}
 	
-    public static List<DBRecord> fullQuery(Map<String, Object> properties, Set<String> fields, ObjectId apsId, APSCache cache) throws AppException {
+    public static List<DBRecord> fullQuery(Map<String, Object> properties, Set<String> fields, MidataId apsId, APSCache cache) throws AppException {
     	AccessLog.logBegin("begin full query");
     	    	
     	APS target = cache.getAPS(apsId);
@@ -215,7 +215,7 @@ class QueryEngine {
 		return result;
 	}
              
-    protected static List<DBRecord> query(Map<String, Object> properties, Set<String> fields, ObjectId apsId, APSCache cache, Feature qm) throws AppException {
+    protected static List<DBRecord> query(Map<String, Object> properties, Set<String> fields, MidataId apsId, APSCache cache, Feature qm) throws AppException {
       if (properties.containsKey("$or")) {
     	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
     	  List<DBRecord> result = new ArrayList<DBRecord>();
@@ -283,7 +283,7 @@ class QueryEngine {
     }
     
     protected static List<DBRecord> duplicateElimination(List<DBRecord> input) {
-    	Set<ObjectId> used = new HashSet<ObjectId>(input.size());
+    	Set<MidataId> used = new HashSet<MidataId>(input.size());
     	List<DBRecord> filteredresult = new ArrayList<DBRecord>(input.size());
     	for (DBRecord r : input) {
     		if (!used.contains(r._id)) {
@@ -362,8 +362,8 @@ class QueryEngine {
 								
 		// 8 Post filter records if necessary		
 						
-		if (q.restrictedBy("creator")) result = filterByMetaSet(result, "creator", q.getObjectIdRestriction("creator"));
-		if (q.restrictedBy("app")) result = filterByMetaSet(result, "app", q.getObjectIdRestriction("app"));
+		if (q.restrictedBy("creator")) result = filterByMetaSet(result, "creator", q.getMidataIdRestriction("creator"));
+		if (q.restrictedBy("app")) result = filterByMetaSet(result, "app", q.getMidataIdRestriction("app"));
 		if (q.restrictedBy("name")) result = filterByMetaSet(result, "name", q.getRestriction("name"));
 		if (q.restrictedBy("code")) result = filterByMetaSet(result, "code", q.getRestriction("code"));
 		
@@ -477,7 +477,7 @@ class QueryEngine {
 			Map<String, Object> query = new HashMap<String, Object>();
 			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "direct");
 			queryFields.addAll(q.getFieldsFromDB());
-			query.put("_id", q.getObjectIdRestriction("_id"));
+			query.put("_id", q.getMidataIdRestriction("_id"));
 			//q.addMongoTimeRestriction(query);			
 			return new ArrayList<DBRecord>(DBRecord.getAll(query, queryFields));		
     }

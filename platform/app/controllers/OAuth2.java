@@ -10,7 +10,7 @@ import models.User;
 import models.enums.ConsentStatus;
 import models.enums.UserRole;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -48,7 +48,7 @@ public class OAuth2 extends Controller {
 	
 		
 	
-	private static boolean verifyAppInstance(MobileAppInstance appInstance, ObjectId ownerId, ObjectId applicationId) {
+	private static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId) {
 		if (appInstance == null) return false;
         if (!appInstance.owner.equals(ownerId)) return false;
         if (!appInstance.applicationId.equals(applicationId)) return false;
@@ -118,7 +118,7 @@ public class OAuth2 extends Controller {
 	public static Result authenticate() throws AppException {
 				
         Map<String, String[]> data = request().body().asFormUrlEncoded();
-        ObjectId appInstanceId = null;
+        MidataId appInstanceId = null;
         MobileAppInstance appInstance = null;
         Map<String, Object> meta = null;
         String phrase = null;

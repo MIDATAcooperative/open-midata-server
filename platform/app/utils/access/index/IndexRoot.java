@@ -8,7 +8,7 @@ import java.util.Set;
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.access.DBRecord;
 import utils.access.op.Condition;
@@ -39,11 +39,11 @@ public class IndexRoot {
 		return rootPage.getVersion();
 	}
 	
-	public long getVersion(ObjectId aps) {
+	public long getVersion(MidataId aps) {
 		return rootPage.getTimestamp(aps.toString());
 	}
 	
-	public void setVersion(ObjectId aps, long now) {
+	public void setVersion(MidataId aps, long now) {
 		rootPage.setTimestamp(aps.toString(), now);	
 	}
 	
@@ -64,12 +64,12 @@ public class IndexRoot {
 	}
 	
 	class EntryInfo {
-		ObjectId aps;
+		MidataId aps;
 		DBRecord record;
 		Comparable<Object>[] key;
 	}
 
-	public void addEntry(ObjectId aps, DBRecord record) throws InternalServerException {
+	public void addEntry(MidataId aps, DBRecord record) throws InternalServerException {
 		EntryInfo inf = new EntryInfo();
 		inf.aps = aps;
 		inf.record = record;

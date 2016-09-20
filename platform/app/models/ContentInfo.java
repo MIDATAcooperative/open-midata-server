@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import models.enums.APSSecurityLevel;
 import utils.collections.CMaps;
@@ -169,7 +169,7 @@ public class ContentInfo extends Model {
 	    Model.upsert(collection, cc);
 	}
 	  
-	public static void delete(ObjectId ccId) throws InternalServerException {			
+	public static void delete(MidataId ccId) throws InternalServerException {			
 	    Model.delete(ContentInfo.class, collection, CMaps.map("_id", ccId));
 	}
 }

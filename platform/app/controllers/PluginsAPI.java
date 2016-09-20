@@ -37,7 +37,7 @@ import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 
 import org.bson.BSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.libs.F.Function;
 import play.libs.F.Function0;
@@ -123,7 +123,7 @@ public class PluginsAPI extends APIController {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 				
-		Set<ObjectId> tokens = ObjectIdConversion.toObjectIds(RecordManager.instance.listRecordIds(spaceToken.executorId, spaceToken.spaceId));		
+		Set<MidataId> tokens = ObjectIdConversion.toMidataIds(RecordManager.instance.listRecordIds(spaceToken.executorId, spaceToken.spaceId));		
 		return ok(Json.toJson(tokens));
 	}
 
@@ -341,7 +341,7 @@ public class PluginsAPI extends APIController {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 					
-		ObjectId targetAps = authToken.spaceId;
+		MidataId targetAps = authToken.spaceId;
 		
 		Collection<RecordsInfo> result;
 
@@ -382,7 +382,7 @@ public class PluginsAPI extends APIController {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 		
-		ObjectId recordId = new ObjectId(id);			
+		MidataId recordId = new MidataId(id);			
 		FileData fileData = RecordManager.instance.fetchFile(authToken.executorId, new RecordToken(recordId.toString(), authToken.spaceId.toString()));
 		if (fileData == null) return badRequest();
 		setAttachmentContentDisposition(fileData.filename);		
@@ -420,9 +420,9 @@ public class PluginsAPI extends APIController {
 		
 		Record record = new Record();
 		if (json.has("_id")) {
-			record._id = JsonValidation.getObjectId(json, "_id");			
+			record._id = JsonValidation.getMidataId(json, "_id");			
 		} else {
-		    record._id = new ObjectId();
+		    record._id = new MidataId();
 		}
 		record.app = authToken.pluginId;
 		record.owner = authToken.ownerId;
@@ -462,7 +462,7 @@ public class PluginsAPI extends APIController {
 		if (record.content==null) record.content = "other";
 		if (record.owner==null) record.owner = inf.ownerId;
 		
-		//ObjectId targetConsent = null;
+		//MidataId targetConsent = null;
 		
 		if (!record.owner.equals(inf.ownerId)) {
 			Set<Consent> consent = Consent.getHealthcareActiveByAuthorizedAndOwner(inf.executorId, record.owner);
@@ -472,7 +472,7 @@ public class PluginsAPI extends APIController {
 		if (inf.space != null) {				
 		    RecordManager.instance.addRecord(inf.executorId, record, inf.space._id);
 				
-		    Set<ObjectId> records = new HashSet<ObjectId>();
+		    Set<MidataId> records = new HashSet<MidataId>();
 			records.add(record._id);
 			
 		    if (inf.executorId.equals(inf.ownerId)) {				
@@ -480,7 +480,7 @@ public class PluginsAPI extends APIController {
 		    }
 			
 			if (inf.space != null && inf.space.autoShare != null && !inf.space.autoShare.isEmpty()) {
-				for (ObjectId autoshareAps : inf.space.autoShare) {
+				for (MidataId autoshareAps : inf.space.autoShare) {
 					Consent consent = Consent.getByIdAndOwner(autoshareAps, inf.ownerId, Sets.create("type"));
 					if (consent != null) { 
 					  RecordManager.instance.share(inf.executorId, inf.space._id, autoshareAps, records, true);
@@ -491,7 +491,7 @@ public class PluginsAPI extends APIController {
 		} else {
 			RecordManager.instance.addRecord(inf.executorId, record, inf.targetAPS);
 									
-			Set<ObjectId> records = new HashSet<ObjectId>();
+			Set<MidataId> records = new HashSet<MidataId>();
 			records.add(record._id);
 			RecordManager.instance.share(inf.executorId, inf.ownerId, inf.targetAPS, records, false);
 		}
@@ -520,11 +520,11 @@ public class PluginsAPI extends APIController {
 		Map<String, Object> tokens = oauthMeta.toMap();	
 						
 		String oauthToken, oauthTokenSecret;
-		ObjectId appId;
+		MidataId appId;
 		
 		oauthToken = (String) tokens.get("oauthToken");
 		oauthTokenSecret = (String) tokens.get("oauthTokenSecret");
-		appId = (ObjectId) tokens.get("appId");
+		appId = (MidataId) tokens.get("appId");
 		
 
 		// also get the consumer key and secret
@@ -604,7 +604,7 @@ public class PluginsAPI extends APIController {
 				
 		Record record = new Record();
 		
-		record._id = JsonValidation.getObjectId(json, "_id");	
+		record._id = JsonValidation.getMidataId(json, "_id");	
 		record.version = JsonValidation.getStringOrNull(json, "version");
 		 		
 		//record.app = authToken.pluginId;
@@ -724,7 +724,7 @@ public class PluginsAPI extends APIController {
 							
 			// create record
 			Record record = new Record();
-			record._id = new ObjectId();
+			record._id = new MidataId();
 			record.app = authToken.pluginId;
 			record.owner = authToken.ownerId;
 			record.creator = authToken.executorId;
@@ -779,12 +779,12 @@ public class PluginsAPI extends APIController {
 				    	throw new InternalServerException("error.internal",e);
 			    }
 					
-				Set<ObjectId> records = new HashSet<ObjectId>();
+				Set<MidataId> records = new HashSet<MidataId>();
 				records.add(record._id);
 				RecordManager.instance.share(authToken.executorId, authToken.ownerId, authToken.targetAPS, records, false);
 				
 				if (authToken.space != null && authToken.space.autoShare != null && !authToken.space.autoShare.isEmpty()) {
-					for (ObjectId autoshareAps : authToken.space.autoShare) {
+					for (MidataId autoshareAps : authToken.space.autoShare) {
 						Consent consent = Consent.getByIdAndOwner(autoshareAps, authToken.ownerId, Sets.create("type"));
 						if (consent != null) { 
 						  RecordManager.instance.share(authToken.executorId, authToken.ownerId, autoshareAps, records, true);
@@ -845,7 +845,7 @@ public class PluginsAPI extends APIController {
 	public static Result generateId() throws JsonValidationException, AppException {
 		JsonNode json = request().body().asJson();		
 		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());									
-		return ok(new ObjectId().toString());
+		return ok(new MidataId().toString());
 	}
 	
 

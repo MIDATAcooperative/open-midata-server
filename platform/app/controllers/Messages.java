@@ -10,7 +10,7 @@ import models.Message;
 import models.Member;
 import models.User;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -71,8 +71,8 @@ public class Messages extends Controller {
 		
 
 		// validate receivers
-		Set<ObjectId> receiverIds = ObjectIdConversion
-				.castToObjectIds(JsonExtraction.extractSet(json.get("receivers")));
+		Set<MidataId> receiverIds = ObjectIdConversion
+				.castToMidataIds(JsonExtraction.extractSet(json.get("receivers")));
 		Set<User> users = User.getAllUser(CMaps.map("_id",  receiverIds), Sets.create("messages.inbox"));
 							
 		if (receiverIds.size() != users.size()) {
@@ -81,8 +81,8 @@ public class Messages extends Controller {
 
 		// create message
 		Message message = new Message();
-		message._id = new ObjectId();
-		message.sender = new ObjectId(request().username());
+		message._id = new MidataId();
+		message.sender = new MidataId(request().username());
 		message.receivers = receiverIds;
 		message.created = DateTimeUtils.now();
 		message.title = JsonValidation.getString(json, "title");
@@ -101,10 +101,10 @@ public class Messages extends Controller {
 	@APICall
 	public static Result move(String messageIdString, String from, String to) throws InternalServerException {
 		// validate request
-		ObjectId userId = new ObjectId(request().username());
-		ObjectId messageId = new ObjectId(messageIdString);
+		MidataId userId = new MidataId(request().username());
+		MidataId messageId = new MidataId(messageIdString);
 		try {
-			if (!User.exists(new ChainedMap<String, ObjectId>().put("_id", userId).put("messages." + from, messageId).get())) {
+			if (!User.exists(new ChainedMap<String, MidataId>().put("_id", userId).put("messages." + from, messageId).get())) {
 				return badRequest("No message with this id exists.");
 			}
 		} catch (InternalServerException e) {
@@ -125,10 +125,10 @@ public class Messages extends Controller {
 	@APICall
 	public static Result remove(String messageIdString) throws InternalServerException {
 		// validate request
-		ObjectId userId = new ObjectId(request().username());
-		ObjectId messageId = new ObjectId(messageIdString);
+		MidataId userId = new MidataId(request().username());
+		MidataId messageId = new MidataId(messageIdString);
 		
-		if (!User.exists(new ChainedMap<String, ObjectId>().put("_id", userId).put("messages.trash", messageId).get())) {
+		if (!User.exists(new ChainedMap<String, MidataId>().put("_id", userId).put("messages.trash", messageId).get())) {
 			return badRequest("No message with this id exists.");
 		}
 		
@@ -145,10 +145,10 @@ public class Messages extends Controller {
 	@APICall
 	public static Result delete(String messageIdString) throws InternalServerException {
 		// validate request
-		ObjectId userId = new ObjectId(request().username());
-		ObjectId messageId = new ObjectId(messageIdString);
+		MidataId userId = new MidataId(request().username());
+		MidataId messageId = new MidataId(messageIdString);
 		
-		if (!Message.exists(new ChainedMap<String, ObjectId>().put("_id", messageId).get())) {
+		if (!Message.exists(new ChainedMap<String, MidataId>().put("_id", messageId).get())) {
 		   return badRequest("No message with this id exists.");
 		}
 		

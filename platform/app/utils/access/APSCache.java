@@ -7,7 +7,7 @@ import java.util.Map;
 
 import models.AccessPermissionSet;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.AccessLog;
 import utils.auth.EncryptionNotSupportedException;
@@ -22,24 +22,24 @@ import utils.exceptions.InternalServerException;
 class APSCache {
 
 	private Map<String, APS> cache;
-	private ObjectId ownerId;
+	private MidataId ownerId;
 	
-	public APSCache(ObjectId who) {
+	public APSCache(MidataId who) {
 		this.ownerId = who;
 		this.cache = new HashMap<String, APS>();
 	}
 	
-	public ObjectId getOwner() {
+	public MidataId getOwner() {
 		return ownerId;
 	}
 	
-	public boolean hasAPS(ObjectId apsId) throws AppException {
+	public boolean hasAPS(MidataId apsId) throws AppException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) return false;
 		return result.isReady();
 	}
 	
-	public APS getAPS(ObjectId apsId) throws InternalServerException {
+	public APS getAPS(MidataId apsId) throws InternalServerException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) {
 			result = new APSImplementation(new EncryptedAPS(apsId, ownerId));
@@ -48,7 +48,7 @@ class APSCache {
 		return result;
 	}
 	
-	public APS getAPS(ObjectId apsId, ObjectId owner) throws InternalServerException {
+	public APS getAPS(MidataId apsId, MidataId owner) throws InternalServerException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) {
 			result = new APSImplementation(new EncryptedAPS(apsId, ownerId, owner));
@@ -57,24 +57,24 @@ class APSCache {
 		return result;
 	}
 	
-	public APS getAPS(ObjectId apsId, byte[] unlockKey, ObjectId owner) throws AppException, EncryptionNotSupportedException {
+	public APS getAPS(MidataId apsId, byte[] unlockKey, MidataId owner) throws AppException, EncryptionNotSupportedException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) { 
 			result = new APSImplementation(new EncryptedAPS(apsId, ownerId, unlockKey, owner));
 			if (!result.isAccessible()) {
 				AccessLog.log("Adding missing access for "+ownerId.toString()+" APS:"+apsId.toString());
-				result.addAccess(Collections.<ObjectId>singleton(ownerId));
+				result.addAccess(Collections.<MidataId>singleton(ownerId));
 			}
 			cache.put(apsId.toString(), result);
 		}
 		return result;
 	}
 	
-	public APS getAPS(ObjectId apsId, byte[] unlockKey, ObjectId owner, AccessPermissionSet set) throws AppException, EncryptionNotSupportedException {
+	public APS getAPS(MidataId apsId, byte[] unlockKey, MidataId owner, AccessPermissionSet set) throws AppException, EncryptionNotSupportedException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) { 
 			result = new APSImplementation(new EncryptedAPS(apsId, ownerId, unlockKey, owner, set));
-			if (!result.isAccessible()) result.addAccess(Collections.<ObjectId>singleton(ownerId));
+			if (!result.isAccessible()) result.addAccess(Collections.<MidataId>singleton(ownerId));
 			cache.put(apsId.toString(), result);
 		}
 		return result;

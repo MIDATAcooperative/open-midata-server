@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bson.BasicBSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import scala.NotImplementedError;
 import utils.auth.EncryptionNotSupportedException;
@@ -24,7 +24,7 @@ import models.enums.APSSecurityLevel;
 public class Feature_InMemoryQuery extends APS {
 	
 	private List<DBRecord> contents;
-	private ObjectId me = new ObjectId();
+	private MidataId me = new MidataId();
 	
 	public Feature_InMemoryQuery(List<DBRecord> contents) {
 		this.contents = contents;
@@ -33,7 +33,7 @@ public class Feature_InMemoryQuery extends APS {
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
 		if (q.restrictedBy("_id")) {
-		  Set<ObjectId> ids = q.getObjectIdRestriction("_id");
+		  Set<MidataId> ids = q.getMidataIdRestriction("_id");
 		  List<DBRecord> result = new ArrayList<DBRecord>();
 		  for (DBRecord record : contents) {
 			  if (ids.contains(record._id)) result.add(record);
@@ -44,7 +44,7 @@ public class Feature_InMemoryQuery extends APS {
 	
 
 	@Override
-	public ObjectId getId() {
+	public MidataId getId() {
 		return me;
 	}
 
@@ -79,17 +79,17 @@ public class Feature_InMemoryQuery extends APS {
 	}
 
 	@Override
-	public void addAccess(Set<ObjectId> targets) throws AppException, EncryptionNotSupportedException {
+	public void addAccess(Set<MidataId> targets) throws AppException, EncryptionNotSupportedException {
 		throw new NotImplementedError();
 	}
 
 	@Override
-	public void addAccess(ObjectId target, byte[] publickey) throws AppException, EncryptionNotSupportedException {
+	public void addAccess(MidataId target, byte[] publickey) throws AppException, EncryptionNotSupportedException {
 		throw new NotImplementedError();
 	}
 
 	@Override
-	public void removeAccess(Set<ObjectId> targets) throws InternalServerException {
+	public void removeAccess(Set<MidataId> targets) throws InternalServerException {
 		throw new NotImplementedError();
 	}
 
@@ -142,7 +142,7 @@ public class Feature_InMemoryQuery extends APS {
 	}
 
 	@Override
-	public ObjectId getStoredOwner() throws AppException {		
+	public MidataId getStoredOwner() throws AppException {		
 		throw new NotImplementedError();	
 	}
 	

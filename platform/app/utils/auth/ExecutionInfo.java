@@ -8,7 +8,7 @@ import models.MobileAppInstance;
 import models.Space;
 import models.User;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -22,15 +22,15 @@ import utils.exceptions.BadRequestException;
 
 public class ExecutionInfo {
 
-	public ObjectId executorId;
+	public MidataId executorId;
 	
-	public ObjectId ownerId;
+	public MidataId ownerId;
 	
-	public ObjectId pluginId;
+	public MidataId pluginId;
 	
-	public ObjectId targetAPS;
+	public MidataId targetAPS;
 	
-	public ObjectId recordId;
+	public MidataId recordId;
 	
 	public Space space;
 	
@@ -112,7 +112,7 @@ public class ExecutionInfo {
         
 		Map<String, Object> appobj = RecordManager.instance.getMeta(authToken.appInstanceId, authToken.appInstanceId, "_app").toMap();
 		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
-			ObjectId alias = new ObjectId(appobj.get("alias").toString());
+			MidataId alias = new MidataId(appobj.get("alias").toString());
 			byte[] key = (byte[]) appobj.get("aliaskey");
 			KeyManager.instance.unlock(appInstance.owner, alias, key);
 			RecordManager.instance.clear();

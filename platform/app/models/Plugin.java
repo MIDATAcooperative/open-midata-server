@@ -7,7 +7,7 @@ import java.util.Set;
 import models.enums.PluginStatus;
 import models.enums.UserRole;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
@@ -64,7 +64,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	/**
 	 * id of creator of this plugin
 	 */
-	public ObjectId creator;
+	public MidataId creator;
 	
 	/**
 	 * the login of the creator of the plugin
@@ -151,7 +151,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	/**
 	 * list of ids of other plugins that a user may like if he likes this plugin
 	 */
-	public List<ObjectId> recommendedPlugins;	
+	public List<MidataId> recommendedPlugins;	
 	
 	/**
 	 * for OAUTH 1.0 and 2.0 : authorization URL
@@ -215,7 +215,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		return Model.get(Plugin.class, collection, properties, fields);
 	}
 	
-	public static Plugin getById(ObjectId id, Set<String> fields) throws InternalServerException {
+	public static Plugin getById(MidataId id, Set<String> fields) throws InternalServerException {
 		return Model.get(Plugin.class, collection, CMaps.map("_id", id), fields);
 	}
 
@@ -223,7 +223,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		return Model.getAll(Plugin.class, collection, properties, fields);
 	}
 
-	public static void set(ObjectId pluginId, String field, Object value) throws InternalServerException {
+	public static void set(MidataId pluginId, String field, Object value) throws InternalServerException {
 		Model.set(Plugin.class, collection, pluginId, field, value);
 	}
 	
@@ -251,12 +251,12 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		}*/
 	}
 
-	public static void delete(ObjectId pluginId) throws InternalServerException {
+	public static void delete(MidataId pluginId) throws InternalServerException {
 		// remove from search index
 		//Search.delete(Type.VISUALIZATION, pluginId);
 
 		// TODO only hide or remove from all users (including deleting their spaces associated with it)?
-		Model.delete(Plugin.class, collection, new ChainedMap<String, ObjectId>().put("_id", pluginId).get());
+		Model.delete(Plugin.class, collection, new ChainedMap<String, MidataId>().put("_id", pluginId).get());
 	}
 	
 	public void setLanguage(String lang) {

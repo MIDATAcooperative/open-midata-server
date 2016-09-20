@@ -11,7 +11,7 @@ import java.util.TreeMap;
 
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.AccessLog;
 import utils.access.op.Condition;
@@ -21,13 +21,13 @@ import utils.exceptions.InternalServerException;
 
 public class IndexNonLeafPage extends IndexPage {
 
-	private Map<ObjectId, IndexPage> loadedChilds;
+	private Map<MidataId, IndexPage> loadedChilds;
 	
 	public IndexNonLeafPage(byte[] key, IndexPageModel model) throws InternalServerException {
 		model.enc = null; 
 		this.key = key;
 		this.model = model;
-		loadedChilds = new HashMap<ObjectId, IndexPage>();
+		loadedChilds = new HashMap<MidataId, IndexPage>();
 	}
 	
 	public static IndexNonLeafPage split(byte[] enckey, IndexPage oldPage) throws InternalServerException {
@@ -162,7 +162,7 @@ public class IndexNonLeafPage extends IndexPage {
 		
 	}
 	
-	private void addEntry(BasicBSONList lk, BasicBSONList hk, ObjectId target) {
+	private void addEntry(BasicBSONList lk, BasicBSONList hk, MidataId target) {
 		BasicBSONList lst = (BasicBSONList) model.unencrypted.get("p");
 		BasicBSONObject entry = new BasicBSONObject();		
 		entry.put("lk", lk);
@@ -173,15 +173,15 @@ public class IndexNonLeafPage extends IndexPage {
 
 	
 	
-	public void addEntry(Comparable<Object>[] key, ObjectId aps, ObjectId target) throws InternalServerException {
+	public void addEntry(Comparable<Object>[] key, MidataId aps, MidataId target) throws InternalServerException {
 		if (key[0] == null) return;
 				
 		EqualsSingleValueCondition[] cond = new EqualsSingleValueCondition[key.length];
 		for (int i=0;i<key.length;i++) cond[i] = new EqualsSingleValueCondition(key[i]);
 		
 		Collection<IndexMatch> results = null;
-		Collection<ObjectId> targets = findEntries(cond);
-		for (ObjectId targetPage : targets) {
+		Collection<MidataId> targets = findEntries(cond);
+		for (MidataId targetPage : targets) {
 			IndexPage ip = access(targetPage); 
 			ip.addEntry(key, aps, target);
 			/*if (ip.needsSplit()) {
@@ -193,8 +193,8 @@ public class IndexNonLeafPage extends IndexPage {
 	
 	public Collection<IndexMatch> lookup(Condition[] key) throws InternalServerException {
 		Collection<IndexMatch> results = null;
-		Collection<ObjectId> targets = findEntries(key);
-		for (ObjectId target : targets) {
+		Collection<MidataId> targets = findEntries(key);
+		for (MidataId target : targets) {
 			Collection<IndexMatch> partResult = access(target).lookup(key);
 			if (results == null) results = partResult;
 			else results.addAll(partResult);
@@ -223,8 +223,8 @@ public class IndexNonLeafPage extends IndexPage {
 	
 	protected void removeFromEntries(Condition[] key, Set<String> ids) throws InternalServerException {
 		
-		Collection<ObjectId> targets = findEntries(key);
-		for (ObjectId target : targets) {
+		Collection<MidataId> targets = findEntries(key);
+		for (MidataId target : targets) {
 			access(target).removeFromEntries(key, ids);
 		}
 				
@@ -252,8 +252,8 @@ public class IndexNonLeafPage extends IndexPage {
 		return true;
 	}
 	
-	private Collection<ObjectId> findEntries(Condition[] key) {
-		Collection<ObjectId> result = new ArrayList<ObjectId>();
+	private Collection<MidataId> findEntries(Condition[] key) {
+		Collection<MidataId> result = new ArrayList<MidataId>();
 		
 		BasicBSONList lst = (BasicBSONList) model.unencrypted.get("p");
 		for (Object entry : lst) {
@@ -262,14 +262,14 @@ public class IndexNonLeafPage extends IndexPage {
 			BasicBSONList highkey = (BasicBSONList) row.get("hk");
 			boolean match = conditionCompare(key, lowkey, highkey);						
 			if (match) {
-				ObjectId childpage = new ObjectId(row.get("c").toString());
+				MidataId childpage = new MidataId(row.get("c").toString());
 				result.add(childpage);				
 			}
 		}
 		return result;
 	}
 	
-	private IndexPage access(ObjectId pageId) throws InternalServerException {
+	private IndexPage access(MidataId pageId) throws InternalServerException {
 		IndexPage ip = loadedChilds.get(pageId);
 		if (ip != null) return ip;
 		ip = new IndexPage(this.key, IndexPageModel.getById(pageId));

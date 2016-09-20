@@ -3,7 +3,7 @@ package utils.db;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 /**
  * Helper functions for converting object ids to string and back
@@ -11,25 +11,25 @@ import org.bson.types.ObjectId;
  */
 public class ObjectIdConversion {
 
-	public static Set<ObjectId> toObjectIds(Set<String> strings) {
-		Set<ObjectId> set = new HashSet<ObjectId>();
+	public static Set<MidataId> toMidataIds(Set<String> strings) {
+		Set<MidataId> set = new HashSet<MidataId>();
 		for (String s : strings) {
-			set.add(new ObjectId(s));
+			set.add(new MidataId(s));
 		}
 		return set;
 	}
 
-	public static Set<ObjectId> castToObjectIds(Set<Object> objects) {
-		Set<ObjectId> set = new HashSet<ObjectId>();
+	public static Set<MidataId> castToMidataIds(Set<Object> objects) {
+		Set<MidataId> set = new HashSet<MidataId>();
 		for (Object o : objects) {
-			set.add((ObjectId) o);
+			set.add((MidataId) o);
 		}
 		return set;
 	}
 
-	public static Set<String> toStrings(Set<ObjectId> objectIds) {
+	public static Set<String> toStrings(Set<MidataId> MidataIds) {
 		Set<String> set = new HashSet<String>();
-		for (ObjectId oid : objectIds) {
+		for (MidataId oid : MidataIds) {
 			set.add(oid.toString());
 		}
 		return set;

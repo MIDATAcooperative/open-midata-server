@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.AccessLog;
 import utils.access.EncryptionUtils;
@@ -38,7 +38,7 @@ public class IndexPage {
 	public IndexPage(byte[] key) throws InternalServerException {
 		this.key = key;
 		this.model = new IndexPageModel();
-		this.model._id = new ObjectId();
+		this.model._id = new MidataId();
 		
 		init();				
 		encrypt();
@@ -55,7 +55,7 @@ public class IndexPage {
 		return model.version;
 	}
 	
-	public void addEntry(Comparable<Object>[] key, ObjectId aps, ObjectId target) throws InternalServerException {
+	public void addEntry(Comparable<Object>[] key, MidataId aps, MidataId target) throws InternalServerException {
 		if (key[0] == null) return;
 		
 	    BasicBSONObject entry = findEntry(key);
@@ -78,8 +78,8 @@ public class IndexPage {
 		for (Object o : entries) {
 			BasicBSONObject obj = (BasicBSONObject) o;
 			IndexMatch match = new IndexMatch();
-			match.apsId = new ObjectId(obj.get("a").toString());
-			match.recordId = new ObjectId(obj.get("t").toString());
+			match.apsId = new MidataId(obj.get("a").toString());
+			match.recordId = new MidataId(obj.get("t").toString());
 			results.add(match);
 		}
 		return results;
@@ -192,7 +192,7 @@ public class IndexPage {
 		return true;
 	}
 	
-	private boolean containsRecord(BasicBSONObject row, ObjectId target) {
+	private boolean containsRecord(BasicBSONObject row, MidataId target) {
 	   BasicBSONList entries = (BasicBSONList) row.get("e");
 	   if (entries == null) return false;
 	   String targetStr = target.toString();
@@ -212,7 +212,7 @@ public class IndexPage {
 		return entry;
 	}
 	
-	private void addRecord(BasicBSONObject row, ObjectId aps, ObjectId target) {
+	private void addRecord(BasicBSONObject row, MidataId aps, MidataId target) {
 			  
 	  BasicBSONList entries = (BasicBSONList) row.get("e");
 	  if (entries == null) {

@@ -11,7 +11,7 @@ import java.util.Set;
 
 
 import org.bson.BasicBSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.mongodb.BasicDBObject;
 
@@ -34,7 +34,7 @@ public abstract class APS extends Feature {
 
 	public final static String QUERY = "_query";
 	
-	public abstract ObjectId getId();
+	public abstract MidataId getId();
 	
 	public abstract boolean isReady() throws AppException;
 	
@@ -48,17 +48,17 @@ public abstract class APS extends Feature {
 	
 	public abstract void provideRecordKey(DBRecord record) throws AppException;
 	
-	public abstract void addAccess(Set<ObjectId> targets) throws AppException,EncryptionNotSupportedException;
+	public abstract void addAccess(Set<MidataId> targets) throws AppException,EncryptionNotSupportedException;
 
-	public abstract void addAccess(ObjectId target, byte[] publickey) throws AppException,EncryptionNotSupportedException;
+	public abstract void addAccess(MidataId target, byte[] publickey) throws AppException,EncryptionNotSupportedException;
 	
-	public abstract void removeAccess(Set<ObjectId> targets) throws InternalServerException;
+	public abstract void removeAccess(Set<MidataId> targets) throws InternalServerException;
 	
 	public abstract void setMeta(String key, Map<String, Object> data) throws AppException;
 	
 	public abstract void removeMeta(String key) throws AppException;
 	
-	public abstract ObjectId getStoredOwner() throws AppException;
+	public abstract MidataId getStoredOwner() throws AppException;
 		
 	public abstract BasicBSONObject getMeta(String key) throws AppException;
 				

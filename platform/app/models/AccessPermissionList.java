@@ -6,7 +6,7 @@ import java.util.Set;
 
 import models.enums.APSSecurityLevel;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
@@ -25,8 +25,8 @@ public class AccessPermissionList extends Model {
 	 */
 	public long version;
 	
-	public ObjectId apsId;
-	public ObjectId recordOwner;
+	public MidataId apsId;
+	public MidataId recordOwner;
 	
 	/**
 	 * the encrypted body of this APS
@@ -43,7 +43,7 @@ public class AccessPermissionList extends Model {
 		Model.insert(collection, aps);	
 	}
 	
-	public static Set<AccessPermissionList> getByApsIdAndRecordOwner(ObjectId apsId, ObjectId recordOwnerId) throws InternalServerException {
+	public static Set<AccessPermissionList> getByApsIdAndRecordOwner(MidataId apsId, MidataId recordOwnerId) throws InternalServerException {
 		return Model.getAll(AccessPermissionList.class, collection, CMaps.map("apsId", apsId).map("recordOwner", recordOwnerId), Sets.create("version", "encrypted" ,"apsId", "recordOwner"));
 	}
 		

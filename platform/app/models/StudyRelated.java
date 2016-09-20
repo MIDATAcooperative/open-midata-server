@@ -4,7 +4,7 @@ import java.util.Set;
 
 import models.enums.ConsentType;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.collections.CMaps;
 import utils.exceptions.InternalServerException;
@@ -16,7 +16,7 @@ import utils.exceptions.InternalServerException;
  */
 public class StudyRelated extends Consent {
 
-	public ObjectId study;
+	public MidataId study;
 	public String group;
 	
 	public StudyRelated() {
@@ -27,15 +27,15 @@ public class StudyRelated extends Consent {
 		Model.insert(collection, this);	
 	}
 	
-	public static StudyRelated getByGroupAndStudy(String group, ObjectId studyId, Set<String> fields) throws InternalServerException {
+	public static StudyRelated getByGroupAndStudy(String group, MidataId studyId, Set<String> fields) throws InternalServerException {
 		return Model.get(StudyRelated.class, collection, CMaps.map("type", ConsentType.STUDYRELATED).map("group", group).map("study", studyId), fields);
 	}
 	
-	public static Set<StudyRelated> getByStudy(ObjectId studyId, Set<String> fields) throws InternalServerException {
+	public static Set<StudyRelated> getByStudy(MidataId studyId, Set<String> fields) throws InternalServerException {
 		return Model.getAll(StudyRelated.class, collection, CMaps.map("type", ConsentType.STUDYRELATED).map("study", studyId), fields);
 	}
 	
-	public static void delete(ObjectId studyId, ObjectId partId) throws InternalServerException {	
+	public static void delete(MidataId studyId, MidataId partId) throws InternalServerException {	
 		Model.delete(StudyRelated.class, collection, CMaps.map("_id", partId).map("study", studyId));
 	}
 	

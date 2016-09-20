@@ -5,7 +5,7 @@ import java.util.Map;
 import models.Space;
 
 import org.bson.BSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.Play;
 import play.libs.Json;
@@ -42,7 +42,7 @@ public class PortalConfig extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result getConfig() throws JsonValidationException, AppException {
 	
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		
 	    Space config = Space.getByOwnerSpecialContext(userId, "portal", Sets.create("name"));
 	    if (config == null) return ok();
@@ -63,7 +63,7 @@ public class PortalConfig extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Result setConfig() throws JsonValidationException, AppException {
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 
 		// validate json
 		JsonNode json = request().body().asJson();		

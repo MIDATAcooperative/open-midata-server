@@ -18,7 +18,7 @@ import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -56,7 +56,7 @@ public class Studies extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result search() throws JsonValidationException, InternalServerException, AuthException {
-	   ObjectId user = new ObjectId(request().username());	   
+	   MidataId user = new MidataId(request().username());	   
 	   JsonNode json = request().body().asJson();
 	   JsonValidation.validate(json, "properties", "fields");
 							   		

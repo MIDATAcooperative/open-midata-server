@@ -11,7 +11,7 @@ import java.util.Set;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.AccessLog;
 import utils.collections.Sets;
@@ -79,7 +79,7 @@ public class Feature_QueryRedirect extends Feature {
 		}
 		Object targetAPSId = query.get("aps");
 		AccessLog.logBegin("begin redirect to Query:");
-		List<DBRecord> result = next.query(new Query(combined, q.getFields(), q.getCache(), new ObjectId(targetAPSId.toString())));
+		List<DBRecord> result = next.query(new Query(combined, q.getFields(), q.getCache(), new MidataId(targetAPSId.toString())));
 		
 		/*if (query.containsField("_exclude") && result.size() > 0) {			
 			List<DBRecord> excluded = QueryEngine.listFromMemory(q.getCache(), (Map<String, Object>) query.get("_exclude"), result);
@@ -115,8 +115,8 @@ public class Feature_QueryRedirect extends Feature {
 			if (combined.containsKey(key)) {
 				Object val1 = combined.get(key);
 				Object val2 = query.get(key);
-				//if (val1 instanceof ObjectId) val1 = val1.toString();
-				//if (val2 instanceof ObjectId) val2 = val2.toString();
+				//if (val1 instanceof MidataId) val1 = val1.toString();
+				//if (val2 instanceof MidataId) val2 = val2.toString();
 				if (val1.equals(val2) || val1.toString().equals(val2.toString())) continue;
 				if (val1 instanceof Collection<?>) {
 				 if (val2 instanceof Collection<?>) {
@@ -158,7 +158,7 @@ public class Feature_QueryRedirect extends Feature {
 		return combined;
 	}
 	
-	public static void setQuery(APSCache cache, ObjectId apsId, Map<String, Object> query) throws AppException {		
+	public static void setQuery(APSCache cache, MidataId apsId, Map<String, Object> query) throws AppException {		
 		APS aps = cache.getAPS(apsId);
 		aps.setMeta(APS.QUERY, query);
 		

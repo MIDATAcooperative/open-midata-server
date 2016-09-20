@@ -7,7 +7,7 @@ import java.util.Set;
 
 import models.enums.UserRole;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.DateTimeUtils;
 import utils.collections.CMaps;
@@ -24,10 +24,10 @@ public class Developer extends User {
 	public Developer(String email) {		
 		this.email = email;
 		this.emailLC = email.toLowerCase();
-		messages = new HashMap<String, Set<ObjectId>>();
-		messages.put("inbox", new HashSet<ObjectId>());
-		messages.put("archive", new HashSet<ObjectId>());
-		messages.put("trash", new HashSet<ObjectId>());
+		messages = new HashMap<String, Set<MidataId>>();
+		messages.put("inbox", new HashSet<MidataId>());
+		messages.put("archive", new HashSet<MidataId>());
+		messages.put("trash", new HashSet<MidataId>());
 		login = DateTimeUtils.now();	
 		history = new ArrayList<History>();
 	}
@@ -40,7 +40,7 @@ public class Developer extends User {
 		return Model.get(Developer.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.DEVELOPER), fields);
 	}
 	
-	public static Developer getById(ObjectId id, Set<String> fields) throws InternalServerException {
+	public static Developer getById(MidataId id, Set<String> fields) throws InternalServerException {
 		return Model.get(Developer.class, collection, CMaps.map("_id", id), fields);
 	}
 		

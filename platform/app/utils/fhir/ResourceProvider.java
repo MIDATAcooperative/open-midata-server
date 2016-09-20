@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 import org.hl7.fhir.instance.model.api.IBaseReference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
@@ -86,7 +86,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	
 	@Read()
 	public T getResourceById(@IdParam IIdType theId) throws AppException {
-		Record record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new ObjectId(theId.getIdPart()));
+		Record record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new MidataId(theId.getIdPart()));
 		IParser parser = ctx().newJsonParser();
 		T p = parser.parseResource(getResourceType(), record.data.toString());
 		processResource(record, p);		
@@ -216,7 +216,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	
 	public static Record newRecord(String format) {
 		Record record = new Record();
-		record._id = new ObjectId();
+		record._id = new MidataId();
 		record.creator = info().executorId;
 		record.format = format;
 		record.app = info().pluginId;
@@ -228,7 +228,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	
 	public static Record fetchCurrent(IIdType theId)  {
 		try {
-			Record record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new ObjectId(theId.getIdPart()));
+			Record record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new MidataId(theId.getIdPart()));
 			
 			if (record == null) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" not found."); 
 			if (!record.format.equals("fhir/"+theId.getResourceType())) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" has wrong resource type."); 

@@ -2,7 +2,7 @@ package models;
 
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -29,7 +29,7 @@ public class KeyInfo extends Model {
 	 */
 	public int type;
 	
-	public static KeyInfo getById(ObjectId id) throws InternalServerException {
+	public static KeyInfo getById(MidataId id) throws InternalServerException {
 		return Model.get(KeyInfo.class, collection, CMaps.map("_id", id), Sets.create("privateKey", "type"));
 	}
 	

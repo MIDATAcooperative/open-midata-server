@@ -16,7 +16,7 @@ import models.enums.APSSecurityLevel;
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 
 import utils.AccessLog;
@@ -33,9 +33,9 @@ import utils.exceptions.InternalServerException;
  */
 public class EncryptedAPS {
 	private AccessPermissionSet aps;
-	private ObjectId apsId;
-	private ObjectId who;
-	private ObjectId owner;
+	private MidataId apsId;
+	private MidataId who;
+	private MidataId owner;
 	private byte[] encryptionKey;	
 	private boolean isValidated = false;
 	private boolean keyProvided = false;
@@ -43,17 +43,17 @@ public class EncryptedAPS {
 	private List<EncryptedAPS> sublists;
 	private AccessPermissionSet acc_aps;		
 		
-	public EncryptedAPS(ObjectId apsId, ObjectId who) throws InternalServerException {
+	public EncryptedAPS(MidataId apsId, MidataId who) throws InternalServerException {
 		this(apsId, who, null);
 	}
 	
-	public EncryptedAPS(ObjectId apsId, ObjectId who, ObjectId owner) throws InternalServerException {
+	public EncryptedAPS(MidataId apsId, MidataId who, MidataId owner) throws InternalServerException {
 		this.apsId = apsId;		
 		this.who = who;
 		this.owner = owner;
 	}
 	
-	public EncryptedAPS(ObjectId apsId, ObjectId who, byte[] enckey, ObjectId owner) throws InternalServerException {
+	public EncryptedAPS(MidataId apsId, MidataId who, byte[] enckey, MidataId owner) throws InternalServerException {
 		this.apsId = apsId;		
 		this.who = who;
 		this.owner = owner;
@@ -61,7 +61,7 @@ public class EncryptedAPS {
 		keyProvided = enckey != null;
 	}
 	
-	public EncryptedAPS(ObjectId apsId, ObjectId who, byte[] enckey, ObjectId owner, AccessPermissionSet set) throws InternalServerException {
+	public EncryptedAPS(MidataId apsId, MidataId who, byte[] enckey, MidataId owner, AccessPermissionSet set) throws InternalServerException {
 		this.apsId = apsId;		
 		this.who = who;
 		this.owner = owner;
@@ -72,11 +72,11 @@ public class EncryptedAPS {
 		keyProvided = true;
 	}
 
-	public EncryptedAPS(ObjectId apsId, ObjectId who, ObjectId owner, APSSecurityLevel lvl) throws InternalServerException {
+	public EncryptedAPS(MidataId apsId, MidataId who, MidataId owner, APSSecurityLevel lvl) throws InternalServerException {
 	  this(apsId, who, owner, lvl, null);
 	}
 	
-	public EncryptedAPS(ObjectId apsId, ObjectId who, ObjectId owner, APSSecurityLevel lvl, byte[] encKey) throws InternalServerException {
+	public EncryptedAPS(MidataId apsId, MidataId who, MidataId owner, APSSecurityLevel lvl, byte[] encKey) throws InternalServerException {
 		this.apsId = apsId;
 		this.acc_aps = this.aps = new AccessPermissionSet();
 		this.who = who;
@@ -98,14 +98,14 @@ public class EncryptedAPS {
 		isValidated = true;				
 	}
 	
-	protected EncryptedAPS(AccessPermissionSet subset, ObjectId who) {
+	protected EncryptedAPS(AccessPermissionSet subset, MidataId who) {
 		this.acc_aps = this.aps = subset;
 		this.apsId = subset._id;
 		this.who = who;
 	}
 	
 	protected EncryptedAPS createChild() throws AppException {
-		EncryptedAPS result = new EncryptedAPS(new ObjectId(), getAccessor(), getOwner(), getSecurityLevel(), EncryptionUtils.generateKey());
+		EncryptedAPS result = new EncryptedAPS(new MidataId(), getAccessor(), getOwner(), getSecurityLevel(), EncryptionUtils.generateKey());
 		if (this.aps.unmerged == null) this.aps.unmerged = new ArrayList<AccessPermissionSet>(); 
 		aps.unmerged.add(result.aps);
 		return result;
@@ -122,14 +122,14 @@ public class EncryptedAPS {
 		return false;
 	}
 	
-	public ObjectId getOwner() throws AppException {
+	public MidataId getOwner() throws AppException {
 		if (apsId.equals(who)) return who;
 		if (owner != null) return owner;
 		if (!isValidated) validate();
 		return owner;
 	}
 	
-	public ObjectId getAccessor() {
+	public MidataId getAccessor() {
 		return who;
 	}
 	
@@ -138,7 +138,7 @@ public class EncryptedAPS {
 		return aps.security.equals(APSSecurityLevel.MEDIUM);
 	}
 	
-	public ObjectId getId() {
+	public MidataId getId() {
 		return apsId;
 	}
 	

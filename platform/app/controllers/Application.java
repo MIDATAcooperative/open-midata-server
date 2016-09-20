@@ -21,7 +21,7 @@ import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.Play;
 import play.Routes;
@@ -142,7 +142,7 @@ public class Application extends APIController {
 	public static Result requestWelcomeMail() throws JsonValidationException, InternalServerException {
 		
 		// execute
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		User user = User.getById(userId, Sets.create("firstname", "lastname", "email", "emailStatus", "status", "role"));
 		
 		if (user != null && user.emailStatus.equals(EMailStatus.UNVALIDATED)) {							  
@@ -188,7 +188,7 @@ public class Application extends APIController {
 		if (passwordResetToken == null) throw new BadRequestException("error.missing.token", "Missing or bad token.");
 		
 		// execute
-		ObjectId userId = passwordResetToken.userId;
+		MidataId userId = passwordResetToken.userId;
 		String token = passwordResetToken.token;
 		String role = passwordResetToken.role;		
 		
@@ -226,7 +226,7 @@ public class Application extends APIController {
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "confirmationCode");
 				
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		String confirmationCode = JsonValidation.getString(json, "confirmationCode");
 		
 		User user = User.getById(userId, Sets.create("firstname", "lastname", "email", "confirmationCode", "emailStatus", "contractStatus", "agbStatus", "status", "role", "subroles", "registeredAt", "confirmedAt"));
@@ -298,7 +298,7 @@ public class Application extends APIController {
 		if (passwordResetToken == null) throw new BadRequestException("error.missing.token", "Missing or bad password token.");
 		
 		// execute
-		ObjectId userId = passwordResetToken.userId;
+		MidataId userId = passwordResetToken.userId;
 		String token = passwordResetToken.token;
 		String role = passwordResetToken.role;
 		String password = JsonValidation.getPassword(json, "password");
@@ -339,7 +339,7 @@ public class Application extends APIController {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "oldPassword", "password");
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		
 		String oldPassword = JsonValidation.getString(json, "oldPassword");
 		String password = JsonValidation.getPassword(json, "password");
@@ -364,7 +364,7 @@ public class Application extends APIController {
 	public static Result changePassphrase() throws AppException {
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "oldPassphrase", "passphrase");
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		
 		String oldPassphrase = JsonValidation.getStringOrNull(json, "oldPassphrase");
 		String passphrase = JsonValidation.getPassword(json, "passphrase");
@@ -481,7 +481,7 @@ public class Application extends APIController {
 		// validate 
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "passphrase");
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		
 		String passphrase = JsonValidation.getString(json, "passphrase");
 		
@@ -523,7 +523,7 @@ public class Application extends APIController {
 		
 		// create the user
 		Member user = new Member();
-		user._id = new ObjectId();
+		user._id = new MidataId();
 		user.email = email;
 		user.emailLC = email.toLowerCase();
 		user.name = firstName + " " + lastName;
@@ -558,17 +558,17 @@ public class Application extends APIController {
 		user.confirmationCode = CodeGenerator.nextCode();
 		user.partInterest = ParticipationInterest.UNSET;
 							
-		user.apps = new HashSet<ObjectId>();
+		user.apps = new HashSet<MidataId>();
 		user.tokens = new HashMap<String, Map<String, String>>();
-		user.visualizations = new HashSet<ObjectId>();
-		user.messages = new HashMap<String, Set<ObjectId>>();
-		user.messages.put("inbox", new HashSet<ObjectId>());
-		user.messages.put("archive", new HashSet<ObjectId>());
-		user.messages.put("trash", new HashSet<ObjectId>());
+		user.visualizations = new HashSet<MidataId>();
+		user.messages = new HashMap<String, Set<MidataId>>();
+		user.messages.put("inbox", new HashSet<MidataId>());
+		user.messages.put("archive", new HashSet<MidataId>());
+		user.messages.put("trash", new HashSet<MidataId>());
 		user.login = DateTimeUtils.now();
-		user.news = new HashSet<ObjectId>();
-		//user.pushed = new HashSet<ObjectId>();
-		//user.shared = new HashSet<ObjectId>();
+		user.news = new HashSet<MidataId>();
+		//user.pushed = new HashSet<MidataId>();
+		//user.shared = new HashSet<MidataId>();
 		
 		user.security = AccountSecurityLevel.KEY;
 		

@@ -7,7 +7,7 @@ import java.util.Set;
 import models.enums.ParticipationInterest;
 import models.enums.UserRole;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
@@ -25,7 +25,7 @@ public class Member extends User {
 	/**
 	 * ids of visible news items. Currently not used.
 	 */
-	public Set<ObjectId> news;
+	public Set<MidataId> news;
 		
 	/**
 	 * the public id of this member. The member may give this ID (together with the birthday) to a healthcare professional for identification.
@@ -50,7 +50,7 @@ public class Member extends User {
 	/**
 	 * id of main APS. Is the same as the id of this object. Will be removed.
 	 */
-	public ObjectId myaps;
+	public MidataId myaps;
 	
 	public Member() {
 		role =UserRole.MEMBER;
@@ -72,15 +72,15 @@ public class Member extends User {
 		return Model.get(Member.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.MEMBER), fields);
 	}
 	
-	public static Member getById(ObjectId id, Set<String> fields) throws InternalServerException {
+	public static Member getById(MidataId id, Set<String> fields) throws InternalServerException {
 		return Model.get(Member.class, collection, CMaps.map("_id", id), fields);
 	}
 	
-	public static Member getByIdAndApp(ObjectId id, ObjectId appId, Set<String> fields) throws InternalServerException {
+	public static Member getByIdAndApp(MidataId id, MidataId appId, Set<String> fields) throws InternalServerException {
 		return Model.get(Member.class, collection, CMaps.map("_id", id).map("apps", appId), fields);
 	}
 	
-	public static Member getByIdAndVisualization(ObjectId id, ObjectId visualizationId, Set<String> fields) throws InternalServerException {
+	public static Member getByIdAndVisualization(MidataId id, MidataId visualizationId, Set<String> fields) throws InternalServerException {
 		return Model.get(Member.class, collection, CMaps.map("_id", id).map("visualizations", visualizationId), fields);
 	}
 	
@@ -100,7 +100,7 @@ public class Member extends User {
 		return Model.getAll(Member.class, collection, properties, fields);
 	}
 
-	public static void set(ObjectId userId, String field, Object value) throws InternalServerException {
+	public static void set(MidataId userId, String field, Object value) throws InternalServerException {
 		Model.set(Member.class, collection, userId, field, value);
 	}
 
@@ -116,13 +116,13 @@ public class Member extends User {
 		}*/
 	}
 
-	public static void delete(ObjectId userId) throws InternalServerException {
+	public static void delete(MidataId userId) throws InternalServerException {
 		// remove from search index
 		//Search.delete(Type.USER, userId);
 
 		// TODO remove all the user's messages, records, spaces, circles, apps (if published, ask whether to leave it in
 		// the marketplace), ...
-		Model.delete(Member.class, collection, new ChainedMap<String, ObjectId>().put("_id", userId).get());
+		Model.delete(Member.class, collection, new ChainedMap<String, MidataId>().put("_id", userId).get());
 	}
 	
 	protected String getCollection() {

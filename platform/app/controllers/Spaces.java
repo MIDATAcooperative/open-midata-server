@@ -12,7 +12,7 @@ import models.Space;
 import models.enums.UserRole;
 
 import org.bson.BSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.Play;
 import play.libs.F;
@@ -58,7 +58,7 @@ public class Spaces extends Controller {
 	public static Result get() throws JsonValidationException, AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		JsonValidation.validate(json, "properties", "fields");
 		
 		// get parameters
@@ -93,9 +93,9 @@ public class Spaces extends Controller {
 		JsonValidation.validate(json, "name", "visualization");
 		
 		// validate request
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		String name = JsonValidation.getString(json, "name");		
-		ObjectId visualizationId = JsonValidation.getObjectId(json, "visualization" );					
+		MidataId visualizationId = JsonValidation.getMidataId(json, "visualization" );					
 		String context = JsonValidation.getString(json, "context");
 		
 		Map<String, Object> query = null;
@@ -129,11 +129,11 @@ public class Spaces extends Controller {
 	 * @return
 	 * @throws InternalServerException
 	 */
-	public static Space add(ObjectId userId, String name, ObjectId visualizationId, String type, String context) throws AppException {
+	public static Space add(MidataId userId, String name, MidataId visualizationId, String type, String context) throws AppException {
 						
 		// create new space
 		Space space = new Space();
-		space._id = new ObjectId();
+		space._id = new MidataId();
 		space.owner = userId;
 		space.name = name;
 		space.order = Space.getMaxOrder(userId) + 1;
@@ -155,8 +155,8 @@ public class Spaces extends Controller {
 		JsonValidation.validate(json, "name", "visualization", "context", "rules");
 		
 		// get parameters
-		ObjectId userId = new ObjectId(request().username());
-		ObjectId visualizationId = JsonValidation.getObjectId(json, "visualization");
+		MidataId userId = new MidataId(request().username());
+		MidataId visualizationId = JsonValidation.getMidataId(json, "visualization");
 		String context = JsonValidation.getString(json, "context");
 		String name = JsonValidation.getString(json, "name");
 		
@@ -192,8 +192,8 @@ public class Spaces extends Controller {
 	@APICall
 	public static Result delete(String spaceIdString) throws AppException {
 		// validate request
-		ObjectId userId = new ObjectId(request().username());
-		ObjectId spaceId = new ObjectId(spaceIdString);
+		MidataId userId = new MidataId(request().username());
+		MidataId spaceId = new MidataId(spaceIdString);
 		
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps"));
 		
@@ -224,8 +224,8 @@ public class Spaces extends Controller {
 		JsonValidation.validate(json, "records");
 		
 		// validate request
-		ObjectId userId = new ObjectId(request().username());
-		ObjectId spaceId = new ObjectId(spaceIdString);
+		MidataId userId = new MidataId(request().username());
+		MidataId spaceId = new MidataId(spaceIdString);
 		
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps"));
 		Member owner = Member.getById(userId, Sets.create("myaps"));
@@ -237,7 +237,7 @@ public class Spaces extends Controller {
 		}
 		
 		// add records to space (implicit: if not already present)
-		Set<ObjectId> recordIds = ObjectIdConversion.castToObjectIds(JsonExtraction.extractSet(json.get("records")));		
+		Set<MidataId> recordIds = ObjectIdConversion.castToMidataIds(JsonExtraction.extractSet(json.get("records")));		
 		RecordManager.instance.share(userId, owner.myaps, space._id, recordIds, true);
 						
 		return ok();
@@ -245,8 +245,8 @@ public class Spaces extends Controller {
 
 	@APICall
 	public static Result getToken(String spaceIdString) throws AppException {
-		ObjectId userId = new ObjectId(request().username());
-		ObjectId spaceId = new ObjectId(spaceIdString);
+		MidataId userId = new MidataId(request().username());
+		MidataId spaceId = new MidataId(spaceIdString);
 		
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps"));
 		
@@ -271,8 +271,8 @@ public class Spaces extends Controller {
 	
 		
 	public static Promise<Result> getUrl(String spaceIdString, boolean auth) throws AppException {
-		ObjectId userId = new ObjectId(request().username());
-		ObjectId spaceId = new ObjectId(spaceIdString);
+		MidataId userId = new MidataId(request().username());
+		MidataId spaceId = new MidataId(spaceIdString);
 		
 		Space space = Space.getByIdAndOwner(spaceId, userId, Sets.create("aps", "visualization", "type", "name"));
 		
@@ -300,7 +300,7 @@ public class Spaces extends Controller {
 		obj.put("name", space.name);
 		
 		if (visualization.type != null && visualization.type.equals("oauth2")) {
-  		  BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new ObjectId(spaceIdString), "_oauth");  		  
+  		  BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new MidataId(spaceIdString), "_oauth");  		  
 		  if (oauthmeta == null) return F.Promise.pure((Result) Plugins.oauthInfo(visualization, obj)); 
 			 		
 		  if (oauthmeta.containsField("refreshToken")) {					
@@ -308,7 +308,7 @@ public class Spaces extends Controller {
 		  }
 		} 
 		if (visualization.type != null && visualization.type.equals("oauth1")) {
-	  		  BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new ObjectId(spaceIdString), "_oauth");  		  
+	  		  BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new MidataId(spaceIdString), "_oauth");  		  
 			  if (oauthmeta == null) return F.Promise.pure((Result) Plugins.oauthInfo(visualization, obj)); 
 				 		
 			  /*if (oauthmeta.containsField("refreshToken")) {					

@@ -23,7 +23,7 @@ import models.KeyInfo;
 import models.MobileAppInstance;
 import models.User;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import akka.japi.Pair;
 
@@ -81,7 +81,7 @@ public class KeyManager {
 	 * @throws EncryptionNotSupportedException
 	 * @throws InternalServerException
 	 */
-	public byte[] encryptKey(ObjectId target, byte[] keyToEncrypt) throws EncryptionNotSupportedException, InternalServerException {
+	public byte[] encryptKey(MidataId target, byte[] keyToEncrypt) throws EncryptionNotSupportedException, InternalServerException {
 				    		
 			User user = User.getById(target, Sets.create("publicKey"));
 			if (user != null) {			
@@ -149,7 +149,7 @@ public class KeyManager {
 	 * @throws InternalServerException
 	 * @throws AuthException
 	 */
-	public byte[] decryptKey(ObjectId target, byte[] keyToDecrypt) throws InternalServerException, AuthException {
+	public byte[] decryptKey(MidataId target, byte[] keyToDecrypt) throws InternalServerException, AuthException {
 		try {
 			
 			byte key[] = pks.get(target.toString());
@@ -197,7 +197,7 @@ public class KeyManager {
 	 * @return public key
 	 * @throws InternalServerException
 	 */
-	public byte[] generateKeypairAndReturnPublicKey(ObjectId target) throws InternalServerException {
+	public byte[] generateKeypairAndReturnPublicKey(MidataId target) throws InternalServerException {
 		return generateKeypairAndReturnPublicKey(target, null);
 	}
 	
@@ -211,7 +211,7 @@ public class KeyManager {
 	 * @return public key
 	 * @throws InternalServerException
 	 */
-	public byte[] generateKeypairAndReturnPublicKey(ObjectId target, String passphrase) throws InternalServerException {
+	public byte[] generateKeypairAndReturnPublicKey(MidataId target, String passphrase) throws InternalServerException {
 		try {
 		   KeyPairGenerator generator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
 		   
@@ -243,7 +243,7 @@ public class KeyManager {
 	 * @throws InternalServerException
 	 * @throws AuthException
 	 */
-	public void changePassphrase(ObjectId target, String newPassphrase) throws InternalServerException, AuthException {
+	public void changePassphrase(MidataId target, String newPassphrase) throws InternalServerException, AuthException {
 		byte[] oldKey = pks.get(target.toString());
 		if (oldKey == null) throw new AuthException("error.relogin", "Authorization Failure");		
 		KeyInfo keyinfo = KeyInfo.getById(target);
@@ -262,7 +262,7 @@ public class KeyManager {
 	 * @param passphrase the passphrase for the private key or null if no passphrase has been applied 
 	 * @throws InternalServerException
 	 */
-	public int unlock(ObjectId target, String passphrase) throws InternalServerException {
+	public int unlock(MidataId target, String passphrase) throws InternalServerException {
 		KeyInfo inf = KeyInfo.getById(target);
 		if (inf == null) {
 			pks.put(target.toString(), null);
@@ -290,7 +290,7 @@ public class KeyManager {
 	 * @param splitkey keyfragment used to unlock the account 
 	 * @throws InternalServerException
 	 */
-	public void unlock(ObjectId target, ObjectId source, byte[] splitkey) throws InternalServerException {
+	public void unlock(MidataId target, MidataId source, byte[] splitkey) throws InternalServerException {
 		KeyInfo inf = KeyInfo.getById(source);
 		if (inf == null) {			
 			throw new InternalServerException("error.internal", "Private key info not found.");
@@ -308,7 +308,7 @@ public class KeyManager {
 	 * @param target id of user or app instance for which the private key should be cleared
 	 * @throws InternalServerException
 	 */
-	public void lock(ObjectId target) throws InternalServerException {
+	public void lock(MidataId target) throws InternalServerException {
 		pks.remove(target.toString());
 	}
 
@@ -318,7 +318,7 @@ public class KeyManager {
 	 * @return type of key protection (0=none, 1=passphrase)
 	 * @throws InternalServerException
 	 */
-	public int getKeyType(ObjectId target) throws InternalServerException {
+	public int getKeyType(MidataId target) throws InternalServerException {
 		KeyInfo inf = KeyInfo.getById(target);
 		return inf.type;
 	}
@@ -326,7 +326,7 @@ public class KeyManager {
 	/**
 	 * Generates a key duplicate encoded with another key
 	 */
-	public byte[] generateAlias(ObjectId source, ObjectId target) throws AuthException, InternalServerException {
+	public byte[] generateAlias(MidataId source, MidataId target) throws AuthException, InternalServerException {
 		byte key[] = pks.get(source.toString());
 		
 		if (key == null) throw new AuthException("error.relogin", "Authorization Failure");

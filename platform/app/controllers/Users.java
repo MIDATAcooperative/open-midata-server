@@ -25,7 +25,7 @@ import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.Play;
 import play.libs.Json;
@@ -183,8 +183,8 @@ public class Users extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	@APICall
 	public static Result loadContacts() throws InternalServerException {
-		ObjectId userId = new ObjectId(request().username());
-		Set<ObjectId> contactIds = new HashSet<ObjectId>();
+		MidataId userId = new MidataId(request().username());
+		Set<MidataId> contactIds = new HashSet<MidataId>();
 		Set<Member> contacts;
 	
 		Set<Circle> circles = Circle.getAll(CMaps.map("owner", userId), Sets.create("authorized"));
@@ -221,8 +221,8 @@ public class Users extends APIController {
 	/**
 	 * Get a user's authorization tokens for an app.
 	 */
-	protected static Map<String, String> getTokens(ObjectId userId, ObjectId appId) throws InternalServerException {
-		Member user = Member.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>().add("tokens").get());
+	protected static Map<String, String> getTokens(MidataId userId, MidataId appId) throws InternalServerException {
+		Member user = Member.get(new ChainedMap<String, MidataId>().put("_id", userId).get(), new ChainedSet<String>().add("tokens").get());
 		if (user.tokens.containsKey(appId.toString())) {
 			return user.tokens.get(appId.toString());
 		} else {
@@ -233,8 +233,8 @@ public class Users extends APIController {
 	/**
 	 * Set authorization tokens, namely the access and refresh token.
 	 */
-	protected static void setTokens(ObjectId userId, ObjectId appId, Map<String, String> tokens) throws InternalServerException {
-		Member user = Member.get(new ChainedMap<String, ObjectId>().put("_id", userId).get(), new ChainedSet<String>().add("tokens").get());
+	protected static void setTokens(MidataId userId, MidataId appId, Map<String, String> tokens) throws InternalServerException {
+		Member user = Member.get(new ChainedMap<String, MidataId>().put("_id", userId).get(), new ChainedSet<String>().add("tokens").get());
 		user.tokens.put(appId.toString(), tokens);
 		Member.set(userId, "tokens", user.tokens);
 	}
@@ -250,7 +250,7 @@ public class Users extends APIController {
 		String firstName = JsonValidation.getString(json, "firstname");
 		String lastName = JsonValidation.getString(json, "lastname");
 		
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 				
 		User user = User.getById(userId, Sets.create("_id", "role")); 
 		
@@ -285,7 +285,7 @@ public class Users extends APIController {
 		boolean searchable = JsonValidation.getBoolean(json, "searchable");
 		String language = JsonValidation.getString(json, "language");
 					
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 				
 		User user = User.getById(userId, Sets.create("_id")); 
 		
@@ -299,7 +299,7 @@ public class Users extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result requestMembership() throws AppException {
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		
 		Member user = Member.getById(userId, Sets.create("_id", "status", "role", "subroles", "history", "contractStatus", "agbStatus", "lastname", "firstname")); 
 		if (user == null) throw new InternalServerException("error.internal", "User record not found.");
@@ -326,7 +326,7 @@ public class Users extends APIController {
 	public static Result accountWipe() throws AppException {
 		if (!Play.application().configuration().getBoolean("demoserver", false)) throw new InternalServerException("error.internal", "Only allowed on demo server");
 		
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		
 		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
 		for (Space space : spaces) {

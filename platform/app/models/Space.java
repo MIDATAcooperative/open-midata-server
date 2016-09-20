@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
@@ -45,12 +45,12 @@ public class Space extends Model implements Comparable<Space> {
 	/**
 	 * The id of the owner of the space.
 	 */
-	public ObjectId owner;
+	public MidataId owner;
 	
 	/**
 	 * The id of the plugin that is used for displaying the contents of this space.
 	 */
-	public ObjectId visualization;
+	public MidataId visualization;
 	
 	/**
 	 * The id of the input form/importer that is used with this space. May be removed in the future.
@@ -70,7 +70,7 @@ public class Space extends Model implements Comparable<Space> {
 	/**
 	 * a list of consent ids into which new records created in this space are automatically shared
 	 */
-	public Set<ObjectId> autoShare;
+	public Set<MidataId> autoShare;
 	
 	/**
 	 * automatically run import
@@ -98,7 +98,7 @@ public class Space extends Model implements Comparable<Space> {
 		return Model.exists(Space.class, collection, properties);
 	}
 	
-	public static boolean existsByNameAndOwner(String name, ObjectId ownerId) throws InternalServerException {
+	public static boolean existsByNameAndOwner(String name, MidataId ownerId) throws InternalServerException {
 		return Model.exists(Space.class, collection, CMaps.map("name", name).map("owner", ownerId));
 	}
 
@@ -106,15 +106,15 @@ public class Space extends Model implements Comparable<Space> {
 		return Model.get(Space.class, collection, properties, fields);
 	}
 	
-	public static Space getByIdAndOwner(ObjectId spaceId, ObjectId ownerId, Set<String> fields) throws InternalServerException {
+	public static Space getByIdAndOwner(MidataId spaceId, MidataId ownerId, Set<String> fields) throws InternalServerException {
 		return Model.get(Space.class, collection, CMaps.map("_id", spaceId).map("owner", ownerId), fields);
 	}
 	
-	public static Space getByOwnerVisualizationContext(ObjectId ownerId, ObjectId visualizationId, String context, Set<String> fields) throws InternalServerException {
+	public static Space getByOwnerVisualizationContext(MidataId ownerId, MidataId visualizationId, String context, Set<String> fields) throws InternalServerException {
 		return Model.get(Space.class, collection, CMaps.map("owner", ownerId).map("visualization", visualizationId).map("context", context), fields);
 	}
 	
-	public static Space getByOwnerSpecialContext(ObjectId ownerId, String context, Set<String> fields) throws InternalServerException {
+	public static Space getByOwnerSpecialContext(MidataId ownerId, String context, Set<String> fields) throws InternalServerException {
 		return Model.get(Space.class, collection, CMaps.map("owner", ownerId).map("context", context), fields);
 	}
 	
@@ -122,11 +122,11 @@ public class Space extends Model implements Comparable<Space> {
 		return Model.getAll(Space.class, collection, properties, fields);
 	}
 	
-	public static Set<Space> getAllByOwner(ObjectId owner, Set<String> fields) throws InternalServerException {
+	public static Set<Space> getAllByOwner(MidataId owner, Set<String> fields) throws InternalServerException {
 		return Model.getAll(Space.class, collection, CMaps.map("owner", owner), fields);
 	}
 
-	public static void set(ObjectId spaceId, String field, Object value) throws InternalServerException {
+	public static void set(MidataId spaceId, String field, Object value) throws InternalServerException {
 		Model.set(Space.class, collection, spaceId, field, value);
 	}
 
@@ -135,9 +135,9 @@ public class Space extends Model implements Comparable<Space> {
 		
 	}
 
-	public static void delete(ObjectId ownerId, ObjectId spaceId) throws InternalServerException {
+	public static void delete(MidataId ownerId, MidataId spaceId) throws InternalServerException {
 		// find order first
-		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", spaceId).get();
+		Map<String, MidataId> properties = new ChainedMap<String, MidataId>().put("_id", spaceId).get();
 		Space space = get(properties, new ChainedSet<String>().add("order").get());
 
 		// decrement all order fields greater than the removed space
@@ -150,7 +150,7 @@ public class Space extends Model implements Comparable<Space> {
 		Model.delete(Space.class, collection, properties);
 	}
 
-	public static int getMaxOrder(ObjectId ownerId) {
+	public static int getMaxOrder(MidataId ownerId) {
 		return OrderOperations.getMax(collection, ownerId);
 	}
 

@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import models.MidataId;
 import models.enums.APSSecurityLevel;
 
-import org.bson.types.ObjectId;
 import play.Logger;
 import utils.exceptions.AuthException;
 
@@ -50,7 +50,7 @@ public class AccessLog {
 	 * @param who the person trying to access the APS
 	 * @param lvl the security level of the APS
 	 */
-	public static void apsAccess(ObjectId aps, ObjectId who, APSSecurityLevel lvl) {
+	public static void apsAccess(MidataId aps, MidataId who, APSSecurityLevel lvl) {
 		String msg = "Access APS:"+(aps != null ? aps.toString() : "null")+" from user:"+(who!=null?who.toString():"null")+" security:"+lvl.toString();
 		log(msg);		
 	}
@@ -151,7 +151,7 @@ public class AccessLog {
      * log an APS decryption failure
      * @param record the record that could not be decrypted
      */
-	public static void decryptFailure(ObjectId record) {
+	public static void decryptFailure(MidataId record) {
 		 log("Decrypt Failure Record="+record.toString());
 	}
 	

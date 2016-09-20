@@ -4,7 +4,7 @@ import java.util.Map;
 
 import models.enums.UserRole;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.libs.Json;
 import play.mvc.Http.Request;
@@ -21,9 +21,9 @@ public class PortalSessionToken {
 	/**
 	 * id of user
 	 */
-	public ObjectId userId;
+	public MidataId userId;
 	
-	public ObjectId org;
+	public MidataId org;
 
 	public UserRole role;
 
@@ -39,11 +39,11 @@ public class PortalSessionToken {
 	
 	
 
-	public ObjectId getUserId() {
+	public MidataId getUserId() {
 		return userId;
 	}
 
-	public ObjectId getOrg() {
+	public MidataId getOrg() {
 		return org;
 	}
 
@@ -59,13 +59,13 @@ public class PortalSessionToken {
 		return remoteAddress;
 	}
 
-	public PortalSessionToken(ObjectId userId, UserRole role, ObjectId org) {
+	public PortalSessionToken(MidataId userId, UserRole role, MidataId org) {
 		this.userId = userId;
 		this.role = role;
 		this.org = org;
 	}
 
-	public PortalSessionToken(ObjectId userId, UserRole role, ObjectId org, long created, String remoteAddr) {
+	public PortalSessionToken(MidataId userId, UserRole role, MidataId org, long created, String remoteAddr) {
 		this.userId = userId;
 		this.role = role;
 		this.org = org;
@@ -116,13 +116,13 @@ public class PortalSessionToken {
 			
 			String plaintext = TokenCrypto.decryptToken(secret);		
 			JsonNode json = Json.parse(plaintext);
-			ObjectId userId = new ObjectId(json.get("u").asText());
+			MidataId userId = new MidataId(json.get("u").asText());
 			UserRole role = UserRole.valueOf(json.get("r").asText());
 			long created = json.get("c").asLong();
 			String remoteAddr = json.get("i").asText();
-			ObjectId org = null;
+			MidataId org = null;
 			if (json.has("o")) {
-			  org = new ObjectId(json.get("o").asText()); 
+			  org = new MidataId(json.get("o").asText()); 
 			}
 
 			if (System.currentTimeMillis() > created + LIFETIME) {				

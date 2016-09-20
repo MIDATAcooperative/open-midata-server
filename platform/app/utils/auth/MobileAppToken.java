@@ -2,7 +2,7 @@ package utils.auth;
 
 import java.util.Map;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.libs.Crypto;
 import play.libs.Json;
@@ -24,17 +24,17 @@ public class MobileAppToken {
 	/**
 	 * the id of the application instance
 	 */
-	public ObjectId appInstanceId;
+	public MidataId appInstanceId;
 	
 	/**
 	 * the id of the application
 	 */
-	public ObjectId appId;
+	public MidataId appId;
 	
 	/**
 	 * the id of the owner of the application instance
 	 */
-	public ObjectId ownerId;
+	public MidataId ownerId;
 	
 	/**
 	 * the secret passphrase of the application instance
@@ -46,7 +46,7 @@ public class MobileAppToken {
 	 */
 	public long created;
 
-	public MobileAppToken(ObjectId appId, ObjectId instanceId, ObjectId ownerId, String phrase, long created) {
+	public MobileAppToken(MidataId appId, MidataId instanceId, MidataId ownerId, String phrase, long created) {
 		this.appInstanceId = instanceId;
 		this.appId = appId;
 		this.ownerId = ownerId;
@@ -68,9 +68,9 @@ public class MobileAppToken {
 			// decryptAES can throw DecoderException, but there is no way to catch it; catch all exceptions for now...
 			String plaintext = TokenCrypto.decryptToken(unsafeSecret);
 			JsonNode json = Json.parse(plaintext);
-			ObjectId appId = new ObjectId(json.get("a").asText());
-			ObjectId instanceId = new ObjectId(json.get("i").asText());
-			ObjectId ownerId = new ObjectId(json.get("o").asText());
+			MidataId appId = new MidataId(json.get("a").asText());
+			MidataId instanceId = new MidataId(json.get("i").asText());
+			MidataId ownerId = new MidataId(json.get("o").asText());
 			String phrase = json.get("p").asText();		
 			long created = json.get("c").asLong();
 			return new MobileAppToken(appId, instanceId, ownerId, phrase, created);

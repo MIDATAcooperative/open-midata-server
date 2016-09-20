@@ -6,7 +6,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import models.Record;
 
@@ -21,7 +21,7 @@ public class Scripting {
 	
 	private ScriptEngineManager manager = new ScriptEngineManager();
 	
-	public Object eval(ObjectId who) {
+	public Object eval(MidataId who) {
 		ScriptEngine engine = manager.getEngineByName("javascript");
 		try {
 			engine.put("who", who);

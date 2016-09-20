@@ -6,7 +6,7 @@ import java.util.Set;
 
 import models.enums.Frequency;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.collections.CMaps;
 import utils.exceptions.InternalServerException;
@@ -25,22 +25,22 @@ public class Task extends Model {
 	 * 
 	 * The owner of the task is the user that should do the action described by this task.
 	 */
-	public ObjectId owner;
+	public MidataId owner;
 	
 	/**
 	 * id of creator of this task
 	 */
-	public ObjectId createdBy;
+	public MidataId createdBy;
 	
 	/**
 	 * id of plugin that should be used to fulfill the task
 	 */
-	public ObjectId plugin;
+	public MidataId plugin;
 	
 	/**
 	 * id of consent where records created by the plugin specified in the plugin field should be shared into
 	 */
-	public ObjectId shareBackTo;
+	public MidataId shareBackTo;
 	
 	/**
 	 * date of creation of this task
@@ -91,15 +91,15 @@ public class Task extends Model {
 		Model.insert(collection, task);
 	}
 	
-	public static Set<Task> getAllByOwner(ObjectId owner, Set<String> fields) throws InternalServerException {
+	public static Set<Task> getAllByOwner(MidataId owner, Set<String> fields) throws InternalServerException {
 		return Model.getAll(Task.class, collection, CMaps.map("owner", owner), fields);
 	}
 	
-	public static void set(ObjectId taskId, String field, Object value) throws InternalServerException {
+	public static void set(MidataId taskId, String field, Object value) throws InternalServerException {
 		Model.set(Task.class, collection, taskId, field, value);
 	}
 	
-	public static Task getByIdAndOwner(ObjectId taskId, ObjectId ownerId, Set<String> fields) throws InternalServerException {
+	public static Task getByIdAndOwner(MidataId taskId, MidataId ownerId, Set<String> fields) throws InternalServerException {
 		return Model.get(Task.class, collection, CMaps.map("_id", taskId).map("owner", ownerId), fields);
 	}
 

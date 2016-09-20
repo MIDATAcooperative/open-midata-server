@@ -13,7 +13,7 @@ import java.util.UUID;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.AccessLog;
 import utils.access.index.IndexDefinition;
@@ -37,7 +37,7 @@ public class IndexManager {
 	
 	private static long UPDATE_TIME = 1000 * 10;
 
-	public String getIndexPseudonym(ObjectId user) throws AppException {
+	public String getIndexPseudonym(MidataId user) throws AppException {
 		BSONObject obj = RecordManager.instance.getMeta(user, user, "_pseudo");
 
 		if (obj == null) {
@@ -58,11 +58,11 @@ public class IndexManager {
 	 * @param selfOnly
 	 * @param fields
 	 */
-	public IndexDefinition createIndex(APSCache cache, ObjectId user, Set<String> formats, boolean selfOnly, List<String> fields) throws AppException {
+	public IndexDefinition createIndex(APSCache cache, MidataId user, Set<String> formats, boolean selfOnly, List<String> fields) throws AppException {
 
 		IndexDefinition indexDef = new IndexDefinition();
 
-		indexDef._id = new ObjectId();
+		indexDef._id = new MidataId();
 		indexDef.fields = fields;
 		indexDef.formats = new ArrayList<String>(formats);
 		indexDef.selfOnly = selfOnly;
@@ -77,19 +77,19 @@ public class IndexManager {
 		return indexDef;
 	}
 	
-	private byte[] getIndexKey(APSCache cache, ObjectId user) throws AppException {
+	private byte[] getIndexKey(APSCache cache, MidataId user) throws AppException {
 		APS aps = cache.getAPS(user, user);
 		return ((APSImplementation) aps).eaps.getAPSKey();
 	}
 	
-	protected void addRecords(IndexRoot index, ObjectId aps, Collection<DBRecord> records) throws AppException {
+	protected void addRecords(IndexRoot index, MidataId aps, Collection<DBRecord> records) throws AppException {
 		for (DBRecord record : records) {
 			QueryEngine.loadData(record);
 			index.addEntry(aps != null ? aps : record.consentAps, record);
 		}
 	}
 	
-	/*protected void scanStreamNewEntries(APSCache cache, IndexRoot index, ObjectId executor, ObjectId stream, Date updatedAfter) throws AppException {
+	/*protected void scanStreamNewEntries(APSCache cache, IndexRoot index, MidataId executor, MidataId stream, Date updatedAfter) throws AppException {
 		Map<String, Object> restrictions = new HashMap<String, Object>();
 		if (updatedAfter != null) restrictions.put("updated-after", updatedAfter);
 		Collection<DBRecord> recs = QueryEngine.listInternal(cache, stream, restrictions, Sets.create("_id"));
@@ -97,7 +97,7 @@ public class IndexManager {
     }*/
 	
 	
-	protected void indexAll(APSCache cache, IndexRoot index, ObjectId executor) throws AppException {
+	protected void indexAll(APSCache cache, IndexRoot index, MidataId executor) throws AppException {
 		try {
 			/*Map<String, Object> restrictions = new HashMap<String, Object>();
 			restrictions.put("format", index.getFormats());
@@ -111,12 +111,12 @@ public class IndexManager {
 		}
 	}
 	
-	protected void indexUpdate(APSCache cache, IndexRoot index, ObjectId executor, Set<ObjectId> targetAps) throws AppException {
+	protected void indexUpdate(APSCache cache, IndexRoot index, MidataId executor, Set<MidataId> targetAps) throws AppException {
 		AccessLog.logBegin("start index update");
 		try {
 			
 			
-			for (ObjectId aps : targetAps) {
+			for (MidataId aps : targetAps) {
 				Map<String, Object> restrictions = new HashMap<String, Object>();
 				restrictions.put("format", index.getFormats());
 				if (aps.equals(executor)) restrictions.put("owner", "self");
@@ -184,20 +184,20 @@ public class IndexManager {
 		return matches;		
 	}
 	
-	public IndexRoot getIndexRootAndUpdate(APSCache cache, ObjectId user, IndexDefinition idx, Set<ObjectId> targetAps) throws AppException {
+	public IndexRoot getIndexRootAndUpdate(APSCache cache, MidataId user, IndexDefinition idx, Set<MidataId> targetAps) throws AppException {
 		IndexRoot root = new IndexRoot(getIndexKey(cache, user), idx, false);		
 		indexUpdate(cache, root, user, targetAps);		
 		return root;
 	}
 	
-	public IndexDefinition findIndex(APSCache cache, ObjectId user, Set<String> format, List<String> pathes) throws AppException {
+	public IndexDefinition findIndex(APSCache cache, MidataId user, Set<String> format, List<String> pathes) throws AppException {
 		String owner = getIndexPseudonym(user);
 		Set<IndexDefinition> res = IndexDefinition.getAll(CMaps.map("owner", owner).map("formats", CMaps.map("$all", format)).map("fields", CMaps.map("$all", pathes)), IndexDefinition.ALL);
 		if (res.size() == 1) return res.iterator().next();
 		return null;
 	}
 	
-	public void clearIndexes(APSCache cache, ObjectId user) throws AppException {
+	public void clearIndexes(APSCache cache, MidataId user) throws AppException {
 		AccessLog.logBegin("start clear indexes");
 		String pseudo = getIndexPseudonym(user);
 		

@@ -21,7 +21,7 @@ import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -76,7 +76,7 @@ public class QuickRegistration extends APIController {
 		
 		// create the user
 		Member user = new Member();
-		user._id = new ObjectId();
+		user._id = new MidataId();
 		user.email = email;
 		user.emailLC = email.toLowerCase();
 		user.name = firstName + " " + lastName;
@@ -111,17 +111,17 @@ public class QuickRegistration extends APIController {
 		user.confirmationCode = CodeGenerator.nextCode();
 		user.partInterest = ParticipationInterest.UNSET;
 							
-		user.apps = new HashSet<ObjectId>();
+		user.apps = new HashSet<MidataId>();
 		user.tokens = new HashMap<String, Map<String, String>>();
-		user.visualizations = new HashSet<ObjectId>();
-		user.messages = new HashMap<String, Set<ObjectId>>();
-		user.messages.put("inbox", new HashSet<ObjectId>());
-		user.messages.put("archive", new HashSet<ObjectId>());
-		user.messages.put("trash", new HashSet<ObjectId>());
+		user.visualizations = new HashSet<MidataId>();
+		user.messages = new HashMap<String, Set<MidataId>>();
+		user.messages.put("inbox", new HashSet<MidataId>());
+		user.messages.put("archive", new HashSet<MidataId>());
+		user.messages.put("trash", new HashSet<MidataId>());
 		user.login = DateTimeUtils.now();
-		user.news = new HashSet<ObjectId>();
-		//user.pushed = new HashSet<ObjectId>();
-		//user.shared = new HashSet<ObjectId>();
+		user.news = new HashSet<MidataId>();
+		//user.pushed = new HashSet<MidataId>();
+		//user.shared = new HashSet<MidataId>();
 		
 		user.security = AccountSecurityLevel.KEY;
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);

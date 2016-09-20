@@ -1,6 +1,6 @@
 package utils.db;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -17,9 +17,9 @@ public class OrderOperations {
 	/**
 	 * Returns the maximum of the order fields in the given collection.
 	 */
-	public static int getMax(String collection, ObjectId userId) {
+	public static int getMax(String collection, MidataId userId) {
 		DBCollection coll = DBLayer.getCollection(collection);
-		DBObject query = new BasicDBObject("owner", userId);
+		DBObject query = new BasicDBObject("owner", userId.toObjectId());
 		query.put("order", new BasicDBObject("$exists", true));
 		DBObject projection = new BasicDBObject("order", 1);
 		DBCursor maxOrder = coll.find(query, projection).sort(new BasicDBObject("order", -1)).limit(1);
@@ -34,7 +34,7 @@ public class OrderOperations {
 	 * Decrements all order fields from (and including) 'fromLimit' to (and including) 'toLimit' by one. If either one
 	 * is zero, only the other condition will be considered.
 	 */
-	public static void decrement(String collection, ObjectId userId, int fromLimit, int toLimit)
+	public static void decrement(String collection, MidataId userId, int fromLimit, int toLimit)
 			throws DatabaseException {
 		int[] limits = getLimits(fromLimit, toLimit);
 		incOperation(collection, userId, limits[0], limits[1], -1);
@@ -44,7 +44,7 @@ public class OrderOperations {
 	 * Increments all order fields from (and including) 'fromLimit' to (and including) 'toLimit' by one. If either one
 	 * is zero, only the other condition will be considered.
 	 */
-	public static void increment(String collection, ObjectId userId, int fromLimit, int toLimit)
+	public static void increment(String collection, MidataId userId, int fromLimit, int toLimit)
 			throws DatabaseException {
 		int[] limits = getLimits(fromLimit, toLimit);
 		incOperation(collection, userId, limits[0], limits[1], 1);
@@ -59,9 +59,9 @@ public class OrderOperations {
 		}
 	}
 
-	private static void incOperation(String collection, ObjectId userId, int fromLimit, int toLimit, int increment)
+	private static void incOperation(String collection, MidataId userId, int fromLimit, int toLimit, int increment)
 			throws DatabaseException {
-		DBObject query = new BasicDBObject("owner", userId);
+		DBObject query = new BasicDBObject("owner", userId.toObjectId());
 		query.put("order", new BasicDBObject("$exists", true));
 		if (fromLimit == 0) {
 			query.put("order", new BasicDBObject("$lte", toLimit));

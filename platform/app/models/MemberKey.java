@@ -7,7 +7,7 @@ import java.util.Set;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -28,7 +28,7 @@ public class MemberKey extends Consent {
 	/**
 	 * id of organization of the healthcare provider
 	 */
-	public ObjectId organization;	
+	public MidataId organization;	
 
 	/**
 	 * date of confirmation of this consent
@@ -44,23 +44,23 @@ public class MemberKey extends Consent {
 		this.type = ConsentType.HEALTHCARE;
 	}
 	
-	public static MemberKey getById(ObjectId id) throws InternalServerException {
+	public static MemberKey getById(MidataId id) throws InternalServerException {
 		return Model.get(MemberKey.class, collection, CMaps.map("_id", id), ALL);
 	}
 	
-	public static Set<MemberKey> getByOwnerAndAuthorizedPerson(ObjectId ownerId, ObjectId authorizedId) throws InternalServerException {
+	public static Set<MemberKey> getByOwnerAndAuthorizedPerson(MidataId ownerId, MidataId authorizedId) throws InternalServerException {
 		return Model.getAll(MemberKey.class, collection, CMaps.map("owner", ownerId).map("authorized", authorizedId).map("type",  ConsentType.HEALTHCARE), ALL);
 	}
 	
-	public static Set<MemberKey> getByAuthorizedPerson(ObjectId authorizedId, Set<String> fields) throws InternalServerException {
+	public static Set<MemberKey> getByAuthorizedPerson(MidataId authorizedId, Set<String> fields) throws InternalServerException {
 		return Model.getAll(MemberKey.class, collection, CMaps.map("authorized", authorizedId).map("type", ConsentType.HEALTHCARE), fields);
 	}
 	
-	public static Set<MemberKey> getByOwner(ObjectId ownerId) throws InternalServerException {
+	public static Set<MemberKey> getByOwner(MidataId ownerId) throws InternalServerException {
 		return Model.getAll(MemberKey.class, collection, CMaps.map("owner", ownerId).map("type",  ConsentType.HEALTHCARE), ALL);
 	}
 	
-	public static MemberKey getByIdAndOwner(ObjectId consentId, ObjectId ownerId, Set<String> fields) throws InternalServerException {
+	public static MemberKey getByIdAndOwner(MidataId consentId, MidataId ownerId, Set<String> fields) throws InternalServerException {
 		return Model.get(MemberKey.class, collection, CMaps.map("_id", consentId).map("owner", ownerId), fields);
 	}
 	

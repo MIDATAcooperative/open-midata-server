@@ -29,7 +29,7 @@ import models.enums.UserRole;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.Play;
 import play.libs.Json;
@@ -141,7 +141,7 @@ public class MobileAPI extends Controller {
 	 */
 		
 	
-	private static boolean verifyAppInstance(MobileAppInstance appInstance, ObjectId ownerId, ObjectId applicationId) {
+	private static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId) {
 		if (appInstance == null) return false;
         if (!appInstance.owner.equals(ownerId)) return false;
         if (!appInstance.applicationId.equals(applicationId)) return false;
@@ -173,7 +173,7 @@ public class MobileAPI extends Controller {
 		if (!app.secret.equals(secret)) throw new BadRequestException("error.unknown.app", "Unknown app");
 		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
 	
-		ObjectId appInstanceId = null;
+		MidataId appInstanceId = null;
 		MobileAppInstance appInstance = null;
 		String phrase;
 		Map<String, Object> meta = null;
@@ -236,9 +236,9 @@ public class MobileAPI extends Controller {
 		return ok(obj);
 	}
 	
-	public static MobileAppInstance installApp(ObjectId executor, Plugin app, User member, String phrase) throws AppException {		
+	public static MobileAppInstance installApp(MidataId executor, Plugin app, User member, String phrase) throws AppException {		
 		MobileAppInstance appInstance = new MobileAppInstance();
-		appInstance._id = new ObjectId();
+		appInstance._id = new MidataId();
 		appInstance.name = "Mobile: "+ app.name;
 		appInstance.applicationId = app._id;		
         appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, phrase);
@@ -271,11 +271,11 @@ public class MobileAPI extends Controller {
 		return appInstance;
 	}
 	
-	private static ObjectId prepareMobileExecutor(MobileAppInstance appInstance, MobileAppSessionToken tk) throws AppException {
+	private static MidataId prepareMobileExecutor(MobileAppInstance appInstance, MobileAppSessionToken tk) throws AppException {
 		KeyManager.instance.unlock(tk.appInstanceId, tk.passphrase);
 		Map<String, Object> appobj = RecordManager.instance.getMeta(tk.appInstanceId, tk.appInstanceId, "_app").toMap();
 		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
-			ObjectId alias = new ObjectId(appobj.get("alias").toString());
+			MidataId alias = new MidataId(appobj.get("alias").toString());
 			byte[] key = (byte[]) appobj.get("aliaskey");
 			KeyManager.instance.unlock(appInstance.owner, alias, key);
 			RecordManager.instance.clear();
@@ -284,10 +284,10 @@ public class MobileAPI extends Controller {
 		return tk.appInstanceId;
 	}
 	
-	public static void confirmMobileConsent(ObjectId userId, ObjectId consentId) throws AppException {
+	public static void confirmMobileConsent(MidataId userId, MidataId consentId) throws AppException {
 		BSONObject meta = RecordManager.instance.getMeta(userId, consentId, "_app");
 		if (meta == null) throw new InternalServerException("error.internal", "_app object not found,");
-		ObjectId alias = new ObjectId();
+		MidataId alias = new MidataId();
 		byte[] key = KeyManager.instance.generateAlias(userId, alias);
 		meta.put("alias", alias.toString());
 		meta.put("aliaskey", key);
@@ -325,7 +325,7 @@ public class MobileAPI extends Controller {
         	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Record", fields));
         }
         
-        ObjectId executor = prepareMobileExecutor(appInstance, authToken);
+        MidataId executor = prepareMobileExecutor(appInstance, authToken);
 		// get record data
 		Collection<Record> records = null;
 		
@@ -368,7 +368,7 @@ public class MobileAPI extends Controller {
 		  info = ExecutionInfo.checkToken(request(), JsonValidation.getString(json, "authToken"));
 		}
 					
-		ObjectId recordId = json != null ? JsonValidation.getObjectId(json, "_id") : new ObjectId(request().getQueryString("_id"));			
+		MidataId recordId = json != null ? JsonValidation.getMidataId(json, "_id") : new MidataId(request().getQueryString("_id"));			
 		FileData fileData = RecordManager.instance.fetchFile(info.executorId, new RecordToken(recordId.toString(), info.targetAPS.toString()));
 		if (fileData == null) return badRequest();
 		//response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
@@ -400,12 +400,12 @@ public class MobileAPI extends Controller {
         if (appInstance == null) throw new BadRequestException("error.invalid.token","Invalid authToken.");
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
 
-        ObjectId executor = prepareMobileExecutor(appInstance, authToken);
+        MidataId executor = prepareMobileExecutor(appInstance, authToken);
         
-		ObjectId appId = appInstance.applicationId;
+		MidataId appId = appInstance.applicationId;
 				
 		Member targetUser;
-		ObjectId targetAps = appInstance._id;
+		MidataId targetAps = appInstance._id;
 				
 		targetUser = Member.getById(appInstance.owner, Sets.create("myaps", "tokens"));
 		if (targetUser == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
@@ -419,8 +419,8 @@ public class MobileAPI extends Controller {
 		String content = JsonValidation.getStringOrNull(json, "content");
 		Set<String> code = JsonExtraction.extractStringSet(json.get("code"));
 		
-		ObjectId owner = appInstance.owner;
-		ObjectId ownerOverride = JsonValidation.getObjectId(json, "owner");
+		MidataId owner = appInstance.owner;
+		MidataId ownerOverride = JsonValidation.getMidataId(json, "owner");
 		if (ownerOverride != null && !ownerOverride.equals(owner)) {
 			Set<Consent> consent = Consent.getHealthcareActiveByAuthorizedAndOwner(executor, ownerOverride);
 			if (consent == null || consent.isEmpty()) throw new BadRequestException("error.noconsent", "No active consent that allows to add data for target person.");
@@ -428,7 +428,7 @@ public class MobileAPI extends Controller {
 		}
 				
 		Record record = new Record();
-		record._id = new ObjectId();
+		record._id = new MidataId();
 		record.app = appId;
 		record.owner = owner;
 		record.creator = appInstance.owner;
@@ -455,13 +455,13 @@ public class MobileAPI extends Controller {
 		
 		RecordManager.instance.addRecord(executor, record, targetAps);
 						
-		Set<ObjectId> records = new HashSet<ObjectId>();
+		Set<MidataId> records = new HashSet<MidataId>();
 		records.add(record._id);
 		RecordManager.instance.share(executor, appInstance.owner, targetAps, records, false);
 
 		/*
 		if (appInstance.autoShare != null && !appInstance.autoShare.isEmpty()) {
-			for (ObjectId autoshareAps : appInstance.autoShare) {
+			for (MidataId autoshareAps : appInstance.autoShare) {
 				Consent consent = Consent.getByIdAndOwner(autoshareAps, targetUser._id, Sets.create("type"));
 				if (consent != null) { 
 				  RecordManager.instance.share(targetUser._id, targetUser._id, autoshareAps, records, true);
@@ -495,7 +495,7 @@ public class MobileAPI extends Controller {
 						
 		Record record = new Record();
 		
-		record._id = JsonValidation.getObjectId(json, "_id");	
+		record._id = JsonValidation.getMidataId(json, "_id");	
 		record.version = JsonValidation.getStringOrNull(json, "version");
 		 				
 		record.creator = inf.executorId;
@@ -541,9 +541,9 @@ public class MobileAPI extends Controller {
         	return ok(Json.toJson(Collections.EMPTY_LIST));
         }
         
-        ObjectId executor = prepareMobileExecutor(appInstance, authToken);
+        MidataId executor = prepareMobileExecutor(appInstance, authToken);
         		
-		ObjectId targetAps = appInstance._id;
+		MidataId targetAps = appInstance._id;
 				
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 		AggregationType aggrType = JsonValidation.getEnum(json, "summarize", AggregationType.class);
@@ -578,7 +578,7 @@ public class MobileAPI extends Controller {
         	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Consent", fields));
         }
         
-        ObjectId executor = prepareMobileExecutor(appInstance, authToken);
+        MidataId executor = prepareMobileExecutor(appInstance, authToken);
 		// get record data
 		Collection<Consent> consents = Consent.getAllActiveByAuthorized(executor);
 		

@@ -8,7 +8,7 @@ import models.enums.APSSecurityLevel;
 import models.enums.InformationType;
 
 import org.bson.BasicBSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.mongodb.BasicDBObject;
 
@@ -71,7 +71,7 @@ public class AccessPermissionSet extends Model {
 		Model.insert(collection, aps);	
 	}
 	
-	public static AccessPermissionSet getById(ObjectId id) throws InternalServerException {
+	public static AccessPermissionSet getById(MidataId id) throws InternalServerException {
 		return Model.get(AccessPermissionSet.class, collection, CMaps.map("_id", id), ALL_FIELDS);
 	}
 	
@@ -112,7 +112,7 @@ public class AccessPermissionSet extends Model {
 		}		
 	}
 	
-	public static void delete(ObjectId appsId) throws InternalServerException {	
-		Model.delete(AccessPermissionSet.class, collection, new ChainedMap<String, ObjectId>().put("_id", appsId).get());
+	public static void delete(MidataId appsId) throws InternalServerException {	
+		Model.delete(AccessPermissionSet.class, collection, new ChainedMap<String, MidataId>().put("_id", appsId).get());
 	}
 }

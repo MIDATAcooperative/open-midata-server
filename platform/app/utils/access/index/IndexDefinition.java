@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
@@ -48,7 +48,7 @@ public class IndexDefinition extends IndexPageModel {
 		return Model.getAll(IndexDefinition.class, collection, properties, fields);
 	}
 	
-	public static void delete(ObjectId id) throws InternalServerException {		
+	public static void delete(MidataId id) throws InternalServerException {		
 		Model.delete(IndexDefinition.class, collection, CMaps.map("_id", id));
 	}
 }

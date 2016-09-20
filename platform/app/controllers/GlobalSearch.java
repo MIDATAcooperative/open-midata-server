@@ -9,7 +9,7 @@ import java.util.Set;
 import models.Circle;
 import models.Member;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import actions.APICall;
 
@@ -35,7 +35,7 @@ public class GlobalSearch extends Controller {
 	 *//*
 	@APICall
 	public static Result search(String query) throws AppException {
-		ObjectId userId = new ObjectId(request().username());
+		MidataId userId = new MidataId(request().username());
 		
 		Set<Circle> circles = Circle.getAllByMember(userId);
 		Map<String, List<SearchResult>> searchResults = Search.search(userId, circles, query);
@@ -47,7 +47,7 @@ public class GlobalSearch extends Controller {
 	 *//*
 	 @APICall
 	public static Result complete(String query) {
-		Map<String, List<CompletionResult>> completions = Search.complete(new ObjectId(request().username()), query);
+		Map<String, List<CompletionResult>> completions = Search.complete(new MidataId(request().username()), query);
 		List<CompletionResult> results = new ArrayList<CompletionResult>();
 		for (String type : completions.keySet()) {
 			results.addAll(completions.get(type));

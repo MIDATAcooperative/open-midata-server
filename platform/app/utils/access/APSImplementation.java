@@ -14,7 +14,7 @@ import models.enums.APSSecurityLevel;
 
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.AccessLog;
 import utils.auth.EncryptionNotSupportedException;
@@ -41,7 +41,7 @@ class APSImplementation extends APS {
 		this.eaps = eaps;
 	}
 
-	public ObjectId getId() {
+	public MidataId getId() {
 		return eaps.getId();
 	}
 	
@@ -86,18 +86,18 @@ class APSImplementation extends APS {
 		return eaps.getVersion();
 	}
 
-	public void addAccess(Set<ObjectId> targets) throws AppException, EncryptionNotSupportedException {
+	public void addAccess(Set<MidataId> targets) throws AppException, EncryptionNotSupportedException {
 		merge();
 		try {
 			boolean changed = false;
 			if (eaps.getSecurityLevel().equals(APSSecurityLevel.NONE)) {
-				for (ObjectId target : targets)
+				for (MidataId target : targets)
 					if (!eaps.hasKey(target.toString())) {
 						eaps.setKey(target.toString(), null);
 						changed = true;
 					}
 			} else {
-				for (ObjectId target : targets)
+				for (MidataId target : targets)
 					if (eaps.getKey(target.toString()) == null) {
 						eaps.setKey(target.toString(), KeyManager.instance.encryptKey(target, eaps.getAPSKey()));
 						changed = true;
@@ -115,7 +115,7 @@ class APSImplementation extends APS {
 		}
 	}
 
-	public void addAccess(ObjectId target, byte[] publickey) throws AppException, EncryptionNotSupportedException {
+	public void addAccess(MidataId target, byte[] publickey) throws AppException, EncryptionNotSupportedException {
 		merge();
 		try {
 			boolean changed = false;
@@ -142,10 +142,10 @@ class APSImplementation extends APS {
 		}
 	}		
 
-	public void removeAccess(Set<ObjectId> targets) throws InternalServerException {
+	public void removeAccess(Set<MidataId> targets) throws InternalServerException {
 		try {
 			boolean changed = false;
-			for (ObjectId target : targets)
+			for (MidataId target : targets)
 				if (eaps.hasKey(target.toString())) {
 					eaps.removeKey(target.toString());
 					changed = true;
@@ -188,9 +188,9 @@ class APSImplementation extends APS {
 		return (BasicBSONObject) eaps.getPermissions().get(key);
 	}
 	
-	public ObjectId getStoredOwner() throws AppException {
+	public MidataId getStoredOwner() throws AppException {
 		String ownerStr = (String) eaps.getPermissions().get("owner");
-		if (ownerStr != null) return new ObjectId(ownerStr); else return null;
+		if (ownerStr != null) return new MidataId(ownerStr); else return null;
 	}
 
 	@Override
@@ -208,7 +208,7 @@ class APSImplementation extends APS {
 			Map<String, Object> query = new HashMap<String, Object>();
 			query.put("stream", eaps.getId());
 			if (q.restrictedBy("_id")) {
-				Set<ObjectId> idRestriction = q.getObjectIdRestriction("_id");
+				Set<MidataId> idRestriction = q.getMidataIdRestriction("_id");
 				if (q.restrictedBy("quick")) {
 					
 					DBRecord record = (DBRecord) q.getProperties().get("quick");		
@@ -249,7 +249,7 @@ class APSImplementation extends APS {
 		// 6 Each permission list : apply filters -> Records
 		boolean restrictedById = q.restrictedBy("_id");
 		if (restrictedById) {
-			for (ObjectId id : q.getObjectIdRestriction("_id")) {
+			for (MidataId id : q.getMidataIdRestriction("_id")) {
 				for (BasicBSONObject row : rows) {
 					BasicBSONObject map = APSEntry.getEntries(row);
 					BasicBSONObject target = (BasicBSONObject) map.get(id.toString());
@@ -291,7 +291,7 @@ class APSImplementation extends APS {
 	private DBRecord createRecordFromAPSEntry(String id, BasicBSONObject row, BasicBSONObject entry, boolean withOwner) throws AppException {
 		DBRecord record = new DBRecord();		
 		
-		record._id = new ObjectId(id);		
+		record._id = new MidataId(id);		
 		APSEntry.populateRecord(row, record);
 		record.isStream = entry.getBoolean("s");
 		record.isReadOnly = entry.getBoolean("ro");
@@ -307,7 +307,7 @@ class APSImplementation extends APS {
 		if (withOwner || record.isStream) {
 			String owner = entry.getString("owner");
 			if (owner != null)
-				record.owner = new ObjectId(owner);
+				record.owner = new MidataId(owner);
 			else
 				record.owner = eaps.getOwner();
 		}
@@ -451,7 +451,7 @@ class APSImplementation extends APS {
 				if (ckey.equals("owner")) wrapper.setKey("owner", eaps.getOwner().toByteArray());
 				else wrapper.setKey(ckey, null);
 			 } else {
-				ObjectId person = ckey.equals("owner") ? eaps.getOwner() : new ObjectId(ckey);
+				MidataId person = ckey.equals("owner") ? eaps.getOwner() : new MidataId(ckey);
 		        wrapper.setKey(ckey, KeyManager.instance.encryptKey(person, wrapper.getAPSKey()));
 			 }
 		   } catch (EncryptionNotSupportedException e) {}
@@ -493,7 +493,7 @@ class APSImplementation extends APS {
 		return eaps.isLoaded();
 	}
 	
-	private void addHistory(ObjectId recordId, boolean isStream, boolean isRemove) throws AppException {
+	private void addHistory(MidataId recordId, boolean isStream, boolean isRemove) throws AppException {
 		BasicBSONList history = (BasicBSONList) eaps.getPermissions().get("_history");
 		if (history != null) {
 			BasicBSONObject newEntry = new BasicBSONObject();
@@ -521,7 +521,7 @@ class APSImplementation extends APS {
 			BasicBSONObject entry = (BasicBSONObject) entry1;
 			if (entry.getLong("ts") >= minUpd && (entry.containsField("d") == removes)) {
 				DBRecord r = new DBRecord();
-				r._id = new ObjectId(entry.getString("r"));
+				r._id = new MidataId(entry.getString("r"));
 				r.isStream = entry.containsField("s");				
 				result.add(r);
 			}

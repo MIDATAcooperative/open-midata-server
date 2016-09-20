@@ -2,7 +2,7 @@ package models;
 
 import java.util.Date;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import models.enums.EventType;
 import models.enums.UserRole;
@@ -26,7 +26,7 @@ public class History implements JsonSerializable {
 	/**
 	 * id of person triggering the event
 	 */
-	public ObjectId who;
+	public MidataId who;
 	
 	/**
 	 * public name of person triggering the event. This may be not the persons real name but a pseudonym for studies.

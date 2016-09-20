@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bson.BSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
@@ -39,9 +39,9 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * This field is not encrypted but stored in the database.
 	 * 
 	 */
-	public ObjectId document;
+	public MidataId document;
 	
-	public ObjectId stream;
+	public MidataId stream;
 	
 	/**
 	 * a part name for records that are part of a document,
@@ -72,7 +72,7 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * The owner information is derived from information of the APS this record is stored in or 
 	 * from the owner of the stream this record is stored in.
 	 */
-	public ObjectId owner; 
+	public MidataId owner; 
 	
 	/**
 	 * firstname lastname of the owner of this record.
@@ -140,7 +140,7 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * 
 	 * The contents of this field is stored in the encrypted part of this record
 	 */
-	public  ObjectId app; 
+	public  MidataId app; 
 	
 	/**
 	 * the id of the user that created this record
@@ -148,7 +148,7 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	 * The contents of this field is stored in the encrypted part of this record.
 	 * If the creator is the same as the owner the creator is not stored 	
 	 */
-	public  ObjectId creator; 
+	public  MidataId creator; 
 	
 	/**
 	 * record creation timestamp
@@ -196,7 +196,7 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	/**
 	 * Other records that are referenced by this record
 	 */
-	public Set<ObjectId> dependencies;
+	public Set<MidataId> dependencies;
 
 	@Override
 	public int compareTo(Record other) {

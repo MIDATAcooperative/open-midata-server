@@ -13,7 +13,7 @@ import models.Plugin;
 import models.Record;
 import models.Space;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.Play;
 import play.mvc.BodyParser;
@@ -132,7 +132,7 @@ public class GenomeDataConverter extends Controller {
 		//if (owner == null) return badRequest("Invalid authToken.");
 
 		// parse the file
-		FileData fileData = RecordManager.instance.fetchFile(appToken.userId, new RecordToken(JsonValidation.getObjectId(json, "id").toString(), appToken.userId.toString()));
+		FileData fileData = RecordManager.instance.fetchFile(appToken.userId, new RecordToken(JsonValidation.getMidataId(json, "id").toString(), appToken.userId.toString()));
 		TreeMap<String, Object> map = new TreeMap<String, Object>();
 		errorMessage = parseInput(fileData.inputStream, map);
 		if (errorMessage != null) {
@@ -141,7 +141,7 @@ public class GenomeDataConverter extends Controller {
 
 		// create record
 		Record record = new Record();
-		record._id = new ObjectId();
+		record._id = new MidataId();
 		record.app = space.visualization;
 		record.created = DateTimeUtils.now();
 		record.creator = appToken.userId;

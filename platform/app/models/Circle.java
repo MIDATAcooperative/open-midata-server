@@ -6,7 +6,7 @@ import java.util.Set;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
@@ -52,7 +52,7 @@ public class Circle extends Consent implements Comparable<Circle> {
 		return Model.get(Circle.class, collection, properties, fields);
 	}
 	
-	public static Circle getByIdAndOwner(ObjectId circleId, ObjectId ownerId, Set<String> fields) throws InternalServerException {
+	public static Circle getByIdAndOwner(MidataId circleId, MidataId ownerId, Set<String> fields) throws InternalServerException {
 		return Model.get(Circle.class, collection, CMaps.map("_id", circleId).map("owner", ownerId), fields);
 	}
 
@@ -61,19 +61,19 @@ public class Circle extends Consent implements Comparable<Circle> {
 		return Model.getAll(Circle.class, collection, properties, fields);
 	}
 	
-	public static Set<Circle> getAllByOwner(ObjectId owner) throws InternalServerException {
+	public static Set<Circle> getAllByOwner(MidataId owner) throws InternalServerException {
 		return Model.getAll(Circle.class, collection, CMaps.map("owner", owner).map("type",  ConsentType.CIRCLE), Sets.create("name", "authorized", "order"));
 	}
 	
-	public static Set<Circle> getAllByMember(ObjectId member) throws InternalServerException {
+	public static Set<Circle> getAllByMember(MidataId member) throws InternalServerException {
 		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  ConsentType.CIRCLE), Sets.create("name", "order", "owner"));
 	}
 	
-	public static Set<Circle> getAllActiveByMember(ObjectId member) throws InternalServerException {
+	public static Set<Circle> getAllActiveByMember(MidataId member) throws InternalServerException {
 		return Model.getAll(Circle.class, collection, CMaps.map("authorized", member).map("type",  ConsentType.CIRCLE).map("status", ConsentStatus.ACTIVE), Sets.create("name", "order", "owner"));
 	}
 
-	public static void set(ObjectId circleId, String field, Object value) throws InternalServerException {
+	public static void set(MidataId circleId, String field, Object value) throws InternalServerException {
 		Model.set(Circle.class, collection, circleId, field, value);
 	}
 
@@ -88,9 +88,9 @@ public class Circle extends Consent implements Comparable<Circle> {
 		}*/
 	}
 
-	public static void delete(ObjectId ownerId, ObjectId circleId) throws InternalServerException {
+	public static void delete(MidataId ownerId, MidataId circleId) throws InternalServerException {
 		// find order first
-		Map<String, ObjectId> properties = new ChainedMap<String, ObjectId>().put("_id", circleId).get();
+		Map<String, MidataId> properties = new ChainedMap<String, MidataId>().put("_id", circleId).get();
 		Circle circle = get(properties, new ChainedSet<String>().add("order").get());
 
 		// decrement all order fields greater than the removed circle
@@ -105,7 +105,7 @@ public class Circle extends Consent implements Comparable<Circle> {
 		Model.delete(Circle.class, collection, properties);
 	}
 
-	public static int getMaxOrder(ObjectId ownerId) {
+	public static int getMaxOrder(MidataId ownerId) {
 		return OrderOperations.getMax(collection, ownerId);
 	}
 

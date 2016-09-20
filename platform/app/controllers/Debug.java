@@ -2,7 +2,7 @@ package controllers;
 
 import models.Admin;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.Play;
 import play.libs.Json;
@@ -37,8 +37,8 @@ public class Debug extends Controller {
 				
 		if (Play.application().configuration().getBoolean("demoserver", false)) {
 		
-			ObjectId userId = new ObjectId(request().username());
-			ObjectId apsId = id.equals("-") ? userId : new ObjectId(id);
+			MidataId userId = new MidataId(request().username());
+			MidataId apsId = id.equals("-") ? userId : new MidataId(id);
 			
 			EncryptedAPS enc = new EncryptedAPS(apsId, userId);
 									   			

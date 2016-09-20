@@ -16,7 +16,7 @@ import models.Plugin;
 import models.RecordGroup;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bson.types.ObjectId;
+import models.MidataId;
 import org.joda.time.format.ISODateTimeFormat;
 
 import utils.AccessLog;
@@ -44,9 +44,9 @@ public class Query {
 	private boolean fetchFromDB;
 	private boolean restrictedOnTime;
 	private APSCache cache;
-	private ObjectId apsId;		
+	private MidataId apsId;		
 		
-	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, ObjectId apsId) throws BadRequestException, InternalServerException {
+	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId) throws BadRequestException, InternalServerException {
 		this.properties = properties;
 		this.fields = fields;
 		this.cache = cache;
@@ -59,7 +59,7 @@ public class Query {
 		this(q, properties, q.getApsId());
 	}
 	
-	public Query(Query q, Map<String, Object> properties, ObjectId aps) throws BadRequestException, InternalServerException {
+	public Query(Query q, Map<String, Object> properties, MidataId aps) throws BadRequestException, InternalServerException {
 		this.properties = new HashMap<String, Object>(q.getProperties());
 		this.properties.putAll(properties);
 		this.fields = q.getFields();
@@ -81,7 +81,7 @@ public class Query {
 		return cache;
 	}
 	
-	public ObjectId getApsId() {
+	public MidataId getApsId() {
 		return apsId;
 	}
 	
@@ -117,7 +117,7 @@ public class Query {
 	public static Set<String> getRestriction(Object v, String name) throws BadRequestException {		
 		if (v instanceof String) {
 			return Collections.singleton((String) v);
-		} else if (v instanceof ObjectId) {
+		} else if (v instanceof MidataId) {
 			return Collections.singleton(v.toString());
 		} else if (v instanceof Set) {
 			return (Set) v;
@@ -128,18 +128,18 @@ public class Query {
 		} else throw new BadRequestException("error.internal","Bad Restriction 1: "+name);
 	}
 	
-	public Set<ObjectId> getObjectIdRestriction(String name) throws BadRequestException {
+	public Set<MidataId> getMidataIdRestriction(String name) throws BadRequestException {
 		Object v = properties.get(name);
-		if (v instanceof ObjectId) {
-			return Collections.singleton((ObjectId) v);
+		if (v instanceof MidataId) {
+			return Collections.singleton((MidataId) v);
 		/*} else if (v instanceof Set) {
 			return (Set) v;*/
 		} else if (v instanceof Collection) {
-			Set<ObjectId> results = new HashSet<ObjectId>();
-			for (Object obj : (Collection<?>) v) { results.add(new ObjectId(obj.toString())); }			
+			Set<MidataId> results = new HashSet<MidataId>();
+			for (Object obj : (Collection<?>) v) { results.add(new MidataId(obj.toString())); }			
 			return results;		
-		} else if (v instanceof String && ObjectId.isValid((String) v)) {
-			return Collections.singleton( new ObjectId((String) v));
+		} else if (v instanceof String && MidataId.isValid((String) v)) {
+			return Collections.singleton( new MidataId((String) v));
 		} else throw new BadRequestException("error.internal", "Bad Restriction 2: "+name);
 	}
 	
@@ -317,12 +317,12 @@ public class Query {
 		 
 		 if (properties.containsKey("app")) {
 			 Set<String> apps = getRestriction("app");
-			 Set<ObjectId> resolved = new HashSet<ObjectId>();
+			 Set<MidataId> resolved = new HashSet<MidataId>();
 			 for (Object app : apps) {
-				 if (!ObjectId.isValid(app.toString())) {
+				 if (!MidataId.isValid(app.toString())) {
 					 Plugin p = Plugin.getByFilename(app.toString(), Sets.create("_id"));	
 					 if (p!=null) resolved.add(p._id);
-				 } else resolved.add(new ObjectId(app.toString()));
+				 } else resolved.add(new MidataId(app.toString()));
 			 }
 			 properties.put("app", resolved);
 		 }
@@ -332,7 +332,7 @@ public class Query {
 			 Set<Object> resolved = new HashSet<Object>();
 			 for (Object owner : owners) {
 				 AccessLog.log("check owner:"+owner.toString());
-				 if (ObjectId.isValid(owner.toString())) {
+				 if (MidataId.isValid(owner.toString())) {
 					 resolved.add(owner);
 				 } else {
 					 if (owner.equals("self")) {

@@ -10,7 +10,7 @@ import models.Consent;
 import models.Member;
 import models.Record;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.dstu3.model.IdType;
@@ -61,7 +61,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     public Patient getResourceById(@IdParam IIdType theId) throws AppException {    	
     	    
     	String id = theId.getIdPart();
-    	ObjectId targetId = new ObjectId(id);
+    	MidataId targetId = new MidataId(id);
     	
     	ExecutionInfo info = info();
     	List<Record> allRecs = RecordManager.instance.list(info.executorId, info.targetAPS, CMaps.map("owner", targetId).map("format",  "fhir/Patient"), Record.ALL_PUBLIC);
@@ -341,7 +341,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     	}
     }
     
-    public static void updatePatientForAccount(ObjectId who) throws AppException {
+    public static void updatePatientForAccount(MidataId who) throws AppException {
       ExecutionInfo inf = new ExecutionInfo();
       inf.executorId = who;
       inf.targetAPS = who;
@@ -362,17 +362,17 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		resource.setId(record.owner.toString());		
 	}
     /*
-    private Set<ObjectId> accessableAccounts(ObjectId executor) throws AppException {
+    private Set<MidataId> accessableAccounts(MidataId executor) throws AppException {
     	Set<Consent> consents = Consent.getAllActiveByAuthorized(executor);
-    	Set<ObjectId> result = new HashSet<ObjectId>();
+    	Set<MidataId> result = new HashSet<MidataId>();
     	for (Consent consent : consents) {
     		result.add(consent.owner);
     	}
     	return result;
     }
     
-    private List<Patient> getAllAccessiblePatients(ObjectId executor) throws AppException {
-       Set<ObjectId> acc = accessableAccounts(executor);
+    private List<Patient> getAllAccessiblePatients(MidataId executor) throws AppException {
+       Set<MidataId> acc = accessableAccounts(executor);
        acc.add(executor);
        return patientsFromUserAccounts(CMaps.map("_id", acc));
     }

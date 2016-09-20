@@ -3,7 +3,7 @@ package utils.access.index;
 import java.util.Set;
 
 import org.bson.BSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -43,7 +43,7 @@ public class IndexPageModel extends Model {
 		Model.insert(collection, def);				
 	}
 	
-	public static IndexPageModel getById(ObjectId pageId) throws InternalServerException {
+	public static IndexPageModel getById(MidataId pageId) throws InternalServerException {
 		return Model.get(IndexPageModel.class, collection, CMaps.map("_id", pageId), ALL_PAGE);
 	}
 	

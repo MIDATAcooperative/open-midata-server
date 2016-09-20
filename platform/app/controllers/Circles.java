@@ -25,7 +25,7 @@ import models.enums.ConsentType;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -75,10 +75,10 @@ public class Circles extends APIController {
 		List<Circle> circles = null;
 
 		if (json.has("owner")) {
-			ObjectId owner = new ObjectId(request().username());
+			MidataId owner = new MidataId(request().username());
 			circles = new ArrayList<Circle>(Circle.getAllByOwner(owner));
 		} else if (json.has("member")) {
-			ObjectId member = new ObjectId(request().username());
+			MidataId member = new MidataId(request().username());
 			circles = new ArrayList<Circle>(Circle.getAllByMember(member));
 			ReferenceTool.resolveOwners(circles, true);
 		} else JsonValidation.validate(json, "owner");
@@ -108,7 +108,7 @@ public class Circles extends APIController {
 		
 		List<Consent> consents = null;
 	
-		ObjectId owner = new ObjectId(request().username());
+		MidataId owner = new MidataId(request().username());
 		if (properties.containsKey("member")) {
 		  consents = new ArrayList<Consent>(Consent.getAllByAuthorized(owner));
 		} else {
@@ -172,9 +172,9 @@ public class Circles extends APIController {
 		
 		// validate request
 		ConsentType type = JsonValidation.getEnum(json, "type", ConsentType.class);
-		ObjectId executorId = new ObjectId(request().username());
+		MidataId executorId = new MidataId(request().username());
 		String name = JsonValidation.getString(json, "name");
-		ObjectId userId = JsonValidation.getObjectId(json, "owner");
+		MidataId userId = JsonValidation.getMidataId(json, "owner");
 		if (userId == null) userId = executorId;
 		String passcode = json.has("passcode") ? JsonValidation.getPassword(json, "passcode") : null;
 						
@@ -219,10 +219,10 @@ public class Circles extends APIController {
 			}
 		}
 			
-		consent._id = new ObjectId();
+		consent._id = new MidataId();
 		consent.owner = userId;
 		consent.name = name;		
-		consent.authorized = new HashSet<ObjectId>();
+		consent.authorized = new HashSet<MidataId>();
 		consent.status = userId.equals(executorId) ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;
 		consent.validUntil = validUntil;
 		consent.createdBefore = createdBefore;
@@ -267,11 +267,11 @@ public class Circles extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result joinByPasscode() throws JsonValidationException, AppException {
 		// validate json
-		ObjectId executorId = new ObjectId(request().username());
+		MidataId executorId = new MidataId(request().username());
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "passcode", "owner");
 		String passcode = JsonValidation.getString(json, "passcode");
-		ObjectId ownerId = JsonValidation.getObjectId(json, "owner");
+		MidataId ownerId = JsonValidation.getMidataId(json, "owner");
 		
 		try {
 		   String hpasscode = PasswordHash.createHashGivenSalt(passcode.toCharArray(), ownerId.toByteArray());
@@ -303,8 +303,8 @@ public class Circles extends APIController {
 	@Security.Authenticated(MemberSecured.class)
 	public static Result delete(String circleIdString) throws JsonValidationException, AppException {
 		// validate request
-		ObjectId userId = new ObjectId(request().username());
-		ObjectId circleId = new ObjectId(circleIdString);
+		MidataId userId = new MidataId(request().username());
+		MidataId circleId = new MidataId(circleIdString);
 		
 		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("owner", "authorized", "type"));
 		if (consent == null) {
@@ -347,8 +347,8 @@ public class Circles extends APIController {
 		JsonValidation.validate(json, "users");
 		
 		// validate request
-		ObjectId userId = new ObjectId(request().username());
-		ObjectId circleId = new ObjectId(circleIdString);
+		MidataId userId = new MidataId(request().username());
+		MidataId circleId = new MidataId(circleIdString);
 		
 		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("authorized","type"));
 		if (consent == null) {
@@ -356,7 +356,7 @@ public class Circles extends APIController {
 		}
 		
 		// add users to circle (implicit: if not already present)
-		Set<ObjectId> newMemberIds = ObjectIdConversion.castToObjectIds(JsonExtraction.extractSet(json.get("users")));
+		Set<MidataId> newMemberIds = ObjectIdConversion.castToMidataIds(JsonExtraction.extractSet(json.get("users")));
 				
 		consent.authorized.addAll(newMemberIds);
 		Consent.set(consent._id, "authorized", consent.authorized);
@@ -378,8 +378,8 @@ public class Circles extends APIController {
 	@APICall
 	public static Result removeMember(String circleIdString, String memberIdString) throws JsonValidationException, AppException {
 		// validate request
-		ObjectId userId = new ObjectId(request().username());
-		ObjectId circleId = new ObjectId(circleIdString);
+		MidataId userId = new MidataId(request().username());
+		MidataId circleId = new MidataId(circleIdString);
 		
 		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("authorized","type"));
 		if (consent == null) {
@@ -387,12 +387,12 @@ public class Circles extends APIController {
 		}
 		
 		// remove member from circle (implicit: if present)
-		ObjectId memberId = new ObjectId(memberIdString);
+		MidataId memberId = new MidataId(memberIdString);
 		
 		consent.authorized.remove(memberId);
 		Consent.set(consent._id, "authorized", consent.authorized);
 
-		Set<ObjectId> memberIds = new HashSet<ObjectId>();
+		Set<MidataId> memberIds = new HashSet<MidataId>();
 		memberIds.add(memberId);
 		
 		RecordManager.instance.unshareAPSRecursive(consent._id, userId, memberIds);
@@ -406,12 +406,12 @@ public class Circles extends APIController {
 	 * @param consent consent to check
 	 * @throws AppException
 	 */
-	public static void consentStatusChange(ObjectId executor, Consent consent) throws AppException {
+	public static void consentStatusChange(MidataId executor, Consent consent) throws AppException {
 		boolean active = consent.status.equals(ConsentStatus.ACTIVE);
 		if (active) {
 			RecordManager.instance.shareAPS(consent._id, consent.owner, consent.authorized);
 		} else {
-			Set<ObjectId> auth = consent.authorized;
+			Set<MidataId> auth = consent.authorized;
 			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }
 			RecordManager.instance.unshareAPSRecursive(consent._id, consent.owner, consent.authorized);
 		}
@@ -423,7 +423,7 @@ public class Circles extends APIController {
 	 * @param consent consent to check
 	 * @throws AppException
 	 */
-	public static void consentSettingChange(ObjectId executor, Consent consent) throws AppException {
+	public static void consentSettingChange(MidataId executor, Consent consent) throws AppException {
 		BasicBSONObject dat = (BasicBSONObject) RecordManager.instance.getMeta(executor, consent._id, "_filter");
 		Map<String, Object> restrictions = (dat == null) ? new HashMap<String, Object>() : dat.toMap();
 		if (consent.validUntil != null) {
@@ -447,7 +447,7 @@ public class Circles extends APIController {
 	 * @return query
 	 * @throws InternalServerException
 	 */
-	public static Map<String, Object> getQueries(ObjectId userId, ObjectId apsId) throws InternalServerException {
+	public static Map<String, Object> getQueries(MidataId userId, MidataId apsId) throws InternalServerException {
 		Member member = Member.getById(userId, Sets.create("queries"));
 		if (member.queries!=null) return member.queries.get(apsId.toString());
 		return null;
@@ -460,7 +460,7 @@ public class Circles extends APIController {
 	 * @param query query to be set
 	 * @throws AppException
 	 */
-	public static void setQuery(ObjectId userId, ObjectId apsId, Map<String, Object> query) throws AppException {
+	public static void setQuery(MidataId userId, MidataId apsId, Map<String, Object> query) throws AppException {
 		Member member = Member.getById(userId, Sets.create("queries"));
 		if (member.queries==null) {
 			member.queries = new HashMap<String, Map<String, Object>>();
@@ -482,7 +482,7 @@ public class Circles extends APIController {
 	 * @param targetaps ID of content
 	 * @throws InternalServerException
 	 */
-	protected static void removeQueries(ObjectId userId, ObjectId targetaps) throws InternalServerException {
+	protected static void removeQueries(MidataId userId, MidataId targetaps) throws InternalServerException {
         Member member = Member.getById(userId, Sets.create("queries"));
 		
 		if (member.queries == null) return;

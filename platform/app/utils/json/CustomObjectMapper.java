@@ -2,7 +2,7 @@ package utils.json;
 
 import java.io.IOException;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
- * JSON mapper with ObjectId support
+ * JSON mapper with MidataId support
  *
  */
 public class CustomObjectMapper extends ObjectMapper {
@@ -24,8 +24,8 @@ public class CustomObjectMapper extends ObjectMapper {
 
 	public CustomObjectMapper() {
 		me = this;
-		SimpleModule module = new SimpleModule("ObjectIdModule");
-		module.addSerializer(ObjectId.class, new ObjectIdSerializer());
+		SimpleModule module = new SimpleModule("MidataIdModule");
+		module.addSerializer(MidataId.class, new MidataIdSerializer());
 		this.registerModule(module);
 		setSerializationInclusion(Include.NON_NULL);
 	}
@@ -43,10 +43,10 @@ public class CustomObjectMapper extends ObjectMapper {
 	
 }
 
-class ObjectIdSerializer extends JsonSerializer<ObjectId> {
+class MidataIdSerializer extends JsonSerializer<MidataId> {
 
 	@Override
-	public void serialize(ObjectId id, JsonGenerator generator, SerializerProvider provider) throws IOException,
+	public void serialize(MidataId id, JsonGenerator generator, SerializerProvider provider) throws IOException,
 			JsonProcessingException {
 	    generator.writeStartObject();
 		generator.writeFieldName("$oid");

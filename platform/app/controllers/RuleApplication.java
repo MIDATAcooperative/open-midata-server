@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.AccessLog;
 import utils.collections.Sets;
@@ -44,15 +44,15 @@ public class RuleApplication {
 		return filterRule.negate ? !rule.qualifies(record, filterRule.params) : rule.qualifies(record, filterRule.params);
 	}
 
-	public void applyRules(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws InternalServerException {
+	public void applyRules(MidataId userId, List<FilterRule> filterRules, MidataId sourceaps, MidataId targetaps, boolean ownerInformation) throws InternalServerException {
 		AccessLog.debug("BEGIN APPLY RULES");
 		Collection<Record> records = RecordManager.instance.list(userId, sourceaps, RecordManager.FULLAPS_FLAT_OWNER, RecordManager.COMPLETE_META);
-		Set<ObjectId> result = applyRules(records, filterRules);		
+		Set<MidataId> result = applyRules(records, filterRules);		
 		RecordManager.instance.share(userId, sourceaps, targetaps, result, ownerInformation);
 		
 		Collection<Record> streams = RecordManager.instance.list(userId, targetaps, RecordManager.STREAMS_ONLY_OWNER, RecordManager.COMPLETE_META);
 		AccessLog.debug("UNSHARE STREAMS CANDIDATES = "+streams.size());
-		Set<ObjectId> remove = new HashSet<ObjectId>();
+		Set<MidataId> remove = new HashSet<MidataId>();
 		for (Record stream : streams) {
 			if (!applyRules(stream, filterRules)) remove.add(stream._id);
 		}
@@ -62,8 +62,8 @@ public class RuleApplication {
 		
 	}
 	
-	public Set<ObjectId> applyRules(Collection<Record> records, List<FilterRule> filterRules) throws InternalServerException {
-        Set<ObjectId> result = new HashSet<ObjectId>();
+	public Set<MidataId> applyRules(Collection<Record> records, List<FilterRule> filterRules) throws InternalServerException {
+        Set<MidataId> result = new HashSet<MidataId>();
 	    		
 		for (Record record : records) {
 						
@@ -88,14 +88,14 @@ public class RuleApplication {
 		return qualifies;
 	}
 	
-	public void applyRules(ObjectId executingPerson, ObjectId userId, Record record, ObjectId useAps) throws InternalServerException {
+	public void applyRules(MidataId executingPerson, MidataId userId, Record record, MidataId useAps) throws InternalServerException {
 		Member member = Member.getById(userId, Sets.create("rules"));
 		if (member.rules!=null) {
 			for (String key : member.rules.keySet()) {
 				List<FilterRule> rules = member.rules.get(key);
 				if (applyRules(record, rules)) {
 					try {
-					  RecordManager.instance.share(executingPerson, useAps, new ObjectId(key), Collections.singleton(record._id), true);
+					  RecordManager.instance.share(executingPerson, useAps, new MidataId(key), Collections.singleton(record._id), true);
 					} catch (APSNotExistingException e) {
 						
 					}
@@ -116,7 +116,7 @@ public class RuleApplication {
 		}
 	}
 	
-	public void setupRules(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws InternalServerException {
+	public void setupRules(MidataId userId, List<FilterRule> filterRules, MidataId sourceaps, MidataId targetaps, boolean ownerInformation) throws InternalServerException {
 		if (filterRules.size() == 0) {
 			removeRules(userId, targetaps);
 			return;
@@ -134,13 +134,13 @@ public class RuleApplication {
 			
 	}
 	
-	public List<FilterRule> getRules(ObjectId userId, ObjectId apsId) throws InternalServerException {
+	public List<FilterRule> getRules(MidataId userId, MidataId apsId) throws InternalServerException {
 		Member member = Member.getById(userId, Sets.create("rules"));
 		if (member.rules!=null) return member.rules.get(apsId.toString());
 		return null;
 	}
 	
-	public void removeRules(ObjectId userId, ObjectId targetaps) throws InternalServerException {
+	public void removeRules(MidataId userId, MidataId targetaps) throws InternalServerException {
         Member member = Member.getById(userId, Sets.create("rules"));
 		
 		if (member.rules == null) return;
@@ -152,7 +152,7 @@ public class RuleApplication {
 	    }
 	}
 	
-    public void setupRulesForSpace(ObjectId userId, List<FilterRule> filterRules, ObjectId sourceaps, ObjectId targetaps, boolean ownerInformation) throws InternalServerException {				
+    public void setupRulesForSpace(MidataId userId, List<FilterRule> filterRules, MidataId sourceaps, MidataId targetaps, boolean ownerInformation) throws InternalServerException {				
 		Map<String, Object> query = queryFromRules(filterRules);						
 		RecordManager.instance.shareByQuery(userId, sourceaps, targetaps, query);
 	}

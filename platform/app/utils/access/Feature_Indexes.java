@@ -10,7 +10,7 @@ import java.util.Set;
 
 import models.Consent;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.AccessLog;
 import utils.access.index.IndexDefinition;
@@ -57,7 +57,7 @@ private Feature next;
 			}
 			
 			Set<Consent> consents = Feature_AccountQuery.getConsentsForQuery(q);			
-			Set<ObjectId> targetAps = new HashSet<ObjectId>();
+			Set<MidataId> targetAps = new HashSet<MidataId>();
 			if (Feature_AccountQuery.mainApsIncluded(q)) targetAps.add(q.getApsId());
 			for (Consent consent : consents) targetAps.add(consent._id);
 						
@@ -65,12 +65,12 @@ private Feature next;
 			IndexRoot root = IndexManager.instance.getIndexRootAndUpdate(q.getCache(), q.getCache().getOwner(), index, targetAps);
 			Collection<IndexMatch> matches = IndexManager.instance.queryIndex(root, condition);
 			
-			Map<ObjectId, Set<ObjectId>> filterMatches = new HashMap<ObjectId, Set<ObjectId>>();
+			Map<MidataId, Set<MidataId>> filterMatches = new HashMap<MidataId, Set<MidataId>>();
 			for (IndexMatch match : matches) {
 				if (targetAps.contains(match.apsId)) {
-					Set<ObjectId> ids = filterMatches.get(match.apsId);
+					Set<MidataId> ids = filterMatches.get(match.apsId);
 					if (ids == null) {
-						ids = new HashSet<ObjectId>();
+						ids = new HashSet<MidataId>();
 						filterMatches.put(match.apsId, ids);
 					}
 					ids.add(match.recordId);				
@@ -80,10 +80,10 @@ private Feature next;
 			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "direct", "encryptedData");
 			queryFields.addAll(q.getFieldsFromDB());
 			
-			for (Map.Entry<ObjectId, Set<ObjectId>> entry : filterMatches.entrySet()) {				
-			   ObjectId aps = entry.getKey();
+			for (Map.Entry<MidataId, Set<MidataId>> entry : filterMatches.entrySet()) {				
+			   MidataId aps = entry.getKey();
 			   AccessLog.log("Now processing aps:"+aps.toString());
-			   Set<ObjectId> ids = entry.getValue();
+			   Set<MidataId> ids = entry.getValue();
 			   
 			   if (ids.size() > INDEX_REVERSE_USE) {
 				   Query q4 = new Query(q, CMaps.map(), aps);
@@ -95,15 +95,17 @@ private Feature next;
 				   //result.addAll(unindexed);
 			   } else {
 				   Map<String, Object> readRecs = new HashMap<String, Object>();
+				   boolean add = false;
 				   if (ids.size() > 5) {
 					    Map<String, Object> props = new HashMap<String, Object>();
 						props.putAll(q.getProperties());
 						props.put("streams", "only");
 						List<DBRecord> matchStreams = next.query(new Query(props, Sets.create("_id"), q.getCache(), aps));
 						AccessLog.log("index query streams "+matchStreams.size()+" matches.");
-						Set<ObjectId> streams = new HashSet<ObjectId>();
+						Set<MidataId> streams = new HashSet<MidataId>();
 						for (DBRecord r : matchStreams) streams.add(r._id);
 						readRecs.put("stream", streams);
+						add = true;
 				   }
 				   readRecs.put("_id", ids);
 					
@@ -111,12 +113,17 @@ private Feature next;
 					
 					Query q3 = new Query(q, CMaps.map("strict", "true"), aps);
 					partresult = Feature_Prefetch.lookup(q3, partresult, next);
+					result.addAll(partresult);
 					
-		            Query q2 = new Query(q, CMaps.map("_id", ids));
-		            List<DBRecord> additional = next.query(q2);
-		            AccessLog.log("looked up directly="+partresult.size()+" additionally="+additional.size());
-		            result.addAll(partresult);
-					result.addAll(additional);
+					if (add) {
+		              Query q2 = new Query(q, CMaps.map(q.getProperties()).map("_id", ids), aps);
+		              List<DBRecord> additional = next.query(q2);
+		              result.addAll(additional);
+		              AccessLog.log("looked up directly="+partresult.size()+" additionally="+additional.size());
+					} else {
+		              AccessLog.log("looked up directly="+partresult.size());
+					}		            
+					
 			   }
 			}
 

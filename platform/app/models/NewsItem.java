@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
@@ -29,7 +29,7 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 	/**
 	 * the creator of the news item
 	 */
-	public ObjectId creator;
+	public MidataId creator;
 	
 	/**
 	 * The date of creation of this news item
@@ -64,7 +64,7 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 	/**
 	 * (optional) id of study this news item is about
 	 */
-	public ObjectId studyId;
+	public MidataId studyId;
 	
 	/**
 	 * whether this should be broadcast to all users
@@ -93,7 +93,7 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 		return Model.getAll(NewsItem.class, collection, properties, fields);
 	}
 
-	public static void set(ObjectId newsItemId, String field, Object value) throws InternalServerException {
+	public static void set(MidataId newsItemId, String field, Object value) throws InternalServerException {
 		Model.set(NewsItem.class, collection, newsItemId, field, value);
 	}
 
@@ -105,8 +105,8 @@ public class NewsItem extends Model implements Comparable<NewsItem> {
 		Model.upsert(collection, newsItem);		
 	}
 
-	public static void delete(ObjectId newsItemId) throws InternalServerException {
-		Model.delete(NewsItem.class, collection, new ChainedMap<String, ObjectId>().put("_id", newsItemId).get());
+	public static void delete(MidataId newsItemId) throws InternalServerException {
+		Model.delete(NewsItem.class, collection, new ChainedMap<String, MidataId>().put("_id", newsItemId).get());
 	}
 
 }

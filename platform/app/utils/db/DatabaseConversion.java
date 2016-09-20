@@ -10,7 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bson.types.ObjectId;
+
 import models.JsonSerializable;
+import models.MidataId;
 import models.Model;
 
 import com.mongodb.BasicDBList;
@@ -31,6 +34,10 @@ public class DatabaseConversion {
 	}
 	
 	private Object todb(Object inp) throws DatabaseConversionException {
+		if (inp instanceof MidataId) {
+			MidataId mid = (MidataId) inp;
+			if (mid.isLocal()) return mid.toObjectId(); else return mid.toString();
+		}
 		if (inp instanceof Enum) return ((Enum) inp).name();
 		if (inp instanceof Set) {
 			Set result = new HashSet();
@@ -54,7 +61,7 @@ public class DatabaseConversion {
 				result.put(key, todb(((Map) inp).get(key)));
 			}
 			return result;
-		}
+		}		
 		return inp;
 	}
 	
@@ -76,7 +83,7 @@ public class DatabaseConversion {
 			}
 		}
 		if (modelObject instanceof Model) {
-			dbObject.put("_id", ((Model) modelObject).get_id()); 
+			dbObject.put("_id", ((Model) modelObject).to_db_id()); 
 		}
 		return dbObject;
 	}
@@ -150,8 +157,9 @@ public class DatabaseConversion {
 			Class c = (Class) type;
 			if (JsonSerializable.class.isAssignableFrom(c)) {
 			  return toModel(c, (DBObject) value);
-			}
+			}			
 		}
+		if (value instanceof ObjectId) return new MidataId(value.toString());
 		return value;
 	}
 

@@ -21,7 +21,7 @@ import models.enums.APSSecurityLevel;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bson.BSON;
 import org.bson.BSONObject;
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import akka.japi.Pair;
 
@@ -182,7 +182,7 @@ public class EncryptionUtils {
 	
 	}
 	
-	public static void addKey(ObjectId target, EncryptedAPS eaps) throws AppException {
+	public static void addKey(MidataId target, EncryptedAPS eaps) throws AppException {
 		if (eaps.getSecurityLevel().equals(APSSecurityLevel.NONE) || eaps.getAPSKey() == null) {
 			if (target.equals(eaps.getOwner())) {
 				eaps.setKey("owner", eaps.getOwner().toByteArray());

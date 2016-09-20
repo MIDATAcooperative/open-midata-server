@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -30,10 +30,10 @@ public class JsonExtraction {
 	/**
 	 * Extracts a set with elements guaranteed to be strings.
 	 */
-	public static Set<ObjectId> extractObjectIdSet(JsonNode json) {
-		Set<ObjectId> set = new HashSet<ObjectId>();
+	public static Set<MidataId> extractMidataIdSet(JsonNode json) {
+		Set<MidataId> set = new HashSet<MidataId>();
 		for (JsonNode jsonNode : json) {
-			set.add(new ObjectId(jsonNode.asText()));
+			set.add(new MidataId(jsonNode.asText()));
 		}
 		return set;
 	}
@@ -81,7 +81,7 @@ public class JsonExtraction {
 	 */
 	private static Object extract(JsonNode json) {
 		if (json.isObject() && json.has("$oid")) {
-			return new ObjectId(json.get("$oid").asText());
+			return new MidataId(json.get("$oid").asText());
 		} else if (json.isObject()) {
 			return extractMap(json);
 		} else if (json.isArray()) {

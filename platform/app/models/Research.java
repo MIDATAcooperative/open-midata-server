@@ -2,7 +2,7 @@ package models;
 
 import java.util.Set;
 
-import org.bson.types.ObjectId;
+import models.MidataId;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
@@ -39,7 +39,7 @@ public class Research extends Model {
 		 return Model.exists(Research.class, collection, CMaps.map("name", name));
 	 }
 	 
-	 public static Research getById(ObjectId researchid, Set<String> fields) throws InternalServerException {
+	 public static Research getById(MidataId researchid, Set<String> fields) throws InternalServerException {
 			return Model.get(Research.class, collection, CMaps.map("_id", researchid), fields);
 		}
 	 
