@@ -83,6 +83,11 @@ public class FormatAPI extends Controller {
 	    return ok(Json.toJson(codes));
 	}
 	
+	/**
+	 * Create a new accepted code (Admin)
+	 * @return
+	 * @throws AppException
+	 */
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
@@ -100,6 +105,12 @@ public class FormatAPI extends Controller {
 		return ok();
 	}
 	
+	/**
+	 * Update an accepted code
+	 * @param id id of code to update
+	 * @return
+	 * @throws AppException
+	 */
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
@@ -117,6 +128,12 @@ public class FormatAPI extends Controller {
 		return ok();
 	}
 	
+	/**
+	 * Delete an accepted code from the database
+	 * @param id id of code to delete
+	 * @return
+	 * @throws AppException
+	 */
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
@@ -125,6 +142,11 @@ public class FormatAPI extends Controller {
 		return ok();
 	}
 	
+	/**
+	 * Create a new MIDATA content type
+	 * @return
+	 * @throws AppException
+	 */
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
@@ -148,6 +170,12 @@ public class FormatAPI extends Controller {
 		return ok();
 	}
 	
+	/**
+	 * Update an existing MIDATA content type
+	 * @param id id of content type to update
+	 * @return
+	 * @throws AppException
+	 */
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
@@ -171,6 +199,12 @@ public class FormatAPI extends Controller {
 		return ok();
 	}
 	
+	/**
+	 * Delete a MIDATA content type
+	 * @param id id of content type to delete
+	 * @return
+	 * @throws AppException
+	 */
 	@APICall
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)

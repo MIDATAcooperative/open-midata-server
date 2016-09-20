@@ -243,6 +243,11 @@ public class Circles extends APIController {
 		return ok(JsonOutput.toJson(consent, "Consent", Consent.ALL));
 	}
 	
+	/**
+	 * Each member has a FHIR patient record. That record should be shared with each consent so that a FHIR plugin can query for the patient. 
+	 * @param consent consent with which the patient record should be shared
+	 * @throws AppException
+	 */
 	public static void autosharePatientRecord(Consent consent) throws AppException {
 		List<Record> recs = RecordManager.instance.list(consent.owner, consent.owner, CMaps.map("owner", "self").map("format", "fhir/Patient"), Sets.create("_id"));
 		if (recs.size()>0) {
@@ -395,6 +400,12 @@ public class Circles extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * Call this method after the status of a consent has changed in order to activate or deactivate sharing as required. 
+	 * @param executor id of executing user
+	 * @param consent consent to check
+	 * @throws AppException
+	 */
 	public static void consentStatusChange(ObjectId executor, Consent consent) throws AppException {
 		boolean active = consent.status.equals(ConsentStatus.ACTIVE);
 		if (active) {
@@ -406,6 +417,12 @@ public class Circles extends APIController {
 		}
 	}
 	
+	/**
+	 * Updates APS of consent after settings of the consent have been changed.
+	 * @param executor id of executing user
+	 * @param consent consent to check
+	 * @throws AppException
+	 */
 	public static void consentSettingChange(ObjectId executor, Consent consent) throws AppException {
 		BasicBSONObject dat = (BasicBSONObject) RecordManager.instance.getMeta(executor, consent._id, "_filter");
 		Map<String, Object> restrictions = (dat == null) ? new HashMap<String, Object>() : dat.toMap();

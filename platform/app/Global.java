@@ -13,9 +13,7 @@ import utils.exceptions.AppException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
 import utils.json.CustomObjectMapper;
-import utils.search.Search;
 import utils.servlet.PlayHttpServletConfig;
-import utils.servlet.PlayHttpServletContext;
 
 /**
  * Actions that need to be done on application start and stop.

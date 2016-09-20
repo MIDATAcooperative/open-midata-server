@@ -38,12 +38,19 @@ import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
+/**
+ * Automatically run plugins once a day for auto import of records
+ *
+ */
 public class AutoRun extends APIController {
 
 		
 	private static Cancellable importer;
 	private static ActorRef manager;
 	
+	/**
+	 * initialize import job launcher
+	 */
 	public static void init() {
 		
 		manager = Akka.system().actorOf(Props.create(ImportManager.class), "manager");
@@ -55,42 +62,77 @@ public class AutoRun extends APIController {
                 Akka.system().dispatcher(), null);		
 	}
 	
+	/**
+	 * shutdown job launcher
+	 */
 	public static void shutdown() {
 		if (importer != null) importer.cancel();
 	}
 	
-	public static Result run() throws AppException {
-		
-		//String host = request().getHeader("Origin");
-  	     			
+	/**
+	 * manually trigger import. Only for testing.
+	 * @return
+	 * @throws AppException
+	 */
+	public static Result run() throws AppException {		  	     		
 		manager.tell(new StartImport(), ActorRef.noSender());		
 		return ok();
 	}
 	
+	/**
+	 * request to run plugin for a specific space
+	 *
+	 */
 	public static class ImportRequest {
 		private final ObjectId autorunner;
 		private final Space space;
 		
+		/**
+		 * Contruct import request
+		 * @param autorunner id of executing "user". (There is one "autorun" user in the database)
+		 * @param space (id of space to run plugin)
+		 */
 		public ImportRequest(ObjectId autorunner, Space space) {
 			this.autorunner = autorunner;
 			this.space = space;
 		}
 		
+		/**
+		 * Retrieve id of autorun user
+		 * @return id
+		 */
 		public ObjectId getAutorunner() {
 			return autorunner;
 		}
+		
+		/**
+		 * Retrieve space to run plugin
+		 * @return id of space
+		 */
 		public Space getSpace() {
 			return space;
 		}				
 	}
 	
+	/**
+	 * response from import plugin for a space
+	 *
+	 */
 	public static class ImportResult {
 		private final int exitCode;
 
+		/**
+		 * Construct import result
+		 * @param exitCode
+		 */
 		public ImportResult(int exitCode) {
 			this.exitCode = exitCode;
 		}
 		
+		/**
+		 * Retrieve exit code of plugin
+		 * @return
+		 */
 		public int getExitCode() {
 			return exitCode;
 		}
@@ -98,10 +140,19 @@ public class AutoRun extends APIController {
 		
 	}
 	
+	/**
+	 * Start import message.
+	 * At this time there are no parameters to pass
+	 *
+	 */
 	public static class StartImport {
 		
 	}
 	
+	/**
+	 * Akka actor that runs the plugin of a specific space
+	 *
+	 */
 	public static class Importer extends UntypedActor {
 
 		@Override
@@ -164,6 +215,10 @@ public class AutoRun extends APIController {
 		
 	}
 	
+	/**
+	 * Akka actor that manages the import process
+	 *
+	 */
 	public static class ImportManager extends UntypedActor {
 
 		private final Router workerRouter;
@@ -171,6 +226,9 @@ public class AutoRun extends APIController {
 		private int numberSuccess = 0;
 		private int numberFailure = 0;
 		
+		/**
+		 * Constructor
+		 */
 		public ImportManager() {
 			this.nrOfWorkers = 4;
 			

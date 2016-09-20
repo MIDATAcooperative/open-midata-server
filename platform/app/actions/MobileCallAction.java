@@ -1,6 +1,5 @@
 package actions;
 
-import play.Logger;
 import play.libs.F;
 import play.libs.Json;
 import play.mvc.Action;
@@ -10,7 +9,6 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.access.RecordManager;
 import utils.exceptions.BadRequestException;
-import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation.JsonValidationException;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -22,8 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class MobileCallAction extends Action<MobileCall> {
 
     public F.Promise<Result> call(Http.Context ctx) throws Throwable { 
-    	try {
-    	  AccessLog.log("MOBILE");
+    	try {    	  
     	  JsonNode json = ctx.request().body().asJson();
     	  ctx.args.put("json", json);
     	  ctx.response().setHeader("Access-Control-Allow-Origin", "*");    	  

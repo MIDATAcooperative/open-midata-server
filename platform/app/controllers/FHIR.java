@@ -28,16 +28,32 @@ public class FHIR extends Controller {
 	 */
 	public static FHIRServlet servlet;
 	
+	/**
+	 * Handling of OPTIONS requests for all pathes except root path
+	 * @param all
+	 * @return
+	 */
 	@MobileCall
 	public static Result checkPreflight(String all) {		
 		return ok();
 	}
 	
+	/**
+	 * Handling of OPTIONS requests for root path
+	 * @return
+	 */
 	@MobileCall
 	public static Result checkPreflightRoot() {		
 		return ok();
 	}
 	
+	/**
+	 * GET Action on root path
+	 * @return
+	 * @throws AppException
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
 	public static Result getRoot() throws AppException, IOException, ServletException {
@@ -80,7 +96,13 @@ public class FHIR extends Controller {
 		return status(res.getStatus());
 	}
 	
-	
+	/**
+	 * POST action of root path (FHIR transactions)
+	 * @return
+	 * @throws AppException
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
 	public static Result postRoot() throws AppException, IOException, ServletException {
@@ -123,6 +145,13 @@ public class FHIR extends Controller {
 		return status(res.getStatus());
 	}
 	
+	/**
+	 * PUT action on root path
+	 * @return
+	 * @throws AppException
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
 	public static Result putRoot() throws AppException, IOException, ServletException {
@@ -165,6 +194,13 @@ public class FHIR extends Controller {
 		return status(res.getStatus());
 	}
 	
+	/**
+	 * DELETE action on root path
+	 * @return
+	 * @throws AppException
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
 	public static Result deleteRoot() throws AppException, IOException, ServletException {

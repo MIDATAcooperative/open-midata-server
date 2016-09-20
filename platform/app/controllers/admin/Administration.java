@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Map;
 
 import models.Admin;
-import models.Developer;
 import models.User;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
@@ -21,17 +20,13 @@ import org.bson.types.ObjectId;
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 
 import controllers.APIController;
 import controllers.Application;
-import controllers.Market;
 
 import play.mvc.BodyParser;
-import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import utils.access.RecordManager;
 import utils.auth.AdminSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
@@ -52,7 +47,7 @@ public class Administration extends APIController {
 	 * change status of target user
 	 * @return status ok
 	 * @throws JsonValidationException
-	 * @throws InternalServerException
+	 * @throws AppException
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall

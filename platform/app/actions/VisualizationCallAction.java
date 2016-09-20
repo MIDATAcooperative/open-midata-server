@@ -10,7 +10,6 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.access.RecordManager;
 import utils.exceptions.BadRequestException;
-import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation.JsonValidationException;
 
 import com.fasterxml.jackson.databind.JsonNode;

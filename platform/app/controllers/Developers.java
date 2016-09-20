@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import models.AccessPermissionSet;
 import models.Admin;
 import models.Developer;
 
@@ -18,21 +17,18 @@ import models.enums.UserStatus;
 
 import org.bson.types.ObjectId;
 
-import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.collections.Sets;
-import utils.evolution.AccountPatches;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.json.JsonValidation;
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * login and registration for developers
