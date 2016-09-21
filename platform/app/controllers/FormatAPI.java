@@ -27,6 +27,7 @@ import play.mvc.Security;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.collections.Sets;
+import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
@@ -272,7 +273,8 @@ public class FormatAPI extends Controller {
 		
         JsonValidation.validate(json, "properties", "fields");		
 		// get parameters
-		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));						
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));	
+		ObjectIdConversion.convertMidataIds(properties, "_id");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
 		// http://loinc.org
@@ -311,7 +313,8 @@ public class FormatAPI extends Controller {
 		
         JsonValidation.validate(json, "properties", "fields");		
 		// get parameters
-		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));						
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));		
+		ObjectIdConversion.convertMidataIds(properties, "_id");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
 				

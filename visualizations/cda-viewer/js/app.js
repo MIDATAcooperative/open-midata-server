@@ -22,7 +22,7 @@ cda.controller('CDACtrl', ['$scope', '$http', '$location', 'midataPortal',
 			$http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/search", JSON.stringify(data)).
 				success(function(records) {
 					$scope.records = records;					
-					angular.forEach(records, function(record) { $scope.displayCDA(record._id.$oid); });
+					angular.forEach(records, function(record) { $scope.displayCDA(record._id); });
 					$scope.loading--;
 				}).
 				error(function(err) {

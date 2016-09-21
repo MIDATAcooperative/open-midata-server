@@ -21,6 +21,10 @@ var en = {
 	
 	"count_entries" : "{{ count }} Documents",
 	"last_entry_at" : "Last document added at",
+	
+	"teaser1" : "Upload your health documents.",
+	"teaser2" : "",
+	"teaser3" : "",
 		
 	"doctor" : "-1- General documents",
 	"specialist" : "-5- Typically from specialists",

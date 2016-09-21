@@ -93,7 +93,7 @@ angular.module('chartApp')
                       content : record.content,
                       context : cnt,
                       dateTime : dateTime,  
-                      owner : record.owner ? record.owner.$oid : "?"
+                      owner : record.owner ? record.owner : "?"
               };
               if (Number.isFinite(e.value)) entries[idx++] = e;
           };
@@ -122,7 +122,7 @@ angular.module('chartApp')
                               content : record.content,
                               context : entry.context,
                               dateTime : dateTime,                              
-                              owner : record.owner ? record.owner.$oid : "?"
+                              owner : record.owner ? record.owner : "?"
                       };
                       if (Number.isFinite(e.value)) entries[idx++] = e;
                   });

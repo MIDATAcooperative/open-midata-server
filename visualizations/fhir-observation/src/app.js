@@ -236,7 +236,7 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 		.then(function(sumResult) {
 			var ids = [];
 			var contents = {};
-			angular.forEach(sumResult.data, function(entry) { ids.push(entry.newestRecord.$oid);contents[entry.contents[0]] = entry.count; }); 	
+			angular.forEach(sumResult.data, function(entry) { ids.push(entry.newestRecord);contents[entry.contents[0]] = entry.count; }); 	
 			
 			var res = [];
 			if (alwaysAddMeasures) {
@@ -268,7 +268,7 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 		console.log(params);
 		return midataServer.getRecords(midataServer.authToken, query, ["name", "created", "content", "data", "owner", "ownerName"])
 		.then(function(results) {
-			angular.forEach(results.data, function(rec) { result.owners[rec.owner.$oid] = rec.ownerName; });
+			angular.forEach(results.data, function(rec) { result.owners[rec.owner] = rec.ownerName; });
 			console.log(result.owners);
 			return results.data;			
 		}, function(err) {

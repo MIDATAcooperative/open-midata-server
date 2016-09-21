@@ -11,7 +11,7 @@ angular.module('portal')
 	};
 	
 	$scope.deleteNews = function(newsItem) {
-		$scope.status.doAction('delete', news.delete(newsItem._id.$oid))
+		$scope.status.doAction('delete', news.delete(newsItem._id))
 		.then(function(data) { $scope.init(); });
 	};
 			

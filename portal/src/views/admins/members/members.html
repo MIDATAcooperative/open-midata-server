@@ -49,7 +49,7 @@
 				</tr>
 								
 				<tr dir-paginate="member in members | itemsPerPage : 10" pagination-id="membertable">
-					<td><a href="javascript:" ui-sref="^.address({ userId : member._id.$oid })">{{ member.midataID || 'none' }}</a></td>
+					<td><a href="javascript:" ui-sref="^.address({ userId : member._id })">{{ member.midataID || 'none' }}</a></td>
 					<td>{{ member.firstname }}</td>
 					<td>{{ member.lastname }}</td>
 					<td>{{ member.email }}</td>

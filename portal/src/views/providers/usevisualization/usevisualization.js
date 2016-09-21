@@ -7,7 +7,7 @@ angular.module('portal')
 	$scope.memberId = $state.params.memberId;
 	$scope.consentId = $state.params.consentId;
 	$scope.loading = true;
-	$scope.space = { "visualization" : { "$oid" : $state.params.visualizationId }};
+	$scope.space = { "visualization" : $state.params.visualizationId};
 	//$scope.memberUrl = portalRoutes.controllers.ProviderFrontend.member($scope.memberId).url;
 	
 	// get current user
@@ -19,7 +19,7 @@ angular.module('portal')
 		
 	// load visualization url for given space
 	loadBaseUrl = function(space) {
-		server.get(jsRoutes.controllers.Plugins.getUrl(space.visualization.$oid).url).
+		server.get(jsRoutes.controllers.Plugins.getUrl(space.visualization).url).
 			success(function(url) {
 				space.baseUrl = url;
 				getAuthToken(space);

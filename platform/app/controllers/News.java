@@ -23,6 +23,7 @@ import utils.auth.MemberSecured;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
+import utils.db.ObjectIdConversion;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
@@ -50,6 +51,7 @@ public class News extends Controller {
 		
 		// get news items
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "studyId");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		List<NewsItem> newsItems;
 		

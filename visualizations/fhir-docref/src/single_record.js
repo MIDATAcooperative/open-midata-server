@@ -31,11 +31,11 @@ angular.module('fhirDocref')
  		}; 		 		
  		
  		$scope.download = function() {
-        	document.location.href = midataServer.baseurl+"/v1/plugin_api/records/file?authToken="+encodeURIComponent(midataServer.authToken)+"&id="+encodeURIComponent($scope.record._id.$oid);
+        	document.location.href = midataServer.baseurl+"/v1/plugin_api/records/file?authToken="+encodeURIComponent(midataServer.authToken)+"&id="+encodeURIComponent($scope.record._id);
         };
         
         $scope.update = function() {
-        	midataServer.updateRecord(midataServer.authToken, $scope.record._id.$oid, $scope.record.version, $scope.record.data)
+        	midataServer.updateRecord(midataServer.authToken, $scope.record._id, $scope.record.version, $scope.record.data)
         	.then(function() {        	
         	  $scope.init();
         	});

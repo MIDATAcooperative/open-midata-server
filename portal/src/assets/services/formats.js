@@ -31,27 +31,27 @@ angular.module('services')
 	};
 	
 	service.updateCode = function(code) {
-		return server.post(jsRoutes.controllers.FormatAPI.updateCode(code._id.$oid).url, JSON.stringify(code));
+		return server.post(jsRoutes.controllers.FormatAPI.updateCode(code._id).url, JSON.stringify(code));
 	};
 	
 	service.updateContent = function(content) {
-		return server.post(jsRoutes.controllers.FormatAPI.updateContent(content._id.$oid).url, JSON.stringify(content));
+		return server.post(jsRoutes.controllers.FormatAPI.updateContent(content._id).url, JSON.stringify(content));
 	};
 	
 	service.updateGroup = function(group) {
-		return server.post(jsRoutes.controllers.FormatAPI.updateGroup(group._id.$oid).url, JSON.stringify(group));
+		return server.post(jsRoutes.controllers.FormatAPI.updateGroup(group._id).url, JSON.stringify(group));
 	};
 	
 	service.deleteCode = function(code) {
-		return server.delete(jsRoutes.controllers.FormatAPI.deleteCode(code._id.$oid).url);
+		return server.delete(jsRoutes.controllers.FormatAPI.deleteCode(code._id).url);
 	};
 	
 	service.deleteContent = function(content) {
-		return server.delete(jsRoutes.controllers.FormatAPI.deleteContent(content._id.$oid).url);
+		return server.delete(jsRoutes.controllers.FormatAPI.deleteContent(content._id).url);
 	};
 	
 	service.deleteGroup = function(group) {
-		return server.delete(jsRoutes.controllers.FormatAPI.deleteGroup(group._id.$oid).url, JSON.stringify(group));
+		return server.delete(jsRoutes.controllers.FormatAPI.deleteGroup(group._id).url, JSON.stringify(group));
 	};
 	
 		

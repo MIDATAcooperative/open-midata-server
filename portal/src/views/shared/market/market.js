@@ -28,7 +28,7 @@ angular.module('portal')
 
 	// show app details
 	$scope.showAppDetails = function(app) {		
-		$state.go("^.app", { appId : app._id.$oid, context : $state.params.context, next : $state.params.next });
+		$state.go("^.app", { appId : app._id, context : $state.params.context, next : $state.params.next });
 	};
 	
 	$scope.getVisualizationImage = function(app) {
@@ -41,7 +41,7 @@ angular.module('portal')
 	
 	// show visualization details
 	$scope.showVisualizationDetails = function(visualization) {
-		$state.go("^.visualization", { visualizationId : visualization._id.$oid, context : $state.params.context, next : $state.params.next });		
+		$state.go("^.visualization", { visualizationId : visualization._id, context : $state.params.context, next : $state.params.next });		
 	};
 	
 	$scope.setTag = function(tag) {

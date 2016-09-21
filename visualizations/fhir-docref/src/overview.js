@@ -39,7 +39,7 @@ angular.module('fhirDocref')
         $scope.data = data; 
         
         $scope.download = function(record) {
-        	document.location.href = midataServer.baseurl+"/v1/plugin_api/records/file?authToken="+encodeURIComponent(midataServer.authToken)+"&id="+encodeURIComponent(record._id.$oid);
+        	document.location.href = midataServer.baseurl+"/v1/plugin_api/records/file?authToken="+encodeURIComponent(midataServer.authToken)+"&id="+encodeURIComponent(record._id);
         };
                 
  		

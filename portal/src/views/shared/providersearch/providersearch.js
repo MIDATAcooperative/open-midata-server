@@ -33,7 +33,7 @@ angular.module('views')
     
     $scope.addConsent = function(prov) {
     	if ($scope.view.setup && $scope.view.setup.studyId) {
-    	   studies.updateParticipation($scope.view.setup.studyId, { add : { providers : [ prov._id.$oid ]}})
+    	   studies.updateParticipation($scope.view.setup.studyId, { add : { providers : [ prov._id ]}})
     	   .then(function() {
     	     views.changed($scope.view.id);
     	     views.disableView($scope.view.id);
@@ -42,7 +42,7 @@ angular.module('views')
     		$scope.view.setup.callback(prov);
     		views.disableView($scope.view.id);
     	} else {
-    	   $state.go("^.newconsent", { authorize : prov._id.$oid });
+    	   $state.go("^.newconsent", { authorize : prov._id });
     	}
     };
     

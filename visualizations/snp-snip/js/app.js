@@ -89,12 +89,12 @@ hdcSnpSnip.controller('SnpSnipCtrl', ['$scope', '$http', '$sce', '$location', 'm
 			$http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/search", JSON.stringify(data)).
 				success(function(records) {
 					for (i in records) {
-						var curId = records[i]._id.$oid;
+						var curId = records[i]._id;
 						$scope.recordIds.push(curId);
 						$scope.records[curId] = records[i];
 					}
 					if (records.length) {
-						$scope.selectedRecord = $scope.records[records[0]._id.$oid];
+						$scope.selectedRecord = $scope.records[records[0]._id];
 					}
 					$scope.imported = true;
 				}).
@@ -114,7 +114,7 @@ hdcSnpSnip.controller('SnpSnipCtrl', ['$scope', '$http', '$sce', '$location', 'm
 			$http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/search", JSON.stringify(data)).
 				success(function(records) {
 					for (i in records) {
-						var curId = records[i]._id.$oid;
+						var curId = records[i]._id;
 						for (rsNum in records[i].data) {
 							$scope.records[curId][rsNum] = records[i].data[rsNum];
 						}

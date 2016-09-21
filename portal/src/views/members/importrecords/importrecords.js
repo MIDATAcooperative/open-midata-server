@@ -10,7 +10,7 @@ angular.module('portal')
 	$scope.finished = false;
 	$scope.status = new status(true);
 	$scope.spaceId = $state.params.spaceId;
-	$scope.space = { "_id" : { "$oid" : $scope.spaceId } };
+	$scope.space = { "_id" : $scope.spaceId };
 	
 	
 	// get current user
@@ -30,7 +30,7 @@ angular.module('portal')
 		
 	// get the authorization token for the current space
 	getAuthToken = function(space, again) {
-		var func = again ? $scope.status.doBusy(spaces.regetUrl(space._id.$oid)) : $scope.status.doBusy(spaces.getUrl(space._id.$oid));
+		var func = again ? $scope.status.doBusy(spaces.regetUrl(space._id)) : $scope.status.doBusy(spaces.getUrl(space._id));
 		func.then(function(result) {
 			if (result.data && result.data.authorizationUrl) {
 		      app = result.data;
@@ -151,7 +151,7 @@ angular.module('portal')
 	};
 	
 	$scope.goBack = function() {
-		   spaces.get({ "_id" :  { $oid : $scope.spaceId } }, ["context"]).
+		   spaces.get({ "_id" :  $scope.spaceId }, ["context"]).
 		   then(function(result) { $state.go('^.dashboard', { dashId : result.data[0].context }); });
 	};
 		

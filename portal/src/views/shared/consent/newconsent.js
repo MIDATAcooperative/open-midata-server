@@ -30,7 +30,7 @@ angular.module('portal')
 		if ($state.params.consentId) {
 			$scope.consentId = $state.params.consentId;
 			
-			$scope.status.doBusy(circles.listConsents({ "_id" : { "$oid" : $state.params.consentId } }, ["name", "type", "status", "authorized","createdBefore", "validUntil" ]))
+			$scope.status.doBusy(circles.listConsents({ "_id" : $state.params.consentId }, ["name", "type", "status", "authorized","createdBefore", "validUntil" ]))
 			.then(function(data) {
 				
 				$scope.consent = $scope.myform = data.data[0];				
@@ -38,7 +38,7 @@ angular.module('portal')
 
                 var role = ($scope.consent.type === "HEALTHCARE") ? "PROVIDER" : null;				
 				angular.forEach($scope.consent.authorized, function(p) {					
-					$scope.authpersons.push(session.resolve(p.$oid, function() {
+					$scope.authpersons.push(session.resolve(p, function() {
 						var res = { "_id" : p };
 						if (role) res.role = role;
 						return users.getMembers(res, (role == "PROVIDER" ? users.ALLPUBLIC : users.MINIMAL )); 
@@ -62,9 +62,9 @@ angular.module('portal')
 		
 		if ($state.params.authorize != null) {
 			$scope.consent.type = "HEALTHCARE";			
-			$scope.consent.authorized = [ { "$oid" : $state.params.authorize } ];
+			$scope.consent.authorized = [ $state.params.authorize ];
 			
-			hc.search({ "_id" : { "$oid" : $state.params.authorize } }, [ "firstname", "lastname", "city", "address1", "address2", "country"])
+			hc.search({ "_id" :  $state.params.authorize }, [ "firstname", "lastname", "city", "address1", "address2", "country"])
 			.then(function(data) {
 				$scope.authpersons = data.data;
 				$scope.consent.name = "Health Professional: "+$scope.authpersons[0].firstname+" "+$scope.authpersons[0].lastname;
@@ -82,14 +82,14 @@ angular.module('portal')
 		then(function(data) {
 			if ($scope.authpersons.length > 0) {
 				$scope.consent.authorized = [];
-				angular.forEach($scope.authpersons, function(p) { $scope.consent.authorized.push({ "$oid" : p._id.$oid }); });
+				angular.forEach($scope.authpersons, function(p) { $scope.consent.authorized.push( p._id); });
 				
-				circles.addUsers(data.data._id.$oid, $scope.consent.authorized )
+				circles.addUsers(data.data._id, $scope.consent.authorized )
 				.then(function() {
-					$state.go("^.recordsharing", { selectedType : "circles", selected : data.data._id.$oid });
+					$state.go("^.recordsharing", { selectedType : "circles", selected : data.data._id });
 				});
 			} else {
-				$state.go("^.recordsharing", { selectedType : "circles", selected : data.data._id.$oid });
+				$state.go("^.recordsharing", { selectedType : "circles", selected : data.data._id });
 			}
 			 
 		 });
@@ -98,7 +98,7 @@ angular.module('portal')
 	
 	$scope.removePerson = function(person) {
 		if ($scope.consentId) {
-		server.delete(jsRoutes.controllers.Circles.removeMember($scope.consent._id.$oid, person._id.$oid).url).
+		server.delete(jsRoutes.controllers.Circles.removeMember($scope.consent._id, person._id).url).
 			success(function() {				
 				$scope.authpersons.splice($scope.authpersons.indexOf(person), 1);
 			}).
@@ -138,26 +138,26 @@ angular.module('portal')
 	};
 	
 	$scope.deleteConsent = function() {
-		server.delete(jsRoutes.controllers.Circles["delete"]($scope.consent._id.$oid).url).
+		server.delete(jsRoutes.controllers.Circles["delete"]($scope.consent._id).url).
 		then(function() {
 			$state.go("^.circles");
 		});
 	};
 	
 	$scope.rejectConsent = function() {
-		hc.reject($scope.consent._id.$oid).then(function() { $scope.init(); });
+		hc.reject($scope.consent._id).then(function() { $scope.init(); });
 	};
 	
 	$scope.confirmConsent = function() {
-		hc.confirm($scope.consent._id.$oid).then(function() { $scope.init(); });	
+		hc.confirm($scope.consent._id).then(function() { $scope.init(); });	
 	};
 	
 	$scope.showStudyDetails = function() {
-		$state.go('^.studydetails', { studyId : $scope.consent._id.$oid });		
+		$state.go('^.studydetails', { studyId : $scope.consent._id });		
 	};
 	
 	$scope.showPasscode = function() {
-		$scope.status.doAction('passcode', circles.listConsents({ "_id" : { "$oid" : $state.params.consentId } }, ["type", "passcode" ]))
+		$scope.status.doAction('passcode', circles.listConsents({ "_id" : $state.params.consentId }, ["type", "passcode" ]))
 		.then(function(data) {
 			$scope.consent.passcode = data.data[0].passcode;
 		});

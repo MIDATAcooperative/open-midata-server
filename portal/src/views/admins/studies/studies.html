@@ -14,7 +14,7 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="study in results">
-	      <td><a ui-sref="^.study({ studyId : study._id.$oid})">{{ study.name }}</a></td>	  
+	      <td><a ui-sref="^.study({ studyId : study._id})">{{ study.name }}</a></td>	  
 	      
 	      <td>{{ study.createdAt | date }}</td>	         
 	    </tr>

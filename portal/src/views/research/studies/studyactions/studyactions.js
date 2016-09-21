@@ -20,7 +20,7 @@ angular.module('portal')
 		server.post(jsRoutes.controllers.research.Studies.shareWithGroup($scope.studyId, $scope.group).url)
 		.then(function(result) {
 			
-		   $scope.aps = result.data._id.$oid;
+		   $scope.aps = result.data._id;
 		   views.setView("group_records", { aps : $scope.aps, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type : "studyrelated" });		   
 		});
 		

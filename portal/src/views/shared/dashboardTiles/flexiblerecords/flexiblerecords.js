@@ -21,13 +21,13 @@ angular.module('views')
 	};
 	
 	$scope.removeRecord = function(record) {
-		$scope.status.doSilent(records.unshare($scope.view.setup.aps, record._id.$oid, $scope.view.setup.type));
+		$scope.status.doSilent(records.unshare($scope.view.setup.aps, record._id, $scope.view.setup.type));
 		$scope.records.splice($scope.records.indexOf(record), 1);
 	};
 	
 	$scope.shareRecords = function() {
 		var selection = _.filter($scope.records, function(rec) { return rec.marked; });
-		selection = _.chain(selection).pluck('_id').pluck('$oid').value();
+		selection = _.chain(selection).pluck('_id').value();
 		$scope.status.doSilent(records.share($scope.view.setup.targetAps, selection, $scope.view.setup.type))
 		.then(function () {
 		   views.changed($attrs.viewid);

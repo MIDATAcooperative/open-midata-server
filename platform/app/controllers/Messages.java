@@ -53,6 +53,7 @@ public class Messages extends Controller {
 		
 		// get messages
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		ObjectIdConversion.convertMidataIds(properties, "_id", "sender", "receivers");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		List<Message> messages = new ArrayList<Message>(Message.getAll(properties, fields));
 		

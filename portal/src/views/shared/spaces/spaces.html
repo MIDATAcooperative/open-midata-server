@@ -39,7 +39,7 @@
 						<button class="btn btn-danger" ng-click="deleteSpace(space)">
 							<span class="glyphicon glyphicon-remove-sign"></span> <span translate="spaces.delete_btn"></span>
 						</button>
-						<a class="btn btn-primary" ui-sref="^.recordsharing({ selectedType : 'spaces', selected : space._id.$oid})">
+						<a class="btn btn-primary" ui-sref="^.recordsharing({ selectedType : 'spaces', selected : space._id})">
 						    <span class="glyphicon glyphicon-share"></span> <span translate="spaces.used_btn"></span>
 						</a>
 						<button class="btn btn-primary" ng-hide="space.compare" ng-click="startShare(space)">

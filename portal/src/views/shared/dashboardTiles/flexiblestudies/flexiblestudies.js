@@ -14,7 +14,7 @@ angular.module('views')
 	};
 	
 	$scope.showDetails = function(study) {
-		$state.go('^.studydetails', { studyId : study._id.$oid });		
+		$state.go('^.studydetails', { studyId : study._id });		
 	};
 	
 	$scope.$watch('view.setup', function() { $scope.reload(); });	

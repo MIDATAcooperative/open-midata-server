@@ -79,7 +79,7 @@ angular.module('portal')
 		
 		// send request
 		var receiverIds = _.uniq(_.map($scope.message.receivers, function(receiver) { return receiver.id; }));
-		var receivers = _.map(receiverIds, function(receiverId) { return {"$oid": receiverId}; });
+		var receivers = receiverIds; // _.map(receiverIds, function(receiverId) { return {"$oid": receiverId}; });
 		var data = {"receivers": receivers, "title": $scope.message.title, "content": $scope.message.content};
 		server.post(jsRoutes.controllers.Messages.send().url, JSON.stringify(data)).
 			success(function() {

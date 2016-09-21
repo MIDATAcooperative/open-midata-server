@@ -33,8 +33,8 @@ angular.module('portal')
 		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
 			success(function(users) {
 				_.each(users, function(user) {
-					if ($scope.record.owner.$oid === user._id.$oid) { $scope.record.owner = (user.firstname+" "+user.lastname).trim(); }
-					if ($scope.record.creator.$oid === user._id.$oid) { $scope.record.creator = (user.firstname+" "+user.lastname).trim(); }
+					if ($scope.record.owner === user._id) { $scope.record.owner = (user.firstname+" "+user.lastname).trim(); }
+					if ($scope.record.creator === user._id) { $scope.record.creator = (user.firstname+" "+user.lastname).trim(); }
 				});
 			}).
 			error(function(err) { $scope.error = { code : "error.internal" }; } );

@@ -134,7 +134,7 @@ angular.module('fhirDocref', [ 'midata', 'ui.router','ui.bootstrap', 'angularFil
 		console.log(params);
 		return midataServer.getRecords(midataServer.authToken, query, ["name", "created", "content", "data", "owner", "ownerName", "version"])
 		.then(function(results) {
-			angular.forEach(results.data, function(rec) { result.owners[rec.owner.$oid] = rec.ownerName; });
+			angular.forEach(results.data, function(rec) { result.owners[rec.owner] = rec.ownerName; });
 			console.log(result.owners);
 			return results.data;			
 		}, function(err) {

@@ -171,7 +171,7 @@ angular.module('fhir')
 	    	.then(function(results) {
 	    		angular.forEach(results.data, function(rec) {		    			
 	    			fhirModule.addToPool(rec.data, rec);
-	    			//$scope.pool[rec._id.$oid] = rec.data;
+	    			//$scope.pool[rec._id] = rec.data;
 	    			rec.data.$$fhirUnchanged = true;
 	    		});
 	    	});

@@ -34,7 +34,7 @@ public class Global extends GlobalSettings {
 		//Search.connect();
 
 		// Set custom object mapper for Json
-		Json.setObjectMapper(new CustomObjectMapper());
+		Json.setObjectMapper(new CustomObjectMapper());		
 		
 		// Init FHIR
 		FHIR.servlet = new FHIRServlet();
@@ -45,7 +45,7 @@ public class Global extends GlobalSettings {
 		} catch (ServletException e) {
 		   throw new NullPointerException();
 		}
-		/*
+		
 		try {
 		  MinimalSetup.dosetup();
 		} catch (AppException e) {
@@ -56,7 +56,7 @@ public class Global extends GlobalSettings {
 		  Market.correctOwners();
 		} catch (AppException e) {
 		  throw new NullPointerException();
-		}*/
+		}
 		
 		AutoRun.init();
 	}

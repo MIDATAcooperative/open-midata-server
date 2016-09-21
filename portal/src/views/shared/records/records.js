@@ -27,7 +27,7 @@ angular.module('portal')
 				 var selectedType = $state.params.selectedType;
 				 var selected = $state.params.selected;
 				 $scope.selectedType = selectedType;
-				 $scope.selectedAps = { "_id" : { "$oid" : selected }, type : selectedType };
+				 $scope.selectedAps = { "_id" : selected , type : selectedType };
 				 $scope.explainPreselection();
 			}
 			
@@ -95,7 +95,7 @@ angular.module('portal')
 			studies.research.list()
 			.then(function(results) {
 				angular.forEach(results.data, function(study) { 
-					$scope.availableAps.push({ i18n:"records.study", name:study.name, aps:userId, study : study._id.$oid });
+					$scope.availableAps.push({ i18n:"records.study", name:study.name, aps:userId, study : study._id });
 				});
 			});
 			
@@ -105,7 +105,7 @@ angular.module('portal')
 			.then(function(results) {
 				//$scope.availableAps = [{ name : "Your Data", aps:userId, owner : "self"  }, { name : "All Data", aps:userId, owner : "all"}];
 				angular.forEach(results.data, function(circle) { 
-					$scope.availableAps.push({ i18n:"records.shared", name:circle.ownerName, aps:circle._id.$oid });
+					$scope.availableAps.push({ i18n:"records.shared", name:circle.ownerName, aps:circle._id });
 				});
 			});
 		}
@@ -247,9 +247,9 @@ angular.module('portal')
 	// go to record creation/import dialog
 	$scope.createOrImport = function(app) {
 		if (app.type === "create") {
-			$state.go('^.createrecord', { appId : app._id.$oid });
+			$state.go('^.createrecord', { appId : app._id });
 		} else {
-			$state.go('^.importrecords', { appId : app._id.$oid });
+			$state.go('^.importrecords', { appId : app._id });
 		}
 	};
 	
@@ -270,7 +270,7 @@ angular.module('portal')
 	
 	// check whether the user is the owner of the record
 	$scope.isOwnRecord = function(record) {
-		return $scope.userId.$oid === record.owner.$oid;
+		return $scope.userId === record.owner;
 	};
 	
 	$scope.loadShared = function() {
@@ -291,7 +291,7 @@ angular.module('portal')
 	
 	$scope.loadSharingDetails = function() {
 		if ($scope.selectedAps == null) return;
-		$scope.status.doBusy(server.get(jsRoutes.controllers.Records.getSharingDetails($scope.selectedAps._id.$oid).url)).
+		$scope.status.doBusy(server.get(jsRoutes.controllers.Records.getSharingDetails($scope.selectedAps._id).url)).
 		then(function(results) {
 			console.log(results.data);
 		    $scope.sharing = results.data;
@@ -312,7 +312,7 @@ angular.module('portal')
 	$scope.isShared = function(record) {
 	   if (record == null) return;
 	   if (!$scope.sharing) return;
-	   return $scope.sharing.ids[record._id.$oid];
+	   return $scope.sharing.ids[record._id];
 	};
 	
 	$scope.isSharedGroup = function(group) {
@@ -337,9 +337,9 @@ angular.module('portal')
 	
 	
 	$scope.share = function(record, group) {
-		removeFromQuery("exclude-ids", record._id.$oid);
-		$scope.status.doBusy(records.share($scope.selectedAps._id.$oid, record._id.$oid, $scope.selectedAps.type, $scope.sharing.query));
-		$scope.sharing.ids[record._id.$oid] = true;
+		removeFromQuery("exclude-ids", record._id);
+		$scope.status.doBusy(records.share($scope.selectedAps._id, record._id, $scope.selectedAps.type, $scope.sharing.query));
+		$scope.sharing.ids[record._id] = true;
 		
 		while (group != null) {
 			console.log(group);
@@ -372,9 +372,9 @@ angular.module('portal')
 	};
 	
 	$scope.unshare = function(record, group) {
-		if (group.shared) addToQuery("exclude-ids", record._id.$oid);
-		$scope.status.doBusy(records.unshare($scope.selectedAps._id.$oid, record._id.$oid, $scope.selectedAps.type, $scope.sharing.query));
-		$scope.sharing.ids[record._id.$oid] = false;
+		if (group.shared) addToQuery("exclude-ids", record._id);
+		$scope.status.doBusy(records.unshare($scope.selectedAps._id, record._id, $scope.selectedAps.type, $scope.sharing.query));
+		$scope.sharing.ids[record._id] = false;
 		
 		while (group != null) {
 			group.countShared--;
@@ -397,7 +397,7 @@ angular.module('portal')
 		};
 		unselect(group);
 		
-		$scope.status.doBusy(records.share($scope.selectedAps._id.$oid, null, $scope.selectedAps.type, $scope.sharing.query)).
+		$scope.status.doBusy(records.share($scope.selectedAps._id, null, $scope.selectedAps.type, $scope.sharing.query)).
 		then(function() { $scope.loadSharingDetails(); });
 	};
 	
@@ -410,7 +410,7 @@ angular.module('portal')
 		var recs = [];
 		
 		var unselect = function(group) {
-			angular.forEach(group.records, function(r) { recs.push(r._id.$oid); });
+			angular.forEach(group.records, function(r) { recs.push(r._id); });
 			angular.forEach(group.children, function(c) {
 				removeFromQuery("group", c.name);
 				removeFromQuery("group-exclude", c.name);
@@ -420,18 +420,18 @@ angular.module('portal')
 		unselect(group);
 		
 		console.log($scope.selectedAps);
-		$scope.status.doBusy(records.unshare($scope.selectedAps._id.$oid, recs, $scope.selectedAps.type, $scope.sharing.query)).
+		$scope.status.doBusy(records.unshare($scope.selectedAps._id, recs, $scope.selectedAps.type, $scope.sharing.query)).
 		then(function() { $scope.loadSharingDetails(); });
 	};
 	
 	$scope.explainPreselection = function() {
 		if ($scope.selectedType == "circles") {
-		   circles.listConsents({ _id : { "$oid" : $scope.selectedAps._id.$oid }}, ["name", "type", "authorized" ])
+		   circles.listConsents({ _id : $scope.selectedAps._id }, ["name", "type", "authorized" ])
 		   .then(function(data) {
 			   $scope.consent = data.data[0];
 		   });
 		} else if ($scope.selectedType == "spaces") {
-		   spaces.get({ _id : { "$oid" : $scope.selectedAps._id.$oid }}, ["name", "context"] )
+		   spaces.get({ _id : $scope.selectedAps._id }, ["name", "context"] )
 		   .then(function(data) {
 			 $scope.space = data.data[0];  
 		   });

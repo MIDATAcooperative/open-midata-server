@@ -6,7 +6,7 @@ angular.module('portal')
 	$scope.userId = null;
 	$scope.loading = true;
 	$scope.spaceId = $state.params.spaceId;
-	$scope.space = { "_id" : { "$oid" : $scope.spaceId } };
+	$scope.space = { "_id" : $scope.spaceId };
 	
 	
 	// get current user
@@ -19,7 +19,7 @@ angular.module('portal')
 	// get the authorization token for the current space
 	getAuthToken = function(space) {
 		
-		spaces.getUrl(space._id.$oid)
+		spaces.getUrl(space._id)
 		.then(function(result) {   
 			$scope.title = result.data.name;
 			var url = spaces.mainUrl(result.data, $translate.use());			
@@ -54,7 +54,7 @@ angular.module('portal')
 	$scope.startCompare = function(space) {
 		// copy relevant properties
 		space.copy = {};
-		space.copy._id = {"$oid": "copy-" + space._id.$oid};
+		space.copy._id =  "copy-" + space._id;
 		space.copy.name = space.name;
 		space.copy.trustedUrl = space.trustedUrl;
 		
@@ -72,13 +72,13 @@ angular.module('portal')
 	};
 	
 	$scope.startShare = function(space) {
-		views.setView("share", { space : space._id.$oid });
+		views.setView("share", { space : space._id });
 	};
 	
 	
 	// delete a space
 	$scope.deleteSpace = function(space) {
-		server.delete(jsRoutes.controllers.Spaces["delete"](space._id.$oid).url).
+		server.delete(jsRoutes.controllers.Spaces["delete"](space._id).url).
 			success(function() {
 				$scope.error = null;
 				$state.go('^.dashboard', { dashId : "me" });
@@ -87,7 +87,7 @@ angular.module('portal')
 	};
 	
 	$scope.goBack = function() {
-	   spaces.get({ "_id" :  { $oid : $scope.spaceId } }, ["context"]).
+	   spaces.get({ "_id" :  $scope.spaceId }, ["context"]).
 	   then(function(result) { $state.go('^.dashboard', { dashId : result.data[0].context }); });
 	};
 	

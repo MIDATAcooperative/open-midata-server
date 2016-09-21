@@ -40,9 +40,9 @@ angular.module('portal')
 		var data = {"properties": properties, "fields": fields};
 		server.post(jsRoutes.controllers.Messages.get().url, JSON.stringify(data)).
 			success(function(messages) {
-				_.each(messages, function(message) { $scope.messages[message._id.$oid] = message; });
+				_.each(messages, function(message) { $scope.messages[message._id] = message; });
 				var senderIds = _.map(messages, function(message) { return message.sender; });
-				senderIds = _.uniq(senderIds, false, function(senderId) { return senderId.$oid; });
+				senderIds = _.uniq(senderIds, false, function(senderId) { return senderId; });
 				getSenderNames(senderIds);
 			}).
 			error(function(err) {
@@ -55,7 +55,7 @@ angular.module('portal')
 		var data = {"properties": {"_id": senderIds}, "fields": ["name"]};
 		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
 			success(function(users) {
-				_.each(users, function(user) { $scope.names[user._id.$oid] = user.name; });
+				_.each(users, function(user) { $scope.names[user._id] = user.name; });
 				$scope.loading = false;
 			}).
 			error(function(err) {
@@ -66,12 +66,12 @@ angular.module('portal')
 	
 	// open message details
 	$scope.showMessage = function(messageId) {
-		$state.go('^.message', { messageId : messageId.$oid });
+		$state.go('^.message', { messageId : messageId });
 	};
 	
 	// move message to another folder
 	$scope.move = function(messageId, from, to) {
-		server.post(jsRoutes.controllers.Messages.move(messageId.$oid, from, to).url).
+		server.post(jsRoutes.controllers.Messages.move(messageId, from, to).url).
 			success(function() {
 				$scope[from].splice($scope[from].indexOf(messageId), 1);
 				$scope[to].push(messageId);
@@ -81,9 +81,9 @@ angular.module('portal')
 	
 	// remove message
 	$scope.remove = function(messageId) {
-		server.delete(jsRoutes.controllers.Messages.remove(messageId.$oid).url).
+		server.delete(jsRoutes.controllers.Messages.remove(messageId).url).
 			success(function() {
-				delete $scope.messages[messageId.$oid];
+				delete $scope.messages[messageId];
 				$scope.trash.splice($scope.trash.indexOf(messageId), 1);
 			}).
 			error(function(err) { $scope.error = "Failed to delete message: " + err; });

@@ -19,18 +19,18 @@ angular.module('portal')
 		    $scope.error = null;
 		    $scope.loading = false;
 		    
-		    //$state.go('^.memberdetails', { memberId : $scope.member._id.$oid });		    
+		    //$state.go('^.memberdetails', { memberId : $scope.member._id });		    
 		});
 	};
 	
 	$scope.selectPatient = function() {
-		$state.go('^.memberdetails', { memberId : $scope.member._id.$oid });		
+		$state.go('^.memberdetails', { memberId : $scope.member._id });		
 	};
 	
 	$scope.addConsent = function() {
 		
       $scope.newconsent.type = "HEALTHCARE";
-      $scope.newconsent.owner = $scope.member._id.$oid;
+      $scope.newconsent.owner = $scope.member._id;
       $scope.status.doAction("createconsent", circles.createNew($scope.newconsent))
       .then(function(data) {
     	 $scope.dosearch(); 
@@ -38,7 +38,7 @@ angular.module('portal')
 	};
 	
 	$scope.usePasscode = function() {
-		$scope.status.doAction("usepasscode", circles.joinByPasscode($scope.member._id.$oid, $scope.criteria.passcode))
+		$scope.status.doAction("usepasscode", circles.joinByPasscode($scope.member._id, $scope.criteria.passcode))
 	    .then(function(data) {
 	    	 $scope.dosearch(); 
 	    });

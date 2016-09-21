@@ -47,7 +47,7 @@ converter.controller('ConverterCtrl', ['$scope', '$http', '$location', 'midataSe
 		var submit = function() {
 			data = {
 				"authToken": authToken,
-				"id": $scope.file._id.$oid,
+				"id": $scope.file._id,
 				"name": "23andMe Genome Data (MIDATA Format)",
 				"description": "23andMe genome data converted to the MIDATA format",
 				"content" : "genome-data",

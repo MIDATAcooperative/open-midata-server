@@ -6,7 +6,7 @@ angular.module('portal')
 	
 	// parse message id (format: /messages/:id) and load the app
 	var messageId = $state.params.messageId;
-	var data = {"properties": {"_id": {"$oid": messageId}}, "fields": ["sender", "receivers", "created", "title", "content"]};
+	var data = {"properties": {"_id":  messageId}, "fields": ["sender", "receivers", "created", "title", "content"]};
 	server.post(jsRoutes.controllers.Messages.get().url, JSON.stringify(data)).
 		success(function(messages) {
 			$scope.message = messages[0];
@@ -28,7 +28,7 @@ angular.module('portal')
 		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
 			success(function(users) {
 				_.each(users, function(user) {
-					var receiver = _.find($scope.message.receivers, function(rec) { return rec.$oid === user._id.$oid; });
+					var receiver = _.find($scope.message.receivers, function(rec) { return rec === user._id; });
 					receiver.name = user.name;
 				});
 			}).

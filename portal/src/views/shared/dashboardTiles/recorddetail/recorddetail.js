@@ -29,8 +29,8 @@ angular.module('views')
 		$scope.status.doSilent(server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data))).
 			then(function(result) {				
 				_.each(result.data, function(user) {
-					if ($scope.record.owner && $scope.record.owner.$oid === user._id.$oid) { $scope.record.owner = (user.firstname+" "+user.lastname).trim(); }
-					if ($scope.record.creator && $scope.record.creator.$oid === user._id.$oid) { $scope.record.creator = (user.firstname+" "+user.lastname).trim(); }
+					if ($scope.record.owner && $scope.record.owner === user._id) { $scope.record.owner = (user.firstname+" "+user.lastname).trim(); }
+					if ($scope.record.creator && $scope.record.creator === user._id) { $scope.record.creator = (user.firstname+" "+user.lastname).trim(); }
 				});
 				if (!$scope.record.owner) $scope.record.owner = "?";
 				if (!$scope.record.creator) $scope.record.creator = "Same as owner";

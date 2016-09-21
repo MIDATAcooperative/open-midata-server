@@ -13,10 +13,13 @@ public class MidataId implements Comparable<MidataId> {
 	}
 	
 	public MidataId(String id) {
+		if (id == null) throw new NullPointerException();
+		if (id.startsWith("midata:/")) id = id.substring(8);
 		this.id = id;
 	}
 	
 	public MidataId(ObjectId objId) {
+		if (objId == null) throw new NullPointerException();
 		this.objId = objId;
 		this.id = objId.toString();
 	}
@@ -26,6 +29,10 @@ public class MidataId implements Comparable<MidataId> {
 	}
 	
 	public String toString() {
+		return id;
+	}
+	
+	public String toURI() {
 		return id;
 	}
 	
@@ -62,7 +69,7 @@ public class MidataId implements Comparable<MidataId> {
 		return id.getBytes();
 	}
 	
-	public static boolean isValid(String str) {
+	public static boolean isValid(String str) {		
 		if (ObjectId.isValid(str)) return true;
 		return false;
 	}
@@ -71,5 +78,10 @@ public class MidataId implements Comparable<MidataId> {
 		if (o == null) return null;
 		if (o instanceof ObjectId) return new MidataId((ObjectId) o);
 		return new MidataId(o.toString());
+	}
+	
+	public static MidataId fromURI(String uri) {
+		if (uri == null) return null;		
+		return new MidataId(uri.substring(8)); // midata:/
 	}
 }

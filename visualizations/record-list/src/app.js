@@ -159,7 +159,7 @@ recordList.controller('RecordListPreviewCtrl', ['$scope', '$filter', '$location'
  	        	if (result.data && result.data.length > 0) {
  	        	   $scope.summary = result.data[0]; 	
  	        	   console.log($scope.summary);
- 	        	   var newestId = $scope.summary.newestRecord.$oid;
+ 	        	   var newestId = $scope.summary.newestRecord;
  	        	   midataServer.getRecords(authToken, { "_id" : newestId, "format" : "fhir/Observation", content : "diary" }, ["name", "data"])
  	        	   .then(function(result2) {
  	        		   $scope.record = result2.data[0];

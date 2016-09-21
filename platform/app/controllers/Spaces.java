@@ -63,6 +63,7 @@ public class Spaces extends Controller {
 		
 		// get parameters
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		ObjectIdConversion.convertMidataIds(properties, "_id", "owner", "visualization", "autoShare");
 		// always restrict to current user
 		properties.put("owner", userId);		
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));

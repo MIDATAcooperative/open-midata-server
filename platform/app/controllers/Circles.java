@@ -101,7 +101,8 @@ public class Circles extends APIController {
 		JsonNode json = request().body().asJson();					
 		JsonValidation.validate(json, "properties", "fields");
 		
-		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));				
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));	
+		ObjectIdConversion.convertMidataIds(properties, "_id", "owner", "authorized");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
 		Rights.chk("Circles.listConsents", getRole(), properties, fields);

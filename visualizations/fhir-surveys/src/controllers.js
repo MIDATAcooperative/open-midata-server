@@ -18,7 +18,7 @@ angular.module('surveys')
 	function($scope, midataServer, currentSurvey, surveys) {
 	    var fhir = function(record) {
 	       var result = record.data;
-	       result.id = record._id.$oid;
+	       result.id = record._id;
 	       result.meta = { version : record.version };
 	       return result;
 	    };

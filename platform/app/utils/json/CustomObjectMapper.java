@@ -48,10 +48,12 @@ class MidataIdSerializer extends JsonSerializer<MidataId> {
 	@Override
 	public void serialize(MidataId id, JsonGenerator generator, SerializerProvider provider) throws IOException,
 			JsonProcessingException {
-	    generator.writeStartObject();
+	    /*generator.writeStartObject();
 		generator.writeFieldName("$oid");
 		generator.writeString(id.toString());
-		generator.writeEndObject();
+		generator.writeEndObject();*/
+		
+		generator.writeString(id.toURI());
 	}
 
 }

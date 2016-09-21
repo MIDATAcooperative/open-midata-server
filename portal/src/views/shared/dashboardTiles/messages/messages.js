@@ -41,9 +41,9 @@ angular.module('views')
 		then(function(results) {
 			    $scope.messages = results.data;
 			    //var messages = results.data;
-				//_.each(messages, function(message) { $scope.messages[message._id.$oid] = message; });
+				//_.each(messages, function(message) { $scope.messages[message._id] = message; });
 				//var senderIds = _.map(messages, function(message) { return message.sender; });
-				//senderIds = _.uniq(senderIds, false, function(senderId) { return senderId.$oid; });
+				//senderIds = _.uniq(senderIds, false, function(senderId) { return senderId; });
 				//getSenderNames(senderIds);
 		});
 	};

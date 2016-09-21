@@ -27,6 +27,7 @@ import play.mvc.Security;
 
 import utils.auth.AnyRoleSecured;
 import utils.auth.Rights;
+import utils.db.ObjectIdConversion;
 import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
@@ -61,6 +62,7 @@ public class Studies extends APIController {
 	   JsonValidation.validate(json, "properties", "fields");
 							   		
 	   Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+	   ObjectIdConversion.convertMidataIds(properties, "_id", "owner", "createdBy", "studyKeywords");
 	   Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 	   
 	   Rights.chk("Studies.search", getRole(), properties, fields);	   	   

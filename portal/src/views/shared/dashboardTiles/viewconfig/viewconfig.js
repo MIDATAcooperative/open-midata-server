@@ -67,13 +67,13 @@ angular.module('views')
     	 if (space.name == "Observations") pos = "full"; //XXXXXXXXXXXXXX testing hack
     	 var spacedef =
 	     {
-	    	   id : "space"+space._id.$oid,
+	    	   id : "space"+space._id,
 	    	   template : "/views/shared/dashboardTiles/spacesummary/spacesummary.html",
 	    	   title : space.name,
 	    	   active : true,
 	    	   position : pos,
-	    	   actions : { /*big : "/members/spaces/" + space._id.$oid,*/ remove : { space : space._id.$oid } },
-	    	   setup : { allowSelection : false, spaceId : space._id.$oid, spaceType : space.type, showview:true }
+	    	   actions : { /*big : "/members/spaces/" + space._id,*/ remove : { space : space._id } },
+	    	   setup : { allowSelection : false, spaceId : space._id, spaceType : space.type, showview:true }
 	     };
 	     views.layout[pos].push(views.def(spacedef)); 
     };
@@ -88,7 +88,7 @@ angular.module('views')
     		$scope.view.active = (results.data.length === 0 && $scope.view.setup.visualizations == null) && !$scope.view.setup.always;
     		var usedvis = {};
     	  _.each(results.data, function(space) {
-    		  usedvis[space.visualization.$oid] = true;
+    		  usedvis[space.visualization] = true;
     		  $scope.addSpace(space);    		
     	  });
     	  if ($scope.view.setup.visualizations) {

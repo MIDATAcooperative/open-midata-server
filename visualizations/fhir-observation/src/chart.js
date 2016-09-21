@@ -55,7 +55,7 @@ angular.module('fhirObservation')
 		data.getRecords(criteria)
 		   .then(function(records) {
 			  $scope.records = records; 
-			  if (records.length > 0) configuration.owner = records[0].owner.$oid;
+			  if (records.length > 0) configuration.owner = records[0].owner;
 			  console.log(configuration.owner);
 			  var entries = $scope.extractData(records);
 			  var info = $scope.buildAxes(entries);
@@ -64,7 +64,7 @@ angular.module('fhirObservation')
 	};
  		 		 		
  	$scope.showSingle = function(record) {
- 		$state.go("^.record", { id : record._id.$oid });
+ 		$state.go("^.record", { id : record._id });
  	};
  		 	 		 		 	
  	$scope.changePerson = function() {

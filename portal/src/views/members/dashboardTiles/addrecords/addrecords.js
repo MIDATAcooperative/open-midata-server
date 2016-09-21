@@ -22,7 +22,7 @@ angular.module('views')
 			
 	$scope.shareRecords = function() {
 		var selection = _.filter($scope.foundRecords, function(rec) { return rec.checked; });
-		selection = _.chain(selection).pluck('_id').pluck('$oid').value();	
+		selection = _.chain(selection).pluck('_id').value();	
 		$scope.status.doSilent(records.share($scope.view.setup.targetAps, selection, $scope.view.setup.type))
 		.then(function () {
 		   views.changed($scope.viewid);
@@ -37,8 +37,8 @@ angular.module('views')
 	
 	// helper method for contains
 	$scope.containsRecord = function(recordIdList, recordId) {
-		var ids = _.map(recordIdList, function(element) { return element.$oid; });
-		return _.contains(ids, recordId.$oid);
+		var ids = _.map(recordIdList, function(element) { return element; });
+		return _.contains(ids, recordId);
 	};
 	
 	$scope.showDetails = function(record) {

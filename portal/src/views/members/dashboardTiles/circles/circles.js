@@ -22,12 +22,12 @@ angular.module('views')
 			_.each($scope.circles, function(circle) {
 				var circledef =
 	   		     {
-	   		    	   id : "circle"+circle._id.$oid,
+	   		    	   id : "circle"+circle._id,
 	   		    	   template : "/views/shared/dashboardTiles/flexiblerecords/flexiblerecords.html",
 	   		    	   title : circle.ownerName ? circle.ownerName : circle.name,
 	   		    	   active : true,
 	   		    	   position : "small",
-	   		    	   setup : { aps : circle._id.$oid, properties : { "max-age" : 86400 * 31 } , fields : [ "ownerName", "created", "id", "name" ] }
+	   		    	   setup : { aps : circle._id, properties : { "max-age" : 86400 * 31 } , fields : [ "ownerName", "created", "id", "name" ] }
 	   		     };
 	   		     views.layout.small.push(views.def(circledef)); 
 			});
@@ -43,7 +43,7 @@ angular.module('views')
 		
 		circles.createNew({ name : $scope.form.newCircleName, type : "CIRCLE" }).
 		then(function(results) {
-			$state.go('^.circles', { circleId : results.data._id.$oid });
+			$state.go('^.circles', { circleId : results.data._id });
 		});		
 	};
 		

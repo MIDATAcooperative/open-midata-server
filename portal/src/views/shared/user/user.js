@@ -14,7 +14,7 @@ angular.module('portal')
 	var userId = $state.params.userId;	
 	
 	$scope.init = function() {
-		$scope.status.doBusy(users.getMembers({"_id": {"$oid": userId}}, ["name", "email", "searchable", "language", "address1", "address2", "zip", "city", "country", "firstname", "lastname", "mobile", "phone", "emailStatus", "agbStatus", "contractStatus", "role", "subroles", "confirmedAt"]))
+		$scope.status.doBusy(users.getMembers({"_id": userId}, ["name", "email", "searchable", "language", "address1", "address2", "zip", "city", "country", "firstname", "lastname", "mobile", "phone", "emailStatus", "agbStatus", "contractStatus", "role", "subroles", "confirmedAt"]))
 		.then(function(results) {
 			$scope.user = results.data[0];
 		});
@@ -22,7 +22,7 @@ angular.module('portal')
 	$scope.init();
 	
 	session.currentUser.then(function(myUserId) { 
-		$scope.isSelf = myUserId.$oid == userId;
+		$scope.isSelf = myUserId == userId;
 		console.log(myUserId);
 	});
 	

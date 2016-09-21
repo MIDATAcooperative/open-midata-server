@@ -410,7 +410,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			var existing = stored[content+formattedDate];
 			if (existing) {
 				if (existing.data.valueQuantity.value != record.valueQuantity.value) {
-					return updateRecord(existing._id.$oid, existing.version, record);
+					return updateRecord(existing._id, existing.version, record);
 				} else { 
 					return null; 
 				}			

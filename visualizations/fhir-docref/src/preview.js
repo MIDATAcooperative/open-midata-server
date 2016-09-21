@@ -15,7 +15,7 @@ angular.module('fhirDocref')
  	        	if (result.data && result.data.length > 0) {
  	        	   $scope.summary = result.data[0]; 	
  	        	   console.log($scope.summary);
- 	        	   var newestId = $scope.summary.newestRecord.$oid;
+ 	        	   var newestId = $scope.summary.newestRecord;
  	        	   midataServer.getRecords(midataServer.authToken, { "_id" : newestId, "format" : "fhir/DocumentReference" }, ["name", "data"])
  	        	   .then(function(result2) {
  	        		   $scope.record = result2.data[0];
@@ -27,7 +27,7 @@ angular.module('fhirDocref')
  		};
  		
  		$scope.download = function(record) {
-        	document.location.href = midataServer.baseurl+"/v1/plugin_api/records/file?authToken="+encodeURIComponent(midataServer.authToken)+"&id="+encodeURIComponent(record._id.$oid);
+        	document.location.href = midataServer.baseurl+"/v1/plugin_api/records/file?authToken="+encodeURIComponent(midataServer.authToken)+"&id="+encodeURIComponent(record._id);
         };
  		
  		midataPortal.setLink("add", "page", "dist/index.html#/create?authToken=:authToken");

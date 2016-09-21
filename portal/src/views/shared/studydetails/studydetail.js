@@ -32,7 +32,7 @@ angular.module('portal')
 				}
 				
 				if ($scope.participation && !($scope.participation.status == "CODE" || $scope.participation.status == "MATCH" )) {
-				  views.setView("shared_with_study", { aps : $scope.participation._id.$oid, properties : { } , type:"participations", allowAdd : true, allowRemove : false, fields : [ "ownerName", "created", "id", "name" ]});
+				  views.setView("shared_with_study", { aps : $scope.participation._id, properties : { } , type:"participations", allowAdd : true, allowRemove : false, fields : [ "ownerName", "created", "id", "name" ]});
 				} else {
 				  views.disableView("shared_with_study");
 				}
@@ -44,7 +44,7 @@ angular.module('portal')
 	
 	$scope.addProvider = function() {
 		var execAdd = function(prov) {
-		   return studies.updateParticipation($scope.study._id.$oid, { add : { providers : [ prov._id.$oid ]}})
+		   return studies.updateParticipation($scope.study._id, { add : { providers : [ prov._id ]}})
 		          .then(function() {
 		        	  $scope.reload();
 		          });
@@ -55,7 +55,7 @@ angular.module('portal')
 	};
 	
 	$scope.removeProvider = function(prov) {
-		studies.updateParticipation($scope.study._id.$oid, { remove : { providers : [ prov._id.$oid ]}})
+		studies.updateParticipation($scope.study._id, { remove : { providers : [ prov._id ]}})
         .then(function() {
       	  $scope.reload();
         });

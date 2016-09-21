@@ -14,7 +14,7 @@
           <th>Status</th>
         </tr>
         <tr dir-paginate="app in apps | itemsPerPage : 10" pagination-id="plugintable">
-          <td><a ui-sref="^.manageapp({ appId : app._id.$oid })">{{  app.name }}</a></td>
+          <td><a ui-sref="^.manageapp({ appId : app._id })">{{  app.name }}</a></td>
           <td>{{ app.type }}</td>
           <td>{{ app.targetUserRole }}</td>
           <td><input class="checkbox" type="checkbox" ng-change="changePlugin(app);" ng-model="app.spotlighted"></td>

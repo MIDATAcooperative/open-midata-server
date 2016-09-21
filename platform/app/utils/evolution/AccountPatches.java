@@ -21,6 +21,7 @@ import models.Record;
 import models.Space;
 import models.User;
 import models.enums.ConsentStatus;
+import models.enums.UserRole;
 
 public class AccountPatches {
 
@@ -78,7 +79,9 @@ public class AccountPatches {
 		AccessLog.logBegin("start patch 2016 09 02");
 		
 		RecordManager.instance.fixAccount(user._id);
-		PatientResourceProvider.updatePatientForAccount(user._id);
+		if (user.role.equals(UserRole.MEMBER)) {
+		  PatientResourceProvider.updatePatientForAccount(user._id);
+		}
 		
 		/*Set<Consent> consents = Consent.getAllByOwner(user._id, CMaps.map("type", ), Consent.ALL);
 		for (Consent consent : consents) {

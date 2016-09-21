@@ -50,7 +50,7 @@ angular.module('fhir')
 	    		}
 	    		newResource.meta.versionId = origRecord.version;
 	    	    newResource.meta.lastUpdated = origRecord.lastUpdated || origRecord.created;
-	    	    newResource.id = origRecord._id.$oid;
+	    	    newResource.id = origRecord._id;
 	    	}
 	    	
 	    	fhirModule.pool[newResource.resourceType+"/"+newResource.id] = newResource;

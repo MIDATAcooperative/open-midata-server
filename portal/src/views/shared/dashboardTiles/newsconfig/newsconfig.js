@@ -14,7 +14,7 @@ angular.module('views')
     $scope.addNews = function(news) {
     	 var spacedef =
 	     {
-	    	   id : "news"+news._id.$oid,
+	    	   id : "news"+news._id,
 	    	   template : "/views/shared/dashboardTiles/newsconfig/newsconfig.html",
 	    	   title : news.title,
 	    	   active : true,

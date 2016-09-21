@@ -19,7 +19,7 @@ angular.module('portal')
 				console.log(data);
 				$scope.memberkey = data.memberkey;
 				if (data.memberkey) {
-				  views.setView("patient_records", { aps : $scope.memberkey._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd: false, type : "memberkeys"});
+				  views.setView("patient_records", { aps : $scope.memberkey._id, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd: false, type : "memberkeys"});
 				} else {
 				  views.disableView("patient_records");
 				}
@@ -31,7 +31,7 @@ angular.module('portal')
 		$scope.consent = consent;
 		console.log($scope.consent);
 		if ($scope.consent != null) {
-			views.setView("patient_records", { aps : $scope.consent._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : false, type : "memberkeys" });			
+			views.setView("patient_records", { aps : $scope.consent._id, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : false, type : "memberkeys" });			
 		} else {
 			views.disableView("patient_records");
 		}
@@ -40,7 +40,7 @@ angular.module('portal')
 	var addDataConsent = function(backConsent) {
 		$scope.data.consent = $scope.consent = null;
 		$scope.hideAdd = true;
-		views.setView("patient_records", { aps : backConsent._id.$oid, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type : "hcrelated" });
+		views.setView("patient_records", { aps : backConsent._id, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type : "hcrelated" });
 	};
 	
 	$scope.addData = function() {
@@ -50,7 +50,7 @@ angular.module('portal')
 		} else {
 			circles.createNew({ type : "HCRELATED", name : $scope.member.firstname+" "+$scope.member.lastname })
 			.then(function(data) {
-				circles.addUsers(data.data._id.$oid, [ { "$oid" : $scope.memberid } ])
+				circles.addUsers(data.data._id, [ $scope.memberid ])
 				.then(function(xdata) {
 					$scope.backwards.push(data.data);
 					addDataConsent(data.data);
@@ -63,7 +63,7 @@ angular.module('portal')
 	  console.log("AAAA");
 	  console.log($scope);
 	  console.log($scope.consent);
-	  views.setView("addtask", { "owner" : $scope.memberid, "shareBackTo" : $scope.consent._id.$oid });
+	  views.setView("addtask", { "owner" : $scope.memberid, "shareBackTo" : $scope.consent._id });
 	  console.log("BBBB");
 	};
 		
@@ -126,9 +126,9 @@ angular.module('portal')
 	// go to record creation/import dialog
 	$scope.createOrImport = function(app) {
 		if (app.type === "create") {
-			$state.go("^.createpatientrecord", { memberId : $scope.member._id.$oid, appId : app._id.$oid, consentId : $scope.consent._id.$oid });			
+			$state.go("^.createpatientrecord", { memberId : $scope.member._id, appId : app._id, consentId : $scope.consent._id });			
 		} else {
-			$state.go("^.importrecords", { appId : app._id.$oid });			
+			$state.go("^.importrecords", { appId : app._id });			
 		}
 	};
 	
@@ -137,7 +137,7 @@ angular.module('portal')
 	$scope.visualizations = [];
 	
 	$scope.useVisualization = function(visualization) {		
-		$state.go("^.usevisualization", { memberId : $scope.member._id.$oid , visualizationId : visualization._id.$oid, consentId : $scope.consent._id.$oid });				
+		$state.go("^.usevisualization", { memberId : $scope.member._id , visualizationId : visualization._id, consentId : $scope.consent._id });				
 	};
 	
 }]);

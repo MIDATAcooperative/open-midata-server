@@ -18,7 +18,7 @@ angular.module('portal')
 		var data = $scope.study;		
 		
 		$scope.status.doAction("submit", server.post(jsRoutes.controllers.research.Studies.create().url, JSON.stringify(data)))
-		.then(function(result) { $state.go('research.study.overview', { studyId : result.data._id.$oid }); });		
+		.then(function(result) { $state.go('research.study.overview', { studyId : result.data._id }); });		
 	};
 	
 }]);

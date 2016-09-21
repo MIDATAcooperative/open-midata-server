@@ -20,12 +20,12 @@ angular.module('services')
     
     service.isVisualizationInstalled = function(visId) {
     	var def = $q.defer();
-    	var inApps = $filter("filter")(session.user.apps, function(x){  return x.$oid == visId; });
+    	var inApps = $filter("filter")(session.user.apps, function(x){  return x == visId; });
     	if (inApps.length > 0) {
     		def.resolve({ data : true });
     		return def.promise;
     	}
-    	var inVis  = $filter("filter")(session.user.visualizations, function(x){  return x.$oid == visId; });
+    	var inVis  = $filter("filter")(session.user.visualizations, function(x){  return x == visId; });
     	if (inVis.length > 0) {
     		def.resolve({ data : true });
     	} else { def.resolve({ data : false }); }
@@ -33,15 +33,15 @@ angular.module('services')
     };
     
     service.updatePlugin = function(plugin) {
-    	return server.put(jsRoutes.controllers.Market.updatePlugin(plugin._id.$oid).url, JSON.stringify(plugin));
+    	return server.put(jsRoutes.controllers.Market.updatePlugin(plugin._id).url, JSON.stringify(plugin));
     };
     
     service.updatePluginStatus = function(plugin) {
-    	return server.put(jsRoutes.controllers.Market.updatePluginStatus(plugin._id.$oid).url, JSON.stringify(plugin));
+    	return server.put(jsRoutes.controllers.Market.updatePluginStatus(plugin._id).url, JSON.stringify(plugin));
     };
     
     service.deletePlugin = function(plugin) {
-    	return server.delete(jsRoutes.controllers.Market.deletePlugin(plugin._id.$oid).url);
+    	return server.delete(jsRoutes.controllers.Market.deletePlugin(plugin._id).url);
     };
     
     service.registerPlugin = function(plugin) {

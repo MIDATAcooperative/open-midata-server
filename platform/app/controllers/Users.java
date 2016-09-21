@@ -44,6 +44,7 @@ import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
+import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
@@ -85,6 +86,7 @@ public class Users extends APIController {
 		
 		// get parameters
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		ObjectIdConversion.convertMidataIds(properties, "_id");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
 		// check authorization

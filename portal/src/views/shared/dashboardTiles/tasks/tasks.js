@@ -30,7 +30,7 @@ angular.module('views')
 	
 	$scope.showTaskDetail = function(task, position) {
 		var teaser = {
-				id : "task"+task._id.$oid,
+				id : "task"+task._id,
 				template : "/views/shared/dashboardTiles/taskdetails/taskdetails.html",
 				title : task.title,
 				position : position,
@@ -44,9 +44,9 @@ angular.module('views')
 	
 	$scope.showDetails = function(task) {
 		$scope.showTaskDetail(task, "modal");
-		/*tasking.execute(task._id.$oid)
+		/*tasking.execute(task._id)
 		.then(function(data) {
-		   $state.go('^.spaces' , { spaceId : data.data._id.$oid });
+		   $state.go('^.spaces' , { spaceId : data.data._id });
 		});*/
 					
 	};

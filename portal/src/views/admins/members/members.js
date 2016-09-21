@@ -44,7 +44,7 @@ angular.module('portal')
 	
 	$scope.changeUser = function(user) {
 		console.log(user);
-		administration.changeStatus(user._id.$oid, user.status);
+		administration.changeStatus(user._id, user.status);
 	};	
 	
 	$scope.reload();

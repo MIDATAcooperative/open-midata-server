@@ -10,7 +10,7 @@
 		  <div class="alert alert-info" ng-show="consent">
 		    <span translate="records.share_instructions1"></span><strong>{{ consent.name }}</strong>.<br>
 		    <span translate="records.share_instructions2"></span><strong>{{ consent.authorized.length }}</strong> <span translate="records.share_instructions3"></span><br><br>	
-		    <a class="btn btn-default btn-sm" ui-sref="^.editconsent({ consentId : selectedAps._id.$oid })">Done</a>	     
+		    <a class="btn btn-default btn-sm" ui-sref="^.editconsent({ consentId : selectedAps._id })">Done</a>	     
 		  </div>
 		  
 		  <div class="alert alert-info" ng-show="allowDelete">
@@ -25,7 +25,7 @@
 	        </div>	
 	        <div class="pull-right col-sm-4" ng-show="compare==null && selectedAps!=null && selectedType=='spaces'">
 			  <label for="selectedAps" translate="records.records_used_for_app"></label>	
-			  <a class="btn btn-default" ui-sref="^.spaces({ spaceId : selectedAps._id.$oid })" translate="records.back_to_plugin"></a>		  
+			  <a class="btn btn-default" ui-sref="^.spaces({ spaceId : selectedAps._id })" translate="records.back_to_plugin"></a>		  
 	        </div>		        
 	        <div class="col-sm-4">
 	           <label for="owner" ng-dblclick="showDebug()" translate="records.show"></label>
@@ -82,7 +82,7 @@
            <ul class="list-group nospaceafter" ng-if="selectedData.allRecords.length > 0">
 				<li class="list-group-item" dir-paginate="record in selectedData.allRecords | itemsPerPage : 10" pagination-id="selectedData.id" ng-class="{ 'list-group-item-success' : ( isShared(record)) }">
 					<span class="label label-info">{{record.created | date}}</span>
-					<span ng-show="record.owner.$oid != userId.$oid" class="label label-info">{{ record.ownerName }}</span>
+					<span ng-show="record.owner != userId" class="label label-info">{{ record.ownerName }}</span>
 					<a href="javascript:;" ng-click="showDetails(record)">{{record.name}}</a>
                     <button ng-show="allowDelete && isOwnRecord(record)" ng-dblclick="deleteRecord(record, selectedData)" class="btn btn-danger btn-xs" translate="records.delete"></button>
                     <div class="pull-right" ng-hide="selectedAps==null">					   

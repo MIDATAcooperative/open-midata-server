@@ -33,6 +33,7 @@ import utils.auth.AnyRoleSecured;
 import utils.auth.Rights;
 import utils.auth.MemberSecured;
 import utils.collections.Sets;
+import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -72,12 +73,13 @@ public class HealthProvider extends APIController {
 	@Security.Authenticated(MemberSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result search() throws AppException, JsonValidationException {
-		AccessLog.log("A");
+		
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "properties", "fields");
-		AccessLog.log("B");
+		
 		// get users
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		ObjectIdConversion.convertMidataIds(properties, "_id", "provider");
 		properties.put("role", UserRole.PROVIDER);
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		Rights.chk("HealthProvider.search", getRole(), properties, fields);

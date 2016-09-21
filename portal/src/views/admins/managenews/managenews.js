@@ -14,7 +14,7 @@ angular.module('portal')
     };
 			
 	$scope.loadNews = function(newsId) {
-		$scope.status.doBusy(news.get({ "_id" : { "$oid" :  newsId }}, ["content", "created", "creator", "expires", "language", "studyId", "title", "url"]))
+		$scope.status.doBusy(news.get({ "_id" : newsId }, ["content", "created", "creator", "expires", "language", "studyId", "title", "url"]))
 		.then(function(data) { 
 			$scope.newsItem = data.data[0];			
 		});
@@ -34,7 +34,7 @@ angular.module('portal')
 	
 	
 	$scope.doDelete = function() {
-		$scope.status.doAction('delete', news.delete($scope.newsItem._id.$oid))
+		$scope.status.doAction('delete', news.delete($scope.newsItem._id))
 		.then(function(data) { $state.go("^.news"); });
 	};
 	

@@ -11,7 +11,7 @@
           <th>Target Role</th>
         </tr>
         <tr ng-repeat="app in apps">
-          <td><a ui-sref="^.manageapp({ appId : app._id.$oid })">{{  app.name }}</a></td>
+          <td><a ui-sref="^.manageapp({ appId : app._id })">{{  app.name }}</a></td>
           <td>{{ app.type }}</td>
           <td>{{ app.targetUserRole }}</td>
         </tr>

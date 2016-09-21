@@ -16,7 +16,7 @@
         <tr ng-repeat="item in news">
           <td>{{ item.created | date }}</td>
           <td>{{ item.language }}</td>
-          <td><a ui-sref="^.managenews({ newsId : item._id.$oid })">{{  item.title }}</a></td>
+          <td><a ui-sref="^.managenews({ newsId : item._id })">{{  item.title }}</a></td>
           <td>{{ item.expires | date }}</td>
           <td><button class="btn btn-danger btn-xs" translate="admin_news.delete_btn" ng-click="deleteNews(item)"></button></td>          
         </tr>

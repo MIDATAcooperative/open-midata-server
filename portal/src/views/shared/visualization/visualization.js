@@ -33,7 +33,7 @@ angular.module('portal')
 	
 	// parse visualization id (format: /visualizations/:id) and load the visualization
 	var visualizationId = $state.params.visualizationId;	
-	$scope.status.doBusy(apps.getApps({"_id": {"$oid": visualizationId}}, ["name", "creator", "description", "defaultSpaceContext", "defaultSpaceName", "defaultQuery"]))
+	$scope.status.doBusy(apps.getApps({"_id":  visualizationId}, ["name", "creator", "description", "defaultSpaceContext", "defaultSpaceName", "defaultQuery"]))
 	.then(function(results) {
 		   var visualizations = results.data;
 			$scope.error = null;
@@ -74,7 +74,7 @@ angular.module('portal')
 	};
 	
 	$scope.install = function() {
-		$scope.status.doAction("install", apps.installPlugin($scope.visualization._id.$oid, $scope.options))
+		$scope.status.doAction("install", apps.installPlugin($scope.visualization._id, $scope.options))
 		.then(function() {
 				$scope.visualization.installed = true;
 				$scope.success = true;

@@ -27,7 +27,7 @@ angular.module('portal')
     ];
 			
 	$scope.loadApp = function(appId) {
-		$scope.status.doBusy(apps.getApps({ "_id" : { "$oid" :  appId }}, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n"]))
+		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n"]))
 		.then(function(data) { 
 			$scope.app = data.data[0];
 			if (!$scope.app.i18n) { $scope.app.i18n = {}; }
@@ -70,7 +70,7 @@ angular.module('portal')
 	};
 	
 	$scope.doInstall = function() {
-		$state.go("^.visualization", { visualizationId : $scope.app._id.$oid, context : "sandbox" });
+		$state.go("^.visualization", { visualizationId : $scope.app._id, context : "sandbox" });
 	};
 	
 	$scope.doDelete = function() {

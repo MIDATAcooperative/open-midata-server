@@ -70,7 +70,7 @@ angular.module('calendarApp')
 	              			      ( (q < tlbdef.limit) ? "#00a000" : "#a00000" );
 	              	  if (q == "Yes") q = null;
 	              	  var e = {
-	              		  id : record._id.$oid,
+	              		  id : record._id,
 	              	      title : shorten(title)+((q != null) ? (":"+q) : ""),
 	              	      allDay : true, 	
 	              	      start : dateTime,	              	       

@@ -15,11 +15,11 @@ angular.module('views')
 	};
 	
 	$scope.confirm = function(memberKey) {
-		hc.confirm(memberKey._id.$oid).then(function() { $scope.reload(); });		
+		hc.confirm(memberKey._id).then(function() { $scope.reload(); });		
 	};
 	
 	$scope.reject = function(memberKey) {
-		hc.reject(memberKey._id.$oid).then(function() { $scope.reload(); });
+		hc.reject(memberKey._id).then(function() { $scope.reload(); });
 	};
 	
 	$scope.mayReject = $scope.mayConfirm = function(memberKey) {
@@ -32,8 +32,8 @@ angular.module('views')
 		var aps = null;
 		_.each($scope.results, function(hc) {		
 			if (hc.provider) {
-				creators.push(hc.provider.$oid);
-				aps = hc.member.$oid;
+				creators.push(hc.provider);
+				aps = hc.member;
 			}
 		});
 		
@@ -45,7 +45,7 @@ angular.module('views')
 	};
 	
 	$scope.showRecords = function(mk) {
-		views.setView("records", { aps : mk._id.$oid, properties: {}, fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type:"memberkeys"}, mk.name);
+		views.setView("records", { aps : mk._id, properties: {}, fields : [ "ownerName", "created", "id", "name" ], allowAdd : true, type:"memberkeys"}, mk.name);
 	};
 	
 	$scope.reload();

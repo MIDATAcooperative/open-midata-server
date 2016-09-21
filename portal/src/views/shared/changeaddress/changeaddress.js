@@ -22,7 +22,7 @@ angular.module('portal')
 												
 		$scope.status.doAction("changeAddress", users.updateAddress($scope.registration)).
 		then(function(data) { 
-			$state.go("^.user", { userId : $scope.registration._id.$oid });
+			$state.go("^.user", { userId : $scope.registration._id });
 		});
 	};
 			

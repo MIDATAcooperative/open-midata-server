@@ -17,7 +17,7 @@ angular.module('views')
             if ($scope.consents.length > 0) $scope.selectedConsent = $scope.consents[0];
             $scope.consents.push({ name : "<Create new...>", isNew : true });			
 		});
-		$scope.status.doBusy(spaces.get({ "_id" : { "$oid" : $scope.view.setup.space  }}, [ "query" ]))
+		$scope.status.doBusy(spaces.get({ "_id" : $scope.view.setup.space }, [ "query" ]))
 		.then(function(result) {
 			if (result.data) {  
 				$scope.rules = result.data[0].query || {};
@@ -41,7 +41,7 @@ angular.module('views')
 	};
 	
 	$scope.share = function() {
-		records.shareSpaceWithCircle($scope.view.setup.space, $scope.selectedConsent._id.$oid)
+		records.shareSpaceWithCircle($scope.view.setup.space, $scope.selectedConsent._id)
 		.then(function() {
 		   $scope.success = true;
            //views.disableView($scope.view.id);			

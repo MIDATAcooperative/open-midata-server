@@ -17,7 +17,7 @@ angular.module('portal')
 	};
 	
 	$scope.editConsent = function(consent) {
-		$state.go("^.editconsent", { consentId : consent._id.$oid });
+		$state.go("^.editconsent", { consentId : consent._id });
 	};
 	
 	session.currentUser.then(function(userId) { loadConsents(userId); });

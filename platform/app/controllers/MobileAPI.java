@@ -53,6 +53,7 @@ import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
+import utils.db.ObjectIdConversion;
 import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -560,7 +561,8 @@ public class MobileAPI extends Controller {
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken", "properties", "fields");
 		
-		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		//Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		//ObjectIdConversion.convertMidataIds(properties, "_id");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
 		//Rights.chk("getRecords", UserRole.ANY, fields);

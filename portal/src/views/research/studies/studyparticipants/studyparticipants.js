@@ -31,7 +31,7 @@ angular.module('portal')
 	
 	$scope.rejectParticipation = function(participation) {
 		$scope.error = null;
-		var params = { member : participation._id.$oid };
+		var params = { member : participation._id };
 		
 		server.post(jsRoutes.controllers.research.Studies.rejectParticipation($scope.studyid).url, params).
 		success(function(data) { 				
@@ -45,7 +45,7 @@ angular.module('portal')
 	$scope.approveParticipation = function(participation) {
 		$scope.error = null;
 		console.log(participation);
-		var params = { member : participation._id.$oid };
+		var params = { member : participation._id };
 		
 		server.post(jsRoutes.controllers.research.Studies.approveParticipation($scope.studyid).url, params).
 		success(function(data) { 				
@@ -57,7 +57,7 @@ angular.module('portal')
 	};
 	
 	$scope.changeGroup = function(participation) {
-		var params = { member : participation._id.$oid, group : participation.group };
+		var params = { member : participation._id, group : participation.group };
 		server.post(jsRoutes.controllers.research.Studies.updateParticipation($scope.studyid).url, JSON.stringify(params))
 		.then(function(data) { 				
 		    //$scope.reload();
