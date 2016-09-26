@@ -497,7 +497,7 @@ class APSImplementation extends APS {
 		BasicBSONList history = (BasicBSONList) eaps.getPermissions().get("_history");
 		if (history != null) {
 			BasicBSONObject newEntry = new BasicBSONObject();
-			newEntry.put("r", recordId);
+			newEntry.put("r", recordId.toString());
 			if (isStream) newEntry.put("s", isStream);
 			newEntry.put("ts", System.currentTimeMillis());
 			if (isRemove) newEntry.put("d", true);

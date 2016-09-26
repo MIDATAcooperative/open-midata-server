@@ -34,7 +34,7 @@ private Feature next;
 	
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
-		if (q.restrictedBy("index") && q.getApsId().equals(q.getCache().getOwner())) {
+		if (q.restrictedBy("index") && q.getApsId().equals(q.getCache().getOwner()) && !q.restrictedBy("_id")) {
 			AccessLog.logBegin("start index query");
 			Map<String,Object> indexQuery = (Map<String,Object>) q.getProperties().get("index");
 			

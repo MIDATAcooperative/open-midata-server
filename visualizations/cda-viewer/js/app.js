@@ -17,7 +17,7 @@ cda.controller('CDACtrl', ['$scope', '$http', '$location', 'midataPortal',
 		// get the data for the records in this space
 		$scope.getRecords = function() {
 			var data = {"authToken": authToken};
-			data.properties = { "format" : "cda" };
+			data.properties = { "format" : ["fhir/DocumentReference"] , "index" : { "content.attachment.contentType" : "text/xml" } };
 			data.fields = ["_id", "data"];
 			$http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/search", JSON.stringify(data)).
 				success(function(records) {
@@ -42,8 +42,8 @@ cda.controller('CDACtrl', ['$scope', '$http', '$location', 'midataPortal',
 		
 		$scope.displayCDA = function(id) {
 			$scope.loading++;
-			var data = {"authToken": authToken, "_id" : id };
-			$http.post("https://" + window.location.hostname + ":9000/v1/plugin_api/records/file", JSON.stringify(data)).
+			
+			$http.get("https://" + window.location.hostname + ":9000/v1/plugin_api/records/file?authToken="+encodeURIComponent(authToken)+"&id="+encodeURIComponent(id)).
 			then(function(result) {				
 				var parser = new DOMParser();				
 				var xml = parser.parseFromString(result.data, "text/xml");				

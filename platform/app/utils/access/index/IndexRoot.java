@@ -10,6 +10,7 @@ import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 import models.MidataId;
 
+import utils.AccessLog;
 import utils.access.DBRecord;
 import utils.access.op.Condition;
 import utils.db.LostUpdateException;
@@ -111,9 +112,12 @@ public class IndexRoot {
 				BasicBSONList lst = (BasicBSONList) res;
 				if (lst.size() == 0) return;
 				for (Object obj : lst) {
-					inf.key[keyIdx] = (Comparable) obj;
-					extract(keyIdx+1, inf, null, null);
-					
+					if (obj instanceof Comparable) {					
+					  inf.key[keyIdx] = (Comparable) obj;
+					  extract(keyIdx+1, inf, null, null);
+					} else {
+					  AccessLog.log("Cannot extract path:"+path);
+					}					
 				}				
 			} else {
 			  inf.key[keyIdx] = (Comparable) res;

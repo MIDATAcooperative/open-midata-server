@@ -42,7 +42,8 @@ public class Feature_QueryRedirect extends Feature {
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
 		
-		BasicBSONObject query = q.getCache().getAPS(q.getApsId()).getMeta(APS.QUERY);    	
+		APS target = q.getCache().getAPS(q.getApsId());
+		BasicBSONObject query = target.getMeta(APS.QUERY);    	
     	// Ignores queries in main APS 
 		if (query != null && !q.getApsId().equals(q.getCache().getOwner())) {			
 			List<DBRecord> result;
