@@ -94,7 +94,7 @@ module.exports = function(grunt) {
     copy: {
       dist: {    
     	files : [
-    	 { expand : true, cwd: 'src/', src: '**/*.html', dest: 'dist/' },
+    	 { expand : true, cwd: 'src/', src: ['**/*.html','**/*.xsl'], dest: 'dist/' },
     	 { expand : true, cwd: 'tmp/', src: ['**/*.html','**/*.min.js','**/*.min.css'], dest: 'dist' },
     	 { expand : true, cwd: 'src/assets/images/', src : '**/*', dest : 'dist/images' },
     	 { expand : true, flatten:true, cwd: 'bower_components/', src: ['**/*.ttf','**/*.woff','**/*.woff2'], dest: 'dist/fonts' }
@@ -102,7 +102,7 @@ module.exports = function(grunt) {
       },
       dev: {    
       	files : [
-      	 { expand : true, cwd: 'src/', src: ['**/*.html','**/*.js'], dest: 'dev/'+midataName+'/dist' },
+      	 { expand : true, cwd: 'src/', src: ['**/*.html','**/*.js','**/*.xsl'], dest: 'dev/'+midataName+'/dist' },
       	 { expand : true, cwd: 'tmp/', src: ['**/*.html','**/*.min.js','**/*.css'], dest: 'dev/'+midataName+'/dist' },
       	 { expand : true, cwd: 'tmp/', src: 'components/**', dest: 'dev/'+midataName+'/dist' },
       	 { expand : true, cwd: 'src/assets/images/', src : '**/*', dest : 'dev/'+midataName+'/dist' },
@@ -111,7 +111,7 @@ module.exports = function(grunt) {
       },
       devdist: {    
         	files : [
-        	 { expand : true, cwd: 'src/', src: '**/*.html', dest: 'dev/'+midataName+'/dist' },
+        	 { expand : true, cwd: 'src/', src: ['**/*.html','**/*.xsl'], dest: 'dev/'+midataName+'/dist' },
         	 { expand : true, cwd: 'tmp/', src: ['**/*.html','**/*.min.js','**/*.css'], dest: 'dev/'+midataName+'/dist' },        	 
         	 { expand : true, cwd: 'src/assets/images/', src : '**/*', dest : 'dev/'+midataName+'/dist' },
         	 { expand : true, flatten:true, cwd: 'bower_components/', src: ['**/*.ttf','**/*.woff','**/*.woff2'], dest: 'dev/'+midataName+'/dist/fonts' }
