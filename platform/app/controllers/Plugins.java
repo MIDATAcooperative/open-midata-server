@@ -324,7 +324,7 @@ public class Plugins extends APIController {
 
 		
 		MidataId appId = space.visualization;
-		Map<String, MidataId> properties = new ChainedMap<String, MidataId>().put("_id", appId).get();
+		Map<String, Object> properties = new ChainedMap<String, Object>().put("_id", appId.toObjectId()).get();
 		Set<String> fields = new ChainedSet<String>().add("consumerKey").add("consumerSecret").add("requestTokenUrl").add("accessTokenUrl")
 				.add("authorizationUrl").get();
 		Plugin app = Plugin.get(properties, fields);
@@ -377,7 +377,7 @@ public class Plugins extends APIController {
          
 		// save token and secret to database
 				
-		Map<String, Object> tokens = CMaps.map("appId",space.visualization)
+		Map<String, Object> tokens = CMaps.map("appId",space.visualization.toString())
 				                          .map("oauthToken", accessToken.token)
 			                              .map("oauthTokenSecret", accessToken.secret);
 		for (String p : additionalParams.keySet()) {
@@ -448,7 +448,7 @@ public class Plugins extends APIController {
 						refreshToken = jsonNode.get("refresh_token").asText();
 					}
 					
-					Map<String, Object> tokens = CMaps.map("appId", appId)
+					Map<String, Object> tokens = CMaps.map("appId", appId.toString())
 							                          .map("accessToken", accessToken)
 							                          .map("refreshToken", refreshToken);
 					RecordManager.instance.setMeta(userId, spaceId, "_oauth", tokens);
@@ -486,7 +486,7 @@ public class Plugins extends APIController {
 		final MidataId appId = new MidataId(tokens1.get("appId").toString());
 		final MidataId userId = new MidataId(request().username());
 		
-		Map<String, MidataId> properties = new ChainedMap<String, MidataId>().put("_id", appId).get();
+		Map<String, Object> properties = new ChainedMap<String, Object>().put("_id", appId.toObjectId()).get();
 		Set<String> fields = Sets.create("name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret", "type");
 			
 		final Plugin app = Plugin.get(properties, fields);

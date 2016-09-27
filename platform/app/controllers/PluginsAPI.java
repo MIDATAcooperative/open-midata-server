@@ -525,7 +525,7 @@ public class PluginsAPI extends APIController {
 		
 		oauthToken = (String) tokens.get("oauthToken");
 		oauthTokenSecret = (String) tokens.get("oauthTokenSecret");
-		appId = (MidataId) tokens.get("appId");
+		appId = new MidataId(tokens.get("appId").toString());
 		
 
 		// also get the consumer key and secret
