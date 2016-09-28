@@ -362,8 +362,8 @@ class QueryEngine {
 								
 		// 8 Post filter records if necessary		
 						
-		if (q.restrictedBy("creator")) result = filterByMetaSet(result, "creator", q.getMidataIdRestriction("creator"));
-		if (q.restrictedBy("app")) result = filterByMetaSet(result, "app", q.getMidataIdRestriction("app"));
+		if (q.restrictedBy("creator")) result = filterByMetaSet(result, "creator", q.getIdRestrictionDB("creator"));
+		if (q.restrictedBy("app")) result = filterByMetaSet(result, "app", q.getIdRestrictionDB("app"));
 		if (q.restrictedBy("name")) result = filterByMetaSet(result, "name", q.getRestriction("name"));
 		if (q.restrictedBy("code")) result = filterByMetaSet(result, "code", q.getRestriction("code"));
 		

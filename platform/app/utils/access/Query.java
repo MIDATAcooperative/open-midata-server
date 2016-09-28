@@ -143,6 +143,21 @@ public class Query {
 		} else throw new BadRequestException("error.internal", "Bad Restriction 2: "+name);
 	}
 	
+	public Set<Object> getIdRestrictionDB(String name) throws BadRequestException {
+		Object v = properties.get(name);
+		if (v instanceof MidataId) {
+			return Collections.singleton(((MidataId) v).toDb());
+		/*} else if (v instanceof Set) {
+			return (Set) v;*/
+		} else if (v instanceof Collection) {
+			Set<Object> results = new HashSet<Object>();
+			for (Object obj : (Collection<?>) v) { results.add(new MidataId(obj.toString()).toDb()); }			
+			return results;		
+		} else if (v instanceof String && MidataId.isValid((String) v)) {
+			return Collections.singleton( new MidataId((String) v).toDb());
+		} else throw new BadRequestException("error.internal", "Bad Restriction 2: "+name);
+	}
+	
 	public boolean restrictedBy(String field) {
 		return properties.get(field) != null;
 	}		
