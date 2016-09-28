@@ -43,7 +43,7 @@ public class QueryBuilder {
 	public QueryBuilder(SearchParameterMap params, Query query, String format) {
 		this.params = params;
 		this.query = query;
-		this.query.putAccount("format", format);
+		if (format != null) this.query.putAccount("format", format);
 		handleCommon();
 	}
 	
@@ -101,9 +101,36 @@ public class QueryBuilder {
 						
 			for (IQueryParameterType param : paramsOr) {
 								
-				handleRestriction(param, path, type, bld);
-								
+				handleRestriction(param, path, type, bld);								
 			    bld.or();
+			}
+			bld.and();
+		}
+		
+		Condition unOpt = bld.get();
+		AccessLog.log("Before opt: "+unOpt.toString());
+		Condition dataCondition = unOpt.optimize();
+		AccessLog.log("After opt: "+dataCondition.toString());
+		query.putDataCondition(dataCondition);
+		
+		if (indexing) {
+		  Map<String, Condition> indexCondition = dataCondition.indexExpression();
+		  if (indexCondition != null) query.putIndexCondition(indexCondition);
+		} 
+	}
+	
+	public void restriction(String name, String type, boolean indexing, String... paths) {
+		List<List<? extends IQueryParameterType>> paramsAnd = params.get(name);
+		if (paramsAnd == null) return;
+		
+		PredicateBuilder bld = new PredicateBuilder();
+		for (List<? extends IQueryParameterType> paramsOr : paramsAnd) {
+						
+			for (IQueryParameterType param : paramsOr) {
+				for (String path : paths) {				
+				  handleRestriction(param, path, type, bld);								
+			      bld.or();
+				}
 			}
 			bld.and();
 		}
@@ -128,6 +155,10 @@ public class QueryBuilder {
 			    bld.addEq(path+".coding.code", tokenParam.getValue());
 			  } else if (type.equals("code")) {
 				bld.addEq(path, tokenParam.getValue());
+			  } else if (type.equals("Identifier")) {
+				bld.addEq(path+".value", tokenParam.getValue());
+			  } else if (type.equals("boolean")) {
+				bld.addEq(path, tokenParam.getValue().equals("true"));
 			  }
 			} else if (param instanceof StringParam) {
 			  StringParam stringParam = (StringParam) param;

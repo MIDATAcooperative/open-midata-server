@@ -301,10 +301,27 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Patient");
 
-		builder.restriction("identifier", "identifier", "CodeableConcept", true);
+		builder.restriction("identifier", "identifier", "Identifier", true);
 		builder.restriction("family", "name.family", "String", true);
+		builder.restriction("birthdate", "birthDate", "Date", true);
+		builder.restriction("deathdate", "deceasedDateTime", "Date", true);
 		builder.restriction("given", "name.given", "String", true);
 		builder.restriction("gender", "gender", "code", false);
+		
+		builder.restriction("name", "String", true, "name.given", "name.family");
+		builder.restriction("email", "code", true, "telecom.value");
+		builder.restriction("address-city", "String", true, "address.city");
+		builder.restriction("address-country", "String", true, "address.country");
+		builder.restriction("address-postalcode", "String", true, "address.postalCode");
+		builder.restriction("address-state", "String", true, "address.state");
+		builder.restriction("address-use", "code", false, "address.use");
+		
+		builder.restriction("address", "String", true, "address.text", "address.line", "address.city", "address.district", "address.state", "address.postalCode", "address.country");
+		
+		builder.restriction("language", "code", false, "communication.language");
+		builder.restriction("phone", "code", true, "telecom.value");
+		builder.restriction("telecom", "code", true, "telecom.value");
+		builder.restriction("active", "active", "boolean", false);
 		
 		return query.execute(info);
 	}

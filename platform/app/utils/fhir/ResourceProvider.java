@@ -15,6 +15,7 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import org.hl7.fhir.dstu3.model.BaseResource;
+import org.hl7.fhir.dstu3.model.Basic;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.InstantType;
 import org.hl7.fhir.dstu3.model.Observation;
@@ -93,47 +94,19 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 		return p;
 	}
 	
-	public static void addRestriction(Map<String, Object> crit, StringParam content, String... path) {
-		addRestriction(crit, content.getValue(), path, 0);
-	}
-	
-	public static void addRestriction(Map<String, Object> crit, TokenOrListParam content, String... path) {
-		Set<String> values = tokensToCodeStrings(content);
-		addRestriction(crit, values, path, 0);
-	}
-	
-	public static void addRestriction(Map<String, Object> crit, DateParam content, String... path) {
-		addRestriction(crit, content.getValueAsString(), path, 0);
-	}
-	
-	public static void addRestriction(Map<String, Object> crit, String rt, ReferenceParam content, String... path) {
-		addRestriction(crit, rt+"/"+content.getIdPart(), path, 0);
-	}
-	
-	public static void addRestriction(Map<String, Object> crit, Object content, String[] path, int idx) {
-		if (idx == path.length - 1) {
-			crit.put(path[idx], content);
-		} else {
-			Object subCrit = crit.get(path[idx]);
-			if (subCrit == null) {
-				subCrit = new HashMap<String, Object>();
-				crit.put(path[idx], subCrit);
-			}
-			addRestriction((Map<String, Object>) subCrit, content, path, idx + 1);
-		}
-	}
 	
 	public abstract List<Record> searchRaw(SearchParameterMap params) throws AppException;
+		
 	
 	public List<T> search(SearchParameterMap params) {
 		try {									
-		   List<T> observations = parse(searchRaw(params), getResourceType());	
+		   List<T> resources = parse(searchRaw(params), getResourceType());	
 		   
 		   if (!params.getIncludes().isEmpty()) {
 			   FhirTerser terser = ResourceProvider.ctx().newTerser();
 			   
 			   for (Include inc : params.getIncludes()) {
-				   for (T res : observations) {
+				   for (T res : resources) {
 					   String type = inc.getParamType();
 					   String name = inc.getParamName();
 					   
@@ -154,7 +127,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 			   }
 		   }
 		   
-		   return observations;
+		   return resources;
 
 	    } catch (AppException e) {
 	       AccessLog.logException("search", e);
