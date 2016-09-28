@@ -16,9 +16,12 @@ object ApplicationBuild extends Build {
     javaWs,
     "org.mongodb" % "mongo-java-driver" % "3.2.2",
     "org.elasticsearch" % "elasticsearch" % "1.2.1",
-    "ca.uhn.hapi.fhir" % "hapi-fhir-base" % "1.5",
-    "ca.uhn.hapi.fhir" % "hapi-fhir-structures-dstu3" % "1.5",  	    
-    "org.thymeleaf" % "thymeleaf" % "2.1.4.RELEASE"	    
+    "ca.uhn.hapi.fhir" % "hapi-fhir-base" % "2.0",
+    "ca.uhn.hapi.fhir" % "hapi-fhir-structures-dstu3" % "2.0",  	    
+    "org.thymeleaf" % "thymeleaf" % "3.0.1.RELEASE",
+    "com.fasterxml.jackson.core" % "jackson-core" % "2.8.3",
+    "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.3",
+    "com.fasterxml.jackson.core" % "jackson-annotations" % "2.8.3"	    
   )
 
 
