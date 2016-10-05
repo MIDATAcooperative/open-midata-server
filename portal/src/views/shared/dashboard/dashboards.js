@@ -819,8 +819,9 @@ angular.module('portal')
               ]
 	}			
 )
-.controller('DashboardCtrl', ['$scope', '$state', 'views', 'dashboards', 'tiles', 'spaces', 'portal', function($scope, $state, views, dashboards, tiles, spaces, portal) {  
+.controller('DashboardCtrl', ['$scope', '$timeout', '$state', 'views', 'dashboards', 'tiles', 'spaces', 'portal', function($scope, $timeout, $state, views, dashboards, tiles, spaces, portal) {  
 	   
+	  $scope.isReady = false;
 	  views.reset();
 	  views.isreset = false;
 	   views.layout = $scope.layout = {
@@ -870,7 +871,8 @@ angular.module('portal')
 				 }
 			 }
 		  });
-			  		  
+			
+		  $timeout(function () { $scope.isReady = true; }, 500);
 	   });
 	   
 	   $scope.makeBig = function(view) {
