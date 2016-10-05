@@ -2,6 +2,7 @@ package utils.collections;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class NChainedMap<K, V> extends HashMap<K, V> {
@@ -16,6 +17,11 @@ public class NChainedMap<K, V> extends HashMap<K, V> {
 
 	public NChainedMap<K, V> map(K key, V value) {
 		put(key, value);
+		return this;
+	}
+	
+	public NChainedMap<K, V> map(Map<K, V> properties) {		
+		putAll(properties);
 		return this;
 	}
 	

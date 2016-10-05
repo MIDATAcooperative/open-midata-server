@@ -40,7 +40,7 @@
   	    </div>
       </formrow>
       <formrow myid="x" label="">
-        <button type="submit" class="btn btn-primary" translate="common.change_btn"></button>
+        <button type="submit" class="btn btn-primary" ng-disabled="studyLocked()" translate="common.change_btn"></button>
       </formrow>
     </form>
     
@@ -55,11 +55,11 @@
       <tr ng-repeat="group in study.groups">
         <td><input class="form-control" type="text"  ng-model="group.name"></td>
         <td><input class="form-control" type="text"  ng-model="group.description"></td>
-        <td><button class="btn btn-danger btn-sm" ng-click="deleteGroup(group);" translate="common.delete_btn">Delete</button>
+        <td><button class="btn btn-danger btn-sm" ng-click="deleteGroup(group);" translate="common.delete_btn" ng-disabled="studyLocked()">Delete</button>
       </tr>
     </table>
-    <button class="btn btn-default" ng-click="addGroup();" translate="studyfields.add_group_btn"></button>
-    <button class="btn btn-primary" ng-click="saveGroups()" ng-disabled="status.action == 'groups'" translate="studyfields.save_changes_btn"></button>
+    <button class="btn btn-default" ng-click="addGroup();" translate="studyfields.add_group_btn" ng-disabled="studyLocked()"></button>
+    <button class="btn btn-primary" ng-click="saveGroups()" ng-disabled="status.action == 'groups' || studyLocked()" translate="studyfields.save_changes_btn"></button>
         
     </loader>
     </div>

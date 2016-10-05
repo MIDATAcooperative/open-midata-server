@@ -252,8 +252,10 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 				
 	 		}
 			
-			res.push(result.getRecords({ ids : ids }));
-			
+			if (ids.length > 0) {
+			  res.push(result.getRecords({ ids : ids }));
+			}
+			  
 			return $q.all(res).then(function(r) { return [].concat.apply([], r); });
 		});
 	};

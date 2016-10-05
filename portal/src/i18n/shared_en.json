@@ -132,7 +132,8 @@
      },
      
      "no_alter" : {
-       "consent" : "Consents for studies may not be altered."
+       "consent" : "Consents for studies may not be altered.",
+       "study" : "Setup can only be changed as long as study is in draft phase."
      }
              
    },
@@ -437,6 +438,7 @@
     "provider_add_btn" : "Add",
     "information_that_needs_sharing" : "Information that must be shared for participation",
     "information_restricted" : "Your gender, year of birth and country",
+    "information_demographic" : "Your complete demographic data. (name, birthday,address,..)",
     "records_with_format" : "Records that have format:",
     "records_with_content" : "Records that have content:",
     "records_with_group" : "Records that belong to group:",
@@ -714,7 +716,8 @@
   "taskdetails" : {
     "created_by" : "Created by:",
     "frequency" : "How often:",
-    "plugin" : "Plugin:"
+    "plugin" : "Plugin:",
+    "do_now_btn" : "Do Now"
   },
   
   "tasks" : {

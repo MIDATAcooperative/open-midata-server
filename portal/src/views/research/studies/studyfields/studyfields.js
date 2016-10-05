@@ -46,5 +46,9 @@ angular.module('portal')
 	 $scope.status.doAction("groups", server.put(jsRoutes.controllers.research.Studies.update($scope.studyid).url, JSON.stringify($scope.study)));	 
    };
    
+   $scope.studyLocked = function() {
+		 return (!$scope.study) || ($scope.study.validationStatus !== "PRE" && $scope.study.validationStatus !== "REJECTED");    
+   };
+   
    $scope.reload();
 }]);

@@ -40,6 +40,10 @@ angular.module('portal')
 		});
 	};
 	
+	$scope.readyForDelete = function() {
+		return true;
+	};
+	
 	$scope.reload();
 	
 }]);

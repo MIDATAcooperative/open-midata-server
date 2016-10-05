@@ -722,6 +722,7 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Studies.listCodes(),
 				controllers.research.routes.javascript.Studies.generateCodes(),
 				controllers.research.routes.javascript.Studies.startValidation(),
+				controllers.research.routes.javascript.Studies.endValidation(),
 				controllers.research.routes.javascript.Studies.startParticipantSearch(),
 				controllers.research.routes.javascript.Studies.endParticipantSearch(),
 				controllers.research.routes.javascript.Studies.startExecution(),

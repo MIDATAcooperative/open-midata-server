@@ -28,6 +28,10 @@ angular.module('portal')
 		    $scope.reload();
 	   }); 
    };
+   
+   $scope.studyLocked = function() {
+	 return (!$scope.study) || ($scope.study.validationStatus !== "PRE" && $scope.study.validationStatus !== "REJECTED");    
+   };
          
    $scope.reload();
 }]);

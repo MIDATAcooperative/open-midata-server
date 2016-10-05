@@ -14,7 +14,7 @@
       <div class="panel panel-primary">
 	    <div class="panel-heading">
 	      <span ng-click="makeSmall(def)" translate="{{ def.title }}"></span>
-	      <a ng-show="def.actions.remove" ng-click="remove(def)" class="pull-right"><span class="glyphicon glyphicon-remove-circle"></span></a>
+	      <a ng-show="def.actions.remove" ng-click="remove(def)" class="pull-right" href="javascript:"><span class="glyphicon glyphicon-remove-circle"></span></a>
 	      <a ng-show="def.actions.big" ng-href="{{def.actions.big}}" class="pull-right"><span class="glyphicon glyphicon-plus-sign"></span></a>
 	    </div>
         <div class="ignore" ng-include="def.template"></div>		  
@@ -29,7 +29,7 @@
       <div class="panel panel-primary" ng-show="def.active">
 	    <div class="panel-heading">
 	      <span ng-click="makeSmall(def)" translate="{{ def.title }}"></span>
-	      <a ng-show="def.actions.remove" ng-click="remove(def)" class="pull-right"><span class="glyphicon glyphicon-remove-circle"></span></a>
+	      <a ng-show="def.actions.remove" ng-click="remove(def)" class="pull-right" href="javascript:"><span class="glyphicon glyphicon-remove-circle"></span></a>
 	      <a ng-show="def.actions.big" ng-href="{{def.actions.big}}" class="pull-right"><span class="glyphicon glyphicon-plus-sign"></span></a>
 	    </div>
         <div class="ignore" ng-include="def.template"></div>		  
@@ -43,7 +43,7 @@
 	    <div class="panel-heading">
 	      <span ng-click="makeSmall(def)" translate="{{ def.title }}"></span>
 	      <span class="ignore" ng-include="def.template"></span>
-	      <a ng-show="def.actions.remove" ng-click="remove(def)" class="pull-right"><span class="glyphicon glyphicon-remove-circle"></span></a>
+	      <a ng-show="def.actions.remove" ng-click="remove(def)" class="pull-right" href="javascript:"><span class="glyphicon glyphicon-remove-circle"></span></a>
 	      <a ng-show="def.actions.big" ng-href="{{def.actions.big}}" class="pull-right"><span class="glyphicon glyphicon-plus-sign"></span></a>
 	    </div>        	
 	  </div>

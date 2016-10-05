@@ -218,7 +218,7 @@ public class Records extends APIController {
 		// update spaces
 		MidataId userId = new MidataId(request().username());
 		MidataId recordId = new MidataId(recordIdString);		
-		Set<MidataId> spaceIds = ObjectIdConversion.castToMidataIds(JsonExtraction.extractSet(json.get("spaces")));
+		Set<MidataId> spaceIds = ObjectIdConversion.toMidataIds(JsonExtraction.extractStringSet(json.get("spaces")));
 		Set<MidataId> recordIds = new HashSet<MidataId>();
 		recordIds.add(recordId);
 		

@@ -3,6 +3,7 @@ package utils.db;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -270,9 +271,9 @@ public class MongoDatabase extends Database {
 		DBObject dbObject = new BasicDBObject();
 		for (String key : properties.keySet()) {
 			Object property = properties.get(key);
-			if (property instanceof Set<?>) {
+			if (property instanceof Collection<?>) {
 				ArrayList al = new ArrayList();
-				for (Object v : ((Set<?>) property)) al.add(conversion.toDBObjectValue(v));
+				for (Object v : ((Collection<?>) property)) al.add(conversion.toDBObjectValue(v));
 				dbObject.put(key, new BasicDBObject("$in", al));
 			} else if (property instanceof Map<?, ?>) {
 				BasicDBObject dbo = new BasicDBObject();

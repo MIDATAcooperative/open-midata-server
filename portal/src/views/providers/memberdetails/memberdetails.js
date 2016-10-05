@@ -123,7 +123,7 @@ angular.module('portal')
 			error(function(err) { $scope.error = "Failed to load apps: " + err; });
 	};
 	
-	// go to record creation/import dialog
+	/*
 	$scope.createOrImport = function(app) {
 		if (app.type === "create") {
 			$state.go("^.createpatientrecord", { memberId : $scope.member._id, appId : app._id, consentId : $scope.consent._id });			
@@ -131,6 +131,7 @@ angular.module('portal')
 			$state.go("^.importrecords", { appId : app._id });			
 		}
 	};
+	*/
 	
 	// Visualizations
 	$scope.loadingVisualizations = true;

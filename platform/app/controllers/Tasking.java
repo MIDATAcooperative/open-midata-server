@@ -32,6 +32,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 
@@ -164,7 +165,7 @@ public class Tasking extends APIController {
 			  RecordManager.instance.shareByQuery(userId, userId, space._id, plugin.defaultQuery);			  
 		}
 				
-		return ok(Json.toJson(space));
+		return ok(JsonOutput.toJson(space, "Space", Space.ALL));
 	}
 	
 

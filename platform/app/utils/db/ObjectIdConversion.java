@@ -23,6 +23,7 @@ public class ObjectIdConversion {
 		return set;
 	}
 
+	/*
 	public static Set<MidataId> castToMidataIds(Set<Object> objects) {
 		Set<MidataId> set = new HashSet<MidataId>();
 		for (Object o : objects) {
@@ -30,6 +31,7 @@ public class ObjectIdConversion {
 		}
 		return set;
 	}
+	*/
 
 	public static Set<String> toStrings(Set<MidataId> MidataIds) {
 		Set<String> set = new HashSet<String>();

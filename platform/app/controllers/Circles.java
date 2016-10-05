@@ -179,9 +179,9 @@ public class Circles extends APIController {
 		if (userId == null) userId = executorId;
 		String passcode = json.has("passcode") ? JsonValidation.getPassword(json, "passcode") : null;
 						
-		if (Consent.existsByOwnerAndName(userId, name)) {
+		/*if (Consent.existsByOwnerAndName(userId, name)) {
 		  throw new BadRequestException("error.exists.consent",  "A consent with this name already exists.");
-		}
+		}*/
 		
 		if (passcode != null && !executorId.equals(userId)) {
 		  throw new BadRequestException("error.internal", "Only owner may create consent with passcode");
@@ -357,7 +357,7 @@ public class Circles extends APIController {
 		}
 		
 		// add users to circle (implicit: if not already present)
-		Set<MidataId> newMemberIds = ObjectIdConversion.castToMidataIds(JsonExtraction.extractSet(json.get("users")));
+		Set<MidataId> newMemberIds = ObjectIdConversion.toMidataIds(JsonExtraction.extractStringSet(json.get("users")));
 				
 		consent.authorized.addAll(newMemberIds);
 		Consent.set(consent._id, "authorized", consent.authorized);

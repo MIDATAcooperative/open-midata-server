@@ -19,7 +19,7 @@ angular.module('portal')
 		
 	// load visualization url for given space
 	loadBaseUrl = function(space) {
-		server.get(jsRoutes.controllers.Plugins.getUrl(space.visualization).url).
+		server.get(jsRoutes.controllers.Plugins.getUrlForConsent(space.visualization, $scope.consentId).url).
 			success(function(url) {
 				space.baseUrl = url;
 				getAuthToken(space);

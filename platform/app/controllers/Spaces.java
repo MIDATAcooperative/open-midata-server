@@ -238,7 +238,7 @@ public class Spaces extends Controller {
 		}
 		
 		// add records to space (implicit: if not already present)
-		Set<MidataId> recordIds = ObjectIdConversion.castToMidataIds(JsonExtraction.extractSet(json.get("records")));		
+		Set<MidataId> recordIds = ObjectIdConversion.toMidataIds(JsonExtraction.extractStringSet(json.get("records")));		
 		RecordManager.instance.share(userId, owner.myaps, space._id, recordIds, true);
 						
 		return ok();

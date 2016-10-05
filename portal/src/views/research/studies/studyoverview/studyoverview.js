@@ -5,11 +5,22 @@ angular.module('portal')
 	$scope.study = {};
 	$scope.status = new status(true);
 		
+	var loadUserNames = function() {
+		var data = {"properties": {"_id": [$scope.study.createdBy]}, "fields": ["firstname", "lastname"]};
+		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
+			success(function(users) {
+				_.each(users, function(user) {
+					if ($scope.study.createdBy === user._id) { $scope.study.creatorName = (user.firstname+" "+user.lastname).trim(); }					
+				});
+			});
+	};
+	
 	$scope.reload = function() {
 			
 		$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyid).url))
 		.then(function(data) { 				
-				$scope.study = data.data;	
+				$scope.study = data.data;
+				loadUserNames();
 		});
 	};
 	

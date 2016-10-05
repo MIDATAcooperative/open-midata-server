@@ -17,9 +17,21 @@ public class CMaps {
 		result.putAll(properties);
 		return result;
 	}
-	
+			
 	public static NChainedMap<String, Object> map() {
 		NChainedMap<String,Object> result = new NChainedMap<String,Object>();		
+		return result;
+	}
+	
+	public static NChainedMap<String, Object> or(Map<String, Object>... properties) {
+		NChainedMap<String,Object> result = new NChainedMap<String,Object>();		
+		result.put("$or", properties);
+		return result;
+	}
+	
+	public static NChainedMap<String, Object> and(Map<String, Object>... properties) {
+		NChainedMap<String,Object> result = new NChainedMap<String,Object>();		
+		result.put("$and", properties);
 		return result;
 	}
 	

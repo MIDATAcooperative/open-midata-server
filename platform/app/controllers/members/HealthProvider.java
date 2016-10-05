@@ -32,6 +32,7 @@ import utils.AccessLog;
 import utils.auth.AnyRoleSecured;
 import utils.auth.Rights;
 import utils.auth.MemberSecured;
+import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
@@ -79,13 +80,28 @@ public class HealthProvider extends APIController {
 		
 		// get users
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
-		ObjectIdConversion.convertMidataIds(properties, "_id", "provider");
-		properties.put("role", UserRole.PROVIDER);
+		ObjectIdConversion.convertMidataIds(properties, "_id", "provider");		
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		Rights.chk("HealthProvider.search", getRole(), properties, fields);
 
 		if (fields.contains("name")) { fields.add("firstname"); fields.add("lastname"); } 
 						
+		if (properties.containsKey("name") || properties.containsKey("city")) {
+			String name = properties.containsKey("name") ? properties.get("name").toString() : null;
+			String city = properties.containsKey("city") ? properties.get("city").toString() : null;
+			properties.remove("name");
+			properties.remove("city");
+			if (name != null && city != null) {
+			properties = CMaps.and(CMaps.or(CMaps.map("firstname", name), CMaps.map("lastname", name)),
+					               CMaps.or(CMaps.map("city", city), CMaps.map("zip", city))).map(properties);
+			} else if (name != null) {
+				properties = CMaps.or(CMaps.map("firstname", name), CMaps.map("lastname", name)).map(properties);
+			} else {
+				properties = CMaps.or(CMaps.map("city", city), CMaps.map("zip", city)).map(properties);
+			}
+		}
+		properties.put("role", UserRole.PROVIDER);
+		
 		List<HPUser> users = new ArrayList<HPUser>(HPUser.getAll(properties, fields));
 		
 		if (fields.contains("name")) {

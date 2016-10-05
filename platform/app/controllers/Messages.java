@@ -73,7 +73,7 @@ public class Messages extends Controller {
 
 		// validate receivers
 		Set<MidataId> receiverIds = ObjectIdConversion
-				.castToMidataIds(JsonExtraction.extractSet(json.get("receivers")));
+				.toMidataIds(JsonExtraction.extractStringSet(json.get("receivers")));
 		Set<User> users = User.getAllUser(CMaps.map("_id",  receiverIds), Sets.create("messages.inbox"));
 							
 		if (receiverIds.size() != users.size()) {
