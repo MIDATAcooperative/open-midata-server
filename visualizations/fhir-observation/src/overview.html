@@ -1,7 +1,7 @@
 
 <div ng-controller="OverviewCtrl" style="min-height:300px">
 
-	<table class="table table-condensed table-hover" ng-show="categories.length">
+	<table class="table table-condensed table-hover" ng-hide="isEmpty">
 		<tbody ng-repeat="category in categories">
 			<tr>
 				<th colspan="4" style=""><br>{{ category.label }}</th>
@@ -35,5 +35,5 @@
 		</tbody>
 	</table>
 
-    <p ng-hide="categories.length" translate="empty"></p>
+    <p ng-show="isEmpty" translate="empty"></p>
 </div>

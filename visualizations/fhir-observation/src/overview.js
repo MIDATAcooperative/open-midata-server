@@ -6,6 +6,7 @@ angular.module('fhirObservation')
  			console.log("INIT");
  			configuration.getConfig().then(function(config) {
  				data.loadSummary(config.measures).then(function(records) {
+ 					$scope.isEmpty = records.length === 0;
  					$scope.categories = data.groupByCategory(records);
  					midataPortal.setLink("view", "hide", "", { });	
  				}); 				
