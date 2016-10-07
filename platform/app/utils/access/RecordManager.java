@@ -1,6 +1,7 @@
 package utils.access;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -461,16 +462,20 @@ public class RecordManager {
 	 * Add a new record containing an attachment to the database
 	 * @param executingPerson id of executing person
 	 * @param record the record to be saved
+	 * @param alternateAps alternative target aps
 	 * @param data a file input stream containing the file to be stored as attachment
 	 * @param fileName the name of the attached file
-	 * @param contentType the mime type of the attached file
-	 * @throws DatabaseException
+	 * @param contentType the mime type of the attached file	
 	 * @throws AppException
 	 */
-	public void addRecord(MidataId executingPerson, Record record, FileInputStream data, String fileName, String contentType) throws DatabaseException, AppException {
+	public void addRecord(MidataId executingPerson, Record record, MidataId alternateAps, InputStream data, String fileName, String contentType) throws AppException {
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
-		byte[] kdata = addRecordIntern(executingPerson, dbrecord, false, null, false);		
+		byte[] kdata = addRecordIntern(executingPerson, dbrecord, false, alternateAps, false);	
+		try {
 		FileStorage.store(EncryptionUtils.encryptStream(kdata, data), record._id, fileName, contentType);
+		} catch (DatabaseException e) {
+			throw new InternalServerException("error.internal", e);
+		}
 		createAndShareDependend(executingPerson, dbrecord, record.dependencies, kdata);
 	}
 	

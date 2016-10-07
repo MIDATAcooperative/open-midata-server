@@ -100,6 +100,7 @@
 		  <formrow myid="x" label="">
 		    <button type="submit" ng-disabled="status.action=='submit'" class="btn btn-primary">Submit</button>
 		    <button type="button" class="btn btn-default" ng-click="doInstall()" ng-hide="app.type == 'mobile'" ng-disabled="app._id == null">Install from localhost</button>
+		    <a class="btn btn-default" ui-sref="^.autoimport({ appId : app._id })" ng-show="app.type == 'oauth1' || app.type == 'oauth2'" ng-disabled="app._id == null">Serverside Import Test</a>
 		    <button type="button" class="btn btn-danger" ng-show="allowDelete" ng-click="doDelete()" ng-disabled="status.action=='delete'">Delete</button>
 		  </formrow>
 	     </form>	  

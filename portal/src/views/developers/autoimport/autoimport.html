@@ -1,0 +1,31 @@
+
+<div  ng-controller="AutoImportCtrl">
+		
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+		  	Auto Import Test
+		</div>
+		<div class="body">
+		<p>In order to test the automatic import feature you need to do the following steps:</p>
+		<ul>
+		  <li>Your plugin needs the 'server.js' file provided by MIDATA.</li>
+		  <li>Install your plugin from localhost into the sandbox and run your development version on your PC.</li>
+		  <li>Using the sandbox to authorize your plugin to access the OAuth endpoint you want to import data from.</li>
+		  <li>Have your plugin save a configuration with autoimport enabled.</li>
+		  <li>Using a shell 'cd' into the directory where you develop your plugin and execute the command shown below.</li>
+		</ul>
+		<div class="alert alert-warning" ng-show="calls.length==0">Plugin is not yet installed in your sandbox!</div>		
+		<div ng-repeat="call in calls">
+		  <hr>			
+		  <p>Installed Plugin: <b>{{ call.name }}</b></p>
+		  <p>Autoimport enabled in config: <b>{{ call.autoImport }}</b></p>
+		  <p>Existing OAuth Session: <b>{{ call.loggedIn }}</b></p>
+		  <div class="alert alert-warning" ng-show="!call.loggedIn">Please establish an OAuth session before testing.</div>
+		  <div class="alert alert-warning" ng-show="!call.autoImport">Please configure your plugin to use autoImport before testing.</div>		
+		  <p>When ready execute this command to test autoimport (paste as one line):</p>
+		  <div class="well" style="word-wrap:break-word">
+           node server.js "{{ call.authToken }}" en {{baseurl}}
+		  </div>		 		  	  
+	    </div>
+    </div>
+</div>

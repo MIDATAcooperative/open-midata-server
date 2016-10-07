@@ -24,6 +24,7 @@ import models.Admin;
 import models.Plugin;
 import models.Space;
 import models.User;
+import models.enums.UserRole;
 import play.Play;
 import play.libs.Akka;
 import play.libs.F.Callback;
@@ -159,48 +160,67 @@ public class AutoRun extends APIController {
 		public void onReceive(Object message) throws Exception {
 		    if (message instanceof ImportRequest) {
 		    	try {
-		    	ImportRequest request = (ImportRequest) message;
-		    	MidataId autorunner = request.autorunner;
-		    	Space space = request.space;
-		        
-		    	final String nodepath = Play.application().configuration().getString("node.path");
-				final String visPath = Play.application().configuration().getString("visualizations.path");
-						    	
-		    	final Plugin plugin = Plugin.getById(space.visualization, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret"));
-				SpaceToken token = new SpaceToken(space._id, space.owner, null, null, autorunner);
-				User tuser = User.getById(space.owner, Sets.create("language"));
-				final String lang = tuser.language != null ? tuser.language : "en";
-				final String tokenstr = token.encrypt();
-				final ActorRef sender = getSender();
-	
-				if (plugin.type != null && plugin.type.equals("oauth2")) {
-					BSONObject oauthmeta = RecordManager.instance.getMeta(autorunner, space._id, "_oauth");
-					if (oauthmeta != null) {
-						if (oauthmeta.containsField("refreshToken")) {							                        				
-							Plugins.requestAccessTokenOAuth2FromRefreshToken(autorunner, plugin, space._id.toString(), oauthmeta.toMap()).onRedeem(new Callback<Boolean>() {
-								public void invoke(Boolean success) throws AppException, IOException {
-									AccessLog.log("Auth:"+success);
-									if (success) {
-										AccessLog.log(nodepath+" "+visPath+"/"+plugin.filename+"/server.js"+" "+tokenstr+" "+lang);
-										Process p = new ProcessBuilder(nodepath, visPath+"/"+plugin.filename+"/server.js", tokenstr, lang).inheritIO().start();
-										try {
-										  p.waitFor();
-										  sender.tell(new ImportResult(p.exitValue()), getSelf());
-										} catch (InterruptedException e) {
-											sender.tell(new ImportResult(-2), getSelf());
+			    	ImportRequest request = (ImportRequest) message;
+			    	MidataId autorunner = request.autorunner;
+			    	Space space = request.space;
+			        
+			    	final String nodepath = Play.application().configuration().getString("node.path");
+					final String visPath = Play.application().configuration().getString("visualizations.path");
+							    	
+			    	final Plugin plugin = Plugin.getById(space.visualization, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret"));
+					SpaceToken token = new SpaceToken(space._id, space.owner, null, null, autorunner);
+					User tuser = User.getById(space.owner, Sets.create("language", "role"));					
+					final String lang = tuser.language != null ? tuser.language : "en";
+					final String tokenstr = token.encrypt();
+					final ActorRef sender = getSender();
+					if (tuser.role.equals(UserRole.DEVELOPER)) {
+						sender.tell(new ImportResult(0), getSelf());
+						return;
+					}
+		
+					if (plugin.type != null && plugin.type.equals("oauth2")) {
+						BSONObject oauthmeta = RecordManager.instance.getMeta(autorunner, space._id, "_oauth");
+						if (oauthmeta != null) {
+							if (oauthmeta.containsField("refreshToken")) {							                        				
+								Plugins.requestAccessTokenOAuth2FromRefreshToken(autorunner, plugin, space._id.toString(), oauthmeta.toMap()).onRedeem(new Callback<Boolean>() {
+									public void invoke(Boolean success) throws AppException, IOException {
+										AccessLog.log("Auth:"+success);
+										if (success) {
+											AccessLog.log(nodepath+" "+visPath+"/"+plugin.filename+"/server.js"+" "+tokenstr+" "+lang);
+											Process p = new ProcessBuilder(nodepath, visPath+"/"+plugin.filename+"/server.js", tokenstr, lang).inheritIO().start();
+											try {
+											  p.waitFor();
+											  sender.tell(new ImportResult(p.exitValue()), getSelf());
+											} catch (InterruptedException e) {
+												sender.tell(new ImportResult(-2), getSelf());
+											}
+										} else {
+											sender.tell(new ImportResult(-1), getSelf());
 										}
-									} else {
-										sender.tell(new ImportResult(-1), getSelf());
+										
 									}
-									
-								}
-							});
-	
+								});
+		
+							} else {
+								sender.tell(new ImportResult(-1), getSelf());
+							}
+						} else {}
+					} else if (plugin.type != null && plugin.type.equals("oauth1")) {
+						BSONObject oauthmeta = RecordManager.instance.getMeta(autorunner, space._id, "_oauth1");
+						if (oauthmeta != null) {
+							AccessLog.log("OAuth 1");
+							AccessLog.log(nodepath+" "+visPath+"/"+plugin.filename+"/server.js"+" "+tokenstr+" "+lang);
+							Process p = new ProcessBuilder(nodepath, visPath+"/"+plugin.filename+"/server.js", tokenstr, lang).inheritIO().start();
+							try {
+							  p.waitFor();
+							  sender.tell(new ImportResult(p.exitValue()), getSelf());
+							} catch (InterruptedException e) {
+								sender.tell(new ImportResult(-2), getSelf());
+							}
 						} else {
 							sender.tell(new ImportResult(-1), getSelf());
 						}
-					} else {}
-				}
+					}
 		    	} catch (Exception e) {
 		    		ErrorReporter.report("Autorun-Service", null, e);	
 		    		throw e;

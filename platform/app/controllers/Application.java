@@ -192,7 +192,7 @@ public class Application extends APIController {
 		String token = passwordResetToken.token;
 		String role = passwordResetToken.role;		
 		
-		User user = User.getById(userId, Sets.create("status", "role", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "resettoken","password","resettokenTs", "registeredAt"));
+		User user = User.getById(userId, Sets.create("status", "role", "subroles", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "resettoken","password","resettokenTs", "registeredAt"));
 		
 		if (user!=null && !user.emailStatus.equals(EMailStatus.VALIDATED)) {							
 		       if (user.resettoken != null 		    		    

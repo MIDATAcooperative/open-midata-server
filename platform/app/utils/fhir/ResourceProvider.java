@@ -1,5 +1,10 @@
 package utils.fhir;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -14,6 +19,7 @@ import org.hl7.fhir.instance.model.api.IBaseReference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
+import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.BaseResource;
 import org.hl7.fhir.dstu3.model.Basic;
 import org.hl7.fhir.dstu3.model.IdType;
@@ -48,6 +54,7 @@ import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.PreconditionFailedException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
+import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import ca.uhn.fhir.util.FhirTerser;
 
 import models.Record;
@@ -201,6 +208,10 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	
 	public static Record fetchCurrent(IIdType theId)  {
 		try {
+			if (theId == null) throw new UnprocessableEntityException("id missing");
+			if (theId.getIdPart() == null || theId.getIdPart().length() == 0) throw new UnprocessableEntityException("id local part missing");
+			if (!isLocalId(theId)) throw new UnprocessableEntityException("id is not local resource");
+			
 			Record record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new MidataId(theId.getIdPart()));
 			
 			if (record == null) throw new ResourceNotFoundException("Resource "+theId.getIdPart()+" not found."); 
@@ -218,11 +229,49 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 		}
 	}
 	
+	private static boolean isLocalId(IIdType theId) {
+		if (theId.getBaseUrl() == null) return true;
+		return false;
+	}
+
 	public static void insertRecord(Record record, IBaseResource resource) {
 		try {
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 			record.data = (DBObject) JSON.parse(encoded);
 			PluginsAPI.createRecord(info(), record);			
+		} catch (AppException e) {
+			throw new InternalErrorException(e);
+		}
+	}
+	
+	public static void insertRecord(Record record, IBaseResource resource, Attachment attachment) throws UnprocessableEntityException {
+		if (attachment == null) {
+			insertRecord(record, resource);
+			return;
+		} 
+		try {
+			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
+			record.data = (DBObject) JSON.parse(encoded);
+			
+			InputStream data = null;
+			byte[] dataArray = attachment.getData();
+			if (dataArray != null)  data = new ByteArrayInputStream(dataArray);
+			else if (attachment.getUrl() != null) {
+				try {
+				  data = new URL(attachment.getUrl()).openStream();
+				} catch (MalformedURLException e) {
+					throw new UnprocessableEntityException("Malformed URL");
+				} catch (IOException e2) {
+					throw new UnprocessableEntityException("IO Exception");
+				}
+			} 
+			String contentType = attachment.getContentType();
+			String fileName = attachment.getTitle();
+			
+			attachment.setData(null);
+			attachment.setUrl(null);
+			
+			PluginsAPI.createRecord(info(), record, data, fileName, contentType);			
 		} catch (AppException e) {
 			throw new InternalErrorException(e);
 		}

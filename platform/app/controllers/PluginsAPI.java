@@ -459,6 +459,10 @@ public class PluginsAPI extends APIController {
 	 * @throws AppException
 	 */
 	public static void createRecord(ExecutionInfo inf, Record record) throws AppException  {
+       createRecord(inf, record, null, null, null);		
+	}
+	
+	public static void createRecord(ExecutionInfo inf, Record record, InputStream fileData, String fileName, String contentType) throws AppException  {
 		if (record.format==null) record.format = "application/json";
 		if (record.content==null) record.content = "other";
 		if (record.owner==null) record.owner = inf.ownerId;
@@ -470,8 +474,12 @@ public class PluginsAPI extends APIController {
 			if (consent == null || consent.isEmpty()) throw new BadRequestException("error.noconsent", "No active consent that allows to add data for target person.");			
 		}
 		
-		if (inf.space != null) {				
-		    RecordManager.instance.addRecord(inf.executorId, record, inf.space._id);
+		if (inf.space != null) {	
+			if (fileData != null) {
+			  RecordManager.instance.addRecord(inf.executorId, record, inf.space._id, fileData, fileName, contentType);
+			} else {
+		      RecordManager.instance.addRecord(inf.executorId, record, inf.space._id);
+			}
 				
 		    Set<MidataId> records = new HashSet<MidataId>();
 			records.add(record._id);
@@ -490,7 +498,11 @@ public class PluginsAPI extends APIController {
 			}
 			
 		} else {
-			RecordManager.instance.addRecord(inf.executorId, record, inf.targetAPS);
+			if (fileData != null) {
+			  RecordManager.instance.addRecord(inf.executorId, record, inf.targetAPS, fileData, fileName, contentType);
+			} else {
+			  RecordManager.instance.addRecord(inf.executorId, record, inf.targetAPS);
+			}
 									
 			Set<MidataId> records = new HashSet<MidataId>();
 			records.add(record._id);
@@ -750,11 +762,18 @@ public class PluginsAPI extends APIController {
 					        .map("size", file.length())
 					);
 					record.data = (DBObject) JSON.parse(data);
-					BasicDBObject attachment = new BasicDBObject();
-					attachment.put("attachment", att);
-					BasicDBList contentArray = new BasicDBList();
-					contentArray.add(attachment);
-					record.data.put("content", contentArray);
+					
+					Object rt = record.data.get("resourceType");
+					
+					if (rt != null && rt.equals("Media")) {
+					    record.data.put("content", att);	
+					} else {
+						BasicDBObject attachment = new BasicDBObject();
+						attachment.put("attachment", att);
+						BasicDBList contentArray = new BasicDBList();
+						contentArray.add(attachment);
+						record.data.put("content", contentArray);
+					}
 				} catch (JSONParseException e) {
 					throw new BadRequestException("error.invalid.json", "Record data is invalid JSON.");
 				}
@@ -769,42 +788,15 @@ public class PluginsAPI extends APIController {
 				);
 			 		
 			}
-			
-
-		// save file with file storage utility
-			
-			if (authToken.space != null) {				
-			    try {
-					  RecordManager.instance.addRecord(authToken.executorId, record, new FileInputStream(file), filename, contentType);
-			    } catch (FileNotFoundException e) {
-				    	throw new InternalServerException("error.internal",e);
-			    }
 					
-				Set<MidataId> records = new HashSet<MidataId>();
-				records.add(record._id);
-				RecordManager.instance.share(authToken.executorId, authToken.ownerId, authToken.targetAPS, records, false);
-				
-				if (authToken.space != null && authToken.space.autoShare != null && !authToken.space.autoShare.isEmpty()) {
-					for (MidataId autoshareAps : authToken.space.autoShare) {
-						Consent consent = Consent.getByIdAndOwner(autoshareAps, authToken.ownerId, Sets.create("type"));
-						if (consent != null) { 
-						  RecordManager.instance.share(authToken.executorId, authToken.ownerId, autoshareAps, records, true);
-						}
-					}
-				}
-				
-			} else {
-				RecordManager.instance.addRecord(authToken.executorId, record, authToken.targetAPS);
-			}
+			createRecord(authToken, record, new FileInputStream(file), filename, contentType);
 											
 			ObjectNode obj = Json.newObject();
 			obj.put("_id", record._id.toString());
 			return ok(obj);
 		} catch (AppException e) {
 			return badRequest(e.getMessage());
-		} catch (DatabaseException e) {
-			return badRequest(e.getMessage());
-		}
+		} 
 			
 		} catch (Exception e2) {
 			ErrorReporter.report("Plugin API", ctx(), e2);

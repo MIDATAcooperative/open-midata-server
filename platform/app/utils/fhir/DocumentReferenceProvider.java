@@ -342,32 +342,39 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 	}
 
 	@Create
-	public MethodOutcome createDocumenentReference(@ResourceParam DocumentReference theObservation) {
+	public MethodOutcome createDocumenentReference(@ResourceParam DocumentReference theDocumentReference) {
 
 		Record record = newRecord("fhir/DocumentReference");
-		prepare(record, theObservation);
+		prepare(record, theDocumentReference);
 		// insert
-		insertRecord(record, theObservation);
+		Attachment attachment = null;
+		
+		List<DocumentReferenceContentComponent> contents = theDocumentReference.getContent(); 
+		if (contents != null && contents.size() == 1) {
+			attachment = theDocumentReference.getContent().get(0).getAttachment();			
+		}
+		
+		insertRecord(record, theDocumentReference, attachment);
 
-		processResource(record, theObservation);
-		return outcome("DocumentReference", record, theObservation);
+		processResource(record, theDocumentReference);
+		return outcome("DocumentReference", record, theDocumentReference);
 
 	}
 	
 	public Record init() { return newRecord("fhir/DocumentReference"); }
 
 	@Update
-	public MethodOutcome updateDocumentReference(@IdParam IdType theId, @ResourceParam DocumentReference theObservation) {
+	public MethodOutcome updateDocumentReference(@IdParam IdType theId, @ResourceParam DocumentReference theDocumentReference) {
 		Record record = fetchCurrent(theId);
-		prepare(record, theObservation);
-		updateRecord(record, theObservation);
-		return outcome("DocumentReference", record, theObservation);
+		prepare(record, theDocumentReference);
+		updateRecord(record, theDocumentReference);
+		return outcome("DocumentReference", record, theDocumentReference);
 	}
 
-	public void prepare(Record record, DocumentReference theObservation) {
+	public void prepare(Record record, DocumentReference theDocumentReference) {
 		// Set Record code and content
 		record.code = new HashSet<String>(); 
-		for (Coding coding : theObservation.getType().getCoding()) {			
+		for (Coding coding : theDocumentReference.getType().getCoding()) {			
 			if (coding.getCode() != null && coding.getSystem() != null) {
 				record.code.add(coding.getSystem() + " " + coding.getCode());
 			}
@@ -377,10 +384,10 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 		} catch (AppException e) {
 			throw new InternalErrorException(e);
 		}
-		record.name = theObservation.getDescription();
+		record.name = theDocumentReference.getDescription();
 	
 		// clean
-		Reference subjectRef = theObservation.getSubject();
+		Reference subjectRef = theDocumentReference.getSubject();
 		boolean cleanSubject = true;
 		if (subjectRef != null) {
 			IIdType target = subjectRef.getReferenceElement();
@@ -394,8 +401,8 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 			}
 		}
 		
-		if (cleanSubject) theObservation.setSubject(null);
-		clean(theObservation);
+		if (cleanSubject) theDocumentReference.setSubject(null);
+		clean(theDocumentReference);
 
 	}
 
@@ -423,9 +430,9 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 	}
 
 	@Override
-	public void clean(DocumentReference theObservation) {
+	public void clean(DocumentReference theDocumentReference) {
 		
-		super.clean(theObservation);
+		super.clean(theDocumentReference);
 	}
 
 }

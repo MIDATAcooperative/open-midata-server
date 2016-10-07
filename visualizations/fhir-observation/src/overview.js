@@ -1,6 +1,6 @@
 angular.module('fhirObservation')
-.controller('OverviewCtrl', ['$scope', '$filter', 'midataServer', 'midataPortal', 'configuration', 'data', 'fhirinfo',
- 	function($scope, $filter, midataServer, midataPortal, configuration, data, fhirinfo) {
+.controller('OverviewCtrl', ['$scope', '$filter', '$timeout', 'midataServer', 'midataPortal', 'configuration', 'data', 'fhirinfo',
+ 	function($scope, $filter, $timeout, midataServer, midataPortal, configuration, data, fhirinfo) {
  			    	     	    
  		$scope.init = function() {
  			console.log("INIT");
@@ -9,6 +9,7 @@ angular.module('fhirObservation')
  					$scope.isEmpty = records.length === 0;
  					$scope.categories = data.groupByCategory(records);
  					midataPortal.setLink("view", "hide", "", { });	
+ 					$timeout(function() { midataPortal.resize(); }, 0);
  				}); 				
  			});
  			 						 	
