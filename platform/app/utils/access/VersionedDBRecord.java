@@ -45,7 +45,7 @@ public class VersionedDBRecord extends DBRecord {
 	 * @return
 	 */
 	public Object get_id() {
-		return new BasicBSONObject("_id", _id).append("version", version);
+		return new BasicBSONObject("_id", _id.toObjectId()).append("version", version);
 	}
 	
 	/**
@@ -54,7 +54,7 @@ public class VersionedDBRecord extends DBRecord {
 	 */
 	public void set_id(Object _id) {
 		BasicBSONObject obj = (BasicBSONObject) _id;
-		_id = obj.get("_id");
+		_id = new MidataId(obj.get("_id").toString());
 		version = (String) obj.getString("version");
 	}
 	
