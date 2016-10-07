@@ -7,7 +7,7 @@ angular.module('portal')
 			
 	$scope.init = function(userId, appId) {
 		
-		var properties = {"owner": userId, "visualization" : appId };
+		var properties = {"owner": userId, "visualization" : appId, "context" : "sandbox" };
 	    var fields = ["name", "type", "order", "autoImport", "context", "visualization"];
 	    var data = {"properties": properties, "fields": fields};
 	    spaces.get(properties, fields)
