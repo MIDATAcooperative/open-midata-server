@@ -361,7 +361,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 									    {
 									      system : "http://hl7.org/fhir/observation-category",
 									      code : "fitness",
-									      display : measure.category_name;
+									      display : measure.category_name
 									   }
 									  ]
 								},
