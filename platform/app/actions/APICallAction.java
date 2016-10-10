@@ -13,6 +13,7 @@ import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.access.RecordManager;
+import utils.auth.PortalSessionToken;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.json.JsonValidation.JsonValidationException;
@@ -65,7 +66,8 @@ public class APICallAction extends Action<APICall> {
 			ErrorReporter.report("Portal", ctx, e2);					
 			return F.Promise.pure((Result) internalServerError(""+e2.getMessage()));			
 		} finally {
-			RecordManager.instance.clear();
+			RecordManager.instance.clear();	
+			PortalSessionToken.clear();
 			AccessLog.newRequest();	
 		}
     }

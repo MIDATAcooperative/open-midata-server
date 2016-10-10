@@ -131,7 +131,7 @@ public class FHIR extends Controller {
           ResourceProvider.setExecutionInfo(info);
 		}
         
-		AccessLog.log(req.getRequestURI());
+		AccessLog.logBegin("begin FHIR request: "+req.getRequestURI());
 		servlet.doPost(req, res);
 		
 		if (res.getResponseWriter() != null) {
@@ -141,6 +141,7 @@ public class FHIR extends Controller {
 		if (res.getResponseStream() != null) {
 			return status(res.getStatus(), res.getResponseStream().toByteArray());
 		}
+		AccessLog.logEnd("end FHIR request");
 		
 		return status(res.getStatus());
 	}

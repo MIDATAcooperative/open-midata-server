@@ -149,4 +149,8 @@ public class PortalSessionToken {
 	public static PortalSessionToken session() {
 		return session.get();
 	}
+	
+	public static void clear() {
+		session.set(null);
+	}
 }

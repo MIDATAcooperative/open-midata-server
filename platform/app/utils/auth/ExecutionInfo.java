@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import play.libs.Json;
 import play.mvc.Http.Request;
 
+import utils.AccessLog;
 import utils.access.RecordManager;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -58,7 +59,8 @@ public class ExecutionInfo {
 		
 	}
 	
-	public static ExecutionInfo checkSpaceToken(SpaceToken authToken) throws AppException {				
+	public static ExecutionInfo checkSpaceToken(SpaceToken authToken) throws AppException {		
+		AccessLog.logBegin("begin check 'space' type session token");
 		ExecutionInfo result = new ExecutionInfo();
 		result.executorId = authToken.executorId;
 			
@@ -86,7 +88,7 @@ public class ExecutionInfo {
 			result.targetAPS = consent._id;
 			result.ownerId = consent.owner;
 		}
-				
+	   AccessLog.logEnd("end check 'space' type session token");
 	   return result;	
 		
 	}
@@ -102,6 +104,7 @@ public class ExecutionInfo {
 	
 	public static ExecutionInfo checkMobileToken(MobileAppSessionToken authToken) throws AppException {		
 						
+		AccessLog.logBegin("begin check 'mobile' type session token");
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare"));
         if (appInstance == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 
@@ -122,6 +125,7 @@ public class ExecutionInfo {
 		result.ownerId = appInstance.owner;
 		result.pluginId = appInstance.applicationId;
 		result.targetAPS = appInstance._id;
+		AccessLog.logEnd("end check 'mobile' type session token");
 		
         return result;						
 		

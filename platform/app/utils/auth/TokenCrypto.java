@@ -95,7 +95,7 @@ public class TokenCrypto {
 					throw new InternalServerException("error.token", "Invalid token");
 				}			
 			}
-			AccessLog.log("passed");
+			
 			String ciperAlg = "AES/CBC/PKCS5Padding";
 			IvParameterSpec ips = new IvParameterSpec(encrypted,0,IV_LENGTH);
 			

@@ -306,7 +306,9 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public Enumeration<String> getHeaders(String arg0) {
-		return Collections.enumeration(Arrays.asList(request.headers().get(arg0)));
+		String[] headers = request.headers().get(arg0);
+		if (headers == null) return Collections.emptyEnumeration();
+		return Collections.enumeration(Arrays.asList(headers));
 	}
 
 	@Override

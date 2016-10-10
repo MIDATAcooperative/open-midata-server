@@ -30,7 +30,7 @@ public class ErrorReporter {
 		} 
 		String timeStamp = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss").format(new Date());
 		if (e!=null) AccessLog.logException("Uncatched Exception:", e);
-		String txt = "Time:"+timeStamp+"\nInterface: "+fromWhere+"\nSession: "+user+"\nPath: "+path+"\n\n"+AccessLog.getReport();
+		String txt = "Time:"+timeStamp+"\nInterface: "+fromWhere+"\nPortal Session: "+user+"\nPath: "+path+"\n\n"+AccessLog.getReport();
 		MailUtils.sendTextMail(bugReportEmail, bugReportName, "Error Report: "+path, txt);
 	}
 }
