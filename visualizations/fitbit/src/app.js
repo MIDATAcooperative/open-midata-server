@@ -324,6 +324,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			var toDate = measure.to;
 			$translate("titles."+measure.id).then(function(t) { measure.title = t; });
 			$translate(measure.id).then(function(t) { measure.name_translated = t; });
+			$translate("fitness_data").then(function(t) { measure.category_name = t; });
 			
 			if (fromDate > toDate) return;
 			
@@ -359,8 +360,8 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 									  coding : [
 									    {
 									      system : "http://hl7.org/fhir/observation-category",
-									      code : "vital-signs",
-									      display : "Vital Signs"
+									      code : "fitness",
+									      display : measure.category_name;
 									   }
 									  ]
 								},

@@ -15,7 +15,7 @@
 	</div>
 	<div class="row" ng-show="timing.dateFrom">
 	    <span class="col-sm-2"><button class="btn btn-xs btn-default" translate="earlier" ng-click="shift(-1);reload();"></button></span>
-		<span class="col-sm-4">{{ timing.dateFrom | date }} - {{ timing.dateTo | date }}</span>
+		<span class="col-sm-4">{{ timing.dateFrom | date }} - {{ (timing.dateTo.getTime() - 24*60*60*1000) | date }}</span>
 		<span class="col-sm-2"><button class="btn btn-xs btn-default" translate="later" ng-click="shift(1);reload();"></button></span>
 	</div>
 	
@@ -37,7 +37,7 @@
 			<table class="table">
 				<tr ng-repeat="record in records | orderBy : 'data.effectiveDateTime'">
 					<td><a href="javascript:" ng-click="showSingle(record);">{{ record.data.effectiveDateTime | date }}</a></td>
-					<td>
+					<td ng-class="record.data.status">
 						<div ng-show="record.data.component">
 							<span ng-repeat="comp in record.data.component">{{ comp.valueQuantity.value }} {{ comp.valueQuantity.unit }} </span>
 						</div>

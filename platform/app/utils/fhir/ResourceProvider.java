@@ -32,6 +32,7 @@ import org.hl7.fhir.exceptions.FHIRException;
 
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
+import com.typesafe.config.ConfigException.BugOrBroken;
 
 import controllers.PluginsAPI;
 
@@ -60,6 +61,7 @@ import ca.uhn.fhir.util.FhirTerser;
 import models.Record;
 
 import utils.AccessLog;
+import utils.ErrorReporter;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
@@ -137,10 +139,12 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 		   return resources;
 
 	    } catch (AppException e) {
-	       AccessLog.logException("search", e);
-		   AccessLog.log("ERROR");
+	       ErrorReporter.report("FHIR (search)", null, e);	       
 		   return null;
-	    }
+	    } catch (NullPointerException e2) {
+			ErrorReporter.report("FHIR (search)", null, e2);	 
+			throw new InternalErrorException(e2);
+		}
      }
 	
 	
@@ -225,7 +229,11 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 			}		
 			return record;
 		} catch (AppException e) {
+			ErrorReporter.report("FHIR (fetch current record)", null, e);	 
 			throw new InternalErrorException(e);
+		} catch (NullPointerException e2) {
+			ErrorReporter.report("FHIR (fetch current record)", null, e2);	 
+			throw new InternalErrorException(e2);
 		}
 	}
 	
@@ -235,24 +243,28 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	}
 
 	public static void insertRecord(Record record, IBaseResource resource) {
+		AccessLog.logBegin("begin insert FHIR record");
 		try {
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 			record.data = (DBObject) JSON.parse(encoded);
 			PluginsAPI.createRecord(info(), record);			
 		} catch (AppException e) {
+			ErrorReporter.report("FHIR (insert record)", null, e);				
 			throw new InternalErrorException(e);
+		} catch (NullPointerException e2) {
+			ErrorReporter.report("FHIR (insert record)", null, e2);	 
+			throw new InternalErrorException(e2);
 		}
+		AccessLog.logEnd("end insert FHIR record");
 	}
 	
 	public static void insertRecord(Record record, IBaseResource resource, Attachment attachment) throws UnprocessableEntityException {
-		if (attachment == null) {
+		if (attachment == null || attachment.isEmpty()) {
 			insertRecord(record, resource);
 			return;
 		} 
-		try {
-			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
-			record.data = (DBObject) JSON.parse(encoded);
-			
+		AccessLog.logBegin("begin insert FHIR record with attachment");
+		try {						
 			InputStream data = null;
 			byte[] dataArray = attachment.getData();
 			if (dataArray != null)  data = new ByteArrayInputStream(dataArray);
@@ -271,10 +283,18 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 			attachment.setData(null);
 			attachment.setUrl(null);
 			
+			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
+			record.data = (DBObject) JSON.parse(encoded);
+			
 			PluginsAPI.createRecord(info(), record, data, fileName, contentType);			
 		} catch (AppException e) {
+			ErrorReporter.report("FHIR (insert record)", null, e);	 
 			throw new InternalErrorException(e);
+		} catch (NullPointerException e2) {
+			ErrorReporter.report("FHIR (insert record)", null, e2);	 
+			throw new InternalErrorException(e2);
 		}
+		AccessLog.logEnd("end insert FHIR record with attachment");
 	}
 	
 	public static void updateRecord(Record record, IBaseResource resource) {
@@ -284,7 +304,11 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 			record.version = resource.getMeta().getVersionId();
 			RecordManager.instance.updateRecord(info().executorId, info().targetAPS, record);
 		} catch (AppException e) {
+			ErrorReporter.report("FHIR (update record)", null, e);	 
 			throw new InternalErrorException(e);
+		} catch (NullPointerException e2) {
+			ErrorReporter.report("FHIR (update record)", null, e2);	 
+			throw new InternalErrorException(e2);
 		}
 	}
 	
@@ -300,6 +324,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	
 	public MethodOutcome outcome(String type, Record record, IBaseResource resource) {
 		MethodOutcome retVal = new MethodOutcome();
+		
 		String version = record.version;
 		if (version == null) version = VersionedDBRecord.INITIAL_VERSION;				
 		retVal.setId(new IdType(type, record._id.toString(), version));

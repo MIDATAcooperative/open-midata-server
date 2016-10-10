@@ -23,6 +23,7 @@ angular.module('fitbiti18n', [])
   "on" : "ON",
   "off" : "OFF",
   
+  "fitness_data" : "Fitness Data",
   
   "food_calories_intake": "Food - Calories Intake",
   "food_water_consumption" : "Food - Water Consumption",
@@ -93,6 +94,7 @@ de : {
 	  "on" : "AN",
 	  "off" : "AUS",
 	  
+	  "fitness_data" : "Fitness Daten",
 	  
 	  "food_calories_intake": "Nahrung - Kalorien Einnahme",
 	  "food_water_consumption" : "Nahrung - Wasser Einnahme",

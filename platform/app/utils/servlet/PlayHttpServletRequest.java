@@ -307,7 +307,10 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 	@Override
 	public Enumeration<String> getHeaders(String arg0) {
 		String[] headers = request.headers().get(arg0);
-		if (headers == null) return Collections.emptyEnumeration();
+		if (headers == null) {
+			AccessLog.log("header not found:"+arg0);
+			return Collections.emptyEnumeration();
+		}
 		return Collections.enumeration(Arrays.asList(headers));
 	}
 

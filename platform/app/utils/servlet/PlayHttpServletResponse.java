@@ -16,6 +16,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 
 import scala.NotImplementedError;
+import utils.AccessLog;
 
 public class PlayHttpServletResponse implements HttpServletResponse {
 
@@ -61,13 +62,13 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public ServletOutputStream getOutputStream() throws IOException {
-		responseStream = new ByteArrayOutputStream(2000);
+		if (this.responseStream == null) responseStream = new ByteArrayOutputStream(2000);
 		return new PlayServletOutputStream(responseStream);		
 	}
 
 	@Override
 	public PrintWriter getWriter() throws IOException {
-		this.responseWriter = new StringWriter();
+		if (this.responseWriter == null) this.responseWriter = new StringWriter();
 		return new PrintWriter(this.responseWriter);
 	}
 
@@ -97,6 +98,7 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public void setCharacterEncoding(String arg0) {
+		AccessLog.log("character-encoding:"+arg0);
 		this.characterEncoding = arg0;		
 	}
 
@@ -114,6 +116,17 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public void setContentType(String arg0) {
+		AccessLog.log("content-type:"+arg0);
+		if (arg0 == null) {
+			return;
+			/*
+			try {			
+			  throw new NullPointerException();
+			} catch (NullPointerException e) {
+				AccessLog.logException("np", e);
+			}
+			arg0 = "application/json+fhir";*/
+		}
 		response.setContentType(arg0);				
 	}
 

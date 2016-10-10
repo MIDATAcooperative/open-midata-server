@@ -40,6 +40,9 @@ angular.module('fhirObservation')
 				$scope.timing.dateFrom = $scope.timing.dateTo = null;  
 			  } else {
 				$scope.timing.dateTo = new Date(entry.newest);
+				$scope.timing.dateTo.setMilliseconds(0);
+				$scope.timing.dateTo.setMinutes(0);
+				$scope.timing.dateTo.setHours(24);				
 				$scope.timing.dateFrom = new Date();
 				$scope.shift(0);
 			  }
@@ -50,8 +53,8 @@ angular.module('fhirObservation')
 	
 	$scope.reload = function() {
 		var criteria = { content : measure, owner : configuration.owner };
-		if ($scope.timing.dateFrom) criteria.after = $scope.timing.dateFrom;
-		if ($scope.timing.dateTo) criteria.before = $scope.timing.dateTo;
+		if ($scope.timing.dateFrom) criteria.after = $filter('date')($scope.timing.dateFrom, "yyyy-MM-dd");
+		if ($scope.timing.dateTo) criteria.before = $filter('date')($scope.timing.dateTo, "yyyy-MM-dd");
 		data.getRecords(criteria)
 		   .then(function(records) {
 			  $scope.records = records; 
@@ -80,7 +83,7 @@ angular.module('fhirObservation')
         var entries = [];
         var idx = 0;
         
-        var addEntry = function(record,cmp,cdate,measure) {
+        var addEntry = function(record,cmp,cdate,measure) {       
       	  var q = cmp.valueQuantity || { value : 1 };
       	  var cnt = "";
       	  if (measure) cnt = measure; 
@@ -100,7 +103,7 @@ angular.module('fhirObservation')
         
         angular.forEach(records, function(record) {
             var cdate = new Date(record.created).toISOString();
-            if (record.data.resourceType == "Observation") {
+            if (record.data.resourceType == "Observation" && record.data.status !== "entered-in-error" && record.data.status !== "cancelled") {
           	  if (record.data.component) {
 	            	  angular.forEach(record.data.component, function(comp) {
 	            		  addEntry(record, comp, cdate);

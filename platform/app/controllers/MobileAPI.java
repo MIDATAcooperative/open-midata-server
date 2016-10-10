@@ -367,7 +367,7 @@ public class MobileAPI extends Controller {
           info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()));                  
 		} else if (json != null && json.has("authToken")) {
 		  info = ExecutionInfo.checkToken(request(), JsonValidation.getString(json, "authToken"));
-		}
+		} else throw new BadRequestException("error.auth", "Please provide authorization token as 'Authorization' header or 'authToken' request parameter.");
 					
 		MidataId recordId = json != null ? JsonValidation.getMidataId(json, "_id") : new MidataId(request().getQueryString("_id"));			
 		FileData fileData = RecordManager.instance.fetchFile(info.executorId, new RecordToken(recordId.toString(), info.targetAPS.toString()));

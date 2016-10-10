@@ -82,16 +82,19 @@ public class FHIR extends Controller {
           ResourceProvider.setExecutionInfo(info);
 		}
         
-		AccessLog.log(req.getRequestURI());
+		AccessLog.logBegin("begin FHIR get request: "+req.getRequestURI());
 		servlet.doGet(req, res);
-		
+		AccessLog.logEnd("end FHIR get request");
+	
 		if (res.getResponseWriter() != null) {
 			return status(res.getStatus(), res.getResponseWriter().toString());		
 		}
 		
 		if (res.getResponseStream() != null) {
+			
 			return status(res.getStatus(), res.getResponseStream().toByteArray());
 		}
+		
 		
 		return status(res.getStatus());
 	}
@@ -131,17 +134,18 @@ public class FHIR extends Controller {
           ResourceProvider.setExecutionInfo(info);
 		}
         
-		AccessLog.logBegin("begin FHIR request: "+req.getRequestURI());
+		AccessLog.logBegin("begin FHIR post request: "+req.getRequestURI());
 		servlet.doPost(req, res);
-		
-		if (res.getResponseWriter() != null) {
+		AccessLog.logEnd("end FHIR post request");
+		if (res.getResponseWriter() != null) {			
 			return status(res.getStatus(), res.getResponseWriter().toString());		
 		}
 		
-		if (res.getResponseStream() != null) {
-			return status(res.getStatus(), res.getResponseStream().toByteArray());
+		if (res.getResponseStream() != null) {			
+			byte[] bytes = res.getResponseStream().toByteArray();			
+			return status(res.getStatus(), bytes);
 		}
-		AccessLog.logEnd("end FHIR request");
+		
 		
 		return status(res.getStatus());
 	}

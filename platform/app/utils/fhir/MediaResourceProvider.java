@@ -10,36 +10,32 @@ import models.Record;
 
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.DocumentReference;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Media;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Reference;
-import org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceContentComponent;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import play.Play;
+import utils.AccessLog;
+import utils.ErrorReporter;
 import utils.auth.ExecutionInfo;
 import utils.exceptions.AppException;
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.rest.annotation.Create;
-import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
-import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
-import ca.uhn.fhir.rest.param.CompositeAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
-import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
@@ -141,7 +137,7 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 			@ca.uhn.fhir.rest.annotation.Count
 			Integer theCount	
 
-	) throws AppException {
+	) {
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
@@ -212,8 +208,18 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 		attachment = theMedia.getContent();			
 				
 		insertRecord(record, theMedia, attachment);
-		processResource(record, theMedia);
-		return outcome("Media", record, theMedia);
+		
+		try {
+		  processResource(record, theMedia);
+		
+		  MethodOutcome out = outcome("Media", record, theMedia);
+		  
+		 
+		  return out;
+		} catch (Exception e) {
+			ErrorReporter.report("test", null, e);
+			return null;
+		}
 
 	}
 	
@@ -233,7 +239,7 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 		// Set Record code and content
 		record.code = new HashSet<String>();
 		try {
-			if (theMedia.getView() != null) {
+			if (!theMedia.getView().isEmpty()) {
 				for (Coding coding : theMedia.getView().getCoding()) {			
 					if (coding.getCode() != null && coding.getSystem() != null) {
 						record.code.add(coding.getSystem() + " " + coding.getCode());
@@ -243,7 +249,7 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 				ContentInfo.setRecordCodeAndContent(record, record.code, null);
 			
 			} else {
-				ContentInfo.setRecordCodeAndContent(record, null, "fhir/Media");
+				ContentInfo.setRecordCodeAndContent(record, null, "Media");
 			}
 		} catch (AppException e) {
 			throw new InternalErrorException(e);

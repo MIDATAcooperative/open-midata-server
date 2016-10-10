@@ -129,10 +129,12 @@ public class ContentInfo extends Model {
 			  }
 			}
 			if (content == null) throw new JsonValidationException("error.field", "Unknown record codes '"+code.toString()+"'!");
-		} else {
+		} else if (content != null ){
 			ContentInfo ci = ContentInfo.getByName(content);
 			content = ci.content;
 			code = Collections.singleton(ci.defaultCode);			
+		} else {
+			throw new BadRequestException("error.field", "Neither code nor content-type available for record.");
 		}
 		record.code = code;
 		record.content = content;
