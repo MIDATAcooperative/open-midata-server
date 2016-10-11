@@ -11,9 +11,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import play.mvc.Content;
 import play.mvc.Http;
-import play.mvc.Result;
 
 import scala.NotImplementedError;
 import utils.AccessLog;
@@ -25,6 +23,7 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 	private Http.Response response;
 	private StringWriter responseWriter;
 	private ByteArrayOutputStream responseStream;
+	private String contentType;
 	
 	public PlayHttpServletResponse(Http.Response response) {
 		this.response = response;
@@ -50,8 +49,7 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public String getContentType() {
-		if (true) throw new NotImplementedError();
-		return null;
+		return contentType;
 	}
 
 	@Override
@@ -118,15 +116,9 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 	public void setContentType(String arg0) {
 		AccessLog.log("content-type:"+arg0);
 		if (arg0 == null) {
-			return;
-			/*
-			try {			
-			  throw new NullPointerException();
-			} catch (NullPointerException e) {
-				AccessLog.logException("np", e);
-			}
-			arg0 = "application/json+fhir";*/
+			return;		
 		}
+		contentType = arg0;
 		response.setContentType(arg0);				
 	}
 

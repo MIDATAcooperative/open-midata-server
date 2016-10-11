@@ -323,12 +323,14 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	
 	
 	public MethodOutcome outcome(String type, Record record, IBaseResource resource) {
-		MethodOutcome retVal = new MethodOutcome();
+		
 		
 		String version = record.version;
-		if (version == null) version = VersionedDBRecord.INITIAL_VERSION;				
-		retVal.setId(new IdType(type, record._id.toString(), version));
+		if (version == null) version = VersionedDBRecord.INITIAL_VERSION;
+		MethodOutcome retVal = new MethodOutcome(new IdType(type, record._id.toString(), version), true);
+		
         retVal.setResource(resource);
+        
 		return retVal;
 	}
 }

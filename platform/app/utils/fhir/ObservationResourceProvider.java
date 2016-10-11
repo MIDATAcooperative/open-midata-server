@@ -38,6 +38,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
+import ca.uhn.fhir.rest.server.EncodingEnum;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.PreconditionFailedException;
@@ -300,7 +301,8 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		// insert
 		insertRecord(record, theObservation);
 
-		processResource(record, theObservation);
+		processResource(record, theObservation);				
+		
 		return outcome("Observation", record, theObservation);
 
 	}
@@ -310,8 +312,8 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 	@Update
 	public MethodOutcome updateObservation(@IdParam IdType theId, @ResourceParam Observation theObservation) {
 		Record record = fetchCurrent(theId);
-		prepare(record, theObservation);
-		updateRecord(record, theObservation);
+		prepare(record, theObservation);		
+		updateRecord(record, theObservation);		
 		return outcome("Observation", record, theObservation);
 	}
 
@@ -324,7 +326,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 			if (coding.getCode() != null && coding.getSystem() != null) {
 				record.code.add(coding.getSystem() + " " + coding.getCode());
 			}
-		}
+		}		
 		try {
 			ContentInfo.setRecordCodeAndContent(record, record.code, null);
 		} catch (AppException e) {

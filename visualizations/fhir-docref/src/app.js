@@ -144,6 +144,7 @@ angular.module('fhirDocref', [ 'midata', 'ui.router','ui.bootstrap', 'angularFil
 			
 	result.getCodeableConcept = function(what) {
 		if (what == null) return null;
+		if (angular.isArray(what) && what.length > 0) return result.getCodeableConcept(what[0]);
 		if (what.text) return what.text;
 		if (what.coding && what.coding.length > 0) {
 			return result.getCoding(what.coding[0]); 				

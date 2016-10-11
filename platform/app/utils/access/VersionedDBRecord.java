@@ -44,7 +44,7 @@ public class VersionedDBRecord extends DBRecord {
 	 * getter for _id field
 	 * @return
 	 */
-	public Object get_id() {
+	public Object to_db_id() {
 		return new BasicBSONObject("_id", _id.toObjectId()).append("version", version);
 	}
 	
