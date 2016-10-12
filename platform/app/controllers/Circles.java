@@ -22,6 +22,8 @@ import models.RecordsInfo;
 import models.enums.AggregationType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
+import models.enums.SubUserRole;
+import models.enums.UserStatus;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
@@ -171,6 +173,8 @@ public class Circles extends APIController {
 		
 		JsonValidation.validate(json, "name", "type");
 		
+		forbidSubUserRole(SubUserRole.TRIALUSER);
+		
 		// validate request
 		ConsentType type = JsonValidation.getEnum(json, "type", ConsentType.class);
 		MidataId executorId = new MidataId(request().username());
@@ -193,6 +197,7 @@ public class Circles extends APIController {
 		Consent consent;
 		switch (type) {
 		case CIRCLE : 
+			forbidSubUserRole(SubUserRole.STUDYPARTICIPANT);
 			consent = new Circle();
 			((Circle) consent).order = Circle.getMaxOrder(userId) + 1;
 			break;

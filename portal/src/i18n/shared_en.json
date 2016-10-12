@@ -23,14 +23,18 @@
 	  "config" : "Config",
 	  "help" : "Help"
    },
-   
-   "error" : {
+      
+   "error" : {   
      "offline" : "The backend is currently offline! Please contact support@midata.coop if the problem persists.",
      "internal" : "An internal error occured. Please contact support@midata.coop if the problem persists.",
      "internal_db" : "An internal database error occured. Please contact support@midata.coop if the problem persists.",
      "relogin" : "Please relogin",
      "noconsent" : "No active consent that allows to add data for target person.",
      "unsupported" : "Operation not supported",
+     "notrial_title" : "Full membership required!",
+     "notrial_detail" : "In order to use this feature you need to complete your registration. Click on your username on the top right and check the 'Account Status' section for more information.",
+     "mustbemember_title" : "Midata cooperative membership required!",
+     "mustbemember_detail" : "In order to use this feature you must be member of the midata cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
      
      "notauthorized" : {
        "action" : "You are not authorized to do this action",
@@ -291,6 +295,53 @@
 	  "email" : "Email"
 	}
 	
+  },
+  
+  "instance" : {
+     "rules"  : "",
+     "purpose" : "Purpose of this MIDATA instance",
+     "access" : "Access to this MIDATA instance",
+     "uptime" : "Availability and downtimes",
+     "data" : "Data stored in this MIDATA instance",
+     "start" : "Choose one of the portal from the bottom of the page to start. Each portal has its own LOGIN and SIGN UP page.",
+     
+     "localhost" : {
+        "name" : "Local MIDATA Instance (localhost)",
+        "intro": "This is a local installation of MIDATA only available from your PC.",
+        "purpose" : "A local installation may be used in order to contribute to the MIDATA platform and for testing purposes.",
+        "access" : "You may register user accounts for all four portals. Accounts do not need to be confirmed or validated by MIDATA administration. You may use and register your own admin accounts.",
+        "uptime" : "Whenever you run it its available for you :-)",
+        "data" : "Data stored in this instance will only be available on your local PC."
+     },
+     
+     "test" : {
+        "name" : "test.midata.coop (Test Instance)",
+        "intro": "This is a test instance of the MIDATA platform.",
+        "purpose" : "The test platform may be used to develop and test new apps and plugins for MIDATA in a safe environment. It is also used to test new versions of the portal and backend before the other instances are updated.",
+        "access" : "You may register user accounts for all four portals. Accounts do not need to be confirmed or validated by MIDATA administration. Just register what account types you need.",
+        "uptime" : "There is no guarantee on availability. Expect updates of the instance to happen as needed. If possible updates are done between 12:00 and 13:00 central european time but may occur more than once a day if problems occur.",
+        "data" : "Store only test data on this instance. Data may be wiped, accounts may be deleted if necessary. Records may become corrupted by bugs. There is no backup for test data."
+     },
+     
+     "demo" : {
+        "name" : "demo.midata.coop (Demo Instance)",
+        "intro": "This is a demonstration instance of MIDATA.",
+        "purpose" : "This instance of MIDATA may be used for demonstration purposes and training.",
+        "access" : "You may register user accounts for all four portals. Accounts do not need to be confirmed or validated by MIDATA management.",
+        "uptime" : "This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time ",
+        "data" : "Store only test and demo data on this instance. There is no backup for test data."
+     },
+     
+     "ch" : {
+        "name" : "ch.midata.coop (MIDATA Switzerland)",
+        "intro": "This is the MIDATA platform for Switzerland.",
+        "purpose" : "This is the productive MIDATA platform for storing health data in switzerland.",
+        "access" : "New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by the MIDATA office. Fake or test accounts are not allowed and will be blocked.",
+        "uptime" : "Downtimes will be announced.",
+        "data" : "This instance is for storing real data about real people. Data is backed up up on a daily basis."
+     }
+     
+     
   },
    
   "registration" : {

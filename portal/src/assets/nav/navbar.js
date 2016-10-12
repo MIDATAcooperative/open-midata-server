@@ -3,7 +3,7 @@ angular.module('portal')
 	
 	// init
 	$scope.user = { subroles:[] };	
-	$scope.beta = ENV.beta;
+	$scope.beta = ENV.beta;	
 	
 	$translatePartialLoader.addPart($state.current.data.locales);
 	

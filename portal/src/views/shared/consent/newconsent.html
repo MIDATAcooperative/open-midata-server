@@ -3,6 +3,10 @@
   <div class="panel-heading" translate="newconsent.title">    
   </div>
   <div class="panel-body">
+  <div class="alert alert-warning" ng-show="locked">
+    <strong translate="error.notrial_title"></strong>
+    <p translate="error.notrial_detail"></p>
+  </div> 
   <form name="myform" class="css-form form-horizontal" ng-submit="create()" novalidate role="form">
     <p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
 	</p>	
@@ -78,7 +82,7 @@
 	<formrow myid="what" label="newconsent.share_what">
 	  <p class="form-control-static" translate="newconsent.consent_empty"></p>
 	</formrow>
-    <button type="submit" class="btn btn-primary" translate="newconsent.create_btn"></button>
+    <button type="submit" class="btn btn-primary" ng-disabled="locked" translate="newconsent.create_btn"></button>
   </form>			
 </div>
 </div>

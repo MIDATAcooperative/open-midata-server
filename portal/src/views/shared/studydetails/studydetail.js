@@ -67,8 +67,8 @@ angular.module('portal')
 	};
 	
 	$scope.mayRequestParticipation = function() {
-		return ($scope.participation != null && ( $scope.participation.status == "MATCH" || $scope.participation.status == "CODE" )) ||
-		   ($scope.participation == null && $scope.study.participantSearchStatus == 'SEARCHING');
+		return ($scope.participation != null && !$scope.locked && ( $scope.participation.status == "MATCH" || $scope.participation.status == "CODE" )) ||
+		   ($scope.participation == null && !$scope.locked && $scope.study.participantSearchStatus == 'SEARCHING');
 	};
 	
 	$scope.mayDeclineParticipation = function() {
@@ -99,7 +99,12 @@ angular.module('portal')
 		});
 	};
 	
-	$scope.reload();
+	session.currentUser.then(function(myUserId) {
+	  if (session.user.subroles.indexOf("MEMBEROFCOOPERATIVE") < 0 && session.user.role === "MEMBER") {
+		  $scope.locked = true;
+	  } else $scope.locked = false;
+	  $scope.reload();
+	});
 	
 	$scope.goBack = function() {
 		$window.history.back();

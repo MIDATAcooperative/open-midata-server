@@ -1,7 +1,7 @@
 var services = angular.module('services', []);
 var views = angular.module('views', ['services']);
 angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services', 'views', 'config', 'ngPostMessage', 'angularUtils.directives.dirPagination', 'pascalprecht.translate', 'ngSanitize'])
-.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider', function($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider) {
+.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider', 'ENV', function($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider, ENV) {
    //$httpProvider.defaults.useXDomain = true;
    $httpProvider.defaults.withCredentials = true;
    //delete $httpProvider.defaults.headers.common['X-Requested-With'];
@@ -68,9 +68,12 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
       data : { role : 'ADMIN', locales : 'admins' },
       templateUrl: 'assets/nav/admin.html'
     });   
-   
-   $urlRouterProvider
-   .otherwise('/portal/login');
+
+    if (["demo", "localhost", "test"].indexOf(ENV.instance) >= 0) {
+      $urlRouterProvider.otherwise('/portal/info');
+    } else {
+      $urlRouterProvider.otherwise('/portal/login');
+    }
 }])
 .run(['$state', '$rootScope', '$translate', '$translatePartialLoader', function($state, $rootScope, $translate, $translatePartialLoader) {   
    $rootScope.$on('$translatePartialLoaderStructureChanged', function () {

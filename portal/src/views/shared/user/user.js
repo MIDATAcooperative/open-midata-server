@@ -23,6 +23,10 @@ angular.module('portal')
 	
 	session.currentUser.then(function(myUserId) { 
 		$scope.isSelf = myUserId == userId;
+		if (session.user.subroles.indexOf("TRIALUSER") >= 0 || session.user.subroles.indexOf("STUDYPARTICIPANT") >= 0 || session.user.subroles.indexOf("NONMEMBERUSER") >= 0) {
+			  $scope.locked = true;
+		  } else $scope.locked = false;
+		
 		console.log(myUserId);
 	});
 	
@@ -33,6 +37,7 @@ angular.module('portal')
 	};
 	
 	$scope.updateSettings = function() {
+		if ($scope.locked) $scope.user.searchable = false;
 		$scope.status.doAction("changesettings", users.updateSettings($scope.user))
 		.then(function() {
 		  $scope.msgSettings = "user.change_settings_success";

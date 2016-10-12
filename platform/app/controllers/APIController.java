@@ -57,6 +57,18 @@ public abstract class APIController extends Controller {
 	}
 	
 	/**
+	 * if current user DOES have the given SubUserRole an AuthException is thrown
+	 * @param subUserRole the SubUserRole the current user is not allowed to have
+	 * @throws AuthException if user does have forbidden SubUserRole
+	 * @throws InternalServerException if a database error occurs
+	 */
+	public static void forbidSubUserRole(SubUserRole subUserRole) throws AuthException, InternalServerException {
+		MidataId userId = new MidataId(request().username());
+		User user = User.getById(userId, Sets.create("subroles"));
+		if (user.subroles.contains(subUserRole)) throw new AuthException("error.notauthorized.action", "Subrole '"+subUserRole.toString()+"' is not allowed for this action.");
+	}
+	
+	/**
 	 * set content disposition header for attachments
 	 * @param filename filename for attachment
 	 */

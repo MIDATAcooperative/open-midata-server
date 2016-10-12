@@ -163,6 +163,11 @@ angular.module('portal')
 		});
 	};
 	
-	$scope.init();
+	session.currentUser.then(function(userId) {
+	  if (session.user.subroles.indexOf("TRIALUSER") >= 0) {
+		  $scope.locked = true;
+	  } else $scope.locked = false;
+	  $scope.init();
+	});
 }]);
 	
