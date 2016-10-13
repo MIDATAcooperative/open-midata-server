@@ -27,7 +27,7 @@ public class AccessLog {
 	/**
 	 * log into activator log file
 	 */
-	private static boolean logToFile = true;
+	private static boolean logToFile = InstanceConfig.getInstance().getInstanceType().getLogToFile();
 	
 	/**
 	 * keep log in memory (during request) for mail bug reports 

@@ -914,7 +914,7 @@ angular.module('portal')
 	   };
 	   
 	   $scope.$on('$messageIncoming', function (event, data){	
-		 if (data && data.viewHeight && data.viewHeight !== "0px") {
+		 if (data && data.viewHeight && data.viewHeight !== "0px" && data.name) {			 
 			 if (views.getView(data.name).pos == "small") return;
   			 console.log("adjust height for "+data.name+" to:"+data.viewHeight);
   		   	 document.getElementById(data.name).style.height = data.viewHeight;

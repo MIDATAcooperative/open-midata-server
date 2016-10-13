@@ -8,6 +8,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.exceptions.BadRequestException;
 import utils.json.JsonValidation.JsonValidationException;
@@ -28,7 +29,7 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
     	  ctx.args.put("json", json);
     	  String host = ctx.request().getHeader("Origin");
     	  //AccessLog.debug("VA:"+host);
-    	  String visualizationsServer = "https://" + Play.application().configuration().getString("visualizations.server");
+    	  String visualizationsServer = "https://" + InstanceConfig.getInstance().getPluginServerDomain();
     	  if (host != null) {
 	  		  if (host.startsWith("https://localhost:") || host.startsWith("http://localhost:") || host.equals(visualizationsServer)) {
 	  		    ctx.response().setHeader("Access-Control-Allow-Origin", host);

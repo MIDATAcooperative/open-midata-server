@@ -52,6 +52,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.InstanceConfig;
 import utils.access.Query;
 import utils.access.RecordManager;
 import utils.auth.AdminSecured;
@@ -374,8 +375,13 @@ public class Studies extends APIController {
 		if (study.recordQuery == null || study.recordQuery.isEmpty()) return badRequest("Please define record sharing query before validation!");
 		
 		
-		study.setValidationStatus(StudyValidationStatus.VALIDATION); // TODO to be changed to VALIDATION
+		study.setValidationStatus(StudyValidationStatus.VALIDATION); 
 		study.addHistory(new History(EventType.VALIDATION_REQUESTED, user, null));
+		
+		if (InstanceConfig.getInstance().getInstanceType().getStudiesValidateAutomatically()) {
+		   study.setValidationStatus(StudyValidationStatus.VALIDATED); 
+		   study.addHistory(new History(EventType.STUDY_VALIDATED, user, null));
+		}
 						
 		return ok();
 	}

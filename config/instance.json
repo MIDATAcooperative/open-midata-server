@@ -1,6 +1,7 @@
 {
   "name" : "test",
   "domain" : "localhost",
+  "instanceType" : "local",
   "certificate" : {
     "pem" : "ROOTDIR/ssl-certificate/server.pem",
     "key" : "ROOTDIR/ssl-certificate/server.pem",

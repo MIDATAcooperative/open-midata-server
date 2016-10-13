@@ -204,7 +204,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 		};
 		
 		angular.forEach($scope.measurements, function(measurement) {
-			measurement.from = null;
+			measurement.from = measurement.fromDisplay = null;
 			measurement.to = null;		
 		});
 		
@@ -220,7 +220,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				  var since = new Date(response.user.memberSince);				  
 				  				  				  
 				  angular.forEach($scope.measurements, function(measurement) {
-					if (measurement.from == null || measurement.from < since) measurement.from = since;					
+					if (measurement.from == null || measurement.from < since) measurement.from = measurement.fromDisplay = since;					
 				  });
 				  
 				  setToDate(false);
@@ -261,17 +261,24 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				var measurement = map[entry.contents[0]];
 				if (measurement != null) {
 					var newestDate = new Date(entry.newest);
-					
-					if (!$scope.last) {
-						$scope.last = newestDate;
-					} else if ($scope.last < newestDate) {
-						$scope.last = newestDate;
-					}
-					
+															
 					newestDate.setHours(1,1,1,1);
+					
+					var displayNewest = new Date(newestDate.getTime());
 					newestDate.setDate(newestDate.getDate() - $scope.reimport);
 					measurement.imported = entry.count;
-					if (measurement.from == null || measurement.from < newestDate) measurement.from = newestDate;
+					
+					if (!$scope.last) {
+						$scope.last = displayNewest;
+					} else if ($scope.last < displayNewest) {
+						$scope.last = displayNewest;
+					}
+					
+					
+					if (measurement.from == null || measurement.from < newestDate) {
+						measurement.from = newestDate;
+						measurement.fromDisplay = displayNewest;
+					}
 				}
 			});
 			reqDone();

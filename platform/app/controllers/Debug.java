@@ -9,6 +9,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.InstanceConfig;
 import utils.access.EncryptedAPS;
 import utils.auth.AnyRoleSecured;
 import utils.collections.Sets;
@@ -35,7 +36,7 @@ public class Debug extends Controller {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result get(String id) throws JsonValidationException, AppException {
 				
-		if (Play.application().configuration().getBoolean("demoserver", false)) {
+		if (InstanceConfig.getInstance().getInstanceType().getDebugFunctionsAvailable()) {
 		
 			MidataId userId = new MidataId(request().username());
 			MidataId apsId = id.equals("-") ? userId : new MidataId(id);

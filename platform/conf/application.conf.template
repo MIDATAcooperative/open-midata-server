@@ -39,6 +39,7 @@ node.path="/usr/bin/node"
 errorreports.targetemail="security@midata.coop"
 errorreports.targetname="Security Officer"
 
+instanceType=INSTANCETYPE
 
 # Evolutions
 # ~~~~~
@@ -84,5 +85,4 @@ play {
   }
 }
 
-demoserver=true
 

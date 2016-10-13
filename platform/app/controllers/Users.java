@@ -33,6 +33,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.DateTimeUtils;
+import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
@@ -311,13 +312,26 @@ public class Users extends APIController {
 		
 		
 		if (user.contractStatus.equals(ContractStatus.NEW)) {
+			user.contractStatus = ContractStatus.REQUESTED;
 			Member.set(user._id, "contractStatus", ContractStatus.REQUESTED);
 		}
 		if (user.agbStatus.equals(ContractStatus.NEW)) {
+			user.agbStatus = ContractStatus.REQUESTED;
 			Member.set(user._id, "agbStatus", ContractStatus.REQUESTED);
 		}
 						
 		user.addHistory(new History(EventType.MEMBERSHIP_REQUEST, user, null));
+		
+		if (InstanceConfig.getInstance().getInstanceType().getAutoGrandMembership()) {
+			if (user.agbStatus == ContractStatus.REQUESTED) {				
+			   user.agbStatus = ContractStatus.SIGNED;
+			   Member.set(user._id, "agbStatus", ContractStatus.SIGNED);
+			} else {
+			   user.contractStatus = ContractStatus.SIGNED;
+			   Member.set(user._id, "contractStatus", ContractStatus.SIGNED);
+			}
+			Application.checkAccount(user);
+		}
 				
 		return ok();
 	}
@@ -326,7 +340,7 @@ public class Users extends APIController {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result accountWipe() throws AppException {
-		if (!Play.application().configuration().getBoolean("demoserver", false)) throw new InternalServerException("error.internal", "Only allowed on demo server");
+		if (InstanceConfig.getInstance().getInstanceType().getAccountWipeAvailable()) throw new InternalServerException("error.internal", "Only allowed on demo server");
 		
 		MidataId userId = new MidataId(request().username());
 		

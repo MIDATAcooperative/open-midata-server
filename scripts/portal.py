@@ -37,6 +37,7 @@ class Portal(Product):
 			config = config.replace('CERTIFICATE_KEY', instance['certificate']['key'])			
 			config = config.replace('NODE_INTERNAL_PORT', instance['node']['port'])
 			config = config.replace('PLATFORM_INTERNAL_PORT', instance['platform']['port'])
+			config = config.replace('INSTANCETYPE', instance['instanceType'])
 			config = config.replace('ROOTDIR', self.parent)												
 		with open(os.path.join(self.appconf, 'application.conf'), 'w') as configFile:
 			configFile.write(config)

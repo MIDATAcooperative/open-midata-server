@@ -34,13 +34,15 @@ module.exports = function(grunt) {
         dev: {
             NODE_ENV : 'DEVELOPMENT',
             BACKEND : instance.portal.backend,
-            NAME : instance.portal.backend.substring(8).split(/[\.\:]/)[0]
+            NAME : instance.portal.backend.substring(8).split(/[\.\:]/)[0],
+            INSTANCETYPE : instance.instanceType
         },
 
         prod : {
             NODE_ENV : 'PRODUCTION',
             BACKEND : instance.portal.backend,
-            NAME : instance.portal.backend.substring(8).split(/[\.\:]/)[0]
+            NAME : instance.portal.backend.substring(8).split(/[\.\:]/)[0],
+            INSTANCETYPE : instance.instanceType
         }
     },
     
@@ -191,7 +193,8 @@ module.exports = function(grunt) {
     	        name: 'development',
     	        apiurl: instance.portal.backend,
     	        beta : instance.portal.beta,
-    	        instance : instance.portal.backend.substring(8).split(/[\.\:]/)[0]
+    	        instance : instance.portal.backend.substring(8).split(/[\.\:]/)[0],
+    	        instanceType : instance.instanceType
     	      }
     	    }
     	  },
@@ -204,7 +207,8 @@ module.exports = function(grunt) {
     	        name: 'production',
     	        apiurl: instance.portal.backend,
     	        beta : instance.portal.beta,
-    	        instance : instance.portal.backend.substring(8).split(/[\.\:]/)[0]
+    	        instance : instance.portal.backend.substring(8).split(/[\.\:]/)[0],
+    	        instanceType : instance.instanceType
     	      }
     	    }
     	  }

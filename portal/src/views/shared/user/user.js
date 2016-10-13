@@ -4,7 +4,7 @@ angular.module('portal')
 	$scope.status = new status(false);
 	$scope.user = {};
 	$scope.msg = null;
-	$scope.beta = ENV.beta;
+	$scope.beta = ENV.instanceType == "test" || ENV.instanceType == "local";
 	
 	$scope.languages = languages.all;
 	

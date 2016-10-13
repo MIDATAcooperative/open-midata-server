@@ -30,6 +30,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.DateTimeUtils;
+import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
@@ -121,7 +122,7 @@ public class Application extends APIController {
 		  user.set("resettokenTs", System.currentTimeMillis());
 		  String encrypted = token.encrypt();
 			   
-		  String site = "https://" + Play.application().configuration().getString("portal.server");
+		  String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
 		  String url = site + "/#/portal/setpw?token=" + encrypted;
 			   
 		  MailUtils.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url));
@@ -163,7 +164,7 @@ public class Application extends APIController {
 	   user.set("resettokenTs", System.currentTimeMillis());
 	   String encrypted = token.encrypt();
 			   
-	   String site = "https://" + Play.application().configuration().getString("portal.server");
+	   String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
 	   String url1 = site + "/#/portal/confirm/" + encrypted;
 	   String url2 = site + "/#/portal/reject/" + encrypted;
 			   
@@ -424,6 +425,9 @@ public class Application extends APIController {
 		if (user.subroles.contains(SubUserRole.TRIALUSER) && user.registeredAt.before(new Date(System.currentTimeMillis() - MAX_TRIAL_DURATION))) {
 			user.status = UserStatus.NEW;
 		}
+		if (user.subroles.contains(SubUserRole.TRIALUSER) && !InstanceConfig.getInstance().getInstanceType().getTrialAccountsMayLogin()) {
+			user.status = UserStatus.NEW;
+		}
 		
 		PortalSessionToken token = null;
 		
@@ -438,7 +442,7 @@ public class Application extends APIController {
 		ObjectNode obj = Json.newObject();
 		obj.put("sessionToken", token.encrypt(request()));
 		
-		if (!user.status.equals(UserStatus.ACTIVE) && !Play.application().configuration().getBoolean("demoserver", false)) {
+		if (!user.status.equals(UserStatus.ACTIVE) && InstanceConfig.getInstance().getInstanceType().getUsersNeedValidation()) {
 		  obj.put("status", user.status.toString());
 		  obj.put("contractStatus", user.contractStatus.toString());
 		  obj.put("agbStatus", user.agbStatus.toString());
