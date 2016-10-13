@@ -323,6 +323,12 @@ public class Users extends APIController {
 		user.addHistory(new History(EventType.MEMBERSHIP_REQUEST, user, null));
 		
 		if (InstanceConfig.getInstance().getInstanceType().getAutoGrandMembership()) {
+			
+			if (user.confirmedAt == null) {
+				user.confirmedAt = new Date(System.currentTimeMillis());			
+	    	    user.set("confirmedAt", user.confirmedAt);
+			}
+			
 			if (user.agbStatus == ContractStatus.REQUESTED) {				
 			   user.agbStatus = ContractStatus.SIGNED;
 			   Member.set(user._id, "agbStatus", ContractStatus.SIGNED);
