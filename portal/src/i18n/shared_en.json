@@ -31,8 +31,8 @@
      "relogin" : "Please relogin",
      "noconsent" : "No active consent that allows to add data for target person.",
      "unsupported" : "Operation not supported",
-     "notrial_title" : "Full membership required!",
-     "notrial_detail" : "In order to use this feature you need to complete your registration. Click on your username on the top right and check the 'Account Status' section for more information.",
+     "notrialuser_title" : "Full membership required!",
+     "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
      "mustbemember_title" : "Midata cooperative membership required!",
      "mustbemember_detail" : "In order to use this feature you must be member of the midata cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
      
@@ -482,6 +482,8 @@
   
   "studydetails" : {
     "study" : "Study",
+    "participant_search_status" : "Participant search:",
+    "execution_status" : "Study execution:",
     "organization" : "Organization",
     "providers_monitoring" : "Healthcare Providers monitoring the study",
     "no_providers" : "None",

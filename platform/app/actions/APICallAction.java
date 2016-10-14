@@ -60,8 +60,13 @@ public class APICallAction extends Action<APICall> {
                     .put("code", e5.getLocaleKey())
                     .put("message", e5.getMessage())));
     	} catch (AuthException e3) {
-    		ErrorReporter.report("Portal", ctx, e3);	
-    		return F.Promise.pure((Result) forbidden(e3.getMessage()));    
+    		if (e3.getRequiredSubUserRole() == null) {
+    			ErrorReporter.report("Portal", ctx, e3);
+    			return F.Promise.pure((Result) forbidden(e3.getMessage()));
+    		} else {
+    			return F.Promise.pure((Result) forbidden(Json.newObject().put("requiredSubUserRole", e3.getRequiredSubUserRole().toString())));
+    		}
+    		    
 		} catch (Exception e2) {	
 			ErrorReporter.report("Portal", ctx, e2);					
 			return F.Promise.pure((Result) internalServerError(""+e2.getMessage()));			

@@ -173,7 +173,7 @@ public class Circles extends APIController {
 		
 		JsonValidation.validate(json, "name", "type");
 		
-		forbidSubUserRole(SubUserRole.TRIALUSER);
+		forbidSubUserRole(SubUserRole.TRIALUSER, SubUserRole.NONMEMBERUSER);
 		
 		// validate request
 		ConsentType type = JsonValidation.getEnum(json, "type", ConsentType.class);
@@ -197,7 +197,7 @@ public class Circles extends APIController {
 		Consent consent;
 		switch (type) {
 		case CIRCLE : 
-			forbidSubUserRole(SubUserRole.STUDYPARTICIPANT);
+			forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.MEMBEROFCOOPERATIVE);
 			consent = new Circle();
 			((Circle) consent).order = Circle.getMaxOrder(userId) + 1;
 			break;

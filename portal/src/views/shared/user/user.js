@@ -12,6 +12,7 @@ angular.module('portal')
 	
 	// parse user id (format: /users/:id) and load the user details
 	var userId = $state.params.userId;	
+	$scope.reqRole = $state.params.role;
 	
 	$scope.init = function() {
 		$scope.status.doBusy(users.getMembers({"_id": userId}, ["name", "email", "searchable", "language", "address1", "address2", "zip", "city", "country", "firstname", "lastname", "mobile", "phone", "emailStatus", "agbStatus", "contractStatus", "role", "subroles", "confirmedAt"]))
@@ -19,15 +20,17 @@ angular.module('portal')
 			$scope.user = results.data[0];
 		});
 	};
-	$scope.init();
+	
 	
 	session.currentUser.then(function(myUserId) { 
 		$scope.isSelf = myUserId == userId;
-		if (session.user.subroles.indexOf("TRIALUSER") >= 0 || session.user.subroles.indexOf("STUDYPARTICIPANT") >= 0 || session.user.subroles.indexOf("NONMEMBERUSER") >= 0) {
+		/*if (session.user.subroles.indexOf("TRIALUSER") >= 0 || session.user.subroles.indexOf("STUDYPARTICIPANT") >= 0 || session.user.subroles.indexOf("NONMEMBERUSER") >= 0) {
 			  $scope.locked = true;
 		  } else $scope.locked = false;
+		*/
+		userId = userId || myUserId;
 		
-		console.log(myUserId);
+        $scope.init();
 	});
 	
 	$scope.fixAccount = function() {

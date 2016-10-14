@@ -5,6 +5,10 @@ angular.module('portal')
 	      url: '/user/:userId',
 	      templateUrl: 'views/shared/user/user.html' 
 	    })
+	    .state('member.upgrade', {
+	      url: '/upgrade/:role',
+	      templateUrl: 'views/shared/user/upgrade.html' 
+	    })
 	    .state('provider.user', {
 	      url: '/user/:userId',
 	      templateUrl: 'views/shared/user/user.html' 

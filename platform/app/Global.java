@@ -1,5 +1,7 @@
 import javax.servlet.ServletException;
 
+import models.RecordGroup;
+
 import controllers.AutoRun;
 import controllers.FHIR;
 import controllers.Market;
@@ -54,6 +56,12 @@ public class Global extends GlobalSettings {
 		
 		try {
 		  Market.correctOwners();
+		} catch (AppException e) {
+		  throw new NullPointerException();
+		}
+		
+		try {
+		   RecordGroup.load();
 		} catch (AppException e) {
 		  throw new NullPointerException();
 		}

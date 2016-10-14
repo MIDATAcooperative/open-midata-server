@@ -2,7 +2,7 @@
     <loader busy="status.isBusy !== false">
     <div ng-show="circles.length" class="body">{{ circles.length }} <span translate="member_othercircles.number_available"></span></div>
     <div class="body" ng-show="circles.length == 0" translate="member_othercircles.empty"></div>
-    <p ng-hide="circles.length" class="body teaser">{{ view.teaser }}</p>
+    <p ng-hide="circles.length" class="body teaser" translate="{{ view.teaser }}"></p>
     <ul class="list-group" ng-show="circles.length > 0">
 		<li class="list-group-item rotate truncate" ng-repeat="circle in circles | limitTo : limit">
 		    <div class="pull-right" ng-if="view.setup.allowRemove">

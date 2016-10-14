@@ -1,6 +1,7 @@
 
 	<div  ng-controller="UserCtrl">		
 		
+				
 		<div ng-cloak class="panel panel-primary">
 		  <div class="panel-heading" translate="user.account"></div>
 		  <div class="panel-body">
@@ -64,7 +65,7 @@
 		    <p ng-show="user.agbStatus === 'SIGNED'" translate="member_user.agb_signed"></p>
 		    <p ng-show="user.confirmedAt" translate="member_user.confirmed"></p>
 		    <div class="alert alert-warning" translate="member_user.email_unvalidated" ng-show="user.emailStatus==='UNVALIDATED'"></div>
-			<button ng-show="user.agbStatus === 'NEW' || user.contractStatus === 'NEW'" ng-disabled="status.action === 'requestmembership'" class="btn btn-primary" href="javascript:" ng-click="requestMembership()" translate="member_user.request_membership_btn"></button>
+			<button ng-show="user.agbStatus === 'NEW' || (user.agbStatus === 'SIGNED' && user.confirmedAt && user.contractStatus === 'NEW')" ng-disabled="status.action === 'requestmembership'" class="btn btn-primary" href="javascript:" ng-click="requestMembership()" translate="member_user.request_membership_btn"></button>
 			
 			<div class="alert alert-danger" translate="{{confirmation.error}}" ng-show="confirmation.error"></div>
 			
@@ -83,10 +84,7 @@
 		  <div class="panel-heading" translate="user.settings"></div>
 		  <div class="panel-body">
 			<loader busy="status.isBusy !== false">
-			<div class="alert alert-warning" ng-show="locked">
-               <strong translate="error.mustbemember_title"></strong>
-               <p translate="error.mustbemember_detail"></p>
-            </div> 
+			
 			
 			<div class="row">
 				<p class="col-sm-2" translate="user.searchable"></p>

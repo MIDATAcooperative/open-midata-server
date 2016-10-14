@@ -29,6 +29,7 @@ import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
 import models.enums.StudyValidationStatus;
+import models.enums.SubUserRole;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
@@ -306,15 +307,18 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result requestParticipation(String id) throws AppException {
+		requireSubUserRole(SubUserRole.MEMBEROFCOOPERATIVE);
 		MidataId userId = new MidataId(request().username());		
 		MidataId studyId = new MidataId(id);		
 		requestParticipation(userId, studyId);		
 		return ok();
 	}
 	
-	public static void requestParticipation(MidataId userId, MidataId studyId) throws AppException {				
+	public static void requestParticipation(MidataId userId, MidataId studyId) throws AppException {
+		
+		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "birthday", "gender", "country"));		
-		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history", "memberName", "owner", "authorized"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "history", "ownerName", "owner", "authorized"));		
 		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history", "owner", "createdBy", "name", "recordQuery", "requiredInformation"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
@@ -350,7 +354,7 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request().username());		
 		MidataId studyId = new MidataId(id);
 					
-		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "history", "memberName", "owner", "authorized"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "history", "ownerName", "owner", "authorized"));		
 		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");

@@ -5,6 +5,7 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
    //$httpProvider.defaults.useXDomain = true;
    $httpProvider.defaults.withCredentials = true;
    //delete $httpProvider.defaults.headers.common['X-Requested-With'];
+   $httpProvider.interceptors.push('SessionInterceptor');
    
        
    $translateProvider
@@ -80,4 +81,21 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
       $translate.refresh();
    });
    $translatePartialLoader.addPart("shared");
+}])
+.service('SessionInterceptor', ["$injector", "$q" , function($injector, $q) {
+    var service = this;    
+    service.responseError = function(response) {
+    	console.log("HANDLE");
+    	console.log(response);
+    	var $state = $injector.get("$state");
+        if (response.status === 401) {
+            $state.go("public.login");
+        } else if (response.status === 403) {
+        	if (response.data && response.data.requiredSubUserRole) {
+        		console.log("DID NAV");
+        		$state.go("^.upgrade", { role : response.data.requiredSubUserRole });
+        	}
+        }
+        return $q.reject(response);
+    };
 }]);

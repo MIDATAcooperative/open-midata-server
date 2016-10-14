@@ -162,11 +162,13 @@ public class Users extends APIController {
      * text search for users
      * @param query search string
      * @return list of users (json)
-     * @throws InternalServerException
+     * @throws AppException
      */
 	@Security.Authenticated(MemberSecured.class)
 	@APICall
-	public static Result search(String query) throws InternalServerException {
+	public static Result search(String query) throws AppException {
+		
+		requireSubUserRoleForRole(SubUserRole.MEMBEROFCOOPERATIVE, UserRole.MEMBER);
 		
 		Set<String> fields =  Sets.create("firstname", "lastname", "name");
 		Set<Member> result = Member.getAll(CMaps.map("email", query), fields);
@@ -286,6 +288,9 @@ public class Users extends APIController {
 		JsonValidation.validate(json, "language");
 		
 		boolean searchable = JsonValidation.getBoolean(json, "searchable");
+		
+		if (searchable) requireSubUserRoleForRole(SubUserRole.MEMBEROFCOOPERATIVE, UserRole.MEMBER);
+		
 		String language = JsonValidation.getString(json, "language");
 					
 		MidataId userId = new MidataId(request().username());
@@ -304,20 +309,20 @@ public class Users extends APIController {
 	public static Result requestMembership() throws AppException {
 		MidataId userId = new MidataId(request().username());
 		
-		Member user = Member.getById(userId, Sets.create("_id", "status", "role", "subroles", "history", "contractStatus", "agbStatus", "lastname", "firstname")); 
+		Member user = Member.getById(userId, Sets.create("_id", "status", "role", "subroles", "history", "emailStatus", "confirmedAt", "contractStatus", "agbStatus", "lastname", "firstname")); 
 		if (user == null) throw new InternalServerException("error.internal", "User record not found.");
 		if (user.subroles.contains(SubUserRole.TRIALUSER) || user.subroles.contains(SubUserRole.NONMEMBERUSER) || user.subroles.contains(SubUserRole.STUDYPARTICIPANT)) {
 			
 		} else throw new BadRequestException("invalid.status_transition", "No membership request required.");
 		
 		
-		if (user.contractStatus.equals(ContractStatus.NEW)) {
-			user.contractStatus = ContractStatus.REQUESTED;
-			Member.set(user._id, "contractStatus", ContractStatus.REQUESTED);
-		}
+		
 		if (user.agbStatus.equals(ContractStatus.NEW)) {
 			user.agbStatus = ContractStatus.REQUESTED;
 			Member.set(user._id, "agbStatus", ContractStatus.REQUESTED);
+		} else if (user.contractStatus.equals(ContractStatus.NEW)) {
+			user.contractStatus = ContractStatus.REQUESTED;
+			Member.set(user._id, "contractStatus", ContractStatus.REQUESTED);
 		}
 						
 		user.addHistory(new History(EventType.MEMBERSHIP_REQUEST, user, null));
@@ -346,7 +351,7 @@ public class Users extends APIController {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result accountWipe() throws AppException {
-		if (InstanceConfig.getInstance().getInstanceType().getAccountWipeAvailable()) throw new InternalServerException("error.internal", "Only allowed on demo server");
+		if (!InstanceConfig.getInstance().getInstanceType().getAccountWipeAvailable()) throw new InternalServerException("error.internal", "Only allowed on demo server");
 		
 		MidataId userId = new MidataId(request().username());
 		

@@ -53,19 +53,26 @@ public abstract class APIController extends Controller {
 	public static void requireSubUserRole(SubUserRole subUserRole) throws AuthException, InternalServerException {
 		MidataId userId = new MidataId(request().username());
 		User user = User.getById(userId, Sets.create("subroles"));
-		if (!user.subroles.contains(subUserRole)) throw new AuthException("error.notauthorized.action", "You need to have subrole '"+subUserRole.toString()+"' for this action.");
+		if (!user.subroles.contains(subUserRole)) throw new AuthException("error.notauthorized.action", "You need to have subrole '"+subUserRole.toString()+"' for this action.", subUserRole);
+	}
+	
+	public static void requireSubUserRoleForRole(SubUserRole subUserRole, UserRole role) throws AuthException, InternalServerException {
+		MidataId userId = new MidataId(request().username());
+		User user = User.getById(userId, Sets.create("role", "subroles"));
+		if (user.role == role && !user.subroles.contains(subUserRole)) throw new AuthException("error.notauthorized.action", "You need to have subrole '"+subUserRole.toString()+"' for this action.", subUserRole);
 	}
 	
 	/**
 	 * if current user DOES have the given SubUserRole an AuthException is thrown
 	 * @param subUserRole the SubUserRole the current user is not allowed to have
+	 * @param requested subUserRole that is requested instead
 	 * @throws AuthException if user does have forbidden SubUserRole
 	 * @throws InternalServerException if a database error occurs
 	 */
-	public static void forbidSubUserRole(SubUserRole subUserRole) throws AuthException, InternalServerException {
+	public static void forbidSubUserRole(SubUserRole subUserRole, SubUserRole requested) throws AuthException, InternalServerException {
 		MidataId userId = new MidataId(request().username());
 		User user = User.getById(userId, Sets.create("subroles"));
-		if (user.subroles.contains(subUserRole)) throw new AuthException("error.notauthorized.action", "Subrole '"+subUserRole.toString()+"' is not allowed for this action.");
+		if (user.subroles.contains(subUserRole)) throw new AuthException("error.notauthorized.action", "Subrole '"+subUserRole.toString()+"' is not allowed for this action.", requested);
 	}
 	
 	/**

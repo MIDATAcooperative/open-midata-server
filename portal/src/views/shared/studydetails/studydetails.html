@@ -2,20 +2,24 @@
 <div ng-controller="StudyDetailCtrl" ng-cloak>
 	<div class="extraspace">
 	  <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span><span translate="common.back_btn"></span></button>
-	</div>
-	<div class="alert alert-warning" ng-show="locked">
-              <strong translate="error.mustbemember_title"></strong>
-              <p translate="error.mustbemember_detail"></p>
-           </div> 
+	</div>	
 	<div class="panel panel-primary">
 		<div class="panel-heading" translate="studydetails.study"></div>
 		<div class="panel-body">
-		   
-		
-		
+		   				
 			<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert"></p>
 			<p>{{ study.name }}</p>
 			<p>{{ study.description }}</p>
+			
+			<p>
+			  <span translate="studydetails.participant_search_status"></span>
+              <span translate="{{ 'enum.participantsearchstatus.'+study.participantSearchStatus }}"></span>              
+            </p>
+            <p>
+              <span translate="studydetails.execution_status"></span>
+              <span translate="{{ 'enum.studyexecutionstatus.'+study.executionStatus }}"></span>
+            </p>
+      </tr>
 		</div>
 	</div>
 	<div class="panel panel-primary">

@@ -1,0 +1,43 @@
+<div  ng-controller="UserCtrl">		
+		
+		<div class="alert alert-warning" ng-show="reqRole=='MEMBEROFCOOPERATIVE'">
+           <strong translate="error.mustbemember_title"></strong>
+           <p translate="error.mustbemember_detail"></p>
+        </div> 
+        
+        <div class="alert alert-warning" ng-show="reqRole=='NONMEMBERUSER'">
+           <strong translate="error.notrialuser_title"></strong>
+           <p translate="error.notrialuser_detail"></p>
+        </div>
+        
+        <div ng-cloak class="panel panel-primary" ng-if="user.role == 'MEMBER'">
+		  <div class="panel-heading" translate="member_user.account_status"></div>
+		  <div class="panel-body">
+			<loader busy="status.isBusy !== false">
+			<p ng-show="user.subroles[0] === 'TRIALUSER'" translate="member_user.trialuser"></p>
+			<p ng-show="user.subroles[0] === 'MEMBEROFCOOPERATIVE'" translate="member_user.memberofcooperative"></p>
+			<p ng-show="user.subroles[0] === 'NONMEMBERUSER'" translate="member_user.nonmemberuser"></p>
+			<p ng-show="user.subroles[0] === 'STUDYPARTICIPANT'" translate="member_user.nonmemberuser"></p>
+		    <p ng-show="user.agbStatus === 'NEW'" translate="member_user.agb_not_requested"></p>
+		    <p ng-show="user.agbStatus === 'REQUESTED'" translate="member_user.agb_requested"></p>				 
+		    <p ng-show="user.agbStatus === 'PRINTED'" translate="member_user.agb_printed"></p>
+		    <p ng-show="user.agbStatus === 'SIGNED'" translate="member_user.agb_signed"></p>
+		    <p ng-show="user.confirmedAt" translate="member_user.confirmed"></p>
+		    <div class="alert alert-warning" translate="member_user.email_unvalidated" ng-show="user.emailStatus==='UNVALIDATED'"></div>
+			<button ng-show="user.agbStatus === 'NEW' || user.contractStatus === 'NEW'" ng-disabled="status.action === 'requestmembership'" class="btn btn-primary" href="javascript:" ng-click="requestMembership()" translate="member_user.request_membership_btn"></button>
+			
+			<div class="alert alert-danger" translate="{{confirmation.error}}" ng-show="confirmation.error"></div>
+			
+			<div class="input-group" ng-show="!user.confirmedAt && (user.agbStatus=='SIGNED' || user.agbStatus=='PRINTED')">
+			  <input class="form-control" ng-model="confirmation.code" type="text">
+			  <div class="input-group-btn">
+				  <button class="btn btn-primary" ng-click="sendCode()" translate="postregister.enter_now_btn"></button>
+			  </div>							 
+			</div>
+											
+			</loader>
+		  </div>
+		</div>
+		
+</div>
+	

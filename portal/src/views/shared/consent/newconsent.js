@@ -16,7 +16,7 @@ angular.module('portal')
 	                 ];
 	
 	
-	$scope.status = new status(true, $scope);
+	$scope.status = new status(false, $scope);
 	$scope.authpersons = [];
 	$scope.datePickers = {  };
 	$scope.dateOptions = {
@@ -56,7 +56,7 @@ angular.module('portal')
 			    }
 			});
 		} else {
-			$scope.consent = $scope.myform = { type : "CIRCLE", status : "ACTIVE", authorized : [] };
+			$scope.consent = { type : "CIRCLE", status : "ACTIVE", authorized : [] };
 			views.disableView("records_shared");
 		}
 		
@@ -73,6 +73,7 @@ angular.module('portal')
 	};
 	
 	$scope.create = function() {	
+		
 		$scope.submitted = true;	
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;		
@@ -164,9 +165,9 @@ angular.module('portal')
 	};
 	
 	session.currentUser.then(function(userId) {
-	  if (session.user.subroles.indexOf("TRIALUSER") >= 0) {
+	  /*if (session.user.subroles.indexOf("TRIALUSER") >= 0) {
 		  $scope.locked = true;
-	  } else $scope.locked = false;
+	  } else $scope.locked = false;*/
 	  $scope.init();
 	});
 }]);
