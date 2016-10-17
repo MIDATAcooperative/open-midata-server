@@ -8,48 +8,67 @@ import models.ContentInfo;
 import models.MidataId;
 import models.Record;
 
+import org.hl7.fhir.dstu3.exceptions.FHIRException;
 import org.hl7.fhir.dstu3.model.Attachment;
+import org.hl7.fhir.dstu3.model.BooleanType;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
+import org.hl7.fhir.dstu3.model.Communication;
+import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.IdType;
-import org.hl7.fhir.dstu3.model.Media;
+import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.dstu3.model.Patient;
+import org.hl7.fhir.dstu3.model.Period;
+import org.hl7.fhir.dstu3.model.Quantity;
+import org.hl7.fhir.dstu3.model.Range;
+import org.hl7.fhir.dstu3.model.Ratio;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.SampledData;
+import org.hl7.fhir.dstu3.model.StringType;
+import org.hl7.fhir.dstu3.model.TimeType;
+import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.instance.model.api.IIdType;
 
-import play.Play;
-import utils.AccessLog;
-import utils.ErrorReporter;
 import utils.auth.ExecutionInfo;
 import utils.exceptions.AppException;
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.rest.annotation.Create;
+import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
+import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.param.CompositeAndListParam;
+import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
+import ca.uhn.fhir.rest.param.QuantityAndListParam;
+import ca.uhn.fhir.rest.param.QuantityParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
+import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
+import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 
-public class MediaResourceProvider extends ResourceProvider<Media> implements IResourceProvider {
+public class CommunicationResourceProvider extends ResourceProvider<Communication> implements IResourceProvider {
 
 	@Override
-	public Class<Media> getResourceType() {
-		return Media.class;
+	public Class<Communication> getResourceType() {
+		return Communication.class;
 	}
 
 	@Search()
-	public List<Media> getMedia(
+	public List<Communication> getCommunication(
+			
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
@@ -57,16 +76,16 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 			@Description(shortDefinition="The resource language")
 			@OptionalParam(name="_language")
 			StringAndListParam theResourceLanguage, 
-			 
+			
 			/*
 			@Description(shortDefinition="Search the contents of the resource's data using a fulltext search")
 			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT)
 			StringAndListParam theFtContent, 
-			  
+			
 			@Description(shortDefinition="Search the contents of the resource's narrative using a fulltext search")
 			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_TEXT)
 			StringAndListParam theFtText, 
-			  
+			 
 			@Description(shortDefinition="Search for resources which have the given tag")
 			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_TAG)
 			TokenAndListParam theSearchForTag, 
@@ -78,7 +97,7 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 			@Description(shortDefinition="Search for resources which have the given profile")
 			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE)
 			UriAndListParam theSearchForProfile, 
-			  */
+			 */
 			/*
 			@Description(shortDefinition="Return resources linked to by the given target")
 			@OptionalParam(name="_has")
@@ -86,36 +105,52 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 			 */
 			    
 			@Description(shortDefinition="")
-			@OptionalParam(name="type")
-			TokenAndListParam theType, 
-			    
-			@Description(shortDefinition="")
-			@OptionalParam(name="subtype")
-			TokenAndListParam theSubtype, 
-			    
-			@Description(shortDefinition="")
 			@OptionalParam(name="identifier")
 			TokenAndListParam theIdentifier, 
+			  
+			@Description(shortDefinition="")
+			@OptionalParam(name="category")
+			TokenAndListParam theCategory, 
 			   
 			@Description(shortDefinition="")
-			@OptionalParam(name="created")
-			DateRangeParam theCreated, 
+			@OptionalParam(name="sender", targetTypes={  } )
+			ReferenceAndListParam theSender, 
 			    
+			@Description(shortDefinition="")
+			@OptionalParam(name="recipient", targetTypes={  } )
+			ReferenceAndListParam theRecipient, 
+			    
+			@Description(shortDefinition="")
+			@OptionalParam(name="medium")
+			TokenAndListParam theMedium, 
+			   
+			@Description(shortDefinition="")
+			@OptionalParam(name="status")
+			TokenAndListParam theStatus, 
+			   
+			@Description(shortDefinition="")
+			@OptionalParam(name="context", targetTypes={  } )
+			ReferenceAndListParam theContext, 
+			   
+			@Description(shortDefinition="")
+			@OptionalParam(name="sent")
+			DateRangeParam theSent, 
+			   
+			@Description(shortDefinition="")
+			@OptionalParam(name="received")
+			DateRangeParam theReceived, 
+			  
 			@Description(shortDefinition="")
 			@OptionalParam(name="subject", targetTypes={  } )
 			ReferenceAndListParam theSubject, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="operator", targetTypes={  } )
-			ReferenceAndListParam theOperator, 
-			   
-			@Description(shortDefinition="")
-			@OptionalParam(name="view")
-			TokenAndListParam theView, 
-			    
+			  
 			@Description(shortDefinition="")
 			@OptionalParam(name="patient", targetTypes={  Patient.class   } )
 			ReferenceAndListParam thePatient, 
+			   
+			@Description(shortDefinition="")
+			@OptionalParam(name="based-on", targetTypes={  } )
+			ReferenceAndListParam theBased_on, 
 			 
 			@IncludeParam(reverse=true)
 			Set<Include> theRevIncludes,
@@ -124,52 +159,52 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 			DateRangeParam theLastUpdated, 
 			 
 			@IncludeParam(allow= {
-						"Media:operator" ,
-						"Media:patient" ,
-						"Media:subject" ,
-						"Media:operator" ,
-						"*"
+					"Communication:based-on" ,
+					"Communication:context" ,
+					"Communication:patient" ,
+					"Communication:recipient" ,
+					"Communication:sender" ,
+					"Communication:subject" ,
+					"*"
 			}) 
 			Set<Include> theIncludes,
-			 			
-			@Sort 
-			SortSpec theSort,
-			 			
-			@ca.uhn.fhir.rest.annotation.Count
-			Integer theCount	
+			 									
+			@Sort SortSpec theSort,
 
-	) {
+			@ca.uhn.fhir.rest.annotation.Count Integer theCount
+
+	) throws AppException {
 
 		SearchParameterMap paramMap = new SearchParameterMap();
 
 		paramMap.add("_id", theId);
 		paramMap.add("_language", theResourceLanguage);
-		/*
-		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT, theFtContent);
+		/*paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT, theFtContent);
 		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_TEXT, theFtText);
 		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_TAG, theSearchForTag);
 		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_SECURITY, theSearchForSecurity);
-		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE, theSearchForProfile);
-		*/
-		//paramMap.add("_has", theHas);
-		
+		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE, theSearchForProfile);*/
+		// paramMap.add("_has", theHas);
+	
 		paramMap.add("identifier", theIdentifier);
+		paramMap.add("category", theCategory);
+		paramMap.add("sender", theSender);
+		paramMap.add("recipient", theRecipient);
+		paramMap.add("medium", theMedium);
+		paramMap.add("status", theStatus);
+		paramMap.add("context", theContext);
+		paramMap.add("sent", theSent);
+		paramMap.add("received", theReceived);
 		paramMap.add("subject", theSubject);
-				
-		paramMap.add("type", theType);
-		paramMap.add("subtype", theSubtype);
-		paramMap.add("identifier", theIdentifier);
-		paramMap.add("created", theCreated);
-		paramMap.add("subject", theSubject);
-		paramMap.add("operator", theOperator);
-		paramMap.add("view", theView);
 		paramMap.add("patient", thePatient);
+		paramMap.add("based-on", theBased_on);
 		
 		paramMap.setRevIncludes(theRevIncludes);
 		paramMap.setLastUpdated(theLastUpdated);
 		paramMap.setIncludes(theIncludes);
 		paramMap.setSort(theSort);
 		paramMap.setCount(theCount);
+
 		return search(paramMap);
 	}
 
@@ -177,94 +212,71 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 		ExecutionInfo info = info();
 
 		Query query = new Query();		
-		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Media");
+		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Communication");
 
-		
 		List<ReferenceParam> patients = builder.resolveReferences("patient", "Patient");
 		if (patients != null) {
 			query.putAccount("owner", referencesToIds(patients));
 		}
 
-		
-		Set<String> codes = builder.tokensToCodeSystemStrings("view");
-		if (codes != null) {
-			query.putAccount("code", codes);
-			builder.restriction("view", "view", "CodeableConcept", false);
-		} else {
-			builder.restriction("view", "view", "CodeableConcept", true);
-		}
-		
 		builder.restriction("identifier", "Identifier", true, "identifier");
-		builder.restriction("created", "Date", true, "content.creation");
+		builder.restriction("received", "Date", true, "received");
+		builder.restriction("sent", "Date", true, "sent");
+		builder.restriction("based-on", null, true, "basedOn");
+		builder.restriction("recipient", null, true, "recipient");
+		builder.restriction("category", "CodeableConcept", true, "category");
+		builder.restriction("context", null, true, "context");
+		builder.restriction("medium", "CodeableConcept", true, "medium");
+		builder.restriction("sender", null, true, "sender");
+		builder.restriction("status", "code", true, "status");
 		builder.restriction("subject", null, true, "subject");
-		builder.restriction("operator", "Practitioner", true, "operator");		
-		builder.restriction("subtype", "CodeableConcept", false, "subtype");
-		builder.restriction("type", "code", false, "type");		
-		
+						
 		return query.execute(info);
 	}
 
 	@Create
-	public MethodOutcome createMedia(@ResourceParam Media theMedia) {
+	public MethodOutcome createCommunication(@ResourceParam Communication theCommunication) {
 
-		Record record = newRecord("fhir/Media");
-		prepare(record, theMedia);
+		Record record = newRecord("fhir/Communication");
+		prepare(record, theCommunication);
 		// insert
-		Attachment attachment = null;
-				 		
-		attachment = theMedia.getContent();			
-				
-		insertRecord(record, theMedia, attachment);
+		insertRecord(record, theCommunication);
+
+		processResource(record, theCommunication);				
 		
-		try {
-		  processResource(record, theMedia);
-		
-		  MethodOutcome out = outcome("Media", record, theMedia);
-		  
-		 
-		  return out;
-		} catch (Exception e) {
-			ErrorReporter.report("test", null, e);
-			return null;
-		}
+		return outcome("Communication", record, theCommunication);
 
 	}
 	
-	public Record init() { return newRecord("fhir/Media"); }
+	public Record init() { return newRecord("fhir/Communication"); }
 
-	/*
 	@Update
-	public MethodOutcome updateMedia(@IdParam IdType theId, @ResourceParam Media theMedia) {
+	public MethodOutcome updateCommunication(@IdParam IdType theId, @ResourceParam Communication theCommunication) {
 		Record record = fetchCurrent(theId);
-		prepare(record, theMedia);
-		updateRecord(record, theMedia);
-		return outcome("Media", record, theMedia);
+		prepare(record, theCommunication);		
+		updateRecord(record, theCommunication);		
+		return outcome("Communication", record, theCommunication);
 	}
-	*/
 
-	public void prepare(Record record, Media theMedia) {
+	public void prepare(Record record, Communication theCommunication) {
 		// Set Record code and content
-		record.code = new HashSet<String>();
+		
 		try {
-			if (!theMedia.getView().isEmpty()) {
-				for (Coding coding : theMedia.getView().getCoding()) {			
-					if (coding.getCode() != null && coding.getSystem() != null) {
-						record.code.add(coding.getSystem() + " " + coding.getCode());
-					}
-				}
-			
-				ContentInfo.setRecordCodeAndContent(record, record.code, null);
-			
-			} else {
-				ContentInfo.setRecordCodeAndContent(record, null, "Media");
-			}
+			ContentInfo.setRecordCodeAndContent(record, null, "Communication");
 		} catch (AppException e) {
 			throw new InternalErrorException(e);
 		}
-		record.name = theMedia.getContent().getTitle();
-	
+		String date;
+		//try {
+			date = theCommunication.getSentElement().asStringValue();
+		//} catch (FHIRException e) {
+		//	throw new UnprocessableEntityException("Cannot process sent");
+		//}
+		record.name = date;
+
+
 		// clean
-		Reference subjectRef = theMedia.getSubject();
+		Reference subjectRef = theCommunication.getSubject();
 		boolean cleanSubject = true;
 		if (subjectRef != null) {
 			IIdType target = subjectRef.getReferenceElement();
@@ -278,31 +290,25 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 			}
 		}
 		
-		if (cleanSubject) theMedia.setSubject(null);
-		clean(theMedia);
+		if (cleanSubject) theCommunication.setSubject(null);
+		clean(theCommunication);
 
 	}
 	
  
 	@Override
-	public void processResource(Record record, Media p) {
+	public void processResource(Record record, Communication p) {
 		super.processResource(record, p);
 		if (p.getSubject().isEmpty()) {
 			p.getSubject().setReferenceElement(new IdType("Patient", record.owner.toString()));
 			p.getSubject().setDisplay(record.ownerName);
 		}
-		
-		Attachment attachment = p.getContent();
-		if (attachment != null && attachment.getUrl() == null && attachment.getData() == null) {	
-		  String url = "https://"+Play.application().configuration().getString("platform.server")+"/v1/records/file?_id="+record._id;
-		  attachment.setUrl(url);
-		}
-		
 	}
 
 	@Override
-	public void clean(Media theMedia) {		
-		super.clean(theMedia);
+	public void clean(Communication theCommunication) {
+		
+		super.clean(theCommunication);
 	}
 
 }

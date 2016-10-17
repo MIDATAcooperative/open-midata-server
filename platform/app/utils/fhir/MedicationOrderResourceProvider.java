@@ -59,6 +59,7 @@ public class MedicationOrderResourceProvider extends ResourceProvider<Medication
     		@OptionalParam(name="_language")
     		StringAndListParam theResourceLanguage, 
     		 
+    		/*
     		@Description(shortDefinition="Search the contents of the resource's data using a fulltext search")
     		@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT)
     		StringAndListParam theFtContent, 
@@ -78,7 +79,7 @@ public class MedicationOrderResourceProvider extends ResourceProvider<Medication
     		@Description(shortDefinition="Search for resources which have the given profile")
     		@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE)
     		UriAndListParam theSearchForProfile, 
-    		  
+    		  */
     		/*
     		@Description(shortDefinition="Return resources linked to by the given target")
     		@OptionalParam(name="_has")
@@ -139,11 +140,13 @@ public class MedicationOrderResourceProvider extends ResourceProvider<Medication
     		SearchParameterMap paramMap = new SearchParameterMap();						
     		paramMap.add("_id", theId);
     		paramMap.add("_language", theResourceLanguage);
+    		/*
     		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT, theFtContent);
     		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_TEXT, theFtText);
     		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_TAG, theSearchForTag);
     		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_SECURITY, theSearchForSecurity);
     		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE, theSearchForProfile);
+    		*/
     		//paramMap.add("_has", theHas);
     		paramMap.add("datewritten", theDatewritten);
     		paramMap.add("encounter", theEncounter);
