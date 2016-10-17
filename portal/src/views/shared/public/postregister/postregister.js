@@ -37,8 +37,9 @@ angular.module('portal')
 		var data = { token : $stateParams.token, mode : $state.current.data.mode };
 	    $scope.status.doAction('email', server.post(jsRoutes.controllers.Application.confirmAccountEmail().url, JSON.stringify(data) ))
 	    .then(function(result) {
-	    	$scope.progress = result.data;
-	    	$scope.mailSuccess = true;	    		    	
+	    	$scope.progress = result.data;	    	
+	    	$scope.mailSuccess = true;	  
+	    	session.postLogin(result, $state);
 	    });	    
 	};
 	

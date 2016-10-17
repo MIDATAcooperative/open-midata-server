@@ -308,12 +308,15 @@ public class EncryptedAPS {
 				} else this.owner = who; // Old version support			
 			} else {		
 				byte[] key = aps.keys.get(who.toString());
-				if (key==null) { key = aps.keys.get("owner"); this.owner = who; } 
-			    if (key==null /*|| ! key.startsWith("key"+who.toString())*/) throw new InternalServerException("error.internal", "APS not readable by user");
-			    		 			    
-			    encryptionKey = KeyManager.instance.decryptKey(who, key);
-			    
-			    decodeAPS();
+				if (key==null) { 
+					key = aps.keys.get("owner");
+					encryptionKey = KeyManager.instance.decryptKey(who, key);			    
+				    decodeAPS();
+					this.owner = who; 
+				} else {			    			    		 			   
+			        encryptionKey = KeyManager.instance.decryptKey(who, key);			    
+			        decodeAPS();
+				}
 			}
 		} else {
 			if (!aps.security.equals(APSSecurityLevel.NONE)) { decodeAPS(); }

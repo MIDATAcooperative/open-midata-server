@@ -94,5 +94,10 @@ public enum EventType {
 	/**
 	 * a user has requested Membership
 	 */
-	MEMBERSHIP_REQUEST
+	MEMBERSHIP_REQUEST,
+	
+	/**
+	 * a user has changed his contact address
+	 */
+	CONTACT_ADDRESS_CHANGED
 }

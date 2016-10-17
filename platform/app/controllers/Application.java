@@ -193,7 +193,7 @@ public class Application extends APIController {
 		String token = passwordResetToken.token;
 		String role = passwordResetToken.role;		
 		
-		User user = User.getById(userId, Sets.create("status", "role", "subroles", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "resettoken","password","resettokenTs", "registeredAt"));
+		User user = User.getById(userId, Sets.create("status", "role", "subroles", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "resettoken","password","resettokenTs", "registeredAt", "confirmedAt"));
 		
 		if (user!=null && !user.emailStatus.equals(EMailStatus.VALIDATED)) {							
 		       if (user.resettoken != null 		    		    
@@ -204,6 +204,8 @@ public class Application extends APIController {
 		           user.emailStatus = wanted;
 			       user.set("emailStatus", wanted);			       
 		       } else throw new BadRequestException("error.expired.token", "Token has already expired. Please request a new one.");
+		       
+		       checkAccount(user);
 		       
 		       return loginHelper(user);
 		} else if (user != null) {
@@ -420,10 +422,14 @@ public class Application extends APIController {
 		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 		
 		if (user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.registeredAt.before(new Date(System.currentTimeMillis() - MAX_TIME_UNTIL_EMAIL_CONFIRMATION))) {
-			user.status = UserStatus.NEW;			
+			user.status = UserStatus.TIMEOUT;			
 		}
 		if (user.subroles.contains(SubUserRole.TRIALUSER) && user.registeredAt.before(new Date(System.currentTimeMillis() - MAX_TRIAL_DURATION))) {
-			user.status = UserStatus.NEW;
+			if (user.agbStatus.equals(ContractStatus.NEW)) {
+				Users.requestMembership();				
+			}
+			
+			user.status = UserStatus.TIMEOUT;
 		}
 		if (user.subroles.contains(SubUserRole.TRIALUSER) && !InstanceConfig.getInstance().getInstanceType().getTrialAccountsMayLogin()) {
 			user.status = UserStatus.NEW;
@@ -442,7 +448,7 @@ public class Application extends APIController {
 		ObjectNode obj = Json.newObject();
 		obj.put("sessionToken", token.encrypt(request()));
 		
-		if (!user.status.equals(UserStatus.ACTIVE) && InstanceConfig.getInstance().getInstanceType().getUsersNeedValidation()) {
+		if (user.status.equals(UserStatus.TIMEOUT) || (!user.status.equals(UserStatus.ACTIVE) && InstanceConfig.getInstance().getInstanceType().getUsersNeedValidation())) {
 		  obj.put("status", user.status.toString());
 		  obj.put("contractStatus", user.contractStatus.toString());
 		  obj.put("agbStatus", user.agbStatus.toString());

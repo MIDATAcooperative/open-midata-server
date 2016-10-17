@@ -276,6 +276,9 @@ public class Users extends APIController {
 		if (user.role.equals(UserRole.MEMBER)) {		  
 		  PatientResourceProvider.updatePatientForAccount(user._id);
 		}
+		
+		user.addHistory(new History(EventType.CONTACT_ADDRESS_CHANGED, user, null));
+		
 		return ok();		
 	}
 	

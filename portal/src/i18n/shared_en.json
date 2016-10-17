@@ -168,7 +168,9 @@
 	   "STUDY_FINISHED" : "Study finished",
 	   "STUDY_ABORTED" : "Study aborted",
 	   "REQUIRED_INFORMATION_CHANGED" : "Required information changed",
-	   "STUDY_SETUP_CHANGED" : "Study setup changed"
+	   "STUDY_SETUP_CHANGED" : "Study setup changed",
+	   "MEMBERSHIP_REQUEST" : "Membership requested",
+	   "CONTACT_ADDRESS_CHANGED" : "Address changed"
 	 },
 	 "consentstatus" : {
 	   "ACTIVE" : "Active",

@@ -16,6 +16,11 @@ public enum UserStatus {
   ACTIVE,
   
   /**
+   * This user accounts validation took longer than timeout period. It is 'blocked' until process is finished.
+   */
+  TIMEOUT,
+  
+  /**
    * This user account has been blocked.
    */
   BLOCKED,
