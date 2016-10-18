@@ -6,10 +6,12 @@ import java.util.HashSet;
 import java.util.Map;
 
 import models.Admin;
+import models.History;
 import models.User;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
+import models.enums.EventType;
 import models.enums.Gender;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
@@ -20,6 +22,7 @@ import models.MidataId;
 import actions.APICall;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 
 import controllers.APIController;
 import controllers.Application;
@@ -62,20 +65,53 @@ public class Administration extends APIController {
 		MidataId userId = JsonValidation.getMidataId(json, "user");
 		UserStatus status = JsonValidation.getEnum(json, "status", UserStatus.class);
 		
-		User user = User.getById(userId, Sets.create("status", "contractStatus", "agbStatus", "subroles", "confirmedAt", "emailStatus"));
+		User user = User.getById(userId, Sets.create("status", "contractStatus", "agbStatus", "subroles", "confirmedAt", "emailStatus", "history"));
+		
+		User admin = User.getById(executorId, Sets.create("firstname", "lastname", "role"));
+		
 		if (user == null) throw new BadRequestException("error.unknown.user", "Unknown user");
 		
+		UserStatus oldstatus = user.status;
 		user.status = status;
 		User.set(user._id, "status", user.status);
 		
+		if (user.status != oldstatus && user.status == UserStatus.DELETED) {
+			User.set(user._id, "searchable", false);
+			user.addHistory(new History(EventType.ACCOUNT_DELETED, admin, null));
+		}
+		
 		if (json.has("contractStatus")) {
+			ContractStatus old = user.contractStatus;
 			user.contractStatus = JsonValidation.getEnum(json, "contractStatus", ContractStatus.class);			
 			User.set(user._id, "contractStatus", user.contractStatus);
+			if (old == user.contractStatus) {
+			} else if (user.contractStatus == ContractStatus.PRINTED) {
+			  user.addHistory(new History(EventType.CONTRACT_SEND, admin, "Midata contract"));				
+			
+			} else {
+			  user.addHistory(new History(EventType.ADMIN_ACCOUNT_CHANGE, admin, "contract status "+old.toString()+" to "+user.contractStatus.toString()));
+			}
 		}
 		
 		if (json.has("agbStatus")) {
+			ContractStatus old = user.agbStatus;
 			user.agbStatus = JsonValidation.getEnum(json, "agbStatus", ContractStatus.class);			
 			User.set(user._id, "agbStatus", user.agbStatus);
+			if (old == user.agbStatus) {
+			} else if (user.agbStatus == ContractStatus.PRINTED) {
+			   user.addHistory(new History(EventType.CONTRACT_SEND, admin, "AGB"));							
+			} else {
+			   user.addHistory(new History(EventType.ADMIN_ACCOUNT_CHANGE, admin, "agb status "+old.toString()+" to "+user.agbStatus.toString()));
+			}
+		}
+		
+		if (json.has("emailStatus")) {
+			EMailStatus old = user.emailStatus;
+			user.emailStatus = JsonValidation.getEnum(json, "emailStatus", EMailStatus.class);
+			User.set(user._id, "emailStatus", user.emailStatus);
+			if (old != user.emailStatus) {
+			  user.addHistory(new History(EventType.ADMIN_ACCOUNT_CHANGE, admin, "email status "+old.toString()+" to "+user.emailStatus.toString()));
+			}
 		}
 		
 		Application.checkAccount(user);

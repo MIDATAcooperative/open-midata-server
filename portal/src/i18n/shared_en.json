@@ -170,7 +170,10 @@
 	   "REQUIRED_INFORMATION_CHANGED" : "Required information changed",
 	   "STUDY_SETUP_CHANGED" : "Study setup changed",
 	   "MEMBERSHIP_REQUEST" : "Membership requested",
-	   "CONTACT_ADDRESS_CHANGED" : "Address changed"
+	   "CONTACT_ADDRESS_CHANGED" : "Address changed",
+	   "CONTRACT_SEND" : "Contract sent",
+	   "ADMIN_ACCOUNT_CHANGE" : "Account changed by admin",
+	   "ACCOUNT_DELETED" : "Account deleted"
 	 },
 	 "consentstatus" : {
 	   "ACTIVE" : "Active",

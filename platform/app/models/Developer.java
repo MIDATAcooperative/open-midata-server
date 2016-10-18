@@ -33,11 +33,11 @@ public class Developer extends User {
 	}
 	
 	public static boolean existsByEMail(String email) throws InternalServerException {
-		return Model.exists(Developer.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.DEVELOPER));
+		return Model.exists(Developer.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.DEVELOPER).map("status", NON_DELETED));
 	}
 	
 	public static Developer getByEmail(String email, Set<String> fields) throws InternalServerException {
-		return Model.get(Developer.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.DEVELOPER), fields);
+		return Model.get(Developer.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.DEVELOPER).map("status", NON_DELETED), fields);
 	}
 	
 	public static Developer getById(MidataId id, Set<String> fields) throws InternalServerException {

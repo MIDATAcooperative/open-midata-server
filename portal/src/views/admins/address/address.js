@@ -8,7 +8,7 @@ angular.module('portal')
     
 	$scope.reload = function() {
 		
-		$scope.status.doBusy(users.getMembers($scope.criteria, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "address1", "address2", "city", "confirmationCode", "agbStatus", "contractStatus", "emailStatus", "country", "email", "gender", "phone", "zip", "registeredAt", "login", "confirmedAt" ]))
+		$scope.status.doBusy(users.getMembers($scope.criteria, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "address1", "address2", "city", "confirmationCode", "agbStatus", "contractStatus", "emailStatus", "country", "email", "gender", "phone", "zip", "registeredAt", "login", "confirmedAt", "history" ]))
 		.then(function(data) {
 			$scope.member = data.data[0];						
 		});
@@ -18,6 +18,13 @@ angular.module('portal')
 		console.log(user);
 		administration.changeStatus(user._id, user.status, user.contractStatus, user.agbStatus);
 	};	
+	
+	$scope.confirmEmail = function(user) {
+		administration.changeStatus(user._id, user.status, null, null, "VALIDATED")
+		.then(function() {
+		  user.emailStatus = "VALIDATED";
+		});
+	};
 	
 	$scope.reload();
 

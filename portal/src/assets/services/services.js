@@ -9,6 +9,7 @@ angular.module('services')
 		postLogin : function(result, $state) {
 			if (result.data.sessionToken) {
 				sessionStorage.token = result.data.sessionToken;
+				console.log("Session started");
 			}
 			if (result.data.status) {
 				  $state.go("public.postregister", { progress : result.data }, { location : false });			
@@ -56,8 +57,7 @@ angular.module('services')
 				}
 				//$cookies.put("session", userId);
 				//session.storedCookie = userId;
-				//userId = { "$oid" : userId };
-				console.log("GOT USERID");
+				//userId = { "$oid" : userId };			
 				var data = {"properties": { "_id" : userId }, "fields": ["email", "firstname", "lastname", "visualizations", "apps", "midataID", "name", "role", "subroles"] };
 				server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data))
 				.then(function(data) {
@@ -71,6 +71,7 @@ angular.module('services')
 		},
 		
 		logout : function() {
+			console.log("Session ended");
 			session.currentUser = null;
 			sessionStorage.token = null;
 			session.cache = {};

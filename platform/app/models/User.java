@@ -27,6 +27,7 @@ import utils.PasswordHash;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
+import utils.collections.Sets;
 import utils.db.DatabaseException;
 import utils.db.NotMaterialized;
 import utils.db.OrderOperations;
@@ -43,7 +44,8 @@ import utils.search.SearchException;
 @JsonFilter("User")
 public class User extends Model implements Comparable<User> {
 
-	protected static final String collection = "users";
+	protected static final @NotMaterialized String collection = "users";
+	protected static final @NotMaterialized Set<String> NON_DELETED = Sets.create(UserStatus.ACTIVE.toString(), UserStatus.NEW.toString(), UserStatus.BLOCKED.toString(), UserStatus.TIMEOUT.toString());
 	
 	/**
 	 * Email address of the user

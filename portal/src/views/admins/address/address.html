@@ -27,7 +27,7 @@
 			  </tr><tr>
 			  <td translate="admin_address.contract_status"></td><td><select ng-change="changeUser(member);" ng-model="member.contractStatus" class="form-control" ng-options="status as 'enum.contractstatus.'+status | translate for status in contractStati"></select></td>
 			  </tr><tr>
-			  <td translate="admin_address.email_status"></td><td translate="{{ 'enum.emailstatus.'+member.emailStatus }}"></td>
+			  <td translate="admin_address.email_status"></td><td><span translate="{{ 'enum.emailstatus.'+member.emailStatus }}"></span>  <button ng-show="member.emailStatus != 'VALIDATED'" ng-click="confirmEmail(member);" class="btn btn-xs btn-danger" translate="admin_address.email_confirm_btn"></button></td>
 			  </tr><tr>
 			  <td translate="admin_address.confirmation_code"></td><td><b>{{ member.confirmationCode }}</b></td>
 			  </tr><tr>
@@ -42,4 +42,28 @@
 			</loader>
 		</div>
 	</div>
+	
+	<div ng-show="member.history.length" class="panel panel-primary">
+    <div class="panel-heading">History</div>
+    <div class="panel-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>Who</th>
+          <th>When</th>
+          <th>Comment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="entry in member.history">
+          <td translate="{{ 'enum.eventtype.'+entry.event }}"></td>
+          <td>{{ entry.whoName }}</td>
+          <td>{{ entry.timestamp | date }}</td>
+          <td>{{ entry.message }}</td>
+        </tr>
+      </tbody>
+    </table>    
+    </div>
+    </div>
 </div>

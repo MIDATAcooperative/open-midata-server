@@ -31,7 +31,7 @@ angular.module('portal')
 	
 }])
 .controller('PublicNavbarCtrl', ['$scope', '$state', '$translate', '$translatePartialLoader', 'session', function($scope, $state, $translate, $translatePartialLoader, session) {	
-	session.logout();
+	if (!$state.current.data || !$state.current.data.keep) session.logout();
 	$translatePartialLoader.addPart($state.current.data.locales);	
 	$scope.changeLanguage = function(lang) {
 		$translate.use(lang);

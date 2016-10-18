@@ -25,7 +25,7 @@ import models.enums.UserRole;
 
 public class AccountPatches {
 
-	public static final int currentAccountVersion = 20160407;
+	public static final int currentAccountVersion = 20160902;
 	
 	public static void check(User user) throws AppException {		
 		if (user.accountVersion < 20160324) { formatPatch20160324(user); }	

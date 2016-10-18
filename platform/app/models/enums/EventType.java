@@ -99,5 +99,20 @@ public enum EventType {
 	/**
 	 * a user has changed his contact address
 	 */
-	CONTACT_ADDRESS_CHANGED
+	CONTACT_ADDRESS_CHANGED,
+	
+	/**
+	 * a contract has been send to a user
+	 */
+	CONTRACT_SEND,
+	
+	/**
+	 * an admin changed the user account status
+	 */
+	ADMIN_ACCOUNT_CHANGE,
+	
+	/**
+	 * the account has been marked as deleted
+	 */
+	ACCOUNT_DELETED
 }

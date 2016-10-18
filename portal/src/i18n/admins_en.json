@@ -34,7 +34,8 @@
     "confirmation_code" : "Confirmation Code:",
     "registration_date" : "Registration Date:",
     "confirmation_date" : "Confirmation Date:",
-    "last_login" : "Last login:"    
+    "last_login" : "Last login:",
+    "email_confirm_btn" : "Confirm email address"    
   },
   
   "admin_news" : {

@@ -29,6 +29,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
 import utils.DateTimeUtils;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
@@ -64,8 +65,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class Application extends APIController {
 
-	public final static long MAX_TIME_UNTIL_EMAIL_CONFIRMATION = 1000 * 60 * 60 * 24;
-	public final static long MAX_TRIAL_DURATION = 1000 * 60 * 60 * 24 * 30;
+	public final static long MAX_TIME_UNTIL_EMAIL_CONFIRMATION = 1000l * 60l * 60l * 24l;
+	public final static long MAX_TRIAL_DURATION = 1000l * 60l * 60l * 24l * 30l;
 	/**
 	 * for debugging only : displays API call test page
 	 * @return
@@ -167,7 +168,7 @@ public class Application extends APIController {
 	   String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
 	   String url1 = site + "/#/portal/confirm/" + encrypted;
 	   String url2 = site + "/#/portal/reject/" + encrypted;
-			   
+	   AccessLog.log("send welcome mail: "+user.email);	   
   	   MailUtils.sendTextMail(user.email, user.firstname+" "+user.lastname, "Welcome to MIDATA", welcome.render(site, url1, url2));
 	}
 	
@@ -424,11 +425,13 @@ public class Application extends APIController {
 		if (user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.registeredAt.before(new Date(System.currentTimeMillis() - MAX_TIME_UNTIL_EMAIL_CONFIRMATION))) {
 			user.status = UserStatus.TIMEOUT;			
 		}
-		if (user.subroles.contains(SubUserRole.TRIALUSER) && user.registeredAt.before(new Date(System.currentTimeMillis() - MAX_TRIAL_DURATION))) {
+		
+		Date endTrial = new Date(System.currentTimeMillis() - MAX_TRIAL_DURATION);
+		if (user.subroles.contains(SubUserRole.TRIALUSER) && user.registeredAt.before(endTrial)) {
 			if (user.agbStatus.equals(ContractStatus.NEW)) {
-				Users.requestMembership();				
+				Users.requestMembershipHelper(user._id);				
 			}
-			
+						
 			user.status = UserStatus.TIMEOUT;
 		}
 		if (user.subroles.contains(SubUserRole.TRIALUSER) && !InstanceConfig.getInstance().getInstanceType().getTrialAccountsMayLogin()) {

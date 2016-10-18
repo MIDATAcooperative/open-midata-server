@@ -11,7 +11,7 @@ angular.module('portal')
 	$scope.codeSuccess = false;
 	$scope.resentSuccess = false;
 		
-	$scope.resend = function() {
+	$scope.resend = function() {	
 		$scope.resentSuccess = $scope.codeSuccess = $scope.mailSuccess = false;
 	    $scope.status.doAction('resent', server.post(jsRoutes.controllers.Application.requestWelcomeMail().url))
 	    .then(function() {
@@ -33,6 +33,7 @@ angular.module('portal')
 	};
 	
 	$scope.confirm = function() {
+		
 		$scope.resentSuccess = $scope.codeSuccess = $scope.mailSuccess = false;
 		var data = { token : $stateParams.token, mode : $state.current.data.mode };
 	    $scope.status.doAction('email', server.post(jsRoutes.controllers.Application.confirmAccountEmail().url, JSON.stringify(data) ))

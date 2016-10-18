@@ -47,11 +47,11 @@ public class HPUser extends User {
 	}
 	
 	public static boolean existsByEMail(String email) throws InternalServerException {
-		return Model.exists(HPUser.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.PROVIDER));
+		return Model.exists(HPUser.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.PROVIDER).map("status", NON_DELETED));
 	}
 	
 	public static HPUser getByEmail(String email, Set<String> fields) throws InternalServerException {
-		return Model.get(HPUser.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.PROVIDER), fields);
+		return Model.get(HPUser.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.PROVIDER).map("status", NON_DELETED), fields);
 	}
 	
 	public static HPUser getById(MidataId id, Set<String> fields) throws InternalServerException {

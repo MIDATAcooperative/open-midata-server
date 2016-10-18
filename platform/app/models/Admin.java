@@ -38,13 +38,13 @@ public class Admin extends User {
 
 	public static boolean existsByEMail(String email) throws InternalServerException {
 		return Model.exists(Admin.class, collection, CMaps.map("emailLC", email.toLowerCase())
-				.map("role", UserRole.ADMIN));
+				.map("role", UserRole.ADMIN).map("status", NON_DELETED));
 	}
 
 	public static Admin getByEmail(String email, Set<String> fields)
 			throws InternalServerException {
 		return Model.get(Admin.class, collection, CMaps.map("emailLC", email.toLowerCase())
-				.map("role", UserRole.ADMIN), fields);
+				.map("role", UserRole.ADMIN).map("status", NON_DELETED), fields);
 	}
 
 	public static Admin getById(MidataId id, Set<String> fields)

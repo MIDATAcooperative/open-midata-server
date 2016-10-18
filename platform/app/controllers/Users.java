@@ -311,6 +311,10 @@ public class Users extends APIController {
 	@Security.Authenticated(MemberSecured.class)
 	public static Result requestMembership() throws AppException {
 		MidataId userId = new MidataId(request().username());
+		return requestMembershipHelper(userId);
+	}
+	
+	public static Result requestMembershipHelper(MidataId userId) throws AppException {			
 		
 		Member user = Member.getById(userId, Sets.create("_id", "status", "role", "subroles", "history", "emailStatus", "confirmedAt", "contractStatus", "agbStatus", "lastname", "firstname")); 
 		if (user == null) throw new InternalServerException("error.internal", "User record not found.");

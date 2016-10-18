@@ -42,11 +42,11 @@ public class ResearchUser extends User {
 	}
 	
 	public static boolean existsByEMail(String email) throws InternalServerException {
-		return Model.exists(ResearchUser.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.RESEARCH));
+		return Model.exists(ResearchUser.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.RESEARCH).map("status", NON_DELETED));
 	}
 	
 	public static ResearchUser getByEmail(String email, Set<String> fields) throws InternalServerException {
-		return Model.get(ResearchUser.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.RESEARCH), fields);
+		return Model.get(ResearchUser.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.RESEARCH).map("status", NON_DELETED), fields);
 	}
 	
 	public static ResearchUser getById(MidataId id, Set<String> fields) throws InternalServerException {

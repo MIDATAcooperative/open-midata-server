@@ -4,25 +4,25 @@ angular.module('portal')
 	    .state('public.postregister', {
 	      url: '/postregister',
 	      templateUrl: 'views/shared/public/postregister/postregister.html',
-	      data : { role : "member" },
+	      data : { role : "member", keep : true },
 	      params : { progress : null }
 	    })
 	    .state('public_provider.postregister', {
 	      url: '/postregister',
 	      templateUrl: 'views/shared/public/postregister/postregister.html',
-	      data : { role : "hpuser" },
+	      data : { role : "hpuser", keep : true },
 	      params : { progress : null }
 	    })
 	    .state('public_research.postregister', {
 	      url: '/postregister',
 	      templateUrl: 'views/shared/public/postregister/postregister.html',
-		  data : { role : "research" },
+		  data : { role : "research", keep : true },
 	      params : { progress : null }
 	    })
 	    .state('public_developer.postregister', {
 	      url: '/postregister',
 	      templateUrl: 'views/shared/public/postregister/postregister.html',
-		  data : { role : "developer" },
+		  data : { role : "developer", keep : true },
 	      params : { progress : null }
 	    })
 	    .state('public.confirm', {
