@@ -2,13 +2,10 @@ package utils.access;
 
 import java.util.Set;
 
-import models.Model;
-import models.Record;
-
-import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
-import models.MidataId;
 
+import models.MidataId;
+import models.Model;
 import utils.collections.CMaps;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;

@@ -4,15 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import models.ContentInfo;
-import models.Member;
-import models.MidataId;
-import models.Record;
-
-import org.hl7.fhir.dstu3.exceptions.FHIRException;
 import org.hl7.fhir.dstu3.model.Basic;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
@@ -22,11 +15,6 @@ import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.instance.model.api.IIdType;
 
-import utils.access.RecordManager;
-import utils.auth.ExecutionInfo;
-import utils.collections.CMaps;
-import utils.collections.Sets;
-import utils.exceptions.AppException;
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.parser.DataFormatException;
@@ -43,10 +31,15 @@ import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
-import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
-import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import models.ContentInfo;
+import models.MidataId;
+import models.Record;
+import utils.access.RecordManager;
+import utils.auth.ExecutionInfo;
+import utils.collections.CMaps;
+import utils.exceptions.AppException;
 
 public class BasicResourceProvider extends ResourceProvider<Basic> implements IResourceProvider {
  

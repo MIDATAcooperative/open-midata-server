@@ -1,7 +1,5 @@
 package models;
 
-import models.MidataId;
-
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.InternalServerException;

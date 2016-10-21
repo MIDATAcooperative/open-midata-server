@@ -6,15 +6,9 @@ import java.util.Set;
 
 import models.enums.ParticipationInterest;
 import models.enums.UserRole;
-
-import models.MidataId;
-
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.exceptions.InternalServerException;
-import utils.search.Search;
-import utils.search.SearchException;
-import utils.search.Search.Type;
 
 /**
  * data model class for a MIDATA member

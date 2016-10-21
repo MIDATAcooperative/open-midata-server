@@ -1,7 +1,6 @@
 package controllers;
 
 import models.MidataId;
-
 import models.User;
 import models.enums.SubUserRole;
 import models.enums.UserRole;

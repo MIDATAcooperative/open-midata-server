@@ -1,12 +1,12 @@
 package utils.db;
 
-import models.MidataId;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoException;
+
+import models.MidataId;
 
 /**
  * Helper functions for ordered objects

@@ -12,13 +12,13 @@ import java.util.Set;
 
 import org.bson.types.ObjectId;
 
-import models.JsonSerializable;
-import models.MidataId;
-import models.Model;
-
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+
+import models.JsonSerializable;
+import models.MidataId;
+import models.Model;
 
 /**
  * Converter between data model classes and BSON objects

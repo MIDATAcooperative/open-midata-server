@@ -1,22 +1,14 @@
 package utils.fhir;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import utils.access.op.AndCondition;
 import utils.access.op.CompareCaseInsensitive;
 import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
 import utils.access.op.CompareCondition;
+import utils.access.op.CompareCondition.CompareOperator;
 import utils.access.op.Condition;
 import utils.access.op.EqualsSingleValueCondition;
 import utils.access.op.FieldAccess;
 import utils.access.op.OrCondition;
-import utils.access.op.CompareCondition.CompareOperator;
 
 public class PredicateBuilder {
   

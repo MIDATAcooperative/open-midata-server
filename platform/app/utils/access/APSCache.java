@@ -4,14 +4,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import models.AccessPermissionSet;
-
 import models.MidataId;
-
 import utils.AccessLog;
 import utils.auth.EncryptionNotSupportedException;
-import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 

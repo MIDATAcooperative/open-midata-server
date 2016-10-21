@@ -5,13 +5,6 @@ import java.util.Map;
 import java.util.Set;
 
 import models.enums.APSSecurityLevel;
-import models.enums.InformationType;
-
-import org.bson.BasicBSONObject;
-import models.MidataId;
-
-import com.mongodb.BasicDBObject;
-
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
@@ -20,8 +13,6 @@ import utils.db.DatabaseException;
 import utils.db.LostUpdateException;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
-import utils.search.Search;
-import utils.search.Search.Type;
 
 /**
  * Data model class for an access permission set.

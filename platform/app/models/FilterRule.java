@@ -1,11 +1,6 @@
 package models;
 
 import java.util.List;
-import java.util.Map;
-
-import models.MidataId;
-
-import utils.db.NotMaterialized;
 
 import models.enums.FilterRuleType;
 

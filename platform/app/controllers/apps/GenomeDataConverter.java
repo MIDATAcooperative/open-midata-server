@@ -2,24 +2,24 @@ package controllers.apps;
 
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import actions.VisualizationCall;
 import models.LargeRecord;
+import models.MidataId;
 import models.Plugin;
 import models.Record;
 import models.Space;
-
-import models.MidataId;
-
-import play.Play;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
-import utils.DateTimeUtils;
 import utils.access.RecordManager;
 import utils.auth.RecordToken;
 import utils.auth.SpaceToken;
@@ -29,13 +29,9 @@ import utils.collections.Sets;
 import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
-import utils.exceptions.InternalServerException;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import actions.VisualizationCall;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 
 //Not secured, accessible from app server
@@ -143,7 +139,7 @@ public class GenomeDataConverter extends Controller {
 		Record record = new Record();
 		record._id = new MidataId();
 		record.app = space.visualization;
-		record.created = DateTimeUtils.now();
+		record.created = new Date();
 		record.creator = appToken.userId;
 		record.owner = appToken.userId;
 		record.name = JsonValidation.getString(json, "name");

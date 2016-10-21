@@ -1,10 +1,9 @@
 import javax.servlet.ServletException;
 
-import models.RecordGroup;
-
 import controllers.AutoRun;
 import controllers.FHIR;
 import controllers.Market;
+import models.RecordGroup;
 import play.Application;
 import play.GlobalSettings;
 import play.libs.Json;

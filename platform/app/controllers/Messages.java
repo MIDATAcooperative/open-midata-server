@@ -2,38 +2,31 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import actions.APICall;
 import models.Message;
-import models.Member;
-import models.User;
-
 import models.MidataId;
-
+import models.User;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import utils.DateTimeUtils;
 import utils.auth.AnyRoleSecured;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
-import utils.collections.ChainedSet;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import utils.search.Search;
-import utils.search.SearchException;
-
-import actions.APICall;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * functions for a message system. Needs to be rewritten in a secure way. Not used.
@@ -85,7 +78,7 @@ public class Messages extends Controller {
 		message._id = new MidataId();
 		message.sender = new MidataId(request().username());
 		message.receivers = receiverIds;
-		message.created = DateTimeUtils.now();
+		message.created = new Date();
 		message.title = JsonValidation.getString(json, "title");
 		message.content = JsonValidation.getString(json, "content");
 		

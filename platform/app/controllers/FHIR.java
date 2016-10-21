@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 
 import actions.MobileCall;
-
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;

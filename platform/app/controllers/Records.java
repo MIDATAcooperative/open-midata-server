@@ -9,10 +9,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import models.Circle;
+import org.bson.BSONObject;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import actions.APICall;
 import models.Consent;
 import models.FormatInfo;
 import models.Member;
+import models.MidataId;
 import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
@@ -20,10 +26,6 @@ import models.Space;
 import models.User;
 import models.enums.AggregationType;
 import models.enums.ConsentType;
-
-import org.bson.BSONObject;
-import models.MidataId;
-
 import play.Play;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -49,13 +51,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import utils.search.Search;
-import utils.search.SearchResult;
 import views.html.dialogs.authorized;
-import actions.APICall;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * functions for handling the records

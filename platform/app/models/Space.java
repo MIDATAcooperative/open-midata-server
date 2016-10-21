@@ -1,10 +1,7 @@
 package models;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import models.MidataId;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
@@ -16,8 +13,6 @@ import utils.db.DatabaseException;
 import utils.db.NotMaterialized;
 import utils.db.OrderOperations;
 import utils.exceptions.InternalServerException;
-import utils.search.Search;
-import utils.search.SearchException;
 
 /**
  * data model class for a "Space".

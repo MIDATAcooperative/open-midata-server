@@ -4,13 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import models.enums.PluginStatus;
-import models.enums.UserRole;
-
-import models.MidataId;
-
 import com.fasterxml.jackson.annotation.JsonFilter;
 
+import models.enums.PluginStatus;
+import models.enums.UserRole;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
@@ -19,9 +16,6 @@ import utils.db.DatabaseException;
 import utils.db.LostUpdateException;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
-import utils.search.Search;
-import utils.search.SearchException;
-import utils.search.Search.Type;
 
 /**
  * data model for a MIDATA plugin. This is the definition of a plugin.

@@ -3,9 +3,6 @@ package models;
 import java.util.Set;
 
 import models.enums.ConsentType;
-
-import models.MidataId;
-
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.InternalServerException;

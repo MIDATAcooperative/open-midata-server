@@ -1,19 +1,10 @@
 package models;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import models.enums.APSSecurityLevel;
-
-import models.MidataId;
-
 import utils.collections.CMaps;
-import utils.collections.ChainedMap;
 import utils.collections.Sets;
-import utils.db.DBLayer;
-import utils.db.DatabaseException;
-import utils.db.LostUpdateException;
 import utils.exceptions.InternalServerException;
 
 public class AccessPermissionList extends Model {

@@ -3,8 +3,9 @@ package utils.access.index;
 import java.util.Set;
 
 import org.bson.BSONObject;
-import models.MidataId;
 
+import models.MidataId;
+import models.Model;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.DBLayer;
@@ -12,8 +13,6 @@ import utils.db.DatabaseException;
 import utils.db.LostUpdateException;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
-import models.Circle;
-import models.Model;
 
 /**
  * Data model for an index page

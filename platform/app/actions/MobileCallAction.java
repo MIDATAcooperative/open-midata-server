@@ -1,5 +1,7 @@
 package actions;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import play.libs.F;
 import play.libs.Json;
 import play.mvc.Action;
@@ -10,8 +12,6 @@ import utils.ErrorReporter;
 import utils.access.RecordManager;
 import utils.exceptions.BadRequestException;
 import utils.json.JsonValidation.JsonValidationException;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * request wrapper for requests from external services

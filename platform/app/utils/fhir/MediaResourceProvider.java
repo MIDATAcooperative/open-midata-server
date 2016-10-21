@@ -4,10 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import models.ContentInfo;
-import models.MidataId;
-import models.Record;
-
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.IdType;
@@ -16,11 +12,6 @@ import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.instance.model.api.IIdType;
 
-import play.Play;
-import utils.AccessLog;
-import utils.ErrorReporter;
-import utils.auth.ExecutionInfo;
-import utils.exceptions.AppException;
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.rest.annotation.Create;
@@ -36,10 +27,16 @@ import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
-import ca.uhn.fhir.rest.param.UriAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import models.ContentInfo;
+import models.MidataId;
+import models.Record;
+import play.Play;
+import utils.ErrorReporter;
+import utils.auth.ExecutionInfo;
+import utils.exceptions.AppException;
 
 public class MediaResourceProvider extends ResourceProvider<Media> implements IResourceProvider {
 

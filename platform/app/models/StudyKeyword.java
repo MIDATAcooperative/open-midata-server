@@ -6,7 +6,7 @@ package models;
  */
 public class StudyKeyword extends Model {
 	
-	private static final String collection = "studykeywords";
+	//private static final String collection = "studykeywords";
 	
 	/**
 	 * name of unique keyword

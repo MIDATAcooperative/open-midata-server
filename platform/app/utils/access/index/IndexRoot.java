@@ -2,14 +2,13 @@ package utils.access.index;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
-import models.MidataId;
 
+import models.MidataId;
 import utils.AccessLog;
 import utils.access.DBRecord;
 import utils.access.op.Condition;

@@ -6,20 +6,18 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import models.MidataId;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import play.mvc.Result;
-
-import models.Consent;
+import actions.APICall;
+import controllers.APIController;
+import controllers.Application;
 import models.HCRelated;
 import models.HPUser;
 import models.HealthcareProvider;
 import models.Member;
 import models.MemberKey;
-import models.Space;
+import models.MidataId;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
@@ -27,6 +25,10 @@ import models.enums.Gender;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
+import play.libs.Json;
+import play.mvc.BodyParser;
+import play.mvc.Result;
+import play.mvc.Security;
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
@@ -34,23 +36,12 @@ import utils.auth.ProviderSecured;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
-import utils.evolution.AccountPatches;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import actions.APICall;
-import controllers.APIController;
-import controllers.Application;
-import controllers.routes;
-import actions.APICall; 
-import play.libs.Json;
-import play.mvc.BodyParser;
-import play.mvc.Controller;
-import play.mvc.Result;
-import play.mvc.Security;
 
 /**
  * functions for healthcare providers

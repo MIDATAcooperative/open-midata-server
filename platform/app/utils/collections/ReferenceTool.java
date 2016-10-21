@@ -6,16 +6,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import models.MidataId;
-
-import utils.exceptions.InternalServerException;
-
-import models.Circle;
 import models.Consent;
 import models.Member;
+import models.MidataId;
 import models.Record;
 import models.RecordsInfo;
 import models.StudyParticipation;
+import utils.exceptions.InternalServerException;
 
 public class ReferenceTool {
 

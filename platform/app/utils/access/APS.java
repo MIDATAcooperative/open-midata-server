@@ -1,30 +1,17 @@
 package utils.access;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
-
 import org.bson.BasicBSONObject;
+
 import models.MidataId;
-
-import com.mongodb.BasicDBObject;
-
-
+import models.enums.APSSecurityLevel;
 import utils.auth.EncryptionNotSupportedException;
-import utils.auth.KeyManager;
-import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
-
-import models.Record;
-import models.RecordsInfo;
-import models.enums.APSSecurityLevel;
 
 /**
  * abstract interface for an access permission set

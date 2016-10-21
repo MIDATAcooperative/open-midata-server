@@ -1,16 +1,13 @@
 package utils.db;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-
-import models.MidataId;
-
-import utils.AccessLog;
 
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
+
+import models.MidataId;
+import utils.AccessLog;
 
 /**
  * Access to GridFS for records with attached file data

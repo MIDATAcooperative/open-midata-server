@@ -12,7 +12,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import play.mvc.Http;
-
 import scala.NotImplementedError;
 import utils.AccessLog;
 

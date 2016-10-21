@@ -1,5 +1,9 @@
 package models;
 
+/**
+ * Used inside plugin class to store internationalization information
+ *
+ */
 public class Plugin_i18n implements JsonSerializable {
 
 	/**

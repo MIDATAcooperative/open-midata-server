@@ -7,31 +7,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import models.MidataId;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
+import actions.APICall;
 import controllers.APIController;
 import controllers.Circles;
 import controllers.MobileAPI;
-
 import models.HPUser;
-import models.Member;
 import models.MemberKey;
+import models.MidataId;
 import models.User;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.UserRole;
-import actions.APICall;
-import play.libs.Json;
 import play.mvc.BodyParser;
-import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import utils.AccessLog;
 import utils.auth.AnyRoleSecured;
-import utils.auth.Rights;
 import utils.auth.MemberSecured;
+import utils.auth.Rights;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;

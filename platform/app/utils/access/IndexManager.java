@@ -1,7 +1,6 @@
 package utils.access;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,8 +12,8 @@ import java.util.UUID;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
-import models.MidataId;
 
+import models.MidataId;
 import utils.AccessLog;
 import utils.access.index.IndexDefinition;
 import utils.access.index.IndexMatch;

@@ -4,14 +4,12 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Map;
 
-import models.MidataId;
+import com.fasterxml.jackson.databind.JsonNode;
 
-import play.libs.Crypto;
+import models.MidataId;
 import play.libs.Json;
 import utils.collections.CMaps;
 import utils.exceptions.InternalServerException;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Authorization token to reset a users password.

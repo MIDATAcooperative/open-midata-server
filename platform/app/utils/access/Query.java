@@ -5,20 +5,18 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.format.ISODateTimeFormat;
 
 import models.ContentCode;
 import models.ContentInfo;
 import models.FormatInfo;
+import models.MidataId;
 import models.Plugin;
 import models.RecordGroup;
-
-import org.apache.commons.lang3.StringUtils;
-import models.MidataId;
-import org.joda.time.format.ISODateTimeFormat;
-
 import utils.AccessLog;
 import utils.collections.Sets;
 import utils.exceptions.AppException;

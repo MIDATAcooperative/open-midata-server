@@ -1,12 +1,9 @@
 package utils.access;
 
-import models.APSNotExistingException;
-
-import org.bson.types.BasicBSONList;
-import models.MidataId;
-
 import com.mongodb.BasicDBList;
 
+import models.APSNotExistingException;
+import models.MidataId;
 import utils.AccessLog;
 import utils.collections.Sets;
 import utils.exceptions.AppException;

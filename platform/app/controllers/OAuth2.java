@@ -2,16 +2,19 @@ package controllers;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import actions.APICall;
+import actions.MobileCall;
 import models.HPUser;
 import models.Member;
+import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
 import models.User;
 import models.enums.ConsentStatus;
 import models.enums.UserRole;
-
-import models.MidataId;
-
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
@@ -26,11 +29,6 @@ import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation;
-import actions.APICall;
-import actions.MobileCall;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class OAuth2 extends Controller {
 

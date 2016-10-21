@@ -11,14 +11,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import play.Play;
-
-import utils.servlet.PlayHttpServletContext;
-
 import ca.uhn.fhir.narrative.DefaultThymeleafNarrativeGenerator;
 import ca.uhn.fhir.rest.server.HardcodedServerAddressStrategy;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
+import play.Play;
 
 // https://demo.careevolution.com/PDemo/PDemo.html?iss=https://localhost:9000/fhir
 // https://demo.careevolution.com/PDemo/PDemo.html?iss=https://test.midata.coop:9000/fhir

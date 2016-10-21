@@ -9,22 +9,20 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import models.Record;
-import models.enums.APSSecurityLevel;
-
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
-import models.MidataId;
 
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+
+import models.MidataId;
+import models.enums.APSSecurityLevel;
 import utils.AccessLog;
 import utils.auth.EncryptionNotSupportedException;
 import utils.auth.KeyManager;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
-
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
 
 /**
  * implementation of an access permission set.

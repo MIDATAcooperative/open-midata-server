@@ -2,8 +2,6 @@ package utils.auth;
 
 import models.enums.UserRole;
 import play.mvc.Http.Context;
-import play.mvc.Result;
-import play.mvc.Security;
 
 /**
  * This authenticator allows only DEVELOPER users

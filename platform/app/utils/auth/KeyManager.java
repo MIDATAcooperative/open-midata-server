@@ -17,16 +17,12 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.ShortBufferException;
-
-import models.KeyInfo;
-import models.MobileAppInstance;
-import models.User;
-
-import models.MidataId;
 
 import akka.japi.Pair;
-
+import models.KeyInfo;
+import models.MidataId;
+import models.MobileAppInstance;
+import models.User;
 import utils.access.EncryptionUtils;
 import utils.collections.Sets;
 import utils.exceptions.AuthException;

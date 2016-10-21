@@ -1,9 +1,9 @@
 package utils.mails;
 
-import play.Play;
-
-import com.typesafe.plugin.MailerPlugin;
 import com.typesafe.plugin.MailerAPI;
+import com.typesafe.plugin.MailerPlugin;
+
+import play.Play;
 
 /**
  * function for sending mails

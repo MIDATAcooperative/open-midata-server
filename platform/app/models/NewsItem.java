@@ -4,15 +4,10 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
-import models.MidataId;
-
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
-import utils.search.Search;
-import utils.search.Search.Type;
-import utils.search.SearchException;
 
 /**
  * Data model for a news item.

@@ -6,8 +6,8 @@ import java.util.Set;
 
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
-import models.MidataId;
 
+import models.MidataId;
 import utils.AccessLog;
 import utils.access.EncryptionUtils;
 import utils.access.op.Condition;

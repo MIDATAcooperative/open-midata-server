@@ -2,16 +2,13 @@ package utils.auth;
 
 import java.util.Map;
 
-import models.MidataId;
+import com.fasterxml.jackson.databind.JsonNode;
 
-import play.libs.Crypto;
+import models.MidataId;
 import play.libs.Json;
 import play.mvc.Http.Request;
-import utils.AccessLog;
 import utils.collections.ChainedMap;
 import utils.exceptions.InternalServerException;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Authorization token for plugins to access a user's records assigned to a space.

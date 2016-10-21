@@ -1,31 +1,28 @@
 package utils.access;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.bson.BasicBSONObject;
-import models.MidataId;
 
 import com.mongodb.BasicDBObject;
 
+import models.APSNotExistingException;
+import models.AccessPermissionSet;
+import models.ContentInfo;
+import models.MidataId;
+import models.enums.APSSecurityLevel;
 import utils.AccessLog;
-import utils.DateTimeUtils;
 import utils.auth.EncryptionNotSupportedException;
 import utils.collections.CMaps;
 import utils.collections.NChainedMap;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
-
-import models.APSNotExistingException;
-import models.AccessPermissionSet;
-import models.ContentInfo;
-import models.Record;
-import models.enums.APSSecurityLevel;
 
 /**
  * organizes records into "streams". these are access permission sets that contain only records of one type.
@@ -189,7 +186,7 @@ public class Feature_Streams extends Feature {
 		result.direct = direct;
 		result.meta = new BasicBSONObject(properties);		
 		result.isStream = true;
-		result.meta.put("created", DateTimeUtils.now());
+		result.meta.put("created", new Date());
 		result.data = new BasicDBObject();
 		result.time = 0;		
 		

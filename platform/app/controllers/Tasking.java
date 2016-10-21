@@ -4,24 +4,20 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import actions.APICall;
+import models.MidataId;
 import models.Plugin;
 import models.RecordsInfo;
 import models.Space;
 import models.Task;
 import models.enums.AggregationType;
 import models.enums.Frequency;
-
-import models.MidataId;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import actions.APICall;
 import play.libs.Json;
 import play.mvc.BodyParser;
-import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.access.RecordManager;

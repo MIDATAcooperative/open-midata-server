@@ -2,17 +2,15 @@ package utils.auth;
 
 import java.util.Map;
 
-import models.enums.UserRole;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import models.MidataId;
-
+import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.collections.ChainedMap;
 import utils.exceptions.InternalServerException;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 public class PortalSessionToken {
 

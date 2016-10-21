@@ -2,19 +2,16 @@ package utils.auth;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import models.Consent;
 import models.Member;
+import models.MidataId;
 import models.MobileAppInstance;
 import models.Space;
 import models.User;
-
-import models.MidataId;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
 import play.libs.Json;
 import play.mvc.Http.Request;
-
 import utils.AccessLog;
 import utils.access.RecordManager;
 import utils.collections.Sets;

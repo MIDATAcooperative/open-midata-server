@@ -2,15 +2,10 @@ package models;
 
 import java.util.Set;
 
-import models.MidataId;
-
 import com.fasterxml.jackson.annotation.JsonFilter;
 
 import utils.collections.CMaps;
 import utils.exceptions.InternalServerException;
-import utils.search.Search;
-import utils.search.SearchException;
-import utils.search.Search.Type;
 
 /**
  * data model class for a research organization

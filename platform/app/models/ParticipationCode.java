@@ -4,9 +4,6 @@ import java.util.Date;
 import java.util.Set;
 
 import models.enums.ParticipationCodeStatus;
-
-import models.MidataId;
-
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.InternalServerException;

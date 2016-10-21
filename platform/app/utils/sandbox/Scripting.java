@@ -1,17 +1,11 @@
 package utils.sandbox;
 
-import java.io.InputStreamReader;
-
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import models.MidataId;
-
-import models.Record;
-
 import utils.AccessLog;
-import utils.access.RecordManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 

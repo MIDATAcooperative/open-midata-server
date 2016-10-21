@@ -5,18 +5,11 @@ import java.util.Map;
 import java.util.Set;
 
 import models.MidataId;
-
-import utils.collections.CMaps;
-import utils.collections.ChainedMap;
-import utils.collections.ChainedSet;
-import utils.collections.Sets;
-import utils.db.DatabaseException;
-import utils.db.NotMaterialized;
-import utils.db.OrderOperations;
-import utils.exceptions.InternalServerException;
-import utils.search.Search;
-import models.Circle;
 import models.Model;
+import utils.collections.CMaps;
+import utils.collections.Sets;
+import utils.db.NotMaterialized;
+import utils.exceptions.InternalServerException;
 
 /**
  * Data model of an index definition 

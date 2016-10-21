@@ -7,15 +7,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bson.BasicBSONObject;
-import models.MidataId;
 
+import models.MidataId;
+import models.enums.APSSecurityLevel;
 import scala.NotImplementedError;
 import utils.auth.EncryptionNotSupportedException;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
-
-import models.Record;
-import models.enums.APSSecurityLevel;
 
 /**
  * query a preselected list of records in memory

@@ -2,13 +2,13 @@ package utils.fhir;
 
 import javax.servlet.http.HttpServletRequest;
 
-import play.Play;
-
+import org.hl7.fhir.dstu3.hapi.rest.server.ServerConformanceProvider;
+import org.hl7.fhir.dstu3.model.Conformance;
 import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.UriType;
-import org.hl7.fhir.dstu3.model.Conformance;
+
 import ca.uhn.fhir.rest.annotation.Metadata;
-import org.hl7.fhir.dstu3.hapi.rest.server.ServerConformanceProvider;
+import play.Play;
 
 public class MidataConformanceProvider extends ServerConformanceProvider {
 

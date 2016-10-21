@@ -7,20 +7,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
-import models.APSNotExistingException;
-import models.AccessPermissionSet;
-import models.Record;
-import models.enums.APSSecurityLevel;
-
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
+
+import models.APSNotExistingException;
+import models.AccessPermissionSet;
 import models.MidataId;
-
-
+import models.enums.APSSecurityLevel;
 import utils.AccessLog;
-import utils.auth.EncryptionNotSupportedException;
 import utils.auth.KeyManager;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;

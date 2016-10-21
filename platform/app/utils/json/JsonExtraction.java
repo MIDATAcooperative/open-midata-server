@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import models.MidataId;
-
 import com.fasterxml.jackson.databind.JsonNode;
+
+import models.MidataId;
 
 public class JsonExtraction {
 

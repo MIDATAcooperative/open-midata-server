@@ -5,19 +5,13 @@ import java.util.Set;
 
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
-
-import models.MidataId;
-
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
 import utils.db.DatabaseException;
-import utils.db.NotMaterialized;
 import utils.db.OrderOperations;
 import utils.exceptions.InternalServerException;
-import utils.search.Search;
-import utils.search.SearchException;
 
 /**
  * Data model for "Circles". Circles are consents between members.

@@ -2,9 +2,6 @@ package utils.access;
 
 import java.util.List;
 
-import models.Record;
-import utils.collections.CMaps;
-import utils.collections.Sets;
 import utils.exceptions.AppException;
 
 public class Feature_Documents extends Feature {

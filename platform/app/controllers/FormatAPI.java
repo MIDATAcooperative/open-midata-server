@@ -6,18 +6,16 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import models.MidataId;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
 import actions.VisualizationCall;
-
 import models.ContentCode;
 import models.ContentInfo;
-import models.RecordGroup;
 import models.FormatInfo;
 import models.Loinc;
+import models.MidataId;
+import models.RecordGroup;
 import models.enums.APSSecurityLevel;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -25,7 +23,6 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.auth.AdminSecured;
-import utils.auth.AnyRoleSecured;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;

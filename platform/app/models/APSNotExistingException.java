@@ -1,7 +1,5 @@
 package models;
 
-import models.MidataId;
-
 import utils.exceptions.InternalServerException;
 
 /**

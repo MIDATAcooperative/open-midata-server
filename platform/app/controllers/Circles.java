@@ -12,23 +12,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bson.BSONObject;
+import org.bson.BasicBSONObject;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import actions.APICall;
 import models.Circle;
 import models.Consent;
 import models.HCRelated;
 import models.Member;
 import models.MemberKey;
+import models.MidataId;
 import models.Record;
 import models.RecordsInfo;
 import models.enums.AggregationType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.SubUserRole;
-import models.enums.UserStatus;
-
-import org.bson.BSONObject;
-import org.bson.BasicBSONObject;
-import models.MidataId;
-
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -50,9 +51,6 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import actions.APICall;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * functions for managing consents

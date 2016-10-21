@@ -1,20 +1,11 @@
 package utils.access;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import models.Record;
-import models.enums.APSSecurityLevel;
-
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
-import models.MidataId;
 
+import models.enums.APSSecurityLevel;
 import utils.AccessLog;
-import utils.DateTimeUtils;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 

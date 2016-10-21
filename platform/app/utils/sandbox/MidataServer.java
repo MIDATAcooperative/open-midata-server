@@ -1,18 +1,9 @@
 package utils.sandbox;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
-
-import models.Record;
-import models.RecordsInfo;
-
-import models.MidataId;
-
-import play.libs.F.Function;
-import play.libs.F.Promise;
-import play.libs.ws.WSResponse;
-import play.mvc.Result;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mongodb.DBObject;
@@ -20,8 +11,12 @@ import com.mongodb.util.JSON;
 import com.mongodb.util.JSONParseException;
 
 import controllers.PluginsAPI;
-
-import utils.DateTimeUtils;
+import models.MidataId;
+import models.Record;
+import models.RecordsInfo;
+import play.libs.F.Function;
+import play.libs.F.Promise;
+import play.libs.ws.WSResponse;
 import utils.auth.ExecutionInfo;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -40,7 +35,7 @@ public class MidataServer {
 		record.app = inf.pluginId;
 		record.owner = inf.ownerId;
 		record.creator = inf.executorId;
-		record.created = DateTimeUtils.now();
+		record.created = new Date();
 						
 		record.format = format;
 		record.content = content;

@@ -1,20 +1,14 @@
 package models;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.Set;
 
 import org.bson.BSONObject;
-import models.MidataId;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
-import utils.collections.CMaps;
-import utils.collections.ChainedMap;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
-import utils.exceptions.InternalServerException;
-import utils.search.Search;
 
 /**
  * data model for a record

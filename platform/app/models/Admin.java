@@ -1,6 +1,7 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,10 +9,6 @@ import java.util.Set;
 
 import models.enums.SubUserRole;
 import models.enums.UserRole;
-
-import models.MidataId;
-
-import utils.DateTimeUtils;
 import utils.collections.CMaps;
 import utils.exceptions.InternalServerException;
 
@@ -31,7 +28,7 @@ public class Admin extends User {
 		messages.put("inbox", new HashSet<MidataId>());
 		messages.put("archive", new HashSet<MidataId>());
 		messages.put("trash", new HashSet<MidataId>());
-		login = DateTimeUtils.now();
+		login = new Date();
 		history = new ArrayList<History>();
 		subroles = EnumSet.noneOf(SubUserRole.class);
 	}

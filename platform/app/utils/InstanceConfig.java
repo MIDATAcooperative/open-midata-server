@@ -1,7 +1,7 @@
 package utils;
 
-import play.Play;
 import models.enums.InstanceType;
+import play.Play;
 
 public class InstanceConfig {
 

@@ -1,10 +1,8 @@
 package controllers;
 
+import actions.APICall;
 import models.Admin;
-
 import models.MidataId;
-
-import play.Play;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -16,7 +14,6 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation.JsonValidationException;
-import actions.APICall;
 
 /**
  * used for debugging. Reading of APS content is not allowed on productive system.

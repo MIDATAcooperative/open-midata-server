@@ -2,9 +2,12 @@ package utils.fhir.transactions;
 
 import org.hl7.fhir.dstu3.model.BaseResource;
 
-
 import utils.fhir.ResourceProvider;
 
+/**
+ * Create a new FHIR resource as part of a FHIR tranction or batch
+ *
+ */
 public class CreateTransactionStep extends TransactionStep {
 
 	

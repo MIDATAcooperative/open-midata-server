@@ -9,11 +9,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.bson.BSONObject;
-import org.bson.BasicBSONObject;
+
 import models.MidataId;
-
-import utils.AccessLog;
-
 import models.Record;
 
 public class RecordConversion {

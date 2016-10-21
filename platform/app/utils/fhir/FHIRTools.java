@@ -2,19 +2,16 @@ package utils.fhir;
 
 import java.util.Set;
 
-import models.Record;
-import models.User;
-
-import models.MidataId;
+import org.hl7.fhir.dstu3.model.Person;
 
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
+import ca.uhn.fhir.parser.IParser;
+import models.MidataId;
+import models.User;
 import utils.collections.Sets;
 import utils.exceptions.InternalServerException;
-
-import org.hl7.fhir.dstu3.model.Person;
-import ca.uhn.fhir.parser.IParser;
 
 public class FHIRTools {
 

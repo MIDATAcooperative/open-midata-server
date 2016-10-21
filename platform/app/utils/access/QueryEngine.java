@@ -12,25 +12,19 @@ import java.util.Set;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
+
 import models.MidataId;
-
-
-import scala.NotImplementedError;
+import models.Record;
+import models.RecordGroup;
+import models.RecordsInfo;
+import models.enums.AggregationType;
 import utils.AccessLog;
-import utils.DateTimeUtils;
 import utils.access.op.AndCondition;
 import utils.access.op.Condition;
-import utils.access.op.EqualsSingleValueCondition;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
-import models.ContentInfo;
-import models.Record;
-import models.RecordGroup;
-import models.RecordsInfo;
-import models.enums.APSSecurityLevel;
-import models.enums.AggregationType;
 
 /**
  * query engine for records. Is called by RecordManager.

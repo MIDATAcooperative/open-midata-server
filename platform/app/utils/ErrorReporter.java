@@ -7,7 +7,6 @@ import play.Play;
 import play.mvc.Http;
 import utils.auth.PortalSessionToken;
 import utils.mails.MailUtils;
-import views.txt.mails.welcome;
 
 public class ErrorReporter {
 

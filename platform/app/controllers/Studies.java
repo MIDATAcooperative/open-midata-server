@@ -1,30 +1,16 @@
 package controllers;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Map;
 import java.util.Set;
 
-import models.History;
-import models.Member;
-import models.ParticipationCode;
-import models.Research;
-import models.Study;
-import models.StudyParticipation;
-import models.User;
-import models.enums.EventType;
-import models.enums.InformationType;
-import models.enums.ParticipantSearchStatus;
-import models.enums.ParticipationCodeStatus;
-import models.enums.ParticipationStatus;
+import com.fasterxml.jackson.databind.JsonNode;
 
+import actions.APICall;
 import models.MidataId;
-
-import play.libs.Json;
+import models.Study;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
-
 import utils.auth.AnyRoleSecured;
 import utils.auth.Rights;
 import utils.db.ObjectIdConversion;
@@ -34,10 +20,6 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import actions.APICall;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**

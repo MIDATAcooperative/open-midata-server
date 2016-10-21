@@ -7,9 +7,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import actions.APICall;
 import models.Developer;
 import models.HPUser;
 import models.Member;
+import models.MidataId;
 import models.ResearchUser;
 import models.User;
 import models.enums.AccountSecurityLevel;
@@ -20,17 +25,12 @@ import models.enums.ParticipationInterest;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
-
-import models.MidataId;
-
-import play.Play;
 import play.Routes;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
-import utils.DateTimeUtils;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
@@ -42,7 +42,6 @@ import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.evolution.AccountPatches;
 import utils.exceptions.AppException;
-import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.PatientResourceProvider;
@@ -53,11 +52,6 @@ import views.html.apstest;
 import views.html.tester;
 import views.txt.mails.lostpwmail;
 import views.txt.mails.welcome;
-import actions.APICall;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Member login, registration and password reset functions 
@@ -578,7 +572,7 @@ public class Application extends APIController {
 		user.messages.put("inbox", new HashSet<MidataId>());
 		user.messages.put("archive", new HashSet<MidataId>());
 		user.messages.put("trash", new HashSet<MidataId>());
-		user.login = DateTimeUtils.now();
+		user.login = new Date();
 		user.news = new HashSet<MidataId>();
 		//user.pushed = new HashSet<MidataId>();
 		//user.shared = new HashSet<MidataId>();

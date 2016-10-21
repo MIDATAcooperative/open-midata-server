@@ -12,7 +12,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.DispatcherType;
@@ -30,7 +29,6 @@ import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
 
 import play.mvc.Http;
-
 import scala.NotImplementedError;
 import utils.AccessLog;
 

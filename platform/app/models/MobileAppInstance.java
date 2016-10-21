@@ -3,12 +3,10 @@ package models;
 import java.util.HashSet;
 import java.util.Set;
 
-import models.MidataId;
-
-import utils.collections.CMaps;
-import utils.exceptions.InternalServerException;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
+import utils.collections.CMaps;
+import utils.exceptions.InternalServerException;
 
 /**
  * data model class for a consent between a MIDATA member and a mobile application.

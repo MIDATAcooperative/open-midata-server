@@ -1,6 +1,5 @@
 package utils.access;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,20 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import models.MidataId;
-
+import models.RecordGroup;
 import utils.AccessLog;
 import utils.collections.CMaps;
-import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
-import utils.exceptions.InternalServerException;
-
-import models.RecordGroup;
-import models.ContentInfo;
-import models.Record;
-import models.RecordsInfo;
-import models.enums.AggregationType;
 
 /**
  * filter records by group. add group information to record while querying

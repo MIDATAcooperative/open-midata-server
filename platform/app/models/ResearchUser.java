@@ -1,21 +1,14 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import models.enums.UserRole;
-
-import models.MidataId;
-
-import utils.DateTimeUtils;
 import utils.collections.CMaps;
 import utils.exceptions.InternalServerException;
-import utils.search.Search;
-import utils.search.SearchException;
-import utils.search.Search.Type;
 
 /**
  * data model class for a researcher.
@@ -37,7 +30,7 @@ public class ResearchUser extends User {
 		messages.put("inbox", new HashSet<MidataId>());
 		messages.put("archive", new HashSet<MidataId>());
 		messages.put("trash", new HashSet<MidataId>());
-		login = DateTimeUtils.now();	
+		login = new Date();	
 		history = new ArrayList<History>();
 	}
 	

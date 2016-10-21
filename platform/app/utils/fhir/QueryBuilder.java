@@ -11,29 +11,22 @@ import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.BaseResource;
 
-import utils.AccessLog;
-import utils.access.op.Condition;
-import utils.access.op.EqualsSingleValueCondition;
-import utils.access.op.FieldAccess;
-import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
-import utils.access.op.CompareCondition.CompareOperator;
-import utils.access.op.OrCondition;
-
-import com.ctc.wstx.dtd.TokenModel;
-
 import ca.uhn.fhir.model.api.IQueryParameterType;
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import ca.uhn.fhir.model.dstu.valueset.QuantityCompararatorEnum;
 import ca.uhn.fhir.rest.param.CompositeParam;
 import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.ParamPrefixEnum;
 import ca.uhn.fhir.rest.param.QuantityParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringParam;
-import ca.uhn.fhir.rest.param.TokenAndListParam;
-import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
-import ca.uhn.fhir.rest.param.TokenParamModifier;
+import utils.AccessLog;
+import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
+import utils.access.op.CompareCondition.CompareOperator;
+import utils.access.op.Condition;
+import utils.access.op.EqualsSingleValueCondition;
+import utils.access.op.FieldAccess;
+import utils.access.op.OrCondition;
 
 public class QueryBuilder {
 

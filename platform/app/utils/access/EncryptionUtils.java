@@ -15,20 +15,13 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import models.AccessPermissionSet;
-import models.enums.APSSecurityLevel;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.bson.BSON;
 import org.bson.BSONObject;
-import models.MidataId;
 
 import akka.japi.Pair;
-
-
-import utils.AccessLog;
-import utils.auth.CodeGenerator;
-import utils.auth.EncryptionNotSupportedException;
+import models.MidataId;
+import models.enums.APSSecurityLevel;
 import utils.auth.KeyManager;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;

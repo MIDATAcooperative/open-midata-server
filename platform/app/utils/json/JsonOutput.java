@@ -2,13 +2,13 @@ package utils.json;
 
 import java.util.Set;
 
-import utils.exceptions.InternalServerException;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+
+import utils.exceptions.InternalServerException;
 
 /**
  * functions for serialization JSON so that only requested fields are returned

@@ -1,33 +1,15 @@
 package utils.auth;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bson.BSONObject;
-import models.MidataId;
-
+import models.Plugin;
+import models.enums.UserRole;
 import utils.collections.Sets;
-import utils.db.NotMaterialized;
 import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
-
-import models.FilterRule;
-import models.History;
-import models.Info;
-import models.Plugin;
-import models.StudyGroup;
-import models.enums.AssistanceType;
-import models.enums.ConsentStatus;
-import models.enums.ConsentType;
-import models.enums.InformationType;
-import models.enums.ParticipantSearchStatus;
-import models.enums.StudyExecutionStatus;
-import models.enums.StudyValidationStatus;
-import models.enums.UserRole;
 
 /**
  * class that defines which user role is allowed to do which actions and to query which fields

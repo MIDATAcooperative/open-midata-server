@@ -3,11 +3,14 @@ package models;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.bson.BSONObject;
+
+import com.fasterxml.jackson.annotation.JsonFilter;
 
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
@@ -16,26 +19,12 @@ import models.enums.Gender;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
-
-import org.bson.BSONObject;
-import models.MidataId;
-
-import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import utils.PasswordHash;
 import utils.collections.CMaps;
-import utils.collections.ChainedMap;
-import utils.collections.ChainedSet;
 import utils.collections.Sets;
-import utils.db.DatabaseException;
 import utils.db.NotMaterialized;
-import utils.db.OrderOperations;
 import utils.evolution.AccountPatches;
 import utils.exceptions.InternalServerException;
-import utils.search.Search;
-import utils.search.Search.Type;
-import utils.search.SearchException;
 
 /**
  * Data model class for any user of the platform.

@@ -2,8 +2,6 @@ package models;
 
 import java.util.Date;
 
-import models.MidataId;
-
 import models.enums.EventType;
 import models.enums.UserRole;
 

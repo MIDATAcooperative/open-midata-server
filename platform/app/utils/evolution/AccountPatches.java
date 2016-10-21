@@ -4,24 +4,16 @@ import java.util.List;
 import java.util.Set;
 
 import models.MidataId;
-
-import controllers.Circles;
-
-import utils.AccessLog;
-import utils.access.RecordManager;
-import utils.auth.RecordToken;
-import utils.collections.CMaps;
-import utils.collections.Sets;
-import utils.exceptions.AppException;
-import utils.exceptions.InternalServerException;
-import utils.fhir.PatientResourceProvider;
-import models.Consent;
-import models.ContentInfo;
 import models.Record;
 import models.Space;
 import models.User;
-import models.enums.ConsentStatus;
 import models.enums.UserRole;
+import utils.AccessLog;
+import utils.access.RecordManager;
+import utils.collections.CMaps;
+import utils.collections.Sets;
+import utils.exceptions.AppException;
+import utils.fhir.PatientResourceProvider;
 
 public class AccountPatches {
 

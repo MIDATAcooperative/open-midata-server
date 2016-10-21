@@ -2,29 +2,24 @@ package controllers;
 
 import java.util.Map;
 
-import models.Space;
-
 import org.bson.BSONObject;
-import models.MidataId;
 
-import play.Play;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import actions.APICall;
+import models.MidataId;
+import models.Space;
 import play.libs.Json;
 import play.mvc.BodyParser;
-import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
-import utils.auth.SpaceToken;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
-import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import actions.APICall;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * function for reading and writing the portal configuration of each user

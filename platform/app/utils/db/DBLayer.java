@@ -1,27 +1,16 @@
 package utils.db;
 
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
 
-import models.Model;
-
-import models.MidataId;
-
-import play.Play;
-import utils.collections.CollectionConversion;
-
-import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoException;
-import com.mongodb.WriteConcern;
+
+import models.Model;
+import play.Play;
 
 /**
  * Main database access class
@@ -126,14 +115,7 @@ public class DBLayer {
 	 */
 	public static void initialize() {
 		// TODO
-	}
-
-	/**
-	 * Drops the database.
-	 */
-	public static void destroy() {
-		for (Database db : dbnameToDB.values()) { db.destroy(); }		
-	}
+	}	
 
 	public static MongoDatabase getDatabaseForCollection(String collection) {
 		return collectionsToDB.get(collection);

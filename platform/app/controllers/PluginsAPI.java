@@ -2,28 +2,36 @@ package controllers;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.bson.BSONObject;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
+import com.mongodb.util.JSONParseException;
+
+import actions.VisualizationCall;
 import models.Admin;
 import models.Consent;
 import models.ContentInfo;
 import models.LargeRecord;
+import models.MidataId;
 import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
@@ -31,18 +39,12 @@ import models.Space;
 import models.User;
 import models.enums.AggregationType;
 import models.enums.UserRole;
-
 import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
-
-import org.bson.BSONObject;
-import models.MidataId;
-
 import play.libs.F.Function;
 import play.libs.F.Function0;
 import play.libs.F.Promise;
-import play.libs.F;
 import play.libs.Json;
 import play.libs.oauth.OAuth.ConsumerKey;
 import play.libs.oauth.OAuth.OAuthCalculator;
@@ -51,12 +53,10 @@ import play.libs.ws.WS;
 import play.libs.ws.WSRequestHolder;
 import play.libs.ws.WSResponse;
 import play.mvc.BodyParser;
-import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import utils.AccessLog;
-import utils.DateTimeUtils;
 import utils.ErrorReporter;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
@@ -64,12 +64,9 @@ import utils.auth.RecordToken;
 import utils.auth.Rights;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
-import utils.collections.ChainedMap;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
-import utils.db.DatabaseException;
 import utils.db.FileStorage.FileData;
-
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -80,15 +77,6 @@ import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.sandbox.FitbitImport;
 import utils.sandbox.MidataServer;
-import actions.VisualizationCall;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
-import com.mongodb.util.JSONParseException;
 
 /**
  * API functions to be used by MIDATA plugins
@@ -428,7 +416,7 @@ public class PluginsAPI extends APIController {
 		record.app = authToken.pluginId;
 		record.owner = authToken.ownerId;
 		record.creator = authToken.executorId;
-		record.created = DateTimeUtils.now();
+		record.created = new Date();
 		
 		if (json.has("created-override")) {
 			record.created = JsonValidation.getDate(json, "created-override");
@@ -623,7 +611,7 @@ public class PluginsAPI extends APIController {
 		//record.app = authToken.pluginId;
 		//record.owner = authToken.ownerId;
 		record.creator = authToken.executorId;
-		record.lastUpdated = DateTimeUtils.now();		
+		record.lastUpdated = new Date();		
 							
 		try {
 			record.data = (DBObject) JSON.parse(data);
@@ -741,7 +729,7 @@ public class PluginsAPI extends APIController {
 			record.app = authToken.pluginId;
 			record.owner = authToken.ownerId;
 			record.creator = authToken.executorId;
-			record.created = DateTimeUtils.now();
+			record.created = new Date();
 			record.name = metaData.get("name")[0];
 			record.description = metaData.containsKey("description") ? metaData.get("description")[0] : null;
 			String[] formats = metaData.get("format");

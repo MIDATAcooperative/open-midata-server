@@ -1,76 +1,59 @@
 package controllers;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import models.Consent;
-import models.ContentCode;
-import models.ContentInfo;
-import models.HPUser;
-import models.LargeRecord;
-import models.Member;
-import models.MobileAppInstance;
-import models.Plugin;
-import models.Record;
-import models.RecordsInfo;
-import models.ResearchUser;
-import models.Space;
-import models.User;
-import models.enums.AggregationType;
-import models.enums.ConsentStatus;
-import models.enums.ConsentType;
-import models.enums.UserRole;
-
 import org.bson.BSONObject;
-import org.bson.BasicBSONObject;
-import models.MidataId;
-
-import play.Play;
-import play.libs.Json;
-import play.mvc.BodyParser;
-import play.mvc.Controller;
-import play.mvc.Result;
-import utils.AccessLog;
-import utils.DateTimeUtils;
-import utils.PasswordHash;
-import utils.access.Feature_FormatGroups;
-import utils.access.Query;
-import utils.access.RecordManager;
-import utils.auth.CodeGenerator;
-import utils.auth.ExecutionInfo;
-import utils.auth.KeyManager;
-import utils.auth.MobileAppSessionToken;
-import utils.auth.MobileAppToken;
-import utils.auth.RecordToken;
-import utils.auth.Rights;
-import utils.auth.SpaceToken;
-import utils.collections.CMaps;
-import utils.collections.ReferenceTool;
-import utils.collections.Sets;
-import utils.db.ObjectIdConversion;
-import utils.db.FileStorage.FileData;
-import utils.exceptions.AppException;
-import utils.exceptions.BadRequestException;
-import utils.exceptions.InternalServerException;
-import utils.fhir.ResourceProvider;
-import utils.json.JsonExtraction;
-import utils.json.JsonOutput;
-import utils.json.JsonValidation;
-import utils.json.JsonValidation.JsonValidationException;
-import actions.APICall;
-import actions.MobileCall;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import com.mongodb.util.JSONParseException;
+
+import actions.MobileCall;
+import models.Consent;
+import models.ContentInfo;
+import models.HPUser;
+import models.LargeRecord;
+import models.Member;
+import models.MidataId;
+import models.MobileAppInstance;
+import models.Plugin;
+import models.Record;
+import models.RecordsInfo;
+import models.User;
+import models.enums.AggregationType;
+import models.enums.ConsentStatus;
+import models.enums.UserRole;
+import play.libs.Json;
+import play.mvc.BodyParser;
+import play.mvc.Controller;
+import play.mvc.Result;
+import utils.AccessLog;
+import utils.access.Feature_FormatGroups;
+import utils.access.RecordManager;
+import utils.auth.ExecutionInfo;
+import utils.auth.KeyManager;
+import utils.auth.MobileAppSessionToken;
+import utils.auth.MobileAppToken;
+import utils.auth.RecordToken;
+import utils.auth.Rights;
+import utils.collections.ReferenceTool;
+import utils.collections.Sets;
+import utils.db.FileStorage.FileData;
+import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
+import utils.json.JsonExtraction;
+import utils.json.JsonOutput;
+import utils.json.JsonValidation;
+import utils.json.JsonValidation.JsonValidationException;
 
 /**
  * functions for mobile APPs
@@ -171,8 +154,9 @@ public class MobileAPI extends Controller {
 	    // Validate Mobile App	
 		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "secret"));
 		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");
-		if (!app.secret.equals(secret)) throw new BadRequestException("error.unknown.app", "Unknown app");
 		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
+		if (app.secret == null || !app.secret.equals(secret)) throw new BadRequestException("error.unknown.app", "Unknown app");
+		
 	
 		MidataId appInstanceId = null;
 		MobileAppInstance appInstance = null;
@@ -433,7 +417,7 @@ public class MobileAPI extends Controller {
 		record.app = appId;
 		record.owner = owner;
 		record.creator = appInstance.owner;
-		record.created = DateTimeUtils.now();
+		record.created = new Date();
 		
 		if (json.has("created-override")) {
 			record.created = JsonValidation.getDate(json, "created-override");
@@ -500,7 +484,7 @@ public class MobileAPI extends Controller {
 		record.version = JsonValidation.getStringOrNull(json, "version");
 		 				
 		record.creator = inf.executorId;
-		record.lastUpdated = DateTimeUtils.now();		
+		record.lastUpdated = new Date();		
 							
 		try {
 			record.data = (DBObject) JSON.parse(data);

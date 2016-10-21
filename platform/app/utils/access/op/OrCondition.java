@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import scala.NotImplementedError;
-
 public class OrCondition implements Condition {
 		
     private List<Condition> checks;

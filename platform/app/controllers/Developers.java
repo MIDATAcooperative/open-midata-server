@@ -6,9 +6,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import actions.APICall;
 import models.Admin;
 import models.Developer;
-
+import models.MidataId;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
@@ -16,9 +19,6 @@ import models.enums.Gender;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
-
-import models.MidataId;
-
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import utils.access.RecordManager;
@@ -28,9 +28,6 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.json.JsonValidation;
-import actions.APICall;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * login and registration for developers

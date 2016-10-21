@@ -2,36 +2,29 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import models.NewsItem;
-import models.Member;
+import com.fasterxml.jackson.databind.JsonNode;
 
+import actions.APICall;
 import models.MidataId;
-
+import models.NewsItem;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import utils.DateTimeUtils;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
-import utils.auth.MemberSecured;
 import utils.collections.CMaps;
-import utils.collections.ChainedMap;
-import utils.collections.ChainedSet;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-
-import actions.APICall;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * functions for a "news" system. 
@@ -74,7 +67,7 @@ public class News extends Controller {
 		NewsItem item = new NewsItem();
 		item._id = new MidataId();
 		item.creator = new MidataId(request().username());
-		item.created = DateTimeUtils.now();
+		item.created = new Date();
 		item.expires = JsonValidation.getDate(json, "expires");
 		item.title = JsonValidation.getString(json, "title");
 		item.content = JsonValidation.getString(json, "content");

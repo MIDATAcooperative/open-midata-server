@@ -1,9 +1,7 @@
 package controllers.research;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOError;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -16,15 +14,20 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import actions.APICall;
+import controllers.APIController;
+import controllers.Circles;
 import models.Admin;
-import models.Consent;
 import models.FilterRule;
 import models.History;
 import models.Info;
 import models.Member;
+import models.MidataId;
 import models.ParticipationCode;
 import models.Record;
-import models.Research;
 import models.ResearchUser;
 import models.Study;
 import models.StudyGroup;
@@ -34,20 +37,14 @@ import models.Task;
 import models.User;
 import models.enums.AssistanceType;
 import models.enums.ConsentStatus;
-import models.enums.ConsentType;
 import models.enums.EventType;
 import models.enums.Frequency;
-import models.enums.Gender;
 import models.enums.InformationType;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
 import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
-
-import models.MidataId;
-
-import play.api.libs.iteratee.Enumerator;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -69,14 +66,6 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import actions.APICall;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import controllers.APIController;
-import controllers.Circles;
 
 /**
  * functions about studies to be used by researchers

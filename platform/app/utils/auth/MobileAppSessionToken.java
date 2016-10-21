@@ -1,16 +1,13 @@
 package utils.auth;
 
-import java.util.Date;
 import java.util.Map;
 
-import models.MidataId;
+import com.fasterxml.jackson.databind.JsonNode;
 
-import play.libs.Crypto;
+import models.MidataId;
 import play.libs.Json;
 import utils.collections.CMaps;
 import utils.exceptions.InternalServerException;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Session authentication token for mobile apps

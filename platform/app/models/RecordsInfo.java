@@ -1,11 +1,8 @@
 package models;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
-import models.MidataId;
 
 import utils.access.DBRecord;
 import utils.access.RecordConversion;

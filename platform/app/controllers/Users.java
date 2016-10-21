@@ -9,38 +9,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import actions.APICall;
 import models.Circle;
 import models.Consent;
 import models.History;
 import models.Member;
+import models.MidataId;
 import models.Space;
 import models.User;
-import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
-import models.enums.EMailStatus;
 import models.enums.EventType;
 import models.enums.Gender;
-import models.enums.ParticipationInterest;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
-import models.enums.UserStatus;
-
-import models.MidataId;
-
-import play.Play;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
-import utils.DateTimeUtils;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
-import utils.auth.CodeGenerator;
-import utils.auth.KeyManager;
+import utils.auth.MemberSecured;
 import utils.auth.PortalSessionToken;
 import utils.auth.Rights;
-import utils.auth.MemberSecured;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
@@ -55,14 +49,6 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import utils.search.Search;
-import utils.search.Search.Type;
-import utils.search.SearchResult;
-
-import actions.APICall;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * user related functions

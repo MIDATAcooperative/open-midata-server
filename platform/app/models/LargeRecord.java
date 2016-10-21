@@ -12,19 +12,15 @@ import java.util.TreeMap;
 
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
-import models.MidataId;
-
-import utils.AccessLog;
-import utils.access.RecordManager;
-import utils.collections.CMaps;
-import utils.collections.ChainedMap;
-import utils.collections.ChainedSet;
-import utils.exceptions.AppException;
-import utils.exceptions.InternalServerException;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+
+import utils.access.RecordManager;
+import utils.collections.CMaps;
+import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 
 /**

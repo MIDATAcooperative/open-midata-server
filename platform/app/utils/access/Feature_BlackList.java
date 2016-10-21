@@ -4,17 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import models.Record;
-
 import org.bson.BasicBSONObject;
-import models.MidataId;
 
 import utils.AccessLog;
 import utils.exceptions.AppException;
-import utils.exceptions.InternalServerException;
 
 /**
  * access permission sets may contain a blacklist of record IDs that are never contained in this APS.

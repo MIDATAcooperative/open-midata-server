@@ -1,16 +1,10 @@
 package utils.db;
 
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-
-import models.Model;
-
-import utils.AccessLog;
-import utils.collections.CollectionConversion;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -22,6 +16,10 @@ import com.mongodb.MongoCredential;
 import com.mongodb.MongoException;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
+
+import models.Model;
+import utils.AccessLog;
+import utils.collections.CollectionConversion;
 
 /**
  * Connection to a mongoDB database
@@ -79,14 +77,7 @@ public class MongoDatabase extends Database {
 	 */
 	protected void initialize() {
 		// TODO
-	}
-
-	/**
-	 * Drops the database.
-	 */
-	protected void destroy() {
-		getDB().dropDatabase();
-	}
+	}	
 
 	/**
 	 * Get a connection to the database in use.

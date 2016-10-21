@@ -1,25 +1,14 @@
 package models;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import models.enums.ConsentType;
 import models.enums.Gender;
-import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationStatus;
-
-import models.MidataId;
-
 import utils.collections.CMaps;
-import utils.collections.ChainedMap;
-import utils.collections.ChainedSet;
 import utils.collections.Sets;
-import utils.db.DatabaseException;
-import utils.db.NotMaterialized;
-import utils.db.OrderOperations;
 import utils.exceptions.InternalServerException;
-import utils.search.Search;
 
 /**
  * A consent that shares data from a MIDATA member with a study.

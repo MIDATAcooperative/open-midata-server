@@ -6,9 +6,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import models.MidataId;
+import com.fasterxml.jackson.databind.JsonNode;
 
-import models.Member;
+import actions.APICall;
+import controllers.APIController;
+import controllers.Application;
+import models.MidataId;
 import models.Research;
 import models.ResearchUser;
 import models.enums.AccountSecurityLevel;
@@ -18,26 +21,12 @@ import models.enums.Gender;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
- 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import controllers.APIController;
-import controllers.Application;
-import controllers.routes;
-
-import actions.APICall; 
-import play.libs.Json;
 import play.mvc.BodyParser;
-import play.mvc.Controller;
-import play.mvc.Result; 
+import play.mvc.Result;
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
-import utils.collections.ChainedMap;
-import utils.collections.ChainedSet;
 import utils.collections.Sets;
-import utils.evolution.AccountPatches;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;

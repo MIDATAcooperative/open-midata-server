@@ -3,38 +3,37 @@ package controllers.members;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import models.MidataId;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import play.mvc.BodyParser;
-import play.mvc.Result;
-import play.mvc.Security;
-
+import actions.APICall;
+import controllers.APIController;
+import controllers.Circles;
 import models.History;
 import models.Member;
+import models.MidataId;
 import models.ParticipationCode;
-import models.Record;
 import models.Research;
-import models.ResearchUser;
 import models.Study;
 import models.StudyParticipation;
-import models.User;
 import models.enums.ConsentStatus;
 import models.enums.EventType;
 import models.enums.InformationType;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
-import models.enums.StudyValidationStatus;
 import models.enums.SubUserRole;
+import play.libs.Json;
+import play.mvc.BodyParser;
+import play.mvc.Result;
+import play.mvc.Security;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.MemberSecured;
-import utils.auth.ResearchSecured;
 import utils.auth.Rights;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
@@ -46,13 +45,6 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import actions.APICall;
-import play.libs.Json;
-import controllers.APIController;
-import controllers.Circles;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * functions about studies for members

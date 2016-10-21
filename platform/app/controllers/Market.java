@@ -1,21 +1,19 @@
 package controllers;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import actions.APICall;
 import models.Developer;
+import models.MidataId;
 import models.Plugin;
 import models.Plugin_i18n;
 import models.enums.PluginStatus;
 import models.enums.UserRole;
-
-import models.MidataId;
-
-import play.Play;
 import play.mvc.BodyParser;
-import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.auth.AdminSecured;
@@ -32,10 +30,6 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-
-import actions.APICall;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * functions for controlling the "market" of plugins

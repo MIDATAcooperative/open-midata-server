@@ -9,9 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import models.Consent;
-
 import models.MidataId;
-
 import utils.AccessLog;
 import utils.access.index.IndexDefinition;
 import utils.access.index.IndexMatch;

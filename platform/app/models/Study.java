@@ -5,17 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 import models.enums.AssistanceType;
 import models.enums.InformationType;
 import models.enums.ParticipantSearchStatus;
-import models.enums.ParticipationCodeStatus;
 import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
-
-import models.MidataId;
-
-import com.fasterxml.jackson.annotation.JsonFilter;
-
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;

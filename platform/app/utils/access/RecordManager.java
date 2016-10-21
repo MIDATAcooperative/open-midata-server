@@ -1,6 +1,5 @@
 package utils.access;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,29 +11,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.http.HttpStatus;
+import org.bson.BSONObject;
+import org.bson.types.BasicBSONList;
+
 import models.APSNotExistingException;
 import models.AccessPermissionSet;
-import models.Circle;
 import models.Consent;
 import models.ContentCode;
 import models.ContentInfo;
 import models.Member;
-import models.MemberKey;
+import models.MidataId;
 import models.Record;
 import models.RecordsInfo;
 import models.Space;
-import models.StudyParticipation;
 import models.enums.APSSecurityLevel;
 import models.enums.AggregationType;
-
-import org.apache.http.HttpStatus;
-import org.bson.BSONObject;
-import org.bson.BasicBSONObject;
-import org.bson.types.BasicBSONList;
-import models.MidataId;
-
 import utils.AccessLog;
-import utils.DateTimeUtils;
 import utils.auth.RecordToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -44,10 +37,6 @@ import utils.db.FileStorage.FileData;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
-import utils.search.Search;
-import utils.search.SearchException;
-
-import com.mongodb.BasicDBObject;
 
 /**
  * Access to records. Manages authorizations using access permission sets.
@@ -520,7 +509,7 @@ public class RecordManager {
 		RecordEncryption.encryptRecord(vrec);
 		VersionedDBRecord.add(vrec);
 				
-		record.lastUpdated = DateTimeUtils.now(); 
+		record.lastUpdated = new Date(); 
 		
 	    rec.data = record.data;
 	    rec.meta.put("lastUpdated", record.lastUpdated);

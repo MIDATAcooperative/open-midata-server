@@ -6,7 +6,7 @@ package models;
  */
 public class Tags {
 
-    private static final String collection = "tags";
+    //private static final String collection = "tags";
 	
     /**
      * public unique name of tag

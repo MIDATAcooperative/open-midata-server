@@ -6,6 +6,12 @@ package utils.exceptions;
  */
 public class AppException extends Exception {
 
+	/**
+	 * UID for serialization (not used)
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	
 	private String localeKey;
 	
 	public AppException(String localeKey, Throwable cause) {

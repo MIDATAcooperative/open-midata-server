@@ -1,9 +1,7 @@
 package utils.collections;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class NChainedMap<K, V> extends HashMap<K, V> {
 	

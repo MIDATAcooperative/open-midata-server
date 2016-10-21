@@ -1,28 +1,21 @@
 package utils.access;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
+import models.Circle;
+import models.Consent;
 import models.MidataId;
-
+import models.StudyParticipation;
+import models.enums.ConsentType;
 import utils.AccessLog;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
-import utils.exceptions.InternalServerException;
-
-
-import models.Circle;
-import models.Consent;
-import models.Record;
-import models.StudyParticipation;
-import models.enums.ConsentType;
 
 /**
  * queries made to the access permission set of a user 

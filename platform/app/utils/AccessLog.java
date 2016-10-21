@@ -3,13 +3,11 @@ package utils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import models.MidataId;
 import models.enums.APSSecurityLevel;
-
 import play.Logger;
 import utils.exceptions.AuthException;
 

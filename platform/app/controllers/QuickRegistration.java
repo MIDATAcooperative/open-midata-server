@@ -7,7 +7,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import actions.APICall;
+import controllers.members.HealthProvider;
 import models.Member;
+import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
 import models.Study;
@@ -20,23 +25,14 @@ import models.enums.ParticipationInterest;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
-
-import models.MidataId;
-
 import play.mvc.BodyParser;
 import play.mvc.Result;
-import utils.DateTimeUtils;
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.json.JsonValidation;
-import actions.APICall;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import controllers.members.HealthProvider;
 
 public class QuickRegistration extends APIController {
 
@@ -118,7 +114,7 @@ public class QuickRegistration extends APIController {
 		user.messages.put("inbox", new HashSet<MidataId>());
 		user.messages.put("archive", new HashSet<MidataId>());
 		user.messages.put("trash", new HashSet<MidataId>());
-		user.login = DateTimeUtils.now();
+		user.login = new Date();
 		user.news = new HashSet<MidataId>();
 		//user.pushed = new HashSet<MidataId>();
 		//user.shared = new HashSet<MidataId>();

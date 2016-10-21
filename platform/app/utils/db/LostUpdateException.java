@@ -6,5 +6,10 @@ package utils.db;
  */
 public class LostUpdateException extends Exception {
 
+	/**
+	 * UID for serialization
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public LostUpdateException() { super(); };
 }

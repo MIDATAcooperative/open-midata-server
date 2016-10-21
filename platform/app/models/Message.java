@@ -4,12 +4,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
-import models.MidataId;
-
 import utils.collections.ChainedMap;
 import utils.exceptions.InternalServerException;
-import utils.search.Search;
-import utils.search.SearchException;
 
 /**
  * data model for a message sent from one user to another

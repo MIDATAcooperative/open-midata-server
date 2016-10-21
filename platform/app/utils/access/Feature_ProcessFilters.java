@@ -1,12 +1,7 @@
 package utils.access;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import utils.AccessLog;
 import utils.exceptions.AppException;
 
 public class Feature_ProcessFilters extends Feature {

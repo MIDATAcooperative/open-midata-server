@@ -4,27 +4,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
-import models.MidataId;
 
+import models.MidataId;
 import utils.AccessLog;
-import utils.collections.Sets;
-import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
-
-import com.mongodb.BasicDBObject;
-
-import controllers.RuleApplication;
-
-import models.FilterRule;
-import models.Record;
 
 /**
  * allows access permission sets not only to have a list of records but also a link to another

@@ -4,13 +4,10 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
-import models.enums.ConsentStatus;
-import models.enums.ConsentType;
-
-import models.MidataId;
-
 import com.fasterxml.jackson.annotation.JsonFilter;
 
+import models.enums.ConsentStatus;
+import models.enums.ConsentType;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;

@@ -11,8 +11,8 @@ import java.util.TreeMap;
 
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
-import models.MidataId;
 
+import models.MidataId;
 import utils.AccessLog;
 import utils.access.op.Condition;
 import utils.access.op.EqualsSingleValueCondition;

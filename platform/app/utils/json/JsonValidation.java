@@ -6,12 +6,10 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.regex.Pattern;
 
-import models.MidataId;
-
-import utils.AccessLog;
-import utils.exceptions.BadRequestException;
-
 import com.fasterxml.jackson.databind.JsonNode;
+
+import models.MidataId;
+import utils.exceptions.BadRequestException;
 
 /**
  * functions for validating JSON input

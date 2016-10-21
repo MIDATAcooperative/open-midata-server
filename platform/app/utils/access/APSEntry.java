@@ -4,11 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-
-import models.ContentInfo;
-import models.Record;
 
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
@@ -17,8 +13,6 @@ import org.bson.types.BasicBSONList;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
-
-import com.mongodb.BasicDBList;
 
 /**
  * functions for reading and manipulation of entries of an access permission set.
