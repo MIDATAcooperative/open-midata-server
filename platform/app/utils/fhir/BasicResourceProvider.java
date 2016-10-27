@@ -41,9 +41,16 @@ import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
 import utils.exceptions.AppException;
 
+/**
+ * Base class for FHIR resource providers. There is one provider subclass for each FHIR resource type.
+ *
+ */
 public class BasicResourceProvider extends ResourceProvider<Basic> implements IResourceProvider {
  
-   
+
+    /**
+     * 
+     */
     @Override
     public Class<Basic> getResourceType() {
         return Basic.class;

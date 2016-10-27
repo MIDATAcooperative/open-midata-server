@@ -48,11 +48,18 @@ import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
 import utils.exceptions.AppException;
 
-
+/**
+ * Base class for FHIR resource providers. There is one provider subclass for each FHIR resource type.
+ *
+ */
 public  abstract class ResourceProvider<T extends BaseResource> implements IResourceProvider {
 
 	public static FhirContext ctx = FhirContext.forDstu3();
 	
+	/**
+	 * Returns FHIR context class
+	 * @return FHIR context for DSTU3
+	 */
 	public static FhirContext ctx() {
 		return ctx;
 	}
@@ -61,18 +68,34 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	public static ThreadLocal<ExecutionInfo> tinfo = new ThreadLocal<ExecutionInfo>();
 	
 	
-	
+	/**
+	 * Set ExecutionInfo (Session information) for current Thread to be used by FHIR classes
+	 * @param info ExecutionInfo to be used
+	 */
 	public static void setExecutionInfo(ExecutionInfo info) {
 		tinfo.set(info);
 	}
 	
+	/**
+	 * Retrives ExecutionInfo for current thread
+	 * @return ExecutionInfo
+	 */
 	public static ExecutionInfo info() {
 		return tinfo.get();
 	}
 	
-	
+	/**
+	 * Returns the class of FHIR resources provided by this resource provider
+	 * @return Subclass of BaseResource 
+	 */
 	public abstract Class<T> getResourceType();
 	
+	/**
+	 * Default implementation to retrieve a FHIR resource by id.
+	 * @param theId ID of resource to be retrieved
+	 * @return Resource read from database
+	 * @throws AppException
+	 */
 	@Read()
 	public T getResourceById(@IdParam IIdType theId) throws AppException {
 		Record record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new MidataId(theId.getIdPart()));
