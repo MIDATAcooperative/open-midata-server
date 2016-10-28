@@ -10,6 +10,7 @@ public class InstanceConfig {
 	private String defaultHost;
 	private String portalServerDomain;
 	private String pluginServerDomain;
+	private String adminEmail;
 	
 	public InstanceConfig() {
 		init();
@@ -51,6 +52,14 @@ public class InstanceConfig {
 	public String getPluginServerDomain() {
 		return pluginServerDomain;
 	}
+	
+	/**
+	 * returns the email adress for admin messages
+	 * @return email of admin
+	 */
+	public String getAdminEmail() {
+		return adminEmail;
+	}
 		
 	public void init() {
 		String instanceTypeStr = Play.application().configuration().getString("instanceType");
@@ -65,5 +74,7 @@ public class InstanceConfig {
 		pluginServerDomain = Play.application().configuration().getString("visualizations.server");
 		
 		portalServerDomain = Play.application().configuration().getString("portal.server");
+		
+		adminEmail = Play.application().configuration().getString("emails.admin", "alexander.kreutz@midata.coop");// TODO change default email to something useful
 	}
 }

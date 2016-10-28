@@ -53,6 +53,7 @@ import views.html.apstest;
 import views.html.tester;
 import views.txt.mails.lostpwmail;
 import views.txt.mails.welcome;
+import views.txt.mails.adminnotify;
 
 /**
  * Member login, registration and password reset functions 
@@ -165,6 +166,21 @@ public class Application extends APIController {
 	   String url2 = site + "/#/portal/reject/" + encrypted;
 	   AccessLog.log("send welcome mail: "+user.email);	   
   	   MailUtils.sendTextMail(user.email, user.firstname+" "+user.lastname, "Welcome to MIDATA", welcome.render(site, url1, url2));
+	}
+	
+	/**
+	 * Helper function to notification mail to admin
+	 * @param user new user record
+	 */
+	public static void sendAdminNotificationMail(User user) throws InternalServerException {
+	   if (user.status == UserStatus.NEW) {		   
+		   String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
+		   String email = user.email;
+		   String role = user.role.toString();
+		   
+		   AccessLog.log("send admin notification mail: "+user.email);	   
+	  	   MailUtils.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), user.firstname+" "+user.lastname, "New MIDATA User", adminnotify.render(site, email, role));
+	   }
 	}
 	
 	/**
@@ -597,6 +613,7 @@ public class Application extends APIController {
 		PatientResourceProvider.updatePatientForAccount(user._id);
 		
 		sendWelcomeMail(user);
+		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) sendAdminNotificationMail(user);
 		
 		return loginHelper(user);		
 	}

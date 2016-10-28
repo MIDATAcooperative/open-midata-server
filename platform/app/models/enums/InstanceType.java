@@ -89,4 +89,12 @@ public enum InstanceType {
 	public boolean developersMayRegisterTestUsers() {
 		return this == TEST || this == LOCAL;
 	}
+	
+	/**
+	 * Send a mail to the MIDATA admin if a new user has been registered
+	 * @return
+	 */
+	public boolean notifyAdminOnRegister() {
+		return this == TEST || this == DEMO;
+	}
 }

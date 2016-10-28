@@ -29,6 +29,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
@@ -117,6 +118,7 @@ public class Providers extends APIController {
 		RecordManager.instance.createPrivateAPS(user._id, user._id);		
 		
 		Application.sendWelcomeMail(user);
+		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
 		
 		return Application.loginHelper(user);		
 	}

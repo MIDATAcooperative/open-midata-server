@@ -1,0 +1,12 @@
+@(website: String)(useremail: String, role: String)
+Dear MIDATA Admin,
+
+a new user has been registered on @website
+
+User: @useremail
+Role: @role
+
+Please validate account as soon as possible.
+
+Regards,
+your MIDATA instance
