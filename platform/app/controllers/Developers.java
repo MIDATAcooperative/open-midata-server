@@ -44,7 +44,7 @@ public class Developers extends APIController {
 	@APICall
 	public static Result register() throws AppException {
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language");
+		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language", "reason");
 							
 		String email = JsonValidation.getEMail(json, "email");
 		if (Developer.existsByEMail(email)) return inputerror("email", "exists", "A user with this email address already exists.");
@@ -65,6 +65,9 @@ public class Developers extends APIController {
 		user.language = JsonValidation.getString(json, "language");
 		user.phone = JsonValidation.getString(json, "phone");
 		user.mobile = JsonValidation.getString(json, "mobile");
+		
+		user.reason = JsonValidation.getString(json, "reason");
+		user.coach = JsonValidation.getString(json, "coach");
 		
 		user.password = Developer.encrypt(JsonValidation.getPassword(json, "password"));		
 		user.registeredAt = new Date();		

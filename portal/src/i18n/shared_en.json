@@ -72,7 +72,8 @@
        "newpassword" : "Please enter a new password!",
        "passphrase" : "Please provide your passphrase.",
        "groupsystem" : "Group system must be provided.",
-       "token" : "Missing or bad token."
+       "token" : "Missing or bad token.",
+       "agb" : "Terms and conditions not accepted."
      },
          
      "unknown" : {
@@ -229,7 +230,7 @@
 	   "ADMIN" : "Admin",
 	   "ANY" : "Any Role",
 	   "DEVELOPER" : "Developer",
-	   "MEMBER" : "MIDATA member",
+	   "MEMBER" : "Account Holder",
 	   "PROVIDER" : "Healthcare provider",
 	   "RESEARCH" : "Researcher"
 	 },
@@ -323,7 +324,7 @@
         "name" : "test.midata.coop (Test Instance)",
         "intro": "This is a test instance of the MIDATA platform.",
         "purpose" : "The test platform may be used to develop and test new apps and plugins for MIDATA in a safe environment. It is also used to test new versions of the portal and backend before the other instances are updated.",
-        "access" : "You may register user accounts for all four portals. Accounts do not need to be confirmed or validated by MIDATA administration. Just register what account types you need.",
+        "access" : "Register your own developer account. After validation by the MIDATA administration you may register test account holders, researchers and health providers without additional validation.",
         "uptime" : "There is no guarantee on availability. Expect updates of the instance to happen as needed. If possible updates are done between 12:00 and 13:00 central european time but may occur more than once a day if problems occur.",
         "data" : "Store only test data on this instance. Data may be wiped, accounts may be deleted if necessary. Records may become corrupted by bugs. There is no backup for test data."
      },
@@ -332,7 +333,7 @@
         "name" : "demo.midata.coop (Demo Instance)",
         "intro": "This is a demonstration instance of MIDATA.",
         "purpose" : "This instance of MIDATA may be used for demonstration purposes and training.",
-        "access" : "You may register user accounts for all four portals. Accounts do not need to be confirmed or validated by MIDATA management.",
+        "access" : "You may register user accounts for all four portals. Accounts will be validated by the MIDATA administration before they are unlocked.",
         "uptime" : "This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time ",
         "data" : "Store only test and demo data on this instance. There is no backup for test data."
      },
@@ -370,6 +371,10 @@
     "country" : "Country",
     "phone" : "Phone",
     "mobile_phone" : "Mobile Phone",
+    "coach" : "Contact person MIDATA",
+    "reason" : "Purpose of Registration",
+    "agb" : "AGB",
+    "agb2" : "I accept the terms and conditions",
     "sign_up_btn" : "Sign Up"
   },
   

@@ -20,6 +20,12 @@
 			  <td translate="admin_address.role"></td><td translate="{{ 'enum.userrole.'+ member.role }}"></td>
 			  </tr><tr>
 			  <td translate="admin_address.subroles"></td><td><div ng-repeat="subrole in member.subroles" translate="{{ 'enum.subuserrole.'+subrole }}"></div></td>
+			  </tr><tr ng-show="member.coach">
+			  <td translate="registration.coach"></td><td>{{ member.coach }}</td>
+			  </tr><tr ng-show="member.reason">
+			  <td translate="registration.reason"></td><td>{{ member.reason }}</td>
+			  </tr><tr ng-show="member.developer">
+			  <td translate="admin_address.developer"></td><td>{{ member.developerName }}</td>
 			  </tr><tr>
 			  <td translate="admin_address.status"></td><td><select ng-change="changeUser(member);" ng-model="member.status" class="form-control" ng-options="status as 'enum.userstatus.'+status | translate for status in stati"></select></td>
 			  </tr><tr>

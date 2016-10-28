@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', function($scope, $state, server, status, session, $translate, languages) {
+.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', function($scope, $state, server, status, session, $translate, languages, $stateParams) {
 	
 	$scope.registration = { language : $translate.use() };
 	$scope.languages = languages.all;
@@ -12,6 +12,13 @@ angular.module('portal')
 	$scope.register = function() {		
 		
         $scope.myform.password.$setValidity('compare', $scope.registration.password ==  $scope.registration.password2);
+        $scope.myform.agb.$setValidity('mustaccept', $scope.registration.agb);
+        if (!$scope.registration.agb) {
+        	console.log($scope.myform.agb);
+        	$scope.myform.agb.$invalid = true;
+        	$scope.myform.agb.$error = { 'mustaccept' : true };
+        }
+        
 		
 		$scope.submitted = true;	
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
@@ -21,14 +28,19 @@ angular.module('portal')
 		if ($scope.registration.password !=  $scope.registration.password2) {
 			$scope.error = { code : "error.invalid.password_repetition" };
 			return;
-		}
+		}		
 		        
         $scope.registration.birthday = $scope.registration.birthdayYear + "-" + 
                                        $scope.registration.birthdayMonth + "-" +
                                        $scope.registration.birthdayDay;
 		
 		// send the request
-		var data = $scope.registration;		
+		var data = $scope.registration;	
+		
+		if ($stateParams.developer) {
+			data.developer = $stateParams.developer;
+		}
+		
 		$scope.status.doAction("register", server.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
 		then(function(data) { session.postLogin(data, $state); });
 	};

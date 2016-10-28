@@ -103,6 +103,8 @@ public class Providers extends APIController {
 		user.tokens = new HashMap<String, Map<String, String>>();
 		user.visualizations = new HashSet<MidataId>();
 		
+		Application.developerRegisteredAccountCheck(user, json);
+		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
 		user.security = AccountSecurityLevel.KEY;
 		
@@ -134,7 +136,7 @@ public class Providers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		HPUser user = HPUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "provider", "role", "subroles", "login", "registeredAt"));
+		HPUser user = HPUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "provider", "role", "subroles", "login", "registeredAt", "developer"));
 		
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		if (!HPUser.authenticationValid(password, user.password)) {

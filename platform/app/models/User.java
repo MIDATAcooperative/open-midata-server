@@ -195,6 +195,11 @@ public class User extends Model implements Comparable<User> {
 	public boolean searchable;
 	
 	/**
+	 * If set : This is a test account registered by this developer
+	 */
+	public MidataId developer;
+	
+	/**
 	 * FHIR: Person
 	 */
 	public BSONObject person;

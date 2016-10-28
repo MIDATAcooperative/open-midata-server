@@ -10,6 +10,17 @@
   "developer_navbar" : {
     "yourapps" : "Your Plugins",
 	"sandbox" : "Sandbox",
-	"records" : "Test Records"
+	"records" : "Test Records",
+	"testusers" : "Test User"
+  },
+  
+  "developer_testusers" : {
+    "title" : "Test Users",
+    "empty" : "There are no test users registered for this account.",
+    "role" : "Role",
+    "description" : "Using these buttons you can register additional users for testing your plugins. These users will use plugins developed by you from 'localhost' instead from the server.",
+    "register_member_btn" : "Register Account Holder",
+    "register_hp_btn" : "Register Health Provider",
+    "register_researcher_btn" : "Register Researcher"
   }
 }

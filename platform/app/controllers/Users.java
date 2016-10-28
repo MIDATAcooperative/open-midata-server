@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import actions.APICall;
 import models.Circle;
 import models.Consent;
+import models.Developer;
 import models.History;
 import models.Member;
 import models.MidataId;
@@ -73,21 +74,22 @@ public class Users extends APIController {
 		
 		// get parameters
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
-		ObjectIdConversion.convertMidataIds(properties, "_id");
+		ObjectIdConversion.convertMidataIds(properties, "_id", "developer");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
 		// check authorization
 		
-		if (!getRole().equals(UserRole.ADMIN) && !properties.containsKey("_id")) properties.put("searchable", true);
+		if (!getRole().equals(UserRole.ADMIN) && !properties.containsKey("_id") && !properties.containsKey("developer")) properties.put("searchable", true);
 		boolean postcheck = false;		
-		if (!getRole().equals(UserRole.ADMIN) && !properties.containsKey("email") && !properties.containsKey("midataID") && !properties.containsKey("_id")) {
+		if (!getRole().equals(UserRole.ADMIN) && !properties.containsKey("email") && !properties.containsKey("midataID") && !properties.containsKey("_id") && !properties.containsKey("developer")) {
 			throw new AuthException("error.notauthorized.action", "Search must be restricted");
 		}
+		UserRole role = null;
 		
 		if (properties.containsKey("_id") && properties.get("_id").toString().equals(request().username())) {
 		  Rights.chk("Users.getSelf", getRole(), properties, fields);
 		} else if (properties.containsKey("role")) {
-		  UserRole role = UserRole.valueOf(properties.get("role").toString());
+		  role = UserRole.valueOf(properties.get("role").toString());
 		  if (Rights.existsAction("Users.get"+role, getRole())) {
 		    Rights.chk("Users.get"+role.toString(), getRole(), properties, fields);
 		  } else {
@@ -109,10 +111,15 @@ public class Users extends APIController {
 			properties.remove("email");
 		}
 		
-		List<Member> users = new ArrayList<Member>(Member.getAll(properties, fields, 100));
+		List<User> users;
+		if (role != null && role == UserRole.DEVELOPER) {
+		  users = new ArrayList<User>(Developer.getAll(properties, fields, 100));
+		} else {
+		  users = new ArrayList<User>(Member.getAll(properties, fields, 100));
+		}
 		
 		if (postcheck) {
-			for (Member mem : users) {
+			for (User mem : users) {
 				if (Rights.existsAction("Users.get"+mem.getRole().toString(), getRole())) {
 				  Rights.chk("Users.get"+mem.getRole().toString(), getRole(), properties, fields);
 				}  else {
@@ -154,7 +161,8 @@ public class Users extends APIController {
 	@APICall
 	public static Result search(String query) throws AppException {
 		
-		requireSubUserRoleForRole(SubUserRole.MEMBEROFCOOPERATIVE, UserRole.MEMBER);
+		forbidSubUserRole(SubUserRole.TRIALUSER, SubUserRole.NONMEMBERUSER);
+		forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.NONMEMBERUSER);
 		
 		Set<String> fields =  Sets.create("firstname", "lastname", "name");
 		Set<Member> result = Member.getAll(CMaps.map("email", query), fields);
@@ -278,7 +286,10 @@ public class Users extends APIController {
 		
 		boolean searchable = JsonValidation.getBoolean(json, "searchable");
 		
-		if (searchable) requireSubUserRoleForRole(SubUserRole.MEMBEROFCOOPERATIVE, UserRole.MEMBER);
+		if (searchable) {
+			forbidSubUserRole(SubUserRole.TRIALUSER, SubUserRole.NONMEMBERUSER);
+			forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.NONMEMBERUSER);
+		}
 		
 		String language = JsonValidation.getString(json, "language");
 					

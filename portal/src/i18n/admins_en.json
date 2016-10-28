@@ -27,6 +27,7 @@
     "midata_id" : "MIDATA-ID",
     "role" : "Role",
     "subroles" : "Sub-Role(s)",
+    "developer" : "Belongs to Developer:",
     "status" : "Status:",
     "agb_status" : "AGB Status:",
     "contract_status" : "Contract Status:",

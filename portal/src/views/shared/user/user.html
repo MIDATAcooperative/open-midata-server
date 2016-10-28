@@ -22,7 +22,7 @@
 			     <a class="btn btn-default" href="javascript:" ui-sref="^.changepassphrase" translate="user.change_passphrase_btn"></a>
 			     <a class="btn btn-default" href="javascript:" ng-disabled="msg" ng-click="fixAccount();" translate="user.repair_account_btn"></a>
 			     <a class="btn btn-default" href="javascript:" ui-sref="^.delete_records" translate="user.delete_records_btn"></a>
-			     <a ng-show="beta" class="btn btn-danger" href="javascript:" ng-click="wipe()">test server: wipe account</a>
+			     <a ng-show="beta && user.role=='MEMBER'" class="btn btn-danger" href="javascript:" ng-click="wipe()">test server: wipe account</a>
 			  </div>			  
 			</div>
 			<div class="extraspace"></div>

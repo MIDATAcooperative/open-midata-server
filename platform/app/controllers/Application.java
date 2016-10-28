@@ -42,6 +42,7 @@ import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.evolution.AccountPatches;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.PatientResourceProvider;
@@ -188,7 +189,7 @@ public class Application extends APIController {
 		String token = passwordResetToken.token;
 		String role = passwordResetToken.role;		
 		
-		User user = User.getById(userId, Sets.create("status", "role", "subroles", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "resettoken","password","resettokenTs", "registeredAt", "confirmedAt"));
+		User user = User.getById(userId, Sets.create("status", "role", "subroles", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "resettoken","password","resettokenTs", "registeredAt", "confirmedAt", "developer"));
 		
 		if (user!=null && !user.emailStatus.equals(EMailStatus.VALIDATED)) {							
 		       if (user.resettoken != null 		    		    
@@ -227,7 +228,7 @@ public class Application extends APIController {
 		MidataId userId = new MidataId(request().username());
 		String confirmationCode = JsonValidation.getString(json, "confirmationCode");
 		
-		User user = User.getById(userId, Sets.create("firstname", "lastname", "email", "confirmationCode", "emailStatus", "contractStatus", "agbStatus", "status", "role", "subroles", "registeredAt", "confirmedAt"));
+		User user = User.getById(userId, Sets.create("firstname", "lastname", "email", "confirmationCode", "emailStatus", "contractStatus", "agbStatus", "status", "role", "subroles", "registeredAt", "confirmedAt", "developer"));
 		
 		
 		if (user!=null && user.confirmationCode != null && user.confirmedAt == null) {
@@ -396,7 +397,7 @@ public class Application extends APIController {
 		String password = JsonValidation.getString(json, "password");
 		
 		// check status
-		Member user = Member.getByEmail(email , Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt"));
+		Member user = Member.getByEmail(email , Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));
 		if (user == null) throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
 		/*if (!Member.authenticationValid(password, user.password)) {
 			throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
@@ -435,11 +436,11 @@ public class Application extends APIController {
 		PortalSessionToken token = null;
 		
 		if (user instanceof HPUser) {
-		   token = new PortalSessionToken(user._id, user.role, ((HPUser) user).provider);		  
+		   token = new PortalSessionToken(user._id, user.role, ((HPUser) user).provider, user.developer);		  
 		} else if (user instanceof ResearchUser) {
-		   token = new PortalSessionToken(user._id, user.role, ((ResearchUser) user).organization);		  
+		   token = new PortalSessionToken(user._id, user.role, ((ResearchUser) user).organization, user.developer);		  
 		} else {
-		   token = new PortalSessionToken(user._id, user.role, null);
+		   token = new PortalSessionToken(user._id, user.role, null, user.developer);
 		}
 		
 		ObjectNode obj = Json.newObject();
@@ -468,7 +469,7 @@ public class Application extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result downloadToken() throws AppException {
 		PortalSessionToken current = PortalSessionToken.session();
-		PortalSessionToken token = new PortalSessionToken(current.getUserId(), current.getRole(), current.getOrg());
+		PortalSessionToken token = new PortalSessionToken(current.getUserId(), current.getRole(), current.getOrg(), current.getDeveloper());
 		
 		ObjectNode obj = Json.newObject();
 		obj.put("token", token.encrypt(request(), 1000 * 10));
@@ -577,6 +578,8 @@ public class Application extends APIController {
 		//user.pushed = new HashSet<MidataId>();
 		//user.shared = new HashSet<MidataId>();
 		
+		developerRegisteredAccountCheck(user, json);
+				
 		user.security = AccountSecurityLevel.KEY;
 		
 		switch (user.security) {
@@ -596,6 +599,16 @@ public class Application extends APIController {
 		sendWelcomeMail(user);
 		
 		return loginHelper(user);		
+	}
+	
+	public static void developerRegisteredAccountCheck(User newuser, JsonNode json) throws JsonValidationException, AuthException {
+		if (InstanceConfig.getInstance().getInstanceType().developersMayRegisterTestUsers()) {		  
+		   newuser.developer = JsonValidation.getMidataId(json, "developer");
+		   if (newuser.developer != null) {
+		     if (!newuser.developer.equals(PortalSessionToken.decrypt(request()).userId)) throw new AuthException("error.internal", "You need to be logged in as this developer");
+		     newuser.status = UserStatus.ACTIVE;
+		   }
+		}
 	}
 
 	/**

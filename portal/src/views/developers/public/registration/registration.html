@@ -50,6 +50,12 @@
                               <formrow myid="phone" label="registration.phone"><input type="text" class="form-control" id="phone" name="phone" translate translate-attr-placeholder="registration.phone" ng-model="registration.phone"></formrow>
                               <formrow myid="mobile" label="registration.mobile_phone"><input type="text" class="form-control" id="mobile" name="mobile" translate translate-attr-placeholder="registration.mobile_phone" ng-model="registration.mobile"></formrow>
                              
+                              <formrow myid="coach" label="registration.coach"><input type="text" class="form-control" id="coach" name="coach" translate translate-attr-placeholder="registration.coach" ng-model="registration.coach"></formrow>
+                              <formrow myid="reason" label="registration.reason"><textarea class="form-control" rows="5" id="reason" name="reason" ng-model="registration.reason" ng-required="true"></textarea></formrow>
+                              <formrow myid="agb" label="registration.agb"><div class="checkbox"><label><input type="checkbox" id="agb" name="agb" ng-model="registration.agb"><span translate="registration.agb2"></span></label></div>
+                                <formerror myid="agb" type="mustaccept" message="error.missing.agb"></formerror>
+                              </formrow>
+                              
                              <button type="submit" ng-disabled="status.action=='register'" class="btn btn-lg btn-primary btn-block" translate="registration.sign_up_btn"></button>
                             </form>
 		            	</div>

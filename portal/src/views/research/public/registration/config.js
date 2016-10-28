@@ -4,5 +4,9 @@ angular.module('portal')
 	    .state('public_research.registration', {
 	      url: '/registration',
 	      templateUrl: 'views/research/public/registration/registration.html' 
+	    })
+	     .state('developer.research_registration', {
+	      url: '/register_research?developer',
+	      templateUrl: 'views/research/public/registration/registration.html'
 	    });
 });

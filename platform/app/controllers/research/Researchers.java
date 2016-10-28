@@ -95,6 +95,8 @@ public class Researchers extends APIController {
 		user.tokens = new HashMap<String, Map<String, String>>();
 		user.visualizations = new HashSet<MidataId>();
 		
+		Application.developerRegisteredAccountCheck(user, json);
+		
 		Research.add(research);
 		user.organization = research._id;
 		ResearchUser.add(user);
@@ -123,7 +125,7 @@ public class Researchers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		ResearchUser user = ResearchUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "organization", "role", "subroles", "login", "registeredAt"));
+		ResearchUser user = ResearchUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "organization", "role", "subroles", "login", "registeredAt", "developer"));
 		
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		if (!ResearchUser.authenticationValid(password, user.password)) {

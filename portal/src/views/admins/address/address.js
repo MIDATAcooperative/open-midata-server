@@ -8,9 +8,19 @@ angular.module('portal')
     
 	$scope.reload = function() {
 		
-		$scope.status.doBusy(users.getMembers($scope.criteria, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "address1", "address2", "city", "confirmationCode", "agbStatus", "contractStatus", "emailStatus", "country", "email", "gender", "phone", "zip", "registeredAt", "login", "confirmedAt", "history" ]))
+		$scope.status.doBusy(users.getMembers($scope.criteria, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "address1", "address2", "city", "confirmationCode", "agbStatus", "contractStatus", "emailStatus", "country", "email", "gender", "phone", "zip", "registeredAt", "login", "confirmedAt", "history", "developer" ]))
 		.then(function(data) {
-			$scope.member = data.data[0];						
+			$scope.member = data.data[0];
+			if ($scope.member.role == "DEVELOPER") {
+				$scope.status.doBusy(users.getMembers({ _id : $stateParams.userId, role : "DEVELOPER" }, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "address1", "address2", "city", "confirmationCode", "agbStatus", "contractStatus", "emailStatus", "country", "email", "gender", "phone", "zip", "registeredAt", "login", "confirmedAt", "history", "coach", "reason" ]))
+				.then(function(data2) { $scope.member = data2.data[0]; });
+			}
+			if ($scope.member.developer) {				
+				users.getMembers({ _id : $scope.member.developer }, ["email", "firstname", "lastname"])
+				.then(function(data3) {
+					$scope.member.developerName = data3.data[0].firstname + " " + data3.data[0].lastname;						
+				});
+			}
 		});
 	};
 	

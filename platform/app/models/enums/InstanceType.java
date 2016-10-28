@@ -31,7 +31,7 @@ public enum InstanceType {
 	 * @return 
 	 */
 	public boolean getUsersNeedValidation() {
-	   return this == PROD;	
+	   return true; /* this != LOCAL; */	
 	}
 	
 	/**
@@ -80,5 +80,13 @@ public enum InstanceType {
 	 */
 	public boolean getLogToFile() {
 		return this == LOCAL;
+	}
+	
+	/**
+	 * A developer may use his developer account to register new users
+	 * @return
+	 */
+	public boolean developersMayRegisterTestUsers() {
+		return this == TEST || this == LOCAL;
 	}
 }

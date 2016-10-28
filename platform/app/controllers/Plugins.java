@@ -152,9 +152,9 @@ public class Plugins extends APIController {
 		
 		String context = json.has("context") ? JsonValidation.getString(json, "context") : visualization.defaultSpaceContext;
 				
-		User user = User.getById(userId, Sets.create("visualizations","apps", "role"));
+		User user = User.getById(userId, Sets.create("visualizations","apps", "role", "developer"));
 
-		boolean testing = user.role.equals(UserRole.DEVELOPER) && visualization.creator.equals(user._id);
+		boolean testing = visualization.creator.equals(user._id) || (user.developer != null && visualization.creator.equals(user.developer));
 		
 		if (!user.role.equals(visualization.targetUserRole) && !visualization.targetUserRole.equals(UserRole.ANY) && !testing) {
 			throw new BadRequestException("error.invalid.plugin", "Visualization is for a different role."+user.role);
@@ -295,7 +295,7 @@ public class Plugins extends APIController {
 		// create encrypted authToken
 		SpaceToken appToken = new SpaceToken(consentId, userId, null, appId);		
 
-        boolean testing = PortalSessionToken.session().getRole().equals(UserRole.DEVELOPER) && app.creator.equals(userId) && app.developmentServer != null && app.developmentServer.length()> 0;
+        boolean testing = (app.creator.equals(PortalSessionToken.session().getDeveloper()) || app.creator.equals(userId)) && app.developmentServer != null && app.developmentServer.length()> 0;
 		
 		String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + app.filename;
 		if (testing) visualizationServer = app.developmentServer;

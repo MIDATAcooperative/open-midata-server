@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import models.enums.UserRole;
@@ -29,6 +30,16 @@ public class Developer extends User {
 		history = new ArrayList<History>();
 	}
 	
+	/**
+	 * For what purpose has this account been opened
+	 */
+	public String reason;
+	
+	/**
+	 * Contact person at MIDATA
+	 */
+	public String coach;
+	
 	public static boolean existsByEMail(String email) throws InternalServerException {
 		return Model.exists(Developer.class, collection, CMaps.map("emailLC", email.toLowerCase()).map("role", UserRole.DEVELOPER).map("status", NON_DELETED));
 	}
@@ -52,5 +63,9 @@ public class Developer extends User {
 	
 	public UserRole getRole() {
 		return UserRole.DEVELOPER;
+	}
+	
+	public static Set<Developer> getAll(Map<String, ? extends Object> properties, Set<String> fields, int limit) throws InternalServerException {
+		return Model.getAll(Developer.class, collection, properties, fields, limit);
 	}
 }

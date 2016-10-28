@@ -91,7 +91,7 @@ angular.module('views')
       },
       { id : "documents", install : 
     	[ 
-			{ plugin : "files", name : "measure.files" }
+			{ plugin : "fhir-docref", name : "measure.files" }
         ] 
       },
       { id : "appointments", install : 

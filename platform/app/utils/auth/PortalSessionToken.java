@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import models.Developer;
 import models.MidataId;
 import models.enums.UserRole;
 import play.libs.Json;
@@ -22,6 +23,8 @@ public class PortalSessionToken {
 	public MidataId userId;
 	
 	public MidataId org;
+	
+	public MidataId developer;
 
 	public UserRole role;
 
@@ -44,6 +47,10 @@ public class PortalSessionToken {
 	public MidataId getOrg() {
 		return org;
 	}
+	
+	public MidataId getDeveloper() {
+		return developer;
+	}
 
 	public UserRole getRole() {
 		return role;
@@ -57,16 +64,18 @@ public class PortalSessionToken {
 		return remoteAddress;
 	}
 
-	public PortalSessionToken(MidataId userId, UserRole role, MidataId org) {
+	public PortalSessionToken(MidataId userId, UserRole role, MidataId org, MidataId developer) {
 		this.userId = userId;
 		this.role = role;
 		this.org = org;
+		this.developer = developer;
 	}
 
-	public PortalSessionToken(MidataId userId, UserRole role, MidataId org, long created, String remoteAddr) {
+	public PortalSessionToken(MidataId userId, UserRole role, MidataId org, MidataId developer, long created, String remoteAddr) {
 		this.userId = userId;
 		this.role = role;
 		this.org = org;
+		this.developer = developer;
 		this.created = created;
 		this.remoteAddress = remoteAddr;
 	}
@@ -93,6 +102,7 @@ public class PortalSessionToken {
 	public String encrypt() throws InternalServerException {
 		Map<String, String> map = new ChainedMap<String, String>().put("u", userId.toString()).put("r", role.toString()).get();
 		if (org != null) map.put("o", org.toString());
+		if (developer != null) map.put("d", developer.toString());
 		map.put("c", Long.toString(this.created));
 		map.put("i", this.remoteAddress);
 		String json = Json.stringify(Json.toJson(map));
@@ -119,8 +129,12 @@ public class PortalSessionToken {
 			long created = json.get("c").asLong();
 			String remoteAddr = json.get("i").asText();
 			MidataId org = null;
+			MidataId developer = null;
 			if (json.has("o")) {
 			  org = new MidataId(json.get("o").asText()); 
+			}
+			if (json.has("d")) {
+				developer = new MidataId(json.get("d").asText());
 			}
 
 			if (System.currentTimeMillis() > created + LIFETIME) {				
@@ -133,7 +147,7 @@ public class PortalSessionToken {
 				}
 			}
 			
-			PortalSessionToken currentSession = new PortalSessionToken(userId, role, org, created, remoteAddr);
+			PortalSessionToken currentSession = new PortalSessionToken(userId, role, org, developer, created, remoteAddr);
             session.set(currentSession);           
 			return currentSession;
 		} catch (Exception e) {

@@ -282,7 +282,7 @@ public class Spaces extends Controller {
 		
 		Plugin visualization = Plugin.getById(space.visualization, Sets.create("type", "name", "filename", "url", "previewUrl", "creator", "developmentServer", "accessTokenUrl", "authorizationUrl", "consumerKey", "scopeParameters"));
 
-		boolean testing = PortalSessionToken.session().getRole().equals(UserRole.DEVELOPER) && visualization.creator.equals(userId) && visualization.developmentServer != null && visualization.developmentServer.length()> 0;
+		boolean testing = (visualization.creator.equals(PortalSessionToken.session().getDeveloper()) || visualization.creator.equals(userId)) && visualization.developmentServer != null && visualization.developmentServer.length()> 0; 
 		
 		
 	    SpaceToken spaceToken = new SpaceToken(space._id, userId);
