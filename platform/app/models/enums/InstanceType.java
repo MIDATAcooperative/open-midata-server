@@ -31,7 +31,7 @@ public enum InstanceType {
 	 * @return 
 	 */
 	public boolean getUsersNeedValidation() {
-	   return true; /* this != LOCAL; */	
+	   return this == PROD || this == DEMO; /* this != LOCAL; */	
 	}
 	
 	/**
