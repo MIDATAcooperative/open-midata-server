@@ -156,16 +156,21 @@ public class Application extends APIController {
 	 * @param user user record which sould receive the mail
 	 */
 	public static void sendWelcomeMail(User user) throws InternalServerException {
-	   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString());
-	   user.set("resettoken", token.token);
-	   user.set("resettokenTs", System.currentTimeMillis());
-	   String encrypted = token.encrypt();
-			   
-	   String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
-	   String url1 = site + "/#/portal/confirm/" + encrypted;
-	   String url2 = site + "/#/portal/reject/" + encrypted;
-	   AccessLog.log("send welcome mail: "+user.email);	   
-  	   MailUtils.sendTextMail(user.email, user.firstname+" "+user.lastname, "Welcome to MIDATA", welcome.render(site, url1, url2));
+	   if (user.developer == null) {
+		   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString());
+		   user.set("resettoken", token.token);
+		   user.set("resettokenTs", System.currentTimeMillis());
+		   String encrypted = token.encrypt();
+				   
+		   String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
+		   String url1 = site + "/#/portal/confirm/" + encrypted;
+		   String url2 = site + "/#/portal/reject/" + encrypted;
+		   AccessLog.log("send welcome mail: "+user.email);	   
+	  	   MailUtils.sendTextMail(user.email, user.firstname+" "+user.lastname, "Welcome to MIDATA", welcome.render(site, url1, url2));
+	   } else {
+		   user.emailStatus = EMailStatus.VALIDATED;
+		   User.set(user._id, "emailStatus", user.emailStatus);
+	   }
 	}
 	
 	/**

@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('MembersListCtrl', ['$scope', '$state', 'views', 'status', 'users', 'administration', function($scope, $state, views, status, users, administration) {
+.controller('MembersListCtrl', ['$scope', '$state', 'views', 'status', 'users', 'administration', 'paginationService', function($scope, $state, views, status, users, administration, paginationService) {
 
 	$scope.status = new status(true);    
 	$scope.roles = [ "MEMBER", "PROVIDER", "RESEARCH", "DEVELOPER", "ADMIN"];
@@ -7,11 +7,11 @@ angular.module('portal')
 	$scope.searches = [ 
 	  { 
 		name : "admin_members.contract_required",
-		criteria : { status : "NEW", contractStatus : "REQUESTED", emailStatus : "VALIDATED" }
+		criteria : { status : "NEW", agbStatus : "REQUESTED", emailStatus : "VALIDATED" }
 	  },
 	  {
 		name : "admin_members.contract_confirm_required",
-		criteria : { status : "NEW", contractStatus : "PRINTED" }
+		criteria : { status : "NEW", agbStatus : "PRINTED" }
 	  },
 	  { 
 		name : "admin_members.trialusers",
@@ -36,8 +36,9 @@ angular.module('portal')
 		if ($scope.search.searchable && !$scope.search.criteria.lastname && !$scope.search.criteria.email) return;
 		if (!$scope.search.criteria.lastname) { delete $scope.search.criteria.lastname; }
 		if (!$scope.search.criteria.email) { delete $scope.search.criteria.email; }
-		$scope.status.doBusy(users.getMembers($scope.search.criteria, [ "midataID", "firstname", "lastname", "email", "role", "status" ]))
+		$scope.status.doBusy(users.getMembers($scope.search.criteria, [ "midataID", "firstname", "lastname", "email", "role", "status", "emailStatus", "developer" ]))
 		.then(function(data) {
+			paginationService.setCurrentPage("membertable", 1); // Reset view to first page
 			$scope.members = data.data;						
 		});
 	};
