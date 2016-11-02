@@ -44,6 +44,7 @@
 					<th translate="common.user.firstname"></th>
 					<th translate="common.user.lastname"></th>
 					<th translate="common.user.email"></th>
+					<th></th>
 					<th translate="admin_members.role"></th>
 					<th translate="admin_members.status"></th>
 				</tr>
@@ -53,6 +54,10 @@
 					<td>{{ member.firstname }}</td>
 					<td>{{ member.lastname }}</td>
 					<td>{{ member.email }}</td>
+					<td>
+					  <span ng-show="member.developer" class="glyphicon glyphicon-link" title="tied to developer"></span>
+					  <span ng-show="member.emailStatus != 'VALIDATED'" class="glyphicon glyphicon-question-sign" title="email not confirmed"></span>
+					</td>
 					<td translate="{{ 'enum.userrole.'+member.role }}"></td>
 					<td><select ng-change="changeUser(member);" ng-model="member.status" class="form-control" ng-options="status as 'enum.userstatus.'+status | translate for status in stati"></select></td>
 				</tr>
