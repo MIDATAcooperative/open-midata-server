@@ -294,6 +294,12 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public String getHeader(String arg0) {
+		if (arg0.toLowerCase().equals("content-type")) {
+			String r = request.getHeader(arg0);
+			if (r == null) return "application/json+fhir";
+			return r;
+		}
+				
 		return request.getHeader(arg0);
 	}
 
@@ -307,6 +313,7 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 		String[] headers = request.headers().get(arg0);
 		if (headers == null) {
 			AccessLog.log("header not found:"+arg0);
+			if (arg0.toLowerCase().equals("content-type")) return Collections.enumeration(Collections.singleton("application/json+fhir"));
 			return Collections.emptyEnumeration();
 		}
 		return Collections.enumeration(Arrays.asList(headers));

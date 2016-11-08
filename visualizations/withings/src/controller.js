@@ -18,6 +18,7 @@ withings.controller('ImportController', ['$scope', '$translate', '$location', 'm
 
 		$scope.Import = function(){
 			importer.firstTime = true;
+			importer.saveConfig(authToken);
 			importer.importNow(authToken);
 			$scope.status = "ok";
 		};

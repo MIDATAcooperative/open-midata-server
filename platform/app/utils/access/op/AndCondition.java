@@ -4,6 +4,7 @@ package utils.access.op;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -151,7 +152,12 @@ public class AndCondition implements Condition {
 	@Override
 	public Map<String, Condition> indexExpression() {
 		// TODO Implement to support multi field indexes
-		
+		if (checks.size() > 0) {
+			for (Condition cond : checks) {
+				Map<String, Condition> result = cond.indexExpression();
+				if (result != null) return result;
+			}
+		}
 		return null;
 	}
 	
@@ -173,7 +179,17 @@ public class AndCondition implements Condition {
 		}
 		return true;
 	}
-		
+	
+	@Override
+	public Map<String, Object> asMongoQuery() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<Object> parts = new ArrayList<Object>();
+		for (Condition check : checks) {
+			parts.add(check.asMongoQuery());
+		}
+		result.put("$and", parts);
+		return result;
+	}
 	
 
 }

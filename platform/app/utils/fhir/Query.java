@@ -1,5 +1,6 @@
 package utils.fhir;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,12 +8,18 @@ import java.util.Map;
 import models.Record;
 import utils.access.RecordManager;
 import utils.access.op.AndCondition;
+import utils.access.op.CompareCaseInsensitive;
 import utils.access.op.Condition;
+import utils.access.op.EqualsSingleValueCondition;
 import utils.auth.ExecutionInfo;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
+/**
+ * A query built by the FHIR API that should be processed by MIDATA.
+ *
+ */
 public class Query {
 
 	private Map<String, Object> accountCriteria;
@@ -64,5 +71,29 @@ public class Query {
 		List<Record> result = RecordManager.instance.list(info.executorId, info.targetAPS, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
 		ReferenceTool.resolveOwners(result, true, false);
 		return result;
+	}
+	
+	public Map<String, Object> retrieveAsNormalMongoQuery() throws AppException {
+		if (dataCriteria == null) return new HashMap<String,Object>();
+		return (Map<String, Object>) dataCriteria.asMongoQuery();
+	}
+	
+	public Object retrieveIndexValues() throws AppException {		
+		if (indexCriteria != null) {
+			List<Object> results = new ArrayList<Object>();
+			for (Condition cond : indexCriteria.values()) {
+				if (cond instanceof CompareCaseInsensitive) {
+					CompareCaseInsensitive cond2 = (CompareCaseInsensitive) cond;
+					results.add(cond2.getValue());
+				}
+				if (cond instanceof EqualsSingleValueCondition) {
+					results.add(((EqualsSingleValueCondition) cond).getValue());
+				}
+			}
+			if (results.size() == 0) return null;
+			if (results.size() == 1) return results.get(0);
+			return results;
+		}
+		return null;
 	}
 }

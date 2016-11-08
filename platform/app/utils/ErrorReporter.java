@@ -8,12 +8,22 @@ import play.mvc.Http;
 import utils.auth.PortalSessionToken;
 import utils.mails.MailUtils;
 
+/**
+ * Sends error reports
+ *
+ */
 public class ErrorReporter {
 
 	private static String bugReportEmail = Play.application().configuration().getString("errorreports.targetemail");
 	private static String bugReportName = Play.application().configuration().getString("errorreports.targetname");
 	private static volatile long lastReport = 0;
 	
+	/**
+	 * Report an exception
+	 * @param fromWhere name of API
+	 * @param ctx http context or null
+	 * @param e Exception to be reported
+	 */
 	public static void report(String fromWhere, Http.Context ctx, Exception e) {
 		long now = System.currentTimeMillis();
 		if (now - lastReport < 1000 * 60) return;
@@ -26,10 +36,10 @@ public class ErrorReporter {
 		   if (tsk != null) {
 		     user = tsk.getRole().toString()+" "+tsk.getUserId().toString();
 		   } 
-		} 
+		} else path = "[internal] "+InstanceConfig.getInstance().getPortalServerDomain();
 		String timeStamp = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss").format(new Date());
 		if (e!=null) AccessLog.logException("Uncatched Exception:", e);
-		String txt = "Time:"+timeStamp+"\nInterface: "+fromWhere+"\nPortal Session: "+user+"\nPath: "+path+"\n\n"+AccessLog.getReport();
+		String txt = "Instance: "+InstanceConfig.getInstance().getPortalServerDomain()+"\nTime:"+timeStamp+"\nInterface: "+fromWhere+"\nPortal Session: "+user+"\nPath: "+path+"\n\n"+AccessLog.getReport();
 		MailUtils.sendTextMail(bugReportEmail, bugReportName, "Error Report: "+path, txt);
 	}
 }

@@ -1,6 +1,7 @@
 package utils.access.op;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.joda.time.format.ISODateTimeFormat;
@@ -80,6 +81,20 @@ public class CompareCondition implements Condition {
 		case LT:return low == null || val.compareTo(low) > 0;
 		}
 		return false;
+	}
+
+	@Override
+	public Object asMongoQuery() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		switch (op) {
+		case EQ:return val;
+		case NE:result.put("$ne", val);
+		case GT:result.put("$gt", val);
+		case GE:result.put("$ge", val);
+		case LE:result.put("$le", val);
+		case LT:result.put("$lt", val);
+		}
+		return result;
 	}
 	
 	
