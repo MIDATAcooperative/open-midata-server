@@ -376,16 +376,14 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 		// set language to be used
 		$translate.use(lang);
 
-		importer.initForm(authToken);
-
-		// Trigger the import
-		return importer.importNow(authToken);
+		return importer.initForm(authToken)
+		.then(function(){
+			importer.importNow(authToken);
+		});
 	};
 
 	// Trigger the import. Must be runnable from webbrowser or from server
 	importer.importNow = function (authToken) {
-
-		importer.saveConfig(authToken);
 
 		console.log("import now started");
 
@@ -399,7 +397,8 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 			toToday.setHours(1, 1, 1, 1);
 			setDateInMeasurements("specified", from1970, toToday);
 		} else {
-			setDateInMeasurements("lastweek");
+			//setDateInMeasurements("lastweek");
+			setDateInMeasurements("lastyear");
 		}
 
 		// 2. get user id
@@ -412,21 +411,21 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 
 					// 3. request to withings 
 					midataServer.oauth1Request(authToken, measurementGroup.getURL(_userid))
-						.then(function (response) {
+						.then(function (response) {console.log('ln 414');
 							if (response.data.status == "0") {
-
+console.log('ln 416');
 								// get all prev records
 								var _defPrevRecords = $q.defer();
 								var _arrPrevRecords = [];
-								measurementGroup.measureTypes.forEach(function (measurementType) {
+								measurementGroup.measureTypes.forEach(function (measurementType) {console.log('ln 420');
 									_arrPrevRecords.push(
 										getPrevRecords(authToken, measurementType.system + " " + measurementType.code, measurementGroup.from)
 									);
-
-									$translate("titles." + measurementType.id).then(function (t) { measurementType.title = t; });
+console.log('ln 424');
+									$translate(/*"titles." + */measurementType.id).then(function (t) { measurementType.title = t; });
 									$translate(measurementType.id).then(function (t) { measurementType.name_translated = t; });
 								});
-
+console.log('ln 428');
 								$q.all(_arrPrevRecords)
 									.then(
 									function (results) {
@@ -441,6 +440,10 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 
 								// all prev. Records loaded
 								_defPrevRecords.promise.then(function () {
+console.log('ln 443');
+console.log(measurementGroup.groupMeasureId);
+console.log('measurementtypes');
+console.log(measurementGroup.measureTypes);
 									//save records
 									if (measurementGroup.groupMeasureId == 'activity_measures') {
 										// save every measure
@@ -465,30 +468,14 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 			});
 	};
 
-	importer.importTest = function (authToken) {
-		importer.resultTest = "";
-		var _userid = "";
-		midataServer.getOAuthParams(authToken)
-			.then(function (response) {
-				_userid = response.data.userid;
-
-				var _url = baseUrl + "?action=getactivity&userid=" + _userid + "&startdateymd=2016-07-27&enddateymd=2016-08-08";
-				midataServer.oauth1Request(authToken, _url)
-					.then(function (response) {
-						importer.resultTest = String(response);
-						console.log(response);
-
-						console.log(_url);
-					});
-			});
-	};
-
-	var getPrevRecords = function (authToken, code, from) {
+	var getPrevRecords = function (authToken, code, from) {console.log('ln 471');
 		return midataServer.getRecords(authToken, { "format": "fhir/Observation", "code": code, "index": { "effectiveDateTime": { "!!!ge": from } } }, ["version", "content", "data"])
-			.then(function (results) {
+			.then(function (results) {console.log('ln 473');
 				angular.forEach(results.data, function (rec) {
 					stored[rec.content + rec.data.effectiveDateTime] = rec;
 				});
+			}, function(reason) {
+				console.log('Failed: ' + reason);
 			});
 	};
 
@@ -499,7 +486,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 		var existing = stored[codeToMidataCode[midataHeader.code] + record.effectiveDateTime];
 		if (existing) {
 			if (existing.data.valueQuantity.value != record.valueQuantity.value) {
-				_promise = updateRecord(authToken, existing._id.$oid, existing.version, record);
+				_promise = updateRecord(authToken, existing._id, existing.version, record);
 			} else {
 				_promise = new Promise(function (resolve, reject) {
 					importer.saved += 1;
@@ -514,7 +501,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 		var existing = stored[codeToMidataCode[midataHeader.code] + record.effectiveDateTime];
 		if (existing) {
 			if (existing.data.valueQuantity.value != record.valueQuantity.value) {
-				return updateRecord(authToken, existing._id.$oid, existing.version, record);
+				return updateRecord(authToken, existing._id, existing.version, record);
 			}
 		} else {
 			return saveRecord(authToken, midataHeader, record);
@@ -581,7 +568,8 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 
 	var save_activities = function (authToken, response, measurement) {
 		var actions = [];
-
+console.log('save activities');
+console.log(response.data.body);
 		// save every measure of every activity
 		response.data.body.activities.forEach(function (activity) {
 
@@ -719,7 +707,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 	};
 
 	var processTransaction = function(authToken, actions){
-
+		console.log('esta entrando');
 		var request = {
 			"resourceType": "Bundle",
 			"id": "bundle-transaction",
@@ -732,6 +720,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 			console.log("bundle saved");
 			console.log(actions);
 		});
+		console.log('llega a guardarlo?');
 	};
 
 	return importer;
