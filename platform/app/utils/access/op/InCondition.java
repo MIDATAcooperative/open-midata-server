@@ -43,6 +43,11 @@ public class InCondition implements Condition {
 	public boolean isInBounds(Object low, Object high) {
 		return true;
 	}
+
+	@Override
+	public Object asMongoQuery() {
+		return val;
+	}
 	
 	
 }

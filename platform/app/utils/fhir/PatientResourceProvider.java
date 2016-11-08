@@ -208,7 +208,10 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     		DateRangeParam theLastUpdated, 
     		 
     		@IncludeParam(allow= {
-    				"Patient:careprovider" , 					"Patient:link" , 					"Patient:organization" , 						"Patient:careprovider" , 					"Patient:link" , 					"Patient:organization" , 						"Patient:careprovider" , 					"Patient:link" , 					"Patient:organization" 					, "*"
+    				"Patient:careprovider",
+    				"Patient:link",
+    				"Patient:organization",
+    				"*"
     		}) 
     		Set<Include> theIncludes,
     		 			
@@ -355,7 +358,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
       inf.ownerId = who;
       PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
       patientProvider.setExecutionInfo(inf);
-      Member member = Member.getById(who, Sets.create("firstname","lastname","birthday","midataID","gender","email","phone","city","country","zip","address1","address2"));
+      Member member = Member.getById(who, Sets.create("firstname", "lastname", "birthday", "midataID", "gender", "email", "phone", "city", "country", "zip", "address1", "address2"));
       patientProvider.updatePatientForAccount(member);
     }
     

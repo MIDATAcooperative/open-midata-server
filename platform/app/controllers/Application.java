@@ -282,6 +282,15 @@ public class Application extends APIController {
 			user.set("subroles", user.subroles);
 		}
 		
+		if (user.subroles.contains(SubUserRole.STUDYPARTICIPANT) && 
+			user.emailStatus.equals(EMailStatus.VALIDATED) &&
+			user.agbStatus.equals(ContractStatus.SIGNED) &&
+			user.confirmedAt != null) {
+			user.subroles.remove(SubUserRole.STUDYPARTICIPANT);
+			user.subroles.add(SubUserRole.NONMEMBERUSER);
+			user.set("subroles", user.subroles);
+		}
+		
 		if (user.subroles.contains(SubUserRole.NONMEMBERUSER) &&
 			user.contractStatus.equals(ContractStatus.SIGNED)) {
 			user.subroles.remove(SubUserRole.NONMEMBERUSER);

@@ -238,6 +238,11 @@ public class Users extends APIController {
 		Member.set(userId, "tokens", user.tokens);
 	}
 	
+	/**
+	 * Updates the address information of a user.
+	 * @return 200 ok
+	 * @throws AppException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
@@ -251,21 +256,37 @@ public class Users extends APIController {
 		
 		MidataId userId = new MidataId(request().username());
 				
-		User user = User.getById(userId, Sets.create("_id", "role")); 
+		User user = User.getById(userId, User.ALL_USER); 
 		
-		User.set(user._id, "email", email);
-		User.set(user._id, "emailLC", email.toLowerCase());
-		User.set(user._id, "name", firstName + " " + lastName);
-		User.set(user._id, "address1", JsonValidation.getString(json, "address1"));
-		User.set(user._id, "address2", JsonValidation.getString(json, "address2"));
-		User.set(user._id, "city", JsonValidation.getString(json, "city"));
-		User.set(user._id, "zip", JsonValidation.getString(json, "zip"));
-		User.set(user._id, "phone", JsonValidation.getString(json, "phone"));
-		User.set(user._id, "mobile", JsonValidation.getString(json, "mobile"));
-		User.set(user._id, "country", JsonValidation.getString(json, "country"));
-		User.set(user._id, "firstname", JsonValidation.getString(json, "firstname"));
-		User.set(user._id, "lastname", JsonValidation.getString(json, "lastname"));
-		User.set(user._id, "gender", JsonValidation.getEnum(json, "gender", Gender.class));		
+		user.email = email;
+		user.emailLC = email.toLowerCase();
+		user.name = firstName + " " + lastName;
+		user.address1 = JsonValidation.getString(json, "address1");
+		user.address2 = JsonValidation.getString(json, "address2");
+		user.city = JsonValidation.getString(json, "city");
+		user.zip = JsonValidation.getString(json, "zip");
+		user.phone = JsonValidation.getString(json, "phone");
+		user.mobile = JsonValidation.getString(json, "mobile");
+		user.country = JsonValidation.getString(json, "country");
+		user.firstname = JsonValidation.getString(json, "firstname");
+		user.lastname = JsonValidation.getString(json, "lastname");
+		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
+		
+		User.set(user._id, "email", user.email);
+		User.set(user._id, "emailLC", user.emailLC);
+		User.set(user._id, "name", user.name);
+		User.set(user._id, "address1", user.address1);
+		User.set(user._id, "address2", user.address2);
+		User.set(user._id, "city", user.city);
+		User.set(user._id, "zip", user.zip);
+		User.set(user._id, "phone", user.phone);
+		User.set(user._id, "mobile", user.mobile);
+		User.set(user._id, "country", user.country);
+		User.set(user._id, "firstname", user.firstname);
+		User.set(user._id, "lastname", user.lastname);
+		User.set(user._id, "gender", user.gender);		
+		
+		updateKeywords(user, true);
 		
 		if (user.role.equals(UserRole.MEMBER)) {		  
 		  PatientResourceProvider.updatePatientForAccount(user._id);
@@ -276,6 +297,28 @@ public class Users extends APIController {
 		return ok();		
 	}
 	
+	/**
+	 * Internally used to update a lower case keyword list for users to improve search speed.
+	 * @param user the user 
+	 * @param write set to true if the new keywords should be written to database
+	 * @throws InternalServerException
+	 */
+	public static void updateKeywords(User user, boolean write) throws InternalServerException {
+		Set<String> keywords = new HashSet<String>();
+		keywords.add(user.firstname.toLowerCase());
+		keywords.add(user.lastname.toLowerCase());
+		if (user.address1 != null && user.address1.length() > 0) keywords.add(user.address1.toLowerCase());
+		if (user.address2 != null && user.address2.length() > 0) keywords.add(user.address2.toLowerCase());
+		if (user.city != null && user.city.length() > 0) keywords.add(user.city.toLowerCase());
+		user.keywordsLC = keywords;
+		if (write) User.set(user._id, "keywordsLC", user.keywordsLC);
+	}
+	
+	/**
+	 * Update user settings like language and public settings
+	 * @return 200 ok
+	 * @throws AppException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
@@ -303,6 +346,11 @@ public class Users extends APIController {
 		return ok();		
 	}
 	
+	/**
+	 * Request MIDATA membership of current user
+	 * @return 200 ok
+	 * @throws AppException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
@@ -351,6 +399,11 @@ public class Users extends APIController {
 		return ok();
 	}
 	
+	/**
+	 * completely wipe account of current user. This is only working on test instances - other instances will throw an exception.
+	 * @return 200 ok
+	 * @throws AppException
+	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)

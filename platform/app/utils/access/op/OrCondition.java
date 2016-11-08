@@ -3,6 +3,7 @@ package utils.access.op;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -116,13 +117,24 @@ public class OrCondition implements Condition {
 	
 	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder("{ $or : {");		
+		StringBuilder result = new StringBuilder("{ $or : [");		
 		for (Condition check : checks) {
 			if (result.length() > 9) result.append(", ");
 			result.append(check.toString());
 		}
-		result.append("} }");
+		result.append("] }");
 		return result.toString();
+	}
+
+	@Override
+	public Map<String, Object> asMongoQuery() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<Object> parts = new ArrayList<Object>();
+		for (Condition check : checks) {
+			parts.add(check.asMongoQuery());
+		}
+		result.put("$or", parts);
+		return result;
 	}
 		
 
