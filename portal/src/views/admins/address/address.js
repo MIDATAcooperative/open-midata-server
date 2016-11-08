@@ -26,7 +26,7 @@ angular.module('portal')
 	
 	$scope.changeUser = function(user) {
 		console.log(user);
-		administration.changeStatus(user._id, user.status, user.contractStatus, user.agbStatus).then(function() { $scope.reload() });
+		administration.changeStatus(user._id, user.status, user.contractStatus, user.agbStatus).then(function() { $scope.reload(); });
 	};	
 	
 	$scope.confirmEmail = function(user) {
