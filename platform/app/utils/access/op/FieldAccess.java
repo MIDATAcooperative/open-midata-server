@@ -1,6 +1,7 @@
 package utils.access.op;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.bson.BSONObject;
@@ -108,6 +109,13 @@ public class FieldAccess implements Condition {
 	@Override
 	public boolean isInBounds(Object low, Object high) {		
 		return false;
+	}
+
+	@Override
+	public Map<String, Object> asMongoQuery() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(field, cond.asMongoQuery());
+		return result;
 	}
 
 	

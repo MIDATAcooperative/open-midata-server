@@ -35,7 +35,9 @@ public class User extends Model implements Comparable<User> {
 
 	protected static final @NotMaterialized String collection = "users";
 	protected static final @NotMaterialized Set<String> NON_DELETED = Sets.create(UserStatus.ACTIVE.toString(), UserStatus.NEW.toString(), UserStatus.BLOCKED.toString(), UserStatus.TIMEOUT.toString());
+	public static final @NotMaterialized Set<String> ALL_USER = Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer");
 	
+			
 	/**
 	 * Email address of the user
 	 * 
@@ -203,6 +205,11 @@ public class User extends Model implements Comparable<User> {
 	 * FHIR: Person
 	 */
 	public BSONObject person;
+	
+	/**
+	 * lower case words from name and address for indexing for improved search speed
+	 */
+	public Set<String> keywordsLC;
 	
 	/**
 	 * Security level of user account

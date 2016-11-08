@@ -12,7 +12,13 @@ import ca.uhn.fhir.model.api.IQueryParameterType;
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.param.DateRangeParam;
+import ca.uhn.fhir.rest.param.StringParam;
+import ca.uhn.fhir.rest.param.TokenParam;
 
+/**
+ * Class for storing search parameter for a FHIR search operation
+ *
+ */
 public class SearchParameterMap extends HashMap<String, List<List<? extends IQueryParameterType>>> {
   
   	private static final long serialVersionUID = 1L;
@@ -75,6 +81,26 @@ public class SearchParameterMap extends HashMap<String, List<List<? extends IQue
  
  	public Integer getCount() {
  		return myCount;
+ 	}
+ 	
+ 	public Set<String> getAllValues(String name) {
+ 		List<List<? extends IQueryParameterType>> allValues = get(name);
+ 		if (allValues == null) return null;
+ 		
+ 		Set<String> result = new HashSet<String>();
+ 		
+ 		for (List<? extends IQueryParameterType> orValues : allValues) {
+ 			for (IQueryParameterType val : orValues) {
+ 				if (val instanceof TokenParam) {
+ 					result.add(((TokenParam) val).getValue());
+ 				}
+ 				if (val instanceof StringParam) {
+ 					result.add(((StringParam) val).getValue());
+ 				}
+ 			}
+ 		}
+ 		
+ 		return result;
  	}
 
  

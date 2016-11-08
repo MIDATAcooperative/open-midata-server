@@ -46,6 +46,16 @@ public class EqualsSingleValueCondition implements Condition {
 	public boolean isInBounds(Object low, Object high) {
 		return (low == null || val.compareTo(low) >= 0) && (high == null || val.compareTo(high) < 0);
 	}
+
+	@Override
+	public Object asMongoQuery() {
+		return val;
+	}
+	
+	@Override
+	public String toString() {		
+		return val == null ? "null" : val.toString();
+	}
 	
 	
 }

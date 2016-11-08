@@ -262,7 +262,7 @@ public class MongoDatabase extends Database {
 		DBObject dbObject = new BasicDBObject();
 		for (String key : properties.keySet()) {
 			Object property = properties.get(key);
-			if (property instanceof Collection<?>) {
+			if (property instanceof Collection<?> && !key.startsWith("$")) {
 				ArrayList al = new ArrayList();
 				for (Object v : ((Collection<?>) property)) al.add(conversion.toDBObjectValue(v));
 				dbObject.put(key, new BasicDBObject("$in", al));

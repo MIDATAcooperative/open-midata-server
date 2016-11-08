@@ -1,6 +1,9 @@
 package utils.access.op;
 
 import java.util.Map;
+import java.util.regex.Pattern;
+
+import scala.NotImplementedError;
 
 public class CompareCaseInsensitive implements Condition {
 
@@ -55,6 +58,29 @@ public class CompareCaseInsensitive implements Condition {
 	@Override
 	public boolean isInBounds(Object low, Object high) {
 		return true;
+	}
+
+	@Override
+	public Object asMongoQuery() {
+		//Map<String, Object> result = new HashMap();
+		switch (op) {
+		case EQUALS: return Pattern.compile("^"+val+"$", Pattern.CASE_INSENSITIVE);
+		case STARTSWITH: return Pattern.compile("^"+val, Pattern.CASE_INSENSITIVE);
+		case ENDSWITH: return Pattern.compile(val+"$", Pattern.CASE_INSENSITIVE);
+		case CONTAINS: return Pattern.compile(val, Pattern.CASE_INSENSITIVE);
+		}
+		return null;
+	}
+	
+	@Override
+	public String toString() {		
+		switch (op) {
+		case EQUALS: return "/^"+val+"$/";
+		case STARTSWITH: return "/^"+val+"/";
+		case ENDSWITH: return "/"+val+"$/";
+		case CONTAINS: return "/"+val+"/";
+		}
+		return null;
 	}
 	
 	

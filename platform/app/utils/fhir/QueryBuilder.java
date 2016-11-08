@@ -28,6 +28,10 @@ import utils.access.op.EqualsSingleValueCondition;
 import utils.access.op.FieldAccess;
 import utils.access.op.OrCondition;
 
+/**
+ * Helper class to create a database Query from a FHIR SearchParameterMap 
+ *
+ */
 public class QueryBuilder {
 
 	private SearchParameterMap params;
@@ -152,6 +156,8 @@ public class QueryBuilder {
 				bld.addEq(path+".value", tokenParam.getValue());
 			  } else if (type.equals("boolean")) {
 				bld.addEq(path, tokenParam.getValue().equals("true"));
+			  } else if (type.equals("String")) {
+				bld.addEq(path, tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
 			  }
 			} else if (param instanceof StringParam) {
 			  StringParam stringParam = (StringParam) param;
