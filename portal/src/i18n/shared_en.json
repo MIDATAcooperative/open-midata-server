@@ -3,7 +3,7 @@
    "footer" : {
      "copyright" : "(c) 2015-2016 ETH Zürich",
      "portals" : "Midata Portals:",
-     "for_members" : "For Members of the Cooperative",
+     "for_members" : "For Account Holders",
 	 "for_researchers" : "For Research Organizations",
 	 "for_providers" : "For Healthcare Providers",
 	 "for_developers" : "For Developers"
@@ -102,11 +102,11 @@
           
      "blocked" : {
        "user" : "User is not allowed to log in. Contact support@midata.coop for help.",
-       "participation" : "Member is not allowed to participate in study."
+       "participation" : "Account holder is not allowed to participate in study."
      },
      
      "closed" : {
-       "study" : "Study not searching for members."
+       "study" : "Study not searching for participants."
      },
      
      "notvalidated" : {
@@ -183,7 +183,7 @@
 	   "UNCONFIRMED" : "Unconfirmed"
 	 },
 	 "consenttype" : {
-	   "CIRCLE" : "Other MIDATA Members",
+	   "CIRCLE" : "Other Account Holders",
 	   "EXTERNALSERVICE" : "External Application",
 	   "HCRELATED" : "Healthcare",
 	   "HEALTHCARE" : "Doctor / Hospital",
@@ -210,7 +210,7 @@
 	   "ACCEPTED" : "Participation accepted",
 	   "CODE" : "Participation code entered",
 	   "MATCH" : "Possible match",
-	   "MEMBER_REJECTED" : "MIDATA member rejected",
+	   "MEMBER_REJECTED" : "Account holder rejected",
 	   "REQUEST" : "Participation requested",
 	   "RESEARCH_REJECTED" : "Rejected by researcher"
 	 },
@@ -247,6 +247,7 @@
 	   "SUPERADMIN" : "Super Admin",
 	   "TRIALUSER" : "Trial User",
 	   "STUDYPARTICIPANT" : "Study Participant",
+	   "NONMEMBERUSER" : "Validated Account Holder",
 	   "MEMBEROFCOOPERATIVE" : "Member of Cooperative"
 	 },
 	 "userstatus" : {
@@ -527,7 +528,7 @@
 	"settings" : "Settings",
 	"address" : "Address and Contact Info",
 	"change_address_btn" : "Change Address",
-	"searchable" : "Is your account visible for other MIDATA members?",
+	"searchable" : "Is your account visible for other MIDATA account holders?",
 	"change_settings_btn" : "Change Settings",
 	"change_settings_success" : "Settings have been updated"
 		
@@ -560,7 +561,7 @@
     "title" : "Create a new consent",
     "name" : "How should this consent be named?",
     "type" : "What type of consent do you want to create?",
-    "share_with_members" : "I want to share data with other MIDATA members.",
+    "share_with_members" : "I want to share data with other MIDATA account holders.",
     "share_with_provider" : "I want to share data with a health professional.",
     "use_passcode" : "Include a passcode?",
     "use_passcode2" : "I do not know yet to whom I want to share the data. Please add a passcode to this consent that I can give to a health professional of my choice.",
@@ -593,7 +594,7 @@
     "created_before" : "Shares only data created before:",
     "what_is_shared" : "What data is shared?",
     "consent_empty" : "This consent does not share any data at the moment.",
-    "type_circle" : "This consent shares data with other MIDATA members.",
+    "type_circle" : "This consent shares data with other MIDATA account holders.",
     "type_healthcare" : "This consent shares data with healthcare professionals.",
     "type_studyparticipation" : "This consent shares data with research for use in a study.",    
     "type_externalservice" : "This consent shares data with a mobile app or external service.",
@@ -689,7 +690,7 @@
 	"newrecords_teaser" : "There are no new records. Visit the records page to browser all of your records.",
 	"myaccount" : "My Account Data",
     "newsharedrecords" : "New records shared with you",
-    "newsharedrecords_teaser" :  "Other MIDATA members may share their data with you.",		    
+    "newsharedrecords_teaser" :  "Other MIDATA account holders may share their data with you.",		    
     "circles" : "Member of Circles",
     "circles_teaser" : "Ask others to add you to their circles.",
 	"circles2" : "Your Circles",
