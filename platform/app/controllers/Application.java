@@ -276,7 +276,7 @@ public class Application extends APIController {
 		if (user.subroles.contains(SubUserRole.TRIALUSER) && 
 			user.emailStatus.equals(EMailStatus.VALIDATED) &&
 			user.agbStatus.equals(ContractStatus.SIGNED) &&
-			user.confirmedAt != null) {
+			(user.confirmedAt != null || !InstanceConfig.getInstance().getInstanceType().confirmationCodeRequired())) {
 			user.subroles.remove(SubUserRole.TRIALUSER);
 			user.subroles.add(SubUserRole.NONMEMBERUSER);
 			user.set("subroles", user.subroles);
@@ -285,7 +285,7 @@ public class Application extends APIController {
 		if (user.subroles.contains(SubUserRole.STUDYPARTICIPANT) && 
 			user.emailStatus.equals(EMailStatus.VALIDATED) &&
 			user.agbStatus.equals(ContractStatus.SIGNED) &&
-			user.confirmedAt != null) {
+			(user.confirmedAt != null || !InstanceConfig.getInstance().getInstanceType().confirmationCodeRequired())) {
 			user.subroles.remove(SubUserRole.STUDYPARTICIPANT);
 			user.subroles.add(SubUserRole.NONMEMBERUSER);
 			user.set("subroles", user.subroles);

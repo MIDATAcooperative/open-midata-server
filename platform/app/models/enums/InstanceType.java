@@ -97,4 +97,12 @@ public enum InstanceType {
 	public boolean notifyAdminOnRegister() {
 		return this == TEST || this == DEMO;
 	}
+	
+	/**
+	 * Users need to enter the confirmation code to complete registration.
+	 * @return
+	 */
+	public boolean confirmationCodeRequired() {
+		return this == PROD || this == LOCAL;
+	}
 }
