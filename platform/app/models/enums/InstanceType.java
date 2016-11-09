@@ -55,7 +55,7 @@ public enum InstanceType {
 	 * @return 
 	 */
 	public boolean getTrialAccountsMayLogin() {
-		return this != PROD;
+		return this == LOCAL;
 	}
 	
 	/**
