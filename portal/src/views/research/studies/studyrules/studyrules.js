@@ -17,7 +17,7 @@ angular.module('portal')
    
    $scope.submit = function() {
 	   $scope.error = null;
-   	   console.log("A");
+   	   
    	   try{
 	     $scope.study.recordQuery = JSON.parse($scope.study.recordQueryStr);
    	   } catch (e) { console.log(e); $scope.error = e.message;return; }
@@ -30,7 +30,7 @@ angular.module('portal')
    };
    
    $scope.studyLocked = function() {
-	 return (!$scope.study) || ($scope.study.validationStatus !== "PRE" && $scope.study.validationStatus !== "REJECTED");    
+	 return (!$scope.study) || ($scope.study.validationStatus !== "DRAFT" && $scope.study.validationStatus !== "REJECTED");    
    };
          
    $scope.reload();

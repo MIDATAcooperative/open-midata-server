@@ -299,7 +299,8 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result requestParticipation(String id) throws AppException {
-		requireSubUserRole(SubUserRole.MEMBEROFCOOPERATIVE);
+		forbidSubUserRole(SubUserRole.TRIALUSER, SubUserRole.NONMEMBERUSER);
+		forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.NONMEMBERUSER);		
 		MidataId userId = new MidataId(request().username());		
 		MidataId studyId = new MidataId(id);		
 		requestParticipation(userId, studyId);		
