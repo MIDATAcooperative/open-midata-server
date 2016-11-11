@@ -316,7 +316,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		}
 		String date;
 		try {
-			date = theObservation.getEffectiveDateTimeType().asStringValue();
+			date = theObservation.getEffectiveDateTimeType().toHumanDisplay();
 		} catch (FHIRException e) {
 			throw new UnprocessableEntityException("Cannot process effectiveDateTime");
 		}

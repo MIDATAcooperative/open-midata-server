@@ -7,7 +7,7 @@
     "angular-ui-router": "~0.3.1",
     "angular-bootstrap": "~1.2.5",
     "bootstrap": "3.3.7",
-    "midata": "git://github.com/Alexander-Kreutz/midata_shared.git",
+    "midata": "git://github.com/MIDATAcooperative/midata-plugin-library.git",
     "angular-translate": "^2.11.0",
     "angular-chart.js": "~1.0.0",
     "Chart.js": "~2.0.2"

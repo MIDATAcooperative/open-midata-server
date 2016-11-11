@@ -69,11 +69,15 @@
 			
 			<div class="alert alert-danger" translate="{{confirmation.error}}" ng-show="confirmation.error"></div>
 			
-			<div class="input-group" ng-show="!user.confirmedAt && (user.agbStatus=='SIGNED' || user.agbStatus=='PRINTED')">
-			  <input class="form-control" ng-model="confirmation.code" type="text">
-			  <div class="input-group-btn">
-				  <button class="btn btn-primary" ng-click="sendCode()" translate="postregister.enter_now_btn"></button>
-			  </div>							 
+			<div ng-show="!user.confirmedAt && (user.agbStatus=='SIGNED' || user.agbStatus=='PRINTED')">
+			    <p translate="member_user.entercode"></p>
+			    <div class="alert alert-danger" translate="{{confirmation.error}}" ng-show="confirmation.error"></div> 
+				<div class="input-group" >
+				  <input class="form-control" ng-model="confirmation.code" type="text">
+				  <div class="input-group-btn">
+					  <button class="btn btn-primary" ng-click="sendCode()" translate="postregister.enter_now_btn"></button>
+				  </div>							 
+				</div>
 			</div>
 											
 			</loader>

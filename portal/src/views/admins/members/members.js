@@ -36,11 +36,14 @@ angular.module('portal')
 		if ($scope.search.searchable && !$scope.search.criteria.lastname && !$scope.search.criteria.email) return;
 		if (!$scope.search.criteria.lastname) { delete $scope.search.criteria.lastname; }
 		if (!$scope.search.criteria.email) { delete $scope.search.criteria.email; }
-		$scope.status.doBusy(users.getMembers($scope.search.criteria, [ "midataID", "firstname", "lastname", "email", "role", "status", "emailStatus", "developer" ]))
+		$scope.status.doBusy(users.getMembers($scope.search.criteria, [ "midataID", "firstname", "lastname", "email", "role", "subroles", "status", "emailStatus", "developer", "login" ]))
 		.then(function(data) {
 			paginationService.setCurrentPage("membertable", 1); // Reset view to first page
 			$scope.members = data.data;						
 		});
+		
+		$scope.dateLimit = new Date();
+		$scope.dateLimit.setMonth($scope.dateLimit.getMonth() - 1);
 	};
 	
 	$scope.changeUser = function(user) {

@@ -28,12 +28,8 @@ angular.module('portal')
 	};
 	
 	
-	$scope.addTask = function() {
-	  console.log("AAAA");
-	  console.log($scope);
-	  console.log($scope.consent);
-	  views.setView("addtask", { "studyId" : $scope.studyId, "group" : $scope.group });
-	  console.log("BBBB");
+	$scope.addTask = function() {	 
+	  views.setView("addtask", { "studyId" : $scope.studyId, "group" : $scope.group });	 
 	};		
 	
 	$scope.reload();

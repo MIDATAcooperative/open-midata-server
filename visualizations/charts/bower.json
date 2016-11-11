@@ -13,7 +13,7 @@
     "angular-chart.js": "~0.7.1",
     "Chart.js": "~1.0.2",
     "angular-bootstrap": "~0.14.3",
-    "midata": "git://github.com/Alexander-Kreutz/midata_shared.git",
+    "midata": "git://github.com/MIDATAcooperative/midata-plugin-library.git",
     "angular-translate": "^2.11.0"
   },
   "devDependencies": {

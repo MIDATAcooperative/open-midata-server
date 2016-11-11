@@ -8,7 +8,7 @@
     "angular-bootstrap": "~1.2.5",
     "bootstrap": "3.3.7",
     "angular-file-upload": "~2.3.4",
-    "midata": "git://github.com/Alexander-Kreutz/midata_shared.git",
+    "midata": "git://github.com/MIDATAcooperative/midata-plugin-library.git",
     "angular-translate": "^2.12.1"
   
   },
