@@ -506,6 +506,7 @@
     "records_with_format" : "Records that have format:",
     "records_with_content" : "Records that have content:",
     "records_with_group" : "Records that belong to group:",
+    "records_from_app" : "Records created by app:",
     "participation_history" : "Participation History",
     "history_event" : "Event",
 	"history_who" : "Who",
