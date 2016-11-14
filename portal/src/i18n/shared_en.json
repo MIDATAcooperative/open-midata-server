@@ -277,6 +277,13 @@
 	   "Fitbit" : "Fitbit",
 	   "Jawbone" : "Jawbone",
 	   "Available" : "Available Plugins" 
+	 },
+	 "plugintype" : {
+	   "visualization" : "Plugin",
+	   "create" : "Form",
+	   "oauth1" : "OAuth 1",
+	   "oauth2" : "OAuth 2",
+	   "mobile" : "Mobile"
 	 }
    },
    
