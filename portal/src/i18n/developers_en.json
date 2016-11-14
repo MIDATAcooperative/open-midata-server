@@ -1,5 +1,6 @@
 {
   "developer_registration" : {
+    "reason_fillout" : "To avoid longer waiting time until your account is validated please fill out contact person and purpose of registration carefully such that an administrator may decide quickly about your access request.",
     "sign_up" : "Developer Sign Up"
   },
   
@@ -22,5 +23,22 @@
     "register_member_btn" : "Register Account Holder",
     "register_hp_btn" : "Register Health Provider",
     "register_researcher_btn" : "Register Researcher"
+  },
+  
+  "manageapp" : {
+    "info" : {
+       "filename" : "This name is internally used to identify your app. Should be a valid identifier.",
+       "targetUserRole" : "Is your app for a specific role only? Otherwise choose 'Any Role'.",
+       "type" : "Choose 'Plugin' if your app will run as MIDATA portal plugin. Choose 'Mobile App' for an external application. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.",
+       "name" : "The name of your app or plugin that will be presented to the end user.",
+       "description" : "A description of your plugin that will also be shown on the marked place.",
+       "defaultSpaceName" : "Title of the tile for your plugin on the dashboard.",
+       "tags" : "Categories on the market place for which your plugin should be listed.",
+       "url" : "URL of your plugins main page. If you use the template from MIDATA it is 'dist/index.html#?authToken=:authToken''",
+       "previewUrl" : "URL of your plugins dashboard tile. Leave empty if you do not provide such a tile.",
+       "defaultSpaceContext" : "Choose 'me' for the default dashboard. Choose 'config' if you write an import plugin.",
+       "defaultQuery" : "Query restricting your plugins access to the database. Access should be restricted by at least one of 'format', 'content' or 'group'. Valid example: '{ \"format\" : [\"fhir/Observation\" ] }'",
+       "secret" : "Your app will need this secret during login. Choose whatever you like."
+    }
   }
 }

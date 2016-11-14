@@ -2,7 +2,15 @@
 <div ng-controller="PluginsCtrl">
 		
   <div class="panel panel-primary">
+    <div class="panel-heading" translate="admin_plugins.title"></div>
     <div class="body">
+       <form class="css-form form-horizontal">		   
+		   <formrow myid="developer" label="admin_plugins.developer">
+		      <select  class="form-control" id="developer" ng-change="reload();" ng-model="search.criteria.creator" ng-options="developer._id as developer.email for developer in developers"></select>
+		   </formrow>		      
+	  </form>
+    
+    
       <loader busy="status.isBusy !== false">
       <dir-pagination-controls pagination-id="plugintable"></dir-pagination-controls>
       <table class="table" ng-show="apps.length > 0">
@@ -15,8 +23,8 @@
         </tr>
         <tr dir-paginate="app in apps | itemsPerPage : 10" pagination-id="plugintable">
           <td><a ui-sref="^.manageapp({ appId : app._id })">{{  app.name }}</a></td>
-          <td>{{ app.type }}</td>
-          <td>{{ app.targetUserRole }}</td>
+          <td translate="{{ 'enum.plugintype.'+app.type }}"></td>
+          <td translate="{{ 'enum.userrole.'+app.targetUserRole }}"></td>
           <td><input class="checkbox" type="checkbox" ng-change="changePlugin(app);" ng-model="app.spotlighted"></td>
           <td><select class="form-control" ng-model="app.status" ng-change="changePlugin(app);" ng-options="status for status in pluginStati"></select></td>
         </tr>

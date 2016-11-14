@@ -8,25 +8,33 @@
 		</div>
 		<div class="body">
 		
-		<form class="form-horizontal" ng-submit="updateApp()">
+		<form name="myform" novalidate role="form" class="form-horizontal" ng-submit="updateApp()">
+		  <p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
+	      </p>	
 		  <formrow myid="filename" label="Internal Name">
 		    <input type="text" id="filename" class="form-control" placeholder="Filename" ng-model="app.filename" autofocus>
+		    <p class="help-block" translate="manageapp.info.filename"></p>
 		  </formrow>
 		  <formrow myid="targetUserRole" label="Target Role">
 		    <select id="targetUserRole" class="form-control" ng-model="app.targetUserRole" ng-options="role.value as role.label for role in targetUserRoles"></select>
+		    <p class="help-block" translate="manageapp.info.targetUserRole"></p>
 		  </formrow>
 		  <formrow myid="type" label="Type">
 		    <select id="type" class="form-control" ng-model="app.type" ng-options="type.value as type.label for type in types"></select>
+		    <p class="help-block" translate="manageapp.info.type"></p>
 		  </formrow>		  		  
 		  <hr>
 		  <formrow myid="name" label="Name">
 		    <input type="text" id="name" class="form-control" placeholder="Name" ng-model="app.name">
+		    <p class="help-block" translate="manageapp.info.name"></p>
 		  </formrow>
 		  <formrow myid="description" label="Description">
 		    <textarea rows="5" id="description" class="form-control" placeholder="Description" ng-model="app.description"></textarea>
+		    <p class="help-block" translate="manageapp.info.description"></p>
 		  </formrow>
 		  <formrow myid="defaultSpaceName" label="Tile Name" ng-show="app.type != 'mobile'">
 		    <input type="text" id="defaultSpaceName" class="form-control" placeholder="Tile Name" ng-model="app.defaultSpaceName">
+		    <p class="help-block" translate="manageapp.info.defaultSpaceName"></p>
 		  </formrow>
 		 
 		  <hr>
@@ -57,18 +65,25 @@
 		        {{ tagdef }}
 		      </label>
 		    </div>
+		    <p class="help-block" translate="manageapp.info.tags"></p>
 		  </formrow>  		
 		  <formrow myid="url" label="URL" ng-hide="app.type == 'mobile'">
-		    <input type="text" id="url" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" ng-model="app.url">
+		    <input type="text" id="url" name="url" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" ng-model="app.url">
+		    <formerror myid="url" type="authToken" message="Url must contain ':authToken' to receive the authorization token required to create records." ></formerror>
+		    <p class="help-block" translate="manageapp.info.url"></p>
 		  </formrow>
 		  <formrow myid="previewUrl" label="Dashboard Tile URL" ng-hide="app.type == 'mobile'">
 		    <input type="text" id="previewUrl" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" ng-model="app.previewUrl">
+		    <p class="help-block" translate="manageapp.info.previewUrl"></p>
 		  </formrow>		 
 		  <formrow myid="defaultSpaceContext" label="Default Dashboard" ng-show="app.type != 'mobile'">
 		    <input type="text" id="defaultSpaceContext" class="form-control" placeholder="Dashboard Name" ng-model="app.defaultSpaceContext">
+		    <p class="help-block" translate="manageapp.info.defaultSpaceContext"></p>
 		  </formrow>
 		  <formrow myid="defaultQuery" label="Access Query(JSON)">
-		    <textarea rows="5" id="defaultQuery" class="form-control" placeholder="Description" ng-model="app.defaultQueryStr"></textarea>
+		    <textarea rows="5" id="defaultQuery" name="defaultQuery" class="form-control" placeholder="Description" ng-model="app.defaultQueryStr"></textarea>
+		    <formerror myid="defaultQuery" type="json" message="error.invalid.json" ></formerror>
+		    <p class="help-block" translate="manageapp.info.defaultQuery"></p> 
 		  </formrow>		 
 		  <formrow myid="authorizationUrl" label="Authorization URL" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
 		    <input type="text" id="authorizationUrl" class="form-control" placeholder="Authorization URL" ng-model="app.authorizationUrl">
@@ -90,6 +105,7 @@
 		  </formrow>
 		  <formrow myid="secret" label="Application Secret" ng-show="app.type == 'mobile'">
 		    <input type="text" id="secret" class="form-control" placeholder="Secret" ng-model="app.secret">
+		    <p class="help-block" translate="manageapp.info.secret"></p>
 		  </formrow>
 		  <formrow myid="redirectUri" label="Redirect URI (optional, required for OAuth2 login)" ng-show="app.type == 'mobile'">
 		    <input type="text" id="redirectUri" class="form-control" placeholder="Redirect URI" ng-model="app.redirectUri">

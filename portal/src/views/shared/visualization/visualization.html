@@ -49,6 +49,11 @@
 			      <div class="alert alert-info">
 			      <ul>
 			        <li ng-repeat="(rule, params) in options.query">
+			          <span ng-if="rule == 'app'"><span translate="studydetails.records_from_app"></span>
+			            <ul>
+			              <li ng-repeat="app in params">{{ app }}</li>
+			            </ul> 
+			          </span>
 			         <span ng-if="rule == 'format'"><span translate="studydetails.records_with_format"></span>
 			            <ul>
 			              <li ng-repeat="format in params">{{ format }}</li>
