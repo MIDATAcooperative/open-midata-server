@@ -656,7 +656,9 @@ public class PluginsAPI extends APIController {
 		Promise<WSResponse> response = oAuth2Call(inf, json.get("url").asText());	
 		
 		Promise<Result> promise = response.map(new Function<WSResponse, Result>() {
-			public Result apply(WSResponse response) {
+			public Result apply(WSResponse response) {				
+				String ct = response.getHeader("Content-Type");
+				if (ct!=null) response().setContentType(ct);
 				return ok(response.asJson());
 			}
 		});

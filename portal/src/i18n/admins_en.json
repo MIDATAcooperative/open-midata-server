@@ -60,5 +60,10 @@
   
   "admin_registration" : {
     "sign_up" : "Register New Admin Account"
+  },
+  
+  "admin_plugins" : {
+    "title" : "Plugins",
+    "developer" : "Restrict by Developer"
   }
 }

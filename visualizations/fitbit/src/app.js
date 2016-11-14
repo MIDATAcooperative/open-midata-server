@@ -316,12 +316,14 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 		};
 		
 		var getPrevRecords = function(measure) {
-		   return midataServer.getRecords($scope.authToken, { "format" :"fhir/Observation", "content" : measure.content, "index" : { "effectiveDateTime" : { "!!!ge" : measure.from }} }, ["version", "content", "data"])
-		   .then(function(results) {
-			   angular.forEach(results.data, function(rec) {
-				 stored[rec.content+rec.data.effectiveDateTime] = rec;  
+			var fromDate = measure.from;
+			var fromFormatted = fromDate.getFullYear() + "-" + twoDigit(fromDate.getMonth() + 1) + "-" + twoDigit(fromDate.getDate());
+			   return midataServer.getRecords($scope.authToken, { "format" :"fhir/Observation", "content" : measure.content, "index" : { "effectiveDateTime" : { "!!!ge" : fromFormatted }} }, ["version", "content", "data"])
+			   .then(function(results) {
+				   angular.forEach(results.data, function(rec) {
+					 stored[rec.content+rec.data.effectiveDateTime] = rec;  
+				   });
 			   });
-		   });
 		};
 				
 		// import records, one main record and possibly a detailed record for each day

@@ -16,6 +16,7 @@ import models.enums.UserRole;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.access.Query;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.auth.DeveloperSecured;
@@ -77,6 +78,7 @@ public class Market extends APIController {
 		app.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 		app.i18n = new HashMap<String, Plugin_i18n>();
+		Query.validate(app.defaultQuery);
 		Map<String,Object> i18n = JsonExtraction.extractMap(json.get("i18n"));
 		for (String lang : i18n.keySet()) {
 			Map<String, Object> entry = (Map<String, Object>) i18n.get(lang);
@@ -219,6 +221,7 @@ public class Market extends APIController {
 		plugin.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
 		plugin.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		plugin.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
+		Query.validate(plugin.defaultQuery);
 		plugin.status = PluginStatus.DEVELOPMENT;
 		plugin.i18n = new HashMap<String, Plugin_i18n>();
 		Map<String,Object> i18n = JsonExtraction.extractMap(json.get("i18n"));

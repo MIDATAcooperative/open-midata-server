@@ -4,7 +4,7 @@ angular.module('portal')
 	// init
 	$scope.error = null;
 	$scope.app = { version:0, tags:[], i18n : {} };
-	$scope.status = new status(true);
+	$scope.status = new status(false, $scope);
 	$scope.allowDelete = $state.current.allowDelete;
 	$scope.languages = ['en', 'de', 'fr', 'it'];
 	$scope.sel = { lang : 'de' };
@@ -16,8 +16,8 @@ angular.module('portal')
 	    { value : "DEVELOPER", label : "Developers" }
     ];
 	$scope.types = [
-	    { value : "visualization", label : "Visualization" },
-	    { value : "create", label : "Input Form" },
+	    { value : "visualization", label : "Plugin" },
+	    { value : "create", label : "Input Form (Deprecated)" },
 	    { value : "oauth1", label : "OAuth 1 Import" },
 	    { value : "oauth2", label : "OAuth 2 Import" },
 	    { value : "mobile", label : "Mobile App" }
@@ -37,10 +37,22 @@ angular.module('portal')
 	
 	// register app
 	$scope.updateApp = function() {
+		$scope.submitted = true;	
+		
 		if ($scope.app.defaultQueryStr != null && $scope.app.defaultQueryStr !== "") {
-		  $scope.app.defaultQuery = JSON.parse($scope.app.defaultQueryStr);
+		  try {
+			  console.log("TEST");
+		    $scope.app.defaultQuery = JSON.parse($scope.app.defaultQueryStr);
+		      $scope.myform.defaultQuery.$setValidity('json', true);
+		    console.log("TEST PASS");
+		  } catch (e) {
+			  $scope.myform.defaultQuery.$setValidity('json', false);
+			  //$scope.error = "Invalid JSON in Access Query!";
+			  return;
+		  }
 		} else {
-		  $scope.app.defaultQuery = null;	
+		  $scope.app.defaultQuery = null;
+		  $scope.myform.defaultQuery.$setValidity('json', true);
 		}
 						
 		angular.forEach($scope.languages, function(lang) {
@@ -51,9 +63,14 @@ angular.module('portal')
 		
 		// check whether url contains ":authToken"
 		if ($scope.app.type !== "mobile" && $scope.app.url.indexOf(":authToken") < 0) {
-			$scope.error = "Url must contain ':authToken' to receive the authorization token required to create records.";
+			$scope.myform.url.$setValidity('authToken', false);
+			//$scope.error = "Url must contain ':authToken' to receive the authorization token required to create records.";
 			return;
+		} else {
+			$scope.myform.url.$setValidity('authToken', true);
 		}
+		
+		if (! $scope.myform.$valid) return;
 		
 		if ($scope.app._id == null) {
 			$scope.status.doAction('submit', apps.registerPlugin($scope.app))
