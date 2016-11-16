@@ -13,6 +13,7 @@
       <p class="form-control-static" ng-show="consent.type == 'HEALTHCARE'" translate="editconsent.type_healthcare"></p>
       <p class="form-control-static" ng-show="consent.type == 'STUDYPARTICIPATION'" translate="editconsent.type_studyparticipation"></p>    
       <p class="form-control-static" ng-show="consent.type == 'EXTERNALSERVICE'" translate="editconsent.type_externalservice"></p>
+      <p class="form-control-static" ng-show="consent.type == 'IMPLICIT'" translate="editconsent.type_implicit"></p>
     </formrow>
     <formrow id="status" label="editconsent.status">
       <p class="form-control-static" ng-show="consent.status == 'ACTIVE'" translate="editconsent.status_active"></p>
@@ -24,7 +25,7 @@
      <formrow myid="passcode" label="editconsent.password" ng-show="consent.type == 'EXTERNALSERVICE'">
        <p class="form-control-static" ng-hide="consent.passcode">
          <span translate="editconsent.password_exists"></span>
-         <button type="button" class="btn btn-default btn-sm" ng-disabled="status.action == 'passcode'" ng-click="showPasscode()" transplate="editconsent.show_password"></button>
+         <button type="button" class="btn btn-default btn-sm" ng-disabled="status.action == 'passcode'" ng-click="showPasscode()" translate="editconsent.show_password"></button>
        </p>
        <p class="form-control-static" ng-show="consent.passcode">
          <span translate="editconsent.password_shown"></span> <strong>{{ consent.passcode }}</strong>

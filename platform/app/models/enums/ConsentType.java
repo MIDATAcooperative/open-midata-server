@@ -34,5 +34,10 @@ public enum ConsentType {
   /**
    * a consent where one MIDATA member shares records with a mobile app instance
    */
-  EXTERNALSERVICE
+  EXTERNALSERVICE,
+  
+  /**
+   * a consent that has been created by the system (for message delivery)
+   */
+  IMPLICIT
 }
