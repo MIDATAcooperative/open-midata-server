@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +28,7 @@ import models.RecordsInfo;
 import models.Space;
 import models.enums.APSSecurityLevel;
 import models.enums.AggregationType;
+import models.enums.ConsentStatus;
 import utils.AccessLog;
 import utils.auth.RecordToken;
 import utils.collections.CMaps;
@@ -905,18 +907,32 @@ public class RecordManager {
 		resetInfo(userId);		
 		IndexManager.instance.clearIndexes(getCache(userId), userId);
 		
-		AccessLog.logBegin("start search for missing records");
 		APSCache cache = getCache(userId);
-		List<DBRecord> recs = QueryEngine.listInternal(cache, userId, CMaps.map("owner", "self").map("streams", "true"), Sets.create("_id"));
-		Set<String> idOnly = Sets.create("_id");
-		for (DBRecord rec : recs) {
-			if (DBRecord.getById(rec._id, idOnly) == null) {
-				if (rec.stream != null) cache.getAPS(rec.stream, userId).removePermission(rec);
-				else cache.getAPS(userId).removePermission(rec);
-			}
-		}
+				
+		
+		AccessLog.logBegin("start search for missing records");
+		checkRecordsInAPS(userId, userId, true);		
 		AccessLog.logEnd("end search for missing records");
 		
+		AccessLog.logBegin("start searching for missing records in consents");
+		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map(), Sets.create("_id"));
+		for (Consent consent : consents) {
+			try {
+				cache.getAPS(consent._id, userId).getStoredOwner();					
+			} catch (Exception e) {
+				Consent.delete(userId, consent._id);
+				continue;
+			}
+			checkRecordsInAPS(userId, consent._id, true);
+		}
+		AccessLog.logEnd("end searching for missing records in consents");
+		
+		AccessLog.logBegin("start searching for missing records in authorized consents");
+		AccessLog.logEnd("end searching for missing records in authorized consents");
+		consents = Consent.getAllActiveByAuthorized(userId);
+		for (Consent consent : consents) {
+			checkRecordsInAPS(userId, consent._id, false);
+		}
 		AccessLog.logBegin("start searching for empty streams");
 		
 		Set<String> fields = new HashSet<String>();
@@ -935,6 +951,18 @@ public class RecordManager {
 		}
 		
 		AccessLog.logEnd("end searching for empty streams");
+	}
+	
+	public void checkRecordsInAPS(MidataId userId, MidataId apsId, boolean instreams) throws AppException {
+		APSCache cache = getCache(userId);
+		List<DBRecord> recs = QueryEngine.listInternal(cache, apsId, CMaps.map("owner", "self").map("streams", "true"), Sets.create("_id"));
+		Set<String> idOnly = Sets.create("_id");
+		for (DBRecord rec : recs) {
+			if (DBRecord.getById(rec._id, idOnly) == null) {
+				if (instreams && rec.stream != null) cache.getAPS(rec.stream, userId).removePermission(rec);
+				cache.getAPS(apsId).removePermission(rec);
+			}
+		}
 	}
 
 	public void patch20160407(MidataId who) throws AppException {

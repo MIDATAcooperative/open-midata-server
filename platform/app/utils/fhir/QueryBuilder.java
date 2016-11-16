@@ -20,6 +20,7 @@ import ca.uhn.fhir.rest.param.QuantityParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenParam;
+import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import utils.AccessLog;
 import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
 import utils.access.op.CompareCondition.CompareOperator;
@@ -174,6 +175,10 @@ public class QueryBuilder {
 				
 				if (referenceParam.getChain() != null) {
 					List<ReferenceParam> resolved = followChain(referenceParam, type);
+					if (resolved.isEmpty()) {
+						bld.addEq(path+".reference", "__false");
+					} else {
+					
 					for (ReferenceParam rp : resolved) {
 					   
 						String id = rp.getIdPart();
@@ -186,6 +191,7 @@ public class QueryBuilder {
 							}
 						}
 						
+					}
 					}
 				} else {
 				
@@ -251,13 +257,16 @@ public class QueryBuilder {
 	}
 	
 	public List<ReferenceParam> followChain(ReferenceParam r, String targetType) {
-		SearchParameterMap params = new SearchParameterMap();		
-        params.add(r.getChain(), new StringParam(r.getValue()));
+		SearchParameterMap params = new SearchParameterMap();			
+        params.add(r.getChain(), new StringParam(r.getIdPart()));
+        
+        if (targetType == null) targetType = r.getResourceType();
+        if (targetType == null) throw new UnprocessableEntityException("Reference search needs reference target type in query");
         
         List<BaseResource> resultList = FHIRServlet.myProviders.get(targetType).search(params);
         List<ReferenceParam> result = new ArrayList<ReferenceParam>();
         for (BaseResource br : resultList) {
-        	result.add(new ReferenceParam(br.getId()));
+        	result.add(new ReferenceParam(targetType+"/"+br.getId()));
         }
         return result;
 	}

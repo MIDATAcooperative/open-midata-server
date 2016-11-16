@@ -126,7 +126,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 						   for (IBaseReference r : refs) {
 							   IIdType refElem = r.getReferenceElement();
 							   IBaseResource result = FHIRServlet.myProviders.get(refElem.getResourceType()).getResourceById(refElem);
-							   AccessLog.log("added:"+result.toString());
+							   
 							   //r.setDisplay(null);
 							   //r.setReference(null);
 							   r.setResource(result);							  
@@ -245,11 +245,16 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	}
 
 	public static void insertRecord(Record record, IBaseResource resource) {
+		insertRecord(record, resource, (MidataId) null);
+	}
+	
+	public static void insertRecord(Record record, IBaseResource resource, MidataId targetConsent) {
 		AccessLog.logBegin("begin insert FHIR record");
 		try {
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
+			
 			record.data = (DBObject) JSON.parse(encoded);
-			PluginsAPI.createRecord(info(), record);			
+			PluginsAPI.createRecord(info(), record, targetConsent);			
 		} catch (AppException e) {
 			ErrorReporter.report("FHIR (insert record)", null, e);				
 			throw new InternalErrorException(e);
@@ -288,7 +293,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 			record.data = (DBObject) JSON.parse(encoded);
 			
-			PluginsAPI.createRecord(info(), record, data, fileName, contentType);			
+			PluginsAPI.createRecord(info(), record, data, fileName, contentType, null);			
 		} catch (AppException e) {
 			ErrorReporter.report("FHIR (insert record)", null, e);	 
 			throw new InternalErrorException(e);

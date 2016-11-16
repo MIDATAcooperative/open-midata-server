@@ -447,54 +447,52 @@ public class PluginsAPI extends APIController {
 	 * @throws AppException
 	 */
 	public static void createRecord(ExecutionInfo inf, Record record) throws AppException  {
-       createRecord(inf, record, null, null, null);		
+       createRecord(inf, record, null, null, null, null);		
 	}
 	
-	public static void createRecord(ExecutionInfo inf, Record record, InputStream fileData, String fileName, String contentType) throws AppException  {
+	public static void createRecord(ExecutionInfo inf, Record record, MidataId targetConsent) throws AppException  {
+	    createRecord(inf, record, null, null, null, targetConsent);		
+	}
+	
+	public static void createRecord(ExecutionInfo inf, Record record, InputStream fileData, String fileName, String contentType, MidataId targetConsent) throws AppException  {
 		if (record.format==null) record.format = "application/json";
 		if (record.content==null) record.content = "other";
 		if (record.owner==null) record.owner = inf.ownerId;
 		
-		//MidataId targetConsent = null;
 		
-		if (!record.owner.equals(inf.ownerId)) {
+		
+		if (!record.owner.equals(inf.ownerId) && targetConsent == null) {
 			Set<Consent> consent = Consent.getHealthcareActiveByAuthorizedAndOwner(inf.executorId, record.owner);
-			if (consent == null || consent.isEmpty()) throw new BadRequestException("error.noconsent", "No active consent that allows to add data for target person.");			
+			if (consent == null || consent.isEmpty()) throw new BadRequestException("error.noconsent", "No active consent that allows to add data for target person.");
+			
 		}
 		
-		if (inf.space != null) {	
-			if (fileData != null) {
-			  RecordManager.instance.addRecord(inf.executorId, record, inf.space._id, fileData, fileName, contentType);
-			} else {
-		      RecordManager.instance.addRecord(inf.executorId, record, inf.space._id);
+		MidataId targetAPS = targetConsent != null ? targetConsent : inf.targetAPS;
+		
+		if (fileData != null) {
+			  RecordManager.instance.addRecord(inf.executorId, record, targetAPS, fileData, fileName, contentType);
+		} else {
+			  RecordManager.instance.addRecord(inf.executorId, record, targetAPS);
+		}
+		
+		Set<MidataId> records = Collections.singleton(record._id);
+								    				
+		if (inf.executorId.equals(inf.ownerId)) {
+			if (targetConsent != null) RecordManager.instance.share(inf.executorId, inf.ownerId, targetConsent, records, false);
+			RecordManager.instance.share(inf.executorId, inf.ownerId, inf.targetAPS, records, false);
+		} else {
+			if (targetConsent != null && !targetConsent.equals(inf.targetAPS)) {
+				RecordManager.instance.share(inf.executorId, targetConsent, inf.targetAPS, records, false);
 			}
-				
-		    Set<MidataId> records = new HashSet<MidataId>();
-			records.add(record._id);
-			
-		    if (inf.executorId.equals(inf.ownerId)) {				
-				RecordManager.instance.share(inf.executorId, inf.ownerId, inf.targetAPS, records, false);
-		    }
-			
-			if (inf.space != null && inf.space.autoShare != null && !inf.space.autoShare.isEmpty()) {
-				for (MidataId autoshareAps : inf.space.autoShare) {
-					Consent consent = Consent.getByIdAndOwner(autoshareAps, inf.ownerId, Sets.create("type"));
-					if (consent != null) { 
-					  RecordManager.instance.share(inf.executorId, inf.space._id, autoshareAps, records, true);
-					}
+		}
+		
+		if (inf.space != null && inf.space.autoShare != null && !inf.space.autoShare.isEmpty()) {
+			for (MidataId autoshareAps : inf.space.autoShare) {
+				Consent consent = Consent.getByIdAndOwner(autoshareAps, inf.ownerId, Sets.create("type"));
+				if (consent != null) { 
+				  RecordManager.instance.share(inf.executorId, inf.space._id, autoshareAps, records, true);
 				}
 			}
-			
-		} else {
-			if (fileData != null) {
-			  RecordManager.instance.addRecord(inf.executorId, record, inf.targetAPS, fileData, fileName, contentType);
-			} else {
-			  RecordManager.instance.addRecord(inf.executorId, record, inf.targetAPS);
-			}
-									
-			Set<MidataId> records = new HashSet<MidataId>();
-			records.add(record._id);
-			RecordManager.instance.share(inf.executorId, inf.ownerId, inf.targetAPS, records, false);
 		}
 	}
 	
@@ -779,7 +777,7 @@ public class PluginsAPI extends APIController {
 			 		
 			}
 					
-			createRecord(authToken, record, new FileInputStream(file), filename, contentType);
+			createRecord(authToken, record, new FileInputStream(file), filename, contentType, null);
 											
 			ObjectNode obj = Json.newObject();
 			obj.put("_id", record._id.toString());
