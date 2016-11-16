@@ -217,6 +217,7 @@ public class MobileAPI extends Controller {
 		obj.put("authToken", session.encrypt());
 		obj.put("refreshToken", refresh.encrypt());
 		obj.put("status", appInstance.status.toString());
+		obj.put("owner", appInstance.owner.toString());
 															
 		return ok(obj);
 	}

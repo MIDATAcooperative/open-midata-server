@@ -178,8 +178,10 @@
 					    </ul>
 						<p>An example response looks like this:</p>
 <pre>{
-      "authToken":"014760...",
-      "refreshToken":"6756756756...."
+      "authToken" : "014760...",
+      "refreshToken" : "6756756756....",
+      "status" : "ACTIVE",
+      "owner" : "4563453454"
 }</pre>
                         <p>After the first login of a user using the mobile app a new "<b>consent</b>" is automatically created in the users MIDATA account.
                            This consent may be used by the user to select which data he/she wants to share with your mobile app.
@@ -201,7 +203,10 @@
 }</pre>                
                         <p>The result is the same as for the initial login. Please note that a new refreshToken will be returned every call to /v1/auth and only the last returned token is valid.
                            Previously returned refreshTokens are invalidated.                           
-                        </p>   
+                        </p>  
+                        
+                        <p>The "<code>owner</code>" is the ID of the current user.</p>
+                        <p>The "<code>status</code>" is <i>ACTIVE</i> if the consent has been accepted by the user. Initially it is <i>UNCONFIRMED</i> and may become <i>REJECTED</i> or <i>EXPIRED</i>.</p> 
                         <p>API calls will return a status code of <code>401</code> if a relogin is required.</p>
                                               
 						<h3>Creating new records</h3>

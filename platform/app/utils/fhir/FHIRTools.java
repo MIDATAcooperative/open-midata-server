@@ -4,13 +4,16 @@ import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.Person;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.instance.model.api.IIdType;
 
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.MidataId;
 import models.User;
+import models.enums.UserRole;
 import utils.collections.Sets;
 import utils.exceptions.InternalServerException;
 
@@ -45,6 +48,25 @@ public class FHIRTools {
 		case PROVIDER : type = "Practitioner";break;
 		}
 		return new Reference().setDisplay(user.firstname+" "+user.lastname).setReference(type+"/"+user._id.toString());
+	}
+	
+	/**
+	 * Returns the MidataId of a user represented by a FHIR reference
+	 * @param userRef The FHIR reference to be checked and converted
+	 * @return the MidataId 
+	 * @throws UnprocessableEntityException if the reference could not be resolved.
+	 * @throws InternalServerException
+	 */
+	public static MidataId getUserIdFromReference(IIdType userRef) throws UnprocessableEntityException, InternalServerException {
+		String rt = userRef.getResourceType();
+		MidataId id = MidataId.from(userRef.getIdPart());
+		User user = User.getById(id, Sets.create("role"));
+		if (user == null) throw new UnprocessableEntityException("Invalid Person Reference");
+		if (rt != null) {
+			if (rt.equals("Patient") && user.role != UserRole.MEMBER) throw new UnprocessableEntityException("Invalid Patient reference");
+			if (rt.equals("Practitioner") && user.role != UserRole.PROVIDER) throw new UnprocessableEntityException("Invalid Practitioner reference");
+		}
+		return id;
 	}
 	
 	/*
