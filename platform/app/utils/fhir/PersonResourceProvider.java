@@ -61,7 +61,8 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 	 */
 	@Read()
 	public Person getResourceById(@IdParam IIdType theId) throws AppException {
-		User member = User.getById(MidataId.from(theId.getIdPart()), Sets.create(""));		
+		User member = User.getById(MidataId.from(theId.getIdPart()), User.ALL_USER);	
+		if (member == null) return null;
 		return personFromMidataUser(member);
 	}
 	

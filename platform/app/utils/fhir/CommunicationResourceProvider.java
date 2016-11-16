@@ -241,8 +241,8 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 	public void shareRecord(Record record, Communication theCommunication) throws AppException {		
 		ExecutionInfo inf = info();
 		
-		MidataId subject = theCommunication.getSubject().isEmpty() ? inf.executorId : MidataId.from(theCommunication.getSubject().getReferenceElement().getIdPart());
-		MidataId sender = MidataId.from(theCommunication.getSender().getReferenceElement().getIdPart());
+		MidataId subject = theCommunication.getSubject().isEmpty() ? inf.executorId : FHIRTools.getUserIdFromReference(theCommunication.getSubject().getReferenceElement());
+		MidataId sender = FHIRTools.getUserIdFromReference(theCommunication.getSender().getReferenceElement());
 		MidataId shareFrom = subject;
 		if (!subject.equals(sender)) {
 			Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, sender, sender, subject);
@@ -255,7 +255,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		
 		List<Reference> recipients = theCommunication.getRecipient();
 		for (Reference recipient :recipients) {
-			MidataId target = MidataId.from(recipient.getReferenceElement().getIdPart());
+			MidataId target = FHIRTools.getUserIdFromReference(recipient.getReferenceElement());
 			Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, sender, target, subject);
 			RecordManager.instance.share(inf.executorId, shareFrom, consent._id, Collections.singleton(record._id), true);
 		}
@@ -276,33 +276,34 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		
 		try {
 			ContentInfo.setRecordCodeAndContent(record, null, "Communication");
+		
+			String date;
+			//try {
+				date = theCommunication.getSentElement().toHumanDisplay();
+			//} catch (FHIRException e) {
+			//	throw new UnprocessableEntityException("Cannot process sent");
+			//}
+			record.name = date;
+	
+	
+			// clean
+			Reference subjectRef = theCommunication.getSubject();
+			boolean cleanSubject = true;
+			if (subjectRef != null && !subjectRef.isEmpty()) {
+				IIdType target = subjectRef.getReferenceElement();
+				if (target != null && target.getIdPart().equals(info().executorId.toString())) {
+					
+				}  else {
+					cleanSubject = false;
+					record.owner = FHIRTools.getUserIdFromReference(target);
+					
+				}
+			}
+			
+			if (cleanSubject) theCommunication.setSubject(null);
 		} catch (AppException e) {
 			throw new InternalErrorException(e);
 		}
-		String date;
-		//try {
-			date = theCommunication.getSentElement().toHumanDisplay();
-		//} catch (FHIRException e) {
-		//	throw new UnprocessableEntityException("Cannot process sent");
-		//}
-		record.name = date;
-
-
-		// clean
-		Reference subjectRef = theCommunication.getSubject();
-		boolean cleanSubject = true;
-		if (subjectRef != null && !subjectRef.isEmpty()) {
-			IIdType target = subjectRef.getReferenceElement();
-			if (target != null && target.getIdPart().equals(info().executorId.toString())) {
-				
-			}  else {
-				cleanSubject = false;
-				record.owner = MidataId.from(target.getIdPart());
-				
-			}
-		}
-		
-		if (cleanSubject) theCommunication.setSubject(null);
 		clean(theCommunication);
 
 	}
