@@ -9,8 +9,12 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import utils.collections.CMaps;
+import utils.collections.ChainedMap;
+import utils.collections.ChainedSet;
 import utils.collections.Sets;
+import utils.db.DatabaseException;
 import utils.db.NotMaterialized;
+import utils.db.OrderOperations;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -112,6 +116,10 @@ public class Consent extends Model {
 	public static Set<Consent> getHealthcareActiveByAuthorizedAndOwner(MidataId member, MidataId owner) throws InternalServerException {
 		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  ConsentStatus.ACTIVE).map("type",  ConsentType.HEALTHCARE), Sets.create("name", "order", "owner", "type"));
 	}
+	
+	public static Consent getMessagingActiveByAuthorizedAndOwner(MidataId member, MidataId owner) throws InternalServerException {
+		return Model.get(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  ConsentStatus.ACTIVE).map("type",  ConsentType.IMPLICIT), Sets.create("name", "order", "owner", "type"));
+	}
 		
 	public static void set(MidataId consentId, String field, Object value) throws InternalServerException {
 		Model.set(Consent.class, collection, consentId, field, value);
@@ -126,5 +134,18 @@ public class Consent extends Model {
 		Model.set(Consent.class, collection, this._id, "status", status);
 	}
 	
-	public void add() throws InternalServerException {}
+	public void add() throws InternalServerException {
+		Model.insert(collection, this);	
+	}
+	
+	/**
+	 * Delete a consent
+	 * @param ownerId id of owner of consent
+	 * @param consentId id of consent
+	 * @throws InternalServerException
+	 */
+	public static void delete(MidataId ownerId, MidataId consentId) throws InternalServerException {		
+		Map<String, Object> properties = CMaps.map("_id", consentId);
+		Model.delete(Consent.class, collection, properties);
+	}
 }

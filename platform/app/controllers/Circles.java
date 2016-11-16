@@ -26,6 +26,7 @@ import models.MemberKey;
 import models.MidataId;
 import models.Record;
 import models.RecordsInfo;
+import models.User;
 import models.enums.AggregationType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
@@ -248,6 +249,38 @@ public class Circles extends APIController {
 	}
 	
 	/**
+	 * Retrieves or creates an implicit consent between a sender and a receiver for the purpose of sending messages.
+	 * @param executorId executing person
+	 * @param sender sender of message
+	 * @param receiver receiver of message
+	 * @param subject subject of message is the "owner" of the message
+	 * @return the consent for the message
+	 * @throws AppException
+	 */
+	public static Consent getOrCreateMessagingConsent(MidataId executorId, MidataId sender, MidataId receiver, MidataId subject) throws AppException {
+		if (executorId == null || sender == null || receiver == null || subject == null) throw new NullPointerException();
+		MidataId other = sender.equals(subject) ? receiver : sender;
+		Consent consent = Consent.getMessagingActiveByAuthorizedAndOwner(other, subject);
+		if (consent != null) return consent;
+		
+		consent = new Consent();
+		consent.type = ConsentType.IMPLICIT;
+		consent._id = new MidataId();
+		consent.owner = subject;
+		consent.authorized = Collections.singleton(other);
+		consent.status = ConsentStatus.ACTIVE;
+		
+		User otheruser = User.getById(other, Sets.create("firstname", "lastname"));
+		consent.name="Msg: "+otheruser.firstname+" "+otheruser.lastname;
+		
+		RecordManager.instance.createAnonymizedAPS(subject, other, consent._id);
+		consentSettingChange(executorId, consent);
+		consent.add();
+		
+		return consent;		
+	}
+	
+	/**
 	 * Each member has a FHIR patient record. That record should be shared with each consent so that a FHIR plugin can query for the patient. 
 	 * @param consent consent with which the patient record should be shared
 	 * @throws AppException
@@ -304,7 +337,7 @@ public class Circles extends APIController {
 	 * @throws AppException
 	 */
 	@APICall
-	@Security.Authenticated(MemberSecured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result delete(String circleIdString) throws JsonValidationException, AppException {
 		// validate request
 		MidataId userId = new MidataId(request().username());
@@ -314,7 +347,7 @@ public class Circles extends APIController {
 		if (consent == null) {
 			throw new BadRequestException("error.unknown.consent", "No consent with this id exists.");
 		}
-		if (consent.type != ConsentType.CIRCLE && consent.type != ConsentType.EXTERNALSERVICE) throw new BadRequestException("error.unsupported", "Operation not supported");
+		if (consent.type != ConsentType.CIRCLE && consent.type != ConsentType.EXTERNALSERVICE && consent.type != ConsentType.IMPLICIT) throw new BadRequestException("error.unsupported", "Operation not supported");
 		
 		// Remove APS
 		consent.setStatus(ConsentStatus.EXPIRED);
@@ -328,6 +361,7 @@ public class Circles extends APIController {
 		switch (consent.type) {
 		case CIRCLE: Circle.delete(userId, circleId);break;
 		case EXTERNALSERVICE: Circle.delete(userId, circleId);break;
+		case IMPLICIT: Consent.delete(userId, circleId);break;
 		default:break;
 		}
 		

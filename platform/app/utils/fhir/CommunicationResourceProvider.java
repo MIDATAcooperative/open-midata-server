@@ -1,5 +1,7 @@
 package utils.fhir;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -29,9 +31,12 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import controllers.Circles;
+import models.Consent;
 import models.ContentInfo;
 import models.MidataId;
 import models.Record;
+import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.exceptions.AppException;
 
@@ -186,7 +191,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {
 		ExecutionInfo info = info();
-
+        
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Communication");
 
@@ -211,17 +216,49 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 	}
 
 	@Create
-	public MethodOutcome createCommunication(@ResourceParam Communication theCommunication) {
+	public MethodOutcome createCommunication(@ResourceParam Communication theCommunication) throws AppException {
 
 		Record record = newRecord("fhir/Communication");
-		prepare(record, theCommunication);
+		prepareForSharing(theCommunication);
+		prepare(record, theCommunication);		
 		// insert
-		insertRecord(record, theCommunication);
-
+		//insertRecord(record, theCommunication);
+        shareRecord(record, theCommunication);
 		processResource(record, theCommunication);				
 		
 		return outcome("Communication", record, theCommunication);
 
+	}
+	
+	public void prepareForSharing(Communication theCommunication) throws AppException {
+		if (theCommunication.getSender().isEmpty()) {
+			theCommunication.setSender(FHIRTools.getReferenceToUser(info().executorId));
+		}
+		if (theCommunication.getSent() == null) theCommunication.setSent(new Date());
+		if (theCommunication.getRecipient().isEmpty()) throw new UnprocessableEntityException("Recipient is missing");
+	}
+	
+	public void shareRecord(Record record, Communication theCommunication) throws AppException {		
+		ExecutionInfo inf = info();
+		
+		MidataId subject = theCommunication.getSubject().isEmpty() ? inf.executorId : MidataId.from(theCommunication.getSubject().getReferenceElement().getIdPart());
+		MidataId sender = MidataId.from(theCommunication.getSender().getReferenceElement().getIdPart());
+		MidataId shareFrom = subject;
+		if (!subject.equals(sender)) {
+			Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, sender, sender, subject);
+			insertRecord(record, theCommunication, consent._id);
+			shareFrom = consent._id;
+		} else {
+			insertRecord(record, theCommunication);
+		}
+		
+		
+		List<Reference> recipients = theCommunication.getRecipient();
+		for (Reference recipient :recipients) {
+			MidataId target = MidataId.from(recipient.getReferenceElement().getIdPart());
+			Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, sender, target, subject);
+			RecordManager.instance.share(inf.executorId, shareFrom, consent._id, Collections.singleton(record._id), true);
+		}
 	}
 	
 	public Record init() { return newRecord("fhir/Communication"); }
@@ -244,7 +281,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		}
 		String date;
 		//try {
-			date = theCommunication.getSentElement().asStringValue();
+			date = theCommunication.getSentElement().toHumanDisplay();
 		//} catch (FHIRException e) {
 		//	throw new UnprocessableEntityException("Cannot process sent");
 		//}
@@ -254,15 +291,14 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		// clean
 		Reference subjectRef = theCommunication.getSubject();
 		boolean cleanSubject = true;
-		if (subjectRef != null) {
+		if (subjectRef != null && !subjectRef.isEmpty()) {
 			IIdType target = subjectRef.getReferenceElement();
-			if (target != null) {
-				String rt = target.getResourceType();
-				if (rt != null && rt.equals("Patient")) {
-					String tId = target.getIdPart();
-					if (! MidataId.isValid(tId)) throw new UnprocessableEntityException("Subject Reference not valid");
-					record.owner = new MidataId(tId);
-				} else cleanSubject = false;
+			if (target != null && target.getIdPart().equals(info().executorId.toString())) {
+				
+			}  else {
+				cleanSubject = false;
+				record.owner = MidataId.from(target.getIdPart());
+				
 			}
 		}
 		

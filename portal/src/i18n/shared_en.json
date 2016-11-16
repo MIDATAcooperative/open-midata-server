@@ -188,7 +188,8 @@
 	   "HCRELATED" : "Healthcare",
 	   "HEALTHCARE" : "Doctor / Hospital",
 	   "STUDYPARTICIPATION" : "Study",
-	   "STUDYRELATED" : "Study" 
+	   "STUDYRELATED" : "Study",
+	   "IMPLICIT" : "Messaging" 
 	 },
 	 "contractstatus" : {
 	   "NEW" : "New",
@@ -606,6 +607,7 @@
     "type_healthcare" : "This consent shares data with healthcare professionals.",
     "type_studyparticipation" : "This consent shares data with research for use in a study.",    
     "type_externalservice" : "This consent shares data with a mobile app or external service.",
+    "type_implicit" : "This implicitely created consent shares messages with their receivers.",
     "status_active" : "This consent is active.",
     "status_expired" : "This consent is expired. Data is no longer shared.",
     "status_unconfirmed" : "This consent needs confirmation by its owner.",    

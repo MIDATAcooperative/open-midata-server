@@ -18,6 +18,11 @@ angular.module('portal')
 	      url: '/records/:selectedType/:selected',
 	      templateUrl: 'views/shared/records/records.html' 
 	    })
+	    .state('provider.delete_records', {
+	      url: '/records-delete',
+		  templateUrl: 'views/shared/records/records.html',
+		  allowDelete : true,
+		})
 	    .state('developer.delete_records', {
 	      url: '/records-delete',
 		  templateUrl: 'views/shared/records/records.html',
