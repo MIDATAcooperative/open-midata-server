@@ -182,7 +182,7 @@ public class FHIR extends Controller {
 		if (param != null && param.startsWith("Bearer ")) {
           ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()));        
           ResourceProvider.setExecutionInfo(info);
-		}
+		} else ResourceProvider.setExecutionInfo(null);
         
 		AccessLog.log(req.getRequestURI());
 		servlet.doPut(req, res);

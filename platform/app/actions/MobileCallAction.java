@@ -11,6 +11,7 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.access.RecordManager;
 import utils.exceptions.BadRequestException;
+import utils.fhir.ResourceProvider;
 import utils.json.JsonValidation.JsonValidationException;
 
 /**
@@ -46,7 +47,8 @@ public class MobileCallAction extends Action<MobileCall> {
 			return F.Promise.pure((Result) internalServerError(e2.getMessage()));			
 		} finally {
 			RecordManager.instance.clear();
-			AccessLog.newRequest();	
+			AccessLog.newRequest();
+			ResourceProvider.setExecutionInfo(null);
 		}
     }
 }
