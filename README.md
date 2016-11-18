@@ -29,7 +29,7 @@ sudo npm install -g bower grunt-cli
 
 Then clone this repository into a directory of your choice. 
 ```
-git clone https://github.com/amarfurt/hdc.git
+git clone https://github.com/MIDATAcooperative/platform-private
 cd hdc
 ```
 

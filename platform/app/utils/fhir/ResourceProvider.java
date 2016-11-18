@@ -33,6 +33,7 @@ import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
@@ -65,7 +66,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	}
 	
 	
-	public static ThreadLocal<ExecutionInfo> tinfo = new ThreadLocal<ExecutionInfo>();
+	private static ThreadLocal<ExecutionInfo> tinfo = new ThreadLocal<ExecutionInfo>();
 	
 	
 	/**
@@ -81,7 +82,9 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	 * @return ExecutionInfo
 	 */
 	public static ExecutionInfo info() {
-		return tinfo.get();
+		ExecutionInfo inf = tinfo.get();
+		if (inf == null) throw new AuthenticationException();
+		return inf;
 	}
 	
 	/**
