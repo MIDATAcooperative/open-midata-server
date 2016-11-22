@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Import Withings Data</title>
+	
+	    <!-- build:css assets/app.min.css -->
+		<link rel="stylesheet" href="components/bootstrap/css/bootstrap.css">
+		<link rel="stylesheet" href="components/midata/css/app.css">
+		<!-- endbuild -->
+		
+		<!-- build:js assets/app.min.js -->
+		<script type="text/javascript" src="components/angular/angular.js" defer></script>
+		<script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
+		<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>		
+		<script type="text/javascript" src="components/midata/js/midata.js" defer></script>
+		<script type="text/javascript" src="i18n.js" defer></script>
+		<script type="text/javascript" src="app.js" defer></script>
+		<!-- endbuild -->
+	</head>
+	<body>
+		<!--<div class="row">
+			<img class="col-md-6" src="">
+		</div>-->
+
+	<div ng-app="withings" ng-controller="PreviewCtrl" ng-cloak>
+	
+	  <div class="body body-center" style="margin-top:50px">
+         <div ng-hide="importer.countSelected" class="text-center lead" translate="no_entries_yet"></div>     
+         <div ng-show="importer.last" class="text-center lead" translate="newest_entry_from"></div>
+         <div ng-show="importer.last" class="text-center lead"><b>{{ importer.last | date }}</b>.</div>
+         <div class="text-center lead" ng-show="importer.countSelected"><span translate="measures_to_import"></span>: <b>{{ importer.countSelected }}</b></div>
+         <div class="text-center lead"><span translate="autoimport_status"></span>: <span ng-show="importer.autoimport"><b translate="on"></b></span><span ng-hide="importer.autoimport"><b translate="off"></b></span></div>     
+      </div>
+	
+										
+		</div>
+	</body>
+</html>

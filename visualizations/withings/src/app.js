@@ -411,21 +411,20 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 
 					// 3. request to withings 
 					midataServer.oauth1Request(authToken, measurementGroup.getURL(_userid))
-						.then(function (response) {console.log('ln 414');
+						.then(function (response) {
 							if (response.data.status == "0") {
-console.log('ln 416');
 								// get all prev records
 								var _defPrevRecords = $q.defer();
 								var _arrPrevRecords = [];
-								measurementGroup.measureTypes.forEach(function (measurementType) {console.log('ln 420');
+								measurementGroup.measureTypes.forEach(function (measurementType) {
 									_arrPrevRecords.push(
 										getPrevRecords(authToken, measurementType.system + " " + measurementType.code, measurementGroup.from)
 									);
-console.log('ln 424');
+
 									$translate(/*"titles." + */measurementType.id).then(function (t) { measurementType.title = t; });
 									$translate(measurementType.id).then(function (t) { measurementType.name_translated = t; });
 								});
-console.log('ln 428');
+
 								$q.all(_arrPrevRecords)
 									.then(
 									function (results) {
@@ -440,10 +439,7 @@ console.log('ln 428');
 
 								// all prev. Records loaded
 								_defPrevRecords.promise.then(function () {
-console.log('ln 443');
-console.log(measurementGroup.groupMeasureId);
-console.log('measurementtypes');
-console.log(measurementGroup.measureTypes);
+
 									//save records
 									if (measurementGroup.groupMeasureId == 'activity_measures') {
 										// save every measure
@@ -468,9 +464,9 @@ console.log(measurementGroup.measureTypes);
 			});
 	};
 
-	var getPrevRecords = function (authToken, code, from) {console.log('ln 471');
+	var getPrevRecords = function (authToken, code, from) {
 		return midataServer.getRecords(authToken, { "format": "fhir/Observation", "code": code, "index": { "effectiveDateTime": { "!!!ge": from } } }, ["version", "content", "data"])
-			.then(function (results) {console.log('ln 473');
+			.then(function (results) {
 				angular.forEach(results.data, function (rec) {
 					stored[rec.content + rec.data.effectiveDateTime] = rec;
 				});
@@ -568,8 +564,6 @@ console.log(measurementGroup.measureTypes);
 
 	var save_activities = function (authToken, response, measurement) {
 		var actions = [];
-console.log('save activities');
-console.log(response.data.body);
 		// save every measure of every activity
 		response.data.body.activities.forEach(function (activity) {
 
@@ -720,7 +714,6 @@ console.log(response.data.body);
 			console.log("bundle saved");
 			console.log(actions);
 		});
-		console.log('llega a guardarlo?');
 	};
 
 	return importer;
