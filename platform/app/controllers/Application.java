@@ -816,6 +816,7 @@ public class Application extends APIController {
 				
 				controllers.admin.routes.javascript.Administration.register(),
 				controllers.admin.routes.javascript.Administration.changeStatus(),
+				controllers.admin.routes.javascript.Administration.addComment(),
 				// Market				
 				controllers.routes.javascript.Market.registerPlugin(),
 				controllers.routes.javascript.Market.updatePlugin(),

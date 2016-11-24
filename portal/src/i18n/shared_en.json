@@ -174,7 +174,8 @@
 	   "CONTACT_ADDRESS_CHANGED" : "Address changed",
 	   "CONTRACT_SEND" : "Contract sent",
 	   "ADMIN_ACCOUNT_CHANGE" : "Account changed by admin",
-	   "ACCOUNT_DELETED" : "Account deleted"
+	   "ACCOUNT_DELETED" : "Account deleted",
+	   "INTERNAL_COMMENT" : "Internal Comment"
 	 },
 	 "consentstatus" : {
 	   "ACTIVE" : "Active",
