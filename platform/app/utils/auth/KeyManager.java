@@ -337,4 +337,14 @@ public class KeyManager {
 		return split.first();
 		
 	}
+	
+	/**
+	 * Deletes a key from the storage
+	 * @param target ID of key to delete
+	 * @throws InternalServerException
+	 */
+	public void deleteKey(MidataId target) throws InternalServerException {
+		KeyInfo.delete(target);
+		lock(target);		
+	}
 }
