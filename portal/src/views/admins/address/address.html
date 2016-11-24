@@ -49,10 +49,10 @@
 		</div>
 	</div>
 	
-	<div ng-show="member.history.length" class="panel panel-primary">
+	<div class="panel panel-primary">
     <div class="panel-heading">History</div>
     <div class="panel-body">
-    <table class="table">
+    <table class="table" ng-show="member.history.length">
       <thead>
         <tr>
           <th>Event</th>
@@ -69,7 +69,14 @@
           <td>{{ entry.message }}</td>
         </tr>
       </tbody>
-    </table>    
+    </table>
+    <form class="form">
+      <div class="form-group">
+        <label for="comment" translate="admin_address.comment"></label>
+        <textarea class="form-control" rows="3" id="comment" ng-model="comment"></textarea>
+      </div>  
+      <button type="button" class="btn btn-default" ng-click="addComment();" translate="admin_address.add_comment_btn"></button>
+    </form>    
     </div>
     </div>
 </div>

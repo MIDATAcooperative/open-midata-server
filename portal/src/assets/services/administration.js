@@ -10,6 +10,11 @@ angular.module('services')
 		if (emailStatus) { data.emailStatus = emailStatus; }
 		return server.post(jsRoutes.controllers.admin.Administration.changeStatus().url, JSON.stringify(data));
 	};
+	
+	service.addComment = function(userId, comment) {
+		var data = { user : userId, comment : comment };		
+		return server.post(jsRoutes.controllers.admin.Administration.addComment().url, JSON.stringify(data));
+	};
 		
 	return service;
 	
