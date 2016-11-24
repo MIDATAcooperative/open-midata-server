@@ -42,4 +42,8 @@ public class MobileAppInstance extends Consent {
 	public static MobileAppInstance getByApplicationAndOwner(MidataId applicationId, MidataId owner, Set<String> fields) throws InternalServerException {
 		return Model.get(MobileAppInstance.class, collection, CMaps.map("applicationId", applicationId).map("owner", owner), fields);
 	}
+	
+	public static Set<MobileAppInstance> getByApplication(MidataId applicationId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(MobileAppInstance.class, collection, CMaps.map("applicationId", applicationId), fields);
+	}
 }

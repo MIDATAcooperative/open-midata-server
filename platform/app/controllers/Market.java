@@ -10,17 +10,21 @@ import com.fasterxml.jackson.databind.JsonNode;
 import actions.APICall;
 import models.Developer;
 import models.MidataId;
+import models.MobileAppInstance;
 import models.Plugin;
 import models.Plugin_i18n;
+import models.Space;
 import models.enums.PluginStatus;
 import models.enums.UserRole;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.access.Query;
+import utils.access.RecordManager;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.auth.DeveloperSecured;
+import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
@@ -150,37 +154,7 @@ public class Market extends APIController {
 		return ok();
 	}
 	
-	 /**
-     * delete a plugins
-     * @param pluginIdStr ID of plugin to update
-     * @return status ok
-     * @throws JsonValidationException
-     * @throws InternalServerException
-     */
-    @APICall
-    @Security.Authenticated(DeveloperSecured.class)
-    public static Result deletePluginDeveloper(String pluginIdStr) throws JsonValidationException, AppException {
-            
-        // validate request     
-        MidataId pluginId = new MidataId(pluginIdStr);
-        MidataId userId = new MidataId(request().username());
-        
-        Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
-        if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
-        if (!app.creator.equals(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
-        if (app.status != PluginStatus.DEVELOPMENT && app.status != PluginStatus.BETA) throw new BadRequestException("error.auth", "Plugin may not be deleted. Ask an admin.");
-              
-        app.spotlighted = false;
-        app.status = PluginStatus.DELETED;
-                 
-        try {
-           app.update();
-        } catch (LostUpdateException e) {
-            throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
-        }
-        
-        return ok();
-    }
+	
 
 	/**
 	 * create a new plugin
@@ -307,9 +281,29 @@ public class Market extends APIController {
 		// validate request		
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
+		deletePlugin(pluginId);
+		
+		return ok();
+	}
+	
+	private static void deletePlugin(MidataId pluginId) throws JsonValidationException, AppException {
+		
+		
 		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 
+		if (app.type.equals("mobile")) {
+			Set<MobileAppInstance> installations =  MobileAppInstance.getByApplication(pluginId, Sets.create("_id", "owner"));
+			for (MobileAppInstance inst : installations) {				
+				KeyManager.instance.deleteKey(inst._id);
+				MobileAppInstance.delete(inst.owner, inst._id);
+			}
+		} else {
+			Set<Space> installations = Space.getAll(CMaps.map("visualization", pluginId), Sets.create("_id","owner"));
+			for (Space inst : installations) {
+				Space.delete(inst.owner, inst._id);
+			}
+		}		 
 		app.status = PluginStatus.DELETED;
 		app.spotlighted = false;
 		
@@ -319,8 +313,32 @@ public class Market extends APIController {
 	        throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
 	    }
 	        
-		return ok();
 	}
+	
+	 /**
+     * delete a plugins
+     * @param pluginIdStr ID of plugin to update
+     * @return status ok
+     * @throws JsonValidationException
+     * @throws InternalServerException
+     */
+    @APICall
+    @Security.Authenticated(DeveloperSecured.class)
+    public static Result deletePluginDeveloper(String pluginIdStr) throws JsonValidationException, AppException {
+            
+        // validate request     
+        MidataId pluginId = new MidataId(pluginIdStr);
+        MidataId userId = new MidataId(request().username());
+        
+        Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
+        if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
+        if (!app.creator.equals(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
+        if (app.status != PluginStatus.DEVELOPMENT && app.status != PluginStatus.BETA) throw new BadRequestException("error.auth", "Plugin may not be deleted. Ask an admin.");
+              
+        deletePlugin(pluginId);        
+        
+        return ok();
+    }
 	
 	@APICall
 	@Security.Authenticated(AdminSecured.class)
