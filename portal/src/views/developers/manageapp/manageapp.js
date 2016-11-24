@@ -27,9 +27,14 @@ angular.module('portal')
     ];
 			
 	$scope.loadApp = function(appId) {
-		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n"]))
+		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status"]))
 		.then(function(data) { 
-			$scope.app = data.data[0];
+			$scope.app = data.data[0];			
+			if ($scope.app.status == "DEVELOPMENT" || $scope.app.status == "BETA") {
+				$scope.allowDelete = true;
+			} else {
+				$scope.allowDelete = $state.current.allowDelete;
+			}
 			if (!$scope.app.i18n) { $scope.app.i18n = {}; }
 			$scope.app.defaultQueryStr = JSON.stringify($scope.app.defaultQuery);
 		});
@@ -91,8 +96,13 @@ angular.module('portal')
 	};
 	
 	$scope.doDelete = function() {
-		$scope.status.doAction('delete', apps.deletePlugin($scope.app))
-		.then(function(data) { $state.go("^.plugins"); });
+		if ($state.current.allowDelete) {
+		    $scope.status.doAction('delete', apps.deletePlugin($scope.app))
+		    .then(function(data) { $state.go("^.plugins"); });
+		} else {
+			$scope.status.doAction('delete', apps.deletePluginDeveloper($scope.app))
+		    .then(function(data) { $state.go("^.yourapps"); });
+		}
 	};
 	
 	if ($state.params.appId != null) { $scope.loadApp($state.params.appId); }

@@ -24,5 +24,10 @@ public enum PluginStatus {
     /**
      * Plugin is deprecated and should no longer be used
      */
-    DEPRECATED
+    DEPRECATED,
+    
+    /**
+     * Plugin has been deleted
+     */
+    DELETED
 }

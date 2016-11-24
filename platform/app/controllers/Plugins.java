@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import models.MidataId;
 import models.Plugin;
 import models.Space;
 import models.User;
+import models.enums.PluginStatus;
 import models.enums.UserRole;
 import play.Play;
 import play.libs.F;
@@ -96,6 +98,9 @@ public class Plugins extends APIController {
 		
 		// get visualizations
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
+		if (!properties.containsKey("status")) {
+		    properties.put("status", EnumSet.of(PluginStatus.DEVELOPMENT, PluginStatus.BETA, PluginStatus.ACTIVE, PluginStatus.DEPRECATED));
+		}
 		ObjectIdConversion.convertMidataIds(properties, "_id", "creator", "recommendedPlugins");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
@@ -137,17 +142,18 @@ public class Plugins extends APIController {
 		Plugin visualization = null;
 		if (MidataId.isValid(visualizationIdString)) {
 			visualizationId = new MidataId(visualizationIdString);
-			visualization = Plugin.getById(visualizationId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator"));
+			visualization = Plugin.getById(visualizationId, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status"));
 		}
 		else {
-            visualization = Plugin.getByFilename(visualizationIdString, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator"));            
+            visualization = Plugin.getByFilename(visualizationIdString, Sets.create("name", "defaultQuery", "type", "targetUserRole", "defaultSpaceName", "defaultSpaceContext", "creator", "status"));            
 		}
 
 		String spaceName = JsonValidation.getString(json, "spaceName");
 		boolean applyRules = JsonValidation.getBoolean(json, "applyRules");		
 		//boolean createSpace = JsonValidation.getBoolean(json, "createSpace");
 		
-		if (visualization == null) throw new BadRequestException("error.unknown.plugin", "Unknown visualization");
+		if (visualization == null) throw new BadRequestException("error.unknown.plugin", "Unknown Plugin");
+		if (visualization.status == PluginStatus.DELETED) throw new BadRequestException("error.unknown.plugin", "Unknown Plugin");
 		visualizationId = visualization._id;
 		
 		String context = json.has("context") ? JsonValidation.getString(json, "context") : visualization.defaultSpaceContext;

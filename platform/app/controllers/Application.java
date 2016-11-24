@@ -459,8 +459,8 @@ public class Application extends APIController {
 						
 			user.status = UserStatus.TIMEOUT;
 		}
-		if (user.subroles.contains(SubUserRole.TRIALUSER) && !InstanceConfig.getInstance().getInstanceType().getTrialAccountsMayLogin()) {
-			user.status = UserStatus.NEW;
+		if (user.status.equals(UserStatus.NEW)&&  user.subroles.contains(SubUserRole.TRIALUSER) && !InstanceConfig.getInstance().getInstanceType().getTrialAccountsMayLogin()) {
+			user.status = UserStatus.TIMEOUT;
 		}
 		
 		PortalSessionToken token = null;
@@ -589,7 +589,7 @@ public class Application extends APIController {
 						
 		user.registeredAt = new Date();		
 		
-		user.status = UserStatus.ACTIVE;		
+		user.status = UserStatus.NEW;		
 		user.contractStatus = ContractStatus.NEW;	
 		user.agbStatus = ContractStatus.NEW;
 		user.emailStatus = EMailStatus.UNVALIDATED;
@@ -816,10 +816,12 @@ public class Application extends APIController {
 				
 				controllers.admin.routes.javascript.Administration.register(),
 				controllers.admin.routes.javascript.Administration.changeStatus(),
+				controllers.admin.routes.javascript.Administration.addComment(),
 				// Market				
 				controllers.routes.javascript.Market.registerPlugin(),
 				controllers.routes.javascript.Market.updatePlugin(),
 				controllers.routes.javascript.Market.deletePlugin(),
+				controllers.routes.javascript.Market.deletePluginDeveloper(),
 				controllers.routes.javascript.Market.updatePluginStatus(),
 				// Global search				
 				//controllers.routes.javascript.GlobalSearch.search(),

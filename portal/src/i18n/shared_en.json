@@ -174,7 +174,8 @@
 	   "CONTACT_ADDRESS_CHANGED" : "Address changed",
 	   "CONTRACT_SEND" : "Contract sent",
 	   "ADMIN_ACCOUNT_CHANGE" : "Account changed by admin",
-	   "ACCOUNT_DELETED" : "Account deleted"
+	   "ACCOUNT_DELETED" : "Account deleted",
+	   "INTERNAL_COMMENT" : "Internal Comment"
 	 },
 	 "consentstatus" : {
 	   "ACTIVE" : "Active",
@@ -732,7 +733,7 @@
 	"study_records" : "Shared records:",
 	"addmore" : "Add more",
 	"view_btn" : "View",
-	"install_btn" : "Install new plugin"
+	"install_btn" : "Add more"
    },
    
    "measure" : {
