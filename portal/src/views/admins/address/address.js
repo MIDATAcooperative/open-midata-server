@@ -36,6 +36,14 @@ angular.module('portal')
 		});
 	};
 	
+	$scope.addComment = function() {
+		administration.addComment($scope.member._id, $scope.comment)
+		.then(function() {
+			$scope.comment = "";
+		    $scope.reload();
+		});		
+	};
+	
 	$scope.reload();
 
 }]);
