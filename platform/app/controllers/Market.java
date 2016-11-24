@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -148,6 +149,38 @@ public class Market extends APIController {
 		
 		return ok();
 	}
+	
+	 /**
+     * delete a plugins
+     * @param pluginIdStr ID of plugin to update
+     * @return status ok
+     * @throws JsonValidationException
+     * @throws InternalServerException
+     */
+    @APICall
+    @Security.Authenticated(DeveloperSecured.class)
+    public static Result deletePluginDeveloper(String pluginIdStr) throws JsonValidationException, AppException {
+            
+        // validate request     
+        MidataId pluginId = new MidataId(pluginIdStr);
+        MidataId userId = new MidataId(request().username());
+        
+        Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
+        if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
+        if (!app.creator.equals(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
+        if (app.status != PluginStatus.DEVELOPMENT && app.status != PluginStatus.BETA) throw new BadRequestException("error.auth", "Plugin may not be deleted. Ask an admin.");
+              
+        app.spotlighted = false;
+        app.status = PluginStatus.DELETED;
+                 
+        try {
+           app.update();
+        } catch (LostUpdateException e) {
+            throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
+        }
+        
+        return ok();
+    }
 
 	/**
 	 * create a new plugin
@@ -189,9 +222,9 @@ public class Market extends APIController {
 		String filename = JsonValidation.getString(json ,"filename");
 		String name = JsonValidation.getString(json, "name");
 		try {
-			if (Plugin.exists(new ChainedMap<String, String>().put("filename", filename).get())) {
+			if (Plugin.exists(CMaps.map("filename", filename).map("status", EnumSet.of(PluginStatus.ACTIVE, PluginStatus.BETA, PluginStatus.DEPRECATED, PluginStatus.DEVELOPMENT)))) {
 				throw new BadRequestException("error.exists.plugin", "A plugin with the same filename already exists.");
-			} else if (Plugin.exists(new ChainedMap<String, Object>().put("creator", userId).put("name", name).get())) {
+			} else if (Plugin.exists(CMaps.map("creator", userId.toDb()).map("name", name).map("status", EnumSet.of(PluginStatus.ACTIVE, PluginStatus.BETA, PluginStatus.DEPRECATED, PluginStatus.DEVELOPMENT)))) {
 				throw new BadRequestException("error.exists.plugin", "A plugin with the same name already exists.");
 			}
 		} catch (InternalServerException e) {
@@ -274,10 +307,18 @@ public class Market extends APIController {
 		// validate request		
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
-		Plugin app = Plugin.getById(pluginId, Sets.create("filename", "status"));
+		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 
-		Plugin.delete(pluginId);
+		app.status = PluginStatus.DELETED;
+		app.spotlighted = false;
+		
+	    try {
+	        app.update();
+	    } catch (LostUpdateException e) {
+	        throw new BadRequestException("error.concurrent.update", "Concurrent updates. Reload page and try again.");
+	    }
+	        
 		return ok();
 	}
 	
