@@ -324,9 +324,9 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 
 		// Set Record subtype
 		Type valType = theObservation.getValue();
-		if (valType == null && theObservation.getComponent() != null) {
+		if ((valType == null || valType.isEmpty()) && !theObservation.getComponent().isEmpty()) {
 			record.subformat = "component";
-		} else if (valType == null) {
+		} else if (valType == null || valType.isEmpty()) {
 			throw new UnprocessableEntityException("Observation must have a value or component");
 		} else if (valType instanceof StringType)
 			record.subformat = "String";
