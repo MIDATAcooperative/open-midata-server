@@ -312,7 +312,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 			record.data = (DBObject) JSON.parse(encoded);	
 			record.version = resource.getMeta().getVersionId();
-			RecordManager.instance.updateRecord(info().executorId, info().targetAPS, record);
+			record.version = RecordManager.instance.updateRecord(info().executorId, info().targetAPS, record);
 		} catch (AppException e) {
 			ErrorReporter.report("FHIR (update record)", null, e);	 
 			throw new InternalErrorException(e);
