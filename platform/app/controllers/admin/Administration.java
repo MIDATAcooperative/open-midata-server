@@ -170,4 +170,31 @@ public class Administration extends APIController {
 		return ok();		
 	}
 	
+	/**
+	 * add a comment for a user
+	 * @return 200 ok
+	 * @throws AppException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public static Result addComment() throws AppException {
+		requireSubUserRole(SubUserRole.USERADMIN);
+		
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "user", "comment");
+							
+		MidataId userId = JsonValidation.getMidataId(json, "user");
+		String comment = JsonValidation.getString(json, "comment");
+		
+		MidataId executorId = new MidataId(request().username());				
+		User admin = User.getById(executorId, Sets.create("firstname", "lastname", "role"));
+	
+		
+		User targetUser = User.getById(userId, Sets.create("history"));		
+		targetUser.addHistory(new History(EventType.INTERNAL_COMMENT, admin, comment));
+		
+		return ok();
+	}
+	
 }

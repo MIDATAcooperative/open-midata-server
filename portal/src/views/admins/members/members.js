@@ -15,7 +15,7 @@ angular.module('portal')
 	  },
 	  { 
 		name : "admin_members.trialusers",
-		criteria : { status : "ACTIVE", subroles : "TRIALUSER" }
+		criteria : { status : ["NEW", "ACTIVE"], subroles : "TRIALUSER" }
 	  },
 	  {
 		name : "admin_members.overview",

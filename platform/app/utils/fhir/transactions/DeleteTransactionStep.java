@@ -1,6 +1,7 @@
 package utils.fhir.transactions;
 
 import org.hl7.fhir.dstu3.model.BaseResource;
+import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 
 import utils.fhir.ResourceProvider;
 
@@ -23,4 +24,5 @@ public class DeleteTransactionStep extends TransactionStep {
 	public void execute() {
 		//provider.updateRecord(record, resource);
 	}
+	
 }

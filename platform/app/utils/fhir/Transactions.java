@@ -9,6 +9,7 @@ import org.hl7.fhir.dstu3.model.BaseResource;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryRequestComponent;
+import org.hl7.fhir.dstu3.model.Bundle.BundleEntryResponseComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleType;
 import org.hl7.fhir.dstu3.model.Bundle.HTTPVerb;
 import org.hl7.fhir.dstu3.model.IdType;
@@ -19,6 +20,7 @@ import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.rest.annotation.Transaction;
 import ca.uhn.fhir.rest.annotation.TransactionParam;
+import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
@@ -80,14 +82,17 @@ public class Transactions {
 		   for (TransactionStep step : steps) step.init();
 		   resolveReferences(steps);
 		   for (TransactionStep step : steps) {
-			   step.prepare();
-			   step.execute();			   
+			   try {				 				
+			     step.prepare();
+			     step.execute();
+			   } catch (BaseServerResponseException e) {
+				  step.setResultBasedOnException(e);			
+			   }			   			  
 		   }
 	   }
 	   	   
 	   Bundle retVal = new Bundle();
-	   // Populate return bundle
-	   //retVal.addEntry(t)
+	   for (TransactionStep step : steps) retVal.addEntry(step.getResult());	   
 	   return retVal;
 	   
 	   } catch (Exception e) {

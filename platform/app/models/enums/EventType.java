@@ -114,5 +114,10 @@ public enum EventType {
 	/**
 	 * the account has been marked as deleted
 	 */
-	ACCOUNT_DELETED
+	ACCOUNT_DELETED,
+	
+	/**
+	 * a comment from the administrator
+	 */
+	INTERNAL_COMMENT
 }

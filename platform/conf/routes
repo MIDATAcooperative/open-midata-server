@@ -90,6 +90,8 @@ DELETE  /members/api/circles/:id/users/:userId           controllers.Circles.rem
 
 POST    /developers/api/plugins                          controllers.Market.registerPlugin()
 PUT     /developers/api/plugins/:appId                   controllers.Market.updatePlugin(appId: String)
+DELETE  /developers/api/plugins/:appId            	     controllers.Market.deletePluginDeveloper(appId: String)
+
 PUT     /admins/api/plugins/:appId            	         controllers.Market.updatePluginStatus(appId: String)
 DELETE  /admins/api/plugins/:appId            	         controllers.Market.deletePlugin(appId: String)
 
@@ -182,6 +184,7 @@ POST    /developers/api/login                             controllers.Developers
 # Admins
 POST    /admins/api/register                             controllers.admin.Administration.register()
 POST    /admins/api/changeStatus                         controllers.admin.Administration.changeStatus()
+POST    /admins/api/addcomment                           controllers.admin.Administration.addComment()
 
 # Tasks
 POST    /shared/api/tasks/create         controllers.Tasking.add()

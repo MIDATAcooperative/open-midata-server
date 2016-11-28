@@ -44,6 +44,10 @@ angular.module('services')
     	return server.delete(jsRoutes.controllers.Market.deletePlugin(plugin._id).url);
     };
     
+    service.deletePluginDeveloper = function(plugin) {
+    	return server.delete(jsRoutes.controllers.Market.deletePluginDeveloper(plugin._id).url);
+    };
+    
     service.registerPlugin = function(plugin) {
     	return server.post(jsRoutes.controllers.Market.registerPlugin().url, JSON.stringify(plugin));
     };

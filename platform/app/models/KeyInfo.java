@@ -36,4 +36,8 @@ public class KeyInfo extends Model {
 	public static void update(KeyInfo keyinfo) throws InternalServerException {
 		Model.upsert(collection, keyinfo);
 	}
+	
+	public static void delete(MidataId id) throws InternalServerException {
+		Model.delete(KeyInfo.class, collection, CMaps.map("_id", id));
+	}
 }
