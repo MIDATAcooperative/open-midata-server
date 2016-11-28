@@ -300,6 +300,11 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 
 				// initialize allMeasureTypes
 				importer.allMeasureTypes = [];
+
+				if (response.data && response.data.selected) {
+					importer.countSelected = response.data.selected.length;
+				}
+				
 				for (var i = 0; i < importer.measurementGroups.length; i++) {
 					var measurementGroup = importer.measurementGroups[i];
 					for (var j = 0; j < measurementGroup.measureTypes.length; j++) {
@@ -343,8 +348,12 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 							if (measurement != null) {
 								var newestDate = new Date(entry.newest);
 
-								//newestDate.setHours(1, 1, 1, 1);
-								//newestDate.setDate(newestDate.getDate() - $scope.reimport);
+								newestDate.setHours(1, 1, 1, 1);
+
+								if (!importer.last || importer.last < newestDate) {
+									importer.last = newestDate;
+								}
+
 								measurement.imported = entry.count;
 								if (measurement.from == null || measurement.from < newestDate) measurement.from = newestDate;
 							}
