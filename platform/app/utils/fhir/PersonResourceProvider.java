@@ -10,6 +10,7 @@ import org.hl7.fhir.dstu3.model.Person;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -104,12 +105,13 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 	}
 	
 	   @Search()
-	    public List<Person> getPerson(
+	    public List<IBaseResource> getPerson(
 	    		
+	    		/*
 	    	@Description(shortDefinition="The resource identity")
 	    	@OptionalParam(name="_id")
 	    	StringParam theId, 
-	    		    
+	    		  */  
 	    	@Description(shortDefinition="A person Identifier")
 	    	@OptionalParam(name="identifier")
 	    	TokenAndListParam theIdentifier, 
@@ -178,7 +180,7 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 	    		) throws AppException {
 	    	
 	    	SearchParameterMap paramMap = new SearchParameterMap();
-	    	paramMap.add("_id", theId);	    	
+	    	//paramMap.add("_id", theId);	    	
 	    	paramMap.add("identifier", theIdentifier);
 	    	paramMap.add("name", theName);
 	    	paramMap.add("email", theEmail);
@@ -201,7 +203,7 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 	}
  
 	@Override
-	public List<Person> search(SearchParameterMap params) {
+	public List<IBaseResource> search(SearchParameterMap params) {
 		try {
 					
 			//ExecutionInfo info = info();
@@ -223,7 +225,7 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 			if (keywords != null) properties.put("keywordsLC", keywords);
 			properties.put("searchable", true);
 			Set<User> users = User.getAllUser(properties, Sets.create("firstname","lastname","birthday","gender","email","phone","city","country","zip","address1","address2","role"));
-			List<Person> result = new ArrayList<Person>();
+			List<IBaseResource> result = new ArrayList<IBaseResource>();
 			for (User user : users) {
 				result.add(personFromMidataUser(user));
 			}
