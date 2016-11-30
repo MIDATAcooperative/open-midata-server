@@ -1,5 +1,7 @@
 package utils.fhir;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.Person;
@@ -10,6 +12,8 @@ import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.param.ReferenceParam;
+import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.MidataId;
 import models.User;
@@ -57,16 +61,39 @@ public class FHIRTools {
 	 * @throws UnprocessableEntityException if the reference could not be resolved.
 	 * @throws InternalServerException
 	 */
-	public static MidataId getUserIdFromReference(IIdType userRef) throws UnprocessableEntityException, InternalServerException {
+	public static MidataId getUserIdFromReference(IIdType userRef) throws UnprocessableEntityException {
 		String rt = userRef.getResourceType();
 		MidataId id = MidataId.from(userRef.getIdPart());
-		User user = User.getById(id, Sets.create("role"));
-		if (user == null) throw new UnprocessableEntityException("Invalid Person Reference");
-		if (rt != null) {
-			if (rt.equals("Patient") && user.role != UserRole.MEMBER) throw new UnprocessableEntityException("Invalid Patient reference");
-			if (rt.equals("Practitioner") && user.role != UserRole.PROVIDER) throw new UnprocessableEntityException("Invalid Practitioner reference");
+		try {
+			User user = User.getById(id, Sets.create("role"));
+			if (user == null) throw new UnprocessableEntityException("Invalid Person Reference");
+			if (rt != null) {
+				if (rt.equals("Patient") && user.role != UserRole.MEMBER) throw new UnprocessableEntityException("Invalid Patient reference");
+				if (rt.equals("Practitioner") && user.role != UserRole.PROVIDER) throw new UnprocessableEntityException("Invalid Practitioner reference");
+			}
+			return id;
+		} catch (InternalServerException e) {
+			throw new InternalErrorException(e);
 		}
-		return id;
+	}
+	
+	public static boolean isUserFromMidata(IIdType ref) {
+		String rt = ref.getResourceType();
+		if (rt.equals("Patient") || rt.equals("Practitioner")) {
+			// TODO check base url
+			
+			return true;
+		}
+		return false;
+	}
+	
+	
+    public static Set<String> referencesToIds(Collection<ReferenceParam> refs) {
+		
+		Set<String> ids = new HashSet<String>();
+		for (ReferenceParam ref : refs)
+			ids.add(ref.getIdPart().toString());
+		return ids;				
 	}
 	
 	/*

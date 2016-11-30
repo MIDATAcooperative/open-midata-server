@@ -269,21 +269,9 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/DocumentReference");
 
-		
-		List<ReferenceParam> patients = builder.resolveReferences("patient", "Patient");
-		if (patients != null) {
-			query.putAccount("owner", referencesToIds(patients));
-		}
-
-		Set<String> codes = builder.tokensToCodeSystemStrings("type");
-		if (codes != null) {
-			query.putAccount("code", codes);
-			builder.restriction("type", "type", "CodeableConcept", false);
-		} else {
-			builder.restriction("type", "type", "CodeableConcept", true);
-		}
-		
-		
+		builder.recordOwnerReference("patient", "Patient");
+		builder.recordCodeRestriction("type", "type");
+				
 		builder.restriction("identifier", "Identifier", true, "identifier", "masterIdentifier");
 		builder.restriction("subject", null, true, "subject");
 		
@@ -357,35 +345,12 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 
 	public void prepare(Record record, DocumentReference theDocumentReference) {
 		// Set Record code and content
-		record.code = new HashSet<String>(); 
-		for (Coding coding : theDocumentReference.getType().getCoding()) {			
-			if (coding.getCode() != null && coding.getSystem() != null) {
-				record.code.add(coding.getSystem() + " " + coding.getCode());
-			}
-		}
-		try {
-			ContentInfo.setRecordCodeAndContent(record, record.code, null);
-		} catch (AppException e) {
-			throw new InternalErrorException(e);
-		}
+		setRecordCodeByCodeableConcept(record, theDocumentReference.getType(), "DocumentReference");		
 		record.name = theDocumentReference.getDescription();
 	
 		// clean
-		Reference subjectRef = theDocumentReference.getSubject();
-		boolean cleanSubject = true;
-		if (subjectRef != null) {
-			IIdType target = subjectRef.getReferenceElement();
-			if (target != null) {
-				String rt = target.getResourceType();
-				if (rt != null && rt.equals("Patient")) {
-					String tId = target.getIdPart();
-					if (! MidataId.isValid(tId)) throw new UnprocessableEntityException("Subject Reference not valid");
-					record.owner = new MidataId(tId);
-				} else cleanSubject = false;
-			}
-		}
-		
-		if (cleanSubject) theDocumentReference.setSubject(null);
+		Reference subjectRef = theDocumentReference.getSubject();	
+		if (cleanAndSetRecordOwner(record, theDocumentReference.getSubject())) theDocumentReference.setSubject(null);
 		clean(theDocumentReference);
 
 	}

@@ -160,21 +160,8 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Observation");
 
-		List<ReferenceParam> patients = builder.resolveReferences("patient", "Patient");
-		if (patients != null) {
-			query.putAccount("owner", referencesToIds(patients));
-		}
-
-		/*
-		Set<String> codes = builder.tokensToCodeSystemStrings("code");
-		if (codes != null) {
-			query.putAccount("code", codes);
-			builder.restriction("code", "code", "CodeableConcept", false);
-		} else {
-			builder.restriction("code", "code", "CodeableConcept", true);
-		}
-        */
-		
+		builder.recordOwnerReference("patient", "Patient");
+				
 		builder.restriction("authored", "Date", true, "authored");
 		builder.restriction("author", null, true, "author");
 		builder.restriction("based-on", null, true, "basedOn");
@@ -223,24 +210,8 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 		}
 		
 		record.name = "Questionnaire Response";
-
-		
-		// clean
-		Reference subjectRef = theQuestionnaireResponse.getSubject();
-		boolean cleanSubject = true;
-		if (subjectRef != null) {
-			IIdType target = subjectRef.getReferenceElement();
-			if (target != null) {
-				String rt = target.getResourceType();
-				if (rt != null && rt.equals("Patient")) {
-					String tId = target.getIdPart();
-					if (! MidataId.isValid(tId)) throw new UnprocessableEntityException("Subject Reference not valid");
-					record.owner = new MidataId(tId);
-				} else cleanSubject = false;
-			}
-		}
-		
-		if (cleanSubject) theQuestionnaireResponse.setSubject(null);
+				
+		if (cleanAndSetRecordOwner(record, theQuestionnaireResponse.getSubject())) theQuestionnaireResponse.setSubject(null);
 		clean(theQuestionnaireResponse);
 
 	}

@@ -8,6 +8,7 @@ import play.Application;
 import play.GlobalSettings;
 import play.libs.Json;
 import setup.MinimalSetup;
+import utils.AccessLog;
 import utils.db.DBLayer;
 import utils.db.DatabaseException;
 import utils.exceptions.AppException;
@@ -62,6 +63,7 @@ public class Global extends GlobalSettings {
 		try {
 		   RecordGroup.load();
 		} catch (AppException e) {
+		  AccessLog.logException("startup", e);
 		  throw new NullPointerException();
 		}
 		
