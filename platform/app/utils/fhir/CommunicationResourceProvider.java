@@ -195,11 +195,8 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Communication");
 
-		List<ReferenceParam> patients = builder.resolveReferences("patient", "Patient");
-		if (patients != null) {
-			query.putAccount("owner", referencesToIds(patients));
-		}
-
+		builder.recordOwnerReference("patient", "Patient");
+		
 		builder.restriction("identifier", "Identifier", true, "identifier");
 		builder.restriction("received", "Date", true, "received");
 		builder.restriction("sent", "Date", true, "sent");
@@ -277,30 +274,11 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		try {
 			ContentInfo.setRecordCodeAndContent(record, null, "Communication");
 		
-			String date;
-			//try {
-				date = theCommunication.getSentElement().toHumanDisplay();
-			//} catch (FHIRException e) {
-			//	throw new UnprocessableEntityException("Cannot process sent");
-			//}
+			String date = theCommunication.getSentElement().toHumanDisplay();			
 			record.name = date;
-	
-	
+		
 			// clean
-			Reference subjectRef = theCommunication.getSubject();
-			boolean cleanSubject = true;
-			if (subjectRef != null && !subjectRef.isEmpty()) {
-				IIdType target = subjectRef.getReferenceElement();
-				if (target != null && target.getIdPart().equals(info().executorId.toString())) {
-					
-				}  else {
-					cleanSubject = false;
-					record.owner = FHIRTools.getUserIdFromReference(target);
-					
-				}
-			}
-			
-			if (cleanSubject) theCommunication.setSubject(null);
+			if (cleanAndSetRecordOwner(record, theCommunication.getSubject())) theCommunication.setSubject(null);
 		} catch (AppException e) {
 			throw new InternalErrorException(e);
 		}

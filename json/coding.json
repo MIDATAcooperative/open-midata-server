@@ -178,3 +178,4 @@
 {"_id":{"$oid":"57d7cc3aaed64511e8f4d44e"},"system":"http://loinc.org","code":"18726-0","display":"Radiology studies","content":"documents/radiology"}
 {"_id":{"$oid":"57d7cc3aaed64511e8f4d44f"},"system":"http://loinc.org","code":"71230-7","display":"Birth certificate","content":"documents/birth-certificate"}
 {"_id":{"$oid":"57d7cc3aaed64511e8f4d450"},"system":"http://loinc.org","code":"53247-3","display":"Eligibility acknowledgement","content":"documents/eligibility-acknowledgement"}
+{"_id":{"$oid":"583d69dcaed6451303c0586e"},"system":"http://midata.coop","code":"Task","display":"Task","content":"Task"}

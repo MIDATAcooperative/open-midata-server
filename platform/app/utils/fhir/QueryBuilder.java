@@ -341,4 +341,45 @@ public class QueryBuilder {
 		AccessLog.log("B");
 		return result;
 	}
+
+	/**
+	 * Use a FHIR query parameter to restrict the record owner
+	 * @param name name of FHIR search parameter
+	 * @param refType Resource referenced (Patient, Practitioner, ...)
+	 */
+	public void recordOwnerReference(String name, String refType) {
+		List<ReferenceParam> patients = resolveReferences(name, refType);
+		if (patients != null) {
+			query.putAccount("owner", FHIRTools.referencesToIds(patients));
+		}
+		
+	}
+	
+	/**
+	 * Use a FHIR query parameter to restrict the record creator
+	 * @param name name of FHIR search parameter
+	 * @param refType Resource referenced (Patient, Practitioner, ...)
+	 */
+	public void recordCreatorReference(String name, String refType) {
+		List<ReferenceParam> patients = resolveReferences(name, refType);
+		if (patients != null) {
+			query.putAccount("creator", FHIRTools.referencesToIds(patients));
+		}
+		
+	}
+
+	/**
+	 * Use a FHIR query parameter to restrict the record code
+	 * @param name name of FHIR search parameter
+	 * @param path path of CodeableConcept in FHIR record 
+	 */
+	public void recordCodeRestriction(String name, String path) {
+		Set<String> codes = tokensToCodeSystemStrings(name);
+		if (codes != null) {
+			query.putAccount("code", codes);
+			restriction(name, path, "CodeableConcept", false);
+		} else {
+			restriction(name, path, "CodeableConcept", true);
+		}		
+	}
 }

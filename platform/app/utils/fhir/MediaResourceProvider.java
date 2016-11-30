@@ -176,21 +176,9 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Media");
 
-		
-		List<ReferenceParam> patients = builder.resolveReferences("patient", "Patient");
-		if (patients != null) {
-			query.putAccount("owner", referencesToIds(patients));
-		}
-
-		
-		Set<String> codes = builder.tokensToCodeSystemStrings("view");
-		if (codes != null) {
-			query.putAccount("code", codes);
-			builder.restriction("view", "view", "CodeableConcept", false);
-		} else {
-			builder.restriction("view", "view", "CodeableConcept", true);
-		}
-		
+		builder.recordOwnerReference("patient", "Patient");
+		builder.recordCodeRestriction("view", "view");
+				
 		builder.restriction("identifier", "Identifier", true, "identifier");
 		builder.restriction("created", "Date", true, "content.creation");
 		builder.restriction("subject", null, true, "subject");
@@ -241,41 +229,10 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 
 	public void prepare(Record record, Media theMedia) {
 		// Set Record code and content
-		record.code = new HashSet<String>();
-		try {
-			if (!theMedia.getView().isEmpty()) {
-				for (Coding coding : theMedia.getView().getCoding()) {			
-					if (coding.getCode() != null && coding.getSystem() != null) {
-						record.code.add(coding.getSystem() + " " + coding.getCode());
-					}
-				}
-			
-				ContentInfo.setRecordCodeAndContent(record, record.code, null);
-			
-			} else {
-				ContentInfo.setRecordCodeAndContent(record, null, "Media");
-			}
-		} catch (AppException e) {
-			throw new InternalErrorException(e);
-		}
+		setRecordCodeByCodeableConcept(record, theMedia.getView(), "Media");		
 		record.name = theMedia.getContent().getTitle();
-	
-		// clean
-		Reference subjectRef = theMedia.getSubject();
-		boolean cleanSubject = true;
-		if (subjectRef != null) {
-			IIdType target = subjectRef.getReferenceElement();
-			if (target != null) {
-				String rt = target.getResourceType();
-				if (rt != null && rt.equals("Patient")) {
-					String tId = target.getIdPart();
-					if (! MidataId.isValid(tId)) throw new UnprocessableEntityException("Subject Reference not valid");
-					record.owner = new MidataId(tId);
-				} else cleanSubject = false;
-			}
-		}
-		
-		if (cleanSubject) theMedia.setSubject(null);
+			
+		if (cleanAndSetRecordOwner(record, theMedia.getSubject())) theMedia.setSubject(null);
 		clean(theMedia);
 
 	}
