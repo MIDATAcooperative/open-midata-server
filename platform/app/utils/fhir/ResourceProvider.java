@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -14,7 +15,11 @@ import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.BaseResource;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
+import org.hl7.fhir.dstu3.model.Coding;
+import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.IdType;
+import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.instance.model.api.IBaseReference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
@@ -39,7 +44,10 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import ca.uhn.fhir.util.FhirTerser;
+import controllers.Circles;
 import controllers.PluginsAPI;
+import models.Consent;
+import models.ContentInfo;
 import models.MidataId;
 import models.Record;
 import utils.AccessLog;
@@ -48,6 +56,7 @@ import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 /**
  * Base class for FHIR resource providers. There is one provider subclass for each FHIR resource type.
@@ -153,13 +162,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
      }
 	
 	
-	public static Set<String> referencesToIds(Collection<ReferenceParam> refs) {
-		
-		Set<String> ids = new HashSet<String>();
-		for (ReferenceParam ref : refs)
-			ids.add(ref.getIdPart().toString());
-		return ids;				
-	}
+	
 	
 	
 	
@@ -312,7 +315,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 			record.data = (DBObject) JSON.parse(encoded);	
 			record.version = resource.getMeta().getVersionId();
-			RecordManager.instance.updateRecord(info().executorId, info().targetAPS, record);
+			record.version = RecordManager.instance.updateRecord(info().executorId, info().targetAPS, record);
 		} catch (AppException e) {
 			ErrorReporter.report("FHIR (update record)", null, e);	 
 			throw new InternalErrorException(e);
@@ -343,4 +346,86 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
         
 		return retVal;
 	}
+		
+	protected boolean cleanAndSetRecordOwner(Record record, Reference subjectRef)  {
+		boolean cleanSubject = true;
+		if (subjectRef != null) {
+			IIdType target = subjectRef.getReferenceElement();
+			if (target != null && !target.isEmpty()) {
+				String rt = target.getResourceType();
+																													
+				if (rt != null && rt.equals("Patient")) {
+					String tId = target.getIdPart();
+					if (tId.equals(info().executorId.toString())) {
+						
+					} else {
+						//cleanSubject = false;
+						record.owner = FHIRTools.getUserIdFromReference(target);
+					}
+					
+					
+				} else cleanSubject = false;
+			}
+		}
+		return cleanSubject;
+	}
+	
+	/**
+	 * Set record.code field based on a CodeableConcept field in the FHIR resource
+	 * @param record MIDATA record
+	 * @param cc CodeableConcept to set
+	 * @return display of codeable concept
+	 */
+	protected String setRecordCodeByCodeableConcept(Record record, CodeableConcept cc, String defaultContent) {
+	  record.code = new HashSet<String>(); 
+	  String display = null;
+	  try {
+		  if (cc != null && !cc.isEmpty()) {
+		  for (Coding coding : cc.getCoding()) {
+			if (coding.getDisplay() != null && display == null) display = coding.getDisplay();
+			if (coding.getCode() != null && coding.getSystem() != null) {
+				record.code.add(coding.getSystem() + " " + coding.getCode());
+			}
+		  }	  
+		  
+			ContentInfo.setRecordCodeAndContent(record, record.code, null);
+		  
+		  } else {
+			  ContentInfo.setRecordCodeAndContent(record, null, defaultContent);
+		  }
+	  } catch (AppException e) {
+		    ErrorReporter.report("FHIR (set record code)", null, e);	
+			throw new InternalErrorException(e);
+	  }
+	  return display;
+	}
+	
+	protected String stringFromDateTime(DateTimeType date) {
+		
+			return date.toHumanDisplay();
+		
+	}
+	
+	/**
+	 * Auto-share a record with all persons provided
+	 * @param record the record to be shared
+	 * @param personRefs collection of FHIR references
+	 * @throws AppException
+	 */
+	protected void shareWithPersons(Record record, Collection<IIdType> personRefs) throws AppException {
+	       ExecutionInfo inf = info();
+			
+			MidataId owner = record.owner;
+			
+			for (IIdType ref : personRefs) {
+				if (FHIRTools.isUserFromMidata(ref)) { 
+					   MidataId target = FHIRTools.getUserIdFromReference(ref);
+					   if (!target.equals(owner)) {
+					     Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, owner, target, owner);
+					     RecordManager.instance.share(inf.executorId, inf.executorId, consent._id, Collections.singleton(record._id), true);
+					   }
+				}
+			}
+	}
+
 }

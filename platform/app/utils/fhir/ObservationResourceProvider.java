@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.exceptions.FHIRException;
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.BooleanType;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
@@ -22,6 +21,7 @@ import org.hl7.fhir.dstu3.model.SampledData;
 import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.dstu3.model.TimeType;
 import org.hl7.fhir.dstu3.model.Type;
+import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -223,19 +223,9 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Observation");
 
-		List<ReferenceParam> patients = builder.resolveReferences("patient", "Patient");
-		if (patients != null) {
-			query.putAccount("owner", referencesToIds(patients));
-		}
-
-		Set<String> codes = builder.tokensToCodeSystemStrings("code");
-		if (codes != null) {
-			query.putAccount("code", codes);
-			builder.restriction("code", "code", "CodeableConcept", false);
-		} else {
-			builder.restriction("code", "code", "CodeableConcept", true);
-		}
-
+		builder.recordOwnerReference("patient", "Patient");
+        builder.recordCodeRestriction("code", "code");
+			
 		builder.restriction("date", "effectiveDateTime", "DateTime", true);
 		
 		builder.restriction("code-value-quantity", "code", "valueQuantity", "CodeableConcept", "Quantity");
@@ -301,22 +291,10 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 
 	public void prepare(Record record, Observation theObservation) {
 		// Set Record code and content
-		record.code = new HashSet<String>(); 
-		String display = null;
-		for (Coding coding : theObservation.getCode().getCoding()) {
-			if (coding.getDisplay() != null && display == null) display = coding.getDisplay();
-			if (coding.getCode() != null && coding.getSystem() != null) {
-				record.code.add(coding.getSystem() + " " + coding.getCode());
-			}
-		}		
+		String display = setRecordCodeByCodeableConcept(record, theObservation.getCode(), null);		
+		String date; 
 		try {
-			ContentInfo.setRecordCodeAndContent(record, record.code, null);
-		} catch (AppException e) {
-			throw new InternalErrorException(e);
-		}
-		String date;
-		try {
-			date = theObservation.getEffectiveDateTimeType().toHumanDisplay();
+			date = stringFromDateTime(theObservation.getEffectiveDateTimeType());
 		} catch (FHIRException e) {
 			throw new UnprocessableEntityException("Cannot process effectiveDateTime");
 		}
@@ -324,9 +302,9 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 
 		// Set Record subtype
 		Type valType = theObservation.getValue();
-		if (valType == null && theObservation.getComponent() != null) {
+		if ((valType == null || valType.isEmpty()) && !theObservation.getComponent().isEmpty()) {
 			record.subformat = "component";
-		} else if (valType == null) {
+		} else if (valType == null || valType.isEmpty()) {
 			throw new UnprocessableEntityException("Observation must have a value or component");
 		} else if (valType instanceof StringType)
 			record.subformat = "String";
@@ -355,22 +333,10 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 
 		// clean
 		Reference subjectRef = theObservation.getSubject();
-		boolean cleanSubject = true;
-		if (subjectRef != null) {
-			IIdType target = subjectRef.getReferenceElement();
-			if (target != null) {
-				String rt = target.getResourceType();
-				if (rt != null && rt.equals("Patient")) {
-					String tId = target.getIdPart();
-					if (! MidataId.isValid(tId)) throw new UnprocessableEntityException("Subject Reference not valid");
-					record.owner = new MidataId(tId);
-				} else cleanSubject = false;
-			}
-		}
+		if (cleanAndSetRecordOwner(record, subjectRef)) theObservation.setSubject(null);
 		
-		if (cleanSubject) theObservation.setSubject(null);
 		clean(theObservation);
-
+ 
 	}
 
 	/*
@@ -383,6 +349,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 	@Override
 	public void processResource(Record record, Observation p) {
 		super.processResource(record, p);
+		
 		if (p.getSubject().isEmpty()) {
 			p.getSubject().setReferenceElement(new IdType("Patient", record.owner.toString()));
 			p.getSubject().setDisplay(record.ownerName);

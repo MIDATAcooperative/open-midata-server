@@ -225,16 +225,9 @@ public class BasicResourceProvider extends ResourceProvider<Basic> implements IR
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, null);
 
-		List<ReferenceParam> patients = builder.resolveReferences("patient", "Patient");
-		if (patients != null) {
-			query.putAccount("owner", referencesToIds(patients));
-		}
+		builder.recordOwnerReference("patient", "Patient");		
+		builder.recordCreatorReference("author", "Patient");
 		
-		List<ReferenceParam> authors = builder.resolveReferences("author", "Patient");
-		if (authors != null) {
-			query.putAccount("creator", referencesToIds(authors));
-		}
-
 		Set<String> codes = builder.tokensToCodeSystemStrings("code");
 		if (codes != null) {
 			query.putAccount("code", codes);			
@@ -247,24 +240,10 @@ public class BasicResourceProvider extends ResourceProvider<Basic> implements IR
     public void prepare(Record record, Basic theBasic) {
     	
     	record.code = new HashSet<String>(); 
-		String display = null;
-		for (Coding coding : theBasic.getCode().getCoding()) {
-			if (coding.getDisplay() != null && display == null) display = coding.getDisplay();
-			if (coding.getCode() != null && coding.getSystem() != null) {
-				record.code.add(coding.getSystem() + " " + coding.getCode());
-			}
-		}
-		try {
-			ContentInfo.setRecordCodeAndContent(record, record.code, null);
-		} catch (AppException e) {
-			throw new InternalErrorException(e);
-		}
-		String date;
-		//try {
-			date = theBasic.getCreatedElement().asStringValue();
-		/*} catch (FHIRException e) {
-			throw new UnprocessableEntityException("Cannot process effectiveDateTime");
-		}*/
+		String display = setRecordCodeByCodeableConcept(record, theBasic.getCode(), "Basic");
+		
+		String date = theBasic.getCreatedElement().toHumanDisplay();
+		
 		record.name = display != null ? (display + " / " + date) : date;    	    	
     }
     

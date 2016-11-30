@@ -1,15 +1,20 @@
 package utils.fhir.transactions;
 
 import org.hl7.fhir.dstu3.model.BaseResource;
+import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.dstu3.model.Bundle.BundleEntryResponseComponent;
+import org.hl7.fhir.dstu3.model.Resource;
 
+import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import models.Record;
+import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
 
 /**
  * One action during a FHIR transaction or batch
  *
  */
-public class TransactionStep {
+public abstract class TransactionStep {
 
 	/**
 	 * the resource that shall be worked with
@@ -25,6 +30,11 @@ public class TransactionStep {
 	 * the resource provider belonging to the resource
 	 */
 	protected ResourceProvider<BaseResource> provider;
+	
+	/**
+	 * The response created by this transaction step
+	 */
+	protected BundleEntryComponent result;
 	
 	/**
 	 * returns the resource belonging to this action
@@ -56,5 +66,25 @@ public class TransactionStep {
 	 * execute this action
 	 */
 	public void execute() {}
+	
+	/**
+	 * Returns the response to this transaction step
+	 * @return response as BundleEntryComponent
+	 */
+	public BundleEntryComponent getResult() {
+		return result;
+	}
+	
+	/**
+	 * Convert an store an exception from HAPI FHIR into a bundle entry component to be returned for transactions/batches
+	 * @param e
+	 */
+	public void setResultBasedOnException(BaseServerResponseException e) {
+		result = new BundleEntryComponent();
+		BundleEntryResponseComponent response = new BundleEntryResponseComponent();		
+		response.setStatus(""+e.getStatusCode());		
+		response.setOutcome((Resource) e.getOperationOutcome());
+		result.setResponse(response);
+	}
 	
 }
