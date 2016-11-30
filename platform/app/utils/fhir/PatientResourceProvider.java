@@ -8,6 +8,7 @@ import java.util.Set;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.dstu3.model.Patient;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -65,7 +66,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
  
    
     @Search()
-    public List<Patient> getPatient(
+    public List<IBaseResource> getPatient(
     		@Description(shortDefinition="The resource identity")
     		@OptionalParam(name="_id")
     		StringAndListParam theId, 
@@ -293,7 +294,12 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Patient");
-
+		
+		if (params.containsKey("_id")) {
+	           Set<String> ids = builder.paramToStrings("_id");
+	           if (ids != null) query.putAccount("owner", ids);
+		}
+		
 		builder.restriction("identifier", "identifier", "Identifier", true);
 		builder.restriction("family", "name.family", "String", true);
 		builder.restriction("birthdate", "birthDate", "Date", true);

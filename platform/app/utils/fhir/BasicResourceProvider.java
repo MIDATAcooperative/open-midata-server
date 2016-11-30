@@ -13,6 +13,7 @@ import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.StringType;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -114,7 +115,7 @@ public class BasicResourceProvider extends ResourceProvider<Basic> implements IR
     
     
     @Search()
-    public List<Basic> getBasic(
+    public List<IBaseResource> getBasic(
     		@Description(shortDefinition="The resource identity")
     		@OptionalParam(name="_id")
     		StringAndListParam theId, 
@@ -225,6 +226,7 @@ public class BasicResourceProvider extends ResourceProvider<Basic> implements IR
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, null);
 
+		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");		
 		builder.recordCreatorReference("author", "Patient");
 		

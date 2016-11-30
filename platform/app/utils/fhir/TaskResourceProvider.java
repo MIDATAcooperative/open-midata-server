@@ -11,6 +11,7 @@ import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.Task;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -46,13 +47,21 @@ import utils.exceptions.AppException;
 
 public class TaskResourceProvider extends ResourceProvider<Task> implements IResourceProvider {
 
+	public TaskResourceProvider() {
+		
+		searchParamNameToPathMap.put("Task:focus", "focus");
+		searchParamNameToPathMap.put("Task:owner", "owner");
+		searchParamNameToPathMap.put("Task:patient", "for");
+		searchParamNameToPathMap.put("Task:requester", "requester");				
+	}
+	
 	@Override
 	public Class<Task> getResourceType() {
 		return Task.class;
 	}
 
 	@Search()
-	public List<Task> getTask(
+	public List<IBaseResource> getTask(
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
@@ -207,6 +216,8 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
         
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Task");
+		
+		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 		builder.recordCodeRestriction("code", "code");
 		

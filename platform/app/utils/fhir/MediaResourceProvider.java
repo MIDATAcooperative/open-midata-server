@@ -10,6 +10,7 @@ import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Media;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -46,7 +47,7 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 	}
 
 	@Search()
-	public List<Media> getMedia(
+	public List<IBaseResource> getMedia(
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
@@ -176,6 +177,7 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Media");
 
+		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 		builder.recordCodeRestriction("view", "view");
 				

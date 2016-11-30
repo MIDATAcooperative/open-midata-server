@@ -11,6 +11,7 @@ import org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceContentCompon
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -51,7 +52,7 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 	}
 
 	@Search()
-	public List<DocumentReference> getDocumentReference(
+	public List<IBaseResource> getDocumentReference(
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
 			
@@ -269,6 +270,7 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/DocumentReference");
 
+		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 		builder.recordCodeRestriction("type", "type");
 				

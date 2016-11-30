@@ -22,6 +22,7 @@ import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.dstu3.model.TimeType;
 import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -58,13 +59,23 @@ import utils.exceptions.AppException;
 
 public class ObservationResourceProvider extends ResourceProvider<Observation> implements IResourceProvider {
 
+	public ObservationResourceProvider() {
+		searchParamNameToPathMap.put("Observation:device", "device");
+		searchParamNameToPathMap.put("Observation:encounter", "encounter");
+		searchParamNameToPathMap.put("Observation:patient", "subject");
+		searchParamNameToPathMap.put("Observation:performer", "performer");
+		searchParamNameToPathMap.put("Observation:related-target", "related.target");
+		searchParamNameToPathMap.put("Observation:specimen", "specimen");
+		searchParamNameToPathMap.put("Observation:subject", "subject");		
+	}
+	
 	@Override
 	public Class<Observation> getResourceType() {
 		return Observation.class;
 	}
 
 	@Search()
-	public List<Observation> getObservation(
+	public List<IBaseResource> getObservation(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
 
 			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
@@ -156,8 +167,15 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 			@IncludeParam(reverse = true) Set<Include> theRevIncludes,
 			@Description(shortDefinition = "Only return resources which were last updated as specified by the given range") @OptionalParam(name = "_lastUpdated") DateRangeParam theLastUpdated,
 
-			@IncludeParam(allow = { "Observation:device", "Observation:encounter", "Observation:patient", "Observation:performer", "Observation:related-target", "Observation:specimen",				
-					"Observation:subject", "*" }) Set<Include> theIncludes,
+			@IncludeParam(allow = { 
+					"Observation:device", 
+					"Observation:encounter", 
+					"Observation:patient", 
+					"Observation:performer", 
+					"Observation:related-target", 
+					"Observation:specimen",				
+					"Observation:subject", 
+					"*" }) Set<Include> theIncludes,
 
 			@Sort SortSpec theSort,
 
@@ -223,6 +241,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Observation");
 
+		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
         builder.recordCodeRestriction("code", "code");
 			

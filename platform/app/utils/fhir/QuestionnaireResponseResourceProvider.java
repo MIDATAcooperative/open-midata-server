@@ -7,6 +7,7 @@ import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.QuestionnaireResponse;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -43,7 +44,7 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 	}
 
 	@Search()
-	public List<QuestionnaireResponse> getQuestionnaireResponse(
+	public List<IBaseResource> getQuestionnaireResponse(
 		
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
@@ -160,6 +161,7 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Observation");
 
+		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 				
 		builder.restriction("authored", "Date", true, "authored");

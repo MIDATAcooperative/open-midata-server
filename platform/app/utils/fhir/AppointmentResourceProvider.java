@@ -14,6 +14,7 @@ import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Practitioner;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.Task;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -53,7 +54,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 	}
 
 	@Search()
-	public List<Appointment> getAppointment(
+	public List<IBaseResource> getAppointment(
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
@@ -182,6 +183,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Appointment");
 		
+		builder.handleIdRestriction();
 		builder.restriction("identifier", "Identifier", true, "identifier");
 		builder.restriction("date", "date", true, "start");
 		builder.restriction("actor", null, true, "participant.actor");

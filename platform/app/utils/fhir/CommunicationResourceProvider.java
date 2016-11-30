@@ -9,6 +9,7 @@ import org.hl7.fhir.dstu3.model.Communication;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -48,7 +49,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 	}
 
 	@Search()
-	public List<Communication> getCommunication(
+	public List<IBaseResource> getCommunication(
 			
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
@@ -195,6 +196,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Communication");
 
+		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 		
 		builder.restriction("identifier", "Identifier", true, "identifier");

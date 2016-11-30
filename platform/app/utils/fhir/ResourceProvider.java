@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.Attachment;
@@ -34,6 +36,7 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.ReferenceOrListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
@@ -121,10 +124,11 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	public abstract List<Record> searchRaw(SearchParameterMap params) throws AppException;
 		
 	
-	public List<T> search(SearchParameterMap params) {
-		try {									
+	public List<IBaseResource> search(SearchParameterMap params) {
+		try {		
+			List<IBaseResource> results = new ArrayList<IBaseResource>();
 		   List<T> resources = parse(searchRaw(params), getResourceType());	
-		   
+		   results.addAll(resources);
 		   if (!params.getIncludes().isEmpty()) {
 			   FhirTerser terser = ResourceProvider.ctx().newTerser();
 			   
@@ -132,25 +136,51 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 				   for (T res : resources) {
 					   String type = inc.getParamType();
 					   String name = inc.getParamName();
+					   String path = type + "." + searchParamNameToPathMap.get(type + ":" + name);
 					   
-					   List<IBaseReference> refs = terser.getValues(res, type+"."+name, IBaseReference.class);
+					   List<IBaseReference> refs = terser.getValues(res, path, IBaseReference.class);
 					   if (refs != null) {
 						   for (IBaseReference r : refs) {
 							   IIdType refElem = r.getReferenceElement();
-							   IBaseResource result = FHIRServlet.myProviders.get(refElem.getResourceType()).getResourceById(refElem);
-							   
-							   //r.setDisplay(null);
-							   //r.setReference(null);
-							   r.setResource(result);							  
+							   ResourceProvider prov = FHIRServlet.myProviders.get(refElem.getResourceType());
+							   if (prov != null) {
+								   IBaseResource result = prov.getResourceById(refElem);
+								   
+								   r.setResource(result);
+								   results.add(result);
+								   
+								   
+								   /*r.setDisplay(null);
+								   r.setReference(null);*/
+								   
+							   }
 							   
 							   
 						   }
 					   }
 				   }
 			   }
+			   
+			   
 		   }
 		   
-		   return resources;
+		   if (!params.getRevIncludes().isEmpty()) {
+			   for (Include inc : params.getRevIncludes()) {
+				   String type = inc.getParamType();
+				   String name = inc.getParamName();				   
+				   ReferenceOrListParam vals = new ReferenceOrListParam();
+				   for (T res : resources) {
+				      vals.add(new ReferenceParam(type+"/"+res.getId()));
+				   }
+				   ResourceProvider prov = FHIRServlet.myProviders.get(type);
+				   SearchParameterMap newsearch = new SearchParameterMap();
+				   newsearch.add(name, vals);
+				   List<IBaseResource> alsoAdd = prov.search(newsearch);
+				   results.addAll(alsoAdd);  					   				   				   				   
+			   }
+		   }
+		   
+		   return results;
 
 	    } catch (AppException e) {
 	       ErrorReporter.report("FHIR (search)", null, e);	       
@@ -162,9 +192,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
      }
 	
 	
-	
-	
-	
+	protected static Map<String,String> searchParamNameToPathMap = new HashMap<String,String>();		
 	
 	public static Set<String> tokensToStrings(TokenOrListParam params) {
 		Set<String> result = new HashSet<String>();
@@ -203,7 +231,8 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	public void processResource(Record record, T resource) {
 		resource.setId(record._id.toString());
 		resource.getMeta().setVersionId(record.version);
-		resource.getMeta().setLastUpdated(record.lastUpdated);
+		if (record.lastUpdated == null) resource.getMeta().setLastUpdated(record.created);
+		else resource.getMeta().setLastUpdated(record.lastUpdated);
 	}
 	
 	public static Record newRecord(String format) {
