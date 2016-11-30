@@ -62,7 +62,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 			@Description(shortDefinition="The resource language")
 			@OptionalParam(name="_language")
 			StringAndListParam theResourceLanguage, 
-			  
+			/*  
 			@Description(shortDefinition="Search the contents of the resource's data using a fulltext search")
 			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT)
 			StringAndListParam theFtContent, 
@@ -82,7 +82,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 			@Description(shortDefinition="Search for resources which have the given profile")
 			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE)
 			UriAndListParam theSearchForProfile, 
-			
+			*/
 			/*
 			@Description(shortDefinition="Return resources linked to by the given target")
 			@OptionalParam(name="_has")
