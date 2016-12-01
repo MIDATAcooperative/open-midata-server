@@ -3,6 +3,7 @@ package utils.access;
 import com.mongodb.BasicDBList;
 
 import models.APSNotExistingException;
+import models.Consent;
 import models.MidataId;
 import utils.AccessLog;
 import utils.collections.Sets;
@@ -65,12 +66,17 @@ public class RecordLifecycle {
 		if (rec.stream != null) cache.getAPS(rec.stream).touch();
 		if (rec.watches == null) return;
 		for (Object watch : rec.watches) {
+			Consent.set(new MidataId(watch.toString()), "dataupdate", System.currentTimeMillis());
+			/*
 			try {
 			   cache.getAPS(new MidataId(watch.toString())).touch();
 			} catch (APSNotExistingException e) {
 				AccessLog.log("APS not existing in notify of change:"+watch.toString());
 			}
+			*/
 		}
 	}
+		
+		
 
 }

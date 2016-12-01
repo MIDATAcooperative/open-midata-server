@@ -634,6 +634,8 @@ public class RecordManager {
 								
 		RecordEncryption.encryptRecord(record);		
 	    if (upsert) { DBRecord.upsert(record); } else { DBRecord.add(record); }	  
+	    
+	    //RecordLifecycle.notifyOfCreation(record, getCache(executingPerson));
 	    AccessLog.logEnd("End Add Record");				
 		return usedKey;	
 	}

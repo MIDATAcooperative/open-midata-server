@@ -81,6 +81,11 @@ public class Consent extends Model {
 	 */
 	public @NotMaterialized Date createdBefore;
 	
+	/**
+	 * Internal timestamp of last data change for faster queries
+	 */
+	public long dataupdate;
+	
 	public static Consent getByIdAndOwner(MidataId consentId, MidataId ownerId, Set<String> fields) throws InternalServerException {
 		return Model.get(Consent.class, collection, CMaps.map("_id", consentId).map("owner", ownerId), fields);
 	}
