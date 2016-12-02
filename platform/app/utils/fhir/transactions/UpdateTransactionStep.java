@@ -21,12 +21,17 @@ public class UpdateTransactionStep extends TransactionStep {
     	record = ResourceProvider.fetchCurrent(resource.getIdElement());
     }
 	
-	public void prepare() { 	
-		provider.prepare(record, resource);		
+	public void prepare() { 
+		try { 
+		  provider.prepare(record, resource);
+		} catch (Exception e) {
+		  setResultBasedOnException(e);
+		}
 	}
 	
 	public void execute() {
 		
+		try {
 		if (result == null) {
 			provider.updateRecord(record, resource);
 			result = new BundleEntryComponent();
@@ -35,6 +40,9 @@ public class UpdateTransactionStep extends TransactionStep {
 			response.setStatus("200 OK");
 			response.setLocation(FHIRServlet.getBaseUrl()+"/"+provider.getResourceType().getSimpleName()+"/"+record._id.toString()+"/_history/"+record.version);
 			result.setResponse(response);
+		}
+		} catch (Exception e) {
+			setResultBasedOnException(e);
 		}
 		
 	}

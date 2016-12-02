@@ -18,7 +18,11 @@ public class GetTransactionStep extends TransactionStep {
     }
 	
 	public void prepare() { 
-		provider.prepare(record, resource);
+		try {
+		  provider.prepare(record, resource);
+		} catch (Exception e) {
+		  setResultBasedOnException(e);
+		}
 	}
 	
 	public void execute() {
