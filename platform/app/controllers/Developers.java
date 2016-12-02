@@ -11,7 +11,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import actions.APICall;
 import models.Admin;
 import models.Developer;
+import models.Member;
 import models.MidataId;
+import models.User;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
@@ -21,10 +23,14 @@ import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
+import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
+import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
+import utils.auth.DeveloperSecured;
 import utils.auth.KeyManager;
+import utils.auth.PasswordResetToken;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -137,5 +143,31 @@ public class Developers extends APIController {
 		return Application.loginHelper(user);
 						
 		// if (keytype == 0 && AccessPermissionSet.getById(user._id) == null) RecordManager.instance.createPrivateAPS(user._id, user._id);		
+	}
+	
+	/**
+	 * Creates a change password link for a test account
+	 * @return
+	 * @throws AppException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(DeveloperSecured.class)
+	public static Result resetTestAccountPassword() throws AppException {
+		JsonNode json = request().body().asJson();
+			
+		MidataId developerId = new MidataId(request().username());
+		MidataId targetUserId = JsonValidation.getMidataId(json, "user");
+		User target = User.getById(targetUserId, Sets.create("developer", "role", "password"));		
+		if (target == null || !target.developer.equals(developerId)) throw new BadRequestException("error.unknown.user", "No test user");
+		
+		PasswordResetToken token = new PasswordResetToken(target._id, target.role.toString().toLowerCase());
+		target.set("resettoken", token.token);
+		target.set("resettokenTs", System.currentTimeMillis());
+		String encrypted = token.encrypt();
+			   		
+		String url = "/#/portal/setpw?token=" + encrypted;
+						
+		return ok(url);		
 	}
 }

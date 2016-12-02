@@ -19,10 +19,15 @@
     "title" : "Test Users",
     "empty" : "There are no test users registered for this account.",
     "role" : "Role",
+    "resetpw" : "New Password",
     "description" : "Using these buttons you can register additional users for testing your plugins. These users will use plugins developed by you from 'localhost' instead from the server.",
     "register_member_btn" : "Register Account Holder",
     "register_hp_btn" : "Register Health Provider",
     "register_researcher_btn" : "Register Researcher"
+  },
+  
+  "developer_yourapps" : {
+    "title" : "Your Plugins"
   },
   
   "manageapp" : {

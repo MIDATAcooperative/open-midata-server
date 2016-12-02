@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('TestUsersCtrl', ['$scope', '$state', 'views', 'session', 'users', 'status', '$translatePartialLoader', function($scope, $state, views, session, users, status, $translatePartialLoader) {
+.controller('TestUsersCtrl', ['$scope', '$state', 'views', 'session', 'users', 'server', 'status', '$translatePartialLoader', function($scope, $state, views, session, users, server, status, $translatePartialLoader) {
 
 	$scope.status = new status(true);    
 	    
@@ -9,7 +9,15 @@ angular.module('portal')
 		.then(function(data) {
 			$scope.members = data.data;						
 		});
-	};				
+	};	
+	
+	$scope.resetPassword = function(member) {
+		console.log(member);
+		$scope.status.doBusy(server.post(jsRoutes.controllers.Developers.resetTestAccountPassword().url, JSON.stringify({ user : member._id })))
+		.then(function(data) {
+			document.location.href=data.data;
+		});
+	};
 	
 	session.currentUser.then(function(userId) { $scope.userId = userId; $scope.reload(userId); });
 	
