@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.Appointment;
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.DocumentReference;
@@ -11,6 +12,7 @@ import org.hl7.fhir.dstu3.model.DocumentReference.DocumentReferenceContentCompon
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -51,7 +53,7 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 	}
 
 	@Search()
-	public List<DocumentReference> getDocumentReference(
+	public List<IBaseResource> getDocumentReference(
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
 			
@@ -269,6 +271,7 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/DocumentReference");
 
+		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 		builder.recordCodeRestriction("type", "type");
 				
@@ -314,7 +317,13 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 	}
 
 	@Create
-	public MethodOutcome createDocumenentReference(@ResourceParam DocumentReference theDocumentReference) {
+	@Override
+	public MethodOutcome createResource(@ResourceParam DocumentReference theDocumentReference) {
+		return super.createResource(theDocumentReference);
+	}
+		
+	@Override
+	protected MethodOutcome create(DocumentReference theDocumentReference) throws AppException {
 
 		Record record = newRecord("fhir/DocumentReference");
 		prepare(record, theDocumentReference);
@@ -336,14 +345,20 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 	public Record init() { return newRecord("fhir/DocumentReference"); }
 
 	@Update
-	public MethodOutcome updateDocumentReference(@IdParam IdType theId, @ResourceParam DocumentReference theDocumentReference) {
+	@Override
+	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam DocumentReference theDocumentReference) {
+		return super.updateResource(theId, theDocumentReference);
+	}
+	
+	@Override
+	protected MethodOutcome update(@IdParam IdType theId, @ResourceParam DocumentReference theDocumentReference) throws AppException {
 		Record record = fetchCurrent(theId);
 		prepare(record, theDocumentReference);
 		updateRecord(record, theDocumentReference);
 		return outcome("DocumentReference", record, theDocumentReference);
 	}
 
-	public void prepare(Record record, DocumentReference theDocumentReference) {
+	public void prepare(Record record, DocumentReference theDocumentReference) throws AppException {
 		// Set Record code and content
 		setRecordCodeByCodeableConcept(record, theDocumentReference.getType(), "DocumentReference");		
 		record.name = theDocumentReference.getDescription();

@@ -180,6 +180,7 @@ GET     /providers/api/member/:member                    controllers.providers.P
 # Developers
 POST    /developers/api/register                          controllers.Developers.register()
 POST    /developers/api/login                             controllers.Developers.login()
+POST    /developers/api/testuser/resetpw                  controllers.Developers.resetTestAccountPassword()
 
 # Admins
 POST    /admins/api/register                             controllers.admin.Administration.register()

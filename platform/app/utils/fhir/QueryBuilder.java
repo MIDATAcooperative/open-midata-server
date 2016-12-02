@@ -55,6 +55,14 @@ public class QueryBuilder {
 		if (params.getCount() != null) {
 			query.putAccount("limit", params.getCount());
 		}		
+		
+	}
+	
+	public void handleIdRestriction() {
+		if (params.containsKey("_id")) {
+	           Set<String> ids = paramToStrings("_id");
+	           if (ids != null) query.putAccount("_id", ids);
+		}
 	}
 	
 	public void restriction(String name, String path1, String path2, String type1, String type2) {
@@ -327,18 +335,36 @@ public class QueryBuilder {
 		  if (paramsOr == null) continue;
 		  for (IQueryParameterType p2 : paramsOr) {
 			TokenParam p = (TokenParam) p2;
-			AccessLog.log("tp="+p);
-			AccessLog.log(p.toString());
+			
 			if (p == null) continue;
 			//if (p.getMissing()) return null;
 			if (p.getModifier() != null) return null;
-			AccessLog.log("A");
+			
 			if (p.getSystem() != null && p.getValue() != null) {
 			  result.add(p.getSystem()+" "+p.getValue());
 			} else return null;
 		  }
 		}
-		AccessLog.log("B");
+	
+		return result;
+	}
+	
+	public Set<String> paramToStrings(String name) {
+		List<List<? extends IQueryParameterType>> paramsAnd = params.get(name);
+		if (paramsAnd == null) return null;
+		
+		Set<String> result = new HashSet<String>();
+		for (List<? extends IQueryParameterType> paramsOr : paramsAnd) {
+		  if (paramsOr == null) continue;
+		  for (IQueryParameterType p2 : paramsOr) {
+			StringParam p = (StringParam) p2;
+			
+			if (p == null) continue;
+			
+			result.add(p.getValue());		
+		  }
+		}
+	
 		return result;
 	}
 

@@ -6,11 +6,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.Appointment;
 import org.hl7.fhir.dstu3.model.Communication;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.Task;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -46,13 +48,21 @@ import utils.exceptions.AppException;
 
 public class TaskResourceProvider extends ResourceProvider<Task> implements IResourceProvider {
 
+	public TaskResourceProvider() {
+		
+		searchParamNameToPathMap.put("Task:focus", "focus");
+		searchParamNameToPathMap.put("Task:owner", "owner");
+		searchParamNameToPathMap.put("Task:patient", "for");
+		searchParamNameToPathMap.put("Task:requester", "requester");				
+	}
+	
 	@Override
 	public Class<Task> getResourceType() {
 		return Task.class;
 	}
 
 	@Search()
-	public List<Task> getTask(
+	public List<IBaseResource> getTask(
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
@@ -207,6 +217,8 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
         
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Task");
+		
+		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 		builder.recordCodeRestriction("code", "code");
 		
@@ -229,7 +241,13 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 	}
 
 	@Create
-	public MethodOutcome createTask(@ResourceParam Task theTask) throws AppException {
+	@Override
+	public MethodOutcome createResource(@ResourceParam Task theTask) {
+		return super.createResource(theTask);
+	}
+	
+	@Override
+	protected MethodOutcome create(Task theTask) throws AppException {
 
 		Record record = newRecord("fhir/Task");
 		
@@ -257,20 +275,17 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 	public Record init() { return newRecord("fhir/Task"); }
 
 	@Update
-	public MethodOutcome updateTask(@IdParam IdType theId, @ResourceParam Task theTask) {
+	public MethodOutcome updateTask(@IdParam IdType theId, @ResourceParam Task theTask) throws AppException {
 		Record record = fetchCurrent(theId);
 		prepare(record, theTask);		
 		updateRecord(record, theTask);	
-		try {
-		  shareRecord(record, theTask);
-		} catch (AppException e) {
-			ErrorReporter.report("FHIR (update Task)", null, e);	
-			throw new InternalErrorException(e);
-		}
+		
+		shareRecord(record, theTask);
+		
 		return outcome("Task", record, theTask);
 	}
 
-	public void prepare(Record record, Task theTask) {
+	public void prepare(Record record, Task theTask) throws AppException {
 		// Set Record code and content
 		String display = setRecordCodeByCodeableConcept(record, theTask.getCode(), "Task");
 		record.name = display != null ? display : "Task";

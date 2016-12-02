@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.Appointment;
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.BooleanType;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
@@ -22,6 +23,7 @@ import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.dstu3.model.TimeType;
 import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.exceptions.FHIRException;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -58,13 +60,23 @@ import utils.exceptions.AppException;
 
 public class ObservationResourceProvider extends ResourceProvider<Observation> implements IResourceProvider {
 
+	public ObservationResourceProvider() {
+		searchParamNameToPathMap.put("Observation:device", "device");
+		searchParamNameToPathMap.put("Observation:encounter", "encounter");
+		searchParamNameToPathMap.put("Observation:patient", "subject");
+		searchParamNameToPathMap.put("Observation:performer", "performer");
+		searchParamNameToPathMap.put("Observation:related-target", "related.target");
+		searchParamNameToPathMap.put("Observation:specimen", "specimen");
+		searchParamNameToPathMap.put("Observation:subject", "subject");		
+	}
+	
 	@Override
 	public Class<Observation> getResourceType() {
 		return Observation.class;
 	}
 
 	@Search()
-	public List<Observation> getObservation(
+	public List<IBaseResource> getObservation(
 			@Description(shortDefinition = "The resource identity") @OptionalParam(name = "_id") StringAndListParam theId,
 
 			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
@@ -156,8 +168,15 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 			@IncludeParam(reverse = true) Set<Include> theRevIncludes,
 			@Description(shortDefinition = "Only return resources which were last updated as specified by the given range") @OptionalParam(name = "_lastUpdated") DateRangeParam theLastUpdated,
 
-			@IncludeParam(allow = { "Observation:device", "Observation:encounter", "Observation:patient", "Observation:performer", "Observation:related-target", "Observation:specimen",				
-					"Observation:subject", "*" }) Set<Include> theIncludes,
+			@IncludeParam(allow = { 
+					"Observation:device", 
+					"Observation:encounter", 
+					"Observation:patient", 
+					"Observation:performer", 
+					"Observation:related-target", 
+					"Observation:specimen",				
+					"Observation:subject", 
+					"*" }) Set<Include> theIncludes,
 
 			@Sort SortSpec theSort,
 
@@ -223,6 +242,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Observation");
 
+		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
         builder.recordCodeRestriction("code", "code");
 			
@@ -266,7 +286,13 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 	}
 
 	@Create
-	public MethodOutcome createObservation(@ResourceParam Observation theObservation) {
+	@Override
+	public MethodOutcome createResource(@ResourceParam Observation theObservation) {
+		return super.createResource(theObservation);
+	}
+	
+	@Override
+	protected MethodOutcome create(Observation theObservation) throws AppException {
 
 		Record record = newRecord("fhir/Observation");
 		prepare(record, theObservation);
@@ -282,21 +308,29 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 	public Record init() { return newRecord("fhir/Observation"); }
 
 	@Update
-	public MethodOutcome updateObservation(@IdParam IdType theId, @ResourceParam Observation theObservation) {
+	@Override
+	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Observation theObservation) {
+		return super.updateResource(theId, theObservation);
+	}
+	
+	@Override
+	protected MethodOutcome update(@IdParam IdType theId, @ResourceParam Observation theObservation) throws AppException {
 		Record record = fetchCurrent(theId);
 		prepare(record, theObservation);		
 		updateRecord(record, theObservation);		
 		return outcome("Observation", record, theObservation);
 	}
 
-	public void prepare(Record record, Observation theObservation) {
+	public void prepare(Record record, Observation theObservation) throws AppException {
 		// Set Record code and content
 		String display = setRecordCodeByCodeableConcept(record, theObservation.getCode(), null);		
-		String date; 
-		try {
-			date = stringFromDateTime(theObservation.getEffectiveDateTimeType());
-		} catch (FHIRException e) {
-			throw new UnprocessableEntityException("Cannot process effectiveDateTime");
+		String date = "No time";		
+		if (theObservation.hasEffectiveDateTimeType()) {
+			try {
+				date = stringFromDateTime(theObservation.getEffectiveDateTimeType());
+			} catch (FHIRException e) {
+				throw new UnprocessableEntityException("Cannot process effectiveDateTime");
+			}
 		}
 		record.name = display != null ? (display + " / " + date) : date;
 

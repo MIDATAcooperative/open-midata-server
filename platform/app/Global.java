@@ -45,6 +45,7 @@ public class Global extends GlobalSettings {
 		  FHIR.servlet.setFhirContext(ResourceProvider.ctx);
 		  FHIR.servlet.init(new PlayHttpServletConfig());
 		} catch (ServletException e) {
+			AccessLog.logException("startup", e);
 		   throw new NullPointerException();
 		}
 		

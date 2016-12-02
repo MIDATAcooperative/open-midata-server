@@ -3,10 +3,12 @@ package utils.fhir;
 import java.util.List;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.Appointment;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.QuestionnaireResponse;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -43,7 +45,7 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 	}
 
 	@Search()
-	public List<QuestionnaireResponse> getQuestionnaireResponse(
+	public List<IBaseResource> getQuestionnaireResponse(
 		
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
@@ -160,6 +162,7 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Observation");
 
+		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 				
 		builder.restriction("authored", "Date", true, "authored");
@@ -177,7 +180,13 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 	}
 
 	@Create
-	public MethodOutcome createQuestionnaireResponse(@ResourceParam QuestionnaireResponse theQuestionnaireResponse) {
+	@Override
+	public MethodOutcome createResource(@ResourceParam QuestionnaireResponse theQuestionnaireResponse) {
+		return super.createResource(theQuestionnaireResponse);
+	}
+	
+	@Override
+	protected MethodOutcome create(QuestionnaireResponse theQuestionnaireResponse) throws AppException {
 
 		Record record = newRecord("fhir/QuestionnaireResponse");
 		prepare(record, theQuestionnaireResponse);
@@ -193,22 +202,24 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 	public Record init() { return newRecord("fhir/QuestionnaireResponse"); }
 
 	@Update
-	public MethodOutcome updateQuestionnaireResponse(@IdParam IdType theId, @ResourceParam QuestionnaireResponse theQuestionnaireResponse) {
+	@Override
+	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam QuestionnaireResponse theQuestionnaireResponse) {
+		return super.updateResource(theId, theQuestionnaireResponse);
+	}
+	
+	@Override
+	protected MethodOutcome update(@IdParam IdType theId, @ResourceParam QuestionnaireResponse theQuestionnaireResponse) throws AppException {
 		Record record = fetchCurrent(theId);
 		prepare(record, theQuestionnaireResponse);		
 		updateRecord(record, theQuestionnaireResponse);		
 		return outcome("QuestionnaireResponse", record, theQuestionnaireResponse);
 	}
 
-	public void prepare(Record record, QuestionnaireResponse theQuestionnaireResponse) {
+	public void prepare(Record record, QuestionnaireResponse theQuestionnaireResponse) throws AppException {
 		// Set Record code and content
-		
-		try {
-			ContentInfo.setRecordCodeAndContent(record, null, "QuestionnaireResponse");
-		} catch (AppException e) {
-			throw new InternalErrorException(e);
-		}
-		
+				
+		ContentInfo.setRecordCodeAndContent(record, null, "QuestionnaireResponse");
+				
 		record.name = "Questionnaire Response";
 				
 		if (cleanAndSetRecordOwner(record, theQuestionnaireResponse.getSubject())) theQuestionnaireResponse.setSubject(null);

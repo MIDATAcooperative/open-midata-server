@@ -5,10 +5,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.Appointment;
 import org.hl7.fhir.dstu3.model.Communication;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -48,7 +50,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 	}
 
 	@Search()
-	public List<Communication> getCommunication(
+	public List<IBaseResource> getCommunication(
 			
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
@@ -195,6 +197,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Communication");
 
+		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 		
 		builder.restriction("identifier", "Identifier", true, "identifier");
@@ -213,7 +216,13 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 	}
 
 	@Create
-	public MethodOutcome createCommunication(@ResourceParam Communication theCommunication) throws AppException {
+	@Override
+	public MethodOutcome createResource(@ResourceParam Communication theCommunication) {
+		return super.createResource(theCommunication);
+	}
+	
+	@Override
+	protected MethodOutcome create(Communication theCommunication) throws AppException {
 
 		Record record = newRecord("fhir/Communication");
 		prepareForSharing(theCommunication);
@@ -261,27 +270,31 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 	public Record init() { return newRecord("fhir/Communication"); }
 
 	@Update
-	public MethodOutcome updateCommunication(@IdParam IdType theId, @ResourceParam Communication theCommunication) {
+	@Override
+	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Communication theCommunication) {
+		return super.updateResource(theId, theCommunication);
+	}
+		
+	@Override
+	public MethodOutcome update(@IdParam IdType theId, @ResourceParam Communication theCommunication) throws AppException {
 		Record record = fetchCurrent(theId);
 		prepare(record, theCommunication);		
 		updateRecord(record, theCommunication);		
 		return outcome("Communication", record, theCommunication);
 	}
 
-	public void prepare(Record record, Communication theCommunication) {
+	public void prepare(Record record, Communication theCommunication) throws AppException {
 		// Set Record code and content
 		
-		try {
-			ContentInfo.setRecordCodeAndContent(record, null, "Communication");
 		
-			String date = theCommunication.getSentElement().toHumanDisplay();			
-			record.name = date;
+		ContentInfo.setRecordCodeAndContent(record, null, "Communication");
 		
-			// clean
-			if (cleanAndSetRecordOwner(record, theCommunication.getSubject())) theCommunication.setSubject(null);
-		} catch (AppException e) {
-			throw new InternalErrorException(e);
-		}
+		String date = theCommunication.hasSentElement() ? theCommunication.getSentElement().toHumanDisplay() : "Not sent";			
+		record.name = date;
+		
+		// clean
+		if (cleanAndSetRecordOwner(record, theCommunication.getSubject())) theCommunication.setSubject(null);
+		
 		clean(theCommunication);
 
 	}

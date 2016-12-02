@@ -14,6 +14,7 @@ import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Practitioner;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.Task;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -53,7 +54,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 	}
 
 	@Search()
-	public List<Appointment> getAppointment(
+	public List<IBaseResource> getAppointment(
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
@@ -61,7 +62,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 			@Description(shortDefinition="The resource language")
 			@OptionalParam(name="_language")
 			StringAndListParam theResourceLanguage, 
-			  
+			/*  
 			@Description(shortDefinition="Search the contents of the resource's data using a fulltext search")
 			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT)
 			StringAndListParam theFtContent, 
@@ -81,7 +82,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 			@Description(shortDefinition="Search for resources which have the given profile")
 			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE)
 			UriAndListParam theSearchForProfile, 
-			
+			*/
 			/*
 			@Description(shortDefinition="Return resources linked to by the given target")
 			@OptionalParam(name="_has")
@@ -182,6 +183,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Appointment");
 		
+		builder.handleIdRestriction();
 		builder.restriction("identifier", "Identifier", true, "identifier");
 		builder.restriction("date", "date", true, "start");
 		builder.restriction("actor", null, true, "participant.actor");
@@ -197,8 +199,13 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 	}
 
 	@Create
-	public MethodOutcome createAppointment(@ResourceParam Appointment theAppointment) throws AppException {
-
+	@Override
+	public MethodOutcome createResource(@ResourceParam Appointment theAppointment) {
+		return super.createResource(theAppointment);
+	}
+	
+	@Override
+	protected MethodOutcome create(Appointment theAppointment) throws AppException {
 		Record record = newRecord("fhir/Appointment");
 		
 		prepare(record, theAppointment);		
@@ -209,6 +216,22 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		
 		return outcome("Appointment", record, theAppointment);
 
+	}
+	
+	@Update
+	@Override
+	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Appointment theAppointment) {
+		return super.updateResource(theId, theAppointment);
+	}
+	
+	@Override
+	protected MethodOutcome update(IdType theId, Appointment theAppointment) throws AppException {
+		Record record = fetchCurrent(theId);
+		prepare(record, theAppointment);		
+		updateRecord(record, theAppointment);			
+		shareRecord(record, theAppointment);
+		
+		return outcome("Appointment", record, theAppointment);
 	}
 			
 	public void shareRecord(Record record, Appointment theAppointment) throws AppException {
@@ -225,27 +248,13 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		
 	public Record init() { return newRecord("fhir/Appointment"); }
 
-	@Update
-	public MethodOutcome updateAppointment(@IdParam IdType theId, @ResourceParam Appointment theAppointment) {
-		Record record = fetchCurrent(theId);
-		prepare(record, theAppointment);		
-		updateRecord(record, theAppointment);	
-		try {
-		  shareRecord(record, theAppointment);
-		} catch (AppException e) {
-			ErrorReporter.report("FHIR (update Appointment)", null, e);	
-			throw new InternalErrorException(e);
-		}
-		return outcome("Appointment", record, theAppointment);
-	}
+	
 
-	public void prepare(Record record, Appointment theAppointment) {
+	public void prepare(Record record, Appointment theAppointment) throws AppException {
 		// Set Record code and content
-		try {
-		    ContentInfo.setRecordCodeAndContent(record, null, "Appointment");								
-		} catch (AppException e) {
-			throw new InternalErrorException(e);
-		}
+		
+		ContentInfo.setRecordCodeAndContent(record, null, "Appointment");								
+		
 		String display = theAppointment.getDescription();
 		record.name = display != null ? display : "Appointment";
 		

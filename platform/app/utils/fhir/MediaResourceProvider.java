@@ -4,12 +4,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.Appointment;
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Media;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.model.api.Include;
@@ -46,7 +48,7 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 	}
 
 	@Search()
-	public List<Media> getMedia(
+	public List<IBaseResource> getMedia(
 			@Description(shortDefinition="The resource identity")
 			@OptionalParam(name="_id")
 			StringAndListParam theId, 
@@ -176,6 +178,7 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 		Query query = new Query();		
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Media");
 
+		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 		builder.recordCodeRestriction("view", "view");
 				
@@ -190,7 +193,13 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 	}
 
 	@Create
-	public MethodOutcome createMedia(@ResourceParam Media theMedia) {
+	@Override
+	public MethodOutcome createResource(@ResourceParam Media theMedia) {
+		return super.createResource(theMedia);
+	}
+	
+	@Override
+	protected MethodOutcome create(Media theMedia) throws AppException {
 
 		Record record = newRecord("fhir/Media");
 		prepare(record, theMedia);
@@ -199,20 +208,11 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 				 		
 		attachment = theMedia.getContent();			
 				
-		insertRecord(record, theMedia, attachment);
-		
-		try {
-		  processResource(record, theMedia);
-		
-		  MethodOutcome out = outcome("Media", record, theMedia);
-		  
-		 
-		  return out;
-		} catch (Exception e) {
-			ErrorReporter.report("test", null, e);
-			return null;
-		}
-
+		insertRecord(record, theMedia, attachment);			
+	    processResource(record, theMedia);		
+		MethodOutcome out = outcome("Media", record, theMedia);		  	
+		return out;
+	
 	}
 	
 	public Record init() { return newRecord("fhir/Media"); }
@@ -227,7 +227,7 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 	}
 	*/
 
-	public void prepare(Record record, Media theMedia) {
+	public void prepare(Record record, Media theMedia) throws AppException {
 		// Set Record code and content
 		setRecordCodeByCodeableConcept(record, theMedia.getView(), "Media");		
 		record.name = theMedia.getContent().getTitle();
