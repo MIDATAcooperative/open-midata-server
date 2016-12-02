@@ -22,6 +22,7 @@ import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.Task;
 import org.hl7.fhir.instance.model.api.IBaseReference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
@@ -33,8 +34,10 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.annotation.Create;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.Read;
+import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.ReferenceOrListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
@@ -42,7 +45,10 @@ import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
+import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
+import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
@@ -59,6 +65,7 @@ import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -118,6 +125,61 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 		T p = parser.parseResource(getResourceType(), record.data.toString());
 		processResource(record, p);		
 		return p;
+	}
+	
+	/**
+	 * Default wrapper for FHIR create
+	 * @param theResource
+	 * @return
+	 */
+	protected MethodOutcome createResource(@ResourceParam T theResource) {
+
+		try {
+			return create(theResource);
+		} catch (BaseServerResponseException e) {
+			throw e;
+		} catch (BadRequestException e2) {
+			throw new InvalidRequestException(e2.getMessage());
+		} catch (InternalServerException e3) {
+			ErrorReporter.report("FHIR (create resource)", null, e3);
+			throw new InternalErrorException(e3);
+		} catch (Exception e4) {
+			ErrorReporter.report("FHIR (create resource)", null, e4);
+			throw new InternalErrorException(e4);
+		}		
+
+	}
+	
+	/**
+	 * Default wrapper for FHIR update
+	 * @param theId
+	 * @param theResource
+	 * @return
+	 */
+	protected MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam T theResource) {
+
+		try {
+			return update(theId, theResource);
+		} catch (BaseServerResponseException e) {
+			throw e;
+		} catch (BadRequestException e2) {
+			throw new InvalidRequestException(e2.getMessage());
+		} catch (InternalServerException e3) {
+			ErrorReporter.report("FHIR (update resource)", null, e3);
+			throw new InternalErrorException(e3);
+		} catch (Exception e4) {
+			ErrorReporter.report("FHIR (update resource)", null, e4);
+			throw new InternalErrorException(e4);
+		}		
+
+	}
+	
+	protected MethodOutcome create(T theResource) throws AppException {
+		throw new NotImplementedOperationException("create not implemented");
+	}
+	
+	protected MethodOutcome update(IdType theId, T theResource) throws AppException {
+		throw new NotImplementedOperationException("create not implemented");
 	}
 	
 	
@@ -279,34 +341,28 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 		return false;
 	}
 
-	public static void insertRecord(Record record, IBaseResource resource) {
+	public static void insertRecord(Record record, IBaseResource resource) throws AppException {
 		insertRecord(record, resource, (MidataId) null);
 	}
 	
-	public static void insertRecord(Record record, IBaseResource resource, MidataId targetConsent) {
+	public static void insertRecord(Record record, IBaseResource resource, MidataId targetConsent) throws AppException {
 		AccessLog.logBegin("begin insert FHIR record");
-		try {
+		
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 			
 			record.data = (DBObject) JSON.parse(encoded);
 			PluginsAPI.createRecord(info(), record, targetConsent);			
-		} catch (AppException e) {
-			ErrorReporter.report("FHIR (insert record)", null, e);				
-			throw new InternalErrorException(e);
-		} catch (NullPointerException e2) {
-			ErrorReporter.report("FHIR (insert record)", null, e2);	 
-			throw new InternalErrorException(e2);
-		}
+		
 		AccessLog.logEnd("end insert FHIR record");
 	}
 	
-	public static void insertRecord(Record record, IBaseResource resource, Attachment attachment) throws UnprocessableEntityException {
+	public static void insertRecord(Record record, IBaseResource resource, Attachment attachment) throws AppException {
 		if (attachment == null || attachment.isEmpty()) {
 			insertRecord(record, resource);
 			return;
 		} 
 		AccessLog.logBegin("begin insert FHIR record with attachment");
-		try {						
+							
 			InputStream data = null;
 			byte[] dataArray = attachment.getData();
 			if (dataArray != null)  data = new ByteArrayInputStream(dataArray);
@@ -329,36 +385,24 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 			record.data = (DBObject) JSON.parse(encoded);
 			
 			PluginsAPI.createRecord(info(), record, data, fileName, contentType, null);			
-		} catch (AppException e) {
-			ErrorReporter.report("FHIR (insert record)", null, e);	 
-			throw new InternalErrorException(e);
-		} catch (NullPointerException e2) {
-			ErrorReporter.report("FHIR (insert record)", null, e2);	 
-			throw new InternalErrorException(e2);
-		}
+		
 		AccessLog.logEnd("end insert FHIR record with attachment");
 	}
 	
-	public static void updateRecord(Record record, IBaseResource resource) {
-		try {
-			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
-			record.data = (DBObject) JSON.parse(encoded);	
-			record.version = resource.getMeta().getVersionId();
-			record.version = RecordManager.instance.updateRecord(info().executorId, info().targetAPS, record);
-		} catch (AppException e) {
-			ErrorReporter.report("FHIR (update record)", null, e);	 
-			throw new InternalErrorException(e);
-		} catch (NullPointerException e2) {
-			ErrorReporter.report("FHIR (update record)", null, e2);	 
-			throw new InternalErrorException(e2);
-		}
+	public static void updateRecord(Record record, IBaseResource resource) throws AppException {
+	
+		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
+		record.data = (DBObject) JSON.parse(encoded);	
+		record.version = resource.getMeta().getVersionId();
+		record.version = RecordManager.instance.updateRecord(info().executorId, info().targetAPS, record);
+	
 	}
 	
 	public void clean(T resource) {
 		
 	}
 	
-	public void prepare(Record record, T theResource)  { }
+	public void prepare(Record record, T theResource) throws AppException { }
 	
 	public Record init() { return null; }
 		
@@ -376,7 +420,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 		return retVal;
 	}
 		
-	protected boolean cleanAndSetRecordOwner(Record record, Reference subjectRef)  {
+	protected boolean cleanAndSetRecordOwner(Record record, Reference subjectRef) throws AppException  {
 		boolean cleanSubject = true;
 		if (subjectRef != null) {
 			IIdType target = subjectRef.getReferenceElement();
@@ -424,7 +468,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 		  }
 	  } catch (AppException e) {
 		    ErrorReporter.report("FHIR (set record code)", null, e);	
-			throw new InternalErrorException(e);
+			throw new UnprocessableEntityException("Error determining MIDATA record code.");
 	  }
 	  return display;
 	}

@@ -199,8 +199,13 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 	}
 
 	@Create
-	public MethodOutcome createAppointment(@ResourceParam Appointment theAppointment) throws AppException {
-
+	@Override
+	public MethodOutcome createResource(@ResourceParam Appointment theAppointment) {
+		return super.createResource(theAppointment);
+	}
+	
+	@Override
+	protected MethodOutcome create(Appointment theAppointment) throws AppException {
 		Record record = newRecord("fhir/Appointment");
 		
 		prepare(record, theAppointment);		
@@ -211,6 +216,22 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		
 		return outcome("Appointment", record, theAppointment);
 
+	}
+	
+	@Update
+	@Override
+	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Appointment theAppointment) {
+		return super.updateResource(theId, theAppointment);
+	}
+	
+	@Override
+	protected MethodOutcome update(IdType theId, Appointment theAppointment) throws AppException {
+		Record record = fetchCurrent(theId);
+		prepare(record, theAppointment);		
+		updateRecord(record, theAppointment);			
+		shareRecord(record, theAppointment);
+		
+		return outcome("Appointment", record, theAppointment);
 	}
 			
 	public void shareRecord(Record record, Appointment theAppointment) throws AppException {
@@ -227,27 +248,13 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		
 	public Record init() { return newRecord("fhir/Appointment"); }
 
-	@Update
-	public MethodOutcome updateAppointment(@IdParam IdType theId, @ResourceParam Appointment theAppointment) {
-		Record record = fetchCurrent(theId);
-		prepare(record, theAppointment);		
-		updateRecord(record, theAppointment);	
-		try {
-		  shareRecord(record, theAppointment);
-		} catch (AppException e) {
-			ErrorReporter.report("FHIR (update Appointment)", null, e);	
-			throw new InternalErrorException(e);
-		}
-		return outcome("Appointment", record, theAppointment);
-	}
+	
 
-	public void prepare(Record record, Appointment theAppointment) {
+	public void prepare(Record record, Appointment theAppointment) throws AppException {
 		// Set Record code and content
-		try {
-		    ContentInfo.setRecordCodeAndContent(record, null, "Appointment");								
-		} catch (AppException e) {
-			throw new InternalErrorException(e);
-		}
+		
+		ContentInfo.setRecordCodeAndContent(record, null, "Appointment");								
+		
 		String display = theAppointment.getDescription();
 		record.name = display != null ? display : "Appointment";
 		

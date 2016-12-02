@@ -19,6 +19,7 @@ import models.MidataId;
 import models.User;
 import models.enums.UserRole;
 import utils.collections.Sets;
+import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
 public class FHIRTools {
@@ -61,20 +62,18 @@ public class FHIRTools {
 	 * @throws UnprocessableEntityException if the reference could not be resolved.
 	 * @throws InternalServerException
 	 */
-	public static MidataId getUserIdFromReference(IIdType userRef) throws UnprocessableEntityException {
+	public static MidataId getUserIdFromReference(IIdType userRef) throws AppException {
 		String rt = userRef.getResourceType();
 		MidataId id = MidataId.from(userRef.getIdPart());
-		try {
-			User user = User.getById(id, Sets.create("role"));
-			if (user == null) throw new UnprocessableEntityException("Invalid Person Reference");
-			if (rt != null) {
+		
+		User user = User.getById(id, Sets.create("role"));
+		if (user == null) throw new UnprocessableEntityException("Invalid Person Reference");
+		if (rt != null) {
 				if (rt.equals("Patient") && user.role != UserRole.MEMBER) throw new UnprocessableEntityException("Invalid Patient reference");
 				if (rt.equals("Practitioner") && user.role != UserRole.PROVIDER) throw new UnprocessableEntityException("Invalid Practitioner reference");
-			}
-			return id;
-		} catch (InternalServerException e) {
-			throw new InternalErrorException(e);
 		}
+		return id;
+		
 	}
 	
 	public static boolean isUserFromMidata(IIdType ref) {
