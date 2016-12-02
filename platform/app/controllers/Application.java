@@ -813,6 +813,7 @@ public class Application extends APIController {
 				// Developers
 				controllers.routes.javascript.Developers.register(),
 				controllers.routes.javascript.Developers.login(),
+				controllers.routes.javascript.Developers.resetTestAccountPassword(),
 				
 				controllers.admin.routes.javascript.Administration.register(),
 				controllers.admin.routes.javascript.Administration.changeStatus(),

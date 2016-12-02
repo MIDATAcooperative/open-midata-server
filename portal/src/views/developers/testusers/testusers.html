@@ -13,14 +13,16 @@
 				    <th translate="common.user.email"></th>					
 					<th translate="common.user.firstname"></th>
 					<th translate="common.user.lastname"></th>					
-					<th translate="developer_testusers.role"></th>					
+					<th translate="developer_testusers.role"></th>
+					<th></th>					
 				</tr>
 								
 				<tr ng-repeat="member in members">
 				    <td>{{ member.email }}</td>					
 					<td>{{ member.firstname }}</td>
 					<td>{{ member.lastname }}</td>					
-					<td translate="{{ 'enum.userrole.'+member.role }}"></td>					
+					<td translate="{{ 'enum.userrole.'+member.role }}"></td>
+					<td><button class="btn btn-xs btn-default" ng-click="resetPassword(member);" translate="developer_testusers.resetpw"></button></td>					
 				</tr>
 			</table>
 
