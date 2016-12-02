@@ -6,6 +6,8 @@ import org.hl7.fhir.dstu3.model.Bundle.BundleEntryResponseComponent;
 import org.hl7.fhir.instance.model.api.IBaseOperationOutcome;
 
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
+import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import utils.exceptions.AppException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
 
@@ -25,14 +27,22 @@ public class CreateTransactionStep extends TransactionStep {
     	record = provider.init();
     }
 	
-	public void prepare() { 		
-		provider.prepare(record, resource);
+	public void prepare() { 
+		try {
+		  provider.prepare(record, resource);
+		} catch (AppException e) {
+		  
+		}
 	}
 	
 	public void execute() {
 		try {
 			if (result == null) {
-				provider.insertRecord(record, resource);
+				try {
+				  provider.insertRecord(record, resource);
+				} catch (AppException e) {
+				  throw new InternalErrorException(e);
+				}
 				result = new BundleEntryComponent();
 				BundleEntryResponseComponent response = new BundleEntryResponseComponent();
 				response.setLastModified(record.created);
@@ -40,9 +50,9 @@ public class CreateTransactionStep extends TransactionStep {
 				response.setLocation(FHIRServlet.getBaseUrl()+"/"+provider.getResourceType().getSimpleName()+"/"+record._id.toString()+"/_history/0");
 				result.setResponse(response);
 			}
-		} catch (BaseServerResponseException e) {
+		} catch (Exception e) {
 			setResultBasedOnException(e);			
-		}
+		} 
 	}
 
 	

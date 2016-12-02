@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.Appointment;
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.IdType;
@@ -192,7 +193,13 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 	}
 
 	@Create
-	public MethodOutcome createMedia(@ResourceParam Media theMedia) {
+	@Override
+	public MethodOutcome createResource(@ResourceParam Media theMedia) {
+		return super.createResource(theMedia);
+	}
+	
+	@Override
+	protected MethodOutcome create(Media theMedia) throws AppException {
 
 		Record record = newRecord("fhir/Media");
 		prepare(record, theMedia);
@@ -201,20 +208,11 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 				 		
 		attachment = theMedia.getContent();			
 				
-		insertRecord(record, theMedia, attachment);
-		
-		try {
-		  processResource(record, theMedia);
-		
-		  MethodOutcome out = outcome("Media", record, theMedia);
-		  
-		 
-		  return out;
-		} catch (Exception e) {
-			ErrorReporter.report("test", null, e);
-			return null;
-		}
-
+		insertRecord(record, theMedia, attachment);			
+	    processResource(record, theMedia);		
+		MethodOutcome out = outcome("Media", record, theMedia);		  	
+		return out;
+	
 	}
 	
 	public Record init() { return newRecord("fhir/Media"); }
@@ -229,7 +227,7 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 	}
 	*/
 
-	public void prepare(Record record, Media theMedia) {
+	public void prepare(Record record, Media theMedia) throws AppException {
 		// Set Record code and content
 		setRecordCodeByCodeableConcept(record, theMedia.getView(), "Media");		
 		record.name = theMedia.getContent().getTitle();

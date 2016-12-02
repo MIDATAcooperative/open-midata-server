@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.Appointment;
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.BooleanType;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
@@ -285,7 +286,13 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 	}
 
 	@Create
-	public MethodOutcome createObservation(@ResourceParam Observation theObservation) {
+	@Override
+	public MethodOutcome createResource(@ResourceParam Observation theObservation) {
+		return super.createResource(theObservation);
+	}
+	
+	@Override
+	protected MethodOutcome create(Observation theObservation) throws AppException {
 
 		Record record = newRecord("fhir/Observation");
 		prepare(record, theObservation);
@@ -301,21 +308,29 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 	public Record init() { return newRecord("fhir/Observation"); }
 
 	@Update
-	public MethodOutcome updateObservation(@IdParam IdType theId, @ResourceParam Observation theObservation) {
+	@Override
+	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Observation theObservation) {
+		return super.updateResource(theId, theObservation);
+	}
+	
+	@Override
+	protected MethodOutcome update(@IdParam IdType theId, @ResourceParam Observation theObservation) throws AppException {
 		Record record = fetchCurrent(theId);
 		prepare(record, theObservation);		
 		updateRecord(record, theObservation);		
 		return outcome("Observation", record, theObservation);
 	}
 
-	public void prepare(Record record, Observation theObservation) {
+	public void prepare(Record record, Observation theObservation) throws AppException {
 		// Set Record code and content
 		String display = setRecordCodeByCodeableConcept(record, theObservation.getCode(), null);		
-		String date; 
-		try {
-			date = stringFromDateTime(theObservation.getEffectiveDateTimeType());
-		} catch (FHIRException e) {
-			throw new UnprocessableEntityException("Cannot process effectiveDateTime");
+		String date = "No time";		
+		if (theObservation.hasEffectiveDateTimeType()) {
+			try {
+				date = stringFromDateTime(theObservation.getEffectiveDateTimeType());
+			} catch (FHIRException e) {
+				throw new UnprocessableEntityException("Cannot process effectiveDateTime");
+			}
 		}
 		record.name = display != null ? (display + " / " + date) : date;
 

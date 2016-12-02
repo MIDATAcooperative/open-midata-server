@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.Appointment;
 import org.hl7.fhir.dstu3.model.Communication;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Patient;
@@ -240,7 +241,13 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 	}
 
 	@Create
-	public MethodOutcome createTask(@ResourceParam Task theTask) throws AppException {
+	@Override
+	public MethodOutcome createResource(@ResourceParam Task theTask) {
+		return super.createResource(theTask);
+	}
+	
+	@Override
+	protected MethodOutcome create(Task theTask) throws AppException {
 
 		Record record = newRecord("fhir/Task");
 		
@@ -268,20 +275,17 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 	public Record init() { return newRecord("fhir/Task"); }
 
 	@Update
-	public MethodOutcome updateTask(@IdParam IdType theId, @ResourceParam Task theTask) {
+	public MethodOutcome updateTask(@IdParam IdType theId, @ResourceParam Task theTask) throws AppException {
 		Record record = fetchCurrent(theId);
 		prepare(record, theTask);		
 		updateRecord(record, theTask);	
-		try {
-		  shareRecord(record, theTask);
-		} catch (AppException e) {
-			ErrorReporter.report("FHIR (update Task)", null, e);	
-			throw new InternalErrorException(e);
-		}
+		
+		shareRecord(record, theTask);
+		
 		return outcome("Task", record, theTask);
 	}
 
-	public void prepare(Record record, Task theTask) {
+	public void prepare(Record record, Task theTask) throws AppException {
 		// Set Record code and content
 		String display = setRecordCodeByCodeableConcept(record, theTask.getCode(), "Task");
 		record.name = display != null ? display : "Task";
