@@ -80,7 +80,7 @@ module.exports = function(grunt) {
     	files : [
     	 { expand : true, cwd: 'src/', src: '**/*.html', dest: 'dist/' },
     	 { expand : true, cwd: 'tmp/', src: ['**/*.html','**/*.min.js','**/*.min.css'], dest: 'dist' },
-    	 { expand : true, cwd: 'src/assets/images/', src : '**/*', dest : 'dist/images' },
+    	 { expand : true, cwd: 'src/assets/images/', src : '**/*', dest : 'dist' },
     	 { expand : true, flatten:true, cwd: 'bower_components/', src: ['**/*.ttf','**/*.woff','**/*.woff2'], dest: 'dist/fonts' }
         ]
       },
