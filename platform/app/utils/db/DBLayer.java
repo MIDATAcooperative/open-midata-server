@@ -187,6 +187,19 @@ public class DBLayer {
 	public static <T extends Model> void set(Class<T> model, String collection, ObjectId modelId, String field, Object value) throws DatabaseException {
 		getDatabaseForCollection(collection).set(model, collection, modelId, field, value);		
 	}
+
+	/**
+	 * Sets a field to a given value for all matching objects
+	 * @param model model class
+	 * @param collection which collection
+	 * @param properties restrictions on update
+	 * @param field name of field to change
+	 * @param value target value
+	 * @throws DatabaseException
+	 */
+	public static <T extends Model> void set(Class<T> model, String collection, Map<String, Object> properties, String field, Object value) throws DatabaseException {
+		getDatabaseForCollection(collection).set(model, collection, properties, field, value);		
+	}
 	
 	/**
 	 * Sets the given fields of the object and prevents lost updates

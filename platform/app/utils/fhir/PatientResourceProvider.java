@@ -268,6 +268,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     	return search(paramMap);    	    	    	
     }
     
+    /*
     private List<Patient> patientsFromUserAccounts(Map<String, Object> properties) throws AppException {
     	Set<Member> members = Member.getAll(properties, Sets.create("_id", "email", "firstname", "lastname", "gender", "birthday", "midataID", "phone", "city", "country", "zip", "address1", "address2"), 0);
     	List<Patient> result = new ArrayList<Patient>();
@@ -287,6 +288,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     	}
     	return result;
     }
+    */
     
     @Override
     public List<Record> searchRaw(SearchParameterMap params) throws AppException {

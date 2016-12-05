@@ -238,10 +238,10 @@ public class Feature_Streams extends Feature {
 				CMaps.map(properties)				     
 					 .map("streams", "only")
 					 .map("owner", "self")
-					 .map("writeable", writeableOnly ? "true" : "false"), RecordManager.INTERNALIDONLY);
+					 .map("writeable", writeableOnly ? "true" : "false"), RecordManager.INTERNALID_AND_WACTHES);
 		if (result.isEmpty())
 			return null;
-		DBRecord streamRec = result.get(0);
+		DBRecord streamRec = result.get(0);		
 		if (doNotify) RecordLifecycle.notifyOfChange(streamRec, RecordManager.instance.getCache(who));
 		RecordManager.instance.getCache(who).getAPS(streamRec._id, streamRec.key, streamRec.owner);
 		return streamRec._id;

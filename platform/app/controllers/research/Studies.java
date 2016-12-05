@@ -567,7 +567,7 @@ public class Studies extends APIController {
 			consent.authorized = new HashSet<MidataId>();
 			consent.status = ConsentStatus.ACTIVE;
 						
-			RecordManager.instance.createAnonymizedAPS(userId, userId, consent._id);			
+			RecordManager.instance.createAnonymizedAPS(userId, userId, consent._id, true);			
 			consent.add();
 		}
 		

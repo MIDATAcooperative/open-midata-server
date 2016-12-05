@@ -234,7 +234,7 @@ public class MobileAPI extends Controller {
 		MobileAppInstance.add(appInstance);	
 		    
 		KeyManager.instance.unlock(appInstance._id, phrase);	   		    
-		RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id);
+		RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id, true);
 		    
 		Map<String, Object> meta = new HashMap<String, Object>();
 		meta.put("phrase", phrase);

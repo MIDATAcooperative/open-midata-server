@@ -26,6 +26,7 @@ import models.enums.EventType;
 import models.enums.Gender;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
+import models.enums.UserStatus;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -86,6 +87,8 @@ public class Users extends APIController {
 		}
 		UserRole role = null;
 		
+		
+		
 		if (properties.containsKey("_id") && properties.get("_id").toString().equals(request().username())) {
 		  Rights.chk("Users.getSelf", getRole(), properties, fields);
 		} else if (properties.containsKey("role")) {
@@ -103,13 +106,15 @@ public class Users extends APIController {
 		  
 		}
 
+		if (!getRole().equals(UserRole.ADMIN)) properties.put("status", User.NON_DELETED);
+		
 		// execute		
 		if (fields.contains("name")) { fields.add("firstname"); fields.add("lastname"); }	
 		
 		if (properties.containsKey("email")) {
 			properties.put("emailLC", properties.get("email").toString().toLowerCase());
 			properties.remove("email");
-		}
+		}				
 		
 		List<User> users;
 		if (role != null && role == UserRole.DEVELOPER) {
@@ -165,7 +170,7 @@ public class Users extends APIController {
 		forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.NONMEMBERUSER);
 		
 		Set<String> fields =  Sets.create("firstname", "lastname", "name");
-		Set<Member> result = Member.getAll(CMaps.map("email", query), fields);
+		Set<Member> result = Member.getAll(CMaps.map("email", query).map("searchable", true).map("status", User.NON_DELETED).map("role", UserRole.MEMBER), fields);
 		
 		for (Member member : result) {
 			member.name = member.firstname+" "+member.lastname;

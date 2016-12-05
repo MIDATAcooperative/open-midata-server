@@ -54,10 +54,19 @@ private Feature next;
 				AccessLog.logEnd("end index creation");
 			}
 			
-			Set<Consent> consents = Feature_AccountQuery.getConsentsForQuery(q);			
-			Set<MidataId> targetAps = new HashSet<MidataId>();
-			if (Feature_AccountQuery.mainApsIncluded(q)) targetAps.add(q.getApsId());
-			for (Consent consent : consents) targetAps.add(consent._id);
+			boolean allTarget = Feature_AccountQuery.allApsIncluded(q);
+			
+			Set<MidataId> targetAps;
+			
+			
+			if (allTarget) {
+			   targetAps = null;			   			  
+			} else {
+			   Set<Consent> consents = Feature_AccountQuery.getConsentsForQuery(q);			
+			   targetAps =  new HashSet<MidataId>();
+			   if (Feature_AccountQuery.mainApsIncluded(q)) targetAps.add(q.getApsId());
+			   for (Consent consent : consents) targetAps.add(consent._id);
+			}
 						
 			List<DBRecord> result = new ArrayList<DBRecord>();
 			IndexRoot root = IndexManager.instance.getIndexRootAndUpdate(q.getCache(), q.getCache().getOwner(), index, targetAps);
@@ -65,7 +74,7 @@ private Feature next;
 			
 			Map<MidataId, Set<MidataId>> filterMatches = new HashMap<MidataId, Set<MidataId>>();
 			for (IndexMatch match : matches) {
-				if (targetAps.contains(match.apsId)) {
+				if (targetAps == null || targetAps.contains(match.apsId)) {
 					Set<MidataId> ids = filterMatches.get(match.apsId);
 					if (ids == null) {
 						ids = new HashSet<MidataId>();

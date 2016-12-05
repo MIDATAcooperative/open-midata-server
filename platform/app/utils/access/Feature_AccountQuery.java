@@ -145,14 +145,28 @@ public class Feature_AccountQuery extends Feature {
 		Set<String> sets = q.getRestriction("owner");
 		return sets.contains("self") || sets.contains("all") || sets.contains(q.getApsId().toString());
 	}
+	
+	protected static boolean allApsIncluded(Query q) throws BadRequestException {
+		if (!q.restrictedBy("owner") && !q.restrictedBy("study") && !q.restrictedBy("study-group")) return true;
+		return false;
+	}
+	
 	protected static Set<Consent> getConsentsForQuery(Query q) throws AppException {
 		Set<Consent> consents = Collections.EMPTY_SET;
 		Set<String> sets = q.restrictedBy("owner") ? q.getRestriction("owner") : Collections.singleton("all");
 		if (sets.contains("all") || sets.contains("other") || sets.contains("shared")) {			
 			if (sets.contains("shared"))
 				consents = new HashSet<Consent>(Circle.getAllActiveByMember(q.getCache().getOwner()));
-			else
-				consents = Consent.getAllActiveByAuthorized(q.getCache().getOwner());																
+			else {
+				long limit = 0;
+				if (q.restrictedBy("updated-after")) limit = q.getMinUpdatedTimestamp();
+				if (q.restrictedBy("shared-after")) limit = q.getMinSharedTimestamp();
+				if (limit == 0) {
+				  consents = Consent.getAllActiveByAuthorized(q.getCache().getOwner());
+				} else {
+				  consents = Consent.getAllActiveByAuthorized(q.getCache().getOwner(), limit);
+				}
+			}
 		} else {
 			Set<MidataId> owners = new HashSet<MidataId>();
 			for (String owner : sets) {
@@ -168,7 +182,6 @@ public class Feature_AccountQuery extends Feature {
 		}
 		consents = applyConsentTimeFilter(q, consents);
 		return consents;
-	}
-	
+	}			
 
 }

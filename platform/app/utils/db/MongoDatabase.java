@@ -212,8 +212,21 @@ public class MongoDatabase extends Database {
 		try {
 			DBObject query = new BasicDBObject("_id", modelId);
 			DBObject update = new BasicDBObject("$set", conversion.toDBObject(field, value));
-		
+			if (logQueries) AccessLog.logDB("set field "+collection+" field="+field+" value="+value);
 			getCollection(collection).update(query, update);
+		} catch (MongoException e) {
+			throw new DatabaseException(e);
+		} catch (DatabaseConversionException e2) {
+			throw new DatabaseException(e2);
+		}
+	}
+	
+	public <T extends Model> void set(Class<T> model, String collection, Map<String, Object> properties, String field, Object value) throws DatabaseException {
+		try {
+			DBObject query = toDBObject(model, properties);
+			DBObject update = new BasicDBObject("$set", conversion.toDBObject(field, value));
+			if (logQueries) AccessLog.logDB("set all "+collection+" query="+query.toString()+" field="+field+" to="+value);
+			getCollection(collection).update(query, update, false, true);
 		} catch (MongoException e) {
 			throw new DatabaseException(e);
 		} catch (DatabaseConversionException e2) {

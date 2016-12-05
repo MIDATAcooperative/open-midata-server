@@ -110,6 +110,10 @@ public class Consent extends Model {
 		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", ConsentStatus.ACTIVE), Sets.create("name", "order", "owner", "type"));
 	}
 	
+	public static Set<Consent> getAllActiveByAuthorized(MidataId member, long since) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", ConsentStatus.ACTIVE).map("dataupdate", CMaps.map("$gte", since)), Sets.create("name", "order", "owner", "type"));
+	}
+	
 	public static Set<Consent> getAllByAuthorized(MidataId member) throws InternalServerException {
 		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member), Sets.create("name", "order", "owner", "type"));
 	}
@@ -128,6 +132,10 @@ public class Consent extends Model {
 		
 	public static void set(MidataId consentId, String field, Object value) throws InternalServerException {
 		Model.set(Consent.class, collection, consentId, field, value);
+	}
+	
+	public static void updateTimestamp(Set<MidataId> consentIds, long min, long value) throws InternalServerException {
+		Model.setAll(Consent.class, collection, CMaps.map("_id", consentIds).map("dataupdate", CMaps.map("$lt", min)), "dataupdate", value);
 	}
 	
 	public static boolean existsByOwnerAndName(MidataId owner, String name) throws InternalServerException {
@@ -152,5 +160,9 @@ public class Consent extends Model {
 	public static void delete(MidataId ownerId, MidataId consentId) throws InternalServerException {		
 		Map<String, Object> properties = CMaps.map("_id", consentId);
 		Model.delete(Consent.class, collection, properties);
+	}
+	
+	public static void touch(MidataId consentId, long version) throws InternalServerException {
+		set(consentId, "dataupdate", version);
 	}
 }

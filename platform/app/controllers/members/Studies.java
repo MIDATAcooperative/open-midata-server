@@ -246,7 +246,7 @@ public class Studies extends APIController {
 		part.authorized = new HashSet<MidataId>();		
 		part.authorized.add(study.createdBy);
 		
-		RecordManager.instance.createAnonymizedAPS(member._id, study.createdBy, part._id);
+		RecordManager.instance.createAnonymizedAPS(member._id, study.createdBy, part._id, true);
 		
 		if (code != null) {
 		  History codedentererd = new History(EventType.CODE_ENTERED, part, null); 

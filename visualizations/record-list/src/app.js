@@ -108,13 +108,18 @@ recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'mida
 			midataServer.createRecord(authToken, { "name" : $scope.newentry.title, "content" : "diary", "subformat" : "String", "format" : "fhir/Observation" }, record)
 			.then(function() {
 					$scope.success = "success";
-					$scope.records.push({ name : $scope.newentry.title, data : record });
+					if ($scope.records.length > 0) {
+					  $scope.records.push({ name : $scope.newentry.title, data : record });
+					} else {
+					  $scope.getRecords();
+					}
 					
 					$scope.title = null;
 					$scope.error = null;					
 					$scope.content = null;
 					$scope.loading = false;
 					$scope.mode = "view";
+					midataPortal.updateNotification();
 					
 			}, function(err) {
 					$scope.success = null;
@@ -134,7 +139,7 @@ recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'mida
 			$scope.content = null;
 		};
 		
-		if (paths.length > 2 && paths[2] === "create") {
+		if (paths.length > 2 && paths[2] === "create") {			
 			$scope.mode = "create";
 		} else { $scope.getRecords(); }
 	}
