@@ -3,6 +3,8 @@ package utils.evolution;
 import java.util.List;
 import java.util.Set;
 
+import models.AccessPermissionSet;
+import models.Consent;
 import models.MidataId;
 import models.Record;
 import models.Space;
@@ -17,12 +19,13 @@ import utils.fhir.PatientResourceProvider;
 
 public class AccountPatches {
 
-	public static final int currentAccountVersion = 20160902;
+	public static final int currentAccountVersion = 20161205;
 	
 	public static void check(User user) throws AppException {		
 		if (user.accountVersion < 20160324) { formatPatch20160324(user); }	
 		if (user.accountVersion < 20160407) { formatPatch20160407(user); }
 		if (user.accountVersion < 20160902) { formatPatch20160902(user); }
+		if (user.accountVersion < 20161205) { formatPatch20161205(user); }
 	}
 	
 	public static void makeCurrent(User user, int currentAccountVersion) throws AppException {
@@ -83,5 +86,22 @@ public class AccountPatches {
 		makeCurrent(user, 20160902);
 		AccessLog.logEnd("end patch 2016 09 02");
 	}
+	
+	public static void formatPatch20161205(User user) throws AppException {
+		AccessLog.logBegin("start patch 2016 12 05");
 		
+		Set<Consent> consents = Consent.getAllByAuthorized(user._id);
+		for (Consent c : consents) {
+			AccessPermissionSet.setConsent(c._id);					
+			Consent.set(c._id, "dataupdate", System.currentTimeMillis());
+		}
+		consents = Consent.getAllByOwner(user._id, CMaps.map(), Sets.create("_id"));
+		for (Consent c : consents) {
+			AccessPermissionSet.setConsent(c._id);					
+			Consent.set(c._id, "dataupdate", System.currentTimeMillis());
+		}
+		makeCurrent(user, 20161205);
+		
+		AccessLog.logEnd("end patch 2016 12 05");
+	}
 }

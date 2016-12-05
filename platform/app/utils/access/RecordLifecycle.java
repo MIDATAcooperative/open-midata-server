@@ -1,8 +1,12 @@
 package utils.access;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.mongodb.BasicDBList;
 
 import models.APSNotExistingException;
+import models.Consent;
 import models.MidataId;
 import utils.AccessLog;
 import utils.collections.Sets;
@@ -63,14 +67,17 @@ public class RecordLifecycle {
 	 */
 	public static void notifyOfChange(DBRecord rec, APSCache cache) throws AppException {
 		if (rec.stream != null) cache.getAPS(rec.stream).touch();
-		if (rec.watches == null) return;
-		for (Object watch : rec.watches) {
-			try {
-			   cache.getAPS(new MidataId(watch.toString())).touch();
-			} catch (APSNotExistingException e) {
-				AccessLog.log("APS not existing in notify of change:"+watch.toString());
-			}
+		if (rec.watches == null) {
+			AccessLog.log("no watches registered for notify of change");
+			return;	
 		}
+		AccessLog.logBegin("start notify of change");
+		Set<MidataId> ids = new HashSet<MidataId>();
+		for (Object watch : rec.watches) ids.add(MidataId.from(watch));
+		Consent.updateTimestamp(ids, System.currentTimeMillis(), System.currentTimeMillis() + 1000l * 60l * 60l);
+		AccessLog.logEnd("end notify of change");
 	}
+		
+		
 
 }

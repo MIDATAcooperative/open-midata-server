@@ -233,7 +233,7 @@ public class Circles extends APIController {
 		consent.createdBefore = createdBefore;
 		if (! userId.equals(executorId)) consent.authorized.add(executorId);
 							
-		RecordManager.instance.createAnonymizedAPS(userId, executorId, consent._id);
+		RecordManager.instance.createAnonymizedAPS(userId, executorId, consent._id, true);
 		
 		if (passcode != null) {			  
 			  byte[] pubkey = KeyManager.instance.generateKeypairAndReturnPublicKey(consent._id, passcode);
@@ -273,7 +273,7 @@ public class Circles extends APIController {
 		User otheruser = User.getById(other, Sets.create("firstname", "lastname"));
 		consent.name="Msg: "+otheruser.firstname+" "+otheruser.lastname;
 		
-		RecordManager.instance.createAnonymizedAPS(subject, other, consent._id);
+		RecordManager.instance.createAnonymizedAPS(subject, other, consent._id, true);
 		consentSettingChange(executorId, consent);
 		consent.add();
 		

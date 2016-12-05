@@ -13,6 +13,7 @@ import java.util.UUID;
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
+import models.Consent;
 import models.MidataId;
 import utils.AccessLog;
 import utils.access.index.IndexDefinition;
@@ -111,9 +112,21 @@ public class IndexManager {
 	}
 	
 	protected void indexUpdate(APSCache cache, IndexRoot index, MidataId executor, Set<MidataId> targetAps) throws AppException {
+						
 		AccessLog.logBegin("start index update");
 		try {
 			
+			long updateAllTs = 0;
+		    if (targetAps == null) {
+		    	updateAllTs = System.currentTimeMillis() - 2000;
+		    	long limit = index.getAllVersion();
+		    	Set<Consent> consents = Consent.getAllActiveByAuthorized(executor, limit);		    							  
+				targetAps = new HashSet<MidataId>();
+				targetAps.add(executor);
+				for (Consent consent : consents) targetAps.add(consent._id);				
+		    }
+		    
+		    AccessLog.log("number of aps to update = "+targetAps.size());
 			
 			for (MidataId aps : targetAps) {
 				Map<String, Object> restrictions = new HashMap<String, Object>();
@@ -144,6 +157,7 @@ public class IndexManager {
 				
 			}
 			
+			if (updateAllTs != 0 && (index.isChanged() || targetAps.size() > 3)) index.setAllVersion(updateAllTs);
 			index.flush();
 		} catch (LostUpdateException e) {
 			index.reload();

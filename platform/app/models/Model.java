@@ -118,5 +118,13 @@ public abstract class Model implements JsonSerializable {
 			throw new InternalServerException("error.internal_db", e);
 		}
 	}
+	
+	protected static void setAll(Class model, String collection, Map<String, Object> properties, String field, Object value) throws InternalServerException {
+		try {
+			DBLayer.set(model, collection, properties, field, value);
+		} catch (DatabaseException e) {
+			throw new InternalServerException("error.internal_db", e);
+		}
+	}
 
 }

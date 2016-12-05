@@ -206,6 +206,10 @@ public class Query {
 		return 0;
 	}
 	
+	public long getMinSharedTimestamp() throws BadRequestException {
+		return getDateRestriction("shared-after").getTime();
+	}
+	
 	public Date getMaxDateCreated() {
 		return maxDateCreated;
 	}

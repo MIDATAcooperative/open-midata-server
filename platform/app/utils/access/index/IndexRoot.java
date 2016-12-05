@@ -47,12 +47,24 @@ public class IndexRoot {
 		rootPage.setTimestamp(aps.toString(), now);	
 	}
 	
+	public long getAllVersion() {
+		return rootPage.getTimestamp("all");
+	}
+	
+	public void setAllVersion(long now) {
+		rootPage.setTimestamp("all", now);	
+	}
+	
 	public void flush() throws InternalServerException, LostUpdateException {
 		rootPage.flush();
 	}
 	
 	public void reload() throws InternalServerException {
 		rootPage.reload();
+	}
+	
+	public boolean isChanged() {
+		return rootPage.changed;
 	}
 
 	public List<String> getFormats() {		
