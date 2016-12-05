@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>Import Fitbit Data</title>
+	<title>Import Withings Data</title>
 
 	<!-- build:css assets/app.min.css -->
 	<link rel="stylesheet" href="components/bootstrap/css/bootstrap.css">
@@ -16,43 +16,41 @@
 	<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>
 	<script type="text/javascript" src="components/midata/js/midata.js" defer></script>
 	<script type="text/javascript" src="i18n.js" defer></script>
+	<script type="text/javascript" src="helpers.js" defer></script>
 	<script type="text/javascript" src="app.js" defer></script>
+	<script type="text/javascript" src="controller.js" defer></script>
 	<!-- endbuild -->
 </head>
 
 <body>
-	<div ng-app="fitbit" ng-controller="PreviewCtrl" ng-cloak>
 
-		<div class="body body-center" style="margin-top:5px">
+	<div ng-app="withings" ng-controller="PreviewCtrl" ng-cloak>
+
+		<div class="body body-center" style="margin-top:5px;">
 			<div class="text-center">
 				<img style="width:100px; padding-bottom: 20px;" src="logo.png" />
 			</div>
-			
-			<!--<div ng-hide="importer.countSelected" class="text-center lead" translate="no_entries_yet"></div>-->
 			<div ng-hide="importer.countSelected" class="lead">
 				<img style="width:50px; padding-left:5px; padding-right:5px;" src="attention.png" />
 				<span translate="no_entries_yet"></span>
 			</div>
-
-			<!--<div ng-show="importer.last" class="text-center lead" translate="newest_entry_from"></div>
-			<div ng-show="importer.last" class="text-center lead"><b>{{ importer.last | date }}</b>.</div>-->
+			
 			<div ng-show="importer.last" class="lead">
 				<img style="width:50px; padding-left:5px; padding-right:5px;" src="calendar.png" />
 				<span translate="newest_entry_from"></span> <b>{{ importer.last | date }}</b>.
 			</div>
-			
-			<!--<div class="text-center lead" ng-show="importer.countSelected"><span translate="measures_to_import"></span>: <b>{{ importer.countSelected }}</b></div>-->
+
 			<div class="lead" ng-show="importer.countSelected">
 				<img style="width:50px; padding-left:5px; padding-right:5px;" src="numbers.png" />
 				<span translate="measures_to_import"></span>: <b>{{ importer.countSelected }}</b>
 			</div>
-
-			<!--<div class="text-center lead"><span translate="autoimport_status"></span>: <span ng-show="importer.autoimport"><b translate="on"></b></span><span ng-hide="importer.autoimport"><b translate="off"></b></span></div>-->
 			<div ng-show="importer.countSelected" class="lead">
 				<img style="width:50px; padding-left:5px; padding-right:5px;" src="switch.png" />
 				<span translate="autoimport_status"></span>: <span ng-show="importer.autoimport"><b translate="on"></b></span><span ng-hide="importer.autoimport"><b translate="off"></b></span>
 			</div>
 		</div>
+
+
 	</div>
 </body>
 

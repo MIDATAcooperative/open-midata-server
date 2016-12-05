@@ -11,6 +11,12 @@ angular.module('withingsi18n', [])
       "autoimport": "auto import",
       "import_now": "Import now",
       "save_changes": "Save changes",
+    "no_entries_yet" : "Withings Import not configured yet.",
+    "newest_entry_from" : "Newest entry:",
+  "measures_to_import" :"Measures to import",
+  "autoimport_status" : "Automatically import",
+  "on" : "ON",
+  "off" : "OFF",
 
 "activity_measures_steps": "Steps",
 "activity_measures_distance": "Distance", 
@@ -73,6 +79,13 @@ angular.module('withingsi18n', [])
       "autoimport": "auto-Import",
       "import_now": "Import starten",
       "save_changes": "Änderungen speichern",
+	  
+	  "no_entries_yet" : "Withings Import ist noch nicht konfiguriert.",
+	  "newest_entry_from" : "Neuester Eintrag:",
+	  "measures_to_import" :"Maße ausgewählt zum Importieren",
+	  "autoimport_status" : "Automatisch importieren",
+	  "on" : "AN",
+	  "off" : "AUS",
 
 "activity_measures_steps": "Schritte",
 "activity_measures_distance": "Distanz", 
