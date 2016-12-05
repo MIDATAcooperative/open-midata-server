@@ -28,3 +28,15 @@ withings.controller('ImportController', ['$scope', '$translate', '$location', 'm
 		};			
 	}
 ]);
+withings.controller('PreviewCtrl', ['$scope', '$translate', '$location', 'midataServer', 'midataPortal', 'importer',  
+	function($scope, $translate, $location, midataServer, midataPortal, importer) {
+		$translate.use(midataPortal.language);
+        $scope.importer = importer;	    
+					
+		// get authorization token
+		var authToken = $location.search().authToken;
+
+		$scope.importer.initForm(authToken);
+		
+	}
+]);
