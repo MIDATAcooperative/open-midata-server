@@ -21,7 +21,7 @@ import utils.exceptions.InternalServerException;
 public class AccessPermissionSet extends Model {
 
 	private static final String collection = "aps";
-	public @NotMaterialized static final Set<String> ALL_FIELDS = Sets.create("keys", "version", "direct" ,"permissions", "encrypted", "security", "unmerged");
+	public @NotMaterialized static final Set<String> ALL_FIELDS = Sets.create("keys", "version", "direct" ,"permissions", "encrypted", "security", "unmerged", "consent");
 	
 	/**
 	 * security level of this APS.
@@ -47,6 +47,11 @@ public class AccessPermissionSet extends Model {
 	 * the encrypted body of this APS
 	 */
 	public byte[] encrypted;
+	
+	/**
+	 * this APS belongs to a consent
+	 */
+	public boolean consent;
 	
 	/**
 	 * the unencrypted body of this APS.
@@ -105,5 +110,9 @@ public class AccessPermissionSet extends Model {
 	
 	public static void delete(MidataId appsId) throws InternalServerException {	
 		Model.delete(AccessPermissionSet.class, collection, new ChainedMap<String, MidataId>().put("_id", appsId).get());
+	}
+	
+	public static void setConsent(MidataId apsId) throws InternalServerException {
+		Model.set(AccessPermissionSet.class, collection, apsId, "consent", true);
 	}
 }

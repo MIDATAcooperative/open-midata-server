@@ -54,6 +54,7 @@ public class RecordManager {
 	public final static Map<String, Object> FULLAPS_FLAT_OWNER = CMaps.map("streams", "true").map("flat", "true").map("owner", "self");
 	
 	public final static Set<String> INTERNALIDONLY = Sets.create("_id");
+	public final static Set<String> INTERNALID_AND_WACTHES = Sets.create("_id","watches");
 	public final static Set<String> COMPLETE_META = Sets.create("id", "owner",
 			"app", "creator", "created", "name", "format", "subformat", "content", "code", "description", "isStream", "lastUpdated");
 	public final static Set<String> COMPLETE_DATA = Sets.create("id", "owner",
@@ -99,7 +100,7 @@ public class RecordManager {
 	public MidataId createPrivateAPS(MidataId who, MidataId proposedId)
 			throws AppException {
 		AccessLog.logBegin("begin createPrivateAPS who="+who.toString()+" id="+proposedId.toString());
-		EncryptedAPS eaps = new EncryptedAPS(proposedId, who, who, APSSecurityLevel.HIGH);
+		EncryptedAPS eaps = new EncryptedAPS(proposedId, who, who, APSSecurityLevel.HIGH, false);
 		EncryptionUtils.addKey(who, eaps);		
 		eaps.create();
         AccessLog.logEnd("end createPrivateAPS");
@@ -111,13 +112,14 @@ public class RecordManager {
 	 * @param owner ID of APS owner
 	 * @param other ID of other person
 	 * @param proposedId ID of APS to be created
+	 * @param consent APS is part of consent
 	 * @return ID of APS
 	 * @throws AppException
 	 */
 	public MidataId createAnonymizedAPS(MidataId owner, MidataId other,
-			MidataId proposedId) throws AppException {
+			MidataId proposedId, boolean consent) throws AppException {
         AccessLog.logBegin("begin createAnonymizedAPS owner="+owner.toString()+" other="+other.toString()+" id="+proposedId.toString());
-		EncryptedAPS eaps = new EncryptedAPS(proposedId, owner, owner, APSSecurityLevel.HIGH);
+		EncryptedAPS eaps = new EncryptedAPS(proposedId, owner, owner, APSSecurityLevel.HIGH, consent);
 		EncryptionUtils.addKey(owner, eaps);
 		EncryptionUtils.addKey(other, eaps);	
 		eaps.getPermissions().put("_history", new BasicBSONList()); // Init with history
@@ -143,7 +145,7 @@ public class RecordManager {
 		AccessLog.logBegin("begin createAPSForRecord exec="+executingPerson.toString()+" owner="+owner.toString()+" record="+recordId.toString());
 		
 		EncryptedAPS eaps = new EncryptedAPS(recordId, executingPerson, owner,
-				direct ? APSSecurityLevel.MEDIUM : APSSecurityLevel.HIGH, key);
+				direct ? APSSecurityLevel.MEDIUM : APSSecurityLevel.HIGH, key, false);
         EncryptionUtils.addKey(owner, eaps);
         if (!executingPerson.equals(owner)) EncryptionUtils.addKey(executingPerson, eaps);
 		eaps.create();
@@ -634,6 +636,8 @@ public class RecordManager {
 								
 		RecordEncryption.encryptRecord(record);		
 	    if (upsert) { DBRecord.upsert(record); } else { DBRecord.add(record); }	  
+	    
+	    //RecordLifecycle.notifyOfCreation(record, getCache(executingPerson));
 	    AccessLog.logEnd("End Add Record");				
 		return usedKey;	
 	}

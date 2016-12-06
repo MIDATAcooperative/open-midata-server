@@ -18,6 +18,7 @@ import models.HealthcareProvider;
 import models.Member;
 import models.MemberKey;
 import models.MidataId;
+import models.User;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
@@ -197,7 +198,7 @@ public class Providers extends APIController {
 		Set<MidataId> ids = new HashSet<MidataId>();
 		for (MemberKey key : memberKeys) ids.add(key.owner);
 		Set<String> fields = Sets.create("_id", "firstname","birthday", "lastname"); 
-		Set<Member> result = Member.getAll(CMaps.map("_id", ids), fields, 0);
+		Set<Member> result = Member.getAll(CMaps.map("_id", ids).map("status", User.NON_DELETED), fields, 0);
 		
 		return ok(JsonOutput.toJson(result, "User", fields));
 	}

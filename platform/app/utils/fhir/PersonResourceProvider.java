@@ -224,6 +224,7 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 			Object keywords = query.retrieveIndexValues();
 			if (keywords != null) properties.put("keywordsLC", keywords);
 			properties.put("searchable", true);
+			properties.put("status", User.NON_DELETED);
 			Set<User> users = User.getAllUser(properties, Sets.create("firstname","lastname","birthday","gender","email","phone","city","country","zip","address1","address2","role"));
 			List<IBaseResource> result = new ArrayList<IBaseResource>();
 			for (User user : users) {

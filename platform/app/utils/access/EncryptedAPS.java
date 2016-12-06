@@ -13,6 +13,7 @@ import org.bson.types.BasicBSONList;
 
 import models.APSNotExistingException;
 import models.AccessPermissionSet;
+import models.Consent;
 import models.MidataId;
 import models.enums.APSSecurityLevel;
 import utils.AccessLog;
@@ -67,11 +68,11 @@ public class EncryptedAPS {
 		keyProvided = true;
 	}
 
-	public EncryptedAPS(MidataId apsId, MidataId who, MidataId owner, APSSecurityLevel lvl) throws InternalServerException {
-	  this(apsId, who, owner, lvl, null);
+	public EncryptedAPS(MidataId apsId, MidataId who, MidataId owner, APSSecurityLevel lvl, boolean consent) throws InternalServerException {
+	  this(apsId, who, owner, lvl, null, consent);
 	}
 	
-	public EncryptedAPS(MidataId apsId, MidataId who, MidataId owner, APSSecurityLevel lvl, byte[] encKey) throws InternalServerException {
+	public EncryptedAPS(MidataId apsId, MidataId who, MidataId owner, APSSecurityLevel lvl, byte[] encKey, boolean consent) throws InternalServerException {
 		this.apsId = apsId;
 		this.acc_aps = this.aps = new AccessPermissionSet();
 		this.who = who;
@@ -79,6 +80,7 @@ public class EncryptedAPS {
 						
 		aps._id = apsId;
 		aps.security = lvl;
+		aps.consent = consent;
 		aps.permissions = new HashMap<String, Object>();
 		aps.permissions.put("p", new BasicBSONList());
 		aps.permissions.put("owner", owner.toString());
@@ -100,7 +102,7 @@ public class EncryptedAPS {
 	}
 	
 	protected EncryptedAPS createChild() throws AppException {
-		EncryptedAPS result = new EncryptedAPS(new MidataId(), getAccessor(), getOwner(), getSecurityLevel(), EncryptionUtils.generateKey());
+		EncryptedAPS result = new EncryptedAPS(new MidataId(), getAccessor(), getOwner(), getSecurityLevel(), EncryptionUtils.generateKey(), this.aps.consent);
 		if (this.aps.unmerged == null) this.aps.unmerged = new ArrayList<AccessPermissionSet>(); 
 		aps.unmerged.add(result.aps);
 		return result;
@@ -110,6 +112,12 @@ public class EncryptedAPS {
 		return this.aps != null;
 	}
 	
+	public boolean isForConsent() throws InternalServerException {
+		if (!isLoaded()) load();
+		return aps.consent;
+	}
+	
+		
 	public boolean isOwner() throws AppException {		
 		if (apsId.equals(who)) return true;	
 		if (!isValidated) validate();
@@ -263,14 +271,17 @@ public class EncryptedAPS {
 		} else if (!aps.security.equals(APSSecurityLevel.NONE)) {
 			encodeAPS();
 			aps.updateEncrypted();
+			if (aps.consent) Consent.touch(apsId, aps.version);
 		} else {
 			aps.updatePermissions();
+			if (aps.consent) Consent.touch(apsId, aps.version);
 		}
 	}
 	
 	public void touch() throws InternalServerException, LostUpdateException {
 		if (!isLoaded()) load();
 		aps.updateVersionOnly();
+		if (aps.consent) Consent.touch(apsId, aps.version);
 	}
 	
 	public void reload() throws InternalServerException {

@@ -160,9 +160,9 @@ public class Feature_Streams extends Feature {
 		 if (record.stream == null) {
 			  for (String field : streamFields) props.put(field, record.meta.get(field));
 			  if (RecordManager.instance.getCache(executingPerson).getAPS(record.owner, record.owner).isAccessible()) {		 
-			     record.stream = getStreamByProperties(executingPerson, record.owner, props, true);
+			     record.stream = getStreamByProperties(executingPerson, record.owner, props, true, true);
 			  } else if (alternateAps != null) {
-				 record.stream = getStreamByProperties(executingPerson, alternateAps, props, true);
+				 record.stream = getStreamByProperties(executingPerson, alternateAps, props, true, true);
 			  }
 		  }
 		  if (record.stream == null) {
@@ -209,6 +209,7 @@ public class Feature_Streams extends Feature {
 		AccessLog.log("adding permission");
 		
 		apswrapper.addPermission(result, targetAPS != null && !targetAPS.equals(result.owner));
+		if (targetAPS != null) RecordLifecycle.addWatchingAps(result, targetAPS);
 								
 		DBRecord unecrypted = result.clone();
 				
@@ -231,16 +232,17 @@ public class Feature_Streams extends Feature {
 		return result;
 	}
 
-	private static MidataId getStreamByProperties(MidataId who, MidataId apsId, Map<String, Object> properties, boolean writeableOnly)
+	private static MidataId getStreamByProperties(MidataId who, MidataId apsId, Map<String, Object> properties, boolean writeableOnly, boolean doNotify)
 			throws AppException {
 		List<DBRecord> result = QueryEngine.listInternal(RecordManager.instance.getCache(who), apsId, 
 				CMaps.map(properties)				     
 					 .map("streams", "only")
 					 .map("owner", "self")
-					 .map("writeable", writeableOnly ? "true" : "false"), RecordManager.INTERNALIDONLY);
+					 .map("writeable", writeableOnly ? "true" : "false"), RecordManager.INTERNALID_AND_WACTHES);
 		if (result.isEmpty())
 			return null;
-		DBRecord streamRec = result.get(0);
+		DBRecord streamRec = result.get(0);		
+		if (doNotify) RecordLifecycle.notifyOfChange(streamRec, RecordManager.instance.getCache(who));
 		RecordManager.instance.getCache(who).getAPS(streamRec._id, streamRec.key, streamRec.owner);
 		return streamRec._id;
 	}	
