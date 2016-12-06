@@ -429,9 +429,9 @@ public class Application extends APIController {
 		// check status
 		Member user = Member.getByEmail(email , Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));
 		if (user == null) throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
-		/*if (!Member.authenticationValid(password, user.password)) {
+		if (!Member.authenticationValid(password, user.password)) {
 			throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
-		}*/
+		}
 			 
 		return loginHelper(user);
 	
