@@ -304,7 +304,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 				if (response.data && response.data.selected) {
 					importer.countSelected = response.data.selected.length;
 				}
-				
+
 				for (var i = 0; i < importer.measurementGroups.length; i++) {
 					var measurementGroup = importer.measurementGroups[i];
 					for (var j = 0; j < measurementGroup.measureTypes.length; j++) {
@@ -336,7 +336,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 					.then(function (response) {
 						var map = {};
 
-						angular.forEach(importer.allMeasureTypes, function(measureType) {
+						angular.forEach(importer.allMeasureTypes, function (measureType) {
 							var midataCode = codeToMidataCode[measureType.system + " " + measureType.code];
 							map[midataCode] = measureType;
 						});
@@ -367,16 +367,16 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 		return deferred.promise;
 	};
 
-	importer.saveConfig = function (authToken){
-			var config = { autoimport : importer.autoimport, selected:[] };
-			angular.forEach(importer.allMeasureTypes, function(measurement) {
-				if (measurement.import) config.selected.push(measurement.id);				
-			});
+	importer.saveConfig = function (authToken) {
+		var config = { autoimport: importer.autoimport, selected: [] };
+		angular.forEach(importer.allMeasureTypes, function (measurement) {
+			if (measurement.import) config.selected.push(measurement.id);
+		});
 
-			if(importer.autoimport === undefined || importer.autoimport === null)
-				importer.autoimport = true;
+		if (importer.autoimport === undefined || importer.autoimport === null)
+			importer.autoimport = true;
 
-			midataServer.setConfig(authToken, config, importer.autoimport);
+		midataServer.setConfig(authToken, config, importer.autoimport);
 	};
 
 	// This is triggered from server
@@ -386,9 +386,9 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 		$translate.use(lang);
 
 		return importer.initForm(authToken)
-		.then(function(){
-			importer.importNow(authToken);
-		});
+			.then(function () {
+				importer.importNow(authToken);
+			});
 	};
 
 	// Trigger the import. Must be runnable from webbrowser or from server
@@ -396,6 +396,9 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 
 		console.log("import now started");
 		importer.saving = true;
+		importer.status = "importing";
+		importer.requested = 0;
+		importer.saved = 0;
 
 		// 1. Set Interval to import
 		// "from" and "to" saved in measurements 
@@ -455,7 +458,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 										// save every measure
 										measurementGroup.measureTypes.forEach(function (measurement) {
 											if (measurement.import) {
-												save_activities(authToken, response, measurement);	
+												save_activities(authToken, response, measurement);
 											}
 										});
 
@@ -471,10 +474,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 							}
 						});
 				}, this);
-			})
-			.then(function(){
-				importer.saving = false;
-		});
+			});
 	};
 
 	var getPrevRecords = function (authToken, code, from) {
@@ -483,7 +483,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 				angular.forEach(results.data, function (rec) {
 					stored[rec.content + rec.data.effectiveDateTime] = rec;
 				});
-			}, function(reason) {
+			}, function (reason) {
 				console.log('Failed: ' + reason);
 			});
 	};
@@ -520,7 +520,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 	};
 
 	// save a single record to the database
-	var saveRecord = function (authToken, midataHeader, record) {			
+	var saveRecord = function (authToken, midataHeader, record) {
 		/*return midataServer.createRecord(authToken, midataHeader, record)
 			.then(function () {
 				importer.log += ("\nRecord imported. Name: " + midataHeader.name + "; Code: " + midataHeader.code);
@@ -532,13 +532,13 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 				console.log("Error! Message: " + err + "\nRecord not imported. Name: " + midataHeader.name + "; Code: " + midataHeader.code);
 			});*/
 
-			return {
-				"resource" : record,
-				"request" : {
-					"method" : "POST",
-					"url" : "Observation"
-				}
-			};
+		return {
+			"resource": record,
+			"request": {
+				"method": "POST",
+				"url": "Observation"
+			}
+		};
 	};
 
 	var updateRecord = function (authToken, id, version, record) {
@@ -549,15 +549,15 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 			.catch(function (err) {
 				errorMessage("Failed to update record to database: " + err);
 			});*/
-			record.meta = { "version" : version };
-			record.id = id;
-			return {
-				"resource" : record,
-				"request" : {
-					"method" : "PUT",
-					"url" : "Observation/"+id
-				}
-			};
+		record.meta = { "version": version };
+		record.id = id;
+		return {
+			"resource": record,
+			"request": {
+				"method": "PUT",
+				"url": "Observation/" + id
+			}
+		};
 	};
 
 	var getMIDATAHeader = function (name, code) {
@@ -601,17 +601,20 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 
 				var action = saveOrUpdateRecord(authToken, getMIDATAHeader(measurement.name_translated, measurement.system + " " + measurement.code), recordContent);
 
-				if(action !== null) actions.push(action);
+				if (action !== null) {
+					importer.requested++;
+					actions.push(action);
+				}
 
 				// Limit request size
 				if (actions.length >= 200) {
-					processTransaction(authToken,actions);
+					processTransaction(authToken, actions);
 					actions = [];
 				}
 			}
 		});
 
-		if(actions.length > 0) { processTransaction(authToken, actions);}
+		if (actions.length > 0) { processTransaction(authToken, actions); }
 	};
 
 
@@ -648,11 +651,14 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 
 						var action = saveOrUpdateRecord(authToken, getMIDATAHeader(measurementType.name_translated, measurementType.system + " " + measurementType.code), recordContent);
 
-						if(action !== null) actions.push(action);
+						if (action !== null) {
+							importer.requested++;
+							actions.push(action);
+						}
 
 						// Limit request size
 						if (actions.length >= 200) {
-							processTransaction(authToken,actions);
+							processTransaction(authToken, actions);
 							actions = [];
 						}
 
@@ -662,7 +668,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 			});
 		});
 
-		if(actions.length > 0) { processTransaction(authToken, actions);}
+		if (actions.length > 0) { processTransaction(authToken, actions); }
 	};
 
 	var save_sleepMeasures = function (authToken, response, measurementGroup) {
@@ -699,83 +705,87 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 
 					var action = saveOrUpdateRecord(authToken, getMIDATAHeader(measurementType.name_translated, measurementType.system + " " + measurementType.code), recordContent);
 
-					if(action !== null) actions.push(action);
+					if (action !== null) {
+						importer.requested++;
+						actions.push(action);
+					}
 
 					// Limit request size
 					if (actions.length >= 200) {
-						processTransaction(authToken,actions);
+						processTransaction(authToken, actions);
 						actions = [];
 					}
 				}
 			}
 		});
 
-		if(actions.length > 0) { processTransaction(authToken, actions);}
+		if (actions.length > 0) { processTransaction(authToken, actions); }
 	};
 
-	var processTransaction = function(authToken, actions){
+	var processTransaction = function (authToken, actions) {
 		var request = {
 			"resourceType": "Bundle",
 			"id": "bundle-transaction",
 			"type": "transaction",
 			"entry": actions
 		};
-		//$scope.requested++;
+		//importer.requested++;
 		midataServer.fhirTransaction(authToken, request)
-		.then(function() {
-			console.log("bundle saved");
-			console.log(actions);
-		});
+			.then(function () {
+				importer.saved += actions.length;
+				console.log("bundle saved");
+				console.log(actions);
+			});
 	};
 
 	return importer;
 }]);
 
 // HELPERS
-(function() {
-  /**
-   * Ajuste decimal de un número.
-   *
-   * @param {String}  tipo  El tipo de ajuste.
-   * @param {Number}  valor El numero.
-   * @param {Integer} exp   El exponente (el logaritmo 10 del ajuste base).
-   * @returns {Number} El valor ajustado.
-   */
-  function decimalAdjust(type, value, exp) {
-    // Si el exp no está definido o es cero...
-    if (typeof exp === 'undefined' || +exp === 0) {
-      return Math[type](value);
-    }
-    value = +value;
-    exp = +exp;
-    // Si el valor no es un número o el exp no es un entero...
-    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
-      return NaN;
-    }
-    // Shift
-    value = value.toString().split('e');
-    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
-    // Shift back
-    value = value.toString().split('e');
-    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
-  }
+(function () {
+	/**
+	 * Ajuste decimal de un número.
+	 *
+	 * @param {String}  tipo  El tipo de ajuste.
+	 * @param {Number}  valor El numero.
+	 * @param {Integer} exp   El exponente (el logaritmo 10 del ajuste base).
+	 * @returns {Number} El valor ajustado.
+	 */
+	function decimalAdjust(type, value, exp) {
+		// Si el exp no está definido o es cero...
+		if (typeof exp === 'undefined' || +exp === 0) {
+			return Math[type](value);
+		}
+		value = +value;
+		exp = +exp;
+		// Si el valor no es un número o el exp no es un entero...
+		if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+			return NaN;
+		}
+		// Shift
+		value = value.toString().split('e');
+		value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+		// Shift back
+		value = value.toString().split('e');
+		return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+	}
 
-  // Decimal round
-  if (!Math.round10) {
-    Math.round10 = function(value, exp) {
-      return decimalAdjust('round', value, exp);
-    };
-  }
-  // Decimal floor
-  if (!Math.floor10) {
-    Math.floor10 = function(value, exp) {
-      return decimalAdjust('floor', value, exp);
-    };
-  }
-  // Decimal ceil
-  if (!Math.ceil10) {
-    Math.ceil10 = function(value, exp) {
-      return decimalAdjust('ceil', value, exp);
-    };
-  }
+	// Decimal round
+	if (!Math.round10) {
+		Math.round10 = function (value, exp) {
+			return decimalAdjust('round', value, exp);
+		};
+	}
+	// Decimal floor
+	if (!Math.floor10) {
+		Math.floor10 = function (value, exp) {
+			return decimalAdjust('floor', value, exp);
+		};
+	}
+	// Decimal ceil
+	if (!Math.ceil10) {
+		Math.ceil10 = function (value, exp) {
+			return decimalAdjust('ceil', value, exp);
+		};
+	}
 })();

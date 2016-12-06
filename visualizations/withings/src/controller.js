@@ -25,7 +25,12 @@ withings.controller('ImportController', ['$scope', '$translate', '$location', 'm
 
 		$scope.saveConfig = function(){
 			importer.saveConfig(authToken);
-		};			
+		};		
+						
+		$scope.progress = function() {
+			var r = $scope.importer.requested > 0 ? $scope.importer.requested : 1;
+			return { 'width' : ($scope.importer.saved * 100 / r)+"%" };
+		};	
 	}
 ]);
 withings.controller('PreviewCtrl', ['$scope', '$translate', '$location', 'midataServer', 'midataPortal', 'importer',  
