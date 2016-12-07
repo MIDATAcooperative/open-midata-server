@@ -5,8 +5,8 @@ module.exports =
 	"data": {
 	    "member": {
 	       "id" : null,
-		   "email" : "test1@example.com",
-		   "password" : "secret"
+		   "email" : "testuser@midata.coop",
+		   "password" : "TESTtest1234"
 		},
 		"session" : "none"
 	}

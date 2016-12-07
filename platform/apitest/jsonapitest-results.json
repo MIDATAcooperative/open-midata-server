@@ -1,5 +1,51 @@
 [
   {
+    "suite": "Login Tests",
+    "test": "bad password",
+    "api_call": {
+      "request": {
+        "headers": {
+          "Accept": "application/json, text/plain, */*",
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "params": {
+          "email": "testuser@midata.coop",
+          "password": "wrongPassword"
+        },
+        "url": "https://test.midata.coop:9000/members/api/login"
+      },
+      "status": 400,
+      "assert": {
+        "equal_keys": {
+          "code": "error.invalid.credentials"
+        }
+      }
+    },
+    "errors": [],
+    "response": {
+      "status": 400,
+      "headers": {
+        "server": "nginx/1.10.0 (Ubuntu)",
+        "date": "Wed, 07 Dec 2016 11:00:12 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "74",
+        "connection": "close",
+        "access-control-allow-credentials": "true",
+        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token",
+        "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
+        "access-control-allow-origin": "https://test.midata.coop",
+        "allow": "*"
+      },
+      "body": {
+        "code": "error.invalid.credentials",
+        "message": "Invalid user or password."
+      },
+      "response_time": 312
+    },
+    "test_description": "login Account User with bad password"
+  },
+  {
     "suite": "Member browse pages",
     "test": "login",
     "api_call": {
@@ -10,34 +56,74 @@
         },
         "method": "POST",
         "params": {
-          "email": "test1@example.com",
-          "password": "secret"
+          "email": "testuser@midata.coop",
+          "password": "TESTtest1234"
         },
-        "url": "https://demo.midata.coop:9000/members/api/login"
+        "url": "https://test.midata.coop:9000/members/api/login"
       },
       "status": 200,
+      "assert": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "sessionToken": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string"
+            },
+            "lastLogin": {
+              "type": "integer"
+            },
+            "keyType": {
+              "type": "integer"
+            },
+            "subroles": {
+              "type": "array"
+            }
+          },
+          "required": [
+            "sessionToken",
+            "lastLogin",
+            "keyType",
+            "subroles"
+          ],
+          "additionalProperties": false
+        }
+      },
       "save": {
-        "session": "headers.set-cookie"
+        "session": "body.sessionToken"
       }
     },
     "errors": [],
     "response": {
       "status": 200,
       "headers": {
-        "server": "nginx/1.4.6 (Ubuntu)",
-        "date": "Tue, 27 Oct 2015 15:51:48 GMT",
-        "content-length": "0",
-        "connection": "keep-alive",
+        "server": "nginx/1.10.0 (Ubuntu)",
+        "date": "Wed, 07 Dec 2016 11:00:13 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "312",
+        "connection": "close",
         "access-control-allow-credentials": "true",
-        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie",
+        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token",
         "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
+        "access-control-allow-origin": "https://test.midata.coop",
         "allow": "*",
-        "set-cookie": [
-          "PLAY_SESSION=\"462ea774cf14434fbee9d3e95e9421724eb26064-id=55eff6fce4b0b767e88f92ba&role=MEMBER\"; Path=/; HTTPOnly"
-        ]
+        "x-frame-options": "DENY",
+        "x-xss-protection": "1; mode=block",
+        "x-content-type-options": "nosniff",
+        "strict-transport-security": "max-age=31536000"
       },
-      "body": "",
-      "response_time": 251
+      "body": {
+        "sessionToken": "gT4P9Sym5-ZExmWe7imSI3A8U527r5Te_O2IA-eMWbL_lsuYbXz-CpauU5m6rbH0OEoF_ysMcRUsNvdY-iuHZ9bAqoUJzSS8pJToOjKfrosXju7rVRZpK6618FAcFsqS68-q-AAIM8YD7OIWHrmwsOyoTeArigsgk8PytGodl2MDPLwrqkX7wwzO7gJkR7MhzlJYL3_Qp9NbAa5yau9lFA",
+        "keyType": 0,
+        "role": "member",
+        "subroles": [
+          "TRIALUSER"
+        ],
+        "lastLogin": 1481108245558
+      },
+      "response_time": 231
     },
     "test_description": "login user"
   },
@@ -48,36 +134,58 @@
       "request": {
         "headers": {
           "Accept": "application/json, text/plain, */*",
-          "Cookie": [
-            "PLAY_SESSION=\"462ea774cf14434fbee9d3e95e9421724eb26064-id=55eff6fce4b0b767e88f92ba&role=MEMBER\"; Path=/; HTTPOnly"
-          ]
+          "X-Session-Token": "gT4P9Sym5-ZExmWe7imSI3A8U527r5Te_O2IA-eMWbL_lsuYbXz-CpauU5m6rbH0OEoF_ysMcRUsNvdY-iuHZ9bAqoUJzSS8pJToOjKfrosXju7rVRZpK6618FAcFsqS68-q-AAIM8YD7OIWHrmwsOyoTeArigsgk8PytGodl2MDPLwrqkX7wwzO7gJkR7MhzlJYL3_Qp9NbAa5yau9lFA"
         },
         "method": "GET",
-        "url": "https://demo.midata.coop:9000/shared/api/users/current"
+        "url": "https://test.midata.coop:9000/shared/api/users/current"
       },
       "status": 200,
+      "assert": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "role": {
+              "type": "string"
+            },
+            "user": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "role",
+            "user"
+          ],
+          "additionalProperties": false
+        }
+      },
       "save": {
-        "member.id": "body.$oid"
+        "member.id": "body.user"
       }
     },
     "errors": [],
     "response": {
       "status": 200,
       "headers": {
-        "server": "nginx/1.4.6 (Ubuntu)",
-        "date": "Tue, 27 Oct 2015 15:51:49 GMT",
+        "server": "nginx/1.10.0 (Ubuntu)",
+        "date": "Wed, 07 Dec 2016 11:00:13 GMT",
         "content-type": "application/json; charset=utf-8",
-        "content-length": "35",
-        "connection": "keep-alive",
+        "content-length": "51",
+        "connection": "close",
         "access-control-allow-credentials": "true",
-        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie",
+        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token",
         "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
-        "allow": "*"
+        "access-control-allow-origin": "https://test.midata.coop",
+        "allow": "*",
+        "x-frame-options": "DENY",
+        "x-xss-protection": "1; mode=block",
+        "x-content-type-options": "nosniff",
+        "strict-transport-security": "max-age=31536000"
       },
       "body": {
-        "$oid": "55eff6fce4b0b767e88f92ba"
+        "role": "MEMBER",
+        "user": "5847e6f979c721c276f5f7c2"
       },
-      "response_time": 219
+      "response_time": 182
     },
     "test_description": "try to get current user id"
   },
@@ -88,12 +196,10 @@
       "request": {
         "headers": {
           "Accept": "application/json, text/plain, */*",
-          "Cookie": [
-            "PLAY_SESSION=\"462ea774cf14434fbee9d3e95e9421724eb26064-id=55eff6fce4b0b767e88f92ba&role=MEMBER\"; Path=/; HTTPOnly"
-          ]
+          "X-Session-Token": "gT4P9Sym5-ZExmWe7imSI3A8U527r5Te_O2IA-eMWbL_lsuYbXz-CpauU5m6rbH0OEoF_ysMcRUsNvdY-iuHZ9bAqoUJzSS8pJToOjKfrosXju7rVRZpK6618FAcFsqS68-q-AAIM8YD7OIWHrmwsOyoTeArigsgk8PytGodl2MDPLwrqkX7wwzO7gJkR7MhzlJYL3_Qp9NbAa5yau9lFA"
         },
         "method": "GET",
-        "url": "https://demo.midata.coop:9000/portal/config"
+        "url": "https://test.midata.coop:9000/portal/config"
       },
       "status": 200
     },
@@ -101,56 +207,22 @@
     "response": {
       "status": 200,
       "headers": {
-        "server": "nginx/1.4.6 (Ubuntu)",
-        "date": "Tue, 27 Oct 2015 15:51:49 GMT",
-        "content-type": "application/json; charset=utf-8",
-        "content-length": "316",
-        "connection": "keep-alive",
+        "server": "nginx/1.10.0 (Ubuntu)",
+        "date": "Wed, 07 Dec 2016 11:00:13 GMT",
+        "content-length": "0",
+        "connection": "close",
         "access-control-allow-credentials": "true",
-        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie",
+        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token",
         "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
-        "allow": "*"
+        "access-control-allow-origin": "https://test.midata.coop",
+        "allow": "*",
+        "x-frame-options": "DENY",
+        "x-xss-protection": "1; mode=block",
+        "x-content-type-options": "nosniff",
+        "strict-transport-security": "max-age=31536000"
       },
-      "body": {
-        "questions": {
-          "qself": {
-            "weight": true,
-            "steps": true
-          },
-          "share": {
-            "family": true,
-            "doctor": true
-          },
-          "devices": {
-            "fitbit": true
-          },
-          "general": {
-            "protocol": true,
-            "compare": true,
-            "manage": true
-          }
-        },
-        "dashboards": {
-          "me": {
-            "remove": [
-              "help_welcome"
-            ],
-            "add": [
-              "charts",
-              "weight-watcher",
-              "entry"
-            ]
-          },
-          "mydata": {
-            "remove": [],
-            "add": [
-              "fitbit",
-              "fileupload"
-            ]
-          }
-        }
-      },
-      "response_time": 221
+      "body": "",
+      "response_time": 180
     },
     "test_description": "try to get config"
   },
@@ -161,12 +233,10 @@
       "request": {
         "headers": {
           "Accept": "application/json, text/plain, */*",
-          "Cookie": [
-            "PLAY_SESSION=\"462ea774cf14434fbee9d3e95e9421724eb26064-id=55eff6fce4b0b767e88f92ba&role=MEMBER\"; Path=/; HTTPOnly"
-          ]
+          "X-Session-Token": "gT4P9Sym5-ZExmWe7imSI3A8U527r5Te_O2IA-eMWbL_lsuYbXz-CpauU5m6rbH0OEoF_ysMcRUsNvdY-iuHZ9bAqoUJzSS8pJToOjKfrosXju7rVRZpK6618FAcFsqS68-q-AAIM8YD7OIWHrmwsOyoTeArigsgk8PytGodl2MDPLwrqkX7wwzO7gJkR7MhzlJYL3_Qp9NbAa5yau9lFA"
         },
         "method": "POST",
-        "url": "https://demo.midata.coop:9000/shared/api/tasks/list"
+        "url": "https://test.midata.coop:9000/shared/api/tasks/list"
       },
       "status": 200
     },
@@ -174,18 +244,23 @@
     "response": {
       "status": 200,
       "headers": {
-        "server": "nginx/1.4.6 (Ubuntu)",
-        "date": "Tue, 27 Oct 2015 15:51:49 GMT",
+        "server": "nginx/1.10.0 (Ubuntu)",
+        "date": "Wed, 07 Dec 2016 11:00:13 GMT",
         "content-type": "application/json; charset=utf-8",
         "content-length": "2",
-        "connection": "keep-alive",
+        "connection": "close",
         "access-control-allow-credentials": "true",
-        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie",
+        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token",
         "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
-        "allow": "*"
+        "access-control-allow-origin": "https://test.midata.coop",
+        "allow": "*",
+        "x-frame-options": "DENY",
+        "x-xss-protection": "1; mode=block",
+        "x-content-type-options": "nosniff",
+        "strict-transport-security": "max-age=31536000"
       },
       "body": [],
-      "response_time": 219
+      "response_time": 179
     },
     "test_description": "list tasks of user"
   },
@@ -196,17 +271,13 @@
       "request": {
         "headers": {
           "Accept": "application/json, text/plain, */*",
-          "Cookie": [
-            "PLAY_SESSION=\"462ea774cf14434fbee9d3e95e9421724eb26064-id=55eff6fce4b0b767e88f92ba&role=MEMBER\"; Path=/; HTTPOnly"
-          ],
+          "X-Session-Token": "gT4P9Sym5-ZExmWe7imSI3A8U527r5Te_O2IA-eMWbL_lsuYbXz-CpauU5m6rbH0OEoF_ysMcRUsNvdY-iuHZ9bAqoUJzSS8pJToOjKfrosXju7rVRZpK6618FAcFsqS68-q-AAIM8YD7OIWHrmwsOyoTeArigsgk8PytGodl2MDPLwrqkX7wwzO7gJkR7MhzlJYL3_Qp9NbAa5yau9lFA",
           "Content-Type": "application/json"
         },
         "method": "POST",
         "params": {
           "properties": {
-            "owner": {
-              "$oid": "55eff6fce4b0b767e88f92ba"
-            },
+            "owner": "5847e6f979c721c276f5f7c2",
             "context": "me"
           },
           "fields": [
@@ -217,7 +288,7 @@
             "order"
           ]
         },
-        "url": "https://demo.midata.coop:9000/members/api/spaces/get"
+        "url": "https://test.midata.coop:9000/members/api/spaces/get"
       },
       "status": 200
     },
@@ -225,18 +296,23 @@
     "response": {
       "status": 200,
       "headers": {
-        "server": "nginx/1.4.6 (Ubuntu)",
-        "date": "Tue, 27 Oct 2015 15:51:49 GMT",
+        "server": "nginx/1.10.0 (Ubuntu)",
+        "date": "Wed, 07 Dec 2016 11:00:13 GMT",
         "content-type": "text/plain; charset=utf-8",
-        "content-length": "123",
-        "connection": "keep-alive",
+        "content-length": "2",
+        "connection": "close",
         "access-control-allow-credentials": "true",
-        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie",
+        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token",
         "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
-        "allow": "*"
+        "access-control-allow-origin": "https://test.midata.coop",
+        "allow": "*",
+        "x-frame-options": "DENY",
+        "x-xss-protection": "1; mode=block",
+        "x-content-type-options": "nosniff",
+        "strict-transport-security": "max-age=31536000"
       },
-      "body": "[{\"_id\":{\"$oid\":\"55ffb38ce4b0eab7a7529d4c\"},\"name\":\"Charts\",\"visualization\":{\"$oid\":\"5571700fe4b0c309cbc949ce\"},\"order\":2}]",
-      "response_time": 224
+      "body": "[]",
+      "response_time": 181
     },
     "test_description": "list spaces of user"
   }

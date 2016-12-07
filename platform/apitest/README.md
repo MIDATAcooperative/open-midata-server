@@ -1,9 +1,11 @@
 This folder contains test cases for the portal API
 
+You need to have nodeJS installed.  
+
 To install the test framework:
 
 ```
-npm install jsonapitest -g
+sudo npm install jsonapitest -g
 ```
 
 To configure which server shall be used edit "config.js" file in this directory.
