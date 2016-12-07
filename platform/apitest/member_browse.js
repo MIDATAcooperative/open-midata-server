@@ -14,11 +14,25 @@ module.exports =
                 "request": {
                     "method": "POST",
                     "path": "/members/api/login",
-                    "params" : { "email" : "test1@example.com", "password" : "secret" }
+                    "params" : { "email" : "{{member.email}}", "password" : "{{member.password}}" }
                 },
                 "status": 200,
+                "assert": {
+                	"schema": {
+                        "type": "object",
+                        "properties": {
+                          "sessionToken": {"type": "string"},
+                          "role": {"type": "string"},
+                          "lastLogin": {"type": "integer"},
+                          "keyType" : {"type": "integer"},
+                          "subroles" : { "type" : "array" }
+                        },
+                        "required": ["sessionToken", "lastLogin", "keyType", "subroles"],
+                        "additionalProperties": false
+                    }
+                },
                 "save" : {
-                	"session" : "headers.set-cookie"
+                	"session" : "body.sessionToken"
                 }
               }
             ]
@@ -32,12 +46,23 @@ module.exports =
                   	"method" : "GET",
                   	"path" : "/shared/api/users/current",
                   	"headers" : {        	                   	 
-                    	   "Cookie" : "{{session}}"
+                    	   "X-Session-Token" : "{{session}}"
                       }
                   },
                   "status": 200,
+                  "assert": {
+                  	"schema": {
+                          "type": "object",
+                          "properties": {
+                            "role": {"type": "string"},
+                            "user": {"type": "string"}                            
+                          },
+                          "required": ["role", "user" ],
+                          "additionalProperties": false
+                      }
+                  },
                   "save" : {
-                	  "member.id" : "body.$oid"
+                	  "member.id" : "body.user"
                   }
                 }
               ]
@@ -51,7 +76,7 @@ module.exports =
                 	"method" : "GET",
                 	"path" : "/portal/config",
                 	"headers" : {        	                   	 
-                  	   "Cookie" : "{{session}}"
+                  	   "X-Session-Token" : "{{session}}"
                     }
                 },
                 "status": 200
@@ -67,7 +92,7 @@ module.exports =
                   	"method" : "POST",
                   	"path" : "/shared/api/tasks/list",
                   	"headers" : {        	                   	 
-                    	   "Cookie" : "{{session}}"
+                    	   "X-Session-Token" : "{{session}}"
                       }
                   },
                   "status": 200
@@ -83,10 +108,10 @@ module.exports =
                  	"method" : "POST",
                  	"path" : "/members/api/spaces/get",
                  	"headers" : {        	                   	 
-                   	   "Cookie" : "{{session}}"
+                   	   "X-Session-Token" : "{{session}}"
                      },
                     "params" : {
-                    	"properties": { "owner":{"$oid":"{{member.id}}"}, "context":"me"},
+                    	"properties": { "owner":"{{member.id}}", "context":"me"},
                     	"fields": ["name","records","visualization","app","order"]
                     }
                  },
