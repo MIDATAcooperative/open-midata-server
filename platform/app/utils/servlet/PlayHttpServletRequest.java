@@ -28,6 +28,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
 
+import play.Play;
 import play.mvc.Http;
 import scala.NotImplementedError;
 import utils.AccessLog;
@@ -377,7 +378,7 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public StringBuffer getRequestURL() {
-		StringBuffer result = new StringBuffer("https://demo.midata.coop:9000");
+		StringBuffer result = new StringBuffer("https://"+Play.application().configuration().getString("platform.server"));
 		String uri = request.uri();
 		int i = uri.indexOf('?');
 		result.append(i >= 0 ? uri.substring(0,i) : uri);

@@ -64,7 +64,7 @@ public class RecordConversion {
 		dbrecord.owner = record.owner;
 		BSONObject meta = dbrecord.meta;		
 		meta.put("app", record.app !=null ? record.app.toDb() : null);
-		meta.put("creator", record.creator.toDb());
+		meta.put("creator", record.creator != null ? record.creator.toDb() : null);
 		meta.put("name", record.name);
 		meta.put("created", record.created);
 		meta.put("description", record.description);
