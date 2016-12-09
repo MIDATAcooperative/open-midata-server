@@ -376,7 +376,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 		if (importer.autoimport === undefined || importer.autoimport === null)
 			importer.autoimport = true;
 
-		midataServer.setConfig(authToken, config, importer.autoimport);
+		return midataServer.setConfig(authToken, config, importer.autoimport);
 	};
 
 	// This is triggered from server
