@@ -209,12 +209,13 @@ public class Feature_Streams extends Feature {
 		AccessLog.log("adding permission");
 		
 		apswrapper.addPermission(result, targetAPS != null && !targetAPS.equals(result.owner));
-		if (targetAPS != null) RecordLifecycle.addWatchingAps(result, targetAPS);
-								
+										
 		DBRecord unecrypted = result.clone();
 				
 		RecordEncryption.encryptRecord(result);		
-	    DBRecord.add(result);	  
+	    DBRecord.add(result);
+	    
+	    if (targetAPS != null) RecordLifecycle.addWatchingAps(result, targetAPS);
 
 	    AccessLog.log("create aps for stream");
 	    

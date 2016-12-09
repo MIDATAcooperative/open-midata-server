@@ -544,6 +544,8 @@ public class RecordManager {
 		
 		Set<String> fields = new HashSet<String>();
 		fields.add("owner");
+		fields.add("stream");
+		fields.add("isStream");
 		fields.addAll(APSEntry.groupingFields);
 		APSCache cache = getCache(executingPerson);
 		query.put("owner", "self");
@@ -781,7 +783,13 @@ public class RecordManager {
 		if (properties.containsKey("content/*")) nproperties.put("content/*", properties.get("content/*"));
 		if (properties.containsKey("subformat")) nproperties.put("subformat", properties.get("subformat"));
 		if (properties.containsKey("group")) nproperties.put("group", properties.get("group"));
-		return QueryEngine.info(getCache(who), aps, nproperties, aggrType);
+		
+		try {
+		    return QueryEngine.info(getCache(who), aps, nproperties, aggrType);
+		} catch (APSNotExistingException e) {
+			fixAccount(who);
+			throw e;
+		}
 	}
 
 	/**
@@ -938,6 +946,13 @@ public class RecordManager {
 			checkRecordsInAPS(userId, consent._id, false);
 		}
 		AccessLog.logBegin("start searching for empty streams");
+		
+		AccessLog.logBegin("start searching for missing records in spaces");
+		Set<Space> spaces = Space.getAllByOwner(userId, Sets.create("_id"));
+		for (Space space : spaces) {			
+			checkRecordsInAPS(userId,space._id, true);
+		}
+		AccessLog.logEnd("end searching for missing records in spaces");
 		
 		Set<String> fields = new HashSet<String>();
 		fields.add("owner");
