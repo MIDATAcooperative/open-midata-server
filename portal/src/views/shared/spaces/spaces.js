@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('Spaces2Ctrl', ['$scope', '$state', '$translate','server', '$sce', 'status', 'spaces', 'views', 'session', function($scope, $state, $translate, server, $sce, status, spaces, views, session) {
+.controller('Spaces2Ctrl', ['$scope', '$state', '$translate','server', '$sce', 'status', 'spaces', 'views', 'session', '$window', function($scope, $state, $translate, server, $sce, status, spaces, views, session, $window) {
 	
 	// init
 	$scope.error = null;
@@ -87,8 +87,9 @@ angular.module('portal')
 	};
 	
 	$scope.goBack = function() {
-	   spaces.get({ "_id" :  $scope.spaceId }, ["context"]).
-	   then(function(result) { $state.go('^.dashboard', { dashId : result.data[0].context }); });
+	   $window.history.back();
+	   //spaces.get({ "_id" :  $scope.spaceId }, ["context"]).
+	   //then(function(result) { $state.go('^.dashboard', { dashId : result.data[0].context }); });
 	};
 	
 }]);

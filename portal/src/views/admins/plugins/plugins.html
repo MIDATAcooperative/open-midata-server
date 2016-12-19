@@ -12,7 +12,7 @@
     
     
       <loader busy="status.isBusy !== false">
-      <dir-pagination-controls pagination-id="plugintable"></dir-pagination-controls>
+      <dir-pagination-controls pagination-id="plugintable" current-page="page.nr"></dir-pagination-controls>
       <table class="table" ng-show="apps.length > 0">
         <tr>
           <th>Name</th>
@@ -21,7 +21,7 @@
           <th>Spotlighted</th>
           <th>Status</th>
         </tr>
-        <tr dir-paginate="app in apps | itemsPerPage : 10" pagination-id="plugintable">
+        <tr dir-paginate="app in apps | itemsPerPage : 10" pagination-id="plugintable" current-page="page.nr">
           <td><a ui-sref="^.manageapp({ appId : app._id })">{{  app.name }}</a></td>
           <td translate="{{ 'enum.plugintype.'+app.type }}"></td>
           <td translate="{{ 'enum.userrole.'+app.targetUserRole }}"></td>
