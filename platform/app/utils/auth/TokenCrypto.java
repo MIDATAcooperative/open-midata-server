@@ -17,6 +17,8 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Base64;
 
 import play.Play;
+import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 
 public class TokenCrypto {
@@ -81,7 +83,7 @@ public class TokenCrypto {
 		
 	}
 	
-	public static String decryptToken(String input) throws InternalServerException {
+	public static String decryptToken(String input) throws AppException {
 		try {
 			byte[] encrypted = Base64.decodeBase64(input);
 			
@@ -89,7 +91,7 @@ public class TokenCrypto {
 			int j = encrypted.length - HMAC_LENGTH ;
 			for (int i=0;i<HMAC_LENGTH;i++) {
 				if (sign[i] != encrypted[i+j]) {					
-					throw new InternalServerException("error.token", "Invalid token");
+					throw new BadRequestException("error.invalid.token", "Invalid token");
 				}			
 			}
 			
@@ -116,6 +118,8 @@ public class TokenCrypto {
 			throw new InternalServerException("error.internal", e6);
 		} catch (UnsupportedEncodingException e7) {
 			throw new InternalServerException("error.internal", e7);
-		}		
+		} catch (IllegalArgumentException e8) {
+			throw new BadRequestException("error.invalid.token", "Invalid token");
+		}
 	}
 }

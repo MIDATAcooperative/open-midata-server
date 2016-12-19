@@ -260,7 +260,7 @@ class QueryEngine {
     protected static void fetchFromDB(Query q, DBRecord record) throws InternalServerException {
     	if (record.encrypted == null) {
 			DBRecord r2 = DBRecord.getById(record._id, q.getFieldsFromDB());
-						
+			if (r2 == null) throw new InternalServerException("error.internal", "Record with id "+record._id.toString()+" not found in database. Account needs repair?");			
 			record.encrypted = r2.encrypted;
 			record.encryptedData = r2.encryptedData;	
 			record.encWatches = r2.encWatches;
