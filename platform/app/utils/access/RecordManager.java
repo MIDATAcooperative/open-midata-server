@@ -980,7 +980,14 @@ public class RecordManager {
 			if (DBRecord.getById(rec._id, idOnly) == null) {
 				if (instreams && rec.stream != null) cache.getAPS(rec.stream, userId).removePermission(rec);
 				cache.getAPS(apsId).removePermission(rec);
+			} else if (rec.isStream) {
+				try {
+				  cache.getAPS(rec._id, rec.owner).getStoredOwner();
+				} catch (Exception e) {
+				  cache.getAPS(apsId).removePermission(rec);
+				}
 			}
+			
 		}
 	}
 

@@ -192,16 +192,18 @@ public class Circles extends APIController {
 		
 		Date validUntil = JsonValidation.getDate(json, "validUntil");
 		Date createdBefore = JsonValidation.getDate(json, "createdBefore");
-		
+		boolean patientRecord = false;
 		Consent consent;
 		switch (type) {
 		case CIRCLE : 
 			forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.MEMBEROFCOOPERATIVE);
 			consent = new Circle();
 			((Circle) consent).order = Circle.getMaxOrder(userId) + 1;
+			patientRecord = true;
 			break;
 		case HEALTHCARE :
 			consent = new MemberKey();
+			patientRecord = true;
 			break;
 		case HCRELATED :
 			consent = new HCRelated();
@@ -244,7 +246,7 @@ public class Circles extends APIController {
 		consentSettingChange(executorId, consent);
 		consent.add();
 				
-		autosharePatientRecord(consent);
+		if (consent.status.equals(ConsentStatus.ACTIVE) && patientRecord) autosharePatientRecord(consent);
 		return ok(JsonOutput.toJson(consent, "Consent", Consent.ALL));
 	}
 	
@@ -448,6 +450,7 @@ public class Circles extends APIController {
 		boolean active = consent.status.equals(ConsentStatus.ACTIVE);
 		if (active) {
 			RecordManager.instance.shareAPS(consent._id, consent.owner, consent.authorized);
+			if (consent.type.equals(ConsentType.CIRCLE) || consent.type.equals(ConsentType.HEALTHCARE)) autosharePatientRecord(consent);
 		} else {
 			Set<MidataId> auth = consent.authorized;
 			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }
