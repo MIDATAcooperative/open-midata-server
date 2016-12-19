@@ -4,12 +4,14 @@ angular.module('portal')
 	$scope.status = new status(true);
 	$scope.pluginStati = ["DEVELOPMENT", "BETA", "ACTIVE", "DEPRECATED"];
 	$scope.search = { criteria : {} };
+	$scope.page = { nr : 1 };
 	
 	$scope.init = function(userId) {		
 		$scope.reload();
 		$scope.status.doBusy(users.getMembers({ role : "DEVELOPER" }, [ "firstname", "lastname", "email" ]))
 		.then(function(data) {
 			$scope.developers = data.data;
+			$scope.developers.push({});
 		});
 	};
 	
@@ -23,5 +25,6 @@ angular.module('portal')
 	    .then(function() { $scope.init(); });				
 	};	
 	
+	session.load("PluginsCtrl", $scope, ["search", "page"]);
 	session.currentUser.then(function(userId) { $scope.init(userId); });
 }]);

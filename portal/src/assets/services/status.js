@@ -22,7 +22,7 @@ angular.module('services')
 			   } else if (msg.status == 503 || msg.status == -1) {
 				   document.location.reload();
 			   } else {
-			     if (this.showerrors && !noerror) alert("An error "+msg.status+" occured:"+msg.data);
+			     if (this.showerrors && !noerror) alert("An error "+msg.status+" occured:"+(msg.data.message || msg.data));
 			   }
 		};
 		this.doBusy = function(call) {
