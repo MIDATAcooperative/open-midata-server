@@ -179,3 +179,9 @@
 {"_id":{"$oid":"57d7cc3aaed64511e8f4d44f"},"system":"http://loinc.org","code":"71230-7","display":"Birth certificate","content":"documents/birth-certificate"}
 {"_id":{"$oid":"57d7cc3aaed64511e8f4d450"},"system":"http://loinc.org","code":"53247-3","display":"Eligibility acknowledgement","content":"documents/eligibility-acknowledgement"}
 {"_id":{"$oid":"583d69dcaed6451303c0586e"},"system":"http://midata.coop","code":"Task","display":"Task","content":"Task"}
+{"_id":{"$oid":"5857a6bfaed6456bcd027ada"},"system":"http://loinc.org","code":"6690-2","display":"Leukocytes in blood by automated count","content":"lab/leukocytes-in-blood"}
+{"_id":{"$oid":"5857a714aed6456bcd027adc"},"system":"http://loinc.org","code":"26515-7","display":"Platelets in blood","content":"lab/platelets-in-blood"}
+{"_id":{"$oid":"5857a759aed6456bcd027ade"},"system":"http://loinc.org","code":"718-7","display":"Hemoglobin in blood","content":"lab/hemoglobin-in-blood"}
+{"_id":{"$oid":"5857a86faed6456bcd027ae0"},"system":"http://loinc.org","code":"1988-5","display":"C reactive protein in serum or plasma","content":"lab/c-protein-in-serum-or-plasma"}
+{"_id":{"$oid":"5857a8efaed6456bcd027ae1"},"system":"http://loinc.org","code":"15189-4","display":"Immunoglobulin light chains.kappa/lambda in serum","content":"lab/loinc-15189-4"}
+{"_id":{"$oid":"5857a9d1aed6456bcd027ae4"},"system":"http://loinc.org","code":"33358-3","display":"Protein.monoclonal in serum or plasma by electrophoresis","content":"lab/loinc-33358-3"}
