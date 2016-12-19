@@ -25,6 +25,7 @@ angular.module('withingsi18n', [])
       "autoimport_status": "Automatically import",
       "on": "ON",
       "off": "OFF",
+      "changesSaved": "The changes were saved successfully.",
 
       "activity_measures_steps": "Steps",
       "activity_measures_distance": "Distance",
@@ -99,6 +100,7 @@ angular.module('withingsi18n', [])
       "autoimport_status": "Automatisch importieren",
       "on": "AN",
       "off": "AUS",
+      "changesSaved": "Die Änderungen wurden erfolgreich gespeichert.",
 
       "activity_measures_steps": "Schritte",
       "activity_measures_distance": "Distanz",

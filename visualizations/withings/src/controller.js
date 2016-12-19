@@ -24,7 +24,10 @@ withings.controller('ImportController', ['$scope', '$translate', '$location', 'm
 		};
 
 		$scope.saveConfig = function(){
-			importer.saveConfig(authToken);
+			importer.saveConfig(authToken)
+			.then(function(){
+            	importer.status = "changesSaved";
+        	});
 		};		
 						
 		$scope.progress = function() {
