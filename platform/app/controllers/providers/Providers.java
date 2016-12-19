@@ -170,6 +170,8 @@ public class Providers extends APIController {
 		
 		Set<String> memberFields = Sets.create("firstname","birthday", "lastname","city","zip","country","email","phone","mobile","ssn","address1","address2");
 		Member result = Member.getByMidataIDAndBirthday(midataID, birthday, memberFields);
+		if (result == null) return ok();
+		
 		HPUser hpuser = HPUser.getById(userId, Sets.create("provider", "firstname", "lastname"));
 		
 		//MemberKeys.getOrCreate(hpuser, result);
