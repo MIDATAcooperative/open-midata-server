@@ -10,6 +10,7 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
+import actions.MobileCall;
 import controllers.members.HealthProvider;
 import models.Member;
 import models.MidataId;
@@ -17,6 +18,7 @@ import models.MobileAppInstance;
 import models.Plugin;
 import models.Study;
 import models.enums.AccountSecurityLevel;
+import models.enums.ConsentStatus;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
@@ -30,8 +32,11 @@ import play.mvc.Result;
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
+import utils.fhir.PatientResourceProvider;
 import utils.json.JsonValidation;
 
 public class QuickRegistration extends APIController {
@@ -46,7 +51,7 @@ public class QuickRegistration extends APIController {
 	public static Result register() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "study", "app", "phrase", "language");
+		JsonValidation.validate(json, "email", "password", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "study", "app", "phrase", "language");
 		
 		String studyCode = JsonValidation.getString(json, "study");
 		String appName = JsonValidation.getString(json, "app");
@@ -72,16 +77,14 @@ public class QuickRegistration extends APIController {
 		
 		// create the user
 		Member user = new Member();
-		user._id = new MidataId();
+		
 		user.email = email;
 		user.emailLC = email.toLowerCase();
 		user.name = firstName + " " + lastName;
 		
 		user.password = Member.encrypt(password);
-		do {
-		  user.midataID = CodeGenerator.nextUniqueCode();
-		} while (Member.existsByMidataID(user.midataID));
-		user.role = UserRole.MEMBER;
+		
+		Application.registerSetDefaultFields(user);
 		user.subroles = EnumSet.of(SubUserRole.STUDYPARTICIPANT);
 		
 		user.address1 = JsonValidation.getString(json, "address1");
@@ -97,41 +100,88 @@ public class QuickRegistration extends APIController {
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");
-						
-		user.registeredAt = new Date();		
-		
+									
 		user.status = UserStatus.ACTIVE;		
-		user.contractStatus = ContractStatus.NEW;
-		user.agbStatus =ContractStatus.NEW;
-		user.emailStatus = EMailStatus.UNVALIDATED;
-		user.confirmationCode = CodeGenerator.nextCode();
-		user.partInterest = ParticipationInterest.UNSET;
-							
-		user.apps = new HashSet<MidataId>();
-		user.tokens = new HashMap<String, Map<String, String>>();
-		user.visualizations = new HashSet<MidataId>();
-		user.messages = new HashMap<String, Set<MidataId>>();
-		user.messages.put("inbox", new HashSet<MidataId>());
-		user.messages.put("archive", new HashSet<MidataId>());
-		user.messages.put("trash", new HashSet<MidataId>());
-		user.login = new Date();
-		user.news = new HashSet<MidataId>();
-		//user.pushed = new HashSet<MidataId>();
-		//user.shared = new HashSet<MidataId>();
-		
-		user.security = AccountSecurityLevel.KEY;
-		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
-								
-		Member.add(user);		
-		KeyManager.instance.unlock(user._id, null);
-		
-		user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
-		Member.set(user._id, "myaps", user.myaps);
-		
+		Application.registerCreateUser(user);
+				
 		controllers.members.Studies.requestParticipation(user._id, study._id);
-		MobileAppInstance appInstance = MobileAPI.installApp(user._id, app, user, phrase);
+		MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, phrase);
 		HealthProvider.confirmConsent(user._id, appInstance._id);
 										
 		return Application.loginHelper(user);		
+	}
+	
+	/**
+	 * register a new MIDATA member from an app prepare the account for usage of that app
+	 * @return status ok
+	 * @throws AppException	
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@MobileCall
+	public static Result registerFromApp() throws AppException {
+		// validate 
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "email", "password", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "birthday", "appname", "secret", "phrase", "language");
+				
+		String appName = JsonValidation.getString(json, "appname");
+		String secret = JsonValidation.getString(json,  "secret");
+		String phrase = JsonValidation.getString(json, "phrase");
+				
+		Plugin app = Plugin.getByFilename(appName, Sets.create("type", "name", "secret", "status", "defaultQuery"));
+		if (app == null) throw new BadRequestException("error.invalid.appcode", "Unknown code for app.");
+		
+		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
+		if (app.secret == null || !app.secret.equals(secret)) throw new BadRequestException("error.unknown.app", "Unknown app");
+				
+		String email = JsonValidation.getEMail(json, "email");
+		String firstName = JsonValidation.getString(json, "firstname");
+		String lastName = JsonValidation.getString(json, "lastname");
+		String password = JsonValidation.getPassword(json, "password");
+
+		// check status
+		if (Member.existsByEMail(email)) {
+		  throw new BadRequestException("error.exists.user", "A user with this email address already exists.");
+		}
+		
+		// create the user
+		Member user = new Member();		
+		user.email = email;
+		user.emailLC = email.toLowerCase();
+		user.name = firstName + " " + lastName;
+		
+		user.password = Member.encrypt(password);
+		
+		Application.registerSetDefaultFields(user);
+		
+		user.subroles = EnumSet.of(SubUserRole.APPUSER);
+		
+		user.address1 = JsonValidation.getString(json, "address1");
+		user.address2 = JsonValidation.getString(json, "address2");
+		user.city = JsonValidation.getString(json, "city");
+		user.zip  = JsonValidation.getString(json, "zip");
+		user.phone = JsonValidation.getString(json, "phone");
+		user.mobile = JsonValidation.getString(json, "mobile");
+		user.country = JsonValidation.getString(json, "country");
+		user.firstname = JsonValidation.getString(json, "firstname"); 
+		user.lastname = JsonValidation.getString(json, "lastname");
+		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
+		user.birthday = JsonValidation.getDate(json, "birthday");
+		user.language = JsonValidation.getString(json, "language");
+		user.ssn = JsonValidation.getString(json, "ssn");
+						
+						
+		user.status = UserStatus.ACTIVE;		
+		Application.registerCreateUser(user);								
+		Application.sendWelcomeMail(user);
+		
+		MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, phrase);
+		HealthProvider.confirmConsent(user._id, appInstance._id);
+		appInstance.status = ConsentStatus.ACTIVE;
+		
+		RecordManager.instance.clear();
+		KeyManager.instance.unlock(appInstance._id, phrase);	
+		Map<String, Object> meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();			
+		
+		return MobileAPI.authResult(appInstance, meta, phrase);		
 	}
 }

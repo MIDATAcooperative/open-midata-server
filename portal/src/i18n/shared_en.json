@@ -249,6 +249,7 @@
 	   "SUPERADMIN" : "Super Admin",
 	   "TRIALUSER" : "Trial User",
 	   "STUDYPARTICIPANT" : "Study Participant",
+	   "APPUSER" : "App User",
 	   "NONMEMBERUSER" : "Validated Account Holder",
 	   "MEMBEROFCOOPERATIVE" : "Member of Cooperative"
 	 },

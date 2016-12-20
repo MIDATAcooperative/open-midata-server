@@ -14,6 +14,7 @@ angular.module('portal')
 	$scope.selectedAps = null;
 	$scope.status = new status(true);
 	$scope.allowDelete = $state.current.allowDelete;
+	$scope.open = {};
 	
 	
 	// get current user
@@ -22,6 +23,8 @@ angular.module('portal')
 			$scope.userId = userId;
 			$scope.availableAps = [{ i18n : "records.my_data" , name : "My Data", aps:userId, owner : "self"  }, { i18n:"records.all_data", name : "All Data", aps:userId, owner : "all"}];
 			$scope.displayAps = $scope.availableAps[0];
+			var n = "RecordsCtrl_"+$state.current.name;
+			session.load(n, $scope, ["open"]);
 			
 			if ($state.params.selected != null) {	
 				 var selectedType = $state.params.selectedType;
@@ -81,6 +84,7 @@ angular.module('portal')
 	
 	$scope.setOpen = function(group, open) {
 		group.open = open;
+		$scope.open[group.id] = open;
 		/*if (open && !group.loaded) {
 			group.loaded = true;
 			$scope.getRecords($scope.displayAps.aps, $scope.displayAps.owner, group.name, $scope.displayAps.study);
@@ -183,7 +187,7 @@ angular.module('portal')
 		var c = group.infoCount || group.records.length;		
 		angular.forEach(group.children, function(g) { c+= countRecords(g); });
 		group.count = c;
-		group.open =  /*group.type == "content" ||*/ group.open || (group.parent == null);
+		group.open =  $scope.open[group.id] || group.open || (group.parent == null);
 		return c;
 	};
 		
@@ -223,7 +227,7 @@ angular.module('portal')
 		    groupItem.infoCount = info.count;
 		    groupItem.records = [];
 		    groupItem.loaded = false;
-		    groupItem.open = false;
+		    groupItem.open = $scope.open[groupItem.id] || false;
 		});
 		angular.forEach($scope.tree, function(t) { countRecords(t); });
 	};

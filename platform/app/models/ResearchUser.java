@@ -26,10 +26,7 @@ public class ResearchUser extends User {
 	public ResearchUser(String email) {		
 		this.email = email;
 		this.emailLC = email.toLowerCase();
-		messages = new HashMap<String, Set<MidataId>>();
-		messages.put("inbox", new HashSet<MidataId>());
-		messages.put("archive", new HashSet<MidataId>());
-		messages.put("trash", new HashSet<MidataId>());
+		
 		login = new Date();	
 		history = new ArrayList<History>();
 	}

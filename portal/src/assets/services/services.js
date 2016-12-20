@@ -1,6 +1,8 @@
 angular.module('services')
 .factory('session', ['$q', 'server', function($q, server) {
 	
+	var _states = {};
+	
 	var session = {
 		currentUser : null,
 		user : null,
@@ -75,6 +77,7 @@ angular.module('services')
 			session.currentUser = null;
 			sessionStorage.token = null;
 			session.cache = {};
+			_states = {};
 		},
 		
 		cacheGet : function(name) {
@@ -100,8 +103,41 @@ angular.module('services')
 			  for (var attr in data) { c[attr] = data[attr]; }
 		   });
 		   return c;
-		}
-	};
+		},
+		
+		save : function(name, scope, fields){
+            if(!_states[name])
+                _states[name] = {};
+            for(var i=0; i<fields.length; i++){
+                _states[name][fields[i]] = scope[fields[i]];
+            }
+        },
+    
+        load : function(name, scope, fields){
+        	
+        	scope.$on('$destroy', function() {
+        		console.log("save: "+name);
+                session.save(name, scope, fields);
+            });
+        	console.log("load: "+name);
+            if(!_states[name])
+                return scope;
+            for(var i=0; i<fields.length; i++){
+                if(typeof _states[name][fields[i]] !== 'undefined')
+                    scope[fields[i]] = _states[name][fields[i]];
+            }
+            return scope;
+        },
+        
+        map : function(array, name) {
+        	var lookup = {};
+        	for (var i = 0, len = array.length; i < len; i++) {
+        	    lookup[array[i][name]] = array[i];
+        	}
+        	return lookup;
+        }
+    };
+	
 	
 	 		
 	return session;

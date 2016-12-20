@@ -208,6 +208,33 @@
                         <p>The "<code>owner</code>" is the ID of the current user.</p>
                         <p>The "<code>status</code>" is <i>ACTIVE</i> if the consent has been accepted by the user. Initially it is <i>UNCONFIRMED</i> and may become <i>REJECTED</i> or <i>EXPIRED</i>.</p> 
                         <p>API calls will return a status code of <code>401</code> if a relogin is required.</p>
+                        <h3>Register a new user</h3>
+                        <p>To register a new user for the MIDATA platform that has immediate access to your application call this endpoint:</p>
+                        <pre><i>POST</i> /v1/register</pre>
+                        <p>The request needs a JSON body with these parameters:</p>
+<pre>{
+  "appname" : the name of your app,
+  "secret" : the app secret of your app,
+    
+  "email" : the email address of the user. This is the account name,  
+  "firstname" : the first name of the user,
+  "lastname" : the family name of the user,
+  "gender" : the gender of the user. MALE / FEMALE / OTHER ,
+  "birthday" : the date of birth in format 2000-12-31
+  "city" : the city of the postal address for the user,
+  "zip" : the zip code of the postal address for the user,
+  "country" : the country code of the country. ( CH for switzerland) ,
+  "address1" : the first line of the address (street and house number),
+  "address2" : (optional) a second line for the address,
+  "phone" : (optional) the phone number of the user,
+  "mobile" : (optional) the mobile phone number of the user
+  
+  "password" : the initial portal password for the new user account,
+  "phrase" :  the password for the app login for the new user account,
+  "language" : the preferred language. ( "en" for english ) 
+}</pre>                        
+                        <p>The response is the same as for the <code>/v1/auth</code> request. (See above)</p>                     
+                        
                                               
 						<h3>Creating new records</h3>
 						<p>To create a new record call this endpoint:</p>

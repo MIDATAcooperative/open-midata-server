@@ -974,20 +974,27 @@ public class RecordManager {
 	
 	public void checkRecordsInAPS(MidataId userId, MidataId apsId, boolean instreams) throws AppException {
 		APSCache cache = getCache(userId);
-		List<DBRecord> recs = QueryEngine.listInternal(cache, apsId, CMaps.map("owner", "self").map("streams", "true"), Sets.create("_id"));
+		
+		List<DBRecord> recs = QueryEngine.listInternal(cache, apsId, CMaps.map("owner", "self").map("streams", "only").map("flat", "true"), Sets.create("_id"));
 		Set<String> idOnly = Sets.create("_id");
 		for (DBRecord rec : recs) {
-			if (DBRecord.getById(rec._id, idOnly) == null) {
-				if (instreams && rec.stream != null) cache.getAPS(rec.stream, userId).removePermission(rec);
+			if (DBRecord.getById(rec._id, idOnly) == null) {				
 				cache.getAPS(apsId).removePermission(rec);
-			} else if (rec.isStream) {
+			} else {
 				try {
 				  cache.getAPS(rec._id, rec.owner).getStoredOwner();
 				} catch (Exception e) {
 				  cache.getAPS(apsId).removePermission(rec);
 				}
-			}
-			
+			}			
+		}
+		
+		recs = QueryEngine.listInternal(cache, apsId, CMaps.map("owner", "self"), Sets.create("_id"));		
+		for (DBRecord rec : recs) {
+			if (DBRecord.getById(rec._id, idOnly) == null) {
+				if (instreams && rec.stream != null) cache.getAPS(rec.stream, userId).removePermission(rec);
+				cache.getAPS(apsId).removePermission(rec);
+			} 			
 		}
 	}
 

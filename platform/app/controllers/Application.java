@@ -291,6 +291,15 @@ public class Application extends APIController {
 			user.set("subroles", user.subroles);
 		}
 		
+		if (user.subroles.contains(SubUserRole.APPUSER) && 
+				user.emailStatus.equals(EMailStatus.VALIDATED) &&
+				user.agbStatus.equals(ContractStatus.SIGNED) &&
+				(user.confirmedAt != null || !InstanceConfig.getInstance().getInstanceType().confirmationCodeRequired())) {
+				user.subroles.remove(SubUserRole.APPUSER);
+				user.subroles.add(SubUserRole.NONMEMBERUSER);
+				user.set("subroles", user.subroles);
+		}
+		
 		if (user.subroles.contains(SubUserRole.NONMEMBERUSER) &&
 			user.contractStatus.equals(ContractStatus.SIGNED)) {
 			user.subroles.remove(SubUserRole.NONMEMBERUSER);
@@ -561,18 +570,13 @@ public class Application extends APIController {
 		
 		// create the user
 		Member user = new Member();
-		user._id = new MidataId();
+		
 		user.email = email;
 		user.emailLC = email.toLowerCase();
 		user.name = firstName + " " + lastName;
 		
-		user.password = Member.encrypt(password);
-		do {
-		  user.midataID = CodeGenerator.nextUniqueCode();
-		} while (Member.existsByMidataID(user.midataID));
-		user.role = UserRole.MEMBER;
-		user.subroles = EnumSet.of(SubUserRole.TRIALUSER);
-		
+		user.password = Member.encrypt(password);				
+		user.subroles = EnumSet.of(SubUserRole.TRIALUSER);		
 		user.address1 = JsonValidation.getString(json, "address1");
 		user.address2 = JsonValidation.getString(json, "address2");
 		user.city = JsonValidation.getString(json, "city");
@@ -585,10 +589,31 @@ public class Application extends APIController {
 		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.language = JsonValidation.getString(json, "language");
-		user.ssn = JsonValidation.getString(json, "ssn");
-						
-		user.registeredAt = new Date();		
+		user.ssn = JsonValidation.getString(json, "ssn");										
 		
+		registerSetDefaultFields(user);				
+		developerRegisteredAccountCheck(user, json);		
+		registerCreateUser(user);		
+		
+		sendWelcomeMail(user);
+		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) sendAdminNotificationMail(user);
+		
+		return loginHelper(user);		
+	}
+	
+	/**
+	 * Sets fields for a new account holder user account
+	 * @param user the new user
+	 * @throws AppException
+	 */
+	public static void registerSetDefaultFields(Member user) throws AppException {
+		user._id = new MidataId();
+		do {
+			  user.midataID = CodeGenerator.nextUniqueCode();
+		} while (Member.existsByMidataID(user.midataID));
+		
+		user.role = UserRole.MEMBER;
+		user.registeredAt = new Date();
 		user.status = UserStatus.NEW;		
 		user.contractStatus = ContractStatus.NEW;	
 		user.agbStatus = ContractStatus.NEW;
@@ -599,24 +624,19 @@ public class Application extends APIController {
 		user.apps = new HashSet<MidataId>();
 		user.tokens = new HashMap<String, Map<String, String>>();
 		user.visualizations = new HashSet<MidataId>();
-		user.messages = new HashMap<String, Set<MidataId>>();
-		user.messages.put("inbox", new HashSet<MidataId>());
-		user.messages.put("archive", new HashSet<MidataId>());
-		user.messages.put("trash", new HashSet<MidataId>());
+		
 		user.login = new Date();
 		user.news = new HashSet<MidataId>();
-		//user.pushed = new HashSet<MidataId>();
-		//user.shared = new HashSet<MidataId>();
-		
-		developerRegisteredAccountCheck(user, json);
-				
-		user.security = AccountSecurityLevel.KEY;
-		
-		switch (user.security) {
-		case KEY: user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);break;
-		default: user.publicKey = null;
-		}
-						
+	}
+	
+	/**
+	 * actually creates a new user and creates the corresponding APS and key
+	 * @param user the new user
+	 * @throws AppException
+	 */
+	public static void registerCreateUser(Member user) throws AppException {
+		user.security = AccountSecurityLevel.KEY;		
+		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);								
 		Member.add(user);
 		
 		KeyManager.instance.unlock(user._id, null);
@@ -625,13 +645,15 @@ public class Application extends APIController {
 		Member.set(user._id, "myaps", user.myaps);
 		
 		PatientResourceProvider.updatePatientForAccount(user._id);
-		
-		sendWelcomeMail(user);
-		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) sendAdminNotificationMail(user);
-		
-		return loginHelper(user);		
 	}
 	
+	/**
+	 * checks for a new user if it has been registered by a developer and skips validation if allowed
+	 * @param newuser the new user
+	 * @param json the json parameters from the registration request
+	 * @throws JsonValidationException
+	 * @throws AuthException
+	 */
 	public static void developerRegisteredAccountCheck(User newuser, JsonNode json) throws JsonValidationException, AuthException {
 		if (InstanceConfig.getInstance().getInstanceType().developersMayRegisterTestUsers()) {		  
 		   newuser.developer = JsonValidation.getMidataId(json, "developer");
@@ -699,12 +721,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.News.add(),
 				controllers.routes.javascript.News.delete(),
 				controllers.routes.javascript.News.update(),
-				// Messages				
-				controllers.routes.javascript.Messages.get(),
-				controllers.routes.javascript.Messages.send(),
-				controllers.routes.javascript.Messages.move(),
-				controllers.routes.javascript.Messages.remove(),
-				controllers.routes.javascript.Messages.delete(),
+				
 				controllers.routes.javascript.FormatAPI.listGroups(),
 				controllers.routes.javascript.FormatAPI.updateGroup(),
 				controllers.routes.javascript.FormatAPI.deleteGroup(),

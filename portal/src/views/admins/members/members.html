@@ -5,7 +5,7 @@
 		<div class="body">
 		    <form class="css-form form-horizontal">
 		      <formrow myid="search" label="admin_members.search_type">
-		        <select class="form-control" id="search" ng-change="reload(search);" ng-model="search" ng-options="search as search.name | translate for search in searches"></select>
+		        <select class="form-control" id="search" ng-change="reload(searchName);" ng-model="searchName" ng-options="search.name as search.name | translate for search in searches"></select>
 		      </formrow>
 		      <formrow myid="role" label="admin_members.role" ng-show="search.changeable">
 		        <select  class="form-control" id="role" ng-change="reload();" ng-model="search.criteria.role" ng-options="role as 'enum.userrole.'+role | translate for role in roles"></select>
@@ -34,7 +34,7 @@
             <loader busy="status.isBusy !== false">
 			
 			<div ng-if="members.length > 10">
-              <dir-pagination-controls pagination-id="membertable"></dir-pagination-controls>
+              <dir-pagination-controls pagination-id="membertable" current-page="page.nr"></dir-pagination-controls>
              </div>
 
 			<table class="table table-striped" ng-show="members.length">
@@ -49,7 +49,7 @@
 					<th translate="admin_members.status"></th>
 				</tr>
 								
-				<tr dir-paginate="member in members | itemsPerPage : 10" pagination-id="membertable">
+				<tr dir-paginate="member in members | itemsPerPage : 10" pagination-id="membertable" current-page="page.nr">
 					<td><a href="javascript:" ui-sref="^.address({ userId : member._id })">{{ member.midataID || 'none' }}</a></td>
 					<td>{{ member.firstname }}</td>
 					<td>{{ member.lastname }}</td>

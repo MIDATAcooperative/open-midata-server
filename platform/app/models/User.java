@@ -78,12 +78,7 @@ public class User extends Model implements Comparable<User> {
 	 * Account version timestamp. May be used for schema evolution
 	 */
 	public int accountVersion = AccountPatches.currentAccountVersion;
-	
-	/**
-	 * Message inbox. Currently not used. May be removed in the future.
-	 */
-	public Map<String, Set<MidataId>> messages; // keys (folders) are: inbox, archive, trash
-	
+			
 	/**
 	 * Timestamp of last login
 	 */
