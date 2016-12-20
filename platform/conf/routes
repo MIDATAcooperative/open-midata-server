@@ -26,6 +26,7 @@ GET     /logout                                          controllers.Application
 
 POST    /members/api/registration                        controllers.Application.register()
 POST    /members/api/join                                controllers.QuickRegistration.register()
+
 POST    /members/api/login                               controllers.Application.authenticate()
 POST    /common/api/passphrase                           controllers.Application.providePassphrase()
 POST    /common/api/passphrase/change                    controllers.Application.changePassphrase()
@@ -45,12 +46,6 @@ POST    /members/api/news/get                            controllers.News.get()
 POST    /admin/api/news/update                           controllers.News.update()
 POST    /admin/api/news/delete/:id                       controllers.News.delete(id: String)
 
-
-POST    /shared/api/messages/get                         controllers.Messages.get()
-POST    /shared/api/messages/send                        controllers.Messages.send()
-DELETE  /shared/api/messages/:id                         controllers.Messages.delete(id: String)
-DELETE  /shared/api/messages/:id/trash                   controllers.Messages.remove(id: String)
-PUT     /shared/api/messages/:id/:from/:to               controllers.Messages.move(id: String, from: String, to: String)
 # Records
 
 POST    /members/api/records/get                         controllers.Records.get()
@@ -230,6 +225,9 @@ POST    /v1/auth            controllers.MobileAPI.authenticate()
 POST    /v1/authorize            controllers.OAuth2.login()
 OPTIONS /v1/token            controllers.OAuth2.checkPreflight()
 POST    /v1/token            controllers.OAuth2.authenticate()
+
+OPTIONS /v1/register        controllers.MobileAPI.checkPreflight()
+POST    /v1/register        controllers.QuickRegistration.registerFromApp()
 
 #OPTIONS /v1/midata            controllers.MobileAPI.checkPreflight()
 #POST    /v1/midata            controllers.MobileAPI.midataLogin()

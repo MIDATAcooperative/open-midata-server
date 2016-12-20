@@ -17,7 +17,7 @@ import utils.exceptions.InternalServerException;
 public class JsonOutput {
 	
 	public static String toJson(Object o, String filtered, Set<String> fields) throws InternalServerException {	   	    
-		fields.add("_id");
+		if (!fields.contains("_id")) fields.add("_id");
 		
 	    SimpleBeanPropertyFilter filter =
 	            new SimpleBeanPropertyFilter.FilterExceptFilter(fields);

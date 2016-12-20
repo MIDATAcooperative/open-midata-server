@@ -197,6 +197,7 @@ public class Circles extends APIController {
 		switch (type) {
 		case CIRCLE : 
 			forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.MEMBEROFCOOPERATIVE);
+			forbidSubUserRole(SubUserRole.APPUSER, SubUserRole.MEMBEROFCOOPERATIVE);
 			consent = new Circle();
 			((Circle) consent).order = Circle.getMaxOrder(userId) + 1;
 			patientRecord = true;
