@@ -185,3 +185,6 @@
 {"_id":{"$oid":"5857a86faed6456bcd027ae0"},"system":"http://loinc.org","code":"1988-5","display":"C reactive protein in serum or plasma","content":"lab/c-protein-in-serum-or-plasma"}
 {"_id":{"$oid":"5857a8efaed6456bcd027ae1"},"system":"http://loinc.org","code":"15189-4","display":"Immunoglobulin light chains.kappa/lambda in serum","content":"lab/loinc-15189-4"}
 {"_id":{"$oid":"5857a9d1aed6456bcd027ae4"},"system":"http://loinc.org","code":"33358-3","display":"Protein.monoclonal in serum or plasma by electrophoresis","content":"lab/loinc-33358-3"}
+{"_id":{"$oid":"585935a5aed6452afe490887"},"system":"http://loinc.org","code":"2339-0","display":"Glucose [Mass/volume] in blood","content":"lab/loinc-2339-0"}
+{"_id":{"$oid":"585935a5aed6452afe490888"},"system":"http://loinc.org","code":"15074-8","display":"Glucose [Moles/volume] in blood","content":"lab/loinc-15074-8"}
+{"_id":{"$oid":"58594553aed6452afe49088e"},"system":"http://midata.coop","code":"LevelOfEmployment","display":"Level of employment","content":"work/level-of-employment"}
