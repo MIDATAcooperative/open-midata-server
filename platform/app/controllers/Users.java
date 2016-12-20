@@ -168,6 +168,7 @@ public class Users extends APIController {
 		
 		forbidSubUserRole(SubUserRole.TRIALUSER, SubUserRole.NONMEMBERUSER);
 		forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.NONMEMBERUSER);
+		forbidSubUserRole(SubUserRole.APPUSER, SubUserRole.NONMEMBERUSER);
 		
 		Set<String> fields =  Sets.create("firstname", "lastname", "name");
 		Set<Member> result = Member.getAll(CMaps.map("email", query).map("searchable", true).map("status", User.NON_DELETED).map("role", UserRole.MEMBER), fields);
@@ -337,6 +338,7 @@ public class Users extends APIController {
 		if (searchable) {
 			forbidSubUserRole(SubUserRole.TRIALUSER, SubUserRole.NONMEMBERUSER);
 			forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.NONMEMBERUSER);
+			forbidSubUserRole(SubUserRole.APPUSER, SubUserRole.NONMEMBERUSER);
 		}
 		
 		String language = JsonValidation.getString(json, "language");
@@ -368,7 +370,7 @@ public class Users extends APIController {
 		
 		Member user = Member.getById(userId, Sets.create("_id", "status", "role", "subroles", "history", "emailStatus", "confirmedAt", "contractStatus", "agbStatus", "lastname", "firstname")); 
 		if (user == null) throw new InternalServerException("error.internal", "User record not found.");
-		if (user.subroles.contains(SubUserRole.TRIALUSER) || user.subroles.contains(SubUserRole.NONMEMBERUSER) || user.subroles.contains(SubUserRole.STUDYPARTICIPANT)) {
+		if (user.subroles.contains(SubUserRole.TRIALUSER) || user.subroles.contains(SubUserRole.NONMEMBERUSER) || user.subroles.contains(SubUserRole.STUDYPARTICIPANT) || user.subroles.contains(SubUserRole.APPUSER)) {
 			
 		} else throw new BadRequestException("invalid.status_transition", "No membership request required.");
 		

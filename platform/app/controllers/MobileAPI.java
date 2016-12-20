@@ -195,7 +195,7 @@ public class MobileAPI extends Controller {
 			appInstance = MobileAppInstance.getByApplicationAndOwner(app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode"));
 			
 			if (appInstance == null) {									
-				appInstance = installApp(null, app, user, phrase);				
+				appInstance = installApp(null, app._id, user, phrase);				
 	   		    meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
 			} else {
 				if (appInstance.passcode != null && !User.authenticationValid(phrase, appInstance.passcode)) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
@@ -207,8 +207,20 @@ public class MobileAPI extends Controller {
 				
 		if (!phrase.equals(meta.get("phrase"))) return internalServerError("Internal error while validating consent");
 						
+		return authResult(appInstance, meta, phrase);
+	}
+	
+	/**
+	 * Returns result for authentication request. 
+	 * @param appInstance instance of app to login
+	 * @param meta _app meta object from app instance
+	 * @param phrase app password
+	 * @return
+	 * @throws AppException
+	 */
+	public static Result authResult(MobileAppInstance appInstance, Map<String, Object> meta, String phrase) throws AppException {
 		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis()); 
-        MobileAppToken refresh = new MobileAppToken(app._id, appInstance._id, appInstance.owner, phrase, System.currentTimeMillis());
+        MobileAppToken refresh = new MobileAppToken(appInstance.applicationId, appInstance._id, appInstance.owner, phrase, System.currentTimeMillis());
 		
         meta.put("created", refresh.created);
         RecordManager.instance.setMeta(appInstance._id, appInstance._id, "_app", meta);
@@ -223,7 +235,8 @@ public class MobileAPI extends Controller {
 		return ok(obj);
 	}
 	
-	public static MobileAppInstance installApp(MidataId executor, Plugin app, User member, String phrase) throws AppException {		
+	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase) throws AppException {
+		Plugin app = Plugin.getById(appId, Sets.create("name", "defaultQuery"));
 		MobileAppInstance appInstance = new MobileAppInstance();
 		appInstance._id = new MidataId();
 		appInstance.name = "Mobile: "+ app.name;

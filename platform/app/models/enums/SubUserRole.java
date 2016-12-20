@@ -72,6 +72,11 @@ public enum SubUserRole {
    STUDYPARTICIPANT,
    
    /**
+    * the user with UserRole MEMBER has been registered for using a specfic app
+    */
+   APPUSER,
+   
+   /**
     * the user with UserRole MEMBER is a member of the cooperative
     */
    MEMBEROFCOOPERATIVE;
