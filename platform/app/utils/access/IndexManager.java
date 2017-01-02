@@ -67,13 +67,14 @@ public class IndexManager {
 		indexDef.formats = new ArrayList<String>(formats);
 		indexDef.selfOnly = selfOnly;
 		indexDef.owner = getIndexPseudonym(user);
-		
-		IndexDefinition.add(indexDef);
-					
+		indexDef.lockTime = System.currentTimeMillis();
+								
 		IndexRoot root = new IndexRoot(getIndexKey(cache, user), indexDef, true);
 		
-		indexAll(cache, root, user);
-		
+		root.prepareToCreate();
+		IndexDefinition.add(indexDef);
+			
+		indexDef.lockTime = 0;
 		return indexDef;
 	}
 	
@@ -82,7 +83,7 @@ public class IndexManager {
 		return ((APSImplementation) aps).eaps.getAPSKey();
 	}
 	
-	protected void addRecords(IndexRoot index, MidataId aps, Collection<DBRecord> records) throws AppException {
+	protected void addRecords(IndexRoot index, MidataId aps, Collection<DBRecord> records) throws AppException, LostUpdateException {
 		for (DBRecord record : records) {
 			QueryEngine.loadData(record);
 			index.addEntry(aps != null ? aps : record.consentAps, record);
@@ -115,6 +116,7 @@ public class IndexManager {
 						
 		AccessLog.logBegin("start index update");
 		try {
+			index.checkLock();
 			
 			long updateAllTs = 0;
 		    if (targetAps == null) {

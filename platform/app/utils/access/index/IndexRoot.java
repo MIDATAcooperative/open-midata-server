@@ -24,12 +24,15 @@ public class IndexRoot {
 	private IndexDefinition model;
 	private IndexPage rootPage;
 	private byte[] key;
+	private boolean locked;
+	private int modCount = 0;
 	
 	public IndexRoot(byte[] key, IndexDefinition def, boolean isnew) throws InternalServerException {
 		this.key = key;
 		this.model = def;
 		this.rootPage = new IndexPage(this.key, def);		
 		if (isnew) {
+			locked = true;
 			this.rootPage.init();
 		}
 		if (this.rootPage.isNonLeaf()) this.rootPage = new IndexNonLeafPage(key, def);
@@ -56,11 +59,39 @@ public class IndexRoot {
 	}
 	
 	public void flush() throws InternalServerException, LostUpdateException {
+		rootPage.model.lockTime = 0;
 		rootPage.flush();
+		locked = false;
+		modCount = 0;
 	}
 	
+	public void prepareToCreate() throws InternalServerException {
+		rootPage.encrypt();
+		rootPage.changed = false;
+	}
+	
+	public void lockIndex() throws InternalServerException, LostUpdateException {
+		if (!locked) {
+			rootPage.model.lockTime = System.currentTimeMillis();
+			rootPage.model.updateLock();
+			locked = true;
+		}
+	}
+	
+	public void checkLock() throws InternalServerException {
+		if (locked) return;
+		while (rootPage.model.lockTime > System.currentTimeMillis() - 1000l * 60l) {
+			try {
+			  Thread.sleep(500);
+			} catch (InterruptedException e) {}
+			rootPage.reload();
+		}
+	}
+			
 	public void reload() throws InternalServerException {
 		rootPage.reload();
+		locked = false;
+		modCount = 0;
 	}
 	
 	public boolean isChanged() {
@@ -81,13 +112,20 @@ public class IndexRoot {
 		Comparable<Object>[] key;
 	}
 
-	public void addEntry(MidataId aps, DBRecord record) throws InternalServerException {
+	public void addEntry(MidataId aps, DBRecord record) throws InternalServerException, LostUpdateException {
+		modCount++;
+		if (modCount > 100) lockIndex();
+		
 		EntryInfo inf = new EntryInfo();
 		inf.aps = aps;
 		inf.record = record;
 		inf.key = new Comparable[model.fields.size()];		
 		extract(0, inf, null,null);				
-		if (rootPage.needsSplit()) rootPage = IndexNonLeafPage.split(this.key, rootPage);				
+		if (rootPage.needsSplit()) {
+			flush();
+			lockIndex();
+			rootPage = IndexNonLeafPage.split(this.key, rootPage);				
+		}
 	}
 
 

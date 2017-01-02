@@ -8,6 +8,9 @@ import models.MidataId;
 import models.Model;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.db.DBLayer;
+import utils.db.DatabaseException;
+import utils.db.LostUpdateException;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
@@ -26,6 +29,7 @@ public class IndexDefinition extends IndexPageModel {
 	 */
 	public boolean selfOnly;
 	
+		
 	/**
 	 * For which record formats does this index apply?
 	 */
@@ -44,4 +48,5 @@ public class IndexDefinition extends IndexPageModel {
 	public static void delete(MidataId id) throws InternalServerException {		
 		Model.delete(IndexDefinition.class, collection, CMaps.map("_id", id));
 	}
+		
 }
