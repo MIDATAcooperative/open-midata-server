@@ -19,15 +19,10 @@ import utils.exceptions.InternalServerException;
  *
  */
 public class IndexDefinition extends IndexPageModel {
-    public @NotMaterialized static final Set<String> ALL = Sets.create("owner", "selfOnly", "formats", "fields", "enc", "version");
+    public @NotMaterialized static final Set<String> ALL = Sets.create("owner", "formats", "fields", "enc", "version");
 	
 	
 	public String owner;
-	
-	/**
-	 * Is this index only about records of the owner?
-	 */
-	public boolean selfOnly;
 	
 		
 	/**

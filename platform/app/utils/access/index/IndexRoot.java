@@ -101,10 +101,7 @@ public class IndexRoot {
 	public List<String> getFormats() {		
 		return model.formats;
 	}
-
-	public boolean restrictedToSelf() {
-		return model.selfOnly;
-	}
+	
 	
 	class EntryInfo {
 		MidataId aps;

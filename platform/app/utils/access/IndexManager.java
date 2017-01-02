@@ -55,17 +55,15 @@ public class IndexManager {
 	 *            id of user of the new index
 	 * @param format
 	 *            format of records stored in the index
-	 * @param selfOnly
 	 * @param fields
 	 */
-	public IndexDefinition createIndex(APSCache cache, MidataId user, Set<String> formats, boolean selfOnly, List<String> fields) throws AppException {
+	public IndexDefinition createIndex(APSCache cache, MidataId user, Set<String> formats, List<String> fields) throws AppException {
 
 		IndexDefinition indexDef = new IndexDefinition();
 
 		indexDef._id = new MidataId();
 		indexDef.fields = fields;
 		indexDef.formats = new ArrayList<String>(formats);
-		indexDef.selfOnly = selfOnly;
 		indexDef.owner = getIndexPseudonym(user);
 		indexDef.lockTime = System.currentTimeMillis();
 								
