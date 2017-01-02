@@ -50,7 +50,7 @@ private Feature next;
 			
 			if (index == null) { 
 				AccessLog.logBegin("start index creation");
-				index = IndexManager.instance.createIndex(q.getCache(), q.getCache().getOwner(), q.getRestriction("format"), q.isRestrictedToSelf(), pathes);
+				index = IndexManager.instance.createIndex(q.getCache(), q.getCache().getOwner(), q.getRestriction("format"), pathes);
 				AccessLog.logEnd("end index creation");
 			}
 			

@@ -203,13 +203,13 @@ public class IndexNonLeafPage extends IndexPage {
 		return results;
 	}
 	
-	public void flush() throws InternalServerException, LostUpdateException {
+	public void flush() throws InternalServerException, LostUpdateException {		
 		if (changed) {
 			AccessLog.log("Flushing index");
 			encrypt();
 			model.update();			
 			changed = false;
-		}
+		}		
 		for (IndexPage page : loadedChilds.values()) page.flush();
 	}
 	
