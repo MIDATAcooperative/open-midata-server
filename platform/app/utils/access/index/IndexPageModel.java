@@ -21,12 +21,17 @@ import utils.exceptions.InternalServerException;
 public class IndexPageModel extends Model {
 
 	protected @NotMaterialized static final String collection = "indexes";
-	private final static Set<String> ALL_PAGE = Sets.create("version", "enc");
+	private final static Set<String> ALL_PAGE = Sets.create("version", "enc", "lockTime");
 	
 	/**
 	 * Last updated version number to prevent lost updates
 	 */
 	public long version;
+	
+	/**
+	 * Timestamp that is set to lock the index for longer index operations
+	 */
+	public long lockTime;
 	
 	/**
 	 * encrypted data
@@ -48,7 +53,15 @@ public class IndexPageModel extends Model {
 	
 	public void update() throws InternalServerException, LostUpdateException {
 		try {
-		   DBLayer.secureUpdate(this, collection, "version", "enc");
+		   DBLayer.secureUpdate(this, collection, "version", "lockTime", "enc");
+		} catch (DatabaseException e) {
+			throw new InternalServerException("error.internal.db", e);
+		}
+	}
+	
+	public void updateLock() throws InternalServerException, LostUpdateException {
+		try {
+		   DBLayer.secureUpdate(this, collection, "version", "lockTime");
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal.db", e);
 		}

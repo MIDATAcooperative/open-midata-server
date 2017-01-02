@@ -625,19 +625,27 @@ public class RecordManager {
 			} else apswrapper.provideRecordKey(record);
 			
 			usedKey = record.key;
-    		
-			if (!record.direct && !documentPart) apswrapper.addPermission(record, false);
-			else apswrapper.touch();
-			
+    								
 			if (apswrapper.getSecurityLevel().equals(APSSecurityLevel.HIGH)) record.time = 0;
+			
+			DBRecord unencrypted = record.clone();
+			
+			RecordEncryption.encryptRecord(record);		
+		    if (upsert) { DBRecord.upsert(record); } else { DBRecord.add(record); }	  
+		    
+		    if (!unencrypted.direct && !documentPart) apswrapper.addPermission(unencrypted, false);
+			else apswrapper.touch();
+		    
 			
 		} else {
 			record.time = 0;
 			usedKey = record.key;
+			
+			RecordEncryption.encryptRecord(record);		
+		    if (upsert) { DBRecord.upsert(record); } else { DBRecord.add(record); }	  
 		}
 								
-		RecordEncryption.encryptRecord(record);		
-	    if (upsert) { DBRecord.upsert(record); } else { DBRecord.add(record); }	  
+		
 	    
 	    //RecordLifecycle.notifyOfCreation(record, getCache(executingPerson));
 	    AccessLog.logEnd("End Add Record");				
@@ -787,7 +795,8 @@ public class RecordManager {
 		try {
 		    return QueryEngine.info(getCache(who), aps, nproperties, aggrType);
 		} catch (APSNotExistingException e) {
-			fixAccount(who);
+			checkRecordsInAPS(who, aps, false);
+			//fixAccount(who);
 			throw e;
 		}
 	}
@@ -939,14 +948,13 @@ public class RecordManager {
 		}
 		AccessLog.logEnd("end searching for missing records in consents");
 		
-		AccessLog.logBegin("start searching for missing records in authorized consents");
-		AccessLog.logEnd("end searching for missing records in authorized consents");
+		AccessLog.logBegin("start searching for missing records in authorized consents");		
 		consents = Consent.getAllActiveByAuthorized(userId);
 		for (Consent consent : consents) {
 			checkRecordsInAPS(userId, consent._id, false);
 		}
-		AccessLog.logBegin("start searching for empty streams");
-		
+		AccessLog.logEnd("end searching for missing records in authorized consents");
+						
 		AccessLog.logBegin("start searching for missing records in spaces");
 		Set<Space> spaces = Space.getAllByOwner(userId, Sets.create("_id"));
 		for (Space space : spaces) {			
@@ -954,6 +962,7 @@ public class RecordManager {
 		}
 		AccessLog.logEnd("end searching for missing records in spaces");
 		
+		AccessLog.logBegin("start searching for empty streams");
 		Set<String> fields = new HashSet<String>();
 		fields.add("owner");
 		fields.addAll(APSEntry.groupingFields);
@@ -974,7 +983,7 @@ public class RecordManager {
 	
 	public void checkRecordsInAPS(MidataId userId, MidataId apsId, boolean instreams) throws AppException {
 		APSCache cache = getCache(userId);
-		
+		AccessLog.logBegin("check records in APS:"+apsId.toString());
 		List<DBRecord> recs = QueryEngine.listInternal(cache, apsId, CMaps.map("owner", "self").map("streams", "only").map("flat", "true"), Sets.create("_id"));
 		Set<String> idOnly = Sets.create("_id");
 		for (DBRecord rec : recs) {
@@ -996,6 +1005,7 @@ public class RecordManager {
 				cache.getAPS(apsId).removePermission(rec);
 			} 			
 		}
+		AccessLog.logEnd("end check records in APS:"+apsId.toString());
 	}
 
 	public void patch20160407(MidataId who) throws AppException {

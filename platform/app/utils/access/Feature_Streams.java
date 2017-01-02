@@ -207,9 +207,7 @@ public class Feature_Streams extends Feature {
 		result.direct = false;
 		
 		AccessLog.log("adding permission");
-		
-		apswrapper.addPermission(result, targetAPS != null && !targetAPS.equals(result.owner));
-										
+														
 		DBRecord unecrypted = result.clone();
 				
 		RecordEncryption.encryptRecord(result);		
@@ -220,7 +218,9 @@ public class Feature_Streams extends Feature {
 	    AccessLog.log("create aps for stream");
 	    
 		RecordManager.instance.createAPSForRecord(executingPerson, unecrypted.owner, unecrypted._id, unecrypted.key, apsDirect);
-				
+		
+		apswrapper.addPermission(unecrypted, targetAPS != null && !targetAPS.equals(unecrypted.owner));
+		
 		if (targetAPS != null) {
 			AccessLog.log("add permission for owner");
 			unecrypted.isReadOnly = true;

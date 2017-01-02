@@ -8,6 +8,7 @@
        $scope.authheader = "";
        //$scope.extra = window.localStorage.extra;
        $scope.results = "empty";
+       $scope.count = 1;
        $scope.saved = [];
        
        //if ($scope.extra == null) $scope.extra = "";
@@ -18,10 +19,16 @@
          console.log(url);
          var call = { method: $scope.type, url: url, data : JSON.parse($scope.body) }; 
          if ($scope.authheader) call.headers = { "Authorization" : $scope.authheader };
+
+         $scope.results = "";
+         console.log("count="+$scope.count);
          
-         $http(call)
-         .success(function(data) { $scope.results = JSON.stringify(data); })
-         .error(function(x,p) { $scope.results = p + ":" + JSON.stringify(x); });
+         for (var count = 0;count < Number($scope.count); count++) {
+        	 console.log(count);
+	         $http(call)
+	         .success(function(data) { $scope.results += JSON.stringify(data); })
+	         .error(function(x,p) { $scope.results = p + ":" + JSON.stringify(x); });
+         }
        };
 
        $scope.dosave = function() {
