@@ -376,13 +376,15 @@ public class Query {
 		return (int) (dt.getTime() / 1000 / 60 / 60 / 24 / 7);
 	}
 	
-	public static void validate(Map<String, Object> query) throws AppException {
+	public static void validate(Map<String, Object> query, boolean requiresContent) throws AppException {
+		boolean contentSet = false;
 		if (query.containsKey("group")) {
 			Object system = query.get("group-system");
 			if (system == null || ! (system instanceof String)) throw new BadRequestException("error.missing.groupsystem", "Missing group-system for query");
 			Set<String> groups = Query.getRestriction(query.get("group"), "group"); 
 			query.put("group", groups);
 			for (String group : groups) if (RecordGroup.getBySystemPlusName(system.toString(), group) == null) throw new BadRequestException("error.group",  "Unknown group'"+group+"' for system '"+system.toString()+"'.");
+			contentSet = true;
 		}
 		if (query.containsKey("group-strict")) {
 			Object system = query.get("group-system");
@@ -395,6 +397,7 @@ public class Query {
 			Set<String> contents = Query.getRestriction(query.get("content"), "content");
 			for (String content : contents) ContentInfo.getByName(content);
 			query.put("content", contents);
+			contentSet = true;
 		}
 		if (query.containsKey("code")) {
 			Set<String> codes = Query.getRestriction(query.get("code"), "code");
@@ -408,6 +411,9 @@ public class Query {
 		}
 		if (query.containsKey("app")) {
 			query.put("app", Query.getRestriction(query.get("app"), "app"));
+		}
+		if (requiresContent && !contentSet) {
+			throw new BadRequestException("error.invalid.access_query", "Access query must restrict by 'content' or 'group'!");
 		}
 	}
 }

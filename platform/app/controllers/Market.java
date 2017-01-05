@@ -83,7 +83,11 @@ public class Market extends APIController {
 		app.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 		app.i18n = new HashMap<String, Plugin_i18n>();
-		Query.validate(app.defaultQuery);
+		try {
+		  Query.validate(app.defaultQuery, app.type.equals("mobile"));
+		} catch (BadRequestException e) {
+			throw new JsonValidationException(e.getLocaleKey(), "defaultQuery", "invalid", e.getMessage());
+		}
 		Map<String,Object> i18n = JsonExtraction.extractMap(json.get("i18n"));
 		for (String lang : i18n.keySet()) {
 			Map<String, Object> entry = (Map<String, Object>) i18n.get(lang);
@@ -228,7 +232,11 @@ public class Market extends APIController {
 		plugin.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
 		plugin.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		plugin.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
-		Query.validate(plugin.defaultQuery);
+		try {
+		    Query.validate(plugin.defaultQuery, plugin.type.equals("mobile"));
+		} catch (BadRequestException e) {
+			throw new JsonValidationException(e.getLocaleKey(), "defaultQuery", "invalid", e.getMessage());
+		}
 		plugin.status = PluginStatus.DEVELOPMENT;
 		plugin.i18n = new HashMap<String, Plugin_i18n>();
 		Map<String,Object> i18n = JsonExtraction.extractMap(json.get("i18n"));
