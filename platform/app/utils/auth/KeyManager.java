@@ -194,7 +194,7 @@ public class KeyManager {
 	 * @throws InternalServerException
 	 */
 	public byte[] generateKeypairAndReturnPublicKey(MidataId target) throws InternalServerException {
-		return generateKeypairAndReturnPublicKey(target, null);
+		return generateKeypairAndReturnPublicKey(target, null, false);
 	}
 	
 	/**
@@ -208,6 +208,21 @@ public class KeyManager {
 	 * @throws InternalServerException
 	 */
 	public byte[] generateKeypairAndReturnPublicKey(MidataId target, String passphrase) throws InternalServerException {
+		return generateKeypairAndReturnPublicKey(target, passphrase, false);
+	}
+	
+	/**
+	 * Generate a new public/private key pair, protect the private key with a passphrase, store it in db or memory and return the public key.
+	 * 
+	 * This method will protect the generated private key with a passphrase.
+	 * 
+	 * @param target id of user or application instance for which this keypair should be generated
+	 * @param passphrase passphrase to apply the the private key
+	 * @param inMemory if true the private key will only be kept in memory and not be stored to the database
+	 * @return public key
+	 * @throws InternalServerException
+	 */
+	public byte[] generateKeypairAndReturnPublicKey(MidataId target, String passphrase, boolean inMemory) throws InternalServerException {
 		try {
 		   KeyPairGenerator generator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
 		   
@@ -224,7 +239,11 @@ public class KeyManager {
 			 keyinfo.privateKey = EncryptionUtils.applyKey(priv.getEncoded(), passphrase); 
 			 keyinfo.type = KEYPROTECTION_PASSPHRASE;
 		   }
-		   KeyInfo.add(keyinfo);
+		   if (inMemory) {
+			  pks.put(target.toString(), keyinfo.privateKey); 
+		   } else {
+		      KeyInfo.add(keyinfo);
+		   }
 		   
 		   return pub.getEncoded();
 		} catch (NoSuchAlgorithmException e) {

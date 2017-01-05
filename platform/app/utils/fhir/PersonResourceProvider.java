@@ -100,7 +100,7 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 		return p;
 	}
 	
-	private String getPersonName(User theUser) {
+	protected static String getPersonName(User theUser) {
 		return theUser.firstname+" "+theUser.lastname;
 	}
 	

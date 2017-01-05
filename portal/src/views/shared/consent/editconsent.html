@@ -43,10 +43,11 @@
 			{{ person.zip }} {{ person.city }}<br>
 			{{ person.country }}<br>
 			</span>
-			<span ng-show="person.email"><span translate="common.user.email"></span>: {{ member.email }}<br></span>
+			<span ng-show="person.email"><span translate="common.user.email"></span>: {{ person.email }}<br></span>
 		  </address>
 		</div>
-		<button type="button" class="btn btn-default" ng-click="addPeople();" translate="editconsent.add_people_btn"></button>		
+		<button type="button" class="btn btn-default" ng-click="addPeople();" translate="editconsent.add_people_btn"></button>
+		<button type="button" class="btn btn-default" ng-click="addUserGroup();" translate="editconsent.add_usergroup_btn"></button>		
 	</formrow>
 	<formrow id="reshare" label="editconsent.reshare" ng-show="consent.type != 'EXTERNALSERVICE'">
 	  <div class="checkbox">

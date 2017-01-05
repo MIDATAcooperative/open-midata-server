@@ -138,6 +138,10 @@ angular.module('portal')
 		}		
 	};
 	
+	$scope.addUserGroup = function() {		
+		views.setView("usergroupsearch", { callback : addPerson });					
+	};
+	
 	$scope.deleteConsent = function() {
 		server.delete(jsRoutes.controllers.Circles["delete"]($scope.consent._id).url).
 		then(function() {

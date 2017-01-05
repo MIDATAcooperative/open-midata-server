@@ -1,0 +1,27 @@
+<div ng-controller="UserGroupsCtrl">
+		
+ 	<div class="panel panel-primary">
+		<div class="panel-heading" translate="provider_usergroups.title"></div>
+		<div class="body">
+      <loader busy="status.isBusy !== false">
+      <table class="table" ng-show="usergroups.length > 0">
+        <tr>
+          <th translate="provider_usergroups.name"></th>
+            
+          <th></th>        
+        </tr>
+        <tr ng-repeat="item in usergroups">
+          <td><a ui-sref="^.editusergroup({ groupId : item._id })">{{ item.name }}</a></td>          
+          <td><button class="btn btn-danger btn-xs" translate="common.delete_btn" ng-click="deleteGroup(item)"></button></td>
+        </tr>
+      </table>
+      <p ng-show="usergroups.length == 0" translate="provider_usergroups.empty"></p>
+      
+      <a class="btn btn-primary" translate="common.add_btn" ui-sref="^.newusergroup"></a> 
+            
+      </loader>		
+    </div>
+  </div>		
+
+		  	
+</div>

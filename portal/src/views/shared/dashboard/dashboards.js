@@ -536,6 +536,29 @@ angular.module('portal')
 				
 				  active : false,
 				  position : "modal"			 
+			},
+			{                        
+				  id : "usergroupsearch",
+				  template : "/views/shared/usergroupsearch/usergroupsearch.html",				
+				  active : false,
+				  position : "modal"			 
+			}
+			
+	 ],
+	 "usergroup" : [			
+			{                        
+				  id : "addusers",
+				  template : "/views/shared/dashboardTiles/addusers/addusers.html",
+				 
+				  active : false,
+				  position : "modal"			 
+			},
+			{                        
+				  id : "providersearch",
+				  template : "/views/shared/providersearch/providersearch.html",
+				
+				  active : false,
+				  position : "modal"			 
 			}
 			
 	 ],

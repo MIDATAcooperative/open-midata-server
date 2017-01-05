@@ -1,0 +1,42 @@
+<div ng-controller="EditUserGroupCtrl">
+ <div class="panel panel-primary">
+  <div class="panel-heading" translate="provider_editusergroup.title">    
+  </div>
+  <div class="panel-body">
+  <loader busy="status.isBusy !== false">
+  <form name="myform" class="css-form form-horizontal" ng-submit="create()" novalidate role="form">
+    <formrow id="name" label="provider_editusergroup.name">
+      <p class="form-control-static">{{ usergroup.name }}</p>
+    </formrow>    
+    <formrow id="status" label="provider_editusergroup.status">
+      <p class="form-control-static" ng-show="usergroup.status == 'ACTIVE'" translate="editconsent.status_active"></p>
+      <p class="form-control-static" ng-show="usergroup.status == 'EXPIRED'" translate="editconsent.status_expired"></p>
+      <p class="form-control-static" ng-show="usergroup.status == 'UNCONFIRMED'" translate="editconsent.status_unconfirmed"></p>    
+      <p class="form-control-static" ng-show="usergroup.status == 'REJECTED'" translate="editconsent.status_rejected"></p>
+    </formrow> 
+  </form>	                
+  
+  <table class="table table-striped">
+    <tr ng-repeat="member in members">
+      <td>{{ member.user.firstname }}</td>
+      <td>{{ member.user.lastname }}</td>
+      <td>{{ member.user.email }}</td>
+      <td>
+        <button type="button" ng-click="removePerson(member)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>
+      </td>
+    </tr>  
+  </table>
+  
+     
+	<a  ui-sref="^.usergroups" class="btn btn-default" translate="common.back_btn"></a>
+	<button type="button" class="btn btn-default" ng-click="addPeople();" translate="editconsent.add_people_btn"></button>
+	<!--  <button type="button" ng-click="confirmConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-primary" translate="editconsent.confirm_btn"></button>
+	<button type="button" ng-click="rejectConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-danger" translate="editconsent.reject_btn"></button>
+    <button type="button" ng-click="deleteConsent();" ng-show="(consent.status == 'ACTIVE' || consent.status == 'REJECTED') && consent.type != 'STUDYPARTICIPATION'" class="btn btn-danger" translate="editconsent.delete_btn"></button>
+     -->   
+  
+  </loader>		
+</div>
+</div>
+<div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
+</div>
