@@ -40,6 +40,7 @@ import models.Record;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 
 /**
@@ -48,7 +49,13 @@ import utils.exceptions.AppException;
  */
 public class BasicResourceProvider extends ResourceProvider<Basic> implements IResourceProvider {
  
-
+    public BasicResourceProvider() {
+    	searchParamNameToPathMap.put("Basic:author", "author");
+    	searchParamNameToPathMap.put("Basic:patient", "subject");
+    	searchParamNameToTypeMap.put("Basic:patient", Sets.create("Patient"));
+    	searchParamNameToPathMap.put("Basic:subject", "subject");		
+    }
+	
     /**
      * 
      */
@@ -227,7 +234,8 @@ public class BasicResourceProvider extends ResourceProvider<Basic> implements IR
 		QueryBuilder builder = new QueryBuilder(params, query, null);
 
 		builder.handleIdRestriction();
-		builder.recordOwnerReference("patient", "Patient");		
+		builder.recordOwnerReference("patient", "Patient");
+		builder.recordOwnerReference("subject", null);
 		builder.recordCreatorReference("author", "Patient");
 		
 		Set<String> codes = builder.tokensToCodeSystemStrings("code");

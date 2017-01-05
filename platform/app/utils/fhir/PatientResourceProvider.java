@@ -38,6 +38,11 @@ import utils.exceptions.AppException;
 
 public class PatientResourceProvider extends ResourceProvider<Patient> implements IResourceProvider {
  
+   public PatientResourceProvider() {
+	   searchParamNameToPathMap.put("Patient.general-practitioner", "generalPractitioner");
+	   searchParamNameToPathMap.put("Patient.link", "link.other");
+	   searchParamNameToPathMap.put("Patient:organization", "managingOrganization");		
+   }
    
     @Override
     public Class<Patient> getResourceType() {
@@ -175,7 +180,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     		ReferenceAndListParam theOrganization, 
     		   
     		@Description(shortDefinition="Patient's nominated care provider, could be a care manager, not the organization that manages the record")
-    		@OptionalParam(name="careprovider", targetTypes={  } )
+    		@OptionalParam(name="general-practitioner", targetTypes={  } )
     		ReferenceAndListParam theCareprovider, 
     		   
     		@Description(shortDefinition="Whether the patient record is active")
@@ -209,7 +214,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     		DateRangeParam theLastUpdated, 
     		 
     		@IncludeParam(allow= {
-    				"Patient:careprovider",
+    				"Patient:general-practitioner",
     				"Patient:link",
     				"Patient:organization",
     				"*"
@@ -252,7 +257,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     	paramMap.add("language", theLanguage);
     	paramMap.add("birthdate", theBirthdate);
     	paramMap.add("organization", theOrganization);
-    	paramMap.add("careprovider", theCareprovider);
+    	paramMap.add("general-practitioner", theCareprovider);
     	paramMap.add("active", theActive);
     	paramMap.add("animal-species", theAnimal_species);
     	paramMap.add("animal-breed", theAnimal_breed);

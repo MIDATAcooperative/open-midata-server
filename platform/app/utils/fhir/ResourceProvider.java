@@ -199,11 +199,13 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 					   String type = inc.getParamType();
 					   String name = inc.getParamName();
 					   String path = type + "." + searchParamNameToPathMap.get(type + ":" + name);
-					   
+					   Set<String> allowedTypes = searchParamNameToTypeMap.get(type + ":" + name);
 					   List<IBaseReference> refs = terser.getValues(res, path, IBaseReference.class);
 					   if (refs != null) {
 						   for (IBaseReference r : refs) {
 							   IIdType refElem = r.getReferenceElement();
+							   String rtype = refElem.getResourceType();
+							   if (allowedTypes != null && !allowedTypes.contains(rtype)) continue;
 							   ResourceProvider prov = FHIRServlet.myProviders.get(refElem.getResourceType());
 							   if (prov != null) {
 								   IBaseResource result = prov.getResourceById(refElem);
@@ -254,7 +256,8 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
      }
 	
 	
-	protected static Map<String,String> searchParamNameToPathMap = new HashMap<String,String>();		
+	protected static Map<String,String> searchParamNameToPathMap = new HashMap<String,String>();
+	protected static Map<String,Set<String>> searchParamNameToTypeMap = new HashMap<String,Set<String>>();
 	
 	public static Set<String> tokensToStrings(TokenOrListParam params) {
 		Set<String> result = new HashSet<String>();

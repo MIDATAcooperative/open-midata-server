@@ -43,10 +43,23 @@ import models.MidataId;
 import models.Record;
 import play.Play;
 import utils.auth.ExecutionInfo;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 
 public class DocumentReferenceProvider extends ResourceProvider<DocumentReference> implements IResourceProvider {
 
+	public DocumentReferenceProvider() {
+		searchParamNameToPathMap.put("DocumentReference:authenticator", "authenticator");
+		searchParamNameToPathMap.put("DocumentReference:author", "author");
+		searchParamNameToPathMap.put("DocumentReference:custodian", "custodian");
+		searchParamNameToPathMap.put("DocumentReference:encounter", "encounter");
+		searchParamNameToPathMap.put("DocumentReference:patient", "subject");
+		searchParamNameToTypeMap.put("DocumentReference:patient", Sets.create("Patient"));
+		searchParamNameToPathMap.put("DocumentReference:related-ref", "context.related.ref");
+		searchParamNameToPathMap.put("DocumentReference:relatesto", "relatesTo.target");
+		searchParamNameToPathMap.put("DocumentReference:subject", "subject");		
+	}
+	
 	@Override
 	public Class<DocumentReference> getResourceType() {
 		return DocumentReference.class;

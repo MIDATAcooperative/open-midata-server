@@ -28,6 +28,9 @@ import utils.access.op.Condition;
 import utils.access.op.EqualsSingleValueCondition;
 import utils.access.op.FieldAccess;
 import utils.access.op.OrCondition;
+import utils.collections.Sets;
+import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 
 /**
  * Helper class to create a database Query from a FHIR SearchParameterMap 
@@ -38,14 +41,14 @@ public class QueryBuilder {
 	private SearchParameterMap params;
 	private Query query;
 	
-	public QueryBuilder(SearchParameterMap params, Query query, String format) {
+	public QueryBuilder(SearchParameterMap params, Query query, String format) throws AppException {
 		this.params = params;
 		this.query = query;
 		if (format != null) this.query.putAccount("format", format);
 		handleCommon();
 	}
 	
-	public void handleCommon() {
+	public void handleCommon() throws AppException {
 		if (params.getLastUpdated() != null) {
 			Date from = params.getLastUpdated().getLowerBoundAsInstant();
 			Date to = params.getLastUpdated().getUpperBoundAsInstant();
@@ -58,7 +61,7 @@ public class QueryBuilder {
 		
 	}
 	
-	public void handleIdRestriction() {
+	public void handleIdRestriction() throws AppException {
 		if (params.containsKey("_id")) {
 	           Set<String> ids = paramToStrings("_id");
 	           if (ids != null) query.putAccount("_id", ids);
@@ -265,7 +268,9 @@ public class QueryBuilder {
 	}
 	
 	public List<ReferenceParam> followChain(ReferenceParam r, String targetType) {
-		SearchParameterMap params = new SearchParameterMap();			
+		SearchParameterMap params = new SearchParameterMap();
+		
+		
         params.add(r.getChain(), new StringParam(r.getIdPart()));
         
         if (targetType == null) targetType = r.getResourceType();
@@ -279,7 +284,7 @@ public class QueryBuilder {
         return result;
 	}
 	
-	public List<ReferenceParam> resolveReferences(String name, String targetType) {
+	public List<ReferenceParam> resolveReferences(String name, String targetType) throws AppException {
 		List<List<? extends IQueryParameterType>> paramsAnd = params.get(name);
 		if (paramsAnd == null) return null;
 				
@@ -302,16 +307,23 @@ public class QueryBuilder {
 					if (r.getChain() != null) {
 						
 						SearchParameterMap params = new SearchParameterMap();						
-                        params.add(r.getChain(), new StringParam(r.getValue())); // XXX YOU DO NOT KNOW IF ITS STRING
+                        params.add(r.getChain(), new StringParam(r.getIdPart())); // XXX YOU DO NOT KNOW IF ITS STRING
                         
-                        List<BaseResource> resultList = FHIRServlet.myProviders.get(targetType).search(params);
+                        List<BaseResource> resultList;
+                        if (targetType == null) {
+                           String rt = r.getResourceType();
+                           if (rt == null) throw new BadRequestException("error.internal", "Target resource type for chaining not known.");
+                           resultList = FHIRServlet.myProviders.get(rt).search(params);
+                        } else {
+                           resultList = FHIRServlet.myProviders.get(targetType).search(params);
+                        }
                         for (BaseResource br : resultList) {
                         	if (keep == null || keep.contains(br.getId())) orResult.add(new ReferenceParam(br.getId()));
                         }
 						
 						/*AccessLog.log("RT:"+r.getResourceType());
 						AccessLog.log("CHAINXX"+r.getChain()); 	
-					   AccessLog.log("CHAINXV"+r.getValue());*/
+					   AccessLog.log("CHAINXV"+r.getIdPart());*/
 					} else
 					if (r.getIdPart() != null) {
 						if (keep == null || keep.contains(r.getIdPart())) orResult.add(r);					
@@ -373,9 +385,9 @@ public class QueryBuilder {
 	 * @param name name of FHIR search parameter
 	 * @param refType Resource referenced (Patient, Practitioner, ...)
 	 */
-	public void recordOwnerReference(String name, String refType) {
+	public void recordOwnerReference(String name, String refType) throws AppException {
 		List<ReferenceParam> patients = resolveReferences(name, refType);
-		if (patients != null) {
+		if (patients != null && FHIRTools.areAllOfType(patients, Sets.create("Patient", "Practitioner", "Person"))) {
 			query.putAccount("owner", FHIRTools.referencesToIds(patients));
 		}
 		
@@ -386,7 +398,7 @@ public class QueryBuilder {
 	 * @param name name of FHIR search parameter
 	 * @param refType Resource referenced (Patient, Practitioner, ...)
 	 */
-	public void recordCreatorReference(String name, String refType) {
+	public void recordCreatorReference(String name, String refType) throws AppException {
 		List<ReferenceParam> patients = resolveReferences(name, refType);
 		if (patients != null) {
 			query.putAccount("creator", FHIRTools.referencesToIds(patients));
@@ -399,7 +411,7 @@ public class QueryBuilder {
 	 * @param name name of FHIR search parameter
 	 * @param path path of CodeableConcept in FHIR record 
 	 */
-	public void recordCodeRestriction(String name, String path) {
+	public void recordCodeRestriction(String name, String path) throws AppException {
 		Set<String> codes = tokensToCodeSystemStrings(name);
 		if (codes != null) {
 			query.putAccount("code", codes);
