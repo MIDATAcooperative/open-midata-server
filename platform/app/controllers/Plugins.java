@@ -163,7 +163,7 @@ public class Plugins extends APIController {
 		boolean testing = visualization.creator.equals(user._id) || (user.developer != null && visualization.creator.equals(user.developer));
 		
 		if (!user.role.equals(visualization.targetUserRole) && !visualization.targetUserRole.equals(UserRole.ANY) && !testing) {
-			throw new BadRequestException("error.invalid.plugin", "Visualization is for a different role."+user.role);
+			throw new BadRequestException("error.invalid.plugin", "Visualization is for a different role. Your role:"+user.role);
 		}
 		
 		if (visualization.type.equals("visualization") ) {

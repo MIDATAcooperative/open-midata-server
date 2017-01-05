@@ -62,7 +62,8 @@
        "json" : "Invalid JSON provided",
        "passphrase" : "Bad passphrase",
        "passcode": "Bad passcode",
-       "plugin" : "Plugin is only for a different role"
+       "plugin" : "Plugin is only for a different role",
+       "access_query" : "Access query must restrict by 'content' or 'group'!"
      },
      
      "missing" : {
