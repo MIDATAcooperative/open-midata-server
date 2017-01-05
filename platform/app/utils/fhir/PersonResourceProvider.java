@@ -107,11 +107,11 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 	   @Search()
 	    public List<IBaseResource> getPerson(
 	    		
-	    		/*
+	    		
 	    	@Description(shortDefinition="The resource identity")
 	    	@OptionalParam(name="_id")
 	    	StringParam theId, 
-	    		  */  
+	    		  
 	    	@Description(shortDefinition="A person Identifier")
 	    	@OptionalParam(name="identifier")
 	    	TokenAndListParam theIdentifier, 
@@ -180,7 +180,7 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 	    		) throws AppException {
 	    	
 	    	SearchParameterMap paramMap = new SearchParameterMap();
-	    	//paramMap.add("_id", theId);	    	
+	    	paramMap.add("_id", theId);	    	
 	    	paramMap.add("identifier", theIdentifier);
 	    	paramMap.add("name", theName);
 	    	paramMap.add("email", theEmail);
@@ -211,6 +211,7 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 			Query query = new Query();		
 			QueryBuilder builder = new QueryBuilder(params, query, null);
 			
+			builder.handleIdRestriction();
 			builder.restriction("name", "String", true, "firstname", "lastname");
 			builder.restriction("email", "String", true, "emailLC");
 			builder.restriction("address", "String", true, "address1", "address2", "city", "country", "zip");

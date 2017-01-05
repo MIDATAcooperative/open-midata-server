@@ -56,6 +56,7 @@ import models.ContentInfo;
 import models.MidataId;
 import models.Record;
 import utils.auth.ExecutionInfo;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 
 public class ObservationResourceProvider extends ResourceProvider<Observation> implements IResourceProvider {
@@ -64,6 +65,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		searchParamNameToPathMap.put("Observation:device", "device");
 		searchParamNameToPathMap.put("Observation:encounter", "encounter");
 		searchParamNameToPathMap.put("Observation:patient", "subject");
+		searchParamNameToTypeMap.put("Observation:patient", Sets.create("Patient"));
 		searchParamNameToPathMap.put("Observation:performer", "performer");
 		searchParamNameToPathMap.put("Observation:related-target", "related.target");
 		searchParamNameToPathMap.put("Observation:specimen", "specimen");
@@ -244,6 +246,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
+		builder.recordOwnerReference("subject", null);
         builder.recordCodeRestriction("code", "code");
 			
 		builder.restriction("date", "effectiveDateTime", "DateTime", true);
@@ -328,7 +331,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		if (theObservation.hasEffectiveDateTimeType()) {
 			try {
 				date = stringFromDateTime(theObservation.getEffectiveDateTimeType());
-			} catch (FHIRException e) {
+			} catch (Exception e) {
 				throw new UnprocessableEntityException("Cannot process effectiveDateTime");
 			}
 		}

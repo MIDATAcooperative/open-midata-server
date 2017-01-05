@@ -42,14 +42,15 @@ angular.module('portal')
 	
 	// register app
 	$scope.updateApp = function() {
+		
 		$scope.submitted = true;	
 		
 		if ($scope.app.defaultQueryStr != null && $scope.app.defaultQueryStr !== "") {
 		  try {
-			  console.log("TEST");
+			  
 		    $scope.app.defaultQuery = JSON.parse($scope.app.defaultQueryStr);
 		      $scope.myform.defaultQuery.$setValidity('json', true);
-		    console.log("TEST PASS");
+		    
 		  } catch (e) {
 			  $scope.myform.defaultQuery.$setValidity('json', false);
 			  //$scope.error = "Invalid JSON in Access Query!";
@@ -67,13 +68,16 @@ angular.module('portal')
 		});
 		
 		// check whether url contains ":authToken"
-		if ($scope.app.type !== "mobile" && $scope.app.url.indexOf(":authToken") < 0) {
+		if ($scope.app.type && $scope.app.type !== "mobile" && $scope.app.url.indexOf(":authToken") < 0) {
 			$scope.myform.url.$setValidity('authToken', false);
 			//$scope.error = "Url must contain ':authToken' to receive the authorization token required to create records.";
 			return;
 		} else {
 			$scope.myform.url.$setValidity('authToken', true);
 		}
+		
+		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
+		$scope.error = null;
 		
 		if (! $scope.myform.$valid) return;
 		

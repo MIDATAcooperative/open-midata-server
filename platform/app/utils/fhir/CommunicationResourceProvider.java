@@ -40,10 +40,21 @@ import models.MidataId;
 import models.Record;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 
 public class CommunicationResourceProvider extends ResourceProvider<Communication> implements IResourceProvider {
 
+	public CommunicationResourceProvider() {
+		searchParamNameToPathMap.put("Communication:based-on", "basedOn");
+		searchParamNameToPathMap.put("Communication:context", "context");
+		searchParamNameToPathMap.put("Communication:patient", "subject");
+		searchParamNameToTypeMap.put("Communication:patient", Sets.create("Patient"));
+		searchParamNameToPathMap.put("Communication:recipient", "recipient");
+		searchParamNameToPathMap.put("Communication:sender", "sender");
+		searchParamNameToPathMap.put("Communication:subject", "subject");		
+	}
+	
 	@Override
 	public Class<Communication> getResourceType() {
 		return Communication.class;
@@ -199,6 +210,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
+		builder.recordOwnerReference("subject", null);
 		
 		builder.restriction("identifier", "Identifier", true, "identifier");
 		builder.restriction("received", "Date", true, "received");
@@ -210,7 +222,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		builder.restriction("medium", "CodeableConcept", true, "medium");
 		builder.restriction("sender", null, true, "sender");
 		builder.restriction("status", "code", true, "status");
-		builder.restriction("subject", null, true, "subject");
+		//builder.restriction("subject", null, true, "subject");
 						
 		return query.execute(info);
 	}

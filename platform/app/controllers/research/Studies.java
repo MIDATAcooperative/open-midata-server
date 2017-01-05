@@ -885,7 +885,7 @@ public class Studies extends APIController {
 		
 		if (json.has("recordQuery")) {
 			Map<String, Object> query = JsonExtraction.extractMap(json.get("recordQuery"));
-			Query.validate(query);			
+			Query.validate(query, true);			
 			study.setRecordQuery(query);
 			study.addHistory(new History(EventType.STUDY_SETUP_CHANGED, user, null));
 		}

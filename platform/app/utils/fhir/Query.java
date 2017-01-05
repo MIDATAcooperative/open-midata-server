@@ -14,7 +14,10 @@ import utils.access.op.EqualsSingleValueCondition;
 import utils.auth.ExecutionInfo;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
+import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
 
 /**
  * A query built by the FHIR API that should be processed by MIDATA.
@@ -32,7 +35,8 @@ public class Query {
 		indexCriteria = null;			
 	}
 	
-	public void putAccount(String name, Object obj) {
+	public void putAccount(String name, Object obj) throws InternalServerException {
+		if (accountCriteria.containsKey(name)) throw new InternalServerException("error.internal", "criteria already used in query: "+name);
 		accountCriteria.put(name, obj);
 	}
 	
@@ -73,9 +77,12 @@ public class Query {
 		return result;
 	}
 	
-	public Map<String, Object> retrieveAsNormalMongoQuery() throws AppException {
-		if (dataCriteria == null) return new HashMap<String,Object>();
-		return (Map<String, Object>) dataCriteria.asMongoQuery();
+	public Map<String, Object> retrieveAsNormalMongoQuery() throws AppException {		
+		Map<String,Object> result = new HashMap<String, Object>();
+		result.putAll(accountCriteria);
+		if (dataCriteria != null) result.putAll((Map<String,Object>) dataCriteria.asMongoQuery());
+		ObjectIdConversion.convertMidataIds(result, "_id");
+		return result;
 	}
 	
 	public Object retrieveIndexValues() throws AppException {		

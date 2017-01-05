@@ -44,6 +44,7 @@ import models.Record;
 import utils.ErrorReporter;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 
 public class TaskResourceProvider extends ResourceProvider<Task> implements IResourceProvider {
@@ -53,6 +54,7 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		searchParamNameToPathMap.put("Task:focus", "focus");
 		searchParamNameToPathMap.put("Task:owner", "owner");
 		searchParamNameToPathMap.put("Task:patient", "for");
+		searchParamNameToTypeMap.put("Task:patient", Sets.create("Patient"));
 		searchParamNameToPathMap.put("Task:requester", "requester");				
 	}
 	
