@@ -86,6 +86,19 @@ public class FHIRTools {
 		return false;
 	}
 	
+	/**
+	 * Checks if all references point to resources of given resource types
+	 * @param refs list of references to check
+	 * @param types allowed types
+	 * @return
+	 */
+	public static boolean areAllOfType(Collection<ReferenceParam> refs, Set<String> types) {
+		for (ReferenceParam ref : refs) {
+			String type = ref.getResourceType();
+			if (type != null && ! types.contains(type)) return false;
+		}
+	    return true;
+	}
 	
     public static Set<String> referencesToIds(Collection<ReferenceParam> refs) {
 		

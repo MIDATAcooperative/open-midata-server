@@ -44,10 +44,21 @@ import models.Record;
 import utils.ErrorReporter;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 
 public class AppointmentResourceProvider extends ResourceProvider<Appointment> implements IResourceProvider {
 
+	public AppointmentResourceProvider() {
+		searchParamNameToPathMap.put("Appointment:actor", "participant.actor");
+		searchParamNameToPathMap.put("Appointment:location", "participant.actor");
+		searchParamNameToTypeMap.put("Appointment:location", Sets.create("Location"));
+		searchParamNameToPathMap.put("Appointment:patient", "participant.actor");
+		searchParamNameToTypeMap.put("Appointment:patient", Sets.create("Patient"));
+		searchParamNameToPathMap.put("Appointment:practitioner", "participant.actor");
+		searchParamNameToTypeMap.put("Appointment:practitioner", Sets.create("Practitioner"));
+	}
+	
 	@Override
 	public Class<Appointment> getResourceType() {
 		return Appointment.class;
