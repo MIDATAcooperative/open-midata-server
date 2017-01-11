@@ -266,7 +266,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		
 		
 		builder.restriction("data-absent-reason", "dataAbsentReason", "CodeableConcept", true);
-		builder.restriction("identifier", "identifier", "CodeableConcept", true);
+		builder.restriction("identifier", "Identifier", true, "identifier");
 		builder.restriction("related-type", "related.type", "code", false);
 		builder.restriction("status", "status", "code", false);
 		builder.restriction("value-concept", "valueCodeableConcept", "CodeableConcept", true);

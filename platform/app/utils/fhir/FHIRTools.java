@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.CodeableConcept;
+import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.Person;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.instance.model.api.IIdType;
@@ -107,6 +109,14 @@ public class FHIRTools {
 			ids.add(ref.getIdPart().toString());
 		return ids;				
 	}
+    
+    public static String getStringFromCodeableConcept(CodeableConcept cc, String defaultValue) {
+    	if (cc.hasText()) return cc.getText();
+    	for (Coding coding : cc.getCoding()) {
+    	  if (coding.hasDisplay()) return coding.getDisplay();
+    	}
+    	return defaultValue;
+    }
 	
 	/*
 	public static void updatePersonRecordOfUser(String id, Person person) throws InternalServerException {
