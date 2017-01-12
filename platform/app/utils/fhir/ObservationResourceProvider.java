@@ -56,6 +56,7 @@ import models.ContentInfo;
 import models.MidataId;
 import models.Record;
 import utils.auth.ExecutionInfo;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 
 public class ObservationResourceProvider extends ResourceProvider<Observation> implements IResourceProvider {
@@ -64,6 +65,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		searchParamNameToPathMap.put("Observation:device", "device");
 		searchParamNameToPathMap.put("Observation:encounter", "encounter");
 		searchParamNameToPathMap.put("Observation:patient", "subject");
+		searchParamNameToTypeMap.put("Observation:patient", Sets.create("Patient"));
 		searchParamNameToPathMap.put("Observation:performer", "performer");
 		searchParamNameToPathMap.put("Observation:related-target", "related.target");
 		searchParamNameToPathMap.put("Observation:specimen", "specimen");
@@ -244,9 +246,13 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
+				
         builder.recordCodeRestriction("code", "code");
 			
 		builder.restriction("date", "effectiveDateTime", "DateTime", true);
+		builder.restriction("identifier", "Identifier", true, "identifier");
+		
+		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", null, true, "subject");
 		
 		builder.restriction("code-value-quantity", "code", "valueQuantity", "CodeableConcept", "Quantity");
 		builder.restriction("code-value-string", "code", "valueString", "CodeableConcept", "String");
@@ -263,7 +269,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		
 		
 		builder.restriction("data-absent-reason", "dataAbsentReason", "CodeableConcept", true);
-		builder.restriction("identifier", "identifier", "CodeableConcept", true);
+		
 		builder.restriction("related-type", "related.type", "code", false);
 		builder.restriction("status", "status", "code", false);
 		builder.restriction("value-concept", "valueCodeableConcept", "CodeableConcept", true);
@@ -328,7 +334,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		if (theObservation.hasEffectiveDateTimeType()) {
 			try {
 				date = stringFromDateTime(theObservation.getEffectiveDateTimeType());
-			} catch (FHIRException e) {
+			} catch (Exception e) {
 				throw new UnprocessableEntityException("Cannot process effectiveDateTime");
 			}
 		}

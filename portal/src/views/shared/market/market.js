@@ -5,7 +5,7 @@ angular.module('portal')
 	// init
 	$scope.error = null;
 	$scope.beta = ENV.beta;
-	$scope.targetRole = $state.params.context == "PROVIDER" ? "PROVIDER" : "MEMBER"; 
+	$scope.targetRole = $state.current.data.role; //context == "PROVIDER" ? "PROVIDER" : "MEMBER"; 
 	/*$scope.apps = {};
 	$scope.apps.spotlighted = [];
 	$scope.apps.suggested = [];*/

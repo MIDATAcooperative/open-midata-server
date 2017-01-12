@@ -38,10 +38,18 @@ import models.Record;
 import play.Play;
 import utils.ErrorReporter;
 import utils.auth.ExecutionInfo;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 
 public class MediaResourceProvider extends ResourceProvider<Media> implements IResourceProvider {
 
+	public MediaResourceProvider() {
+		searchParamNameToPathMap.put("Media:operator", "operator");
+		searchParamNameToPathMap.put("Media:patient", "subject");
+		searchParamNameToTypeMap.put("Media:patient", Sets.create("Patient"));
+		searchParamNameToPathMap.put("Media:subject", "subject");				
+	}
+	
 	@Override
 	public Class<Media> getResourceType() {
 		return Media.class;
@@ -125,8 +133,7 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 			@IncludeParam(allow= {
 						"Media:operator" ,
 						"Media:patient" ,
-						"Media:subject" ,
-						"Media:operator" ,
+						"Media:subject" ,					
 						"*"
 			}) 
 			Set<Include> theIncludes,
@@ -152,9 +159,7 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 		*/
 		//paramMap.add("_has", theHas);
 		
-		paramMap.add("identifier", theIdentifier);
-		paramMap.add("subject", theSubject);
-				
+		paramMap.add("identifier", theIdentifier);						
 		paramMap.add("type", theType);
 		paramMap.add("subtype", theSubtype);
 		paramMap.add("identifier", theIdentifier);
@@ -179,12 +184,16 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Media");
 
 		builder.handleIdRestriction();
-		builder.recordOwnerReference("patient", "Patient");
+		builder.recordOwnerReference("patient", "Patient");		
+		
 		builder.recordCodeRestriction("view", "view");
 				
 		builder.restriction("identifier", "Identifier", true, "identifier");
 		builder.restriction("created", "Date", true, "content.creation");
-		builder.restriction("subject", null, true, "subject");
+		
+		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", null, true, "subject");
+		
+		//builder.restriction("subject", null, true, "subject");
 		builder.restriction("operator", "Practitioner", true, "operator");		
 		builder.restriction("subtype", "CodeableConcept", false, "subtype");
 		builder.restriction("type", "code", false, "type");		

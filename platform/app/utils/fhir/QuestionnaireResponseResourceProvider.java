@@ -35,10 +35,23 @@ import models.ContentInfo;
 import models.MidataId;
 import models.Record;
 import utils.auth.ExecutionInfo;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 
 public class QuestionnaireResponseResourceProvider extends ResourceProvider<QuestionnaireResponse> implements IResourceProvider {
 
+	public QuestionnaireResponseResourceProvider() {
+		searchParamNameToPathMap.put("QuestionnaireResponse:author", "author");
+		searchParamNameToPathMap.put("QuestionnaireResponse:based-on", "basedOn");
+		searchParamNameToPathMap.put("QuestionnaireResponse:context", "context");
+		searchParamNameToPathMap.put("QuestionnaireResponse:parent", "parent");
+		searchParamNameToPathMap.put("QuestionnaireResponse:patient", "subject");
+		searchParamNameToTypeMap.put("QuestionnaireResponse:patient", Sets.create("Patient"));
+		searchParamNameToPathMap.put("QuestionnaireResponse:questionnaire", "questionnaire");
+		searchParamNameToPathMap.put("QuestionnaireResponse:source", "source");
+		searchParamNameToPathMap.put("QuestionnaireResponse:subject", "subject");		
+	}
+	
 	@Override
 	public Class<QuestionnaireResponse> getResourceType() {
 		return QuestionnaireResponse.class;
@@ -165,16 +178,17 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 				
+		builder.restriction("identifier", "Identifier", true, "identifier");
+		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", null, true, "subject");
+				
 		builder.restriction("authored", "Date", true, "authored");
 		builder.restriction("author", null, true, "author");
 		builder.restriction("based-on", null, true, "basedOn");
-		builder.restriction("context", null, true, "context");
-		builder.restriction("identifier", "Identifier", true, "identifier");
+		builder.restriction("context", null, true, "context");		
 		builder.restriction("parent", null, true, "parent");
 		builder.restriction("questionnaire", "Questionnaire", true, "questionnaire");
 		builder.restriction("source", null, true, "source");
-		builder.restriction("status", "code", true, "status");
-		builder.restriction("subject", null, true, "subject");
+		builder.restriction("status", "code", true, "status");		
 				
 		return query.execute(info);
 	}

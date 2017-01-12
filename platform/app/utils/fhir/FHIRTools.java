@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.CodeableConcept;
+import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.Person;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.instance.model.api.IIdType;
@@ -86,6 +88,19 @@ public class FHIRTools {
 		return false;
 	}
 	
+	/**
+	 * Checks if all references point to resources of given resource types
+	 * @param refs list of references to check
+	 * @param types allowed types
+	 * @return
+	 */
+	public static boolean areAllOfType(Collection<ReferenceParam> refs, Set<String> types) {
+		for (ReferenceParam ref : refs) {
+			String type = ref.getResourceType();
+			if (type != null && ! types.contains(type)) return false;
+		}
+	    return true;
+	}
 	
     public static Set<String> referencesToIds(Collection<ReferenceParam> refs) {
 		
@@ -94,6 +109,14 @@ public class FHIRTools {
 			ids.add(ref.getIdPart().toString());
 		return ids;				
 	}
+    
+    public static String getStringFromCodeableConcept(CodeableConcept cc, String defaultValue) {
+    	if (cc.hasText()) return cc.getText();
+    	for (Coding coding : cc.getCoding()) {
+    	  if (coding.hasDisplay()) return coding.getDisplay();
+    	}
+    	return defaultValue;
+    }
 	
 	/*
 	public static void updatePersonRecordOfUser(String id, Person person) throws InternalServerException {

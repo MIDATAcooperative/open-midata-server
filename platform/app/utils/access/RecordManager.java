@@ -273,7 +273,7 @@ public class RecordManager {
 	public void shareByQuery(MidataId who, MidataId fromAPS, MidataId toAPS,
 			Map<String, Object> query) throws AppException {
         AccessLog.log("shareByQuery who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString()+ "query="+query.toString());
-		if (toAPS.equals(who)) throw new BadRequestException("error.internal", "Bad call to shareByQuery. target APS may not be user APS!");
+		//if (toAPS.equals(who)) throw new BadRequestException("error.internal", "Bad call to shareByQuery. target APS may not be user APS!");
         APS apswrapper = getCache(who).getAPS(toAPS);
 
         query.remove("aps");
