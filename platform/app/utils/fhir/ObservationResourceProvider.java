@@ -246,10 +246,13 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
-		builder.recordOwnerReference("subject", null);
+				
         builder.recordCodeRestriction("code", "code");
 			
 		builder.restriction("date", "effectiveDateTime", "DateTime", true);
+		builder.restriction("identifier", "Identifier", true, "identifier");
+		
+		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", null, true, "subject");
 		
 		builder.restriction("code-value-quantity", "code", "valueQuantity", "CodeableConcept", "Quantity");
 		builder.restriction("code-value-string", "code", "valueString", "CodeableConcept", "String");
@@ -266,7 +269,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		
 		
 		builder.restriction("data-absent-reason", "dataAbsentReason", "CodeableConcept", true);
-		builder.restriction("identifier", "Identifier", true, "identifier");
+		
 		builder.restriction("related-type", "related.type", "code", false);
 		builder.restriction("status", "status", "code", false);
 		builder.restriction("value-concept", "valueCodeableConcept", "CodeableConcept", true);

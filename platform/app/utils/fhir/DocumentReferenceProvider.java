@@ -286,10 +286,13 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
+		
+		
 		builder.recordCodeRestriction("type", "type");
 				
-		builder.restriction("identifier", "Identifier", true, "identifier", "masterIdentifier");
-		builder.restriction("subject", null, true, "subject");
+		builder.restriction("identifier", "Identifier", true, "identifier", "masterIdentifier");		
+		
+		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", null, true, "subject");
 		
 		builder.restriction("authenticator", null, true, "authenticator");
 		

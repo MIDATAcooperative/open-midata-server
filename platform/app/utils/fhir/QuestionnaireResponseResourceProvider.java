@@ -177,18 +177,18 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
-		builder.recordOwnerReference("subject", null);
+				
+		builder.restriction("identifier", "Identifier", true, "identifier");
+		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", null, true, "subject");
 				
 		builder.restriction("authored", "Date", true, "authored");
 		builder.restriction("author", null, true, "author");
 		builder.restriction("based-on", null, true, "basedOn");
-		builder.restriction("context", null, true, "context");
-		builder.restriction("identifier", "Identifier", true, "identifier");
+		builder.restriction("context", null, true, "context");		
 		builder.restriction("parent", null, true, "parent");
 		builder.restriction("questionnaire", "Questionnaire", true, "questionnaire");
 		builder.restriction("source", null, true, "source");
-		builder.restriction("status", "code", true, "status");
-		builder.restriction("subject", null, true, "subject");
+		builder.restriction("status", "code", true, "status");		
 				
 		return query.execute(info);
 	}

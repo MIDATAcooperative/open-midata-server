@@ -135,10 +135,12 @@ public class GoalResourceProvider extends ResourceProvider<Goal> implements IRes
 
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
-		builder.recordOwnerReference("subject", null);       
-			
+		      		
 		builder.restriction("category", "CodeableConcept", true, "category");
 		builder.restriction("identifier", "Identifier", true, "identifier");
+		
+		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", null, true, "subject");		
+		
 		builder.restriction("status", "code", true, "status");
 		builder.restriction("targetdate", "Date", true, "targetDate");				
 		
