@@ -210,19 +210,20 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
-		builder.recordOwnerReference("subject", null);
 		
 		builder.restriction("identifier", "Identifier", true, "identifier");
 		builder.restriction("received", "Date", true, "received");
 		builder.restriction("sent", "Date", true, "sent");
 		builder.restriction("based-on", null, true, "basedOn");
 		builder.restriction("recipient", null, true, "recipient");
+		
+		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", null, true, "subject");
+				
 		builder.restriction("category", "CodeableConcept", true, "category");
 		builder.restriction("context", null, true, "context");
 		builder.restriction("medium", "CodeableConcept", true, "medium");
 		builder.restriction("sender", null, true, "sender");
-		builder.restriction("status", "code", true, "status");
-		//builder.restriction("subject", null, true, "subject");
+		builder.restriction("status", "code", true, "status");	
 						
 		return query.execute(info);
 	}

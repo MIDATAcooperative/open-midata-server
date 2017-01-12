@@ -188,3 +188,4 @@
 {"_id":{"$oid":"585935a5aed6452afe490887"},"system":"http://loinc.org","code":"2339-0","display":"Glucose [Mass/volume] in blood","content":"lab/loinc-2339-0"}
 {"_id":{"$oid":"585935a5aed6452afe490888"},"system":"http://loinc.org","code":"15074-8","display":"Glucose [Moles/volume] in blood","content":"lab/loinc-15074-8"}
 {"_id":{"$oid":"58594553aed6452afe49088e"},"system":"http://midata.coop","code":"LevelOfEmployment","display":"Level of employment","content":"work/level-of-employment"}
+{"_id":{"$oid":"5877408faed645135829ffbf"},"system":"http://snomed.info/sct","code":"160786009","display":"Personal Milestones","content":"milestones"}

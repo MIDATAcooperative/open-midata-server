@@ -385,11 +385,13 @@ public class QueryBuilder {
 	 * @param name name of FHIR search parameter
 	 * @param refType Resource referenced (Patient, Practitioner, ...)
 	 */
-	public void recordOwnerReference(String name, String refType) throws AppException {
+	public boolean recordOwnerReference(String name, String refType) throws AppException {
 		List<ReferenceParam> patients = resolveReferences(name, refType);
 		if (patients != null && FHIRTools.areAllOfType(patients, Sets.create("Patient", "Practitioner", "Person"))) {
 			query.putAccount("owner", FHIRTools.referencesToIds(patients));
+			return true;
 		}
+		return patients == null;
 		
 	}
 	
