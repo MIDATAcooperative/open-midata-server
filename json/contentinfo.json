@@ -22,7 +22,7 @@
 {"_id":{"$oid":"569915fc6281a61a232ecde0"},"content":"CommunicationRequest","security":"MEDIUM","group":"healthworkflow","defaultCode":"http://midata.coop CommunicationRequest","label":{"en":"CommunicationRequest"}}
 {"_id":{"$oid":"569915fc6281a61a232ecde1"},"content":"Composition","security":"MEDIUM","group":"healthdocuments","defaultCode":"http://midata.coop Composition","label":{"en":"Composition"}}
 {"_id":{"$oid":"569915fc6281a61a232ecde2"},"content":"ConceptMap","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop ConceptMap","label":{"en":"ConceptMap"}}
-{"_id":{"$oid":"569915fc6281a61a232ecde3"},"content":"Condition","security":"MEDIUM","group":"encounters","defaultCode":"http://midata.coop Condition","label":{"en":"Condition"}}
+{"_id":{"$oid":"569915fc6281a61a232ecde3"},"content":"Condition","defaultCode":"http://midata.coop Condition","security":"MEDIUM","label":{"en":"Condition"}}
 {"_id":{"$oid":"569915fc6281a61a232ecde4"},"content":"Conformance","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop Conformance","label":{"en":"Conformance"}}
 {"_id":{"$oid":"569915fc6281a61a232ecde5"},"content":"Contract","security":"MEDIUM","group":"entities","defaultCode":"http://midata.coop Contract","label":{"en":"Contract"}}
 {"_id":{"$oid":"569915fc6281a61a232ecde6"},"content":"DetectedIssue","security":"MEDIUM","group":"encounters","defaultCode":"http://midata.coop DetectedIssue","label":{"en":"DetectedIssue"}}
@@ -45,7 +45,7 @@
 {"_id":{"$oid":"569915fc6281a61a232ecdf8"},"content":"ExplanationOfBenefit","security":"MEDIUM","group":"billing","defaultCode":"http://midata.coop ExplanationOfBenefit","label":{"en":"ExplanationOfBenefit"}}
 {"_id":{"$oid":"569915fc6281a61a232ecdf9"},"content":"FamilyMemberHistory","security":"MEDIUM","group":"relatedpersons","defaultCode":"http://midata.coop FamilyMemberHistory","label":{"en":"FamilyMemberHistory"}}
 {"_id":{"$oid":"569915fc6281a61a232ecdfa"},"content":"Flag","security":"MEDIUM","group":"encounters","defaultCode":"http://midata.coop Flag","label":{"en":"Flag"}}
-{"_id":{"$oid":"569915fc6281a61a232ecdfb"},"content":"Goal","security":"MEDIUM","group":"care","defaultCode":"http://midata.coop Goal","label":{"en":"Goal"}}
+{"_id":{"$oid":"569915fc6281a61a232ecdfb"},"content":"Goal","defaultCode":"http://midata.coop Goal","security":"MEDIUM","label":{"en":"Goal"}}
 {"_id":{"$oid":"569915fc6281a61a232ecdfc"},"content":"Group","security":"MEDIUM","group":"entities","defaultCode":"http://midata.coop Group","label":{"en":"Group"}}
 {"_id":{"$oid":"569915fc6281a61a232ecdfd"},"content":"HealthcareService","security":"MEDIUM","group":"entities","defaultCode":"http://midata.coop HealthcareService","label":{"en":"HealthcareService"}}
 {"_id":{"$oid":"569915fc6281a61a232ecdfe"},"content":"ImagingObjectSelection","security":"MEDIUM","group":"diagnostics","defaultCode":"http://midata.coop ImagingObjectSelection","label":{"en":"ImagingObjectSelection"}}
@@ -182,3 +182,4 @@
 {"_id":{"$oid":"585935a5aed6452afe49088a"},"content":"lab/loinc-2339-0","defaultCode":"http://loinc.org 2339-0","security":"MEDIUM","label":{"en":"Glucose [Mass/volume] in blood"},"resourceType":"fhir/Observation","subType":"Quantity","defaultUnit":"mg/dL","category":"laboratory"}
 {"_id":{"$oid":"585935a5aed6452afe490889"},"content":"lab/loinc-15074-8","defaultCode":"http://loinc.org 15074-8","security":"MEDIUM","label":{"en":"Glucose in blood"},"resourceType":"fhir/Observation","subType":"Quantity","defaultUnit":"mmol/L","category":"laboratory"}
 {"_id":{"$oid":"58594553aed6452afe49088d"},"content":"work/level-of-employment","defaultCode":"http://midata.coop LevelOfEmployment","security":"MEDIUM","label":{"en":"Level of employment"},"resourceType":"fhir/Observation","subType":"Quantity","defaultUnit":"%","category":"social-history"}
+{"_id":{"$oid":"5877408faed645135829ffbe"},"content":"milestones","defaultCode":"http://snomed.info/sct 160786009","security":"MEDIUM","label":{"en":"Personal Milestones"}}
