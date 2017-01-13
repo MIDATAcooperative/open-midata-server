@@ -57,6 +57,8 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		searchParamNameToTypeMap.put("Appointment:patient", Sets.create("Patient"));
 		searchParamNameToPathMap.put("Appointment:practitioner", "participant.actor");
 		searchParamNameToTypeMap.put("Appointment:practitioner", Sets.create("Practitioner"));
+		
+		registerSearches("Appointment", getClass(), "getAppointment");
 	}
 	
 	@Override

@@ -53,7 +53,9 @@ public class BasicResourceProvider extends ResourceProvider<Basic> implements IR
     	searchParamNameToPathMap.put("Basic:author", "author");
     	searchParamNameToPathMap.put("Basic:patient", "subject");
     	searchParamNameToTypeMap.put("Basic:patient", Sets.create("Patient"));
-    	searchParamNameToPathMap.put("Basic:subject", "subject");		
+    	searchParamNameToPathMap.put("Basic:subject", "subject");	
+    	
+    	registerSearches("Basic", getClass(), "getBasic");
     }
 	
     /**

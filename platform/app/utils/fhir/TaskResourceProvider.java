@@ -55,7 +55,9 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		searchParamNameToPathMap.put("Task:owner", "owner");
 		searchParamNameToPathMap.put("Task:patient", "for");
 		searchParamNameToTypeMap.put("Task:patient", Sets.create("Patient"));
-		searchParamNameToPathMap.put("Task:requester", "requester");				
+		searchParamNameToPathMap.put("Task:requester", "requester");	
+		
+		registerSearches("Task", getClass(), "getTask");
 	}
 	
 	@Override

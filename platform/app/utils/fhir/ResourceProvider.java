@@ -3,6 +3,8 @@ package utils.fhir;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,11 +33,13 @@ import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.model.api.IQueryParameterType;
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.Create;
 import ca.uhn.fhir.rest.annotation.IdParam;
+import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.api.MethodOutcome;
@@ -258,6 +262,30 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	
 	protected static Map<String,String> searchParamNameToPathMap = new HashMap<String,String>();
 	protected static Map<String,Set<String>> searchParamNameToTypeMap = new HashMap<String,Set<String>>();
+	protected static Map<String,String> searchParamNameToTokenMap = new HashMap<String,String>();
+	
+	public static IQueryParameterType asQueryParameter(String resourceType, String searchParam, ReferenceParam param) {
+		String type = searchParamNameToTokenMap.get(resourceType+"."+searchParam);
+		if (type.contains("Token")) return param.toTokenParam(ctx());
+		if (type.contains("String")) return param.toStringParam(ctx());
+		if (type.contains("Date")) return param.toDateParam(ctx());
+		if (type.contains("Quantity")) return param.toQuantityParam(ctx());
+		if (type.contains("Number")) return param.toNumberParam(ctx());
+		return null;
+	}
+	
+	public static void registerSearches(String resourceType, Class baseClass, String methodName) {
+		for (Method m : baseClass.getMethods()) {
+			if (m.getName().equals(methodName)) {
+				for (Parameter p : m.getParameters()) {
+					OptionalParam op = p.getAnnotation(OptionalParam.class);
+					if (op != null) {
+						searchParamNameToTokenMap.put(resourceType+"."+op.name(), p.getType().getSimpleName());
+					}
+				}
+			}
+		}
+	}
 	
 	public static Set<String> tokensToStrings(TokenOrListParam params) {
 		Set<String> result = new HashSet<String>();

@@ -35,7 +35,9 @@ public class GoalResourceProvider extends ResourceProvider<Goal> implements IRes
 	public GoalResourceProvider() {		
 		searchParamNameToPathMap.put("Goal:patient", "subject");
 		searchParamNameToTypeMap.put("Goal:patient", Sets.create("Patient"));		
-		searchParamNameToPathMap.put("Goal:subject", "subject");		
+		searchParamNameToPathMap.put("Goal:subject", "subject");	
+		
+		registerSearches("Goal", getClass(), "getGoal");
 	}
 	
 	@Override

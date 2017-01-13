@@ -57,7 +57,9 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 		searchParamNameToTypeMap.put("DocumentReference:patient", Sets.create("Patient"));
 		searchParamNameToPathMap.put("DocumentReference:related-ref", "context.related.ref");
 		searchParamNameToPathMap.put("DocumentReference:relatesto", "relatesTo.target");
-		searchParamNameToPathMap.put("DocumentReference:subject", "subject");		
+		searchParamNameToPathMap.put("DocumentReference:subject", "subject");	
+		
+		registerSearches("DocumentReference", getClass(), "getDocumentReference");
 	}
 	
 	@Override

@@ -358,12 +358,11 @@ public class QueryBuilder {
 	
 	public List<ReferenceParam> followChain(ReferenceParam r, String targetType) {
 		SearchParameterMap params = new SearchParameterMap();
-		
-		
-        params.add(r.getChain(), new StringParam(r.getIdPart()));
-        
+				         
         if (targetType == null) targetType = r.getResourceType();
         if (targetType == null) throw new UnprocessableEntityException("Reference search needs reference target type in query");
+        
+        params.add(r.getChain(), ResourceProvider.asQueryParameter(targetType, r.getChain(), r));
         
         List<BaseResource> resultList = FHIRServlet.myProviders.get(targetType).search(params);
         List<ReferenceParam> result = new ArrayList<ReferenceParam>();
@@ -396,23 +395,25 @@ public class QueryBuilder {
 					if (r.getChain() != null) {
 						
 						SearchParameterMap params = new SearchParameterMap();						
-                        params.add(r.getChain(), new StringParam(r.getIdPart())); // XXX YOU DO NOT KNOW IF ITS STRING
-                        
+                                                
                         List<BaseResource> resultList;
                         if (targetType == null) {
                            String rt = r.getResourceType();
                            if (rt == null) throw new BadRequestException("error.internal", "Target resource type for chaining not known.");
+                           params.add(r.getChain(), ResourceProvider.asQueryParameter(rt, r.getChain(), r));
                            resultList = FHIRServlet.myProviders.get(rt).search(params);
                         } else {
+                           params.add(r.getChain(), ResourceProvider.asQueryParameter(targetType, r.getChain(), r));
                            resultList = FHIRServlet.myProviders.get(targetType).search(params);
                         }
                         for (BaseResource br : resultList) {
                         	if (keep == null || keep.contains(br.getId())) orResult.add(new ReferenceParam(br.getId()));
                         }
 						
-						/*AccessLog.log("RT:"+r.getResourceType());
+						AccessLog.log("RT:"+r.getResourceType());
 						AccessLog.log("CHAINXX"+r.getChain()); 	
-					   AccessLog.log("CHAINXV"+r.getIdPart());*/
+					   AccessLog.log("CHAINXV "+r.toTokenParam(ResourceProvider.ctx).getSystem());
+					   AccessLog.log("CHAINXV2 "+r.toTokenParam(ResourceProvider.ctx).getValue());
 					} else
 					if (r.getIdPart() != null) {
 						if (keep == null || keep.contains(r.getIdPart())) orResult.add(r);					

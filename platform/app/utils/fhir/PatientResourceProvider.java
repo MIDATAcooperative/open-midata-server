@@ -41,7 +41,9 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
    public PatientResourceProvider() {
 	   searchParamNameToPathMap.put("Patient.general-practitioner", "generalPractitioner");
 	   searchParamNameToPathMap.put("Patient.link", "link.other");
-	   searchParamNameToPathMap.put("Patient:organization", "managingOrganization");		
+	   searchParamNameToPathMap.put("Patient:organization", "managingOrganization");	
+	   
+	   registerSearches("Patient", getClass(), "getPatient");
    }
    
     @Override

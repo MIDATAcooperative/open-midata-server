@@ -47,7 +47,9 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 		searchParamNameToPathMap.put("Media:operator", "operator");
 		searchParamNameToPathMap.put("Media:patient", "subject");
 		searchParamNameToTypeMap.put("Media:patient", Sets.create("Patient"));
-		searchParamNameToPathMap.put("Media:subject", "subject");				
+		searchParamNameToPathMap.put("Media:subject", "subject");
+		
+		registerSearches("Media", getClass(), "getMedia");
 	}
 	
 	@Override

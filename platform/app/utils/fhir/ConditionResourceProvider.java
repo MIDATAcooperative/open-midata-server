@@ -59,7 +59,9 @@ public class ConditionResourceProvider extends ResourceProvider<Condition> imple
 		searchParamNameToPathMap.put("Condition:context", "context");
 		searchParamNameToPathMap.put("Condition:patient", "subject");
 		searchParamNameToTypeMap.put("Condition:patient", Sets.create("Patient"));		
-		searchParamNameToPathMap.put("Condition:subject", "subject");		
+		searchParamNameToPathMap.put("Condition:subject", "subject");	
+		
+		registerSearches("Condition", getClass(), "getCondition");
 	}
 	
 	@Override

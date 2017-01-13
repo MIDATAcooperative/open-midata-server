@@ -49,6 +49,10 @@ import utils.exceptions.AppException;
  */
 public class PersonResourceProvider extends ResourceProvider<Person> implements IResourceProvider {
 
+	public  PersonResourceProvider() {
+		registerSearches("Person", getClass(), "getPerson");
+	}
+	
 	@Override
 	public Class<Person> getResourceType() {
 		return Person.class;

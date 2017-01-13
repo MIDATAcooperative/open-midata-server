@@ -49,7 +49,9 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 		searchParamNameToTypeMap.put("QuestionnaireResponse:patient", Sets.create("Patient"));
 		searchParamNameToPathMap.put("QuestionnaireResponse:questionnaire", "questionnaire");
 		searchParamNameToPathMap.put("QuestionnaireResponse:source", "source");
-		searchParamNameToPathMap.put("QuestionnaireResponse:subject", "subject");		
+		searchParamNameToPathMap.put("QuestionnaireResponse:subject", "subject");	
+		
+		registerSearches("QuestionnaireResponse", getClass(), "getQuestionnaireResponse");
 	}
 	
 	@Override

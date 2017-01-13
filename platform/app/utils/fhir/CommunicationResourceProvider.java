@@ -53,6 +53,8 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		searchParamNameToPathMap.put("Communication:recipient", "recipient");
 		searchParamNameToPathMap.put("Communication:sender", "sender");
 		searchParamNameToPathMap.put("Communication:subject", "subject");		
+		
+		registerSearches("Communication", getClass(), "getCommunication");
 	}
 	
 	@Override

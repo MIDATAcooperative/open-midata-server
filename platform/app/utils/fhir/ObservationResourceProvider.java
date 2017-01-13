@@ -69,7 +69,9 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		searchParamNameToPathMap.put("Observation:performer", "performer");
 		searchParamNameToPathMap.put("Observation:related-target", "related.target");
 		searchParamNameToPathMap.put("Observation:specimen", "specimen");
-		searchParamNameToPathMap.put("Observation:subject", "subject");		
+		searchParamNameToPathMap.put("Observation:subject", "subject");	
+		
+		registerSearches("Observation", getClass(), "getObservation");
 	}
 	
 	@Override
