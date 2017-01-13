@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('NewConsentCtrl', ['$scope', '$state', 'server', 'status', 'circles', 'hc', 'views', 'session', 'users', function($scope, $state, server, status, circles, hc, views, session, users) {
+.controller('NewConsentCtrl', ['$scope', '$state', 'server', 'status', 'circles', 'hc', 'views', 'session', 'users', 'usergroups', function($scope, $state, server, status, circles, hc, views, session, users, usergroups) {
 	
 	$scope.types = [
 	                { value : "CIRCLE", label : "enum.consenttype.CIRCLE"},
@@ -18,6 +18,7 @@ angular.module('portal')
 	
 	$scope.status = new status(false, $scope);
 	$scope.authpersons = [];
+	$scope.authteams = [];
 	$scope.datePickers = {  };
 	$scope.dateOptions = {
 	  	 formatYear: 'yy',
@@ -30,20 +31,29 @@ angular.module('portal')
 		if ($state.params.consentId) {
 			$scope.consentId = $state.params.consentId;
 			
-			$scope.status.doBusy(circles.listConsents({ "_id" : $state.params.consentId }, ["name", "type", "status", "authorized","createdBefore", "validUntil" ]))
+			$scope.status.doBusy(circles.listConsents({ "_id" : $state.params.consentId }, ["name", "type", "status", "authorized", "entityType", "createdBefore", "validUntil" ]))
 			.then(function(data) {
 				
 				$scope.consent = $scope.myform = data.data[0];				
 				views.setView("records_shared", { aps : $state.params.consentId, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowRemove : false, allowAdd : false, type : "circles" });
 
-                var role = ($scope.consent.type === "HEALTHCARE") ? "PROVIDER" : null;				
-				angular.forEach($scope.consent.authorized, function(p) {					
-					$scope.authpersons.push(session.resolve(p, function() {
-						var res = { "_id" : p };
-						if (role) res.role = role;
-						return users.getMembers(res, (role == "PROVIDER" ? users.ALLPUBLIC : users.MINIMAL )); 
-					}));
-				});				
+				if ($scope.consent.entityType == "USERGROUP") {
+					$scope.status.doBusy(usergroups.search({ "_id" : $scope.consent.authorized }, ["name"]))
+					.then(function(data2) {
+						angular.forEach(data2.data, function(userGroup) {
+							$scope.authteams.push(userGroup);
+						});
+					});
+				} else {
+	                var role = ($scope.consent.type === "HEALTHCARE") ? "PROVIDER" : null;				
+					angular.forEach($scope.consent.authorized, function(p) {					
+						$scope.authpersons.push(session.resolve(p, function() {
+							var res = { "_id" : p };
+							if (role) res.role = role;
+							return users.getMembers(res, (role == "PROVIDER" ? users.ALLPUBLIC : users.MINIMAL )); 
+						}));
+					});		
+				}
 				
 			});
 			$scope.status.doBusy(server.get(jsRoutes.controllers.Records.getSharingDetails($state.params.consentId).url)).
@@ -100,16 +110,30 @@ angular.module('portal')
 	$scope.removePerson = function(person) {
 		if ($scope.consentId) {
 		server.delete(jsRoutes.controllers.Circles.removeMember($scope.consent._id, person._id).url).
-			success(function() {				
-				$scope.authpersons.splice($scope.authpersons.indexOf(person), 1);
+			success(function() {
+				if ($scope.consent.entityType == "USERGROUP") {
+				  $scope.authteams.splice($scope.authteams.indexOf(person), 1);
+				} else {
+				  $scope.authpersons.splice($scope.authpersons.indexOf(person), 1);
+				}
 			}).
 			error(function(err) { $scope.error = { code : "error.internal" }; });
 		} else {
-			$scope.authpersons.splice($scope.authpersons.indexOf(person), 1);			
+			if ($scope.consent.entityType == "USERGROUP") {
+				  $scope.authteams.splice($scope.authteams.indexOf(person), 1);
+			} else {
+				  $scope.authpersons.splice($scope.authpersons.indexOf(person), 1);
+			}			
 		}
 	};
 	
-	var addPerson = function(person) {			
+	var addPerson = function(person, isTeam) {	
+		console.log(person);
+		if (isTeam) {
+			$scope.authteams.push(person);
+			$scope.consent.authorized.push(person._id);
+			$scope.consent.entityType = "USERGROUP";
+		} else {
 		if (person.length) {
 			angular.forEach(person, function(p) { 
 				$scope.authpersons.push(p); 
@@ -119,9 +143,9 @@ angular.module('portal')
 		    $scope.authpersons.push(person);
 		    $scope.consent.authorized.push(person._id);
 		}
-		
+		}
 		if ($scope.consentId) {
-			circles.addUsers($scope.consentId, $scope.consent.authorized );
+			circles.addUsers($scope.consentId, $scope.consent.authorized, isTeam ? "USERGROUP" : "USER" );
 		}
 				
 	};

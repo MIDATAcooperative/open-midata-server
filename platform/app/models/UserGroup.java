@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bson.BSONObject;
+
 import com.fasterxml.jackson.annotation.JsonFilter;
 
 import models.enums.UserGroupType;
@@ -24,6 +26,7 @@ public class UserGroup extends Model {
 
 	protected static final @NotMaterialized String collection = "usergroups";
 	public static final @NotMaterialized Set<String> ALL = Sets.create("name", "registeredAt", "status", "type", "creator", "history");
+	public static final @NotMaterialized Set<String> FHIR = Sets.create("fhirGroup");
 
 	
 	/**
@@ -80,6 +83,11 @@ public class UserGroup extends Model {
 	 * Public key of group
 	 */
 	public byte[] publicKey;
+	
+	/**
+	 * FHIR representation of UserGroup
+	 */
+	public BSONObject fhirGroup;
 	
 	/**
 	 * History of important changes to group account

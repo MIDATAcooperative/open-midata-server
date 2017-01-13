@@ -18,6 +18,7 @@ import utils.exceptions.InternalServerException;
 class APSCache {
 
 	private Map<String, APS> cache;
+	private Map<String, APSCache> subcache;
 	private MidataId ownerId;
 	
 	public APSCache(MidataId who) {
@@ -78,6 +79,18 @@ class APSCache {
 	
 	public void addAPS(APS aps) {		
 		cache.put(aps.getId().toString(), aps);
+	}
+
+	public APSCache getSubCache(MidataId group) {
+		if (subcache == null) {
+			subcache = new HashMap<String, APSCache>();
+		}
+		APSCache result = subcache.get(group.toString());
+		if (result == null) {
+			result = new APSCache(group);
+			subcache.put(group.toString(), result);
+		}
+		return result;
 	}
 	
 	

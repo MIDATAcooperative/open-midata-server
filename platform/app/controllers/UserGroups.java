@@ -32,6 +32,7 @@ import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
+import utils.fhir.GroupResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -146,6 +147,7 @@ public class UserGroups extends APIController {
 		
 		userGroup.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(userGroup._id, null, true);
 				
+		GroupResourceProvider.updateMidataUserGroup(userGroup);
 		userGroup.add();
 		
 		UserGroupMember member = new UserGroupMember();

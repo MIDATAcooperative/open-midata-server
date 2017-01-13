@@ -13,8 +13,12 @@ import org.hl7.fhir.dstu3.model.Group;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
+
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
+import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
@@ -37,6 +41,8 @@ import models.Record;
 import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
+import models.enums.UserStatus;
+import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -56,9 +62,9 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 	 */
 	@Read()
 	public Group getResourceById(@IdParam IIdType theId) throws AppException {
-		UserGroup group = UserGroup.getById(MidataId.from(theId.getIdPart()), User.ALL_USER);	
+		UserGroup group = UserGroup.getById(MidataId.from(theId.getIdPart()), UserGroup.FHIR);	
 		if (group == null) return null;
-		return groupFromMidataUserGroup(group);
+		return readGroupFromMidataUserGroup(group);
 	}
 	
 	/**
@@ -67,17 +73,30 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 	 * @return FHIR person
 	 * @throws AppException
 	 */
-	public Group groupFromMidataUserGroup(UserGroup groupToConvert) throws AppException {
-		Group p = new Group();
-
-		p.setId(groupToConvert._id.toString());
-		p.setName(groupToConvert.name);
+	public Group readGroupFromMidataUserGroup(UserGroup groupToConvert) throws AppException {
 		
+		IParser parser = ctx().newJsonParser();
+		AccessLog.log(groupToConvert.fhirGroup.toString());
+		Group p = parser.parseResource(getResourceType(), groupToConvert.fhirGroup.toString());
+				
 		Set<UserGroupMember> members = UserGroups.listUserGroupMembers(groupToConvert._id);
 		for (UserGroupMember member : members) {
 		  p.addMember().setEntity(FHIRTools.getReferenceToUser(member.member));
 		}
 		return p;
+	}
+	
+	public static void updateMidataUserGroup(UserGroup groupToConvert) throws AppException {
+		Group p = new Group();
+
+		p.setId(groupToConvert._id.toString());
+		p.setName(groupToConvert.name);
+		p.setActual(true);
+		p.setActive(groupToConvert.status == UserStatus.ACTIVE);
+		//p.setIdentifier(theIdentifier)
+		
+		String encoded = ctx.newJsonParser().encodeResourceToString(p);		
+		groupToConvert.fhirGroup = (DBObject) JSON.parse(encoded);				
 	}
 			
 	   @Search()
@@ -178,17 +197,15 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 	
 			Query query = new Query();		
 			QueryBuilder builder = new QueryBuilder(params, query, null);
-			
-			/*
-			builder.restriction("name", "String", true, "firstname", "lastname");
-			builder.restriction("email", "String", true, "emailLC");
-			builder.restriction("address", "String", true, "address1", "address2", "city", "country", "zip");
-			builder.restriction("address-city", "String", true, "city");
-			builder.restriction("address-postalcode", "String", true, "zip");
-			builder.restriction("address-country", "String", true, "country");
-			builder.restriction("birthdate", "Date", false, "birthdate");						
-			builder.restriction("gender", "String", false, "gender");
-			*/
+						
+			builder.restriction("actual", "Boolean", false, "fhirGroup.actual");
+			builder.restriction("characteristic", "CodeableConcept", false, "fhirGroup.characteristic.code");
+			builder.restriction("code", "CodeableConcept", false, "fhirGroup.code");
+			builder.restriction("exclude", "Boolean", false, "fhirGroup.characteristic.exclude");
+			builder.restriction("identifier", "Identifier", false, "fhirGroup.identifier");
+			builder.restriction("type", "code", false, "fhirGroup.type");
+			//builder.restriction("characteristic-value", "CodeableConcept", "valueDate", "CodeableConcept", "DateTime");
+			//builder.restriction("value", "CodeableConcept", false, "fhirGroup.characteristic.value");																				
 			
 			Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
 			builder.restriction("identifier", "String", true, "nameLC");
@@ -198,10 +215,10 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 			properties.put("searchable", true);
 			properties.put("status", User.NON_DELETED);
 			*/
-			Set<UserGroup> groups = UserGroup.getAllUserGroup(properties, UserGroup.ALL);
+			Set<UserGroup> groups = UserGroup.getAllUserGroup(properties, UserGroup.FHIR);
 			List<IBaseResource> result = new ArrayList<IBaseResource>();
 			for (UserGroup group : groups) {
-				result.add(groupFromMidataUserGroup(group));
+				result.add(readGroupFromMidataUserGroup(group));
 			}
 			
 			return result;

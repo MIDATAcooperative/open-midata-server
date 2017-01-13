@@ -33,8 +33,8 @@ angular.module('views')
     	views.disableView($scope.view.id);    	
     };
     
-    $scope.addGroup = function(prov) {
-    	
+    $scope.addGroup = function(group) {
+    	$scope.view.setup.callback(group, true);
     	views.disableView($scope.view.id);    	
     };
     

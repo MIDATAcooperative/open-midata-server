@@ -141,7 +141,7 @@ class QueryEngine {
 		}
 		
 		
-		Feature qm = new Feature_Prefetch(new Feature_BlackList(myaps, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Streams())))))));
+		Feature qm = new Feature_Prefetch(new Feature_BlackList(myaps, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_UserGroups(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Streams()))))))));
 				
 		List<DBRecord> recs = qm.query(q);
 		recs = postProcessRecords(qm, q.getProperties(), recs);
@@ -195,7 +195,7 @@ class QueryEngine {
     	AccessLog.logBegin("begin full query");
     	    	
     	APS target = cache.getAPS(apsId);
-    	Feature qm = new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Documents(new Feature_Streams()))))))))));
+    	Feature qm = new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Documents(new Feature_Streams())))))))))));
     	
     	List<DBRecord> result = query(properties, fields, apsId, cache, qm);
     	

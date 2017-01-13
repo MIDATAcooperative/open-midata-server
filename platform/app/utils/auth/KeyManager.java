@@ -23,6 +23,7 @@ import models.KeyInfo;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.User;
+import models.UserGroup;
 import utils.access.EncryptionUtils;
 import utils.collections.Sets;
 import utils.exceptions.AuthException;
@@ -89,6 +90,12 @@ public class KeyManager {
 			if (mai != null) {
 				if (mai.publicKey == null) throw new EncryptionNotSupportedException("No public key");			
 				return encryptKey(mai.publicKey , keyToEncrypt);
+			}
+			
+			UserGroup ug = UserGroup.getById(target, Sets.create("publicKey"));
+			if (ug != null) {
+				if (ug.publicKey == null) throw new EncryptionNotSupportedException("No public key");			
+				return encryptKey(ug.publicKey , keyToEncrypt);
 			}
 			
 			throw new EncryptionNotSupportedException("No public key");	

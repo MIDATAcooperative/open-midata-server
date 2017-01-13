@@ -30,6 +30,7 @@ import models.User;
 import models.enums.AggregationType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
+import models.enums.EntityType;
 import models.enums.SubUserRole;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -391,7 +392,7 @@ public class Circles extends APIController {
 		MidataId userId = new MidataId(request().username());
 		MidataId circleId = new MidataId(circleIdString);
 		
-		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("authorized","type"));
+		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("authorized","authorizedTypes", "type"));
 		if (consent == null) {
 			throw new BadRequestException("error.unknown.consent", "No consent with this id belonging to user exists.");
 		}
@@ -399,6 +400,17 @@ public class Circles extends APIController {
 		// add users to circle (implicit: if not already present)
 		Set<MidataId> newMemberIds = ObjectIdConversion.toMidataIds(JsonExtraction.extractStringSet(json.get("users")));
 				
+		if (json.has("entityType")) {
+			EntityType type = JsonValidation.getEnum(json, "entityType", EntityType.class);
+			if (consent.entityType == null) {
+				consent.entityType = type;				
+				Consent.set(consent._id, "entityType", type);
+				
+			} else if (!consent.entityType.equals(type)) {
+				throw new BadRequestException("error.invalid.consent", "Bad consent entity type");
+			}			
+		}
+		
 		consent.authorized.addAll(newMemberIds);
 		Consent.set(consent._id, "authorized", consent.authorized);
 		

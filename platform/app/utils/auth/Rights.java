@@ -69,7 +69,7 @@ public class Rights {
 		role(UserRole.ANY, "_id", "id", "owner" , "ownerName", "creatorName", "format", "subformat", "content", "code", "group", "app", "creator", "created", "lastUpdated", "version", "name", "description", "tags", "data", "created-after", "created-before", "max-age", "group-strict", "group-exclude", "limit");
 		
 		action("Circles.listConsents");
-		role(UserRole.ANY, "_id", "owner", "name", "authorized", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "validUntil");
+		role(UserRole.ANY, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "validUntil");
 		
 		action("Plugins.get");
 		role(UserRole.ANY, Plugin.ALL_PUBLIC);

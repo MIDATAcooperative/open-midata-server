@@ -49,6 +49,10 @@
 			<span ng-show="person.email"><span translate="common.user.email"></span>: {{ member.email }}<br></span>
 		  </address>
 		</div>
+		<div class="well well-sm" ng-repeat="usergroup in authteams">
+		  <button type="button" ng-click="removePerson(usergroup)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>	
+		  {{ usergroup.name }}
+		</div>
 		<button type="button" class="btn btn-default" ng-click="addPeople();" translate="newconsent.add_person_btn"></button>
 		<button type="button" class="btn btn-default" ng-click="addUserGroup();" translate="newconsent.add_usergroup_btn"></button>
 	</formrow>
