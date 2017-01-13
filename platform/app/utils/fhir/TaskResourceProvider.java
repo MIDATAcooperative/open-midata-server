@@ -224,17 +224,17 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		builder.recordOwnerReference("patient", "Patient");
 		builder.recordCodeRestriction("code", "code");
 		
-		builder.restriction("identifier", "Identifier", true, "identifier");
-		builder.restriction("performer", "CodeableConcept", true, "performerType");        
-        builder.restriction("priority", "code", false, "priority");
-        builder.restriction("status", "code", false, "status");
-		builder.restriction("statusreason", "CodeableConcept", true, "statusReason");
-		builder.restriction("focus", null, true, "focus");
+		builder.restriction("identifier", true, "Identifier", "identifier");
+		builder.restriction("performer", true, "CodeableConcept", "performerType");        
+        builder.restriction("priority", false, "code", "priority");
+        builder.restriction("status", false, "code", "status");
+		builder.restriction("statusreason", true, "CodeableConcept", "statusReason");
+		builder.restriction("focus", true, null, "focus");
 		//builder.restriction("definition", type, indexing, paths);
 		
-		builder.restriction("modified", "date", true, "lastModified");
-		builder.restriction("owner", null, true, "owner");
-		builder.restriction("requester", null, true, "requester.agent");
+		builder.restriction("modified", true, "DateTime", "lastModified");
+		builder.restriction("owner", true, null, "owner");
+		builder.restriction("requester", true, null, "requester.agent");
 		
 		//paramMap.add("parent", theParent);		
 		//paramMap.add("stage", theStage);

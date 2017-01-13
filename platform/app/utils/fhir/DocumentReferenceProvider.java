@@ -290,41 +290,41 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 		
 		builder.recordCodeRestriction("type", "type");
 				
-		builder.restriction("identifier", "Identifier", true, "identifier", "masterIdentifier");		
+		builder.restriction("identifier", true, "Identifier", "identifier", "Identifier", "masterIdentifier");		
 		
-		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", null, true, "subject");
+		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
 		
-		builder.restriction("authenticator", null, true, "authenticator");
+		builder.restriction("authenticator", true, null, "authenticator");
 		
-		builder.restriction("author", null, true, "author");
+		builder.restriction("author", true, null, "author");
 		
-		builder.restriction("class", "CodeableConcept", true, "class");
-		builder.restriction("created", "date", true, "created");
-		builder.restriction("custodian", "Organization", true, "custodian");
+		builder.restriction("class", true, "CodeableConcept", "class");
+		builder.restriction("created", true, "DateTime", "created");
+		builder.restriction("custodian", true, "Organization", "custodian");
 		
-		builder.restriction("description", "String", true, "description");
-		builder.restriction("encounter", "Encounter", true, "context.encounter");
+		builder.restriction("description", true, "string", "description");
+		builder.restriction("encounter", true, "Encounter", "context.encounter");
 		
-		builder.restriction("event", "CodeableConcept", true, "context.event");
-		builder.restriction("facility", "CodeableConcept", true, "context.facilityType");
-		builder.restriction("format", "CodeableConcept", true, "content.format");
+		builder.restriction("event", true, "CodeableConcept", "context.event");
+		builder.restriction("facility", true, "CodeableConcept", "context.facilityType");
+		builder.restriction("format", true, "CodeableConcept", "content.format");
 		
-		builder.restriction("indexed", "date", true, "indexed");
-		builder.restriction("language", "code", true, "content.attachment.language");
-		builder.restriction("location", "uri", true, "content.attachment.url");
+		builder.restriction("indexed", true, "DateTime", "indexed");
+		builder.restriction("language", true, "code", "content.attachment.language");
+		builder.restriction("location", true, "uri", "content.attachment.url");
 		//builder.restriction("patient", "Patient", true, "subject");
 		
-		builder.restriction("period", "date", true, "context.period");
-		builder.restriction("related-id", "Identifier", true, "context.related.identifier");
-		builder.restriction("related-ref", null, true, "context.related.ref");
+		builder.restriction("period", true, "Period", "context.period");
+		builder.restriction("related-id", true, "Identifier", "context.related.identifier");
+		builder.restriction("related-ref", true, null, "context.related.ref");
 		
-		builder.restriction("relatesto", "DocumentReference", true, "relatesTo.target");
+		builder.restriction("relatesto", true, "DocumentReference", "relatesTo.target");
 		
-		builder.restriction("relation", "code", false, "relatesTo.code");
+		builder.restriction("relation", false, "code", "relatesTo.code");
 		builder.restriction("relationship", "relatesTo.code", "relatesTo.target", "code", "DocumentReference");	
-		builder.restriction("securitylabel", "CodeableConcept", true, "securityLabel");
-		builder.restriction("setting", "CodeableConcept", true, "context.practiceSetting");
-		builder.restriction("status", "code", true, "status");
+		builder.restriction("securitylabel", true, "CodeableConcept", "securityLabel");
+		builder.restriction("setting", true, "CodeableConcept", "context.practiceSetting");
+		builder.restriction("status", true, "code", "status");
 		
 		
 		//builder.restriction("type", "CodeableConcept", true, "type");

@@ -212,14 +212,14 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 			QueryBuilder builder = new QueryBuilder(params, query, null);
 			
 			builder.handleIdRestriction();
-			builder.restriction("name", "String", true, "firstname", "lastname");
-			builder.restriction("email", "String", true, "emailLC");
-			builder.restriction("address", "String", true, "address1", "address2", "city", "country", "zip");
-			builder.restriction("address-city", "String", true, "city");
-			builder.restriction("address-postalcode", "String", true, "zip");
-			builder.restriction("address-country", "String", true, "country");
-			builder.restriction("birthdate", "Date", false, "birthdate");						
-			builder.restriction("gender", "String", false, "gender");
+			builder.restriction("name", true, "string", "firstname", "string", "lastname");
+			builder.restriction("email", true, "string", "emailLC");
+			builder.restrictionMany("address", true, "string", "address1", "address2", "city", "country", "zip");
+			builder.restriction("address-city", true, "string", "city");
+			builder.restriction("address-postalcode", true, "string", "zip");
+			builder.restriction("address-country", true, "string", "country");
+			builder.restriction("birthdate", false, "DateTime", "birthdate");						
+			builder.restriction("gender", false, "string", "gender");
 			
 			Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
 			Object keywords = query.retrieveIndexValues();

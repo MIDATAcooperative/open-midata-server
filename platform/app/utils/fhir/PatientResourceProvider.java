@@ -307,27 +307,27 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 	           if (ids != null) query.putAccount("owner", ids);
 		}
 		
-		builder.restriction("identifier", "identifier", "Identifier", true);
-		builder.restriction("family", "name.family", "String", true);
-		builder.restriction("birthdate", "birthDate", "Date", true);
-		builder.restriction("deathdate", "deceasedDateTime", "Date", true);
-		builder.restriction("given", "name.given", "String", true);
-		builder.restriction("gender", "gender", "code", false);
+		builder.restriction("identifier", true, "Identifier", "identifier");
+		builder.restriction("family", true, "string", "name.family");
+		builder.restriction("birthdate", true, "DateTime", "birthDate");
+		builder.restriction("deathdate", true, "DateTime", "deceasedDateTime");
+		builder.restriction("given", true, "string", "name.given");
+		builder.restriction("gender", false, "code", "gender");
 		
-		builder.restriction("name", "String", true, "name.given", "name.family");
-		builder.restriction("email", "code", true, "telecom.value");
-		builder.restriction("address-city", "String", true, "address.city");
-		builder.restriction("address-country", "String", true, "address.country");
-		builder.restriction("address-postalcode", "String", true, "address.postalCode");
-		builder.restriction("address-state", "String", true, "address.state");
-		builder.restriction("address-use", "code", false, "address.use");
+		builder.restriction("name", true, "string", "name.given", "string", "name.family");
+		builder.restriction("email", true, "code", "telecom.value");
+		builder.restriction("address-city", true, "string", "address.city");
+		builder.restriction("address-country", true, "string", "address.country");
+		builder.restriction("address-postalcode", true, "string", "address.postalCode");
+		builder.restriction("address-state", true, "string", "address.state");
+		builder.restriction("address-use", false, "code", "address.use");
 		
-		builder.restriction("address", "String", true, "address.text", "address.line", "address.city", "address.district", "address.state", "address.postalCode", "address.country");
+		builder.restrictionMany("address", true, "string", "address.text", "address.line", "address.city", "address.district", "address.state", "address.postalCode", "address.country");
 		
-		builder.restriction("language", "code", false, "communication.language");
-		builder.restriction("phone", "code", true, "telecom.value");
-		builder.restriction("telecom", "code", true, "telecom.value");
-		builder.restriction("active", "active", "boolean", false);
+		builder.restriction("language", false, "code", "communication.language");
+		builder.restriction("phone", true, "code", "telecom.value");
+		builder.restriction("telecom", true, "code", "telecom.value");
+		builder.restriction("active", false, "boolean", "active");
 		
 		return query.execute(info);
 	}

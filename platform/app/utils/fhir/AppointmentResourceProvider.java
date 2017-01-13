@@ -195,16 +195,16 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Appointment");
 		
 		builder.handleIdRestriction();
-		builder.restriction("identifier", "Identifier", true, "identifier");
-		builder.restriction("date", "date", true, "start");
-		builder.restriction("actor", null, true, "participant.actor");
-		builder.restriction("status", "code", false, "status");
-		builder.restriction("part-status", "code", false, "participant.status");
-		builder.restriction("patient", "Patient", true, "participant.actor");
-		builder.restriction("practitioner", "Practitioner", true, "participant.actor");
-		builder.restriction("location", "Location", true, "participant.actor");
-		builder.restriction("appointment-type", "CodeableConcept", true, "appointmentType");
-		builder.restriction("service-type", "CodeableConcept", true, "serviceType");
+		builder.restriction("identifier", true, "Identifier", "identifier");
+		builder.restriction("date", true, "date", "start");
+		builder.restriction("actor", true, null, "participant.actor");
+		builder.restriction("status", false, "code", "status");
+		builder.restriction("part-status", false, "code", "participant.status");
+		builder.restriction("patient", true, "Patient", "participant.actor");
+		builder.restriction("practitioner", true, "Practitioner", "participant.actor");
+		builder.restriction("location", true, "Location", "participant.actor");
+		builder.restriction("appointment-type", true, "CodeableConcept", "appointmentType");
+		builder.restriction("service-type", true, "CodeableConcept", "serviceType");
 								  
 		return query.execute(info);
 	}

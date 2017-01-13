@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.BaseResource;
 
+import akka.japi.Pair;
 import ca.uhn.fhir.model.api.IQueryParameterType;
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import ca.uhn.fhir.rest.param.CompositeParam;
@@ -20,6 +21,7 @@ import ca.uhn.fhir.rest.param.QuantityParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenParam;
+import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import utils.AccessLog;
 import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
@@ -80,8 +82,9 @@ public class QueryBuilder {
 	           IQueryParameterType param1 = compositeParam.getLeftValue();
 	           IQueryParameterType param2 = compositeParam.getRightValue();
 	           
-	           handleRestriction(param1, path1, type1, bld);
 	           handleRestriction(param2, path2, type2, bld);
+	           handleRestriction(param1, path1, type1, bld);
+	           
 	           
 	           bld.or();
 	           
@@ -95,12 +98,13 @@ public class QueryBuilder {
 		AccessLog.log("After opt: "+dataCondition.toString());
 		query.putDataCondition(dataCondition);
 		
-		/*if (indexing) {
+		//if (indexing) {
 		  Map<String, Condition> indexCondition = dataCondition.indexExpression();
 		  if (indexCondition != null) query.putIndexCondition(indexCondition);
-		}*/ 
+		//} 
 	}
 	
+	/*
 	public void restriction(String name, String path, String type, boolean indexing) {
 		List<List<? extends IQueryParameterType>> paramsAnd = params.get(name);
 		if (paramsAnd == null) return;
@@ -126,9 +130,52 @@ public class QueryBuilder {
 		  Map<String, Condition> indexCondition = dataCondition.indexExpression();
 		  if (indexCondition != null) query.putIndexCondition(indexCondition);
 		} 
+	}*/
+	
+	public void restriction(String name, boolean indexing, String t1, String p1) {
+	  restriction(name, indexing, t1, p1, null, null, null, null);	
 	}
 	
-	public void restriction(String name, String type, boolean indexing, String... paths) {
+	public void restriction(String name, boolean indexing, String t1, String p1, String t2, String p2) {
+	  restriction(name, indexing, t1, p1, t2, p2, null, null);	
+	}
+	
+	public void restriction(String name, boolean indexing, String t1, String p1, String t2, String p2, String t3, String p3) {
+		List<List<? extends IQueryParameterType>> paramsAnd = params.get(name);
+		if (paramsAnd == null) return;
+		
+		PredicateBuilder bld = new PredicateBuilder();
+		for (List<? extends IQueryParameterType> paramsOr : paramsAnd) {
+						
+			for (IQueryParameterType param : paramsOr) {
+								
+				handleRestriction(param, p1, t1, bld);								
+			    if (p2 != null) {
+			    	bld.or();
+			    	handleRestriction(param, p2, t2, bld);
+			    }
+			    if (p3 != null) {
+			    	bld.or();
+			    	handleRestriction(param, p3, t3, bld);
+			    }
+			    bld.or();
+			}
+			bld.and();
+		}
+		
+		Condition unOpt = bld.get();
+		AccessLog.log("Before opt: "+unOpt.toString());
+		Condition dataCondition = unOpt.optimize();
+		AccessLog.log("After opt: "+dataCondition.toString());
+		query.putDataCondition(dataCondition);
+		
+		if (indexing) {
+		  Map<String, Condition> indexCondition = dataCondition.indexExpression();
+		  if (indexCondition != null) query.putIndexCondition(indexCondition);
+		} 
+	}
+	
+	public void restrictionMany(String name, boolean indexing, String type, String... paths) {
 		List<List<? extends IQueryParameterType>> paramsAnd = params.get(name);
 		if (paramsAnd == null) return;
 		
@@ -159,18 +206,39 @@ public class QueryBuilder {
 	private void handleRestriction(IQueryParameterType param, String path, String type, PredicateBuilder bld) {
 		if (param instanceof TokenParam) {
 			  TokenParam tokenParam = (TokenParam) param;
-			  
+			  String system = tokenParam.getSystem();
 			  if (type.equals("CodeableConcept")) {
-			    bld.addEq(path+".coding.code", tokenParam.getValue());
+				if (system == null) {
+			      bld.addEq(path+".coding.code", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
+				} else {
+				  bld.addEq(path+".coding", "system", system, "code", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
+				}
+			    //if (tokenParam.getSystem() != null) bld.addEq(path+".coding.code", tokenParam.getValue());
 			  } else if (type.equals("code")) {
 				bld.addEq(path, tokenParam.getValue());
+			  } else if (type.equals("Coding")) {
+				if (system == null) {
+					bld.addEq(path+".code", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
+				} else {
+					bld.addEq(path, "system", system, "code", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
+				}					
 			  } else if (type.equals("Identifier")) {
-				bld.addEq(path+".value", tokenParam.getValue());
+				if (system == null) {
+				   bld.addEq(path+".value", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
+				} else {
+				   bld.addEq(path, "system", system, "value", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
+				}	
+			  } else if (type.equals("ContactPoint")) {
+				if (system == null) {
+				   bld.addEq(path+".value", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
+				} else {
+				   bld.addEq(path, "use", system, "value", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
+				}	
 			  } else if (type.equals("boolean")) {
 				bld.addEq(path, tokenParam.getValue().equals("true"));
-			  } else if (type.equals("String")) {
+			  } else if (type.equals("string")) {
 				bld.addEq(path, tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
-			  }
+			  } 
 			} else if (param instanceof StringParam) {
 			  StringParam stringParam = (StringParam) param;
 			  
@@ -234,36 +302,57 @@ public class QueryBuilder {
 				default: format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");break;
 				}
 				compStr = format.format(comp); 
-				
-				switch (prefix) {
-				case GREATERTHAN: bld.addComp(path, CompareOperator.GT, compStr);break;
-				case LESSTHAN: bld.addComp(path,CompareOperator.LT, compStr);break;
-				case GREATERTHAN_OR_EQUALS: bld.addComp(path, CompareOperator.GE, compStr);break;
-				case LESSTHAN_OR_EQUALS: bld.addComp(path, CompareOperator.LE, compStr);break;
-				case EQUAL: 
-					bld.addComp(path, CompareOperator.GE, compStr);
-					bld.addComp(path, CompareOperator.LE, compStr);
-					break;
+				if (type.equals("Period")) {
+					throw new NotImplementedOperationException("Date search on Period not implemented");
+				} else {
+				    switch (prefix) {
+					case GREATERTHAN: bld.addComp(path, CompareOperator.GT, compStr);break;
+					case LESSTHAN: bld.addComp(path,CompareOperator.LT, compStr);break;
+					case GREATERTHAN_OR_EQUALS: bld.addComp(path, CompareOperator.GE, compStr);break;
+					case LESSTHAN_OR_EQUALS: bld.addComp(path, CompareOperator.LE, compStr);break;
+					case EQUAL: 
+						bld.addComp(path, CompareOperator.GE, compStr);
+						bld.addComp(path, CompareOperator.LE, compStr);
+						break;
+					}
 				}
 			} else if (param instanceof QuantityParam) {
+				
 				QuantityParam quantityParam = (QuantityParam) param;
 				ParamPrefixEnum prefix = quantityParam.getPrefix();
 				if (prefix == null) prefix = ParamPrefixEnum.EQUAL;
 				String units = quantityParam.getUnits();
 				String system = quantityParam.getSystem();
 				BigDecimal val = quantityParam.getValue();
-				switch(prefix) {
-				case GREATERTHAN: bld.addComp(path+".value", CompareOperator.GT, val.doubleValue());break;
-				case LESSTHAN: bld.addComp(path+".value", CompareOperator.LT, val.doubleValue());break;
-				case GREATERTHAN_OR_EQUALS: bld.addComp(path+".value", CompareOperator.GE, val.doubleValue());break;
-				case LESSTHAN_OR_EQUALS: bld.addComp(path+".value", CompareOperator.LE, val.doubleValue());break;
-				case EQUAL: bld.addComp(path+".value", CompareOperator.EQ, val.doubleValue());break;
-				case NOT_EQUAL: bld.addComp(path+".value", CompareOperator.NE, val.doubleValue());break;						
+                if (type.equals("Range")) {
+                	throw new NotImplementedOperationException("Search on Range fields not yet implemented.");
+                	/*switch(prefix) {
+    				case GREATERTHAN: bld.addComp(path+".value", CompareOperator.GT, val.doubleValue());break;
+    				case LESSTHAN: bld.addComp(path+".value", CompareOperator.LT, val.doubleValue());break;
+    				case GREATERTHAN_OR_EQUALS: bld.addComp(path+".value", CompareOperator.GE, val.doubleValue());break;
+    				case LESSTHAN_OR_EQUALS: bld.addComp(path+".value", CompareOperator.LE, val.doubleValue());break;
+    				case EQUAL: bld.addComp(path+".value", CompareOperator.EQ, val.doubleValue());break;
+    				case NOT_EQUAL: bld.addComp(path+".value", CompareOperator.NE, val.doubleValue());break;						
+    				}
+    				if (system != null) bld.addEq(path+".system", system);
+    				if (units!=null) {						
+    					bld.add(OrCondition.or(FieldAccess.path(path+".unit", new EqualsSingleValueCondition((Comparable) units)), FieldAccess.path(path+".code", new EqualsSingleValueCondition((Comparable) units))));																
+    				}*/
+				} else {
+					switch(prefix) {
+					case GREATERTHAN: bld.addComp(path+".value", CompareOperator.GT, val.doubleValue());break;
+					case LESSTHAN: bld.addComp(path+".value", CompareOperator.LT, val.doubleValue());break;
+					case GREATERTHAN_OR_EQUALS: bld.addComp(path+".value", CompareOperator.GE, val.doubleValue());break;
+					case LESSTHAN_OR_EQUALS: bld.addComp(path+".value", CompareOperator.LE, val.doubleValue());break;
+					case EQUAL: bld.addComp(path+".value", CompareOperator.EQ, val.doubleValue());break;
+					case NOT_EQUAL: bld.addComp(path+".value", CompareOperator.NE, val.doubleValue());break;						
+					}
+					if (system != null) bld.addEq(path+".system", system);
+					if (units!=null) {						
+						bld.add(OrCondition.or(FieldAccess.path(path+".unit", new EqualsSingleValueCondition((Comparable) units)), FieldAccess.path(path+".code", new EqualsSingleValueCondition((Comparable) units))));																
+					}	
 				}
-				if (system != null) bld.addEq(path+".system", system);
-				if (units!=null) {						
-					bld.add(OrCondition.or(FieldAccess.path(path+".unit", new EqualsSingleValueCondition((Comparable) units)), FieldAccess.path(path+".code", new EqualsSingleValueCondition((Comparable) units))));																
-				}
+				
 			} 
 	}
 	
@@ -417,9 +506,9 @@ public class QueryBuilder {
 		Set<String> codes = tokensToCodeSystemStrings(name);
 		if (codes != null) {
 			query.putAccount("code", codes);
-			restriction(name, path, "CodeableConcept", false);
+			restriction(name, false, "CodeableConcept", path);
 		} else {
-			restriction(name, path, "CodeableConcept", true);
+			restriction(name, true, "CodeableConcept", path);
 		}		
 	}
 }
