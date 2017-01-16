@@ -33,6 +33,13 @@ public class PredicateBuilder {
 		  add(FieldAccess.path(path, new CompareCaseInsensitive(value, op)));
 	}
 	
+	public void addEq(String path, String sysPath, Object system, String valPath, Object value, CompareCaseInsensitiveOperator op) {
+		  add(FieldAccess.path(path, 
+				  AndCondition.and(
+						  FieldAccess.path(valPath, new CompareCaseInsensitive(value, op)), 
+						  FieldAccess.path(sysPath, new EqualsSingleValueCondition((Comparable) system)))));
+	}
+	
 	public void and() {
 		result = AndCondition.and(result, block);
 		block = null;

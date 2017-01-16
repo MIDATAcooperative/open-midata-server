@@ -47,7 +47,9 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 		searchParamNameToPathMap.put("Media:operator", "operator");
 		searchParamNameToPathMap.put("Media:patient", "subject");
 		searchParamNameToTypeMap.put("Media:patient", Sets.create("Patient"));
-		searchParamNameToPathMap.put("Media:subject", "subject");				
+		searchParamNameToPathMap.put("Media:subject", "subject");
+		
+		registerSearches("Media", getClass(), "getMedia");
 	}
 	
 	@Override
@@ -188,15 +190,15 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 		
 		builder.recordCodeRestriction("view", "view");
 				
-		builder.restriction("identifier", "Identifier", true, "identifier");
-		builder.restriction("created", "Date", true, "content.creation");
+		builder.restriction("identifier", true, "Identifier", "identifier");
+		builder.restriction("created", true, "DateTime", "content.creation");
 		
-		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", null, true, "subject");
+		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
 		
 		//builder.restriction("subject", null, true, "subject");
-		builder.restriction("operator", "Practitioner", true, "operator");		
-		builder.restriction("subtype", "CodeableConcept", false, "subtype");
-		builder.restriction("type", "code", false, "type");		
+		builder.restriction("operator", true, "Practitioner", "operator");		
+		builder.restriction("subtype", false, "CodeableConcept", "subtype");
+		builder.restriction("type", false, "code", "type");		
 		
 		return query.execute(info);
 	}

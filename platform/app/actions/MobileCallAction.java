@@ -21,6 +21,7 @@ import utils.json.JsonValidation.JsonValidationException;
 public class MobileCallAction extends Action<MobileCall> {
 
     public F.Promise<Result> call(Http.Context ctx) throws Throwable { 
+    	long startTime = System.currentTimeMillis();
     	try {    	  
     	  JsonNode json = ctx.request().body().asJson();
     	  ctx.args.put("json", json);
@@ -46,6 +47,11 @@ public class MobileCallAction extends Action<MobileCall> {
 			ErrorReporter.report("Mobile API", ctx, e2);
 			return F.Promise.pure((Result) internalServerError(e2.getMessage()));			
 		} finally {
+			long endTime = System.currentTimeMillis();
+			if (endTime - startTime > 1000l * 4l) {
+			   ErrorReporter.reportPerformance("Mobile API", ctx, endTime - startTime);
+			}
+			
 			RecordManager.instance.clear();
 			AccessLog.newRequest();
 			ResourceProvider.setExecutionInfo(null);
