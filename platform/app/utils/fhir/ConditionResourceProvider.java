@@ -59,7 +59,9 @@ public class ConditionResourceProvider extends ResourceProvider<Condition> imple
 		searchParamNameToPathMap.put("Condition:context", "context");
 		searchParamNameToPathMap.put("Condition:patient", "subject");
 		searchParamNameToTypeMap.put("Condition:patient", Sets.create("Patient"));		
-		searchParamNameToPathMap.put("Condition:subject", "subject");		
+		searchParamNameToPathMap.put("Condition:subject", "subject");	
+		
+		registerSearches("Condition", getClass(), "getCondition");
 	}
 	
 	@Override
@@ -240,28 +242,28 @@ public class ConditionResourceProvider extends ResourceProvider<Condition> imple
         builder.recordCodeRestriction("code", "code");
 			
 		
-        builder.restriction("identifier", "Identifier", true, "identifier");
-        builder.restriction("asserter", null, true, "asserter");
+        builder.restriction("identifier", true, "Identifier", "identifier");
+        builder.restriction("asserter", true, null, "asserter");
         
-        if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", null, true, "subject");
+        if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
         
-        builder.restriction("context", null, true, "context");
-        builder.restriction("category", "CodeableConcept", true, "category");
+        builder.restriction("context", true, null, "context");
+        builder.restriction("category", true, "CodeableConcept", "category");
         
-		builder.restriction("abatement-age", "Quantity", true, "abatementAge", "abatementRange");
-		builder.restriction("abatement-boolean", "Boolean", false, "abatementBoolean");
-		builder.restriction("abatement-date", "DateTime", true, "abatementDateTime", "abatementPeriod");
-		builder.restriction("abatement-string", "String", true, "abatementString");
+		builder.restriction("abatement-age", true, "Quantity", "abatementAge", "Range", "abatementRange");
+		builder.restriction("abatement-boolean", false, "boolean", "abatementBoolean");
+		builder.restriction("abatement-date", true, "DateTime", "abatementDateTime", "Period", "abatementPeriod");
+		builder.restriction("abatement-string", true, "string", "abatementString");
 		
-		builder.restriction("body-site", "CodeableConcept", true, "bodySite");							
-		builder.restriction("clinicalstatus", "code", true, "clinicalStatus");		
-		builder.restriction("evidence", "CodeableConcept", true, "evidence.code");
+		builder.restriction("body-site", true, "CodeableConcept", "bodySite");							
+		builder.restriction("clinicalstatus", true, "code", "clinicalStatus");		
+		builder.restriction("evidence", true, "CodeableConcept", "evidence.code");
 		
-		builder.restriction("onset-age", "Quantity", true, "onsetAge", "onsetRange");
-		builder.restriction("onset-date", "DateTime", true, "onsetDateTime", "onsetPeriod");
-		builder.restriction("onset-info", "String", true, "onsetString");
-		builder.restriction("severity", "CodeableConcept", true, "severity");
-		builder.restriction("stage", "CodeableConcept", true, "stage.summary");					
+		builder.restriction("onset-age", true, "Quantity", "onsetAge", "Range", "onsetRange");
+		builder.restriction("onset-date", true, "DateTime", "onsetDateTime", "Period", "onsetPeriod");
+		builder.restriction("onset-info", true, "string", "onsetString");
+		builder.restriction("severity", true, "CodeableConcept", "severity");
+		builder.restriction("stage", true, "CodeableConcept", "stage.summary");					
 		
 		return query.execute(info);
 	}

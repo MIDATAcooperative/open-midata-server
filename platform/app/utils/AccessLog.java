@@ -1,6 +1,7 @@
 package utils;
 
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
@@ -110,6 +111,13 @@ public class AccessLog {
 		  Logger.debug(getReport());
 		}
 		ident.set(0);
+		LogContext context = msgs.get();
+		if (context != null) {
+			context.writer.close();
+			try {
+			  context.out.close();
+			} catch (IOException e) {}
+		}
 		msgs.set(new LogContext());
 	}
 	
