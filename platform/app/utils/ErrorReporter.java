@@ -42,4 +42,23 @@ public class ErrorReporter {
 		String txt = "Instance: "+InstanceConfig.getInstance().getPortalServerDomain()+"\nTime:"+timeStamp+"\nInterface: "+fromWhere+"\nPortal Session: "+user+"\nPath: "+path+"\n\n"+AccessLog.getReport();
 		MailUtils.sendTextMail(bugReportEmail, bugReportName, "Error Report: "+path, txt);
 	}
+	
+	public static void reportPerformance(String fromWhere, Http.Context ctx, long duration) {
+		long now = System.currentTimeMillis();
+		if (now - lastReport < 1000 * 60) return;
+		lastReport = now;
+		String path = "none";
+		String user = "none";
+		if (ctx != null) {
+		   path = "["+ctx.request().method()+"] "+ctx.request().host()+ctx.request().path();
+		   PortalSessionToken tsk = PortalSessionToken.session();
+		   if (tsk != null) {
+		     user = tsk.getRole().toString()+" "+tsk.getUserId().toString();
+		   } 
+		} else path = "[internal] "+InstanceConfig.getInstance().getPortalServerDomain();
+		String timeStamp = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss").format(new Date());
+		
+		String txt = "Instance: "+InstanceConfig.getInstance().getPortalServerDomain()+"\nTime:"+timeStamp+"\nInterface: "+fromWhere+"\nPortal Session: "+user+"\nPath: "+path+"\nExecution Time: "+duration+"ms\n\n"+AccessLog.getReport();
+		MailUtils.sendTextMail(bugReportEmail, bugReportName, "Bad Performance: "+path, txt);
+	}
 }

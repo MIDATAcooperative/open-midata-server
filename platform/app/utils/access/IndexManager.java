@@ -160,6 +160,9 @@ public class IndexManager {
 			if (updateAllTs != 0 && (index.isChanged() || targetAps.size() > 3)) index.setAllVersion(updateAllTs);
 			index.flush();
 		} catch (LostUpdateException e) {
+			try {
+			  Thread.sleep(50);
+			} catch (InterruptedException e2) {}
 			index.reload();
 			indexUpdate(cache, index, executor, targetAps);
 		}
