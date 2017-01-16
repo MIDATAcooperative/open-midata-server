@@ -12,6 +12,7 @@ import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.exceptions.BadRequestException;
+import utils.fhir.ResourceProvider;
 import utils.json.JsonValidation.JsonValidationException;
 
 
@@ -22,6 +23,7 @@ import utils.json.JsonValidation.JsonValidationException;
 public class VisualizationCallAction extends Action<VisualizationCall> {
 	
     public F.Promise<Result> call(Http.Context ctx) throws Throwable { 
+    	long startTime = System.currentTimeMillis();
     	try {    	  
     		
     	  JsonNode json = ctx.request().body().asJson();
@@ -58,8 +60,14 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
 			ErrorReporter.report("Plugin API", ctx, e2);
 			return F.Promise.pure((Result) internalServerError("err:"+e2.getMessage()));			
 		} finally {
+			long endTime = System.currentTimeMillis();
+			if (endTime - startTime > 1000l * 4l) {
+			   ErrorReporter.reportPerformance("Plugin API", ctx, endTime - startTime);
+			}
+			
 			RecordManager.instance.clear();
 			AccessLog.newRequest();	
+			ResourceProvider.setExecutionInfo(null);
 		}
     }
 }
