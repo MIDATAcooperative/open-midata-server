@@ -15,6 +15,7 @@ public class CompareCondition implements Condition {
     private Comparable<Object> val;
     private CompareOperator op;
 	private boolean isDate;
+	private boolean isNumber;
     
     public enum CompareOperator {
     	GT, LT, LE, GE, EQ, NE
@@ -31,6 +32,7 @@ public class CompareCondition implements Condition {
 		this.val = val;
 		this.op = op;
 		this.isDate = ((Object) val) instanceof Date;
+		this.isNumber = ((Object) val) instanceof Double;
 	}
 	
 	@Override
@@ -38,6 +40,7 @@ public class CompareCondition implements Condition {
 		if (obj == null) return false;
 		try {
 		  if (isDate) obj = ISODateTimeFormat.dateTimeParser().parseDateTime(obj.toString()).toDate();
+		  if (isNumber && !(obj instanceof Double)) obj = new Double(obj.toString());
 		} catch (IllegalArgumentException e) { return false; }
 		//AccessLog.debug(obj.toString()+" "+op.toString()+val.toString());
 		//AccessLog.debug(obj.getClass().getName()+" "+op.toString()+val.getClass().getName());

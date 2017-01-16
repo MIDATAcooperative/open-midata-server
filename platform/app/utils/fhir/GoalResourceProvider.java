@@ -35,7 +35,9 @@ public class GoalResourceProvider extends ResourceProvider<Goal> implements IRes
 	public GoalResourceProvider() {		
 		searchParamNameToPathMap.put("Goal:patient", "subject");
 		searchParamNameToTypeMap.put("Goal:patient", Sets.create("Patient"));		
-		searchParamNameToPathMap.put("Goal:subject", "subject");		
+		searchParamNameToPathMap.put("Goal:subject", "subject");	
+		
+		registerSearches("Goal", getClass(), "getGoal");
 	}
 	
 	@Override
@@ -136,13 +138,13 @@ public class GoalResourceProvider extends ResourceProvider<Goal> implements IRes
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 		      		
-		builder.restriction("category", "CodeableConcept", true, "category");
-		builder.restriction("identifier", "Identifier", true, "identifier");
+		builder.restriction("category", true, "CodeableConcept", "category");
+		builder.restriction("identifier", true, "Identifier", "identifier");
 		
-		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", null, true, "subject");		
+		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");		
 		
-		builder.restriction("status", "code", true, "status");
-		builder.restriction("targetdate", "Date", true, "targetDate");				
+		builder.restriction("status", true, "code", "status");
+		builder.restriction("targetdate", true, "DateTime", "targetDate");				
 		
 		return query.execute(info);
 	}

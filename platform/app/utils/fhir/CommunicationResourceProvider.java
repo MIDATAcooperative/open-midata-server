@@ -53,6 +53,8 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		searchParamNameToPathMap.put("Communication:recipient", "recipient");
 		searchParamNameToPathMap.put("Communication:sender", "sender");
 		searchParamNameToPathMap.put("Communication:subject", "subject");		
+		
+		registerSearches("Communication", getClass(), "getCommunication");
 	}
 	
 	@Override
@@ -211,19 +213,19 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 		
-		builder.restriction("identifier", "Identifier", true, "identifier");
-		builder.restriction("received", "Date", true, "received");
-		builder.restriction("sent", "Date", true, "sent");
-		builder.restriction("based-on", null, true, "basedOn");
-		builder.restriction("recipient", null, true, "recipient");
+		builder.restriction("identifier", true, "Identifier", "identifier");
+		builder.restriction("received", true, "Date", "received");
+		builder.restriction("sent", true, "Date", "sent");
+		builder.restriction("based-on", true, null, "basedOn");
+		builder.restriction("recipient", true, null, "recipient");
 		
-		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", null, true, "subject");
+		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
 				
-		builder.restriction("category", "CodeableConcept", true, "category");
-		builder.restriction("context", null, true, "context");
-		builder.restriction("medium", "CodeableConcept", true, "medium");
-		builder.restriction("sender", null, true, "sender");
-		builder.restriction("status", "code", true, "status");	
+		builder.restriction("category", true, "CodeableConcept", "category");
+		builder.restriction("context", true, null, "context");
+		builder.restriction("medium", true, "CodeableConcept", "medium");
+		builder.restriction("sender", true, null, "sender");
+		builder.restriction("status", true, "code", "status");	
 						
 		return query.execute(info);
 	}

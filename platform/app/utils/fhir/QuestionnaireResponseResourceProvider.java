@@ -49,7 +49,9 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 		searchParamNameToTypeMap.put("QuestionnaireResponse:patient", Sets.create("Patient"));
 		searchParamNameToPathMap.put("QuestionnaireResponse:questionnaire", "questionnaire");
 		searchParamNameToPathMap.put("QuestionnaireResponse:source", "source");
-		searchParamNameToPathMap.put("QuestionnaireResponse:subject", "subject");		
+		searchParamNameToPathMap.put("QuestionnaireResponse:subject", "subject");	
+		
+		registerSearches("QuestionnaireResponse", getClass(), "getQuestionnaireResponse");
 	}
 	
 	@Override
@@ -178,17 +180,17 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 				
-		builder.restriction("identifier", "Identifier", true, "identifier");
-		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", null, true, "subject");
+		builder.restriction("identifier", true, "Identifier", "identifier");
+		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
 				
-		builder.restriction("authored", "Date", true, "authored");
-		builder.restriction("author", null, true, "author");
-		builder.restriction("based-on", null, true, "basedOn");
-		builder.restriction("context", null, true, "context");		
-		builder.restriction("parent", null, true, "parent");
-		builder.restriction("questionnaire", "Questionnaire", true, "questionnaire");
-		builder.restriction("source", null, true, "source");
-		builder.restriction("status", "code", true, "status");		
+		builder.restriction("authored", true, "DateTime", "authored");
+		builder.restriction("author", true, null, "author");
+		builder.restriction("based-on", true, null, "basedOn");
+		builder.restriction("context", true, null, "context");		
+		builder.restriction("parent", true, null, "parent");
+		builder.restriction("questionnaire", true, "Questionnaire", "questionnaire");
+		builder.restriction("source", true, null, "source");
+		builder.restriction("status", true, "code", "status");		
 				
 		return query.execute(info);
 	}

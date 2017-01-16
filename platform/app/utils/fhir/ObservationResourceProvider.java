@@ -69,7 +69,9 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		searchParamNameToPathMap.put("Observation:performer", "performer");
 		searchParamNameToPathMap.put("Observation:related-target", "related.target");
 		searchParamNameToPathMap.put("Observation:specimen", "specimen");
-		searchParamNameToPathMap.put("Observation:subject", "subject");		
+		searchParamNameToPathMap.put("Observation:subject", "subject");	
+		
+		registerSearches("Observation", getClass(), "getObservation");
 	}
 	
 	@Override
@@ -249,18 +251,18 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 				
         builder.recordCodeRestriction("code", "code");
 			
-		builder.restriction("date", "effectiveDateTime", "DateTime", true);
-		builder.restriction("identifier", "Identifier", true, "identifier");
+		builder.restriction("date", true, "DateTime", "effectiveDateTime");
+		builder.restriction("identifier", true, "Identifier", "identifier");
 		
-		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", null, true, "subject");
+		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
 		
 		builder.restriction("code-value-quantity", "code", "valueQuantity", "CodeableConcept", "Quantity");
 		builder.restriction("code-value-string", "code", "valueString", "CodeableConcept", "String");
 		builder.restriction("code-value-date", "code", "valueDate", "CodeableConcept", "DateTime");
 		builder.restriction("code-value-concept", "code", "valueConcept", "CodeableConcept", "CodeableConcept");
 		
-		builder.restriction("category", "category", "CodeableConcept", true);
-		builder.restriction("component-code", "component.code", "CodeableConcept", true);
+		builder.restriction("category", true, "CodeableConcept", "category");
+		builder.restriction("component-code", true, "CodeableConcept", "component.code");
 		
 		builder.restriction("component-code-value-quantity", "component.code", "component.valueQuantity", "CodeableConcept", "Quantity");
 		builder.restriction("component-code-value-string", "component.code", "component.valueString", "CodeableConcept", "String");
@@ -268,24 +270,24 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		builder.restriction("component-code-value-concept", "component.code", "component.valueConcept", "CodeableConcept", "CodeableConcept");
 		
 		
-		builder.restriction("data-absent-reason", "dataAbsentReason", "CodeableConcept", true);
+		builder.restriction("data-absent-reason", true, "CodeableConcept", "dataAbsentReason");
 		
-		builder.restriction("related-type", "related.type", "code", false);
-		builder.restriction("status", "status", "code", false);
-		builder.restriction("value-concept", "valueCodeableConcept", "CodeableConcept", true);
+		builder.restriction("related-type", false, "code", "related.type");
+		builder.restriction("status", false, "code", "status");
+		builder.restriction("value-concept", true, "CodeableConcept", "valueCodeableConcept");
 		
-		builder.restriction("value-string", "valueString", "String", true);
-		builder.restriction("value-quantity", "valueQuantity", "Quantity", true);
-		builder.restriction("value-date", "valueDate", "DateTime", true);
-		builder.restriction("component-value-string", "component.valueString", "String", true);
-		builder.restriction("component-value-quantity", "component.valueQuantity", "Quantity", true);
+		builder.restriction("value-string", true, "string", "valueString");
+		builder.restriction("value-quantity", true, "Quantity", "valueQuantity");
+		builder.restriction("value-date", true, "DateTime", "valueDate");
+		builder.restriction("component-value-string", true, "string", "component.valueString");
+		builder.restriction("component-value-quantity", true, "Quantity", "component.valueQuantity");
 		
-		builder.restriction("device", "device", "Device", true);
-		builder.restriction("encounter", "encounter", "Encounter", true);
-		builder.restriction("performer", "performer", "Performer", true);
-		builder.restriction("related-target", "related.target", null, true);
+		builder.restriction("device", true, "Device", "device");
+		builder.restriction("encounter", true, "Encounter", "encounter");
+		builder.restriction("performer", true, "Performer", "performer");
+		builder.restriction("related-target", true, null, "related.target");
 		builder.restriction("related", "related.type", "related.target", "code", null);
-		builder.restriction("specimen", "Specimen", "specimen", true);
+		builder.restriction("specimen", true, "Specimen", "specimen");
 		
 		
 		return query.execute(info);
