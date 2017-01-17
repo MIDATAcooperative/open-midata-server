@@ -164,6 +164,8 @@ public class UserGroups extends APIController {
 		member.add();
 		
 		KeyManager.instance.lock(userGroup._id);
+		RecordManager.instance.createPrivateAPS(userGroup._id, userGroup._id);
+		
 		return ok(JsonOutput.toJson(userGroup, "UserGroup", UserGroup.ALL));
 	}
 	
@@ -206,7 +208,7 @@ public class UserGroups extends APIController {
 				member.add();
 			}
 		}
-				
+				 
 		return ok();
 	}
 	

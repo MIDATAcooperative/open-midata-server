@@ -198,17 +198,17 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 			Query query = new Query();		
 			QueryBuilder builder = new QueryBuilder(params, query, null);
 						
-			builder.restriction("actual", "Boolean", false, "fhirGroup.actual");
-			builder.restriction("characteristic", "CodeableConcept", false, "fhirGroup.characteristic.code");
-			builder.restriction("code", "CodeableConcept", false, "fhirGroup.code");
-			builder.restriction("exclude", "Boolean", false, "fhirGroup.characteristic.exclude");
-			builder.restriction("identifier", "Identifier", false, "fhirGroup.identifier");
-			builder.restriction("type", "code", false, "fhirGroup.type");
+			builder.restriction("actual", false, "boolean", "fhirGroup.actual");
+			builder.restriction("characteristic", false, "CodeableConcept", "fhirGroup.characteristic.code");
+			builder.restriction("code", false, "CodeableConcept", "fhirGroup.code");
+			builder.restriction("exclude", false, "boolean", "fhirGroup.characteristic.exclude");
+			builder.restriction("identifier", false, "Identifier", "fhirGroup.identifier");
+			builder.restriction("type", false, "code", "fhirGroup.type");
 			//builder.restriction("characteristic-value", "CodeableConcept", "valueDate", "CodeableConcept", "DateTime");
 			//builder.restriction("value", "CodeableConcept", false, "fhirGroup.characteristic.value");																				
 			
 			Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
-			builder.restriction("identifier", "String", true, "nameLC");
+			builder.restriction("identifier", true, "string", "nameLC");
 			
 			/*Object keywords = query.retrieveIndexValues();
 			if (keywords != null) properties.put("keywordsLC", keywords);

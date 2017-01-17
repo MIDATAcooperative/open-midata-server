@@ -159,6 +159,10 @@ class APSImplementation extends APS {
 			removeAccess(targets);
 		}
 	}
+	
+	public boolean hasAccess(MidataId target) throws InternalServerException {		
+		return eaps.hasKey(target.toString());
+	}
 
 	public void setMeta(String key, Map<String, Object> data) throws AppException {
 		try {

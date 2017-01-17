@@ -143,6 +143,11 @@ public class Feature_InMemoryQuery extends APS {
 	public MidataId getStoredOwner() throws AppException {		
 		throw new NotImplementedError();	
 	}
+
+	@Override
+	public boolean hasAccess(MidataId target) throws InternalServerException {		
+		return false;
+	}
 	
 	
 

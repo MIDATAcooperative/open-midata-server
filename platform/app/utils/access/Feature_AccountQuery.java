@@ -70,7 +70,7 @@ public class Feature_AccountQuery extends Feature {
 				}
 			} else {
 
-				if ((sets.contains("self") || sets.contains("all") || sets.contains(q.getApsId().toString())) && !q.restrictedBy("consent-after")) {
+				if ((sets.contains("self") || sets.contains("all") || sets.contains(q.getApsId().toString())) && !q.restrictedBy("consent-after") && !q.restrictedBy("usergroup")) {
 					result = next.query(q);
 					setIdAndConsentField(q, q.getApsId(), result);						
 				} else {

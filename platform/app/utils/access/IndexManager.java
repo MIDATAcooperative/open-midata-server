@@ -37,13 +37,14 @@ public class IndexManager {
 	
 	private static long UPDATE_TIME = 1000 * 10;
 
-	public String getIndexPseudonym(MidataId user) throws AppException {
-		BSONObject obj = RecordManager.instance.getMeta(user, user, "_pseudo");
+	public String getIndexPseudonym(APSCache cache, MidataId user) throws AppException {		
 
+		BSONObject obj = cache.getAPS(user).getMeta("_pseudo");
+		
 		if (obj == null) {
 			obj = new BasicBSONObject();
 			obj.put("name", UUID.randomUUID());
-			RecordManager.instance.setMeta(user, user, "_pseudo", obj.toMap());
+			cache.getAPS(user).setMeta("_pseudo", obj.toMap());			
 		}
 		return obj.get("name").toString();
 	}
@@ -64,7 +65,7 @@ public class IndexManager {
 		indexDef._id = new MidataId();
 		indexDef.fields = fields;
 		indexDef.formats = new ArrayList<String>(formats);
-		indexDef.owner = getIndexPseudonym(user);
+		indexDef.owner = getIndexPseudonym(cache, user);
 		indexDef.lockTime = System.currentTimeMillis();
 								
 		IndexRoot root = new IndexRoot(getIndexKey(cache, user), indexDef, true);
@@ -207,7 +208,7 @@ public class IndexManager {
 	}
 	
 	public IndexDefinition findIndex(APSCache cache, MidataId user, Set<String> format, List<String> pathes) throws AppException {
-		String owner = getIndexPseudonym(user);
+		String owner = getIndexPseudonym(cache, user);
 		Set<IndexDefinition> res = IndexDefinition.getAll(CMaps.map("owner", owner).map("formats", CMaps.map("$all", format)).map("fields", CMaps.map("$all", pathes)), IndexDefinition.ALL);
 		if (res.size() == 1) return res.iterator().next();
 		return null;
@@ -215,7 +216,7 @@ public class IndexManager {
 	
 	public void clearIndexes(APSCache cache, MidataId user) throws AppException {
 		AccessLog.logBegin("start clear indexes");
-		String pseudo = getIndexPseudonym(user);
+		String pseudo = getIndexPseudonym(cache, user);
 		
 		Set<IndexDefinition> defs = IndexDefinition.getAll(CMaps.map("owner", pseudo), Sets.create("_id"));
 		

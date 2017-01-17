@@ -89,7 +89,7 @@
 	</formrow>
 	<a  ui-sref="^.circles" class="btn btn-default" translate="common.back_btn"></a>
 	<button type="button" ng-click="confirmConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-primary" translate="editconsent.confirm_btn"></button>
-	<button type="button" ng-click="rejectConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-danger" translate="editconsent.reject_btn"></button>
+	<button type="button" ng-click="rejectConsent();" ng-show="(consent.status == 'UNCONFIRMED' || consent.status == 'ACTIVE') && consent.type != 'STUDYPARTICIPATION'" class="btn btn-danger" translate="editconsent.reject_btn"></button>
     <button type="button" ng-click="deleteConsent();" ng-show="(consent.status == 'ACTIVE' || consent.status == 'REJECTED') && consent.type != 'STUDYPARTICIPATION'" class="btn btn-danger" translate="editconsent.delete_btn"></button>
     <!--  <button type="button" ng-click="showStudyDetails();" ng-show="consent.type == 'STUDYPARTICIPATION'" class="btn btn-default">Show Study</button> -->
   </form>	
