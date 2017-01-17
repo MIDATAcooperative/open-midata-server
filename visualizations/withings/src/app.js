@@ -35,6 +35,10 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 	importer.alldone = null;
 	importer.repeat = false;
 	importer.allMeasureTypes = [];
+	importer.codeObservations = {
+		fitness: {code: "fitness", translate: "fitness_data", name_translated: "Fitness"},
+		vitalSigns : {code: "vital-signs", translate: "vital_signs_data", name_translated: "Vital Signs"}
+	};
 
 	var workouts_categories = [
 		{ "id": 4, "name": "Staking" },
@@ -436,6 +440,8 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 
 									$translate(/*"titles." + */measurementType.id).then(function (t) { measurementType.title = t; });
 									$translate(measurementType.id).then(function (t) { measurementType.name_translated = t; });
+									$translate(importer.codeObservations.fitness.translate).then(function(t){importer.codeObservations.fitness.name_translated = t;});
+									$translate(importer.codeObservations.vitalSigns.translate).then(function(t){importer.codeObservations.vitalSigns.name_translated = t;});
 								});
 
 								$q.all(_arrPrevRecords)
@@ -587,7 +593,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 					resourceType: "Observation",
 					status: "preliminary",
 					category: {
-						coding: [{ system: "http://hl7.org/fhir/observation-category", code: "vital-signs", display: "Vital Signs" }]
+						coding: [{ system: "http://hl7.org/fhir/observation-category", code: importer.codeObservations.fitness.code, display: importer.codeObservations.fitness.name_translated }]
 					},
 					code: {
 						coding: [{ system: measurement.system, code: measurement.code, display: measurement.name_translated }]
@@ -637,7 +643,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 							resourceType: "Observation",
 							status: "preliminary",
 							category: {
-								coding: [{ system: "http://hl7.org/fhir/observation-category", code: "vital-signs", display: "Vital Signs" }]
+								coding: [{ system: "http://hl7.org/fhir/observation-category", code: importer.codeObservations.vitalSigns.code, display: importer.codeObservations.vitalSigns.name_translated }]
 							},
 							code: {
 								coding: [{ system: measurementType.system, code: measurementType.code, display: measurementType.name_translated }]
@@ -691,7 +697,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 						resourceType: "Observation",
 						status: "preliminary",
 						category: {
-							coding: [{ system: "http://hl7.org/fhir/observation-category", code: "vital-signs", display: "Vital Signs" }]
+							coding: [{ system: "http://hl7.org/fhir/observation-category", code: importer.codeObservations.vitalSigns.code, display: importer.codeObservations.vitalSigns.name_translated }]
 						},
 						code: {
 							coding: [{ system: measurementType.system, code: measurementType.code, display: measurementType.name_translated }]
