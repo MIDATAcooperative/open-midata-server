@@ -59,4 +59,17 @@ public interface KeySession {
 	 * Generates a key duplicate encoded with another key
 	 */
 	public byte[] generateAlias(MidataId source, MidataId target) throws AuthException, InternalServerException;
+	
+	/**
+	 * Generate a new public/private key pair, protect the private key with a passphrase, store it in memory and return the public key.
+	 * 
+	 * This method will protect the generated private key with a passphrase.
+	 * 
+	 * @param target id of user or application instance for which this keypair should be generated
+	 * @param passphrase passphrase to apply the the private key
+	 * @return public key
+	 * @throws InternalServerException
+	 */
+	public byte[] generateKeypairAndReturnPublicKeyInMemory(MidataId target, String passphrase) throws InternalServerException;
+
 }

@@ -28,6 +28,7 @@ import models.KeyInfo;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.User;
+import models.UserGroup;
 import utils.AccessLog;
 import utils.access.EncryptionUtils;
 import utils.collections.Sets;
@@ -103,6 +104,12 @@ public class KeyManager implements KeySession {
 				return encryptKey(mai.publicKey , keyToEncrypt);
 			}
 			
+			UserGroup ug = UserGroup.getById(target, Sets.create("publicKey"));
+			if (ug != null) {
+				if (ug.publicKey == null) throw new EncryptionNotSupportedException("No public key");			
+				return encryptKey(ug.publicKey , keyToEncrypt);
+			}
+			
 			throw new EncryptionNotSupportedException("No public key");	
 	}
 	
@@ -171,7 +178,7 @@ public class KeyManager implements KeySession {
 	 * @return public key
 	 * @throws InternalServerException
 	 */
-	public byte[] generateKeypairAndReturnPublicKey(MidataId target, String passphrase) throws InternalServerException {
+	public byte[] generateKeypairAndReturnPublicKey(MidataId target, String passphrase) throws InternalServerException {		
 		try {
 		   KeyPairGenerator generator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
 		   
@@ -188,7 +195,9 @@ public class KeyManager implements KeySession {
 			 keyinfo.privateKey = EncryptionUtils.applyKey(priv.getEncoded(), passphrase); 
 			 keyinfo.type = KEYPROTECTION_PASSPHRASE;
 		   }
+		   
 		   KeyInfo.add(keyinfo);
+		   
 		   
 		   return pub.getEncoded();
 		} catch (NoSuchAlgorithmException e) {
@@ -423,6 +432,43 @@ public class KeyManager implements KeySession {
 			return split.first();
 			
 		}
+		
+		/**
+		 * Generate a new public/private key pair, protect the private key with a passphrase, store it in db or memory and return the public key.
+		 * 
+		 * This method will protect the generated private key with a passphrase.
+		 * 
+		 * @param target id of user or application instance for which this keypair should be generated
+		 * @param passphrase passphrase to apply the the private key
+		 * @param inMemory if true the private key will only be kept in memory and not be stored to the database
+		 * @return public key
+		 * @throws InternalServerException
+		 */
+		public byte[] generateKeypairAndReturnPublicKeyInMemory(MidataId target, String passphrase) throws InternalServerException {
+			try {
+			   KeyPairGenerator generator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
+			   
+			   KeyPair pair = generator.generateKeyPair();
+			   PublicKey pub = pair.getPublic();
+			   PrivateKey priv = pair.getPrivate();
+			   
+			   KeyInfo keyinfo = new KeyInfo();
+			   keyinfo._id = target;
+			   if (passphrase == null) {
+			     keyinfo.privateKey = priv.getEncoded();
+			     keyinfo.type = KEYPROTECTION_NONE;
+			   } else {
+				 keyinfo.privateKey = EncryptionUtils.applyKey(priv.getEncoded(), passphrase); 
+				 keyinfo.type = KEYPROTECTION_PASSPHRASE;
+			   }
+			   
+			   pks.addKey(target.toString(), keyinfo.privateKey); 			   
+			   
+			   return pub.getEncoded();
+			} catch (NoSuchAlgorithmException e) {
+				throw new InternalServerException("error.internal", e);
+			}
+		}
 	}
 	
 	class KeyRing {
@@ -496,5 +542,10 @@ public class KeyManager implements KeySession {
 	@Override
 	public byte[] generateAlias(MidataId source, MidataId target) throws AuthException, InternalServerException {
 		return session.get().generateAlias(source, target);		
+	}
+
+	@Override
+	public byte[] generateKeypairAndReturnPublicKeyInMemory(MidataId target, String passphrase) throws InternalServerException {
+		return session.get().generateKeypairAndReturnPublicKeyInMemory(target, passphrase);
 	}
 }

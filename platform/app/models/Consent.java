@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
+import models.enums.EntityType;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
@@ -29,7 +30,7 @@ public class Consent extends Model {
 	/**
 	 * constant for all fields of a consent
 	 */
-	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "name", "authorized", "type", "status");
+	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "name", "authorized", "entityType", "type", "status");
 	
 	/**
 	 * id of owner of this consent. The owner is the person who shares data.
@@ -45,6 +46,11 @@ public class Consent extends Model {
 	 * a set containing the ids of all entities that are authorized to access the data shared with this consent.
 	 */
 	public Set<MidataId> authorized;
+	
+	/**
+	 * Type of entity that is authorized
+	 */
+	public EntityType entityType;
 	
 	/**
 	 * the type of this consent.

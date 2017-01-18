@@ -141,7 +141,7 @@ class QueryEngine {
 		}
 		
 		
-		Feature qm = new Feature_Prefetch(new Feature_BlackList(myaps, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Streams())))))));
+		Feature qm = new Feature_Prefetch(new Feature_BlackList(myaps, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_UserGroups(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Streams()))))))));
 				
 		List<DBRecord> recs = qm.query(q);
 		recs = postProcessRecords(qm, q.getProperties(), recs);
@@ -194,9 +194,15 @@ class QueryEngine {
     public static List<DBRecord> fullQuery(Map<String, Object> properties, Set<String> fields, MidataId apsId, APSCache cache) throws AppException {
     	AccessLog.logBegin("begin full query");
     	    	
-    	APS target = cache.getAPS(apsId);
-    	Feature qm = new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Documents(new Feature_Streams()))))))))));
-    	
+    	Feature qm = null;
+    	MidataId userGroup = Feature_UserGroups.identifyUserGroup(cache, apsId);
+    	if (userGroup != null) {
+    		properties.put("usergroup", userGroup);
+    		qm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Documents(new Feature_Streams())))))))));
+    	} else {    	
+    	   APS target = cache.getAPS(apsId);    	
+    	   qm = new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Documents(new Feature_Streams())))))))))));
+    	}
     	List<DBRecord> result = query(properties, fields, apsId, cache, qm);
     	
 		if (result == null) {
@@ -315,7 +321,8 @@ class QueryEngine {
 			    	
     	int minTime = q.getMinTime();
     	int compress = 0;    	    	
-    	if (q.getFetchFromDB()) {				
+    	if (q.getFetchFromDB()) {	
+    		result = duplicateElimination(result);
 			for (DBRecord record : result) {
 				fetchFromDB(q, record);
 				if (minTime == 0 || record.time ==0 || record.time >= minTime) {

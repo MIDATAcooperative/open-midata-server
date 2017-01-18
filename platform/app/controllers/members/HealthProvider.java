@@ -65,7 +65,7 @@ public class HealthProvider extends APIController {
 	 * @throws JsonValidationException
 	 */
 	@APICall
-	@Security.Authenticated(MemberSecured.class)
+	@Security.Authenticated(AnyRoleSecured.class)
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result search() throws AppException, JsonValidationException {
 		
@@ -155,7 +155,7 @@ public class HealthProvider extends APIController {
 		
 		MidataId consentId = JsonValidation.getMidataId(json, "consent");
 		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Sets.create("owner", "authorized", "status", "confirmDate"));
-		if (target.status.equals(ConsentStatus.UNCONFIRMED)) {
+		if (target.status.equals(ConsentStatus.UNCONFIRMED) || target.status.equals(ConsentStatus.ACTIVE)) {
 			target.setConfirmDate(new Date());
 			target.setStatus(ConsentStatus.REJECTED);
 			Circles.consentStatusChange(userId, target);

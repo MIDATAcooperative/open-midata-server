@@ -580,6 +580,7 @@
     "choose_passcode" : "Choose a secure passcode",
     "which_persons" : "With which persons(s) do you want to share data?",
     "add_person_btn" : "Add New Person",
+    "add_usergroup_btn" : "Add New Team",
     "reshare" : "3rd party access?",
     "reshare2" : "The person(s) authorized with this consent may reshare the data I gave them access to.",
     "expiration_date" : "Consent expiration date:",
@@ -600,6 +601,7 @@
     "password_shown" : "Use your email address and this password for login:",
     "people" : "With which persons(s) do you want to share data?",
     "add_people_btn" : "Add More People",
+    "add_usergroup_btn" : "Add a Team",
     "reshare" : "@:newconsent.reshare",
     "reshare2" : "@:newconsent.reshare2",
     "expiration_date" : "Consent expiration date:",
@@ -712,6 +714,7 @@
 	"providers_teaser" : "Search for healthcare providers and add them to your list in order to share data with them.",
 	"providersearch" : "Search for Health Providers",
 	"providersearch_text" : "Search function for healthcare providers.",
+	"usergroupsearch" : "Search for Teams",
 	"hcrecords" : "Newest Records from your healthcare providers",
 	"records" : "Records",                      
     "share" : "Share",
@@ -811,5 +814,12 @@
     "searching" : "Searching...",
     "no_matching_users" : "No users matched your search.",
     "no_new_found" : "All found users are already members of this circle."
+  },
+  
+  "usergroupsearch" : {
+     "name" : "Team Name",
+     "empty_result" : "No matching teams found.",
+     "add_individuals_btn" : "Add As Individual People To Consent",
+     "add_group_btn" : "Add As Changing Team To Consent"
   }
 }

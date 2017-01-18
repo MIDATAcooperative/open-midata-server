@@ -1,0 +1,19 @@
+<div ng-controller="EditUserGroupCtrl">
+ <div class="panel panel-primary">
+  <div class="panel-heading" translate="provider_newusergroup.title">    
+  </div>
+  <div class="panel-body">
+   
+  <form name="myform" class="css-form form-horizontal" ng-submit="create()" novalidate role="form">
+    <p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
+	</p>	
+    <formrow myid="name" label="provider_newusergroup.name">
+      <input id="name" name="name" type="text" class="form-control" ng-model="usergroup.name" required>
+    </formrow>
+               	
+    <button type="submit" class="btn btn-primary" translate="provider_newusergroup.create_btn"></button>
+  </form>			
+  </div>
+ </div>
+</div>
+	

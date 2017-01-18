@@ -18,7 +18,9 @@ import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.MidataId;
+import models.TypedMidataId;
 import models.User;
+import models.UserGroup;
 import models.enums.UserRole;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -78,9 +80,43 @@ public class FHIRTools {
 		
 	}
 	
+	/**
+	 * Returns the MidataId of a usergroup represented by a FHIR reference
+	 * @param userRef The FHIR reference to be checked and converted
+	 * @return the MidataId 
+	 * @throws UnprocessableEntityException if the reference could not be resolved.
+	 * @throws InternalServerException
+	 */
+	public static MidataId getUserGroupIdFromReference(IIdType userRef) throws AppException {
+		String rt = userRef.getResourceType();
+		MidataId id = MidataId.from(userRef.getIdPart());
+		
+		UserGroup usergroup = UserGroup.getById(id, Sets.create("name"));
+		if (usergroup == null) throw new UnprocessableEntityException("Invalid Group Reference");
+		
+		return id;
+		
+	}
+	
+	public static TypedMidataId getMidataIdFromReference(IIdType ref) throws AppException {
+		String rt = ref.getResourceType();
+		if (rt.equals("Group")) {
+			MidataId result = getUserGroupIdFromReference(ref);
+			return result != null ? new TypedMidataId(result, rt) : null; 
+		} else {
+			MidataId result = getUserIdFromReference(ref);
+			return result != null ? new TypedMidataId(result, rt) : null;
+		}				
+	}
+	
 	public static boolean isUserFromMidata(IIdType ref) {
 		String rt = ref.getResourceType();
 		if (rt.equals("Patient") || rt.equals("Practitioner")) {
+			// TODO check base url
+			
+			return true;
+		}
+		if (rt.equals("Group")) {
 			// TODO check base url
 			
 			return true;

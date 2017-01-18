@@ -43,10 +43,15 @@
 			{{ person.zip }} {{ person.city }}<br>
 			{{ person.country }}<br>
 			</span>
-			<span ng-show="person.email"><span translate="common.user.email"></span>: {{ member.email }}<br></span>
+			<span ng-show="person.email"><span translate="common.user.email"></span>: {{ person.email }}<br></span>
 		  </address>
 		</div>
-		<button type="button" class="btn btn-default" ng-click="addPeople();" translate="editconsent.add_people_btn"></button>		
+		<div class="well well-sm" ng-repeat="usergroup in authteams">
+		  <button type="button" ng-click="removePerson(usergroup)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>	
+		  {{ usergroup.name }}
+		</div>
+		<button type="button" class="btn btn-default" ng-click="addPeople();" translate="editconsent.add_people_btn"></button>
+		<button type="button" class="btn btn-default" ng-click="addUserGroup();" translate="editconsent.add_usergroup_btn"></button>		
 	</formrow>
 	<formrow id="reshare" label="editconsent.reshare" ng-show="consent.type != 'EXTERNALSERVICE'">
 	  <div class="checkbox">
@@ -84,7 +89,7 @@
 	</formrow>
 	<a  ui-sref="^.circles" class="btn btn-default" translate="common.back_btn"></a>
 	<button type="button" ng-click="confirmConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-primary" translate="editconsent.confirm_btn"></button>
-	<button type="button" ng-click="rejectConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-danger" translate="editconsent.reject_btn"></button>
+	<button type="button" ng-click="rejectConsent();" ng-show="(consent.status == 'UNCONFIRMED' || consent.status == 'ACTIVE') && consent.type != 'STUDYPARTICIPATION'" class="btn btn-danger" translate="editconsent.reject_btn"></button>
     <button type="button" ng-click="deleteConsent();" ng-show="(consent.status == 'ACTIVE' || consent.status == 'REJECTED') && consent.type != 'STUDYPARTICIPATION'" class="btn btn-danger" translate="editconsent.delete_btn"></button>
     <!--  <button type="button" ng-click="showStudyDetails();" ng-show="consent.type == 'STUDYPARTICIPATION'" class="btn btn-default">Show Study</button> -->
   </form>	

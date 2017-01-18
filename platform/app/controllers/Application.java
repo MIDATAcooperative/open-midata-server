@@ -846,9 +846,17 @@ public class Application extends APIController {
 				// Global search				
 				//controllers.routes.javascript.GlobalSearch.search(),
 				//controllers.routes.javascript.GlobalSearch.complete(),
+				
+				// UserGroups
+				controllers.routes.javascript.UserGroups.search(),
+				controllers.routes.javascript.UserGroups.createUserGroup(),
+				controllers.routes.javascript.UserGroups.addMembersToUserGroup(),
+				controllers.routes.javascript.UserGroups.listUserGroupMembers(),
+				
 		        // Portal
 		        controllers.routes.javascript.PortalConfig.getConfig(),
 		        controllers.routes.javascript.PortalConfig.setConfig()));
+				        
 		        
 	}
 
