@@ -184,3 +184,5 @@
 {"_id":{"$oid":"58594553aed6452afe49088d"},"content":"work/level-of-employment","defaultCode":"http://midata.coop LevelOfEmployment","security":"MEDIUM","label":{"en":"Level of employment"},"resourceType":"fhir/Observation","subType":"Quantity","defaultUnit":"%","category":"social-history"}
 {"_id":{"$oid":"5877408faed645135829ffbe"},"content":"milestones","defaultCode":"http://snomed.info/sct 160786009","security":"MEDIUM","label":{"en":"Personal Milestones"}}
 {"_id":{"$oid":"587e0783aed6452205545ffb"},"content":"survey/pain-severity","defaultCode":"http://loinc.org 72514-3","security":"MEDIUM","label":{"en":"Pain severity"},"resourceType":"fhir/Observation","subType":"Quantity","category":"survey"}
+{"_id":{"$oid":"587f507daed645217a8c1a37"},"content":"condition/icd-10-c9x","defaultCode":"http://hl7.org/fhir/sid/icd-10 C91.0","security":"HIGH","label":{"en":"Leukemia"}}
+{"_id":{"$oid":"587f53fdaed645217a8c1a38"},"content":"work/field-of-occupation","defaultCode":"http://midata.coop FieldOfOccupation","security":"MEDIUM","label":{"en":"Field Of Occupation"},"resourceType":"fhir/Observation","subType":"CodeableConcept","category":"social-history"}
