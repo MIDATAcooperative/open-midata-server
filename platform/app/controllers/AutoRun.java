@@ -86,13 +86,15 @@ public class AutoRun extends APIController {
 	public static class ImportRequest {
 		private final MidataId autorunner;
 		private final Space space;
+		private final String handle;
 		
 		/**
 		 * Contruct import request
 		 * @param autorunner id of executing "user". (There is one "autorun" user in the database)
 		 * @param space (id of space to run plugin)
 		 */
-		public ImportRequest(MidataId autorunner, Space space) {
+		public ImportRequest(String handle, MidataId autorunner, Space space) {
+			this.handle = handle;
 			this.autorunner = autorunner;
 			this.space = space;
 		}
@@ -111,7 +113,11 @@ public class AutoRun extends APIController {
 		 */
 		public Space getSpace() {
 			return space;
-		}				
+		}	
+		
+		public String getHandle() {
+			return handle;
+		}
 	}
 	
 	/**
@@ -160,6 +166,7 @@ public class AutoRun extends APIController {
 		    if (message instanceof ImportRequest) {
 		    	try {
 			    	ImportRequest request = (ImportRequest) message;
+			    	KeyManager.instance.continueSession(request.handle);
 			    	MidataId autorunner = request.autorunner;
 			    	Space space = request.space;
 			        
@@ -167,7 +174,7 @@ public class AutoRun extends APIController {
 					final String visPath = Play.application().configuration().getString("visualizations.path");
 							    	
 			    	final Plugin plugin = Plugin.getById(space.visualization, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret"));
-					SpaceToken token = new SpaceToken(space._id, space.owner, null, null, autorunner);
+					SpaceToken token = new SpaceToken(request.handle, space._id, space.owner, null, null, autorunner);
 					User tuser = User.getById(space.owner, Sets.create("language", "role"));					
 					final String lang = tuser.language != null ? tuser.language : "en";
 					final String tokenstr = token.encrypt();
@@ -266,11 +273,12 @@ public class AutoRun extends APIController {
 			if (message instanceof StartImport) {
 				AccessLog.log("Starting Autoimport...");
 				User autorunner = Admin.getByEmail("autorun-service", Sets.create("_id"));
+				String handle = KeyManager.instance.login(1000l*60l*60l*23l);
 				KeyManager.instance.unlock(autorunner._id, null);
 				Set<Space> autoImports = Space.getAll(CMaps.map("autoImport", true), Sets.create("_id", "owner", "visualization"));
 				
 				for (Space space : autoImports) {										    
-			       workerRouter.route(new ImportRequest(autorunner._id, space), getSelf());
+			       workerRouter.route(new ImportRequest(handle, autorunner._id, space), getSelf());
 			    }
 				
 				AccessLog.log("Done scheduling Autoimport size="+autoImports.size());
