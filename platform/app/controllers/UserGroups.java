@@ -145,7 +145,7 @@ public class UserGroups extends APIController {
 		userGroup.keywordsLC = new HashSet<String>();
 		userGroup.registeredAt = new Date();
 		
-		userGroup.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(userGroup._id, null, true);
+		userGroup.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKeyInMemory(userGroup._id, null);
 				
 		GroupResourceProvider.updateMidataUserGroup(userGroup);
 		userGroup.add();
@@ -162,8 +162,7 @@ public class UserGroups extends APIController {
 		RecordManager.instance.setMeta(executorId, member._id, "_usergroup", accessData);
 						
 		member.add();
-		
-		KeyManager.instance.lock(userGroup._id);
+				
 		RecordManager.instance.createPrivateAPS(userGroup._id, userGroup._id);
 		
 		return ok(JsonOutput.toJson(userGroup, "UserGroup", UserGroup.ALL));
