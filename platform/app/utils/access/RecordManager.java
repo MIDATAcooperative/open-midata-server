@@ -30,6 +30,8 @@ import models.enums.APSSecurityLevel;
 import models.enums.AggregationType;
 import models.enums.ConsentStatus;
 import utils.AccessLog;
+import utils.auth.KeyManager;
+import utils.auth.KeySession;
 import utils.auth.RecordToken;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -81,12 +83,17 @@ public class RecordManager {
 		APSCache result = apsCache.get();
 		if (!result.getOwner().equals(who)) throw new InternalServerException("error.internal", "Owner Change!");
 		return result;
-	}
+	}		
 	
 	/**
 	 * clears APS cache. Is automatically called after each request.
 	 */
 	public void clear() {
+		clearCache();
+		KeyManager.instance.clear();
+	}
+	
+	public void clearCache() {
 		if (apsCache.get() != null) apsCache.set(null);
 	}
 

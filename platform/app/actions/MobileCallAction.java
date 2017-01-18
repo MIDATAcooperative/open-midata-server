@@ -10,6 +10,7 @@ import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.access.RecordManager;
+import utils.auth.KeyManager;
 import utils.exceptions.BadRequestException;
 import utils.fhir.ResourceProvider;
 import utils.json.JsonValidation.JsonValidationException;
@@ -52,9 +53,10 @@ public class MobileCallAction extends Action<MobileCall> {
 			   ErrorReporter.reportPerformance("Mobile API", ctx, endTime - startTime);
 			}
 			
-			RecordManager.instance.clear();
+			KeyManager.instance.logout();
+			RecordManager.instance.clear();			
+			ResourceProvider.setExecutionInfo(null);			
 			AccessLog.newRequest();
-			ResourceProvider.setExecutionInfo(null);
 		}
     }
 }

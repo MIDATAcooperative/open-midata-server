@@ -1,5 +1,6 @@
 package utils.auth;
 
+import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -7,11 +8,15 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -24,6 +29,7 @@ import models.MidataId;
 import models.MobileAppInstance;
 import models.User;
 import models.UserGroup;
+import utils.AccessLog;
 import utils.access.EncryptionUtils;
 import utils.collections.Sets;
 import utils.exceptions.AuthException;
@@ -33,7 +39,7 @@ import utils.exceptions.InternalServerException;
  * Manager for the private and public keys of users and external apps
  *
  */
-public class KeyManager {
+public class KeyManager implements KeySession {
 
 	/**
 	 * The one and only KeyManager instance
@@ -68,7 +74,13 @@ public class KeyManager {
 	public final static int KEYPROTECTION_SPLITKEY = 2;
 		
 	
-	private Map<String, byte[]> pks = new HashMap<String, byte[]>();	
+	private Map<String, KeyRing> keySessions = new ConcurrentHashMap<String, KeyRing>();	
+	
+	private static ThreadLocal<KeyManagerSession> session = new ThreadLocal<KeyManagerSession>();
+	
+	public KeyManager() {
+		new CleanerThread().start();
+	}
 	
 	/**
 	 * encrypt a key with the target entities public key and return the encrypted key
@@ -141,55 +153,7 @@ public class KeyManager {
 		} 
 	}
 	
-	/**
-	 * Decrypt an encrypted key using the entities private key
-	 * 
-	 * This operation will only work if the corresponding account has been unlocked before.
-	 * 
-	 * @param target the id of the user or application instance from which the private key should be used
-	 * @param keyToDecrypt the encrypted key that shall be decrypted
-	 * @return the decrypted keyToDecrypt
-	 * @throws InternalServerException
-	 * @throws AuthException
-	 */
-	public byte[] decryptKey(MidataId target, byte[] keyToDecrypt) throws InternalServerException, AuthException {
-		try {
-			
-			byte key[] = pks.get(target.toString());
-						
-			if (key == null) throw new AuthException("error.relogin", "Authorization Failure");
-			
-			PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(key);
-			
-			KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
-			PrivateKey privKey = keyFactory.generatePrivate(spec);
-			 
-			byte algorithm = 0;
-			int offset = 0;
-			if (keyToDecrypt[1] == 0 && keyToDecrypt[2] == 0 && keyToDecrypt[3] == 0) {
-				algorithm = keyToDecrypt[0];
-				offset = 4;
-			}
-			Cipher c = Cipher.getInstance(CIPHERS[algorithm]);
-			c.init(Cipher.DECRYPT_MODE, privKey);
-		    
-			byte[] cipherText = c.doFinal(keyToDecrypt, offset, keyToDecrypt.length - offset);
-						
-			return EncryptionUtils.derandomize(cipherText);
-		} catch (NoSuchAlgorithmException e) {
-			throw new InternalServerException("error.internal", e);		
-		} catch (NoSuchPaddingException e2) {
-			throw new InternalServerException("error.internal", e2);
-		} catch (InvalidKeyException e3) {
-			throw new InternalServerException("error.internal", e3);
-		} catch (InvalidKeySpecException e4) {
-			throw new InternalServerException("error.internal", e4);
-		} catch (BadPaddingException e5) {
-			throw new InternalServerException("error.internal", e5);
-		} catch (IllegalBlockSizeException e6) {
-			throw new InternalServerException("error.internal", e6);
-		} 
-	}
+	
 	
 	/**
 	 * Generate a new public/private key pair, store the private key in the database and return the public key
@@ -201,7 +165,7 @@ public class KeyManager {
 	 * @throws InternalServerException
 	 */
 	public byte[] generateKeypairAndReturnPublicKey(MidataId target) throws InternalServerException {
-		return generateKeypairAndReturnPublicKey(target, null, false);
+		return generateKeypairAndReturnPublicKey(target, null);
 	}
 	
 	/**
@@ -214,22 +178,7 @@ public class KeyManager {
 	 * @return public key
 	 * @throws InternalServerException
 	 */
-	public byte[] generateKeypairAndReturnPublicKey(MidataId target, String passphrase) throws InternalServerException {
-		return generateKeypairAndReturnPublicKey(target, passphrase, false);
-	}
-	
-	/**
-	 * Generate a new public/private key pair, protect the private key with a passphrase, store it in db or memory and return the public key.
-	 * 
-	 * This method will protect the generated private key with a passphrase.
-	 * 
-	 * @param target id of user or application instance for which this keypair should be generated
-	 * @param passphrase passphrase to apply the the private key
-	 * @param inMemory if true the private key will only be kept in memory and not be stored to the database
-	 * @return public key
-	 * @throws InternalServerException
-	 */
-	public byte[] generateKeypairAndReturnPublicKey(MidataId target, String passphrase, boolean inMemory) throws InternalServerException {
+	public byte[] generateKeypairAndReturnPublicKey(MidataId target, String passphrase) throws InternalServerException {		
 		try {
 		   KeyPairGenerator generator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
 		   
@@ -246,11 +195,9 @@ public class KeyManager {
 			 keyinfo.privateKey = EncryptionUtils.applyKey(priv.getEncoded(), passphrase); 
 			 keyinfo.type = KEYPROTECTION_PASSPHRASE;
 		   }
-		   if (inMemory) {
-			  pks.put(target.toString(), keyinfo.privateKey); 
-		   } else {
-		      KeyInfo.add(keyinfo);
-		   }
+		   
+		   KeyInfo.add(keyinfo);
+		   
 		   
 		   return pub.getEncoded();
 		} catch (NoSuchAlgorithmException e) {
@@ -258,80 +205,39 @@ public class KeyManager {
 		}
 	}
 	
-	/**
-	 * Sets a new passphrase for a private key
-	 * @param target id of key to be changed
-	 * @param newPassphrase new passphrase to be applied
-	 * @throws InternalServerException
-	 * @throws AuthException
-	 */
-	public void changePassphrase(MidataId target, String newPassphrase) throws InternalServerException, AuthException {
-		byte[] oldKey = pks.get(target.toString());
-		if (oldKey == null) throw new AuthException("error.relogin", "Authorization Failure");		
-		KeyInfo keyinfo = KeyInfo.getById(target);
-		if (keyinfo == null) throw new InternalServerException("error.internal", "Private key info not found.");
-		
-		keyinfo.privateKey = EncryptionUtils.applyKey(oldKey, newPassphrase);
-		keyinfo.type = KEYPROTECTION_PASSPHRASE;
-		KeyInfo.update(keyinfo);
+	public String login(long expire) {
+		AccessLog.log("Key-Ring: new session with duration="+expire);
+		String handle;
+		do {
+			handle = new BigInteger(130, random).toString(32);
+		} while (keySessions.containsKey(handle));
+		KeyRing keyring = new KeyRing(System.currentTimeMillis() + expire);
+		keySessions.put(handle, keyring);
+		session.set(new KeyManagerSession(handle, keyring));
+		return handle;
 	}
 	
-	/**
-	 * Unlock a user or app instance account
-	 * 
-	 * The account stays unlocked until lock is called for the account
-	 * @param target id of user or app instance to unlock
-	 * @param passphrase the passphrase for the private key or null if no passphrase has been applied 
-	 * @throws InternalServerException
-	 */
-	public int unlock(MidataId target, String passphrase) throws InternalServerException {
-		KeyInfo inf = KeyInfo.getById(target);
-		if (inf == null) {
-			pks.put(target.toString(), null);
-			return -1;
-		}
-		else {
-			if (inf.type == KEYPROTECTION_PASSPHRASE) {
-				if (passphrase != null) {
- 				   pks.put(target.toString(), EncryptionUtils.applyKey(inf.privateKey, passphrase));
-				}
-				return KEYPROTECTION_PASSPHRASE;
-			} else {
-				pks.put(target.toString(), inf.privateKey);
-				return KEYPROTECTION_NONE;
-			}
-		}
+	public void continueSession(String handle) throws AuthException {
+		AccessLog.log("Key-Ring: continue session");
+		KeyRing ring = keySessions.get(handle);
+		if (ring != null) {
+			session.set(new KeyManagerSession(handle, ring));
+		} else throw new AuthException("error.relogin", "Session expired. Please relogin.");
 	}
 	
-	/**
-	 * Unlock a user account using an alias and split key
-	 * 
-	 * The account stays unlocked until lock is called for the account
-	 * @param target id of user or app instance to unlock
-	 * @param source id of alias
-	 * @param splitkey keyfragment used to unlock the account 
-	 * @throws InternalServerException
-	 */
-	public void unlock(MidataId target, MidataId source, byte[] splitkey) throws InternalServerException {
-		KeyInfo inf = KeyInfo.getById(source);
-		if (inf == null) {			
-			throw new InternalServerException("error.internal", "Private key info not found.");
-		}
-		
-		if (inf.type != KEYPROTECTION_SPLITKEY) {
-			throw new InternalServerException("error.internal", "Private key has wrong type.");
-		}
-		pks.put(target.toString(), EncryptionUtils.joinKey(inf.privateKey, splitkey) );		
-	}
 	
-	/**
-	 * Remove a private key from memory
-	 * 
-	 * @param target id of user or app instance for which the private key should be cleared
-	 * @throws InternalServerException
-	 */
-	public void lock(MidataId target) throws InternalServerException {
-		pks.remove(target.toString());
+	public void logout() {		
+		KeyManagerSession current = session.get();
+		if (current != null) {
+			AccessLog.log("Key-Ring: end session");
+			keySessions.remove(current.handle);
+		} else {
+			AccessLog.log("Key-Ring: no session");
+		}		
+	}	
+	
+	public void clear() {		
+		session.set(null);
 	}
 
 	/**
@@ -345,24 +251,7 @@ public class KeyManager {
 		return inf.type;
 	}
 	
-	/**
-	 * Generates a key duplicate encoded with another key
-	 */
-	public byte[] generateAlias(MidataId source, MidataId target) throws AuthException, InternalServerException {
-		byte key[] = pks.get(source.toString());
-		
-		if (key == null) throw new AuthException("error.relogin", "Authorization Failure");
 	
-		Pair<byte[], byte[]> split = EncryptionUtils.splitKey(key);
-		KeyInfo keyinfo = new KeyInfo();
-		keyinfo._id = target;		 
-		keyinfo.privateKey = split.second();
-		keyinfo.type = KEYPROTECTION_SPLITKEY;		   
-		KeyInfo.add(keyinfo);
-		
-		return split.first();
-		
-	}
 	
 	/**
 	 * Deletes a key from the storage
@@ -370,7 +259,293 @@ public class KeyManager {
 	 * @throws InternalServerException
 	 */
 	public void deleteKey(MidataId target) throws InternalServerException {
-		KeyInfo.delete(target);
-		lock(target);		
+		KeyInfo.delete(target);			
+	}
+	
+	private SecureRandom random = new SecureRandom();
+	    	  	
+	
+	
+	private byte[] getKey(String handle, MidataId keyId) throws AuthException {
+		KeyRing keyRing = keySessions.get(handle);
+		if (keyRing == null) return null;
+		return keyRing.getKey(keyId.toString());
+	}
+	
+	private void setKey(String handle, MidataId keyId, byte[] key) {
+		KeyRing keyRing = keySessions.get(handle);
+		//if (keyRing == null) return null;
+		keyRing.addKey(keyId.toString(), key);
+	}
+	
+	class KeyManagerSession implements KeySession {
+		
+		private KeyRing pks;
+		public String handle;
+		
+		KeyManagerSession(String handle, KeyRing pks) {
+			this.handle = handle;
+			this.pks = pks;
+		}
+		
+		/**
+		 * Decrypt an encrypted key using the entities private key
+		 * 
+		 * This operation will only work if the corresponding account has been unlocked before.
+		 * 
+		 * @param target the id of the user or application instance from which the private key should be used
+		 * @param keyToDecrypt the encrypted key that shall be decrypted
+		 * @return the decrypted keyToDecrypt
+		 * @throws InternalServerException
+		 * @throws AuthException
+		 */
+		public byte[] decryptKey(MidataId target, byte[] keyToDecrypt) throws InternalServerException, AuthException {
+			try {
+				
+				byte key[] = pks.getKey(target.toString());
+							
+				if (key == null) throw new AuthException("error.relogin", "Authorization Failure");
+				
+				PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(key);
+				
+				KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
+				PrivateKey privKey = keyFactory.generatePrivate(spec);
+				 
+				byte algorithm = 0;
+				int offset = 0;
+				if (keyToDecrypt[1] == 0 && keyToDecrypt[2] == 0 && keyToDecrypt[3] == 0) {
+					algorithm = keyToDecrypt[0];
+					offset = 4;
+				}
+				Cipher c = Cipher.getInstance(CIPHERS[algorithm]);
+				c.init(Cipher.DECRYPT_MODE, privKey);
+			    
+				byte[] cipherText = c.doFinal(keyToDecrypt, offset, keyToDecrypt.length - offset);
+							
+				return EncryptionUtils.derandomize(cipherText);
+			} catch (NoSuchAlgorithmException e) {
+				throw new InternalServerException("error.internal", e);		
+			} catch (NoSuchPaddingException e2) {
+				throw new InternalServerException("error.internal", e2);
+			} catch (InvalidKeyException e3) {
+				throw new InternalServerException("error.internal", e3);
+			} catch (InvalidKeySpecException e4) {
+				throw new InternalServerException("error.internal", e4);
+			} catch (BadPaddingException e5) {
+				throw new InternalServerException("error.internal", e5);
+			} catch (IllegalBlockSizeException e6) {
+				throw new InternalServerException("error.internal", e6);
+			} 
+		}
+		
+		/**
+		 * Sets a new passphrase for a private key
+		 * @param target id of key to be changed
+		 * @param newPassphrase new passphrase to be applied
+		 * @throws InternalServerException
+		 * @throws AuthException
+		 */
+		public void changePassphrase(MidataId target, String newPassphrase) throws InternalServerException, AuthException {
+			byte[] oldKey = pks.getKey(target.toString());
+			if (oldKey == null) throw new AuthException("error.relogin", "Authorization Failure");		
+			KeyInfo keyinfo = KeyInfo.getById(target);
+			if (keyinfo == null) throw new InternalServerException("error.internal", "Private key info not found.");
+			
+			keyinfo.privateKey = EncryptionUtils.applyKey(oldKey, newPassphrase);
+			keyinfo.type = KEYPROTECTION_PASSPHRASE;
+			KeyInfo.update(keyinfo);
+		}
+		
+		/**
+		 * Unlock a user or app instance account
+		 * 
+		 * The account stays unlocked until lock is called for the account
+		 * @param target id of user or app instance to unlock
+		 * @param passphrase the passphrase for the private key or null if no passphrase has been applied 
+		 * @throws InternalServerException
+		 */
+		public int unlock(MidataId target, String passphrase) throws InternalServerException {
+			KeyInfo inf = KeyInfo.getById(target);
+			if (inf == null) {
+				pks.addKey(target.toString(), null);
+				return -1;
+			}
+			else {
+				if (inf.type == KEYPROTECTION_PASSPHRASE) {
+					if (passphrase != null) {
+	 				   pks.addKey(target.toString(), EncryptionUtils.applyKey(inf.privateKey, passphrase));
+					}
+					return KEYPROTECTION_PASSPHRASE;
+				} else {
+					pks.addKey(target.toString(), inf.privateKey);
+					return KEYPROTECTION_NONE;
+				}
+			}
+		}
+		
+		/**
+		 * Unlock a user account using an alias and split key
+		 * 
+		 * The account stays unlocked until lock is called for the account
+		 * @param target id of user or app instance to unlock
+		 * @param source id of alias
+		 * @param splitkey keyfragment used to unlock the account 
+		 * @throws InternalServerException
+		 */
+		public void unlock(MidataId target, MidataId source, byte[] splitkey) throws InternalServerException {
+			KeyInfo inf = KeyInfo.getById(source);
+			if (inf == null) {			
+				throw new InternalServerException("error.internal", "Private key info not found.");
+			}
+			
+			if (inf.type != KEYPROTECTION_SPLITKEY) {
+				throw new InternalServerException("error.internal", "Private key has wrong type.");
+			}
+			pks.addKey(target.toString(), EncryptionUtils.joinKey(inf.privateKey, splitkey) );		
+		}
+		
+		/**
+		 * Deletes a key from the storage
+		 * @param target ID of key to delete
+		 * @throws InternalServerException
+		 */
+		public void deleteKey(MidataId target) throws InternalServerException {
+			KeyInfo.delete(target);
+			pks.remove(target.toString());
+		}
+		
+		/**
+		 * Generates a key duplicate encoded with another key
+		 */
+		public byte[] generateAlias(MidataId source, MidataId target) throws AuthException, InternalServerException {
+			byte key[] = pks.getKey(source.toString());
+			
+			if (key == null) throw new AuthException("error.relogin", "Authorization Failure");
+		
+			Pair<byte[], byte[]> split = EncryptionUtils.splitKey(key);
+			KeyInfo keyinfo = new KeyInfo();
+			keyinfo._id = target;		 
+			keyinfo.privateKey = split.second();
+			keyinfo.type = KEYPROTECTION_SPLITKEY;		   
+			KeyInfo.add(keyinfo);
+			
+			return split.first();
+			
+		}
+		
+		/**
+		 * Generate a new public/private key pair, protect the private key with a passphrase, store it in db or memory and return the public key.
+		 * 
+		 * This method will protect the generated private key with a passphrase.
+		 * 
+		 * @param target id of user or application instance for which this keypair should be generated
+		 * @param passphrase passphrase to apply the the private key
+		 * @param inMemory if true the private key will only be kept in memory and not be stored to the database
+		 * @return public key
+		 * @throws InternalServerException
+		 */
+		public byte[] generateKeypairAndReturnPublicKeyInMemory(MidataId target, String passphrase) throws InternalServerException {
+			try {
+			   KeyPairGenerator generator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
+			   
+			   KeyPair pair = generator.generateKeyPair();
+			   PublicKey pub = pair.getPublic();
+			   PrivateKey priv = pair.getPrivate();
+			   
+			   KeyInfo keyinfo = new KeyInfo();
+			   keyinfo._id = target;
+			   if (passphrase == null) {
+			     keyinfo.privateKey = priv.getEncoded();
+			     keyinfo.type = KEYPROTECTION_NONE;
+			   } else {
+				 keyinfo.privateKey = EncryptionUtils.applyKey(priv.getEncoded(), passphrase); 
+				 keyinfo.type = KEYPROTECTION_PASSPHRASE;
+			   }
+			   
+			   pks.addKey(target.toString(), keyinfo.privateKey); 			   
+			   
+			   return pub.getEncoded();
+			} catch (NoSuchAlgorithmException e) {
+				throw new InternalServerException("error.internal", e);
+			}
+		}
+	}
+	
+	class KeyRing {
+		private Map<String, byte[]> keys; 
+		private long expire;
+		
+		KeyRing(long expire) {
+			this.keys = new ConcurrentHashMap<String, byte[]>(8, 0.9f, 1);
+			this.expire = expire;
+		}
+		
+		byte[] getKey(String name) {
+			return keys.get(name);
+		}
+		
+		void addKey(String name, byte[] key) {
+			keys.put(name,  key);
+		}
+		
+		void remove(String name) {
+			keys.remove(name);
+		}
+		
+		long getExpires() {
+			return expire;
+		}
+	}
+	
+	class CleanerThread extends Thread {
+        @Override
+        public void run() {        	
+        	try {
+	            while (true) {
+	                cleanMap();               
+	                Thread.sleep(10000);                
+	            }
+        	} catch (InterruptedException e) {                
+            }        	
+        }
+
+        private void cleanMap() {        	
+            long currentTime = System.currentTimeMillis();
+            Iterator<Entry<String, KeyRing>> it = keySessions.entrySet().iterator();
+            while (it.hasNext()) {
+            	Entry<String, KeyRing> entry = it.next();
+            	if (entry.getValue().expire < currentTime) it.remove();
+            }
+        }
+    }
+
+	@Override
+	public byte[] decryptKey(MidataId target, byte[] keyToDecrypt) throws InternalServerException, AuthException {
+		return session.get().decryptKey(target, keyToDecrypt);
+	}
+
+	@Override
+	public void changePassphrase(MidataId target, String newPassphrase) throws InternalServerException, AuthException {
+		session.get().changePassphrase(target, newPassphrase);		
+	}
+
+	@Override
+	public int unlock(MidataId target, String passphrase) throws InternalServerException {
+		return session.get().unlock(target, passphrase);		
+	}
+
+	@Override
+	public void unlock(MidataId target, MidataId source, byte[] splitkey) throws InternalServerException {
+		session.get().unlock(target, source, splitkey);		
+	}
+
+	@Override
+	public byte[] generateAlias(MidataId source, MidataId target) throws AuthException, InternalServerException {
+		return session.get().generateAlias(source, target);		
+	}
+
+	@Override
+	public byte[] generateKeypairAndReturnPublicKeyInMemory(MidataId target, String passphrase) throws InternalServerException {
+		return session.get().generateKeypairAndReturnPublicKeyInMemory(target, passphrase);
 	}
 }
