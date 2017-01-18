@@ -58,7 +58,7 @@ public class GenomeDataConverter extends Controller {
 		JsonValidation.validate(json, "authToken");
 		
 		// decrypt authToken
-		SpaceToken appToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
+		SpaceToken appToken = SpaceToken.decryptAndSession(request(), json.get("authToken").asText());
 		if (appToken == null) {
 			return badRequest("Invalid authToken.");
 		}
@@ -111,7 +111,7 @@ public class GenomeDataConverter extends Controller {
 		
 
 		// decrypt authToken
-		SpaceToken appToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
+		SpaceToken appToken = SpaceToken.decryptAndSession(request(), json.get("authToken").asText());
 		if (appToken == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}

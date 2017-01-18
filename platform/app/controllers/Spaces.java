@@ -255,7 +255,7 @@ public class Spaces extends Controller {
 		}
 
 		// create encrypted authToken
-		SpaceToken spaceToken = new SpaceToken(space._id, userId);
+		SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, space._id, userId);
 		return ok(spaceToken.encrypt(request()));
 	}
 	
@@ -285,7 +285,7 @@ public class Spaces extends Controller {
 		boolean testing = (visualization.creator.equals(PortalSessionToken.session().getDeveloper()) || visualization.creator.equals(userId)) && visualization.developmentServer != null && visualization.developmentServer.length()> 0; 
 		
 		
-	    SpaceToken spaceToken = new SpaceToken(space._id, userId);
+	    SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, space._id, userId);
 			
 		String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename;
 		if (testing) visualizationServer = visualization.developmentServer;

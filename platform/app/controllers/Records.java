@@ -37,6 +37,7 @@ import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.MemberSecured;
+import utils.auth.PortalSessionToken;
 import utils.auth.RecordToken;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
@@ -432,7 +433,7 @@ public class Records extends APIController {
 		Plugin visualization = Plugin.getById(format.visualization, Sets.create("filename", "url"));
 					
 		// create encrypted authToken
-		SpaceToken spaceToken = new SpaceToken(new MidataId(tk.apsId), userId, new MidataId(tk.recordId));
+		SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, new MidataId(tk.apsId), userId, new MidataId(tk.recordId));
 		
 		String visualizationServer = "https://" + Play.application().configuration().getString("visualizations.server") + "/" + visualization.filename + "/";
 		

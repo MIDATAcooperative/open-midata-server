@@ -107,7 +107,7 @@ public class PluginsAPI extends APIController {
 		JsonValidation.validate(json, "authToken");
 		
 		// decrypt authToken 
-		SpaceToken spaceToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
+		SpaceToken spaceToken = SpaceToken.decryptAndSession(request(), json.get("authToken").asText());
 		if (spaceToken == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
@@ -131,7 +131,7 @@ public class PluginsAPI extends APIController {
 		JsonValidation.validate(json, "authToken");
 		
 		// decrypt authToken and check whether space with corresponding owner exists
-		SpaceToken spaceToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
+		SpaceToken spaceToken = SpaceToken.decryptAndSession(request(), json.get("authToken").asText());
 		if (spaceToken == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
@@ -163,7 +163,7 @@ public class PluginsAPI extends APIController {
 		JsonValidation.validate(json, "authToken");
 		
 		// decrypt authToken and check whether space with corresponding owner exists
-		SpaceToken spaceToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
+		SpaceToken spaceToken = SpaceToken.decryptAndSession(request(), json.get("authToken").asText());
 		if (spaceToken == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
@@ -191,7 +191,7 @@ public class PluginsAPI extends APIController {
 		JsonValidation.validate(json, "authToken");
 		
 		// decrypt authToken 
-		SpaceToken spaceToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
+		SpaceToken spaceToken = SpaceToken.decryptAndSession(request(), json.get("authToken").asText());
 		if (spaceToken == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
@@ -234,7 +234,7 @@ public class PluginsAPI extends APIController {
 		JsonValidation.validate(json, "authToken", "name", "config");
 		
 		// decrypt authToken 
-		SpaceToken spaceToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
+		SpaceToken spaceToken = SpaceToken.decryptAndSession(request(), json.get("authToken").asText());
 		if (spaceToken == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
@@ -325,7 +325,7 @@ public class PluginsAPI extends APIController {
 		JsonValidation.validate(json, "authToken", "properties", "summarize");
 		
 		// decrypt authToken 
-		SpaceToken authToken = SpaceToken.decrypt(request(), json.get("authToken").asText());
+		SpaceToken authToken = SpaceToken.decryptAndSession(request(), json.get("authToken").asText());
 		if (authToken == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
@@ -366,7 +366,7 @@ public class PluginsAPI extends APIController {
 		String id = request().getQueryString("id");
 		
 		// decrypt authToken and check whether space with corresponding owner exists
-		SpaceToken authToken = SpaceToken.decrypt(request(), authTokenStr);
+		SpaceToken authToken = SpaceToken.decryptAndSession(request(), authTokenStr);
 		if (authToken == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}

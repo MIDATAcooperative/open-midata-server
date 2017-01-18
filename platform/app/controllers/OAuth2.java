@@ -91,6 +91,7 @@ public class OAuth2 extends Controller {
 			if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
 			
 			appInstance = MobileAppInstance.getByApplicationAndOwner(app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode"));
+			KeyManager.instance.login(60000l);
 			
 			if (appInstance == null) {									
 				appInstance = MobileAPI.installApp(null, app._id, user, phrase);				
@@ -121,6 +122,8 @@ public class OAuth2 extends Controller {
         Map<String, Object> meta = null;
         String phrase = null;
         ObjectNode obj = Json.newObject();	
+        
+        KeyManager.instance.login(60000l);
         
         if (!data.containsKey("grant_type")) throw new BadRequestException("error.internal", "Missing grant_type");
         
@@ -168,6 +171,7 @@ public class OAuth2 extends Controller {
 			
 		if (appInstance.passcode != null && !User.authenticationValid(phrase, appInstance.passcode)) throw new BadRequestException("error.invalid.credentials", "Wrong password.");
 		//	if (!verifyAppInstance(appInstance, user._id, app._id)) return badRequest("Access denied");
+		
 		KeyManager.instance.unlock(appInstance._id, phrase);
 		meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
 			

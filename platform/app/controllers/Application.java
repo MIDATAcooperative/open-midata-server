@@ -473,13 +473,14 @@ public class Application extends APIController {
 		}
 		
 		PortalSessionToken token = null;
+		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME);
 		
 		if (user instanceof HPUser) {
-		   token = new PortalSessionToken(user._id, user.role, ((HPUser) user).provider, user.developer);		  
+		   token = new PortalSessionToken(handle, user._id, user.role, ((HPUser) user).provider, user.developer);		  
 		} else if (user instanceof ResearchUser) {
-		   token = new PortalSessionToken(user._id, user.role, ((ResearchUser) user).organization, user.developer);		  
+		   token = new PortalSessionToken(handle, user._id, user.role, ((ResearchUser) user).organization, user.developer);		  
 		} else {
-		   token = new PortalSessionToken(user._id, user.role, null, user.developer);
+		   token = new PortalSessionToken(handle, user._id, user.role, null, user.developer);
 		}
 		
 		ObjectNode obj = Json.newObject();
@@ -508,7 +509,7 @@ public class Application extends APIController {
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result downloadToken() throws AppException {
 		PortalSessionToken current = PortalSessionToken.session();
-		PortalSessionToken token = new PortalSessionToken(current.getUserId(), current.getRole(), current.getOrg(), current.getDeveloper());
+		PortalSessionToken token = new PortalSessionToken(current.getHandle(), current.getUserId(), current.getRole(), current.getOrg(), current.getDeveloper());
 		
 		ObjectNode obj = Json.newObject();
 		obj.put("token", token.encrypt(request(), 1000 * 10));
@@ -638,7 +639,7 @@ public class Application extends APIController {
 		user.security = AccountSecurityLevel.KEY;		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);								
 		Member.add(user);
-		
+		KeyManager.instance.login(60000);
 		KeyManager.instance.unlock(user._id, null);
 		
 		user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
@@ -669,10 +670,11 @@ public class Application extends APIController {
 	 * @return status ok
 	 */
 	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result logout() {
 		
 		// execute
-		//session().clear();
+		KeyManager.instance.logout();
 		
 		// reponse
 		return ok();		

@@ -58,6 +58,7 @@ public class ExecutionInfo {
 	
 	public static ExecutionInfo checkSpaceToken(SpaceToken authToken) throws AppException {		
 		AccessLog.logBegin("begin check 'space' type session token");
+		KeyManager.instance.continueSession(authToken.handle);
 		ExecutionInfo result = new ExecutionInfo();
 		result.executorId = authToken.executorId;
 			
@@ -105,6 +106,7 @@ public class ExecutionInfo {
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare"));
         if (appInstance == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 
+        KeyManager.instance.login(60000l);
         KeyManager.instance.unlock(appInstance._id, authToken.passphrase);
         
         ExecutionInfo result = new ExecutionInfo();
@@ -115,7 +117,7 @@ public class ExecutionInfo {
 			MidataId alias = new MidataId(appobj.get("alias").toString());
 			byte[] key = (byte[]) appobj.get("aliaskey");
 			KeyManager.instance.unlock(appInstance.owner, alias, key);
-			RecordManager.instance.clear();
+			RecordManager.instance.clearCache();
 			result.executorId = appInstance.owner;
 		}
                                                 

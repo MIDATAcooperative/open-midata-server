@@ -41,6 +41,7 @@ import play.mvc.Security;
 import utils.AccessLog;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
+import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
 import utils.auth.Rights;
 import utils.auth.SpaceToken;
@@ -299,7 +300,7 @@ public class Plugins extends APIController {
 		Plugin app = Plugins.getPluginAndCheckIfInstalled(appId, userId, Sets.create("filename", "type", "url", "creator"));
 		
 		// create encrypted authToken
-		SpaceToken appToken = new SpaceToken(consentId, userId, null, appId);		
+		SpaceToken appToken = new SpaceToken(PortalSessionToken.session().handle, consentId, userId, null, appId);		
 
         boolean testing = (app.creator.equals(PortalSessionToken.session().getDeveloper()) || app.creator.equals(userId)) && app.developmentServer != null && app.developmentServer.length()> 0;
 		
@@ -419,6 +420,7 @@ public class Plugins extends APIController {
 		// get app details			
 		final MidataId spaceId = new MidataId(spaceIdString);
 		final MidataId userId = new MidataId(request().username());
+		final String sessionHandle = PortalSessionToken.session().handle;
 				
 		Space space  = Space.getByIdAndOwner(spaceId, userId, Sets.create("visualization", "type"));
 		if (space == null) throw new InternalServerException("error.internal", "Unknown Space");
@@ -443,6 +445,7 @@ public class Plugins extends APIController {
 		return promise.map(new Function<WSResponse, Result>() {
 			public Result apply(WSResponse response) throws AppException {
 				try {
+				KeyManager.instance.continueSession(sessionHandle);
 				AccessLog.log(response.getBody());
 				JsonNode jsonNode = response.asJson();
 				if (jsonNode.has("access_token") && jsonNode.get("access_token").isTextual()) {
@@ -512,7 +515,7 @@ public class Plugins extends APIController {
 		final Map<String, Object> tokens = tokens1;
 		final MidataId spaceId = new MidataId(spaceIdStr);
 		// get app details
-					
+		final String sessionHandle = PortalSessionToken.session().handle;			
 		
 		String refreshToken = tokens.get("refreshToken").toString();
        
@@ -524,6 +527,7 @@ public class Plugins extends APIController {
 		   .post("client_id="+app.consumerKey+"&grant_type=refresh_token&refresh_token="+refreshToken);
 		return promise.map(new Function<WSResponse, Boolean>()  {
 			public Boolean apply(WSResponse response) throws AppException {
+				KeyManager.instance.continueSession(sessionHandle);
 				AccessLog.log(response.getBody());
 				JsonNode jsonNode = response.asJson();
 				if (jsonNode.has("access_token") && jsonNode.get("access_token").isTextual()) {
