@@ -163,7 +163,7 @@ public class MobileAPI extends Controller {
 		MobileAppInstance appInstance = null;
 		String phrase;
 		Map<String, Object> meta = null;
-		
+		KeyManager.instance.login(60000l);
 		if (json.has("refreshToken")) {
 			MobileAppToken refreshToken = MobileAppToken.decrypt(JsonValidation.getString(json, "refreshToken"));
 			appInstanceId = refreshToken.appInstanceId;
@@ -244,8 +244,7 @@ public class MobileAPI extends Controller {
         appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, phrase);
     	appInstance.owner = member._id;
     	appInstance.passcode = Member.encrypt(phrase);
-		MobileAppInstance.add(appInstance);	
-		    
+		MobileAppInstance.add(appInstance);			  
 		KeyManager.instance.unlock(appInstance._id, phrase);	   		    
 		RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id, true);
 		    
@@ -272,13 +271,14 @@ public class MobileAPI extends Controller {
 	}
 	
 	private static MidataId prepareMobileExecutor(MobileAppInstance appInstance, MobileAppSessionToken tk) throws AppException {
+		KeyManager.instance.login(1000l*60l);
 		KeyManager.instance.unlock(tk.appInstanceId, tk.passphrase);
 		Map<String, Object> appobj = RecordManager.instance.getMeta(tk.appInstanceId, tk.appInstanceId, "_app").toMap();
 		if (appobj.containsKey("aliaskey") && appobj.containsKey("alias")) {
 			MidataId alias = new MidataId(appobj.get("alias").toString());
 			byte[] key = (byte[]) appobj.get("aliaskey");
 			KeyManager.instance.unlock(appInstance.owner, alias, key);
-			RecordManager.instance.clear();
+			RecordManager.instance.clearCache();
 			return appInstance.owner;
 		}
 		return tk.appInstanceId;

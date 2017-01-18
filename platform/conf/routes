@@ -172,6 +172,11 @@ POST    /providers/api/usevisualization                  controllers.providers.P
 
 GET     /providers/api/member/:member                    controllers.providers.Providers.getMember(member: String)    
 
+POST    /shared/api/usergroups/search                     controllers.UserGroups.search()
+POST    /shared/api/usergroups/members                    controllers.UserGroups.listUserGroupMembers()
+POST    /shared/api/usergroups/create                     controllers.UserGroups.createUserGroup()
+POST    /shared/api/usergroups/adduser                    controllers.UserGroups.addMembersToUserGroup()
+
 # Developers
 POST    /developers/api/register                          controllers.Developers.register()
 POST    /developers/api/login                             controllers.Developers.login()

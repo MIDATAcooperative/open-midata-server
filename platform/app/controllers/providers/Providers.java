@@ -34,6 +34,7 @@ import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
+import utils.auth.PortalSessionToken;
 import utils.auth.ProviderSecured;
 import utils.auth.SpaceToken;
 import utils.collections.CMaps;
@@ -114,7 +115,7 @@ public class Providers extends APIController {
 		user.provider = provider._id;
 		HPUser.add(user);
 		
-		KeyManager.instance.unlock(user._id, null);
+		//KeyManager.instance.unlock(user._id, null);
 		
 		RecordManager.instance.createPrivateAPS(user._id, user._id);		
 		
@@ -254,7 +255,7 @@ public class Providers extends APIController {
 		//MemberKey memberKey = MemberKey.getByIdAndOwner(consentId, memberId, Sets.create());
 
 		// create encrypted authToken
-		SpaceToken spaceToken = new SpaceToken(consentId, userId);
+		SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, consentId, userId);
 		return ok(spaceToken.encrypt(request()));
 	}
 	

@@ -27,6 +27,8 @@ public class PortalSessionToken {
 	public MidataId developer;
 
 	public UserRole role;
+	
+	public String handle;
 
 	/**
 	 * Creation time of token
@@ -63,15 +65,21 @@ public class PortalSessionToken {
 	public String getRemoteAddress() {
 		return remoteAddress;
 	}
+	
+	public String getHandle() {
+		return handle;
+	}
 
-	public PortalSessionToken(MidataId userId, UserRole role, MidataId org, MidataId developer) {
+	public PortalSessionToken(String handle, MidataId userId, UserRole role, MidataId org, MidataId developer) {
+		this.handle = handle;
 		this.userId = userId;
 		this.role = role;
 		this.org = org;
 		this.developer = developer;
 	}
 
-	public PortalSessionToken(MidataId userId, UserRole role, MidataId org, MidataId developer, long created, String remoteAddr) {
+	public PortalSessionToken(String handle, MidataId userId, UserRole role, MidataId org, MidataId developer, long created, String remoteAddr) {
+		this.handle = handle;
 		this.userId = userId;
 		this.role = role;
 		this.org = org;
@@ -103,6 +111,7 @@ public class PortalSessionToken {
 		Map<String, String> map = new ChainedMap<String, String>().put("u", userId.toString()).put("r", role.toString()).get();
 		if (org != null) map.put("o", org.toString());
 		if (developer != null) map.put("d", developer.toString());
+		map.put("h", handle);
 		map.put("c", Long.toString(this.created));
 		map.put("i", this.remoteAddress);
 		String json = Json.stringify(Json.toJson(map));
@@ -128,6 +137,7 @@ public class PortalSessionToken {
 			UserRole role = UserRole.valueOf(json.get("r").asText());
 			long created = json.get("c").asLong();
 			String remoteAddr = json.get("i").asText();
+			String handle = json.get("h").asText();
 			MidataId org = null;
 			MidataId developer = null;
 			if (json.has("o")) {
@@ -147,7 +157,7 @@ public class PortalSessionToken {
 				}
 			}
 			
-			PortalSessionToken currentSession = new PortalSessionToken(userId, role, org, developer, created, remoteAddr);
+			PortalSessionToken currentSession = new PortalSessionToken(handle, userId, role, org, developer, created, remoteAddr);
             session.set(currentSession);           
 			return currentSession;
 		} catch (Exception e) {

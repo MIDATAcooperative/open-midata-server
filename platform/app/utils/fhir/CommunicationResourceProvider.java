@@ -38,6 +38,7 @@ import models.Consent;
 import models.ContentInfo;
 import models.MidataId;
 import models.Record;
+import models.TypedMidataId;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
@@ -266,7 +267,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		MidataId sender = FHIRTools.getUserIdFromReference(theCommunication.getSender().getReferenceElement());
 		MidataId shareFrom = subject;
 		if (!subject.equals(sender)) {
-			Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, sender, sender, subject);
+			Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, sender, sender, subject, false);
 			insertRecord(record, theCommunication, consent._id);
 			shareFrom = consent._id;
 		} else {
@@ -276,9 +277,11 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		
 		List<Reference> recipients = theCommunication.getRecipient();
 		for (Reference recipient :recipients) {
-			MidataId target = FHIRTools.getUserIdFromReference(recipient.getReferenceElement());
-			Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, sender, target, subject);
+						
+			TypedMidataId target = FHIRTools.getMidataIdFromReference(recipient.getReferenceElement());
+			Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, sender, target.getMidataId(), subject, target.getType().equals("Group"));
 			RecordManager.instance.share(inf.executorId, shareFrom, consent._id, Collections.singleton(record._id), true);
+			
 		}
 	}
 	

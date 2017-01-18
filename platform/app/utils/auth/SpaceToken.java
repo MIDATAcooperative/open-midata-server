@@ -8,6 +8,7 @@ import models.MidataId;
 import play.libs.Json;
 import play.mvc.Http.Request;
 import utils.collections.ChainedMap;
+import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -51,21 +52,26 @@ public class SpaceToken {
 	 * Different executing person
 	 */
 	public MidataId executorId;
+	
+	public String handle;
 
-	public SpaceToken(MidataId spaceId, MidataId userId) {
+	public SpaceToken(String handle, MidataId spaceId, MidataId userId) {
+		this.handle = handle;
 		this.spaceId = spaceId;
 		this.userId = userId;
 		this.recordId = null;
 	}
 	
-	public SpaceToken(MidataId spaceId, MidataId userId, MidataId recordId, MidataId pluginId) {
+	public SpaceToken(String handle, MidataId spaceId, MidataId userId, MidataId recordId, MidataId pluginId) {
+		this.handle = handle;
 		this.spaceId = spaceId;
 		this.userId = userId;
 		this.recordId = recordId;
 		this.pluginId = pluginId;
 	}
 	
-	public SpaceToken(MidataId spaceId, MidataId userId, MidataId recordId, MidataId pluginId, MidataId executorId) {
+	public SpaceToken(String handle, MidataId spaceId, MidataId userId, MidataId recordId, MidataId pluginId, MidataId executorId) {
+		this.handle = handle;
 		this.spaceId = spaceId;
 		this.userId = userId;
 		this.recordId = recordId;
@@ -74,7 +80,8 @@ public class SpaceToken {
 		this.created = System.currentTimeMillis();
 	}
 	
-	public SpaceToken(MidataId spaceId, MidataId userId, MidataId recordId, MidataId pluginId, MidataId executorId, long created, String remoteAddr) {
+	public SpaceToken(String handle, MidataId spaceId, MidataId userId, MidataId recordId, MidataId pluginId, MidataId executorId, long created, String remoteAddr) {
+		this.handle = handle;
 		this.spaceId = spaceId;
 		this.userId = userId;
 		this.recordId = recordId;
@@ -84,7 +91,8 @@ public class SpaceToken {
 		this.remoteAddress = remoteAddr;
 	}
 	
-	public SpaceToken(MidataId spaceId, MidataId userId, MidataId recordId) {
+	public SpaceToken(String handle, MidataId spaceId, MidataId userId, MidataId recordId) {
+		this.handle = handle;
 		this.spaceId = spaceId;
 		this.userId = userId;
 		this.recordId = recordId;
@@ -111,6 +119,7 @@ public class SpaceToken {
 		if (executorId != null && !executorId.equals(userId)) map.put("e", executorId.toString());
 		map.put("c", Long.toString(this.created));
 		map.put("i", this.remoteAddress);
+		map.put("h", handle);
 		String json = Json.stringify(Json.toJson(map));
 		return TokenCrypto.encryptToken(json);
 	}
@@ -118,6 +127,13 @@ public class SpaceToken {
 	/**
 	 * The secret passed here can be an arbitrary string, so check all possible exceptions.
 	 */
+	
+	public static SpaceToken decryptAndSession(Request request, String unsafeSecret) throws AuthException {
+		SpaceToken res = decrypt(request, unsafeSecret);
+		KeyManager.instance.continueSession(res.handle);
+		return res;
+	}
+	
 	public static SpaceToken decrypt(Request request, String unsafeSecret) {
 		try {
 			// decryptAES can throw DecoderException, but there is no way to catch it; catch all exceptions for now...
@@ -136,6 +152,7 @@ public class SpaceToken {
 			MidataId recordId = json.has("r") ? new MidataId(json.get("r").asText()) : null;
 			MidataId pluginId = json.has("p") ? new MidataId(json.get("p").asText()) : null;
 			MidataId executorId = json.has("e") ? new MidataId(json.get("e").asText()) : userId;
+			String handle = json.get("h").asText();
 			long created = json.get("c").asLong();
 			String remoteAddr = json.get("i").asText();
 			
@@ -144,7 +161,7 @@ public class SpaceToken {
 			  if (!remoteAddr(request).equals(remoteAddr)) return null;
 			}
 			
-			return new SpaceToken(spaceId, userId, recordId, pluginId, executorId, created, remoteAddr);
+			return new SpaceToken(handle, spaceId, userId, recordId, pluginId, executorId, created, remoteAddr);
 		} catch (Exception e) {
 			return null;
 		}

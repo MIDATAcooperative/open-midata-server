@@ -94,7 +94,7 @@ public class Developers extends APIController {
 				
 		Developer.add(user);
 		
-		KeyManager.instance.unlock(user._id, null);
+		//KeyManager.instance.unlock(user._id, null);
 		RecordManager.instance.createPrivateAPS(user._id, user._id);
 		
 		Application.sendWelcomeMail(user);

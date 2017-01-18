@@ -1,5 +1,6 @@
 package utils.json;
 
+import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,6 +25,28 @@ public class JsonOutput {
 	    SimpleFilterProvider fProvider = new SimpleFilterProvider();
 	    fProvider.addFilter(filtered, filter);
 
+	    ObjectMapper mapper = CustomObjectMapper.me;	  
+
+	    try {
+	      String json = mapper.writer(fProvider).writeValueAsString(o);
+	      return json;
+	    } catch (JsonProcessingException e) {
+	    	throw new InternalServerException("error.internal", e);
+	    }
+	}
+	
+	public static String toJson(Object o, Map<String, Set<String>> fieldMap) throws InternalServerException {
+		
+		SimpleFilterProvider fProvider = new SimpleFilterProvider();
+		
+		for (Map.Entry<String, Set<String>> entry : fieldMap.entrySet()) {
+			Set<String> fields = entry.getValue();
+			if (!fields.contains("_id")) fields.add("_id");
+			SimpleBeanPropertyFilter filter =
+		            new SimpleBeanPropertyFilter.FilterExceptFilter(fields);
+			fProvider.addFilter(entry.getKey(), filter);
+		}
+			   
 	    ObjectMapper mapper = CustomObjectMapper.me;	  
 
 	    try {

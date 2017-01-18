@@ -52,7 +52,7 @@ public class MinimalSetup {
 			admin.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(admin._id);
 			Admin.add(admin);
 			
-			KeyManager.instance.unlock(admin._id, null);
+			//KeyManager.instance.unlock(admin._id, null);
 			RecordManager.instance.createPrivateAPS(admin._id, admin._id);
 		}
 		
@@ -79,7 +79,7 @@ public class MinimalSetup {
 			
 			Developer.add(developer);
 			
-			KeyManager.instance.unlock(developer._id, null);
+			//KeyManager.instance.unlock(developer._id, null);
 			RecordManager.instance.createPrivateAPS(developer._id, developer._id);
 		}	
 		
@@ -105,7 +105,7 @@ public class MinimalSetup {
 			admin.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(admin._id);
 			Admin.add(admin);
 			
-			KeyManager.instance.unlock(admin._id, null);
+			//KeyManager.instance.unlock(admin._id, null);
 			RecordManager.instance.createPrivateAPS(admin._id, admin._id);
 		}
 	}

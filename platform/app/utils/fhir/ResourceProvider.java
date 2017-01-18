@@ -63,6 +63,7 @@ import models.Consent;
 import models.ContentInfo;
 import models.MidataId;
 import models.Record;
+import models.TypedMidataId;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.access.RecordManager;
@@ -511,7 +512,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	}
 	
 	/**
-	 * Auto-share a record with all persons provided
+	 * Auto-share a record with all person/groups provided
 	 * @param record the record to be shared
 	 * @param personRefs collection of FHIR references
 	 * @throws AppException
@@ -523,9 +524,9 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 			
 			for (IIdType ref : personRefs) {
 				if (FHIRTools.isUserFromMidata(ref)) { 
-					   MidataId target = FHIRTools.getUserIdFromReference(ref);
-					   if (!target.equals(owner)) {
-					     Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, owner, target, owner);
+					   TypedMidataId target = FHIRTools.getMidataIdFromReference(ref);
+					   if (!target.getMidataId().equals(owner)) {
+					     Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, owner, target.getMidataId(), owner, target.getType().equals("Group"));
 					     RecordManager.instance.share(inf.executorId, inf.executorId, consent._id, Collections.singleton(record._id), true);
 					   }
 				}

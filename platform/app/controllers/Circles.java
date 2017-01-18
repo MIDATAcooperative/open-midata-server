@@ -27,9 +27,11 @@ import models.MidataId;
 import models.Record;
 import models.RecordsInfo;
 import models.User;
+import models.UserGroup;
 import models.enums.AggregationType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
+import models.enums.EntityType;
 import models.enums.SubUserRole;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -257,10 +259,11 @@ public class Circles extends APIController {
 	 * @param sender sender of message
 	 * @param receiver receiver of message
 	 * @param subject subject of message is the "owner" of the message
+	 * @param groupReceiver receiver is a group
 	 * @return the consent for the message
 	 * @throws AppException
 	 */
-	public static Consent getOrCreateMessagingConsent(MidataId executorId, MidataId sender, MidataId receiver, MidataId subject) throws AppException {
+	public static Consent getOrCreateMessagingConsent(MidataId executorId, MidataId sender, MidataId receiver, MidataId subject, boolean groupReceiver) throws AppException {
 		if (executorId == null || sender == null || receiver == null || subject == null) throw new NullPointerException();
 		MidataId other = sender.equals(subject) ? receiver : sender;
 		Consent consent = Consent.getMessagingActiveByAuthorizedAndOwner(other, subject);
@@ -273,8 +276,13 @@ public class Circles extends APIController {
 		consent.authorized = Collections.singleton(other);
 		consent.status = ConsentStatus.ACTIVE;
 		
-		User otheruser = User.getById(other, Sets.create("firstname", "lastname"));
-		consent.name="Msg: "+otheruser.firstname+" "+otheruser.lastname;
+		if (groupReceiver && other.equals(receiver)) {
+			UserGroup othergroup = UserGroup.getById(receiver, Sets.create("name"));
+			consent.name="Msg: "+othergroup.name;
+		} else {
+			User otheruser = User.getById(other, Sets.create("firstname", "lastname"));
+			consent.name="Msg: "+otheruser.firstname+" "+otheruser.lastname;
+		}
 		
 		RecordManager.instance.createAnonymizedAPS(subject, other, consent._id, true);
 		consentSettingChange(executorId, consent);
@@ -391,7 +399,7 @@ public class Circles extends APIController {
 		MidataId userId = new MidataId(request().username());
 		MidataId circleId = new MidataId(circleIdString);
 		
-		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("authorized","type"));
+		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("authorized","authorizedTypes", "type"));
 		if (consent == null) {
 			throw new BadRequestException("error.unknown.consent", "No consent with this id belonging to user exists.");
 		}
@@ -399,6 +407,17 @@ public class Circles extends APIController {
 		// add users to circle (implicit: if not already present)
 		Set<MidataId> newMemberIds = ObjectIdConversion.toMidataIds(JsonExtraction.extractStringSet(json.get("users")));
 				
+		if (json.has("entityType")) {
+			EntityType type = JsonValidation.getEnum(json, "entityType", EntityType.class);
+			if (consent.entityType == null) {
+				consent.entityType = type;				
+				Consent.set(consent._id, "entityType", type);
+				
+			} else if (!consent.entityType.equals(type)) {
+				throw new BadRequestException("error.invalid.consent", "Bad consent entity type");
+			}			
+		}
+		
 		consent.authorized.addAll(newMemberIds);
 		Consent.set(consent._id, "authorized", consent.authorized);
 		

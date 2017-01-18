@@ -1,0 +1,37 @@
+<div ng-controller="UserGroupSearchResultsCtrl">
+
+	<div ng-cloak class="panel panel-primary">
+		<div class="panel-heading" translate="usergroupsearch.title"></div>
+		<div class="body">
+
+			<form class="css-form form-horizontal">
+				<formrow myid="name" label="usergroupsearch.name">
+				  <input type="text" class="form-control" translate translate-attr-placeholder="usergroupsearch.name" ng-model="criteria.name"> 
+				</formrow>
+				
+				<formrow myid="x" label=""> 
+				  <button ng-click="search()" class="btn btn-default" translate="common.search_btn"></button>
+				</formrow>
+			</form>
+			
+		 <loader busy="status.isBusy !== false">
+				   
+	       <div ng-repeat="usergroup in usergroups">
+	          <h1>{{ usergroup.name }}</h1>
+	          <table class="table">
+	            <tr ng-repeat="member in usergroup.members">
+	              <td>{{ member.user.firstname }}</td>
+	              <td>{{ member.user.lastname }}</td>
+	              <td>{{ member.user.email }}</td>
+	            </tr>
+	          </table>
+	          <button class="btn btn-default" ng-click="addIndividuals(usergroup)" translate="usergroupsearch.add_individuals_btn"></button>
+	          <button class="btn btn-default" ng-click="addGroup(usergroup)" translate="usergroupsearch.add_group_btn"></button>
+	       </div>
+	   
+	   
+	       <p ng-show="usergroups.length == 0" translate="usergroupsearch.empty_result"></p>
+	    </loader>
+		</div>
+	</div>
+</div>

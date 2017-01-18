@@ -16,8 +16,8 @@ angular.module('services')
 		return server.post(jsRoutes.controllers.Circles.add().url, JSON.stringify(data));
 	};
 	
-	service.addUsers = function(circleId, users) {		
-		return server.post(jsRoutes.controllers.Circles.addUsers(circleId).url, JSON.stringify({ users : users }));
+	service.addUsers = function(circleId, users, entityType) {		
+		return server.post(jsRoutes.controllers.Circles.addUsers(circleId).url, JSON.stringify({ users : users, entityType : (entityType || "USER") }));
 	};
 	
 	service.joinByPasscode = function(ownerId, passcode) {
