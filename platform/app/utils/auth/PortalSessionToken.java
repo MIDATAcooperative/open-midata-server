@@ -15,7 +15,7 @@ import utils.exceptions.InternalServerException;
 
 public class PortalSessionToken {
 
-	public final static long LIFETIME = 1000 * 60 * 60 * 8;
+	public final static long LIFETIME = 1000l * 60l * 60l * 8l;
 
 	/**
 	 * id of user
