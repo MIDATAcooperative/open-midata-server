@@ -188,7 +188,7 @@ public class AutoRun extends APIController {
 						BSONObject oauthmeta = RecordManager.instance.getMeta(autorunner, space._id, "_oauth");
 						if (oauthmeta != null) {
 							if (oauthmeta.containsField("refreshToken")) {							                        				
-								Plugins.requestAccessTokenOAuth2FromRefreshToken(autorunner, plugin, space._id.toString(), oauthmeta.toMap()).onRedeem(new Callback<Boolean>() {
+								Plugins.requestAccessTokenOAuth2FromRefreshToken(request.handle, autorunner, plugin, space._id.toString(), oauthmeta.toMap()).onRedeem(new Callback<Boolean>() {
 									public void invoke(Boolean success) throws AppException, IOException {
 										AccessLog.log("Auth:"+success);
 										if (success) {
