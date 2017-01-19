@@ -30,6 +30,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 	importer.requested = 0;
 	importer.saving = false;
 	importer.saved = 0;
+	importer.notSaved = 0;
 	importer.totalImport = 0;
 	importer.measure = null;
 	importer.alldone = null;
@@ -403,6 +404,10 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 		importer.status = "importing";
 		importer.requested = 0;
 		importer.saved = 0;
+		importer.notSaved = 0;
+		importer.requesting = -1;
+		importer.error.message = null;
+		importer.error.messages = [];
 
 		// 1. Set Interval to import
 		// "from" and "to" saved in measurements 
@@ -423,6 +428,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 			.then(function (response) {
 				var _userid = response.data.userid;
 
+				importer.requesting = importer.measurementGroups.length;
 				// Import all defined measurements groups
 				importer.measurementGroups.forEach(function (measurementGroup) {
 
@@ -467,17 +473,32 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 												save_activities(authToken, response, measurement);
 											}
 										});
+										updateRequesting();
 
 									} else if (measurementGroup.groupMeasureId == 'body_measures') {
 										save_bodyMeasures(authToken, response, measurementGroup);
+										updateRequesting();
 									} else if (measurementGroup.groupMeasureId == 'sleep_summary') {
 										save_sleepMeasures(authToken, response, measurementGroup);
+										updateRequesting();
+									} else {
+										console.log("Error! new measurement group not defined");
+										updateRequesting();
 									}
+								},
+								function(error){
+									console.log("Error: " + error);
+									updateRequesting();
 								});
 
 							} else {
 								console.log("Error: url " + measurementGroup.getURL(_userid));
+								updateRequesting();
 							}
+						}, 
+						function(error){
+							console.log('Failed: ' + error);
+							updateRequesting();
 						});
 				}, this);
 			});
@@ -497,22 +518,6 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 
 	// save a single record to the database
 	var saveOrUpdateRecord = function (authToken, midataHeader, record) {//(title, content, formattedDate, record) {
-		/*var _promise = {};
-		var existing = stored[codeToMidataCode[midataHeader.code] + record.effectiveDateTime];
-		if (existing) {
-			if (existing.data.valueQuantity.value != record.valueQuantity.value) {
-				_promise = updateRecord(authToken, existing._id, existing.version, record);
-			} else {
-				_promise = new Promise(function (resolve, reject) {
-					importer.saved += 1;
-				});
-			}
-		} else {
-			_promise = saveRecord(authToken, midataHeader, record);
-		}
-
-		return _promise;*/
-
 		var existing = stored[codeToMidataCode[midataHeader.code] + record.effectiveDateTime];
 		if (existing) {
 			if (existing.data.valueQuantity.value != record.valueQuantity.value) {
@@ -527,17 +532,6 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 
 	// save a single record to the database
 	var saveRecord = function (authToken, midataHeader, record) {
-		/*return midataServer.createRecord(authToken, midataHeader, record)
-			.then(function () {
-				importer.log += ("\nRecord imported. Name: " + midataHeader.name + "; Code: " + midataHeader.code);
-				console.log("Record imported. Name: " + midataHeader.name + "; Code: " + midataHeader.code);
-				importer.saved += 1;
-			})
-			.catch(function (err) {
-				importer.log += ("\nError! Message: " + err + "\nRecord not imported. Name: " + midataHeader.name + "; Code: " + midataHeader.code);
-				console.log("Error! Message: " + err + "\nRecord not imported. Name: " + midataHeader.name + "; Code: " + midataHeader.code);
-			});*/
-
 		return {
 			"resource": record,
 			"request": {
@@ -548,13 +542,6 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 	};
 
 	var updateRecord = function (authToken, id, version, record) {
-		/*return midataServer.updateRecord(authToken, id, version, record)
-			.then(function () {
-				importer.saved += 1;
-			})
-			.catch(function (err) {
-				errorMessage("Failed to update record to database: " + err);
-			});*/
 		record.meta = { "version": version };
 		record.id = id;
 		return {
@@ -735,13 +722,32 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 			"type": "transaction",
 			"entry": actions
 		};
-		//importer.requested++;
+
 		midataServer.fhirTransaction(authToken, request)
 			.then(function () {
 				importer.saved += actions.length;
-				console.log("bundle saved");
-				console.log(actions);
+				finish();
+			},
+			function(reason){
+				importer.notSaved += actions.length;
+				importer.error.messages.push(reason);
+				finish();
 			});
+	};
+
+	var updateRequesting = function(){
+		importer.requesting--;
+		finish();
+	};
+
+	var finish = function(){
+		if(importer.requesting === 0 && importer.saved + importer.notSaved === importer.requested){
+			importer.status = "done";
+
+			if(importer.notSaved !== 0){
+				importer.status = "with_errors";
+			}
+		}
 	};
 
 	return importer;
