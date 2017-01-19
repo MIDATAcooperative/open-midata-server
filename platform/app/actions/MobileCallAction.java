@@ -53,7 +53,7 @@ public class MobileCallAction extends Action<MobileCall> {
 			   ErrorReporter.reportPerformance("Mobile API", ctx, endTime - startTime);
 			}
 			
-			KeyManager.instance.logout();
+			// KeyManager.instance.logout(); FHIR API should not logout
 			RecordManager.instance.clear();			
 			ResourceProvider.setExecutionInfo(null);			
 			AccessLog.newRequest();
