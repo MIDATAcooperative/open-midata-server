@@ -488,7 +488,7 @@ public class Plugins extends APIController {
 		return ok(result);
 	}
 	
-	
+	// Needs active session
 	public static Promise<Result> requestAccessTokenOAuth2FromRefreshToken(String spaceIdStr, Map<String, Object> tokens1, final JsonNode result) throws AppException {		
 		final MidataId appId = new MidataId(tokens1.get("appId").toString());
 		final MidataId userId = new MidataId(request().username());
@@ -498,7 +498,7 @@ public class Plugins extends APIController {
 			
 		final Plugin app = Plugin.get(properties, fields);
 	
-		return requestAccessTokenOAuth2FromRefreshToken(userId, app, spaceIdStr, tokens1).map(new Function<Boolean, Result>()  {
+		return requestAccessTokenOAuth2FromRefreshToken(PortalSessionToken.session().handle, userId, app, spaceIdStr, tokens1).map(new Function<Boolean, Result>()  {
 			public Result apply(Boolean success) throws AppException {
 				if (success) return ok(result);
 				ObjectNode resultBase = result instanceof ObjectNode ? (ObjectNode) result : null;
@@ -507,15 +507,12 @@ public class Plugins extends APIController {
 		});
 	}
 	
-	@BodyParser.Of(BodyParser.Json.class)
-	@Security.Authenticated(AnyRoleSecured.class)
-	@APICall
-	public static Promise<Boolean> requestAccessTokenOAuth2FromRefreshToken(final MidataId userId, final Plugin app, String spaceIdStr, Map<String, Object> tokens1) {
+
+	public static Promise<Boolean> requestAccessTokenOAuth2FromRefreshToken(final String sessionHandle, final MidataId userId, final Plugin app, String spaceIdStr, Map<String, Object> tokens1) {
 
 		final Map<String, Object> tokens = tokens1;
 		final MidataId spaceId = new MidataId(spaceIdStr);
-		// get app details
-		final String sessionHandle = PortalSessionToken.session().handle;			
+		// get app details			
 		
 		String refreshToken = tokens.get("refreshToken").toString();
        
