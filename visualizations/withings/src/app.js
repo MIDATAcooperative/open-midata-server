@@ -730,7 +730,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 			},
 			function(reason){
 				importer.notSaved += actions.length;
-				importer.error.messages.push(reason);
+				//importer.error.messages.push(reason);
 				finish();
 			});
 	};
