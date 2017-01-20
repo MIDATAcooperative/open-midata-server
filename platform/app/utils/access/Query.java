@@ -284,6 +284,12 @@ public class Query {
 		 
          fieldsFromDB = Sets.create("createdOld", "encrypted");
          mayNeedFromDB = new HashSet<String>();
+         if (fields.contains("stream")) { 
+        	 fieldsFromDB.add("stream");
+        	 fieldsFromDB.add("time");
+        	 fieldsFromDB.add("document");
+        	 fieldsFromDB.add("part");
+         }
          if (fields.contains("format") || properties.containsKey("format") || properties.containsKey("group")) mayNeedFromDB.add("format");
          if (fields.contains("content") || properties.containsKey("content") || properties.containsKey("group")) mayNeedFromDB.add("content");
          if (fields.contains("subformat") || properties.containsKey("subformat") || properties.containsKey("group")) mayNeedFromDB.add("subformat");

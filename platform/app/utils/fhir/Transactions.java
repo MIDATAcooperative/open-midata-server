@@ -13,6 +13,7 @@ import org.hl7.fhir.dstu3.model.Bundle.BundleEntryResponseComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleType;
 import org.hl7.fhir.dstu3.model.Bundle.HTTPVerb;
 import org.hl7.fhir.dstu3.model.IdType;
+import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.instance.model.api.IBaseReference;
 import org.hl7.fhir.instance.model.api.IBaseResource;
@@ -26,6 +27,8 @@ import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import ca.uhn.fhir.util.FhirTerser;
 import utils.ErrorReporter;
+import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.fhir.transactions.CreateTransactionStep;
 import utils.fhir.transactions.TransactionStep;
 import utils.fhir.transactions.UpdateTransactionStep;
@@ -37,6 +40,7 @@ public class Transactions {
 		
 	   try {
 	   BundleType type = theInput.getType();
+	   if (type == null) throw new UnprocessableEntityException("No type given for Bundle!");
 	   if (! (type.equals(BundleType.BATCH) || type.equals(BundleType.TRANSACTION))) {
 		   throw new UnprocessableEntityException("Unknown transaction type");
 	   }
@@ -66,18 +70,38 @@ public class Transactions {
 		   }
 		   
 	   }
-	   
-	   /*
-	   BundleEntryComponent cmp = new BundleEntryComponent();
-	   BundleEntryResponseComponent res = new BundleEntryResponseComponent();	   
-	   cmp.setResponse(res);
-	   */
+	   	  
 	   
 	   if (type.equals(BundleType.TRANSACTION)) {
+		   
 		   for (TransactionStep step : steps) step.init();
 		   resolveReferences(steps);
-		   for (TransactionStep step : steps) step.prepare();
-		   for (TransactionStep step : steps) step.execute();
+		   boolean failed = false;
+		   
+		   for (TransactionStep step : steps) {
+			   try {
+			     step.prepare();
+			   } catch (BaseServerResponseException e) {
+				 failed = true;
+				 step.setResultBasedOnException(e);					 
+				 throw e;
+			   } catch (BadRequestException e1) {
+				  failed = true;
+				 step.setResultBasedOnException(e1);
+				 throw new UnprocessableEntityException(e1.getMessage());
+			   } catch (AppException e2) {
+				 failed = true;
+				  step.setResultBasedOnException(e2);
+				 throw e2;
+			   } catch (NullPointerException e3) {
+				  failed = true;
+				  step.setResultBasedOnException(e3);
+				 throw e3;
+			   }
+		   }		   
+		   if (!failed) {
+		     for (TransactionStep step : steps) step.execute();
+		   }
 	   } else {
 		   for (TransactionStep step : steps) step.init();
 		   resolveReferences(steps);
@@ -87,14 +111,17 @@ public class Transactions {
 			     step.execute();
 			   } catch (BaseServerResponseException e) {
 				  step.setResultBasedOnException(e);			
-			   }			   			  
+			   } catch (AppException e2) {
+				  step.setResultBasedOnException(e2);
+			   }
 		   }
 	   }
 	   	   
-	   Bundle retVal = new Bundle();
+	   Bundle retVal = new Bundle();		 
 	   for (TransactionStep step : steps) retVal.addEntry(step.getResult());	   
 	   return retVal;
-	   
+	   } catch (BaseServerResponseException e2) {
+		   throw e2;
 	   } catch (Exception e) {
 		   ErrorReporter.report("FHIR Transaction", null, e);
 		   throw new InternalErrorException(e);

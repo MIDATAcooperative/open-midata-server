@@ -64,7 +64,7 @@ public class RecordManager {
 			"data", "group");
 	public final static Set<String> COMPLETE_DATA_WITH_WATCHES = Sets.create("id", "owner",
 			"app", "creator", "created", "name", "format", "subformat", "content", "code", "description", "isStream", "lastUpdated",
-			"data", "group", "watches");
+			"data", "group", "watches", "stream");
 	//public final static String STREAM_TYPE = "Stream";
 	public final static Map<String, Object> STREAMS_ONLY = CMaps.map("streams", "only").map("flat", "true");
 	public final static Map<String, Object> STREAMS_ONLY_OWNER = CMaps.map("streams", "only").map("flat", "true").map("owner", "self");	
@@ -506,38 +506,41 @@ public class RecordManager {
 	 */
 	public String updateRecord(MidataId executingPerson, MidataId apsId, Record record) throws AppException {
 		AccessLog.logBegin("begin updateRecord executor="+executingPerson.toString()+" aps="+apsId.toString()+" record="+record._id.toString());
-		List<DBRecord> result = QueryEngine.listInternal(getCache(executingPerson), apsId, CMaps.map("_id", record._id), RecordManager.COMPLETE_DATA_WITH_WATCHES);	
-		if (result.size() != 1) throw new InternalServerException("error.internal.notfound", "Unknown Record");
-		if (record.data == null) throw new BadRequestException("error.internal", "Missing data");
-		
-		DBRecord rec = result.get(0);
-		String storedVersion = rec.meta.getString("version");
-		if (storedVersion == null) storedVersion = VersionedDBRecord.INITIAL_VERSION;
-		String providedVersion = record.version != null ? record.version : VersionedDBRecord.INITIAL_VERSION; 
-		if (!providedVersion.equals(storedVersion)) throw new BadRequestException("error.concurrent.update", "Concurrent update", HttpStatus.SC_CONFLICT);
-		
-		VersionedDBRecord vrec = new VersionedDBRecord(rec);		
-		RecordEncryption.encryptRecord(vrec);
-		VersionedDBRecord.add(vrec);
-				
-		record.lastUpdated = new Date(); 
-		
-	    rec.data = record.data;
-	    rec.meta.put("lastUpdated", record.lastUpdated);
-	    rec.time = Query.getTimeFromDate(record.lastUpdated);		
+		try {
+			List<DBRecord> result = QueryEngine.listInternal(getCache(executingPerson), apsId, CMaps.map("_id", record._id), RecordManager.COMPLETE_DATA_WITH_WATCHES);	
+			if (result.size() != 1) throw new InternalServerException("error.internal.notfound", "Unknown Record");
+			if (record.data == null) throw new BadRequestException("error.internal", "Missing data");
+			
+			DBRecord rec = result.get(0);
+			String storedVersion = rec.meta.getString("version");
+			if (storedVersion == null) storedVersion = VersionedDBRecord.INITIAL_VERSION;
+			String providedVersion = record.version != null ? record.version : VersionedDBRecord.INITIAL_VERSION; 
+			if (!providedVersion.equals(storedVersion)) throw new BadRequestException("error.concurrent.update", "Concurrent update", HttpStatus.SC_CONFLICT);
+			
+			VersionedDBRecord vrec = new VersionedDBRecord(rec);		
+			RecordEncryption.encryptRecord(vrec);
+			VersionedDBRecord.add(vrec);
+					
+			record.lastUpdated = new Date(); 
+			
+		    rec.data = record.data;
+		    rec.meta.put("lastUpdated", record.lastUpdated);
+		    rec.time = Query.getTimeFromDate(record.lastUpdated);		
+		    
+		    String version = Long.toString(System.currentTimeMillis());
+		    rec.meta.put("version", version);
+			
+		    DBRecord clone = rec.clone();
+		    
+			RecordEncryption.encryptRecord(rec);		
+		    DBRecord.upsert(rec); 	  	
+		    
+		    RecordLifecycle.notifyOfChange(clone, getCache(executingPerson));
+		    return version;
+		} finally {
+	        AccessLog.logEnd("end updateRecord");
+		}
 	    
-	    String version = Long.toString(System.currentTimeMillis());
-	    rec.meta.put("version", version);
-		
-	    DBRecord clone = rec.clone();
-	    
-		RecordEncryption.encryptRecord(rec);		
-	    DBRecord.upsert(rec); 	  	
-	    
-	    RecordLifecycle.notifyOfChange(clone, getCache(executingPerson));
-
-	    AccessLog.logEnd("end updateRecord");
-	    return version;
 	}
 	
 	/**

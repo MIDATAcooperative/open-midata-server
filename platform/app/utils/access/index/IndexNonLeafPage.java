@@ -196,8 +196,10 @@ public class IndexNonLeafPage extends IndexPage {
 		Collection<MidataId> targets = findEntries(key);
 		for (MidataId target : targets) {
 			Collection<IndexMatch> partResult = access(target).lookup(key);
-			if (results == null) results = partResult;
-			else results.addAll(partResult);
+			if (partResult != null) {
+				if (results == null) results = partResult;
+				else results.addAll(partResult);
+			}
 		}
 				
 		return results;

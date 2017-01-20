@@ -5,6 +5,10 @@ import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryResponseComponent;
 
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
+import ca.uhn.fhir.rest.server.exceptions.PreconditionFailedException;
+import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
+import ca.uhn.fhir.rest.server.exceptions.ResourceVersionNotSpecifiedException;
+import utils.exceptions.AppException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
 
@@ -21,12 +25,11 @@ public class UpdateTransactionStep extends TransactionStep {
     	record = ResourceProvider.fetchCurrent(resource.getIdElement());
     }
 	
-	public void prepare() { 
-		try { 
+	public void prepare() throws AppException { 				  
 		  provider.prepare(record, resource);
-		} catch (Exception e) {
-		  setResultBasedOnException(e);
-		}
+		  if (resource.getMeta() == null || resource.getMeta().getVersionId() == null) throw new PreconditionFailedException("Resource version missing!");
+		  if (!record.version.equals(resource.getMeta().getVersionId())) throw new ResourceVersionConflictException("Wrong resource version supplied!") ;
+		
 	}
 	
 	public void execute() {
