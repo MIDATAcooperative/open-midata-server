@@ -53,6 +53,7 @@ import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
+import ca.uhn.fhir.rest.server.exceptions.PreconditionFailedException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
@@ -164,6 +165,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	protected MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam T theResource) {
 
 		try {
+			if (theResource.getMeta() == null || theResource.getMeta().getVersionId() == null) throw new PreconditionFailedException("Resource version missing!");
 			return update(theId, theResource);
 		} catch (BaseServerResponseException e) {
 			throw e;
@@ -422,7 +424,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	}
 	
 	public static void updateRecord(Record record, IBaseResource resource) throws AppException {
-	
+		if (!record.version.equals(resource.getMeta().getVersionId())) throw new ResourceVersionConflictException("Wrong resource version supplied!") ;
 		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 		record.data = (DBObject) JSON.parse(encoded);	
 		record.version = resource.getMeta().getVersionId();

@@ -8,6 +8,7 @@ import org.hl7.fhir.dstu3.model.Resource;
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import models.Record;
 import utils.ErrorReporter;
+import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.FHIRServlet;
@@ -63,7 +64,7 @@ public abstract class TransactionStep {
 	/**
 	 * prepare this action for execution
 	 */
-	public void prepare() {}
+	public void prepare() throws AppException {}
 	
 	/**
 	 * execute this action

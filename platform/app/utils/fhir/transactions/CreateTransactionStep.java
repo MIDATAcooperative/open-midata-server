@@ -27,12 +27,10 @@ public class CreateTransactionStep extends TransactionStep {
     	record = provider.init();
     }
 	
-	public void prepare() { 
-		try {
-		  provider.prepare(record, resource);
-		} catch (AppException e) {
-		  
-		}
+	public void prepare() throws AppException { 
+		
+		provider.prepare(record, resource);
+		
 	}
 	
 	public void execute() {
