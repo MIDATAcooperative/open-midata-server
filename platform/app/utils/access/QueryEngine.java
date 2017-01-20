@@ -270,6 +270,10 @@ class QueryEngine {
 			record.encrypted = r2.encrypted;
 			record.encryptedData = r2.encryptedData;	
 			record.encWatches = r2.encWatches;
+			if (record.stream == null) record.stream = r2.stream;
+			if (record.time == 0) record.time = r2.time;
+			if (record.document == null) record.document = r2.document;
+			if (record.part == null) record.part = r2.part;
 		}
     }
     
