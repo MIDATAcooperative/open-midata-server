@@ -32,10 +32,14 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 	    .state('create', {
 	      url: '/create?measure&authToken',	    
 	      templateUrl: 'create.html'
+	    })
+	    .state('preview', {
+	      url: '/preview?lang&authToken',	   
+	      templateUrl: 'preview.html'
 	    });
 	 
 	 $urlRouterProvider
-	 .otherwise('/overview');  
+	 .otherwise('/preview');  
 }])
 .run(['$translate', '$location', 'midataPortal', 'midataServer', function($translate, $location, midataPortal, midataServer) {
 	console.log("Language: "+midataPortal.language);

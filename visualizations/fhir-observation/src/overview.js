@@ -1,6 +1,6 @@
 angular.module('fhirObservation')
-.controller('OverviewCtrl', ['$scope', '$filter', '$timeout', 'midataServer', 'midataPortal', 'configuration', 'data', 'fhirinfo',
- 	function($scope, $filter, $timeout, midataServer, midataPortal, configuration, data, fhirinfo) {
+.controller('OverviewCtrl', ['$scope', '$filter', '$timeout', '$state', 'midataServer', 'midataPortal', 'configuration', 'data', 'fhirinfo',
+ 	function($scope, $filter, $timeout, $state, midataServer, midataPortal, configuration, data, fhirinfo) {
  			    	     	    
  		$scope.init = function() {
  			console.log("INIT");
@@ -24,12 +24,16 @@ angular.module('fhirObservation')
  		
  		$scope.showDetailsPopup = function(record) {
  			console.log(record);
- 			midataPortal.openLink("page", "dist/index.html#/chart?authToken=:authToken", { measure : record.content });
+ 			$state.go("^.chart", {  measure : record.content });
+ 			
+ 			//midataPortal.openLink("page", "dist/index.html#/chart?authToken=:authToken", { measure : record.content });
  		};
  		
  		$scope.showAddPopup = function(record) {
  			console.log(record);
- 			midataPortal.openLink("modal", "dist/index.html#/create?authToken=:authToken", { measure : record.content });
+ 			$state.go("^.create", { measure : record.content });
+ 			
+ 			//midataPortal.openLink("modal", "dist/index.html#/create?authToken=:authToken", { measure : record.content });
  		};
  		 			 		 		
  		$scope.changePerson = function() {
