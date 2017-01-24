@@ -228,7 +228,7 @@ class APSImplementation extends APS {
 				query.put("_id", idRestriction);
 			}
 			//query.put("direct", Boolean.TRUE);
-			q.addMongoTimeRestriction(query);
+			q.addMongoTimeRestriction(query, false);
 			List<DBRecord> directResult = new ArrayList<DBRecord>(DBRecord.getAll(query, q.getFieldsFromDB()));
 			for (DBRecord record : directResult) {
 				record.key = eaps.getAPSKey() != null ? eaps.getAPSKey() : null;
