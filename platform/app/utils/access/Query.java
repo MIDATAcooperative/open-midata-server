@@ -295,10 +295,18 @@ public class Query {
          if (fields.contains("subformat") || properties.containsKey("subformat") || properties.containsKey("group")) mayNeedFromDB.add("subformat");
          if (fields.contains("created")) mayNeedFromDB.add("created");
          
+         if (properties.containsKey("sort")) {
+			 String sort = properties.get("sort").toString();
+			 if (sort.startsWith("data.")) { fieldsFromDB.add("encryptedData"); }
+			 fetchFromDB = true;
+		 }
+         
          if (restrictedOnTime) fieldsFromDB.add("time");
 		 if (fetchFromDB) fieldsFromDB.add("encrypted");
 		 if (fields.contains("data")) fieldsFromDB.add("encryptedData");
 		 if (fields.contains("watches")) fieldsFromDB.add("encWatches");
+		 
+		 
 				
 		 // TODO Remove later
 		 /*if (fields.contains("data")) fieldsFromDB.add("data");

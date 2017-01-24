@@ -81,7 +81,6 @@
 				</table>
 		<button ng-click="Import()" class="btn btn-primary" translate="import_now"></button>
 		<button ng-click="saveConfig()" class="btn btn-primary" translate="save_changes"></button>
-				<!--<button type="button" class="btn btn-primary" ng-click="submit()" ng-disabled="saving" translate="import_btn"></button>-->
 			</form>
 			<hr>
 			<div class="alert alert-danger alert-dismissable" ng-show="importer.error.message || importer.error.messages.length">
@@ -92,7 +91,9 @@
 				</ul>
 			</div>
 			<p ng-show="importer.status" class="alert alert-info" translate="{{importer.status}}"></p>
-
+			<!--<p ng-show="!importer.requesting" class="alert alert-info" translate="done"></p>
+			<p ng-show="importer.requesting" class="alert alert-info" translate="importing"></p>-->
+			
 			<div ng-show="importer.saving" class="progress">
 				<div class="progress-bar" role="progressbar" ng-style="progress()">
 					<span class="sr-only"></span>

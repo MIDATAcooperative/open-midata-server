@@ -69,7 +69,7 @@ class QueryEngine {
 		Query query = new Query(properties, Sets.create("_id"), cache, inMemory.getId());
 		List<DBRecord> recs = qm.query(query);
 		AccessLog.log("list from memory pre postprocess size = "+recs.size());
-		List<DBRecord> result = postProcessRecords(qm, query.getProperties(), recs);		
+		List<DBRecord> result = postProcessRecords(query.getProperties(), recs);		
 		if (AccessLog.detailedLog) AccessLog.logEnd("End list from memory #recs="+result.size());
 		return result;
 	}
@@ -144,7 +144,7 @@ class QueryEngine {
 		Feature qm = new Feature_Prefetch(new Feature_BlackList(myaps, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_UserGroups(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Streams()))))))));
 				
 		List<DBRecord> recs = qm.query(q);
-		recs = postProcessRecords(qm, q.getProperties(), recs);
+		recs = postProcessRecords(q.getProperties(), recs);
 		
 		for (DBRecord record : recs) {
 			if (record.isStream) {				
@@ -209,7 +209,7 @@ class QueryEngine {
 			AccessLog.log("NULL result");
 		}
 					
-		result = postProcessRecords(qm, properties, result);
+		result = postProcessRecords(properties, result);
 		AccessLog.logEnd("end full query");
 		
 		return result;
@@ -217,6 +217,7 @@ class QueryEngine {
              
     protected static List<DBRecord> query(Map<String, Object> properties, Set<String> fields, MidataId apsId, APSCache cache, Feature qm) throws AppException {
       if (properties.containsKey("$or")) {
+    	  qm = new Feature_SortAndLimit(qm);
     	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
     	  List<DBRecord> result = new ArrayList<DBRecord>();
     	  for (Map<String, Object> prop : col) {
@@ -307,14 +308,27 @@ class QueryEngine {
     	return filteredresult;
     }
     
-    protected static List<DBRecord> postProcessRecords(Feature qm, Map<String, Object> properties, List<DBRecord> result) throws AppException {
+    protected static List<DBRecord> postProcessRecords(Map<String, Object> properties, List<DBRecord> result) throws AppException {
     	if (result.size() > 0) {
     	   result = duplicateElimination(result); 
-	       Collections.sort(result);	    
+    	   
+    	   if (properties.containsKey("sort")) {
+    		 String sortBy = properties.get("sort").toString();
+    		 if (sortBy.startsWith("lastUpdated")) {
+    			 for (DBRecord r : result) {
+    				 if (r.meta.getDate("lastUpdated") == null) r.meta.put("lastUpdated", r.meta.get("created"));
+    			 }
+    		 }
+    		 RecordComparator comp = new RecordComparator(sortBy);
+    		 Collections.sort(result, comp);
+    	   } else {
+	         Collections.sort(result);
+    	   }
+    	   
 	       result = limitResultSize(properties, result);	    
     	}
 	    
-	    AccessLog.log("END Full Query, result size="+result.size());
+	    AccessLog.log("Sort and limit, result size="+result.size());
 	    
 		return result;
     }
@@ -487,6 +501,7 @@ class QueryEngine {
 			//q.addMongoTimeRestriction(query);			
 			return new ArrayList<DBRecord>(DBRecord.getAll(query, queryFields));		
     }
+        
     
     /*protected static List<DBRecord> lookupRecordsByDocument(Query q) throws InternalServerException {    	
 			Map<String, Object> query = new HashMap<String, Object>();
