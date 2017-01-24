@@ -22,7 +22,7 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 	      templateUrl: 'single_record.html'
 	    })
 	    .state('chart', {
-	      url: '/chart?measure&authToken&mode',	   
+	      url: '/chart?measure&authToken&mode&until',	   
 	      templateUrl: 'chart.html'
 	    })
 	    .state('overview', {
@@ -232,13 +232,28 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 	};
 	
 	result.loadSummary = function(alwaysAddMeasures) {
-		return midataServer.getSummary(midataServer.authToken, "SINGLE", { format : ["fhir/Observation"], subformat : ["Quantity", "component"], owner : "self" }) 			
+		return midataServer.getSummary(midataServer.authToken, "SINGLE", { format : ["fhir/Observation"], subformat : ["Quantity", "component"], owner : "self", "include-records" : true }) 			
 		.then(function(sumResult) {
-			var ids = [];
-			var contents = {};
-			angular.forEach(sumResult.data, function(entry) { ids.push(entry.newestRecord);contents[entry.contents[0]] = entry.count; }); 	
-			
+			var queries = [];
 			var res = [];
+			var contents = {};
+			
+			angular.forEach(sumResult.data, function(entry) {
+				if (entry.newestRecordContent.data.effectiveDateTime) {			
+				  queries.push({ "format" : "fhir/Observation", "content" : entry.newestRecordContent.content, "owner" : "self", "index" : { "effectiveDateTime" : { "!!!ge" : entry.newestRecordContent.data.effectiveDateTime } }, "sort" : "data.effectiveDateTime desc", "limit" : 1 } );
+		        } else {
+		          res.push($q.when(entry.newestRecordContent));
+		        } 
+				contents[entry.contents[0]] = entry.count; 
+			});
+			
+			console.log(queries);
+			if (queries.length > 0) {
+				res.push(result.getRecords({ "!!!or" : queries }));				
+			}
+			
+			
+			
 			if (alwaysAddMeasures) {
 				var measures = $filter('filter')(alwaysAddMeasures, function(measure) { return !contents[measure]; });
 				if (measures && measures.length > 0) {
@@ -251,22 +266,23 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 				}
 				
 	 		}
-			
-			if (ids.length > 0) {
-			  res.push(result.getRecords({ ids : ids }));
-			}
+						
 			  
 			return $q.all(res).then(function(r) { return [].concat.apply([], r); });
 		});
 	};
 	
 	result.getRecords = function(params) { 	
-		
+		console.log("D");
 		var query = { "format" : "fhir/Observation" };
-		if (params.content) query.content = params.content;
-		if (params.owner) query.owner = params.owner;
-		if (params.ids) query._id = params.ids;
-		if (params.after && params.before) query.index = { "effectiveDateTime" : { "!!!ge" : params.after, "!!!lt" : params.before }};
+		if (params["!!!or"]) {
+			query = params; 
+		} else {		
+			if (params.content) query.content = params.content;
+			if (params.owner) query.owner = params.owner;
+			if (params.ids) query._id = params.ids;
+			if (params.after && params.before) query.index = { "effectiveDateTime" : { "!!!ge" : params.after, "!!!lt" : params.before }};
+		}
 		console.log(params);
 		return midataServer.getRecords(midataServer.authToken, query, ["name", "created", "content", "data", "owner", "ownerName"])
 		.then(function(results) {
