@@ -190,6 +190,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				
 			if (measurement.to.getTime() - measurement.from.getTime() > 1000 * 60 * 60 * 24 * 365) {
 			  measurement.to = new Date(measurement.from.getTime() + 1000 * 60 * 60 * 24 * 365);
+			  console.log("do repeat");
 			  $scope.repeat = true;
 			}
 		 });		 
@@ -459,7 +460,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			.catch(function(err) {
 					errorMessage("Failed to update record to database: " + err);
 			});*/
-			record.meta = { "version" : version };
+			record.meta = { "versionId" : version };
 			record.id = id;
 			return {
 				"resource" : record,
