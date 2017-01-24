@@ -216,7 +216,7 @@ public class IndexManager {
 		AccessLog.logBegin("start clear indexes");
 		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, false);
 		
-		Set<IndexDefinition> defs = IndexDefinition.getAll(CMaps.map("owner", pseudo), Sets.create("_id"));
+		Set<IndexDefinition> defs = IndexDefinition.getAll(CMaps.map("owner", pseudo.getPseudonym()), Sets.create("_id"));
 		
 		for (IndexDefinition def : defs) {
 			IndexDefinition.delete(def._id);

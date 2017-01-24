@@ -18,6 +18,7 @@ import models.MidataId;
 import models.Plugin;
 import models.RecordGroup;
 import utils.AccessLog;
+import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -218,8 +219,14 @@ public class Query {
 		return maxDateUpdated;
 	}
 	
-	public void addMongoTimeRestriction(Map<String, Object> properties) {
+	public void addMongoTimeRestriction(Map<String, Object> properties1, boolean allowZero) {
+		Map<String, Object> properties = properties1;		
 		if (minTime != 0 || maxTime != 0) {
+			if (allowZero) {
+				Map<String, Object> prop2 = CMaps.map();
+				properties.putAll(CMaps.or(CMaps.map("time", 0), prop2) );
+				properties = prop2;
+			}
 			if (minTime == maxTime) {
 				properties.put("time", minTime);
 			} else {

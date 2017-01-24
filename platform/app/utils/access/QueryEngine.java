@@ -267,7 +267,13 @@ class QueryEngine {
     protected static void fetchFromDB(Query q, DBRecord record) throws InternalServerException {
     	if (record.encrypted == null) {
 			DBRecord r2 = DBRecord.getById(record._id, q.getFieldsFromDB());
-			if (r2 == null) throw new InternalServerException("error.internal", "Record with id "+record._id.toString()+" not found in database. Account needs repair?");			
+			if (r2 == null) throw new InternalServerException("error.internal", "Record with id "+record._id.toString()+" not found in database. Account needs repair?");
+			fetchFromDB(record, r2);			
+		}
+    }
+    
+    protected static void fetchFromDB(DBRecord record, DBRecord r2) throws InternalServerException {
+    	if (record.encrypted == null) {			
 			record.encrypted = r2.encrypted;
 			record.encryptedData = r2.encryptedData;	
 			record.encWatches = r2.encWatches;
@@ -333,16 +339,27 @@ class QueryEngine {
 		return result;
     }
     
+    
+    
     protected static List<DBRecord> postProcessRecordsFilter(Query q, List<DBRecord> result) throws AppException {
     	if (result.size() > 0) {
     	AccessLog.logBegin("begin process filters size="+result.size());    	
 			    	
     	int minTime = q.getMinTime();
-    	int compress = 0;    	    	
+    	int compress = 0;    
+    	Map<MidataId, DBRecord> fetchIds = new HashMap<MidataId, DBRecord>();
+    	
     	if (q.getFetchFromDB()) {	
-    		result = duplicateElimination(result);
+    		//result = duplicateElimination(result);    		
 			for (DBRecord record : result) {
-				fetchFromDB(q, record);
+				if (record.encrypted == null) fetchIds.put(record._id, record);				
+			}
+			List<DBRecord> read = lookupRecordsById(q, fetchIds.keySet());			
+			for (DBRecord record : read) {
+				DBRecord old = fetchIds.get(record._id);
+				fetchFromDB(old, record);
+			}
+			for (DBRecord record : result) {
 				if (minTime == 0 || record.time ==0 || record.time >= minTime) {
 				  RecordEncryption.decryptRecord(record);
 				  if (!record.meta.containsField("creator")) record.meta.put("creator", record.owner);
@@ -493,12 +510,16 @@ class QueryEngine {
     	return result;
     }
     
-    protected static List<DBRecord> lookupRecordsById(Query q) throws AppException {    	
+    protected static List<DBRecord> lookupRecordsById(Query q) throws AppException {
+    	return lookupRecordsById(q, q.getMidataIdRestriction("_id"));
+    }
+    	
+    protected static List<DBRecord> lookupRecordsById(Query q, Set<MidataId> ids) throws AppException {  
 			Map<String, Object> query = new HashMap<String, Object>();
 			Set<String> queryFields = Sets.create("stream", "time", "document", "part", "direct");
 			queryFields.addAll(q.getFieldsFromDB());
-			query.put("_id", q.getMidataIdRestriction("_id"));
-			//q.addMongoTimeRestriction(query);			
+			query.put("_id", ids);
+			q.addMongoTimeRestriction(query, true);			
 			return new ArrayList<DBRecord>(DBRecord.getAll(query, queryFields));		
     }
         
