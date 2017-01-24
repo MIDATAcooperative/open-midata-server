@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.apache.http.HttpStatus;
 import org.bson.BSONObject;
+import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 
 import models.APSNotExistingException;
@@ -318,6 +319,9 @@ public class RecordManager {
 			List<DBRecord> content = QueryEngine.listInternal(getCache(who), targetAPS, CMaps.map("redirect-only", "true"), fields);
 			
 			apswrapper.addPermission(content, true);
+			
+			Feature_Expiration.setup(apswrapper);
+						
 			apswrapper.removeMeta("_query");
 			AccessLog.logEnd("end materialize query");
 		}
@@ -646,6 +650,7 @@ public class RecordManager {
 		    if (!unencrypted.direct && !documentPart) apswrapper.addPermission(unencrypted, false);
 			else apswrapper.touch();
 		    
+		    Feature_Expiration.check(getCache(executingPerson), apswrapper);
 			
 		} else {
 			record.time = 0;
