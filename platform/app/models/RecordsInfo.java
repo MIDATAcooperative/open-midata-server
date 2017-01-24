@@ -62,6 +62,8 @@ public class RecordsInfo {
 	 * _id of newest record summarized in this entry
 	 */
 	public MidataId newestRecord;	
+	
+	public Record newestRecordContent;
 
 	
     public RecordsInfo() {
