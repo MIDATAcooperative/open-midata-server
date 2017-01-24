@@ -3,6 +3,7 @@ angular.module('fhirObservation')
  	function($scope, $filter, $state, midataServer, midataPortal, configuration, data, fhirinfo) {
  		
 	var measure = $scope.measure = $state.params.measure;
+	var until = $scope.until = $state.params.until;
 	
 	$scope.data = data;
 	
@@ -32,14 +33,14 @@ angular.module('fhirObservation')
 	   .then(function() {
 		   if (!configuration.owner) configuration.owner = "self";
 	
-		   midataServer.getSummary(midataServer.authToken, "SINGLE", { format : ["fhir/Observation"], content : measure,  owner : "self" }) 			
+		   midataServer.getSummary(midataServer.authToken, "SINGLE", { format : ["fhir/Observation"], content : measure,  owner : "self"}) 			
 		   .then(function(sumResult) {
 			  if (!sumResult.data || sumResult.data.length === 0) return;
 			  var entry = sumResult.data[0];
 			  if (entry.count < 30) {
 				$scope.timing.dateFrom = $scope.timing.dateTo = null;  
-			  } else {
-				$scope.timing.dateTo = new Date(entry.newest);
+			  } else {				  				  
+				$scope.timing.dateTo = until ? new Date(until) : new Date(entry.newest);
 				$scope.timing.dateTo.setMilliseconds(0);
 				$scope.timing.dateTo.setMinutes(0);
 				$scope.timing.dateTo.setHours(24);				

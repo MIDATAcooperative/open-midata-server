@@ -25,6 +25,8 @@ public class RecordConversion {
 		record.creator = MidataId.from(dbrecord.meta.get("creator"));
 		record.name = (String) dbrecord.meta.get("name");				
 		record.created = (Date) dbrecord.meta.get("created");
+		record.lastUpdated = (Date) dbrecord.meta.get("lastUpdated");
+		if (record.lastUpdated == null) record.lastUpdated = record.created;
 		record.description = (String) dbrecord.meta.get("description");
 		record.version = (String) dbrecord.meta.get("version");
 		if (record.version == null) record.version = VersionedDBRecord.INITIAL_VERSION;
@@ -67,6 +69,7 @@ public class RecordConversion {
 		meta.put("creator", record.creator != null ? record.creator.toDb() : null);
 		meta.put("name", record.name);
 		meta.put("created", record.created);
+		if (record.lastUpdated != null) meta.put("lastUpdated", record.lastUpdated);
 		meta.put("description", record.description);
 		meta.put("version", record.version);
 		meta.put("tags", record.tags);

@@ -37,16 +37,20 @@ public class IndexManager {
 	
 	private static long UPDATE_TIME = 1000 * 10;
 
-	public String getIndexPseudonym(APSCache cache, MidataId user) throws AppException {		
+	public IndexPseudonym getIndexPseudonym(APSCache cache, MidataId user, MidataId targetAPS, boolean create) throws AppException {		
 
-		BSONObject obj = cache.getAPS(user).getMeta("_pseudo");
+		APS aps = cache.getAPS(targetAPS);
+		BSONObject obj = aps.getMeta("_pseudo");
 		
-		if (obj == null) {
-			obj = new BasicBSONObject();
-			obj.put("name", UUID.randomUUID());
-			cache.getAPS(user).setMeta("_pseudo", obj.toMap());			
+		if (obj == null && !create && !user.equals(targetAPS)) return null;
+				
+		if (obj == null) { 
+		obj = new BasicBSONObject();
+		obj.put("name", UUID.randomUUID());
+		aps.setMeta("_pseudo", obj.toMap());			
 		}
-		return obj.get("name").toString();
+		
+		return new IndexPseudonym(obj.get("name").toString(), ((APSImplementation) aps).eaps.getAPSKey());
 	}
 
 	/**
@@ -58,17 +62,17 @@ public class IndexManager {
 	 *            format of records stored in the index
 	 * @param fields
 	 */
-	public IndexDefinition createIndex(APSCache cache, MidataId user, Set<String> formats, List<String> fields) throws AppException {
+	public IndexDefinition createIndex(IndexPseudonym pseudo, Set<String> formats, List<String> fields) throws AppException {
 
 		IndexDefinition indexDef = new IndexDefinition();
 
 		indexDef._id = new MidataId();
 		indexDef.fields = fields;
 		indexDef.formats = new ArrayList<String>(formats);
-		indexDef.owner = getIndexPseudonym(cache, user);
+		indexDef.owner = pseudo.getPseudonym();
 		indexDef.lockTime = System.currentTimeMillis();
 								
-		IndexRoot root = new IndexRoot(getIndexKey(cache, user), indexDef, true);
+		IndexRoot root = new IndexRoot(pseudo.getKey(), indexDef, true);
 		
 		root.prepareToCreate();
 		IndexDefinition.add(indexDef);
@@ -76,12 +80,7 @@ public class IndexManager {
 		indexDef.lockTime = 0;
 		return indexDef;
 	}
-	
-	private byte[] getIndexKey(APSCache cache, MidataId user) throws AppException {
-		APS aps = cache.getAPS(user, user);
-		return ((APSImplementation) aps).eaps.getAPSKey();
-	}
-	
+			
 	protected void addRecords(IndexRoot index, MidataId aps, Collection<DBRecord> records) throws AppException, LostUpdateException {
 		for (DBRecord record : records) {
 			QueryEngine.loadData(record);
@@ -201,22 +200,21 @@ public class IndexManager {
 		return matches;		
 	}
 	
-	public IndexRoot getIndexRootAndUpdate(APSCache cache, MidataId user, IndexDefinition idx, Set<MidataId> targetAps) throws AppException {
-		IndexRoot root = new IndexRoot(getIndexKey(cache, user), idx, false);		
+	public IndexRoot getIndexRootAndUpdate(IndexPseudonym pseudo, APSCache cache, MidataId user, IndexDefinition idx, Set<MidataId> targetAps) throws AppException {
+		IndexRoot root = new IndexRoot(pseudo.getKey(), idx, false);		
 		indexUpdate(cache, root, user, targetAps);		
 		return root;
 	}
 	
-	public IndexDefinition findIndex(APSCache cache, MidataId user, Set<String> format, List<String> pathes) throws AppException {
-		String owner = getIndexPseudonym(cache, user);
-		Set<IndexDefinition> res = IndexDefinition.getAll(CMaps.map("owner", owner).map("formats", CMaps.map("$all", format)).map("fields", CMaps.map("$all", pathes)), IndexDefinition.ALL);
+	public IndexDefinition findIndex(IndexPseudonym pseudo, Set<String> format, List<String> pathes) throws AppException {		
+		Set<IndexDefinition> res = IndexDefinition.getAll(CMaps.map("owner", pseudo.getPseudonym()).map("formats", CMaps.map("$all", format)).map("fields", CMaps.map("$all", pathes)), IndexDefinition.ALL);
 		if (res.size() == 1) return res.iterator().next();
 		return null;
 	}
 	
 	public void clearIndexes(APSCache cache, MidataId user) throws AppException {
 		AccessLog.logBegin("start clear indexes");
-		String pseudo = getIndexPseudonym(cache, user);
+		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, false);
 		
 		Set<IndexDefinition> defs = IndexDefinition.getAll(CMaps.map("owner", pseudo), Sets.create("_id"));
 		

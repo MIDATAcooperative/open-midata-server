@@ -24,7 +24,7 @@ angular.module('fhirObservation')
  		
  		$scope.showDetailsPopup = function(record) {
  			console.log(record);
- 			midataPortal.openLink("page", "dist/index.html#/chart?authToken=:authToken", { measure : record.content });
+ 			midataPortal.openLink("page", "dist/index.html#/chart?authToken=:authToken", { measure : record.content, until : record.data.effectiveDateTime });
  		};
  		
  		$scope.showAddPopup = function(record) {

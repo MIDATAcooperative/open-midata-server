@@ -344,11 +344,19 @@ public class PluginsAPI extends APIController {
 		} else {
 							
 			AggregationType aggrType = JsonValidation.getEnum(json, "summarize", AggregationType.class);		
-		    result = RecordManager.instance.info(authToken.executorId, targetAps, properties, aggrType);	
+		    result = RecordManager.instance.info(authToken.executorId, targetAps, properties, aggrType);
+
+		    if (properties.containsKey("include-records")) {
+			    for (RecordsInfo inf : result) {
+			    	if (inf.newestRecord != null) {
+			    		inf.newestRecordContent = RecordManager.instance.fetch(authToken.executorId, targetAps, inf.newestRecord);
+			    	}
+			    }
+		    }
 
 		}
 	    if (fields.contains("ownerName")) ReferenceTool.resolveOwnersForRecordsInfo(result, true);
-		return ok(Json.toJson(result));
+		return ok(JsonOutput.toJson(result, "Record", Record.ALL_PUBLIC));
 	}
 	
 	/**
