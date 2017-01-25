@@ -3,7 +3,7 @@
   "description": "MIDATA Plugin",
   "version": "1.0.0",
   "dependencies": {
-    "angular": "~1.5.8",
+    "angular": "~1.5.9",
     "angular-ui-router": "~1.0.0-beta.2",
     "angular-bootstrap": "~1.2.5",
     "bootstrap": "3.3.7",
