@@ -340,38 +340,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 				throw new UnprocessableEntityException("Cannot process effectiveDateTime");
 			}
 		}
-		record.name = display != null ? (display + " / " + date) : date;
-
-		// Set Record subtype
-		Type valType = theObservation.getValue();
-		if ((valType == null || valType.isEmpty()) && !theObservation.getComponent().isEmpty()) {
-			record.subformat = "component";
-		} else if (valType == null || valType.isEmpty()) {
-			throw new UnprocessableEntityException("Observation must have a value or component");
-		} else if (valType instanceof StringType)
-			record.subformat = "String";
-		else if (valType instanceof Quantity)
-			record.subformat = "Quantity";
-		else if (valType instanceof BooleanType)
-			record.subformat = "Boolean";
-		else if (valType instanceof CodeableConcept)
-			record.subformat = "CodeableConcept";
-		else if (valType instanceof Range)
-			record.subformat = "Range";
-		else if (valType instanceof Ratio)
-			record.subformat = "Ratio";
-		else if (valType instanceof SampledData)
-			record.subformat = "SampledData";
-		else if (valType instanceof Attachment)
-			record.subformat = "Attachment";
-		else if (valType instanceof TimeType)
-			record.subformat = "Time";
-		else if (valType instanceof DateTimeType)
-			record.subformat = "DateTime";
-		else if (valType instanceof Period)
-			record.subformat = "Period";		  		  		  
-		else
-			throw new UnprocessableEntityException("Value Type not Implemented");
+		record.name = display != null ? (display + " / " + date) : date;		
 
 		// clean
 		Reference subjectRef = theObservation.getSubject();

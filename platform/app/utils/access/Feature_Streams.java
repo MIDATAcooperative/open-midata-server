@@ -36,7 +36,7 @@ public class Feature_Streams extends Feature {
 		
 	}
 	
-	public final static Set<String> streamFields = Sets.create("content", "format", "subformat");					
+	public final static Set<String> streamFields = Sets.create("content", "format", "app");					
 	
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {		

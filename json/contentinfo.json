@@ -187,3 +187,4 @@
 {"_id":{"$oid":"587f507daed645217a8c1a37"},"content":"condition/icd-10-c9x","defaultCode":"http://hl7.org/fhir/sid/icd-10 C91.0","security":"HIGH","label":{"en":"Leukemia"}}
 {"_id":{"$oid":"587f53fdaed645217a8c1a38"},"content":"work/field-of-occupation","defaultCode":"http://midata.coop FieldOfOccupation","security":"MEDIUM","label":{"en":"Field Of Occupation"},"resourceType":"fhir/Observation","subType":"CodeableConcept","category":"social-history"}
 {"_id":{"$oid":"5880af3baed64515f44314fd"},"content":"quality-of-life","defaultCode":"http://loinc.org 72098-7","security":"MEDIUM","label":{"en":"Quality of life score"},"resourceType":"fhir/Observation","subType":"Quantity","category":"survey"}
+{"_id":{"$oid":"5888c31baed6450ed3ada92a"},"content":"karegenda/task","defaultCode":"http://midata.coop/karegenda Task","security":"MEDIUM","label":{"en":"Karegenda Task"}}

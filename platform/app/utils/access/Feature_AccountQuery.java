@@ -140,7 +140,7 @@ public class Feature_AccountQuery extends Feature {
 		return consents;
 	}
 	
-	protected static boolean mainApsIncluded(Query q) throws BadRequestException {
+	protected static boolean mainApsIncluded(Query q) throws AppException {
 		if (!q.restrictedBy("owner")) return true;
 		Set<String> sets = q.getRestriction("owner");
 		return sets.contains("self") || sets.contains("all") || sets.contains(q.getApsId().toString());

@@ -42,7 +42,7 @@ public class AccountPatches {
 	   for (Record r : recs) {
 		   MidataId oldId = r._id;
 		   r._id = new MidataId();
-		   r.subformat = r.format.substring(r.format.lastIndexOf('/')+1);
+		   
 		   r.format = "fhir/Observation";
 		   try {
 		     RecordManager.instance.addRecord(user._id, r);

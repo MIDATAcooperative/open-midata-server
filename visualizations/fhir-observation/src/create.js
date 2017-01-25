@@ -56,7 +56,7 @@ angular.module('fhirObservation')
 			}			
 																					
 			$scope.isBusy = true;
-			midataServer.createRecord(midataServer.authToken, { "name" : $scope.format.label, "content" : $scope.format.content, format : "fhir/Observation", subformat : $scope.format.type }, $scope.newentry )
+			midataServer.createRecord(midataServer.authToken, { "name" : $scope.format.label, "content" : $scope.format.content, format : "fhir/Observation" }, $scope.newentry )
 			.then(function() { 
 				$scope.success = true; 
 				$scope.isBusy = false; 

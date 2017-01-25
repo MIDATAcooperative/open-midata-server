@@ -337,7 +337,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 			.then(function (response) {
 
 				// get summary
-				midataServer.getSummary(authToken, "content", { "format": "fhir/Observation", "subformat": "Quantity", "app": "withings" })
+				midataServer.getSummary(authToken, "content", { "format": "fhir/Observation", "app": "withings" })
 					.then(function (response) {
 						var map = {};
 
@@ -542,7 +542,8 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 	};
 
 	var updateRecord = function (authToken, id, version, record) {
-		record.meta = { "version": version };
+	
+		record.meta = { "versionId": version };
 		record.id = id;
 		return {
 			"resource": record,

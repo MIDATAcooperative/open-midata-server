@@ -17,6 +17,7 @@ import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
 
+import controllers.Circles;
 import models.APSNotExistingException;
 import models.AccessPermissionSet;
 import models.Consent;
@@ -59,12 +60,12 @@ public class RecordManager {
 	public final static Set<String> INTERNALIDONLY = Sets.create("_id");
 	public final static Set<String> INTERNALID_AND_WACTHES = Sets.create("_id","watches");
 	public final static Set<String> COMPLETE_META = Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format", "subformat", "content", "code", "description", "isStream", "lastUpdated");
+			"app", "creator", "created", "name", "format",  "content", "code", "description", "isStream", "lastUpdated");
 	public final static Set<String> COMPLETE_DATA = Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format", "subformat", "content", "code", "description", "isStream", "lastUpdated",
+			"app", "creator", "created", "name", "format", "content", "code", "description", "isStream", "lastUpdated",
 			"data", "group");
 	public final static Set<String> COMPLETE_DATA_WITH_WATCHES = Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format", "subformat", "content", "code", "description", "isStream", "lastUpdated",
+			"app", "creator", "created", "name", "format",  "content", "code", "description", "isStream", "lastUpdated",
 			"data", "group", "watches", "stream");
 	//public final static String STREAM_TYPE = "Stream";
 	public final static Map<String, Object> STREAMS_ONLY = CMaps.map("streams", "only").map("flat", "true");
@@ -240,7 +241,7 @@ public class RecordManager {
 		APS apswrapper = getCache(who).getAPS(toAPS);
 		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(who), fromAPS,
 				records != null ? CMaps.map("_id", records) : RecordManager.FULLAPS_FLAT,
-				Sets.create("_id", "key", "owner", "format", "subformat", "content", "created", "name", "isStream", "stream"));
+				Sets.create("_id", "key", "owner", "format", "content", "created", "name", "isStream", "stream"));
 		
 		List<DBRecord> alreadyContained = QueryEngine.isContainedInAps(getCache(who), toAPS, recordEntries);
 		AccessLog.log("to-share: "+recordEntries.size()+" already="+alreadyContained.size());
@@ -313,17 +314,27 @@ public class RecordManager {
 	public void materialize(MidataId who, MidataId targetAPS) throws AppException {
 		APS apswrapper = getCache(who).getAPS(targetAPS);
 		if (apswrapper.getMeta("_query") != null) {
+
 			AccessLog.logBegin("start materialize query APS="+targetAPS.toString());
 			Set<String> fields = Sets.create("owner");
 			fields.addAll(APSEntry.groupingFields);
 			List<DBRecord> content = QueryEngine.listInternal(getCache(who), targetAPS, CMaps.map("redirect-only", "true"), fields);
+			Set<MidataId> ids = new HashSet<MidataId>();
+			for (DBRecord rec : content) ids.add(rec._id);
 			
-			apswrapper.addPermission(content, true);
-			
-			Feature_Expiration.setup(apswrapper);
-						
+			BasicBSONObject query = apswrapper.getMeta("_query");
+			Circles.setQuery(who, targetAPS, query);
 			apswrapper.removeMeta("_query");
+       	    RecordManager.instance.applyQuery(who, query, who, targetAPS, true);
+			
+       	    RecordManager.instance.share(who, who, targetAPS, ids, true);
+             
+			
+			//Feature_Expiration.setup(apswrapper);
+						
+			
 			AccessLog.logEnd("end materialize query");
+
 		}
 		if (apswrapper.getMeta("_filter") != null) {
 			AccessLog.logBegin("start materialize consent APS="+targetAPS.toString());
@@ -362,7 +373,7 @@ public class RecordManager {
         AccessLog.logBegin("begin unshare who="+who.toString()+" aps="+apsId.toString()+" #recs="+records.size());
 		APS apswrapper = getCache(who).getAPS(apsId);
 		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(who), apsId,
-				CMaps.map("_id", records), Sets.create("_id", "format", "subformat", "content", "watches"));		
+				CMaps.map("_id", records), Sets.create("_id", "format", "content", "watches"));		
 		apswrapper.removePermission(recordEntries);
 		for (DBRecord rec : recordEntries) RecordLifecycle.removeWatchingAps(rec, apsId);
 		AccessLog.logEnd("end unshare");
@@ -650,7 +661,7 @@ public class RecordManager {
 		    if (!unencrypted.direct && !documentPart) apswrapper.addPermission(unencrypted, false);
 			else apswrapper.touch();
 		    
-		    Feature_Expiration.check(getCache(executingPerson), apswrapper);
+		    //Feature_Expiration.check(getCache(executingPerson), apswrapper);
 			
 		} else {
 			record.time = 0;
@@ -804,7 +815,7 @@ public class RecordManager {
 		if (properties.containsKey("format/*")) nproperties.put("format/*", properties.get("format/*"));
 		if (properties.containsKey("content")) nproperties.put("content", properties.get("content"));
 		if (properties.containsKey("content/*")) nproperties.put("content/*", properties.get("content/*"));
-		if (properties.containsKey("subformat")) nproperties.put("subformat", properties.get("subformat"));
+		if (properties.containsKey("app")) nproperties.put("app", properties.get("app"));
 		if (properties.containsKey("group")) nproperties.put("group", properties.get("group"));
 		
 		try {
