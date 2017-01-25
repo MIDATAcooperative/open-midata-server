@@ -337,7 +337,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     public Patient generatePatientForAccount(Member member) {
     	Patient p = new Patient();
 		p.setId(member._id.toString());
-		p.addName().addFamily(member.lastname).addGiven(member.firstname);
+		p.addName().setFamily(member.lastname).addGiven(member.firstname);
 		p.setBirthDate(member.birthday);
 		p.addIdentifier().setSystem("http://midata.coop/midataID").setValue(member.midataID);
 		p.setGender(AdministrativeGender.valueOf(member.gender.toString()));

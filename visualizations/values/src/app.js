@@ -202,7 +202,7 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 			//envelope[$scope.newentry.format.objkey] = [ data ];
 			
 			$scope.isBusy = true;
-			midataServer.createRecord(authToken, { "name" : $scope.newentry.format.label, "description" :"Manually entered "+$scope.newentry.format.label, "content" : $scope.newentry.format.content, format : "fhir/Observation", subformat : "Quantity" }, envelope)
+			midataServer.createRecord(authToken, { "name" : $scope.newentry.format.label, "description" :"Manually entered "+$scope.newentry.format.label, "content" : $scope.newentry.format.content, format : "fhir/Observation" }, envelope)
 			.then(function() { $scope.success = true; $scope.isBusy = false; $scope.reset(); $timeout(function() { $scope.success = false; }, 2000); });			
 		};
 					

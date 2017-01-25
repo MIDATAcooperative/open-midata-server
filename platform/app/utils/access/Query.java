@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bson.types.ObjectId;
 import org.joda.time.format.ISODateTimeFormat;
 
 import models.ContentCode;
@@ -45,7 +46,7 @@ public class Query {
 	private APSCache cache;
 	private MidataId apsId;		
 		
-	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId) throws BadRequestException, InternalServerException {
+	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId) throws AppException {
 		this.properties = properties;
 		this.fields = fields;
 		this.cache = cache;
@@ -54,11 +55,11 @@ public class Query {
 		AccessLog.logQuery(properties, fields);
 	}
 	
-	public Query(Query q, Map<String, Object> properties) throws BadRequestException, InternalServerException {
+	public Query(Query q, Map<String, Object> properties) throws AppException {
 		this(q, properties, q.getApsId());
 	}
 	
-	public Query(Query q, Map<String, Object> properties, MidataId aps) throws BadRequestException, InternalServerException {
+	public Query(Query q, Map<String, Object> properties, MidataId aps) throws AppException {
 		this.properties = new HashMap<String, Object>(q.getProperties());
 		this.properties.putAll(properties);
 		this.fields = q.getFields();
@@ -101,22 +102,24 @@ public class Query {
 		return restrictedOnTime;
 	}
 	
-	public boolean isRestrictedToSelf() throws BadRequestException {
+	public boolean isRestrictedToSelf() throws AppException {
 		if (!restrictedBy("owner")) return false;
 		Set<String> owner = getRestriction("owner");
 		if (owner.size() == 1 && (owner.contains("self") || owner.contains(cache.getOwner().toString()))) return true;
 		return false;
 	}
 	
-	public Set<String> getRestriction(String name) throws BadRequestException {
+	public Set<String> getRestriction(String name) throws AppException {
 		Object v = properties.get(name);
 		return getRestriction(v, name);		
 	}
 	
-	public static Set<String> getRestriction(Object v, String name) throws BadRequestException {		
+	public static Set<String> getRestriction(Object v, String name) throws AppException {		
 		if (v instanceof String) {
 			return Collections.singleton((String) v);
 		} else if (v instanceof MidataId) {
+			return Collections.singleton(v.toString());
+		} else if (v instanceof ObjectId) {
 			return Collections.singleton(v.toString());
 		} else if (v instanceof Set) {
 			return (Set) v;
@@ -124,7 +127,7 @@ public class Query {
 			Set<String> results = new HashSet<String>();
 			for (Object val : (Collection) v) { results.add(val.toString()); }			
 			return results;											
-		} else throw new BadRequestException("error.internal","Bad Restriction 1: "+name);
+		} else throw new InternalServerException("error.internal","Bad Restriction 1: "+name);
 	}
 	
 	public Set<MidataId> getMidataIdRestriction(String name) throws BadRequestException {
@@ -154,6 +157,21 @@ public class Query {
 			return results;		
 		} else if (v instanceof String && MidataId.isValid((String) v)) {
 			return Collections.singleton( new MidataId((String) v).toDb());
+		} else throw new BadRequestException("error.internal", "Bad Restriction 2: "+name);
+	}
+	
+	public Set<String> getIdRestrictionAsString(String name) throws BadRequestException {
+		Object v = properties.get(name);
+		if (v instanceof MidataId) {
+			return Collections.singleton(((MidataId) v).toString());
+		/*} else if (v instanceof Set) {
+			return (Set) v;*/
+		} else if (v instanceof Collection) {
+			Set<String> results = new HashSet<String>();
+			for (Object obj : (Collection<?>) v) { results.add(obj.toString()); }			
+			return results;		
+		} else if (v instanceof String && MidataId.isValid((String) v)) {
+			return Collections.singleton((String) v);
 		} else throw new BadRequestException("error.internal", "Bad Restriction 2: "+name);
 	}
 	
@@ -271,18 +289,18 @@ public class Query {
 		throw new BadRequestException("error.invalid.string", "Restriction on field '"+name+"' must be string.");		
 	}
 	
-	private void process() throws BadRequestException, InternalServerException {
+	private void process() throws AppException {
 		 if (fields.contains("group")) fields.add("content");
 		
 		 fetchFromDB = fields.contains("data") ||
-	              fields.contains("app") || 
+	              //fields.contains("app") || 
 	              fields.contains("creator") || 	             
 	              fields.contains("name") ||
 	              fields.contains("code") || 
 	              fields.contains("description") || 
 	              fields.contains("tags") ||	              
 	              fields.contains("watches") ||
-	              properties.containsKey("app") ||
+	              //properties.containsKey("app") ||
 	              properties.containsKey("creator") ||
 	              properties.containsKey("code") ||
 	              properties.containsKey("name");
@@ -299,7 +317,7 @@ public class Query {
          }
          if (fields.contains("format") || properties.containsKey("format") || properties.containsKey("group")) mayNeedFromDB.add("format");
          if (fields.contains("content") || properties.containsKey("content") || properties.containsKey("group")) mayNeedFromDB.add("content");
-         if (fields.contains("subformat") || properties.containsKey("subformat") || properties.containsKey("group")) mayNeedFromDB.add("subformat");
+         if (fields.contains("app") || properties.containsKey("app") || properties.containsKey("group")) mayNeedFromDB.add("app");
          if (fields.contains("created")) mayNeedFromDB.add("created");
          
          if (properties.containsKey("sort")) {
@@ -358,8 +376,9 @@ public class Query {
 			 Set<MidataId> resolved = new HashSet<MidataId>();
 			 for (Object app : apps) {
 				 if (!MidataId.isValid(app.toString())) {
-					 Plugin p = Plugin.getByFilename(app.toString(), Sets.create("_id"));	
+					 Plugin p = Plugin.getByFilename(app.toString(), Sets.create("_id"));					 
 					 if (p!=null) resolved.add(p._id);
+					 else throw new BadRequestException("error.internal", "Queried for unknown app.");
 				 } else resolved.add(new MidataId(app.toString()));
 			 }
 			 properties.put("app", resolved);

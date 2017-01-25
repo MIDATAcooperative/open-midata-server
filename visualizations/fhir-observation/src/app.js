@@ -232,7 +232,7 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 	};
 	
 	result.loadSummary = function(alwaysAddMeasures) {
-		return midataServer.getSummary(midataServer.authToken, "SINGLE", { format : ["fhir/Observation"], subformat : ["Quantity", "component"], owner : "self", "include-records" : true }) 			
+		return midataServer.getSummary(midataServer.authToken, "SINGLE", { format : ["fhir/Observation"], owner : "self", "include-records" : true }) 			
 		.then(function(sumResult) {
 			var queries = [];
 			var res = [];

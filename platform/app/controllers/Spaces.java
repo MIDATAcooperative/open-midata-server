@@ -201,8 +201,9 @@ public class Spaces extends Controller {
 			throw new BadRequestException("error.unknown.space", "Space does not exist");
 		}
 		
+		Circles.removeQueries(userId, spaceId);
 		RecordManager.instance.deleteAPS(space._id, userId);
-
+		
 		// delete space		
 		Space.delete(userId, spaceId);
 		

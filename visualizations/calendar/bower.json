@@ -2,9 +2,9 @@
   "name": "calendar",
   "version": "0.0.1",
   "dependencies": {
-    "angular": "~1.5.3",
+    "angular": "~1.5.9",
     "angular-bootstrap": "~0.14.3",
-    "angular-route": "1.2.25",
+    "angular-route": "~1.5.9",
     "bootstrap": "3.3.5",
     "midata": "git://github.com/MIDATAcooperative/midata-plugin-library.git",
     "angular-translate": "^2.11.0",
@@ -19,6 +19,6 @@
     }
   },
   "resolutions": {
-    "angular": "~1.5.3"
+    "angular": "~1.5.9"
   }
 }
