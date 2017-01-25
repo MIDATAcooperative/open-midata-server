@@ -252,7 +252,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			 reqDone();
 		  }, function() { reqDone(); });
 		
-		  midataServer.getSummary(authToken, "content" , { "format" : "fhir/Observation" , "subformat" : "Quantity", "app" : "fitbit" })
+		  midataServer.getSummary(authToken, "content" , { "format" : "fhir/Observation" , "app" : "fitbit" })
 		  .then(function(response) {
 			var map = {};
 			angular.forEach($scope.measurements, function(measurement) {

@@ -41,7 +41,7 @@ class QueryEngine {
 	}
 	
 	public static Collection<RecordsInfo> info(APSCache cache, MidataId aps, Map<String, Object> properties, AggregationType aggrType) throws AppException {
-		return infoQuery(new Query(properties, Sets.create("created", "group", "content", "format", "owner"), cache, aps), aps, false, aggrType, null);
+		return infoQuery(new Query(properties, Sets.create("created", "group", "content", "format", "owner", "app"), cache, aps), aps, false, aggrType, null);
 	}
 	
 	public static List<DBRecord> isContainedInAps(APSCache cache, MidataId aps, List<DBRecord> candidates) throws AppException {
@@ -97,10 +97,10 @@ class QueryEngine {
 		  BasicBSONObject query = myaps.getMeta(APS.QUERY);
 		  if (query != null) {
 			  Map<String, Object> queryMap = query.toMap();
-			  if (queryMap.containsKey("app")) {
+			  /*if (queryMap.containsKey("app")) {
 				  doNotCacheInStreams = true;
 				  doNotQueryPerStream = true;
-			  }
+			  }*/
 		  }
 		}
 		
@@ -112,7 +112,7 @@ class QueryEngine {
 		if (cached) {
 			String groupSystem = q.getStringRestriction("group-system");			
 			BasicBSONObject obj = myaps.getMeta("_info");
-			if (obj != null) { 
+			if (obj != null && obj.containsField("apps")) { // Check for apps for compatibility with old versions 
 				
 				RecordsInfo inf = new RecordsInfo();
 				inf.count = obj.getInt("count");				
@@ -121,6 +121,7 @@ class QueryEngine {
 				inf.newestRecord = new MidataId(obj.getString("newestRecord"));								
 				inf.formats.add(obj.getString("formats"));
 				inf.contents.add(obj.getString("contents"));
+				inf.apps.add(MidataId.from(obj.getString("apps")));
 				for (String content : inf.contents) inf.groups.add(RecordGroup.getGroupForSystemAndContent(groupSystem, content));
 				if (owner != null) inf.owners.add(owner.toString());
 				inf.calculated = obj.getDate("calculated");
@@ -178,15 +179,18 @@ class QueryEngine {
 		AccessLog.logEnd("end infoQuery result: cached="+cached+" records="+recs.size()+" result="+result.size());
 		if (cached && recs.size()>0 && result.size() == 1) {
 			RecordsInfo inf = result.values().iterator().next();
-			BasicBSONObject r = new BasicBSONObject();			
-			r.put("formats", inf.formats.iterator().next());
-			r.put("contents", inf.contents.iterator().next());			
-			r.put("count", inf.count);
-			r.put("newest", inf.newest);
-			r.put("oldest", inf.oldest);
-			r.put("newestRecord", inf.newestRecord.toString());
-			r.put("calculated", new Date());
-			q.getCache().getAPS(aps).setMeta("_info", r);
+			if (!inf.apps.isEmpty()) {
+				BasicBSONObject r = new BasicBSONObject();			
+				r.put("formats", inf.formats.iterator().next());
+				r.put("contents", inf.contents.iterator().next());
+				r.put("apps", inf.apps.iterator().next().toString());
+				r.put("count", inf.count);
+				r.put("newest", inf.newest);
+				r.put("oldest", inf.oldest);
+				r.put("newestRecord", inf.newestRecord.toString());
+				r.put("calculated", new Date());
+				q.getCache().getAPS(aps).setMeta("_info", r);
+			}
 		}
 		return result.values();
 	}
@@ -437,7 +441,9 @@ class QueryEngine {
     	AccessLog.log("filter by meta-set: "+property);
     	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());
     	for (DBRecord record : input) {
-    		if (!values.contains(record.meta.get(property))) continue;    		    		
+    		if (!values.contains(record.meta.get(property))) {    			
+    			continue;    		    		
+    		}
     		filteredResult.add(record);
     	}    	
     	return filteredResult;

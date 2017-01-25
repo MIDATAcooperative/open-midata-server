@@ -167,7 +167,7 @@ public class Studies extends APIController {
 			     output = new OutputStreamWriter(zos);
 			     
 				 Set<String> fields = Sets.create( 
-							"owner", "ownerName", "app", "creator", "created", "name", "format", "subformat", "content", "description", "data"); 
+							"owner", "ownerName", "app", "creator", "created", "name", "format", "content", "description", "data"); 
 				 List<Record> allRecords = RecordManager.instance.list(executorId, executorId, CMaps.map("study", study._id).map("study-group", group.name), fields);
 						 
 				 output.append(JsonOutput.toJson(allRecords, "Record" , fields));			     

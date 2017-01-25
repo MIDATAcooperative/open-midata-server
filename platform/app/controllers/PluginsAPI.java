@@ -431,7 +431,7 @@ public class PluginsAPI extends APIController {
 		}
 		
 		record.format = format;
-		record.subformat = JsonValidation.getStringOrNull(json, "subformat");
+		
 		
 		ContentInfo.setRecordCodeAndContent(record, code, content);		
 					
@@ -744,8 +744,6 @@ public class PluginsAPI extends APIController {
 			record.format = (formats != null && formats.length == 1) ? formats[0] : (contentType != null) ? contentType : "application/octet-stream";
 			String[] contents = metaData.get("content");
 			String[] codes = metaData.get("code");
-			String[] subformats = metaData.get("subformat");
-			record.subformat = (subformats != null && subformats.length == 1) ? subformats[0] : null;
 			
 			ContentInfo.setRecordCodeAndContent(record, codes != null ? new HashSet<String>(Arrays.asList(codes)) : null, contents != null ? contents[0] : null);					
 						
