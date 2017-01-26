@@ -284,7 +284,11 @@ public class RecordManager {
         AccessLog.log("shareByQuery who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString()+ "query="+query.toString());
 		//if (toAPS.equals(who)) throw new BadRequestException("error.internal", "Bad call to shareByQuery. target APS may not be user APS!");
         APS apswrapper = getCache(who).getAPS(toAPS);
-
+        
+        // Resolve "app" into IDs
+        Query q = new Query(query, Sets.create("_id"), getCache(who), toAPS);
+        query = q.getProperties();
+        
         query.remove("aps");
         if (query.isEmpty()) {
            apswrapper.removeMeta("_query");
