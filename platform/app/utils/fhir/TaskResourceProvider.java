@@ -9,6 +9,7 @@ import java.util.Set;
 import org.hl7.fhir.dstu3.model.Appointment;
 import org.hl7.fhir.dstu3.model.Communication;
 import org.hl7.fhir.dstu3.model.IdType;
+import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.Task;
@@ -331,15 +332,19 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 	}
 	
 	public Record init() { return newRecord("fhir/Task"); }
-
+	
 	@Update
-	public MethodOutcome updateTask(@IdParam IdType theId, @ResourceParam Task theTask) throws AppException {
+	@Override
+	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Task theTask) {
+		return super.updateResource(theId, theTask);
+	}
+	
+	@Override
+	protected MethodOutcome update(@IdParam IdType theId, @ResourceParam Task theTask) throws AppException {
 		Record record = fetchCurrent(theId);
 		prepare(record, theTask);		
-		updateRecord(record, theTask);	
-		
+		updateRecord(record, theTask);
 		shareRecord(record, theTask);
-		
 		return outcome("Task", record, theTask);
 	}
 
