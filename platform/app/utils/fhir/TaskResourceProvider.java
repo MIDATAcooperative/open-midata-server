@@ -12,6 +12,7 @@ import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.Task;
+import org.hl7.fhir.dstu3.model.Task.TaskRestrictionComponent;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
@@ -74,7 +75,7 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 			@Description(shortDefinition="The resource language")
 			@OptionalParam(name="_language")
 			StringAndListParam theResourceLanguage, 
-			  
+			 /* 
 			@Description(shortDefinition="Search the contents of the resource's data using a fulltext search")
 			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT)
 			StringAndListParam theFtContent, 
@@ -94,74 +95,95 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 			@Description(shortDefinition="Search for resources which have the given profile")
 			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE)
 			UriAndListParam theSearchForProfile, 
-			  
-			/*
-			@Description(shortDefinition="Return resources linked to by the given target")
-			@OptionalParam(name="_has")
-			HasAndListParam theHas, 
-			 */ 
+			  */
+			@Description(shortDefinition="Search by creation date")
+			@OptionalParam(name="authored-on")
+			DateRangeParam theAuthored_on, 
 			   
-			@Description(shortDefinition="Search for a task instance by its business identifier")
-			@OptionalParam(name="identifier")
-			TokenAndListParam theIdentifier, 
+			@Description(shortDefinition="Search by requests this task is based on")
+			@OptionalParam(name="based-on", targetTypes={  } )
+			ReferenceAndListParam theBased_on, 
 			   
+			@Description(shortDefinition="Search by business status")
+			@OptionalParam(name="business-status")
+			TokenAndListParam theBusiness_status, 
+			    
 			@Description(shortDefinition="Search by task code")
 			@OptionalParam(name="code")
 			TokenAndListParam theCode, 
-			    
-			@Description(shortDefinition="Search by recommended type of performer (e.g., Requester, Performer, Scheduler).")
-			@OptionalParam(name="performer")
-			TokenAndListParam thePerformer, 
 			   
-			@Description(shortDefinition="Search by task priority")
-			@OptionalParam(name="priority")
-			TokenAndListParam thePriority, 
+			@Description(shortDefinition="Search by encounter or episode")
+			@OptionalParam(name="context", targetTypes={  } )
+			ReferenceAndListParam theContext, 
 			   
-			@Description(shortDefinition="Search by task status")
-			@OptionalParam(name="status")
-			TokenAndListParam theStatus, 
-			    
-			@Description(shortDefinition="Search by status reason")
-			@OptionalParam(name="statusreason")
-			TokenAndListParam theStatusreason, 
+			@Description(shortDefinition="Search by task definition as a Reference")
+			@OptionalParam(name="definition-ref", targetTypes={  } )
+			ReferenceAndListParam theDefinition_ref, 
 			    
 			@Description(shortDefinition="Search by task focus")
 			@OptionalParam(name="focus", targetTypes={  } )
 			ReferenceAndListParam theFocus, 
-			 
-			/*
-			@Description(shortDefinition="Search by task definition")
-			@OptionalParam(name="definition")
-			UriAndListParam theDefinition, 
-			*/  			   			
+			  
+			@Description(shortDefinition="Search by group identifier")
+			@OptionalParam(name="group-identifier")
+			TokenAndListParam theGroup_identifier, 
+			   
+			@Description(shortDefinition="Search for a task instance by its business identifier")
+			@OptionalParam(name="identifier")
+			TokenAndListParam theIdentifier, 
+			  
+			@Description(shortDefinition="Search by task intent")
+			@OptionalParam(name="intent")
+			TokenAndListParam theIntent, 
 			   
 			@Description(shortDefinition="Search by last modification date")
 			@OptionalParam(name="modified")
 			DateRangeParam theModified, 
 			   
+			@Description(shortDefinition="Search by responsible organization")
+			@OptionalParam(name="organization", targetTypes={  } )
+			ReferenceAndListParam theOrganization, 
+			  
 			@Description(shortDefinition="Search by task owner")
 			@OptionalParam(name="owner", targetTypes={  } )
 			ReferenceAndListParam theOwner, 
 			  
+			@Description(shortDefinition="Search by task this task is part of")
+			@OptionalParam(name="part-of", targetTypes={  } )
+			ReferenceAndListParam thePart_of, 
+			   
+			@Description(shortDefinition="Search by patient")
+			@OptionalParam(name="patient", targetTypes={  } )
+			ReferenceAndListParam thePatient, 
+			   
+			@Description(shortDefinition="Search by recommended type of performer (e.g., Requester, Performer, Scheduler).")
+			@OptionalParam(name="performer")
+			TokenAndListParam thePerformer, 
+			   
+			@Description(shortDefinition="Search by period Task is/was underway")
+			@OptionalParam(name="period")
+			DateRangeParam thePeriod, 
+			   
+			@Description(shortDefinition="Search by task priority")
+			@OptionalParam(name="priority")
+			TokenAndListParam thePriority, 
+			   
 			@Description(shortDefinition="Search by task requester")
 			@OptionalParam(name="requester", targetTypes={  } )
 			ReferenceAndListParam theRequester, 
 			   
-			/*
-			@Description(shortDefinition="Search by parent task")
-			@OptionalParam(name="parent", targetTypes={  } )
-			ReferenceAndListParam theParent, 
-			  */
-			  
-			@Description(shortDefinition="Search by patient")
-			@OptionalParam(name="patient", targetTypes={  Patient.class   } )
-			ReferenceAndListParam thePatient, 
+			@Description(shortDefinition="Search by task status")
+			@OptionalParam(name="status")
+			TokenAndListParam theStatus, 
 			   
-			/*
-			@Description(shortDefinition="Search by task stage")
-			@OptionalParam(name="stage")
-			TokenAndListParam theStage, 
-			 */
+			@Description(shortDefinition="Search by status reason")
+			@OptionalParam(name="statusreason")
+			TokenAndListParam theStatusreason, 
+			   
+			@Description(shortDefinition="Search by subject")
+			@OptionalParam(name="subject", targetTypes={  } )
+			ReferenceAndListParam theSubject, 
+			 
 			@IncludeParam(reverse=true)
 			Set<Include> theRevIncludes,
 			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
@@ -169,17 +191,22 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 			DateRangeParam theLastUpdated, 
 			 
 			@IncludeParam(allow= {
-						"Task:focus" ,
-						"Task:owner" ,
-						"Task:parent" ,
-						"Task:patient" ,
-						"Task:requester" ,
-						"*"
+				"Task:based-on" ,
+				"Task:context" ,
+				"Task:definition-ref" ,
+				"Task:focus" ,
+				"Task:organization" ,
+				"Task:owner" ,
+				"Task:part-of" ,
+				"Task:patient" ,
+				"Task:requester" ,
+				"Task:subject" ,
+				"*"
 			}) 
-			
 			Set<Include> theIncludes,
-			 									
-			@Sort SortSpec theSort,
+			 			
+			@Sort 
+			SortSpec theSort,
 
 			@ca.uhn.fhir.rest.annotation.Count Integer theCount
 
@@ -191,21 +218,28 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		paramMap.add("_language", theResourceLanguage);
 		
 	    //paramMap.add("_has", theHas);
-        paramMap.add("identifier", theIdentifier);
-        paramMap.add("code", theCode);
-        paramMap.add("performer", thePerformer);
-        paramMap.add("priority", thePriority);
+		paramMap.add("authored-on", theAuthored_on);
+		paramMap.add("based-on", theBased_on);
+		paramMap.add("business-status", theBusiness_status);
+		paramMap.add("code", theCode);
+		paramMap.add("context", theContext);
+		paramMap.add("definition-ref", theDefinition_ref);
+		paramMap.add("focus", theFocus);
+		paramMap.add("group-identifier", theGroup_identifier);
+		paramMap.add("identifier", theIdentifier);
+		paramMap.add("intent", theIntent);
+		paramMap.add("modified", theModified);
+		paramMap.add("organization", theOrganization);
+		paramMap.add("owner", theOwner);
+		paramMap.add("part-of", thePart_of);
+		paramMap.add("patient", thePatient);
+		paramMap.add("performer", thePerformer);
+		paramMap.add("period", thePeriod);
+		paramMap.add("priority", thePriority);
+		paramMap.add("requester", theRequester);
 		paramMap.add("status", theStatus);
 		paramMap.add("statusreason", theStatusreason);
-		paramMap.add("focus", theFocus);
-		//paramMap.add("definition", theDefinition);
-		
-		paramMap.add("modified", theModified);
-		paramMap.add("owner", theOwner);
-		paramMap.add("requester", theRequester);
-		//paramMap.add("parent", theParent);
-		paramMap.add("patient", thePatient);
-		//paramMap.add("stage", theStage);
+		paramMap.add("subject", theSubject);
 	
 		paramMap.setRevIncludes(theRevIncludes);
 		paramMap.setLastUpdated(theLastUpdated);
@@ -223,23 +257,35 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Task");
 		
 		builder.handleIdRestriction();
-		builder.recordOwnerReference("patient", "Patient");
+		builder.recordOwnerReference("patient", "Patient");		
 		builder.recordCodeRestriction("code", "code");
 		
 		builder.restriction("identifier", true, "Identifier", "identifier");
-		builder.restriction("performer", true, "CodeableConcept", "performerType");        
-        builder.restriction("priority", false, "code", "priority");
-        builder.restriction("status", false, "code", "status");
-		builder.restriction("statusreason", true, "CodeableConcept", "statusReason");
-		builder.restriction("focus", true, null, "focus");
-		//builder.restriction("definition", type, indexing, paths);
-		
-		builder.restriction("modified", true, "DateTime", "lastModified");
+		builder.restriction("part-of", true, "Task", "partOf");
 		builder.restriction("owner", true, null, "owner");
-		builder.restriction("requester", true, null, "requester.agent");
 		
-		//paramMap.add("parent", theParent);		
-		//paramMap.add("stage", theStage);
+		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "for");
+		  
+        											
+		builder.restriction("authored-on", true, "DateTime", "authoredOn");
+		builder.restriction("based-on", true, null, "basedOn");
+		builder.restriction("business-status",  true,  "CodeableConcept", "businessStatus");
+		builder.restriction("context", true, null, "context");
+		builder.restriction("definition-ref", true, "ActivityDefinition", "definitionReference");	
+		builder.restriction("focus", true, null, "focus");			
+		builder.restriction("group-identifier", true, "Identifier", "groupIdentifier");
+		
+		builder.restriction("intent", true, "code", "intent");
+		builder.restriction("modified", true, "DateTime", "lastModified");
+		builder.restriction("organization", true, "Organization", "requester.onBehalfOf");
+		
+		
+		builder.restriction("performer", true, "CodeableConcept", "performerType"); 
+		builder.restriction("period", true, "Period", "executionPeriod");
+		builder.restriction("priority", false, "code", "priority");	
+		builder.restriction("requester", true, null, "requester.agent");	
+		builder.restriction("status", false, "code", "status");
+		builder.restriction("statusreason", true, "CodeableConcept", "statusReason");					
 							   
 		return query.execute(info);
 	}
@@ -272,6 +318,14 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		if (theTask.getOwner() != null && !theTask.getOwner().isEmpty()) {
 			personRefs.add(theTask.getOwner().getReferenceElement());
 		}
+		
+		TaskRestrictionComponent trc = theTask.getRestriction();
+		if (trc != null && trc.getRecipient() != null) {
+			for (Reference ref : trc.getRecipient()) {
+				personRefs.add(ref.getReferenceElement());
+			}
+		}
+				
 					
 		shareWithPersons(record, personRefs);
 	}
