@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bson.BasicBSONObject;
+import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
 
@@ -184,7 +185,11 @@ public class Feature_Streams extends Feature {
 		result._id = new MidataId();
 		result.owner = owner;
 		result.direct = direct;
-		result.meta = new BasicBSONObject(properties);		
+		result.meta = new BasicBSONObject(properties);	
+		
+		Object app = result.meta.get("app");
+		if (app != null) result.meta.put("app", MidataId.from(app).toDb());
+		
 		result.isStream = true;
 		result.meta.put("created", new Date());
 		result.data = new BasicDBObject();

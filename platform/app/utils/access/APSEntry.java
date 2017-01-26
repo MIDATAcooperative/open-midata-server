@@ -50,7 +50,7 @@ class APSEntry {
 			if (apps != null) {
 				String fmt = crit.getString("app");
 				if (fmt != null && !apps.contains(fmt)) { match = false;  
-				AccessLog.log("fmt:"+fmt.getClass().getName()+" vs:"+apps.iterator().next().getClass().getName()+" match="+match);
+				//AccessLog.log("fmt:"+fmt.getClass().getName()+" vs:"+apps.iterator().next().getClass().getName()+" match="+match);
 				}
 			}
 			/*if (contentsWC != null) {

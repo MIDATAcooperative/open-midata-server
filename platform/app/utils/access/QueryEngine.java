@@ -179,7 +179,7 @@ class QueryEngine {
 		AccessLog.logEnd("end infoQuery result: cached="+cached+" records="+recs.size()+" result="+result.size());
 		if (cached && recs.size()>0 && result.size() == 1) {
 			RecordsInfo inf = result.values().iterator().next();
-			if (!inf.apps.isEmpty()) {
+			if (inf.apps.size() == 1) {
 				BasicBSONObject r = new BasicBSONObject();			
 				r.put("formats", inf.formats.iterator().next());
 				r.put("contents", inf.contents.iterator().next());
@@ -404,7 +404,7 @@ class QueryEngine {
 		// 8 Post filter records if necessary		
 						
 		if (q.restrictedBy("creator")) result = filterByMetaSet(result, "creator", q.getIdRestrictionDB("creator"));
-		if (q.restrictedBy("app")) result = filterByMetaSet(result, "app", q.getIdRestrictionDB("app"));
+		if (q.restrictedBy("app")) result = filterByMetaSet(result, "app", q.getIdRestrictionDB("app"), q.restrictedBy("no-postfilter-streams"));
 		if (q.restrictedBy("name")) result = filterByMetaSet(result, "name", q.getRestriction("name"));
 		if (q.restrictedBy("code")) result = filterByMetaSet(result, "code", q.getRestriction("code"));
 		
@@ -443,6 +443,20 @@ class QueryEngine {
     	for (DBRecord record : input) {
     		if (!values.contains(record.meta.get(property))) {    			
     			continue;    		    		
+    		}
+    		filteredResult.add(record);
+    	}    	
+    	return filteredResult;
+    }
+    
+    protected static List<DBRecord> filterByMetaSet(List<DBRecord> input, String property, Set values, boolean noPostfilterStreams) {
+    	AccessLog.log("filter by meta-set: "+property);
+    	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());
+    	for (DBRecord record : input) {
+    		if (!noPostfilterStreams || !record.isStream) {
+	    		if (!values.contains(record.meta.get(property))) {    			
+	    			continue;    		    		
+	    		}
     		}
     		filteredResult.add(record);
     	}    	
