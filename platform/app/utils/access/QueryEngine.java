@@ -404,7 +404,7 @@ class QueryEngine {
 		// 8 Post filter records if necessary		
 						
 		if (q.restrictedBy("creator")) result = filterByMetaSet(result, "creator", q.getIdRestrictionDB("creator"));
-		if (q.restrictedBy("app")) result = filterByMetaSet(result, "app", q.getIdRestrictionDB("app"));
+		if (q.restrictedBy("app")) result = filterByMetaSet(result, "app", q.getIdRestrictionDB("app"), q.restrictedBy("no-postfilter-streams"));
 		if (q.restrictedBy("name")) result = filterByMetaSet(result, "name", q.getRestriction("name"));
 		if (q.restrictedBy("code")) result = filterByMetaSet(result, "code", q.getRestriction("code"));
 		
@@ -443,6 +443,20 @@ class QueryEngine {
     	for (DBRecord record : input) {
     		if (!values.contains(record.meta.get(property))) {    			
     			continue;    		    		
+    		}
+    		filteredResult.add(record);
+    	}    	
+    	return filteredResult;
+    }
+    
+    protected static List<DBRecord> filterByMetaSet(List<DBRecord> input, String property, Set values, boolean noPostfilterStreams) {
+    	AccessLog.log("filter by meta-set: "+property);
+    	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());
+    	for (DBRecord record : input) {
+    		if (!noPostfilterStreams || !record.isStream) {
+	    		if (!values.contains(record.meta.get(property))) {    			
+	    			continue;    		    		
+	    		}
     		}
     		filteredResult.add(record);
     	}    	
