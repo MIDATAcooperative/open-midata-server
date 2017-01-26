@@ -373,13 +373,13 @@ public class Query {
 		 
 		 if (properties.containsKey("app")) {
 			 Set<String> apps = getRestriction("app");
-			 Set<MidataId> resolved = new HashSet<MidataId>();
+			 Set<String> resolved = new HashSet<String>();
 			 for (Object app : apps) {
 				 if (!MidataId.isValid(app.toString())) {
 					 Plugin p = Plugin.getByFilename(app.toString(), Sets.create("_id"));					 
-					 if (p!=null) resolved.add(p._id);
+					 if (p!=null) resolved.add(p._id.toString());
 					 else throw new BadRequestException("error.internal", "Queried for unknown app.");
-				 } else resolved.add(new MidataId(app.toString()));
+				 } else resolved.add(app.toString());
 			 }
 			 properties.put("app", resolved);
 		 }

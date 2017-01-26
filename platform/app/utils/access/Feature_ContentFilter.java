@@ -22,7 +22,7 @@ public class Feature_ContentFilter extends Feature {
 		List<DBRecord> result = next.query(q);
 		if (q.restrictedBy("format")) result = QueryEngine.filterByMetaSet(result, "format", q.getRestriction("format"));
 		if (q.restrictedBy("content")) result = QueryEngine.filterByMetaSet(result, "content", q.getRestriction("content"));
-		if (q.restrictedBy("app")) result = QueryEngine.filterByMetaSet(result, "app", q.getRestriction("app"));	
+		if (q.restrictedBy("app")) result = QueryEngine.filterByMetaSet(result, "app", q.getIdRestrictionDB("app"));	
 		return result;
 	}
 			
