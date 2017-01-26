@@ -179,7 +179,7 @@ class QueryEngine {
 		AccessLog.logEnd("end infoQuery result: cached="+cached+" records="+recs.size()+" result="+result.size());
 		if (cached && recs.size()>0 && result.size() == 1) {
 			RecordsInfo inf = result.values().iterator().next();
-			if (!inf.apps.isEmpty()) {
+			if (inf.apps.size() == 1) {
 				BasicBSONObject r = new BasicBSONObject();			
 				r.put("formats", inf.formats.iterator().next());
 				r.put("contents", inf.contents.iterator().next());
