@@ -52,6 +52,7 @@ public class Global extends GlobalSettings {
 		try {
 		  MinimalSetup.dosetup();
 		} catch (AppException e) {
+		  AccessLog.logException("startup", e);
 		  throw new NullPointerException();
 		}
 		

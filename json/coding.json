@@ -197,3 +197,4 @@
 {"_id":{"$oid":"587f53fdaed645217a8c1a39"},"system":"http://midata.coop","code":"FieldOfOccupation","display":"Field Of Occupation","content":"work/field-of-occupation"}
 {"_id":{"$oid":"5880af3baed64515f44314fc"},"system":"http://loinc.org","code":"72098-7","display":"Quality of life score","content":"quality-of-life"}
 {"_id":{"$oid":"5888c31baed6450ed3ada92b"},"system":"http://midata.coop/karegenda","code":"Task","display":"Karegenda Task","content":"karegenda/task"}
+{"_id":{"$oid":"588b56dbaed6450ffef8fb37"},"system":"http://hl7.org/fhir/sid/icd-10","code":"C95.9","display":"Leukemia, unspecified","content":"condition/icd-10-c9x"}
