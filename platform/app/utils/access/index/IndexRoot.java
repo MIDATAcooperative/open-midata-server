@@ -90,6 +90,7 @@ public class IndexRoot {
 			
 	public void reload() throws InternalServerException {
 		rootPage.reload();
+		if (rootPage.isNonLeaf() && !(rootPage instanceof IndexNonLeafPage)) { this.rootPage = new IndexNonLeafPage(key, rootPage.model); }
 		locked = false;
 		modCount = 0;
 	}
