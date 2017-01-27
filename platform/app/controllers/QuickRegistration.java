@@ -101,13 +101,15 @@ public class QuickRegistration extends APIController {
 		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");
 									
-		user.status = UserStatus.ACTIVE;		
+		user.status = UserStatus.ACTIVE;	
+		
 		Application.registerCreateUser(user);
 				
 		controllers.members.Studies.requestParticipation(user._id, study._id);
 		MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, phrase);
 		HealthProvider.confirmConsent(user._id, appInstance._id);
-										
+				
+		Application.sendWelcomeMail(user);
 		return Application.loginHelper(user);		
 	}
 	
