@@ -184,15 +184,16 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			if (amendFrom) {
 				measurement.from = new Date(measurement.to.getTime());
 				measurement.from.setDate(measurement.from.getDate() + 1);
-			}
+				if (measurement.from.getTime() > yesterday.getTime()) measurement.skip = true;
+			} else measurement.skip = false;
 			 
 			measurement.to = yesterday;
 				
 			if (measurement.to.getTime() - measurement.from.getTime() > 1000 * 60 * 60 * 24 * 365) {
 			  measurement.to = new Date(measurement.from.getTime() + 1000 * 60 * 60 * 24 * 365);
 			  console.log("do repeat");
-			  $scope.repeat = true;
-			}
+			  measurement.repeat = true;
+			} else measurement.repeat = false;
 		 });		 
 	};
 
@@ -301,7 +302,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			actionDef.resolve();
 						
 			angular.forEach($scope.measurements, function(measure) {
-				if (measure.import) {
+				if (measure.import && !measure.skip) {
 					var f = function() { return getPrevRecords(measure); };
 					actionChain = actionChain.then(f);					
 				}
@@ -309,21 +310,26 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			
 			actionChain.then(function() {
 			  angular.forEach($scope.measurements, function(measure) {
-				if (measure.import) {					
+				if (measure.import && !measure.skip) {					
 					importRecords(measure);
+					if (measure.repeat) { measure.repeat = false; $scope.repeat = true; }
 				}
 			  });
 			});
+			
+			if ($scope.requesting === 0) { finish(); }
 		};
 		
 		var getPrevRecords = function(measure) {
 			var fromDate = measure.from;
 			var fromFormatted = fromDate.getFullYear() + "-" + twoDigit(fromDate.getMonth() + 1) + "-" + twoDigit(fromDate.getDate());
-			   return midataServer.getRecords($scope.authToken, { "format" :"fhir/Observation", "content" : measure.content, "index" : { "effectiveDateTime" : { "!!!ge" : fromFormatted }} }, ["version", "content", "data"])
+			$scope.requesting++;
+		   return midataServer.getRecords($scope.authToken, { "format" :"fhir/Observation", "content" : measure.content, "index" : { "effectiveDateTime" : { "!!!ge" : fromFormatted }} }, ["version", "content", "data"])
 			   .then(function(results) {
 				   angular.forEach(results.data, function(rec) {
 					 stored[rec.content+rec.data.effectiveDateTime] = rec;  
 				   });
+				   $scope.requesting--;
 			   });
 		};
 				
