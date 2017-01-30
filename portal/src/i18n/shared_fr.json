@@ -4,6 +4,10 @@
     "footer" : {
         "copyright" : "(c) 2015-2016 ETH Zürich",
         "portals" : "Portails MIDATA:",
+
+        // TODO CHANGED
+        // OLD: For Members of the Cooperative
+        // NEW: For Account Holders
         "for_members" : "Pour les membres de la coopérative",
         "for_researchers" : "Pour les organismes de recherche",
         "for_providers" : "Pour les professionnels de la santé",
@@ -17,7 +21,6 @@
         "login" : "Connexion",
         "sign_up" : "Inscription",
         "sign_out" : "Déconnexion",
-
         "me" : "Moi",
         "overview" : "Vue d'ensemble",
         "messages" : "Messages",
@@ -55,6 +58,18 @@
 
         // TODO NEW: Operation not supported
         "unsupported" : "Operation not supported",
+
+        // TODO NEW: Full membership required!
+        "notrialuser_title" : "Full membership required!",
+
+        // TODO NEW: In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.
+        "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
+
+        // TODO NEW: Midata cooperative membership required!
+        "mustbemember_title" : "Midata cooperative membership required!",
+
+        // TODO NEW: In order to use this feature you must be member of the midata cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
+        "mustbemember_detail" : "In order to use this feature you must be member of the midata cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
 
         "notauthorized" : {
 
@@ -126,7 +141,10 @@
             "passcode" : "Bad passcode",
 
             // TODO NEW: Plugin is only for a different role
-            "plugin" : "Plugin is only for a different role"
+            "plugin" : "Plugin is only for a different role",
+
+            // TODO NEW: Access query must restrict by 'content' or 'group'!
+            "access_query" : "Access query must restrict by 'content' or 'group'!"
         },
 
         "missing" : {
@@ -150,7 +168,10 @@
             "groupsystem" : "Group system must be provided.",
 
             // TODO NEW: Missing or bad token.
-            "token" : "Missing or bad token."
+            "token" : "Missing or bad token.",
+
+            // TODO NEW: Terms and conditions not accepted.
+            "agb" : "Terms and conditions not accepted."
         },
 
         "unknown" : {
@@ -219,12 +240,20 @@
             "user" : "User is not allowed to log in. Contact support@midata.coop for help.",
 
             // TODO NEW: Member is not allowed to participate in study.
+
+            // TODO CHANGED
+            // OLD: Member is not allowed to participate in study.
+            // NEW: Account holder is not allowed to participate in study.
             "participation" : "Member is not allowed to participate in study."
         },
 
         "closed" : {
 
             // TODO NEW: Study not searching for members.
+
+            // TODO CHANGED
+            // OLD: Study not searching for members.
+            // NEW: Study not searching for participants.
             "study" : "Study not searching for members."
         },
 
@@ -276,7 +305,10 @@
         "no_alter" : {
 
             // TODO NEW: Consents for studies may not be altered.
-            "consent" : "Consents for studies may not be altered."
+            "consent" : "Consents for studies may not be altered.",
+
+            // TODO NEW: Setup can only be changed as long as study is in draft phase.
+            "study" : "Setup can only be changed as long as study is in draft phase."
         }
 
     },
@@ -349,7 +381,25 @@
             "REQUIRED_INFORMATION_CHANGED" : "Required information changed",
 
             // TODO NEW: Study setup changed
-            "STUDY_SETUP_CHANGED" : "Study setup changed"
+            "STUDY_SETUP_CHANGED" : "Study setup changed",
+
+            // TODO NEW: Membership requested
+            "MEMBERSHIP_REQUEST" : "Membership requested",
+
+            // TODO NEW: Address changed
+            "CONTACT_ADDRESS_CHANGED" : "Address changed",
+
+            // TODO NEW: Contract sent
+            "CONTRACT_SEND" : "Contract sent",
+
+            // TODO NEW: Account changed by admin
+            "ADMIN_ACCOUNT_CHANGE" : "Account changed by admin",
+
+            // TODO NEW: Account deleted
+            "ACCOUNT_DELETED" : "Account deleted",
+
+            // TODO NEW: Internal Comment
+            "INTERNAL_COMMENT" : "Internal Comment"
         },
         "consentstatus" : {
 
@@ -368,6 +418,10 @@
         "consenttype" : {
 
             // TODO NEW: Other MIDATA Members
+
+            // TODO CHANGED
+            // OLD: Other MIDATA Members
+            // NEW: Other Account Holders
             "CIRCLE" : "Other MIDATA Members",
 
             // TODO NEW: External Application
@@ -383,7 +437,10 @@
             "STUDYPARTICIPATION" : "Study",
 
             // TODO NEW: Study
-            "STUDYRELATED" : "Study"
+            "STUDYRELATED" : "Study",
+
+            // TODO NEW: Messaging
+            "IMPLICIT" : "Messaging"
         },
         "contractstatus" : {
 
@@ -433,6 +490,10 @@
             "MATCH" : "Possible match",
 
             // TODO NEW: MIDATA member rejected
+
+            // TODO CHANGED
+            // OLD: MIDATA member rejected
+            // NEW: Account holder rejected
             "MEMBER_REJECTED" : "MIDATA member rejected",
 
             // TODO NEW: Participation requested
@@ -446,8 +507,6 @@
             // TODO NEW: Execution aborted
             "ABORTED" : "Execution aborted",
 
-            // TODO NEW: Study finished
-
             // TODO CHANGED
             // OLD: Study finished
             // NEW: Finished
@@ -456,16 +515,12 @@
             // TODO NEW: Not yet started
             "PRE" : "Not yet started",
 
-            // TODO NEW: Study currently running
-
             // TODO CHANGED
             // OLD: Study currently running
             // NEW: Currently running
             "RUNNING" : "Study currently running"
         },
         "studyvalidationstatus" : {
-
-            // TODO NEW: Validation not requested yet
 
             // TODO CHANGED
             // OLD: Validation not requested yet
@@ -493,6 +548,10 @@
             "DEVELOPER" : "Developer",
 
             // TODO NEW: MIDATA member
+
+            // TODO CHANGED
+            // OLD: MIDATA member
+            // NEW: Account Holder
             "MEMBER" : "MIDATA member",
 
             // TODO NEW: Healthcare provider
@@ -538,6 +597,12 @@
 
             // TODO NEW: Study Participant
             "STUDYPARTICIPANT" : "Study Participant",
+
+            // TODO NEW: App User
+            "APPUSER" : "App User",
+
+            // TODO NEW: Validated Account Holder
+            "NONMEMBERUSER" : "Validated Account Holder",
 
             // TODO NEW: Member of Cooperative
             "MEMBEROFCOOPERATIVE" : "Member of Cooperative"
@@ -609,6 +674,23 @@
 
             // TODO NEW: Available Plugins
             "Available" : "Available Plugins"
+        },
+        "plugintype" : {
+
+            // TODO NEW: Plugin
+            "visualization" : "Plugin",
+
+            // TODO NEW: Form
+            "create" : "Form",
+
+            // TODO NEW: OAuth 1
+            "oauth1" : "OAuth 1",
+
+            // TODO NEW: OAuth 2
+            "oauth2" : "OAuth 2",
+
+            // TODO NEW: Mobile
+            "mobile" : "Mobile"
         }
     },
 
@@ -667,6 +749,113 @@
             // TODO NEW: Email
             "email" : "Email"
         }
+
+    },
+
+    "instance" : {
+
+        // TODO NEW: 
+        "rules" : "",
+
+        // TODO NEW: Purpose of this MIDATA instance
+        "purpose" : "Purpose of this MIDATA instance",
+
+        // TODO NEW: Access to this MIDATA instance
+        "access" : "Access to this MIDATA instance",
+
+        // TODO NEW: Availability and downtimes
+        "uptime" : "Availability and downtimes",
+
+        // TODO NEW: Data stored in this MIDATA instance
+        "data" : "Data stored in this MIDATA instance",
+
+        // TODO NEW: Choose one of the portal from the bottom of the page to start. Each portal has its own LOGIN and SIGN UP page.
+        "start" : "Choose one of the portal from the bottom of the page to start. Each portal has its own LOGIN and SIGN UP page.",
+
+        "localhost" : {
+
+            // TODO NEW: Local MIDATA Instance (localhost)
+            "name" : "Local MIDATA Instance (localhost)",
+
+            // TODO NEW: This is a local installation of MIDATA only available from your PC.
+            "intro" : "This is a local installation of MIDATA only available from your PC.",
+
+            // TODO NEW: A local installation may be used in order to contribute to the MIDATA platform and for testing purposes.
+            "purpose" : "A local installation may be used in order to contribute to the MIDATA platform and for testing purposes.",
+
+            // TODO NEW: You may register user accounts for all four portals. Accounts do not need to be confirmed or validated by MIDATA administration. You may use and register your own admin accounts.
+            "access" : "You may register user accounts for all four portals. Accounts do not need to be confirmed or validated by MIDATA administration. You may use and register your own admin accounts.",
+
+            // TODO NEW: Whenever you run it its available for you :-)
+            "uptime" : "Whenever you run it its available for you :-)",
+
+            // TODO NEW: Data stored in this instance will only be available on your local PC.
+            "data" : "Data stored in this instance will only be available on your local PC."
+        },
+
+        "test" : {
+
+            // TODO NEW: test.midata.coop (Test Instance)
+            "name" : "test.midata.coop (Test Instance)",
+
+            // TODO NEW: This is a test instance of the MIDATA platform.
+            "intro" : "This is a test instance of the MIDATA platform.",
+
+            // TODO NEW: The test platform may be used to develop and test new apps and plugins for MIDATA in a safe environment. It is also used to test new versions of the portal and backend before the other instances are updated.
+            "purpose" : "The test platform may be used to develop and test new apps and plugins for MIDATA in a safe environment. It is also used to test new versions of the portal and backend before the other instances are updated.",
+
+            // TODO NEW: Register your own developer account. After validation by the MIDATA administration you may register test account holders, researchers and health providers without additional validation.
+            "access" : "Register your own developer account. After validation by the MIDATA administration you may register test account holders, researchers and health providers without additional validation.",
+
+            // TODO NEW: There is no guarantee on availability. Expect updates of the instance to happen as needed. If possible updates are done between 12:00 and 13:00 central european time but may occur more than once a day if problems occur.
+            "uptime" : "There is no guarantee on availability. Expect updates of the instance to happen as needed. If possible updates are done between 12:00 and 13:00 central european time but may occur more than once a day if problems occur.",
+
+            // TODO NEW: Store only test data on this instance. Data may be wiped, accounts may be deleted if necessary. Records may become corrupted by bugs. There is no backup for test data.
+            "data" : "Store only test data on this instance. Data may be wiped, accounts may be deleted if necessary. Records may become corrupted by bugs. There is no backup for test data."
+        },
+
+        "demo" : {
+
+            // TODO NEW: demo.midata.coop (Demo Instance)
+            "name" : "demo.midata.coop (Demo Instance)",
+
+            // TODO NEW: This is a demonstration instance of MIDATA.
+            "intro" : "This is a demonstration instance of MIDATA.",
+
+            // TODO NEW: This instance of MIDATA may be used for demonstration purposes and training.
+            "purpose" : "This instance of MIDATA may be used for demonstration purposes and training.",
+
+            // TODO NEW: You may register user accounts for all four portals. Accounts will be validated by the MIDATA administration before they are unlocked.
+            "access" : "You may register user accounts for all four portals. Accounts will be validated by the MIDATA administration before they are unlocked.",
+
+            // TODO NEW: This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time 
+            "uptime" : "This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time ",
+
+            // TODO NEW: Store only test and demo data on this instance. There is no backup for test data.
+            "data" : "Store only test and demo data on this instance. There is no backup for test data."
+        },
+
+        "ch" : {
+
+            // TODO NEW: ch.midata.coop (MIDATA Switzerland)
+            "name" : "ch.midata.coop (MIDATA Switzerland)",
+
+            // TODO NEW: This is the MIDATA platform for Switzerland.
+            "intro" : "This is the MIDATA platform for Switzerland.",
+
+            // TODO NEW: This is the productive MIDATA platform for storing health data in switzerland.
+            "purpose" : "This is the productive MIDATA platform for storing health data in switzerland.",
+
+            // TODO NEW: New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by the MIDATA office. Fake or test accounts are not allowed and will be blocked.
+            "access" : "New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by the MIDATA office. Fake or test accounts are not allowed and will be blocked.",
+
+            // TODO NEW: Downtimes will be announced.
+            "uptime" : "Downtimes will be announced.",
+
+            // TODO NEW: This instance is for storing real data about real people. Data is backed up up on a daily basis.
+            "data" : "This instance is for storing real data about real people. Data is backed up up on a daily basis."
+        }
+
 
     },
 
@@ -731,6 +920,18 @@
 
         // TODO NEW: Mobile Phone
         "mobile_phone" : "Mobile Phone",
+
+        // TODO NEW: Contact person MIDATA
+        "coach" : "Contact person MIDATA",
+
+        // TODO NEW: Purpose of Registration
+        "reason" : "Purpose of Registration",
+
+        // TODO NEW: AGB
+        "agb" : "AGB",
+
+        // TODO NEW: I accept the terms and conditions
+        "agb2" : "I accept the terms and conditions",
 
         // TODO NEW: Sign Up
         "sign_up_btn" : "Sign Up"
@@ -1011,6 +1212,12 @@
         // TODO NEW: Study
         "study" : "Study",
 
+        // TODO NEW: Participant search:
+        "participant_search_status" : "Participant search:",
+
+        // TODO NEW: Study execution:
+        "execution_status" : "Study execution:",
+
         // TODO NEW: Organization
         "organization" : "Organization",
 
@@ -1032,6 +1239,9 @@
         // TODO NEW: Your gender, year of birth and country
         "information_restricted" : "Your gender, year of birth and country",
 
+        // TODO NEW: Your complete demographic data. (name, birthday,address,..)
+        "information_demographic" : "Your complete demographic data. (name, birthday,address,..)",
+
         // TODO NEW: Records that have format:
         "records_with_format" : "Records that have format:",
 
@@ -1040,6 +1250,15 @@
 
         // TODO NEW: Records that belong to group:
         "records_with_group" : "Records that belong to group:",
+
+        // TODO NEW: Records that belong to owner:
+        "records_with_owner" : "Records that belong to owner:",
+
+        // TODO NEW: Records created by app:
+        "records_from_app" : "Records created by app:",
+
+        // TODO NEW: Your own records
+        "owner_self" : "Your own records",
 
         // TODO NEW: Participation History
         "participation_history" : "Participation History",
@@ -1102,6 +1321,10 @@
         "change_address_btn" : "Change Address",
 
         // TODO NEW: Is your account visible for other MIDATA members?
+
+        // TODO CHANGED
+        // OLD: Is your account visible for other MIDATA members?
+        // NEW: Is your account visible for other MIDATA account holders?
         "searchable" : "Is your account visible for other MIDATA members?",
 
         // TODO NEW: Change Settings
@@ -1109,6 +1332,7 @@
 
         // TODO NEW: Settings have been updated
         "change_settings_success" : "Settings have been updated"
+
     },
 
     "visualization" : {
@@ -1150,9 +1374,6 @@
             // TODO NEW: Workspace
             "sandbox" : "Workspace",
 
-            // TODO NEW: MIDATA Mobile App
-            "mobile" : "MIDATA Mobile App",
-
             // TODO NEW: Me Page
             "me" : "Me Page",
 
@@ -1177,6 +1398,10 @@
         "title" : "Créer un nouveau consentement",
         "name" : "Quel est le libellé de ce consentement ?",
         "type" : "Quel type de consentement souhaitez-vous créer ?",
+
+        // TODO CHANGED
+        // OLD: I want to share data with other MIDATA members.
+        // NEW: I want to share data with other MIDATA account holders.
         "share_with_members" : "Je veux partager des données avec d'autres membres MIDATA.",
         "share_with_provider" : "Je veux partager des données avec un professionnel de la santé.",
 
@@ -1194,6 +1419,9 @@
 
         // TODO NEW: Add New Person
         "add_person_btn" : "Add New Person",
+
+        // TODO NEW: Add New Team
+        "add_usergroup_btn" : "Add New Team",
 
         // TODO NEW: 3rd party access?
         "reshare" : "3rd party access?",
@@ -1232,16 +1460,26 @@
         "password_shown" : "Use your email address and this password for login:",
         "people" : "Avec quelle(s) personne(s) désirez-vous partager des données ?",
         "add_people_btn" : "Ajouter d'autres personnes",
+
+        // TODO NEW: Add a Team
+        "add_usergroup_btn" : "Add a Team",
         "reshare" : "@:newconsent.reshare",
         "reshare2" : "@:newconsent.reshare2",
         "expiration_date" : "Date d'expiration du consentement :",
         "created_before" : "Ne partager que les données créées avant :",
         "what_is_shared" : "Quelles données sont-elles partagées ?",
         "consent_empty" : "Ce consentement ne partage actuellement aucunes données.",
+
+        // TODO CHANGED
+        // OLD: This consent shares data with other MIDATA members.
+        // NEW: This consent shares data with other MIDATA account holders.
         "type_circle" : "Ce consentement partage des données avec d'autres membres MIDATA.",
         "type_healthcare" : "Ce consentement partage des données avec des professionnels de la santé.",
         "type_studyparticipation" : "This consent shares data with research for use in a study.",
         "type_externalservice" : "Ce consentement partage des données avec une application mobile ou un service externe.",
+
+        // TODO NEW: This implicitely created consent shares messages with their receivers.
+        "type_implicit" : "This implicitely created consent shares messages with their receivers.",
         "status_active" : "Ce consentement est actif.",
         "status_expired" : "Ce consentement a expiré. Les données ne sont plus partagées.",
         "status_unconfirmed" : "Ce consentement nécessite une confirmation par son propriétaire.",
@@ -1304,7 +1542,6 @@
         // TODO NEW: In order to permanently
         "delete_instructions1" : "In order to permanently ",
         "delete_instructions2" : "supprimer",
-
         "delete_instructions3" : "un enregistrement ",
         "delete_instructions4" : "double clic",
 
@@ -1314,7 +1551,6 @@
         // TODO NEW: In order to permanently delete all records of a certain category double click on the delete button to the right of the category.
         "delete_instructions6" : "In order to permanently delete all records of a certain category double click on the delete button to the right of the category.",
         "shared_with" : "Partagé avec :",
-
         "records_used_for_app" : "Enregistrements utilisés pour l'app",
 
         // TODO NEW: Back to Visualization
@@ -1382,6 +1618,10 @@
         "newsharedrecords" : "New records shared with you",
 
         // TODO NEW: Other MIDATA members may share their data with you.
+
+        // TODO CHANGED
+        // OLD: Other MIDATA members may share their data with you.
+        // NEW: Other MIDATA account holders may share their data with you.
         "newsharedrecords_teaser" : "Other MIDATA members may share their data with you.",
         "circles" : "Membre des Cercles",
 
@@ -1404,6 +1644,9 @@
         // TODO NEW: Search function for healthcare providers.
         "providersearch_text" : "Search function for healthcare providers.",
 
+        // TODO NEW: Search for Teams
+        "usergroupsearch" : "Search for Teams",
+
         // TODO NEW: Newest Records from your healthcare providers
         "hcrecords" : "Newest Records from your healthcare providers",
         "records" : "Enregistrements",
@@ -1412,7 +1655,7 @@
         "yourstudies" : "Études dans lesquelles vous êtes impliqué(e) :",
 
         // TODO NEW: If you want to participate in research configure your research settings. You will be contacted in this tile if you match a studies requirements.
-        "yourstudies_teaser" : "If you want to participate in research configure your research settings. You will be contacted in this tile if you match a studies requirements.",
+        "studies_teaser" : "If you want to participate in research configure your research settings. You will be contacted in this tile if you match a studies requirements.",
         "newstudies" : "Nouvelles études",
 
         // TODO NEW: News
@@ -1429,7 +1672,6 @@
 
         // TODO NEW: Join by participation code
         "entercode" : "Join by participation code",
-
         "records_shared" : "Enregistrements partagés avec ce consentement :",
 
         // TODO NEW: Add Users to Consent
@@ -1443,6 +1685,10 @@
         // TODO NEW: Add more
         "addmore" : "Add more",
         "view_btn" : "Afficher",
+
+        // TODO CHANGED
+        // OLD: Install new plugin
+        // NEW: Add more
         "install_btn" : "Installer un nouveau plugin"
     },
 
@@ -1556,7 +1802,10 @@
         "frequency" : "How often:",
 
         // TODO NEW: Plugin:
-        "plugin" : "Plugin:"
+        "plugin" : "Plugin:",
+
+        // TODO NEW: Do Now
+        "do_now_btn" : "Do Now"
     },
 
     "tasks" : {
@@ -1596,5 +1845,20 @@
 
         // TODO NEW: All found users are already members of this circle.
         "no_new_found" : "All found users are already members of this circle."
+    },
+
+    "usergroupsearch" : {
+
+        // TODO NEW: Team Name
+        "name" : "Team Name",
+
+        // TODO NEW: No matching teams found.
+        "empty_result" : "No matching teams found.",
+
+        // TODO NEW: Add As Individual People To Consent
+        "add_individuals_btn" : "Add As Individual People To Consent",
+
+        // TODO NEW: Add As Changing Team To Consent
+        "add_group_btn" : "Add As Changing Team To Consent"
     }
 }

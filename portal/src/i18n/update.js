@@ -87,7 +87,7 @@ function nextLine(part) {
 	}
 	var hasvar = trimmed.indexOf("{{") > 0;
 	var k;
-	if (!hasvar && trimmed.indexOf("{") > 0) {
+	if (!hasvar && trimmed.indexOf("{") >= trimmed.length - 1) {
 	   k = key(trimmed);
 	   part.path.push(k);
 	   return { type : 1, key : k, full : part.path.join("."), ws : ws(result), comments:[], blanks:0 };
@@ -152,7 +152,7 @@ function doprocess(info) {
 		} else if (srcLine.type == 3) {
 		  var srcVal = fetch(info.src, srcLine.full);
 		  var targetVal = fetch(info.target, srcLine.full);
-		  var refVal = fetch(info.ref, srcLine.full);
+		  var refVal = fetch(info.ref, srcLine.full);		  
 		 
 		  if (!targetVal) {		
 			  output.push("");

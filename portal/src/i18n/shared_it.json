@@ -2,52 +2,78 @@
 
 
     "footer" : {
-        "copyright" : "(c) 2015-2016 ETH Zürich",
-        "portals" : "MIDATA Portale:",
 
-        // TODO CHANGED
-        // OLD: For Members of the Cooperative
-        // NEW: For Account Holders
-        "for_members" : "Für Mitglieder der Genossenschaft",
-        "for_researchers" : "Für Forschungseinrichtungen",
-        "for_providers" : "Für Gesundheitsfachpersonen",
-        "for_developers" : "Für Entwickler"
+        // TODO NEW: (c) 2015-2016 ETH Zürich
+        "copyright" : "(c) 2015-2016 ETH Zürich",
+
+        // TODO NEW: Midata Portals:
+        "portals" : "Midata Portals:",
+
+        // TODO NEW: For Account Holders
+        "for_members" : "For Account Holders",
+
+        // TODO NEW: For Research Organizations
+        "for_researchers" : "For Research Organizations",
+
+        // TODO NEW: For Healthcare Providers
+        "for_providers" : "For Healthcare Providers",
+
+        // TODO NEW: For Developers
+        "for_developers" : "For Developers"
     },
 
     "navbar" : {
-        "toggle_navigation" : "Navigation an/aus",
-        "login" : "Anmelden",
-        "sign_up" : "Registrieren",
-        "sign_out" : "Abmelden",
-        "me" : "Mich",
-        "overview" : "Übersicht",
-        "messages" : "Nachrichten",
-        "my_data" : "Meine Daten",
 
-        // TODO CHANGED
-        // OLD: Consents
-        // NEW: Sharing
-        "consents" : "Zustimmungen",
+        // TODO NEW: Toggle navigation
+        "toggle_navigation" : "Toggle navigation",
 
-        // TODO CHANGED
-        // OLD: Research
-        // NEW: News
-        "research" : "Forschung",
+        // TODO NEW: Login
+        "login" : "Login",
+
+        // TODO NEW: Sign Up
+        "sign_up" : "Sign Up",
+
+        // TODO NEW: Sign out
+        "sign_out" : "Sign out",
+
+        // TODO NEW: Me
+        "me" : "Me",
+
+        // TODO NEW: Overview
+        "overview" : "Overview",
+
+        // TODO NEW: Messages
+        "messages" : "Messages",
+
+        // TODO NEW: My Data
+        "my_data" : "My Data",
+
+        // TODO NEW: Sharing
+        "consents" : "Sharing",
+
+        // TODO NEW: News
+        "research" : "News",
 
         // TODO NEW: Config
         "config" : "Config",
-        "help" : "Hilfe"
+
+        // TODO NEW: Help
+        "help" : "Help"
     },
 
     "error" : {
-        "offline" : "The backend is currently offline! Come back later.",
+
+        // TODO NEW: The backend is currently offline! Please contact support@midata.coop if the problem persists.
+        "offline" : "The backend is currently offline! Please contact support@midata.coop if the problem persists.",
 
         // TODO NEW: An internal error occured. Please contact support@midata.coop if the problem persists.
         "internal" : "An internal error occured. Please contact support@midata.coop if the problem persists.",
 
         // TODO NEW: An internal database error occured. Please contact support@midata.coop if the problem persists.
         "internal_db" : "An internal database error occured. Please contact support@midata.coop if the problem persists.",
-        "relogin" : "Melden Sie sich bitte neu an",
+
+        // TODO NEW: Please relogin
+        "relogin" : "Please relogin",
 
         // TODO NEW: No active consent that allows to add data for target person.
         "noconsent" : "No active consent that allows to add data for target person.",
@@ -87,9 +113,15 @@
 
 
         "invalid" : {
-            "email" : "Bitte eine gültige Email-Addresse eingeben.",
-            "credentials" : "Ungültiger Benutzername oder Kennwort!",
-            "password_repetition" : "Kennwort und Kennwortwiederholung stimmen nicht überein!",
+
+            // TODO NEW: Please enter a valid email address
+            "email" : "Please enter a valid email address",
+
+            // TODO NEW: Invalid username or password.
+            "credentials" : "Invalid username or password.",
+
+            // TODO NEW: Password and password repetition do not match!
+            "password_repetition" : "Password and password repetition do not match!",
 
             // TODO NEW: Passphrase and passphrase repetition do not match!
             "passphrase_repetition" : "Passphrase and passphrase repetition do not match!",
@@ -99,11 +131,15 @@
 
             // TODO NEW: Old password not correct.
             "password_old" : "Old password not correct.",
-            "confirmation_code" : "Ungültiger Bestätigungscode",
+
+            // TODO NEW: Bad confirmation code
+            "confirmation_code" : "Bad confirmation code",
 
             // TODO NEW: Unknown code for study.
             "code" : "Unknown code for study.",
-            "appcode" : "Unbekannter App-Code.",
+
+            // TODO NEW: Unknown code for app.
+            "appcode" : "Unknown code for app.",
 
             // TODO NEW: Invalid status change
             "status_transition" : "Invalid status change",
@@ -134,7 +170,9 @@
         },
 
         "missing" : {
-            "credentials" : "Bitte Benutzernamen und Passwort eingeben!",
+
+            // TODO NEW: Please provide a username  and a password.
+            "credentials" : "Please provide a username  and a password.",
 
             // TODO NEW: Please fill out your email address.
             "email" : "Please fill out your email address.",
@@ -223,22 +261,14 @@
             // TODO NEW: User is not allowed to log in. Contact support@midata.coop for help.
             "user" : "User is not allowed to log in. Contact support@midata.coop for help.",
 
-            // TODO NEW: Member is not allowed to participate in study.
-
-            // TODO CHANGED
-            // OLD: Member is not allowed to participate in study.
-            // NEW: Account holder is not allowed to participate in study.
-            "participation" : "Member is not allowed to participate in study."
+            // TODO NEW: Account holder is not allowed to participate in study.
+            "participation" : "Account holder is not allowed to participate in study."
         },
 
         "closed" : {
 
-            // TODO NEW: Study not searching for members.
-
-            // TODO CHANGED
-            // OLD: Study not searching for members.
-            // NEW: Study not searching for participants.
-            "study" : "Study not searching for members."
+            // TODO NEW: Study not searching for participants.
+            "study" : "Study not searching for participants."
         },
 
         "notvalidated" : {
@@ -401,12 +431,8 @@
         },
         "consenttype" : {
 
-            // TODO NEW: Other MIDATA Members
-
-            // TODO CHANGED
-            // OLD: Other MIDATA Members
-            // NEW: Other Account Holders
-            "CIRCLE" : "Other MIDATA Members",
+            // TODO NEW: Other Account Holders
+            "CIRCLE" : "Other Account Holders",
 
             // TODO NEW: External Application
             "EXTERNALSERVICE" : "External Application",
@@ -473,12 +499,8 @@
             // TODO NEW: Possible match
             "MATCH" : "Possible match",
 
-            // TODO NEW: MIDATA member rejected
-
-            // TODO CHANGED
-            // OLD: MIDATA member rejected
-            // NEW: Account holder rejected
-            "MEMBER_REJECTED" : "MIDATA member rejected",
+            // TODO NEW: Account holder rejected
+            "MEMBER_REJECTED" : "Account holder rejected",
 
             // TODO NEW: Participation requested
             "REQUEST" : "Participation requested",
@@ -491,25 +513,19 @@
             // TODO NEW: Execution aborted
             "ABORTED" : "Execution aborted",
 
-            // TODO CHANGED
-            // OLD: Study finished
-            // NEW: Finished
-            "FINISHED" : "Study finished",
+            // TODO NEW: Finished
+            "FINISHED" : "Finished",
 
             // TODO NEW: Not yet started
             "PRE" : "Not yet started",
 
-            // TODO CHANGED
-            // OLD: Study currently running
-            // NEW: Currently running
-            "RUNNING" : "Study currently running"
+            // TODO NEW: Currently running
+            "RUNNING" : "Currently running"
         },
         "studyvalidationstatus" : {
 
-            // TODO CHANGED
-            // OLD: Validation not requested yet
-            // NEW: Draft (Not Validated)
-            "DRAFT" : "Validation not requested yet",
+            // TODO NEW: Draft (Not Validated)
+            "DRAFT" : "Draft (Not Validated)",
 
             // TODO NEW: Study rejected by MIDATA
             "REJECTED" : "Study rejected by MIDATA",
@@ -531,12 +547,8 @@
             // TODO NEW: Developer
             "DEVELOPER" : "Developer",
 
-            // TODO NEW: MIDATA member
-
-            // TODO CHANGED
-            // OLD: MIDATA member
-            // NEW: Account Holder
-            "MEMBER" : "MIDATA member",
+            // TODO NEW: Account Holder
+            "MEMBER" : "Account Holder",
 
             // TODO NEW: Healthcare provider
             "PROVIDER" : "Healthcare provider",
@@ -1304,12 +1316,8 @@
         // TODO NEW: Change Address
         "change_address_btn" : "Change Address",
 
-        // TODO NEW: Is your account visible for other MIDATA members?
-
-        // TODO CHANGED
-        // OLD: Is your account visible for other MIDATA members?
-        // NEW: Is your account visible for other MIDATA account holders?
-        "searchable" : "Is your account visible for other MIDATA members?",
+        // TODO NEW: Is your account visible for other MIDATA account holders?
+        "searchable" : "Is your account visible for other MIDATA account holders?",
 
         // TODO NEW: Change Settings
         "change_settings_btn" : "Change Settings",
@@ -1389,12 +1397,8 @@
         // TODO NEW: What type of consent do you want to create?
         "type" : "What type of consent do you want to create?",
 
-        // TODO NEW: I want to share data with other MIDATA members.
-
-        // TODO CHANGED
-        // OLD: I want to share data with other MIDATA members.
-        // NEW: I want to share data with other MIDATA account holders.
-        "share_with_members" : "I want to share data with other MIDATA members.",
+        // TODO NEW: I want to share data with other MIDATA account holders.
+        "share_with_members" : "I want to share data with other MIDATA account holders.",
 
         // TODO NEW: I want to share data with a health professional.
         "share_with_provider" : "I want to share data with a health professional.",
@@ -1492,12 +1496,8 @@
         // TODO NEW: This consent does not share any data at the moment.
         "consent_empty" : "This consent does not share any data at the moment.",
 
-        // TODO NEW: This consent shares data with other MIDATA members.
-
-        // TODO CHANGED
-        // OLD: This consent shares data with other MIDATA members.
-        // NEW: This consent shares data with other MIDATA account holders.
-        "type_circle" : "This consent shares data with other MIDATA members.",
+        // TODO NEW: This consent shares data with other MIDATA account holders.
+        "type_circle" : "This consent shares data with other MIDATA account holders.",
 
         // TODO NEW: This consent shares data with healthcare professionals.
         "type_healthcare" : "This consent shares data with healthcare professionals.",
@@ -1610,22 +1610,22 @@
         // TODO NEW: My Data
         "title" : "My Data",
 
-        // TODO NEW: Please use the 'share' and 'unshare' buttons to select which records you want to share with consent
+        // TODO NEW: Please use the 'share' and 'unshare' buttons to select which records you want to share with consent 
         "share_instructions1" : "Please use the 'share' and 'unshare' buttons to select which records you want to share with consent ",
 
-        // TODO NEW: This consent currently shares data with
+        // TODO NEW: This consent currently shares data with 
         "share_instructions2" : "This consent currently shares data with ",
 
         // TODO NEW: people.
         "share_instructions3" : "people.",
 
-        // TODO NEW: In order to permanently
+        // TODO NEW: In order to permanently 
         "delete_instructions1" : "In order to permanently ",
 
         // TODO NEW: delete
         "delete_instructions2" : "delete",
 
-        // TODO NEW: a record
+        // TODO NEW: a record 
         "delete_instructions3" : "a record ",
 
         // TODO NEW: double-click
@@ -1751,12 +1751,8 @@
         // TODO NEW: New records shared with you
         "newsharedrecords" : "New records shared with you",
 
-        // TODO NEW: Other MIDATA members may share their data with you.
-
-        // TODO CHANGED
-        // OLD: Other MIDATA members may share their data with you.
-        // NEW: Other MIDATA account holders may share their data with you.
-        "newsharedrecords_teaser" : "Other MIDATA members may share their data with you.",
+        // TODO NEW: Other MIDATA account holders may share their data with you.
+        "newsharedrecords_teaser" : "Other MIDATA account holders may share their data with you.",
 
         // TODO NEW: Member of Circles
         "circles" : "Member of Circles",
@@ -1854,12 +1850,8 @@
         // TODO NEW: View
         "view_btn" : "View",
 
-        // TODO NEW: Install new plugin
-
-        // TODO CHANGED
-        // OLD: Install new plugin
-        // NEW: Add more
-        "install_btn" : "Install new plugin"
+        // TODO NEW: Add more
+        "install_btn" : "Add more"
     },
 
     "measure" : {
@@ -1926,16 +1918,30 @@
     },
 
     "flexiblerecords" : {
-        "records_available" : "Verfügbare Datensätze:",
-        "empty" : "Leer",
-        "browse_btn" : "Datensätze durchblättern",
-        "add_btn" : "Datensätze hinzufügen...",
-        "share_btn" : "Teilen"
+
+        // TODO NEW: Records available:
+        "records_available" : "Records available:",
+
+        // TODO NEW: Empty
+        "empty" : "Empty",
+
+        // TODO NEW: Browse Records
+        "browse_btn" : "Browse Records",
+
+        // TODO NEW: Add Records...
+        "add_btn" : "Add Records...",
+
+        // TODO NEW: Share
+        "share_btn" : "Share"
     },
 
     "flexiblestudies" : {
-        "empty" : "Leer",
-        "studies_found" : "Gefundene Studien:"
+
+        // TODO NEW: Empty
+        "empty" : "Empty",
+
+        // TODO NEW: Studies found:
+        "studies_found" : "Studies found:"
     },
 
     "addtask" : {

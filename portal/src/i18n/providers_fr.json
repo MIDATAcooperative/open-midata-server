@@ -36,6 +36,57 @@
         "workspace" : "Workspace",
 
         // TODO NEW: Market
-        "market" : "Market"
+        "market" : "Market",
+
+        // TODO NEW: Teams
+        "usergroups" : "Teams"
+    },
+
+    "provider_patientsearch" : {
+
+        // TODO NEW: Patient Search
+        "title" : "Patient Search"
+    },
+
+    "provider_patients" : {
+
+        // TODO NEW: Patients
+        "title" : "Patients"
+    },
+
+    "provider_usergroups" : {
+
+        // TODO NEW: Teams
+        "title" : "Teams",
+
+        // TODO NEW: Team
+        "name" : "Team",
+
+        // TODO NEW: You are not part of a team.
+        "empty" : "You are not part of a team."
+    },
+
+    "provider_newusergroup" : {
+
+        // TODO NEW: Create new Team
+        "title" : "Create new Team",
+
+        // TODO NEW: Team Name
+        "name" : "Team Name",
+
+        // TODO NEW: Create
+        "create_btn" : "Create"
+    },
+
+    "provider_editusergroup" : {
+
+        // TODO NEW: Edit Team
+        "title" : "Edit Team",
+
+        // TODO NEW: Team Name
+        "name" : "Team Name",
+
+        // TODO NEW: Status
+        "status" : "Status"
     }
 }

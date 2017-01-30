@@ -35,6 +35,9 @@
         // TODO NEW: Signed contract needs to be confirmed
         "contract_confirm_required" : "Signed contract needs to be confirmed",
 
+        // TODO NEW: Active Trial Users
+        "trialusers" : "Active Trial Users",
+
         // TODO NEW: Overview
         "overview" : "Overview",
 
@@ -68,8 +71,14 @@
         // TODO NEW: Sub-Role(s)
         "subroles" : "Sub-Role(s)",
 
+        // TODO NEW: Belongs to Developer:
+        "developer" : "Belongs to Developer:",
+
         // TODO NEW: Status:
         "status" : "Status:",
+
+        // TODO NEW: AGB Status:
+        "agb_status" : "AGB Status:",
 
         // TODO NEW: Contract Status:
         "contract_status" : "Contract Status:",
@@ -83,8 +92,20 @@
         // TODO NEW: Registration Date:
         "registration_date" : "Registration Date:",
 
+        // TODO NEW: Confirmation Date:
+        "confirmation_date" : "Confirmation Date:",
+
         // TODO NEW: Last login:
-        "last_login" : "Last login:"
+        "last_login" : "Last login:",
+
+        // TODO NEW: Confirm email address
+        "email_confirm_btn" : "Confirm email address",
+
+        // TODO NEW: Comment
+        "comment" : "Comment",
+
+        // TODO NEW: Add Comment
+        "add_comment_btn" : "Add Comment"
     },
 
     "admin_news" : {
@@ -136,5 +157,14 @@
 
         // TODO NEW: Register New Admin Account
         "sign_up" : "Register New Admin Account"
+    },
+
+    "admin_plugins" : {
+
+        // TODO NEW: Plugins
+        "title" : "Plugins",
+
+        // TODO NEW: Restrict by Developer
+        "developer" : "Restrict by Developer"
     }
 }

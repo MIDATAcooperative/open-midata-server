@@ -38,7 +38,16 @@
         "menu_consents" : "Consentements",
         "menu_consents_text" : "Gérez les données que vous partagez avec d'autres utilisateurs.",
         "answer_questions" : "Pour commencer, nous vous recommandons de répondre à quelques questions. Votre compte sera préconfiguré d'après vos réponses.",
-        "answer_btn" : "Répondez aux questions de configuration maintenant"
+
+        // TODO NEW: Thank you for answering the setup questions! You sould visit your dashboard now or change your answers if you need to.
+        "answered_questions" : "Thank you for answering the setup questions! You sould visit your dashboard now or change your answers if you need to.",
+        "answer_btn" : "Répondez aux questions de configuration maintenant",
+
+        // TODO NEW: Visit 'me' page
+        "dashboard_btn" : "Visit 'me' page",
+
+        // TODO NEW: Change Answers to Setup Questions
+        "answer_again_btn" : "Change Answers to Setup Questions"
     },
 
     "help_setup" : {
@@ -89,10 +98,54 @@
     "providers" : {
         "name" : "Nom",
         "status" : "État",
-
         "confirmation_date" : "Date de confirmation",
         "confirm_btn" : "confirmer",
         "reject_btn" : "refuser",
         "empty" : "Vous n'avez pas enregistré de contact à un professionel de la santé."
+    },
+
+    "member_user" : {
+
+        // TODO NEW: Account Status
+        "account_status" : "Account Status",
+
+        // TODO NEW: Your account is currently a trial account with limited functionality.
+        "trialuser" : "Your account is currently a trial account with limited functionality.",
+
+        // TODO NEW: Your account has been set up for participation in a study. Functionality is limited. You may upgrade your user account to a full account.
+        "studyparticipant" : "Your account has been set up for participation in a study. Functionality is limited. You may upgrade your user account to a full account.",
+
+        // TODO NEW: Your account has been registered by an external application. Functionality is limited. You may upgrade your user account to a full account.
+        "appuser" : "Your account has been registered by an external application. Functionality is limited. You may upgrade your user account to a full account.",
+
+        // TODO NEW: You are a member of the MIDATA cooperative.
+        "memberofcooperative" : "You are a member of the MIDATA cooperative.",
+
+        // TODO NEW: You have a full user account but you are no member of the MIDATA cooperative.
+        "nonmemberuser" : "You have a full user account but you are no member of the MIDATA cooperative.",
+
+        // TODO NEW: By clicking on the 'Request Contract' button the contract and AGB will be sent to you by letter. Please return the signed AGB to convert this trial account into a full account.
+        "agb_not_requested" : "By clicking on the 'Request Contract' button the contract and AGB will be sent to you by letter. Please return the signed AGB to convert this trial account into a full account.",
+
+        // TODO NEW: The AGB and contract have been requested by you. Your request has not been processed by the MIDATA office yet.
+        "agb_requested" : "The AGB and contract have been requested by you. Your request has not been processed by the MIDATA office yet.",
+
+        // TODO NEW: The AGB and contract have been requested by you and should arrive during the next days.
+        "agb_printed" : "The AGB and contract have been requested by you and should arrive during the next days.",
+
+        // TODO NEW: You have signed the AGB.
+        "agb_signed" : "You have signed the AGB.",
+
+        // TODO NEW: Your postal address has been confirmed.
+        "confirmed" : "Your postal address has been confirmed.",
+
+        // TODO NEW: The letter sent to you contains a registration code. Please enter your code here once you have received it:
+        "entercode" : "The letter sent to you contains a registration code. Please enter your code here once you have received it:",
+
+        // TODO NEW: Your eMail address has not been validated yet. Please click on the link of the validation email you received in your email account!
+        "email_unvalidated" : "Your eMail address has not been validated yet. Please click on the link of the validation email you received in your email account!",
+
+        // TODO NEW: Request Contract
+        "request_membership_btn" : "Request Contract"
     }
 }
