@@ -309,6 +309,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 						
 			angular.forEach($scope.measurements, function(measure) {
 				if (measure.import && !(measure.skip)) {
+					$scope.requesting++;
 					var f = function() { return getPrevRecords(measure); };
 					actionChain = actionChain.then(f);					
 				}
@@ -329,7 +330,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 		var getPrevRecords = function(measure) {
 			var fromDate = measure.from;
 			var fromFormatted = fromDate.getFullYear() + "-" + twoDigit(fromDate.getMonth() + 1) + "-" + twoDigit(fromDate.getDate());
-			$scope.requesting++;
+			
 		   return midataServer.getRecords($scope.authToken, { "format" :"fhir/Observation", "content" : measure.content, "index" : { "effectiveDateTime" : { "!!!ge" : fromFormatted }} }, ["version", "content", "data"])
 			   .then(function(results) {
 				   angular.forEach(results.data, function(rec) {
@@ -521,6 +522,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 					if ($scope.alldone != null) {
 						$scope.alldone.resolve();
 					} else {
+						$scope.user = null;
 					    $scope.initForm($scope.authToken);
 					}
 				}
