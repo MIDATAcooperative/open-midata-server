@@ -184,7 +184,13 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			if (amendFrom) {
 				measurement.from = new Date(measurement.to.getTime());
 				measurement.from.setDate(measurement.from.getDate() + 1);
-				if (measurement.from.getTime() > yesterday.getTime()) measurement.skip = true;
+				if (measurement.from.getTime() > yesterday.getTime()) {
+				  measurement.skip = true;
+				  console.log("skip");
+				  console.log(measurement);
+				} else  {
+  				  measurement.skip = false;
+				}
 			} else measurement.skip = false;
 			 
 			measurement.to = yesterday;
@@ -302,7 +308,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			actionDef.resolve();
 						
 			angular.forEach($scope.measurements, function(measure) {
-				if (measure.import && !measure.skip) {
+				if (measure.import && !(measure.skip)) {
 					var f = function() { return getPrevRecords(measure); };
 					actionChain = actionChain.then(f);					
 				}
@@ -310,7 +316,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			
 			actionChain.then(function() {
 			  angular.forEach($scope.measurements, function(measure) {
-				if (measure.import && !measure.skip) {					
+				if (measure.import && !(measure.skip)) {					
 					importRecords(measure);
 					if (measure.repeat) { measure.repeat = false; $scope.repeat = true; }
 				}
