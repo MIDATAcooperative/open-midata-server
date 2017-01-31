@@ -36,12 +36,12 @@ private Feature next;
 	protected List<DBRecord> query(Query q) throws AppException {
 		if (q.restrictedBy("index") && !q.restrictedBy("_id")) {
 			
-			IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getOwner(), q.getApsId(), false);
+			IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), false);
 			
 		    if (pseudo == null) {
 				List<DBRecord> recs = next.query(q);
 				if (recs.size() > AUTOCREATE_INDEX_COUNT) {
-					pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getOwner(), q.getApsId(), true);
+					pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), true);
 				} else { return recs; }
 			}			
 			
@@ -68,7 +68,7 @@ private Feature next;
 			
 			Set<MidataId> targetAps;
 			
-			if (!q.getApsId().equals(q.getCache().getOwner())) {
+			if (!q.getApsId().equals(q.getCache().getAccountOwner())) {
 				targetAps = Collections.singleton(q.getApsId());
 			} else {
 				boolean allTarget = Feature_AccountQuery.allApsIncluded(q);
@@ -84,7 +84,7 @@ private Feature next;
 			}
 						
 			List<DBRecord> result = new ArrayList<DBRecord>();
-			IndexRoot root = IndexManager.instance.getIndexRootAndUpdate(pseudo, q.getCache(), q.getCache().getOwner(), index, targetAps);
+			IndexRoot root = IndexManager.instance.getIndexRootAndUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index, targetAps);
 			Collection<IndexMatch> matches = IndexManager.instance.queryIndex(root, condition);
 			
 			Map<MidataId, Set<MidataId>> filterMatches = new HashMap<MidataId, Set<MidataId>>();

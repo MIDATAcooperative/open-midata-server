@@ -19,15 +19,25 @@ class APSCache {
 
 	private Map<String, APS> cache;
 	private Map<String, APSCache> subcache;
-	private MidataId ownerId;
+	private MidataId executorId;
+	private MidataId accountOwner;
 	
-	public APSCache(MidataId who) {
-		this.ownerId = who;
+	public APSCache(MidataId executorId, MidataId accountApsId) {
+		this.executorId = executorId;
+		this.accountOwner = accountApsId;
 		this.cache = new HashMap<String, APS>();
 	}
 	
-	public MidataId getOwner() {
-		return ownerId;
+	public MidataId getExecutor() {
+		return executorId;
+	}
+	
+	public MidataId getAccountOwner() {
+		return accountOwner;
+	}
+	
+	protected void setAccountOwner(MidataId accountOwner) {
+		this.accountOwner = accountOwner;
 	}
 	
 	public boolean hasAPS(MidataId apsId) throws AppException {
@@ -39,7 +49,7 @@ class APSCache {
 	public APS getAPS(MidataId apsId) throws InternalServerException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) {
-			result = new APSImplementation(new EncryptedAPS(apsId, ownerId));
+			result = new APSImplementation(new EncryptedAPS(apsId, executorId));
 			cache.put(apsId.toString(), result);
 		}
 		return result;
@@ -48,7 +58,7 @@ class APSCache {
 	public APS getAPS(MidataId apsId, MidataId owner) throws InternalServerException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) {
-			result = new APSImplementation(new EncryptedAPS(apsId, ownerId, owner));
+			result = new APSImplementation(new EncryptedAPS(apsId, executorId, owner));
 			cache.put(apsId.toString(), result);
 		}	
 		return result;
@@ -57,10 +67,10 @@ class APSCache {
 	public APS getAPS(MidataId apsId, byte[] unlockKey, MidataId owner) throws AppException, EncryptionNotSupportedException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) { 
-			result = new APSImplementation(new EncryptedAPS(apsId, ownerId, unlockKey, owner));
+			result = new APSImplementation(new EncryptedAPS(apsId, executorId, unlockKey, owner));
 			if (!result.isAccessible()) {
-				AccessLog.log("Adding missing access for "+ownerId.toString()+" APS:"+apsId.toString());
-				result.addAccess(Collections.<MidataId>singleton(ownerId));
+				AccessLog.log("Adding missing access for "+executorId.toString()+" APS:"+apsId.toString());
+				result.addAccess(Collections.<MidataId>singleton(executorId));
 			}
 			cache.put(apsId.toString(), result);
 		}
@@ -70,8 +80,8 @@ class APSCache {
 	public APS getAPS(MidataId apsId, byte[] unlockKey, MidataId owner, AccessPermissionSet set) throws AppException, EncryptionNotSupportedException {
 		APS result = cache.get(apsId.toString());
 		if (result == null) { 
-			result = new APSImplementation(new EncryptedAPS(apsId, ownerId, unlockKey, owner, set));
-			if (!result.isAccessible()) result.addAccess(Collections.<MidataId>singleton(ownerId));
+			result = new APSImplementation(new EncryptedAPS(apsId, executorId, unlockKey, owner, set));
+			if (!result.isAccessible()) result.addAccess(Collections.<MidataId>singleton(executorId));
 			cache.put(apsId.toString(), result);
 		}
 		return result;
@@ -87,7 +97,7 @@ class APSCache {
 		}
 		APSCache result = subcache.get(group.toString());
 		if (result == null) {
-			result = new APSCache(group);
+			result = new APSCache(group, group);
 			subcache.put(group.toString(), result);
 		}
 		return result;
