@@ -105,7 +105,7 @@ public class Query {
 	public boolean isRestrictedToSelf() throws AppException {
 		if (!restrictedBy("owner")) return false;
 		Set<String> owner = getRestriction("owner");
-		if (owner.size() == 1 && (owner.contains("self") || owner.contains(cache.getOwner().toString()))) return true;
+		if (owner.size() == 1 && (owner.contains("self") || owner.contains(cache.getAccountOwner().toString()))) return true;
 		return false;
 	}
 	
@@ -393,7 +393,7 @@ public class Query {
 					 resolved.add(owner);
 				 } else {
 					 if (owner.equals("self")) {
-						 resolved.add(cache.getOwner().toString());
+						 resolved.add(cache.getAccountOwner().toString());
 					 } else resolved.add(owner);
 				 }
 			 }

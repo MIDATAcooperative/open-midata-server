@@ -27,15 +27,15 @@ public class Feature_UserGroups extends Feature {
 	protected List<DBRecord> query(Query q) throws AppException {
 		if (q.restrictedBy("usergroup")) {
 			MidataId usergroup = q.getMidataIdRestriction("usergroup").iterator().next();
-			UserGroupMember isMemberOfGroup = UserGroupMember.getByGroupAndMember(usergroup, q.getCache().getOwner());
+			UserGroupMember isMemberOfGroup = UserGroupMember.getByGroupAndMember(usergroup, q.getCache().getAccountOwner());
 			if (isMemberOfGroup == null) throw new InternalServerException("error.internal", "Not member of provided user group");
 			return doQueryAsGroup(isMemberOfGroup, q);					
 		}
 		
-		if (q.getApsId().equals(q.getCache().getOwner())) {				
+		if (q.getApsId().equals(q.getCache().getAccountOwner())) {				
 			
 			if (!q.isRestrictedToSelf()) {
-				Set<UserGroupMember> isMemberOfGroups = UserGroupMember.getAllActiveByMember(q.getCache().getOwner());
+				Set<UserGroupMember> isMemberOfGroups = UserGroupMember.getAllActiveByMember(q.getCache().getAccountOwner());
 				if (!isMemberOfGroups.isEmpty()) {
 					List<DBRecord> results = next.query(q);
 					for (UserGroupMember ugm : isMemberOfGroups) {
@@ -68,7 +68,7 @@ public class Feature_UserGroups extends Feature {
 		if (target.isAccessible()) {
 			return null;
 		}
-		Set<UserGroupMember> isMemberOfGroups = UserGroupMember.getAllActiveByMember(cache.getOwner());
+		Set<UserGroupMember> isMemberOfGroups = UserGroupMember.getAllActiveByMember(cache.getAccountOwner());
 		if (!isMemberOfGroups.isEmpty()) {
 			
 			for (UserGroupMember ugm : isMemberOfGroups) {

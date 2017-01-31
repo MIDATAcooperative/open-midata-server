@@ -127,6 +127,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	@Read()
 	public T getResourceById(@IdParam IIdType theId) throws AppException {
 		Record record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new MidataId(theId.getIdPart()));
+		if (record == null) throw new ResourceNotFoundException(theId);
 		IParser parser = ctx().newJsonParser();
 		T p = parser.parseResource(getResourceType(), record.data.toString());
 		processResource(record, p);		

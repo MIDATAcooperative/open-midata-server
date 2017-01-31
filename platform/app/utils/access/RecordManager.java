@@ -81,11 +81,15 @@ public class RecordManager {
 	 */
 	protected APSCache getCache(MidataId who) throws InternalServerException {
 		if (apsCache.get() == null)
-			apsCache.set(new APSCache(who));
+			apsCache.set(new APSCache(who, who));
 		APSCache result = apsCache.get();
-		if (!result.getOwner().equals(who)) throw new InternalServerException("error.internal", "Owner Change!");
+		if (!result.getExecutor().equals(who)) throw new InternalServerException("error.internal", "Owner Change!");
 		return result;
-	}		
+	}	
+	
+	public void setAccountOwner(MidataId executor, MidataId accountOwner) throws InternalServerException {
+		getCache(executor).setAccountOwner(accountOwner);
+	}
 	
 	/**
 	 * clears APS cache. Is automatically called after each request.
