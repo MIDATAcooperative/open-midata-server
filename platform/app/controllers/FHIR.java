@@ -77,7 +77,7 @@ public class FHIR extends Controller {
 		String param = req.getHeader("Authorization");
 				
 		if (param != null && param.startsWith("Bearer ")) {
-          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()));        
+          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);        
           ResourceProvider.setExecutionInfo(info);
 		}
         
@@ -129,7 +129,7 @@ public class FHIR extends Controller {
 		String param = req.getHeader("Authorization");
 				
 		if (param != null && param.startsWith("Bearer ")) {
-          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()));        
+          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);        
           ResourceProvider.setExecutionInfo(info);
 		}
         
@@ -180,7 +180,7 @@ public class FHIR extends Controller {
 		String param = req.getHeader("Authorization");
 				
 		if (param != null && param.startsWith("Bearer ")) {
-          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()));        
+          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);        
           ResourceProvider.setExecutionInfo(info);
 		} else ResourceProvider.setExecutionInfo(null);
         
@@ -229,7 +229,7 @@ public class FHIR extends Controller {
 		String param = req.getHeader("Authorization");
 				
 		if (param != null && param.startsWith("Bearer ")) {
-          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()));        
+          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);        
           ResourceProvider.setExecutionInfo(info);
 		}
         

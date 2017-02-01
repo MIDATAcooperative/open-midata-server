@@ -408,7 +408,7 @@ class QueryEngine {
 		if (q.restrictedBy("name")) result = filterByMetaSet(result, "name", q.getRestriction("name"));
 		if (q.restrictedBy("code")) result = filterByMetaSet(result, "code", q.getRestriction("code"));
 		
-		if (q.restrictedBy("index") && !q.getApsId().equals(q.getCache().getOwner())) {
+		if (q.restrictedBy("index") && !q.getApsId().equals(q.getCache().getAccountOwner())) {
 			AccessLog.log("Manually applying index query aps="+q.getApsId().toString());
 			result = QueryEngine.filterByDataQuery(result, q.getProperties().get("index"));
 		}
