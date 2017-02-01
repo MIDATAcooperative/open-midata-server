@@ -181,7 +181,9 @@ public class GoalResourceProvider extends ResourceProvider<Goal> implements IRes
 	protected MethodOutcome update(@IdParam IdType theId, @ResourceParam Goal theGoal) throws AppException {
 		Record record = fetchCurrent(theId);
 		prepare(record, theGoal);		
-		updateRecord(record, theGoal);		
+		updateRecord(record, theGoal);	
+		processResource(record, theGoal);
+		
 		return outcome("Goal", record, theGoal);
 	}
 

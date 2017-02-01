@@ -345,6 +345,8 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		prepare(record, theTask);		
 		updateRecord(record, theTask);
 		shareRecord(record, theTask);
+		processResource(record, theTask);
+		
 		return outcome("Task", record, theTask);
 	}
 

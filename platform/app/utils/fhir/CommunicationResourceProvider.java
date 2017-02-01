@@ -298,6 +298,8 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		Record record = fetchCurrent(theId);
 		prepare(record, theCommunication);		
 		updateRecord(record, theCommunication);		
+		processResource(record, theCommunication);
+		
 		return outcome("Communication", record, theCommunication);
 	}
 
