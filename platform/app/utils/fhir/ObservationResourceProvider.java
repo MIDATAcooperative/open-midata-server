@@ -325,7 +325,9 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 	protected MethodOutcome update(@IdParam IdType theId, @ResourceParam Observation theObservation) throws AppException {
 		Record record = fetchCurrent(theId);
 		prepare(record, theObservation);		
-		updateRecord(record, theObservation);		
+		updateRecord(record, theObservation);	
+		processResource(record, theObservation);
+		
 		return outcome("Observation", record, theObservation);
 	}
 

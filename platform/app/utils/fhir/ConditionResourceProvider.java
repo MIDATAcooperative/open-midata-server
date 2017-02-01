@@ -301,6 +301,8 @@ public class ConditionResourceProvider extends ResourceProvider<Condition> imple
 		Record record = fetchCurrent(theId);
 		prepare(record, theCondition);		
 		updateRecord(record, theCondition);		
+		processResource(record, theCondition);
+		
 		return outcome("Condition", record, theCondition);
 	}
 
