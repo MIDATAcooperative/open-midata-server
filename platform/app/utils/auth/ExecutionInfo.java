@@ -104,7 +104,7 @@ public class ExecutionInfo {
 	public static ExecutionInfo checkMobileToken(MobileAppSessionToken authToken, boolean allowInactive) throws AppException {		
 						
 		AccessLog.logBegin("begin check 'mobile' type session token");
-		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare"));
+		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare", "status"));
         if (appInstance == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 
         if (!allowInactive && !appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
