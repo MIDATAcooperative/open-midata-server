@@ -30,7 +30,7 @@ public class MobileCallAction extends Action<MobileCall> {
     	  ctx.response().setHeader("Allow", "*");
     	  ctx.response().setHeader("Access-Control-Allow-Credentials", "true");
     	  ctx.response().setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH");
-    	  ctx.response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, Authorization, Prefer, Location");
+    	  ctx.response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, Authorization, Prefer, Location, IfMatch, ETag, LastModified");
     	
           return delegate.call(ctx);
     	} catch (JsonValidationException e) {
