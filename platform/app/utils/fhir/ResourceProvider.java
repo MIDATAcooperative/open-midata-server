@@ -166,7 +166,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	protected MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam T theResource) {
 
 		try {
-			if (theResource.getMeta() == null || theResource.getMeta().getVersionId() == null) throw new PreconditionFailedException("Resource version missing!");
+			if (theId.getVersionIdPart() == null && (theResource.getMeta() == null || theResource.getMeta().getVersionId() == null)) throw new PreconditionFailedException("Resource version missing!");
 			return update(theId, theResource);
 		} catch (BaseServerResponseException e) {
 			throw e;
@@ -326,7 +326,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 		
 	
 	public void processResource(Record record, T resource) {
-		resource.setId(record._id.toString());
+		resource.setId(new IdType(resource.fhirType(), record._id.toString(), record.version));
 		resource.getMeta().setVersionId(record.version);
 		if (record.lastUpdated == null) resource.getMeta().setLastUpdated(record.created);
 		else resource.getMeta().setLastUpdated(record.lastUpdated);
@@ -425,7 +425,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	}
 	
 	public static void updateRecord(Record record, IBaseResource resource) throws AppException {
-		if (!record.version.equals(resource.getMeta().getVersionId())) throw new ResourceVersionConflictException("Wrong resource version supplied!") ;
+		if (resource.getMeta() != null && resource.getMeta().getVersionId() != null && !record.version.equals(resource.getMeta().getVersionId())) throw new ResourceVersionConflictException("Wrong resource version supplied!") ;
 		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 		record.data = (DBObject) JSON.parse(encoded);	
 		record.version = resource.getMeta().getVersionId();

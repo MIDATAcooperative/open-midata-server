@@ -373,6 +373,8 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 		Record record = fetchCurrent(theId);
 		prepare(record, theDocumentReference);
 		updateRecord(record, theDocumentReference);
+		processResource(record, theDocumentReference);
+		
 		return outcome("DocumentReference", record, theDocumentReference);
 	}
 

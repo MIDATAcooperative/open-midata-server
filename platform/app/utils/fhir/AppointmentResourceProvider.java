@@ -243,6 +243,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		prepare(record, theAppointment);		
 		updateRecord(record, theAppointment);			
 		shareRecord(record, theAppointment);
+		processResource(record, theAppointment);
 		
 		return outcome("Appointment", record, theAppointment);
 	}
