@@ -95,7 +95,7 @@ public enum InstanceType {
 	 * @return
 	 */
 	public boolean notifyAdminOnRegister() {
-		return this == TEST || this == DEMO;
+		return this == TEST || this == DEMO || this == PROD;
 	}
 	
 	/**
