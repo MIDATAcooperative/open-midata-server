@@ -915,20 +915,25 @@ public class Studies extends APIController {
 		//if (study.participantSearchStatus != ParticipantSearchStatus.CLOSED) return badRequest("Participant search must be closed before.");
 		if (study.executionStatus != StudyExecutionStatus.PRE) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 	
-		Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(study._id, Sets.create("_id", "owner"));
+		deleteStudy(userId, study._id);
+		
+		return ok();
+	}
+	
+	public static void deleteStudy(MidataId userId, MidataId studyId) throws AppException {
+		
+		Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyId, Sets.create("_id", "owner"));
 		for (StudyParticipation part : participants) {
 			RecordManager.instance.deleteAPS(part._id, userId);
-			StudyParticipation.delete(study._id, part._id);
+			StudyParticipation.delete(studyId, part._id);
 		}
 		
-		Set<StudyRelated> related = StudyRelated.getByStudy(studyid, Sets.create("authorized"));
+		Set<StudyRelated> related = StudyRelated.getByStudy(studyId, Sets.create("authorized"));
 		for (StudyRelated studyRelated : related) {
 			RecordManager.instance.deleteAPS(studyRelated._id, userId);
-			StudyRelated.delete(study._id, studyRelated._id);
+			StudyRelated.delete(studyId, studyRelated._id);
 		}
 		
-		Study.delete(study._id);
-	
-		return ok();
+		Study.delete(studyId);
 	}
 }

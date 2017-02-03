@@ -20,7 +20,11 @@ public class HealthcareProvider extends Model {
 	
 	public static void add(HealthcareProvider provider) throws InternalServerException {
 		Model.insert(collection, provider);
-	 }
+	}
+	
+	public static void delete(MidataId userId) throws InternalServerException {			
+		Model.delete(HealthcareProvider.class, collection, CMaps.map("_id", userId));
+    }
  
 	public static HealthcareProvider getById(MidataId id) throws InternalServerException {
 		return Model.get(HealthcareProvider.class, collection, CMaps.map("_id", id), Sets.create("name"));

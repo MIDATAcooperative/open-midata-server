@@ -423,7 +423,7 @@ public class Query {
 			if (system == null || ! (system instanceof String)) throw new BadRequestException("error.missing.groupsystem", "Missing group-system for query");
 			Set<String> groups = Query.getRestriction(query.get("group"), "group"); 
 			query.put("group", groups);
-			for (String group : groups) if (RecordGroup.getBySystemPlusName(system.toString(), group) == null) throw new BadRequestException("error.group",  "Unknown group'"+group+"' for system '"+system.toString()+"'.");
+			for (String group : groups) if (RecordGroup.getBySystemPlusName(system.toString(), group) == null) throw new BadRequestException("error.unknown.group",  "Unknown group'"+group+"' for system '"+system.toString()+"'.");
 			contentSet = true;
 		}
 		if (query.containsKey("group-strict")) {

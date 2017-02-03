@@ -44,6 +44,7 @@ public class ResearchUser extends User {
 	}
 	
 	public static void add(ResearchUser user) throws InternalServerException {
+		//user.updateKeywords(false);
 		Model.insert(collection, user);	
 	}
 	

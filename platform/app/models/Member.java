@@ -99,6 +99,7 @@ public class Member extends User {
 	}
 
 	public static void add(Member user) throws InternalServerException {
+		user.updateKeywords(false);
 		Model.insert(collection, user);
 
 		// add to search index (email is document's content, so that it is searchable as well)
