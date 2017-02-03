@@ -30,6 +30,10 @@ public class Research extends Model {
 			Model.insert(collection, research);
   	 }
 	 
+	 public static void delete(MidataId userId) throws InternalServerException {			
+			Model.delete(Research.class, collection, CMaps.map("_id", userId));
+	 }
+	 
 	 public static boolean existsByName(String name) throws InternalServerException {
 		 return Model.exists(Research.class, collection, CMaps.map("name", name));
 	 }

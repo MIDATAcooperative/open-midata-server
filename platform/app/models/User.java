@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -319,6 +320,22 @@ public class User extends Model implements Comparable<User> {
 		Model.delete(User.class, collection, CMaps.map("_id", userId));
 	}
 
+	/**
+	 * Internally used to update a lower case keyword list for users to improve search speed.
+	 * @param user the user 
+	 * @param write set to true if the new keywords should be written to database
+	 * @throws InternalServerException
+	 */
+	public void updateKeywords(boolean write) throws InternalServerException {
+		Set<String> keywords = new HashSet<String>();
+		keywords.add(firstname.toLowerCase());
+		keywords.add(lastname.toLowerCase());
+		if (address1 != null && address1.length() > 0) keywords.add(address1.toLowerCase());
+		if (address2 != null && address2.length() > 0) keywords.add(address2.toLowerCase());
+		if (city != null && city.length() > 0) keywords.add(city.toLowerCase());
+		keywordsLC = keywords;
+		if (write) User.set(_id, "keywordsLC", keywordsLC);
+	}
 		
 	
 }

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -595,7 +596,10 @@ public class RecordManager {
 		if (recs.size() == 0) return;
 		
 		AccessLog.logBegin("begin wipe #records="+recs.size());
-		for (DBRecord record : recs) {			
+		Iterator<DBRecord> it = recs.iterator();
+		while (it.hasNext()) {
+	   	   DBRecord record = it.next();			
+	       if (record.meta.getString("content").equals("Patient")) it.remove();
 		   if (record.owner == null) throw new InternalServerException("error.internal", "Owner of record is null.");
 		   if (!record.owner.equals(executingPerson)) throw new BadRequestException("error.internal", "Not owner of record!");
 		}
