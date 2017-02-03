@@ -82,6 +82,7 @@ public class IndexManager {
 	}
 			
 	protected void addRecords(IndexRoot index, MidataId aps, Collection<DBRecord> records) throws AppException, LostUpdateException {
+		// TODO Load Records in Chunks for better performance
 		for (DBRecord record : records) {
 			QueryEngine.loadData(record);
 			index.addEntry(aps != null ? aps : record.consentAps, record);
@@ -95,20 +96,6 @@ public class IndexManager {
 		addRecords(index, recs);
     }*/
 	
-	
-	protected void indexAll(APSCache cache, IndexRoot index, MidataId executor) throws AppException {
-		try {
-			/*Map<String, Object> restrictions = new HashMap<String, Object>();
-			restrictions.put("format", index.getFormats());
-			if (index.restrictedToSelf()) restrictions.put("owner", "self");
-			Collection<DBRecord> recs = QueryEngine.listInternal(cache, executor, restrictions, Sets.create("_id", "consentAps"));
-			addRecords(index, recs);*/
-			index.flush();
-		} catch (LostUpdateException e) {
-			index.reload();
-			indexAll(cache, index, executor);
-		}
-	}
 	
 	protected void indexUpdate(APSCache cache, IndexRoot index, MidataId executor, Set<MidataId> targetAps) throws AppException {
 						
@@ -163,7 +150,7 @@ public class IndexManager {
 			try {
 			  Thread.sleep(50);
 			} catch (InterruptedException e2) {}
-			index.reload();
+			index.reload(); //XXXX
 			indexUpdate(cache, index, executor, targetAps);
 		}
 		AccessLog.logEnd("end index update");

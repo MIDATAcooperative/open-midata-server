@@ -16,10 +16,13 @@ import actions.APICall;
 import models.Circle;
 import models.Consent;
 import models.Developer;
+import models.HealthcareProvider;
 import models.History;
 import models.Member;
 import models.MidataId;
+import models.Research;
 import models.Space;
+import models.Study;
 import models.User;
 import models.enums.ContractStatus;
 import models.enums.EventType;
@@ -292,7 +295,7 @@ public class Users extends APIController {
 		User.set(user._id, "lastname", user.lastname);
 		User.set(user._id, "gender", user.gender);		
 		
-		updateKeywords(user, true);
+		user.updateKeywords(true);
 		
 		if (user.role.equals(UserRole.MEMBER)) {		  
 		  PatientResourceProvider.updatePatientForAccount(user._id);
@@ -303,22 +306,7 @@ public class Users extends APIController {
 		return ok();		
 	}
 	
-	/**
-	 * Internally used to update a lower case keyword list for users to improve search speed.
-	 * @param user the user 
-	 * @param write set to true if the new keywords should be written to database
-	 * @throws InternalServerException
-	 */
-	public static void updateKeywords(User user, boolean write) throws InternalServerException {
-		Set<String> keywords = new HashSet<String>();
-		keywords.add(user.firstname.toLowerCase());
-		keywords.add(user.lastname.toLowerCase());
-		if (user.address1 != null && user.address1.length() > 0) keywords.add(user.address1.toLowerCase());
-		if (user.address2 != null && user.address2.length() > 0) keywords.add(user.address2.toLowerCase());
-		if (user.city != null && user.city.length() > 0) keywords.add(user.city.toLowerCase());
-		user.keywordsLC = keywords;
-		if (write) User.set(user._id, "keywordsLC", user.keywordsLC);
-	}
+	
 	
 	/**
 	 * Update user settings like language and public settings
@@ -418,7 +406,7 @@ public class Users extends APIController {
 		if (!InstanceConfig.getInstance().getInstanceType().getAccountWipeAvailable()) throw new InternalServerException("error.internal", "Only allowed on demo server");
 		
 		MidataId userId = new MidataId(request().username());
-		
+						
 		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
 		for (Space space : spaces) {
 			RecordManager.instance.deleteAPS(space._id, userId);
@@ -440,6 +428,21 @@ public class Users extends APIController {
 		
 		RecordManager.instance.wipe(userId, CMaps.map("owner", "self"));
 		RecordManager.instance.wipe(userId, CMaps.map("owner", "self").map("streams", "true"));
+		
+		if (getRole().equals(UserRole.RESEARCH)) {
+			Set<Study> studies = Study.getByOwner(PortalSessionToken.session().org, Sets.create("_id"));
+			
+			for (Study study : studies) {
+				controllers.research.Studies.deleteStudy(userId, study._id);
+			}
+			
+			Research.delete(PortalSessionToken.session().org);			
+			
+		}
+		
+		if (getRole().equals(UserRole.PROVIDER)) {
+			HealthcareProvider.delete(PortalSessionToken.session().org);
+		}
 		
 		User.delete(userId);
 		

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -86,12 +87,20 @@ public class HealthProvider extends APIController {
 			properties.remove("name");
 			properties.remove("city");
 			if (name != null && city != null) {
-			properties = CMaps.and(CMaps.or(CMaps.map("firstname", name), CMaps.map("lastname", name)),
-					               CMaps.or(CMaps.map("city", city), CMaps.map("zip", city))).map(properties);
+			properties = CMaps.and(CMaps.or(CMaps.map("firstname", Pattern.compile("^"+name+"$", Pattern.CASE_INSENSITIVE)), CMaps.map("lastname", Pattern.compile("^"+name+"$", Pattern.CASE_INSENSITIVE))),
+					               CMaps.or(CMaps.map("city", Pattern.compile("^"+city+"$", Pattern.CASE_INSENSITIVE)), CMaps.map("zip", Pattern.compile("^"+city+"$", Pattern.CASE_INSENSITIVE))),
+					               CMaps.map("keywordsLC", name.toLowerCase())).map(properties);
 			} else if (name != null) {
-				properties = CMaps.or(CMaps.map("firstname", name), CMaps.map("lastname", name)).map(properties);
+				properties = CMaps.and(
+						        CMaps.or(CMaps.map("firstname", Pattern.compile("^"+name+"$", Pattern.CASE_INSENSITIVE)), CMaps.map("lastname", Pattern.compile("^"+name+"$", Pattern.CASE_INSENSITIVE))),
+						        CMaps.map("keywordsLC", name.toLowerCase())		
+						      ).map(properties);
 			} else {
-				properties = CMaps.or(CMaps.map("city", city), CMaps.map("zip", city)).map(properties);
+				properties = CMaps.or(
+						       CMaps.and(
+						    		 CMaps.map("keywordsLC", city.toLowerCase()), 
+						             CMaps.map("city", Pattern.compile("^"+city+"$", Pattern.CASE_INSENSITIVE))
+						       ), CMaps.map("zip", city)).map(properties);
 			}
 		}
 		properties.put("role", UserRole.PROVIDER);
