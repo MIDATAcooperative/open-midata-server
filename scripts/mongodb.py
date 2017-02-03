@@ -197,7 +197,7 @@ class MongoDB(Product):
 	def export(self):
 		MongoDB.readconf(self)
 		print 'Exporting metadata'
-		for f in ['formatgroups','contentinfo','formatinfo','plugins','coding']:
+		for f in ['formatgroups','contentinfo','formatinfo','coding']:
 			Command.execute('{0} -h {2}:{3} -d {4} {5}{6} -c {7} -o {1}'.format(os.path.join(self.bin, 'mongoexport'), 
 				os.path.join(self.parent, 'json', f + '.json'), 
 				self.user_host, 
@@ -206,6 +206,16 @@ class MongoDB(Product):
 				self.user_username,
 				self.user_password,
 				f), self.parent)					  
+		Command.execute('{0} -h {2}:{3} -d {4} {5}{6} -c {7} -o {1} {8}'.format(os.path.join(self.bin, 'mongoexport'), 
+			os.path.join(self.parent, 'json', 'plugins.json'), 
+			self.user_host, 
+			self.user_port, 
+			self.user_database,
+			self.user_username,
+			self.user_password,
+			'plugins',
+			'-q \'{ "status" : { "$in" : ["BETA","ACTIVE","DEPRECATED"] } }\''
+			), self.parent)					  
 
 	def reimport(self):
 		MongoDB.readconf(self)	
