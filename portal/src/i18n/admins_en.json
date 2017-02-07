@@ -38,7 +38,8 @@
     "last_login" : "Last login:",
     "email_confirm_btn" : "Confirm email address",
     "comment" : "Comment",
-    "add_comment_btn" : "Add Comment"    
+    "add_comment_btn" : "Add Comment",
+    "wipe_btn" : "Wipe Account"    
   },
   
   "admin_news" : {
