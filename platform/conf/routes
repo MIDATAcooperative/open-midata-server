@@ -186,6 +186,7 @@ POST    /developers/api/testuser/resetpw                  controllers.Developers
 POST    /admins/api/register                             controllers.admin.Administration.register()
 POST    /admins/api/changeStatus                         controllers.admin.Administration.changeStatus()
 POST    /admins/api/addcomment                           controllers.admin.Administration.addComment()
+POST    /admins/api/wipeaccount                          controllers.admin.Administration.adminWipeAccount()
 
 # Tasks
 POST    /shared/api/tasks/create         controllers.Tasking.add()

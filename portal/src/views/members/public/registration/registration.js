@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', function($scope, $state, server, status, session, $translate, languages, $stateParams) {
+.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', 'oauth', function($scope, $state, server, status, session, $translate, languages, $stateParams, oauth) {
 	
 	$scope.registration = { language : $translate.use() };
 	$scope.languages = languages.all;
@@ -41,8 +41,19 @@ angular.module('portal')
 			data.developer = $stateParams.developer;
 		}
 		
-		$scope.status.doAction("register", server.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
-		then(function(data) { session.postLogin(data, $state); });
+		if (oauth.getAppname()) {
+		  data.app = oauth.getAppname();
+		  $scope.status.doAction("register", server.post(jsRoutes.controllers.QuickRegistration.register().url, JSON.stringify(data))).
+		  then(function(data) { 		  
+			  oauth.setUser($scope.registration.email, $scope.registration.password);
+			  oauth.login();		
+		  });
+		  
+		} else {
+		
+		  $scope.status.doAction("register", server.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
+		  then(function(data) { session.postLogin(data, $state); });
+		}
 	};
 	
 	$scope.changeLanguage = function(lang) {

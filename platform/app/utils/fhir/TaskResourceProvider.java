@@ -355,6 +355,15 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		String display = setRecordCodeByCodeableConcept(record, theTask.getCode(), "Task");
 		record.name = display != null ? display : "Task";
 
+		FHIRTools.resolve(theTask.getOwner());
+		FHIRTools.resolve(theTask.getFor());
+		TaskRestrictionComponent trc = theTask.getRestriction();
+		if (trc != null && trc.getRecipient() != null) {
+			for (Reference ref : trc.getRecipient()) {
+				FHIRTools.resolve(ref);
+			}
+		}
+		
 		if (cleanAndSetRecordOwner(record, theTask.getFor())) theTask.setFor(null);		
 		clean(theTask);
 	}
