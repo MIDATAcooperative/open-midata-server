@@ -272,6 +272,13 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		String display = theAppointment.getDescription();
 		record.name = display != null ? display : "Appointment";
 		
+		List<AppointmentParticipantComponent> participants = theAppointment.getParticipant();
+		if (participants != null) {
+			for (AppointmentParticipantComponent participant :participants) { 
+				FHIRTools.resolve(participant.getActor()); 
+			}	
+		}
+		
 		clean(theAppointment);
 	}
 	

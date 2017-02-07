@@ -312,6 +312,14 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		String date = theCommunication.hasSentElement() ? theCommunication.getSentElement().toHumanDisplay() : "Not sent";			
 		record.name = date;
 		
+		List<Reference> recipients = theCommunication.getRecipient();
+		if (recipients != null) {
+			for (Reference recipient :recipients) {
+			    FHIRTools.resolve(recipient);	
+			}
+		}
+		
+		
 		// clean
 		if (cleanAndSetRecordOwner(record, theCommunication.getSubject())) theCommunication.setSubject(null);
 		
