@@ -4,15 +4,23 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
 import controllers.APIController;
 import controllers.Application;
+import models.AccessPermissionSet;
 import models.Admin;
+import models.Circle;
+import models.Consent;
+import models.HealthcareProvider;
 import models.History;
 import models.MidataId;
+import models.Research;
+import models.Space;
+import models.Study;
 import models.User;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
@@ -25,9 +33,12 @@ import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.access.RecordManager;
 import utils.auth.AdminSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
+import utils.auth.PortalSessionToken;
+import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -197,4 +208,58 @@ public class Administration extends APIController {
 		return ok();
 	}
 	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public static Result adminWipeAccount() throws JsonValidationException, AppException {
+		requireSubUserRole(SubUserRole.USERADMIN);
+		
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "user");
+							
+		MidataId userId = JsonValidation.getMidataId(json, "user");
+		
+		User selected = User.getById(userId, Sets.create("status"));
+		if (!selected.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.invalid.status",  "User must have status deleted to be wiped.");
+		
+		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
+		for (Space space : spaces) {
+			AccessPermissionSet.delete(space._id);			
+			Space.delete(userId, space._id);
+		}
+		
+		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map(), Consent.ALL);
+		for (Consent consent : consents) {			
+			AccessPermissionSet.delete(consent._id);
+			Circle.delete(userId, consent._id);
+		}
+		
+		Set<Consent> consents2 = Consent.getAllByAuthorized(userId);
+		for (Consent consent : consents2) {
+			consent = Consent.getByIdAndAuthorized(consent._id, userId, Sets.create("authorized"));
+			consent.authorized.remove(userId);
+			Consent.set(consent._id, "authorized", consent.authorized);			
+		}
+		
+		
+		
+		if (getRole().equals(UserRole.RESEARCH)) {
+			Set<Study> studies = Study.getByOwner(PortalSessionToken.session().org, Sets.create("_id"));
+			
+			for (Study study : studies) {
+				controllers.research.Studies.deleteStudy(userId, study._id, true);
+			}
+			
+			Research.delete(PortalSessionToken.session().org);			
+			
+		}
+		
+		if (getRole().equals(UserRole.PROVIDER)) {
+			HealthcareProvider.delete(PortalSessionToken.session().org);
+		}
+		
+		KeyManager.instance.deleteKey(userId);
+		User.delete(userId);
+		return ok();
+	}
 }

@@ -37,6 +37,7 @@ import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
+import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
 import utils.auth.PortalSessionToken;
 import utils.auth.Rights;
@@ -433,7 +434,7 @@ public class Users extends APIController {
 			Set<Study> studies = Study.getByOwner(PortalSessionToken.session().org, Sets.create("_id"));
 			
 			for (Study study : studies) {
-				controllers.research.Studies.deleteStudy(userId, study._id);
+				controllers.research.Studies.deleteStudy(userId, study._id, false);
 			}
 			
 			Research.delete(PortalSessionToken.session().org);			
@@ -444,6 +445,7 @@ public class Users extends APIController {
 			HealthcareProvider.delete(PortalSessionToken.session().org);
 		}
 		
+		KeyManager.instance.deleteKey(userId);
 		User.delete(userId);
 		
 		return ok();

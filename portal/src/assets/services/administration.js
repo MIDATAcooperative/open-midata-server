@@ -15,6 +15,11 @@ angular.module('services')
 		var data = { user : userId, comment : comment };		
 		return server.post(jsRoutes.controllers.admin.Administration.addComment().url, JSON.stringify(data));
 	};
+	
+	service.wipe = function(userId) {
+		var data = { user : userId };		
+		return server.post(jsRoutes.controllers.admin.Administration.adminWipeAccount().url, JSON.stringify(data));
+	};
 		
 	return service;
 	

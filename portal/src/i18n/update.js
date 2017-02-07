@@ -91,7 +91,7 @@ function nextLine(part) {
 	   k = key(trimmed);
 	   part.path.push(k);
 	   return { type : 1, key : k, full : part.path.join("."), ws : ws(result), comments:[], blanks:0 };
-	} else if (!hasvar && trimmed.indexOf("}") == 0) {
+	} else if (!hasvar && trimmed.indexOf("}") === 0) {
 	   if (part.path.length === 0) return { type : 0 }; 
 	   k = part.path.pop();
 	   return { type : 2, key : k, ws : ws(result), komma : trimmed.indexOf(",") > 0, comments:[], blanks:0 };
