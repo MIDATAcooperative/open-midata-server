@@ -358,20 +358,8 @@ class QueryEngine {
 			for (DBRecord record : result) {
 				if (record.encrypted == null) fetchIds.put(record._id, record);				
 			}
-			List<DBRecord> read = lookupRecordsById(q, fetchIds.keySet());			
-			for (DBRecord record : read) {
-				DBRecord old = fetchIds.get(record._id);
-				fetchFromDB(old, record);
-			}
-			for (DBRecord record : result) {
-				if (minTime == 0 || record.time ==0 || record.time >= minTime) {
-				  RecordEncryption.decryptRecord(record);
-				  if (!record.meta.containsField("creator")) record.meta.put("creator", record.owner);
-				} else {compress++;record.meta=null;}				
-				//if (!q.getGiveKey()) record.clearSecrets();
-			}
     	} else {
-    		Set<String> check = q.mayNeedFromDB(); 
+    		Set<String> check = q.mayNeedFromDB();
     		if (!check.isEmpty()) {
     			for (DBRecord record : result) {
     				boolean fetch = false;
@@ -379,18 +367,27 @@ class QueryEngine {
     					AccessLog.log("need: "+k);
     					fetch = true; 
     				}
-    				if (fetch) {
-    					fetchFromDB(q, record);
-    					if (minTime == 0 || record.time ==0 || record.time >= minTime) {
-    					  RecordEncryption.decryptRecord(record);
-    					  if (!record.meta.containsField("creator")) record.meta.put("creator", record.owner);
-    					} else {compress++;record.meta=null;}
-    				}
+    				if (fetch) { fetchIds.put(record._id, record); }
+    				
     			}
-    	    }
-    					   
-		}
+    		}
+    	}
+    	if (!fetchIds.isEmpty()) {	
+    		
+			List<DBRecord> read = lookupRecordsById(q, fetchIds.keySet());			
+			for (DBRecord record : read) {
+				DBRecord old = fetchIds.get(record._id);
+				fetchFromDB(old, record);
+			}
+    	}
     	
+		for (DBRecord record : result) {
+			if (minTime == 0 || record.time ==0 || record.time >= minTime) {
+			  RecordEncryption.decryptRecord(record);
+			  if (!record.meta.containsField("creator")) record.meta.put("creator", record.owner);
+			} else {compress++;record.meta=null;}						
+		}
+    	     	
     	if (compress > 0) {
     		List<DBRecord> result_new = new ArrayList<DBRecord>(result.size() - compress);
     		for (DBRecord r : result) {

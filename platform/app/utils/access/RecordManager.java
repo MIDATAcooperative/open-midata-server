@@ -62,7 +62,7 @@ public class RecordManager {
 	public final static Set<String> INTERNALID_AND_WACTHES = Sets.create("_id","watches");
 	public final static Set<String> COMPLETE_META = Sets.create("id", "owner",
 			"app", "creator", "created", "name", "format",  "content", "code", "description", "isStream", "lastUpdated");
-	public final static Set<String> COMPLETE_DATA = Sets.create("id", "owner",
+	public final static Set<String> COMPLETE_DATA = Sets.create("id", "owner", "ownerName",
 			"app", "creator", "created", "name", "format", "content", "code", "description", "isStream", "lastUpdated",
 			"data", "group");
 	public final static Set<String> COMPLETE_DATA_WITH_WATCHES = Sets.create("id", "owner",
@@ -586,7 +586,7 @@ public class RecordManager {
 		List<DBRecord> recs = QueryEngine.listInternal(cache, executingPerson, query, fields);
 		
 		wipe(executingPerson, recs);		
-		fixAccount(executingPerson);
+		//fixAccount(executingPerson);
 		
 		AccessLog.logEnd("end deleteRecord");
 	}
@@ -596,6 +596,8 @@ public class RecordManager {
 		if (recs.size() == 0) return;
 		
 		AccessLog.logBegin("begin wipe #records="+recs.size());
+		Set<MidataId> streams = new HashSet<MidataId>();
+		
 		Iterator<DBRecord> it = recs.iterator();
 		while (it.hasNext()) {
 	   	   DBRecord record = it.next();			
@@ -603,7 +605,9 @@ public class RecordManager {
 		   if (record.owner == null) throw new InternalServerException("error.internal", "Owner of record is null.");
 		   if (!record.owner.equals(executingPerson)) throw new BadRequestException("error.internal", "Not owner of record!");
 		}
-					
+		
+		IndexManager.instance.removeRecords(cache, executingPerson, recs);
+		
 		Set<Consent> consents = Consent.getAllByOwner(executingPerson, new HashMap<String, Object>(), Sets.create("_id"));
 		
 		for (Consent c : consents) {
@@ -618,6 +622,7 @@ public class RecordManager {
 		for (DBRecord record : recs) {
 			if (record.stream != null) {
 				cache.getAPS(record.stream, executingPerson).removePermission(record);
+				streams.add(record.stream);
 			}
 		}
 		
@@ -633,6 +638,15 @@ public class RecordManager {
 		  DBRecord.delete(record.owner, record._id);
 		}
 		
+		for (MidataId streamId : streams) {
+			getCache(executingPerson).getAPS(streamId).removeMeta("_info");
+									
+			List<DBRecord> testRec = QueryEngine.listInternal(cache, streamId, CMaps.map("limit", 1), Sets.create("_id"));
+			if (testRec.size() == 0) {
+				wipe(executingPerson, CMaps.map("_id", streamId).map("streams", "only"));
+			}			
+		}
+				
 		AccessLog.logEnd("end wipe #records="+recs.size());				
 	}
 
