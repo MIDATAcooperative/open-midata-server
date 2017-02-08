@@ -191,6 +191,20 @@ public class IndexNonLeafPage extends IndexPage {
 						
 	}
 	
+	public void removeEntry(Comparable<Object>[] key, MidataId target) throws InternalServerException {
+		if (key[0] == null) return;
+		
+		EqualsSingleValueCondition[] cond = new EqualsSingleValueCondition[key.length];
+		for (int i=0;i<key.length;i++) cond[i] = new EqualsSingleValueCondition(key[i]);
+		
+		Collection<IndexMatch> results = null;
+		Collection<MidataId> targets = findEntries(cond);
+		for (MidataId targetPage : targets) {
+			IndexPage ip = access(targetPage); 
+			ip.removeEntry(key, target);			
+		}			    
+	}
+	
 	public Collection<IndexMatch> lookup(Condition[] key) throws InternalServerException {
 		Collection<IndexMatch> results = null;
 		Collection<MidataId> targets = findEntries(key);

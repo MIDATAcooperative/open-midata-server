@@ -69,6 +69,17 @@ public class IndexPage {
 	    }
 	}
 	
+	public void removeEntry(Comparable<Object>[] key, MidataId target) throws InternalServerException {
+		if (key[0] == null) return;
+		
+	    BasicBSONObject entry = findEntry(key);
+	    if (entry == null) return;
+	    	
+	    if (removeRecord(entry, target)) {
+	      ((BasicBSONList) model.unencrypted.get("e")).remove(entry);
+	    }
+	}
+	
 	public Collection<IndexMatch> lookup(Condition[] key) throws InternalServerException  {
 				
 		BasicBSONList entries = findEntries(key);
@@ -225,6 +236,21 @@ public class IndexPage {
 	  entries.add(entry);
 	  
 	  model.unencrypted.put("size", ((BasicBSONObject) model.unencrypted).getInt("size") + 1);
+	}
+	
+	private boolean removeRecord(BasicBSONObject row, MidataId target) {
+		BasicBSONList objs = (BasicBSONList) row.get("e");
+		if (objs == null) return false;
+		String t = target.toString();
+		for (int i=0;i<objs.size();i++) {
+			BasicBSONObject e = (BasicBSONObject) objs.get(i);
+			if (t.equals(e.getString("t"))) {
+				objs.remove(i);		
+				changed = true;
+				return objs.size() == 0;					
+			}
+		}	
+		return false;
 	}
 	
 	protected void setTimestamp(String key, long value) {

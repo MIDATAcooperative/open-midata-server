@@ -304,15 +304,15 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		
 		prepare(record, theTask);		
 		// insert
-		insertRecord(record, theTask);
-        shareRecord(record, theTask);
+		MidataId consent = insertMessageRecord(record, theTask);
+        shareRecord(record, theTask, consent);
 		processResource(record, theTask);				
 		
 		return outcome("Task", record, theTask);
 
 	}
 			
-	public void shareRecord(Record record, Task theTask) throws AppException {		
+	public void shareRecord(Record record, Task theTask, MidataId consent) throws AppException {		
 		ExecutionInfo inf = info();
 		List<IIdType> personRefs = new ArrayList<IIdType>();
 		
@@ -328,7 +328,7 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		}
 				
 					
-		shareWithPersons(record, personRefs);
+		shareWithPersons(record, personRefs, consent);
 	}
 	
 	public Record init() { return newRecord("fhir/Task"); }
@@ -344,7 +344,7 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		Record record = fetchCurrent(theId);
 		prepare(record, theTask);		
 		updateRecord(record, theTask);
-		shareRecord(record, theTask);
+		shareRecord(record, theTask, info().executorId); // XXX To be checked
 		processResource(record, theTask);
 		
 		return outcome("Task", record, theTask);
