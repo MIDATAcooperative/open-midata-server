@@ -95,7 +95,21 @@ public class IndexManager {
 		Collection<DBRecord> recs = QueryEngine.listInternal(cache, stream, restrictions, Sets.create("_id"));
 		addRecords(index, recs);
     }*/
-	
+	protected void indexRemove(APSCache cache, IndexRoot index, MidataId executor, List<DBRecord> records) throws AppException {
+		AccessLog.logBegin("start remove entries from index");
+		try {
+			for (DBRecord record : records) {
+				QueryEngine.loadData(record);
+				index.removeEntry(record);
+			}
+			index.flush();
+		} catch (LostUpdateException e) {
+			index.reload();
+			indexRemove(cache, index, executor, records);
+		}
+		AccessLog.logEnd("end remove entries from index");
+		
+	}
 	
 	protected void indexUpdate(APSCache cache, IndexRoot index, MidataId executor, Set<MidataId> targetAps) throws AppException {
 						
@@ -199,6 +213,11 @@ public class IndexManager {
 		return null;
 	}
 	
+	public Collection<IndexDefinition> findIndexes(IndexPseudonym pseudo, String format) throws AppException {		
+		Set<IndexDefinition> res = IndexDefinition.getAll(CMaps.map("owner", pseudo.getPseudonym()).map("formats", format), IndexDefinition.ALL);       
+		return res;
+	}
+	
 	public void clearIndexes(APSCache cache, MidataId user) throws AppException {
 		AccessLog.logBegin("start clear indexes");
 		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, false);
@@ -239,6 +258,31 @@ public class IndexManager {
 			root.reload();
 			removeRecords(root, cond, ids);
 		}
+	}
+	
+	public void removeRecords(APSCache cache, MidataId user, List<DBRecord> records) throws AppException {
+		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, false);
+		if (pseudo == null) return;
+		AccessLog.logBegin("start removing records from indexes #recs="+records.size());
+		Map<String, List<DBRecord>> hashMap = new HashMap<String, List<DBRecord>>();
+		for (DBRecord rec : records) {			
+		   String format = rec.meta.getString("format");
+		   if (!hashMap.containsKey(format)) {
+		       List<DBRecord> list = new ArrayList<DBRecord>();
+		       list.add(rec);
+
+		       hashMap.put(format, list);
+		   } else {
+		       hashMap.get(format).add(rec);
+		   }
+		}
+		for (Map.Entry<String, List<DBRecord>> entry : hashMap.entrySet()) {
+			for (IndexDefinition def : findIndexes(pseudo, entry.getKey())) {
+				IndexRoot root = new IndexRoot(pseudo.getKey(), def, false);
+				indexRemove(cache, root, user, entry.getValue());				
+			}
+		}
+		AccessLog.logEnd("end removing records from indexes");
 	}
 			
 	

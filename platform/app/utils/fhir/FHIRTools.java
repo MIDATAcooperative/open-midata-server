@@ -138,10 +138,10 @@ public class FHIRTools {
 			User target = null;
 			String type = null;
 			if (system.equals("http://midata.coop/identifier/patient-login")) {
-				target = Member.getByEmail(value, Sets.create("_id", "role"));
+				target = Member.getByEmail(value, Sets.create("_id", "role", "firstname", "lastname"));
 				type = "Patient";
 			} else if (system.equals("http://midata.coop/identifier/practitioner-login")) {
-				target = HPUser.getByEmail(value, Sets.create("_id", "role"));
+				target = HPUser.getByEmail(value, Sets.create("_id", "role", "firstname", "lastname"));
 				type = "Practitioner";
 			}
 			if (type == null) return ref;
@@ -149,6 +149,7 @@ public class FHIRTools {
 			if (target == null) throw new UnprocessableEntityException("References Patient not found");
 			ref.setReference(type+"/"+target._id.toString());
 			ref.setIdentifier(null);
+			ref.setDisplay(target.firstname+" "+target.lastname);
 		}		
 		
 		return ref;

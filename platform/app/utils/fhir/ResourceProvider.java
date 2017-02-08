@@ -70,6 +70,7 @@ import utils.ErrorReporter;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
+import utils.collections.ReferenceTool;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -127,7 +128,8 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	@Read()
 	public T getResourceById(@IdParam IIdType theId) throws AppException {
 		Record record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new MidataId(theId.getIdPart()));
-		if (record == null) throw new ResourceNotFoundException(theId);
+		if (record == null) throw new ResourceNotFoundException(theId);		
+		ReferenceTool.resolveOwners(Collections.singletonList(record), true, false);		
 		IParser parser = ctx().newJsonParser();
 		T p = parser.parseResource(getResourceType(), record.data.toString());
 		processResource(record, p);		
@@ -391,6 +393,20 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 		AccessLog.logEnd("end insert FHIR record");
 	}
 	
+	public static MidataId insertMessageRecord(Record record, IBaseResource resource) throws AppException {
+		ExecutionInfo inf = info();
+		MidataId shareFrom = inf.executorId;
+		MidataId owner = record.owner;
+		if (!owner.equals(inf.executorId)) {
+			Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, inf.executorId, owner, owner, false);
+			insertRecord(record, resource, consent._id);
+			shareFrom = consent._id;
+		} else {
+			insertRecord(record, resource);
+		}
+		return shareFrom;
+	}
+	
 	public static void insertRecord(Record record, IBaseResource resource, Attachment attachment) throws AppException {
 		if (attachment == null || attachment.isEmpty()) {
 			insertRecord(record, resource);
@@ -520,7 +536,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	 * @param personRefs collection of FHIR references
 	 * @throws AppException
 	 */
-	protected void shareWithPersons(Record record, Collection<IIdType> personRefs) throws AppException {
+	protected void shareWithPersons(Record record, Collection<IIdType> personRefs, MidataId shareFrom) throws AppException {
 	       ExecutionInfo inf = info();
 			
 			MidataId owner = record.owner;
@@ -530,7 +546,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 					   TypedMidataId target = FHIRTools.getMidataIdFromReference(ref);
 					   if (!target.getMidataId().equals(owner)) {
 					     Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, owner, target.getMidataId(), owner, target.getType().equals("Group"));
-					     RecordManager.instance.share(inf.executorId, inf.executorId, consent._id, Collections.singleton(record._id), true);
+					     RecordManager.instance.share(inf.executorId, shareFrom, consent._id, Collections.singleton(record._id), true);
 					   }
 				}
 			}
