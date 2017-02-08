@@ -255,7 +255,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		for (AppointmentParticipantComponent participant :participants) { 
 			persons.add(participant.getActor().getReferenceElement()); 
 		}		
-		shareWithPersons(record, persons);				
+		shareWithPersons(record, persons, info().executorId);				
 				
 	}
 	

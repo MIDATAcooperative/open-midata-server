@@ -258,6 +258,9 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		}
 		if (theCommunication.getSent() == null) theCommunication.setSent(new Date());
 		if (theCommunication.getRecipient().isEmpty()) throw new UnprocessableEntityException("Recipient is missing");
+		
+		FHIRTools.resolve(theCommunication.getSender());
+		FHIRTools.resolve(theCommunication.getSubject());
 	}
 	
 	public void shareRecord(Record record, Communication theCommunication) throws AppException {		
@@ -265,16 +268,8 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		
 		MidataId subject = theCommunication.getSubject().isEmpty() ? inf.executorId : FHIRTools.getUserIdFromReference(theCommunication.getSubject().getReferenceElement());
 		MidataId sender = FHIRTools.getUserIdFromReference(theCommunication.getSender().getReferenceElement());
-		MidataId shareFrom = subject;
-		if (!subject.equals(sender)) {
-			Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, sender, sender, subject, false);
-			insertRecord(record, theCommunication, consent._id);
-			shareFrom = consent._id;
-		} else {
-			insertRecord(record, theCommunication);
-		}
-		
-		
+		MidataId shareFrom = insertMessageRecord(record, theCommunication);
+						
 		List<Reference> recipients = theCommunication.getRecipient();
 		for (Reference recipient :recipients) {
 						
