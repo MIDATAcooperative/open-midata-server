@@ -452,6 +452,10 @@ public class Query {
 		if (query.containsKey("app")) {
 			query.put("app", Query.getRestriction(query.get("app"), "app"));
 		}
+		
+		if (query.containsKey("owner")) {
+			query.put("owner", Query.getRestriction(query.get("owner"), "owner"));
+		}
 		if (requiresContent && !contentSet) {
 			throw new BadRequestException("error.invalid.access_query", "Access query must restrict by 'content' or 'group'!");
 		}
