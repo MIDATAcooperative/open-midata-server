@@ -46,7 +46,12 @@ public class JsonExtraction {
 		Iterator<Entry<String, JsonNode>> iterator = json.fields();
 		while (iterator.hasNext()) {
 			Entry<String, JsonNode> cur = iterator.next();
-			map.put(cur.getKey(), extract(cur.getValue()));
+			String key = cur.getKey();
+			if (key.startsWith("!!!")) key = "$"+key.substring(3);
+			String ck = key.trim().toLowerCase();
+			if (!ck.startsWith("$where")) { 
+			  map.put(key, extract(cur.getValue()));
+			}
 		}
 		return map;
 	}

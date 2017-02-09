@@ -2,6 +2,7 @@ package utils.access;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,10 +30,21 @@ private Feature next;
 	}
 	
 	public final static int INDEX_REVERSE_USE = 300;
+	public final static int AUTOCREATE_INDEX_COUNT = 30;
 	
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
-		if (q.restrictedBy("index") && q.getApsId().equals(q.getCache().getOwner()) && !q.restrictedBy("_id")) {
+		if (q.restrictedBy("index") && !q.restrictedBy("_id")) {
+			
+			IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), false);
+			
+		    if (pseudo == null) {
+				List<DBRecord> recs = next.query(q);
+				if (recs.size() > AUTOCREATE_INDEX_COUNT) {
+					pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), true);
+				} else { return recs; }
+			}			
+			
 			AccessLog.logBegin("start index query");
 			Map<String,Object> indexQuery = (Map<String,Object>) q.getProperties().get("index");
 			
@@ -46,30 +58,33 @@ private Feature next;
 				idx++;
 			}
 												
-			IndexDefinition index = IndexManager.instance.findIndex(q.getCache(),  q.getCache().getOwner(), q.getRestriction("format"), pathes);
+			IndexDefinition index = IndexManager.instance.findIndex(pseudo, q.getRestriction("format"), pathes);
 			
 			if (index == null) { 
 				AccessLog.logBegin("start index creation");
-				index = IndexManager.instance.createIndex(q.getCache(), q.getCache().getOwner(), q.getRestriction("format"), pathes);
+				index = IndexManager.instance.createIndex(pseudo, q.getRestriction("format"), pathes);
 				AccessLog.logEnd("end index creation");
 			}
 			
-			boolean allTarget = Feature_AccountQuery.allApsIncluded(q);
-			
 			Set<MidataId> targetAps;
 			
-			
-			if (allTarget) {
-			   targetAps = null;			   			  
+			if (!q.getApsId().equals(q.getCache().getAccountOwner())) {
+				targetAps = Collections.singleton(q.getApsId());
 			} else {
-			   Set<Consent> consents = Feature_AccountQuery.getConsentsForQuery(q);			
-			   targetAps =  new HashSet<MidataId>();
-			   if (Feature_AccountQuery.mainApsIncluded(q)) targetAps.add(q.getApsId());
-			   for (Consent consent : consents) targetAps.add(consent._id);
+				boolean allTarget = Feature_AccountQuery.allApsIncluded(q);
+													
+				if (allTarget) {
+				   targetAps = null;			   			  
+				} else {
+				   Set<Consent> consents = Feature_AccountQuery.getConsentsForQuery(q);			
+				   targetAps =  new HashSet<MidataId>();
+				   if (Feature_AccountQuery.mainApsIncluded(q)) targetAps.add(q.getApsId());
+				   for (Consent consent : consents) targetAps.add(consent._id);
+				}
 			}
 						
 			List<DBRecord> result = new ArrayList<DBRecord>();
-			IndexRoot root = IndexManager.instance.getIndexRootAndUpdate(q.getCache(), q.getCache().getOwner(), index, targetAps);
+			IndexRoot root = IndexManager.instance.getIndexRootAndUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index, targetAps);
 			Collection<IndexMatch> matches = IndexManager.instance.queryIndex(root, condition);
 			
 			Map<MidataId, Set<MidataId>> filterMatches = new HashMap<MidataId, Set<MidataId>>();
@@ -103,32 +118,40 @@ private Feature next;
 			   } else {
 				   Map<String, Object> readRecs = new HashMap<String, Object>();
 				   boolean add = false;
+				   boolean directQuery = true;
 				   if (ids.size() > 5) {
 					    Map<String, Object> props = new HashMap<String, Object>();
 						props.putAll(q.getProperties());
 						props.put("streams", "only");
 						List<DBRecord> matchStreams = next.query(new Query(props, Sets.create("_id"), q.getCache(), aps));
 						AccessLog.log("index query streams "+matchStreams.size()+" matches.");
-						Set<MidataId> streams = new HashSet<MidataId>();
-						for (DBRecord r : matchStreams) streams.add(r._id);
-						readRecs.put("stream", streams);
+						if (matchStreams.isEmpty()) directQuery = false;
+						else {
+							Set<MidataId> streams = new HashSet<MidataId>();
+							for (DBRecord r : matchStreams) streams.add(r._id);
+							readRecs.put("stream", streams);
+						}
 						add = true;
 				   }
 				   readRecs.put("_id", ids);
-					
-				   List<DBRecord> partresult = new ArrayList(DBRecord.getAll(readRecs, queryFields));
-					
-					Query q3 = new Query(q, CMaps.map("strict", "true"), aps);
-					partresult = Feature_Prefetch.lookup(q3, partresult, next);
-					result.addAll(partresult);
+				
+				   int directSize = 0;
+				   if (directQuery) {
+					   List<DBRecord> partresult = new ArrayList(DBRecord.getAll(readRecs, queryFields));
+						
+					   Query q3 = new Query(q, CMaps.map("strict", "true"), aps);
+					   partresult = Feature_Prefetch.lookup(q3, partresult, next);
+					   result.addAll(partresult);
+					   directSize = partresult.size();
+				   }
 					
 					if (add) {
 		              Query q2 = new Query(q, CMaps.map(q.getProperties()).map("_id", ids), aps);
 		              List<DBRecord> additional = next.query(q2);
 		              result.addAll(additional);
-		              AccessLog.log("looked up directly="+partresult.size()+" additionally="+additional.size());
+		              AccessLog.log("looked up directly="+directSize+" additionally="+additional.size());
 					} else {
-		              AccessLog.log("looked up directly="+partresult.size());
+		              AccessLog.log("looked up directly="+directSize);
 					}		            
 					
 			   }
@@ -140,6 +163,7 @@ private Feature next;
 			
 			AccessLog.logEnd("end index query "+result.size()+" matches.");
 			return result;
+						
 			
 		} else return next.query(q);
 	}

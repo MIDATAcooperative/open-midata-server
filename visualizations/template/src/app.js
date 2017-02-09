@@ -23,7 +23,7 @@ recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'mida
 		// get the data for the records in this space
 		$scope.getRecords = function() {
 	
-			midataServer.getRecords(authToken, { "format" : "fhir/Observation", subformat : "String", content : "diary" }, ["name", "data"])
+			midataServer.getRecords(authToken, { "format" : "fhir/Observation", content : "diary" }, ["name", "data"])
 			.then(function(results) {
 				    var records = results.data;
 					for (var i = 0; i < records.length; i++) {
@@ -83,7 +83,7 @@ recordList.controller('RecordListCtrl', ['$scope', '$filter', '$location', 'mida
 			};
 						
 			// submit to server
-			midataServer.createRecord(authToken, { "name" : $scope.title, "content" : "diary", "subformat" : "String", "format" : "fhir/Observation" }, record)
+			midataServer.createRecord(authToken, { "name" : $scope.title, "content" : "diary", "format" : "fhir/Observation" }, record)
 			.then(function() {
 					$scope.success = "Record created successfully.";
 					$scope.records.push({ name : $scope.title, data : record });

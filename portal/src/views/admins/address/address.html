@@ -45,6 +45,7 @@
 			  </tr>
 			  </table>
 			  <button ui-sref="^.members" class="btn btn-default" translate="common.back_btn"></button>
+			  <button ng-show="member.status == 'DELETED'" class="btn btn-danger" ng-click="wipe()" translate="admin_address.wipe_btn"></button>
 			</loader>
 		</div>
 	</div>

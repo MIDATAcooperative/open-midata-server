@@ -14,7 +14,8 @@ angular.module('portal')
 	   
 	   $scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyid).url))
 	    .then(function(data) { 				
-			$scope.study = data.data;	
+			$scope.study = data.data;
+			$scope.study.recordQuery = undefined;
 		});
    };
    

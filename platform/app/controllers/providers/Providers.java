@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import actions.APICall;
 import controllers.APIController;
 import controllers.Application;
+import controllers.Users;
 import models.HCRelated;
 import models.HPUser;
 import models.HealthcareProvider;
@@ -110,7 +111,7 @@ public class Providers extends APIController {
 		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
 		user.security = AccountSecurityLevel.KEY;
-		
+				
 		HealthcareProvider.add(provider);
 		user.provider = provider._id;
 		HPUser.add(user);
@@ -140,14 +141,19 @@ public class Providers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		HPUser user = HPUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "provider", "role", "subroles", "login", "registeredAt", "developer"));
+		HPUser user = HPUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "provider", "role", "subroles", "login", "registeredAt", "developer", "keywordsLC"));
 		
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		if (!HPUser.authenticationValid(password, user.password)) {
 			throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		}
 		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
-						
+
+		if (user.keywordsLC == null || user.keywordsLC.isEmpty()) {
+			User user2 = User.getById(user._id, User.ALL_USER);
+			user2.updateKeywords(true);
+		}
+		
 		return Application.loginHelper(user);					
 	}
 	

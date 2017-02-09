@@ -62,9 +62,9 @@
 			              <li ng-repeat="format in params">{{ format }}</li>
 			            </ul> 
 			          </span>
-			          <span ng-if="rule == 'format/*'"><span translate="studydetails.records_with_format"></span>
+			          <span ng-if="rule == 'owner'"><span translate="studydetails.records_with_owner"></span>
 			            <ul>
-			              <li ng-repeat="format in params">{{ format }}</li>
+			              <li ng-repeat="owner in params" translate="{{ 'studydetails.owner_'+ owner }}"></li>
 			            </ul> 
 			          </span>
 			          <span ng-if="rule == 'content'"><span translate="studydetails.records_with_content"></span>

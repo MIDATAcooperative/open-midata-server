@@ -49,6 +49,11 @@ public class RecordsInfo {
 	public Set<String> groups;
 	
 	/**
+	 * set of all apps of all records summarized in this entry
+	 */
+	public Set<MidataId> apps;
+	
+	/**
 	 * set of all owner ids of all records summarized in this entry
 	 */
 	public Set<String> owners;
@@ -62,6 +67,8 @@ public class RecordsInfo {
 	 * _id of newest record summarized in this entry
 	 */
 	public MidataId newestRecord;	
+	
+	public Record newestRecordContent;
 
 	
     public RecordsInfo() {
@@ -69,6 +76,7 @@ public class RecordsInfo {
     	contents = new HashSet<String>();
     	groups = new HashSet<String>();
     	owners = new HashSet<String>();
+    	apps =new HashSet<MidataId>();
     	
     }
     
@@ -81,11 +89,14 @@ public class RecordsInfo {
     	contents = new HashSet<String>();
     	groups = new HashSet<String>();
     	owners = new HashSet<String>();
+    	apps =new HashSet<MidataId>();
     	
     	
     	formats.add((String) rec.meta.get("format"));
     	contents.add((String) rec.meta.get("content"));
     	groups.add(rec.group);
+    	MidataId app = MidataId.from(rec.meta.get("app")); 
+    	if (app != null) apps.add(app);
     	if (rec.owner != null) owners.add(rec.owner.toString());
     	
     	
@@ -112,6 +123,7 @@ public class RecordsInfo {
 		this.contents.addAll(item.contents);
 		this.formats.addAll(item.formats);
 		this.owners.addAll(item.owners);
+		this.apps.addAll(item.apps);
 		
 
 	}

@@ -153,7 +153,7 @@ tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$t
 			};
 															
 			$scope.isBusy++;
-			midataServer.createRecord(authToken, { "name" : code.display, "content" : "user-observation", format : "fhir/Observation", subformat : "CodeableConcept" }, data)
+			midataServer.createRecord(authToken, { "name" : code.display, "content" : "user-observation", format : "fhir/Observation" }, data)
 			.then(function() { 
 				$scope.isBusy--; 
 				if ($scope.isBusy === 0) {

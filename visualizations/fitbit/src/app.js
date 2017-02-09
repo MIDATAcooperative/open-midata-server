@@ -184,14 +184,22 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			if (amendFrom) {
 				measurement.from = new Date(measurement.to.getTime());
 				measurement.from.setDate(measurement.from.getDate() + 1);
-			}
+				if (measurement.from.getTime() > yesterday.getTime()) {
+				  measurement.skip = true;
+				  console.log("skip");
+				  console.log(measurement);
+				} else  {
+  				  measurement.skip = false;
+				}
+			} else measurement.skip = false;
 			 
 			measurement.to = yesterday;
 				
 			if (measurement.to.getTime() - measurement.from.getTime() > 1000 * 60 * 60 * 24 * 365) {
 			  measurement.to = new Date(measurement.from.getTime() + 1000 * 60 * 60 * 24 * 365);
-			  $scope.repeat = true;
-			}
+			  console.log("do repeat");
+			  measurement.repeat = true;
+			} else measurement.repeat = false;
 		 });		 
 	};
 
@@ -251,7 +259,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			 reqDone();
 		  }, function() { reqDone(); });
 		
-		  midataServer.getSummary(authToken, "content" , { "format" : "fhir/Observation" , "subformat" : "Quantity", "app" : "fitbit" })
+		  midataServer.getSummary(authToken, "content" , { "format" : "fhir/Observation" , "app" : "fitbit" })
 		  .then(function(response) {
 			var map = {};
 			angular.forEach($scope.measurements, function(measurement) {
@@ -300,7 +308,8 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			actionDef.resolve();
 						
 			angular.forEach($scope.measurements, function(measure) {
-				if (measure.import) {
+				if (measure.import && !(measure.skip)) {
+					$scope.requesting++;
 					var f = function() { return getPrevRecords(measure); };
 					actionChain = actionChain.then(f);					
 				}
@@ -308,21 +317,26 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			
 			actionChain.then(function() {
 			  angular.forEach($scope.measurements, function(measure) {
-				if (measure.import) {					
+				if (measure.import && !(measure.skip)) {					
 					importRecords(measure);
+					if (measure.repeat) { measure.repeat = false; $scope.repeat = true; }
 				}
 			  });
 			});
+			
+			if ($scope.requesting === 0) { finish(); }
 		};
 		
 		var getPrevRecords = function(measure) {
 			var fromDate = measure.from;
 			var fromFormatted = fromDate.getFullYear() + "-" + twoDigit(fromDate.getMonth() + 1) + "-" + twoDigit(fromDate.getDate());
-			   return midataServer.getRecords($scope.authToken, { "format" :"fhir/Observation", "content" : measure.content, "index" : { "effectiveDateTime" : { "!!!ge" : fromFormatted }} }, ["version", "content", "data"])
+			
+		   return midataServer.getRecords($scope.authToken, { "format" :"fhir/Observation", "content" : measure.content, "index" : { "effectiveDateTime" : { "!!!ge" : fromFormatted }} }, ["version", "content", "data"])
 			   .then(function(results) {
 				   angular.forEach(results.data, function(rec) {
 					 stored[rec.content+rec.data.effectiveDateTime] = rec;  
 				   });
+				   $scope.requesting--;
 			   });
 		};
 				
@@ -459,7 +473,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			.catch(function(err) {
 					errorMessage("Failed to update record to database: " + err);
 			});*/
-			record.meta = { "version" : version };
+			record.meta = { "versionId" : version };
 			record.id = id;
 			return {
 				"resource" : record,
@@ -508,6 +522,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 					if ($scope.alldone != null) {
 						$scope.alldone.resolve();
 					} else {
+						$scope.user = null;
 					    $scope.initForm($scope.authToken);
 					}
 				}

@@ -280,6 +280,8 @@ public class MobileAPI extends Controller {
 			KeyManager.instance.unlock(appInstance.owner, alias, key);
 			RecordManager.instance.clearCache();
 			return appInstance.owner;
+		} else {
+			RecordManager.instance.setAccountOwner(appInstance._id, appInstance.owner);
 		}
 		return tk.appInstanceId;
 	}
@@ -363,9 +365,9 @@ public class MobileAPI extends Controller {
 		
 		String param = request().getHeader("Authorization");		
 		if (param != null && param.startsWith("Bearer ")) {
-          info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()));                  
+          info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);                  
 		} else if (json != null && json.has("authToken")) {
-		  info = ExecutionInfo.checkToken(request(), JsonValidation.getString(json, "authToken"));
+		  info = ExecutionInfo.checkToken(request(), JsonValidation.getString(json, "authToken"), false);
 		} else throw new BadRequestException("error.auth", "Please provide authorization token as 'Authorization' header or 'authToken' request parameter.");
 					
 		MidataId recordId = json != null ? JsonValidation.getMidataId(json, "_id") : new MidataId(request().getQueryString("_id"));			
@@ -439,7 +441,7 @@ public class MobileAPI extends Controller {
 		}
 		
 		record.format = format;
-		record.subformat = JsonValidation.getStringOrNull(json, "subformat");
+		
 			
 		ContentInfo.setRecordCodeAndContent(record, code, content);
 				
@@ -489,7 +491,7 @@ public class MobileAPI extends Controller {
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken", "data", "_id", "version");
 		
-		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText());
+		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
 			
         String data = JsonValidation.getJsonString(json, "data");
 						

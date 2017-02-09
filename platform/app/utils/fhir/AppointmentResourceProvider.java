@@ -243,6 +243,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		prepare(record, theAppointment);		
 		updateRecord(record, theAppointment);			
 		shareRecord(record, theAppointment);
+		processResource(record, theAppointment);
 		
 		return outcome("Appointment", record, theAppointment);
 	}
@@ -254,7 +255,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		for (AppointmentParticipantComponent participant :participants) { 
 			persons.add(participant.getActor().getReferenceElement()); 
 		}		
-		shareWithPersons(record, persons);				
+		shareWithPersons(record, persons, info().executorId);				
 				
 	}
 	
@@ -270,6 +271,13 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		
 		String display = theAppointment.getDescription();
 		record.name = display != null ? display : "Appointment";
+		
+		List<AppointmentParticipantComponent> participants = theAppointment.getParticipant();
+		if (participants != null) {
+			for (AppointmentParticipantComponent participant :participants) { 
+				FHIRTools.resolve(participant.getActor()); 
+			}	
+		}
 		
 		clean(theAppointment);
 	}

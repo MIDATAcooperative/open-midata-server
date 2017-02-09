@@ -9,7 +9,9 @@ import java.util.Set;
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.types.BasicBSONList;
+import org.bson.types.ObjectId;
 
+import utils.AccessLog;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
@@ -20,7 +22,7 @@ import utils.exceptions.InternalServerException;
  */
 class APSEntry {
 
-	public static final Set<String> groupingFields = Sets.create("format", "content", "subformat");
+	public static final Set<String> groupingFields = Sets.create("format", "content", "app");
 	
 	public static List<BasicBSONObject> findMatchingRowsForQuery(Map<String, Object> permissions, Query q) throws AppException {
 		List<BasicBSONObject> result = new ArrayList<BasicBSONObject>();
@@ -32,7 +34,7 @@ class APSEntry {
 		//Set<String> formatsWC = q.restrictedBy("format/*") ? q.getRestriction("format/*") : null;
 		Set<String> contents = q.restrictedBy("content") ? q.getRestriction("content") : null;
 		//Set<String> contentsWC = q.restrictedBy("content/*") ? q.getRestriction("content/*") : null;
-		Set<String> subformats = q.restrictedBy("subformat") ? q.getRestriction("subformat") : null;
+		Set<String> apps = q.restrictedBy("app") ? q.getIdRestrictionAsString("app") : null;
 		
 		for (Object row : lst) {
 			BasicBSONObject crit = (BasicBSONObject) row;
@@ -45,9 +47,11 @@ class APSEntry {
 			  String fmt = crit.getString("content");
 			  if (fmt != null && !contents.contains(fmt)) match = false;  
 			}
-			if (subformats != null) {
-				String fmt = crit.getString("subformat");
-				if (fmt != null && !subformats.contains(fmt)) match = false;  
+			if (apps != null) {
+				String fmt = crit.getString("app");
+				if (fmt != null && !apps.contains(fmt)) { match = false;  
+				//AccessLog.log("fmt:"+fmt.getClass().getName()+" vs:"+apps.iterator().next().getClass().getName()+" match="+match);
+				}
 			}
 			/*if (contentsWC != null) {
   			  String fmt = crit.getString("content");
@@ -74,7 +78,7 @@ class APSEntry {
 			for (String field : groupingFields) {			
 			  String val = crit.getString(field);
 			  String oval = record.meta.getString(field);
-			  if (val != null && oval !=null && !oval.equals(val)) match = false;
+			  if (oval !=null && (val == null || !oval.equals(val))) match = false;
 			}
 												
 			if (match) return crit;			
@@ -83,7 +87,8 @@ class APSEntry {
 		
 		BasicBSONObject newentry = new BasicBSONObject();
 		for (String field : groupingFields) {
-		  newentry.put(field, record.meta.get(field));
+			Object o = record.meta.get(field);
+		  newentry.put(field, o != null ? o.toString() : null);
 		}
 		newentry.put("r", new BasicBSONObject());
 		lst.add(newentry);
@@ -112,6 +117,8 @@ class APSEntry {
 		  String val = row.getString(field);
 		  if (val != null) record.meta.put(field, val);
 		}
+		Object app = record.meta.get("app");
+		if (app != null) record.meta.put("app", new ObjectId(app.toString()));
 	}
 	 
 	public static void mergeAllInto(Map<String, Object> props, Map<String, Object> targetPermissions) throws InternalServerException {

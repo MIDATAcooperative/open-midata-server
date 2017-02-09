@@ -51,16 +51,19 @@ public class QuickRegistration extends APIController {
 	public static Result register() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "email", "password", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "study", "app", "phrase", "language");
+		JsonValidation.validate(json, "email", "password", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "app", "language");
 		
-		String studyCode = JsonValidation.getString(json, "study");
+		
 		String appName = JsonValidation.getString(json, "app");
-		String phrase = JsonValidation.getString(json, "phrase");
+		Study study = null;
 		
-		Study study = Study.getByCodeFromMember(studyCode, Study.ALL);
-		if (study == null) throw new BadRequestException("error.invalid.code", "Unknown code for study.");
-		
-		if (!study.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING)) throw new BadRequestException("error.closed.study", "Study not searching for members.");
+		if (json.has("study")) {
+			String studyCode = JsonValidation.getString(json, "study");
+			study = Study.getByCodeFromMember(studyCode, Study.ALL);
+			if (study == null) throw new BadRequestException("error.invalid.code", "Unknown code for study.");
+			
+			if (!study.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING)) throw new BadRequestException("error.closed.study", "Study not searching for members.");
+		}
 		
 		Plugin app = Plugin.getByFilename(appName, Plugin.ALL_PUBLIC);
 		if (app == null) throw new BadRequestException("error.invalid.appcode", "Unknown code for app.");
@@ -85,7 +88,12 @@ public class QuickRegistration extends APIController {
 		user.password = Member.encrypt(password);
 		
 		Application.registerSetDefaultFields(user);
-		user.subroles = EnumSet.of(SubUserRole.STUDYPARTICIPANT);
+		
+		if (study != null) {
+		  user.subroles = EnumSet.of(SubUserRole.STUDYPARTICIPANT);
+		} else {
+		  user.subroles = EnumSet.of(SubUserRole.APPUSER);
+		}
 		
 		user.address1 = JsonValidation.getString(json, "address1");
 		user.address2 = JsonValidation.getString(json, "address2");
@@ -101,13 +109,15 @@ public class QuickRegistration extends APIController {
 		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");
 									
-		user.status = UserStatus.ACTIVE;		
+		user.status = UserStatus.ACTIVE;	
+		
 		Application.registerCreateUser(user);
 				
-		controllers.members.Studies.requestParticipation(user._id, study._id);
-		MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, phrase);
+		if (study != null) controllers.members.Studies.requestParticipation(user._id, study._id);
+		MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, password);
 		HealthProvider.confirmConsent(user._id, appInstance._id);
-										
+				
+		Application.sendWelcomeMail(user);
 		return Application.loginHelper(user);		
 	}
 	

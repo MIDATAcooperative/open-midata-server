@@ -1,7 +1,7 @@
 [
   {
-    "suite": "Login Tests",
-    "test": "bad password",
+    "suite": "Register Testusers",
+    "test": "Login as Developer",
     "api_call": {
       "request": {
         "headers": {
@@ -10,26 +10,218 @@
         },
         "method": "POST",
         "params": {
-          "email": "testuser@midata.coop",
-          "password": "wrongPassword"
+          "email": "Alexander.Kreutz@midata.coop",
+          "password": "Secret123"
         },
-        "url": "https://test.midata.coop:9000/members/api/login"
+        "url": "https://test.midata.coop:9000/developers/api/login"
       },
-      "status": 400,
-      "assert": {
-        "equal_keys": {
-          "code": "error.invalid.credentials"
-        }
+      "status": 200,
+      "save": {
+        "developersession": "body.sessionToken"
       }
     },
     "errors": [],
     "response": {
+      "status": 200,
+      "headers": {
+        "server": "nginx",
+        "date": "Fri, 03 Feb 2017 09:13:16 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "304",
+        "connection": "close",
+        "access-control-allow-credentials": "true",
+        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token",
+        "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
+        "access-control-allow-origin": "https://test.midata.coop",
+        "allow": "*",
+        "x-frame-options": "DENY",
+        "x-xss-protection": "1; mode=block",
+        "x-content-type-options": "nosniff",
+        "strict-transport-security": "max-age=31536000"
+      },
+      "body": {
+        "sessionToken": "0NNUXS93grBP6_UNPBdUKAzO6fLQMUj-ctW0OoC1CxhfPfsjU03uSTIXHTvXHVJG3_QVpVrChqZysKZqJXCggD9-cZfyOpdYqZ0sM1mWbh58WDVYGzGKF1zeC_-SFDI9UPNGpF_mAxmCJGGEnjZtns4HYViHTrtiEIPiBJsZLgxXwcRscktZTYdyfqoUcXPvEWn0Xr0aoMHKTSE4LS7Rdg",
+        "keyType": 0,
+        "role": "developer",
+        "subroles": [],
+        "lastLogin": 1486112928960
+      },
+      "response_time": 335
+    },
+    "test_description": "Login Developer Account"
+  },
+  {
+    "suite": "Register Testusers",
+    "test": "Login as Developer",
+    "api_call": {
+      "request": {
+        "headers": {
+          "Accept": "application/json, text/plain, */*",
+          "X-Session-Token": "0NNUXS93grBP6_UNPBdUKAzO6fLQMUj-ctW0OoC1CxhfPfsjU03uSTIXHTvXHVJG3_QVpVrChqZysKZqJXCggD9-cZfyOpdYqZ0sM1mWbh58WDVYGzGKF1zeC_-SFDI9UPNGpF_mAxmCJGGEnjZtns4HYViHTrtiEIPiBJsZLgxXwcRscktZTYdyfqoUcXPvEWn0Xr0aoMHKTSE4LS7Rdg"
+        },
+        "method": "GET",
+        "url": "https://test.midata.coop:9000/shared/api/users/current"
+      },
+      "status": 200,
+      "save": {
+        "developer.id": "body.user"
+      }
+    },
+    "errors": [],
+    "response": {
+      "status": 200,
+      "headers": {
+        "server": "nginx",
+        "date": "Fri, 03 Feb 2017 09:13:16 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "54",
+        "connection": "close",
+        "access-control-allow-credentials": "true",
+        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token",
+        "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
+        "access-control-allow-origin": "https://test.midata.coop",
+        "allow": "*",
+        "x-frame-options": "DENY",
+        "x-xss-protection": "1; mode=block",
+        "x-content-type-options": "nosniff",
+        "strict-transport-security": "max-age=31536000"
+      },
+      "body": {
+        "role": "DEVELOPER",
+        "user": "5735ba5879c72130d7fb13ad"
+      },
+      "response_time": 173
+    },
+    "test_description": "Login Developer Account"
+  },
+  {
+    "suite": "Register Testusers",
+    "test": "Register Account Holder",
+    "api_call": {
+      "request": {
+        "headers": {
+          "Accept": "application/json, text/plain, */*",
+          "X-Session-Token": "0NNUXS93grBP6_UNPBdUKAzO6fLQMUj-ctW0OoC1CxhfPfsjU03uSTIXHTvXHVJG3_QVpVrChqZysKZqJXCggD9-cZfyOpdYqZ0sM1mWbh58WDVYGzGKF1zeC_-SFDI9UPNGpF_mAxmCJGGEnjZtns4HYViHTrtiEIPiBJsZLgxXwcRscktZTYdyfqoUcXPvEWn0Xr0aoMHKTSE4LS7Rdg",
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "params": {
+          "language": "en",
+          "email": "ac1@instant-mail.de",
+          "password": "TESTtest1234",
+          "password2": "TESTtest1234",
+          "firstname": "Test",
+          "lastname": "User",
+          "gender": "MALE",
+          "birthdayDay": "01",
+          "birthdayMonth": "01",
+          "birthdayYear": "2000",
+          "address1": "Teststrasse 1",
+          "city": "Teststadt",
+          "zip": "12345",
+          "country": "CH",
+          "agb": true,
+          "birthday": "2000-01-01",
+          "developer": "5735ba5879c72130d7fb13ad"
+        },
+        "url": "https://test.midata.coop:9000/members/api/registration"
+      },
+      "status": 200,
+      "assert": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "sessionToken": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string"
+            },
+            "lastLogin": {
+              "type": "integer"
+            },
+            "keyType": {
+              "type": "integer"
+            },
+            "subroles": {
+              "type": "array"
+            }
+          },
+          "required": [
+            "sessionToken",
+            "lastLogin",
+            "keyType",
+            "subroles"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "save": {
+        "session": "body.sessionToken"
+      }
+    },
+    "errors": [
+      {
+        "type": "schema",
+        "expected": {
+          "type": "object",
+          "properties": {
+            "sessionToken": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string"
+            },
+            "lastLogin": {
+              "type": "integer"
+            },
+            "keyType": {
+              "type": "integer"
+            },
+            "subroles": {
+              "type": "array"
+            }
+          },
+          "required": [
+            "sessionToken",
+            "lastLogin",
+            "keyType",
+            "subroles"
+          ],
+          "additionalProperties": false
+        },
+        "actual": {
+          "code": "error.exists.user",
+          "message": "A user with this email address already exists."
+        },
+        "error_messages": [
+          {
+            "code": "OBJECT_ADDITIONAL_PROPERTIES",
+            "params": [
+              [
+                "message",
+                "code"
+              ]
+            ],
+            "message": "Additional properties not allowed: message,code",
+            "path": "#/"
+          }
+        ]
+      },
+      {
+        "type": "equal",
+        "select": "status",
+        "expected": 200,
+        "actual": 400
+      }
+    ],
+    "response": {
       "status": 400,
       "headers": {
-        "server": "nginx/1.10.0 (Ubuntu)",
-        "date": "Wed, 07 Dec 2016 11:00:12 GMT",
+        "server": "nginx",
+        "date": "Fri, 03 Feb 2017 09:13:16 GMT",
         "content-type": "application/json; charset=utf-8",
-        "content-length": "74",
+        "content-length": "87",
         "connection": "close",
         "access-control-allow-credentials": "true",
         "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token",
@@ -38,16 +230,16 @@
         "allow": "*"
       },
       "body": {
-        "code": "error.invalid.credentials",
-        "message": "Invalid user or password."
+        "code": "error.exists.user",
+        "message": "A user with this email address already exists."
       },
-      "response_time": 312
+      "response_time": 177
     },
-    "test_description": "login Account User with bad password"
+    "test_description": "Register new account holder"
   },
   {
-    "suite": "Member browse pages",
-    "test": "login",
+    "suite": "Register Testusers",
+    "test": "Double Register Check",
     "api_call": {
       "request": {
         "headers": {
@@ -56,10 +248,84 @@
         },
         "method": "POST",
         "params": {
-          "email": "testuser@midata.coop",
-          "password": "TESTtest1234"
+          "language": "en",
+          "email": "ac1@instant-mail.de",
+          "password": "TESTtest1234",
+          "password2": "TESTtest1234",
+          "firstname": "Test",
+          "lastname": "User",
+          "gender": "MALE",
+          "birthdayDay": "01",
+          "birthdayMonth": "01",
+          "birthdayYear": "2000",
+          "address1": "Teststrasse 1",
+          "city": "Teststadt",
+          "zip": "12345",
+          "country": "CH",
+          "agb": true,
+          "birthday": "2000-01-01"
         },
-        "url": "https://test.midata.coop:9000/members/api/login"
+        "url": "https://test.midata.coop:9000/members/api/registration"
+      },
+      "status": 400,
+      "assert": {
+        "equal_keys": {
+          "code": "error.exists.user"
+        }
+      }
+    },
+    "errors": [],
+    "response": {
+      "status": 400,
+      "headers": {
+        "server": "nginx",
+        "date": "Fri, 03 Feb 2017 09:13:16 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "87",
+        "connection": "close",
+        "access-control-allow-credentials": "true",
+        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token",
+        "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
+        "access-control-allow-origin": "https://test.midata.coop",
+        "allow": "*"
+      },
+      "body": {
+        "code": "error.exists.user",
+        "message": "A user with this email address already exists."
+      },
+      "response_time": 172
+    },
+    "test_description": "Double Register Check"
+  },
+  {
+    "suite": "Register Testusers",
+    "test": "Register Researcher",
+    "api_call": {
+      "request": {
+        "headers": {
+          "Accept": "application/json, text/plain, */*",
+          "X-Session-Token": "0NNUXS93grBP6_UNPBdUKAzO6fLQMUj-ctW0OoC1CxhfPfsjU03uSTIXHTvXHVJG3_QVpVrChqZysKZqJXCggD9-cZfyOpdYqZ0sM1mWbh58WDVYGzGKF1zeC_-SFDI9UPNGpF_mAxmCJGGEnjZtns4HYViHTrtiEIPiBJsZLgxXwcRscktZTYdyfqoUcXPvEWn0Xr0aoMHKTSE4LS7Rdg",
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "params": {
+          "name": "Tests Research",
+          "description": "A test research institute",
+          "language": "en",
+          "email": "res1@instant-mail.de",
+          "password": "RESItest1234",
+          "password2": "RESItest1234",
+          "firstname": "Resi",
+          "lastname": "Research",
+          "gender": "MALE",
+          "address1": "Teststrasse 1",
+          "city": "Teststadt",
+          "zip": "12345",
+          "country": "CH",
+          "agb": true,
+          "developer": "5735ba5879c72130d7fb13ad"
+        },
+        "url": "https://test.midata.coop:9000/research/api/register"
       },
       "status": 200,
       "assert": {
@@ -99,10 +365,10 @@
     "response": {
       "status": 200,
       "headers": {
-        "server": "nginx/1.10.0 (Ubuntu)",
-        "date": "Wed, 07 Dec 2016 11:00:13 GMT",
+        "server": "nginx",
+        "date": "Fri, 03 Feb 2017 09:13:27 GMT",
         "content-type": "application/json; charset=utf-8",
-        "content-length": "312",
+        "content-length": "388",
         "connection": "close",
         "access-control-allow-credentials": "true",
         "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token",
@@ -115,205 +381,279 @@
         "strict-transport-security": "max-age=31536000"
       },
       "body": {
-        "sessionToken": "gT4P9Sym5-ZExmWe7imSI3A8U527r5Te_O2IA-eMWbL_lsuYbXz-CpauU5m6rbH0OEoF_ysMcRUsNvdY-iuHZ9bAqoUJzSS8pJToOjKfrosXju7rVRZpK6618FAcFsqS68-q-AAIM8YD7OIWHrmwsOyoTeArigsgk8PytGodl2MDPLwrqkX7wwzO7gJkR7MhzlJYL3_Qp9NbAa5yau9lFA",
+        "sessionToken": "uKgG6mOB5gQvYbf6KrC-d45g2SIRUB-ybRIoXVq-Q1T2JMdTf-nm_GifeWBgxaWMzwlOqDRFVm7KK3WkU8r3Esgpt4ElHeg5wSVkPGWbHFsXi-GwMMPYbJIJr2sMclR-uuT-ZGxuClqCko21-_n0n7ZjFYn9rKMM7s22oGckBOrxQhRgrfLUzuF2-g1dLrMq-sMhjtrIas75suGAMzr4XLWU9L-45Ya7Q4af75OUGJa1hTVGo9-HEwTQHNVGANIUp5KWk0BgHeKLkg1WPKoeK3sa6F53fY6AFQCj7US8S8A",
         "keyType": 0,
-        "role": "member",
-        "subroles": [
-          "TRIALUSER"
-        ],
-        "lastLogin": 1481108245558
+        "role": "research",
+        "subroles": [],
+        "lastLogin": 1486113207050
       },
-      "response_time": 231
+      "response_time": 10303
     },
-    "test_description": "login user"
+    "test_description": "Register new researcher"
   },
   {
-    "suite": "Member browse pages",
-    "test": "get user id",
+    "suite": "Register Testusers",
+    "test": "Double Register Check",
     "api_call": {
       "request": {
         "headers": {
           "Accept": "application/json, text/plain, */*",
-          "X-Session-Token": "gT4P9Sym5-ZExmWe7imSI3A8U527r5Te_O2IA-eMWbL_lsuYbXz-CpauU5m6rbH0OEoF_ysMcRUsNvdY-iuHZ9bAqoUJzSS8pJToOjKfrosXju7rVRZpK6618FAcFsqS68-q-AAIM8YD7OIWHrmwsOyoTeArigsgk8PytGodl2MDPLwrqkX7wwzO7gJkR7MhzlJYL3_Qp9NbAa5yau9lFA"
+          "Content-Type": "application/json"
         },
-        "method": "GET",
-        "url": "https://test.midata.coop:9000/shared/api/users/current"
+        "method": "POST",
+        "params": {
+          "name": "Tests Research",
+          "description": "A test research institute",
+          "language": "en",
+          "email": "res1@instant-mail.de",
+          "password": "RESItest1234",
+          "password2": "RESItest1234",
+          "firstname": "Resi",
+          "lastname": "Research",
+          "gender": "MALE",
+          "address1": "Teststrasse 1",
+          "city": "Teststadt",
+          "zip": "12345",
+          "country": "CH",
+          "agb": true,
+          "developer": "5735ba5879c72130d7fb13ad"
+        },
+        "url": "https://test.midata.coop:9000/research/api/register"
+      },
+      "status": 400,
+      "assert": {
+        "equal_keys": {
+          "field": "name",
+          "type": "exists"
+        }
+      }
+    },
+    "errors": [],
+    "response": {
+      "status": 400,
+      "headers": {
+        "server": "nginx",
+        "date": "Fri, 03 Feb 2017 09:13:27 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "99",
+        "connection": "close",
+        "access-control-allow-credentials": "true",
+        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token",
+        "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
+        "access-control-allow-origin": "https://test.midata.coop",
+        "allow": "*"
+      },
+      "body": {
+        "field": "name",
+        "type": "exists",
+        "message": "A research organization with this name already exists."
+      },
+      "response_time": 170
+    },
+    "test_description": "Double Register Check"
+  },
+  {
+    "suite": "Register Testusers",
+    "test": "Register Provider",
+    "api_call": {
+      "request": {
+        "headers": {
+          "Accept": "application/json, text/plain, */*",
+          "X-Session-Token": "0NNUXS93grBP6_UNPBdUKAzO6fLQMUj-ctW0OoC1CxhfPfsjU03uSTIXHTvXHVJG3_QVpVrChqZysKZqJXCggD9-cZfyOpdYqZ0sM1mWbh58WDVYGzGKF1zeC_-SFDI9UPNGpF_mAxmCJGGEnjZtns4HYViHTrtiEIPiBJsZLgxXwcRscktZTYdyfqoUcXPvEWn0Xr0aoMHKTSE4LS7Rdg",
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "params": {
+          "name": "Tests Provider",
+          "language": "en",
+          "email": "prov1@instant-mail.de",
+          "password": "PROVtest1234",
+          "password2": "PROVtest1234",
+          "firstname": "Doctor",
+          "lastname": "Test",
+          "gender": "MALE",
+          "address1": "Teststrasse 1",
+          "city": "Teststadt",
+          "zip": "12345",
+          "country": "CH",
+          "agb": true,
+          "developer": "5735ba5879c72130d7fb13ad"
+        },
+        "url": "https://test.midata.coop:9000/providers/api/register"
       },
       "status": 200,
       "assert": {
         "schema": {
           "type": "object",
           "properties": {
+            "sessionToken": {
+              "type": "string"
+            },
             "role": {
               "type": "string"
             },
-            "user": {
-              "type": "string"
+            "lastLogin": {
+              "type": "integer"
+            },
+            "keyType": {
+              "type": "integer"
+            },
+            "subroles": {
+              "type": "array"
             }
           },
           "required": [
-            "role",
-            "user"
+            "sessionToken",
+            "lastLogin",
+            "keyType",
+            "subroles"
           ],
           "additionalProperties": false
         }
       },
       "save": {
-        "member.id": "body.user"
+        "session": "body.sessionToken"
       }
     },
-    "errors": [],
+    "errors": [
+      {
+        "type": "schema",
+        "expected": {
+          "type": "object",
+          "properties": {
+            "sessionToken": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string"
+            },
+            "lastLogin": {
+              "type": "integer"
+            },
+            "keyType": {
+              "type": "integer"
+            },
+            "subroles": {
+              "type": "array"
+            }
+          },
+          "required": [
+            "sessionToken",
+            "lastLogin",
+            "keyType",
+            "subroles"
+          ],
+          "additionalProperties": false
+        },
+        "actual": {
+          "field": "name",
+          "type": "exists",
+          "message": "A healthcare provider with this name already exists."
+        },
+        "error_messages": [
+          {
+            "code": "OBJECT_ADDITIONAL_PROPERTIES",
+            "params": [
+              [
+                "message",
+                "type",
+                "field"
+              ]
+            ],
+            "message": "Additional properties not allowed: message,type,field",
+            "path": "#/"
+          }
+        ]
+      },
+      {
+        "type": "equal",
+        "select": "status",
+        "expected": 200,
+        "actual": 400
+      }
+    ],
     "response": {
-      "status": 200,
+      "status": 400,
       "headers": {
-        "server": "nginx/1.10.0 (Ubuntu)",
-        "date": "Wed, 07 Dec 2016 11:00:13 GMT",
+        "server": "nginx",
+        "date": "Fri, 03 Feb 2017 09:13:27 GMT",
         "content-type": "application/json; charset=utf-8",
-        "content-length": "51",
+        "content-length": "97",
         "connection": "close",
         "access-control-allow-credentials": "true",
         "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token",
         "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
         "access-control-allow-origin": "https://test.midata.coop",
-        "allow": "*",
-        "x-frame-options": "DENY",
-        "x-xss-protection": "1; mode=block",
-        "x-content-type-options": "nosniff",
-        "strict-transport-security": "max-age=31536000"
+        "allow": "*"
       },
       "body": {
-        "role": "MEMBER",
-        "user": "5847e6f979c721c276f5f7c2"
+        "field": "name",
+        "type": "exists",
+        "message": "A healthcare provider with this name already exists."
       },
-      "response_time": 182
-    },
-    "test_description": "try to get current user id"
-  },
-  {
-    "suite": "Member browse pages",
-    "test": "get config",
-    "api_call": {
-      "request": {
-        "headers": {
-          "Accept": "application/json, text/plain, */*",
-          "X-Session-Token": "gT4P9Sym5-ZExmWe7imSI3A8U527r5Te_O2IA-eMWbL_lsuYbXz-CpauU5m6rbH0OEoF_ysMcRUsNvdY-iuHZ9bAqoUJzSS8pJToOjKfrosXju7rVRZpK6618FAcFsqS68-q-AAIM8YD7OIWHrmwsOyoTeArigsgk8PytGodl2MDPLwrqkX7wwzO7gJkR7MhzlJYL3_Qp9NbAa5yau9lFA"
-        },
-        "method": "GET",
-        "url": "https://test.midata.coop:9000/portal/config"
-      },
-      "status": 200
-    },
-    "errors": [],
-    "response": {
-      "status": 200,
-      "headers": {
-        "server": "nginx/1.10.0 (Ubuntu)",
-        "date": "Wed, 07 Dec 2016 11:00:13 GMT",
-        "content-length": "0",
-        "connection": "close",
-        "access-control-allow-credentials": "true",
-        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token",
-        "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
-        "access-control-allow-origin": "https://test.midata.coop",
-        "allow": "*",
-        "x-frame-options": "DENY",
-        "x-xss-protection": "1; mode=block",
-        "x-content-type-options": "nosniff",
-        "strict-transport-security": "max-age=31536000"
-      },
-      "body": "",
       "response_time": 180
     },
-    "test_description": "try to get config"
+    "test_description": "Register new provider"
   },
   {
-    "suite": "Member browse pages",
-    "test": "list tasks",
+    "suite": "Register Testusers",
+    "test": "Double Register Check",
     "api_call": {
       "request": {
         "headers": {
           "Accept": "application/json, text/plain, */*",
-          "X-Session-Token": "gT4P9Sym5-ZExmWe7imSI3A8U527r5Te_O2IA-eMWbL_lsuYbXz-CpauU5m6rbH0OEoF_ysMcRUsNvdY-iuHZ9bAqoUJzSS8pJToOjKfrosXju7rVRZpK6618FAcFsqS68-q-AAIM8YD7OIWHrmwsOyoTeArigsgk8PytGodl2MDPLwrqkX7wwzO7gJkR7MhzlJYL3_Qp9NbAa5yau9lFA"
-        },
-        "method": "POST",
-        "url": "https://test.midata.coop:9000/shared/api/tasks/list"
-      },
-      "status": 200
-    },
-    "errors": [],
-    "response": {
-      "status": 200,
-      "headers": {
-        "server": "nginx/1.10.0 (Ubuntu)",
-        "date": "Wed, 07 Dec 2016 11:00:13 GMT",
-        "content-type": "application/json; charset=utf-8",
-        "content-length": "2",
-        "connection": "close",
-        "access-control-allow-credentials": "true",
-        "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token",
-        "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
-        "access-control-allow-origin": "https://test.midata.coop",
-        "allow": "*",
-        "x-frame-options": "DENY",
-        "x-xss-protection": "1; mode=block",
-        "x-content-type-options": "nosniff",
-        "strict-transport-security": "max-age=31536000"
-      },
-      "body": [],
-      "response_time": 179
-    },
-    "test_description": "list tasks of user"
-  },
-  {
-    "suite": "Member browse pages",
-    "test": "list spaces",
-    "api_call": {
-      "request": {
-        "headers": {
-          "Accept": "application/json, text/plain, */*",
-          "X-Session-Token": "gT4P9Sym5-ZExmWe7imSI3A8U527r5Te_O2IA-eMWbL_lsuYbXz-CpauU5m6rbH0OEoF_ysMcRUsNvdY-iuHZ9bAqoUJzSS8pJToOjKfrosXju7rVRZpK6618FAcFsqS68-q-AAIM8YD7OIWHrmwsOyoTeArigsgk8PytGodl2MDPLwrqkX7wwzO7gJkR7MhzlJYL3_Qp9NbAa5yau9lFA",
+          "X-Session-Token": "0NNUXS93grBP6_UNPBdUKAzO6fLQMUj-ctW0OoC1CxhfPfsjU03uSTIXHTvXHVJG3_QVpVrChqZysKZqJXCggD9-cZfyOpdYqZ0sM1mWbh58WDVYGzGKF1zeC_-SFDI9UPNGpF_mAxmCJGGEnjZtns4HYViHTrtiEIPiBJsZLgxXwcRscktZTYdyfqoUcXPvEWn0Xr0aoMHKTSE4LS7Rdg",
           "Content-Type": "application/json"
         },
         "method": "POST",
         "params": {
-          "properties": {
-            "owner": "5847e6f979c721c276f5f7c2",
-            "context": "me"
-          },
-          "fields": [
-            "name",
-            "records",
-            "visualization",
-            "app",
-            "order"
-          ]
+          "name": "Tests Provider",
+          "language": "en",
+          "email": "prov1@instant-mail.de",
+          "password": "PROVtest1234",
+          "password2": "PROVtest1234",
+          "firstname": "Doctor",
+          "lastname": "Test",
+          "gender": "MALE",
+          "address1": "Teststrasse 1",
+          "city": "Teststadt",
+          "zip": "12345",
+          "country": "CH",
+          "agb": true,
+          "developer": "5735ba5879c72130d7fb13ad"
         },
-        "url": "https://test.midata.coop:9000/members/api/spaces/get"
+        "url": "https://test.midata.coop:9000/providers/api/register"
       },
-      "status": 200
+      "status": 400,
+      "assert": {
+        "equal_keys": {
+          "field": "name",
+          "type": "exists"
+        }
+      }
     },
     "errors": [],
     "response": {
-      "status": 200,
+      "status": 400,
       "headers": {
-        "server": "nginx/1.10.0 (Ubuntu)",
-        "date": "Wed, 07 Dec 2016 11:00:13 GMT",
-        "content-type": "text/plain; charset=utf-8",
-        "content-length": "2",
+        "server": "nginx",
+        "date": "Fri, 03 Feb 2017 09:13:27 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "97",
         "connection": "close",
         "access-control-allow-credentials": "true",
         "access-control-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, X-Session-Token",
         "access-control-allow-methods": "POST, GET, PUT, DELETE, OPTIONS, PATCH",
         "access-control-allow-origin": "https://test.midata.coop",
-        "allow": "*",
-        "x-frame-options": "DENY",
-        "x-xss-protection": "1; mode=block",
-        "x-content-type-options": "nosniff",
-        "strict-transport-security": "max-age=31536000"
+        "allow": "*"
       },
-      "body": "[]",
-      "response_time": 181
+      "body": {
+        "field": "name",
+        "type": "exists",
+        "message": "A healthcare provider with this name already exists."
+      },
+      "response_time": 174
     },
-    "test_description": "list spaces of user"
+    "test_description": "Double Register Check"
   }
 ]

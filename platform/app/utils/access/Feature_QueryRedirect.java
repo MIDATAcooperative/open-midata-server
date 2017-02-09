@@ -33,7 +33,7 @@ public class Feature_QueryRedirect extends Feature {
 		APS target = q.getCache().getAPS(q.getApsId());
 		BasicBSONObject query = target.getMeta(APS.QUERY);    	
     	// Ignores queries in main APS 
-		if (query != null && !q.getApsId().equals(q.getCache().getOwner())) {			
+		if (query != null && !q.getApsId().equals(q.getCache().getAccountOwner())) {			
 			List<DBRecord> result;
 			
 			if (q.restrictedBy("redirect-only")) {

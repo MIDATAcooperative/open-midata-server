@@ -428,7 +428,8 @@ In the array case each record must match one entry in the array to qualify for t
   <ul>      
     <li><code>format</code> - (string) the technical format of the record</li>
     <li><code>content</code> - (string) the semantical format of the record</li>
-    <li><code>group</code> - (string) the group of the record may be one of the given groups or a child of those.</li>       
+    <li><code>group</code> - (string) the group of the record may be one of the given groups or a child of those.</li>
+    <li><code>app</code> - (string) the app that created the record</li>       
  </ul>
  <p>The response to the query is an array of information objects looking like that:</p>  
 <pre>
@@ -441,6 +442,7 @@ In the array case each record must match one entry in the array to qualify for t
       "formats" : ["measurements"],
       "contents" : ["food/water"],
       "groups" : ["nutrition"],
+      "apps" : ["abc1234"],
       "newestRecord" : "midata:/55faadeae4b0b22590969f44"
    },
    {
@@ -450,6 +452,7 @@ In the array case each record must match one entry in the array to qualify for t
       "calculated" : 1447336206862,
       "formats" : ["measurements"],
       "contents" : ["activities/fairly-active","activities/more-active"],
+      "apps" : ["abc123"],
       "groups": ["movement"],
       "newestRecord" : "midata:/55faab97e4b0b2259096744a"
    }

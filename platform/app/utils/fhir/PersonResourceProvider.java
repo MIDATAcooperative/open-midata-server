@@ -80,7 +80,8 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 	public Person personFromMidataUser(User userToConvert) throws AppException {
 		Person p = new Person();
 		p.setId(userToConvert._id.toString());
-		p.addName().addFamily(userToConvert.lastname).addGiven(userToConvert.firstname);
+		p.addName().setFamily(userToConvert.lastname).addGiven(userToConvert.firstname);
+	
 		//p.setBirthDate(member.birthday);
 		//p.addIdentifier().setSystem("http://midata.coop/midataID").setValue(member.midataID);
 		p.setGender(AdministrativeGender.valueOf(userToConvert.gender.toString()));

@@ -10,6 +10,7 @@ import models.MidataId;
 import models.MobileAppInstance;
 import models.Space;
 import models.User;
+import models.enums.ConsentStatus;
 import play.libs.Json;
 import play.mvc.Http.Request;
 import utils.AccessLog;
@@ -32,7 +33,7 @@ public class ExecutionInfo {
 	
 	public Space space;
 	
-	public static ExecutionInfo checkToken(Request request, String token) throws AppException {
+	public static ExecutionInfo checkToken(Request request, String token, boolean allowInactive) throws AppException {
 		String plaintext = TokenCrypto.decryptToken(token);
 		if (plaintext == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");	
 		JsonNode json = Json.parse(plaintext);
@@ -41,7 +42,7 @@ public class ExecutionInfo {
 		if (json.has("instanceId")) {
 			return checkSpaceToken(SpaceToken.decrypt(request, json));
 		} else {
-			return checkMobileToken(MobileAppSessionToken.decrypt(json));
+			return checkMobileToken(MobileAppSessionToken.decrypt(json), allowInactive);
 		}
 	}
 	
@@ -91,20 +92,22 @@ public class ExecutionInfo {
 		
 	}
 	
-	public static ExecutionInfo checkMobileToken(String token) throws AppException {		
+	public static ExecutionInfo checkMobileToken(String token, boolean allowInactive) throws AppException {		
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(token);
 		if (authToken == null) {
 			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
 		}
 			
-		return checkMobileToken(authToken);		
+		return checkMobileToken(authToken, allowInactive);		
 	}
 	
-	public static ExecutionInfo checkMobileToken(MobileAppSessionToken authToken) throws AppException {		
+	public static ExecutionInfo checkMobileToken(MobileAppSessionToken authToken, boolean allowInactive) throws AppException {		
 						
 		AccessLog.logBegin("begin check 'mobile' type session token");
-		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare"));
+		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare", "status"));
         if (appInstance == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
+
+        if (!allowInactive && !appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
 
         KeyManager.instance.login(60000l);
         KeyManager.instance.unlock(appInstance._id, authToken.passphrase);
@@ -119,6 +122,8 @@ public class ExecutionInfo {
 			KeyManager.instance.unlock(appInstance.owner, alias, key);
 			RecordManager.instance.clearCache();
 			result.executorId = appInstance.owner;
+		} else {
+			RecordManager.instance.setAccountOwner(appInstance._id, appInstance.owner);
 		}
                                                 
 		result.ownerId = appInstance.owner;

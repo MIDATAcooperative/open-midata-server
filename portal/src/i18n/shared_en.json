@@ -15,6 +15,7 @@
 	  "sign_up" : "Sign Up",
 	  "sign_out" : "Sign out",	 
 	  "me" : "Me",
+	  "view" : "View",
       "overview" : "Overview",            	
 	  "messages" : "Messages",				
 	  "my_data" : "My Data",				
@@ -517,7 +518,9 @@
     "records_with_format" : "Records that have format:",
     "records_with_content" : "Records that have content:",
     "records_with_group" : "Records that belong to group:",
+    "records_with_owner" : "Records that belong to owner:",
     "records_from_app" : "Records created by app:",
+    "owner_self" : "Your own records",
     "participation_history" : "Participation History",
     "history_event" : "Event",
 	"history_who" : "Who",
@@ -756,7 +759,8 @@
    },  
    
    "config" : {
-     "fitbit" : "Fitbit Configuration"
+     "fitbit" : "Fitbit Configuration",
+     "withings" : "Withings Configuration"
    },
   
   "spacesummary" : {

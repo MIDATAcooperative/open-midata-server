@@ -70,6 +70,7 @@ import utils.ErrorReporter;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
+import utils.collections.ReferenceTool;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -127,6 +128,8 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	@Read()
 	public T getResourceById(@IdParam IIdType theId) throws AppException {
 		Record record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new MidataId(theId.getIdPart()));
+		if (record == null) throw new ResourceNotFoundException(theId);		
+		ReferenceTool.resolveOwners(Collections.singletonList(record), true, false);		
 		IParser parser = ctx().newJsonParser();
 		T p = parser.parseResource(getResourceType(), record.data.toString());
 		processResource(record, p);		
@@ -165,7 +168,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	protected MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam T theResource) {
 
 		try {
-			if (theResource.getMeta() == null || theResource.getMeta().getVersionId() == null) throw new PreconditionFailedException("Resource version missing!");
+			if (theId.getVersionIdPart() == null && (theResource.getMeta() == null || theResource.getMeta().getVersionId() == null)) throw new PreconditionFailedException("Resource version missing!");
 			return update(theId, theResource);
 		} catch (BaseServerResponseException e) {
 			throw e;
@@ -325,7 +328,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 		
 	
 	public void processResource(Record record, T resource) {
-		resource.setId(record._id.toString());
+		resource.setId(new IdType(resource.fhirType(), record._id.toString(), record.version));
 		resource.getMeta().setVersionId(record.version);
 		if (record.lastUpdated == null) resource.getMeta().setLastUpdated(record.created);
 		else resource.getMeta().setLastUpdated(record.lastUpdated);
@@ -390,6 +393,20 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 		AccessLog.logEnd("end insert FHIR record");
 	}
 	
+	public static MidataId insertMessageRecord(Record record, IBaseResource resource) throws AppException {
+		ExecutionInfo inf = info();
+		MidataId shareFrom = inf.executorId;
+		MidataId owner = record.owner;
+		if (!owner.equals(inf.executorId)) {
+			Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, inf.executorId, owner, owner, false);
+			insertRecord(record, resource, consent._id);
+			shareFrom = consent._id;
+		} else {
+			insertRecord(record, resource);
+		}
+		return shareFrom;
+	}
+	
 	public static void insertRecord(Record record, IBaseResource resource, Attachment attachment) throws AppException {
 		if (attachment == null || attachment.isEmpty()) {
 			insertRecord(record, resource);
@@ -424,7 +441,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	}
 	
 	public static void updateRecord(Record record, IBaseResource resource) throws AppException {
-		if (!record.version.equals(resource.getMeta().getVersionId())) throw new ResourceVersionConflictException("Wrong resource version supplied!") ;
+		if (resource.getMeta() != null && resource.getMeta().getVersionId() != null && !record.version.equals(resource.getMeta().getVersionId())) throw new ResourceVersionConflictException("Wrong resource version supplied!") ;
 		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 		record.data = (DBObject) JSON.parse(encoded);	
 		record.version = resource.getMeta().getVersionId();
@@ -519,7 +536,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	 * @param personRefs collection of FHIR references
 	 * @throws AppException
 	 */
-	protected void shareWithPersons(Record record, Collection<IIdType> personRefs) throws AppException {
+	protected void shareWithPersons(Record record, Collection<IIdType> personRefs, MidataId shareFrom) throws AppException {
 	       ExecutionInfo inf = info();
 			
 			MidataId owner = record.owner;
@@ -529,7 +546,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 					   TypedMidataId target = FHIRTools.getMidataIdFromReference(ref);
 					   if (!target.getMidataId().equals(owner)) {
 					     Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, owner, target.getMidataId(), owner, target.getType().equals("Group"));
-					     RecordManager.instance.share(inf.executorId, inf.executorId, consent._id, Collections.singleton(record._id), true);
+					     RecordManager.instance.share(inf.executorId, shareFrom, consent._id, Collections.singleton(record._id), true);
 					   }
 				}
 			}

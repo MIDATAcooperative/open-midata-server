@@ -44,6 +44,13 @@ angular.module('portal')
 		});		
 	};
 	
+	$scope.wipe = function() {
+		administration.wipe($scope.member._id)
+		.then(function() {
+			$state.go("^.members");
+		});
+	};
+	
 	$scope.reload();
 
 }]);

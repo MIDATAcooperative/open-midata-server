@@ -659,7 +659,9 @@ public class Application extends APIController {
 		if (InstanceConfig.getInstance().getInstanceType().developersMayRegisterTestUsers()) {		  
 		   newuser.developer = JsonValidation.getMidataId(json, "developer");
 		   if (newuser.developer != null) {
-		     if (!newuser.developer.equals(PortalSessionToken.decrypt(request()).userId)) throw new AuthException("error.internal", "You need to be logged in as this developer");
+			  PortalSessionToken token = PortalSessionToken.decrypt(request());
+			  if (token == null) throw new AuthException("error.internal", "You need to be logged in as this developer");
+		     if (!newuser.developer.equals(token.userId)) throw new AuthException("error.internal", "You need to be logged in as this developer");
 		     newuser.status = UserStatus.ACTIVE;
 		   }
 		}
@@ -837,6 +839,7 @@ public class Application extends APIController {
 				controllers.admin.routes.javascript.Administration.register(),
 				controllers.admin.routes.javascript.Administration.changeStatus(),
 				controllers.admin.routes.javascript.Administration.addComment(),
+				controllers.admin.routes.javascript.Administration.adminWipeAccount(),
 				// Market				
 				controllers.routes.javascript.Market.registerPlugin(),
 				controllers.routes.javascript.Market.updatePlugin(),

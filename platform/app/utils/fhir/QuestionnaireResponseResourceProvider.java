@@ -228,6 +228,8 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 		Record record = fetchCurrent(theId);
 		prepare(record, theQuestionnaireResponse);		
 		updateRecord(record, theQuestionnaireResponse);		
+		processResource(record, theQuestionnaireResponse);
+		
 		return outcome("QuestionnaireResponse", record, theQuestionnaireResponse);
 	}
 
