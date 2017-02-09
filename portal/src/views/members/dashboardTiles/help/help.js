@@ -167,6 +167,7 @@ angular.module('views')
 		}
 		
 		if (q.devices.fitbit) install("fitbit", "config.fitbit", "config");
+		if (q.devices.withings) install("witings", "config.withings", "config");
 				
 		remove('help_welcome', 'me', true);
 		

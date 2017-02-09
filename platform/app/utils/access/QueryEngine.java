@@ -292,7 +292,7 @@ class QueryEngine {
     protected static DBRecord loadData(DBRecord input) throws AppException {
     	if (input.data == null && input.encryptedData == null) {
     	   DBRecord r2 = DBRecord.getById(input._id, DATA_ONLY);					
-		   input.encryptedData = r2.encryptedData;
+		   // r2=null should not happen if (r2 != null) input.encryptedData = r2.encryptedData;
     	}
 		RecordEncryption.decryptRecord(input);
 		return input;
