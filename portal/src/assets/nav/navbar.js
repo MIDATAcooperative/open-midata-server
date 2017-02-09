@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('NavbarCtrl', ['$scope', '$state', '$translate', '$translatePartialLoader', 'server', 'session', 'ENV', function($scope, $state, $translate, $translatePartialLoader, server, session, ENV) {
+.controller('NavbarCtrl', ['$scope', '$state', '$translate', '$translatePartialLoader', 'server', 'session', 'ENV', 'spaces', function($scope, $state, $translate, $translatePartialLoader, server, session, ENV, spaces) {
 	
 	// init
 	$scope.user = { subroles:[] };	
@@ -14,6 +14,12 @@ angular.module('portal')
 	session.currentUser.then(function(userId) {
 		console.log("DONE NAV");
 		$scope.user = session.user;		
+		
+		spaces.getSpacesOfUserContext($scope.userId, "menu")
+    	.then(function(results) {
+    		$scope.me_menu = results.data;
+    	});
+    
 	});
 			
 	$scope.logout = function() {		
@@ -27,6 +33,10 @@ angular.module('portal')
 	
 	$scope.hasSubRole = function(subRole) {	
 		return $scope.user.subroles.indexOf(subRole) >= 0;
+	};
+	
+	$scope.showSpace = function(space) {
+		$state.go('^.spaces', { spaceId : space._id });
 	};
 	
 }])
