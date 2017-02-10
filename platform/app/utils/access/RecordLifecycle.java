@@ -11,6 +11,7 @@ import models.MidataId;
 import utils.AccessLog;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.InternalServerException;
 
 
 /**
@@ -27,6 +28,7 @@ public class RecordLifecycle {
 	 */
 	public static void addWatchingAps(DBRecord rec, MidataId aps) throws AppException {
 		DBRecord record = DBRecord.getById(rec._id, Sets.create("encWatches"));
+		if (record == null) throw new InternalServerException("error.internal", "Record with id "+rec._id.toString()+" not found in database. Account or consent needs repair?");
 		record.key = rec.key;
 		record.security = rec.security;
 		record.meta = null;

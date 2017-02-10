@@ -271,7 +271,7 @@ class QueryEngine {
     protected static void fetchFromDB(Query q, DBRecord record) throws InternalServerException {
     	if (record.encrypted == null) {
 			DBRecord r2 = DBRecord.getById(record._id, q.getFieldsFromDB());
-			if (r2 == null) throw new InternalServerException("error.internal", "Record with id "+record._id.toString()+" not found in database. Account needs repair?");
+			if (r2 == null) throw new InternalServerException("error.internal", "Record with id "+record._id.toString()+" not found in database. Account or consent needs repair?");
 			fetchFromDB(record, r2);			
 		}
     }
@@ -291,7 +291,8 @@ class QueryEngine {
     private static final Set<String> DATA_ONLY = Sets.create("_id", "encryptedData");
     protected static DBRecord loadData(DBRecord input) throws AppException {
     	if (input.data == null && input.encryptedData == null) {
-    	   DBRecord r2 = DBRecord.getById(input._id, DATA_ONLY);					
+    	   DBRecord r2 = DBRecord.getById(input._id, DATA_ONLY);
+    	   if (r2 == null) throw new InternalServerException("error.internal", "Record with id "+input._id.toString()+" not found in database. Account or consent needs repair?");
 		   // r2=null should not happen if (r2 != null) 
     	   input.encryptedData = r2.encryptedData;
     	}
@@ -404,7 +405,7 @@ class QueryEngine {
 		if (q.restrictedBy("creator")) result = filterByMetaSet(result, "creator", q.getIdRestrictionDB("creator"));
 		if (q.restrictedBy("app")) result = filterByMetaSet(result, "app", q.getIdRestrictionDB("app"), q.restrictedBy("no-postfilter-streams"));
 		if (q.restrictedBy("name")) result = filterByMetaSet(result, "name", q.getRestriction("name"));
-		if (q.restrictedBy("code")) result = filterByMetaSet(result, "code", q.getRestriction("code"));
+		if (q.restrictedBy("code")) result = filterSetByMetaSet(result, "code", q.getRestriction("code"));
 		
 		if (q.restrictedBy("index") && !q.getApsId().equals(q.getCache().getAccountOwner())) {
 			AccessLog.log("Manually applying index query aps="+q.getApsId().toString());
