@@ -118,32 +118,40 @@ private Feature next;
 			   } else {
 				   Map<String, Object> readRecs = new HashMap<String, Object>();
 				   boolean add = false;
+				   boolean directQuery = true;
 				   if (ids.size() > 5) {
 					    Map<String, Object> props = new HashMap<String, Object>();
 						props.putAll(q.getProperties());
 						props.put("streams", "only");
 						List<DBRecord> matchStreams = next.query(new Query(props, Sets.create("_id"), q.getCache(), aps));
 						AccessLog.log("index query streams "+matchStreams.size()+" matches.");
-						Set<MidataId> streams = new HashSet<MidataId>();
-						for (DBRecord r : matchStreams) streams.add(r._id);
-						readRecs.put("stream", streams);
+						if (matchStreams.isEmpty()) directQuery = false;
+						else {
+							Set<MidataId> streams = new HashSet<MidataId>();
+							for (DBRecord r : matchStreams) streams.add(r._id);
+							readRecs.put("stream", streams);
+						}
 						add = true;
 				   }
 				   readRecs.put("_id", ids);
-					
-				   List<DBRecord> partresult = new ArrayList(DBRecord.getAll(readRecs, queryFields));
-					
-					Query q3 = new Query(q, CMaps.map("strict", "true"), aps);
-					partresult = Feature_Prefetch.lookup(q3, partresult, next);
-					result.addAll(partresult);
+				
+				   int directSize = 0;
+				   if (directQuery) {
+					   List<DBRecord> partresult = new ArrayList(DBRecord.getAll(readRecs, queryFields));
+						
+					   Query q3 = new Query(q, CMaps.map("strict", "true"), aps);
+					   partresult = Feature_Prefetch.lookup(q3, partresult, next);
+					   result.addAll(partresult);
+					   directSize = partresult.size();
+				   }
 					
 					if (add) {
 		              Query q2 = new Query(q, CMaps.map(q.getProperties()).map("_id", ids), aps);
 		              List<DBRecord> additional = next.query(q2);
 		              result.addAll(additional);
-		              AccessLog.log("looked up directly="+partresult.size()+" additionally="+additional.size());
+		              AccessLog.log("looked up directly="+directSize+" additionally="+additional.size());
 					} else {
-		              AccessLog.log("looked up directly="+partresult.size());
+		              AccessLog.log("looked up directly="+directSize);
 					}		            
 					
 			   }

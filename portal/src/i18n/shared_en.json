@@ -15,6 +15,7 @@
 	  "sign_up" : "Sign Up",
 	  "sign_out" : "Sign out",	 
 	  "me" : "Me",
+	  "view" : "View",
       "overview" : "Overview",            	
 	  "messages" : "Messages",				
 	  "my_data" : "My Data",				
@@ -758,7 +759,8 @@
    },  
    
    "config" : {
-     "fitbit" : "Fitbit Configuration"
+     "fitbit" : "Fitbit Configuration",
+     "withings" : "Withings Configuration"
    },
   
   "spacesummary" : {

@@ -790,6 +790,8 @@ public class RecordManager {
 				  RecordLifecycle.removeWatchingAps(rec, apsId);
 				} catch (AppException e) {
 				  AccessLog.logException("error while deleting APS during remove watch", e);
+				} catch (NullPointerException e2) {
+				  AccessLog.logException("error while deleting APS during remove watch", e2);	
 				}
 			}
 		} catch (AppException e) {

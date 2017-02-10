@@ -39,7 +39,8 @@
    
     "question_devices" : "Do use any of these devices?", 
     "question_devices_answer1" : "Fitbit",
-	"question_devices_answer2" : "Jawbone",		 
+	"question_devices_answer2" : "Jawbone",
+	"question_devices_answer3" : "Withings",			 
    
     "come_back" : "You can always come back and change these settings by visiting the \"Help\" page.",
     "done_btn" : "Done"
