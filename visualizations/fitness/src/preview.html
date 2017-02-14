@@ -1,0 +1,83 @@
+<div ng-controller="PreviewCtrl">
+	<div class="container-fluid">
+		<div class="row">
+			<div ng-repeat="entry in previews" class="col-sm-6" style="min-height:600px">
+				<div>
+					<div class="pull-left" style="margin-right:10px">
+						<img width="40" ng-src="{{ 'images/'+entry.icon }}">
+					</div>
+					<div class="pull-right" ng-if="entry.stars != undefined">
+						<span ng-repeat="x in entry.starsFull track by $index" style="color: #a0a010; font-size: 20px" class="glyphicon glyphicon-star"></span>						
+                        <span ng-repeat="x in entry.starsEmpty track by $index" style="color: #a0a010; font-size: 20px" class="glyphicon glyphicon-star-empty"></span>
+					</div>
+					<div ng-if="entry.trend" class="pull-right col-xs-4">
+					   <div >
+						<div class="pull-left" >
+							<span ng-show="entry.trend.value > 0" style="color: green; font-size: 30px;" class="glyphicon glyphicon-arrow-up"></span>
+							<span ng-show="entry.trend.value < 0" style="color: red; font-size: 30px;" class="glyphicon glyphicon-arrow-down"></span>
+						</div>
+						<div translate="trend"></div><div><b><span ng-show="entry.trend.value > 0">+</span>{{ entry.trend.value }} {{ entry.last.unit }}</b></div>
+					   </div>
+					</div>
+					
+					<div class="lead" translate="{{ entry.display }}"></div>
+				</div><div>
+					<div ng-if="entry.count" class="row">					  
+					  <div class="col-xs-3">
+					    <div class="seperate">
+					    <div translate="last"></div>
+					    <div class="value" ng-style="checkGoal(entry.last,entry.goal)">{{ entry.last.value }} {{ entry.last.unit }}</div>
+					    <div class="small">{{ entry.last.date | date }}</div>
+					    </div>
+					  </div>
+		      		  <div class="col-xs-3">
+					    <div class="seperate">
+					    <div translate="best"></div>
+					    <div class="value" ng-style="checkGoal(entry.best,entry.goal)">{{ entry.best.value }} {{ entry.best.unit }}</div>
+					    <div class="small">{{ entry.best.date | date }}</div>
+					    </div>
+					  </div>
+			 		  <div class="col-xs-3">
+					    <div class="seperate">
+					    <div translate="worst"></div>
+					    <div class="value" ng-style="checkGoal(entry.worst,entry.goal)">{{ entry.worst.value }} {{ entry.worst.unit }}</div>
+					    <div class="small">{{ entry.worst.date | date }}</div>
+					    </div>
+					  </div>
+		    		  <div class="col-xs-3">
+					    <div class="">
+					    <div translate="avg"></div>
+					    <div class="value" ng-style="checkGoal(entry.avg,entry.goal)">{{ (entry.avg.value / entry.count).toFixed(1) }} {{ entry.last.unit }}</div>
+					    <div class="small">&nbsp;</div>
+					    </div>
+					  </div>
+		 		              						
+					</div>
+					
+					<div ng-if="entry.labels.length > 1" class="row" style="margin-top:20px">
+		              <div class="col-xs-12">
+			            <canvas id="line" class="chart chart-line" chart-data="entry.chart" chart-labels="entry.labels" legend="true" chart-series="entry.series">
+                        </canvas>
+		              </div>
+		            </div>
+		            <div ng-if="!entry.labels || entry.labels.length <= 1" class="row" style="margin-top:20px">
+		              <div class="col-xs-12">
+		                <img class="round" style="width:100%;height:auto;padding:0px" ng-src="{{ 'images/'+entry.placeholder}}">
+		              </div>
+		            </div>
+					
+					<div class="row" style="margin-top:10px;margin-bottom:10px"><div class="col-xs-12"><div class="round" style="background-color:#e0e0e0">
+					  <div ng-if="!entry.count" translate="{{'empty.'+entry.display}}"></div>
+					  <div ng-if="entry.hint" translate="{{entry.hint}}"></div>
+				    </div></div></div>					
+					<button class="btn btn-small btn-default" ng-click="showDetails(entry);" translate="details_btn"></button>
+					<button ng-show="entry.add" class="btn btn-small btn-default" ng-click="showAdd(entry);" translate="add_btn">
+						add</button>
+					<button ng-show="entry.device" class="btn btn-small btn-default" ng-click="showInstall(entry);" translate="device_btn"></button>
+					<div style="margin-top:10px;margin-bottom:20px;border:1px solid #e0e0e0;width:100%"></div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>

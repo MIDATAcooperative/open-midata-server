@@ -476,7 +476,8 @@
     "plugins" : "Plugins",
     "no_spotlighted_plugins" : "There are no spotlighted plugins yet.",
     "plugins_you_may_like" : "Plugins you may like",
-    "no_recommendations" : "We have no recommendations for you yet."
+    "no_recommendations" : "We have no recommendations for you yet.",
+    "install_now_btn" : "Use Now"
   },
   
   "providersearch" : {

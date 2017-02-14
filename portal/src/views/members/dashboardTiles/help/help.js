@@ -1,5 +1,5 @@
 angular.module('views')
-.controller('HelpCtrl', ['$scope', '$state', 'portal', function($scope, $state, portal) {
+.controller('HelpCtrl', ['$scope', '$state', 'portal', 'spaces', function($scope, $state, portal, spaces) {
 	$scope.alreadyAnswered = false;
 	$scope.init = function() {
 		portal.getConfig()
@@ -12,6 +12,10 @@ angular.module('views')
 		});
 	};
 	$scope.init();
+	
+	$scope.use = function(view) {
+		spaces.openAppLink($state, { app : view});
+	};
 		
 }])
 .controller('HelpSetupCtrl', ['$scope', '$state', 'portal', 'apps', 'spaces', 'session', function($scope, $state, portal, apps, spaces, session) {

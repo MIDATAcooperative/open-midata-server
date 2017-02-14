@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('Spaces2Ctrl', ['$scope', '$state', '$translate','server', '$sce', 'status', 'spaces', 'views', 'session', '$window', function($scope, $state, $translate, server, $sce, status, spaces, views, session, $window) {
+.controller('Spaces2Ctrl', ['$scope', '$state', '$translate','server', '$sce', 'status', 'spaces', 'views', 'session', '$window', 'apps', function($scope, $state, $translate, server, $sce, status, spaces, views, session, $window, apps) {
 	
 	// init
 	$scope.error = null;
@@ -7,6 +7,7 @@ angular.module('portal')
 	$scope.loading = true;
 	$scope.spaceId = $state.params.spaceId;
 	$scope.space = { "_id" : $scope.spaceId };
+	$scope.params = $state.params.params ? JSON.parse($state.params.params) : null;
 	
 	
 	// get current user
@@ -22,7 +23,7 @@ angular.module('portal')
 		spaces.getUrl(space._id)
 		.then(function(result) {   
 			$scope.title = result.data.name;
-			var url = spaces.mainUrl(result.data, $translate.use());			
+			var url = spaces.mainUrl(result.data, $translate.use(), $scope.params);			
 			space.trustedUrl = $sce.trustAsResourceUrl(url);
 		});
 	};
@@ -90,6 +91,10 @@ angular.module('portal')
 	   $window.history.back();
 	   //spaces.get({ "_id" :  $scope.spaceId }, ["context"]).
 	   //then(function(result) { $state.go('^.dashboard', { dashId : result.data[0].context }); });
+	};
+	
+	$scope.openAppLink = function(data) {
+		spaces.openAppLink($state, data);	 
 	};
 	
 }]);

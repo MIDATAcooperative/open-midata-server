@@ -21,6 +21,9 @@ angular.module('portal')
     		 if (data && data.name == attrs.id && data.viewHeight && data.viewHeight !== "0px") {
     			 console.log("adjust height for "+attrs.id+" to:"+data.viewHeight);
     		   	document.getElementById(attrs.id+"_fr").height = data.viewHeight;
+    		 }  else if (data && data.name == attrs.id && data.type==="link") {    	  		 
+    	  		console.log(data);
+    	  		if (scope.openAppLink) scope.openAppLink(data);
     		 }
     	  });
       }

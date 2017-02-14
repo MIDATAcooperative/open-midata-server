@@ -32,16 +32,16 @@ angular.module('services')
 		return service.url(urlInfo, urlInfo.preview, null, lang);		
 	};
 	
-	service.mainUrl = function(urlInfo, lang) {		
-		return service.url(urlInfo, urlInfo.main, null, lang);		
+	service.mainUrl = function(urlInfo, lang, params) {		
+		return service.url(urlInfo, urlInfo.main, params, lang);		
 	};
 	
 	service.url = function(urlInfo, path, params, lang) {
-		var url = urlInfo.base + path.replace(":authToken", urlInfo.token);
+		var url = urlInfo.base + path.replace(":authToken", urlInfo.token).replace(":path", (params && params.path) ? params.path : "");
 		if (url.indexOf("?")>=0) url += "&lang="+encodeURIComponent(lang); else url+="?lang="+encodeURIComponent(lang);
 		if (params) {
 			angular.forEach(params, function(v,k) {
-				url += "&"+k+"="+encodeURIComponent(v);
+				if (k != "path") url += "&"+k+"="+encodeURIComponent(v);
 			});
 		}
 		return url;
@@ -53,6 +53,26 @@ angular.module('services')
 	
 	service.deleteSpace = function(space) {
 		return server["delete"](jsRoutes.controllers.Spaces["delete"](space).url);
+	};
+	
+	service.openAppLink = function($state, data) {
+		  if (data.app === "market") {
+				$state.go("^.market", { tag : data.params.tag, context : "me" });  
+			  } else {
+			  server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify({ "properties" : { "filename" : data.app }, "fields": ["_id"] }))
+			  .then(function(result) {
+				  console.log(result); 
+				  if (result.data.length >= 1) {
+					  service.get({ "owner": $scope.userId, "visualization" : result.data[0]._id }, ["_id"])
+					  .then(function(spaceresult) {
+						 if (spaceresult.data.length > 0) {
+							 var target = spaceresult.data[0];
+							 $state.go("^.spaces", { spaceId : target._id, params : JSON.stringify(data.params) });
+						 }
+					  });
+				  }
+			  });
+			  }
 	};
 	
 	return service;

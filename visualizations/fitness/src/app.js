@@ -16,30 +16,15 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 	.translations('fr', fr)
 	.fallbackLanguage('en');
 	
-	 $stateProvider
-	    .state('record', {
-	      url: '/record?id&authToken',	   
-	      templateUrl: 'single_record.html'
-	    })
-	    .state('chart', {
-	      url: '/chart?measure&authToken&mode&until',	   
-	      templateUrl: 'chart.html'
-	    })
-	    .state('overview', {
-	      url: '/overview?lang&authToken',	   
-	      templateUrl: 'overview.html'
-	    })
-	    .state('create', {
-	      url: '/create?measure&authToken',	    
-	      templateUrl: 'create.html'
-	    })
+	 $stateProvider	    
+	   
 	    .state('preview', {
 	      url: '/preview?lang&authToken',	   
 	      templateUrl: 'preview.html'
 	    });
 	 
 	 $urlRouterProvider
-	 .otherwise('/overview');  
+	 .otherwise('/preview');  
 }])
 .run(['$translate', '$location', 'midataPortal', 'midataServer', function($translate, $location, midataPortal, midataServer) {
 	console.log("Language: "+midataPortal.language);
@@ -189,18 +174,7 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 	   
 	  //return $q.when(meta[contentType]);		 
    };
-   
-   var setcategory = {
-			"body/bloodpressure" : "Vital Signs",
-			"body/temperature" : "Vital Signs",
-			"activities/heartrate" : "Vital Signs",
-			"body/weight" : "Vital Signs",
-			"body/height" : "Vital Signs"
-	};
-   
-   result.getCategory = function(contentType) {
-	  return setcategory[contentType]; 
-   };
+    
    
    result.codeToLabel = {  };	
     
@@ -285,7 +259,7 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 			if (params.content) query.content = params.content;
 			if (params.owner) query.owner = params.owner;
 			if (params.ids) query._id = params.ids;
-			if (params.after && params.before) query.index = { "effectiveDateTime" : { "!!!ge" : params.after, "!!!lt" : params.before }};
+			if (params.after) query.index = { "effectiveDateTime" : { "!!!ge" : params.after }};
 		}
 		console.log(params);
 		return midataServer.getRecords(midataServer.authToken, query, ["name", "created", "content", "data", "owner", "ownerName"])

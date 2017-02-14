@@ -5,12 +5,19 @@ angular.module('fhirObservation')
  		$scope.init = function() {
  			console.log("INIT");
  			configuration.getConfig().then(function(config) {
+ 				
+ 				if (configuration.readonly) {
+ 					$state.go("record", null, { location : "replace" });
+ 				} else {
+ 				
  				data.loadSummary(config.measures).then(function(records) {
  					$scope.isEmpty = records.length === 0;
  					$scope.categories = data.groupByCategory(records);
  					midataPortal.setLink("view", "hide", "", { });	
  					$timeout(function() { midataPortal.resize(); }, 0);
- 				}); 				
+ 				}); 	
+ 				
+ 				}
  			});
  			 						 	
  		};
