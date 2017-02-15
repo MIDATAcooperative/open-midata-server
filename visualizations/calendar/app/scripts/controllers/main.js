@@ -98,6 +98,10 @@ angular.module('calendarApp')
           $("#details").modal("show");          
       };
       
+      $scope.showDetails = function(event) {
+    	  midataPortal.openApp("page", "fhir-observation", { id : event.id, path :"/record" });
+      };
+      
       $scope.load();
     
       

@@ -7,6 +7,7 @@ var en = {
   "date" : "Date",
   "details" : "Details",
   "close_btn" : "Close",
+  "details_btn" : "Open Details",
   
   "add_sources_title" : "Add Data Sources",
   "no_data_sources" : "Currently there is no data available that could be displayed in the calendar. Please come back after you have some data in your account.",
