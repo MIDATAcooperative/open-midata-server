@@ -69,13 +69,15 @@ angular.module('services')
 					  .then(function(spaceresult) {
 						 if (spaceresult.data.length > 0) {
 							 var target = spaceresult.data[0];
-							 $state.go("^.spaces", { spaceId : target._id, params : JSON.stringify(data.params) });
-						 } else {
 							 if (result.data[0].type === "oauth1" || result.data[0].type === "oauth2") {
-							   $state.go("^.importrecords", { "spaceId" : result.data[0]._id, "context" : "me", "params" : JSON.stringify(data.params) });
+							   $state.go("^.importrecords", { "spaceId" : target._id, "params" : JSON.stringify(data.params) });
 							 } else {
-							   $state.go("^.visualization", { "visualizationId" : result.data[0]._id, "context" : "me", "params" : JSON.stringify(data.params) });
+							   $state.go("^.spaces", { spaceId : target._id, params : JSON.stringify(data.params) });
 							 }
+						 } else {
+							 
+							   $state.go("^.visualization", { "visualizationId" : result.data[0]._id, "params" : JSON.stringify(data.params) });
+							 
 						 }
 					  });
 				  } 

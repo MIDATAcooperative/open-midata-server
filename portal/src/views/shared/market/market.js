@@ -73,16 +73,20 @@ angular.module('portal')
 		 if (spaceresult.data.length > 0) {
 			 var target = spaceresult.data[0];
 			 if (target.type === "oauth1" || target.type === "oauth2") {
-				 $state.go("^.importrecords", { "spaceId" : target._id, params : JSON.stringify(data.params) });
+				 $state.go("^.importrecords", { "spaceId" : target._id, params : $state.params.params });
 			 } else { 
-			     $state.go("^.spaces", { spaceId : target._id, params : JSON.stringify(data.params) });
+			     $state.go("^.spaces", { spaceId : target._id, params : $state.params.params });
 			 }
 		 } else {	  				
 			$scope.status.doAction("install", apps.installPlugin(app._id, { applyRules : true }))
 			.then(function(result) {				
 				session.login();
 				if (result.data && result.data._id) {
-				  $state.go('^.spaces', { spaceId : result.data._id });
+				  if (app.type === "oauth1" || app.type === "oauth2") {
+					 $state.go("^.importrecords", { "spaceId" : result.data._id, params : JSON.stringify(data.params) });
+				  } else { 
+				     $state.go('^.spaces', { spaceId : result.data._id });
+				  }
 				} else {
 				  $state.go('^.dashboard', { dashId : $scope.options.context });
 				}

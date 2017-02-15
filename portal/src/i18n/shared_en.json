@@ -742,7 +742,9 @@
 	"study_records" : "Shared records:",
 	"addmore" : "Add more",
 	"view_btn" : "View",
-	"install_btn" : "Add more"
+	"install_btn" : "Add more",
+	"observations" : "Measures",
+	"calendar" : "Calendar"
    },
    
    "measure" : {

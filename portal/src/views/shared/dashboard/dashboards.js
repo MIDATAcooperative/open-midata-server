@@ -223,13 +223,7 @@ angular.module('portal')
     	  ],
 	  "config" : 
 			  [
-			   {
-				    id: "help_welcome",
-				   
-				    template : "/views/members/dashboardTiles/help/help_welcome.html",
-				    active : true,
-				    position : "full"			    
-			    },
+			   
 			    {
 				    id: "myviews",
 				  

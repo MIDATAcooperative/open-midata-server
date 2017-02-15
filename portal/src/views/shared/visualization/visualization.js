@@ -33,7 +33,7 @@ angular.module('portal')
 	
 	// parse visualization id (format: /visualizations/:id) and load the visualization
 	var visualizationId = $state.params.visualizationId;	
-	$scope.status.doBusy(apps.getApps({"_id":  visualizationId}, ["name", "creator", "description", "defaultSpaceContext", "defaultSpaceName", "defaultQuery"]))
+	$scope.status.doBusy(apps.getApps({"_id":  visualizationId}, ["name", "creator", "description", "defaultSpaceContext", "defaultSpaceName", "defaultQuery", "type"]))
 	.then(function(results) {
 		   var visualizations = results.data;
 			$scope.error = null;
@@ -52,7 +52,7 @@ angular.module('portal')
 			if ($scope.params && $scope.params.context) {
 				$scope.options.context = $scope.params.context;
 			} else { 
-				$scope.options.context = "mydata"; 
+				$scope.options.context = $scope.visualization.defaultSpaceContext; 
 			}
 			if ($scope.visualization.defaultSpaceContext == "config" && $state.params.context !== "sandbox") $scope.options.context = "config"; 
 			if ($scope.params && $scope.params.name) {
@@ -80,7 +80,11 @@ angular.module('portal')
 				$scope.success = true;
 				session.login();
 				if (result.data && result.data._id) {
-				  $state.go('^.spaces', { spaceId : result.data._id, params : $scope.params.params });
+					if ($scope.visualization.type === "oauth1" || $scope.visualization.type === "oauth2") {
+					  $state.go('^.importrecords', { spaceId : result.data._id, params : $scope.params.params });	
+					} else {
+				      $state.go('^.spaces', { spaceId : result.data._id, params : $scope.params.params });
+					}
 				} else {
 				  $state.go('^.dashboard', { dashId : $scope.options.context });
 				}

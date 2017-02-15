@@ -146,9 +146,10 @@ angular.module('fhirObservation')
  				
  				p.hint = "default_hint."+p.display;
  				console.log($state.params);
- 				if ($state.params.measure === p.content) {
+ 				p.tab = "intro";
+ 				if ($state.params.measure && $state.params.measure === p.content) {
  					selected.splice(0,0,p);
- 					p.tab = "chart";
+ 					if (p.recs) p.tab = p.recs.length > 1 ? "chart" : "intro";
  				} else {
 	 				if (!p.hide || (p.recs && p.recs.length>0)) {
 	 					p.tab = p.recs.length > 1 ? "chart" : "intro";

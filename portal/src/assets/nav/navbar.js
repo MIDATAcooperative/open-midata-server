@@ -13,7 +13,8 @@ angular.module('portal')
 	// get current user
 	session.currentUser.then(function(userId) {
 		console.log("DONE NAV");
-		$scope.user = session.user;		
+		$scope.user = session.user;	
+		$scope.userId = userId;
 		
 		spaces.getSpacesOfUserContext($scope.userId, "menu")
     	.then(function(results) {
@@ -37,6 +38,10 @@ angular.module('portal')
 	
 	$scope.showSpace = function(space) {
 		$state.go('^.spaces', { spaceId : space._id });
+	};
+	
+	$scope.showApp = function(app) {
+		spaces.openAppLink($state, $scope.userId, { app : app });
 	};
 	
 }])
