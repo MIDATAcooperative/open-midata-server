@@ -80,6 +80,7 @@ angular.module('portal')
 				$scope.consent.name = "Health Professional: "+$scope.authpersons[0].firstname+" "+$scope.authpersons[0].lastname;
 			});
 		}
+				
 	};
 	
 	$scope.create = function() {	

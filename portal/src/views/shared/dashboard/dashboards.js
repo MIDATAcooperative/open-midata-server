@@ -842,7 +842,7 @@ angular.module('portal')
               ]
 	}			
 )
-.controller('DashboardCtrl', ['$scope', '$timeout', '$state', 'views', 'dashboards', 'tiles', 'spaces', 'portal', function($scope, $timeout, $state, views, dashboards, tiles, spaces, portal) {  
+.controller('DashboardCtrl', ['$scope', '$timeout', '$state', 'views', 'dashboards', 'tiles', 'spaces', 'portal', 'session', function($scope, $timeout, $state, views, dashboards, tiles, spaces, portal, session) {  
 	   
 	  $scope.isReady = false;
 	  views.reset();
@@ -943,6 +943,14 @@ angular.module('portal')
   		   	 document.getElementById(data.name).style.height = data.viewHeight;
   		 }
 		 else if (data && data.type==="link") {
+			 
+			if (data.app) {		
+				session.currentUser.then(function(userId) {
+				spaces.openAppLink($state, userId, data);
+				});
+				return;
+			}
+			 
   			var vc = views.getView(data.name);
   			 
   			console.log("link");

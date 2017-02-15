@@ -94,7 +94,7 @@ angular.module('portal')
 	};
 	
 	$scope.openAppLink = function(data) {
-		spaces.openAppLink($state, data);	 
+		spaces.openAppLink($state, $scope.userId, data);	 
 	};
 	
 }]);

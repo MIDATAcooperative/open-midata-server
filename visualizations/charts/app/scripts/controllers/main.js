@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('chartApp')
-  .controller('MainCtrl', ['$scope', '$filter', '$routeParams', '$timeout', 'midataServer', 'midataPortal', 
-    function ($scope, $filter, $routeParams, $timeout, midataServer, midataPortal) {
+  .controller('MainCtrl', ['$scope', '$filter', '$routeParams', '$timeout', 'midataServer', 'midataPortal', '$location',
+    function ($scope, $filter, $routeParams, $timeout, midataServer, midataPortal, $location) {
       window.scope = $scope;
       $scope.authToken = $routeParams.authToken;
       
@@ -729,7 +729,21 @@ angular.module('chartApp')
     	console.log($scope.reportInfo);
       };
       
-      $scope.loadConfig();
+      var p = $location.search();
+      if (p.type) {
+    	  $scope.config = {};
+          $scope.report = p;
+          if ($scope.report.filter === "null") $scope.report.filter = null;
+          if ($scope.report.filter2 === "null") $scope.report.filter2 = null;
+          //$scope.reportInfo = result.data.info;
+          //$scope.reportInfo.timing = Number($scope.reportInfo.timing);
+          $scope.noconfig = false;
+          
+          $scope.reloadSummary()
+          .then(function() { $scope.prepareReport(); });
+      } else {
+        $scope.loadConfig();
+      }
       
     }]);
 

@@ -75,11 +75,15 @@ angular.module('portal')
 	
 	$scope.install = function() {
 		$scope.status.doAction("install", apps.installPlugin($scope.visualization._id, $scope.options))
-		.then(function() {
+		.then(function(result) {
 				$scope.visualization.installed = true;
 				$scope.success = true;
 				session.login();
-				$state.go('^.dashboard', { dashId : $scope.options.context }); 
+				if (result.data && result.data._id) {
+				  $state.go('^.spaces', { spaceId : result.data._id, params : $scope.params.params });
+				} else {
+				  $state.go('^.dashboard', { dashId : $scope.options.context });
+				}
 		});			
 	};
 		

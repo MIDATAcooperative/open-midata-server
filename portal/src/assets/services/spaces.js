@@ -55,22 +55,30 @@ angular.module('services')
 		return server["delete"](jsRoutes.controllers.Spaces["delete"](space).url);
 	};
 	
-	service.openAppLink = function($state, data) {
+	service.openAppLink = function($state, userId, data) {
 		  if (data.app === "market") {
-				$state.go("^.market", { tag : data.params.tag, context : "me" });  
-			  } else {
-			  server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify({ "properties" : { "filename" : data.app }, "fields": ["_id"] }))
+				$state.go("^.market", { tag : data.params.tag, context : "me" });
+		  } else if (data.app === "newconsent") {
+			  $state.go("^.newconsent", { content : data.params.content });
+		  } else {
+			  server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify({ "properties" : { "filename" : data.app }, "fields": ["_id", "type"] }))
 			  .then(function(result) {
 				  console.log(result); 
-				  if (result.data.length >= 1) {
-					  service.get({ "owner": $scope.userId, "visualization" : result.data[0]._id }, ["_id"])
+				  if (result.data.length == 1) {
+					  service.get({ "owner": userId, "visualization" : result.data[0]._id }, ["_id"])
 					  .then(function(spaceresult) {
 						 if (spaceresult.data.length > 0) {
 							 var target = spaceresult.data[0];
 							 $state.go("^.spaces", { spaceId : target._id, params : JSON.stringify(data.params) });
+						 } else {
+							 if (result.data[0].type === "oauth1" || result.data[0].type === "oauth2") {
+							   $state.go("^.importrecords", { "spaceId" : result.data[0]._id, "context" : "me", "params" : JSON.stringify(data.params) });
+							 } else {
+							   $state.go("^.visualization", { "visualizationId" : result.data[0]._id, "context" : "me", "params" : JSON.stringify(data.params) });
+							 }
 						 }
 					  });
-				  }
+				  } 
 			  });
 			  }
 	};

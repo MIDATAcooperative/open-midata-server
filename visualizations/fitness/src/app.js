@@ -17,9 +17,12 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 	.fallbackLanguage('en');
 	
 	 $stateProvider	    
-	   
+	    .state('overview', {
+	      url: '/overview?lang&authToken',	   
+	      templateUrl: 'overview.html'
+	    })
 	    .state('preview', {
-	      url: '/preview?lang&authToken',	   
+	      url: '/preview?lang&authToken&measure',	   
 	      templateUrl: 'preview.html'
 	    });
 	 
@@ -192,6 +195,85 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 	
 	result.owners = {};
 	
+	 result.allPreviews = [
+		   
+		    {
+		    	content : "activities/steps",
+		    	display : "steps",
+		    	icon : "Footsteps_icon.png",
+		    	placeholder : "steps-large.jpeg",
+		    	goal : { type : "min", value : 10000 },
+		    	device : true
+		    },
+		    {
+		    	content : "activities/floors",
+		    	display : "floors",
+		    	icon : "stairs.png",
+		    	goal : { type : "min", value : 10 },
+		    	device : true,
+		    	hide : true
+		    },
+		    {
+		    	content : "food/calories-in",
+		    	display : "calories",
+		    	placeholder : "food-large.jpg",
+		    	icon : "food.png",
+		    	goal : { type : "max", value : 500 },
+			    add : true,
+			    device : true
+		    },
+		    {
+		    	content : "food/water",
+		    	display : "water",
+		    	placeholder : "water-large.jpeg",
+		    	icon : "water.png",
+		    	goal : { type : "min", value : 2000 },
+			    add : true
+		    },
+		    {
+		    	display : "activities",
+		    	icon : "pulse.png",
+		    	placeholder : "activity-large.jpg",
+		    	chart : ["activities/minutes-fairly-active",
+		    			 "activities/minutes-lightly-active",
+		    			 "activities/minutes-sedentary",
+		    			 "activities/minutes-very-active"],
+		    	hide : false,
+			    device : true
+		    },
+		    {
+		    	display : "sleep",
+		    	icon : "sleep.png",	
+		    	placeholder : "sleep-large.jpeg",
+		    	content : "sleep/efficiency",
+		    	chart : ["sleep/minutes-asleep",
+		    			 "sleep/minutes-awake",
+		    			 "sleep/minutes-light-sleep",
+		    			 "sleep/minutes-to-fall-asleep",
+		    			 "sleep/rem",
+		    			 "sleep/time-in-bed",
+		    			 "sleep/wakeup-duration"
+		    			 ],
+		    	device : true
+		    },
+		    {	    		
+		        content : "body/weight",	
+		        display : "weight",
+		    	icon : "weight.png",
+		    	placeholder : "weight-large.jpeg",
+		    	goal : { "type" : "max" , "value" : 90 },
+		    	add : true
+		    },
+		    {	    		
+		        content : "body/height",
+		        display : "height",
+		    	icon : "height.png",
+		    	placeholder : "height-large.jpeg",
+		    	add : true
+		    }
+		    ];
+	
+	
 	result.groupByCategory = function(records) {
 		var categories = {};
 		angular.forEach(records, function(record) {
@@ -210,7 +292,7 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 	};
 	
 	result.loadSummary = function(alwaysAddMeasures) {
-		return midataServer.getSummary(midataServer.authToken, "SINGLE", { format : ["fhir/Observation"], owner : "self", "include-records" : true }) 			
+		return midataServer.getSummary(midataServer.authToken, "SINGLE", { format : ["fhir/Observation"], content : ["activities/steps","body/weight","food/calories-in","food/water","activities/floors"], owner : "self", "include-records" : true }) 			
 		.then(function(sumResult) {
 			var queries = [];
 			var res = [];

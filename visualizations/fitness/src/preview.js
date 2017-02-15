@@ -1,142 +1,48 @@
 angular.module('fhirObservation')
-.controller('PreviewCtrl', ['$scope', '$filter', '$timeout', 'midataServer', 'midataPortal', 'configuration', 'data', 'fhirinfo',
- 	function($scope, $filter, $timeout, midataServer, midataPortal, configuration, data, fhirinfo) {
+.controller('PreviewCtrl', ['$scope', '$state', '$filter', '$timeout', 'midataServer', 'midataPortal', 'configuration', 'data', 'fhirinfo',
+ 	function($scope, $state, $filter, $timeout, midataServer, midataPortal, configuration, data, fhirinfo) {
  			
 	
-	    $scope.allPreviews = [
-	   
-	    {
-	    	content : "activities/steps",
-	    	display : "steps",
-	    	icon : "Footsteps_icon.png",
-	    	placeholder : "steps-large.jpeg",
-	    	goal : { min : 10000 },
-	    	device : true
-	    },
-	    {
-	    	content : "activities/floors",
-	    	display : "floors",
-	    	icon : "stairs.png",
-	    	goal : { min : 10 },
-	    	device : true,
-	    	hide : true
-	    },
-	    {
-	    	content : "food/calories-in",
-	    	display : "calories",
-	    	placeholder : "food-large.jpg",
-	    	icon : "food.png",
-	    	goal : { max : 500 },
-		    add : true,
-		    device : true
-	    },
-	    {
-	    	display : "activities",
-	    	icon : "pulse.png",
-	    	placeholder : "activity-large.jpg",
-	    	chart : ["activities/minutes-fairly-active",
-	    			 "activities/minutes-lightly-active",
-	    			 "activities/minutes-sedentary",
-	    			 "activities/minutes-very-active"],
-	    	hide : false
-	    },
-	    {
-	    	display : "sleep",
-	    	icon : "sleep.png",	
-	    	placeholder : "sleep-large.jpeg",
-	    	content : "sleep/efficiency",
-	    	chart : ["sleep/minutes-asleep",
-	    			 "sleep/minutes-awake",
-	    			 "sleep/minutes-light-sleep",
-	    			 "sleep/minutes-to-fall-asleep",
-	    			 "sleep/rem",
-	    			 "sleep/time-in-bed",
-	    			 "sleep/wakeup-duration"
-	    			 ],
-	    	device : true
-	    },
-	    {	    		
-	        content : "body/weight",	
-	        display : "weight",
-	    	icon : "weight.png",
-	    	placeholder : "weight-large.jpeg",
-	    	add : true
-	    },
-	    {	    		
-	        content : "body/height",
-	        display : "height",
-	    	icon : "height.png",
-	    	placeholder : "height-large.jpeg",
-	    	add : true
-	    }
-	    ];
-	    
+	    $scope.allPreviews = data.allPreviews;    
 	    $scope.previews = [];
-	
-	    /*
-	    $scope.groupForPreview = function(records) {
-	       console.log(records);	
-	       var byContent = {};
-	       var tiles = [];
-	       angular.forEach(records, function(summary) {
-	    	   byContent[summary.content] = summary;
-	       });
-	       angular.forEach($scope.previews, function(prev) {
-	    	  var cont = byContent[prev.content]; 
-	    	  if (cont) {
-	    		 
-	    		 tiles.push(
-	    			{
-	    			   "display" : data.getCodeableConcept(cont.data.code),
-	    			   "icon" : prev.icon,
-	    			   "index" : tiles.length,
-	    			   "value" : cont.data.valueQuantity.value+" "+cont.data.valueQuantity.unit,
-	    			   "content" : prev.content
-	    			}	   
-	    		 );
-	    	  } 
-	       });
-	       tiles.push({
-	    	  "display" : "Measures",
-	    	  "icon" : "chart.png",
-	   	      "index" : tiles.length,
-	   	      "value" : records.length
-	       });
-	       return tiles;	    	 
-	    };
-	    
-	    $scope.getStyle = function(entry) {
-	    	return {
-	    		"position" : "absolute",
-	    		"top" : (Math.floor(entry.index/2) * 70)+"px",
-	    		"left" : ((entry.index % 2) * 175) + "px"
-	    	};
-	    };
-	    */
+		   
 	    
 	    $scope.checkGoal = function(what, goal) {
 	    	if (!goal || !what) return { "font-weight" : "bold" };
 	    	var v = what.count ? (what.value / what.count) : what.value;
-	    	if (goal.max && v > goal.max) return { "color" : "red", "font-weight" : "bold" };
-	    	if (goal.min && v < goal.min) return { "color" : "red", "font-weight" : "bold" };
+	    	if (goal.type === "max" && v > goal.value) return { "color" : "red", "font-weight" : "bold" };
+	    	if (goal.type === "min" && v < goal.value) return { "color" : "red", "font-weight" : "bold" };
 	    	return { "color" : "green", "font-weight" : "bold" };	    	
 	    };
 	    
 	    $scope.check = function(what, goal) {
 	    	if (!goal || !what) return 0;
 	    	var v = what.count ? (what.value / what.count) : what.value;
-	    	if (goal.max && v > goal.max) return 0;
-	    	if (goal.min && v < goal.min) return 0;
+	    	if (goal.type === "max" && v > goal.value) return 0;
+	    	if (goal.type === "min" && v < goal.value) return 0;
 	    	return 1;	    	
 	    }; 
 	    
  		$scope.init = function() {
- 			console.log("INIT");
+ 			
  				
  			configuration.getConfig().then(function(config) {
+ 				$scope.config = config;
+ 				$scope.previews = $scope.mergeConfigIntoPreviews(config, $scope.allPreviews); 
  				
- 				$scope.previews = $scope.mergeConfigIntoPreviews(config, $scope.allPreviews); 				
- 				$scope.loadRecords($scope.previews); 				 				
+ 				midataServer.getRecords(midataServer.authToken, { "format" : "fhir/Patient", "owner" : "self" }, ["data"])
+ 				.then(function(result) {
+ 					var patient = result.data[0].data;
+ 					
+ 					var ageDifMs = Date.now() - new Date(patient.birthDate).getTime();
+ 				    var ageDate = new Date(ageDifMs); // miliseconds from epoch
+ 				    $scope.age = Math.abs(ageDate.getUTCFullYear() - 1970); 					
+ 					$scope.gender = patient.gender;
+ 					
+ 					
+ 					$scope.loadRecords($scope.previews);
+ 				});
+ 				 				 				
  			});
  			 						 	
  		};
@@ -149,7 +55,8 @@ angular.module('fhirObservation')
  				p.last = { value:0 , unit : "", date : null };
  				p.avg = { value:0, count : 0 };
  				p.trend = { sumX : 0, sumY : 0, sumXY : 0, sumXSq : 0};
- 				
+ 				if (config[p.display] && config[p.display].goal) p.goal = config[p.display].goal;
+ 			
  			});
  			return previews;
  		};
@@ -220,6 +127,7 @@ angular.module('fhirObservation')
  			});
  			
  			var selected = [];
+ 			var later = [];
  			angular.forEach(previews, function(p) { 
  				if (p.count < 2) {
  					p.trend = undefined;
@@ -237,11 +145,19 @@ angular.module('fhirObservation')
  				$scope.build(p.info, p);
  				
  				p.hint = "default_hint."+p.display;
- 				
- 				if (!p.hide || (p.recs && p.recs.length>0)) selected.push(p); 
+ 				console.log($state.params);
+ 				if ($state.params.measure === p.content) {
+ 					selected.splice(0,0,p);
+ 					p.tab = "chart";
+ 				} else {
+	 				if (!p.hide || (p.recs && p.recs.length>0)) {
+	 					p.tab = p.recs.length > 1 ? "chart" : "intro";
+	 					if (p.recs && p.recs.length > 0) selected.push(p); else later.push(p); 
+	 				}
+ 				}
  			});
  			
- 			return selected;
+ 			return selected.concat(later);
  		};
  		
  		$scope.init(); 		 		
@@ -252,7 +168,7 @@ angular.module('fhirObservation')
  		};
  		
  		$scope.showDetails = function(preview) {
- 			console.log(preview);
+ 		
 
  			midataPortal.openApp("page", "fhir-observation", { measure : preview.content, path :"/chart" });
  			/*if (record.content) {
@@ -263,13 +179,41 @@ angular.module('fhirObservation')
  		};
  		
  		$scope.showAdd = function(preview) {
- 			console.log(preview);
- 			midataPortal.openApp("modal", "fhir-observation", { measure : preview.content, path :"/create" });
+ 		
+ 			midataPortal.openApp("modal", "fhir-observation", { measure : preview.content, path :"/chart" });
  		};
  		
  		$scope.showInstall = function(preview) {
- 			console.log(preview);
+ 			
  			midataPortal.openApp("page", "market", { "tag" : "Import" });
+ 		};
+ 		
+ 		$scope.showCalendar = function(preview) { 	
+ 			
+ 			var c = (preview.content ? [ preview.content ] : []).concat((preview.chart ? preview.chart : [])); 			
+ 			midataPortal.openApp("page", "calendar", { "content" : c.join(",") });
+ 		};
+ 		
+ 		$scope.addConsent = function(preview) { 			
+ 			midataPortal.openApp("page", "newconsent", { "content" : preview.content });
+ 		};
+ 		
+ 		$scope.showChart = function(preview) {
+ 			var report = { 
+ 					type : "line", 			
+ 	 				series : "owner",
+ 	 				label : "dateTime",
+ 	 				filterLabel : "measure",
+ 	 				timeUnits : true 
+ 	 		};
+ 			midataPortal.openApp("page", "charts", report);
+ 		};
+ 		
+ 		$scope.saveGoal = function(entry) {
+ 			entry.goal.value = Number(entry.goal.value);
+ 		   if (!configuration.config[entry.display]) configuration.config[entry.display] = {}; 
+ 		   configuration.config[entry.display].goal = entry.goal; 		   
+ 		   configuration.save();
  		};
  		 			 		 		 				 	 		
  		$scope.getLabel = data.getLabel; 		
@@ -335,7 +279,7 @@ angular.module('fhirObservation')
     	   
     	   var labelMap = $scope.map(info[labelAxis]);
     	   var seriesMap = $scope.map(info[seriesAxis]);
-    	   var d = preview.chart = [];
+    	   var d = preview.chartdat = [];
     	   var h = [];
     	  
     	   angular.forEach(preview.series, function() { d.push(new Array(preview.labels.length).fill(0)); });
@@ -343,7 +287,7 @@ angular.module('fhirObservation')
     	       d[seriesMap[entry.content]][labelMap[entry.data.effectiveDateTime]] = entry.data.valueQuantity.value;
     	   });
     	      
-    	   console.log(preview);
+    	 
     	};
  		
 }]);

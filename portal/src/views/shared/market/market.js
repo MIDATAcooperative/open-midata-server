@@ -68,11 +68,15 @@ angular.module('portal')
 	$scope.install = function(app) {
 		
 		
-	  spaces.get({ "owner": $scope.userId, "visualization" : app._id }, ["_id"])
+	  spaces.get({ "owner": $scope.userId, "visualization" : app._id }, ["_id", "type"])
 	  .then(function(spaceresult) {
 		 if (spaceresult.data.length > 0) {
 			 var target = spaceresult.data[0];
-			 $state.go("^.spaces", { spaceId : target._id, params : JSON.stringify(data.params) });
+			 if (target.type === "oauth1" || target.type === "oauth2") {
+				 $state.go("^.importrecords", { "spaceId" : target._id, params : JSON.stringify(data.params) });
+			 } else { 
+			     $state.go("^.spaces", { spaceId : target._id, params : JSON.stringify(data.params) });
+			 }
 		 } else {	  				
 			$scope.status.doAction("install", apps.installPlugin(app._id, { applyRules : true }))
 			.then(function(result) {				

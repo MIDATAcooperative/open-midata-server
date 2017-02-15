@@ -1,7 +1,9 @@
 angular.module('views')
-.controller('HelpCtrl', ['$scope', '$state', 'portal', 'spaces', function($scope, $state, portal, spaces) {
+.controller('HelpCtrl', ['$scope', '$state', 'portal', 'spaces', 'session', function($scope, $state, portal, spaces, session) {
 	$scope.alreadyAnswered = false;
 	$scope.init = function() {
+		
+		session.currentUser.then(function(userId) { $scope.userId = userId; });
 		portal.getConfig()
 		.then(function(data) {			
 			if (data.data && data.data.questions) {
@@ -14,7 +16,7 @@ angular.module('views')
 	$scope.init();
 	
 	$scope.use = function(view) {
-		spaces.openAppLink($state, { app : view});
+		spaces.openAppLink($state, $scope.userId, { app : view});
 	};
 		
 }])
