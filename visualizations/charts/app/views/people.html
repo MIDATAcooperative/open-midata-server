@@ -5,7 +5,7 @@
      <div class="checkbox" ng-repeat="f in baseInfo.owner">
       <label>
        <input type="checkbox" ng-checked="isSelected('owner', f)" ng-click="toggleSelection('owner', f);" >
-       {{ getLabel("owner", f) | translate }}
+       {{ getLabel(f, "owner") | translate }}
       </label>
      </div>
       

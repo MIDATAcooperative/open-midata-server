@@ -201,11 +201,15 @@ angular.module('fhirObservation')
  		
  		$scope.showChart = function(preview) {
  			var report = { 
+ 					id : "report_ts_person", 		
  					type : "line", 			
  	 				series : "owner",
  	 				label : "dateTime",
- 	 				filterLabel : "measure",
- 	 				timeUnits : true 
+ 	 				filter : "content",
+ 	 				filterValue : preview.content,
+ 	 				timeUnits : true,
+ 	 				timeUnit : "",
+ 	 				timing : 30
  	 		};
  			midataPortal.openApp("page", "charts", report);
  		};
