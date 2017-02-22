@@ -26,7 +26,7 @@ angular.module('withingsi18n', [])
       "on": "ON",
       "off": "OFF",
       "changesSaved": "The changes were saved successfully.",
-      "fitness_data" : "Fitness",
+      "fitness_data" : "Fitness Data",
       "vital_signs_data": "Vital Signs",
 
       "activity_measures_steps": "Steps",
@@ -103,7 +103,7 @@ angular.module('withingsi18n', [])
       "on": "AN",
       "off": "AUS",
       "changesSaved": "Die Änderungen wurden erfolgreich gespeichert.",
-      "fitness_data" : "Fitness",
+      "fitness_data" : "Fitness-Daten",
       "vital_signs_data": "Vitalzeichen",
 
       "activity_measures_steps": "Schritte",

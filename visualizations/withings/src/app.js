@@ -37,7 +37,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 	importer.repeat = false;
 	importer.allMeasureTypes = [];
 	importer.codeObservations = {
-		fitness: {code: "fitness", translate: "fitness_data", name_translated: "Fitness"},
+		fitness: {code: "fitness", translate: "fitness_data", name_translated: "Fitness Data"},
 		vitalSigns : {code: "vital-signs", translate: "vital_signs_data", name_translated: "Vital Signs"}
 	};
 
@@ -82,8 +82,8 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 			groupMeasureId: "activity_measures",
 			actionType: "getactivity",
 			measureTypes: [
-				{ id: "activity_measures_steps", name: "Activity Measures - Steps", measureType: "steps", unit: "steps", system: "http://midata.coop", code: "activities/steps", factor: 1 },//, system: "http://loinc.org", code: "41950-7" },
-				{ id: "activity_measures_distance", name: "Activity Measures - Distance", measureType: "distance", unit: "m", system: "http://midata.coop", code: "activities/distance", factor: 1 },//, system: "http://loinc.org", code: "41953-1" },
+				{ id: "activity_measures_steps", name: "Activity Measures - Steps", measureType: "steps", unit: "steps", system: "http://loinc.org", code: "41950-7", factor: 1 },//,  },, system: "http://midata.coop", code: "activities/steps"
+				{ id: "activity_measures_distance", name: "Activity Measures - Distance", measureType: "distance", unit: "m", system: "http://loinc.org", code: "41953-1", factor: 1 },//, system: "http://midata.coop", code: "activities/distance" },
 				//? //{ id: "activity_measures_calories", name: "Activity Measures - Calories", measureType: "calories", unit: "kcal", system: "http://midata.coop", code: "activities/calories", factor: 1 },//, system: "http://loinc.org", code: "41981-2" },
 				{ id: "activity_measures_totalcalories", name: "Activity Measures - Total calories", measureType: "totalcalories", unit: "kcal", system: "http://midata.coop", code: "activities/calories", factor: 1 },//, system : "http://loinc.org", code : "41981-2"},
 				{ id: "activity_measures_elevation", name: "Activity Measures - Elevation", measureType: "elevation", unit: "m", system: "http://midata.coop", code: "activities/elevation", factor: 1 },
@@ -105,7 +105,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 			groupMeasureId: "body_measures",
 			actionType: "getmeas",
 			measureTypes: [
-				{ id: "body_measures_weigth", name: "Body Measures - Weight", measureType: 1, unit: "kg", system: "http://loinc.org", code: "3141-9" },
+				{ id: "body_measures_weigth", name: "Body Measures - Weight", measureType: 1, unit: "kg", system: "http://loinc.org", code: "29463-7" },
 				{ id: "body_measures_height", name: "Body Measures - Height", measureType: 4, unit: "m", system: "http://loinc.org", code: "8302-2" },
 				{ id: "body_measures_fat_free_mass", name: "Body Measures - Fat Free Mass", measureType: 5, unit: "kg", system: "http://midata.coop", code: "body/fat_free_mass" },
 				{ id: "body_measures_fat_radio", name: "Body Measures - Fat Ratio", measureType: 6, unit: "%", system: "http://loinc.org", code: "41982-0" },
@@ -114,7 +114,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 				{ id: "body_measures_systolic_blood_pressure", name: "Body Measures - Systolic Blood Pressure", measureType: 10, unit: "mmHg", system: "http://loinc.org", code: "8480-6" },
 				{ id: "body_measures_heart_pulse", name: "Body Measures - Heart Pulse", measureType: 11, unit: "bpm", system: "http://loinc.org", code: "8867-4" },
 				{ id: "body_measures_sp02", name: "Body Measures - SP02", measureType: 54, unit: "%", system: "http://loinc.org", code: "20564-1" },
-				{ id: "body_measures_body_temperature", name: "Body Measures - Body Temperature", measureType: 71, unit: "?", system: "http://loinc.org", code: "8310-5" }, // TODO: unit not defined. Do Tests!
+				{ id: "body_measures_body_temperature", name: "Body Measures - Body Temperature", measureType: 71, unit: "C°", system: "http://loinc.org", code: "8310-5" }, // TODO: unit not defined. Do Tests!
 				{ id: "body_measures_muscle_mass", name: "Body Measures - Muscle Mass", measureType: 76, unit: "kg", system: "http://loinc.org", code: "73964-9" },// unit not defined. Do Tests! 
 				{ id: "body_measures_hydration", name: "Body Measures - Hydration", measureType: 77, unit: "?", system: "http://midata.coop", code: "body/hydration" },// unit not defined. Do Tests!
 				{ id: "body_measures_bone_mass", name: "Body Measures - Bone Mass", measureType: 88, unit: "kg", system: "http://midata.coop", code: "body/bone_mass" },// unit not defined. Do Tests!
