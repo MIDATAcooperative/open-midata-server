@@ -31,30 +31,30 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 	$scope.repeat = false;
 	$scope.measurements = [
 						
-			{
-				"id" : "food_calories_intake",
-				"name": "Food - Calories Intake",				
-				"endpoint": "/1/user/-/foods/log/caloriesIn/date/{date}/1d.json",
-				"content" : "food/calories-in",
-				"unit" : "kcal",
-				"system" : "http://midata.coop"
-			},
-			{
-				"id" : "food_water_consumption",
-				"name": "Food - Water Consumption",				
-				"endpoint": "/1/user/-/foods/log/water/date/{date}/1d.json",
-				"content" : "food/water",
-				"unit" : "ml",
-				"system" : "http://midata.coop"
-			},
-			{
-				"id" : "activities_calories_burned",
-				"name": "Activities - Calories Burned",				
-				"endpoint": "/1/user/-/activities/calories/date/{date}/1d.json",
-				"content" : "activities/calories",
-				"unit" : "kcal",
-				"system" : "http://midata.coop"
-			},
+			// {
+			// 	"id" : "food_calories_intake",
+			// 	"name": "Food - Calories Intake",				
+			// 	"endpoint": "/1/user/-/foods/log/caloriesIn/date/{date}/1d.json",
+			// 	"content" : "food/calories-in",
+			// 	"unit" : "kcal",
+			// 	"system" : "http://midata.coop"
+			// },
+			// {
+			// 	"id" : "food_water_consumption",
+			// 	"name": "Food - Water Consumption",				
+			// 	"endpoint": "/1/user/-/foods/log/water/date/{date}/1d.json",
+			// 	"content" : "food/water",
+			// 	"unit" : "ml",
+			// 	"system" : "http://midata.coop"
+			// },
+			// {
+			// 	"id" : "activities_calories_burned",
+			// 	"name": "Activities - Calories Burned",				
+			// 	"endpoint": "/1/user/-/activities/calories/date/{date}/1d.json",
+			// 	"content" : "activities/calories",
+			// 	"unit" : "kcal",
+			// 	"system" : "http://midata.coop"
+			// },
 			{
 				"id" : "activities_steps",
 				"name": "Activities - Steps",				
@@ -71,101 +71,101 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				"unit" : "km",
 				"system" : "http://loinc.org"
 			},
-			{
-				"id" : "activities_floors_climbed",
-				"name": "Activities - Floors Climbed",				
-				"endpoint": "/1/user/-/activities/floors/date/{date}/1d.json",
-				"content" : "activities/floors",
-				"unit" : "floors",
-				"system" : "http://midata.coop"
-			},
-			{
-				"id" : "activities_elevation",
-				"name": "Activities - Elevation",				
-				"endpoint": "/1/user/-/activities/elevation/date/{date}/1d.json",
-				"content" : "activities/elevation",
-				"unit" : "m",
-				"system" : "http://midata.coop"
-			},
-			{
-				"id" : "activities_minutes_sedentary",
-				"name": "Activities - Minutes Sedentary",				
-				"endpoint": "/1/user/-/activities/minutesSedentary/date/{date}/1d.json",
-				"content" : "activities/minutes-sedentary",
-				"unit" : "min",
-				"system" : "http://midata.coop"
-			},
-			{
-				"id" : "activities_minutes_lightly_active",
-				"name": "Activities - Minutes Lightly Active",				
-				"endpoint": "/1/user/-/activities/minutesLightlyActive/date/{date}/1d.json",
-				"content" : "activities/minutes-lightly-active",
-				"unit" : "min",
-				"system" : "http://midata.coop"
-			},
-			{
-				"id" : "activities_minutes_fairly_active",
-				"name": "Activities - Minutes Fairly Active",				
-				"endpoint": "/1/user/-/activities/minutesFairlyActive/date/{date}/1d.json",
-				"content" : "activities/minutes-fairly-active",
-				"unit" : "min",
-				"system" : "http://midata.coop"
-			},
-			{
-				"id" : "activities_minutes_very_active",
-				"name": "Activities - Minutes Very Active",				
-				"endpoint": "/1/user/-/activities/minutesVeryActive/date/{date}/1d.json",
-				"content" : "activities/minutes-very-active",
-				"unit" : "min",
-				"system" : "http://midata.coop"
-			},
-			{
-				"id" : "activities_calories_burned_in_activities",
-				"name": "Activities - Calories Burned in Activities",				
-				"endpoint": "/1/user/-/activities/activityCalories/date/{date}/1d.json",
-				"content" : "activities/activity-calories",
-				"unit" : "kcal",
-				"system" : "http://midata.coop"
-			},
-			{
-				"id" : "sleep_time_in_bed",
-				"name": "Sleep - Time in Bed",				
-				"endpoint": "/1/user/-/sleep/timeInBed/date/{date}/1d.json",
-				"content" : "sleep/time-in-bed",
-				"unit" : "min",
-				"system" : "http://midata.coop"
-			},
-			{
-				"id" : "sleep_minutes_asleep",
-				"name": "Sleep - Minutes Asleep",				
-				"endpoint": "/1/user/-/sleep/minutesAsleep/date/{date}/1d.json",
-				"content" : "sleep/minutes-asleep",
-				"unit" : "min",
-				"system" : "http://midata.coop"
-			},
-			{
-				"id" : "sleep_minutes_awake",
-				"name": "Sleep - Minutes Awake",				
-				"endpoint": "/1/user/-/sleep/minutesAwake/date/{date}/1d.json",
-				"content" : "sleep/minutes-awake",
-				"unit" : "min",
-				"system" : "http://midata.coop"
-			},
-			{
-				"id" : "sleep_minutes_to_fall_asleep",
-				"name": "Sleep - Minutes to Fall Asleep",				
-				"endpoint": "/1/user/-/sleep/minutesToFallAsleep/date/{date}/1d.json",
-				"content" : "sleep/minutes-to-fall-asleep",
-				"unit" : "min",
-				"system" : "http://midata.coop"
-			},
-			{
-				"id" : "sleep_efficiency",
-				"name": "Sleep - Efficiency",				
-				"endpoint": "/1/user/-/sleep/efficiency/date/{date}/1d.json",
-				"content" : "sleep/efficiency",
-				"system" : "http://midata.coop" // TODO: Achtung, "unit" nicht definiert
-			},
+			// {
+			// 	"id" : "activities_floors_climbed",
+			// 	"name": "Activities - Floors Climbed",				
+			// 	"endpoint": "/1/user/-/activities/floors/date/{date}/1d.json",
+			// 	"content" : "activities/floors",
+			// 	"unit" : "floors",
+			// 	"system" : "http://midata.coop"
+			// },
+			// {
+			// 	"id" : "activities_elevation",
+			// 	"name": "Activities - Elevation",				
+			// 	"endpoint": "/1/user/-/activities/elevation/date/{date}/1d.json",
+			// 	"content" : "activities/elevation",
+			// 	"unit" : "m",
+			// 	"system" : "http://midata.coop"
+			// },
+			// {
+			// 	"id" : "activities_minutes_sedentary",
+			// 	"name": "Activities - Minutes Sedentary",				
+			// 	"endpoint": "/1/user/-/activities/minutesSedentary/date/{date}/1d.json",
+			// 	"content" : "activities/minutes-sedentary",
+			// 	"unit" : "min",
+			// 	"system" : "http://midata.coop"
+			// },
+			// {
+			// 	"id" : "activities_minutes_lightly_active",
+			// 	"name": "Activities - Minutes Lightly Active",				
+			// 	"endpoint": "/1/user/-/activities/minutesLightlyActive/date/{date}/1d.json",
+			// 	"content" : "activities/minutes-lightly-active",
+			// 	"unit" : "min",
+			// 	"system" : "http://midata.coop"
+			// },
+			// {
+			// 	"id" : "activities_minutes_fairly_active",
+			// 	"name": "Activities - Minutes Fairly Active",				
+			// 	"endpoint": "/1/user/-/activities/minutesFairlyActive/date/{date}/1d.json",
+			// 	"content" : "activities/minutes-fairly-active",
+			// 	"unit" : "min",
+			// 	"system" : "http://midata.coop"
+			// },
+			// {
+			// 	"id" : "activities_minutes_very_active",
+			// 	"name": "Activities - Minutes Very Active",				
+			// 	"endpoint": "/1/user/-/activities/minutesVeryActive/date/{date}/1d.json",
+			// 	"content" : "activities/minutes-very-active",
+			// 	"unit" : "min",
+			// 	"system" : "http://midata.coop"
+			// },
+			// {
+			// 	"id" : "activities_calories_burned_in_activities",
+			// 	"name": "Activities - Calories Burned in Activities",				
+			// 	"endpoint": "/1/user/-/activities/activityCalories/date/{date}/1d.json",
+			// 	"content" : "activities/activity-calories",
+			// 	"unit" : "kcal",
+			// 	"system" : "http://midata.coop"
+			// },
+			// {
+			// 	"id" : "sleep_time_in_bed",
+			// 	"name": "Sleep - Time in Bed",				
+			// 	"endpoint": "/1/user/-/sleep/timeInBed/date/{date}/1d.json",
+			// 	"content" : "sleep/time-in-bed",
+			// 	"unit" : "min",
+			// 	"system" : "http://midata.coop"
+			// },
+			// {
+			// 	"id" : "sleep_minutes_asleep",
+			// 	"name": "Sleep - Minutes Asleep",				
+			// 	"endpoint": "/1/user/-/sleep/minutesAsleep/date/{date}/1d.json",
+			// 	"content" : "sleep/minutes-asleep",
+			// 	"unit" : "min",
+			// 	"system" : "http://midata.coop"
+			// },
+			// {
+			// 	"id" : "sleep_minutes_awake",
+			// 	"name": "Sleep - Minutes Awake",				
+			// 	"endpoint": "/1/user/-/sleep/minutesAwake/date/{date}/1d.json",
+			// 	"content" : "sleep/minutes-awake",
+			// 	"unit" : "min",
+			// 	"system" : "http://midata.coop"
+			// },
+			// {
+			// 	"id" : "sleep_minutes_to_fall_asleep",
+			// 	"name": "Sleep - Minutes to Fall Asleep",				
+			// 	"endpoint": "/1/user/-/sleep/minutesToFallAsleep/date/{date}/1d.json",
+			// 	"content" : "sleep/minutes-to-fall-asleep",
+			// 	"unit" : "min",
+			// 	"system" : "http://midata.coop"
+			// },
+			// {
+			// 	"id" : "sleep_efficiency",
+			// 	"name": "Sleep - Efficiency",				
+			// 	"endpoint": "/1/user/-/sleep/efficiency/date/{date}/1d.json",
+			// 	"content" : "sleep/efficiency",
+			// 	"system" : "http://midata.coop" // TODO: Achtung, "unit" nicht definiert
+			// },
 			{
 				"id" : "body_weight",
 				"name": "Body - Weight",				
@@ -173,23 +173,23 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			    "content" : "29463-7",
 			    "unit" : "kg",
 				"system" : "http://loinc.org"
-			},
-			{
-				"id" : "body_bmi",
-				"name": "Body - BMI",				
-				"endpoint": "/1/user/-/body/bmi/date/{date}/1d.json",
-				"content" : "body/bmi",
-				"unit" : "kg/m2",
-				"system" : "http://midata.coop"
-			},
-			{
-				"id" : "body_fat",
-				"name": "Body - Fat",				
-				"endpoint": "/1/user/-/body/fat/date/{date}/1d.json",
-				"content" : "body/fat",	
-				"unit" : "%",
-				"system" : "http://midata.coop"
-			}						
+			 }//,
+			// {
+			// 	"id" : "body_bmi",
+			// 	"name": "Body - BMI",				
+			// 	"endpoint": "/1/user/-/body/bmi/date/{date}/1d.json",
+			// 	"content" : "body/bmi",
+			// 	"unit" : "kg/m2",
+			// 	"system" : "http://midata.coop"
+			// },
+			// {
+			// 	"id" : "body_fat",
+			// 	"name": "Body - Fat",				
+			// 	"endpoint": "/1/user/-/body/fat/date/{date}/1d.json",
+			// 	"content" : "body/fat",	
+			// 	"unit" : "%",
+			// 	"system" : "http://midata.coop"
+			// }						
 			
 	];
 	var baseUrl = "https://api.fitbit.com";
