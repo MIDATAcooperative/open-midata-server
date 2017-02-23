@@ -37,7 +37,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			// 	"endpoint": "/1/user/-/foods/log/caloriesIn/date/{date}/1d.json",
 			// 	"content" : "food/calories-in",
 			// 	"unit" : "kcal",
-			// 	"system" : "http://midata.coop"
+			// 	"system" : "http://midata.coop", 
+			//	"unitSystem" : "http://unitsofmeasure.org", 
+			//	"unitCode" : ""
 			// },
 			// {
 			// 	"id" : "food_water_consumption",
@@ -45,7 +47,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			// 	"endpoint": "/1/user/-/foods/log/water/date/{date}/1d.json",
 			// 	"content" : "food/water",
 			// 	"unit" : "ml",
-			// 	"system" : "http://midata.coop"
+			// 	"system" : "http://midata.coop", 
+			//	"unitSystem" : "http://unitsofmeasure.org", 
+			//	"unitCode" : ""
 			// },
 			// {
 			// 	"id" : "activities_calories_burned",
@@ -53,7 +57,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			// 	"endpoint": "/1/user/-/activities/calories/date/{date}/1d.json",
 			// 	"content" : "activities/calories",
 			// 	"unit" : "kcal",
-			// 	"system" : "http://midata.coop"
+			// 	"system" : "http://midata.coop", 
+			//	"unitSystem" : "http://unitsofmeasure.org", 
+			//	"unitCode" : ""
 			// },
 			{
 				"id" : "activities_steps",
@@ -61,7 +67,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				"endpoint": "/1/user/-/activities/steps/date/{date}/1d.json",
 				"content" : "41950-7",
 				"unit" : "steps",
-				"system" : "http://loinc.org"
+				"system" : "http://loinc.org", 
+				"unitSystem" : "http://unitsofmeasure.org", 
+				"unitCode" : "n/a"
 			},
 			{
 				"id" : "activities_distance",
@@ -69,7 +77,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				"endpoint": "/1/user/-/activities/distance/date/{date}/1d.json",
 				"content" : "41953-1",
 				"unit" : "km",
-				"system" : "http://loinc.org"
+				"system" : "http://loinc.org", 
+				"unitSystem" : "http://unitsofmeasure.org", 
+				"unitCode" : "m"
 			},
 			// {
 			// 	"id" : "activities_floors_climbed",
@@ -77,7 +87,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			// 	"endpoint": "/1/user/-/activities/floors/date/{date}/1d.json",
 			// 	"content" : "activities/floors",
 			// 	"unit" : "floors",
-			// 	"system" : "http://midata.coop"
+			// 	"system" : "http://midata.coop", 
+			//	"unitSystem" : "http://unitsofmeasure.org", 
+			//	"unitCode" : ""
 			// },
 			// {
 			// 	"id" : "activities_elevation",
@@ -85,7 +97,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			// 	"endpoint": "/1/user/-/activities/elevation/date/{date}/1d.json",
 			// 	"content" : "activities/elevation",
 			// 	"unit" : "m",
-			// 	"system" : "http://midata.coop"
+			// 	"system" : "http://midata.coop", 
+			//	"unitSystem" : "http://unitsofmeasure.org", 
+			//	"unitCode" : ""
 			// },
 			// {
 			// 	"id" : "activities_minutes_sedentary",
@@ -93,7 +107,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			// 	"endpoint": "/1/user/-/activities/minutesSedentary/date/{date}/1d.json",
 			// 	"content" : "activities/minutes-sedentary",
 			// 	"unit" : "min",
-			// 	"system" : "http://midata.coop"
+			// 	"system" : "http://midata.coop", 
+			//	"unitSystem" : "http://unitsofmeasure.org", 
+			//	"unitCode" : ""
 			// },
 			// {
 			// 	"id" : "activities_minutes_lightly_active",
@@ -101,7 +117,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			// 	"endpoint": "/1/user/-/activities/minutesLightlyActive/date/{date}/1d.json",
 			// 	"content" : "activities/minutes-lightly-active",
 			// 	"unit" : "min",
-			// 	"system" : "http://midata.coop"
+			// 	"system" : "http://midata.coop", 
+			//	"unitSystem" : "http://unitsofmeasure.org", 
+			//	"unitCode" : ""
 			// },
 			// {
 			// 	"id" : "activities_minutes_fairly_active",
@@ -109,7 +127,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			// 	"endpoint": "/1/user/-/activities/minutesFairlyActive/date/{date}/1d.json",
 			// 	"content" : "activities/minutes-fairly-active",
 			// 	"unit" : "min",
-			// 	"system" : "http://midata.coop"
+			// 	"system" : "http://midata.coop", 
+			//	"unitSystem" : "http://unitsofmeasure.org", 
+			//	"unitCode" : ""
 			// },
 			// {
 			// 	"id" : "activities_minutes_very_active",
@@ -117,7 +137,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			// 	"endpoint": "/1/user/-/activities/minutesVeryActive/date/{date}/1d.json",
 			// 	"content" : "activities/minutes-very-active",
 			// 	"unit" : "min",
-			// 	"system" : "http://midata.coop"
+			// 	"system" : "http://midata.coop", 
+			//	"unitSystem" : "http://unitsofmeasure.org", 
+			//	"unitCode" : ""
 			// },
 			// {
 			// 	"id" : "activities_calories_burned_in_activities",
@@ -125,7 +147,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			// 	"endpoint": "/1/user/-/activities/activityCalories/date/{date}/1d.json",
 			// 	"content" : "activities/activity-calories",
 			// 	"unit" : "kcal",
-			// 	"system" : "http://midata.coop"
+			// 	"system" : "http://midata.coop", 
+			//	"unitSystem" : "http://unitsofmeasure.org", 
+			//	"unitCode" : ""
 			// },
 			// {
 			// 	"id" : "sleep_time_in_bed",
@@ -133,7 +157,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			// 	"endpoint": "/1/user/-/sleep/timeInBed/date/{date}/1d.json",
 			// 	"content" : "sleep/time-in-bed",
 			// 	"unit" : "min",
-			// 	"system" : "http://midata.coop"
+			// 	"system" : "http://midata.coop", 
+			//	"unitSystem" : "http://unitsofmeasure.org", 
+			//	"unitCode" : ""
 			// },
 			// {
 			// 	"id" : "sleep_minutes_asleep",
@@ -141,7 +167,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			// 	"endpoint": "/1/user/-/sleep/minutesAsleep/date/{date}/1d.json",
 			// 	"content" : "sleep/minutes-asleep",
 			// 	"unit" : "min",
-			// 	"system" : "http://midata.coop"
+			// 	"system" : "http://midata.coop", 
+			//	"unitSystem" : "http://unitsofmeasure.org", 
+			//	"unitCode" : ""
 			// },
 			// {
 			// 	"id" : "sleep_minutes_awake",
@@ -149,7 +177,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			// 	"endpoint": "/1/user/-/sleep/minutesAwake/date/{date}/1d.json",
 			// 	"content" : "sleep/minutes-awake",
 			// 	"unit" : "min",
-			// 	"system" : "http://midata.coop"
+			// 	"system" : "http://midata.coop", 
+			//	"unitSystem" : "http://unitsofmeasure.org", 
+			//	"unitCode" : ""
 			// },
 			// {
 			// 	"id" : "sleep_minutes_to_fall_asleep",
@@ -157,14 +187,18 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			// 	"endpoint": "/1/user/-/sleep/minutesToFallAsleep/date/{date}/1d.json",
 			// 	"content" : "sleep/minutes-to-fall-asleep",
 			// 	"unit" : "min",
-			// 	"system" : "http://midata.coop"
+			// 	"system" : "http://midata.coop", 
+			//	"unitSystem" : "http://unitsofmeasure.org", 
+			//	"unitCode" : ""
 			// },
 			// {
 			// 	"id" : "sleep_efficiency",
 			// 	"name": "Sleep - Efficiency",				
 			// 	"endpoint": "/1/user/-/sleep/efficiency/date/{date}/1d.json",
 			// 	"content" : "sleep/efficiency",
-			// 	"system" : "http://midata.coop" // TODO: Achtung, "unit" nicht definiert
+			// 	"system" : "http://midata.coop" // TODO: Achtung, "unit" nicht definiert, 
+			//	"unitSystem" : "http://unitsofmeasure.org", 
+			//	"unitCode" : ""
 			// },
 			{
 				"id" : "body_weight",
@@ -172,7 +206,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				"endpoint": "/1/user/-/body/weight/date/{date}/1d.json",
 			    "content" : "29463-7",
 			    "unit" : "kg",
-				"system" : "http://loinc.org"
+				"system" : "http://loinc.org", 
+				"unitSystem" : "http://unitsofmeasure.org", 
+				"unitCode" : "kg"
 			 }//,
 			// {
 			// 	"id" : "body_bmi",
@@ -180,7 +216,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			// 	"endpoint": "/1/user/-/body/bmi/date/{date}/1d.json",
 			// 	"content" : "body/bmi",
 			// 	"unit" : "kg/m2",
-			// 	"system" : "http://midata.coop"
+			// 	"system" : "http://midata.coop", 
+			//	"unitSystem" : "http://unitsofmeasure.org", 
+			//	"unitCode" : ""
 			// },
 			// {
 			// 	"id" : "body_fat",
@@ -188,7 +226,9 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			// 	"endpoint": "/1/user/-/body/fat/date/{date}/1d.json",
 			// 	"content" : "body/fat",	
 			// 	"unit" : "%",
-			// 	"system" : "http://midata.coop"
+			// 	"system" : "http://midata.coop", 
+			//	"unitSystem" : "http://unitsofmeasure.org", 
+			//	"unitCode" : ""
 			// }						
 			
 	];
@@ -412,7 +452,14 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 								effectiveDateTime : recDate,
 								valueQuantity : {
 									value : val,
-									unit : itm.unit
+									unit : itm.unit,
+									system: measure.unitSystem,
+									code: measure.unitCode
+								},
+								meta: {
+									tag: [{ 
+										system: "http://midata.coop", "code": "fitbit", "display": "Fitbit" 
+									}] 
 								}
 							  };
 							  
