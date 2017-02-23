@@ -451,7 +451,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 								code : { coding : [ { system : measure.system, code : measure.content, display : measure.name_translated } ] },
 								effectiveDateTime : recDate,
 								valueQuantity : {
-									value : val,
+									value : Number(val),
 									unit : itm.unit,
 									system: measure.unitSystem,
 									code: measure.unitCode
