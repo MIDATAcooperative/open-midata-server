@@ -430,7 +430,7 @@ public class Records extends APIController {
 		FormatInfo format = FormatInfo.getByName(record.format);
 		if (format == null || format.visualization == null) return ok();
 		
-		Plugin visualization = Plugin.getById(format.visualization, Sets.create("filename", "url"));
+		Plugin visualization = Plugin.getById(format.visualization);
 					
 		// create encrypted authToken
 		SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, new MidataId(tk.apsId), userId, new MidataId(tk.recordId));
