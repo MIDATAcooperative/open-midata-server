@@ -189,3 +189,4 @@
 {"_id":{"$oid":"5880af3baed64515f44314fd"},"content":"quality-of-life","defaultCode":"http://loinc.org 72098-7","security":"MEDIUM","label":{"en":"Quality of life score"},"resourceType":"fhir/Observation","subType":"Quantity","category":"survey"}
 {"_id":{"$oid":"5888c31baed6450ed3ada92a"},"content":"karegenda/task","defaultCode":"http://midata.coop/karegenda Task","security":"MEDIUM","label":{"en":"Karegenda Task"}}
 {"_id":{"$oid":"5890aa5faed6450fd69a10d4"},"content":"karegenda/entry","defaultCode":"http://midata.coop/karegenda Entry","security":"MEDIUM","label":{"en":"Karegenda Entry"}}
+{"_id":{"$oid":"58b5a0a8aed64510c953d832"},"content":"activities/distance-24h-calc","defaultCode":"http://loinc.org 41953-1","security":"MEDIUM","label":{"en":"Distance walked in 24h (calculated)"},"resourceType":"fhir/Observation","subType":"Quantity","defaultUnit":"m","category":"fitness"}
