@@ -324,11 +324,10 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 	
  
 	@Override
-	public void processResource(Record record, Communication p) {
+	public void processResource(Record record, Communication p) throws AppException {
 		super.processResource(record, p);
-		if (p.getSubject().isEmpty()) {
-			p.getSubject().setReferenceElement(new IdType("Patient", record.owner.toString()));
-			p.getSubject().setDisplay(record.ownerName);
+		if (p.getSubject().isEmpty()) {			
+			p.setSubject(FHIRTools.getReferenceToUser(record.owner));
 		}
 	}
 

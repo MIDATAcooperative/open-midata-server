@@ -3,6 +3,7 @@ package utils.fhir.transactions;
 import org.hl7.fhir.dstu3.model.BaseResource;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryResponseComponent;
+import org.hl7.fhir.dstu3.model.DomainResource;
 
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import ca.uhn.fhir.rest.server.exceptions.PreconditionFailedException;
@@ -16,7 +17,7 @@ public class UpdateTransactionStep extends TransactionStep {
 
 	
 	
-	public UpdateTransactionStep(ResourceProvider provider, BaseResource resource) {
+	public UpdateTransactionStep(ResourceProvider provider, DomainResource resource) {
 		this.provider = provider;
 		this.resource = resource;
 	}

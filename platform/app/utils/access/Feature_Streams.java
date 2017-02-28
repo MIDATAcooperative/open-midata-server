@@ -46,10 +46,17 @@ public class Feature_Streams extends Feature {
 		boolean restrictedByStream = q.restrictedBy("stream");
 		
 		if (restrictedByStream) {
-			  AccessLog.logBegin("begin single stream query");
-			  //Set<String> streams1 = q.getRestriction("stream");
 			  
-			  List<DBRecord> streams = next.query(new Query(CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId() ));
+			 
+			  // optimization for record lookup queries 
+			  if (q.restrictedBy("quick")) {
+			      records = next.query(q);			    
+			      if (records.size() > 0) return records; 
+			  }
+			  
+			  AccessLog.logBegin("begin single stream query");
+			  
+			  List<DBRecord> streams = next.query(new Query(CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")).removeKey("quick"), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId() ));
 				
 			  for (DBRecord r : streams) {
 				  if (r.isStream) {
@@ -80,7 +87,7 @@ public class Feature_Streams extends Feature {
 		}
         		
 		AccessLog.logBegin("start query on target APS");
-		records = next.query(q);
+		records.addAll(next.query(q));
 		AccessLog.logEnd("end query on target APS #res="+records.size());
 		boolean includeStreams = q.includeStreams();
 		boolean streamsOnly = q.isStreamOnlyQuery();

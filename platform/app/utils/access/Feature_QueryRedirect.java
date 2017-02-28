@@ -36,7 +36,7 @@ public class Feature_QueryRedirect extends Feature {
 		if (query != null && !q.getApsId().equals(q.getCache().getAccountOwner())) {			
 			List<DBRecord> result;
 			
-			if (q.restrictedBy("redirect-only")) {
+			if (q.restrictedBy("redirect-only") || target.hasNoDirectEntries()) {
 			  result = new ArrayList<DBRecord>();	
 			} else {
 			  result = next.query(q);

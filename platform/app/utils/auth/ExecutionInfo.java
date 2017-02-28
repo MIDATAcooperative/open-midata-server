@@ -15,6 +15,7 @@ import play.libs.Json;
 import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.access.RecordManager;
+import utils.collections.RequestCache;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -32,6 +33,8 @@ public class ExecutionInfo {
 	public MidataId recordId;
 	
 	public Space space;
+	
+	public RequestCache cache = new RequestCache();
 	
 	public static ExecutionInfo checkToken(Request request, String token, boolean allowInactive) throws AppException {
 		String plaintext = TokenCrypto.decryptToken(token);

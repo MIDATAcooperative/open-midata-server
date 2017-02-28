@@ -542,8 +542,7 @@ public class RecordManager {
 			if (!providedVersion.equals(storedVersion)) throw new BadRequestException("error.concurrent.update", "Concurrent update", HttpStatus.SC_CONFLICT);
 			
 			VersionedDBRecord vrec = new VersionedDBRecord(rec);		
-			RecordEncryption.encryptRecord(vrec);
-			VersionedDBRecord.add(vrec);
+			RecordEncryption.encryptRecord(vrec);			
 					
 			record.lastUpdated = new Date(); 
 			
@@ -556,7 +555,9 @@ public class RecordManager {
 			
 		    DBRecord clone = rec.clone();
 		    
-			RecordEncryption.encryptRecord(rec);		
+			RecordEncryption.encryptRecord(rec);	
+			
+			VersionedDBRecord.add(vrec);
 		    DBRecord.upsert(rec); 	  	
 		    
 		    RecordLifecycle.notifyOfChange(clone, getCache(executingPerson));
@@ -967,8 +968,10 @@ public class RecordManager {
 		AccessLog.logBegin("start reset info user="+who.toString());
 		List<Record> result = list(who, who, RecordManager.STREAMS_ONLY_OWNER, Sets.create("_id", "owner"));
 		for (Record stream : result) {
-			AccessLog.log("reset stream:"+stream._id.toString());
-			getCache(who).getAPS(stream._id, stream.owner).removeMeta("_info");
+			try {
+			  AccessLog.log("reset stream:"+stream._id.toString());
+			  getCache(who).getAPS(stream._id, stream.owner).removeMeta("_info");
+			} catch (APSNotExistingException e) {}
 		}
 		AccessLog.logEnd("end reset info user="+who.toString());
 	}
