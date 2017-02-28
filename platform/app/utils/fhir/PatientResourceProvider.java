@@ -383,7 +383,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     	record.name=thePatient.getName().get(0).getNameAsSingleString();
     }
     
-    public void processResource(Record record, Patient resource) {
+    public void processResource(Record record, Patient resource) throws AppException {
     	super.processResource(record, resource);
 		resource.setId(record.owner.toString());		
 	}

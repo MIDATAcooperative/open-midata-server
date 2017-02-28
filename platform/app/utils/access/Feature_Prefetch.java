@@ -35,15 +35,9 @@ public class Feature_Prefetch extends Feature {
 		    APS stream = q.getCache().getAPS(record.stream);
 		    if (stream.isAccessible()) {
 		    	MidataId owner = stream.getStoredOwner();
-		    	partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("owner", owner), next);			    	
-			    if (partResult.isEmpty()) {
-			    	partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("stream", record.stream).map("owner", owner).map("quick",  record), next);
-			    }
+		    	partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("owner", owner).map("quick",  record), next);
 		    } else {
-		    	partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true"), next);			    	
-		    	if (partResult.isEmpty()) {
-		    		partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("stream", record.stream).map("quick",  record), next);
-			    }
+	    		partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("quick",  record), next);
 		    }		 
 		  } else partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("streams", "true"), next);
 		  

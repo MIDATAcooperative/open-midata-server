@@ -253,11 +253,10 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 	 */
  
 	@Override
-	public void processResource(Record record, QuestionnaireResponse p) {
+	public void processResource(Record record, QuestionnaireResponse p) throws AppException {
 		super.processResource(record, p);
 		if (p.getSubject().isEmpty()) {
-			p.getSubject().setReferenceElement(new IdType("Patient", record.owner.toString()));
-			p.getSubject().setDisplay(record.ownerName);
+			p.setSubject(FHIRTools.getReferenceToUser(record.owner));
 		}
 	}
 

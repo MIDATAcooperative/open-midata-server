@@ -269,6 +269,8 @@ public class Circles extends APIController {
 		Consent consent = Consent.getMessagingActiveByAuthorizedAndOwner(other, subject);
 		if (consent != null) return consent;
 		
+		if (!executorId.equals(subject) && !executorId.equals(other)) throw new InternalServerException("error.internal", "Executor differs from message subject and other person");
+		
 		consent = new Consent();
 		consent.type = ConsentType.IMPLICIT;
 		consent._id = new MidataId();

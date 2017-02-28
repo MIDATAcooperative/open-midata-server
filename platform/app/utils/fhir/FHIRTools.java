@@ -50,9 +50,9 @@ public class FHIRTools {
 	 * @return
 	 * @throws InternalServerException
 	 */
-	public static Reference getReferenceToUser(MidataId id) throws InternalServerException {
+	public static Reference getReferenceToUser(MidataId id) throws AppException {
 	
-		User user = User.getById(id, REFERENCE);
+		User user = ResourceProvider.info().cache.getUserById(id);
 		if (user == null) throw new InternalServerException("error.internal", "Person not found");
 		String type = "RelatedPerson";
 		switch (user.role) {

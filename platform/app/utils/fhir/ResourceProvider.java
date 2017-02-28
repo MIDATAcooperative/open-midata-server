@@ -22,6 +22,8 @@ import org.hl7.fhir.dstu3.model.BaseResource;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.DateTimeType;
+import org.hl7.fhir.dstu3.model.DomainResource;
+import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.Task;
@@ -63,6 +65,7 @@ import controllers.PluginsAPI;
 import models.Consent;
 import models.ContentInfo;
 import models.MidataId;
+import models.Plugin;
 import models.Record;
 import models.TypedMidataId;
 import utils.AccessLog;
@@ -79,7 +82,7 @@ import utils.exceptions.InternalServerException;
  * Base class for FHIR resource providers. There is one provider subclass for each FHIR resource type.
  *
  */
-public  abstract class ResourceProvider<T extends BaseResource> implements IResourceProvider {
+public  abstract class ResourceProvider<T extends DomainResource> implements IResourceProvider {
 
 	public static FhirContext ctx = FhirContext.forDstu3();
 	
@@ -128,8 +131,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	@Read()
 	public T getResourceById(@IdParam IIdType theId) throws AppException {
 		Record record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new MidataId(theId.getIdPart()));
-		if (record == null) throw new ResourceNotFoundException(theId);		
-		ReferenceTool.resolveOwners(Collections.singletonList(record), true, false);		
+		if (record == null) throw new ResourceNotFoundException(theId);					
 		IParser parser = ctx().newJsonParser();
 		T p = parser.parseResource(getResourceType(), record.data.toString());
 		processResource(record, p);		
@@ -312,7 +314,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	}
 		
 	
-	public List<T> parse(List<Record> result, Class<T> resultClass) {
+	public List<T> parse(List<Record> result, Class<T> resultClass) throws AppException {
 		ArrayList<T> parsed = new ArrayList<T>();	
 	    IParser parser = ctx().newJsonParser();
 	    for (Record rec : result) {
@@ -327,11 +329,21 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	}
 		
 	
-	public void processResource(Record record, T resource) {
+	public void processResource(Record record, T resource) throws AppException {
 		resource.setId(new IdType(resource.fhirType(), record._id.toString(), record.version));
 		resource.getMeta().setVersionId(record.version);
 		if (record.lastUpdated == null) resource.getMeta().setLastUpdated(record.created);
 		else resource.getMeta().setLastUpdated(record.lastUpdated);
+		
+		Extension meta = new Extension("http://midata.coop/StructureDefinition/metadata");
+		
+		if (record.app != null) {
+		  Plugin creatorApp = Plugin.getById(record.app);		
+		  meta.addExtension("app", new Coding("http://midata.coop/apps", creatorApp.filename, creatorApp.name));
+		}
+		if (record.creator != null) meta.addExtension("creator", FHIRTools.getReferenceToUser(record.creator));
+				
+		resource.getMeta().addExtension(meta);
 	}
 	
 	public static Record newRecord(String format) {
