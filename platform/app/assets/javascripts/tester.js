@@ -2,9 +2,10 @@
      
     phonecatApp.controller('TesterCtrl', function ($scope, $http) {
    
-       $scope.server = "https://localhost:9000";
+       $scope.server = "https://"+document.location.host;
        $scope.url = "";
-       $scope.body = "";
+       $scope.body = "{}";
+       $scope.type = "POST";
        $scope.authheader = "";
        //$scope.extra = window.localStorage.extra;
        $scope.results = "empty";
@@ -15,9 +16,18 @@
 
        $scope.dosubmit = function() {
          var url = $scope.server + $scope.url;
-         //window.localStorage.extra = $scope.extra;
+         
          console.log(url);
-         var call = { method: $scope.type, url: url, data : JSON.parse($scope.body) }; 
+         
+         var body = "";
+         try {
+        	 body = JSON.parse($scope.body);
+         } catch (e) {
+        	 $scope.results = "Error processing body: \n"+e;
+        	 return;
+         }
+         
+         var call = { method: $scope.type, url: url, data : body }; 
          if ($scope.authheader) call.headers = { "Authorization" : $scope.authheader };
 
          $scope.results = "";
@@ -26,8 +36,8 @@
          for (var count = 0;count < Number($scope.count); count++) {
         	 console.log(count);
 	         $http(call)
-	         .success(function(data) { $scope.results += JSON.stringify(data); })
-	         .error(function(x,p) { $scope.results = p + ":" + JSON.stringify(x); });
+	         .success(function(data) { $scope.results += JSON.stringify(data, null, 2); })
+	         .error(function(x,p) { $scope.results = p + ":" + JSON.stringify(x, null, 2); });
          }
        };
 
