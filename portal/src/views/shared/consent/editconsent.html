@@ -22,6 +22,7 @@
       <p class="form-control-static" ng-show="consent.status == 'REJECTED'" translate="editconsent.status_rejected"></p>
     </formrow> 
     
+    <!-- 
      <formrow myid="passcode" label="editconsent.password" ng-show="consent.type == 'EXTERNALSERVICE'">
        <p class="form-control-static" ng-hide="consent.passcode">
          <span translate="editconsent.password_exists"></span>
@@ -30,7 +31,8 @@
        <p class="form-control-static" ng-show="consent.passcode">
          <span translate="editconsent.password_shown"></span> <strong>{{ consent.passcode }}</strong>
        </p>
-    </formrow>            
+    </formrow>
+     -->            
     
    <formrow id="share" label="editconsent.people" ng-show="consent.type != 'EXTERNALSERVICE'">
 		<div class="well well-sm" ng-repeat="person in authpersons">

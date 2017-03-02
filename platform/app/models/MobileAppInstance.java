@@ -1,6 +1,7 @@
 package models;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import models.enums.ConsentStatus;
@@ -39,8 +40,8 @@ public class MobileAppInstance extends Consent {
 		return Model.get(MobileAppInstance.class, collection, CMaps.map("_id", id), fields);
 	}
 	
-	public static MobileAppInstance getByApplicationAndOwner(MidataId applicationId, MidataId owner, Set<String> fields) throws InternalServerException {
-		return Model.get(MobileAppInstance.class, collection, CMaps.map("applicationId", applicationId).map("owner", owner), fields);
+	public static Set<MobileAppInstance> getByApplicationAndOwner(MidataId applicationId, MidataId owner, Set<String> fields) throws InternalServerException {
+		return Model.getAll(MobileAppInstance.class, collection, CMaps.map("applicationId", applicationId).map("owner", owner), fields);
 	}
 	
 	public static Set<MobileAppInstance> getByApplication(MidataId applicationId, Set<String> fields) throws InternalServerException {

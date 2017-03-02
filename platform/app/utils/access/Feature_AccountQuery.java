@@ -80,10 +80,12 @@ public class Feature_AccountQuery extends Feature {
 				Set<Consent> consents = getConsentsForQuery(q);
 										
 				for (Consent circle : consents) {
+				   AccessLog.logBegin("start query for consent id="+circle._id);
 				   List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id));
 				   setOwnerField(q, circle, consentRecords);
 				   setIdAndConsentField(q, circle._id, consentRecords);							
 				   result.addAll(consentRecords);
+				   AccessLog.logEnd("end query for consent");
 				}				
 				
 			}

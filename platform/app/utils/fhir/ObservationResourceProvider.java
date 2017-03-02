@@ -360,12 +360,11 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 	 */
  
 	@Override
-	public void processResource(Record record, Observation p) {
+	public void processResource(Record record, Observation p) throws AppException {
 		super.processResource(record, p);
 		
 		if (p.getSubject().isEmpty()) {
-			p.getSubject().setReferenceElement(new IdType("Patient", record.owner.toString()));
-			p.getSubject().setDisplay(record.ownerName);
+			p.setSubject(FHIRTools.getReferenceToUser(record.owner));
 		}
 	}
 

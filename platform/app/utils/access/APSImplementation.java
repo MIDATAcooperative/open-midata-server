@@ -530,6 +530,11 @@ class APSImplementation extends APS {
 		}
 		return result;
 	}
+	
+	public boolean hasNoDirectEntries() throws AppException {
+	   merge();
+	   return ((BasicBSONList) eaps.getPermissions().get("p")).isEmpty();
+	}
 
 
 }

@@ -370,12 +370,11 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 	
  
 	@Override
-	public void processResource(Record record, Task p) {
+	public void processResource(Record record, Task p) throws AppException {
 		super.processResource(record, p);
 		
-		if (p.getFor().isEmpty()) {
-			p.getFor().setReferenceElement(new IdType("Patient", record.owner.toString()));
-			p.getFor().setDisplay(record.ownerName);
+		if (p.getFor().isEmpty()) {			
+			p.setFor(FHIRTools.getReferenceToUser(record.owner));
 		}
 	}
 

@@ -12,6 +12,7 @@ import org.hl7.fhir.dstu3.model.Bundle.BundleEntryRequestComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryResponseComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleType;
 import org.hl7.fhir.dstu3.model.Bundle.HTTPVerb;
+import org.hl7.fhir.dstu3.model.DomainResource;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.hl7.fhir.dstu3.model.Resource;
@@ -56,11 +57,11 @@ public class Transactions {
 		   if (verb.equals(HTTPVerb.POST)) {		   
 		     Resource res = nextEntry.getResource();
 		     ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());		   
-		     steps.add(new CreateTransactionStep(provider, (BaseResource) res));
+		     steps.add(new CreateTransactionStep(provider, (DomainResource) res));
 		   } else if (verb.equals(HTTPVerb.PUT)) {
 			 Resource res = nextEntry.getResource();
 			 ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());		   
-			 steps.add(new UpdateTransactionStep(provider, (BaseResource) res));
+			 steps.add(new UpdateTransactionStep(provider, (DomainResource) res));
 		   } else if (verb.equals(HTTPVerb.DELETE)) {
 			   throw new NotImplementedOperationException("Currently no support for DELETE");
 		   } else if (verb.equals(HTTPVerb.GET)) {

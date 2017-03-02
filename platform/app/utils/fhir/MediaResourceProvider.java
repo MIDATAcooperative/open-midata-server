@@ -250,11 +250,10 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 	
  
 	@Override
-	public void processResource(Record record, Media p) {
+	public void processResource(Record record, Media p) throws AppException {
 		super.processResource(record, p);
 		if (p.getSubject().isEmpty()) {
-			p.getSubject().setReferenceElement(new IdType("Patient", record.owner.toString()));
-			p.getSubject().setDisplay(record.ownerName);
+			p.setSubject(FHIRTools.getReferenceToUser(record.owner));
 		}
 		
 		Attachment attachment = p.getContent();

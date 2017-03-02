@@ -284,7 +284,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 	
  
 	@Override
-	public void processResource(Record record, Appointment p) {
+	public void processResource(Record record, Appointment p) throws AppException {
 		super.processResource(record, p);
 		
 		

@@ -27,6 +27,11 @@ public class NChainedMap<K, V> extends HashMap<K, V> {
 		if (value != null && !"".equals(value.toString())) put(key, value);
 		return this;
 	}
+	
+	public NChainedMap<K, V> removeKey(K key) {
+		remove(key);
+		return this;
+	}
 		
 	
 }

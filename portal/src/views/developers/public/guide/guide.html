@@ -163,11 +163,13 @@
 						<p>with these parameters as JSON body:</p>
 <pre>{ 
       "appname" : internal name of the application,
-      "secret" : the secret key that has been chosen on the development portal  
+      "secret" : the secret key that has been chosen on the development portal,
+      "device" : a string that identifies the device,  
       "username" : the email of the user, 
       "password" : password of user,
       "role" : the role of the user (optional, default is "member") 
 }</pre>						
+                        <p>The <code>device</code> string may be generated from a unique device ID or may be some random string that is stored on the device. Must not be shorter than 10 characters.</p>
 					    <p>As result you either get a 400 status with an error message or a session tokens that can be used for further requests.</p>
 					    <p>Possible values for <code>role</code> are:
 					    <ul>
@@ -188,9 +190,8 @@
                            As long as this consent has not been accepted by the member it does not share any data so that your app will see a blank account. The app is not allowed to create
                            records until the consent is confirmed.
                         </p>  
-                        <p>The "<code>password</code>" may be choosen freely during the first login. It does not need to be the same password as for the portal.
-                           For all subsequent logins the same password must be used. If the password is lost the user may log into the portal and delete the consent to freely choose a new password.
-                           A password recovery function for apps will be integrated into the portal.                            
+                        <p>If the consent has been accepted the returned <code>status</code> is <i>ACTIVE</i> otherwise it is <i>UNCONFIRMED</i>, <i>REJECTED</i> or <i>EXPIRED</i>.</p> 
+                        <p>The "<code>password</code>" is the same password as used for the portal.                            
                         </p>
                         <p>The "<code>authToken</code>" needs to be passed to all other API functions for authentication. The "<code>refreshToken</code>" may be used to skip the login process the next time.
                         To reauthenticate issue this request:</p>
@@ -230,7 +231,7 @@
   "mobile" : (optional) the mobile phone number of the user
   
   "password" : the initial portal password for the new user account,
-  "phrase" :  the password for the app login for the new user account,
+  "device" : a string that identifies the device,  
   "language" : the preferred language. ( "en" for english ) 
 }</pre>                        
                         <p>The response is the same as for the <code>/v1/auth</code> request. (See above)</p>                     

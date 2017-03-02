@@ -86,7 +86,7 @@ public class BasicResourceProvider extends ResourceProvider<Basic> implements IR
     }
     
     
-    public List<Basic> parse(List<Record> result, Class<Basic> resultClass) {
+    public List<Basic> parse(List<Record> result, Class<Basic> resultClass) throws AppException {
 		ArrayList<Basic> parsed = new ArrayList<Basic>();	
 	    IParser parser = ctx().newJsonParser();
 	    for (Record rec : result) {
@@ -259,11 +259,11 @@ public class BasicResourceProvider extends ResourceProvider<Basic> implements IR
 		record.name = display != null ? (display + " / " + date) : date;    	    	
     }
     
-    public void processResource(Record record, Basic resource) {
+    public void processResource(Record record, Basic resource) throws AppException {
     	super.processResource(record, resource);
     	if (resource.getSubject().isEmpty()) {
-    		resource.getSubject().setReferenceElement(new IdType("Patient", record.owner.toString()));
-    		resource.getSubject().setDisplay(record.ownerName);
+    		resource.setSubject(FHIRTools.getReferenceToUser(record.owner));
+ 
 		}		
 	}
    
