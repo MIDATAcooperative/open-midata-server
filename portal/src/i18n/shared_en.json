@@ -597,11 +597,7 @@
     "title" : "Consent",
     "name" : "Name of Consent",
     "type" : "Type of Consent",
-    "status" : "Status of Consent",
-    "password" : "Password",
-    "password_exists" : "A password has been set if you need to relogin with the app.",
-    "show_password" : "Show password",
-    "password_shown" : "Use your email address and this password for login:",
+    "status" : "Status of Consent",   
     "people" : "With which persons(s) do you want to share data?",
     "add_people_btn" : "Add More People",
     "add_usergroup_btn" : "Add a Team",
@@ -685,7 +681,14 @@
   
   "oauth2" : {
     "requesting_app" : "This application requests access:",
-    "sign_in_btn" : "Sign In"
+    "sign_in" : "MIDATA Sign In for:",
+    "sign_in_btn" : "Sign In",
+    "device" : "Device: {{ device}}",
+    "please_confirm" : "Please confirm the application consent using MIDATA portal then retry. Consent title is: {{ consent }}",
+    "requests_access" : "Requested Access:",
+    "shares_group" : "Group: {{ group }}",
+    "shares_format" : "Format: {{ format }}",
+    "shares_content" : "Content: {{ content }}"
   },
   
   "dashboard" : {

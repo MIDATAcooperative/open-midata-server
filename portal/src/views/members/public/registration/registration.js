@@ -43,6 +43,7 @@ angular.module('portal')
 		
 		if (oauth.getAppname()) {
 		  data.app = oauth.getAppname();
+		  data.device = oauth.getDevice();
 		  $scope.status.doAction("register", server.post(jsRoutes.controllers.QuickRegistration.register().url, JSON.stringify(data))).
 		  then(function(data) { 		  
 			  oauth.setUser($scope.registration.email, $scope.registration.password);
