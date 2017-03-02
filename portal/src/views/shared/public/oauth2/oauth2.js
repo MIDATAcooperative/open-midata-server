@@ -19,6 +19,8 @@ angular.module('portal')
 		.then(function(results) {
 			$scope.app = results.data;
 			oauth.init($scope.params.client_id, $scope.params.redirect_uri, $scope.params.state);
+			$scope.device = oauth.getDeviceShort();
+			$scope.consent = "App: "+$scope.app.name+" (Device: "+$scope.device+")";
 		});
 	};
 	
@@ -32,8 +34,11 @@ angular.module('portal')
 		
 		oauth.setUser($scope.login.email, $scope.login.password);
 				
-		$scope.status.doAction("login", oauth.login()).		
-		catch(function(err) { $scope.error = err.data; });
+		$scope.status.doAction("login", oauth.login())
+		.then(function(result) {
+		  if (result !== "ACTIVE") $scope.pleaseConfirm = true;	
+		})
+		.catch(function(err) { $scope.error = err.data; });
 	};	
 	
 	$scope.showRegister = function() {

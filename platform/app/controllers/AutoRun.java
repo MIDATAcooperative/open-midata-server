@@ -256,7 +256,7 @@ public class AutoRun extends APIController {
 		 * Constructor
 		 */
 		public ImportManager() {
-			this.nrOfWorkers = 4;
+			this.nrOfWorkers = 1; // For Testing if less performance warnings occur
 			
 		    List<Routee> routees = new ArrayList<Routee>();
 		    for (int i = 0; i < nrOfWorkers; i++) {
