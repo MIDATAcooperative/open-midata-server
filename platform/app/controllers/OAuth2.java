@@ -62,11 +62,12 @@ public class OAuth2 extends Controller {
 	public static Result login() throws AppException {
 				
         JsonNode json = request().body().asJson();		
-        JsonValidation.validate(json, "appname", "username", "password", "state", "redirectUri");
+        JsonValidation.validate(json, "appname", "username", "password", "device", "state", "redirectUri");
 						
         String name = JsonValidation.getString(json, "appname");
 		String state = JsonValidation.getString(json, "state");
 		String redirectUri = JsonValidation.getString(json, "redirectUri"); 
+		String device = JsonValidation.getString(json, "device");
 					
 	    // Validate Mobile App	
 		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri"));
@@ -79,28 +80,33 @@ public class OAuth2 extends Controller {
 		
 		
 		String username = JsonValidation.getEMail(json, "username");
-		String phrase = JsonValidation.getString(json, "password");
+		String password = JsonValidation.getString(json, "password");
 		UserRole role = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;
-			
-				
+		String phrase = device;
+					
 			User user = null;
 			switch (role) {
-			case MEMBER : user = Member.getByEmail(username, Sets.create("visualizations","tokens"));break;
-			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("visualizations","tokens"));break;
+			case MEMBER : user = Member.getByEmail(username, Sets.create("visualizations","password"));break;
+			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("visualizations","password"));break;
 			}
 			if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
+			if (!Member.authenticationValid(password, user.password)) {
+				throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
+			}
 			
-			appInstance = MobileAppInstance.getByApplicationAndOwner(app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode"));
+			appInstance = MobileAPI.getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode"));
 			KeyManager.instance.login(60000l);
 			
-			if (appInstance == null) {									
-				appInstance = MobileAPI.installApp(null, app._id, user, phrase);				
-	   		    meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
-			} else {
-				if (appInstance.passcode != null && !User.authenticationValid(phrase, appInstance.passcode)) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
+			if (appInstance == null) {		
+				boolean autoConfirm = KeyManager.instance.unlock(user._id, null) == KeyManager.KEYPROTECTION_NONE;
+				MidataId executor = autoConfirm ? user._id : null;
+				appInstance = MobileAPI.installApp(executor, app._id, user, phrase, autoConfirm);				
+				if (executor == null) executor = appInstance._id;
+	   		    meta = RecordManager.instance.getMeta(executor, appInstance._id, "_app").toMap();
+			} else {				
 				if (!verifyAppInstance(appInstance, user._id, app._id)) throw new BadRequestException("error.expired.token", "Access denied");
 				KeyManager.instance.unlock(appInstance._id, phrase);
-				meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
+				meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();				
 			}
 					
 		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
@@ -109,6 +115,7 @@ public class OAuth2 extends Controller {
 					
 		ObjectNode obj = Json.newObject();								
 		obj.put("code", tk.encrypt());
+		obj.put("status", appInstance.status.toString());
 		return ok(obj);
 	}
 
