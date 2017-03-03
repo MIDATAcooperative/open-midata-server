@@ -10,18 +10,23 @@ angular.module('portal')
 	session.viewHeight = "600px";	
 	session.login($state.current.data.role);
 	
-	// get current user
-	session.currentUser.then(function(userId) {
-		console.log("DONE NAV");
-		$scope.user = session.user;	
-		$scope.userId = userId;
-		
-		spaces.getSpacesOfUserContext($scope.userId, "menu")
-    	.then(function(results) {
-    		$scope.me_menu = results.data;
-    	});
-    
-	});
+	
+	$scope.updateNav = function() {
+		// get current user
+		session.currentUser.then(function(userId) {
+			console.log("DONE NAV");
+			$scope.user = session.user;	
+			$scope.userId = userId;
+			
+			spaces.getSpacesOfUserContext($scope.userId, "menu")
+	    	.then(function(results) {
+	    		$scope.me_menu = results.data;
+	    	});
+	    
+		});	
+	};
+	
+	$scope.updateNav();
 			
 	$scope.logout = function() {		
 		server.get('/logout')
