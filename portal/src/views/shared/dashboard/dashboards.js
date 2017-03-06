@@ -223,7 +223,13 @@ angular.module('portal')
     	  ],
 	  "config" : 
 			  [
-			   
+				{
+					    id: "myaccount",
+					   
+					    template : "/views/members/dashboardTiles/accountdata/accountdata.html",
+					    active : true,
+					    position : "small"			    
+				},   
 			    {
 				    id: "myviews",
 				  
