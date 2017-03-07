@@ -732,6 +732,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.FormatAPI.createGroup(),
 				controllers.routes.javascript.FormatAPI.listFormats(),				
 				controllers.routes.javascript.FormatAPI.listContents(),
+				controllers.routes.javascript.FormatAPI.searchContents(),
 				controllers.routes.javascript.FormatAPI.updateContent(),
 				controllers.routes.javascript.FormatAPI.deleteContent(),
 				controllers.routes.javascript.FormatAPI.createContent(),
