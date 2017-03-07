@@ -9,15 +9,12 @@
       <p class="form-control-static">{{ usergroup.name }}</p>
     </formrow>    
     <formrow id="status" label="provider_editusergroup.status">
-      <p class="form-control-static" ng-show="usergroup.status == 'ACTIVE'" translate="editconsent.status_active"></p>
-      <p class="form-control-static" ng-show="usergroup.status == 'EXPIRED'" translate="editconsent.status_expired"></p>
-      <p class="form-control-static" ng-show="usergroup.status == 'UNCONFIRMED'" translate="editconsent.status_unconfirmed"></p>    
-      <p class="form-control-static" ng-show="usergroup.status == 'REJECTED'" translate="editconsent.status_rejected"></p>
+      <p class="form-control-static" translate="{{ 'enum.userstatus.'+usergroup.status }}"></p>               
     </formrow> 
   </form>	                
   
   <table class="table table-striped">
-    <tr ng-repeat="member in members">
+    <tr ng-repeat="member in members|filter:{status:'ACTIVE'}|orderBy:'lastname'">
       <td>{{ member.user.firstname }}</td>
       <td>{{ member.user.lastname }}</td>
       <td>{{ member.user.email }}</td>
@@ -27,9 +24,10 @@
     </tr>  
   </table>
   
+  
      
 	<a  ui-sref="^.usergroups" class="btn btn-default" translate="common.back_btn"></a>
-	<button type="button" class="btn btn-default" ng-click="addPeople();" translate="editconsent.add_people_btn"></button>
+	<button type="button" class="btn btn-default" ng-show="usergroup.status == 'ACTIVE'" ng-click="addPeople();" translate="editconsent.add_people_btn"></button>
 	<!--  <button type="button" ng-click="confirmConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-primary" translate="editconsent.confirm_btn"></button>
 	<button type="button" ng-click="rejectConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-danger" translate="editconsent.reject_btn"></button>
     <button type="button" ng-click="deleteConsent();" ng-show="(consent.status == 'ACTIVE' || consent.status == 'REJECTED') && consent.type != 'STUDYPARTICIPATION'" class="btn btn-danger" translate="editconsent.delete_btn"></button>
@@ -38,5 +36,29 @@
   </loader>		
 </div>
 </div>
+
+ <div class="panel panel-primary" ng-show="(members|filter:{status:'EXPIRED'}).length">
+    <div class="panel-heading" translate="provider_editusergroup.former_members">    
+    </div>
+    <div class="panel-body">
+  
+   <table class="table table-striped">
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th translate="provider_editusergroup.startDate"></th>
+      <th translate="provider_editusergroup.endDate"></th>
+    </tr>
+    <tr ng-repeat="member in members|filter:{status:'EXPIRED'}|orderBy:'lastname'">
+      <td>{{ member.user.firstname }}</td>
+      <td>{{ member.user.lastname }}</td>
+      <td>{{ member.user.email }}</td>
+      <td>{{ member.startDate | date }}</td>
+      <td>{{ member.endDate | date }}</td>      
+    </tr>  
+  </table>
+   </div>
+  </div>
 <div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
 </div>

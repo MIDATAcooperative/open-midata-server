@@ -11,6 +11,10 @@ angular.module('services')
 		return server.post(jsRoutes.controllers.UserGroups.search().url, JSON.stringify(data));
 	};
 	
+	service.deleteUserGroup = function(id) {	
+		return server.post(jsRoutes.controllers.UserGroups.deleteUserGroup(id).url);
+	};
+	
 	service.listUserGroupMembers = function(groupId) {
 		var data = {"usergroup": groupId };
 		return server.post(jsRoutes.controllers.UserGroups.listUserGroupMembers().url, JSON.stringify(data));
