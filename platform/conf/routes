@@ -144,6 +144,7 @@ POST    /common/api/groups/:group                        controllers.FormatAPI.u
 DELETE  /common/api/groups/:group                        controllers.FormatAPI.deleteGroup(group: String)
 GET     /common/api/formats                              controllers.FormatAPI.listFormats()
 GET     /common/api/contents                             controllers.FormatAPI.listContents()
+POST    /common/api/contents                             controllers.FormatAPI.searchContents()
 POST    /common/api/contents                             controllers.FormatAPI.createContent()
 POST    /common/api/contents/:content                    controllers.FormatAPI.updateContent(content: String)
 DELETE  /common/api/contents/:content                    controllers.FormatAPI.deleteContent(content: String)

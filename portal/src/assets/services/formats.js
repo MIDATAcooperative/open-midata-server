@@ -10,6 +10,10 @@ angular.module('services')
 		return server.get(jsRoutes.controllers.FormatAPI.listContents().url);		
 	};
 	
+	service.searchContents = function(properties, fields) {
+		return server.post(jsRoutes.controllers.FormatAPI.searchContents().url, JSON.stringify({ properties : properties, fields : fields}));		
+	};
+	
 	service.listFormats = function() {
 		return server.get(jsRoutes.controllers.FormatAPI.listFormats().url);		
 	};

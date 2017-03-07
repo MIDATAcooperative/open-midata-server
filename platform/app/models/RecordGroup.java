@@ -67,7 +67,7 @@ public class RecordGroup extends Model {
 	    Model.delete(RecordGroup.class, collection, CMaps.map("_id", recordGroupId));
 	}
 	
-	public static RecordGroup getBySystemPlusName(String system, String name) throws AppException {
+	public static RecordGroup getBySystemPlusName(String system, String name) throws AppException {		
 		if (cache == null) load();		
 		return cache.get(system+":"+name);
 	}
