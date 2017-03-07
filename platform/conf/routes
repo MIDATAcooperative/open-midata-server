@@ -144,6 +144,7 @@ POST    /common/api/groups/:group                        controllers.FormatAPI.u
 DELETE  /common/api/groups/:group                        controllers.FormatAPI.deleteGroup(group: String)
 GET     /common/api/formats                              controllers.FormatAPI.listFormats()
 GET     /common/api/contents                             controllers.FormatAPI.listContents()
+POST    /common/api/contents                             controllers.FormatAPI.searchContents()
 POST    /common/api/contents                             controllers.FormatAPI.createContent()
 POST    /common/api/contents/:content                    controllers.FormatAPI.updateContent(content: String)
 DELETE  /common/api/contents/:content                    controllers.FormatAPI.deleteContent(content: String)
@@ -175,7 +176,9 @@ GET     /providers/api/member/:member                    controllers.providers.P
 POST    /shared/api/usergroups/search                     controllers.UserGroups.search()
 POST    /shared/api/usergroups/members                    controllers.UserGroups.listUserGroupMembers()
 POST    /shared/api/usergroups/create                     controllers.UserGroups.createUserGroup()
+POST    /shared/api/usergroups/delete/:group              controllers.UserGroups.deleteUserGroup(group: String)
 POST    /shared/api/usergroups/adduser                    controllers.UserGroups.addMembersToUserGroup()
+POST    /shared/api/usergroups/removeuser                 controllers.UserGroups.deleteUserGroupMembership()
 
 # Developers
 POST    /developers/api/register                          controllers.Developers.register()

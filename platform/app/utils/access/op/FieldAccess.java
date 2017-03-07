@@ -114,7 +114,16 @@ public class FieldAccess implements Condition {
 	@Override
 	public Map<String, Object> asMongoQuery() {
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put(field, cond.asMongoQuery());
+		
+		String fieldName = field;
+		Condition c = cond;
+		
+		while (c instanceof FieldAccess) {
+			fieldName += "."+((FieldAccess) c).field;
+			c = ((FieldAccess) c).cond;
+		}
+		
+		result.put(fieldName, c.asMongoQuery());
 		return result;
 	}
 

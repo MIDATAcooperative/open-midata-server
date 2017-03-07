@@ -56,9 +56,13 @@ public class Feature_FormatGroups extends Feature {
 		
 		Set<String> result = new HashSet<String>();
 		for (String grp : groups) {
-			RecordGroup recGroup = RecordGroup.getBySystemPlusName(groupSystem,grp);
-			if (recGroup == null) throw new BadRequestException("error.unknown.group", "Unknown group:'"+grp+"', group-system:'"+groupSystem+"'");
-			if (recGroup.contents != null) result.addAll(recGroup.contents);
+			if (grp.startsWith("cnt:")) {
+				result.add(grp.substring(4));
+			} else {
+				RecordGroup recGroup = RecordGroup.getBySystemPlusName(groupSystem,grp);
+				if (recGroup == null) throw new BadRequestException("error.unknown.group", "Unknown group:'"+grp+"', group-system:'"+groupSystem+"'");
+				if (recGroup.contents != null) result.addAll(recGroup.contents);
+			}
 		}	
 		
 		return result;
@@ -114,6 +118,7 @@ public class Feature_FormatGroups extends Feature {
     			RecordGroup group = RecordGroup.getBySystemPlusName(groupSystem, grp);
     			if (group.contents != null && group.contents.size() == counts.get(grp)) {
     				include.add(grp);
+    				contents.removeAll(group.contents);
     			}
     		}
     		
@@ -154,6 +159,8 @@ public class Feature_FormatGroups extends Feature {
     		
     		} while (redo && cancel > 0);
     		if (cancel <= 0) properties.put("error", "true");
+    		
+    		for (String content : contents) include.add("cnt:"+content);
     		
     		properties.put("group", include);
     		properties.put("group-system", groupSystem);

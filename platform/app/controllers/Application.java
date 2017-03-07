@@ -732,6 +732,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.FormatAPI.createGroup(),
 				controllers.routes.javascript.FormatAPI.listFormats(),				
 				controllers.routes.javascript.FormatAPI.listContents(),
+				controllers.routes.javascript.FormatAPI.searchContents(),
 				controllers.routes.javascript.FormatAPI.updateContent(),
 				controllers.routes.javascript.FormatAPI.deleteContent(),
 				controllers.routes.javascript.FormatAPI.createContent(),
@@ -853,7 +854,9 @@ public class Application extends APIController {
 				// UserGroups
 				controllers.routes.javascript.UserGroups.search(),
 				controllers.routes.javascript.UserGroups.createUserGroup(),
+				controllers.routes.javascript.UserGroups.deleteUserGroup(),
 				controllers.routes.javascript.UserGroups.addMembersToUserGroup(),
+				controllers.routes.javascript.UserGroups.deleteUserGroupMembership(),
 				controllers.routes.javascript.UserGroups.listUserGroupMembers(),
 				
 		        // Portal

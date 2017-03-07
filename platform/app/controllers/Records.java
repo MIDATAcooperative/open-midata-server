@@ -186,7 +186,7 @@ public class Records extends APIController {
 		Set<String> recordsIds = RecordManager.instance.listRecordIds(userId, apsId);
 		
 		Map<String, Object> props = new HashMap<String, Object>();
-		Collection<RecordsInfo> infos = RecordManager.instance.info(userId, apsId, props, AggregationType.GROUP);
+		Collection<RecordsInfo> infos = RecordManager.instance.info(userId, apsId, props, AggregationType.CONTENT);
 				
 		ObjectNode result = Json.newObject();
 		

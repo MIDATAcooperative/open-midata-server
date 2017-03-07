@@ -319,4 +319,21 @@ public class FormatAPI extends Controller {
 	      	      
 	    return ok(Json.toJson(contents));		
 	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public static Result searchContents() throws JsonValidationException, InternalServerException {
+		JsonNode json = request().body().asJson();
+		
+        JsonValidation.validate(json, "properties", "fields");		
+		// get parameters
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));		
+		ObjectIdConversion.convertMidataIds(properties, "_id");
+		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+		
+				
+	    Collection<ContentInfo> contents = ContentInfo.getAll(properties, fields);
+	      	      
+	    return ok(Json.toJson(contents));		
+	}
 }
