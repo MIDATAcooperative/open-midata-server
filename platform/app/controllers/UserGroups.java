@@ -12,6 +12,7 @@ import org.bson.BSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
+import models.Consent;
 import models.History;
 import models.MidataId;
 import models.User;
@@ -32,6 +33,7 @@ import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
+import utils.exceptions.BadRequestException;
 import utils.fhir.GroupResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -155,6 +157,7 @@ public class UserGroups extends APIController {
 		member.member = executorId;
 		member.userGroup = userGroup._id;
 		member.status = ConsentStatus.ACTIVE;
+		member.startDate = new Date();
 																				
 		Map<String, Object> accessData = new HashMap<String, Object>();
 		accessData.put("aliaskey", KeyManager.instance.generateAlias(userGroup._id, member._id));
@@ -166,6 +169,53 @@ public class UserGroups extends APIController {
 		RecordManager.instance.createPrivateAPS(userGroup._id, userGroup._id);
 		
 		return ok(JsonOutput.toJson(userGroup, "UserGroup", UserGroup.ALL));
+	}
+	
+	/**
+	 * delete a new user group
+	 * @return 200 ok
+	 * @throws AppException
+	 */	
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result deleteUserGroup(String groupIdStr) throws AppException {       
+		MidataId executorId = new MidataId(request().username());
+		MidataId groupId = MidataId.from(groupIdStr);
+		
+		UserGroupMember execMember = UserGroupMember.getByGroupAndMember(groupId, executorId);
+		if (execMember == null) throw new BadRequestException("error.invalid.usergroup", "Only members may delete a group");
+		
+		UserGroup userGroup = UserGroup.getById(groupId, Sets.create("_id", "status"));
+		
+		Set<Consent> consents = Consent.getAllByAuthorized(groupId);
+		
+		if (consents.isEmpty()) {		
+			Set<UserGroupMember> allMembers = UserGroupMember.getAllByGroup(groupId);		
+			for (UserGroupMember member : allMembers) {
+				RecordManager.instance.deleteAPS(member._id, executorId);
+				member.delete();
+			}
+			
+			RecordManager.instance.deleteAPS(groupId, executorId);
+			UserGroup.delete(groupId);
+		} else {
+			Set<UserGroupMember> allMembers = UserGroupMember.getAllByGroup(groupId);		
+			for (UserGroupMember member : allMembers) {
+				if (member.status == ConsentStatus.ACTIVE) {
+					member.status = ConsentStatus.EXPIRED;
+					member.endDate = new Date();
+					UserGroupMember.set(member._id, "status" , member.status);
+					UserGroupMember.set(member._id, "endDate" , member.endDate);
+				}
+			}
+			
+			userGroup.status = UserStatus.DELETED;
+			UserGroup.set(userGroup._id, "status", userGroup.status);
+			
+			GroupResourceProvider.updateMidataUserGroup(userGroup);
+		}
+					
+		return ok();
 	}
 	
 	public static Result editUserGroup() {
@@ -198,6 +248,7 @@ public class UserGroups extends APIController {
 				member.member = targetUserId;
 				member.userGroup = groupId;
 				member.status = ConsentStatus.ACTIVE;
+				member.startDate = new Date();
 																									
 				Map<String, Object> accessData = new HashMap<String, Object>();
 				accessData.put("aliaskey", KeyManager.instance.generateAlias(groupId, member._id));
@@ -205,13 +256,41 @@ public class UserGroups extends APIController {
 				RecordManager.instance.setMeta(executorId, member._id, "_usergroup", accessData);
 				
 				member.add();
+			} else {
+				old.status = ConsentStatus.ACTIVE;
+				old.startDate = new Date();
+				old.endDate = null;
+				UserGroupMember.set(old._id, "status", old.status);
+				UserGroupMember.set(old._id, "startDate", old.startDate);
+				UserGroupMember.set(old._id, "endDate", old.endDate);
 			}
 		}
 				 
 		return ok();
 	}
 	
-	public static Result changeUserGroupMembership() {
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result deleteUserGroupMembership() throws AppException  {
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "member", "group");
+		MidataId executorId = new MidataId(request().username());
+	
+		MidataId groupId = JsonValidation.getMidataId(json, "group");
+		MidataId targetUserId = JsonValidation.getMidataId(json, "member");
+		
+		if (targetUserId.equals(executorId)) throw new BadRequestException("error.invalid.user", "You cannot remove yourself from group.");
+		UserGroupMember self = UserGroupMember.getByGroupAndMember(groupId, executorId);
+		if (self == null) throw new AuthException("error.internal", "User not member of group");
+		
+		UserGroupMember target = UserGroupMember.getByGroupAndMember(groupId, targetUserId);
+		if (target == null) throw new BadRequestException("error.invalid.user", "User is not member of group");
+		target.status = ConsentStatus.EXPIRED;
+		target.endDate = new Date();
+		UserGroupMember.set(target._id, "status", target.status);
+		UserGroupMember.set(target._id, "endDate", target.endDate);
+			
 		return ok();
 	}
 		
