@@ -153,7 +153,7 @@ angular.module('portal')
 		formats.searchContents({ content : Object.keys(loadLabels) },["content","label"]).
 		then(function(result) { 
 		  angular.forEach(result.data, function(c) {
-			 contentLabels[c.content] = loadLabels[c.content].fullLabel = c.label[$scope.lang] || c.label["en"];
+			 contentLabels[c.content] = loadLabels[c.content].fullLabel = c.label[$scope.lang] || c.label.en;
 			 
 		  });
 		  loadLabels = {};
