@@ -19,7 +19,7 @@
       <td>{{ member.user.lastname }}</td>
       <td>{{ member.user.email }}</td>
       <td>
-        <button type="button" ng-click="removePerson(member)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>
+        <button type="button" ng-show="member.member != user._id" ng-click="removePerson(member)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>
       </td>
     </tr>  
   </table>
@@ -28,10 +28,7 @@
      
 	<a  ui-sref="^.usergroups" class="btn btn-default" translate="common.back_btn"></a>
 	<button type="button" class="btn btn-default" ng-show="usergroup.status == 'ACTIVE'" ng-click="addPeople();" translate="editconsent.add_people_btn"></button>
-	<!--  <button type="button" ng-click="confirmConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-primary" translate="editconsent.confirm_btn"></button>
-	<button type="button" ng-click="rejectConsent();" ng-show="consent.status == 'UNCONFIRMED'" class="btn btn-danger" translate="editconsent.reject_btn"></button>
-    <button type="button" ng-click="deleteConsent();" ng-show="(consent.status == 'ACTIVE' || consent.status == 'REJECTED') && consent.type != 'STUDYPARTICIPATION'" class="btn btn-danger" translate="editconsent.delete_btn"></button>
-     -->   
+	
   
   </loader>		
 </div>

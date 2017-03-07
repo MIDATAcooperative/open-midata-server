@@ -14,9 +14,13 @@ angular.module('portal')
 	
 	$scope.init = function() {
 		
+		session.currentUser.then(function(userId) {			
+			$scope.user = session.user;		
+		});
+		
 		if ($state.params.groupId) {
 			$scope.groupId = $state.params.groupId;
-			
+						
 			$scope.status.doBusy(usergroups.listUserGroupMembers($state.params.groupId))
 			.then(function(data) {
 				$scope.members = data.data;
