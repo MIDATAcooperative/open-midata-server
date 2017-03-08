@@ -19,6 +19,7 @@ import com.mongodb.DBObject;
 import models.JsonSerializable;
 import models.MidataId;
 import models.Model;
+import utils.AccessLog;
 
 /**
  * Converter between data model classes and BSON objects
@@ -110,7 +111,7 @@ public class DatabaseConversion {
 			throw new DatabaseConversionException(e);
 		}
 		for (Field field : modelClass.getFields()) {
-			if (dbObject.keySet().contains(field.getName())) {
+			if (!field.getName().equals("_id") && dbObject.keySet().contains(field.getName())) {
 				try {
 					field.set(modelObject, convert(modelClass, field.getName(), field.getGenericType(), resolveEnums(field.getType(), dbObject.get(field.getName()))));
 				} catch (IllegalArgumentException e) {
@@ -121,8 +122,9 @@ public class DatabaseConversion {
 			}
 		}
 		if (modelObject instanceof Model) {
-			((Model) modelObject).set_id(dbObject.get("_id"));
+			((Model) modelObject).set_id(dbObject.get("_id"));			
 		}
+		
 		return modelObject;
 	}
 

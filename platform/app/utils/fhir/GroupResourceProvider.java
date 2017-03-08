@@ -1,6 +1,7 @@
 package utils.fhir;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.dstu3.model.Group;
+import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Group.GroupMemberComponent;
 import org.hl7.fhir.dstu3.model.Group.GroupType;
 import org.hl7.fhir.instance.model.api.IBaseResource;
@@ -23,6 +25,7 @@ import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.Elements;
+import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
@@ -41,6 +44,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import ch.qos.logback.core.joran.conditional.ThenOrElseActionBase;
 import controllers.UserGroups;
 import models.MidataId;
@@ -75,6 +79,12 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 		return readGroupFromMidataUserGroup(group, true);
 	}
 	
+    @History()
+    @Override
+	public List<Group> getHistory(@IdParam IIdType theId) throws AppException {
+    	throw new ResourceNotFoundException("No history kept for Group resource"); 
+    }
+    
 	/**
 	 * Convert a MIDATA User object into a FHIR person object
 	 * @param userToConvert user to be converted into a FHIR object
@@ -91,7 +101,7 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 			Set<UserGroupMember> members = UserGroups.listUserGroupMembers(groupToConvert._id);
 			for (UserGroupMember member : members) {
 			  GroupMemberComponent gmc = p.addMember();
-			  gmc.setEntity(FHIRTools.getReferenceToUser(member.member));
+			  gmc.setEntity(FHIRTools.getReferenceToUser(member.member, null));
 			  if (member.status != ConsentStatus.ACTIVE) gmc.setInactive(true);
 			  if (member.startDate != null) gmc.getPeriod().setStart(member.startDate);
 			  if (member.endDate != null) gmc.getPeriod().setEnd(member.endDate);

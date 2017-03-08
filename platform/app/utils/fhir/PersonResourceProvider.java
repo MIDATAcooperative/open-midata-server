@@ -1,10 +1,12 @@
 package utils.fhir;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.Group;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Person;
 import org.hl7.fhir.dstu3.model.Reference;
@@ -16,6 +18,7 @@ import org.hl7.fhir.instance.model.api.IIdType;
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
@@ -31,6 +34,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.MidataId;
 import models.Record;
 import models.User;
@@ -70,6 +74,12 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 		if (member == null) return null;
 		return personFromMidataUser(member);
 	}
+	
+	@History()
+    @Override
+	public List<Person> getHistory(@IdParam IIdType theId) throws AppException {
+		throw new ResourceNotFoundException("No history kept for Person resource");
+    }
 	
 	/**
 	 * Convert a MIDATA User object into a FHIR person object

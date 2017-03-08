@@ -253,7 +253,7 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 	public void processResource(Record record, Media p) throws AppException {
 		super.processResource(record, p);
 		if (p.getSubject().isEmpty()) {
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner));
+			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
 		
 		Attachment attachment = p.getContent();

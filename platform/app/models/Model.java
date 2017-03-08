@@ -32,8 +32,8 @@ public abstract class Model implements JsonSerializable {
 	 * setter for _id field
 	 * @param _id value of _id field
 	 */
-	public void set_id(Object _id) {
-		_id = new MidataId(_id.toString());
+	public void set_id(Object _id) {		
+		this._id = new MidataId(_id.toString());
 	}
 
 	@Override
@@ -45,6 +45,13 @@ public abstract class Model implements JsonSerializable {
 		return false;
 	}
 	
+	
+	
+	@Override
+	public int hashCode() {
+		return _id == null ? 0 : _id.hashCode();
+	}
+
 	/**
 	 * Fallback method for comparison of models.
 	 */

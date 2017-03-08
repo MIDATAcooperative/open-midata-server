@@ -256,7 +256,7 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 	public void processResource(Record record, QuestionnaireResponse p) throws AppException {
 		super.processResource(record, p);
 		if (p.getSubject().isEmpty()) {
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner));
+			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
 	}
 

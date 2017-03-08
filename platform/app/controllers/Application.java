@@ -474,7 +474,7 @@ public class Application extends APIController {
 		
 		PortalSessionToken token = null;
 		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME);
-		
+	
 		if (user instanceof HPUser) {
 		   token = new PortalSessionToken(handle, user._id, user.role, ((HPUser) user).provider, user.developer);		  
 		} else if (user instanceof ResearchUser) {
