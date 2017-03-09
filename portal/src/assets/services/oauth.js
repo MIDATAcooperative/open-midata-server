@@ -39,10 +39,12 @@ angular.module('services')
 		return devid;
 	};
 	
-	service.init = function(client_id, redirect_uri, state) {
+	service.init = function(client_id, redirect_uri, state, code_challenge, code_challenge_method) {
 	   cred.appname = client_id;
 	   cred.redirectUri = redirect_uri;
 	   cred.state = state || "none";
+	   cred.code_challenge = code_challenge;
+	   cred.code_challenge_method = code_challenge_method;
 	   cred.device = getDeviceId();
 	};
 	
@@ -64,7 +66,8 @@ angular.module('services')
 		return cred.device.substr(0,3);
 	};
 	
-	service.login = function() {	    			
+	service.login = function() {	    	
+		
 		return server.post("/v1/authorize", JSON.stringify(cred)).
 		then(function(result) {				
 			if (result.data.status === "ACTIVE") {							
