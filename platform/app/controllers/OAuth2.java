@@ -19,11 +19,13 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
+import utils.AccessLog;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
 import utils.auth.MobileAppSessionToken;
 import utils.auth.MobileAppToken;
 import utils.auth.OAuthCodeToken;
+import utils.auth.TokenCrypto;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -68,7 +70,10 @@ public class OAuth2 extends Controller {
 		String state = JsonValidation.getString(json, "state");
 		String redirectUri = JsonValidation.getString(json, "redirectUri"); 
 		String device = JsonValidation.getString(json, "device");
-					
+		
+		String code_challenge = JsonValidation.getStringOrNull(json, "code_challenge");
+	    String code_challenge_method = JsonValidation.getStringOrNull(json, "code_challenge_method");
+	   					
 	    // Validate Mobile App	
 		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri"));
 		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");		
@@ -111,8 +116,8 @@ public class OAuth2 extends Controller {
 					
 		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
 		
-		OAuthCodeToken tk = new OAuthCodeToken(appInstance._id, phrase, System.currentTimeMillis(), state);
-					
+		OAuthCodeToken tk = new OAuthCodeToken(appInstance._id, phrase, System.currentTimeMillis(), state, code_challenge, code_challenge_method);
+									
 		ObjectNode obj = Json.newObject();								
 		obj.put("code", tk.encrypt());
 		obj.put("status", appInstance.status.toString());
@@ -140,6 +145,7 @@ public class OAuth2 extends Controller {
         	String refresh_token = data.get("refresh_token")[0];
         	
         	MobileAppToken refreshToken = MobileAppToken.decrypt(refresh_token);
+        	if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) return MobileAPI.invalidToken();
 			appInstanceId = refreshToken.appInstanceId;
 			
 			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "applicationId", "status"));
@@ -163,6 +169,20 @@ public class OAuth2 extends Controller {
             String client_id = data.get("client_id")[0];
     					
     		OAuthCodeToken tk = OAuthCodeToken.decrypt(code);
+    		AccessLog.log("cs:"+tk.codeChallenge);
+    		AccessLog.log("csm:"+tk.codeChallengeMethod);
+    		
+    		if (tk.codeChallenge != null) {
+    			String csa[] = data.get("code_verifier");
+    			String csm = csa!=null && csa.length>0 ? csa[0] : null;
+    			if (csm == null) throw new BadRequestException("error.internal", "invalid_grant");
+    			
+    			if (tk.codeChallengeMethod == null || tk.codeChallengeMethod.equals("plain")) {
+    			  if (!csm.equals(tk.codeChallenge)) throw new BadRequestException("error.internal", "invalid_grant");
+    			} else if (tk.codeChallengeMethod.equals("S256")) {
+    			   if (!TokenCrypto.sha256ThenBase64(csm).equals(tk.codeChallenge)) throw new BadRequestException("error.internal", "invalid_grant");    			  
+    			} else throw new BadRequestException("error.internal", "invalid_grant");
+    		}
     				
     	    // Validate Mobile App	
     		Plugin app = Plugin.getByFilename(client_id, Sets.create("type", "name", "secret"));
@@ -186,7 +206,7 @@ public class OAuth2 extends Controller {
 				
 		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
 						
-		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis()); 
+		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME); 
         MobileAppToken refresh = new MobileAppToken(appInstance.applicationId, appInstance._id, appInstance.owner, phrase, System.currentTimeMillis());
 		
         meta.put("created", refresh.created);
@@ -198,7 +218,7 @@ public class OAuth2 extends Controller {
 		obj.put("token_type", "Bearer");
 		obj.put("scope", "XXX");
 		
-		//obj.put("expires_in", MobileAppSessionToken.);
+		obj.put("expires_in", MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME / 1000l);
 		obj.put("patient", appInstance.owner.toString());
 		obj.put("refresh_token", refresh.encrypt());
 				

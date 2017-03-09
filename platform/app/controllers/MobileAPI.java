@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.http.HttpStatus;
 import org.bson.BSONObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -63,6 +64,10 @@ import utils.json.JsonValidation.JsonValidationException;
  */
 public class MobileAPI extends Controller {
 
+	
+	public final static long DEFAULT_ACCESSTOKEN_EXPIRATION_TIME = 1000l * 60l * 60l * 6l;
+	public final static long DEFAULT_REFRESHTOKEN_EXPIRATION_TIME = 1000l * 60l * 60l * 24l * 31l;
+	
 	/**
 	 * handle OPTIONS requests. 
 	 * @return status ok
@@ -71,8 +76,15 @@ public class MobileAPI extends Controller {
 	public static Result checkPreflight() {		
 		return ok();
 	}
- 	
-	
+
+	/**
+	 * accessToken expired result
+	 * @return
+	 * @throws BadRequestException
+	 */
+	public static Result invalidToken() throws BadRequestException {
+		throw new BadRequestException("error.invalid.token", "Invalid or expired authToken.", HttpStatus.SC_UNAUTHORIZED);
+	}
 	
 	/**
 	 * login function for MIDATA app
@@ -178,6 +190,7 @@ public class MobileAPI extends Controller {
 		KeyManager.instance.login(60000l);
 		if (json.has("refreshToken")) {
 			MobileAppToken refreshToken = MobileAppToken.decrypt(JsonValidation.getString(json, "refreshToken"));
+			if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) return MobileAPI.invalidToken();
 			appInstanceId = refreshToken.appInstanceId;
 			
 			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "applicationId", "status"));
@@ -254,7 +267,7 @@ public class MobileAPI extends Controller {
 	 * @throws AppException
 	 */
 	public static Result authResult(MidataId executor, MobileAppInstance appInstance, Map<String, Object> meta, String phrase) throws AppException {
-		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis()); 
+		MobileAppSessionToken session = new MobileAppSessionToken(appInstance._id, phrase, System.currentTimeMillis() + MobileAPI.DEFAULT_ACCESSTOKEN_EXPIRATION_TIME); 
         MobileAppToken refresh = new MobileAppToken(appInstance.applicationId, appInstance._id, appInstance.owner, phrase, System.currentTimeMillis());
 		
         meta.put("created", refresh.created);
@@ -358,12 +371,10 @@ public class MobileAPI extends Controller {
 
 		// decrypt authToken
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(json.get("authToken").asText());
-		if (authToken == null) {
-			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
-		}
+		if (authToken == null) return invalidToken(); 
 					
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "status"));
-        if (appInstance == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
+        if (appInstance == null) return invalidToken(); 
 		
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {
         	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Record", fields));
@@ -436,12 +447,10 @@ public class MobileAPI extends Controller {
 		
 		// decrypt authToken 
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(json.get("authToken").asText());
-		if (authToken == null) {
-			throw new BadRequestException("error.invalid.token","Invalid authToken.");
-		}
+		if (authToken == null) return invalidToken(); 
 					
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare","status"));
-        if (appInstance == null) throw new BadRequestException("error.invalid.token","Invalid authToken.");
+        if (appInstance == null) return invalidToken(); 
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
 
         MidataId executor = prepareMobileExecutor(appInstance, authToken);
@@ -574,12 +583,11 @@ public class MobileAPI extends Controller {
 		
 		// decrypt authToken 
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(json.get("authToken").asText());
-		if (authToken == null) {
-			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
-		}
+		if (authToken == null) return invalidToken(); 
+	
 					
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare", "status"));
-        if (appInstance == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
+        if (appInstance == null) return invalidToken(); 
 
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {
         	return ok(Json.toJson(Collections.EMPTY_LIST));
@@ -612,12 +620,10 @@ public class MobileAPI extends Controller {
 
 		// decrypt authToken
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(json.get("authToken").asText());
-		if (authToken == null) {
-			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
-		}
+		if (authToken == null) return invalidToken(); 
 					
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "status"));
-        if (appInstance == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
+        if (appInstance == null) return invalidToken(); 
 		
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {
         	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Consent", fields));

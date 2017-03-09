@@ -202,10 +202,10 @@ class QueryEngine {
     	MidataId userGroup = Feature_UserGroups.identifyUserGroup(cache, apsId);
     	if (userGroup != null) {
     		properties.put("usergroup", userGroup);
-    		qm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Documents(new Feature_Streams())))))))));
+    		qm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Documents(new Feature_Streams()))))))))));
     	} else {    	
     	   APS target = cache.getAPS(apsId);    	
-    	   qm = new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Documents(new Feature_Streams())))))))))));
+    	   qm = new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Documents(new Feature_Streams()))))))))))));
     	}
     	List<DBRecord> result = query(properties, fields, apsId, cache, qm);
     	
@@ -225,10 +225,12 @@ class QueryEngine {
     	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
     	  List<DBRecord> result = new ArrayList<DBRecord>();
     	  for (Map<String, Object> prop : col) {
+    		  AccessLog.logQuery(prop, fields);
     		  result.addAll(qm.query(new Query(prop, fields, cache, apsId)));
     	  }
     	  return result;
       } else {
+    	  AccessLog.logQuery(properties, fields);
     	  return qm.query(new Query(properties, fields, cache, apsId));
       }
     }
@@ -301,15 +303,22 @@ class QueryEngine {
     }
     
     protected static List<DBRecord> duplicateElimination(List<DBRecord> input) {
-    	Set<MidataId> used = new HashSet<MidataId>(input.size());
-    	List<DBRecord> filteredresult = new ArrayList<DBRecord>(input.size());
-    	for (DBRecord r : input) {
-    		if (!used.contains(r._id)) {
-    			used.add(r._id);
-    			filteredresult.add(r);
-    		}
-    	}
-    	return filteredresult;
+    	int size = input.size();
+        int out = 0;
+        {
+            final Set<DBRecord> encountered = new HashSet<DBRecord>();
+            for (int in = 0; in < size; in++) {
+                final DBRecord t = input.get(in);
+                final boolean first = encountered.add(t);
+                if (first) {
+                	input.set(out++, t);
+                }
+            }
+        }
+        while (out < size) {
+        	input.remove(--size);
+        }
+    	return input;
     }
     
     protected static List<DBRecord> onlyWithKey(List<DBRecord> input) {    	

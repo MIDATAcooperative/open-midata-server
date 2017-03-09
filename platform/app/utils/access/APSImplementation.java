@@ -34,6 +34,8 @@ class APSImplementation extends APS {
 
 	public final static String QUERY = "_query";
 	public Random rand = new Random(System.currentTimeMillis());
+	
+	private List<DBRecord> cachedRecords;
 
 	public APSImplementation(EncryptedAPS eaps) {
 		this.eaps = eaps;
@@ -207,29 +209,37 @@ class APSImplementation extends APS {
 			if (q.isStreamOnlyQuery())
 				return result;
 			
+			if (q.restrictedBy("quick")) {					
+				DBRecord record = (DBRecord) q.getProperties().get("quick");															
+				record.key = eaps.getAPSKey() != null ? eaps.getAPSKey() : null;
+				record.security = eaps.getSecurityLevel();
+				if (withOwner)
+					record.owner = eaps.getOwner(); 
+
+				result.add(record);
+				
+				return result;
+			}
+			
 			Map<String, Object> query = new HashMap<String, Object>();
 			query.put("stream", eaps.getId());
+			boolean useCache = true;
 			if (q.restrictedBy("_id")) {
+				                				
 				Set<MidataId> idRestriction = q.getMidataIdRestriction("_id");
-				if (q.restrictedBy("quick")) {
-					
-					DBRecord record = (DBRecord) q.getProperties().get("quick");		
-						
-							
-					record.key = eaps.getAPSKey() != null ? eaps.getAPSKey() : null;
-					record.security = eaps.getSecurityLevel();
-					if (withOwner)
-						record.owner = eaps.getOwner(); 
-
-					result.add(record);
-					
-					return result;
-				}
-				query.put("_id", idRestriction);
+								query.put("_id", idRestriction);
+				useCache = false;
 			}
 			//query.put("direct", Boolean.TRUE);
-			q.addMongoTimeRestriction(query, false);
-			List<DBRecord> directResult = new ArrayList<DBRecord>(DBRecord.getAll(query, q.getFieldsFromDB()));
+			useCache = !q.addMongoTimeRestriction(query, false) && useCache;
+			List<DBRecord> directResult;
+			
+			if (useCache && cachedRecords != null) {
+				result.addAll(cachedRecords);
+				return result;
+			}
+			
+			directResult = new ArrayList<DBRecord>(DBRecord.getAll(query, q.getFieldsFromDB()));
 			for (DBRecord record : directResult) {
 				record.key = eaps.getAPSKey() != null ? eaps.getAPSKey() : null;
 				record.security = eaps.getSecurityLevel();
@@ -237,6 +247,7 @@ class APSImplementation extends APS {
 					record.owner = eaps.getOwner();
 			}
 			AccessLog.log("direct query stream=" + eaps.getId()+" #size="+directResult.size());
+			if (useCache && withOwner) cachedRecords = directResult;
 			result.addAll(directResult);
 			return result;
 		}
@@ -264,10 +275,10 @@ class APSImplementation extends APS {
 			for (BasicBSONObject row : rows) {
 				BasicBSONObject map = APSEntry.getEntries(row);
 				// AccessLog.debug("format:" + format+" map="+map.toString());
-				for (String id : map.keySet()) {
-					BasicBSONObject target = (BasicBSONObject) map.get(id);
+				for (Map.Entry<String, Object> entry : map.entrySet()) {
+					BasicBSONObject target = (BasicBSONObject) entry.getValue();
 					if (satisfies(target, q)) {
-						result.add(createRecordFromAPSEntry(id, row, target, withOwner));
+						result.add(createRecordFromAPSEntry(entry.getKey(), row, target, withOwner));
 					}
 				}
 			}

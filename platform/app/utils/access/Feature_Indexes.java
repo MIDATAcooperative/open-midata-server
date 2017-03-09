@@ -137,8 +137,10 @@ private Feature next;
 				
 				   int directSize = 0;
 				   if (directQuery) {
+					   long time = System.currentTimeMillis();
 					   List<DBRecord> partresult = new ArrayList(DBRecord.getAll(readRecs, queryFields));
-						
+					   AccessLog.log("db time:"+(System.currentTimeMillis() - time));
+					   
 					   Query q3 = new Query(q, CMaps.map("strict", "true"), aps);
 					   partresult = Feature_Prefetch.lookup(q3, partresult, next);
 					   result.addAll(partresult);
