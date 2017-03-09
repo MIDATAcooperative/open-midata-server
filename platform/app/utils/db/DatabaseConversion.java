@@ -6,6 +6,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +20,7 @@ import com.mongodb.DBObject;
 import models.JsonSerializable;
 import models.MidataId;
 import models.Model;
+import utils.AccessLog;
 
 /**
  * Converter between data model classes and BSON objects
@@ -101,39 +103,68 @@ public class DatabaseConversion {
 	 */
 	public <T extends JsonSerializable> T toModel(Class<T> modelClass, DBObject dbObject)
 			throws DatabaseConversionException {
+		Converter[] conv = transformations.get(modelClass);
+		if (conv == null) conv = build(modelClass);
+		return toModel(modelClass, conv, dbObject);
+		/*
 		T modelObject;
 		try {
 			modelObject = modelClass.newInstance();
+		
+		for (Field field : modelClass.getFields()) {
+			if (!field.getName().equals("_id")) {
+				final Object value = dbObject.get(field.getName());
+				if (value != null) field.set(modelObject, convert(modelClass, field.getName(), field.getGenericType(), resolveEnums(field.getType(), value)));			
+			}
+		}
+		if (modelObject instanceof Model) {
+			((Model) modelObject).set_id(dbObject.get("_id"));			
+		}
+		
 		} catch (InstantiationException e) {
 			throw new DatabaseConversionException(e);
 		} catch (IllegalAccessException e) {
 			throw new DatabaseConversionException(e);
-		}
-		for (Field field : modelClass.getFields()) {
-			if (dbObject.keySet().contains(field.getName())) {
-				try {
-					field.set(modelObject, convert(modelClass, field.getName(), field.getGenericType(), resolveEnums(field.getType(), dbObject.get(field.getName()))));
-				} catch (IllegalArgumentException e) {
-					throw new DatabaseConversionException(e);
-				} catch (IllegalAccessException e) {
-					throw new DatabaseConversionException(e);
-				}
+		} catch (IllegalArgumentException e) {
+			throw new DatabaseConversionException(e);
+		} 
+		
+		return modelObject;*/
+	}
+	
+	public <T extends JsonSerializable> T toModel(Class<T> modelClass, Converter[] converters, DBObject dbObject)
+			throws DatabaseConversionException {
+		T modelObject;
+		try {
+			modelObject = modelClass.newInstance();
+			for (Converter conv : converters) {
+				final Object value = dbObject.get(conv.fieldName);
+				if (value != null) conv.field.set(modelObject, conv.convert(value));
 			}
-		}
-		if (modelObject instanceof Model) {
-			((Model) modelObject).set_id(dbObject.get("_id"));
-		}
+		    if (modelObject instanceof Model) {
+			  ((Model) modelObject).set_id(dbObject.get("_id"));			
+		    }		
+		} catch (InstantiationException e) {
+			throw new DatabaseConversionException(e);
+		} catch (IllegalAccessException e) {
+			throw new DatabaseConversionException(e);
+		} catch (IllegalArgumentException e) {
+			throw new DatabaseConversionException(e);
+		} 
+		
 		return modelObject;
 	}
 
 	/**
 	 * Converts a set of database objects to models.
 	 */
-	public <T extends Model> Set<T> toModel(Class<T> modelClass, Set<DBObject> dbObjects)
+	public <T extends Model> Set<T> toModel(Class<T> modelClass, Iterator<DBObject> dbObjects)
 			throws DatabaseConversionException {
+		Converter[] conv = transformations.get(modelClass);
+		if (conv == null) conv = build(modelClass);
 		Set<T> models = new HashSet<T>();
-		for (DBObject dbObject : dbObjects) {
-			models.add(toModel(modelClass, dbObject));
+		while (dbObjects.hasNext()) {		
+		  models.add(toModel(modelClass, conv, dbObjects.next()));
 		}
 		return models;
 	}
@@ -144,12 +175,12 @@ public class DatabaseConversion {
 	private Object convert(Class model, String path, Type type, Object value) throws DatabaseConversionException {
 		
 		if (type instanceof ParameterizedType) {
-			ParameterizedType parameterizedType = (ParameterizedType) type;			
-			if (parameterizedType.getRawType().equals(Map.class)) {
+			Type rawType = ((ParameterizedType) type).getRawType();			
+			if (rawType.equals(Map.class)) {
 				return convertToMap(model, path, type, value);
-			} else if (parameterizedType.getRawType().equals(Set.class)) {
+			} else if (rawType.equals(Set.class)) {
 				return convertToSet(model, path, type, value);
-			} else if (parameterizedType.getRawType().equals(List.class)) {
+			} else if (rawType.equals(List.class)) {
 				return convertToList(model, path, type, value);
 			}
 		}
@@ -222,4 +253,218 @@ public class DatabaseConversion {
 		}
 	}
 
+	private Map<Class, Converter[]> transformations = new HashMap<Class, Converter[]>();
+	
+	private Converter[] build(Class modelClass) {
+		AccessLog.log("build: "+modelClass.getName());
+		Converter[] c = new Converter[0];
+		ArrayList<Converter> allConv = new ArrayList<Converter>();
+		for (Field field : modelClass.getFields()) {
+			if (!field.getName().equals("_id")) {
+				final String name = field.getName();
+				Converter conv = build(field.getType(), field.getGenericType());
+												
+				conv.fieldName = name;
+				conv.field = field;
+				allConv.add(conv);									
+			}
+		}
+		Converter[] result = allConv.toArray(c);
+		transformations.put(modelClass, result);
+		return result;
+	}
+	
+	private Converter build(Class type, Type genType) {
+		Converter conv = null;
+		
+		if (type.isEnum()) {
+			conv = new ConvertEnum(type);
+		}
+		
+		if (genType instanceof ParameterizedType) {
+			Type rawType = ((ParameterizedType) genType).getRawType();																				
+			
+			if (rawType.equals(Map.class)) {
+				Type valueType = ((ParameterizedType) genType).getActualTypeArguments()[1];
+				Class<?> cl = valueType instanceof Class ? (Class<?>) valueType : Object.class;
+				Converter subconv = build(cl, valueType);
+				conv = new ConvertMap(subconv);
+			} else if (rawType.equals(Set.class)) {
+				Type valueType = ((ParameterizedType) genType).getActualTypeArguments()[0];
+				Class<?> cl = valueType instanceof Class ? (Class<?>) valueType : Object.class;
+				Converter subconv = build(cl, valueType);
+				conv = new ConvertSet(subconv);
+			} else if (rawType.equals(List.class)) {
+				Type valueType = ((ParameterizedType) genType).getActualTypeArguments()[0];
+				Class<?> cl = valueType instanceof Class ? (Class<?>) valueType : Object.class;
+				Converter subconv = build(cl, valueType);
+				conv = new ConvertList(subconv);						
+			}
+		}
+		if (genType instanceof Class) {
+			Class c = (Class) genType;
+			if (JsonSerializable.class.isAssignableFrom(c)) {
+			  conv = new ConvertType(c);
+			}			
+		}
+		
+		if (conv == null) conv = new ConvertStd();		
+		return conv;
+	}
+	
+	abstract class Converter {
+		String fieldName;
+		Field field;
+		abstract Object convert(Object input) throws DatabaseConversionException;
+	}
+	
+	class ConvertEnum extends Converter {
+		private Class type;
+		
+		ConvertEnum(Class type) { this.type = type; }
+		
+		public Object convert(Object input) throws DatabaseConversionException {
+			return Enum.valueOf(type, (String) input);
+		}		
+	}
+	
+	class ConvertType extends Converter {
+		private Class c;
+		
+		ConvertType(Class type) { this.c = type; }
+		
+		public Object convert(Object input) throws DatabaseConversionException {
+			return toModel(c, (DBObject) input);
+		}		
+	}
+	
+	class ConvertMap extends Converter {		
+		private Converter conv;
+		
+		ConvertMap(Converter conv) { 			
+			this.conv = conv; 
+		}
+		
+		public Object convert(Object input) throws DatabaseConversionException {
+			if (input == null) return null;
+			BasicDBObject dbObject = (BasicDBObject) input;
+			
+			Map<String, Object> map = new HashMap<String, Object>();
+			for (Map.Entry<String,Object> entry : dbObject.entrySet()) {										
+				map.put(entry.getKey(), conv.convert(entry.getValue()));
+			}
+			return map;			
+		}		
+	}
+	
+	class ConvertMapFast extends Converter {		
+		
+		ConvertMapFast() {  }
+		
+		public Object convert(Object input) throws DatabaseConversionException {
+			if (input == null) return null;
+			BasicDBObject dbObject = (BasicDBObject) input;			
+			return new HashMap<String, Object>(dbObject);			
+		}		
+	}
+	
+	class ConvertList extends Converter {		
+		private Converter conv;
+		
+		ConvertList(Converter conv) { 		
+			this.conv = conv;
+		}
+		
+		public Object convert(Object input) throws DatabaseConversionException {
+			if (input == null) return null;
+			BasicDBList dbList = (BasicDBList) input;
+						
+			List<Object> list = new ArrayList<Object>(dbList.size());		
+			for (Object element : dbList) {
+				list.add(conv.convert(element));
+			}
+			
+			return list;			
+		}		
+	}
+	
+	class ConvertListFast extends Converter {		
+		
+		ConvertListFast() {  }
+		
+		public Object convert(Object input) throws DatabaseConversionException {
+			if (input == null) return null;
+			BasicDBList dbList = (BasicDBList) input;			
+			return new ArrayList<Object>(dbList);			
+		}		
+	}
+	
+	class ConvertSet extends Converter {		
+		private Converter conv;
+		
+		ConvertSet(Converter conv) { 			
+			this.conv = conv; 
+		}
+		
+		public Object convert(Object input) throws DatabaseConversionException {
+			if (input == null) return null;
+			BasicDBList dbList = (BasicDBList) input;
+						
+			Set<Object> list = new HashSet<Object>();		
+			for (Object element : dbList) {
+				list.add(conv.convert(element));
+			}
+			
+			return list;			
+		}		
+	}
+	
+	class ConvertSetFast extends Converter {		
+		
+		ConvertSetFast() {  }
+		
+		public Object convert(Object input) throws DatabaseConversionException {
+			if (input == null) return null;
+			BasicDBList dbList = (BasicDBList) input;			
+			return new HashSet<Object>(dbList);			
+		}		
+	}
+				
+	
+	class ConvertStd extends Converter {
+				
+		ConvertStd() {  }
+		
+		public Object convert(Object input) throws DatabaseConversionException {
+			if (input instanceof ObjectId) return new MidataId(input.toString());
+			return input;
+		}		
+	}
+	
+	/*
+	class ConvertMap implements Converter {
+	 	
+	}
+	
+	if (type instanceof ParameterizedType) {
+		Type rawType = ((ParameterizedType) type).getRawType();			
+		if (rawType.equals(Map.class)) {
+			return convertToMap(model, path, type, value);
+		} else if (rawType.equals(Set.class)) {
+			return convertToSet(model, path, type, value);
+		} else if (rawType.equals(List.class)) {
+			return convertToList(model, path, type, value);
+		}
+	}
+	if (type instanceof Class) {
+		Class c = (Class) type;
+		if (JsonSerializable.class.isAssignableFrom(c)) {
+		  return toModel(c, (DBObject) value);
+		}			
+	}
+	if (value instanceof ObjectId) return new MidataId(value.toString());
+	return value;
+	*/
+	
+	
 }

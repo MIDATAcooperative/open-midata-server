@@ -14,6 +14,7 @@ import org.hl7.fhir.instance.model.api.IIdType;
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
@@ -26,6 +27,7 @@ import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.Member;
 import models.MidataId;
 import models.Record;
@@ -70,6 +72,26 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		processResource(record, p);		
 		return p;    	
     }
+    
+    @History()
+    @Override
+	public List<Patient> getHistory(@IdParam IIdType theId) throws AppException {
+    	String id = theId.getIdPart();
+    	MidataId targetId = new MidataId(id);
+    	
+	   List<Record> records = RecordManager.instance.list(info().executorId, info().targetAPS, CMaps.map("owner", targetId).map("format",  "fhir/Patient").map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
+	   if (records.isEmpty()) throw new ResourceNotFoundException(theId); 
+	   
+	   List<Patient> result = new ArrayList<Patient>(records.size());
+	   IParser parser = ctx().newJsonParser();
+	   for (Record record : records) {		   
+		   Patient p = parser.parseResource(getResourceType(), record.data.toString());
+			processResource(record, p);
+			result.add(p);
+	   }
+	   
+	   return result;
+	}
  
    
     @Search()

@@ -326,7 +326,7 @@ public class ConditionResourceProvider extends ResourceProvider<Condition> imple
 		super.processResource(record, p);
 		
 		if (p.getSubject().isEmpty()) {
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner));
+			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
 	}
 

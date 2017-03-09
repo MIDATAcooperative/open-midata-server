@@ -40,6 +40,7 @@ import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.Create;
+import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
@@ -73,6 +74,7 @@ import utils.ErrorReporter;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
+import utils.collections.CMaps;
 import utils.collections.ReferenceTool;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -128,14 +130,36 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 	 * @return Resource read from database
 	 * @throws AppException
 	 */
-	@Read()
+	@Read(version=true)
 	public T getResourceById(@IdParam IIdType theId) throws AppException {
-		Record record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new MidataId(theId.getIdPart()));
+		Record record;
+		if (theId.hasVersionIdPart()) {
+			List<Record> result = RecordManager.instance.list(info().executorId, info().targetAPS, CMaps.map("_id", new MidataId(theId.getIdPart())).map("version", theId.getVersionIdPart()), RecordManager.COMPLETE_DATA);
+			record = result.isEmpty() ? null : result.get(0);
+		} else {
+		    record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new MidataId(theId.getIdPart()));
+		}
 		if (record == null) throw new ResourceNotFoundException(theId);					
 		IParser parser = ctx().newJsonParser();
 		T p = parser.parseResource(getResourceType(), record.data.toString());
 		processResource(record, p);		
 		return p;
+	}
+	
+	@History()
+	public List<T> getHistory(@IdParam IIdType theId) throws AppException {
+	   List<Record> records = RecordManager.instance.list(info().executorId, info().targetAPS, CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
+	   if (records.isEmpty()) throw new ResourceNotFoundException(theId); 
+	   
+	   List<T> result = new ArrayList<T>(records.size());
+	   IParser parser = ctx().newJsonParser();
+	   for (Record record : records) {		   
+			T p = parser.parseResource(getResourceType(), record.data.toString());
+			processResource(record, p);
+			result.add(p);
+	   }
+	   
+	   return result;
 	}
 	
 	/**
@@ -341,7 +365,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 		  Plugin creatorApp = Plugin.getById(record.app);		
 		  meta.addExtension("app", new Coding("http://midata.coop/apps", creatorApp.filename, creatorApp.name));
 		}
-		if (record.creator != null) meta.addExtension("creator", FHIRTools.getReferenceToUser(record.creator));
+		if (record.creator != null) meta.addExtension("creator", FHIRTools.getReferenceToUser(record.creator, record.creator.equals(record.owner) ? record.ownerName : null ));
 				
 		resource.getMeta().addExtension(meta);
 	}
@@ -462,7 +486,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 	}
 	
 	public void clean(T resource) {
-		
+		resource.getMeta().setExtension(null);
 	}
 	
 	public void prepare(Record record, T theResource) throws AppException { }

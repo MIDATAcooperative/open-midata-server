@@ -206,7 +206,7 @@ public class GoalResourceProvider extends ResourceProvider<Goal> implements IRes
 		super.processResource(record, p);
 		
 		if (p.getSubject().isEmpty()) {
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner));
+			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
 	}
 	

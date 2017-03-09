@@ -374,7 +374,7 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		super.processResource(record, p);
 		
 		if (p.getFor().isEmpty()) {			
-			p.setFor(FHIRTools.getReferenceToUser(record.owner));
+			p.setFor(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
 	}
 

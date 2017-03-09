@@ -161,7 +161,8 @@ public class Feature_AccountQuery extends Feature {
 				consents = new HashSet<Consent>(Circle.getAllActiveByMember(q.getCache().getAccountOwner()));
 			else {
 				long limit = 0;
-				if (q.restrictedBy("updated-after")) limit = q.getMinUpdatedTimestamp();
+				if (q.restrictedBy("created-after")) limit = q.getMinCreatedTimestamp();
+				if (q.restrictedBy("updated-after")) limit = q.getMinUpdatedTimestamp();				
 				if (q.restrictedBy("shared-after")) limit = q.getMinSharedTimestamp();
 				if (limit == 0) {
 				  consents = Consent.getAllActiveByAuthorized(q.getCache().getAccountOwner());
