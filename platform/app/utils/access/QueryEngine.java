@@ -225,10 +225,12 @@ class QueryEngine {
     	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
     	  List<DBRecord> result = new ArrayList<DBRecord>();
     	  for (Map<String, Object> prop : col) {
+    		  AccessLog.logQuery(prop, fields);
     		  result.addAll(qm.query(new Query(prop, fields, cache, apsId)));
     	  }
     	  return result;
       } else {
+    	  AccessLog.logQuery(properties, fields);
     	  return qm.query(new Query(properties, fields, cache, apsId));
       }
     }

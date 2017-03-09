@@ -195,9 +195,8 @@ public class MongoDatabase extends Database {
 			DBObject projection = toDBObject(fields);
 			if (logQueries) AccessLog.logDB("all "+collection+" "+query.toString());
 			DBCursor cursor = getCollection(collection).find(query, projection);
-			if (limit!=0) cursor = cursor.limit(limit);
-			Set<DBObject> dbObjects = CollectionConversion.toSet(cursor);
-			return conversion.toModel(modelClass, dbObjects);
+			if (limit!=0) cursor = cursor.limit(limit);			
+			return conversion.toModel(modelClass, cursor.iterator());
 		} catch (MongoException e) {
 			throw new DatabaseException(e);
 		} catch (DatabaseConversionException e) {

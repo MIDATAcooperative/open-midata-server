@@ -60,13 +60,14 @@ public class AccessLog {
 	 * @param properties restrictions of query
 	 * @param fields fields to be queries
 	 */
-	public static void logQuery(Map<String,Object> properties, Set<String> fields) {
+	public static void logQuery(Map<String,Object> properties, Set<String> fields) {	 
+		
 	   StringBuilder s = new StringBuilder();
 	   boolean first = true;
-	   for (String key : properties.keySet()) {
-		   Object v = properties.get(key);
+	   for (Map.Entry<String,Object> entry : properties.entrySet()) {
+		   Object v = entry.getValue();
 		   if (first) first = false; else s.append(",");
-		   s.append(key);
+		   s.append(entry.getKey());
 		   s.append("=");
 		   s.append(v != null ? v.toString() : "null");		   
 	   }
