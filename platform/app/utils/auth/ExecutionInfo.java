@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import controllers.MobileAPI;
 import models.Consent;
 import models.Member;
 import models.MidataId;
@@ -97,10 +98,8 @@ public class ExecutionInfo {
 	
 	public static ExecutionInfo checkMobileToken(String token, boolean allowInactive) throws AppException {		
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(token);
-		if (authToken == null) {
-			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
-		}
-			
+		if (authToken == null) MobileAPI.invalidToken(); 
+				
 		return checkMobileToken(authToken, allowInactive);		
 	}
 	
@@ -108,7 +107,7 @@ public class ExecutionInfo {
 						
 		AccessLog.logBegin("begin check 'mobile' type session token");
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare", "status"));
-        if (appInstance == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
+        if (appInstance == null) MobileAPI.invalidToken(); 
 
         if (!allowInactive && !appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
 

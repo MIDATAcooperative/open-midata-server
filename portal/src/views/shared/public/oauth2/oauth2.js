@@ -18,7 +18,7 @@ angular.module('portal')
 		$scope.status.doBusy(apps.getAppInfo($scope.params.client_id))
 		.then(function(results) {
 			$scope.app = results.data;
-			oauth.init($scope.params.client_id, $scope.params.redirect_uri, $scope.params.state);
+			oauth.init($scope.params.client_id, $scope.params.redirect_uri, $scope.params.state, $scope.params.code_challenge, $scope.params.code_challenge_method);
 			$scope.device = oauth.getDeviceShort();
 			$scope.consent = "App: "+$scope.app.name+" (Device: "+$scope.device+")";
 		});

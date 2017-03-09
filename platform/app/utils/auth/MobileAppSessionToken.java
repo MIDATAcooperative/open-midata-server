@@ -26,18 +26,18 @@ public class MobileAppSessionToken {
 	public String passphrase;
 	
 	/**
-	 * the creation timestamp of the token
+	 * the expiration timestamp of the token
 	 */
-	public long created;
+	public long expiration;
 
-	public MobileAppSessionToken(MidataId appInstanceId, String phrase, long created) {
+	public MobileAppSessionToken(MidataId appInstanceId, String phrase, long expirationTime) {
 		this.appInstanceId = appInstanceId;
 		this.passphrase = phrase;
-		this.created = created;
+		this.expiration = expirationTime;
 	}
 	
 	public String encrypt() throws InternalServerException {
-		Map<String, Object> map = CMaps.map("a", appInstanceId.toString()).map("p", passphrase).map("c", created);						
+		Map<String, Object> map = CMaps.map("a", appInstanceId.toString()).map("p", passphrase).map("c", expiration);						
 		String json = Json.stringify(Json.toJson(map));
 		return TokenCrypto.encryptToken(json);
 	}
@@ -60,8 +60,9 @@ public class MobileAppSessionToken {
 		try {			
 			MidataId appInstanceId = new MidataId(json.get("a").asText());
 			String phrase = json.get("p").asText();	
-			long created = json.get("c").asLong();
-			return new MobileAppSessionToken(appInstanceId, phrase, created);
+			long expirationTime = json.get("c").asLong();
+		    if (expirationTime < System.currentTimeMillis()) return null;
+			return new MobileAppSessionToken(appInstanceId, phrase, expirationTime);
 		} catch (Exception e) {
 			return null;
 		}

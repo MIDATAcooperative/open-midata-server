@@ -3,6 +3,7 @@ package utils.auth;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.BadPaddingException;
@@ -42,6 +43,19 @@ public class TokenCrypto {
 			throw new InternalServerException("error.internal", e);
 		} catch (InvalidKeyException e2) {
 			throw new InternalServerException("error.internal", e2);
+		}
+	}
+	
+	public static String sha256ThenBase64(String input) throws InternalServerException  {
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			md.update(input.getBytes("ASCII")); 
+			byte[] digest = md.digest();
+			return Base64.encodeBase64URLSafeString(digest);
+		} catch (NoSuchAlgorithmException e) {
+			throw new InternalServerException("error.internal", e);
+		} catch (UnsupportedEncodingException e7) {
+			throw new InternalServerException("error.internal", e7);
 		}
 	}
 	
