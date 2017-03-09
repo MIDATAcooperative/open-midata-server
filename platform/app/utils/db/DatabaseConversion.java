@@ -171,7 +171,7 @@ public class DatabaseConversion {
 
 	/**
 	 * Converts an object retrieved from the database to the corresponding type.
-	 */
+	 *//*
 	private Object convert(Class model, String path, Type type, Object value) throws DatabaseConversionException {
 		
 		if (type instanceof ParameterizedType) {
@@ -192,11 +192,11 @@ public class DatabaseConversion {
 		}
 		if (value instanceof ObjectId) return new MidataId(value.toString());
 		return value;
-	}
+	}*/
 
 	/**
 	 * Converts a BasicDBObject into a map (keys are always strings because of JSON serialization).
-	 */
+	 *//*
 	private Map<String, Object> convertToMap(Class model, String path, Type type, Object value) throws DatabaseConversionException {
 		if (value == null) return null;
 		BasicDBObject dbObject = (BasicDBObject) value;
@@ -212,11 +212,11 @@ public class DatabaseConversion {
 		} else {
 			return new HashMap<String, Object>(dbObject);
 		}
-	}
+	}*/
 
 	/**
 	 * Converts a BasicDBList into a set.
-	 */
+	 *//*
 	private Set<Object> convertToSet(Class model, String path, Type type, Object value) throws DatabaseConversionException {
 		if (value == null) return null;
 		BasicDBList dbList = (BasicDBList) value;		
@@ -232,11 +232,11 @@ public class DatabaseConversion {
 		} else {
 			return new HashSet<Object>(dbList);
 		}
-	}
+	}*/
 
 	/**
 	 * Converts a BasicDBList into a list.
-	 */
+	 *//*
 	private List<Object> convertToList(Class model, String path, Type type, Object value) throws DatabaseConversionException {
 		if (value==null) return null;
 		BasicDBList dbList = (BasicDBList) value;
@@ -251,7 +251,7 @@ public class DatabaseConversion {
 		} else {
 			return new ArrayList<Object>(dbList);
 		}
-	}
+	}*/
 
 	private Map<Class, Converter[]> transformations = new HashMap<Class, Converter[]>();
 	
@@ -440,31 +440,6 @@ public class DatabaseConversion {
 			return input;
 		}		
 	}
-	
-	/*
-	class ConvertMap implements Converter {
-	 	
-	}
-	
-	if (type instanceof ParameterizedType) {
-		Type rawType = ((ParameterizedType) type).getRawType();			
-		if (rawType.equals(Map.class)) {
-			return convertToMap(model, path, type, value);
-		} else if (rawType.equals(Set.class)) {
-			return convertToSet(model, path, type, value);
-		} else if (rawType.equals(List.class)) {
-			return convertToList(model, path, type, value);
-		}
-	}
-	if (type instanceof Class) {
-		Class c = (Class) type;
-		if (JsonSerializable.class.isAssignableFrom(c)) {
-		  return toModel(c, (DBObject) value);
-		}			
-	}
-	if (value instanceof ObjectId) return new MidataId(value.toString());
-	return value;
-	*/
 	
 	
 }
