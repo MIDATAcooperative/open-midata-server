@@ -104,7 +104,8 @@ public class ExecutionInfo {
 	}
 	
 	public static ExecutionInfo checkMobileToken(MobileAppSessionToken authToken, boolean allowInactive) throws AppException {		
-						
+		if (authToken == null) MobileAPI.invalidToken();				
+		
 		AccessLog.logBegin("begin check 'mobile' type session token");
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare", "status"));
         if (appInstance == null) MobileAPI.invalidToken(); 
