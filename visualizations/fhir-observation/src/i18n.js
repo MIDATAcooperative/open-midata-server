@@ -5,7 +5,7 @@ var en = {
 	"date" : "Date:",
 	"status" : "Status:",
 	"add_btn" : "Add",
-	"back_btn" : "Back",
+	"back_btn" : "Timeline View",
 	
 	"later" : ">>",
 	"earlier" : "<<",

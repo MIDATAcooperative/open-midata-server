@@ -476,7 +476,8 @@
     "plugins" : "Plugins",
     "no_spotlighted_plugins" : "There are no spotlighted plugins yet.",
     "plugins_you_may_like" : "Plugins you may like",
-    "no_recommendations" : "We have no recommendations for you yet."
+    "no_recommendations" : "We have no recommendations for you yet.",
+    "install_now_btn" : "Use Now"
   },
   
   "providersearch" : {
@@ -538,8 +539,10 @@
     "change_password_btn" : "Change Password",
  	"change_passphrase_btn" : "Change Passphrase",
 	"repair_account_btn" : "Repair Account",
+	"reset_spaces_btn" : "Reset Portal",
 	"delete_records_btn" : "Delete Records",
 	"account_repaired" : "Your account has been repaired.",
+	"spaces_resetted" : "Your configuration has been resetted.",
 	"settings" : "Settings",
 	"address" : "Address and Contact Info",
 	"change_address_btn" : "Change Address",
@@ -744,7 +747,9 @@
 	"study_records" : "Shared records:",
 	"addmore" : "Add more",
 	"view_btn" : "View",
-	"install_btn" : "Add more"
+	"install_btn" : "Add more",
+	"observations" : "Measures",
+	"calendar" : "Calendar"
    },
    
    "measure" : {

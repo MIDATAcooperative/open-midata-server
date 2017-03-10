@@ -1,0 +1,147 @@
+<div ng-controller="PreviewCtrl">
+	<div class="container-fluid">
+	   
+		<div class="row">
+			<div ng-repeat="entry in previews" class="col-sm-6" style="min-height:600px">
+				<div>
+					<div class="pull-left" style="margin-right:10px">
+						<img width="40" ng-src="{{ 'images/'+entry.icon }}">
+					</div>
+					<div class="pull-right" ng-if="entry.stars != undefined">
+						<span ng-repeat="x in entry.starsFull track by $index" style="color: #a0a010; font-size: 20px" class="glyphicon glyphicon-star"></span>						
+                        <span ng-repeat="x in entry.starsEmpty track by $index" style="color: #a0a010; font-size: 20px" class="glyphicon glyphicon-star-empty"></span>
+					</div>
+					<div ng-if="entry.trend" class="pull-right col-xs-4">
+					   <div >
+						<div class="pull-left" >
+							<span ng-show="entry.trend.value > 0" style="color: green; font-size: 30px;" class="glyphicon glyphicon-arrow-up"></span>
+							<span ng-show="entry.trend.value < 0" style="color: red; font-size: 30px;" class="glyphicon glyphicon-arrow-down"></span>
+						</div>
+						<div translate="trend"></div><div><b><span ng-show="entry.trend.value > 0">+</span>{{ entry.trend.value }} {{ entry.last.unit }}</b></div>
+					   </div>
+					</div>
+					
+					<div class="lead" translate="{{ entry.display }}"></div>
+				</div><div>
+					<div ng-if="entry.count" class="row">					  
+					  <div class="col-xs-3">
+					    <div class="seperate">
+					    <div translate="last"></div>
+					    <div class="value" ng-style="checkGoal(entry.last,entry.goal)">{{ entry.last.value }} {{ entry.last.unit }}</div>
+					    <div class="small">{{ entry.last.date | date }}</div>
+					    </div>
+					  </div>
+		      		  <div class="col-xs-3">
+					    <div class="seperate">
+					    <div translate="best"></div>
+					    <div class="value" ng-style="checkGoal(entry.best,entry.goal)">{{ entry.best.value }} {{ entry.best.unit }}</div>
+					    <div class="small">{{ entry.best.date | date }}</div>
+					    </div>
+					  </div>
+			 		  <div class="col-xs-3">
+					    <div class="seperate">
+					    <div translate="worst"></div>
+					    <div class="value" ng-style="checkGoal(entry.worst,entry.goal)">{{ entry.worst.value }} {{ entry.worst.unit }}</div>
+					    <div class="small">{{ entry.worst.date | date }}</div>
+					    </div>
+					  </div>
+		    		  <div class="col-xs-3">
+					    <div class="">
+					    <div translate="avg"></div>
+					    <div class="value" ng-style="checkGoal(entry.avg,entry.goal)">{{ (entry.avg.value / entry.count).toFixed(1) }} {{ entry.last.unit }}</div>
+					    <div class="small">&nbsp;</div>
+					    </div>
+					  </div>
+		 		              						
+					</div>
+					
+					<ul style="margin-top:20px;margin-bottom:10px" class="nav nav-pills small">
+					  <li ng-class="{'active' : entry.tab == 'intro'}"><a href="javascript:" ng-click="entry.tab = 'intro';" translate="menu_intro"></a></li> 
+					  <li ng-class="{'active' : entry.tab == 'chart'}" ng-show="entry.labels.length > 1"><a href="javascript:" ng-click="entry.tab = 'chart';" translate="menu_chart"></a></li>
+					  <li ng-class="{'active' : entry.tab == 'goals'}" ng-show="entry.goal"><a href="javascript:" ng-click="entry.tab = 'goals';" translate="menu_goals"></a></li>
+					  <li ng-class="{'active' : entry.tab == 'compare'}" ng-show="entry.recs.length"><a href="javascript:" ng-click="entry.tab = 'compare';" translate="menu_compare"></a></li>
+					  <li ng-class="{'active' : entry.tab == 'other'}" ng-show="entry.recs.length"><a href="javascript:" ng-click="entry.tab = 'other';" translate="menu_other"></a></li>
+                    </ul>
+
+                    <div class="row" style="margin-bottom:10px">
+                      <div class="col-xs-12" ng-show="entry.tab == 'chart'">
+                        <canvas id="line" class="chart chart-line" chart-data="entry.chartdat" chart-labels="entry.labels" legend="true" chart-series="entry.series">
+                        </canvas>
+                      </div>
+                      <div class="col-xs-12" ng-show="entry.tab == 'intro'">
+                        <div style="position:relative;width:100%;overflow:hidden;">
+                          <div style="position:absolute;z-index:10;font-size:200%;text-align:center;width:100%;color:white;top:50px;">
+                            <div style="background: rgba(0, 0, 0, 0.65); padding: 4px 8px; white;-webkit-filter: blur(12px); filter: blur(12px); position:absolute;width:100%;height:100%" ng-show="entry.hint"></div>
+                            <div style="color: white;z-index:15;position:relative" ng-show="entry.hint" translate="{{entry.hint}}">
+                            </div>
+                          </div>
+		                  <img class="round" style="width:100%;height:auto;padding:0px" ng-src="{{ 'images/'+entry.placeholder}}">
+		                </div>
+		              </div>
+		              <div class="col-xs-12" ng-show="entry.tab == 'compare'">
+		                <p style="font-size:30px">Sorry, Comparison with others not implemented yet.</p>
+		              </div>
+		              <div class="col-xs-12" ng-show="entry.tab == 'goals'">
+		                
+		                <p translate="your_goal"></p>
+		                <div class="form-inline">
+		                <select class="form-control" ng-model="entry.goal.type"><option value="min" translate="min"></option><option value="max" translate="max"></option></select>
+		                <div class="input-group">
+		                  <input class="form-control" type="text" ng-model="entry.goal.value">
+		                  <span class="input-group-addon">{{ entry.last.unit }}</span>
+		                </div>
+		                <button class="btn btn-sm btn-primary" ng-click="saveGoal(entry);">save</button>
+		                </div>
+		                <p style="margin-top:10px" translate="your_performance"></p>
+		                <div>
+		                  <div>
+		                     <span ng-show="check(entry.best,entry.goal)" style="color: #a0a010; font-size: 20px" class="glyphicon glyphicon-star"></span>		                 			
+                             <span ng-hide="check(entry.best,entry.goal)" style="color: #a0a010; font-size: 20px" class="glyphicon glyphicon-star-empty"></span>
+                             <span translate="star_best_entry"></span>
+                          </div>
+                          <div>
+		                     <span ng-show="check(entry.avg,entry.goal)" style="color: #a0a010; font-size: 20px" class="glyphicon glyphicon-star"></span>		                 			
+                             <span ng-hide="check(entry.avg,entry.goal)" style="color: #a0a010; font-size: 20px" class="glyphicon glyphicon-star-empty"></span>
+                             <span translate="star_avg_entry"></span>
+                          </div>
+                          <div>
+		                     <span ng-show="check(entry.worst,entry.goal)" style="color: #a0a010; font-size: 20px" class="glyphicon glyphicon-star"></span>		                 			
+                             <span ng-hide="check(entry.worst,entry.goal)" style="color: #a0a010; font-size: 20px" class="glyphicon glyphicon-star-empty"></span>
+                             <span translate="star_worst_entry"></span>
+                          </div>
+                          <div>
+		                     <span ng-show="check(entry.last,entry.goal)" style="color: #a0a010; font-size: 20px" class="glyphicon glyphicon-star"></span>		                 			
+                             <span ng-hide="check(entry.last,entry.goal)" style="color: #a0a010; font-size: 20px" class="glyphicon glyphicon-star-empty"></span>
+                             <span translate="star_last_entry"></span>
+                          </div>
+                          <div>
+		                     <span ng-show="entry.trend.value >= 0" style="color: #a0a010; font-size: 20px" class="glyphicon glyphicon-star"></span>		                 			
+                             <span ng-hide="entry.trend.value >= 0" style="color: #a0a010; font-size: 20px" class="glyphicon glyphicon-star-empty"></span>
+                             <span translate="star_trend"></span>
+                          </div>
+                        </div>
+		              </div>
+		              <div class="col-xs-12" ng-show="entry.tab == 'other'">
+		                <button class="btn btn-block btn-default" ng-click="showDetails(entry);" translate="browse_btn"></button>
+		                <button class="btn btn-block btn-default" ng-click="showCalendar(entry);" translate="calendar_btn"></button>
+					    <button class="btn btn-block btn-default" ng-click="addConsent(entry);" translate="share_btn"></button>
+					    <button class="btn btn-block btn-default" ng-click="showChart(entry);" translate="chart_btn"></button>
+		              </div>
+                    </div>
+					
+							            
+					<div ng-if="!entry.count" class="row" style="margin-top:10px;margin-bottom:10px"><div class="col-xs-12"><div class="round" style="background-color:#e0e0e0">
+					  <div translate="{{'empty.'+entry.display}}"></div>
+					  
+				    </div></div></div>					
+					
+					<button ng-show="entry.add" class="btn btn-small btn-default" ng-click="showAdd(entry);" translate="add_btn">
+						add</button>
+					<button ng-show="entry.device" class="btn btn-small btn-default" ng-click="showInstall(entry);" translate="device_btn"></button>					
+					<div style="margin-top:10px;margin-bottom:20px;border:1px solid #e0e0e0;width:100%"></div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>

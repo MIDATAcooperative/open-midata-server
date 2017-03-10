@@ -13,15 +13,15 @@
 	  <div ng-show="unsaved" class="alert alert-info">
 	    <strong translate="save_question"></strong>
 	    <div class="row">
-	      <div class="col-sm-4">
+	      <div class="col-sm-4" ng-hide="configAndLinked">
 	        <button class="btn btn-default" ng-hide="saving" ng-click="saveConfig()" translate="save_setting_btn"></button>    
 	        <button class="btn btn-default" disabled="true" ng-show="saving" translate="saving"></button>
 	      </div>
 	      <div class="col-sm-4" ng-hide="noconfig">
 	        <div class="input-group">
-	          <input class="form-control" type="text" ng-model="name" translate translate-attr-placeholder="chart_name">
+	          <input class="form-control" type="text" ng-model="name.name" translate translate-attr-placeholder="chart_name">
 	          <div class="input-group-btn">
-	            <button ng-click="add(name)" ng-disabled="!name" ng-hide="saving2" class="btn btn-default" translate="add_btn"></button>
+	            <button ng-click="add(name.name)" ng-disabled="!name.name" ng-hide="saving2" class="btn btn-default" translate="add_btn"></button>
 	            <button class="btn btn-default" disabled="true" ng-show="saving2" translate="saving"></button>
 	          </div>
 	        </div>    
@@ -41,12 +41,12 @@
   </div>
   
   <div class="form-group separator" ng-show="report.filter">
-     <label for="filter">{{ report.filterLabel | translate }}:</label>
-     <select id="filter"  class="form-control" ng-model="reportInfo.filter" ng-options="f as getLabel(report.filter,f) | translate for f in reportInfo[report.filter]" ng-change="prepareFilter()"></select>
+     <label for="filter">{{ report.filter | translate }}:</label>
+     <select id="filter"  class="form-control" ng-model="reportInfo.filter" ng-options="f as getLabel(f, report.filter) | translate for f in reportInfo[report.filter]" ng-change="prepareFilter()"></select>
   </div>
   <div class="form-group separator" ng-show="report.filter2">
-     <label for="filter2">{{ report.filterLabel2 | translate }}:</label>
-     <select id="filter2" class="form-control" ng-model="reportInfo.filter2" ng-options="f as getLabel(report.filter2,f) | translate for f in reportInfo[report.filter2]" ng-change="update()"></select>
+     <label for="filter2">{{ report.filter2 | translate }}:</label>
+     <select id="filter2" class="form-control" ng-model="reportInfo.filter2" ng-options="f as getLabel(f, report.filter2) | translate for f in reportInfo[report.filter2]" ng-change="update()"></select>
   </div>
  
   </div>

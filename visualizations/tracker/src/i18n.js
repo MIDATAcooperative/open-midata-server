@@ -8,6 +8,7 @@ var en = {
 	"empty3" : "button to add event types.",
 	"add_btn" : "Add",
 	"edit_events_btn" : "Edit Event List",
+	"calendar_btn" : "View in Calendar",
 	"available" : "Edit list of available events:",
 	"available_title" : "Event/Observation Title",
 	"remove_btn" : "Remove",

@@ -209,6 +209,22 @@ public class Spaces extends Controller {
 		
 		return ok();
 	}
+	
+	@APICall
+	public static Result reset() throws AppException {
+		// validate request
+		MidataId userId = new MidataId(request().username());
+		
+		Set<Space> spaces = Space.getAllByOwner(userId, Sets.create("_id"));
+		
+		for (Space space : spaces) {		
+		  Circles.removeQueries(userId, space._id);
+		  RecordManager.instance.deleteAPS(space._id, userId);		
+		  Space.delete(userId, space._id);
+		}
+		
+		return ok();
+	}
 
 	/**
 	 * add records to a space of the current user

@@ -24,8 +24,11 @@
     "menu_config_text" : "Configure your dashboard and data imports.",
     "menu_research" : "News",
     "menu_research_text" : "News and announcements about MIDATA, the platform and research projects",
-    "menu_consents" : "Consents",
+    "menu_consents" : "Sharing",
     "menu_consents_text" : "Manage data sharing with others.",
+    
+    "starts" : "Some ideas to start with MIDATA:",
+    
     "answer_questions" : "In order to get started we recommend that you answer us some questions. We will preconfigure your account based on your answers.",
     "answered_questions" : "Thank you for answering the setup questions! You sould visit your dashboard now or change your answers if you need to.",
     "answer_btn" : "Answer Setup Questions Now",
