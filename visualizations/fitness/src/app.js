@@ -235,8 +235,7 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 		    	icon : "pulse.png",
 		    	placeholder : "activity-large.jpg",
 		    	chart : ["activities/minutes-fairly-active",
-		    			 "activities/minutes-lightly-active",
-		    			 "activities/minutes-sedentary",
+		    			 "activities/minutes-lightly-active",		    			
 		    			 "activities/minutes-very-active"],
 		    	hide : false,
 			    device : true

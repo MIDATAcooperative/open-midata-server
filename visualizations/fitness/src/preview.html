@@ -56,7 +56,7 @@
 					</div>
 					
 					<ul style="margin-top:20px;margin-bottom:10px" class="nav nav-pills small">
-					  <li ng-class="{'active' : entry.tab == 'intro'}"><a href="javascript:" ng-click="entry.tab = 'intro';" translate="menu_intro"></a></li> 
+					  <li ng-class="{'active' : entry.tab == 'intro'}" ng-show="entry.placeholder"><a href="javascript:" ng-click="entry.tab = 'intro';" translate="menu_intro"></a></li> 
 					  <li ng-class="{'active' : entry.tab == 'chart'}" ng-show="entry.labels.length > 1"><a href="javascript:" ng-click="entry.tab = 'chart';" translate="menu_chart"></a></li>
 					  <li ng-class="{'active' : entry.tab == 'goals'}" ng-show="entry.goal"><a href="javascript:" ng-click="entry.tab = 'goals';" translate="menu_goals"></a></li>
 					  <li ng-class="{'active' : entry.tab == 'compare'}" ng-show="entry.recs.length"><a href="javascript:" ng-click="entry.tab = 'compare';" translate="menu_compare"></a></li>
