@@ -1,17 +1,23 @@
 angular.module('views')
-.controller('HelpCtrl', ['$scope', '$state', 'portal', function($scope, $state, portal) {
+.controller('HelpCtrl', ['$scope', '$state', 'portal', 'spaces', 'session', function($scope, $state, portal, spaces, session) {
 	$scope.alreadyAnswered = false;
 	$scope.init = function() {
-		portal.getConfig()
+		
+		session.currentUser.then(function(userId) { $scope.userId = userId; });
+		/*portal.getConfig()
 		.then(function(data) {			
 			if (data.data && data.data.questions) {
 				$scope.alreadyAnswered = true;								
 			} else {
 				$scope.alreadyAnswered = false;				
 			}
-		});
+		});*/
 	};
 	$scope.init();
+	
+	$scope.use = function(view) {
+		spaces.openAppLink($state, $scope.userId, { app : view});
+	};
 		
 }])
 .controller('HelpSetupCtrl', ['$scope', '$state', 'portal', 'apps', 'spaces', 'session', function($scope, $state, portal, apps, spaces, session) {

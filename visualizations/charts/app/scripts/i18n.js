@@ -19,13 +19,13 @@ var en = {
    "update_btn" : "Update now",
    "next_btn" : "Next",
    
-   "person" : "Person",
+   "owner" : "Person",
    "people" : {
 	   "people" : "People",
 	   "title" : "Show data about whom?",
 	   "description" : "You may select one or multiple persons to show data about."
    },
-   "measure" : "Measure",
+   "content" : "Measure",
    "measures" : {
 	   "measures" : "Measures",
 	   "title" : "Which measures should be shown?",
@@ -116,10 +116,10 @@ de = {
    "wait" : "Bitte warten, Grafik wird berechnet...",
    "update_btn" : "Aktualisieren",
    
-   "person" : "Person",
-   "people" : "Personen",
-   "measure" : "Messung",
-   "measures" : "Messungen",
+   "owner" : "Person",
+   "owners" : "Personen",
+   "content" : "Messung",
+   "contents" : "Messungen",
    "detail" : "Detail",
    "details" : "Details",
    "code" : "Code",

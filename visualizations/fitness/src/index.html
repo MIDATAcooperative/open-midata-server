@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>FHIR</title>
+		
+	   <!-- build:css assets/app.min.css -->
+		<link rel="stylesheet" href="components/bootstrap/css/bootstrap.css">
+		<link rel="stylesheet" href="components/angular-chart.js/angular-chart.css" />
+		<link rel="stylesheet" href="components/midata/css/app.css">
+		<!-- endbuild -->
+		
+		<!-- build:js assets/app.min.js -->
+		<script type="text/javascript" src="components/angular/angular.js" defer></script>
+		<script type="text/javascript" src="components/angular-ui-router/angular-ui-router.js" defer></script>
+		<script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
+		<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>		
+		<script type="text/javascript" src="components/midata/js/midata.js" defer></script>
+	    <script type="text/javascript" src="components/Chart.js/Chart.js" defer></script>
+        <script type="text/javascript" src="components/angular-chart.js/angular-chart.js" defer></script>
+		<script type="text/javascript" src="i18n.js" defer></script>
+		<script type="text/javascript" src="app.js" defer></script>		
+		<script type="text/javascript" src="preview.js" defer></script>
+		<script type="text/javascript" src="overview.js" defer></script>	
+		<!-- endbuild -->
+						
+		<style>
+		  table .checkbox { margin:0px; }
+		  .table tbody tr th { border-top:none; }
+		  table { border-collapse : separate; }
+		  .entered-in-error { color:grey }
+		  .cancelled { color:red }
+		  
+		  .round {
+		     border-radius: 5px 5px 5px 5px;
+             -moz-border-radius: 5px 5px 5px 5px;
+             -webkit-border-radius: 5px 5px 5px 5px;
+             padding:8px 8px 8px 8px;             
+          }
+          
+          .seperate {
+            border-right:1px solid #e0e0e0;
+          }
+          
+          .nav li a { padding:5px 7px; }
+		</style>
+			
+	</head>
+	<body>	
+		<div ng-app="fhirObservation" ng-cloak>		
+		   <div ui-view class="ng-cloak"></div>		 		
+	   </div>
+	</body>
+</html>

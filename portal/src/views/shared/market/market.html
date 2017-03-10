@@ -36,6 +36,7 @@
 					<div class="media-body">
 						<a href="javascript:;" ng-click="showVisualizationDetails(visualization)">{{ visualization.i18n[translate.use()].name || visualization.name}}</a>
 						<p>{{visualization.i18n[translate.use()].description || visualization.description}}</p>
+						<button ng-click="install(visualization)" class="btn btn-xs btn-default" translate="market.install_now_btn"></button>
 					</div>
 				</div>
 				</div>
