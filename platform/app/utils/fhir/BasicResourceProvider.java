@@ -1,6 +1,7 @@
 package utils.fhir;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -20,6 +21,7 @@ import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
@@ -34,6 +36,7 @@ import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.ContentInfo;
 import models.MidataId;
 import models.Record;
@@ -69,21 +72,27 @@ public class BasicResourceProvider extends ResourceProvider<Basic> implements IR
    
     @Read()
     public Basic getResourceById(@IdParam IIdType theId) throws AppException {    	
-    	    
-    	String id = theId.getIdPart();
-    	MidataId targetId = new MidataId(id);
-    	
-    	ExecutionInfo info = info();
-    	List<Record> allRecs = RecordManager.instance.list(info.executorId, info.targetAPS, CMaps.map("owner", targetId).map("format",  "fhir/Patient"), Record.ALL_PUBLIC);
-    	
-    	if (allRecs == null || allRecs.size() == 0) return null;
-    	
-    	Record record = allRecs.get(0);
+    	Record record;
+		if (theId.hasVersionIdPart()) {
+			List<Record> result = RecordManager.instance.list(info().executorId, info().targetAPS, CMaps.map("_id", new MidataId(theId.getIdPart())).map("version", theId.getVersionIdPart()), RecordManager.COMPLETE_DATA);
+			record = result.isEmpty() ? null : result.get(0);
+		} else {
+		    record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new MidataId(theId.getIdPart()));
+		}
+		if (record == null) throw new ResourceNotFoundException(theId);		
     	    	
-		Basic p = parse(allRecs, Basic.class).get(0);
-		processResource(record, p);		
+		Basic p = parse(Collections.singletonList(record), Basic.class).get(0);
+		
 		return p;    	
     }
+    
+    @History()
+	public List<Basic> getHistory(@IdParam IIdType theId) throws AppException {
+	   List<Record> records = RecordManager.instance.list(info().executorId, info().targetAPS, CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
+	   if (records.isEmpty()) throw new ResourceNotFoundException(theId); 
+	   
+	   return parse(records, Basic.class);	   	  
+	}
     
     
     public List<Basic> parse(List<Record> result, Class<Basic> resultClass) throws AppException {
@@ -262,7 +271,7 @@ public class BasicResourceProvider extends ResourceProvider<Basic> implements IR
     public void processResource(Record record, Basic resource) throws AppException {
     	super.processResource(record, resource);
     	if (resource.getSubject().isEmpty()) {
-    		resource.setSubject(FHIRTools.getReferenceToUser(record.owner));
+    		resource.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
  
 		}		
 	}

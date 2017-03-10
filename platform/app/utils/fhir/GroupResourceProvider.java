@@ -1,6 +1,8 @@
 package utils.fhir;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +12,9 @@ import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.dstu3.model.Group;
+import org.hl7.fhir.dstu3.model.Patient;
+import org.hl7.fhir.dstu3.model.Group.GroupMemberComponent;
+import org.hl7.fhir.dstu3.model.Group.GroupType;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
@@ -19,6 +24,8 @@ import com.mongodb.util.JSON;
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.annotation.Elements;
+import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
@@ -26,21 +33,26 @@ import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.api.SummaryEnum;
 import ca.uhn.fhir.rest.param.CompositeAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
+import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
+import ch.qos.logback.core.joran.conditional.ThenOrElseActionBase;
 import controllers.UserGroups;
 import models.MidataId;
 import models.Record;
 import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
+import models.enums.ConsentStatus;
 import models.enums.UserStatus;
 import utils.AccessLog;
 import utils.ErrorReporter;
@@ -64,24 +76,36 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 	public Group getResourceById(@IdParam IIdType theId) throws AppException {
 		UserGroup group = UserGroup.getById(MidataId.from(theId.getIdPart()), UserGroup.FHIR);	
 		if (group == null) return null;
-		return readGroupFromMidataUserGroup(group);
+		return readGroupFromMidataUserGroup(group, true);
 	}
 	
+    @History()
+    @Override
+	public List<Group> getHistory(@IdParam IIdType theId) throws AppException {
+    	throw new ResourceNotFoundException("No history kept for Group resource"); 
+    }
+    
 	/**
 	 * Convert a MIDATA User object into a FHIR person object
 	 * @param userToConvert user to be converted into a FHIR object
 	 * @return FHIR person
 	 * @throws AppException
 	 */
-	public Group readGroupFromMidataUserGroup(UserGroup groupToConvert) throws AppException {
+	public Group readGroupFromMidataUserGroup(UserGroup groupToConvert, boolean addMembers) throws AppException {
 		
 		IParser parser = ctx().newJsonParser();
 		AccessLog.log(groupToConvert.fhirGroup.toString());
 		Group p = parser.parseResource(getResourceType(), groupToConvert.fhirGroup.toString());
 				
-		Set<UserGroupMember> members = UserGroups.listUserGroupMembers(groupToConvert._id);
-		for (UserGroupMember member : members) {
-		  p.addMember().setEntity(FHIRTools.getReferenceToUser(member.member));
+		if (addMembers) {
+			Set<UserGroupMember> members = UserGroups.listUserGroupMembers(groupToConvert._id);
+			for (UserGroupMember member : members) {
+			  GroupMemberComponent gmc = p.addMember();
+			  gmc.setEntity(FHIRTools.getReferenceToUser(member.member, null));
+			  if (member.status != ConsentStatus.ACTIVE) gmc.setInactive(true);
+			  if (member.startDate != null) gmc.getPeriod().setStart(member.startDate);
+			  if (member.endDate != null) gmc.getPeriod().setEnd(member.endDate);
+			}
 		}
 		return p;
 	}
@@ -93,7 +117,8 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 		p.setName(groupToConvert.name);
 		p.setActual(true);
 		p.setActive(groupToConvert.status == UserStatus.ACTIVE);
-		//p.setIdentifier(theIdentifier)
+		p.setType(GroupType.PRACTITIONER);
+		p.addIdentifier().setSystem("http://midata.coop/identifier/group-name").setValue(groupToConvert.name);
 		
 		String encoded = ctx.newJsonParser().encodeResourceToString(p);		
 		groupToConvert.fhirGroup = (DBObject) JSON.parse(encoded);				
@@ -160,7 +185,10 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 	    		SortSpec theSort,
 	    					
 	    		@ca.uhn.fhir.rest.annotation.Count
-	    		Integer theCount	
+	    		Integer theCount,
+	    		
+	    		SummaryEnum theSummary, // will receive the summary (no annotation required)
+	    	    @Elements Set<String> theElements
 	    
 	    		) throws AppException {
 	    	
@@ -179,7 +207,9 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 	    	paramMap.setLastUpdated(theLastUpdated);
 	    	paramMap.setIncludes(theIncludes);
 	    	paramMap.setSort(theSort);
-	    	paramMap.setCount(theCount);	    		    	
+	    	paramMap.setCount(theCount);
+	    	paramMap.setElements(theElements);
+	    	paramMap.setSummary(theSummary);
 	    	    		    	
 	    	return search(paramMap);    	    	    	
 	    }
@@ -207,6 +237,21 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 			//builder.restriction("characteristic-value", "CodeableConcept", "valueDate", "CodeableConcept", "DateTime");
 			//builder.restriction("value", "CodeableConcept", false, "fhirGroup.characteristic.value");																				
 			
+			if (params.containsKey("member")) {
+				List<ReferenceParam> persons = builder.resolveReferences("member", null);
+				Set<MidataId> ids = new HashSet<MidataId>();
+				if (persons != null && FHIRTools.areAllOfType(persons, Sets.create("Patient", "Practitioner", "Person"))) {
+					Set<String> pers = FHIRTools.referencesToIds(persons);
+					for (String p : pers) {
+						MidataId personId = FHIRTools.getUserIdFromReference(new Reference(p).getReferenceElement());
+						Set<UserGroupMember> members = UserGroupMember.getAllActiveByMember(personId);
+						for (UserGroupMember member : members) ids.add(member.userGroup);
+					}
+					
+				}
+				query.putAccount("_id", ids);
+			}
+			
 			Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
 			builder.restriction("identifier", true, "string", "nameLC");
 			
@@ -215,10 +260,12 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 			properties.put("searchable", true);
 			properties.put("status", User.NON_DELETED);
 			*/
+			boolean addMembers = params.hasElement("member") && params.getSummary().equals(SummaryEnum.FALSE);			
+			
 			Set<UserGroup> groups = UserGroup.getAllUserGroup(properties, UserGroup.FHIR);
 			List<IBaseResource> result = new ArrayList<IBaseResource>();
 			for (UserGroup group : groups) {
-				result.add(readGroupFromMidataUserGroup(group));
+				result.add(readGroupFromMidataUserGroup(group, addMembers));
 			}
 			
 			return result;

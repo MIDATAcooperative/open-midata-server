@@ -401,7 +401,7 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 	public void processResource(Record record, DocumentReference p) throws AppException {
 		super.processResource(record, p);
 		if (p.getSubject().isEmpty()) {
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner));
+			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
 		for (DocumentReferenceContentComponent component : p.getContent()) {
 			Attachment attachment = component.getAttachment();

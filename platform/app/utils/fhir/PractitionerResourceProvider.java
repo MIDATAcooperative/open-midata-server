@@ -1,33 +1,25 @@
 package utils.fhir;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hl7.fhir.dstu3.model.Group;
-import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Person;
+import org.hl7.fhir.dstu3.model.Practitioner;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
-import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
-import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
-import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.Search;
-import ca.uhn.fhir.rest.annotation.Sort;
-import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.param.DateRangeParam;
-import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
@@ -35,31 +27,23 @@ import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
+import models.HPUser;
 import models.MidataId;
 import models.Record;
 import models.User;
-import models.enums.UserRole;
 import utils.ErrorReporter;
-import utils.access.RecordManager;
-import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 
-/**
- * FHIR resource provider for the "Person" resource.
- * Unlike other resources this resource type triggers a user search on the account database.
- * Creates, updates and deletes are not allowed.
- *
- */
-public class PersonResourceProvider extends ResourceProvider<Person> implements IResourceProvider {
+public class PractitionerResourceProvider extends ResourceProvider<Practitioner> implements IResourceProvider {
 
-	public  PersonResourceProvider() {
-		registerSearches("Person", getClass(), "getPerson");
+	public  PractitionerResourceProvider() {
+		registerSearches("Practitioner", getClass(), "getPractitioner");
 	}
 	
 	@Override
-	public Class<Person> getResourceType() {
-		return Person.class;
+	public Class<Practitioner> getResourceType() {
+		return Practitioner.class;
 	}
 
 	/**
@@ -69,15 +53,15 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 	 * @throws AppException
 	 */
 	@Read()
-	public Person getResourceById(@IdParam IIdType theId) throws AppException {
-		User member = User.getById(MidataId.from(theId.getIdPart()), User.ALL_USER);	
+	public Practitioner getResourceById(@IdParam IIdType theId) throws AppException {
+		HPUser member = HPUser.getById(MidataId.from(theId.getIdPart()), User.ALL_USER);	
 		if (member == null) return null;
-		return personFromMidataUser(member);
+		return practitionerFromMidataUser(member);
 	}
 	
 	@History()
     @Override
-	public List<Person> getHistory(@IdParam IIdType theId) throws AppException {
+	public List<Practitioner> getHistory(@IdParam IIdType theId) throws AppException {
 		throw new ResourceNotFoundException("No history kept for Person resource");
     }
 	
@@ -87,8 +71,8 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 	 * @return FHIR person
 	 * @throws AppException
 	 */
-	public Person personFromMidataUser(User userToConvert) throws AppException {
-		Person p = new Person();
+	public Practitioner practitionerFromMidataUser(HPUser userToConvert) throws AppException {
+		Practitioner p = new Practitioner();
 		p.setId(userToConvert._id.toString());
 		p.addName().setFamily(userToConvert.lastname).addGiven(userToConvert.firstname);
 	
@@ -100,18 +84,7 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 			p.addTelecom().setSystem(ContactPointSystem.PHONE).setValue(userToConvert.phone);
 		}
 		p.addAddress().setCity(userToConvert.city).setCountry(userToConvert.country).setPostalCode(userToConvert.zip).addLine(userToConvert.address1).addLine(userToConvert.address2);
-
-		switch (userToConvert.role) {
-		case MEMBER:
-			p.addLink().setTarget(new Reference().setDisplay(getPersonName(userToConvert)).setReference("Patient/"+userToConvert._id.toString()));
-			break;
-		case PROVIDER:
-			p.addLink().setTarget(new Reference().setDisplay(getPersonName(userToConvert)).setReference("Practitioner/"+userToConvert._id.toString()));
-			break;
-		default:
-			p.addLink().setTarget(new Reference().setDisplay(getPersonName(userToConvert)).setReference("RelatedPerson/"+userToConvert._id.toString()));
-			break;
-		} 
+			
 		return p;
 	}
 	
@@ -120,7 +93,7 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 	}
 	
 	   @Search()
-	    public List<IBaseResource> getPerson(
+	    public List<IBaseResource> getPractitioner(
 	    		
 	    		
 	    	@Description(shortDefinition="The resource identity")
@@ -168,29 +141,7 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 	    	@Description(shortDefinition="The person's date of birth")
 	    	@OptionalParam(name="birthdate")
 	    	DateRangeParam theBirthdate
-	    		   
-	    	/*
-	    	@Description(shortDefinition="The organization at which this person record is being managed")
-	    	@OptionalParam(name="organization", targetTypes={  } )
-	    	ReferenceAndListParam theOrganization
-	    		*/
-	    		/*
-	    		126 			@Description(shortDefinition="Any link has this Patient, Person, RelatedPerson or Practitioner reference")
-	    		127 			@OptionalParam(name="link", targetTypes={  } )
-	    		128 			ReferenceAndListParam theLink, 
-	    		129   
-	    		130 			@Description(shortDefinition="The Person links to this Patient")
-	    		131 			@OptionalParam(name="patient", targetTypes={  Patient.class   } )
-	    		132 			ReferenceAndListParam thePatient, 
-	    		133   
-	    		134 			@Description(shortDefinition="The Person links to this Practitioner")
-	    		135 			@OptionalParam(name="practitioner", targetTypes={  Practitioner.class   } )
-	    		136 			ReferenceAndListParam thePractitioner, 
-	    		137   
-	    		138 			@Description(shortDefinition="The Person links to this RelatedPerson")
-	    		139 			@OptionalParam(name="relatedperson", targetTypes={  RelatedPerson.class   } )
-	    		140 			ReferenceAndListParam theRelatedperson,
-	    		*/ 	    		
+	    		   	    	
 	    		
 	    		) throws AppException {
 	    	
@@ -241,10 +192,10 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 			if (keywords != null) properties.put("keywordsLC", keywords);
 			properties.put("searchable", true);
 			properties.put("status", User.NON_DELETED);
-			Set<User> users = User.getAllUser(properties, Sets.create("firstname","lastname","birthday","gender","email","phone","city","country","zip","address1","address2","role"));
+			Set<HPUser> users = HPUser.getAll(properties, Sets.create("firstname","lastname","birthday","gender","email","phone","city","country","zip","address1","address2","role"));
 			List<IBaseResource> result = new ArrayList<IBaseResource>();
-			for (User user : users) {
-				result.add(personFromMidataUser(user));
+			for (HPUser user : users) {
+				result.add(practitionerFromMidataUser(user));
 			}
 			return result;
 			

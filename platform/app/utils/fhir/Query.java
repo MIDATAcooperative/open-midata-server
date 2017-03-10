@@ -72,7 +72,7 @@ public class Query {
 			accountCriteria.put("data", dataCriteria);
 		}
 		
-		List<Record> result = RecordManager.instance.list(info.executorId, info.targetAPS, accountCriteria, Sets.create("owner", "version", "created", "lastUpdated", "data"));
+		List<Record> result = RecordManager.instance.list(info.executorId, info.targetAPS, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
 		
 		return result;
 	}

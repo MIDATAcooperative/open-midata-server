@@ -254,7 +254,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 	
 	public void prepareForSharing(Communication theCommunication) throws AppException {
 		if (theCommunication.getSender().isEmpty()) {
-			theCommunication.setSender(FHIRTools.getReferenceToUser(info().executorId));
+			theCommunication.setSender(FHIRTools.getReferenceToUser(info().executorId, null));
 		}
 		if (theCommunication.getSent() == null) theCommunication.setSent(new Date());
 		if (theCommunication.getRecipient().isEmpty()) throw new UnprocessableEntityException("Recipient is missing");
@@ -327,7 +327,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 	public void processResource(Record record, Communication p) throws AppException {
 		super.processResource(record, p);
 		if (p.getSubject().isEmpty()) {			
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner));
+			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
 	}
 

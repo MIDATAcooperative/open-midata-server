@@ -27,6 +27,7 @@ public class Feature_Prefetch extends Feature {
 	
 	protected static List<DBRecord> lookup(Query q, List<DBRecord> prefetched, Feature next) throws AppException {
 		AccessLog.logBegin("start lookup #recs="+prefetched.size());
+		long time = System.currentTimeMillis();
 		List<DBRecord> results = null;
 		for (DBRecord record : prefetched) {
 		  List<DBRecord> partResult = null;	
@@ -46,7 +47,7 @@ public class Feature_Prefetch extends Feature {
 		  if (results == null) results = partResult; else results.addAll(partResult);
 		}
 		if (results==null) results = new ArrayList<DBRecord>();
-		AccessLog.logEnd("end lookup #found="+results.size());
+		AccessLog.logEnd("end lookup #found="+results.size()+" time="+(System.currentTimeMillis() - time));
 		return results;
 	}
 		

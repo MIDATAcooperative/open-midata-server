@@ -18,7 +18,7 @@ import scala.NotImplementedError;
  */
 public class AndCondition implements Condition {
 		
-    private List<Condition> checks;
+    protected List<Condition> checks;
 
     public static Condition and(Condition cond1, Condition cond2) {
     	if (cond1 == null) return cond2;

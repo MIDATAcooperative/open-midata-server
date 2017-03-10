@@ -6,6 +6,7 @@ import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
 import utils.access.op.CompareCondition;
 import utils.access.op.CompareCondition.CompareOperator;
 import utils.access.op.Condition;
+import utils.access.op.ElemMatchCondition;
 import utils.access.op.EqualsSingleValueCondition;
 import utils.access.op.FieldAccess;
 import utils.access.op.OrCondition;
@@ -35,7 +36,7 @@ public class PredicateBuilder {
 	
 	public void addEq(String path, String sysPath, Object system, String valPath, Object value, CompareCaseInsensitiveOperator op) {
 		  add(FieldAccess.path(path, 
-				  AndCondition.and(
+				  ElemMatchCondition.and(
 						  FieldAccess.path(valPath, new CompareCaseInsensitive(value, op)), 
 						  FieldAccess.path(sysPath, new EqualsSingleValueCondition((Comparable) system)))));
 	}

@@ -11,6 +11,7 @@ import ca.uhn.fhir.model.api.IQueryParameterOr;
 import ca.uhn.fhir.model.api.IQueryParameterType;
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.api.SummaryEnum;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenParam;
@@ -30,6 +31,8 @@ public class SearchParameterMap extends HashMap<String, List<List<? extends IQue
 //  	private RequestDetails myRequestDetails;
   	private Set<Include> myRevIncludes;
   	private SortSpec mySort;
+  	private Set<String> elements;
+  	private SummaryEnum summary = SummaryEnum.FALSE;
   
   	public void add(String theName, IQueryParameterAnd<?> theAnd) {
   		if (theAnd == null) {
@@ -78,8 +81,25 @@ public class SearchParameterMap extends HashMap<String, List<List<? extends IQue
   	public void addRevInclude(Include theInclude) {
  		getRevIncludes().add(theInclude);
  	}
- 
- 	public Integer getCount() {
+  	
+  	public void setElements(Set<String> elements) {
+  		this.elements = elements;
+  	}
+  	
+  	public boolean hasElement(String name) {
+  		return this.elements == null || this.elements.contains(name);
+  	}
+  	
+ 	public SummaryEnum getSummary() {
+		return summary;
+	}
+
+	public void setSummary(SummaryEnum summary) {
+		if (summary == null) summary = SummaryEnum.FALSE;
+		this.summary = summary;
+	}
+
+	public Integer getCount() {
  		return myCount;
  	}
  	

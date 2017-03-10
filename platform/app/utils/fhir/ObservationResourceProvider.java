@@ -55,6 +55,7 @@ import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.ContentInfo;
 import models.MidataId;
 import models.Record;
+import utils.AccessLog;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -363,8 +364,8 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 	public void processResource(Record record, Observation p) throws AppException {
 		super.processResource(record, p);
 		
-		if (p.getSubject().isEmpty()) {
-			p.setSubject(FHIRTools.getReferenceToUser(record.owner));
+		if (p.getSubject().isEmpty()) {			
+			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
 	}
 

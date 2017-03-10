@@ -52,7 +52,7 @@ public class Query {
 		this.cache = cache;
 		this.apsId = apsId;
 		process();
-		AccessLog.logQuery(properties, fields);
+		//AccessLog.logQuery(properties, fields);
 	}
 	
 	public Query(Query q, Map<String, Object> properties) throws AppException {
@@ -66,7 +66,7 @@ public class Query {
 		this.cache = q.getCache();
 		this.apsId = aps;			
 		process();
-		AccessLog.logQuery(properties, fields);
+		//AccessLog.logQuery(properties, fields);
 	}		
 	
 	public Map<String, Object> getProperties() {
@@ -237,7 +237,7 @@ public class Query {
 		return maxDateUpdated;
 	}
 	
-	public void addMongoTimeRestriction(Map<String, Object> properties1, boolean allowZero) {
+	public boolean addMongoTimeRestriction(Map<String, Object> properties1, boolean allowZero) {
 		Map<String, Object> properties = properties1;		
 		if (minTime != 0 || maxTime != 0) {
 			if (allowZero) {
@@ -256,7 +256,9 @@ public class Query {
 			    if (maxTime!=0) restriction.put("$lte", maxTime);
 			    properties.put("time", restriction);
 			}
+			return true;
 		}
+		return false;
 	}
 	
 	public Date getDateRestriction(String name) throws BadRequestException {

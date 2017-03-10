@@ -335,11 +335,16 @@ In the array case each record must match one entry in the array to qualify for t
     <li><code>group-exclude</code> - (string) the group of the record must NOT be one of the given groups or a child of those.</li>    
     <li><code>created-after</code> - (date) only records created after the given date/time</li>
     <li><code>created-before</code> - (date) only records created earlier than the given date/time</li>
+    <li><code>updated-after</code> - (date) only records last updated after the given date/time</li>
+    <li><code>updated-before</code> - (date) only records last updated earlier than the given date/time</li>
     <li><code>max-age</code> - (integer) only records not older than the given amount of seconds</li>
     <li><code>creator</code> - (id) only records with a specific creator</li>
     <li><code>limit</code> - (integer) the maximum count of records you want to receive</li>
+    <li><code>sort</code> - (field name asc/desc) sort results ascending or descending by a field. Use prefix <code>data.</code> to sort by a field inside the record content.</li>
     <li><code>data</code> - (JSON expression) restriction on the record content</li>
-    <li><code>index</code> - (JSON expression) restriction on the record content, backed up by an index    
+    <li><code>index</code> - (JSON expression) restriction on the record content, backed up by an index
+    <li><code>version</code> - (string) return a specific version of the queried record</li>
+    <li><code>history</code> - (boolean) return the history of the queried records</li>     
  </ul>
  <p>The response to the query is an array of records having only the fields you requested.</p>  
  <p>You directly restrict on the content of the record using the "<code>data</code>" or "<code>index</code>" property. As value for the property pass

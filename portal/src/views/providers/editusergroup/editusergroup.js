@@ -14,9 +14,13 @@ angular.module('portal')
 	
 	$scope.init = function() {
 		
+		session.currentUser.then(function(userId) {			
+			$scope.user = session.user;		
+		});
+		
 		if ($state.params.groupId) {
 			$scope.groupId = $state.params.groupId;
-			
+						
 			$scope.status.doBusy(usergroups.listUserGroupMembers($state.params.groupId))
 			.then(function(data) {
 				$scope.members = data.data;
@@ -49,15 +53,12 @@ angular.module('portal')
 	};
 	
 	$scope.removePerson = function(person) {
-		if ($scope.consentId) {
-		server.delete(jsRoutes.controllers.Circles.removeMember($scope.consent._id, person._id).url).
-			success(function() {				
-				$scope.authpersons.splice($scope.authpersons.indexOf(person), 1);
-			}).
-			error(function(err) { $scope.error = { code : "error.internal" }; });
-		} else {
-			$scope.authpersons.splice($scope.authpersons.indexOf(person), 1);			
-		}
+		
+		server.post(jsRoutes.controllers.UserGroups.deleteUserGroupMembership().url, JSON.stringify({ member : person.member, group : $scope.groupId }))
+	    .then(function() {				
+			$scope.members.splice($scope.members.indexOf(person), 1);
+		});
+		
 	};
 	
 	var addPerson = function(persons) {			

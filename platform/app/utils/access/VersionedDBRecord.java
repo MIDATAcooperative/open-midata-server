@@ -51,8 +51,8 @@ public class VersionedDBRecord extends DBRecord {
 	 */
 	public void set_id(Object _id) {
 		BasicBSONObject obj = (BasicBSONObject) _id;
-		_id = new MidataId(obj.get("_id").toString());
-		version = (String) obj.getString("version");
+		this._id = new MidataId(obj.get("_id").toString());
+		this.version = (String) obj.getString("version");
 	}
 	
 	@Override
@@ -62,6 +62,11 @@ public class VersionedDBRecord extends DBRecord {
 			return _id.equals(otherModel._id) && version.equals(otherModel.version);
 		}
 		return false;
+	}
+				
+	@Override
+	public int hashCode() {
+		return _id.hashCode() + version.hashCode();
 	}
 	
 	/**
@@ -76,7 +81,27 @@ public class VersionedDBRecord extends DBRecord {
 		Model.insert(collection, record);	
 	}
 	
-	public static Set<VersionedDBRecord> getAllById(Set<MidataId> ids, Set<String> fields) throws InternalServerException {
-		return Model.getAll(VersionedDBRecord.class, collection, CMaps.map("_id", ids), fields);
+	public static Set<VersionedDBRecord> getAllById(MidataId id, Set<String> fields) throws InternalServerException {
+		return Model.getAll(VersionedDBRecord.class, collection, CMaps.map("_id._id", id), fields);
+	}
+	
+	public static VersionedDBRecord getByIdAndVersion(MidataId id, String version, Set<String> fields) throws InternalServerException {
+		return Model.get(VersionedDBRecord.class, collection, CMaps.map("_id", CMaps.map("_id", id).map("version", version)), fields);
+	}
+	
+	public void merge(DBRecord record) {
+		this.stream = record.stream; 
+		this.time = record.time;
+		this.document = record.document;
+		this.consentAps = record.consentAps;
+		this.createdFromAps = record.createdFromAps;
+		this.part = record.part;
+		this.id = record.id;
+		this.owner = record.owner;		
+		this.key = record.key;
+		this.group = record.group;
+		this.isStream = record.isStream;
+		this.security = record.security;
+		
 	}
 }
