@@ -152,7 +152,7 @@ angular.module('fhirObservation')
  					if (p.recs) p.tab = p.recs.length > 1 ? "chart" : "intro";
  				} else {
 	 				if (!p.hide || (p.recs && p.recs.length>0)) {
-	 					p.tab = p.recs.length > 1 ? "chart" : (p.goal ? "goal" : "intro");
+	 					p.tab = p.recs.length > 1 ? "chart" : ((p.goal && (p.recs && p.recs.length>0)) ? "goals" : "intro");
 	 					if (p.recs && p.recs.length > 0) selected.push(p); else later.push(p); 
 	 				}
  				}
