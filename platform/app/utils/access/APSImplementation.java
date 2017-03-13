@@ -69,6 +69,10 @@ class APSImplementation extends APS {
 		
 	}
 	
+	public void provideAPSKeyAndOwner(byte[] unlock, MidataId owner) {
+		eaps.provideAPSKeyAndOwner(unlock, owner);
+	}
+	
 	public void touch() throws AppException {
 		try {
 		   eaps.touch();

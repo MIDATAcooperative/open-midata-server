@@ -160,6 +160,14 @@ public class EncryptedAPS {
 		return encryptionKey;
 	}
 	
+	protected void provideAPSKeyAndOwner(byte[] unlock, MidataId owner) {
+		if (!keyProvided && !isValidated) {
+			encryptionKey = unlock;
+			keyProvided = true;
+			if (this.owner == null) this.owner = owner;
+		}
+	}
+	
 	public long getVersion() throws InternalServerException {
 		if (!isLoaded()) load();
 		return aps.version;

@@ -66,5 +66,7 @@ public abstract class APS extends Feature {
 	public abstract List<DBRecord> historyQuery(long minUpd, boolean removes) throws AppException;
 
 	public abstract boolean hasNoDirectEntries() throws AppException;
+	
+	public abstract void provideAPSKeyAndOwner(byte[] unlock, MidataId owner);
 					
 }
