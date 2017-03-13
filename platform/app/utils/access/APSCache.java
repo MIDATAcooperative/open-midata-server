@@ -73,6 +73,8 @@ class APSCache {
 				result.addAccess(Collections.<MidataId>singleton(executorId));
 			}
 			cache.put(apsId.toString(), result);
+		} else if (unlockKey != null) {
+			result.provideAPSKeyAndOwner(unlockKey, owner);
 		}
 		return result;
 	}
