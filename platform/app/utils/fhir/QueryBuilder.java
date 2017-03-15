@@ -3,6 +3,7 @@ package utils.fhir;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -99,7 +100,7 @@ public class QueryBuilder {
 		query.putDataCondition(dataCondition);
 		
 		//if (indexing) {
-		  Map<String, Condition> indexCondition = dataCondition.indexExpression();
+		  Condition indexCondition = dataCondition.indexExpression();
 		  if (indexCondition != null) query.putIndexCondition(indexCondition);
 		//} 
 	}
@@ -170,7 +171,7 @@ public class QueryBuilder {
 		query.putDataCondition(dataCondition);
 		
 		if (indexing) {
-		  Map<String, Condition> indexCondition = dataCondition.indexExpression();
+		  Condition indexCondition = dataCondition.indexExpression();
 		  if (indexCondition != null) query.putIndexCondition(indexCondition);
 		} 
 	}
@@ -198,7 +199,7 @@ public class QueryBuilder {
 		query.putDataCondition(dataCondition);
 		
 		if (indexing) {
-		  Map<String, Condition> indexCondition = dataCondition.indexExpression();
+		  Condition indexCondition = dataCondition.indexExpression();
 		  if (indexCondition != null) query.putIndexCondition(indexCondition);
 		} 
 	}
@@ -289,33 +290,102 @@ public class QueryBuilder {
 				Date comp = dateParam.getValue();
 				ParamPrefixEnum prefix = dateParam.getPrefix();
 				TemporalPrecisionEnum precision = dateParam.getPrecision();
-				String compStr;
-				SimpleDateFormat format;
+				
+				String lPath = null;
+				String hPath = null;
+				
+				Date lDate = null;
+				Date hDate = null;
+				
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(comp);
+				
 				switch (precision) {					  
-				case SECOND: format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");break;
-				case MINUTE: format = new SimpleDateFormat("yyyy-MM-dd HH:mm");break;
-				//case HOURS: format = new SimpleDateFormat("yyyy-MM-dd HH");break;
-				case DAY: format = new SimpleDateFormat("yyyy-MM-dd");break;
-				case MONTH: format = new SimpleDateFormat("yyyy-MM");break;
-				case YEAR: format = new SimpleDateFormat("yyyy");break;
+				case SECOND: 
+					cal.set(Calendar.MILLISECOND, 0);
+					lDate = cal.getTime();
+					cal.set(Calendar.MILLISECOND, 1000);
+					hDate = cal.getTime();
+					break;
+				case MINUTE: 
+					cal.set(Calendar.MILLISECOND, 0);
+					cal.set(Calendar.SECOND, 0);
+					lDate = cal.getTime();
+					cal.add(Calendar.MINUTE, 1);
+					hDate = cal.getTime();
+					break;
+				case DAY: 
+					cal.set(Calendar.MILLISECOND, 0);
+					cal.set(Calendar.SECOND, 0);
+					cal.set(Calendar.MINUTE, 0);
+					cal.set(Calendar.HOUR_OF_DAY, 0);
+					lDate = cal.getTime();
+					cal.add(Calendar.DAY_OF_MONTH, 1);
+					hDate = cal.getTime();
+					break;
+				case MONTH: 
+					int month = cal.get(Calendar.MONTH);
+					int year = cal.get(Calendar.YEAR);
+					cal.set(year, month, 1, 0, 0, 0);
+					lDate = cal.getTime();
+					cal.add(Calendar.MONTH, 1);
+					hDate = cal.getTime();
+					break;
+				case YEAR: 
+					year = cal.get(Calendar.YEAR);
+					cal.set(year, 0, 1, 0, 0, 0);
+					lDate = cal.getTime();
+					cal.add(Calendar.YEAR, 1);
+					hDate = cal.getTime();
+					break;
 				case MILLI:
-				default: format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");break;
+				default: 
+                    lDate = cal.getTime();
+                    hDate = lDate;
+                    break;
 				}
-				compStr = format.format(comp); 
-				if (type.equals("Period")) {
-					throw new NotImplementedOperationException("Date search on Period not implemented");
-				} else {
-				    switch (prefix) {
-					case GREATERTHAN: bld.addComp(path, CompareOperator.GT, compStr);break;
-					case LESSTHAN: bld.addComp(path,CompareOperator.LT, compStr);break;
-					case GREATERTHAN_OR_EQUALS: bld.addComp(path, CompareOperator.GE, compStr);break;
-					case LESSTHAN_OR_EQUALS: bld.addComp(path, CompareOperator.LE, compStr);break;
-					case EQUAL: 
-						bld.addComp(path, CompareOperator.GE, compStr);
-						bld.addComp(path, CompareOperator.LE, compStr);
-						break;
-					}
+				if (type.equals("DateTime")) {
+					lPath = path;
+					hPath = path;
+				} else if (type.equals("Period")) {
+					lPath = path+".start|null";
+					lPath = path+".end|null";
+				} else if (type.equals("DateTime|Period")) {
+					lPath = path+"DateTime|"+path+"Period.start|null";
+					hPath = path+"DateTime|"+path+"Period.end|null";
+				} else throw new NullPointerException();
+				
+				
+				
+			    switch (prefix) {
+				case GREATERTHAN: bld.addComp(hPath, CompareOperator.GE, hDate, true);break;
+				case LESSTHAN: bld.addComp(lPath,CompareOperator.LT, lDate, true);break;
+				case GREATERTHAN_OR_EQUALS:														
+					bld.addCompOr(lPath, CompareOperator.GE, lDate, true);
+					bld.addCompOr(hPath, CompareOperator.GE, hDate, true);					
+					break;
+				case LESSTHAN_OR_EQUALS:
+										
+					bld.addCompOr(lPath, CompareOperator.LE, lDate, true);
+					bld.addCompOr(hPath, CompareOperator.LT, hDate, true);										
+					break;
+				case STARTS_AFTER:					
+					bld.addComp(lPath, CompareOperator.GE, hDate, false);
+					break;
+				case ENDS_BEFORE:
+					bld.addComp(hPath, CompareOperator.LT, lDate, false);
+					break;
+				case EQUAL:					
+					bld.addComp(lPath, CompareOperator.GE, lDate, false);
+                    bld.addComp(hPath, CompareOperator.LT, hDate, false);					
+					break;
+				case NOT_EQUAL:					
+					bld.addCompOr(lPath, CompareOperator.LT, lDate, true);
+					bld.addCompOr(hPath, CompareOperator.GE, hDate, true);
+					break;
+				default:throw new NullPointerException();
 				}
+			
 			} else if (param instanceof QuantityParam) {
 				
 				QuantityParam quantityParam = (QuantityParam) param;
@@ -339,6 +409,7 @@ public class QueryBuilder {
     					bld.add(OrCondition.or(FieldAccess.path(path+".unit", new EqualsSingleValueCondition((Comparable) units)), FieldAccess.path(path+".code", new EqualsSingleValueCondition((Comparable) units))));																
     				}*/
 				} else {
+					/*
 					switch(prefix) {
 					case GREATERTHAN: bld.addComp(path+".value", CompareOperator.GT, val.doubleValue());break;
 					case LESSTHAN: bld.addComp(path+".value", CompareOperator.LT, val.doubleValue());break;
@@ -350,8 +421,54 @@ public class QueryBuilder {
 					if (system != null) bld.addEq(path+".system", system);
 					if (units!=null) {						
 						bld.add(OrCondition.or(FieldAccess.path(path+".unit", new EqualsSingleValueCondition((Comparable) units)), FieldAccess.path(path+".code", new EqualsSingleValueCondition((Comparable) units))));																
-					}	
+					}
+					*/	
 				}
+                
+                String lPath = null;
+				String hPath = null;
+				boolean simple = true;
+				
+				if (type.equals("Quantity")) {
+				  lPath = path+".value";
+				  hPath = path+".value";
+				} else if (type.equals("Range")){
+				  lPath = path+".low.value";
+				  hPath = path+".high.value";
+				  simple = false;
+				} else if (type.equals("Quantity|Range")) {
+				  lPath = path+"Quantity.value|"+path+"Range.low.value|null";
+				  hPath = path+"Quantity.value|"+path+"Range.high.value|null";
+				  simple = false;	
+				} else throw new NullPointerException();
+				
+			    switch (prefix) {
+				case GREATERTHAN: bld.addComp(hPath, CompareOperator.GT, val.doubleValue(), true);break;
+				case LESSTHAN: bld.addComp(lPath,CompareOperator.LT, val.doubleValue(), true);break;
+				case GREATERTHAN_OR_EQUALS:														
+					bld.addCompOr(lPath, CompareOperator.GE, val.doubleValue(), true);
+					if (!simple) bld.addCompOr(hPath, CompareOperator.GE, val.doubleValue(), true);					
+					break;
+				case LESSTHAN_OR_EQUALS:									
+					bld.addCompOr(lPath, CompareOperator.LE, val.doubleValue(), true);
+					if (!simple) bld.addCompOr(hPath, CompareOperator.LE, val.doubleValue(), true);										
+					break;			
+				case EQUAL:					
+					bld.addComp(lPath, CompareOperator.GE, val.doubleValue(), false);
+                    bld.addComp(hPath, CompareOperator.LE, val.doubleValue(), false);					
+					break;
+				case NOT_EQUAL:					
+					bld.addCompOr(lPath, CompareOperator.LT, val.doubleValue(), true);
+					bld.addCompOr(hPath, CompareOperator.GT, val.doubleValue(), true);
+					break;
+				default:throw new NullPointerException();
+				}
+			    
+			    if (system != null) bld.addEq(path+".system", system);
+				if (units!=null) {						
+					bld.add(OrCondition.or(FieldAccess.path(path+".unit", new EqualsSingleValueCondition((Comparable) units)), FieldAccess.path(path+".code", new EqualsSingleValueCondition((Comparable) units))));																
+				}
+                
 				
 			} 
 	}

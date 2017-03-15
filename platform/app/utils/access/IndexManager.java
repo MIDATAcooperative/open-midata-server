@@ -232,7 +232,7 @@ public class IndexManager {
 		AccessLog.logEnd("end clear indexes");
 	}
 
-	public void revalidate(List<DBRecord> validatedResult, IndexRoot root, Map<String, Object> indexQuery, Condition[] cond) throws AppException {		
+	public void revalidate(List<DBRecord> validatedResult, IndexRoot root, Object indexQuery, Condition[] cond) throws AppException {		
 		if (validatedResult.size() == 0) return;
 					
 		for (DBRecord r : validatedResult) QueryEngine.loadData(r);

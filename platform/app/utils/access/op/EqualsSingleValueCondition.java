@@ -38,7 +38,7 @@ public class EqualsSingleValueCondition implements Condition {
 	}
 
 	@Override
-	public Map<String, Condition> indexExpression() {		
+	public Condition indexExpression() {		
 		return null;
 	}
 

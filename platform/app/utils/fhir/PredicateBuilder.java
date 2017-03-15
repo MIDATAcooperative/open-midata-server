@@ -19,11 +19,18 @@ public class PredicateBuilder {
 	
 	private boolean indexable = true;
 	
-	public void addComp(String path, CompareOperator op, Object value) {		
-		Condition cond = new CompareCondition((Comparable<Object>) value, op);
+	public void addComp(String path, CompareOperator op, Object value, boolean nullTrue) {		
+		Condition cond = new CompareCondition((Comparable<Object>) value, op, nullTrue);
 		add(FieldAccess.path(path, cond));
 	}
 	
+	public void addCompOr(String path, CompareOperator op, Object value, boolean nullTrue) {		
+		Condition cond = new CompareCondition((Comparable<Object>) value, op, nullTrue);
+		cond = FieldAccess.path(path, cond);
+		
+		if (current == null) current = cond; 
+		else current = OrCondition.or(current, cond);
+	}
 	
 	
 	public void addEq(String path, Object value) {

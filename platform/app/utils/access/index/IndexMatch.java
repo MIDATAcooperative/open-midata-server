@@ -17,4 +17,19 @@ public class IndexMatch {
 	 * aps that can be checked if record is still accessible
 	 */
 	public MidataId apsId;
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof IndexMatch) {
+			return ((IndexMatch) obj).recordId.equals(recordId);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return recordId.hashCode();
+	}
+	
+	
 }

@@ -39,6 +39,7 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.param.CompositeAndListParam;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.QuantityAndListParam;
@@ -116,13 +117,13 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 
 			@Description(shortDefinition = "The value of the component observation, if the value is a CodeableConcept") @OptionalParam(name = "component-value-concept") TokenAndListParam theComponent_value_concept,
 
-			@Description(shortDefinition = "The value of the observation, if the value is a date or period of time") @OptionalParam(name = "value-date") DateRangeParam theValue_date,
+			@Description(shortDefinition = "The value of the observation, if the value is a date or period of time") @OptionalParam(name = "value-date") DateAndListParam theValue_date,
 
 			@Description(shortDefinition = "The value of the observation, if the value is a string, and also searches in CodeableConcept.text") @OptionalParam(name = "value-string") StringAndListParam theValue_string,
 
 			@Description(shortDefinition = "The value of the component observation, if the value is a string, and also searches in CodeableConcept.text") @OptionalParam(name = "component-value-string") StringAndListParam theComponent_value_string,
 
-			@Description(shortDefinition = "Obtained date/time. If the obtained element is a period, a date that falls in the period") @OptionalParam(name = "date") DateRangeParam theDate,
+			@Description(shortDefinition = "Obtained date/time. If the obtained element is a period, a date that falls in the period") @OptionalParam(name = "date") DateAndListParam theDate,
 
 			@Description(shortDefinition = "The status of the observation") @OptionalParam(name = "status") TokenAndListParam theStatus,
 
@@ -252,14 +253,14 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 				
         builder.recordCodeRestriction("code", "code");
 			
-		builder.restriction("date", true, "DateTime", "effectiveDateTime");
+		builder.restriction("date", true, "DateTime|Period", "effective");
 		builder.restriction("identifier", true, "Identifier", "identifier");
 		
 		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
 		
 		builder.restriction("code-value-quantity", "code", "valueQuantity", "CodeableConcept", "Quantity");
 		builder.restriction("code-value-string", "code", "valueString", "CodeableConcept", "String");
-		builder.restriction("code-value-date", "code", "valueDate", "CodeableConcept", "DateTime");
+		builder.restriction("code-value-date", "code", "value", "CodeableConcept", "DateTime|Period");
 		builder.restriction("code-value-concept", "code", "valueConcept", "CodeableConcept", "CodeableConcept");
 		
 		builder.restriction("category", true, "CodeableConcept", "category");
@@ -267,7 +268,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		
 		builder.restriction("component-code-value-quantity", "component.code", "component.valueQuantity", "CodeableConcept", "Quantity");
 		builder.restriction("component-code-value-string", "component.code", "component.valueString", "CodeableConcept", "String");
-		builder.restriction("component-code-value-date", "component.code", "component.valueDate", "CodeableConcept", "DateTime");
+		builder.restriction("component-code-value-date", "component.code", "component.value", "CodeableConcept", "DateTime|Period");
 		builder.restriction("component-code-value-concept", "component.code", "component.valueConcept", "CodeableConcept", "CodeableConcept");
 		
 		
@@ -279,7 +280,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		
 		builder.restriction("value-string", true, "string", "valueString");
 		builder.restriction("value-quantity", true, "Quantity", "valueQuantity");
-		builder.restriction("value-date", true, "DateTime", "valueDate");
+		builder.restriction("value-date", true, "DateTime|Period", "value");
 		builder.restriction("component-value-string", true, "string", "component.valueString");
 		builder.restriction("component-value-quantity", true, "Quantity", "component.valueQuantity");
 		

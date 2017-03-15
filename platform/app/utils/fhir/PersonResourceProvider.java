@@ -237,6 +237,7 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 			builder.restriction("gender", false, "string", "gender");
 			
 			Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
+			
 			Object keywords = query.retrieveIndexValues();
 			if (keywords != null) properties.put("keywordsLC", keywords);
 			properties.put("searchable", true);

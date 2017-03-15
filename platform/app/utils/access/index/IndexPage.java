@@ -56,7 +56,7 @@ public class IndexPage {
 	}
 	
 	public void addEntry(Comparable<Object>[] key, MidataId aps, MidataId target) throws InternalServerException {
-		if (key[0] == null) return;
+		//if (key[0] == null) return;
 		
 	    BasicBSONObject entry = findEntry(key);
 	    if (entry == null) {

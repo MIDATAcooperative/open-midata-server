@@ -137,6 +137,7 @@ public class OAuth2 extends Controller {
         
         KeyManager.instance.login(60000l);
         
+        if (data==null) throw new BadRequestException("error.internal", "Missing request body of type form/urlencoded.");
         if (!data.containsKey("grant_type")) throw new BadRequestException("error.internal", "Missing grant_type");
         
         String grant_type = data.get("grant_type")[0];
