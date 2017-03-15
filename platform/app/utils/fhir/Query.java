@@ -13,6 +13,7 @@ import utils.access.op.AndCondition;
 import utils.access.op.CompareCaseInsensitive;
 import utils.access.op.Condition;
 import utils.access.op.EqualsSingleValueCondition;
+import utils.access.op.FieldAccess;
 import utils.access.op.OrCondition;
 import utils.auth.ExecutionInfo;
 import utils.collections.ReferenceTool;
@@ -118,6 +119,9 @@ public class Query {
 			for (Condition c : ((OrCondition) cond).getParts()) {
 				retrieveIndexValues(values, c);
 			}
+		}
+		if (cond instanceof FieldAccess) {
+			retrieveIndexValues(values, ((FieldAccess) cond).getCondition());
 		}
 	}
 }
