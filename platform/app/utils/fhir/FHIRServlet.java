@@ -69,6 +69,7 @@ public class FHIRServlet extends RestfulServer {
       myProviders.put("Appointment", new AppointmentResourceProvider());
       myProviders.put("Group", new GroupResourceProvider());
       myProviders.put("Practitioner", new PractitionerResourceProvider());
+      myProviders.put("Device", new DeviceResourceProvider());
       
       resourceProviders.addAll(myProviders.values());
       setResourceProviders(resourceProviders);
