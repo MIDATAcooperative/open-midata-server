@@ -22,6 +22,8 @@ import ca.uhn.fhir.rest.param.QuantityParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenParam;
+import ca.uhn.fhir.rest.param.UriParam;
+import ca.uhn.fhir.rest.param.UriParamQualifierEnum;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import utils.AccessLog;
@@ -470,7 +472,17 @@ public class QueryBuilder {
 				}
                 
 				
-			} 
+			} else if (param instanceof UriParam) {
+				UriParam uriParam = (UriParam) param;
+				UriParamQualifierEnum qualifier = uriParam.getQualifier();
+				String uri = uriParam.getValue();
+				
+				if (qualifier == null) {
+				  bld.addEq(path, uri);
+				} else if (qualifier == UriParamQualifierEnum.BELOW) {
+				  bld.addEq(path, uri, CompareCaseInsensitiveOperator.STARTSWITH); // should be case sensitive
+				} else throw new NotImplementedOperationException("ABOVE modifier not implemented.");
+			}
 	}
 	
 	public List<ReferenceParam> followChain(ReferenceParam r, String targetType) {
