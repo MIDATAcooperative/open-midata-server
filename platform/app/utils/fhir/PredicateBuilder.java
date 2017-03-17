@@ -8,6 +8,7 @@ import utils.access.op.CompareCondition.CompareOperator;
 import utils.access.op.Condition;
 import utils.access.op.ElemMatchCondition;
 import utils.access.op.EqualsSingleValueCondition;
+import utils.access.op.ExistsCondition;
 import utils.access.op.FieldAccess;
 import utils.access.op.OrCondition;
 
@@ -32,6 +33,10 @@ public class PredicateBuilder {
 		else current = OrCondition.or(current, cond);
 	}
 	
+	public void addExists(String path, boolean value) {
+	  add(FieldAccess.path(path, new ExistsCondition(value)));
+	}
+		
 	
 	public void addEq(String path, Object value) {
 	  add(FieldAccess.path(path, new EqualsSingleValueCondition((Comparable) value)));

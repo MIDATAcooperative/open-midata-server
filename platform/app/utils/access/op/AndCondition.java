@@ -70,6 +70,8 @@ public class AndCondition implements Condition {
 			  for (Object obj : makeSet(value)) {
 				  checks.add(parseRemaining(obj));
 			  }
+		   } else if (accessKey.equals("$exists")) {
+			   checks.add(new ExistsCondition(value.toString().toLowerCase().equals("true")));
 		   } else {		   			  			   
 			     Condition cond = FieldAccess.path(accessKey, parseRemaining(value));			   			   			   
 		         checks.add(cond);			   

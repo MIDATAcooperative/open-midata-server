@@ -27,10 +27,12 @@ import ca.uhn.fhir.rest.param.UriParamQualifierEnum;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import utils.AccessLog;
+import utils.access.op.AndCondition;
 import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
 import utils.access.op.CompareCondition.CompareOperator;
 import utils.access.op.Condition;
 import utils.access.op.EqualsSingleValueCondition;
+import utils.access.op.ExistsCondition;
 import utils.access.op.FieldAccess;
 import utils.access.op.OrCondition;
 import utils.collections.Sets;
@@ -200,6 +202,23 @@ public class QueryBuilder {
 	}
 	
 	private void handleRestriction(IQueryParameterType param, String path, String type, PredicateBuilder bld) {
+		if (param.getMissing() != null) {
+			boolean exist = !param.getMissing().booleanValue();
+			if (type.equals(TYPE_DATETIME_OR_PERIOD)) {
+				if (exist) bld.add(OrCondition.or(FieldAccess.path(path+"DateTime", new ExistsCondition(true)), FieldAccess.path(path+"Period", new ExistsCondition(true))));
+				else bld.add(AndCondition.and(FieldAccess.path(path+"DateTime", new ExistsCondition(false)), FieldAccess.path(path+"Period", new ExistsCondition(false))));
+			} else if (type.equals(TYPE_QUANTITY_OR_RANGE)) {
+				if (exist) bld.add(OrCondition.or(FieldAccess.path(path+"Quantity", new ExistsCondition(true)), FieldAccess.path(path+"Range", new ExistsCondition(true))));
+				else bld.add(AndCondition.and(FieldAccess.path(path+"Quantity", new ExistsCondition(false)), FieldAccess.path(path+"Range", new ExistsCondition(false))));
+			}  else if (type.equals(TYPE_AGE_OR_RANGE)) {
+				if (exist) bld.add(OrCondition.or(FieldAccess.path(path+"Age", new ExistsCondition(true)), FieldAccess.path(path+"Range", new ExistsCondition(true))));
+				else bld.add(AndCondition.and(FieldAccess.path(path+"Age", new ExistsCondition(false)), FieldAccess.path(path+"Range", new ExistsCondition(false))));
+			} else {
+			   bld.addExists(path, exist);
+			}
+						
+			return;
+		}
 		if (param instanceof TokenParam) {
 			  TokenParam tokenParam = (TokenParam) param;
 			  String system = tokenParam.getSystem();
