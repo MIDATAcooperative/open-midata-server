@@ -28,6 +28,7 @@ import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import utils.AccessLog;
 import utils.access.op.AndCondition;
+import utils.access.op.CompareCaseInsensitive;
 import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
 import utils.access.op.CompareCondition.CompareOperator;
 import utils.access.op.Condition;
@@ -222,8 +223,15 @@ public class QueryBuilder {
 		if (param instanceof TokenParam) {
 			  TokenParam tokenParam = (TokenParam) param;
 			  String system = tokenParam.getSystem();
+			  boolean isText = tokenParam.isText();
 			  if (type.equals(TYPE_CODEABLE_CONCEPT)) {
-				if (system == null) {
+				if (isText) {
+				  bld.add(
+						  OrCondition.or(
+						    FieldAccess.path(path+".text", new CompareCaseInsensitive(tokenParam.getValue(), CompareCaseInsensitiveOperator.CONTAINS)),
+						    FieldAccess.path(path+".coding.display", new CompareCaseInsensitive(tokenParam.getValue(), CompareCaseInsensitiveOperator.CONTAINS))
+                          ));						  
+				} else 	if (system == null) {
 			      bld.addEq(path+".coding.code", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
 				} else {
 				  bld.addEq(path+".coding", "system", system, "code", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
@@ -232,13 +240,17 @@ public class QueryBuilder {
 			  } else if (type.equals(TYPE_CODE)) {
 				bld.addEq(path, tokenParam.getValue());
 			  } else if (type.equals(TYPE_CODING)) {
-				if (system == null) {
+				if (isText) {
+					bld.addEq(path+".display",tokenParam.getValue(), CompareCaseInsensitiveOperator.CONTAINS);
+				} else if (system == null) {
 					bld.addEq(path+".code", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
 				} else {
 					bld.addEq(path, "system", system, "code", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
 				}					
 			  } else if (type.equals(TYPE_IDENTIFIER)) {
-				if (system == null) {
+				if (isText) {
+				   bld.addEq(path+".type.text",tokenParam.getValue(), CompareCaseInsensitiveOperator.CONTAINS);
+				} else if (system == null) {
 				   bld.addEq(path+".value", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
 				} else {
 				   bld.addEq(path, "system", system, "value", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
@@ -557,7 +569,7 @@ public class QueryBuilder {
 			//if (p.getMissing()) return null;
 			if (p.getModifier() != null) return null;
 			
-			if (p.getSystem() != null && p.getValue() != null) {
+			if (p.getSystem() != null && p.getValue() != null && p.getSystem().length()>0 && p.getValue().length()>0) {
 			  result.add(p.getSystem()+" "+p.getValue());
 			} else return null;
 		  }
