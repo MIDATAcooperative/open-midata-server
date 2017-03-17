@@ -1,40 +1,33 @@
 package utils.access.op;
 
+import java.util.HashMap;
 import java.util.Map;
 
-/**
- * check if object is equal to a fixed value
- *
- */
-public class EqualsSingleValueCondition implements Condition {
+public class ExistsCondition implements Condition {
 
-	private Comparable<Object> val;
+	private boolean shouldExist;
 	
 	/**
 	 * Constructor
 	 * @param val value to compare target object with
 	 */
-	public EqualsSingleValueCondition(Comparable<Object> val) {
-		this.val = val;
+	public ExistsCondition(boolean shouldExist) {
+		this.shouldExist = shouldExist;
 	}
 	
 	@Override
 	public boolean satisfiedBy(Object obj) {
-		return val.equals(obj);
+		return shouldExist ? (obj != null) : (obj == null);
 	}
 
 	@Override
 	public Condition optimize() {
 		return this;
 	}
-	
-	public Object getValue() {
-		return val;
-	}
-
+		
 	@Override
 	public Condition indexValueExpression() {
-		return this;
+		return null;
 	}
 
 	@Override
@@ -44,17 +37,19 @@ public class EqualsSingleValueCondition implements Condition {
 
 	@Override
 	public boolean isInBounds(Object low, Object high) {
-		return (low == null || val.compareTo(low) >= 0) && (high == null || val.compareTo(high) < 0);
+		return true;
 	}
 
 	@Override
 	public Object asMongoQuery() {
-		return val;
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("$exists", shouldExist);
+		return result;
 	}
 	
 	@Override
 	public String toString() {		
-		return val == null ? "null" : val.toString();
+		return "{ $exists : "+shouldExist+" }";
 	}
 	
 	

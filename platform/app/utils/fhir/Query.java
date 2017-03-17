@@ -2,8 +2,10 @@ package utils.fhir;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import models.Record;
 import utils.access.RecordManager;
@@ -11,6 +13,8 @@ import utils.access.op.AndCondition;
 import utils.access.op.CompareCaseInsensitive;
 import utils.access.op.Condition;
 import utils.access.op.EqualsSingleValueCondition;
+import utils.access.op.FieldAccess;
+import utils.access.op.OrCondition;
 import utils.auth.ExecutionInfo;
 import utils.collections.ReferenceTool;
 import utils.collections.Sets;
@@ -26,7 +30,7 @@ import utils.exceptions.InternalServerException;
 public class Query {
 
 	private Map<String, Object> accountCriteria;
-	private Map<String, Condition> indexCriteria;
+	private Condition indexCriteria;
 	private Condition dataCriteria;
 	//private List<> postFilters;
 	
@@ -47,8 +51,10 @@ public class Query {
 		}
 	}
 	
-	public void putIndexCondition(Map<String, Condition> indexCondition) {
-		if (indexCriteria == null) indexCriteria = indexCondition;		
+	public void putIndexCondition(Condition indexCondition) {
+		if (indexCriteria == null) {
+			indexCriteria = indexCondition;		
+		} else indexCriteria = AndCondition.and(indexCriteria, indexCondition);
 	}
 	
 	private static void addRestriction(Map<String, Object> crit, Object content, String[] path, int idx) {
@@ -65,7 +71,7 @@ public class Query {
 	}
 	
 	public List<Record> execute(ExecutionInfo info) throws AppException {
-		if (indexCriteria!=null && !indexCriteria.isEmpty()) {
+		if (indexCriteria!=null) {
 			accountCriteria.put("index", indexCriteria);
 		}
 		if (dataCriteria!=null) {
@@ -85,22 +91,37 @@ public class Query {
 		return result;
 	}
 	
+	
 	public Object retrieveIndexValues() throws AppException {		
 		if (indexCriteria != null) {
-			List<Object> results = new ArrayList<Object>();
-			for (Condition cond : indexCriteria.values()) {
-				if (cond instanceof CompareCaseInsensitive) {
-					CompareCaseInsensitive cond2 = (CompareCaseInsensitive) cond;
-					results.add(cond2.getValue());
-				}
-				if (cond instanceof EqualsSingleValueCondition) {
-					results.add(((EqualsSingleValueCondition) cond).getValue());
-				}
-			}
-			if (results.size() == 0) return null;
-			if (results.size() == 1) return results.get(0);
+			Set<String> results = new HashSet<String>();
+            retrieveIndexValues(results, indexCriteria);
+            if (results.isEmpty()) return null;
 			return results;
 		}
 		return null;
+	}
+	
+	private void retrieveIndexValues(Set<String> values, Condition cond) {
+		if (cond instanceof CompareCaseInsensitive) {
+			CompareCaseInsensitive cond2 = (CompareCaseInsensitive) cond;
+			values.add(cond2.getValue().toString());
+		}
+		if (cond instanceof EqualsSingleValueCondition) {
+			values.add(((EqualsSingleValueCondition) cond).getValue().toString());
+		}
+		if (cond instanceof AndCondition) {
+			for (Condition c : ((AndCondition) cond).getParts()) {
+				retrieveIndexValues(values, c);
+			}
+		}
+		if (cond instanceof OrCondition) {
+			for (Condition c : ((OrCondition) cond).getParts()) {
+				retrieveIndexValues(values, c);
+			}
+		}
+		if (cond instanceof FieldAccess) {
+			retrieveIndexValues(values, ((FieldAccess) cond).getCondition());
+		}
 	}
 }

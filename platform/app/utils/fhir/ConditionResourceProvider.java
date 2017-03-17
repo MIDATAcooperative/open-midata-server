@@ -75,17 +75,6 @@ public class ConditionResourceProvider extends ResourceProvider<Condition> imple
 
 			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
 
-			/*
-			@Description(shortDefinition = "Search the contents of the resource's data using a fulltext search") @OptionalParam(name = ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT) StringAndListParam theFtContent,
-
-			@Description(shortDefinition = "Search the contents of the resource's narrative using a fulltext search") @OptionalParam(name = ca.uhn.fhir.rest.server.Constants.PARAM_TEXT) StringAndListParam theFtText,
-
-			@Description(shortDefinition = "Search for resources which have the given tag") @OptionalParam(name = ca.uhn.fhir.rest.server.Constants.PARAM_TAG) TokenAndListParam theSearchForTag,
-
-			@Description(shortDefinition = "Search for resources which have the given security labels") @OptionalParam(name = ca.uhn.fhir.rest.server.Constants.PARAM_SECURITY) TokenAndListParam theSearchForSecurity,
-
-			@Description(shortDefinition = "Search for resources which have the given profile") @OptionalParam(name = ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE) UriAndListParam theSearchForProfile,
-			*/
 			
 			@Description(shortDefinition="Abatement as age or age range")
 			@OptionalParam(name="abatement-age")
@@ -194,13 +183,7 @@ public class ConditionResourceProvider extends ResourceProvider<Condition> imple
 
 		paramMap.add("_id", theId);
 		paramMap.add("_language", theResourceLanguage);
-		/*
-		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT, theFtContent);
-		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_TEXT, theFtText);
-		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_TAG, theSearchForTag);
-		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_SECURITY, theSearchForSecurity);
-		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE, theSearchForProfile);
-		*/
+		
 		paramMap.add("abatement-age", theAbatement_age);
 		paramMap.add("abatement-boolean", theAbatement_boolean);
 		paramMap.add("abatement-date", theAbatement_date);
@@ -242,28 +225,28 @@ public class ConditionResourceProvider extends ResourceProvider<Condition> imple
         builder.recordCodeRestriction("code", "code");
 			
 		
-        builder.restriction("identifier", true, "Identifier", "identifier");
+        builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
         builder.restriction("asserter", true, null, "asserter");
         
         if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
         
         builder.restriction("context", true, null, "context");
-        builder.restriction("category", true, "CodeableConcept", "category");
+        builder.restriction("category", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "category");
         
-		builder.restriction("abatement-age", true, "Quantity", "abatementAge", "Range", "abatementRange");
-		builder.restriction("abatement-boolean", false, "boolean", "abatementBoolean");
-		builder.restriction("abatement-date", true, "DateTime", "abatementDateTime", "Period", "abatementPeriod");
-		builder.restriction("abatement-string", true, "string", "abatementString");
+		builder.restriction("abatement-age", true, QueryBuilder.TYPE_AGE_OR_RANGE, "abatement");
+		//builder.restriction("abatement-boolean", false, QueryBuilder.TYPE_BOOLEAN, "abatementBoolean");
+		builder.restriction("abatement-date", true, QueryBuilder.TYPE_DATETIME_OR_PERIOD, "abatement");
+		builder.restriction("abatement-string", true, QueryBuilder.TYPE_STRING, "abatementString");
 		
-		builder.restriction("body-site", true, "CodeableConcept", "bodySite");							
-		builder.restriction("clinicalstatus", true, "code", "clinicalStatus");		
-		builder.restriction("evidence", true, "CodeableConcept", "evidence.code");
+		builder.restriction("body-site", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "bodySite");							
+		builder.restriction("clinicalstatus", true, QueryBuilder.TYPE_CODE, "clinicalStatus");		
+		builder.restriction("evidence", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "evidence.code");
 		
-		builder.restriction("onset-age", true, "Quantity", "onsetAge", "Range", "onsetRange");
-		builder.restriction("onset-date", true, "DateTime", "onsetDateTime", "Period", "onsetPeriod");
-		builder.restriction("onset-info", true, "string", "onsetString");
-		builder.restriction("severity", true, "CodeableConcept", "severity");
-		builder.restriction("stage", true, "CodeableConcept", "stage.summary");					
+		builder.restriction("onset-age", true, QueryBuilder.TYPE_AGE_OR_RANGE, "onset");
+		builder.restriction("onset-date", true, QueryBuilder.TYPE_DATETIME_OR_PERIOD, "onset");
+		builder.restriction("onset-info", true, QueryBuilder.TYPE_STRING, "onsetString");
+		builder.restriction("severity", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "severity");
+		builder.restriction("stage", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "stage.summary");					
 		
 		return query.execute(info);
 	}
@@ -273,20 +256,7 @@ public class ConditionResourceProvider extends ResourceProvider<Condition> imple
 	public MethodOutcome createResource(@ResourceParam Condition theCondition) {
 		return super.createResource(theCondition);
 	}
-	
-	@Override
-	protected MethodOutcome create(Condition theCondition) throws AppException {
-
-		Record record = newRecord("fhir/Condition");
-		prepare(record, theCondition);
-		// insert
-		insertRecord(record, theCondition);
-
-		processResource(record, theCondition);				
 		
-		return outcome("Condition", record, theCondition);
-
-	}
 	
 	public Record init() { return newRecord("fhir/Condition"); }
 
@@ -295,17 +265,7 @@ public class ConditionResourceProvider extends ResourceProvider<Condition> imple
 	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Condition theCondition) {
 		return super.updateResource(theId, theCondition);
 	}
-	
-	@Override
-	protected MethodOutcome update(@IdParam IdType theId, @ResourceParam Condition theCondition) throws AppException {
-		Record record = fetchCurrent(theId);
-		prepare(record, theCondition);		
-		updateRecord(record, theCondition);		
-		processResource(record, theCondition);
 		
-		return outcome("Condition", record, theCondition);
-	}
-
 	public void prepare(Record record, Condition theCondition) throws AppException {
 		// Set Record code and content
 		String display = setRecordCodeByCodeableConcept(record, theCondition.getCode(), null);		

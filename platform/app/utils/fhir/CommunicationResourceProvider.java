@@ -73,33 +73,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 			@Description(shortDefinition="The resource language")
 			@OptionalParam(name="_language")
 			StringAndListParam theResourceLanguage, 
-			
-			/*
-			@Description(shortDefinition="Search the contents of the resource's data using a fulltext search")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT)
-			StringAndListParam theFtContent, 
-			
-			@Description(shortDefinition="Search the contents of the resource's narrative using a fulltext search")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_TEXT)
-			StringAndListParam theFtText, 
-			 
-			@Description(shortDefinition="Search for resources which have the given tag")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_TAG)
-			TokenAndListParam theSearchForTag, 
-			 
-			@Description(shortDefinition="Search for resources which have the given security labels")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_SECURITY)
-			TokenAndListParam theSearchForSecurity, 
-			   
-			@Description(shortDefinition="Search for resources which have the given profile")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE)
-			UriAndListParam theSearchForProfile, 
-			 */
-			/*
-			@Description(shortDefinition="Return resources linked to by the given target")
-			@OptionalParam(name="_has")
-			HasAndListParam theHas, 
-			 */
+						
 			    
 			@Description(shortDefinition="")
 			@OptionalParam(name="identifier")
@@ -175,13 +149,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		SearchParameterMap paramMap = new SearchParameterMap();
 
 		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
-		/*paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT, theFtContent);
-		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_TEXT, theFtText);
-		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_TAG, theSearchForTag);
-		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_SECURITY, theSearchForSecurity);
-		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE, theSearchForProfile);*/
-		// paramMap.add("_has", theHas);
+		paramMap.add("_language", theResourceLanguage);	
 	
 		paramMap.add("identifier", theIdentifier);
 		paramMap.add("category", theCategory);
@@ -214,19 +182,19 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 		
-		builder.restriction("identifier", true, "Identifier", "identifier");
-		builder.restriction("received", true, "Date", "received");
-		builder.restriction("sent", true, "Date", "sent");
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
+		builder.restriction("received", true, QueryBuilder.TYPE_DATE, "received");
+		builder.restriction("sent", true, QueryBuilder.TYPE_DATE, "sent");
 		builder.restriction("based-on", true, null, "basedOn");
 		builder.restriction("recipient", true, null, "recipient");
 		
 		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
 				
-		builder.restriction("category", true, "CodeableConcept", "category");
+		builder.restriction("category", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "category");
 		builder.restriction("context", true, null, "context");
-		builder.restriction("medium", true, "CodeableConcept", "medium");
+		builder.restriction("medium", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "medium");
 		builder.restriction("sender", true, null, "sender");
-		builder.restriction("status", true, "code", "status");	
+		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");	
 						
 		return query.execute(info);
 	}
@@ -287,16 +255,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Communication theCommunication) {
 		return super.updateResource(theId, theCommunication);
 	}
-		
-	@Override
-	public MethodOutcome update(@IdParam IdType theId, @ResourceParam Communication theCommunication) throws AppException {
-		Record record = fetchCurrent(theId);
-		prepare(record, theCommunication);		
-		updateRecord(record, theCommunication);		
-		processResource(record, theCommunication);
-		
-		return outcome("Communication", record, theCommunication);
-	}
+			
 
 	public void prepare(Record record, Communication theCommunication) throws AppException {
 		// Set Record code and content
@@ -330,11 +289,6 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
 	}
-
-	@Override
-	public void clean(Communication theCommunication) {
-		
-		super.clean(theCommunication);
-	}
+	
 
 }

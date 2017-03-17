@@ -498,7 +498,7 @@ class QueryEngine {
     	if (query instanceof Map<?, ?>) condition = new AndCondition((Map<String, Object>) query).optimize();
     	else if (query instanceof Condition) condition = ((Condition) query).optimize();
     	else throw new InternalServerException("error.internal", "Query type not implemented");
-    	
+    	AccessLog.log("validate condition:"+condition.toString());
     	for (DBRecord record : input) {
             Object accessVal = record.data;                        
             if (condition.satisfiedBy(accessVal)) filteredResult.add(record);    		
@@ -532,7 +532,7 @@ class QueryEngine {
     protected static List<DBRecord> limitResultSize(Map<String, Object> properties, List<DBRecord> result) {
     	if (properties.containsKey("limit")) {
 	    	Object limitObj = properties.get("limit");
-	    	int limit = Integer.parseInt(limitObj.toString());
+	    	int limit = (int) Double.parseDouble(limitObj.toString());
 	    	if (result.size() > limit) result = result.subList(0, limit);
 	    }
     	return result;
