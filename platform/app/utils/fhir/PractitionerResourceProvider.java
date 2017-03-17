@@ -178,14 +178,14 @@ public class PractitionerResourceProvider extends ResourceProvider<Practitioner>
 			QueryBuilder builder = new QueryBuilder(params, query, null);
 			
 			builder.handleIdRestriction();
-			builder.restriction("name", true, "string", "firstname", "string", "lastname");
-			builder.restriction("email", true, "string", "emailLC");
-			builder.restrictionMany("address", true, "string", "address1", "address2", "city", "country", "zip");
-			builder.restriction("address-city", true, "string", "city");
-			builder.restriction("address-postalcode", true, "string", "zip");
-			builder.restriction("address-country", true, "string", "country");
-			builder.restriction("birthdate", false, "DateTime", "birthdate");						
-			builder.restriction("gender", false, "string", "gender");
+			builder.restriction("name", true, QueryBuilder.TYPE_STRING, "firstname", "string", "lastname");
+			builder.restriction("email", true, QueryBuilder.TYPE_STRING, "emailLC");
+			builder.restrictionMany("address", true, QueryBuilder.TYPE_STRING, "address1", "address2", "city", "country", "zip");
+			builder.restriction("address-city", true, QueryBuilder.TYPE_STRING, "city");
+			builder.restriction("address-postalcode", true, QueryBuilder.TYPE_STRING, "zip");
+			builder.restriction("address-country", true, QueryBuilder.TYPE_STRING, "country");
+			builder.restriction("birthdate", false, QueryBuilder.TYPE_DATE, "birthdate");						
+			builder.restriction("gender", false, QueryBuilder.TYPE_CODE, "gender");
 			
 			Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
 			Object keywords = query.retrieveIndexValues();

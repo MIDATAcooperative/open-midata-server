@@ -111,8 +111,14 @@ public class OrCondition implements Condition {
 	}
 
 	@Override
-	public Map<String, Condition> indexExpression() {		
-		return null;
+	public Condition indexExpression() {
+		Condition result = null;
+		for (Condition c : checks) {
+			Condition changed = c.indexExpression();
+			if (changed == null) return null;
+			result = OrCondition.or(result, changed);
+		}
+		return result;
 	}
 	
 	@Override
@@ -135,6 +141,10 @@ public class OrCondition implements Condition {
 		}
 		result.put("$or", parts);
 		return result;
+	}
+	
+	public List<Condition> getParts() {
+		return checks;
 	}
 		
 

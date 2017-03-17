@@ -292,7 +292,7 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 		
 		builder.recordCodeRestriction("type", "type");
 				
-		builder.restriction("identifier", true, "Identifier", "identifier", "Identifier", "masterIdentifier");		
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier", QueryBuilder.TYPE_IDENTIFIER, "masterIdentifier");		
 		
 		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
 		
@@ -300,33 +300,33 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 		
 		builder.restriction("author", true, null, "author");
 		
-		builder.restriction("class", true, "CodeableConcept", "class");
-		builder.restriction("created", true, "DateTime", "created");
+		builder.restriction("class", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "class");
+		builder.restriction("created", true, QueryBuilder.TYPE_DATETIME, "created");
 		builder.restriction("custodian", true, "Organization", "custodian");
 		
-		builder.restriction("description", true, "string", "description");
+		builder.restriction("description", true, QueryBuilder.TYPE_STRING, "description");
 		builder.restriction("encounter", true, "Encounter", "context.encounter");
 		
-		builder.restriction("event", true, "CodeableConcept", "context.event");
-		builder.restriction("facility", true, "CodeableConcept", "context.facilityType");
-		builder.restriction("format", true, "CodeableConcept", "content.format");
+		builder.restriction("event", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "context.event");
+		builder.restriction("facility", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "context.facilityType");
+		builder.restriction("format", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "content.format");
 		
-		builder.restriction("indexed", true, "DateTime", "indexed");
-		builder.restriction("language", true, "code", "content.attachment.language");
-		builder.restriction("location", true, "uri", "content.attachment.url");
+		builder.restriction("indexed", true, QueryBuilder.TYPE_DATETIME, "indexed");
+		builder.restriction("language", true, QueryBuilder.TYPE_CODE, "content.attachment.language");
+		builder.restriction("location", true, QueryBuilder.TYPE_URI, "content.attachment.url");
 		//builder.restriction("patient", "Patient", true, "subject");
 		
-		builder.restriction("period", true, "Period", "context.period");
-		builder.restriction("related-id", true, "Identifier", "context.related.identifier");
+		builder.restriction("period", true, QueryBuilder.TYPE_PERIOD, "context.period");
+		builder.restriction("related-id", true, QueryBuilder.TYPE_IDENTIFIER, "context.related.identifier");
 		builder.restriction("related-ref", true, null, "context.related.ref");
 		
 		builder.restriction("relatesto", true, "DocumentReference", "relatesTo.target");
 		
-		builder.restriction("relation", false, "code", "relatesTo.code");
-		builder.restriction("relationship", "relatesTo.code", "relatesTo.target", "code", "DocumentReference");	
-		builder.restriction("securitylabel", true, "CodeableConcept", "securityLabel");
-		builder.restriction("setting", true, "CodeableConcept", "context.practiceSetting");
-		builder.restriction("status", true, "code", "status");
+		builder.restriction("relation", false, QueryBuilder.TYPE_CODE, "relatesTo.code");
+		builder.restriction("relationship", "relatesTo.code", "relatesTo.target", QueryBuilder.TYPE_CODE, "DocumentReference");	
+		builder.restriction("securitylabel", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "securityLabel");
+		builder.restriction("setting", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "context.practiceSetting");
+		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");
 		
 		
 		//builder.restriction("type", "CodeableConcept", true, "type");

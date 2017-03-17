@@ -1,9 +1,11 @@
 package utils.json;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -80,6 +82,17 @@ public class JsonExtraction {
 		}
 		return set;
 	}
+	
+	/**
+	 * Extracts a general list.
+	 */
+	public static List<Object> extractList(JsonNode json) {
+		List<Object> set = new ArrayList<Object>();
+		for (JsonNode element : json) {
+			set.add(extract(element));
+		}
+		return set;
+	}
 
 	/**
 	 * Extracts any data type.
@@ -93,6 +106,8 @@ public class JsonExtraction {
 			return extractSet(json);
 		} else if (json.isBoolean()) {
 			return json.asBoolean();
+		} else if (json.isNumber()) {
+			return json.asDouble();
 		} else {
 			return json.asText();
 		}

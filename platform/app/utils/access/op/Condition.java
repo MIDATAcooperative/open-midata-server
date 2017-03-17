@@ -32,7 +32,7 @@ public interface Condition {
 	 * Returns null if conversion is not possible.
 	 * @return
 	 */
-	public Map<String, Condition> indexExpression();
+	public Condition indexExpression();
 	
 	/**
 	 * Converts the condition to a mongo query that works on a standard collection

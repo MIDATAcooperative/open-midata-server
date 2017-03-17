@@ -46,26 +46,35 @@ public class AndCondition implements Condition {
 	   for (String accessKey : restrictions.keySet()) {		  		  
 		   Object value = restrictions.get(accessKey);
 		   		   
-		   if (accessKey.equals("$gt") || accessKey.equals("!!!gt")) {
-			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.GT));
-		   } else if (accessKey.equals("$lt") || accessKey.equals("!!!lt")) {
-			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.LT));
-		   } else if (accessKey.equals("$le") || accessKey.equals("!!!le")) {
-			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.LE));
-		   } else if (accessKey.equals("$ge") || accessKey.equals("!!!ge")) {
-			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.GE));
-		   } else if (accessKey.equals("$in") || accessKey.equals("!!!in")) {			   
+		   if (accessKey.equals("$gt")) {
+			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.GT, false));
+		   } else if (accessKey.equals("$lt")) {
+			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.LT, false));
+		   } else if (accessKey.equals("$le")) {
+			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.LE, false));
+		   } else if (accessKey.equals("$ge")) {
+			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.GE, false));
+		   } else if (accessKey.equals("$gtn")) {
+			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.GT, true));
+		   } else if (accessKey.equals("$ltn")) {
+			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.LT, true));
+		   } else if (accessKey.equals("$len")) {
+			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.LE, true));
+		   } else if (accessKey.equals("$gen")) {
+			  checks.add(new CompareCondition((Comparable<Object>) value, CompareCondition.CompareOperator.GE, true));
+		   } else if (accessKey.equals("$in")) {			   
 			  checks.add(new InCondition(makeSet(value)));
-		   } else if (accessKey.equals("$or") || accessKey.equals("!!!or")) {			   
-			  checks.add(new OrCondition(makeSet(value)));
-		   } else if (accessKey.equals("$and") || accessKey.equals("!!!and")) {			   
+		   } else if (accessKey.equals("$or")) {			   
+			  checks.add(new OrCondition(makeSet(value)));		   
+		   } else if (accessKey.equals("$and")) {			   
 			  for (Object obj : makeSet(value)) {
 				  checks.add(parseRemaining(obj));
 			  }
-		   } else {		   
-			   			   
-			   Condition cond = FieldAccess.path(accessKey, parseRemaining(value));			   			   			   
-		       checks.add(cond);
+		   } else if (accessKey.equals("$exists")) {
+			   checks.add(new ExistsCondition(value.toString().toLowerCase().equals("true")));
+		   } else {		   			  			   
+			     Condition cond = FieldAccess.path(accessKey, parseRemaining(value));			   			   			   
+		         checks.add(cond);			   
 		   }
 	       	       		     
 	   }
@@ -150,15 +159,15 @@ public class AndCondition implements Condition {
 	}
 	
 	@Override
-	public Map<String, Condition> indexExpression() {
-		// TODO Implement to support multi field indexes
+	public Condition indexExpression() {
+		Condition result = null;
 		if (checks.size() > 0) {
 			for (Condition cond : checks) {
-				Map<String, Condition> result = cond.indexExpression();
-				if (result != null) return result;
+				Condition indexAccess = cond.indexExpression();
+				result = AndCondition.and(result, indexAccess);				
 			}
 		}
-		return null;
+		return result;
 	}
 	
 	@Override
@@ -189,6 +198,10 @@ public class AndCondition implements Condition {
 		}
 		result.put("$and", parts);
 		return result;
+	}
+	
+	public List<Condition> getParts() {
+		return checks;
 	}
 	
 

@@ -14,6 +14,7 @@ public class CompareCondition implements Condition {
 
     private Comparable<Object> val;
     private CompareOperator op;
+    private boolean nullTrue;
 	private boolean isDate;
 	private boolean isNumber;
     
@@ -27,17 +28,18 @@ public class CompareCondition implements Condition {
 	 * @param val a value to that the record fields should be compared with 
 	 * @param op comparison operator. 
 	 */
-	public CompareCondition(Comparable<Object> val, CompareOperator op) {
+	public CompareCondition(Comparable<Object> val, CompareOperator op, boolean nullTrue) {
 		if (val == null) throw new NullPointerException("Null argument for comparator");
 		this.val = val;
 		this.op = op;
+		this.nullTrue = nullTrue;
 		this.isDate = ((Object) val) instanceof Date;
 		this.isNumber = ((Object) val) instanceof Double;
 	}
 	
 	@Override
 	public boolean satisfiedBy(Object obj) {
-		if (obj == null) return false;
+		if (obj == null) return nullTrue;
 		try {
 		  if (isDate) obj = ISODateTimeFormat.dateTimeParser().parseDateTime(obj.toString()).toDate();
 		  if (isNumber && !(obj instanceof Double)) obj = new Double(obj.toString());
@@ -66,13 +68,13 @@ public class CompareCondition implements Condition {
 	}
 
 	@Override
-	public Map<String, Condition> indexExpression() {		
+	public Condition indexExpression() {		
 		return null;
 	}
 
 	@Override
 	public String toString() {
-		return "$"+op+" : "+val.toString(); 
+		return "$"+op+(nullTrue?"n":"")+" : "+val.toString(); 
 	}
 
 	@Override

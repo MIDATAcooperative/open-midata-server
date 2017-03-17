@@ -86,6 +86,7 @@ import utils.exceptions.InternalServerException;
  */
 public  abstract class ResourceProvider<T extends DomainResource> implements IResourceProvider {
 
+		
 	public static FhirContext ctx = FhirContext.forDstu3();
 	
 	/**
@@ -210,12 +211,35 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 
 	}
 	
+	/**
+	 * Default implementation for create
+	 * @param theResource
+	 * @return
+	 * @throws AppException
+	 */
 	protected MethodOutcome create(T theResource) throws AppException {
-		throw new NotImplementedOperationException("create not implemented");
+		Record record = init();
+		prepare(record, theResource);	
+		insertRecord(record, theResource);
+		processResource(record, theResource);				
+		
+		return outcome(theResource.getResourceType().name(), record, theResource);				
 	}
 	
+	/**
+	 * Default implementation for update
+	 * @param theId
+	 * @param theResource
+	 * @return
+	 * @throws AppException
+	 */
 	protected MethodOutcome update(IdType theId, T theResource) throws AppException {
-		throw new NotImplementedOperationException("create not implemented");
+		Record record = fetchCurrent(theId);
+		prepare(record, theResource);		
+		updateRecord(record, theResource);	
+		processResource(record, theResource);
+		
+		return outcome(theResource.getResourceType().name(), record, theResource);				
 	}
 	
 	

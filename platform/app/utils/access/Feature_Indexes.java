@@ -15,11 +15,16 @@ import utils.AccessLog;
 import utils.access.index.IndexDefinition;
 import utils.access.index.IndexMatch;
 import utils.access.index.IndexRoot;
+import utils.access.op.AlternativeFieldAccess;
 import utils.access.op.AndCondition;
 import utils.access.op.Condition;
+import utils.access.op.FieldAccess;
+import utils.access.op.OrCondition;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
 
 public class Feature_Indexes extends Feature {
 
@@ -31,10 +36,13 @@ private Feature next;
 	
 	public final static int INDEX_REVERSE_USE = 300;
 	public final static int AUTOCREATE_INDEX_COUNT = 30;
+	public final static int NO_SECOND_INDEX_COUNT = 30;
 	
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
 		if (q.restrictedBy("index") && !q.restrictedBy("_id")) {
+			
+			if (!q.restrictedBy("format")) throw new BadRequestException("error.invalid.query", "Queries using an index must be restricted by format!");
 			
 			IndexPseudonym pseudo = IndexManager.instance.getIndexPseudonym(q.getCache(), q.getCache().getExecutor(), q.getApsId(), false);
 			
@@ -46,26 +54,21 @@ private Feature next;
 			}			
 			
 			AccessLog.logBegin("start index query");
-			Map<String,Object> indexQuery = (Map<String,Object>) q.getProperties().get("index");
 			
-			List<String> pathes = new ArrayList<String>();
-			Condition[] condition = new Condition[indexQuery.size()];
-
-			int idx = 0;
-			for (Map.Entry<String, Object> entry : indexQuery.entrySet()) {
-				pathes.add(entry.getKey());
-				condition[idx] = AndCondition.parseRemaining(entry.getValue()).optimize();
-				idx++;
-			}
-												
-			IndexDefinition index = IndexManager.instance.findIndex(pseudo, q.getRestriction("format"), pathes);
+			Object indexQueryUnparsed = q.getProperties().get("index");
+			Condition indexQueryParsed = null;
 			
-			if (index == null) { 
-				AccessLog.logBegin("start index creation");
-				index = IndexManager.instance.createIndex(pseudo, q.getRestriction("format"), pathes);
-				AccessLog.logEnd("end index creation");
+			if (indexQueryUnparsed instanceof Condition) {
+				indexQueryParsed = (Condition) indexQueryUnparsed;
+			} else {
+				indexQueryParsed = AndCondition.parseRemaining(indexQueryUnparsed).optimize();
+				AccessLog.log("Optimized query: "+indexQueryParsed.toString());
+				indexQueryParsed = indexQueryParsed.indexExpression();
 			}
 			
+			AccessLog.log("Index query: "+indexQueryParsed.toString());
+				
+																						
 			Set<MidataId> targetAps;
 			
 			if (!q.getApsId().equals(q.getCache().getAccountOwner())) {
@@ -84,8 +87,12 @@ private Feature next;
 			}
 						
 			List<DBRecord> result = new ArrayList<DBRecord>();
-			IndexRoot root = IndexManager.instance.getIndexRootAndUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index, targetAps);
-			Collection<IndexMatch> matches = IndexManager.instance.queryIndex(root, condition);
+			
+			
+			IndexUse myAccess = parse(pseudo, q.getRestriction("format"), indexQueryParsed);			
+								
+			Collection<IndexMatch> matches = myAccess.query(q, targetAps);
+			
 			
 			Map<MidataId, Set<MidataId>> filterMatches = new HashMap<MidataId, Set<MidataId>>();
 			for (IndexMatch match : matches) {
@@ -160,8 +167,8 @@ private Feature next;
 			}
 
 			AccessLog.log("index query found "+matches.size()+" matches, "+result.size()+" in correct aps.");
-																													
-			IndexManager.instance.revalidate(result, root, indexQuery, condition);
+				
+			myAccess.revalidate(result);						
 			
 			AccessLog.logEnd("end index query "+result.size()+" matches.");
 			return result;
@@ -170,6 +177,154 @@ private Feature next;
 		} else return next.query(q);
 	}
 	
+	IndexUse parse(IndexPseudonym pseudo, Set<String> format, Condition indexQuery) throws InternalServerException {
+		if (indexQuery instanceof AndCondition) {
+			List<IndexUse> uses = new ArrayList<IndexUse>();			
+			for (Condition check : ((AndCondition) indexQuery).getParts()) {
+				uses.add(parse(pseudo, format, check));
+			}
+			return new IndexAnd(uses);
+		} else if (indexQuery instanceof OrCondition) {
+			List<IndexUse> uses = new ArrayList<IndexUse>();			
+			for (Condition check : ((OrCondition) indexQuery).getParts()) {
+				uses.add(parse(pseudo, format, check));
+			}
+			return new IndexOr(uses);
+		} else if (indexQuery instanceof FieldAccess) {		
+		   return new IndexAccess(pseudo, format, indexQuery);
+		} else if (indexQuery instanceof AlternativeFieldAccess) {		
+			   return new IndexAccess(pseudo, format, indexQuery);
+		} else throw new InternalServerException("error.internal", "Bad index query expression");
+	}
+	
+	private final Map<MidataId, IndexRoot> cachedIndexRoots = new HashMap<MidataId, IndexRoot>();
+	
+	interface IndexUse {		
+		Collection<IndexMatch> query(Query q, Set<MidataId> targetAps) throws AppException;
+		void revalidate(List<DBRecord> result) throws AppException;
+	}
+	
+	class IndexAccess implements IndexUse {
+		IndexDefinition index;
+		
+		IndexPseudonym pseudo;
+		Set<String> format;
+		
+		Condition revalidationQuery;
+		
+		List<String> pathes;
+		Condition[] condition;
+		
+		Collection<IndexMatch> matches;
+		IndexRoot root;
+		
+		
+		IndexAccess(IndexPseudonym pseudo, Set<String> format, Condition indexQuery) throws InternalServerException {
+			this.pseudo = pseudo;
+			this.format = format;
+			this.revalidationQuery = indexQuery;			
+			
+			int idx = 0;
+			condition = new Condition[1 /*indexQuery.size() */];
+			pathes = new ArrayList();
+
+			if (indexQuery instanceof FieldAccess) {
+				
+			  FieldAccess fa = (FieldAccess) indexQuery;
+			  pathes.add(fa.getField());
+			  condition[0] = AndCondition.parseRemaining(fa.getCondition()).optimize();
+			} else if (indexQuery instanceof AlternativeFieldAccess) {
+			  AlternativeFieldAccess fa = (AlternativeFieldAccess) indexQuery;
+			  pathes.add(fa.getField());
+			  condition[0] = AndCondition.parseRemaining(fa.getCondition()).optimize();
+			} else throw new InternalServerException("error.internal", "Index expression not useable.");
+
+		}
+		
+		public void prepare() throws AppException {
+			index = IndexManager.instance.findIndex(pseudo, format, pathes);
+			if (index == null) { 
+				AccessLog.logBegin("start index creation");
+				index = IndexManager.instance.createIndex(pseudo, format, pathes);
+				AccessLog.logEnd("end index creation");
+			}
+		}
+		
+		public Collection<IndexMatch> query(Query q, Set<MidataId> targetAps) throws AppException {
+			prepare();
+			root = cachedIndexRoots.get(index._id);
+			if (root == null) {
+			  root = IndexManager.instance.getIndexRootAndUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index, targetAps);
+			  cachedIndexRoots.put(index._id, root);
+			}
+			matches = IndexManager.instance.queryIndex(root, condition);
+			return matches;
+			
+		}
+		
+		public void revalidate(List<DBRecord> result) throws AppException {
+			if (index==null) return;
+			IndexManager.instance.revalidate(result, root, revalidationQuery, condition);
+		}
+	}
+	
+	class IndexAnd implements IndexUse {
+		List<IndexUse> parts;
+		
+		IndexAnd(List<IndexUse> parts) {
+			this.parts = parts;
+		}
+
+		@Override
+		public Collection<IndexMatch> query(Query q, Set<MidataId> targetAps) throws AppException {
+			Collection<IndexMatch> results = null;
+			
+			for (IndexUse part : parts) {
+				Collection<IndexMatch> partResult = part.query(q, targetAps);								
+				if (results == null) {
+					results = partResult;
+				} else {
+					results.retainAll(partResult);
+				}
+				if (results.size() < NO_SECOND_INDEX_COUNT) return results;
+			}
+			return results;
+		}
+
+		@Override
+		public void revalidate(List<DBRecord> result) throws AppException {
+			for (IndexUse part : parts) part.revalidate(result);			
+		}
+		
+	}
+	
+	class IndexOr implements IndexUse {
+       List<IndexUse> parts;
+		
+       IndexOr(List<IndexUse> parts) {
+			this.parts = parts;
+		}
+
+		@Override
+		public Collection<IndexMatch> query(Query q, Set<MidataId> targetAps) throws AppException {
+			Collection<IndexMatch> results = null;
+			
+			for (IndexUse part : parts) {
+				Collection<IndexMatch> partResult = part.query(q, targetAps);								
+				if (results == null) {
+					results = partResult;
+				} else {
+					results.addAll(partResult);
+				}				
+			}
+			return results;
+		}
+
+		@Override
+		public void revalidate(List<DBRecord> result) throws AppException {
+			//for (IndexUse part : parts) part.revalidate(result);			
+		}
+	}
 
 	
 }
