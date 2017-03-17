@@ -197,16 +197,16 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Appointment");
 		
 		builder.handleIdRestriction();
-		builder.restriction("identifier", true, "Identifier", "identifier");
-		builder.restriction("date", true, "date", "start");
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
+		builder.restriction("date", true, QueryBuilder.TYPE_DATE, "start");
 		builder.restriction("actor", true, null, "participant.actor");
-		builder.restriction("status", false, "code", "status");
-		builder.restriction("part-status", false, "code", "participant.status");
+		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");
+		builder.restriction("part-status", false, QueryBuilder.TYPE_CODE, "participant.status");
 		builder.restriction("patient", true, "Patient", "participant.actor");
 		builder.restriction("practitioner", true, "Practitioner", "participant.actor");
 		builder.restriction("location", true, "Location", "participant.actor");
-		builder.restriction("appointment-type", true, "CodeableConcept", "appointmentType");
-		builder.restriction("service-type", true, "CodeableConcept", "serviceType");
+		builder.restriction("appointment-type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "appointmentType");
+		builder.restriction("service-type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "serviceType");
 								  
 		return query.execute(info);
 	}
@@ -221,8 +221,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 	protected MethodOutcome create(Appointment theAppointment) throws AppException {
 		Record record = newRecord("fhir/Appointment");
 		
-		prepare(record, theAppointment);		
-		// insert
+		prepare(record, theAppointment);				
 		insertRecord(record, theAppointment);
         shareRecord(record, theAppointment);
 		processResource(record, theAppointment);				

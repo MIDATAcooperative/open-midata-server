@@ -148,17 +148,17 @@ public class DeviceResourceProvider extends ResourceProvider<Device> implements 
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 				
-		builder.restriction("identifier", true, "Identifier", "identifier");
-		builder.restriction("device-name", false, "String", "udi", "String", "type.coding.display", "String", "type.text");
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
+		builder.restriction("device-name", false, QueryBuilder.TYPE_STRING, "udi", QueryBuilder.TYPE_STRING, "type.coding.display", QueryBuilder.TYPE_STRING, "type.text");
         builder.restriction("location", true, "Location", "location");
-		builder.restriction("manufacturer", true, "String", "manufacturer");	
-		builder.restriction("model", true, "String", "model");
+		builder.restriction("manufacturer", true, QueryBuilder.TYPE_STRING, "manufacturer");	
+		builder.restriction("model", true, QueryBuilder.TYPE_STRING, "model");
 		builder.restriction("organization", true, "Organization", "owner");
-		builder.restriction("status", true, "code", "status");	
-		builder.restriction("type", true, "CodeableConcept", "type");
-		builder.restriction("udi-carrier", true, "String", "udi.carrierHRF", "String", "udi.carrierAIDC");
-		builder.restriction("udi-di", true, "String", "udi.deviceIdentifier");
-		builder.restriction("url", true, "uri", "url");
+		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");	
+		builder.restriction("type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "type");
+		builder.restriction("udi-carrier", true, QueryBuilder.TYPE_STRING, "udi.carrierHRF", QueryBuilder.TYPE_STRING, "udi.carrierAIDC");
+		builder.restriction("udi-di", true, QueryBuilder.TYPE_STRING, "udi.deviceIdentifier");
+		builder.restriction("url", true, QueryBuilder.TYPE_URI, "url");
 														
 		return query.execute(info);
 	}
@@ -168,20 +168,7 @@ public class DeviceResourceProvider extends ResourceProvider<Device> implements 
 	public MethodOutcome createResource(@ResourceParam Device theDevice) {
 		return super.createResource(theDevice);
 	}
-	
-	@Override
-	protected MethodOutcome create(Device theDevice) throws AppException {
-
-		Record record = newRecord("fhir/Device");
-		prepare(record, theDevice);
-		// insert
-		insertRecord(record, theDevice);
-
-		processResource(record, theDevice);				
 		
-		return outcome("Device", record, theDevice);
-
-	}
 	
 	public Record init() { return newRecord("fhir/Device"); }
 
@@ -190,15 +177,7 @@ public class DeviceResourceProvider extends ResourceProvider<Device> implements 
 	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Device theDevice) {
 		return super.updateResource(theId, theDevice);
 	}
-	
-	@Override
-	protected MethodOutcome update(@IdParam IdType theId, @ResourceParam Device theDevice) throws AppException {
-		Record record = fetchCurrent(theId);
-		prepare(record, theDevice);		
-		updateRecord(record, theDevice);		
-		processResource(record, theDevice);		
-		return outcome("Device", record, theDevice);
-	}
+		
 
 	public void prepare(Record record, Device theDevice) throws AppException {
 		// Set Record code and content

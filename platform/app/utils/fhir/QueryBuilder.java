@@ -43,6 +43,26 @@ import utils.exceptions.BadRequestException;
  */
 public class QueryBuilder {
 
+	public final static String TYPE_DATE = "date";
+	public final static String TYPE_DATETIME = "DateTime";
+	public final static String TYPE_PERIOD = "Period";
+	public final static String TYPE_DATETIME_OR_PERIOD = "DateTime|Period";
+
+	public final static String TYPE_CODEABLE_CONCEPT = "CodeableConcept";
+	public final static String TYPE_CODING = "Coding";
+	public final static String TYPE_CODE = "code";
+	public final static String TYPE_IDENTIFIER = "Identifier";
+	public final static String TYPE_CONTACT_POINT = "ContactPoint";
+	
+	public final static String TYPE_BOOLEAN = "boolean";
+	public final static String TYPE_STRING = "string";
+	public final static String TYPE_URI = "uri";
+	
+	public final static String TYPE_QUANTITY = "Quantity";
+	public final static String TYPE_RANGE = "Range";
+	public final static String TYPE_QUANTITY_OR_RANGE = "Quantity|Range";
+	public final static String TYPE_AGE_OR_RANGE = "Age|Range";
+	
 	private SearchParameterMap params;
 	private Query query;
 	
@@ -106,34 +126,7 @@ public class QueryBuilder {
 		  if (indexCondition != null) query.putIndexCondition(indexCondition);
 		//} 
 	}
-	
-	/*
-	public void restriction(String name, String path, String type, boolean indexing) {
-		List<List<? extends IQueryParameterType>> paramsAnd = params.get(name);
-		if (paramsAnd == null) return;
 		
-		PredicateBuilder bld = new PredicateBuilder();
-		for (List<? extends IQueryParameterType> paramsOr : paramsAnd) {
-						
-			for (IQueryParameterType param : paramsOr) {
-								
-				handleRestriction(param, path, type, bld);								
-			    bld.or();
-			}
-			bld.and();
-		}
-		
-		Condition unOpt = bld.get();
-		AccessLog.log("Before opt: "+unOpt.toString());
-		Condition dataCondition = unOpt.optimize();
-		AccessLog.log("After opt: "+dataCondition.toString());
-		query.putDataCondition(dataCondition);
-		
-		if (indexing) {
-		  Map<String, Condition> indexCondition = dataCondition.indexExpression();
-		  if (indexCondition != null) query.putIndexCondition(indexCondition);
-		} 
-	}*/
 	
 	public void restriction(String name, boolean indexing, String t1, String p1) {
 	  restriction(name, indexing, t1, p1, null, null, null, null);	
@@ -210,36 +203,36 @@ public class QueryBuilder {
 		if (param instanceof TokenParam) {
 			  TokenParam tokenParam = (TokenParam) param;
 			  String system = tokenParam.getSystem();
-			  if (type.equals("CodeableConcept")) {
+			  if (type.equals(TYPE_CODEABLE_CONCEPT)) {
 				if (system == null) {
 			      bld.addEq(path+".coding.code", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
 				} else {
 				  bld.addEq(path+".coding", "system", system, "code", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
 				}
 			    //if (tokenParam.getSystem() != null) bld.addEq(path+".coding.code", tokenParam.getValue());
-			  } else if (type.equals("code")) {
+			  } else if (type.equals(TYPE_CODE)) {
 				bld.addEq(path, tokenParam.getValue());
-			  } else if (type.equals("Coding")) {
+			  } else if (type.equals(TYPE_CODING)) {
 				if (system == null) {
 					bld.addEq(path+".code", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
 				} else {
 					bld.addEq(path, "system", system, "code", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
 				}					
-			  } else if (type.equals("Identifier")) {
+			  } else if (type.equals(TYPE_IDENTIFIER)) {
 				if (system == null) {
 				   bld.addEq(path+".value", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
 				} else {
 				   bld.addEq(path, "system", system, "value", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
 				}	
-			  } else if (type.equals("ContactPoint")) {
+			  } else if (type.equals(TYPE_CONTACT_POINT)) {
 				if (system == null) {
 				   bld.addEq(path+".value", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
 				} else {
 				   bld.addEq(path, "use", system, "value", tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
 				}	
-			  } else if (type.equals("boolean")) {
+			  } else if (type.equals(TYPE_BOOLEAN)) {
 				bld.addEq(path, tokenParam.getValue().equals("true"));
-			  } else if (type.equals("string")) {
+			  } else if (type.equals(TYPE_STRING)) {
 				bld.addEq(path, tokenParam.getValue(), CompareCaseInsensitiveOperator.EQUALS);
 			  } 
 			} else if (param instanceof StringParam) {
@@ -346,13 +339,13 @@ public class QueryBuilder {
                     hDate = lDate;
                     break;
 				}
-				if (type.equals("DateTime")) {
+				if (type.equals(TYPE_DATETIME) || type.equals(TYPE_DATE)) {
 					lPath = path;
 					hPath = path;
-				} else if (type.equals("Period")) {
+				} else if (type.equals(TYPE_PERIOD)) {
 					lPath = path+".start|null";
 					lPath = path+".end|null";
-				} else if (type.equals("DateTime|Period")) {
+				} else if (type.equals(TYPE_DATETIME_OR_PERIOD)) {
 					lPath = path+"DateTime|"+path+"Period.start|null";
 					hPath = path+"DateTime|"+path+"Period.end|null";
 				} else throw new NullPointerException();
@@ -395,53 +388,27 @@ public class QueryBuilder {
 				if (prefix == null) prefix = ParamPrefixEnum.EQUAL;
 				String units = quantityParam.getUnits();
 				String system = quantityParam.getSystem();
-				BigDecimal val = quantityParam.getValue();
-                if (type.equals("Range")) {
-                	throw new NotImplementedOperationException("Search on Range fields not yet implemented.");
-                	/*switch(prefix) {
-    				case GREATERTHAN: bld.addComp(path+".value", CompareOperator.GT, val.doubleValue());break;
-    				case LESSTHAN: bld.addComp(path+".value", CompareOperator.LT, val.doubleValue());break;
-    				case GREATERTHAN_OR_EQUALS: bld.addComp(path+".value", CompareOperator.GE, val.doubleValue());break;
-    				case LESSTHAN_OR_EQUALS: bld.addComp(path+".value", CompareOperator.LE, val.doubleValue());break;
-    				case EQUAL: bld.addComp(path+".value", CompareOperator.EQ, val.doubleValue());break;
-    				case NOT_EQUAL: bld.addComp(path+".value", CompareOperator.NE, val.doubleValue());break;						
-    				}
-    				if (system != null) bld.addEq(path+".system", system);
-    				if (units!=null) {						
-    					bld.add(OrCondition.or(FieldAccess.path(path+".unit", new EqualsSingleValueCondition((Comparable) units)), FieldAccess.path(path+".code", new EqualsSingleValueCondition((Comparable) units))));																
-    				}*/
-				} else {
-					/*
-					switch(prefix) {
-					case GREATERTHAN: bld.addComp(path+".value", CompareOperator.GT, val.doubleValue());break;
-					case LESSTHAN: bld.addComp(path+".value", CompareOperator.LT, val.doubleValue());break;
-					case GREATERTHAN_OR_EQUALS: bld.addComp(path+".value", CompareOperator.GE, val.doubleValue());break;
-					case LESSTHAN_OR_EQUALS: bld.addComp(path+".value", CompareOperator.LE, val.doubleValue());break;
-					case EQUAL: bld.addComp(path+".value", CompareOperator.EQ, val.doubleValue());break;
-					case NOT_EQUAL: bld.addComp(path+".value", CompareOperator.NE, val.doubleValue());break;						
-					}
-					if (system != null) bld.addEq(path+".system", system);
-					if (units!=null) {						
-						bld.add(OrCondition.or(FieldAccess.path(path+".unit", new EqualsSingleValueCondition((Comparable) units)), FieldAccess.path(path+".code", new EqualsSingleValueCondition((Comparable) units))));																
-					}
-					*/	
-				}
+				BigDecimal val = quantityParam.getValue();               
                 
                 String lPath = null;
 				String hPath = null;
 				boolean simple = true;
 				
-				if (type.equals("Quantity")) {
+				if (type.equals(TYPE_QUANTITY)) {
 				  lPath = path+".value";
 				  hPath = path+".value";
-				} else if (type.equals("Range")){
+				} else if (type.equals(TYPE_RANGE)){
 				  lPath = path+".low.value";
 				  hPath = path+".high.value";
 				  simple = false;
-				} else if (type.equals("Quantity|Range")) {
+				} else if (type.equals(TYPE_QUANTITY_OR_RANGE)) {
 				  lPath = path+"Quantity.value|"+path+"Range.low.value|null";
 				  hPath = path+"Quantity.value|"+path+"Range.high.value|null";
-				  simple = false;	
+				  simple = false;
+				} else if (type.equals(TYPE_AGE_OR_RANGE)) {
+					  lPath = path+"Age.value|"+path+"Range.low.value|null";
+					  hPath = path+"Age.value|"+path+"Range.high.value|null";
+					  simple = false;	
 				} else throw new NullPointerException();
 				
 			    switch (prefix) {
@@ -636,9 +603,9 @@ public class QueryBuilder {
 		Set<String> codes = tokensToCodeSystemStrings(name);
 		if (codes != null) {
 			query.putAccount("code", codes);
-			restriction(name, false, "CodeableConcept", path);
+			restriction(name, false, TYPE_CODEABLE_CONCEPT, path);
 		} else {
-			restriction(name, true, "CodeableConcept", path);
+			restriction(name, true, TYPE_CODEABLE_CONCEPT, path);
 		}		
 	}
 }

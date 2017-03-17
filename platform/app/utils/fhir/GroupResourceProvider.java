@@ -228,12 +228,12 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 			Query query = new Query();		
 			QueryBuilder builder = new QueryBuilder(params, query, null);
 						
-			builder.restriction("actual", false, "boolean", "fhirGroup.actual");
-			builder.restriction("characteristic", false, "CodeableConcept", "fhirGroup.characteristic.code");
-			builder.restriction("code", false, "CodeableConcept", "fhirGroup.code");
-			builder.restriction("exclude", false, "boolean", "fhirGroup.characteristic.exclude");
-			builder.restriction("identifier", false, "Identifier", "fhirGroup.identifier");
-			builder.restriction("type", false, "code", "fhirGroup.type");
+			builder.restriction("actual", false, QueryBuilder.TYPE_BOOLEAN, "fhirGroup.actual");
+			builder.restriction("characteristic", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirGroup.characteristic.code");
+			builder.restriction("code", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirGroup.code");
+			builder.restriction("exclude", false, QueryBuilder.TYPE_BOOLEAN, "fhirGroup.characteristic.exclude");
+			builder.restriction("identifier", false, QueryBuilder.TYPE_IDENTIFIER, "fhirGroup.identifier");
+			builder.restriction("type", false, QueryBuilder.TYPE_CODE, "fhirGroup.type");
 			//builder.restriction("characteristic-value", "CodeableConcept", "valueDate", "CodeableConcept", "DateTime");
 			//builder.restriction("value", "CodeableConcept", false, "fhirGroup.characteristic.value");																				
 			

@@ -261,32 +261,32 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		builder.recordOwnerReference("patient", "Patient");		
 		builder.recordCodeRestriction("code", "code");
 		
-		builder.restriction("identifier", true, "Identifier", "identifier");
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		builder.restriction("part-of", true, "Task", "partOf");
 		builder.restriction("owner", true, null, "owner");
 		
 		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "for");
 		  
         											
-		builder.restriction("authored-on", true, "DateTime", "authoredOn");
+		builder.restriction("authored-on", true, QueryBuilder.TYPE_DATETIME, "authoredOn");
 		builder.restriction("based-on", true, null, "basedOn");
-		builder.restriction("business-status",  true,  "CodeableConcept", "businessStatus");
+		builder.restriction("business-status",  true,  QueryBuilder.TYPE_CODEABLE_CONCEPT, "businessStatus");
 		builder.restriction("context", true, null, "context");
 		builder.restriction("definition-ref", true, "ActivityDefinition", "definitionReference");	
 		builder.restriction("focus", true, null, "focus");			
-		builder.restriction("group-identifier", true, "Identifier", "groupIdentifier");
+		builder.restriction("group-identifier", true, QueryBuilder.TYPE_IDENTIFIER, "groupIdentifier");
 		
-		builder.restriction("intent", true, "code", "intent");
-		builder.restriction("modified", true, "DateTime", "lastModified");
+		builder.restriction("intent", true, QueryBuilder.TYPE_CODE, "intent");
+		builder.restriction("modified", true, QueryBuilder.TYPE_DATETIME, "lastModified");
 		builder.restriction("organization", true, "Organization", "requester.onBehalfOf");
 		
 		
-		builder.restriction("performer", true, "CodeableConcept", "performerType"); 
-		builder.restriction("period", true, "Period", "executionPeriod");
-		builder.restriction("priority", false, "code", "priority");	
+		builder.restriction("performer", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "performerType"); 
+		builder.restriction("period", true, QueryBuilder.TYPE_PERIOD, "executionPeriod");
+		builder.restriction("priority", false, QueryBuilder.TYPE_CODE, "priority");	
 		builder.restriction("requester", true, null, "requester.agent");	
-		builder.restriction("status", false, "code", "status");
-		builder.restriction("statusreason", true, "CodeableConcept", "statusReason");					
+		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");
+		builder.restriction("statusreason", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "statusReason");					
 							   
 		return query.execute(info);
 	}
