@@ -50,7 +50,9 @@ angular.module('portal')
 	};
 	
 }])
-.controller('PublicNavbarCtrl', ['$scope', '$state', '$translate', '$translatePartialLoader', 'session', function($scope, $state, $translate, $translatePartialLoader, session) {	
+.controller('PublicNavbarCtrl', ['$scope', '$state', '$translate', '$translatePartialLoader', 'session', 'ENV', function($scope, $state, $translate, $translatePartialLoader, session, ENV) {
+	$scope.notPublic = ENV.instanceType == "prod";
+	
 	if (!$state.current.data || !$state.current.data.keep) session.logout();
 	$translatePartialLoader.addPart($state.current.data.locales);	
 	$scope.changeLanguage = function(lang) {
