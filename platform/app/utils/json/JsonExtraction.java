@@ -106,6 +106,10 @@ public class JsonExtraction {
 			return extractSet(json);
 		} else if (json.isBoolean()) {
 			return json.asBoolean();
+		} else if (json.isLong()) {
+			return json.asLong();
+		} else if (json.isInt()) {
+			return json.asInt();
 		} else if (json.isNumber()) {
 			return json.asDouble();
 		} else {

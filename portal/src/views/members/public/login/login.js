@@ -1,12 +1,13 @@
 angular.module('portal')
-.controller('LoginCtrl', ['$scope', 'server', '$state', 'status', 'session', function($scope, server, $state, status, session) {
+.controller('LoginCtrl', ['$scope', 'server', '$state', 'status', 'session', 'ENV', function($scope, server, $state, status, session, ENV) {
 	
-	// init
+	// init		
 	$scope.login = {};	
 	$scope.error = null;
 	$scope.status = new status(false);
 	
-	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
+	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);	
+	$scope.notPublic = ENV.instanceType == "prod";
 	
 	// login
 	$scope.login = function() {
