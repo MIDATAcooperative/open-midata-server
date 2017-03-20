@@ -346,7 +346,7 @@ public class Query {
 		 if (fields.contains("tags")) fieldsFromDB.add("tags");
 		 */
 		 if (properties.containsKey("max-age")) {
-			Number maxAge = Long.parseLong(properties.get("max-age").toString());
+			Number maxAge = (long) Double.parseDouble(properties.get("max-age").toString());
 			minDateCreated = new Date(System.currentTimeMillis() - 1000 * maxAge.longValue());
 			minTime = getTimeFromDate(minDateCreated);
 		 }
