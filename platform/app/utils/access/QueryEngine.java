@@ -532,7 +532,7 @@ class QueryEngine {
     protected static List<DBRecord> limitResultSize(Map<String, Object> properties, List<DBRecord> result) {
     	if (properties.containsKey("limit")) {
 	    	Object limitObj = properties.get("limit");
-	    	int limit = (int) Double.parseDouble(limitObj.toString());
+	    	int limit = (int) Integer.parseInt(limitObj.toString());
 	    	if (result.size() > limit) result = result.subList(0, limit);
 	    }
     	return result;
