@@ -1,5 +1,6 @@
 package models;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +28,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 
 	private static final String collection = "plugins";
 	private static Map<MidataId, Plugin> cache = new ConcurrentHashMap<MidataId, Plugin>();
+	public @NotMaterialized static final Set<PluginStatus> NOT_DELETED = EnumSet.of(PluginStatus.ACTIVE, PluginStatus.BETA, PluginStatus.DEPRECATED, PluginStatus.DEVELOPMENT);
 	
 	/**
 	 * constant containing all fields visible to a developer
@@ -233,7 +235,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	}
 	
 	public static Plugin getByFilename(String name, Set<String> fields) throws InternalServerException {
-		return Model.get(Plugin.class, collection, CMaps.map("filename", name), fields);
+		return Model.get(Plugin.class, collection, CMaps.map("filename", name).map("status", Plugin.NOT_DELETED), fields);
 	}
 	
 	public void update() throws InternalServerException, LostUpdateException {
