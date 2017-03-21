@@ -19,11 +19,6 @@
 		"class": "Portal",
 		"startOrder": 1
 	},
-	"elasticsearch": {
-		"module": "scripts.elasticsearch",
-		"class": "ElasticSearch",
-		"startOrder": 1
-	},
 	"lighttpd": {
 		"module": "scripts.lighttpd",
 		"class": "Lighttpd",
