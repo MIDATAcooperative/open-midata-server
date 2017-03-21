@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('developer.manageapp', {
 	      url: '/app/:appId',
@@ -16,4 +16,4 @@ angular.module('portal')
 		      templateUrl: 'views/developers/manageapp/manageapp.html',
 		      allowDelete : true
 	   });
-});
+}]);

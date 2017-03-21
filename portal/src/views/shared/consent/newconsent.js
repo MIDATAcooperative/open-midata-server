@@ -129,7 +129,7 @@ angular.module('portal')
 	};
 	
 	var addPerson = function(person, isTeam) {	
-		console.log(person);
+		
 		if (isTeam) {
 			$scope.authteams.push(person);
 			$scope.consent.authorized.push(person._id);

@@ -28,7 +28,7 @@ angular.module('views')
 	$scope.init = function() {
 		portal.getConfig()
 		.then(function(data) {
-			console.log(data);
+			
 			if (data.data && data.data.questions) {
 				$scope.config = data.data;
 				$scope.questions = $scope.config.questions;
@@ -158,7 +158,7 @@ angular.module('views')
 		angular.forEach($scope.measures, function(measure) {
 		  if (q.measures[measure.id]) {
 			 angular.forEach(measure.install, function(toInstall) {
-				 console.log(toInstall);
+				
 				if (toInstall.plugin === "fhir-observation") {
 				  if (obs==null) obs = toInstall; else obs.config.measures = obs.config.measures.concat(toInstall.config.measures);	
 				} else {

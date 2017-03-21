@@ -16,7 +16,7 @@ angular.module('portal')
 				$scope.member = data.member;
 				$scope.consents = data.consents;
 				$scope.backwards = data.backwards;
-				console.log(data);
+			
 				$scope.memberkey = data.memberkey;
 				if (data.memberkey) {
 				  views.setView("patient_records", { aps : $scope.memberkey._id, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd: false, type : "memberkeys"});
@@ -29,7 +29,7 @@ angular.module('portal')
 	$scope.selectConsent = function(consent) {
 		$scope.hideAdd = false;
 		$scope.consent = consent;
-		console.log($scope.consent);
+		
 		if ($scope.consent != null) {
 			views.setView("patient_records", { aps : $scope.consent._id, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowAdd : false, type : "memberkeys" });			
 		} else {
@@ -60,11 +60,9 @@ angular.module('portal')
 	};
 	
 	$scope.addTask = function() {
-	  console.log("AAAA");
-	  console.log($scope);
-	  console.log($scope.consent);
+	
 	  views.setView("addtask", { "owner" : $scope.memberid, "shareBackTo" : $scope.consent._id });
-	  console.log("BBBB");
+	 
 	};
 		
 	$scope.reload();

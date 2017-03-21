@@ -853,7 +853,7 @@ angular.module('portal')
 	   var dashid = $state.params.dashId || $state.current.dashId;
 	   views.context = dashid;
 	   
-	   console.log(dashid);
+	  
 	   /*
 		 * _.each(dashboards[dashid], function(view) {
 		 * $scope.layout[view.position].push(views.def(view)); });
@@ -867,9 +867,9 @@ angular.module('portal')
 		  }
 			 
 		  _.each(dashboards[dashid], function(view) {
-			  console.log("VIEW:"+view.id);			  
+			   
 			  if (conf.remove.indexOf(view.id) < 0) {
-				  console.log("ADDED");
+				 
 				  $scope.layout[view.position].push(views.def(view));
 			  }
 		  });
@@ -884,12 +884,11 @@ angular.module('portal')
 			 var tile = tiles[add];
 			 tile.name = add;
 			 if (tile.template != null) {
-				console.log("ADD VIEW:"+tile);
+				
 			   $scope.layout[tile.position].push(views.def(tile));
 			 } else {				
 				 if (vc != null) {
-					 console.log("ADD TILE");
-					 console.log(tile);
+					
 					 vc.setup.visualizations.push(tile);
 				 }
 			 }
@@ -939,7 +938,7 @@ angular.module('portal')
 	   $scope.$on('$messageIncoming', function (event, data){	
 		 if (data && data.viewHeight && data.viewHeight !== "0px" && data.name) {			 
 			 if (views.getView(data.name).pos == "small") return;
-  			 console.log("adjust height for "+data.name+" to:"+data.viewHeight);
+  			 //console.log("adjust height for "+data.name+" to:"+data.viewHeight);
   		   	 document.getElementById(data.name).style.height = data.viewHeight;
   		 }
 		 else if (data && data.type==="link") {
@@ -952,8 +951,7 @@ angular.module('portal')
 			}
 			 
   			var vc = views.getView(data.name);
-  			 
-  			console.log("link");
+  			   			
   			console.log(data);
   		   
   			var pos = data.pos;  	    	 

@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('member.createmessage', {
 	      url: '/createmessage',
@@ -13,4 +13,4 @@ angular.module('portal')
 	      url: '/createmessage',
 	      templateUrl: 'views/shared/createmessage/createmessage.html'
 	    });
-});
+}]);

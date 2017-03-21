@@ -12,7 +12,7 @@ angular.module('portal')
 	};	
 	
 	$scope.resetPassword = function(member) {
-		console.log(member);
+		
 		$scope.status.doBusy(server.post(jsRoutes.controllers.Developers.resetTestAccountPassword().url, JSON.stringify({ user : member._id })))
 		.then(function(data) {
 			document.location.href=data.data;

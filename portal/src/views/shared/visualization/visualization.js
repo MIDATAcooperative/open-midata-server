@@ -44,7 +44,7 @@ angular.module('portal')
 			  if ($scope.visualization.defaultQuery != null) {
 				  $scope.options.query = $scope.visualization.defaultQuery;
 				  $scope.options.applyRules = true;
-				  console.log($scope.options.query);
+				
 			  } else {				 
 				  console.log($scope.visualization);
 			  }

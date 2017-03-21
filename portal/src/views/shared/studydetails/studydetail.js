@@ -26,7 +26,7 @@ angular.module('portal')
 				$scope.providers = [];
 				if (data.participation && data.participation.providers) {
 					angular.forEach(data.participation.providers, function(p) {
-						console.log(p);
+					
 						$scope.providers.push(session.resolve(p, function() { return users.getMembers({ "_id" : p },users.ALLPUBLIC ); }));
 					});
 				}

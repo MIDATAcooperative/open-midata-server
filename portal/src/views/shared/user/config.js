@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('member.user', {
 	      url: '/user/:userId',
@@ -25,4 +25,4 @@ angular.module('portal')
 	      url: '/user/:userId',
 	      templateUrl: 'views/shared/user/user.html' 
 	    });	    
-});
+}]);

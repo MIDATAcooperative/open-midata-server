@@ -21,7 +21,7 @@ angular.module('portal')
    	   try{
 	     $scope.study.recordQuery = JSON.parse($scope.study.recordQueryStr);
    	   } catch (e) { console.log(e); $scope.error = e.message;return; }
-	   console.log($scope.study);
+	  
 	   var data = { recordQuery : $scope.study.recordQuery };
 	   $scope.status.doAction("update", server.put(jsRoutes.controllers.research.Studies.update($scope.studyid).url, JSON.stringify(data)))
 	  .then(function(data) { 				

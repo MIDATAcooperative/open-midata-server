@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('member.studydetails', {
 	      url: '/study/:studyId',
@@ -11,4 +11,4 @@ angular.module('portal')
 	      templateUrl: 'views/shared/studydetails/studydetails.html',
 	      dashId : 'studydetails'
 	    });	    
-});
+}]);

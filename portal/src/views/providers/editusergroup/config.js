@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('provider.editusergroup', {
 	      url: '/teams/:groupId',
@@ -10,4 +10,4 @@ angular.module('portal')
 	      url: '/newteam',
 	      templateUrl: 'views/providers/editusergroup/newusergroup.html'
 	    });
-});
+}]);
