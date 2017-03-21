@@ -75,8 +75,6 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import utils.sandbox.FitbitImport;
-import utils.sandbox.MidataServer;
 
 /**
  * API functions to be used by MIDATA plugins
@@ -801,31 +799,7 @@ public class PluginsAPI extends APIController {
 		}
 		
 	}
-	
-	/**
-	 * NOT FINISHED, EXPERIMENTAL CODE : Run a java plugin in a secure sandbox. 
-	 * @return
-	 * @throws JsonValidationException
-	 * @throws AppException
-	 */
-	@BodyParser.Of(BodyParser.Json.class)
-	@VisualizationCall
-	public static Result run() throws JsonValidationException, AppException {		
-		// validate json
-		JsonNode json = request().body().asJson();		
-		//JsonValidation.validate(json, "authToken", "properties", "fields");
 		
-		//Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
-		//Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
-						
-		ExecutionInfo inf = ExecutionInfo.checkSpaceToken(request(), json.get("authToken").asText());
-		
-		MidataServer midataServer = new MidataServer(inf);
-		FitbitImport test = new FitbitImport();
-		test.run(midataServer);
-						
-		return ok();
-	}
 	
 	@BodyParser.Of(BodyParser.Json.class)
 	@VisualizationCall

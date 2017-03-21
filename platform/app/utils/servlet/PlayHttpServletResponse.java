@@ -15,15 +15,22 @@ import play.mvc.Http;
 import scala.NotImplementedError;
 import utils.AccessLog;
 
+/**
+ * HttpServletResponse emulation for Play Framework
+ *
+ */
 public class PlayHttpServletResponse implements HttpServletResponse {
 
-	private int status = 200;
-	private String characterEncoding;
+	private int status = 200;	
 	private Http.Response response;
 	private StringWriter responseWriter;
 	private ByteArrayOutputStream responseStream;
 	private String contentType;
 	
+	/**
+	 * Creates HttpServletResponse from Play Http.Response
+	 * @param response the Play Http.Response
+	 */
 	public PlayHttpServletResponse(Http.Response response) {
 		this.response = response;
 	}
@@ -36,14 +43,12 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public int getBufferSize() {
-		if (true) throw new NotImplementedError();
-		return 0;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public String getCharacterEncoding() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
@@ -53,8 +58,7 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public Locale getLocale() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
@@ -71,8 +75,7 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public boolean isCommitted() {
-		if (true) throw new NotImplementedError();
-		return false;
+		throw new NotImplementedError();		
 	}
 
 	@Override
@@ -96,7 +99,7 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 	@Override
 	public void setCharacterEncoding(String arg0) {
 		AccessLog.log("character-encoding:"+arg0);
-		this.characterEncoding = arg0;		
+		//this.characterEncoding = arg0;		
 	}
 
 	@Override
@@ -146,56 +149,48 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public void addIntHeader(String arg0, int arg1) {
-		if (true) throw new NotImplementedError();
+		throw new NotImplementedError();
 		
 	}
 
 	@Override
 	public boolean containsHeader(String arg0) {
-		if (true) throw new NotImplementedError();
-		return false;
+		throw new NotImplementedError();
 	}
 
 	@Override
 	public String encodeRedirectURL(String arg0) {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public String encodeRedirectUrl(String arg0) {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public String encodeURL(String arg0) {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public String encodeUrl(String arg0) {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public String getHeader(String arg0) {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public Collection<String> getHeaderNames() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public Collection<String> getHeaders(String arg0) {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
@@ -205,25 +200,25 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public void sendError(int arg0) throws IOException {
-		if (true) throw new NotImplementedError();
+		throw new NotImplementedError();
 		
 	}
 
 	@Override
 	public void sendError(int arg0, String arg1) throws IOException {
-		if (true) throw new NotImplementedError();
+		throw new NotImplementedError();
 		
 	}
 
 	@Override
 	public void sendRedirect(String arg0) throws IOException {
-		if (true) throw new NotImplementedError();
+		throw new NotImplementedError();
 		
 	}
 
 	@Override
 	public void setDateHeader(String arg0, long arg1) {
-		if (true) throw new NotImplementedError();
+		 throw new NotImplementedError();
 		
 	}
 
@@ -234,7 +229,7 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public void setIntHeader(String arg0, int arg1) {
-		if (true) throw new NotImplementedError();
+		 throw new NotImplementedError();
 		
 	}
 
@@ -245,14 +240,22 @@ public class PlayHttpServletResponse implements HttpServletResponse {
 
 	@Override
 	public void setStatus(int arg0, String arg1) {
-		if (true) throw new NotImplementedError();
+		 throw new NotImplementedError();
 		
 	}
 
+	/**
+	 * Returns the writer used to fill this response
+	 * @return StringWriter containing response
+	 */
 	public StringWriter getResponseWriter() {
 		return responseWriter;
 	}
 
+	/**
+	 * Returns the stream used to fill this reponse
+	 * @return ByteArrayOutputStream containing response
+	 */
 	public ByteArrayOutputStream getResponseStream() {
 		return responseStream;
 	}

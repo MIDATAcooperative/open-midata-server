@@ -8,10 +8,18 @@ import javax.servlet.WriteListener;
 
 import scala.NotImplementedError;
 
+/**
+ * ServletOuputStream emulation for Play Framework
+ *
+ */
 public class PlayServletOutputStream extends ServletOutputStream {
 
 	private ByteArrayOutputStream out;
 	
+	/**
+	 * Creates a new ServletOutputStream for a given ByteArrayOutputStream
+	 * @param out the stream to use
+	 */
 	public PlayServletOutputStream(ByteArrayOutputStream out) {
 		this.out = out;
 	}

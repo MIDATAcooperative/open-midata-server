@@ -7,20 +7,24 @@ import javax.servlet.ServletContext;
 
 import scala.NotImplementedError;
 
+/**
+ * HttpServletConfig emulation for Play Framework
+ *
+ */
 public class PlayHttpServletConfig implements ServletConfig {
 
 	private PlayHttpServletContext context = new PlayHttpServletContext();
 	
 	@Override
 	public String getInitParameter(String arg0) {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();
+		
 	}
 
 	@Override
 	public Enumeration<String> getInitParameterNames() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();
+		
 	}
 
 	@Override
