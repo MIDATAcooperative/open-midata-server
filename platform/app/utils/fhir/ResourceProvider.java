@@ -438,7 +438,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 		return false;
 	}
 
-	public static void insertRecord(Record record, IBaseResource resource) throws AppException {
+	public void insertRecord(Record record, IBaseResource resource) throws AppException {
 		insertRecord(record, resource, (MidataId) null);
 	}
 	
@@ -453,7 +453,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 		AccessLog.logEnd("end insert FHIR record");
 	}
 	
-	public static MidataId insertMessageRecord(Record record, IBaseResource resource) throws AppException {
+	public MidataId insertMessageRecord(Record record, IBaseResource resource) throws AppException {
 		ExecutionInfo inf = info();
 		MidataId shareFrom = inf.executorId;
 		MidataId owner = record.owner;
@@ -467,7 +467,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 		return shareFrom;
 	}
 	
-	public static void insertRecord(Record record, IBaseResource resource, Attachment attachment) throws AppException {
+	public void insertRecord(Record record, IBaseResource resource, Attachment attachment) throws AppException {
 		if (attachment == null || attachment.isEmpty()) {
 			insertRecord(record, resource);
 			return;
@@ -500,7 +500,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 		AccessLog.logEnd("end insert FHIR record with attachment");
 	}
 	
-	public static void updateRecord(Record record, IBaseResource resource) throws AppException {
+	public void updateRecord(Record record, IBaseResource resource) throws AppException {
 		if (resource.getMeta() != null && resource.getMeta().getVersionId() != null && !record.version.equals(resource.getMeta().getVersionId())) throw new ResourceVersionConflictException("Wrong resource version supplied!") ;
 		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 		record.data = (DBObject) JSON.parse(encoded);	
