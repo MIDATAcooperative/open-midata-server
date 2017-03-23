@@ -229,7 +229,7 @@ class MongoDB(Product):
 				self.user_username,
 				self.user_password,
 				f), self.parent)		
-		Command.execute('{0} -h {2}:{3} -d {4} {5}{6} -c {7} --file {1} --upsertFields _id'.format(os.path.join(self.bin, 'mongoimport'), 
+		Command.execute('{0} -h {2}:{3} -d {4} {5}{6} -c {7} --file {1} --upsertFields filename'.format(os.path.join(self.bin, 'mongoimport'), 
 			os.path.join(self.parent, 'json', 'plugins.json'),
 			self.user_host, 
 			self.user_port, 
