@@ -45,7 +45,7 @@ angular.module('portal')
 	};
 	
 				
-	console.log($state.current.data.mode);
+	
 	if ($stateParams.token && $state.current.data.mode) {
 		$scope.confirm();
 	}

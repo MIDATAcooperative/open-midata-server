@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('member.records', {
 	      url: '/records',
@@ -41,4 +41,4 @@ angular.module('portal')
 	      templateUrl: 'views/shared/records/records.html',
 	      role : 'research'
 	    });
-});
+}]);

@@ -73,7 +73,7 @@ angular.module('portal')
 	};
 	
 	$scope.getInfos = function(userId, owner, study) {
-		console.log(owner);
+		
 		var properties = {};
 		if (owner) properties.owner = owner;
 		if (study) properties.study = study;
@@ -141,7 +141,7 @@ angular.module('portal')
 		$scope.status.doBusy(formats.listGroups()).
 		then(function(result) { 
 			$scope.gi = result.data;			
-			console.log($scope.gi);
+			
 			if ($scope.infos.length > 0) $scope.prepareInfos();	
 			if ($scope.records.length > 0) $scope.prepareRecords();	
 		});
@@ -166,9 +166,9 @@ angular.module('portal')
 	
 	var getOrCreateGroup = function(group) {
 	   	if (groups[group] != null) return groups[group];
-	   	console.log(group);
+	  
 	   	var newgroup = $filter("filter")($scope.gi, function(x){  return x.name == group; })[0];
-	   	console.log(newgroup);
+	   
 	   	newgroup.children = [];
 	   	newgroup.records = [];
 	   	newgroup.infoCount = 0;
@@ -192,7 +192,7 @@ angular.module('portal')
 	 	
 	var getOrCreateFormat = function(format, group) {
 	   	if (groups["cnt:"+format] != null) return groups["cnt:"+format];
-	   	console.log(format);
+	   
 	   	var grp = getOrCreateGroup(group);
 	   	var newfmt = { name : "cnt:"+format, type:"group", fullLabel:"Content: "+format, parent:group, children:[], records:[] };
 	   	
@@ -331,7 +331,7 @@ angular.module('portal')
 		if ($scope.selectedAps == null) return;
 		$scope.status.doBusy(server.get(jsRoutes.controllers.Records.getSharingDetails($scope.selectedAps._id).url)).
 		then(function(results) {
-			console.log(results.data);
+		
 		    $scope.sharing = results.data;
 		    $scope.sharing.ids = {};
 		    if ($scope.sharing.query) {
@@ -382,7 +382,7 @@ angular.module('portal')
 		$scope.sharing.ids[record._id] = true;
 		
 		while (group != null) {
-			console.log(group);
+		
 			group.countShared++;
 			group = groups[group.parent];
 		}
@@ -459,7 +459,7 @@ angular.module('portal')
 		};
 		unselect(group);
 		
-		console.log($scope.selectedAps);
+	
 		$scope.status.doBusy(records.unshare($scope.selectedAps._id, recs, $scope.selectedAps.type, $scope.sharing.query)).
 		then(function() { $scope.loadSharingDetails(); });
 	};

@@ -44,7 +44,7 @@ angular.module('portal')
 	
 	$scope.approveParticipation = function(participation) {
 		$scope.error = null;
-		console.log(participation);
+	
 		var params = { member : participation._id };
 		
 		server.post(jsRoutes.controllers.research.Studies.approveParticipation($scope.studyid).url, params).

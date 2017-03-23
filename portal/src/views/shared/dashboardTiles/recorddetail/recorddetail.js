@@ -16,8 +16,7 @@ angular.module('views')
 			
 			apps.getApps({"_id": $scope.record.app}, ["name"]).
 			then(function(result) { $scope.record.app = result.data[0].name; });
-			
-			console.log($scope.record);
+						
 			//var split = $scope.record.created.split(" ");
 			//$scope.record.created = split[0] + " at " + split[1];
 		});

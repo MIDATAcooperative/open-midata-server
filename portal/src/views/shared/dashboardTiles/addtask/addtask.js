@@ -46,7 +46,7 @@ angular.module('views')
 		if ($scope.view.setup.studyId) {
             $scope.task.study = $scope.view.setup.studyId;
             $scope.task.group = $scope.view.setup.group;
-            console.log($scope.task);
+           
             
             $scope.status.doBusy(server.post(jsRoutes.controllers.research.Studies.addTask($scope.task.study, $scope.task.group).url,  JSON.stringify($scope.task)))
 			.then(function() {
@@ -55,7 +55,7 @@ angular.module('views')
 		} else {
 			$scope.task.owner = $scope.view.setup.owner;
 			$scope.task.shareBackTo = $scope.view.setup.shareBackTo;
-	        console.log($scope.task);
+	        
 			
 			$scope.status.doBusy(tasking.add($scope.task))
 			.then(function() {

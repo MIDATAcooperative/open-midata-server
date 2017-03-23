@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('public.postregister', {
 	      url: '/postregister',
@@ -36,4 +36,4 @@ angular.module('portal')
 		      data : { mode : "REJECTED" }
 		});
 	   
-});
+}]);

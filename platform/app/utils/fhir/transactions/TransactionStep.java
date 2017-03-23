@@ -12,7 +12,6 @@ import utils.ErrorReporter;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
-import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
 
 /**
@@ -64,6 +63,7 @@ public abstract class TransactionStep {
 	
 	/**
 	 * prepare this action for execution
+	 * @throws AppException
 	 */
 	public void prepare() throws AppException {}
 	

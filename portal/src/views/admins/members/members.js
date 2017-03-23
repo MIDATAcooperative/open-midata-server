@@ -47,8 +47,7 @@ angular.module('portal')
 		$scope.dateLimit.setMonth($scope.dateLimit.getMonth() - 1);
 	};
 	
-	$scope.changeUser = function(user) {
-		console.log(user);
+	$scope.changeUser = function(user) {	
 		administration.changeStatus(user._id, user.status);
 	};	
 	

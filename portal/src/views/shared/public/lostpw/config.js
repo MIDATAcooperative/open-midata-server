@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('public.lostpw', {
 	      url: '/lostpw',
@@ -25,4 +25,4 @@ angular.module('portal')
 	      url: '/setpw',
 	      templateUrl: 'views/shared/public/lostpw/setpw.html'
 	    });
-});
+}]);

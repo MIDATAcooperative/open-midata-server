@@ -62,8 +62,7 @@ angular.module('services')
 			  $state.go("^.newconsent", { content : data.params.content });
 		  } else {
 			  server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify({ "properties" : { "filename" : data.app }, "fields": ["_id", "type"] }))
-			  .then(function(result) {
-				  console.log(result); 
+			  .then(function(result) {				
 				  if (result.data.length == 1) {
 					  service.get({ "owner": userId, "visualization" : result.data[0]._id }, ["_id"])
 					  .then(function(spaceresult) {

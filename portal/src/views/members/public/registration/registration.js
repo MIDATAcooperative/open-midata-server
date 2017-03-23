@@ -14,7 +14,7 @@ angular.module('portal')
         $scope.myform.password.$setValidity('compare', $scope.registration.password ==  $scope.registration.password2);
         $scope.myform.agb.$setValidity('mustaccept', $scope.registration.agb);
         if (!$scope.registration.agb) {
-        	console.log($scope.myform.agb);
+        	
         	$scope.myform.agb.$invalid = true;
         	$scope.myform.agb.$error = { 'mustaccept' : true };
         }

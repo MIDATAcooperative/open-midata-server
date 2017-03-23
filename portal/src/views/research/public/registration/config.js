@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('public_research.registration', {
 	      url: '/registration',
@@ -9,4 +9,4 @@ angular.module('portal')
 	      url: '/register_research?developer',
 	      templateUrl: 'views/research/public/registration/registration.html'
 	    });
-});
+}]);

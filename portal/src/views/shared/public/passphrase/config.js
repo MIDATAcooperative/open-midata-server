@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('public.passphrase', {
 	      url: '/passphrase',
@@ -26,4 +26,4 @@ angular.module('portal')
 	      templateUrl: 'views/shared/public/passphrase/passphrase_admin.html',
 		  data : { role : "admin" }
 	    });
-});
+}]);

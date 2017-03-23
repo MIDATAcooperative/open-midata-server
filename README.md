@@ -101,19 +101,17 @@ python main.py COMMAND [PRODUCT]
 where ```COMMAND``` is one of
 - ```setup```: Downloads the products' binaries, unpacks them and writes the paths in the config files. The only exception is Lighttpd, which is installed via the package manager APT.
 - ```start```: Starts the products in production mode. 
-- ```run```: Starts the products in development mode. Note: ElasticSearch has an initialization phase before it's completely ready. Activator starts the web application and leaves the user in interactive mode, where log output can be observed and the server is terminated with CTRL+D.
+- ```run```: Starts the products in development mode. Activator starts the web application and leaves the user in interactive mode, where log output can be observed and the server is terminated with CTRL+D.
 - ```stop```: Stops all products.
-- ```reset```: Populates the database and the search server with sample data.
-- ```dump```: Dumps the database and search server contents.
+- ```reimport```: Populates the database with information about apps and content types. May be safely run on an already data containing instance.
+- ```export```: Exports database for apps and content types.
 
-Giving a product is optional and will invoke the task only for the specified product, instead of for all. ```PRODUCT``` can be one of ```mongodb```, ```elasticsearch```, ```lighttpd```, ```node```, or ```activator```.
+Giving a product is optional and will invoke the task only for the specified product, instead of for all. ```PRODUCT``` can be one of ```mongodb```, ```lighttpd```, ```node```, or ```activator```.
 
 Folder structure
 ----------------
 
-- apps: Plugins that create/import health records. May connect to external sites but may not query data from the platform.
 - config: Template config files for products used by the platform.
-- dump: Example database and search server state.
 - logs (created by script): Logs of all products except web application (whose log is in platform -> logs).
 - platform: Code for the MIDATA platform.
 - scripts: Modules used by the main.py script.

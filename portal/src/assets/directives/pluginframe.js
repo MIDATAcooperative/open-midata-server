@@ -12,14 +12,14 @@ angular.module('portal')
     	  attrs.$observe('mysrc', function(value) {
     		  if (value) {
     			 var html = '<iframe name="'+attrs.id+'" id="'+attrs.id+'_fr" src="'+value+'" height="'+attrs.height+'" width="'+attrs.width+'"></iframe>';
-    			 console.log(html);
+    			
     		    document.getElementById(attrs.id).innerHTML = html;
-    		    console.log("DONE HTML");
+    		    
     		  }
     	  });
     	  scope.$on('$messageIncoming', function (event, data){		
     		 if (data && data.name == attrs.id && data.viewHeight && data.viewHeight !== "0px") {
-    			 console.log("adjust height for "+attrs.id+" to:"+data.viewHeight);
+    			 //console.log("adjust height for "+attrs.id+" to:"+data.viewHeight);
     		   	document.getElementById(attrs.id+"_fr").height = data.viewHeight;
     		 }  else if (data && data.name == attrs.id && data.type==="link") {    	  		 
     	  		console.log(data);

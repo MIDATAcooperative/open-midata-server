@@ -1,31 +1,37 @@
 package utils.fhir.transactions;
 
-import org.hl7.fhir.dstu3.model.BaseResource;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryResponseComponent;
 import org.hl7.fhir.dstu3.model.DomainResource;
 
-import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import ca.uhn.fhir.rest.server.exceptions.PreconditionFailedException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceVersionConflictException;
-import ca.uhn.fhir.rest.server.exceptions.ResourceVersionNotSpecifiedException;
 import utils.exceptions.AppException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
 
+/**
+ * Transaction step containing a resource UPDATE
+ *
+ */
 public class UpdateTransactionStep extends TransactionStep {
 
-	
-	
-	public UpdateTransactionStep(ResourceProvider provider, DomainResource resource) {
+	/**
+	 * Creates update transaction step for a given ResourceProvider and DomainResource from request 
+	 * @param provider the resource provider to use
+	 * @param resource the domain resource provided in the request
+	 */
+	public UpdateTransactionStep(ResourceProvider<DomainResource> provider, DomainResource resource) {
 		this.provider = provider;
 		this.resource = resource;
 	}
 	
+	@Override
     public void init() {
     	record = ResourceProvider.fetchCurrent(resource.getIdElement());
     }
 	
+	@Override
 	public void prepare() throws AppException { 				  
 		  provider.prepare(record, resource);
 		  if (resource.getMeta() == null || resource.getMeta().getVersionId() == null) throw new PreconditionFailedException("Resource version missing!");
@@ -33,6 +39,7 @@ public class UpdateTransactionStep extends TransactionStep {
 		
 	}
 	
+	@Override
 	public void execute() {
 		
 		try {

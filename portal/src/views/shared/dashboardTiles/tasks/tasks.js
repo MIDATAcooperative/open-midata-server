@@ -14,7 +14,7 @@ angular.module('views')
 		.then(function (result) {			
 			$scope.tasks = result.data;
 			if ($scope.tasks.length === 0) views.disableView($scope.view.id);
-			console.log($scope.tasks);
+			
 			if (($scope.view.setup && $scope.view.setup.autoopen) || $scope.tasks.length < 3) {		
 			  angular.forEach($scope.tasks, function(task) {
 				$scope.showTaskDetail(task, "full");				

@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('member.visualization', {
 	      url: '/visualization/:visualizationId?name&context&query&params',
@@ -17,4 +17,4 @@ angular.module('portal')
 	      url: '/visualization/:visualizationId?name&context&query&params',
 	      templateUrl: 'views/shared/visualization/visualization.html'
 	    });
-});
+}]);

@@ -11,6 +11,13 @@ import play.Play;
  */
 public class MailUtils {
 
+	/**
+	 * Sends an email in text format
+	 * @param email target email address
+	 * @param fullname name of recipient
+	 * @param subject title of email
+	 * @param content content of email
+	 */
 	public static void sendTextMail(String email, String fullname, String subject, Object content) {
 		MailerAPI mail = play.Play.application().plugin(MailerPlugin.class).email();
 		mail.setSubject(subject);
