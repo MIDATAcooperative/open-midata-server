@@ -350,6 +350,12 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		builder.restriction("component-code-value-date", "component.code", "component.value", QueryBuilder.TYPE_CODEABLE_CONCEPT, QueryBuilder.TYPE_DATETIME_OR_PERIOD);
 		builder.restriction("component-code-value-concept", "component.code", "component.valueConcept", QueryBuilder.TYPE_CODEABLE_CONCEPT, QueryBuilder.TYPE_CODEABLE_CONCEPT);
 		
+		builder.restriction("combo-code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "code", QueryBuilder.TYPE_CODEABLE_CONCEPT, "component.code");				
+		builder.restriction("combo-data-absent-reason", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "dataAbsentReason", QueryBuilder.TYPE_CODEABLE_CONCEPT, "component.dataAbsentReason");
+	    builder.restriction("combo-value-concept", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "valueCodeableConcept", QueryBuilder.TYPE_CODEABLE_CONCEPT, "component.valueCodeableConcept");
+	    builder.restriction("combo-value-quantity", true, QueryBuilder.TYPE_QUANTITY, "valueQuantity", QueryBuilder.TYPE_QUANTITY, "component.valueQuantity");
+		
+		
 		
 		builder.restriction("data-absent-reason", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "dataAbsentReason");
 		
