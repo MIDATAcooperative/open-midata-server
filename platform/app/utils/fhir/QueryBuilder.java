@@ -292,11 +292,13 @@ public class QueryBuilder {
 						if (id != null) {
 							if (resType != null) {
 								bld.addEq(path+".reference", resType+"/"+id);
+								bld.or();
 							} else {
 								bld.addEq(path+".reference", "/"+id, CompareCaseInsensitiveOperator.ENDSWITH);
+								bld.or();
 							}
 						}
-						
+					
 					}
 					}
 				} else {
@@ -381,7 +383,7 @@ public class QueryBuilder {
 					hPath = path+"DateTime|"+path+"Period.end|null";
 				} else throw new NullPointerException();
 				
-				
+				if (prefix==null) prefix = ParamPrefixEnum.EQUAL;
 				
 			    switch (prefix) {
 				case GREATERTHAN: bld.addComp(hPath, CompareOperator.GE, hDate, true);break;

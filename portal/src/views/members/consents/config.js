@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('member.circles', {
 	      url: '/circles?circleId',
@@ -11,4 +11,4 @@ angular.module('portal')
 	      templateUrl: 'views/members/consents/consents.html',	      
 	      dashId : 'circles'
 	    });
-});
+}]);

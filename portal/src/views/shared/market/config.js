@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('member.market', {
 	      url: '/market?context&tag',
@@ -17,4 +17,4 @@ angular.module('portal')
 	      url: '/market?context&tag',
 	      templateUrl: 'views/shared/market/market.html' 
 	    });
-});
+}]);

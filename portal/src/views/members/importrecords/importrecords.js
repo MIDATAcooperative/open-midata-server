@@ -54,7 +54,7 @@ angular.module('portal')
 			  $scope.url = $sce.trustAsResourceUrl(url);
 			  $scope.loaded = true;
 			  $scope.authorized = true;
-			  console.log("LOADED");
+			 
 			}
 		});
 	};

@@ -13,8 +13,7 @@ angular.module('portal')
 	
 	$scope.updateNav = function() {
 		// get current user
-		session.currentUser.then(function(userId) {
-			console.log("DONE NAV");
+		session.currentUser.then(function(userId) {			
 			$scope.user = session.user;	
 			$scope.userId = userId;
 			

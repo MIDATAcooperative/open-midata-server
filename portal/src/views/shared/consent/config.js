@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('member.newconsent', {
 	      url: '/newconsent?authorize',	      
@@ -21,4 +21,4 @@ angular.module('portal')
 	      templateUrl: 'views/shared/consent/editconsent.html',
 	      dashId : 'circles'
 	    });
-});
+}]);

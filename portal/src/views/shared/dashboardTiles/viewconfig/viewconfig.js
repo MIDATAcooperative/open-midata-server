@@ -13,8 +13,7 @@ angular.module('views')
     $scope.test = function(vis) {
     	apps.isVisualizationInstalled(vis.id)
 		.then(function(result) {
-			console.log(vis);
-			console.log(result.data);
+			
 			if (result.data == "true" || result.data === true) {
 				$scope.install(vis);
 			} else {
@@ -28,7 +27,7 @@ angular.module('views')
     		space.visualization = vis.id;
     		spaces.add(space)
     		.then (function(result) {
-    			console.log(result);
+    			
     			$scope.addSpace(result.data);
     		});
     	});

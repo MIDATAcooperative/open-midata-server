@@ -1,7 +1,5 @@
 package utils.fhir.transactions;
 
-import org.hl7.fhir.dstu3.model.BaseResource;
-import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.DomainResource;
 
 import utils.fhir.ResourceProvider;

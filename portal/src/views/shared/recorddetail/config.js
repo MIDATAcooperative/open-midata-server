@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('member.recorddetail', {
 	      url: '/record/:recordId',
@@ -17,4 +17,4 @@ angular.module('portal')
 	      url: '/record/:recordId',
 	      templateUrl: 'views/shared/recorddetail/recorddetail.html' 
 	    });
-});
+}]);

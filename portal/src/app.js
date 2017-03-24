@@ -82,17 +82,19 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
    });
    $translatePartialLoader.addPart("shared");
 }])
+.config(['$compileProvider', function ($compileProvider) {
+  $compileProvider.debugInfoEnabled(false);
+  $compileProvider.commentDirectivesEnabled(false);
+  $compileProvider.cssClassDirectivesEnabled(false);  
+}])
 .service('SessionInterceptor', ["$injector", "$q" , function($injector, $q) {
     var service = this;    
-    service.responseError = function(response) {
-    	console.log("HANDLE");
-    	console.log(response);
+    service.responseError = function(response) {    	
     	var $state = $injector.get("$state");
         if (response.status === 401) {
             $state.go("public.login");
         } else if (response.status === 403) {
-        	if (response.data && response.data.requiredSubUserRole) {
-        		console.log("DID NAV");
+        	if (response.data && response.data.requiredSubUserRole) {        		
         		$state.go("^.upgrade", { role : response.data.requiredSubUserRole });
         	}
         }

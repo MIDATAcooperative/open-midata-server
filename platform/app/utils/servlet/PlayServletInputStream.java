@@ -8,10 +8,18 @@ import javax.servlet.ServletInputStream;
 
 import scala.NotImplementedError;
 
+/**
+ * ServletInputStream emulation for Play Framework
+ *
+ */
 public class PlayServletInputStream extends ServletInputStream {
 
 	private ByteArrayInputStream in;
 	
+	/**
+	 * Creates a new ServletInputStream from a ByteArrayInputStream
+	 * @param in the stream to use
+	 */
 	public PlayServletInputStream(ByteArrayInputStream in) {
 		this.in = in;
 	}

@@ -17,6 +17,12 @@ import utils.exceptions.BadRequestException;
  */
 public class JsonValidation {
 
+	/**
+	 * checks provided json if all required fields are provided
+	 * @param json the JsonNode to check
+	 * @param requiredFields list of required fields
+	 * @throws JsonValidationException if a required field is missing
+	 */
 	public static void validate(JsonNode json, String... requiredFields) throws JsonValidationException {
 		if (json == null) {
 			throw new JsonValidationException("error.missing.json", "No json found.");
@@ -29,12 +35,18 @@ public class JsonValidation {
 		}
 	}
 	
+	/**
+	 * returns a string field from the provided JSON
+	 * @param json the JSON to access
+	 * @param field the name of the field to return
+	 * @return trimmed string or null if field does not exist
+	 */
 	public static String getString(JsonNode json, String field) {
 		String res = json.path(field).asText();
 		if (res != null) res = res.trim();
 		return res;
 	}
-	
+		
 	public static String getJsonString(JsonNode json, String field) throws JsonValidationException {
 		JsonNode data = json.path(field);
 		if (data.isTextual()) return data.asText().trim();

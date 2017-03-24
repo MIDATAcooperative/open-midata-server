@@ -10,6 +10,7 @@ db.users.find({ role : "MEMBER", subroles : { $exists : false }}).forEach(functi
 db.users.find({ subroles : { $exists : false }}).forEach(function(e) { db.users.update({ _id : e._id }, { $set : { subroles : [] }})});
 db.users.find({ agbStatus : { $exists : false }}).forEach(function(e) { db.users.update({ _id : e._id }, { $set : { agbStatus : "NEW" }})});
 
+db.plugins.find({ status : "DELETED", filename : { $exists : true } }).forEach(function(e) { db.plugins.update({ _id : e._id }, { $unset : { filename : 1 }})});
 db.users.createIndex({ "midataID" : 1 });
 
 

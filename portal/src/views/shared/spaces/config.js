@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('member.spaces', {
 	      url: '/spaces/:spaceId?url&params',
@@ -17,4 +17,4 @@ angular.module('portal')
 	      url: '/spaces/:spaceId?url&params',
 	      templateUrl: 'views/shared/spaces/spaces.html' 
 	    });
-});
+}]);

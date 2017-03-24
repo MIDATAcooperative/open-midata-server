@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('member.changepassword', {
 	      url: '/changepassword',
@@ -21,4 +21,4 @@ angular.module('portal')
 	      url: '/changepassword',
 	      templateUrl: 'views/shared/changepassword/changepassword.html' 
 	    });	    
-});
+}]);

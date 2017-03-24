@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('member.messages', {
 	      url: '/messages',
@@ -21,4 +21,4 @@ angular.module('portal')
 	      url: '/messages',
 	      templateUrl: 'views/shared/messages/messages.html' 
 	    });
-});
+}]);

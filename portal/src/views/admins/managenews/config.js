@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider	    
 	   .state('admin.newnews', {
 		  url: '/newnews/',
@@ -11,4 +11,4 @@ angular.module('portal')
 		  templateUrl: 'views/admins/managenews/managenews.html',
 		  allowDelete : true
 	   });
-});
+}]);

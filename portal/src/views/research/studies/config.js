@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('research.studies', {
 	      url: '/studies',
@@ -9,4 +9,4 @@ angular.module('portal')
 	      url: '/study/:studyId',
 	      templateUrl: 'views/research/studies/studynav.html'
 	    });
-});
+}]);
