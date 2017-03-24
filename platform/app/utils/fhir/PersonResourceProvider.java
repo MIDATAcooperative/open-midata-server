@@ -26,6 +26,7 @@ import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
@@ -167,7 +168,7 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 	    		 
 	    	@Description(shortDefinition="The person's date of birth")
 	    	@OptionalParam(name="birthdate")
-	    	DateRangeParam theBirthdate
+	    	DateAndListParam theBirthdate
 	    		   
 	    	/*
 	    	@Description(shortDefinition="The organization at which this person record is being managed")

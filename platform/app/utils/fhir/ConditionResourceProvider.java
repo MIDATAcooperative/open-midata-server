@@ -35,6 +35,7 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.param.CompositeAndListParam;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.QuantityAndListParam;
@@ -86,7 +87,7 @@ public class ConditionResourceProvider extends ResourceProvider<Condition> imple
 			   
 			@Description(shortDefinition="Date-related abatements (dateTime and period)")
 			@OptionalParam(name="abatement-date")
-			DateRangeParam theAbatement_date, 
+			DateAndListParam theAbatement_date, 
 			   
 			@Description(shortDefinition="Abatement as a string")
 			@OptionalParam(name="abatement-string")
@@ -94,7 +95,7 @@ public class ConditionResourceProvider extends ResourceProvider<Condition> imple
 			    
 			@Description(shortDefinition="Date record was believed accurate")
 			@OptionalParam(name="asserted-date")
-			DateRangeParam theAsserted_date, 
+			DateAndListParam theAsserted_date, 
 			   
 			@Description(shortDefinition="Person who asserts this condition")
 			@OptionalParam(name="asserter", targetTypes={  } )
@@ -134,7 +135,7 @@ public class ConditionResourceProvider extends ResourceProvider<Condition> imple
 			   
 			@Description(shortDefinition="Date related onsets (dateTime and Period)")
 			@OptionalParam(name="onset-date")
-			DateRangeParam theOnset_date, 
+			DateAndListParam theOnset_date, 
 			   
 			@Description(shortDefinition="Onsets as a string")
 			@OptionalParam(name="onset-info")
