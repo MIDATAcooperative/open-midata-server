@@ -94,6 +94,7 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request().username());
 		MidataId research = PortalSessionToken.session().getOrg();
 				
+		if (research == null) throw new InternalServerException("error.internal", "No organization associated with session.");
 		Study study = new Study();
 				
 		study._id = new MidataId();
