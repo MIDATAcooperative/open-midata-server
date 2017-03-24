@@ -25,6 +25,7 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
@@ -105,11 +106,11 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 			   
 			@Description(shortDefinition="")
 			@OptionalParam(name="sent")
-			DateRangeParam theSent, 
+			DateAndListParam theSent, 
 			   
 			@Description(shortDefinition="")
 			@OptionalParam(name="received")
-			DateRangeParam theReceived, 
+			DateAndListParam theReceived, 
 			  
 			@Description(shortDefinition="")
 			@OptionalParam(name="subject", targetTypes={  } )

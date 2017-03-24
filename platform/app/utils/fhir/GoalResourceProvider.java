@@ -20,6 +20,7 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
@@ -74,7 +75,7 @@ public class GoalResourceProvider extends ResourceProvider<Goal> implements IRes
 			    
 			@Description(shortDefinition="Reach goal on or before")
 			@OptionalParam(name="targetdate")
-			DateRangeParam theTargetdate, 
+			DateAndListParam theTargetdate, 
 			  
 			@IncludeParam(reverse=true)
 			Set<Include> theRevIncludes,

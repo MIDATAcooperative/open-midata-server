@@ -22,6 +22,7 @@ import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
@@ -197,7 +198,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     		   
     		@Description(shortDefinition="The patient's date of birth")
     		@OptionalParam(name="birthdate")
-    		DateRangeParam theBirthdate, 
+    		DateAndListParam theBirthdate, 
     		   
     		@Description(shortDefinition="The organization at which this person is a patient")
     		@OptionalParam(name="organization", targetTypes={  } )
@@ -229,7 +230,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     		  
     		@Description(shortDefinition="The date of death has been provided and satisfies this search value")
     		@OptionalParam(name="deathdate")
-    		DateRangeParam theDeathdate, 
+    		DateAndListParam theDeathdate, 
     		
     		@IncludeParam(reverse=true)
     		Set<Include> theRevIncludes,

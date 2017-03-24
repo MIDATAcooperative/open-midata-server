@@ -177,7 +177,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 			  
 			@Description(shortDefinition="Obtained date/time. If the obtained element is a period, a date that falls in the period")
 			@OptionalParam(name="date")
-			DateRangeParam theDate, 
+			DateAndListParam theDate, 
 			  
 			@Description(shortDefinition="The Device that generated the observation data.")
 			@OptionalParam(name="device", targetTypes={  } )
@@ -233,7 +233,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 			   
 			@Description(shortDefinition="The value of the observation, if the value is a date or period of time")
 			@OptionalParam(name="value-date")
-			DateRangeParam theValue_date, 
+			DateAndListParam theValue_date, 
 			  
 			@Description(shortDefinition="The value of the observation, if the value is a Quantity, or a SampledData (just search on the bounds of the values in sampled data)")
 			@OptionalParam(name="value-quantity")

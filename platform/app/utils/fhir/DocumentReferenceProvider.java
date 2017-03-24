@@ -28,6 +28,7 @@ import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.param.CompositeAndListParam;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
@@ -133,11 +134,11 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 			  
 			@Description(shortDefinition="")
 			@OptionalParam(name="created")
-			DateRangeParam theCreated, 
+			DateAndListParam theCreated, 
 			    
 			@Description(shortDefinition="")
 			@OptionalParam(name="indexed")
-			DateRangeParam theIndexed, 
+			DateAndListParam theIndexed, 
 			   
 			@Description(shortDefinition="")
 			@OptionalParam(name="status")
@@ -177,7 +178,7 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 			  
 			@Description(shortDefinition="")
 			@OptionalParam(name="period")
-			DateRangeParam thePeriod, 
+			DateAndListParam thePeriod, 
 			  
 			@Description(shortDefinition="")
 			@OptionalParam(name="facility")
