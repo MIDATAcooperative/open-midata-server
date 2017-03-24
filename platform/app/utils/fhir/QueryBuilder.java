@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.BaseResource;
+import org.hl7.fhir.dstu3.model.DomainResource;
 
 import akka.japi.Pair;
 import ca.uhn.fhir.model.api.IQueryParameterType;
@@ -24,6 +25,7 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.param.UriParam;
 import ca.uhn.fhir.rest.param.UriParamQualifierEnum;
+import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import utils.AccessLog;
@@ -493,7 +495,9 @@ public class QueryBuilder {
         
         params.add(r.getChain(), ResourceProvider.asQueryParameter(targetType, r.getChain(), r));
         
-        List<BaseResource> resultList = FHIRServlet.myProviders.get(targetType).search(params);
+        ResourceProvider prov = FHIRServlet.myProviders.get(targetType);
+        if (prov==null) throw new InvalidRequestException("Unknown resource type '"+targetType+"' during chaining.");
+        List<BaseResource> resultList = prov.search(params);
         List<ReferenceParam> result = new ArrayList<ReferenceParam>();
         for (BaseResource br : resultList) {
         	result.add(new ReferenceParam(targetType+"/"+br.getId()));
