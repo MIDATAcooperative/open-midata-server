@@ -274,8 +274,6 @@ OPTIONS /v1/plugin_api/oauth/get      controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/oauth/get      controllers.PluginsAPI.getOAuthParams()
 OPTIONS /v1/plugin_api/clone           controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/clone           controllers.PluginsAPI.cloneAs()
-OPTIONS /v1/plugin_api/run             controllers.PluginsAPI.checkPreflight()
-POST    /v1/plugin_api/run             controllers.PluginsAPI.run()
 OPTIONS /v1/plugin_api/records/newId    controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/records/newId    controllers.PluginsAPI.generateId()
 
