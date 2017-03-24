@@ -23,7 +23,7 @@ import javax.servlet.descriptor.JspConfigDescriptor;
 import scala.NotImplementedError;
 
 /**
- * PlayHttpServletContext emulation for Play Framework
+ * HttpServletContext emulation for Play Framework
  *
  */
 public class PlayHttpServletContext implements ServletContext {
