@@ -65,6 +65,8 @@ import utils.exceptions.AppException;
 public class ObservationResourceProvider extends ResourceProvider<Observation> implements IResourceProvider {
 
 	public ObservationResourceProvider() {
+		searchParamNameToPathMap.put("Observation:based-on", "basedOn");
+		searchParamNameToPathMap.put("Observation:context", "context");
 		searchParamNameToPathMap.put("Observation:device", "device");
 		searchParamNameToPathMap.put("Observation:encounter", "encounter");
 		searchParamNameToPathMap.put("Observation:patient", "subject");
@@ -72,7 +74,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		searchParamNameToPathMap.put("Observation:performer", "performer");
 		searchParamNameToPathMap.put("Observation:related-target", "related.target");
 		searchParamNameToPathMap.put("Observation:specimen", "specimen");
-		searchParamNameToPathMap.put("Observation:subject", "subject");	
+		searchParamNameToPathMap.put("Observation:subject", "subject");				
 		
 		registerSearches("Observation", getClass(), "getObservation");
 	}
@@ -89,85 +91,178 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
 
 		
-			@Description(shortDefinition = "The code of the observation type") @OptionalParam(name = "code") TokenAndListParam theCode,
-
-			@Description(shortDefinition = "The component code of the observation type") @OptionalParam(name = "component-code") TokenAndListParam theComponent_code,
-
-			@Description(shortDefinition = "The value of the observation, if the value is a Quantity, or a SampledData (just search on the bounds of the values in sampled data)") @OptionalParam(name = "value-quantity") QuantityAndListParam theValue_quantity,
-
-			@Description(shortDefinition = "The value of the component observation, if the value is a Quantity, or a SampledData (just search on the bounds of the values in sampled data)") @OptionalParam(name = "component-value-quantity") QuantityAndListParam theComponent_value_quantity,
-
-			@Description(shortDefinition = "The value of the observation, if the value is a CodeableConcept") @OptionalParam(name = "value-concept") TokenAndListParam theValue_concept,
-
-			@Description(shortDefinition = "The value of the component observation, if the value is a CodeableConcept") @OptionalParam(name = "component-value-concept") TokenAndListParam theComponent_value_concept,
-
-			@Description(shortDefinition = "The value of the observation, if the value is a date or period of time") @OptionalParam(name = "value-date") DateAndListParam theValue_date,
-
-			@Description(shortDefinition = "The value of the observation, if the value is a string, and also searches in CodeableConcept.text") @OptionalParam(name = "value-string") StringAndListParam theValue_string,
-
-			@Description(shortDefinition = "The value of the component observation, if the value is a string, and also searches in CodeableConcept.text") @OptionalParam(name = "component-value-string") StringAndListParam theComponent_value_string,
-
-			@Description(shortDefinition = "Obtained date/time. If the obtained element is a period, a date that falls in the period") @OptionalParam(name = "date") DateAndListParam theDate,
-
-			@Description(shortDefinition = "The status of the observation") @OptionalParam(name = "status") TokenAndListParam theStatus,
-
-			@Description(shortDefinition = "The subject that the observation is about") @OptionalParam(name = "subject", targetTypes = {}) ReferenceAndListParam theSubject,
-
-			@Description(shortDefinition = "Who performed the observation") @OptionalParam(name = "performer", targetTypes = {}) ReferenceAndListParam thePerformer,
-
-			@Description(shortDefinition = "") @OptionalParam(name = "specimen", targetTypes = {}) ReferenceAndListParam theSpecimen,
-
-			@Description(shortDefinition = "") @OptionalParam(name = "related-type") TokenAndListParam theRelated_type,
-
-			@Description(shortDefinition = "") @OptionalParam(name = "related-target", targetTypes = {}) ReferenceAndListParam theRelated_target,
-
-			@Description(shortDefinition = "Healthcare event related to the observation") @OptionalParam(name = "encounter", targetTypes = {}) ReferenceAndListParam theEncounter,
-
-			@Description(shortDefinition = "The reason why the expected value in the element Observation.value[x] is missing.") @OptionalParam(name = "data-absent-reason") TokenAndListParam theData_absent_reason,
-
-			@Description(shortDefinition = "The reason why the expected value in the element Observation.component.value[x] is missing.") @OptionalParam(name = "component-data-absent-reason") TokenAndListParam theComponent_data_absent_reason,
-
-			@Description(shortDefinition = "The subject that the observation is about (if patient)") @OptionalParam(name = "patient", targetTypes = { Patient.class }) ReferenceAndListParam thePatient,
-
-			@Description(shortDefinition = "The unique id for a particular observation") @OptionalParam(name = "identifier") TokenAndListParam theIdentifier,
-
-			@Description(shortDefinition = "The Device that generated the observation data.") @OptionalParam(name = "device", targetTypes = {}) ReferenceAndListParam theDevice,
-
-			@Description(shortDefinition = "The classification of the type of observation") @OptionalParam(name = "category") TokenAndListParam theCategory,
-
-			@Description(shortDefinition = "Both code and one of the value parameters") @OptionalParam(name = "code-value-quantity", compositeTypes = { TokenParam.class, QuantityParam.class }) CompositeAndListParam<TokenParam, QuantityParam> theCode_value_quantity,
-
-			@Description(shortDefinition = "Both code and one of the value parameters") @OptionalParam(name = "code-value-concept", compositeTypes = { TokenParam.class, TokenParam.class }) CompositeAndListParam<TokenParam, TokenParam> theCode_value_concept,
-
-			@Description(shortDefinition = "Both code and one of the value parameters") @OptionalParam(name = "code-value-date", compositeTypes = { TokenParam.class, DateParam.class }) CompositeAndListParam<TokenParam, DateParam> theCode_value_date,
-
-			@Description(shortDefinition = "Both code and one of the value parameters") @OptionalParam(name = "code-value-string", compositeTypes = { TokenParam.class, StringParam.class }) CompositeAndListParam<TokenParam, StringParam> theCode_value_string,
-
-			@Description(shortDefinition = "Both component code and one of the component value parameters") @OptionalParam(name = "component-code-component-value-quantity", compositeTypes = {
-					TokenParam.class, QuantityParam.class }) CompositeAndListParam<TokenParam, QuantityParam> theComponent_code_component_value_quantity,
-
-			@Description(shortDefinition = "Both component code and one of the component value parameters") @OptionalParam(name = "component-code-component-value-concept", compositeTypes = {
-					TokenParam.class, TokenParam.class }) CompositeAndListParam<TokenParam, TokenParam> theComponent_code_component_value_concept,
-
-			@Description(shortDefinition = "Both component code and one of the component value parameters") @OptionalParam(name = "component-code-component-value-string", compositeTypes = {
-					TokenParam.class, StringParam.class }) CompositeAndListParam<TokenParam, StringParam> theComponent_code_component_value_string,
-
-			@Description(shortDefinition = "Related Observations - search on related-type and related-target together") @OptionalParam(name = "related-target-related-type", compositeTypes = {
-					ReferenceParam.class, TokenParam.class }) CompositeAndListParam<ReferenceParam, TokenParam> theRelated_target_related_type,
-
-			@IncludeParam(reverse = true) Set<Include> theRevIncludes,
-			@Description(shortDefinition = "Only return resources which were last updated as specified by the given range") @OptionalParam(name = "_lastUpdated") DateRangeParam theLastUpdated,
-
-			@IncludeParam(allow = { 
-					"Observation:device", 
-					"Observation:encounter", 
-					"Observation:patient", 
-					"Observation:performer", 
-					"Observation:related-target", 
-					"Observation:specimen",				
-					"Observation:subject", 
-					"*" }) Set<Include> theIncludes,
-
+			@Description(shortDefinition="Reference to the test or procedure request.")
+			@OptionalParam(name="based-on", targetTypes={  } )
+			ReferenceAndListParam theBased_on, 
+			   
+			@Description(shortDefinition="The classification of the type of observation")
+			@OptionalParam(name="category")
+			TokenAndListParam theCategory, 
+			  
+			@Description(shortDefinition="The code of the observation type")
+			@OptionalParam(name="code")
+			TokenAndListParam theCode, 
+			   
+			@Description(shortDefinition="Code and coded value parameter pair")
+			@OptionalParam(name="code-value-concept", compositeTypes= { TokenParam.class, TokenParam.class })
+			CompositeAndListParam<TokenParam, TokenParam> theCode_value_concept,
+			   
+			@Description(shortDefinition="Code and date/time value parameter pair")
+			@OptionalParam(name="code-value-date", compositeTypes= { TokenParam.class, DateParam.class })
+			CompositeAndListParam<TokenParam, DateParam> theCode_value_date,
+			  
+			@Description(shortDefinition="Code and quantity value parameter pair")
+			@OptionalParam(name="code-value-quantity", compositeTypes= { TokenParam.class, QuantityParam.class })
+			CompositeAndListParam<TokenParam, QuantityParam> theCode_value_quantity,
+			   
+			@Description(shortDefinition="Code and string value parameter pair")
+			@OptionalParam(name="code-value-string", compositeTypes= { TokenParam.class, StringParam.class })
+			CompositeAndListParam<TokenParam, StringParam> theCode_value_string,
+			   
+			@Description(shortDefinition="The code of the observation type or component type")
+			@OptionalParam(name="combo-code")
+			TokenAndListParam theCombo_code, 
+			   
+			@Description(shortDefinition="Code and coded value parameter pair, including in components")
+			@OptionalParam(name="combo-code-value-concept", compositeTypes= { TokenParam.class, TokenParam.class })
+			CompositeAndListParam<TokenParam, TokenParam> theCombo_code_value_concept,
+			   
+			@Description(shortDefinition="Code and quantity value parameter pair, including in components")
+			@OptionalParam(name="combo-code-value-quantity", compositeTypes= { TokenParam.class, QuantityParam.class })
+			CompositeAndListParam<TokenParam, QuantityParam> theCombo_code_value_quantity,
+			  
+			@Description(shortDefinition="The reason why the expected value in the element Observation.value[x] or Observation.component.value[x] is missing.")
+			@OptionalParam(name="combo-data-absent-reason")
+			TokenAndListParam theCombo_data_absent_reason, 
+			  
+			@Description(shortDefinition="The value or component value of the observation, if the value is a CodeableConcept")
+			@OptionalParam(name="combo-value-concept")
+			TokenAndListParam theCombo_value_concept, 
+			  
+			@Description(shortDefinition="The value or component value of the observation, if the value is a Quantity, or a SampledData (just search on the bounds of the values in sampled data)")
+			@OptionalParam(name="combo-value-quantity")
+			QuantityAndListParam theCombo_value_quantity, 
+			  
+			@Description(shortDefinition="The component code of the observation type")
+			@OptionalParam(name="component-code")
+			TokenAndListParam theComponent_code, 
+			  
+			@Description(shortDefinition="Component code and component coded value parameter pair")
+			@OptionalParam(name="component-code-value-concept", compositeTypes= { TokenParam.class, TokenParam.class })
+			CompositeAndListParam<TokenParam, TokenParam> theComponent_code_value_concept,
+			  
+			@Description(shortDefinition="Component code and component quantity value parameter pair")
+			@OptionalParam(name="component-code-value-quantity", compositeTypes= { TokenParam.class, QuantityParam.class })
+			CompositeAndListParam<TokenParam, QuantityParam> theComponent_code_value_quantity,
+			  
+			@Description(shortDefinition="The reason why the expected value in the element Observation.component.value[x] is missing.")
+			@OptionalParam(name="component-data-absent-reason")
+			TokenAndListParam theComponent_data_absent_reason, 
+			  
+			@Description(shortDefinition="The value of the component observation, if the value is a CodeableConcept")
+			@OptionalParam(name="component-value-concept")
+			TokenAndListParam theComponent_value_concept, 
+			  
+			@Description(shortDefinition="The value of the component observation, if the value is a Quantity, or a SampledData (just search on the bounds of the values in sampled data)")
+			@OptionalParam(name="component-value-quantity")
+			QuantityAndListParam theComponent_value_quantity, 
+			   
+			@Description(shortDefinition="Healthcare event  (Episode-of-care or Encounter) related to the observation")
+			@OptionalParam(name="context", targetTypes={  } )
+			ReferenceAndListParam theContext, 
+			  
+			@Description(shortDefinition="The reason why the expected value in the element Observation.value[x] is missing.")
+			@OptionalParam(name="data-absent-reason")
+			TokenAndListParam theData_absent_reason, 
+			  
+			@Description(shortDefinition="Obtained date/time. If the obtained element is a period, a date that falls in the period")
+			@OptionalParam(name="date")
+			DateRangeParam theDate, 
+			  
+			@Description(shortDefinition="The Device that generated the observation data.")
+			@OptionalParam(name="device", targetTypes={  } )
+			ReferenceAndListParam theDevice, 
+			  
+			@Description(shortDefinition="Encounter related to the observation")
+			@OptionalParam(name="encounter", targetTypes={  } )
+			ReferenceAndListParam theEncounter, 
+			  
+			@Description(shortDefinition="The unique id for a particular observation")
+			@OptionalParam(name="identifier")
+			TokenAndListParam theIdentifier, 
+			   
+			@Description(shortDefinition="The method used for the observation")
+			@OptionalParam(name="method")
+			TokenAndListParam theMethod, 
+			  
+			@Description(shortDefinition="The subject that the observation is about (if patient)")
+			@OptionalParam(name="patient", targetTypes={  } )
+			ReferenceAndListParam thePatient, 
+			  
+			@Description(shortDefinition="Who performed the observation")
+			@OptionalParam(name="performer", targetTypes={  } )
+			ReferenceAndListParam thePerformer, 
+			   
+			@Description(shortDefinition="Related Observations - search on related-type and related-target together")
+			@OptionalParam(name="related", compositeTypes= { ReferenceParam.class, TokenParam.class })
+			CompositeAndListParam<ReferenceParam, TokenParam> theRelated,
+			  
+			@Description(shortDefinition="Resource that is related to this one")
+			@OptionalParam(name="related-target", targetTypes={  } )
+			ReferenceAndListParam theRelated_target, 
+			  
+			@Description(shortDefinition="has-member | derived-from | sequel-to | replaces | qualified-by | interfered-by")
+			@OptionalParam(name="related-type")
+			TokenAndListParam theRelated_type, 
+			  
+			@Description(shortDefinition="Specimen used for this observation")
+			@OptionalParam(name="specimen", targetTypes={  } )
+			ReferenceAndListParam theSpecimen, 
+			  
+			@Description(shortDefinition="The status of the observation")
+			@OptionalParam(name="status")
+			TokenAndListParam theStatus, 
+			  
+			@Description(shortDefinition="The subject that the observation is about")
+			@OptionalParam(name="subject", targetTypes={  } )
+			ReferenceAndListParam theSubject, 
+			   
+			@Description(shortDefinition="The value of the observation, if the value is a CodeableConcept")
+			@OptionalParam(name="value-concept")
+			TokenAndListParam theValue_concept, 
+			   
+			@Description(shortDefinition="The value of the observation, if the value is a date or period of time")
+			@OptionalParam(name="value-date")
+			DateRangeParam theValue_date, 
+			  
+			@Description(shortDefinition="The value of the observation, if the value is a Quantity, or a SampledData (just search on the bounds of the values in sampled data)")
+			@OptionalParam(name="value-quantity")
+			QuantityAndListParam theValue_quantity, 
+			   
+			@Description(shortDefinition="The value of the observation, if the value is a string, and also searches in CodeableConcept.text")
+			@OptionalParam(name="value-string")
+			StringAndListParam theValue_string, 
+			
+			@IncludeParam(reverse=true)
+			Set<Include> theRevIncludes,
+			@Description(shortDefinition="Only return resources which were last updated as specified by the given range")
+			@OptionalParam(name="_lastUpdated")
+			DateRangeParam theLastUpdated, 
+			
+			@IncludeParam(allow= {
+					"Observation:based-on",
+					"Observation:context" ,
+					"Observation:device" ,
+					"Observation:encounter" ,
+					"Observation:patient" ,
+					"Observation:performer" ,
+					"Observation:related-target" ,
+					"Observation:specimen" ,
+					"Observation:subject" ,
+					"*"
+			}) 
+			Set<Include> theIncludes,
+								
 			@Sort SortSpec theSort,
 
 			@ca.uhn.fhir.rest.annotation.Count Integer theCount
@@ -179,37 +274,44 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		paramMap.add("_id", theId);
 		paramMap.add("_language", theResourceLanguage);
 	
-		paramMap.add("code", theCode);
-		paramMap.add("component-code", theComponent_code);
-		paramMap.add("value-quantity", theValue_quantity);
-		paramMap.add("component-value-quantity", theComponent_value_quantity);
-		paramMap.add("value-concept", theValue_concept);
-		paramMap.add("component-value-concept", theComponent_value_concept);
-		paramMap.add("value-date", theValue_date);
-		paramMap.add("value-string", theValue_string);
-		paramMap.add("component-value-string", theComponent_value_string);
-		paramMap.add("date", theDate);
-		paramMap.add("status", theStatus);
-		paramMap.add("subject", theSubject);
-		paramMap.add("performer", thePerformer);
-		paramMap.add("specimen", theSpecimen);
-		paramMap.add("related-type", theRelated_type);
-		paramMap.add("related-target", theRelated_target);
-		paramMap.add("encounter", theEncounter);
-		paramMap.add("data-absent-reason", theData_absent_reason);
-		paramMap.add("component-data-absent-reason", theComponent_data_absent_reason);
-		paramMap.add("patient", thePatient);
-		paramMap.add("identifier", theIdentifier);
-		paramMap.add("device", theDevice);
+		paramMap.add("based-on", theBased_on);
 		paramMap.add("category", theCategory);
-		paramMap.add("code-value-quantity", theCode_value_quantity);
+		paramMap.add("code", theCode);
 		paramMap.add("code-value-concept", theCode_value_concept);
 		paramMap.add("code-value-date", theCode_value_date);
+		paramMap.add("code-value-quantity", theCode_value_quantity);
 		paramMap.add("code-value-string", theCode_value_string);
-		paramMap.add("component-code-component-value-quantity", theComponent_code_component_value_quantity);
-		paramMap.add("component-code-component-value-concept", theComponent_code_component_value_concept);
-		paramMap.add("component-code-component-value-string", theComponent_code_component_value_string);
-		paramMap.add("related-target-related-type", theRelated_target_related_type);
+		paramMap.add("combo-code", theCombo_code);
+		paramMap.add("combo-code-value-concept", theCombo_code_value_concept);
+		paramMap.add("combo-code-value-quantity", theCombo_code_value_quantity);
+		paramMap.add("combo-data-absent-reason", theCombo_data_absent_reason);
+		paramMap.add("combo-value-concept", theCombo_value_concept);
+		paramMap.add("combo-value-quantity", theCombo_value_quantity);
+		paramMap.add("component-code", theComponent_code);
+		paramMap.add("component-code-value-concept", theComponent_code_value_concept);
+		paramMap.add("component-code-value-quantity", theComponent_code_value_quantity);
+		paramMap.add("component-data-absent-reason", theComponent_data_absent_reason);
+		paramMap.add("component-value-concept", theComponent_value_concept);
+		paramMap.add("component-value-quantity", theComponent_value_quantity);
+		paramMap.add("context", theContext);
+		paramMap.add("data-absent-reason", theData_absent_reason);
+		paramMap.add("date", theDate);
+		paramMap.add("device", theDevice);
+		paramMap.add("encounter", theEncounter);
+		paramMap.add("identifier", theIdentifier);
+		paramMap.add("method", theMethod);
+		paramMap.add("patient", thePatient);
+		paramMap.add("performer", thePerformer);
+		paramMap.add("related", theRelated);
+		paramMap.add("related-target", theRelated_target);
+		paramMap.add("related-type", theRelated_type);
+		paramMap.add("specimen", theSpecimen);
+		paramMap.add("status", theStatus);
+		paramMap.add("subject", theSubject);
+		paramMap.add("value-concept", theValue_concept);
+		paramMap.add("value-date", theValue_date);
+		paramMap.add("value-quantity", theValue_quantity);
+		paramMap.add("value-string", theValue_string);
 		paramMap.setRevIncludes(theRevIncludes);
 		paramMap.setLastUpdated(theLastUpdated);
 		paramMap.setIncludes(theIncludes);
@@ -264,8 +366,9 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		builder.restriction("device", true, "Device", "device");
 		builder.restriction("encounter", true, "Encounter", "encounter");
 		builder.restriction("performer", true, "Performer", "performer");
+		builder.restriction("based-on", true, null, "basedOn");
 		builder.restriction("related-target", true, null, "related.target");
-		builder.restriction("related", "related.type", "related.target", QueryBuilder.TYPE_CODE, null);
+		builder.restriction("related", "related.target", "related.type", null,  QueryBuilder.TYPE_CODE);
 		builder.restriction("specimen", true, "Specimen", "specimen");
 		
 		

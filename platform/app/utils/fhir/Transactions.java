@@ -27,6 +27,7 @@ import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import ca.uhn.fhir.util.FhirTerser;
+import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -140,6 +141,7 @@ public class Transactions {
 		   IIdType source = step.getResource().getIdElement();
 		   if (source != null && source.getIdPart() != null) {
 			 IdType t = new IdType(source.getResourceType(), step.getRecord()._id.toString());
+			 AccessLog.log("reg ref:"+source.getIdPart()+" -> "+t.toString());
 		     idSubstitutions.put(source.getIdPart(), t);
 		   }
 	   }
@@ -152,12 +154,14 @@ public class Transactions {
 	public void resolveReferences(Map<String, IdType> idSubstitutions, IBaseResource resource, FhirTerser terser) {
 		List<IBaseReference> allRefs = terser.getAllPopulatedChildElementsOfType(resource, IBaseReference.class);
 		for (IBaseReference nextRef : allRefs) {
+			AccessLog.log("checkref:"+nextRef.toString());
 			IIdType nextId = nextRef.getReferenceElement();
 			if (!nextId.hasIdPart()) {
 				continue;
 			}
-			if (idSubstitutions.containsKey(nextId)) {
-				IdType newId = idSubstitutions.get(nextId.getIdPart());				
+			if (idSubstitutions.containsKey(nextId.getIdPart())) {
+				IdType newId = idSubstitutions.get(nextId.getIdPart());
+				AccessLog.log("set ref:"+nextRef.toString()+" -> "+newId.toString());
 				nextRef.setReference(newId.getValue());
 			} 
 		}
