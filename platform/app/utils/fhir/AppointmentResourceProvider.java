@@ -29,6 +29,7 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
@@ -104,7 +105,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 			   
 			@Description(shortDefinition="Appointment date/time.")
 			@OptionalParam(name="date")
-			DateRangeParam theDate, 
+			DateAndListParam theDate, 
 			   
 			@Description(shortDefinition="The overall status of the appointment")
 			@OptionalParam(name="status")

@@ -23,6 +23,7 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
@@ -81,7 +82,7 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 			   
 			@Description(shortDefinition="When the questionnaire was authored")
 			@OptionalParam(name="authored")
-			DateRangeParam theAuthored, 
+			DateAndListParam theAuthored, 
 			   
 			@Description(shortDefinition="The subject of the questionnaire")
 			@OptionalParam(name="subject", targetTypes={  } )

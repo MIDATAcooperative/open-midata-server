@@ -29,6 +29,7 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.HasAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
@@ -99,7 +100,7 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 			  */
 			@Description(shortDefinition="Search by creation date")
 			@OptionalParam(name="authored-on")
-			DateRangeParam theAuthored_on, 
+			DateAndListParam theAuthored_on, 
 			   
 			@Description(shortDefinition="Search by requests this task is based on")
 			@OptionalParam(name="based-on", targetTypes={  } )
@@ -139,7 +140,7 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 			   
 			@Description(shortDefinition="Search by last modification date")
 			@OptionalParam(name="modified")
-			DateRangeParam theModified, 
+			DateAndListParam theModified, 
 			   
 			@Description(shortDefinition="Search by responsible organization")
 			@OptionalParam(name="organization", targetTypes={  } )
@@ -163,7 +164,7 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 			   
 			@Description(shortDefinition="Search by period Task is/was underway")
 			@OptionalParam(name="period")
-			DateRangeParam thePeriod, 
+			DateAndListParam thePeriod, 
 			   
 			@Description(shortDefinition="Search by task priority")
 			@OptionalParam(name="priority")

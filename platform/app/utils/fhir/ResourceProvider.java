@@ -258,8 +258,11 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 				   for (T res : resources) {
 					   String type = inc.getParamType();
 					   String name = inc.getParamName();
-					   String path = type + "." + searchParamNameToPathMap.get(type + ":" + name);
-					   Set<String> allowedTypes = searchParamNameToTypeMap.get(type + ":" + name);
+					   if (type==null || name==null) throw new InvalidRequestException("Invalid/incomplete parameter for _include.");
+					   String field = searchParamNameToPathMap.get(type + ":" + name);
+					   if (field == null) throw new NotImplementedOperationException("Value for _include is not supported by the server.");
+					   String path = type + "." + field;
+					   Set<String> allowedTypes = searchParamNameToTypeMap.get(type + ":" + name);					   
 					   List<IBaseReference> refs = terser.getValues(res, path, IBaseReference.class);
 					   if (refs != null) {
 						   for (IBaseReference r : refs) {
@@ -291,12 +294,14 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 		   if (!params.getRevIncludes().isEmpty()) {
 			   for (Include inc : params.getRevIncludes()) {
 				   String type = inc.getParamType();
-				   String name = inc.getParamName();				   
+				   String name = inc.getParamName();	
+				   if (type == null || name == null) throw new InvalidRequestException("Incomplete parameter for _revinclude");
 				   ReferenceOrListParam vals = new ReferenceOrListParam();
 				   for (T res : resources) {
 				      vals.add(new ReferenceParam(type+"/"+res.getId()));
 				   }
 				   ResourceProvider prov = FHIRServlet.myProviders.get(type);
+				   if (prov==null) throw new InvalidRequestException("Unknown resource type for _revinclude");
 				   SearchParameterMap newsearch = new SearchParameterMap();
 				   newsearch.add(name, vals);
 				   List<IBaseResource> alsoAdd = prov.search(newsearch);
@@ -322,6 +327,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 	
 	public static IQueryParameterType asQueryParameter(String resourceType, String searchParam, ReferenceParam param) {
 		String type = searchParamNameToTokenMap.get(resourceType+"."+searchParam);
+		if (type==null) throw new NotImplementedOperationException("Search '"+searchParam+"' not defined on resource '"+resourceType+"'.");
 		if (type.contains("Token")) return param.toTokenParam(ctx());
 		if (type.contains("String")) return param.toStringParam(ctx());
 		if (type.contains("Date")) return param.toDateParam(ctx());

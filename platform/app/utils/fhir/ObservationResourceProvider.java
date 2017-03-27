@@ -177,7 +177,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 			  
 			@Description(shortDefinition="Obtained date/time. If the obtained element is a period, a date that falls in the period")
 			@OptionalParam(name="date")
-			DateRangeParam theDate, 
+			DateAndListParam theDate, 
 			  
 			@Description(shortDefinition="The Device that generated the observation data.")
 			@OptionalParam(name="device", targetTypes={  } )
@@ -233,7 +233,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 			   
 			@Description(shortDefinition="The value of the observation, if the value is a date or period of time")
 			@OptionalParam(name="value-date")
-			DateRangeParam theValue_date, 
+			DateAndListParam theValue_date, 
 			  
 			@Description(shortDefinition="The value of the observation, if the value is a Quantity, or a SampledData (just search on the bounds of the values in sampled data)")
 			@OptionalParam(name="value-quantity")
@@ -349,6 +349,12 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		builder.restriction("component-code-value-string", "component.code", "component.valueString", QueryBuilder.TYPE_CODEABLE_CONCEPT, QueryBuilder.TYPE_STRING);
 		builder.restriction("component-code-value-date", "component.code", "component.value", QueryBuilder.TYPE_CODEABLE_CONCEPT, QueryBuilder.TYPE_DATETIME_OR_PERIOD);
 		builder.restriction("component-code-value-concept", "component.code", "component.valueConcept", QueryBuilder.TYPE_CODEABLE_CONCEPT, QueryBuilder.TYPE_CODEABLE_CONCEPT);
+		
+		builder.restriction("combo-code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "code", QueryBuilder.TYPE_CODEABLE_CONCEPT, "component.code");				
+		builder.restriction("combo-data-absent-reason", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "dataAbsentReason", QueryBuilder.TYPE_CODEABLE_CONCEPT, "component.dataAbsentReason");
+	    builder.restriction("combo-value-concept", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "valueCodeableConcept", QueryBuilder.TYPE_CODEABLE_CONCEPT, "component.valueCodeableConcept");
+	    builder.restriction("combo-value-quantity", true, QueryBuilder.TYPE_QUANTITY, "valueQuantity", QueryBuilder.TYPE_QUANTITY, "component.valueQuantity");
+		
 		
 		
 		builder.restriction("data-absent-reason", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "dataAbsentReason");
