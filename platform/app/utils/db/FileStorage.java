@@ -38,7 +38,7 @@ public class FileStorage {
 	public static FileData retrieve(MidataId id) {
 		GridFS fileSystem = new GridFS(DBLayer.getFSDB(), FILE_STORAGE);
 		GridFSDBFile retrievedFile = fileSystem.findOne(id.toObjectId());
-		if (retrievedFile != null) return new FileData(retrievedFile.getInputStream(), retrievedFile.getFilename());
+		if (retrievedFile != null) return new FileData(retrievedFile.getInputStream(), retrievedFile.getFilename(), retrievedFile.getContentType());
 		return null;
 	}
 
@@ -49,10 +49,12 @@ public class FileStorage {
 
 		public InputStream inputStream;
 		public String filename;
+		public String contentType;
 
-		public FileData(InputStream inputStream, String filename) {
+		public FileData(InputStream inputStream, String filename, String contentType) {
 			this.inputStream = inputStream;
 			this.filename = filename;
+			this.contentType = contentType;
 		}
 	}
 
