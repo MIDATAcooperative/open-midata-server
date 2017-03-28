@@ -416,16 +416,21 @@ public class MobileAPI extends Controller {
 						
 		ExecutionInfo info = null;
 		
-		String param = request().getHeader("Authorization");		
+		String param = request().getHeader("Authorization");
+		String param2 = request().getQueryString("access_token");
+		
 		if (param != null && param.startsWith("Bearer ")) {
           info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);                  
 		} else if (json != null && json.has("authToken")) {
 		  info = ExecutionInfo.checkToken(request(), JsonValidation.getString(json, "authToken"), false);
+		} else if (param2 != null) {
+		  info = ExecutionInfo.checkToken(request(), param2, false);
 		} else throw new BadRequestException("error.auth", "Please provide authorization token as 'Authorization' header or 'authToken' request parameter.");
 					
 		MidataId recordId = json != null ? JsonValidation.getMidataId(json, "_id") : new MidataId(request().getQueryString("_id"));			
 		FileData fileData = RecordManager.instance.fetchFile(info.executorId, new RecordToken(recordId.toString(), info.targetAPS.toString()));
 		if (fileData == null) return badRequest();
+		if (fileData.contentType != null) response().setContentType(fileData.contentType);
 		//response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
 		return ok(fileData.inputStream);
 	}
