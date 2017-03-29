@@ -86,11 +86,16 @@ public class Consent extends Model {
 	 * Exclude all data created after this date
 	 */
 	public @NotMaterialized Date createdBefore;
+		
 	
 	/**
 	 * Internal timestamp of last data change for faster queries
 	 */
 	public long dataupdate;
+	
+	public static Consent getByIdUnchecked(MidataId consentId, Set<String> fields) throws InternalServerException {
+		return Model.get(Consent.class, collection, CMaps.map("_id", consentId), fields);
+	}
 	
 	public static Consent getByIdAndOwner(MidataId consentId, MidataId ownerId, Set<String> fields) throws InternalServerException {
 		return Model.get(Consent.class, collection, CMaps.map("_id", consentId).map("owner", ownerId), fields);
@@ -120,8 +125,16 @@ public class Consent extends Model {
 		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", ConsentStatus.ACTIVE).map("dataupdate", CMaps.map("$gte", since)), Sets.create("name", "order", "owner", "ownerName", "type"));
 	}
 	
+	public static Set<Consent> getAllByAuthorized(MidataId member, Map<String, Object> properties, Set<String> fields) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("authorized", member), fields);
+	}
+	
+	public static Set<Consent> getAllByAuthorized(Set<MidataId> member, Map<String, Object> properties, Set<String> fields) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("authorized", member), fields);
+	}
+	
 	public static Set<Consent> getAllByAuthorized(MidataId member) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member), Sets.create("name", "order", "owner", "ownerName", "type"));
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member), Sets.create("name", "order", "owner", "ownerName", "type", "status"));
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorizedAndOwners(MidataId member, Set<MidataId> owners) throws InternalServerException {

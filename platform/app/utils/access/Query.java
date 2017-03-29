@@ -307,7 +307,7 @@ public class Query {
 	              properties.containsKey("code") ||
 	              properties.containsKey("name");
 		 
-		 restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age") || properties.containsKey("created-after") || properties.containsKey("updated-after") || properties.containsKey("updated-before");
+		 restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age") || properties.containsKey("created-after") || properties.containsKey("created-before") || properties.containsKey("updated-after") || properties.containsKey("updated-before");
 		 
          fieldsFromDB = Sets.create("createdOld", "encrypted");
          mayNeedFromDB = new HashSet<String>();
@@ -320,7 +320,7 @@ public class Query {
          if (fields.contains("format") || properties.containsKey("format") || properties.containsKey("group")) mayNeedFromDB.add("format");
          if (fields.contains("content") || properties.containsKey("content") || properties.containsKey("group")) mayNeedFromDB.add("content");
          if (fields.contains("app") || properties.containsKey("app") || properties.containsKey("group")) mayNeedFromDB.add("app");
-         if (fields.contains("created")) mayNeedFromDB.add("created");
+         if (fields.contains("created") || restrictedOnTime) mayNeedFromDB.add("created");
          
          if (properties.containsKey("sort")) {
 			 String sort = properties.get("sort").toString();

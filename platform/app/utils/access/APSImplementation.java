@@ -299,7 +299,7 @@ class APSImplementation extends APS {
 		}
 		if (q.getMaxDateCreated() != null) {
 			Date created = entry.getDate("created");
-			if (created != null && created.after(q.getMinDateCreated()))
+			if (created != null && created.after(q.getMaxDateCreated()))
 				return false;
 		}
 		return true;
