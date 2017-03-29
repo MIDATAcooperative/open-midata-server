@@ -62,7 +62,7 @@ angular.module('portal')
 				users.getMembers({ "_id" : $scope.consent.owner }, [ "firstname", "lastname", "email", "role"])
 				.then(function(result) { console.log(result);$scope.owner = result.data[0]; });
 				
-				$scope.writeProtect = ($scope.consent.owner !== userId && $scope.consent.status !== "UNCONFIRMED") || $scope.consent.type === "STUDYPARTICIPATION";
+				$scope.writeProtect = ($scope.consent.owner !== userId && $scope.consent.status !== "UNCONFIRMED") || $scope.consent.type === "STUDYPARTICIPATION" || $scope.consent.status === "EXPIRED" || $scope.consent.status === "REJECTED";
 				
 			});
 			$scope.status.doBusy(server.get(jsRoutes.controllers.Records.getSharingDetails($state.params.consentId).url)).
