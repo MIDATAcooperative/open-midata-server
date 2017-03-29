@@ -48,7 +48,11 @@
     "status" : "Status",
     "startDate" : "Member From",
     "endDate" : "Member Until"
-  }
+  },
+  
+  "provider_memberdetails" : {
+    "propose_consent" : "Request Consent"
+   }
   
   
 }

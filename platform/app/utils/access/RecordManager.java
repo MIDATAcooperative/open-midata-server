@@ -332,7 +332,7 @@ public class RecordManager {
 			for (DBRecord rec : content) ids.add(rec._id);
 			
 			BasicBSONObject query = apswrapper.getMeta("_query");
-			Circles.setQuery(who, targetAPS, query);
+			Circles.setQuery(who, who, targetAPS, query);
 			apswrapper.removeMeta("_query");
        	    RecordManager.instance.applyQuery(who, query, who, targetAPS, true);
 			
