@@ -1,4 +1,4 @@
-package utils.mails;
+package utils.messaging;
 
 import com.typesafe.plugin.MailerAPI;
 import com.typesafe.plugin.MailerPlugin;

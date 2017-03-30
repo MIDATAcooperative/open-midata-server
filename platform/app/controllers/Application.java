@@ -48,7 +48,8 @@ import utils.exceptions.InternalServerException;
 import utils.fhir.PatientResourceProvider;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import utils.mails.MailUtils;
+import utils.messaging.MailUtils;
+import utils.messaging.Messager;
 import views.html.apstest;
 import views.html.tester;
 import views.txt.mails.lostpwmail;
@@ -122,7 +123,7 @@ public class Application extends APIController {
 		  String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
 		  String url = site + "/#/portal/setpw?token=" + encrypted;
 			   
-		  MailUtils.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url));
+		  Messager.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url).toString());
 		}
 			
 		// response
@@ -166,7 +167,7 @@ public class Application extends APIController {
 		   String url1 = site + "/#/portal/confirm/" + encrypted;
 		   String url2 = site + "/#/portal/reject/" + encrypted;
 		   AccessLog.log("send welcome mail: "+user.email);	   
-	  	   MailUtils.sendTextMail(user.email, user.firstname+" "+user.lastname, "Welcome to MIDATA", welcome.render(site, url1, url2));
+	  	   Messager.sendTextMail(user.email, user.firstname+" "+user.lastname, "Welcome to MIDATA", welcome.render(site, url1, url2).toString());
 	   } else {
 		   user.emailStatus = EMailStatus.VALIDATED;
 		   User.set(user._id, "emailStatus", user.emailStatus);
@@ -184,7 +185,7 @@ public class Application extends APIController {
 		   String role = user.role.toString();
 		   
 		   AccessLog.log("send admin notification mail: "+user.email);	   
-	  	   MailUtils.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), user.firstname+" "+user.lastname, "New MIDATA User", adminnotify.render(site, email, role));
+	  	   Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), user.firstname+" "+user.lastname, "New MIDATA User", adminnotify.render(site, email, role).toString());
 	   }
 	}
 	
