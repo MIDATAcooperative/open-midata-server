@@ -38,6 +38,7 @@ angular.module('fhirObservation')
  				    var ageDate = new Date(ageDifMs); // miliseconds from epoch
  				    $scope.age = Math.abs(ageDate.getUTCFullYear() - 1970); 					
  					$scope.gender = patient.gender;
+ 					$scope.myid = patient.id;
  					
  					
  					$scope.loadRecords($scope.previews);
@@ -45,6 +46,21 @@ angular.module('fhirObservation')
  				 				 				
  			});
  			 						 	
+ 		};
+ 		
+ 		$scope.compare = function() {
+ 			midataServer.getRecords(midataServer.authToken, { "format" : "fhir/Patient", "owner" : "self" }, ["data"])
+			.then(function(result) {
+					var patient = result.data[0].data;
+					
+					var ageDifMs = Date.now() - new Date(patient.birthDate).getTime();
+				    var ageDate = new Date(ageDifMs); // miliseconds from epoch
+				    $scope.age = Math.abs(ageDate.getUTCFullYear() - 1970); 					
+					$scope.gender = patient.gender;
+					
+					
+					$scope.loadRecords($scope.previews);
+				});
  		};
  		
  		$scope.mergeConfigIntoPreviews = function(config,previews) {
@@ -91,33 +107,55 @@ angular.module('fhirObservation')
  			  var p = pmap[record.content]; 	
  			  
  			  if (p) {
- 			  p.display = p.display || data.getCodeableConcept(record.data.code);
- 			  
- 			  if (record.data.valueQuantity) {
- 				 p.count++;
- 				 if (record.data.effectiveDateTime) p.recs.push(record);
- 				 var date = new Date(record.data.effectiveDateTime);
- 				 var val = record.data.valueQuantity.value;
- 				 var unit = record.data.valueQuantity.unit; 				
- 				 if (!p.last.date || date > p.last.date) {
- 					 p.last = { value : val, unit : unit, date : date }; 					 
- 				 }
- 				 if (!p.best.value || val > p.best.value) {
- 					 p.best = { value : val, unit : unit, date : date };
- 				 }
- 				 if (val < p.worst.value) {
-					 p.worst = { value : val, unit : unit, date : date };
-				 }
- 				 p.avg.value += val;
- 				 p.avg.count += 1;
- 				  				  				
- 				 var tim = date.getTime() / (1000 * 60 * 60 * 24);
- 			     p.trend.sumX += tim;
- 			     p.trend.sumY += val;
- 			     p.trend.sumXY += tim * val;
- 				 p.trend.sumXSq += tim * tim;
- 				  				 				
- 			  }
+	 			  p.display = p.display || data.getCodeableConcept(record.data.code);
+	 			  
+	 			  if (record.owner !== $scope.myid) {
+	 				 if (!p.others) p.others = {};
+	 				 var px = p.others[record.owner];
+	 				 if (!px) px = p.others[record.owner] = { name : record.ownerName, last : {}, best : {}, worst:{ value:99999 }, avg:{ value:0, count:0 } };
+	 				 	 				 	 				 
+	 				 var date2 = new Date(record.data.effectiveDateTime);
+	 				 var val2 = record.data.valueQuantity.value;
+	 				 var unit2 = record.data.valueQuantity.unit; 				
+	 				 if (!px.last.date || date2 > px.last.date) {
+	 					 px.last = { value : val2, unit : unit2, date : date2 }; 					 
+	 				 }
+	 				 if (!px.best.value || val2 > px.best.value) {
+	 					 px.best = { value : val2, unit : unit2, date : date2 };
+	 				 }
+	 				 if (val2 < px.worst.value) {
+						 px.worst = { value : val2, unit : unit2, date : date2 };
+					 }
+	 				 px.avg.value += val2;
+	 				 px.avg.count += 1;
+	 				 
+	 				 
+	 				 
+	 			  } else if (record.data.valueQuantity) {
+	 				 p.count++;
+	 				 if (record.data.effectiveDateTime) p.recs.push(record);
+	 				 var date = new Date(record.data.effectiveDateTime);
+	 				 var val = record.data.valueQuantity.value;
+	 				 var unit = record.data.valueQuantity.unit; 				
+	 				 if (!p.last.date || date > p.last.date) {
+	 					 p.last = { value : val, unit : unit, date : date }; 					 
+	 				 }
+	 				 if (!p.best.value || val > p.best.value) {
+	 					 p.best = { value : val, unit : unit, date : date };
+	 				 }
+	 				 if (val < p.worst.value) {
+						 p.worst = { value : val, unit : unit, date : date };
+					 }
+	 				 p.avg.value += val;
+	 				 p.avg.count += 1;
+	 				  				  				
+	 				 var tim = date.getTime() / (1000 * 60 * 60 * 24);
+	 			     p.trend.sumX += tim;
+	 			     p.trend.sumY += val;
+	 			     p.trend.sumXY += tim * val;
+	 				 p.trend.sumXSq += tim * tim;
+	 				  				 				
+	 			  }
  			  } else {
  				 if (record.data.valueQuantity && record.data.effectiveDateTime) {
  				   var c = cmap[record.content];
@@ -197,6 +235,10 @@ angular.module('fhirObservation')
  		
  		$scope.addConsent = function(preview) { 			
  			midataPortal.openApp("page", "newconsent", { "share" : JSON.stringify({ "content" : [ preview.content ] }) });
+ 		};
+ 		
+ 		$scope.requestConsent = function(preview) { 			
+ 			midataPortal.openApp("page", "newrequest", { "share" : JSON.stringify({ "content" : [ preview.content ] }) });
  		};
  		
  		$scope.showChart = function(preview) {

@@ -586,6 +586,7 @@
     "choose_passcode" : "Choose a secure passcode",
     "who_is_owner" : "Who is sharing data?",
     "which_persons" : "With which persons(s) is data shared?",
+    "set_owner_btn" : "Select person that shares data",
     "add_yourself_btn" : "Add yourself",
     "add_person_btn" : "Add New Person",
     "add_usergroup_btn" : "Add New Team",
@@ -647,7 +648,8 @@
   },
   
   "revconsents" : {
-    "count" : "There are {{ count }} consents sharing data with you:"
+    "count" : "There are {{ count }} consents sharing data with you:",
+    "add_new_btn" : "Add Request for Consent"
   },
   
   "importrecords" : {

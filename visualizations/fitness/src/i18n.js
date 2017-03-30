@@ -9,6 +9,9 @@ var en = {
   
   "your_goal" : "Your personal goal:",
   "your_performance" : "Your performance:",
+  "data_from_friends" : "Shared with you:",
+  "nodata_from_friends" : "No recent data has been shared with you.",
+  "request_from_friend_btn" : "Request friend to share data",
   
   "star_best_entry" : "Your highest value has met your goal?",
   "star_worst_entry" : "Your lowest value has met your goal?",

@@ -462,14 +462,14 @@ public class Application extends APIController {
 		}
 		
 		Date endTrial = new Date(System.currentTimeMillis() - MAX_TRIAL_DURATION);
-		if (user.subroles.contains(SubUserRole.TRIALUSER) && user.registeredAt.before(endTrial)) {
+		if (user.status.equals(UserStatus.NEW) && user.subroles.contains(SubUserRole.TRIALUSER) && user.registeredAt.before(endTrial)) {
 			if (user.agbStatus.equals(ContractStatus.NEW)) {
 				Users.requestMembershipHelper(user._id);				
 			}
 						
 			user.status = UserStatus.TIMEOUT;
 		}
-		if (user.status.equals(UserStatus.NEW)&&  user.subroles.contains(SubUserRole.TRIALUSER) && !InstanceConfig.getInstance().getInstanceType().getTrialAccountsMayLogin()) {
+		if (user.status.equals(UserStatus.NEW) &&  user.subroles.contains(SubUserRole.TRIALUSER) && !InstanceConfig.getInstance().getInstanceType().getTrialAccountsMayLogin()) {
 			user.status = UserStatus.TIMEOUT;
 		}
 		

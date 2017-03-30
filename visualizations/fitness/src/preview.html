@@ -48,7 +48,7 @@
 		    		  <div class="col-xs-3">
 					    <div class="">
 					    <div translate="avg"></div>
-					    <div class="value" ng-style="checkGoal(entry.avg,entry.goal)">{{ (entry.avg.value / entry.count).toFixed(1) }} {{ entry.last.unit }}</div>
+					    <div class="value" ng-style="checkGoal(entry.avg,entry.goal)">{{ (entry.avg.value / entry.avg.count).toFixed(1) }} {{ entry.last.unit }}</div>
 					    <div class="small">&nbsp;</div>
 					    </div>
 					  </div>
@@ -78,8 +78,47 @@
 		                  <img class="round" style="width:100%;height:auto;padding:0px" ng-src="{{ 'images/'+entry.placeholder}}">
 		                </div>
 		              </div>
-		              <div class="col-xs-12" ng-show="entry.tab == 'compare'">
-		                <p style="font-size:30px">Sorry, Comparison with others not implemented yet.</p>
+		              <div class="col-xs-12" ng-show="entry.tab == 'compare'">		              
+		              <p ng-hide="entry.others" class="well" translate="nodata_from_friends"></p>
+		              <p ng-show="entry.others" translate="data_from_friends"></p>
+		              <table ng-show="entry.others" class="table table-striped table-condensed">
+		              <tr>
+		               <th>&nbsp;</th>
+		               <th class="small" translate="last"></th>
+		               <th class="small" translate="best"></th>
+		               <th class="small" translate="worst"></th>
+		               <th class="small" translate="avg"></th>
+		              </tr>  
+		              <tr ng-repeat="oentry in entry.others">
+		              <td>{{ oentry.name }}</td>					  
+					  <td>
+					    
+					    <div class="value" ng-style="checkGoal(oentry.last,entry.goal)">{{ oentry.last.value }} {{ oentry.last.unit }}</div>
+					    <div class="small">{{ oentry.last.date | date }}</div>
+					    </div>
+					  </td>
+		      		  <td>
+					    
+					    <div class="value" ng-style="checkGoal(oentry.best,entry.goal)">{{ oentry.best.value }} {{ oentry.best.unit }}</div>
+					    <div class="small">{{ oentry.best.date | date }}</div>
+					    </div>
+					  </td>
+			 		  <td>
+					    
+					    <div class="value" ng-style="checkGoal(oentry.worst,entry.goal)">{{ oentry.worst.value }} {{ oentry.worst.unit }}</div>
+					    <div class="small">{{ oentry.worst.date | date }}</div>
+					    </div>
+					  </td>
+		    		  <td>					    
+					    <div class="value" ng-style="checkGoal(oentry.avg,entry.goal)">{{ (oentry.avg.value / oentry.avg.count).toFixed(1) }} {{ oentry.last.unit }}</div>					    
+					  </td>
+		 		              						
+					</div>
+					</table>
+		                <button class="btn btn-block btn-default" ng-click="requestConsent(entry);" translate="request_from_friend_btn"></button>
+		                
+		                
+		                
 		              </div>
 		              <div class="col-xs-12" ng-show="entry.tab == 'goals'">
 		                

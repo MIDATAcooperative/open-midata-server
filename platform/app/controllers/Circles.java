@@ -525,7 +525,7 @@ public class Circles extends APIController {
 			RecordManager.instance.shareAPS(consent._id, consent.owner, consent.authorized);
 			if (consent.type.equals(ConsentType.CIRCLE) || consent.type.equals(ConsentType.HEALTHCARE)) autosharePatientRecord(consent);
 			Map<String, Object> query = Circles.getQueries(consent.owner, consent._id);
-			RecordManager.instance.applyQuery(executor, query, consent.owner, consent._id, true);	 
+			if (query!=null) RecordManager.instance.applyQuery(executor, query, consent.owner, consent._id, true);	 
 		} else {
 			Set<MidataId> auth = consent.authorized;
 			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }

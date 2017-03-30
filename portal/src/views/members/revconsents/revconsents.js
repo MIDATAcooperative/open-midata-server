@@ -10,6 +10,10 @@ angular.module('portal')
 		});
 	};
 			
+	$scope.addConsent = function() {
+		$state.go("^.newconsent", { request : true });
+	};
+	
 	$scope.editConsent = function(consent) {
 		$state.go("^.showconsent", { consentId : consent._id });
 	};

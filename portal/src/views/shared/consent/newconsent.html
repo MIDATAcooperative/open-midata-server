@@ -37,7 +37,7 @@
     </formrow>    
     
      <formrow myid="owner" label="newconsent.who_is_owner">
-		<div class="well well-sm" >		  	
+		<div ng-show="owner" class="well well-sm" >		  	
 		  <address>
 			<strong>{{ owner.firstname }} {{ owner.lastname }}</strong>
 			<span ng-show="owner.address1 || owner.city || owner.country"><br>{{ owner.address1 }}<br>
@@ -47,7 +47,8 @@
 			</span>
 			<span ng-show="owner.email"><span translate="common.user.email"></span>: {{ owner.email }}<br></span>
 		  </address>
-		</div>				
+		</div>	
+		<button ng-hide="owner" type="button" class="btn btn-default" ng-click="setOwner();" translate="newconsent.set_owner_btn"></button> 			
 	</formrow>
     
     
@@ -68,7 +69,7 @@
 		  <button type="button" ng-click="removePerson(usergroup)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>	
 		  {{ usergroup.name }}
 		</div>
-		<button type="button" class="btn btn-default" ng-show="consent.owner != userId" ng-click="addYourself();" translate="newconsent.add_yourself_btn"></button>
+		<button type="button" class="btn btn-default" ng-show="consent.owner != userId && consent.authorized.indexOf(userId)<0" ng-click="addYourself();" translate="newconsent.add_yourself_btn"></button>
 		<button type="button" class="btn btn-default" ng-click="addPeople();" translate="newconsent.add_person_btn"></button>
 		<button type="button" class="btn btn-default" ng-click="addUserGroup();" translate="newconsent.add_usergroup_btn"></button>
 	</formrow>

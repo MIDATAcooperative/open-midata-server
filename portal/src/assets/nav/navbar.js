@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('NavbarCtrl', ['$scope', '$state', '$translate', '$translatePartialLoader', 'server', 'session', 'ENV', 'spaces', function($scope, $state, $translate, $translatePartialLoader, server, session, ENV, spaces) {
+.controller('NavbarCtrl', ['$scope', '$state', '$translate', '$translatePartialLoader', 'server', 'session', 'ENV', 'spaces', 'circles', function($scope, $state, $translate, $translatePartialLoader, server, session, ENV, spaces, circles) {
 	
 	// init
 	$scope.user = { subroles:[] };	
@@ -12,6 +12,8 @@ angular.module('portal')
 	
 	
 	$scope.updateNav = function() {
+		$scope.circles = circles;
+		circles.unconfirmed = 0;
 		// get current user
 		session.currentUser.then(function(userId) {			
 			$scope.user = session.user;	
@@ -21,6 +23,11 @@ angular.module('portal')
 	    	.then(function(results) {
 	    		$scope.me_menu = results.data;
 	    	});
+			
+			circles.listConsents({ "status" : "UNCONFIRMED" }, ["status"])
+			.then(function(results) {
+				circles.unconfirmed = results.data.length;
+			});
 	    
 		});	
 	};

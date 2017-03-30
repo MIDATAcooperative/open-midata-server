@@ -28,6 +28,7 @@ angular.module('portal')
 	$scope.writeProtect = true;
 	views.reset();
 	
+	
 	$scope.init = function(userId) {
 		$scope.userId = userId;
 		
@@ -59,8 +60,10 @@ angular.module('portal')
 					});		
 				}
 				
-				users.getMembers({ "_id" : $scope.consent.owner }, [ "firstname", "lastname", "email", "role"])
-				.then(function(result) { console.log(result);$scope.owner = result.data[0]; });
+				if ($scope.consent.owner) {
+					users.getMembers({ "_id" : $scope.consent.owner }, [ "firstname", "lastname", "email", "role"])
+					.then(function(result) { console.log(result);$scope.owner = result.data[0]; });
+				}
 				
 				$scope.writeProtect = ($scope.consent.owner !== userId && $scope.consent.status !== "UNCONFIRMED") || $scope.consent.type === "STUDYPARTICIPATION" || $scope.consent.status === "EXPIRED" || $scope.consent.status === "REJECTED";
 				
@@ -81,7 +84,10 @@ angular.module('portal')
 			
 			if ($state.params.owner != null) {
 				$scope.consent.owner = $state.params.owner;				
-			} else $scope.consent.owner = userId;
+			} else if ($state.params.request) {
+				$scope.addYourself();
+				$scope.owner = null;
+			} else { $scope.consent.owner = userId; }
 			
 			if ($state.params.share != null) {
 				$scope.sharing = { query : JSON.parse($state.params.share) };
@@ -95,8 +101,10 @@ angular.module('portal')
 				$scope.updateSharingLabels();
 			}
 			
-			users.getMembers({ "_id" : $scope.consent.owner }, [ "firstname", "lastname", "city", "address1", "address2", "country"])
-			.then(function(result) { $scope.owner = result.data[0]; });
+			if ($scope.consent.owner) {				
+				users.getMembers({ "_id" : $scope.consent.owner }, [ "firstname", "lastname", "city", "address1", "address2", "country"])
+				.then(function(result) { $scope.owner = result.data[0]; });
+			}
 			
 			$scope.writeProtect = false;
 		}
@@ -168,8 +176,11 @@ angular.module('portal')
 		} else {
 			if ($scope.consent.entityType == "USERGROUP") {
 				  $scope.authteams.splice($scope.authteams.indexOf(person), 1);
+				  $scope.constent.authorized.splice($scope.consent.authorized.indexOf(person._id), 1);
 			} else {
 				  $scope.authpersons.splice($scope.authpersons.indexOf(person), 1);
+				  $scope.consent.authorized.splice($scope.consent.authorized.indexOf(person._id), 1);
+				  
 			}			
 		}
 	};
@@ -209,6 +220,19 @@ angular.module('portal')
 		}		
 	};
 	
+    var setOwnerPerson = function(person, isTeam) {	
+		
+		if (isTeam) return;			
+		if (person.length) person = person[0];
+			
+		$scope.owner = person;
+		$scope.consent.owner = person._id;								
+	};
+	
+	$scope.setOwner = function() {		
+		views.setView("addusers", { consent : $scope.consent, callback : setOwnerPerson });			
+	};
+	
 	$scope.addUserGroup = function() {		
 		views.setView("usergroupsearch", { callback : addPerson });					
 	};
@@ -220,6 +244,7 @@ angular.module('portal')
 	};
 	
 	$scope.deleteConsent = function() {
+		circles.unconfirmed = 0;
 		server.delete(jsRoutes.controllers.Circles["delete"]($scope.consent._id).url).
 		then(function() {
 			$state.go("^.circles");
@@ -227,10 +252,12 @@ angular.module('portal')
 	};
 	
 	$scope.rejectConsent = function() {
+		circles.unconfirmed = 0;
 		hc.reject($scope.consent._id).then(function() { $scope.init(); });
 	};
 	
 	$scope.confirmConsent = function() {
+		circles.unconfirmed = 0;
 		hc.confirm($scope.consent._id).then(function() { $scope.init(); });	
 	};
 	
@@ -246,7 +273,7 @@ angular.module('portal')
 		return $scope.consent.status == 'UNCONFIRMED';
 	};
 	
-	$scope.mayDelete = function() {
+	$scope.mayDelete = function() {		
 		if (! $scope.consent) return false;
 		if ($scope.consent.owner !== $scope.userId) return false;
 		return ($scope.consent.status == 'ACTIVE' || $scope.consent.status == 'REJECTED') && $scope.consent.type != 'STUDYPARTICIPATION';
