@@ -591,7 +591,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 	}
 	
 	protected String stringFromDateTime(DateTimeType date) {
-		
+		    if (date == null) return "";
 			return date.toHumanDisplay();
 		
 	}
