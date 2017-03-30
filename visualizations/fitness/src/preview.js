@@ -196,7 +196,7 @@ angular.module('fhirObservation')
  		};
  		
  		$scope.addConsent = function(preview) { 			
- 			midataPortal.openApp("page", "newconsent", { "content" : preview.content });
+ 			midataPortal.openApp("page", "newconsent", { "share" : JSON.stringify({ "content" : [ preview.content ] }) });
  		};
  		
  		$scope.showChart = function(preview) {

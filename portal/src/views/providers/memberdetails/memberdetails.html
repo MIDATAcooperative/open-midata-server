@@ -1,8 +1,5 @@
 
-<div ng-controller="MemberDetailsCtrl" ng-cloak> 
-    <div class="page-header"> 
-	<h1>Member Details</h1>
-	</div>
+<div ng-controller="MemberDetailsCtrl" ng-cloak>    
 	<div class="panel panel-primary">
 	<div class="panel-heading">{{ member.firstname }} {{ member.lastname }}</div>
 	<div class="panel-body">
@@ -17,8 +14,7 @@
 	{{ member.zip }} {{ member.city }}<br>
 	{{ member.country }}<br>
 	  <span ng-show="member.phone">Phone: {{ member.phone }}</span><br>
-	  <span ng-show="member.mobile">Mobile: {{ member.mobile }}</span><br>
-	  <span ng-show="member.ssn">SSN: {{ member.ssn }}</span><br>
+	  <span ng-show="member.mobile">Mobile: {{ member.mobile }}</span><br>	  
 	  <span ng-show="member.email">Email: {{ member.email }}</span><br>
     </address>
       <p>Pick consent:</p>
@@ -28,6 +24,7 @@
       </div><div class="col-sm-4">
       <button class="btn btn-default" ng-click="addData();" ng-hide="hideAdd">Share Data With Patient</button>
       <button class="btn btn-default" ng-click="addTask();" ng-hide="hideAdd || consent==null">Add Task</button>
+      <button class="btn btn-default" ui-sref="^.newconsent({ owner : member._id })" translate="provider_memberdetails.propose_consent"></button>
       </div>
       </div>
       </loader>

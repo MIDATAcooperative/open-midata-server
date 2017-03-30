@@ -55,8 +55,7 @@ public class FHIRServlet extends RestfulServer {
       List<IResourceProvider> resourceProviders = new ArrayList<IResourceProvider>();
       
       myProviders.put("Patient", new PatientResourceProvider());
-      myProviders.put("Observation",  new ObservationResourceProvider());   
-      //myProviders.put("MedicationOrder",  new MedicationOrderResourceProvider());
+      myProviders.put("Observation",  new ObservationResourceProvider());        
       myProviders.put("DocumentReference",  new DocumentReferenceProvider());
       myProviders.put("Goal",  new GoalResourceProvider());
       myProviders.put("Condition",  new ConditionResourceProvider());
@@ -70,6 +69,7 @@ public class FHIRServlet extends RestfulServer {
       myProviders.put("Group", new GroupResourceProvider());
       myProviders.put("Practitioner", new PractitionerResourceProvider());
       myProviders.put("Device", new DeviceResourceProvider());
+      myProviders.put("MedicationStatement", new MedicationStatementResourceProvider());
       
       resourceProviders.addAll(myProviders.values());
       setResourceProviders(resourceProviders);

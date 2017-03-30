@@ -3,6 +3,20 @@
 	<div class="panel panel-primary">
 		<div class="panel-heading" translate="consents.title"></div>
 		<div class="body">
+		  <form class="form">
+		    <div class="radio">
+		      <label>
+                <input type="radio" name="consenttype" value="option1" checked> <span translate="consents.where_owner"></span> 
+              </label>
+            </div>
+            <div class="radio">
+              <label class="radio-inline">
+                <input type="radio" name="consenttype" value="option2" ng-click="changeView()"> <span translate="consents.where_authorized"></span>
+              </label>
+            </div>
+          </form>
+		
+		
             <p translate="consents.description"></p>
             <loader busy="status.isBusy !== false">
 			<p translate="consents.count" translate-value-count="{{ consents.length }}"></p>

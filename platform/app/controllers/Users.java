@@ -175,7 +175,7 @@ public class Users extends APIController {
 		forbidSubUserRole(SubUserRole.APPUSER, SubUserRole.NONMEMBERUSER);
 		
 		Set<String> fields =  Sets.create("firstname", "lastname", "name");
-		Set<Member> result = Member.getAll(CMaps.map("email", query).map("searchable", true).map("status", User.NON_DELETED).map("role", UserRole.MEMBER), fields);
+		Set<Member> result = Member.getAll(CMaps.map("emailLC", query.toLowerCase()).map("searchable", true).map("status", User.NON_DELETED).map("role", UserRole.MEMBER), fields);
 		
 		for (Member member : result) {
 			member.name = member.firstname+" "+member.lastname;
@@ -200,21 +200,9 @@ public class Users extends APIController {
 		for (Circle circle : circles) {
 			contactIds.addAll(circle.authorized);
 		}
-		contacts = Member.getAll(CMaps.map("_id", contactIds),Sets.create("firstname","lastname","email"));
-	
-		Set<ObjectNode> jsonContacts = new HashSet<ObjectNode>();
-		for (Member contact : contacts) {
-			ObjectNode node = Json.newObject();
-			node.put("value", contact.firstname+" "+contact.lastname + " (" + contact.email + ")");
-			String[] split = (contact.firstname+" "+contact.lastname).split(" ");
-			String[] tokens = new String[split.length + 1];
-			System.arraycopy(split, 0, tokens, 0, split.length);
-			tokens[tokens.length - 1] = contact.email;
-			node.put("tokens", Json.toJson(tokens));
-			node.put("id", contact._id.toString());
-			jsonContacts.add(node);
-		}
-		return ok(Json.toJson(jsonContacts));
+		contacts = Member.getAll(CMaps.map("_id", contactIds).map("role", UserRole.MEMBER).map("status", User.NON_DELETED),Sets.create("firstname","lastname","email","role"));
+			
+		return ok(JsonOutput.toJson(contacts, "User", Sets.create("firstname","lastname","email","role")));
 	}
 
 	/**
