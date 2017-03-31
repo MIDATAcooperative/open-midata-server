@@ -241,7 +241,9 @@ public class MongoDatabase extends Database {
 			if (logQueries) AccessLog.logDB("secure update "+collection+ " "+model.to_db_id().toString());
 			DBObject query = new BasicDBObject();
 			query.put("_id", model.to_db_id());
-			query.put(timestampField, model.getClass().getField(timestampField).get(model));
+			
+			Object oldTimeStamp = model.getClass().getField(timestampField).get(model);
+			query.put(timestampField, oldTimeStamp);
 			
 			DBObject updateContent = new BasicDBObject();
 			for (String field : fields) {
@@ -252,9 +254,13 @@ public class MongoDatabase extends Database {
 			DBObject update = new BasicDBObject("$set", updateContent);
 		
 			DBObject result = getCollection(collection).findAndModify(query, update);
-			if (result == null) throw new LostUpdateException();
+			if (result == null) {
+				if (logQueries) AccessLog.log("failed secure update version: "+oldTimeStamp); 
+				throw new LostUpdateException();
+			}
 			
 			model.getClass().getField(timestampField).set(model, ts);
+			if (logQueries) AccessLog.log("secure updated: "+oldTimeStamp+" -> "+ts);
 											
 		} catch (MongoException e) {
 			throw new DatabaseException(e);
