@@ -15,6 +15,7 @@ import utils.exceptions.AppException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
 import utils.json.CustomObjectMapper;
+import utils.messaging.Messager;
 import utils.servlet.PlayHttpServletConfig;
 
 /**
@@ -69,6 +70,7 @@ public class Global extends GlobalSettings {
 		  throw new NullPointerException();
 		}
 		
+		Messager.init();
 		AutoRun.init();
 	}
 

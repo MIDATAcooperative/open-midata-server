@@ -60,6 +60,8 @@ angular.module('services')
 				$state.go("^.market", { tag : data.params.tag, context : "me" });
 		  } else if (data.app === "newconsent") {
 			  $state.go("^.newconsent", { share : data.params.share });
+		  } else if (data.app === "newrequest") {
+			  $state.go("^.newconsent", { share : data.params.share, request : true });
 		  } else {
 			  server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify({ "properties" : { "filename" : data.app }, "fields": ["_id", "type"] }))
 			  .then(function(result) {				

@@ -56,7 +56,7 @@
 		  {{ usergroup.name }}
 		</div>
 		<button type="button" class="btn btn-default" ng-show="mayChangeUsers()" ng-click="addPeople();" translate="editconsent.add_people_btn"></button>
-		<button type="button" class="btn btn-default" ng-show="mayChangeUsers" ng-click="addUserGroup();" translate="editconsent.add_usergroup_btn"></button>		
+		<button type="button" class="btn btn-default" ng-show="mayChangeUsers()" ng-click="addUserGroup();" translate="editconsent.add_usergroup_btn"></button>		
 	</formrow>
 	<formrow id="reshare" label="editconsent.reshare" ng-show="consent.type != 'EXTERNALSERVICE'">
 	  <div class="checkbox">
