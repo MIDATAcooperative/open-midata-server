@@ -13,6 +13,7 @@
     "search_type" : "Search",
     "contract_required" : "Contract needs to be sent",
     "contract_confirm_required" : "Signed contract needs to be confirmed",
+    "trialusers" : "Active Trial Users",
     "overview" : "Overview",
     "specific_user" : "Specific User",
     "role" : "Role",
@@ -26,12 +27,18 @@
     "midata_id" : "MIDATA-ID",
     "role" : "Role",
     "subroles" : "Sub-Role(s)",
+    "developer" : "Belongs to Developer:",
     "status" : "Status:",
+    "agb_status" : "AGB Status:",
     "contract_status" : "Contract Status:",
     "email_status" : "EMail Status:",
     "confirmation_code" : "Confirmation Code:",
     "registration_date" : "Registration Date:",
-    "last_login" : "Last login:"    
+    "confirmation_date" : "Confirmation Date:",
+    "last_login" : "Last login:",
+    "email_confirm_btn" : "Confirm email address",
+    "comment" : "Comment",
+    "add_comment_btn" : "Add Comment"    
   },
   
   "admin_news" : {
@@ -55,5 +62,10 @@
   
   "admin_registration" : {
     "sign_up" : "Register New Admin Account"
+  },
+  
+  "admin_plugins" : {
+    "title" : "Plugins",
+    "developer" : "Restrict by Developer"
   }
 }

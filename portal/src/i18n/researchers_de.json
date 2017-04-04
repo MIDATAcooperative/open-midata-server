@@ -1,305 +1,128 @@
 {
-
     "researcher_registration" : {
-
-        // TODO NEW: Research Sign up
-        "sign_up" : "Research Sign up",
-
-        // TODO NEW: Research Organization
-        "research_organization" : "Research Organization",
-
-        // TODO NEW: Name
+        "sign_up" : "Registrierung als Forscher",
+        "research_organization" : "Forschungseinrichtung",
         "name" : "Name",
-
-        // TODO NEW: Description
-        "description" : "Description",
-
-        // TODO NEW: Research User
-        "research_user" : "Research User"
+        "description" : "Beschreibung",
+        "research_user" : "Forschungsbenutzer"
     },
 
     "researcher_login" : {
-
-        // TODO NEW: Research Login
-        "title" : "Research Login"
+        "title" : "Login als Forscher"
     },
 
     "researcher_navbar" : {
-
-        // TODO NEW: Studies
-        "studies" : "Studies",
-
-        // TODO NEW: Workspace
+        "studies" : "Studien",
         "workspace" : "Workspace",
-
-        // TODO NEW: Data
-        "data" : "Data"
+        "data" : "Daten"
     },
 
     "createstudy" : {
-
-        // TODO NEW: Create new study
-        "title" : "Create new study",
-
-        // TODO NEW: Study name
-        "study_name" : "Study name",
-
-        // TODO NEW: Study description
-        "study_description" : "Study description"
+        "title" : "Neue Studie anlegen",
+        "study_name" : "Name der Studie",
+        "study_description" : "Beschreibung der Studie"
     },
 
     "studynav" : {
-
-        // TODO NEW: Overview
-        "overview" : "Overview",
-
-        // TODO NEW: Details
+        "overview" : "Übersicht",
         "details" : "Details",
-
-        // TODO NEW: Rules
-        "rules" : "Rules",
-
-        // TODO NEW: Actions
-        "actions" : "Actions",
-
-        // TODO NEW: Participants
-        "participants" : "Participants",
-
-        // TODO NEW: Records
-        "records" : "Records",
-
-        // TODO NEW: Results
-        "results" : "Results"
+        "rules" : "Regeln",
+        "actions" : "Aktionen",
+        "participants" : "Teilnehmer",
+        "records" : "Einträge",
+        "results" : "Ergebnisse"
     },
 
     "studies" : {
-
-        // TODO NEW: Studies
-        "title" : "Studies",
-
-        // TODO NEW: Name
+        "title" : "Studien",
         "name" : "Name",
-
-        // TODO NEW: Validation
-        "validation" : "Validation",
-
-        // TODO NEW: Participants
-        "participants" : "Participants",
-
-        // TODO NEW: Execution
-        "execution" : "Execution",
-
-        // TODO NEW: Created
-        "creation_date" : "Created",
-
-        // TODO NEW: No studies have been created yet for your organisation.
-        "empty" : "No studies have been created yet for your organisation.",
-
-        // TODO NEW: Create new study
-        "create_btn" : "Create new study"
+        "validation" : "Validierung",
+        "participants" : "Teilnehmer",
+        "execution" : "Durchführung",
+        "creation_date" : "Erstellt",
+        "empty" : "Für Ihre Organisation wurde bisher keine Studie angelegt.",
+        "create_btn" : "Neue Studie anlegen"
     },
 
     "studyactions" : {
-
-        // TODO NEW: When the study is running you can share data with participants and have them complete tasks. (Like fill out a form)
-        "description" : "When the study is running you can share data with participants and have them complete tasks. (Like fill out a form)",
-
-        // TODO NEW: Select Group
-        "select_group_btn" : "Select Group",
-
-        // TODO NEW: Add Task for Participants
-        "add_task_btn" : "Add Task for Participants"
+        "description" : "Wenn eine Studie läuft, können Sie Daten mit Teilnehmern teilen und Aufgaben stellen (z.B. ein Formular ausfüllen).",
+        "select_group_btn" : "Gruppe auswählen",
+        "add_task_btn" : "Aufgabe für Teilnehmer hinzufügen"
     },
 
     "studyfields" : {
-
-        // TODO NEW: Required data
-        "required_data" : "Required data",
-
-        // TODO NEW: This setup cannot be changed anymore after Study has been validated.
-        "no_change_warning" : "This setup cannot be changed anymore after Study has been validated.",
-
-        // TODO NEW: Member Identity
-        "member_identity" : "Member Identity",
-
-        // TODO NEW: Anonymous Participation
-        "anonymous1" : "Anonymous Participation",
-
-        // TODO NEW: , reveals anonymized ID, year of birth, gender and country
-        "anonymous2" : ", reveals anonymized ID, year of birth, gender and country",
-
-        // TODO NEW: Not Anonymous
-        "not_anonymous1" : "Not Anonymous",
-
-        // TODO NEW: , requests member to share full name, birthday and contact Information (address, phone, eMail)
-        "not_anonymous2" : ", requests member to share full name, birthday and contact Information (address, phone, eMail)",
-
-        // TODO NEW: Assistance
-        "assistance" : "Assistance",
-
-        // TODO NEW: None
-        "no_assistance1" : "None",
-
-        // TODO NEW:  - the MIDATA member participates alone.
-        "no_assistance2" : " - the MIDATA member participates alone.",
-
-        // TODO NEW: Health Professional
-        "assistance1" : "Health Professional",
-
-        // TODO NEW:  - the MIDATA member needs assistance of a health professional.
-        "assistance2" : " - the MIDATA member needs assistance of a health professional.",
-
-        // TODO NEW: Participant Groups
-        "groups" : "Participant Groups",
-
-        // TODO NEW: No groups of participants have been defined yet.
-        "groups_empty" : "No groups of participants have been defined yet.",
-
-        // TODO NEW: Group Name
-        "group_name" : "Group Name",
-
-        // TODO NEW: Description
-        "group_description" : "Description",
-
-        // TODO NEW: Add Group
-        "add_group_btn" : "Add Group",
-
-        // TODO NEW: Save Changes
-        "save_changes_btn" : "Save Changes"
+        "required_data" : "Erforderliche Daten",
+        "no_change_warning" : "Diese Konfiguration kann nicht mehr geändert werden, sobald die Studie validiert wurde.",
+        "member_identity" : "Identität des Mitglieds",
+        "anonymous1" : "Anonyme Teilnahme",
+        "anonymous2" : ", legt anonymisierte ID, Geburtsjahr, Geschlecht und Land offen",
+        "not_anonymous1" : "Nicht anonym",
+        "not_anonymous2" : ", bedingt, dass das Mitglied seinen vollständigen Name, Geburtsdatum und Kontaktinformationen (Adresse, Telefon, E-Mail) teilt",
+        "assistance" : "Unterstützung",
+        "no_assistance1" : "Keine",
+        "no_assistance2" : " - das MIDATA-Mitglied nimmt alleine teil.",
+        "assistance1" : "Gesundheitsfachperson",
+        "assistance2" : " - das MIDATA-Mitglied benötigt Unterstützung durch eine Gesundheitsfachperson.",
+        "groups" : "Teilnehmergruppen",
+        "groups_empty" : "Keine Teilnehmergruppen wurden bisher definiert.",
+        "group_name" : "Name der Gruppe",
+        "group_description" : "Beschreibung",
+        "add_group_btn" : "Gruppe hinzufügen",
+        "save_changes_btn" : "Änderungen speichern"
     },
 
     "studyoverview" : {
-
-        // TODO NEW: Name
         "name" : "Name",
-
-        // TODO NEW: Created At:
-        "created_at" : "Created At:",
-
-        // TODO NEW: Created By:
-        "created_by" : "Created By:",
-
-        // TODO NEW: Description
-        "description" : "Description",
-
-        // TODO NEW: Code
+        "created_at" : "Erstellt bei:",
+        "created_by" : "Erstellt durch:",
+        "description" : "Beschreibung",
         "code" : "Code",
-
-        // TODO NEW: Validation Status
-        "validation_status" : "Validation Status",
-
-        // TODO NEW: Participant Search Status
-        "participant_search_status" : "Participant Search Status",
-
-        // TODO NEW: Execution Status
-        "execution_status" : "Execution Status",
-
-        // TODO NEW: History
-        "history" : "History",
-
-        // TODO NEW: Event
-        "event" : "Event",
-
-        // TODO NEW: Who
-        "who" : "Who",
-
-        // TODO NEW: When
-        "when" : "When",
-
-        // TODO NEW: Comment
-        "comment" : "Comment",
-
-        // TODO NEW: Request Study Validation
-        "start_validation_btn" : "Request Study Validation",
-
-        // TODO NEW: Start to search for participants
-        "start_participant_search_btn" : "Start to search for participants",
-
-        // TODO NEW: End Participant Search
-        "end_participant_search_btn" : "End Participant Search",
-
-        // TODO NEW: Start Study Execution
-        "start_study_execution_btn" : "Start Study Execution",
-
-        // TODO NEW: Finish Study
-        "finish_study_btn" : "Finish Study",
-
-        // TODO NEW: Delete Study
-        "delete_study_btn" : "Delete Study"
+        "validation_status" : "Status der Validierung",
+        "participant_search_status" : "Status der Teilnehmersuche",
+        "execution_status" : "Status durch Durchführung",
+        "history" : "Historie",
+        "event" : "Ereignis",
+        "who" : "Wer",
+        "when" : "Wann",
+        "comment" : "Anmerkung",
+        "start_validation_btn" : "Validierung der Studie anfordern",
+        "start_participant_search_btn" : "Suche nach Teilnehmer starten",
+        "end_participant_search_btn" : "Suche nach Teilnehmer beenden",
+        "start_study_execution_btn" : "Durchführung der Studie starten",
+        "finish_study_btn" : "Studie beenden",
+        "delete_study_btn" : "Studie löschen"
     },
 
     "studyparticipant" : {
-
-        // TODO NEW: Participant:
-        "participant" : "Participant:",
-
-        // TODO NEW: Gender:
-        "gender" : "Gender:",
-
-        // TODO NEW: Year of Birth:
-        "year" : "Year of Birth:",
-
-        // TODO NEW: Country:
-        "country" : "Country:",
-
-        // TODO NEW: Status:
+        "participant" : "Teilnehmer:",
+        "gender" : "Geschlecht:",
+        "year" : "Geburtsjahr:",
+        "country" : "Land:",
         "status" : "Status:",
-
-        // TODO NEW: Group:
-        "group" : "Group:",
-
-        // TODO NEW: Participation History
-        "history" : "Participation History"
+        "group" : "Gruppe:",
+        "history" : "Historie der Teilnahme"
     },
 
     "studyparticipants" : {
-
-        // TODO NEW: Name
         "name" : "Name",
-
-        // TODO NEW: Group
-        "group" : "Group",
-
-        // TODO NEW: Status
+        "group" : "Gruppe",
         "status" : "Status",
-
-        // TODO NEW: Recruiter
-        "recruiter" : "Recruiter",
-
-        // TODO NEW: Accept
-        "accept_btn" : "Accept",
-
-        // TODO NEW: Reject
-        "reject_btn" : "Reject",
-
-        // TODO NEW: This study does not have any participants yet.
-        "empty" : "This study does not have any participants yet."
+        "recruiter" : "Anwerber",
+        "accept_btn" : "Annehmen",
+        "reject_btn" : "Verwerfen",
+        "empty" : "Diese Studie hat noch keine Teilnehmer."
     },
 
     "studyrecords" : {
-
-        // TODO NEW: Once data is available it can be downloaded here.
-        "empty" : "Once data is available it can be downloaded here.",
-
-        // TODO NEW: Data Group
-        "group" : "Data Group",
-
-        // TODO NEW: # Records
-        "number_of_records" : "# Records",
-
-        // TODO NEW: Download
-        "download_btn" : "Download"
+        "empty" : "Sobald Daten verfügbar sind, können diese hier heruntergeladen werden.",
+        "group" : "Datengruppe",
+        "number_of_records" : "# Einträge",
+        "download_btn" : "Herunterladen"
     },
 
     "studyrules" : {
-
-        // TODO NEW: Study Rules
-        "title" : "Study Rules",
-
-        // TODO NEW: This setup cannot be changed anymore after Study has been validated.
-        "no_change_warning" : "This setup cannot be changed anymore after Study has been validated.",
-
-        // TODO NEW: Sharing Query (JSON)
+        "title" : "Regel der Studie",
+        "no_change_warning" : "Diese Konfiguration kann nicht mehr geändert werden, sobald die Studie validiert wurde.",
         "sharing_query" : "Sharing Query (JSON)"
     }
 }
