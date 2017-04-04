@@ -1,6 +1,4 @@
 {
-
-
     "footer" : {
 
         // TODO NEW: (c) 2015-2016 ETH Zürich
@@ -105,10 +103,10 @@
             "account" : "You are not authorized to access this account",
 
             // TODO NEW: You are not authorized to access this study.
-            "study" : "You are not authorized to access this study.",
+            "study" : "You are not authorized to access this study",
 
             // TODO NEW: This is not your plugin.
-            "not_plugin_owner" : "This is not your plugin."
+            "not_plugin_owner" : "This is not your pluginƒ"
         },
 
 
@@ -1592,8 +1590,8 @@
         // TODO NEW: Delete this space
         "delete_btn" : "Delete this space",
 
-        // TODO NEW: Used records..
-        "used_btn" : "Used records..",
+        // TODO NEW: Used records...
+        "used_btn" : "Used records...",
 
         // TODO NEW: Share...
         "share_btn" : "Share...",

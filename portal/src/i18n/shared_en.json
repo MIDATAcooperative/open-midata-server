@@ -1,5 +1,4 @@
 {
-
    "footer" : {
      "copyright" : "(c) 2015-2016 ETH Zürich",
      "portals" : "Midata Portals:",
@@ -20,7 +19,7 @@
 	  "my_data" : "My Data",				
 	  "consents" : "Sharing",
 	  "research" : "News",
-	  "config" : "Config",
+	  "config" : "Configuration",
 	  "help" : "Help"
    },
       
@@ -35,13 +34,13 @@
      "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
      "mustbemember_title" : "Midata cooperative membership required!",
      "mustbemember_detail" : "In order to use this feature you must be member of the midata cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
-     
+
      "notauthorized" : {
        "action" : "You are not authorized to do this action",
        "fields" : "You are not authorized to query provided fields",
        "account" : "You are not authorized to access this account",
-       "study" : "You are not authorized to access this study.",
-       "not_plugin_owner" : "This is not your plugin."      
+       "study" : "You are not authorized to access this study",
+       "not_plugin_owner" : "This is not your plugin"
      },
           
      
@@ -509,7 +508,7 @@
     "organization" : "Organization",
     "providers_monitoring" : "Healthcare Providers monitoring the study",
     "no_providers" : "None",
-    "provider_remove_btn" : "remove",
+    "provider_remove_btn" : "Remove",
     "provider_add_btn" : "Add",
     "information_that_needs_sharing" : "Information that must be shared for participation",
     "information_restricted" : "Your gender, year of birth and country",
@@ -648,7 +647,7 @@
   "spaces" : {
     "title" : "MIDATA Plugin",
     "delete_btn" : "Delete this space",
-    "used_btn" : "Used records..",
+    "used_btn" : "Used records...",
     "share_btn" : "Share...",
     "finish_comparing_btn" : "Finished comparing",
     "compare_btn" : "Compare"
@@ -733,7 +732,7 @@
     "entercode" : "Join by participation code",
 	"records_shared" : "Records shared with this consent:",
 	"addusers" : "Add Users to Consent",
-	"shared_with_study" : "Shared Records:",
+	"shared_with_study" : "Shared records:",
 	"patient_records" : "Records of this patient:",
 	"addtask" : "Add Task",
 	"group_records" : "Records of this group:",

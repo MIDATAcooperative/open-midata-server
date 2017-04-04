@@ -1,9 +1,6 @@
 {
-
     "member_login" : {
-
-        // TODO NEW: MY DATA - OUR HEALTH!
-        "teaser" : "MY DATA - OUR HEALTH!",
+        "teaser" : "MEINE DATEN - UNSERE GESUNDHEIT!",
         "register_now" : "Jetzt registrieren",
         "sign_in" : "Anmelden"
     },
@@ -20,51 +17,29 @@
     "help_welcome" : {
         "menu" : "Das oben stehende Menü enthält folgende Verknüpfungen:",
         "menu_me" : "Mich",
-        "menu_me_text" : "Ihr persönliches Cockpit wo Sie Ihre Favoriten platzieren können.",
+        "menu_me_text" : "Ihr persönliches Dashboard wo Sie Ihre Favoriten platzieren können.",
         "menu_overview" : "Übersicht",
         "menu_overview_text" : "Eine Übersicht über alle Funktionen, die die MIDATA-Plattform anbietet.",
-
-        // TODO NEW: Config
-        "menu_config" : "Config",
-
-        // TODO NEW: Configure your dashboard and data imports.
-        "menu_config_text" : "Configure your dashboard and data imports.",
-
-        // TODO NEW: News
+        "menu_config" : "Konfiguration",
+        "menu_config_text" : "Konfigurieren Sie Ihr Dashboard und die Datenimports.",
         "menu_research" : "News",
-
-        // TODO NEW: News and announcements about MIDATA, the platform and research projects
-        "menu_research_text" : "News and announcements about MIDATA, the platform and research projects",
+        "menu_research_text" : "Neuigkeiten und Ankündigungen über MIDATA, die Plattform und Forschungsprojekte",
         "menu_consents" : "Zustimmungen",
-
-        // TODO NEW: Manage data sharing with others.
-        "menu_consents_text" : "Manage data sharing with others.",
-        "answer_questions" : "Zum Starten empfehlen wir Ihnen an einigen Fragen zu antworten. Ihr Konto wird an Hand Ihren Antworten vorkonfiguriert.",
-
-        // TODO NEW: Thank you for answering the setup questions! You sould visit your dashboard now or change your answers if you need to.
-        "answered_questions" : "Thank you for answering the setup questions! You sould visit your dashboard now or change your answers if you need to.",
+        "menu_consents_text" : "Verwaltung der mit anderen Benutzern geteilten Daten.",
+        "answer_questions" : "Zum Starten empfehlen wir Ihnen einige Fragen zu beantworten. Ihr Konto wird an Hand Ihren Antworten vorkonfiguriert.",
+        "answered_questions" : "Danke, dass Sie die Konfigurationsfragen beantwortet haben! Sie können nun Ihr Dashboard betrachten oder die Konfiguration ggf. nochmals durchführen.",
         "answer_btn" : "Konfigurationsfragen jetzt beantworten",
-
-        // TODO NEW: Visit 'me' page
-        "dashboard_btn" : "Visit 'me' page",
-
-        // TODO NEW: Change Answers to Setup Questions
-        "answer_again_btn" : "Change Answers to Setup Questions"
+        "dashboard_btn" : "Zur Seite 'Mich' wechseln",
+        "answer_again_btn" : "Konfigurationsfragen nochmals beantworten"
     },
 
     "help_setup" : {
         "description" : "Die Antworten zu diesen Fragen dienen nur um Ihr Konto nach Ihren Bedürfnissen zu konfigurieren.",
-
-        // TODO NEW: Which measures do you want to view in the portal?
-        "question_measures" : "Which measures do you want to view in the portal?",
-
+        "question_measures" : "Welche Messungen wollen Sie im Portal einblenden?",
         "question_devices" : "Benutzen Sie eines dieser Produkte?",
         "question_devices_answer1" : "Fitbit",
         "question_devices_answer2" : "Jawbone",
-
-
-        // TODO NEW: You can always come back and change these settings by visiting the "Help" page.
-        "come_back" : "You can always come back and change these settings by visiting the \"Help\" page.",
+        "come_back" : "Sie können immer wieder Ihre Einstellungen über die Seite \"Hilfe\" ändern.",
         "done_btn" : "Fertig"
     },
 
@@ -109,47 +84,19 @@
     },
 
     "member_user" : {
-
-        // TODO NEW: Account Status
-        "account_status" : "Account Status",
-
-        // TODO NEW: Your account is currently a trial account with limited functionality.
-        "trialuser" : "Your account is currently a trial account with limited functionality.",
-
-        // TODO NEW: Your account has been set up for participation in a study. Functionality is limited. You may upgrade your user account to a full account.
-        "studyparticipant" : "Your account has been set up for participation in a study. Functionality is limited. You may upgrade your user account to a full account.",
-
-        // TODO NEW: Your account has been registered by an external application. Functionality is limited. You may upgrade your user account to a full account.
-        "appuser" : "Your account has been registered by an external application. Functionality is limited. You may upgrade your user account to a full account.",
-
-        // TODO NEW: You are a member of the MIDATA cooperative.
-        "memberofcooperative" : "You are a member of the MIDATA cooperative.",
-
-        // TODO NEW: You have a full user account but you are no member of the MIDATA cooperative.
-        "nonmemberuser" : "You have a full user account but you are no member of the MIDATA cooperative.",
-
-        // TODO NEW: By clicking on the 'Request Contract' button the contract and AGB will be sent to you by letter. Please return the signed AGB to convert this trial account into a full account.
-        "agb_not_requested" : "By clicking on the 'Request Contract' button the contract and AGB will be sent to you by letter. Please return the signed AGB to convert this trial account into a full account.",
-
-        // TODO NEW: The AGB and contract have been requested by you. Your request has not been processed by the MIDATA office yet.
-        "agb_requested" : "The AGB and contract have been requested by you. Your request has not been processed by the MIDATA office yet.",
-
-        // TODO NEW: The AGB and contract have been requested by you and should arrive during the next days.
-        "agb_printed" : "The AGB and contract have been requested by you and should arrive during the next days.",
-
-        // TODO NEW: You have signed the AGB.
-        "agb_signed" : "You have signed the AGB.",
-
-        // TODO NEW: Your postal address has been confirmed.
-        "confirmed" : "Your postal address has been confirmed.",
-
-        // TODO NEW: The letter sent to you contains a registration code. Please enter your code here once you have received it:
-        "entercode" : "The letter sent to you contains a registration code. Please enter your code here once you have received it:",
-
-        // TODO NEW: Your eMail address has not been validated yet. Please click on the link of the validation email you received in your email account!
-        "email_unvalidated" : "Your eMail address has not been validated yet. Please click on the link of the validation email you received in your email account!",
-
-        // TODO NEW: Request Contract
-        "request_membership_btn" : "Request Contract"
+        "account_status" : "Status Account",
+        "trialuser" : "Ihr Account ist zur Zeit ein Testaccount mit begrenzter Funktionalität.",
+        "studyparticipant" : "Ihr Account wurde eingerichtet um an eine Studie teilzunehmen. Die Funktionalität ist begrenzt. Sie können Ihr Account zu einem vollwertigen Account aufwerten.",
+        "appuser" : "Ihr Account wurde durch eine externe Applikation eingerichtet. Die Funktionalität ist begrenzt. Sie können Ihr Account zu einem vollwertigen Account aufwerten.",
+        "memberofcooperative" : "Sie sind Mitglied der MIDATA Genossenschaft.",
+        "nonmemberuser" : "Sie besitzen ein vollwertiges Account sind aber nicht Mitglied der MIDATA Genossenschaft.",
+        "agb_not_requested" : "Durch Klicken auf dem Button 'Vertrag anfordern' werden Ihnen einen Vertrag und die AGB nach Hause geschickt. Schicken Sie bitte die unterzeichneten AGB zurück um Ihr Probe-Account zu einem vollwertigen Account aufzuwerten.",
+        "agb_requested" : "Sie haben die AGB und den Vertrag angefordert. Ihre Anfrage wird durch die MIDATA Anmeldestelle verarbeitet.",
+        "agb_printed" : "Die von Ihnen angeforderten AGB und Vertrag sollten in den nächsten Tagen eintreffen.",
+        "agb_signed" : "Sie haben die AGB unterzeichnet.",
+        "confirmed" : "Ihr Postadresse wurde bestätigt.",
+        "entercode" : "Sie sollten einen Brief mit einem Registrierungscode erhalten haben. Geben Sie bitte den Code hier ein, sobald Sie ihn erhalten haben:",
+        "email_unvalidated" : "Ihre E-Mail-Adresse wurde bisher noch nicht bestätigt. Klicken Sie bitten auf dem Link den Sie in der Bestätigungs-E-Mail erhalten haben!",
+        "request_membership_btn" : "Vertrag anfordern"
     }
 }

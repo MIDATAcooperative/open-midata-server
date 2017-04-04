@@ -1,5 +1,4 @@
 {
-
     "developer_registration" : {
 
         // TODO NEW: To avoid longer waiting time until your account is validated please fill out contact person and purpose of registration carefully such that an administrator may decide quickly about your access request.
@@ -95,6 +94,18 @@
 
             // TODO NEW: Choose 'me' for the default dashboard. Choose 'config' if you write an import plugin.
             "defaultSpaceContext" : "Choose 'me' for the default dashboard. Choose 'config' if you write an import plugin.",
+
+            // TODO NEW
+            "defaultQuery_mobile" : "Query restricting the access of the app to the database. Access must be restricted by 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
+
+            // TODO NEW
+            "defaultQuery" : "Query restricting the access of the plugin to the database. Access must be restricted by at least one of 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
+
+            // TODO NEW
+            "defaultQuery_extra" : "Look for valid values for 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { \"group\" : \"all\", \"group-system\" : \"v1\" }. Please refine query before plugin or app goes in production.",
+
+            // TODO NEW
+            "secret" : "Your app will need this 'secret' during login. Choose whatever you like."
         },
     },
 }

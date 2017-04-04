@@ -1,9 +1,6 @@
 {
-
     "member_login" : {
-
-        // TODO NEW: MY DATA - OUR HEALTH!
-        "teaser" : "MY DATA - OUR HEALTH!",
+        "teaser" : "MES DONNÉES - NOTRE SANTÉ !",
         "register_now" : "S'inscrire maintenant",
         "sign_in" : "Connexion"
     },
@@ -23,43 +20,25 @@
         "menu_me_text" : "Votre tableau de bord personnel où vous pouvez placer vos favoris.",
         "menu_overview" : "Vue d'ensemble",
         "menu_overview_text" : "Une vue d'ensemble de toutes les fonctionnalités proposées par la plateforme MIDATA.",
-
-        // TODO NEW: Config
-        "menu_config" : "Config",
-
-        // TODO NEW: Configure your dashboard and data imports.
-        "menu_config_text" : "Configure your dashboard and data imports.",
-
-        // TODO NEW: News
+        "menu_config" : "Configuration",
+        "menu_config_text" : "Configurez votre tableau de bord et l'importation de données.",
         "menu_research" : "News",
-
-        // TODO NEW: News and announcements about MIDATA, the platform and research projects
-        "menu_research_text" : "News and announcements about MIDATA, the platform and research projects",
+        "menu_research_text" : "Nouveautés et announces à propos de MIDATA, de la plateforme et de projets de recherche",
         "menu_consents" : "Consentements",
         "menu_consents_text" : "Gérez les données que vous partagez avec d'autres utilisateurs.",
         "answer_questions" : "Pour commencer, nous vous recommandons de répondre à quelques questions. Votre compte sera préconfiguré d'après vos réponses.",
-
-        // TODO NEW: Thank you for answering the setup questions! You sould visit your dashboard now or change your answers if you need to.
-        "answered_questions" : "Thank you for answering the setup questions! You sould visit your dashboard now or change your answers if you need to.",
-        "answer_btn" : "Répondez aux questions de configuration maintenant",
-
-        // TODO NEW: Visit 'me' page
-        "dashboard_btn" : "Visit 'me' page",
-
-        // TODO NEW: Change Answers to Setup Questions
-        "answer_again_btn" : "Change Answers to Setup Questions"
+        "answered_questions" : "Merci d'avoir répondu aux questions de configuration! Vous pouvez maintenant consulter votre tableau de bord et le reconfigurer le cas échéant.",
+        "answer_btn" : "Répondre aux questions de configuration maintenant",
+        "dashboard_btn" : "Aller à la page 'Moi'",
+        "answer_again_btn" : "Répéter les questions de configuration"
     },
 
     "help_setup" : {
-        "description" : "Les réponses aux questions suivantes ne sont utilisées que pour configurer votre compte selon vos besoins.",
-
-        // TODO NEW: Which measures do you want to view in the portal?
-        "question_measures" : "Which measures do you want to view in the portal?",
-
+        "description" : "Les réponses aux questions suivantes sont utilisées uniquement pour configurer votre compte selon vos besoins.",
+        "question_measures" : "Quelles données voulez-vous afficher sur votre portail ?",
         "question_devices" : "Utilisez-vous l'un de ces produits ?",
         "question_devices_answer1" : "Fitbit",
         "question_devices_answer2" : "Jawbone",
-
         "come_back" : "Vous pouvez modifier votre configuration en tout temps en consultant la page \"Aide\".",
         "done_btn" : "Terminé"
     },
@@ -105,47 +84,19 @@
     },
 
     "member_user" : {
-
-        // TODO NEW: Account Status
-        "account_status" : "Account Status",
-
-        // TODO NEW: Your account is currently a trial account with limited functionality.
-        "trialuser" : "Your account is currently a trial account with limited functionality.",
-
-        // TODO NEW: Your account has been set up for participation in a study. Functionality is limited. You may upgrade your user account to a full account.
-        "studyparticipant" : "Your account has been set up for participation in a study. Functionality is limited. You may upgrade your user account to a full account.",
-
-        // TODO NEW: Your account has been registered by an external application. Functionality is limited. You may upgrade your user account to a full account.
-        "appuser" : "Your account has been registered by an external application. Functionality is limited. You may upgrade your user account to a full account.",
-
-        // TODO NEW: You are a member of the MIDATA cooperative.
-        "memberofcooperative" : "You are a member of the MIDATA cooperative.",
-
-        // TODO NEW: You have a full user account but you are no member of the MIDATA cooperative.
-        "nonmemberuser" : "You have a full user account but you are no member of the MIDATA cooperative.",
-
-        // TODO NEW: By clicking on the 'Request Contract' button the contract and AGB will be sent to you by letter. Please return the signed AGB to convert this trial account into a full account.
-        "agb_not_requested" : "By clicking on the 'Request Contract' button the contract and AGB will be sent to you by letter. Please return the signed AGB to convert this trial account into a full account.",
-
-        // TODO NEW: The AGB and contract have been requested by you. Your request has not been processed by the MIDATA office yet.
-        "agb_requested" : "The AGB and contract have been requested by you. Your request has not been processed by the MIDATA office yet.",
-
-        // TODO NEW: The AGB and contract have been requested by you and should arrive during the next days.
-        "agb_printed" : "The AGB and contract have been requested by you and should arrive during the next days.",
-
-        // TODO NEW: You have signed the AGB.
-        "agb_signed" : "You have signed the AGB.",
-
-        // TODO NEW: Your postal address has been confirmed.
-        "confirmed" : "Your postal address has been confirmed.",
-
-        // TODO NEW: The letter sent to you contains a registration code. Please enter your code here once you have received it:
-        "entercode" : "The letter sent to you contains a registration code. Please enter your code here once you have received it:",
-
-        // TODO NEW: Your eMail address has not been validated yet. Please click on the link of the validation email you received in your email account!
-        "email_unvalidated" : "Your eMail address has not been validated yet. Please click on the link of the validation email you received in your email account!",
-
-        // TODO NEW: Request Contract
-        "request_membership_btn" : "Request Contract"
+        "account_status" : "État du compte",
+        "trialuser" : "Vous possédez actuellement un compte de test à fonctionnalité limitée.",
+        "studyparticipant" : "Votre compte a été créé pour participer à une étude. Sa fonctionnalité est limitée. Vous pouvez le faire évoluer vers un compte à part entière.",
+        "appuser" : "Votre compte a été créé par une application externe. Sa fonctionnalité est limitée. Vous pouvez le faire évoluer vers un compte à part entière.",
+        "memberofcooperative" : "Vous êtes membre de la coopérative MIDATA.",
+        "nonmemberuser" : "Vous possédez un compte à part entière mais vous n'êtes pas membre de la coopérative MIDATA.",
+        "agb_not_requested" : "En cliquant sur 'Demander un contrat', un contrat ainsi que les CGU vous seront envoyés par la poste. Veuillez renvoyer les CGU signées pour faire évoluer votre compte de test vers un compte à part entière.",
+        "agb_requested" : "Vous avez fait une demande pour les CGU et un contrat. Votre demande est en cours de traitement à la centrale des inscriptions de MIDATA.",
+        "agb_printed" : "Les CGU et le contrat que vous avez demandés devraient vous être livrés dans les prochains jours.",
+        "agb_signed" : "Vous avez signé les CGU.",
+        "confirmed" : "Votre adresse postale a été confirmée.",
+        "entercode" : "Une lettre contenant un code d'enregistrement vous a été envoyée. Veuillez saisir le code ici dès que vous l'avez reçu :",
+        "email_unvalidated" : "Votre adresse eMail n'a pas encore été validée. Veuillez cliquer sur le lien que vous avez reçu dans l'eMail de confirmation !",
+        "request_membership_btn" : "Demander un contrat"
     }
 }

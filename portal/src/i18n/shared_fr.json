@@ -1,23 +1,16 @@
 {
-
-
     "footer" : {
         "copyright" : "(c) 2015-2016 ETH Zürich",
         "portals" : "Portails MIDATA:",
-
-        // TODO CHANGED
-        // OLD: For Members of the Cooperative
-        // NEW: For Account Holders
-        "for_members" : "Pour les membres de la coopérative",
+        "for_members" : "Pour les possesseurs de compte",
         "for_researchers" : "Pour les organismes de recherche",
         "for_providers" : "Pour les professionnels de la santé",
         "for_developers" : "Pour les développeurs"
     },
 
     "navbar" : {
-
-        // TODO NEW: Toggle navigation
-        "toggle_navigation" : "Toggle navigation",
+        // TODO
+        "toggle_navigation" : "Navigation ",
         "login" : "Connexion",
         "sign_up" : "Inscription",
         "sign_out" : "Déconnexion",
@@ -25,19 +18,9 @@
         "overview" : "Vue d'ensemble",
         "messages" : "Messages",
         "my_data" : "Mes données",
-
-        // TODO CHANGED
-        // OLD: Consents
-        // NEW: Sharing
-        "consents" : "Consentements",
-
-        // TODO CHANGED
-        // OLD: Research
-        // NEW: News
-        "research" : "Recherche",
-
-        // TODO NEW: Config
-        "config" : "Config",
+        "consents" : "Partage",
+        "research" : "News",
+        "config" : "Configuration",
         "help" : "Aide"
     },
 
@@ -83,10 +66,10 @@
             "account" : "You are not authorized to access this account",
 
             // TODO NEW: You are not authorized to access this study.
-            "study" : "You are not authorized to access this study.",
+            "study" : "You are not authorized to access this study",
 
             // TODO NEW: This is not your plugin.
-            "not_plugin_owner" : "This is not your plugin."
+            "not_plugin_owner" : "This is not your plugin"
         },
 
 
@@ -1519,7 +1502,7 @@
         "delete_btn" : "Supprimer cet espace",
 
         // TODO NEW: Used records..
-        "used_btn" : "Used records..",
+        "used_btn" : "Used records...",
         "share_btn" : "Partager...",
         "finish_comparing_btn" : "Comparaison terminée",
         "compare_btn" : "Comparer"

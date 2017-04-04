@@ -1,100 +1,51 @@
 {
-
     "developer_registration" : {
-
-        // TODO NEW: To avoid longer waiting time until your account is validated please fill out contact person and purpose of registration carefully such that an administrator may decide quickly about your access request.
-        "reason_fillout" : "To avoid longer waiting time until your account is validated please fill out contact person and purpose of registration carefully such that an administrator may decide quickly about your access request.",
-
-        // TODO NEW: Developer Sign Up
-        "sign_up_btn" : "Developer Sign Up"
+        "reason_fillout" : "Um die Wartezeit bis zur Freigabe des Accounts zu reduzieren, geben Sie bitte die Kontaktperson und der Zweck der Registrierung sorgfältig ein, damit ein Administrator ihr Anfrage rasch bearbeiten kann.",
+        "sign_up_btn" : "Entwickler registrieren"
     },
 
     "developer_login" : {
-
-        // TODO NEW: Developer Login
-        "title" : "Developer Login"
+        "title" : "Login als Entwickler"
     },
 
     "developer_navbar" : {
-
-        // TODO NEW: Your Plugins
-        "yourapps" : "Your Plugins",
-
-        // TODO NEW: Sandbox
+        "yourapps" : "Ihre Plugins",
         "sandbox" : "Sandbox",
-
-        // TODO NEW: Test Records
-        "records" : "Test Records",
-
-        // TODO NEW: Test User
-        "testusers" : "Test User"
+        "records" : "Testeinträge"
+        "testusers" : "Testbenutzer"
     },
 
     "developer_testusers" : {
-
-        // TODO NEW: Test Users
-        "title" : "Test Users",
-
-        // TODO NEW: There are no test users registered for this account.
-        "empty" : "There are no test users registered for this account.",
-
-        // TODO NEW: Role
-        "role" : "Role",
-
-        // TODO NEW: New Password
-        "resetpw" : "New Password",
-
-        // TODO NEW: Using these buttons you can register additional users for testing your plugins. These users will use plugins developed by you from 'localhost' instead from the server.
-        "description" : "Using these buttons you can register additional users for testing your plugins. These users will use plugins developed by you from 'localhost' instead from the server.",
-
-        // TODO NEW: Register Account Holder
-        "register_member_btn" : "Register Account Holder",
-
-        // TODO NEW: Register Health Provider
-        "register_hp_btn" : "Register Health Provider",
-
-        // TODO NEW: Register Researcher
-        "register_researcher_btn" : "Register Researcher"
+        "title" : "Testbenutzer",
+        "empty" : "Für diesen Account sind keine Testbenutzer registriert.",
+        "role" : "Rolle",
+        "resetpw" : "Neues Kennwort",
+        "description" : "Mit diesen Buttons können Sie weitere Benutzer für das Testen Ihrer Plugins registrieren. Bei den Testbenutzern werden die Plugins lokal ausgeführt (aus 'localhost') und nicht auf dem Server.",
+        "register_member_btn" : "Kontoinhaber registrieren",
+        "register_hp_btn" : "Gesundheitsfachperson registrieren",
+        "register_researcher_btn" : "Forscher registrieren"
     },
 
     "developer_yourapps" : {
-
-        // TODO NEW: Your Plugins
-        "title" : "Your Plugins"
+        "title" : "Ihre Plugins"
     },
 
     "manageapp" : {
         "info" : {
-
-            // TODO NEW: This name is internally used to identify your app. Should be a valid identifier.
-            "filename" : "This name is internally used to identify your app. Should be a valid identifier.",
-
-            // TODO NEW: Is your app for a specific role only? Otherwise choose 'Any Role'.
-            "targetUserRole" : "Is your app for a specific role only? Otherwise choose 'Any Role'.",
-
-            // TODO NEW: Choose 'Plugin' if your app will run as MIDATA portal plugin. Choose 'Mobile App' for an external application. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.
-            "type" : "Choose 'Plugin' if your app will run as MIDATA portal plugin. Choose 'Mobile App' for an external application. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.",
-
-            // TODO NEW: The name of your app or plugin that will be presented to the end user.
-            "name" : "The name of your app or plugin that will be presented to the end user.",
-
-            // TODO NEW: A description of your plugin that will also be shown on the marked place.
-            "description" : "A description of your plugin that will also be shown on the marked place.",
-
-            // TODO NEW: Title of the tile for your plugin on the dashboard.
-            "defaultSpaceName" : "Title of the tile for your plugin on the dashboard.",
-
-            // TODO NEW: Categories on the market place for which your plugin should be listed.
-            "tags" : "Categories on the market place for which your plugin should be listed.",
-
-            // TODO NEW: URL of your plugins main page. If you use the template from MIDATA it is 'dist/index.html#?authToken=:authToken''
-            "url" : "URL of your plugins main page. If you use the template from MIDATA it is 'dist/index.html#?authToken=:authToken''",
-
-            // TODO NEW: URL of your plugins dashboard tile. Leave empty if you do not provide such a tile.
-            "previewUrl" : "URL of your plugins dashboard tile. Leave empty if you do not provide such a tile.",
-
-            // TODO NEW: Choose 'me' for the default dashboard. Choose 'config' if you write an import plugin.
-            "defaultSpaceContext" : "Choose 'me' for the default dashboard. Choose 'config' if you write an import plugin.",
+            "filename" : "Dieser Name wird intern für die Kennung Ihrer App verwendet. Es sollte einen gültigen Identifikator sein (a-z, A-Z, 0-9, _).",
+            "targetUserRole" : "Dient Ihre App nur für eine spezifische Rolle? Wenn nicht, wählen Sie 'Alle Rollen'.",
+            "type" : "Wählen Sie 'Plugin' wenn Ihre App im MIDATA-Portal laufen wird. Wählen Sie 'Mobile App' für eine externe App. Wählen Sie 'OAuth1 Import' oder 'OAuth2 Import' wenn Sie sich über OAuth1 oder OAuth2 mit einem externen Server verbinden.",
+            "name" : "Der Name der App oder des Plugins für den Endbenutzer.",
+            "description" : "Die Beschreibung des Plugins, die im Markplatz erscheinen wird.",
+            "defaultSpaceName" : "Titel der Kachel des Plugins auf dem Dashboard.",
+            "tags" : "Kategorien unter welchen das Plugin im Marktplatz erscheinen wird.",
+            "url" : "URL der Hauptseite des Plugins. Wenn Sie das MIDATA-Template verwenden ist es 'dist/index.html#?authToken=:authToken''",
+            "previewUrl" : "URL der Dashboard-Kachel des Plugins. Leer lassen falls keine solche Kachel angeboten wird.",
+            "defaultSpaceContext" : "Wählen Sie 'Mich' für den Standard-Dashboard. Wählen Sie 'Konfiguration' für ein Import-Plugin.",
+            "defaultQuery_mobile" : "Query das den Zugriff der App auf die Datenbank begrenzt. Der Zugriff muss eingeschränkt werden nach 'content' oder 'group' und kann eingeschränkt werden nach 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
+            "defaultQuery" : "Query das den Zugriff des Plugins auf die Datenbank begrenzt. Der Zugriff muss mindestens eingeschränkt werden nach 'content', 'group', 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
+            "defaultQuery_extra" : "Gültige Werte für 'content' oder 'format' sind im Developer Guide unter 'Format/Content' aufgelistet. Für erste Versionen kann der Vollzugriff erstattet werden mit { \"group\" : \"all\", \"group-system\" : \"v1\" }. Schränken Sie allerdings den Zugriff weiter ein, bevor das Plugin oder die App produktiv eingesetzt wird.",
+            "secret" : "Ihre App braucht dieses 'Secret' um sich anmelden zu können. Wählen Sie es nach Belieben."
         },
     },
 }
