@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +37,7 @@ public class User extends Model implements Comparable<User> {
 	protected static final @NotMaterialized String collection = "users";
 	public static final @NotMaterialized Set<String> NON_DELETED = Sets.create(UserStatus.ACTIVE.toString(), UserStatus.NEW.toString(), UserStatus.BLOCKED.toString(), UserStatus.TIMEOUT.toString());
 	public static final @NotMaterialized Set<String> ALL_USER = Sets.create("email", "emailLC", "name", "role", "subroles", "accountVersion", "registeredAt",  "status", "contractStatus", "agbStatus", "emailStatus", "confirmedAt", "firstname", "lastname",	"gender", "city", "zip", "country", "address1", "address2", "phone", "mobile", "language", "searchable", "developer");
+	public static final @NotMaterialized Set<String> PUBLIC = Sets.create("email", "role", "status", "firstname", "lastname", "gender");
 	
 			
 	/**
@@ -319,6 +321,22 @@ public class User extends Model implements Comparable<User> {
 		Model.delete(User.class, collection, CMaps.map("_id", userId));
 	}
 
+	/**
+	 * Internally used to update a lower case keyword list for users to improve search speed.
+	 * @param user the user 
+	 * @param write set to true if the new keywords should be written to database
+	 * @throws InternalServerException
+	 */
+	public void updateKeywords(boolean write) throws InternalServerException {
+		Set<String> keywords = new HashSet<String>();
+		keywords.add(firstname.toLowerCase());
+		keywords.add(lastname.toLowerCase());
+		if (address1 != null && address1.length() > 0) keywords.add(address1.toLowerCase());
+		if (address2 != null && address2.length() > 0) keywords.add(address2.toLowerCase());
+		if (city != null && city.length() > 0) keywords.add(city.toLowerCase());
+		keywordsLC = keywords;
+		if (write) User.set(_id, "keywordsLC", keywordsLC);
+	}
 		
 	
 }

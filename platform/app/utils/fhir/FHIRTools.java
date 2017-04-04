@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
+import org.hl7.fhir.dstu3.model.Identifier;
 import org.hl7.fhir.dstu3.model.Person;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.instance.model.api.IIdType;
@@ -17,6 +18,8 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import models.HPUser;
+import models.Member;
 import models.MidataId;
 import models.TypedMidataId;
 import models.User;
@@ -47,10 +50,14 @@ public class FHIRTools {
 	 * @return
 	 * @throws InternalServerException
 	 */
-	public static Reference getReferenceToUser(MidataId id) throws InternalServerException {
+	public static Reference getReferenceToUser(MidataId id, String defName) throws AppException {
 	
-		User user = User.getById(id, REFERENCE);
-		if (user == null) throw new InternalServerException("error.internal", "Person not found");
+		if (defName != null) return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());
+		User user = ResourceProvider.info().cache.getUserById(id);
+		if (user == null) {
+			//return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());
+			throw new InternalServerException("error.internal", "Person not found "+id.toString());
+		}
 		String type = "RelatedPerson";
 		switch (user.role) {
 		case MEMBER : type = "Patient";break;
@@ -111,6 +118,7 @@ public class FHIRTools {
 	
 	public static boolean isUserFromMidata(IIdType ref) {
 		String rt = ref.getResourceType();
+		if (rt == null) return false;
 		if (rt.equals("Patient") || rt.equals("Practitioner")) {
 			// TODO check base url
 			
@@ -122,6 +130,33 @@ public class FHIRTools {
 			return true;
 		}
 		return false;
+	}
+	
+	public static Reference resolve(Reference ref) throws InternalServerException {
+		if (ref == null) return null;
+		if (ref.hasIdentifier()) {
+			Identifier id = ref.getIdentifier();
+			String system = id.getSystem();
+			String value = id.getValue();
+			
+			User target = null;
+			String type = null;
+			if (system.equals("http://midata.coop/identifier/patient-login")) {
+				target = Member.getByEmail(value, Sets.create("_id", "role", "firstname", "lastname"));
+				type = "Patient";
+			} else if (system.equals("http://midata.coop/identifier/practitioner-login")) {
+				target = HPUser.getByEmail(value, Sets.create("_id", "role", "firstname", "lastname"));
+				type = "Practitioner";
+			}
+			if (type == null) return ref;
+			
+			if (target == null) throw new UnprocessableEntityException("References Patient not found");
+			ref.setReference(type+"/"+target._id.toString());
+			ref.setIdentifier(null);
+			ref.setDisplay(target.firstname+" "+target.lastname);
+		}		
+		
+		return ref;
 	}
 	
 	/**

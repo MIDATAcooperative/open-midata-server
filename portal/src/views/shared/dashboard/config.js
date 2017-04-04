@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('member.overview', {
 	      url: '/me',
@@ -28,4 +28,4 @@ angular.module('portal')
 	      url: '/dashboard/:dashId',
 	      templateUrl: 'views/shared/dashboard/dashboard.html'	     
 	    });
-});
+}]);

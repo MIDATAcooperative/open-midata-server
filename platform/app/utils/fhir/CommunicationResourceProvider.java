@@ -25,6 +25,7 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
@@ -73,33 +74,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 			@Description(shortDefinition="The resource language")
 			@OptionalParam(name="_language")
 			StringAndListParam theResourceLanguage, 
-			
-			/*
-			@Description(shortDefinition="Search the contents of the resource's data using a fulltext search")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT)
-			StringAndListParam theFtContent, 
-			
-			@Description(shortDefinition="Search the contents of the resource's narrative using a fulltext search")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_TEXT)
-			StringAndListParam theFtText, 
-			 
-			@Description(shortDefinition="Search for resources which have the given tag")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_TAG)
-			TokenAndListParam theSearchForTag, 
-			 
-			@Description(shortDefinition="Search for resources which have the given security labels")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_SECURITY)
-			TokenAndListParam theSearchForSecurity, 
-			   
-			@Description(shortDefinition="Search for resources which have the given profile")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE)
-			UriAndListParam theSearchForProfile, 
-			 */
-			/*
-			@Description(shortDefinition="Return resources linked to by the given target")
-			@OptionalParam(name="_has")
-			HasAndListParam theHas, 
-			 */
+						
 			    
 			@Description(shortDefinition="")
 			@OptionalParam(name="identifier")
@@ -131,11 +106,11 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 			   
 			@Description(shortDefinition="")
 			@OptionalParam(name="sent")
-			DateRangeParam theSent, 
+			DateAndListParam theSent, 
 			   
 			@Description(shortDefinition="")
 			@OptionalParam(name="received")
-			DateRangeParam theReceived, 
+			DateAndListParam theReceived, 
 			  
 			@Description(shortDefinition="")
 			@OptionalParam(name="subject", targetTypes={  } )
@@ -175,13 +150,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		SearchParameterMap paramMap = new SearchParameterMap();
 
 		paramMap.add("_id", theId);
-		paramMap.add("_language", theResourceLanguage);
-		/*paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT, theFtContent);
-		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_TEXT, theFtText);
-		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_TAG, theSearchForTag);
-		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_SECURITY, theSearchForSecurity);
-		paramMap.add(ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE, theSearchForProfile);*/
-		// paramMap.add("_has", theHas);
+		paramMap.add("_language", theResourceLanguage);	
 	
 		paramMap.add("identifier", theIdentifier);
 		paramMap.add("category", theCategory);
@@ -214,19 +183,19 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 		
-		builder.restriction("identifier", true, "Identifier", "identifier");
-		builder.restriction("received", true, "Date", "received");
-		builder.restriction("sent", true, "Date", "sent");
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
+		builder.restriction("received", true, QueryBuilder.TYPE_DATE, "received");
+		builder.restriction("sent", true, QueryBuilder.TYPE_DATE, "sent");
 		builder.restriction("based-on", true, null, "basedOn");
 		builder.restriction("recipient", true, null, "recipient");
 		
 		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
 				
-		builder.restriction("category", true, "CodeableConcept", "category");
+		builder.restriction("category", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "category");
 		builder.restriction("context", true, null, "context");
-		builder.restriction("medium", true, "CodeableConcept", "medium");
+		builder.restriction("medium", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "medium");
 		builder.restriction("sender", true, null, "sender");
-		builder.restriction("status", true, "code", "status");	
+		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");	
 						
 		return query.execute(info);
 	}
@@ -254,10 +223,13 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 	
 	public void prepareForSharing(Communication theCommunication) throws AppException {
 		if (theCommunication.getSender().isEmpty()) {
-			theCommunication.setSender(FHIRTools.getReferenceToUser(info().executorId));
+			theCommunication.setSender(FHIRTools.getReferenceToUser(info().executorId, null));
 		}
 		if (theCommunication.getSent() == null) theCommunication.setSent(new Date());
 		if (theCommunication.getRecipient().isEmpty()) throw new UnprocessableEntityException("Recipient is missing");
+		
+		FHIRTools.resolve(theCommunication.getSender());
+		FHIRTools.resolve(theCommunication.getSubject());
 	}
 	
 	public void shareRecord(Record record, Communication theCommunication) throws AppException {		
@@ -265,16 +237,8 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		
 		MidataId subject = theCommunication.getSubject().isEmpty() ? inf.executorId : FHIRTools.getUserIdFromReference(theCommunication.getSubject().getReferenceElement());
 		MidataId sender = FHIRTools.getUserIdFromReference(theCommunication.getSender().getReferenceElement());
-		MidataId shareFrom = subject;
-		if (!subject.equals(sender)) {
-			Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, sender, sender, subject, false);
-			insertRecord(record, theCommunication, consent._id);
-			shareFrom = consent._id;
-		} else {
-			insertRecord(record, theCommunication);
-		}
-		
-		
+		MidataId shareFrom = insertMessageRecord(record, theCommunication);
+						
 		List<Reference> recipients = theCommunication.getRecipient();
 		for (Reference recipient :recipients) {
 						
@@ -292,14 +256,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Communication theCommunication) {
 		return super.updateResource(theId, theCommunication);
 	}
-		
-	@Override
-	public MethodOutcome update(@IdParam IdType theId, @ResourceParam Communication theCommunication) throws AppException {
-		Record record = fetchCurrent(theId);
-		prepare(record, theCommunication);		
-		updateRecord(record, theCommunication);		
-		return outcome("Communication", record, theCommunication);
-	}
+			
 
 	public void prepare(Record record, Communication theCommunication) throws AppException {
 		// Set Record code and content
@@ -310,6 +267,14 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 		String date = theCommunication.hasSentElement() ? theCommunication.getSentElement().toHumanDisplay() : "Not sent";			
 		record.name = date;
 		
+		List<Reference> recipients = theCommunication.getRecipient();
+		if (recipients != null) {
+			for (Reference recipient :recipients) {
+			    FHIRTools.resolve(recipient);	
+			}
+		}
+		
+		
 		// clean
 		if (cleanAndSetRecordOwner(record, theCommunication.getSubject())) theCommunication.setSubject(null);
 		
@@ -319,18 +284,12 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 	
  
 	@Override
-	public void processResource(Record record, Communication p) {
+	public void processResource(Record record, Communication p) throws AppException {
 		super.processResource(record, p);
-		if (p.getSubject().isEmpty()) {
-			p.getSubject().setReferenceElement(new IdType("Patient", record.owner.toString()));
-			p.getSubject().setDisplay(record.ownerName);
+		if (p.getSubject().isEmpty()) {			
+			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
 	}
-
-	@Override
-	public void clean(Communication theCommunication) {
-		
-		super.clean(theCommunication);
-	}
+	
 
 }

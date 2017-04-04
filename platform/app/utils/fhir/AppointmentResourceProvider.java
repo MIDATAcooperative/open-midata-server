@@ -29,6 +29,7 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
@@ -104,7 +105,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 			   
 			@Description(shortDefinition="Appointment date/time.")
 			@OptionalParam(name="date")
-			DateRangeParam theDate, 
+			DateAndListParam theDate, 
 			   
 			@Description(shortDefinition="The overall status of the appointment")
 			@OptionalParam(name="status")
@@ -197,16 +198,16 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Appointment");
 		
 		builder.handleIdRestriction();
-		builder.restriction("identifier", true, "Identifier", "identifier");
-		builder.restriction("date", true, "date", "start");
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
+		builder.restriction("date", true, QueryBuilder.TYPE_DATE, "start");
 		builder.restriction("actor", true, null, "participant.actor");
-		builder.restriction("status", false, "code", "status");
-		builder.restriction("part-status", false, "code", "participant.status");
+		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");
+		builder.restriction("part-status", false, QueryBuilder.TYPE_CODE, "participant.status");
 		builder.restriction("patient", true, "Patient", "participant.actor");
 		builder.restriction("practitioner", true, "Practitioner", "participant.actor");
 		builder.restriction("location", true, "Location", "participant.actor");
-		builder.restriction("appointment-type", true, "CodeableConcept", "appointmentType");
-		builder.restriction("service-type", true, "CodeableConcept", "serviceType");
+		builder.restriction("appointment-type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "appointmentType");
+		builder.restriction("service-type", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "serviceType");
 								  
 		return query.execute(info);
 	}
@@ -221,8 +222,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 	protected MethodOutcome create(Appointment theAppointment) throws AppException {
 		Record record = newRecord("fhir/Appointment");
 		
-		prepare(record, theAppointment);		
-		// insert
+		prepare(record, theAppointment);				
 		insertRecord(record, theAppointment);
         shareRecord(record, theAppointment);
 		processResource(record, theAppointment);				
@@ -243,6 +243,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		prepare(record, theAppointment);		
 		updateRecord(record, theAppointment);			
 		shareRecord(record, theAppointment);
+		processResource(record, theAppointment);
 		
 		return outcome("Appointment", record, theAppointment);
 	}
@@ -254,7 +255,7 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		for (AppointmentParticipantComponent participant :participants) { 
 			persons.add(participant.getActor().getReferenceElement()); 
 		}		
-		shareWithPersons(record, persons);				
+		shareWithPersons(record, persons, info().executorId);				
 				
 	}
 	
@@ -271,12 +272,19 @@ public class AppointmentResourceProvider extends ResourceProvider<Appointment> i
 		String display = theAppointment.getDescription();
 		record.name = display != null ? display : "Appointment";
 		
+		List<AppointmentParticipantComponent> participants = theAppointment.getParticipant();
+		if (participants != null) {
+			for (AppointmentParticipantComponent participant :participants) { 
+				FHIRTools.resolve(participant.getActor()); 
+			}	
+		}
+		
 		clean(theAppointment);
 	}
 	
  
 	@Override
-	public void processResource(Record record, Appointment p) {
+	public void processResource(Record record, Appointment p) throws AppException {
 		super.processResource(record, p);
 		
 		

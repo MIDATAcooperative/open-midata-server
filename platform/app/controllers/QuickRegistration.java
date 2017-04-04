@@ -51,16 +51,19 @@ public class QuickRegistration extends APIController {
 	public static Result register() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "email", "password", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "study", "app", "phrase", "language");
+		JsonValidation.validate(json, "email", "password", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "app", "language");
 		
-		String studyCode = JsonValidation.getString(json, "study");
+		
 		String appName = JsonValidation.getString(json, "app");
-		String phrase = JsonValidation.getString(json, "phrase");
+		Study study = null;
 		
-		Study study = Study.getByCodeFromMember(studyCode, Study.ALL);
-		if (study == null) throw new BadRequestException("error.invalid.code", "Unknown code for study.");
-		
-		if (!study.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING)) throw new BadRequestException("error.closed.study", "Study not searching for members.");
+		if (json.has("study")) {
+			String studyCode = JsonValidation.getString(json, "study");
+			study = Study.getByCodeFromMember(studyCode, Study.ALL);
+			if (study == null) throw new BadRequestException("error.invalid.code", "Unknown code for study.");
+			
+			if (!study.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING)) throw new BadRequestException("error.closed.study", "Study not searching for members.");
+		}
 		
 		Plugin app = Plugin.getByFilename(appName, Plugin.ALL_PUBLIC);
 		if (app == null) throw new BadRequestException("error.invalid.appcode", "Unknown code for app.");
@@ -69,6 +72,7 @@ public class QuickRegistration extends APIController {
 		String firstName = JsonValidation.getString(json, "firstname");
 		String lastName = JsonValidation.getString(json, "lastname");
 		String password = JsonValidation.getPassword(json, "password");
+		String device = JsonValidation.getStringOrNull(json, "device");
 
 		// check status
 		if (Member.existsByEMail(email)) {
@@ -85,7 +89,12 @@ public class QuickRegistration extends APIController {
 		user.password = Member.encrypt(password);
 		
 		Application.registerSetDefaultFields(user);
-		user.subroles = EnumSet.of(SubUserRole.STUDYPARTICIPANT);
+		
+		if (study != null) {
+		  user.subroles = EnumSet.of(SubUserRole.STUDYPARTICIPANT);
+		} else {
+		  user.subroles = EnumSet.of(SubUserRole.APPUSER);
+		}
 		
 		user.address1 = JsonValidation.getString(json, "address1");
 		user.address2 = JsonValidation.getString(json, "address2");
@@ -105,9 +114,11 @@ public class QuickRegistration extends APIController {
 		
 		Application.registerCreateUser(user);
 				
-		controllers.members.Studies.requestParticipation(user._id, study._id);
-		MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, phrase);
-		HealthProvider.confirmConsent(user._id, appInstance._id);
+		if (study != null) controllers.members.Studies.requestParticipation(user._id, study._id);
+		
+		if (device != null) {
+		   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true);
+		}
 				
 		Application.sendWelcomeMail(user);
 		return Application.loginHelper(user);		
@@ -123,11 +134,11 @@ public class QuickRegistration extends APIController {
 	public static Result registerFromApp() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "email", "password", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "birthday", "appname", "secret", "phrase", "language");
+		JsonValidation.validate(json, "email", "password", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "birthday", "appname", "secret", "device", "language");
 				
 		String appName = JsonValidation.getString(json, "appname");
 		String secret = JsonValidation.getString(json,  "secret");
-		String phrase = JsonValidation.getString(json, "phrase");
+		String phrase = JsonValidation.getString(json, "device");
 				
 		Plugin app = Plugin.getByFilename(appName, Sets.create("type", "name", "secret", "status", "defaultQuery"));
 		if (app == null) throw new BadRequestException("error.invalid.appcode", "Unknown code for app.");
@@ -176,14 +187,13 @@ public class QuickRegistration extends APIController {
 		Application.registerCreateUser(user);								
 		Application.sendWelcomeMail(user);
 		
-		MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, phrase);
-		HealthProvider.confirmConsent(user._id, appInstance._id);
+		MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, phrase, true);		
 		appInstance.status = ConsentStatus.ACTIVE;
 		
-		RecordManager.instance.clear();
-		KeyManager.instance.unlock(appInstance._id, phrase);	
-		Map<String, Object> meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();			
+		/*RecordManager.instance.clear();
+		KeyManager.instance.unlock(appInstance._id, phrase);*/	
+		Map<String, Object> meta = RecordManager.instance.getMeta(user._id, appInstance._id, "_app").toMap();			
 		
-		return MobileAPI.authResult(appInstance, meta, phrase);		
+		return MobileAPI.authResult(user._id, appInstance, meta, phrase);		
 	}
 }

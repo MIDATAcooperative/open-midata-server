@@ -4,9 +4,9 @@
   "description": "SNP-Snip Plugin fuer MIDATA",
   "main": "index.js",
   "dependencies": {
-    "async": "~1.5.2",
+    "async": "~2.1.5",
     "dblite": "~0.7.6",
-    "fast-csv": "~1.0.0"
+    "fast-csv": "~2.4.0"
   },
   "devDependencies": {},
   "scripts": {

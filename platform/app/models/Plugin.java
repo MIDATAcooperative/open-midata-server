@@ -1,8 +1,10 @@
 package models;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 
@@ -25,6 +27,8 @@ import utils.exceptions.InternalServerException;
 public class Plugin extends Model implements Comparable<Plugin> {
 
 	private static final String collection = "plugins";
+	private static Map<MidataId, Plugin> cache = new ConcurrentHashMap<MidataId, Plugin>();
+	public @NotMaterialized static final Set<PluginStatus> NOT_DELETED = EnumSet.of(PluginStatus.ACTIVE, PluginStatus.BETA, PluginStatus.DEPRECATED, PluginStatus.DEVELOPMENT);
 	
 	/**
 	 * constant containing all fields visible to a developer
@@ -212,6 +216,15 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	public static Plugin getById(MidataId id, Set<String> fields) throws InternalServerException {
 		return Model.get(Plugin.class, collection, CMaps.map("_id", id), fields);
 	}
+	
+	public static Plugin getById(MidataId id) throws InternalServerException {
+		Plugin result = cache.get(id);
+		if (result != null) return result;
+		
+		result = getById(id, ALL_PUBLIC);
+		cache.put(id, result);
+		return result;		
+	}
 
 	public static Set<Plugin> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.getAll(Plugin.class, collection, properties, fields);
@@ -222,10 +235,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	}
 	
 	public static Plugin getByFilename(String name, Set<String> fields) throws InternalServerException {
-		return Model.get(Plugin.class, collection, CMaps.map("filename", name), fields);
+		return Model.get(Plugin.class, collection, CMaps.map("filename", name).map("status", Plugin.NOT_DELETED), fields);
 	}
 	
 	public void update() throws InternalServerException, LostUpdateException {
+		cache.remove(_id);
 		try {
 			   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n" );
 		} catch (DatabaseException e) {
@@ -235,21 +249,13 @@ public class Plugin extends Model implements Comparable<Plugin> {
 
 
 	public static void add(Plugin plugin) throws InternalServerException {
-		Model.insert(collection, plugin);
-
-		// add to search index
-		/*try {
-			Search.add(Type.VISUALIZATION, plugin._id, plugin.name, plugin.description);
-		} catch (SearchException e) {
-			throw new InternalServerException("error.internal.db", e);
-		}*/
+		Model.insert(collection, plugin);	
 	}
 
 	public static void delete(MidataId pluginId) throws InternalServerException {
-		// remove from search index
-		//Search.delete(Type.VISUALIZATION, pluginId);
-
+		
 		// TODO only hide or remove from all users (including deleting their spaces associated with it)?
+		cache.remove(pluginId);
 		Model.delete(Plugin.class, collection, new ChainedMap<String, MidataId>().put("_id", pluginId).get());
 	}
 	

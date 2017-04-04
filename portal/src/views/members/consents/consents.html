@@ -3,6 +3,20 @@
 	<div class="panel panel-primary">
 		<div class="panel-heading" translate="consents.title"></div>
 		<div class="body">
+		  <form class="form">
+		    <div class="radio">
+		      <label>
+                <input type="radio" name="consenttype" value="option1" checked> <span translate="consents.where_owner"></span> 
+              </label>
+            </div>
+            <div class="radio">
+              <label class="radio-inline">
+                <input type="radio" name="consenttype" value="option2" ng-click="changeView()"> <span translate="consents.where_authorized"></span>
+              </label>
+            </div>
+          </form>
+		
+		
             <p translate="consents.description"></p>
             <loader busy="status.isBusy !== false">
 			<p translate="consents.count" translate-value-count="{{ consents.length }}"></p>
@@ -16,7 +30,7 @@
 					<th translate="consents.number_of_people"></th>
 					<th translate="consents.number_of_records"></th>
 				</tr>
-				<tr ng-repeat="consent in consents | orderBy : 'name'">
+				<tr ng-repeat="consent in consents | orderBy : 'name'" ng-class="{ 'warning' : consent.status == 'UNCONFIRMED' }">
 					<td><a ng-click="editConsent(consent);" href="javascript:">{{ consent.name }}</a></td>
 					<td translate="{{ 'enum.consenttype.'+consent.type }}"></td>
 					<td translate="{{ 'enum.consentstatus.'+consent.status }}"></td>

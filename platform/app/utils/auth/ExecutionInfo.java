@@ -4,16 +4,19 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import controllers.MobileAPI;
 import models.Consent;
 import models.Member;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Space;
 import models.User;
+import models.enums.ConsentStatus;
 import play.libs.Json;
 import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.access.RecordManager;
+import utils.collections.RequestCache;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -32,7 +35,9 @@ public class ExecutionInfo {
 	
 	public Space space;
 	
-	public static ExecutionInfo checkToken(Request request, String token) throws AppException {
+	public RequestCache cache = new RequestCache();
+	
+	public static ExecutionInfo checkToken(Request request, String token, boolean allowInactive) throws AppException {
 		String plaintext = TokenCrypto.decryptToken(token);
 		if (plaintext == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");	
 		JsonNode json = Json.parse(plaintext);
@@ -41,7 +46,7 @@ public class ExecutionInfo {
 		if (json.has("instanceId")) {
 			return checkSpaceToken(SpaceToken.decrypt(request, json));
 		} else {
-			return checkMobileToken(MobileAppSessionToken.decrypt(json));
+			return checkMobileToken(MobileAppSessionToken.decrypt(json), allowInactive);
 		}
 	}
 	
@@ -91,20 +96,21 @@ public class ExecutionInfo {
 		
 	}
 	
-	public static ExecutionInfo checkMobileToken(String token) throws AppException {		
+	public static ExecutionInfo checkMobileToken(String token, boolean allowInactive) throws AppException {		
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(token);
-		if (authToken == null) {
-			throw new BadRequestException("error.invalid.token", "Invalid authToken.");
-		}
-			
-		return checkMobileToken(authToken);		
+		if (authToken == null) MobileAPI.invalidToken(); 
+				
+		return checkMobileToken(authToken, allowInactive);		
 	}
 	
-	public static ExecutionInfo checkMobileToken(MobileAppSessionToken authToken) throws AppException {		
-						
+	public static ExecutionInfo checkMobileToken(MobileAppSessionToken authToken, boolean allowInactive) throws AppException {		
+		if (authToken == null) MobileAPI.invalidToken();				
+		
 		AccessLog.logBegin("begin check 'mobile' type session token");
-		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare"));
-        if (appInstance == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
+		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare", "status"));
+        if (appInstance == null) MobileAPI.invalidToken(); 
+
+        if (!allowInactive && !appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
 
         KeyManager.instance.login(60000l);
         KeyManager.instance.unlock(appInstance._id, authToken.passphrase);
@@ -119,6 +125,8 @@ public class ExecutionInfo {
 			KeyManager.instance.unlock(appInstance.owner, alias, key);
 			RecordManager.instance.clearCache();
 			result.executorId = appInstance.owner;
+		} else {
+			RecordManager.instance.setAccountOwner(appInstance._id, appInstance.owner);
 		}
                                                 
 		result.ownerId = appInstance.owner;

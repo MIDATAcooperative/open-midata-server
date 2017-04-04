@@ -24,8 +24,7 @@ angular.module('portal')
 		});
 	};
 	
-	$scope.changeUser = function(user) {
-		console.log(user);
+	$scope.changeUser = function(user) {		
 		administration.changeStatus(user._id, user.status, user.contractStatus, user.agbStatus).then(function() { $scope.reload(); });
 	};	
 	
@@ -42,6 +41,13 @@ angular.module('portal')
 			$scope.comment = "";
 		    $scope.reload();
 		});		
+	};
+	
+	$scope.wipe = function() {
+		administration.wipe($scope.member._id)
+		.then(function() {
+			$state.go("^.members");
+		});
 	};
 	
 	$scope.reload();

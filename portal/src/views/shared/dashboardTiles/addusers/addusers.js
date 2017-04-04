@@ -5,35 +5,22 @@ angular.module('views')
 	$scope.view = views.getView($attrs.viewid || $scope.def.id);
 	$scope.status = new status(true);
 	$scope.crit = {};
-	$scope.userNames = {};
-
 	
-	// get names for users in circles
-	loadContacts = function() {
-		var contactIds = _.map($scope.circles, function(circle) { return circle.authorized; });
-		contactIds = _.flatten(contactIds);
-		contactIds = _.uniq(contactIds, false, function(contactId) { return contactId; });
-		var properties = {"_id": contactIds};
-		var fields = ["firstname", "lastname"];
-		var data = {"properties": properties, "fields": fields};
-		server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data)).
-			success(function(contacts) {
-				$scope.contacts = contacts;
-				_.each(contacts, function(contact) { $scope.userNames[contact._id] = (contact.firstname + " " + contact.lastname).trim(); });
-				$scope.loading = false;
-			}).
-			error(function(err) {
-				$scope.error = "Failed to load contacts: " + err;
-				$scope.loading = false;
-			});
-	};
+
+		
 	
 	$scope.reload = function() {
-		
+		console.log("RELOAD!");
+		server.get(jsRoutes.controllers.Users.loadContacts().url).
+		then(function(result) {
+			console.log(result.data);
+			$scope.contacts = result.data;
+		});
 	};
 	
 	// check whether user is not already in active circle
 	$scope.isntMember = function(user) {
+		if (!$scope.view || !$scope.view.setup) return true;
 		var activeCircle = $scope.view.setup.consent;
 		var memberIds = _.map(activeCircle.authorized, function(member) { return member; });
 		return !_.contains(memberIds, user._id);
@@ -65,13 +52,14 @@ angular.module('views')
 		var usersToAdd = _.union(contactsToAdd, foundUsersToAdd);
 		var userIds = _.map(usersToAdd, function(user) { return user._id; });
 		userIds = _.uniq(userIds, false, function(userId) { return userId; });
-		
+		console.log(usersToAdd);
+		if (usersToAdd.length === 0) return;
 		if ($scope.view.setup.callback) {
 		   $scope.view.setup.callback(usersToAdd);
 		   $scope.error = null;
 			$scope.foundUsers = [];
 			_.each($scope.contacts, function(contact) { contact.checked = false; });			
-			_.each(usersToAdd, function(user) { $scope.userNames[user._id] = user.name; });
+			//_.each(usersToAdd, function(user) { $scope.userNames[user._id] = user.name; });
 		} else {
 		
 		var data = {"users": userIds};
@@ -81,7 +69,7 @@ angular.module('views')
 				$scope.foundUsers = [];
 				_.each($scope.contacts, function(contact) { contact.checked = false; });
 				_.each(userIds, function(userId) { circle.authorized.push(userId); });
-				_.each(usersToAdd, function(user) { $scope.userNames[user._id] = user.name; });
+				//_.each(usersToAdd, function(user) { $scope.userNames[user._id] = user.name; });
 			}).
 			error(function(err) { $scope.error = "Failed to add users: " + err; });
 		}

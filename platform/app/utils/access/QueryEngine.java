@@ -202,10 +202,10 @@ class QueryEngine {
     	MidataId userGroup = Feature_UserGroups.identifyUserGroup(cache, apsId);
     	if (userGroup != null) {
     		properties.put("usergroup", userGroup);
-    		qm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Documents(new Feature_Streams())))))))));
+    		qm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Documents(new Feature_Streams()))))))))));
     	} else {    	
     	   APS target = cache.getAPS(apsId);    	
-    	   qm = new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Documents(new Feature_Streams())))))))))));
+    	   qm = new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Documents(new Feature_Streams()))))))))))));
     	}
     	List<DBRecord> result = query(properties, fields, apsId, cache, qm);
     	
@@ -225,10 +225,12 @@ class QueryEngine {
     	  Collection<Map<String, Object>> col = (Collection<Map<String, Object>>) properties.get("$or");
     	  List<DBRecord> result = new ArrayList<DBRecord>();
     	  for (Map<String, Object> prop : col) {
+    		  AccessLog.logQuery(prop, fields);
     		  result.addAll(qm.query(new Query(prop, fields, cache, apsId)));
     	  }
     	  return result;
       } else {
+    	  AccessLog.logQuery(properties, fields);
     	  return qm.query(new Query(properties, fields, cache, apsId));
       }
     }
@@ -271,7 +273,7 @@ class QueryEngine {
     protected static void fetchFromDB(Query q, DBRecord record) throws InternalServerException {
     	if (record.encrypted == null) {
 			DBRecord r2 = DBRecord.getById(record._id, q.getFieldsFromDB());
-			if (r2 == null) throw new InternalServerException("error.internal", "Record with id "+record._id.toString()+" not found in database. Account needs repair?");
+			if (r2 == null) throw new InternalServerException("error.internal", "Record with id "+record._id.toString()+" not found in database. Account or consent needs repair?");
 			fetchFromDB(record, r2);			
 		}
     }
@@ -291,23 +293,32 @@ class QueryEngine {
     private static final Set<String> DATA_ONLY = Sets.create("_id", "encryptedData");
     protected static DBRecord loadData(DBRecord input) throws AppException {
     	if (input.data == null && input.encryptedData == null) {
-    	   DBRecord r2 = DBRecord.getById(input._id, DATA_ONLY);					
-		   input.encryptedData = r2.encryptedData;
+    	   DBRecord r2 = DBRecord.getById(input._id, DATA_ONLY);
+    	   if (r2 == null) throw new InternalServerException("error.internal", "Record with id "+input._id.toString()+" not found in database. Account or consent needs repair?");
+		   // r2=null should not happen if (r2 != null) 
+    	   input.encryptedData = r2.encryptedData;
     	}
 		RecordEncryption.decryptRecord(input);
 		return input;
     }
     
     protected static List<DBRecord> duplicateElimination(List<DBRecord> input) {
-    	Set<MidataId> used = new HashSet<MidataId>(input.size());
-    	List<DBRecord> filteredresult = new ArrayList<DBRecord>(input.size());
-    	for (DBRecord r : input) {
-    		if (!used.contains(r._id)) {
-    			used.add(r._id);
-    			filteredresult.add(r);
-    		}
-    	}
-    	return filteredresult;
+    	int size = input.size();
+        int out = 0;
+        {
+            final Set<DBRecord> encountered = new HashSet<DBRecord>();
+            for (int in = 0; in < size; in++) {
+                final DBRecord t = input.get(in);
+                final boolean first = encountered.add(t);
+                if (first) {
+                	input.set(out++, t);
+                }
+            }
+        }
+        while (out < size) {
+        	input.remove(--size);
+        }
+    	return input;
     }
     
     protected static List<DBRecord> onlyWithKey(List<DBRecord> input) {    	
@@ -358,20 +369,8 @@ class QueryEngine {
 			for (DBRecord record : result) {
 				if (record.encrypted == null) fetchIds.put(record._id, record);				
 			}
-			List<DBRecord> read = lookupRecordsById(q, fetchIds.keySet());			
-			for (DBRecord record : read) {
-				DBRecord old = fetchIds.get(record._id);
-				fetchFromDB(old, record);
-			}
-			for (DBRecord record : result) {
-				if (minTime == 0 || record.time ==0 || record.time >= minTime) {
-				  RecordEncryption.decryptRecord(record);
-				  if (!record.meta.containsField("creator")) record.meta.put("creator", record.owner);
-				} else {compress++;record.meta=null;}				
-				//if (!q.getGiveKey()) record.clearSecrets();
-			}
     	} else {
-    		Set<String> check = q.mayNeedFromDB(); 
+    		Set<String> check = q.mayNeedFromDB();
     		if (!check.isEmpty()) {
     			for (DBRecord record : result) {
     				boolean fetch = false;
@@ -379,18 +378,27 @@ class QueryEngine {
     					AccessLog.log("need: "+k);
     					fetch = true; 
     				}
-    				if (fetch) {
-    					fetchFromDB(q, record);
-    					if (minTime == 0 || record.time ==0 || record.time >= minTime) {
-    					  RecordEncryption.decryptRecord(record);
-    					  if (!record.meta.containsField("creator")) record.meta.put("creator", record.owner);
-    					} else {compress++;record.meta=null;}
-    				}
+    				if (fetch) { fetchIds.put(record._id, record); }
+    				
     			}
-    	    }
-    					   
-		}
+    		}
+    	}
+    	if (!fetchIds.isEmpty()) {	
+    		
+			List<DBRecord> read = lookupRecordsById(q, fetchIds.keySet());			
+			for (DBRecord record : read) {
+				DBRecord old = fetchIds.get(record._id);
+				fetchFromDB(old, record);
+			}
+    	}
     	
+		for (DBRecord record : result) {
+			if (minTime == 0 || record.time ==0 || record.time >= minTime) {
+			  RecordEncryption.decryptRecord(record);
+			  if (!record.meta.containsField("creator")) record.meta.put("creator", record.owner);
+			} else {compress++;record.meta=null;}						
+		}
+    	     	
     	if (compress > 0) {
     		List<DBRecord> result_new = new ArrayList<DBRecord>(result.size() - compress);
     		for (DBRecord r : result) {
@@ -406,9 +414,9 @@ class QueryEngine {
 		if (q.restrictedBy("creator")) result = filterByMetaSet(result, "creator", q.getIdRestrictionDB("creator"));
 		if (q.restrictedBy("app")) result = filterByMetaSet(result, "app", q.getIdRestrictionDB("app"), q.restrictedBy("no-postfilter-streams"));
 		if (q.restrictedBy("name")) result = filterByMetaSet(result, "name", q.getRestriction("name"));
-		if (q.restrictedBy("code")) result = filterByMetaSet(result, "code", q.getRestriction("code"));
+		if (q.restrictedBy("code")) result = filterSetByMetaSet(result, "code", q.getRestriction("code"));
 		
-		if (q.restrictedBy("index") && !q.getApsId().equals(q.getCache().getOwner())) {
+		if (q.restrictedBy("index") && !q.getApsId().equals(q.getCache().getAccountOwner())) {
 			AccessLog.log("Manually applying index query aps="+q.getApsId().toString());
 			result = QueryEngine.filterByDataQuery(result, q.getProperties().get("index"));
 		}
@@ -490,7 +498,7 @@ class QueryEngine {
     	if (query instanceof Map<?, ?>) condition = new AndCondition((Map<String, Object>) query).optimize();
     	else if (query instanceof Condition) condition = ((Condition) query).optimize();
     	else throw new InternalServerException("error.internal", "Query type not implemented");
-    	
+    	AccessLog.log("validate condition:"+condition.toString());
     	for (DBRecord record : input) {
             Object accessVal = record.data;                        
             if (condition.satisfiedBy(accessVal)) filteredResult.add(record);    		
@@ -512,6 +520,10 @@ class QueryEngine {
     	for (DBRecord record : input) {
     		Date cmp = (Date) record.meta.get(property);
     		if (cmp == null) cmp = (Date) record.meta.get("created"); //Fallback for lastUpdated
+    		if (cmp == null) {
+    			AccessLog.log("Record with _id "+record.id+" has not created date!");
+    			continue;
+    		}
     		if (minDate != null && cmp.before(minDate)) continue;
 			if (maxDate != null && cmp.after(maxDate)) continue;    		    		    	
     		filteredResult.add(record);
@@ -524,7 +536,7 @@ class QueryEngine {
     protected static List<DBRecord> limitResultSize(Map<String, Object> properties, List<DBRecord> result) {
     	if (properties.containsKey("limit")) {
 	    	Object limitObj = properties.get("limit");
-	    	int limit = Integer.parseInt(limitObj.toString());
+	    	int limit = (int) Integer.parseInt(limitObj.toString());
 	    	if (result.size() > limit) result = result.subList(0, limit);
 	    }
     	return result;

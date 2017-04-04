@@ -12,6 +12,7 @@ import org.hl7.fhir.dstu3.model.Bundle.BundleEntryRequestComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryResponseComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleType;
 import org.hl7.fhir.dstu3.model.Bundle.HTTPVerb;
+import org.hl7.fhir.dstu3.model.DomainResource;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.hl7.fhir.dstu3.model.Resource;
@@ -26,6 +27,7 @@ import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import ca.uhn.fhir.util.FhirTerser;
+import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -56,11 +58,11 @@ public class Transactions {
 		   if (verb.equals(HTTPVerb.POST)) {		   
 		     Resource res = nextEntry.getResource();
 		     ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());		   
-		     steps.add(new CreateTransactionStep(provider, (BaseResource) res));
+		     steps.add(new CreateTransactionStep(provider, (DomainResource) res));
 		   } else if (verb.equals(HTTPVerb.PUT)) {
 			 Resource res = nextEntry.getResource();
 			 ResourceProvider provider = FHIRServlet.myProviders.get(res.getResourceType().name());		   
-			 steps.add(new UpdateTransactionStep(provider, (BaseResource) res));
+			 steps.add(new UpdateTransactionStep(provider, (DomainResource) res));
 		   } else if (verb.equals(HTTPVerb.DELETE)) {
 			   throw new NotImplementedOperationException("Currently no support for DELETE");
 		   } else if (verb.equals(HTTPVerb.GET)) {
@@ -139,6 +141,7 @@ public class Transactions {
 		   IIdType source = step.getResource().getIdElement();
 		   if (source != null && source.getIdPart() != null) {
 			 IdType t = new IdType(source.getResourceType(), step.getRecord()._id.toString());
+			 AccessLog.log("reg ref:"+source.getIdPart()+" -> "+t.toString());
 		     idSubstitutions.put(source.getIdPart(), t);
 		   }
 	   }
@@ -151,12 +154,14 @@ public class Transactions {
 	public void resolveReferences(Map<String, IdType> idSubstitutions, IBaseResource resource, FhirTerser terser) {
 		List<IBaseReference> allRefs = terser.getAllPopulatedChildElementsOfType(resource, IBaseReference.class);
 		for (IBaseReference nextRef : allRefs) {
+			AccessLog.log("checkref:"+nextRef.toString());
 			IIdType nextId = nextRef.getReferenceElement();
 			if (!nextId.hasIdPart()) {
 				continue;
 			}
-			if (idSubstitutions.containsKey(nextId)) {
-				IdType newId = idSubstitutions.get(nextId.getIdPart());				
+			if (idSubstitutions.containsKey(nextId.getIdPart())) {
+				IdType newId = idSubstitutions.get(nextId.getIdPart());
+				AccessLog.log("set ref:"+nextRef.toString()+" -> "+newId.toString());
 				nextRef.setReference(newId.getValue());
 			} 
 		}

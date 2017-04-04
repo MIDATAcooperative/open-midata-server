@@ -148,6 +148,15 @@ public class Feature_InMemoryQuery extends APS {
 	public boolean hasAccess(MidataId target) throws InternalServerException {		
 		return false;
 	}
+
+	@Override
+	public boolean hasNoDirectEntries() throws AppException {
+		return contents.isEmpty();
+	}
+
+	@Override
+	public void provideAPSKeyAndOwner(byte[] unlock, MidataId owner) {				
+	}
 	
 	
 

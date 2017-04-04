@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('OAuth2LoginCtrl', ['$scope', '$location', '$translate', 'server', '$state', 'status', 'session', 'apps', function($scope, $location, $translate, server, $state, status, session, apps) {
+.controller('OAuth2LoginCtrl', ['$scope', '$location', '$translate', 'server', '$state', 'status', 'session', 'apps', 'oauth', function($scope, $location, $translate, server, $state, status, session, apps, oauth) {
 	
 	// init
 	$scope.login = { role : "MEMBER"};	
@@ -18,6 +18,9 @@ angular.module('portal')
 		$scope.status.doBusy(apps.getAppInfo($scope.params.client_id))
 		.then(function(results) {
 			$scope.app = results.data;
+			oauth.init($scope.params.client_id, $scope.params.redirect_uri, $scope.params.state, $scope.params.code_challenge, $scope.params.code_challenge_method);
+			$scope.device = oauth.getDeviceShort();
+			$scope.consent = "App: "+$scope.app.name+" (Device: "+$scope.device+")";
 		});
 	};
 	
@@ -29,22 +32,17 @@ angular.module('portal')
 			return;
 		}
 		
-		// send the request
-		
-		var data = { 
-		      "appname" : $scope.params.client_id,
-		      "redirectUri" : $scope.params.redirect_uri,
-		      "username" : $scope.login.email, 
-		      "password" : $scope.login.password,
-		      "state" : $scope.params.state || "none",
-		      "role" : $scope.login.role
-		};
+		oauth.setUser($scope.login.email, $scope.login.password);
 				
-		$scope.status.doAction("login", server.post("/v1/authorize", JSON.stringify(data))).
-		then(function(result) {			
-			document.location.href = $scope.params.redirect_uri + "?state=" + encodeURIComponent($scope.params.state) + "&code=" + result.data.code;			
-		}).
-		catch(function(err) { $scope.error = err.data; });
+		$scope.status.doAction("login", oauth.login())
+		.then(function(result) {
+		  if (result !== "ACTIVE") $scope.pleaseConfirm = true;	
+		})
+		.catch(function(err) { $scope.error = err.data; });
+	};	
+	
+	$scope.showRegister = function() {
+		$state.go("public.registration");
 	};
 	
 	$scope.prepare();

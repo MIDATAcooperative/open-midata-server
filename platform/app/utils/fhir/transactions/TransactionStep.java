@@ -3,6 +3,7 @@ package utils.fhir.transactions;
 import org.hl7.fhir.dstu3.model.BaseResource;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryResponseComponent;
+import org.hl7.fhir.dstu3.model.DomainResource;
 import org.hl7.fhir.dstu3.model.Resource;
 
 import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
@@ -11,7 +12,6 @@ import utils.ErrorReporter;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
-import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
 
 /**
@@ -23,7 +23,7 @@ public abstract class TransactionStep {
 	/**
 	 * the resource that shall be worked with
 	 */
-	protected BaseResource resource;
+	protected DomainResource resource;
 	
 	/**
 	 * the record that shall be worked with
@@ -33,7 +33,7 @@ public abstract class TransactionStep {
 	/**
 	 * the resource provider belonging to the resource
 	 */
-	protected ResourceProvider<BaseResource> provider;
+	protected ResourceProvider<DomainResource> provider;
 	
 	/**
 	 * The response created by this transaction step
@@ -63,6 +63,7 @@ public abstract class TransactionStep {
 	
 	/**
 	 * prepare this action for execution
+	 * @throws AppException
 	 */
 	public void prepare() throws AppException {}
 	

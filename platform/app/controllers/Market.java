@@ -314,6 +314,7 @@ public class Market extends APIController {
 		}		 
 		app.status = PluginStatus.DELETED;
 		app.spotlighted = false;
+		app.filename = null;
 		
 	    try {
 	        app.update();

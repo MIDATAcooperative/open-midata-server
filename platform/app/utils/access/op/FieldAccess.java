@@ -27,6 +27,8 @@ public class FieldAccess implements Condition {
 	}
 	
 	public static Condition path(String accessKey, Condition cond) {
+		if (accessKey.contains("|")) return new AlternativeFieldAccess(accessKey, cond);
+		
 		String[] paths = accessKey.split("\\.");
 		   		   		   
 		for (int i = paths.length-1;i>=0;i--) cond = new FieldAccess(paths[i], cond);
@@ -78,6 +80,7 @@ public class FieldAccess implements Condition {
 	@Override
 	public Condition optimize() {
 		cond = cond.optimize();
+		if (field.contains(".")) return FieldAccess.path(field, cond);
 		return this;
 	}
 
@@ -87,7 +90,7 @@ public class FieldAccess implements Condition {
 	}
 
 	@Override
-	public Map<String, Condition> indexExpression() {
+	public Condition indexExpression() {
 		String path = field;
 		Condition c = cond;
 		 
@@ -96,9 +99,24 @@ public class FieldAccess implements Condition {
 			c = ((FieldAccess) c).cond;
 		}
 		c = c.indexValueExpression();
-		if (c == null) return null;
+		if (c == null) {
+			if (cond instanceof AndCondition) {
+				Condition r = null;
+				for (Condition part : ((AndCondition) cond).getParts()) {
+					r = AndCondition.and(r, new FieldAccess(path, part));
+				}
+				return r.indexExpression();
+			} else if (cond instanceof OrCondition) {
+				Condition r = null;
+				for (Condition part : ((OrCondition) cond).getParts()) {
+					r = OrCondition.or(r, new FieldAccess(path, part));
+				}
+				return r.indexExpression();
+			} 
+			return null;
+		}
 		
-		return Collections.singletonMap(path, c); 
+		return new FieldAccess(path, c); 
 	}
 
 	@Override
@@ -114,7 +132,16 @@ public class FieldAccess implements Condition {
 	@Override
 	public Map<String, Object> asMongoQuery() {
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put(field, cond.asMongoQuery());
+		
+		String fieldName = field;
+		Condition c = cond;
+		
+		while (c instanceof FieldAccess) {
+			fieldName += "."+((FieldAccess) c).field;
+			c = ((FieldAccess) c).cond;
+		}
+		
+		result.put(fieldName, c.asMongoQuery());
 		return result;
 	}
 

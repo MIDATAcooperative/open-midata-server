@@ -86,11 +86,16 @@ public class Consent extends Model {
 	 * Exclude all data created after this date
 	 */
 	public @NotMaterialized Date createdBefore;
+		
 	
 	/**
 	 * Internal timestamp of last data change for faster queries
 	 */
 	public long dataupdate;
+	
+	public static Consent getByIdUnchecked(MidataId consentId, Set<String> fields) throws InternalServerException {
+		return Model.get(Consent.class, collection, CMaps.map("_id", consentId), fields);
+	}
 	
 	public static Consent getByIdAndOwner(MidataId consentId, MidataId ownerId, Set<String> fields) throws InternalServerException {
 		return Model.get(Consent.class, collection, CMaps.map("_id", consentId).map("owner", ownerId), fields);
@@ -113,19 +118,27 @@ public class Consent extends Model {
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorized(MidataId member) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", ConsentStatus.ACTIVE), Sets.create("name", "order", "owner", "type"));
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", ConsentStatus.ACTIVE), Sets.create("name", "order", "owner", "ownerName", "type"));
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorized(MidataId member, long since) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", ConsentStatus.ACTIVE).map("dataupdate", CMaps.map("$gte", since)), Sets.create("name", "order", "owner", "type"));
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", ConsentStatus.ACTIVE).map("dataupdate", CMaps.map("$gte", since)), Sets.create("name", "order", "owner", "ownerName", "type"));
+	}
+	
+	public static Set<Consent> getAllByAuthorized(MidataId member, Map<String, Object> properties, Set<String> fields) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("authorized", member), fields);
+	}
+	
+	public static Set<Consent> getAllByAuthorized(Set<MidataId> member, Map<String, Object> properties, Set<String> fields) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("authorized", member), fields);
 	}
 	
 	public static Set<Consent> getAllByAuthorized(MidataId member) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member), Sets.create("name", "order", "owner", "type"));
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member), Sets.create("name", "order", "owner", "ownerName", "type", "status"));
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorizedAndOwners(MidataId member, Set<MidataId> owners) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owners).map("status",  ConsentStatus.ACTIVE), Sets.create("name", "order", "owner", "type"));
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owners).map("status",  ConsentStatus.ACTIVE), Sets.create("name", "order", "owner", "ownerName", "type"));
 	}
 	
 	public static Set<Consent> getHealthcareActiveByAuthorizedAndOwner(MidataId member, MidataId owner) throws InternalServerException {
@@ -133,7 +146,7 @@ public class Consent extends Model {
 	}
 	
 	public static Consent getMessagingActiveByAuthorizedAndOwner(MidataId member, MidataId owner) throws InternalServerException {
-		return Model.get(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  ConsentStatus.ACTIVE).map("type",  ConsentType.IMPLICIT), Sets.create("name", "order", "owner", "type"));
+		return Model.get(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  ConsentStatus.ACTIVE).map("type",  ConsentType.IMPLICIT), Sets.create("name", "order", "owner", "ownerName", "type"));
 	}
 		
 	public static void set(MidataId consentId, String field, Object value) throws InternalServerException {

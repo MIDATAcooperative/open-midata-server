@@ -53,11 +53,12 @@ public class HPUser extends User {
 		return Model.get(HPUser.class, collection, CMaps.map("_id", id).map("apps", appId).map("role",  UserRole.PROVIDER), fields);
 	}
 	
-	public static Set<HPUser> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
-		return Model.getAll(HPUser.class, collection, properties, fields);
+	public static Set<HPUser> getAll(Map<String, Object> properties, Set<String> fields) throws InternalServerException {
+		return Model.getAll(HPUser.class, collection, CMaps.map(properties).map("role", UserRole.PROVIDER), fields);
 	}
 	
 	public static void add(HPUser user) throws InternalServerException {
+		user.updateKeywords(false);
 		Model.insert(collection, user);	
 		
 		// add to search index (email is document's content, so that it is searchable as well)

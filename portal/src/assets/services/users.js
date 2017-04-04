@@ -5,7 +5,7 @@ angular.module('services')
 	var dinfo;
 	
 	service.ALLPUBLIC = ["address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "mobile", "phone", "role", "zip"];
-	service.MINIMAL = [ "firstname", "lastname", "role"];
+	service.MINIMAL = [ "firstname", "lastname", "role", "email"];
 	
 	
 	service.getMembers = function(properties, fields) {

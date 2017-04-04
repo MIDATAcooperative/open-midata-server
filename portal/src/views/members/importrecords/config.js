@@ -1,5 +1,5 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('member.importrecords', {
 	      url: '/import/:spaceId',
@@ -9,4 +9,4 @@ angular.module('portal')
 	      url: '/import/:spaceId',
 	      templateUrl: 'views/members/importrecords/importrecords.html'
 	    });
-});
+}]);

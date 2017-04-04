@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bson.BasicBSONObject;
 
+import controllers.Circles;
 import utils.AccessLog;
 import utils.exceptions.AppException;
 
@@ -25,7 +26,8 @@ public class Feature_ConsentRestrictions extends Feature {
 		  if (filter.containsField("valid-until")) {
 			  Date until = filter.getDate("valid-until");
 			  if (until.before(new Date(System.currentTimeMillis()))) {
-				  AccessLog.log("consent not valid anymore");				  
+				  AccessLog.log("consent not valid anymore");			
+				  Circles.consentExpired(q.getCache().getExecutor(), q.getApsId());
 				  return new ArrayList<DBRecord>();
 			  }
 		  }

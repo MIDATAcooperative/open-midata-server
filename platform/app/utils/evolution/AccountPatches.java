@@ -4,11 +4,14 @@ import java.util.List;
 import java.util.Set;
 
 import models.AccessPermissionSet;
+import models.Circle;
 import models.Consent;
 import models.MidataId;
+import models.MobileAppInstance;
 import models.Record;
 import models.Space;
 import models.User;
+import models.enums.ConsentType;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.access.RecordManager;
@@ -26,6 +29,7 @@ public class AccountPatches {
 		if (user.accountVersion < 20160407) { formatPatch20160407(user); }
 		if (user.accountVersion < 20160902) { formatPatch20160902(user); }
 		if (user.accountVersion < 20161205) { formatPatch20161205(user); }
+		//if (user.accountVersion < 20170206) { formatPatch20170206(user); }
 	}
 	
 	public static void makeCurrent(User user, int currentAccountVersion) throws AppException {
@@ -104,4 +108,33 @@ public class AccountPatches {
 		
 		AccessLog.logEnd("end patch 2016 12 05");
 	}
+	
+	public static void formatPatch20170206(User user) throws AppException {
+		AccessLog.logBegin("start patch 2017 02 06");
+		
+		accountReset(user);
+		RecordManager.instance.wipe(user._id, CMaps.map("owner", "self").map("app", "fitbit"));
+		RecordManager.instance.wipe(user._id, CMaps.map("owner", "self").map("app", "57a476e679c72190248a135d"));
+		makeCurrent(user, 20170206);
+		
+		AccessLog.logEnd("end patch 2017 02 06");
+	}
+	
+	public static void accountReset(User user) throws AppException {
+		MidataId userId = user._id;
+		
+		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
+		for (Space space : spaces) {
+			RecordManager.instance.deleteAPS(space._id, userId);			
+			Space.delete(userId, space._id);
+		}
+		
+		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map("type", ConsentType.EXTERNALSERVICE), Consent.ALL);
+		for (Consent consent : consents) {
+			RecordManager.instance.deleteAPS(consent._id, userId);
+			Circle.delete(userId, consent._id);
+		}
+	}
+	
+	
 }

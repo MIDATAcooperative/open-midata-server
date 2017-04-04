@@ -52,7 +52,7 @@ public class Query {
 		this.cache = cache;
 		this.apsId = apsId;
 		process();
-		AccessLog.logQuery(properties, fields);
+		//AccessLog.logQuery(properties, fields);
 	}
 	
 	public Query(Query q, Map<String, Object> properties) throws AppException {
@@ -66,7 +66,7 @@ public class Query {
 		this.cache = q.getCache();
 		this.apsId = aps;			
 		process();
-		AccessLog.logQuery(properties, fields);
+		//AccessLog.logQuery(properties, fields);
 	}		
 	
 	public Map<String, Object> getProperties() {
@@ -105,7 +105,7 @@ public class Query {
 	public boolean isRestrictedToSelf() throws AppException {
 		if (!restrictedBy("owner")) return false;
 		Set<String> owner = getRestriction("owner");
-		if (owner.size() == 1 && (owner.contains("self") || owner.contains(cache.getOwner().toString()))) return true;
+		if (owner.size() == 1 && (owner.contains("self") || owner.contains(cache.getAccountOwner().toString()))) return true;
 		return false;
 	}
 	
@@ -237,7 +237,7 @@ public class Query {
 		return maxDateUpdated;
 	}
 	
-	public void addMongoTimeRestriction(Map<String, Object> properties1, boolean allowZero) {
+	public boolean addMongoTimeRestriction(Map<String, Object> properties1, boolean allowZero) {
 		Map<String, Object> properties = properties1;		
 		if (minTime != 0 || maxTime != 0) {
 			if (allowZero) {
@@ -256,7 +256,9 @@ public class Query {
 			    if (maxTime!=0) restriction.put("$lte", maxTime);
 			    properties.put("time", restriction);
 			}
+			return true;
 		}
+		return false;
 	}
 	
 	public Date getDateRestriction(String name) throws BadRequestException {
@@ -305,7 +307,7 @@ public class Query {
 	              properties.containsKey("code") ||
 	              properties.containsKey("name");
 		 
-		 restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age") || properties.containsKey("created-after") || properties.containsKey("updated-after") || properties.containsKey("updated-before");
+		 restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age") || properties.containsKey("created-after") || properties.containsKey("created-before") || properties.containsKey("updated-after") || properties.containsKey("updated-before");
 		 
          fieldsFromDB = Sets.create("createdOld", "encrypted");
          mayNeedFromDB = new HashSet<String>();
@@ -318,7 +320,7 @@ public class Query {
          if (fields.contains("format") || properties.containsKey("format") || properties.containsKey("group")) mayNeedFromDB.add("format");
          if (fields.contains("content") || properties.containsKey("content") || properties.containsKey("group")) mayNeedFromDB.add("content");
          if (fields.contains("app") || properties.containsKey("app") || properties.containsKey("group")) mayNeedFromDB.add("app");
-         if (fields.contains("created")) mayNeedFromDB.add("created");
+         if (fields.contains("created") || restrictedOnTime) mayNeedFromDB.add("created");
          
          if (properties.containsKey("sort")) {
 			 String sort = properties.get("sort").toString();
@@ -344,7 +346,7 @@ public class Query {
 		 if (fields.contains("tags")) fieldsFromDB.add("tags");
 		 */
 		 if (properties.containsKey("max-age")) {
-			Number maxAge = Long.parseLong(properties.get("max-age").toString());
+			Number maxAge = (long) Double.parseDouble(properties.get("max-age").toString());
 			minDateCreated = new Date(System.currentTimeMillis() - 1000 * maxAge.longValue());
 			minTime = getTimeFromDate(minDateCreated);
 		 }
@@ -393,7 +395,7 @@ public class Query {
 					 resolved.add(owner);
 				 } else {
 					 if (owner.equals("self")) {
-						 resolved.add(cache.getOwner().toString());
+						 resolved.add(cache.getAccountOwner().toString());
 					 } else resolved.add(owner);
 				 }
 			 }
@@ -423,7 +425,7 @@ public class Query {
 			if (system == null || ! (system instanceof String)) throw new BadRequestException("error.missing.groupsystem", "Missing group-system for query");
 			Set<String> groups = Query.getRestriction(query.get("group"), "group"); 
 			query.put("group", groups);
-			for (String group : groups) if (RecordGroup.getBySystemPlusName(system.toString(), group) == null) throw new BadRequestException("error.group",  "Unknown group'"+group+"' for system '"+system.toString()+"'.");
+			for (String group : groups) if (RecordGroup.getBySystemPlusName(system.toString(), group) == null) throw new BadRequestException("error.unknown.group",  "Unknown group'"+group+"' for system '"+system.toString()+"'.");
 			contentSet = true;
 		}
 		if (query.containsKey("group-strict")) {
@@ -451,6 +453,10 @@ public class Query {
 		}
 		if (query.containsKey("app")) {
 			query.put("app", Query.getRestriction(query.get("app"), "app"));
+		}
+		
+		if (query.containsKey("owner")) {
+			query.put("owner", Query.getRestriction(query.get("owner"), "owner"));
 		}
 		if (requiresContent && !contentSet) {
 			throw new BadRequestException("error.invalid.access_query", "Access query must restrict by 'content' or 'group'!");

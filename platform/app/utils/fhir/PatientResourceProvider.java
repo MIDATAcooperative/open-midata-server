@@ -14,6 +14,7 @@ import org.hl7.fhir.instance.model.api.IIdType;
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
@@ -21,11 +22,13 @@ import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.Member;
 import models.MidataId;
 import models.Record;
@@ -70,6 +73,26 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		processResource(record, p);		
 		return p;    	
     }
+    
+    @History()
+    @Override
+	public List<Patient> getHistory(@IdParam IIdType theId) throws AppException {
+    	String id = theId.getIdPart();
+    	MidataId targetId = new MidataId(id);
+    	
+	   List<Record> records = RecordManager.instance.list(info().executorId, info().targetAPS, CMaps.map("owner", targetId).map("format",  "fhir/Patient").map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
+	   if (records.isEmpty()) throw new ResourceNotFoundException(theId); 
+	   
+	   List<Patient> result = new ArrayList<Patient>(records.size());
+	   IParser parser = ctx().newJsonParser();
+	   for (Record record : records) {		   
+		   Patient p = parser.parseResource(getResourceType(), record.data.toString());
+			processResource(record, p);
+			result.add(p);
+	   }
+	   
+	   return result;
+	}
  
    
     @Search()
@@ -175,7 +198,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     		   
     		@Description(shortDefinition="The patient's date of birth")
     		@OptionalParam(name="birthdate")
-    		DateRangeParam theBirthdate, 
+    		DateAndListParam theBirthdate, 
     		   
     		@Description(shortDefinition="The organization at which this person is a patient")
     		@OptionalParam(name="organization", targetTypes={  } )
@@ -207,7 +230,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     		  
     		@Description(shortDefinition="The date of death has been provided and satisfies this search value")
     		@OptionalParam(name="deathdate")
-    		DateRangeParam theDeathdate, 
+    		DateAndListParam theDeathdate, 
     		
     		@IncludeParam(reverse=true)
     		Set<Include> theRevIncludes,
@@ -309,27 +332,27 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 	           if (ids != null) query.putAccount("owner", ids);
 		}
 		
-		builder.restriction("identifier", true, "Identifier", "identifier");
-		builder.restriction("family", true, "string", "name.family");
-		builder.restriction("birthdate", true, "DateTime", "birthDate");
-		builder.restriction("deathdate", true, "DateTime", "deceasedDateTime");
-		builder.restriction("given", true, "string", "name.given");
-		builder.restriction("gender", false, "code", "gender");
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
+		builder.restriction("family", true, QueryBuilder.TYPE_STRING, "name.family");
+		builder.restriction("birthdate", true, QueryBuilder.TYPE_DATE, "birthDate");
+		builder.restriction("deathdate", true, QueryBuilder.TYPE_DATETIME, "deceasedDateTime");
+		builder.restriction("given", true, QueryBuilder.TYPE_STRING, "name.given");
+		builder.restriction("gender", false, QueryBuilder.TYPE_CODE, "gender");
 		
-		builder.restriction("name", true, "string", "name.given", "string", "name.family");
-		builder.restriction("email", true, "code", "telecom.value");
-		builder.restriction("address-city", true, "string", "address.city");
-		builder.restriction("address-country", true, "string", "address.country");
-		builder.restriction("address-postalcode", true, "string", "address.postalCode");
-		builder.restriction("address-state", true, "string", "address.state");
-		builder.restriction("address-use", false, "code", "address.use");
+		builder.restriction("name", true, QueryBuilder.TYPE_STRING, "name.given", QueryBuilder.TYPE_STRING, "name.family");
+		builder.restriction("email", true, QueryBuilder.TYPE_CODE, "telecom.value");
+		builder.restriction("address-city", true, QueryBuilder.TYPE_STRING, "address.city");
+		builder.restriction("address-country", true, QueryBuilder.TYPE_STRING, "address.country");
+		builder.restriction("address-postalcode", true, QueryBuilder.TYPE_STRING, "address.postalCode");
+		builder.restriction("address-state", true, QueryBuilder.TYPE_STRING, "address.state");
+		builder.restriction("address-use", false, QueryBuilder.TYPE_CODE, "address.use");
 		
-		builder.restrictionMany("address", true, "string", "address.text", "address.line", "address.city", "address.district", "address.state", "address.postalCode", "address.country");
+		builder.restrictionMany("address", true, QueryBuilder.TYPE_STRING, "address.text", "address.line", "address.city", "address.district", "address.state", "address.postalCode", "address.country");
 		
-		builder.restriction("language", false, "code", "communication.language");
-		builder.restriction("phone", true, "code", "telecom.value");
-		builder.restriction("telecom", true, "code", "telecom.value");
-		builder.restriction("active", false, "boolean", "active");
+		builder.restriction("language", false, QueryBuilder.TYPE_CODE, "communication.language");
+		builder.restriction("phone", true, QueryBuilder.TYPE_CODE, "telecom.value");
+		builder.restriction("telecom", true, QueryBuilder.TYPE_CODE, "telecom.value");
+		builder.restriction("active", false, QueryBuilder.TYPE_BOOLEAN, "active");
 		
 		return query.execute(info);
 	}
@@ -383,7 +406,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     	record.name=thePatient.getName().get(0).getNameAsSingleString();
     }
     
-    public void processResource(Record record, Patient resource) {
+    public void processResource(Record record, Patient resource) throws AppException {
     	super.processResource(record, resource);
 		resource.setId(record.owner.toString());		
 	}

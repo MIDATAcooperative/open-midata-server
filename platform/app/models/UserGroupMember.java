@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Date;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
@@ -18,7 +19,7 @@ import utils.exceptions.InternalServerException;
 public class UserGroupMember extends Model {
 	
 	protected static final @NotMaterialized String collection = "groupmember";
-	public static final @NotMaterialized Set<String> ALL = Sets.create("userGroup", "member", "status", "user");
+	public static final @NotMaterialized Set<String> ALL = Sets.create("userGroup", "member", "status", "user", "startDate", "endDate");
 
 	/**
 	 * Id of user group a group member belongs to
@@ -34,6 +35,16 @@ public class UserGroupMember extends Model {
 	 * Status of membership
 	 */
 	public ConsentStatus status;
+	
+	/**
+	 * Start date of membership
+	 */
+	public Date startDate;
+	
+	/**
+	 * End date of membership
+	 */
+	public Date endDate;
 	
 	
 	@NotMaterialized
@@ -58,5 +69,13 @@ public class UserGroupMember extends Model {
 	
 	public void add() throws InternalServerException {
 		Model.insert(collection, this);	
+	}
+	
+	public void delete() throws InternalServerException {			
+		Model.delete(UserGroupMember.class, collection, CMaps.map("_id", _id));
+	}
+	
+	public static void set(MidataId userId, String field, Object value) throws InternalServerException {
+		Model.set(UserGroupMember.class, collection, userId, field, value);
 	}
 }

@@ -63,8 +63,7 @@ angular.module('services')
 				var data = {"properties": { "_id" : userId }, "fields": ["email", "firstname", "lastname", "visualizations", "apps", "midataID", "name", "role", "subroles"] };
 				server.post(jsRoutes.controllers.Users.get().url, JSON.stringify(data))
 				.then(function(data) {
-				   session.user = data.data[0];
-				   console.log("GOT USER");
+				   session.user = data.data[0];				 
 				   def.resolve(userId);
 				});																					
 			}).
@@ -98,8 +97,7 @@ angular.module('services')
 		   if (c != null) return c;
 		   c = session.cache[id] = {};
 		   callback().then(function(data) {
-			   data = data.data[0];
-			   console.log(data);
+			   data = data.data[0];			 
 			  for (var attr in data) { c[attr] = data[attr]; }
 		   });
 		   return c;

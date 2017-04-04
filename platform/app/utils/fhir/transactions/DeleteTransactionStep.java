@@ -1,28 +1,39 @@
 package utils.fhir.transactions;
 
-import org.hl7.fhir.dstu3.model.BaseResource;
-import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.dstu3.model.DomainResource;
 
+import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import utils.fhir.ResourceProvider;
 
+/**
+ * Deleted a FHIR resource as part of a FHIR tranction or batch
+ * NOT IMPLEMENTED YET
+ */
 public class DeleteTransactionStep extends TransactionStep {
 
-	
-	public DeleteTransactionStep(ResourceProvider provider, BaseResource resource) {
+	/**
+	 * Creates a new delete transaction step for the given ResourceProvider and DomainResource from the user request
+	 * @param provider the ResourceProvider to use
+	 * @param resource the DomainResource from the user request
+	 */
+	public DeleteTransactionStep(ResourceProvider<DomainResource> provider, DomainResource resource) {
 		this.provider = provider;
 		this.resource = resource;
 	}
 	
+	@Override
     public void init() {
-    	record = ResourceProvider.fetchCurrent(resource.getIdElement());
+    	throw new NotImplementedOperationException("delete not implemented");    	
     }
 	
+	@Override
 	public void prepare() { 
-		//provider.prepare(record, resource);
+		throw new NotImplementedOperationException("delete not implemented");
 	}
 	
+	@Override
 	public void execute() {
-		//provider.updateRecord(record, resource);
+		throw new NotImplementedOperationException("delete not implemented");
 	}
 	
 }

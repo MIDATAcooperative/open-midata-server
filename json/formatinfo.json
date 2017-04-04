@@ -6,7 +6,7 @@
 {"_id":{"$oid":"55ae59d0f351efda91eadc77"},"format":"fhir/Observation","comment":"FHIR Observation Resource","visName":"Observation Viewer","visualization":{"$oid":"56fa6a44aed64539084d46ca"}}
 {"_id":{"$oid":"57c935873f4bb36b8d99794a"},"format":"fhir/Patient","comment":"FHIR Patient Resource","visName":"Patient Viewer"}
 {"_id":{"$oid":"57c935873f4bb36b8d99794b"},"format":"fhir/DocumentReference","comment":"FHIR DocumentReference Resource","visName":"Document Viewer"}
-{"_id":{"$oid":"57c935873f4bb36b8d99794c"},"format":"fhir/MedicationOrder","comment":"FHIR MedicationOrder Resource","visName":"Medication Viewer"}
+{"_id":{"$oid":"57c935873f4bb36b8d99794c"},"format":"fhir/MedicationStatement","comment":"FHIR MedicationStatement Resource","visName":"Medication Viewer"}
 {"_id":{"$oid":"58765a8620230b512be8859c"},"format":"fhir/Goal","comment":"FHIR Goal Resource","visName":"Goal Viewer"}
 {"_id":{"$oid":"58765a8620230b512be8859d"},"format":"fhir/Condition","comment":"FHIR Condition Resource","visName":"Condition Viewer"}
 {"_id":{"$oid":"57fb683a6b17c4a12238e597"},"format":"fhir/Media","comment":"FHIR Media Resource","visName":"Media Viewer"}
@@ -14,6 +14,7 @@
 {"_id":{"$oid":"5800fd960834cb6453433e8f"},"format":"fhir/QuestionnaireResponse","comment":"FHIR QuestionnaireResponse Resource","visName":"Questionnaire Viewer"}
 {"_id":{"$oid":"583d6a6350214afeeb296918"},"format":"fhir/Task","comment":"FHIR Task Resource","visName":"Task Viewer"}
 {"_id":{"$oid":"583dae4eea22922db7561fed"},"format":"fhir/Appointment","comment":"FHIR Appointment Resource","visName":"Appointment Viewer"}
+{"_id":{"$oid":"58ca6a188d4500b518e62bb6"},"format":"fhir/Device","comment":"FHIR Device Resource","visName":"Devices Viewer"}
 {"_id":{"$oid":"55ae59d0f351efda91eadc78"},"format":"jawbone/summary","comment":"Deprecated. Do not use.","visName":"Jawbone Activity Clock","visualization":{"$oid":"543d2c14e4b0f34f43670afa"}}
 {"_id":{"$oid":"55ae59d0f351efda91eadc79"},"format":"jawbone/ticks","comment":"Deprecated. Do not use.","visName":"Jawbone Activity Clock","visualization":{"$oid":"543d2c14e4b0f34f43670afa"}}
 {"_id":{"$oid":"55ae59d0f351efda91eadc7b"},"format":"training-app","comment":"Demo only. Do not use.","visName":"Training Editor","visualization":{"$oid":"554c867de4b08413ff37d6f5"}}

@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', function($scope, $state, server, status, session, $translate, languages, $stateParams) {
+.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', 'oauth', function($scope, $state, server, status, session, $translate, languages, $stateParams, oauth) {
 	
 	$scope.registration = { language : $translate.use() };
 	$scope.languages = languages.all;
@@ -14,7 +14,7 @@ angular.module('portal')
         $scope.myform.password.$setValidity('compare', $scope.registration.password ==  $scope.registration.password2);
         $scope.myform.agb.$setValidity('mustaccept', $scope.registration.agb);
         if (!$scope.registration.agb) {
-        	console.log($scope.myform.agb);
+        	
         	$scope.myform.agb.$invalid = true;
         	$scope.myform.agb.$error = { 'mustaccept' : true };
         }
@@ -41,8 +41,20 @@ angular.module('portal')
 			data.developer = $stateParams.developer;
 		}
 		
-		$scope.status.doAction("register", server.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
-		then(function(data) { session.postLogin(data, $state); });
+		if (oauth.getAppname()) {
+		  data.app = oauth.getAppname();
+		  data.device = oauth.getDevice();
+		  $scope.status.doAction("register", server.post(jsRoutes.controllers.QuickRegistration.register().url, JSON.stringify(data))).
+		  then(function(data) { 		  
+			  oauth.setUser($scope.registration.email, $scope.registration.password);
+			  oauth.login();		
+		  });
+		  
+		} else {
+		
+		  $scope.status.doAction("register", server.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
+		  then(function(data) { session.postLogin(data, $state); });
+		}
 	};
 	
 	$scope.changeLanguage = function(lang) {

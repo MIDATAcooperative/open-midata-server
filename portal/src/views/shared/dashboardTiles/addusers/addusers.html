@@ -1,25 +1,24 @@
 
 <div class="ignore autosize" ng-controller="AddUsersCtrl">
   <div class="body">
-	<tabset> 
-	<tab heading="{{ 'addusers.contacts' | translate }}">
-	<p ng-show="contacts.length === 0" translate="addusers.no_contacts"></p>
+		
 	<div ng-show="contacts.length > 0">
+	   <p translate="addusers.contacts"></p>
 		<div class="checkbox" ng-repeat="contact in filteredContacts = (contacts | filter:isntMember)">
-			<label> <input type="checkbox" ng-model="contact.checked"> {{contact.name}}
+			<label> <input type="checkbox" ng-model="contact.checked"> {{contact.firstname}} {{contact.lastname}} &lt;{{contact.email}}&gt;
 			</label>
 		</div>
 		<p ng-show="filteredContacts.length === 0" translate="addusers.no_contacts_to_add"></p>
 	</div>
-	</tab>
-	<tab heading="{{ 'addusers.all_users' | translate }}">
+	
 	<form class="form-horizontal" ng-submit="searchUsers()">
+	   <p translate="addusers.search_by_email"></p>
 		<div class="form-group">
 			<div class="col-xs-10">
 				<input type="text" class="form-control" translate translate-attr-placeholder="addusers.search_user" ng-model="crit.userQuery" autofocus>
 			</div>
 			<div class="col-xs-2">
-				<button type="submit" class="btn btn-primary form-control" translate="common.search_btn"></button>
+				<button type="submit" ng-disabled="!crit.userQuery" class="btn btn-primary form-control" translate="common.search_btn"></button>
 			</div>
 		</div>
 	</form>
@@ -32,7 +31,7 @@
 		</div>
 		<p ng-show="filteredUsers.length === 0" translate="addusers.no_new_found"></p>
 	</div>
-	</tab> </tabset>
+	
 </div>
 <div class="footer">
 	<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addUsers(circle)" translate="common.add_btn"></button>

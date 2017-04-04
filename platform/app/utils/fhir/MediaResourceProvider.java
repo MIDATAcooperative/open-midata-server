@@ -66,33 +66,7 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 			@Description(shortDefinition="The resource language")
 			@OptionalParam(name="_language")
 			StringAndListParam theResourceLanguage, 
-			 
-			/*
-			@Description(shortDefinition="Search the contents of the resource's data using a fulltext search")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT)
-			StringAndListParam theFtContent, 
-			  
-			@Description(shortDefinition="Search the contents of the resource's narrative using a fulltext search")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_TEXT)
-			StringAndListParam theFtText, 
-			  
-			@Description(shortDefinition="Search for resources which have the given tag")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_TAG)
-			TokenAndListParam theSearchForTag, 
-			 
-			@Description(shortDefinition="Search for resources which have the given security labels")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_SECURITY)
-			TokenAndListParam theSearchForSecurity, 
-			   
-			@Description(shortDefinition="Search for resources which have the given profile")
-			@OptionalParam(name=ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE)
-			UriAndListParam theSearchForProfile, 
-			  */
-			/*
-			@Description(shortDefinition="Return resources linked to by the given target")
-			@OptionalParam(name="_has")
-			HasAndListParam theHas, 
-			 */
+			 			
 			    
 			@Description(shortDefinition="")
 			@OptionalParam(name="type")
@@ -190,15 +164,15 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 		
 		builder.recordCodeRestriction("view", "view");
 				
-		builder.restriction("identifier", true, "Identifier", "identifier");
-		builder.restriction("created", true, "DateTime", "content.creation");
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
+		builder.restriction("created", true, QueryBuilder.TYPE_DATETIME, "content.creation");
 		
 		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
 		
 		//builder.restriction("subject", null, true, "subject");
 		builder.restriction("operator", true, "Practitioner", "operator");		
-		builder.restriction("subtype", false, "CodeableConcept", "subtype");
-		builder.restriction("type", false, "code", "type");		
+		builder.restriction("subtype", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "subtype");
+		builder.restriction("type", false, QueryBuilder.TYPE_CODE, "type");		
 		
 		return query.execute(info);
 	}
@@ -250,11 +224,10 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 	
  
 	@Override
-	public void processResource(Record record, Media p) {
+	public void processResource(Record record, Media p) throws AppException {
 		super.processResource(record, p);
 		if (p.getSubject().isEmpty()) {
-			p.getSubject().setReferenceElement(new IdType("Patient", record.owner.toString()));
-			p.getSubject().setDisplay(record.ownerName);
+			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
 		
 		Attachment attachment = p.getContent();

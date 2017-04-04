@@ -1,17 +1,23 @@
 angular.module('views')
-.controller('HelpCtrl', ['$scope', '$state', 'portal', function($scope, $state, portal) {
+.controller('HelpCtrl', ['$scope', '$state', 'portal', 'spaces', 'session', function($scope, $state, portal, spaces, session) {
 	$scope.alreadyAnswered = false;
 	$scope.init = function() {
-		portal.getConfig()
+		
+		session.currentUser.then(function(userId) { $scope.userId = userId; });
+		/*portal.getConfig()
 		.then(function(data) {			
 			if (data.data && data.data.questions) {
 				$scope.alreadyAnswered = true;								
 			} else {
 				$scope.alreadyAnswered = false;				
 			}
-		});
+		});*/
 	};
 	$scope.init();
+	
+	$scope.use = function(view) {
+		spaces.openAppLink($state, $scope.userId, { app : view});
+	};
 		
 }])
 .controller('HelpSetupCtrl', ['$scope', '$state', 'portal', 'apps', 'spaces', 'session', function($scope, $state, portal, apps, spaces, session) {
@@ -22,7 +28,7 @@ angular.module('views')
 	$scope.init = function() {
 		portal.getConfig()
 		.then(function(data) {
-			console.log(data);
+			
 			if (data.data && data.data.questions) {
 				$scope.config = data.data;
 				$scope.questions = $scope.config.questions;
@@ -152,7 +158,7 @@ angular.module('views')
 		angular.forEach($scope.measures, function(measure) {
 		  if (q.measures[measure.id]) {
 			 angular.forEach(measure.install, function(toInstall) {
-				 console.log(toInstall);
+				
 				if (toInstall.plugin === "fhir-observation") {
 				  if (obs==null) obs = toInstall; else obs.config.measures = obs.config.measures.concat(toInstall.config.measures);	
 				} else {
@@ -167,6 +173,7 @@ angular.module('views')
 		}
 		
 		if (q.devices.fitbit) install("fitbit", "config.fitbit", "config");
+		if (q.devices.withings) install("witings", "config.withings", "config");
 				
 		remove('help_welcome', 'me', true);
 		

@@ -27,6 +27,7 @@ public class Feature_Prefetch extends Feature {
 	
 	protected static List<DBRecord> lookup(Query q, List<DBRecord> prefetched, Feature next) throws AppException {
 		AccessLog.logBegin("start lookup #recs="+prefetched.size());
+		long time = System.currentTimeMillis();
 		List<DBRecord> results = null;
 		for (DBRecord record : prefetched) {
 		  List<DBRecord> partResult = null;	
@@ -35,15 +36,9 @@ public class Feature_Prefetch extends Feature {
 		    APS stream = q.getCache().getAPS(record.stream);
 		    if (stream.isAccessible()) {
 		    	MidataId owner = stream.getStoredOwner();
-		    	partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("owner", owner), next);			    	
-			    if (partResult.isEmpty()) {
-			    	partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("stream", record.stream).map("owner", owner).map("quick",  record), next);
-			    }
+		    	partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("owner", owner).map("quick",  record), next);
 		    } else {
-		    	partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true"), next);			    	
-		    	if (partResult.isEmpty()) {
-		    		partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("stream", record.stream).map("quick",  record), next);
-			    }
+	    		partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("quick",  record), next);
 		    }		 
 		  } else partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("streams", "true"), next);
 		  
@@ -52,7 +47,7 @@ public class Feature_Prefetch extends Feature {
 		  if (results == null) results = partResult; else results.addAll(partResult);
 		}
 		if (results==null) results = new ArrayList<DBRecord>();
-		AccessLog.logEnd("end lookup #found="+results.size());
+		AccessLog.logEnd("end lookup #found="+results.size()+" time="+(System.currentTimeMillis() - time));
 		return results;
 	}
 		

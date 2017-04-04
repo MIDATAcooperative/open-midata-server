@@ -23,6 +23,7 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
@@ -81,7 +82,7 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 			   
 			@Description(shortDefinition="When the questionnaire was authored")
 			@OptionalParam(name="authored")
-			DateRangeParam theAuthored, 
+			DateAndListParam theAuthored, 
 			   
 			@Description(shortDefinition="The subject of the questionnaire")
 			@OptionalParam(name="subject", targetTypes={  } )
@@ -180,17 +181,17 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 				
-		builder.restriction("identifier", true, "Identifier", "identifier");
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
 				
-		builder.restriction("authored", true, "DateTime", "authored");
+		builder.restriction("authored", true, QueryBuilder.TYPE_DATETIME, "authored");
 		builder.restriction("author", true, null, "author");
 		builder.restriction("based-on", true, null, "basedOn");
 		builder.restriction("context", true, null, "context");		
 		builder.restriction("parent", true, null, "parent");
 		builder.restriction("questionnaire", true, "Questionnaire", "questionnaire");
 		builder.restriction("source", true, null, "source");
-		builder.restriction("status", true, "code", "status");		
+		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");		
 				
 		return query.execute(info);
 	}
@@ -228,6 +229,8 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 		Record record = fetchCurrent(theId);
 		prepare(record, theQuestionnaireResponse);		
 		updateRecord(record, theQuestionnaireResponse);		
+		processResource(record, theQuestionnaireResponse);
+		
 		return outcome("QuestionnaireResponse", record, theQuestionnaireResponse);
 	}
 
@@ -251,11 +254,10 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 	 */
  
 	@Override
-	public void processResource(Record record, QuestionnaireResponse p) {
+	public void processResource(Record record, QuestionnaireResponse p) throws AppException {
 		super.processResource(record, p);
 		if (p.getSubject().isEmpty()) {
-			p.getSubject().setReferenceElement(new IdType("Patient", record.owner.toString()));
-			p.getSubject().setDisplay(record.ownerName);
+			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
 	}
 

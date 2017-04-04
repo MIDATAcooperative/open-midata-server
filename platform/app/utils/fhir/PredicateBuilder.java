@@ -6,7 +6,9 @@ import utils.access.op.CompareCaseInsensitive.CompareCaseInsensitiveOperator;
 import utils.access.op.CompareCondition;
 import utils.access.op.CompareCondition.CompareOperator;
 import utils.access.op.Condition;
+import utils.access.op.ElemMatchCondition;
 import utils.access.op.EqualsSingleValueCondition;
+import utils.access.op.ExistsCondition;
 import utils.access.op.FieldAccess;
 import utils.access.op.OrCondition;
 
@@ -18,12 +20,23 @@ public class PredicateBuilder {
 	
 	private boolean indexable = true;
 	
-	public void addComp(String path, CompareOperator op, Object value) {		
-		Condition cond = new CompareCondition((Comparable<Object>) value, op);
+	public void addComp(String path, CompareOperator op, Object value, boolean nullTrue) {		
+		Condition cond = new CompareCondition((Comparable<Object>) value, op, nullTrue);
 		add(FieldAccess.path(path, cond));
 	}
 	
+	public void addCompOr(String path, CompareOperator op, Object value, boolean nullTrue) {		
+		Condition cond = new CompareCondition((Comparable<Object>) value, op, nullTrue);
+		cond = FieldAccess.path(path, cond);
+		
+		if (current == null) current = cond; 
+		else current = OrCondition.or(current, cond);
+	}
 	
+	public void addExists(String path, boolean value) {
+	  add(FieldAccess.path(path, new ExistsCondition(value)));
+	}
+		
 	
 	public void addEq(String path, Object value) {
 	  add(FieldAccess.path(path, new EqualsSingleValueCondition((Comparable) value)));
@@ -35,7 +48,7 @@ public class PredicateBuilder {
 	
 	public void addEq(String path, String sysPath, Object system, String valPath, Object value, CompareCaseInsensitiveOperator op) {
 		  add(FieldAccess.path(path, 
-				  AndCondition.and(
+				  ElemMatchCondition.and(
 						  FieldAccess.path(valPath, new CompareCaseInsensitive(value, op)), 
 						  FieldAccess.path(sysPath, new EqualsSingleValueCondition((Comparable) system)))));
 	}

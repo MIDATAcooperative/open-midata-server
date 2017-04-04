@@ -48,7 +48,7 @@ angular.module('portal')
 				if (grp.contents) {
 					angular.forEach(grp.contents, function(cnt) {
 						var c = $scope.nameToContent[cnt];
-						console.log(c);
+					
 						if (c != null) {
 							grp.contentEntries.push(c);
 							c.group = grp.name;
@@ -235,8 +235,7 @@ angular.module('portal')
 		if ($scope.oldGroup != $scope.contentEntry.group || $scope.oldName != $scope.contentEntry.content) {
 			var old = $scope.nameToGroup[$scope.oldGroup];
 			var newGroup = $scope.nameToGroup[$scope.contentEntry.group];
-			console.log($scope.contentEntry.group);
-			console.log(newGroup);
+			
 			if (old) {
 			  old.action = old.action || "update";
 			  old.contents.splice(old.contents.indexOf($scope.oldName), 1);

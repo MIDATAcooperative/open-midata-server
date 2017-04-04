@@ -48,7 +48,8 @@ import utils.exceptions.InternalServerException;
 import utils.fhir.PatientResourceProvider;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
-import utils.mails.MailUtils;
+import utils.messaging.MailUtils;
+import utils.messaging.Messager;
 import views.html.apstest;
 import views.html.tester;
 import views.txt.mails.lostpwmail;
@@ -122,7 +123,7 @@ public class Application extends APIController {
 		  String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
 		  String url = site + "/#/portal/setpw?token=" + encrypted;
 			   
-		  MailUtils.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url));
+		  Messager.sendTextMail(email, user.firstname+" "+user.lastname, "Your Password", lostpwmail.render(site,url).toString());
 		}
 			
 		// response
@@ -166,7 +167,7 @@ public class Application extends APIController {
 		   String url1 = site + "/#/portal/confirm/" + encrypted;
 		   String url2 = site + "/#/portal/reject/" + encrypted;
 		   AccessLog.log("send welcome mail: "+user.email);	   
-	  	   MailUtils.sendTextMail(user.email, user.firstname+" "+user.lastname, "Welcome to MIDATA", welcome.render(site, url1, url2));
+	  	   Messager.sendTextMail(user.email, user.firstname+" "+user.lastname, "Welcome to MIDATA", welcome.render(site, url1, url2).toString());
 	   } else {
 		   user.emailStatus = EMailStatus.VALIDATED;
 		   User.set(user._id, "emailStatus", user.emailStatus);
@@ -184,7 +185,7 @@ public class Application extends APIController {
 		   String role = user.role.toString();
 		   
 		   AccessLog.log("send admin notification mail: "+user.email);	   
-	  	   MailUtils.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), user.firstname+" "+user.lastname, "New MIDATA User", adminnotify.render(site, email, role));
+	  	   Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), user.firstname+" "+user.lastname, "New MIDATA User", adminnotify.render(site, email, role).toString());
 	   }
 	}
 	
@@ -461,20 +462,20 @@ public class Application extends APIController {
 		}
 		
 		Date endTrial = new Date(System.currentTimeMillis() - MAX_TRIAL_DURATION);
-		if (user.subroles.contains(SubUserRole.TRIALUSER) && user.registeredAt.before(endTrial)) {
+		if (user.status.equals(UserStatus.NEW) && user.subroles.contains(SubUserRole.TRIALUSER) && user.registeredAt.before(endTrial)) {
 			if (user.agbStatus.equals(ContractStatus.NEW)) {
 				Users.requestMembershipHelper(user._id);				
 			}
 						
 			user.status = UserStatus.TIMEOUT;
 		}
-		if (user.status.equals(UserStatus.NEW)&&  user.subroles.contains(SubUserRole.TRIALUSER) && !InstanceConfig.getInstance().getInstanceType().getTrialAccountsMayLogin()) {
+		if (user.status.equals(UserStatus.NEW) &&  user.subroles.contains(SubUserRole.TRIALUSER) && !InstanceConfig.getInstance().getInstanceType().getTrialAccountsMayLogin()) {
 			user.status = UserStatus.TIMEOUT;
 		}
 		
 		PortalSessionToken token = null;
 		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME);
-		
+	
 		if (user instanceof HPUser) {
 		   token = new PortalSessionToken(handle, user._id, user.role, ((HPUser) user).provider, user.developer);		  
 		} else if (user instanceof ResearchUser) {
@@ -659,7 +660,9 @@ public class Application extends APIController {
 		if (InstanceConfig.getInstance().getInstanceType().developersMayRegisterTestUsers()) {		  
 		   newuser.developer = JsonValidation.getMidataId(json, "developer");
 		   if (newuser.developer != null) {
-		     if (!newuser.developer.equals(PortalSessionToken.decrypt(request()).userId)) throw new AuthException("error.internal", "You need to be logged in as this developer");
+			  PortalSessionToken token = PortalSessionToken.decrypt(request());
+			  if (token == null) throw new AuthException("error.internal", "You need to be logged in as this developer");
+		     if (!newuser.developer.equals(token.userId)) throw new AuthException("error.internal", "You need to be logged in as this developer");
 		     newuser.status = UserStatus.ACTIVE;
 		   }
 		}
@@ -730,6 +733,7 @@ public class Application extends APIController {
 				controllers.routes.javascript.FormatAPI.createGroup(),
 				controllers.routes.javascript.FormatAPI.listFormats(),				
 				controllers.routes.javascript.FormatAPI.listContents(),
+				controllers.routes.javascript.FormatAPI.searchContents(),
 				controllers.routes.javascript.FormatAPI.updateContent(),
 				controllers.routes.javascript.FormatAPI.deleteContent(),
 				controllers.routes.javascript.FormatAPI.createContent(),
@@ -763,7 +767,8 @@ public class Application extends APIController {
 				controllers.routes.javascript.Spaces.delete(),
 				controllers.routes.javascript.Spaces.addRecords(),
 				controllers.routes.javascript.Spaces.getUrl(),
-				controllers.routes.javascript.Spaces.regetUrl(),	
+				controllers.routes.javascript.Spaces.regetUrl(),
+				controllers.routes.javascript.Spaces.reset(),
 				// Users
 				controllers.routes.javascript.Users.get(),		
 				controllers.routes.javascript.Users.getCurrentUser(),
@@ -837,6 +842,7 @@ public class Application extends APIController {
 				controllers.admin.routes.javascript.Administration.register(),
 				controllers.admin.routes.javascript.Administration.changeStatus(),
 				controllers.admin.routes.javascript.Administration.addComment(),
+				controllers.admin.routes.javascript.Administration.adminWipeAccount(),
 				// Market				
 				controllers.routes.javascript.Market.registerPlugin(),
 				controllers.routes.javascript.Market.updatePlugin(),
@@ -850,7 +856,9 @@ public class Application extends APIController {
 				// UserGroups
 				controllers.routes.javascript.UserGroups.search(),
 				controllers.routes.javascript.UserGroups.createUserGroup(),
+				controllers.routes.javascript.UserGroups.deleteUserGroup(),
 				controllers.routes.javascript.UserGroups.addMembersToUserGroup(),
+				controllers.routes.javascript.UserGroups.deleteUserGroupMembership(),
 				controllers.routes.javascript.UserGroups.listUserGroupMembers(),
 				
 		        // Portal

@@ -33,19 +33,27 @@ import play.mvc.Http;
 import scala.NotImplementedError;
 import utils.AccessLog;
 
+/**
+ * HttpServletRequest emulation for Play Framework
+ *
+ */
 public class PlayHttpServletRequest implements HttpServletRequest {
 
 	private Http.Request request;
 	private Map<String, Object> attribs = new HashMap<String, Object>();
 	
+	/**
+	 * Create HttpServletRequest from Play Http.Request
+	 * @param request the play Http.Request
+	 */
 	public PlayHttpServletRequest(Http.Request request) {
 	   this.request = request;	
 	}
 	
 	@Override
 	public AsyncContext getAsyncContext() {
-		if (true) throw new NotImplementedError();
-		return null;
+		 throw new NotImplementedError();
+		
 	}
 
 	@Override
@@ -55,38 +63,34 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public Enumeration<String> getAttributeNames() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();
+		
 	}
 
 	@Override
 	public String getCharacterEncoding() {
-		if (true) throw new NotImplementedError();
-		return null;
+		 throw new NotImplementedError();
+		
 	}
 
 	@Override
 	public int getContentLength() {
-		if (true) throw new NotImplementedError();
-		return 0;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public long getContentLengthLong() {
-		if (true) throw new NotImplementedError();
-		return 0;
+		throw new NotImplementedError();	
 	}
 
 	@Override
 	public String getContentType() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public DispatcherType getDispatcherType() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
@@ -96,32 +100,31 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public String getLocalAddr() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();
+		
 	}
 
 	@Override
 	public String getLocalName() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();
+		
 	}
 
 	@Override
 	public int getLocalPort() {
-		if (true) throw new NotImplementedError();
-		return 0;
+		throw new NotImplementedError();
 	}
 
 	@Override
 	public Locale getLocale() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();
+		
 	}
 
 	@Override
 	public Enumeration<Locale> getLocales() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();
+		
 	}
 
 	@Override
@@ -136,8 +139,7 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public Enumeration<String> getParameterNames() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
@@ -147,86 +149,72 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public String getProtocol() {
-		if (true) throw new NotImplementedError();
-		return null;
+	    throw new NotImplementedError();		
 	}
 
 	@Override
 	public BufferedReader getReader() throws IOException {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public String getRealPath(String arg0) {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public String getRemoteAddr() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public String getRemoteHost() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public int getRemotePort() {
-		if (true) throw new NotImplementedError();
-		return 0;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public RequestDispatcher getRequestDispatcher(String arg0) {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();
 	}
 
 	@Override
 	public String getScheme() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public String getServerName() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public int getServerPort() {
-		if (true) throw new NotImplementedError();
-		return 0;
+		throw new NotImplementedError();
 	}
 
 	@Override
 	public ServletContext getServletContext() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public boolean isAsyncStarted() {
-		if (true) throw new NotImplementedError();
-		return false;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public boolean isAsyncSupported() {
-		if (true) throw new NotImplementedError();
-		return false;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public boolean isSecure() {
-		if (true) throw new NotImplementedError();
-		return false;
+		throw new NotImplementedError();		
 	}
 
 	@Override
@@ -248,32 +236,27 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public AsyncContext startAsync() throws IllegalStateException {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public AsyncContext startAsync(ServletRequest arg0, ServletResponse arg1) throws IllegalStateException {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public boolean authenticate(HttpServletResponse arg0) throws IOException, ServletException {
-		if (true) throw new NotImplementedError();
-		return false;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public String changeSessionId() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public String getAuthType() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
@@ -283,14 +266,12 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public Cookie[] getCookies() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public long getDateHeader(String arg0) {
-		if (true) throw new NotImplementedError();
-		return 0;
+		throw new NotImplementedError();		
 	}
 
 	@Override
@@ -322,38 +303,32 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public int getIntHeader(String arg0) {
-		if (true) throw new NotImplementedError();
-		return 0;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public String getMethod() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public Part getPart(String arg0) throws IOException, ServletException {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public Collection<Part> getParts() throws IOException, ServletException {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public String getPathInfo() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public String getPathTranslated() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
@@ -365,8 +340,7 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public String getRemoteUser() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
@@ -388,8 +362,7 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public String getRequestedSessionId() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
@@ -399,68 +372,59 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public HttpSession getSession() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public HttpSession getSession(boolean arg0) {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public Principal getUserPrincipal() {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public boolean isRequestedSessionIdFromCookie() {
-		if (true) throw new NotImplementedError();
-		return false;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public boolean isRequestedSessionIdFromURL() {
-		if (true) throw new NotImplementedError();
-		return false;
+		throw new NotImplementedError();	
 	}
 
 	@Override
 	public boolean isRequestedSessionIdFromUrl() {
-		if (true) throw new NotImplementedError();
-		return false;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public boolean isRequestedSessionIdValid() {
-		if (true) throw new NotImplementedError();
-		return false;
+		throw new NotImplementedError();
 	}
 
 	@Override
 	public boolean isUserInRole(String arg0) {
-		if (true) throw new NotImplementedError();
-		return false;
+		throw new NotImplementedError();		
 	}
 
 	@Override
 	public void login(String arg0, String arg1) throws ServletException {
-		if (true) throw new NotImplementedError();
+		throw new NotImplementedError();
 		
 	}
 
 	@Override
 	public void logout() throws ServletException {
-		if (true) throw new NotImplementedError();
+		throw new NotImplementedError();
 		
 	}
 
 	@Override
 	public <T extends HttpUpgradeHandler> T upgrade(Class<T> arg0) throws IOException, ServletException {
-		if (true) throw new NotImplementedError();
-		return null;
+		throw new NotImplementedError();
 	}
 
 }

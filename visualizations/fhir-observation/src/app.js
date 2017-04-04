@@ -32,6 +32,10 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 	    .state('create', {
 	      url: '/create?measure&authToken',	    
 	      templateUrl: 'create.html'
+	    })
+	    .state('preview', {
+	      url: '/preview?lang&authToken',	   
+	      templateUrl: 'preview.html'
 	    });
 	 
 	 $urlRouterProvider

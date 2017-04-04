@@ -1,6 +1,7 @@
 package utils.access.index;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -118,23 +119,53 @@ public class IndexRoot {
 		inf.aps = aps;
 		inf.record = record;
 		inf.key = new Comparable[model.fields.size()];		
-		extract(0, inf, null,null);				
+		extract(0, inf, null,null, null, 0, false);				
 		if (rootPage.needsSplit()) {
 			flush();
 			lockIndex();
 			rootPage = IndexNonLeafPage.split(this.key, rootPage);				
 		}
 	}
+	
+	public void removeEntry(DBRecord record) throws InternalServerException, LostUpdateException {
+		modCount++;
+		if (modCount > 100) lockIndex();
+		
+		EntryInfo inf = new EntryInfo();		
+		inf.record = record;
+		inf.key = new Comparable[model.fields.size()];		
+		extract(0, inf, null,null, null, 0, true);						
+	}
 
 
-	private void extract(int keyIdx, EntryInfo inf, BSONObject data, String path) throws InternalServerException {
+	private void extract(int keyIdx, EntryInfo inf, BSONObject data, String path, String[] allpath, int pathIdx, boolean remove) throws InternalServerException {
 		if (data == null) {
-			if (keyIdx >= model.fields.size()) {
-				rootPage.addEntry(inf.key, inf.aps, inf.record._id);
-				return;
-			}			
-			data = inf.record.data;
-			path = model.fields.get(keyIdx);
+			if (allpath != null) {
+				if (pathIdx < allpath.length) {			
+				  path = allpath[pathIdx];
+				  pathIdx++;
+				  data = inf.record.data;
+				  if (path.equals("null")) {
+					  inf.key[keyIdx] = (Comparable) null;
+					  extract(keyIdx+1, inf, null, null, null, 0, remove);  
+				  }
+				} else return;
+			} else {
+			
+				if (keyIdx >= model.fields.size()) {
+					if (remove) {
+					  rootPage.removeEntry(inf.key, inf.record._id);	
+					} else {
+					  rootPage.addEntry(inf.key, inf.aps, inf.record._id);
+					}
+					return;
+				}			
+				data = inf.record.data;
+				allpath = model.getFieldsSplit().get(keyIdx);
+				path = allpath[0];
+				pathIdx = 1;
+			}
+			
 		}
 		
 		int i = path.indexOf('.');
@@ -147,12 +178,12 @@ public class IndexRoot {
 				if (lst.size() == 0) return;
 				for (Object obj : lst) {
 					if (obj != null && obj instanceof BSONObject) {
-						extract(keyIdx, inf, (BSONObject) obj, remain);
+						extract(keyIdx, inf, (BSONObject) obj, remain, allpath, pathIdx, remove);
 					}
 				}				
 			} else if (access instanceof BasicBSONObject) {
-			   extract(keyIdx, inf, (BasicBSONObject) access, remain);
-			} else return;
+			   extract(keyIdx, inf, (BasicBSONObject) access, remain, allpath, pathIdx, remove);
+			} else extract(keyIdx, inf, null, null, allpath, pathIdx, remove);;
 		} else {
 			Object res = data.get(path);
 			if (res instanceof BasicBSONList) {
@@ -161,14 +192,16 @@ public class IndexRoot {
 				for (Object obj : lst) {
 					if (obj instanceof Comparable) {					
 					  inf.key[keyIdx] = (Comparable) obj;
-					  extract(keyIdx+1, inf, null, null);
+					  extract(keyIdx+1, inf, null, null, null, 0, remove);
 					} else {
 					  AccessLog.log("Cannot extract path:"+path);
 					}					
 				}				
-			} else {
+			} else if (res != null) {
 			  inf.key[keyIdx] = (Comparable) res;
-			  extract(keyIdx+1, inf, null, null);
+			  extract(keyIdx+1, inf, null, null, null, 0, remove);
+			} else {
+			  extract(keyIdx, inf, null, null, allpath, pathIdx, remove);
 			}
 		}
 	}

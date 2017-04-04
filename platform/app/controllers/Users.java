@@ -16,10 +16,13 @@ import actions.APICall;
 import models.Circle;
 import models.Consent;
 import models.Developer;
+import models.HealthcareProvider;
 import models.History;
 import models.Member;
 import models.MidataId;
+import models.Research;
 import models.Space;
+import models.Study;
 import models.User;
 import models.enums.ContractStatus;
 import models.enums.EventType;
@@ -34,6 +37,7 @@ import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
+import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
 import utils.auth.PortalSessionToken;
 import utils.auth.Rights;
@@ -171,7 +175,7 @@ public class Users extends APIController {
 		forbidSubUserRole(SubUserRole.APPUSER, SubUserRole.NONMEMBERUSER);
 		
 		Set<String> fields =  Sets.create("firstname", "lastname", "name");
-		Set<Member> result = Member.getAll(CMaps.map("email", query).map("searchable", true).map("status", User.NON_DELETED).map("role", UserRole.MEMBER), fields);
+		Set<Member> result = Member.getAll(CMaps.map("emailLC", query.toLowerCase()).map("searchable", true).map("status", User.NON_DELETED).map("role", UserRole.MEMBER), fields);
 		
 		for (Member member : result) {
 			member.name = member.firstname+" "+member.lastname;
@@ -196,21 +200,9 @@ public class Users extends APIController {
 		for (Circle circle : circles) {
 			contactIds.addAll(circle.authorized);
 		}
-		contacts = Member.getAll(CMaps.map("_id", contactIds),Sets.create("firstname","lastname","email"));
-	
-		Set<ObjectNode> jsonContacts = new HashSet<ObjectNode>();
-		for (Member contact : contacts) {
-			ObjectNode node = Json.newObject();
-			node.put("value", contact.firstname+" "+contact.lastname + " (" + contact.email + ")");
-			String[] split = (contact.firstname+" "+contact.lastname).split(" ");
-			String[] tokens = new String[split.length + 1];
-			System.arraycopy(split, 0, tokens, 0, split.length);
-			tokens[tokens.length - 1] = contact.email;
-			node.put("tokens", Json.toJson(tokens));
-			node.put("id", contact._id.toString());
-			jsonContacts.add(node);
-		}
-		return ok(Json.toJson(jsonContacts));
+		contacts = Member.getAll(CMaps.map("_id", contactIds).map("role", UserRole.MEMBER).map("status", User.NON_DELETED),Sets.create("firstname","lastname","email","role"));
+			
+		return ok(JsonOutput.toJson(contacts, "User", Sets.create("firstname","lastname","email","role")));
 	}
 
 	/**
@@ -292,7 +284,7 @@ public class Users extends APIController {
 		User.set(user._id, "lastname", user.lastname);
 		User.set(user._id, "gender", user.gender);		
 		
-		updateKeywords(user, true);
+		user.updateKeywords(true);
 		
 		if (user.role.equals(UserRole.MEMBER)) {		  
 		  PatientResourceProvider.updatePatientForAccount(user._id);
@@ -303,22 +295,7 @@ public class Users extends APIController {
 		return ok();		
 	}
 	
-	/**
-	 * Internally used to update a lower case keyword list for users to improve search speed.
-	 * @param user the user 
-	 * @param write set to true if the new keywords should be written to database
-	 * @throws InternalServerException
-	 */
-	public static void updateKeywords(User user, boolean write) throws InternalServerException {
-		Set<String> keywords = new HashSet<String>();
-		keywords.add(user.firstname.toLowerCase());
-		keywords.add(user.lastname.toLowerCase());
-		if (user.address1 != null && user.address1.length() > 0) keywords.add(user.address1.toLowerCase());
-		if (user.address2 != null && user.address2.length() > 0) keywords.add(user.address2.toLowerCase());
-		if (user.city != null && user.city.length() > 0) keywords.add(user.city.toLowerCase());
-		user.keywordsLC = keywords;
-		if (write) User.set(user._id, "keywordsLC", user.keywordsLC);
-	}
+	
 	
 	/**
 	 * Update user settings like language and public settings
@@ -418,7 +395,7 @@ public class Users extends APIController {
 		if (!InstanceConfig.getInstance().getInstanceType().getAccountWipeAvailable()) throw new InternalServerException("error.internal", "Only allowed on demo server");
 		
 		MidataId userId = new MidataId(request().username());
-		
+						
 		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
 		for (Space space : spaces) {
 			RecordManager.instance.deleteAPS(space._id, userId);
@@ -441,6 +418,22 @@ public class Users extends APIController {
 		RecordManager.instance.wipe(userId, CMaps.map("owner", "self"));
 		RecordManager.instance.wipe(userId, CMaps.map("owner", "self").map("streams", "true"));
 		
+		if (getRole().equals(UserRole.RESEARCH)) {
+			Set<Study> studies = Study.getByOwner(PortalSessionToken.session().org, Sets.create("_id"));
+			
+			for (Study study : studies) {
+				controllers.research.Studies.deleteStudy(userId, study._id, false);
+			}
+			
+			Research.delete(PortalSessionToken.session().org);			
+			
+		}
+		
+		if (getRole().equals(UserRole.PROVIDER)) {
+			HealthcareProvider.delete(PortalSessionToken.session().org);
+		}
+		
+		KeyManager.instance.deleteKey(userId);
 		User.delete(userId);
 		
 		return ok();

@@ -1,20 +1,20 @@
 angular.module('portal')
-.config(function($stateProvider) {
+.config(["$stateProvider", function($stateProvider) {
 	   $stateProvider
 	    .state('member.spaces', {
-	      url: '/spaces/:spaceId',
+	      url: '/spaces/:spaceId?url&params',
 	      templateUrl: 'views/shared/spaces/spaces.html' 
 	    })
 	    .state('developer.spaces', {
-	      url: '/spaces/:spaceId',
+	      url: '/spaces/:spaceId?url&params',
 	      templateUrl: 'views/shared/spaces/spaces.html' 
 	    })
 	    .state('research.spaces', {
-	      url: '/spaces/:spaceId',
+	      url: '/spaces/:spaceId?url&params',
 	      templateUrl: 'views/shared/spaces/spaces.html' 
 	    })
 	     .state('provider.spaces', {
-	      url: '/spaces/:spaceId',
+	      url: '/spaces/:spaceId?url&params',
 	      templateUrl: 'views/shared/spaces/spaces.html' 
 	    });
-});
+}]);

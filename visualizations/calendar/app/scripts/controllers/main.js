@@ -29,29 +29,41 @@ angular.module('calendarApp')
 	        }
 	      };
       };
+      
+      $scope.useConfig = function(config) {
+    	 var add = [];
+ 		 angular.forEach(config.sources, function(source) { 
+     		 if (source.selected) { 
+     			 add.push(source.id);
+     			 if (source.tlb) eventProvider.setTlb(source); else eventProvider.clearTlb(source.id);
+     		 }
+     	  });
+     	 eventProvider.setContents(add);
+     	 $scope.init();
+      };
 	    
       $scope.load = function() {
     	  if (eventProvider.inited) {
     		  $scope.init();
     	  } else {
-		      midataServer.getConfig(eventProvider.authToken)
-		      .then(function(result) {
-		    	 if (result.data && result.data.sources) {
-		    		 var add = [];
-		    		 angular.forEach(result.data.sources, function(source) { 
-		        		 if (source.selected) { 
-		        			 add.push(source.id);
-		        			 if (source.tlb) eventProvider.setTlb(source); else eventProvider.clearTlb(source.id);
-		        		 }
-		        	  });
-		        	 eventProvider.setContents(add);
-		        	 $scope.init();
-		    	 } else {
-		    		$scope.init();
-		    		$location.url('/cal/add'); 
-		    	 }
-		    	 
-		      });
+    		  var params = $location.search();
+    		  
+    		  if (params.content) {
+    			  eventProvider.setContents(params.content.split(","));
+    			  $scope.init();
+    		  } else {
+    		  
+			      midataServer.getConfig(eventProvider.authToken)
+			      .then(function(result) {
+			    	 if (result.data && result.data.sources) {
+			    	    $scope.useConfig(result.data);
+			    	 } else {
+			    		$scope.init();
+			    		$location.url('/cal/add'); 
+			    	 }
+			    	 
+			      });
+    		  }
     	  }
       };
       
@@ -84,6 +96,10 @@ angular.module('calendarApp')
     	  console.log(event);
     	  $scope.selectedEvent = event;
           $("#details").modal("show");          
+      };
+      
+      $scope.showDetails = function(event) {
+    	  midataPortal.openApp("page", "fhir-observation", { id : event.id, path :"/record" });
       };
       
       $scope.load();

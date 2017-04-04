@@ -29,6 +29,7 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.HasAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
@@ -99,7 +100,7 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 			  */
 			@Description(shortDefinition="Search by creation date")
 			@OptionalParam(name="authored-on")
-			DateRangeParam theAuthored_on, 
+			DateAndListParam theAuthored_on, 
 			   
 			@Description(shortDefinition="Search by requests this task is based on")
 			@OptionalParam(name="based-on", targetTypes={  } )
@@ -139,7 +140,7 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 			   
 			@Description(shortDefinition="Search by last modification date")
 			@OptionalParam(name="modified")
-			DateRangeParam theModified, 
+			DateAndListParam theModified, 
 			   
 			@Description(shortDefinition="Search by responsible organization")
 			@OptionalParam(name="organization", targetTypes={  } )
@@ -163,7 +164,7 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 			   
 			@Description(shortDefinition="Search by period Task is/was underway")
 			@OptionalParam(name="period")
-			DateRangeParam thePeriod, 
+			DateAndListParam thePeriod, 
 			   
 			@Description(shortDefinition="Search by task priority")
 			@OptionalParam(name="priority")
@@ -261,32 +262,32 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		builder.recordOwnerReference("patient", "Patient");		
 		builder.recordCodeRestriction("code", "code");
 		
-		builder.restriction("identifier", true, "Identifier", "identifier");
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		builder.restriction("part-of", true, "Task", "partOf");
 		builder.restriction("owner", true, null, "owner");
 		
 		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "for");
 		  
         											
-		builder.restriction("authored-on", true, "DateTime", "authoredOn");
+		builder.restriction("authored-on", true, QueryBuilder.TYPE_DATETIME, "authoredOn");
 		builder.restriction("based-on", true, null, "basedOn");
-		builder.restriction("business-status",  true,  "CodeableConcept", "businessStatus");
+		builder.restriction("business-status",  true,  QueryBuilder.TYPE_CODEABLE_CONCEPT, "businessStatus");
 		builder.restriction("context", true, null, "context");
 		builder.restriction("definition-ref", true, "ActivityDefinition", "definitionReference");	
 		builder.restriction("focus", true, null, "focus");			
-		builder.restriction("group-identifier", true, "Identifier", "groupIdentifier");
+		builder.restriction("group-identifier", true, QueryBuilder.TYPE_IDENTIFIER, "groupIdentifier");
 		
-		builder.restriction("intent", true, "code", "intent");
-		builder.restriction("modified", true, "DateTime", "lastModified");
+		builder.restriction("intent", true, QueryBuilder.TYPE_CODE, "intent");
+		builder.restriction("modified", true, QueryBuilder.TYPE_DATETIME, "lastModified");
 		builder.restriction("organization", true, "Organization", "requester.onBehalfOf");
 		
 		
-		builder.restriction("performer", true, "CodeableConcept", "performerType"); 
-		builder.restriction("period", true, "Period", "executionPeriod");
-		builder.restriction("priority", false, "code", "priority");	
+		builder.restriction("performer", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "performerType"); 
+		builder.restriction("period", true, QueryBuilder.TYPE_PERIOD, "executionPeriod");
+		builder.restriction("priority", false, QueryBuilder.TYPE_CODE, "priority");	
 		builder.restriction("requester", true, null, "requester.agent");	
-		builder.restriction("status", false, "code", "status");
-		builder.restriction("statusreason", true, "CodeableConcept", "statusReason");					
+		builder.restriction("status", false, QueryBuilder.TYPE_CODE, "status");
+		builder.restriction("statusreason", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "statusReason");					
 							   
 		return query.execute(info);
 	}
@@ -304,15 +305,15 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		
 		prepare(record, theTask);		
 		// insert
-		insertRecord(record, theTask);
-        shareRecord(record, theTask);
+		MidataId consent = insertMessageRecord(record, theTask);
+        shareRecord(record, theTask, consent);
 		processResource(record, theTask);				
 		
 		return outcome("Task", record, theTask);
 
 	}
 			
-	public void shareRecord(Record record, Task theTask) throws AppException {		
+	public void shareRecord(Record record, Task theTask, MidataId consent) throws AppException {		
 		ExecutionInfo inf = info();
 		List<IIdType> personRefs = new ArrayList<IIdType>();
 		
@@ -328,7 +329,7 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		}
 				
 					
-		shareWithPersons(record, personRefs);
+		shareWithPersons(record, personRefs, consent);
 	}
 	
 	public Record init() { return newRecord("fhir/Task"); }
@@ -344,7 +345,9 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		Record record = fetchCurrent(theId);
 		prepare(record, theTask);		
 		updateRecord(record, theTask);
-		shareRecord(record, theTask);
+		shareRecord(record, theTask, info().executorId); // XXX To be checked
+		processResource(record, theTask);
+		
 		return outcome("Task", record, theTask);
 	}
 
@@ -353,18 +356,26 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		String display = setRecordCodeByCodeableConcept(record, theTask.getCode(), "Task");
 		record.name = display != null ? display : "Task";
 
+		FHIRTools.resolve(theTask.getOwner());
+		FHIRTools.resolve(theTask.getFor());
+		TaskRestrictionComponent trc = theTask.getRestriction();
+		if (trc != null && trc.getRecipient() != null) {
+			for (Reference ref : trc.getRecipient()) {
+				FHIRTools.resolve(ref);
+			}
+		}
+		
 		if (cleanAndSetRecordOwner(record, theTask.getFor())) theTask.setFor(null);		
 		clean(theTask);
 	}
 	
  
 	@Override
-	public void processResource(Record record, Task p) {
+	public void processResource(Record record, Task p) throws AppException {
 		super.processResource(record, p);
 		
-		if (p.getFor().isEmpty()) {
-			p.getFor().setReferenceElement(new IdType("Patient", record.owner.toString()));
-			p.getFor().setDisplay(record.ownerName);
+		if (p.getFor().isEmpty()) {			
+			p.setFor(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
 	}
 

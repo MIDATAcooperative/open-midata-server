@@ -6,7 +6,7 @@ import java.util.Date;
 import play.Play;
 import play.mvc.Http;
 import utils.auth.PortalSessionToken;
-import utils.mails.MailUtils;
+import utils.messaging.MailUtils;
 
 /**
  * Sends error reports

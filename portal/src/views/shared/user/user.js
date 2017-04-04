@@ -39,6 +39,12 @@ angular.module('portal')
 		.then(function() { $scope.msg = "user.account_repaired"; });
 	};
 	
+	$scope.resetSpaces = function() {
+		$scope.msg = "Please wait...";
+		server.delete(jsRoutes.controllers.Spaces.reset().url)
+		.then(function() { $scope.msg = "user.spaces_resetted";$state.reload(); });
+	};
+	
 	$scope.updateSettings = function() {
 		if ($scope.locked) $scope.user.searchable = false;
 		$scope.status.doAction("changesettings", users.updateSettings($scope.user))

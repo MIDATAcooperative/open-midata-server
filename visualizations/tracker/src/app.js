@@ -184,6 +184,10 @@ tracker.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter', '$t
 			midataServer.setConfig(authToken, { codes : $scope.codes })
 			.then(function() { $scope.status.mode=''; });
 		};
+		
+		$scope.showCalendar = function() {
+			midataPortal.openApp("page", "calendar", { content : "user-observation" });
+		};
 					
 		$scope.reset();
 								

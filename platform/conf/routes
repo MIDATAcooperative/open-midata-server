@@ -68,6 +68,7 @@ DELETE  /members/api/spaces/:id                          controllers.Spaces.dele
 POST    /members/api/spaces/:id/records                  controllers.Spaces.addRecords(id: String)
 GET     /members/api/spaces/:id/url                      controllers.Spaces.getUrl(id: String)
 GET     /members/api/spaces/:id/url/noauth               controllers.Spaces.regetUrl(id: String)
+DELETE  /members/api/spaces                              controllers.Spaces.reset()
 
 
 # Circles
@@ -90,9 +91,6 @@ DELETE  /developers/api/plugins/:appId            	     controllers.Market.delet
 PUT     /admins/api/plugins/:appId            	         controllers.Market.updatePluginStatus(appId: String)
 DELETE  /admins/api/plugins/:appId            	         controllers.Market.deletePlugin(appId: String)
 
-# Search
-#GET     /members/api/search/run/:query                   controllers.GlobalSearch.search(query: String)
-#GET     /members/api/search/complete/:query              controllers.GlobalSearch.complete(query: String)
 # Users
 
 POST    /members/api/users/get                           controllers.Users.get()
@@ -144,6 +142,7 @@ POST    /common/api/groups/:group                        controllers.FormatAPI.u
 DELETE  /common/api/groups/:group                        controllers.FormatAPI.deleteGroup(group: String)
 GET     /common/api/formats                              controllers.FormatAPI.listFormats()
 GET     /common/api/contents                             controllers.FormatAPI.listContents()
+POST    /common/api/contents                             controllers.FormatAPI.searchContents()
 POST    /common/api/contents                             controllers.FormatAPI.createContent()
 POST    /common/api/contents/:content                    controllers.FormatAPI.updateContent(content: String)
 DELETE  /common/api/contents/:content                    controllers.FormatAPI.deleteContent(content: String)
@@ -175,7 +174,9 @@ GET     /providers/api/member/:member                    controllers.providers.P
 POST    /shared/api/usergroups/search                     controllers.UserGroups.search()
 POST    /shared/api/usergroups/members                    controllers.UserGroups.listUserGroupMembers()
 POST    /shared/api/usergroups/create                     controllers.UserGroups.createUserGroup()
+POST    /shared/api/usergroups/delete/:group              controllers.UserGroups.deleteUserGroup(group: String)
 POST    /shared/api/usergroups/adduser                    controllers.UserGroups.addMembersToUserGroup()
+POST    /shared/api/usergroups/removeuser                 controllers.UserGroups.deleteUserGroupMembership()
 
 # Developers
 POST    /developers/api/register                          controllers.Developers.register()
@@ -186,6 +187,7 @@ POST    /developers/api/testuser/resetpw                  controllers.Developers
 POST    /admins/api/register                             controllers.admin.Administration.register()
 POST    /admins/api/changeStatus                         controllers.admin.Administration.changeStatus()
 POST    /admins/api/addcomment                           controllers.admin.Administration.addComment()
+POST    /admins/api/wipeaccount                          controllers.admin.Administration.adminWipeAccount()
 
 # Tasks
 POST    /shared/api/tasks/create         controllers.Tasking.add()
@@ -272,8 +274,6 @@ OPTIONS /v1/plugin_api/oauth/get      controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/oauth/get      controllers.PluginsAPI.getOAuthParams()
 OPTIONS /v1/plugin_api/clone           controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/clone           controllers.PluginsAPI.cloneAs()
-OPTIONS /v1/plugin_api/run             controllers.PluginsAPI.checkPreflight()
-POST    /v1/plugin_api/run             controllers.PluginsAPI.run()
 OPTIONS /v1/plugin_api/records/newId    controllers.PluginsAPI.checkPreflight()
 POST    /v1/plugin_api/records/newId    controllers.PluginsAPI.generateId()
 

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,7 +62,7 @@ public class RecordManager {
 	public final static Set<String> INTERNALID_AND_WACTHES = Sets.create("_id","watches");
 	public final static Set<String> COMPLETE_META = Sets.create("id", "owner",
 			"app", "creator", "created", "name", "format",  "content", "code", "description", "isStream", "lastUpdated");
-	public final static Set<String> COMPLETE_DATA = Sets.create("id", "owner",
+	public final static Set<String> COMPLETE_DATA = Sets.create("id", "owner", "ownerName",
 			"app", "creator", "created", "name", "format", "content", "code", "description", "isStream", "lastUpdated",
 			"data", "group");
 	public final static Set<String> COMPLETE_DATA_WITH_WATCHES = Sets.create("id", "owner",
@@ -81,11 +82,15 @@ public class RecordManager {
 	 */
 	protected APSCache getCache(MidataId who) throws InternalServerException {
 		if (apsCache.get() == null)
-			apsCache.set(new APSCache(who));
+			apsCache.set(new APSCache(who, who));
 		APSCache result = apsCache.get();
-		if (!result.getOwner().equals(who)) throw new InternalServerException("error.internal", "Owner Change!");
+		if (!result.getExecutor().equals(who)) throw new InternalServerException("error.internal", "Owner Change!");
 		return result;
-	}		
+	}	
+	
+	public void setAccountOwner(MidataId executor, MidataId accountOwner) throws InternalServerException {
+		getCache(executor).setAccountOwner(accountOwner);
+	}
 	
 	/**
 	 * clears APS cache. Is automatically called after each request.
@@ -327,7 +332,7 @@ public class RecordManager {
 			for (DBRecord rec : content) ids.add(rec._id);
 			
 			BasicBSONObject query = apswrapper.getMeta("_query");
-			Circles.setQuery(who, targetAPS, query);
+			Circles.setQuery(who, who, targetAPS, query);
 			apswrapper.removeMeta("_query");
        	    RecordManager.instance.applyQuery(who, query, who, targetAPS, true);
 			
@@ -537,8 +542,7 @@ public class RecordManager {
 			if (!providedVersion.equals(storedVersion)) throw new BadRequestException("error.concurrent.update", "Concurrent update", HttpStatus.SC_CONFLICT);
 			
 			VersionedDBRecord vrec = new VersionedDBRecord(rec);		
-			RecordEncryption.encryptRecord(vrec);
-			VersionedDBRecord.add(vrec);
+			RecordEncryption.encryptRecord(vrec);			
 					
 			record.lastUpdated = new Date(); 
 			
@@ -551,7 +555,9 @@ public class RecordManager {
 			
 		    DBRecord clone = rec.clone();
 		    
-			RecordEncryption.encryptRecord(rec);		
+			RecordEncryption.encryptRecord(rec);	
+			
+			VersionedDBRecord.add(vrec);
 		    DBRecord.upsert(rec); 	  	
 		    
 		    RecordLifecycle.notifyOfChange(clone, getCache(executingPerson));
@@ -581,7 +587,7 @@ public class RecordManager {
 		List<DBRecord> recs = QueryEngine.listInternal(cache, executingPerson, query, fields);
 		
 		wipe(executingPerson, recs);		
-		fixAccount(executingPerson);
+		//fixAccount(executingPerson);
 		
 		AccessLog.logEnd("end deleteRecord");
 	}
@@ -591,11 +597,18 @@ public class RecordManager {
 		if (recs.size() == 0) return;
 		
 		AccessLog.logBegin("begin wipe #records="+recs.size());
-		for (DBRecord record : recs) {			
+		Set<MidataId> streams = new HashSet<MidataId>();
+		
+		Iterator<DBRecord> it = recs.iterator();
+		while (it.hasNext()) {
+	   	   DBRecord record = it.next();			
+	       if (record.meta.getString("content").equals("Patient")) it.remove();
 		   if (record.owner == null) throw new InternalServerException("error.internal", "Owner of record is null.");
 		   if (!record.owner.equals(executingPerson)) throw new BadRequestException("error.internal", "Not owner of record!");
 		}
-					
+		
+		IndexManager.instance.removeRecords(cache, executingPerson, recs);
+		
 		Set<Consent> consents = Consent.getAllByOwner(executingPerson, new HashMap<String, Object>(), Sets.create("_id"));
 		
 		for (Consent c : consents) {
@@ -610,6 +623,7 @@ public class RecordManager {
 		for (DBRecord record : recs) {
 			if (record.stream != null) {
 				cache.getAPS(record.stream, executingPerson).removePermission(record);
+				streams.add(record.stream);
 			}
 		}
 		
@@ -625,6 +639,15 @@ public class RecordManager {
 		  DBRecord.delete(record.owner, record._id);
 		}
 		
+		for (MidataId streamId : streams) {
+			getCache(executingPerson).getAPS(streamId).removeMeta("_info");
+									
+			List<DBRecord> testRec = QueryEngine.listInternal(cache, streamId, CMaps.map("limit", 1), Sets.create("_id"));
+			if (testRec.size() == 0) {
+				wipe(executingPerson, CMaps.map("_id", streamId).map("streams", "only"));
+			}			
+		}
+				
 		AccessLog.logEnd("end wipe #records="+recs.size());				
 	}
 
@@ -768,6 +791,8 @@ public class RecordManager {
 				  RecordLifecycle.removeWatchingAps(rec, apsId);
 				} catch (AppException e) {
 				  AccessLog.logException("error while deleting APS during remove watch", e);
+				} catch (NullPointerException e2) {
+				  AccessLog.logException("error while deleting APS during remove watch", e2);	
 				}
 			}
 		} catch (AppException e) {
@@ -943,8 +968,10 @@ public class RecordManager {
 		AccessLog.logBegin("start reset info user="+who.toString());
 		List<Record> result = list(who, who, RecordManager.STREAMS_ONLY_OWNER, Sets.create("_id", "owner"));
 		for (Record stream : result) {
-			AccessLog.log("reset stream:"+stream._id.toString());
-			getCache(who).getAPS(stream._id, stream.owner).removeMeta("_info");
+			try {
+			  AccessLog.log("reset stream:"+stream._id.toString());
+			  getCache(who).getAPS(stream._id, stream.owner).removeMeta("_info");
+			} catch (APSNotExistingException e) {}
 		}
 		AccessLog.logEnd("end reset info user="+who.toString());
 	}

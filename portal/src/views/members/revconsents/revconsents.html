@@ -1,0 +1,45 @@
+<div ng-controller="ReverseConsentsCtrl">
+
+	<div class="panel panel-primary">
+		<div class="panel-heading" translate="consents.title"></div>
+		<div class="body">
+		  <form class="form">
+		    <div class="radio">
+		      <label>
+                <input type="radio" name="consenttype" value="option1" ng-click="changeView()"> <span translate="consents.where_owner"></span> 
+              </label>
+            </div>
+            <div class="radio">
+              <label class="radio-inline">
+                <input type="radio" name="consenttype" value="option2" checked> <span translate="consents.where_authorized"></span>
+              </label>
+            </div>
+          </form>
+		
+            <p translate="consents.description"></p>
+            <loader busy="status.isBusy !== false">
+			<p translate="revconsents.count" translate-value-count="{{ consents.length }}"></p>
+
+			<table class="table table-striped" ng-show="consents.length">
+
+				<tr>
+					<th translate="consents.ownerName"></th>
+					<th translate="consents.name"></th>
+					<th translate="consents.type"></th>
+					<th translate="consents.status"></th>					
+					<th translate="consents.number_of_records"></th>
+				</tr>
+				<tr ng-repeat="consent in consents | orderBy : 'ownerName'">
+					<td><a ng-click="editConsent(consent);" href="javascript:">{{ consent.ownerName }}</a></td>
+					<td>{{ consent.name }}</td>
+					<td translate="{{ 'enum.consenttype.'+consent.type }}"></td>
+					<td translate="{{ 'enum.consentstatus.'+consent.status }}"></td>					
+					<td>{{ consent.records }}</td>
+				</tr>
+			</table>
+			
+			<button class="btn btn-primary" ng-click="addConsent();" translate="revconsents.add_new_btn"></button>
+			</loader>
+		</div>
+	</div>
+</div>

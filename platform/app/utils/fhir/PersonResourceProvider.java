@@ -1,10 +1,12 @@
 package utils.fhir;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.Group;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Person;
 import org.hl7.fhir.dstu3.model.Reference;
@@ -16,6 +18,7 @@ import org.hl7.fhir.instance.model.api.IIdType;
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
@@ -23,6 +26,7 @@ import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
@@ -31,6 +35,7 @@ import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.MidataId;
 import models.Record;
 import models.User;
@@ -70,6 +75,12 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 		if (member == null) return null;
 		return personFromMidataUser(member);
 	}
+	
+	@History()
+    @Override
+	public List<Person> getHistory(@IdParam IIdType theId) throws AppException {
+		throw new ResourceNotFoundException("No history kept for Person resource");
+    }
 	
 	/**
 	 * Convert a MIDATA User object into a FHIR person object
@@ -157,7 +168,7 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 	    		 
 	    	@Description(shortDefinition="The person's date of birth")
 	    	@OptionalParam(name="birthdate")
-	    	DateRangeParam theBirthdate
+	    	DateAndListParam theBirthdate
 	    		   
 	    	/*
 	    	@Description(shortDefinition="The organization at which this person record is being managed")
@@ -217,16 +228,17 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 			QueryBuilder builder = new QueryBuilder(params, query, null);
 			
 			builder.handleIdRestriction();
-			builder.restriction("name", true, "string", "firstname", "string", "lastname");
-			builder.restriction("email", true, "string", "emailLC");
-			builder.restrictionMany("address", true, "string", "address1", "address2", "city", "country", "zip");
-			builder.restriction("address-city", true, "string", "city");
-			builder.restriction("address-postalcode", true, "string", "zip");
-			builder.restriction("address-country", true, "string", "country");
-			builder.restriction("birthdate", false, "DateTime", "birthdate");						
-			builder.restriction("gender", false, "string", "gender");
+			builder.restriction("name", true, QueryBuilder.TYPE_STRING, "firstname", QueryBuilder.TYPE_STRING, "lastname");
+			builder.restriction("email", true, QueryBuilder.TYPE_STRING, "emailLC");
+			builder.restrictionMany("address", true, QueryBuilder.TYPE_STRING, "address1", "address2", "city", "country", "zip");
+			builder.restriction("address-city", true, QueryBuilder.TYPE_STRING, "city");
+			builder.restriction("address-postalcode", true, QueryBuilder.TYPE_STRING, "zip");
+			builder.restriction("address-country", true, QueryBuilder.TYPE_STRING, "country");
+			builder.restriction("birthdate", false, QueryBuilder.TYPE_DATE, "birthdate");						
+			builder.restriction("gender", false, QueryBuilder.TYPE_CODE, "gender");
 			
 			Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
+			
 			Object keywords = query.retrieveIndexValues();
 			if (keywords != null) properties.put("keywordsLC", keywords);
 			properties.put("searchable", true);

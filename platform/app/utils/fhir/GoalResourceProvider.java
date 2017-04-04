@@ -20,6 +20,7 @@ import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
@@ -51,17 +52,7 @@ public class GoalResourceProvider extends ResourceProvider<Goal> implements IRes
 
 			@Description(shortDefinition = "The resource language") @OptionalParam(name = "_language") StringAndListParam theResourceLanguage,
 
-			/*
-			@Description(shortDefinition = "Search the contents of the resource's data using a fulltext search") @OptionalParam(name = ca.uhn.fhir.rest.server.Constants.PARAM_CONTENT) StringAndListParam theFtContent,
-
-			@Description(shortDefinition = "Search the contents of the resource's narrative using a fulltext search") @OptionalParam(name = ca.uhn.fhir.rest.server.Constants.PARAM_TEXT) StringAndListParam theFtText,
-
-			@Description(shortDefinition = "Search for resources which have the given tag") @OptionalParam(name = ca.uhn.fhir.rest.server.Constants.PARAM_TAG) TokenAndListParam theSearchForTag,
-
-			@Description(shortDefinition = "Search for resources which have the given security labels") @OptionalParam(name = ca.uhn.fhir.rest.server.Constants.PARAM_SECURITY) TokenAndListParam theSearchForSecurity,
-
-			@Description(shortDefinition = "Search for resources which have the given profile") @OptionalParam(name = ca.uhn.fhir.rest.server.Constants.PARAM_PROFILE) UriAndListParam theSearchForProfile,
-			*/
+			
 			@Description(shortDefinition="E.g. Treatment, dietary, behavioral, etc.")
 			@OptionalParam(name="category")
 			TokenAndListParam theCategory, 
@@ -84,7 +75,7 @@ public class GoalResourceProvider extends ResourceProvider<Goal> implements IRes
 			    
 			@Description(shortDefinition="Reach goal on or before")
 			@OptionalParam(name="targetdate")
-			DateRangeParam theTargetdate, 
+			DateAndListParam theTargetdate, 
 			  
 			@IncludeParam(reverse=true)
 			Set<Include> theRevIncludes,
@@ -138,13 +129,13 @@ public class GoalResourceProvider extends ResourceProvider<Goal> implements IRes
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");
 		      		
-		builder.restriction("category", true, "CodeableConcept", "category");
-		builder.restriction("identifier", true, "Identifier", "identifier");
+		builder.restriction("category", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "category");
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		
 		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");		
 		
-		builder.restriction("status", true, "code", "status");
-		builder.restriction("targetdate", true, "DateTime", "targetDate");				
+		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");
+		builder.restriction("targetdate", true, QueryBuilder.TYPE_DATETIME, "targetDate");				
 		
 		return query.execute(info);
 	}
@@ -154,20 +145,7 @@ public class GoalResourceProvider extends ResourceProvider<Goal> implements IRes
 	public MethodOutcome createResource(@ResourceParam Goal theGoal) {
 		return super.createResource(theGoal);
 	}
-	
-	@Override
-	protected MethodOutcome create(Goal theGoal) throws AppException {
-
-		Record record = newRecord("fhir/Goal");
-		prepare(record, theGoal);
-		// insert
-		insertRecord(record, theGoal);
-
-		processResource(record, theGoal);				
 		
-		return outcome("Goal", record, theGoal);
-
-	}
 	
 	public Record init() { return newRecord("fhir/Goal"); }
 
@@ -176,14 +154,7 @@ public class GoalResourceProvider extends ResourceProvider<Goal> implements IRes
 	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Goal theGoal) {
 		return super.updateResource(theId, theGoal);
 	}
-	
-	@Override
-	protected MethodOutcome update(@IdParam IdType theId, @ResourceParam Goal theGoal) throws AppException {
-		Record record = fetchCurrent(theId);
-		prepare(record, theGoal);		
-		updateRecord(record, theGoal);		
-		return outcome("Goal", record, theGoal);
-	}
+		
 
 	public void prepare(Record record, Goal theGoal) throws AppException {
 		// Set Record code and content
@@ -200,12 +171,11 @@ public class GoalResourceProvider extends ResourceProvider<Goal> implements IRes
 
 	
 	@Override
-	public void processResource(Record record, Goal p) {
+	public void processResource(Record record, Goal p) throws AppException {
 		super.processResource(record, p);
 		
 		if (p.getSubject().isEmpty()) {
-			p.getSubject().setReferenceElement(new IdType("Patient", record.owner.toString()));
-			p.getSubject().setDisplay(record.ownerName);
+			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
 	}
 	

@@ -1,5 +1,6 @@
 package utils.access.index;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,6 +36,15 @@ public class IndexDefinition extends IndexPageModel {
 	 */
 	public List<String> fields;
 	
+	private @NotMaterialized List<String[]> fieldsSplit;
+	
+	public List<String[]> getFieldsSplit() {
+		if (fieldsSplit == null) {
+		  fieldsSplit = new ArrayList<String[]>(fields.size());
+		  for (String f : fields) fieldsSplit.add(f.split("\\|"));
+		}
+		return fieldsSplit;
+	}
 		
 	public static Set<IndexDefinition> getAll(Map<String, ? extends Object> properties, Set<String> fields) throws InternalServerException {
 		return Model.getAll(IndexDefinition.class, collection, properties, fields);

@@ -22,6 +22,8 @@ import org.hl7.fhir.dstu3.model.BaseResource;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.DateTimeType;
+import org.hl7.fhir.dstu3.model.DomainResource;
+import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.Task;
@@ -38,6 +40,7 @@ import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.parser.DataFormatException;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.annotation.Create;
+import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
@@ -63,6 +66,7 @@ import controllers.PluginsAPI;
 import models.Consent;
 import models.ContentInfo;
 import models.MidataId;
+import models.Plugin;
 import models.Record;
 import models.TypedMidataId;
 import utils.AccessLog;
@@ -70,6 +74,8 @@ import utils.ErrorReporter;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
+import utils.collections.CMaps;
+import utils.collections.ReferenceTool;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
@@ -78,8 +84,9 @@ import utils.exceptions.InternalServerException;
  * Base class for FHIR resource providers. There is one provider subclass for each FHIR resource type.
  *
  */
-public  abstract class ResourceProvider<T extends BaseResource> implements IResourceProvider {
+public  abstract class ResourceProvider<T extends DomainResource> implements IResourceProvider {
 
+		
 	public static FhirContext ctx = FhirContext.forDstu3();
 	
 	/**
@@ -124,13 +131,36 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	 * @return Resource read from database
 	 * @throws AppException
 	 */
-	@Read()
+	@Read(version=true)
 	public T getResourceById(@IdParam IIdType theId) throws AppException {
-		Record record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new MidataId(theId.getIdPart()));
+		Record record;
+		if (theId.hasVersionIdPart()) {
+			List<Record> result = RecordManager.instance.list(info().executorId, info().targetAPS, CMaps.map("_id", new MidataId(theId.getIdPart())).map("version", theId.getVersionIdPart()), RecordManager.COMPLETE_DATA);
+			record = result.isEmpty() ? null : result.get(0);
+		} else {
+		    record = RecordManager.instance.fetch(info().executorId, info().targetAPS, new MidataId(theId.getIdPart()));
+		}
+		if (record == null) throw new ResourceNotFoundException(theId);					
 		IParser parser = ctx().newJsonParser();
 		T p = parser.parseResource(getResourceType(), record.data.toString());
 		processResource(record, p);		
 		return p;
+	}
+	
+	@History()
+	public List<T> getHistory(@IdParam IIdType theId) throws AppException {
+	   List<Record> records = RecordManager.instance.list(info().executorId, info().targetAPS, CMaps.map("_id", new MidataId(theId.getIdPart())).map("history", true).map("sort","lastUpdated desc"), RecordManager.COMPLETE_DATA);
+	   if (records.isEmpty()) throw new ResourceNotFoundException(theId); 
+	   
+	   List<T> result = new ArrayList<T>(records.size());
+	   IParser parser = ctx().newJsonParser();
+	   for (Record record : records) {		   
+			T p = parser.parseResource(getResourceType(), record.data.toString());
+			processResource(record, p);
+			result.add(p);
+	   }
+	   
+	   return result;
 	}
 	
 	/**
@@ -165,7 +195,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	protected MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam T theResource) {
 
 		try {
-			if (theResource.getMeta() == null || theResource.getMeta().getVersionId() == null) throw new PreconditionFailedException("Resource version missing!");
+			if (theId.getVersionIdPart() == null && (theResource.getMeta() == null || theResource.getMeta().getVersionId() == null)) throw new PreconditionFailedException("Resource version missing!");
 			return update(theId, theResource);
 		} catch (BaseServerResponseException e) {
 			throw e;
@@ -181,12 +211,35 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 
 	}
 	
+	/**
+	 * Default implementation for create
+	 * @param theResource
+	 * @return
+	 * @throws AppException
+	 */
 	protected MethodOutcome create(T theResource) throws AppException {
-		throw new NotImplementedOperationException("create not implemented");
+		Record record = init();
+		prepare(record, theResource);	
+		insertRecord(record, theResource);
+		processResource(record, theResource);				
+		
+		return outcome(theResource.getResourceType().name(), record, theResource);				
 	}
 	
+	/**
+	 * Default implementation for update
+	 * @param theId
+	 * @param theResource
+	 * @return
+	 * @throws AppException
+	 */
 	protected MethodOutcome update(IdType theId, T theResource) throws AppException {
-		throw new NotImplementedOperationException("create not implemented");
+		Record record = fetchCurrent(theId);
+		prepare(record, theResource);		
+		updateRecord(record, theResource);	
+		processResource(record, theResource);
+		
+		return outcome(theResource.getResourceType().name(), record, theResource);				
 	}
 	
 	
@@ -205,8 +258,11 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 				   for (T res : resources) {
 					   String type = inc.getParamType();
 					   String name = inc.getParamName();
-					   String path = type + "." + searchParamNameToPathMap.get(type + ":" + name);
-					   Set<String> allowedTypes = searchParamNameToTypeMap.get(type + ":" + name);
+					   if (type==null || name==null) throw new InvalidRequestException("Invalid/incomplete parameter for _include.");
+					   String field = searchParamNameToPathMap.get(type + ":" + name);
+					   if (field == null) throw new NotImplementedOperationException("Value for _include is not supported by the server.");
+					   String path = type + "." + field;
+					   Set<String> allowedTypes = searchParamNameToTypeMap.get(type + ":" + name);					   
 					   List<IBaseReference> refs = terser.getValues(res, path, IBaseReference.class);
 					   if (refs != null) {
 						   for (IBaseReference r : refs) {
@@ -238,12 +294,14 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 		   if (!params.getRevIncludes().isEmpty()) {
 			   for (Include inc : params.getRevIncludes()) {
 				   String type = inc.getParamType();
-				   String name = inc.getParamName();				   
+				   String name = inc.getParamName();	
+				   if (type == null || name == null) throw new InvalidRequestException("Incomplete parameter for _revinclude");
 				   ReferenceOrListParam vals = new ReferenceOrListParam();
 				   for (T res : resources) {
 				      vals.add(new ReferenceParam(type+"/"+res.getId()));
 				   }
 				   ResourceProvider prov = FHIRServlet.myProviders.get(type);
+				   if (prov==null) throw new InvalidRequestException("Unknown resource type for _revinclude");
 				   SearchParameterMap newsearch = new SearchParameterMap();
 				   newsearch.add(name, vals);
 				   List<IBaseResource> alsoAdd = prov.search(newsearch);
@@ -269,6 +327,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	
 	public static IQueryParameterType asQueryParameter(String resourceType, String searchParam, ReferenceParam param) {
 		String type = searchParamNameToTokenMap.get(resourceType+"."+searchParam);
+		if (type==null) throw new NotImplementedOperationException("Search '"+searchParam+"' not defined on resource '"+resourceType+"'.");
 		if (type.contains("Token")) return param.toTokenParam(ctx());
 		if (type.contains("String")) return param.toStringParam(ctx());
 		if (type.contains("Date")) return param.toDateParam(ctx());
@@ -309,7 +368,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	}
 		
 	
-	public List<T> parse(List<Record> result, Class<T> resultClass) {
+	public List<T> parse(List<Record> result, Class<T> resultClass) throws AppException {
 		ArrayList<T> parsed = new ArrayList<T>();	
 	    IParser parser = ctx().newJsonParser();
 	    for (Record rec : result) {
@@ -324,11 +383,21 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	}
 		
 	
-	public void processResource(Record record, T resource) {
-		resource.setId(record._id.toString());
+	public void processResource(Record record, T resource) throws AppException {
+		resource.setId(new IdType(resource.fhirType(), record._id.toString(), record.version));
 		resource.getMeta().setVersionId(record.version);
 		if (record.lastUpdated == null) resource.getMeta().setLastUpdated(record.created);
 		else resource.getMeta().setLastUpdated(record.lastUpdated);
+		
+		Extension meta = new Extension("http://midata.coop/StructureDefinition/metadata");
+		
+		if (record.app != null) {
+		  Plugin creatorApp = Plugin.getById(record.app);		
+		  meta.addExtension("app", new Coding("http://midata.coop/apps", creatorApp.filename, creatorApp.name));
+		}
+		if (record.creator != null) meta.addExtension("creator", FHIRTools.getReferenceToUser(record.creator, record.creator.equals(record.owner) ? record.ownerName : null ));
+				
+		resource.getMeta().addExtension(meta);
 	}
 	
 	public static Record newRecord(String format) {
@@ -375,7 +444,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 		return false;
 	}
 
-	public static void insertRecord(Record record, IBaseResource resource) throws AppException {
+	public void insertRecord(Record record, IBaseResource resource) throws AppException {
 		insertRecord(record, resource, (MidataId) null);
 	}
 	
@@ -390,7 +459,21 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 		AccessLog.logEnd("end insert FHIR record");
 	}
 	
-	public static void insertRecord(Record record, IBaseResource resource, Attachment attachment) throws AppException {
+	public MidataId insertMessageRecord(Record record, IBaseResource resource) throws AppException {
+		ExecutionInfo inf = info();
+		MidataId shareFrom = inf.executorId;
+		MidataId owner = record.owner;
+		if (!owner.equals(inf.executorId)) {
+			Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, inf.executorId, owner, owner, false);
+			insertRecord(record, resource, consent._id);
+			shareFrom = consent._id;
+		} else {
+			insertRecord(record, resource);
+		}
+		return shareFrom;
+	}
+	
+	public void insertRecord(Record record, IBaseResource resource, Attachment attachment) throws AppException {
 		if (attachment == null || attachment.isEmpty()) {
 			insertRecord(record, resource);
 			return;
@@ -423,8 +506,8 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 		AccessLog.logEnd("end insert FHIR record with attachment");
 	}
 	
-	public static void updateRecord(Record record, IBaseResource resource) throws AppException {
-		if (!record.version.equals(resource.getMeta().getVersionId())) throw new ResourceVersionConflictException("Wrong resource version supplied!") ;
+	public void updateRecord(Record record, IBaseResource resource) throws AppException {
+		if (resource.getMeta() != null && resource.getMeta().getVersionId() != null && !record.version.equals(resource.getMeta().getVersionId())) throw new ResourceVersionConflictException("Wrong resource version supplied!") ;
 		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 		record.data = (DBObject) JSON.parse(encoded);	
 		record.version = resource.getMeta().getVersionId();
@@ -433,7 +516,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	}
 	
 	public void clean(T resource) {
-		
+		resource.getMeta().setExtension(null);
 	}
 	
 	public void prepare(Record record, T theResource) throws AppException { }
@@ -508,7 +591,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	}
 	
 	protected String stringFromDateTime(DateTimeType date) {
-		
+		    if (date == null) return "";
 			return date.toHumanDisplay();
 		
 	}
@@ -519,7 +602,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 	 * @param personRefs collection of FHIR references
 	 * @throws AppException
 	 */
-	protected void shareWithPersons(Record record, Collection<IIdType> personRefs) throws AppException {
+	protected void shareWithPersons(Record record, Collection<IIdType> personRefs, MidataId shareFrom) throws AppException {
 	       ExecutionInfo inf = info();
 			
 			MidataId owner = record.owner;
@@ -529,7 +612,7 @@ public  abstract class ResourceProvider<T extends BaseResource> implements IReso
 					   TypedMidataId target = FHIRTools.getMidataIdFromReference(ref);
 					   if (!target.getMidataId().equals(owner)) {
 					     Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, owner, target.getMidataId(), owner, target.getType().equals("Group"));
-					     RecordManager.instance.share(inf.executorId, inf.executorId, consent._id, Collections.singleton(record._id), true);
+					     RecordManager.instance.share(inf.executorId, shareFrom, consent._id, Collections.singleton(record._id), true);
 					   }
 				}
 			}

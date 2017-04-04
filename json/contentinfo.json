@@ -51,16 +51,16 @@
 {"_id":{"$oid":"569915fc6281a61a232ecdfe"},"content":"ImagingObjectSelection","security":"MEDIUM","group":"diagnostics","defaultCode":"http://midata.coop ImagingObjectSelection","label":{"en":"ImagingObjectSelection"}}
 {"_id":{"$oid":"569915fc6281a61a232ecdff"},"content":"ImagingStudy","security":"MEDIUM","group":"diagnostics","defaultCode":"http://midata.coop ImagingStudy","label":{"en":"ImagingStudy"}}
 {"_id":{"$oid":"569915fc6281a61a232ece00"},"content":"Immunization","security":"MEDIUM","group":"allergies","defaultCode":"http://midata.coop Immunization","label":{"en":"Immunization"}}
-{"_id":{"$oid":"569915fc6281a61a232ece01"},"content":"ImmunizationRecommendation","security":"MEDIUM","group":"allergies","defaultCode":"http://midata.coop ImmunizationRecommendation","label":{"en":"ImmunizationRecommendation"}}
+{"_id":{"$oid":"569915fc6281a61a232ece01"},"content":"ImmunizationRecommendation","security":"MEDIUM","group":"allergies","defaultCode":"http://midata.coop ImmunizationRecommendation","label":{"en":"Immunization Recommendation"}}
 {"_id":{"$oid":"569915fc6281a61a232ece02"},"content":"ImplementationGuide","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop ImplementationGuide","label":{"en":"ImplementationGuide"}}
 {"_id":{"$oid":"569915fc6281a61a232ece03"},"content":"List","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop List","label":{"en":"List"}}
 {"_id":{"$oid":"569915fc6281a61a232ece04"},"content":"Location","security":"MEDIUM","group":"entities","defaultCode":"http://midata.coop Location","label":{"en":"Location"}}
 {"_id":{"$oid":"569915fc6281a61a232ece05"},"content":"Media","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop Media","label":{"en":"Media"}}
 {"_id":{"$oid":"569915fc6281a61a232ece06"},"content":"Medication","security":"MEDIUM","group":"medication","defaultCode":"http://midata.coop Medication","label":{"en":"Medication"}}
-{"_id":{"$oid":"569915fc6281a61a232ece07"},"content":"MedicationAdministration","security":"MEDIUM","group":"medication","defaultCode":"http://midata.coop MedicationAdministration","label":{"en":"MedicationAdministration"}}
-{"_id":{"$oid":"569915fc6281a61a232ece08"},"content":"MedicationDispense","security":"MEDIUM","group":"medication","defaultCode":"http://midata.coop MedicationDispense","label":{"en":"MedicationDispense"}}
-{"_id":{"$oid":"569915fc6281a61a232ece09"},"content":"MedicationOrder","security":"MEDIUM","group":"medication","defaultCode":"http://midata.coop MedicationOrder","label":{"en":"MedicationOrder"}}
-{"_id":{"$oid":"569915fc6281a61a232ece0a"},"content":"MedicationStatement","security":"MEDIUM","group":"medication","defaultCode":"http://midata.coop MedicationStatement","label":{"en":"MedicationStatement"}}
+{"_id":{"$oid":"569915fc6281a61a232ece07"},"content":"MedicationAdministration","security":"MEDIUM","group":"medication","defaultCode":"http://midata.coop MedicationAdministration","label":{"en":"Medication Administration"}}
+{"_id":{"$oid":"569915fc6281a61a232ece08"},"content":"MedicationDispense","security":"MEDIUM","group":"medication","defaultCode":"http://midata.coop MedicationDispense","label":{"en":"Medication Dispense"}}
+{"_id":{"$oid":"569915fc6281a61a232ece09"},"content":"MedicationOrder","security":"MEDIUM","group":"medication","defaultCode":"http://midata.coop MedicationOrder","label":{"en":"Medication Order"}}
+{"_id":{"$oid":"569915fc6281a61a232ece0a"},"content":"MedicationStatement","security":"MEDIUM","group":"medication","defaultCode":"http://midata.coop MedicationStatement","label":{"en":"Medication Statement"}}
 {"_id":{"$oid":"569915fc6281a61a232ece0b"},"content":"MessageHeader","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop MessageHeader","label":{"en":"MessageHeader"}}
 {"_id":{"$oid":"569915fc6281a61a232ece0c"},"content":"NamingSystem","security":"MEDIUM","group":"unknown","defaultCode":"http://midata.coop NamingSystem","label":{"en":"NamingSystem"}}
 {"_id":{"$oid":"569915fc6281a61a232ece0d"},"content":"NutritionOrder","security":"MEDIUM","group":"care","defaultCode":"http://midata.coop NutritionOrder","label":{"en":"NutritionOrder"}}
@@ -188,3 +188,5 @@
 {"_id":{"$oid":"587f53fdaed645217a8c1a38"},"content":"work/field-of-occupation","defaultCode":"http://midata.coop FieldOfOccupation","security":"MEDIUM","label":{"en":"Field Of Occupation"},"resourceType":"fhir/Observation","subType":"CodeableConcept","category":"social-history"}
 {"_id":{"$oid":"5880af3baed64515f44314fd"},"content":"quality-of-life","defaultCode":"http://loinc.org 72098-7","security":"MEDIUM","label":{"en":"Quality of life score"},"resourceType":"fhir/Observation","subType":"Quantity","category":"survey"}
 {"_id":{"$oid":"5888c31baed6450ed3ada92a"},"content":"karegenda/task","defaultCode":"http://midata.coop/karegenda Task","security":"MEDIUM","label":{"en":"Karegenda Task"}}
+{"_id":{"$oid":"5890aa5faed6450fd69a10d4"},"content":"karegenda/entry","defaultCode":"http://midata.coop/karegenda Entry","security":"MEDIUM","label":{"en":"Karegenda Entry"}}
+{"_id":{"$oid":"58b5a0a8aed64510c953d832"},"content":"activities/distance-24h-calc","defaultCode":"http://loinc.org 41953-1","security":"MEDIUM","label":{"en":"Distance walked in 24h (calculated)"},"resourceType":"fhir/Observation","subType":"Quantity","defaultUnit":"m","category":"fitness"}

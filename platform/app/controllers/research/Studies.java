@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import actions.APICall;
 import controllers.APIController;
 import controllers.Circles;
+import models.AccessPermissionSet;
 import models.Admin;
 import models.FilterRule;
 import models.History;
@@ -93,6 +94,7 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request().username());
 		MidataId research = PortalSessionToken.session().getOrg();
 				
+		if (research == null) throw new InternalServerException("error.internal", "No organization associated with session.");
 		Study study = new Study();
 				
 		study._id = new MidataId();
@@ -915,20 +917,33 @@ public class Studies extends APIController {
 		//if (study.participantSearchStatus != ParticipantSearchStatus.CLOSED) return badRequest("Participant search must be closed before.");
 		if (study.executionStatus != StudyExecutionStatus.PRE) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 	
-		Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(study._id, Sets.create("_id", "owner"));
-		for (StudyParticipation part : participants) {
-			RecordManager.instance.deleteAPS(part._id, userId);
-			StudyParticipation.delete(study._id, part._id);
-		}
+		deleteStudy(userId, study._id, false);
 		
-		Set<StudyRelated> related = StudyRelated.getByStudy(studyid, Sets.create("authorized"));
-		for (StudyRelated studyRelated : related) {
-			RecordManager.instance.deleteAPS(studyRelated._id, userId);
-			StudyRelated.delete(study._id, studyRelated._id);
-		}
-		
-		Study.delete(study._id);
-	
 		return ok();
+	}
+	
+	public static void deleteStudy(MidataId userId, MidataId studyId, boolean force) throws AppException {
+		
+		Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyId, Sets.create("_id", "owner"));
+		for (StudyParticipation part : participants) {
+			if (force) {
+				AccessPermissionSet.delete(part._id);			   
+			} else {
+				RecordManager.instance.deleteAPS(part._id, userId);
+			}
+			StudyParticipation.delete(studyId, part._id);
+		}
+		
+		Set<StudyRelated> related = StudyRelated.getByStudy(studyId, Sets.create("authorized"));
+		for (StudyRelated studyRelated : related) {
+			if (force) {
+				AccessPermissionSet.delete(studyRelated._id);
+			} else {
+			    RecordManager.instance.deleteAPS(studyRelated._id, userId);
+			}
+			StudyRelated.delete(studyId, studyRelated._id);
+		}
+		
+		Study.delete(studyId);
 	}
 }
