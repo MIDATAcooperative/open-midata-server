@@ -110,8 +110,16 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 				//{ id: "body_measures_fat_free_mass", name: "Body Measures - Fat Free Mass", measureType: 5, unit: "kg", system: "http://midata.coop", code: "body/fat_free_mass", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
 				//{ id: "body_measures_fat_radio", name: "Body Measures - Fat Ratio", measureType: 6, unit: "%", system: "http://loinc.org", code: "41982-0", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
 				//{ id: "body_measures_fat_mass_weight", name: "Body Measures - Fat Mass Weight", measureType: 8, unit: "kg", system: "http://loinc.org", code: "73708-0", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
-				{ id: "body_measures_diastolic_blood_pressure", name: "Body Measures - Diastolic Blood Pressure", measureType: 9, unit: "mm Hg", system: "http://loinc.org", code: "8462-4", unitSystem: "http://unitsofmeasure.org", unitCode: "mm[Hg]" },
-				{ id: "body_measures_systolic_blood_pressure", name: "Body Measures - Systolic Blood Pressure", measureType: 10, unit: "mm Hg", system: "http://loinc.org", code: "8480-6", unitSystem: "http://unitsofmeasure.org", unitCode: "mm[Hg]" },
+				
+				// TODO: delete
+				//{ id: "body_measures_diastolic_blood_pressure", name: "Body Measures - Diastolic Blood Pressure", measureType: 9, unit: "mm Hg", system: "http://loinc.org", code: "8462-4", unitSystem: "http://unitsofmeasure.org", unitCode: "mm[Hg]" },
+				//{ id: "body_measures_systolic_blood_pressure", name: "Body Measures - Systolic Blood Pressure", measureType: 10, unit: "mm Hg", system: "http://loinc.org", code: "8480-6", unitSystem: "http://unitsofmeasure.org", unitCode: "mm[Hg]" },
+
+				{ id: "body_measures_blood_pressure", name: "Body Measures - Blood Pressure", unit: "mm Hg", unitSystem: "http://unitsofmeasure.org", unitCode: "mm[Hg]", system: "http://loinc.org", code: "55417-0",
+					diastolic : {id: "body_measures_diastolic_blood_pressure", measureType: 9, system: "http://loinc.org", code: "8462-4"},
+					systolic : {id: "body_measures_systolic_blood_pressure", measureType: 10, system: "http://loinc.org", code: "8480-6"}
+				 },
+				
 				{ id: "body_measures_heart_pulse", name: "Body Measures - Heart Pulse", measureType: 11, unit: "bpm", system: "http://loinc.org", code: "8867-4", unitSystem: "http://unitsofmeasure.org", unitCode: "/min" },
 				//{ id: "body_measures_sp02", name: "Body Measures - SP02", measureType: 54, unit: "%", system: "http://loinc.org", code: "20564-1", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
 				{ id: "body_measures_body_temperature", name: "Body Measures - Body Temperature", measureType: 71, unit: "C°", system: "http://loinc.org", code: "8310-5", unitSystem: "http://unitsofmeasure.org", unitCode: "Cel" }
@@ -247,6 +255,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 	codeToMidataCode["http://midata.coop sleep/wakeupcount"] = "sleep/wakeupcount";
 	codeToMidataCode["http://midata.coop sleep/minutes-to-fall-asleep"] = "sleep/minutes-to-fall-asleep";
 	codeToMidataCode["http://loinc.org 65554-8"] = "sleep/wakeup-duration";
+	codeToMidataCode["http://loinc.org 55417-0"] = "body/bloodpressure";
 	//codeToMidataCode[""] = "";
 
 	var baseUrl = "https://wbsapi.withings.net";
@@ -451,6 +460,13 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 									$translate(measurementType.id).then(function (t) { measurementType.name_translated = t; });
 									$translate(importer.codeObservations.fitness.translate).then(function(t){importer.codeObservations.fitness.name_translated = t;});
 									$translate(importer.codeObservations.vitalSigns.translate).then(function(t){importer.codeObservations.vitalSigns.name_translated = t;});
+
+									if (measurementType.diastolic){
+										$translate(measurementType.diastolic.id).then(function (t) { measurementType.diastolic.name_translated = t; });
+									}
+									if (measurementType.systolic){
+										$translate(measurementType.systolic.id).then(function (t) { measurementType.systolic.name_translated = t; });
+									}
 								});
 
 								// all prev. Records loaded
@@ -615,13 +631,63 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 		response.data.body.measuregrps.forEach(function (mgroup) {
 			var date = new Date(mgroup.date * 1000);
 
+				var recordBPDiastolic = null;
+				var recordBPSystolic = null;
+				var _BPMeasurementType = null;
 			mgroup.measures.forEach(function (measure) {
+
 				for (var index = 0; index < measurementGroup.measureTypes.length; index++) {
 					var measurementType = measurementGroup.measureTypes[index];
 
 					if (!measurementType.import) { continue; }
 
-					if (measurementType.measureType == measure.type) {
+					if (measurementType.id == "body_measures_blood_pressure" && measurementType.diastolic.measureType == measure.type){
+						_BPMeasurementType = measurementType;
+						recordBPDiastolic = {
+							"code": {
+								"coding": [
+								{
+									"system": measurementType.diastolic.system,
+									"code": measurementType.diastolic.code,
+									"display": measurementType.diastolic.name_translated
+								}
+								]
+							},
+							"valueQuantity": {
+								"value": Math.round10(Math.pow(10, measure.unit) * measure.value, -2),
+								"unit": measurementType.unit
+							}
+						};
+
+						if (measurementType.unitCode) {
+							recordBPDiastolic.valueQuantity.system = measurementType.unitSystem;
+							recordBPDiastolic.valueQuantity.code = measurementType.unitCode;
+						}
+
+					} else if (measurementType.id == "body_measures_blood_pressure" && measurementType.systolic.measureType == measure.type){
+						_BPMeasurementType = measurementType;
+						recordBPSystolic = {
+							"code": {
+								"coding": [
+								{
+									"system": measurementType.systolic.system,
+									"code": measurementType.systolic.code,
+									"display": measurementType.systolic.name_translated
+								}
+								]
+							},
+							"valueQuantity": {
+								"value": Math.round10(Math.pow(10, measure.unit) * measure.value, -2),
+								"unit": measurementType.unit
+							}
+						};
+
+						if (measurementType.unitCode) {
+							recordBPSystolic.valueQuantity.system = measurementType.unitSystem;
+							recordBPSystolic.valueQuantity.code = measurementType.unitCode;
+						}
+					}
+					else if (measurementType.measureType == measure.type) {
 
 						var recordContent = {
 							resourceType: "Observation",
@@ -639,10 +705,10 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 							}
 						};
 
-				if (measurementType.unitCode) {
-					recordContent.valueQuantity.system = measurementType.unitSystem;
-					recordContent.valueQuantity.code = measurementType.unitCode;
-				}
+						if (measurementType.unitCode) {
+							recordContent.valueQuantity.system = measurementType.unitSystem;
+							recordContent.valueQuantity.code = measurementType.unitCode;
+						}
 
 						var action = saveOrUpdateRecord(authToken, getMIDATAHeader(measurementType.name_translated, measurementType.system + " " + measurementType.code), recordContent);
 
@@ -659,8 +725,36 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 
 						break;
 					}
-				}
+				} // end for
 			});
+
+			if (recordBPDiastolic || recordBPSystolic) {
+				var recordBPContent = {
+					resourceType: "Observation",
+					status: "preliminary",
+					category: {
+						coding: [{ system: "http://hl7.org/fhir/observation-category", code: importer.codeObservations.vitalSigns.code, display: importer.codeObservations.vitalSigns.name_translated }]
+					},
+					code: {
+						coding: [{ system: _BPMeasurementType.system, code: _BPMeasurementType.code, display: _BPMeasurementType.name_translated }]
+					},
+					effectiveDateTime: date.toJSON(),
+					component: [recordBPDiastolic, recordBPSystolic]
+				};
+
+					var actionBP = saveOrUpdateRecord(authToken, getMIDATAHeader(_BPMeasurementType.name_translated, _BPMeasurementType.system + " " + _BPMeasurementType.code), recordBPContent);
+
+					if (actionBP !== null) {
+						importer.requested++;
+						actions.push(actionBP);
+					}
+
+					// Limit request size
+					if (actions.length >= 200) {
+						processTransaction(authToken, actions);
+						actions = [];
+					}
+			}
 		});
 
 		if (actions.length > 0) { processTransaction(authToken, actions); }
