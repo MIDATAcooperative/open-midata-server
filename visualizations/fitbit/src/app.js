@@ -69,7 +69,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				"unit" : "steps",
 				"system" : "http://loinc.org", 
 				"unitSystem" : "http://unitsofmeasure.org", 
-				"unitCode" : "n/a"
+				"unitCode" : "/d"
 			},
 			{
 				"id" : "activities_distance",
@@ -91,16 +91,16 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			//	"unitSystem" : "http://unitsofmeasure.org", 
 			//	"unitCode" : ""
 			// },
-			// {
-			// 	"id" : "activities_elevation",
-			// 	"name": "Activities - Elevation",				
-			// 	"endpoint": "/1/user/-/activities/elevation/date/{date}/1d.json",
-			// 	"content" : "activities/elevation",
-			// 	"unit" : "m",
-			// 	"system" : "http://midata.coop", 
-			//	"unitSystem" : "http://unitsofmeasure.org", 
-			//	"unitCode" : ""
-			// },
+			 {
+			 	"id" : "activities_elevation",
+			 	"name": "Activities - Elevation",				
+			 	"endpoint": "/1/user/-/activities/elevation/date/{date}/1d.json",
+			 	"content" : "activities/elevation",
+			 	"unit" : "m",
+			 	"system" : "http://midata.coop", 
+				"unitSystem" : "http://unitsofmeasure.org", 
+				"unitCode" : "m"
+			 },
 			// {
 			// 	"id" : "activities_minutes_sedentary",
 			// 	"name": "Activities - Minutes Sedentary",				
@@ -111,36 +111,36 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			//	"unitSystem" : "http://unitsofmeasure.org", 
 			//	"unitCode" : ""
 			// },
-			// {
-			// 	"id" : "activities_minutes_lightly_active",
-			// 	"name": "Activities - Minutes Lightly Active",				
-			// 	"endpoint": "/1/user/-/activities/minutesLightlyActive/date/{date}/1d.json",
-			// 	"content" : "activities/minutes-lightly-active",
-			// 	"unit" : "min",
-			// 	"system" : "http://midata.coop", 
-			//	"unitSystem" : "http://unitsofmeasure.org", 
-			//	"unitCode" : ""
-			// },
-			// {
-			// 	"id" : "activities_minutes_fairly_active",
-			// 	"name": "Activities - Minutes Fairly Active",				
-			// 	"endpoint": "/1/user/-/activities/minutesFairlyActive/date/{date}/1d.json",
-			// 	"content" : "activities/minutes-fairly-active",
-			// 	"unit" : "min",
-			// 	"system" : "http://midata.coop", 
-			//	"unitSystem" : "http://unitsofmeasure.org", 
-			//	"unitCode" : ""
-			// },
-			// {
-			// 	"id" : "activities_minutes_very_active",
-			// 	"name": "Activities - Minutes Very Active",				
-			// 	"endpoint": "/1/user/-/activities/minutesVeryActive/date/{date}/1d.json",
-			// 	"content" : "activities/minutes-very-active",
-			// 	"unit" : "min",
-			// 	"system" : "http://midata.coop", 
-			//	"unitSystem" : "http://unitsofmeasure.org", 
-			//	"unitCode" : ""
-			// },
+			 {
+			 	"id" : "activities_minutes_lightly_active",
+			 	"name": "Activities - Minutes Lightly Active",				
+			 	"endpoint": "/1/user/-/activities/minutesLightlyActive/date/{date}/1d.json",
+			 	"content" : "activities/minutes-lightly-active",
+			 	"unit" : "min",
+			 	"system" : "http://midata.coop", 
+				"unitSystem" : "http://unitsofmeasure.org", 
+				"unitCode" : "min"
+			 },
+			 {
+			 	"id" : "activities_minutes_fairly_active",
+			 	"name": "Activities - Minutes Fairly Active",				
+			 	"endpoint": "/1/user/-/activities/minutesFairlyActive/date/{date}/1d.json",
+			 	"content" : "activities/minutes-fairly-active",
+			 	"unit" : "min",
+			 	"system" : "http://midata.coop", 
+				"unitSystem" : "http://unitsofmeasure.org", 
+				"unitCode" : "min"
+			 },
+			 {
+			 	"id" : "activities_minutes_very_active",
+			 	"name": "Activities - Minutes Very Active",				
+			 	"endpoint": "/1/user/-/activities/minutesVeryActive/date/{date}/1d.json",
+			 	"content" : "activities/minutes-very-active",
+			 	"unit" : "min",
+			 	"system" : "http://midata.coop", 
+				"unitSystem" : "http://unitsofmeasure.org", 
+				"unitCode" : "min"
+			 },
 			// {
 			// 	"id" : "activities_calories_burned_in_activities",
 			// 	"name": "Activities - Calories Burned in Activities",				
@@ -452,17 +452,15 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 								effectiveDateTime : recDate,
 								valueQuantity : {
 									value : Number(val),
-									unit : itm.unit,
-									system: measure.unitSystem,
-									code: measure.unitCode
-								},
-								meta: {
-									tag: [{ 
-										system: "http://midata.coop", "code": "fitbit", "display": "Fitbit" 
-									}] 
+									unit : itm.unit
 								}
 							  };
 							  
+							  if (measure.unitCode) {
+								  rec.valueQuantity.system = measure.unitSystem;
+								  rec.valueQuantity.code = measure.unitCode;
+							  }
+
 							  var action = saveOrUpdateRecord(measure.title, measure.content, recDate, rec);
 							  if (action !== null) actions.push(action);		
 							  

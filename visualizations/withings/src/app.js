@@ -82,14 +82,14 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 			groupMeasureId: "activity_measures",
 			actionType: "getactivity",
 			measureTypes: [
-				{ id: "activity_measures_steps", name: "Activity Measures - Steps", measureType: "steps", unit: "steps", system: "http://loinc.org", code: "41950-7", factor: 1, unitSystem: "http://unitsofmeasure.org", unitCode: "n/a" },//,  },, system: "http://midata.coop", code: "activities/steps"
+				{ id: "activity_measures_steps", name: "Activity Measures - Steps", measureType: "steps", unit: "steps", system: "http://loinc.org", code: "41950-7", factor: 1, unitSystem: "http://unitsofmeasure.org", unitCode: "/d" },//,  },, system: "http://midata.coop", code: "activities/steps"
 				{ id: "activity_measures_distance", name: "Activity Measures - Distance", measureType: "distance", unit: "m", system: "http://loinc.org", code: "41953-1", factor: 1, unitSystem: "http://unitsofmeasure.org", unitCode: "m" },//, system: "http://midata.coop", code: "activities/distance" },
 				////? //{ id: "activity_measures_calories", name: "Activity Measures - Calories", measureType: "calories", unit: "kcal", system: "http://midata.coop", code: "activities/calories", factor: 1, unitSystem: "http://unitsofmeasure.org", unitCode: "" },//, system: "http://loinc.org", code: "41981-2" },
 				//{ id: "activity_measures_totalcalories", name: "Activity Measures - Total calories", measureType: "totalcalories", unit: "kcal", system: "http://midata.coop", code: "activities/calories", factor: 1, unitSystem: "http://unitsofmeasure.org", unitCode: "" },//, system : "http://loinc.org", code : "41981-2"},
-				//{ id: "activity_measures_elevation", name: "Activity Measures - Elevation", measureType: "elevation", unit: "m", system: "http://midata.coop", code: "activities/elevation", factor: 1, unitSystem: "http://unitsofmeasure.org", unitCode: "" },
-				//{ id: "activity_measures_soft", name: "Activity Measures - Soft Activities", measureType: "soft", unit: "min", system: "http://midata.coop", code: "activities/minutes-lightly-active", factor: 0.0166667, unitSystem: "http://unitsofmeasure.org", unitCode: "" },//, system : "http://loinc.org", code : "55411-3"},
-				//{ id: "activity_measures_moderate", name: "Activity Measures - Moderate Activities", measureType: "moderate", unit: "min", system: "http://midata.coop", code: "activities/minutes-fairly-active", factor: 0.0166667, unitSystem: "http://unitsofmeasure.org", unitCode: "" },//, system : "http://loinc.org", code : "55411-3"},
-				//{ id: "activity_measures_intense", name: "Activity Measures - Intense Activities", measureType: "intense", unit: "min", system: "http://midata.coop", code: "activities/minutes-very-active", factor: 0.0166667, unitSystem: "http://unitsofmeasure.org", unitCode: "" }//, system : "http://loinc.org", code : "55411-3"},
+				{ id: "activity_measures_elevation", name: "Activity Measures - Elevation", measureType: "elevation", unit: "m", system: "http://midata.coop", code: "activities/elevation", factor: 1, unitSystem: "http://unitsofmeasure.org", unitCode: "m" },
+				{ id: "activity_measures_soft", name: "Activity Measures - Soft Activities", measureType: "soft", unit: "min", system: "http://midata.coop", code: "activities/minutes-lightly-active", factor: 0.0166667, unitSystem: "http://unitsofmeasure.org", unitCode: "min" },//, system : "http://loinc.org", code : "55411-3"},
+				{ id: "activity_measures_moderate", name: "Activity Measures - Moderate Activities", measureType: "moderate", unit: "min", system: "http://midata.coop", code: "activities/minutes-fairly-active", factor: 0.0166667, unitSystem: "http://unitsofmeasure.org", unitCode: "min" },//, system : "http://loinc.org", code : "55411-3"},
+				{ id: "activity_measures_intense", name: "Activity Measures - Intense Activities", measureType: "intense", unit: "min", system: "http://midata.coop", code: "activities/minutes-very-active", factor: 0.0166667, unitSystem: "http://unitsofmeasure.org", unitCode: "min" }//, system : "http://loinc.org", code : "55411-3"},
 			],
 			getURL: function (userid) { // max 60 calls per minute  // http://oauth.withings.com/api/doc
 				var _url = baseUrl + "/v2/measure?";
@@ -590,16 +590,14 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 					effectiveDateTime: activity.date, //yyyy-MM-ddThh:mm:ss.xxxx //-?[0-9]{4}(-(0[1-9]|1[0-2])(-(0[0-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?
 					valueQuantity: {
 						value: Math.round(activity[measurement.measureType] * measurement.factor), // factor: to convert (ex: seconds to minutes)
-						unit: measurement.unit,
-						system: measurement.unitSystem,
-						code: measurement.unitCode
-					},
-					meta: {
-						tag: [{ 
-							system: "http://midata.coop", "code": "withings", "display": "Withings" 
-						}] 
+						unit: measurement.unit
 					}
 				};
+
+				if (measure.unitCode) {
+					recordContent.valueQuantity.system = measurement.unitSystem;
+					recordContent.valueQuantity.code = measurement.unitCode;
+				}
 
 				var action = saveOrUpdateRecord(authToken, getMIDATAHeader(measurement.name_translated, measurement.system + " " + measurement.code), recordContent);
 
