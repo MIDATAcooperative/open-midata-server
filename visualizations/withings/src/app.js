@@ -440,31 +440,21 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 								// get all prev records
 								var _defPrevRecords = $q.defer();
 								var _arrPrevRecords = [];
-								measurementGroup.measureTypes.forEach(function (measurementType) {
-									_arrPrevRecords.push(
-										getPrevRecords(authToken, measurementType.system + " " + measurementType.code, measurementGroup.from)
-									);
+								var _chainPrevRecords = _defPrevRecords.promise;
+								_defPrevRecords.resolve();
 
+								measurementGroup.measureTypes.forEach(function (measurementType) {
+									var f = function() { return getPrevRecords(authToken, measurementType.system + " " + measurementType.code, measurementGroup.from);};
+									_chainPrevRecords = _chainPrevRecords.then(f);
+									
 									$translate(/*"titles." + */measurementType.id).then(function (t) { measurementType.title = t; });
 									$translate(measurementType.id).then(function (t) { measurementType.name_translated = t; });
 									$translate(importer.codeObservations.fitness.translate).then(function(t){importer.codeObservations.fitness.name_translated = t;});
 									$translate(importer.codeObservations.vitalSigns.translate).then(function(t){importer.codeObservations.vitalSigns.name_translated = t;});
 								});
 
-								$q.all(_arrPrevRecords)
-									.then(
-									function (results) {
-										_defPrevRecords.resolve(JSON.stringify(results));
-									},
-									function (errors) {
-										_defPrevRecords.reject(errors);
-									},
-									function (updates) {
-										_defPrevRecords.update(updates);
-									});
-
 								// all prev. Records loaded
-								_defPrevRecords.promise.then(function () {
+								_chainPrevRecords.then(function () {
 
 									//save records
 									if (measurementGroup.groupMeasureId == 'activity_measures') {
@@ -594,7 +584,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 					}
 				};
 
-				if (measure.unitCode) {
+				if (measurement.unitCode) {
 					recordContent.valueQuantity.system = measurement.unitSystem;
 					recordContent.valueQuantity.code = measurement.unitCode;
 				}
@@ -645,16 +635,14 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 							effectiveDateTime: date.toJSON(),
 							valueQuantity: {
 								value: Math.round10(Math.pow(10, measure.unit) * measure.value, -2), //* measurementType.factor, // factor: to convert (ex: seconds to minutes)
-								unit: measurementType.unit,
-								system: measurement.unitSystem,
-								code: measurement.unitCode
-							},
-							meta: {
-								tag: [{ 
-									system: "http://midata.coop", "code": "withings", "display": "Withings" 
-								}] 
+								unit: measurementType.unit
 							}
 						};
+
+				if (measurementType.unitCode) {
+					recordContent.valueQuantity.system = measurementType.unitSystem;
+					recordContent.valueQuantity.code = measurementType.unitCode;
+				}
 
 						var action = saveOrUpdateRecord(authToken, getMIDATAHeader(measurementType.name_translated, measurementType.system + " " + measurementType.code), recordContent);
 
@@ -706,16 +694,14 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 						effectiveDateTime: startdate.toJSON(),// ?? start or end??
 						valueQuantity: {
 							value: Math.round(valueForTheRecord * measurementType.factor), // factor: to convert (ex: seconds to minutes)
-							unit: measurementType.unit,
-							system: measurement.unitSystem,
-							code: measurement.unitCode
-						},
-						meta: {
-							tag: [{ 
-								system: "http://midata.coop", "code": "withings", "display": "Withings" 
-							}] 
+							unit: measurementType.unit
 						}
 					};
+
+				if (measurementType.unitCode) {
+					recordContent.valueQuantity.system = measurementType.unitSystem;
+					recordContent.valueQuantity.code = measurementType.unitCode;
+				}
 
 					var action = saveOrUpdateRecord(authToken, getMIDATAHeader(measurementType.name_translated, measurementType.system + " " + measurementType.code), recordContent);
 
