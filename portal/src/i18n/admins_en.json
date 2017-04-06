@@ -31,12 +31,12 @@
     "status" : "Status:",
     "agb_status" : "AGB Status:",
     "contract_status" : "Contract Status:",
-    "email_status" : "EMail Status:",
+    "email_status" : "eMail Status:",
     "confirmation_code" : "Confirmation Code:",
     "registration_date" : "Registration Date:",
     "confirmation_date" : "Confirmation Date:",
-    "last_login" : "Last login:",
-    "email_confirm_btn" : "Confirm email address",
+    "last_login" : "Last Login:",
+    "email_confirm_btn" : "Confirm eMail Address",
     "comment" : "Comment",
     "add_comment_btn" : "Add Comment",
     "wipe_btn" : "Wipe Account"    
@@ -67,6 +67,6 @@
   
   "admin_plugins" : {
     "title" : "Plugins",
-    "developer" : "Restrict by Developer"
+    "developer" : "Filter by Developer"
   }
 }

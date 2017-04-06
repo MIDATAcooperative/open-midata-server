@@ -37,7 +37,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 	importer.repeat = false;
 	importer.allMeasureTypes = [];
 	importer.codeObservations = {
-		fitness: {code: "fitness", translate: "fitness_data", name_translated: "Fitness"},
+		fitness: {code: "fitness", translate: "fitness_data", name_translated: "Fitness Data"},
 		vitalSigns : {code: "vital-signs", translate: "vital_signs_data", name_translated: "Vital Signs"}
 	};
 
@@ -82,14 +82,14 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 			groupMeasureId: "activity_measures",
 			actionType: "getactivity",
 			measureTypes: [
-				{ id: "activity_measures_steps", name: "Activity Measures - Steps", measureType: "steps", unit: "steps", system: "http://midata.coop", code: "activities/steps", factor: 1 },//, system: "http://loinc.org", code: "41950-7" },
-				{ id: "activity_measures_distance", name: "Activity Measures - Distance", measureType: "distance", unit: "m", system: "http://midata.coop", code: "activities/distance", factor: 1 },//, system: "http://loinc.org", code: "41953-1" },
-				//? //{ id: "activity_measures_calories", name: "Activity Measures - Calories", measureType: "calories", unit: "kcal", system: "http://midata.coop", code: "activities/calories", factor: 1 },//, system: "http://loinc.org", code: "41981-2" },
-				{ id: "activity_measures_totalcalories", name: "Activity Measures - Total calories", measureType: "totalcalories", unit: "kcal", system: "http://midata.coop", code: "activities/calories", factor: 1 },//, system : "http://loinc.org", code : "41981-2"},
-				{ id: "activity_measures_elevation", name: "Activity Measures - Elevation", measureType: "elevation", unit: "m", system: "http://midata.coop", code: "activities/elevation", factor: 1 },
-				{ id: "activity_measures_soft", name: "Activity Measures - Soft Activities", measureType: "soft", unit: "min", system: "http://midata.coop", code: "activities/minutes-lightly-active", factor: 0.0166667 },//, system : "http://loinc.org", code : "55411-3"},
-				{ id: "activity_measures_moderate", name: "Activity Measures - Moderate Activities", measureType: "moderate", unit: "min", system: "http://midata.coop", code: "activities/minutes-fairly-active", factor: 0.0166667 },//, system : "http://loinc.org", code : "55411-3"},
-				{ id: "activity_measures_intense", name: "Activity Measures - Intense Activities", measureType: "intense", unit: "min", system: "http://midata.coop", code: "activities/minutes-very-active", factor: 0.0166667 }//, system : "http://loinc.org", code : "55411-3"},
+				{ id: "activity_measures_steps", name: "Activity Measures - Steps", measureType: "steps", unit: "steps", system: "http://loinc.org", code: "41950-7", factor: 1, unitSystem: "http://unitsofmeasure.org", unitCode: "/d" },//,  },, system: "http://midata.coop", code: "activities/steps"
+				{ id: "activity_measures_distance", name: "Activity Measures - Distance", measureType: "distance", unit: "m", system: "http://loinc.org", code: "41953-1", factor: 1, unitSystem: "http://unitsofmeasure.org", unitCode: "m" },//, system: "http://midata.coop", code: "activities/distance" },
+				////? //{ id: "activity_measures_calories", name: "Activity Measures - Calories", measureType: "calories", unit: "kcal", system: "http://midata.coop", code: "activities/calories", factor: 1, unitSystem: "http://unitsofmeasure.org", unitCode: "" },//, system: "http://loinc.org", code: "41981-2" },
+				//{ id: "activity_measures_totalcalories", name: "Activity Measures - Total calories", measureType: "totalcalories", unit: "kcal", system: "http://midata.coop", code: "activities/calories", factor: 1, unitSystem: "http://unitsofmeasure.org", unitCode: "" },//, system : "http://loinc.org", code : "41981-2"},
+				{ id: "activity_measures_elevation", name: "Activity Measures - Elevation", measureType: "elevation", unit: "m", system: "http://midata.coop", code: "activities/elevation", factor: 1, unitSystem: "http://unitsofmeasure.org", unitCode: "m" },
+				{ id: "activity_measures_soft", name: "Activity Measures - Soft Activities", measureType: "soft", unit: "min", system: "http://midata.coop", code: "activities/minutes-lightly-active", factor: 0.0166667, unitSystem: "http://unitsofmeasure.org", unitCode: "min" },//, system : "http://loinc.org", code : "55411-3"},
+				{ id: "activity_measures_moderate", name: "Activity Measures - Moderate Activities", measureType: "moderate", unit: "min", system: "http://midata.coop", code: "activities/minutes-fairly-active", factor: 0.0166667, unitSystem: "http://unitsofmeasure.org", unitCode: "min" },//, system : "http://loinc.org", code : "55411-3"},
+				{ id: "activity_measures_intense", name: "Activity Measures - Intense Activities", measureType: "intense", unit: "min", system: "http://midata.coop", code: "activities/minutes-very-active", factor: 0.0166667, unitSystem: "http://unitsofmeasure.org", unitCode: "min" }//, system : "http://loinc.org", code : "55411-3"},
 			],
 			getURL: function (userid) { // max 60 calls per minute  // http://oauth.withings.com/api/doc
 				var _url = baseUrl + "/v2/measure?";
@@ -105,20 +105,29 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 			groupMeasureId: "body_measures",
 			actionType: "getmeas",
 			measureTypes: [
-				{ id: "body_measures_weigth", name: "Body Measures - Weight", measureType: 1, unit: "kg", system: "http://loinc.org", code: "3141-9" },
-				{ id: "body_measures_height", name: "Body Measures - Height", measureType: 4, unit: "m", system: "http://loinc.org", code: "8302-2" },
-				{ id: "body_measures_fat_free_mass", name: "Body Measures - Fat Free Mass", measureType: 5, unit: "kg", system: "http://midata.coop", code: "body/fat_free_mass" },
-				{ id: "body_measures_fat_radio", name: "Body Measures - Fat Ratio", measureType: 6, unit: "%", system: "http://loinc.org", code: "41982-0" },
-				{ id: "body_measures_fat_mass_weight", name: "Body Measures - Fat Mass Weight", measureType: 8, unit: "kg", system: "http://loinc.org", code: "73708-0" },
-				{ id: "body_measures_diastolic_blood_pressure", name: "Body Measures - Diastolic Blood Pressure", measureType: 9, unit: "mmHg", system: "http://loinc.org", code: "8462-4" },
-				{ id: "body_measures_systolic_blood_pressure", name: "Body Measures - Systolic Blood Pressure", measureType: 10, unit: "mmHg", system: "http://loinc.org", code: "8480-6" },
-				{ id: "body_measures_heart_pulse", name: "Body Measures - Heart Pulse", measureType: 11, unit: "bpm", system: "http://loinc.org", code: "8867-4" },
-				{ id: "body_measures_sp02", name: "Body Measures - SP02", measureType: 54, unit: "%", system: "http://loinc.org", code: "20564-1" },
-				{ id: "body_measures_body_temperature", name: "Body Measures - Body Temperature", measureType: 71, unit: "?", system: "http://loinc.org", code: "8310-5" }, // TODO: unit not defined. Do Tests!
-				{ id: "body_measures_muscle_mass", name: "Body Measures - Muscle Mass", measureType: 76, unit: "kg", system: "http://loinc.org", code: "73964-9" },// unit not defined. Do Tests! 
-				{ id: "body_measures_hydration", name: "Body Measures - Hydration", measureType: 77, unit: "?", system: "http://midata.coop", code: "body/hydration" },// unit not defined. Do Tests!
-				{ id: "body_measures_bone_mass", name: "Body Measures - Bone Mass", measureType: 88, unit: "kg", system: "http://midata.coop", code: "body/bone_mass" },// unit not defined. Do Tests!
-				{ id: "body_measures_pulse_wave_velocity", name: "Body Measures - Pulse Wave Velocity", measureType: 91, unit: "?cm/s", system: "http://loinc.org", code: "77196-4" }// unit not defined. Do Tests!
+				{ id: "body_measures_weigth", name: "Body Measures - Weight", measureType: 1, unit: "kg", system: "http://loinc.org", code: "29463-7", unitSystem: "http://unitsofmeasure.org", unitCode: "kg" },
+				{ id: "body_measures_height", name: "Body Measures - Height", measureType: 4, unit: "m", system: "http://loinc.org", code: "8302-2", unitSystem: "http://unitsofmeasure.org", unitCode: "m" },
+				//{ id: "body_measures_fat_free_mass", name: "Body Measures - Fat Free Mass", measureType: 5, unit: "kg", system: "http://midata.coop", code: "body/fat_free_mass", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
+				//{ id: "body_measures_fat_radio", name: "Body Measures - Fat Ratio", measureType: 6, unit: "%", system: "http://loinc.org", code: "41982-0", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
+				//{ id: "body_measures_fat_mass_weight", name: "Body Measures - Fat Mass Weight", measureType: 8, unit: "kg", system: "http://loinc.org", code: "73708-0", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
+				
+				// TODO: delete
+				//{ id: "body_measures_diastolic_blood_pressure", name: "Body Measures - Diastolic Blood Pressure", measureType: 9, unit: "mm Hg", system: "http://loinc.org", code: "8462-4", unitSystem: "http://unitsofmeasure.org", unitCode: "mm[Hg]" },
+				//{ id: "body_measures_systolic_blood_pressure", name: "Body Measures - Systolic Blood Pressure", measureType: 10, unit: "mm Hg", system: "http://loinc.org", code: "8480-6", unitSystem: "http://unitsofmeasure.org", unitCode: "mm[Hg]" },
+
+				{ id: "body_measures_blood_pressure", name: "Body Measures - Blood Pressure", unit: "mm Hg", unitSystem: "http://unitsofmeasure.org", unitCode: "mm[Hg]", system: "http://loinc.org", code: "55417-0",
+					diastolic : {id: "body_measures_diastolic_blood_pressure", measureType: 9, system: "http://loinc.org", code: "8462-4"},
+					systolic : {id: "body_measures_systolic_blood_pressure", measureType: 10, system: "http://loinc.org", code: "8480-6"}
+				 },
+				
+				{ id: "body_measures_heart_pulse", name: "Body Measures - Heart Pulse", measureType: 11, unit: "bpm", system: "http://loinc.org", code: "8867-4", unitSystem: "http://unitsofmeasure.org", unitCode: "/min" },
+				//{ id: "body_measures_sp02", name: "Body Measures - SP02", measureType: 54, unit: "%", system: "http://loinc.org", code: "20564-1", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
+				{ id: "body_measures_body_temperature", name: "Body Measures - Body Temperature", measureType: 71, unit: "C°", system: "http://loinc.org", code: "8310-5", unitSystem: "http://unitsofmeasure.org", unitCode: "Cel" }
+				//,
+				//{ id: "body_measures_muscle_mass", name: "Body Measures - Muscle Mass", measureType: 76, unit: "kg", system: "http://loinc.org", code: "73964-9", unitSystem: "http://unitsofmeasure.org", unitCode: "" },// unit not defined. Do Tests! 
+				//{ id: "body_measures_hydration", name: "Body Measures - Hydration", measureType: 77, unit: "?", system: "http://midata.coop", code: "body/hydration", unitSystem: "http://unitsofmeasure.org", unitCode: "" },// unit not defined. Do Tests!
+				//{ id: "body_measures_bone_mass", name: "Body Measures - Bone Mass", measureType: 88, unit: "kg", system: "http://midata.coop", code: "body/bone_mass", unitSystem: "http://unitsofmeasure.org", unitCode: "" },// unit not defined. Do Tests!
+				//{ id: "body_measures_pulse_wave_velocity", name: "Body Measures - Pulse Wave Velocity", measureType: 91, unit: "?cm/s", system: "http://loinc.org", code: "77196-4", unitSystem: "http://unitsofmeasure.org", unitCode: "" }// unit not defined. Do Tests!
 			],
 			getURL: function (userid) {
 				var _url = baseUrl + "/measure?";
@@ -134,13 +143,13 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 			groupMeasureId: "intraday_activity",
 			actionType: "getintradayactivity",
 			measureTypes: [
-				{ id: "intraday_activity_calories", name: "Intraday Activity - Calories", measureType: "calories", unit: "kcal", system: "http://midata.coop", code: "activities/intraday/calories" },//, system: "http://loinc.org", code: "41981-2" },
-				{ id: "intraday_activity_distance", name: "Intraday Activity - Distance", measureType: "distance", unit: "m", system: "http://midata.coop", code: "activities/intraday/distance" },//, system: "http://loinc.org", code: "41953-1" },
-				{ id: "intraday_activity_duration", name: "Intraday Activity - Duration", measureType: "duration", unit: "s", system: "http://midata.coop", code: "activities/intraday/duration" },//, system: "http://loinc.org", code: "55411-3" },
-				{ id: "intraday_activity_elevation", name: "Intraday Activity - Elevation", measureType: "elevation", unit: "m", system: "http://midata.coop", code: "activities/intraday/elevation" },//, system: "http://midata.coop", code: "activities/elevation" },
-				{ id: "intraday_activity_steps", name: "Intraday Activity - Steps", measureType: "steps", unit: "{#}", system: "http://midata.coop", code: "activities/intraday/steps" },//, system: "http://loinc.org", code: "41950-7" },
-				{ id: "intraday_activity_stroke", name: "Intraday Activity - Stroke", measureType: "stroke", unit: "{#}", system: "http://midata.coop", code: "activities/intraday/stroke" },
-				{ id: "intraday_activity_pool_lap", name: "Intraday Activity - Pool lap", measureType: "pool_lap", unit: "{#}", system: "http://midata.coop", code: "activities/intraday/pool-lap" }
+				{ id: "intraday_activity_calories", name: "Intraday Activity - Calories", measureType: "calories", unit: "kcal", system: "http://midata.coop", code: "activities/intraday/calories", unitSystem: "http://unitsofmeasure.org", unitCode: "" },//, system: "http://loinc.org", code: "41981-2" },
+				{ id: "intraday_activity_distance", name: "Intraday Activity - Distance", measureType: "distance", unit: "m", system: "http://midata.coop", code: "activities/intraday/distance", unitSystem: "http://unitsofmeasure.org", unitCode: "" },//, system: "http://loinc.org", code: "41953-1" },
+				{ id: "intraday_activity_duration", name: "Intraday Activity - Duration", measureType: "duration", unit: "s", system: "http://midata.coop", code: "activities/intraday/duration", unitSystem: "http://unitsofmeasure.org", unitCode: "" },//, system: "http://loinc.org", code: "55411-3" },
+				{ id: "intraday_activity_elevation", name: "Intraday Activity - Elevation", measureType: "elevation", unit: "m", system: "http://midata.coop", code: "activities/intraday/elevation", unitSystem: "http://unitsofmeasure.org", unitCode: "" },//, system: "http://midata.coop", code: "activities/elevation" },
+				{ id: "intraday_activity_steps", name: "Intraday Activity - Steps", measureType: "steps", unit: "{#}", system: "http://midata.coop", code: "activities/intraday/steps" },//, system: "http://loinc.org", code: "41950-7", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
+				{ id: "intraday_activity_stroke", name: "Intraday Activity - Stroke", measureType: "stroke", unit: "{#}", system: "http://midata.coop", code: "activities/intraday/stroke", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
+				{ id: "intraday_activity_pool_lap", name: "Intraday Activity - Pool lap", measureType: "pool_lap", unit: "{#}", system: "http://midata.coop", code: "activities/intraday/pool-lap", unitSystem: "http://unitsofmeasure.org", unitCode: "" }
 			],
 			getURL: function (userid) { // max. 120 calls per minute
 				var _url = baseUrl + "/v2/measure?";
@@ -156,10 +165,10 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 			groupMeasureId: "sleep_measures",
 			actionType: "get",
 			measureTypes: [
-				{ id: "sleep_measures_awake", name: "Sleep Measures - Awake", measureType: 0, unit: "min", system: "http://midata.coop", code: "sleep/minutes-awake" }//,
-				//duplicated in summary//{ id: "sleep_measures_light_sleep", name: "Sleep Summary - Light sleep", measureType: 1, unit: "min", system: "http://midata.coop", code: "sleep/minutes-light-sleep" },
-				//duplicated in summary//{ id: "sleep_measures_deep_sleep", name: "Sleep Summary - Deep Sleep", measureType: 2, unit: "min", system: "http://midata.coop", code: "sleep/minutes-asleep" },
-				//duplicated in summary//{ id: "sleep_measures_rem_sleep", name: "Sleep Summary - REM Sleep", measureType: 3, unit: "min", system: "http://loinc.org", code: "sleep/rem" }
+				{ id: "sleep_measures_awake", name: "Sleep Measures - Awake", measureType: 0, unit: "min", system: "http://midata.coop", code: "sleep/minutes-awake", unitSystem: "http://unitsofmeasure.org", unitCode: "" }//,
+				//duplicated in summary//{ id: "sleep_measures_light_sleep", name: "Sleep Summary - Light sleep", measureType: 1, unit: "min", system: "http://midata.coop", code: "sleep/minutes-light-sleep", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
+				//duplicated in summary//{ id: "sleep_measures_deep_sleep", name: "Sleep Summary - Deep Sleep", measureType: 2, unit: "min", system: "http://midata.coop", code: "sleep/minutes-asleep", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
+				//duplicated in summary//{ id: "sleep_measures_rem_sleep", name: "Sleep Summary - REM Sleep", measureType: 3, unit: "min", system: "http://loinc.org", code: "sleep/rem", unitSystem: "http://unitsofmeasure.org", unitCode: "" }
 			],
 			getURL: function (userid) { //  A single call can span up to 7 days maximum
 				var _url = baseUrl + "/v2/sleep?";
@@ -175,13 +184,13 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 			groupMeasureId: "sleep_summary",
 			actionType: "getsummary",
 			measureTypes: [
-				{ id: "sleep_summary_wakeupduration", name: "Sleep Summary - Wake up duration", measureType: "wakeupduration", unit: "min", system: "http://loinc.org", code: "65554-8", factor: 0.0166667 },
-				{ id: "sleep_summary_lightsleepduration", name: "Sleep Summary - Light sleep duration", measureType: "lightsleepduration", unit: "min", system: "http://midata.coop", code: "sleep/minutes-light-sleep", factor: 0.0166667 },
-				{ id: "sleep_summary_deepsleepduration", name: "Sleep Summary - Deep sleep duration", measureType: "deepsleepduration", unit: "min", system: "http://midata.coop", code: "sleep/minutes-asleep", factor: 0.0166667 },
-				{ id: "sleep_summary_remsleepduration", name: "Sleep Summary - REM sleep duration", measureType: "remsleepduration", unit: "min", system: "http://midata.coop", code: "sleep/rem", factor: 0.0166667 },
-				{ id: "sleep_summary_wakeupcount", name: "Sleep Summary - Wake up count", measureType: "wakeupcount", unit: "times", system: "http://midata.coop", code: "sleep/wakeupcount", factor: 1 },
-				{ id: "sleep_summary_durationtosleep", name: "Sleep Summary - Duration to sleep", measureType: "durationtosleep", unit: "min", system: "http://midata.coop", code: "sleep/minutes-to-fall-asleep", factor: 0.0166667 },
-				{ id: "sleep_summary_durationtowakeup", name: "Sleep Summary - Duration to wake up", measureType: "durationtowakeup", unit: "min", system: "http://loinc.org", code: "65554-8", factor: 0.0166667 } // ATTENTION: Loinc-Unit "hh:mm". 
+				//{ id: "sleep_summary_wakeupduration", name: "Sleep Summary - Wake up duration", measureType: "wakeupduration", unit: "min", system: "http://loinc.org", code: "65554-8", factor: 0.0166667, unitSystem: "http://unitsofmeasure.org", unitCode: "" },
+				//{ id: "sleep_summary_lightsleepduration", name: "Sleep Summary - Light sleep duration", measureType: "lightsleepduration", unit: "min", system: "http://midata.coop", code: "sleep/minutes-light-sleep", factor: 0.0166667, unitSystem: "http://unitsofmeasure.org", unitCode: ""},
+				//{ id: "sleep_summary_deepsleepduration", name: "Sleep Summary - Deep sleep duration", measureType: "deepsleepduration", unit: "min", system: "http://midata.coop", code: "sleep/minutes-asleep", factor: 0.0166667 , unitSystem: "http://unitsofmeasure.org", unitCode: ""},
+				//{ id: "sleep_summary_remsleepduration", name: "Sleep Summary - REM sleep duration", measureType: "remsleepduration", unit: "min", system: "http://midata.coop", code: "sleep/rem", factor: 0.0166667, unitSystem: "http://unitsofmeasure.org", unitCode: "" },
+				//{ id: "sleep_summary_wakeupcount", name: "Sleep Summary - Wake up count", measureType: "wakeupcount", unit: "times", system: "http://midata.coop", code: "sleep/wakeupcount", factor: 1, unitSystem: "http://unitsofmeasure.org", unitCode: "" },
+				//{ id: "sleep_summary_durationtosleep", name: "Sleep Summary - Duration to sleep", measureType: "durationtosleep", unit: "min", system: "http://midata.coop", code: "sleep/minutes-to-fall-asleep", factor: 0.0166667, unitSystem: "http://unitsofmeasure.org", unitCode: "" },
+				//{ id: "sleep_summary_durationtowakeup", name: "Sleep Summary - Duration to wake up", measureType: "durationtowakeup", unit: "min", system: "http://loinc.org", code: "65554-8", factor: 0.0166667, unitSystem: "http://unitsofmeasure.org", unitCode: "" } // ATTENTION: Loinc-Unit "hh:mm". 
 			],
 			getURL: function (userid) { // A single call can span up to 200 days maximum.
 				var _url = baseUrl + "/v2/sleep?";
@@ -197,11 +206,11 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 			groupMeasureId: "workouts",
 			actionType: "getworkouts",
 			measureTypes: [
-				{ id: "workouts_calories", name: "Workouts - Calories", measureType: "calories", unit: "kcal", system: "http://loinc.org", code: "41981-2" },
-				//not found //{ id: "workouts_strokes", name: "Workouts - Strokes", measureType: "strokes", unit: "{#}", system: "http://loinc.org", code: "" },
-				//not found //{ id: "workouts_pool_length", name: "Workouts - Pool length", measureType: "pool_length", unit: "meters", system: "http://loinc.org", code: "" },
-				//not found //{ id: "workouts_pool_laps", name: "Workouts - Pool laps", measureType: "pool_laps", unit: "{#}", system: "http://loinc.org", code: "" },
-				//not found //{ id: "workouts_effduration", name: "Workouts - Effective duration", measureType: "effduration", unit: "seconds", system: "http://loinc.org", code: "" }
+				{ id: "workouts_calories", name: "Workouts - Calories", measureType: "calories", unit: "kcal", system: "http://loinc.org", code: "41981-2", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
+				//not found //{ id: "workouts_strokes", name: "Workouts - Strokes", measureType: "strokes", unit: "{#}", system: "http://loinc.org", code: "", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
+				//not found //{ id: "workouts_pool_length", name: "Workouts - Pool length", measureType: "pool_length", unit: "meters", system: "http://loinc.org", code: "", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
+				//not found //{ id: "workouts_pool_laps", name: "Workouts - Pool laps", measureType: "pool_laps", unit: "{#}", system: "http://loinc.org", code: "", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
+				//not found //{ id: "workouts_effduration", name: "Workouts - Effective duration", measureType: "effduration", unit: "seconds", system: "http://loinc.org", code: "", unitSystem: "http://unitsofmeasure.org", unitCode: "" }
 			],
 			getURL: function (userid) {
 				var _url = baseUrl + "/v2/measure?";
@@ -217,14 +226,14 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 	];
 
 	var codeToMidataCode = {};
-	codeToMidataCode["http://midata.coop activities/steps"] = "activities/steps";
-	codeToMidataCode["http://midata.coop activities/distance"] = "activities/distance";
+	codeToMidataCode["http://loinc.org 41950-7"] = "activities/steps";
+	codeToMidataCode["http://loinc.org 41953-1"] = "activities/distance";
 	codeToMidataCode["http://midata.coop activities/calories"] = "activities/calories";
 	codeToMidataCode["http://midata.coop activities/elevation"] = "activities/elevation";
 	codeToMidataCode["http://midata.coop activities/minutes-lightly-active"] = "activities/minutes-lightly-active";
 	codeToMidataCode["http://midata.coop activities/minutes-fairly-active"] = "activities/minutes-fairly-active";
 	codeToMidataCode["http://midata.coop activities/minutes-very-active"] = "activities/minutes-very-active";
-	codeToMidataCode["http://loinc.org 3141-9"] = "body/weight";
+	codeToMidataCode["http://loinc.org 29463-7"] = "body/weight";
 	codeToMidataCode["http://loinc.org 8302-2"] = "body/height";
 	codeToMidataCode["http://midata.coop body/fat_free_mass"] = "body/fat_free_mass";
 	codeToMidataCode["http://loinc.org 41982-0"] = "body/fat";
@@ -246,6 +255,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 	codeToMidataCode["http://midata.coop sleep/wakeupcount"] = "sleep/wakeupcount";
 	codeToMidataCode["http://midata.coop sleep/minutes-to-fall-asleep"] = "sleep/minutes-to-fall-asleep";
 	codeToMidataCode["http://loinc.org 65554-8"] = "sleep/wakeup-duration";
+	codeToMidataCode["http://loinc.org 55417-0"] = "body/bloodpressure";
 	//codeToMidataCode[""] = "";
 
 	var baseUrl = "https://wbsapi.withings.net";
@@ -439,31 +449,28 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 								// get all prev records
 								var _defPrevRecords = $q.defer();
 								var _arrPrevRecords = [];
-								measurementGroup.measureTypes.forEach(function (measurementType) {
-									_arrPrevRecords.push(
-										getPrevRecords(authToken, measurementType.system + " " + measurementType.code, measurementGroup.from)
-									);
+								var _chainPrevRecords = _defPrevRecords.promise;
+								_defPrevRecords.resolve();
 
+								measurementGroup.measureTypes.forEach(function (measurementType) {
+									var f = function() { return getPrevRecords(authToken, measurementType.system + " " + measurementType.code, measurementGroup.from);};
+									_chainPrevRecords = _chainPrevRecords.then(f);
+									
 									$translate(/*"titles." + */measurementType.id).then(function (t) { measurementType.title = t; });
 									$translate(measurementType.id).then(function (t) { measurementType.name_translated = t; });
 									$translate(importer.codeObservations.fitness.translate).then(function(t){importer.codeObservations.fitness.name_translated = t;});
 									$translate(importer.codeObservations.vitalSigns.translate).then(function(t){importer.codeObservations.vitalSigns.name_translated = t;});
+
+									if (measurementType.diastolic){
+										$translate(measurementType.diastolic.id).then(function (t) { measurementType.diastolic.name_translated = t; });
+									}
+									if (measurementType.systolic){
+										$translate(measurementType.systolic.id).then(function (t) { measurementType.systolic.name_translated = t; });
+									}
 								});
 
-								$q.all(_arrPrevRecords)
-									.then(
-									function (results) {
-										_defPrevRecords.resolve(JSON.stringify(results));
-									},
-									function (errors) {
-										_defPrevRecords.reject(errors);
-									},
-									function (updates) {
-										_defPrevRecords.update(updates);
-									});
-
 								// all prev. Records loaded
-								_defPrevRecords.promise.then(function () {
+								_chainPrevRecords.then(function () {
 
 									//save records
 									if (measurementGroup.groupMeasureId == 'activity_measures') {
@@ -593,6 +600,11 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 					}
 				};
 
+				if (measurement.unitCode) {
+					recordContent.valueQuantity.system = measurement.unitSystem;
+					recordContent.valueQuantity.code = measurement.unitCode;
+				}
+
 				var action = saveOrUpdateRecord(authToken, getMIDATAHeader(measurement.name_translated, measurement.system + " " + measurement.code), recordContent);
 
 				if (action !== null) {
@@ -619,13 +631,63 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 		response.data.body.measuregrps.forEach(function (mgroup) {
 			var date = new Date(mgroup.date * 1000);
 
+				var recordBPDiastolic = null;
+				var recordBPSystolic = null;
+				var _BPMeasurementType = null;
 			mgroup.measures.forEach(function (measure) {
+
 				for (var index = 0; index < measurementGroup.measureTypes.length; index++) {
 					var measurementType = measurementGroup.measureTypes[index];
 
 					if (!measurementType.import) { continue; }
 
-					if (measurementType.measureType == measure.type) {
+					if (measurementType.id == "body_measures_blood_pressure" && measurementType.diastolic.measureType == measure.type){
+						_BPMeasurementType = measurementType;
+						recordBPDiastolic = {
+							"code": {
+								"coding": [
+								{
+									"system": measurementType.diastolic.system,
+									"code": measurementType.diastolic.code,
+									"display": measurementType.diastolic.name_translated
+								}
+								]
+							},
+							"valueQuantity": {
+								"value": Math.round10(Math.pow(10, measure.unit) * measure.value, -2),
+								"unit": measurementType.unit
+							}
+						};
+
+						if (measurementType.unitCode) {
+							recordBPDiastolic.valueQuantity.system = measurementType.unitSystem;
+							recordBPDiastolic.valueQuantity.code = measurementType.unitCode;
+						}
+
+					} else if (measurementType.id == "body_measures_blood_pressure" && measurementType.systolic.measureType == measure.type){
+						_BPMeasurementType = measurementType;
+						recordBPSystolic = {
+							"code": {
+								"coding": [
+								{
+									"system": measurementType.systolic.system,
+									"code": measurementType.systolic.code,
+									"display": measurementType.systolic.name_translated
+								}
+								]
+							},
+							"valueQuantity": {
+								"value": Math.round10(Math.pow(10, measure.unit) * measure.value, -2),
+								"unit": measurementType.unit
+							}
+						};
+
+						if (measurementType.unitCode) {
+							recordBPSystolic.valueQuantity.system = measurementType.unitSystem;
+							recordBPSystolic.valueQuantity.code = measurementType.unitCode;
+						}
+					}
+					else if (measurementType.measureType == measure.type) {
 
 						var recordContent = {
 							resourceType: "Observation",
@@ -643,6 +705,11 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 							}
 						};
 
+						if (measurementType.unitCode) {
+							recordContent.valueQuantity.system = measurementType.unitSystem;
+							recordContent.valueQuantity.code = measurementType.unitCode;
+						}
+
 						var action = saveOrUpdateRecord(authToken, getMIDATAHeader(measurementType.name_translated, measurementType.system + " " + measurementType.code), recordContent);
 
 						if (action !== null) {
@@ -658,8 +725,36 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 
 						break;
 					}
-				}
+				} // end for
 			});
+
+			if (recordBPDiastolic || recordBPSystolic) {
+				var recordBPContent = {
+					resourceType: "Observation",
+					status: "preliminary",
+					category: {
+						coding: [{ system: "http://hl7.org/fhir/observation-category", code: importer.codeObservations.vitalSigns.code, display: importer.codeObservations.vitalSigns.name_translated }]
+					},
+					code: {
+						coding: [{ system: _BPMeasurementType.system, code: _BPMeasurementType.code, display: _BPMeasurementType.name_translated }]
+					},
+					effectiveDateTime: date.toJSON(),
+					component: [recordBPDiastolic, recordBPSystolic]
+				};
+
+					var actionBP = saveOrUpdateRecord(authToken, getMIDATAHeader(_BPMeasurementType.name_translated, _BPMeasurementType.system + " " + _BPMeasurementType.code), recordBPContent);
+
+					if (actionBP !== null) {
+						importer.requested++;
+						actions.push(actionBP);
+					}
+
+					// Limit request size
+					if (actions.length >= 200) {
+						processTransaction(authToken, actions);
+						actions = [];
+					}
+			}
 		});
 
 		if (actions.length > 0) { processTransaction(authToken, actions); }
@@ -696,6 +791,11 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 							unit: measurementType.unit
 						}
 					};
+
+				if (measurementType.unitCode) {
+					recordContent.valueQuantity.system = measurementType.unitSystem;
+					recordContent.valueQuantity.code = measurementType.unitCode;
+				}
 
 					var action = saveOrUpdateRecord(authToken, getMIDATAHeader(measurementType.name_translated, measurementType.system + " " + measurementType.code), recordContent);
 

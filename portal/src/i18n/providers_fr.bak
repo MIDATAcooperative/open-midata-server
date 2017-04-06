@@ -15,6 +15,35 @@
     "patients" : "Patients",
     "research" : "Research",
     "workspace" : "Workspace",
-    "market" : "Market"
+    "market" : "Market",    
+	"usergroups" : "Teams"
+  },
+  
+  "provider_patientsearch" : {
+     "title" : "Patient Search"
+  },
+  
+  "provider_patients" : {
+     "title" : "Patients"
+  },
+  
+  "provider_usergroups" : {
+    "title" : "Teams",
+    "name" : "Team",
+    "empty" : "You are not part of a team."
+  },
+  
+  "provider_newusergroup" : {
+    "title" : "Create new Team",
+    "name" : "Team Name",
+    "create_btn" : "Create"
+  },
+  
+  "provider_editusergroup" : {
+    "title" : "Edit Team",
+    "name" : "Team Name",
+    "status" : "Status"
   }
+  
+  
 }

@@ -1,41 +1,47 @@
 {
-
     "provider_registration" : {
-
-        // TODO NEW: Healthcare Provider Sign up
-        "sign_up" : "Healthcare Provider Sign up",
-
-        // TODO NEW: Healthcare Provider
-        "provider" : "Healthcare Provider",
-
-        // TODO NEW: User
-        "user" : "User",
-
-        // TODO NEW: Name
-        "name" : "Name"
+        "sign_up" : "Enregistrement d'un compte professionnel de la santé",
+        "provider" : "Professionnel de la santé",
+        "user" : "Utilisateur",
+        "name" : "Nom"
     },
 
     "provider_login" : {
-
-        // TODO NEW: Healthcare Provider Login
-        "title" : "Healthcare Provider Login"
+        "title" : "Connexion compte professionnel de la santé"
     },
 
     "provider_navbar" : {
-
-        // TODO NEW: New Patient
-        "new_patient" : "New Patient",
-
-        // TODO NEW: Patients
+        "new_patient" : "Nouveau patient",
         "patients" : "Patients",
-
-        // TODO NEW: Research
-        "research" : "Research",
-
-        // TODO NEW: Workspace
+        "research" : "Recherche",
         "workspace" : "Workspace",
+        "market" : "Marché",
+        "usergroups" : "Teams"
+    },
 
-        // TODO NEW: Market
-        "market" : "Market"
+    "provider_patientsearch" : {
+        "title" : "Rechercher un patient"
+    },
+
+    "provider_patients" : {
+        "title" : "Patients"
+    },
+
+    "provider_usergroups" : {
+        "title" : "Teams",
+        "name" : "Team",
+        "empty" : "Vous ne faites pas partie d'un team."
+    },
+
+    "provider_newusergroup" : {
+        "title" : "Créer un team",
+        "name" : "Nom du team",
+        "create_btn" : "Créer"
+    },
+
+    "provider_editusergroup" : {
+        "title" : "Modifier le team",
+        "name" : "Nom du team",
+        "status" : "État"
     }
 }

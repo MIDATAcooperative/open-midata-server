@@ -1,26 +1,51 @@
 {
-
     "developer_registration" : {
-
-        // TODO NEW: Developer Sign Up
-        "sign_up" : "Developer Sign Up"
+        "reason_fillout" : "Afin de réduire le temps d'attente jusqu'à la validation de votre compte, veuillez indiquer la personne de contact et la raison précise de la demande d'enregistrement, afin qu'un administrateur puisse rapidement traiter votre requête.",
+        "sign_up_btn" : "Enregistrer un développeur"
     },
 
     "developer_login" : {
-
-        // TODO NEW: Developer Login
-        "title" : "Developer Login"
+        "title" : "Connexion compte développeur"
     },
 
     "developer_navbar" : {
-
-        // TODO NEW: Your Plugins
-        "yourapps" : "Your Plugins",
-
-        // TODO NEW: Sandbox
+        "yourapps" : "Vos Plugins",
         "sandbox" : "Sandbox",
+        "records" : "Enregistrements de test",
+        "testusers" : "Utilisateurs de test"
+    },
 
-        // TODO NEW: Test Records
-        "records" : "Test Records"
+    "developer_testusers" : {
+        "title" : "Utilisateurs de test",
+        "empty" : "Il n'y a aucun utilisateur de test enregistré sous ce compte.",
+        "role" : "Rôle",
+        "resetpw" : "Nouveau mot de passe",
+        "description" : "A l'aide de ces boutons, vous pouvez enregistrer des utilisateurs additionnels afin de tester vos plugins. Pour ces utilisateurs, les plugins sont exécutés localement (depuis 'localhost') et non pas sur le serveur.",
+        "register_member_btn" : "Enregistrer un compte personnel",
+        "register_hp_btn" : "Enregistrer un professionnel de la santé",
+        "register_researcher_btn" : "Enregistrer un chercheur"
+    },
+
+    "developer_yourapps" : {
+        "title" : "Vos plugins"
+    },
+
+    "manageapp" : {
+        "info" : {
+            "filename" : "Ce nom est utilisé (en interne) pour identifier votre app. Il doit s'agir d'un identificateur valide (a-z, A-Z, 0-9, _).",
+            "targetUserRole" : "Est-ce que votre app est spécifique à un rôle ? Si non, veuillez choisir 'Tous les rôles'.",
+            "type" : "Choisissez 'Plugin' si votre app tourne en temps que plugin sur le portail MIDATA. Choisissez 'Mobile App' pour une app externe. Choisissez 'OAuth1 Import' ou 'OAuth2 Import' si vous vous connectez à un serveur externe par OAuth1 ou OAuth2.",
+            "name" : "Le nom de l'app ou du plugin tel qu'il est affiché pour les utilisateurs finaux.",
+            "description" : "La description du plugin qui sera affichée sur la place du marché.",
+            "defaultSpaceName" : "Titre de la tuile du plugin sur le tableau de bord.",
+            "tags" : "Catégories sous lesquelles le plugin sera listé sur la place du marché.",
+            "url" : "URL de la page principale du plugin. Si vous utilisez le modèle MIDATA, c'est 'dist/index.html#?authToken=:authToken''",
+            "previewUrl" : "URL de la tuile du tableau de bord du plugin. Laisser vide si une telle tuile n'est pas fournie.",
+            "defaultSpaceContext" : "Choisissez 'Moi' pour le tableau de bord standard. Choisissez 'Configuration' pour un plugin d'importation.",
+            "defaultQuery_mobile" : "Requête limitant l'accès de l'app à la base de données. L'accès doit être limité par 'content' ou 'group' et peut être restreint par 'format' ou 'owner'. Example valide (toutes les Observations) : '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
+            "defaultQuery" : "Requête limitant l'accès du plugin à la base de données. L'accès doit être limité au moins par 'content', 'group', 'format' ou 'owner'. Example valide (toutes les Observations) : '{ \"format\" : [\"fhir/Observation\" ] }'",
+            "defaultQuery_extra" : "Veuillez consulter les valeurs valides pour 'content' et 'format' sous 'Format/Content' dans le guide du développeur. Pour une première version, vous pouvez débuter avec un accès total en indiquant : { \"group\" : \"all\", \"group-system\" : \"v1\" }. Veuillez préciser la limitation avant que le plugin ou l'app soit mis en production.",
+            "secret" : "Votre app aura besoin de ce 'secret' pour se connecter. Choisissez le librement."
+        }
     }
 }
