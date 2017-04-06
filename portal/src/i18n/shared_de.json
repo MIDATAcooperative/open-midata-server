@@ -70,7 +70,7 @@
             "json" : "Ungültiges JSON",
             "passphrase" : "Falsches Passphrase",
             "passcode" : "Falsches Passcode",
-            "plugin" : "Dieses Plugin gilt nur für eine andere Rolle"
+            "plugin" : "Dieses Plugin gilt nur für eine andere Rolle",
             "access_query" : "Das Query muss den Zugriff nach 'content' oder 'group' einschränken!"
         },
 
@@ -85,7 +85,7 @@
             "groupsystem" : "Die Gruppe system must be provided.",
 
             // TODO NEW: Missing or bad token.
-            "token" : "Fehlendes oder falsches Token."
+            "token" : "Fehlendes oder falsches Token.",
 
             "agb" : "Allgemeine Geschäftsbedingungen nicht akzeptiert."
         },
@@ -159,7 +159,7 @@
         },
 
         "no_alter" : {
-            "consent" : "Zustimmungen für Studien können nicht verändert werden."
+            "consent" : "Zustimmungen für Studien können nicht verändert werden.",
 
             // TODO NEW: Setup can only be changed as long as study is in draft phase.
             "study" : "Setup can only be changed as long as study is in draft phase."
@@ -227,7 +227,7 @@
             "HCRELATED" : "Gesundheitswesen",
             "HEALTHCARE" : "Arzt / Spital",
             "STUDYPARTICIPATION" : "Studie",
-            "STUDYRELATED" : "Studie"
+            "STUDYRELATED" : "Studie",
 
             // TODO NEW: Messaging
             "IMPLICIT" : "Messaging"
@@ -1036,7 +1036,7 @@
     "taskdetails" : {
         "created_by" : "Erstellt durch:",
         "frequency" : "Wie oft:",
-        "plugin" : "Plugin:"
+        "plugin" : "Plugin:",
         "do_now_btn" : "Jetzt zu tun"
     },
 

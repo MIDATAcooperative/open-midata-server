@@ -200,3 +200,9 @@
 {"_id":{"$oid":"588b56dbaed6450ffef8fb37"},"system":"http://hl7.org/fhir/sid/icd-10","code":"C95.9","display":"Leukemia, unspecified","content":"condition/icd-10-c9x"}
 {"_id":{"$oid":"5890aa5faed6450fd69a10d3"},"system":"http://midata.coop/karegenda","code":"Entry","display":"Karegenda Entry","content":"karegenda/entry"}
 {"_id":{"$oid":"58b5a0a8aed64510c953d833"},"system":"http://loinc.org","code":"41953-1","display":"Distance walked in 24h (calculated)","content":"activities/distance-24h-calc"}
+{"_id":{"$oid":"58e60ed1aed6450f67436b76"},"system":"http://midata.coop","code":"MSCogTestSD","display":"MS Kognitionstest Symbol-Digit","content":"MSCogTestSD"}
+{"_id":{"$oid":"58e60f13aed6450f67436b77"},"system":"http://midata.coop","code":"MSCogTestLab","display":"MS Kognitionstest Labyrinth","content":"MSCogTestLab"}
+{"_id":{"$oid":"58e60f3eaed6450f67436b79"},"system":"http://midata.coop","code":"MSCogTestSDPrep","display":"MS Kognitionstest Symbol-Digit Probelauf","content":"MSCogTestSDPrep"}
+{"_id":{"$oid":"58e60f6baed6450f67436b7b"},"system":"http://midata.coop","code":"MSMotTestDot","display":"MS Motoriktest Punkte bewegen","content":"MSMotTestDot"}
+{"_id":{"$oid":"58e60fa6aed6450f67436b7d"},"system":"http://midata.coop","code":"MSMotTestLine","display":"MS Motoriktest Linie nachzeichnen","content":"MSMotTestLine"}
+{"_id":{"$oid":"58e6100baed6450f67436b80"},"system":"http://midata.coop","code":"MSTests","display":"Kognitive und motorische Übungen von MS-Patienten","content":"MSTests"}

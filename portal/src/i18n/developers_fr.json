@@ -46,6 +46,6 @@
             "defaultQuery" : "Requête limitant l'accès du plugin à la base de données. L'accès doit être limité au moins par 'content', 'group', 'format' ou 'owner'. Example valide (toutes les Observations) : '{ \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery_extra" : "Veuillez consulter les valeurs valides pour 'content' et 'format' sous 'Format/Content' dans le guide du développeur. Pour une première version, vous pouvez débuter avec un accès total en indiquant : { \"group\" : \"all\", \"group-system\" : \"v1\" }. Veuillez préciser la limitation avant que le plugin ou l'app soit mis en production.",
             "secret" : "Votre app aura besoin de ce 'secret' pour se connecter. Choisissez le librement."
-        },
-    },
+        }
+    }
 }
