@@ -517,6 +517,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 	
 	public void clean(T resource) {
 		resource.getMeta().setExtension(null);
+		resource.setId((IIdType) null);
 	}
 	
 	public void prepare(Record record, T theResource) throws AppException { }
