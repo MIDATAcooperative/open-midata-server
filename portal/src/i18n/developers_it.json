@@ -106,6 +106,6 @@
 
             // TODO NEW
             "secret" : "Your app will need this 'secret' during login. Choose whatever you like."
-        },
-    },
+        }
+    }
 }

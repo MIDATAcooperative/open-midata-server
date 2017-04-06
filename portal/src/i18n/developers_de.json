@@ -11,7 +11,7 @@
     "developer_navbar" : {
         "yourapps" : "Ihre Plugins",
         "sandbox" : "Sandbox",
-        "records" : "Testeinträge"
+        "records" : "Testeinträge",
         "testusers" : "Testbenutzer"
     },
 
@@ -46,6 +46,6 @@
             "defaultQuery" : "Query das den Zugriff des Plugins auf die Datenbank begrenzt. Der Zugriff muss mindestens eingeschränkt werden nach 'content', 'group', 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery_extra" : "Gültige Werte für 'content' oder 'format' sind im Developer Guide unter 'Format/Content' aufgelistet. Für erste Versionen kann der Vollzugriff erstattet werden mit { \"group\" : \"all\", \"group-system\" : \"v1\" }. Schränken Sie allerdings den Zugriff weiter ein, bevor das Plugin oder die App produktiv eingesetzt wird.",
             "secret" : "Ihre App braucht dieses 'Secret' um sich anmelden zu können. Wählen Sie es nach Belieben."
-        },
-    },
+        }
+    }
 }

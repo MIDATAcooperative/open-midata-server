@@ -35,7 +35,7 @@
         "confirmation_code" : "Bestätigungscode:",
         "registration_date" : "Registrierungsdatum:",
         "confirmation_date" : "Bestätigungsdatum:",
-        "last_login" : "Letzte Anmeldung:"
+        "last_login" : "Letzte Anmeldung:",
         "email_confirm_btn" : "E-Mail-Adresse bestätigen",
         "comment" : "Bemerkung",
         "add_comment_btn" : "Bemerkung hinzufügen"
