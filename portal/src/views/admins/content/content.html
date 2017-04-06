@@ -112,7 +112,7 @@
 	             <input class="form-control" type="text" ng-model="group.label[lang]">
 	           </formrow>
 	           <formrow myid="parent" label="Parent">
-	             <select class="form-control" type="text" ng-model="group.parent" ng-options="grp.name as grp.label[lang] for grp in groups"></select>
+	             <select class="form-control" type="text" ng-model="group.parent" ng-options="grp.name as grp.label[lang] for grp in groups | orderBy : 'label.en'"></select>
 	           </formrow>
 	           <formrow myid="system" label="Group System">
 	             <input class="form-control" type="text" ng-model="group.system">
