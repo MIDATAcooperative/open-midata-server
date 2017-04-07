@@ -883,7 +883,8 @@ public class RecordManager {
 		
 		if (rec.security == null) throw new InternalServerException("error.internal", "Missing key for record:"+rec._id.toString());
 		FileData fileData = FileStorage.retrieve(new MidataId(token.recordId));
-				
+		if (fileData == null) throw new InternalServerException("error.internal", "Record "+rec._id.toString()+" has no binary data attached.");		
+		
 		if (rec.security.equals(APSSecurityLevel.NONE) || rec.security.equals(APSSecurityLevel.LOW)) {
 		  fileData.inputStream = fileData.inputStream;			
 		} else {

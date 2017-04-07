@@ -2,18 +2,23 @@ package controllers;
 
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 
 import actions.APICall;
 import models.Developer;
+import models.MessageDefinition;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
 import models.Plugin_i18n;
 import models.Space;
+import models.enums.MessageReason;
 import models.enums.PluginStatus;
 import models.enums.UserRole;
 import play.mvc.BodyParser;
@@ -82,7 +87,14 @@ public class Market extends APIController {
 		app.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
 		app.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
+		app.resharesData = JsonValidation.getBoolean(json, "resharesData");
+		app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		app.i18n = new HashMap<String, Plugin_i18n>();
+		
+		
+		Map<String, MessageDefinition> predefinedMessages = parseMessages(json);
+		if (predefinedMessages != null) app.predefinedMessages = predefinedMessages;
+		
 		try {
 		  Query.validate(app.defaultQuery, app.type.equals("mobile"));
 		} catch (BadRequestException e) {
@@ -232,6 +244,10 @@ public class Market extends APIController {
 		plugin.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
 		plugin.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		plugin.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
+		plugin.resharesData = JsonValidation.getBoolean(json, "resharesData");
+		plugin.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
+		plugin.predefinedMessages = parseMessages(json);
+		
 		try {
 		    Query.validate(plugin.defaultQuery, plugin.type.equals("mobile"));
 		} catch (BadRequestException e) {
@@ -270,6 +286,27 @@ public class Market extends APIController {
 		Plugin.add(plugin);
 		
 		return ok(JsonOutput.toJson(plugin, "Plugin", Plugin.ALL_DEVELOPER));
+	}
+	
+	private static Map<String, MessageDefinition> parseMessages(JsonNode json) throws JsonValidationException {
+		if (!json.has("predefinedMessages")) return null;
+		Iterator<Entry<String,JsonNode>> messages = json.get("predefinedMessages").fields();
+		if (!messages.hasNext()) return null;
+		
+		Map<String, MessageDefinition> result = new HashMap<String, MessageDefinition>();		
+		while (messages.hasNext()) {		
+			Entry<String,JsonNode> entry = messages.next();
+			JsonNode def = entry.getValue();
+			
+			MessageDefinition messageDef  = new MessageDefinition();
+			messageDef.reason = JsonValidation.getEnum(def, "reason", MessageReason.class); 
+			messageDef.code = JsonValidation.getStringOrNull(def, "code");
+			messageDef.text = JsonExtraction.extractStringMap(def.get("text"));
+			messageDef.title = JsonExtraction.extractStringMap(def.get("title"));
+			
+			result.put(messageDef.reason.toString() + (messageDef.code != null ? "_"+messageDef.code : ""), messageDef);
+		}
+		return result;
 	}
 	
 	/**

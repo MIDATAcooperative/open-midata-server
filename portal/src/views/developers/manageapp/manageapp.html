@@ -87,7 +87,20 @@
 		    <p class="help-block" ng-show="app.type == 'mobile'" translate="manageapp.info.defaultQuery_mobile"></p> 
 		    <p class="help-block" ng-hide="app.type == 'mobile'" translate="manageapp.info.defaultQuery"></p>
 		    <p class="help-block" translate="manageapp.info.defaultQuery_extra"></p>
-		  </formrow>		 
+		  </formrow>
+		 
+		  <formrow myid="resharesData" label="Resharing">
+		    <label>
+		      <input type="checkbox" id="resharesData" name="resharesData" class="form-control" ng-model="app.resharesData" value="true">
+		      <span translate="manageapp.info.resharesData"></span>
+		    </label>
+		  </formrow>
+		   <formrow myid="allowsUserSearch" label="User Search">
+		    <label>
+		      <input type="checkbox" id="allowsUserSearch" name="allowsUserSearch" class="form-control" ng-model="app.allowsUserSearch" value="true">
+		      <span translate="manageapp.info.allowsUserSearch"></span>
+		    </label>
+		  </formrow>			 
 		  <formrow myid="authorizationUrl" label="Authorization URL" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
 		    <input type="text" id="authorizationUrl" name="authorizationUrl" class="form-control" placeholder="Authorization URL" ng-model="app.authorizationUrl">
 		  </formrow>

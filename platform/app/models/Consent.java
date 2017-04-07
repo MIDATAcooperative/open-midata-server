@@ -30,12 +30,22 @@ public class Consent extends Model {
 	/**
 	 * constant for all fields of a consent
 	 */
-	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "name", "authorized", "entityType", "type", "status");
+	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp");
 	
 	/**
 	 * id of owner of this consent. The owner is the person who shares data.
 	 */
 	public MidataId owner;
+	
+	/**
+	 * id of app that created the consent (optional)
+	 */
+	public MidataId creatorApp; 
+	
+	/**
+	 * a code for the category of the consent. 
+	 */
+	public String categoryCode;
 	
 	/**
 	 * a public name for this consent
