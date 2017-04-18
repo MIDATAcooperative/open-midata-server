@@ -30,7 +30,27 @@
     "title" : "Your Plugins"
   },
   
+  "appmessages" : {
+    "title" : "Predefined Messages for App:",
+    "reason" : "Reason (Trigger)",
+	"code" : "Code",
+    "languages" : "Languages",
+    "empty" : "There are no app specfic messages defined yet.",
+    
+    "lang" : "Language",
+    "msgtitle" : "Message Title",
+    "text" : "Message Text",
+    
+    "reasons" : {
+       "REGISTRATION" : "Registration of new user",
+	   "CONSENT_REQUEST" : "Request for consent",
+	   "CONSENT_CONFIRM" : "Confirmation of consent",
+	   "CONSENT_REJECT" : "Rejection of consent"
+    }		      
+  },
+  
   "manageapp" : {
+    "messages_btn" : "Edit Messages",
     "info" : {
        "filename" : "This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your app for a specific role only? Otherwise choose 'Any Role'.",

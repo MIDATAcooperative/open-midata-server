@@ -1,0 +1,88 @@
+
+	<div  ng-controller="AppMessagesCtrl">
+		
+		<div class="panel panel-primary">
+		<div class="panel-heading">
+		  	<span translate="appmessages.title"></span>
+		  	{{ app.filename }}			
+		</div>
+		<div class="body">
+		
+		<div ng-hide="selmsg">
+		<table class="table table-striped" ng-show="messages.length">
+		    <tr>
+		      <th translate="appmessages.reason"></th>
+		      <th translate="appmessages.code"></th>
+		      <th translate="appmessages.languages"></th>
+		      <th>&nbsp;</th>
+		    </tr>
+		    <tr ng-repeat="msg in messages">
+		      <td><a ng-click="showMessage(msg)" href="javascript:" translate="{{ 'appmessages.reasons.' + msg.reason }}"></a></td>
+		      <td>{{ msg.code }}</td>
+		      <td>
+		        <span ng-repeat="l in languages" ng-click="showMessage(msg,l)">
+		          <span ng-show="msg.text[l]"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{{l}} </span>		      
+		        </span>
+		      </td>
+		      <td>
+		       <button class="btn btn-xs btn-default" ng-click="showMessage(msg)" translate="common.view_btn"></button>
+		      </td>
+		    </tr>
+		</table>
+		
+		
+		<p ng-hide="messages.length" translate="appmessages.empty"></p>
+		
+		<button class="btn btn-default" ng-click="addMessage()" translate="common.add_btn"></button>
+		<a class="btn btn-default" ui-sref="^.manageapp({ appId : app._id })" translate="common.back_btn"></a>
+		
+		</div>
+		<div ng-show="selmsg">  		
+		
+		  		
+		<form name="myform" novalidate role="form" class="form-horizontal" >
+		  <p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
+	      </p>	
+		  		  
+		  		  
+		  
+		  <formrow myid="reason" label="appmessages.reason">
+		    <select id="reason" name="reason" class="form-control" ng-model="selmsg.reason" ng-options="reason for reason in reasons"></select>		    
+		  </formrow>
+		  
+		  <formrow myid="code" label="appmessages.code">		    
+		    <input type="text" id="code" name="code" class="form-control" placeholder="Code" ng-model="selmsg.code">
+		  </formrow>
+		  	
+		  <hr>	
+		  		  	
+		  <formrow myid="x" label="Multi Language Support">
+		    <div class="help-block">
+		     <span ng-repeat="l in languages" ng-click="showMessage(selmsg,l)">
+		          <span ng-show="selmsg.text[l]"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{{l}} </span>		      
+		     </span>
+		    </div>
+		  </formrow>
+		  		  	
+		  		  		  		  		  		  		  		 
+		  <formrow myid="lang" label="appmessages.lang">
+		    <select id="lang" name="lang" class="form-control" ng-model="sel.lang" ng-options="lang for lang in languages"></select>		    
+		  </formrow>
+		  
+		  
+		  <formrow myid="title" label="appmessages.msgtitle">		    
+		    <input type="text" id="title" name="title" class="form-control" ng-model="selmsg.title[sel.lang]">
+		  </formrow>
+		  <formrow myid="text" label="appmessages.text">
+		    <textarea rows="5" id="text" name="text" class="form-control" ng-model="selmsg.text[sel.lang]"></textarea>
+		  </formrow>
+		  		  
+		  <formrow myid="x" label="">
+		    <button type="button" ng-click="updateApp()" ng-disabled="status.action=='submit'" class="btn btn-primary">Submit</button>	
+		    <button type="button" class="btn btn-danger" translate="common.delete_btn" ng-click="deleteMessage(msg)"></button>	    
+		  </formrow>
+	     </form>	  
+		</div>
+		
+	</div>
+	</div></div>
