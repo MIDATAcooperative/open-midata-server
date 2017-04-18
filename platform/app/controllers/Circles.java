@@ -442,7 +442,7 @@ public class Circles extends APIController {
 		if (consent == null) {
 			throw new BadRequestException("error.unknown.consent", "No consent with this id belonging to user exists.");
 		}
-		if (!consent.owner.equals(userId) || !consent.status.equals(ConsentStatus.UNCONFIRMED)) {
+		if (!consent.owner.equals(userId) && !consent.status.equals(ConsentStatus.UNCONFIRMED)) {
 			throw new BadRequestException("error.invalid.consent", "This consent may not be modified by current user.");
 		}
 		
