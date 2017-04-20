@@ -1,4 +1,5 @@
 {
+
     "provider_registration" : {
         "sign_up" : "Registrierung als Gesundheitsfachperson",
         "provider" : "Gesundheitsfachperson",
@@ -29,7 +30,11 @@
 
     "provider_usergroups" : {
         "title" : "Teams",
+
         "name" : "Team",
+
+        // TODO NEW: Status
+        "status" : "Status",
         "empty" : "Sie sind nicht Mitglied eines Teams."
     },
 
@@ -41,7 +46,22 @@
 
     "provider_editusergroup" : {
         "title" : "Team ändern",
+
+        // TODO NEW: Former Members
+        "former_members" : "Former Members",
         "name" : "Team Name des Teams",
-        "status" : "Status"
+        "status" : "Status",
+
+        // TODO NEW: Member From
+        "startDate" : "Member From",
+
+        // TODO NEW: Member Until
+        "endDate" : "Member Until"
+    },
+
+    "provider_memberdetails" : {
+
+        // TODO NEW: Request Consent
+        "propose_consent" : "Request Consent"
     }
 }

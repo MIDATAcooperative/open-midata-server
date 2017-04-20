@@ -1,4 +1,5 @@
 {
+
     "footer" : {
         "copyright" : "(c) 2015-2016 ETH Zürich",
         "portals" : "MIDATA Portale:",
@@ -9,17 +10,25 @@
     },
 
     "navbar" : {
+
         // TODO
         "toggle_navigation" : "Navigation an/aus",
         "login" : "Anmelden",
         "sign_up" : "Registrieren",
         "sign_out" : "Abmelden",
         "me" : "Mich",
+
+        // TODO NEW: View
+        "view" : "View",
         "overview" : "Übersicht",
         "messages" : "Nachrichten",
         "my_data" : "Meine Daten",
         "consents" : "Teilen",
         "research" : "News",
+
+        // TODO CHANGED
+        // OLD: Config
+        // NEW: Configuration
         "config" : "Konfiguration",
         "help" : "Hilfe"
     },
@@ -48,7 +57,15 @@
             "action" : "Sie sind nicht berechtigt diese Aktion auszuführen",
             "fields" : "Sie sind nicht berechtigt diese Felder abzufragen",
             "account" : "Sie sind nicht berechtigt diesen Account zuzugreifen",
+
+            // TODO CHANGED
+            // OLD: You are not authorized to access this study.
+            // NEW: You are not authorized to access this study
             "study" : "Sie sind nicht berechtigt diese Studie einzusehen",
+
+            // TODO CHANGED
+            // OLD: This is not your plugin.
+            // NEW: This is not your plugin
             "not_plugin_owner" : "Dies ist nicht Ihr Plugin"
         },
 
@@ -81,12 +98,9 @@
             "newpassword" : "Geben Sie bitte ein neues Kennwort ein!",
             "passphrase" : "Geben Sie bitte Ihr Passphrase ein.",
 
-            // TODO NEW: Group system must be provided.
             "groupsystem" : "Die Gruppe system must be provided.",
 
-            // TODO NEW: Missing or bad token.
             "token" : "Fehlendes oder falsches Token.",
-
             "agb" : "Allgemeine Geschäftsbedingungen nicht akzeptiert."
         },
 
@@ -96,7 +110,6 @@
 
             // TODO NEW: The requested space does no longer exist.
             "space" : "The requested space does no longer exist.",
-
             "consent" : "Zustimmung nicht gefunden",
             "study" : "Diese Studie existiert nicht.",
             "content" : "Der Content-Type dieses Datensatzes ist nicht in der Platform registriert.",
@@ -136,7 +149,7 @@
         },
 
         "tooweak" : {
-            // TODO NEW: Passwords should contain of a mix of upper/lower case letters, numbers and special characters. -> should or must?
+
             "password" : "Kennwörter müssen eine Mischung von Klein-/Grossbuchstaben, Ziffern und spezielle Zeichen enthalten.",
             "passphrase" : "Passphrases müssen eine Mischung von Klein-/Grossbuchstaben, Ziffern und spezielle Zeichen enthalten."
         },
@@ -149,7 +162,6 @@
 
         "expired" : {
 
-            // TODO NEW: Token has already expired. Please request a new one.
             "token" : "Dieses Token ist bereits abgelaufen. Fordern Sie bitte ein neues.",
             "code" : "Dieser Teilnahmecode ist abgelaufen."
         },
@@ -200,7 +212,6 @@
 
             // TODO NEW: Study setup changed
             "STUDY_SETUP_CHANGED" : "Study setup changed",
-
             "MEMBERSHIP_REQUEST" : "Mitgliedschaft erforderlich",
             "CONTACT_ADDRESS_CHANGED" : "Adresse geändert",
             "CONTRACT_SEND" : "Vertrag verschickt",
@@ -216,13 +227,10 @@
         },
         "consenttype" : {
 
-            // TODO NEW: Other MIDATA Members
-
             // TODO CHANGED
             // OLD: Other MIDATA Members
             // NEW: Other Account Holders
             "CIRCLE" : "Other MIDATA Members",
-
             "EXTERNALSERVICE" : "Externe Applikation",
             "HCRELATED" : "Gesundheitswesen",
             "HEALTHCARE" : "Arzt / Spital",
@@ -263,14 +271,11 @@
             // TODO NEW: Possible match
             "MATCH" : "Possible match",
 
-            // TODO NEW: MIDATA member rejected
-
             // TODO CHANGED
             // OLD: MIDATA member rejected
             // NEW: Account holder rejected
             "MEMBER_REJECTED" : "MIDATA member rejected",
 
-            // TODO NEW: Participation requested
             "REQUEST" : "Teilnahme angefordert",
             "RESEARCH_REJECTED" : "Verworfen durch Forscher"
         },
@@ -306,8 +311,6 @@
 
             // TODO NEW: Developer
             "DEVELOPER" : "Developer",
-
-            // TODO NEW: MIDATA member
 
             // TODO CHANGED
             // OLD: MIDATA member
@@ -419,7 +422,6 @@
 
         // TODO NEW: Submit
         "submit_btn" : "Submit",
-
         "delete_btn" : "Löschen",
 
         "user" : {
@@ -432,7 +434,6 @@
 
             // TODO NEW: Mobile
             "mobile_phone" : "Mobile",
-
             "email" : "E-Mail"
         }
 
@@ -442,7 +443,6 @@
 
         // TODO NEW: 
         "rules" : "",
-
         "purpose" : "Zweck dieser MIDATA-Instanz",
         "access" : "Zugriff zu dieser MIDATA-Instanz",
         "uptime" : "Verfügbarkeit und Ausfallzeiten",
@@ -495,10 +495,9 @@
             // TODO NEW: You may register user accounts for all four portals. Accounts will be validated by the MIDATA administration before they are unlocked.
             "access" : "You may register user accounts for all four portals. Accounts will be validated by the MIDATA administration before they are unlocked.",
 
-            // TODO NEW: This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time 
+            // TODO NEW: This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time
             "uptime" : "This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time ",
 
-            // TODO NEW: Store only test and demo data on this instance. There is no backup for test data.
             "data" : "Store only test and demo data on this instance. Daten werden nicht gesichert."
         },
 
@@ -509,7 +508,6 @@
 
             // TODO NEW: New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by the MIDATA office. Fake or test accounts are not allowed and will be blocked.
             "access" : "New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by the MIDATA office. Fake or test accounts are not allowed and will be blocked.",
-
             "uptime" : "Ausfälle werden angekündigt.",
 
             // TODO NEW: This instance is for storing real data about real people. Data is backed up up on a daily basis.
@@ -523,7 +521,6 @@
 
         // TODO NEW: Sign Up
         "sign_up" : "Sign Up",
-
         "email" : "E-Mail",
         "password" : "Kennwort",
         "password_repetition" : "Kennwort wiederholen",
@@ -545,14 +542,11 @@
 
         // TODO NEW: Mobile Phone
         "mobile_phone" : "Mobile Phone",
-
         "coach" : "Kontaktperson bei MIDATA",
         "reason" : "Grund der Registrierung",
         "agb" : "AGB",
 
-        // TODO NEW: I accept the terms and conditions
         "agb2" : "Ich akzeptiere  accept the terms and conditions",
-
         "sign_up_btn" : "Registrieren"
     },
 
@@ -562,7 +556,6 @@
 
         // TODO NEW: Remember Me
         "remember_me" : "Remember Me",
-
         "sign_in_btn" : "Anmelden",
         "forgot_your_password" : "Kennwort vergessen?",
 
@@ -624,7 +617,6 @@
 
         // TODO NEW: Please keep your passphrase at a save place as there is no recovery function for it. If you ever loose your passphrase you need to contact support@midata.coop.
         "keep_passphrase_safe" : "Please keep your passphrase at a save place as there is no recovery function for it. If you ever loose your passphrase you need to contact support@midata.coop.",
-
         "old_passphrase" : "Altes Passphrase",
         "new_passphrase" : "Neues Passphrase",
         "change_passphrase_btn" : "Passphrase ändern",
@@ -654,9 +646,11 @@
 
         // TODO NEW: There are no spotlighted plugins yet.
         "no_spotlighted_plugins" : "There are no spotlighted plugins yet.",
-
         "plugins_you_may_like" : "Plugins die Ihnen gefallen könnten",
-        "no_recommendations" : "Wir haben noch keine Empfehlung für Sie."
+        "no_recommendations" : "Wir haben noch keine Empfehlung für Sie.",
+
+        // TODO NEW: Use Now
+        "install_now_btn" : "Use Now"
     },
 
     "providersearch" : {
@@ -690,6 +684,10 @@
         "organization" : "Einrichtung",
         "providers_monitoring" : "Betreuende Fachperson der Studie",
         "no_providers" : "Keine",
+
+        // TODO CHANGED
+        // OLD: remove
+        // NEW: Remove
         "provider_remove_btn" : "Entfernen",
         "provider_add_btn" : "Hinzufügen",
 
@@ -716,7 +714,6 @@
 
         // TODO NEW: Records created by app:
         "records_from_app" : "Records created by app:",
-
         "owner_self" : "Ihre eigene Datensätze",
         "participation_history" : "Historie der Teilnahme",
         "history_event" : "Ereignis",
@@ -735,14 +732,21 @@
         "change_password_btn" : "Kennwort ändern",
         "change_passphrase_btn" : "Passphrase ändern",
         "repair_account_btn" : "Account reparieren",
+
+        // TODO NEW: Reset Portal
+        "reset_spaces_btn" : "Reset Portal",
         "delete_records_btn" : "Datensätze löschen",
         "account_repaired" : "Ihr Account wurde repariert.",
+
+        // TODO NEW: Your configuration has been resetted.
+        "spaces_resetted" : "Your configuration has been resetted.",
         "settings" : "Einstellungen",
         "address" : "Adresse und Kontaktinformationen",
         "change_address_btn" : "Adresse ändern",
         "searchable" : "Ist Ihr Account durch andere MIDATA Kontoinhabende sichtbar?",
         "change_settings_btn" : "Einstellungen ändern",
         "change_settings_success" : "Die Einstellungen wurde aktualisiert"
+
     },
 
     "visualization" : {
@@ -757,7 +761,6 @@
 
         // TODO NEW: Grant this plugin access to:
         "grant_access" : "Grant this plugin access to:",
-
         "install_btn" : "Plugin hinzufügen",
         "location" : {
             "workspace" : "Workspace",
@@ -767,15 +770,12 @@
 
             // TODO NEW: Me Page
             "me" : "Me Page",
-
             "config" : "Konfigurations-Dashboard",
 
             // TODO NEW: My Data Dashboard
             "mydata" : "My Data Dashboard",
 
-            // TODO NEW: Social Dashboard
             "social" : "Social-Dashboard",
-
             "providers" : "Gesundheits-Dashboard",
             "studies" : "Forschungs-Dashboard"
         }
@@ -792,18 +792,31 @@
         // TODO NEW: I do not know yet to whom I want to share the data. Please add a passcode to this consent that I can give to a health professional of my choice.
         "use_passcode2" : "I do not know yet to whom I want to share the data. Please add a passcode to this consent that I can give to a health professional of my choice.",
 
-        // TODO NEW: Choose a secure passcode
         "choose_passcode" : "Wählen Sie ein sicheres Passcode",
 
+        // TODO NEW: Who is sharing data?
+        "who_is_owner" : "Who is sharing data?",
+
+        // TODO CHANGED
+        // OLD: With which persons(s) do you want to share data?
+        // NEW: With which persons(s) is data shared?
         "which_persons" : "Mit welchen Personen wollen Sie Daten teilen?",
+
+        // TODO NEW: Select person that shares data
+        "set_owner_btn" : "Select person that shares data",
+
+        // TODO NEW: Add yourself
+        "add_yourself_btn" : "Add yourself",
         "add_person_btn" : "Neue Person hinzufügen",
         "add_usergroup_btn" : "Neues Team hinzufügen",
 
-        // TODO NEW: 3rd party access?
         "reshare" : "Zugriff für 3rd party access?",
-
         "reshare2" : "Die durch diese Zustimmung berechtigten Personen dürfen die entsprechenden Daten weiter teilen.",
         "expiration_date" : "Ablaufdatum der Zustimmung:",
+
+        // TODO CHANGED
+        // OLD: Shares only data created before:
+        // NEW: Do not share data created after:
         "created_before" : "Nur Daten teilen die erstellt wurden vor dem:",
         "share_what" : "Welche Daten wollen Sie teilen?",
         "consent_empty" : "Diese Zustimmung teilt zu Beginn keine Daten. Sie können die Daten, die Sie darüber teilen wollen, später wählen.",
@@ -812,22 +825,22 @@
 
     "editconsent" : {
         "title" : "Zustimmung",
+
+        // TODO NEW: Owner of Consent
+        "owner" : "Owner of Consent",
         "name" : "Name der Zustimmung",
         "type" : "Typ der Zustimmung",
         "status" : "Status der Zustimmung",
-        "password" : "Kennwort",
-
-        // TODO NEW: A password has been set if you need to relogin with the app.
-        "password_exists" : "A password has been set if you need to relogin with the app.",
-
-        "show_password" : "Kennwort anzeigen",
-        "password_shown" : "Benutzen Sie Ihre E-Mail-Adresse und Ihr Kennwort um sich anzumelden:",
         "people" : "Mit welcher Person/welchen Personen wollen Sie Daten teilen?",
         "add_people_btn" : "Andere Personen hinzufügen",
         "add_usergroup_btn" : "Team hinzufügen",
         "reshare" : "@:newconsent.reshare",
         "reshare2" : "@:newconsent.reshare2",
         "expiration_date" : "Ablaufdatum der Zustimmung:",
+
+        // TODO CHANGED
+        // OLD: Shares only data created before:
+        // NEW: Does not share data created after:
         "created_before" : "Nur Daten teilen, die erstellt wurden vor dem:",
         "what_is_shared" : "Welche Daten sind geteilt?",
         "consent_empty" : "Diese Zustimmung teilt momentan keine Daten.",
@@ -853,12 +866,34 @@
         "title" : "Zustimmungen",
         "description" : "Zustimmungen geben Anderen (Gesundheitsfachpersonen, Freunde, Forscher, ...) Zugriff auf bestimmte Daten. Hier können Sie bestehende Zustimmung verwalten oder neue erstellen.",
         "count" : "Sie haben {{ count }} Zustimmungen:",
+
+        // TODO NEW: Show consents where you share data with someone else
+        "where_owner" : "Show consents where you share data with someone else",
+
+        // TODO NEW: Show consents where data is shared with you
+        "where_authorized" : "Show consents where data is shared with you",
+
+        // TODO CHANGED
+        // OLD: Name
+        // NEW: Consent Title
         "name" : "Name",
+
+        // TODO NEW: Sharing Person
+        "ownerName" : "Sharing Person",
         "type" : "Typ",
         "status" : "Status",
         "number_of_people" : "# Personen",
         "number_of_records" : "# Einträge",
         "add_new_btn" : "Neue Zustimmung hinzufügen"
+    },
+
+    "revconsents" : {
+
+        // TODO NEW: There are {{ count }} consents sharing data with you:
+        "count" : "There are {{ count }} consents sharing data with you:",
+
+        // TODO NEW: Add Request for Consent
+        "add_new_btn" : "Add Request for Consent"
     },
 
     "importrecords" : {
@@ -869,6 +904,10 @@
     "spaces" : {
         "title" : "MIDATA Plugin",
         "delete_btn" : "Diesen Space löschen",
+
+        // TODO CHANGED
+        // OLD: Used records..
+        // NEW: Used records...
         "used_btn" : "Verwendete Datensätze..",
         "share_btn" : "Teilen...",
         "finish_comparing_btn" : "Vergleich beendet",
@@ -878,13 +917,10 @@
     "records" : {
         "title" : "Meine Daten",
 
-        // TODO NEW: Please use the 'share' and 'unshare' buttons to select which records you want to share with consent
         "share_instructions1" : "Benutzen Sie die Buttons 'teilen' und 'nicht teilen' um zu bestimmen welche Datensätze Sie teilen wollen",
 
-        // TODO NEW: This consent currently shares data with
         "share_instructions2" : "Diese Zustimmung teil momentan Daten mit ",
 
-        // TODO NEW: people.
         "share_instructions3" : "Personen.",
 
         // TODO NEW: In order to permanently
@@ -902,9 +938,7 @@
         // TODO NEW: on the delete button to the right of the record.
         "delete_instructions5" : "on the delete button to the right of the record.",
 
-        // TODO NEW: In order to permanently delete all records of a certain category double click on the delete button to the right of the category.
         "delete_instructions6" : "Um alle Datensätze einer bestimmten Kategorie permanent zu löschen, Doppelklicken Sie auf dem Button rechts der Kategorie.",
-
         "shared_with" : "Geteilt mit:",
         "records_used_for_app" : "Datensätze die durch der benutzt weden",
         "back_to_plugin" : "Zurück zur Betrachtung",
@@ -924,7 +958,28 @@
 
     "oauth2" : {
         "requesting_app" : "Diese Applikation benötigt eine Anmeldung:",
-        "sign_in_btn" : "Anmelden"
+
+        // TODO NEW: MIDATA Sign In for:
+        "sign_in" : "MIDATA Sign In for:",
+        "sign_in_btn" : "Anmelden",
+
+        // TODO NEW: Device: {{ device}}
+        "device" : "Device: {{ device}}",
+
+        // TODO NEW: Please confirm the application consent using MIDATA portal then retry. Consent title is: {{ consent }}
+        "please_confirm" : "Please confirm the application consent using MIDATA portal then retry. Consent title is: {{ consent }}",
+
+        // TODO NEW: Requested Access:
+        "requests_access" : "Requested Access:",
+
+        // TODO NEW: Group: {{ group }}
+        "shares_group" : "Group: {{ group }}",
+
+        // TODO NEW: Format: {{ format }}
+        "shares_format" : "Format: {{ format }}",
+
+        // TODO NEW: Content: {{ content }}
+        "shares_content" : "Content: {{ content }}"
     },
 
     "dashboard" : {
@@ -973,6 +1028,10 @@
         "entercode" : "Durch Teilnahmecode beitreten",
         "records_shared" : "Einträge die mit dieser Zustimmung geteilt sind:",
         "addusers" : "Benutzer zu dieser Zustimmung hinzufügen",
+
+        // TODO CHANGED
+        // OLD: Shared Records:
+        // NEW: Shared records:
         "shared_with_study" : "Geteilte Datensätze:",
         "patient_records" : "Einträge dieses patienten:",
         "addtask" : "Aufgabe hinzufügen",
@@ -980,7 +1039,13 @@
         "study_records" : "Geteilte Datensätze:",
         "addmore" : "Mehr hinzufügen",
         "view_btn" : "Ansehen",
-        "install_btn" : "Neues Plugin installieren"
+        "install_btn" : "Neues Plugin installieren",
+
+        // TODO NEW: Measures
+        "observations" : "Measures",
+
+        // TODO NEW: Calendar
+        "calendar" : "Calendar"
     },
 
     "measure" : {
@@ -998,7 +1063,10 @@
     },
 
     "config" : {
-        "fitbit" : "Fitbit-Konfiguration"
+        "fitbit" : "Fitbit-Konfiguration",
+
+        // TODO NEW: Withings Configuration
+        "withings" : "Withings Configuration"
     },
 
     "spacesummary" : {
@@ -1028,6 +1096,7 @@
         "task_title" : "Titel der Aufgabe",
         "description" : "Beschreibung",
         "frequency" : "Häufigkeit",
+
         "survey_name" : "Umfrage ausfüllen",
         "survey_description" : "Füllen Sie bitte die Umfragen die ich mit Ihrem Account teile.",
         "survey_title" : "Umfrage ausfüllen"
@@ -1047,10 +1116,16 @@
     },
 
     "addusers" : {
+
+        // TODO CHANGED
+        // OLD: Contacts
+        // NEW: Existing contacts:
         "contacts" : "Kontakte",
         "all_users" : "Alle Benutzer",
-        "no_contacts" : "Sie haben noch keine Benutzer in Ihre Circles.",
         "no_contacts_to_add" : "Keine Kontakte können diesem Circle hinzugefügt werden.",
+
+        // TODO NEW: Enter email of target person:
+        "search_by_email" : "Enter email of target person:",
         "search_user" : "Benutzer suchen",
         "searching" : "Suchen...",
         "no_matching_users" : "Kein Benutzer entspricht Ihre Suchkriterien.",

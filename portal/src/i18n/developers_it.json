@@ -1,4 +1,5 @@
 {
+
     "developer_registration" : {
 
         // TODO NEW: To avoid longer waiting time until your account is validated please fill out contact person and purpose of registration carefully such that an administrator may decide quickly about your access request.
@@ -44,6 +45,10 @@
         "resetpw" : "New Password",
 
         // TODO NEW: Using these buttons you can register additional users for testing your plugins. These users will use plugins developed by you from 'localhost' instead from the server.
+
+        // TODO CHANGED
+        // OLD: Using these buttons you can register additional users for testing your plugins. These users will use plugins developed by you from 'localhost' instead from the server.
+        // NEW: Using these buttons you can register additional users for testing your plugins. By test users, plugins are run locally (from 'localhost') and not on the server.
         "description" : "Using these buttons you can register additional users for testing your plugins. These users will use plugins developed by you from 'localhost' instead from the server.",
 
         // TODO NEW: Register Account Holder
@@ -66,6 +71,10 @@
         "info" : {
 
             // TODO NEW: This name is internally used to identify your app. Should be a valid identifier.
+
+            // TODO CHANGED
+            // OLD: This name is internally used to identify your app. Should be a valid identifier.
+            // NEW: This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).
             "filename" : "This name is internally used to identify your app. Should be a valid identifier.",
 
             // TODO NEW: Is your app for a specific role only? Otherwise choose 'Any Role'.
@@ -96,15 +105,31 @@
             "defaultSpaceContext" : "Choose 'me' for the default dashboard. Choose 'config' if you write an import plugin.",
 
             // TODO NEW
+
+            // TODO CHANGED
+            // OLD: Query restricting your plugins access to the database. Access must be restricted by 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ "group" : "all", "group-system" : "v1", "format" : ["fhir/Observation" ] }'
+            // NEW: Query restricting the access of the app to the database. Access must be restricted by 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ "group" : "all", "group-system" : "v1", "format" : ["fhir/Observation" ] }'
             "defaultQuery_mobile" : "Query restricting the access of the app to the database. Access must be restricted by 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
 
             // TODO NEW
+
+            // TODO CHANGED
+            // OLD: Query restricting your plugins access to the database. Access must be restricted by at least one of 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ "format" : ["fhir/Observation" ] }'
+            // NEW: Query restricting the access of the plugin to the database. Access must be restricted by at least one of 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ "format" : ["fhir/Observation" ] }'
             "defaultQuery" : "Query restricting the access of the plugin to the database. Access must be restricted by at least one of 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
 
             // TODO NEW
+
+            // TODO CHANGED
+            // OLD: Look for valid values for 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { "group" : "all", "group-system" : "v1" } . Please refine query before plugin or app goes in production.
+            // NEW: Look for valid values for 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { "group" : "all", "group-system" : "v1" }. Please refine query before plugin or app goes in production.
             "defaultQuery_extra" : "Look for valid values for 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { \"group\" : \"all\", \"group-system\" : \"v1\" }. Please refine query before plugin or app goes in production.",
 
             // TODO NEW
+
+            // TODO CHANGED
+            // OLD: Your app will need this secret during login. Choose whatever you like.
+            // NEW: Your app will need this 'secret' during login. Choose whatever you like.
             "secret" : "Your app will need this 'secret' during login. Choose whatever you like."
         }
     }

@@ -1,4 +1,5 @@
 {
+
     "footer" : {
         "copyright" : "(c) 2015-2016 ETH Zürich",
         "portals" : "Portails MIDATA:",
@@ -9,17 +10,25 @@
     },
 
     "navbar" : {
+
         // TODO
         "toggle_navigation" : "Navigation ",
         "login" : "Connexion",
         "sign_up" : "Inscription",
         "sign_out" : "Déconnexion",
         "me" : "Moi",
+
+        // TODO NEW: View
+        "view" : "View",
         "overview" : "Vue d'ensemble",
         "messages" : "Messages",
         "my_data" : "Mes données",
         "consents" : "Partage",
         "research" : "News",
+
+        // TODO CHANGED
+        // OLD: Config
+        // NEW: Configuration
         "config" : "Configuration",
         "help" : "Aide"
     },
@@ -66,9 +75,17 @@
             "account" : "You are not authorized to access this account",
 
             // TODO NEW: You are not authorized to access this study.
+
+            // TODO CHANGED
+            // OLD: You are not authorized to access this study.
+            // NEW: You are not authorized to access this study
             "study" : "You are not authorized to access this study",
 
             // TODO NEW: This is not your plugin.
+
+            // TODO CHANGED
+            // OLD: This is not your plugin.
+            // NEW: This is not your plugin
             "not_plugin_owner" : "This is not your plugin"
         },
 
@@ -222,8 +239,6 @@
             // TODO NEW: User is not allowed to log in. Contact support@midata.coop for help.
             "user" : "User is not allowed to log in. Contact support@midata.coop for help.",
 
-            // TODO NEW: Member is not allowed to participate in study.
-
             // TODO CHANGED
             // OLD: Member is not allowed to participate in study.
             // NEW: Account holder is not allowed to participate in study.
@@ -231,8 +246,6 @@
         },
 
         "closed" : {
-
-            // TODO NEW: Study not searching for members.
 
             // TODO CHANGED
             // OLD: Study not searching for members.
@@ -400,8 +413,6 @@
         },
         "consenttype" : {
 
-            // TODO NEW: Other MIDATA Members
-
             // TODO CHANGED
             // OLD: Other MIDATA Members
             // NEW: Other Account Holders
@@ -472,8 +483,6 @@
             // TODO NEW: Possible match
             "MATCH" : "Possible match",
 
-            // TODO NEW: MIDATA member rejected
-
             // TODO CHANGED
             // OLD: MIDATA member rejected
             // NEW: Account holder rejected
@@ -529,8 +538,6 @@
 
             // TODO NEW: Developer
             "DEVELOPER" : "Developer",
-
-            // TODO NEW: MIDATA member
 
             // TODO CHANGED
             // OLD: MIDATA member
@@ -811,7 +818,7 @@
             // TODO NEW: You may register user accounts for all four portals. Accounts will be validated by the MIDATA administration before they are unlocked.
             "access" : "You may register user accounts for all four portals. Accounts will be validated by the MIDATA administration before they are unlocked.",
 
-            // TODO NEW: This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time 
+            // TODO NEW: This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time
             "uptime" : "This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time ",
 
             // TODO NEW: Store only test and demo data on this instance. There is no backup for test data.
@@ -1127,7 +1134,10 @@
         "plugins_you_may_like" : "Plugins you may like",
 
         // TODO NEW: We have no recommendations for you yet.
-        "no_recommendations" : "We have no recommendations for you yet."
+        "no_recommendations" : "We have no recommendations for you yet.",
+
+        // TODO NEW: Use Now
+        "install_now_btn" : "Use Now"
     },
 
     "providersearch" : {
@@ -1211,6 +1221,10 @@
         "no_providers" : "None",
 
         // TODO NEW: remove
+
+        // TODO CHANGED
+        // OLD: remove
+        // NEW: Remove
         "provider_remove_btn" : "remove",
 
         // TODO NEW: Add
@@ -1288,11 +1302,17 @@
         // TODO NEW: Repair Account
         "repair_account_btn" : "Repair Account",
 
+        // TODO NEW: Reset Portal
+        "reset_spaces_btn" : "Reset Portal",
+
         // TODO NEW: Delete Records
         "delete_records_btn" : "Delete Records",
 
         // TODO NEW: Your account has been repaired.
         "account_repaired" : "Your account has been repaired.",
+
+        // TODO NEW: Your configuration has been resetted.
+        "spaces_resetted" : "Your configuration has been resetted.",
 
         // TODO NEW: Settings
         "settings" : "Settings",
@@ -1302,8 +1322,6 @@
 
         // TODO NEW: Change Address
         "change_address_btn" : "Change Address",
-
-        // TODO NEW: Is your account visible for other MIDATA members?
 
         // TODO CHANGED
         // OLD: Is your account visible for other MIDATA members?
@@ -1397,8 +1415,21 @@
         // TODO NEW: Choose a secure passcode
         "choose_passcode" : "Choose a secure passcode",
 
+        // TODO NEW: Who is sharing data?
+        "who_is_owner" : "Who is sharing data?",
+
         // TODO NEW: With which persons(s) do you want to share data?
+
+        // TODO CHANGED
+        // OLD: With which persons(s) do you want to share data?
+        // NEW: With which persons(s) is data shared?
         "which_persons" : "With which persons(s) do you want to share data?",
+
+        // TODO NEW: Select person that shares data
+        "set_owner_btn" : "Select person that shares data",
+
+        // TODO NEW: Add yourself
+        "add_yourself_btn" : "Add yourself",
 
         // TODO NEW: Add New Person
         "add_person_btn" : "Add New Person",
@@ -1416,6 +1447,10 @@
         "expiration_date" : "Consent expiration date:",
 
         // TODO NEW: Shares only data created before:
+
+        // TODO CHANGED
+        // OLD: Shares only data created before:
+        // NEW: Do not share data created after:
         "created_before" : "Shares only data created before:",
 
         // TODO NEW: What data do you want to share?
@@ -1430,17 +1465,12 @@
 
     "editconsent" : {
         "title" : "Consentement",
+
+        // TODO NEW: Owner of Consent
+        "owner" : "Owner of Consent",
         "name" : "Libellé du consentement",
         "type" : "Type de consentement",
         "status" : "État du consentement",
-        "password" : "Mot de passe",
-
-        // TODO NEW: A password has been set if you need to relogin with the app.
-        "password_exists" : "A password has been set if you need to relogin with the app.",
-        "show_password" : "Afficher le mot de passe",
-
-        // TODO NEW: Use your email address and this password for login:
-        "password_shown" : "Use your email address and this password for login:",
         "people" : "Avec quelle(s) personne(s) désirez-vous partager des données ?",
         "add_people_btn" : "Ajouter d'autres personnes",
 
@@ -1449,6 +1479,10 @@
         "reshare" : "@:newconsent.reshare",
         "reshare2" : "@:newconsent.reshare2",
         "expiration_date" : "Date d'expiration du consentement :",
+
+        // TODO CHANGED
+        // OLD: Shares only data created before:
+        // NEW: Does not share data created after:
         "created_before" : "Ne partager que les données créées avant :",
         "what_is_shared" : "Quelles données sont-elles partagées ?",
         "consent_empty" : "Ce consentement ne partage actuellement aucunes données.",
@@ -1484,12 +1518,34 @@
         // TODO NEW: Using consents you can grant others (healthcare professionals, friends, research...) access to some of your data. Use this page to manage your existing consents or to create a new one.
         "description" : "Using consents you can grant others (healthcare professionals, friends, research...) access to some of your data. Use this page to manage your existing consents or to create a new one.",
         "count" : "Vous avez {{ count }} consentements :",
+
+        // TODO NEW: Show consents where you share data with someone else
+        "where_owner" : "Show consents where you share data with someone else",
+
+        // TODO NEW: Show consents where data is shared with you
+        "where_authorized" : "Show consents where data is shared with you",
+
+        // TODO CHANGED
+        // OLD: Name
+        // NEW: Consent Title
         "name" : "Nom",
+
+        // TODO NEW: Sharing Person
+        "ownerName" : "Sharing Person",
         "type" : "Type",
         "status" : "État",
         "number_of_people" : "# personnes",
         "number_of_records" : "# enregistrements",
         "add_new_btn" : "Ajouter un consentement"
+    },
+
+    "revconsents" : {
+
+        // TODO NEW: There are {{ count }} consents sharing data with you:
+        "count" : "There are {{ count }} consents sharing data with you:",
+
+        // TODO NEW: Add Request for Consent
+        "add_new_btn" : "Add Request for Consent"
     },
 
     "importrecords" : {
@@ -1502,6 +1558,10 @@
         "delete_btn" : "Supprimer cet espace",
 
         // TODO NEW: Used records..
+
+        // TODO CHANGED
+        // OLD: Used records..
+        // NEW: Used records...
         "used_btn" : "Used records...",
         "share_btn" : "Partager...",
         "finish_comparing_btn" : "Comparaison terminée",
@@ -1557,8 +1617,29 @@
     "oauth2" : {
         "requesting_app" : "Cette application demande l'accès :",
 
+        // TODO NEW: MIDATA Sign In for:
+        "sign_in" : "MIDATA Sign In for:",
+
         // TODO NEW: Sign In
-        "sign_in_btn" : "Sign In"
+        "sign_in_btn" : "Sign In",
+
+        // TODO NEW: Device: {{ device}}
+        "device" : "Device: {{ device}}",
+
+        // TODO NEW: Please confirm the application consent using MIDATA portal then retry. Consent title is: {{ consent }}
+        "please_confirm" : "Please confirm the application consent using MIDATA portal then retry. Consent title is: {{ consent }}",
+
+        // TODO NEW: Requested Access:
+        "requests_access" : "Requested Access:",
+
+        // TODO NEW: Group: {{ group }}
+        "shares_group" : "Group: {{ group }}",
+
+        // TODO NEW: Format: {{ format }}
+        "shares_format" : "Format: {{ format }}",
+
+        // TODO NEW: Content: {{ content }}
+        "shares_content" : "Content: {{ content }}"
     },
 
     "dashboard" : {
@@ -1599,8 +1680,6 @@
 
         // TODO NEW: New records shared with you
         "newsharedrecords" : "New records shared with you",
-
-        // TODO NEW: Other MIDATA members may share their data with you.
 
         // TODO CHANGED
         // OLD: Other MIDATA members may share their data with you.
@@ -1659,6 +1738,10 @@
 
         // TODO NEW: Add Users to Consent
         "addusers" : "Add Users to Consent",
+
+        // TODO CHANGED
+        // OLD: Shared Records:
+        // NEW: Shared records:
         "shared_with_study" : "Enregistrements partagés :",
         "patient_records" : "Enregistrements de ce patient :",
         "addtask" : "Ajouter une tâche",
@@ -1672,7 +1755,13 @@
         // TODO CHANGED
         // OLD: Install new plugin
         // NEW: Add more
-        "install_btn" : "Installer un nouveau plugin"
+        "install_btn" : "Installer un nouveau plugin",
+
+        // TODO NEW: Measures
+        "observations" : "Measures",
+
+        // TODO NEW: Calendar
+        "calendar" : "Calendar"
     },
 
     "measure" : {
@@ -1714,7 +1803,10 @@
     "config" : {
 
         // TODO NEW: Fitbit Configuration
-        "fitbit" : "Fitbit Configuration"
+        "fitbit" : "Fitbit Configuration",
+
+        // TODO NEW: Withings Configuration
+        "withings" : "Withings Configuration"
     },
 
     "spacesummary" : {
@@ -1806,16 +1898,20 @@
     "addusers" : {
 
         // TODO NEW: Contacts
+
+        // TODO CHANGED
+        // OLD: Contacts
+        // NEW: Existing contacts:
         "contacts" : "Contacts",
 
         // TODO NEW: All users
         "all_users" : "All users",
 
-        // TODO NEW: You have no users in your circles yet.
-        "no_contacts" : "You have no users in your circles yet.",
-
         // TODO NEW: No contacts can be added to this circle.
         "no_contacts_to_add" : "No contacts can be added to this circle.",
+
+        // TODO NEW: Enter email of target person:
+        "search_by_email" : "Enter email of target person:",
 
         // TODO NEW: Search for a user
         "search_user" : "Search for a user",

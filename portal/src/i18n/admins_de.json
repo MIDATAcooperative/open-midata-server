@@ -1,4 +1,5 @@
 {
+
     "admin_navbar" : {
         "members" : "Mitglieder",
         "news" : "News",
@@ -31,14 +32,29 @@
         "status" : "Status:",
         "agb_status" : "Status AGB:",
         "contract_status" : "Status Vertrag:",
+
+        // TODO CHANGED
+        // OLD: EMail Status:
+        // NEW: eMail Status:
         "email_status" : "Status E-Mail:",
         "confirmation_code" : "Bestätigungscode:",
         "registration_date" : "Registrierungsdatum:",
         "confirmation_date" : "Bestätigungsdatum:",
+
+        // TODO CHANGED
+        // OLD: Last login:
+        // NEW: Last Login:
         "last_login" : "Letzte Anmeldung:",
+
+        // TODO CHANGED
+        // OLD: Confirm email address
+        // NEW: Confirm eMail Address
         "email_confirm_btn" : "E-Mail-Adresse bestätigen",
         "comment" : "Bemerkung",
-        "add_comment_btn" : "Bemerkung hinzufügen"
+        "add_comment_btn" : "Bemerkung hinzufügen",
+
+        // TODO NEW: Wipe Account
+        "wipe_btn" : "Wipe Account"
     },
 
     "admin_news" : {
@@ -66,6 +82,10 @@
 
     "admin_plugins" : {
         "title" : "Plugins",
+
+        // TODO CHANGED
+        // OLD: Restrict by Developer
+        // NEW: Filter by Developer
         "developer" : "Nach Entwickler filtern"
     }
 }

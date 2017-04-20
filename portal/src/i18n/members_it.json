@@ -1,4 +1,5 @@
 {
+
     "member_login" : {
 
         // TODO NEW: MY DATA - OUR HEALTH!
@@ -62,10 +63,19 @@
         "menu_research_text" : "News and announcements about MIDATA, the platform and research projects",
 
         // TODO NEW: Consents
+
+        // TODO CHANGED
+        // OLD: Consents
+        // NEW: Sharing
         "menu_consents" : "Consents",
 
         // TODO NEW: Manage data sharing with others.
         "menu_consents_text" : "Manage data sharing with others.",
+
+
+        // TODO NEW: Some ideas to start with MIDATA:
+        "starts" : "Some ideas to start with MIDATA:",
+
 
         // TODO NEW: In order to get started we recommend that you answer us some questions. We will preconfigure your account based on your answers.
         "answer_questions" : "In order to get started we recommend that you answer us some questions. We will preconfigure your account based on your answers.",
@@ -91,7 +101,6 @@
         // TODO NEW: Which measures do you want to view in the portal?
         "question_measures" : "Which measures do you want to view in the portal?",
 
-
         // TODO NEW: Do use any of these devices?
         "question_devices" : "Do use any of these devices?",
 
@@ -101,6 +110,8 @@
         // TODO NEW: Jawbone
         "question_devices_answer2" : "Jawbone",
 
+        // TODO NEW: Withings
+        "question_devices_answer3" : "Withings",
 
         // TODO NEW: You can always come back and change these settings by visiting the "Help" page.
         "come_back" : "You can always come back and change these settings by visiting the \"Help\" page.",

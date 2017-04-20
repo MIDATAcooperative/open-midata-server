@@ -1,4 +1,5 @@
 {
+
     "developer_registration" : {
         "reason_fillout" : "Um die Wartezeit bis zur Freigabe des Accounts zu reduzieren, geben Sie bitte die Kontaktperson und der Zweck der Registrierung sorgfältig ein, damit ein Administrator ihr Anfrage rasch bearbeiten kann.",
         "sign_up_btn" : "Entwickler registrieren"
@@ -20,6 +21,10 @@
         "empty" : "Für diesen Account sind keine Testbenutzer registriert.",
         "role" : "Rolle",
         "resetpw" : "Neues Kennwort",
+
+        // TODO CHANGED
+        // OLD: Using these buttons you can register additional users for testing your plugins. These users will use plugins developed by you from 'localhost' instead from the server.
+        // NEW: Using these buttons you can register additional users for testing your plugins. By test users, plugins are run locally (from 'localhost') and not on the server.
         "description" : "Mit diesen Buttons können Sie weitere Benutzer für das Testen Ihrer Plugins registrieren. Bei den Testbenutzern werden die Plugins lokal ausgeführt (aus 'localhost') und nicht auf dem Server.",
         "register_member_btn" : "Kontoinhaber registrieren",
         "register_hp_btn" : "Gesundheitsfachperson registrieren",
@@ -32,6 +37,10 @@
 
     "manageapp" : {
         "info" : {
+
+            // TODO CHANGED
+            // OLD: This name is internally used to identify your app. Should be a valid identifier.
+            // NEW: This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).
             "filename" : "Dieser Name wird intern für die Kennung Ihrer App verwendet. Es sollte einen gültigen Identifikator sein (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Dient Ihre App nur für eine spezifische Rolle? Wenn nicht, wählen Sie 'Alle Rollen'.",
             "type" : "Wählen Sie 'Plugin' wenn Ihre App im MIDATA-Portal laufen wird. Wählen Sie 'Mobile App' für eine externe App. Wählen Sie 'OAuth1 Import' oder 'OAuth2 Import' wenn Sie sich über OAuth1 oder OAuth2 mit einem externen Server verbinden.",
@@ -42,9 +51,25 @@
             "url" : "URL der Hauptseite des Plugins. Wenn Sie das MIDATA-Template verwenden ist es 'dist/index.html#?authToken=:authToken''",
             "previewUrl" : "URL der Dashboard-Kachel des Plugins. Leer lassen falls keine solche Kachel angeboten wird.",
             "defaultSpaceContext" : "Wählen Sie 'Mich' für den Standard-Dashboard. Wählen Sie 'Konfiguration' für ein Import-Plugin.",
+
+            // TODO CHANGED
+            // OLD: Query restricting your plugins access to the database. Access must be restricted by 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ "group" : "all", "group-system" : "v1", "format" : ["fhir/Observation" ] }'
+            // NEW: Query restricting the access of the app to the database. Access must be restricted by 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ "group" : "all", "group-system" : "v1", "format" : ["fhir/Observation" ] }'
             "defaultQuery_mobile" : "Query das den Zugriff der App auf die Datenbank begrenzt. Der Zugriff muss eingeschränkt werden nach 'content' oder 'group' und kann eingeschränkt werden nach 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
+
+            // TODO CHANGED
+            // OLD: Query restricting your plugins access to the database. Access must be restricted by at least one of 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ "format" : ["fhir/Observation" ] }'
+            // NEW: Query restricting the access of the plugin to the database. Access must be restricted by at least one of 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ "format" : ["fhir/Observation" ] }'
             "defaultQuery" : "Query das den Zugriff des Plugins auf die Datenbank begrenzt. Der Zugriff muss mindestens eingeschränkt werden nach 'content', 'group', 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
+
+            // TODO CHANGED
+            // OLD: Look for valid values for 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { "group" : "all", "group-system" : "v1" } . Please refine query before plugin or app goes in production.
+            // NEW: Look for valid values for 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { "group" : "all", "group-system" : "v1" }. Please refine query before plugin or app goes in production.
             "defaultQuery_extra" : "Gültige Werte für 'content' oder 'format' sind im Developer Guide unter 'Format/Content' aufgelistet. Für erste Versionen kann der Vollzugriff erstattet werden mit { \"group\" : \"all\", \"group-system\" : \"v1\" }. Schränken Sie allerdings den Zugriff weiter ein, bevor das Plugin oder die App produktiv eingesetzt wird.",
+
+            // TODO CHANGED
+            // OLD: Your app will need this secret during login. Choose whatever you like.
+            // NEW: Your app will need this 'secret' during login. Choose whatever you like.
             "secret" : "Ihre App braucht dieses 'Secret' um sich anmelden zu können. Wählen Sie es nach Belieben."
         }
     }

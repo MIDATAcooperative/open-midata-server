@@ -1,4 +1,5 @@
 {
+
     "member_login" : {
         "teaser" : "MEINE DATEN - UNSERE GESUNDHEIT!",
         "register_now" : "Jetzt registrieren",
@@ -24,8 +25,17 @@
         "menu_config_text" : "Konfigurieren Sie Ihr Dashboard und die Datenimports.",
         "menu_research" : "News",
         "menu_research_text" : "Neuigkeiten und Ankündigungen über MIDATA, die Plattform und Forschungsprojekte",
+
+        // TODO CHANGED
+        // OLD: Consents
+        // NEW: Sharing
         "menu_consents" : "Zustimmungen",
         "menu_consents_text" : "Verwaltung der mit anderen Benutzern geteilten Daten.",
+
+
+        // TODO NEW: Some ideas to start with MIDATA:
+        "starts" : "Some ideas to start with MIDATA:",
+
         "answer_questions" : "Zum Starten empfehlen wir Ihnen einige Fragen zu beantworten. Ihr Konto wird an Hand Ihren Antworten vorkonfiguriert.",
         "answered_questions" : "Danke, dass Sie die Konfigurationsfragen beantwortet haben! Sie können nun Ihr Dashboard betrachten oder die Konfiguration ggf. nochmals durchführen.",
         "answer_btn" : "Konfigurationsfragen jetzt beantworten",
@@ -39,6 +49,9 @@
         "question_devices" : "Benutzen Sie eines dieser Produkte?",
         "question_devices_answer1" : "Fitbit",
         "question_devices_answer2" : "Jawbone",
+
+        // TODO NEW: Withings
+        "question_devices_answer3" : "Withings",
         "come_back" : "Sie können immer wieder Ihre Einstellungen über die Seite \"Hilfe\" ändern.",
         "done_btn" : "Fertig"
     },
