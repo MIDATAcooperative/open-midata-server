@@ -9,6 +9,7 @@
 		<div class="body">
 		
 		<div ng-hide="selmsg">
+		 <loader busy="status.isBusy !== false">
 		<table class="table table-striped" ng-show="messages.length">
 		    <tr>
 		      <th translate="appmessages.reason"></th>
@@ -29,6 +30,7 @@
 		      </td>
 		    </tr>
 		</table>
+		</loader>
 		
 		
 		<p ng-hide="messages.length" translate="appmessages.empty"></p>

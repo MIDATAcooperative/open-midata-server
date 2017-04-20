@@ -44,6 +44,12 @@ public class PasswordResetToken {
 		this.role = role;
 	    this.token = new BigInteger(130, random).toString(32);
 	}
+	
+	public PasswordResetToken(MidataId userId, String role, boolean dummy) {
+		this.userId = userId;
+		this.role = role;
+	    this.token = new BigInteger(32, random).toString(32);
+	}
 
 	public String encrypt() throws InternalServerException {
 		Map<String, Object> map = CMaps.map("userId", userId.toString()).map("token", token).map("role", role);

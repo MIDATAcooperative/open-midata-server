@@ -25,7 +25,7 @@ angular.module('portal')
 	$scope.updateApp = function() {		
 		$scope.submitted = true;	
 				
-		if (!$scope.app.predefinedMessages) $scope.app.predefinedMessages = {};
+		$scope.app.predefinedMessages = {};
 						
 		angular.forEach($scope.messages, function(msg) {
 			
@@ -43,7 +43,7 @@ angular.module('portal')
 		*/
 						
 		$scope.status.doAction('submit', apps.updatePlugin($scope.app))
-		.then(function() { $scope.selmsg = null;$scope.submitted = false; });
+		.then(function() { $scope.selmsg = null;$scope.submitted = false;$scope.loadApp($state.params.appId); });
 		
 	};
 	

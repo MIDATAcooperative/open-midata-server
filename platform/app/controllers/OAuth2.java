@@ -15,11 +15,13 @@ import models.Plugin;
 import models.User;
 import models.enums.ConsentStatus;
 import models.enums.UserRole;
+import models.enums.UserStatus;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import utils.AccessLog;
+import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
 import utils.auth.MobileAppSessionToken;
@@ -89,30 +91,34 @@ public class OAuth2 extends Controller {
 		UserRole role = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;
 		String phrase = device;
 					
-			User user = null;
-			switch (role) {
-			case MEMBER : user = Member.getByEmail(username, Sets.create("visualizations","password"));break;
-			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("visualizations","password"));break;
-			}
-			if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
-			if (!Member.authenticationValid(password, user.password)) {
-				throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
-			}
-			
-			appInstance = MobileAPI.getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode"));
-			KeyManager.instance.login(60000l);
-			
-			if (appInstance == null) {		
-				boolean autoConfirm = KeyManager.instance.unlock(user._id, null) == KeyManager.KEYPROTECTION_NONE;
-				MidataId executor = autoConfirm ? user._id : null;
-				appInstance = MobileAPI.installApp(executor, app._id, user, phrase, autoConfirm);				
-				if (executor == null) executor = appInstance._id;
-	   		    meta = RecordManager.instance.getMeta(executor, appInstance._id, "_app").toMap();
-			} else {				
-				if (!verifyAppInstance(appInstance, user._id, app._id)) throw new BadRequestException("error.expired.token", "Access denied");
-				KeyManager.instance.unlock(appInstance._id, phrase);
-				meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();				
-			}
+		User user = null;
+		switch (role) {
+		case MEMBER : user = Member.getByEmail(username, Sets.create("visualizations","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));break;
+		case PROVIDER : user = HPUser.getByEmail(username, Sets.create("visualizations","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));break;
+		}
+		if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
+		if (!Member.authenticationValid(password, user.password)) {
+			throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
+		}
+		boolean notok = Application.loginHelperPreconditionsFailed(user);
+		if (notok) {
+		  return Application.loginHelperResult(user);
+		}
+		
+		appInstance = MobileAPI.getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode"));
+		KeyManager.instance.login(60000l);
+		
+		if (appInstance == null) {		
+			boolean autoConfirm = KeyManager.instance.unlock(user._id, null) == KeyManager.KEYPROTECTION_NONE;
+			MidataId executor = autoConfirm ? user._id : null;
+			appInstance = MobileAPI.installApp(executor, app._id, user, phrase, autoConfirm);				
+			if (executor == null) executor = appInstance._id;
+   		    meta = RecordManager.instance.getMeta(executor, appInstance._id, "_app").toMap();
+		} else {				
+			if (!verifyAppInstance(appInstance, user._id, app._id)) throw new BadRequestException("error.expired.token", "Access denied");
+			KeyManager.instance.unlock(appInstance._id, phrase);
+			meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();				
+		}
 					
 		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
 		
@@ -120,7 +126,7 @@ public class OAuth2 extends Controller {
 									
 		ObjectNode obj = Json.newObject();								
 		obj.put("code", tk.encrypt());
-		obj.put("status", appInstance.status.toString());
+		obj.put("istatus", appInstance.status.toString());
 		return ok(obj);
 	}
 
@@ -151,7 +157,8 @@ public class OAuth2 extends Controller {
 			
 			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "applicationId", "status"));
 			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.internal", "Bad refresh token.");                        
-            
+            if (!Application.verifyUser(appInstance.owner)) return status(UNAUTHORIZED); 
+			
             phrase = refreshToken.phrase;
             KeyManager.instance.unlock(appInstance._id, phrase);	
             meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();

@@ -21,8 +21,16 @@
 							  <li class="list-group-item" ng-class="{ 'list-group-item-success' : progress.confirmationCode, 'list-group-item-warning' : !progress.confirmationCode }"><span ng-show="progress.confirmationCode" class="glyphicon glyphicon-ok"></span><span ng-hide="progress.confirmationCode" class="glyphicon glyphicon-remove"></span> <span translate="postregister.code_entered"></span></li>							  
 							</ul>
 							
-							<p translate="postregister.email_instructions"></p>
+							<p translate="postregister.email_instructions"></p>							
 							<button ng-show="progress.emailStatus=='UNVALIDATED'" class="btn btn-default" ng-click="resend()" translate="postregister.resend_btn"></button>
+							<p translate="postregister.email_code"></p>
+							<div class="input-group" ng-show="progress.emailStatus=='UNVALIDATED'">
+							 <input class="form-control" ng-model="passphrase.code" type="text">
+							 <div class="input-group-btn">
+							   <button class="btn btn-primary" ng-click="enterMailCode(passphrase.code)" translate="postregister.enter_now_btn"></button>
+							 </div>							 
+							</div>
+							
 							<div class="extraspace"></div>
 							<p translate="postregister.contract_instructions"></p>
                             <div class="extraspace"></div>		

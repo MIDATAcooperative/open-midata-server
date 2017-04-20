@@ -36,7 +36,12 @@ angular.module('portal')
 				
 		$scope.status.doAction("login", oauth.login())
 		.then(function(result) {
-		  if (result !== "ACTIVE") $scope.pleaseConfirm = true;	
+		  if (result !== "ACTIVE") {
+			  if (result.istatus) { $scope.pleaseConfirm = true; }
+			  else {
+				  
+			  }
+		  }
 		})
 		.catch(function(err) { $scope.error = err.data; });
 	};	

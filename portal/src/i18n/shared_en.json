@@ -434,6 +434,7 @@
     "address_success" : "Address has been confirmed.",
     "code_entered" : "Confirmation Code entered?",
     "email_instructions" : "1. Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.",
+    "email_code" : "For convenience you may enter the code from the email here:",
     "resend_btn" : "Resend eMail",
     "contract_instructions" : "2. A contract has been sent to your postal address. Return it signed to MIDATA.",
     "code_intructions" : "3. A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",

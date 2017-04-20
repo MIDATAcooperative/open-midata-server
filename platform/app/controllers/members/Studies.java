@@ -252,6 +252,8 @@ public class Studies extends APIController {
 		  History codedentererd = new History(EventType.CODE_ENTERED, part, null); 
 		  part.history.add(codedentererd);
 		} 
+		
+		Circles.prepareConsent(part);
 		StudyParticipation.add(part);
 		Circles.setQuery(member._id, member._id, part._id, study.recordQuery);
 		RecordManager.instance.applyQuery(member._id, study.recordQuery, member._id, part._id, study.requiredInformation.equals(InformationType.DEMOGRAPHIC));

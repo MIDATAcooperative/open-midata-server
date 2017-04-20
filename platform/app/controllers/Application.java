@@ -62,7 +62,7 @@ import views.txt.mails.adminnotify;
  */
 public class Application extends APIController {
 
-	public final static long MAX_TIME_UNTIL_EMAIL_CONFIRMATION = 1000l * 60l * 60l * 24l;
+	public final static long MAX_TIME_UNTIL_EMAIL_CONFIRMATION = -1l; //1000l * 60l * 60l * 24l;
 	public final static long MAX_TRIAL_DURATION = 1000l * 60l * 60l * 24l * 30l;
 	/**
 	 * for debugging only : displays API call test page
@@ -158,7 +158,7 @@ public class Application extends APIController {
 	 */
 	public static void sendWelcomeMail(User user) throws InternalServerException {
 	   if (user.developer == null) {
-		   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString());
+		   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString(), true);
 		   user.set("resettoken", token.token);
 		   user.set("resettokenTs", System.currentTimeMillis());
 		   String encrypted = token.encrypt();
@@ -167,7 +167,7 @@ public class Application extends APIController {
 		   String url1 = site + "/#/portal/confirm/" + encrypted;
 		   String url2 = site + "/#/portal/reject/" + encrypted;
 		   AccessLog.log("send welcome mail: "+user.email);	   
-	  	   Messager.sendTextMail(user.email, user.firstname+" "+user.lastname, "Welcome to MIDATA", welcome.render(site, url1, url2).toString());
+	  	   Messager.sendTextMail(user.email, user.firstname+" "+user.lastname, "Welcome to MIDATA", welcome.render(site, url1, url2, token.token).toString());
 	   } else {
 		   user.emailStatus = EMailStatus.VALIDATED;
 		   User.set(user._id, "emailStatus", user.emailStatus);
@@ -188,6 +188,7 @@ public class Application extends APIController {
 	  	   Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), user.firstname+" "+user.lastname, "New MIDATA User", adminnotify.render(site, email, role).toString());
 	   }
 	}
+			
 	
 	/**
 	 * confirms a email account for a new MIDATA user
@@ -199,17 +200,30 @@ public class Application extends APIController {
 	public static Result confirmAccountEmail() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "token" ,"mode");
+		
 		EMailStatus wanted = JsonValidation.getEnum(json, "mode", EMailStatus.class);
 		
-		// check status
-		PasswordResetToken passwordResetToken = PasswordResetToken.decrypt(json.get("token").asText());
-		if (passwordResetToken == null) throw new BadRequestException("error.missing.token", "Missing or bad token.");
+		MidataId userId;
+		String token;
+		String role;
 		
-		// execute
-		MidataId userId = passwordResetToken.userId;
-		String token = passwordResetToken.token;
-		String role = passwordResetToken.role;		
+		if (json.has("token")) {	
+			JsonValidation.validate(json, "token" ,"mode");
+			// check status
+			PasswordResetToken passwordResetToken = PasswordResetToken.decrypt(json.get("token").asText());
+			if (passwordResetToken == null) throw new BadRequestException("error.missing.token", "Missing or bad token.");
+			
+			// execute
+			userId = passwordResetToken.userId;
+			token = passwordResetToken.token;
+			role = passwordResetToken.role;		
+		} else {
+			JsonValidation.validate(json, "userId", "code", "role" ,"mode");
+			userId = JsonValidation.getMidataId(json, "userId");
+			token = JsonValidation.getString(json, "code");
+			role = JsonValidation.getString(json, "role");
+		}
+		
 		
 		User user = User.getById(userId, Sets.create("status", "role", "subroles", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "resettoken","password","resettokenTs", "registeredAt", "confirmedAt", "developer"));
 		
@@ -447,15 +461,15 @@ public class Application extends APIController {
 	
 	}
 	
-	/**
-	 * Helper function for all login / registration type functions.
-	 * Returns correct response to login request
-	 * @param user the user to be logged in. May have any role.
-	 * @return
-	 * @throws AppException
-	 */
-	public static Result loginHelper(User user) throws AppException {
-		if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
+	public static boolean verifyUser(MidataId userId) throws AppException {
+		User user = User.getById(userId , Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));
+		if (user == null) return false;
+		if (loginHelperPreconditionsFailed(user)) return false;
+		return true;
+	}
+	
+	public static boolean loginHelperPreconditionsFailed(User user) throws AppException {
+        if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 		
 		if (user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.registeredAt.before(new Date(System.currentTimeMillis() - MAX_TIME_UNTIL_EMAIL_CONFIRMATION))) {
 			user.status = UserStatus.TIMEOUT;			
@@ -473,6 +487,31 @@ public class Application extends APIController {
 			user.status = UserStatus.TIMEOUT;
 		}
 		
+		return (user.status.equals(UserStatus.TIMEOUT) || (!user.status.equals(UserStatus.ACTIVE) && InstanceConfig.getInstance().getInstanceType().getUsersNeedValidation()));
+	}
+	
+	public static Result loginHelperResult(User user) {
+		ObjectNode obj = Json.newObject();
+		obj.put("status", user.status.toString());
+		obj.put("contractStatus", user.contractStatus.toString());
+		obj.put("agbStatus", user.agbStatus.toString());
+		obj.put("emailStatus", user.emailStatus.toString());
+		obj.put("confirmationCode", user.confirmationCode == null);
+		obj.put("role", user.role.toString().toLowerCase());
+		obj.put("userId", user._id.toString());
+		return ok(obj);
+	}
+	
+	/**
+	 * Helper function for all login / registration type functions.
+	 * Returns correct response to login request
+	 * @param user the user to be logged in. May have any role.
+	 * @return
+	 * @throws AppException
+	 */
+	public static Result loginHelper(User user) throws AppException {
+		boolean notok = loginHelperPreconditionsFailed(user);
+		
 		PortalSessionToken token = null;
 		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME);
 	
@@ -487,12 +526,14 @@ public class Application extends APIController {
 		ObjectNode obj = Json.newObject();
 		obj.put("sessionToken", token.encrypt(request()));
 		
-		if (user.status.equals(UserStatus.TIMEOUT) || (!user.status.equals(UserStatus.ACTIVE) && InstanceConfig.getInstance().getInstanceType().getUsersNeedValidation())) {
+		if (notok) {
 		  obj.put("status", user.status.toString());
 		  obj.put("contractStatus", user.contractStatus.toString());
 		  obj.put("agbStatus", user.agbStatus.toString());
 		  obj.put("emailStatus", user.emailStatus.toString());
 		  obj.put("confirmationCode", user.confirmationCode == null);
+		  obj.put("role", user.role.toString().toLowerCase());
+		  obj.put("userId", user._id.toString());
 		} else {						
 		  int keytype = KeyManager.instance.unlock(user._id, null);		
 		  if (keytype == 0) AccountPatches.check(user);

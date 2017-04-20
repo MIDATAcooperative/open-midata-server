@@ -44,6 +44,17 @@ angular.module('portal')
 	    });	    
 	};
 	
+    $scope.enterMailCode = function(code) {
+		
+		$scope.resentSuccess = $scope.codeSuccess = $scope.mailSuccess = false;
+		var data = { code : code, mode : "VALIDATED", userId : $scope.progress.userId , role : $scope.progress.role };
+	    $scope.status.doAction('email', server.post(jsRoutes.controllers.Application.confirmAccountEmail().url, JSON.stringify(data) ))
+	    .then(function(result) {
+	    	$scope.progress = result.data;	    	
+	    	$scope.mailSuccess = true;	  
+	    	session.postLogin(result, $state);
+	    });	    
+	};
 				
 	
 	if ($stateParams.token && $state.current.data.mode) {

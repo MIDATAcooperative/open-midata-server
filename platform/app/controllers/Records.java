@@ -182,14 +182,7 @@ public class Records extends APIController {
 		Consent consent = Circles.getConsentById(userId, apsId, Sets.create("owner", "authorized", "status", "type"));
 		if (consent != null) {
 			if (!consent.owner.equals(userId) && !consent.authorized.contains(userId)) throw new InternalServerException("error.invalid.consent", "You are not allowed to access this consent.");
-			if (consent.type.equals(ConsentType.EXTERNALSERVICE)) {
-				BSONObject b = RecordManager.instance.getMeta(userId, apsId, APS.QUERY);
-				if (b!=null) {
-					query = b.toMap();				
-				}
-			} else {
-			  query = Circles.getQueries(consent.owner, apsId);
-			}
+			Circles.fillConsentFields(userId, Collections.singleton(consent), Sets.create("sharingQuery"));			
 			if (!consent.status.equals(ConsentStatus.ACTIVE) && !consent.owner.equals(userId)) readRecords = false;
 		} else {										
 			BSONObject b = RecordManager.instance.getMeta(userId, apsId, APS.QUERY);
