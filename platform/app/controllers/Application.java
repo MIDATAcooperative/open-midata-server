@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
+import models.enums.MessageReason;
 import models.enums.ParticipationInterest;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
@@ -32,6 +34,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
 import utils.InstanceConfig;
+import utils.RuntimeConstants;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
@@ -133,12 +136,11 @@ public class Application extends APIController {
 	/**
 	 * request sending the welcome mail
 	 * @return status ok
-	 * @throws JsonValidationException
-	 * @throws InternalServerException
+	 * @throws AppException
 	 */	
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
-	public static Result requestWelcomeMail() throws JsonValidationException, InternalServerException {
+	public static Result requestWelcomeMail() throws AppException {
 		
 		// execute
 		MidataId userId = new MidataId(request().username());
@@ -156,18 +158,28 @@ public class Application extends APIController {
 	 * Helper function to send welcome mail
 	 * @param user user record which sould receive the mail
 	 */
-	public static void sendWelcomeMail(User user) throws InternalServerException {
+	public static void sendWelcomeMail(User user) throws AppException {
+		sendWelcomeMail(RuntimeConstants.instance.portalPlugin, user);
+	}
+	
+	
+	public static void sendWelcomeMail(MidataId sourcePlugin, User user) throws AppException {
 	   if (user.developer == null) {
 		   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString(), true);
 		   user.set("resettoken", token.token);
 		   user.set("resettokenTs", System.currentTimeMillis());
 		   String encrypted = token.encrypt();
-				   
+	
 		   String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
-		   String url1 = site + "/#/portal/confirm/" + encrypted;
-		   String url2 = site + "/#/portal/reject/" + encrypted;
-		   AccessLog.log("send welcome mail: "+user.email);	   
-	  	   Messager.sendTextMail(user.email, user.firstname+" "+user.lastname, "Welcome to MIDATA", welcome.render(site, url1, url2, token.token).toString());
+		   Map<String,String> replacements = new HashMap<String, String>();
+		   replacements.put("site", site);
+		   replacements.put("confirm-url", site + "/#/portal/confirm/" + encrypted);
+		   replacements.put("reject-url", site + "/#/portal/reject/" + encrypted);
+		   replacements.put("token", token.token);
+		   
+		   AccessLog.log("send welcome mail: "+user.email);
+		   Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), replacements);
+	  	   //Messager.sendTextMail(user.email, user.firstname+" "+user.lastname, "Welcome to MIDATA", welcome.render(site, url1, url2, token.token).toString());
 	   } else {
 		   user.emailStatus = EMailStatus.VALIDATED;
 		   User.set(user._id, "emailStatus", user.emailStatus);

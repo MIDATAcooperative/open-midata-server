@@ -58,12 +58,16 @@ public class FHIRTools {
 			//return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());
 			throw new InternalServerException("error.internal", "Person not found "+id.toString());
 		}
+        return getReferenceToUser(user);		
+	}
+	
+	public static Reference getReferenceToUser(User user) throws AppException {
 		String type = "RelatedPerson";
 		switch (user.role) {
 		case MEMBER : type = "Patient";break;
 		case PROVIDER : type = "Practitioner";break;
 		}
-		return new Reference().setDisplay(user.firstname+" "+user.lastname).setReference(type+"/"+user._id.toString());
+		return new Reference().setDisplay(user.firstname+" "+user.lastname).setReference(type+"/"+user._id.toString());		
 	}
 	
 	/**

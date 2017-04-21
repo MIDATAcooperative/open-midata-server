@@ -32,6 +32,7 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.Member;
 import models.MidataId;
 import models.Record;
+import utils.RuntimeConstants;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.collections.CMaps;
@@ -394,7 +395,8 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
       inf.executorId = who;
       inf.targetAPS = who;
       inf.ownerId = who;
-      inf.pluginId = MidataId.from("588b53a7aed64509f5095def");
+      inf.pluginId = RuntimeConstants.instance.portalPlugin;
+      
       PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
       patientProvider.setExecutionInfo(inf);
       Member member = Member.getById(who, Sets.create("firstname", "lastname", "birthday", "midataID", "gender", "email", "phone", "city", "country", "zip", "address1", "address2"));

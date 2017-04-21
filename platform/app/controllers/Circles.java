@@ -23,7 +23,9 @@ import models.Consent;
 import models.HCRelated;
 import models.Member;
 import models.MemberKey;
+import models.MessageDefinition;
 import models.MidataId;
+import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
 import models.User;
@@ -33,11 +35,13 @@ import models.enums.AggregationType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.EntityType;
+import models.enums.MessageReason;
 import models.enums.SubUserRole;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.PasswordHash;
+import utils.RuntimeConstants;
 import utils.access.APS;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
@@ -57,6 +61,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.Messager;
 
 /**
  * functions for managing consents
@@ -313,6 +318,12 @@ public class Circles extends APIController {
 		consentSettingChange(executorId, consent);
 		prepareConsent(consent);
 		consent.add();
+		
+		if (consent.status == ConsentStatus.UNCONFIRMED) {
+			sendConsentNotifications(executorId, consent, MessageReason.CONSENT_REQUEST);
+		} else if (consent.status == ConsentStatus.ACTIVE) {
+			sendConsentNotifications(executorId, consent, MessageReason.CONSENT_CONFIRM);
+		}
 				
 		if (consent.status.equals(ConsentStatus.ACTIVE) && patientRecord) autosharePatientRecord(consent);
 
@@ -588,6 +599,33 @@ public class Circles extends APIController {
 	 */
 	public static void prepareConsent(Consent consent) throws AppException {
 		ConsentResourceProvider.updateMidataConsent(consent);
+	}
+	
+	public static void sendConsentNotifications(MidataId executorId, Consent consent, MessageReason reason) throws AppException {
+		MidataId sourcePlugin = consent.creatorApp != null ? consent.creatorApp : RuntimeConstants.instance.portalPlugin;
+		Map<String, String> replacements = new HashMap<String, String>();
+		Set<MidataId> targets = new HashSet<MidataId>();
+		
+		if (reason == MessageReason.CONSENT_REQUEST) {
+			targets.add(consent.owner);
+		} else if (reason == MessageReason.CONSENT_REJECT) {
+			targets.addAll(consent.authorized);
+		} else {
+			targets.add(consent.owner);
+			targets.addAll(consent.authorized);
+		}
+		
+		String category = consent.categoryCode;
+		if (category == null) category = consent.type.toString();
+		
+		User sender = User.getById(executorId, Sets.create("firstname", "lastname", "role", "email"));
+		replacements.put("executor-firstname", sender.firstname);
+		replacements.put("executor-lastname", sender.lastname);
+		replacements.put("executor-email", sender.email);
+		
+		
+		
+		Messager.sendMessage(sourcePlugin, reason, category, targets, replacements);
 	}
 	
 	/**

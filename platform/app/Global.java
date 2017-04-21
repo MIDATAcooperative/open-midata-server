@@ -9,6 +9,7 @@ import play.GlobalSettings;
 import play.libs.Json;
 import setup.MinimalSetup;
 import utils.AccessLog;
+import utils.RuntimeConstants;
 import utils.db.DBLayer;
 import utils.db.DatabaseException;
 import utils.exceptions.AppException;
@@ -45,30 +46,20 @@ public class Global extends GlobalSettings {
 		try {
 		  FHIR.servlet.setFhirContext(ResourceProvider.ctx);
 		  FHIR.servlet.init(new PlayHttpServletConfig());
+		
+		  MinimalSetup.dosetup();						
+		  Market.correctOwners();				
+		  RecordGroup.load();		 
+		  RuntimeConstants.instance = new RuntimeConstants();
+		  
+		} catch (AppException e) {
+		  AccessLog.logException("startup", e);
+		  throw new NullPointerException();
 		} catch (ServletException e) {
-			AccessLog.logException("startup", e);
-		   throw new NullPointerException();
-		}
-		
-		try {
-		  MinimalSetup.dosetup();
-		} catch (AppException e) {
 		  AccessLog.logException("startup", e);
 		  throw new NullPointerException();
 		}
 		
-		try {
-		  Market.correctOwners();
-		} catch (AppException e) {
-		  throw new NullPointerException();
-		}
-		
-		try {
-		   RecordGroup.load();
-		} catch (AppException e) {
-		  AccessLog.logException("startup", e);
-		  throw new NullPointerException();
-		}
 		
 		Messager.init();
 		AutoRun.init();

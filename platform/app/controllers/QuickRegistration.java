@@ -120,7 +120,7 @@ public class QuickRegistration extends APIController {
 		   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true);
 		}
 				
-		Application.sendWelcomeMail(user);
+		Application.sendWelcomeMail(app._id, user);
 		return Application.loginHelper(user);		
 	}
 	
@@ -185,7 +185,7 @@ public class QuickRegistration extends APIController {
 						
 		user.status = UserStatus.ACTIVE;		
 		Application.registerCreateUser(user);								
-		Application.sendWelcomeMail(user);
+		Application.sendWelcomeMail(app._id,user);
 		
 		MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, phrase, true);		
 		appInstance.status = ConsentStatus.ACTIVE;

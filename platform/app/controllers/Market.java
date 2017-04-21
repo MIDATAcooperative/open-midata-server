@@ -100,14 +100,16 @@ public class Market extends APIController {
 		} catch (BadRequestException e) {
 			throw new JsonValidationException(e.getLocaleKey(), "defaultQuery", "invalid", e.getMessage());
 		}
-		Map<String,Object> i18n = JsonExtraction.extractMap(json.get("i18n"));
-		for (String lang : i18n.keySet()) {
-			Map<String, Object> entry = (Map<String, Object>) i18n.get(lang);
-			Plugin_i18n plugin_i18n = new Plugin_i18n();
-			plugin_i18n.name = (String) entry.get("name");
-			plugin_i18n.description = (String) entry.get("description");
-			plugin_i18n.defaultSpaceName = (String) entry.get("defaultSpaceName");
-			app.i18n.put(lang, plugin_i18n);
+		if (json.has("i18n")) {
+			Map<String,Object> i18n = JsonExtraction.extractMap(json.get("i18n"));
+			for (String lang : i18n.keySet()) {
+				Map<String, Object> entry = (Map<String, Object>) i18n.get(lang);
+				Plugin_i18n plugin_i18n = new Plugin_i18n();
+				plugin_i18n.name = (String) entry.get("name");
+				plugin_i18n.description = (String) entry.get("description");
+				plugin_i18n.defaultSpaceName = (String) entry.get("defaultSpaceName");
+				app.i18n.put(lang, plugin_i18n);
+			}
 		}
 		
 

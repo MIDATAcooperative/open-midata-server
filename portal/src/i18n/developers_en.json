@@ -40,6 +40,7 @@
     "lang" : "Language",
     "msgtitle" : "Message Title",
     "text" : "Message Text",
+    "available_tags" : "Available variables",
     
     "reasons" : {
        "REGISTRATION" : "Registration of new user",

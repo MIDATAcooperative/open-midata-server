@@ -2,6 +2,7 @@ package utils.fhir;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +57,8 @@ import controllers.UserGroups;
 import models.Consent;
 import models.MidataId;
 import models.Record;
+import models.TypedMidataId;
+import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.ConsentStatus;
@@ -168,7 +171,7 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 		if (categoryCode == null) categoryCode = "default";
 		c.addCategory().addCoding().setCode(categoryCode).setSystem("http://midata.coop/ConsentCategory");
 
-		c.setPatient(FHIRTools.getReferenceToUser(consentToConvert.owner, null));
+		c.setPatient(FHIRTools.getReferenceToUser(User.getById(consentToConvert.owner, Sets.create("role", "firstname", "lastname", "email"))));
 		
 		if (consentToConvert.validUntil != null) {
 		  c.setPeriod(new Period().setEnd(consentToConvert.validUntil));	
@@ -383,6 +386,7 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 	protected MethodOutcome create(org.hl7.fhir.dstu3.model.Consent theResource) throws AppException {
 		models.Consent consent = new Consent();
 		
+		consent.creatorApp = info().pluginId;
 		consent.status = ConsentStatus.UNCONFIRMED;
 		consent.authorized = new HashSet<MidataId>();
 		consent.categoryCode = theResource.getCategoryFirstRep().getCodingFirstRep().getCode();
@@ -399,8 +403,32 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 		consent.owner = info().ownerId;
 		
 		for (ConsentActorComponent cac : theResource.getActor()) {
-			//FHIRTools.getMidataIdFromReference(cac.getReference());
+			Reference ref = FHIRTools.resolve(cac.getReference());
+			TypedMidataId mid = FHIRTools.getMidataIdFromReference(ref.getReferenceElement());
+			consent.authorized.add(mid.getMidataId());
 		}
+		
+		Reference patient = theResource.getPatient();
+		if (patient != null) {
+			patient = FHIRTools.resolve(patient);
+			TypedMidataId mid = FHIRTools.getMidataIdFromReference(patient.getReferenceElement());
+			consent.owner = mid.getMidataId();
+		}
+		
+		Map<String, Object> query = new HashMap<String, Object>();
+		Set<String> contents = new HashSet<String>();
+		for (ExceptComponent ec : theResource.getExcept()) {
+			if (ec.getType() == org.hl7.fhir.dstu3.model.Consent.ConsentExceptType.PERMIT) {
+				for (Coding coding : ec.getClass_()) {
+					String system = coding.getSystem();
+					if (system.equals("http://midata.coop/Content")) {
+					  contents.add(coding.getCode());	
+					}
+				}
+			}
+		}
+		if (!contents.isEmpty()) query.put("content", contents);
+		consent.sharingQuery = query;
         
 		
 		Circles.addConsent(info().executorId, consent, true, null);

@@ -7,9 +7,16 @@ angular.module('portal')
 	$scope.status = new status(false, $scope);
 	
 	$scope.languages = ['en', 'de', 'fr', 'it'];
-    $scope.reasons = ['REGISTRATION', 'CONSENT_REQUEST', 'CONSENT_CONFIRM', 'CONSENT_REJECT' ];
+    $scope.reasons = ['REGISTRATION', 'FIRSTUSE', 'CONSENT_REQUEST', 'CONSENT_CONFIRM', 'CONSENT_REJECT' ];
 	$scope.sel = { lang : 'en' };
     $scope.messages = [];
+    $scope.tags = {
+    	'REGISTRATION': ["site", "confirm-url", "reject-url", "token", "firstname", "lastname", "email", "plugin-name", "midata-instance"],
+    	'FIRSTUSE' : ["firstname", "lastname", "email", "plugin-name", "midata-instance"],
+    	'CONSENT_REQUEST' : ["executor-firstname", "executor-lastname", "executor-email", "firstname", "lastname", "email", "plugin-name", "midata-instance"],
+    	'CONSENT_CONFIRM' : ["executor-firstname", "executor-lastname", "executor-email", "firstname", "lastname", "email", "plugin-name", "midata-instance"],
+    	'CONSENT_REJECT' : ["executor-firstname", "executor-lastname", "executor-email", "firstname", "lastname", "email", "plugin-name", "midata-instance"]	
+    };
 	
 			
 	$scope.loadApp = function(appId) {

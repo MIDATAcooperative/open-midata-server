@@ -77,6 +77,10 @@
 		  </formrow>
 		  <formrow myid="text" label="appmessages.text">
 		    <textarea rows="5" id="text" name="text" class="form-control" ng-model="selmsg.text[sel.lang]"></textarea>
+		    <div class="help-block">
+		      <span translate="appmessages.available_tags"></span>:
+		      <code ng-repeat="tag in tags[selmsg.reason]">&lt;{{ tag }}&gt;</code>
+		    </div>
 		  </formrow>
 		  		  
 		  <formrow myid="x" label="">

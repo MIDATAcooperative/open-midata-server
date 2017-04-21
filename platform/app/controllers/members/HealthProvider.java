@@ -20,6 +20,7 @@ import models.MidataId;
 import models.User;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
+import models.enums.MessageReason;
 import models.enums.UserRole;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -136,7 +137,7 @@ public class HealthProvider extends APIController {
 	
     public static void confirmConsent(MidataId userId, MidataId consentId) throws AppException, JsonValidationException {
 										
-		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Sets.create("status", "owner", "authorized", "confirmDate", "type"));
+		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Sets.create("status", "owner", "authorized", "confirmDate", "type", "creatorApp", "categoryCode"));
 		if (target.status.equals(ConsentStatus.UNCONFIRMED)) {
 			if (target.type.equals(ConsentType.EXTERNALSERVICE)) {
 				MobileAPI.confirmMobileConsent(userId, consentId);
@@ -144,6 +145,7 @@ public class HealthProvider extends APIController {
 			target.setConfirmDate(new Date());
 			target.setStatus(ConsentStatus.ACTIVE);
 			Circles.consentStatusChange(userId, target);
+			Circles.sendConsentNotifications(userId, target, MessageReason.CONSENT_CONFIRM);
 		} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");			
 	}
 	
@@ -163,11 +165,12 @@ public class HealthProvider extends APIController {
 		JsonValidation.validate(json, "consent");
 		
 		MidataId consentId = JsonValidation.getMidataId(json, "consent");
-		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Sets.create("owner", "authorized", "status", "confirmDate"));
+		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Sets.create("owner", "type", "authorized", "status", "confirmDate", "creatorApp", "categoryCode"));
 		if (target.status.equals(ConsentStatus.UNCONFIRMED) || target.status.equals(ConsentStatus.ACTIVE)) {
 			target.setConfirmDate(new Date());
 			target.setStatus(ConsentStatus.REJECTED);
 			Circles.consentStatusChange(userId, target);
+			Circles.sendConsentNotifications(userId, target, MessageReason.CONSENT_REJECT);
 		} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");
 	
 		return ok();
