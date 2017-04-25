@@ -30,7 +30,7 @@
 					<th translate="consents.number_of_records"></th>
 				</tr>
 				<tr ng-repeat="consent in consents | orderBy : 'ownerName'">
-					<td><a ng-click="editConsent(consent);" href="javascript:">{{ consent.ownerName }}</a></td>
+					<td><a ng-click="editConsent(consent);" href="javascript:">{{ consent.ownerName || consent.externalOwner }}</a></td>
 					<td>{{ consent.name }}</td>
 					<td translate="{{ 'enum.consenttype.'+consent.type }}"></td>
 					<td translate="{{ 'enum.consentstatus.'+consent.status }}"></td>					

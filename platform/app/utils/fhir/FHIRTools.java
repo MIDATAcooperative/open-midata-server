@@ -110,7 +110,9 @@ public class FHIRTools {
 	}
 	
 	public static TypedMidataId getMidataIdFromReference(IIdType ref) throws AppException {
+		if (ref == null) return null;
 		String rt = ref.getResourceType();
+		if (rt == null) return null;
 		if (rt.equals("Group")) {
 			MidataId result = getUserGroupIdFromReference(ref);
 			return result != null ? new TypedMidataId(result, rt) : null; 
@@ -118,6 +120,19 @@ public class FHIRTools {
 			MidataId result = getUserIdFromReference(ref);
 			return result != null ? new TypedMidataId(result, rt) : null;
 		}				
+	}
+	
+	public static String getMidataLoginFromReference(Reference ref) throws AppException {
+		if (ref == null) return null;
+		if (ref.hasIdentifier()) {
+			Identifier id = ref.getIdentifier();
+			String system = id.getSystem();
+			String value = id.getValue();
+			if (system.equals("http://midata.coop/identifier/patient-login-or-invitation")) {
+				return value;
+			}
+		}
+		return null;
 	}
 	
 	public static boolean isUserFromMidata(IIdType ref) {
@@ -148,6 +163,10 @@ public class FHIRTools {
 			if (system.equals("http://midata.coop/identifier/patient-login")) {
 				target = Member.getByEmail(value, Sets.create("_id", "role", "firstname", "lastname"));
 				type = "Patient";
+			} else if (system.equals("http://midata.coop/identifier/patient-login-or-invitation")) {
+				target = Member.getByEmail(value, Sets.create("_id", "role", "firstname", "lastname"));
+				type = "Patient";
+				if (target == null) return ref;
 			} else if (system.equals("http://midata.coop/identifier/practitioner-login")) {
 				target = HPUser.getByEmail(value, Sets.create("_id", "role", "firstname", "lastname"));
 				type = "Practitioner";

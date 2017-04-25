@@ -158,35 +158,38 @@ public class Circles extends APIController {
 		if (fields.contains("records")) {
 			Map<String, Object> all = new HashMap<String,Object>();
 			for (Consent consent : consents) {
-				if (!consent.status.equals(ConsentStatus.EXPIRED)) {
+				if (consent.status.equals(ConsentStatus.ACTIVE)) {
 				  Collection<RecordsInfo> summary = RecordManager.instance.info(executor, consent._id, all, AggregationType.ALL);
 				  if (summary.isEmpty()) consent.records = 0; else consent.records = summary.iterator().next().count;
 				} else consent.records = 0;
 			}
 		}
 		
-		if (fields.contains("createdBefore") || fields.contains("validUntil")) {
-			for (Consent consent : consents) {
-				BasicBSONObject obj = (BasicBSONObject) RecordManager.instance.getMeta(executor, consent._id, "_filter");
-				if (obj != null) {
-					consent.validUntil = obj.getDate("valid-until");
-					consent.createdBefore = obj.getDate("created-before");
+		for (Consent consent : consents) {
+			if (consent.sharingQuery == null) {
+				if (fields.contains("createdBefore") || fields.contains("validUntil")) {				
+					BasicBSONObject obj = (BasicBSONObject) RecordManager.instance.getMeta(executor, consent._id, "_filter");
+					if (obj != null) {
+						consent.validUntil = obj.getDate("valid-until");
+						consent.createdBefore = obj.getDate("created-before");
+					}				
 				}
-			}
-		}
-		
-		if (fields.contains("sharingQuery")) {
-			for (Consent consent : consents) {
-				if (consent.type.equals(ConsentType.EXTERNALSERVICE)) {
-					BSONObject b = RecordManager.instance.getMeta(executor, consent._id, APS.QUERY);
-					if (b!=null) {
-						consent.sharingQuery = b.toMap();				
+				
+				if (fields.contains("sharingQuery")) {
+					
+					if (consent.type.equals(ConsentType.EXTERNALSERVICE)) {
+						BSONObject b = RecordManager.instance.getMeta(executor, consent._id, APS.QUERY);
+						if (b!=null) {
+							consent.sharingQuery = b.toMap();				
+						}
+					} else {
+						consent.sharingQuery = Circles.getQueries(consent.owner, consent._id);
 					}
-				} else {
-					consent.sharingQuery = Circles.getQueries(consent.owner, consent._id);
-				}
+					
+				}		
 			}
 		}
+					
 								
 	}
 	
@@ -204,7 +207,7 @@ public class Circles extends APIController {
 		fields.add("authorized");
 		Consent consent = Consent.getByIdUnchecked(consentId, fields);		
 		if (consent == null) return null;
-		if (consent.owner.equals(user)) return consent;
+		if (consent.owner != null && consent.owner.equals(user)) return consent;
 		if (consent.authorized.contains(user)) return consent;
 		Set<UserGroupMember> groups = UserGroupMember.getAllActiveByMember(user);
 		for (UserGroupMember group : groups) if (consent.authorized.contains(group.userGroup)) return consent;
@@ -291,7 +294,9 @@ public class Circles extends APIController {
 		if (! userId.equals(executorId)) consent.authorized.add(executorId);
 				
 		addConsent(executorId, consent, patientRecord, passcode);
-				
+			
+		
+		
 		if (json.has("authorized")) {
 			Set<MidataId> newMemberIds = ObjectIdConversion.toMidataIds(JsonExtraction.extractStringSet(json.get("authorized")));
 			if (!newMemberIds.isEmpty()) {
@@ -306,19 +311,26 @@ public class Circles extends APIController {
 	public static void addConsent(MidataId executorId, Consent consent, boolean patientRecord, String passcode) throws AppException {
 		consent._id = new MidataId();
 		consent.dateOfCreation = new Date();				
-							
-		RecordManager.instance.createAnonymizedAPS(consent.owner, executorId, consent._id, true);
+			
+		if (consent.status != ConsentStatus.DRAFT && consent.status != ConsentStatus.UNCONFIRMED) {
+			if (consent.owner == null || !consent.owner.equals(executorId)) throw new AuthException("error.invalid.consent", "You must be owner to create active consents!");
+		}
 		
-		if (passcode != null) {			  
-			  byte[] pubkey = KeyManager.instance.generateKeypairAndReturnPublicKey(consent._id, passcode);
-		      RecordManager.instance.shareAPS(consent._id, consent.owner, consent._id, pubkey);
-		      RecordManager.instance.setMeta(executorId, consent._id, "_config", CMaps.map("passcode", passcode));			  		
+		if (consent.owner != null) {
+			RecordManager.instance.createAnonymizedAPS(consent.owner, executorId, consent._id, true);
+			
+			if (passcode != null) {			  
+				  byte[] pubkey = KeyManager.instance.generateKeypairAndReturnPublicKey(consent._id, passcode);
+			      RecordManager.instance.shareAPS(consent._id, consent.owner, consent._id, pubkey);
+			      RecordManager.instance.setMeta(executorId, consent._id, "_config", CMaps.map("passcode", passcode));			  		
+			}
 		}
 						
-		consentSettingChange(executorId, consent);
+		//consentSettingChange(executorId, consent);
 		prepareConsent(consent);
+		consentStatusChange(executorId, consent, null);
 		consent.add();
-		
+								
 		if (consent.status == ConsentStatus.UNCONFIRMED) {
 			sendConsentNotifications(executorId, consent, MessageReason.CONSENT_REQUEST);
 		} else if (consent.status == ConsentStatus.ACTIVE) {
@@ -429,15 +441,13 @@ public class Circles extends APIController {
 		MidataId userId = new MidataId(request().username());
 		MidataId circleId = new MidataId(circleIdString);
 		
-		Consent consent = Consent.getByIdAndOwner(circleId, userId, Sets.create("owner", "authorized", "type"));
+		Consent consent = Consent.getByIdAndOwner(circleId, userId, Consent.ALL);
 		if (consent == null) {
 			throw new BadRequestException("error.unknown.consent", "No consent with this id exists.");
 		}
 		if (consent.type != ConsentType.CIRCLE && consent.type != ConsentType.EXTERNALSERVICE && consent.type != ConsentType.IMPLICIT) throw new BadRequestException("error.unsupported", "Operation not supported");
-		
-		// Remove APS
-		consent.setStatus(ConsentStatus.EXPIRED);
-		consentStatusChange(userId, consent);
+						
+		consentStatusChange(userId, consent, ConsentStatus.EXPIRED);
 		RecordManager.instance.deleteAPS(consent._id, userId);
 		
 		// Remove Rules
@@ -505,7 +515,9 @@ public class Circles extends APIController {
 		consent.authorized.addAll(newMemberIds);
 		Consent.set(consent._id, "authorized", consent.authorized);
 		
-		RecordManager.instance.shareAPS(consent._id, executor, newMemberIds);
+		if (consent.status == ConsentStatus.ACTIVE) {
+		  RecordManager.instance.shareAPS(consent._id, executor, newMemberIds);
+		}
 	}
 
 	/**
@@ -544,9 +556,8 @@ public class Circles extends APIController {
 	
 	public static void consentExpired(MidataId executor, MidataId consentId) throws AppException {
 		Consent consent = getConsentById(executor, consentId, Consent.ALL);
-		if (consent != null && !consent.status.equals(ConsentStatus.EXPIRED)) {
-			consent.setStatus(ConsentStatus.EXPIRED);
-			consentStatusChange(executor, consent);
+		if (consent != null && !consent.status.equals(ConsentStatus.EXPIRED)) {			
+			consentStatusChange(executor, consent, ConsentStatus.EXPIRED);
 		}
 	}
 	/**
@@ -555,19 +566,35 @@ public class Circles extends APIController {
 	 * @param consent consent to check
 	 * @throws AppException
 	 */
-	public static void consentStatusChange(MidataId executor, Consent consent) throws AppException {
-		boolean active = consent.status.equals(ConsentStatus.ACTIVE);
-		if (active) {
-			RecordManager.instance.shareAPS(consent._id, consent.owner, consent.authorized);
-			if (consent.type.equals(ConsentType.CIRCLE) || consent.type.equals(ConsentType.HEALTHCARE)) autosharePatientRecord(consent);
-			Map<String, Object> query = Circles.getQueries(consent.owner, consent._id);
-			if (query!=null) RecordManager.instance.applyQuery(executor, query, consent.owner, consent._id, true);	 
+	public static void consentStatusChange(MidataId executor, Consent consent, ConsentStatus newStatus) throws AppException {
+		
+		ConsentStatus oldStatus = consent.status;
+		boolean wasActive = oldStatus.equals(ConsentStatus.ACTIVE);
+		boolean active = (newStatus == null) ? wasActive : newStatus.equals(ConsentStatus.ACTIVE);
+						
+		if (newStatus == null) {
+		  wasActive = false;
 		} else {
+		  consent.setStatus(newStatus);
+		}
+		
+		if (active && !wasActive) {
+			RecordManager.instance.shareAPS(consent._id, consent.owner, consent.authorized);
+			consentSettingChange(executor, consent);
+			if (consent.type.equals(ConsentType.CIRCLE) || consent.type.equals(ConsentType.HEALTHCARE)) autosharePatientRecord(consent);
+			Map<String, Object> query = consent.sharingQuery;
+			if (query == null) query = Circles.getQueries(consent.owner, consent._id);			
+			if (query!=null) {
+				Circles.setQuery(executor, consent.owner, consent._id, query);
+				RecordManager.instance.applyQuery(executor, query, consent.owner, consent._id, true);	 
+			}
+		} else if (!active && wasActive) {
 			Set<MidataId> auth = consent.authorized;
 			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }
 			RecordManager.instance.unshareAPSRecursive(consent._id, consent.owner, consent.authorized);
 		}
 	}
+	 
 	
 	/**
 	 * Updates APS of consent after settings of the consent have been changed.
@@ -576,20 +603,22 @@ public class Circles extends APIController {
 	 * @throws AppException
 	 */
 	public static void consentSettingChange(MidataId executor, Consent consent) throws AppException {
-		BasicBSONObject dat = (BasicBSONObject) RecordManager.instance.getMeta(executor, consent._id, "_filter");
-		Map<String, Object> restrictions = (dat == null) ? new HashMap<String, Object>() : dat.toMap();
-		if (consent.validUntil != null) {
-			restrictions.put("valid-until", consent.validUntil);
-		} else {
-			restrictions.remove("valid-until");
+		if (consent.status == ConsentStatus.ACTIVE || executor.equals(consent.owner)) {
+			BasicBSONObject dat = (BasicBSONObject) RecordManager.instance.getMeta(executor, consent._id, "_filter");
+			Map<String, Object> restrictions = (dat == null) ? new HashMap<String, Object>() : dat.toMap();
+			if (consent.validUntil != null) {
+				restrictions.put("valid-until", consent.validUntil);
+			} else {
+				restrictions.remove("valid-until");
+			}
+			if (consent.createdBefore != null) {
+				restrictions.put("created-before", consent.createdBefore);
+			} else {
+				restrictions.remove("created-before");
+			}
+			
+			RecordManager.instance.setMeta(executor, consent._id, "_filter", restrictions);
 		}
-		if (consent.createdBefore != null) {
-			restrictions.put("created-before", consent.createdBefore);
-		} else {
-			restrictions.remove("created-before");
-		}
-		
-		RecordManager.instance.setMeta(executor, consent._id, "_filter", restrictions);				
 	}
 	
 	/**
@@ -604,28 +633,50 @@ public class Circles extends APIController {
 	public static void sendConsentNotifications(MidataId executorId, Consent consent, MessageReason reason) throws AppException {
 		MidataId sourcePlugin = consent.creatorApp != null ? consent.creatorApp : RuntimeConstants.instance.portalPlugin;
 		Map<String, String> replacements = new HashMap<String, String>();
-		Set<MidataId> targets = new HashSet<MidataId>();
+		Set<Object> targets = new HashSet<Object>();
 		
 		if (reason == MessageReason.CONSENT_REQUEST) {
-			targets.add(consent.owner);
+			if (consent.owner != null) targets.add(consent.owner);
+			if (consent.externalOwner != null) targets.add(consent.externalOwner);
 		} else if (reason == MessageReason.CONSENT_REJECT) {
 			targets.addAll(consent.authorized);
 		} else {
-			targets.add(consent.owner);
+			if (consent.owner != null) targets.add(consent.owner);
+			if (consent.externalOwner != null) targets.add(consent.externalOwner);
 			targets.addAll(consent.authorized);
+			if (consent.externalAuthorized != null) targets.addAll(consent.externalAuthorized);
 		}
 		
 		String category = consent.categoryCode;
 		if (category == null) category = consent.type.toString();
 		
-		User sender = User.getById(executorId, Sets.create("firstname", "lastname", "role", "email"));
+		User sender = User.getById(executorId, Sets.create("firstname", "lastname", "role", "email", "language"));
 		replacements.put("executor-firstname", sender.firstname);
 		replacements.put("executor-lastname", sender.lastname);
 		replacements.put("executor-email", sender.email);
+				
+		Messager.sendMessage(sourcePlugin, reason, category, targets, sender.language, replacements);
+	}
+	
+	public static void fetchExistingConsents(MidataId executorId, String emailLC) throws AppException {
+		Set<Consent> consents = Consent.getByExternalEmail(emailLC);
+		for (Consent consent : consents) {
+			addUsers(executorId, EntityType.USER, consent, Collections.singleton(executorId));
+			consent.externalAuthorized.remove(emailLC);
+			Consent.set(consent._id, "externalAuthorized", consent.externalAuthorized);
+		}
 		
-		
-		
-		Messager.sendMessage(sourcePlugin, reason, category, targets, replacements);
+		consents = Consent.getByExternalOwnerEmail(emailLC);
+		for (Consent consent : consents) {
+			
+			consent.owner = executorId;
+			consent.externalOwner = null;
+			
+			RecordManager.instance.createAnonymizedAPS(consent.owner, executorId, consent._id, true);
+			
+			Consent.set(consent._id, "owner", consent.owner);
+			Consent.set(consent._id, "externalOwner", consent.externalOwner);
+		}
 	}
 	
 	/**

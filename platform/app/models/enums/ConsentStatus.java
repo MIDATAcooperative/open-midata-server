@@ -6,6 +6,11 @@ package models.enums;
  */
 public enum ConsentStatus {
 	
+   /**
+    * the consent is still under construction and not ready for use
+    */
+   DRAFT,
+      
 	/**
 	 * the consent is currently active
 	 */

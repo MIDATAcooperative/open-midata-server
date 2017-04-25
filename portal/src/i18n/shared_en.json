@@ -606,6 +606,7 @@
     "type" : "Type of Consent",
     "status" : "Status of Consent",   
     "people" : "With which persons(s) do you want to share data?",
+    "external" : "Non MIDATA account holder",
     "add_people_btn" : "Add More People",
     "add_usergroup_btn" : "Add a Team",
     "reshare" : "@:newconsent.reshare",

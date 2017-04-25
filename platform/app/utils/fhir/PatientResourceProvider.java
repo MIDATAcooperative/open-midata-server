@@ -363,7 +363,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		p.setId(member._id.toString());
 		p.addName().setFamily(member.lastname).addGiven(member.firstname);
 		p.setBirthDate(member.birthday);
-		p.addIdentifier().setSystem("http://midata.coop/midataID").setValue(member.midataID);
+		p.addIdentifier().setSystem("http://midata.coop/identifier/midata-id").setValue(member.midataID);
 		p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
 		p.addTelecom().setSystem(ContactPointSystem.EMAIL).setValue(member.email);
 		if (member.phone != null && member.phone.length()>0) {

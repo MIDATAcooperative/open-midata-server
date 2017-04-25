@@ -178,7 +178,7 @@ public class Application extends APIController {
 		   replacements.put("token", token.token);
 		   
 		   AccessLog.log("send welcome mail: "+user.email);
-		   Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), replacements);
+		   Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements);
 	  	   //Messager.sendTextMail(user.email, user.firstname+" "+user.lastname, "Welcome to MIDATA", welcome.render(site, url1, url2, token.token).toString());
 	   } else {
 		   user.emailStatus = EMailStatus.VALIDATED;
@@ -649,6 +649,8 @@ public class Application extends APIController {
 		registerSetDefaultFields(user);				
 		developerRegisteredAccountCheck(user, json);		
 		registerCreateUser(user);		
+		
+		Circles.fetchExistingConsents(user._id, user.emailLC);
 		
 		sendWelcomeMail(user);
 		if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) sendAdminNotificationMail(user);

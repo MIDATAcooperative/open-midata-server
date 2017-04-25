@@ -32,7 +32,7 @@ public class Consent extends Model {
 	/**
 	 * constant for all fields of a consent
 	 */
-	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp");
+	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore");
 	
 	/**
 	 * constant for all FHIR fields of a consent
@@ -112,12 +112,12 @@ public class Consent extends Model {
 	/**
 	 * The expiration date of this consent
 	 */
-	public @NotMaterialized Date validUntil;
+	public Date validUntil;
 	
 	/**
 	 * Exclude all data created after this date
 	 */
-	public @NotMaterialized Date createdBefore;		
+	public Date createdBefore;		
 	
 	/**
 	 * FHIR representation of Consent
@@ -127,7 +127,7 @@ public class Consent extends Model {
 	/**
 	 * Sharing Query
 	 */
-	public @NotMaterialized Map<String, Object> sharingQuery;
+	public Map<String, Object> sharingQuery;
 		
 	
 	/**
@@ -185,6 +185,14 @@ public class Consent extends Model {
 	
 	public static Set<Consent> getHealthcareActiveByAuthorizedAndOwner(MidataId member, MidataId owner) throws InternalServerException {
 		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  ConsentStatus.ACTIVE).map("type",  ConsentType.HEALTHCARE), Sets.create("name", "order", "owner", "type"));
+	}
+	
+	public static Set<Consent> getByExternalEmail(String emailLC) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map("externalAuthorized", emailLC), FHIR);
+	}
+	
+	public static Set<Consent> getByExternalOwnerEmail(String emailLC) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map("externalOwner", emailLC), FHIR);
 	}
 	
 	public static Consent getMessagingActiveByAuthorizedAndOwner(MidataId member, MidataId owner) throws InternalServerException {

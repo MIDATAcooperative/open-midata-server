@@ -765,10 +765,9 @@ public class Studies extends APIController {
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new BadRequestException("error.closed.study", "Study participant search already closed.");
 		if (participation.pstatus != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
 		
-		participation.setPStatus(ParticipationStatus.RESEARCH_REJECTED);
-		participation.setStatus(ConsentStatus.REJECTED);
+		participation.setPStatus(ParticipationStatus.RESEARCH_REJECTED);		
 		participation.addHistory(new History(EventType.PARTICIPATION_REJECTED, user, comment));
-		Circles.consentStatusChange(userId, participation);
+		Circles.consentStatusChange(userId, participation, ConsentStatus.REJECTED);
 						
 		return ok();
 	}

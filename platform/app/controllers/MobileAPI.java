@@ -254,9 +254,8 @@ public class MobileAPI extends Controller {
 	
 	public static void removeAppInstance(MobileAppInstance appInstance) throws AppException {
 		AccessLog.logBegin("start remove app instance");
-		// Device or password changed, regenerates consent		
-		appInstance.setStatus(ConsentStatus.EXPIRED);
-		Circles.consentStatusChange(appInstance.owner, appInstance);
+		// Device or password changed, regenerates consent				
+		Circles.consentStatusChange(appInstance.owner, appInstance, ConsentStatus.EXPIRED);
 		RecordManager.instance.deleteAPS(appInstance._id, appInstance.owner);									
 		Circles.removeQueries(appInstance.owner, appInstance._id);										
 		MobileAppInstance.delete(appInstance.owner, appInstance._id);

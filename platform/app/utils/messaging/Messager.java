@@ -33,16 +33,16 @@ public class Messager {
 		mailSender.tell(new Message(email, fullname, subject, content), ActorRef.noSender());
 	}
 	
-	public static void sendMessage(MidataId sourcePlugin, MessageReason reason, String code, Set<MidataId> targets, Map<String, String> replacements) throws AppException {
+	public static void sendMessage(MidataId sourcePlugin, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements) throws AppException {
 		Plugin plugin = Plugin.getById(sourcePlugin, Sets.create("predefinedMessages", "name"));
 		if (plugin.predefinedMessages != null) {
 		  replacements.put("plugin-name", plugin.name);
 		  replacements.put("midata-instance", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
-		  sendMessage(plugin.predefinedMessages, reason, code, targets, replacements);
+		  sendMessage(plugin.predefinedMessages, reason, code, targets, defaultLanguage, replacements);
 		}
 	}
 	
-	public static void sendMessage(Map<String, MessageDefinition> messageDefinitions, MessageReason reason, String code, Set<MidataId> targets, Map<String, String> replacements) throws AppException {
+	public static void sendMessage(Map<String, MessageDefinition> messageDefinitions, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements) throws AppException {
 		if (targets.isEmpty()) return;
 		
 		MessageDefinition msg = null; 
@@ -57,13 +57,19 @@ public class Messager {
 		  if (footerDefs != null) footers = footerDefs.text;
 		}
 		
-		sendMessage(msg, footers, targets, replacements);			
+		sendMessage(msg, footers, targets, defaultLanguage, replacements);			
 	}
 	
-	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, Set<MidataId> targets, Map<String, String> replacements) throws AppException {	
-		for (MidataId userId : targets) {
-			User user = User.getById(userId, Sets.create("email", "firstname", "lastname", "language"));
-			if (user != null) sendMessage(messageDefinition, footers, user, replacements);
+	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, Set targets, String defaultLanguage, Map<String, String> replacements) throws AppException {	
+		for (Object target : targets) {
+			if (target instanceof MidataId) {
+				MidataId userId = (MidataId) target;
+				User user = User.getById(userId, Sets.create("email", "firstname", "lastname", "language"));
+				if (user != null) sendMessage(messageDefinition, footers, user, replacements);
+			} else if (target instanceof String) {
+				sendMessage(messageDefinition, footers, target.toString(), null, defaultLanguage, replacements);
+			}
+			
 		}
 	}
 	
@@ -83,6 +89,41 @@ public class Messager {
 		replacements.put("firstname", member.firstname);
 		replacements.put("lastname", member.lastname);
 		replacements.put("email", member.email);
+		
+		for (Map.Entry<String, String> replacement : replacements.entrySet()) {
+			String key = "<"+replacement.getKey()+">";
+		    subject = subject.replaceAll(key, replacement.getValue());
+		    content = content.replaceAll(key, replacement.getValue());
+		}
+		
+		Messager.sendTextMail(email, fullname, subject, content);
+	}
+	
+	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, String email, String fullname, String language, Map<String, String> replacements) {				
+
+		String subject = messageDefinition.title.get(language);
+		if (subject == null) subject = messageDefinition.title.get("EN");
+		String content = messageDefinition.text.get(language);
+		if (content == null) content = messageDefinition.text.get("EN");
+		
+		if (footers != null) {
+			String footer = footers.get(language);
+			if (footer == null) footer = footers.get("EN");
+			if (footer != null) content += "\n"+footer;
+		}
+		String names[] = fullname == null ? new String[0] : fullname.split(" ");
+		
+		if (names.length>1) {
+		  replacements.put("firstname", names[0]);
+		  replacements.put("lastname", names[names.length-1]);
+		} else if (names.length == 1) {
+		  replacements.put("firstname", "");
+		  replacements.put("lastname", names[0]);
+		} else {
+		  replacements.put("firstname", "");
+		  replacements.put("lastname", "");	
+		}
+		replacements.put("email", email);
 		
 		for (Map.Entry<String, String> replacement : replacements.entrySet()) {
 			String key = "<"+replacement.getKey()+">";

@@ -13,9 +13,12 @@ import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.Condition;
 import org.hl7.fhir.dstu3.model.Consent.ConsentActorComponent;
 import org.hl7.fhir.dstu3.model.Consent.ExceptComponent;
+import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.Group;
 import org.hl7.fhir.dstu3.model.IdType;
+import org.hl7.fhir.dstu3.model.Identifier;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.dstu3.model.codesystems.ConsentExceptType;
 import org.hl7.fhir.dstu3.model.Group.GroupMemberComponent;
 import org.hl7.fhir.dstu3.model.Group.GroupType;
@@ -141,17 +144,17 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
         if (query.containsKey("content")) {
 		  	ExceptComponent ex = p.addExcept();
 		  	Set<String> vals = utils.access.Query.getRestriction(query.get("content"), "content");
-		  	for (String s : vals) ex.addClass_().setSystem("http://midata.coop/Content").setCode(s);
+		  	for (String s : vals) ex.addClass_().setSystem("http://midata.coop/codesystems/content").setCode(s);
 		}
         if (query.containsKey("group")) {
 		  	ExceptComponent ex = p.addExcept();
 		  	Set<String> vals = utils.access.Query.getRestriction(query.get("group"), "group");
-		  	for (String s : vals) ex.addClass_().setSystem("http://midata.coop/Group").setCode(s);
+		  	for (String s : vals) ex.addClass_().setSystem("http://midata.coop/codesystems/group").setCode(s);
 		}
         if (query.containsKey("format")) {
 		  	ExceptComponent ex = p.addExcept();
 		  	Set<String> vals = utils.access.Query.getRestriction(query.get("format"), "format");
-		  	for (String s : vals) ex.addClass_().setSystem("http://midata.coop/Format").setCode(s);
+		  	for (String s : vals) ex.addClass_().setSystem("http://midata.coop/codesystems/format").setCode(s);
 		}
 	}
 	
@@ -169,9 +172,13 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 		
 		String categoryCode = consentToConvert.categoryCode;
 		if (categoryCode == null) categoryCode = "default";
-		c.addCategory().addCoding().setCode(categoryCode).setSystem("http://midata.coop/ConsentCategory");
+		c.addCategory().addCoding().setCode(categoryCode).setSystem("http://midata.coop/codesystems/consent-category");
 
-		c.setPatient(FHIRTools.getReferenceToUser(User.getById(consentToConvert.owner, Sets.create("role", "firstname", "lastname", "email"))));
+		if (consentToConvert.owner != null) {
+		  c.setPatient(FHIRTools.getReferenceToUser(User.getById(consentToConvert.owner, Sets.create("role", "firstname", "lastname", "email"))));
+		} else if (consentToConvert.externalOwner != null) {
+		  c.setPatient(new Reference().setIdentifier(new Identifier().setSystem("http://midata.coop/identifier/patient-login-or-invitation").setValue(consentToConvert.externalOwner)));
+		}
 		
 		if (consentToConvert.validUntil != null) {
 		  c.setPeriod(new Period().setEnd(consentToConvert.validUntil));	
@@ -183,8 +190,9 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 		  c.setDateTime(consentToConvert.dateOfCreation);
 		}
 		c.setPolicyRule("http://hl7.org/fhir/ConsentPolicy/opt-in");
-		c.addPurpose(new Coding("http://midata.coop/ConsentType", consentToConvert.type.toString(), null));
+		c.addPurpose(new Coding("http://midata.coop/codesystems/consent-type", consentToConvert.type.toString(), null));
 		
+		c.addExtension().setUrl("http://midata.coop/extensions/consent-name").setValue(new StringType(consentToConvert.name));
 		
 		String encoded = ctx.newJsonParser().encodeResourceToString(c);		
 		consentToConvert.fhirConsent = (DBObject) JSON.parse(encoded);				
@@ -391,6 +399,13 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 		consent.authorized = new HashSet<MidataId>();
 		consent.categoryCode = theResource.getCategoryFirstRep().getCodingFirstRep().getCode();
 		
+		consent.name = theResource.getCategoryFirstRep().getText();
+		for (Extension ext : theResource.getExtensionsByUrl("http://midata.coop/extensions/consent-name")) {
+		  consent.name = ext.getValue().toString();	
+		}
+		if (consent.name == null) consent.name = "Unnamed";
+		
+		
 		if (theResource.getPeriod() != null) {
 		  consent.validUntil = theResource.getPeriod().getEnd();
 		}
@@ -405,14 +420,32 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 		for (ConsentActorComponent cac : theResource.getActor()) {
 			Reference ref = FHIRTools.resolve(cac.getReference());
 			TypedMidataId mid = FHIRTools.getMidataIdFromReference(ref.getReferenceElement());
-			consent.authorized.add(mid.getMidataId());
+			if (mid == null) {
+			  String login = FHIRTools.getMidataLoginFromReference(ref);
+			  if (login != null) {
+				  if (consent.externalAuthorized == null) {
+					  consent.externalAuthorized = new HashSet<String>();
+				  }
+				  consent.externalAuthorized.add(login);
+			  }
+			} else {
+			  consent.authorized.add(mid.getMidataId());
+			}
 		}
 		
 		Reference patient = theResource.getPatient();
 		if (patient != null) {
 			patient = FHIRTools.resolve(patient);
 			TypedMidataId mid = FHIRTools.getMidataIdFromReference(patient.getReferenceElement());
-			consent.owner = mid.getMidataId();
+			if (mid != null) {
+			  consent.owner = mid.getMidataId();
+			} else {
+				String login = FHIRTools.getMidataLoginFromReference(patient);
+				if (login != null) {
+					consent.externalOwner = login;
+					consent.owner = null;
+				}
+			}
 		}
 		
 		Map<String, Object> query = new HashMap<String, Object>();
@@ -421,7 +454,7 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 			if (ec.getType() == org.hl7.fhir.dstu3.model.Consent.ConsentExceptType.PERMIT) {
 				for (Coding coding : ec.getClass_()) {
 					String system = coding.getSystem();
-					if (system.equals("http://midata.coop/Content")) {
+					if (system.equals("http://midata.coop/codesystems/content")) {
 					  contents.add(coding.getCode());	
 					}
 				}
