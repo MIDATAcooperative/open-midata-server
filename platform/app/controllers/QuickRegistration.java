@@ -109,6 +109,9 @@ public class QuickRegistration extends APIController {
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");
+		
+		user.initialApp = app._id;
+		if (study != null) user.initialStudy = study._id;
 									
 		user.status = UserStatus.ACTIVE;	
 		
@@ -182,7 +185,8 @@ public class QuickRegistration extends APIController {
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");
-						
+		
+		user.initialApp = app._id;		
 						
 		user.status = UserStatus.ACTIVE;		
 		Application.registerCreateUser(user);								

@@ -7,15 +7,21 @@ angular.module('portal')
 	$scope.status = new status(false, $scope);
 	
 	$scope.languages = ['en', 'de', 'fr', 'it'];
-    $scope.reasons = ['REGISTRATION', 'FIRSTUSE', 'CONSENT_REQUEST', 'CONSENT_CONFIRM', 'CONSENT_REJECT' ];
+    $scope.reasons = ['REGISTRATION', 'FIRSTUSE_ANYUSER', 'FIRSTUSE_EXISTINGUSER', 'CONSENT_REQUEST_OWNER_INVITED', 'CONSENT_REQUEST_OWNER_EXISTING', 'CONSENT_REQUEST_AUTHORIZED_INVITED', 'CONSENT_REQUEST_AUTHORIZED_EXISTING', 'CONSENT_CONFIRM_OWNER', 'CONSENT_CONFIRM_AUTHORIZED', 'CONSENT_REJECT_OWNER', 'CONSENT_REJECT_AUTHORIZED' ];
 	$scope.sel = { lang : 'en' };
     $scope.messages = [];
     $scope.tags = {
-    	'REGISTRATION': ["site", "confirm-url", "reject-url", "token", "firstname", "lastname", "email", "plugin-name", "midata-instance"],
-    	'FIRSTUSE' : ["firstname", "lastname", "email", "plugin-name", "midata-instance"],
-    	'CONSENT_REQUEST' : ["executor-firstname", "executor-lastname", "executor-email", "firstname", "lastname", "email", "plugin-name", "midata-instance"],
-    	'CONSENT_CONFIRM' : ["executor-firstname", "executor-lastname", "executor-email", "firstname", "lastname", "email", "plugin-name", "midata-instance"],
-    	'CONSENT_REJECT' : ["executor-firstname", "executor-lastname", "executor-email", "firstname", "lastname", "email", "plugin-name", "midata-instance"]	
+    	'REGISTRATION': ["site", "confirm-url", "reject-url", "token", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+    	'FIRSTUSE_ANYUSER' : ["firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+    	'FIRSTUSE_EXISTINGUSER' : ["firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+    	'CONSENT_REQUEST_OWNER_EXISTING' : ["executor-firstname", "executor-lastname", "executor-email", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+    	'CONSENT_REQUEST_AUTHORIZED_EXISTING' : ["executor-firstname", "executor-lastname", "executor-email", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+    	'CONSENT_CONFIRM_OWNER' : ["executor-firstname", "executor-lastname", "executor-email", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+    	'CONSENT_CONFIRM_AUTHORIZED' : ["executor-firstname", "executor-lastname", "executor-email", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+    	'CONSENT_REJECT_OWNER' : ["executor-firstname", "executor-lastname", "executor-email", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+    	'CONSENT_REJECT_AUTHORIZED' : ["executor-firstname", "executor-lastname", "executor-email", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+    	'CONSENT_REQUEST_OWNER_INVITED' : ["executor-firstname", "executor-lastname", "executor-email", "email", "plugin-name", "midata-portal-url"],
+    	'CONSENT_REQUEST_AUTHORIZED_INVITED' : ["executor-firstname", "executor-lastname", "executor-email", "email", "plugin-name", "midata-portal-url"]
     };
 	
 			

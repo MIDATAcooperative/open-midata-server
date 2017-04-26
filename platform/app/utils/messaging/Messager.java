@@ -34,10 +34,11 @@ public class Messager {
 	}
 	
 	public static void sendMessage(MidataId sourcePlugin, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements) throws AppException {
+		if (targets == null || targets.isEmpty()) return;
 		Plugin plugin = Plugin.getById(sourcePlugin, Sets.create("predefinedMessages", "name"));
 		if (plugin.predefinedMessages != null) {
 		  replacements.put("plugin-name", plugin.name);
-		  replacements.put("midata-instance", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
+		  replacements.put("midata-portal-url", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
 		  sendMessage(plugin.predefinedMessages, reason, code, targets, defaultLanguage, replacements);
 		}
 	}

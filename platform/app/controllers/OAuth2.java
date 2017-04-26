@@ -75,6 +75,7 @@ public class OAuth2 extends Controller {
 		
 		String code_challenge = JsonValidation.getStringOrNull(json, "code_challenge");
 	    String code_challenge_method = JsonValidation.getStringOrNull(json, "code_challenge_method");
+	    boolean confirmed = JsonValidation.getBoolean(json, "confirm");
 	   					
 	    // Validate Mobile App	
 		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri"));
@@ -93,8 +94,8 @@ public class OAuth2 extends Controller {
 					
 		User user = null;
 		switch (role) {
-		case MEMBER : user = Member.getByEmail(username, Sets.create("visualizations","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));break;
-		case PROVIDER : user = HPUser.getByEmail(username, Sets.create("visualizations","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));break;
+		case MEMBER : user = Member.getByEmail(username, Sets.create("visualizations","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
+		case PROVIDER : user = HPUser.getByEmail(username, Sets.create("visualizations","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
 		}
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
 		if (!Member.authenticationValid(password, user.password)) {
@@ -109,6 +110,7 @@ public class OAuth2 extends Controller {
 		KeyManager.instance.login(60000l);
 		
 		if (appInstance == null) {		
+			if (!confirmed) return ok("CONFIRM");
 			boolean autoConfirm = KeyManager.instance.unlock(user._id, null) == KeyManager.KEYPROTECTION_NONE;
 			MidataId executor = autoConfirm ? user._id : null;
 			appInstance = MobileAPI.installApp(executor, app._id, user, phrase, autoConfirm);				

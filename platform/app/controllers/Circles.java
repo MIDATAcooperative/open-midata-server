@@ -332,9 +332,9 @@ public class Circles extends APIController {
 		consent.add();
 								
 		if (consent.status == ConsentStatus.UNCONFIRMED) {
-			sendConsentNotifications(executorId, consent, MessageReason.CONSENT_REQUEST);
+			sendConsentNotifications(executorId, consent, consent.status);
 		} else if (consent.status == ConsentStatus.ACTIVE) {
-			sendConsentNotifications(executorId, consent, MessageReason.CONSENT_CONFIRM);
+			sendConsentNotifications(executorId, consent, consent.status);
 		}
 				
 		if (consent.status.equals(ConsentStatus.ACTIVE) && patientRecord) autosharePatientRecord(consent);
@@ -630,23 +630,11 @@ public class Circles extends APIController {
 		ConsentResourceProvider.updateMidataConsent(consent);
 	}
 	
-	public static void sendConsentNotifications(MidataId executorId, Consent consent, MessageReason reason) throws AppException {
+	public static void sendConsentNotifications(MidataId executorId, Consent consent, ConsentStatus reason) throws AppException {
 		MidataId sourcePlugin = consent.creatorApp != null ? consent.creatorApp : RuntimeConstants.instance.portalPlugin;
 		Map<String, String> replacements = new HashMap<String, String>();
 		Set<Object> targets = new HashSet<Object>();
-		
-		if (reason == MessageReason.CONSENT_REQUEST) {
-			if (consent.owner != null) targets.add(consent.owner);
-			if (consent.externalOwner != null) targets.add(consent.externalOwner);
-		} else if (reason == MessageReason.CONSENT_REJECT) {
-			targets.addAll(consent.authorized);
-		} else {
-			if (consent.owner != null) targets.add(consent.owner);
-			if (consent.externalOwner != null) targets.add(consent.externalOwner);
-			targets.addAll(consent.authorized);
-			if (consent.externalAuthorized != null) targets.addAll(consent.externalAuthorized);
-		}
-		
+						
 		String category = consent.categoryCode;
 		if (category == null) category = consent.type.toString();
 		
@@ -655,7 +643,19 @@ public class Circles extends APIController {
 		replacements.put("executor-lastname", sender.lastname);
 		replacements.put("executor-email", sender.email);
 				
-		Messager.sendMessage(sourcePlugin, reason, category, targets, sender.language, replacements);
+		if (reason == ConsentStatus.UNCONFIRMED) {
+			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_AUTHORIZED_INVITED, category, consent.externalAuthorized, sender.language, replacements);
+			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_AUTHORIZED_EXISTING, category, consent.authorized, sender.language, replacements);
+			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_OWNER_INVITED, category, Collections.singleton(consent.externalOwner), sender.language, replacements);
+			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_OWNER_EXISTING, category, Collections.singleton(consent.owner), sender.language, replacements);
+		} else if (reason == ConsentStatus.ACTIVE) {
+			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_AUTHORIZED, category, consent.authorized, sender.language, replacements);
+			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_OWNER, category, Collections.singleton(consent.owner), sender.language, replacements);
+		} else if (reason == ConsentStatus.REJECTED) {
+			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_AUTHORIZED, category, consent.authorized, sender.language, replacements);
+			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_OWNER, category, Collections.singleton(consent.owner), sender.language, replacements);
+		}
+		
 	}
 	
 	public static void fetchExistingConsents(MidataId executorId, String emailLC) throws AppException {

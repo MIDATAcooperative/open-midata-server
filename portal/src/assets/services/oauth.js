@@ -66,8 +66,8 @@ angular.module('services')
 		return cred.device.substr(0,3);
 	};
 	
-	service.login = function() {	    	
-		
+	service.login = function(confirm) {	    	
+		cred.confirm = confirm || false;
 		return server.post("/v1/authorize", JSON.stringify(cred)).
 		then(function(result) {				
 			if (result.data.istatus === "ACTIVE") {							

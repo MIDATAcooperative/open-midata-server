@@ -34,17 +34,32 @@ angular.module('portal')
 		
 		oauth.setUser($scope.login.email, $scope.login.password);
 				
-		$scope.status.doAction("login", oauth.login())
+		$scope.status.doAction("login", oauth.login(false))
 		.then(function(result) {
-		  if (result !== "ACTIVE") {
+		  if (result === "CONFIRM") {
+			  $scope.acceptConsent = true;
+		  } else if (result !== "ACTIVE") {
 			  if (result.istatus) { $scope.pleaseConfirm = true; }
 			  else {
-				  
+				  session.postLogin({ data : result}, $state);  
 			  }
 		  }
 		})
 		.catch(function(err) { $scope.error = err.data; });
 	};	
+	
+	$scope.confirm = function() {
+		$scope.status.doAction("login", oauth.login(true))
+		.then(function(result) {
+		  if (result !== "ACTIVE") {
+			  if (result.istatus) { $scope.pleaseConfirm = true; }	
+			  else {
+				  session.postLogin({ data : result}, $state);
+			  }
+		  }
+		})
+		.catch(function(err) { $scope.error = err.data; });
+	};
 	
 	$scope.showRegister = function() {
 		$state.go("public.registration");

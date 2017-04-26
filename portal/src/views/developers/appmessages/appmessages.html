@@ -49,7 +49,7 @@
 		  		  
 		  
 		  <formrow myid="reason" label="appmessages.reason">
-		    <select id="reason" name="reason" class="form-control" ng-model="selmsg.reason" ng-options="reason for reason in reasons"></select>		    
+		    <select id="reason" name="reason" class="form-control" ng-model="selmsg.reason" ng-options="reason as ('appmessages.reasons.' + reason) | translate for reason in reasons"></select>		    
 		  </formrow>
 		  
 		  <formrow myid="code" label="appmessages.code">		    

@@ -44,9 +44,16 @@
     
     "reasons" : {
        "REGISTRATION" : "Registration of new user",
-	   "CONSENT_REQUEST" : "Request for consent",
-	   "CONSENT_CONFIRM" : "Confirmation of consent",
-	   "CONSENT_REJECT" : "Rejection of consent"
+	   "FIRSTUSE_ANYUSER" : "First use of app",
+	   "FIRSTUSE_EXISTINGUSER" : "First use of app (if no registration mail sent)",
+	   "CONSENT_REQUEST_OWNER_INVITED" : "Proposed consent (Grantor, Invitation)",
+	   "CONSENT_REQUEST_OWNER_EXISTING" : "Proposed consent (Grantor, Account Holder)",
+	   "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Proposed consent (Grantee, Invitation)",
+	   "CONSENT_REQUEST_AUTHORIZED_EXISTING" : "Proposed consent (Grantee, Account Holder)",
+	   "CONSENT_CONFIRM_OWNER" : "Consent confirmation (Grantor)",
+	   "CONSENT_CONFIRM_AUTHORIZED" : "Consent confirmation (Grantee)",
+	   "CONSENT_REJECT_OWNER" : "Consent rejection (Grantor)",
+	   "CONSENT_REJECT_AUTHORIZED" : "Consent rejection (Grantee)"	   
     }		      
   },
   

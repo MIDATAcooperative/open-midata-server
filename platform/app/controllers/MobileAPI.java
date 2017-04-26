@@ -219,8 +219,8 @@ public class MobileAPI extends Controller {
 				
 			User user = null;
 			switch (role) {
-			case MEMBER : user = Member.getByEmail(username, Sets.create("visualizations","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));break;
-			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("visualizations","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));break;
+			case MEMBER : user = Member.getByEmail(username, Sets.create("visualizations","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
+			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("visualizations","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
 			}
 			if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
 			
@@ -326,17 +326,12 @@ public class MobileAPI extends Controller {
 		   appInstance.status = ConsentStatus.ACTIVE;
 		}
 		
-		if (app.predefinedMessages!=null && app.predefinedMessages.containsKey(MessageReason.REGISTRATION.toString())) {
-			MessageDefinition messageDefinition = app.predefinedMessages.get(MessageReason.REGISTRATION.toString());
-			
-			String email = member.email;
-			String fullname = member.firstname+" "+member.lastname;
-			String subject = messageDefinition.title.get(member.language);
-			if (subject == null) subject = messageDefinition.title.get("EN");
-			String content = messageDefinition.text.get(member.language);
-			if (content == null) content = messageDefinition.text.get("EN");			
-			Messager.sendTextMail(email, fullname, subject, content);
-			
+		
+		if (app.predefinedMessages!=null) {
+			if (!app._id.equals(member.initialApp)) {
+				Messager.sendMessage(app._id, MessageReason.FIRSTUSE_EXISTINGUSER, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());	
+			} 
+			Messager.sendMessage(app._id, MessageReason.FIRSTUSE_ANYUSER, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());								
 		}
 				
 		return appInstance;

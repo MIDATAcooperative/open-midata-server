@@ -145,7 +145,7 @@ public class HealthProvider extends APIController {
 			}			
 			target.setConfirmDate(new Date());			
 			Circles.consentStatusChange(userId, target, ConsentStatus.ACTIVE);
-			Circles.sendConsentNotifications(userId, target, MessageReason.CONSENT_CONFIRM);
+			Circles.sendConsentNotifications(userId, target, ConsentStatus.ACTIVE);
 		} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");			
 	}
 	
@@ -169,7 +169,7 @@ public class HealthProvider extends APIController {
 		if (target.status.equals(ConsentStatus.UNCONFIRMED) || target.status.equals(ConsentStatus.ACTIVE)) {
 			target.setConfirmDate(new Date());			
 			Circles.consentStatusChange(userId, target, ConsentStatus.REJECTED);
-			Circles.sendConsentNotifications(userId, target, MessageReason.CONSENT_REJECT);
+			Circles.sendConsentNotifications(userId, target, ConsentStatus.REJECTED);
 		} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");
 	
 		return ok();

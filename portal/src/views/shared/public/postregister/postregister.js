@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('PostRegisterCtrl', ['$scope', '$state', '$stateParams', 'status', 'server', 'session',function($scope, $state, $stateParams, status, server, session) {
+.controller('PostRegisterCtrl', ['$scope', '$state', '$stateParams', 'status', 'server', 'session', 'oauth', function($scope, $state, $stateParams, status, server, session, oauth) {
 	
 	// init
 	$scope.passphrase = {};
@@ -10,10 +10,11 @@ angular.module('portal')
 	$scope.mailSuccess = false;
 	$scope.codeSuccess = false;
 	$scope.resentSuccess = false;
+	$scope.isoauth = false;
 		
 	$scope.resend = function() {	
 		$scope.resentSuccess = $scope.codeSuccess = $scope.mailSuccess = false;
-	    $scope.status.doAction('resent', server.post(jsRoutes.controllers.Application.requestWelcomeMail().url))
+	    $scope.status.doAction('resent', server.post(jsRoutes.controllers.Application.requestWelcomeMail().url, JSON.stringify({ userId : $scope.progress.userId })))
 	    .then(function() {
 	    	$scope.resentSuccess = true;	    		    	
 	    });	    
@@ -52,13 +53,26 @@ angular.module('portal')
 	    .then(function(result) {
 	    	$scope.progress = result.data;	    	
 	    	$scope.mailSuccess = true;	  
-	    	session.postLogin(result, $state);
+	    	
+	    	if (oauth.getAppname()) {
+	    	  oauth.login(true);	
+	    	} else {	    	
+	    	  session.postLogin(result, $state);
+	    	}
 	    });	    
+	};
+	
+	$scope.retry = function() {
+		if (oauth.getAppname()) {
+	    	  oauth.login(true);	
+	    }
 	};
 				
 	
 	if ($stateParams.token && $state.current.data.mode) {
 		$scope.confirm();
 	}
+	
+	if (oauth.getAppname()) { $scope.isoauth = true; }
 }]);
 

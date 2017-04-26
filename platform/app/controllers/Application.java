@@ -138,12 +138,13 @@ public class Application extends APIController {
 	 * @return status ok
 	 * @throws AppException
 	 */	
-	@APICall
-	@Security.Authenticated(AnyRoleSecured.class)
+	@APICall	
+	@BodyParser.Of(BodyParser.Json.class) 
 	public static Result requestWelcomeMail() throws AppException {
 		
-		// execute
-		MidataId userId = new MidataId(request().username());
+		JsonNode json = request().body().asJson();	
+		JsonValidation.validate(json, "userId");				
+		MidataId userId = JsonValidation.getMidataId(json, "userId");
 		User user = User.getById(userId, Sets.create("firstname", "lastname", "email", "emailStatus", "status", "role"));
 		
 		if (user != null && user.emailStatus.equals(EMailStatus.UNVALIDATED)) {							  
