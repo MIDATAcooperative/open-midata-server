@@ -94,8 +94,8 @@ public class OAuth2 extends Controller {
 					
 		User user = null;
 		switch (role) {
-		case MEMBER : user = Member.getByEmail(username, Sets.create("visualizations","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
-		case PROVIDER : user = HPUser.getByEmail(username, Sets.create("visualizations","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
+		case MEMBER : user = Member.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
+		case PROVIDER : user = HPUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
 		}
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
 		if (!Member.authenticationValid(password, user.password)) {

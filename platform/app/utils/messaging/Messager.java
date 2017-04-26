@@ -33,23 +33,24 @@ public class Messager {
 		mailSender.tell(new Message(email, fullname, subject, content), ActorRef.noSender());
 	}
 	
-	public static void sendMessage(MidataId sourcePlugin, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements) throws AppException {
-		if (targets == null || targets.isEmpty()) return;
+	public static boolean sendMessage(MidataId sourcePlugin, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements) throws AppException {
+		if (targets == null || targets.isEmpty()) return false;
 		Plugin plugin = Plugin.getById(sourcePlugin, Sets.create("predefinedMessages", "name"));
 		if (plugin.predefinedMessages != null) {
 		  replacements.put("plugin-name", plugin.name);
 		  replacements.put("midata-portal-url", "https://" + InstanceConfig.getInstance().getPortalServerDomain());
-		  sendMessage(plugin.predefinedMessages, reason, code, targets, defaultLanguage, replacements);
+		  return sendMessage(plugin.predefinedMessages, reason, code, targets, defaultLanguage, replacements);
 		}
+		return false;
 	}
 	
-	public static void sendMessage(Map<String, MessageDefinition> messageDefinitions, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements) throws AppException {
-		if (targets.isEmpty()) return;
+	public static boolean sendMessage(Map<String, MessageDefinition> messageDefinitions, MessageReason reason, String code, Set targets, String defaultLanguage, Map<String, String> replacements) throws AppException {
+		if (targets.isEmpty()) return false;
 		
 		MessageDefinition msg = null; 
 		if (code != null) msg = messageDefinitions.get(reason.toString()+"_"+code);
 		if (msg == null) msg = messageDefinitions.get(reason.toString());
-		if (msg == null) return;
+		if (msg == null) return false;
 		
 		Map<String, String> footers = null;
 		Plugin commonPlugin = Plugin.getById(RuntimeConstants.instance.commonPlugin, Sets.create("predefinedMessages"));
@@ -58,7 +59,9 @@ public class Messager {
 		  if (footerDefs != null) footers = footerDefs.text;
 		}
 		
-		sendMessage(msg, footers, targets, defaultLanguage, replacements);			
+		sendMessage(msg, footers, targets, defaultLanguage, replacements);
+		
+		return true;
 	}
 	
 	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, Set targets, String defaultLanguage, Map<String, String> replacements) throws AppException {	

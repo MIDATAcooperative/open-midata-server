@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import actions.APICall;
 import models.Developer;
 import models.HPUser;
+import models.History;
 import models.Member;
 import models.MidataId;
 import models.ResearchUser;
@@ -21,6 +22,7 @@ import models.User;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
+import models.enums.EventType;
 import models.enums.Gender;
 import models.enums.MessageReason;
 import models.enums.ParticipationInterest;
@@ -179,8 +181,9 @@ public class Application extends APIController {
 		   replacements.put("token", token.token);
 		   
 		   AccessLog.log("send welcome mail: "+user.email);
-		   Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements);
-	  	   //Messager.sendTextMail(user.email, user.firstname+" "+user.lastname, "Welcome to MIDATA", welcome.render(site, url1, url2, token.token).toString());
+		   if (!Messager.sendMessage(sourcePlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements)) {
+			   Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.REGISTRATION, null, Collections.singleton(user._id), null, replacements);
+		   }	  	   
 	   } else {
 		   user.emailStatus = EMailStatus.VALIDATED;
 		   User.set(user._id, "emailStatus", user.emailStatus);
@@ -238,16 +241,24 @@ public class Application extends APIController {
 		}
 		
 		
-		User user = User.getById(userId, Sets.create("status", "role", "subroles", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "resettoken","password","resettokenTs", "registeredAt", "confirmedAt", "developer"));
+		User user = User.getById(userId, Sets.create("firstname", "lastname", "status", "role", "subroles", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "resettoken","password","resettokenTs", "registeredAt", "confirmedAt", "developer"));
 		
 		if (user!=null && !user.emailStatus.equals(EMailStatus.VALIDATED)) {							
 		       if (user.resettoken != null 		    		    
 		    		   && user.resettoken.equals(token)
 		    		   && System.currentTimeMillis() - user.resettokenTs < 1000 * 60 * 15) {	   
 			   
+		    	   
+		    	   if (wanted == EMailStatus.REJECTED) {
+		    		   user.status = UserStatus.BLOCKED;
+			    	   user.set("status", user.status);
+			    	   user.addHistory(new History(EventType.INTERNAL_COMMENT, user, "E-Mail explicitely rejected at "+new Date().toString()));
+			       }
+		    	   
 		           user.set("resettoken", null);	
 		           user.emailStatus = wanted;
-			       user.set("emailStatus", wanted);			       
+			       user.set("emailStatus", wanted);				       
+			       
 		       } else throw new BadRequestException("error.expired.token", "Token has already expired. Please request a new one.");
 		       
 		       checkAccount(user);

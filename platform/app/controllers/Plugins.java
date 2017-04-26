@@ -169,12 +169,16 @@ public class Plugins extends APIController {
 		
 		if (visualization.type.equals("visualization") ) {
 			if (user.visualizations == null) user.visualizations = new HashSet<MidataId>();
-			user.visualizations.add(visualizationId);
-			User.set(userId, "visualizations", user.visualizations);
+			if (!user.visualizations.contains(visualizationId)) {
+				user.visualizations.add(visualizationId);
+				User.set(userId, "visualizations", user.visualizations);
+			}
 		} else {
 			if (user.apps == null) user.apps = new HashSet<MidataId>();
-			user.apps.add(visualizationId);
-			User.set(userId, "apps", user.apps);
+			if (!user.apps.contains(visualizationId)) {
+				user.apps.add(visualizationId);
+				User.set(userId, "apps", user.apps);
+			}
 		}
 		
 		

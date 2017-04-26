@@ -67,7 +67,7 @@ public class Market extends APIController {
 		MidataId userId = new MidataId(request().username());
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
-		Plugin app = Plugin.getById(pluginId, Sets.create("creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status"));
+		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
 		if (!app.creator.equals(userId) && !getRole().equals(UserRole.ADMIN)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");

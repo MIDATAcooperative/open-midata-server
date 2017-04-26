@@ -634,6 +634,8 @@ public class Circles extends APIController {
 		MidataId sourcePlugin = consent.creatorApp != null ? consent.creatorApp : RuntimeConstants.instance.portalPlugin;
 		Map<String, String> replacements = new HashMap<String, String>();
 		Set<Object> targets = new HashSet<Object>();
+		targets.addAll(consent.authorized);
+		targets.remove(executorId);
 						
 		String category = consent.categoryCode;
 		if (category == null) category = consent.type.toString();
@@ -642,18 +644,34 @@ public class Circles extends APIController {
 		replacements.put("executor-firstname", sender.firstname);
 		replacements.put("executor-lastname", sender.lastname);
 		replacements.put("executor-email", sender.email);
+		
+		if (executorId.equals(consent.owner)) {
+			replacements.put("grantor-firstname", sender.firstname);
+			replacements.put("grantor-lastname", sender.lastname);
+			replacements.put("grantor-email", sender.email);
+		} else if (consent.owner != null) {
+			User owner = User.getById(consent.owner, Sets.create("firstname", "lastname", "role", "email", "language"));
+			replacements.put("grantor-firstname", owner.firstname);
+			replacements.put("grantor-lastname", owner.lastname);
+			replacements.put("grantor-email", owner.email);
+		} else {
+			replacements.put("grantor-firstname", "");
+			replacements.put("grantor-lastname", "");
+			replacements.put("grantor-email", consent.externalOwner);
+		}
+		replacements.put("consent-name", consent.name);
 				
 		if (reason == ConsentStatus.UNCONFIRMED) {
 			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_AUTHORIZED_INVITED, category, consent.externalAuthorized, sender.language, replacements);
-			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_AUTHORIZED_EXISTING, category, consent.authorized, sender.language, replacements);
+			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_AUTHORIZED_EXISTING, category, targets, sender.language, replacements);
 			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_OWNER_INVITED, category, Collections.singleton(consent.externalOwner), sender.language, replacements);
-			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_OWNER_EXISTING, category, Collections.singleton(consent.owner), sender.language, replacements);
+			if (!executorId.equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REQUEST_OWNER_EXISTING, category, Collections.singleton(consent.owner), sender.language, replacements);
 		} else if (reason == ConsentStatus.ACTIVE) {
-			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_AUTHORIZED, category, consent.authorized, sender.language, replacements);
-			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_OWNER, category, Collections.singleton(consent.owner), sender.language, replacements);
+			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_AUTHORIZED, category, targets, sender.language, replacements);
+			if (!executorId.equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_CONFIRM_OWNER, category, Collections.singleton(consent.owner), sender.language, replacements);			
 		} else if (reason == ConsentStatus.REJECTED) {
-			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_AUTHORIZED, category, consent.authorized, sender.language, replacements);
-			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_OWNER, category, Collections.singleton(consent.owner), sender.language, replacements);
+			Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_AUTHORIZED, category, targets, sender.language, replacements);
+			if (!executorId.equals(consent.owner)) Messager.sendMessage(sourcePlugin, MessageReason.CONSENT_REJECT_OWNER, category, Collections.singleton(consent.owner), sender.language, replacements);
 		}
 		
 	}

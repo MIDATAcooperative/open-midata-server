@@ -219,8 +219,8 @@ public class MobileAPI extends Controller {
 				
 			User user = null;
 			switch (role) {
-			case MEMBER : user = Member.getByEmail(username, Sets.create("visualizations","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
-			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("visualizations","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
+			case MEMBER : user = Member.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
+			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
 			}
 			if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
 			
@@ -326,7 +326,11 @@ public class MobileAPI extends Controller {
 		   appInstance.status = ConsentStatus.ACTIVE;
 		}
 		
-		
+		if (!member.apps.contains(app._id)) {
+			member.apps.add(app._id);
+			User.set(member._id, "apps", member.apps);
+		}
+				
 		if (app.predefinedMessages!=null) {
 			if (!app._id.equals(member.initialApp)) {
 				Messager.sendMessage(app._id, MessageReason.FIRSTUSE_EXISTINGUSER, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());	

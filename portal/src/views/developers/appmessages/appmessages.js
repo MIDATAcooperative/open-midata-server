@@ -14,14 +14,14 @@ angular.module('portal')
     	'REGISTRATION': ["site", "confirm-url", "reject-url", "token", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
     	'FIRSTUSE_ANYUSER' : ["firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
     	'FIRSTUSE_EXISTINGUSER' : ["firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
-    	'CONSENT_REQUEST_OWNER_EXISTING' : ["executor-firstname", "executor-lastname", "executor-email", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
-    	'CONSENT_REQUEST_AUTHORIZED_EXISTING' : ["executor-firstname", "executor-lastname", "executor-email", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
-    	'CONSENT_CONFIRM_OWNER' : ["executor-firstname", "executor-lastname", "executor-email", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
-    	'CONSENT_CONFIRM_AUTHORIZED' : ["executor-firstname", "executor-lastname", "executor-email", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
-    	'CONSENT_REJECT_OWNER' : ["executor-firstname", "executor-lastname", "executor-email", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
-    	'CONSENT_REJECT_AUTHORIZED' : ["executor-firstname", "executor-lastname", "executor-email", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
-    	'CONSENT_REQUEST_OWNER_INVITED' : ["executor-firstname", "executor-lastname", "executor-email", "email", "plugin-name", "midata-portal-url"],
-    	'CONSENT_REQUEST_AUTHORIZED_INVITED' : ["executor-firstname", "executor-lastname", "executor-email", "email", "plugin-name", "midata-portal-url"]
+    	'CONSENT_REQUEST_OWNER_EXISTING' : ["executor-firstname", "executor-lastname", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-email", "consent-name", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+    	'CONSENT_REQUEST_AUTHORIZED_EXISTING' : ["executor-firstname", "executor-lastname", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-email", "consent-name","firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+    	'CONSENT_CONFIRM_OWNER' : ["executor-firstname", "executor-lastname", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-email", "consent-name", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+    	'CONSENT_CONFIRM_AUTHORIZED' : ["executor-firstname", "executor-lastname", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-email", "consent-name", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+    	'CONSENT_REJECT_OWNER' : ["executor-firstname", "executor-lastname", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-email", "consent-name","firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+    	'CONSENT_REJECT_AUTHORIZED' : ["executor-firstname", "executor-lastname", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-email", "consent-name", "firstname", "lastname", "email", "plugin-name", "midata-portal-url"],
+    	'CONSENT_REQUEST_OWNER_INVITED' : ["executor-firstname", "executor-lastname", "executor-email", "grantor-email", "consent-name", "email", "plugin-name", "midata-portal-url"],
+    	'CONSENT_REQUEST_AUTHORIZED_INVITED' : ["executor-firstname", "executor-lastname", "executor-email", "grantor-firstname", "grantor-lastname", "grantor-email", "consent-name", "email", "plugin-name", "midata-portal-url"]
     };
 	
 			

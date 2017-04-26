@@ -12,14 +12,17 @@ import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.Condition;
 import org.hl7.fhir.dstu3.model.Consent.ConsentActorComponent;
+import org.hl7.fhir.dstu3.model.Consent.ConsentState;
 import org.hl7.fhir.dstu3.model.Consent.ExceptComponent;
 import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.Group;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Identifier;
+import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.dstu3.model.codesystems.ConsentExceptType;
+import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.dstu3.model.Group.GroupMemberComponent;
 import org.hl7.fhir.dstu3.model.Group.GroupType;
 import org.hl7.fhir.dstu3.model.Period;
@@ -42,6 +45,7 @@ import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
+import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.SummaryEnum;
@@ -53,12 +57,18 @@ import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
+import ca.uhn.fhir.rest.server.exceptions.ForbiddenOperationException;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
+import ca.uhn.fhir.rest.server.exceptions.PreconditionFailedException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import controllers.Circles;
 import controllers.UserGroups;
+import controllers.members.HealthProvider;
 import models.Consent;
 import models.MidataId;
+import models.Plugin;
 import models.Record;
 import models.TypedMidataId;
 import models.User;
@@ -70,9 +80,11 @@ import models.enums.EntityType;
 import models.enums.UserStatus;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.access.Feature_FormatGroups;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 
 public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3.model.Consent> implements IResourceProvider {
@@ -385,6 +397,83 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 		return super.createResource(theConsent);
 	}
 	
+	@Update
+	@Override
+	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam org.hl7.fhir.dstu3.model.Consent theConsent) {		
+		try {			
+			return update(theId, theConsent);
+		} catch (BaseServerResponseException e) {
+			throw e;
+		} catch (BadRequestException e2) {
+			throw new InvalidRequestException(e2.getMessage());
+		} catch (InternalServerException e3) {
+			ErrorReporter.report("FHIR (update resource)", null, e3);
+			throw new InternalErrorException(e3);
+		} catch (Exception e4) {
+			ErrorReporter.report("FHIR (update resource)", null, e4);
+			throw new InternalErrorException(e4);
+		}	
+	}
+	
+	protected MethodOutcome update(IdType theId, org.hl7.fhir.dstu3.model.Consent theResource) throws AppException {
+		Consent consent = Circles.getConsentById(info().executorId, MidataId.from(theId.getIdPart()), Consent.FHIR);
+		if (consent == null) throw new ResourceNotFoundException(theId);
+		
+		if ((theResource.getStatus() == ConsentState.ACTIVE || theResource.getStatus() == ConsentState.REJECTED) && consent.status == ConsentStatus.UNCONFIRMED) {
+			mayShare(info().pluginId, consent.sharingQuery);
+						
+			if (theResource.getStatus() == ConsentState.ACTIVE) {
+				HealthProvider.confirmConsent(info().executorId, consent._id);
+			} else {
+				HealthProvider.rejectConsent(info().executorId, consent._id);
+			}
+		}
+		
+		MethodOutcome retVal = new MethodOutcome(new IdType("Consent", consent._id.toString(), null), true);	
+        retVal.setResource(theResource);
+        
+		return retVal;		
+	}
+	
+	private static void mayShare(MidataId pluginId, Map<String, Object> query) throws AppException {
+		Plugin plugin = Plugin.getById(pluginId);
+		if (!plugin.resharesData) throw new ForbiddenOperationException("Plugin is not allowed to share data.");
+		if (!isSubQuery(plugin.defaultQuery, query)) throw new ForbiddenOperationException("Plugin is not allowed to share this type of data.");
+				
+	}
+	
+	private static boolean isSubQuery(Map<String, Object> masterQuery, Map<String, Object> subQuery) throws AppException {
+		
+		masterQuery = new HashMap<String, Object>(masterQuery);
+		subQuery = new HashMap<String, Object>(subQuery);
+		
+		String groupSystem = null;
+		
+		if (masterQuery.containsKey("group-system")) {
+		  groupSystem = masterQuery.get("group-system").toString();
+		} else {
+		  groupSystem = "v1";
+		}
+		Feature_FormatGroups.convertQueryToContents(groupSystem, masterQuery);
+		if (subQuery.containsKey("group-system")) {
+		  groupSystem = subQuery.get("group-system").toString();
+		} else {
+		  groupSystem = "v1";
+		}
+		Feature_FormatGroups.convertQueryToContents(groupSystem, subQuery);
+		
+		masterQuery.remove("group-system");
+		subQuery.remove("group-system");
+		
+	    for (Map.Entry<String, Object> entry : masterQuery.entrySet()) {
+	    	if (!subQuery.containsKey(entry.getKey())) return false;
+	    	Set<String> master = utils.access.Query.getRestriction(entry.getValue(), entry.getKey());
+	    	Set<String> sub = utils.access.Query.getRestriction(subQuery.get(entry.getKey()), entry.getKey());
+	    	if (!master.containsAll(sub)) return false;	    	
+	    }
+		return true;
+	}
+	
 	/**
 	 * Implementation for create
 	 * @param theResource
@@ -463,6 +552,12 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 		if (!contents.isEmpty()) query.put("content", contents);
 		consent.sharingQuery = query;
         
+		if (theResource.getStatus() == ConsentState.ACTIVE) {
+			mayShare(info().pluginId, consent.sharingQuery);
+			consent.status = ConsentStatus.ACTIVE;
+		} else if (theResource.getStatus() != ConsentState.PROPOSED) {
+			throw new ForbiddenOperationException("consent status not supported for creation.");
+		}
 		
 		Circles.addConsent(info().executorId, consent, true, null);
         
