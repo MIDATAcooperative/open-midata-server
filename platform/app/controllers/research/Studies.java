@@ -22,6 +22,7 @@ import controllers.APIController;
 import controllers.Circles;
 import models.AccessPermissionSet;
 import models.Admin;
+import models.Consent;
 import models.FilterRule;
 import models.History;
 import models.Info;
@@ -569,7 +570,8 @@ public class Studies extends APIController {
 			consent.authorized = new HashSet<MidataId>();
 			consent.status = ConsentStatus.ACTIVE;
 						
-			RecordManager.instance.createAnonymizedAPS(userId, userId, consent._id, true);			
+			RecordManager.instance.createAnonymizedAPS(userId, userId, consent._id, true);
+			Circles.prepareConsent(consent);
 			consent.add();
 		}
 		
@@ -756,7 +758,7 @@ public class Studies extends APIController {
 		String comment = JsonValidation.getString(json, "comment");
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));					
-		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("pstatus", "history", "ownerName", "owner", "authorized"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create(Consent.ALL, "pstatus", "history", "ownerName", "owner", "authorized"));		
 		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Unknown Study");	
@@ -764,10 +766,9 @@ public class Studies extends APIController {
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new BadRequestException("error.closed.study", "Study participant search already closed.");
 		if (participation.pstatus != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
 		
-		participation.setPStatus(ParticipationStatus.RESEARCH_REJECTED);
-		participation.setStatus(ConsentStatus.REJECTED);
+		participation.setPStatus(ParticipationStatus.RESEARCH_REJECTED);		
 		participation.addHistory(new History(EventType.PARTICIPATION_REJECTED, user, comment));
-		Circles.consentStatusChange(userId, participation);
+		Circles.consentStatusChange(userId, participation, ConsentStatus.REJECTED);
 						
 		return ok();
 	}

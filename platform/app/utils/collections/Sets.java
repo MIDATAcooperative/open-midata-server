@@ -11,6 +11,13 @@ public class Sets {
 		return result;
 	}
 	
+	public static Set<String> create(Set<String> base, String... contents) {
+		HashSet<String> result = new HashSet<String>();
+		result.addAll(base);
+		for (String entry : contents) result.add(entry);
+		return result;
+	}
+	
 	@SafeVarargs
 	public static <T extends Enum> Set<T> createEnum(T... contents) {
 		HashSet<T> result = new HashSet<T>();

@@ -47,7 +47,9 @@ angular.module('portal')
 		  $scope.status.doAction("register", server.post(jsRoutes.controllers.QuickRegistration.register().url, JSON.stringify(data))).
 		  then(function(data) { 		  
 			  oauth.setUser($scope.registration.email, $scope.registration.password);
-			  oauth.login();		
+			  oauth.login(true).then(function(result) {
+				  if (result !== "ACTIVE") { session.postLogin({ data : result}, $state);}
+			  });		
 		  });
 		  
 		} else {

@@ -66,15 +66,16 @@ angular.module('services')
 		return cred.device.substr(0,3);
 	};
 	
-	service.login = function() {	    	
-		
+	service.login = function(confirm) {	    	
+		cred.confirm = confirm || false;
 		return server.post("/v1/authorize", JSON.stringify(cred)).
 		then(function(result) {				
-			if (result.data.status === "ACTIVE") {							
+			if (result.data.istatus === "ACTIVE") {							
 			  cred.appname = null;
 			  document.location.href = cred.redirectUri + "?state=" + encodeURIComponent(cred.state) + "&code=" + result.data.code;
-			}
-			return result.data.status;
+			  return "ACTIVE";
+			} else
+			return result.data;
 		});
 	};
 	

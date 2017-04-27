@@ -109,6 +109,9 @@ public class QuickRegistration extends APIController {
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");
+		
+		user.initialApp = app._id;
+		if (study != null) user.initialStudy = study._id;
 									
 		user.status = UserStatus.ACTIVE;	
 		
@@ -119,8 +122,9 @@ public class QuickRegistration extends APIController {
 		if (device != null) {
 		   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true);
 		}
-				
-		Application.sendWelcomeMail(user);
+		
+		Circles.fetchExistingConsents(user._id, user.emailLC);
+		Application.sendWelcomeMail(app._id, user);
 		return Application.loginHelper(user);		
 	}
 	
@@ -181,11 +185,13 @@ public class QuickRegistration extends APIController {
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");
-						
+		
+		user.initialApp = app._id;		
 						
 		user.status = UserStatus.ACTIVE;		
 		Application.registerCreateUser(user);								
-		Application.sendWelcomeMail(user);
+		Application.sendWelcomeMail(app._id,user);
+		Circles.fetchExistingConsents(user._id, user.emailLC);
 		
 		MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, phrase, true);		
 		appInstance.status = ConsentStatus.ACTIVE;

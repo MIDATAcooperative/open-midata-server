@@ -25,6 +25,7 @@ import models.ContentInfo;
 import models.HPUser;
 import models.LargeRecord;
 import models.Member;
+import models.MessageDefinition;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
@@ -33,6 +34,7 @@ import models.RecordsInfo;
 import models.User;
 import models.enums.AggregationType;
 import models.enums.ConsentStatus;
+import models.enums.MessageReason;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -57,6 +59,7 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.Messager;
 
 /**
  * functions for mobile APPs
@@ -196,6 +199,7 @@ public class MobileAPI extends Controller {
 			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "applicationId", "status"));
 			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");            
             if (!refreshToken.appId.equals(app._id)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");  
+            if (!Application.verifyUser(appInstance.owner)) return status(UNAUTHORIZED); 
             
             phrase = refreshToken.phrase;
             KeyManager.instance.unlock(appInstance._id, phrase);
@@ -215,14 +219,15 @@ public class MobileAPI extends Controller {
 				
 			User user = null;
 			switch (role) {
-			case MEMBER : user = Member.getByEmail(username, Sets.create("visualizations","password"));break;
-			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("visualizations","password"));break;
+			case MEMBER : user = Member.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
+			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
 			}
 			if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
 			
 			if (!Member.authenticationValid(password, user.password)) {
 				throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
 			}
+			if (Application.loginHelperPreconditionsFailed(user)) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
 			
 			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode"));
 			
@@ -249,9 +254,8 @@ public class MobileAPI extends Controller {
 	
 	public static void removeAppInstance(MobileAppInstance appInstance) throws AppException {
 		AccessLog.logBegin("start remove app instance");
-		// Device or password changed, regenerates consent		
-		appInstance.setStatus(ConsentStatus.EXPIRED);
-		Circles.consentStatusChange(appInstance.owner, appInstance);
+		// Device or password changed, regenerates consent				
+		Circles.consentStatusChange(appInstance.owner, appInstance, ConsentStatus.EXPIRED);
 		RecordManager.instance.deleteAPS(appInstance._id, appInstance.owner);									
 		Circles.removeQueries(appInstance.owner, appInstance._id);										
 		MobileAppInstance.delete(appInstance.owner, appInstance._id);
@@ -284,7 +288,7 @@ public class MobileAPI extends Controller {
 	}
 	
 	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm) throws AppException {
-		Plugin app = Plugin.getById(appId, Sets.create("name", "defaultQuery"));
+		Plugin app = Plugin.getById(appId, Sets.create("name", "defaultQuery", "predefinedMessages"));
 		MobileAppInstance appInstance = new MobileAppInstance();
 		appInstance._id = new MidataId();
 		appInstance.name = "App: "+ app.name+" (Device: "+phrase.substring(0, 3)+")";
@@ -320,6 +324,18 @@ public class MobileAPI extends Controller {
 		if (autoConfirm) {
 		   HealthProvider.confirmConsent(appInstance.owner, appInstance._id);
 		   appInstance.status = ConsentStatus.ACTIVE;
+		}
+		
+		if (!member.apps.contains(app._id)) {
+			member.apps.add(app._id);
+			User.set(member._id, "apps", member.apps);
+		}
+				
+		if (app.predefinedMessages!=null) {
+			if (!app._id.equals(member.initialApp)) {
+				Messager.sendMessage(app._id, MessageReason.FIRSTUSE_EXISTINGUSER, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());	
+			} 
+			Messager.sendMessage(app._id, MessageReason.FIRSTUSE_ANYUSER, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());								
 		}
 				
 		return appInstance;

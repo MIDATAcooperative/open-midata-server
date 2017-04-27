@@ -30,13 +30,43 @@
     "title" : "Your Plugins"
   },
   
+  "appmessages" : {
+    "title" : "Predefined Messages for App:",
+    "reason" : "Reason (Trigger)",
+	"code" : "Code",
+    "languages" : "Languages",
+    "empty" : "There are no app specfic messages defined yet.",
+    
+    "lang" : "Language",
+    "msgtitle" : "Message Title",
+    "text" : "Message Text",
+    "available_tags" : "Available variables",
+    
+    "reasons" : {
+       "REGISTRATION" : "Registration of new user",
+	   "FIRSTUSE_ANYUSER" : "First use of app",
+	   "FIRSTUSE_EXISTINGUSER" : "First use of app (if no registration mail sent)",
+	   "CONSENT_REQUEST_OWNER_INVITED" : "Proposed consent (Grantor, Invitation)",
+	   "CONSENT_REQUEST_OWNER_EXISTING" : "Proposed consent (Grantor, Account Holder)",
+	   "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Proposed consent (Grantee, Invitation)",
+	   "CONSENT_REQUEST_AUTHORIZED_EXISTING" : "Proposed consent (Grantee, Account Holder)",
+	   "CONSENT_CONFIRM_OWNER" : "Consent confirmation (Grantor)",
+	   "CONSENT_CONFIRM_AUTHORIZED" : "Consent confirmation (Grantee)",
+	   "CONSENT_REJECT_OWNER" : "Consent rejection (Grantor)",
+	   "CONSENT_REJECT_AUTHORIZED" : "Consent rejection (Grantee)"	   
+    }		      
+  },
+  
   "manageapp" : {
+    "messages_btn" : "Edit Messages",
     "info" : {
        "filename" : "This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your app for a specific role only? Otherwise choose 'Any Role'.",
        "type" : "Choose 'Plugin' if your app will run as MIDATA portal plugin. Choose 'Mobile App' for an external application. Choose 'OAuth1 Import' or 'OAuth2 Import' if you need to connect to an external server using OAuth1 or OAuth2.",
        "name" : "The name of your app or plugin that will be presented to the end user.",
        "description" : "A description of your plugin that will also be shown on the marked place.",
+       "resharesData" : "App is allowed to reshare data it has access to to 3rd party.",
+       "allowsUserSearch" : "Users of app are allowed to search for other users of same app.",
        "defaultSpaceName" : "Title of the tile for your plugin on the dashboard.",
        "tags" : "Categories on the market place for which your plugin should be listed.",
        "url" : "URL of your plugins main page. If you use the template from MIDATA it is 'dist/index.html#?authToken=:authToken''",

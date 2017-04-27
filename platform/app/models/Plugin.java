@@ -38,7 +38,8 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret",
-	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n");
+	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n",
+	                     "predefinedMessages", "resharesData", "allowsUserSearch");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -47,7 +48,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 			 Sets.create("_id", "version", "creator", "filename", "name", "description", "tags", 
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
-	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang");
+	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "predefinedMessages", "resharesData");
 	
 	/**
 	 * timestamp of last change. Used to prevent lost updates.
@@ -94,6 +95,21 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * Internationalization support
 	 */
 	public Map<String, Plugin_i18n> i18n;
+	
+	/**
+	 * Predefined messages
+	 */
+	public Map<String, MessageDefinition> predefinedMessages;
+	
+	/**
+	 * App shares data it has access to to 3rd party
+	 */
+	public boolean resharesData;
+	
+	/**
+	 * Users of app are allowed to search each other
+	 */
+	public boolean allowsUserSearch;
 		
 	/**
 	 * set of tags that determine for which categories this plugin should be displayed in the market
@@ -241,7 +257,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	public void update() throws InternalServerException, LostUpdateException {
 		cache.remove(_id);
 		try {
-			   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n" );
+			   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch" );
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);
 		}

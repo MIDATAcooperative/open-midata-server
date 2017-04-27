@@ -246,6 +246,16 @@ public class User extends Model implements Comparable<User> {
 	 * Map consent id to query map.
 	 */
 	public Map<String, Map<String, Object>> queries;
+	
+	/**
+	 * App that was used to register this person
+	 */
+	public MidataId initialApp;
+	
+	/**
+	 * Study that has been the reason for the user to register
+	 */
+	public MidataId initialStudy;
 
 	@Override
 	public int compareTo(User other) {
