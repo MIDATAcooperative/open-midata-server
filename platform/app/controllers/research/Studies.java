@@ -22,6 +22,7 @@ import controllers.APIController;
 import controllers.Circles;
 import models.AccessPermissionSet;
 import models.Admin;
+import models.Consent;
 import models.FilterRule;
 import models.History;
 import models.Info;
@@ -757,7 +758,7 @@ public class Studies extends APIController {
 		String comment = JsonValidation.getString(json, "comment");
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));					
-		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("pstatus", "history", "ownerName", "owner", "authorized"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create(Consent.ALL, "pstatus", "history", "ownerName", "owner", "authorized"));		
 		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Unknown Study");	

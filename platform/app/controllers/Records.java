@@ -181,7 +181,7 @@ public class Records extends APIController {
 		
 		Consent consent = Circles.getConsentById(userId, apsId, Sets.create("owner", "authorized", "status", "type", "sharingQuery"));
 		if (consent != null) {
-			if (!userId.equals(consent.owner) && !consent.authorized.contains(userId)) throw new InternalServerException("error.invalid.consent", "You are not allowed to access this consent.");
+			
 			Circles.fillConsentFields(userId, Collections.singleton(consent), Sets.create("sharingQuery"));
 			query = consent.sharingQuery;
 			if (!consent.status.equals(ConsentStatus.ACTIVE) && !userId.equals(consent.owner)) readRecords = false;

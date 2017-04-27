@@ -61,6 +61,7 @@ import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import ca.uhn.fhir.rest.server.exceptions.ForbiddenOperationException;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
+import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.PreconditionFailedException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import controllers.Circles;
@@ -518,6 +519,13 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 				  consent.externalAuthorized.add(login);
 			  }
 			} else {
+			  if (mid.getType().equals("Group")) {
+				  if (consent.entityType != null && !consent.entityType.equals(EntityType.USERGROUP)) throw new NotImplementedOperationException("Consent actors need to be all people or all groups. Mixed actors are not supported.");
+				  consent.entityType = EntityType.USERGROUP;
+			  } else {
+				  if (consent.entityType != null && !consent.entityType.equals(EntityType.USER)) throw new NotImplementedOperationException("Consent actors need to be all people or all groups. Mixed actors are not supported.");				  
+				  consent.entityType = EntityType.USER;
+			  }
 			  consent.authorized.add(mid.getMidataId());
 			}
 		}
@@ -559,6 +567,7 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 			throw new ForbiddenOperationException("consent status not supported for creation.");
 		}
 		
+		if (consent.type == ConsentType.IMPLICIT) throw new ForbiddenOperationException("consent type not supported for creation.");
 		Circles.addConsent(info().executorId, consent, true, null);
         
 		theResource.setDateTime(consent.dateOfCreation);

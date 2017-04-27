@@ -235,7 +235,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 	public void shareRecord(Record record, Communication theCommunication) throws AppException {		
 		ExecutionInfo inf = info();
 		
-		MidataId subject = theCommunication.getSubject().isEmpty() ? inf.executorId : FHIRTools.getUserIdFromReference(theCommunication.getSubject().getReferenceElement());
+		MidataId subject = record.owner;//theCommunication.getSubject().isEmpty() ? inf.executorId : FHIRTools.getUserIdFromReference(theCommunication.getSubject().getReferenceElement());
 		MidataId sender = FHIRTools.getUserIdFromReference(theCommunication.getSender().getReferenceElement());
 		MidataId shareFrom = insertMessageRecord(record, theCommunication);
 						

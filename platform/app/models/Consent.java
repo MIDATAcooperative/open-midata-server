@@ -32,7 +32,7 @@ public class Consent extends Model {
 	/**
 	 * constant for all fields of a consent
 	 */
-	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore");
+	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "externalAuthorized");
 	
 	/**
 	 * constant for all FHIR fields of a consent

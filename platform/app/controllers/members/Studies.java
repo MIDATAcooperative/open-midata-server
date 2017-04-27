@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import actions.APICall;
 import controllers.APIController;
 import controllers.Circles;
+import models.Consent;
 import models.History;
 import models.Member;
 import models.MidataId;
@@ -347,7 +348,7 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request().username());		
 		MidataId studyId = new MidataId(id);
 					
-		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "history", "ownerName", "owner", "authorized"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create(Consent.ALL, "status", "pstatus", "history", "ownerName", "owner", "authorized"));		
 		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");

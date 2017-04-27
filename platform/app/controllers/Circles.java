@@ -312,7 +312,7 @@ public class Circles extends APIController {
 		consent._id = new MidataId();
 		consent.dateOfCreation = new Date();				
 			
-		if (consent.status != ConsentStatus.DRAFT && consent.status != ConsentStatus.UNCONFIRMED) {
+		if (consent.status != ConsentStatus.DRAFT && consent.status != ConsentStatus.UNCONFIRMED && consent.type != ConsentType.IMPLICIT) {
 			if (consent.owner == null || !consent.owner.equals(executorId)) throw new AuthException("error.invalid.consent", "You must be owner to create active consents!");
 		}
 		
@@ -353,17 +353,18 @@ public class Circles extends APIController {
 	 */
 	public static Consent getOrCreateMessagingConsent(MidataId executorId, MidataId sender, MidataId receiver, MidataId subject, boolean groupReceiver) throws AppException {
 		if (executorId == null || sender == null || receiver == null || subject == null) throw new NullPointerException();
-		MidataId other = sender.equals(subject) ? receiver : sender;
+		MidataId other = receiver.equals(subject) ? sender : receiver;
 		Consent consent = Consent.getMessagingActiveByAuthorizedAndOwner(other, subject);
 		if (consent != null) return consent;
 		
-		if (!executorId.equals(subject) && !executorId.equals(other)) throw new InternalServerException("error.internal", "Executor differs from message subject and other person");
+		//if (!executorId.equals(subject) && !executorId.equals(other)) throw new InternalServerException("error.internal", "Executor differs from message subject and other person");
 		
 		consent = new Consent();		
 		consent.type = ConsentType.IMPLICIT;		
 		consent.owner = subject;
 		consent.authorized = Collections.singleton(other);
 		consent.status = ConsentStatus.ACTIVE;
+		consent.entityType = groupReceiver ? EntityType.USERGROUP : EntityType.USER;
 		
 		if (groupReceiver && other.equals(receiver)) {
 			UserGroup othergroup = UserGroup.getById(receiver, Sets.create("name"));
@@ -441,7 +442,7 @@ public class Circles extends APIController {
 		MidataId userId = new MidataId(request().username());
 		MidataId circleId = new MidataId(circleIdString);
 		
-		Consent consent = Consent.getByIdAndOwner(circleId, userId, Consent.ALL);
+		Consent consent = Consent.getByIdAndOwner(circleId, userId, Consent.FHIR);
 		if (consent == null) {
 			throw new BadRequestException("error.unknown.consent", "No consent with this id exists.");
 		}
@@ -558,6 +559,7 @@ public class Circles extends APIController {
 		Consent consent = getConsentById(executor, consentId, Consent.ALL);
 		if (consent != null && !consent.status.equals(ConsentStatus.EXPIRED)) {			
 			consentStatusChange(executor, consent, ConsentStatus.EXPIRED);
+			
 		}
 	}
 	/**
@@ -579,7 +581,7 @@ public class Circles extends APIController {
 		}
 		
 		if (active && !wasActive) {
-			RecordManager.instance.shareAPS(consent._id, consent.owner, consent.authorized);
+			RecordManager.instance.shareAPS(consent._id, executor, consent.authorized);
 			consentSettingChange(executor, consent);
 			if (consent.type.equals(ConsentType.CIRCLE) || consent.type.equals(ConsentType.HEALTHCARE)) autosharePatientRecord(consent);
 			Map<String, Object> query = consent.sharingQuery;
@@ -593,6 +595,8 @@ public class Circles extends APIController {
 			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }
 			RecordManager.instance.unshareAPSRecursive(consent._id, consent.owner, consent.authorized);
 		}
+		
+		prepareConsent(consent);
 	}
 	 
 	
@@ -682,6 +686,8 @@ public class Circles extends APIController {
 			addUsers(executorId, EntityType.USER, consent, Collections.singleton(executorId));
 			consent.externalAuthorized.remove(emailLC);
 			Consent.set(consent._id, "externalAuthorized", consent.externalAuthorized);
+			
+			prepareConsent(consent);
 		}
 		
 		consents = Consent.getByExternalOwnerEmail(emailLC);
@@ -694,6 +700,8 @@ public class Circles extends APIController {
 			
 			Consent.set(consent._id, "owner", consent.owner);
 			Consent.set(consent._id, "externalOwner", consent.externalOwner);
+			
+			prepareConsent(consent);
 		}
 	}
 	
