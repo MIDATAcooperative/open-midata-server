@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import actions.APICall;
 import controllers.APIController;
 import controllers.Circles;
+import models.Consent;
 import models.History;
 import models.Member;
 import models.MidataId;
@@ -252,6 +253,8 @@ public class Studies extends APIController {
 		  History codedentererd = new History(EventType.CODE_ENTERED, part, null); 
 		  part.history.add(codedentererd);
 		} 
+		
+		Circles.prepareConsent(part);
 		StudyParticipation.add(part);
 		Circles.setQuery(member._id, member._id, part._id, study.recordQuery);
 		RecordManager.instance.applyQuery(member._id, study.recordQuery, member._id, part._id, study.requiredInformation.equals(InformationType.DEMOGRAPHIC));
@@ -312,7 +315,7 @@ public class Studies extends APIController {
 		
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "birthday", "gender", "country"));		
-		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "history", "ownerName", "owner", "authorized"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "history", "ownerName", "owner", "authorized", "sharingQuery", "validUntil", "createdBefore"));		
 		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history", "owner", "createdBy", "name", "recordQuery", "requiredInformation"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
@@ -326,12 +329,9 @@ public class Studies extends APIController {
 		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
 		
 		participation.setPStatus(ParticipationStatus.REQUEST);
-		
-		// participation.setStatus(ConsentStatus.UNCONFIRMED); // Needs more thought on process!
-		participation.setStatus(ConsentStatus.ACTIVE);
-		
+						
 		participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, null));
-		Circles.consentStatusChange(userId, participation);				
+		Circles.consentStatusChange(userId, participation, ConsentStatus.ACTIVE);				
 				
 	}
 	
@@ -348,17 +348,16 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request().username());		
 		MidataId studyId = new MidataId(id);
 					
-		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "history", "ownerName", "owner", "authorized"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create(Consent.ALL, "status", "pstatus", "history", "ownerName", "owner", "authorized"));		
 		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		if (participation == null) throw new BadRequestException("error.blocked.participation", "Member is not allowed to participate in study.");				
 		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH && participation.pstatus != ParticipationStatus.REQUEST) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
 		
-		participation.setPStatus(ParticipationStatus.MEMBER_REJECTED);
-		participation.setStatus(ConsentStatus.REJECTED);
+		participation.setPStatus(ParticipationStatus.MEMBER_REJECTED);		
 		participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, null));
-		Circles.consentStatusChange(userId, participation);
+		Circles.consentStatusChange(userId, participation, ConsentStatus.REJECTED);
 						
 		return ok();
 	}

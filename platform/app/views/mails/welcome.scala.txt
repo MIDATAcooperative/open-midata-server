@@ -1,4 +1,4 @@
-@(website: String)(confirmlink: String, rejectlink: String)
+@(website: String)(confirmlink: String, rejectlink: String, token: String)
 Welcome to MIDATA.
 
 You have just registered to @website.
@@ -7,3 +7,4 @@ click on the link below to confirm your email address.
 
 @confirmlink
 
+As an alternative you may enter this code upon login: @token

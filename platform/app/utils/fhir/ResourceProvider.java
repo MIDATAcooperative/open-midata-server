@@ -389,11 +389,11 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 		if (record.lastUpdated == null) resource.getMeta().setLastUpdated(record.created);
 		else resource.getMeta().setLastUpdated(record.lastUpdated);
 		
-		Extension meta = new Extension("http://midata.coop/StructureDefinition/metadata");
+		Extension meta = new Extension("http://midata.coop/extensions/metadata");
 		
 		if (record.app != null) {
 		  Plugin creatorApp = Plugin.getById(record.app);		
-		  meta.addExtension("app", new Coding("http://midata.coop/apps", creatorApp.filename, creatorApp.name));
+		  meta.addExtension("app", new Coding("http://midata.coop/codesystems/app", creatorApp.filename, creatorApp.name));
 		}
 		if (record.creator != null) meta.addExtension("creator", FHIRTools.getReferenceToUser(record.creator, record.creator.equals(record.owner) ? record.ownerName : null ));
 				

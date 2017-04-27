@@ -398,7 +398,7 @@ public class RecordManager {
 	 */
 	public BSONObject getMeta(MidataId who, MidataId apsId, String key) throws AppException {
 		AccessLog.logBegin("begin getMeta who="+who.toString()+" aps="+apsId.toString()+" key="+key);
-		BSONObject result = getCache(who).getAPS(apsId).getMeta(key);
+		BSONObject result = Feature_UserGroups.findApsCacheToUse(getCache(who), apsId).getAPS(apsId).getMeta(key);
 		AccessLog.logEnd("end getMeta");
 		return result;
 	}
@@ -883,7 +883,8 @@ public class RecordManager {
 		
 		if (rec.security == null) throw new InternalServerException("error.internal", "Missing key for record:"+rec._id.toString());
 		FileData fileData = FileStorage.retrieve(new MidataId(token.recordId));
-				
+		if (fileData == null) throw new InternalServerException("error.internal", "Record "+rec._id.toString()+" has no binary data attached.");		
+		
 		if (rec.security.equals(APSSecurityLevel.NONE) || rec.security.equals(APSSecurityLevel.LOW)) {
 		  fileData.inputStream = fileData.inputStream;			
 		} else {

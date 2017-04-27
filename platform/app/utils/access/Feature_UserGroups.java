@@ -64,6 +64,11 @@ public class Feature_UserGroups extends Feature {
 	}
 	
 	protected static MidataId identifyUserGroup(APSCache cache, MidataId targetAps) throws AppException {
+		UserGroupMember ugm = identifyUserGroupMember(cache, targetAps);
+		return ugm == null ? null : ugm.userGroup;		
+	}
+	
+	protected static UserGroupMember identifyUserGroupMember(APSCache cache, MidataId targetAps) throws AppException {
 		APS target = cache.getAPS(targetAps);
 		if (target.isAccessible()) {
 			return null;
@@ -72,10 +77,20 @@ public class Feature_UserGroups extends Feature {
 		if (!isMemberOfGroups.isEmpty()) {
 			
 			for (UserGroupMember ugm : isMemberOfGroups) {
-				if (target.hasAccess(ugm.userGroup)) return ugm.userGroup;
+				if (target.hasAccess(ugm.userGroup)) return ugm;
 			}				
 		}
 		return null;
 	}
-
+	
+	protected static APSCache findApsCacheToUse(APSCache cache, MidataId targetAps) throws AppException {
+		UserGroupMember ugm = identifyUserGroupMember(cache, targetAps);
+		if (ugm == null) return cache;		
+		
+		BasicBSONObject obj = cache.getAPS(ugm._id, ugm.member).getMeta("_usergroup");
+		KeyManager.instance.unlock(ugm.userGroup, ugm._id, (byte[]) obj.get("aliaskey"));		
+		return cache.getSubCache(ugm.userGroup);
+				
+	}
+		
 }

@@ -36,11 +36,15 @@ angular.module('portal')
 		if ($state.params.consentId) {
 			$scope.consentId = $state.params.consentId;
 			
-			$scope.status.doBusy(circles.listConsents({ "_id" : $state.params.consentId }, ["name", "type", "status", "owner", "authorized", "entityType", "createdBefore", "validUntil" ]))
+			$scope.status.doBusy(circles.listConsents({ "_id" : $state.params.consentId }, ["name", "type", "status", "owner", "authorized", "entityType", "createdBefore", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery" ]))
 			.then(function(data) {
 				
-				$scope.consent = $scope.myform = data.data[0];				
-				views.setView("records_shared", { aps : $state.params.consentId, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowRemove : false, allowAdd : false, type : "circles" });
+				$scope.consent = $scope.myform = data.data[0];		
+				if ($scope.consent.status === "ACTIVE" || $scope.consent.owner === $scope.userId) {
+				  views.setView("records_shared", { aps : $state.params.consentId, properties : { } , fields : [ "ownerName", "created", "id", "name" ], allowRemove : false, allowAdd : false, type : "circles" });
+				} else {
+				  views.disableView("records_shared");
+				}
 
 				if ($scope.consent.entityType == "USERGROUP") {
 					$scope.status.doBusy(usergroups.search({ "_id" : $scope.consent.authorized }, ["name"]))

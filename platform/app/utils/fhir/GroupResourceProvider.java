@@ -61,6 +61,10 @@ import utils.exceptions.AppException;
 
 public class GroupResourceProvider extends ResourceProvider<Group> implements IResourceProvider {
 
+	public GroupResourceProvider() {
+		registerSearches("Group", getClass(), "getGroup");
+	}
+	
 	@Override
 	public Class<Group> getResourceType() {
 		return Group.class;
@@ -194,6 +198,8 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 	    	
 	    	SearchParameterMap paramMap = new SearchParameterMap();
 	    	
+	    	paramMap.add("_id", theId);
+			paramMap.add("_language", theResourceLanguage);
 	    	paramMap.add("actual", theActual);
 	    	paramMap.add("characteristic", theCharacteristic);
 	    	paramMap.add("characteristic-value", theCharacteristic_value);

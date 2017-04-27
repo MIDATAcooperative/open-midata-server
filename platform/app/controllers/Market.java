@@ -2,18 +2,23 @@ package controllers;
 
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 
 import actions.APICall;
 import models.Developer;
+import models.MessageDefinition;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
 import models.Plugin_i18n;
 import models.Space;
+import models.enums.MessageReason;
 import models.enums.PluginStatus;
 import models.enums.UserRole;
 import play.mvc.BodyParser;
@@ -62,7 +67,7 @@ public class Market extends APIController {
 		MidataId userId = new MidataId(request().username());
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
-		Plugin app = Plugin.getById(pluginId, Sets.create("creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status"));
+		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 		
 		if (!app.creator.equals(userId) && !getRole().equals(UserRole.ADMIN)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");
@@ -82,20 +87,29 @@ public class Market extends APIController {
 		app.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
 		app.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
+		app.resharesData = JsonValidation.getBoolean(json, "resharesData");
+		app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		app.i18n = new HashMap<String, Plugin_i18n>();
+		
+		
+		Map<String, MessageDefinition> predefinedMessages = parseMessages(json);
+		if (predefinedMessages != null) app.predefinedMessages = predefinedMessages;
+		
 		try {
 		  Query.validate(app.defaultQuery, app.type.equals("mobile"));
 		} catch (BadRequestException e) {
 			throw new JsonValidationException(e.getLocaleKey(), "defaultQuery", "invalid", e.getMessage());
 		}
-		Map<String,Object> i18n = JsonExtraction.extractMap(json.get("i18n"));
-		for (String lang : i18n.keySet()) {
-			Map<String, Object> entry = (Map<String, Object>) i18n.get(lang);
-			Plugin_i18n plugin_i18n = new Plugin_i18n();
-			plugin_i18n.name = (String) entry.get("name");
-			plugin_i18n.description = (String) entry.get("description");
-			plugin_i18n.defaultSpaceName = (String) entry.get("defaultSpaceName");
-			app.i18n.put(lang, plugin_i18n);
+		if (json.has("i18n")) {
+			Map<String,Object> i18n = JsonExtraction.extractMap(json.get("i18n"));
+			for (String lang : i18n.keySet()) {
+				Map<String, Object> entry = (Map<String, Object>) i18n.get(lang);
+				Plugin_i18n plugin_i18n = new Plugin_i18n();
+				plugin_i18n.name = (String) entry.get("name");
+				plugin_i18n.description = (String) entry.get("description");
+				plugin_i18n.defaultSpaceName = (String) entry.get("defaultSpaceName");
+				app.i18n.put(lang, plugin_i18n);
+			}
 		}
 		
 
@@ -232,6 +246,10 @@ public class Market extends APIController {
 		plugin.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
 		plugin.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
 		plugin.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
+		plugin.resharesData = JsonValidation.getBoolean(json, "resharesData");
+		plugin.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
+		plugin.predefinedMessages = parseMessages(json);
+		
 		try {
 		    Query.validate(plugin.defaultQuery, plugin.type.equals("mobile"));
 		} catch (BadRequestException e) {
@@ -270,6 +288,27 @@ public class Market extends APIController {
 		Plugin.add(plugin);
 		
 		return ok(JsonOutput.toJson(plugin, "Plugin", Plugin.ALL_DEVELOPER));
+	}
+	
+	private static Map<String, MessageDefinition> parseMessages(JsonNode json) throws JsonValidationException {
+		if (!json.has("predefinedMessages")) return null;
+		Iterator<Entry<String,JsonNode>> messages = json.get("predefinedMessages").fields();
+		if (!messages.hasNext()) return null;
+		
+		Map<String, MessageDefinition> result = new HashMap<String, MessageDefinition>();		
+		while (messages.hasNext()) {		
+			Entry<String,JsonNode> entry = messages.next();
+			JsonNode def = entry.getValue();
+			
+			MessageDefinition messageDef  = new MessageDefinition();
+			messageDef.reason = JsonValidation.getEnum(def, "reason", MessageReason.class); 
+			messageDef.code = JsonValidation.getStringOrNull(def, "code");
+			messageDef.text = JsonExtraction.extractStringMap(def.get("text"));
+			messageDef.title = JsonExtraction.extractStringMap(def.get("title"));
+			
+			result.put(messageDef.reason.toString() + (messageDef.code != null ? "_"+messageDef.code : ""), messageDef);
+		}
+		return result;
 	}
 	
 	/**

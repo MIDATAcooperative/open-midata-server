@@ -124,7 +124,7 @@ public class BasicResourceProvider extends ResourceProvider<Basic> implements IR
 	    	  basic.setAuthor(new Reference("Patient/"+rec.creator.toString()));
 	    	  basic.setSubject(new Reference("Patient/"+rec.owner.toString()));
 	    	  
-	    	  basic.addExtension().setUrl("http://midata.coop/format-codes/"+rec.format).setValue(new StringType(rec.data.toString()));
+	    	  basic.addExtension().setUrl("http://midata.coop/extensions/format-codes/"+rec.format).setValue(new StringType(rec.data.toString()));
 	    	  parsed.add(basic);
 	      }
 	    }

@@ -87,7 +87,24 @@
 		    <p class="help-block" ng-show="app.type == 'mobile'" translate="manageapp.info.defaultQuery_mobile"></p> 
 		    <p class="help-block" ng-hide="app.type == 'mobile'" translate="manageapp.info.defaultQuery"></p>
 		    <p class="help-block" translate="manageapp.info.defaultQuery_extra"></p>
-		  </formrow>		 
+		  </formrow>
+		 
+		  <formrow myid="resharesData" label="Resharing">
+		    <div class="checkbox">
+		    <label>
+		      <input type="checkbox" id="resharesData" name="resharesData" ng-model="app.resharesData" value="true">
+		      <span translate="manageapp.info.resharesData"></span>
+		    </label>
+		    </div>
+		  </formrow>
+		   <formrow myid="allowsUserSearch" label="User Search">
+		    <div class="checkbox">
+		    <label>
+		      <input type="checkbox" id="allowsUserSearch" name="allowsUserSearch" ng-model="app.allowsUserSearch" value="true">
+		      <span translate="manageapp.info.allowsUserSearch"></span>
+		    </label>
+		    </div>
+		  </formrow>			 
 		  <formrow myid="authorizationUrl" label="Authorization URL" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
 		    <input type="text" id="authorizationUrl" name="authorizationUrl" class="form-control" placeholder="Authorization URL" ng-model="app.authorizationUrl">
 		  </formrow>
@@ -120,6 +137,8 @@
 		    <button type="submit" ng-disabled="status.action=='submit'" class="btn btn-primary">Submit</button>
 		    <button type="button" class="btn btn-default" ng-click="doInstall()" ng-hide="app.type == 'mobile'" ng-disabled="app._id == null">Install from localhost</button>
 		    <a class="btn btn-default" ui-sref="^.autoimport({ appId : app._id })" ng-show="app.type == 'oauth1' || app.type == 'oauth2'" ng-disabled="app._id == null">Serverside Import Test</a>
+		    
+		    <a class="btn btn-default" ui-sref="^.appmessages({ appId : app._id })" ng-disabled="app._id == null" translate="manageapp.messages_btn"></a>
 		    <button type="button" class="btn btn-danger" ng-show="allowDelete" ng-click="doDelete()" ng-disabled="status.action=='delete'">Delete</button>
 		  </formrow>
 	     </form>	  
