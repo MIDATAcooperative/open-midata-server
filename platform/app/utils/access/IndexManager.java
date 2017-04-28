@@ -99,8 +99,13 @@ public class IndexManager {
 		AccessLog.logBegin("start remove entries from index");
 		try {
 			for (DBRecord record : records) {
-				QueryEngine.loadData(record);
-				index.removeEntry(record);
+				try {
+				  QueryEngine.loadData(record);
+				  index.removeEntry(record);
+				} catch (InternalServerException e) {
+				  // We ignore error during index remove as this might be part of a delete operation
+				  AccessLog.logException("Error during index entry remove", e);
+				}
 			}
 			index.flush();
 		} catch (LostUpdateException e) {

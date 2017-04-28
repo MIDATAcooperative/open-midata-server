@@ -230,6 +230,12 @@ public class RecordManager {
 		AccessLog.logEnd("end unshareAPSRecursive");
 	}
 
+	
+	public void share(MidataId who, MidataId fromAPS, MidataId toAPS, 
+			Set<MidataId> records, boolean withOwnerInformation) throws AppException {
+		share(who, fromAPS, toAPS, null, records, withOwnerInformation);
+	}
+	
 	/**
 	 * share records contained in an APS to another APS
 	 * @param who ID of executing person
@@ -239,11 +245,11 @@ public class RecordManager {
 	 * @param withOwnerInformation 
 	 * @throws AppException
 	 */
-	public void share(MidataId who, MidataId fromAPS, MidataId toAPS,
+	public void share(MidataId who, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner,
 			Set<MidataId> records, boolean withOwnerInformation)
 			throws AppException {
         AccessLog.logBegin("begin share: who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString()+" count="+(records!=null ? records.size() : "?"));
-		APS apswrapper = getCache(who).getAPS(toAPS);
+		APS apswrapper = getCache(who).getAPS(toAPS, toAPSOwner);
 		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(who), fromAPS,
 				records != null ? CMaps.map("_id", records) : RecordManager.FULLAPS_FLAT,
 				Sets.create("_id", "key", "owner", "format", "content", "created", "name", "isStream", "stream"));
