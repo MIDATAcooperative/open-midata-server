@@ -113,10 +113,19 @@ public class AccountPatches {
 		AccessLog.logBegin("start patch 2017 02 06");
 		
 		accountReset(user);
-		RecordManager.instance.wipe(user._id, CMaps.map("owner", "self").map("app", "fitbit"));
-		RecordManager.instance.wipe(user._id, CMaps.map("owner", "self").map("app", "57a476e679c72190248a135d"));
-		makeCurrent(user, 20170206);
+		try {
+		  RecordManager.instance.wipe(user._id, CMaps.map("owner", "self").map("app", "fitbit"));
+		} catch (AppException e) {};
+		try {
+		  RecordManager.instance.wipe(user._id, CMaps.map("owner", "self").map("app", "57a476e679c72190248a135d"));
+		} catch (AppException e) {};
+		try {
+		  RecordManager.instance.wipe(user._id, CMaps.map("owner", "self").map("app", "withings"));
+		} catch (AppException e) {};
 		
+				
+		makeCurrent(user, 20170206);
+						
 		AccessLog.logEnd("end patch 2017 02 06");
 	}
 	

@@ -98,7 +98,7 @@ public class IndexPage {
 	
 	public void flush() throws InternalServerException, LostUpdateException {
 		if (changed) {
-			AccessLog.log("Flushing index");
+			AccessLog.log("Flushing index page");
 			encrypt();
 			model.update();			
 			changed = false;
