@@ -221,7 +221,7 @@ public class IndexNonLeafPage extends IndexPage {
 	
 	public void flush() throws InternalServerException, LostUpdateException {		
 		if (changed) {
-			AccessLog.log("Flushing index");
+			AccessLog.log("Flushing index non-leaf page");
 			encrypt();
 			model.update();			
 			changed = false;
@@ -231,6 +231,7 @@ public class IndexNonLeafPage extends IndexPage {
 	
 	public void reload() throws InternalServerException {
 		model = IndexPageModel.getById(model._id);
+		loadedChilds.clear();
 		decrypt();
 	}
 	

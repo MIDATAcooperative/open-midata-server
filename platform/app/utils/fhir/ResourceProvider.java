@@ -449,11 +449,9 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 	}
 	
 	public static void insertRecord(Record record, IBaseResource resource, MidataId targetConsent) throws AppException {
-		AccessLog.logBegin("begin insert FHIR record");
-		
-			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
-			
-			record.data = (DBObject) JSON.parse(encoded);
+		AccessLog.logBegin("begin insert FHIR record");		    
+			String encoded = ctx.newJsonParser().encodeResourceToString(resource);			
+			record.data = (DBObject) JSON.parse(encoded);			
 			PluginsAPI.createRecord(info(), record, targetConsent);			
 		
 		AccessLog.logEnd("end insert FHIR record");
@@ -517,7 +515,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 	
 	public void clean(T resource) {
 		resource.getMeta().setExtension(null);
-		resource.setId((IIdType) null);
+		resource.setId((IIdType) null);		
 	}
 	
 	public void prepare(Record record, T theResource) throws AppException { }
@@ -613,7 +611,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 					   TypedMidataId target = FHIRTools.getMidataIdFromReference(ref);
 					   if (!target.getMidataId().equals(owner)) {
 					     Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, owner, target.getMidataId(), owner, target.getType().equals("Group"));
-					     RecordManager.instance.share(inf.executorId, shareFrom, consent._id, Collections.singleton(record._id), true);
+					     RecordManager.instance.share(inf.executorId, shareFrom, consent._id, consent.owner, Collections.singleton(record._id), true);
 					   }
 				}
 			}

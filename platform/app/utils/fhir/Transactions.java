@@ -147,7 +147,7 @@ public class Transactions {
 	   }
 	   
 	   for (TransactionStep step : steps) {
-		   resolveReferences(idSubstitutions, step.getResource(), terser);
+		   resolveReferences(idSubstitutions, step.getResource(), terser);		   
 	   }
 	}
 	
@@ -162,6 +162,7 @@ public class Transactions {
 			if (idSubstitutions.containsKey(nextId.getIdPart())) {
 				IdType newId = idSubstitutions.get(nextId.getIdPart());
 				AccessLog.log("set ref:"+nextRef.toString()+" -> "+newId.toString());
+				nextRef.setResource(null);
 				nextRef.setReference(newId.getValue());
 			} 
 		}

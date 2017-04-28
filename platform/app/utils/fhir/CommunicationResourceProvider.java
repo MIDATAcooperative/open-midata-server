@@ -244,7 +244,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 						
 			TypedMidataId target = FHIRTools.getMidataIdFromReference(recipient.getReferenceElement());
 			Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, sender, target.getMidataId(), subject, target.getType().equals("Group"));
-			RecordManager.instance.share(inf.executorId, shareFrom, consent._id, Collections.singleton(record._id), true);
+			RecordManager.instance.share(inf.executorId, shareFrom, consent._id, consent.owner, Collections.singleton(record._id), true);
 			
 		}
 	}

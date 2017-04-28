@@ -179,8 +179,8 @@ public class OAuth2 extends Controller {
             String client_id = data.get("client_id")[0];
     					
     		OAuthCodeToken tk = OAuthCodeToken.decrypt(code);
-    		AccessLog.log("cs:"+tk.codeChallenge);
-    		AccessLog.log("csm:"+tk.codeChallengeMethod);
+    		//AccessLog.log("cs:"+tk.codeChallenge);
+    		//AccessLog.log("csm:"+tk.codeChallengeMethod);
     		
     		if (tk.codeChallenge != null) {
     			String csa[] = data.get("code_verifier");
