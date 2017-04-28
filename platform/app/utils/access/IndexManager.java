@@ -119,6 +119,7 @@ public class IndexManager {
 	protected void indexUpdate(APSCache cache, IndexRoot index, MidataId executor, Set<MidataId> targetAps) throws AppException {
 						
 		AccessLog.logBegin("start index update");
+		long startUpdate = System.currentTimeMillis();
 		try {
 			index.checkLock();
 			
@@ -172,7 +173,7 @@ public class IndexManager {
 			index.reload(); //XXXX
 			indexUpdate(cache, index, executor, targetAps);
 		}
-		AccessLog.logEnd("end index update");
+		AccessLog.logEnd("end index update time= "+(System.currentTimeMillis() - startUpdate)+" ms");
 	}
 
 	/**

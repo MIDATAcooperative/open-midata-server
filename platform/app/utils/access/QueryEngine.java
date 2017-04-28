@@ -197,7 +197,7 @@ class QueryEngine {
 	
     public static List<DBRecord> fullQuery(Map<String, Object> properties, Set<String> fields, MidataId apsId, APSCache cache) throws AppException {
     	AccessLog.logBegin("begin full query");
-    	    	
+    	long queryStart = System.currentTimeMillis();   	
     	Feature qm = null;
     	MidataId userGroup = Feature_UserGroups.identifyUserGroup(cache, apsId);
     	if (userGroup != null) {
@@ -214,7 +214,7 @@ class QueryEngine {
 		}
 					
 		result = postProcessRecords(properties, result);
-		AccessLog.logEnd("end full query");
+		AccessLog.logEnd("end full query time= "+(System.currentTimeMillis() - queryStart)+" ms");
 		
 		return result;
 	}
