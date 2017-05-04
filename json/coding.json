@@ -206,3 +206,4 @@
 {"_id":{"$oid":"58e60f6baed6450f67436b7b"},"system":"http://midata.coop","code":"MSMotTestDot","display":"MS Motoriktest Punkte bewegen","content":"MSMotTestDot"}
 {"_id":{"$oid":"58e60fa6aed6450f67436b7d"},"system":"http://midata.coop","code":"MSMotTestLine","display":"MS Motoriktest Linie nachzeichnen","content":"MSMotTestLine"}
 {"_id":{"$oid":"58e6100baed6450f67436b80"},"system":"http://midata.coop","code":"MSTests","display":"Kognitive und motorische Übungen von MS-Patienten","content":"MSTests"}
+{"_id":{"$oid":"5909f37caed6450e198a9452"},"system":"http://snomed.info/sct","code":"228438002","display":"Craves for drugs","content":"behavior/craves-for-drugs"}
