@@ -15,10 +15,13 @@ angular.module('portal')
 	$scope.status = new status(true);
 	$scope.allowDelete = $state.current.allowDelete;
 	$scope.open = {};
+	$scope.treeMode = "group";
 	
 	var contentLabels = {};
 	var loadLabels = {};
+	var loadPlugins = {};
 	var doLoadLabels = false;
+	var doLoadPlugins = false;
 	
 	// get current user
 	session.currentUser
@@ -51,6 +54,23 @@ angular.module('portal')
 			});
 		});
 	
+	$scope.setTreeMode = function(mode) {
+		if ($scope.treeMode === mode) return;
+		
+		$scope.records = [];
+		$scope.infos = [];
+		$scope.tree = [ ];
+		$scope.compare = [];
+		
+		
+		$scope.treeMode = mode;
+		
+		$scope.getInfos($scope.displayAps.aps, $scope.displayAps.owner, $scope.displayAps.study)
+		.then(function() {				
+		   $scope.loadSharingDetails();				 			
+		});
+		
+	};
 	
 	
 	// get records
@@ -59,12 +79,16 @@ angular.module('portal')
 		var properties = {};
 		if (owner) properties.owner = owner;
 		if (study) properties.study = study;
-		if (group) {
+		if (groupObj && groupObj.plugin) {
+			properties.app = groupObj.plugin;
+			properties.content = groupObj.content;
+		}
+		else if (group) {
 			properties.group = group;
 			properties["group-system"] = "v1";
 		}
 		if ($scope.debug) properties.streams = "true";
-		return $scope.status.doAction("load", records.getRecords(userId, properties, ["id", "owner", "ownerName", "content", "created", "name", "group"])).
+		return $scope.status.doAction("load", records.getRecords(userId, properties, ["id", "owner", "ownerName", "content", "created", "name", "group", "app"])).
 		then(function(results) {
 			$scope.records = results.data;
 			if (groupObj) groupObj.allRecords = results.data;
@@ -78,7 +102,7 @@ angular.module('portal')
 		if (owner) properties.owner = owner;
 		if (study) properties.study = study;
 		if ($scope.debug) properties.streams = "true";
-		return $scope.status.doBusy(records.getInfos(userId, properties, "CONTENT")).
+		return $scope.status.doBusy(records.getInfos(userId, properties, $scope.treeMode === "plugin" ? "CONTENT_PER_APP" : "CONTENT")).
 		then(function(results) {
 			$scope.infos = results.data;
 			if ($scope.gi != null) $scope.prepareInfos();				
@@ -148,6 +172,7 @@ angular.module('portal')
 	};
 	
 	$scope.loadContentLabels = function() {
+		$scope.loadPluginLabels();
 		if (!doLoadLabels) return;
 		doLoadLabels = false;
 		formats.searchContents({ content : Object.keys(loadLabels) },["content","label"]).
@@ -161,7 +186,23 @@ angular.module('portal')
 		});
 	};
 	
+	$scope.loadPluginLabels = function() {
+		if (!doLoadPlugins) return;
+		doLoadPlugins = false;
+				
+		apps.getApps({"_id" : Object.keys(loadPlugins) },["_id", "name", "i18n"])
+		.then(function(result) {
+			angular.forEach(result.data, function(c) {
+				var label = c.name;
+				if (c.i18n && c.i18n[$scope.lang]) label = c.i18n[$scope.lang].name;
+				contentLabels[c._id] = loadPlugins[c._id].fullLabel = label || c.name;				
+			});
+			loadPlugins = {};
+		});									
+	};
+	
 	var groups = {};
+	var plugins = {};
 		
 	
 	var getOrCreateGroup = function(group) {
@@ -173,6 +214,7 @@ angular.module('portal')
 	   	newgroup.records = [];
 	   	newgroup.infoCount = 0;
 	   	newgroup.countShared = 0;
+	   	newgroup.group = newgroup.name;
 	   	newgroup.id = newgroup.name.replace(/[/\-]/g,'_');
 	   	
 	   	if (newgroup.parent == null || newgroup.parent === "") {
@@ -189,12 +231,40 @@ angular.module('portal')
 	   	return newgroup;
 	};
 	
+	var getOrCreatePlugin = function(plugin) {
+	   	if (plugins[plugin] != null) return plugins[plugin];
+	  
+	   	var newplugin = { id : "_"+plugin, plugin:plugin, parent:$scope.tree[0] };
+	   
+	   	newplugin.children = [];
+	   	newplugin.contents = {};
+	   	newplugin.records = [];
+	   	newplugin.infoCount = 0;
+	   	newplugin.countShared = 0;	   	
+	   		   	
+	   	newplugin.fullLabel = "Label "+newplugin.id;
+	   	if (contentLabels[plugin]) {
+	   		newplugin.fullLabel = contentLabels[plugin];
+	   	} else {
+	   		if (plugin) {
+		   		loadPlugins[plugin] = newplugin;
+		   		doLoadPlugins = true;
+	   		}
+	   	}
+	   	
+	   	
+	   	$scope.tree[0].children.push(newplugin);
+	   		   	
+	   	plugins[plugin] = newplugin;
+	   	return newplugin;
+	};
+	
 	 	
 	var getOrCreateFormat = function(format, group) {
 	   	if (groups["cnt:"+format] != null) return groups["cnt:"+format];
 	   
 	   	var grp = getOrCreateGroup(group);
-	   	var newfmt = { name : "cnt:"+format, type:"group", fullLabel:"Content: "+format, parent:group, children:[], records:[] };
+	   	var newfmt = { name : "cnt:"+format, content:format, type:"group", fullLabel:"Content: "+format, parent:group, children:[], records:[] };
 	   	
 	   	if (contentLabels[format]) {
 	   		newfmt.fullLabel = contentLabels[format];
@@ -205,6 +275,23 @@ angular.module('portal')
 	   	
 	   	grp.children.push(newfmt);	   		   	
 	   	groups["cnt:"+format] = newfmt;
+	   	return newfmt;
+	};
+	
+	var getOrCreatePluginContent = function(content, plugin) {
+	   	if (plugin.contents[content] != null) return plugin.contents[content];
+	   	
+	   	var newfmt = { name : "cnt:"+content, type:"group", fullLabel:"Content: "+content, parent:plugin, plugin:plugin.plugin, content:content, children:[], records:[] };
+	   	
+	   	if (contentLabels[content]) {
+	   		newfmt.fullLabel = contentLabels[content];
+	   	} else {
+	   		loadLabels[content] = newfmt;
+	   		doLoadLabels = true;
+	   	}
+	   	
+	   	plugin.children.push(newfmt);	   		   	
+	   	plugin.contents[content] = newfmt;
 	   	return newfmt;
 	};
 		
@@ -230,38 +317,70 @@ angular.module('portal')
 	};
 	
 	$scope.prepareRecords = function() {
-		//$scope.tree = [];
-		//groups = {};
-		angular.forEach($scope.records, function(record) {
-		    var format = record.content;
-		    var group = record.group;
-		    var groupItem = getOrCreateFormat(format, group);
-		    groupItem.records.push(record);
-		    if (!record.name) record.name="no name";
-		});
+		
+		if ($scope.treeMode === "plugin") {
+			angular.forEach($scope.records, function(record) {
+			    var format = record.content;
+			    var pluginId = record.app;
+			    var plugin = getOrCreatePlugin(pluginId);
+			    var groupItem = getOrCreatePluginContent(format, plugin);
+			    groupItem.records.push(record);
+			    if (!record.name) record.name="no name";
+			});
+		} else {
+			angular.forEach($scope.records, function(record) {
+			    var format = record.content;
+			    var group = record.group;
+			    var groupItem = getOrCreateFormat(format, group);
+			    groupItem.records.push(record);
+			    if (!record.name) record.name="no name";
+			});
+		}
 		angular.forEach($scope.tree, function(t) { countRecords(t); });
 	};
 	
 	$scope.prepareInfos = function() {
-		$scope.tree = [];
+		
 		groups = {};
-		$scope.addAllGroups();
-		angular.forEach($scope.infos, function(info) {		    
-		    var group = info.groups[0];
-		    var groupItem = getOrCreateGroup(group);
-		    
-		    //groupItem.records = [];
-		    //groupItem.loaded = false;
-		    groupItem.open = $scope.open[groupItem.id] || false;
-		    
-		    var content = info.contents[0];
-		    var contentItem = getOrCreateFormat(content, group);
-		    contentItem.infoCount = info.count;
-		    contentItem.loaded = false;
-		    contentItem.records = [];
-		    contentItem.open = $scope.open[contentItem.id] || false;
-		    
-		});
+		plugins = {};		
+		
+		if ($scope.treeMode === "plugin") {
+			$scope.tree = [ { name : "all",  fullLabel:"", parent:null, children:[], records:[] } ];
+			$translate("records.all").then(function(f) { $scope.tree[0].fullLabel = f; });
+			angular.forEach($scope.infos, function(info) {		    
+			    var plugin = info.apps[0];
+			    var pluginItem = getOrCreatePlugin(plugin);
+			    			    
+			    pluginItem.open = $scope.open[pluginItem.id] || false;
+			    
+			    var content = info.contents[0];
+			    var contentItem = getOrCreatePluginContent(content, pluginItem);
+			    contentItem.infoCount = info.count;
+			    contentItem.loaded = false;
+			    contentItem.records = [];
+			    contentItem.open = $scope.open[contentItem.id] || false;
+			    
+			});
+		} else {
+			$scope.tree = [];
+			$scope.addAllGroups();
+			angular.forEach($scope.infos, function(info) {		    
+			    var group = info.groups[0];
+			    var groupItem = getOrCreateGroup(group);
+			    
+			    //groupItem.records = [];
+			    //groupItem.loaded = false;
+			    groupItem.open = $scope.open[groupItem.id] || false;
+			    
+			    var content = info.contents[0];
+			    var contentItem = getOrCreateFormat(content, group);
+			    contentItem.infoCount = info.count;
+			    contentItem.loaded = false;
+			    contentItem.records = [];
+			    contentItem.open = $scope.open[contentItem.id] || false;
+			    
+			});
+		}
 		angular.forEach($scope.tree, function(t) { countRecords(t); });
 		$scope.loadContentLabels();
 	};
@@ -274,7 +393,12 @@ angular.module('portal')
 	};
 	
 	$scope.deleteGroup = function(group) {
-		server.post(jsRoutes.controllers.Records["delete"]().url, { "group" : group }).
+		var props = {};
+		if (group.plugin) props.app = group.plugin;
+		if (group.content) props.content = group.content;
+		if (group.group) props.group = group.group;
+		
+		server.post(jsRoutes.controllers.Records["delete"]().url, props).
 		success(function(data) {
 			$scope.loadGroups();
 			$scope.getInfos($scope.userId, "self");
@@ -356,7 +480,8 @@ angular.module('portal')
 	};
 	
 	$scope.isSharedGroup = function(group) {
-	   //var type = group.type == "content" ? "content" : "group";
+	   if ($scope.treeMode === "plugin") return false;
+	   
 	   group.parentShared = (group.parent != null && groups[group.parent].shared);
 	   group.parentExcluded = (group.parent != null && groups[group.parent].excluded);
 	   var excluded = $scope.sharing && 

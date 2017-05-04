@@ -296,10 +296,13 @@ public class Records extends APIController {
 			String id = JsonValidation.getString(json, "_id");
 			RecordToken tk = getRecordTokenFromString(id);				
 			RecordManager.instance.wipe(userId, CMaps.map("_id", tk.recordId));
-		} else if (json.has("group")) {
-			String group = JsonValidation.getString(json, "group");
+		} else if (json.has("group") || json.has("content") || json.has("app")) {
 			
-			RecordManager.instance.wipe(userId,  CMaps.map("group", group));			
+			Map<String, Object> properties = new HashMap<String, Object>();
+			if (json.has("group")) properties.put("group", JsonValidation.getString(json, "group"));
+			if (json.has("content")) properties.put("content", JsonValidation.getString(json, "content"));
+			if (json.has("app")) properties.put("app", JsonValidation.getString(json, "app"));
+			RecordManager.instance.wipe(userId,  properties);			
 		}
 		
 		return ok();

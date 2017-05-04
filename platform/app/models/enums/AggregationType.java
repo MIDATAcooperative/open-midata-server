@@ -32,6 +32,11 @@ public enum AggregationType {
    CONTENT_PER_OWNER,
    
    /**
+    * all records with the same content type and app are summarized into one entry
+    */
+   CONTENT_PER_APP,
+   
+   /**
     * all records with the same content type, format, group and owner are summarized into one entry
     */
    SINGLE   
