@@ -32,6 +32,22 @@
 	           <select class="form-control" id="owner" ng-model="displayAps" ng-options="c as c.i18n | translate:{ name : c.name } for c in availableAps" ng-change="selectSet()"></select>
 	        </div>			
         </div>	
+        
+        <div class="row"><div class="col-sm-12">
+          <form class="form">
+		    <div class="radio">
+		      <label>
+                <input type="radio" name="treetype" value="group" checked ng-click="setTreeMode('group');"> <span translate="records.by_group"></span> 
+              </label>
+            </div>
+            <div class="radio">
+              <label class="radio-inline">
+                <input type="radio" name="treetype" value="plugin" ng-click="setTreeMode('plugin');"> <span translate="records.by_plugin"></span>
+              </label>
+            </div>
+          </form>
+        
+        </div></div>
         </div>
         <loader busy="status.isBusy !== false">					
 		<script type="text/ng-template"  id="tree_item_renderer.html">
@@ -49,7 +65,7 @@
               <span ng-show="data.open && !data.type" ng-click="setOpen(data,false);" class="treehandle glyphicon glyphicon-minus"></span>
               </span>
               <span ng-hide="data.children.length" class="treehandle glyphicon">&nbsp;</span>
-              <a href="javascript:" ng-click="showRecords(data);" ng-class="{ 'text-success' : isSharedGroup(data), 'format': data.type == 'content', 'nodata' : data.count == 0 }">{{data.fullLabel}}</a> <small>(<span ng-show="selectedAps">{{ data.countShared }} / </span>{{ data.count }})</small><button class="btn btn-xs btn-danger" ng-show="allowDelete" ng-dblclick="deleteGroup(data.name)" translate="records.delete_all_btn"></button></h1>
+              <a href="javascript:" ng-click="showRecords(data);" ng-class="{ 'text-success' : isSharedGroup(data), 'format': data.type == 'content', 'nodata' : data.count == 0 }">{{data.fullLabel}}</a> <small>(<span ng-show="selectedAps">{{ data.countShared }} / </span>{{ data.count }})</small><button class="btn btn-xs btn-danger" ng-show="allowDelete" ng-dblclick="deleteGroup(data)" translate="records.delete_all_btn"></button></h1>
            <div ng-show="data.open">          
            
             

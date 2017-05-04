@@ -77,7 +77,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				"id" : "activities_distance",
 				"name": "Activities - Distance",				
 				"endpoint": "/1/user/-/activities/distance/date/{date}/1d.json",
-				"content" : "activities/distance",
+				"content" : "activities/distance-24h-calc",
 				"unit" : "km",
 				"system" : "http://loinc.org",
 				"code" : "41953-1",

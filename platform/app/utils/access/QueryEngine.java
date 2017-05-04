@@ -19,6 +19,7 @@ import models.RecordGroup;
 import models.RecordsInfo;
 import models.enums.AggregationType;
 import utils.AccessLog;
+import utils.RuntimeConstants;
 import utils.access.op.AndCondition;
 import utils.access.op.Condition;
 import utils.collections.CMaps;
@@ -74,13 +75,14 @@ class QueryEngine {
 		return result;
 	}
 	
-	private static String getInfoKey(AggregationType aggrType, String group, String content, String format, MidataId owner) {
+	private static String getInfoKey(AggregationType aggrType, String group, String content, String format, MidataId owner, String app) {
 		switch (aggrType) {
 		case ALL: return "";
 		case GROUP: return group;
 		case CONTENT: return content;
 		case CONTENT_PER_OWNER : return content+"/"+(owner != null ? owner.toString() : "?");
 		case FORMAT: return format;
+		case CONTENT_PER_APP : return content+"/"+(app != null ? app.toString() : "?");
 		default: return content+"/"+format+"/"+(owner != null ? owner.toString() : "?");
 		}
 	}
@@ -125,7 +127,7 @@ class QueryEngine {
 				for (String content : inf.contents) inf.groups.add(RecordGroup.getGroupForSystemAndContent(groupSystem, content));
 				if (owner != null) inf.owners.add(owner.toString());
 				inf.calculated = obj.getDate("calculated");
-				String k = getInfoKey(aggrType, obj.getString("groups"), obj.getString("contents"), obj.getString("formats"), owner);
+				String k = getInfoKey(aggrType, obj.getString("groups"), obj.getString("contents"), obj.getString("formats"), owner, obj.getString("apps"));
 				
 				result.put(k, inf);
 				Date from = inf.calculated != null ? new Date(inf.calculated.getTime() - 1000) : new Date(inf.newest.getTime() + 1);
@@ -155,7 +157,7 @@ class QueryEngine {
 				
 				for (RecordsInfo inf : streaminfo) {
 					if (record.owner != null) inf.owners.add(record.owner.toString());
-					String k = getInfoKey(aggrType, inf.groups.iterator().next(), inf.contents.iterator().next(), inf.formats.iterator().next(), record.owner);
+					String k = getInfoKey(aggrType, inf.groups.iterator().next(), inf.contents.iterator().next(), inf.formats.iterator().next(), record.owner, inf.apps.isEmpty() ? "empty" : inf.apps.iterator().next().toString());
 					RecordsInfo here = result.get(k);					
 					if (here == null) {
 						result.put(k, inf);
@@ -163,8 +165,10 @@ class QueryEngine {
 						here.merge(inf);						
 					}
 				}
-			} else {			
-				String k = getInfoKey(aggrType, record.group, (String) record.meta.get("content"), (String) record.meta.get("format"), record.owner);
+			} else {	
+				Object app = record.meta.get("app");
+				String appStr = app != null ? MidataId.from(app).toString() : RuntimeConstants.instance.portalPlugin.toString();
+				String k = getInfoKey(aggrType, record.group, (String) record.meta.get("content"), (String) record.meta.get("format"), record.owner, appStr);
 				RecordsInfo existing = result.get(k);
 				RecordsInfo newentry = new RecordsInfo(record);					
 				if (existing == null) {
