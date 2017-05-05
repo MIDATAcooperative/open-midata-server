@@ -178,6 +178,7 @@ public class AutoRun extends APIController {
 					User tuser = User.getById(space.owner, Sets.create("language", "role"));					
 					final String lang = tuser.language != null ? tuser.language : "en";
 					final String tokenstr = token.encrypt();
+					final String owner = space.owner.toString();
 					final ActorRef sender = getSender();
 					if (tuser.role.equals(UserRole.DEVELOPER)) {
 						sender.tell(new ImportResult(0), getSelf());
@@ -192,8 +193,8 @@ public class AutoRun extends APIController {
 									public void invoke(Boolean success) throws AppException, IOException {
 										AccessLog.log("Auth:"+success);
 										if (success) {
-											AccessLog.log(nodepath+" "+visPath+"/"+plugin.filename+"/server.js"+" "+tokenstr+" "+lang);
-											Process p = new ProcessBuilder(nodepath, visPath+"/"+plugin.filename+"/server.js", tokenstr, lang).inheritIO().start();
+											AccessLog.log(nodepath+" "+visPath+"/"+plugin.filename+"/server.js"+" "+tokenstr+" "+lang+" "+owner);
+											Process p = new ProcessBuilder(nodepath, visPath+"/"+plugin.filename+"/server.js", tokenstr, lang, "http://localhost:9001", owner).inheritIO().start();
 											try {
 											  p.waitFor();
 											  sender.tell(new ImportResult(p.exitValue()), getSelf());
