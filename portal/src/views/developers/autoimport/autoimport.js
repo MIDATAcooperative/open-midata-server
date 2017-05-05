@@ -6,7 +6,7 @@ angular.module('portal')
 	$scope.calls = [];
 			
 	$scope.init = function(userId, appId) {
-		
+		$scope.userId = userId;
 		var properties = {"owner": userId, "visualization" : appId, "context" : "sandbox" };
 	    var fields = ["name", "type", "order", "autoImport", "context", "visualization"];
 	    var data = {"properties": properties, "fields": fields};
