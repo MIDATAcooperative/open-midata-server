@@ -73,8 +73,26 @@ public class Market extends APIController {
 		if (!app.creator.equals(userId) && !getRole().equals(UserRole.ADMIN)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");
 		
 		app.version = JsonValidation.getLong(json, "version");		
-		app.filename = JsonValidation.getString(json, "filename");
-		app.name = JsonValidation.getString(json, "name");
+		
+		String filename = JsonValidation.getString(json, "filename"); // .toLowerCase(); We have existing plugins with mixed case
+		if (!app.filename.equals(filename)) {
+			
+			if (Plugin.exists(CMaps.map("filename", filename).map("status", EnumSet.of(PluginStatus.ACTIVE, PluginStatus.BETA, PluginStatus.DEPRECATED, PluginStatus.DEVELOPMENT)))) {
+				throw new BadRequestException("error.exists.plugin", "A plugin with the same filename already exists.");
+			}
+			
+			app.filename = JsonValidation.getString(json, "filename"); 
+		}
+			
+		String name = JsonValidation.getString(json, "name");
+		if (!app.name.equals(name)) {
+			
+		  if (Plugin.exists(CMaps.map("creator", userId.toDb()).map("name", name).map("status", EnumSet.of(PluginStatus.ACTIVE, PluginStatus.BETA, PluginStatus.DEPRECATED, PluginStatus.DEVELOPMENT)))) {
+			throw new BadRequestException("error.exists.plugin", "A plugin with the same name already exists.");
+		  }
+			
+		  app.name = JsonValidation.getString(json, "name");
+		}
 		app.description = JsonValidation.getStringOrNull(json, "description");		
 		app.type = JsonValidation.getString(json, "type");
 		app.url = JsonValidation.getStringOrNull(json, "url");
@@ -211,7 +229,7 @@ public class Market extends APIController {
 		
 		Developer dev = Developer.getById(userId, Sets.create("email"));
 		
-		String filename = JsonValidation.getString(json ,"filename");
+		String filename = JsonValidation.getString(json ,"filename").toLowerCase();
 		String name = JsonValidation.getString(json, "name");
 		try {
 			if (Plugin.exists(CMaps.map("filename", filename).map("status", EnumSet.of(PluginStatus.ACTIVE, PluginStatus.BETA, PluginStatus.DEPRECATED, PluginStatus.DEVELOPMENT)))) {

@@ -315,6 +315,7 @@ public class Spaces extends Controller {
 		obj.put("main", visualization.url);
 		obj.put("type", visualization.type);
 		obj.put("name", space.name);
+		obj.put("owner", userId.toString());
 		
 		if (visualization.type != null && visualization.type.equals("oauth2")) {
   		  BSONObject oauthmeta = RecordManager.instance.getMeta(userId, new MidataId(spaceIdString), "_oauth");  		  

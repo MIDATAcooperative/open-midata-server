@@ -73,17 +73,18 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				"unitSystem" : "http://unitsofmeasure.org", 
 				"unitCode" : "/d"
 			},
-			{
-				"id" : "activities_distance",
-				"name": "Activities - Distance",				
-				"endpoint": "/1/user/-/activities/distance/date/{date}/1d.json",
-				"content" : "activities/distance-24h-calc",
-				"unit" : "km",
-				"system" : "http://loinc.org",
-				"code" : "41953-1",
-				"unitSystem" : "http://unitsofmeasure.org", 
-				"unitCode" : "m"
-			},
+			// Wrong LOINC code
+			//{
+			//	"id" : "activities_distance",
+			//	"name": "Activities - Distance",				
+			//	"endpoint": "/1/user/-/activities/distance/date/{date}/1d.json",
+			//	"content" : "activities/distance",
+			//	"unit" : "km",
+			//	"system" : "http://loinc.org",
+			//	"code" : "41953-1",
+			//	"unitSystem" : "http://unitsofmeasure.org", 
+			//	"unitCode" : "m"
+			//},
 			{
 			 	"id" : "activities_floors_climbed",
 				"name": "Activities - Floors Climbed",				
