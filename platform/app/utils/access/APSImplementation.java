@@ -23,6 +23,7 @@ import utils.auth.KeyManager;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
+import utils.stats.Stats;
 
 /**
  * implementation of an access permission set.
@@ -78,6 +79,7 @@ class APSImplementation extends APS {
 		   eaps.touch();
 		} catch (LostUpdateException e) {
 			try {
+				Stats.reportConflict();
 				Thread.sleep(rand.nextInt(1000));
 			} catch (InterruptedException e2) {
 			}
@@ -111,6 +113,7 @@ class APSImplementation extends APS {
 				eaps.updateKeys();
 		} catch (LostUpdateException e) {
 			try {
+				Stats.reportConflict();
 				Thread.sleep(rand.nextInt(1000));
 			} catch (InterruptedException e2) {
 			}
@@ -138,6 +141,7 @@ class APSImplementation extends APS {
 				eaps.updateKeys();
 		} catch (LostUpdateException e) {
 			try {
+				Stats.reportConflict();
 				Thread.sleep(rand.nextInt(1000));
 			} catch (InterruptedException e2) {
 			}
@@ -158,6 +162,7 @@ class APSImplementation extends APS {
 				eaps.updateKeys();
 		} catch (LostUpdateException e) {
 			try {
+				Stats.reportConflict();
 				Thread.sleep(rand.nextInt(1000));
 			} catch (InterruptedException e2) {
 			}
@@ -389,6 +394,7 @@ class APSImplementation extends APS {
 
 	private void recoverFromLostUpdate() throws InternalServerException {
 		try {
+			Stats.reportConflict();
 			Thread.sleep(rand.nextInt(1000));
 		} catch (InterruptedException e) {
 		}

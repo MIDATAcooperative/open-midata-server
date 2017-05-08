@@ -58,6 +58,7 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.stats.Stats;
 
 public class GroupResourceProvider extends ResourceProvider<Group> implements IResourceProvider {
 
@@ -267,6 +268,8 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 			properties.put("status", User.NON_DELETED);
 			*/
 			boolean addMembers = params.hasElement("member") && params.getSummary().equals(SummaryEnum.FALSE);			
+			
+			if (Stats.enabled && addMembers && !params.containsKey("identifier") && !params.containsKey("_id")) Stats.addComment("Use _summary or _elements parameter if list of members is not needed.");
 			
 			Set<UserGroup> groups = UserGroup.getAllUserGroup(properties, UserGroup.FHIR);
 			List<IBaseResource> result = new ArrayList<IBaseResource>();

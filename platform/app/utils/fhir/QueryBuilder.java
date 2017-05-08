@@ -41,6 +41,7 @@ import utils.access.op.OrCondition;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
+import utils.stats.Stats;
 
 /**
  * Helper class to create a database Query from a FHIR SearchParameterMap 
@@ -577,7 +578,10 @@ public class QueryBuilder {
 			
 			if (p.getSystem() != null && p.getValue() != null && p.getSystem().length()>0 && p.getValue().length()>0) {
 			  result.add(p.getSystem()+" "+p.getValue());
-			} else return null;
+			} else {
+				Stats.addComment("Parameter "+name+": Always provide code system and code if possible");
+				return null;
+			}
 		  }
 		}
 	
@@ -614,6 +618,7 @@ public class QueryBuilder {
 			query.putAccount("owner", FHIRTools.referencesToIds(patients));
 			return true;
 		}
+		if (Stats.enabled && patients == null && name.equals("patient") && !params.containsKey(name)) Stats.addComment("Restrict by patient?");
 		return patients == null;
 		
 	}

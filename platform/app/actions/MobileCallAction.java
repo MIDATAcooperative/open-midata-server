@@ -14,6 +14,7 @@ import utils.auth.KeyManager;
 import utils.exceptions.BadRequestException;
 import utils.fhir.ResourceProvider;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.stats.Stats;
 
 /**
  * request wrapper for requests from external services
@@ -34,6 +35,7 @@ public class MobileCallAction extends Action<MobileCall> {
     	
           return delegate.call(ctx);
     	} catch (JsonValidationException e) {
+    		if (Stats.enabled) Stats.finishRequest(ctx.request(), "400");
     		if (e.getField() != null) {
     		  return F.Promise.pure((Result) badRequest(
     				    Json.newObject().put("field", e.getField())
@@ -43,9 +45,11 @@ public class MobileCallAction extends Action<MobileCall> {
     		  return F.Promise.pure((Result) badRequest(e.getMessage()));
     		}
     	} catch (BadRequestException e3) {
+    		if (Stats.enabled) Stats.finishRequest(ctx.request(), e3.getStatusCode()+"");
     		return F.Promise.pure((Result) status(e3.getStatusCode(), e3.getMessage()));
 		} catch (Exception e2) {			
 			ErrorReporter.report("Mobile API", ctx, e2);
+			if (Stats.enabled) Stats.finishRequest(ctx.request(), "500");
 			return F.Promise.pure((Result) internalServerError(e2.getMessage()));			
 		} finally {
 			long endTime = System.currentTimeMillis();

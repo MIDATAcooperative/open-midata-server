@@ -59,6 +59,7 @@
   
   "manageapp" : {
     "messages_btn" : "Edit Messages",
+    "stats_btn" : "Debug Info",
     "info" : {
        "filename" : "This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your app for a specific role only? Otherwise choose 'Any Role'.",
@@ -77,5 +78,24 @@
        "defaultQuery_extra" : "Look for valid values for 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { \"group\" : \"all\", \"group-system\" : \"v1\" }. Please refine query before plugin or app goes in production.",
        "secret" : "Your app will need this 'secret' during login. Choose whatever you like."
     }
+  },
+  
+  "appstats" : {
+    "title" : "Debug Information for",
+    "action" : "Action",
+    "first" : "First action recordet at",
+    "lastrun" : "Last executed",    
+    "count" : "Statistic",
+    "run" : "Number of times the action has been invoked.",
+    "retry" : "Number of times operations had to be repeated because of concurrency issues.",
+    "db" :  "Average number of internal (MongoDB) database queries executed per action invocation.",
+    "time" : "Execution time",
+    "avgtime" : "Avg",
+    "lasttime" : "Last",
+    "results" : "Results and Warnings",
+    "result" : "response",
+    "empty" : "No information has been recorded since debug information was last cleared.",
+    "reload_btn" : "Refresh",
+    "reset_btn" : "Clear"    
   }
 }

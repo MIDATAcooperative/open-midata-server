@@ -15,6 +15,7 @@ import utils.access.DBRecord;
 import utils.access.op.Condition;
 import utils.db.LostUpdateException;
 import utils.exceptions.InternalServerException;
+import utils.stats.Stats;
 
 /**
  * Manages one index
@@ -86,6 +87,7 @@ public class IndexRoot {
 		while (rootPage.model.lockTime > System.currentTimeMillis() - 1000l * 60l) {
 			AccessLog.log("waiting for lock release");
 			try {
+			  Stats.reportConflict();
 			  Thread.sleep(500);
 			} catch (InterruptedException e) {}
 			rootPage.reload();

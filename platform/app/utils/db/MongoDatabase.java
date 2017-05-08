@@ -120,7 +120,7 @@ public class MongoDatabase extends Database {
 			dbObject = conversion.toDBObject(modelObject);
 			DBObject query = new BasicDBObject();
 			query.put("_id", modelObject.to_db_id());
-			getCollection(collection).update(query, dbObject);			
+			getCollection(collection).update(query, dbObject, true, false);			
 		} catch (DatabaseConversionException e) {
 			throw new DatabaseException(e);
 		} catch (MongoException e) {

@@ -25,6 +25,7 @@ import utils.collections.Sets;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
+import utils.stats.Stats;
 
 /**
  * Manages indexes on encrypted data records. Allows creation of new indexes,
@@ -168,6 +169,7 @@ public class IndexManager {
 			index.flush();
 		} catch (LostUpdateException e) {
 			try {
+			  Stats.reportConflict();
 			  Thread.sleep(50);
 			} catch (InterruptedException e2) {}
 			index.reload(); //XXXX
