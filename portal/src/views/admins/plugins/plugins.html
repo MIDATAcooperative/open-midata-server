@@ -19,6 +19,7 @@
           <th>Type</th>
           <th>Target Role</th>
           <th>Spotlighted</th>
+          <th>Stats</th>
           <th>Status</th>
         </tr>
         <tr dir-paginate="app in apps | itemsPerPage : 10" pagination-id="plugintable" current-page="page.nr">
@@ -26,6 +27,7 @@
           <td translate="{{ 'enum.plugintype.'+app.type }}"></td>
           <td translate="{{ 'enum.userrole.'+app.targetUserRole }}"></td>
           <td><input class="checkbox" type="checkbox" ng-change="changePlugin(app);" ng-model="app.spotlighted"></td>
+          <td><a ui-sref="^.appstats({ appId : app._id })">show</a></td>
           <td><select class="form-control" ng-model="app.status" ng-change="changePlugin(app);" ng-options="status for status in pluginStati"></select></td>
         </tr>
       </table>

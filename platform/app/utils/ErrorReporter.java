@@ -7,6 +7,7 @@ import play.Play;
 import play.mvc.Http;
 import utils.auth.PortalSessionToken;
 import utils.messaging.MailUtils;
+import utils.stats.Stats;
 
 /**
  * Sends error reports
@@ -41,6 +42,7 @@ public class ErrorReporter {
 		if (e!=null) AccessLog.logException("Uncatched Exception:", e);
 		String txt = "Instance: "+InstanceConfig.getInstance().getPortalServerDomain()+"\nTime:"+timeStamp+"\nInterface: "+fromWhere+"\nPortal Session: "+user+"\nPath: "+path+"\n\n"+AccessLog.getReport();
 		MailUtils.sendTextMail(bugReportEmail, bugReportName, "Error Report: "+path, txt);
+		if (e!=null) Stats.addComment("Error: "+e.getClass().getName()+": "+e.getMessage());
 	}
 	
 	public static void reportPerformance(String fromWhere, Http.Context ctx, long duration) {
@@ -59,6 +61,6 @@ public class ErrorReporter {
 		String timeStamp = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss").format(new Date());
 		
 		String txt = "Instance: "+InstanceConfig.getInstance().getPortalServerDomain()+"\nTime:"+timeStamp+"\nInterface: "+fromWhere+"\nPortal Session: "+user+"\nPath: "+path+"\nExecution Time: "+duration+"ms\n\n"+AccessLog.getReport();
-		MailUtils.sendTextMail(bugReportEmail, bugReportName, "Bad Performance: "+path, txt);
+		MailUtils.sendTextMail(bugReportEmail, bugReportName, "Bad Performance: "+path, txt);		
 	}
 }

@@ -916,10 +916,9 @@ public class Application extends APIController {
 				controllers.routes.javascript.Market.deletePlugin(),
 				controllers.routes.javascript.Market.deletePluginDeveloper(),
 				controllers.routes.javascript.Market.updatePluginStatus(),
-				// Global search				
-				//controllers.routes.javascript.GlobalSearch.search(),
-				//controllers.routes.javascript.GlobalSearch.complete(),
-				
+				controllers.routes.javascript.Market.getPluginStats(),
+				controllers.routes.javascript.Market.deletePluginStats(),
+								
 				// UserGroups
 				controllers.routes.javascript.UserGroups.search(),
 				controllers.routes.javascript.UserGroups.createUserGroup(),
