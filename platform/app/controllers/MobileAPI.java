@@ -60,6 +60,7 @@ import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
+import utils.stats.Stats;
 
 /**
  * functions for mobile APPs
@@ -377,6 +378,8 @@ public class MobileAPI extends Controller {
 	@MobileCall
 	public static Result getRecords() throws JsonValidationException, AppException {		
 		// validate json
+		Stats.startRequest(request());
+		
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken", "properties", "fields");
 		
@@ -391,7 +394,8 @@ public class MobileAPI extends Controller {
 					
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "status"));
         if (appInstance == null) return invalidToken(); 
-		
+        Stats.setPlugin(appInstance.applicationId);
+        
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {
         	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Record", fields));
         }
@@ -414,6 +418,8 @@ public class MobileAPI extends Controller {
 		records = LargeRecord.getAll(executor, appInstance._id, properties, fields);		  
 				
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
+		
+		Stats.finishRequest(request(), "200", properties.keySet());
 		return ok(JsonOutput.toJson(records, "Record", fields));
 	}
 	
@@ -426,7 +432,7 @@ public class MobileAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall	
 	public static Result getFile() throws AppException, JsonValidationException {
-		
+		Stats.startRequest(request());
 		// validate json
 		JsonNode json = request().body().asJson();				
 						
@@ -448,6 +454,8 @@ public class MobileAPI extends Controller {
 		if (fileData == null) return badRequest();
 		if (fileData.contentType != null) response().setContentType(fileData.contentType);
 		//response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
+		
+		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
 		return ok(fileData.inputStream);
 	}
 	
@@ -460,7 +468,8 @@ public class MobileAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall
 	public static Result createRecord() throws AppException, JsonValidationException {
-				
+		Stats.startRequest(request());
+		
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken", "data", "name", "format");
@@ -469,11 +478,12 @@ public class MobileAPI extends Controller {
 		// decrypt authToken 
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(json.get("authToken").asText());
 		if (authToken == null) return invalidToken(); 
-					
+						
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare","status"));
         if (appInstance == null) return invalidToken(); 
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
-
+        Stats.setPlugin(appInstance.applicationId);
+        
         MidataId executor = prepareMobileExecutor(appInstance, authToken);
         
 		MidataId appId = appInstance.applicationId;
@@ -543,7 +553,8 @@ public class MobileAPI extends Controller {
 			}
 		}
 		*/
-				
+			
+		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
 		ObjectNode obj = Json.newObject();		
 		obj.put("_id", record._id.toString());		
 		return ok(JsonOutput.toJson(record, "Record", Sets.create("_id", "created", "version")));
@@ -558,13 +569,15 @@ public class MobileAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall
 	public static Result updateRecord() throws AppException, JsonValidationException {
-				
+		
+		Stats.startRequest(request());
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken", "data", "_id", "version");
 		
 		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
-			
+		Stats.setPlugin(inf.pluginId);	
+		
         String data = JsonValidation.getJsonString(json, "data");
 						
 		Record record = new Record();
@@ -582,6 +595,9 @@ public class MobileAPI extends Controller {
 		}
 				
 		String version = PluginsAPI.updateRecord(inf, record);
+		
+		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
+		
 		ObjectNode obj = Json.newObject();		
 		obj.put("version", version);		
 		return ok(obj);

@@ -15,6 +15,7 @@ import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
 import utils.servlet.PlayHttpServletRequest;
 import utils.servlet.PlayHttpServletResponse;
+import utils.stats.Stats;
 
 /**
  * FHIR Server
@@ -71,13 +72,15 @@ public class FHIR extends Controller {
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
 	public static Result get(String all) throws AppException, IOException, ServletException {
+		Stats.startRequest(request());
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
 		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
 				
 		String param = req.getHeader("Authorization");
 				
 		if (param != null && param.startsWith("Bearer ")) {
-          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);        
+          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);
+          Stats.setPlugin(info.pluginId);
           ResourceProvider.setExecutionInfo(info);
 		}
         
@@ -85,6 +88,7 @@ public class FHIR extends Controller {
 		servlet.doGet(req, res);
 		AccessLog.logEnd("end FHIR get request");
 	
+		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
 		if (res.getContentType() != null && res.getResponseWriter() != null) {
 			return status(res.getStatus(), res.getResponseWriter().toString());		
 		}
@@ -123,19 +127,24 @@ public class FHIR extends Controller {
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
 	public static Result post(String all) throws AppException, IOException, ServletException {
+		Stats.startRequest(request());
+		
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
 		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
 				
 		String param = req.getHeader("Authorization");
 				
 		if (param != null && param.startsWith("Bearer ")) {
-          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);        
+          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);
+          Stats.setPlugin(info.pluginId);
           ResourceProvider.setExecutionInfo(info);
 		}
         
 		AccessLog.logBegin("begin FHIR post request: "+req.getRequestURI());
 		servlet.doPost(req, res);
 		AccessLog.logEnd("end FHIR post request");
+		
+		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
 		if (res.getContentType() != null && res.getResponseWriter() != null) {			
 			return status(res.getStatus(), res.getResponseWriter().toString());		
 		}
@@ -174,18 +183,23 @@ public class FHIR extends Controller {
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
 	public static Result put(String all) throws AppException, IOException, ServletException {
+		Stats.startRequest(request());
+		
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
 		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
 				
 		String param = req.getHeader("Authorization");
 				
 		if (param != null && param.startsWith("Bearer ")) {
-          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);        
+          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);
+          Stats.setPlugin(info.pluginId);
           ResourceProvider.setExecutionInfo(info);
 		} else ResourceProvider.setExecutionInfo(null);
         
 		AccessLog.log(req.getRequestURI());
 		servlet.doPut(req, res);
+		
+		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
 		
 		if (res.getResponseWriter() != null) {
 			return status(res.getStatus(), res.getResponseWriter().toString());		
@@ -223,18 +237,23 @@ public class FHIR extends Controller {
 	@MobileCall
 	@BodyParser.Of(BodyParser.Raw.class) 
 	public static Result delete(String all) throws AppException, IOException, ServletException {
+		Stats.startRequest(request());
+		
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request());
 		PlayHttpServletResponse res = new PlayHttpServletResponse(response());
 				
 		String param = req.getHeader("Authorization");
 				
 		if (param != null && param.startsWith("Bearer ")) {
-          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);        
+          ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);
+          Stats.setPlugin(info.pluginId);
           ResourceProvider.setExecutionInfo(info);
 		}
         
 		AccessLog.log(req.getRequestURI());
 		servlet.doDelete(req, res);
+		
+		Stats.finishRequest(request(), String.valueOf(res.getStatus()));
 		
 		if (res.getResponseWriter() != null) {
 			return status(res.getStatus(), res.getResponseWriter().toString());		

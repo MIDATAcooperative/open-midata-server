@@ -93,6 +93,7 @@ public class MinimalSetup {
 			admin.emailLC = admin.email.toLowerCase();
 			admin.password = null;
 			admin.role = UserRole.ADMIN;
+			admin.subroles = EnumSet.noneOf(SubUserRole.class);
 			admin.status = UserStatus.ACTIVE;
 			admin.contractStatus = ContractStatus.SIGNED;
 			admin.agbStatus = ContractStatus.SIGNED;	

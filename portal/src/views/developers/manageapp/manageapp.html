@@ -139,6 +139,7 @@
 		    <a class="btn btn-default" ui-sref="^.autoimport({ appId : app._id })" ng-show="app.type == 'oauth1' || app.type == 'oauth2'" ng-disabled="app._id == null">Serverside Import Test</a>
 		    
 		    <a class="btn btn-default" ui-sref="^.appmessages({ appId : app._id })" ng-disabled="app._id == null" translate="manageapp.messages_btn"></a>
+		    <a class="btn btn-default" ui-sref="^.appstats({ appId : app._id })" ng-disabled="app._id == null" translate="manageapp.stats_btn"></a>
 		    <button type="button" class="btn btn-danger" ng-show="allowDelete" ng-click="doDelete()" ng-disabled="status.action=='delete'">Delete</button>
 		  </formrow>
 	     </form>	  

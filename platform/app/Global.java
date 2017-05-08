@@ -18,6 +18,7 @@ import utils.fhir.ResourceProvider;
 import utils.json.CustomObjectMapper;
 import utils.messaging.Messager;
 import utils.servlet.PlayHttpServletConfig;
+import utils.stats.Stats;
 
 /**
  * Actions that need to be done on application start and stop.
@@ -60,7 +61,7 @@ public class Global extends GlobalSettings {
 		  throw new NullPointerException();
 		}
 		
-		
+		Stats.init();
 		Messager.init();
 		AutoRun.init();
 	}

@@ -87,6 +87,8 @@ DELETE  /members/api/circles/:id/users/:userId           controllers.Circles.rem
 POST    /developers/api/plugins                          controllers.Market.registerPlugin()
 PUT     /developers/api/plugins/:appId                   controllers.Market.updatePlugin(appId: String)
 DELETE  /developers/api/plugins/:appId            	     controllers.Market.deletePluginDeveloper(appId: String)
+GET     /developers/api/plugins/:appId/stats             controllers.Market.getPluginStats(appId: String)
+DELETE  /developers/api/plugins/:appId/stats             controllers.Market.deletePluginStats(appId: String)
 
 PUT     /admins/api/plugins/:appId            	         controllers.Market.updatePluginStatus(appId: String)
 DELETE  /admins/api/plugins/:appId            	         controllers.Market.deletePlugin(appId: String)

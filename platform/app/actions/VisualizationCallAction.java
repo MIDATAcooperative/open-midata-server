@@ -14,6 +14,7 @@ import utils.access.RecordManager;
 import utils.exceptions.BadRequestException;
 import utils.fhir.ResourceProvider;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.stats.Stats;
 
 
 /**
@@ -45,6 +46,7 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
     	  return delegate.call(ctx);
     	      	  
     	} catch (JsonValidationException e) {
+    		if (Stats.enabled) Stats.finishRequest(ctx.request(), "400");
     		if (e.getField() != null) {
     		  return F.Promise.pure((Result) badRequest(
     				    Json.newObject().put("field", e.getField())
@@ -54,10 +56,11 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
     		  return F.Promise.pure((Result) badRequest(e.getMessage()));
     		}
     	} catch (BadRequestException e3) {
+    		if (Stats.enabled) Stats.finishRequest(ctx.request(), e3.getStatusCode()+"");
     		return F.Promise.pure((Result) badRequest(e3.getMessage()));
-		} catch (Exception e2) {
-			AccessLog.logException("VC", e2);
+		} catch (Exception e2) {					
 			ErrorReporter.report("Plugin API", ctx, e2);
+			if (Stats.enabled) Stats.finishRequest(ctx.request(), "500");
 			return F.Promise.pure((Result) internalServerError("err:"+e2.getMessage()));			
 		} finally {
 			long endTime = System.currentTimeMillis();

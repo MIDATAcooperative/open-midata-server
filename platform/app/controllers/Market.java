@@ -1,8 +1,10 @@
 package controllers;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -16,6 +18,7 @@ import models.MessageDefinition;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
+import models.PluginDevStats;
 import models.Plugin_i18n;
 import models.Space;
 import models.enums.MessageReason;
@@ -422,5 +425,39 @@ public class Market extends APIController {
 	   }
 	   
 	   return ok();
+	}
+		
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)	
+	public static Result getPluginStats(String pluginIdStr) throws JsonValidationException, AppException {
+		if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
+		
+		MidataId pluginId = new MidataId(pluginIdStr);
+        MidataId userId = new MidataId(request().username());
+        
+        Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
+        if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
+        if (!getRole().equals(UserRole.ADMIN) && !app.creator.equals(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
+   
+		List<PluginDevStats> stats = new ArrayList(PluginDevStats.getByPlugin(pluginId, PluginDevStats.ALL));
+		
+		return ok(JsonOutput.toJson(stats, "PluginDevStats", PluginDevStats.ALL));
+	}
+	
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)	
+	public static Result deletePluginStats(String pluginIdStr) throws JsonValidationException, AppException {
+		if (!getRole().equals(UserRole.ADMIN) && !getRole().equals(UserRole.DEVELOPER)) return unauthorized();
+		
+		MidataId pluginId = new MidataId(pluginIdStr);
+        MidataId userId = new MidataId(request().username());
+        
+        Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
+        if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
+        if (!getRole().equals(UserRole.ADMIN) && !app.creator.equals(userId)) throw new BadRequestException("error.auth", "You are not owner of this plugin.");
+   
+		PluginDevStats.deleteByPlugin(pluginId);
+		
+		return ok();
 	}
 }

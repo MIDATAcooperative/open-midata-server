@@ -10,11 +10,13 @@
           <th>Name</th>
           <th>Type</th>
           <th>Target Role</th>
+          <th></th>
         </tr>
         <tr ng-repeat="app in apps">
           <td><a ui-sref="^.manageapp({ appId : app._id })">{{  app.name }}</a></td>
           <td>{{ app.type }}</td>
           <td>{{ app.targetUserRole }}</td>
+          <td><a class="btn btn-default btn-xs" ui-sref="^.manageapp({ appId : app._id })">manage</a> <a class="btn btn-default btn-xs" ui-sref="^.appstats({ appId : app._id })">debug info</a></td>
         </tr>
       </table>
       <p ng-show="apps.length == 0">You have not registered any plugin yet.</p>
