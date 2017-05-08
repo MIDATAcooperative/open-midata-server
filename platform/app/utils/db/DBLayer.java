@@ -134,7 +134,7 @@ public class DBLayer {
 	 * Insert a document into the given collection.
 	 */
 	public static <T extends Model> void insert(String collection, T modelObject) throws DatabaseException {
-		Stats.reportDb();
+		Stats.reportDb("insert 1", collection);
 		getDatabaseForCollection(collection).insert(collection, modelObject);		
 	}
 	
@@ -142,7 +142,7 @@ public class DBLayer {
 	 * Upserts a document into the given collection.
 	 */
 	public static <T extends Model> void upsert(String collection, T modelObject) throws DatabaseException {
-		Stats.reportDb();
+		Stats.reportDb("upsert 1","collection");
 		getDatabaseForCollection(collection).upsert(collection, modelObject);		
 	}
 
@@ -150,7 +150,7 @@ public class DBLayer {
 	 * Remove all documents with the given properties from the given collection.
 	 */
 	public static void delete(Class model, String collection, Map<String, ? extends Object> properties) throws DatabaseException {
-		Stats.reportDb();
+		Stats.reportDb("delete",collection);
 		getDatabaseForCollection(collection).delete(model, collection, properties);		
 	}
 
@@ -158,7 +158,7 @@ public class DBLayer {
 	 * Check whether a document exists that has the given properties.
 	 */
 	public static boolean exists(Class model, String collection, Map<String, ? extends Object> properties) throws DatabaseException {
-		Stats.reportDb();
+		Stats.reportDb("exists", collection);
 		return getDatabaseForCollection(collection).exists(model, collection, properties);		
 	}
 
@@ -167,7 +167,7 @@ public class DBLayer {
 	 */
 	public static <T extends Model> T get(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
 			Set<String> fields) throws DatabaseException {
-		Stats.reportDb();
+		Stats.reportDb("read 1", collection);
 		return getDatabaseForCollection(collection).get(modelClass, collection, properties, fields);
 	}
 
@@ -176,7 +176,7 @@ public class DBLayer {
 	 */
 	public static <T extends Model> Set<T> getAll(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
 			Set<String> fields) throws DatabaseException {
-		Stats.reportDb();
+		Stats.reportDb("read N", collection);
 		return getDatabaseForCollection(collection).getAll(modelClass, collection, properties, fields);
 	}
 	
@@ -185,7 +185,7 @@ public class DBLayer {
 	 */
 	public static <T extends Model> Set<T> getAll(Class<T> modelClass, String collection, Map<String, ? extends Object> properties,
 			Set<String> fields, int limit) throws DatabaseException {
-		Stats.reportDb();
+		Stats.reportDb("read N", collection);
 		return getDatabaseForCollection(collection).getAll(modelClass, collection, properties, fields, limit);
 	}
 
@@ -193,7 +193,7 @@ public class DBLayer {
 	 * Set the given field of the object with the given id.
 	 */
 	public static <T extends Model> void set(Class<T> model, String collection, ObjectId modelId, String field, Object value) throws DatabaseException {
-		Stats.reportDb();
+		Stats.reportDb("update 1", collection);
 		getDatabaseForCollection(collection).set(model, collection, modelId, field, value);		
 	}
 
@@ -207,7 +207,7 @@ public class DBLayer {
 	 * @throws DatabaseException
 	 */
 	public static <T extends Model> void set(Class<T> model, String collection, Map<String, Object> properties, String field, Object value) throws DatabaseException {
-		Stats.reportDb();
+		Stats.reportDb("update N",collection);
 		getDatabaseForCollection(collection).set(model, collection, properties, field, value);		
 	}
 	
@@ -216,7 +216,7 @@ public class DBLayer {
 	 * @return
 	 */
 	public static <T extends Model> void secureUpdate(T model, String collection, String timestampField, String... fields) throws LostUpdateException, DatabaseException {
-		Stats.reportDb();
+		Stats.reportDb("update 1", collection);
 		getDatabaseForCollection(collection).secureUpdate(model, collection, timestampField, fields);
 	}
 

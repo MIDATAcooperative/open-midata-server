@@ -15,8 +15,15 @@ angular.module('portal')
 	    	$scope.calls = results.data;
 	    	var firstrun;
 	    	angular.forEach($scope.calls, function(c) {
-	    	  if (!firstrun || c.firstrun < firstrun) firstrun = c.firstrun;
+	    	   if (!firstrun || c.firstrun < firstrun) firstrun = c.firstrun;
+	    	   
+	    	   c.queries = [];
+	    	   angular.forEach(c.queryCount, function(v,k) {
+			     c.queries.push({ k : k, v : v});
+			   });
 	    	});
+	    	
+	    	
 	    	$scope.firstrun = firstrun;
 	    });		
 	    

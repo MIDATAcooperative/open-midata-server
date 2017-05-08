@@ -14,33 +14,40 @@
              <tr>
                <th translate="appstats.action"></th>
                <th translate="appstats.lastrun"></th>              
-               <th colspan="3" translate="appstats.count"></th>
-               <th colspan="2" translate="appstats.time"></th>               
+               <th colspan="2" translate="appstats.count"></th>
+               <th colspan="2" translate="appstats.time"></th>
+               <th><a href="javascript:" ng-click="showdb=true;">db</a></th>               
                <th translate="appstats.results"></th>
+               
              </tr>
              <tr>
                <th></th>
                <th></th>              
-               <th>run</th>
-               <th>db</th>
+               <th>run</th>               
                <th>retry</th>
                <th translate="appstats.avgtime"></th>
                <th translate="appstats.lasttime"></th>
+               <th></th>
                <th></th>
              </tr>
            
              <tr ng-repeat="call in calls | orderBy : 'lastrun' : 1">
                <td>{{ call.action }}<span ng-show="call.params">?{{ call.params }}</span></td>               
                <td>{{ call.lastrun | date : 'dd.MM.yy HH:mm' }}</td>               
-               <td>{{ call.count }}</td>
-               <td>{{ (call.db / call.count) | number : 0 }}</td>
+               <td>{{ call.count }}</td>              
                <td>{{ call.conflicts }}</td>
                <td>{{ (call.totalExecTime / call.count) | number : 0 }} ms</td>
                <td>{{ call.lastExecTime }} ms</td>
                <td>
+                 <div ng-if="showdb">
+                 <div ng-repeat="e in call.queries | orderBy : 'k'">{{ e.k }} : {{ (e.v / call.count) | number : 0 }}</div>
+                 </div>
+               </td>
+               <td>
                  <div ng-repeat="(k,v) in call.resultCount" ng-class="{ 'text-danger' : (k>=400) }">status {{ k }} : {{ v }}</div>
                  <div class="text-info" ng-repeat="comment in call.comments">{{ comment }}</div>
                </td>
+               
              </tr>
            </table>
            

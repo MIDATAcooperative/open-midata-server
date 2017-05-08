@@ -22,7 +22,7 @@ public class PluginDevStats extends Model {
 	/**
 	 * constant set containing all fields of this class
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "action", "comments", "count", "lastExecTime", "firstrun", "lastrun", "params", "plugin", "resultCount", "totalExecTime", "conflicts", "db");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "action", "comments", "count", "lastExecTime", "firstrun", "lastrun", "params", "plugin", "resultCount", "queryCount", "totalExecTime", "conflicts", "db");
 
 	
 	/**
@@ -73,7 +73,12 @@ public class PluginDevStats extends Model {
 	/**
 	 * Request Results
 	 */
-	public Map<String, Integer> resultCount;		
+	public Map<String, Integer> resultCount;
+	
+	/**
+	 * Query count
+	 */
+	public Map<String, Integer> queryCount;	
 	
 	/**
 	 * Sum of all execution times

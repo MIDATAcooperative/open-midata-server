@@ -44,7 +44,8 @@ public class Stats {
 	public static void startRequest(Request req) {
 		if (!enabled) return;
 		
-		PluginDevStats stats = new PluginDevStats();			
+		PluginDevStats stats = new PluginDevStats();	
+		stats.queryCount = new HashMap<String, Integer>();
 		stats.lastrun = stats.lastExecTime = System.currentTimeMillis();
 		
 		currentStats.set(stats);
@@ -72,11 +73,15 @@ public class Stats {
 		stats.conflicts++;
 	}
 	
-	public static void reportDb() {
+	public static void reportDb(String action, String collection) {
 		if (!enabled) return;
 		PluginDevStats stats = currentStats.get();
 		if (stats == null) return;
 		stats.db++;
+		String key = collection+" ("+action+")";
+		Integer old = stats.queryCount.get(key);
+		if (old != null) stats.queryCount.put(key, old + 1);
+		else stats.queryCount.put(key, 1);
 	}
 	
 	public static void finishRequest(Request req, String result) {		
@@ -125,7 +130,8 @@ class StatsMessage {
 	public final String action;		
 	public final String params;		
 	public final long lastrun;				
-	public final Set<String> comments;		
+	public final Set<String> comments;
+	public final Map<String, Integer> queryCount;
 	public final String result;
 	public final long lastExecTime;
 	public final int conflicts;
@@ -141,6 +147,7 @@ class StatsMessage {
 		this.conflicts = stats.conflicts;
 		this.db = stats.db;
 		this.result = stats.resultCount.keySet().iterator().next();
+		this.queryCount = stats.queryCount;
 	}
 }
 
@@ -179,6 +186,13 @@ class StatsRecorder extends UntypedActor {
 				stats.resultCount.put(msg.result, stats.resultCount.get(msg.result) + 1);
 			} else {
 				stats.resultCount.put(msg.result, 1);
+			}
+			
+			if (stats.queryCount == null) stats.queryCount = new HashMap<String, Integer>();
+			for (Map.Entry<String, Integer> queries : msg.queryCount.entrySet()) {
+				Integer old = stats.queryCount.get(queries.getKey());
+				if (old != null) stats.queryCount.put(queries.getKey(), old + queries.getValue());
+				else stats.queryCount.put(queries.getKey(), queries.getValue());
 			}
 			
 			stats.update();
