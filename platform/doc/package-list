@@ -9,6 +9,7 @@ controllers.research
 models
 models.enums
 models.records
+setup
 utils
 utils.access
 utils.access.index
@@ -19,9 +20,9 @@ utils.db
 utils.evolution
 utils.exceptions
 utils.fhir
+utils.fhir.transactions
 utils.json
-utils.mails
-utils.rules
-utils.sandbox
-utils.search
+utils.messaging
 utils.servlet
+utils.stats
+utils.sync
