@@ -227,7 +227,7 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 
 	var codeToMidataCode = {};
 	codeToMidataCode["http://loinc.org 41950-7"] = "activities/steps";
-	codeToMidataCode["http://loinc.org 41953-1"] = "activities/distance";
+	codeToMidataCode["http://loinc.org 41953-1"] = "activities/distance-24h-calc";
 	codeToMidataCode["http://midata.coop activities/calories"] = "activities/calories";
 	codeToMidataCode["http://midata.coop activities/elevation"] = "activities/elevation";
 	codeToMidataCode["http://midata.coop activities/minutes-lightly-active"] = "activities/minutes-lightly-active";
