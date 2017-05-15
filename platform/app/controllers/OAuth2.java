@@ -154,6 +154,7 @@ public class OAuth2 extends Controller {
         	String refresh_token = data.get("refresh_token")[0];
         	
         	MobileAppToken refreshToken = MobileAppToken.decrypt(refresh_token);
+        	if (refreshToken == null) throw new BadRequestException("error.internal", "Bad refresh_token.");
         	if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) return MobileAPI.invalidToken();
 			appInstanceId = refreshToken.appInstanceId;
 			
