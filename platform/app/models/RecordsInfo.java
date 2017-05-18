@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import utils.RuntimeConstants;
 import utils.access.DBRecord;
 import utils.access.RecordConversion;
 
@@ -96,7 +97,7 @@ public class RecordsInfo {
     	contents.add((String) rec.meta.get("content"));
     	groups.add(rec.group);
     	MidataId app = MidataId.from(rec.meta.get("app")); 
-    	if (app != null) apps.add(app);
+    	if (app != null) apps.add(app); else apps.add(RuntimeConstants.instance.portalPlugin);
     	if (rec.owner != null) owners.add(rec.owner.toString());
     	
     	
