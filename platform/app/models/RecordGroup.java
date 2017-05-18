@@ -88,36 +88,21 @@ public class RecordGroup extends Model {
 		cache = null;
 	}
 	
-	public static void load() throws AppException {
-		/*
-		Set<ContentCode> ccs = ContentCode.getAll(new HashMap<String, Object>(), Sets.create("display", "content","system","code"));
-		for (ContentCode cc : ccs) {
-			try {
-			  ContentInfo ci = ContentInfo.getByName(cc.content);
-			} catch (AppException e) {
-			  ContentInfo ci = new ContentInfo();
-			  ci.defaultCode = cc.system+" "+cc.code;
-			  ci.content = cc.content;
-			  ci.security = APSSecurityLevel.MEDIUM;
-			  ci.label = new HashMap<String, String>();
-			  ci.label.put("en", cc.display);
-			  ContentInfo.add(ci);
-			}
-		}*/
+	public static void load() throws AppException {		
 		
-		systemToContentToGroup = new HashMap<String, Map<String, String>>();
+		Map<String, Map<String, String>> newSystemToContentToGroup = new HashMap<String, Map<String, String>>();
 				
 		Set<RecordGroup> groups = Model.getAll(RecordGroup.class, collection, Collections.EMPTY_MAP, Sets.create("system", "name", "label", "contents", "parent"));
 		
-		cache = new HashMap<String, RecordGroup>();
+		Map<String, RecordGroup> newCache = new HashMap<String, RecordGroup>();
 		for (RecordGroup group : groups) {
-			cache.put(group.system+":"+group.name, group);
+			newCache.put(group.system+":"+group.name, group);
 			group.children = new ArrayList<RecordGroup>();						
 		}
 		
 		for (RecordGroup group : groups) {
 			AccessLog.log(group.name);
-		    if (group.parent != null) cache.get(group.system+":"+group.parent).children.add(group);
+		    if (group.parent != null) newCache.get(group.system+":"+group.parent).children.add(group);
 		}
 				
 		Set<ContentInfo> allci = ContentInfo.getAll(new HashMap<String, Object>(), Sets.create("content", "group","label","defaultCode"));
@@ -133,24 +118,16 @@ public class RecordGroup extends Model {
 				   ci.label.put("en", ci.content);
 				   Model.set(ContentInfo.class, "contentinfo", ci._id, "label", ci.label);
 			   }
-			}
-			/*
-			String group = ci.group;
-			if (group == null) throw new NullPointerException("content: "+ci.content);
-			RecordGroup grp = getBySystemPlusName("v1", group);
-			if (grp.children.size() > 0) throw new NullPointerException("group:" +group);
-			if (grp.contents == null) grp.contents = new HashSet<String>();
-			if (!grp.contents.contains(ci.content)) {
-			  grp.contents.add(ci.content);
-			  Model.set(RecordGroup.class, collection, grp._id, "contents", grp.contents);
-			}*/			
+			}		
 		}
 		
+		ContentInfo.clear();
+		
 		for (RecordGroup group : groups) {		
-			Map<String, String> contentToGroup = systemToContentToGroup.get(group.system);
+			Map<String, String> contentToGroup = newSystemToContentToGroup.get(group.system);
 			if (contentToGroup == null) {
 				contentToGroup = new HashMap<String, String>();
-				systemToContentToGroup.put(group.system, contentToGroup);
+				newSystemToContentToGroup.put(group.system, contentToGroup);
 			}
 			if (group.contents != null) {
 				for (String content : group.contents) {					
@@ -159,6 +136,9 @@ public class RecordGroup extends Model {
 				}
 			}
 		}
+		
+		cache = newCache;
+		systemToContentToGroup = newSystemToContentToGroup;
 		
 	}
 	

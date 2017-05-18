@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 
 import models.enums.PluginStatus;
 import models.enums.UserRole;
+import utils.AccessLog;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
@@ -18,6 +19,7 @@ import utils.db.DatabaseException;
 import utils.db.LostUpdateException;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
+import utils.sync.Instances;
 
 /**
  * data model for a MIDATA plugin. This is the definition of a plugin.
@@ -254,10 +256,10 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		return Model.get(Plugin.class, collection, CMaps.map("filename", name).map("status", Plugin.NOT_DELETED), fields);
 	}
 	
-	public void update() throws InternalServerException, LostUpdateException {
-		cache.remove(_id);
+	public void update() throws InternalServerException, LostUpdateException {		
 		try {
-			   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch" );
+		   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch" );
+		   Instances.cacheClear("plugin",  _id);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);
 		}
@@ -268,11 +270,14 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		Model.insert(collection, plugin);	
 	}
 
-	public static void delete(MidataId pluginId) throws InternalServerException {
-		
-		// TODO only hide or remove from all users (including deleting their spaces associated with it)?
-		cache.remove(pluginId);
+	public static void delete(MidataId pluginId) throws InternalServerException {				
 		Model.delete(Plugin.class, collection, new ChainedMap<String, MidataId>().put("_id", pluginId).get());
+		Instances.cacheClear("plugin",  pluginId);
+	}
+	
+	public static void cacheRemove(MidataId pluginId) {
+		AccessLog.log("cache remove");
+		cache.remove(pluginId);
 	}
 	
 	public void setLanguage(String lang) {

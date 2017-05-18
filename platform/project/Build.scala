@@ -20,7 +20,9 @@ object ApplicationBuild extends Build {
     "org.thymeleaf" % "thymeleaf" % "3.0.1.RELEASE",
     "com.fasterxml.jackson.core" % "jackson-core" % "2.8.3",
     "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.3",
-    "com.fasterxml.jackson.core" % "jackson-annotations" % "2.8.3"	    
+    "com.fasterxml.jackson.core" % "jackson-annotations" % "2.8.3",
+   
+    "com.typesafe.akka" %% "akka-remote" % "2.3.16"	    
   )
 
 

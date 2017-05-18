@@ -19,6 +19,7 @@ import utils.json.CustomObjectMapper;
 import utils.messaging.Messager;
 import utils.servlet.PlayHttpServletConfig;
 import utils.stats.Stats;
+import utils.sync.Instances;
 
 /**
  * Actions that need to be done on application start and stop.
@@ -49,7 +50,8 @@ public class Global extends GlobalSettings {
 		  FHIR.servlet.init(new PlayHttpServletConfig());
 		
 		  MinimalSetup.dosetup();						
-		  Market.correctOwners();				
+		  Market.correctOwners();
+		  Instances.init();
 		  RecordGroup.load();		 
 		  RuntimeConstants.instance = new RuntimeConstants();
 		  
@@ -72,6 +74,7 @@ public class Global extends GlobalSettings {
 		
 		// Close connection to database
 		DBLayer.close();
+		Instances.shutdown();
 
 		// Close connection to search cluster
 		//Search.close();
