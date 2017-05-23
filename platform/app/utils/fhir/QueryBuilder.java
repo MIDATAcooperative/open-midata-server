@@ -62,6 +62,7 @@ public class QueryBuilder {
 	
 	public final static String TYPE_BOOLEAN = "boolean";
 	public final static String TYPE_STRING = "string";
+	public final static String TYPE_MARKDOWN = "string";
 	public final static String TYPE_URI = "uri";
 	
 	public final static String TYPE_QUANTITY = "Quantity";

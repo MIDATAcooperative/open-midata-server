@@ -1,0 +1,108 @@
+<div ng-controller="AnswerCtrl" class="container" ng-cloak>
+         
+           
+   <script type="text/ng-template"  id="display_head.html">
+     <span class="display">
+      <span class="prefix">{{ item.prefix }}</span>
+      <span class="display_text">
+        {{ item.text }}
+      </span>
+     </span>
+   </script>
+   <script type="text/ng-template"  id="display_body.html">
+   </script>
+   <script type="text/ng-template"  id="string_body.html">
+      <input class="form-control" type="text" ng-model="item._answer">
+   </script>
+   <script type="text/ng-template"  id="decimal_body.html">
+      <input class="form-control" type="text" ng-model="item._answer">
+   </script>
+   <script type="text/ng-template"  id="integer_body.html">
+      <input class="form-control" type="text" ng-model="item._answer">
+   </script>   
+   <script type="text/ng-template"  id="date_body.html">
+      <div class="input-group">
+		<input type="text" is-open="question.dateOpened" datepicker-options="dateOptions" close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" placeholder="Date" autofocus ng-model="item._answer">
+		<span class="input-group-btn">
+           <button type="button" class="btn btn-default" ng-click="question.dateOpened=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+        </span>
+      </div>	
+   </script>
+   <script type="text/ng-template"  id="text_body.html">
+      <textarea class="form-control" ng-model="item._answer"></textarea>
+   </script>
+   <script type="text/ng-template"  id="choice_body.html">
+      <div ng-if="!item.repeats">
+          <div class="radio" ng-repeat="choice in item.option">
+		     <label >
+			       <input type="radio" ng-value="choice.valueCoding" ng-model="item._answer">
+			       {{ choice.valueCoding.display }}					        
+		     </label>					     			
+		  </div>		
+      </div>
+      <div ng-if="item.repeats">
+         <div class="radio" ng-repeat="choice in item.option">
+	        <label >
+		       <input type="checkbox" ng-checked="isChecked(item, choice)" ng-changed="changeChecked(item, choice)">
+		       {{ choice.valueCoding.display }}					       
+		    </label>			
+		 </div>		
+      </div>
+   </script>
+   <script type="text/ng-template"  id="open-choice_body.html">
+     <div ng-if="!item.repeats">
+        <div class="radio" ng-repeat="choice in item.option">
+	      <label >
+	       <input type="radio" ng-value="choice.valueCoding" ng-model="item._answer">
+		       {{ choice.valueCoding.display }}					        
+	      </label>					     			
+	    </div>		
+     </div>
+     <div ng-if="item.repeats">
+       <div class="radio" ng-repeat="choice in item.option">
+	     <label >
+	       <input type="checkbox" ng-checked="isChecked(item, choice)" ng-changed="changeChecked(item, choice)">
+	       {{ choice.valueCoding.display }}					       
+	     </label>			
+	   </div>		
+    </div>
+   </script>
+   <script type="text/ng-template"  id="boolean_body.html">
+      <div class="radio">
+		<label>
+		  <input type="radio" value="true" ng-model="item._answer">
+	       Yes
+		</label>
+	  </div>
+	  <div class="radio">
+		<label>
+		  <input type="radio" value="false" ng-model="item._answer">
+ 	       No
+  	    </label>			
+	  </div>		    
+  </script>
+  
+  <script type="text/ng-template"  id="group_body.html">
+    <form class="form">
+    <div ng-repeat="item in item.item" class="form-group">    
+       <label for="{{ item._id }}" class="control-label" ng-include="getHeadTemplate(item)"></label>     
+       <button class="btn btn-default btn-xs" ng-click="add(item._parent, $index)">insert</button>          
+       <div ng-include="getBodyTemplate(item)"></div>     
+    </div>    
+    </form>
+  </script>
+   
+  <div class="pull-left">
+	 <a href="javascript:" ng-click="prev();">Back</a>
+  </div>
+  <div class="pull-right">
+	 <a href="javascript:" ng-click="cancel()">Cancel</a>
+  </div>
+  <p class="text-center">Step {{ (page + 1) }} of X</p>	 
+    
+  <div ng-include="getHeadTemplate(item)"></div>
+  <div ng-include="getBodyTemplate(item)"></div>     
+  
+  <button class="btn btn-primary" type="button" ng-click="next()">next</button>
+       
+</div>

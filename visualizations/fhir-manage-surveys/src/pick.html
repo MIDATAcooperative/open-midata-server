@@ -1,0 +1,19 @@
+<div ng-controller="PickCtrl" class="container" ng-cloak>
+    <div ng-show="surveys.length == 0">
+		<p class="head">Survey participation</p>
+		<p>This visualizations allows you to participate in surveys shared with you. You currently do not have any survey to participate.</p>
+	</div>
+	<div ng-show="(surveys.length > 0 || edit)">
+	   <h1>Select a survey</h1>
+	   <ul class="list-group">
+	     <li class="list-group-item" ng-repeat="survey in surveys">
+	        <a href="javascript:" ng-click="startSurvey(survey, false);">{{ survey.title }}</a>	
+	        <button class="btn btn-default btn-xs" type="button" ng-click="startSurvey(survey, true);">edit</button>
+	        <button class="btn btn-default btn-xs" type="button" ng-click="showResults(survey);">results</button>			    
+	        <span class="badge" ng-show="survey.answered">Last Answered: {{ survey.answered.created | date }}</span>
+	        <span class="badge" ng-show="survey.frequency">{{ survey.frequency }}</span>
+	     </li>
+	     <li class="list-group-item" ng-show="edit"><a href="javascript:" ng-click="createNew();">Create new survey</a>
+	    </ul>
+	</div>
+</div>

@@ -176,7 +176,7 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 		ExecutionInfo info = info();
 
 		Query query = new Query();		
-		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Observation");
+		QueryBuilder builder = new QueryBuilder(params, query, "fhir/QuestionnaireResponse");
 
 		builder.handleIdRestriction();
 		builder.recordOwnerReference("patient", "Patient");

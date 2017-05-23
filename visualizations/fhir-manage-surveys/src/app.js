@@ -15,11 +15,7 @@ angular.module('surveys', [ 'midata', 'ui.router','ui.bootstrap', 'pascalprecht.
 	.translations('fr', fr)
 	.fallbackLanguage('en');
 	
-	 $stateProvider
-	    .state('answer', {
-	      url: '/answer?questionnaire&response&page&authToken',	   
-	      templateUrl: 'answer.html'
-	    })
+	 $stateProvider	  
 	    .state('edititem', {
 	      url: '/edititem?questionnaire&item&parent&idx&authToken',	   
 	      templateUrl: 'edititem.html'
