@@ -10,6 +10,7 @@
      </span>
    </script>
    <script type="text/ng-template"  id="display_body.html">
+     <p></p>
    </script>
    <script type="text/ng-template"  id="string_body.html">
       <input class="form-control" type="text" ng-model="item._answer">
@@ -32,6 +33,7 @@
       <textarea class="form-control" ng-model="item._answer"></textarea>
    </script>
    <script type="text/ng-template"  id="choice_body.html">
+     {{ item._answer }}
       <div ng-if="!item.repeats">
           <div class="radio" ng-repeat="choice in item.option">
 		     <label >
@@ -43,28 +45,41 @@
       <div ng-if="item.repeats">
          <div class="radio" ng-repeat="choice in item.option">
 	        <label >
-		       <input type="checkbox" ng-checked="isChecked(item, choice)" ng-changed="changeChecked(item, choice)">
+		       <input type="checkbox" ng-model="choice._dummy" ng-checked="isChecked(item, choice)" ng-change="changeChecked(item, choice)">
 		       {{ choice.valueCoding.display }}					       
 		    </label>			
 		 </div>		
       </div>
    </script>
    <script type="text/ng-template"  id="open-choice_body.html">
+     {{ item._answer }}
      <div ng-if="!item.repeats">
         <div class="radio" ng-repeat="choice in item.option">
 	      <label >
 	       <input type="radio" ng-value="choice.valueCoding" ng-model="item._answer">
 		       {{ choice.valueCoding.display }}					        
 	      </label>					     			
-	    </div>		
+	    </div>	
+        <div class="radio">
+	      <label >
+	       <input type="radio" ng-value="item._answerStr" ng-model="item._answer">
+		   <input type="text" class="form-control" ng-model="item._answerStr.valueString" >					        
+	      </label>					     			
+	    </div>	
      </div>
      <div ng-if="item.repeats">
-       <div class="radio" ng-repeat="choice in item.option">
+       <div class="checkbox" ng-repeat="choice in item.option">
 	     <label >
-	       <input type="checkbox" ng-checked="isChecked(item, choice)" ng-changed="changeChecked(item, choice)">
+	       <input type="checkbox" ng-model="choice._dummy" ng-checked="isChecked(item, choice)" ng-change="changeChecked(item, choice)">
 	       {{ choice.valueCoding.display }}					       
 	     </label>			
 	   </div>		
+        <div class="checkbox">
+	     <label >
+	       <input type="checkbox" ng-model="choice._dummy" ng-checked="isChecked(item, item._answerStr)" ng-change="changeChecked(item, item._answerStr)">
+	       <input type="text" class="form-control" ng-model="item._answerStr.valueString" >					       
+	     </label>			
+	   </div>
     </div>
    </script>
    <script type="text/ng-template"  id="boolean_body.html">
@@ -83,13 +98,12 @@
   </script>
   
   <script type="text/ng-template"  id="group_body.html">
-    <form class="form">
+    <p></p>
     <div ng-repeat="item in item.item" class="form-group">    
-       <label for="{{ item._id }}" class="control-label" ng-include="getHeadTemplate(item)"></label>     
-       <button class="btn btn-default btn-xs" ng-click="add(item._parent, $index)">insert</button>          
+       <label for="{{ item._id }}" class="control-label" ng-include="getHeadTemplate(item)"></label>                     
        <div ng-include="getBodyTemplate(item)"></div>     
     </div>    
-    </form>
+   
   </script>
    
   <div class="pull-left">
@@ -98,10 +112,12 @@
   <div class="pull-right">
 	 <a href="javascript:" ng-click="cancel()">Cancel</a>
   </div>
-  <p class="text-center">Step {{ (page + 1) }} of X</p>	 
-    
+  <p class="text-center">Page {{ (page + 1) }}</p>	 
+   
+  <form class="form"> 
   <div ng-include="getHeadTemplate(item)"></div>
   <div ng-include="getBodyTemplate(item)"></div>     
+  </form>
   
   <button class="btn btn-primary" type="button" ng-click="next()">next</button>
        

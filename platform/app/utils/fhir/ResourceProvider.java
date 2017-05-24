@@ -566,28 +566,32 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 	 * @return display of codeable concept
 	 */
 	protected String setRecordCodeByCodeableConcept(Record record, CodeableConcept cc, String defaultContent) {
-	  record.code = new HashSet<String>(); 
-	  String display = null;
-	  try {
-		  if (cc != null && !cc.isEmpty()) {
-		  for (Coding coding : cc.getCoding()) {
-			if (coding.getDisplay() != null && display == null) display = coding.getDisplay();
-			if (coding.getCode() != null && coding.getSystem() != null) {
-				record.code.add(coding.getSystem() + " " + coding.getCode());
-			}
-		  }	  
-		  
-			ContentInfo.setRecordCodeAndContent(record, record.code, null);
-		  
-		  } else {
-			  ContentInfo.setRecordCodeAndContent(record, null, defaultContent);
-		  }
-	  } catch (AppException e) {
-		    ErrorReporter.report("FHIR (set record code)", null, e);	
-			throw new UnprocessableEntityException("Error determining MIDATA record code.");
-	  }
-	  return display;
+	  return setRecordCodeByCodings(record, cc != null ? cc.getCoding() : null, defaultContent);
 	}
+	
+	protected String setRecordCodeByCodings(Record record, List<Coding> codings, String defaultContent) {
+		  record.code = new HashSet<String>(); 
+		  String display = null;
+		  try {
+			  if (codings != null && !codings.isEmpty()) {
+			  for (Coding coding : codings) {
+				if (coding.getDisplay() != null && display == null) display = coding.getDisplay();
+				if (coding.getCode() != null && coding.getSystem() != null) {
+					record.code.add(coding.getSystem() + " " + coding.getCode());
+				}
+			  }	  
+			  
+				ContentInfo.setRecordCodeAndContent(record, record.code, null);
+			  
+			  } else {
+				  ContentInfo.setRecordCodeAndContent(record, null, defaultContent);
+			  }
+		  } catch (AppException e) {
+			    ErrorReporter.report("FHIR (set record code)", null, e);	
+				throw new UnprocessableEntityException("Error determining MIDATA record code.");
+		  }
+		  return display;
+		}
 	
 	protected String stringFromDateTime(DateTimeType date) {
 		    if (date == null) return "";

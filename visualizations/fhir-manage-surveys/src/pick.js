@@ -21,11 +21,12 @@ angular.module('surveys')
 				midataServer.fhirSearch(midataServer.authToken, "QuestionnaireResponse")
 				.then(function(results2) {
 				  var surveyIdx = {};
-				  angular.forEach($scope.surveys, function(s) { surveyIdx["Questionnaire/"+s.id] = s; });
+				  angular.forEach($scope.surveys, function(s) { surveyIdx["Questionnaire/"+s.id] = s;s.answerCount = 0; });
 				  angular.forEach(results2.data.entry, function(record) {
 					  var r = record.resource;
 					  if (r.questionnaire && r.questionnaire.reference) {
 						  var survey = surveyIdx[r.questionnaire.reference];
+						  survey.answerCount++;
 						  if (survey != null && (!survey.answered || survey.answered.created < new Date(r.authored))) {
 							  survey.answered = { created : new Date(r.authored) };
 						  }
@@ -38,12 +39,8 @@ angular.module('surveys')
 	   		$state.go("^.editsurvey");
 	   	};
 	   	     	     	
-	   	$scope.startSurvey = function(survey, edit) {
-	   		if (edit) {
-	   			$state.go("^.previewsurvey", { questionnaire : survey.id });
-	   		} else {
-	   			$state.go("^.answer", { questionnaire : survey.id });
-	   		}
+	   	$scope.startSurvey = function(survey) {	   		
+	   		$state.go("^.previewsurvey", { questionnaire : survey.id });	   		
 	   	};
 	   	
 	   	$scope.showResults = function(survey) {	   		

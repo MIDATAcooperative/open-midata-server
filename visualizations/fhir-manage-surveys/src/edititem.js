@@ -4,7 +4,7 @@ angular.module('surveys')
 		
 	   var loc;
 	   
-	   $scope.types = ["group", "display", "boolean", "decimal", "integer", "date", "dateTime", "time", "string", "text" ,"url", "choice", "open-choice", "attachment", "reference", "quantity" ];
+	   $scope.types = ["display", "group", "string", "text", "choice", "open-choice", "boolean", "decimal", "integer", "date", "dateTime", "time", "url", "quantity" ];
 	   
 	   $scope.init = function(surveyId, itemId, parentId, idx) {
 		   
@@ -37,6 +37,10 @@ angular.module('surveys')
 	   
 	   $scope.cancel = function() {
 		   $state.go("^.previewsurvey", { questionnaire : $scope.survey.id });
+	   };
+	   
+	   $scope.hasRequired = function() {
+		   return $scope.item.type != "display" && $scope.item.type != "group";
 	   };
 	   
 	   $scope.hasRepeats = function() {

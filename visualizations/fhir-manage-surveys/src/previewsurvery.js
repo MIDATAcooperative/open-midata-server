@@ -11,6 +11,16 @@ angular.module('surveys')
 		});
 	};
 	
+	$scope.getText = function(item) {
+		if (item && item.text) return item.text;
+		return "<No text>";
+	};
+	
+	$scope.getTemplate = function(item) {
+		if (item.type === "group") return "group_body.html";
+		return "section.html";
+	};
+	
 	$scope.getHeadTemplate = function(item) {
 		return "display_head.html";
 	};

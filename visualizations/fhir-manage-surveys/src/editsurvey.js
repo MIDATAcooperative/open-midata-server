@@ -2,6 +2,7 @@ angular.module('surveys')
 .controller('EditSurveyCtrl', ['$scope', '$state', 'editor', 'midataServer', 'midataPortal', 
 	function($scope, $state, editor, midataServer, midataPortal) {
 			    
+	   $scope.stati = ["draft", "active", "retired", "unknown" ];
 	   $scope.init = function(id) {
 		   console.log(id);
 		   var start;

@@ -215,8 +215,7 @@ public class QuestionnaireResourceProvider extends ResourceProvider<Questionnair
 
 	public void prepare(Record record, Questionnaire theQuestionnaire) throws AppException {
 		// Set Record code and content
-				
-		ContentInfo.setRecordCodeAndContent(record, null, "Questionnaire");
+		String display = setRecordCodeByCodings(record, theQuestionnaire.getCode(), "Questionnaire");			
 				
 		record.name = theQuestionnaire.getTitle();
 		if (record.name == null) record.name = "Questionnaire";

@@ -1,4 +1,4 @@
-angular.module('surveys', [ 'midata', 'ui.router','ui.bootstrap', 'pascalprecht.translate' ])
+angular.module('surveys', [ 'midata', 'ui.router','ui.bootstrap', 'pascalprecht.translate', 'chart.js' ])
 .config(['$stateProvider', '$urlRouterProvider', '$translateProvider', function($stateProvider, $urlRouterProvider, $translateProvider) {	    
     
 	$translateProvider

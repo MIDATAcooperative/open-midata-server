@@ -205,7 +205,7 @@ public class MedicationStatementResourceProvider extends ResourceProvider<Medica
 
 	public void prepare(Record record, MedicationStatement theMedicationStatement) throws AppException {
 		// Set Record code and content
-		setRecordCodeByCodeableConcept(record, null, "MedicationStatement");		
+		setRecordCodeByCodings(record, null, "MedicationStatement");		
 		
 		String date = "No time";		
 		if (theMedicationStatement.hasEffectiveDateTimeType()) {

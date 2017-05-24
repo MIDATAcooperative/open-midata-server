@@ -35,7 +35,7 @@ angular.module('surveys')
 		if (survey.id) {
 		  return midataServer.fhirUpdate(midataServer.authToken, survey).then(function(result) {
 			 console.log(result.data);
-			 survey.meta.version = result.data.meta.version;
+			 
 		  });			
 		} else {
 		  return midataServer.fhirCreate(midataServer.authToken, survey).then(function(result) {
@@ -50,9 +50,9 @@ angular.module('surveys')
 		return {			
 			 "linkId" : "",			    
 			 "code" : [], 
-			 "prefix" : "<string>", // E.g. "1(a)", "2.5.3"
-			 "text" : "<string>", // Primary text for the item
-			 "type" : "<code>", // R!  group | display | boolean | decimal | integer | date | dateTime +
+			 "prefix" : "", 
+			 "text" : "", 
+			 "type" : "display",
 			 
 			 "required" : true,
 			 "repeats" : false,			 
@@ -172,7 +172,7 @@ angular.module('surveys')
 	};
 	
 	editor.end = function() {
-		currentQuestionnaire = undefined;
+		currentQuestionnaire = {};
 	};
 	
 	editor.getQuestionnaire = function() {
@@ -486,7 +486,10 @@ angular.module('surveys')
 				   inc(linked.answer.valueUri, answer.valueUri);				   
 			   } else if (answer.valueCoding !== undefined) {
 				   if (!linked.answer.valueCoding) linked.answer.valueCoding = {  };
-				   inc(linked.answer.valueCoding, answer.valueCoding.system+" "+answer.valueCoding.code);				   
+				   if (!linked.labelMap) linked.labelMap = {};
+				   var k = answer.valueCoding.system+" "+answer.valueCoding.code;
+				   if (!linked.labelMap[k]) linked.labelMap[k] = answer.valueCoding.display;
+				   inc(linked.answer.valueCoding, k);				   
 			   }			 
 			});
 			
@@ -516,6 +519,19 @@ angular.module('surveys')
 		
 		angular.forEach(responses, function(singleResponse) {
 			processItems(singleResponse.item);
+		});
+		
+		angular.forEach(results, function(result) {
+			if (result.answer && result.answer.some) {
+				result.labels = [];
+				result.values = [];
+				angular.forEach(result.answer.some, function(v,k) {
+					if (result.labelMap && result.labelMap[k]) result.labels.push(result.labelMap[k]);
+					else result.labels.push(k);
+					result.values.push(v);
+				});
+				result.values = [ result.values ];
+			}
 		});
 		
 		return results;

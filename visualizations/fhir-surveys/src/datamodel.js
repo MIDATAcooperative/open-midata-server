@@ -35,7 +35,7 @@ angular.module('surveys')
 		if (survey.id) {
 		  return midataServer.fhirUpdate(midataServer.authToken, survey).then(function(result) {
 			 console.log(result.data);
-			 survey.meta.version = result.data.meta.version;
+			 
 		  });			
 		} else {
 		  return midataServer.fhirCreate(midataServer.authToken, survey).then(function(result) {
@@ -50,9 +50,9 @@ angular.module('surveys')
 		return {			
 			 "linkId" : "",			    
 			 "code" : [], 
-			 "prefix" : "<string>", // E.g. "1(a)", "2.5.3"
-			 "text" : "<string>", // Primary text for the item
-			 "type" : "<code>", // R!  group | display | boolean | decimal | integer | date | dateTime +
+			 "prefix" : "", 
+			 "text" : "", 
+			 "type" : "display",
 			 
 			 "required" : true,
 			 "repeats" : false,			 
@@ -172,7 +172,7 @@ angular.module('surveys')
 	};
 	
 	editor.end = function() {
-		currentQuestionnaire = undefined;
+		currentQuestionnaire = {};
 	};
 	
 	editor.getQuestionnaire = function() {
@@ -292,15 +292,42 @@ angular.module('surveys')
 			qitem._answer = first(ritem).valueUri;			
 			break;
 		case "choice":
-			if (qitem.repeats) {
-				
-			} else {
-				var cod = first(ritem).valueCoding;
-				if (cod) qitem._answer = cod;
-			}
-			break;
 		case "open-choice":
-			break;
+			
+			var findOption = function(answer) {
+			   if (!answer.valueCoding) return answer;
+			   for (var i=0;i<qitem.option.length;i++) {
+				   if (qitem.option[i].valueCoding.code == answer.valueCoding.code && qitem.option[i].valueCoding.system == answer.valueCoding.system) {
+					   return qitem.option[i];
+				   }
+			   }
+			   return answer;
+		    };
+		    
+			if (qitem.repeats) {
+				if (first(ritem)) {
+				  qitem._answer = [];
+				  qitem._answerStr = { valueString : "" };
+				  angular.forEach(ritem.answer, function(answer) {
+					 answer = findOption(answer);
+					 if (answer.valueString) qitem._answerStr = answer;
+					 if (answer.valueString || answer.valueCoding) qitem._answer.push(answer);
+				  });
+				} else {
+				  qitem._answer = [];
+				  qitem._answerStr = { valueString : "" };
+				}
+			} else {
+				var cod = findOption(first(ritem));
+				if (cod.valueString || cod.valueCoding) {
+					qitem._answer = cod;
+					if (cod.valueString) qitem._answerStr = cod; else qitem._answerStr = { valueString : "" };
+				} else {
+					qitem._answerStr = { valueString : "" };
+					qitem._answer = undefined;
+				}
+			}
+			break;					
 		case "attachment":
 			break;
 		case "reference":
@@ -349,10 +376,10 @@ angular.module('surveys')
 			ritem.answer = [ { "valueUri" : qitem._answer }];
 			break;
 		case "choice":
-			ritem.answer = [ { "valueCoding" : qitem._answer }];
-			break;
 		case "open-choice":
-			break;
+			if (qitem.repeats) ritem.answer = qitem._answer;
+			else ritem.answer = [ qitem._answer ];
+			break;		
 		case "attachment":
 			break;
 		case "reference":
@@ -363,9 +390,7 @@ angular.module('surveys')
 		qitem._answer = undefined;
 	};
 	
-	var bundleResponse = function(qitem) {
-		console.log("BR");
-		console.log(qitem);
+	var bundleResponse = function(qitem) {		
 		var ritem = qitem._response;
 		parseResponse(qitem, ritem);
 		
@@ -516,6 +541,17 @@ angular.module('surveys')
 		
 		angular.forEach(responses, function(singleResponse) {
 			processItems(singleResponse.item);
+		});
+		
+		angular.forEach(results, function(result) {
+			if (result.answer && result.answer.some) {
+				result.labels = [];
+				result.values = [];
+				angular.forEach(result.answer.some, function(v,k) {
+					result.labels.push(k);
+					result.values.push(v);
+				});
+			}
 		});
 		
 		return results;

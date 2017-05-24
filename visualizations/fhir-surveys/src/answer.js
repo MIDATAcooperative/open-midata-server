@@ -52,6 +52,17 @@ angular.module('surveys')
 			  $state.go('^.pick');
 			});
 		};
+		
+		$scope.isChecked = function(item, choice) {
+			return item._answer.indexOf(choice) >= 0;
+		};
+		
+		$scope.changeChecked = function(item, choice) {
+			var i = item._answer.indexOf(choice);
+			if (i >= 0) {
+				item._answer.splice(i,1);
+			} else item._answer.push(choice);			
+		};
 			
 		$scope.init($state.params.questionnaire, $state.params.response, $state.params.page);
 	}
