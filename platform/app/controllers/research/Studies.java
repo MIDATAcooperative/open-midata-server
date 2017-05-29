@@ -210,11 +210,14 @@ public class Studies extends APIController {
 	 * @throws InternalServerException
 	 */
 	@APICall
+	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	public static Result listAdmin() throws JsonValidationException, InternalServerException {
 	   	   
+	   JsonNode json = request().body().asJson();
+	   Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
 	   Set<String> fields = Sets.create("createdAt","createdBy","description","name");
-	   Set<Study> studies = Study.getAll(null, CMaps.map("validationStatus", StudyValidationStatus.VALIDATION), fields);
+	   Set<Study> studies = Study.getAll(null, properties, fields);
 	   
 	   return ok(JsonOutput.toJson(studies, "Study", fields));
 	}

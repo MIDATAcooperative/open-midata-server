@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('OAuth2LoginCtrl', ['$scope', '$location', '$translate', 'server', '$state', 'status', 'session', 'apps', 'oauth', function($scope, $location, $translate, server, $state, status, session, apps, oauth) {
+.controller('OAuth2LoginCtrl', ['$scope', '$location', '$translate', 'server', '$state', 'status', 'session', 'apps', 'studies', 'oauth', function($scope, $location, $translate, server, $state, status, session, apps, studies, oauth) {
 	
 	// init
 	$scope.login = { role : "MEMBER"};	
@@ -18,14 +18,28 @@ angular.module('portal')
 		$scope.status.doBusy(apps.getAppInfo($scope.params.client_id))
 		.then(function(results) {
 			$scope.app = results.data;
+			$scope.login.role = $scope.app.targetUserRole === 'ANY'? "MEMBER" : $scope.app.targetUserRole;
 			oauth.init($scope.params.client_id, $scope.params.redirect_uri, $scope.params.state, $scope.params.code_challenge, $scope.params.code_challenge_method);
 			$scope.device = oauth.getDeviceShort();
 			$scope.consent = "App: "+$scope.app.name+" (Device: "+$scope.device+")";
+			
+			if ($scope.app.linkedStudy) {
+				$scope.status.doBusy(studies.search({ _id : $scope.app.linkedStudy }, ["code", "name", "description"]))
+				.then(function(studyresult) {
+					if (studyresult.data && studyresult.data.length) {
+					  $scope.app.linkedStudyCode = studyresult.data[0].code;
+				 	  $scope.app.linkedStudyName = studyresult.data[0].name;
+				 	  $scope.app.linkedStudyDescription = studyresult.data[0].description;
+					}
+				});
+			}
 		});
 	};
 	
 	// login
 	$scope.dologin = function() {
+		$scope.error = null;
+		
 		// check user input
 		if (!$scope.login.email || !$scope.login.password) {
 			$scope.error = { code : "error.missing.credentials" };
@@ -49,7 +63,9 @@ angular.module('portal')
 	};	
 	
 	$scope.confirm = function() {
-		$scope.status.doAction("login", oauth.login(true))
+		$scope.error = null;
+		
+		$scope.status.doAction("login", oauth.login(true, $scope.login.confirmStudy))
 		.then(function(result) {
 		  if (result !== "ACTIVE") {
 			  if (result.istatus) { $scope.pleaseConfirm = true; }	

@@ -30,6 +30,7 @@ import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.sync.Instances;
 
 /**
  * used by portal to retrieve data groups
@@ -163,7 +164,7 @@ public class FormatAPI extends Controller {
 		cc.source = JsonValidation.getStringOrNull(json,  "source");
 		
 		ContentInfo.add(cc);
-		RecordGroup.invalidate();
+		Instances.cacheClear("content", null);
 		
 		return ok();
 	}
@@ -192,7 +193,7 @@ public class FormatAPI extends Controller {
 		cc.source = JsonValidation.getStringOrNull(json,  "source");
 		
 		ContentInfo.upsert(cc);
-		RecordGroup.invalidate();
+		Instances.cacheClear("content", null);
 		
 		return ok();
 	}
@@ -225,7 +226,7 @@ public class FormatAPI extends Controller {
 		cc.label = JsonExtraction.extractStringMap(json.get("label"));
 		
 		RecordGroup.add(cc);
-		RecordGroup.invalidate();
+		Instances.cacheClear("content", null);
 		
 		return ok();
 	}
@@ -244,7 +245,7 @@ public class FormatAPI extends Controller {
 		cc.label = JsonExtraction.extractStringMap(json.get("label"));
 		
 		RecordGroup.upsert(cc);
-		RecordGroup.invalidate();
+		Instances.cacheClear("content", null);
 		return ok();
 	}
 	
@@ -253,7 +254,7 @@ public class FormatAPI extends Controller {
 	@Security.Authenticated(AdminSecured.class)
 	public static Result deleteGroup(String id) throws AppException {
 		RecordGroup.delete(new MidataId(id));	
-		RecordGroup.invalidate();
+		Instances.cacheClear("content", null);
 		return ok();
 	}
 	

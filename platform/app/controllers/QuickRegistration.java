@@ -55,18 +55,21 @@ public class QuickRegistration extends APIController {
 		
 		
 		String appName = JsonValidation.getString(json, "app");
+		String studyName = null;
 		Study study = null;
 		
-		if (json.has("study")) {
-			String studyCode = JsonValidation.getString(json, "study");
-			study = Study.getByCodeFromMember(studyCode, Study.ALL);
+		if (json.has("study")) { studyName = JsonValidation.getString(json, "study"); }
+						
+		Plugin app = Plugin.getByFilename(appName, Plugin.ALL_PUBLIC);
+		if (app == null) throw new BadRequestException("error.invalid.appcode", "Unknown code for app.");
+				
+		
+		if (studyName != null) {
+			study = Study.getByCodeFromMember(studyName, Study.ALL);
 			if (study == null) throw new BadRequestException("error.invalid.code", "Unknown code for study.");
 			
 			if (!study.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING)) throw new BadRequestException("error.closed.study", "Study not searching for members.");
 		}
-		
-		Plugin app = Plugin.getByFilename(appName, Plugin.ALL_PUBLIC);
-		if (app == null) throw new BadRequestException("error.invalid.appcode", "Unknown code for app.");
 		
 		String email = JsonValidation.getEMail(json, "email");
 		String firstName = JsonValidation.getString(json, "firstname");
@@ -120,7 +123,7 @@ public class QuickRegistration extends APIController {
 		if (study != null) controllers.members.Studies.requestParticipation(user._id, study._id);
 		
 		if (device != null) {
-		   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true);
+		   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true, true);
 		}
 		
 		Circles.fetchExistingConsents(user._id, user.emailLC);
@@ -193,7 +196,7 @@ public class QuickRegistration extends APIController {
 		Application.sendWelcomeMail(app._id,user);
 		Circles.fetchExistingConsents(user._id, user.emailLC);
 		
-		MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, phrase, true);		
+		MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, phrase, true, false);		
 		appInstance.status = ConsentStatus.ACTIVE;
 		
 		/*RecordManager.instance.clear();

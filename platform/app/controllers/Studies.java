@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import actions.APICall;
 import models.MidataId;
 import models.Study;
+import models.enums.UserRole;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -36,10 +37,10 @@ public class Studies extends APIController {
 	 * @throws AuthException
 	 */
 	@APICall
-	@Security.Authenticated(AnyRoleSecured.class)
+	
 	@BodyParser.Of(BodyParser.Json.class)
 	public static Result search() throws JsonValidationException, InternalServerException, AuthException {
-	   MidataId user = new MidataId(request().username());	   
+	   //MidataId user = new MidataId(request().username());	   
 	   JsonNode json = request().body().asJson();
 	   JsonValidation.validate(json, "properties", "fields");
 							   		
@@ -47,8 +48,8 @@ public class Studies extends APIController {
 	   ObjectIdConversion.convertMidataIds(properties, "_id", "owner", "createdBy", "studyKeywords");
 	   Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 	   
-	   Rights.chk("Studies.search", getRole(), properties, fields);	   	   
-	   Set<Study> studies = Study.getAll(user, properties, fields);
+	   Rights.chk("Studies.search", UserRole.MEMBER, properties, fields);	   	   
+	   Set<Study> studies = Study.getAll(null, properties, fields);
 	   
 	   return ok(JsonOutput.toJson(studies, "Study", fields));
 	}	

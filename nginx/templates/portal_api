@@ -1,5 +1,6 @@
 server {
         listen 9000;
+        listen [::]:9000;
         server_name DOMAIN;
 
         ssl on;

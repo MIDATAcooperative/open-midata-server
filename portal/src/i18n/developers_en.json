@@ -60,6 +60,9 @@
   "manageapp" : {
     "messages_btn" : "Edit Messages",
     "stats_btn" : "Debug Info",
+    "debug_btn" : "API Tester",
+    "linkedStudy" : "Study linked to App (Code)",
+    "mustParticipateInStudy" : "Study Required",
     "info" : {
        "filename" : "This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your app for a specific role only? Otherwise choose 'Any Role'.",
@@ -76,7 +79,8 @@
        "defaultQuery_mobile" : "Query restricting the access of the app to the database. Access must be restricted by 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
        "defaultQuery" : "Query restricting the access of the plugin to the database. Access must be restricted by at least one of 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
        "defaultQuery_extra" : "Look for valid values for 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { \"group\" : \"all\", \"group-system\" : \"v1\" }. Please refine query before plugin or app goes in production.",
-       "secret" : "Your app will need this 'secret' during login. Choose whatever you like."
+       "secret" : "Your app will need this 'secret' during login. Choose whatever you like.",
+       "mustParticipateInStudy" : "User must participate in Study in order to use app."
     }
   },
   
@@ -97,5 +101,9 @@
     "empty" : "No information has been recorded since debug information was last cleared.",
     "reload_btn" : "Refresh",
     "reset_btn" : "Clear"    
+  },
+  
+  "appdebug" : {
+    "title" : "API Tester"
   }
 }

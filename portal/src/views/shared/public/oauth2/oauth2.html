@@ -28,7 +28,7 @@
 							    
 								<input type="email" class="form-control" translate translate-attr-placeholder="login.email_address" ng-model="login.email" style="margin-bottom:5px;" autofocus>
 								<input type="password" class="form-control" translate translate-attr-placeholder="login.password" ng-model="login.password" style="margin-bottom:5px;">
-								<select class="form-control" ng-model="login.role" ng-options="role.value as role.name | translate for role in roles"></select>
+								<select class="form-control" ng-show="app.targetUserRole=='ANY'" ng-model="login.role" ng-options="role.value as role.name | translate for role in roles"></select>
 								<div class="extraspace"></div>
 								<button type="submit" ng-disabled="status.action=='login'" class="btn btn-lg btn-primary btn-block" translate="oauth2.sign_in_btn"></button>
 								<div class="margin-top">
@@ -57,11 +57,26 @@
 		            	<div class="panel-body">
 		            	  <p><strong>{{ app.i18n[translate.use()].name || app.name }}</strong></p>
 		            	  <p>{{ app.i18n[translate.use()].description || app.description }}</p>
+		            	  <hr>
+		            	  <p translate="oauth2.reshares_data" ng-show="app.resharesData"></p>
+		            	  <p translate="oauth2.allows_user_search" ng-show="app.allowsUserSearch"></p>
 		            	  <p translate="oauth2.requests_access"></p>
 		            	  <div ng-repeat="group in app.defaultQuery.group" translate="oauth2.shares_group" translate-value-group="{{ group }}"></div>
 		            	  <div ng-repeat="format in app.defaultQuery.format" translate="oauth2.shares_format" translate-value-format="{{ format }}"></div>
 		            	  <div ng-repeat="content in app.defaultQuery.content" translate="oauth2.shares_content" translate-value-content="{{ content }}"></div>
 		            	  
+		            	  <div ng-show="app.linkedStudy">
+		            	    <hr>
+		            	    <label>
+		            	      <input type="checkbox" ng-model="login.confirmStudy">
+		            	      <span translate="oauth2.confirm_study"></span>:
+		            	    </label>
+		            	    <p>{{ app.linkedStudyName }}</p>
+		            	    <p>{{ app.linkedStudyDescription }}</p>
+		            	   
+		            	  </div>
+		            	  <p translate="{{ error.code }}" ng-show="error" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                           
+	                        </p>
 		            	  <button type="button" class="btn btn-primary" translate="oauth2.confirm_btn" ng-click="confirm();"></button>
 		            	</div>
 		            </div>

@@ -1,8 +1,15 @@
 
 <div ng-controller="AdminListStudiesCtrl" ng-cloak>
     <div class="panel panel-primary">
-		<div class="panel-heading">Studies</div>
+		<div class="panel-heading" translate="admin_studies.title"></div>
 		<div class="body">
+		
+	 <form class="css-form form-horizontal">		   
+		   <formrow myid="criteria" label="admin_studies.criteria">
+		      <select  class="form-control" id="criteria" ng-change="doreload();" ng-model="selection.criteria" ng-options="crit as crit.id|translate for crit in searches"></select>
+		   </formrow>		      
+	  </form>	
+		
 	<loader busy="status.isBusy !== false">	
 	<table ng-show="results.length > 0" class="table table-hover">
 	  <thead>
@@ -13,14 +20,14 @@
 	    </tr>
 	  </thead>
 	  <tbody>
-	    <tr ng-repeat="study in results">
+	    <tr ng-repeat="study in results | orderBy : 'createdAt' : true">
 	      <td><a ui-sref="^.study({ studyId : study._id})">{{ study.name }}</a></td>	  
 	      
 	      <td>{{ study.createdAt | date }}</td>	         
 	    </tr>
 	  </tbody>
 	</table>
-	<p ng-hide="results.length">No studies are waiting for validation.</p>	
+	<p ng-hide="results.length" translate="admin_studies.empty"></p>	
 	</loader>
 	</div>
 	</div>
