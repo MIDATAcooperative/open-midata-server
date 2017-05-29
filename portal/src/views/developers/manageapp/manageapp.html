@@ -104,7 +104,11 @@
 		      <span translate="manageapp.info.allowsUserSearch"></span>
 		    </label>
 		    </div>
-		  </formrow>			 
+		  </formrow>	
+		  
+		
+		  
+		  		 
 		  <formrow myid="authorizationUrl" label="Authorization URL" ng-show="app.type == 'oauth1' || app.type == 'oauth2'">
 		    <input type="text" id="authorizationUrl" name="authorizationUrl" class="form-control" placeholder="Authorization URL" ng-model="app.authorizationUrl">
 		  </formrow>
@@ -133,6 +137,22 @@
 		   <formrow myid="developmentServer" label="Development Server" ng-hide="app.type == 'mobile' || !app.developmentServer">
 		    <p class="form-control-static">{{ app.developmentServer }}</p>
 		  </formrow>
+		  
+		  <hr ng-show="app.type == 'mobile'">
+		  <formrow myid="linkedStudy" label="manageapp.linkedStudy" ng-show="app.type == 'mobile'">
+		    <input type="text" id="linkedStudy" ng-disabled="!allowStudyConfig" name="linkedStudy" class="form-control" placeholder="Study" ng-model="app.linkedStudyCode">
+		    <formerror myid="linkedStudy" type="invalid" message="error.unknown.study" ></formerror>
+		     <p class="help-block">{{ app.linkedStudyName }}</p> 
+		  </formrow>
+		   <formrow myid="mustParticipateInStudy" label="manageapp.mustParticipateInStudy" ng-show="app.type == 'mobile'">
+		    <div class="checkbox">
+		    <label>
+		      <input type="checkbox" id="mustParticipateInStudy" ng-disabled="!allowStudyConfig" name="mustParticipateInStudy" ng-model="app.mustParticipateInStudy" value="true">
+		      <span translate="manageapp.info.mustParticipateInStudy"></span>
+		    </label>
+		    </div>
+		  </formrow>
+		  
 		  <formrow myid="x" label="">
 		    <button type="submit" ng-disabled="status.action=='submit'" class="btn btn-primary">Submit</button>
 		    <button type="button" class="btn btn-default" ng-click="doInstall()" ng-hide="app.type == 'mobile'" ng-disabled="app._id == null">Install from localhost</button>
@@ -140,6 +160,7 @@
 		    
 		    <a class="btn btn-default" ui-sref="^.appmessages({ appId : app._id })" ng-disabled="app._id == null" translate="manageapp.messages_btn"></a>
 		    <a class="btn btn-default" ui-sref="^.appstats({ appId : app._id })" ng-disabled="app._id == null" translate="manageapp.stats_btn"></a>
+		    <a class="btn btn-default" ui-sref="^.appdebug({ appId : app._id })" ng-disabled="app._id == null" translate="manageapp.debug_btn"></a>
 		    <button type="button" class="btn btn-danger" ng-show="allowDelete" ng-click="doDelete()" ng-disabled="status.action=='delete'">Delete</button>
 		  </formrow>
 	     </form>	  

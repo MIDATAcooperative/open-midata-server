@@ -8,6 +8,9 @@
     <formrow id="name" label="editconsent.name">
       <p class="form-control-static">{{ consent.name }}</p>
     </formrow>
+    <formrow id="name" label="editconsent.date_of_creation">
+      <p class="form-control-static">{{ consent.dateOfCreation | date }}</p>
+    </formrow>
     <formrow id="type" label="editconsent.type">
       <p class="form-control-static" ng-show="consent.type == 'CIRCLE'" translate="editconsent.type_circle"></p>
       <p class="form-control-static" ng-show="consent.type == 'HEALTHCARE'" translate="editconsent.type_healthcare"></p>

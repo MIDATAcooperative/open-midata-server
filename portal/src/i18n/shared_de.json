@@ -924,6 +924,9 @@
 
     "oauth2" : {
         "requesting_app" : "Diese Applikation benötigt eine Anmeldung:",
+        "reshares_data" : "This application may share data it has access to with other accounts.",
+        "allows_user_search" : "Other users of this app will be allowed to search for your account.",
+        "confirm_study" : "Participate study",
         "sign_in_btn" : "Anmelden"
     },
 

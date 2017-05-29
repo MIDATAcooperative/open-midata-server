@@ -1,0 +1,63 @@
+
+<div  ng-controller="AppDebugCtrl">
+		
+	<div class="panel panel-primary">
+		<div class="panel-heading"><span translate="appdebug.title"></span>: <b>{{ app.name }}</b> ({{ app.filename }})		  	
+		</div>
+		<div class="body">
+        
+        <form class="form">
+        
+        <div ng-show="saved.length">
+        <label>Saved Requests:</label>
+       <div class="list-group">
+        <a ng-repeat="ext in saved" class="list-group-item clearfix" href="javascript:" ng-click="doload(ext);">[{{ ext.type }}] <b>{{ ext.url }}</b> (<span class="small text-info">{{ ext.body }}</span>)<div class="pull-right"><button class="btn btn-xs btn-default" ng-click="dodelete(ext);">delete</button></div></a>
+       </div>
+       
+       </div>
+        
+        
+        
+        <div class="row extraspace">
+         <div class="col-xs-12"><label>Request to backend: {{ server }}</label></div>
+         <div class="col-xs-2">           
+           <select class="form-control" ng-model="type"><option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option></select>
+         </div>
+         <div class="col-xs-10">
+         <input type="text" class="form-control" ng-model="url">
+         </div>
+        </div>
+
+        <div class="row">          
+          <div class="col-xs-12 extraspace">
+          <label>Authorization:</label>
+          <input class="form-control" ng-model="authheader" >
+          </div>
+        </div>
+
+        <div class="row" ng-show="type != 'GET'">
+          <div class="col-xs-12 extraspace">
+          <label>Body:</label>
+          <textarea class="form-control" ng-model="body" rows="10"></textarea>
+          </div>
+        </div>
+        
+        <div class="row">
+        <div class="col-xs-12 extraspace">
+        <button class="btn btn-primary" type="button" ng-click="dosubmit();">submit</button> 
+        <button class="btn btn-default" type="button" ng-click="dosave();">save</button>
+        </div>
+        </div>
+       
+      </form>
+      
+      <div class="row">
+      <div class="col-xs-12">
+      <label>Request Results:</label>
+      <textarea class="form-control" ng-model="results" rows="40"></textarea>
+      </div>
+      </div>
+      
+		</div>
+    </div>
+</div>
