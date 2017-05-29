@@ -112,7 +112,7 @@ POST    /research/api/login                              controllers.research.Re
 
 POST    /research/api/studies                            controllers.research.Studies.create()
 GET     /research/api/studies                            controllers.research.Studies.list()
-GET     /admin/api/studies                               controllers.research.Studies.listAdmin()
+POST     /admin/api/studies                               controllers.research.Studies.listAdmin()
 GET     /research/api/studies/:study                     controllers.research.Studies.get(study: String)
 GET     /admin/api/studies/:study                        controllers.research.Studies.getAdmin(study: String)
 PUT     /research/api/studies/:study                     controllers.research.Studies.update(study: String)

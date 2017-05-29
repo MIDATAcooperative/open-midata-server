@@ -21,6 +21,7 @@ import models.Plugin;
 import models.PluginDevStats;
 import models.Plugin_i18n;
 import models.Space;
+import models.Study;
 import models.enums.MessageReason;
 import models.enums.PluginStatus;
 import models.enums.UserRole;
@@ -75,7 +76,7 @@ public class Market extends APIController {
 		
 		if (!app.creator.equals(userId) && !getRole().equals(UserRole.ADMIN)) throw new BadRequestException("error.not_authorized.not_plugin_owner", "Not your plugin!");
 		
-		app.version = JsonValidation.getLong(json, "version");		
+		app.version = JsonValidation.getLong(json, "version");				
 		
 		String filename = JsonValidation.getString(json, "filename"); // .toLowerCase(); We have existing plugins with mixed case
 		if (!app.filename.equals(filename)) {
@@ -111,7 +112,20 @@ public class Market extends APIController {
 		app.resharesData = JsonValidation.getBoolean(json, "resharesData");
 		app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		app.i18n = new HashMap<String, Plugin_i18n>();
+		app.pluginVersion = System.currentTimeMillis();
 		
+		if (getRole().equals(UserRole.ADMIN)) {
+			String linkedStudyCode = JsonValidation.getStringOrNull(json, "linkedStudyCode");
+			if (linkedStudyCode != null) {
+			  Study study = Study.getByCodeFromMember(linkedStudyCode, Sets.create("_id"));
+			  if (study == null) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Unknown Study");
+			  app.linkedStudy = study._id;
+			} else {
+			  app.linkedStudy = null;
+			}
+			app.mustParticipateInStudy = JsonValidation.getBoolean(json, "mustParticipateInStudy");
+						
+		}
 		
 		Map<String, MessageDefinition> predefinedMessages = parseMessages(json);
 		if (predefinedMessages != null) app.predefinedMessages = predefinedMessages;
@@ -177,7 +191,7 @@ public class Market extends APIController {
 		// validate request		
 		MidataId pluginId = new MidataId(pluginIdStr);
 		
-		Plugin app = Plugin.getById(pluginId, Sets.create("creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","url","developmentServer", "status"));
+		Plugin app = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
 		if (app == null) throw new BadRequestException("error.unknown.plugin", "Unknown plugin");
 						
 		app.version = JsonValidation.getLong(json, "version");		
@@ -270,6 +284,7 @@ public class Market extends APIController {
 		plugin.resharesData = JsonValidation.getBoolean(json, "resharesData");
 		plugin.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		plugin.predefinedMessages = parseMessages(json);
+		plugin.pluginVersion = System.currentTimeMillis();
 		
 		try {
 		    Query.validate(plugin.defaultQuery, plugin.type.equals("mobile"));

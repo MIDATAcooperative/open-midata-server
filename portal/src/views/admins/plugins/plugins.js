@@ -16,7 +16,7 @@ angular.module('portal')
 	};
 	
 	$scope.reload = function() {
-	   $scope.status.doBusy(apps.getApps( $scope.search.criteria, [ "creator", "filename", "version", "name", "description", "tags", "targetUserRole", "spotlighted", "type", "status"]))
+	   $scope.status.doBusy(apps.getApps( $scope.search.criteria, [ "creator", "creatorLogin", "filename", "version", "name", "description", "tags", "targetUserRole", "spotlighted", "type", "status"]))
 	   .then(function(data) { $scope.apps = data.data; });
 	};
 	

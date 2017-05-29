@@ -4,16 +4,19 @@ angular.module('portal')
 	    .state('developer.manageapp', {
 	      url: '/app/:appId',
 	      templateUrl: 'views/developers/manageapp/manageapp.html',
-	      allowDelete : false
+	      allowDelete : false,
+	      allowStudyConfig : false
 	    })
 	    .state('developer.registerapp', {
 	      url: '/newapp',
 	      templateUrl: 'views/developers/manageapp/manageapp.html',
-	      allowDelete : false
+	      allowDelete : false,
+	      allowStudyConfig : false
 	    })
 	   .state('admin.manageapp', {
 		      url: '/app/:appId',
 		      templateUrl: 'views/developers/manageapp/manageapp.html',
-		      allowDelete : true
+		      allowDelete : true,
+		      allowStudyConfig : true
 	   });
 }]);
