@@ -22,7 +22,7 @@ public class MidataConformanceProvider  extends ServerCapabilityStatementProvide
 			Extension dt = conformance.getRest().get(0).getSecurity().addExtension().setUrl("http://fhir-registry.smarthealthit.org/StructureDefinition/oauth-uris");
 			String tokenUrl = "https://"+Play.application().configuration().getString("platform.server")+"/v1/token";
 			dt.addExtension(new Extension("token", new UriType(tokenUrl)));
-			String authUrl = Play.application().configuration().getString("portal.originUrl")+"/#/portal/oauth2";		
+			String authUrl = Play.application().configuration().getString("portal.originUrl")+"/oauth.html#/portal/oauth2";		
 			dt.addExtension(new Extension("authorize", new UriType(authUrl)));
 			doadd = false;
 		}

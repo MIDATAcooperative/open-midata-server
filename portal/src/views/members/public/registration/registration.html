@@ -52,6 +52,21 @@
                               <formrow myid="agb" label="registration.agb"><div class="checkbox"><label><input type="checkbox" id="agb" name="agb" ng-model="registration.agb"><span translate="registration.agb2"></span></label></div>
                                 <formerror myid="agb" type="mustaccept" message="error.missing.agb"></formerror>
                               </formrow>
+                              
+                              <div ng-show="app.linkedStudy">
+		            	       <formrow myid="confirmStudy" label="registration.study">
+		            	         <div class="checkbox">
+		            	           <label>
+		            	             <input type="checkbox" id="confirmStudy" name="confirmStudy" ng-model="registration.confirmStudy">
+		            	             <span translate="oauth2.confirm_study"></span>:
+		            	           </label>
+		            	         </div>
+		            	          <formerror myid="confirmStudy" type="mustaccept" message="error.missing.study_accept"></formerror>
+		            	           <p class="help-block">{{ app.linkedStudyName }}</p>
+		            	           <p class="help-block">{{ app.linkedStudyDescription }}</p>
+		            	       </formrow>
+		            	     </div>
+                              
                              <button type="submit" ng-disabled="status.action=='register'" class="btn btn-lg btn-primary btn-block" translate="registration.sign_up_btn"></button>
                             </form>
 		            	</div>

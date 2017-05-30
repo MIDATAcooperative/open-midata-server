@@ -38,6 +38,7 @@ import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.PatientResourceProvider;
 import utils.json.JsonValidation;
+import utils.json.JsonValidation.JsonValidationException;
 
 public class QuickRegistration extends APIController {
 
@@ -57,18 +58,27 @@ public class QuickRegistration extends APIController {
 		String appName = JsonValidation.getString(json, "app");
 		String studyName = null;
 		Study study = null;
+		boolean confirmStudy =  JsonValidation.getBoolean(json, "confirmStudy");
 		
 		if (json.has("study")) { studyName = JsonValidation.getString(json, "study"); }
 						
 		Plugin app = Plugin.getByFilename(appName, Plugin.ALL_PUBLIC);
 		if (app == null) throw new BadRequestException("error.invalid.appcode", "Unknown code for app.");
-				
+			
 		
 		if (studyName != null) {
 			study = Study.getByCodeFromMember(studyName, Study.ALL);
+						
 			if (study == null) throw new BadRequestException("error.invalid.code", "Unknown code for study.");
 			
-			if (!study.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING)) throw new BadRequestException("error.closed.study", "Study not searching for members.");
+			controllers.members.Studies.precheckRequestParticipation(null, study._id);			
+		}
+		
+		if (app.linkedStudy != null && app.mustParticipateInStudy && !confirmStudy) {
+			throw new JsonValidationException("error.missing.study_accept", "confirmStudy", "mustaccept", "Study belonging to app must be accepted.");
+		}
+		if (app.linkedStudy != null && confirmStudy) {
+			controllers.members.Studies.precheckRequestParticipation(null, app.linkedStudy);
 		}
 		
 		String email = JsonValidation.getEMail(json, "email");
@@ -123,7 +133,7 @@ public class QuickRegistration extends APIController {
 		if (study != null) controllers.members.Studies.requestParticipation(user._id, study._id);
 		
 		if (device != null) {
-		   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true, true);
+		   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true, confirmStudy);
 		}
 		
 		Circles.fetchExistingConsents(user._id, user.emailLC);
