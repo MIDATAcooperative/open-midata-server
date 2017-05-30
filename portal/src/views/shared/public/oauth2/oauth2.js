@@ -14,6 +14,14 @@ angular.module('portal')
 	
 	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
 	
+	if ($scope.params.language) {
+		$translate.use($scope.params.language);
+	}
+	
+	if ($scope.params.email) {
+		$scope.login.email = $scope.params.email;
+	}
+	
 	$scope.prepare = function() {
 		$scope.status.doBusy(apps.getAppInfo($scope.params.client_id))
 		.then(function(results) {
@@ -27,6 +35,7 @@ angular.module('portal')
 				$scope.status.doBusy(studies.search({ _id : $scope.app.linkedStudy }, ["code", "name", "description"]))
 				.then(function(studyresult) {
 					if (studyresult.data && studyresult.data.length) {
+					  oauth.app = $scope.app;
 					  $scope.app.linkedStudyCode = studyresult.data[0].code;
 				 	  $scope.app.linkedStudyName = studyresult.data[0].name;
 				 	  $scope.app.linkedStudyDescription = studyresult.data[0].description;

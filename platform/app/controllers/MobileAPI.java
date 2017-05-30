@@ -296,6 +296,10 @@ public class MobileAPI extends Controller {
 			throw new BadRequestException("error.missing.study_accept", "Study belonging to app must be accepted.");
 		}
 		
+		if (app.linkedStudy != null && studyConfirm) {			
+			controllers.members.Studies.precheckRequestParticipation(member._id, app.linkedStudy);
+		}
+		
 		MobileAppInstance appInstance = new MobileAppInstance();
 		appInstance._id = new MidataId();
 		appInstance.name = "App: "+ app.name+" (Device: "+phrase.substring(0, 3)+")";
@@ -331,7 +335,7 @@ public class MobileAPI extends Controller {
 		}
 		
 		
-		if (app.linkedStudy != null) {			
+		if (app.linkedStudy != null && studyConfirm) {			
 			controllers.members.Studies.requestParticipation(member._id, app.linkedStudy);
 		}
 		

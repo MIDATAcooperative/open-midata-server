@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>MIDATA.coop</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="MIDATA">		
+	<!-- Favicon -->
+   <link rel="apple-touch-icon" sizes="57x57" href="/images/apple-icon-57x57.png">
+   <link rel="apple-touch-icon" sizes="60x60" href="/images/apple-icon-60x60.png">
+   <link rel="apple-touch-icon" sizes="72x72" href="/images/apple-icon-72x72.png">
+   <link rel="apple-touch-icon" sizes="76x76" href="/images/apple-icon-76x76.png">
+   <link rel="apple-touch-icon" sizes="114x114" href="/images/apple-icon-114x114.png">
+   <link rel="apple-touch-icon" sizes="120x120" href="/images/apple-icon-120x120.png">
+   <link rel="apple-touch-icon" sizes="144x144" href="/images/apple-icon-144x144.png">
+   <link rel="apple-touch-icon" sizes="152x152" href="/images/apple-icon-152x152.png">
+   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-icon-180x180.png">
+   <link rel="icon" type="image/png" sizes="192x192"  href="/images/android-icon-192x192.png">
+   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+   <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
+   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+   <link rel="manifest" href="/images/manifest.json">
+		<!-- Clear CSS defaults -->
+					
+		<!-- Application style sheet -->
+		<!-- build:css app.min.css -->
+		<link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.min.css">
+		<!-- <link rel="stylesheet" href="components/jquery-ui/themes/smoothness/jquery-ui.css">  -->
+		<link rel="stylesheet" href="/app.css">
+		<!-- endbuild -->
+		
+		<!-- JS framework and libraries -->
+        <!-- jQuery needed for Bootstrap's JavaScript plugins and is also used by AngularJS -->
+        <!-- @if NODE_ENV == 'DEVELOPMENT' -->
+		<script src="http://localhost:35729/livereload.js"></script>
+		<script type="text/javascript" src="https://localhost:9000/assets/javascripts/routes" defer></script>
+		<!-- @endif -->
+		<!-- @if BACKEND == 'https://demo.midata.coop:9000' -->
+		<script type="text/javascript" src="https://demo.midata.coop:9000/assets/javascripts/routes" defer></script>
+		<!-- @endif -->
+		<!-- @if BACKEND == 'https://test.midata.coop:9000' -->
+		<script type="text/javascript" src="https://test.midata.coop:9000/assets/javascripts/routes" defer></script>
+		<!-- @endif -->
+		<!-- @if BACKEND == 'https://ch.midata.coop:9000' -->
+		<script type="text/javascript" src="https://ch.midata.coop:9000/assets/javascripts/routes" defer></script>
+		<!-- @endif -->
+									
+		<!-- <script type="text/javascript" src="components/jquery-ui/jquery-ui.js" defer></script>  -->  
+		
+		<!-- build:js oauth.min.js -->				
+        <script type="text/javascript" src="components/angular/angular.js" defer></script>                
+        <script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
+        <script type="text/javascript" src="components/angular-translate-loader-partial/angular-translate-loader-partial.js" defer></script>
+        <script type="text/javascript" src="components/angular-translate-storage-cookie/angular-translate-storage-cookie.js" defer></script>
+        <script type="text/javascript" src="components/angular-translate-storage-local/angular-translate-storage-local.js" defer></script>
+        <script type="text/javascript" src="components/angular-cookies/angular-cookies.js" defer></script>        
+        <script type="text/javascript" src="components/angular-ui-router/release/angular-ui-router.js" defer></script> 
+                                    		
+		<script type="text/javascript" src="oauthapp.js" defer></script>
+		<!-- endbuild -->
+	</head>
+	<body ng-app="portal"  class="<!-- @echo NAME -->">
+	  <div id="wrapper">
+	  <div ng-if="false">
+	  <header id="navbar" class="navbar navbar-default" role="navigation" ng-controller="NavbarCtrl">
+	  <div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="https://www.midata.coop">
+	           	  <span class="midata" id="logotype">MIDATA<span>.COOP</span></span>
+	        </a>
+		</div>
+			    
+	   </div>
+	   </header>
+	  
+	    <div class="container">
+	     <div class="panel panel-primary">
+	       <div class="panel-body" style="height:200px;position:relative;">
+	         <div style="text-align:center;margin-top:-40px;top:50%;width:100%;position:absolute;">
+	           Please wait...
+	         </div>
+	       </div>
+	     </div>
+	     </div>
+	  </div>
+	  <div id="maincontent" ui-view ng-cloak></div>
+	  <footer id="footer">
+		 <div class="container">
+			<p translate="footer.copyright"></p>			   
+		 </div>
+	  </footer>
+	  </div>
+	</body>
+</html>

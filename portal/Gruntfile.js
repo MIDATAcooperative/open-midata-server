@@ -48,20 +48,22 @@ module.exports = function(grunt) {
     
     preprocess : {
         all : {
-            src : 'src/index.html',
-            dest : 'dest/index.html'
+          files : { 
+        	  'dest/index.html' : 'src/index.html',
+        	  'dest/oauth.html' : 'src/oauth.html',
+          }            
         }
     },
     
     useminPrepare: {
-      html: 'dest/index.html',
+      html: ['dest/index.html', 'dest/oauth.html' ],
       options : { 
     	  dest : 'dest'
       }
     },
     
     usemin: {
-      html: 'dest/index.html'      
+      html: ['dest/index.html', 'dest/oauth.html' ]      
     },
     
     // Which files to watch
@@ -127,6 +129,10 @@ module.exports = function(grunt) {
           src: ['src/app.js', 'tmp/scripts/config.js', 'src/assets/**/*.js', 'src/views/**/*.js' ],
           dest: 'dest/app.js'
         },
+        oauthjs: {
+            src: ['src/oauthapp.js', 'tmp/scripts/config.js', 'src/assets/**/*.js', 'src/views/shared/public/oauth2/*.js', 'src/views/shared/public/postregister/*.js', 'src/views/members/public/registration/*.js' ],
+            dest: 'dest/oauthapp.js'
+        },
         css : {
           src : ['src/assets/css/*' , 'src/views/**/*.less'],
           dest: 'dest/app.less'
@@ -140,7 +146,8 @@ module.exports = function(grunt) {
          },
          app: {
              files: {
-                 'dest/app.js': ['dest/app.js']                
+                 'dest/app.js': ['dest/app.js'],
+                 'dest/oauthapp.js' : [ 'dest/oauthapp.js' ]
              }
          }
      },
