@@ -328,16 +328,29 @@ public class Studies extends APIController {
 										
 		}
 		
-		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return;
-		
-		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new BadRequestException("error.closed.study", "Study is not searching for participants anymore.");
+		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return;				
 		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
 		
-		participation.setPStatus(ParticipationStatus.REQUEST);
-						
+		participation.setPStatus(ParticipationStatus.REQUEST);						
 		participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, null));
 		Circles.consentStatusChange(userId, participation, ConsentStatus.ACTIVE);				
 				
+	}
+	
+   public static void precheckRequestParticipation(MidataId userId, MidataId studyId) throws AppException {
+				
+		Member user = userId != null ? Member.getById(userId, Sets.create("firstname", "lastname", "birthday", "gender", "country")) : null;		
+		StudyParticipation participation = userId != null ? StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "history", "ownerName", "owner", "authorized", "sharingQuery", "validUntil", "createdBefore")) : null;		
+		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history", "owner", "createdBy", "name", "recordQuery", "requiredInformation"));
+		
+		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
+		if (participation == null) {
+			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants.");
+			return;												
+		}
+		
+		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return;				
+		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");											
 	}
 	
 	/**
