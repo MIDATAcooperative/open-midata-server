@@ -207,3 +207,12 @@
 {"_id":{"$oid":"58e60fa6aed6450f67436b7d"},"system":"http://midata.coop","code":"MSMotTestLine","display":"MS Motoriktest Linie nachzeichnen","content":"MSMotTestLine"}
 {"_id":{"$oid":"58e6100baed6450f67436b80"},"system":"http://midata.coop","code":"MSTests","display":"Kognitive und motorische Übungen von MS-Patienten","content":"MSTests"}
 {"_id":{"$oid":"5909f37caed6450e198a9452"},"system":"http://snomed.info/sct","code":"228438002","display":"Craves for drugs","content":"behavior/craves-for-drugs"}
+{"_id":{"$oid":"59313c68aed6450f200e2fef"},"system":"http://loinc.org","code":"77572-6","display":"Interferance of pain on enjoyment of life","content":"pain/77572-6"}
+{"_id":{"$oid":"59313c68aed6450f200e2fee"},"system":"http://snomed.info/sct","code":"410720000","display":"Pain by sensation quality","content":"pain/410720000"}
+{"_id":{"$oid":"59313cd6aed6450f200e2ff1"},"system":"http://loinc.org","code":"77566-8","display":"Interferance of pain on general activity","content":"pain/77566-8"}
+{"_id":{"$oid":"59313cd6aed6450f200e2ff3"},"system":"http://loinc.org","code":"77567-6","display":"Interferance of pain on mood","content":"pain/77567-6"}
+{"_id":{"$oid":"59313d5daed6450f200e2ff5"},"system":"http://loinc.org","code":"77570-0","display":"Interferance of pain on relations with other people","content":"pain/77570-0"}
+{"_id":{"$oid":"59313d5daed6450f200e2ff6"},"system":"http://loinc.org","code":"77569-2","display":"Interferance of pain on normal work","content":"pain/77569-2"}
+{"_id":{"$oid":"59313d5daed6450f200e2ff9"},"system":"http://loinc.org","code":"77565-0","display":"Pain interference score","content":"pain/77565-0"}
+{"_id":{"$oid":"59313e2aaed6450f200e2ffa"},"system":"http://loinc.org","code":"77568-4","display":"Interferance of pain on walking ability","content":"pain/77568-4"}
+{"_id":{"$oid":"59313e2aaed6450f200e2ffb"},"system":"http://loinc.org","code":"77571-8","display":"Interferance of pain on sleep","content":"pain/77571-8"}
