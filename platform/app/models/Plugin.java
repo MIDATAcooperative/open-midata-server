@@ -251,10 +251,13 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	}
 	
 	public static Plugin getById(MidataId id) throws InternalServerException {
+		if (id == null) return null;
+		
 		Plugin result = cache.get(id);
 		if (result != null) return result;
 		
 		result = getById(id, ALL_PUBLIC);
+		if (result == null) return null;
 		cache.put(id, result);
 		return result;		
 	}
