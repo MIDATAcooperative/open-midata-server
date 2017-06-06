@@ -10,7 +10,7 @@ angular.module('fitbiti18n', [])
   "from_date" : "From Date",
   "to_date" : "To Date",
   "autoimport" : "Automatically import measurements once per day",
-  "import_btn" : "Import data",
+  "import_btn" : "Import Now",
   "progress" : "Requested {{requested}} records from Fitbit. {{saved}} records saved to database.",
   "importing" : "Importing data from Fitbit...",
   "done" : "Finished import",
