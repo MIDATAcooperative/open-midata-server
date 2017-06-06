@@ -1,11 +1,14 @@
 package utils.fhir;
 
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
+import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.Identifier;
 import org.hl7.fhir.dstu3.model.Person;
 import org.hl7.fhir.dstu3.model.Reference;
@@ -33,6 +36,8 @@ public class FHIRTools {
 
 	private static Set<String> PERSON = Sets.create("person");
 	private static Set<String> REFERENCE = Sets.create("role", "firstname", "lastname");
+	
+	private static DateTimeFormatter titleTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 	
 /*
 	public static Person getPersonRecordOfUser(String id) throws InternalServerException {
@@ -210,6 +215,13 @@ public class FHIRTools {
     	  if (coding.hasDisplay()) return coding.getDisplay();
     	}
     	return defaultValue;
+    }
+    
+    public static String stringFromDateTime(DateTimeType date) {
+    	if (date == null) return "";
+    	return date.getValue().toInstant()
+               .atZone(ZoneId.systemDefault())
+               .format(titleTimeFormatter);
     }
 	
 	/*
