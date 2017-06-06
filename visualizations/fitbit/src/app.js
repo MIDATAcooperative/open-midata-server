@@ -272,12 +272,14 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			measurement.to = yesterday;
 				
 			if (measurement.to.getTime() - measurement.from.getTime() > 1000 * 60 * 60 * 24 * 365) {
+			  var years = Math.floor((measurement.to.getTime() - measurement.from.getTime()) / (1000 * 60 * 60 * 24 * 365));
+			  if (years > $scope.totalYears) { $scope.totalYears = years; }
+			  
 			  measurement.to = new Date(measurement.from.getTime() + 1000 * 60 * 60 * 24 * 365);
 			  console.log("do repeat");
 			  measurement.repeat = true;
 			  
-			  var years = Math.floor((measurement.to.getTime() - measurement.from.getTime()) / (1000 * 60 * 60 * 24 * 365));
-			  if (years > $scope.totalYears) { $scope.totalYears = years; }
+			  
 			} else measurement.repeat = false;
 		 });		 
 	};
@@ -376,8 +378,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 		
 		$scope.startImport = function() {
 			$scope.error.message = null;
-			$scope.error.messages = [];
-			$scope.totalYears = 0;
+			$scope.error.messages = [];			
 			$scope.currentYear = -1;
 			
 			$scope.continueImport();
@@ -608,6 +609,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 					$scope.continueImport();
 				} else {							
 					$scope.status = "done";
+					$scope.totalYears = 0;
 					if ($scope.error.messages.length > 0) {
 						$scope.status = "with_errors"; 
 					}
