@@ -464,6 +464,7 @@ public class Records extends APIController {
 		if (format == null || format.visualization == null) return ok();
 		
 		Plugin visualization = Plugin.getById(format.visualization);
+		if (visualization == null) return ok();
 					
 		// create encrypted authToken
 		SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, new MidataId(tk.apsId), userId, new MidataId(tk.recordId));
