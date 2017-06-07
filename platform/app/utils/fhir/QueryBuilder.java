@@ -318,7 +318,7 @@ public class QueryBuilder {
 				}
 			} else if (param instanceof DateParam) {
 				DateParam dateParam = (DateParam) param;
-				Date comp = dateParam.getValue();
+				//Date comp = dateParam.getValue();
 				ParamPrefixEnum prefix = dateParam.getPrefix();
 				TemporalPrecisionEnum precision = dateParam.getPrecision();
 				
@@ -328,8 +328,8 @@ public class QueryBuilder {
 				Date lDate = null;
 				Date hDate = null;
 				
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(comp);
+				Calendar cal = dateParam.getValueAsDateTimeDt().getValueAsCalendar();
+				//cal.setTime(comp);
 				
 				switch (precision) {					  
 				case SECOND: 
@@ -372,7 +372,8 @@ public class QueryBuilder {
 				case MILLI:
 				default: 
                     lDate = cal.getTime();
-                    hDate = lDate;
+                    cal.add(Calendar.MILLISECOND, 1);
+                    hDate = cal.getTime();
                     break;
 				}
 				if (type.equals(TYPE_DATETIME) || type.equals(TYPE_DATE)) {

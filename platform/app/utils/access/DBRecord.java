@@ -13,6 +13,7 @@ import models.Model;
 import models.enums.APSSecurityLevel;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
+import utils.db.IncludeNullValues;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
@@ -26,6 +27,7 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	 * This field is null for stream records.
 	 * This field is not encrypted but stored in the database
 	 */
+	@IncludeNullValues
 	public MidataId stream; 
 	
 	/**

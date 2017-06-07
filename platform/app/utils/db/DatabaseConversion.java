@@ -78,6 +78,7 @@ public class DatabaseConversion {
 			try {
 				Object val = todb(field.get(modelObject));
 				if (val != null) dbObject.put(field.getName(), val);
+				else if (field.getAnnotation(IncludeNullValues.class)!=null) dbObject.put(field.getName(), val);
 			} catch (IllegalArgumentException e) {
 				throw new DatabaseConversionException(e);
 			} catch (IllegalAccessException e) {
