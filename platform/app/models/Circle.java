@@ -84,19 +84,19 @@ public class Circle extends Consent implements Comparable<Circle> {
 
 	public static void delete(MidataId ownerId, MidataId circleId) throws InternalServerException {
 		// find order first
-		Map<String, MidataId> properties = new ChainedMap<String, MidataId>().put("_id", circleId).get();
-		Circle circle = get(properties, new ChainedSet<String>().add("order").get());
+		
+		Circle circle = Circle.getByIdAndOwner(circleId, ownerId, Sets.create("order"));
 
-		// decrement all order fields greater than the removed circle
-		try {
-			OrderOperations.decrement(collection, ownerId, circle.order, 0);
-		} catch (DatabaseException e) {
-			throw new InternalServerException("error.internal", e);
-		}
-
-		// also remove from search index
-		//Search.delete(ownerId, "circle", circleId);
-		Model.delete(Circle.class, collection, properties);
+        if (circle != null) {
+			// decrement all order fields greater than the removed circle
+			try {
+				OrderOperations.decrement(collection, ownerId, circle.order, 0);
+			} catch (DatabaseException e) {
+				throw new InternalServerException("error.internal", e);
+			}
+        }
+			
+		Model.delete(Circle.class, collection, CMaps.map("owner", ownerId).map("_id", circleId));
 	}
 
 	public static int getMaxOrder(MidataId ownerId) {
