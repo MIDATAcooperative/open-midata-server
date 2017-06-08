@@ -592,13 +592,8 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 		  }
 		  return display;
 		}
-	
-	protected String stringFromDateTime(DateTimeType date) {
-		    if (date == null) return "";
-			return date.toHumanDisplay();
 		
-	}
-	
+		
 	/**
 	 * Auto-share a record with all person/groups provided
 	 * @param record the record to be shared

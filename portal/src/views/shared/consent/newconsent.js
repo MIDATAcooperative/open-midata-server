@@ -36,7 +36,7 @@ angular.module('portal')
 		if ($state.params.consentId) {
 			$scope.consentId = $state.params.consentId;
 			
-			$scope.status.doBusy(circles.listConsents({ "_id" : $state.params.consentId }, ["name", "type", "status", "owner", "authorized", "entityType", "createdBefore", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery" ]))
+			$scope.status.doBusy(circles.listConsents({ "_id" : $state.params.consentId }, ["name", "type", "status", "owner", "authorized", "entityType", "createdBefore", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery", "dateOfCreation" ]))
 			.then(function(data) {
 				
 				$scope.consent = $scope.myform = data.data[0];		

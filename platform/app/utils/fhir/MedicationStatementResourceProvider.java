@@ -210,13 +210,13 @@ public class MedicationStatementResourceProvider extends ResourceProvider<Medica
 		String date = "No time";		
 		if (theMedicationStatement.hasEffectiveDateTimeType()) {
 			try {
-				date = stringFromDateTime(theMedicationStatement.getEffectiveDateTimeType());
+				date = FHIRTools.stringFromDateTime(theMedicationStatement.getEffectiveDateTimeType());
 			} catch (Exception e) {
 				throw new UnprocessableEntityException("Cannot process effectiveDateTime");
 			}
 		} else if (theMedicationStatement.hasEffectivePeriod()) {
 			try {
-				date = stringFromDateTime(theMedicationStatement.getEffectivePeriod().getStartElement())+" - "+stringFromDateTime(theMedicationStatement.getEffectivePeriod().getEndElement());
+				date = FHIRTools.stringFromDateTime(theMedicationStatement.getEffectivePeriod().getStartElement())+" - "+FHIRTools.stringFromDateTime(theMedicationStatement.getEffectivePeriod().getEndElement());
 			} catch (Exception e) {
 				throw new UnprocessableEntityException("Cannot process effectivePeriod");
 			}

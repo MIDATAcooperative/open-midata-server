@@ -29,6 +29,8 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 	$scope.measure = null;
 	$scope.alldone = null;
 	$scope.repeat = false;
+	$scope.totalYears = 0; // For progress bar
+	$scope.currentYear = 0; // For progress bar
 	$scope.measurements = [
 						
 			// {
@@ -270,9 +272,14 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			measurement.to = yesterday;
 				
 			if (measurement.to.getTime() - measurement.from.getTime() > 1000 * 60 * 60 * 24 * 365) {
+			  var years = Math.floor((measurement.to.getTime() - measurement.from.getTime()) / (1000 * 60 * 60 * 24 * 365));
+			  if (years > $scope.totalYears) { $scope.totalYears = years; }
+			  
 			  measurement.to = new Date(measurement.from.getTime() + 1000 * 60 * 60 * 24 * 365);
 			  console.log("do repeat");
 			  measurement.repeat = true;
+			  
+			  
 			} else measurement.repeat = false;
 		 });		 
 	};
@@ -369,12 +376,20 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 		  return deferred.promise;
 		};
 		
-		// start the importing of records
-		$scope.startImport = function() {			
+		$scope.startImport = function() {
 			$scope.error.message = null;
-			$scope.error.messages = [];
+			$scope.error.messages = [];			
+			$scope.currentYear = -1;
+			
+			$scope.continueImport();
+		};
+		
+		// start the importing of records
+		$scope.continueImport = function() {			
+			
 			$scope.requested = 0;
 			$scope.saved = 0;
+			$scope.currentYear++;
 			$scope.status = "importing";
 			
 			var actionDef = $q.defer();
@@ -591,9 +606,10 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 					$scope.repeat = false;
 					$scope.totalImport += $scope.saved;
 					setToDate(true);
-					$scope.startImport();
+					$scope.continueImport();
 				} else {							
 					$scope.status = "done";
+					$scope.totalYears = 0;
 					if ($scope.error.messages.length > 0) {
 						$scope.status = "with_errors"; 
 					}
@@ -643,7 +659,8 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', '$translate', '
 							
 		$scope.progress = function() {
 			var r = $scope.importer.requested > 0 ? $scope.importer.requested : 1;
-			return { 'width' : ($scope.importer.saved * 100 / r)+"%" };
+			var b = Math.floor($scope.importer.currentYear / ($scope.importer.totalYears + 1) * 100); 
+			return { 'width' : Math.floor(b + $scope.importer.saved * (100 / ($scope.importer.totalYears + 1)) / r)+"%" };
 		};
 		
 		$scope.importer.initForm(authToken);

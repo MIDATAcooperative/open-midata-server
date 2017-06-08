@@ -36,12 +36,12 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * constant containing all fields visible to a developer
 	 */
 	public @NotMaterialized final static Set<String> ALL_DEVELOPER = 
-			 Sets.create("_id", "version", "creator", "filename", "name", "description", "tags", 
+			 Sets.create("_id", "version", "creator", "creatorLogin", "filename", "name", "description", "tags", 
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret",
 	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n",
-	                     "predefinedMessages", "resharesData", "allowsUserSearch");
+	                     "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -50,12 +50,17 @@ public class Plugin extends Model implements Comparable<Plugin> {
 			 Sets.create("_id", "version", "creator", "filename", "name", "description", "tags", 
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
-	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "predefinedMessages", "resharesData");
+	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "predefinedMessages", "resharesData", "linkedStudy", "mustParticipateInStudy", "pluginVersion");
 	
 	/**
 	 * timestamp of last change. Used to prevent lost updates.
 	 */
 	public long version;
+	
+	/**
+	 * Also a timestamp. Changing this timestamp needs all users to confirm to the app consent again. Does not need to be changed if only messages or translation is edited 
+	 */
+	public long pluginVersion;
 	
 	/**
 	 * status of plugin
@@ -112,6 +117,16 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * Users of app are allowed to search each other
 	 */
 	public boolean allowsUserSearch;
+	
+	/**
+	 * Directly link app to study
+	 */
+	public MidataId linkedStudy;
+	
+	/**
+	 * Study participation required for app use
+	 */
+	public boolean mustParticipateInStudy;
 		
 	/**
 	 * set of tags that determine for which categories this plugin should be displayed in the market
@@ -236,10 +251,13 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	}
 	
 	public static Plugin getById(MidataId id) throws InternalServerException {
+		if (id == null) return null;
+		
 		Plugin result = cache.get(id);
 		if (result != null) return result;
 		
 		result = getById(id, ALL_PUBLIC);
+		if (result == null) return null;
 		cache.put(id, result);
 		return result;		
 	}
@@ -258,7 +276,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	
 	public void update() throws InternalServerException, LostUpdateException {		
 		try {
-		   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch" );
+		   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion" );
 		   Instances.cacheClear("plugin",  _id);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);

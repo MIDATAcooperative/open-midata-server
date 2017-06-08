@@ -16,6 +16,7 @@ import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
 import utils.db.DatabaseException;
+import utils.db.IncludeNullValues;
 import utils.db.NotMaterialized;
 import utils.db.OrderOperations;
 import utils.exceptions.InternalServerException;
@@ -47,6 +48,7 @@ public class Consent extends Model {
 	/**
 	 * id of owner of this consent. The owner is the person who shares data.
 	 */
+	@IncludeNullValues
 	public MidataId owner;
 	
 	/**

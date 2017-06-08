@@ -41,7 +41,7 @@ angular.module('portal')
 			data.developer = $stateParams.developer;
 		}
 		
-		if (oauth.getAppname()) {
+		if (oauth.getAppname()) {		  
 		  data.app = oauth.getAppname();
 		  data.device = oauth.getDevice();
 		  $scope.status.doAction("register", server.post(jsRoutes.controllers.QuickRegistration.register().url, JSON.stringify(data))).
@@ -71,5 +71,9 @@ angular.module('portal')
 	for (i=10;i <= 31; i++ ) $scope.days.push(""+i);	
 	for (i=10;i <= 12; i++ ) $scope.months.push(""+i);
 	for (i=2015;i > 1900; i-- ) $scope.years.push(""+i);	
+	
+	if (oauth.getAppname()) {		
+	   $scope.app = oauth.app;
+	}
 	
 }]);

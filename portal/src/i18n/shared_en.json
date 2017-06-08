@@ -74,7 +74,8 @@
        "passphrase" : "Please provide your passphrase.",
        "groupsystem" : "Group system must be provided.",
        "token" : "Missing or bad token.",
-       "agb" : "Terms and conditions not accepted."
+       "agb" : "Terms and conditions not accepted.",
+       "study_accept" : "Study participation must be accepted."
      },
          
      "unknown" : {
@@ -103,7 +104,8 @@
           
      "blocked" : {
        "user" : "User is not allowed to log in. Contact support@midata.coop for help.",
-       "participation" : "Account holder is not allowed to participate in study."
+       "participation" : "Account holder is not allowed to participate in study.",
+       "consent" : "The consent for using this app has been revoked. To reenable use the MIDATA portal and delete the rejected or expired consent."
      },
      
      "closed" : {
@@ -386,6 +388,7 @@
     "coach" : "Contact person MIDATA",
     "reason" : "Purpose of Registration",
     "agb" : "AGB",
+    "study" : "Research",
     "agb2" : "I accept the terms and conditions",
     "sign_up_btn" : "Sign Up"
   },
@@ -604,6 +607,7 @@
     "title" : "Consent",
     "owner" : "Owner of Consent",
     "name" : "Name of Consent",
+    "date_of_creation" : "Consent created at",
     "type" : "Type of Consent",
     "status" : "Status of Consent",   
     "people" : "With which persons(s) do you want to share data?",

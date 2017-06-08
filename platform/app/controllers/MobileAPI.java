@@ -31,6 +31,7 @@ import models.MobileAppInstance;
 import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
+import models.Study;
 import models.User;
 import models.enums.AggregationType;
 import models.enums.ConsentStatus;
@@ -235,7 +236,7 @@ public class MobileAPI extends Controller {
 			if (appInstance == null) {									
 				boolean autoConfirm = false; /*KeyManager.instance.unlock(appInstance.owner, null) == KeyManager.KEYPROTECTION_NONE;*/
 				
-				appInstance = installApp(null, app._id, user, phrase, autoConfirm);
+				appInstance = installApp(null, app._id, user, phrase, autoConfirm, false);
 				executor = appInstance._id;
 	   		    meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
 			} else {
@@ -288,15 +289,26 @@ public class MobileAPI extends Controller {
 		return ok(obj);
 	}
 	
-	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm) throws AppException {
-		Plugin app = Plugin.getById(appId, Sets.create("name", "defaultQuery", "predefinedMessages"));
+	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, boolean studyConfirm) throws AppException {
+		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "linkedStudy", "mustParticipateInStudy"));
+
+		if (app.linkedStudy != null && app.mustParticipateInStudy && !studyConfirm) {
+			throw new BadRequestException("error.missing.study_accept", "Study belonging to app must be accepted.");
+		}
+		
+		if (app.linkedStudy != null && studyConfirm) {			
+			controllers.members.Studies.precheckRequestParticipation(member._id, app.linkedStudy);
+		}
+		
 		MobileAppInstance appInstance = new MobileAppInstance();
 		appInstance._id = new MidataId();
 		appInstance.name = "App: "+ app.name+" (Device: "+phrase.substring(0, 3)+")";
-		appInstance.applicationId = app._id;		
+		appInstance.applicationId = app._id;	
+		appInstance.appVersion = app.pluginVersion;
         appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, phrase);
     	appInstance.owner = member._id;
-    	appInstance.passcode = Member.encrypt(phrase);    	
+    	appInstance.passcode = Member.encrypt(phrase); 
+    	appInstance.dateOfCreation = new Date();
 		
     	MobileAppInstance.add(appInstance);	
 		KeyManager.instance.unlock(appInstance._id, phrase);	   		    
@@ -320,6 +332,11 @@ public class MobileAPI extends Controller {
 		    Feature_FormatGroups.convertQueryToContents(groupSystem, app.defaultQuery);
 				
 		    RecordManager.instance.shareByQuery(executor, member._id, appInstance._id, app.defaultQuery);
+		}
+		
+		
+		if (app.linkedStudy != null && studyConfirm) {			
+			controllers.members.Studies.requestParticipation(member._id, app.linkedStudy);
 		}
 		
 		if (autoConfirm) {
