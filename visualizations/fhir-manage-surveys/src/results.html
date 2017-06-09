@@ -1,0 +1,34 @@
+<div ng-controller="ResultsCtrl" class="container" ng-cloak>
+
+  <div ng-repeat="entry in results">
+    <h2>Question: {{ entry.linkId }}</h2>
+    <p>{{ entry.text }}</p>    
+    <div ng-if="entry.answer.some">
+      <table class="table table-condensed table-striped table-bordered">        
+        <tr ng-repeat="(k,v) in entry.answer.some">
+          <td>{{ k }}</td><td>{{ v }}</td>
+        </tr>
+        <tr>
+          <td><b translate="answers"></b></td><td>{{ entry.count }}</td>
+        </tr>
+      </table>           
+      <div ng-if="entry.labels.length > 1 && entry.labels.length < 11">
+      <canvas class="chart chart-bar"
+          chart-data="entry.values" chart-labels="entry.labels" >
+      </canvas> 
+      </div>
+      
+    </div> 
+    <div ng-if="entry.answer.valueBoolean"></div> 
+    <div ng-if="entry.answer.valueDecimal"></div>
+    <div ng-if="entry.answer.valueInteger"></div>
+    <div ng-if="entry.answer.valueDate"></div>
+    <div ng-if="entry.answer.valueDateTime"></div>
+    <div ng-if="entry.answer.valueTime"></div>
+    <div ng-if="entry.answer.valueString"></div>
+    <div ng-if="entry.answer.valueUri"></div>
+    <div ng-if="entry.answer.valueCoding"></div>
+    
+  </div>
+
+</div>

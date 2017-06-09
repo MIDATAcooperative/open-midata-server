@@ -31,8 +31,9 @@ public class MobileCallAction extends Action<MobileCall> {
     	  ctx.response().setHeader("Allow", "*");
     	  ctx.response().setHeader("Access-Control-Allow-Credentials", "true");
     	  ctx.response().setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH");
-    	  ctx.response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, Authorization, Prefer, Location, IfMatch, ETag, LastModified");
-    	
+    	  ctx.response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, Authorization, Prefer, Location, IfMatch, ETag, LastModified, Pragma, Cache-Control");
+    	  ctx.response().setHeader("Pragma", "no-cache");
+    	  ctx.response().setHeader("Cache-Control", "no-cache");
           return delegate.call(ctx);
     	} catch (JsonValidationException e) {
     		if (Stats.enabled) Stats.finishRequest(ctx.request(), "400");
