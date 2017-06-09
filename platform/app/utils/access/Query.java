@@ -434,6 +434,7 @@ public class Query {
 			Set<String> groups = Query.getRestriction(query.get("group-strict"), "group");
 			query.put("group-strict", groups);
 			for (String group : groups) if (RecordGroup.getBySystemPlusName(system.toString(), group) == null) throw new BadRequestException("error.unknown.group",  "Unknown group'"+group+"' for system '"+system.toString()+"'.");
+			contentSet = true;
 		}
 		if (query.containsKey("content")) {
 			Set<String> contents = Query.getRestriction(query.get("content"), "content");
@@ -445,6 +446,7 @@ public class Query {
 			Set<String> codes = Query.getRestriction(query.get("code"), "code");
 			for (String code : codes) if (ContentCode.getBySystemCode(code) == null) throw new BadRequestException("error.unknown.code","Unknown code '"+code+"' in query.");
 			query.put("code", codes);
+			contentSet = true;
 		}
 		if (query.containsKey("format")) {
 			Set<String> formats = Query.getRestriction(query.get("format"), "format");
@@ -459,7 +461,7 @@ public class Query {
 			query.put("owner", Query.getRestriction(query.get("owner"), "owner"));
 		}
 		if (requiresContent && !contentSet) {
-			throw new BadRequestException("error.invalid.access_query", "Access query must restrict by 'content' or 'group'!");
+			throw new BadRequestException("error.invalid.access_query", "Access query must restrict by 'code', 'content' or 'group'!");
 		}
 	}
 }

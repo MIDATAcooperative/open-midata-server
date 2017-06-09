@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import models.ContentCode;
 import models.RecordGroup;
 import utils.AccessLog;
 import utils.collections.CMaps;
@@ -94,7 +95,16 @@ public class Feature_FormatGroups extends Feature {
     		properties.put("content", contents);
     		properties.remove("group");
     		properties.remove("group-exclude");
-    	}    			    	
+    	} else if (properties.containsKey("code")) {
+    		 Set<String> codes = Query.getRestriction(properties.get("code"), "code");
+			 Set<String> contents = new HashSet<String>();
+			 for (String code : codes) {
+				 String content = ContentCode.getContentForSystemCode(code);
+				 if (content == null) throw new BadRequestException("error.unknown.code", "Unknown code '"+code+"' in restriction.");
+				 contents.add(content);
+			 }
+			 properties.put("content", contents);
+    	}
     }
     
     public static void convertQueryToGroups(String groupSystem, Map<String, Object> properties) throws BadRequestException, AppException {

@@ -1,13 +1,18 @@
 package utils.fhir;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.Appointment;
+import org.hl7.fhir.dstu3.model.Coding;
+import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Patient;
+import org.hl7.fhir.dstu3.model.Questionnaire;
 import org.hl7.fhir.dstu3.model.QuestionnaireResponse;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
@@ -236,9 +241,26 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 
 	public void prepare(Record record, QuestionnaireResponse theQuestionnaireResponse) throws AppException {
 		// Set Record code and content
-				
-		ContentInfo.setRecordCodeAndContent(record, null, "QuestionnaireResponse");
-				
+		
+
+		List<Coding> codings = new ArrayList<Coding>();
+		for (Extension ext : theQuestionnaireResponse.getExtensionsByUrl("http://midata.coop/extensions/response-code")) {
+			  Coding coding = (Coding) ext.getValue();
+			  codings.add(coding);
+		}
+		if (codings.isEmpty()) {
+			IIdType questions = theQuestionnaireResponse.getQuestionnaire().getReferenceElement();
+			Questionnaire q = (Questionnaire) FHIRServlet.myProviders.get("Questionnaire").getResourceById(questions);
+			codings = q.getCode();
+			if (codings != null) {
+			  for (Coding c : codings) {			
+				theQuestionnaireResponse.addExtension().setUrl("http://midata.coop/extensions/response-code").setValue(c);
+			  }
+			}
+		}
+		
+		setRecordCodeByCodings(record, codings, "QuestionnaireResponse");
+						
 		record.name = "Questionnaire Response";
 				
 		if (cleanAndSetRecordOwner(record, theQuestionnaireResponse.getSubject())) theQuestionnaireResponse.setSubject(null);
