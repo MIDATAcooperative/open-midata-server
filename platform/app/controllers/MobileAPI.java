@@ -144,12 +144,20 @@ public class MobileAPI extends Controller {
 	 */
 		
 	
-	private static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId) {
+	private static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId) throws AppException {
 		if (appInstance == null) return false;
         if (!appInstance.owner.equals(ownerId)) return false;
         if (!appInstance.applicationId.equals(applicationId)) return false;
         
         if (appInstance.status.equals(ConsentStatus.EXPIRED) || appInstance.status.equals(ConsentStatus.REJECTED)) return false;
+        
+        Plugin app = Plugin.getById(appInstance.applicationId);
+        
+        AccessLog.log("app-instance:"+appInstance.appVersion+" vs plugin:"+app.pluginVersion);
+        if (appInstance.appVersion != app.pluginVersion) {
+        	MobileAPI.removeAppInstance(appInstance);
+        	return false;
+        }
         
         return true;
 	}
@@ -198,7 +206,7 @@ public class MobileAPI extends Controller {
 			if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) return MobileAPI.invalidToken();
 			appInstanceId = refreshToken.appInstanceId;
 			
-			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "applicationId", "status"));
+			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "applicationId", "status", "appVersion"));
 			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");            
             if (!refreshToken.appId.equals(app._id)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");  
             if (!Application.verifyUser(appInstance.owner)) return status(UNAUTHORIZED); 
@@ -231,8 +239,13 @@ public class MobileAPI extends Controller {
 			}
 			if (Application.loginHelperPreconditionsFailed(user)) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
 			
-			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode"));
+			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));
 			
+			if (appInstance != null && !verifyAppInstance(appInstance, user._id, app._id)) {
+				appInstance = null;
+				RecordManager.instance.clearCache();
+			}
+						
 			if (appInstance == null) {									
 				boolean autoConfirm = false; /*KeyManager.instance.unlock(appInstance.owner, null) == KeyManager.KEYPROTECTION_NONE;*/
 				
@@ -241,7 +254,7 @@ public class MobileAPI extends Controller {
 	   		    meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
 			} else {
 				
-				if (!verifyAppInstance(appInstance, user._id, app._id)) throw new BadRequestException("error.expired.token", "Access denied");
+				
 				KeyManager.instance.unlock(appInstance._id, phrase);
 				executor = appInstance._id;
 				meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();

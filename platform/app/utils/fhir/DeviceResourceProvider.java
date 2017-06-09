@@ -182,8 +182,7 @@ public class DeviceResourceProvider extends ResourceProvider<Device> implements 
 	public void prepare(Record record, Device theDevice) throws AppException {
 		// Set Record code and content
 				
-		ContentInfo.setRecordCodeAndContent(record, null, "Device");
-				
+		ContentInfo.setRecordCodeAndContent(record, null, "Device");			
 		record.name = "Device";
 				
 		if (cleanAndSetRecordOwner(record, theDevice.getPatient())) theDevice.setPatient(null);

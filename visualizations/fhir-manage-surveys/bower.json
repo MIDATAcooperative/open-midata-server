@@ -8,7 +8,9 @@
     "angular-bootstrap": "~1.2.5",
     "bootstrap": "3.3.7",
     "midata": "git://github.com/MIDATAcooperative/midata-plugin-library.git",
-    "angular-translate": "^2.11.0"
+    "angular-translate": "^2.11.0",
+    "angular-chart.js": "~1.1.1",
+    "Chart.js": "~2.0.2"
   },
   "exportsOverride": {
     "bootstrap": {
