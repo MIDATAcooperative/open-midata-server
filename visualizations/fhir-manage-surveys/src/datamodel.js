@@ -35,12 +35,13 @@ angular.module('surveys')
 		if (survey.id) {
 		  return midataServer.fhirUpdate(midataServer.authToken, survey).then(function(result) {
 			 console.log(result.data);
-			 
+			 survey.meta = result.data.meta;
 		  });			
 		} else {
 		  return midataServer.fhirCreate(midataServer.authToken, survey).then(function(result) {
   		    console.log(result.data);
 			survey.id = result.data.id;
+			survey.meta = result.data.meta;
 			return survey;
 		  });
 		}
@@ -122,13 +123,19 @@ angular.module('surveys')
 	var editor = {};
 	var currentQuestionnaire = {};
 	var itemMap = {};
+	var usedLinkIds = {};
 	var counter = 1;
+	var linkIdCounter = 1;
 	
 	var buildItemMap = function(parent) {
-		if (parent === currentQuestionnaire) itemMap = {};
+		if (parent === currentQuestionnaire) {
+			itemMap = {};
+			usedLinkIds = {};
+		}
 		
 		angular.forEach(parent.item, function(item) {
 			item._parent = parent;
+			if (item.linkId) usedLinkIds[item.linkId] = true;
 			if (!item._id) {
 				item._id = item.linkId;
 				if (!item._id || itemMap[item._id]) item._id = counter++;
@@ -147,6 +154,8 @@ angular.module('surveys')
 			if (item.item && item.item.length) cleanItemMap(item);
 		});
 	};
+	
+	editor.advanced = false;
 	
 	editor.createQuestionnaire = function() {
 		currentQuestionnaire = questionnaire.create();
@@ -214,7 +223,8 @@ angular.module('surveys')
 			if (!parent.item) parent.item = [];
 			if (loc.idx === undefined) loc.idx = parent.item.length;			
 			parent.item.splice(loc.idx | 0, 0, item);			
-			buildItemMap(parent);			
+			buildItemMap(parent);	
+			editor.renumber();
 		} else {
 			
 		}
@@ -232,6 +242,29 @@ angular.module('surveys')
 		   parent.item.splice(idx, 1);
 		   buildItemMap(parent);
 	   });	   	   
+	};
+	
+	editor.renumber = function() {
+		var idx = 1;
+		
+		var num = function(what) {
+			console.log("renum");
+			console.log(what);
+			angular.forEach(what.item, function(item) {			  
+			  if (item.type !== "display") {
+				  item.prefix = ""+idx;
+				  idx++;
+				  if (!item.linkId) {
+					  while (usedLinkIds[""+linkIdCounter]) linkIdCounter++;
+					  item.linkId = ""+linkIdCounter;
+					  usedLinkIds[""+linkIdCounter] = true;
+				  }				  
+			  }
+			  if (item.item && item.item.length) num(item);
+			});
+		};
+		
+		num(currentQuestionnaire);
 	};
 	
 	return editor;

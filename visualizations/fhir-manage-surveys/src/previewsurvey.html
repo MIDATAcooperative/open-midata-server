@@ -58,7 +58,7 @@
          <div class="radio" ng-repeat="choice in item.option">
 	        <label >
 		       <input type="checkbox" >
-		       {{ choice.valueCoding.display }}					       
+		       {{ choice.valueCoding.display }}{{ choice.valueString }}					       
 		    </label>			
 		 </div>		
       </div>
@@ -82,7 +82,7 @@
        <div class="checkbox" ng-repeat="choice in item.option">
 	     <label >
 	       <input type="checkbox" >
-	       {{ choice.valueCoding.display }}					       
+	       {{ choice.valueCoding.display }}{{ choice.valueString }}					       
 	     </label>			
 	   </div>		
         <div class="checkbox">
