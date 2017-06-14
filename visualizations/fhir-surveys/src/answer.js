@@ -2,7 +2,12 @@ angular.module('surveys')
 .controller('AnswerCtrl', ['$scope', '$state', 'answer', 'midataServer', 'midataPortal', 
 	function($scope, $state, answer, midataServer, midataPortal) {
 		
+	    $scope.onlyNumbers = /^\d+$/;
+	    
+	    
 		$scope.init = function(qid, rid, page) {
+			$scope.submitted = false;
+			
 			if (page === undefined) {
 			   answer.startQuestionnaire(qid, rid).then(function() {
 				  $scope.page = 0;
@@ -33,6 +38,18 @@ angular.module('surveys')
 		};
 		
 		$scope.next = function() {
+			$scope.submitted = true;
+			if (! $scope.form.$valid) return;
+			
+			var pn = answer.next($scope.page);
+			if (pn >= 0) {
+				$state.go('^.answer', { questionnaire : $state.params.questionnaire, response : $state.params.response, page : pn} );
+			} else {
+				$scope.save();
+			}
+		};
+		
+		$scope.skip = function() {
 			var pn = answer.next($scope.page);
 			if (pn >= 0) {
 				$state.go('^.answer', { questionnaire : $state.params.questionnaire, response : $state.params.response, page : pn} );
