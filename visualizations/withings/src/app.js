@@ -526,10 +526,26 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 	// save a single record to the database
 	var saveOrUpdateRecord = function (authToken, midataHeader, record) {//(title, content, formattedDate, record) {
 		var existing = stored[codeToMidataCode[midataHeader.code] + record.effectiveDateTime];
-		if (existing) {
-			if (existing.data.valueQuantity.value != record.valueQuantity.value) {
-				return updateRecord(authToken, existing._id, existing.version, record);
+		if (existing && existing.data) {
+			if (codeToMidataCode[midataHeader.code] == 'body/bloodpressure') {
+				// use 2 components
+				if (existing.data.component &&
+					record.component &&
+					record.component[0].valueQuantity &&
+					record.component[1].valueQuantity && 
+					existing.data.component[0].valueQuantity &&
+					existing.data.component[1].valueQuantity &&
+					existing.data.component[0].valueQuantity.value != record.component[0].valueQuantity.value &&
+					existing.data.component[1].valueQuantity.value != record.component[1].valueQuantity.value) {
+					return updateRecord(authToken, existing._id, existing.version, record);
+				}
+			} else {
+				if (existing.data.valueQuantity && existing.data.valueQuantity.value &&
+					existing.data.valueQuantity.value != record.valueQuantity.value) {
+					return updateRecord(authToken, existing._id, existing.version, record);
+				}
 			}
+			
 		} else {
 			return saveRecord(authToken, midataHeader, record);
 		}
