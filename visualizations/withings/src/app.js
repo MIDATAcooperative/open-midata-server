@@ -535,8 +535,8 @@ withings.factory('importer', ['$http', '$translate', 'midataServer', '$q', funct
 					record.component[1].valueQuantity && 
 					existing.data.component[0].valueQuantity &&
 					existing.data.component[1].valueQuantity &&
-					existing.data.component[0].valueQuantity.value != record.component[0].valueQuantity.value &&
-					existing.data.component[1].valueQuantity.value != record.component[1].valueQuantity.value) {
+					(existing.data.component[0].valueQuantity.value != record.component[0].valueQuantity.value ||
+					existing.data.component[1].valueQuantity.value != record.component[1].valueQuantity.value)) {
 					return updateRecord(authToken, existing._id, existing.version, record);
 				}
 			} else {
