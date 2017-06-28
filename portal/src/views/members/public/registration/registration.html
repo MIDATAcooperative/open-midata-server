@@ -29,16 +29,25 @@
 							  <formrow myid="lastname" label="registration.lastname"><input type="text" class="form-control" id="lastname" name="lastname" translate translate-attr-placeholder="registration.lastname" ng-model="registration.lastname" required></formrow>
 							  
 							  <formrow myid="gender" label="registration.gender"><select class="form-control" id="gender" name="gender" ng-model="registration.gender"><option value="FEMALE" translate="enum.gender.FEMALE">female</option><option value="MALE" translate="enum.gender.MALE"></option><option value="OTHER" translate="enum.gender.OTHER"></option></select></formrow>
-							  <formrow myid="birthday" label="registration.birthday">  
-							    <div class="input-group">
-							    <div class="input-group-addon" translate="registration.day"></div>
-							    <select class="form-control " id="birthday" name="birthday" ng-model="registration.birthdayDay" ><option ng-repeat="day in days">{{ day }}</option></select>
-							    <div class="input-group-addon" translate="registration.month"></div>
-							    <select class="form-control" id="birthdayMonth" name="birthdayMonth" ng-model="registration.birthdayMonth"><option ng-repeat="month in months">{{ month }}</option></select>
-							    <div class="input-group-addon" translate="registration.year"></div>
-							    <select class="form-control" id="birthdayYear" name="birthdayYear" ng-model="registration.birthdayYear"><option ng-repeat="year in years">{{ year }}</option></select>
-							    </div>
-							  </formrow>							  
+							  <formrow myid="birthday" label="registration.birthday">
+									<div class="col-sx-12 col-sm-12">
+							      <div class="row">
+											<!-- TODO: check user input -> (0)1 to (28)31 -->
+							        <div class="col-xs-3 col-sm-3">
+													<input type="text" maxlength="2" class="form-control" id="birthday" name="birthday" translate translate-attr-placeholder="registration.day" ng-model="registration.birthday" required>
+							        </div>
+											<!-- TODO: Add month name (with moment.js i.e.) -->
+											<div class="col-xs-5 col-sm-6">
+							          <select class="form-control" id="birthdayMonth" name="birthdayMonth" ng-model="registration.birthdayMonth"><option ng-repeat="month in months">{{ month }}</option></select>
+							        </div>
+											<!-- TODO: check user input -> 1900 - currentYear -->
+							        <div class="col-xs-4 col-sm-3">
+												<input type="text" maxlength="4" class="form-control" id="birthdayYear" name="birthdayYear" translate translate-attr-placeholder="registration.year" ng-model="registration.birthdayYear" required>
+							        </div>
+							     </div>
+							   </div>
+
+							  </formrow>
 							  <formrow myid="language" label="registration.language"><select class="form-control" id="language" ng-model="registration.language" ng-change="changeLanguage(registration.language);" ng-options="lang.value as lang.name | translate for lang in languages"></select></formrow>
 							  
 							  <formrow myid="address1" label="registration.address"><input type="text" class="form-control" id="address1" name="address1" translate translate-attr-placeholder="registration.address_line1" ng-model="registration.address1" required></formrow>

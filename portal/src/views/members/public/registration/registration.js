@@ -62,15 +62,12 @@ angular.module('portal')
 	$scope.changeLanguage = function(lang) {
 		$translate.use(lang);
 	};
-	
-	$scope.days = [];
+
+
 	$scope.months = [];
-	$scope.years = [];
 	var i = 0;
-	for (i=1;i <= 9; i++ ) { $scope.days.push("0"+i); $scope.months.push("0"+i); }
-	for (i=10;i <= 31; i++ ) $scope.days.push(""+i);	
+	for (i=1;i <= 9; i++ ) { $scope.months.push("0"+i); }
 	for (i=10;i <= 12; i++ ) $scope.months.push(""+i);
-	for (i=2015;i > 1900; i-- ) $scope.years.push(""+i);	
 	
 	if (oauth.getAppname()) {		
 	   $scope.app = oauth.app;
