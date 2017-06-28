@@ -1,9 +1,7 @@
 {
 
     "footer" : {
-
-        // TODO NEW: (c) 2015-2016 ETH Zürich
-        "copyright" : "(c) 2015-2016 ETH Zürich",
+        "copyright" : "(c) 2015-2017 ETH Zürich",
 
         // TODO NEW: Midata Portals:
         "portals" : "Midata Portals:",
