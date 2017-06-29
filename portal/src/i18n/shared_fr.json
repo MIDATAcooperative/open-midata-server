@@ -10,8 +10,6 @@
     },
 
     "navbar" : {
-
-        // TODO
         "toggle_navigation" : "Navigation ",
         "login" : "Connexion",
         "sign_up" : "Inscription",
@@ -28,22 +26,14 @@
     },
 
     "error" : {
-
-        // TODO NEW: The backend is currently offline! Please contact support@midata.coop if the problem persists.
-        "offline" : "The backend is currently offline! Please contact support@midata.coop if the problem persists.",
-
-        // TODO NEW: An internal error occured. Please contact support@midata.coop if the problem persists.
-        "internal" : "An internal error occured. Please contact support@midata.coop if the problem persists.",
-
-        // TODO NEW: An internal database error occured. Please contact support@midata.coop if the problem persists.
-        "internal_db" : "An internal database error occured. Please contact support@midata.coop if the problem persists.",
+        "offline" : "La plateforme est actuellement indisponible! Veuilez contacter support@midata.coop si le problème persiste.",
+        "internal" : "Une erreur interne est survenue. Veuilez contacter support@midata.coop si le problème persiste.",
+        "internal_db" : "Une erreur interne lié à la base de donnée est survenue. Veuilez contacter support@midata.coop si le problème persiste.",
         "relogin" : "Veuillez vous reconnecter",
 
         // TODO NEW: No active consent that allows to add data for target person.
         "noconsent" : "No active consent that allows to add data for target person.",
-
-        // TODO NEW: Operation not supported
-        "unsupported" : "Operation not supported",
+        "unsupported" : "Opération non supportée",
 
         // TODO NEW: Full membership required!
         "notrialuser_title" : "Full membership required!",
@@ -58,15 +48,12 @@
         "mustbemember_detail" : "In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
 
         "notauthorized" : {
-
-            // TODO NEW: You are not authorized to do this action
-            "action" : "You are not authorized to do this action",
+            "action" : "Vous n'êtes pas autorisé à entreprendre cette action.",
 
             // TODO NEW: You are not authorized to query provided fields
             "fields" : "You are not authorized to query provided fields",
 
-            // TODO NEW: You are not authorized to access this account
-            "account" : "You are not authorized to access this account",
+            "account" : "Vous n'avez pas les droits pour accéder à ce compte.",
 
             // TODO NEW: You are not authorized to access this study.
 
@@ -75,25 +62,15 @@
             // NEW: You are not authorized to access this study
             "study" : "You are not authorized to access this study",
 
-            // TODO NEW: This is not your plugin.
-
-            // TODO CHANGED
-            // OLD: This is not your plugin.
-            // NEW: This is not your plugin
-            "not_plugin_owner" : "This is not your plugin"
+            "not_plugin_owner" : "Ceci n'est pas votre plugin"
         },
 
 
         "invalid" : {
 
-            // TODO NEW: Please enter a valid email address
-            "email" : "Please enter a valid email address",
-
-            // TODO NEW: Invalid username or password.
-            "credentials" : "Invalid username or password.",
-
-            // TODO NEW: Password and password repetition do not match!
-            "password_repetition" : "Password and password repetition do not match!",
+            "email" : "Veuillez entrer une adresse e-mail valide",
+            "credentials" : "Nom d'utilisateur ou mot de passe invalide.",
+            "password_repetition" : "La répétition du mot de passe ne concorde pas avec le mot de passe entré!",
 
             // TODO NEW: Passphrase and passphrase repetition do not match!
             "passphrase_repetition" : "Passphrase and passphrase repetition do not match!",
@@ -102,25 +79,17 @@
             "passphrase_old" : "Old passphrase not correct.",
 
             // TODO NEW: Old password not correct.
-            "password_old" : "Old password not correct.",
+            "password_old" : "L'ancien mot de passe n'est pas correct.",
 
             // TODO NEW: Bad confirmation code
             "confirmation_code" : "Bad confirmation code",
-
-            // TODO NEW: Unknown code for study.
-            "code" : "Unknown code for study.",
-
-            // TODO NEW: Unknown code for app.
-            "appcode" : "Unknown code for app.",
+            "code" : "Code d'étude inconnu.",
+            "appcode" : "Code d'app inconnu",
 
             // TODO NEW: Invalid status change
             "status_transition" : "Invalid status change",
-
-            // TODO NEW: Invalid value for date field
-            "date" : "Invalid value for date field",
-
-            // TODO NEW: Field must be of type string
-            "string" : "Field must be of type string",
+            "date" : "Valeur invalide pour le champ date",
+            "string" : "Ce champ doit contenir du text",
 
             // TODO NEW: Invalid authorization token. Please relogin.
             "token" : "Invalid authorization token. Please relogin.",
@@ -143,17 +112,12 @@
 
         "missing" : {
 
-            // TODO NEW: Please provide a username  and a password.
-            "credentials" : "Please provide a username  and a password.",
-
-            // TODO NEW: Please fill out your email address.
-            "email" : "Please fill out your email address.",
+            "credentials" : "Veuillez entrer un nom d'utilisateur et un mot de passe.",
+            "email" : "Veuillez entrer votre adresse e-mail",
 
             // TODO NEW: Please fill out this input field.
             "input_field" : "Please fill out this input field.",
-
-            // TODO NEW: Please enter a new password!
-            "newpassword" : "Please enter a new password!",
+            "newpassword" : "Veuillez entrer un nouveau mot de passe!",
 
             // TODO NEW: Please provide your passphrase.
             "passphrase" : "Please provide your passphrase.",
@@ -170,47 +134,30 @@
 
         "unknown" : {
 
-            // TODO NEW: Unknown Plugin
-            "plugin" : "Unknown Plugin",
-
-            // TODO NEW: Unknown application
-            "app" : "Unknown application",
+            "plugin" : "Plugin inconnu",
+            "app" : "Application inconnue",
 
             // TODO NEW: The requested space does no longer exist.
             "space" : "The requested space does no longer exist.",
 
             // TODO NEW: Consent not found
             "consent" : "Consent not found",
-
-            // TODO NEW: Study does not exist.
-            "study" : "Study does not exist.",
+            "study" : "L'étude n'existe pas.",
 
             // TODO NEW: Record Content-Type is not registered with the platform.
             "content" : "Record Content-Type is not registered with the platform.",
 
             // TODO NEW: Unknown group name
             "group" : "Unknown group name",
-
-            // TODO NEW: Unknown code
-            "code" : "Unknown code",
-
-            // TODO NEW: Unknown record
-            "record" : "Unknown record",
-
-            // TODO NEW: User does not exist
-            "user" : "User does not exist",
-
-            // TODO NEW: Study Participation not found.
-            "participation" : "Study Participation not found."
+            "code" : "Code inconnu",
+            "record" : "Enregistrement inconnu",
+            "user" : "Utilisateur inexistant",
+            "participation" : "Participant à l'étude introuvable."
         },
 
         "exists" : {
-
-            // TODO NEW: A person with this email is already registered.
-            "user" : "A person with this email is already registered.",
-
-            // TODO NEW: A person with this email is already registered.
-            "member" : "A person with this email is already registered.",
+            "user" : "Une personne avec cet e-mail est déjà enregistrée.",
+            "member" : "Une personne avec cet e-mail est déjà enregistrée.",
 
             // TODO NEW: A healthcare provider with this name already exists.
             "provider" : "A healthcare provider with this name already exists.",
@@ -393,17 +340,10 @@
         },
         "consentstatus" : {
 
-            // TODO NEW: Active
-            "ACTIVE" : "Active",
-
-            // TODO NEW: Expired
-            "EXPIRED" : "Expired",
-
-            // TODO NEW: Rejected
-            "REJECTED" : "Rejected",
-
-            // TODO NEW: Unconfirmed
-            "UNCONFIRMED" : "Unconfirmed"
+            "ACTIVE" : "Actif",
+            "EXPIRED" : "Expiré",
+            "REJECTED" : "Rejeté",
+            "UNCONFIRMED" : "non confirmé"
         },
         "consenttype" : {
 
@@ -680,32 +620,15 @@
 
     "common" : {
 
-        // TODO NEW: Back
-        "back_btn" : "Back",
-
-        // TODO NEW: Search
-        "search_btn" : "Search",
-
-        // TODO NEW: Add
-        "add_btn" : "Add",
-
-        // TODO NEW: Create
-        "create_btn" : "Create",
-
-        // TODO NEW: Change
-        "change_btn" : "Change",
-
-        // TODO NEW: Cancel
-        "cancel_btn" : "Cancel",
-
-        // TODO NEW: View
-        "view_btn" : "View",
-
-        // TODO NEW: Submit
-        "submit_btn" : "Submit",
-
-        // TODO NEW: Delete
-        "delete_btn" : "Delete",
+        "back_btn" : "Retour",
+        "search_btn" : "Rechercher",
+        "add_btn" : "Ajouter",
+        "create_btn" : "Créer",
+        "change_btn" : "Changer",
+        "cancel_btn" : "Annuler",
+        "view_btn" : "Vue",
+        "submit_btn" : "Envoyer",
+        "delete_btn" : "Supprimer",
 
         "user" : {
 
@@ -717,28 +640,18 @@
 
             // TODO NEW: ZIP
             "zip" : "ZIP",
-
-            // TODO NEW: City
-            "city" : "City",
-
-            // TODO NEW: Street
-            "street" : "Street",
-
-            // TODO NEW: Phone
-            "phone" : "Phone",
-
-            // TODO NEW: Mobile
+            "city" : "Ville",
+            "street" : "Rue",
+            "phone" : "Téléphone",
             "mobile_phone" : "Mobile",
-
-            // TODO NEW: Email
-            "email" : "Email"
+            "email" : "E-mail"
         }
 
     },
 
     "instance" : {
 
-        // TODO NEW: 
+        // TODO NEW:
         "rules" : "",
 
         // TODO NEW: Purpose of this MIDATA instance
@@ -757,9 +670,7 @@
         "start" : "Choose one of the portal from the bottom of the page to start. Each portal has its own LOGIN and SIGN UP page.",
 
         "localhost" : {
-
-            // TODO NEW: Local MIDATA Instance (localhost)
-            "name" : "Local MIDATA Instance (localhost)",
+            "name" : "Instance local de MIDATA (localhost)",
 
             // TODO NEW: This is a local installation of MIDATA only available from your PC.
             "intro" : "This is a local installation of MIDATA only available from your PC.",
@@ -844,101 +755,39 @@
     },
 
     "registration" : {
-
-        // TODO NEW: Sign Up
-        "sign_up" : "Sign Up",
-
-        // TODO NEW: EMail
-        "email" : "EMail",
-
-        // TODO NEW: Password
-        "password" : "Password",
-
-        // TODO NEW: Repeat Password
-        "password_repetition" : "Repeat Password",
-
-        // TODO NEW: First Name
-        "firstname" : "First Name",
-
-        // TODO NEW: Surname
-        "lastname" : "Surname",
-
-        // TODO NEW: Gender
-        "gender" : "Gender",
-
-        // TODO NEW: Birthday
-        "birthday" : "Birthday",
-
-        // TODO NEW: Preferred Language
-        "language" : "Preferred Language",
-
-        // TODO NEW: Day
-        "day" : "Day",
-
-        // TODO NEW: Month
-        "month" : "Month",
-
-        // TODO NEW: Year
-        "year" : "Year",
-
-        // TODO NEW: Address
-        "address" : "Address",
-
-        // TODO NEW: Enter your address here
-        "address_line1" : "Enter your address here",
-
-        // TODO NEW: Second line for address
-        "address_line2" : "Second line for address",
-
-        // TODO NEW: City
-        "city" : "City",
-
-        // TODO NEW: Zip Code
-        "zip" : "Zip Code",
-
-        // TODO NEW: Country
-        "country" : "Country",
-
-        // TODO NEW: Phone
-        "phone" : "Phone",
-
-        // TODO NEW: Mobile Phone
-        "mobile_phone" : "Mobile Phone",
-
-        // TODO NEW: Contact person MIDATA
+        "sign_up" : "S'authentifier",
+        "email" : "E-mail",
+        "password" : "Mot de passe",
+        "password_repetition" : "Répéter le mot de passe",
+        "firstname" : "Prénom",
+        "lastname" : "Nom",
+        "gender" : "Sexe",
+        "birthday" : "Date de naissance",
+        "language" : "Langue préférée",
+        "day" : "Jour",
+        "month" : "Mois",
+        "year" : "Année",
+        "address" : "Adresse",
+        "address_line1" : "Entrez votre adresse ici",
+        "address_line2" : "Seconde line d'adresse",
+        "city" : "Ville",
+        "zip" : "Code postal",
+        "country" : "Pays",
+        "phone" : "Numéro de téléphone",
+        "mobile_phone" : "Numéro mobile",
         "coach" : "Contact person MIDATA",
-
-        // TODO NEW: Purpose of Registration
-        "reason" : "Purpose of Registration",
-
-        // TODO NEW: AGB
-        "agb" : "AGB",
-
-        // TODO NEW: I accept the terms and conditions
-        "agb2" : "I accept the terms and conditions",
-
-        // TODO NEW: Sign Up
-        "sign_up_btn" : "Sign Up"
+        "reason" : "Raison de l'enregistremenet",
+        "agb" : "CGU",
+        "agb2" : "J'accepte les règles de confidentialité et conditions d'utilisation",
+        "sign_up_btn" : "S'authentifier"
     },
 
     "login" : {
-
-        // TODO NEW: Email address
-        "email_address" : "Email address",
-
-        // TODO NEW: Password
-        "password" : "Password",
-
-        // TODO NEW: Remember Me
-        "remember_me" : "Remember Me",
-
-        // TODO NEW: Sign in
-        "sign_in_btn" : "Sign in",
-
-        // TODO NEW: Forgot your password?
-        "forgot_your_password" : "Forgot your password?",
-
-        // TODO NEW: Login
+        "email_address" : "Adresse e-mail",
+        "password" : "Mot de passe",
+        "remember_me" : "Se souvenir de moi",
+        "sign_in_btn" : "S'authentifier",
+        "forgot_your_password" : "Mot de passe oublié ?",
         "login_btn" : "Login"
     },
 
@@ -949,11 +798,7 @@
 
         // TODO NEW: Enter the e-mail address associated with your account, then click Continue. We'll email you a link to a page where you can easily create a new password.
         "description" : "Enter the e-mail address associated with your account, then click Continue. We'll email you a link to a page where you can easily create a new password.",
-
-        // TODO NEW: Email address
-        "email" : "Email address",
-
-        // TODO NEW: Continue
+        "email" : "Adresse e-mail",
         "continue" : "Continue",
 
         // TODO NEW: We have sent you an email with instructions on how to reset your password.
