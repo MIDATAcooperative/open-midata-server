@@ -30,10 +30,7 @@
 
     "provider_usergroups" : {
         "title" : "Teams",
-
         "name" : "Team",
-
-        // TODO NEW: Status
         "status" : "Status",
         "empty" : "Sie sind nicht Mitglied eines Teams."
     },
@@ -46,22 +43,14 @@
 
     "provider_editusergroup" : {
         "title" : "Team ändern",
-
-        // TODO NEW: Former Members
-        "former_members" : "Former Members",
-        "name" : "Team Name des Teams",
+        "former_members" : "Ehemalige Mitglieder",
+        "name" : "Name des Teams",
         "status" : "Status",
-
-        // TODO NEW: Member From
-        "startDate" : "Member From",
-
-        // TODO NEW: Member Until
-        "endDate" : "Member Until"
+        "startDate" : "Mitglied seit",
+        "endDate" : "Mitglied bis"
     },
 
     "provider_memberdetails" : {
-
-        // TODO NEW: Request Consent
-        "propose_consent" : "Request Consent"
+        "propose_consent" : "Zustimmung anfragen"
     }
 }

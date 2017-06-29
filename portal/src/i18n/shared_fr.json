@@ -1,7 +1,7 @@
 {
 
     "footer" : {
-        "copyright" : "(c) 2015-2016 ETH Zürich",
+        "copyright" : "(c) 2015-2017 ETH Zürich",
         "portals" : "Portails MIDATA:",
         "for_members" : "Pour les possesseurs de compte",
         "for_researchers" : "Pour les organismes de recherche",
@@ -17,18 +17,12 @@
         "sign_up" : "Inscription",
         "sign_out" : "Déconnexion",
         "me" : "Moi",
-
-        // TODO NEW: View
-        "view" : "View",
+        "view" : "Examiner",
         "overview" : "Vue d'ensemble",
         "messages" : "Messages",
         "my_data" : "Mes données",
         "consents" : "Partage",
         "research" : "News",
-
-        // TODO CHANGED
-        // OLD: Config
-        // NEW: Configuration
         "config" : "Configuration",
         "help" : "Aide"
     },
@@ -57,11 +51,11 @@
         // TODO NEW: In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.
         "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
 
-        // TODO NEW: Midata cooperative membership required!
-        "mustbemember_title" : "Midata cooperative membership required!",
+        // TODO NEW: MIDATA cooperative membership required!
+        "mustbemember_title" : "MIDATA cooperative membership required!",
 
-        // TODO NEW: In order to use this feature you must be member of the midata cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
-        "mustbemember_detail" : "In order to use this feature you must be member of the midata cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
+        // TODO NEW: In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
+        "mustbemember_detail" : "In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
 
         "notauthorized" : {
 

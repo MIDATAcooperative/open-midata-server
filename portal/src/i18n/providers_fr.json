@@ -30,11 +30,8 @@
 
     "provider_usergroups" : {
         "title" : "Teams",
-
         "name" : "Team",
-
-        // TODO NEW: Status
-        "status" : "Status",
+        "status" : "État",
         "empty" : "Vous ne faites pas partie d'un team."
     },
 
@@ -46,22 +43,14 @@
 
     "provider_editusergroup" : {
         "title" : "Modifier le team",
-
-        // TODO NEW: Former Members
-        "former_members" : "Former Members",
+        "former_members" : "Anciens membres",
         "name" : "Nom du team",
         "status" : "État",
-
-        // TODO NEW: Member From
-        "startDate" : "Member From",
-
-        // TODO NEW: Member Until
-        "endDate" : "Member Until"
+        "startDate" : "Membre depuis",
+        "endDate" : "Membre jusqu'au"
     },
 
     "provider_memberdetails" : {
-
-        // TODO NEW: Request Consent
-        "propose_consent" : "Request Consent"
+        "propose_consent" : "Demander le consentement"
     }
 }
