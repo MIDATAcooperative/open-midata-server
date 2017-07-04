@@ -409,6 +409,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 		record.created = new Date(System.currentTimeMillis());
 		record.code = new HashSet<String>();
 		record.owner = info().ownerId;
+		record.version = VersionedDBRecord.INITIAL_VERSION;
 		return record;
 	}
 	

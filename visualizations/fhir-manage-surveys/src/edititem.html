@@ -3,10 +3,10 @@
 	  <div class="form-group">
 		 <label for="linkId" class="control-label col-sm-4" translate="item.linkId"></label>
 		 <div class="col-sm-8">
-		    <input id="linkId" class="form-control" type="text" ng-model="item.linkId">
+		    <input id="linkId" class="form-control" type="text" ng-disabled="!advanced" ng-model="item.linkId">
 		 </div>		         
 	  </div>	
-	  <div class="form-group">
+	  <div class="form-group" ng-show="advanced">
 		 <label for="prefix" class="control-label col-sm-4" translate="item.prefix"></label>
 		 <div class="col-sm-8">
 		    <input id="prefix" class="form-control" type="text" ng-model="item.prefix">
@@ -30,7 +30,7 @@
          <div class="col-sm-8 checkbox">
            <label>
 			  <input type="checkbox" ng-model="item.required">
-			       Yes
+			       <span translate="yes"></span>
 			</label>		           
          </div>		         
       </div>
@@ -39,7 +39,7 @@
          <div class="col-sm-8 checkbox">
            <label>
 			  <input type="checkbox" ng-model="item.repeats">
-			       Yes
+			       <span translate="yes"></span>
 			</label>		           
          </div>		         
       </div>
@@ -51,14 +51,14 @@
            <table class="table table-condensed table-striped table-bordered" ng-show="item.option.length">
              <tr>
                <th width="40%" translate="item.display"></th>
-               <th width="25%" translate="item.system"></th>
-               <th width="25%" translate="item.code"></th>
+               <th width="25%" ng-show="advanced" translate="item.system"></th>
+               <th width="25%" ng-show="advanced" translate="item.code"></th>
                <th width="10%"></th>
              </tr>
              <tr ng-repeat="opt in item.option">
                <td><input class="form-control" type="text" ng-model="opt.valueCoding.display"></td>
-               <td><input class="form-control" type="text" ng-model="opt.valueCoding.system"></td>
-               <td><input class="form-control" type="text" ng-model="opt.valueCoding.code"></td>
+               <td ng-show="advanced"><input class="form-control" type="text" ng-model="opt.valueCoding.system"></td>
+               <td ng-show="advanced"><input class="form-control" type="text" ng-model="opt.valueCoding.code"></td>
                <td><button type="button" class="btn btn-xs btn-danger" ng-click="deleteOption(opt);" translate="item.delete_btn">delete</button></td>
              </tr>
            </table>

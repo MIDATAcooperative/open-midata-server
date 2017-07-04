@@ -4,7 +4,7 @@ angular.module('surveys')
 		
 	   var loc;
 	   
-	   $scope.types = ["display", "group", "string", "text", "choice", "open-choice", "boolean", "decimal", "integer", "date", "dateTime", "time", "url", "quantity" ];
+	   $scope.types = ["display", "group", "string", "text", "choice", "open-choice", "boolean", "decimal", "integer", "date"/*, "dateTime", "time", "url", "quantity"*/ ];
 	   
 	   $scope.init = function(surveyId, itemId, parentId, idx) {
 		   
@@ -17,11 +17,13 @@ angular.module('surveys')
 				   loc = null;
 			   } else {
 				   $scope.item = editor.emptyItem();
-				   loc = { parentId : parentId, idx : idx };
+				   loc = { parentId : parentId, idx : idx, prefix:"" };
 			   }
 			   
 		   });
 	   };
+	   
+	   $scope.advanced = editor.advanced;
 	   
 	   $scope.save = function() {
 		   editor.saveItem($scope.survey.id, $scope.item, loc).then(function() {  		   
@@ -51,10 +53,9 @@ angular.module('surveys')
 		   return $scope.item.type == "choice" || $scope.item.type == "open-choice";
 	   };
 	   
-	   $scope.addOption = function() {
-		   console.log("XX");
-		   if (!$scope.item.option) $scope.item.option = [];
-		   $scope.item.option.push({ valueCoding : { display:"" , system:"", code:"" } });  
+	   $scope.addOption = function() {		   
+		   if (!$scope.item.option) $scope.item.option = [];		   
+		   $scope.item.option.push({ valueCoding : { display:"" , system:"http://midata.coop/random", code:Math.abs(Math.random()*0xffffffff|0) } });  
 	   };
 	   
 	   $scope.deleteOption = function(opt) {

@@ -77,7 +77,7 @@ angular.module('portal')
 	};
 	
 	$scope.wipe = function() {
-	  server.delete("/shared/api/users/wipe").then(function() {
+	  server.delete("/api/shared/users/wipe").then(function() {
 		  document.location.href="/#/public/login"; 
 	  });	  
 	};

@@ -64,6 +64,7 @@ var en = {
   "active" : "Active",
   "retired" : "Retired",
   "Unknown" : "Unknown",
+  "yes" : "Yes",
   
   "answers" : "Total nr of Answers"
 },
