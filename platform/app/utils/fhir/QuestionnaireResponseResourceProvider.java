@@ -250,12 +250,14 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 		}
 		if (codings.isEmpty()) {
 			IIdType questions = theQuestionnaireResponse.getQuestionnaire().getReferenceElement();
-			Questionnaire q = (Questionnaire) FHIRServlet.myProviders.get("Questionnaire").getResourceById(questions);
-			codings = q.getCode();
-			if (codings != null) {
-			  for (Coding c : codings) {			
-				theQuestionnaireResponse.addExtension().setUrl("http://midata.coop/extensions/response-code").setValue(c);
-			  }
+			if (questions != null && !questions.isEmpty()) {
+				Questionnaire q = (Questionnaire) FHIRServlet.myProviders.get("Questionnaire").getResourceById(questions);
+				codings = q.getCode();
+				if (codings != null) {
+				  for (Coding c : codings) {			
+					theQuestionnaireResponse.addExtension().setUrl("http://midata.coop/extensions/response-code").setValue(c);
+				  }
+				}
 			}
 		}
 		
