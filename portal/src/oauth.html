@@ -45,7 +45,7 @@
 		<script type="text/javascript" src="oauthapp.js" defer></script>
 		<!-- endbuild -->
 	</head>
-	<body ng-app="portal"  class="<!-- @echo NAME -->">
+	<body ng-app="portal" ng-csp="no-unsafe-eval" class="<!-- @echo NAME -->">
 	  <div id="wrapper">
 	  <div ng-if="false">
 	  <header id="navbar" class="navbar navbar-default" role="navigation" ng-controller="NavbarCtrl">
