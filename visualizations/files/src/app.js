@@ -19,8 +19,8 @@ files.run(['$translate', 'midataPortal', function($translate, midataPortal) {
 	console.log("Language: "+midataPortal.language);
 $translate.use(midataPortal.language);	   	  
 }]);
-files.controller('FilesCtrl', ['$scope', '$http', '$location', 'FileUploader', 'midataPortal',
-	function($scope, $http, $location, FileUploader, midataPortal) {
+files.controller('FilesCtrl', ['$scope', '$http', '$location', 'FileUploader', 'midataPortal', 'midataServer',
+	function($scope, $http, $location, FileUploader, midataPortal, midataServer) {
 		
 	    midataPortal.autoresize();
 	    
@@ -38,7 +38,7 @@ files.controller('FilesCtrl', ['$scope', '$http', '$location', 'FileUploader', '
 
 		var initUploader = function() {
 			uploader = $scope.uploader = new FileUploader({
-				"url": "https://" + window.location.hostname + ":9000/v1/plugin_api/records/upload",
+				"url": midataServer.baseurl + "/v1/plugin_api/records/upload",
 				"removeAfterUpload": true,
 				"queueLimit": 1 // restrict to one file per upload
 			});
