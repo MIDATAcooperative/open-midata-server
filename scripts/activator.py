@@ -55,7 +55,7 @@ class Activator(Product):
 		print 'Waiting for startup...'		
 		time.sleep(30)
 		print 'Fetching Page'
-		t = urllib2.urlopen('http://localhost:9001/test')		
+		t = urllib2.urlopen('http://localhost:9001/api/test')		
 		t.read()		
 		t.close()		
 		Command.execute('{0} -zun 0 /dev/shm/secret.conf'.format(self.shred), self.conf)
