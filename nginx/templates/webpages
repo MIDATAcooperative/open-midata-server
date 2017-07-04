@@ -74,8 +74,8 @@ server {
            client_max_body_size 100M;
         }
          
-        location /visualizations {   
-           root ROOTDIR;
+        location /plugin {   
+           alias ROOTDIR/visualizations;
            
            add_header 'X-Frame-Options' 'ALLOW-FROM https://DOMAIN';
            add_header 'X-XSS-Protection' "1; mode=block";
