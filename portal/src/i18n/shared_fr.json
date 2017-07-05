@@ -1,10 +1,6 @@
 {
 
     "footer" : {
-
-        // TODO CHANGED
-        // OLD: (c) 2015-2016 ETH Zürich
-        // NEW: (c) 2015-{{now}} ETH Zürich
         "copyright" : "(c) 2015-{{now}} ETH Zürich",
         "portals" : "Portails MIDATA:",
         "for_members" : "Pour les possesseurs de compte",
@@ -37,21 +33,9 @@
         "noconsent" : "Il n'y a pas de consentement actif permettant l'ajout de donnée à cette personne.",
         "unsupported" : "Opération non supportée",
         "notrialuser_title" : "Inscription requise!",
-
         "notrialuser_detail" : "Pour utiliser cette fonctionnalité, vous devez compléter votre inscription. Veuillez demander une copie écrite des conditions générales d'utilisation et la retourner signée. Vous recevrez également un code d'activation permettant de vérifier votre adresse postale. Si vous désirez vérifier le status de votre compte, cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'Etat du compte'.",
-
-
-        // TODO CHANGED
-        // OLD: Midata cooperative membership required!
-        // NEW: MIDATA cooperative membership required!
         "mustbemember_title" : "Inscription à la copperative MIDATA requise!",
-
-
-        // TODO CHANGED
-        // OLD: In order to use this feature you must be member of the midata cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
-        // NEW: In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
         "mustbemember_detail" : "Pour utiliser cette fonctionnalité, vous devez être membre de la coopérative MIDATA. Cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'Etat du compte' pour plus d'informations.",
-
         "notauthorized" : {
             "action" : "Vous n'êtes pas autorisé à entreprendre cette action",
             "fields" : "Vous n'êtes pas autorisé à consulter les champs demandés",
@@ -60,12 +44,9 @@
             "not_plugin_owner" : "Ce n'est pas votre plugin"
         },
 
-
         "invalid" : {
             "email" : "Veuillez entrer une adresse e-mail valide",
-
             "credentials" : "Nom d'utilisateur ou mot de passe invalide.",
-
             "password_repetition" : "La répétition du mot de passe ne concorde pas avec le mot de passe entré!",
             "passphrase_repetition" : "La répétition de la phrase secrète ne concorde pas avec la phrase secrète entrée!",
             "passphrase_old" : "Ancienne phrase secrète incorrecte.",
@@ -86,7 +67,6 @@
 
         "missing" : {
             "credentials" : "Veuillez entrer un nom d'utilisateur et un mot de passe.",
-
             "email" : "Veuillez entrer votre adresse e-mail",
             "input_field" : "Veuillez compléter ce champ de saisie.",
             "newpassword" : "Veuillez entrer un nouveau mot de passe!",
@@ -94,10 +74,6 @@
             "groupsystem" : "Le système de groupe doit être fourni.",
             "token" : "Jeton manquant ou invalide.",
             "agb" : "Les termes et conditions ne sont pas acceptés.",
-
-            // TODO CHANGED
-            // OLD: undefined
-            // NEW: Study participation must be accepted.
             "study_accept" : "La participation à l'étude doit être acceptée."
         },
 
@@ -128,11 +104,7 @@
         "blocked" : {
             "user" : "L'utilisateur n'est pas autorisé à se connecter. Contactez support@midata.coop pour obtenir de l'aide.",
             "participation" : "Le titulaire du compte n'est pas autorisé à participer à l'étude.",
-
-            // TODO CHANGED
-            // OLD: undefined
-            // NEW: The consent for using this app has been revoked. To reenable use the MIDATA portal and delete the rejected or expired consent.
-            "consent" : "Le consentement à l'utilisation de cette application a été révoqué. "
+            "consent" : "Le consentement pour l'utilisation de cette application a été révoqué. Veuillez utiliser le portail web pour supprimer le consentement rejeté ou expiré."
         },
 
         "closed" : {
@@ -360,7 +332,7 @@
 
     "instance" : {
 
-        // TODO NEW: 
+        // TODO NEW:
         "rules" : "",
         "purpose" : "Raison d'être de cette instance MIDATA",
         "access" : "Accès à cette instance MIDATA",
@@ -434,21 +406,13 @@
         "mobile_phone" : "Numéro mobile",
         "coach" : "Contact person MIDATA",
         "reason" : "Raison de l'enregistremenet",
-
-        // TODO CHANGED
-        // OLD: AGB
-        // NEW: Midata AGB
-        "agb" : "CGU",
+        "agb" : "CGU MIDATA",
 
         // TODO NEW: Research
         "study" : "Research",
         "agb2" : "J'accepte les règles de confidentialité et conditions d'utilisation",
-
-        // TODO NEW: App AGB
-        "app_agb" : "App AGB",
-
-        // TODO NEW: I accept the terms and conditions
-        "app_agb2" : "I accept the terms and conditions",
+        "app_agb" : "CGU de l'App",
+        "app_agb2" : "J'accepte les conditions générales d'utilisation.",
         "sign_up_btn" : "S'authentifier"
     },
 
@@ -505,10 +469,8 @@
 
         // TODO NEW: For convenience you may enter the code from the email here:
         "email_code" : "For convenience you may enter the code from the email here:",
-        "resend_btn" : "Renvoer l'e-mail",
-
-        // TODO NEW: Retry login
-        "retry_btn" : "Retry login",
+        "resend_btn" : "Renvoyer l'e-mail",
+        "retry_btn" : "Veuillez vous authentifier à nouveau",
 
         // TODO NEW: 2. A contract has been sent to your postal address. Return it signed to MIDATA.
 
@@ -526,9 +488,7 @@
 
         // TODO NEW: Confirmation code may be entered here after signed contract has arrived at MIDATA office.
         "code_later" : "Confirmation code may be entered here after signed contract has arrived at MIDATA office.",
-
-        // TODO NEW: Enter now
-        "enter_now_btn" : "Enter now",
+        "enter_now_btn" : "Entrer maintenant",
         "email_success" : "L'adresse e-mail a déjà été confirmée."
     },
 
@@ -546,9 +506,7 @@
         "old_passphrase" : "Ancienne phrase secrète",
         "new_passphrase" : "Nouvelle phrase secrète",
         "change_passphrase_btn" : "Changer la phrase secrète",
-
-        // TODO NEW: By repeating your new passphrase you make the change final.
-        "repeat_finalizes" : "By repeating your new passphrase you make the change final.",
+        "repeat_finalizes" : "En changeant votre phrase secrète vous rendez vos changements définitifs.",
         "repeat_passphrase" : "Répétez la nouvelle phrase secrète",
         "confirm_btn" : "Confirmez la phrase secrète",
         "success" : "La phrase secrète a bien été changée!"
@@ -595,9 +553,7 @@
 
         // TODO NEW: No providers found.
         "empty_result" : "No providers found.",
-
-        // TODO NEW: Add Consent
-        "add_consent_btn" : "Add Consent"
+        "add_consent_btn" : "Ajouter un consentement"
     },
 
     "recorddetail" : {
@@ -652,24 +608,12 @@
 
         // TODO NEW: Records that have format:
         "records_with_format" : "Records that have format:",
-
-        // TODO NEW: Records that have content:
-        "records_with_content" : "Records that have content:",
-
-        // TODO NEW: Records that belong to group:
-        "records_with_group" : "Records that belong to group:",
-
-        // TODO NEW: Records that belong to owner:
-        "records_with_owner" : "Records that belong to owner:",
-
-        // TODO NEW: Records created by app:
-        "records_from_app" : "Records created by app:",
-
-        // TODO NEW: Your own records
-        "owner_self" : "Your own records",
-
-        // TODO NEW: Participation History
-        "participation_history" : "Participation History",
+        "records_with_content" : "Enregistrements avec contenu:",
+        "records_with_group" : "Enregistrements appartement au groupe:",
+        "records_with_owner" : "Enregistrements appartement à:",
+        "records_from_app" : "Enregistrements créés avec l'app:",
+        "owner_self" : "Vos propres enregistrements",
+        "participation_history" : "Historique",
         "history_event" : "Evénement",
         "history_who" : "Qui",
         "history_when" : "Quand",
@@ -749,13 +693,9 @@
 
         // TODO NEW: The person(s) authorized with this consent may reshare the data I gave them access to.
         "reshare2" : "The person(s) authorized with this consent may reshare the data I gave them access to.",
-
-        // TODO NEW: Consent expiration date:
-        "expiration_date" : "Consent expiration date:",
+        "expiration_date" : "Date d'expiration du consentement:",
         "created_before" : "Ne partager les données créées avant le:",
-
-        // TODO NEW: What data do you want to share?
-        "share_what" : "What data do you want to share?",
+        "share_what" : "Quelle(s) donnée(s) désirez vous partager?",
 
         // TODO NEW: This consent is empty at the beginning. You can select the data you want to share with this consent afterwards.
         "consent_empty" : "This consent is empty at the beginning. You can select the data you want to share with this consent afterwards.",
@@ -768,9 +708,7 @@
         "title" : "Consentement",
         "owner" : "Propriétaire du consentement",
         "name" : "Libellé du consentement",
-
-        // TODO NEW: Consent created at
-        "date_of_creation" : "Consent created at",
+        "date_of_creation" : "Consentement créé le",
         "type" : "Type de consentement",
         "status" : "État du consentement",
         "people" : "Avec quelle(s) personne(s) désirez-vous partager des données ?",
@@ -799,9 +737,7 @@
         "shares_records" : "Ce consentement partage {{count}} enregistrements.",
         "shares_group" : "Partage tous les enregistrements appartenant au groupe : {{ group }}",
         "excludes_group" : "Les enregistrements appartenant au groupe {{ group }} sont exclus",
-
-        // TODO NEW: View/Change data selection
-        "view_change_selection_btn" : "View/Change data selection",
+        "view_change_selection_btn" : "Voir/changer la selection des données",
         "confirm_btn" : "Confirmer ce consentement",
         "reject_btn" : "Rejeter ce consentement",
         "delete_btn" : "Supprimer ce consentement"
@@ -875,18 +811,12 @@
         "shared_with" : "Partagé avec :",
         "records_used_for_app" : "Enregistrements utilisés pour l'app",
         "back_to_plugin" : "Retour à la visualisation",
-
-        // TODO NEW: Grouped by type of content
-        "by_group" : "Grouped by type of content",
-
-        // TODO NEW: Grouped by application
-        "by_plugin" : "Grouped by application",
+        "by_group" : "Grouper par contenu",
+        "by_plugin" : "Grouper par application",
         "show" : "Afficher:",
         "my_data" : "Mes données",
         "all_data" : "Toutes les données",
-
-        // TODO NEW: Personal Data
-        "all" : "Personal Data",
+        "all" : "Données personnelles",
         "study" : "Étude : {{name}}",
         "shared" : "Partagé par : {{name}}",
         "just_name" : "{{name}}",
@@ -904,9 +834,7 @@
         "sign_in_btn" : "Se connecter",
         "device" : "Appareil : {{ device}}",
         "please_confirm" : "Veuillez confirmer le consentement sur le portail MIDATA, puis réessayez. Titre du consentement: {{ consent }}",
-
-        // TODO NEW: Confirm Access
-        "confirm_btn" : "Confirm Access",
+        "confirm_btn" : "Confimer l'accès",
         "requests_access" : "Accès demandé:",
         "shares_group" : "Groupe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
@@ -1006,11 +934,7 @@
         "study_records" : "Enregistrements partagés :",
         "addmore" : "Ajouter plus",
         "view_btn" : "Afficher",
-
-        // TODO CHANGED
-        // OLD: Install new plugin
-        // NEW: Add more
-        "install_btn" : "Installer un nouveau plugin",
+        "install_btn" : "Ajouter plus",
         "observations" : "Mesures",
         "calendar" : "Calendrier"
     },
@@ -1084,27 +1008,21 @@
 
     "addusers" : {
         "contacts" : "Contacts existants",
-
-        // TODO NEW: All users
-        "all_users" : "All users",
+        "all_users" : "Tout les utilisateur",
 
         // TODO NEW: No contacts can be added to this circle.
         "no_contacts_to_add" : "No contacts can be added to this circle.",
         "search_by_email" : "Entrez l'email de la personne cible:",
         "search_user" : "Recherche d'un utilisateur",
         "searching" : "Recherche...",
-
-        // TODO NEW: No users matched your search.
-        "no_matching_users" : "No users matched your search.",
+        "no_matching_users" : "Auncun utilisateur de correspond à votre recherche.",
 
         // TODO NEW: All found users are already members of this circle.
         "no_new_found" : "All found users are already members of this circle."
     },
 
     "usergroupsearch" : {
-
-        // TODO NEW: Team Name
-        "name" : "Team Name",
+        "name" : "Nom de l'équipe",
 
         // TODO NEW: No matching teams found.
         "empty_result" : "No matching teams found.",
