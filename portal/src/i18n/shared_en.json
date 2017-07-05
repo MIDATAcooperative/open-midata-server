@@ -1,6 +1,6 @@
 {
    "footer" : {
-     "copyright" : "(c) 2015-2016 ETH Zürich",
+     "copyright" : "(c) 2015-{{now}} ETH Zürich",
      "portals" : "Midata Portals:",
      "for_members" : "For Account Holders",
 	 "for_researchers" : "For Research Organizations",
@@ -387,9 +387,11 @@
     "mobile_phone" : "Mobile Phone",
     "coach" : "Contact person MIDATA",
     "reason" : "Purpose of Registration",
-    "agb" : "AGB",
+    "agb" : "Midata AGB",
     "study" : "Research",
     "agb2" : "I accept the terms and conditions",
+    "app_agb" : "App AGB",
+    "app_agb2" : "I accept the terms and conditions",
     "sign_up_btn" : "Sign Up"
   },
   

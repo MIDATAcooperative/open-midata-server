@@ -23,7 +23,10 @@ import models.Plugin_i18n;
 import models.Space;
 import models.Study;
 import models.enums.MessageReason;
+import models.enums.ParticipantSearchStatus;
 import models.enums.PluginStatus;
+import models.enums.StudyExecutionStatus;
+import models.enums.StudyValidationStatus;
 import models.enums.UserRole;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -117,8 +120,12 @@ public class Market extends APIController {
 		if (getRole().equals(UserRole.ADMIN)) {
 			String linkedStudyCode = JsonValidation.getStringOrNull(json, "linkedStudyCode");
 			if (linkedStudyCode != null) {
-			  Study study = Study.getByCodeFromMember(linkedStudyCode, Sets.create("_id"));
+			  Study study = Study.getByCodeFromMember(linkedStudyCode, Sets.create("_id", "executionStatus", "validationStatus", "participantSearchStatus"));
 			  if (study == null) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Unknown Study");
+			  if (study.executionStatus.equals(StudyExecutionStatus.ABORTED) || study.executionStatus.equals(StudyExecutionStatus.FINISHED)) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Study closed");
+			  if (study.validationStatus.equals(StudyValidationStatus.REJECTED) || study.validationStatus.equals(StudyValidationStatus.DRAFT)) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Study rejected");
+			  if (study.participantSearchStatus.equals(ParticipantSearchStatus.CLOSED)) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Study not searching");
+			  
 			  app.linkedStudy = study._id;
 			} else {
 			  app.linkedStudy = null;

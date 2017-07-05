@@ -37,7 +37,11 @@ angular.module('services')
 		   		console.log(err);
 		   		if (err.data && err.data.field && err.data.type && me.scope && me.scope.myform) {		   			
 		   			me.scope.error = err.data;
-		   			me.scope.myform[err.data.field].$setValidity(err.data.type, false);
+		   			if (me.scope.myform[err.data.field]) {
+		   			  me.scope.myform[err.data.field].$setValidity(err.data.type, false);
+		   			} else {
+		   			  err.data.field = undefined;
+		   			}
 		   			me.fail(err, true);
 		   		} else {
 		   			if (me.scope) me.scope.error = err.data;
