@@ -1,4 +1,5 @@
 {
+
     "developer_registration" : {
         "reason_fillout" : "Afin de réduire le temps d'attente jusqu'à la validation de votre compte, veuillez indiquer la personne de contact et la raison précise de la demande d'enregistrement, afin qu'un administrateur puisse rapidement traiter votre requête.",
         "sign_up_btn" : "Enregistrer un développeur"

@@ -7,24 +7,24 @@
 	 "for_providers" : "For Healthcare Providers",
 	 "for_developers" : "For Developers"
    },
-   
+
    "navbar" : {
 	  "toggle_navigation": "Toggle navigation",
 	  "login" : "Login",
 	  "sign_up" : "Sign Up",
-	  "sign_out" : "Sign out",	 
+	  "sign_out" : "Sign out",
 	  "me" : "Me",
 	  "view" : "View",
-      "overview" : "Overview",            	
-	  "messages" : "Messages",				
-	  "my_data" : "My Data",				
+      "overview" : "Overview",
+	  "messages" : "Messages",
+	  "my_data" : "My Data",
 	  "consents" : "Sharing",
 	  "research" : "News",
 	  "config" : "Configuration",
 	  "help" : "Help"
    },
-      
-   "error" : {   
+
+   "error" : {
      "offline" : "The backend is currently offline! Please contact support@midata.coop if the problem persists.",
      "internal" : "An internal error occured. Please contact support@midata.coop if the problem persists.",
      "internal_db" : "An internal database error occured. Please contact support@midata.coop if the problem persists.",
@@ -32,9 +32,14 @@
      "noconsent" : "No active consent that allows to add data for target person.",
      "unsupported" : "Operation not supported",
      "notrialuser_title" : "Full membership required!",
+
+	//TODO: username -> name
      "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
-     "mustbemember_title" : "Midata cooperative membership required!",
-     "mustbemember_detail" : "In order to use this feature you must be member of the midata cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
+
+     "mustbemember_title" : "MIDATA cooperative membership required!",
+
+	//TODO: username -> name
+     "mustbemember_detail" : "In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
 
      "notauthorized" : {
        "action" : "You are not authorized to do this action",
@@ -43,11 +48,14 @@
        "study" : "You are not authorized to access this study",
        "not_plugin_owner" : "This is not your plugin"
      },
-          
-     
+
+
      "invalid" : {
        "email" : "Please enter a valid email address",
+
+	//TODO username?
        "credentials" : "Invalid username or password.",
+
        "password_repetition" : "Password and password repetition do not match!",
        "passphrase_repetition" : "Passphrase and passphrase repetition do not match!",
        "passphrase_old" : "Old passphrase not correct.",
@@ -65,9 +73,11 @@
        "plugin" : "Plugin is only for a different role",
        "access_query" : "Access query must restrict by 'content' or 'group'!"
      },
-     
+
      "missing" : {
+	//TODO username?
        "credentials" : "Please provide a username  and a password.",
+
        "email" : "Please fill out your email address.",
        "input_field" : "Please fill out this input field.",
        "newpassword" : "Please enter a new password!",
@@ -77,7 +87,7 @@
        "agb" : "Terms and conditions not accepted.",
        "study_accept" : "Study participation must be accepted."
      },
-         
+
      "unknown" : {
        "plugin" : "Unknown Plugin",
        "app" : "Unknown application",
@@ -91,7 +101,7 @@
        "user" : "User does not exist",
        "participation" : "Study Participation not found."
      },
-     
+
      "exists" : {
        "user" : "A person with this email is already registered.",
        "member" : "A person with this email is already registered.",
@@ -101,51 +111,51 @@
        "plugin" : "A plugin with the same name already exists.",
        "study" : "A study with this name already exists."
      },
-          
+
      "blocked" : {
        "user" : "User is not allowed to log in. Contact support@midata.coop for help.",
        "participation" : "Account holder is not allowed to participate in study.",
        "consent" : "The consent for using this app has been revoked. To reenable use the MIDATA portal and delete the rejected or expired consent."
      },
-     
+
      "closed" : {
        "study" : "Study not searching for participants."
      },
-     
+
      "notvalidated" : {
        "study" : "Study must be validated before."
      },
-     
+
      "tooshort" : {
        "password" : "Passwords must be at least 8 characters long.",
-       "passphrase" : "Passphrases must be at least 8 characters long."       
+       "passphrase" : "Passphrases must be at least 8 characters long."
      },
-     
+
      "tooweak" : {
        "password" : "Passwords should contain of a mix of upper/lower case letters, numbers and special characters.",
        "passphrase" : "Passphrases should contain of a mix of upper/lower case letters, numbers and special characters."
      },
-     
+
      "concurrent" : {
        "update" : "Concurrent update. Please try again."
      },
-     
+
      "expired" : {
        "token" : "Token has already expired. Please request a new one.",
        "code" : "Participation code has expired."
      },
-     
+
      "already_done" : {
        "email_verification" : "E-Mail has already been verified."
      },
-     
+
      "no_alter" : {
        "consent" : "Consents for studies may not be altered.",
        "study" : "Setup can only be changed as long as study is in draft phase."
      }
-             
+
    },
-   
+
    "enum" : {
      "gender" : {
        "MALE" : "male",
@@ -193,7 +203,7 @@
 	   "HEALTHCARE" : "Doctor / Hospital",
 	   "STUDYPARTICIPATION" : "Study",
 	   "STUDYRELATED" : "Study",
-	   "IMPLICIT" : "Messaging" 
+	   "IMPLICIT" : "Messaging"
 	 },
 	 "contractstatus" : {
 	   "NEW" : "New",
@@ -267,7 +277,7 @@
 	   "DAILY" : "Daily",
 	   "WEEKLY" : "Once a week",
 	   "MONTHLY" : "Once a month",
-	   "YEARLY" : "Once a year"	
+	   "YEARLY" : "Once a year"
 	 },
 	 "language" : {
 	   "EN" : "English",
@@ -276,13 +286,13 @@
 	   "FR" : "Frensh"
 	 },
 	 "tags" : {
-	   "Analysis" : "Analysis", 
+	   "Analysis" : "Analysis",
 	   "Import" : "Import",
 	   "Planning" : "Planning",
 	   "Tools" : "Tools",
 	   "Fitbit" : "Fitbit",
 	   "Jawbone" : "Jawbone",
-	   "Available" : "Available Plugins" 
+	   "Available" : "Available Plugins"
 	 },
 	 "plugintype" : {
 	   "visualization" : "Plugin",
@@ -292,7 +302,7 @@
 	   "mobile" : "Mobile"
 	 }
    },
-   
+
   "common" : {
     "back_btn" : "Back",
     "search_btn" : "Search",
@@ -303,7 +313,7 @@
     "view_btn" : "View",
     "submit_btn" : "Submit",
     "delete_btn" : "Delete",
-    
+
     "user" : {
       "lastname" : "Surname",
 	  "firstname" : "Firstname",
@@ -314,9 +324,9 @@
 	  "mobile_phone" : "Mobile",
 	  "email" : "Email"
 	}
-	
+
   },
-  
+
   "instance" : {
      "rules"  : "",
      "purpose" : "Purpose of this MIDATA instance",
@@ -324,7 +334,7 @@
      "uptime" : "Availability and downtimes",
      "data" : "Data stored in this MIDATA instance",
      "start" : "Choose one of the portal from the bottom of the page to start. Each portal has its own LOGIN and SIGN UP page.",
-     
+
      "localhost" : {
         "name" : "Local MIDATA Instance (localhost)",
         "intro": "This is a local installation of MIDATA only available from your PC.",
@@ -333,7 +343,7 @@
         "uptime" : "Whenever you run it its available for you :-)",
         "data" : "Data stored in this instance will only be available on your local PC."
      },
-     
+
      "test" : {
         "name" : "test.midata.coop (Test Instance)",
         "intro": "This is a test instance of the MIDATA platform.",
@@ -342,7 +352,7 @@
         "uptime" : "There is no guarantee on availability. Expect updates of the instance to happen as needed. If possible updates are done between 12:00 and 13:00 central european time but may occur more than once a day if problems occur.",
         "data" : "Store only test data on this instance. Data may be wiped, accounts may be deleted if necessary. Records may become corrupted by bugs. There is no backup for test data."
      },
-     
+
      "demo" : {
         "name" : "demo.midata.coop (Demo Instance)",
         "intro": "This is a demonstration instance of MIDATA.",
@@ -351,7 +361,7 @@
         "uptime" : "This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time ",
         "data" : "Store only test and demo data on this instance. There is no backup for test data."
      },
-     
+
      "ch" : {
         "name" : "ch.midata.coop (MIDATA Switzerland)",
         "intro": "This is the MIDATA platform for Switzerland.",
@@ -360,10 +370,10 @@
         "uptime" : "Downtimes will be announced.",
         "data" : "This instance is for storing real data about real people. Data is backed up up on a daily basis."
      }
-     
-     
+
+
   },
-   
+
   "registration" : {
     "sign_up" : "Sign Up",
     "email" : "EMail",
@@ -394,7 +404,7 @@
     "app_agb2" : "I accept the terms and conditions",
     "sign_up_btn" : "Sign Up"
   },
-  
+
   "login" : {
     "email_address" : "Email address",
     "password" : "Password",
@@ -403,7 +413,7 @@
     "forgot_your_password" : "Forgot your password?",
     "login_btn" : "Login"
   },
-  
+
   "lostpw" : {
     "title" : "Password Assistance - Step 1",
     "description" : "Enter the e-mail address associated with your account, then click Continue. We'll email you a link to a page where you can easily create a new password.",
@@ -411,9 +421,9 @@
     "continue" : "Continue",
     "success" : "We have sent you an email with instructions on how to reset your password."
   },
-  
+
   "setpw" : {
-    "title" : "Password Assistance - Step 2",    
+    "title" : "Password Assistance - Step 2",
     "new_password" : "New password",
     "new_password_repeat" : "Password repetition",
     "enter_new" : "Please enter a new password for your account.",
@@ -421,7 +431,7 @@
     "success" : "You have successfully set a new password for your account.",
     "back_to_login" : "Go back to login page."
   },
-  
+
   "passphrase" : {
     "title" : "Enter Passphrase",
     "description" : "Your account is protected with a passphrase.",
@@ -429,7 +439,7 @@
     "continue_btn" : "Continue",
     "if_lost" : "If you lost your passphrase contact support@midata.coop"
   },
-  
+
   "postregister" : {
     "title" : "Welcome to MIDATA",
     "description" : "Before you can use your account your identity needs to be verified:",
@@ -448,7 +458,7 @@
     "enter_now_btn" : "Enter now",
     "email_success" : "E-Mail address has been confirmed."
   },
-  
+
   "changepassphrase" : {
     "title" : "Change Passphrase",
     "description" : "A passphrase is an additional protection for your data. It is not stored on our servers but is required for decrypting your data. It is impossible to read your records (unless shared with another account) if the passphrase is not provided.",
@@ -462,7 +472,7 @@
     "confirm_btn" : "Confirm Passphrase",
     "success" : "Passphrase has been successfully changed!"
   },
-  
+
   "changepassword" : {
     "title" : "Change Password",
     "old_password" : "Old Password",
@@ -471,12 +481,12 @@
     "change_btn" : "Change Password",
     "success" : "Password has been successfully changed!"
   },
-  
+
   "changeaddress" : {
     "title" : "Postal Address and Contact Information",
     "update_btn" : "Update"
   },
-  
+
   "market" : {
     "categories" : "Categories",
     "plugins" : "Plugins",
@@ -485,7 +495,7 @@
     "no_recommendations" : "We have no recommendations for you yet.",
     "install_now_btn" : "Use Now"
   },
-  
+
   "providersearch" : {
     "title" : "Provider search",
     "name" : "Name",
@@ -494,7 +504,7 @@
     "empty_result" : "No providers found.",
     "add_consent_btn" : "Add Consent"
   },
-  
+
   "recorddetail" : {
     "meta" : "Meta Information",
     "name" :"Name:",
@@ -509,7 +519,7 @@
     "no_visualization" : "No visualization available for this record.",
     "raw_data" : "RAW Data"
   },
-  
+
   "studydetails" : {
     "study" : "Study",
     "participant_search_status" : "Participant search:",
@@ -536,7 +546,7 @@
 	"request_participation_btn" : "Request Participation",
 	"do_not_participate_btn" : "Do not participate"
   },
-  
+
   "user" : {
     "account" : "User Account",
     "user" : "User",
@@ -555,9 +565,9 @@
 	"searchable" : "Is your account visible for other MIDATA account holders?",
 	"change_settings_btn" : "Change Settings",
 	"change_settings_success" : "Settings have been updated"
-		
+
   },
-  
+
   "visualization" : {
     "title" : "Plugin Information",
     "success" : "You have successfully installed a new plugin.",
@@ -571,16 +581,16 @@
       "workspace" : "Workspace",
       "mobile" : "MIDATA Mobile App",
       "research" : "Research Dashboard",
-      "sandbox" : "Workspace",		         	  
+      "sandbox" : "Workspace",
       "me" : "Me Page",
       "config" : "Config Dashboard",
 	  "mydata" : "My Data Dashboard",
 	  "social" : "Social Dashboard",
 	  "providers" : "Health Dashboard",
-      "studies" : "Research Dashboard"		
-    }		  
+      "studies" : "Research Dashboard"
+    }
   },
-  
+
   "newconsent" : {
     "title" : "Create a new consent",
     "name" : "How should this consent be named?",
@@ -604,14 +614,14 @@
     "consent_empty" : "This consent is empty at the beginning. You can select the data you want to share with this consent afterwards.",
     "create_btn" : "Create and Data Selection"
   },
-  
+
   "editconsent" : {
     "title" : "Consent",
     "owner" : "Owner of Consent",
     "name" : "Name of Consent",
     "date_of_creation" : "Consent created at",
     "type" : "Type of Consent",
-    "status" : "Status of Consent",   
+    "status" : "Status of Consent",
     "people" : "With which persons(s) do you want to share data?",
     "external" : "Non MIDATA account holder",
     "add_people_btn" : "Add More People",
@@ -624,12 +634,12 @@
     "consent_empty" : "This consent does not share any data at the moment.",
     "type_circle" : "This consent shares data with other MIDATA account holders.",
     "type_healthcare" : "This consent shares data with healthcare professionals.",
-    "type_studyparticipation" : "This consent shares data with research for use in a study.",    
+    "type_studyparticipation" : "This consent shares data with research for use in a study.",
     "type_externalservice" : "This consent shares data with a mobile app or external service.",
     "type_implicit" : "This implicitely created consent shares messages with their receivers.",
     "status_active" : "This consent is active.",
     "status_expired" : "This consent is expired. Data is no longer shared.",
-    "status_unconfirmed" : "This consent needs confirmation by its owner.",    
+    "status_unconfirmed" : "This consent needs confirmation by its owner.",
     "status_rejected" : "This consent has been rejected by its owner.",
     "shares_records" : "This consent shares {{count}} records.",
     "shares_group" : "Shares all records belonging to group: {{ group }}",
@@ -639,7 +649,7 @@
 	"reject_btn" : "Reject this Consent",
     "delete_btn" : "Delete this Consent"
   },
-  
+
   "consents" : {
     "title" : "Consents",
     "description" : "Using consents you can grant others (healthcare professionals, friends, research...) access to some of your data. Use this page to manage your existing consents or to create a new one.",
@@ -654,17 +664,17 @@
 	"number_of_records" : "# Records",
 	"add_new_btn" : "Add new consent"
   },
-  
+
   "revconsents" : {
     "count" : "There are {{ count }} consents sharing data with you:",
     "add_new_btn" : "Add Request for Consent"
   },
-  
+
   "importrecords" : {
     "title" : "Import",
     "authorize_btn" : "Authorize Now"
   },
-  
+
   "spaces" : {
     "title" : "MIDATA Plugin",
     "delete_btn" : "Delete this space",
@@ -673,7 +683,7 @@
     "finish_comparing_btn" : "Finished comparing",
     "compare_btn" : "Compare"
   },
-  
+
   "records" : {
     "title" : "My Data",
     "share_instructions1" : "Please use the 'share' and 'unshare' buttons to select which records you want to share with consent ",
@@ -702,10 +712,11 @@
 	"delete" : "delete",
 	"delete_all_btn" : "delete all",
 	"empty" : "No available records found.",
-	"close_btn" : "Close"		
+	"close_btn" : "Close"
   },
-  
+
   "oauth2" : {
+    // todo This application has to be activated ???
     "requesting_app" : "This application requests access:",
     "sign_in" : "MIDATA Sign In for:",
     "sign_in_btn" : "Sign In",
@@ -717,7 +728,7 @@
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}"
   },
-  
+
   "dashboard" : {
     "help_welcome" : "Welcome to MIDATA",
     "tasks" : "Tasks",
@@ -738,7 +749,7 @@
 	"newrecords_teaser" : "There are no new records. Visit the records page to browser all of your records.",
 	"myaccount" : "My Account Data",
     "newsharedrecords" : "New records shared with you",
-    "newsharedrecords_teaser" :  "Other MIDATA account holders may share their data with you.",		    
+    "newsharedrecords_teaser" :  "Other MIDATA account holders may share their data with you.",
     "circles" : "Member of Circles",
     "circles_teaser" : "Ask others to add you to their circles.",
 	"circles2" : "Your Circles",
@@ -749,7 +760,7 @@
 	"providersearch_text" : "Search function for healthcare providers.",
 	"usergroupsearch" : "Search for Teams",
 	"hcrecords" : "Newest Records from your healthcare providers",
-	"records" : "Records",                      
+	"records" : "Records",
     "share" : "Share",
     "details" : "Details",
     "yourstudies" : "Studies you are involved:",
@@ -775,7 +786,7 @@
 	"observations" : "Measures",
 	"calendar" : "Calendar"
    },
-   
+
    "measure" : {
      "body_weight" : "Body Weight",
      "activities_steps" : "Steps",
@@ -788,22 +799,22 @@
      "activities_heartrate" : "Heart Rate",
      "body_bloodpressure" : "Blood Pressure",
      "files" : "Documents"
-   },  
-   
+   },
+
    "config" : {
      "fitbit" : "Fitbit Configuration",
      "withings" : "Withings Configuration"
    },
-  
+
   "spacesummary" : {
-    "records_to_view" : "Records to view.", 
+    "records_to_view" : "Records to view.",
     "last_entry_at" : "Last entry at",
-    "no_entries_yet" : "No entries yet",     
+    "no_entries_yet" : "No entries yet",
     "newest_entry_from" : "Newest entry from",
     "view_btn" : "View",
     "add_btn" : "Add"
   },
-  
+
   "flexiblerecords" : {
     "records_available" : "Records available:",
     "empty" : "Empty",
@@ -811,39 +822,39 @@
 	"add_btn" : "Add Records...",
 	"share_btn" : "Share"
   },
-  
+
   "flexiblestudies" : {
     "empty" : "Empty",
     "studies_found" : "Studies found:"
   },
-  
+
   "addtask" : {
     "task_type" : "Task Type",
     "task_title" : "Task Title",
     "description" : "Description",
     "frequency" : "Frequency",
-  
+
     "survey_name" : "Fill out survey",
     "survey_description" : "Please fill out the surveys I shared with your account.",
-	"survey_title" : "Fill out survey"    
+	"survey_title" : "Fill out survey"
   },
-  
+
   "taskdetails" : {
     "created_by" : "Created by:",
     "frequency" : "How often:",
     "plugin" : "Plugin:",
     "do_now_btn" : "Do Now"
   },
-  
+
   "tasks" : {
     "empty" : "Empty",
     "tasks_found" : "Tasks found:",
     "more_btn" : "More..."
   },
-  
+
   "addusers" : {
     "contacts" : "Existing contacts:",
-    "all_users" : "All users",    
+    "all_users" : "All users",
     "no_contacts_to_add" : "No contacts can be added to this circle.",
     "search_by_email" : "Enter email of target person:",
     "search_user" : "Search for a user",
@@ -851,7 +862,7 @@
     "no_matching_users" : "No users matched your search.",
     "no_new_found" : "All found users are already members of this circle."
   },
-  
+
   "usergroupsearch" : {
      "name" : "Team Name",
      "empty_result" : "No matching teams found.",

@@ -1,5 +1,4 @@
 {
-
    "footer" : {
      "copyright" : "(c) 2015-2016 ETH Zürich",
      "portals" : "Midata Portals:",
@@ -15,12 +14,13 @@
 	  "sign_up" : "Sign Up",
 	  "sign_out" : "Sign out",	 
 	  "me" : "Me",
+	  "view" : "View",
       "overview" : "Overview",            	
 	  "messages" : "Messages",				
 	  "my_data" : "My Data",				
 	  "consents" : "Sharing",
 	  "research" : "News",
-	  "config" : "Config",
+	  "config" : "Configuration",
 	  "help" : "Help"
    },
       
@@ -35,13 +35,13 @@
      "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
      "mustbemember_title" : "Midata cooperative membership required!",
      "mustbemember_detail" : "In order to use this feature you must be member of the midata cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
-     
+
      "notauthorized" : {
        "action" : "You are not authorized to do this action",
        "fields" : "You are not authorized to query provided fields",
        "account" : "You are not authorized to access this account",
-       "study" : "You are not authorized to access this study.",
-       "not_plugin_owner" : "This is not your plugin."      
+       "study" : "You are not authorized to access this study",
+       "not_plugin_owner" : "This is not your plugin"
      },
           
      
@@ -475,7 +475,8 @@
     "plugins" : "Plugins",
     "no_spotlighted_plugins" : "There are no spotlighted plugins yet.",
     "plugins_you_may_like" : "Plugins you may like",
-    "no_recommendations" : "We have no recommendations for you yet."
+    "no_recommendations" : "We have no recommendations for you yet.",
+    "install_now_btn" : "Use Now"
   },
   
   "providersearch" : {
@@ -509,7 +510,7 @@
     "organization" : "Organization",
     "providers_monitoring" : "Healthcare Providers monitoring the study",
     "no_providers" : "None",
-    "provider_remove_btn" : "remove",
+    "provider_remove_btn" : "Remove",
     "provider_add_btn" : "Add",
     "information_that_needs_sharing" : "Information that must be shared for participation",
     "information_restricted" : "Your gender, year of birth and country",
@@ -537,8 +538,10 @@
     "change_password_btn" : "Change Password",
  	"change_passphrase_btn" : "Change Passphrase",
 	"repair_account_btn" : "Repair Account",
+	"reset_spaces_btn" : "Reset Portal",
 	"delete_records_btn" : "Delete Records",
 	"account_repaired" : "Your account has been repaired.",
+	"spaces_resetted" : "Your configuration has been resetted.",
 	"settings" : "Settings",
 	"address" : "Address and Contact Info",
 	"change_address_btn" : "Change Address",
@@ -580,13 +583,16 @@
     "use_passcode" : "Include a passcode?",
     "use_passcode2" : "I do not know yet to whom I want to share the data. Please add a passcode to this consent that I can give to a health professional of my choice.",
     "choose_passcode" : "Choose a secure passcode",
-    "which_persons" : "With which persons(s) do you want to share data?",
+    "who_is_owner" : "Who is sharing data?",
+    "which_persons" : "With which persons(s) is data shared?",
+    "set_owner_btn" : "Select person that shares data",
+    "add_yourself_btn" : "Add yourself",
     "add_person_btn" : "Add New Person",
     "add_usergroup_btn" : "Add New Team",
     "reshare" : "3rd party access?",
     "reshare2" : "The person(s) authorized with this consent may reshare the data I gave them access to.",
     "expiration_date" : "Consent expiration date:",
-    "created_before" : "Shares only data created before:",
+    "created_before" : "Do not share data created after:",
     "share_what" : "What data do you want to share?",
     "consent_empty" : "This consent is empty at the beginning. You can select the data you want to share with this consent afterwards.",
     "create_btn" : "Create and Data Selection"
@@ -594,20 +600,17 @@
   
   "editconsent" : {
     "title" : "Consent",
+    "owner" : "Owner of Consent",
     "name" : "Name of Consent",
     "type" : "Type of Consent",
-    "status" : "Status of Consent",
-    "password" : "Password",
-    "password_exists" : "A password has been set if you need to relogin with the app.",
-    "show_password" : "Show password",
-    "password_shown" : "Use your email address and this password for login:",
+    "status" : "Status of Consent",   
     "people" : "With which persons(s) do you want to share data?",
     "add_people_btn" : "Add More People",
     "add_usergroup_btn" : "Add a Team",
     "reshare" : "@:newconsent.reshare",
     "reshare2" : "@:newconsent.reshare2",
     "expiration_date" : "Consent expiration date:",
-    "created_before" : "Shares only data created before:",
+    "created_before" : "Does not share data created after:",
     "what_is_shared" : "What data is shared?",
     "consent_empty" : "This consent does not share any data at the moment.",
     "type_circle" : "This consent shares data with other MIDATA account holders.",
@@ -632,12 +635,20 @@
     "title" : "Consents",
     "description" : "Using consents you can grant others (healthcare professionals, friends, research...) access to some of your data. Use this page to manage your existing consents or to create a new one.",
     "count" : "You have {{ count }} consents:",
-    "name" : "Name",
+    "where_owner" : "Show consents where you share data with someone else",
+    "where_authorized" : "Show consents where data is shared with you",
+    "name" : "Consent Title",
+    "ownerName" : "Sharing Person",
     "type" : "Type",
 	"status" : "Status",
 	"number_of_people" : "# People",
 	"number_of_records" : "# Records",
 	"add_new_btn" : "Add new consent"
+  },
+  
+  "revconsents" : {
+    "count" : "There are {{ count }} consents sharing data with you:",
+    "add_new_btn" : "Add Request for Consent"
   },
   
   "importrecords" : {
@@ -648,7 +659,7 @@
   "spaces" : {
     "title" : "MIDATA Plugin",
     "delete_btn" : "Delete this space",
-    "used_btn" : "Used records..",
+    "used_btn" : "Used records...",
     "share_btn" : "Share...",
     "finish_comparing_btn" : "Finished comparing",
     "compare_btn" : "Compare"
@@ -684,7 +695,14 @@
   
   "oauth2" : {
     "requesting_app" : "This application requests access:",
-    "sign_in_btn" : "Sign In"
+    "sign_in" : "MIDATA Sign In for:",
+    "sign_in_btn" : "Sign In",
+    "device" : "Device: {{ device}}",
+    "please_confirm" : "Please confirm the application consent using MIDATA portal then retry. Consent title is: {{ consent }}",
+    "requests_access" : "Requested Access:",
+    "shares_group" : "Group: {{ group }}",
+    "shares_format" : "Format: {{ format }}",
+    "shares_content" : "Content: {{ content }}"
   },
   
   "dashboard" : {
@@ -733,14 +751,16 @@
     "entercode" : "Join by participation code",
 	"records_shared" : "Records shared with this consent:",
 	"addusers" : "Add Users to Consent",
-	"shared_with_study" : "Shared Records:",
+	"shared_with_study" : "Shared records:",
 	"patient_records" : "Records of this patient:",
 	"addtask" : "Add Task",
 	"group_records" : "Records of this group:",
 	"study_records" : "Shared records:",
 	"addmore" : "Add more",
 	"view_btn" : "View",
-	"install_btn" : "Add more"
+	"install_btn" : "Add more",
+	"observations" : "Measures",
+	"calendar" : "Calendar"
    },
    
    "measure" : {
@@ -758,7 +778,8 @@
    },  
    
    "config" : {
-     "fitbit" : "Fitbit Configuration"
+     "fitbit" : "Fitbit Configuration",
+     "withings" : "Withings Configuration"
    },
   
   "spacesummary" : {
@@ -808,10 +829,10 @@
   },
   
   "addusers" : {
-    "contacts" : "Contacts",
-    "all_users" : "All users",
-    "no_contacts" : "You have no users in your circles yet.",
+    "contacts" : "Existing contacts:",
+    "all_users" : "All users",    
     "no_contacts_to_add" : "No contacts can be added to this circle.",
+    "search_by_email" : "Enter email of target person:",
     "search_user" : "Search for a user",
     "searching" : "Searching...",
     "no_matching_users" : "No users matched your search.",
