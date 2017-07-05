@@ -41,6 +41,7 @@ import utils.access.op.OrCondition;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
+import utils.stats.Stats;
 
 /**
  * Helper class to create a database Query from a FHIR SearchParameterMap 
@@ -61,6 +62,7 @@ public class QueryBuilder {
 	
 	public final static String TYPE_BOOLEAN = "boolean";
 	public final static String TYPE_STRING = "string";
+	public final static String TYPE_MARKDOWN = "string";
 	public final static String TYPE_URI = "uri";
 	
 	public final static String TYPE_QUANTITY = "Quantity";
@@ -317,7 +319,7 @@ public class QueryBuilder {
 				}
 			} else if (param instanceof DateParam) {
 				DateParam dateParam = (DateParam) param;
-				Date comp = dateParam.getValue();
+				//Date comp = dateParam.getValue();
 				ParamPrefixEnum prefix = dateParam.getPrefix();
 				TemporalPrecisionEnum precision = dateParam.getPrecision();
 				
@@ -327,8 +329,8 @@ public class QueryBuilder {
 				Date lDate = null;
 				Date hDate = null;
 				
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(comp);
+				Calendar cal = dateParam.getValueAsDateTimeDt().getValueAsCalendar();
+				//cal.setTime(comp);
 				
 				switch (precision) {					  
 				case SECOND: 
@@ -371,7 +373,8 @@ public class QueryBuilder {
 				case MILLI:
 				default: 
                     lDate = cal.getTime();
-                    hDate = lDate;
+                    cal.add(Calendar.MILLISECOND, 1);
+                    hDate = cal.getTime();
                     break;
 				}
 				if (type.equals(TYPE_DATETIME) || type.equals(TYPE_DATE)) {
@@ -577,7 +580,10 @@ public class QueryBuilder {
 			
 			if (p.getSystem() != null && p.getValue() != null && p.getSystem().length()>0 && p.getValue().length()>0) {
 			  result.add(p.getSystem()+" "+p.getValue());
-			} else return null;
+			} else {
+				Stats.addComment("Parameter "+name+": Always provide code system and code if possible");
+				return null;
+			}
 		  }
 		}
 	
@@ -614,6 +620,7 @@ public class QueryBuilder {
 			query.putAccount("owner", FHIRTools.referencesToIds(patients));
 			return true;
 		}
+		if (Stats.enabled && patients == null && name.equals("patient") && !params.containsKey(name)) Stats.addComment("Restrict by patient?");
 		return patients == null;
 		
 	}

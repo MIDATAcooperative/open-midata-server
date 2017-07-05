@@ -15,12 +15,14 @@ object ApplicationBuild extends Build {
     javaCore,
     javaWs,
     "org.mongodb" % "mongo-java-driver" % "3.2.2",
-    "ca.uhn.hapi.fhir" % "hapi-fhir-base" % "2.2",
-    "ca.uhn.hapi.fhir" % "hapi-fhir-structures-dstu3" % "2.2",  	    
+    "ca.uhn.hapi.fhir" % "hapi-fhir-base" % "2.3",
+    "ca.uhn.hapi.fhir" % "hapi-fhir-structures-dstu3" % "2.3",  	    
     "org.thymeleaf" % "thymeleaf" % "3.0.1.RELEASE",
     "com.fasterxml.jackson.core" % "jackson-core" % "2.8.3",
     "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.3",
-    "com.fasterxml.jackson.core" % "jackson-annotations" % "2.8.3"	    
+    "com.fasterxml.jackson.core" % "jackson-annotations" % "2.8.3",
+   
+    "com.typesafe.akka" %% "akka-remote" % "2.3.16"	    
   )
 
 

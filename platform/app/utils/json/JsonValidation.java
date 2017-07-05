@@ -29,7 +29,7 @@ public class JsonValidation {
 		} else {
 			for (String requiredField : requiredFields) {
 				if (!json.has(requiredField)) {
-					throw new JsonValidationException("error.missing.field", requiredField, "required", "Request parameter '" + requiredField + "' not found.");
+					throw new JsonValidationException("error.missing.input_field", requiredField, "required", "Request parameter '" + requiredField + "' not found.");
 				}
 			}
 		}

@@ -12,16 +12,22 @@ angular.module('portal')
 	$scope.register = function() {		
 		
         $scope.myform.password.$setValidity('compare', $scope.registration.password ==  $scope.registration.password2);
-        $scope.myform.agb.$setValidity('mustaccept', $scope.registration.agb);
+        $scope.myform.agb.$setValidity('mustaccept', $scope.registration.agb);        
         if (!$scope.registration.agb) {
         	
         	$scope.myform.agb.$invalid = true;
         	$scope.myform.agb.$error = { 'mustaccept' : true };
         }
-        
-		
+        if ($scope.app) {
+        	$scope.myform.appAgb.$setValidity('mustaccept', $scope.registration.appAgb);
+            if (!$scope.registration.appAgb) {        	
+	        	$scope.myform.appAgb.$invalid = true;
+	        	$scope.myform.appAgb.$error = { 'mustaccept' : true };
+            }
+        }
+		 
 		$scope.submitted = true;	
-		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
+		if ($scope.error && $scope.error.field && $scope.error.type && $scope.myform[$scope.error.field]) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;
 		if (! $scope.myform.$valid) return;
 		
@@ -41,13 +47,15 @@ angular.module('portal')
 			data.developer = $stateParams.developer;
 		}
 		
-		if (oauth.getAppname()) {
+		if (oauth.getAppname()) {		  
 		  data.app = oauth.getAppname();
 		  data.device = oauth.getDevice();
 		  $scope.status.doAction("register", server.post(jsRoutes.controllers.QuickRegistration.register().url, JSON.stringify(data))).
 		  then(function(data) { 		  
 			  oauth.setUser($scope.registration.email, $scope.registration.password);
-			  oauth.login();		
+			  oauth.login(true).then(function(result) {
+				  if (result !== "ACTIVE") { session.postLogin({ data : result}, $state);}
+			  });		
 		  });
 		  
 		} else {
@@ -69,5 +77,9 @@ angular.module('portal')
 	for (i=10;i <= 31; i++ ) $scope.days.push(""+i);	
 	for (i=10;i <= 12; i++ ) $scope.months.push(""+i);
 	for (i=2015;i > 1900; i-- ) $scope.years.push(""+i);	
+	
+	if (oauth.getAppname()) {		
+	   $scope.app = oauth.app;
+	}
 	
 }]);

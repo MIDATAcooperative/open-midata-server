@@ -28,7 +28,7 @@
 							  <formrow myid="firstname" label="registration.firstname"><input type="text" class="form-control" id="firstname" name="firstname" translate translate-attr-placeholder="registration.firstname" ng-model="registration.firstname" required></formrow>
 							  <formrow myid="lastname" label="registration.lastname"><input type="text" class="form-control" id="lastname" name="lastname" translate translate-attr-placeholder="registration.lastname" ng-model="registration.lastname" required></formrow>
 							  
-							  <formrow myid="gender" label="registration.gender"><select class="form-control" id="gender" name="gender" ng-model="registration.gender"><option value="FEMALE" translate="enum.gender.FEMALE">female</option><option value="MALE" translate="enum.gender.MALE"></option><option value="OTHER" translate="enum.gender.OTHER"></option></select></formrow>
+							  <formrow myid="gender" label="registration.gender"><select class="form-control" id="gender" name="gender" ng-model="registration.gender" required><option value="FEMALE" translate="enum.gender.FEMALE">female</option><option value="MALE" translate="enum.gender.MALE"></option><option value="OTHER" translate="enum.gender.OTHER"></option></select></formrow>
 							  <formrow myid="birthday" label="registration.birthday">  
 							    <div class="input-group">
 							    <div class="input-group-addon" translate="registration.day"></div>
@@ -52,6 +52,25 @@
                               <formrow myid="agb" label="registration.agb"><div class="checkbox"><label><input type="checkbox" id="agb" name="agb" ng-model="registration.agb"><span translate="registration.agb2"></span></label></div>
                                 <formerror myid="agb" type="mustaccept" message="error.missing.agb"></formerror>
                               </formrow>
+                              <div ng-show="app">
+                              <formrow myid="appAgb" label="registration.app_agb"><div class="checkbox"><label><input type="checkbox" id="appAgb" name="appAgb" ng-model="registration.appAgb"><span translate="registration.app_agb2"></span></label></div>
+                                <formerror myid="appAgb" type="mustaccept" message="error.missing.agb"></formerror>
+                              </formrow>
+                              </div>
+                              <div ng-show="app.linkedStudy">
+		            	       <formrow myid="confirmStudy" label="registration.study">
+		            	         <div class="checkbox">
+		            	           <label>
+		            	             <input type="checkbox" id="confirmStudy" name="confirmStudy" ng-model="registration.confirmStudy" ng-required="app.mustParticipateInStudy">
+		            	             <span translate="oauth2.confirm_study"></span>:
+		            	           </label>
+		            	         </div>
+		            	          <formerror myid="confirmStudy" type="mustaccept" message="error.missing.study_accept"></formerror>
+		            	           <p class="help-block">{{ app.linkedStudyName }}</p>
+		            	           <p class="help-block">{{ app.linkedStudyDescription }}</p>
+		            	       </formrow>
+		            	     </div>
+                              
                              <button type="submit" ng-disabled="status.action=='register'" class="btn btn-lg btn-primary btn-block" translate="registration.sign_up_btn"></button>
                             </form>
 		            	</div>

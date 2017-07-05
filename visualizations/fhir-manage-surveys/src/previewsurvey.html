@@ -1,0 +1,142 @@
+<div ng-controller="PreviewSurveyCtrl" class="container" ng-cloak>
+   <h3><span translate="previewsurvey.title"></span>{{ survey.title }}</h3>
+   <button class="btn btn-primary" ng-click="save()">Save and Exit</button>
+   <button class="btn btn-default" ng-click="editHeader()">Edit Header</button>
+   <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+   <hr>
+   <h3 translate="previewsurvey.preview"></h3>         
+         
+   <script type="text/ng-template"  id="edit.html">
+     <p ng-show="item.linkId"><span translate="item.linkId"></span>:{{ item.linkId }}</p>
+     <p>{{ ('type.'+item.type) | translate }}</p>
+     <button class="btn btn-default btn-sm" ng-click="edit(item);" type="button">edit</button>
+     <button class="btn btn-default btn-sm" ng-click="add(item._parent, $index)">insert before</button> 
+     <button class="btn btn-default btn-sm" ng-click="add(item._parent, $index+1)">insert after</button>
+     <button class="btn btn-default btn-sm" ng-click="delete(item);" type="button">delete</button>
+   </script>
+         
+   <script type="text/ng-template"  id="display_head.html">
+     <span  >
+      <span class="prefix">{{ item.prefix }}</span>
+      <span class="display_text">
+        {{ getText(item) }}
+      </span>
+     </span>
+   </script>
+   <script type="text/ng-template"  id="display_body.html">
+   </script>
+   <script type="text/ng-template"  id="string_body.html">
+      <input class="form-control" type="text">
+   </script>
+   <script type="text/ng-template"  id="decimal_body.html">
+      <input class="form-control" type="text">
+   </script>
+   <script type="text/ng-template"  id="integer_body.html">
+      <input class="form-control" type="text">
+   </script>   
+   <script type="text/ng-template"  id="date_body.html">
+      <div class="input-group">
+		<input type="text" is-open="question.dateOpened" datepicker-options="dateOptions" close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" placeholder="Date" autofocus ng-model="question.rQuestion.answer[0].valueDate">
+		<span class="input-group-btn">
+           <button type="button" class="btn btn-default" ng-click="question.dateOpened=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+        </span>
+      </div>	
+   </script>
+   <script type="text/ng-template"  id="text_body.html">
+      <textarea class="form-control"></textarea>
+   </script>
+   <script type="text/ng-template"  id="choice_body.html">
+      <div ng-if="!item.repeats">
+          <div class="radio" ng-repeat="choice in item.option">
+		     <label >
+			       <input type="radio" ng-value="choice">
+			       {{ choice.valueCoding.display }}					        
+		     </label>					     			
+		  </div>		
+      </div>
+      <div ng-if="item.repeats">
+         <div class="radio" ng-repeat="choice in item.option">
+	        <label >
+		       <input type="checkbox" >
+		       {{ choice.valueCoding.display }}{{ choice.valueString }}					       
+		    </label>			
+		 </div>		
+      </div>
+   </script>
+   <script type="text/ng-template"  id="open-choice_body.html">
+     <div ng-if="!item.repeats">
+        <div class="radio" ng-repeat="choice in item.option">
+	      <label >
+	       <input type="radio" >
+		       {{ choice.valueCoding.display }}					        
+	      </label>					     			
+	    </div>	
+        <div class="radio">
+	      <label >
+	       <input type="radio" >
+		   <input type="text" class="form-control" >					        
+	      </label>					     			
+	    </div>	
+     </div>
+     <div ng-if="item.repeats">
+       <div class="checkbox" ng-repeat="choice in item.option">
+	     <label >
+	       <input type="checkbox" >
+	       {{ choice.valueCoding.display }}{{ choice.valueString }}					       
+	     </label>			
+	   </div>		
+        <div class="checkbox">
+	     <label >
+	       <input type="checkbox">
+	       <input type="text" class="form-control" >					       
+	     </label>			
+	   </div>
+    </div>
+   </script>
+   <script type="text/ng-template"  id="boolean_body.html">
+      <div class="radio">
+		<label>
+		  <input type="radio" value="true" >
+	       Yes
+		</label>
+	  </div>
+	  <div class="radio">
+		<label>
+		  <input type="radio" value="false">
+ 	       No
+  	    </label>			
+	  </div>		    
+  </script>
+  
+  <script type="text/ng-template"  id="group_body.html">
+    <div class="display" uib-popover-template="'edit.html'" popover-trigger="outsideClick">
+      <div ng-include="getHeadTemplate(item)"></div>
+    </div>
+    <form class="form">
+    <div ng-repeat="item in item.item" class="form-group">    
+      <div class="display" uib-popover-template="'edit.html'" popover-trigger="outsideClick">
+       <label for="{{ item._id }}" class="control-label" ng-include="getHeadTemplate(item)"></label>                     
+       <div ng-include="getBodyTemplate(item)"></div>
+      </div>     
+    </div>
+    <button class="btn btn-default btn-xs" ng-click="add(item)">add to page</button>
+    </form>
+  </script>
+  
+   <script type="text/ng-template"  id="section.html">
+     <div class="display" uib-popover-template="'edit.html'" popover-trigger="outsideClick">
+       <div ng-include="getHeadTemplate(item)"></div>
+       <div ng-include="getBodyTemplate(item)"></div>
+     </div>  
+  </script>
+   
+   
+   <div ng-repeat="item in items">
+     <div class="pagenr"><span translate="previewsurvey.page"></span> {{ ($index + 1) }}</div>     
+     <div ng-include="getTemplate(item)"></div>         
+   </div>
+   <div class="pagenr" ng-show="items.length"><span translate="previewsurvey.end"></span></div>
+   <div translate="previewsurvey.empty" ng-hide="items.length"></div>
+      
+   <button class="btn btn-primary" ng-click="add()" translate="previewsurvey.add_page_btn">add page</button>
+</div>

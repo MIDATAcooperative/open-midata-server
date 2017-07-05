@@ -1,11 +1,14 @@
 package utils.fhir;
 
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
+import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.Identifier;
 import org.hl7.fhir.dstu3.model.Person;
 import org.hl7.fhir.dstu3.model.Reference;
@@ -34,6 +37,8 @@ public class FHIRTools {
 	private static Set<String> PERSON = Sets.create("person");
 	private static Set<String> REFERENCE = Sets.create("role", "firstname", "lastname");
 	
+	private static DateTimeFormatter titleTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+	
 /*
 	public static Person getPersonRecordOfUser(String id) throws InternalServerException {
 		MidataId mongoId = new MidataId(id);
@@ -58,12 +63,16 @@ public class FHIRTools {
 			//return new Reference().setDisplay(defName).setReference("Patient/"+id.toString());
 			throw new InternalServerException("error.internal", "Person not found "+id.toString());
 		}
+        return getReferenceToUser(user);		
+	}
+	
+	public static Reference getReferenceToUser(User user) throws AppException {
 		String type = "RelatedPerson";
 		switch (user.role) {
 		case MEMBER : type = "Patient";break;
 		case PROVIDER : type = "Practitioner";break;
 		}
-		return new Reference().setDisplay(user.firstname+" "+user.lastname).setReference(type+"/"+user._id.toString());
+		return new Reference().setDisplay(user.firstname+" "+user.lastname).setReference(type+"/"+user._id.toString());		
 	}
 	
 	/**
@@ -106,7 +115,9 @@ public class FHIRTools {
 	}
 	
 	public static TypedMidataId getMidataIdFromReference(IIdType ref) throws AppException {
+		if (ref == null) return null;
 		String rt = ref.getResourceType();
+		if (rt == null) return null;
 		if (rt.equals("Group")) {
 			MidataId result = getUserGroupIdFromReference(ref);
 			return result != null ? new TypedMidataId(result, rt) : null; 
@@ -114,6 +125,19 @@ public class FHIRTools {
 			MidataId result = getUserIdFromReference(ref);
 			return result != null ? new TypedMidataId(result, rt) : null;
 		}				
+	}
+	
+	public static String getMidataLoginFromReference(Reference ref) throws AppException {
+		if (ref == null) return null;
+		if (ref.hasIdentifier()) {
+			Identifier id = ref.getIdentifier();
+			String system = id.getSystem();
+			String value = id.getValue();
+			if (system.equals("http://midata.coop/identifier/patient-login-or-invitation")) {
+				return value;
+			}
+		}
+		return null;
 	}
 	
 	public static boolean isUserFromMidata(IIdType ref) {
@@ -144,6 +168,10 @@ public class FHIRTools {
 			if (system.equals("http://midata.coop/identifier/patient-login")) {
 				target = Member.getByEmail(value, Sets.create("_id", "role", "firstname", "lastname"));
 				type = "Patient";
+			} else if (system.equals("http://midata.coop/identifier/patient-login-or-invitation")) {
+				target = Member.getByEmail(value, Sets.create("_id", "role", "firstname", "lastname"));
+				type = "Patient";
+				if (target == null) return ref;
 			} else if (system.equals("http://midata.coop/identifier/practitioner-login")) {
 				target = HPUser.getByEmail(value, Sets.create("_id", "role", "firstname", "lastname"));
 				type = "Practitioner";
@@ -187,6 +215,13 @@ public class FHIRTools {
     	  if (coding.hasDisplay()) return coding.getDisplay();
     	}
     	return defaultValue;
+    }
+    
+    public static String stringFromDateTime(DateTimeType date) {
+    	if (date == null) return "";
+    	return date.getValue().toInstant()
+               .atZone(ZoneId.systemDefault())
+               .format(titleTimeFormatter);
     }
 	
 	/*

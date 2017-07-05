@@ -1,11 +1,12 @@
 angular.module('portal')
-.controller('ManageAppCtrl', ['$scope', '$state', 'server', 'apps', 'status', function($scope, $state, server, apps, status) {
+.controller('ManageAppCtrl', ['$scope', '$state', '$translatePartialLoader', 'server', 'apps', 'status', 'studies', function($scope, $state, $translatePartialLoader, server, apps, status, studies) {
 	
 	// init
 	$scope.error = null;
 	$scope.app = { version:0, tags:[], i18n : {} };
 	$scope.status = new status(false, $scope);
 	$scope.allowDelete = $state.current.allowDelete;
+	$scope.allowStudyConfig = $state.current.allowStudyConfig;
 	$scope.languages = ['en', 'de', 'fr', 'it'];
 	$scope.sel = { lang : 'de' };
 	$scope.targetUserRoles = [
@@ -27,7 +28,7 @@ angular.module('portal')
     ];
 			
 	$scope.loadApp = function(appId) {
-		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status"]))
+		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion"]))
 		.then(function(data) { 
 			$scope.app = data.data[0];			
 			if ($scope.app.status == "DEVELOPMENT" || $scope.app.status == "BETA") {
@@ -37,6 +38,18 @@ angular.module('portal')
 			}
 			if (!$scope.app.i18n) { $scope.app.i18n = {}; }
 			$scope.app.defaultQueryStr = JSON.stringify($scope.app.defaultQuery);
+			
+			if ($scope.app.linkedStudy) {
+				
+				$scope.status.doBusy(studies.search({ _id : $scope.app.linkedStudy }, ["code", "name"]))
+				.then(function(studyresult) {
+					if (studyresult.data && studyresult.data.length) {
+					  $scope.app.linkedStudyCode = studyresult.data[0].code;
+				 	  $scope.app.linkedStudyName = studyresult.data[0].name;
+					}
+				});
+				
+			}
 		});
 	};
 	
@@ -108,6 +121,8 @@ angular.module('portal')
 		    .then(function(data) { $state.go("^.yourapps"); });
 		}
 	};
+	
+	$translatePartialLoader.addPart("developers");
 	
 	if ($state.params.appId != null) { $scope.loadApp($state.params.appId); }
 	else { $scope.status.isBusy = false; }

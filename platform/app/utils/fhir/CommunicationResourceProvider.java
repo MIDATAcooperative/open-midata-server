@@ -235,7 +235,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 	public void shareRecord(Record record, Communication theCommunication) throws AppException {		
 		ExecutionInfo inf = info();
 		
-		MidataId subject = theCommunication.getSubject().isEmpty() ? inf.executorId : FHIRTools.getUserIdFromReference(theCommunication.getSubject().getReferenceElement());
+		MidataId subject = record.owner;//theCommunication.getSubject().isEmpty() ? inf.executorId : FHIRTools.getUserIdFromReference(theCommunication.getSubject().getReferenceElement());
 		MidataId sender = FHIRTools.getUserIdFromReference(theCommunication.getSender().getReferenceElement());
 		MidataId shareFrom = insertMessageRecord(record, theCommunication);
 						
@@ -244,7 +244,7 @@ public class CommunicationResourceProvider extends ResourceProvider<Communicatio
 						
 			TypedMidataId target = FHIRTools.getMidataIdFromReference(recipient.getReferenceElement());
 			Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, sender, target.getMidataId(), subject, target.getType().equals("Group"));
-			RecordManager.instance.share(inf.executorId, shareFrom, consent._id, Collections.singleton(record._id), true);
+			RecordManager.instance.share(inf.executorId, shareFrom, consent._id, consent.owner, Collections.singleton(record._id), true);
 			
 		}
 	}

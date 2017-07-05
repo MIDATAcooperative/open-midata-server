@@ -25,14 +25,17 @@ import models.ContentInfo;
 import models.HPUser;
 import models.LargeRecord;
 import models.Member;
+import models.MessageDefinition;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
+import models.Study;
 import models.User;
 import models.enums.AggregationType;
 import models.enums.ConsentStatus;
+import models.enums.MessageReason;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -57,6 +60,8 @@ import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.Messager;
+import utils.stats.Stats;
 
 /**
  * functions for mobile APPs
@@ -139,12 +144,20 @@ public class MobileAPI extends Controller {
 	 */
 		
 	
-	private static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId) {
+	private static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId) throws AppException {
 		if (appInstance == null) return false;
         if (!appInstance.owner.equals(ownerId)) return false;
         if (!appInstance.applicationId.equals(applicationId)) return false;
         
         if (appInstance.status.equals(ConsentStatus.EXPIRED) || appInstance.status.equals(ConsentStatus.REJECTED)) return false;
+        
+        Plugin app = Plugin.getById(appInstance.applicationId);
+        
+        AccessLog.log("app-instance:"+appInstance.appVersion+" vs plugin:"+app.pluginVersion);
+        if (appInstance.appVersion != app.pluginVersion) {
+        	MobileAPI.removeAppInstance(appInstance);
+        	return false;
+        }
         
         return true;
 	}
@@ -193,9 +206,10 @@ public class MobileAPI extends Controller {
 			if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) return MobileAPI.invalidToken();
 			appInstanceId = refreshToken.appInstanceId;
 			
-			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "applicationId", "status"));
+			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "applicationId", "status", "appVersion"));
 			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");            
             if (!refreshToken.appId.equals(app._id)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");  
+            if (!Application.verifyUser(appInstance.owner)) return status(UNAUTHORIZED); 
             
             phrase = refreshToken.phrase;
             KeyManager.instance.unlock(appInstance._id, phrase);
@@ -215,26 +229,32 @@ public class MobileAPI extends Controller {
 				
 			User user = null;
 			switch (role) {
-			case MEMBER : user = Member.getByEmail(username, Sets.create("visualizations","password"));break;
-			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("visualizations","password"));break;
+			case MEMBER : user = Member.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
+			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
 			}
 			if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
 			
 			if (!Member.authenticationValid(password, user.password)) {
 				throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
 			}
+			if (Application.loginHelperPreconditionsFailed(user)) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
 			
-			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode"));
+			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));
 			
+			if (appInstance != null && !verifyAppInstance(appInstance, user._id, app._id)) {
+				appInstance = null;
+				RecordManager.instance.clearCache();
+			}
+						
 			if (appInstance == null) {									
 				boolean autoConfirm = false; /*KeyManager.instance.unlock(appInstance.owner, null) == KeyManager.KEYPROTECTION_NONE;*/
 				
-				appInstance = installApp(null, app._id, user, phrase, autoConfirm);
+				appInstance = installApp(null, app._id, user, phrase, autoConfirm, false);
 				executor = appInstance._id;
 	   		    meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
 			} else {
 				
-				if (!verifyAppInstance(appInstance, user._id, app._id)) throw new BadRequestException("error.expired.token", "Access denied");
+				
 				KeyManager.instance.unlock(appInstance._id, phrase);
 				executor = appInstance._id;
 				meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
@@ -249,9 +269,8 @@ public class MobileAPI extends Controller {
 	
 	public static void removeAppInstance(MobileAppInstance appInstance) throws AppException {
 		AccessLog.logBegin("start remove app instance");
-		// Device or password changed, regenerates consent		
-		appInstance.setStatus(ConsentStatus.EXPIRED);
-		Circles.consentStatusChange(appInstance.owner, appInstance);
+		// Device or password changed, regenerates consent				
+		Circles.consentStatusChange(appInstance.owner, appInstance, ConsentStatus.EXPIRED);
 		RecordManager.instance.deleteAPS(appInstance._id, appInstance.owner);									
 		Circles.removeQueries(appInstance.owner, appInstance._id);										
 		MobileAppInstance.delete(appInstance.owner, appInstance._id);
@@ -283,15 +302,26 @@ public class MobileAPI extends Controller {
 		return ok(obj);
 	}
 	
-	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm) throws AppException {
-		Plugin app = Plugin.getById(appId, Sets.create("name", "defaultQuery"));
+	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, boolean studyConfirm) throws AppException {
+		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "linkedStudy", "mustParticipateInStudy"));
+
+		if (app.linkedStudy != null && app.mustParticipateInStudy && !studyConfirm) {
+			throw new BadRequestException("error.missing.study_accept", "Study belonging to app must be accepted.");
+		}
+		
+		if (app.linkedStudy != null && studyConfirm) {			
+			controllers.members.Studies.precheckRequestParticipation(member._id, app.linkedStudy);
+		}
+		
 		MobileAppInstance appInstance = new MobileAppInstance();
 		appInstance._id = new MidataId();
 		appInstance.name = "App: "+ app.name+" (Device: "+phrase.substring(0, 3)+")";
-		appInstance.applicationId = app._id;		
+		appInstance.applicationId = app._id;	
+		appInstance.appVersion = app.pluginVersion;
         appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, phrase);
     	appInstance.owner = member._id;
-    	appInstance.passcode = Member.encrypt(phrase);    	
+    	appInstance.passcode = Member.encrypt(phrase); 
+    	appInstance.dateOfCreation = new Date();
 		
     	MobileAppInstance.add(appInstance);	
 		KeyManager.instance.unlock(appInstance._id, phrase);	   		    
@@ -317,9 +347,26 @@ public class MobileAPI extends Controller {
 		    RecordManager.instance.shareByQuery(executor, member._id, appInstance._id, app.defaultQuery);
 		}
 		
+		
+		if (app.linkedStudy != null && studyConfirm) {			
+			controllers.members.Studies.requestParticipation(member._id, app.linkedStudy);
+		}
+		
 		if (autoConfirm) {
 		   HealthProvider.confirmConsent(appInstance.owner, appInstance._id);
 		   appInstance.status = ConsentStatus.ACTIVE;
+		}
+		
+		if (!member.apps.contains(app._id)) {
+			member.apps.add(app._id);
+			User.set(member._id, "apps", member.apps);
+		}
+				
+		if (app.predefinedMessages!=null) {
+			if (!app._id.equals(member.initialApp)) {
+				Messager.sendMessage(app._id, MessageReason.FIRSTUSE_EXISTINGUSER, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());	
+			} 
+			Messager.sendMessage(app._id, MessageReason.FIRSTUSE_ANYUSER, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());								
 		}
 				
 		return appInstance;
@@ -361,6 +408,8 @@ public class MobileAPI extends Controller {
 	@MobileCall
 	public static Result getRecords() throws JsonValidationException, AppException {		
 		// validate json
+		Stats.startRequest(request());
+		
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken", "properties", "fields");
 		
@@ -375,7 +424,8 @@ public class MobileAPI extends Controller {
 					
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "status"));
         if (appInstance == null) return invalidToken(); 
-		
+        Stats.setPlugin(appInstance.applicationId);
+        
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) {
         	return ok(JsonOutput.toJson(Collections.EMPTY_LIST, "Record", fields));
         }
@@ -398,6 +448,8 @@ public class MobileAPI extends Controller {
 		records = LargeRecord.getAll(executor, appInstance._id, properties, fields);		  
 				
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
+		
+		Stats.finishRequest(request(), "200", properties.keySet());
 		return ok(JsonOutput.toJson(records, "Record", fields));
 	}
 	
@@ -410,7 +462,7 @@ public class MobileAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall	
 	public static Result getFile() throws AppException, JsonValidationException {
-		
+		Stats.startRequest(request());
 		// validate json
 		JsonNode json = request().body().asJson();				
 						
@@ -432,6 +484,8 @@ public class MobileAPI extends Controller {
 		if (fileData == null) return badRequest();
 		if (fileData.contentType != null) response().setContentType(fileData.contentType);
 		//response().setHeader("Content-Disposition", "attachment; filename=" + fileData.filename);
+		
+		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
 		return ok(fileData.inputStream);
 	}
 	
@@ -444,7 +498,8 @@ public class MobileAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall
 	public static Result createRecord() throws AppException, JsonValidationException {
-				
+		Stats.startRequest(request());
+		
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken", "data", "name", "format");
@@ -453,11 +508,12 @@ public class MobileAPI extends Controller {
 		// decrypt authToken 
 		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(json.get("authToken").asText());
 		if (authToken == null) return invalidToken(); 
-					
+						
 		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare","status"));
         if (appInstance == null) return invalidToken(); 
         if (!appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
-
+        Stats.setPlugin(appInstance.applicationId);
+        
         MidataId executor = prepareMobileExecutor(appInstance, authToken);
         
 		MidataId appId = appInstance.applicationId;
@@ -527,7 +583,8 @@ public class MobileAPI extends Controller {
 			}
 		}
 		*/
-				
+			
+		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
 		ObjectNode obj = Json.newObject();		
 		obj.put("_id", record._id.toString());		
 		return ok(JsonOutput.toJson(record, "Record", Sets.create("_id", "created", "version")));
@@ -542,13 +599,15 @@ public class MobileAPI extends Controller {
 	@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall
 	public static Result updateRecord() throws AppException, JsonValidationException {
-				
+		
+		Stats.startRequest(request());
 		// check whether the request is complete
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "authToken", "data", "_id", "version");
 		
 		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
-			
+		Stats.setPlugin(inf.pluginId);	
+		
         String data = JsonValidation.getJsonString(json, "data");
 						
 		Record record = new Record();
@@ -566,6 +625,9 @@ public class MobileAPI extends Controller {
 		}
 				
 		String version = PluginsAPI.updateRecord(inf, record);
+		
+		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
+		
 		ObjectNode obj = Json.newObject();		
 		obj.put("version", version);		
 		return ok(obj);

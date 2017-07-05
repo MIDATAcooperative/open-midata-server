@@ -230,6 +230,12 @@ public class RecordManager {
 		AccessLog.logEnd("end unshareAPSRecursive");
 	}
 
+	
+	public void share(MidataId who, MidataId fromAPS, MidataId toAPS, 
+			Set<MidataId> records, boolean withOwnerInformation) throws AppException {
+		share(who, fromAPS, toAPS, null, records, withOwnerInformation);
+	}
+	
 	/**
 	 * share records contained in an APS to another APS
 	 * @param who ID of executing person
@@ -239,11 +245,11 @@ public class RecordManager {
 	 * @param withOwnerInformation 
 	 * @throws AppException
 	 */
-	public void share(MidataId who, MidataId fromAPS, MidataId toAPS,
+	public void share(MidataId who, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner,
 			Set<MidataId> records, boolean withOwnerInformation)
 			throws AppException {
         AccessLog.logBegin("begin share: who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString()+" count="+(records!=null ? records.size() : "?"));
-		APS apswrapper = getCache(who).getAPS(toAPS);
+		APS apswrapper = getCache(who).getAPS(toAPS, toAPSOwner);
 		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(who), fromAPS,
 				records != null ? CMaps.map("_id", records) : RecordManager.FULLAPS_FLAT,
 				Sets.create("_id", "key", "owner", "format", "content", "created", "name", "isStream", "stream"));
@@ -398,7 +404,7 @@ public class RecordManager {
 	 */
 	public BSONObject getMeta(MidataId who, MidataId apsId, String key) throws AppException {
 		AccessLog.logBegin("begin getMeta who="+who.toString()+" aps="+apsId.toString()+" key="+key);
-		BSONObject result = getCache(who).getAPS(apsId).getMeta(key);
+		BSONObject result = Feature_UserGroups.findApsCacheToUse(getCache(who), apsId).getAPS(apsId).getMeta(key);
 		AccessLog.logEnd("end getMeta");
 		return result;
 	}
@@ -883,7 +889,8 @@ public class RecordManager {
 		
 		if (rec.security == null) throw new InternalServerException("error.internal", "Missing key for record:"+rec._id.toString());
 		FileData fileData = FileStorage.retrieve(new MidataId(token.recordId));
-				
+		if (fileData == null) throw new InternalServerException("error.internal", "Record "+rec._id.toString()+" has no binary data attached.");		
+		
 		if (rec.security.equals(APSSecurityLevel.NONE) || rec.security.equals(APSSecurityLevel.LOW)) {
 		  fileData.inputStream = fileData.inputStream;			
 		} else {

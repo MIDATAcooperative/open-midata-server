@@ -15,11 +15,13 @@ import models.Plugin;
 import models.User;
 import models.enums.ConsentStatus;
 import models.enums.UserRole;
+import models.enums.UserStatus;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import utils.AccessLog;
+import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
 import utils.auth.MobileAppSessionToken;
@@ -48,13 +50,21 @@ public class OAuth2 extends Controller {
 	
 		
 	
-	private static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId) {
+	private static boolean verifyAppInstance(MobileAppInstance appInstance, MidataId ownerId, MidataId applicationId) throws AppException {
 		if (appInstance == null) return false;
-        if (!appInstance.owner.equals(ownerId)) return false;
-        if (!appInstance.applicationId.equals(applicationId)) return false;
+        if (!appInstance.owner.equals(ownerId)) throw new InternalServerException("error.invalid.token", "Wrong app instance owner!");
+        if (!appInstance.applicationId.equals(applicationId)) throw new InternalServerException("error.invalid.token", "Wrong app for app instance!");
         
-        if (appInstance.status.equals(ConsentStatus.EXPIRED) || appInstance.status.equals(ConsentStatus.REJECTED)) return false;
+        if (appInstance.status.equals(ConsentStatus.EXPIRED) || appInstance.status.equals(ConsentStatus.REJECTED)) 
+        	throw new BadRequestException("error.blocked.consent", "Consent expired or blocked.");
         
+        Plugin app = Plugin.getById(appInstance.applicationId);
+        
+        AccessLog.log("app-instance:"+appInstance.appVersion+" vs plugin:"+app.pluginVersion);
+        if (appInstance.appVersion != app.pluginVersion) {
+        	MobileAPI.removeAppInstance(appInstance);
+        	return false;
+        }
         return true;
 	}
 	
@@ -73,6 +83,8 @@ public class OAuth2 extends Controller {
 		
 		String code_challenge = JsonValidation.getStringOrNull(json, "code_challenge");
 	    String code_challenge_method = JsonValidation.getStringOrNull(json, "code_challenge_method");
+	    boolean confirmed = JsonValidation.getBoolean(json, "confirm");
+	    boolean confirmStudy = JsonValidation.getBoolean(json, "confirmStudy");
 	   					
 	    // Validate Mobile App	
 		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri"));
@@ -89,30 +101,37 @@ public class OAuth2 extends Controller {
 		UserRole role = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;
 		String phrase = device;
 					
-			User user = null;
-			switch (role) {
-			case MEMBER : user = Member.getByEmail(username, Sets.create("visualizations","password"));break;
-			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("visualizations","password"));break;
+		User user = null;
+		switch (role) {
+		case MEMBER : user = Member.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
+		case PROVIDER : user = HPUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
+		}
+		if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
+		if (!Member.authenticationValid(password, user.password)) {
+			throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
+		}
+		boolean notok = Application.loginHelperPreconditionsFailed(user);
+		if (notok) {
+		  return Application.loginHelperResult(user);
+		}
+		
+		appInstance = MobileAPI.getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));
+		KeyManager.instance.login(60000l);
+		
+		if (appInstance == null) {		
+			if (!confirmed) return ok("CONFIRM");
+			boolean autoConfirm = KeyManager.instance.unlock(user._id, null) == KeyManager.KEYPROTECTION_NONE;
+			MidataId executor = autoConfirm ? user._id : null;
+			appInstance = MobileAPI.installApp(executor, app._id, user, phrase, autoConfirm, confirmStudy);				
+			if (executor == null) executor = appInstance._id;
+   		    meta = RecordManager.instance.getMeta(executor, appInstance._id, "_app").toMap();
+		} else {				
+			if (!verifyAppInstance(appInstance, user._id, app._id)) {
+				return ok("CONFIRM");
 			}
-			if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
-			if (!Member.authenticationValid(password, user.password)) {
-				throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
-			}
-			
-			appInstance = MobileAPI.getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode"));
-			KeyManager.instance.login(60000l);
-			
-			if (appInstance == null) {		
-				boolean autoConfirm = KeyManager.instance.unlock(user._id, null) == KeyManager.KEYPROTECTION_NONE;
-				MidataId executor = autoConfirm ? user._id : null;
-				appInstance = MobileAPI.installApp(executor, app._id, user, phrase, autoConfirm);				
-				if (executor == null) executor = appInstance._id;
-	   		    meta = RecordManager.instance.getMeta(executor, appInstance._id, "_app").toMap();
-			} else {				
-				if (!verifyAppInstance(appInstance, user._id, app._id)) throw new BadRequestException("error.expired.token", "Access denied");
-				KeyManager.instance.unlock(appInstance._id, phrase);
-				meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();				
-			}
+			KeyManager.instance.unlock(appInstance._id, phrase);
+			meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();				
+		}
 					
 		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
 		
@@ -120,7 +139,7 @@ public class OAuth2 extends Controller {
 									
 		ObjectNode obj = Json.newObject();								
 		obj.put("code", tk.encrypt());
-		obj.put("status", appInstance.status.toString());
+		obj.put("istatus", appInstance.status.toString());
 		return ok(obj);
 	}
 
@@ -146,12 +165,14 @@ public class OAuth2 extends Controller {
         	String refresh_token = data.get("refresh_token")[0];
         	
         	MobileAppToken refreshToken = MobileAppToken.decrypt(refresh_token);
+        	if (refreshToken == null) throw new BadRequestException("error.internal", "Bad refresh_token.");
         	if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) return MobileAPI.invalidToken();
 			appInstanceId = refreshToken.appInstanceId;
 			
-			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "applicationId", "status"));
+			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "appVersion", "applicationId", "status"));
 			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.internal", "Bad refresh token.");                        
-            
+            if (!Application.verifyUser(appInstance.owner)) return status(UNAUTHORIZED);            
+			
             phrase = refreshToken.phrase;
             KeyManager.instance.unlock(appInstance._id, phrase);	
             meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
@@ -170,8 +191,8 @@ public class OAuth2 extends Controller {
             String client_id = data.get("client_id")[0];
     					
     		OAuthCodeToken tk = OAuthCodeToken.decrypt(code);
-    		AccessLog.log("cs:"+tk.codeChallenge);
-    		AccessLog.log("csm:"+tk.codeChallengeMethod);
+    		//AccessLog.log("cs:"+tk.codeChallenge);
+    		//AccessLog.log("csm:"+tk.codeChallengeMethod);
     		
     		if (tk.codeChallenge != null) {
     			String csa[] = data.get("code_verifier");

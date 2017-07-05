@@ -1,7 +1,7 @@
 {
    "footer" : {
-     "copyright" : "(c) 2015-2017 ETH Zürich",
-     "portals" : "MIDATA Portals:",
+     "copyright" : "(c) 2015-{{now}} ETH Zürich",
+     "portals" : "Midata Portals:",
      "for_members" : "For Account Holders",
 	 "for_researchers" : "For Research Organizations",
 	 "for_providers" : "For Healthcare Providers",
@@ -84,7 +84,8 @@
        "passphrase" : "Please provide your passphrase.",
        "groupsystem" : "Group system must be provided.",
        "token" : "Missing or bad token.",
-       "agb" : "Terms and conditions not accepted."
+       "agb" : "Terms and conditions not accepted.",
+       "study_accept" : "Study participation must be accepted."
      },
 
      "unknown" : {
@@ -113,7 +114,8 @@
 
      "blocked" : {
        "user" : "User is not allowed to log in. Contact support@midata.coop for help.",
-       "participation" : "Account holder is not allowed to participate in study."
+       "participation" : "Account holder is not allowed to participate in study.",
+       "consent" : "The consent for using this app has been revoked. To reenable use the MIDATA portal and delete the rejected or expired consent."
      },
 
      "closed" : {
@@ -395,8 +397,11 @@
     "mobile_phone" : "Mobile Phone",
     "coach" : "Contact person MIDATA",
     "reason" : "Purpose of Registration",
-    "agb" : "AGB",
+    "agb" : "Midata AGB",
+    "study" : "Research",
     "agb2" : "I accept the terms and conditions",
+    "app_agb" : "App AGB",
+    "app_agb2" : "I accept the terms and conditions",
     "sign_up_btn" : "Sign Up"
   },
 
@@ -443,10 +448,12 @@
     "resent_success" : "Welcome mail has been resent.",
     "address_success" : "Address has been confirmed.",
     "code_entered" : "Confirmation Code entered?",
-    "email_instructions" : "1. Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.",
+    "email_instructions" : "Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.",
+    "email_code" : "For convenience you may enter the code from the email here:",
     "resend_btn" : "Resend eMail",
-    "contract_instructions" : "2. A contract has been sent to your postal address. Return it signed to MIDATA.",
-    "code_intructions" : "3. A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
+    "retry_btn" : "Retry login",
+    "contract_instructions" : "A contract has been sent to your postal address. Return it signed to MIDATA.",
+    "code_intructions" : "A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
     "code_later" : "Confirmation code may be entered here after signed contract has arrived at MIDATA office.",
     "enter_now_btn" : "Enter now",
     "email_success" : "E-Mail address has been confirmed."
@@ -612,9 +619,11 @@
     "title" : "Consent",
     "owner" : "Owner of Consent",
     "name" : "Name of Consent",
+    "date_of_creation" : "Consent created at",
     "type" : "Type of Consent",
     "status" : "Status of Consent",
     "people" : "With which persons(s) do you want to share data?",
+    "external" : "Non MIDATA account holder",
     "add_people_btn" : "Add More People",
     "add_usergroup_btn" : "Add a Team",
     "reshare" : "@:newconsent.reshare",
@@ -689,9 +698,12 @@
 	"shared_with" : "Shared With:",
 	"records_used_for_app" : "Records used for app",
 	"back_to_plugin" : "Back to Visualization",
+	"by_group" : "Grouped by type of content",
+	"by_plugin" : "Grouped by application",
 	"show" : "Show:",
 	"my_data" : "My Data",
 	"all_data" : "All Data",
+	"all" : "Personal Data",
 	"study" : "Study: {{name}}",
 	"shared" : "Shared by: {{name}}",
 	"just_name" : "{{name}}",
@@ -710,6 +722,7 @@
     "sign_in_btn" : "Sign In",
     "device" : "Device: {{ device}}",
     "please_confirm" : "Please confirm the application consent using MIDATA portal then retry. Consent title is: {{ consent }}",
+    "confirm_btn" : "Confirm Access",
     "requests_access" : "Requested Access:",
     "shares_group" : "Group: {{ group }}",
     "shares_format" : "Format: {{ format }}",

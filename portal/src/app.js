@@ -3,7 +3,7 @@ var views = angular.module('views', ['services']);
 angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services', 'views', 'config', 'ngPostMessage', 'angularUtils.directives.dirPagination', 'pascalprecht.translate', 'ngSanitize'])
 .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider', 'ENV', function($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider, ENV) {
    //$httpProvider.defaults.useXDomain = true;
-   $httpProvider.defaults.withCredentials = true;
+   //$httpProvider.defaults.withCredentials = true;
    //delete $httpProvider.defaults.headers.common['X-Requested-With'];
    $httpProvider.interceptors.push('SessionInterceptor');
    
@@ -80,6 +80,7 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
    $rootScope.$on('$translatePartialLoaderStructureChanged', function () {
       $translate.refresh();
    });
+   $rootScope.currentDate = new Date();
    $translatePartialLoader.addPart("shared");
 }])
 .config(['$compileProvider', function ($compileProvider) {
@@ -91,6 +92,7 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
     var service = this;    
     service.responseError = function(response) {    	
     	var $state = $injector.get("$state");
+    	if ($state.current.nointerceptor) return $q.reject(response); 
         if (response.status === 401) {
             $state.go("public.login");
         } else if (response.status === 403) {

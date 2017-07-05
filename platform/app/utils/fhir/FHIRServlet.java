@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ca.uhn.fhir.narrative.DefaultThymeleafNarrativeGenerator;
+import ca.uhn.fhir.rest.server.BundleInclusionRule;
 import ca.uhn.fhir.rest.server.HardcodedServerAddressStrategy;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
@@ -44,8 +45,8 @@ public class FHIRServlet extends RestfulServer {
 	   String serverBaseUrl = getBaseUrl();
        setServerAddressStrategy(new HardcodedServerAddressStrategy(serverBaseUrl));
        this.setServerConformanceProvider(new MidataConformanceProvider());
-       ResourceProvider.ctx.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());
-	   
+       ResourceProvider.ctx.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());       
+       
       /*
        * The servlet defines any number of resource providers, and
        * configures itself to use them by calling
@@ -61,6 +62,7 @@ public class FHIRServlet extends RestfulServer {
       myProviders.put("Condition",  new ConditionResourceProvider());
       myProviders.put("Communication", new CommunicationResourceProvider());
       myProviders.put("QuestionnaireResponse", new QuestionnaireResponseResourceProvider());
+      myProviders.put("Questionnaire", new QuestionnaireResourceProvider());
       myProviders.put("Basic",  new BasicResourceProvider());
       myProviders.put("Media",  new MediaResourceProvider());
       myProviders.put("Person", new PersonResourceProvider());
@@ -70,6 +72,7 @@ public class FHIRServlet extends RestfulServer {
       myProviders.put("Practitioner", new PractitionerResourceProvider());
       myProviders.put("Device", new DeviceResourceProvider());
       myProviders.put("MedicationStatement", new MedicationStatementResourceProvider());
+      myProviders.put("Consent", new ConsentResourceProvider());
       
       resourceProviders.addAll(myProviders.values());
       setResourceProviders(resourceProviders);

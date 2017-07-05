@@ -38,6 +38,7 @@ import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.PatientResourceProvider;
 import utils.json.JsonValidation;
+import utils.json.JsonValidation.JsonValidationException;
 
 public class QuickRegistration extends APIController {
 
@@ -55,18 +56,30 @@ public class QuickRegistration extends APIController {
 		
 		
 		String appName = JsonValidation.getString(json, "app");
+		String studyName = null;
 		Study study = null;
+		boolean confirmStudy =  JsonValidation.getBoolean(json, "confirmStudy");
 		
-		if (json.has("study")) {
-			String studyCode = JsonValidation.getString(json, "study");
-			study = Study.getByCodeFromMember(studyCode, Study.ALL);
-			if (study == null) throw new BadRequestException("error.invalid.code", "Unknown code for study.");
-			
-			if (!study.participantSearchStatus.equals(ParticipantSearchStatus.SEARCHING)) throw new BadRequestException("error.closed.study", "Study not searching for members.");
-		}
-		
+		if (json.has("study")) { studyName = JsonValidation.getString(json, "study"); }
+						
 		Plugin app = Plugin.getByFilename(appName, Plugin.ALL_PUBLIC);
 		if (app == null) throw new BadRequestException("error.invalid.appcode", "Unknown code for app.");
+			
+		
+		if (studyName != null) {
+			study = Study.getByCodeFromMember(studyName, Study.ALL);
+						
+			if (study == null) throw new BadRequestException("error.invalid.code", "Unknown code for study.");
+			
+			controllers.members.Studies.precheckRequestParticipation(null, study._id);			
+		}
+		
+		if (app.linkedStudy != null && app.mustParticipateInStudy && !confirmStudy) {
+			throw new JsonValidationException("error.missing.study_accept", "confirmStudy", "mustaccept", "Study belonging to app must be accepted.");
+		}
+		if (app.linkedStudy != null && confirmStudy) {
+			controllers.members.Studies.precheckRequestParticipation(null, app.linkedStudy);
+		}
 		
 		String email = JsonValidation.getEMail(json, "email");
 		String firstName = JsonValidation.getString(json, "firstname");
@@ -109,6 +122,9 @@ public class QuickRegistration extends APIController {
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");
+		
+		user.initialApp = app._id;
+		if (study != null) user.initialStudy = study._id;
 									
 		user.status = UserStatus.ACTIVE;	
 		
@@ -117,10 +133,11 @@ public class QuickRegistration extends APIController {
 		if (study != null) controllers.members.Studies.requestParticipation(user._id, study._id);
 		
 		if (device != null) {
-		   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true);
+		   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true, confirmStudy);
 		}
-				
-		Application.sendWelcomeMail(user);
+		
+		Circles.fetchExistingConsents(user._id, user.emailLC);
+		Application.sendWelcomeMail(app._id, user);
 		return Application.loginHelper(user);		
 	}
 	
@@ -181,13 +198,15 @@ public class QuickRegistration extends APIController {
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");
-						
+		
+		user.initialApp = app._id;		
 						
 		user.status = UserStatus.ACTIVE;		
 		Application.registerCreateUser(user);								
-		Application.sendWelcomeMail(user);
+		Application.sendWelcomeMail(app._id,user);
+		Circles.fetchExistingConsents(user._id, user.emailLC);
 		
-		MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, phrase, true);		
+		MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, phrase, true, false);		
 		appInstance.status = ConsentStatus.ACTIVE;
 		
 		/*RecordManager.instance.clear();

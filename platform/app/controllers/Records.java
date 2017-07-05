@@ -179,18 +179,12 @@ public class Records extends APIController {
 		Map<String, Object> query = null;
 		boolean readRecords = true;
 		
-		Consent consent = Circles.getConsentById(userId, apsId, Sets.create("owner", "authorized", "status", "type"));
+		Consent consent = Circles.getConsentById(userId, apsId, Sets.create("owner", "authorized", "status", "type", "sharingQuery"));
 		if (consent != null) {
-			if (!consent.owner.equals(userId) && !consent.authorized.contains(userId)) throw new InternalServerException("error.invalid.consent", "You are not allowed to access this consent.");
-			if (consent.type.equals(ConsentType.EXTERNALSERVICE)) {
-				BSONObject b = RecordManager.instance.getMeta(userId, apsId, APS.QUERY);
-				if (b!=null) {
-					query = b.toMap();				
-				}
-			} else {
-			  query = Circles.getQueries(consent.owner, apsId);
-			}
-			if (!consent.status.equals(ConsentStatus.ACTIVE) && !consent.owner.equals(userId)) readRecords = false;
+			
+			Circles.fillConsentFields(userId, Collections.singleton(consent), Sets.create("sharingQuery"));
+			query = consent.sharingQuery;
+			if (!consent.status.equals(ConsentStatus.ACTIVE) && !userId.equals(consent.owner)) readRecords = false;
 		} else {										
 			BSONObject b = RecordManager.instance.getMeta(userId, apsId, APS.QUERY);
 			if (b!=null) {
@@ -302,10 +296,13 @@ public class Records extends APIController {
 			String id = JsonValidation.getString(json, "_id");
 			RecordToken tk = getRecordTokenFromString(id);				
 			RecordManager.instance.wipe(userId, CMaps.map("_id", tk.recordId));
-		} else if (json.has("group")) {
-			String group = JsonValidation.getString(json, "group");
+		} else if (json.has("group") || json.has("content") || json.has("app")) {
 			
-			RecordManager.instance.wipe(userId,  CMaps.map("group", group));			
+			Map<String, Object> properties = new HashMap<String, Object>();
+			if (json.has("group")) properties.put("group", JsonValidation.getString(json, "group"));
+			if (json.has("content")) properties.put("content", JsonValidation.getString(json, "content"));
+			if (json.has("app")) properties.put("app", JsonValidation.getString(json, "app"));
+			RecordManager.instance.wipe(userId,  properties);			
 		}
 		
 		return ok();
@@ -360,7 +357,7 @@ public class Records extends APIController {
         	boolean withMember = false;
         	boolean hasAccess = true;
         	MidataId apsOwner = userId;
-        	Consent consent = Circles.getConsentById(userId, start, Sets.create("type", "status", "owner", "authorized"));
+        	Consent consent = Circles.getConsentById(userId, start, Sets.create("type", "status", "owner", "authorized", "sharingQuery"));
         	if (consent == null) {
         		Space space = Space.getByIdAndOwner(start, userId, Sets.create("_id"));
         		if (space == null) {
@@ -370,37 +367,37 @@ public class Records extends APIController {
         	  ConsentType type = consent.type;
         	  
         	  if (type.equals(ConsentType.STUDYPARTICIPATION)) throw new BadRequestException("error.no_alter.consent", "Consents for studies may not be altered.");
-        	  if (!consent.owner.equals(userId) && !consent.status.equals(ConsentStatus.UNCONFIRMED)) throw new BadRequestException("error.no_alter.consent", "Consent may not be altered.");
+        	  if (!userId.equals(consent.owner) && !consent.status.equals(ConsentStatus.UNCONFIRMED)) throw new BadRequestException("error.no_alter.consent", "Consent may not be altered.");
         	  withMember = !type.equals(ConsentType.STUDYPARTICIPATION);        	  
-        	  hasAccess = consent.owner.equals(userId);
+        	  hasAccess = userId.equals(consent.owner);
         	  apsOwner = consent.owner;
         	}        	         	
         	      
         	if (hasAccess) {
-        	for (String sourceAps :records.keySet()) {        	  
-        	  RecordManager.instance.share(userId, new MidataId(sourceAps), start, ObjectIdConversion.toMidataIds(records.get(sourceAps)), withMember);
-        	}    
+	        	for (String sourceAps :records.keySet()) {        	  
+	        	  RecordManager.instance.share(userId, new MidataId(sourceAps), start, ObjectIdConversion.toMidataIds(records.get(sourceAps)), withMember);
+	        	}    
         	}
         	
         	if (query != null) {
-        		
-        		AccessLog.log("QUERY1"+query.toString());
-        		Feature_FormatGroups.convertQueryToContents(groupSystem, query);
-        		AccessLog.log("QUERY2"+query.toString());
-        		//query = Collections.unmodifiableMap(query);
+        		        		
+        		Feature_FormatGroups.convertQueryToContents(groupSystem, query);        		
         		
         		if (hasAccess) {
-        		List<Record> recs = RecordManager.instance.list(userId, start, CMaps.map(query).map("flat", "true"), Sets.create("_id"));
-        		Set<MidataId> remove = new HashSet<MidataId>();
-        		for (Record r : recs) remove.add(r._id);
-        		RecordManager.instance.unshare(userId, start, remove);
+	        		List<Record> recs = RecordManager.instance.list(userId, start, CMaps.map(query).map("flat", "true"), Sets.create("_id"));
+	        		Set<MidataId> remove = new HashSet<MidataId>();
+	        		for (Record r : recs) remove.add(r._id);
+	        		RecordManager.instance.unshare(userId, start, remove);
         		}
-        		AccessLog.log("QUERY3"+query.toString());
+        		
         		if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
         		  RecordManager.instance.shareByQuery(userId, userId, start, query);
         		} else {
-        		  Circles.setQuery(userId, apsOwner, start, query);        		          		  
-	        	  if (hasAccess) RecordManager.instance.applyQuery(userId, query, userId, start, withMember);	        	  
+        		  consent.set(consent._id, "sharingQuery", query);
+        		  if (consent.status == ConsentStatus.ACTIVE) {
+        		    Circles.setQuery(userId, apsOwner, start, query);        		          		  
+	        	    if (hasAccess) RecordManager.instance.applyQuery(userId, query, userId, start, withMember);
+        		  }
         		}
         	}
         }
@@ -439,8 +436,11 @@ public class Records extends APIController {
         		if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
         		  RecordManager.instance.shareByQuery(userId, userId, start, query);
         		} else {
-        		  Circles.setQuery(userId, apsOwner, start, query);        		          		  
-	        	  if (hasAccess) RecordManager.instance.applyQuery(userId, query, userId, start, withMember);	        	  
+        		  consent.set(consent._id, "sharingQuery", query);
+          		  if (consent.status == ConsentStatus.ACTIVE) {
+          		    Circles.setQuery(userId, apsOwner, start, query);        		          		  
+  	        	    if (hasAccess) RecordManager.instance.applyQuery(userId, query, userId, start, withMember);
+          		  }        		        	  
         		}
         	}
         	        	
@@ -464,6 +464,7 @@ public class Records extends APIController {
 		if (format == null || format.visualization == null) return ok();
 		
 		Plugin visualization = Plugin.getById(format.visualization);
+		if (visualization == null) return ok();
 					
 		// create encrypted authToken
 		SpaceToken spaceToken = new SpaceToken(PortalSessionToken.session().handle, new MidataId(tk.apsId), userId, new MidataId(tk.recordId));

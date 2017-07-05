@@ -1,7 +1,7 @@
 {"_id":{"$oid":"55ae5a08f351efda91eadc7c"},"system":"v1","name":"all","label":{"de":"Persönliche Daten","en":"Personal Data"}}
 {"_id":{"$oid":"55ae5a08f351efda91eadc7d"},"system":"v1","name":"lifestyle","label":{"de":"Lifestyle","en":"Lifestyle"},"parent":"all"}
 {"_id":{"$oid":"55ae5a08f351efda91eadc7e"},"system":"v1","name":"nutrition","label":{"de":"Ernährung","en":"Nutrition"},"parent":"lifestyle","contents":["food/water","food/calories-in"]}
-{"_id":{"$oid":"55ae5a08f351efda91eadc7f"},"system":"v1","name":"mood","label":{"de":"Stimmung","en":"Mood"},"parent":"lifestyle","contents":["subjective-condition","quality-of-life","survey/pain-severity"]}
+{"_id":{"$oid":"55ae5a08f351efda91eadc7f"},"system":"v1","name":"mood","label":{"de":"Stimmung","en":"Mood"},"parent":"lifestyle","contents":["pain/77572-6","pain/77566-8","pain/77567-6","pain/77571-8","pain/77568-4","pain/77569-2","subjective-condition","quality-of-life","pain/77570-0","pain/410720000","pain/77565-0","survey/pain-severity"]}
 {"_id":{"$oid":"55ae5a08f351efda91eadc80"},"system":"v1","name":"qself","label":{"de":"Quantified Self","en":"Quantified self"},"parent":"lifestyle","contents":[]}
 {"_id":{"$oid":"55ae5a08f351efda91eadc81"},"system":"v1","name":"activities","label":{"de":"Aktivitäten","en":"Activities"},"parent":"lifestyle","contents":[]}
 {"_id":{"$oid":"55ae5a08f351efda91eadc82"},"system":"v1","name":"sleep","label":{"de":"Schalf","en":"Sleep"},"parent":"lifestyle","contents":["sleep/minutes-to-fall-asleep","sleep/minutes-asleep","sleep/minutes-light-sleep","sleep/wakeupcount","sleep/minutes-awake","sleep/efficiency","sleep/wakeup-duration","sleep/time-in-bed","sleep/rem"]}
@@ -46,3 +46,4 @@
 {"_id":{"$oid":"58773f8daed645135829ffbb"},"system":"v1","name":"goal","label":{"en":"Goals"},"parent":"health","contents":["Goal"]}
 {"_id":{"$oid":"5877408faed645135829ffbd"},"system":"v1","name":"milestones","label":{"en":"Milestones"},"parent":"lifestyle","contents":["milestones"]}
 {"_id":{"$oid":"58e60ed1aed6450f67436b75"},"system":"v1","name":"assessment","label":{"de":"Bewertungen","en":"Assessment"},"parent":"health","contents":["MSCogTestSDPrep","MSMotTestLine","MSMotTestDot","MSCogTestLab","MSTests","MSCogTestSD"]}
+{"_id":{"$oid":"5909f37caed6450e198a9451"},"system":"v1","name":"behavior","label":{"en":"Behavior"},"parent":"health","contents":["behavior/craves-for-drugs"]}

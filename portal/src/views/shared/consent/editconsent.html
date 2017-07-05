@@ -8,6 +8,9 @@
     <formrow id="name" label="editconsent.name">
       <p class="form-control-static">{{ consent.name }}</p>
     </formrow>
+    <formrow id="name" label="editconsent.date_of_creation">
+      <p class="form-control-static">{{ consent.dateOfCreation | date }}</p>
+    </formrow>
     <formrow id="type" label="editconsent.type">
       <p class="form-control-static" ng-show="consent.type == 'CIRCLE'" translate="editconsent.type_circle"></p>
       <p class="form-control-static" ng-show="consent.type == 'HEALTHCARE'" translate="editconsent.type_healthcare"></p>
@@ -24,7 +27,7 @@
     
     
      <formrow myid="owner" label="newconsent.who_is_owner">
-		<div class="well well-sm" >		  	
+		<div class="well well-sm" ng-show="owner">		  	
 		  <address>
 			<strong>{{ owner.firstname }} {{ owner.lastname }}</strong>
 			<span ng-show="owner.address1 || owner.city || owner.country"><br>{{ owner.address1 }}<br>
@@ -34,6 +37,9 @@
 			</span>
 			<span ng-show="owner.email"><span translate="common.user.email"></span>: {{ owner.email }}<br></span>
 		  </address>
+		</div>
+		<div class="well well-sm" ng-show="consent.externalOwner">
+		  <span translate="editconsent.external"></span>: <strong>{{ consent.externalOwner }}</strong>
 		</div>				
 	</formrow>
     
@@ -54,6 +60,9 @@
 		<div class="well well-sm" ng-repeat="usergroup in authteams">
 		  <button type="button" ng-show="mayChangeUsers" ng-click="removePerson(usergroup)" class="close" aria-label="Delete"><span aria-hidden="true">&times;</span></button>	
 		  {{ usergroup.name }}
+		</div>
+		<div class="well well-sm" ng-repeat="person in consent.externalAuthorized">
+		  <span translate="editconsent.external"></span>: <strong>{{ person }}</strong>
 		</div>
 		<button type="button" class="btn btn-default" ng-show="mayChangeUsers()" ng-click="addPeople();" translate="editconsent.add_people_btn"></button>
 		<button type="button" class="btn btn-default" ng-show="mayChangeUsers()" ng-click="addUserGroup();" translate="editconsent.add_usergroup_btn"></button>		

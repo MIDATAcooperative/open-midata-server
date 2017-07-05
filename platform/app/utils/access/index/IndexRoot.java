@@ -15,6 +15,7 @@ import utils.access.DBRecord;
 import utils.access.op.Condition;
 import utils.db.LostUpdateException;
 import utils.exceptions.InternalServerException;
+import utils.stats.Stats;
 
 /**
  * Manages one index
@@ -60,6 +61,7 @@ public class IndexRoot {
 	}
 	
 	public void flush() throws InternalServerException, LostUpdateException {
+		AccessLog.log("Flushing index root");
 		rootPage.model.lockTime = 0;
 		rootPage.flush();
 		locked = false;
@@ -73,6 +75,7 @@ public class IndexRoot {
 	
 	public void lockIndex() throws InternalServerException, LostUpdateException {
 		if (!locked) {
+			AccessLog.log("lock index");
 			rootPage.model.lockTime = System.currentTimeMillis();
 			rootPage.model.updateLock();
 			locked = true;
@@ -82,7 +85,9 @@ public class IndexRoot {
 	public void checkLock() throws InternalServerException {
 		if (locked) return;
 		while (rootPage.model.lockTime > System.currentTimeMillis() - 1000l * 60l) {
+			AccessLog.log("waiting for lock release");
 			try {
+			  Stats.reportConflict();
 			  Thread.sleep(500);
 			} catch (InterruptedException e) {}
 			rootPage.reload();

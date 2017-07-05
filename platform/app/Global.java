@@ -9,6 +9,7 @@ import play.GlobalSettings;
 import play.libs.Json;
 import setup.MinimalSetup;
 import utils.AccessLog;
+import utils.RuntimeConstants;
 import utils.db.DBLayer;
 import utils.db.DatabaseException;
 import utils.exceptions.AppException;
@@ -17,6 +18,8 @@ import utils.fhir.ResourceProvider;
 import utils.json.CustomObjectMapper;
 import utils.messaging.Messager;
 import utils.servlet.PlayHttpServletConfig;
+import utils.stats.Stats;
+import utils.sync.Instances;
 
 /**
  * Actions that need to be done on application start and stop.
@@ -45,31 +48,22 @@ public class Global extends GlobalSettings {
 		try {
 		  FHIR.servlet.setFhirContext(ResourceProvider.ctx);
 		  FHIR.servlet.init(new PlayHttpServletConfig());
-		} catch (ServletException e) {
-			AccessLog.logException("startup", e);
-		   throw new NullPointerException();
-		}
 		
-		try {
-		  MinimalSetup.dosetup();
-		} catch (AppException e) {
-		  AccessLog.logException("startup", e);
-		  throw new NullPointerException();
-		}
-		
-		try {
+		  MinimalSetup.dosetup();						
 		  Market.correctOwners();
+		  Instances.init();
+		  RecordGroup.load();		 
+		  RuntimeConstants.instance = new RuntimeConstants();
+		  
 		} catch (AppException e) {
+		  AccessLog.logException("startup", e);
 		  throw new NullPointerException();
-		}
-		
-		try {
-		   RecordGroup.load();
-		} catch (AppException e) {
+		} catch (ServletException e) {
 		  AccessLog.logException("startup", e);
 		  throw new NullPointerException();
 		}
 		
+		Stats.init();
 		Messager.init();
 		AutoRun.init();
 	}
@@ -80,6 +74,7 @@ public class Global extends GlobalSettings {
 		
 		// Close connection to database
 		DBLayer.close();
+		Instances.shutdown();
 
 		// Close connection to search cluster
 		//Search.close();

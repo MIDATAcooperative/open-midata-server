@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
+import org.bson.BSONObject;
+
 import com.fasterxml.jackson.annotation.JsonFilter;
 
 import models.enums.ConsentStatus;
@@ -14,6 +16,7 @@ import utils.collections.ChainedMap;
 import utils.collections.ChainedSet;
 import utils.collections.Sets;
 import utils.db.DatabaseException;
+import utils.db.IncludeNullValues;
 import utils.db.NotMaterialized;
 import utils.db.OrderOperations;
 import utils.exceptions.InternalServerException;
@@ -30,12 +33,33 @@ public class Consent extends Model {
 	/**
 	 * constant for all fields of a consent
 	 */
-	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "name", "authorized", "entityType", "type", "status");
+	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "externalAuthorized");
+	
+	/**
+	 * constant for all FHIR fields of a consent
+	 */
+	public @NotMaterialized final static Set<String> FHIR = Sets.create("owner", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "fhirConsent", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "externalAuthorized");
+	
+	/**
+	 * When this consent was created
+	 */
+	public Date dateOfCreation;
 	
 	/**
 	 * id of owner of this consent. The owner is the person who shares data.
 	 */
+	@IncludeNullValues
 	public MidataId owner;
+	
+	/**
+	 * id of app that created the consent (optional)
+	 */
+	public MidataId creatorApp; 
+	
+	/**
+	 * a code for the category of the consent. 
+	 */
+	public String categoryCode;
 	
 	/**
 	 * a public name for this consent
@@ -46,6 +70,16 @@ public class Consent extends Model {
 	 * a set containing the ids of all entities that are authorized to access the data shared with this consent.
 	 */
 	public Set<MidataId> authorized;
+	
+	/**
+	 * a set containing the emails of external (non midata) entities that are authorized by this consent.
+	 */
+	public Set<String> externalAuthorized;
+	
+	/**
+	 * the email of a non midata consent owner
+	 */
+	public String externalOwner;
 	
 	/**
 	 * Type of entity that is authorized
@@ -80,12 +114,22 @@ public class Consent extends Model {
 	/**
 	 * The expiration date of this consent
 	 */
-	public @NotMaterialized Date validUntil;
+	public Date validUntil;
 	
 	/**
 	 * Exclude all data created after this date
 	 */
-	public @NotMaterialized Date createdBefore;
+	public Date createdBefore;		
+	
+	/**
+	 * FHIR representation of Consent
+	 */
+	public BSONObject fhirConsent;
+	
+	/**
+	 * Sharing Query
+	 */
+	public Map<String, Object> sharingQuery;
 		
 	
 	/**
@@ -145,6 +189,14 @@ public class Consent extends Model {
 		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  ConsentStatus.ACTIVE).map("type",  ConsentType.HEALTHCARE), Sets.create("name", "order", "owner", "type"));
 	}
 	
+	public static Set<Consent> getByExternalEmail(String emailLC) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map("externalAuthorized", emailLC), FHIR);
+	}
+	
+	public static Set<Consent> getByExternalOwnerEmail(String emailLC) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map("externalOwner", emailLC), FHIR);
+	}
+	
 	public static Consent getMessagingActiveByAuthorizedAndOwner(MidataId member, MidataId owner) throws InternalServerException {
 		return Model.get(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  ConsentStatus.ACTIVE).map("type",  ConsentType.IMPLICIT), Sets.create("name", "order", "owner", "ownerName", "type"));
 	}
@@ -162,7 +214,7 @@ public class Consent extends Model {
 	}
 	
 	public void setStatus(ConsentStatus status) throws InternalServerException {
-		this.status = status;
+		this.status = status;		
 		Model.set(Consent.class, collection, this._id, "status", status);
 	}
 	

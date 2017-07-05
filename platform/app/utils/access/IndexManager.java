@@ -25,6 +25,7 @@ import utils.collections.Sets;
 import utils.db.LostUpdateException;
 import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
+import utils.stats.Stats;
 
 /**
  * Manages indexes on encrypted data records. Allows creation of new indexes,
@@ -99,8 +100,13 @@ public class IndexManager {
 		AccessLog.logBegin("start remove entries from index");
 		try {
 			for (DBRecord record : records) {
-				QueryEngine.loadData(record);
-				index.removeEntry(record);
+				try {
+				  QueryEngine.loadData(record);
+				  index.removeEntry(record);
+				} catch (InternalServerException e) {
+				  // We ignore error during index remove as this might be part of a delete operation
+				  AccessLog.logException("Error during index entry remove", e);
+				}
 			}
 			index.flush();
 		} catch (LostUpdateException e) {
@@ -114,6 +120,7 @@ public class IndexManager {
 	protected void indexUpdate(APSCache cache, IndexRoot index, MidataId executor, Set<MidataId> targetAps) throws AppException {
 						
 		AccessLog.logBegin("start index update");
+		long startUpdate = System.currentTimeMillis();
 		try {
 			index.checkLock();
 			
@@ -162,12 +169,13 @@ public class IndexManager {
 			index.flush();
 		} catch (LostUpdateException e) {
 			try {
+			  Stats.reportConflict();
 			  Thread.sleep(50);
 			} catch (InterruptedException e2) {}
 			index.reload(); //XXXX
 			indexUpdate(cache, index, executor, targetAps);
 		}
-		AccessLog.logEnd("end index update");
+		AccessLog.logEnd("end index update time= "+(System.currentTimeMillis() - startUpdate)+" ms");
 	}
 
 	/**

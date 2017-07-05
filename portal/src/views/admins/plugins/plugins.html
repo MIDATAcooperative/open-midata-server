@@ -16,20 +16,24 @@
       <table class="table" ng-show="apps.length > 0">
         <tr>
           <th>Name</th>
+          <th>Developer</th>
           <th>Type</th>
           <th>Target Role</th>
-          <th>Spotlighted</th>
+          <th>Market</th>
+          <th>Stats</th>
           <th>Status</th>
         </tr>
         <tr dir-paginate="app in apps | itemsPerPage : 10" pagination-id="plugintable" current-page="page.nr">
           <td><a ui-sref="^.manageapp({ appId : app._id })">{{  app.name }}</a></td>
+          <td><a ui-sref="^.address({ userId : app.creator })">{{ app.creatorLogin }}</a></td>
           <td translate="{{ 'enum.plugintype.'+app.type }}"></td>
           <td translate="{{ 'enum.userrole.'+app.targetUserRole }}"></td>
           <td><input class="checkbox" type="checkbox" ng-change="changePlugin(app);" ng-model="app.spotlighted"></td>
+          <td><a ui-sref="^.appstats({ appId : app._id })">show</a></td>
           <td><select class="form-control" ng-model="app.status" ng-change="changePlugin(app);" ng-options="status for status in pluginStati"></select></td>
         </tr>
       </table>
-      <p ng-show="apps.length == 0">There are no plugins yet.</p>
+      <p ng-show="apps.length == 0" translate="admin_plugins.empty"></p>
             
       </loader>		
     </div>

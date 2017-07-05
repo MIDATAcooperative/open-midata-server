@@ -105,4 +105,12 @@ public enum InstanceType {
 	public boolean confirmationCodeRequired() {
 		return this == PROD || this == LOCAL;
 	}
+	
+	/**
+	 * Record requests done by apps and plugins for debugging and performance optimizations
+	 * @return
+	 */
+	public boolean doAppDeveloperStats() {
+		return this == LOCAL || this == TEST || this == DEMO;
+	}
 }

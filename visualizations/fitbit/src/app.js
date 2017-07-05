@@ -29,6 +29,8 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 	$scope.measure = null;
 	$scope.alldone = null;
 	$scope.repeat = false;
+	$scope.totalYears = 0; // For progress bar
+	$scope.currentYear = 0; // For progress bar
 	$scope.measurements = [
 						
 			// {
@@ -41,16 +43,17 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			//	"unitSystem" : "http://unitsofmeasure.org", 
 			//	"unitCode" : ""
 			// },
-			// {
-			// 	"id" : "food_water_consumption",
-			// 	"name": "Food - Water Consumption",				
-			// 	"endpoint": "/1/user/-/foods/log/water/date/{date}/1d.json",
-			// 	"content" : "food/water",
-			// 	"unit" : "ml",
-			// 	"system" : "http://midata.coop", 
-			//	"unitSystem" : "http://unitsofmeasure.org", 
-			//	"unitCode" : ""
-			// },
+			{
+			 	"id" : "food_water_consumption",
+			 	"name": "Food - Water Consumption",				
+			 	"endpoint": "/1/user/-/foods/log/water/date/{date}/1d.json",
+			 	"content" : "food/water",
+			 	"unit" : "ml",
+			 	"system" : "http://midata.coop", 
+			 	"code": "food/water",
+				"unitSystem" : "http://unitsofmeasure.org", 
+				"unitCode" : ""
+			 },
 			// {
 			// 	"id" : "activities_calories_burned",
 			// 	"name": "Activities - Calories Burned",				
@@ -65,32 +68,36 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				"id" : "activities_steps",
 				"name": "Activities - Steps",				
 				"endpoint": "/1/user/-/activities/steps/date/{date}/1d.json",
-				"content" : "41950-7",
+				"content" : "activities/steps",
 				"unit" : "steps",
-				"system" : "http://loinc.org", 
+				"system" : "http://loinc.org",
+				"code" : "41950-7",
 				"unitSystem" : "http://unitsofmeasure.org", 
 				"unitCode" : "/d"
 			},
-			{
-				"id" : "activities_distance",
-				"name": "Activities - Distance",				
-				"endpoint": "/1/user/-/activities/distance/date/{date}/1d.json",
-				"content" : "41953-1",
-				"unit" : "km",
-				"system" : "http://loinc.org", 
-				"unitSystem" : "http://unitsofmeasure.org", 
-				"unitCode" : "m"
-			},
-			// {
-			// 	"id" : "activities_floors_climbed",
-			// 	"name": "Activities - Floors Climbed",				
-			// 	"endpoint": "/1/user/-/activities/floors/date/{date}/1d.json",
-			// 	"content" : "activities/floors",
-			// 	"unit" : "floors",
-			// 	"system" : "http://midata.coop", 
+			// Wrong LOINC code
+			//{
+			//	"id" : "activities_distance",
+			//	"name": "Activities - Distance",				
+			//	"endpoint": "/1/user/-/activities/distance/date/{date}/1d.json",
+			//	"content" : "activities/distance",
+			//	"unit" : "km",
+			//	"system" : "http://loinc.org",
+			//	"code" : "41953-1",
 			//	"unitSystem" : "http://unitsofmeasure.org", 
-			//	"unitCode" : ""
-			// },
+			//	"unitCode" : "m"
+			//},
+			{
+			 	"id" : "activities_floors_climbed",
+				"name": "Activities - Floors Climbed",				
+				"endpoint": "/1/user/-/activities/floors/date/{date}/1d.json",
+				"content" : "activities/floors",
+				"unit" : "floors",
+				"system" : "http://midata.coop",
+				"code" : "activities/floors",
+			    "unitSystem" : "http://unitsofmeasure.org", 
+				"unitCode" : ""
+			 },
 			 {
 			 	"id" : "activities_elevation",
 			 	"name": "Activities - Elevation",				
@@ -98,6 +105,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			 	"content" : "activities/elevation",
 			 	"unit" : "m",
 			 	"system" : "http://midata.coop", 
+			 	"code" : "activities/elevation",
 				"unitSystem" : "http://unitsofmeasure.org", 
 				"unitCode" : "m"
 			 },
@@ -118,6 +126,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			 	"content" : "activities/minutes-lightly-active",
 			 	"unit" : "min",
 			 	"system" : "http://midata.coop", 
+			 	"code" : "activities/minutes-lightly-active",
 				"unitSystem" : "http://unitsofmeasure.org", 
 				"unitCode" : "min"
 			 },
@@ -128,6 +137,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			 	"content" : "activities/minutes-fairly-active",
 			 	"unit" : "min",
 			 	"system" : "http://midata.coop", 
+			 	"code" : "activities/minutes-fairly-active",
 				"unitSystem" : "http://unitsofmeasure.org", 
 				"unitCode" : "min"
 			 },
@@ -137,7 +147,8 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			 	"endpoint": "/1/user/-/activities/minutesVeryActive/date/{date}/1d.json",
 			 	"content" : "activities/minutes-very-active",
 			 	"unit" : "min",
-			 	"system" : "http://midata.coop", 
+			 	"system" : "http://midata.coop",
+			 	"code" : "activities/minutes-very-active",
 				"unitSystem" : "http://unitsofmeasure.org", 
 				"unitCode" : "min"
 			 },
@@ -151,46 +162,50 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			//	"unitSystem" : "http://unitsofmeasure.org", 
 			//	"unitCode" : ""
 			// },
-			// {
-			// 	"id" : "sleep_time_in_bed",
-			// 	"name": "Sleep - Time in Bed",				
-			// 	"endpoint": "/1/user/-/sleep/timeInBed/date/{date}/1d.json",
-			// 	"content" : "sleep/time-in-bed",
-			// 	"unit" : "min",
-			// 	"system" : "http://midata.coop", 
-			//	"unitSystem" : "http://unitsofmeasure.org", 
-			//	"unitCode" : ""
-			// },
-			// {
-			// 	"id" : "sleep_minutes_asleep",
-			// 	"name": "Sleep - Minutes Asleep",				
-			// 	"endpoint": "/1/user/-/sleep/minutesAsleep/date/{date}/1d.json",
-			// 	"content" : "sleep/minutes-asleep",
-			// 	"unit" : "min",
-			// 	"system" : "http://midata.coop", 
-			//	"unitSystem" : "http://unitsofmeasure.org", 
-			//	"unitCode" : ""
-			// },
-			// {
-			// 	"id" : "sleep_minutes_awake",
-			// 	"name": "Sleep - Minutes Awake",				
-			// 	"endpoint": "/1/user/-/sleep/minutesAwake/date/{date}/1d.json",
-			// 	"content" : "sleep/minutes-awake",
-			// 	"unit" : "min",
-			// 	"system" : "http://midata.coop", 
-			//	"unitSystem" : "http://unitsofmeasure.org", 
-			//	"unitCode" : ""
-			// },
-			// {
-			// 	"id" : "sleep_minutes_to_fall_asleep",
-			// 	"name": "Sleep - Minutes to Fall Asleep",				
-			// 	"endpoint": "/1/user/-/sleep/minutesToFallAsleep/date/{date}/1d.json",
-			// 	"content" : "sleep/minutes-to-fall-asleep",
-			// 	"unit" : "min",
-			// 	"system" : "http://midata.coop", 
-			//	"unitSystem" : "http://unitsofmeasure.org", 
-			//	"unitCode" : ""
-			// },
+			{
+				"id" : "sleep_time_in_bed",
+				"name": "Sleep - Time in Bed",				
+				"endpoint": "/1/user/-/sleep/timeInBed/date/{date}/1d.json",
+				"content" : "sleep/time-in-bed",
+				"unit" : "min",
+				"system" : "http://midata.coop",
+				"code" : "sleep/time-in-bed",
+				"unitSystem" : "http://unitsofmeasure.org", 
+				"unitCode" : ""
+			},
+			{
+				"id" : "sleep_minutes_asleep",
+				"name": "Sleep - Minutes Asleep",				
+				"endpoint": "/1/user/-/sleep/minutesAsleep/date/{date}/1d.json",
+			 	"content" : "sleep/minutes-asleep",
+			 	"unit" : "min",
+				"system" : "http://midata.coop",
+				"code" : "sleep/minutes-asleep",
+				"unitSystem" : "http://unitsofmeasure.org", 
+				"unitCode" : ""
+			 },
+			 {
+			 	"id" : "sleep_minutes_awake",
+			 	"name": "Sleep - Minutes Awake",				
+				"endpoint": "/1/user/-/sleep/minutesAwake/date/{date}/1d.json",
+			 	"content" : "sleep/minutes-awake",
+			 	"unit" : "min",
+			 	"system" : "http://midata.coop",
+			 	"code" : "sleep/minutes-awake",
+				"unitSystem" : "http://unitsofmeasure.org", 
+				"unitCode" : ""
+			 },
+			 {
+			 	"id" : "sleep_minutes_to_fall_asleep",
+			 	"name": "Sleep - Minutes to Fall Asleep",				
+			 	"endpoint": "/1/user/-/sleep/minutesToFallAsleep/date/{date}/1d.json",
+			 	"content" : "sleep/minutes-to-fall-asleep",
+			 	"unit" : "min",
+				"system" : "http://midata.coop", 
+				"code" : "sleep/minutes-to-fall-asleep",
+				"unitSystem" : "http://unitsofmeasure.org", 
+				"unitCode" : ""
+			 },
 			// {
 			// 	"id" : "sleep_efficiency",
 			// 	"name": "Sleep - Efficiency",				
@@ -204,9 +219,10 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				"id" : "body_weight",
 				"name": "Body - Weight",				
 				"endpoint": "/1/user/-/body/weight/date/{date}/1d.json",
-			    "content" : "29463-7",
+			    "content" : "body/weight",
 			    "unit" : "kg",
-				"system" : "http://loinc.org", 
+				"system" : "http://loinc.org",
+				"code" : "29463-7",
 				"unitSystem" : "http://unitsofmeasure.org", 
 				"unitCode" : "kg"
 			 }//,
@@ -256,9 +272,14 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			measurement.to = yesterday;
 				
 			if (measurement.to.getTime() - measurement.from.getTime() > 1000 * 60 * 60 * 24 * 365) {
+			  var years = Math.floor((measurement.to.getTime() - measurement.from.getTime()) / (1000 * 60 * 60 * 24 * 365));
+			  if (years > $scope.totalYears) { $scope.totalYears = years; }
+			  
 			  measurement.to = new Date(measurement.from.getTime() + 1000 * 60 * 60 * 24 * 365);
 			  console.log("do repeat");
 			  measurement.repeat = true;
+			  
+			  
 			} else measurement.repeat = false;
 		 });		 
 	};
@@ -355,12 +376,20 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 		  return deferred.promise;
 		};
 		
-		// start the importing of records
-		$scope.startImport = function() {			
+		$scope.startImport = function() {
 			$scope.error.message = null;
-			$scope.error.messages = [];
+			$scope.error.messages = [];			
+			$scope.currentYear = -1;
+			
+			$scope.continueImport();
+		};
+		
+		// start the importing of records
+		$scope.continueImport = function() {			
+			
 			$scope.requested = 0;
 			$scope.saved = 0;
+			$scope.currentYear++;
 			$scope.status = "importing";
 			
 			var actionDef = $q.defer();
@@ -448,7 +477,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 									   }
 									  ]
 								},
-								code : { coding : [ { system : measure.system, code : measure.content, display : measure.name_translated } ] },
+								code : { coding : [ { system : measure.system, code : measure.code, display : measure.name_translated } ] },
 								effectiveDateTime : recDate,
 								valueQuantity : {
 									value : Number(val),
@@ -577,9 +606,10 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 					$scope.repeat = false;
 					$scope.totalImport += $scope.saved;
 					setToDate(true);
-					$scope.startImport();
+					$scope.continueImport();
 				} else {							
 					$scope.status = "done";
+					$scope.totalYears = 0;
 					if ($scope.error.messages.length > 0) {
 						$scope.status = "with_errors"; 
 					}
@@ -629,7 +659,8 @@ fitbit.controller('ImportCtrl', ['$scope', '$http', '$location', '$translate', '
 							
 		$scope.progress = function() {
 			var r = $scope.importer.requested > 0 ? $scope.importer.requested : 1;
-			return { 'width' : ($scope.importer.saved * 100 / r)+"%" };
+			var b = Math.floor($scope.importer.currentYear / ($scope.importer.totalYears + 1) * 100); 
+			return { 'width' : Math.floor(b + $scope.importer.saved * (100 / ($scope.importer.totalYears + 1)) / r)+"%" };
 		};
 		
 		$scope.importer.initForm(authToken);

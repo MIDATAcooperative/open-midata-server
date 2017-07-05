@@ -378,7 +378,7 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		String date = "No time";		
 		if (theObservation.hasEffectiveDateTimeType()) {
 			try {
-				date = stringFromDateTime(theObservation.getEffectiveDateTimeType());
+				date = FHIRTools.stringFromDateTime(theObservation.getEffectiveDateTimeType());
 			} catch (Exception e) {
 				throw new UnprocessableEntityException("Cannot process effectiveDateTime");
 			}

@@ -4,312 +4,34 @@
 		<meta charset="utf-8">
 		<title>Surveys</title>
 		
-		<!-- build:css assets/app.min.css -->
+	   <!-- build:css assets/app.min.css -->
 		<link rel="stylesheet" href="components/bootstrap/css/bootstrap.css">
+		<link rel="stylesheet" href="components/angular-chart.js/angular-chart.css" />
 		<link rel="stylesheet" href="components/midata/css/app.css">
 		<!-- endbuild -->
 		
 		<!-- build:js assets/app.min.js -->
-		<script type="text/javascript" src="components/jquery/jquery.js" defer></script>
-		<script type="text/javascript" src="components/bootstrap/js/bootstrap.js" defer></script>
 		<script type="text/javascript" src="components/angular/angular.js" defer></script>
+		<script type="text/javascript" src="components/angular-ui-router/angular-ui-router.js" defer></script>
+		<script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
 		<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>		
-		<script type="text/javascript" src="components/midata/js/midata.js" defer></script>
-		<script type="text/javascript" src="app.js" defer></script>
+		<script type="text/javascript" src="components/midata/js/midata.js" defer></script>	    
+		<script type="text/javascript" src="i18n.js" defer></script>
+		<script type="text/javascript" src="app.js" defer></script>		
+		<script type="text/javascript" src="datamodel.js" defer></script>		
+		<script type="text/javascript" src="pick.js" defer></script>		
+		<script type="text/javascript" src="answer.js" defer></script>
 		<!-- endbuild -->
-		
+						
 		<style>
-		  .selected { background-color: #70ff00; }
+		  .extraspace { margin-bottom: 10px }
+		  .submitted .ng-invalid { color : red; border-color : red }
 		</style>
+			
 	</head>
-	<body>
-		<div class="container-fluid" ng-app="surveys" ng-controller="SurveyCtrl" ng-cloak>
-		
-	
-		  <div ng-if="nav.status=='pick'">
-		    <div ng-controller="PickSurveyCtrl">
-		       <div ng-show="surveys.length == 0">
-		          <p class="head">Survey participation</p>
-		          <p>This visualizations allows you to participate in surveys shared with you. You currently do not have any survey to participate.</p>
-		       </div>
-		       <div ng-show="(surveys.length > 0 || edit)">
-		          <h1>Select a survey</h1>
-			      <ul class="list-group">
-				     <li class="list-group-item" ng-repeat="survey in surveys">
-				        <a href="javascript:" ng-click="startSurvey(survey);">{{ survey.group.title }}</a>				    
-				        <span class="badge" ng-show="survey.answered">Last Answered: {{ survey.answered.created | date }}</span>
-				        <span class="badge" ng-show="survey.frequency">{{ survey.frequency }}</span>
-				     </li>
-				     <li class="list-group-item" ng-show="edit"><a href="javascript:" ng-click="createNew();">Create new survey</a>
-			      </ul>
-			   </div>
-		     </div>
-		  </div>
-		  
-		  <div ng-if="nav.status=='editsurvey'">
-		    <div ng-controller="EditSurveyCtrl">
-		       <form class="form-horizontal">
-		       <div class="form-group">
-		         <label for="title" class="control-label col-sm-4">Title</label>
-		         <div class="col-sm-8">
-		           <input id="title" class="form-control" type="text" ng-model="currentSurvey.activeSurvey.group.title">
-		         </div>		         
-		       </div>	
-		       <div class="form-group">
-		         <label for="version" class="control-label col-sm-4">Version</label>
-		         <div class="col-sm-8">
-		           <input id="version" class="form-control" type="text" ng-model="currentSurvey.activeSurvey.version">
-		         </div>		         
-		       </div>
-		       
-		       <button class="btn btn-default" ng-click="exit()">Exit</button>
-		       <button class="btn btn-default" ng-click="save()">Save</button>
-		       <button class="btn btn-default" ng-click="test()">Test Survey</button>		       
-		       <button class="btn btn-default" ng-disabled="!currentSurvey.activeGroup || currentSurvey.activeGroup.question" ng-click="addGroup()">Add Group</button>
-		       <button class="btn btn-default" ng-disabled="currentSurvey.activeGroup.group" ng-click="addQuestion()">Add Question</button>
-		       <button class="btn btn-default" ng-disabled="currentSurvey.activeGroup == currentSurvey.activeSurvey.group" ng-click="edit()">Edit</button>
-		       <button class="btn btn-default" ng-disabled="currentSurvey.activeGroup == currentSurvey.activeSurvey.group" ng-click="delete()">Delete</button>
-		       
-		       <h3>Structure</h3>
-		       
-		       <script type="text/ng-template"  id="group_tree.html">
-                 <ul>
-                   <li ng-class="{ 'selected' : currentSurvey.activeGroup == group }" ng-repeat="group in group.group">
-                     <a href="javascript:" ng-click="selectGroup(group)">{{ group.linkId }} XXX</a> : {{ group.title }}
-                     <div ng-include="'group_tree.html'"></div>
-                   </li>
-                   <li ng-class="{ 'selected' : currentSurvey.activeQuestion == q }" ng-repeat="q in group.question">
-                     <a href="javascript:" ng-click="selectQuestion(q)">{{ q.linkId }} XXX</a> : {{ q.text }}
-                   </li>
-                 </ul>
-               </script>
-		       
-		       <p ng-class="{ 'selected' : currentSurvey.activeGroup == currentSurvey.activeSurvey.group }">
-		         <a href="javascript:" ng-click="selectGroup(currentSurvey.activeSurvey.group)">Questionnaire</a>
-		       </p>
-		       <div ng-init="group = currentSurvey.activeSurvey.group;" ng-include="'group_tree.html'"></div>
-		       		       
-		       </form>		       		       		       
-		     </div>
-		  </div>
-		  
-		  <div ng-if="nav.status=='editquestion'">
-		    <div ng-controller="EditQuestionCtrl">
-		       <form class="form-horizontal">
-		       <div class="form-group">
-		         <label for="linkId" class="control-label col-sm-4">Question ID</label>
-		         <div class="col-sm-8">
-		           <input id="linkId" class="form-control" type="text" ng-model="currentSurvey.activeQuestion.linkId">
-		         </div>		         
-		       </div>	
-               <div class="form-group">
-		         <label for="text" class="control-label col-sm-4">Text</label>
-		         <div class="col-sm-8">
-		           <textarea id="text" class="form-control" ng-model="currentSurvey.activeQuestion.text">
-		           </textarea>
-		         </div>		         
-		       </div>	
-               <div class="form-group">
-		         <label for="type" class="control-label col-sm-4">Question Type</label>
-		         <div class="col-sm-8">
-		           <select id="type" class="form-control" ng-model="currentSurvey.activeQuestion.type" ng-options="qtype.value as qtype.label for qtype in questionTypes">
-		           </select>
-		         </div>		         
-		       </div>
-		       <div class="form-group">
-		         <label for="type" class="control-label col-sm-4">Answer Required?</label>
-		         <div class="col-sm-8">
-		           <label>
-					  <input type="checkbox" ng-model="currentSurvey.activeQuestion.required">
-					       Yes
-					</label>		           
-		         </div>		         
-		       </div>
-		       <div class="form-group" ng-show="hasRepeats()">
-		         <label for="type" class="control-label col-sm-4">Multiple Choice</label>
-		         <div class="col-sm-8">
-		           <label>
-					  <input type="checkbox" ng-model="currentSurvey.activeQuestion.repeats">
-					       Yes
-					</label>		           
-		         </div>		         
-		       </div>
-		       <div class="form-group" ng-show="hasOptions()">
-		         <label for="option" class="control-label col-sm-4">Options</label>
-		         <div class="col-sm-8">
-		           <table class="table" ng-show="currentSurvey.activeQuestion.option.length">
-		             <tr>
-		               <th>Displayed Text</th>
-		               <th>Code System</th>
-		               <th>Code</th>
-		               <th></th>
-		             </tr>
-		             <tr ng-repeat="opt in currentSurvey.activeQuestion.option">
-		               <td><input class="form-control" type="text" ng-model="opt.display"></td>
-		               <td><input class="form-control" type="text" ng-model="opt.system"></td>
-		               <td><input class="form-control" type="text" ng-model="opt.code"></td>
-		               <td><button type="button" class="btn btn-xs btn-danger" ng-click="deleteOption(opt);">delete</button></td>
-		             </tr>
-		           </table>
-		           <button type="button" class="btn btn-xs btn-primary" ng-click="addOption()">Add New Option</button>
-		         </div>		         
-		       </div>
-		       <button class="btn btn-primary" ng-click="ok()">ok</button>		       
-	           </form>
-	        </div>
-	      </div>
-	      
-	      <div ng-if="nav.status=='editgroup'">
-		    <div ng-controller="EditGroupCtrl">
-		       <form class="form-horizontal">
-		       <div class="form-group">
-		         <label for="linkId" class="control-label col-sm-4">Group ID</label>
-		         <div class="col-sm-8">
-		           <input id="linkId" class="form-control" type="text" ng-model="currentSurvey.activeGroup.linkId">
-		         </div>		         
-		       </div>	
-		       <div class="form-group">
-		         <label for="title" class="control-label col-sm-4">Title</label>
-		         <div class="col-sm-8">
-		           <input id="title" class="form-control" type="text" ng-model="currentSurvey.activeGroup.title">
-		         </div>		         
-		       </div>	
-               <div class="form-group">
-		         <label for="text" class="control-label col-sm-4">Text</label>
-		         <div class="col-sm-8">
-		           <textarea id="text" class="form-control" ng-model="currentSurvey.activeGroup.text">
-		           </textarea>
-		         </div>		         
-		       </div>
-		       <div class="form-group">
-		         <label for="type" class="control-label col-sm-4">Required?</label>
-		         <div class="col-sm-8">
-		           <label>
-					  <input type="checkbox" ng-model="currentSurvey.activeGroup.required">
-					       Yes
-					</label>		           
-		         </div>		         
-		       </div>	              
-		       <button class="btn btn-primary" ng-click="ok()">ok</button>		       
-	           </form>
-	        </div>
-	      </div>
-	      
-	      <div ng-if="nav.status=='saveanswer'">
-			 <div ng-controller="FinishSurveyCtrl">
-			      <p>Your answers have been recorded. Thank you for participation.</p>
-			      <pre>
-			       {{ record | json }}
-			      </pre>
-			      <button class="btn btn-primary" ng-click="back()">Back to list</button>
-			 </div>
-		  </div>	  
-	      
-	      <div ng-if="nav.status=='answer'">
-		    <div ng-controller="AnswerSurveyCtrl">
-		      <script type="text/ng-template"  id="question_string.html">
-                <input class="form-control" type="text" ng-model="question.rQuestion.answer[0].valueString">
-              </script>
-              <script type="text/ng-template"  id="question_decimal.html">
-                <input class="form-control" type="text" ng-model="question.rQuestion.answer[0].valueString">
-              </script>
-              <script type="text/ng-template"  id="question_integer.html">
-                <input class="form-control" type="text" ng-model="question.rQuestion.answer[0].valueString">
-              </script>
-              
-              <script type="text/ng-template"  id="question_date.html">
-                <div class="input-group">
-				    <input type="text" is-open="question.dateOpened" datepicker-options="dateOptions" close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" placeholder="Date" autofocus ng-model="question.rQuestion.answer[0].valueDate">
-					<span class="input-group-btn">
-                          <button type="button" class="btn btn-default" ng-click="question.dateOpened=true;"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-                </div>	
-              </script>
-              <script type="text/ng-template"  id="question_text.html">
-                 <textarea class="form-control" ng-model="question.rQuestion.answer[0].valueString"></textarea>
-              </script>
-              <script type="text/ng-template"  id="question_choice.html">
-                <div ng-if="!question.question.repeats">
-                 <div class="radio" ng-repeat="choice in question.question.option">
-					     <label >
-					       <input type="radio" ng-value="choice" ng-model="question.rQuestion.answer[0].valueCoding">
-					       {{ choice.display }}					        
-					     </label>					     			
-			     </div>		
-                </div>
-                <div ng-if="question.question.repeats">
-                   <div class="radio" ng-repeat="choice in question.question.option">
-					     <label >
-					       <input type="checkbox" ng-checked="isChecked(question, choice)" ng-changed="changeChecked(question, choice)">
-					       {{ choice.display }}					       
-					     </label>			
-				   </div>		
-                </div>
-              </script>
-              <script type="text/ng-template"  id="question_open-choice.html">
-                <div ng-if="!question.question.repeats">
-                 <div class="radio" ng-repeat="choice in question.question.option">
-					     <label >
-					       <input type="radio" ng-value="choice" ng-model="question.rQuestion.answer[0].valueCoding">
-					       {{ choice.display }}					        
-					     </label>					     			
-			     </div>		
-                </div>
-                <div ng-if="question.question.repeats">
-                   <div class="radio" ng-repeat="choice in question.question.option">
-					     <label >
-					       <input type="checkbox" ng-checked="isChecked(question, choice)" ng-changed="changeChecked(question, choice)">
-					       {{ choice.display }}					       
-					     </label>			
-				   </div>		
-                </div>
-              </script>
-              <script type="text/ng-template"  id="question_boolean.html">
-                 <div class="radio">
-					<label>
-					  <input type="radio" value="true" ng-model="question.rQuestion.answer[0].valueBoolean">
-					       Yes
-					</label>
-				  </div>
-				  <div class="radio">
-					<label>
-					  <input type="radio" value="false" ng-model="question.rQuestion.answer[0].valueBoolean">
- 				       No
-  			        </label>			
-				  </div>		    
-              </script>
-              
-              <script type="text/ng-template"  id="question.html">                
-                <div class="form-group">
-		         <label for="{{ question.question.linkId }}" class="control-label">{{ question.question.text }}</label>
-		         <div class="" ng-include="templateName(question.question)">		           
-		         </div>		         
-		       </div>	
-              </script>
-		    		    
-		      <div class="pull-left">
-				 <a href="javascript:" ng-click="prev();">Back</a>
-			  </div>
-			  <div class="pull-right">
-				 <a href="javascript:" ng-click="cancel()">Cancel</a>
-			  </div>
-		      <p class="text-center">Step {{ (currentSurvey.activeStepIdx + 1) }} of {{ currentSurvey.pages.length }}</p>
-		      <form>
-		      <h1>{{ currentSurvey.activePage.group.title }}</h1>	
-		      <p>{{ currentSurvey.activePage.group.text }}</p>
-		      
-		      <div ng-repeat="question in currentSurvey.activePage.question">
-		        <div ng-include="'question.html'"></div>
-		      </div>
-		      
-		      <button class="btn btn-primary" ng-click="next()">Next</button>			
-			  <div ng-hide="currentSurvey.activePage.group.required">
-				  <a href="javascript:" ng-click="skip()">Skip this question</a>
-			  </div>
-			  </form>
-		    </div>	
-		    
-		    
-		  </div>		  	  
+	<body>	
+		<div ng-app="surveys" ng-cloak>		
+		   <div ui-view class="ng-cloak"></div>		 		
+	   </div>
 	</body>
 </html>

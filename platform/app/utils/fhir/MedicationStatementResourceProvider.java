@@ -205,18 +205,18 @@ public class MedicationStatementResourceProvider extends ResourceProvider<Medica
 
 	public void prepare(Record record, MedicationStatement theMedicationStatement) throws AppException {
 		// Set Record code and content
-		setRecordCodeByCodeableConcept(record, null, "MedicationStatement");		
+		setRecordCodeByCodings(record, null, "MedicationStatement");		
 		
 		String date = "No time";		
 		if (theMedicationStatement.hasEffectiveDateTimeType()) {
 			try {
-				date = stringFromDateTime(theMedicationStatement.getEffectiveDateTimeType());
+				date = FHIRTools.stringFromDateTime(theMedicationStatement.getEffectiveDateTimeType());
 			} catch (Exception e) {
 				throw new UnprocessableEntityException("Cannot process effectiveDateTime");
 			}
 		} else if (theMedicationStatement.hasEffectivePeriod()) {
 			try {
-				date = stringFromDateTime(theMedicationStatement.getEffectivePeriod().getStartElement())+" - "+stringFromDateTime(theMedicationStatement.getEffectivePeriod().getEndElement());
+				date = FHIRTools.stringFromDateTime(theMedicationStatement.getEffectivePeriod().getStartElement())+" - "+FHIRTools.stringFromDateTime(theMedicationStatement.getEffectivePeriod().getEndElement());
 			} catch (Exception e) {
 				throw new UnprocessableEntityException("Cannot process effectivePeriod");
 			}

@@ -1,0 +1,18 @@
+<div ng-controller="PickCtrl" class="container" ng-cloak>
+    <div ng-show="surveys.length == 0">
+		<p class="head" translate="pick.title"></p>
+		<p translate="pick.intro_empty"></p>
+	</div>
+	<div ng-show="(surveys.length > 0 || edit)">
+	   <p translate="pick.title"></p>
+	   <ul class="list-group">
+	     <li class="list-group-item" ng-repeat="survey in surveys">
+	        <a href="javascript:" ng-click="startSurvey(survey, false);">{{ survey.title }}</a>	
+	        <button class="btn btn-default btn-xs" type="button" ng-click="startSurvey(survey, true);" translate="pick.edit_btn">edit</button>
+	        <button class="btn btn-default btn-xs" type="button" ng-click="showResults(survey);" ng-disabled="survey.answerCount == 0" translate="pick.results_btn">results</button>			    
+	        <span class="badge" ng-show="survey.answered">{{ survey.answerCount }} <span translate="pick.count"></span> {{ survey.answered.created | date }}</span>
+	     </li>
+	     <li class="list-group-item" ng-show="edit"><a href="javascript:" ng-click="createNew();" translate="pick.create_new_btn"></a>
+	    </ul>
+	</div>
+</div>

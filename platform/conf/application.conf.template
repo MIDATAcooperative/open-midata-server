@@ -29,9 +29,9 @@ application.langs="en"
 # ~~~~~
 portal.originUrl="PORTAL_ORIGIN"
 portal.server="DOMAIN"
-platform.server="DOMAIN:9000"
-apps.server="DOMAIN:3000"
-visualizations.server="DOMAIN:4000"
+platform.server="DOMAIN"
+apps.server="DOMAIN"
+visualizations.server="DOMAIN/plugin"
 visualizations.path="ROOTDIR/visualizations"
 node.server="DOMAIN:5000"
 node.path="/usr/bin/node"
@@ -70,11 +70,14 @@ logger.application=DEBUG
 # ~~~~~
 parsers.text.maxLength=1024K
 
+servers = ["127.0.0.1:9006"]
+
 play {
   akka {
     event-handlers = ["akka.event.slf4j.Slf4jEventHandler"]
     loglevel = WARNING
     actor {
+                
       default-dispatcher = {
         fork-join-executor {
           parallelism-min = 300
@@ -83,6 +86,29 @@ play {
       }
     }
   }
+    
 }
+
+midata {
+    akka {
+	    loglevel = WARNING
+	    actor {      
+	      provider = "akka.remote.RemoteActorRefProvider"                
+	    }
+	    
+	    remote {
+	    
+	      enabled-transports = ["akka.remote.netty.tcp"]
+	      
+	      netty.tcp {
+	        hostname = "127.0.0.1"
+	        port = 9006
+	      }
+	      
+	      log-sent-messages = on
+	      log-received-messages = on
+	    }
+    }
+ }
 
 

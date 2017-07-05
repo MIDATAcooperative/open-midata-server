@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 
 import models.enums.PluginStatus;
 import models.enums.UserRole;
+import utils.AccessLog;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
 import utils.collections.Sets;
@@ -18,6 +19,7 @@ import utils.db.DatabaseException;
 import utils.db.LostUpdateException;
 import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
+import utils.sync.Instances;
 
 /**
  * data model for a MIDATA plugin. This is the definition of a plugin.
@@ -34,11 +36,12 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * constant containing all fields visible to a developer
 	 */
 	public @NotMaterialized final static Set<String> ALL_DEVELOPER = 
-			 Sets.create("_id", "version", "creator", "filename", "name", "description", "tags", 
+			 Sets.create("_id", "version", "creator", "creatorLogin", "filename", "name", "description", "tags", 
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret",
-	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n");
+	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n",
+	                     "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -47,12 +50,17 @@ public class Plugin extends Model implements Comparable<Plugin> {
 			 Sets.create("_id", "version", "creator", "filename", "name", "description", "tags", 
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
-	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang");
+	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "predefinedMessages", "resharesData", "linkedStudy", "mustParticipateInStudy", "pluginVersion");
 	
 	/**
 	 * timestamp of last change. Used to prevent lost updates.
 	 */
 	public long version;
+	
+	/**
+	 * Also a timestamp. Changing this timestamp needs all users to confirm to the app consent again. Does not need to be changed if only messages or translation is edited 
+	 */
+	public long pluginVersion;
 	
 	/**
 	 * status of plugin
@@ -94,6 +102,31 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * Internationalization support
 	 */
 	public Map<String, Plugin_i18n> i18n;
+	
+	/**
+	 * Predefined messages
+	 */
+	public Map<String, MessageDefinition> predefinedMessages;
+	
+	/**
+	 * App shares data it has access to to 3rd party
+	 */
+	public boolean resharesData;
+	
+	/**
+	 * Users of app are allowed to search each other
+	 */
+	public boolean allowsUserSearch;
+	
+	/**
+	 * Directly link app to study
+	 */
+	public MidataId linkedStudy;
+	
+	/**
+	 * Study participation required for app use
+	 */
+	public boolean mustParticipateInStudy;
 		
 	/**
 	 * set of tags that determine for which categories this plugin should be displayed in the market
@@ -218,10 +251,13 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	}
 	
 	public static Plugin getById(MidataId id) throws InternalServerException {
+		if (id == null) return null;
+		
 		Plugin result = cache.get(id);
 		if (result != null) return result;
 		
 		result = getById(id, ALL_PUBLIC);
+		if (result == null) return null;
 		cache.put(id, result);
 		return result;		
 	}
@@ -238,10 +274,10 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		return Model.get(Plugin.class, collection, CMaps.map("filename", name).map("status", Plugin.NOT_DELETED), fields);
 	}
 	
-	public void update() throws InternalServerException, LostUpdateException {
-		cache.remove(_id);
+	public void update() throws InternalServerException, LostUpdateException {		
 		try {
-			   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n" );
+		   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion" );
+		   Instances.cacheClear("plugin",  _id);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);
 		}
@@ -252,11 +288,14 @@ public class Plugin extends Model implements Comparable<Plugin> {
 		Model.insert(collection, plugin);	
 	}
 
-	public static void delete(MidataId pluginId) throws InternalServerException {
-		
-		// TODO only hide or remove from all users (including deleting their spaces associated with it)?
-		cache.remove(pluginId);
+	public static void delete(MidataId pluginId) throws InternalServerException {				
 		Model.delete(Plugin.class, collection, new ChainedMap<String, MidataId>().put("_id", pluginId).get());
+		Instances.cacheClear("plugin",  pluginId);
+	}
+	
+	public static void cacheRemove(MidataId pluginId) {
+		AccessLog.log("cache remove");
+		cache.remove(pluginId);
 	}
 	
 	public void setLanguage(String lang) {

@@ -4,15 +4,18 @@ package setup;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.HashMap;
 
 import models.Admin;
 import models.Developer;
 import models.History;
 import models.MidataId;
+import models.Plugin;
 import models.enums.AccountSecurityLevel;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
+import models.enums.PluginStatus;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -90,6 +93,7 @@ public class MinimalSetup {
 			admin.emailLC = admin.email.toLowerCase();
 			admin.password = null;
 			admin.role = UserRole.ADMIN;
+			admin.subroles = EnumSet.noneOf(SubUserRole.class);
 			admin.status = UserStatus.ACTIVE;
 			admin.contractStatus = ContractStatus.SIGNED;
 			admin.agbStatus = ContractStatus.SIGNED;	
@@ -107,6 +111,36 @@ public class MinimalSetup {
 			
 			//KeyManager.instance.unlock(admin._id, null);
 			RecordManager.instance.createPrivateAPS(admin._id, admin._id);
+		}
+		
+		if (Plugin.getByFilename("portal", Sets.create("_id")) == null ) {
+			Plugin portal = new Plugin();
+			portal._id = MidataId.from("588b53a7aed64509f5095def");
+			portal.filename = "portal";
+			portal.name = "Midata Portal";
+			portal.targetUserRole = UserRole.ANY;
+			portal.status = PluginStatus.ACTIVE;
+			portal.type = "visualization";
+			portal.description = "The MIDATA portal";
+			portal.creator = Developer.getByEmail("development@midata.coop", Sets.create("_id"))._id;
+			portal.creatorLogin = "development@midata.coop";
+			portal.defaultQuery=new HashMap<String, Object>();
+			Plugin.add(portal);
+		} 
+		
+		if (Plugin.getByFilename("common", Sets.create("_id")) == null ) {
+			Plugin common = new Plugin();
+			common._id = new MidataId();
+			common.filename = "common";
+			common.name = "Midata Common Messages";
+			common.targetUserRole = UserRole.ADMIN;
+			common.status = PluginStatus.ACTIVE;
+			common.type = "visualization";
+			common.description = "Midata Common Messages";
+			common.creator = Developer.getByEmail("development@midata.coop", Sets.create("_id"))._id;
+			common.creatorLogin = "development@midata.coop";
+			common.defaultQuery=new HashMap<String, Object>();
+			Plugin.add(common);
 		}
 	}
 

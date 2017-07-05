@@ -389,11 +389,11 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 		if (record.lastUpdated == null) resource.getMeta().setLastUpdated(record.created);
 		else resource.getMeta().setLastUpdated(record.lastUpdated);
 		
-		Extension meta = new Extension("http://midata.coop/StructureDefinition/metadata");
+		Extension meta = new Extension("http://midata.coop/extensions/metadata");
 		
 		if (record.app != null) {
 		  Plugin creatorApp = Plugin.getById(record.app);		
-		  meta.addExtension("app", new Coding("http://midata.coop/apps", creatorApp.filename, creatorApp.name));
+		  meta.addExtension("app", new Coding("http://midata.coop/codesystems/app", creatorApp.filename, creatorApp.name));
 		}
 		if (record.creator != null) meta.addExtension("creator", FHIRTools.getReferenceToUser(record.creator, record.creator.equals(record.owner) ? record.ownerName : null ));
 				
@@ -409,6 +409,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 		record.created = new Date(System.currentTimeMillis());
 		record.code = new HashSet<String>();
 		record.owner = info().ownerId;
+		record.version = VersionedDBRecord.INITIAL_VERSION;
 		return record;
 	}
 	
@@ -449,11 +450,9 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 	}
 	
 	public static void insertRecord(Record record, IBaseResource resource, MidataId targetConsent) throws AppException {
-		AccessLog.logBegin("begin insert FHIR record");
-		
-			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
-			
-			record.data = (DBObject) JSON.parse(encoded);
+		AccessLog.logBegin("begin insert FHIR record");		    
+			String encoded = ctx.newJsonParser().encodeResourceToString(resource);			
+			record.data = (DBObject) JSON.parse(encoded);			
 			PluginsAPI.createRecord(info(), record, targetConsent);			
 		
 		AccessLog.logEnd("end insert FHIR record");
@@ -517,7 +516,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 	
 	public void clean(T resource) {
 		resource.getMeta().setExtension(null);
-		resource.setId((IIdType) null);
+		resource.setId((IIdType) null);		
 	}
 	
 	public void prepare(Record record, T theResource) throws AppException { }
@@ -568,35 +567,34 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 	 * @return display of codeable concept
 	 */
 	protected String setRecordCodeByCodeableConcept(Record record, CodeableConcept cc, String defaultContent) {
-	  record.code = new HashSet<String>(); 
-	  String display = null;
-	  try {
-		  if (cc != null && !cc.isEmpty()) {
-		  for (Coding coding : cc.getCoding()) {
-			if (coding.getDisplay() != null && display == null) display = coding.getDisplay();
-			if (coding.getCode() != null && coding.getSystem() != null) {
-				record.code.add(coding.getSystem() + " " + coding.getCode());
-			}
-		  }	  
-		  
-			ContentInfo.setRecordCodeAndContent(record, record.code, null);
-		  
-		  } else {
-			  ContentInfo.setRecordCodeAndContent(record, null, defaultContent);
+	  return setRecordCodeByCodings(record, cc != null ? cc.getCoding() : null, defaultContent);
+	}
+	
+	protected String setRecordCodeByCodings(Record record, List<Coding> codings, String defaultContent) {
+		  record.code = new HashSet<String>(); 
+		  String display = null;
+		  try {
+			  if (codings != null && !codings.isEmpty()) {
+			  for (Coding coding : codings) {
+				if (coding.getDisplay() != null && display == null) display = coding.getDisplay();
+				if (coding.getCode() != null && coding.getSystem() != null) {
+					record.code.add(coding.getSystem() + " " + coding.getCode());
+				}
+			  }	  
+			  
+				ContentInfo.setRecordCodeAndContent(record, record.code, null);
+			  
+			  } else {
+				  ContentInfo.setRecordCodeAndContent(record, null, defaultContent);
+			  }
+		  } catch (AppException e) {
+			    ErrorReporter.report("FHIR (set record code)", null, e);	
+				throw new UnprocessableEntityException("Error determining MIDATA record code.");
 		  }
-	  } catch (AppException e) {
-		    ErrorReporter.report("FHIR (set record code)", null, e);	
-			throw new UnprocessableEntityException("Error determining MIDATA record code.");
-	  }
-	  return display;
-	}
-	
-	protected String stringFromDateTime(DateTimeType date) {
-		    if (date == null) return "";
-			return date.toHumanDisplay();
+		  return display;
+		}
 		
-	}
-	
+		
 	/**
 	 * Auto-share a record with all person/groups provided
 	 * @param record the record to be shared
@@ -613,7 +611,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 					   TypedMidataId target = FHIRTools.getMidataIdFromReference(ref);
 					   if (!target.getMidataId().equals(owner)) {
 					     Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, owner, target.getMidataId(), owner, target.getType().equals("Group"));
-					     RecordManager.instance.share(inf.executorId, shareFrom, consent._id, Collections.singleton(record._id), true);
+					     RecordManager.instance.share(inf.executorId, shareFrom, consent._id, consent.owner, Collections.singleton(record._id), true);
 					   }
 				}
 			}

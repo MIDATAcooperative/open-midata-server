@@ -158,7 +158,7 @@ public class GoalResourceProvider extends ResourceProvider<Goal> implements IRes
 
 	public void prepare(Record record, Goal theGoal) throws AppException {
 		// Set Record code and content
-		String display = setRecordCodeByCodeableConcept(record, null, "Goal");					
+		String display = setRecordCodeByCodings(record, null, "Goal");					
 		record.name = FHIRTools.getStringFromCodeableConcept(theGoal.getDescription(), "Goal");
 		
 		// clean

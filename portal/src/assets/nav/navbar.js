@@ -35,7 +35,7 @@ angular.module('portal')
 	$scope.updateNav();
 			
 	$scope.logout = function() {		
-		server.get('/logout')
+		server.get('/api/logout')
 		.then(function() { session.logout(); document.location.href="/#/public/login"; });
 	};
 		
