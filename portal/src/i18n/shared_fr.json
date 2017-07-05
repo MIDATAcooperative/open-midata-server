@@ -1,6 +1,10 @@
 {
 
     "footer" : {
+
+        // TODO CHANGED
+        // OLD: (c) 2015-2016 ETH Zürich
+        // NEW: (c) 2015-{{now}} ETH Zürich
         "copyright" : "(c) 2015-{{now}} ETH Zürich",
         "portals" : "Portails MIDATA:",
         "for_members" : "Pour les possesseurs de compte",
@@ -33,35 +37,47 @@
         "noconsent" : "Il n'y a pas de consentement actif permettant l'ajout de donnée à cette personne.",
         "unsupported" : "Opération non supportée",
         "notrialuser_title" : "Inscription requise!",
+
         "notrialuser_detail" : "Pour utiliser cette fonctionnalité, vous devez compléter votre inscription. Veuillez demander une copie écrite des conditions générales d'utilisation et la retourner signée. Vous recevrez également un code d'activation permettant de vérifier votre adresse postale. Si vous désirez vérifier le status de votre compte, cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'Etat du compte'.",
+
+
+        // TODO CHANGED
+        // OLD: Midata cooperative membership required!
+        // NEW: MIDATA cooperative membership required!
         "mustbemember_title" : "Inscription à la copperative MIDATA requise!",
+
+
+        // TODO CHANGED
+        // OLD: In order to use this feature you must be member of the midata cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
+        // NEW: In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
         "mustbemember_detail" : "Pour utiliser cette fonctionnalité, vous devez être membre de la coopérative MIDATA. Cliquez sur votre nom d'utilisateur en haut à droite et rendez-vous à la section 'Etat du compte' pour plus d'informations.",
 
-        "notauthorized": {
-            "action": "Vous n'êtes pas autorisé à entreprendre cette action",
-            "fields": "Vous n'êtes pas autorisé à consulter les champs demandés",
-            "account": "Vous n'êtes pas autorisé à accéder à ce compte",
-            "study": "Vous n'êtes pas autorisé à accéder à cette étude",
-            "not_plugin_owner": "Ce n'est pas votre plugin"
+        "notauthorized" : {
+            "action" : "Vous n'êtes pas autorisé à entreprendre cette action",
+            "fields" : "Vous n'êtes pas autorisé à consulter les champs demandés",
+            "account" : "Vous n'êtes pas autorisé à accéder à ce compte",
+            "study" : "Vous n'êtes pas autorisé à accéder à cette étude",
+            "not_plugin_owner" : "Ce n'est pas votre plugin"
         },
 
 
         "invalid" : {
-
             "email" : "Veuillez entrer une adresse e-mail valide",
+
             "credentials" : "Nom d'utilisateur ou mot de passe invalide.",
+
             "password_repetition" : "La répétition du mot de passe ne concorde pas avec le mot de passe entré!",
             "passphrase_repetition" : "La répétition de la phrase secrète ne concorde pas avec la phrase secrète entrée!",
             "passphrase_old" : "Ancienne phrase secrète incorrecte.",
             "password_old" : "L'ancien mot de passe n'est pas correct.",
-            "confirmation_code": "Code de confirmation incorrect",
+            "confirmation_code" : "Code de confirmation incorrect",
             "code" : "Code d'étude inconnu.",
             "appcode" : "Code d'app inconnu",
-            "status_transition": "Changement d'état invalide",
+            "status_transition" : "Changement d'état invalide",
             "date" : "Valeur invalide pour le champ date",
             "string" : "Ce champ doit contenir du text",
-            "token": "Jeton d'autorisation invalide. ",
-            "json": "JSON fourni invalide",
+            "token" : "Jeton d'autorisation invalide. ",
+            "json" : "JSON fourni invalide",
             "passphrase" : "Mauvaise phrase secrète",
             "passcode" : "Mauvais NIP",
             "plugin" : "Les plugins sont destinés à un rôle différent",
@@ -70,18 +86,22 @@
 
         "missing" : {
             "credentials" : "Veuillez entrer un nom d'utilisateur et un mot de passe.",
+
             "email" : "Veuillez entrer votre adresse e-mail",
-            "input_field": "Veuillez compléter ce champ de saisie.",
-            "newpassword": "Veuillez entrer un nouveau mot de passe!",
-            "passphrase": "Veuillez fournir votre phrase secrète.",
-            "groupsystem": "Le système de groupe doit être fourni.",
-            "token": "Jeton manquant ou invalide.",
-            "agb": "Les termes et conditions ne sont pas acceptés.",
-            "study_accept": "La participation à l'étude doit être acceptée."
+            "input_field" : "Veuillez compléter ce champ de saisie.",
+            "newpassword" : "Veuillez entrer un nouveau mot de passe!",
+            "passphrase" : "Veuillez fournir votre phrase secrète.",
+            "groupsystem" : "Le système de groupe doit être fourni.",
+            "token" : "Jeton manquant ou invalide.",
+            "agb" : "Les termes et conditions ne sont pas acceptés.",
+
+            // TODO CHANGED
+            // OLD: undefined
+            // NEW: Study participation must be accepted.
+            "study_accept" : "La participation à l'étude doit être acceptée."
         },
 
         "unknown" : {
-
             "plugin" : "Plugin inconnu",
             "app" : "Application inconnue",
             "space" : "L'espace requis n'existe plus.",
@@ -105,32 +125,36 @@
             "study" : "Une étude avec ce nom existe déjà."
         },
 
-        "blocked": {
-           "user": "L'utilisateur n'est pas autorisé à se connecter. Contactez support@midata.coop pour obtenir de l'aide.",
-           "participation": "Le titulaire du compte n'est pas autorisé à participer à l'étude.",
-           "consent": "Le consentement à l'utilisation de cette application a été révoqué. "
-         },
+        "blocked" : {
+            "user" : "L'utilisateur n'est pas autorisé à se connecter. Contactez support@midata.coop pour obtenir de l'aide.",
+            "participation" : "Le titulaire du compte n'est pas autorisé à participer à l'étude.",
+
+            // TODO CHANGED
+            // OLD: undefined
+            // NEW: The consent for using this app has been revoked. To reenable use the MIDATA portal and delete the rejected or expired consent.
+            "consent" : "Le consentement à l'utilisation de cette application a été révoqué. "
+        },
 
         "closed" : {
-            "study": "L'étude n'est pas à la cherche de participants"
+            "study" : "L'étude n'est pas à la cherche de participants"
         },
 
         "notvalidated" : {
-            "study": "L'étude doit d'abord être validée."
+            "study" : "L'étude doit d'abord être validée."
         },
 
         "tooshort" : {
-            "password": "Les mots de passe doivent comporter au moins 8 caractères.",
+            "password" : "Les mots de passe doivent comporter au moins 8 caractères.",
             "passphrase" : "La phrase secrète doit contenir au moins 8 caractères."
         },
 
         "tooweak" : {
-            "password": "Les mots de passe doivent contenir un mélange de lettres majuscules/minuscules, de chiffres et de caractères spéciaux.",
+            "password" : "Les mots de passe doivent contenir un mélange de lettres majuscules/minuscules, de chiffres et de caractères spéciaux.",
             "passphrase" : "Les phrases de passe doivent contenir un mélange de lettres majuscules ou minuscules, de chiffres et de caractères spéciaux."
         },
 
-        "concurrent": {
-            "update": "Mise à jour simultanée. Veuillez réessayer"
+        "concurrent" : {
+            "update" : "Mise à jour simultanée. Veuillez réessayer"
         },
 
         "expired" : {
@@ -139,7 +163,7 @@
         },
 
         "already_done" : {
-            "email_verification": "L'adresse e-mail a déjà été vérifié."
+            "email_verification" : "L'adresse e-mail a déjà été vérifié."
         },
 
         "no_alter" : {
@@ -152,41 +176,40 @@
     },
 
     "enum" : {
-        "gender": {
-            "MALE": "mâle",
-            "FEMALE": "femelle",
-            "OTHER": "autre"
+        "gender" : {
+            "MALE" : "mâle",
+            "FEMALE" : "femelle",
+            "OTHER" : "autre"
         },
-        "country": {
-            "CH": "Suisse"
+        "country" : {
+            "CH" : "Suisse"
         },
         "eventtype" : {
-          "CODE_ENTERED": "Code entré",
-          "PARTICIPATION_REQUESTED": "Participation demandée",
-          "NO_PARTICIPATION": "Pas de participation",
-          "PARTICIPATION_REJECTED": "Participation rejetée",
-          "PARTICIPATION_APPROVED": "Participation approuvée",
-          "GROUP_ASSIGNED": "Groupe assigné",
-          "VALIDATION_REQUESTED": "Validation demandée",
-          "STUDY_VALIDATED": "Étude validée",
-          "STUDY_REJECTED": "Etude rejetée",
-          "PARTICIPANT_SEARCH_STARTED": "La recherche de participant a commencée",
-          "PARTICIPANT_SEARCH_CLOSED": "Recherche de participant terminée",
-          "CODES_GENERATED": "Codes générés",
-          "STUDY_STARTED": "Étude commencée",
-          "STUDY_FINISHED": "Étude terminée",
-          "STUDY_ABORTED": "Étude avortée",
-          "REQUIRED_INFORMATION_CHANGED": "Les informations requises ont changées",
-          "STUDY_SETUP_CHANGED": "La configuration de l'étude a changée",
-          "MEMBERSHIP_REQUEST": "Adhésion demandée",
-          "CONTACT_ADDRESS_CHANGED": "L'adresse a changée",
-          "CONTRACT_SEND": "Contrat envoyé",
-          "ADMIN_ACCOUNT_CHANGE": "Compte modifié par l'administrateur",
-          "ACCOUNT_DELETED": "Compte supprimé",
-          "INTERNAL_COMMENT": "Commentaire interne"
+            "CODE_ENTERED" : "Code entré",
+            "PARTICIPATION_REQUESTED" : "Participation demandée",
+            "NO_PARTICIPATION" : "Pas de participation",
+            "PARTICIPATION_REJECTED" : "Participation rejetée",
+            "PARTICIPATION_APPROVED" : "Participation approuvée",
+            "GROUP_ASSIGNED" : "Groupe assigné",
+            "VALIDATION_REQUESTED" : "Validation demandée",
+            "STUDY_VALIDATED" : "Étude validée",
+            "STUDY_REJECTED" : "Etude rejetée",
+            "PARTICIPANT_SEARCH_STARTED" : "La recherche de participant a commencée",
+            "PARTICIPANT_SEARCH_CLOSED" : "Recherche de participant terminée",
+            "CODES_GENERATED" : "Codes générés",
+            "STUDY_STARTED" : "Étude commencée",
+            "STUDY_FINISHED" : "Étude terminée",
+            "STUDY_ABORTED" : "Étude avortée",
+            "REQUIRED_INFORMATION_CHANGED" : "Les informations requises ont changées",
+            "STUDY_SETUP_CHANGED" : "La configuration de l'étude a changée",
+            "MEMBERSHIP_REQUEST" : "Adhésion demandée",
+            "CONTACT_ADDRESS_CHANGED" : "L'adresse a changée",
+            "CONTRACT_SEND" : "Contrat envoyé",
+            "ADMIN_ACCOUNT_CHANGE" : "Compte modifié par l'administrateur",
+            "ACCOUNT_DELETED" : "Compte supprimé",
+            "INTERNAL_COMMENT" : "Commentaire interne"
         },
         "consentstatus" : {
-
             "ACTIVE" : "Actif",
             "EXPIRED" : "Expiré",
             "REJECTED" : "Rejeté",
@@ -204,20 +227,20 @@
             "IMPLICIT" : "Messagerie"
         },
         "contractstatus" : {
-            "NEW": "Nouveau",
-            "REQUESTED": "Contrat demandé",
-            "PRINTED": "Contrat imprimé",
-            "SIGNED": "Contrat signé"
+            "NEW" : "Nouveau",
+            "REQUESTED" : "Contrat demandé",
+            "PRINTED" : "Contrat imprimé",
+            "SIGNED" : "Contrat signé"
         },
         "emailstatus" : {
-          "REJECTED": "Rejeté",
-          "UNVALIDATED": "Pas encore confirmé",
-          "VALIDATED": "Confirmé"
+            "REJECTED" : "Rejeté",
+            "UNVALIDATED" : "Pas encore confirmé",
+            "VALIDATED" : "Confirmé"
         },
         "participantsearchstatus" : {
-          "CLOSED": "Fermé",
-          "PRE": "Pas encore commencé",
-          "SEARCHING": "En cours de recherche"
+            "CLOSED" : "Fermé",
+            "PRE" : "Pas encore commencé",
+            "SEARCHING" : "En cours de recherche"
         },
         "participationstatus" : {
             "ACCEPTED" : "articipation acceptée",
@@ -234,10 +257,10 @@
             "RESEARCH_REJECTED" : "Rejeté par le chercheur"
         },
         "studyexecutionstatus" : {
-            "ABORTED": "Exécution annulée",
-            "FINISHED": "Terminée",
-            "PRE": "Pas encore commencée",
-            "RUNNING": "Etude en cours d'exécution"
+            "ABORTED" : "Exécution annulée",
+            "FINISHED" : "Terminée",
+            "PRE" : "Pas encore commencée",
+            "RUNNING" : "Etude en cours d'exécution"
         },
         "studyvalidationstatus" : {
 
@@ -258,61 +281,60 @@
             "RESEARCH" : "Chercheur"
         },
         "subuserrole" : {
-            "DOCTOR": "Docteur",
-            "NURSE": "Infirmière",
-            "MANAGER": "Directeur",
-            "MONITOR": "Moniteur",
-            "USERADMIN": "Administrateur utilisateur",
-            "STUDYADMIN": "Administrateur d'étude",
-            "CONTENTADMIN": "Administrateur de contenu",
-            "PLUGINADMIN": "Administrateur de plugins",
-            "NEWSWRITER": "Auteur de nouvelle",
-            "SUPERADMIN": "Super administrateur",
-            "TRIALUSER": "Utilisateur à l'essai",
-            "STUDYPARTICIPANT": "Participant à l'étude",
-            "APPUSER": "Utilisateur de l'application",
-            "NONMEMBERUSER": "Titulaire de compte validé",
-            "MEMBEROFCOOPERATIVE": "Membre de la cooperative"
+            "DOCTOR" : "Docteur",
+            "NURSE" : "Infirmière",
+            "MANAGER" : "Directeur",
+            "MONITOR" : "Moniteur",
+            "USERADMIN" : "Administrateur utilisateur",
+            "STUDYADMIN" : "Administrateur d'étude",
+            "CONTENTADMIN" : "Administrateur de contenu",
+            "PLUGINADMIN" : "Administrateur de plugins",
+            "NEWSWRITER" : "Auteur de nouvelle",
+            "SUPERADMIN" : "Super administrateur",
+            "TRIALUSER" : "Utilisateur à l'essai",
+            "STUDYPARTICIPANT" : "Participant à l'étude",
+            "APPUSER" : "Utilisateur de l'application",
+            "NONMEMBERUSER" : "Titulaire de compte validé",
+            "MEMBEROFCOOPERATIVE" : "Membre de la cooperative"
         },
         "userstatus" : {
-            "ACTIVE": "actif",
-            "BLOCKED": "Bloqué",
-            "DELETED": "Supprimé",
-            "NEW": "Nouveau"
+            "ACTIVE" : "actif",
+            "BLOCKED" : "Bloqué",
+            "DELETED" : "Supprimé",
+            "NEW" : "Nouveau"
         },
         "frequency" : {
-            "ONCE": "Une fois",
-            "DAILY": "quotidien",
-            "WEEKLY": "hebdomadaire",
-            "MONTHLY": "mensuel",
-            "YEARLY": "annuel"
+            "ONCE" : "Une fois",
+            "DAILY" : "quotidien",
+            "WEEKLY" : "hebdomadaire",
+            "MONTHLY" : "mensuel",
+            "YEARLY" : "annuel"
         },
         "language" : {
-            "EN": "Anglais",
-            "DE": "allemand",
-            "IT": "italien",
-            "FR": "français"
+            "EN" : "Anglais",
+            "DE" : "allemand",
+            "IT" : "italien",
+            "FR" : "français"
         },
         "tags" : {
-            "Analysis": "Analyse",
-            "Import": "Importer",
-            "Planning": "Planification",
-            "Tools": "Outils",
-            "Fitbit": "Fitbit",
-            "Jawbone": "Jawbone",
-            "Available": "Plugins disponibles"
+            "Analysis" : "Analyse",
+            "Import" : "Importer",
+            "Planning" : "Planification",
+            "Tools" : "Outils",
+            "Fitbit" : "Fitbit",
+            "Jawbone" : "Jawbone",
+            "Available" : "Plugins disponibles"
         },
         "plugintype" : {
-            "visualization": "Plugin",
-            "create": "Formulaire",
-            "oauth1": "OAuth 1",
-            "oauth2": "OAuth 2",
-            "mobile": "Mobile"
+            "visualization" : "Plugin",
+            "create" : "Formulaire",
+            "oauth1" : "OAuth 1",
+            "oauth2" : "OAuth 2",
+            "mobile" : "Mobile"
         }
     },
 
     "common" : {
-
         "back_btn" : "Retour",
         "search_btn" : "Rechercher",
         "add_btn" : "Ajouter",
@@ -324,8 +346,8 @@
         "delete_btn" : "Supprimer",
 
         "user" : {
-            "lastname": "Nom",
-            "firstname": "Prénom",
+            "lastname" : "Nom",
+            "firstname" : "Prénom",
             "zip" : "Code postal",
             "city" : "Ville",
             "street" : "Rue",
@@ -338,7 +360,7 @@
 
     "instance" : {
 
-        // TODO NEW:
+        // TODO NEW: 
         "rules" : "",
         "purpose" : "Raison d'être de cette instance MIDATA",
         "access" : "Accès à cette instance MIDATA",
@@ -359,31 +381,31 @@
             "data" : "Les données stockées dans cette instance ne seront disponibles que sur votre PC local."
         },
 
-        "test": {
-            "name": "Test.midata.coop (instance de test)",
-            "intro": "Il s'agit d'une instance de test de la plate-forme MIDATA.",
-            "purpose": "La plate-forme de test peut être utilisée pour développer et tester de nouvelles applications et des plugins pour MIDATA dans un environnement sécurisé. Elle est également utilisée pour tester des nouvelles version du portail et du backend avant de mettre à jour les autres instances.",
-            "access": "Enregistrez votre propre compte de développeur. Après validation par un administrateur, vous pourrez générer des utilisateurs de test, de recherche et de professionnels de la santé sans validation",
-            "uptime": "Il n'y a aucune garantie quant à la disponibilité. Les mises à jours se font autant que nécessaire. Elles sont toutefois effectuée de préférence le lundi entre 12:00 et 13:00, heure d'Europe centrale",
-            "data": "Conservez uniquement les données de test sur cette instance. Les enregistrements peuvent être corrompu par erreur. Il n'y a pas de sauvegarde des données."
+        "test" : {
+            "name" : "Test.midata.coop (instance de test)",
+            "intro" : "Il s'agit d'une instance de test de la plate-forme MIDATA.",
+            "purpose" : "La plate-forme de test peut être utilisée pour développer et tester de nouvelles applications et des plugins pour MIDATA dans un environnement sécurisé. Elle est également utilisée pour tester des nouvelles version du portail et du backend avant de mettre à jour les autres instances.",
+            "access" : "Enregistrez votre propre compte de développeur. Après validation par un administrateur, vous pourrez générer des utilisateurs de test, de recherche et de professionnels de la santé sans validation",
+            "uptime" : "Il n'y a aucune garantie quant à la disponibilité. Les mises à jours se font autant que nécessaire. Elles sont toutefois effectuée de préférence le lundi entre 12:00 et 13:00, heure d'Europe centrale",
+            "data" : "Conservez uniquement les données de test sur cette instance. Les enregistrements peuvent être corrompu par erreur. Il n'y a pas de sauvegarde des données."
         },
 
         "demo" : {
-            "name": "demo.midata.coop (instance de demonstration)",
-            "intro": "Il s'agit d'une instance de démonstration de MIDATA.",
-            "purpose": "Cette instance de MIDATA peut être utilisée à des fins de démonstration et de formation.",
-            "access": "Vous pouvez enregistrer des comptes d'utilisateurs pour les quatre portails. Les comptes doivent être validé par un administrateur avant de pouvoir être utilisé",
-            "uptime": "Cette instance est mise à jour moins fréquemment que l'instance test.midata.coop. La plage de maintenance est le lundi entre 12:00 et 14:00, heure d'Europe centrale.",
-            "data": "Enregistrez uniquement des données de test et de démonstration sur cette instance. Il n'y a pas de sauvegarde des données de test"
+            "name" : "demo.midata.coop (instance de demonstration)",
+            "intro" : "Il s'agit d'une instance de démonstration de MIDATA.",
+            "purpose" : "Cette instance de MIDATA peut être utilisée à des fins de démonstration et de formation.",
+            "access" : "Vous pouvez enregistrer des comptes d'utilisateurs pour les quatre portails. Les comptes doivent être validé par un administrateur avant de pouvoir être utilisé",
+            "uptime" : "Cette instance est mise à jour moins fréquemment que l'instance test.midata.coop. La plage de maintenance est le lundi entre 12:00 et 14:00, heure d'Europe centrale.",
+            "data" : "Enregistrez uniquement des données de test et de démonstration sur cette instance. Il n'y a pas de sauvegarde des données de test"
         },
 
-        "ch": {
-            "name": "Ch.midata.coop (MIDATA Suisse)",
-            "intro": "Il s'agit de la plate-forme MIDATA pour la Suisse.",
-            "purpose": "Il s'agit de la plate-forme productive MIDATA pour stocker des données sur la santé en Suisse.",
-            "access": "Les nouveaux comptes d'utilisateurs ont des restrictions de fonctionnalités. Les comptes des professionnels de la santé, de recherche et de développement ne peuvent être utilisés qu'après validation par MIDATA. Les faux comptes ou de test ne sont pas autorisés et seront bloqués.",
-            "uptime": "Les plages de maintenance seront annoncés.",
-            "data": "Cette instance stocke des données réelles appartenant des personnes réelles. Les données sont savegardées quotidiennement."
+        "ch" : {
+            "name" : "Ch.midata.coop (MIDATA Suisse)",
+            "intro" : "Il s'agit de la plate-forme MIDATA pour la Suisse.",
+            "purpose" : "Il s'agit de la plate-forme productive MIDATA pour stocker des données sur la santé en Suisse.",
+            "access" : "Les nouveaux comptes d'utilisateurs ont des restrictions de fonctionnalités. Les comptes des professionnels de la santé, de recherche et de développement ne peuvent être utilisés qu'après validation par MIDATA. Les faux comptes ou de test ne sont pas autorisés et seront bloqués.",
+            "uptime" : "Les plages de maintenance seront annoncés.",
+            "data" : "Cette instance stocke des données réelles appartenant des personnes réelles. Les données sont savegardées quotidiennement."
         }
 
 
@@ -412,8 +434,21 @@
         "mobile_phone" : "Numéro mobile",
         "coach" : "Contact person MIDATA",
         "reason" : "Raison de l'enregistremenet",
+
+        // TODO CHANGED
+        // OLD: AGB
+        // NEW: Midata AGB
         "agb" : "CGU",
+
+        // TODO NEW: Research
+        "study" : "Research",
         "agb2" : "J'accepte les règles de confidentialité et conditions d'utilisation",
+
+        // TODO NEW: App AGB
+        "app_agb" : "App AGB",
+
+        // TODO NEW: I accept the terms and conditions
+        "app_agb2" : "I accept the terms and conditions",
         "sign_up_btn" : "S'authentifier"
     },
 
@@ -431,17 +466,17 @@
         "description" : "Entrez l'adresse e-mail associée à votre compte, puis cliquez sur Continuer. Un e-mail contenant un lien vous permettant de créer un nouveau mot de passe vous sera envoyé.",
         "email" : "Adresse e-mail",
         "continue" : "Continue",
-        "success": "Nous vous avons envoyé un courrier électronique avec les instructions nécessaire pour réinitialiser votre mot de passe."
+        "success" : "Nous vous avons envoyé un courrier électronique avec les instructions nécessaire pour réinitialiser votre mot de passe."
     },
 
     "setpw" : {
         "title" : "Assistance pour mot de passe - Étape 2",
-        "new_password": "Nouveau mot de passe",
-        "new_password_repeat": "Répétition du mot de passe",
-        "enter_new": "Entrez un nouveau mot de passe pour votre compte.",
-        "set_new_btn": "Définir un nouveau mot de passe",
-        "success": "Vous avez réussi à définir un nouveau mot de passe pour votre compte.",
-        "back_to_login": "Renevir à la page de connexion."
+        "new_password" : "Nouveau mot de passe",
+        "new_password_repeat" : "Répétition du mot de passe",
+        "enter_new" : "Entrez un nouveau mot de passe pour votre compte.",
+        "set_new_btn" : "Définir un nouveau mot de passe",
+        "success" : "Vous avez réussi à définir un nouveau mot de passe pour votre compte.",
+        "back_to_login" : "Renevir à la page de connexion."
     },
 
     "passphrase" : {
@@ -453,22 +488,40 @@
     },
 
     "postregister" : {
-        "title": "Bienvenue sur MIDATA",
-        "description": "Avant d'utiliser votre compte, votre identité doit être vérifiée:",
-        "email_confirmed": "E-mail confirmé?",
-        "contract_signed": "Contrat signé et renvoyé?",
-        "resent_success": "Le courrier de bienvenue a été renvoyé.",
-        "address_success": "L'adresse a été confirmée.",
-        "code_entered": "Le code de confirmation a-t-il été entré?",
+        "title" : "Bienvenue sur MIDATA",
+        "description" : "Avant d'utiliser votre compte, votre identité doit être vérifiée:",
+        "email_confirmed" : "E-mail confirmé?",
+        "contract_signed" : "Contrat signé et renvoyé?",
+        "resent_success" : "Le courrier de bienvenue a été renvoyé.",
+        "address_success" : "L'adresse a été confirmée.",
+        "code_entered" : "Le code de confirmation a-t-il été entré?",
 
         // TODO NEW: 1. Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.
+
+        // TODO CHANGED
+        // OLD: 1. Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.
+        // NEW: Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.
         "email_instructions" : "1. Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.",
+
+        // TODO NEW: For convenience you may enter the code from the email here:
+        "email_code" : "For convenience you may enter the code from the email here:",
         "resend_btn" : "Renvoer l'e-mail",
 
+        // TODO NEW: Retry login
+        "retry_btn" : "Retry login",
+
         // TODO NEW: 2. A contract has been sent to your postal address. Return it signed to MIDATA.
+
+        // TODO CHANGED
+        // OLD: 2. A contract has been sent to your postal address. Return it signed to MIDATA.
+        // NEW: A contract has been sent to your postal address. Return it signed to MIDATA.
         "contract_instructions" : "2. A contract has been sent to your postal address. Return it signed to MIDATA.",
 
         // TODO NEW: 3. A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.
+
+        // TODO CHANGED
+        // OLD: 3. A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.
+        // NEW: A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.
         "code_intructions" : "3. A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
 
         // TODO NEW: Confirmation code may be entered here after signed contract has arrived at MIDATA office.
@@ -501,23 +554,23 @@
         "success" : "La phrase secrète a bien été changée!"
     },
 
-    "changepassword": {
-        "title": "Changer le mot de passe",
-        "old_password": "Ancien mot de passe",
-        "new_password": "Nouveau mot de passe",
-        "repeat_password": "Répétez le nouveau mot de passe",
-        "change_btn": "Changer le mot de passe",
-        "success": "Le mot de passe a été changé avec succès!"
+    "changepassword" : {
+        "title" : "Changer le mot de passe",
+        "old_password" : "Ancien mot de passe",
+        "new_password" : "Nouveau mot de passe",
+        "repeat_password" : "Répétez le nouveau mot de passe",
+        "change_btn" : "Changer le mot de passe",
+        "success" : "Le mot de passe a été changé avec succès!"
     },
 
-    "changeaddress": {
-       "title": "Adresse postale et coordonnées",
-       "update_btn": "Mettre à jour"
-   },
+    "changeaddress" : {
+        "title" : "Adresse postale et coordonnées",
+        "update_btn" : "Mettre à jour"
+    },
 
     "market" : {
-        "categories": "Catégories",
-        "plugins": "Plugins",
+        "categories" : "Catégories",
+        "plugins" : "Plugins",
 
         // TODO NEW: There are no spotlighted plugins yet.
         "no_spotlighted_plugins" : "There are no spotlighted plugins yet.",
@@ -552,17 +605,17 @@
         // TODO NEW: Meta Information
         "meta" : "Meta Information",
         "name" : "Nom:",
-        "owned_by": "Propriétaire:",
-        "created_by": "Créé par:",
+        "owned_by" : "Propriétaire:",
+        "created_by" : "Créé par:",
+
         // TODO NEW: Created with:
         "created_with" : "Created with:",
 
         // TODO NEW: Created on:
         "created_on" : "Created on:",
-
-        "content": "Contenu:",
-        "format": "Format:",
-        "download_btn": "Télécharger",
+        "content" : "Contenu:",
+        "format" : "Format:",
+        "download_btn" : "Télécharger",
 
         // TODO NEW: Content Visualization
         "content_visualization" : "Content Visualization",
@@ -585,7 +638,7 @@
         // TODO NEW: Healthcare Providers monitoring the study
         "providers_monitoring" : "Healthcare Providers monitoring the study",
         "no_providers" : "Aucun",
-        "provider_remove_btn": "supprimer",
+        "provider_remove_btn" : "supprimer",
         "provider_add_btn" : "Ajouter",
 
         // TODO NEW: Information that must be shared for participation
@@ -618,53 +671,54 @@
         // TODO NEW: Participation History
         "participation_history" : "Participation History",
         "history_event" : "Evénement",
-        "history_who": "Qui",
-        "history_when": "Quand",
-        "history_comment": "Commentaire",
-        "request_participation_btn": "Demande de participation",
-        "do_not_participate_btn": "Ne participez pas"
+        "history_who" : "Qui",
+        "history_when" : "Quand",
+        "history_comment" : "Commentaire",
+        "request_participation_btn" : "Demande de participation",
+        "do_not_participate_btn" : "Ne participez pas"
     },
 
-    "user": {
-        "account": "Compte d'utilisateur",
-        "user": "Utilisateur",
-        "name": "Prénom:",
-        "email": "E-mail:",
-        "change_password_btn": "Changer le mot de passe",
-        "change_passphrase_btn": "Modifier la phrase de passe",
-        "repair_account_btn": "Réparer le compte",
-        "reset_spaces_btn": "Réinitialiser le portail",
-        "delete_records_btn": "Supprimer les enregistrements",
-        "account_repaired": "Votre compte a été réparé.",
-        "spaces_resetted": "Votre configuration a été réinitialisée.",
-        "settings": "Paramètres",
-        "address": "Adresse et coordonnées",
-        "change_address_btn": "Changement d'adresse",
-        "searchable": "Votre compte est-il visible pour les autres titulaires de compte MIDATA?",
-        "change_settings_btn": "Modifier les paramètres",
-        "change_settings_success": "Les paramètres ont été mis à jour"
+    "user" : {
+        "account" : "Compte d'utilisateur",
+        "user" : "Utilisateur",
+        "name" : "Prénom:",
+        "email" : "E-mail:",
+        "change_password_btn" : "Changer le mot de passe",
+        "change_passphrase_btn" : "Modifier la phrase de passe",
+        "repair_account_btn" : "Réparer le compte",
+        "reset_spaces_btn" : "Réinitialiser le portail",
+        "delete_records_btn" : "Supprimer les enregistrements",
+        "account_repaired" : "Votre compte a été réparé.",
+        "spaces_resetted" : "Votre configuration a été réinitialisée.",
+        "settings" : "Paramètres",
+        "address" : "Adresse et coordonnées",
+        "change_address_btn" : "Changement d'adresse",
+        "searchable" : "Votre compte est-il visible pour les autres titulaires de compte MIDATA?",
+        "change_settings_btn" : "Modifier les paramètres",
+        "change_settings_success" : "Les paramètres ont été mis à jour"
+
     },
 
-    "visualization": {
-        "title": "Informations sur les plugins",
-        "success": "Vous avez installé avec succès un nouveau plugin.",
-        "created_by": "Créé par:",
-        "description": "Description:",
-        "tile_name": "Nom de la tuile:",
-        "install_location": "Emplacement:",
-        "grant_access": "Autoriser ce plugin à accèder à:",
-        "install_btn": "Ajouter un plugin",
-        "location": {
-            "workspace": "Espace de travail",
-            "mobile": "MIDATA Mobile App",
-            "research": "Tableau de bord de recherche",
-            "sandbox": "Espace de travail",
-            "me": "Ma page",
-            "config": "Tableau de bord de configuration",
-            "mydata": "Tableau de bord de mes données",
-            "social": "Tableau de bord social",
-            "providers": "Tableau de bord de santé",
-            "studies": "Tableau de bord de recherche"
+    "visualization" : {
+        "title" : "Informations sur les plugins",
+        "success" : "Vous avez installé avec succès un nouveau plugin.",
+        "created_by" : "Créé par:",
+        "description" : "Description:",
+        "tile_name" : "Nom de la tuile:",
+        "install_location" : "Emplacement:",
+        "grant_access" : "Autoriser ce plugin à accèder à:",
+        "install_btn" : "Ajouter un plugin",
+        "location" : {
+            "workspace" : "Espace de travail",
+            "mobile" : "MIDATA Mobile App",
+            "research" : "Tableau de bord de recherche",
+            "sandbox" : "Espace de travail",
+            "me" : "Ma page",
+            "config" : "Tableau de bord de configuration",
+            "mydata" : "Tableau de bord de mes données",
+            "social" : "Tableau de bord social",
+            "providers" : "Tableau de bord de santé",
+            "studies" : "Tableau de bord de recherche"
         }
     },
 
@@ -689,10 +743,9 @@
 
         // TODO NEW: Add yourself
         "add_yourself_btn" : "Add yourself",
-
-        "add_person_btn": "Ajouter une nouvelle personne",
-        "add_usergroup_btn": "Ajouter une nouvelle équipe",
-        "reshare": "Accès aux tiers?",
+        "add_person_btn" : "Ajouter une nouvelle personne",
+        "add_usergroup_btn" : "Ajouter une nouvelle équipe",
+        "reshare" : "Accès aux tiers?",
 
         // TODO NEW: The person(s) authorized with this consent may reshare the data I gave them access to.
         "reshare2" : "The person(s) authorized with this consent may reshare the data I gave them access to.",
@@ -715,9 +768,15 @@
         "title" : "Consentement",
         "owner" : "Propriétaire du consentement",
         "name" : "Libellé du consentement",
+
+        // TODO NEW: Consent created at
+        "date_of_creation" : "Consent created at",
         "type" : "Type de consentement",
         "status" : "État du consentement",
         "people" : "Avec quelle(s) personne(s) désirez-vous partager des données ?",
+
+        // TODO NEW: Non MIDATA account holder
+        "external" : "Non MIDATA account holder",
         "add_people_btn" : "Ajouter d'autres personnes",
         "add_usergroup_btn" : "Ajouter une équipe",
         "reshare" : "@:newconsent.reshare",
@@ -785,13 +844,13 @@
         "authorize_btn" : "Autoriser maintenant"
     },
 
-    "spaces": {
-        "title": "Plugin MIDATA",
-        "delete_btn": "Supprimez cet espace",
-        "used_btn": "Enregistrements utilisés ...",
-        "share_btn": "Partager...",
-        "finish_comparing_btn": "Comparaison terminée",
-        "compare_btn": "Comparer"
+    "spaces" : {
+        "title" : "Plugin MIDATA",
+        "delete_btn" : "Supprimez cet espace",
+        "used_btn" : "Enregistrements utilisés ...",
+        "share_btn" : "Partager...",
+        "finish_comparing_btn" : "Comparaison terminée",
+        "compare_btn" : "Comparer"
     },
 
     "records" : {
@@ -816,9 +875,18 @@
         "shared_with" : "Partagé avec :",
         "records_used_for_app" : "Enregistrements utilisés pour l'app",
         "back_to_plugin" : "Retour à la visualisation",
+
+        // TODO NEW: Grouped by type of content
+        "by_group" : "Grouped by type of content",
+
+        // TODO NEW: Grouped by application
+        "by_plugin" : "Grouped by application",
         "show" : "Afficher:",
         "my_data" : "Mes données",
         "all_data" : "Toutes les données",
+
+        // TODO NEW: Personal Data
+        "all" : "Personal Data",
         "study" : "Étude : {{name}}",
         "shared" : "Partagé par : {{name}}",
         "just_name" : "{{name}}",
@@ -836,6 +904,9 @@
         "sign_in_btn" : "Se connecter",
         "device" : "Appareil : {{ device}}",
         "please_confirm" : "Veuillez confirmer le consentement sur le portail MIDATA, puis réessayez. Titre du consentement: {{ consent }}",
+
+        // TODO NEW: Confirm Access
+        "confirm_btn" : "Confirm Access",
         "requests_access" : "Accès demandé:",
         "shares_group" : "Groupe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
@@ -933,47 +1004,45 @@
         "addtask" : "Ajouter une tâche",
         "group_records" : "Enregistrements de ce groupe :",
         "study_records" : "Enregistrements partagés :",
-        "addmore": "Ajouter plus",
+        "addmore" : "Ajouter plus",
         "view_btn" : "Afficher",
 
         // TODO CHANGED
         // OLD: Install new plugin
         // NEW: Add more
         "install_btn" : "Installer un nouveau plugin",
-
-        "observations": "Mesures",
-        "calendar": "Calendrier"
+        "observations" : "Mesures",
+        "calendar" : "Calendrier"
     },
 
-    "measure": {
-        "body_weight": "Poids",
-        "activities_steps": "Pas",
-        "diary": "Journal personnel",
-        "subjective_condition": "Ambiance",
-        "heart": "Fréquence cardiaque et pression artérielle",
-        "documents": "Documents de santé",
-        "appointments": "Rendez-vous",
-        "sleep": "Données de sommeil",
-        "activities_heartrate": "Rythme cardiaque",
-        "body_bloodpressure": "Tension artérielle",
-        "files": "Documents"
+    "measure" : {
+        "body_weight" : "Poids",
+        "activities_steps" : "Pas",
+        "diary" : "Journal personnel",
+        "subjective_condition" : "Ambiance",
+        "heart" : "Fréquence cardiaque et pression artérielle",
+        "documents" : "Documents de santé",
+        "appointments" : "Rendez-vous",
+        "sleep" : "Données de sommeil",
+        "activities_heartrate" : "Rythme cardiaque",
+        "body_bloodpressure" : "Tension artérielle",
+        "files" : "Documents"
     },
 
-    "config": {
-        "fitbit": "Configuration Fitbit",
-        "withings": "Configuration de Withings"
+    "config" : {
+        "fitbit" : "Configuration Fitbit",
+        "withings" : "Configuration de Withings"
     },
 
     "spacesummary" : {
-        "records_to_view": "Enregistrements à afficher.",
-        "last_entry_at": "Dernière entrée à",
-        "no_entries_yet": "Pas encore d'enregistrement",
+        "records_to_view" : "Enregistrements à afficher.",
+        "last_entry_at" : "Dernière entrée à",
+        "no_entries_yet" : "Pas encore d'enregistrement",
 
         // TODO NEW: Newest entry from
         "newest_entry_from" : "Newest entry from",
-
-        "view_btn": "Vue",
-        "add_btn": "Ajouter"
+        "view_btn" : "Vue",
+        "add_btn" : "Ajouter"
     },
 
     "flexiblerecords" : {
@@ -990,26 +1059,27 @@
     },
 
     "addtask" : {
-        "task_type": "Type de tâche",
-        "task_title": "Titre de la tâche",
-        "description": "Description",
-        "frequency": "Fréquence",
-        "survey_name": "Remplir le sondage",
-        "survey_description": "Veuillez remplir les sondages que j'ai partagés avec votre compte.",
-        "survey_title": "Remplir un sondage"
+        "task_type" : "Type de tâche",
+        "task_title" : "Titre de la tâche",
+        "description" : "Description",
+        "frequency" : "Fréquence",
+
+        "survey_name" : "Remplir le sondage",
+        "survey_description" : "Veuillez remplir les sondages que j'ai partagés avec votre compte.",
+        "survey_title" : "Remplir un sondage"
     },
 
     "taskdetails" : {
-        "created_by": "Créé par:",
-        "frequency": "Fréquence:",
-        "plugin": "Plugin:",
-        "do_now_btn": "Faire maintenant"
+        "created_by" : "Créé par:",
+        "frequency" : "Fréquence:",
+        "plugin" : "Plugin:",
+        "do_now_btn" : "Faire maintenant"
     },
 
     "tasks" : {
-      "empty": "Vide",
-      "tasks_found": "Tâches trouvées:",
-      "more_btn": "Plus..."
+        "empty" : "Vide",
+        "tasks_found" : "Tâches trouvées:",
+        "more_btn" : "Plus..."
     },
 
     "addusers" : {
