@@ -86,7 +86,7 @@
 	  <div id="maincontent" ui-view ng-cloak></div>
 	  <footer id="footer">
 		 <div class="container">
-			<p translate="footer.copyright"></p>
+			<p translate="footer.copyright" translate-value-now="{{ currentDate | date:'yyyy' }}">(c) ETH Zürich</p>
 			<p><strong transplate="footer.portals"></strong></p>
 			   <ul>			     
 			      <li><a ui-sref="public.login" translate="footer.for_members">For Members of the Cooperative</a></li>
