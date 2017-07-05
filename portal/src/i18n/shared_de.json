@@ -1,7 +1,7 @@
 {
 
     "footer" : {
-        "copyright" : "(c) 2015-2017 ETH Zürich",
+        "copyright" : "(c) 2015-{{now}} ETH Zürich",
         "portals" : "MIDATA Portale:",
         "for_members" : "Für Kontoinhabende",
         "for_researchers" : "Für Forschungseinrichtungen",
