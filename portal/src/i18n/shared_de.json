@@ -1,6 +1,7 @@
 {
+
     "footer" : {
-        "copyright" : "(c) 2015-2016 ETH Zürich",
+        "copyright" : "(c) 2015-{{now}} ETH Zürich",
         "portals" : "MIDATA Portale:",
         "for_members" : "Für Kontoinhabende",
         "for_researchers" : "Für Forschungseinrichtungen",
@@ -11,10 +12,12 @@
     "navbar" : {
         // TODO
         "toggle_navigation" : "Navigation an/aus",
+        
         "login" : "Anmelden",
         "sign_up" : "Registrieren",
         "sign_out" : "Abmelden",
         "me" : "Mich",
+        "view" : "Ansehen",
         "overview" : "Übersicht",
         "messages" : "Nachrichten",
         "my_data" : "Meine Daten",
@@ -31,18 +34,16 @@
         "relogin" : "Melden Sie sich bitte neu an",
         "noconsent" : "Kein aktive Zustimmung erlaubt Daten bei der Zielperson hinzufügen.",
         "unsupported" : "Operation nicht unterstützt",
-
-        // TODO NEW: Full membership required!
-        "notrialuser_title" : "Full membership required!",
+        "notrialuser_title" : "Vollständige Mitgliedschaft notwendig!",
 
         // TODO NEW: In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.
-        "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
+        "notrialuser_detail" : "Um diese Funktion benutzen zu können, benötigen Sie eine vollständige Registrierung. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
 
         // TODO NEW: Midata cooperative membership required!
-        "mustbemember_title" : "Midata cooperative membership required!",
+        "mustbemember_title" : "Mitgliedschaft bei MIDATA Cooperative erforderlich!",
 
         // TODO NEW: In order to use this feature you must be member of the midata cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
-        "mustbemember_detail" : "In order to use this feature you must be member of the midata cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
+        "mustbemember_detail" : "Um diese Funktion benutzen zu können, müssen sie Mitglied der MIDATA Cooperative sein. Klicken Sie auf Ihre our username on the top right and check the 'Account Status' section for more information.",
 
         "notauthorized" : {
             "action" : "Sie sind nicht berechtigt diese Aktion auszuführen",
@@ -81,12 +82,9 @@
             "newpassword" : "Geben Sie bitte ein neues Kennwort ein!",
             "passphrase" : "Geben Sie bitte Ihr Passphrase ein.",
 
-            // TODO NEW: Group system must be provided.
             "groupsystem" : "Die Gruppe system must be provided.",
 
-            // TODO NEW: Missing or bad token.
             "token" : "Fehlendes oder falsches Token.",
-
             "agb" : "Allgemeine Geschäftsbedingungen nicht akzeptiert."
         },
 
@@ -96,7 +94,7 @@
 
             // TODO NEW: The requested space does no longer exist.
             "space" : "The requested space does no longer exist.",
-
+            
             "consent" : "Zustimmung nicht gefunden",
             "study" : "Diese Studie existiert nicht.",
             "content" : "Der Content-Type dieses Datensatzes ist nicht in der Platform registriert.",
@@ -136,7 +134,7 @@
         },
 
         "tooweak" : {
-            // TODO NEW: Passwords should contain of a mix of upper/lower case letters, numbers and special characters. -> should or must?
+
             "password" : "Kennwörter müssen eine Mischung von Klein-/Grossbuchstaben, Ziffern und spezielle Zeichen enthalten.",
             "passphrase" : "Passphrases müssen eine Mischung von Klein-/Grossbuchstaben, Ziffern und spezielle Zeichen enthalten."
         },
@@ -144,12 +142,11 @@
         "concurrent" : {
 
             // TODO NEW: Concurrent update. Please try again.
-            "update" : "Concurrent update. Please try again."
+            "update" : "Gleichlaufendes Update. Versuchen Sie bitte nochmals."
         },
 
         "expired" : {
 
-            // TODO NEW: Token has already expired. Please request a new one.
             "token" : "Dieses Token ist bereits abgelaufen. Fordern Sie bitte ein neues.",
             "code" : "Dieser Teilnahmecode ist abgelaufen."
         },
@@ -160,9 +157,7 @@
 
         "no_alter" : {
             "consent" : "Zustimmungen für Studien können nicht verändert werden.",
-
-            // TODO NEW: Setup can only be changed as long as study is in draft phase.
-            "study" : "Setup can only be changed as long as study is in draft phase."
+            "study" : "Der Studienaufbau kann nur während der Entwurfsphase geändert werden."
         }
 
     },
@@ -171,9 +166,7 @@
         "gender" : {
             "MALE" : "männlich",
             "FEMALE" : "weiblich",
-
-            // TODO NEW: other
-            "OTHER" : "other"
+            "OTHER" : "anderes"
         },
         "country" : {
             "CH" : "Schweiz"
@@ -194,13 +187,8 @@
             "STUDY_STARTED" : "Studie gestartet",
             "STUDY_FINISHED" : "Studie beendet",
             "STUDY_ABORTED" : "Studie abgebrochen",
-
-            // TODO NEW: Required information changed
-            "REQUIRED_INFORMATION_CHANGED" : "Required information changed",
-
-            // TODO NEW: Study setup changed
-            "STUDY_SETUP_CHANGED" : "Study setup changed",
-
+            "REQUIRED_INFORMATION_CHANGED" : "Erforderliche Informationen geändert",
+            "STUDY_SETUP_CHANGED" : "Studienaufbau geändert",
             "MEMBERSHIP_REQUEST" : "Mitgliedschaft erforderlich",
             "CONTACT_ADDRESS_CHANGED" : "Adresse geändert",
             "CONTRACT_SEND" : "Vertrag verschickt",
@@ -215,34 +203,19 @@
             "UNCONFIRMED" : "Nicht bestätigt"
         },
         "consenttype" : {
-
-            // TODO NEW: Other MIDATA Members
-
-            // TODO CHANGED
-            // OLD: Other MIDATA Members
-            // NEW: Other Account Holders
-            "CIRCLE" : "Other MIDATA Members",
-
+            "CIRCLE" : "Andere MIDATA Kontoinhabende",
             "EXTERNALSERVICE" : "Externe Applikation",
             "HCRELATED" : "Gesundheitswesen",
             "HEALTHCARE" : "Arzt / Spital",
             "STUDYPARTICIPATION" : "Studie",
             "STUDYRELATED" : "Studie",
-
-            // TODO NEW: Messaging
-            "IMPLICIT" : "Messaging"
+            "IMPLICIT" : "Nachrichtenaustausch"
         },
         "contractstatus" : {
             "NEW" : "Neu",
-
-            // TODO NEW: Contract requested
-            "REQUESTED" : "Contract requested",
-
-            // TODO NEW: Contract printed
-            "PRINTED" : "Contract printed",
-
-            // TODO NEW: Contract signed
-            "SIGNED" : "Contract signed"
+            "REQUESTED" : "Vertrag angefordert",
+            "PRINTED" : "Vertrag ausgedruckt",
+            "SIGNED" : "Vertrag unterschrieben"
         },
         "emailstatus" : {
             "REJECTED" : "Verworfen",
@@ -263,14 +236,11 @@
             // TODO NEW: Possible match
             "MATCH" : "Possible match",
 
-            // TODO NEW: MIDATA member rejected
-
             // TODO CHANGED
             // OLD: MIDATA member rejected
             // NEW: Account holder rejected
             "MEMBER_REJECTED" : "MIDATA member rejected",
 
-            // TODO NEW: Participation requested
             "REQUEST" : "Teilnahme angefordert",
             "RESEARCH_REJECTED" : "Verworfen durch Forscher"
         },
@@ -281,49 +251,23 @@
             "RUNNING" : "Study derzeit am Laufen"
         },
         "studyvalidationstatus" : {
-
-            // TODO CHANGED
-            // OLD: Validation not requested yet
-            // NEW: Draft (Not Validated)
-            "DRAFT" : "Validation not requested yet",
-
-            // TODO NEW: Study rejected by MIDATA
-            "REJECTED" : "Study rejected by MIDATA",
-
-            // TODO NEW: Study has been validated
-            "VALIDATED" : "Study has been validated",
-
-            // TODO NEW: Validation running
-            "VALIDATION" : "Validation running"
+            "DRAFT" : "Entwurf (nicht validiert)",
+            "REJECTED" : "Studie abgelehnt durch MIDATA",
+            "VALIDATED" : "Studie wurde validiert",
+            "VALIDATION" : "Validierung am Laufen"
         },
         "userrole" : {
-
-            // TODO NEW: Admin
             "ADMIN" : "Admin",
-
-            // TODO NEW: Any Role
-            "ANY" : "Any Role",
-
-            // TODO NEW: Developer
-            "DEVELOPER" : "Developer",
-
-            // TODO NEW: MIDATA member
-
-            // TODO CHANGED
-            // OLD: MIDATA member
-            // NEW: Account Holder
-            "MEMBER" : "MIDATA member",
-
-            // TODO NEW: Healthcare provider
-            "PROVIDER" : "Healthcare provider",
-
-            // TODO NEW: Researcher
-            "RESEARCH" : "Researcher"
+            "ANY" : "Jede Rolle",
+            "DEVELOPER" : "Entwickler",
+            "MEMBER" : "Kontoinhabende",
+            "PROVIDER" : "Gesundheitsfachperson",
+            "RESEARCH" : "Forscher"
         },
         "subuserrole" : {
 
             // TODO NEW: Doctor
-            "DOCTOR" : "Doctor",
+            "DOCTOR" : "Arzt",
 
             // TODO NEW: Nurse
             "NURSE" : "Nurse",
@@ -419,7 +363,6 @@
 
         // TODO NEW: Submit
         "submit_btn" : "Submit",
-
         "delete_btn" : "Löschen",
 
         "user" : {
@@ -429,10 +372,7 @@
             "city" : "Ort",
             "street" : "Strasse",
             "phone" : "Telefon",
-
-            // TODO NEW: Mobile
-            "mobile_phone" : "Mobile",
-
+            "mobile_phone" : "Mobiltelefon",
             "email" : "E-Mail"
         }
 
@@ -442,14 +382,11 @@
 
         // TODO NEW: 
         "rules" : "",
-
         "purpose" : "Zweck dieser MIDATA-Instanz",
         "access" : "Zugriff zu dieser MIDATA-Instanz",
         "uptime" : "Verfügbarkeit und Ausfallzeiten",
         "data" : "In dieser MIDATA-Instanz gespeicherten Daten",
-
-        // TODO NEW: Choose one of the portal from the bottom of the page to start. Each portal has its own LOGIN and SIGN UP page.
-        "start" : "Choose one of the portal from the bottom of the page to start. Each portal has its own LOGIN and SIGN UP page.",
+        "start" : "Wählen Sie einen Portal im unteren Bereich dieser Seite. Jedes Portal hat eine eigene Anmeldungs- und Registrierungsseite.",
 
         "localhost" : {
             "name" : "Lokale MIDATA-Instanz (localhost)",
@@ -495,10 +432,9 @@
             // TODO NEW: You may register user accounts for all four portals. Accounts will be validated by the MIDATA administration before they are unlocked.
             "access" : "You may register user accounts for all four portals. Accounts will be validated by the MIDATA administration before they are unlocked.",
 
-            // TODO NEW: This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time 
+            // TODO NEW: This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time
             "uptime" : "This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time ",
 
-            // TODO NEW: Store only test and demo data on this instance. There is no backup for test data.
             "data" : "Store only test and demo data on this instance. Daten werden nicht gesichert."
         },
 
@@ -509,7 +445,6 @@
 
             // TODO NEW: New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by the MIDATA office. Fake or test accounts are not allowed and will be blocked.
             "access" : "New user accounts have feature restrictions. Healthprovider, research and development accounts can only be used after validation by the MIDATA office. Fake or test accounts are not allowed and will be blocked.",
-
             "uptime" : "Ausfälle werden angekündigt.",
 
             // TODO NEW: This instance is for storing real data about real people. Data is backed up up on a daily basis.
@@ -520,10 +455,7 @@
     },
 
     "registration" : {
-
-        // TODO NEW: Sign Up
-        "sign_up" : "Sign Up",
-
+        "sign_up" : "Registrierung",
         "email" : "E-Mail",
         "password" : "Kennwort",
         "password_repetition" : "Kennwort wiederholen",
@@ -542,17 +474,11 @@
         "zip" : "PLZ",
         "country" : "Land",
         "phone" : "Telefon",
-
-        // TODO NEW: Mobile Phone
-        "mobile_phone" : "Mobile Phone",
-
+        "mobile_phone" : "Mobiltelefon",
         "coach" : "Kontaktperson bei MIDATA",
         "reason" : "Grund der Registrierung",
         "agb" : "AGB",
-
-        // TODO NEW: I accept the terms and conditions
-        "agb2" : "Ich akzeptiere  accept the terms and conditions",
-
+        "agb2" : "Ich akzeptiere die AGBs",
         "sign_up_btn" : "Registrieren"
     },
 
@@ -562,7 +488,6 @@
 
         // TODO NEW: Remember Me
         "remember_me" : "Remember Me",
-
         "sign_in_btn" : "Anmelden",
         "forgot_your_password" : "Kennwort vergessen?",
 
@@ -624,7 +549,6 @@
 
         // TODO NEW: Please keep your passphrase at a save place as there is no recovery function for it. If you ever loose your passphrase you need to contact support@midata.coop.
         "keep_passphrase_safe" : "Please keep your passphrase at a save place as there is no recovery function for it. If you ever loose your passphrase you need to contact support@midata.coop.",
-
         "old_passphrase" : "Altes Passphrase",
         "new_passphrase" : "Neues Passphrase",
         "change_passphrase_btn" : "Passphrase ändern",
@@ -654,9 +578,11 @@
 
         // TODO NEW: There are no spotlighted plugins yet.
         "no_spotlighted_plugins" : "There are no spotlighted plugins yet.",
-
         "plugins_you_may_like" : "Plugins die Ihnen gefallen könnten",
-        "no_recommendations" : "Wir haben noch keine Empfehlung für Sie."
+        "no_recommendations" : "Wir haben noch keine Empfehlung für Sie.",
+
+        // TODO NEW: Use Now
+        "install_now_btn" : "Sofort anwenden"
     },
 
     "providersearch" : {
@@ -692,12 +618,10 @@
         "no_providers" : "Keine",
         "provider_remove_btn" : "Entfernen",
         "provider_add_btn" : "Hinzufügen",
-
-        // TODO NEW: Information that must be shared for participation
-        "information_that_needs_sharing" : "Information that must be shared for participation",
+        "information_that_needs_sharing" : "Informationen die geteilt werden müssen um teilnehmen zu können",
 
         // TODO NEW: Your gender, year of birth and country
-        "information_restricted" : "Your gender, year of birth and country",
+        "information_restricted" : "Ihr Geschlecht, Geburtsjahr und Wohnland",
 
         // TODO NEW: Your complete demographic data. (name, birthday,address,..)
         "information_demographic" : "Your complete demographic data. (name, birthday,address,..)",
@@ -712,11 +636,9 @@
         "records_with_group" : "Records that belong to group:",
 
         // TODO NEW: Records that belong to owner:
-        "records_with_owner" : "Records that belong to owner:",
+        "records_with_owner" : "Datensätze die Records that belong to owner:",
 
-        // TODO NEW: Records created by app:
-        "records_from_app" : "Records created by app:",
-
+        "records_from_app" : "Datensätze erstellt durch eine App:",
         "owner_self" : "Ihre eigene Datensätze",
         "participation_history" : "Historie der Teilnahme",
         "history_event" : "Ereignis",
@@ -735,14 +657,17 @@
         "change_password_btn" : "Kennwort ändern",
         "change_passphrase_btn" : "Passphrase ändern",
         "repair_account_btn" : "Account reparieren",
+        "reset_spaces_btn" : "Reset Portal zurücksetzen",
         "delete_records_btn" : "Datensätze löschen",
         "account_repaired" : "Ihr Account wurde repariert.",
+        "spaces_resetted" : "Ihre Konfiguration wurde zurückgesetzt.",
         "settings" : "Einstellungen",
         "address" : "Adresse und Kontaktinformationen",
         "change_address_btn" : "Adresse ändern",
         "searchable" : "Ist Ihr Account durch andere MIDATA Kontoinhabende sichtbar?",
         "change_settings_btn" : "Einstellungen ändern",
         "change_settings_success" : "Die Einstellungen wurde aktualisiert"
+
     },
 
     "visualization" : {
@@ -757,7 +682,6 @@
 
         // TODO NEW: Grant this plugin access to:
         "grant_access" : "Grant this plugin access to:",
-
         "install_btn" : "Plugin hinzufügen",
         "location" : {
             "workspace" : "Workspace",
@@ -767,15 +691,12 @@
 
             // TODO NEW: Me Page
             "me" : "Me Page",
-
             "config" : "Konfigurations-Dashboard",
 
             // TODO NEW: My Data Dashboard
             "mydata" : "My Data Dashboard",
 
-            // TODO NEW: Social Dashboard
             "social" : "Social-Dashboard",
-
             "providers" : "Gesundheits-Dashboard",
             "studies" : "Forschungs-Dashboard"
         }
@@ -792,19 +713,21 @@
         // TODO NEW: I do not know yet to whom I want to share the data. Please add a passcode to this consent that I can give to a health professional of my choice.
         "use_passcode2" : "I do not know yet to whom I want to share the data. Please add a passcode to this consent that I can give to a health professional of my choice.",
 
-        // TODO NEW: Choose a secure passcode
         "choose_passcode" : "Wählen Sie ein sicheres Passcode",
-
-        "which_persons" : "Mit welchen Personen wollen Sie Daten teilen?",
+        "who_is_owner" : "Wer teilt Daten?",
+        "which_persons" : "Mit welchen Personen sind Daten geteilt?",
+        "set_owner_btn" : "Person auswählen, mit der Sie Daten teilen wollen",
+        "add_yourself_btn" : "Sie selbst hinzufügen",
         "add_person_btn" : "Neue Person hinzufügen",
         "add_usergroup_btn" : "Neues Team hinzufügen",
 
-        // TODO NEW: 3rd party access?
-        "reshare" : "Zugriff für 3rd party access?",
-
+		//TODO: Alexnader?
+        "reshare" : "Zugriff für Drittpartei?",
         "reshare2" : "Die durch diese Zustimmung berechtigten Personen dürfen die entsprechenden Daten weiter teilen.",
         "expiration_date" : "Ablaufdatum der Zustimmung:",
-        "created_before" : "Nur Daten teilen die erstellt wurden vor dem:",
+        
+        // TODO: Alexander?
+        "created_before" : "Daten nicht teilen, die erstellt wurden nach dem:",
         "share_what" : "Welche Daten wollen Sie teilen?",
         "consent_empty" : "Diese Zustimmung teilt zu Beginn keine Daten. Sie können die Daten, die Sie darüber teilen wollen, später wählen.",
         "create_btn" : "Erstellen und Daten wählen"
@@ -812,23 +735,17 @@
 
     "editconsent" : {
         "title" : "Zustimmung",
+        "owner" : "Besitzer der Zustimmung",
         "name" : "Name der Zustimmung",
         "type" : "Typ der Zustimmung",
         "status" : "Status der Zustimmung",
-        "password" : "Kennwort",
-
-        // TODO NEW: A password has been set if you need to relogin with the app.
-        "password_exists" : "A password has been set if you need to relogin with the app.",
-
-        "show_password" : "Kennwort anzeigen",
-        "password_shown" : "Benutzen Sie Ihre E-Mail-Adresse und Ihr Kennwort um sich anzumelden:",
         "people" : "Mit welcher Person/welchen Personen wollen Sie Daten teilen?",
         "add_people_btn" : "Andere Personen hinzufügen",
         "add_usergroup_btn" : "Team hinzufügen",
         "reshare" : "@:newconsent.reshare",
         "reshare2" : "@:newconsent.reshare2",
         "expiration_date" : "Ablaufdatum der Zustimmung:",
-        "created_before" : "Nur Daten teilen, die erstellt wurden vor dem:",
+        "created_before" : "Teilt keine Daten, die erstellt wurden nach dem:",
         "what_is_shared" : "Welche Daten sind geteilt?",
         "consent_empty" : "Diese Zustimmung teilt momentan keine Daten.",
         "type_circle" : "Diese Zustimmung teilt Daten mit anderen MIDATA Kontoinhabenden.",
@@ -853,12 +770,24 @@
         "title" : "Zustimmungen",
         "description" : "Zustimmungen geben Anderen (Gesundheitsfachpersonen, Freunde, Forscher, ...) Zugriff auf bestimmte Daten. Hier können Sie bestehende Zustimmung verwalten oder neue erstellen.",
         "count" : "Sie haben {{ count }} Zustimmungen:",
-        "name" : "Name",
+        "where_owner" : "Zustimmungen anzeigen, bei denen Sie Daten mit anderen teilen",
+        "where_authorized" : "Zustimmungen anzeigen, bei denen Daten mit Ihnen geteilt sind",
+        "name" : "Bezeichnung der Zustimmung",
+
+        // TODO NEW: Sharing Person
+        "ownerName" : "Besitzer",
         "type" : "Typ",
         "status" : "Status",
         "number_of_people" : "# Personen",
         "number_of_records" : "# Einträge",
         "add_new_btn" : "Neue Zustimmung hinzufügen"
+    },
+
+    "revconsents" : {
+        "count" : "Es gibt {{ count }} Zustimmungen, die Daten mit Ihnen teilen:",
+
+        // TODO NEW: Add Request for Consent
+        "add_new_btn" : "Neue Anfrage für eine Zustimmung"
     },
 
     "importrecords" : {
@@ -878,13 +807,10 @@
     "records" : {
         "title" : "Meine Daten",
 
-        // TODO NEW: Please use the 'share' and 'unshare' buttons to select which records you want to share with consent
         "share_instructions1" : "Benutzen Sie die Buttons 'teilen' und 'nicht teilen' um zu bestimmen welche Datensätze Sie teilen wollen",
 
-        // TODO NEW: This consent currently shares data with
         "share_instructions2" : "Diese Zustimmung teil momentan Daten mit ",
 
-        // TODO NEW: people.
         "share_instructions3" : "Personen.",
 
         // TODO NEW: In order to permanently
@@ -902,9 +828,7 @@
         // TODO NEW: on the delete button to the right of the record.
         "delete_instructions5" : "on the delete button to the right of the record.",
 
-        // TODO NEW: In order to permanently delete all records of a certain category double click on the delete button to the right of the category.
         "delete_instructions6" : "Um alle Datensätze einer bestimmten Kategorie permanent zu löschen, Doppelklicken Sie auf dem Button rechts der Kategorie.",
-
         "shared_with" : "Geteilt mit:",
         "records_used_for_app" : "Datensätze die durch der benutzt weden",
         "back_to_plugin" : "Zurück zur Betrachtung",
@@ -923,11 +847,23 @@
     },
 
     "oauth2" : {
+		// todo 
+        "requesting_app" : "Diese Applikation muss freigeschaltet werden:",
+        "sign_in" : "MIDATA Anmeldung für:",
+        "sign_in_btn" : "Anmelden",
+        "device" : "Device: {{ device}}",
+
+        // TODO NEW: Please confirm the application consent using MIDATA portal then retry. Consent title is: {{ consent }}
+        "please_confirm" : "Please confirm the application consent using MIDATA portal then retry. Consent title is: {{ consent }}",
+
+        "requests_access" : "Angeforderter Zugriff:",
+        "shares_group" : "Gruppe: {{ group }}",
+        "shares_format" : "Format: {{ format }}",
+        "shares_content" : "Inhalt: {{ content }}",
         "requesting_app" : "Diese Applikation benötigt eine Anmeldung:",
         "reshares_data" : "This application may share data it has access to with other accounts.",
         "allows_user_search" : "Other users of this app will be allowed to search for your account.",
-        "confirm_study" : "Participate study",
-        "sign_in_btn" : "Anmelden"
+        "confirm_study" : "Participate study"        
     },
 
     "dashboard" : {
@@ -983,7 +919,12 @@
         "study_records" : "Geteilte Datensätze:",
         "addmore" : "Mehr hinzufügen",
         "view_btn" : "Ansehen",
-        "install_btn" : "Neues Plugin installieren"
+        "install_btn" : "Neues Plugin installieren",
+
+        // TODO NEW: Measures
+        "observations" : "Measures",
+
+        "calendar" : "Kalender"
     },
 
     "measure" : {
@@ -1001,7 +942,8 @@
     },
 
     "config" : {
-        "fitbit" : "Fitbit-Konfiguration"
+        "fitbit" : "Fitbit-Konfiguration",
+        "withings" : "Withings-Konfiguration"
     },
 
     "spacesummary" : {
@@ -1050,10 +992,10 @@
     },
 
     "addusers" : {
-        "contacts" : "Kontakte",
+        "contacts" : "Vorhandene Kontakte",
         "all_users" : "Alle Benutzer",
-        "no_contacts" : "Sie haben noch keine Benutzer in Ihre Circles.",
         "no_contacts_to_add" : "Keine Kontakte können diesem Circle hinzugefügt werden.",
+        "search_by_email" : "E-Mail der gesuchten Person eingeben:",
         "search_user" : "Benutzer suchen",
         "searching" : "Suchen...",
         "no_matching_users" : "Kein Benutzer entspricht Ihre Suchkriterien.",

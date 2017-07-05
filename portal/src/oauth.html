@@ -78,7 +78,7 @@
 	  <div id="maincontent" ui-view ng-cloak></div>
 	  <footer id="footer">
 		 <div class="container">
-			<p translate="footer.copyright"></p>			   
+			<p translate="footer.copyright" translate-value-now="{{ currentDate | date:'yyyy' }}"></p>		   
 		 </div>
 	  </footer>
 	  </div>

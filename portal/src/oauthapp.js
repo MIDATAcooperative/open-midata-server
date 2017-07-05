@@ -39,6 +39,7 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'services', 'views', 'confi
    $rootScope.$on('$translatePartialLoaderStructureChanged', function () {
       $translate.refresh();
    });
+   $rootScope.currentDate = new Date();
    $translatePartialLoader.addPart("shared");
 }])
 .config(['$compileProvider', function ($compileProvider) {

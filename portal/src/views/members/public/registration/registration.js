@@ -12,16 +12,22 @@ angular.module('portal')
 	$scope.register = function() {		
 		
         $scope.myform.password.$setValidity('compare', $scope.registration.password ==  $scope.registration.password2);
-        $scope.myform.agb.$setValidity('mustaccept', $scope.registration.agb);
+        $scope.myform.agb.$setValidity('mustaccept', $scope.registration.agb);        
         if (!$scope.registration.agb) {
         	
         	$scope.myform.agb.$invalid = true;
         	$scope.myform.agb.$error = { 'mustaccept' : true };
         }
-        
-		
+        if ($scope.app) {
+        	$scope.myform.appAgb.$setValidity('mustaccept', $scope.registration.appAgb);
+            if (!$scope.registration.appAgb) {        	
+	        	$scope.myform.appAgb.$invalid = true;
+	        	$scope.myform.appAgb.$error = { 'mustaccept' : true };
+            }
+        }
+		 
 		$scope.submitted = true;	
-		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
+		if ($scope.error && $scope.error.field && $scope.error.type && $scope.myform[$scope.error.field]) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;
 		if (! $scope.myform.$valid) return;
 		

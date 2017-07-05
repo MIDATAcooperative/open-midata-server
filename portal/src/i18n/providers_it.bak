@@ -29,7 +29,9 @@
   
   "provider_usergroups" : {
     "title" : "Teams",
+  
     "name" : "Team",
+    "status" : "Status",
     "empty" : "You are not part of a team."
   },
   
@@ -41,9 +43,16 @@
   
   "provider_editusergroup" : {
     "title" : "Edit Team",
+    "former_members" : "Former Members",
     "name" : "Team Name",
-    "status" : "Status"
-  }
+    "status" : "Status",
+    "startDate" : "Member From",
+    "endDate" : "Member Until"
+  },
+  
+  "provider_memberdetails" : {
+    "propose_consent" : "Request Consent"
+   }
   
   
 }

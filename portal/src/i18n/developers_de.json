@@ -1,4 +1,5 @@
 {
+
     "developer_registration" : {
         "reason_fillout" : "Um die Wartezeit bis zur Freigabe des Accounts zu reduzieren, geben Sie bitte die Kontaktperson und der Zweck der Registrierung sorgfältig ein, damit ein Administrator ihr Anfrage rasch bearbeiten kann.",
         "sign_up_btn" : "Entwickler registrieren"
@@ -45,7 +46,7 @@
             "defaultQuery_mobile" : "Query das den Zugriff der App auf die Datenbank begrenzt. Der Zugriff muss eingeschränkt werden nach 'content' oder 'group' und kann eingeschränkt werden nach 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery" : "Query das den Zugriff des Plugins auf die Datenbank begrenzt. Der Zugriff muss mindestens eingeschränkt werden nach 'content', 'group', 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery_extra" : "Gültige Werte für 'content' oder 'format' sind im Developer Guide unter 'Format/Content' aufgelistet. Für erste Versionen kann der Vollzugriff erstattet werden mit { \"group\" : \"all\", \"group-system\" : \"v1\" }. Schränken Sie allerdings den Zugriff weiter ein, bevor das Plugin oder die App produktiv eingesetzt wird.",
-            "secret" : "Ihre App braucht dieses 'Secret' um sich anmelden zu können. Wählen Sie es nach Belieben."
+            "secret" : "Ihre App braucht dieses 'secret' um sich anmelden zu können. Wählen Sie es nach Belieben."
         }
     }
 }
