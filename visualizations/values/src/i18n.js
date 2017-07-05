@@ -12,11 +12,16 @@ de = {
 	"value" : "Wert:",
 	"context" : "Kontext:",
 	"date" : "Datum:",
-	"add_btn" : "Hinzufügen"	
+	"add_btn" : "Hinzufügen"
 },
 it = {
-		
+
 },
 fr = {
-		
+	"data_added" : "Donnée ajoutée avec succès.",
+	"what" : "Quoi:",
+	"value" : "Valeur:",
+	"context" : "Contexte:",
+	"date" : "Date:",
+	"add_btn" : "Ajouter"
 };

@@ -19,20 +19,45 @@ var en = {
 	"today_empty" : "No events tracked yet for today.",
 	"click_view" : "Click on the 'view' button below to open the tracker plugin.",
 	"more" : "{{ count }} more",
-	
+
 	"example1" : "Headache",
 	"example2" : "Feeling sick",
 	"example3" : "Beginning of menstruation",
 	"example4" : "Ate more than I wanted",
 	"example5" : "Thunderstorm outside",
-	"example6" : "Click 'Edit Event List' and change this list into something useful for you!"			
+	"example6" : "Click 'Edit Event List' and change this list into something useful for you!"
 },
 de = {
-		
+
 },
 it = {
-		
+
 },
 fr = {
-		
+	"data_added": "Données ajoutées avec succès.",
+			"prompt": "Parmis les évènements que vous souhaitez suivre s'en est-il produit aujourd'hui?",
+			"date": "Date des événements",
+			"events": "Événements/observations:",
+			"empty1": "Vide! Veuillez cliquez sur",
+			"empty2": "Editer la liste des événements",
+			"empty3": "le bouton pour ajouter un type d'événement.",
+			"add_btn": "Ajouter",
+			"edit_events_btn": "Modifier la liste des événements",
+			"calendar_btn": "Afficher dans le calendrier",
+			"available": "Modifier la liste des événements disponibles:",
+			"available_title": "Titre de l'événement/observation",
+			"remove_btn": "Supprimer",
+			"name_of_event": "Nom de l'événement à suivre",
+			"done_btn": "Terminé",
+			"cancel_btn": "Annuler",
+			"events_today": "Événements suivis aujourd'hui:",
+			"today_empty": "Aucun événement n'a encore été suivi aujourd'hui.",
+			"click_view": "Cliquez sur le bouton 'Afficher' ci-dessous pour ouvrir le plugin de suivi.",
+			"more": "{{Count}} plus",
+			"example1": "Mal de tête",
+			"example2": "Se sentir malade",
+			"example3": "Début de la menstruation",
+			"example4": "J'ai mangé plus que ce que je voulais",
+			"example5": "L'orage",
+			"example6": "Cliquez sur 'Modifier la liste des événements' et modifiez cette liste afin qu'elle vous soit utile!"
 };
