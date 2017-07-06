@@ -47,7 +47,7 @@ public class Query {
 	private MidataId apsId;		
 		
 	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId) throws AppException {
-		this.properties = properties;
+		this.properties = new HashMap<String, Object>(properties);
 		this.fields = fields;
 		this.cache = cache;
 		this.apsId = apsId;

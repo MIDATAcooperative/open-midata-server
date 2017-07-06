@@ -53,10 +53,10 @@ public class RecordManager {
 
 	public static RecordManager instance = new RecordManager();
 
-	public final static Map<String, Object> FULLAPS = new HashMap<String, Object>();
-	public final static Map<String, Object> FULLAPS_WITHSTREAMS = CMaps.map("streams", "true");
-	public final static Map<String, Object> FULLAPS_FLAT = CMaps.map("streams", "true").map("flat", "true");
-	public final static Map<String, Object> FULLAPS_FLAT_OWNER = CMaps.map("streams", "true").map("flat", "true").map("owner", "self");
+	public final static Map<String, Object> FULLAPS = Collections.unmodifiableMap(new HashMap<String, Object>());
+	public final static Map<String, Object> FULLAPS_WITHSTREAMS = Collections.unmodifiableMap(CMaps.map("streams", "true"));
+	public final static Map<String, Object> FULLAPS_FLAT = Collections.unmodifiableMap(CMaps.map("streams", "true").map("flat", "true"));
+	public final static Map<String, Object> FULLAPS_FLAT_OWNER = Collections.unmodifiableMap(CMaps.map("streams", "true").map("flat", "true").map("owner", "self"));
 	
 	public final static Set<String> INTERNALIDONLY = Sets.create("_id");
 	public final static Set<String> INTERNALID_AND_WACTHES = Sets.create("_id","watches");
@@ -69,8 +69,8 @@ public class RecordManager {
 			"app", "creator", "created", "name", "format",  "content", "code", "description", "isStream", "lastUpdated",
 			"data", "group", "watches", "stream");
 	//public final static String STREAM_TYPE = "Stream";
-	public final static Map<String, Object> STREAMS_ONLY = CMaps.map("streams", "only").map("flat", "true");
-	public final static Map<String, Object> STREAMS_ONLY_OWNER = CMaps.map("streams", "only").map("flat", "true").map("owner", "self");	
+	public final static Map<String, Object> STREAMS_ONLY = Collections.unmodifiableMap(CMaps.map("streams", "only").map("flat", "true"));
+	public final static Map<String, Object> STREAMS_ONLY_OWNER = Collections.unmodifiableMap(CMaps.map("streams", "only").map("flat", "true").map("owner", "self"));	
 
 	private static ThreadLocal<APSCache> apsCache = new ThreadLocal<APSCache>();
 
@@ -973,7 +973,7 @@ public class RecordManager {
 	 */
 	private void resetInfo(MidataId who) throws AppException {
 		AccessLog.logBegin("start reset info user="+who.toString());
-		List<Record> result = list(who, who, RecordManager.STREAMS_ONLY_OWNER, Sets.create("_id", "owner"));
+		List<Record> result = list(who, who, RecordManager.STREAMS_ONLY, Sets.create("_id", "owner"));
 		for (Record stream : result) {
 			try {
 			  AccessLog.log("reset stream:"+stream._id.toString());
