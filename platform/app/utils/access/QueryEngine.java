@@ -130,7 +130,7 @@ class QueryEngine {
 				String k = getInfoKey(aggrType, obj.getString("groups"), obj.getString("contents"), obj.getString("formats"), owner, obj.getString("apps"));
 				
 				result.put(k, inf);
-				Date from = inf.calculated != null ? new Date(inf.calculated.getTime() - 1000) : new Date(inf.newest.getTime() + 1);
+				Date from = inf.calculated != null && (inf.calculated.getTime() - 1000 > inf.newest.getTime() + 1) ? new Date(inf.calculated.getTime() - 1000) : new Date(inf.newest.getTime() + 1);
 				q = new Query(q, CMaps.map("created-after", from));
 			
 				long diff = myaps.getLastChanged() - from.getTime();
