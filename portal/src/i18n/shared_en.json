@@ -868,5 +868,10 @@
      "empty_result" : "No matching teams found.",
      "add_individuals_btn" : "Add As Individual People To Consent",
      "add_group_btn" : "Add As Changing Team To Consent"
+  },
+  
+  "confirm" : {
+    "title" : "Are you really sure?",    
+    "cancel" : "Cancel"
   }
 }
