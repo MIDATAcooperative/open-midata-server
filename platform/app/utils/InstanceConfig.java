@@ -68,8 +68,13 @@ public class InstanceConfig {
 		else if (instanceTypeStr.equals("demo")) instanceType = InstanceType.DEMO;
 		else if (instanceTypeStr.equals("test")) instanceType = InstanceType.TEST;
 		else if (instanceTypeStr.equals("prod")) instanceType = InstanceType.PROD;
+		else if (instanceTypeStr.equals("perftest")) instanceType = InstanceType.PERFTEST;
 		
-		defaultHost = Play.application().configuration().getString("portal.originUrl");
+		if (instanceType.disableCORSProtection()) {
+		  defaultHost = "*";
+		} else {
+		  defaultHost = Play.application().configuration().getString("portal.originUrl");
+		}
 		
 		pluginServerDomain = Play.application().configuration().getString("visualizations.server");
 		
