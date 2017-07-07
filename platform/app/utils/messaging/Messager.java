@@ -29,7 +29,7 @@ public class Messager {
 		mailSender = Akka.system().actorOf(Props.create(MailSender.class), "mailSender");
 	}
 	
-	public static void sendTextMail(String email, String fullname, String subject, String content) {
+	public static void sendTextMail(String email, String fullname, String subject, String content) {		
 		mailSender.tell(new Message(email, fullname, subject, content), ActorRef.noSender());
 	}
 	
@@ -148,8 +148,10 @@ class MailSender extends UntypedActor {
 	public void onReceive(Object message) throws Exception {
 		try {
 		if (message instanceof Message) {
-			Message msg = (Message) message;
-			MailUtils.sendTextMail(msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText());
+			if (!InstanceConfig.getInstance().getInstanceType().disableMessaging()) {
+			  Message msg = (Message) message;
+			  MailUtils.sendTextMail(msg.getReceiverEmail(), msg.getReceiverName(), msg.getSubject(), msg.getText());
+			}
 		} else {
 		    unhandled(message);
 	    }	
