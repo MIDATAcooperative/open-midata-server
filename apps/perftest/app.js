@@ -36,7 +36,7 @@ jsonRecords.factory('server', [ '$http', function($http) {
 		var t = new Date();	
 		return $http.post(service.baseurl+"/api/members/join", data)
 		       .then(function(response) {
-		    	  service.out += ".";
+		    	  //service.out += ".";
 		    	  service.requests++;
 		    	  service.time += new Date().getTime() - t.getTime(); 
 		    	  return response.data; 
@@ -56,7 +56,7 @@ jsonRecords.factory('server', [ '$http', function($http) {
 		var t = new Date();			
 		return $http.post(service.baseurl+"/api/members/login", data)
 				.then(function(response) {
-			    	  service.out += ".";
+			    	  //service.out += ".";
 			    	  service.requests++;
 			    	  service.time += new Date().getTime() - t.getTime(); 
 			    	  return response.data; 
@@ -80,7 +80,7 @@ jsonRecords.factory('server', [ '$http', function($http) {
 		// submit to server
 		return $http.post(service.baseurl+"/v1/auth", data)
 		  .then(function(response) {
-	    	  service.out += ".";
+	    	  //service.out += ".";
 	    	  service.requests++;
 	    	  service.time += new Date().getTime() - t.getTime(); 
 	    	  return response.data; 
@@ -136,7 +136,7 @@ jsonRecords.factory('server', [ '$http', function($http) {
 		// submit to server
 		return $http.post(service.baseurl+ "/v1/records/create", data)
 		.then(function(response) {
-		    	  service.out += ".";
+		    	  //service.out += ".";
 		    	  service.requests++;
 		    	  service.time += new Date().getTime() - t.getTime(); 
 		    	  return response.data; 
@@ -146,6 +146,32 @@ jsonRecords.factory('server', [ '$http', function($http) {
 		    	  service.time += new Date().getTime() - t.getTime();
 			      return response.data;
 		       });;
+	};
+	
+	service.wipeUser = function(session, userId) {
+		var data = {
+			"email" : "user"+userId+"@instant-mail.de", 			
+			"password" : "Secret123"
+		};			
+		var t = new Date();			
+		return $http({
+			  "method" : "DELETE",
+			  "url" : service.baseurl+"/api/shared/users/wipe",
+			  "headers" : {
+				  "X-Session-Token" : session.sessionToken
+			  }
+		})
+		.then(function(response) {
+	    	  //service.out += ".";
+	    	  service.requests++;
+	    	  service.time += new Date().getTime() - t.getTime(); 
+	    	  return response.data; 
+       }, function(response) {
+    	  service.out += "F";
+    	  service.requests++;
+    	  service.time += new Date().getTime() - t.getTime();
+	      return response.data;
+       });
 	};
 		
 		
@@ -210,6 +236,27 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 						};
 						
 						return scedule(0, $scope.setup.numCreate, f2);						
+					}); 
+				} 
+			};
+		
+			var part = Math.floor($scope.setup.usersCreate / $scope.setup.numSync); 
+			for (var x=0;x<$scope.setup.numSync;x++) {
+				scedule(part * x, part, f)
+				.then(function() { server.out += "ok"; $scope.success = true; });	
+			}
+						
+		};
+		
+        $scope.execute3 = function() {
+			
+			server.out = "";
+			server.time = server.requests = 0;
+			
+			var f = function(i) { 
+				return function() { 
+					return server.loginUserPortal(i).then(function(session) {						
+						return server.wipeUser(session);						
 					}); 
 				} 
 			};
