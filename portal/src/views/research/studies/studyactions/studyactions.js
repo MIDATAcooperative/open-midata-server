@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('StudyActionsCtrl', ['$scope', '$state', 'server', 'views', 'status', function($scope, $state, server, views, status) {
+.controller('StudyActionsCtrl', ['$scope', '$state', 'server', 'views', 'apps', 'status', function($scope, $state, server, views, apps, status) {
 	
 	$scope.studyId = $state.params.studyId;
 	$scope.crit = { group : "" };
@@ -11,6 +11,11 @@ angular.module('portal')
 		$scope.status.doBusy(server.get(jsRoutes.controllers.research.Studies.get($scope.studyId).url))
 	    .then(function(data) { 				
 			$scope.study = data.data;	
+		});
+		
+		apps.getApps({ "targetUserRole" : "RESEARCH" }, ["filename", "name"])
+		.then(function(data) {
+			$scope.plugins = data.data;
 		});
 		
 	};
@@ -29,8 +34,15 @@ angular.module('portal')
 	
 	
 	$scope.addTask = function() {	 
-	  views.setView("addtask", { "studyId" : $scope.studyId, "group" : $scope.group });	 
+	   views.setView("addtask", { "studyId" : $scope.studyId, "group" : $scope.group });
 	};		
+	
+	$scope.addApplication = function() {	 	  	  
+	  $scope.status.doAction("addapplication", server.post(jsRoutes.controllers.research.Studies.addApplication($scope.studyId, $scope.group).url, $scope.crit))
+		.then(function(result) {
+					  		   
+		});
+	};
 	
 	$scope.reload();
 	

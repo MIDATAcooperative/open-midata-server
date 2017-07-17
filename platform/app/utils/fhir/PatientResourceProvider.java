@@ -1,6 +1,8 @@
 package utils.fhir;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +12,9 @@ import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
+
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
 
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
@@ -32,6 +37,7 @@ import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import models.Member;
 import models.MidataId;
 import models.Record;
+import models.StudyParticipation;
 import utils.RuntimeConstants;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
@@ -63,7 +69,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     	MidataId targetId = new MidataId(id);
     	
     	ExecutionInfo info = info();
-    	List<Record> allRecs = RecordManager.instance.list(info.executorId, info.targetAPS, CMaps.map("owner", targetId).map("format",  "fhir/Patient"), Record.ALL_PUBLIC);
+    	List<Record> allRecs = RecordManager.instance.list(info.executorId, info.targetAPS, CMaps.map("owner", targetId).map("format",  "fhir/Patient").map("data.id",targetId), RecordManager.COMPLETE_DATA);
     	
     	if (allRecs == null || allRecs.size() == 0) return null;
     	
@@ -355,7 +361,12 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		builder.restriction("telecom", true, QueryBuilder.TYPE_CODE, "telecom.value");
 		builder.restriction("active", false, QueryBuilder.TYPE_BOOLEAN, "active");
 		
-		return query.execute(info);
+		List<Record> recs = query.execute(info);
+		List<Record> result = new ArrayList<Record>(recs.size());
+		for (Record record : recs) {
+			if (record.data.get("id").equals(record.owner.toString())) result.add(record);
+		}
+		return result;
 	}
     
     public Patient generatePatientForAccount(Member member) {
@@ -374,7 +385,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     }
     
     public void updatePatientForAccount(Member member) throws AppException {
-    	List<Record> allExisting = RecordManager.instance.list(member._id, member._id, CMaps.map("format", "fhir/Patient").map("owner", "self"), Record.ALL_PUBLIC);
+    	List<Record> allExisting = RecordManager.instance.list(member._id, member._id, CMaps.map("format", "fhir/Patient").map("owner", "self").map("data.id", member._id.toString()), Record.ALL_PUBLIC);
     	
     	if (allExisting.isEmpty()) {    	
     	  Patient patient = generatePatientForAccount(member);
@@ -403,14 +414,57 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
       patientProvider.updatePatientForAccount(member);
     }
     
+    public static Patient generatePatientForStudyParticipation(StudyParticipation part, Member member) {
+    	
+    	Calendar cal = Calendar.getInstance();
+    	cal.setTime(member.birthday);
+    	cal.set(Calendar.MONTH, 0);
+    	cal.set(Calendar.DAY_OF_MONTH, 1);
+    	cal.set(Calendar.HOUR_OF_DAY, 0);
+    	cal.set(Calendar.MINUTE, 0);
+    	cal.set(Calendar.SECOND, 0);
+    	cal.set(Calendar.MILLISECOND, 0);
+    	    	
+    	Patient p = new Patient();
+		p.setId(part._id.toString());
+		p.addName().setText(part.ownerName);
+		p.setBirthDate(cal.getTime());		
+		p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
+		
+		return p;    	    			
+    }
+    
+    public static void createPatientForStudyParticipation(StudyParticipation part, Member member) throws AppException {
+        ExecutionInfo inf = new ExecutionInfo();
+        inf.executorId = member._id;
+        inf.targetAPS = member._id;
+        inf.ownerId = member._id;
+        inf.pluginId = RuntimeConstants.instance.portalPlugin;
+        
+        PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
+        PatientResourceProvider.setExecutionInfo(inf);
+        
+        Patient patient = generatePatientForStudyParticipation(part, member);
+    	Record record = PatientResourceProvider.newRecord("fhir/Patient");
+    	patientProvider.prepare(record, patient);		
+    	patientProvider.insertRecord(record, patient);
+    	
+    	RecordManager.instance.share(member._id, member._id, part._id, Collections.singleton(record._id), false);
+    }
+    
     public void prepare(Record record, Patient thePatient) {
     	record.content = "Patient";    	
     	record.name=thePatient.getName().get(0).getNameAsSingleString();
+    	if (record.name == null || record.name.length() == 0) record.name = thePatient.getName().get(0).getText();
     }
     
     public void processResource(Record record, Patient resource) throws AppException {
+    	if (!resource.getId().equals(record.owner.toString())) {
+    		resource.setActive(false);
+    	}
     	super.processResource(record, resource);
-		resource.setId(record.owner.toString());		
+    	
+		//resource.setId(record.owner.toString());		
 	}
     /*
     private Set<MidataId> accessableAccounts(MidataId executor) throws AppException {

@@ -47,7 +47,11 @@
   "studyactions" : {
     "description" : "When the study is running you can share data with participants and have them complete tasks. (Like fill out a form)",
     "select_group_btn" : "Select Group",
-    "add_task_btn" : "Add Task for Participants"
+    "add_task_btn" : "Add Task for Participants",
+    "plugin" : "Research Application",
+    "device" : "Device Code",
+    "restrict" : "Restrict Read to Group",
+    "add_application_btn" : "Add Study Data Providing Application"
   },
   
   "studyfields" : {

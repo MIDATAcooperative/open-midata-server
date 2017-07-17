@@ -20,6 +20,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import actions.APICall;
 import controllers.APIController;
 import controllers.Circles;
+import controllers.MobileAPI;
+import controllers.members.HealthProvider;
 import models.AccessPermissionSet;
 import models.Admin;
 import models.Consent;
@@ -28,7 +30,9 @@ import models.History;
 import models.Info;
 import models.Member;
 import models.MidataId;
+import models.MobileAppInstance;
 import models.ParticipationCode;
+import models.Plugin;
 import models.Record;
 import models.ResearchUser;
 import models.Study;
@@ -45,13 +49,16 @@ import models.enums.InformationType;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
+import models.enums.PluginStatus;
 import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
+import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.InstanceConfig;
+import utils.access.Feature_FormatGroups;
 import utils.access.Query;
 import utils.access.RecordManager;
 import utils.auth.AdminSecured;
@@ -360,7 +367,7 @@ public class Studies extends APIController {
 		MidataId studyid = new MidataId(id);
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));
-		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history","groups","recordQuery"));
+		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history","groups","recordQuery","requiredInformation"));
 		
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		if (study.validationStatus == StudyValidationStatus.VALIDATED) return badRequest("Study has already been validated.");
@@ -368,6 +375,20 @@ public class Studies extends APIController {
 		
 		if (study.groups == null || study.groups.size() == 0) return badRequest("Please define study groups before validation!");
 		if (study.recordQuery == null || study.recordQuery.isEmpty()) return badRequest("Please define record sharing query before validation!");
+		
+		// Checks
+
+		if (study.requiredInformation.equals(InformationType.RESTRICTED)) {
+			String groupSystem = (String) study.recordQuery.get("group-system");
+			if (groupSystem == null) groupSystem = "v1";
+			
+			Map<String, Object> properties = new HashMap<String, Object>(study.recordQuery);
+			Feature_FormatGroups.convertQueryToContents(groupSystem, properties);
+			
+			if (!properties.containsKey("content")) throw new BadRequestException("error.invalid.access_query", "Query does not restrict content."); 
+			if (Query.getRestriction(properties.get("content"), "content").contains("Patient")) throw new BadRequestException("error.invalid.sharing", "Restricted study may not share Patient records.");
+			
+		}
 		
 		
 		study.setValidationStatus(StudyValidationStatus.VALIDATION); 
@@ -480,7 +501,7 @@ public class Studies extends APIController {
 		
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
-		if (study.participantSearchStatus != ParticipantSearchStatus.CLOSED) return badRequest("Participant search must be closed before.");
+		if (study.participantSearchStatus == ParticipantSearchStatus.PRE) return badRequest("Participant search must be done before.");
 		if (study.executionStatus != StudyExecutionStatus.PRE) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 		
 		study.setExecutionStatus(StudyExecutionStatus.RUNNING);
@@ -587,6 +608,56 @@ public class Studies extends APIController {
 		RecordManager.instance.shareAPS(consent._id, userId, participants);
 				
 		return ok(JsonOutput.toJson(consent, "Consent", Sets.create("_id", "authorized")));		
+	}
+	
+	/**
+	 * add an application for data processing
+	 * @return status ok
+	 * @throws AppException
+	 * @throws JsonValidationException
+	 */
+	@Security.Authenticated(ResearchSecured.class)
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	public static Result addApplication(String id, String group) throws AppException, JsonValidationException {
+		MidataId userId = new MidataId(request().username());
+		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId studyId = new MidataId(id);
+		
+		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history", "name"));
+		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
+		if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
+		if (study.executionStatus != StudyExecutionStatus.RUNNING) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
+		
+		// validate json
+		JsonNode json = request().body().asJson();	
+		JsonValidation.validate(json, "plugin", "device");
+		
+		String device = JsonValidation.getString(json, "device");
+		MidataId pluginId = JsonValidation.getMidataId(json, "plugin");
+		boolean restrictRead = JsonValidation.getBoolean(json, "restrictread");
+		
+		Plugin plugin = Plugin.getById(pluginId, Plugin.ALL_DEVELOPER);
+		if (plugin == null) throw new BadRequestException("error.invalid.plugin", "Plugin not found.");
+		if (plugin.status == PluginStatus.DELETED) if (plugin.status == PluginStatus.DELETED) throw new BadRequestException("error.invalid.plugin", "Plugin not found.");
+		if (plugin.targetUserRole != UserRole.RESEARCH) throw new BadRequestException("error.invalid.plugin", "Wrong target role.");
+				
+		User researcher = User.getById(userId, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));
+
+		MobileAppInstance appInstance = MobileAPI.installApp(userId, plugin._id, researcher, device, false, false);
+		Map<String,Object> query = appInstance.sharingQuery;
+		query.put("study", studyId.toString());
+		if (restrictRead) query.put("study-group", group);
+		query.put("target-study", studyId.toString());
+		query.put("target-study-group", group);
+			    		
+		
+		appInstance.set(appInstance._id, "sharingQuery", query);
+		
+		HealthProvider.confirmConsent(appInstance.owner, appInstance._id);
+		appInstance.status = ConsentStatus.ACTIVE;
+				
+		return ok();
 	}
 	
 	/**

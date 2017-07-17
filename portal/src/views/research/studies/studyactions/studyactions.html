@@ -15,7 +15,26 @@
 		   
 		   
 		   <button class="btn btn-default" ng-click="setGroup();" translate="studyactions.select_group_btn"></button>	  
-           <button class="btn btn-default" ng-click="addTask();" ng-disabled="group == null" translate="studyactions.add_task_btn"></button>
+		   <!--  <button class="btn btn-default" ng-click="addTask();" translate="studyactions.add_task_btn"></button> -->
+           
+           <form class="form-horizontal" ng-show="group != null">
+             <formrow myid="plugin" label="studyactions.plugin">
+               <select ng-model="crit.plugin" class="form-control" ng-options="plugin._id as plugin.name for plugin in plugins"></select>
+             </formrow>
+             <formrow myid="device" label="studyactions.device">
+               <input type="text" id="device" name="device" ng-model="crit.device" class="form-control">
+             </formrow>
+             <formrow myid="restrictread" label="studyactions.restrict">
+               <div class="checkbox">
+                 <label>
+                   <input type="checkbox" ng-model="crit.restrictread">
+                 </label> 
+               </div>
+             </formrow>
+             <button class="btn btn-default" ng-click="addApplication();" translate="studyactions.add_application_btn"></button>          
+             
+           </form>
+                      
            </div>
    		   </loader>
 		</div>	

@@ -385,7 +385,7 @@ public class Circles extends APIController {
 	 * @throws AppException
 	 */
 	public static void autosharePatientRecord(Consent consent) throws AppException {
-		List<Record> recs = RecordManager.instance.list(consent.owner, consent.owner, CMaps.map("owner", "self").map("format", "fhir/Patient"), Sets.create("_id"));
+		List<Record> recs = RecordManager.instance.list(consent.owner, consent.owner, CMaps.map("owner", "self").map("format", "fhir/Patient").map("data.id", consent.owner.toString()), Sets.create("_id"));
 		if (recs.size()>0) {
 		  RecordManager.instance.share(consent.owner, consent.owner, consent._id, Collections.singleton(recs.get(0)._id), true);
 		}
@@ -587,8 +587,12 @@ public class Circles extends APIController {
 			Map<String, Object> query = consent.sharingQuery;
 			if (query == null) query = Circles.getQueries(consent.owner, consent._id);			
 			if (query!=null) {
-				Circles.setQuery(executor, consent.owner, consent._id, query);
-				RecordManager.instance.applyQuery(executor, query, consent.owner, consent._id, true);	 
+				if (consent.type.equals(ConsentType.EXTERNALSERVICE)) {
+				  RecordManager.instance.shareByQuery(executor, consent.owner, consent._id, query);				  
+				} else {
+				  Circles.setQuery(executor, consent.owner, consent._id, query);
+				  RecordManager.instance.applyQuery(executor, query, consent.owner, consent._id, true);
+				}
 			}
 		} else if (!active && wasActive) {
 			Set<MidataId> auth = consent.authorized;

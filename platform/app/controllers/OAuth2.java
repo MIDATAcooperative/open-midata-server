@@ -12,6 +12,7 @@ import models.Member;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
+import models.ResearchUser;
 import models.User;
 import models.enums.ConsentStatus;
 import models.enums.UserRole;
@@ -105,6 +106,7 @@ public class OAuth2 extends Controller {
 		switch (role) {
 		case MEMBER : user = Member.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
 		case PROVIDER : user = HPUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
+		case RESEARCH : user = ResearchUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
 		}
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
 		if (!Member.authenticationValid(password, user.password)) {

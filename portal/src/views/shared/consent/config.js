@@ -22,5 +22,10 @@ angular.module('portal')
 	      url: '/consent/:consentId',	      
 	      templateUrl: 'views/shared/consent/editconsent.html',
 	      dashId : 'circles'	      
+	    })
+	    .state('research.editconsent', {
+	      url: '/consent/:consentId',	      
+	      templateUrl: 'views/shared/consent/editconsent.html',
+	      dashId : 'circles'	      
 	    });
 }]);

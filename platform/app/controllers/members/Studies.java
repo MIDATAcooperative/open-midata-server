@@ -43,6 +43,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.PatientResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -238,6 +239,8 @@ public class Studies extends APIController {
 			part.pstatus = ParticipationStatus.CODE;
 		} else part.pstatus = ParticipationStatus.MATCH;
 		
+		//PatientResourceProvider.generatePatientForStudyParticipation(part, member);
+		
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(member.birthday);
 		part.yearOfBirth = cal.get(Calendar.YEAR);
@@ -333,6 +336,13 @@ public class Studies extends APIController {
 		
 		participation.setPStatus(ParticipationStatus.REQUEST);						
 		participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, null));
+				
+		if (study.requiredInformation.equals(InformationType.RESTRICTED)) {
+			PatientResourceProvider.createPatientForStudyParticipation(participation, user);
+		} else {
+			Circles.autosharePatientRecord(participation);
+		}
+		
 		Circles.consentStatusChange(userId, participation, ConsentStatus.ACTIVE);				
 				
 	}

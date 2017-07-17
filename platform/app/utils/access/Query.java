@@ -18,6 +18,7 @@ import models.FormatInfo;
 import models.MidataId;
 import models.Plugin;
 import models.RecordGroup;
+import models.Study;
 import utils.AccessLog;
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -384,6 +385,19 @@ public class Query {
 				 } else resolved.add(app.toString());
 			 }
 			 properties.put("app", resolved);
+		 }
+		 
+		 if (properties.containsKey("study")) {
+			 Set<String> studies = getRestriction("study");
+			 Set<String> resolved = new HashSet<String>();
+			 for (Object study : studies) {
+				 if (!MidataId.isValid(study.toString())) {
+					 Study s = Study.getByCodeFromMember(study.toString(), Sets.create("_id"));					 
+					 if (s!=null) resolved.add(s._id.toString());
+					 else throw new BadRequestException("error.internal", "Queried for unknown study.");
+				 } else resolved.add(study.toString());
+			 }
+			 properties.put("study", resolved);
 		 }
 		 
 		 if (properties.containsKey("owner")) {
