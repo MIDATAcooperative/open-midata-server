@@ -88,9 +88,9 @@ public class Feature_AccountQuery extends Feature {
 		if (q.returns("owner") || oname) {
 			for (DBRecord record : targetRecords) {
 				
-					record.owner = c.type.equals(ConsentType.STUDYPARTICIPATION) ? c._id : c.owner;
+					record.owner = (c.type.equals(ConsentType.STUDYPARTICIPATION) && c.ownerName != null) ? c._id : c.owner;
 					
-					if (oname) {
+					if (oname && c.ownerName != null) {
 						QueryEngine.fetchFromDB(q, record);
 						RecordEncryption.decryptRecord(record);						
 						record.meta.put("ownerName", c.ownerName);

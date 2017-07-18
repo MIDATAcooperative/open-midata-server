@@ -24,8 +24,8 @@ public class StudyRelated extends Consent {
 		Model.insert(collection, this);	
 	}
 	
-	public static StudyRelated getByGroupAndStudy(String group, MidataId studyId, Set<String> fields) throws InternalServerException {
-		return Model.get(StudyRelated.class, collection, CMaps.map("type", ConsentType.STUDYRELATED).map("group", group).map("study", studyId), fields);
+	public static Set<StudyRelated> getByGroupAndStudy(String group, MidataId studyId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(StudyRelated.class, collection, CMaps.map("type", ConsentType.STUDYRELATED).map("group", group).map("study", studyId), fields);
 	}
 	
 	public static Set<StudyRelated> getByStudy(MidataId studyId, Set<String> fields) throws InternalServerException {

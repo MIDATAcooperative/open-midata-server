@@ -51,7 +51,8 @@
     "plugin" : "Research Application",
     "device" : "Device Code",
     "restrict" : "Restrict Read to Group",
-    "add_application_btn" : "Add Study Data Providing Application"
+    "add_application_btn" : "Add Study Data Providing Application",
+    "linked_apps" : "Application Consents"
   },
   
   "studyfields" : {

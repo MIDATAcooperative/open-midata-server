@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +45,7 @@ import models.Task;
 import models.User;
 import models.enums.AssistanceType;
 import models.enums.ConsentStatus;
+import models.enums.EntityType;
 import models.enums.EventType;
 import models.enums.Frequency;
 import models.enums.InformationType;
@@ -82,6 +85,7 @@ import utils.json.JsonValidation.JsonValidationException;
  */
 public class Studies extends APIController {
 
+	public final static int STUDY_CONSENT_SIZE = 100;
 	/**
 	 * create a new study 
 	 * @return Study
@@ -563,6 +567,49 @@ public class Studies extends APIController {
 		return ok();
 	}
 	
+	public static StudyRelated findFreeSharingConsent(Study study, String group, boolean ifDataShared) throws AppException {
+		MidataId ownerId = study.createdBy;
+		Set<StudyRelated> consents = StudyRelated.getByGroupAndStudy(group, study._id, Consent.ALL);
+		if (consents.isEmpty() && ifDataShared) return null;
+		
+		for (StudyRelated sr : consents) {
+			if (sr.authorized.size() < STUDY_CONSENT_SIZE) {
+				return sr;
+			}
+		}		
+		StudyRelated consent = new StudyRelated();
+		consent._id = new MidataId();
+		consent.study = study._id;
+		consent.group = group;			
+		consent.owner = ownerId;
+		consent.name = "Study:"+study.name;		
+		consent.authorized = new HashSet<MidataId>();
+		consent.dateOfCreation = new Date();		
+		consent.status = ConsentStatus.ACTIVE;
+					
+		RecordManager.instance.createAnonymizedAPS(ownerId, ownerId, consent._id, true);
+		Circles.prepareConsent(consent);
+		consent.add();
+		return consent;
+	}
+	
+	public static void joinSharing(MidataId executor, Study study, String group, boolean ifDataShared, List<StudyParticipation> part) throws AppException {
+		StudyRelated sr = findFreeSharingConsent(study, group, ifDataShared);
+		if (sr == null) return;
+		
+		Set<MidataId> ids = new HashSet<MidataId>();
+		Iterator<StudyParticipation> it = part.iterator();
+		int remaining = part.size();
+		while (sr.authorized.size() + remaining > STUDY_CONSENT_SIZE) {
+			for (int i=0;i<STUDY_CONSENT_SIZE - sr.authorized.size();i++) { ids.add(it.next().owner);remaining--; }
+			Circles.addUsers(executor, EntityType.USER, sr, ids);
+			ids.clear();
+			sr = findFreeSharingConsent(study, group, ifDataShared);
+		}
+		while (it.hasNext()) ids.add(it.next().owner);
+		Circles.addUsers(executor, EntityType.USER, sr, ids);				
+	}
+	
 	/**
 	 * share records with a group of participants of a study
 	 * @param id ID of study
@@ -582,32 +629,14 @@ public class Studies extends APIController {
 		if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
 		if (study.executionStatus != StudyExecutionStatus.RUNNING) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 		
-		StudyRelated consent = StudyRelated.getByGroupAndStudy(group, studyid, Sets.create("authorized"));
+		Set<StudyRelated> consents = StudyRelated.getByGroupAndStudy(group, study._id, Sets.create("authorized"));
 		
-		if (consent == null) {
-			consent = new StudyRelated();
-			consent._id = new MidataId();
-			consent.study = studyid;
-			consent.group = group;			
-			consent.owner = userId;
-			consent.name = "Study:"+study.name;		
-			consent.authorized = new HashSet<MidataId>();
-			consent.status = ConsentStatus.ACTIVE;
-						
-			RecordManager.instance.createAnonymizedAPS(userId, userId, consent._id, true);
-			Circles.prepareConsent(consent);
-			consent.add();
+		if (consents.isEmpty()) {
+		   Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyid, group, Sets.create());
+		   joinSharing(userId, study, group, false, new ArrayList<StudyParticipation>(parts));
 		}
 		
-		Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyid, group, Sets.create());
-		Set<MidataId> participants = new HashSet<MidataId>();
-		for (StudyParticipation part : parts) { participants.add(part.owner); }
-		
-		consent.authorized.addAll(participants);
-		StudyRelated.set(consent._id, "authorized", consent.authorized);
-		RecordManager.instance.shareAPS(consent._id, userId, participants);
-				
-		return ok(JsonOutput.toJson(consent, "Consent", Sets.create("_id", "authorized")));		
+		return ok(JsonOutput.toJson(consents, "Consent", Sets.create("_id", "authorized")));		
 	}
 	
 	/**
@@ -796,8 +825,8 @@ public class Studies extends APIController {
 		String comment = JsonValidation.getString(json, "comment");
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));				
-		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("pstatus", "history", "ownerName"));		
-		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("executionStatus", "participantSearchStatus", "history"));
+		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("pstatus", "history", "ownerName", "group"));		
+		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("name", "executionStatus", "participantSearchStatus", "history"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Unknown Study");	
 		if (participation == null) throw new BadRequestException("error.unknown.participant", "Member does not participate in study");	
@@ -806,7 +835,8 @@ public class Studies extends APIController {
 		
 		participation.setPStatus(ParticipationStatus.ACCEPTED);
 		participation.addHistory(new History(EventType.PARTICIPATION_APPROVED, user, comment));
-						
+		joinSharing(userId, study, participation.group, true, Collections.singletonList(participation));
+		
 		return ok();
 	}
 	
@@ -874,7 +904,7 @@ public class Studies extends APIController {
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Unknown Study");
 		if (participation == null) throw new BadRequestException("error.unknown.participant", "Member does not participate in study");	
-		if (study.executionStatus != StudyExecutionStatus.PRE) return badRequest("Study is already running.");
+		if (study.executionStatus != StudyExecutionStatus.PRE && participation.pstatus == ParticipationStatus.ACCEPTED) return badRequest("Study is already running.");
 						
 		participation.group = JsonValidation.getString(json, "group");
 		StudyParticipation.set(participation._id, "group", participation.group);

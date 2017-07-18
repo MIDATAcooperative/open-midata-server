@@ -245,8 +245,8 @@ public class BasicResourceProvider extends ResourceProvider<Basic> implements IR
 		QueryBuilder builder = new QueryBuilder(params, query, null);
 
 		builder.handleIdRestriction();
-		builder.recordOwnerReference("patient", "Patient");
-		builder.recordOwnerReference("subject", null);
+		builder.recordOwnerReference("patient", "Patient", "subject");
+		builder.recordOwnerReference("subject", null, "subject");
 		builder.recordCreatorReference("author", "Patient");
 		
 		Set<String> codes = builder.tokensToCodeSystemStrings("code");

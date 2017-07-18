@@ -636,6 +636,7 @@
     "type_circle" : "This consent shares data with other MIDATA account holders.",
     "type_healthcare" : "This consent shares data with healthcare professionals.",
     "type_studyparticipation" : "This consent shares data with research for use in a study.",
+    "type_studyrelated" : "This consent shares research data to a study participant.",
     "type_externalservice" : "This consent shares data with a mobile app or external service.",
     "type_implicit" : "This implicitely created consent shares messages with their receivers.",
     "status_active" : "This consent is active.",

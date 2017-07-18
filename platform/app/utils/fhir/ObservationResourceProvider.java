@@ -305,14 +305,14 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Observation");
 
 		builder.handleIdRestriction();
-		builder.recordOwnerReference("patient", "Patient");
+		builder.recordOwnerReference("patient", "Patient", "subject");
 				
         builder.recordCodeRestriction("code", "code");
 			
 		builder.restriction("date", true, QueryBuilder.TYPE_DATETIME_OR_PERIOD, "effective");
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		
-		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
+		if (!builder.recordOwnerReference("subject", null, "subject")) builder.restriction("subject", true, null, "subject");
 		
 		builder.restriction("code-value-quantity", "code", "valueQuantity", QueryBuilder.TYPE_CODEABLE_CONCEPT, QueryBuilder.TYPE_QUANTITY);
 		builder.restriction("code-value-string", "code", "valueString", QueryBuilder.TYPE_CODEABLE_CONCEPT, QueryBuilder.TYPE_STRING);

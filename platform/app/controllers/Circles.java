@@ -115,6 +115,7 @@ public class Circles extends APIController {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));	
 		ObjectIdConversion.convertMidataIds(properties, "_id", "owner", "authorized");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+		fields.add("type");
 		
 		Rights.chk("Circles.listConsents", getRole(), properties, fields);
 		
@@ -166,6 +167,8 @@ public class Circles extends APIController {
 		}
 		
 		for (Consent consent : consents) {
+			if (consent.type.equals(ConsentType.STUDYRELATED)) consent.authorized.clear();
+			
 			if (consent.sharingQuery == null) {
 				if (fields.contains("createdBefore") || fields.contains("validUntil")) {				
 					BasicBSONObject obj = (BasicBSONObject) RecordManager.instance.getMeta(executor, consent._id, "_filter");

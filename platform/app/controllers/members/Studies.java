@@ -223,7 +223,7 @@ public class Studies extends APIController {
 		String userName;
 		
 		if (study.requiredInformation == InformationType.DEMOGRAPHIC) {
-			userName = member.lastname+", "+member.firstname;	
+			userName = null; //member.lastname+", "+member.firstname;	
 		} else {
 			do {
 			  userName = "Part. " + CodeGenerator.nextUniqueCode();

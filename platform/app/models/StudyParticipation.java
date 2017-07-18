@@ -62,7 +62,7 @@ public class StudyParticipation extends Consent {
 	}
 	
 	public static Set<StudyParticipation> getActiveParticipantsByStudyAndGroupsAndParticipant(Set<MidataId> study, Set<String> group, MidataId member, Set<MidataId> owners, Set<String> fields) throws InternalServerException {
-		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).mapNotEmpty("group", group).map("pstatus", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST)).map("authorized", member).mapNotEmpty("owner", owners).map("status",  ConsentStatus.ACTIVE), fields);
+		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).mapNotEmpty("group", group).map("pstatus", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST)).map("authorized", member).mapNotEmpty("owner", owners).map("status",  ConsentStatus.ACTIVE).map("ownerName", CMaps.map("$exists", false)), fields);
 	}
 	
 	public static Set<StudyParticipation> getActiveParticipantsByStudyAndGroupsAndIds(Set<MidataId> study, Set<String> group, MidataId member, Set<MidataId> owners, Set<String> fields) throws InternalServerException {

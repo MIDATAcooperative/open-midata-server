@@ -7,37 +7,60 @@
 	       <p class="alert alert-info" translate="studyactions.description"></p>
 	       
 	       <div ng-show="study.executionStatus == 'RUNNING'">
-	       <form class="form-vertical">
+	       <form name="myform" role="form" class="css-form form-horizontal" novalidate ng-submit="addApplication(myform)">
 	         <formrow myid="group" label="Group">
-	           <select ng-model="crit.group" class="form-control" ng-options="group.name as group.name for group in study.groups"></select>
+	           <select ng-model="crit.group" class="form-control" ng-change="changedGroup()" ng-options="group.name as group.name for group in study.groups"></select>
 	         </formrow>
-	       </form>
-		   
-		   
-		   <button class="btn btn-default" ng-click="setGroup();" translate="studyactions.select_group_btn"></button>	  
+	       		   		   			  
 		   <!--  <button class="btn btn-default" ng-click="addTask();" translate="studyactions.add_task_btn"></button> -->
            
-           <form class="form-horizontal" ng-show="group != null">
+           <div ng-show="group != null">
              <formrow myid="plugin" label="studyactions.plugin">
-               <select ng-model="crit.plugin" class="form-control" ng-options="plugin._id as plugin.name for plugin in plugins"></select>
+               <select name="plugin" id="plugin" ng-model="crit.plugin" class="form-control" ng-options="plugin._id as plugin.name for plugin in plugins" required></select>
              </formrow>
              <formrow myid="device" label="studyactions.device">
-               <input type="text" id="device" name="device" ng-model="crit.device" class="form-control">
+               <input type="text" id="device" name="device" ng-model="crit.device" class="form-control" required>
              </formrow>
              <formrow myid="restrictread" label="studyactions.restrict">
                <div class="checkbox">
                  <label>
-                   <input type="checkbox" ng-model="crit.restrictread">
+                   <input type="checkbox" name="restricted" id="restricted" ng-model="crit.restrictread">
                  </label> 
                </div>
              </formrow>
-             <button class="btn btn-default" ng-click="addApplication();" translate="studyactions.add_application_btn"></button>          
-             
-           </form>
+            </div>
+            
+            <button type="button" class="btn btn-default" ng-click="setGroup();" translate="studyactions.select_group_btn"></button>
+            <button type="submit" class="btn btn-default" ng-show="group != null" translate="studyactions.add_application_btn"></button>          
+     
+           </form>                   
                       
            </div>
    		   </loader>
 		</div>	
 	</div>
+	
+	 <div class="panel panel-primary" ng-show="group != null && consents.length">
+	    <div class="panel-heading" translate="studyactions.linked_apps">
+	    </div>
+	    <div class="panel-body">
+		<table class="table table-striped" ng-show="consents.length">
+
+				<tr>
+					<th translate="consents.name"></th>					
+					<th translate="consents.status"></th>					
+					<th translate="consents.number_of_records"></th>
+					<th></th>
+				</tr>
+				<tr ng-repeat="consent in consents | orderBy : 'name'" ng-class="{ 'warning' : consent.status == 'UNCONFIRMED' }">
+					<td><a ng-click="editConsent(consent);" href="javascript:">{{ consent.name }}</a></td>					
+					<td translate="{{ 'enum.consentstatus.'+consent.status }}"></td>					
+					<td>{{ consent.records }}</td>
+					<td><button ng-click="deleteConsent(consent)" class="btn btn-danger btn-xs" translate="common.delete_btn"></button>
+				</tr>
+			</table>
+		</div>
+	</div>
+	
 	<div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
 </div>
