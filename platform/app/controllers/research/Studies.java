@@ -70,6 +70,7 @@ import utils.auth.CodeGenerator;
 import utils.auth.PortalSessionToken;
 import utils.auth.ResearchSecured;
 import utils.collections.CMaps;
+import utils.collections.ReferenceTool;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
@@ -394,13 +395,12 @@ public class Studies extends APIController {
 			
 		}
 		
-		
-		study.setValidationStatus(StudyValidationStatus.VALIDATION); 
 		study.addHistory(new History(EventType.VALIDATION_REQUESTED, user, null));
+		study.setValidationStatus(StudyValidationStatus.VALIDATION); 		
 		
 		if (InstanceConfig.getInstance().getInstanceType().getStudiesValidateAutomatically()) {
-		   study.setValidationStatus(StudyValidationStatus.VALIDATED); 
 		   study.addHistory(new History(EventType.STUDY_VALIDATED, user, null));
+		   study.setValidationStatus(StudyValidationStatus.VALIDATED); 		   
 		}
 						
 		return ok();
@@ -424,9 +424,9 @@ public class Studies extends APIController {
 		
 		if (study == null) throw new BadRequestException("error.missing.study", "Study does not exist");
 		if (!study.validationStatus.equals(StudyValidationStatus.VALIDATION)) return badRequest("Study has already been validated.");
-							
-		study.setValidationStatus(StudyValidationStatus.VALIDATED); 
+									 
 		study.addHistory(new History(EventType.STUDY_VALIDATED, user, null));
+		study.setValidationStatus(StudyValidationStatus.VALIDATED);
 						
 		return ok();
 	}
@@ -453,8 +453,8 @@ public class Studies extends APIController {
 		if (study.executionStatus != StudyExecutionStatus.PRE) return badRequest("Participants can only be searched as long as study has not stared.");
 		if (study.participantSearchStatus != ParticipantSearchStatus.PRE && study.participantSearchStatus != ParticipantSearchStatus.CLOSED) return badRequest("Study participant search already started.");
 		
-		study.setParticipantSearchStatus(ParticipantSearchStatus.SEARCHING);
 		study.addHistory(new History(EventType.PARTICIPANT_SEARCH_STARTED, user, null));
+		study.setParticipantSearchStatus(ParticipantSearchStatus.SEARCHING);		
 						
 		return ok();
 	}
@@ -479,9 +479,9 @@ public class Studies extends APIController {
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new BadRequestException("error.closed.study", "Study participant search already closed.");
-		
-		study.setParticipantSearchStatus(ParticipantSearchStatus.CLOSED);
+				
 		study.addHistory(new History(EventType.PARTICIPANT_SEARCH_CLOSED, user, null));
+		study.setParticipantSearchStatus(ParticipantSearchStatus.CLOSED);
 						
 		return ok();
 	}
@@ -507,9 +507,9 @@ public class Studies extends APIController {
 		if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
 		if (study.participantSearchStatus == ParticipantSearchStatus.PRE) return badRequest("Participant search must be done before.");
 		if (study.executionStatus != StudyExecutionStatus.PRE) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
-		
-		study.setExecutionStatus(StudyExecutionStatus.RUNNING);
+				
 		study.addHistory(new History(EventType.STUDY_STARTED, user, null));
+		study.setExecutionStatus(StudyExecutionStatus.RUNNING);
 						
 		return ok();
 	}
@@ -534,9 +534,9 @@ public class Studies extends APIController {
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");		
 		if (study.executionStatus != StudyExecutionStatus.RUNNING) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
-		
-		study.setExecutionStatus(StudyExecutionStatus.FINISHED);
+				
 		study.addHistory(new History(EventType.STUDY_FINISHED, user, null));
+		study.setExecutionStatus(StudyExecutionStatus.FINISHED);
 						
 		return ok();
 	}
@@ -560,16 +560,16 @@ public class Studies extends APIController {
 		
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");		
 		if (study.executionStatus != StudyExecutionStatus.RUNNING) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
-		
-		study.setExecutionStatus(StudyExecutionStatus.ABORTED);
+				
 		study.addHistory(new History(EventType.STUDY_ABORTED, user, null));
+		study.setExecutionStatus(StudyExecutionStatus.ABORTED);
 						
 		return ok();
 	}
 	
 	public static StudyRelated findFreeSharingConsent(Study study, String group, boolean ifDataShared) throws AppException {
 		MidataId ownerId = study.createdBy;
-		Set<StudyRelated> consents = StudyRelated.getByGroupAndStudy(group, study._id, Consent.ALL);
+		Set<StudyRelated> consents = StudyRelated.getActiveByGroupAndStudy(group, study._id, Consent.ALL);
 		if (consents.isEmpty() && ifDataShared) return null;
 		
 		for (StudyRelated sr : consents) {
@@ -624,12 +624,12 @@ public class Studies extends APIController {
 		MidataId owner = PortalSessionToken.session().getOrg();
 		MidataId studyid = new MidataId(id);
 		
-		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history", "name"));
+		Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history", "name", "createdBy"));
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		if (study.validationStatus != StudyValidationStatus.VALIDATED) throw new BadRequestException("error.notvalidated.study", "Study must be validated before.");
 		if (study.executionStatus != StudyExecutionStatus.RUNNING) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
 		
-		Set<StudyRelated> consents = StudyRelated.getByGroupAndStudy(group, study._id, Sets.create("authorized"));
+		Set<StudyRelated> consents = StudyRelated.getActiveByGroupAndStudy(group, study._id, Sets.create("authorized"));
 		
 		if (consents.isEmpty()) {
 		   Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(studyid, group, Sets.create());
@@ -755,10 +755,10 @@ public class Studies extends APIController {
 	   Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history"));
 	   if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 	   
-       Set<String> fields = Sets.create("ownerName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth"); 
+       Set<String> fields = Sets.create("owner", "ownerName", "group", "recruiter", "recruiterName", "pstatus", "gender", "country", "yearOfBirth"); 
 	   Set<StudyParticipation> participants = StudyParticipation.getParticipantsByStudy(studyid, fields);
-	   
-	   
+	   ReferenceTool.resolveOwners(participants, true);
+	   fields.remove("owner");
 	   return ok(JsonOutput.toJson(participants, "Consent", fields));
 	}
 	
@@ -778,7 +778,7 @@ public class Studies extends APIController {
 	   MidataId studyId = new MidataId(studyidstr);
 	   MidataId partId = new MidataId(partidstr);
 	   	   
-	   Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords"));
+	   Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords", "requiredInformation"));
 	   if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 	   	   
 	   Set<String> participationFields = Sets.create("pstatus", "status", "group", "history","ownerName", "gender", "country", "yearOfBirth", "owner"); 
@@ -789,6 +789,7 @@ public class Studies extends APIController {
 		   participation.pstatus == ParticipationStatus.MEMBER_REJECTED) throw new BadRequestException("error.unknown.participant", "Member does not participate in study");
 	   
 	   if (study.requiredInformation != InformationType.DEMOGRAPHIC) { participation.owner = null; }
+	   else ReferenceTool.resolveOwners(Collections.singleton(participation), true);
 	   
 	   ObjectNode obj = Json.newObject();
 	   obj.put("participation", JsonOutput.toJsonNode(participation, "Consent", participationFields));	   
@@ -825,17 +826,17 @@ public class Studies extends APIController {
 		String comment = JsonValidation.getString(json, "comment");
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));				
-		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("pstatus", "history", "ownerName", "group"));		
-		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("name", "executionStatus", "participantSearchStatus", "history"));
+		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("pstatus", "history", "owner", "ownerName", "group"));		
+		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("name", "executionStatus", "participantSearchStatus", "history", "createdBy", "owner"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Unknown Study");	
 		if (participation == null) throw new BadRequestException("error.unknown.participant", "Member does not participate in study");	
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new BadRequestException("error.closed.study", "Study participant search already closed.");
 		if (participation.pstatus != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
-		
-		participation.setPStatus(ParticipationStatus.ACCEPTED);
+				
 		participation.addHistory(new History(EventType.PARTICIPATION_APPROVED, user, comment));
 		joinSharing(userId, study, participation.group, true, Collections.singletonList(participation));
+		participation.setPStatus(ParticipationStatus.ACCEPTED);
 		
 		return ok();
 	}
@@ -869,10 +870,10 @@ public class Studies extends APIController {
 		if (participation == null) throw new BadRequestException("error.unknown.participant", "Member does not participate in study");	
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new BadRequestException("error.closed.study", "Study participant search already closed.");
 		if (participation.pstatus != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
-		
-		participation.setPStatus(ParticipationStatus.RESEARCH_REJECTED);		
+					
 		participation.addHistory(new History(EventType.PARTICIPATION_REJECTED, user, comment));
 		Circles.consentStatusChange(userId, participation, ConsentStatus.REJECTED);
+		participation.setPStatus(ParticipationStatus.RESEARCH_REJECTED);
 						
 		return ok();
 	}
@@ -904,11 +905,11 @@ public class Studies extends APIController {
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Unknown Study");
 		if (participation == null) throw new BadRequestException("error.unknown.participant", "Member does not participate in study");	
-		if (study.executionStatus != StudyExecutionStatus.PRE && participation.pstatus == ParticipationStatus.ACCEPTED) return badRequest("Study is already running.");
+		if (study.executionStatus != StudyExecutionStatus.PRE && participation.pstatus == ParticipationStatus.ACCEPTED) throw new BadRequestException("error.no_alter.group", "Study is already running.");	
 						
 		participation.group = JsonValidation.getString(json, "group");
-		StudyParticipation.set(participation._id, "group", participation.group);
 		participation.addHistory(new History(EventType.GROUP_ASSIGNED, user, comment));
+		StudyParticipation.set(participation._id, "group", participation.group);		
 						
 		return ok();
 	}
@@ -951,10 +952,10 @@ public class Studies extends APIController {
 			
 		if (study == null) throw new BadRequestException("error.notauthorized.study", "Study does not belong to organization.");
 		if (study.validationStatus != StudyValidationStatus.DRAFT) throw new BadRequestException("error.no_alter.study", "Setup can only be changed as long as study is in draft phase.");
-        				
+        
+		study.addHistory(new History(EventType.REQUIRED_INFORMATION_CHANGED, user, null));
 		study.setRequiredInformation(inf);
-		study.setAssistance(assist);
-        study.addHistory(new History(EventType.REQUIRED_INFORMATION_CHANGED, user, null));		
+		study.setAssistance(assist);        		
         
         return ok();
 	}
@@ -986,15 +987,16 @@ public class Studies extends APIController {
 				groups.add(grp);
 			}
 			
-			study.setGroups(groups);
 			study.addHistory(new History(EventType.STUDY_SETUP_CHANGED, user, null));
+			study.setGroups(groups);
+			
 		}
 		
 		if (json.has("recordQuery")) {
 			Map<String, Object> query = JsonExtraction.extractMap(json.get("recordQuery"));
-			Query.validate(query, true);			
-			study.setRecordQuery(query);
+			Query.validate(query, true);
 			study.addHistory(new History(EventType.STUDY_SETUP_CHANGED, user, null));
+			study.setRecordQuery(query);			
 		}
 				        	        
         return ok();
@@ -1046,7 +1048,7 @@ public class Studies extends APIController {
 			} else {
 			    RecordManager.instance.deleteAPS(studyRelated._id, userId);
 			}
-			StudyRelated.delete(studyId, studyRelated._id);
+			StudyRelated.deleteByStudyAndParticipant(studyId, studyRelated._id);
 		}
 		
 		Study.delete(studyId);

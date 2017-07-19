@@ -236,4 +236,12 @@ public class Consent extends Model {
 	public static void touch(MidataId consentId, long version) throws InternalServerException {
 		set(consentId, "dataupdate", version);
 	}
+	
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
+	
+	public String getOwnerName() {
+		return ownerName;
+	}
 }

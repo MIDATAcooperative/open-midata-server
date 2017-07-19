@@ -97,5 +97,14 @@ public class StudyParticipation extends Consent {
     public static void delete(MidataId studyId, MidataId partId) throws InternalServerException {	
 		Model.delete(StudyParticipation.class, collection, CMaps.map("_id", partId).map("study", studyId));
 	}
+    
+    public void setOwnerName(String ownerName) {
+    	super.setOwnerName(ownerName);
+		this.ownerName = ownerName;
+	}
+    
+    public String getOwnerName() {
+		return ownerName;
+	}
 
 }

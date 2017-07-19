@@ -522,7 +522,7 @@ public class PluginsAPI extends APIController {
 			Map<String, Object> q = query.toMap(); 
 			MidataId studyId = MidataId.from(q.get("target-study"));
 			String group = q.get("target-study-group").toString();
-			Set<StudyRelated> srs = StudyRelated.getByGroupAndStudy(group, studyId, Sets.create("_id"));
+			Set<StudyRelated> srs = StudyRelated.getActiveByGroupAndStudy(group, studyId, Sets.create("_id"));
 			if (!srs.isEmpty()) {
 				for (StudyRelated sr : srs ) {
 				  RecordManager.instance.share(inf.executorId, inf.ownerId, sr._id, records, false);

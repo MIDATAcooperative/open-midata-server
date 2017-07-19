@@ -69,7 +69,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     	MidataId targetId = new MidataId(id);
     	
     	ExecutionInfo info = info();
-    	List<Record> allRecs = RecordManager.instance.list(info.executorId, info.targetAPS, CMaps.map("owner", targetId).map("format",  "fhir/Patient").map("data.id",targetId), RecordManager.COMPLETE_DATA);
+    	List<Record> allRecs = RecordManager.instance.list(info.executorId, info.targetAPS, CMaps.map("owner", targetId).map("format",  "fhir/Patient").map("data", CMaps.map("id",targetId.toString())), RecordManager.COMPLETE_DATA);
     	
     	if (allRecs == null || allRecs.size() == 0) return null;
     	
@@ -385,7 +385,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     }
     
     public void updatePatientForAccount(Member member) throws AppException {
-    	List<Record> allExisting = RecordManager.instance.list(member._id, member._id, CMaps.map("format", "fhir/Patient").map("owner", "self").map("data.id", member._id.toString()), Record.ALL_PUBLIC);
+    	List<Record> allExisting = RecordManager.instance.list(member._id, member._id, CMaps.map("format", "fhir/Patient").map("owner", "self").map("data", CMaps.map("id", member._id.toString())), Record.ALL_PUBLIC);
     	
     	if (allExisting.isEmpty()) {    	
     	  Patient patient = generatePatientForAccount(member);
