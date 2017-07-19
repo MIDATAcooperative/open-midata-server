@@ -86,7 +86,8 @@
        "groupsystem" : "Group system must be provided.",
        "token" : "Missing or bad token.",
        "agb" : "Terms and conditions not accepted.",
-       "study_accept" : "Study participation must be accepted."
+       "study_accept" : "Study participation must be accepted.",
+       "study_group" : "Group must be assigned to participant first."
      },
 
      "unknown" : {
@@ -703,6 +704,9 @@
 	"back_to_plugin" : "Back to Visualization",
 	"by_group" : "Grouped by type of content",
 	"by_plugin" : "Grouped by application",
+	"type_global" : "Global",
+	"type_study" : "Research",
+	"type_circle" : "Other Account Holders",
 	"show" : "Show:",
 	"my_data" : "My Data",
 	"all_data" : "All Data",

@@ -86,7 +86,7 @@ import utils.json.JsonValidation.JsonValidationException;
  */
 public class Studies extends APIController {
 
-	public final static int STUDY_CONSENT_SIZE = 100;
+	public final static int STUDY_CONSENT_SIZE = 10000;
 	/**
 	 * create a new study 
 	 * @return Study
@@ -832,8 +832,9 @@ public class Studies extends APIController {
 		if (study == null) throw new BadRequestException("error.unknown.study", "Unknown Study");	
 		if (participation == null) throw new BadRequestException("error.unknown.participant", "Member does not participate in study");	
 		if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new BadRequestException("error.closed.study", "Study participant search already closed.");
-		if (participation.pstatus != ParticipationStatus.REQUEST) return badRequest("Wrong participation status.");
-				
+		if (participation.pstatus != ParticipationStatus.REQUEST) throw new BadRequestException("error.invalid.status_transition", "Wrong participant status.");
+		if (participation.group == null) throw new BadRequestException("error.missing.study_group", "No group assigned to participant.");		
+		
 		participation.addHistory(new History(EventType.PARTICIPATION_APPROVED, user, comment));
 		joinSharing(userId, study, participation.group, true, Collections.singletonList(participation));
 		participation.setPStatus(ParticipationStatus.ACCEPTED);
