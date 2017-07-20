@@ -87,6 +87,12 @@ public class IndexManager {
 		for (DBRecord record : records) {
 			QueryEngine.loadData(record);
 			index.addEntry(aps != null ? aps : record.consentAps, record);
+			
+			// Remove from memory
+			record.data = null;
+			record.encryptedData = null;
+			record.encrypted = null;
+			record.meta = null;
 		}
 	}
 	
