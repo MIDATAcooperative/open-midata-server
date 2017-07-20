@@ -54,6 +54,7 @@ private Feature next;
 			}			
 			
 			AccessLog.logBegin("start index query");
+			long startTime = System.currentTimeMillis();
 			
 			Object indexQueryUnparsed = q.getProperties().get("index");
 			Condition indexQueryParsed = null;
@@ -90,7 +91,9 @@ private Feature next;
 			
 			
 			IndexUse myAccess = parse(pseudo, q.getRestriction("format"), indexQueryParsed);			
-								
+				
+			long afterPrepareTime = System.currentTimeMillis();
+			
 			Collection<IndexMatch> matches = myAccess.query(q, targetAps);
 			
 			
@@ -165,12 +168,15 @@ private Feature next;
 					
 			   }
 			}
+			long endTime = System.currentTimeMillis();
 
 			AccessLog.log("index query found "+matches.size()+" matches, "+result.size()+" in correct aps.");
 				
-			myAccess.revalidate(result);						
+			myAccess.revalidate(result);				
 			
-			AccessLog.logEnd("end index query "+result.size()+" matches.");
+			long afterRevalidateTime = System.currentTimeMillis();
+			
+			AccessLog.logEnd("end index query "+result.size()+" matches. timePrepare="+(afterPrepareTime-startTime)+" exec="+(endTime-afterPrepareTime)+" revalid="+(afterRevalidateTime-endTime));
 			return result;
 						
 			
