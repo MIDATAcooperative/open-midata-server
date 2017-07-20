@@ -37,7 +37,7 @@ public class Feature_Prefetch extends Feature {
 		
 		  if (record.stream != null) {
 		    APS stream = q.getCache().getAPS(record.stream);
-		    if (stream.isAccessible()) {
+		    if (stream.isAccessible() && !q.restrictedBy("study")) {
 		    	MidataId owner = stream.getStoredOwner();
 		    	partResult = QueryEngine.combine(q, CMaps.map("_id", record._id).map("flat", "true").map("stream", record.stream).map("owner", owner).map("quick",  record), next);
 		    } else {
