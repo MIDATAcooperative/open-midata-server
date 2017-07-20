@@ -33,7 +33,7 @@
     
     <tr ng-show="record.ownerName">
       <td translate="person"></td>
-      <td>{{ record.ownerName }}</td>
+      <td>{{ record.data.subject.display || record.ownerName }}</td>
     </tr>
     
     <tr ng-show="record.data.category">

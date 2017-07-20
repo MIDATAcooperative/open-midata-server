@@ -614,10 +614,11 @@ public class QueryBuilder {
 	 * @param name name of FHIR search parameter
 	 * @param refType Resource referenced (Patient, Practitioner, ...)
 	 */
-	public boolean recordOwnerReference(String name, String refType) throws AppException {
+	public boolean recordOwnerReference(String name, String refType, String emptyField) throws AppException {
 		List<ReferenceParam> patients = resolveReferences(name, refType);
 		if (patients != null && FHIRTools.areAllOfType(patients, Sets.create("Patient", "Practitioner", "Person"))) {
 			query.putAccount("owner", FHIRTools.referencesToIds(patients));
+			if (emptyField != null) query.putDataCondition(new FieldAccess(emptyField, new ExistsCondition(false)));
 			return true;
 		}
 		if (Stats.enabled && patients == null && name.equals("patient") && !params.containsKey(name)) Stats.addComment("Restrict by patient?");

@@ -71,7 +71,8 @@
        "passphrase" : "Bad passphrase",
        "passcode": "Bad passcode",
        "plugin" : "Plugin is only for a different role",
-       "access_query" : "Access query must restrict by 'content' or 'group'!"
+       "access_query" : "Access query must restrict by 'content' or 'group'!",
+       "sharing" : "Data excluded by study configuration is shared in sharing query."
      },
 
      "missing" : {
@@ -85,7 +86,8 @@
        "groupsystem" : "Group system must be provided.",
        "token" : "Missing or bad token.",
        "agb" : "Terms and conditions not accepted.",
-       "study_accept" : "Study participation must be accepted."
+       "study_accept" : "Study participation must be accepted.",
+       "study_group" : "Group must be assigned to participant first."
      },
 
      "unknown" : {
@@ -151,7 +153,8 @@
 
      "no_alter" : {
        "consent" : "Consents for studies may not be altered.",
-       "study" : "Setup can only be changed as long as study is in draft phase."
+       "study" : "Setup can only be changed as long as study is in draft phase.",
+       "group" : "Group of participant can only be changed if study is not running or participant not accepted yet."
      }
 
    },
@@ -635,6 +638,7 @@
     "type_circle" : "This consent shares data with other MIDATA account holders.",
     "type_healthcare" : "This consent shares data with healthcare professionals.",
     "type_studyparticipation" : "This consent shares data with research for use in a study.",
+    "type_studyrelated" : "This consent shares research data to a study participant.",
     "type_externalservice" : "This consent shares data with a mobile app or external service.",
     "type_implicit" : "This implicitely created consent shares messages with their receivers.",
     "status_active" : "This consent is active.",
@@ -700,6 +704,9 @@
 	"back_to_plugin" : "Back to Visualization",
 	"by_group" : "Grouped by type of content",
 	"by_plugin" : "Grouped by application",
+	"type_global" : "Global",
+	"type_study" : "Research",
+	"type_circle" : "Other Account Holders",
 	"show" : "Show:",
 	"my_data" : "My Data",
 	"all_data" : "All Data",

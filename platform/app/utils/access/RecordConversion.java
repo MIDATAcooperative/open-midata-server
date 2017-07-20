@@ -22,7 +22,8 @@ public class RecordConversion {
 		
 		record._id = dbrecord._id;
 		record.app = MidataId.from(dbrecord.meta.get("app"));
-		record.creator = MidataId.from(dbrecord.meta.get("creator"));
+		Object creator = dbrecord.meta.get("creator");
+		if (creator != null) record.creator = MidataId.from(creator); else record.creator = dbrecord.owner;
 		record.name = (String) dbrecord.meta.get("name");				
 		record.created = (Date) dbrecord.meta.get("created");
 		record.lastUpdated = (Date) dbrecord.meta.get("lastUpdated");
@@ -65,7 +66,7 @@ public class RecordConversion {
 		dbrecord.owner = record.owner;
 		BSONObject meta = dbrecord.meta;		
 		meta.put("app", record.app !=null ? record.app.toDb() : null);
-		meta.put("creator", record.creator != null ? record.creator.toDb() : null);
+		meta.put("creator", (record.creator != null && !record.creator.equals(record.owner)) ? record.creator.toDb() : null);
 		meta.put("name", record.name);
 		meta.put("created", record.created);
 		if (record.lastUpdated != null) meta.put("lastUpdated", record.lastUpdated);

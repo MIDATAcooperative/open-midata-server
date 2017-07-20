@@ -222,14 +222,14 @@ public class ConditionResourceProvider extends ResourceProvider<Condition> imple
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Condition");
 
 		builder.handleIdRestriction();
-		builder.recordOwnerReference("patient", "Patient");				
+		builder.recordOwnerReference("patient", "Patient", "subject");				
         builder.recordCodeRestriction("code", "code");
 			
 		
         builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
         builder.restriction("asserter", true, null, "asserter");
         
-        if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
+        if (!builder.recordOwnerReference("subject", null, "subject")) builder.restriction("subject", true, null, "subject");
         
         builder.restriction("context", true, null, "context");
         builder.restriction("category", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "category");

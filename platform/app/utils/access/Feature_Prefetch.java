@@ -1,11 +1,14 @@
 package utils.access;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import models.Consent;
 import models.MidataId;
 import utils.AccessLog;
 import utils.collections.CMaps;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 
 public class Feature_Prefetch extends Feature {
@@ -47,6 +50,9 @@ public class Feature_Prefetch extends Feature {
 		  if (results == null) results = partResult; else results.addAll(partResult);
 		}
 		if (results==null) results = new ArrayList<DBRecord>();
+									
+		Feature_AccountQuery.setOwnerField(q, results);			
+						
 		AccessLog.logEnd("end lookup #found="+results.size()+" time="+(System.currentTimeMillis() - time));
 		return results;
 	}

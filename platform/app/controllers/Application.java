@@ -876,6 +876,7 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Studies.approveParticipation(),
 				controllers.research.routes.javascript.Studies.rejectParticipation(),
 				controllers.research.routes.javascript.Studies.shareWithGroup(),
+				controllers.research.routes.javascript.Studies.addApplication(),
 				controllers.research.routes.javascript.Studies.addTask(),
 				controllers.research.routes.javascript.Studies.getRequiredInformationSetup(),
 				controllers.research.routes.javascript.Studies.setRequiredInformationSetup(),

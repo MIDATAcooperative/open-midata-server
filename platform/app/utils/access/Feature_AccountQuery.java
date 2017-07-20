@@ -37,61 +37,34 @@ public class Feature_AccountQuery extends Feature {
 		if (q.getApsId().equals(q.getCache().getAccountOwner())) {
 			if (AccessLog.detailedLog) AccessLog.logBegin("Begin process owner aps");
 			Set<String> sets = q.restrictedBy("owner") ? q.getRestriction("owner") : Collections.singleton("all");
-			Set<MidataId> studies = q.restrictedBy("study") ? q.getMidataIdRestriction("study") : null;
-
+			
 			List<DBRecord> result = null;
 
-			if (studies != null) {
-				result = new ArrayList<DBRecord>();
+		
 
-				Set<StudyParticipation> consents = new HashSet<StudyParticipation>();
-				
-				if (q.restrictedBy("study-group")) {
-					Set<String> groups = q.getRestriction("study-group");
-					for (MidataId studyId : studies) {
-						for (String grp : groups) {
-							consents.addAll(StudyParticipation.getActiveParticipantsByStudyAndGroup(studyId, grp, Sets.create("pstatus", "ownerName")));
-						}
-					}
-					
-				} else {				
-					for (MidataId studyId : studies) {
-						consents.addAll(StudyParticipation.getActiveParticipantsByStudy(studyId, Sets.create("pstatus", "ownerName")));
-					}
-				}
-
-				for (StudyParticipation sp : consents) {
-					List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), sp._id));
-
-					
-					setOwnerField(q, sp, consentRecords);
-					setIdAndConsentField(q, sp._id, consentRecords);							
-					result.addAll(consentRecords);
-				}
+			if ((sets.contains("self") || sets.contains("all") || sets.contains(q.getApsId().toString())) && !q.restrictedBy("consent-after") && !q.restrictedBy("usergroup") && !q.restrictedBy("study")) {
+				result = next.query(q);
+				setIdAndConsentField(q, q.getApsId(), result);						
 			} else {
-
-				if ((sets.contains("self") || sets.contains("all") || sets.contains(q.getApsId().toString())) && !q.restrictedBy("consent-after") && !q.restrictedBy("usergroup")) {
-					result = next.query(q);
-					setIdAndConsentField(q, q.getApsId(), result);						
-				} else {
-					result = new ArrayList<DBRecord>();
-				}
-
-				Set<Consent> consents = getConsentsForQuery(q);
-										
-				for (Consent circle : consents) {
-				   AccessLog.logBegin("start query for consent id="+circle._id);
-				   List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id));
-				   setOwnerField(q, circle, consentRecords);
-				   setIdAndConsentField(q, circle._id, consentRecords);							
-				   result.addAll(consentRecords);
-				   AccessLog.logEnd("end query for consent");
-				}				
-				
+				result = new ArrayList<DBRecord>();
 			}
+
+			Set<Consent> consents = getConsentsForQuery(q);
+									
+			for (Consent circle : consents) {
+			   AccessLog.logBegin("start query for consent id="+circle._id);
+			   List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id));
+			   setOwnerField(q, circle, consentRecords);
+			   setIdAndConsentField(q, circle._id, consentRecords);							
+			   result.addAll(consentRecords);
+			   AccessLog.logEnd("end query for consent");
+			}				
+				
+			
 			if (AccessLog.detailedLog) AccessLog.logEnd("End process owner aps #size="+result.size());
 			return result;
 		} else {
+			
 			List<DBRecord> result = next.query(q);
 
 			setIdAndConsentField(q, q.getApsId(), result);
@@ -110,19 +83,32 @@ public class Feature_AccountQuery extends Feature {
 		}
 	}
 	
-	private void setOwnerField(Query q, Consent c, List<DBRecord> targetRecords) throws AppException {
+	protected static void setOwnerField(Query q, Consent c, List<DBRecord> targetRecords) throws AppException {
 		boolean oname = q.returns("ownerName");
 		if (q.returns("owner") || oname) {
 			for (DBRecord record : targetRecords) {
 				
-					record.owner = c.type.equals(ConsentType.STUDYPARTICIPATION) ? c._id : c.owner;
+					record.owner = (c.type.equals(ConsentType.STUDYPARTICIPATION) && c.ownerName != null) ? c._id : c.owner;
 					
-					if (oname) {
+					if (oname && c.ownerName != null) {
 						QueryEngine.fetchFromDB(q, record);
 						RecordEncryption.decryptRecord(record);						
 						record.meta.put("ownerName", c.ownerName);
+						
+						//Bugfix for older records
+						String creator = record.meta.getString("creator");
+						if (creator != null && creator.equals(c.owner.toString())) record.meta.remove("creator");
 					}					
 				
+			}
+		}		
+	}
+	
+	protected static void setOwnerField(Query q, List<DBRecord> targetRecords) throws AppException {
+		if (q.returns("owner") || q.returns("ownerName")) {			
+			Consent c = q.getCache().getConsent(q.getApsId());	
+			if (c != null) {
+			  Feature_AccountQuery.setOwnerField(q, c, targetRecords);
 			}
 		}		
 	}
@@ -156,7 +142,34 @@ public class Feature_AccountQuery extends Feature {
 	protected static Set<Consent> getConsentsForQuery(Query q) throws AppException {
 		Set<Consent> consents = Collections.EMPTY_SET;
 		Set<String> sets = q.restrictedBy("owner") ? q.getRestriction("owner") : Collections.singleton("all");
-		if (sets.contains("all") || sets.contains("other") || sets.contains("shared")) {			
+		Set<MidataId> studies = q.restrictedBy("study") ? q.getMidataIdRestriction("study") : null;
+		Set<String> studyGroups = null;
+		
+	    if (q.restrictedBy("study")) {
+	    	Set<MidataId> owners = null;
+	    	
+	    	if (!sets.contains("all")) {
+		    	owners = new HashSet<MidataId>();
+				for (String owner : sets) {
+					if (MidataId.isValid(owner)) {
+						MidataId id = new MidataId(owner);
+						if (!id.equals(q.getCache().getAccountOwner())) owners.add(id);
+					}
+				}
+	    	}
+	    	
+	    	if (q.restrictedBy("study-group")) {
+	    		studyGroups = q.getRestriction("study-group");
+	    	}
+	    	
+	    	consents = new HashSet<Consent>(StudyParticipation.getActiveParticipantsByStudyAndGroupsAndIds(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Sets.create("name", "order", "owner", "ownerName", "type")));
+	    	
+	    	if (owners != null && consents.size() < owners.size()) {	    		
+	    		consents.addAll(StudyParticipation.getActiveParticipantsByStudyAndGroupsAndParticipant(studies, studyGroups, q.getCache().getAccountOwner(), sets.contains("all") ? null : owners, Sets.create("name", "order", "owner", "ownerName", "type")));
+	    	}
+	    	
+	    	AccessLog.log("found: "+consents.size());
+	    } else if (sets.contains("all") || sets.contains("other") || sets.contains("shared")) {			
 			if (sets.contains("shared"))
 				consents = new HashSet<Consent>(Circle.getAllActiveByMember(q.getCache().getAccountOwner()));
 			else {
@@ -184,6 +197,8 @@ public class Feature_AccountQuery extends Feature {
 			}
 		}
 		consents = applyConsentTimeFilter(q, consents);
+		
+		q.getCache().cache(consents);
 		return consents;
 	}			
 

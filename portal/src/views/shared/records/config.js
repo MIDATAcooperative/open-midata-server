@@ -40,5 +40,18 @@ angular.module('portal')
 	      url: '/records',
 	      templateUrl: 'views/shared/records/records.html',
 	      role : 'research'
-	    });
+	    })
+	    .state('research.recordsharing', {
+	      url: '/records/:selectedType/:selected',
+	      templateUrl: 'views/shared/records/records.html' 
+	    })
+	    .state('research.study.recordsharing', {
+	      url: '/records/:selectedType/:selected',
+	      templateUrl: 'views/shared/records/records.html' 
+	    })
+	    .state('research.delete_records', {
+	      url: '/records-delete',
+		  templateUrl: 'views/shared/records/records.html',
+		  allowDelete : true,
+		});
 }]);

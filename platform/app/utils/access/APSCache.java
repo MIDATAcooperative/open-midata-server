@@ -1,10 +1,12 @@
 package utils.access;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import models.AccessPermissionSet;
+import models.Consent;
 import models.MidataId;
 import utils.AccessLog;
 import utils.auth.EncryptionNotSupportedException;
@@ -22,10 +24,13 @@ class APSCache {
 	private MidataId executorId;
 	private MidataId accountOwner;
 	
+	private Map<MidataId, Consent> consentCache;
+	
 	public APSCache(MidataId executorId, MidataId accountApsId) {
 		this.executorId = executorId;
 		this.accountOwner = accountApsId;
 		this.cache = new HashMap<String, APS>();
+		this.consentCache = new HashMap<MidataId, Consent>();
 	}
 	
 	public MidataId getExecutor() {
@@ -105,5 +110,27 @@ class APSCache {
 		return result;
 	}
 	
+	public Consent getConsent(MidataId consentId) throws InternalServerException {
+		if (consentId == null || consentId.equals(accountOwner)) return null;
+		
+		Consent result = consentCache.get(consentId);
+		if (result != null) return result;
+		
+		result = Consent.getByIdAndAuthorized(consentId, executorId, Consent.ALL);
+		consentCache.put(consentId, result);
+		
+		return result;
+	}
 	
+	public Consent cache(Consent consent) throws InternalServerException {
+		if (consent != null) {
+			consentCache.put(consent._id, consent);
+		}
+		
+		return consent;
+	}
+	
+	public void cache(Collection<? extends Consent> consents) throws InternalServerException {		
+		for (Consent consent : consents) consentCache.put(consent._id, consent);		
+	}
 }

@@ -12,6 +12,7 @@ import models.MidataId;
 import models.Record;
 import models.RecordsInfo;
 import models.StudyParticipation;
+import utils.AccessLog;
 import utils.exceptions.InternalServerException;
 
 public class ReferenceTool {
@@ -82,7 +83,7 @@ public class ReferenceTool {
 		Map<String, String> members = new HashMap<String, String>();		
 		
 		for (Consent circle : circles) {
-			if (owners && (circle.owner != null)) {
+			if (owners && (circle.owner != null && circle.getOwnerName() == null)) {
 				String key = circle.owner.toString();
 				String name = members.get(key);
 				if (name == null) {
@@ -91,8 +92,8 @@ public class ReferenceTool {
 						name = member.lastname + ", " + member.firstname;
 						members.put(key, name);
 					}
-				}
-				circle.ownerName = name;
+				}			
+				circle.setOwnerName(name);
 			}
 		
 		}

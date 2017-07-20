@@ -288,14 +288,14 @@ public class DocumentReferenceProvider extends ResourceProvider<DocumentReferenc
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/DocumentReference");
 
 		builder.handleIdRestriction();
-		builder.recordOwnerReference("patient", "Patient");
+		builder.recordOwnerReference("patient", "Patient", "subject");
 		
 		
 		builder.recordCodeRestriction("type", "type");
 				
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier", QueryBuilder.TYPE_IDENTIFIER, "masterIdentifier");		
 		
-		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
+		if (!builder.recordOwnerReference("subject", null, "subject")) builder.restriction("subject", true, null, "subject");
 		
 		builder.restriction("authenticator", true, null, "authenticator");
 		
