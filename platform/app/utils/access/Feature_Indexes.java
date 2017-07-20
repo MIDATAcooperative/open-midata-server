@@ -96,6 +96,7 @@ private Feature next;
 			
 			Collection<IndexMatch> matches = myAccess.query(q, targetAps);
 			
+			long afterQuery = System.currentTimeMillis();
 			
 			Map<MidataId, Set<MidataId>> filterMatches = new HashMap<MidataId, Set<MidataId>>();
 			for (IndexMatch match : matches) {
@@ -176,7 +177,7 @@ private Feature next;
 			
 			long afterRevalidateTime = System.currentTimeMillis();
 			
-			AccessLog.logEnd("end index query "+result.size()+" matches. timePrepare="+(afterPrepareTime-startTime)+" exec="+(endTime-afterPrepareTime)+" revalid="+(afterRevalidateTime-endTime));
+			AccessLog.logEnd("end index query "+result.size()+" matches. timePrepare="+(afterPrepareTime-startTime)+" exec="+(afterQuery-afterPrepareTime)+" postLookup="+(endTime-afterQuery)+" revalid="+(afterRevalidateTime-endTime));
 			return result;
 						
 			
