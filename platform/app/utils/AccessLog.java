@@ -33,6 +33,8 @@ public class AccessLog {
 	 */
 	private static boolean logForMail = true;
 	
+	private static int LOGSIZELIMIT = 1024 * 100;
+	
 	/**
 	 * add a line of text to the log
 	 * @param txt the line to be logged
@@ -79,7 +81,7 @@ public class AccessLog {
 	   s.append(")");
 	   String msg = "                                            ".substring(0,ident.get())+"Query:"+s.toString();
 	   //if (logToFile) Logger.debug(msg);
-	   if (logForMail) msgs.get().writer.println(msg);
+	   if (logForMail) log(msg);
 	}
 	
 	/**
@@ -89,7 +91,7 @@ public class AccessLog {
 	public static void logDB(String msg) {
 	   String msg1 = "                                            ".substring(0,ident.get())+"DB:"+msg; 
 	   //if (logToFile) Logger.debug(msg1);
-	   if (logForMail) msgs.get().writer.println(msg1);
+	   if (logForMail) log(msg1);
 	}
 	
 	private static ThreadLocal<Integer> ident = new ThreadLocal<Integer>() {
@@ -116,8 +118,13 @@ public class AccessLog {
 		if (context != null) {
 			context.writer.close();
 			try {
-			  context.out.close();
+			  context.head.close();
 			} catch (IOException e) {}
+			try {
+			  if (context.tail != null) context.tail.close();			  
+			} catch (IOException e) {}
+			context.head = null;
+			context.tail = null;
 		}
 		msgs.set(new LogContext());
 	}
@@ -174,11 +181,38 @@ public class AccessLog {
 	
 	private static class LogContext {
 		PrintWriter writer;
-		StringWriter out;
+		StringWriter head;
+		StringWriter tail;
+		int len = 0;
+		int cleared = 0;
 		
 		LogContext() {
-			out = new StringWriter();
-			writer = new PrintWriter(out);
+			head = new StringWriter();		
+			writer = new PrintWriter(head);
+		}
+		
+		void println(String line) {
+			len += line.length();
+			if (len > LOGSIZELIMIT) {
+				writer.close();				
+				if (tail == null) {
+					tail = new StringWriter();					
+					writer = new PrintWriter(tail);
+					len = 0;
+				} else {
+					cleared++;
+					tail = new StringWriter();					
+					writer = new PrintWriter(tail);
+					len = 0;
+					writer.println("...(skipping "+cleared+" blocks)...");
+				}
+			}
+			writer.println(line);
+		}
+		
+		public String toString() {
+			if (tail == null) return head.toString();
+			else return head.toString() + tail.toString();
 		}
 	}
 	
@@ -187,6 +221,6 @@ public class AccessLog {
 	 * @return
 	 */
 	public static String getReport() {
-		return msgs.get().out.toString();
+		return msgs.get().toString();
 	}
 }
