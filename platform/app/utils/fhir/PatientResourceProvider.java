@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
+import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
@@ -459,10 +460,9 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     }
     
     public void processResource(Record record, Patient resource) throws AppException {
-    	if (!resource.getId().equals(record.owner.toString())) {
-    		resource.setActive(false);
-    	}
+    	IdType old = resource.getIdElement();    	
     	super.processResource(record, resource);
+    	resource.setIdElement(old);
     	
 		//resource.setId(record.owner.toString());		
 	}
