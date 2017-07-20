@@ -295,6 +295,7 @@ class QueryEngine {
     }
     
     private static final Set<String> DATA_ONLY = Sets.create("_id", "encryptedData");
+    
     protected static DBRecord loadData(DBRecord input) throws AppException {
     	if (input.data == null && input.encryptedData == null) {
     	   DBRecord r2 = DBRecord.getById(input._id, DATA_ONLY);
@@ -304,6 +305,25 @@ class QueryEngine {
     	}
 		RecordEncryption.decryptRecord(input);
 		return input;
+    }
+    
+    protected static void loadData(Collection<DBRecord> records) throws AppException {
+    	Map<MidataId, DBRecord> idMap = new HashMap<MidataId,DBRecord>(records.size());
+    	for (DBRecord rec : records) {    		    	
+	    	if (rec.data == null && rec.encryptedData == null) {
+	    	   idMap.put(rec._id, rec);
+	    	}
+	    	
+    	}
+    	if (!idMap.isEmpty()) {
+	    	Collection<DBRecord> fromDB = DBRecord.getAll(CMaps.map("_id", idMap.keySet()), DATA_ONLY);
+	    	for (DBRecord r2 : fromDB) {
+	    	   idMap.get(r2._id).encryptedData = r2.encryptedData;	    	   
+	    	}
+    	}
+    	for (DBRecord rec : records) {    		
+		   RecordEncryption.decryptRecord(rec);
+    	}		
     }
     
     protected static List<DBRecord> duplicateElimination(List<DBRecord> input) {

@@ -82,18 +82,24 @@ public class IndexManager {
 		return indexDef;
 	}
 			
-	protected void addRecords(IndexRoot index, MidataId aps, Collection<DBRecord> records) throws AppException, LostUpdateException {
-		// TODO Load Records in Chunks for better performance
-		for (DBRecord record : records) {
-			QueryEngine.loadData(record);
-			index.addEntry(aps != null ? aps : record.consentAps, record);
-			
-			// Remove from memory
-			record.data = null;
-			record.encryptedData = null;
-			record.encrypted = null;
-			record.meta = null;
-		}
+	protected void addRecords(IndexRoot index, MidataId aps, List<DBRecord> records) throws AppException, LostUpdateException {
+		
+		int max = records.size();
+		int cur = 0;
+		int CHUNK_SIZE = 100;
+		while (cur < max) {
+			List<DBRecord> part = records.subList(cur, cur+CHUNK_SIZE > max ? max : cur+CHUNK_SIZE);
+			QueryEngine.loadData(part);
+			for (DBRecord record : part) {
+				index.addEntry(aps != null ? aps : record.consentAps, record);				
+				// Remove from memory
+				record.data = null;
+				record.encryptedData = null;
+				record.encrypted = null;
+				record.meta = null;	
+			}
+			cur+=CHUNK_SIZE;
+		}			
 	}
 	
 	/*protected void scanStreamNewEntries(APSCache cache, IndexRoot index, MidataId executor, MidataId stream, Date updatedAfter) throws AppException {
@@ -153,14 +159,14 @@ public class IndexManager {
 				long now = System.currentTimeMillis();
 				 
 				restrictions.put("updated-after", limit);								
-				Collection<DBRecord> recs = QueryEngine.listInternal(cache, aps, restrictions, Sets.create("_id"));
+				List<DBRecord> recs = QueryEngine.listInternal(cache, aps, restrictions, Sets.create("_id"));
 				addRecords(index, aps, recs);
 				boolean updateTs = recs.size() > 0;
 				// Records that have been freshly shared
 				if (limit.getTime() > 0) {
 					restrictions.remove("updated-after");
 					restrictions.put("shared-after", limit);
-					Collection<DBRecord> recs2 = QueryEngine.listInternal(cache, aps, restrictions, Sets.create("_id", "key"));
+					List<DBRecord> recs2 = QueryEngine.listInternal(cache, aps, restrictions, Sets.create("_id", "key"));
 					addRecords(index, aps, recs2);
 					if (recs2.size()>0) updateTs = true;
 					AccessLog.log("Add index from sharing="+recs2.size());
