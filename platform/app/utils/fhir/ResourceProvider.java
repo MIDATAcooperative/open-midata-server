@@ -406,7 +406,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 		record.creator = info().executorId;
 		record.format = format;
 		record.app = info().pluginId;
-		record.created = new Date(System.currentTimeMillis());
+		record.created = record._id.toObjectId().getDate();
 		record.code = new HashSet<String>();
 		record.owner = info().ownerId;
 		record.version = VersionedDBRecord.INITIAL_VERSION;

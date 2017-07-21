@@ -42,7 +42,7 @@ class QueryEngine {
 	}
 	
 	public static Collection<RecordsInfo> info(APSCache cache, MidataId aps, Map<String, Object> properties, AggregationType aggrType) throws AppException {		
-		return infoQuery(new Query(properties, Sets.create("created", "group", "content", "format", "owner", "app"), Feature_UserGroups.findApsCacheToUse(cache,aps), aps), aps, false, aggrType, null);
+		return infoQuery(new Query(properties, Sets.create("group", "content", "format", "owner", "app"), Feature_UserGroups.findApsCacheToUse(cache,aps), aps), aps, false, aggrType, null);
 	}
 	
 	public static List<DBRecord> isContainedInAps(APSCache cache, MidataId aps, List<DBRecord> candidates) throws AppException {
@@ -395,6 +395,13 @@ class QueryEngine {
 			}
     	} else {
     		Set<String> check = q.mayNeedFromDB();
+    		
+    		if (check.contains("created")) {
+    			for (DBRecord record : result) {
+    				record.meta.put("created", record._id.toObjectId().getDate());
+    			}
+    		}
+    		
     		if (!check.isEmpty()) {
     			for (DBRecord record : result) {
     				boolean fetch = false;

@@ -295,7 +295,12 @@ private Feature next;
 				if (results == null) {
 					results = partResult;
 				} else {
-					results.retainAll(partResult);
+					Set<IndexMatch> check = new HashSet<IndexMatch>(partResult);
+					Collection<IndexMatch> newresult = new ArrayList<IndexMatch>();
+					for (IndexMatch match : results) {
+						if (check.contains(match)) newresult.add(match);
+					}
+					results = newresult;
 				}
 				if (results.size() < NO_SECOND_INDEX_COUNT) return results;
 			}
