@@ -275,6 +275,7 @@ public class IndexNonLeafPage extends IndexPage {
 		Collection<MidataId> result = new ArrayList<MidataId>();
 		
 		BasicBSONList lst = (BasicBSONList) model.unencrypted.get("p");
+		AccessLog.log("idx size, root="+lst.size());
 		for (Object entry : lst) {
 			BasicBSONObject row = (BasicBSONObject) entry;
 			BasicBSONList lowkey = (BasicBSONList) row.get("lk");

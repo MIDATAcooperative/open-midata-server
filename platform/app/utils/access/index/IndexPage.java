@@ -147,6 +147,7 @@ public class IndexPage {
 		boolean cloned = false;
 		
 		BasicBSONList lst = (BasicBSONList) model.unencrypted.get("e");
+		AccessLog.log("idx size, normal="+lst.size());
 		for (Object entry : lst) {
 			BasicBSONObject row = (BasicBSONObject) entry;
 			BasicBSONList rowkey = (BasicBSONList) row.get("k");
