@@ -258,13 +258,17 @@ private Feature next;
 		}
 		
 		public Collection<IndexMatch> query(Query q, Set<MidataId> targetAps) throws AppException {
+			long t1 = System.currentTimeMillis();
 			prepare();
 			root = cachedIndexRoots.get(index._id);
+			long t2 = System.currentTimeMillis();
 			if (root == null) {
 			  root = IndexManager.instance.getIndexRootAndUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index, targetAps);
 			  cachedIndexRoots.put(index._id, root);
 			}
+			long t3 = System.currentTimeMillis();
 			matches = IndexManager.instance.queryIndex(root, condition);
+			AccessLog.log("Index use: prep="+(t2-t1)+" update="+(t3-t2)+" query="+(System.currentTimeMillis() - t3));
 			return matches;
 			
 		}

@@ -81,7 +81,7 @@ public class IndexPage {
 	}
 	
 	public Collection<IndexMatch> lookup(Condition[] key) throws InternalServerException  {
-				
+        long t = System.currentTimeMillis();				
 		BasicBSONList entries = findEntries(key);
 		if (entries == null) return null;
 		
@@ -93,6 +93,7 @@ public class IndexPage {
 			match.recordId = new MidataId(obj.get("t").toString());
 			results.add(match);
 		}
+		AccessLog.log("lookup:"+(System.currentTimeMillis() - t));
 		return results;
 	}
 	

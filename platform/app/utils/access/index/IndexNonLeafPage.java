@@ -206,8 +206,10 @@ public class IndexNonLeafPage extends IndexPage {
 	}
 	
 	public Collection<IndexMatch> lookup(Condition[] key) throws InternalServerException {
+		long t1 = System.currentTimeMillis();
 		Collection<IndexMatch> results = null;
 		Collection<MidataId> targets = findEntries(key);
+		long t2 = System.currentTimeMillis();
 		for (MidataId target : targets) {
 			Collection<IndexMatch> partResult = access(target).lookup(key);
 			if (partResult != null) {
@@ -215,7 +217,7 @@ public class IndexNonLeafPage extends IndexPage {
 				else results.addAll(partResult);
 			}
 		}
-				
+        AccessLog.log("Root Lookup: find="+(t2-t1)+" childs="+(System.currentTimeMillis() - t2));				
 		return results;
 	}
 	
