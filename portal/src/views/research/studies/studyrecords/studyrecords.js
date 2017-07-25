@@ -34,6 +34,13 @@ angular.module('portal')
 		});
 	};
 	
+	$scope.fhirDownload = function(what) {
+		$scope.status.doAction("download", server.token())
+		.then(function(response) {
+		  document.location.href = ENV.apiurl + jsRoutes.controllers.research.Studies.downloadFHIR($scope.studyId, what.group).url + "?token=" + encodeURIComponent(response.data.token);
+		});
+	};
+	
 	$scope.reload();
 	
 }]);

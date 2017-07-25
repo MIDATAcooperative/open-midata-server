@@ -60,6 +60,8 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
+import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.access.Feature_FormatGroups;
 import utils.access.Query;
@@ -67,6 +69,8 @@ import utils.access.RecordManager;
 import utils.auth.AdminSecured;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
+import utils.auth.ExecutionInfo;
+import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
 import utils.auth.ResearchSecured;
 import utils.collections.CMaps;
@@ -75,10 +79,13 @@ import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.FHIRServlet;
+import utils.fhir.ResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import org.hl7.fhir.dstu3.model.DomainResource;
 
 /**
  * functions about studies to be used by researchers
@@ -196,6 +203,81 @@ public class Studies extends APIController {
 			    
 			    return ok(servletOutputStream.toByteArray());
 		 
+	}
+	
+	/**
+	 * download FHIR data about a study of the current research organization
+	 * @param id ID of study
+	 * @return not yet: (ZIP file) 
+	 * @throws AppException
+	 */
+	@APICall
+	@Security.Authenticated(ResearchSecured.class)
+	public static Result downloadFHIR(String id, final String studyGroup) throws AppException, IOException {
+		 final MidataId studyid = new MidataId(id);
+		 MidataId owner = PortalSessionToken.session().getOrg();
+		 final MidataId executorId = new MidataId(request().username());
+		   
+		 final Study study = Study.getByIdFromOwner(studyid, owner, Sets.create("executionStatus","participantSearchStatus","validationStatus","history","owner","groups"));
+
+		 if (study == null) throw new BadRequestException("error.unknown.study", "Unknown Study");
+
+		 setAttachmentContentDisposition("study.json");
+				 		 		
+		 	     			    
+		 final List<Record> allRecords = RecordManager.instance.list(executorId, executorId, CMaps.map("study", study._id).map("study-group", studyGroup), Sets.create("_id"));
+		 final Iterator<Record> recordIterator = allRecords.iterator();				 
+		 final String handle = PortalSessionToken.session().handle;
+		 
+		 
+		 Chunks<String> chunks = new StringChunks() {
+                
+		        // Called when the stream is ready
+		        public void onReady(Chunks.Out<String> out) {
+		        	try {
+		        		KeyManager.instance.continueSession(handle);
+		        		ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId));
+		        		out.write("{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"total\" : "+allRecords.size()+", \"entry\" : [ ");
+		        		boolean first = true;
+		        		while (recordIterator.hasNext()) {
+				            int i = 0;
+				            Set<MidataId> ids = new HashSet<MidataId>();		           
+				            while (i < 100 && recordIterator.hasNext()) {
+				            	ids.add(recordIterator.next()._id);i++;
+				            }
+				            List<Record> someRecords = RecordManager.instance.list(executorId, executorId, CMaps.map("study", study._id).map("study-group", studyGroup).map("_id", ids), RecordManager.COMPLETE_DATA);
+				            for (Record rec : someRecords) {
+				            	
+				            	String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";
+				            	
+				            	ResourceProvider<DomainResource> prov = FHIRServlet.myProviders.get(format); 
+				            	DomainResource r = prov.parse(rec, prov.getResourceType());
+				            	String location = FHIRServlet.getBaseUrl()+"/"+prov.getResourceType().getSimpleName()+"/"+rec._id.toString()+"/_history/"+rec.version;
+				            	if (r!=null) {
+				            		out.write((first?"":",")+"{ \"fullUrl\" : \""+location+"\", \"resource\" : "+prov.serialize(r)+" } ");
+				            	} else {
+				            		out.write((first?"":",")+"{ \"fullUrl\" : \""+location+"\" } ");
+				            	}
+			            		first = false;
+				            }
+		        		}
+		        		out.write("] }");
+			        	out.close();
+		        	} catch (Exception e) {
+		        		AccessLog.logException("download", e);
+		        		ErrorReporter.report("Study Download", null, e);		        		
+		        	} finally {
+		        		RecordManager.instance.clear();	
+		    			PortalSessionToken.clear();
+		    			AccessLog.newRequest();	
+		    			ResourceProvider.setExecutionInfo(null);
+		        	}
+		        }
+
+		 };
+
+		    // Serves this stream with 200 OK
+		  return ok(chunks);			    				 
 	}
 	
 	/**
