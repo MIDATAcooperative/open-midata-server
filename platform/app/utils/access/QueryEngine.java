@@ -398,7 +398,7 @@ class QueryEngine {
     		
     		if (check.contains("created")) {
     			for (DBRecord record : result) {
-    				record.meta.put("created", record._id.toObjectId().getDate());
+    				record.meta.put("created", record._id.getCreationDate());
     			}
     		}
     		
