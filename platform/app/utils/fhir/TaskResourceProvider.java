@@ -259,14 +259,14 @@ public class TaskResourceProvider extends ResourceProvider<Task> implements IRes
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Task");
 		
 		builder.handleIdRestriction();
-		builder.recordOwnerReference("patient", "Patient");		
+		builder.recordOwnerReference("patient", "Patient", "subject");		
 		builder.recordCodeRestriction("code", "code");
 		
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		builder.restriction("part-of", true, "Task", "partOf");
 		builder.restriction("owner", true, null, "owner");
 		
-		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "for");
+		if (!builder.recordOwnerReference("subject", null, "subject")) builder.restriction("subject", true, null, "for");
 		  
         											
 		builder.restriction("authored-on", true, QueryBuilder.TYPE_DATETIME, "authoredOn");

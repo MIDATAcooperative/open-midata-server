@@ -146,7 +146,7 @@ public class DeviceResourceProvider extends ResourceProvider<Device> implements 
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Device");
 
 		builder.handleIdRestriction();
-		builder.recordOwnerReference("patient", "Patient");
+		builder.recordOwnerReference("patient", "Patient", null);
 				
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		builder.restriction("device-name", false, QueryBuilder.TYPE_STRING, "udi", QueryBuilder.TYPE_STRING, "type.coding.display", QueryBuilder.TYPE_STRING, "type.text");

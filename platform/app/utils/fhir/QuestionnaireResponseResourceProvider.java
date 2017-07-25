@@ -184,10 +184,10 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/QuestionnaireResponse");
 
 		builder.handleIdRestriction();
-		builder.recordOwnerReference("patient", "Patient");
+		builder.recordOwnerReference("patient", "Patient", "subject");
 				
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
-		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
+		if (!builder.recordOwnerReference("subject", null, "subject")) builder.restriction("subject", true, null, "subject");
 				
 		builder.restriction("authored", true, QueryBuilder.TYPE_DATETIME, "authored");
 		builder.restriction("author", true, null, "author");

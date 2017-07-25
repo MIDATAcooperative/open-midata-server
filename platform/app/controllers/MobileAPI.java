@@ -1,5 +1,6 @@
 package controllers;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -31,6 +32,7 @@ import models.MobileAppInstance;
 import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
+import models.ResearchUser;
 import models.Study;
 import models.User;
 import models.enums.AggregationType;
@@ -149,7 +151,8 @@ public class MobileAPI extends Controller {
         if (!appInstance.owner.equals(ownerId)) return false;
         if (!appInstance.applicationId.equals(applicationId)) return false;
         
-        if (appInstance.status.equals(ConsentStatus.EXPIRED) || appInstance.status.equals(ConsentStatus.REJECTED)) return false;
+        if (appInstance.status.equals(ConsentStatus.REJECTED)) throw new BadRequestException("error.invalid.token", "Rejected");        
+        if (appInstance.status.equals(ConsentStatus.EXPIRED)) return false;
         
         Plugin app = Plugin.getById(appInstance.applicationId);
         
@@ -164,10 +167,12 @@ public class MobileAPI extends Controller {
 	
 	public static MobileAppInstance getAppInstance(String phrase, MidataId applicationId, MidataId owner, Set<String> fields) throws InternalServerException {
 		Set<MobileAppInstance> candidates = MobileAppInstance.getByApplicationAndOwner(applicationId, owner, fields);
+		AccessLog.log("CS:"+candidates.size());
 		if (candidates.isEmpty()) return null;
 		for (MobileAppInstance instance : candidates) {
 		  if (User.authenticationValid(phrase, instance.passcode)) return instance;
 		}
+		AccessLog.log("CS:fail");
 		return null;
 	}
 	/**
@@ -231,6 +236,7 @@ public class MobileAPI extends Controller {
 			switch (role) {
 			case MEMBER : user = Member.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
 			case PROVIDER : user = HPUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
+			case RESEARCH: user = ResearchUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
 			}
 			if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
 			
@@ -239,16 +245,17 @@ public class MobileAPI extends Controller {
 			}
 			if (Application.loginHelperPreconditionsFailed(user)) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
 			
-			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));
-			
+			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));			
 			if (appInstance != null && !verifyAppInstance(appInstance, user._id, app._id)) {
+				AccessLog.log("CSCLEAR");
 				appInstance = null;
 				RecordManager.instance.clearCache();
 			}
 						
 			if (appInstance == null) {									
 				boolean autoConfirm = false; /*KeyManager.instance.unlock(appInstance.owner, null) == KeyManager.KEYPROTECTION_NONE;*/
-				
+
+				AccessLog.log("REINSTALL");
 				appInstance = installApp(null, app._id, user, phrase, autoConfirm, false);
 				executor = appInstance._id;
 	   		    meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();
@@ -343,6 +350,8 @@ public class MobileAPI extends Controller {
 				}
 			}
 		    Feature_FormatGroups.convertQueryToContents(groupSystem, app.defaultQuery);
+		    
+		    appInstance.sharingQuery = app.defaultQuery;
 				
 		    RecordManager.instance.shareByQuery(executor, member._id, appInstance._id, app.defaultQuery);
 		}
@@ -505,26 +514,9 @@ public class MobileAPI extends Controller {
 		JsonValidation.validate(json, "authToken", "data", "name", "format");
 		if (!json.has("content") && !json.has("code")) new JsonValidationException("error.validation.fieldmissing", "Request parameter 'content' or 'code' not found.");
 		
-		// decrypt authToken 
-		MobileAppSessionToken authToken = MobileAppSessionToken.decrypt(json.get("authToken").asText());
-		if (authToken == null) return invalidToken(); 
-						
-		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare","status"));
-        if (appInstance == null) return invalidToken(); 
-        if (!appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
-        Stats.setPlugin(appInstance.applicationId);
-        
-        MidataId executor = prepareMobileExecutor(appInstance, authToken);
-        
-		MidataId appId = appInstance.applicationId;
-				
-		Member targetUser;
-		MidataId targetAps = appInstance._id;
-				
-		targetUser = Member.getById(appInstance.owner, Sets.create("myaps", "tokens"));
-		if (targetUser == null) throw new BadRequestException("error.invalid.token", "Invalid authToken.");
-		//owner = targetUser;											
-				
+		ExecutionInfo inf = ExecutionInfo.checkMobileToken(json.get("authToken").asText(), false);
+		Stats.setPlugin(inf.pluginId);	
+					
 		String data = JsonValidation.getJsonString(json, "data");
 		String name = JsonValidation.getString(json, "name");
 		String description = JsonValidation.getString(json, "description");
@@ -533,24 +525,24 @@ public class MobileAPI extends Controller {
 		String content = JsonValidation.getStringOrNull(json, "content");
 		Set<String> code = JsonExtraction.extractStringSet(json.get("code"));
 		
-		MidataId owner = appInstance.owner;
+		MidataId owner = inf.ownerId;
 		MidataId ownerOverride = JsonValidation.getMidataId(json, "owner");
 		if (ownerOverride != null && !ownerOverride.equals(owner)) {
-			Set<Consent> consent = Consent.getHealthcareActiveByAuthorizedAndOwner(executor, ownerOverride);
+			Set<Consent> consent = Consent.getHealthcareActiveByAuthorizedAndOwner(inf.ownerId, ownerOverride);
 			if (consent == null || consent.isEmpty()) throw new BadRequestException("error.noconsent", "No active consent that allows to add data for target person.");
 			owner = ownerOverride;
 		}
 				
 		Record record = new Record();
 		record._id = new MidataId();
-		record.app = appId;
+		record.app = inf.pluginId;
 		record.owner = owner;
-		record.creator = appInstance.owner;
-		record.created = new Date();
+		record.creator = inf.ownerId;
+		record.created = record._id.getCreationDate();
 		
-		if (json.has("created-override")) {
+		/*if (json.has("created-override")) {
 			record.created = JsonValidation.getDate(json, "created-override");
-		}
+		}*/
 		
 		record.format = format;
 		
@@ -566,24 +558,9 @@ public class MobileAPI extends Controller {
 		}
 		record.name = name;
 		record.description = description;
+								
+		PluginsAPI.createRecord(inf, record, null, null,null, null);
 		
-		RecordManager.instance.addRecord(executor, record, targetAps);
-						
-		Set<MidataId> records = new HashSet<MidataId>();
-		records.add(record._id);
-		RecordManager.instance.share(executor, appInstance.owner, targetAps, records, false);
-
-		/*
-		if (appInstance.autoShare != null && !appInstance.autoShare.isEmpty()) {
-			for (MidataId autoshareAps : appInstance.autoShare) {
-				Consent consent = Consent.getByIdAndOwner(autoshareAps, targetUser._id, Sets.create("type"));
-				if (consent != null) { 
-				  RecordManager.instance.share(targetUser._id, targetUser._id, autoshareAps, records, true);
-				}
-			}
-		}
-		*/
-			
 		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
 		ObjectNode obj = Json.newObject();		
 		obj.put("_id", record._id.toString());		

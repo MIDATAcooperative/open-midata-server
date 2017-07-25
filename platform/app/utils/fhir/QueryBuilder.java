@@ -409,8 +409,10 @@ public class QueryBuilder {
 					bld.addComp(hPath, CompareOperator.LT, lDate, false);
 					break;
 				case EQUAL:					
-					bld.addComp(lPath, CompareOperator.GE, lDate, false);
-                    bld.addComp(hPath, CompareOperator.LT, hDate, false);					
+					bld.addComp(lPath, CompareOperator.GE, lDate, false, CompareOperator.LT, hDate, false);
+					if (!lPath.equals(hPath)) {
+                      bld.addComp(hPath, CompareOperator.LT, hDate, false, CompareOperator.GE, lDate, false);
+					}
 					break;
 				case NOT_EQUAL:					
 					bld.addCompOr(lPath, CompareOperator.LT, lDate, true);
@@ -614,10 +616,11 @@ public class QueryBuilder {
 	 * @param name name of FHIR search parameter
 	 * @param refType Resource referenced (Patient, Practitioner, ...)
 	 */
-	public boolean recordOwnerReference(String name, String refType) throws AppException {
+	public boolean recordOwnerReference(String name, String refType, String emptyField) throws AppException {
 		List<ReferenceParam> patients = resolveReferences(name, refType);
 		if (patients != null && FHIRTools.areAllOfType(patients, Sets.create("Patient", "Practitioner", "Person"))) {
 			query.putAccount("owner", FHIRTools.referencesToIds(patients));
+			if (emptyField != null) query.putDataCondition(new FieldAccess(emptyField, new ExistsCondition(false)));
 			return true;
 		}
 		if (Stats.enabled && patients == null && name.equals("patient") && !params.containsKey(name)) Stats.addComment("Restrict by patient?");

@@ -24,14 +24,19 @@ public enum InstanceType {
 	/**
 	 * Local instance
 	 */
-	LOCAL;
+	LOCAL,
+	
+	/**
+	 * Performance test instance
+	 */
+	PERFTEST;
 		
 	/**
 	 * Users need status ACTIVE to log in
 	 * @return 
 	 */
 	public boolean getUsersNeedValidation() {
-	   return this != LOCAL;	
+	   return this != LOCAL && this != PERFTEST;	
 	}
 	
 	/**
@@ -55,7 +60,7 @@ public enum InstanceType {
 	 * @return 
 	 */
 	public boolean getTrialAccountsMayLogin() {
-		return this == LOCAL;
+		return this == LOCAL || this == PERFTEST;
 	}
 	
 	/**
@@ -63,7 +68,7 @@ public enum InstanceType {
 	 * @return 
 	 */
 	public boolean getStudiesValidateAutomatically() {
-		return this == TEST || this == DEMO;
+		return this == TEST || this == DEMO || this == PERFTEST;
 	}
 	
 	/**
@@ -71,7 +76,7 @@ public enum InstanceType {
 	 * @return 
 	 */
 	public boolean getAutoGrandMembership() {
-		return this == TEST || this == DEMO;
+		return this == TEST || this == DEMO || this == PERFTEST;
 	}
 	
 	/**
@@ -111,6 +116,30 @@ public enum InstanceType {
 	 * @return
 	 */
 	public boolean doAppDeveloperStats() {
-		return this == LOCAL || this == TEST || this == DEMO;
+		return this == LOCAL || this == TEST || this == DEMO || this == PERFTEST;
+	}
+	
+	/**
+	 * Disable cross site scripting protection.
+	 * @return
+	 */
+	public boolean disableCORSProtection() {
+		return this == PERFTEST;
+	}
+	
+	/**
+	 * Do not send messages to users
+	 * @return
+	 */
+	public boolean disableMessaging() {
+		return this == PERFTEST;
+	}
+	
+	/**
+	 * Do not check if email address has been validated
+	 * @return
+	 */
+	public boolean disableEMailValidation() {
+		return this == PERFTEST;
 	}
 }

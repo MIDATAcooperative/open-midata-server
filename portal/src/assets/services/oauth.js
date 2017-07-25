@@ -33,7 +33,7 @@ angular.module('services')
 		if (!devid) {
 			devid = randomString();						
 		}
-		localStorage.deviceId = devid;
+		if (localStorage) localStorage.deviceId = devid;
 		$cookies.put("device", devid);
 		
 		return devid;

@@ -495,7 +495,7 @@ public class Application extends APIController {
 	public static boolean loginHelperPreconditionsFailed(User user) throws AppException {
         if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 		
-		if (user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.registeredAt.before(new Date(System.currentTimeMillis() - MAX_TIME_UNTIL_EMAIL_CONFIRMATION))) {
+		if (user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.registeredAt.before(new Date(System.currentTimeMillis() - MAX_TIME_UNTIL_EMAIL_CONFIRMATION)) && !InstanceConfig.getInstance().getInstanceType().disableEMailValidation()) {
 			user.status = UserStatus.TIMEOUT;			
 		}
 		
@@ -624,7 +624,7 @@ public class Application extends APIController {
 	public static Result register() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language");
+		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language","password");
 		String email = JsonValidation.getEMail(json, "email");
 		String firstName = JsonValidation.getString(json, "firstname");
 		String lastName = JsonValidation.getString(json, "lastname");
@@ -876,6 +876,7 @@ public class Application extends APIController {
 				controllers.research.routes.javascript.Studies.approveParticipation(),
 				controllers.research.routes.javascript.Studies.rejectParticipation(),
 				controllers.research.routes.javascript.Studies.shareWithGroup(),
+				controllers.research.routes.javascript.Studies.addApplication(),
 				controllers.research.routes.javascript.Studies.addTask(),
 				controllers.research.routes.javascript.Studies.getRequiredInformationSetup(),
 				controllers.research.routes.javascript.Studies.setRequiredInformationSetup(),

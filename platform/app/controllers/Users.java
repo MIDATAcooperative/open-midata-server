@@ -35,6 +35,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.InstanceConfig;
+import utils.access.IndexManager;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.KeyManager;
@@ -414,6 +415,8 @@ public class Users extends APIController {
 			consent.authorized.remove(userId);
 			Consent.set(consent._id, "authorized", consent.authorized);			
 		}
+		
+		RecordManager.instance.clearIndexes(userId);
 		
 		RecordManager.instance.wipe(userId, CMaps.map("owner", "self"));
 		RecordManager.instance.wipe(userId, CMaps.map("owner", "self").map("streams", "true"));

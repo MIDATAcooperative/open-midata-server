@@ -1108,5 +1108,9 @@ public class RecordManager {
 		
 	}
 	
+	public void clearIndexes(MidataId userId) throws AppException {
+		IndexManager.instance.clearIndexes(RecordManager.instance.getCache(userId), userId);		
+	}
+	
 
 }

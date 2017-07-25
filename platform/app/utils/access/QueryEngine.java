@@ -42,7 +42,7 @@ class QueryEngine {
 	}
 	
 	public static Collection<RecordsInfo> info(APSCache cache, MidataId aps, Map<String, Object> properties, AggregationType aggrType) throws AppException {		
-		return infoQuery(new Query(properties, Sets.create("created", "group", "content", "format", "owner", "app"), Feature_UserGroups.findApsCacheToUse(cache,aps), aps), aps, false, aggrType, null);
+		return infoQuery(new Query(properties, Sets.create("group", "content", "format", "owner", "app"), Feature_UserGroups.findApsCacheToUse(cache,aps), aps), aps, false, aggrType, null);
 	}
 	
 	public static List<DBRecord> isContainedInAps(APSCache cache, MidataId aps, List<DBRecord> candidates) throws AppException {
@@ -295,6 +295,7 @@ class QueryEngine {
     }
     
     private static final Set<String> DATA_ONLY = Sets.create("_id", "encryptedData");
+    
     protected static DBRecord loadData(DBRecord input) throws AppException {
     	if (input.data == null && input.encryptedData == null) {
     	   DBRecord r2 = DBRecord.getById(input._id, DATA_ONLY);
@@ -304,6 +305,25 @@ class QueryEngine {
     	}
 		RecordEncryption.decryptRecord(input);
 		return input;
+    }
+    
+    protected static void loadData(Collection<DBRecord> records) throws AppException {
+    	Map<MidataId, DBRecord> idMap = new HashMap<MidataId,DBRecord>(records.size());
+    	for (DBRecord rec : records) {    		    	
+	    	if (rec.data == null && rec.encryptedData == null) {
+	    	   idMap.put(rec._id, rec);
+	    	}
+	    	
+    	}
+    	if (!idMap.isEmpty()) {
+	    	Collection<DBRecord> fromDB = DBRecord.getAll(CMaps.map("_id", idMap.keySet()), DATA_ONLY);
+	    	for (DBRecord r2 : fromDB) {
+	    	   idMap.get(r2._id).encryptedData = r2.encryptedData;	    	   
+	    	}
+    	}
+    	for (DBRecord rec : records) {    		
+		   RecordEncryption.decryptRecord(rec);
+    	}		
     }
     
     protected static List<DBRecord> duplicateElimination(List<DBRecord> input) {
@@ -375,6 +395,13 @@ class QueryEngine {
 			}
     	} else {
     		Set<String> check = q.mayNeedFromDB();
+    		
+    		if (check.contains("created")) {
+    			for (DBRecord record : result) {
+    				record.meta.put("created", record._id.getCreationDate());
+    			}
+    		}
+    		
     		if (!check.isEmpty()) {
     			for (DBRecord record : result) {
     				boolean fetch = false;

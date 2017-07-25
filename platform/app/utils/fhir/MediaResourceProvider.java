@@ -160,14 +160,14 @@ public class MediaResourceProvider extends ResourceProvider<Media> implements IR
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Media");
 
 		builder.handleIdRestriction();
-		builder.recordOwnerReference("patient", "Patient");		
+		builder.recordOwnerReference("patient", "Patient", "subject");		
 		
 		builder.recordCodeRestriction("view", "view");
 				
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		builder.restriction("created", true, QueryBuilder.TYPE_DATETIME, "content.creation");
 		
-		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
+		if (!builder.recordOwnerReference("subject", null, "subject")) builder.restriction("subject", true, null, "subject");
 		
 		//builder.restriction("subject", null, true, "subject");
 		builder.restriction("operator", true, "Practitioner", "operator");		

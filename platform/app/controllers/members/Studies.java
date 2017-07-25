@@ -24,6 +24,7 @@ import models.StudyParticipation;
 import models.enums.ConsentStatus;
 import models.enums.EventType;
 import models.enums.InformationType;
+import models.enums.InstanceType;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
@@ -32,6 +33,7 @@ import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
@@ -43,6 +45,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.fhir.PatientResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -222,7 +225,7 @@ public class Studies extends APIController {
 		String userName;
 		
 		if (study.requiredInformation == InformationType.DEMOGRAPHIC) {
-			userName = member.lastname+", "+member.firstname;	
+			userName = null; //member.lastname+", "+member.firstname;	
 		} else {
 			do {
 			  userName = "Part. " + CodeGenerator.nextUniqueCode();
@@ -238,6 +241,8 @@ public class Studies extends APIController {
 			part.pstatus = ParticipationStatus.CODE;
 		} else part.pstatus = ParticipationStatus.MATCH;
 		
+		//PatientResourceProvider.generatePatientForStudyParticipation(part, member);
+		
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(member.birthday);
 		part.yearOfBirth = cal.get(Calendar.YEAR);
@@ -252,7 +257,7 @@ public class Studies extends APIController {
 		RecordManager.instance.createAnonymizedAPS(member._id, study.createdBy, part._id, true);
 		
 		if (code != null) {
-		  History codedentererd = new History(EventType.CODE_ENTERED, part, null); 
+		  History codedentererd = new History(EventType.CODE_ENTERED, part, member, null); 
 		  part.history.add(codedentererd);
 		} 
 		
@@ -304,9 +309,11 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result requestParticipation(String id) throws AppException {
-		forbidSubUserRole(SubUserRole.TRIALUSER, SubUserRole.NONMEMBERUSER);
-		forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.NONMEMBERUSER);
-		forbidSubUserRole(SubUserRole.APPUSER, SubUserRole.NONMEMBERUSER);	
+		if (!InstanceConfig.getInstance().getInstanceType().equals(InstanceType.PERFTEST)) {
+		  forbidSubUserRole(SubUserRole.TRIALUSER, SubUserRole.NONMEMBERUSER);
+		  forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.NONMEMBERUSER);
+		  forbidSubUserRole(SubUserRole.APPUSER, SubUserRole.NONMEMBERUSER);	
+		}
 		MidataId userId = new MidataId(request().username());		
 		MidataId studyId = new MidataId(id);		
 		requestParticipation(userId, studyId);		
@@ -332,7 +339,14 @@ public class Studies extends APIController {
 		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
 		
 		participation.setPStatus(ParticipationStatus.REQUEST);						
-		participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, null));
+		participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, user, null));
+				
+		if (study.requiredInformation.equals(InformationType.RESTRICTED)) {
+			PatientResourceProvider.createPatientForStudyParticipation(participation, user);
+		} else {
+			Circles.autosharePatientRecord(participation);
+		}
+		
 		Circles.consentStatusChange(userId, participation, ConsentStatus.ACTIVE);				
 				
 	}
@@ -365,7 +379,8 @@ public class Studies extends APIController {
 	public static Result noParticipation(String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().username());		
 		MidataId studyId = new MidataId(id);
-					
+		
+		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "birthday", "gender", "country"));
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create(Consent.ALL, "status", "pstatus", "history", "ownerName", "owner", "authorized"));		
 		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history"));
 		
@@ -374,7 +389,7 @@ public class Studies extends APIController {
 		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH && participation.pstatus != ParticipationStatus.REQUEST) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
 		
 		participation.setPStatus(ParticipationStatus.MEMBER_REJECTED);		
-		participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, null));
+		participation.addHistory(new History(EventType.NO_PARTICIPATION, participation, user, null));
 		Circles.consentStatusChange(userId, participation, ConsentStatus.REJECTED);
 						
 		return ok();

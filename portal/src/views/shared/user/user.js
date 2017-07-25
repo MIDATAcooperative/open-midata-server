@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('UserCtrl', ['$scope', '$state', '$translate', 'ENV', 'users', 'status', 'session', 'server', 'languages', function($scope, $state, $translate, ENV, users, status, session, server, languages) {
+.controller('UserCtrl', ['$scope', '$state', '$translate', 'ENV', 'users', 'status', 'session', 'server', 'languages', 'views', function($scope, $state, $translate, ENV, users, status, session, server, languages, views) {
 	// init
 	$scope.status = new status(false);
 	$scope.user = {};
@@ -74,6 +74,10 @@ angular.module('portal')
 			
 		});	    
 		}
+	};
+	
+	$scope.askwipe = function() {
+		views.setView("confirm", true, "confirm.title");
 	};
 	
 	$scope.wipe = function() {

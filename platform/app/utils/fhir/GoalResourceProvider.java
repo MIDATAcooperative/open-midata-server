@@ -127,12 +127,12 @@ public class GoalResourceProvider extends ResourceProvider<Goal> implements IRes
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Goal");
 
 		builder.handleIdRestriction();
-		builder.recordOwnerReference("patient", "Patient");
+		builder.recordOwnerReference("patient", "Patient", "subject");
 		      		
 		builder.restriction("category", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "category");
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		
-		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");		
+		if (!builder.recordOwnerReference("subject", null, "subject")) builder.restriction("subject", true, null, "subject");		
 		
 		builder.restriction("status", true, QueryBuilder.TYPE_CODE, "status");
 		builder.restriction("targetdate", true, QueryBuilder.TYPE_DATETIME, "targetDate");				

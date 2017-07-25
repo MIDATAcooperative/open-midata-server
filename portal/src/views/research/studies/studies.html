@@ -16,7 +16,7 @@
 	    </tr>
 	  </thead>
 	  <tbody>
-	    <tr ng-repeat="study in results">
+	    <tr ng-repeat="study in results | orderBy : 'createdAt' : 1">
 	      <td><a ui-sref="research.study.overview({ studyId : study._id})">{{ study.name }}</a></td>	  
 	      <td translate="{{ 'enum.studyvalidationstatus.'+study.validationStatus }}"></td>
 	      <td translate="{{ 'enum.participantsearchstatus.'+study.participantSearchStatus }}"></td>
