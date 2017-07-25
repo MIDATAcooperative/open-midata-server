@@ -77,7 +77,6 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 		{ "id": 33, "name": "Wrestling" },
 		{ "id": 34, "name": "Skiing" },
 		{ "id": 35, "name": "SnowBoarding" },
-
 		{ "id": 186, "name": "Base" },
 		{ "id": 187, "name": "Rowing" },
 		{ "id": 188, "name": "Zumba" },
@@ -255,7 +254,7 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 
 	var codeToMidataCode = {};
 	codeToMidataCode["http://loinc.org 41950-7"] = "activities/steps";
-	codeToMidataCode["http://loinc.org 41953-1"] = "activities/distance";
+	codeToMidataCode["http://loinc.org 41953-1"] = "activities/distance-24h-calc";
 	codeToMidataCode["http://midata.coop activities/calories"] = "activities/calories";
 	codeToMidataCode["http://midata.coop activities/elevation"] = "activities/elevation";
 	codeToMidataCode["http://midata.coop activities/minutes-lightly-active"] = "activities/minutes-lightly-active";
