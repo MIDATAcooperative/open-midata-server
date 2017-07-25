@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Date;
+
 import org.bson.types.ObjectId;
 
 /**
@@ -70,6 +72,10 @@ public class MidataId implements Comparable<MidataId> {
 		if (objId!=null) return objId;
 		objId = new ObjectId(id);
 		return objId;
+	}
+	
+	public Date getCreationDate() {
+		return toObjectId().getDate();
 	}
 	
 	/**

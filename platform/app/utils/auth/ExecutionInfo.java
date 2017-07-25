@@ -15,6 +15,7 @@ import models.enums.ConsentStatus;
 import play.libs.Json;
 import play.mvc.Http.Request;
 import utils.AccessLog;
+import utils.RuntimeConstants;
 import utils.access.RecordManager;
 import utils.collections.RequestCache;
 import utils.collections.Sets;
@@ -36,6 +37,15 @@ public class ExecutionInfo {
 	public Space space;
 	
 	public RequestCache cache = new RequestCache();
+	
+	public ExecutionInfo() {}
+	
+	public ExecutionInfo(MidataId executor) {
+		this.executorId = executor;
+		this.ownerId = executor;
+		this.targetAPS = executor;
+		this.pluginId = RuntimeConstants.instance.portalPlugin;
+	}
 	
 	public static ExecutionInfo checkToken(Request request, String token, boolean allowInactive) throws AppException {
 		String plaintext = TokenCrypto.decryptToken(token);

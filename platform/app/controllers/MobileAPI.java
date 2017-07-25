@@ -538,7 +538,7 @@ public class MobileAPI extends Controller {
 		record.app = inf.pluginId;
 		record.owner = owner;
 		record.creator = inf.ownerId;
-		record.created = record._id.toObjectId().getDate();
+		record.created = record._id.getCreationDate();
 		
 		/*if (json.has("created-override")) {
 			record.created = JsonValidation.getDate(json, "created-override");
