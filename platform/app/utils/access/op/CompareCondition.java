@@ -78,7 +78,17 @@ public class CompareCondition implements Condition {
 	}
 
 	@Override
-	public boolean isInBounds(Object low, Object high) {
+	public boolean isInBounds(Object low, Object high) {		
+		try {
+		  if (isDate) {
+			  if (low!=null) low = ISODateTimeFormat.dateTimeParser().parseDateTime(low.toString()).toDate();
+			  if (high!=null) high = ISODateTimeFormat.dateTimeParser().parseDateTime(high.toString()).toDate();
+		  }
+		  if (isNumber && low!=null && !(low instanceof Double)) low = new Double(low.toString());
+		  if (isNumber && high!=null && !(high instanceof Double)) high = new Double(low.toString());
+		} catch (IllegalArgumentException e) { return false; }
+		
+		
 		switch (op) {
 		case GT:return high == null || val.compareTo(high) < 0;
 		case GE:return high == null || val.compareTo(high) <= 0;

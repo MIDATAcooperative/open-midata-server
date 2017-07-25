@@ -436,11 +436,11 @@ public class PluginsAPI extends APIController {
 		record.app = authToken.pluginId;
 		record.owner = authToken.ownerId;
 		record.creator = authToken.executorId;
-		record.created = new Date();
+		record.created = record._id.toObjectId().getDate();
 		
-		if (json.has("created-override")) {
+		/*if (json.has("created-override")) {
 			record.created = JsonValidation.getDate(json, "created-override");
-		}
+		}*/
 		
 		record.format = format;
 		
@@ -767,7 +767,7 @@ public class PluginsAPI extends APIController {
 			record.app = authToken.pluginId;
 			record.owner = authToken.ownerId;
 			record.creator = authToken.executorId;
-			record.created = new Date();
+			record.created = record._id.toObjectId().getDate();
 			record.name = metaData.get("name")[0];
 			record.description = metaData.containsKey("description") ? metaData.get("description")[0] : null;
 			String[] formats = metaData.get("format");

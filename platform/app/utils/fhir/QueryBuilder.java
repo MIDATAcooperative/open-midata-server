@@ -409,8 +409,10 @@ public class QueryBuilder {
 					bld.addComp(hPath, CompareOperator.LT, lDate, false);
 					break;
 				case EQUAL:					
-					bld.addComp(lPath, CompareOperator.GE, lDate, false);
-                    bld.addComp(hPath, CompareOperator.LT, hDate, false);					
+					bld.addComp(lPath, CompareOperator.GE, lDate, false, CompareOperator.LT, hDate, false);
+					if (!lPath.equals(hPath)) {
+                      bld.addComp(hPath, CompareOperator.LT, hDate, false, CompareOperator.GE, lDate, false);
+					}
 					break;
 				case NOT_EQUAL:					
 					bld.addCompOr(lPath, CompareOperator.LT, lDate, true);

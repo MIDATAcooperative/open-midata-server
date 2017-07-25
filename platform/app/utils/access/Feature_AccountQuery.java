@@ -36,6 +36,7 @@ public class Feature_AccountQuery extends Feature {
 
 		if (q.getApsId().equals(q.getCache().getAccountOwner())) {
 			if (AccessLog.detailedLog) AccessLog.logBegin("Begin process owner aps");
+			long time = System.currentTimeMillis();
 			Set<String> sets = q.restrictedBy("owner") ? q.getRestriction("owner") : Collections.singleton("all");
 			
 			List<DBRecord> result = null;
@@ -61,7 +62,7 @@ public class Feature_AccountQuery extends Feature {
 			}				
 				
 			
-			if (AccessLog.detailedLog) AccessLog.logEnd("End process owner aps #size="+result.size());
+			if (AccessLog.detailedLog) AccessLog.logEnd("End process owner aps #size="+result.size()+" time="+(System.currentTimeMillis()-time));
 			return result;
 		} else {
 			
