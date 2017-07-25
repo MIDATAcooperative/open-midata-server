@@ -12,6 +12,7 @@ import org.bson.BSONObject;
 
 import models.MidataId;
 import models.Record;
+import utils.AccessLog;
 
 public class RecordConversion {
 	
@@ -21,25 +22,29 @@ public class RecordConversion {
 		Record record = new Record();
 		
 		record._id = dbrecord._id;
-		record.app = MidataId.from(dbrecord.meta.get("app"));
-		Object creator = dbrecord.meta.get("creator");
-		if (creator != null) record.creator = MidataId.from(creator); else record.creator = dbrecord.owner;
-		record.name = (String) dbrecord.meta.get("name");				
-		record.created = (Date) dbrecord.meta.get("created");
-		record.lastUpdated = (Date) dbrecord.meta.get("lastUpdated");
-		if (record.lastUpdated == null) record.lastUpdated = record.created;
-		record.description = (String) dbrecord.meta.get("description");
-		record.version = (String) dbrecord.meta.get("version");
-		if (record.version == null) record.version = VersionedDBRecord.INITIAL_VERSION;
-		record.format = (String) dbrecord.meta.get("format");				
-		record.content = (String) dbrecord.meta.get("content");
-		Object code = dbrecord.meta.get("code");
-		if (code != null) {
-		  record.code = (code instanceof String) ? Collections.singleton((String) code) : new HashSet((Collection) code);
+		record.format = (String) dbrecord.meta.get("format");		
+		if (record.format != null) {
+		  record.app = MidataId.from(dbrecord.meta.get("app"));
+		  Object creator = dbrecord.meta.get("creator");
+		  if (creator != null) record.creator = MidataId.from(creator); else record.creator = dbrecord.owner;
+		  record.name = (String) dbrecord.meta.get("name");				
+		  record.created = (Date) dbrecord.meta.get("created");
+		  record.lastUpdated = (Date) dbrecord.meta.get("lastUpdated");
+		  if (record.lastUpdated == null) record.lastUpdated = record.created;
+		  record.description = (String) dbrecord.meta.get("description");
+		  record.version = (String) dbrecord.meta.get("version");
+		  if (record.version == null) record.version = VersionedDBRecord.INITIAL_VERSION;
+						
+		  record.content = (String) dbrecord.meta.get("content");
+		  Object code = dbrecord.meta.get("code");
+		  if (code != null) {
+		    record.code = (code instanceof String) ? Collections.singleton((String) code) : new HashSet((Collection) code);
+		  }
+		  record.tags = (Set<String>) dbrecord.meta.get("tags");
 		}
+		
 		record.owner = dbrecord.owner;
-		record.ownerName = (String) dbrecord.meta.get("ownerName");		
-		record.tags = (Set<String>) dbrecord.meta.get("tags");
+		record.ownerName = (String) dbrecord.meta.get("ownerName");				
 		record.document = dbrecord.document;
 		record.group = dbrecord.group;
 		record.id = dbrecord.id;
@@ -52,8 +57,10 @@ public class RecordConversion {
 	}
 	
 	public List<Record> currentVersionFromDB(List<DBRecord> dbrecords) {
+		AccessLog.log("start convert");
 		List<Record> result = new ArrayList<Record>(dbrecords.size());
 		for (DBRecord dbrecord : dbrecords) result.add(currentVersionFromDB(dbrecord));
+		AccessLog.log("end convert");
 		return result;
 	}
 	

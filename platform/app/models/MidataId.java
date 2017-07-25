@@ -131,6 +131,7 @@ public class MidataId implements Comparable<MidataId> {
 	public static MidataId from(Object o) {
 		if (o == null) return null;
 		if (o instanceof ObjectId) return new MidataId((ObjectId) o);
+		if (o instanceof MidataId) return (MidataId) o;
 		return new MidataId(o.toString());
 	}
 		
