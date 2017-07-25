@@ -310,7 +310,7 @@ public class Query {
 		 
 		 restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age") || properties.containsKey("created-after") || properties.containsKey("created-before") || properties.containsKey("updated-after") || properties.containsKey("updated-before");
 		 
-         fieldsFromDB = Sets.create("createdOld", "encrypted");
+         fieldsFromDB = Sets.create("createdOld");
          mayNeedFromDB = new HashSet<String>();
          if (fields.contains("stream")) { 
         	 fieldsFromDB.add("stream");
