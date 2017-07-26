@@ -102,8 +102,8 @@ public class RecordsInfo {
     	
     	
     	count = 1;
-    	oldest = rec._id.toObjectId().getDate();//meta._id.get("created");
-    	newest = rec._id.toObjectId().getDate();//meta.get("created");
+    	oldest = rec._id.getCreationDate(); //meta.get("created");
+    	newest = oldest;
     	newestRecord = rec._id;
     	
     	calculated = new Date(System.currentTimeMillis());

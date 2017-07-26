@@ -436,7 +436,7 @@ public class PluginsAPI extends APIController {
 		record.app = authToken.pluginId;
 		record.owner = authToken.ownerId;
 		record.creator = authToken.executorId;
-		record.created = record._id.toObjectId().getDate();
+		record.created = record._id.getCreationDate();
 		
 		/*if (json.has("created-override")) {
 			record.created = JsonValidation.getDate(json, "created-override");
@@ -767,7 +767,7 @@ public class PluginsAPI extends APIController {
 			record.app = authToken.pluginId;
 			record.owner = authToken.ownerId;
 			record.creator = authToken.executorId;
-			record.created = record._id.toObjectId().getDate();
+			record.created = record._id.getCreationDate();
 			record.name = metaData.get("name")[0];
 			record.description = metaData.containsKey("description") ? metaData.get("description")[0] : null;
 			String[] formats = metaData.get("format");
