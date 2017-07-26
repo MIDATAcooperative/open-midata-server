@@ -550,9 +550,9 @@ class QueryEngine {
     	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());
     	for (DBRecord record : input) {
     		Date cmp = (Date) record.meta.get(property);
-    		if (cmp == null) cmp = (Date) record.meta.get("created"); //Fallback for lastUpdated
+    		if (cmp == null) cmp = record._id.getCreationDate(); //Fallback for lastUpdated
     		if (cmp == null) {
-    			AccessLog.log("Record with _id "+record.id+" has not created date!");
+    			AccessLog.log("Record with _id "+record._id.toString()+" has not created date!");
     			continue;
     		}
     		if (minDate != null && cmp.before(minDate)) continue;
