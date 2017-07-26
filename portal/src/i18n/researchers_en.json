@@ -122,7 +122,8 @@
     "empty" : "Once data is available it can be downloaded here.",
     "group" : "Data Group",
     "number_of_records" : "# Records",
-    "download_btn" : "Download"
+    "download_btn" : "Download",
+    "fhir_download_btn" : "Download FHIR Bundle"
   },
   
   "studyrules" : {

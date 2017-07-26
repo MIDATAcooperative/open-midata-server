@@ -117,6 +117,7 @@ GET     /api/research/studies/:study                     controllers.research.St
 GET     /api/admin/studies/:study                        controllers.research.Studies.getAdmin(study: String)
 PUT     /api/research/studies/:study                     controllers.research.Studies.update(study: String)
 GET     /api/research/studies/:study/download            controllers.research.Studies.download(study: String)
+GET     /api/research/studies/:study/fhirdownload/:studyGroup  controllers.research.Studies.downloadFHIR(study: String, studyGroup : String)
 GET     /api/research/studies/:study/codes               controllers.research.Studies.listCodes(study: String)
 POST    /api/research/studies/:study/codes               controllers.research.Studies.generateCodes(study: String)
 GET     /api/research/studies/:study/requiredinfo        controllers.research.Studies.getRequiredInformationSetup(study: String)

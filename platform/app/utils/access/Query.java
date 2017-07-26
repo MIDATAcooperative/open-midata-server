@@ -300,7 +300,8 @@ public class Query {
 	              fields.contains("creator") || 	             
 	              fields.contains("name") ||
 	              fields.contains("code") || 
-	              fields.contains("description") || 
+	              fields.contains("description") ||
+	              fields.contains("lastUpdated") || 
 	              fields.contains("tags") ||	              
 	              fields.contains("watches") ||
 	              //properties.containsKey("app") ||
@@ -310,7 +311,7 @@ public class Query {
 		 
 		 restrictedOnTime = properties.containsKey("created") || properties.containsKey("max-age") || properties.containsKey("created-after") || properties.containsKey("created-before") || properties.containsKey("updated-after") || properties.containsKey("updated-before");
 		 
-         fieldsFromDB = Sets.create("createdOld", "encrypted");
+         fieldsFromDB = Sets.create();
          mayNeedFromDB = new HashSet<String>();
          if (fields.contains("stream")) { 
         	 fieldsFromDB.add("stream");
@@ -330,22 +331,11 @@ public class Query {
 		 }
          
          if (restrictedOnTime) fieldsFromDB.add("time");
-		 if (fetchFromDB) fieldsFromDB.add("encrypted");
+		 //if (fetchFromDB) fieldsFromDB.add("encrypted");
 		 if (fields.contains("data")) fieldsFromDB.add("encryptedData");
 		 if (fields.contains("watches")) fieldsFromDB.add("encWatches");
 		 
-		 
-				
-		 // TODO Remove later
-		 /*if (fields.contains("data")) fieldsFromDB.add("data");
-		 if (fields.contains("app")) fieldsFromDB.add("app");
-		 if (fields.contains("format")) fieldsFromDB.add("format");
-		 if (fields.contains("content")) fieldsFromDB.add("content");
-		 if (uses("creator")) fieldsFromDB.add("creator");	
-		 if (fields.contains("name")) fieldsFromDB.add("name");
-		 if (fields.contains("description")) fieldsFromDB.add("description");
-		 if (fields.contains("tags")) fieldsFromDB.add("tags");
-		 */
+		 					
 		 if (properties.containsKey("max-age")) {
 			Number maxAge = (long) Double.parseDouble(properties.get("max-age").toString());
 			minDateCreated = new Date(System.currentTimeMillis() - 1000 * maxAge.longValue());
@@ -426,6 +416,8 @@ public class Query {
 			 }
 			 properties.put("content", contents);
 		 }
+		 
+		 if (fetchFromDB) fieldsFromDB.add("encrypted");
 	}
 	
 	public static int getTimeFromDate(Date dt) {

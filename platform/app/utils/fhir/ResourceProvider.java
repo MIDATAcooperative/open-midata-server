@@ -383,7 +383,8 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 	}
 	
 	public T parse(Record record, Class<T> resultClass) throws AppException {
-		return parse(Collections.singletonList(record), resultClass).iterator().next();
+		List<T> result = parse(Collections.singletonList(record), resultClass);
+		return result.isEmpty() ? null : result.iterator().next();
 	}
 	
     public String serialize(T resource) {
