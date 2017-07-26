@@ -10,6 +10,7 @@ import ca.uhn.fhir.model.api.IQueryParameterAnd;
 import ca.uhn.fhir.model.api.IQueryParameterOr;
 import ca.uhn.fhir.model.api.IQueryParameterType;
 import ca.uhn.fhir.model.api.Include;
+import ca.uhn.fhir.rest.api.SortOrderEnum;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.SummaryEnum;
 import ca.uhn.fhir.rest.param.DateRangeParam;
@@ -174,7 +175,29 @@ public class SearchParameterMap extends HashMap<String, List<List<? extends IQue
  	}
  
 	public void setSort(SortSpec theSort) {
-		mySort = theSort;
+		mySort = theSort;		
 	}
+	
+	public SortOrderEnum hasSortParam(String name) {
+		SortSpec spec = mySort;
+		while (spec != null) {
+			if (spec.getParamName().equals(name)) return spec.getOrder();
+			spec = spec.getChain();
+		}
+		return null;		
+	}
+	
+	public String[] getSortNames() {
+		if (mySort == null) return null;
+		List<String> sorts = new ArrayList();
+		SortSpec spec = mySort;
+		while (spec != null) {
+			sorts.add(spec.getParamName());
+			spec = spec.getChain();
+		}
+		return sorts.toArray(new String[sorts.size()]);
+	}
+	
+	
 
 }
