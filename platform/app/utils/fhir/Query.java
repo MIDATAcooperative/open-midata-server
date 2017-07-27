@@ -106,6 +106,10 @@ public class Query {
 		return result;
 	}
 	
+	public Map<String, Object> getAccountCriteria() {
+		return accountCriteria;
+	}
+	
 	
 	public Object retrieveIndexValues() throws AppException {		
 		if (indexCriteria != null) {

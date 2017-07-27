@@ -853,9 +853,29 @@ public class RecordManager {
 		if (properties.containsKey("content/*")) nproperties.put("content/*", properties.get("content/*"));
 		if (properties.containsKey("app")) nproperties.put("app", properties.get("app"));
 		if (properties.containsKey("group")) nproperties.put("group", properties.get("group"));
+		if (properties.containsKey("code")) {
+			Set<String> codes = Query.getRestriction(properties.get("code"), "code");
+			Set<String> contents = new HashSet<String>();
+			for (String code : codes) {
+				 String content = ContentCode.getContentForSystemCode(code);
+				 if (content == null) throw new BadRequestException("error.unknown.code", "Unknown code '"+code+"' in restriction.");
+				 contents.add(content);
+			}
+			nproperties.put("content", contents);
+		}
 		
 		try {
-		    return QueryEngine.info(getCache(who), aps, nproperties, aggrType);
+		    Collection<RecordsInfo> result = QueryEngine.info(getCache(who), aps, nproperties, aggrType);
+		    
+		    if (properties.containsKey("include-records")) {
+			    for (RecordsInfo inf : result) {
+			    	if (inf.newestRecord != null) {
+			    		inf.newestRecordContent = fetch(who, aps, inf.newestRecord);
+			    	}
+			    }
+		    }
+		    
+		    return result;
 		} catch (APSNotExistingException e) {
 			checkRecordsInAPS(who, aps, false);
 			//fixAccount(who);

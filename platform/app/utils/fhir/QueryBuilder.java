@@ -78,6 +78,8 @@ public class QueryBuilder {
 		this.params = params;
 		this.query = query;
 		if (format != null) this.query.putAccount("format", format);
+		String content = params.getContent();
+		if (content != null) this.query.putAccount("content", content);
 		handleCommon();
 	}
 	

@@ -27,14 +27,12 @@ public class SearchParameterMap extends HashMap<String, List<List<? extends IQue
   
   	private Integer myCount;  	
   	private Set<Include> myIncludes;
-  	private DateRangeParam myLastUpdated;
-  	private boolean myPersistResults = true;
-//  	private RequestDetails myRequestDetails;
+  	private DateRangeParam myLastUpdated;  	
   	private Set<Include> myRevIncludes;
   	private SortSpec mySort;
   	private Set<String> elements;
   	private SummaryEnum summary = SummaryEnum.FALSE;
-    	
+    private String content;	
   	
   	public void add(String theName, IQueryParameterAnd<?> theAnd) {
   		if (theAnd == null) {
@@ -198,6 +196,15 @@ public class SearchParameterMap extends HashMap<String, List<List<? extends IQue
 		}
 		return sorts.toArray(new String[sorts.size()]);
 	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+	
 	
 	
 
