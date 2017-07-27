@@ -34,7 +34,8 @@ public class SearchParameterMap extends HashMap<String, List<List<? extends IQue
   	private SortSpec mySort;
   	private Set<String> elements;
   	private SummaryEnum summary = SummaryEnum.FALSE;
-  
+    	
+  	
   	public void add(String theName, IQueryParameterAnd<?> theAnd) {
   		if (theAnd == null) {
   			return;

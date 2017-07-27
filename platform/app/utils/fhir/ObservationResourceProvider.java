@@ -1,29 +1,42 @@
 package utils.fhir;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.IdType;
+import org.hl7.fhir.dstu3.model.IntegerType;
 import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.Resource;
+import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
+import ca.uhn.fhir.model.api.IQueryParameterType;
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.rest.annotation.Create;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
+import ca.uhn.fhir.rest.annotation.Operation;
+import ca.uhn.fhir.rest.annotation.OperationParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
 import ca.uhn.fhir.rest.annotation.Update;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.api.SortOrderEnum;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.param.CompositeAndListParam;
 import ca.uhn.fhir.rest.param.DateAndListParam;
+import ca.uhn.fhir.rest.param.DateOrListParam;
 import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
+import ca.uhn.fhir.rest.param.ParamPrefixEnum;
 import ca.uhn.fhir.rest.param.QuantityAndListParam;
 import ca.uhn.fhir.rest.param.QuantityParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
@@ -33,6 +46,7 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.Record;
 import utils.auth.ExecutionInfo;
@@ -400,6 +414,61 @@ public class ObservationResourceProvider extends ResourceProvider<Observation> i
 		if (p.getSubject().isEmpty()) {			
 			p.setSubject(FHIRTools.getReferenceToUser(record.owner, record.ownerName));
 		}
+	}
+	
+	@Operation(name="$lastn", idempotent=true)
+	public Bundle lastn(				  
+	   @OperationParam(name="max") IntegerType theMax,
+	   @OperationParam(name="patient") ReferenceParam thePatient,
+	   @OperationParam(name="subject") ReferenceParam theSubject,
+	   @OperationParam(name="code") List<TokenParam> theCode
+	   )  {
+	    
+		if (theCode == null) throw new NotImplementedOperationException("'code' is currently required as parameter for $lastn");
+		
+		SearchParameterMap paramMap = new SearchParameterMap();
+		Bundle retVal = new Bundle();
+				
+		paramMap.add("subject", theSubject);
+		paramMap.add("patient", thePatient);
+		int count = theMax != null ? theMax.getValue() : 1;		
+		paramMap.setSort(new SortSpec("date", SortOrderEnum.DESC));
+		long now = System.currentTimeMillis();
+		
+		for (TokenParam code : theCode) {
+			paramMap.setCount(count);
+			paramMap.remove("code");
+			paramMap.add("code", code);
+			long range = 1000l*60l*60l*24l*(count+3);
+			Date limit = new Date(now - range);
+			paramMap.remove("date");
+			paramMap.add("date", (IQueryParameterType) new DateParam(ParamPrefixEnum.STARTS_AFTER, limit));						
+			int found = addBundle(paramMap, retVal);
+			int retries = 3;
+			while (found<count && retries>=0) {
+				retries--;
+				paramMap.setCount(count-found);				
+				DateAndListParam daterange = new DateAndListParam();
+				daterange.addValue(new DateOrListParam().add(new DateParam(ParamPrefixEnum.LESSTHAN, limit)));
+				range = range * 2 + 1000l*60l*60l*24l*32l;
+				limit = new Date(now-range);
+				if (retries>0) daterange.addValue(new DateOrListParam().add(new DateParam(ParamPrefixEnum.STARTS_AFTER, limit)));
+				paramMap.remove("date");
+				paramMap.add("date", daterange);
+				
+				found += addBundle(paramMap, retVal);				
+			}
+		}
+							   	  
+ 	    return retVal;
+	}
+	
+	private int addBundle(SearchParameterMap paramMap, Bundle retVal) {
+		List<IBaseResource> partResult = search(paramMap);												
+		for (IBaseResource res : partResult) {
+			retVal.addEntry().setResource((Resource) res); 
+		}		
+		return partResult.size();
 	}
 	
 
