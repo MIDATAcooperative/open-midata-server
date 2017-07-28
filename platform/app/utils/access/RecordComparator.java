@@ -1,13 +1,15 @@
 package utils.access;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 import org.bson.BSONObject;
+import org.bson.types.BasicBSONList;
 
 public class RecordComparator implements Comparator<DBRecord> {
 
-	private String[] path;
-	private String last;
+	private Path path;
 	private boolean data;
 	private int direction = 1;
 	
@@ -21,26 +23,28 @@ public class RecordComparator implements Comparator<DBRecord> {
 		}
 		if (fullPath.startsWith("data.")) {
 			data = true;
-			String p[] = fullPath.split("\\.");
-			if (p.length > 2) {
-				path = new String[p.length-2];
-				for (int i=0;i<p.length-2;i++) path[i] = p[i+1];
-			}
-			last = p[p.length-1];
-		} else {
-			String p[] = fullPath.split("\\.");
-			if (p.length > 1) {
-				path = new String[p.length-1];
-				for (int i=0;i<p.length-1;i++) path[i] = p[i];
-			}
-			last = p[p.length-1];
+			fullPath = fullPath.substring("data.".length());
 		}
+		String alts[] = fullPath.split("\\|");
+		
+		if (alts.length == 1) {
+			String p[] = alts[0].split("\\.");
+			path = new SimplePath(p);
+		} else {
+			List<SimplePath> lst = new ArrayList<SimplePath>(alts.length);
+			for (String alt : alts) {
+				String p[] = alt.split("\\.");
+				lst.add(new SimplePath(p));
+			}
+			path = new AlternativePath(lst.toArray(new SimplePath[alts.length]));
+		}
+		
 	}
 	
 	@Override
 	public int compare(DBRecord o1, DBRecord o2) {
-		BSONObject obj1;
-		BSONObject obj2;
+		Object obj1;
+		Object obj2;
 		
 		if (data) {
 			obj1 = o1.data;
@@ -50,18 +54,54 @@ public class RecordComparator implements Comparator<DBRecord> {
 			obj2 = o2.meta;
 		}
 		
-		if (path != null) {
-			for (String part : path) {
-				obj1 = (BSONObject) obj1.get(part);
-				obj2 = (BSONObject) obj2.get(part);
-			}
+		if (path != null) {			
+			obj1 = path.access((BSONObject) obj1);
+			obj2 = path.access((BSONObject) obj2);			
 		}
-		
-		Object o = obj1.get(last);
-		if (o == null) {
-			return obj2.get(last) == null ? 0 : -direction;
+				
+		if (obj1 == null) {
+			return obj2 == null ? 0 : -direction;
 		}
-		return direction * ((Comparable) o).compareTo(obj2.get(last));		
+		if (obj2 == null) return direction;
+		return direction * ((Comparable) obj1).compareTo(obj2);		
 	}
 
+    interface Path {
+    	Object access(BSONObject in);
+    }
+
+	class SimplePath implements Path {
+		private String[] path;
+		
+		SimplePath(String[] path) {
+			this.path = path;
+		}
+		
+		public Object access(BSONObject p) {
+			Object in = p;
+			for (String part : path) {				
+				in = ((BSONObject) in).get(part);
+				if (in instanceof BasicBSONList) in = ((BasicBSONList) in).get(0);
+				if (in == null) return null;
+			}
+			return in;
+		}
+	}
+	
+	class AlternativePath implements Path {
+		private SimplePath[] alt;
+		
+		AlternativePath(SimplePath[] alt) {
+			this.alt = alt;
+		}
+		
+		public Object access(BSONObject in) {
+			for (SimplePath part : alt) {
+				Object r = part.access(in);				
+				if (r != null) return r;
+			}
+			return null;
+		}
+		
+	}
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import ca.uhn.fhir.rest.api.SortOrderEnum;
 import models.Record;
 import utils.access.RecordManager;
 import utils.access.op.AndCondition;
@@ -32,6 +33,7 @@ public class Query {
 	private Map<String, Object> accountCriteria;
 	private Condition indexCriteria;
 	private Condition dataCriteria;
+	private String[] sorts;
 	//private List<> postFilters;
 	
 	public Query() {
@@ -57,6 +59,16 @@ public class Query {
 		} else indexCriteria = AndCondition.and(indexCriteria, indexCondition);
 	}
 	
+	public void initSort(String[] sorts) {
+		this.sorts = sorts;
+	}
+	
+	public void putSort(String name, SortOrderEnum direction, String path) {
+		for (int i=0;i<sorts.length;i++) {
+			if (sorts[i].equals(name)) sorts[i] = path+((direction == SortOrderEnum.ASC) ?" asc":" desc");
+		}
+	}
+	
 	private static void addRestriction(Map<String, Object> crit, Object content, String[] path, int idx) {
 		if (idx == path.length - 1) {
 			crit.put(path[idx], content);
@@ -77,6 +89,9 @@ public class Query {
 		if (dataCriteria!=null) {
 			accountCriteria.put("data", dataCriteria);
 		}
+		if (sorts!=null) {
+			accountCriteria.put("sort", String.join(",", sorts));
+		}
 		
 		List<Record> result = RecordManager.instance.list(info.executorId, info.targetAPS, accountCriteria, Sets.create("owner", "ownerName", "version", "created", "lastUpdated", "data"));
 		
@@ -89,6 +104,10 @@ public class Query {
 		if (dataCriteria != null) result.putAll((Map<String,Object>) dataCriteria.asMongoQuery());
 		ObjectIdConversion.convertMidataIds(result, "_id");
 		return result;
+	}
+	
+	public Map<String, Object> getAccountCriteria() {
+		return accountCriteria;
 	}
 	
 	
