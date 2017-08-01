@@ -52,6 +52,7 @@
 		  </div>
 		</div>
 		
+		<!-- 
 		<div ng-cloak class="panel panel-primary" ng-if="user.role == 'MEMBER'">
 		  <div class="panel-heading" translate="member_user.account_status"></div>
 		  <div class="panel-body">
@@ -85,6 +86,7 @@
 			</loader>
 		  </div>
 		</div>
+		 -->
 		
 		<div ng-cloak class="panel panel-primary">
 		  <div class="panel-heading" translate="user.settings"></div>
@@ -93,8 +95,23 @@
 			
 			
 			<div class="row">
-				<p class="col-sm-2" translate="user.searchable"></p>
-				<p class="col-sm-10"><input type="checkbox" ng-disabled="locked" ng-model="user.searchable"></p>
+				<p class="col-sm-2" translate="user.searchable_short"></p>
+				<div class="col-sm-10">
+				  <div translate="user.searchable"></div>
+				  <div class="radio">
+				    <label>
+				      <input type="radio" ng-disabled="locked" name="searchable" ng-value="true" ng-model="user.searchable">
+				      <span translate="user.searchable_yes"></span>
+				    </label>
+				  </div>
+				  <div class="radio">
+				    <label>
+				      <input type="radio" ng-disabled="locked" name="searchable" ng-value="false" ng-model="user.searchable">
+				      <span translate="user.searchable_no"></span>
+				    </label>
+				  </div>
+				  <span class="help-block" translate="user.searchable_info"></span>
+				 </div>
 			</div>
 			<div class="row">
 				<p class="col-sm-2" translate="registration.language"></p>

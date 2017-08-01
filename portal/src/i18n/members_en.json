@@ -7,8 +7,8 @@
   
   "member_quickregistration" : {
     "sign_up" : "Sign up",
-    "study" : "Study",
-    "app" : "App to be used",
+    "study" : "Study*",
+    "app" : "App to be used*",
     "app_password" : "Password for app",
     "account_password" : "Account Password",
     "repeat_account_password" : "Repeat Account Password"

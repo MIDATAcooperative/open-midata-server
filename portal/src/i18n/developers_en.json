@@ -1,5 +1,6 @@
 {
   "developer_registration" : {
+    "sign_up" : "Developer Sign Up",
     "reason_fillout" : "To avoid longer waiting time until your account is validated please fill out contact person and purpose of registration carefully such that an administrator may decide quickly about your access request.",
     "sign_up_btn" : "Developer Sign Up"
   },

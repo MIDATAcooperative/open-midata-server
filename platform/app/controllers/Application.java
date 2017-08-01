@@ -624,7 +624,7 @@ public class Application extends APIController {
 	public static Result register() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "language","password");
+		JsonValidation.validate(json, "email", "firstname", "lastname", "gender", "country", "language","password");
 		String email = JsonValidation.getEMail(json, "email");
 		String firstName = JsonValidation.getString(json, "firstname");
 		String lastName = JsonValidation.getString(json, "lastname");
@@ -644,10 +644,10 @@ public class Application extends APIController {
 		
 		user.password = Member.encrypt(password);				
 		user.subroles = EnumSet.of(SubUserRole.TRIALUSER);		
-		user.address1 = JsonValidation.getString(json, "address1");
-		user.address2 = JsonValidation.getString(json, "address2");
-		user.city = JsonValidation.getString(json, "city");
-		user.zip  = JsonValidation.getString(json, "zip");
+		user.address1 = JsonValidation.getStringOrNull(json, "address1");
+		user.address2 = JsonValidation.getStringOrNull(json, "address2");
+		user.city = JsonValidation.getStringOrNull(json, "city");
+		user.zip  = JsonValidation.getStringOrNull(json, "zip");
 		user.phone = JsonValidation.getString(json, "phone");
 		user.mobile = JsonValidation.getString(json, "mobile");
 		user.country = JsonValidation.getString(json, "country");
@@ -928,6 +928,10 @@ public class Application extends APIController {
 				controllers.routes.javascript.UserGroups.addMembersToUserGroup(),
 				controllers.routes.javascript.UserGroups.deleteUserGroupMembership(),
 				controllers.routes.javascript.UserGroups.listUserGroupMembers(),
+				
+				controllers.routes.javascript.Terms.get(),
+				controllers.routes.javascript.Terms.search(),
+				controllers.routes.javascript.Terms.add(),
 				
 		        // Portal
 		        controllers.routes.javascript.PortalConfig.getConfig(),

@@ -217,6 +217,11 @@ GET     /api/plugins/:id/url            controllers.Plugins.getUrl(id: String)
 GET     /api/portal/config              controllers.PortalConfig.getConfig()
 POST    /api/portal/config              controllers.PortalConfig.setConfig()
 
+#TermsOfUse
+POST     /api/terms/get                 controllers.Terms.get()
+POST     /api/terms/add                 controllers.Terms.add()
+POST     /api/terms/search              controllers.Terms.search()
+
 # JS Routes
 GET     /api/assets/javascripts/routes  controllers.Application.javascriptRoutes()
 

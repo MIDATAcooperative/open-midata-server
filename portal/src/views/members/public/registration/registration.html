@@ -11,7 +11,10 @@
 		            	<div class="panel-body">
 		            		<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
 	                        </p>	
-	                        <p ng-show="offline" class="alert alert-danger" translate="error.offline"></p>					
+	                        <p ng-show="offline" class="alert alert-danger" translate="error.offline"></p>
+	                        <div class="row">
+	                        <p class="col-sm-offset-4 col-sm-8" translate="registration.mandantory_fields"></p>
+	                        </div>					
 							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="register()" role="form">								  
 							  <formrow myid="email" label="registration.email">
 							    <input type="email" class="form-control" id="email" name="email" translate translate-attr-placeholder="registration.email" ng-model="registration.email" required>
@@ -41,19 +44,43 @@
 							  </formrow>							  
 							  <formrow myid="language" label="registration.language"><select class="form-control" id="language" ng-model="registration.language" ng-change="changeLanguage(registration.language);" ng-options="lang.value as lang.name | translate for lang in languages"></select></formrow>
 							  
-							  <formrow myid="address1" label="registration.address"><input type="text" class="form-control" id="address1" name="address1" translate translate-attr-placeholder="registration.address_line1" ng-model="registration.address1" required></formrow>
+							  <formrow myid="address1" label="registration.address"><input type="text" class="form-control" id="address1" name="address1" translate translate-attr-placeholder="registration.address_line1" ng-model="registration.address1"></formrow>
 							  <formrow myid="address2" label=""><input type="text" class="form-control" id="address2" name="address2" translate translate-attr-placeholder="registration.address_line2" ng-model="registration.address2"></formrow>
-							  <formrow myid="city" label="registration.city"><input type="text" class="form-control" id="city" name="city" translate translate-attr-placeholder="registration.city" ng-model="registration.city" required></formrow>
-							  <formrow myid="zip" label="registration.zip"><input type="text" class="form-control" id="zip" name="zip" translate translate-attr-placeholder="registration.zip" ng-model="registration.zip" required></formrow>
+							  <formrow myid="city" label="registration.city"><input type="text" class="form-control" id="city" name="city" translate translate-attr-placeholder="registration.city" ng-model="registration.city"></formrow>
+							  <formrow myid="zip" label="registration.zip"><input type="text" class="form-control" id="zip" name="zip" translate translate-attr-placeholder="registration.zip" ng-model="registration.zip"></formrow>
 							  <formrow myid="country" label="registration.country"><select class="form-control" id="country" name="country" ng-model="registration.country" required><option value="CH" translate="enum.country.CH"></option></select></formrow>
                              
                               <formrow myid="phone" label="registration.phone"><input type="text" class="form-control" id="phone" name="phone" translate translate-attr-placeholder="registration.phone" ng-model="registration.phone"></formrow>
                               <formrow myid="mobile" label="registration.mobile_phone"><input type="text" class="form-control" id="mobile" name="mobile" translate translate-attr-placeholder="registration.mobile_phone" ng-model="registration.mobile"></formrow>
-                              <formrow myid="agb" label="registration.agb"><div class="checkbox"><label><input type="checkbox" id="agb" name="agb" ng-model="registration.agb"><span translate="registration.agb2"></span></label></div>
+                              <formrow myid="agb" label="registration.agb">
+                                 <div class="checkbox">
+                                   <label>
+                                     <input type="checkbox" id="agb" name="agb" ng-model="registration.agb">
+                                     <span translate="registration.agb2"></span>
+                                        <a ui-sref="^.terms({which : 'midata-terms-of-use'})" translate="registration.agb3"></a>
+                                   </label>
+                                 </div>
                                 <formerror myid="agb" type="mustaccept" message="error.missing.agb"></formerror>
                               </formrow>
+                               <formrow myid="privacypolicy" label="">
+                                 <div class="checkbox">
+                                   <label>
+                                     <input type="checkbox" id="privacypolicy" name="privacypolicy" ng-model="registration.privacypolicy">
+                                     <span translate="registration.privacypolicy2"></span>
+                                        <a ui-sref="^.terms({which : 'midata-privacy-policy'})" translate="registration.privacypolicy3"></a>
+                                   </label>
+                                 </div>
+                                <formerror myid="privacypolicy" type="mustaccept" message="error.missing.privacypolicy"></formerror>
+                              </formrow>
                               <div ng-show="app">
-                              <formrow myid="appAgb" label="registration.app_agb"><div class="checkbox"><label><input type="checkbox" id="appAgb" name="appAgb" ng-model="registration.appAgb"><span translate="registration.app_agb2"></span></label></div>
+                              <formrow myid="appAgb" label="registration.app_agb">
+                                <div class="checkbox">
+                                 <label>
+                                    <input type="checkbox" id="appAgb" name="appAgb" ng-model="registration.appAgb">
+                                    <span translate="registration.app_agb2"></span>
+                                    <a ui-sref="^.terms({which : 'agb'})" translate="registration.app_agb3"></a>
+                                 </label>
+                                </div>
                                 <formerror myid="appAgb" type="mustaccept" message="error.missing.agb"></formerror>
                               </formrow>
                               </div>
