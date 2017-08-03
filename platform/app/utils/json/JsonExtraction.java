@@ -13,6 +13,7 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.MidataId;
+import utils.json.JsonValidation.JsonValidationException;
 
 public class JsonExtraction {
 
@@ -25,6 +26,25 @@ public class JsonExtraction {
 		Set<String> set = new HashSet<String>();
 		for (JsonNode jsonNode : json) {
 			set.add(jsonNode.asText());
+		}
+		return set;
+	}
+	
+	/**
+	 * Extracts a set with elements guaranteed to be strings.
+	 */
+	public static <T extends Enum<T>> Set<T> extractEnumSet(JsonNode json, String field, Class<T> en) throws JsonValidationException {
+		json = json.get(field);
+		if (json == null) return null;		
+		Set<T> set = new HashSet<T>();
+		for (JsonNode jsonNode : json) {
+			String val = jsonNode.asText().toUpperCase();
+			try {
+			   T result = (T) Enum.valueOf(en, val);
+			   set.add(result);
+			} catch (IllegalArgumentException e) {
+			  throw new JsonValidationException("error.validation.enum", "Value of parameter '" + field + "' has none of the valid values.");		
+			}			
 		}
 		return set;
 	}

@@ -11,10 +11,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
 import models.Developer;
+import models.History;
 import models.MidataId;
 import models.NewsItem;
 import models.TermsOfUse;
 import models.User;
+import models.enums.EventType;
 import play.Play;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -83,6 +85,13 @@ public class Terms extends APIController {
         if (result == null) result = TermsOfUse.getByNameVersionLanguage(name, version, InstanceConfig.getInstance().getDefaultLanguage());
         
 		return ok(Json.toJson(result));
+	}
+	
+	public static void addAgreedToDefaultTerms(User user) {
+		String terms = Play.application().configuration().getString("versions.midata-terms-of-use","1.0");
+		String ppolicy = Play.application().configuration().getString("versions.midata-privacy-policy","1.0");
+		user.history.add(new History(EventType.TERMS_OF_USE_AGREED, user, "midata-terms-of-use--"+terms));
+		user.history.add(new History(EventType.TERMS_OF_USE_AGREED, user, "midata-privacy-policy--"+ppolicy));
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)

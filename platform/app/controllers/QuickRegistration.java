@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import actions.APICall;
 import actions.MobileCall;
 import controllers.members.HealthProvider;
+import models.History;
 import models.Member;
 import models.MidataId;
 import models.MobileAppInstance;
@@ -21,10 +22,12 @@ import models.enums.AccountSecurityLevel;
 import models.enums.ConsentStatus;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
+import models.enums.EventType;
 import models.enums.Gender;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationInterest;
 import models.enums.SubUserRole;
+import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.mvc.BodyParser;
@@ -52,7 +55,7 @@ public class QuickRegistration extends APIController {
 	public static Result register() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "email", "password", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "app", "language");
+		JsonValidation.validate(json, "email", "password", "firstname", "lastname", "gender", "country", "app", "language");
 		
 		
 		String appName = JsonValidation.getString(json, "app");
@@ -64,7 +67,16 @@ public class QuickRegistration extends APIController {
 						
 		Plugin app = Plugin.getByFilename(appName, Plugin.ALL_PUBLIC);
 		if (app == null) throw new BadRequestException("error.invalid.appcode", "Unknown code for app.");
-			
+  
+		if (app.requirements != null 
+				&& (app.requirements.contains(UserFeature.ADDRESS_ENTERED) || app.requirements.contains(UserFeature.ADDRESS_VERIFIED))) {
+			JsonValidation.validate(json, "city", "zip", "country", "address1");	
+		}
+		
+		if (app.requirements != null 
+				&& (app.requirements.contains(UserFeature.PHONE_ENTERED) || app.requirements.contains(UserFeature.PHONE_VERIFIED))) {
+			JsonValidation.validate(json, "mobile");	
+		}
 		
 		if (studyName != null) {
 			study = Study.getByCodeFromMember(studyName, Study.ALL);
@@ -103,6 +115,7 @@ public class QuickRegistration extends APIController {
 		
 		Application.registerSetDefaultFields(user);
 		
+		
 		if (study != null) {
 		  user.subroles = EnumSet.of(SubUserRole.STUDYPARTICIPANT);
 		} else {
@@ -127,6 +140,8 @@ public class QuickRegistration extends APIController {
 		if (study != null) user.initialStudy = study._id;
 									
 		user.status = UserStatus.ACTIVE;	
+		
+		user.history.add(new History(EventType.TERMS_OF_USE_AGREED, user, app.termsOfUse));
 		
 		Application.registerCreateUser(user);
 				

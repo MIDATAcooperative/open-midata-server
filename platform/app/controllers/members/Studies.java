@@ -309,11 +309,11 @@ public class Studies extends APIController {
 	@APICall
 	@Security.Authenticated(MemberSecured.class)
 	public static Result requestParticipation(String id) throws AppException {
-		if (!InstanceConfig.getInstance().getInstanceType().equals(InstanceType.PERFTEST)) {
+		/*if (!InstanceConfig.getInstance().getInstanceType().equals(InstanceType.PERFTEST)) {
 		  forbidSubUserRole(SubUserRole.TRIALUSER, SubUserRole.NONMEMBERUSER);
 		  forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.NONMEMBERUSER);
 		  forbidSubUserRole(SubUserRole.APPUSER, SubUserRole.NONMEMBERUSER);	
-		}
+		}*/
 		MidataId userId = new MidataId(request().username());		
 		MidataId studyId = new MidataId(id);		
 		requestParticipation(userId, studyId);		

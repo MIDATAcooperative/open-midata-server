@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.fasterxml.jackson.annotation.JsonFilter;
 
 import models.enums.PluginStatus;
+import models.enums.UserFeature;
 import models.enums.UserRole;
 import utils.AccessLog;
 import utils.collections.CMaps;
@@ -41,7 +42,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret",
 	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n",
-	                     "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse");
+	                     "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -51,7 +52,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "predefinedMessages", "resharesData", "linkedStudy", "mustParticipateInStudy", "pluginVersion",
-	                     "termsOfUse");
+	                     "termsOfUse", "requirements");
 	
 	/**
 	 * timestamp of last change. Used to prevent lost updates.
@@ -138,6 +139,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * required role for users using this plugin. May be ANY. Developers may always test their own plugin.
 	 */
 	public UserRole targetUserRole;
+	
+	/**
+	 * Requirements about user account that must be fulfilled for use of app
+	 */
+	public Set<UserFeature> requirements;
 	
 	/**
 	 * Is this plugin displayed in the market
@@ -282,7 +288,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	
 	public void update() throws InternalServerException, LostUpdateException {		
 		try {
-		   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion" );
+		   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements" );
 		   Instances.cacheClear("plugin",  _id);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);

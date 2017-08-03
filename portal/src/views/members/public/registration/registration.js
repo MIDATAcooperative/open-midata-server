@@ -78,6 +78,14 @@ angular.module('portal')
 		$translate.use(lang);
 	};
 	
+	$scope.addressNeeded = function() {
+		return $scope.app !== null && $scope.app.requirements && ($scope.app.requirements.indexOf('ADDRESS_ENTERED') >= 0 ||  $scope.app.requirements.indexOf('ADDRESS_VERIFIED') >=0 );
+	};
+	
+	$scope.phoneNeeded = function() {
+		return $scope.app !== null && $scope.app.requirements && ($scope.app.requirements.indexOf('PHONE_ENTERED') >= 0 ||  $scope.app.requirements.indexOf('PHONE_VERIFIED') >=0 );
+	};
+	
 	$scope.days = [];
 	$scope.months = [];
 	$scope.years = [];

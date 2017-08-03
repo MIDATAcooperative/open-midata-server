@@ -1,6 +1,6 @@
 var services = angular.module('services', []);
 var views = angular.module('views', ['services']);
-angular.module('portal', [ 'ngCookies', 'ui.router', 'services', 'views', 'config', 'pascalprecht.translate'])
+angular.module('portal', [ 'ngCookies', 'ui.router', 'services', 'views', 'config', 'pascalprecht.translate', 'ngSanitize'])
 .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider', 'ENV', function($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider, ENV) {
    //$httpProvider.defaults.useXDomain = true;
    //$httpProvider.defaults.withCredentials = true;
@@ -13,11 +13,11 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'services', 'views', 'confi
      .useLoader('$translatePartialLoader', {
         urlTemplate: '/i18n/{part}_{lang}.json'
       })   
-     .registerAvailableLanguageKeys(['en', 'de', 'fr', 'it'], {
+     .registerAvailableLanguageKeys(['en', 'de', 'fr'/*, 'it'*/], {
        'en_*': 'en',
        'de_*': 'de',
-       'fr_*': 'fr',
-       'it_*': 'it'
+       'fr_*': 'fr'/*,
+       'it_*': 'it'*/
      })
      .fallbackLanguage('en')
      .determinePreferredLanguage();

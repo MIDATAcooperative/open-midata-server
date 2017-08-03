@@ -89,7 +89,6 @@
   
   "member_user" : {
     "account_status" : "Account Status",
-	"trialuser" : "Your account is currently a trial account with limited functionality.",
 	"studyparticipant" : "Your account has been set up for participation in a study. Functionality is limited. You may upgrade your user account to a full account.",
 	"appuser" : "Your account has been registered by an external application. Functionality is limited. You may upgrade your user account to a full account.",
 	"memberofcooperative" : "You are a member of the MIDATA cooperative.",

@@ -193,7 +193,18 @@
 	   "CONTRACT_SEND" : "Contract sent",
 	   "ADMIN_ACCOUNT_CHANGE" : "Account changed by admin",
 	   "ACCOUNT_DELETED" : "Account deleted",
-	   "INTERNAL_COMMENT" : "Internal Comment"
+	   "INTERNAL_COMMENT" : "Internal Comment",
+	   "TERMS_OF_USE_AGREED" : "Agreed to terms of use"
+	 },
+	 "userfeature" : {
+	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
+	   "EMAIL_VERIFIED" : "Email address of user must have been verified",
+	   "PHONE_ENTERED" : "Mobile phone number of user must be known to the platform",
+	   "PHONE_VERIFIED" : "Users mobile phone number must be known and verified",
+	   "ADDRESS_ENTERED" : "User must have entered his address",
+	   "ADDRESS_VERIFIED" : "User address must have been verified",
+	   "PASSPORT_VERIFIED" : "Users ID card must have been verified",
+	   "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative"
 	 },
 	 "consentstatus" : {
 	   "ACTIVE" : "Active",
@@ -410,7 +421,8 @@
     "privacypolicy2" : "I accept the",
     "privacypolicy3" : "Privacy Policy",
     "app_agb" : "App AGB",
-    "app_agb2" : "I accept the terms and conditions",
+    "app_agb2" : "I accept the",
+    "app_agb3" : "App Terms And Conditions",
     "sign_up_btn" : "Sign Up"
   },
 
@@ -465,7 +477,9 @@
     "code_intructions" : "A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
     "code_later" : "Confirmation code may be entered here after signed contract has arrived at MIDATA office.",
     "enter_now_btn" : "Enter now",
-    "email_success" : "E-Mail address has been confirmed."
+    "email_success" : "E-Mail address has been confirmed.",
+    "address_entered" : "Your postal address is required to use this service, please provide it.",
+    "phone_entered" : "A mobile phone number is required to use this service, please provide it."
   },
 
   "changepassphrase" : {

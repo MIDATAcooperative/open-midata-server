@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
@@ -27,6 +29,7 @@ import models.enums.Gender;
 import models.enums.MessageReason;
 import models.enums.ParticipationInterest;
 import models.enums.SubUserRole;
+import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.Routes;
@@ -51,6 +54,7 @@ import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.fhir.PatientResourceProvider;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.MailUtils;
@@ -68,7 +72,7 @@ import views.txt.mails.adminnotify;
 public class Application extends APIController {
 
 	public final static long MAX_TIME_UNTIL_EMAIL_CONFIRMATION = -1l; //1000l * 60l * 60l * 24l;
-	public final static long MAX_TRIAL_DURATION = 1000l * 60l * 60l * 24l * 30l;
+	// public final static long MAX_TRIAL_DURATION = 1000l * 60l * 60l * 24l * 30l;
 	/**
 	 * for debugging only : displays API call test page
 	 * @return
@@ -312,7 +316,7 @@ public class Application extends APIController {
 	}
 	
 	public static void checkAccount(User user) throws AppException {
-		if (user.subroles.contains(SubUserRole.TRIALUSER) && 
+		/*if (user.subroles.contains(SubUserRole.TRIALUSER) && 
 			user.emailStatus.equals(EMailStatus.VALIDATED) &&
 			user.agbStatus.equals(ContractStatus.SIGNED) &&
 			(user.confirmedAt != null || !InstanceConfig.getInstance().getInstanceType().confirmationCodeRequired())) {
@@ -352,7 +356,7 @@ public class Application extends APIController {
 			user.status = UserStatus.ACTIVE;
 			user.set("status", user.status);
 		}
-				
+			*/	
 	}
 	
 
@@ -485,44 +489,69 @@ public class Application extends APIController {
 	
 	}
 	
+	/*
 	public static boolean verifyUser(MidataId userId) throws AppException {
 		User user = User.getById(userId , Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));
+		return verifyUser(user);		
+	}
+	
+	public static boolean verifyUser(User user) throws AppException {		
 		if (user == null) return false;
 		if (loginHelperPreconditionsFailed(user)) return false;
 		return true;
 	}
+	*/
 	
-	public static boolean loginHelperPreconditionsFailed(User user) throws AppException {
+	public static Set<UserFeature> loginHelperPreconditionsFailed(User user, Set<UserFeature> required) throws AppException {
         if (user.status.equals(UserStatus.BLOCKED) || user.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.blocked.user", "User is not allowed to log in.");
 		
 		if (user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.registeredAt.before(new Date(System.currentTimeMillis() - MAX_TIME_UNTIL_EMAIL_CONFIRMATION)) && !InstanceConfig.getInstance().getInstanceType().disableEMailValidation()) {
 			user.status = UserStatus.TIMEOUT;			
+			return Collections.singleton(UserFeature.EMAIL_VERIFIED);
 		}
 		
-		Date endTrial = new Date(System.currentTimeMillis() - MAX_TRIAL_DURATION);
-		if (user.status.equals(UserStatus.NEW) && user.subroles.contains(SubUserRole.TRIALUSER) && user.registeredAt.before(endTrial)) {
-			if (user.agbStatus.equals(ContractStatus.NEW)) {
-				Users.requestMembershipHelper(user._id);				
-			}
 						
-			user.status = UserStatus.TIMEOUT;
-		}
-		if (user.status.equals(UserStatus.NEW) &&  user.subroles.contains(SubUserRole.TRIALUSER) && !InstanceConfig.getInstance().getInstanceType().getTrialAccountsMayLogin()) {
-			user.status = UserStatus.TIMEOUT;
+		Set<UserFeature> missing = null;
+		if (required != null) {
+			for (UserFeature feature : required) {
+				if (!feature.isSatisfiedBy(user)) {
+					if (missing == null) missing = new HashSet<UserFeature>();
+					missing.add(feature);
+				}
+			}
 		}
 		
-		return (user.status.equals(UserStatus.TIMEOUT) || (!user.status.equals(UserStatus.ACTIVE) && InstanceConfig.getInstance().getInstanceType().getUsersNeedValidation()));
+		if (!user.status.equals(UserStatus.ACTIVE) && InstanceConfig.getInstance().getInstanceType().getUsersNeedValidation()) {
+			if (missing == null) missing = new HashSet<UserFeature>();
+			missing.add(UserFeature.ADDRESS_VERIFIED);
+		}
+		
+		return missing;
 	}
 	
-	public static Result loginHelperResult(User user) {
+	public static Result loginHelperResult(User user, Set<UserFeature> missing) throws InternalServerException {
 		ObjectNode obj = Json.newObject();
 		obj.put("status", user.status.toString());
 		obj.put("contractStatus", user.contractStatus.toString());
+		
+		/*
 		obj.put("agbStatus", user.agbStatus.toString());
-		obj.put("emailStatus", user.emailStatus.toString());
+		obj.put("emailStatus", user.emailStatus.toString());*/
+		ArrayNode ar = obj.putArray("requirements");
+		for (UserFeature feature : missing) ar.add(feature.toString());
 		obj.put("confirmationCode", user.confirmationCode == null);
 		obj.put("role", user.role.toString().toLowerCase());
 		obj.put("userId", user._id.toString());
+		obj.put("user", JsonOutput.toJsonNode(user, "User", User.ALL_USER));
+		
+		if (user.status.equals(UserStatus.ACTIVE)) {
+		   PortalSessionToken token = null;
+		   String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME);		
+		   token = new PortalSessionToken(handle, user._id, UserRole.ANY, null, user.developer);
+		   obj.put("sessionToken", token.encrypt(request()));
+		   KeyManager.instance.unlock(user._id, null);
+		}
+								
 		return ok(obj);
 	}
 	
@@ -533,8 +562,8 @@ public class Application extends APIController {
 	 * @return
 	 * @throws AppException
 	 */
-	public static Result loginHelper(User user) throws AppException {
-		boolean notok = loginHelperPreconditionsFailed(user);
+	public static Result loginHelper(User user ) throws AppException {
+		Set<UserFeature> notok = loginHelperPreconditionsFailed(user, null);
 		
 		PortalSessionToken token = null;
 		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME);
@@ -550,14 +579,8 @@ public class Application extends APIController {
 		ObjectNode obj = Json.newObject();
 		obj.put("sessionToken", token.encrypt(request()));
 		
-		if (notok) {
-		  obj.put("status", user.status.toString());
-		  obj.put("contractStatus", user.contractStatus.toString());
-		  obj.put("agbStatus", user.agbStatus.toString());
-		  obj.put("emailStatus", user.emailStatus.toString());
-		  obj.put("confirmationCode", user.confirmationCode == null);
-		  obj.put("role", user.role.toString().toLowerCase());
-		  obj.put("userId", user._id.toString());
+		if (notok!=null) {
+		  return loginHelperResult(user, notok);
 		} else {						
 		  int keytype = KeyManager.instance.unlock(user._id, null);		
 		  if (keytype == 0) AccountPatches.check(user);
@@ -643,7 +666,7 @@ public class Application extends APIController {
 		user.name = firstName + " " + lastName;
 		
 		user.password = Member.encrypt(password);				
-		user.subroles = EnumSet.of(SubUserRole.TRIALUSER);		
+		user.subroles = EnumSet.noneOf(SubUserRole.class);		
 		user.address1 = JsonValidation.getStringOrNull(json, "address1");
 		user.address2 = JsonValidation.getStringOrNull(json, "address2");
 		user.city = JsonValidation.getStringOrNull(json, "city");
@@ -683,7 +706,7 @@ public class Application extends APIController {
 		
 		user.role = UserRole.MEMBER;
 		user.registeredAt = new Date();
-		user.status = UserStatus.NEW;		
+		user.status = UserStatus.ACTIVE;		
 		user.contractStatus = ContractStatus.NEW;	
 		user.agbStatus = ContractStatus.NEW;
 		user.emailStatus = EMailStatus.UNVALIDATED;
@@ -696,6 +719,9 @@ public class Application extends APIController {
 		
 		user.login = new Date();
 		user.news = new HashSet<MidataId>();
+		
+		user.history = new ArrayList<History>();
+		Terms.addAgreedToDefaultTerms(user);
 	}
 	
 	/**

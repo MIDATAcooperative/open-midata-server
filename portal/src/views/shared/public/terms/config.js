@@ -5,6 +5,10 @@ angular.module('portal')
 	      url: '/terms/:which?lang',
 	      templateUrl: 'views/shared/public/terms/terms.html',	      
 	    })
+	    .state('developer.terms', {
+	      url: '/terms/:which?lang',
+	      templateUrl: 'views/shared/public/terms/terms.html',	      
+	    })
 	    .state('admin.terms', {
 	      url: '/terms/:which?lang',
 	      templateUrl: 'views/shared/public/terms/terms.html',	      
