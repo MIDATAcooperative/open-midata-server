@@ -31,7 +31,12 @@
 		    <button type="submit" ng-disabled="status.action=='submit'" class="btn btn-primary" translate="common.submit_btn"></button>		    		  
 		  </formrow>
 	     </form>	  
-		  
-		
+	</div></div>	  
+	<div class="panel panel-primary">
+	   <div class="panel-heading">{{ newTerms.title }}		  	
+	   </div>
+	   <div class="body">  
+         <div ng-bind-html="newTerms.text"></div>		
+	   </div>
 	</div>
-	</div></div>
+</div>

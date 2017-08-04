@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', 'oauth', '$document', function($scope, $state, server, status, session, $translate, languages, $stateParams, oauth, $document) {
+.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', 'oauth', '$document', 'views', function($scope, $state, server, status, session, $translate, languages, $stateParams, oauth, $document, views) {
 	
 	$scope.registration = { language : $translate.use() };
 	$scope.languages = languages.all;
@@ -7,6 +7,8 @@ angular.module('portal')
 	$scope.status = new status(false, $scope);
 	
 	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
+	
+	$scope.view = views.getView("terms");
 	
 	// register new user
 	$scope.register = function() {		
@@ -72,6 +74,7 @@ angular.module('portal')
 		  $scope.status.doAction("register", server.post(jsRoutes.controllers.Application.register().url, JSON.stringify(data))).
 		  then(function(data) { session.postLogin(data, $state); });
 		}
+				
 	};
 	
 	$scope.changeLanguage = function(lang) {
@@ -79,11 +82,15 @@ angular.module('portal')
 	};
 	
 	$scope.addressNeeded = function() {
-		return $scope.app !== null && $scope.app.requirements && ($scope.app.requirements.indexOf('ADDRESS_ENTERED') >= 0 ||  $scope.app.requirements.indexOf('ADDRESS_VERIFIED') >=0 );
+		return $scope.app && $scope.app.requirements && ($scope.app.requirements.indexOf('ADDRESS_ENTERED') >= 0 ||  $scope.app.requirements.indexOf('ADDRESS_VERIFIED') >=0 );
 	};
 	
 	$scope.phoneNeeded = function() {
-		return $scope.app !== null && $scope.app.requirements && ($scope.app.requirements.indexOf('PHONE_ENTERED') >= 0 ||  $scope.app.requirements.indexOf('PHONE_VERIFIED') >=0 );
+		return $scope.app && $scope.app.requirements && ($scope.app.requirements.indexOf('PHONE_ENTERED') >= 0 ||  $scope.app.requirements.indexOf('PHONE_VERIFIED') >=0 );
+	};
+	
+	$scope.terms = function(def) {
+		views.setView("terms", def, "Terms");
 	};
 	
 	$scope.days = [];

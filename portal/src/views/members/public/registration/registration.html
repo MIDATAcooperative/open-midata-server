@@ -1,6 +1,6 @@
 
 	<div class="container" ng-controller="RegistrationCtrl" ng-cloak>
-		<div class="row">
+		<div class="row" ng-hide="view.active">
 			<!-- Registration -->
 			<div class="col-sm-12">
 				<div class="panel-container" style="max-width:630px; padding-top:30px; margin:0 auto;">
@@ -61,7 +61,7 @@
                                    <label>
                                      <input type="checkbox" id="agb" name="agb" ng-model="registration.agb">
                                      <span translate="registration.agb2"></span>
-                                        <a ui-sref="^.terms({which : 'midata-terms-of-use'})" translate="registration.agb3"></a>
+                                        <a ng-click="terms({which : 'midata-terms-of-use'});" href="javascript:" translate="registration.agb3"></a>
                                    </label>
                                  </div>
                                 <formerror myid="agb" type="mustaccept" message="error.missing.agb"></formerror>
@@ -71,7 +71,7 @@
                                    <label>
                                      <input type="checkbox" id="privacypolicy" name="privacypolicy" ng-model="registration.privacypolicy">
                                      <span translate="registration.privacypolicy2"></span>
-                                        <a ui-sref="^.terms({which : 'midata-privacy-policy'})" translate="registration.privacypolicy3"></a>
+                                        <a ng-click="terms({which : 'midata-privacy-policy'});" href="javascript:" translate="registration.privacypolicy3"></a>
                                    </label>
                                  </div>
                                 <formerror myid="privacypolicy" type="mustaccept" message="error.missing.privacypolicy"></formerror>
@@ -82,7 +82,7 @@
                                  <label>
                                     <input type="checkbox" id="appAgb" name="appAgb" ng-model="registration.appAgb">
                                     <span translate="registration.app_agb2"></span>
-                                    <a ui-sref="^.terms({which : app.termsOfUse })" translate="registration.app_agb3"></a>
+                                    <a ng-click="terms({which : app.termsOfUse })" href="javascript:" translate="registration.app_agb3"></a>
                                  </label>
                                 </div>
                                 <formerror myid="appAgb" type="mustaccept" message="error.missing.agb"></formerror>
@@ -109,5 +109,10 @@
 				</div>
 			</div>
 		</div>
+		
+	   <div ng-show="view.active">      
+	     <div ng-include="'/views/shared/public/terms/terms-modal.html'"></div>	    	  
+	   </div>
+		
 	</div>
 	

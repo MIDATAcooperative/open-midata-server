@@ -904,5 +904,9 @@
   "confirm" : {
     "title" : "Are you really sure?",    
     "cancel" : "Cancel"
+  },
+  
+  "terms" : {
+    "close_btn" : "<< Back"
   }
 }

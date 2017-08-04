@@ -532,11 +532,9 @@ public class Application extends APIController {
 	public static Result loginHelperResult(User user, Set<UserFeature> missing) throws InternalServerException {
 		ObjectNode obj = Json.newObject();
 		obj.put("status", user.status.toString());
-		obj.put("contractStatus", user.contractStatus.toString());
-		
-		/*
+		obj.put("contractStatus", user.contractStatus.toString());		
 		obj.put("agbStatus", user.agbStatus.toString());
-		obj.put("emailStatus", user.emailStatus.toString());*/
+		obj.put("emailStatus", user.emailStatus.toString());
 		ArrayNode ar = obj.putArray("requirements");
 		for (UserFeature feature : missing) ar.add(feature.toString());
 		obj.put("confirmationCode", user.confirmationCode == null);

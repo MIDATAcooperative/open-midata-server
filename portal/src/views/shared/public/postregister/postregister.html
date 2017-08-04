@@ -12,10 +12,7 @@
 		            	    <p ng-show="resentSuccess" class="alert alert-success" translate="postregister.resent_success"></p>
 		            	    <p ng-show="codeSuccess" class="alert alert-success" translate="postregister.address_success"></p>
 		            	    <p ng-show="mailSuccess" class="alert alert-success" translate="postregister.email_success"></p>
-			            	<p ng-show="error" class="alert alert-danger" translate="{{ error.code }}"></p>
-							<pre>
-							{{ progress | json }}
-                            	</pre>	
+			            	<p ng-show="error" class="alert alert-danger" translate="{{ error.code }}"></p>							
                             <div ng-show="progress.EMAIL_VERIFIED">
 							<p translate="postregister.email_instructions"></p>							
 							<button  class="btn btn-default" ng-click="resend()" translate="postregister.resend_btn"></button>
@@ -35,6 +32,12 @@
 							
 							<div ng-show="progress.ADDRESS_VERIFIED && !progress.ADDRESS_ENTERED">
 							<div class="extraspace"></div>
+							<div ng-show="progress.agbStatus=='NEW'">							
+							  <p translate="member_user.agb_not_requested"></p>		   
+			                  <button ng-disabled="status.action === 'requestmembership'" class="btn btn-primary" href="javascript:" ng-click="requestMembership()" translate="member_user.request_membership_btn"></button> 															
+							</div>
+							<div ng-hide="progress.agbStatus=='NEW'">
+							
 							<p translate="postregister.contract_instructions"></p>
                             <div class="extraspace"></div>		
 							<p translate="postregister.code_intructions"></p>														
@@ -43,6 +46,7 @@
 							 <div class="input-group-btn">
 							   <button class="btn btn-primary" ng-click="sendCode()" translate="postregister.enter_now_btn"></button>
 							 </div>							 
+							</div>
 							</div>
 							<hr>
 							</div>

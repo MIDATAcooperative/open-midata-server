@@ -117,9 +117,7 @@ public class OAuth2 extends Controller {
 			throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
 		}
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, app.requirements);
-		if (notok != null) {
-		  return Application.loginHelperResult(user, notok);
-		}
+		
 		
 		appInstance = MobileAPI.getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));
 		KeyManager.instance.login(60000l);
@@ -137,6 +135,10 @@ public class OAuth2 extends Controller {
 			}
 			KeyManager.instance.unlock(appInstance._id, phrase);
 			meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();				
+		}
+		
+		if (notok != null) {
+		  return Application.loginHelperResult(user, notok);
 		}
 					
 		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
