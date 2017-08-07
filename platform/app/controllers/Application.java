@@ -443,6 +443,8 @@ public class Application extends APIController {
 	@APICall
 	@Security.Authenticated(AnyRoleSecured.class)
 	public static Result changePassphrase() throws AppException {
+		requireUserFeature(UserFeature.ADDRESS_VERIFIED);
+		
 		JsonNode json = request().body().asJson();		
 		JsonValidation.validate(json, "oldPassphrase", "passphrase");
 		MidataId userId = new MidataId(request().username());

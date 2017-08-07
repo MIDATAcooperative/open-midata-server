@@ -34,6 +34,10 @@ angular.module('portal')
 		      url: '/reject/:token',
 		      templateUrl: 'views/shared/public/postregister/postregister.html',
 		      data : { mode : "REJECTED" }
-		});
+		})
+	   .state('member.upgrade', {
+	      url: '/upgrade?role&feature',
+	      templateUrl: 'views/shared/public/postregister/postregister.html' 
+	   });
 	   
 }]);

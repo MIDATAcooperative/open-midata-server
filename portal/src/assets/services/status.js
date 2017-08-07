@@ -15,7 +15,7 @@ angular.module('services')
 			   this.loading--; 
 			   this.error = msg; 
 			   if (this.loading<=0) { this.isBusy = false;this.action=null; }
-			   if (msg.status == 403) {
+			   if (msg.status == 403 || msg.status == 401) {
 				   // Now handeled by http interceptor
 				   //alert("Please relogin. Your session has expired.");
 				   //$state.go("public.login");

@@ -2,6 +2,7 @@ package actions;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.libs.F;
 import play.libs.Json;
@@ -60,11 +61,14 @@ public class APICallAction extends Action<APICall> {
                     .put("code", e5.getLocaleKey())
                     .put("message", e5.getMessage())));
     	} catch (AuthException e3) {
-    		if (e3.getRequiredSubUserRole() == null) {
+    		if (e3.getRequiredSubUserRole() == null && e3.getRequiredFeature() == null) {
     			ErrorReporter.report("Portal", ctx, e3);
     			return F.Promise.pure((Result) forbidden(e3.getMessage()));
     		} else {
-    			return F.Promise.pure((Result) forbidden(Json.newObject().put("requiredSubUserRole", e3.getRequiredSubUserRole().toString())));
+    			ObjectNode node = Json.newObject();
+    			if (e3.getRequiredFeature() != null) node.put("requiredFeature", e3.getRequiredFeature().toString());
+    			if (e3.getRequiredSubUserRole() != null) node.put("requiredSubUserRole", e3.getRequiredSubUserRole().toString());
+    			return F.Promise.pure((Result) forbidden(node));
     		}
     		    
 		} catch (Exception e2) {	

@@ -12,6 +12,23 @@ angular.module('portal')
 	$scope.resentSuccess = false;
 	$scope.isoauth = false;
 	
+	$scope.init = function() {
+	if ($stateParams.feature) {
+		$scope.progress = { requirements : [ $stateParams.feature ] };
+		
+		session.currentUser.then(function (userId) {
+			users.getMembers({"_id": userId}, ["name", "email", "searchable", "language", "address1", "address2", "zip", "city", "country", "firstname", "lastname", "mobile", "phone", "emailStatus", "agbStatus", "contractStatus", "role", "subroles", "confirmedAt"])
+			.then(function(results) {
+				$scope.registration = results.data[0];
+				$scope.progress.emailStatus = $scope.registration.emailStatus;
+				$scope.progress.agbStatus = $scope.registration.agbStatus;
+				$scope.progress.contractStatus = $scope.registration.contractStatus;
+			});
+		});
+	}
+	};
+	$scope.init();
+				
 	for (var i in $scope.progress.requirements) {
 		$scope.progress[$scope.progress.requirements[i]] = true;
 	}
@@ -89,7 +106,10 @@ angular.module('portal')
 	  				  session.postLogin({ data : result}, $state);  
 	  			  }
 	  		  });	  		
+	    } else {
+	      $state.go("^.user",{userId:$scope.registration._id});	
 	    }
+		
 	};
 	
 	$scope.addressNeeded = function() {

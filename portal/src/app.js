@@ -96,8 +96,8 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
         if (response.status === 401) {
             $state.go("public.login");
         } else if (response.status === 403) {
-        	if (response.data && response.data.requiredSubUserRole) {        		
-        		$state.go("^.upgrade", { role : response.data.requiredSubUserRole });
+        	if (response.data && (response.data.requiredSubUserRole || response.data.requiredFeature)) {        		
+        		$state.go("^.upgrade", { role : response.data.requiredSubUserRole, feature : response.data.requiredFeature });
         	}
         }
         return $q.reject(response);
