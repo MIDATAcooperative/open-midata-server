@@ -1,0 +1,33 @@
+
+<div ng-controller="AdminTermsCtrl">
+		
+ 	<div class="panel panel-primary">
+		<div class="panel-heading" translate="admin_terms.title">Terms</div>
+		<div class="body">
+      <loader busy="status.isBusy !== false">
+      <table class="table" ng-show="terms.length > 0">
+        <tr>
+          <th translate="admin_terms.name"></th>
+          <th translate="admin_terms.version"></th>
+          <th translate="admin_terms.language"></th>
+          <th translate="admin_terms.createdAt"></th>  
+          <th></th>        
+        </tr>
+        <tr ng-repeat="term in terms">
+          <td><a ui-sref="^.terms({ which : name(term), lang : term.language })">{{ term.name }}</a></td>
+          <td>{{ term.version }}</td>
+          <td>{{ term.language }}</td>
+          <td>{{ term.createdAt | date }}</td>         
+        </tr>
+      </table>
+      <p ng-show="terms.length == 0" translate="admin_terms.empty"></p>
+      
+      <a class="btn btn-primary" translate="common.add_btn" ui-sref="^.newterms"></a> 
+            
+      </loader>		
+    </div>
+  </div>		
+
+		  	
+</div>
+	

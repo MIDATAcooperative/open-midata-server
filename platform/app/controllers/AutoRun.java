@@ -31,6 +31,7 @@ import play.mvc.Result;
 import scala.concurrent.duration.Duration;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
 import utils.auth.SpaceToken;
@@ -176,7 +177,7 @@ public class AutoRun extends APIController {
 			    	final Plugin plugin = Plugin.getById(space.visualization, Sets.create("type", "filename", "name", "authorizationUrl", "scopeParameters", "accessTokenUrl", "consumerKey", "consumerSecret"));
 					SpaceToken token = new SpaceToken(request.handle, space._id, space.owner, null, null, autorunner);
 					User tuser = User.getById(space.owner, Sets.create("language", "role"));					
-					final String lang = tuser.language != null ? tuser.language : "en";
+					final String lang = tuser.language != null ? tuser.language : InstanceConfig.getInstance().getDefaultLanguage();
 					final String tokenstr = token.encrypt();
 					final String owner = space.owner.toString();
 					final ActorRef sender = getSender();

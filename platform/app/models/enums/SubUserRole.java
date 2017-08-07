@@ -55,17 +55,7 @@ public enum SubUserRole {
     * the user with UserRole ADMIN may create and manage administrator accounts
     */
    SUPERADMIN,
-   
-   /**
-    * the user with UserRole MEMBER is a trial user
-    */
-   TRIALUSER,
-   
-   /**
-    * the user with UserRole MEMBER is a confirmed user who is no member of the cooperative
-    */
-   NONMEMBERUSER,
-   
+            
    /**
     * the user with UserRole MEMBER has been registered for participation in a specific study
     */

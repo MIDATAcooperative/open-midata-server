@@ -12,6 +12,9 @@
 		            		<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
 	                        </p>	
 	                        <p ng-show="offline" class="alert alert-danger" translate="error.offline"></p>					
+	                        <div class="row">
+	                        <p class="col-sm-offset-4 col-sm-8" translate="registration.mandantory_fields"></p>
+	                        </div>					
 							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="register()" role="form">
 							  <formrow myid="study" label="member_quickregistration.study"><input type="text" class="form-control" id="study" name="study" translate translate-attr-placeholder="member_quickregistration.study" ng-model="registration.study" required></formrow>
 							  <formrow myid="app" label="member_quickregistration.app"><input type="text" class="form-control" id="app" name="app" translate translate-attr-placeholder="member_quickregistration.app" ng-model="registration.app" required></formrow>

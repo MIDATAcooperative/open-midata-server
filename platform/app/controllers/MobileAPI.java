@@ -38,6 +38,7 @@ import models.User;
 import models.enums.AggregationType;
 import models.enums.ConsentStatus;
 import models.enums.MessageReason;
+import models.enums.UserFeature;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -213,8 +214,9 @@ public class MobileAPI extends Controller {
 			
 			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "applicationId", "status", "appVersion"));
 			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");            
-            if (!refreshToken.appId.equals(app._id)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");  
-            if (!Application.verifyUser(appInstance.owner)) return status(UNAUTHORIZED); 
+            if (!refreshToken.appId.equals(app._id)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");
+            User user = User.getById(appInstance.owner, User.ALL_USER);
+            if (Application.loginHelperPreconditionsFailed(user, app.requirements) != null) return status(UNAUTHORIZED); 
             
             phrase = refreshToken.phrase;
             KeyManager.instance.unlock(appInstance._id, phrase);
@@ -243,7 +245,7 @@ public class MobileAPI extends Controller {
 			if (!Member.authenticationValid(password, user.password)) {
 				throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
 			}
-			if (Application.loginHelperPreconditionsFailed(user)) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
+			if (Application.loginHelperPreconditionsFailed(user, app.requirements)!=null) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
 			
 			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));			
 			if (appInstance != null && !verifyAppInstance(appInstance, user._id, app._id)) {

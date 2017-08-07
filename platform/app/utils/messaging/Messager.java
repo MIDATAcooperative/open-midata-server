@@ -81,13 +81,13 @@ public class Messager {
 		String email = member.email;
 		String fullname = member.firstname+" "+member.lastname;
 		String subject = messageDefinition.title.get(member.language);
-		if (subject == null) subject = messageDefinition.title.get("en");
+		if (subject == null) subject = messageDefinition.title.get(InstanceConfig.getInstance().getDefaultLanguage());
 		String content = messageDefinition.text.get(member.language);
-		if (content == null) content = messageDefinition.text.get("en");
+		if (content == null) content = messageDefinition.text.get(InstanceConfig.getInstance().getDefaultLanguage());
 		
 		if (footers != null) {
 			String footer = footers.get(member.language);
-			if (footer == null) footer = footers.get("en");
+			if (footer == null) footer = footers.get(InstanceConfig.getInstance().getDefaultLanguage());
 			if (footer != null) content += "\n"+footer;
 		}
 		replacements.put("firstname", member.firstname);
@@ -106,13 +106,13 @@ public class Messager {
 	public static void sendMessage(MessageDefinition messageDefinition, Map<String, String> footers, String email, String fullname, String language, Map<String, String> replacements) {				
 
 		String subject = messageDefinition.title.get(language);
-		if (subject == null) subject = messageDefinition.title.get("en");
+		if (subject == null) subject = messageDefinition.title.get(InstanceConfig.getInstance().getDefaultLanguage());
 		String content = messageDefinition.text.get(language);
-		if (content == null) content = messageDefinition.text.get("en");
+		if (content == null) content = messageDefinition.text.get(InstanceConfig.getInstance().getDefaultLanguage());
 		
 		if (footers != null) {
 			String footer = footers.get(language);
-			if (footer == null) footer = footers.get("en");
+			if (footer == null) footer = footers.get(InstanceConfig.getInstance().getDefaultLanguage());
 			if (footer != null) content += "\n"+footer;
 		}
 		String names[] = fullname == null ? new String[0] : fullname.split(" ");

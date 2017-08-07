@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('PostRegisterCtrl', ['$scope', '$state', '$stateParams', 'status', 'server', 'session', 'oauth', function($scope, $state, $stateParams, status, server, session, oauth) {
+.controller('PostRegisterCtrl', ['$scope', '$state', '$stateParams', 'status', 'server', 'session', 'oauth', 'users', function($scope, $state, $stateParams, status, server, session, oauth, users) {
 	
 	// init
 	$scope.passphrase = {};
@@ -11,6 +11,29 @@ angular.module('portal')
 	$scope.codeSuccess = false;
 	$scope.resentSuccess = false;
 	$scope.isoauth = false;
+	
+	$scope.init = function() {
+	if ($stateParams.feature) {
+		$scope.progress = { requirements : [ $stateParams.feature ] };
+		
+		session.currentUser.then(function (userId) {
+			users.getMembers({"_id": userId}, ["name", "email", "searchable", "language", "address1", "address2", "zip", "city", "country", "firstname", "lastname", "mobile", "phone", "emailStatus", "agbStatus", "contractStatus", "role", "subroles", "confirmedAt"])
+			.then(function(results) {
+				$scope.registration = results.data[0];
+				$scope.progress.emailStatus = $scope.registration.emailStatus;
+				$scope.progress.agbStatus = $scope.registration.agbStatus;
+				$scope.progress.contractStatus = $scope.registration.contractStatus;
+			});
+		});
+	}
+	};
+	$scope.init();
+				
+	for (var i in $scope.progress.requirements) {
+		$scope.progress[$scope.progress.requirements[i]] = true;
+	}
+	$scope.registration = $scope.progress.user;
+	
 		
 	$scope.resend = function() {	
 		$scope.resentSuccess = $scope.codeSuccess = $scope.mailSuccess = false;
@@ -31,6 +54,19 @@ angular.module('portal')
 	    	session.postLogin(result, $state);
 		});	    
 		}
+	};
+	
+	$scope.changeAddress = function() {		
+        
+		$scope.submitted = true;	
+		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
+		$scope.error = null;
+		if (! $scope.myform.$valid) return;
+												
+		$scope.status.doAction("changeAddress", users.updateAddress($scope.registration)).
+		then(function(data) { 
+			$scope.retry();
+		});
 	};
 	
 	$scope.confirm = function() {
@@ -64,8 +100,31 @@ angular.module('portal')
 	
 	$scope.retry = function() {
 		if (oauth.getAppname()) {
-	    	  oauth.login(true);	
+	    	  oauth.login(true)
+	    	  .then(function(result) {
+	  		      if (result !== "ACTIVE") {	  			    
+	  				  session.postLogin({ data : result}, $state);  
+	  			  }
+	  		  });	  		
+	    } else {
+	      $state.go("^.user",{userId:$scope.registration._id});	
 	    }
+		
+	};
+	
+	$scope.addressNeeded = function() {
+		return $scope.progress.requirements && ($scope.progress.requirements.indexOf('ADDRESS_ENTERED') >= 0  );
+	};
+	
+	$scope.phoneNeeded = function() {
+		return $scope.progress.requirements && ($scope.progress.requirements.indexOf('PHONE_ENTERED') >= 0  );
+	};
+	
+	$scope.requestMembership = function() {
+		$scope.status.doAction("requestmembership", users.requestMembership($scope.user))
+		.then(function() {
+		   $scope.retry();
+		});
 	};
 				
 	

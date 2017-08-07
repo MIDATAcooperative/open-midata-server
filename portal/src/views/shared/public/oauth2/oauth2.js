@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('OAuth2LoginCtrl', ['$scope', '$location', '$translate', 'server', '$state', 'status', 'session', 'apps', 'studies', 'oauth', function($scope, $location, $translate, server, $state, status, session, apps, studies, oauth) {
+.controller('OAuth2LoginCtrl', ['$scope', '$location', '$translate', 'server', '$state', 'status', 'session', 'apps', 'studies', 'oauth', 'views', function($scope, $location, $translate, server, $state, status, session, apps, studies, oauth, views) {
 	
 	// init
 	$scope.login = { role : "MEMBER"};	
@@ -13,6 +13,8 @@ angular.module('portal')
     ];
 	
 	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
+
+	$scope.view = views.getView("terms");
 	
 	if ($scope.params.language) {
 		$translate.use($scope.params.language);
@@ -88,6 +90,10 @@ angular.module('portal')
 	
 	$scope.showRegister = function() {
 		$state.go("public.registration");
+	};
+	
+	$scope.terms = function(def) {
+		views.setView("terms", def, "Terms");
 	};
 	
 	$scope.prepare();

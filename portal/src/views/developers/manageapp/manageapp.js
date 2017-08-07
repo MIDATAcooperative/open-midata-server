@@ -1,13 +1,14 @@
 angular.module('portal')
-.controller('ManageAppCtrl', ['$scope', '$state', '$translatePartialLoader', 'server', 'apps', 'status', 'studies', function($scope, $state, $translatePartialLoader, server, apps, status, studies) {
+.controller('ManageAppCtrl', ['$scope', '$state', '$translatePartialLoader', 'server', 'apps', 'status', 'studies', 'languages', 'terms', function($scope, $state, $translatePartialLoader, server, apps, status, studies, languages, terms) {
 	
 	// init
 	$scope.error = null;
-	$scope.app = { version:0, tags:[], i18n : {} };
+	$scope.app = { version:0, tags:[], i18n : {}, requirements:[] };
 	$scope.status = new status(false, $scope);
 	$scope.allowDelete = $state.current.allowDelete;
 	$scope.allowStudyConfig = $state.current.allowStudyConfig;
-	$scope.languages = ['en', 'de', 'fr', 'it'];
+	$scope.languages = languages.array;
+	$scope.requirements = apps.userfeatures;
 	$scope.sel = { lang : 'de' };
 	$scope.targetUserRoles = [
         { value : "ANY", label : "Any Role" },
@@ -28,7 +29,7 @@ angular.module('portal')
     ];
 			
 	$scope.loadApp = function(appId) {
-		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion"]))
+		$scope.status.doBusy(apps.getApps({ "_id" : appId }, ["creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer","version","i18n","status", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "requirements", "termsOfUse"]))
 		.then(function(data) { 
 			$scope.app = data.data[0];			
 			if ($scope.app.status == "DEVELOPMENT" || $scope.app.status == "BETA") {
@@ -37,6 +38,7 @@ angular.module('portal')
 				$scope.allowDelete = $state.current.allowDelete;
 			}
 			if (!$scope.app.i18n) { $scope.app.i18n = {}; }
+			if (!$scope.app.requirements) { $scope.app.requirements = []; }
 			$scope.app.defaultQueryStr = JSON.stringify($scope.app.defaultQuery);
 			
 			if ($scope.app.linkedStudy) {
@@ -104,6 +106,7 @@ angular.module('portal')
 	};
 	
 	$scope.toggle = function(array,itm) {
+		console.log(array);
 		var pos = array.indexOf(itm);
 		if (pos < 0) array.push(itm); else array.splice(pos, 1);
 	};
@@ -124,6 +127,11 @@ angular.module('portal')
 	
 	$translatePartialLoader.addPart("developers");
 	
-	if ($state.params.appId != null) { $scope.loadApp($state.params.appId); }
-	else { $scope.status.isBusy = false; }
+	terms.search({}, ["name", "version", "language", "title"])
+	.then(function(result) {
+		$scope.terms = result.data;
+		if ($state.params.appId != null) { $scope.loadApp($state.params.appId); }
+		else { $scope.status.isBusy = false; }
+	});
+	
 }]);

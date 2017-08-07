@@ -462,14 +462,14 @@
         "code_entered": "Le code de confirmation a-t-il été entré?",
 
         // TODO NEW: 1. Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.
-        "email_instructions" : "1. Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.",
+        "email_instructions" : "Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.",
         "resend_btn" : "Renvoer l'e-mail",
 
         // TODO NEW: 2. A contract has been sent to your postal address. Return it signed to MIDATA.
-        "contract_instructions" : "2. A contract has been sent to your postal address. Return it signed to MIDATA.",
+        "contract_instructions" : "A contract has been sent to your postal address. Return it signed to MIDATA.",
 
         // TODO NEW: 3. A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.
-        "code_intructions" : "3. A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
+        "code_intructions" : "A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
 
         // TODO NEW: Confirmation code may be entered here after signed contract has arrived at MIDATA office.
         "code_later" : "Confirmation code may be entered here after signed contract has arrived at MIDATA office.",

@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.Map;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -15,6 +16,7 @@ import models.Plugin;
 import models.ResearchUser;
 import models.User;
 import models.enums.ConsentStatus;
+import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.libs.Json;
@@ -88,7 +90,7 @@ public class OAuth2 extends Controller {
 	    boolean confirmStudy = JsonValidation.getBoolean(json, "confirmStudy");
 	   					
 	    // Validate Mobile App	
-		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri"));
+		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements"));
 		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");		
 		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
 		if (!redirectUri.equals(app.redirectUri)) throw new InternalServerException("error.internal", "Wrong redirect uri");
@@ -104,8 +106,8 @@ public class OAuth2 extends Controller {
 					
 		User user = null;
 		switch (role) {
-		case MEMBER : user = Member.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
-		case PROVIDER : user = HPUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
+		case MEMBER : user = Member.getByEmail(username, User.ALL_USER_INTERNAL);break;
+		case PROVIDER : user = HPUser.getByEmail(username, User.ALL_USER_INTERNAL);break;
 		
 		// Currently no OAuth2 support for RESEARCH Apps
 		//case RESEARCH : user = ResearchUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
@@ -114,10 +116,8 @@ public class OAuth2 extends Controller {
 		if (!Member.authenticationValid(password, user.password)) {
 			throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
 		}
-		boolean notok = Application.loginHelperPreconditionsFailed(user);
-		if (notok) {
-		  return Application.loginHelperResult(user);
-		}
+		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, app.requirements);
+		
 		
 		appInstance = MobileAPI.getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));
 		KeyManager.instance.login(60000l);
@@ -135,6 +135,10 @@ public class OAuth2 extends Controller {
 			}
 			KeyManager.instance.unlock(appInstance._id, phrase);
 			meta = RecordManager.instance.getMeta(appInstance._id, appInstance._id, "_app").toMap();				
+		}
+		
+		if (notok != null) {
+		  return Application.loginHelperResult(user, notok);
 		}
 					
 		if (!phrase.equals(meta.get("phrase"))) throw new InternalServerException("error.internal", "Internal error while validating consent");
@@ -174,8 +178,15 @@ public class OAuth2 extends Controller {
 			appInstanceId = refreshToken.appInstanceId;
 			
 			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "appVersion", "applicationId", "status"));
-			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.internal", "Bad refresh token.");                        
-            if (!Application.verifyUser(appInstance.owner)) return status(UNAUTHORIZED);            
+			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.internal", "Bad refresh token.");
+			
+			Plugin app = Plugin.getById(appInstance.applicationId);
+			User user = User.getById(appInstance.owner, User.ALL_USER);
+			
+			Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, app.requirements);
+			if (notok != null) {
+				return status(UNAUTHORIZED);
+			}                       
 			
             phrase = refreshToken.phrase;
             KeyManager.instance.unlock(appInstance._id, phrase);	
