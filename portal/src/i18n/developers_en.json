@@ -1,5 +1,6 @@
 {
   "developer_registration" : {
+    "sign_up" : "Developer Sign Up",
     "reason_fillout" : "To avoid longer waiting time until your account is validated please fill out contact person and purpose of registration carefully such that an administrator may decide quickly about your access request.",
     "sign_up_btn" : "Developer Sign Up"
   },
@@ -63,6 +64,9 @@
     "debug_btn" : "API Tester",
     "linkedStudy" : "Study linked to App (Code)",
     "mustParticipateInStudy" : "Study Required",
+    "admin_only" : "Only a MIDATA admin may change this section. Please request changes if required.",
+    "terms_of_use" : "Terms of Use",
+    "show_terms" : "Show terms of use",
     "info" : {
        "filename" : "This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your app for a specific role only? Otherwise choose 'Any Role'.",

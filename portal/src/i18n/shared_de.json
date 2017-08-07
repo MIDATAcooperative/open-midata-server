@@ -529,10 +529,10 @@
         "resent_success" : "Die Willkommens-E-Mail wurde erneut versendet.",
         "address_success" : "Die Adresse wurde bestätigt.",
         "code_entered" : "Bestätigungscode eingegeben?",
-        "email_instructions" : "1. Ihre E-Mail-Adresse muss bestätigt werden. Eine Aktivierungs-E-Mail wurde Ihnen geschickt. Klicken Sie bitte auf dem Link um Ihre E-Mail-Adresse zu bestätigen.",
+        "email_instructions" : "Ihre E-Mail-Adresse muss bestätigt werden. Eine Aktivierungs-E-Mail wurde Ihnen geschickt. Klicken Sie bitte auf dem Link um Ihre E-Mail-Adresse zu bestätigen.",
         "resend_btn" : "E-mail erneut versenden",
-        "contract_instructions" : "2. Ein Vertrag wurde an Ihre Postadresse geschickt. Schicken Sie es bitte unterschrieben an MIDATA zurück.",
-        "code_intructions" : "3. Ein Brief mit einem Bestätigungscode wurde an Ihre Postadresse geschickt. Geben Sie bitte den Bestätigungscode ein um Zugriff auf die Plattform zu erhalten.",
+        "contract_instructions" : "Ein Vertrag wurde an Ihre Postadresse geschickt. Schicken Sie es bitte unterschrieben an MIDATA zurück.",
+        "code_intructions" : "Ein Brief mit einem Bestätigungscode wurde an Ihre Postadresse geschickt. Geben Sie bitte den Bestätigungscode ein um Zugriff auf die Plattform zu erhalten.",
         "code_later" : "Der Bestätigungscode kann hier eingegeben sobald Ihr unterschriebener Vertrag an der MIDATA Anmeldestelle angekommen ist.",
         "enter_now_btn" : "Jetzt eingeben",
         "email_success" : "Die E-Mail-Adresse wurde bestätigt."

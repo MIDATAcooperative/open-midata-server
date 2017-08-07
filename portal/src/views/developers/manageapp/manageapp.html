@@ -22,6 +22,14 @@
 		  <formrow myid="type" label="Type">
 		    <select id="type" name="type" class="form-control" ng-model="app.type" ng-options="type.value as type.label for type in types" required></select>
 		    <p class="help-block" translate="manageapp.info.type"></p>
+		  </formrow>
+		  <formrow myid="requirements" label="Requirements">
+		    <div class="checkbox" ng-repeat="req in requirements">
+		      <label>
+		        <input type="checkbox" ng-checked="app.requirements.indexOf(req)>=0" ng-click="toggle(app.requirements, req)">
+		        <span translate="{{ 'enum.userfeature.'+req }}"></span>
+		      </label>
+		    </div>
 		  </formrow>		  		  
 		  <hr>
 		  <formrow myid="name" label="Name">
@@ -67,6 +75,7 @@
 		    </div>
 		    <p class="help-block" translate="manageapp.info.tags"></p>
 		  </formrow>  		
+		
 		  <formrow myid="url" label="URL" ng-hide="app.type == 'mobile'">
 		    <input type="text" id="url" name="url" class="form-control" placeholder="URL (must include &quot;:authToken&quot;)" ng-model="app.url">
 		    <formerror myid="url" type="authToken" message="Url must contain ':authToken' to receive the authorization token required to create records." ></formerror>
@@ -139,6 +148,12 @@
 		  </formrow>
 		  
 		  <hr ng-show="app.type == 'mobile'">
+		  <p class="alert alert-info" ng-show="app.type == 'mobile'" translate="manageapp.admin_only"></p>
+		  <formrow myid="termsOfUse" label="manageapp.terms_of_use" ng-show="app.type == 'mobile'">
+		    <select id="termsOfUse" ng-disabled="!allowStudyConfig" name="termsOfUse" class="form-control" ng-model="app.termsOfUse" ng-options="term.id as term.fullname for term in terms"></select>
+		    <formerror myid="linkedStudy" type="invalid" message="error.unknown.study" ></formerror>
+		     <p class="help-block" ng-show="app.termsOfUse"><a ui-sref="^.terms({ which:app.termsOfUse })" translate="manageapp.show_terms"></a></p> 
+		  </formrow>
 		  <formrow myid="linkedStudy" label="manageapp.linkedStudy" ng-show="app.type == 'mobile'">
 		    <input type="text" id="linkedStudy" ng-disabled="!allowStudyConfig" name="linkedStudy" class="form-control" placeholder="Study" ng-model="app.linkedStudyCode">
 		    <formerror myid="linkedStudy" type="invalid" message="error.unknown.study" ></formerror>

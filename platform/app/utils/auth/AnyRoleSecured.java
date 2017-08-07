@@ -1,5 +1,6 @@
 package utils.auth;
 
+import models.enums.UserRole;
 import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -16,7 +17,7 @@ public class AnyRoleSecured extends Security.Authenticator {
 	@Override
 	public String getUsername(Context ctx) {
 	    PortalSessionToken tk = PortalSessionToken.decrypt(ctx.request());
-	    if (tk == null) return null;
+	    if (tk == null || tk.getRole() == UserRole.ANY) return null;
 	    try {
 	      KeyManager.instance.continueSession(tk.getHandle());
 	    } catch (AuthException e) { return null; }	    

@@ -119,5 +119,10 @@ public enum EventType {
 	/**
 	 * a comment from the administrator
 	 */
-	INTERNAL_COMMENT
+	INTERNAL_COMMENT,
+	
+	/**
+	 * a user agreed to terms of use
+	 */
+	TERMS_OF_USE_AGREED
 }

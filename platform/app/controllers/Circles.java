@@ -38,6 +38,7 @@ import models.enums.ConsentType;
 import models.enums.EntityType;
 import models.enums.MessageReason;
 import models.enums.SubUserRole;
+import models.enums.UserFeature;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -234,7 +235,7 @@ public class Circles extends APIController {
 		
 		JsonValidation.validate(json, "name", "type");
 		
-		forbidSubUserRole(SubUserRole.TRIALUSER, SubUserRole.NONMEMBERUSER);
+		requireUserFeature(UserFeature.EMAIL_VERIFIED);		
 		
 		// validate request
 		ConsentType type = JsonValidation.getEnum(json, "type", ConsentType.class);
@@ -257,9 +258,7 @@ public class Circles extends APIController {
 		boolean patientRecord = false;
 		Consent consent;
 		switch (type) {
-		case CIRCLE : 
-			forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.MEMBEROFCOOPERATIVE);
-			forbidSubUserRole(SubUserRole.APPUSER, SubUserRole.MEMBEROFCOOPERATIVE);
+		case CIRCLE : 			
 			consent = new Circle();
 			((Circle) consent).order = Circle.getMaxOrder(userId) + 1;
 			patientRecord = true;

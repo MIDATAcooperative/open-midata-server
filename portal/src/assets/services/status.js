@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('status', ['$q', '$state', function($q, $state) {
+.factory('status', ['$q', '$state', '$document', function($q, $state, $document) {
 	return function(showerrors, scope) {		
 		this.loading = 0;
 		this.isBusy = true;
@@ -15,7 +15,7 @@ angular.module('services')
 			   this.loading--; 
 			   this.error = msg; 
 			   if (this.loading<=0) { this.isBusy = false;this.action=null; }
-			   if (msg.status == 403) {
+			   if (msg.status == 403 || msg.status == 401) {
 				   // Now handeled by http interceptor
 				   //alert("Please relogin. Your session has expired.");
 				   //$state.go("public.login");
@@ -39,6 +39,8 @@ angular.module('services')
 		   			me.scope.error = err.data;
 		   			if (me.scope.myform[err.data.field]) {
 		   			  me.scope.myform[err.data.field].$setValidity(err.data.type, false);
+		   			  var elem = $document[0].getElementById(err.data.field);
+		   			  if (elem && elem.focus) elem.focus();
 		   			} else {
 		   			  err.data.field = undefined;
 		   			}

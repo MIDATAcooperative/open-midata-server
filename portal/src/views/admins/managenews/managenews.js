@@ -1,12 +1,12 @@
 angular.module('portal')
-.controller('ManageNewsCtrl', ['$scope', '$state', 'server', 'news', 'status', function($scope, $state, server, news, status) {
+.controller('ManageNewsCtrl', ['$scope', '$state', 'server', 'news', 'status', 'languages', function($scope, $state, server, news, status, languages) {
 	
 	// init
 	$scope.error = null;
 	$scope.newsItem = {  };
 	$scope.status = new status(true);
 	$scope.allowDelete = $state.current.allowDelete;
-	$scope.languages = ['en', 'de', 'fr', 'it'];
+	$scope.languages = languages.array;
 	$scope.datePickers = {};
     $scope.dateOptions = {
        formatYear: 'yy',
