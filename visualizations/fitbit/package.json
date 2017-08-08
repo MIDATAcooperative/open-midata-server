@@ -6,7 +6,6 @@
   "dependencies": {
     "benv": "^3.3.0",
     "grunt": "~1.0.1",
-    "grunt-bower-task": "~0.4.0",
     "grunt-contrib-clean": "~1.0.0",
     "grunt-contrib-concat": "~1.0.1",
     "grunt-contrib-connect": "~1.0.2",
@@ -23,7 +22,9 @@
     "grunt-preprocess": "~5.1.0",
     "grunt-usemin": "~3.1.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "grunt-bower-task": "^0.5.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
