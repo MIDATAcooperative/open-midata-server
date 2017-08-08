@@ -1,10 +1,12 @@
 	<!-- Content -->
 	<div class="container" ng-controller="GuideCtrl">
 		<div class="page-header">
+		
+		
 			<h1>Developer's Guide</h1>
 		</div>
 		<div class="row">
-			<div class="col-md-2">
+			<div class="col-sm-2">
 				<ul class="nav nav-pills nav-stacked">
 					<li ng-init="tab='home'" ng-class="{ 'active' : tab=='home' }"><a href="javascript:" ng-click="tab='home';">Home</a></li>
 					<li ng-class="{ 'active' : tab=='accounts' }"><a href="javascript:" ng-click="tab='accounts';">Developer Accounts</a></li>
@@ -15,9 +17,10 @@
 					<li ng-class="{ 'active' : tab=='formats' }"><a href="javascript:" ng-click="tab='formats';">Format/Content List</a></li>
 				</ul>
 			</div>
-			<div class="col-md-10">
+			<div class="col-sm-10">
 				<div class="tab-content">
 					<div id="home" class="tab-pane fade" ng-class="{ 'active in' : tab=='home' }">
+					   			
 						<h2>Overview</h2>
 						<p>The developer's guide explains the general architecture of the
 							platform, how mobile apps and plugins interact with it and 
@@ -25,6 +28,7 @@
 						</p>
 						
 						<p>For any type of development you need a <b>Developer Account</b> first.</p>
+						
 						
 						<p>If you want to develop a SMART on FHIR app, please read
 						  <a href="javascript:" ng-click="tab='mobile';">Mobile Apps / External Apps</a> and <a href="javascript:" ng-click="tab='fhir';">FHIR API</a>. You may need to look at the <a href="javascript:" ng-click="tab='formats';">Format/Content List</a>.
