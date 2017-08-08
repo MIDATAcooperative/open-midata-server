@@ -36,11 +36,14 @@
 							  
 							  <formrow myid="gender" label="registration.gender"><select class="form-control" id="gender" name="gender" ng-model="registration.gender" required><option value="FEMALE" translate="enum.gender.FEMALE">female</option><option value="MALE" translate="enum.gender.MALE"></option><option value="OTHER" translate="enum.gender.OTHER"></option></select></formrow>							 						  
 							  <formrow myid="language" label="registration.language"><select class="form-control" id="language" ng-model="registration.language" ng-change="changeLanguage(registration.language);" ng-options="lang.value as lang.name | translate for lang in languages"></select></formrow>
-							  
+							  <div class="required">
 							  <formrow myid="address1" label="registration.address"><input type="text" class="form-control" id="address1" name="address1" translate translate-attr-placeholder="registration.address_line1" ng-model="registration.address1" required></formrow>
+							  </div>
 							  <formrow myid="address2" label=""><input type="text" class="form-control" id="address2" name="address2" translate translate-attr-placeholder="registration.address_line2" ng-model="registration.address2"></formrow>
+							  <div class="required">
 							  <formrow myid="city" label="registration.city"><input type="text" class="form-control" id="city" name="city" translate translate-attr-placeholder="registration.city" ng-model="registration.city" required></formrow>
 							  <formrow myid="zip" label="registration.zip"><input type="text" class="form-control" id="zip" name="zip" translate translate-attr-placeholder="registration.zip" ng-model="registration.zip" required></formrow>
+							  </div>
 							  <formrow myid="country" label="registration.country"><select class="form-control" id="country" name="country" ng-model="registration.country" required><option value="CH" translate="enum.country.CH"></option></select></formrow>
                              
                               <formrow myid="phone" label="registration.phone"><input type="text" class="form-control" id="phone" name="phone" translate translate-attr-placeholder="registration.phone" ng-model="registration.phone"></formrow>

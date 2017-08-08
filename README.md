@@ -22,7 +22,7 @@ Installation
 To install all required software on ubuntu run:
 ```
 sudo apt-get install git curl openssl python openjdk-8-jdk nginx mcrypt sqlite3 unzip
-curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install -y nodejs
 sudo npm install -g bower grunt-cli
 ```
