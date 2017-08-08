@@ -11,6 +11,7 @@
 
    "navbar" : {
 	  "toggle_navigation": "Toggle navigation",
+	  "ribbon" : "Pilot Phase",
 	  "login" : "Login",
 	  "sign_up" : "Sign Up",
 	  "sign_out" : "Sign out",
@@ -349,7 +350,7 @@
      "access" : "Access to this MIDATA instance",
      "uptime" : "Availability and downtimes",
      "data" : "Data stored in this MIDATA instance",
-     "start" : "Choose one of the portal from the bottom of the page to start. Each portal has its own LOGIN and SIGN UP page.",
+     "start" : "Choose one of the portal from the top of the page to start. Each portal has its own LOGIN and SIGN UP page.",
 
      "localhost" : {
         "name" : "Local MIDATA Instance (localhost)",
@@ -393,14 +394,14 @@
   "registration" : {
     "sign_up" : "Sign Up",
     "mandantory_fields" : "Fields marked with a * must be filled out.",
-    "email" : "EMail*",
-    "password" : "Password*",
-    "password_repetition" : "Repeat Password*",
-    "firstname" : "First Name*",
-    "lastname" : "Surname*",
-    "gender" : "Gender*",
-    "birthday" : "Birthday*",
-    "language" : "Preferred Language*",
+    "email" : "EMail",
+    "password" : "Password",
+    "password_repetition" : "Repeat Password",
+    "firstname" : "First Name",
+    "lastname" : "Surname",
+    "gender" : "Gender",
+    "birthday" : "Birthday",
+    "language" : "Preferred Language",
     "day" : "Day",
     "month" : "Month",
     "year" : "Year",
@@ -409,7 +410,7 @@
     "address_line2" : "Second line for address",
     "city" : "City",
     "zip" : "Zip Code",
-    "country" : "Country*",
+    "country" : "Country",
     "phone" : "Phone",
     "mobile_phone" : "Mobile Phone",
     "coach" : "Contact person MIDATA",
