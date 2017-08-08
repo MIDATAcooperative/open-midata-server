@@ -20,15 +20,15 @@ class Plugins(Product):
 
 	def build(self):
 		print 'Installing Apps...'		
-		Command.execute('for f in *; do cd $f; [ -e "package.json" ] && npm install; cd ..; done', self.apps)
-		Command.execute('for f in *; do cd $f; [ -e "bower.json" ] && bower install; cd ..; done', self.apps)
+		Command.execute('for f in *; do echo NPM Plugin $f;cd $f; [ -e "package.json" ] && npm install; cd ..; done', self.apps)
+		Command.execute('for f in *; do echo BOWER Plugin $f;cd $f; [ -e "bower.json" ] && bower install; cd ..; done', self.apps)
 		print 'Installing Plugins...'		
-		Command.execute('for f in *; do cd $f; [ -e "package.json" ] && npm install; cd ..; done', self.plugins)
-		Command.execute('for f in *; do cd $f; [ -e "bower.json" ] && bower update; cd ..; done', self.plugins)						
+		Command.execute('for f in *; do echo NPM Plugin $f;cd $f; [ -e "package.json" ] && npm install; cd ..; done', self.plugins)
+		Command.execute('for f in *; do echo BOWER Plugin $f;cd $f; [ -e "bower.json" ] && bower update; cd ..; done', self.plugins)						
 		print 'Building Apps...'		
-		Command.execute('for f in *; do cd $f; [ -e "Gruntfile.js" ] && grunt build; cd ..; done', self.apps)
+		Command.execute('for f in *; do echo BUILD Plugin $f;cd $f; [ -e "Gruntfile.js" ] && grunt build; cd ..; done', self.apps)
 		print 'Building Plugins...'		
-		Command.execute('for f in *; do cd $f; [ -e "Gruntfile.js" ] && grunt build; cd ..; done', self.plugins)
+		Command.execute('for f in *; do echo BUILD Plugin $f;cd $f; [ -e "Gruntfile.js" ] && grunt build; cd ..; done', self.plugins)
 		
 	def start(self):
 		pass
