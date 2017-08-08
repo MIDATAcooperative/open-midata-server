@@ -6,7 +6,8 @@
   },
   
   "developer_login" : {
-    "title" : "Developer Login"
+    "title" : "Developer Login",
+    "guide" : "Visit Developer Guide"
   },
   
   "developer_navbar" : {

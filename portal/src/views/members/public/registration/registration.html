@@ -15,7 +15,8 @@
 	                        <div class="row">
 	                        <p class="col-sm-offset-4 col-sm-8" translate="registration.mandantory_fields"></p>
 	                        </div>					
-							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="register()" role="form">								  
+							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="register()" role="form">
+							  <div class="required">								  
 							  <formrow myid="email" label="registration.email">
 							    <input type="email" class="form-control" id="email" name="email" translate translate-attr-placeholder="registration.email" ng-model="registration.email" required>
 							    <formerror myid="email" type="email" message="error.invalid.email" ></formerror> 
@@ -43,6 +44,7 @@
 							    </div>
 							  </formrow>							  
 							  <formrow myid="language" label="registration.language"><select class="form-control" id="language" ng-model="registration.language" ng-change="changeLanguage(registration.language);" ng-options="lang.value as lang.name | translate for lang in languages"></select></formrow>
+							  </div>
 							  <div ng-class="{ 'required' : addressNeeded() }">
 							  <formrow myid="address1" label="registration.address"><input type="text" class="form-control" id="address1" name="address1" translate translate-attr-placeholder="registration.address_line1" ng-model="registration.address1" ng-required="{{addressNeeded()}}"></formrow>
 							  </div>
@@ -51,7 +53,9 @@
 							  <formrow myid="city" label="registration.city"><input type="text" class="form-control" id="city" name="city" translate translate-attr-placeholder="registration.city" ng-model="registration.city" ng-required="{{addressNeeded()}}"></formrow>
 							  <formrow myid="zip" label="registration.zip"><input type="text" class="form-control" id="zip" name="zip" translate translate-attr-placeholder="registration.zip" ng-model="registration.zip" ng-required="{{addressNeeded()}}"></formrow>
 							  </div>
-							  <formrow myid="country" label="registration.country"><select class="form-control" id="country" name="country" ng-model="registration.country" required><option value="CH" translate="enum.country.CH"></option></select></formrow>                             
+							  <div class="required">
+							  <formrow myid="country" label="registration.country"><select class="form-control" id="country" name="country" ng-model="registration.country" required><option value="CH" translate="enum.country.CH"></option></select></formrow>
+							  </div>                             
                               <formrow myid="phone" label="registration.phone"><input type="text" class="form-control" id="phone" name="phone" translate translate-attr-placeholder="registration.phone" ng-model="registration.phone"></formrow>
                               <div ng-class="{ 'required' : phoneNeeded() }">
                               <formrow myid="mobile" label="registration.mobile_phone"><input type="text" class="form-control" id="mobile" name="mobile" translate translate-attr-placeholder="registration.mobile_phone" ng-model="registration.mobile" ng-required="{{phoneNeeded()}}"></formrow>

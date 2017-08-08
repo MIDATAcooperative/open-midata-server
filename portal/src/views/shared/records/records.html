@@ -37,12 +37,12 @@
           <form class="form">
 		    <div class="radio">
 		      <label>
-                <input type="radio" name="treetype" value="group" checked ng-click="setTreeMode('group');"> <span translate="records.by_group"></span> 
+                <input type="radio" name="treetype" value="group" ng-model="treeMode" ng-click="setTreeMode('group');"> <span translate="records.by_group"></span> 
               </label>
             </div>
             <div class="radio">
               <label class="radio-inline">
-                <input type="radio" name="treetype" value="plugin" ng-click="setTreeMode('plugin');"> <span translate="records.by_plugin"></span>
+                <input type="radio" name="treetype" value="plugin" ng-model="treeMode" ng-click="setTreeMode('plugin');"> <span translate="records.by_plugin"></span>
               </label>
             </div>
           </form>
