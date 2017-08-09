@@ -860,6 +860,20 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 	};
 
 	var processTransaction = function (authToken, actions) {
+		actions.sort(function(a,b){
+			var _value = 0;
+			try {
+				var _a = new Date(a.resource.effectiveDateTime);
+				var _b = new Date(b.resource.effectiveDateTime);
+				_value = _a.getTime() - _b.getTime();
+			}
+			catch(err) {
+				_value = 0;
+			}
+			return _value;
+		});
+		console.log('array sorted');
+		console.log(actions);
 		var request = {
 			"resourceType": "Bundle",
 			"id": "bundle-transaction",
