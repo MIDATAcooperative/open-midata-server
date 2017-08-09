@@ -12,6 +12,10 @@ angular.module('portal')
 	    .state('admin.terms', {
 	      url: '/terms/:which?lang',
 	      templateUrl: 'views/shared/public/terms/terms.html',	      
+	    })
+	    .state('research.terms', {
+	      url: '/terms/:which?lang',
+	      templateUrl: 'views/shared/public/terms/terms.html',	      
 	    });	    
 	   
 }]);

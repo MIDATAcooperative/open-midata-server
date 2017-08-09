@@ -68,7 +68,7 @@ angular.module('services')
 	
 	service.login = function(confirm, confirmStudy) {	    	
 		cred.confirm = confirm || false;
-		cred.confirmStudy = confirmStudy || false;
+		cred.confirmStudy = confirmStudy || (confirm && cred.confirmStudy);
 		return server.post("/v1/authorize", JSON.stringify(cred)).
 		then(function(result) {				
 			if (result.data.istatus === "ACTIVE") {							

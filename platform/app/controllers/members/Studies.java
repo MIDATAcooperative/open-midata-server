@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
 import controllers.APIController;
+import controllers.Application;
 import controllers.Circles;
 import models.Consent;
 import models.History;
@@ -21,6 +22,7 @@ import models.ParticipationCode;
 import models.Research;
 import models.Study;
 import models.StudyParticipation;
+import models.User;
 import models.enums.ConsentStatus;
 import models.enums.EventType;
 import models.enums.InformationType;
@@ -29,6 +31,7 @@ import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
 import models.enums.SubUserRole;
+import models.enums.UserFeature;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -315,7 +318,14 @@ public class Studies extends APIController {
 		  forbidSubUserRole(SubUserRole.APPUSER, SubUserRole.NONMEMBERUSER);	
 		}*/
 		MidataId userId = new MidataId(request().username());		
-		MidataId studyId = new MidataId(id);		
+		MidataId studyId = new MidataId(id);	
+		
+		User user = Member.getById(userId, Member.ALL_USER);
+		
+		Set<UserFeature> requirements = precheckRequestParticipation(userId, studyId);
+		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
+		if (!notok.isEmpty()) requireUserFeature(notok.iterator().next());
+		
 		requestParticipation(userId, studyId);		
 		return ok();
 	}
@@ -351,20 +361,22 @@ public class Studies extends APIController {
 				
 	}
 	
-   public static void precheckRequestParticipation(MidataId userId, MidataId studyId) throws AppException {
+   public static Set<UserFeature> precheckRequestParticipation(MidataId userId, MidataId studyId) throws AppException {
 				
 		Member user = userId != null ? Member.getById(userId, Sets.create("firstname", "lastname", "birthday", "gender", "country")) : null;		
 		StudyParticipation participation = userId != null ? StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "history", "ownerName", "owner", "authorized", "sharingQuery", "validUntil", "createdBefore")) : null;		
-		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history", "owner", "createdBy", "name", "recordQuery", "requiredInformation"));
+		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "requirements"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		if (participation == null) {
 			if (study.participantSearchStatus != ParticipantSearchStatus.SEARCHING) throw new JsonValidationException("error.closed.study", "code", "notsearching", "Study is not searching for participants.");
-			return;												
+			return study.requirements;							
 		}
 		
-		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return;				
-		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");											
+		if (participation.pstatus == ParticipationStatus.ACCEPTED || participation.pstatus == ParticipationStatus.REQUEST) return study.requirements;			
+		if (participation.pstatus != ParticipationStatus.CODE && participation.pstatus != ParticipationStatus.MATCH) throw new BadRequestException("error.invalid.status_transition", "Wrong participation status.");
+		
+		return study.requirements;
 	}
 	
 	/**

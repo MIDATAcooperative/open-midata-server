@@ -34,13 +34,14 @@ angular.module('portal')
 			$scope.consent = "App: "+$scope.app.name+" (Device: "+$scope.device+")";
 			
 			if ($scope.app.linkedStudy) {
-				$scope.status.doBusy(studies.search({ _id : $scope.app.linkedStudy }, ["code", "name", "description"]))
+				$scope.status.doBusy(studies.search({ _id : $scope.app.linkedStudy }, ["code", "name", "description", "termsOfUse"]))
 				.then(function(studyresult) {
 					if (studyresult.data && studyresult.data.length) {
 					  oauth.app = $scope.app;
 					  $scope.app.linkedStudyCode = studyresult.data[0].code;
 				 	  $scope.app.linkedStudyName = studyresult.data[0].name;
 				 	  $scope.app.linkedStudyDescription = studyresult.data[0].description;
+				 	  $scope.app.linkedStudyTermsOfUse = studyresult.data[0].termsOfUse;
 					}
 				});
 			}

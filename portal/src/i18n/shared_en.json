@@ -421,9 +421,10 @@
     "agb3" : "Terms of Use",
     "privacypolicy2" : "I accept the",
     "privacypolicy3" : "Privacy Policy",
-    "app_agb" : "App AGB",
+    "app_agb" : "App Terms of Use",
     "app_agb2" : "I accept the",
     "app_agb3" : "App Terms And Conditions",
+    "study_agb" : "Study Terms of Use",
     "sign_up_btn" : "Sign Up"
   },
 
@@ -476,7 +477,7 @@
     "retry_btn" : "Retry login",
     "contract_instructions" : "A contract has been sent to your postal address. Return it signed to MIDATA.",
     "code_intructions" : "A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
-    "code_later" : "Confirmation code may be entered here after signed contract has arrived at MIDATA office.",
+    "code_done" : "You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA office.",
     "enter_now_btn" : "Enter now",
     "email_success" : "E-Mail address has been confirmed.",
     "address_entered" : "Your postal address is required to use this service, please provide it.",
@@ -600,6 +601,7 @@
     "title" : "Plugin Information",
     "success" : "You have successfully installed a new plugin.",
     "created_by" : "Created by:",
+    "orgName" : "Organization:",
     "description" : "Description:",
     "tile_name" : "Tile Name:",
     "install_location" : "Location:",

@@ -82,6 +82,9 @@
 		            	      <input type="checkbox" ng-model="login.confirmStudy">
 		            	      <span translate="oauth2.confirm_study"></span>:
 		            	    </label>
+		            	    <p ng-show="app.linkedStudyTermsOfUse">
+		            	      <a ng-click="terms({which : app.linkedStudyTermsOfUse })" href="javascript:" translate="registration.study_agb"></a>
+		            	    </p>
 		            	    <p>{{ app.linkedStudyName }}</p>
 		            	    <p>{{ app.linkedStudyDescription }}</p>
 		            	   

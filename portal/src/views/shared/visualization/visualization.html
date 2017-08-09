@@ -20,7 +20,11 @@
 			<p class="lead">{{ visualization.i18n[translate.use()].name || visualization.name}}</p>
 			<div class="row">
 				<p class="col-xs-2" translate="visualization.created_by"></p>
-				<p class="col-xs-10">{{visualization.creator}}</p>
+				<p class="col-xs-10">{{visualization.creatorLogin}} <span ng-show="visualization.creator">({{visualization.creator}})</span></p>
+			</div>
+			<div class="row" ng-show="visualization.orgName">
+				<p class="col-xs-2" translate="visualization.orgName"></p>
+				<p class="col-xs-10">{{visualization.orgName}}</p>
 			</div>
 			<div class="row">
 				<p class="col-xs-2" translate="visualization.description"></p>
@@ -84,6 +88,19 @@
 			      </div>
                 </div>
 			</div>
+			  
+		    <div ng-show="app.termsOfUse" class="row>
+		        <p class="col-xs-2" translate="registration.appAgb"></p>
+			    <p class="col-xs-10">	
+		      	    <div class="checkbox">
+                               <label>
+                                  <input type="checkbox" id="appAgb" name="appAgb" ng-model="options.appAgb">
+                                  <span translate="registration.app_agb2"></span>
+                                  <a ng-click="terms({which : app.termsOfUse })" href="javascript:" translate="registration.app_agb3"></a>
+                               </label>
+                    </div>
+                </p>
+		    </div>
 					
 			<button type="button" ng-disabled="status.action == 'install'" class="btn btn-primary" ng-click="install()" translate="visualization.install_btn"></button>			
 			</loader>
