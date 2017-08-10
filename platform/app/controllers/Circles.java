@@ -28,6 +28,7 @@ import models.MidataId;
 import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
+import models.StudyRelated;
 import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
@@ -37,6 +38,7 @@ import models.enums.ConsentType;
 import models.enums.EntityType;
 import models.enums.MessageReason;
 import models.enums.SubUserRole;
+import models.enums.UserFeature;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -115,6 +117,7 @@ public class Circles extends APIController {
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));	
 		ObjectIdConversion.convertMidataIds(properties, "_id", "owner", "authorized");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
+		fields.add("type");
 		
 		Rights.chk("Circles.listConsents", getRole(), properties, fields);
 		
@@ -166,6 +169,8 @@ public class Circles extends APIController {
 		}
 		
 		for (Consent consent : consents) {
+			if (consent.type.equals(ConsentType.STUDYRELATED) && consent.authorized != null) consent.authorized.clear();
+			
 			if (consent.sharingQuery == null) {
 				if (fields.contains("createdBefore") || fields.contains("validUntil")) {				
 					BasicBSONObject obj = (BasicBSONObject) RecordManager.instance.getMeta(executor, consent._id, "_filter");
@@ -230,7 +235,7 @@ public class Circles extends APIController {
 		
 		JsonValidation.validate(json, "name", "type");
 		
-		forbidSubUserRole(SubUserRole.TRIALUSER, SubUserRole.NONMEMBERUSER);
+		requireUserFeature(UserFeature.EMAIL_VERIFIED);		
 		
 		// validate request
 		ConsentType type = JsonValidation.getEnum(json, "type", ConsentType.class);
@@ -253,9 +258,7 @@ public class Circles extends APIController {
 		boolean patientRecord = false;
 		Consent consent;
 		switch (type) {
-		case CIRCLE : 
-			forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.MEMBEROFCOOPERATIVE);
-			forbidSubUserRole(SubUserRole.APPUSER, SubUserRole.MEMBEROFCOOPERATIVE);
+		case CIRCLE : 			
 			consent = new Circle();
 			((Circle) consent).order = Circle.getMaxOrder(userId) + 1;
 			patientRecord = true;
@@ -329,6 +332,9 @@ public class Circles extends APIController {
 		//consentSettingChange(executorId, consent);
 		prepareConsent(consent);
 		consentStatusChange(executorId, consent, null);
+		
+		if (consent.status.equals(ConsentStatus.ACTIVE) && patientRecord) autosharePatientRecord(consent);
+		
 		consent.add();
 								
 		if (consent.status == ConsentStatus.UNCONFIRMED) {
@@ -337,7 +343,7 @@ public class Circles extends APIController {
 			sendConsentNotifications(executorId, consent, consent.status);
 		}
 				
-		if (consent.status.equals(ConsentStatus.ACTIVE) && patientRecord) autosharePatientRecord(consent);
+		
 
 	}
 	
@@ -385,10 +391,10 @@ public class Circles extends APIController {
 	 * @throws AppException
 	 */
 	public static void autosharePatientRecord(Consent consent) throws AppException {
-		List<Record> recs = RecordManager.instance.list(consent.owner, consent.owner, CMaps.map("owner", "self").map("format", "fhir/Patient"), Sets.create("_id"));
+		List<Record> recs = RecordManager.instance.list(consent.owner, consent.owner, CMaps.map("owner", "self").map("format", "fhir/Patient").map("data", CMaps.map("id", consent.owner.toString())), Sets.create("_id", "data"));
 		if (recs.size()>0) {
 		  RecordManager.instance.share(consent.owner, consent.owner, consent._id, Collections.singleton(recs.get(0)._id), true);
-		}
+		} else throw new InternalServerException("error.internal", "Patient Record not found!");
 	}
 	
 	/**
@@ -446,7 +452,7 @@ public class Circles extends APIController {
 		if (consent == null) {
 			throw new BadRequestException("error.unknown.consent", "No consent with this id exists.");
 		}
-		if (consent.type != ConsentType.CIRCLE && consent.type != ConsentType.EXTERNALSERVICE && consent.type != ConsentType.IMPLICIT) throw new BadRequestException("error.unsupported", "Operation not supported");
+		if (consent.type != ConsentType.CIRCLE && consent.type != ConsentType.EXTERNALSERVICE && consent.type != ConsentType.IMPLICIT && consent.type != ConsentType.STUDYRELATED) throw new BadRequestException("error.unsupported", "Operation not supported");
 						
 		consentStatusChange(userId, consent, ConsentStatus.EXPIRED);
 		RecordManager.instance.deleteAPS(consent._id, userId);
@@ -459,6 +465,7 @@ public class Circles extends APIController {
 		case CIRCLE: Circle.delete(userId, circleId);break;
 		case EXTERNALSERVICE: Circle.delete(userId, circleId);break;
 		case IMPLICIT: Consent.delete(userId, circleId);break;
+		case STUDYRELATED : StudyRelated.delete(userId, circleId);break;
 		default:break;
 		}
 		
@@ -512,6 +519,7 @@ public class Circles extends APIController {
 				throw new BadRequestException("error.invalid.consent", "Bad consent entity type");
 			}			
 		}
+		if (newMemberIds.contains(null)) throw new NullPointerException();
 		
 		consent.authorized.addAll(newMemberIds);
 		Consent.set(consent._id, "authorized", consent.authorized);
@@ -587,8 +595,12 @@ public class Circles extends APIController {
 			Map<String, Object> query = consent.sharingQuery;
 			if (query == null) query = Circles.getQueries(consent.owner, consent._id);			
 			if (query!=null) {
-				Circles.setQuery(executor, consent.owner, consent._id, query);
-				RecordManager.instance.applyQuery(executor, query, consent.owner, consent._id, true);	 
+				if (consent.type.equals(ConsentType.EXTERNALSERVICE)) {
+				  RecordManager.instance.shareByQuery(executor, consent.owner, consent._id, query);				  
+				} else {
+				  Circles.setQuery(executor, consent.owner, consent._id, query);
+				  RecordManager.instance.applyQuery(executor, query, consent.owner, consent._id, true);
+				}
 			}
 		} else if (!active && wasActive) {
 			Set<MidataId> auth = consent.authorized;

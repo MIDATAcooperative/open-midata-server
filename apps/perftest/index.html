@@ -3,35 +3,56 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Performance Tester</title>
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 		<!-- jQuery needed for Bootstrap's JavaScript plugins -->
-		<script type="text/javascript" src="//code.jquery.com/jquery-2.0.2.min.js"></script>
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
-		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" defer></script>
-		<script type="text/javascript" src="js/app.js" defer></script>
+		
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js"></script>
+		<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" defer></script>
+		<script type="text/javascript" src="app.js" defer></script>
 	</head>
 	<body>
 		<div class="container" ng-app="jsonRecords" ng-controller="CreateCtrl" ng-cloak>
 		  <h2>Performance Tester</h2>
-		  <div class="alert alert-success alert-dismissable" ng-show="success">
-			<button type="button" class="close" ng-click="success=false" aria-hidden="true">&times;</button>
-			Records successfully added
-		  </div>
+		  
 		  <form>
 		    <div class="form-group"> 
-		      <label for="numCreate">Number of Records to create:</label>
+		      <label for="server">Target Server</label>
+		      <input type="text" ng-model="server.baseurl" >
+		    </div>
+		    <div class="form-group"> 
+		      <label for="usersCreate">Number of Users to create:</label>
+		      <input type="text" ng-model="setup.usersCreate" >
+		    </div>
+		    <div class="form-group"> 
+		      <label for="numCreate">Number of Records or Transactions per User to create:</label>
 		      <input type="text" ng-model="setup.numCreate" >
+		    </div>		    
+		    <div class="form-group"> 
+		      <label for="numCreate">Requests parallel:</label>
+		      <input type="text" ng-model="setup.numSync" >
 		    </div>
-		     <div class="form-group">
-		      <label for="format">Content:</label>
-		      <input type="text" ng-model="setup.content" >
+		    <div class="form-group"> 
+		      <label for="numBulk">Records per Transaction:</label>
+		      <input type="text" ng-model="setup.numBulk" >
 		    </div>
-		     <div class="form-group">
-		      <label for="format">Format:</label>
-		      <input type="text" ng-model="setup.format" >
-		    </div>	
-		    
-		    <button class="btn btn-primary" ng-click="execute()">Execute</button>
+		    <button class="btn btn-primary" ng-click="executeCreateUsers()">Create Users</button>
+		    <button class="btn btn-primary" ng-click="executeCreateRecords()">Create Records (single)</button>
+		    <button class="btn btn-primary" ng-click="executeCreateBulk()">Create Records (fhir transaction)</button>
+		    <button class="btn btn-primary" ng-click="executeWipeUsers()">Wipe Users</button>
+		    <div class="form-group"> 
+		      <label for="study">Study-ID</label>
+		      <input type="text" ng-model="setup.study" >
+		    </div>
+		    <div class="form-group"> 
+		      <label for="studyGroup">Study Group</label>
+		      <input type="text" ng-model="setup.studyGroup" >
+		    </div>
+		    <button class="btn btn-primary" ng-click="executeJoinStudy()">Join Study</button>
+		    <button class="btn btn-primary" ng-click="executeConfirmStudy()">Confirm all Participants</button>
+		    <div style="margin-top:20px">
+		    <div>{{ server.requests }} req : {{ server.time }} ms ( {{ (server.time / server.requests) | number : 0  }} ms )</div>
+		    <div style="max-width:800px; word-wrap:break-word">{{ server.out }}</div>
+		    </div>
 		  </form>
 		</div>
 	</body>

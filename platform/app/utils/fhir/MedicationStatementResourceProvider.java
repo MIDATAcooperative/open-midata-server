@@ -171,13 +171,13 @@ public class MedicationStatementResourceProvider extends ResourceProvider<Medica
 		QueryBuilder builder = new QueryBuilder(params, query, "fhir/MedicationStatement");
 
 		builder.handleIdRestriction();
-		builder.recordOwnerReference("patient", "Patient");
+		builder.recordOwnerReference("patient", "Patient", "subject");
 
 		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
 		builder.restriction("code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "medicationCodeableConcept");
 		builder.restriction("effective", true, QueryBuilder.TYPE_DATETIME_OR_PERIOD, "effective");
 		
-		if (!builder.recordOwnerReference("subject", null)) builder.restriction("subject", true, null, "subject");
+		if (!builder.recordOwnerReference("subject", null, "subject")) builder.restriction("subject", true, null, "subject");
 		
 		builder.restriction("category", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "category");			
 		builder.restriction("context", true, null, "context");	

@@ -53,10 +53,10 @@ public class RecordManager {
 
 	public static RecordManager instance = new RecordManager();
 
-	public final static Map<String, Object> FULLAPS = new HashMap<String, Object>();
-	public final static Map<String, Object> FULLAPS_WITHSTREAMS = CMaps.map("streams", "true");
-	public final static Map<String, Object> FULLAPS_FLAT = CMaps.map("streams", "true").map("flat", "true");
-	public final static Map<String, Object> FULLAPS_FLAT_OWNER = CMaps.map("streams", "true").map("flat", "true").map("owner", "self");
+	public final static Map<String, Object> FULLAPS = Collections.unmodifiableMap(new HashMap<String, Object>());
+	public final static Map<String, Object> FULLAPS_WITHSTREAMS = Collections.unmodifiableMap(CMaps.map("streams", "true"));
+	public final static Map<String, Object> FULLAPS_FLAT = Collections.unmodifiableMap(CMaps.map("streams", "true").map("flat", "true"));
+	public final static Map<String, Object> FULLAPS_FLAT_OWNER = Collections.unmodifiableMap(CMaps.map("streams", "true").map("flat", "true").map("owner", "self"));
 	
 	public final static Set<String> INTERNALIDONLY = Sets.create("_id");
 	public final static Set<String> INTERNALID_AND_WACTHES = Sets.create("_id","watches");
@@ -69,8 +69,8 @@ public class RecordManager {
 			"app", "creator", "created", "name", "format",  "content", "code", "description", "isStream", "lastUpdated",
 			"data", "group", "watches", "stream");
 	//public final static String STREAM_TYPE = "Stream";
-	public final static Map<String, Object> STREAMS_ONLY = CMaps.map("streams", "only").map("flat", "true");
-	public final static Map<String, Object> STREAMS_ONLY_OWNER = CMaps.map("streams", "only").map("flat", "true").map("owner", "self");	
+	public final static Map<String, Object> STREAMS_ONLY = Collections.unmodifiableMap(CMaps.map("streams", "only").map("flat", "true"));
+	public final static Map<String, Object> STREAMS_ONLY_OWNER = Collections.unmodifiableMap(CMaps.map("streams", "only").map("flat", "true").map("owner", "self"));	
 
 	private static ThreadLocal<APSCache> apsCache = new ThreadLocal<APSCache>();
 
@@ -853,9 +853,29 @@ public class RecordManager {
 		if (properties.containsKey("content/*")) nproperties.put("content/*", properties.get("content/*"));
 		if (properties.containsKey("app")) nproperties.put("app", properties.get("app"));
 		if (properties.containsKey("group")) nproperties.put("group", properties.get("group"));
+		if (properties.containsKey("code")) {
+			Set<String> codes = Query.getRestriction(properties.get("code"), "code");
+			Set<String> contents = new HashSet<String>();
+			for (String code : codes) {
+				 String content = ContentCode.getContentForSystemCode(code);
+				 if (content == null) throw new BadRequestException("error.unknown.code", "Unknown code '"+code+"' in restriction.");
+				 contents.add(content);
+			}
+			nproperties.put("content", contents);
+		}
 		
 		try {
-		    return QueryEngine.info(getCache(who), aps, nproperties, aggrType);
+		    Collection<RecordsInfo> result = QueryEngine.info(getCache(who), aps, nproperties, aggrType);
+		    
+		    if (properties.containsKey("include-records")) {
+			    for (RecordsInfo inf : result) {
+			    	if (inf.newestRecord != null) {
+			    		inf.newestRecordContent = fetch(who, aps, inf.newestRecord);
+			    	}
+			    }
+		    }
+		    
+		    return result;
 		} catch (APSNotExistingException e) {
 			checkRecordsInAPS(who, aps, false);
 			//fixAccount(who);
@@ -973,7 +993,7 @@ public class RecordManager {
 	 */
 	private void resetInfo(MidataId who) throws AppException {
 		AccessLog.logBegin("start reset info user="+who.toString());
-		List<Record> result = list(who, who, RecordManager.STREAMS_ONLY_OWNER, Sets.create("_id", "owner"));
+		List<Record> result = list(who, who, RecordManager.STREAMS_ONLY, Sets.create("_id", "owner"));
 		for (Record stream : result) {
 			try {
 			  AccessLog.log("reset stream:"+stream._id.toString());
@@ -1106,6 +1126,10 @@ public class RecordManager {
 		}
 		wipe(who, toWipe);
 		
+	}
+	
+	public void clearIndexes(MidataId userId) throws AppException {
+		IndexManager.instance.clearIndexes(RecordManager.instance.getCache(userId), userId);		
 	}
 	
 

@@ -557,10 +557,11 @@
         "address_success" : "Die Adresse wurde bestätigt.",
         "code_entered" : "Bestätigungscode eingegeben?",
 
+
         // TODO CHANGED
         // OLD: 1. Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.
         // NEW: Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.
-        "email_instructions" : "1. Ihre E-Mail-Adresse muss bestätigt werden. Eine Aktivierungs-E-Mail wurde Ihnen geschickt. Klicken Sie bitte auf dem Link um Ihre E-Mail-Adresse zu bestätigen.",
+        "email_instructions" : "Ihre E-Mail-Adresse muss bestätigt werden. Eine Aktivierungs-E-Mail wurde Ihnen geschickt. Klicken Sie bitte auf dem Link um Ihre E-Mail-Adresse zu bestätigen.",
 
         // TODO NEW: For convenience you may enter the code from the email here:
         "email_code" : "For convenience you may enter the code from the email here:",
@@ -572,12 +573,13 @@
         // TODO CHANGED
         // OLD: 2. A contract has been sent to your postal address. Return it signed to MIDATA.
         // NEW: A contract has been sent to your postal address. Return it signed to MIDATA.
-        "contract_instructions" : "2. Ein Vertrag wurde an Ihre Postadresse geschickt. Schicken Sie es bitte unterschrieben an MIDATA zurück.",
+        "contract_instructions" : "Ein Vertrag wurde an Ihre Postadresse geschickt. Schicken Sie es bitte unterschrieben an MIDATA zurück.",
 
         // TODO CHANGED
         // OLD: 3. A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.
         // NEW: A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.
-        "code_intructions" : "3. Ein Brief mit einem Bestätigungscode wurde an Ihre Postadresse geschickt. Geben Sie bitte den Bestätigungscode ein um Zugriff auf die Plattform zu erhalten.",
+        "code_intructions" : "Ein Brief mit einem Bestätigungscode wurde an Ihre Postadresse geschickt. Geben Sie bitte den Bestätigungscode ein um Zugriff auf die Plattform zu erhalten.",
+
         "code_later" : "Der Bestätigungscode kann hier eingegeben sobald Ihr unterschriebener Vertrag an der MIDATA Anmeldestelle angekommen ist.",
         "enter_now_btn" : "Jetzt eingeben",
         "email_success" : "Die E-Mail-Adresse wurde bestätigt."

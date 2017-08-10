@@ -182,7 +182,7 @@ public class Consent extends Model {
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorizedAndOwners(MidataId member, Set<MidataId> owners) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owners).map("status",  ConsentStatus.ACTIVE), Sets.create("name", "order", "owner", "ownerName", "type"));
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owners).map("status",  ConsentStatus.ACTIVE).map("ownerName", CMaps.map("$exists", false)), Sets.create("name", "order", "owner", "ownerName", "type"));
 	}
 	
 	public static Set<Consent> getHealthcareActiveByAuthorizedAndOwner(MidataId member, MidataId owner) throws InternalServerException {
@@ -235,5 +235,13 @@ public class Consent extends Model {
 	
 	public static void touch(MidataId consentId, long version) throws InternalServerException {
 		set(consentId, "dataupdate", version);
+	}
+	
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
+	
+	public String getOwnerName() {
+		return ownerName;
 	}
 }

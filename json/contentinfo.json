@@ -206,3 +206,7 @@
 {"_id":{"$oid":"59313d5daed6450f200e2ff8"},"content":"pain/77565-0","defaultCode":"http://loinc.org 77565-0","security":"MEDIUM","label":{"en":"Pain interference score"},"resourceType":"fhir/Observation","category":"survey"}
 {"_id":{"$oid":"59313e2aaed6450f200e2ffc"},"content":"pain/77568-4","defaultCode":"http://loinc.org 77568-4","security":"MEDIUM","label":{"en":"Interferance of pain on walking ability"},"resourceType":"fhir/Observation","category":"survey"}
 {"_id":{"$oid":"59313e2aaed6450f200e2ffd"},"content":"pain/77571-8","defaultCode":"http://loinc.org 77571-8","security":"MEDIUM","label":{"en":"Interferance of pain on sleep"},"resourceType":"fhir/Observation","category":"survey"}
+{"_id":{"$oid":"59802513aed6450a5c70f841"},"content":"MiSensQuestionnaire","defaultCode":"http://midata.coop MiSensQuestionnaire","security":"MEDIUM","label":{"en":"MiSens General Questionnaire"}}
+{"_id":{"$oid":"59802513aed6450a5c70f842"},"content":"MiSensTasteIntensity","defaultCode":"http://midata.coop MiSensTasteIntensity","security":"MEDIUM","label":{"en":"Taste intensity on a GLMS (General Labeled Magnitude Scale) of a specific substance"}}
+{"_id":{"$oid":"59802514aed6450a5c70f845"},"content":"MiSensSmellThreshold","defaultCode":"http://midata.coop MiSensSmellThreshold","security":"MEDIUM","label":{"en":"Smell concentration threshold of a specific substance"}}
+{"_id":{"$oid":"59802674aed6450a5c70f847"},"content":"loinc/63582-1","defaultCode":"http://loinc.org 63582-1","security":"MEDIUM","label":{"en":"Smoking Behavior"}}

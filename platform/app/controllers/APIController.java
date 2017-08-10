@@ -3,6 +3,7 @@ package controllers;
 import models.MidataId;
 import models.User;
 import models.enums.SubUserRole;
+import models.enums.UserFeature;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -53,6 +54,12 @@ public abstract class APIController extends Controller {
 		MidataId userId = new MidataId(request().username());
 		User user = User.getById(userId, Sets.create("subroles"));
 		if (!user.subroles.contains(subUserRole)) throw new AuthException("error.notauthorized.action", "You need to have subrole '"+subUserRole.toString()+"' for this action.", subUserRole);
+	}
+	
+	public static void requireUserFeature(UserFeature feature) throws AuthException, InternalServerException {
+		MidataId userId = new MidataId(request().username());
+		User user = User.getById(userId, User.ALL_USER);
+		if (!feature.isSatisfiedBy(user)) throw new AuthException("error.notauthorized.action", "You need to have feature '"+feature.toString()+"' for this action.", feature);
 	}
 	
 	public static void requireSubUserRoleForRole(SubUserRole subUserRole, UserRole role) throws AuthException, InternalServerException {

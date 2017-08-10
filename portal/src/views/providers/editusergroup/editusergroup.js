@@ -76,35 +76,14 @@ angular.module('portal')
 	};
 	
 	$scope.addPeople = function() {
-		//if ($scope.consent.type != "CIRCLE") {
+		
 		views.setView("providersearch", { callback : addPerson });	
-		/*} else {
-		  views.setView("addusers", { consent : $scope.consent, callback : addPerson });
-		}*/		
+			
 	};
-	
-	/*
-	$scope.deleteConsent = function() {
-		server.delete(jsRoutes.controllers.Circles["delete"]($scope.consent._id).url).
-		then(function() {
-			$state.go("^.circles");
-		});
-	};
-	
-	$scope.rejectConsent = function() {
-		hc.reject($scope.consent._id).then(function() { $scope.init(); });
-	};
-	
-	$scope.confirmConsent = function() {
-		hc.confirm($scope.consent._id).then(function() { $scope.init(); });	
-	};
-	*/
+		
 	
 	
-	session.currentUser.then(function(userId) {
-	  /*if (session.user.subroles.indexOf("TRIALUSER") >= 0) {
-		  $scope.locked = true;
-	  } else $scope.locked = false;*/
+	session.currentUser.then(function(userId) {	 
 	  $scope.init();
 	});
 }]);

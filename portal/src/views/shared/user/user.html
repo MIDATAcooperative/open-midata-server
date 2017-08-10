@@ -23,7 +23,7 @@
 			     <a class="btn btn-default" href="javascript:" ng-disabled="msg" ng-click="fixAccount();" translate="user.repair_account_btn"></a>
 			     <a class="btn btn-default" href="javascript:" ng-disabled="msg" ng-click="resetSpaces();" translate="user.reset_spaces_btn"></a>
 			     <a class="btn btn-default" href="javascript:" ui-sref="^.delete_records" translate="user.delete_records_btn"></a>
-			     <a ng-show="beta && user.role=='MEMBER'" class="btn btn-danger" href="javascript:" ng-click="wipe()">test server: wipe account</a>
+			     <a ng-show="beta && user.role=='MEMBER'" class="btn btn-danger" href="javascript:" ng-click="askwipe()">test server: wipe account</a>
 			  </div>			  
 			</div>
 			<div class="extraspace"></div>
@@ -52,15 +52,12 @@
 		  </div>
 		</div>
 		
+		<!-- 
 		<div ng-cloak class="panel panel-primary" ng-if="user.role == 'MEMBER'">
 		  <div class="panel-heading" translate="member_user.account_status"></div>
 		  <div class="panel-body">
 			<loader busy="status.isBusy !== false">
-			<p ng-show="user.subroles[0] === 'TRIALUSER'" translate="member_user.trialuser"></p>
-			<p ng-show="user.subroles[0] === 'MEMBEROFCOOPERATIVE'" translate="member_user.memberofcooperative"></p>
-			<p ng-show="user.subroles[0] === 'NONMEMBERUSER'" translate="member_user.nonmemberuser"></p>
-			<p ng-show="user.subroles[0] === 'STUDYPARTICIPANT'" translate="member_user.studyparticipant"></p>
-			<p ng-show="user.subroles[0] === 'APPUSER'" translate="member_user.appuser"></p>
+			
 		    <p ng-show="user.agbStatus === 'NEW'" translate="member_user.agb_not_requested"></p>
 		    <p ng-show="user.agbStatus === 'REQUESTED'" translate="member_user.agb_requested"></p>				 
 		    <p ng-show="user.agbStatus === 'PRINTED'" translate="member_user.agb_printed"></p>
@@ -85,6 +82,7 @@
 			</loader>
 		  </div>
 		</div>
+		 -->
 		
 		<div ng-cloak class="panel panel-primary">
 		  <div class="panel-heading" translate="user.settings"></div>
@@ -93,8 +91,23 @@
 			
 			
 			<div class="row">
-				<p class="col-sm-2" translate="user.searchable"></p>
-				<p class="col-sm-10"><input type="checkbox" ng-disabled="locked" ng-model="user.searchable"></p>
+				<p class="col-sm-2" translate="user.searchable_short"></p>
+				<div class="col-sm-10">
+				  <div translate="user.searchable"></div>
+				  <div class="radio">
+				    <label>
+				      <input type="radio" ng-disabled="locked" name="searchable" ng-value="true" ng-model="user.searchable">
+				      <span translate="user.searchable_yes"></span>
+				    </label>
+				  </div>
+				  <div class="radio">
+				    <label>
+				      <input type="radio" ng-disabled="locked" name="searchable" ng-value="false" ng-model="user.searchable">
+				      <span translate="user.searchable_no"></span>
+				    </label>
+				  </div>
+				  <span class="help-block" translate="user.searchable_info"></span>
+				 </div>
 			</div>
 			<div class="row">
 				<p class="col-sm-2" translate="registration.language"></p>
@@ -109,7 +122,14 @@
 		  </div>
 		</div>
 		
-	
+	    <modal viewid="confirm">
+	      <div style="margin:10px 10px 10px 10px">	    
+	      <div>
+	        <a class="btn btn-danger" href="javascript:" ng-click="wipe()">test server: wipe account</a>
+	        <button class="btn btn-default" type="button" data-dismiss="modal" translate="confirm.cancel"></button>	      
+	      </div>
+	      </div>
+	    </modal>
 		
 		
 	</div>

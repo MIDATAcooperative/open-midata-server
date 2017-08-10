@@ -59,10 +59,10 @@ public class MinimalSetup {
 			RecordManager.instance.createPrivateAPS(admin._id, admin._id);
 		}
 		
-		if (Developer.getByEmail("development@midata.coop", Sets.create("_id")) == null) {
+		if (Developer.getByEmail("developers@midata.coop", Sets.create("_id")) == null) {
 			Developer developer = new Developer();
 			developer._id = new MidataId("55eff624e4b0b767e88f92b9");
-			developer.email = "development@midata.coop";
+			developer.email = "developers@midata.coop";
 			developer.emailLC = developer.email.toLowerCase();
 			developer.password = "1000:25156cb392d80c023e57290637e96b4bb6674fa50f329f6e:c27fd59cb2b9ce964cfa194655cb83930bc6a762ace15290";
 			developer.role = UserRole.DEVELOPER;

@@ -120,7 +120,7 @@ angular.module('services')
         	console.log("load: "+name);
             if(!_states[name])
                 return scope;
-            for(var i=0; i<fields.length; i++){
+            for(var i=0; i<fields.length; i++){            	
                 if(typeof _states[name][fields[i]] !== 'undefined')
                     scope[fields[i]] = _states[name][fields[i]];
             }

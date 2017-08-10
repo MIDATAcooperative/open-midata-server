@@ -3,7 +3,7 @@ angular.module('portal')
 	
 	$scope.studyid = $state.params.studyId;
 	$scope.results =[];
-    $scope.status = new status(true);
+    $scope.status = new status(false, $scope);
 	
 	$scope.reload = function() {
 			
@@ -33,12 +33,9 @@ angular.module('portal')
 		$scope.error = null;
 		var params = { member : participation._id };
 		
-		server.post(jsRoutes.controllers.research.Studies.rejectParticipation($scope.studyid).url, params).
-		success(function(data) { 				
+		$scope.status.doAction("reject", server.post(jsRoutes.controllers.research.Studies.rejectParticipation($scope.studyid).url, params))
+		.then(function(data) { 				
 		    $scope.reload();
-		}).
-		error(function(err) {
-			$scope.error = err;			
 		});
 	};
 	
@@ -47,18 +44,15 @@ angular.module('portal')
 	
 		var params = { member : participation._id };
 		
-		server.post(jsRoutes.controllers.research.Studies.approveParticipation($scope.studyid).url, params).
-		success(function(data) { 				
+		$scope.status.doAction("approve", server.post(jsRoutes.controllers.research.Studies.approveParticipation($scope.studyid).url, params))
+		.then(function(data) { 				
 		    $scope.reload();
-		}).
-		error(function(err) {
-			$scope.error = err;			
 		});
 	};
 	
 	$scope.changeGroup = function(participation) {
 		var params = { member : participation._id, group : participation.group };
-		server.post(jsRoutes.controllers.research.Studies.updateParticipation($scope.studyid).url, JSON.stringify(params))
+		$scope.status.doAction("change", server.post(jsRoutes.controllers.research.Studies.updateParticipation($scope.studyid).url, JSON.stringify(params)))
 		.then(function(data) { 				
 		    //$scope.reload();
 		});

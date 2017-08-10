@@ -12,6 +12,7 @@ import models.enums.InformationType;
 import models.enums.ParticipantSearchStatus;
 import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
+import models.enums.UserFeature;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
@@ -29,7 +30,7 @@ public class Study extends Model {
 	/**
 	 * constant set containing all fields
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history", "groups");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history", "groups", "requirements", "termsOfUse");
 	
 	/**
 	 * name of study
@@ -118,6 +119,16 @@ public class Study extends Model {
      */
     public List<StudyGroup> groups;
     
+    /**
+     * Requirements to user account to participate in study
+     */
+    public Set<UserFeature> requirements;
+    
+    /**
+     * Terms of use for study
+     */
+    public String termsOfUse;
+    
     public static void add(Study study) throws InternalServerException {
 		Model.insert(collection, study);
 	 }
@@ -179,6 +190,16 @@ public class Study extends Model {
     	this.recordQuery = recordQuery;
 		Model.set(Study.class, collection, this._id, "recordQuery", recordQuery);
 	}
+    
+    public void setRequirements(Set<UserFeature> requirements) throws InternalServerException {
+    	this.requirements = requirements;
+    	Model.set(Study.class, collection, this._id, "requirements", requirements);
+    }
+    
+    public void setTermsOfUse(String termsOfUse) throws InternalServerException {
+    	this.termsOfUse = termsOfUse;
+    	Model.set(Study.class, collection, this._id, "termsOfUse", termsOfUse);
+    }
     
     public void addHistory(History newhistory) throws InternalServerException {
     	this.history.add(newhistory);

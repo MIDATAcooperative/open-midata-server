@@ -52,12 +52,17 @@ public class History implements JsonSerializable {
 		this.message = message;
 	}
 	
-	public History(EventType event, StudyParticipation who, String message) {
+	public History(EventType event, StudyParticipation part, User who, String message) {		
 		this.event = event;
 		this.timestamp = new Date();
-		this.who = who._id;
 		this.whoRole = UserRole.MEMBER;
-		this.whoName = who.ownerName;
+		if (part.getOwnerName() == null) {
+			this.who = who._id;			
+			this.whoName = who.lastname+", "+who.firstname;
+		} else {
+		    this.who = part._id;		
+		    this.whoName = part.ownerName;
+		}
 		this.message = message;
 	}
 }

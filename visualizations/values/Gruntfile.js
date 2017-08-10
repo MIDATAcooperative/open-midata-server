@@ -39,7 +39,8 @@ module.exports = function(grunt) {
        },
        options : {
     	   targetDir : 'tmp/components',
-    	   layout : 'byComponent'
+    	   layout : 'byComponent',
+    	   copy : true
        }
     },
     

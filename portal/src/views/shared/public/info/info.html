@@ -1,12 +1,14 @@
  	<div class="welcome" ng-cloak ng-controller="InfoCtrl">	 
 		<div id="mainheader"><div class="container"><div class="row">
 			<!-- Login -->
-			<div class="col-sm-12 text-center" style="margin-top:10px;margin-bottom:40px;font-family:Sans-serif;color:white">	
+			<div class="col-sm-12 text-center" style="margin-top:20px;margin-bottom:40px;font-family:Sans-serif;color:white">	
 			
 			
               <b style="font-size:9rem">MIDATA<span style="font-size:50%">.COOP</span></b>
               <h1 style="color:white;" translate="member_login.teaser"></h1>              
-														  			
+				<div style="height:34px">	
+					
+				</div>			 									  			
 			</div>
 			</div></div>
 		</div><div class="container"><div class="row">
@@ -16,7 +18,14 @@
 		            	<div class="panel-heading">
 		              		<h3 class="panel-title" translate="instance.{{ENV.instance}}.name"></h3>
 		            	</div>
-		            	<div class="panel-body">		            	    
+		            	<div class="panel-body">	
+		            	<div class="row">		     
+			<a class="col-sm-3" ui-sref="public.login"><img class="img-responsive" src="/images/account.jpg"><span translate="footer.for_members"></span></a>
+			<a class="col-sm-3" ui-sref="public_research.login"><img class="img-responsive" src="/images/research2.jpeg"><span translate="footer.for_researchers"></span></a>
+			<a class="col-sm-3" ui-sref="public_provider.login"><img class="img-responsive" src="/images/doctor.jpeg"><span translate="footer.for_providers"></span></a>
+			<a class="col-sm-3" ui-sref="public_developer.login"><img class="img-responsive" src="/images/developer.jpeg"><span translate="footer.for_developers"></span></a>
+			 </div>
+			 <hr>	            	    
 			            	<p translate="instance.{{ENV.instance}}.intro"></p>
 			            	<p translate="instance.rules"></p>
 			            	
@@ -30,8 +39,10 @@
 			            	<p translate="instance.{{ENV.instance}}.data"></p>
 			            	
 			            	<div class="alert alert-info">
-			            	  <span class="glyphicon glyphicon-arrow-down"></span> <span translate="instance.start"></span>
+			            	  <span class="glyphicon glyphicon-arrow-up"></span> <span translate="instance.start"></span>
 			            	</div>
+			            	
+			            		
 		            	</div>
 					</div>
 				</div>

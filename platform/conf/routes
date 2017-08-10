@@ -117,6 +117,7 @@ GET     /api/research/studies/:study                     controllers.research.St
 GET     /api/admin/studies/:study                        controllers.research.Studies.getAdmin(study: String)
 PUT     /api/research/studies/:study                     controllers.research.Studies.update(study: String)
 GET     /api/research/studies/:study/download            controllers.research.Studies.download(study: String)
+GET     /api/research/studies/:study/fhirdownload/:studyGroup  controllers.research.Studies.downloadFHIR(study: String, studyGroup : String)
 GET     /api/research/studies/:study/codes               controllers.research.Studies.listCodes(study: String)
 POST    /api/research/studies/:study/codes               controllers.research.Studies.generateCodes(study: String)
 GET     /api/research/studies/:study/requiredinfo        controllers.research.Studies.getRequiredInformationSetup(study: String)
@@ -135,6 +136,7 @@ POST    /api/research/studies/:study/approve             controllers.research.St
 POST    /api/research/studies/:study/reject              controllers.research.Studies.rejectParticipation(study: String)
 POST    /api/research/studies/:study/update              controllers.research.Studies.updateParticipation(study: String)
 POST    /api/research/studies/:study/share/:group        controllers.research.Studies.shareWithGroup(study: String, group:String)
+POST    /api/research/studies/:study/addapp/:group       controllers.research.Studies.addApplication(study: String, group:String)
 POST    /api/research/studies/:study/task/:group         controllers.research.Studies.addTask(study: String, group:String)
 
 POST    /api/common/studies                              controllers.Studies.search()
@@ -214,6 +216,11 @@ GET     /api/plugins/:id/url            controllers.Plugins.getUrl(id: String)
 #Portal
 GET     /api/portal/config              controllers.PortalConfig.getConfig()
 POST    /api/portal/config              controllers.PortalConfig.setConfig()
+
+#TermsOfUse
+POST     /api/terms/get                 controllers.Terms.get()
+POST     /api/terms/add                 controllers.Terms.add()
+POST     /api/terms/search              controllers.Terms.search()
 
 # JS Routes
 GET     /api/assets/javascripts/routes  controllers.Application.javascriptRoutes()

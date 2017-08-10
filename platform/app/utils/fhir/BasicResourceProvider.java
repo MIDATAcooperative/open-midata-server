@@ -111,14 +111,16 @@ public class BasicResourceProvider extends ResourceProvider<Basic> implements IR
 	    	  basic.setId(rec._id.toString());
 	    	  basic.setCreated(rec.created);
 	    	  
-	    	  Iterator<String> codeIter = rec.code.iterator();
-	    	  if (codeIter.hasNext()) {
-	    		  String code = codeIter.next();
-	    		  int idx = code.indexOf(" ");
-	    		  String system = code.substring(0, idx);
-	    		  code = code.substring(idx+1);
-	    		  Coding coding = new Coding(system, code, null);
-	    		  basic.setCode(new CodeableConcept().addCoding(coding));
+	    	  if (rec.code != null) {
+		    	  Iterator<String> codeIter = rec.code.iterator();
+		    	  if (codeIter.hasNext()) {
+		    		  String code = codeIter.next();
+		    		  int idx = code.indexOf(" ");
+		    		  String system = code.substring(0, idx);
+		    		  code = code.substring(idx+1);
+		    		  Coding coding = new Coding(system, code, null);
+		    		  basic.setCode(new CodeableConcept().addCoding(coding));
+		    	  }
 	    	  }
 	    	  
 	    	  basic.setAuthor(new Reference("Patient/"+rec.creator.toString()));
@@ -245,8 +247,8 @@ public class BasicResourceProvider extends ResourceProvider<Basic> implements IR
 		QueryBuilder builder = new QueryBuilder(params, query, null);
 
 		builder.handleIdRestriction();
-		builder.recordOwnerReference("patient", "Patient");
-		builder.recordOwnerReference("subject", null);
+		builder.recordOwnerReference("patient", "Patient", "subject");
+		builder.recordOwnerReference("subject", null, "subject");
 		builder.recordCreatorReference("author", "Patient");
 		
 		Set<String> codes = builder.tokensToCodeSystemStrings("code");

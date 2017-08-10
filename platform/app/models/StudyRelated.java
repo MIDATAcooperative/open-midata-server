@@ -2,6 +2,7 @@ package models;
 
 import java.util.Set;
 
+import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import utils.collections.CMaps;
 import utils.exceptions.InternalServerException;
@@ -24,15 +25,15 @@ public class StudyRelated extends Consent {
 		Model.insert(collection, this);	
 	}
 	
-	public static StudyRelated getByGroupAndStudy(String group, MidataId studyId, Set<String> fields) throws InternalServerException {
-		return Model.get(StudyRelated.class, collection, CMaps.map("type", ConsentType.STUDYRELATED).map("group", group).map("study", studyId), fields);
+	public static Set<StudyRelated> getActiveByGroupAndStudy(String group, MidataId studyId, Set<String> fields) throws InternalServerException {
+		return Model.getAll(StudyRelated.class, collection, CMaps.map("type", ConsentType.STUDYRELATED).map("group", group).map("study", studyId).map("status", ConsentStatus.ACTIVE), fields);
 	}
 	
 	public static Set<StudyRelated> getByStudy(MidataId studyId, Set<String> fields) throws InternalServerException {
 		return Model.getAll(StudyRelated.class, collection, CMaps.map("type", ConsentType.STUDYRELATED).map("study", studyId), fields);
 	}
 	
-	public static void delete(MidataId studyId, MidataId partId) throws InternalServerException {	
+	public static void deleteByStudyAndParticipant(MidataId studyId, MidataId partId) throws InternalServerException {	
 		Model.delete(StudyRelated.class, collection, CMaps.map("_id", partId).map("study", studyId));
 	}
 	

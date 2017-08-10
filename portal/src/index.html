@@ -65,7 +65,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="https://www.midata.coop">
+			<a class="navbar-brand" href="javascript:">
 	           	  <span class="midata" id="logotype">MIDATA<span>.COOP</span></span>
 	        </a>
 		</div>
@@ -87,12 +87,12 @@
 	  <footer id="footer">
 		 <div class="container">
 			<p translate="footer.copyright" translate-value-now="{{ currentDate | date:'yyyy' }}">(c) ETH Zürich</p>
-			<p><strong transplate="footer.portals"></strong></p>
-			   <ul>			     
-			      <li><a ui-sref="public.login" translate="footer.for_members">For Members of the Cooperative</a></li>
-			      <li><a ui-sref="public_research.login" translate="footer.for_researchers">For Research Organizations</a></li>
-			      <li><a ui-sref="public_provider.login" translate="footer.for_providers">For Healthcare Providers</a></li>
-			      <li><a ui-sref="public_developer.guide" translate="footer.for_developers">For Developers</a></li>
+			
+			   <ul>		
+			      <li><a href="https://www.midata.coop" translate="footer.homepage">MIDATA Homepage</a></li>	     
+			      <li><a ui-sref="public.terms({which : 'midata-terms-of-use'})" translate="registration.agb3">Terms of Use</a></li>
+			      <li><a ui-sref="public.terms({which : 'midata-privacy-policy'})" translate="registration.privacypolicy3">Privacy Policy</a></li>
+			     
 			   </ul>	    
 		 </div>
 	  </footer>

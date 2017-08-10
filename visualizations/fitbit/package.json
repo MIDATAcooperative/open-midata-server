@@ -4,26 +4,27 @@
   "description": "Fitbit Importer",
   "main": "server.js",
   "dependencies": {
-    "benv": "~3.2.0",
+    "benv": "^3.3.0",
     "grunt": "~1.0.1",
-    "grunt-contrib-jshint": "~1.1.0",
-    "grunt-contrib-nodeunit": "~1.0.0",
-    "grunt-contrib-uglify": "~2.2.0",
-    "grunt-contrib-watch": "~1.0.0",
     "grunt-contrib-clean": "~1.0.0",
-    "grunt-contrib-copy": "~1.0.0",
     "grunt-contrib-concat": "~1.0.1",
     "grunt-contrib-connect": "~1.0.2",
-    "grunt-contrib-less": "~1.4.1",
-    "grunt-usemin": "~3.1.1",
+    "grunt-contrib-copy": "~1.0.0",
     "grunt-contrib-cssmin": "~2.0.0",
+    "grunt-contrib-jshint": "~1.1.0",
+    "grunt-contrib-less": "~1.4.1",
+    "grunt-contrib-nodeunit": "~1.0.0",
+    "grunt-contrib-uglify": "^2.2.1",
+    "grunt-contrib-watch": "~1.0.0",
+    "grunt-env": "~0.4.4",
     "grunt-ng-annotate": "~3.0.0",
     "grunt-ng-constant": "~2.0.1",
     "grunt-preprocess": "~5.1.0",
-    "grunt-env": "~0.4.4",
-    "grunt-bower-task": "~0.4.0"
+    "grunt-usemin": "~3.1.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "grunt-bower-task": "^0.5.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"

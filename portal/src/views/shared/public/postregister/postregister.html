@@ -1,61 +1,115 @@
 
-	<div class="container" ng-controller="PostRegisterCtrl" ng-cloak>
-		<div class="row">
-			
-			<div class="col-sm-12">
-				<div class="panel-container" style="max-width:600px; padding-top:20px; margin:0 auto;">
-					<div class="panel panel-primary">
-		            	<div class="panel-heading">
-		              		<h3 class="panel-title" translate="postregister.title"></h3>
-		            	</div>
-		            	<div class="panel-body">
-		            	    <p ng-show="resentSuccess" class="alert alert-success" translate="postregister.resent_success"></p>
-		            	    <p ng-show="codeSuccess" class="alert alert-success" translate="postregister.address_success"></p>
-		            	    <p ng-show="mailSuccess" class="alert alert-success" translate="postregister.email_success"></p>
-			            	<p ng-show="error" class="alert alert-danger" translate="{{ error.code }}"></p>
-			            	<!-- 						
-							<p translate="postregister.description"></p>
-							<ul class="list-group">
-							  <li class="list-group-item" ng-class="{ 'list-group-item-success' : progress.emailStatus == 'VALIDATED', 'list-group-item-warning' : progress.emailStatus=='UNVALIDATED' }"><span ng-show="progress.emailStatus == 'VALIDATED'" class="glyphicon glyphicon-ok"></span><span ng-hide="progress.emailStatus == 'VALIDATED'" class="glyphicon glyphicon-remove"></span> <span translate="postregister.email_confirmed"></span></li>
-							  <li class="list-group-item" ng-class="{ 'list-group-item-success' : progress.agbStatus == 'SIGNED', 'list-group-item-warning' : progress.agbStatus!='SIGNED' }"><span ng-show="progress.agbStatus=='SIGNED'" class="glyphicon glyphicon-ok"></span><span ng-hide="progress.agbStatus=='SIGNED'" class="glyphicon glyphicon-remove"></span> <span translate="postregister.contract_signed"></span></li>
-							  <li class="list-group-item" ng-class="{ 'list-group-item-success' : progress.confirmationCode, 'list-group-item-warning' : !progress.confirmationCode }"><span ng-show="progress.confirmationCode" class="glyphicon glyphicon-ok"></span><span ng-hide="progress.confirmationCode" class="glyphicon glyphicon-remove"></span> <span translate="postregister.code_entered"></span></li>							  
-							</ul>
-							 -->
-							
-							<div ng-show="progress.emailStatus=='UNVALIDATED'">
-							<p translate="postregister.email_instructions"></p>							
-							<button  class="btn btn-default" ng-click="resend()" translate="postregister.resend_btn"></button>
-							<button  class="btn btn-default" ng-click="retry()" ng-show="isoauth" translate="postregister.retry_btn"></button>
+<div class="container" ng-controller="PostRegisterCtrl" ng-cloak>
+	<div class="row">
+
+		<div class="col-sm-12">
+			<div class="panel-container" style="max-width: 600px; padding-top: 20px; margin: 0 auto;">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h3 class="panel-title" translate="postregister.title"></h3>
+					</div>
+					<div class="panel-body">
+						<p ng-show="resentSuccess" class="alert alert-success" translate="postregister.resent_success"></p>
+						<p ng-show="codeSuccess" class="alert alert-success" translate="postregister.address_success"></p>
+						<p ng-show="mailSuccess" class="alert alert-success" translate="postregister.email_success"></p>
+						<p ng-show="error" class="alert alert-danger" translate="{{ error.code }}"></p>
+						<div ng-show="progress.EMAIL_VERIFIED">
+							<p translate="postregister.email_instructions"></p>
+							<button class="btn btn-default" ng-click="resend()" translate="postregister.resend_btn"></button>
+							<button class="btn btn-default" ng-click="retry()" ng-show="isoauth" translate="postregister.retry_btn"></button>
 							<hr>
 							<p translate="postregister.email_code"></p>
 							<div class="input-group">
-							 <input class="form-control" ng-model="passphrase.code" type="text">
-							 <div class="input-group-btn">
-							   <button class="btn btn-primary" ng-click="enterMailCode(passphrase.code)" translate="postregister.enter_now_btn"></button>
-							 </div>							 
+								<input class="form-control" ng-model="passphrase.code" type="text">
+								<div class="input-group-btn">
+									<button class="btn btn-primary" ng-click="enterMailCode(passphrase.code)" translate="postregister.enter_now_btn"></button>
+								</div>
 							</div>
-							</div>
-							
-							<div ng-show="progress.agbStatus && progress.agbStatus!='NEW'">
+							<hr>
+						</div>
+
+
+
+						<div ng-show="progress.ADDRESS_VERIFIED && !progress.ADDRESS_ENTERED">
 							<div class="extraspace"></div>
-							<p translate="postregister.contract_instructions"></p>
-                            <div class="extraspace"></div>		
-							<p translate="postregister.code_intructions"></p>
-							
-							<div class="alert alert-info" ng-hide="progress.emailStatus=='VALIDATED' && progress.agbStatus=='SIGNED'" translate="postregister.code_later">
-							</div>	
-							<div class="input-group" ng-show="progress.emailStatus=='VALIDATED' && progress.agbStatus=='SIGNED'">
-							 <input class="form-control" ng-model="passphrase.passphrase" type="text">
-							 <div class="input-group-btn">
-							   <button class="btn btn-primary" ng-click="sendCode()" translate="postregister.enter_now_btn"></button>
-							 </div>							 
+							<div ng-show="progress.agbStatus=='NEW'">
+								<p translate="member_user.agb_not_requested"></p>
+								<button ng-disabled="status.action === 'requestmembership'" class="btn btn-primary" href="javascript:"
+									ng-click="requestMembership()" translate="member_user.request_membership_btn"></button>
 							</div>
+							<div ng-hide="progress.agbStatus=='NEW'">
+
+								<p translate="postregister.contract_instructions"></p>
+								<div ng-hide="progress.confirmationCode">
+									<div class="extraspace"></div>
+									<p translate="postregister.code_intructions"></p>
+									<div class="input-group">
+										<input class="form-control" ng-model="passphrase.passphrase" type="text">
+										<div class="input-group-btn">
+											<button class="btn btn-primary" ng-click="sendCode()" translate="postregister.enter_now_btn"></button>
+										</div>
+									</div>
+								</div>
+								<div ng-show="progress.confirmationCode">
+								  <p translate="postregister.code_done"></p>
+								</div>
 							</div>
-							
-		            	</div>
+							<hr>
+						</div>
+
+
+						<div ng-show="progress.ADDRESS_ENTERED || progress.PHONE_ENTERED">
+							<div ng-show="progress.ADDRESS_ENTERED" translate="postregister.address_entered"></div>
+							<div ng-show="progress.PHONE_ENTERED" translate="postregister.phone_entered"></div>
+							<div ng-show="progress.MIDATA_COOPERATIVE_MEMBER" translate="postregister.midata_cooperative_member"></div>
+							<div class="extraspace"></div>
+							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="changeAddress()" role="form">
+
+								<div ng-show="addressNeeded()">
+									<div class="required">
+										<formrow myid="address1" label="registration.address">
+										<input type="text" class="form-control" id="address1" name="address1" translate
+											translate-attr-placeholder="registration.address_line1" ng-model="registration.address1" ng-required="{{addressNeeded()}}"></formrow>
+									</div>
+									<formrow myid="address2" label="">
+									<input type="text" class="form-control" id="address2" name="address2" translate
+										translate-attr-placeholder="registration.address_line2" ng-model="registration.address2"></formrow>
+									<div class="required">
+										<formrow myid="city" label="registration.city">
+										<input type="text" class="form-control" id="city" name="city" translate translate-attr-placeholder="registration.city"
+											ng-model="registration.city" ng-required="{{addressNeeded()}}"></formrow>
+										<formrow myid="zip" label="registration.zip">
+										<input type="text" class="form-control" id="zip" name="zip" translate translate-attr-placeholder="registration.zip"
+											ng-model="registration.zip" ng-required="{{addressNeeded()}}"></formrow>
+									</div>
+									<formrow myid="country" label="registration.country">
+									<select class="form-control" id="country" name="country" ng-model="registration.country" required><option value="CH"
+											translate="enum.country.CH"></option></select></formrow>
+								</div>
+
+
+								<div ng-show="phoneNeeded()">
+									<formrow myid="phone" label="registration.phone">
+									<input type="text" class="form-control" id="phone" name="phone" translate translate-attr-placeholder="registration.phone"
+										ng-model="registration.phone"></formrow>
+									<div class="required">
+										<formrow myid="mobile" label="registration.mobile_phone">
+										<input type="text" class="form-control" id="mobile" name="mobile" translate translate-attr-placeholder="registration.mobile_phone"
+											ng-model="registration.mobile" ng-required="{{phoneNeeded()}}"></formrow>
+									</div>
+								</div>
+
+								<button type="submit" ng-disabled="status.action=='changeAddress'" class="btn btn-primary" translate="changeaddress.update_btn"></button>
+							</form>
+
+						</div>
+
+
+
 					</div>
 				</div>
 			</div>
-			
 		</div>
+
 	</div>
+</div>

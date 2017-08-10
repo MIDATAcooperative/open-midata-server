@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import actions.APICall;
 import actions.MobileCall;
 import controllers.members.HealthProvider;
+import models.History;
 import models.Member;
 import models.MidataId;
 import models.MobileAppInstance;
@@ -21,10 +22,12 @@ import models.enums.AccountSecurityLevel;
 import models.enums.ConsentStatus;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
+import models.enums.EventType;
 import models.enums.Gender;
 import models.enums.ParticipantSearchStatus;
 import models.enums.ParticipationInterest;
 import models.enums.SubUserRole;
+import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.mvc.BodyParser;
@@ -52,7 +55,7 @@ public class QuickRegistration extends APIController {
 	public static Result register() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
-		JsonValidation.validate(json, "email", "password", "firstname", "lastname", "gender", "city", "zip", "country", "address1", "app", "language");
+		JsonValidation.validate(json, "email", "password", "firstname", "lastname", "gender", "country", "app", "language");
 		
 		
 		String appName = JsonValidation.getString(json, "app");
@@ -64,23 +67,38 @@ public class QuickRegistration extends APIController {
 						
 		Plugin app = Plugin.getByFilename(appName, Plugin.ALL_PUBLIC);
 		if (app == null) throw new BadRequestException("error.invalid.appcode", "Unknown code for app.");
-			
+  
+		Set<UserFeature> requirements = EnumSet.noneOf(UserFeature.class);
+		if (app.requirements != null) requirements.addAll(app.requirements);
+		
+		if (app.linkedStudy != null && app.mustParticipateInStudy && !confirmStudy) {
+			throw new JsonValidationException("error.missing.study_accept", "confirmStudy", "mustaccept", "Study belonging to app must be accepted.");
+		}
+		if (app.linkedStudy != null && confirmStudy) {
+			Set<UserFeature> studyReq = controllers.members.Studies.precheckRequestParticipation(null, app.linkedStudy);
+			if (studyReq != null) requirements.addAll(studyReq);
+		}
 		
 		if (studyName != null) {
 			study = Study.getByCodeFromMember(studyName, Study.ALL);
 						
 			if (study == null) throw new BadRequestException("error.invalid.code", "Unknown code for study.");
 			
-			controllers.members.Studies.precheckRequestParticipation(null, study._id);			
+			Set<UserFeature> studyReq = controllers.members.Studies.precheckRequestParticipation(null, study._id);
+			if (studyReq != null) requirements.addAll(studyReq);
+		}
+
+		
+		if (requirements != null 
+				&& (requirements.contains(UserFeature.ADDRESS_ENTERED) || requirements.contains(UserFeature.ADDRESS_VERIFIED))) {
+			JsonValidation.validate(json, "city", "zip", "country", "address1");	
 		}
 		
-		if (app.linkedStudy != null && app.mustParticipateInStudy && !confirmStudy) {
-			throw new JsonValidationException("error.missing.study_accept", "confirmStudy", "mustaccept", "Study belonging to app must be accepted.");
+		if (requirements != null 
+				&& (requirements.contains(UserFeature.PHONE_ENTERED) || requirements.contains(UserFeature.PHONE_VERIFIED))) {
+			JsonValidation.validate(json, "mobile");	
 		}
-		if (app.linkedStudy != null && confirmStudy) {
-			controllers.members.Studies.precheckRequestParticipation(null, app.linkedStudy);
-		}
-		
+						
 		String email = JsonValidation.getEMail(json, "email");
 		String firstName = JsonValidation.getString(json, "firstname");
 		String lastName = JsonValidation.getString(json, "lastname");
@@ -102,6 +120,7 @@ public class QuickRegistration extends APIController {
 		user.password = Member.encrypt(password);
 		
 		Application.registerSetDefaultFields(user);
+		
 		
 		if (study != null) {
 		  user.subroles = EnumSet.of(SubUserRole.STUDYPARTICIPANT);
@@ -128,17 +147,27 @@ public class QuickRegistration extends APIController {
 									
 		user.status = UserStatus.ACTIVE;	
 		
+		user.history.add(new History(EventType.TERMS_OF_USE_AGREED, user, app.termsOfUse));
+		
 		Application.registerCreateUser(user);
 				
-		if (study != null) controllers.members.Studies.requestParticipation(user._id, study._id);
-		
-		if (device != null) {
-		   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true, confirmStudy);
-		}
+		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		
 		Circles.fetchExistingConsents(user._id, user.emailLC);
 		Application.sendWelcomeMail(app._id, user);
-		return Application.loginHelper(user);		
+		
+		if (notok.isEmpty()) {
+		
+			if (study != null) controllers.members.Studies.requestParticipation(user._id, study._id);
+			
+			if (device != null) {
+			   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true, confirmStudy);
+			}
+					
+			return Application.loginHelper(user);
+		} else {
+			return Application.loginHelperResult(user, notok);
+		}
 	}
 	
 	/**

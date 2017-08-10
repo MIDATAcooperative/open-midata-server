@@ -9,9 +9,13 @@ import java.util.Set;
 
 import org.hl7.fhir.dstu3.model.Person;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
+import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.dstu3.model.Group;
+import org.hl7.fhir.dstu3.model.IdType;
+import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Group.GroupMemberComponent;
 import org.hl7.fhir.dstu3.model.Group.GroupType;
@@ -24,14 +28,18 @@ import com.mongodb.util.JSON;
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.annotation.Create;
 import ca.uhn.fhir.rest.annotation.Elements;
 import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
+import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
+import ca.uhn.fhir.rest.annotation.Update;
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.SummaryEnum;
 import ca.uhn.fhir.rest.param.CompositeAndListParam;
@@ -45,6 +53,7 @@ import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
+import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import ch.qos.logback.core.joran.conditional.ThenOrElseActionBase;
 import controllers.UserGroups;
 import models.MidataId;
@@ -56,6 +65,7 @@ import models.enums.ConsentStatus;
 import models.enums.UserStatus;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.stats.Stats;
@@ -80,8 +90,8 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 	@Read()
 	public Group getResourceById(@IdParam IIdType theId) throws AppException {
 		UserGroup group = UserGroup.getById(MidataId.from(theId.getIdPart()), UserGroup.FHIR);	
-		if (group == null) return null;
-		return readGroupFromMidataUserGroup(group, true);
+		if (group != null) return readGroupFromMidataUserGroup(group, true);
+		return super.getResourceById(theId);		
 	}
 	
     @History()
@@ -123,6 +133,7 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 		p.setActual(true);
 		p.setActive(groupToConvert.status == UserStatus.ACTIVE);
 		p.setType(GroupType.PRACTITIONER);
+		p.setCode(new CodeableConcept().addCoding(new Coding().setSystem("http://midata.coop").setCode("team").setDisplay("Team")));
 		p.addIdentifier().setSystem("http://midata.coop/identifier/group-name").setValue(groupToConvert.name);
 		
 		String encoded = ctx.newJsonParser().encodeResourceToString(p);		
@@ -223,7 +234,26 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 	
 	@Override
 	public List<Record> searchRaw(SearchParameterMap params) throws AppException {		
-		return null;
+		ExecutionInfo info = info();
+
+		Query query = new Query();		
+		QueryBuilder builder = new QueryBuilder(params, query, "fhir/Group");
+
+		builder.handleIdRestriction();
+		
+		builder.restriction("identifier", true, QueryBuilder.TYPE_IDENTIFIER, "identifier");
+		builder.restriction("code", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "code");
+		builder.restriction("member", true, null, "member.entity");	
+		builder.restriction("type", true, QueryBuilder.TYPE_CODE, "type");
+		
+		builder.restriction("characteristic", true, QueryBuilder.TYPE_CODEABLE_CONCEPT, "characteristic.code");
+		builder.restriction("characteristic-value", "characteristic.code", "characteristic.value", QueryBuilder.TYPE_CODEABLE_CONCEPT, QueryBuilder.TYPE_QUANTITY_OR_RANGE);
+		builder.restriction("value", true, QueryBuilder.TYPE_QUANTITY_OR_RANGE, "value");
+		
+		builder.restriction("exclude", false, QueryBuilder.TYPE_BOOLEAN, "characteristic.exclude");						
+		builder.restriction("actual", false, QueryBuilder.TYPE_BOOLEAN, "actual");								
+		
+		return query.execute(info);
 	}
  
 	@Override
@@ -277,6 +307,9 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 				result.add(readGroupFromMidataUserGroup(group, addMembers));
 			}
 			
+			List<IBaseResource> normal = super.search(params);
+			result.addAll(normal);
+			
 			return result;
 			
 		 } catch (AppException e) {
@@ -288,4 +321,28 @@ public class GroupResourceProvider extends ResourceProvider<Group> implements IR
 		}
 		
 	}
+	
+	@Create
+	@Override
+	public MethodOutcome createResource(@ResourceParam Group theGroup) {
+		return super.createResource(theGroup);
+	}
+			
+	public Record init() { return newRecord("fhir/Group"); }
+
+	@Update
+	@Override
+	public MethodOutcome updateResource(@IdParam IdType theId, @ResourceParam Group theGroup) {
+		return super.updateResource(theId, theGroup);
+	}		
+
+	public void prepare(Record record, Group theGroup) throws AppException {
+		
+		setRecordCodeByCodeableConcept(record, null, "Group");				
+		record.name = theGroup.getName();		
+		
+		clean(theGroup);
+ 
+	}	
+ 	
 }

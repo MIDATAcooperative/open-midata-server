@@ -25,6 +25,12 @@ public class PredicateBuilder {
 		add(FieldAccess.path(path, cond));
 	}
 	
+	public void addComp(String path, CompareOperator op, Object value, boolean nullTrue, CompareOperator op2, Object value2, boolean nullTrue2) {		
+		Condition cond1 = new CompareCondition((Comparable<Object>) value, op, nullTrue);
+		Condition cond2 = new CompareCondition((Comparable<Object>) value2, op2, nullTrue2);
+		add(FieldAccess.path(path, AndCondition.and(cond1, cond2)));
+	}
+	
 	public void addCompOr(String path, CompareOperator op, Object value, boolean nullTrue) {		
 		Condition cond = new CompareCondition((Comparable<Object>) value, op, nullTrue);
 		cond = FieldAccess.path(path, cond);

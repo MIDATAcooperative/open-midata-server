@@ -460,12 +460,10 @@
         "address_success" : "L'adresse a été confirmée.",
         "code_entered" : "Le code de confirmation a-t-il été entré?",
 
-        // TODO NEW: 1. Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.
-
         // TODO CHANGED
         // OLD: 1. Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.
         // NEW: Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.
-        "email_instructions" : "1. Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.",
+        "email_instructions" : "Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.",
 
         // TODO NEW: For convenience you may enter the code from the email here:
         "email_code" : "For convenience you may enter the code from the email here:",
