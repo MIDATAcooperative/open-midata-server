@@ -476,6 +476,7 @@
     "email_code" : "For convenience you may enter the code from the email here:",
     "resend_btn" : "Resend eMail",
     "retry_btn" : "Retry login",
+    "pilot_phase" : "During the pilot phase (or if you are on a test server) NO contract will be sent to you. A MIDATA admin will verify and unlock your account. You will be notified when your account has been unlocked.",
     "contract_instructions" : "A contract has been sent to your postal address. Return it signed to MIDATA.",
     "code_intructions" : "A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
     "code_done" : "You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA office.",
