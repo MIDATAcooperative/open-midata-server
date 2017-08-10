@@ -33,11 +33,12 @@ angular.module('portal')
 	
 	// parse visualization id (format: /visualizations/:id) and load the visualization
 	var visualizationId = $state.params.visualizationId;	
-	$scope.status.doBusy(apps.getApps({"_id":  visualizationId}, ["name", "creator", "description", "defaultSpaceContext", "defaultSpaceName", "defaultQuery", "type"]))
+	$scope.status.doBusy(apps.getApps({"_id":  visualizationId}, ["name", "creator", "creatorLogin", "description", "defaultSpaceContext", "defaultSpaceName", "defaultQuery", "type", "orgName", "requirements", "termsOfUse"]))
 	.then(function(results) {
 		   var visualizations = results.data;
 			$scope.error = null;
 			$scope.visualization = visualizations[0];
+			if (!$scope.visualization.termsOfUse) $scope.options.appAgb = true;
 			if ($scope.visualization.type !== "mobile" && $scope.visualization.type !== "form") {
 			  $scope.options.createSpace = true;
 			  $scope.options.spaceName = $scope.params.name ||  $scope.visualization.defaultSpaceName;

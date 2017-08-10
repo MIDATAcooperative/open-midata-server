@@ -6,7 +6,9 @@
     <div class="body">
        <form class="css-form form-horizontal">		   
 		   <formrow myid="developer" label="admin_plugins.developer">
-		      <select  class="form-control" id="developer" ng-change="reload();" ng-model="search.criteria.creator" ng-options="developer._id as developer.email for developer in developers"></select>
+		      <input type="text" class="form-control" id="developer" typeahead-on-select="reload()" ng-change="reload();" ng-model="search.criteria.creatorLogin" ng-model-options="{ debounce: 500 }" uib-typeahead="developer.email for developer in developers">
+		      
+		      
 		   </formrow>		      
 	  </form>
     

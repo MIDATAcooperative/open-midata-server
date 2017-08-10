@@ -7,29 +7,48 @@ var en = {
 	"content2" : "Enter your content here.",
 	"create_btn" : "Create",
 	"cancel_btn" : "Cancel",
-	
+
 	"new_entry" : "New Entry",
 	"empty" : "There are no records to display.",
-	
+
 	"count_entries" : "{{ count }} Entries",
 	"last_entry_at" : "Last entry at",
-	
+
 	"teaser1" : "Start taking notes now!",
     "teaser2" : "Use this as a diary or to document whatever you want.",
     "teaser3" : "Your notes may also be viewed using the calendar.",
-	
+
 	"success" : "Record created successfully.",
 	"failed" :  "Failed to load records",
 	"no_title_error" : "No title provided",
 	"title_too_long_error" : "Title too long.",
-	"no_content_error" : "No content provided."	
+	"no_content_error" : "No content provided."
 },
 de = {
-		
+
 },
 it = {
-		
+
 },
 fr = {
-		
+	"loading": "Chargement des enregistrements ...",
+        "create_title": "Créer un nouvel enregistrement texte",
+        "date": "Date",
+        "title": "Titre",
+        "content": "Contenu",
+        "content2": "Entrez le contenu ici.",
+        "create_btn": "Créer",
+        "cancel_btn": "Annuler",
+        "new_entry": "Nouvelle entrée",
+        "empty": "Il n'y a aucun enregistrement à afficher.",
+        "count_entries": "{{ count }} entrées",
+        "last_entry_at": "Dernière entrée le",
+        "teaser1": "Commencez dès maintenant à prendre des notes!",
+        "teaser2": "Utilisez ceci comme un journal ou pour documenter ce que vous désirez.",
+        "teaser3": "Vos notes peuvent également être visualisées à l'aide du calendrier.",
+        "success": "Enregistrement créé avec succès.",
+        "failed": "Impossible de charger des enregistrements",
+        "no_title_error": "Aucun titre entré",
+        "title_too_long_error": "Titre trop long.",
+        "no_content_error": "Aucun contenu entré."
 };

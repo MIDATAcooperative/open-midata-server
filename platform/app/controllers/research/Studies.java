@@ -55,6 +55,7 @@ import models.enums.ParticipationStatus;
 import models.enums.PluginStatus;
 import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
+import models.enums.UserFeature;
 import models.enums.UserRole;
 import play.libs.Json;
 import play.mvc.BodyParser;
@@ -330,7 +331,7 @@ public class Studies extends APIController {
 	   MidataId studyid = new MidataId(id);
 	   MidataId owner = PortalSessionToken.session().getOrg();
 
-	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "assistance"); 
+	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "assistance", "termsOfUse", "requirements"); 
 	   Study study = Study.getByIdFromOwner(studyid, owner, fields);
 	   	   	   
 	   return ok(JsonOutput.toJson(study, "Study", fields));
@@ -349,7 +350,7 @@ public class Studies extends APIController {
        
 	   MidataId studyid = new MidataId(id);
 	   
-	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "assistance"); 
+	   Set<String> fields = Sets.create("createdAt","createdBy","description","executionStatus","name","participantSearchStatus","validationStatus","history","infos","owner","participantRules","recordQuery","studyKeywords","code","groups","requiredInformation", "assistance", "termsOfUse", "requirements"); 
 	   Study study = Study.getByIdFromMember(studyid, fields);
 	   	   	   
 	   ObjectNode result = Json.newObject();
@@ -1080,6 +1081,13 @@ public class Studies extends APIController {
 			Query.validate(query, true);
 			study.addHistory(new History(EventType.STUDY_SETUP_CHANGED, user, null));
 			study.setRecordQuery(query);			
+		}
+		
+		if (json.has("termsOfUse")) {
+			study.setTermsOfUse(JsonValidation.getString(json, "termsOfUse"));
+		} 
+		if (json.has("requirements")) {
+			study.setRequirements(JsonExtraction.extractEnumSet(json, "requirements", UserFeature.class));
 		}
 				        	        
         return ok();

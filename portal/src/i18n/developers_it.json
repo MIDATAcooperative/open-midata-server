@@ -44,8 +44,6 @@
         // TODO NEW: New Password
         "resetpw" : "New Password",
 
-        // TODO NEW: Using these buttons you can register additional users for testing your plugins. These users will use plugins developed by you from 'localhost' instead from the server.
-
         // TODO CHANGED
         // OLD: Using these buttons you can register additional users for testing your plugins. These users will use plugins developed by you from 'localhost' instead from the server.
         // NEW: Using these buttons you can register additional users for testing your plugins. By test users, plugins are run locally (from 'localhost') and not on the server.
@@ -67,10 +65,90 @@
         "title" : "Your Plugins"
     },
 
-    "manageapp" : {
-        "info" : {
+    "appmessages" : {
 
-            // TODO NEW: This name is internally used to identify your app. Should be a valid identifier.
+        // TODO NEW: Predefined Messages for App:
+        "title" : "Predefined Messages for App:",
+
+        // TODO NEW: Reason (Trigger)
+        "reason" : "Reason (Trigger)",
+
+        // TODO NEW: Code
+        "code" : "Code",
+
+        // TODO NEW: Languages
+        "languages" : "Languages",
+
+        // TODO NEW: There are no app specfic messages defined yet.
+        "empty" : "There are no app specfic messages defined yet.",
+
+
+        // TODO NEW: Language
+        "lang" : "Language",
+
+        // TODO NEW: Message Title
+        "msgtitle" : "Message Title",
+
+        // TODO NEW: Message Text
+        "text" : "Message Text",
+
+        // TODO NEW: Available variables
+        "available_tags" : "Available variables",
+
+        "reasons" : {
+
+            // TODO NEW: Registration of new user
+            "REGISTRATION" : "Registration of new user",
+
+            // TODO NEW: First use of app
+            "FIRSTUSE_ANYUSER" : "First use of app",
+
+            // TODO NEW: First use of app (if no registration mail sent)
+            "FIRSTUSE_EXISTINGUSER" : "First use of app (if no registration mail sent)",
+
+            // TODO NEW: Proposed consent (Grantor, Invitation)
+            "CONSENT_REQUEST_OWNER_INVITED" : "Proposed consent (Grantor, Invitation)",
+
+            // TODO NEW: Proposed consent (Grantor, Account Holder)
+            "CONSENT_REQUEST_OWNER_EXISTING" : "Proposed consent (Grantor, Account Holder)",
+
+            // TODO NEW: Proposed consent (Grantee, Invitation)
+            "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Proposed consent (Grantee, Invitation)",
+
+            // TODO NEW: Proposed consent (Grantee, Account Holder)
+            "CONSENT_REQUEST_AUTHORIZED_EXISTING" : "Proposed consent (Grantee, Account Holder)",
+
+            // TODO NEW: Consent confirmation (Grantor)
+            "CONSENT_CONFIRM_OWNER" : "Consent confirmation (Grantor)",
+
+            // TODO NEW: Consent confirmation (Grantee)
+            "CONSENT_CONFIRM_AUTHORIZED" : "Consent confirmation (Grantee)",
+
+            // TODO NEW: Consent rejection (Grantor)
+            "CONSENT_REJECT_OWNER" : "Consent rejection (Grantor)",
+
+            // TODO NEW: Consent rejection (Grantee)
+            "CONSENT_REJECT_AUTHORIZED" : "Consent rejection (Grantee)"
+        }
+    },
+
+    "manageapp" : {
+
+        // TODO NEW: Edit Messages
+        "messages_btn" : "Edit Messages",
+
+        // TODO NEW: Debug Info
+        "stats_btn" : "Debug Info",
+
+        // TODO NEW: API Tester
+        "debug_btn" : "API Tester",
+
+        // TODO NEW: Study linked to App (Code)
+        "linkedStudy" : "Study linked to App (Code)",
+
+        // TODO NEW: Study Required
+        "mustParticipateInStudy" : "Study Required",
+        "info" : {
 
             // TODO CHANGED
             // OLD: This name is internally used to identify your app. Should be a valid identifier.
@@ -89,6 +167,12 @@
             // TODO NEW: A description of your plugin that will also be shown on the marked place.
             "description" : "A description of your plugin that will also be shown on the marked place.",
 
+            // TODO NEW: App is allowed to reshare data it has access to to 3rd party.
+            "resharesData" : "App is allowed to reshare data it has access to to 3rd party.",
+
+            // TODO NEW: Users of app are allowed to search for other users of same app.
+            "allowsUserSearch" : "Users of app are allowed to search for other users of same app.",
+
             // TODO NEW: Title of the tile for your plugin on the dashboard.
             "defaultSpaceName" : "Title of the tile for your plugin on the dashboard.",
 
@@ -105,32 +189,100 @@
             "defaultSpaceContext" : "Choose 'me' for the default dashboard. Choose 'config' if you write an import plugin.",
 
             // TODO NEW
-
             // TODO CHANGED
             // OLD: Query restricting your plugins access to the database. Access must be restricted by 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ "group" : "all", "group-system" : "v1", "format" : ["fhir/Observation" ] }'
             // NEW: Query restricting the access of the app to the database. Access must be restricted by 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ "group" : "all", "group-system" : "v1", "format" : ["fhir/Observation" ] }'
+
+            // TODO CHANGED
+            // OLD: Query restricting the access of the app to the database. Access must be restricted by 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ "group" : "all", "group-system" : "v1", "format" : ["fhir/Observation" ] }'
+            // NEW: Query restricting the access of the app to the database. Access must be restricted by 'code', 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ "group" : "all", "group-system" : "v1", "format" : ["fhir/Observation" ] }'
             "defaultQuery_mobile" : "Query restricting the access of the app to the database. Access must be restricted by 'content' or 'group' and may be restricted by 'format' or 'owner'. Valid example (all Observations): '{ \"group\" : \"all\", \"group-system\" : \"v1\", \"format\" : [\"fhir/Observation\" ] }'",
 
             // TODO NEW
-
             // TODO CHANGED
             // OLD: Query restricting your plugins access to the database. Access must be restricted by at least one of 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ "format" : ["fhir/Observation" ] }'
             // NEW: Query restricting the access of the plugin to the database. Access must be restricted by at least one of 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ "format" : ["fhir/Observation" ] }'
+
+            // TODO CHANGED
+            // OLD: Query restricting the access of the plugin to the database. Access must be restricted by at least one of 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ "format" : ["fhir/Observation" ] }'
+            // NEW: Query restricting the access of the plugin to the database. Access must be restricted by at least one of 'code', 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ "format" : ["fhir/Observation" ] }'
             "defaultQuery" : "Query restricting the access of the plugin to the database. Access must be restricted by at least one of 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
 
             // TODO NEW
-
             // TODO CHANGED
             // OLD: Look for valid values for 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { "group" : "all", "group-system" : "v1" } . Please refine query before plugin or app goes in production.
             // NEW: Look for valid values for 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { "group" : "all", "group-system" : "v1" }. Please refine query before plugin or app goes in production.
+
+            // TODO CHANGED
+            // OLD: Look for valid values for 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { "group" : "all", "group-system" : "v1" }. Please refine query before plugin or app goes in production.
+            // NEW: Look for valid values for 'code', 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { "group" : "all", "group-system" : "v1" }. Please refine query before plugin or app goes in production.
             "defaultQuery_extra" : "Look for valid values for 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { \"group\" : \"all\", \"group-system\" : \"v1\" }. Please refine query before plugin or app goes in production.",
 
             // TODO NEW
-
             // TODO CHANGED
             // OLD: Your app will need this secret during login. Choose whatever you like.
             // NEW: Your app will need this 'secret' during login. Choose whatever you like.
-            "secret" : "Your app will need this 'secret' during login. Choose whatever you like."
+            "secret" : "Your app will need this 'secret' during login. Choose whatever you like.",
+
+            // TODO NEW: User must participate in Study in order to use app.
+            "mustParticipateInStudy" : "User must participate in Study in order to use app."
         }
+    },
+
+    "appstats" : {
+
+        // TODO NEW: Debug Information for
+        "title" : "Debug Information for",
+
+        // TODO NEW: Action
+        "action" : "Action",
+
+        // TODO NEW: First action recordet at
+        "first" : "First action recordet at",
+
+        // TODO NEW: Last executed
+        "lastrun" : "Last executed",
+
+        // TODO NEW: Statistic
+        "count" : "Statistic",
+
+        // TODO NEW: Number of times the action has been invoked.
+        "run" : "Number of times the action has been invoked.",
+
+        // TODO NEW: Number of times operations had to be repeated because of concurrency issues.
+        "retry" : "Number of times operations had to be repeated because of concurrency issues.",
+
+        // TODO NEW: Average number of internal (MongoDB) database queries executed per action invocation.
+        "db" : "Average number of internal (MongoDB) database queries executed per action invocation.",
+
+        // TODO NEW: Execution time
+        "time" : "Execution time",
+
+        // TODO NEW: Avg
+        "avgtime" : "Avg",
+
+        // TODO NEW: Last
+        "lasttime" : "Last",
+
+        // TODO NEW: Results and Warnings
+        "results" : "Results and Warnings",
+
+        // TODO NEW: response
+        "result" : "response",
+
+        // TODO NEW: No information has been recorded since debug information was last cleared.
+        "empty" : "No information has been recorded since debug information was last cleared.",
+
+        // TODO NEW: Refresh
+        "reload_btn" : "Refresh",
+
+        // TODO NEW: Clear
+        "reset_btn" : "Clear"
+    },
+
+    "appdebug" : {
+
+        // TODO NEW: API Tester
+        "title" : "API Tester"
     }
 }

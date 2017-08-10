@@ -46,6 +46,7 @@ import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.auth.PasswordResetToken;
 import utils.auth.PortalSessionToken;
+import utils.auth.PreLoginSecured;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.evolution.AccountPatches;
@@ -283,7 +284,7 @@ public class Application extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	@Security.Authenticated(AnyRoleSecured.class)
+	@Security.Authenticated(PreLoginSecured.class)
 	public static Result confirmAccountAddress() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		

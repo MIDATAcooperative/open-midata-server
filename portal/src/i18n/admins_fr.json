@@ -68,6 +68,21 @@
 
     "admin_plugins" : {
         "title" : "Plugins",
-        "developer" : "Filtrer par développeur"
+        "developer" : "Filtrer par développeur",
+
+        // TODO NEW: There are no apps or plugins yet.
+        "empty" : "There are no apps or plugins yet."
+    },
+
+    "admin_studies" : {
+
+        // TODO NEW: Studies
+        "title" : "Studies",
+
+        // TODO NEW: Search criteria
+        "criteria" : "Search criteria",
+
+        // TODO NEW: No matching studies found.
+        "empty" : "No matching studies found."
     }
 }

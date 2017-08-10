@@ -1,5 +1,7 @@
 package controllers;
 
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,6 +16,7 @@ import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
 import models.ResearchUser;
+import models.Study;
 import models.User;
 import models.enums.ConsentStatus;
 import models.enums.UserFeature;
@@ -90,10 +93,18 @@ public class OAuth2 extends Controller {
 	    boolean confirmStudy = JsonValidation.getBoolean(json, "confirmStudy");
 	   					
 	    // Validate Mobile App	
-		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements"));
+		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements", "linkedStudy", "termsOfUse"));
 		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");		
 		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
 		if (!redirectUri.equals(app.redirectUri)) throw new InternalServerException("error.internal", "Wrong redirect uri");
+		
+		Set<UserFeature> requirements = app.requirements;
+		if (app.linkedStudy != null && confirmStudy) {
+			Study study = Study.getByIdFromMember(app.linkedStudy, Sets.create("requirements"));
+			requirements = EnumSet.noneOf(UserFeature.class);
+			if (app.requirements != null) requirements.addAll(app.requirements);
+			if (study.requirements != null) requirements.addAll(study.requirements);
+		}
 		
 		MobileAppInstance appInstance = null;		
 		Map<String, Object> meta = null;
@@ -116,7 +127,7 @@ public class OAuth2 extends Controller {
 		if (!Member.authenticationValid(password, user.password)) {
 			throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
 		}
-		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, app.requirements);
+		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		
 		
 		appInstance = MobileAPI.getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));
@@ -124,6 +135,11 @@ public class OAuth2 extends Controller {
 		
 		if (appInstance == null) {		
 			if (!confirmed) return ok("CONFIRM");
+			
+			if (notok != null) {
+			  return Application.loginHelperResult(user, notok);
+			}
+			
 			boolean autoConfirm = KeyManager.instance.unlock(user._id, null) == KeyManager.KEYPROTECTION_NONE;
 			MidataId executor = autoConfirm ? user._id : null;
 			appInstance = MobileAPI.installApp(executor, app._id, user, phrase, autoConfirm, confirmStudy);				
