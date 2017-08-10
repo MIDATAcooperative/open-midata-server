@@ -35,7 +35,7 @@ public class Feature_UserGroups extends Feature {
 		if (q.getApsId().equals(q.getCache().getAccountOwner())) {				
 			
 			if (!q.isRestrictedToSelf()) {
-				Set<UserGroupMember> isMemberOfGroups = UserGroupMember.getAllActiveByMember(q.getCache().getAccountOwner());
+				Set<UserGroupMember> isMemberOfGroups = q.getCache().getAllActiveByMember();
 				if (!isMemberOfGroups.isEmpty()) {
 					List<DBRecord> results = next.query(q);
 					for (UserGroupMember ugm : isMemberOfGroups) {

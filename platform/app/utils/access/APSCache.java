@@ -4,10 +4,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import models.AccessPermissionSet;
 import models.Consent;
 import models.MidataId;
+import models.UserGroupMember;
 import utils.AccessLog;
 import utils.auth.EncryptionNotSupportedException;
 import utils.exceptions.AppException;
@@ -25,12 +27,15 @@ class APSCache {
 	private MidataId accountOwner;
 	
 	private Map<MidataId, Consent> consentCache;
+	private long consentLimit;
+	private Set<UserGroupMember> userGroupMember;
 	
 	public APSCache(MidataId executorId, MidataId accountApsId) {
 		this.executorId = executorId;
 		this.accountOwner = accountApsId;
 		this.cache = new HashMap<String, APS>();
 		this.consentCache = new HashMap<MidataId, Consent>();
+		this.consentLimit = -1;
 	}
 	
 	public MidataId getExecutor() {
@@ -132,5 +137,33 @@ class APSCache {
 	
 	public void cache(Collection<? extends Consent> consents) throws InternalServerException {		
 		for (Consent consent : consents) consentCache.put(consent._id, consent);		
+	}
+	
+	public Set<UserGroupMember> getAllActiveByMember() throws InternalServerException {
+		if (userGroupMember != null) return userGroupMember;
+		
+		userGroupMember = UserGroupMember.getAllActiveByMember(getAccountOwner());
+		return userGroupMember;
+	}
+	
+	public Collection<Consent> getAllActiveConsentsByAuthorized(long limit) throws InternalServerException {
+		if (consentLimit != -1 && limit > consentLimit) {
+			return consentCache.values();
+		}
+		
+		Set<Consent> consents;
+		if (limit == 0) {
+		  consents = Consent.getAllActiveByAuthorized(getAccountOwner());
+		} else {
+		  consents = Consent.getAllActiveByAuthorized(getAccountOwner(), limit);
+		}
+		cache(consents);
+		consentLimit = limit;
+		return consents;
+	}
+	
+	public void resetConsentCache() {
+		consentLimit = -1;
+		consentCache.clear();
 	}
 }

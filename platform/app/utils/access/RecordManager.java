@@ -646,12 +646,14 @@ public class RecordManager {
 		}
 		
 		for (MidataId streamId : streams) {
-			getCache(executingPerson).getAPS(streamId).removeMeta("_info");
-									
-			List<DBRecord> testRec = QueryEngine.listInternal(cache, streamId, CMaps.map("limit", 1), Sets.create("_id"));
-			if (testRec.size() == 0) {
-				wipe(executingPerson, CMaps.map("_id", streamId).map("streams", "only"));
-			}			
+			try {
+				getCache(executingPerson).getAPS(streamId).removeMeta("_info");
+										
+				List<DBRecord> testRec = QueryEngine.listInternal(cache, streamId, CMaps.map("limit", 1), Sets.create("_id"));
+				if (testRec.size() == 0) {
+					wipe(executingPerson, CMaps.map("_id", streamId).map("streams", "only"));
+				}	
+			} catch (APSNotExistingException e) {}
 		}
 				
 		AccessLog.logEnd("end wipe #records="+recs.size());				
