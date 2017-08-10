@@ -6,6 +6,9 @@
         "plugins" : "Plugins",
         "content" : "Inhalt",
         "studies" : "Studien",
+
+        // TODO NEW: Terms
+        "terms" : "Terms",
         "registration" : "Administrator registrieren"
     },
 
@@ -14,7 +17,6 @@
         "search_type" : "Suche",
         "contract_required" : "Der Vertrag muss geschickt werden",
         "contract_confirm_required" : "Der unterschriebene Vertrag muss bestätigt werden",
-        "trialusers" : "Aktive Probebenutzer",
         "overview" : "Übersicht",
         "specific_user" : "Bestimmten Benutzer",
         "role" : "Rolle",
@@ -84,5 +86,98 @@
 
         // TODO NEW: No matching studies found.
         "empty" : "No matching studies found."
+    },
+
+    "admin_terms" : {
+
+        // TODO NEW: Terms of Use
+        "title" : "Terms of Use",
+
+        // TODO NEW: No terms of use stored.
+        "empty" : "No terms of use stored.",
+
+        // TODO NEW: Name
+        "name" : "Name",
+
+        // TODO NEW: Version
+        "version" : "Version",
+
+        // TODO NEW: Language
+        "language" : "Language",
+
+        // TODO NEW: Creation Date
+        "createdAt" : "Creation Date"
+    },
+
+    "admin_manageterms" : {
+
+        // TODO NEW: Terms of Use
+        "pagetitle" : "Terms of Use",
+
+        // TODO NEW: Internal Name
+        "name" : "Internal Name",
+
+        // TODO NEW: Version
+        "version" : "Version",
+
+        // TODO NEW: Language
+        "language" : "Language",
+
+        // TODO NEW: Title (public)
+        "title" : "Title (public)",
+
+        // TODO NEW: Content (HTML)
+        "text" : "Content (HTML)"
+    },
+
+    "admin_study" : {
+
+        // TODO NEW: Study
+        "title" : "Study",
+
+        // TODO NEW: Name
+        "name" : "Name",
+
+        // TODO NEW: Created At
+        "created_at" : "Created At",
+
+        // TODO NEW: Description
+        "description" : "Description",
+
+        // TODO NEW: Code
+        "code" : "Code",
+
+        // TODO NEW: Required Information
+        "required_information" : "Required Information",
+
+        // TODO NEW: Required Assistance
+        "required_assistance" : "Required Assistance",
+
+        // TODO NEW: Terms Of Use
+        "termsOfUse" : "Terms Of Use",
+
+        // TODO NEW: Sharing Query
+        "sharing_query" : "Sharing Query",
+
+        // TODO NEW: Requirements
+        "requirements" : "Requirements",
+
+        // TODO NEW: Groups
+        "groups" : "Groups",
+
+        // TODO NEW: Group Name
+        "group_name" : "Group Name",
+
+        // TODO NEW: Description
+        "group_description" : "Description",
+
+        // TODO NEW: History
+        "history" : "History",
+
+        // TODO NEW: End Validation
+        "end_validation_btn" : "End Validation",
+
+        // TODO NEW: Delete Study
+        "delete_study_btn" : "Delete Study"
     }
 }

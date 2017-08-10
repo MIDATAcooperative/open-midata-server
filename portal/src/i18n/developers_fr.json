@@ -1,12 +1,18 @@
 {
 
     "developer_registration" : {
+
+        // TODO NEW: Developer Sign Up
+        "sign_up" : "Developer Sign Up",
         "reason_fillout" : "Afin de réduire le temps d'attente jusqu'à la validation de votre compte, veuillez indiquer la personne de contact et la raison précise de la demande d'enregistrement, afin qu'un administrateur puisse rapidement traiter votre requête.",
         "sign_up_btn" : "Enregistrer un développeur"
     },
 
     "developer_login" : {
-        "title" : "Connexion compte développeur"
+        "title" : "Connexion compte développeur",
+
+        // TODO NEW: Visit Developer Guide
+        "guide" : "Visit Developer Guide"
     },
 
     "developer_navbar" : {
@@ -114,6 +120,15 @@
 
         // TODO NEW: Study Required
         "mustParticipateInStudy" : "Study Required",
+
+        // TODO NEW: Only a MIDATA admin may change this section. Please request changes if required.
+        "admin_only" : "Only a MIDATA admin may change this section. Please request changes if required.",
+
+        // TODO NEW: Terms of Use
+        "terms_of_use" : "Terms of Use",
+
+        // TODO NEW: Show terms of use
+        "show_terms" : "Show terms of use",
         "info" : {
             "filename" : "Ce nom est utilisé (en interne) pour identifier votre app. Il doit s'agir d'un identificateur valide (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Est-ce que votre app est spécifique à un rôle ? Si non, veuillez choisir 'Tous les rôles'.",

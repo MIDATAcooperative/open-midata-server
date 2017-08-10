@@ -8,7 +8,15 @@
 
     "member_quickregistration" : {
         "sign_up" : "Registrieren",
+
+        // TODO CHANGED
+        // OLD: Study
+        // NEW: Study*
         "study" : "Studie",
+
+        // TODO CHANGED
+        // OLD: App to be used
+        // NEW: App to be used*
         "app" : "Benutzte App",
         "app_password" : "Kennwort der App",
         "account_password" : "Kennwort des Kontos",
@@ -90,7 +98,6 @@
 
     "member_user" : {
         "account_status" : "Status Account",
-        "trialuser" : "Ihr Account ist zur Zeit ein Testaccount mit begrenzter Funktionalität.",
         "studyparticipant" : "Ihr Account wurde eingerichtet um an eine Studie teilzunehmen. Die Funktionalität ist begrenzt. Sie können Ihr Account zu einem vollwertigen Account aufwerten.",
         "appuser" : "Ihr Account wurde durch eine externe Applikation eingerichtet. Die Funktionalität ist begrenzt. Sie können Ihr Account zu einem vollwertigen Account aufwerten.",
         "memberofcooperative" : "Sie sind Mitglied der MIDATA Genossenschaft.",

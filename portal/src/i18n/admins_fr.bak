@@ -5,6 +5,7 @@
     "plugins" : "Plugins",
 	"content" : "Content",
 	"studies" : "Studies",
+	"terms" : "Terms",	
 	"registration" : "Register Admin"
   },
   
@@ -12,8 +13,7 @@
     "title" : "Member List",
     "search_type" : "Search",
     "contract_required" : "Contract needs to be sent",
-    "contract_confirm_required" : "Signed contract needs to be confirmed",
-    "trialusers" : "Active Trial Users",
+    "contract_confirm_required" : "Signed contract needs to be confirmed",   
     "overview" : "Overview",
     "specific_user" : "Specific User",
     "role" : "Role",
@@ -75,5 +75,42 @@
     "title" : "Studies",
     "criteria" : "Search criteria",
     "empty" : "No matching studies found."
+  },
+  
+  "admin_terms" : {
+    "title" : "Terms of Use",
+    "empty" : "No terms of use stored.",
+    "name" : "Name",
+    "version" : "Version",
+    "language" : "Language",
+    "createdAt" : "Creation Date"
+  },
+  
+  "admin_manageterms" : {
+    "pagetitle" : "Terms of Use",
+    "name" : "Internal Name",
+    "version" : "Version",
+    "language" : "Language",
+    "title" : "Title (public)",
+    "text" : "Content (HTML)"
+  },
+  
+  "admin_study" : {
+     "title" : "Study",
+     "name" : "Name",
+     "created_at" : "Created At",
+     "description" : "Description",
+     "code" : "Code",
+     "required_information" : "Required Information",
+     "required_assistance" : "Required Assistance",
+     "termsOfUse" : "Terms Of Use",
+     "sharing_query" : "Sharing Query",
+     "requirements" : "Requirements",
+     "groups" : "Groups",
+     "group_name" : "Group Name",
+     "group_description" : "Description",
+     "history" : "History",
+     "end_validation_btn" : "End Validation",
+     "delete_study_btn" : "Delete Study"    
   }
 }

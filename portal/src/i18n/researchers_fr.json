@@ -3,7 +3,15 @@
     "researcher_registration" : {
         "sign_up" : "Enregistrement d'un compte chercheur",
         "research_organization" : "Organisation de recherche",
+
+        // TODO CHANGED
+        // OLD: Name
+        // NEW: Name*
         "name" : "Nom",
+
+        // TODO CHANGED
+        // OLD: Description
+        // NEW: Description*
         "description" : "Description",
         "research_user" : "Utilisateur"
     },
@@ -48,7 +56,22 @@
     "studyactions" : {
         "description" : "Lorsque l'étude est en cours, vous pouvez partager des données avec les participants et leur assigner des tâches (p.ex. remplir un formulaire).",
         "select_group_btn" : "Sélectionnez un groupe",
-        "add_task_btn" : "Ajouter une tâche pour les participants"
+        "add_task_btn" : "Ajouter une tâche pour les participants",
+
+        // TODO NEW: Research Application
+        "plugin" : "Research Application",
+
+        // TODO NEW: Device Code
+        "device" : "Device Code",
+
+        // TODO NEW: Restrict Read to Group
+        "restrict" : "Restrict Read to Group",
+
+        // TODO NEW: Add Study Data Providing Application
+        "add_application_btn" : "Add Study Data Providing Application",
+
+        // TODO NEW: Application Consents
+        "linked_apps" : "Application Consents"
     },
 
     "studyfields" : {
@@ -118,12 +141,24 @@
         "empty" : "Dès quelles sont disponibles, vous pourrez télécharger les données ici.",
         "group" : "Groupe de données",
         "number_of_records" : "# enregistrements",
-        "download_btn" : "Télécharger"
+        "download_btn" : "Télécharger",
+
+        // TODO NEW: Download FHIR Bundle
+        "fhir_download_btn" : "Download FHIR Bundle"
     },
 
     "studyrules" : {
         "title" : "Règles de l'étude",
         "no_change_warning" : "Cette configuration ne peut plus être modifiée une fois l'étude validée.",
-        "sharing_query" : "Sharing Query (JSON)"
+        "sharing_query" : "Sharing Query (JSON)",
+
+        // TODO NEW: Terms
+        "terms_of_use" : "Terms",
+
+        // TODO NEW: Show Terms
+        "show_terms" : "Show Terms",
+
+        // TODO NEW: Requirements
+        "requirements" : "Requirements"
     }
 }

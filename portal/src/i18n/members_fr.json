@@ -8,7 +8,15 @@
 
     "member_quickregistration" : {
         "sign_up" : "Inscription",
+
+        // TODO CHANGED
+        // OLD: Study
+        // NEW: Study*
         "study" : "Étude",
+
+        // TODO CHANGED
+        // OLD: App to be used
+        // NEW: App to be used*
         "app" : "App utilisée",
         "app_password" : "Mot de passe de l'app",
         "account_password" : "Mot de passe du compte",
@@ -90,7 +98,6 @@
 
     "member_user" : {
         "account_status" : "État du compte",
-        "trialuser" : "Vous possédez actuellement un compte de test à fonctionnalité limitée.",
         "studyparticipant" : "Votre compte a été créé pour participer à une étude. Sa fonctionnalité est limitée. Vous pouvez le faire évoluer vers un compte à part entière.",
         "appuser" : "Votre compte a été créé par une application externe. Sa fonctionnalité est limitée. Vous pouvez le faire évoluer vers un compte à part entière.",
         "memberofcooperative" : "Vous êtes membre de la coopérative MIDATA.",
