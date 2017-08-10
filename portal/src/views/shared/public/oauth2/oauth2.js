@@ -29,7 +29,7 @@ angular.module('portal')
 		.then(function(results) {
 			$scope.app = results.data;
 			$scope.login.role = $scope.app.targetUserRole === 'ANY'? "MEMBER" : $scope.app.targetUserRole;
-			oauth.init($scope.params.client_id, $scope.params.redirect_uri, $scope.params.state, $scope.params.code_challenge, $scope.params.code_challenge_method);
+			oauth.init($scope.params.client_id, $scope.params.redirect_uri, $scope.params.state, $scope.params.code_challenge, $scope.params.code_challenge_method, $scope.params.device_id);
 			$scope.device = oauth.getDeviceShort();
 			$scope.consent = "App: "+$scope.app.name+" (Device: "+$scope.device+")";
 			

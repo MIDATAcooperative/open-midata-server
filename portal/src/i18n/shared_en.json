@@ -120,7 +120,8 @@
      "blocked" : {
        "user" : "User is not allowed to log in. Contact support@midata.coop for help.",
        "participation" : "Account holder is not allowed to participate in study.",
-       "consent" : "The consent for using this app has been revoked. To reenable use the MIDATA portal and delete the rejected or expired consent."
+       "consent" : "The consent for using this app has been revoked. To reenable use the MIDATA portal and delete the rejected or expired consent.",
+       "app" : "You are allowed to use this app on a maximum of 10 devices. Please delete unused consents on the MIDATA portal." 
      },
 
      "closed" : {
@@ -465,7 +466,7 @@
 
   "postregister" : {
     "title" : "Welcome to MIDATA",
-    "description" : "Before you can use your account your identity needs to be verified:",
+    
     "email_confirmed" : "E-Mail confirmed?",
     "contract_signed" : "Contract signed and sent back?",
     "resent_success" : "Welcome mail has been resent.",
