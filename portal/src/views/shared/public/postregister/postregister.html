@@ -32,6 +32,8 @@
 
 						<div ng-show="progress.ADDRESS_VERIFIED && !progress.ADDRESS_ENTERED">
 							<div class="extraspace"></div>
+							<div class="alert alert-info" translate="postregister.pilot_phase"></div>
+							<div class="extraspace"></div>
 							<div ng-show="progress.agbStatus=='NEW'">
 								<p translate="member_user.agb_not_requested"></p>
 								<button ng-disabled="status.action === 'requestmembership'" class="btn btn-primary" href="javascript:"
