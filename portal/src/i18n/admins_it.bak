@@ -67,6 +67,13 @@
   
   "admin_plugins" : {
     "title" : "Plugins",
-    "developer" : "Filter by Developer"
+    "developer" : "Filter by Developer",
+    "empty" : "There are no apps or plugins yet."
+  },
+  
+  "admin_studies" : {
+    "title" : "Studies",
+    "criteria" : "Search criteria",
+    "empty" : "No matching studies found."
   }
 }

@@ -62,8 +62,6 @@
         // TODO NEW: News and announcements about MIDATA, the platform and research projects
         "menu_research_text" : "News and announcements about MIDATA, the platform and research projects",
 
-        // TODO NEW: Consents
-
         // TODO CHANGED
         // OLD: Consents
         // NEW: Sharing
@@ -103,7 +101,6 @@
 
         // TODO NEW: Do use any of these devices?
         "question_devices" : "Do use any of these devices?",
-
         "question_devices_answer1" : "Fitbit",
         "question_devices_answer2" : "Jawbone",
         "question_devices_answer3" : "Withings",

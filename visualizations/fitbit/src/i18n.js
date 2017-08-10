@@ -10,21 +10,21 @@ angular.module('fitbiti18n', [])
   "from_date" : "From Date",
   "to_date" : "To Date",
   "autoimport" : "Automatically import measurements once per day",
-  "import_btn" : "Import Now",
+  "import_btn" : "Import data",
   "progress" : "Requested {{requested}} records from Fitbit. {{saved}} records saved to database.",
   "importing" : "Importing data from Fitbit...",
   "done" : "Finished import",
   "with_errors" : "Finished import with errors.",
-  
+
   "no_entries_yet" : "Fitbit Import not configured yet.",
   "newest_entry_from" : "Newest entry:",
   "measures_to_import" :"Measures to import",
   "autoimport_status" : "Automatically import",
   "on" : "ON",
   "off" : "OFF",
-  
+
   "fitness_data" : "Fitness Data",
-  
+
   "food_calories_intake": "Calories Intake",
   "food_water_consumption" : "Water Consumption",
   "activities_calories_burned" : "Calories Burned",
@@ -45,7 +45,7 @@ angular.module('fitbiti18n', [])
   "body_weight" : "Weight",
   "body_bmi" : "BMI",
   "body_fat" : "Fat",
-  
+
   "titles" : { // TODO: delete ?
 	 "food_calories_intake" : "Fitbit food (calories intake) {date}",
      "food_water_consumption" : "Fitbit food (water consumption) {date}",
@@ -67,9 +67,9 @@ angular.module('fitbiti18n', [])
      "body_weight" : "Fitbit body (weight) {date}",
      "body_bmi" : "Fitbit body (BMI) {date}",
      "body_fat" : "Fitbit body (fat) {date}"
-  }			
-	  
-  
+  }
+
+
 },
 de : {
 	  "title" : "Import aus ihrem Fitbit Account",
@@ -86,16 +86,16 @@ de : {
 	  "importing" : "Importiere Daten von Fitbit...",
 	  "done" : "Import fertig",
 	  "with_errors" : "Import mit Fehlern abgeschlossen.",
-	  
+
 	  "no_entries_yet" : "Fitbit Import ist noch nicht konfiguriert.",
 	  "newest_entry_from" : "Neuester Eintrag:",
 	  "measures_to_import" :"Maße ausgewählt zum Importieren",
 	  "autoimport_status" : "Automatisch importieren",
 	  "on" : "AN",
 	  "off" : "AUS",
-	  
+
 	  "fitness_data" : "Fitness Daten",
-	  
+
 	  "food_calories_intake": "Kalorien Einnahme",
 	  "food_water_consumption" : "Wasser Einnahme",
 	  "activities_calories_burned" : "Kalorien verbrannt",
@@ -116,7 +116,7 @@ de : {
 	  "body_weight" : "Gewicht",
 	  "body_bmi" : "BMI",
 	  "body_fat" : "Fett",
-	  
+
 	  "titles" : {
 		 "food_calories_intake" : "Fitbit Nahrung (Kalorien Einnahme) {date}",
 	     "food_water_consumption" : "Fitbit Nahrung (Wasser Einnahme) {date}",
@@ -138,12 +138,80 @@ de : {
 	     "body_weight" : "Fitbit Körper (Gewicht) {date}",
 	     "body_bmi" : "Fitbit Körper (BMI) {date}",
 	     "body_fat" : "Fitbit Körper (Fett) {date}"
-	  }					
+	  }
 },
 it : {
-		
+
 },
 fr : {
-		
+"title" : "Importez des enregistrements depuis votre compte Fitbit",
+"account" : "Compte Fitbit:",
+"member_since" : "Membre depuis le:",
+"which_measurements" : "Sélectionnez les mesures que vous souhaitez importer:",
+"measurement" : "Messures",
+"imported" : "Importé",
+"from_date" : "Depuis le",
+"to_date" : "Jusqu'au",
+"autoimport" : "Importer automatiquement les données (se fait quotidiennement)",
+"import_btn" : "Importer les données",
+"progress" : "Requested {{requested}} records from Fitbit. {{saved}} records saved to database.",
+"importing" : "Importation des données de chez Fitbit...",
+"done" : "Import termnié",
+"with_errors" : "Import terminé avec erreur(s).",
+
+"no_entries_yet" : "L'import Fitbit n'est pas encore configuré.",
+"newest_entry_from" : "Entrée la plus récente:",
+"measures_to_import" :"Mesures à importer",
+"autoimport_status" : "Importation automatique",
+"on" : "ON",
+"off" : "OFF",
+
+"fitness_data" : "Donnée de fitness",
+
+"food_calories_intake": "Calories ingérées",
+"food_water_consumption" : "Consomation d'eau",
+"activities_calories_burned" : "Calories brulées",
+"activities_steps" : "Pas",
+"activities_distance" : "Distance",
+"activities_floors_climbed" : "Etages gravis",
+"activities_elevation" : "Elevation",
+"activities_minutes_sedentary" : "Minutes Sedentary",
+"activities_minutes_lightly_active" : "Minutes d'activités douces",
+"activities_minutes_fairly_active" : "Minutes d'activités modérées",
+"activities_minutes_very_active" : "Minutes d'activités intenses",
+"activities_calories_burned_in_activities" : "Calories Burned in Activities",
+"sleep_time_in_bed" : "Time in Bed",
+"sleep_minutes_asleep" : "Minutes Asleep",
+"sleep_minutes_awake" : "Minutes Awake",
+"sleep_minutes_to_fall_asleep" : "Minutes to Fall Asleep",
+"sleep_efficiency" : "Efficiency",
+"body_weight" : "Poids",
+"body_bmi" : "BMI",
+"body_fat" : "Graisse",
+
+"titles" : { // TODO: delete ?
+ "food_calories_intake" : "Fitbit food (calories intake) {date}",
+   "food_water_consumption" : "Fitbit food (water consumption) {date}",
+   "activities_calories_burned" : "Fitbit activities (calories burned) {date}",
+   "activities_steps" : "Fitbit activities (steps) {date}",
+   "activities_distance" : "Fitbit activities (distance) {date}",
+   "activities_floors_climbed" : "Fitbit activities (floors climbed) {date}",
+   "activities_elevation" : "Fitbit activities (elevation) {date}",
+   "activities_minutes_sedentary" : "Fitbit activities (minutes sedentary) {date}",
+   "activities_minutes_lightly_active" : "Fitbit activities (minutes lightly active) {date}",
+   "activities_minutes_fairly_active" : "Fitbit activities (minutes fairly active) {date}",
+   "activities_minutes_very_active" : "Fitbit activities (minutes very active) {date}",
+   "activities_calories_burned_in_activities" : "Fitbit activities (calories burned in activities) {date}",
+   "sleep_time_in_bed" : "Fitbit sleep (time in bed) {date}",
+   "sleep_minutes_asleep" : "Fitbit sleep (minutes asleep) {date}",
+   "sleep_minutes_awake" : "Fitbit sleep (minutes awake) {date}",
+   "sleep_minutes_to_fall_asleep" : "Fitbit sleep (minutes to fall asleep) {date}",
+   "sleep_efficiency" : "Sleep - Efficiency",
+   "body_weight" : "Fitbit body (weight) {date}",
+   "body_bmi" : "Fitbit body (BMI) {date}",
+   "body_fat" : "Fitbit body (fat) {date}"
+}
+
+
 }
 });

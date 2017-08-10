@@ -29,7 +29,6 @@
   
   "provider_usergroups" : {
     "title" : "Teams",
-  
     "name" : "Team",
     "status" : "Status",
     "empty" : "You are not part of a team."

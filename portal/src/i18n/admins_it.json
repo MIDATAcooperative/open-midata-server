@@ -83,8 +83,6 @@
         // TODO NEW: Contract Status:
         "contract_status" : "Contract Status:",
 
-        // TODO NEW: EMail Status:
-
         // TODO CHANGED
         // OLD: EMail Status:
         // NEW: eMail Status:
@@ -99,14 +97,10 @@
         // TODO NEW: Confirmation Date:
         "confirmation_date" : "Confirmation Date:",
 
-        // TODO NEW: Last login:
-
         // TODO CHANGED
         // OLD: Last login:
         // NEW: Last Login:
         "last_login" : "Last login:",
-
-        // TODO NEW: Confirm email address
 
         // TODO CHANGED
         // OLD: Confirm email address
@@ -179,11 +173,24 @@
         // TODO NEW: Plugins
         "title" : "Plugins",
 
-        // TODO NEW: Restrict by Developer
-
         // TODO CHANGED
         // OLD: Restrict by Developer
         // NEW: Filter by Developer
-        "developer" : "Restrict by Developer"
+        "developer" : "Restrict by Developer",
+
+        // TODO NEW: There are no apps or plugins yet.
+        "empty" : "There are no apps or plugins yet."
+    },
+
+    "admin_studies" : {
+
+        // TODO NEW: Studies
+        "title" : "Studies",
+
+        // TODO NEW: Search criteria
+        "criteria" : "Search criteria",
+
+        // TODO NEW: No matching studies found.
+        "empty" : "No matching studies found."
     }
 }
