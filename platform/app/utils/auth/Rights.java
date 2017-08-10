@@ -60,10 +60,10 @@ public class Rights {
 		role(UserRole.ADMIN   , "_id", "address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "mobile", "name", "role", "status", "zip");
 		
 		action("Studies.search");
-		role(UserRole.RESEARCH, "_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history", "groups");
-		role(UserRole.ADMIN, "_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history", "groups");
-		role(UserRole.PROVIDER, "_id", "name", "code", "owner", "createdAt", "description", "infos", "studyKeywords", "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history");
-		role(UserRole.MEMBER, "_id", "name", "code", "owner", "createdAt", "description", "infos", "studyKeywords", "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history");
+		role(UserRole.RESEARCH, "_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history", "groups", "termsOfUse", "requirements");
+		role(UserRole.ADMIN, "_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history", "groups", "termsOfUse", "requirements");
+		role(UserRole.PROVIDER, "_id", "name", "code", "owner", "createdAt", "description", "infos", "studyKeywords", "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history", "termsOfUse", "requirements");
+		role(UserRole.MEMBER, "_id", "name", "code", "owner", "createdAt", "description", "infos", "studyKeywords", "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history", "termsOfUse", "requirements");
 		
 		action("getRecords");
 		role(UserRole.ANY, "_id", "id", "owner" , "ownerName", "creatorName", "format", "subformat", "content", "code", "group", "app", "creator", "created", "lastUpdated", "version", "name", "description", "tags", "data", "created-after", "created-before", "max-age", "group-strict", "group-exclude", "limit");

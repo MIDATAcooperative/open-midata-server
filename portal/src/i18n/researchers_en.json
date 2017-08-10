@@ -129,6 +129,9 @@
   "studyrules" : {
     "title" : "Study Rules",
     "no_change_warning" : "This setup cannot be changed anymore after Study has been validated.",
-    "sharing_query" : "Sharing Query (JSON)"
+    "sharing_query" : "Sharing Query (JSON)",
+    "terms_of_use" : "Terms",
+    "show_terms" : "Show Terms",
+    "requirements" : "Requirements"
   }
 }

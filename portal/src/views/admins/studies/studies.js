@@ -14,7 +14,7 @@ angular.module('portal')
 		{
 			id :"enum.participantsearchstatus.SEARCHING",
 			properties : {
-				"participantSearch" : "SEARCHING"
+				"participantSearchStatus" : "SEARCHING"
 			}
 		},
 		{

@@ -166,10 +166,11 @@ public class MobileAPI extends Controller {
         return true;
 	}
 	
-	public static MobileAppInstance getAppInstance(String phrase, MidataId applicationId, MidataId owner, Set<String> fields) throws InternalServerException {
+	public static MobileAppInstance getAppInstance(String phrase, MidataId applicationId, MidataId owner, Set<String> fields) throws AppException {
 		Set<MobileAppInstance> candidates = MobileAppInstance.getByApplicationAndOwner(applicationId, owner, fields);
 		AccessLog.log("CS:"+candidates.size());
 		if (candidates.isEmpty()) return null;
+		if (candidates.size() >= 10) throw new BadRequestException("error.blocked.app", "Maximum number of consents reached for this app. Please cleanup using the MIDATA portal.");
 		for (MobileAppInstance instance : candidates) {
 		  if (User.authenticationValid(phrase, instance.passcode)) return instance;
 		}

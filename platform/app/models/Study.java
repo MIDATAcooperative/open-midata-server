@@ -191,6 +191,16 @@ public class Study extends Model {
 		Model.set(Study.class, collection, this._id, "recordQuery", recordQuery);
 	}
     
+    public void setRequirements(Set<UserFeature> requirements) throws InternalServerException {
+    	this.requirements = requirements;
+    	Model.set(Study.class, collection, this._id, "requirements", requirements);
+    }
+    
+    public void setTermsOfUse(String termsOfUse) throws InternalServerException {
+    	this.termsOfUse = termsOfUse;
+    	Model.set(Study.class, collection, this._id, "termsOfUse", termsOfUse);
+    }
+    
     public void addHistory(History newhistory) throws InternalServerException {
     	this.history.add(newhistory);
     	Model.set(Study.class, collection, this._id, "history", this.history);

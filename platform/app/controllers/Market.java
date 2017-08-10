@@ -102,6 +102,7 @@ public class Market extends APIController {
 			
 		  app.name = JsonValidation.getString(json, "name");
 		}
+		app.orgName = JsonValidation.getStringOrNull(json, "orgName");
 		app.description = JsonValidation.getStringOrNull(json, "description");		
 		app.type = JsonValidation.getString(json, "type");
 		app.url = JsonValidation.getStringOrNull(json, "url");
@@ -282,6 +283,7 @@ public class Market extends APIController {
 		plugin.version = JsonValidation.getLong(json, "version");		
 		plugin.filename = JsonValidation.getStringOrNull(json, "filename");
 		plugin.name = JsonValidation.getStringOrNull(json, "name");
+		plugin.orgName = JsonValidation.getStringOrNull(json, "orgName");
 		plugin.description = JsonValidation.getStringOrNull(json, "description");
 		plugin.spotlighted = JsonValidation.getBoolean(json, "spotlighted");
 		plugin.type = JsonValidation.getString(json, "type");

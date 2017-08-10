@@ -39,13 +39,13 @@ angular.module('services')
 		return devid;
 	};
 	
-	service.init = function(client_id, redirect_uri, state, code_challenge, code_challenge_method) {
+	service.init = function(client_id, redirect_uri, state, code_challenge, code_challenge_method, devId) {
 	   cred.appname = client_id;
 	   cred.redirectUri = redirect_uri;
 	   cred.state = state || "none";
 	   cred.code_challenge = code_challenge;
 	   cred.code_challenge_method = code_challenge_method;
-	   cred.device = getDeviceId();
+	   cred.device = devId || getDeviceId();
 	};
 	
 	service.setUser = function(email, password, role) {
@@ -68,7 +68,7 @@ angular.module('services')
 	
 	service.login = function(confirm, confirmStudy) {	    	
 		cred.confirm = confirm || false;
-		cred.confirmStudy = confirmStudy || false;
+		cred.confirmStudy = confirmStudy || (confirm && cred.confirmStudy);
 		return server.post("/v1/authorize", JSON.stringify(cred)).
 		then(function(result) {				
 			if (result.data.istatus === "ACTIVE") {							

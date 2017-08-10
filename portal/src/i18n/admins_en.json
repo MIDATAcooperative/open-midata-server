@@ -93,5 +93,24 @@
     "language" : "Language",
     "title" : "Title (public)",
     "text" : "Content (HTML)"
+  },
+  
+  "admin_study" : {
+     "title" : "Study",
+     "name" : "Name",
+     "created_at" : "Created At",
+     "description" : "Description",
+     "code" : "Code",
+     "required_information" : "Required Information",
+     "required_assistance" : "Required Assistance",
+     "termsOfUse" : "Terms Of Use",
+     "sharing_query" : "Sharing Query",
+     "requirements" : "Requirements",
+     "groups" : "Groups",
+     "group_name" : "Group Name",
+     "group_description" : "Description",
+     "history" : "History",
+     "end_validation_btn" : "End Validation",
+     "delete_study_btn" : "Delete Study"    
   }
 }

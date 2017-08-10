@@ -101,6 +101,9 @@
 		            	           </label>
 		            	         </div>
 		            	          <formerror myid="confirmStudy" type="mustaccept" message="error.missing.study_accept"></formerror>
+		            	          <p class="help-block" ng-show="app.linkedStudyTermsOfUse">
+		            	             <a ng-click="terms({which : app.linkedStudyTermsOfUse })" href="javascript:" translate="registration.study_agb"></a>
+		            	           </p>
 		            	           <p class="help-block">{{ app.linkedStudyName }}</p>
 		            	           <p class="help-block">{{ app.linkedStudyDescription }}</p>
 		            	       </formrow>
