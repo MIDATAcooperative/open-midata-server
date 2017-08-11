@@ -37,25 +37,24 @@
 							  <formrow myid="lastname" label="Surname"><input type="text" class="form-control" id="lastname" name="lastname" translate translate-attr-placeholder="registration.lastname" ng-model="registration.lastname" required></formrow>
 							  
 							  <formrow myid="gender" label="registration.gender"><select class="form-control" id="gender" name="gender" ng-model="registration.gender" required><option value="FEMALE" translate="enum.gender.FEMALE"></option><option value="MALE" translate="enum.gender.MALE"></option><option value="OTHER" translate="enum.gender.OTHER"></option></select></formrow>
-							  <formrow myid="birthday" label="registration.birthday">
-									<div class="col-sx-12 col-sm-12">
-							      <div class="row">
-											<!-- TODO: check user input -> (0)1 to (28)31 -->
+							   <formrow myid="birthday" label="registration.birthday">
+									
+							      <div class="row">										
 							        <div class="col-xs-3 col-sm-3">
-													<input type="text" maxlength="2" class="form-control" id="birthday" name="birthday" translate translate-attr-placeholder="registration.day" ng-model="registration.birthday" required>
-							        </div>
-											<!-- TODO: Add month name (with moment.js i.e.) -->
-											<div class="col-xs-5 col-sm-6">
-							          <select class="form-control" id="birthdayMonth" name="birthdayMonth" ng-model="registration.birthdayMonth"><option ng-repeat="month in months">{{ month }}</option></select>
-							        </div>
-											<!-- TODO: check user input -> 1900 - currentYear -->
+										<input type="text" maxlength="2" class="form-control" id="birthday" name="birthday" translate translate-attr-placeholder="registration.day" ng-model="registration.birthdayDay" required pattern="[0123]?[0-9]">
+							        </div>											
+									<div class="col-xs-5 col-sm-6 selectplaceholder">
+							          <select  id="birthdayMonth" class="form-control" name="birthdayMonth" ng-model="registration.birthdayMonth" required><option ng-repeat="month in months" ng-value="month" translate="{{ 'enum.month.'+month }}"></option><option value="" selected disabled hidden translate="registration.month"></option></select>
+							        </div>											
 							        <div class="col-xs-4 col-sm-3">
-												<input type="text" maxlength="4" class="form-control" id="birthdayYear" name="birthdayYear" translate translate-attr-placeholder="registration.year" ng-model="registration.birthdayYear" required>
+									  <input type="text" maxlength="4" class="form-control" id="birthdayYear" name="birthdayYear" translate translate-attr-placeholder="registration.year" ng-model="registration.birthdayYear" required>
 							        </div>
 							     </div>
-							   </div>
+							  
+                                 <formerror myid="birthday" type="day" message="error.invalid.day"></formerror>
+                                 <formerror myid="birthday" type="month" message="error.invalid.month"></formerror>
+                                 <formerror myid="birthday" type="year" message="error.invalid.year"></formerror>
 							  </formrow>
-
 							  <formrow myid="language" label="registration.language"><select class="form-control" id="language" ng-model="registration.language" ng-change="changeLanguage(registration.language);" ng-options="lang.value as lang.name | translate for lang in languages"></select></formrow>
 							  </div>
 							  <formrow myid="address1" label="registration.address"><input type="text" class="form-control" id="address1" name="address1" translate translate-attr-placeholder="registration.address_line1" ng-model="registration.address1" required></formrow>
