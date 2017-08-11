@@ -14,12 +14,13 @@ angular.module('services')
 	   {
 		  value : "fr",
 		  name : "enum.language.FR"
-	   },
+	   }/*,
 	   {
 		  value : "it",
 		  name : "enum.language.IT"
-	   }
+	   }*/
 	];
+	service.array = ['en' , 'de' , 'fr' /*, 'it' */]; 
 	
 	return service;
 });

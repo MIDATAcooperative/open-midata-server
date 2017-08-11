@@ -21,7 +21,7 @@
 		<div class="row">	
 			<div class="pull-right col-sm-4" ng-show="displayAps.owner && compare!=null">
 			   <label for="selectedAps" translate="records.shared_with"></label>
-			  <select class="form-control" id="selectedAps" ng-model="selectedAps" ng-options="c as c.i18n | translate:{ name : c.name } for c in compare" ng-change="loadSharingDetails()"></select>
+			  <select class="form-control" id="selectedAps" ng-model="selectedAps" ng-options="c as c.i18n | translate:{ name : c.name } group by ('enum.consenttype.'+c.type) | translate for c in compare" ng-change="loadSharingDetails()"></select>
 	        </div>	
 	        <div class="pull-right col-sm-4" ng-show="compare==null && selectedAps!=null && selectedType=='spaces'">
 			  <label for="selectedAps" translate="records.records_used_for_app"></label>	
@@ -29,7 +29,7 @@
 	        </div>		        
 	        <div class="col-sm-4">
 	           <label for="owner" ng-dblclick="showDebug()" translate="records.show"></label>
-	           <select class="form-control" id="owner" ng-model="displayAps" ng-options="c as c.i18n | translate:{ name : c.name } for c in availableAps" ng-change="selectSet()"></select>
+	           <select class="form-control" id="owner" ng-model="displayAps" ng-options="c as c.i18n | translate:{ name : c.name } group by ('records.type_'+c.type) | translate for c in availableAps" ng-change="selectSet()"></select>
 	        </div>			
         </div>	
         
@@ -37,12 +37,12 @@
           <form class="form">
 		    <div class="radio">
 		      <label>
-                <input type="radio" name="treetype" value="group" checked ng-click="setTreeMode('group');"> <span translate="records.by_group"></span> 
+                <input type="radio" name="treetype" value="group" ng-model="treeMode" ng-click="setTreeMode('group');"> <span translate="records.by_group"></span> 
               </label>
             </div>
             <div class="radio">
               <label class="radio-inline">
-                <input type="radio" name="treetype" value="plugin" ng-click="setTreeMode('plugin');"> <span translate="records.by_plugin"></span>
+                <input type="radio" name="treetype" value="plugin" ng-model="treeMode" ng-click="setTreeMode('plugin');"> <span translate="records.by_plugin"></span>
               </label>
             </div>
           </form>

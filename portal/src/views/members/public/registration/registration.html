@@ -1,6 +1,6 @@
 
 	<div class="container" ng-controller="RegistrationCtrl" ng-cloak>
-		<div class="row">
+		<div class="row" ng-hide="view.active">
 			<!-- Registration -->
 			<div class="col-sm-12">
 				<div class="panel-container" style="max-width:630px; padding-top:30px; margin:0 auto;">
@@ -11,8 +11,12 @@
 		            	<div class="panel-body">
 		            		<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
 	                        </p>	
-	                        <p ng-show="offline" class="alert alert-danger" translate="error.offline"></p>					
-							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="register()" role="form">								  
+	                        <p ng-show="offline" class="alert alert-danger" translate="error.offline"></p>
+	                        <div class="row">
+	                        <p class="col-sm-offset-4 col-sm-8" translate="registration.mandantory_fields"></p>
+	                        </div>					
+							<form name="myform" novalidate class="css-form form-horizontal" ng-submit="register()" role="form">
+							  <div class="required">								  
 							  <formrow myid="email" label="registration.email">
 							    <input type="email" class="form-control" id="email" name="email" translate translate-attr-placeholder="registration.email" ng-model="registration.email" required>
 							    <formerror myid="email" type="email" message="error.invalid.email" ></formerror> 
@@ -28,7 +32,8 @@
 							  <formrow myid="firstname" label="registration.firstname"><input type="text" class="form-control" id="firstname" name="firstname" translate translate-attr-placeholder="registration.firstname" ng-model="registration.firstname" required></formrow>
 							  <formrow myid="lastname" label="registration.lastname"><input type="text" class="form-control" id="lastname" name="lastname" translate translate-attr-placeholder="registration.lastname" ng-model="registration.lastname" required></formrow>
 							  
-							  <formrow myid="gender" label="registration.gender"><select class="form-control" id="gender" name="gender" ng-model="registration.gender"><option value="FEMALE" translate="enum.gender.FEMALE">female</option><option value="MALE" translate="enum.gender.MALE"></option><option value="OTHER" translate="enum.gender.OTHER"></option></select></formrow>
+
+							  <formrow myid="gender" label="registration.gender"><select class="form-control" id="gender" name="gender" ng-model="registration.gender" required><option value="FEMALE" translate="enum.gender.FEMALE">female</option><option value="MALE" translate="enum.gender.MALE"></option><option value="OTHER" translate="enum.gender.OTHER"></option></select></formrow>
 							  <formrow myid="birthday" label="registration.birthday">
 									
 							      <div class="row">										
@@ -47,29 +52,68 @@
                                  <formerror myid="birthday" type="month" message="error.invalid.month"></formerror>
                                  <formerror myid="birthday" type="year" message="error.invalid.year"></formerror>
 							  </formrow>
+
 							  <formrow myid="language" label="registration.language"><select class="form-control" id="language" ng-model="registration.language" ng-change="changeLanguage(registration.language);" ng-options="lang.value as lang.name | translate for lang in languages"></select></formrow>
-							  
-							  <formrow myid="address1" label="registration.address"><input type="text" class="form-control" id="address1" name="address1" translate translate-attr-placeholder="registration.address_line1" ng-model="registration.address1" required></formrow>
+							  </div>
+							  <div ng-class="{ 'required' : addressNeeded() }">
+							  <formrow myid="address1" label="registration.address"><input type="text" class="form-control" id="address1" name="address1" translate translate-attr-placeholder="registration.address_line1" ng-model="registration.address1" ng-required="{{addressNeeded()}}"></formrow>
+							  </div>
 							  <formrow myid="address2" label=""><input type="text" class="form-control" id="address2" name="address2" translate translate-attr-placeholder="registration.address_line2" ng-model="registration.address2"></formrow>
-							  <formrow myid="city" label="registration.city"><input type="text" class="form-control" id="city" name="city" translate translate-attr-placeholder="registration.city" ng-model="registration.city" required></formrow>
-							  <formrow myid="zip" label="registration.zip"><input type="text" class="form-control" id="zip" name="zip" translate translate-attr-placeholder="registration.zip" ng-model="registration.zip" required></formrow>
+							  <div ng-class="{ 'required' : addressNeeded() }">
+							  <formrow myid="city" label="registration.city"><input type="text" class="form-control" id="city" name="city" translate translate-attr-placeholder="registration.city" ng-model="registration.city" ng-required="{{addressNeeded()}}"></formrow>
+							  <formrow myid="zip" label="registration.zip"><input type="text" class="form-control" id="zip" name="zip" translate translate-attr-placeholder="registration.zip" ng-model="registration.zip" ng-required="{{addressNeeded()}}"></formrow>
+							  </div>
+							  <div class="required">
 							  <formrow myid="country" label="registration.country"><select class="form-control" id="country" name="country" ng-model="registration.country" required><option value="CH" translate="enum.country.CH"></option></select></formrow>
-                             
+							  </div>                             
                               <formrow myid="phone" label="registration.phone"><input type="text" class="form-control" id="phone" name="phone" translate translate-attr-placeholder="registration.phone" ng-model="registration.phone"></formrow>
-                              <formrow myid="mobile" label="registration.mobile_phone"><input type="text" class="form-control" id="mobile" name="mobile" translate translate-attr-placeholder="registration.mobile_phone" ng-model="registration.mobile"></formrow>
-                              <formrow myid="agb" label="registration.agb"><div class="checkbox"><label><input type="checkbox" id="agb" name="agb" ng-model="registration.agb"><span translate="registration.agb2"></span></label></div>
+                              <div ng-class="{ 'required' : phoneNeeded() }">
+                              <formrow myid="mobile" label="registration.mobile_phone"><input type="text" class="form-control" id="mobile" name="mobile" translate translate-attr-placeholder="registration.mobile_phone" ng-model="registration.mobile" ng-required="{{phoneNeeded()}}"></formrow>
+                              </div>
+                              <formrow myid="agb" label="registration.agb">
+                                 <div class="checkbox">
+                                   <label>
+                                     <input type="checkbox" id="agb" name="agb" ng-model="registration.agb">
+                                     <span translate="registration.agb2"></span>
+                                        <a ng-click="terms({which : 'midata-terms-of-use'});" href="javascript:" translate="registration.agb3"></a>
+                                   </label>
+                                 </div>
                                 <formerror myid="agb" type="mustaccept" message="error.missing.agb"></formerror>
                               </formrow>
-                              
+                               <formrow myid="privacypolicy" label="">
+                                 <div class="checkbox">
+                                   <label>
+                                     <input type="checkbox" id="privacypolicy" name="privacypolicy" ng-model="registration.privacypolicy">
+                                     <span translate="registration.privacypolicy2"></span>
+                                        <a ng-click="terms({which : 'midata-privacy-policy'});" href="javascript:" translate="registration.privacypolicy3"></a>
+                                   </label>
+                                 </div>
+                                <formerror myid="privacypolicy" type="mustaccept" message="error.missing.privacypolicy"></formerror>
+                              </formrow>
+                              <div ng-show="app.termsOfUse">
+                              <formrow myid="appAgb" label="registration.app_agb">
+                                <div class="checkbox">
+                                 <label>
+                                    <input type="checkbox" id="appAgb" name="appAgb" ng-model="registration.appAgb">
+                                    <span translate="registration.app_agb2"></span>
+                                    <a ng-click="terms({which : app.termsOfUse })" href="javascript:" translate="registration.app_agb3"></a>
+                                 </label>
+                                </div>
+                                <formerror myid="appAgb" type="mustaccept" message="error.missing.agb"></formerror>
+                              </formrow>
+                              </div>
                               <div ng-show="app.linkedStudy">
 		            	       <formrow myid="confirmStudy" label="registration.study">
 		            	         <div class="checkbox">
 		            	           <label>
-		            	             <input type="checkbox" id="confirmStudy" name="confirmStudy" ng-model="registration.confirmStudy">
+		            	             <input type="checkbox" id="confirmStudy" name="confirmStudy" ng-model="registration.confirmStudy" ng-required="app.mustParticipateInStudy">
 		            	             <span translate="oauth2.confirm_study"></span>:
 		            	           </label>
 		            	         </div>
 		            	          <formerror myid="confirmStudy" type="mustaccept" message="error.missing.study_accept"></formerror>
+		            	          <p class="help-block" ng-show="app.linkedStudyTermsOfUse">
+		            	             <a ng-click="terms({which : app.linkedStudyTermsOfUse })" href="javascript:" translate="registration.study_agb"></a>
+		            	           </p>
 		            	           <p class="help-block">{{ app.linkedStudyName }}</p>
 		            	           <p class="help-block">{{ app.linkedStudyDescription }}</p>
 		            	       </formrow>
@@ -82,5 +126,10 @@
 				</div>
 			</div>
 		</div>
+		
+	   <div ng-show="view.active">      
+	     <div ng-include="'/views/shared/public/terms/terms-modal.html'"></div>	    	  
+	   </div>
+		
 	</div>
 	

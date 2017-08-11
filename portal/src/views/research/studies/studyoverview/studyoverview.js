@@ -47,7 +47,7 @@ angular.module('portal')
 	
 	$scope.readyForStartExecution = function() {
 		return $scope.study.validationStatus == "VALIDATED" && 
-		       $scope.study.participantSearchStatus == "CLOSED" &&
+		       $scope.study.participantSearchStatus != "PRE" &&
 		       $scope.study.executionStatus == "PRE";
 	};
 	

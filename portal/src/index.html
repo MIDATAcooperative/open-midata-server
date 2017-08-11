@@ -29,22 +29,8 @@
 		<!-- <link rel="stylesheet" href="components/jquery-ui/themes/smoothness/jquery-ui.css">  -->
 		<link rel="stylesheet" href="/app.css">
 		<!-- endbuild -->
-		
-		<!-- JS framework and libraries -->
-        <!-- jQuery needed for Bootstrap's JavaScript plugins and is also used by AngularJS -->
-        <!-- @if NODE_ENV == 'DEVELOPMENT' -->
-		<script src="http://localhost:35729/livereload.js"></script>
-		<script type="text/javascript" src="https://localhost:9000/assets/javascripts/routes" defer></script>
-		<!-- @endif -->
-		<!-- @if BACKEND == 'https://demo.midata.coop:9000' -->
-		<script type="text/javascript" src="https://demo.midata.coop:9000/assets/javascripts/routes" defer></script>
-		<!-- @endif -->
-		<!-- @if BACKEND == 'https://test.midata.coop:9000' -->
-		<script type="text/javascript" src="https://test.midata.coop:9000/assets/javascripts/routes" defer></script>
-		<!-- @endif -->
-		<!-- @if BACKEND == 'https://ch.midata.coop:9000' -->
-		<script type="text/javascript" src="https://ch.midata.coop:9000/assets/javascripts/routes" defer></script>
-		<!-- @endif -->
+				        
+		<script type="text/javascript" src="<!-- @echo BACKEND -->/api/assets/javascripts/routes" defer></script>		
 		<script type="text/javascript" src="components/jquery/dist/jquery.js" defer></script>			
 		<script type="text/javascript" src="components/underscore/underscore-min.js" defer></script>
 		<script type="text/javascript" src="components/bootstrap/dist/js/bootstrap.js" defer></script>
@@ -67,7 +53,7 @@
 		<script type="text/javascript" src="app.js" defer></script>
 		<!-- endbuild -->
 	</head>
-	<body ng-app="portal"  class="<!-- @echo NAME -->">
+	<body ng-app="portal" ng-csp="no-unsafe-eval" class="<!-- @echo NAME -->">
 	  <div id="wrapper">
 	  <div ng-if="false">
 	  <header id="navbar" class="navbar navbar-default" role="navigation" ng-controller="NavbarCtrl">
@@ -79,7 +65,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="https://www.midata.coop">
+			<a class="navbar-brand" href="javascript:">
 	           	  <span class="midata" id="logotype">MIDATA<span>.COOP</span></span>
 	        </a>
 		</div>
@@ -100,13 +86,13 @@
 	  <div id="maincontent" ui-view ng-cloak></div>
 	  <footer id="footer">
 		 <div class="container">
-			<p translate="footer.copyright"></p>
-			<p><strong transplate="footer.portals"></strong></p>
-			   <ul>			     
-			      <li><a ui-sref="public.login" translate="footer.for_members">For Members of the Cooperative</a></li>
-			      <li><a ui-sref="public_research.login" translate="footer.for_researchers">For Research Organizations</a></li>
-			      <li><a ui-sref="public_provider.login" translate="footer.for_providers">For Healthcare Providers</a></li>
-			      <li><a ui-sref="public_developer.guide" translate="footer.for_developers">For Developers</a></li>
+			<p translate="footer.copyright" translate-value-now="{{ currentDate | date:'yyyy' }}">(c) ETH Zürich</p>
+			
+			   <ul>		
+			      <li><a href="https://www.midata.coop" translate="footer.homepage">MIDATA Homepage</a></li>	     
+			      <li><a ui-sref="public.terms({which : 'midata-terms-of-use'})" translate="registration.agb3">Terms of Use</a></li>
+			      <li><a ui-sref="public.terms({which : 'midata-privacy-policy'})" translate="registration.privacypolicy3">Privacy Policy</a></li>
+			     
 			   </ul>	    
 		 </div>
 	  </footer>

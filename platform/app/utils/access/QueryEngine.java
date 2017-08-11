@@ -42,7 +42,7 @@ class QueryEngine {
 	}
 	
 	public static Collection<RecordsInfo> info(APSCache cache, MidataId aps, Map<String, Object> properties, AggregationType aggrType) throws AppException {		
-		return infoQuery(new Query(properties, Sets.create("created", "group", "content", "format", "owner", "app"), Feature_UserGroups.findApsCacheToUse(cache,aps), aps), aps, false, aggrType, null);
+		return infoQuery(new Query(properties, Sets.create("group", "content", "format", "owner", "app"), Feature_UserGroups.findApsCacheToUse(cache,aps), aps), aps, false, aggrType, null);
 	}
 	
 	public static List<DBRecord> isContainedInAps(APSCache cache, MidataId aps, List<DBRecord> candidates) throws AppException {
@@ -88,6 +88,7 @@ class QueryEngine {
 	}
 	
 	public static Collection<RecordsInfo> infoQuery(Query q, MidataId aps, boolean cached, AggregationType aggrType, MidataId owner) throws AppException {
+		long t = System.currentTimeMillis();
 		AccessLog.logBegin("begin infoQuery aps="+aps+" cached="+cached);
 		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
 		
@@ -130,7 +131,7 @@ class QueryEngine {
 				String k = getInfoKey(aggrType, obj.getString("groups"), obj.getString("contents"), obj.getString("formats"), owner, obj.getString("apps"));
 				
 				result.put(k, inf);
-				Date from = inf.calculated != null ? new Date(inf.calculated.getTime() - 1000) : new Date(inf.newest.getTime() + 1);
+				Date from = inf.calculated != null && (inf.calculated.getTime() - 1000 > inf.newest.getTime() + 1) ? new Date(inf.calculated.getTime() - 1000) : new Date(inf.newest.getTime() + 1);
 				q = new Query(q, CMaps.map("created-after", from));
 			
 				long diff = myaps.getLastChanged() - from.getTime();
@@ -180,7 +181,7 @@ class QueryEngine {
 						
 		}
 		
-		AccessLog.logEnd("end infoQuery result: cached="+cached+" records="+recs.size()+" result="+result.size());
+		AccessLog.logEnd("end infoQuery result: cached="+cached+" records="+recs.size()+" result="+result.size()+" time="+(System.currentTimeMillis() - t));
 		if (cached && recs.size()>0 && result.size() == 1) {
 			RecordsInfo inf = result.values().iterator().next();
 			if (inf.apps.size() == 1) {
@@ -295,6 +296,7 @@ class QueryEngine {
     }
     
     private static final Set<String> DATA_ONLY = Sets.create("_id", "encryptedData");
+    
     protected static DBRecord loadData(DBRecord input) throws AppException {
     	if (input.data == null && input.encryptedData == null) {
     	   DBRecord r2 = DBRecord.getById(input._id, DATA_ONLY);
@@ -304,6 +306,25 @@ class QueryEngine {
     	}
 		RecordEncryption.decryptRecord(input);
 		return input;
+    }
+    
+    protected static void loadData(Collection<DBRecord> records) throws AppException {
+    	Map<MidataId, DBRecord> idMap = new HashMap<MidataId,DBRecord>(records.size());
+    	for (DBRecord rec : records) {    		    	
+	    	if (rec.data == null && rec.encryptedData == null) {
+	    	   idMap.put(rec._id, rec);
+	    	}
+	    	
+    	}
+    	if (!idMap.isEmpty()) {
+	    	Collection<DBRecord> fromDB = DBRecord.getAll(CMaps.map("_id", idMap.keySet()), DATA_ONLY);
+	    	for (DBRecord r2 : fromDB) {
+	    	   idMap.get(r2._id).encryptedData = r2.encryptedData;	    	   
+	    	}
+    	}
+    	for (DBRecord rec : records) {    		
+		   RecordEncryption.decryptRecord(rec);
+    	}		
     }
     
     protected static List<DBRecord> duplicateElimination(List<DBRecord> input) {
@@ -375,6 +396,13 @@ class QueryEngine {
 			}
     	} else {
     		Set<String> check = q.mayNeedFromDB();
+    		
+    		if (check.contains("created")) {
+    			for (DBRecord record : result) {
+    				record.meta.put("created", record._id.getCreationDate());
+    			}
+    		}
+    		
     		if (!check.isEmpty()) {
     			for (DBRecord record : result) {
     				boolean fetch = false;
@@ -523,9 +551,9 @@ class QueryEngine {
     	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());
     	for (DBRecord record : input) {
     		Date cmp = (Date) record.meta.get(property);
-    		if (cmp == null) cmp = (Date) record.meta.get("created"); //Fallback for lastUpdated
+    		if (cmp == null) cmp = record._id.getCreationDate(); //Fallback for lastUpdated
     		if (cmp == null) {
-    			AccessLog.log("Record with _id "+record.id+" has not created date!");
+    			AccessLog.log("Record with _id "+record._id.toString()+" has not created date!");
     			continue;
     		}
     		if (minDate != null && cmp.before(minDate)) continue;

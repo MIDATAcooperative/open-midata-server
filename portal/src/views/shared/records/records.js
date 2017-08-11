@@ -27,10 +27,10 @@ angular.module('portal')
 	session.currentUser
 	.then(function(userId) {		
 			$scope.userId = userId;
-			$scope.availableAps = [{ i18n : "records.my_data" , name : "My Data", aps:userId, owner : "self"  }, { i18n:"records.all_data", name : "All Data", aps:userId, owner : "all"}];
+			$scope.availableAps = [{ i18n : "records.my_data" , name : "My Data", aps:userId, owner : "self", type : "global"  }, { i18n:"records.all_data", name : "All Data", aps:userId, owner : "all", type : "global" }];
 			$scope.displayAps = $scope.availableAps[0];
 			var n = "RecordsCtrl_"+$state.current.name;
-			session.load(n, $scope, ["open"]);
+			session.load(n, $scope, ["open", "treeMode"]);
 			
 			if ($state.params.selected != null) {	
 				 var selectedType = $state.params.selectedType;
@@ -55,7 +55,7 @@ angular.module('portal')
 		});
 	
 	$scope.setTreeMode = function(mode) {
-		if ($scope.treeMode === mode) return;
+		//if ($scope.treeMode === mode) return;
 		
 		$scope.records = [];
 		$scope.infos = [];
@@ -65,7 +65,7 @@ angular.module('portal')
 		
 		$scope.treeMode = mode;
 		
-		$scope.getInfos($scope.displayAps.aps, $scope.displayAps.owner, $scope.displayAps.study)
+		$scope.status.doBusy($scope.getInfos($scope.displayAps.aps, $scope.displayAps.owner, $scope.displayAps.study))
 		.then(function() {				
 		   $scope.loadSharingDetails();				 			
 		});
@@ -126,7 +126,7 @@ angular.module('portal')
 			studies.research.list()
 			.then(function(results) {
 				angular.forEach(results.data, function(study) { 
-					$scope.availableAps.push({ i18n:"records.study", name:study.name, aps:userId, study : study._id });
+					$scope.availableAps.push({ i18n:"records.study", name:study.name, aps:userId, study : study._id, type : "study" });
 				});
 			});
 			
@@ -136,7 +136,7 @@ angular.module('portal')
 			.then(function(results) {
 				//$scope.availableAps = [{ name : "Your Data", aps:userId, owner : "self"  }, { name : "All Data", aps:userId, owner : "all"}];
 				angular.forEach(results.data, function(circle) { 
-					$scope.availableAps.push({ i18n:"records.shared", name:circle.ownerName, aps:circle._id });
+					$scope.availableAps.push({ i18n:"records.shared", name:circle.ownerName, aps:circle._id, type : "circle" });
 				});
 			});
 		}
@@ -481,6 +481,7 @@ angular.module('portal')
 	
 	$scope.isSharedGroup = function(group) {
 	   if ($scope.treeMode === "plugin") return false;
+	   if (group.parent != null && !groups[group.parent]) return false;
 	   
 	   group.parentShared = (group.parent != null && groups[group.parent].shared);
 	   group.parentExcluded = (group.parent != null && groups[group.parent].excluded);

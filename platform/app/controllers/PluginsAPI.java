@@ -36,6 +36,7 @@ import models.Plugin;
 import models.Record;
 import models.RecordsInfo;
 import models.Space;
+import models.StudyRelated;
 import models.User;
 import models.enums.AggregationType;
 import models.enums.UserRole;
@@ -351,13 +352,7 @@ public class PluginsAPI extends APIController {
 			AggregationType aggrType = JsonValidation.getEnum(json, "summarize", AggregationType.class);		
 		    result = RecordManager.instance.info(authToken.executorId, targetAps, properties, aggrType);
 
-		    if (properties.containsKey("include-records")) {
-			    for (RecordsInfo inf : result) {
-			    	if (inf.newestRecord != null) {
-			    		inf.newestRecordContent = RecordManager.instance.fetch(authToken.executorId, targetAps, inf.newestRecord);
-			    	}
-			    }
-		    }
+		    
 
 		}
 	    if (fields.contains("ownerName")) ReferenceTool.resolveOwnersForRecordsInfo(result, true);
@@ -435,11 +430,11 @@ public class PluginsAPI extends APIController {
 		record.app = authToken.pluginId;
 		record.owner = authToken.ownerId;
 		record.creator = authToken.executorId;
-		record.created = new Date();
+		record.created = record._id.getCreationDate();
 		
-		if (json.has("created-override")) {
+		/*if (json.has("created-override")) {
 			record.created = JsonValidation.getDate(json, "created-override");
-		}
+		}*/
 		
 		record.format = format;
 		
@@ -511,6 +506,20 @@ public class PluginsAPI extends APIController {
 				Consent consent = Consent.getByIdAndOwner(autoshareAps, inf.ownerId, Sets.create("type"));
 				if (consent != null) { 
 				  RecordManager.instance.share(inf.executorId, inf.space._id, autoshareAps, records, true);
+				}
+			}
+		}
+		
+		/* Publication of study results */ 
+		BSONObject query = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_query");
+		if (query != null && query.containsField("target-study")) {
+			Map<String, Object> q = query.toMap(); 
+			MidataId studyId = MidataId.from(q.get("target-study"));
+			String group = q.get("target-study-group").toString();
+			Set<StudyRelated> srs = StudyRelated.getActiveByGroupAndStudy(group, studyId, Sets.create("_id"));
+			if (!srs.isEmpty()) {
+				for (StudyRelated sr : srs ) {
+				  RecordManager.instance.share(inf.executorId, inf.ownerId, sr._id, records, false);
 				}
 			}
 		}
@@ -752,7 +761,7 @@ public class PluginsAPI extends APIController {
 			record.app = authToken.pluginId;
 			record.owner = authToken.ownerId;
 			record.creator = authToken.executorId;
-			record.created = new Date();
+			record.created = record._id.getCreationDate();
 			record.name = metaData.get("name")[0];
 			record.description = metaData.containsKey("description") ? metaData.get("description")[0] : null;
 			String[] formats = metaData.get("format");

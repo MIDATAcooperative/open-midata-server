@@ -217,3 +217,7 @@
 {"_id":{"$oid":"59313e2aaed6450f200e2ffa"},"system":"http://loinc.org","code":"77568-4","display":"Interferance of pain on walking ability","content":"pain/77568-4"}
 {"_id":{"$oid":"59313e2aaed6450f200e2ffb"},"system":"http://loinc.org","code":"77571-8","display":"Interferance of pain on sleep","content":"pain/77571-8"}
 {"_id":{"$oid":"5937d44eaed6450bd19d01bd"},"system":"http://snomed.info/sct","code":"405152002","display":"Quality of life satisfaction","content":"quality-of-life"}
+{"_id":{"$oid":"59802513aed6450a5c70f840"},"system":"http://midata.coop","code":"MiSensSmellThreshold","display":"Smell concentration threshold of a specific substance","content":"MiSensSmellThreshold"}
+{"_id":{"$oid":"59802513aed6450a5c70f843"},"system":"http://midata.coop","code":"MiSensQuestionnaire","display":"MiSens General Questionnaire","content":"MiSensQuestionnaire"}
+{"_id":{"$oid":"59802514aed6450a5c70f844"},"system":"http://midata.coop","code":"MiSensTasteIntensity","display":"Taste intensity on a GLMS (General Labeled Magnitude Scale) of a specific substance","content":"MiSensTasteIntensity"}
+{"_id":{"$oid":"59802674aed6450a5c70f848"},"system":"http://loinc.org","code":"63582-1","display":"Do you now smoke cigarettes every day, some days, or not at all","content":"loinc/63582-1"}

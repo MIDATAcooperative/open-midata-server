@@ -28,6 +28,7 @@ import models.enums.ContractStatus;
 import models.enums.EventType;
 import models.enums.Gender;
 import models.enums.SubUserRole;
+import models.enums.UserFeature;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.libs.Json;
@@ -35,11 +36,13 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.InstanceConfig;
+import utils.access.IndexManager;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
 import utils.auth.PortalSessionToken;
+import utils.auth.PreLoginSecured;
 import utils.auth.Rights;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
@@ -170,9 +173,7 @@ public class Users extends APIController {
 	@APICall
 	public static Result search(String query) throws AppException {
 		
-		forbidSubUserRole(SubUserRole.TRIALUSER, SubUserRole.NONMEMBERUSER);
-		forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.NONMEMBERUSER);
-		forbidSubUserRole(SubUserRole.APPUSER, SubUserRole.NONMEMBERUSER);
+		requireUserFeature(UserFeature.EMAIL_VERIFIED);
 		
 		Set<String> fields =  Sets.create("firstname", "lastname", "name");
 		Set<Member> result = Member.getAll(CMaps.map("emailLC", query.toLowerCase()).map("searchable", true).map("status", User.NON_DELETED).map("role", UserRole.MEMBER), fields);
@@ -243,7 +244,7 @@ public class Users extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	@Security.Authenticated(AnyRoleSecured.class)
+	@Security.Authenticated(PreLoginSecured.class)
 	public static Result updateAddress() throws AppException {
 		// validate 
 		JsonNode json = request().body().asJson();		
@@ -313,9 +314,7 @@ public class Users extends APIController {
 		boolean searchable = JsonValidation.getBoolean(json, "searchable");
 		
 		if (searchable) {
-			forbidSubUserRole(SubUserRole.TRIALUSER, SubUserRole.NONMEMBERUSER);
-			forbidSubUserRole(SubUserRole.STUDYPARTICIPANT, SubUserRole.NONMEMBERUSER);
-			forbidSubUserRole(SubUserRole.APPUSER, SubUserRole.NONMEMBERUSER);
+			requireUserFeature(UserFeature.EMAIL_VERIFIED);			
 		}
 		
 		String language = JsonValidation.getString(json, "language");
@@ -337,7 +336,7 @@ public class Users extends APIController {
 	 */
 	@BodyParser.Of(BodyParser.Json.class)
 	@APICall
-	@Security.Authenticated(MemberSecured.class)
+	@Security.Authenticated(PreLoginSecured.class)
 	public static Result requestMembership() throws AppException {
 		MidataId userId = new MidataId(request().username());
 		return requestMembershipHelper(userId);
@@ -347,9 +346,9 @@ public class Users extends APIController {
 		
 		Member user = Member.getById(userId, Sets.create("_id", "status", "role", "subroles", "history", "emailStatus", "confirmedAt", "contractStatus", "agbStatus", "lastname", "firstname")); 
 		if (user == null) throw new InternalServerException("error.internal", "User record not found.");
-		if (user.subroles.contains(SubUserRole.TRIALUSER) || user.subroles.contains(SubUserRole.NONMEMBERUSER) || user.subroles.contains(SubUserRole.STUDYPARTICIPANT) || user.subroles.contains(SubUserRole.APPUSER)) {
-			
-		} else throw new BadRequestException("invalid.status_transition", "No membership request required.");
+		//if (user.subroles.contains(SubUserRole.TRIALUSER) || user.subroles.contains(SubUserRole.NONMEMBERUSER) || user.subroles.contains(SubUserRole.STUDYPARTICIPANT) || user.subroles.contains(SubUserRole.APPUSER)) {
+		//	
+		//} else throw new BadRequestException("invalid.status_transition", "No membership request required.");
 		
 		
 		
@@ -414,6 +413,8 @@ public class Users extends APIController {
 			consent.authorized.remove(userId);
 			Consent.set(consent._id, "authorized", consent.authorized);			
 		}
+		
+		RecordManager.instance.clearIndexes(userId);
 		
 		RecordManager.instance.wipe(userId, CMaps.map("owner", "self"));
 		RecordManager.instance.wipe(userId, CMaps.map("owner", "self").map("streams", "true"));

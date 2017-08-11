@@ -3,6 +3,9 @@ package models;
 import java.util.List;
 import java.util.Set;
 
+import org.bson.BSONObject;
+
+import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.Gender;
 import models.enums.ParticipationStatus;
@@ -29,7 +32,7 @@ public class StudyParticipation extends Consent {
 	public int yearOfBirth;
 	public String country;
 	public Gender gender;
-	
+			
 	public StudyParticipation() {
 		this.type = ConsentType.STUDYPARTICIPATION;
 	}
@@ -56,6 +59,14 @@ public class StudyParticipation extends Consent {
 	
 	public static Set<StudyParticipation> getActiveParticipantsByStudyAndGroup(MidataId study, String group, Set<String> fields) throws InternalServerException {
 		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("group", group).map("pstatus", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST)), fields);
+	}
+	
+	public static Set<StudyParticipation> getActiveParticipantsByStudyAndGroupsAndParticipant(Set<MidataId> study, Set<String> group, MidataId member, Set<MidataId> owners, Set<String> fields) throws InternalServerException {
+		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).mapNotEmpty("group", group).map("pstatus", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST)).map("authorized", member).mapNotEmpty("owner", owners).map("status",  ConsentStatus.ACTIVE).map("ownerName", CMaps.map("$exists", false)), fields);
+	}
+	
+	public static Set<StudyParticipation> getActiveParticipantsByStudyAndGroupsAndIds(Set<MidataId> study, Set<String> group, MidataId member, Set<MidataId> owners, Set<String> fields) throws InternalServerException {
+		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).mapNotEmpty("group", group).map("pstatus", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST)).map("authorized", member).mapNotEmpty("_id", owners).map("status",  ConsentStatus.ACTIVE), fields);
 	}
 	
 	public static StudyParticipation getById(MidataId id, Set<String> fields) throws InternalServerException {
@@ -85,6 +96,15 @@ public class StudyParticipation extends Consent {
     
     public static void delete(MidataId studyId, MidataId partId) throws InternalServerException {	
 		Model.delete(StudyParticipation.class, collection, CMaps.map("_id", partId).map("study", studyId));
+	}
+    
+    public void setOwnerName(String ownerName) {
+    	super.setOwnerName(ownerName);
+		this.ownerName = ownerName;
+	}
+    
+    public String getOwnerName() {
+		return ownerName;
 	}
 
 }

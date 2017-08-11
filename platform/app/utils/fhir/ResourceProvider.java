@@ -381,7 +381,15 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 	    }
 	    return parsed;
 	}
-		
+	
+	public T parse(Record record, Class<T> resultClass) throws AppException {
+		List<T> result = parse(Collections.singletonList(record), resultClass);
+		return result.isEmpty() ? null : result.iterator().next();
+	}
+	
+    public String serialize(T resource) {
+    	return ctx.newJsonParser().encodeResourceToString(resource);
+    }
 	
 	public void processResource(Record record, T resource) throws AppException {
 		resource.setId(new IdType(resource.fhirType(), record._id.toString(), record.version));
@@ -406,7 +414,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 		record.creator = info().executorId;
 		record.format = format;
 		record.app = info().pluginId;
-		record.created = new Date(System.currentTimeMillis());
+		record.created = record._id.getCreationDate();
 		record.code = new HashSet<String>();
 		record.owner = info().ownerId;
 		record.version = VersionedDBRecord.INITIAL_VERSION;

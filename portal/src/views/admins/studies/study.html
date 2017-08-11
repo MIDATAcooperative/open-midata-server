@@ -2,7 +2,7 @@
 <div ng-controller="AdminStudyCtrl" ng-cloak>
 
 	<div class="panel panel-primary">
-		<div class="panel-heading">Study</div>
+		<div class="panel-heading" translate="admin_study.title"></div>
 		<div class="body">
 	<loader busy="status.isBusy !== false">
 	<p ng-show="error && !error.field" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
@@ -10,19 +10,19 @@
 	</p>
 	<table class="table">
 	  <tr>
-	    <td>Name</td>
+	    <td translate="admin_study.name"></td>
 	    <td>{{ study.name }}</td>
 	  </tr>
 	  <tr>
-        <td>Created At:</td>
+        <td translate="admin_study.created_at"></td>
         <td>{{ study.createdAt | date }}</td>
       </tr>   
       <tr>
-        <td>Description</td>
+        <td translate="admin_study.description"></td>
         <td>{{ study.description }}</td>
       </tr>      
       <tr>
-	    <td>Code</td>
+	    <td translate="admin_study.code"></td>
 	    <td>{{ study.code }}</td>
 	  </tr>    
     </table>	
@@ -31,23 +31,28 @@
     </div>
         
     <div class="panel panel-primary">
-		<div class="panel-heading">Required Information</div>
+		<div class="panel-heading" translate="admin_study.required_information"></div>
 		<div class="body">
-		  <p>Required Information: <b>{{ study.requiredInformation }}</b></p>
-		  <p>Required Assistance: <b>{{ study.assistance }}</b></p>
-		  <p>Sharing Query:</p>
+		  <p><span translate="admin_study.required_information"></span>: <b>{{ study.requiredInformation }}</b></p>
+		  <p><span translate="admin_study.required_assistance"></span>: <b>{{ study.assistance }}</b></p>
+		  <p><span translate="admin_study.termsOfUse"></span>: <b><a ui-sref="^.terms({which:study.termsOfUse})">{{ study.termsOfUse }}</a></b></p>		  
+		  <p><span translate="admin_study.sharing_query"></span>:</p>
 		  <pre>{{ study.recordQuery | json }}
 		  </pre>
+		  <p translate="admin_study.requirements"></p>
+		  <ul>
+		    <li ng-repeat="req in study.requirements" translate="{{'enum.userfeature.'+req}}"></li>
+		  </ul>
 		</div>
 	</div>
 	
 	 <div class="panel panel-primary">
-		<div class="panel-heading">Groups</div>
+		<div class="panel-heading" translate="admin_study.groups"></div>
 		<div class="body">
 		  <table class="table table-striped">
 		      <tr>
-		        <th>Group Name</th>
-		        <th>Description</th>		        
+		        <th translate="admin_study.group_name"></th>
+		        <th translate="admin_study.group_description"></th>		        
 		      </tr>
 		      <tr ng-repeat="group in study.groups">
 		        <td>{{ group.name }}</td>
@@ -58,15 +63,15 @@
 	</div>
     
     <div ng-show="study.history.length" class="panel panel-primary">
-    <div class="panel-heading">History</div>
+    <div class="panel-heading" translate="admin_study.history"></div>
     <div class="panel-body">
     <table class="table">
       <thead>
         <tr>
-          <th>Event</th>
-          <th>Who</th>
-          <th>When</th>
-          <th>Comment</th>
+          <th translate="studydetails.history_event"></th>
+          <th translate="studydetails.history_who"></th>
+          <th translate="studydetails.history_when"></th>
+          <th translate="studydetails.history_comment"></th>
         </tr>
       </thead>
       <tbody>
@@ -82,8 +87,8 @@
     </div>
     
   
-    <a class="btn btn-default" ui-sref="admin.studies">Back</a> 
-    <button class="btn btn-primary" ng-click="finishValidation()">End Validation</button>    
-    <button ng-show="readyForDelete()" class="btn btn-danger" ng-click="delete()">Delete Study</button>
+    <a class="btn btn-default" ui-sref="admin.studies" translate="common.back_btn">Back</a> 
+    <button class="btn btn-primary" ng-click="finishValidation()" translate="admin_study.end_validation_btn"></button>    
+    <button ng-show="readyForDelete()" class="btn btn-danger" ng-click="delete()" translate="admin_study.delete_study_btn"></button>
     
 </div>

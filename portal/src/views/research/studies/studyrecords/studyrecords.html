@@ -8,13 +8,17 @@
       <tr>
         <th translate="studyrecords.group">Data Group</th>
         <th translate="studyrecords.number_of_records"># Records</th>
+        <th>&nbsp;</th>
       </tr>
       <tr ng-repeat="info in infos">        
 	      <td>{{ info.group }}</td>      
 	      <td>{{ info.count }}</td>
+	      <td><button ng-disabled="status.action == 'download'" ng-click="fhirDownload(info)" href="javascript:" class="btn btn-xs btn-primary" translate="studyrecords.fhir_download_btn"></button>
       </tr>
       </table>
+      <!-- 
 	  <button ng-disabled="status.action == 'download'" ng-click="download()" href="javascript:" ng-show="infos.length" class="btn btn-primary" translate="studyrecords.download_btn">Download</button>
+	   -->
 	  </loader>
 	</div>	
 </div>

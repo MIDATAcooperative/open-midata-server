@@ -351,7 +351,7 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 			QueryBuilder builder = new QueryBuilder(params, query, null);
 				
 			builder.handleIdRestriction();
-			builder.recordOwnerReference("patient", "Patient");
+			builder.recordOwnerReference("patient", "Patient", null);
 			builder.restriction("category", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirConsent.category");
 			builder.restriction("date", false, QueryBuilder.TYPE_DATETIME, "fhirConsent.dateTime");
 			builder.restriction("period", false, QueryBuilder.TYPE_DATETIME, "fhirConsent.period");

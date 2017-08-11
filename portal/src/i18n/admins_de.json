@@ -1,4 +1,5 @@
 {
+
     "admin_navbar" : {
         "members" : "Mitglieder",
         "news" : "News",
@@ -38,7 +39,8 @@
         "last_login" : "Letzte Anmeldung:",
         "email_confirm_btn" : "E-Mail-Adresse bestätigen",
         "comment" : "Bemerkung",
-        "add_comment_btn" : "Bemerkung hinzufügen"
+        "add_comment_btn" : "Bemerkung hinzufügen",
+        "wipe_btn" : "Account beseitigen"
     },
 
     "admin_news" : {
@@ -66,6 +68,21 @@
 
     "admin_plugins" : {
         "title" : "Plugins",
-        "developer" : "Nach Entwickler filtern"
+        "developer" : "Nach Entwickler filtern",
+
+        // TODO NEW: There are no apps or plugins yet.
+        "empty" : "There are no apps or plugins yet."
+    },
+
+    "admin_studies" : {
+
+        // TODO NEW: Studies
+        "title" : "Studies",
+
+        // TODO NEW: Search criteria
+        "criteria" : "Search criteria",
+
+        // TODO NEW: No matching studies found.
+        "empty" : "No matching studies found."
     }
 }

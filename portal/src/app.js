@@ -14,11 +14,11 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
      .useLoader('$translatePartialLoader', {
         urlTemplate: '/i18n/{part}_{lang}.json'
       })   
-     .registerAvailableLanguageKeys(['en', 'de', 'fr', 'it'], {
+     .registerAvailableLanguageKeys(['en', 'de', 'fr' /* , 'it' */], {
        'en_*': 'en',
        'de_*': 'de',
-       'fr_*': 'fr',
-       'it_*': 'it'
+       'fr_*': 'fr'/*,
+       'it_*': 'it'*/
      })
      .fallbackLanguage('en')
      .determinePreferredLanguage();
@@ -80,6 +80,7 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
    $rootScope.$on('$translatePartialLoaderStructureChanged', function () {
       $translate.refresh();
    });
+   $rootScope.currentDate = new Date();
    $translatePartialLoader.addPart("shared");
 }])
 .config(['$compileProvider', function ($compileProvider) {
@@ -95,8 +96,8 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
         if (response.status === 401) {
             $state.go("public.login");
         } else if (response.status === 403) {
-        	if (response.data && response.data.requiredSubUserRole) {        		
-        		$state.go("^.upgrade", { role : response.data.requiredSubUserRole });
+        	if (response.data && (response.data.requiredSubUserRole || response.data.requiredFeature)) {        		
+        		$state.go("^.upgrade", { role : response.data.requiredSubUserRole, feature : response.data.requiredFeature });
         	}
         }
         return $q.reject(response);

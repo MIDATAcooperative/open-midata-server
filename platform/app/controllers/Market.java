@@ -22,8 +22,13 @@ import models.PluginDevStats;
 import models.Plugin_i18n;
 import models.Space;
 import models.Study;
+import models.TermsOfUse;
 import models.enums.MessageReason;
+import models.enums.ParticipantSearchStatus;
 import models.enums.PluginStatus;
+import models.enums.StudyExecutionStatus;
+import models.enums.StudyValidationStatus;
+import models.enums.UserFeature;
 import models.enums.UserRole;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -97,6 +102,7 @@ public class Market extends APIController {
 			
 		  app.name = JsonValidation.getString(json, "name");
 		}
+		app.orgName = JsonValidation.getStringOrNull(json, "orgName");
 		app.description = JsonValidation.getStringOrNull(json, "description");		
 		app.type = JsonValidation.getString(json, "type");
 		app.url = JsonValidation.getStringOrNull(json, "url");
@@ -105,6 +111,7 @@ public class Market extends APIController {
 		app.developmentServer = "https://localhost:9004/"+app.filename;
 		//app.developmentServer = JsonValidation.getStringOrNull(json, "developmentServer");
 		app.tags = JsonExtraction.extractStringSet(json.get("tags"));
+		app.requirements = JsonExtraction.extractEnumSet(json, "requirements", UserFeature.class);
 		app.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
 		app.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
 		app.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");
@@ -117,14 +124,21 @@ public class Market extends APIController {
 		if (getRole().equals(UserRole.ADMIN)) {
 			String linkedStudyCode = JsonValidation.getStringOrNull(json, "linkedStudyCode");
 			if (linkedStudyCode != null) {
-			  Study study = Study.getByCodeFromMember(linkedStudyCode, Sets.create("_id"));
+			  Study study = Study.getByCodeFromMember(linkedStudyCode, Sets.create("_id", "executionStatus", "validationStatus", "participantSearchStatus"));
 			  if (study == null) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Unknown Study");
+			  if (study.executionStatus.equals(StudyExecutionStatus.ABORTED) || study.executionStatus.equals(StudyExecutionStatus.FINISHED)) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Study closed");
+			  if (study.validationStatus.equals(StudyValidationStatus.REJECTED) || study.validationStatus.equals(StudyValidationStatus.DRAFT)) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Study rejected");
+			  if (study.participantSearchStatus.equals(ParticipantSearchStatus.CLOSED)) throw new JsonValidationException("error.invalid.study", "linkedStudy", "invalid", "Study not searching");
+			  
 			  app.linkedStudy = study._id;
 			} else {
 			  app.linkedStudy = null;
 			}
 			app.mustParticipateInStudy = JsonValidation.getBoolean(json, "mustParticipateInStudy");
-						
+				
+			
+		   String termsOfUse = JsonValidation.getStringOrNull(json, "termsOfUse");
+		   app.termsOfUse = termsOfUse;
 		}
 		
 		Map<String, MessageDefinition> predefinedMessages = parseMessages(json);
@@ -269,6 +283,7 @@ public class Market extends APIController {
 		plugin.version = JsonValidation.getLong(json, "version");		
 		plugin.filename = JsonValidation.getStringOrNull(json, "filename");
 		plugin.name = JsonValidation.getStringOrNull(json, "name");
+		plugin.orgName = JsonValidation.getStringOrNull(json, "orgName");
 		plugin.description = JsonValidation.getStringOrNull(json, "description");
 		plugin.spotlighted = JsonValidation.getBoolean(json, "spotlighted");
 		plugin.type = JsonValidation.getString(json, "type");
@@ -277,6 +292,7 @@ public class Market extends APIController {
 		plugin.addDataUrl = JsonValidation.getStringOrNull(json, "addDataUrl");
 		plugin.developmentServer = "https://localhost:9004/"+plugin.filename; //JsonValidation.getStringOrNull(json, "developmentServer");
 		plugin.tags = JsonExtraction.extractStringSet(json.get("tags"));
+		plugin.requirements = JsonExtraction.extractEnumSet(json, "requirements", UserFeature.class);
 		plugin.targetUserRole = JsonValidation.getEnum(json, "targetUserRole", UserRole.class);
 		plugin.defaultSpaceName = JsonValidation.getStringOrNull(json, "defaultSpaceName");
 		plugin.defaultSpaceContext = JsonValidation.getStringOrNull(json, "defaultSpaceContext");

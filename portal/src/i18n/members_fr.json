@@ -1,4 +1,5 @@
 {
+
     "member_login" : {
         "teaser" : "MES DONNÉES - NOTRE SANTÉ !",
         "register_now" : "S'inscrire maintenant",
@@ -24,8 +25,11 @@
         "menu_config_text" : "Configurez votre tableau de bord et l'importation de données.",
         "menu_research" : "News",
         "menu_research_text" : "Nouveautés et announces à propos de MIDATA, de la plateforme et de projets de recherche",
-        "menu_consents" : "Consentements",
+        "menu_consents" : "Partage",
         "menu_consents_text" : "Gérez les données que vous partagez avec d'autres utilisateurs.",
+
+        "starts" : "Quelques idées pour débuter avec MIDATA :",
+
         "answer_questions" : "Pour commencer, nous vous recommandons de répondre à quelques questions. Votre compte sera préconfiguré d'après vos réponses.",
         "answered_questions" : "Merci d'avoir répondu aux questions de configuration! Vous pouvez maintenant consulter votre tableau de bord et le reconfigurer le cas échéant.",
         "answer_btn" : "Répondre aux questions de configuration maintenant",
@@ -39,6 +43,7 @@
         "question_devices" : "Utilisez-vous l'un de ces produits ?",
         "question_devices_answer1" : "Fitbit",
         "question_devices_answer2" : "Jawbone",
+        "question_devices_answer3" : "Withings",
         "come_back" : "Vous pouvez modifier votre configuration en tout temps en consultant la page \"Aide\".",
         "done_btn" : "Terminé"
     },

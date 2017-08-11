@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('OAuth2LoginCtrl', ['$scope', '$location', '$translate', 'server', '$state', 'status', 'session', 'apps', 'studies', 'oauth', function($scope, $location, $translate, server, $state, status, session, apps, studies, oauth) {
+.controller('OAuth2LoginCtrl', ['$scope', '$location', '$translate', 'server', '$state', 'status', 'session', 'apps', 'studies', 'oauth', 'views', function($scope, $location, $translate, server, $state, status, session, apps, studies, oauth, views) {
 	
 	// init
 	$scope.login = { role : "MEMBER"};	
@@ -13,6 +13,8 @@ angular.module('portal')
     ];
 	
 	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
+
+	$scope.view = views.getView("terms");
 	
 	if ($scope.params.language) {
 		$translate.use($scope.params.language);
@@ -27,18 +29,19 @@ angular.module('portal')
 		.then(function(results) {
 			$scope.app = results.data;
 			$scope.login.role = $scope.app.targetUserRole === 'ANY'? "MEMBER" : $scope.app.targetUserRole;
-			oauth.init($scope.params.client_id, $scope.params.redirect_uri, $scope.params.state, $scope.params.code_challenge, $scope.params.code_challenge_method);
+			oauth.init($scope.params.client_id, $scope.params.redirect_uri, $scope.params.state, $scope.params.code_challenge, $scope.params.code_challenge_method, $scope.params.device_id);
 			$scope.device = oauth.getDeviceShort();
 			$scope.consent = "App: "+$scope.app.name+" (Device: "+$scope.device+")";
 			
 			if ($scope.app.linkedStudy) {
-				$scope.status.doBusy(studies.search({ _id : $scope.app.linkedStudy }, ["code", "name", "description"]))
+				$scope.status.doBusy(studies.search({ _id : $scope.app.linkedStudy }, ["code", "name", "description", "termsOfUse"]))
 				.then(function(studyresult) {
 					if (studyresult.data && studyresult.data.length) {
 					  oauth.app = $scope.app;
 					  $scope.app.linkedStudyCode = studyresult.data[0].code;
 				 	  $scope.app.linkedStudyName = studyresult.data[0].name;
 				 	  $scope.app.linkedStudyDescription = studyresult.data[0].description;
+				 	  $scope.app.linkedStudyTermsOfUse = studyresult.data[0].termsOfUse;
 					}
 				});
 			}
@@ -88,6 +91,10 @@ angular.module('portal')
 	
 	$scope.showRegister = function() {
 		$state.go("public.registration");
+	};
+	
+	$scope.terms = function(def) {
+		views.setView("terms", def, "Terms");
 	};
 	
 	$scope.prepare();

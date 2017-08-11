@@ -1,11 +1,13 @@
 {
+
     "footer" : {
 
-        // TODO NEW: (c) 2015-2016 ETH Zürich
-        "copyright" : "(c) 2015-2016 ETH Zürich",
+        // TODO CHANGED
+        // OLD: (c) 2015-2016 ETH Zürich
+        // NEW: (c) 2015-{{now}} ETH Zürich
+        "copyright" : "(c) 2015-{{now}} ETH Zürich",
 
-        // TODO NEW: Midata Portals:
-        "portals" : "Midata Portals:",
+        "portals" : "MIDATA Portals:",
 
         // TODO NEW: For Account Holders
         "for_members" : "For Account Holders",
@@ -37,6 +39,9 @@
         // TODO NEW: Me
         "me" : "Me",
 
+        // TODO NEW: View
+        "view" : "View",
+
         // TODO NEW: Overview
         "overview" : "Overview",
 
@@ -52,7 +57,9 @@
         // TODO NEW: News
         "research" : "News",
 
-        // TODO NEW: Config
+        // TODO CHANGED
+        // OLD: Config
+        // NEW: Configuration
         "config" : "Config",
 
         // TODO NEW: Help
@@ -82,14 +89,25 @@
         // TODO NEW: Full membership required!
         "notrialuser_title" : "Full membership required!",
 
+
         // TODO NEW: In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.
         "notrialuser_detail" : "In order to use this feature you need to complete your registration. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
 
-        // TODO NEW: Midata cooperative membership required!
-        "mustbemember_title" : "Midata cooperative membership required!",
 
-        // TODO NEW: In order to use this feature you must be member of the midata cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
-        "mustbemember_detail" : "In order to use this feature you must be member of the midata cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
+        // TODO NEW: MIDATA cooperative membership required!
+
+        // TODO CHANGED
+        // OLD: Midata cooperative membership required!
+        // NEW: MIDATA cooperative membership required!
+        "mustbemember_title" : "MIDATA cooperative membership required!",
+
+
+        // TODO NEW: In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
+
+        // TODO CHANGED
+        // OLD: In order to use this feature you must be member of the midata cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
+        // NEW: In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
+        "mustbemember_detail" : "In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.",
 
         "notauthorized" : {
 
@@ -103,9 +121,14 @@
             "account" : "You are not authorized to access this account",
 
             // TODO NEW: You are not authorized to access this study.
+            // TODO CHANGED
+            // OLD: You are not authorized to access this study.
+            // NEW: You are not authorized to access this study
             "study" : "You are not authorized to access this study",
 
-            // TODO NEW: This is not your plugin.
+            // TODO CHANGED
+            // OLD: This is not your plugin.
+            // NEW: This is not your plugin
             "not_plugin_owner" : "This is not your pluginƒ"
         },
 
@@ -115,8 +138,10 @@
             // TODO NEW: Please enter a valid email address
             "email" : "Please enter a valid email address",
 
+
             // TODO NEW: Invalid username or password.
             "credentials" : "Invalid username or password.",
+
 
             // TODO NEW: Password and password repetition do not match!
             "password_repetition" : "Password and password repetition do not match!",
@@ -172,6 +197,7 @@
             // TODO NEW: Please provide a username  and a password.
             "credentials" : "Please provide a username  and a password.",
 
+
             // TODO NEW: Please fill out your email address.
             "email" : "Please fill out your email address.",
 
@@ -191,7 +217,10 @@
             "token" : "Missing or bad token.",
 
             // TODO NEW: Terms and conditions not accepted.
-            "agb" : "Terms and conditions not accepted."
+            "agb" : "Terms and conditions not accepted.",
+
+            // TODO NEW: Study participation must be accepted.
+            "study_accept" : "Study participation must be accepted."
         },
 
         "unknown" : {
@@ -260,7 +289,10 @@
             "user" : "User is not allowed to log in. Contact support@midata.coop for help.",
 
             // TODO NEW: Account holder is not allowed to participate in study.
-            "participation" : "Account holder is not allowed to participate in study."
+            "participation" : "Account holder is not allowed to participate in study.",
+
+            // TODO NEW: The consent for using this app has been revoked. To reenable use the MIDATA portal and delete the rejected or expired consent.
+            "consent" : "The consent for using this app has been revoked. To reenable use the MIDATA portal and delete the rejected or expired consent."
         },
 
         "closed" : {
@@ -822,7 +854,7 @@
             // TODO NEW: You may register user accounts for all four portals. Accounts will be validated by the MIDATA administration before they are unlocked.
             "access" : "You may register user accounts for all four portals. Accounts will be validated by the MIDATA administration before they are unlocked.",
 
-            // TODO NEW: This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time 
+            // TODO NEW: This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time
             "uptime" : "This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time ",
 
             // TODO NEW: Store only test and demo data on this instance. There is no backup for test data.
@@ -922,10 +954,23 @@
         "reason" : "Purpose of Registration",
 
         // TODO NEW: AGB
+
+        // TODO CHANGED
+        // OLD: AGB
+        // NEW: Midata AGB
         "agb" : "AGB",
+
+        // TODO NEW: Research
+        "study" : "Research",
 
         // TODO NEW: I accept the terms and conditions
         "agb2" : "I accept the terms and conditions",
+
+        // TODO NEW: App AGB
+        "app_agb" : "App AGB",
+
+        // TODO NEW: I accept the terms and conditions
+        "app_agb2" : "I accept the terms and conditions",
 
         // TODO NEW: Sign Up
         "sign_up_btn" : "Sign Up"
@@ -1036,15 +1081,33 @@
         "code_entered" : "Confirmation Code entered?",
 
         // TODO NEW: 1. Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.
+
+        // TODO CHANGED
+        // OLD: 1. Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.
+        // NEW: Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.
         "email_instructions" : "1. Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.",
+
+        // TODO NEW: For convenience you may enter the code from the email here:
+        "email_code" : "For convenience you may enter the code from the email here:",
 
         // TODO NEW: Resend eMail
         "resend_btn" : "Resend eMail",
 
+        // TODO NEW: Retry login
+        "retry_btn" : "Retry login",
+
         // TODO NEW: 2. A contract has been sent to your postal address. Return it signed to MIDATA.
+
+        // TODO CHANGED
+        // OLD: 2. A contract has been sent to your postal address. Return it signed to MIDATA.
+        // NEW: A contract has been sent to your postal address. Return it signed to MIDATA.
         "contract_instructions" : "2. A contract has been sent to your postal address. Return it signed to MIDATA.",
 
         // TODO NEW: 3. A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.
+
+        // TODO CHANGED
+        // OLD: 3. A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.
+        // NEW: A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.
         "code_intructions" : "3. A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
 
         // TODO NEW: Confirmation code may be entered here after signed contract has arrived at MIDATA office.
@@ -1138,7 +1201,10 @@
         "plugins_you_may_like" : "Plugins you may like",
 
         // TODO NEW: We have no recommendations for you yet.
-        "no_recommendations" : "We have no recommendations for you yet."
+        "no_recommendations" : "We have no recommendations for you yet.",
+
+        // TODO NEW: Use Now
+        "install_now_btn" : "Use Now"
     },
 
     "providersearch" : {
@@ -1221,7 +1287,9 @@
         // TODO NEW: None
         "no_providers" : "None",
 
-        // TODO NEW: remove
+        // TODO CHANGED
+        // OLD: remove
+        // NEW: Remove
         "provider_remove_btn" : "remove",
 
         // TODO NEW: Add
@@ -1299,11 +1367,17 @@
         // TODO NEW: Repair Account
         "repair_account_btn" : "Repair Account",
 
+        // TODO NEW: Reset Portal
+        "reset_spaces_btn" : "Reset Portal",
+
         // TODO NEW: Delete Records
         "delete_records_btn" : "Delete Records",
 
         // TODO NEW: Your account has been repaired.
         "account_repaired" : "Your account has been repaired.",
+
+        // TODO NEW: Your configuration has been resetted.
+        "spaces_resetted" : "Your configuration has been resetted.",
 
         // TODO NEW: Settings
         "settings" : "Settings",
@@ -1410,8 +1484,19 @@
         // TODO NEW: Choose a secure passcode
         "choose_passcode" : "Choose a secure passcode",
 
-        // TODO NEW: With which persons(s) do you want to share data?
+        // TODO NEW: Who is sharing data?
+        "who_is_owner" : "Who is sharing data?",
+
+        // TODO CHANGED
+        // OLD: With which persons(s) do you want to share data?
+        // NEW: With which persons(s) is data shared?
         "which_persons" : "With which persons(s) do you want to share data?",
+
+        // TODO NEW: Select person that shares data
+        "set_owner_btn" : "Select person that shares data",
+
+        // TODO NEW: Add yourself
+        "add_yourself_btn" : "Add yourself",
 
         // TODO NEW: Add New Person
         "add_person_btn" : "Add New Person",
@@ -1428,7 +1513,9 @@
         // TODO NEW: Consent expiration date:
         "expiration_date" : "Consent expiration date:",
 
-        // TODO NEW: Shares only data created before:
+        // TODO CHANGED
+        // OLD: Shares only data created before:
+        // NEW: Do not share data created after:
         "created_before" : "Shares only data created before:",
 
         // TODO NEW: What data do you want to share?
@@ -1446,8 +1533,14 @@
         // TODO NEW: Consent
         "title" : "Consent",
 
+        // TODO NEW: Owner of Consent
+        "owner" : "Owner of Consent",
+
         // TODO NEW: Name of Consent
         "name" : "Name of Consent",
+
+        // TODO NEW: Consent created at
+        "date_of_creation" : "Consent created at",
 
         // TODO NEW: Type of Consent
         "type" : "Type of Consent",
@@ -1455,20 +1548,11 @@
         // TODO NEW: Status of Consent
         "status" : "Status of Consent",
 
-        // TODO NEW: Password
-        "password" : "Password",
-
-        // TODO NEW: A password has been set if you need to relogin with the app.
-        "password_exists" : "A password has been set if you need to relogin with the app.",
-
-        // TODO NEW: Show password
-        "show_password" : "Show password",
-
-        // TODO NEW: Use your email address and this password for login:
-        "password_shown" : "Use your email address and this password for login:",
-
         // TODO NEW: With which persons(s) do you want to share data?
         "people" : "With which persons(s) do you want to share data?",
+
+        // TODO NEW: Non MIDATA account holder
+        "external" : "Non MIDATA account holder",
 
         // TODO NEW: Add More People
         "add_people_btn" : "Add More People",
@@ -1485,7 +1569,9 @@
         // TODO NEW: Consent expiration date:
         "expiration_date" : "Consent expiration date:",
 
-        // TODO NEW: Shares only data created before:
+        // TODO CHANGED
+        // OLD: Shares only data created before:
+        // NEW: Does not share data created after:
         "created_before" : "Shares only data created before:",
 
         // TODO NEW: What data is shared?
@@ -1554,8 +1640,19 @@
         // TODO NEW: You have {{ count }} consents:
         "count" : "You have {{ count }} consents:",
 
-        // TODO NEW: Name
+        // TODO NEW: Show consents where you share data with someone else
+        "where_owner" : "Show consents where you share data with someone else",
+
+        // TODO NEW: Show consents where data is shared with you
+        "where_authorized" : "Show consents where data is shared with you",
+
+        // TODO CHANGED
+        // OLD: Name
+        // NEW: Consent Title
         "name" : "Name",
+
+        // TODO NEW: Sharing Person
+        "ownerName" : "Sharing Person",
 
         // TODO NEW: Type
         "type" : "Type",
@@ -1571,6 +1668,15 @@
 
         // TODO NEW: Add new consent
         "add_new_btn" : "Add new consent"
+    },
+
+    "revconsents" : {
+
+        // TODO NEW: There are {{ count }} consents sharing data with you:
+        "count" : "There are {{ count }} consents sharing data with you:",
+
+        // TODO NEW: Add Request for Consent
+        "add_new_btn" : "Add Request for Consent"
     },
 
     "importrecords" : {
@@ -1591,6 +1697,9 @@
         "delete_btn" : "Delete this space",
 
         // TODO NEW: Used records...
+        // TODO CHANGED
+        // OLD: Used records..
+        // NEW: Used records...
         "used_btn" : "Used records...",
 
         // TODO NEW: Share...
@@ -1608,22 +1717,22 @@
         // TODO NEW: My Data
         "title" : "My Data",
 
-        // TODO NEW: Please use the 'share' and 'unshare' buttons to select which records you want to share with consent 
+        // TODO NEW: Please use the 'share' and 'unshare' buttons to select which records you want to share with consent
         "share_instructions1" : "Please use the 'share' and 'unshare' buttons to select which records you want to share with consent ",
 
-        // TODO NEW: This consent currently shares data with 
+        // TODO NEW: This consent currently shares data with
         "share_instructions2" : "This consent currently shares data with ",
 
         // TODO NEW: people.
         "share_instructions3" : "people.",
 
-        // TODO NEW: In order to permanently 
+        // TODO NEW: In order to permanently
         "delete_instructions1" : "In order to permanently ",
 
         // TODO NEW: delete
         "delete_instructions2" : "delete",
 
-        // TODO NEW: a record 
+        // TODO NEW: a record
         "delete_instructions3" : "a record ",
 
         // TODO NEW: double-click
@@ -1644,6 +1753,12 @@
         // TODO NEW: Back to Visualization
         "back_to_plugin" : "Back to Visualization",
 
+        // TODO NEW: Grouped by type of content
+        "by_group" : "Grouped by type of content",
+
+        // TODO NEW: Grouped by application
+        "by_plugin" : "Grouped by application",
+
         // TODO NEW: Show:
         "show" : "Show:",
 
@@ -1652,6 +1767,9 @@
 
         // TODO NEW: All Data
         "all_data" : "All Data",
+
+        // TODO NEW: Personal Data
+        "all" : "Personal Data",
 
         // TODO NEW: Study: {{name}}
         "study" : "Study: {{name}}",
@@ -1686,8 +1804,32 @@
         // TODO NEW: This application requests access:
         "requesting_app" : "This application requests access:",
 
+        // TODO NEW: MIDATA Sign In for:
+        "sign_in" : "MIDATA Sign In for:",
+
         // TODO NEW: Sign In
-        "sign_in_btn" : "Sign In"
+        "sign_in_btn" : "Sign In",
+
+        // TODO NEW: Device: {{ device}}
+        "device" : "Device: {{ device}}",
+
+        // TODO NEW: Please confirm the application consent using MIDATA portal then retry. Consent title is: {{ consent }}
+        "please_confirm" : "Please confirm the application consent using MIDATA portal then retry. Consent title is: {{ consent }}",
+
+        // TODO NEW: Confirm Access
+        "confirm_btn" : "Confirm Access",
+
+        // TODO NEW: Requested Access:
+        "requests_access" : "Requested Access:",
+
+        // TODO NEW: Group: {{ group }}
+        "shares_group" : "Group: {{ group }}",
+
+        // TODO NEW: Format: {{ format }}
+        "shares_format" : "Format: {{ format }}",
+
+        // TODO NEW: Content: {{ content }}
+        "shares_content" : "Content: {{ content }}"
     },
 
     "dashboard" : {
@@ -1827,7 +1969,9 @@
         // TODO NEW: Add Users to Consent
         "addusers" : "Add Users to Consent",
 
-        // TODO NEW: Shared Records:
+        // TODO CHANGED
+        // OLD: Shared Records:
+        // NEW: Shared records:
         "shared_with_study" : "Shared Records:",
 
         // TODO NEW: Records of this patient:
@@ -1849,7 +1993,13 @@
         "view_btn" : "View",
 
         // TODO NEW: Add more
-        "install_btn" : "Add more"
+        "install_btn" : "Add more",
+
+        // TODO NEW: Measures
+        "observations" : "Measures",
+
+        // TODO NEW: Calendar
+        "calendar" : "Calendar"
     },
 
     "measure" : {
@@ -1891,7 +2041,10 @@
     "config" : {
 
         // TODO NEW: Fitbit Configuration
-        "fitbit" : "Fitbit Configuration"
+        "fitbit" : "Fitbit Configuration",
+
+        // TODO NEW: Withings Configuration
+        "withings" : "Withings Configuration"
     },
 
     "spacesummary" : {
@@ -1996,17 +2149,19 @@
 
     "addusers" : {
 
-        // TODO NEW: Contacts
+        // TODO CHANGED
+        // OLD: Contacts
+        // NEW: Existing contacts:
         "contacts" : "Contacts",
 
         // TODO NEW: All users
         "all_users" : "All users",
 
-        // TODO NEW: You have no users in your circles yet.
-        "no_contacts" : "You have no users in your circles yet.",
-
         // TODO NEW: No contacts can be added to this circle.
         "no_contacts_to_add" : "No contacts can be added to this circle.",
+
+        // TODO NEW: Enter email of target person:
+        "search_by_email" : "Enter email of target person:",
 
         // TODO NEW: Search for a user
         "search_user" : "Search for a user",

@@ -1,12 +1,12 @@
 angular.module('portal')
-.controller('AppMessagesCtrl', ['$scope', '$state', 'server', 'apps', 'status', function($scope, $state, server, apps, status) {
+.controller('AppMessagesCtrl', ['$scope', '$state', 'server', 'apps', 'status', 'languages', function($scope, $state, server, apps, status, languages) {
 	
 	// init
 	$scope.error = null;
 	
 	$scope.status = new status(false, $scope);
 	
-	$scope.languages = ['en', 'de', 'fr', 'it'];
+	$scope.languages = languages.array;
     $scope.reasons = ['REGISTRATION', 'FIRSTUSE_ANYUSER', 'FIRSTUSE_EXISTINGUSER', 'CONSENT_REQUEST_OWNER_INVITED', 'CONSENT_REQUEST_OWNER_EXISTING', 'CONSENT_REQUEST_AUTHORIZED_INVITED', 'CONSENT_REQUEST_AUTHORIZED_EXISTING', 'CONSENT_CONFIRM_OWNER', 'CONSENT_CONFIRM_AUTHORIZED', 'CONSENT_REJECT_OWNER', 'CONSENT_REJECT_AUTHORIZED' ];
 	$scope.sel = { lang : 'en' };
     $scope.messages = [];

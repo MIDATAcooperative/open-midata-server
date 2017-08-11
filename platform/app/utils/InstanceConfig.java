@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.List;
+
 import models.enums.InstanceType;
 import play.Play;
 
@@ -11,6 +13,9 @@ public class InstanceConfig {
 	private String portalServerDomain;
 	private String pluginServerDomain;
 	private String adminEmail;
+	
+	private String defaultLanguage;
+	private List<String> countries;
 	
 	public InstanceConfig() {
 		init();
@@ -60,7 +65,23 @@ public class InstanceConfig {
 	public String getAdminEmail() {
 		return adminEmail;
 	}
-		
+	
+	/**
+	 * returns the default language code for this platform
+	 * @return
+	 */		
+	public String getDefaultLanguage() {
+		return defaultLanguage;
+	}
+
+	/**
+	 * returns the list of supported countries for this platform
+	 * @return
+	 */
+	public List<String> getCountries() {
+		return countries;
+	}
+
 	public void init() {
 		String instanceTypeStr = Play.application().configuration().getString("instanceType");
 		
@@ -68,13 +89,22 @@ public class InstanceConfig {
 		else if (instanceTypeStr.equals("demo")) instanceType = InstanceType.DEMO;
 		else if (instanceTypeStr.equals("test")) instanceType = InstanceType.TEST;
 		else if (instanceTypeStr.equals("prod")) instanceType = InstanceType.PROD;
+		else if (instanceTypeStr.equals("perftest")) instanceType = InstanceType.PERFTEST;
 		
-		defaultHost = Play.application().configuration().getString("portal.originUrl");
+		if (instanceType.disableCORSProtection()) {
+		  defaultHost = "*";
+		} else {
+		  defaultHost = Play.application().configuration().getString("portal.originUrl");
+		}
 		
 		pluginServerDomain = Play.application().configuration().getString("visualizations.server");
 		
 		portalServerDomain = Play.application().configuration().getString("portal.server");
 		
 		adminEmail = Play.application().configuration().getString("emails.admin", "alexander.kreutz@midata.coop");// TODO change default email to something useful
+		
+		defaultLanguage = Play.application().configuration().getString("default.language", "en");
+		
+		countries = Play.application().configuration().getStringList("default.countries");
 	}
 }

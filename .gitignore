@@ -16,3 +16,8 @@ portal/node_modules
 portal/dest
 platform/conf/application.conf
 platform/conf/secret.conf.gz.nc
+.classpath
+.project
+nginx/sites-available/*
+portal/.tmp/*
+**/package-lock.json

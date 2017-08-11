@@ -58,7 +58,7 @@ angular.module('fhirDocref')
 		$scope.displayCDA = function(id) {
 			$scope.loading++;
 			
-			$http.get("https://" + window.location.hostname + ":9000/v1/plugin_api/records/file?authToken="+encodeURIComponent(midataServer.authToken)+"&id="+encodeURIComponent(id)).
+			$http.get(midataServer.baseurl + "/v1/plugin_api/records/file?authToken="+encodeURIComponent(midataServer.authToken)+"&id="+encodeURIComponent(id)).
 			then(function(result) {		
 				$scope.isCDA = true;
 				var parser = new DOMParser();				

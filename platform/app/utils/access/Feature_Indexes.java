@@ -54,6 +54,7 @@ private Feature next;
 			}			
 			
 			AccessLog.logBegin("start index query");
+			long startTime = System.currentTimeMillis();
 			
 			Object indexQueryUnparsed = q.getProperties().get("index");
 			Condition indexQueryParsed = null;
@@ -90,9 +91,12 @@ private Feature next;
 			
 			
 			IndexUse myAccess = parse(pseudo, q.getRestriction("format"), indexQueryParsed);			
-								
+				
+			long afterPrepareTime = System.currentTimeMillis();
+			
 			Collection<IndexMatch> matches = myAccess.query(q, targetAps);
 			
+			long afterQuery = System.currentTimeMillis();
 			
 			Map<MidataId, Set<MidataId>> filterMatches = new HashMap<MidataId, Set<MidataId>>();
 			for (IndexMatch match : matches) {
@@ -165,12 +169,15 @@ private Feature next;
 					
 			   }
 			}
+			long endTime = System.currentTimeMillis();
 
 			AccessLog.log("index query found "+matches.size()+" matches, "+result.size()+" in correct aps.");
 				
-			myAccess.revalidate(result);						
+			myAccess.revalidate(result);				
 			
-			AccessLog.logEnd("end index query "+result.size()+" matches.");
+			long afterRevalidateTime = System.currentTimeMillis();
+			
+			AccessLog.logEnd("end index query "+result.size()+" matches. timePrepare="+(afterPrepareTime-startTime)+" exec="+(afterQuery-afterPrepareTime)+" postLookup="+(endTime-afterQuery)+" revalid="+(afterRevalidateTime-endTime));
 			return result;
 						
 			
@@ -251,13 +258,17 @@ private Feature next;
 		}
 		
 		public Collection<IndexMatch> query(Query q, Set<MidataId> targetAps) throws AppException {
+			long t1 = System.currentTimeMillis();
 			prepare();
 			root = cachedIndexRoots.get(index._id);
+			long t2 = System.currentTimeMillis();
 			if (root == null) {
 			  root = IndexManager.instance.getIndexRootAndUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index, targetAps);
 			  cachedIndexRoots.put(index._id, root);
 			}
+			long t3 = System.currentTimeMillis();
 			matches = IndexManager.instance.queryIndex(root, condition);
+			AccessLog.log("Index use: prep="+(t2-t1)+" update="+(t3-t2)+" query="+(System.currentTimeMillis() - t3));
 			return matches;
 			
 		}
@@ -284,7 +295,12 @@ private Feature next;
 				if (results == null) {
 					results = partResult;
 				} else {
-					results.retainAll(partResult);
+					Set<IndexMatch> check = new HashSet<IndexMatch>(partResult);
+					Collection<IndexMatch> newresult = new ArrayList<IndexMatch>();
+					for (IndexMatch match : results) {
+						if (check.contains(match)) newresult.add(match);
+					}
+					results = newresult;
 				}
 				if (results.size() < NO_SECOND_INDEX_COUNT) return results;
 			}

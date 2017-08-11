@@ -12,7 +12,7 @@ var en = {
 	"missing_description" : "Please provide a brief description of the record.",
 	"choose" : "Please choose a file to upload.",
 	"internal" : "An unexpected error occurred. Please reload the page and try again.",
-	
+
 	"success" : "File upload complete."
 },
 de = {
@@ -29,12 +29,26 @@ de = {
 	"missing_description" : "Bitte eine kurze Beschreibung eingeben.",
 	"choose" : "Bitte eine Datei zum Hochladen wählen",
 	"internal" : "Ein unerwarteter Fehler ist aufgetreten. Bitte Seite erneut laden und nochmals versuchen.",
-	
-	"success" : "Hochladen der Datei abgeschlossen."		
+
+	"success" : "Hochladen der Datei abgeschlossen."
 },
 it = {
-		
+
 },
 fr = {
-		
+	"intro_description" : "Envoyer un fichier de votre choix.",
+	"title" : "Titre",
+	"description" : "Description",
+	"description2" : "Bref description de votre enregistrement.",
+	"file" : "Fichier",
+	"cancel_btn" : "Annuler",
+	"save_btn" : "Enregistrer",
+	"saving" : "Enregistrement du fichier...",
+	"missing_title" : "Veuillez entrer un titre.",
+	"shorter_title" : "Veuillez entrer un titre succint (moins de 50 caractères).",
+	"missing_description" : "Veuillez entrer une bref description.",
+	"choose" : "Veuillez selectionner un fichier à envoyer",
+	"internal" : "Une erreur est survenue. Veuillez recharger la page et recommancer.",
+
+	"success" : "Envoi du fichier terminée."
 };

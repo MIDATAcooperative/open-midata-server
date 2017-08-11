@@ -19,7 +19,7 @@ angular.module('fhirDocref')
 
    		var initUploader = function() {
    			uploader = $scope.uploader = new FileUploader({
-   				"url": "https://" + window.location.hostname + ":9000/v1/plugin_api/records/upload",
+   				"url": midataServer.baseurl + "/v1/plugin_api/records/upload",
    				"removeAfterUpload": true,
    				"queueLimit": 1 // restrict to one file per upload
    			});

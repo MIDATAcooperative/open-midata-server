@@ -2,6 +2,8 @@ angular.module('services')
 .factory('apps', ['server', '$q', 'session', '$filter', function(server, $q, session, $filter) {
 	var service = {};
 
+	service.userfeatures = ['EMAIL_ENTERED', 'EMAIL_VERIFIED', 'PHONE_ENTERED', 'PHONE_VERIFIED', 'ADDRESS_ENTERED' ,'ADDRESS_VERIFIED', 'PASSPORT_VERIFIED', 'MIDATA_COOPERATIVE_MEMBER', 'ADMIN_VERIFIED'];
+	
     service.getApps = function(properties, fields) {
    	   var data = {"properties": properties, "fields": fields};
 	   return server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data));
