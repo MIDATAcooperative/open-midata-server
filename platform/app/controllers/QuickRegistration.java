@@ -32,6 +32,7 @@ import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
+import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
@@ -68,7 +69,7 @@ public class QuickRegistration extends APIController {
 		Plugin app = Plugin.getByFilename(appName, Plugin.ALL_PUBLIC);
 		if (app == null) throw new BadRequestException("error.invalid.appcode", "Unknown code for app.");
   
-		Set<UserFeature> requirements = EnumSet.noneOf(UserFeature.class);
+		Set<UserFeature> requirements = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(UserRole.MEMBER);
 		if (app.requirements != null) requirements.addAll(app.requirements);
 		
 		if (app.linkedStudy != null && app.mustParticipateInStudy && !confirmStudy) {
@@ -145,7 +146,7 @@ public class QuickRegistration extends APIController {
 		user.initialApp = app._id;
 		if (study != null) user.initialStudy = study._id;
 									
-		user.status = UserStatus.ACTIVE;	
+		user.status = UserStatus.NEW;	
 		
 		user.history.add(new History(EventType.TERMS_OF_USE_AGREED, user, app.termsOfUse));
 		
@@ -230,7 +231,7 @@ public class QuickRegistration extends APIController {
 		
 		user.initialApp = app._id;		
 						
-		user.status = UserStatus.ACTIVE;		
+		user.status = UserStatus.NEW;		
 		Application.registerCreateUser(user);								
 		Application.sendWelcomeMail(app._id,user);
 		Circles.fetchExistingConsents(user._id, user.emailLC);

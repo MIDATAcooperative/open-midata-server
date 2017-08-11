@@ -7,6 +7,7 @@ angular.module('portal')
 		
 		terms.get(name, version,language)
 		.then(function(result) {
+			console.log(result.data);
 			$scope.terms = result.data;
 		});
 	};

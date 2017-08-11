@@ -1,5 +1,8 @@
 package models.enums;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 /**
  * Type of platform installation
  *
@@ -30,14 +33,7 @@ public enum InstanceType {
 	 * Performance test instance
 	 */
 	PERFTEST;
-		
-	/**
-	 * Users need status ACTIVE to log in
-	 * @return 
-	 */
-	public boolean getUsersNeedValidation() {
-	   return this != LOCAL && this != PERFTEST;	
-	}
+			
 	
 	/**
 	 * Debug functions like direct APS reads are allowed
@@ -141,5 +137,21 @@ public enum InstanceType {
 	 */
 	public boolean disableEMailValidation() {
 		return this == PERFTEST;
+	}
+	
+	public Set<UserFeature> defaultRequirementsPortalLogin(UserRole role) {
+		if (role != UserRole.MEMBER) return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED);
+		if (this == TEST || this == DEMO || this == PROD) {
+		   return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED);
+		}
+		return EnumSet.of(UserFeature.EMAIL_VERIFIED);
+	}
+	
+    public Set<UserFeature> defaultRequirementsOAuthLogin(UserRole role) {
+    	if (role != UserRole.MEMBER) return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED);
+    	if (this == TEST || this == DEMO) {
+ 		   return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED);
+ 		}
+    	return EnumSet.of(UserFeature.EMAIL_VERIFIED);
 	}
 }

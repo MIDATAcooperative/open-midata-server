@@ -106,7 +106,11 @@ angular.module('portal')
 		} else if (funcresult) {
 		  session.postLogin(funcresult, $state);		
 	    } else {
-	      $state.go("^.user",{userId:$scope.registration._id});	
+	      try {
+	        $state.go("^.user",{userId:$scope.registration._id});
+	      } catch(e) {
+	    	$state.go("^.login");
+	      }
 	    }
 		
 	};

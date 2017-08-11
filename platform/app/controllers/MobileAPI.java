@@ -45,6 +45,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import utils.AccessLog;
+import utils.InstanceConfig;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
@@ -217,7 +218,9 @@ public class MobileAPI extends Controller {
 			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");            
             if (!refreshToken.appId.equals(app._id)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");
             User user = User.getById(appInstance.owner, User.ALL_USER);
-            if (Application.loginHelperPreconditionsFailed(user, app.requirements) != null) return status(UNAUTHORIZED); 
+            Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
+            if (app.requirements != null) req.addAll(app.requirements);
+            if (Application.loginHelperPreconditionsFailed(user, req) != null) return status(UNAUTHORIZED); 
             
             phrase = refreshToken.phrase;
             KeyManager.instance.unlock(appInstance._id, phrase);
@@ -246,7 +249,9 @@ public class MobileAPI extends Controller {
 			if (!Member.authenticationValid(password, user.password)) {
 				throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
 			}
-			if (Application.loginHelperPreconditionsFailed(user, app.requirements)!=null) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
+			Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
+			if (app.requirements != null) req.addAll(app.requirements);
+			if (Application.loginHelperPreconditionsFailed(user, req)!=null) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
 			
 			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));			
 			if (appInstance != null && !verifyAppInstance(appInstance, user._id, app._id)) {

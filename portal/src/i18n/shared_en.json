@@ -206,7 +206,8 @@
 	   "ADDRESS_ENTERED" : "User must have entered his address",
 	   "ADDRESS_VERIFIED" : "User address must have been verified",
 	   "PASSPORT_VERIFIED" : "Users ID card must have been verified",
-	   "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative"
+	   "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative",
+	   "ADMIN_VERIFIED" : "Account must have been unlocked by MIDATA admin"
 	 },
 	 "consentstatus" : {
 	   "ACTIVE" : "Active",
@@ -483,7 +484,8 @@
     "enter_now_btn" : "Enter now",
     "email_success" : "E-Mail address has been confirmed.",
     "address_entered" : "Your postal address is required to use this service, please provide it.",
-    "phone_entered" : "A mobile phone number is required to use this service, please provide it."
+    "phone_entered" : "A mobile phone number is required to use this service, please provide it.",
+    "admin_verified" : "Your account must be confirmed by a MIDATA admin. Please retry later. If your account has not been confirmed for more than 24 hours please contact MIDATA."
   },
 
   "changepassphrase" : {
