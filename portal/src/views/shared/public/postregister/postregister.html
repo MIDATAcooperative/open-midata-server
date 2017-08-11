@@ -28,9 +28,14 @@
 							<hr>
 						</div>
 
-
+                        <div ng-show="progress.ADMIN_VERIFIED">
+                          <p translate="postregister.admin_verified"></p>
+                          <button class="btn btn-default" ng-click="retry()" translate="postregister.retry_btn"></button>
+                        </div>
 
 						<div ng-show="progress.ADDRESS_VERIFIED && !progress.ADDRESS_ENTERED">
+							<div class="extraspace"></div>
+							<div class="alert alert-info" translate="postregister.pilot_phase"></div>
 							<div class="extraspace"></div>
 							<div ng-show="progress.agbStatus=='NEW'">
 								<p translate="member_user.agb_not_requested"></p>

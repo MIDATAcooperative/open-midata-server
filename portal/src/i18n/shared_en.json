@@ -67,6 +67,9 @@
        "appcode" : "Unknown code for app.",
        "status_transition" : "Invalid status change",
        "date" : "Invalid value for date field",
+       "day" : "Enter a valid day of month (1 - 31)",
+       "year" : "Enter a valid year (4 digits)",
+       "month" : "Choose a valid month",
        "string" : "Field must be of type string",
        "token" : "Invalid authorization token. Please relogin.",
        "json" : "Invalid JSON provided",
@@ -206,7 +209,8 @@
 	   "ADDRESS_ENTERED" : "User must have entered his address",
 	   "ADDRESS_VERIFIED" : "User address must have been verified",
 	   "PASSPORT_VERIFIED" : "Users ID card must have been verified",
-	   "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative"
+	   "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative",
+	   "ADMIN_VERIFIED" : "Account must have been unlocked by MIDATA admin"
 	 },
 	 "consentstatus" : {
 	   "ACTIVE" : "Active",
@@ -302,6 +306,20 @@
 	   "DE" : "German",
 	   "IT" : "Italian",
 	   "FR" : "Frensh"
+	 },
+	 "month" : {
+	   "01" : "Jan",
+	   "02" : "Feb",
+	   "03" : "Mar",
+	   "04" : "Apr",
+	   "05" : "May",
+	   "06" : "Jun",
+	   "07" : "Jul",
+	   "08" : "Aug",
+	   "09" : "Sep",
+	   "10" : "Oct",
+	   "11" : "Nov",
+	   "12" : "Dec"
 	 },
 	 "tags" : {
 	   "Analysis" : "Analysis",
@@ -483,7 +501,8 @@
     "enter_now_btn" : "Enter now",
     "email_success" : "E-Mail address has been confirmed.",
     "address_entered" : "Your postal address is required to use this service, please provide it.",
-    "phone_entered" : "A mobile phone number is required to use this service, please provide it."
+    "phone_entered" : "A mobile phone number is required to use this service, please provide it.",
+    "admin_verified" : "Your account must be confirmed by a MIDATA admin. Please retry later. If your account has not been confirmed for more than 24 hours please contact MIDATA."
   },
 
   "changepassphrase" : {
