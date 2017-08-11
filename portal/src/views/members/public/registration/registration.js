@@ -21,6 +21,12 @@ angular.module('portal')
         	$scope.myform.agb.$invalid = true;
         	$scope.myform.agb.$error = { 'mustaccept' : true };
         }
+
+        
+        $scope.myform.birthday.$setValidity('day', $scope.registration.birthdayDay > 0 && $scope.registration.birthdayDay < 32);
+        $scope.myform.birthday.$setValidity('month', $scope.registration.birthdayMonth > 0);
+		$scope.myform.birthday.$setValidity('year', $scope.registration.birthdayYear >= 1900 && $scope.registration.birthdayYear <= new Date().getFullYear());
+				
         if (!$scope.registration.privacypolicy) {        	
         	$scope.myform.privacypolicy.$invalid = true;
         	$scope.myform.privacypolicy.$error = { 'mustaccept' : true };
@@ -33,6 +39,7 @@ angular.module('portal')
             }
         }
 		 
+
 		$scope.submitted = true;	
 		if ($scope.error && $scope.error.field && $scope.error.type && $scope.myform[$scope.error.field]) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;
@@ -46,11 +53,14 @@ angular.module('portal')
 			$scope.error = { code : "error.invalid.password_repetition" };
 			return;
 		}		
-		        
-        $scope.registration.birthday = $scope.registration.birthdayYear + "-" + 
-                                       $scope.registration.birthdayMonth + "-" +
-                                       $scope.registration.birthdayDay;
+				
+		var pad = function(n){
+		    return ("0" + n).slice(-2);
+		};
 		
+        $scope.registration.birthday = $scope.registration.birthdayYear + "-" + 
+                                       pad($scope.registration.birthdayMonth) + "-" +
+                                       pad($scope.registration.birthdayDay);		
 		// send the request
 		var data = $scope.registration;	
 		
@@ -80,7 +90,8 @@ angular.module('portal')
 	$scope.changeLanguage = function(lang) {
 		$translate.use(lang);
 	};
-	
+
+
 	$scope.addressNeeded = function() {
 		return $scope.app && $scope.app.requirements && ($scope.app.requirements.indexOf('ADDRESS_ENTERED') >= 0 ||  $scope.app.requirements.indexOf('ADDRESS_VERIFIED') >=0 );
 	};
@@ -94,13 +105,11 @@ angular.module('portal')
 	};
 	
 	$scope.days = [];
+
 	$scope.months = [];
-	$scope.years = [];
 	var i = 0;
-	for (i=1;i <= 9; i++ ) { $scope.days.push("0"+i); $scope.months.push("0"+i); }
-	for (i=10;i <= 31; i++ ) $scope.days.push(""+i);	
+	for (i=1;i <= 9; i++ ) { $scope.months.push("0"+i); }
 	for (i=10;i <= 12; i++ ) $scope.months.push(""+i);
-	for (i=2015;i > 1900; i-- ) $scope.years.push(""+i);	
 	
 	if (oauth.getAppname()) {		
 	   $scope.app = oauth.app;
