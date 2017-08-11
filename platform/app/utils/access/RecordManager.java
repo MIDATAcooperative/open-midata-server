@@ -791,7 +791,7 @@ public class RecordManager {
 		
 		APS apswrapper = getCache(executorId).getAPS(apsId);
 		try {
-		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(executorId), apsId, new HashMap<String, Object>(),
+		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(executorId), apsId, CMaps.map("ignore-redirect", true),
 				Sets.create("_id", "watches"));		
 		
 			for (DBRecord rec : recordEntries) {
