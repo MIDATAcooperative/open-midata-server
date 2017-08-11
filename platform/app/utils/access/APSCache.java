@@ -147,7 +147,7 @@ class APSCache {
 	}
 	
 	public Collection<Consent> getAllActiveConsentsByAuthorized(long limit) throws InternalServerException {
-		if (consentLimit != -1 && limit > consentLimit) {
+		if (consentLimit != -1 && limit >= consentLimit) {
 			return consentCache.values();
 		}
 		
