@@ -31,7 +31,7 @@ angular.module('portal')
         	$scope.myform.privacypolicy.$invalid = true;
         	$scope.myform.privacypolicy.$error = { 'mustaccept' : true };
         }
-        if ($scope.app) {
+        if ($scope.app && $scope.app.termsOfUse) {
         	$scope.myform.appAgb.$setValidity('mustaccept', $scope.registration.appAgb);
             if (!$scope.registration.appAgb) {        	
 	        	$scope.myform.appAgb.$invalid = true;
