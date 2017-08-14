@@ -159,7 +159,7 @@ public class IndexRoot {
 			
 				if (keyIdx >= model.fields.size()) {
 					if (remove) {
-					  rootPage.removeEntry(inf.key, inf.record._id);	
+					  rootPage.removeEntry(inf.key, inf.record._id, inf.aps);	
 					} else {
 					  rootPage.addEntry(inf.key, inf.aps, inf.record._id);
 					}
