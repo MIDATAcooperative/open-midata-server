@@ -172,7 +172,7 @@ public class IndexNonLeafPage extends IndexPage {
 	}
 
 	
-	
+	@Override
 	public void addEntry(Comparable<Object>[] key, MidataId aps, MidataId target) throws InternalServerException {
 		if (key[0] == null) return;
 				
@@ -191,7 +191,8 @@ public class IndexNonLeafPage extends IndexPage {
 						
 	}
 	
-	public void removeEntry(Comparable<Object>[] key, MidataId target) throws InternalServerException {
+	@Override
+	public void removeEntry(Comparable<Object>[] key, MidataId target, MidataId aps) throws InternalServerException {
 		if (key[0] == null) return;
 		
 		EqualsSingleValueCondition[] cond = new EqualsSingleValueCondition[key.length];
@@ -201,7 +202,7 @@ public class IndexNonLeafPage extends IndexPage {
 		Collection<MidataId> targets = findEntries(cond);
 		for (MidataId targetPage : targets) {
 			IndexPage ip = access(targetPage); 
-			ip.removeEntry(key, target);			
+			ip.removeEntry(key, target, aps);			
 		}			    
 	}
 	
