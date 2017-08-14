@@ -119,16 +119,7 @@ public class QuickRegistration extends APIController {
 		user.name = firstName + " " + lastName;
 		
 		user.password = Member.encrypt(password);
-		
-		Application.registerSetDefaultFields(user);
-		
-		
-		if (study != null) {
-		  user.subroles = EnumSet.of(SubUserRole.STUDYPARTICIPANT);
-		} else {
-		  user.subroles = EnumSet.of(SubUserRole.APPUSER);
-		}
-		
+						
 		user.address1 = JsonValidation.getString(json, "address1");
 		user.address2 = JsonValidation.getString(json, "address2");
 		user.city = JsonValidation.getString(json, "city");
@@ -142,6 +133,14 @@ public class QuickRegistration extends APIController {
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");
+		
+        Application.registerSetDefaultFields(user);		
+		
+		if (study != null) {
+		  user.subroles = EnumSet.of(SubUserRole.STUDYPARTICIPANT);
+		} else {
+		  user.subroles = EnumSet.of(SubUserRole.APPUSER);
+		}
 		
 		user.initialApp = app._id;
 		if (study != null) user.initialStudy = study._id;

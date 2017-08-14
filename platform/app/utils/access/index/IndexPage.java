@@ -63,19 +63,19 @@ public class IndexPage {
 	    	entry = addEntry(key);
 	    }
 	    //AccessLog.log("add to="+entry.toString()+" key="+key[0].toString());
-	    if (!containsRecord(entry, target)) {
+	    if (!containsRecord(entry, target, aps)) {
 	    	addRecord(entry, aps, target);
 	    	changed = true;
 	    }
 	}
 	
-	public void removeEntry(Comparable<Object>[] key, MidataId target) throws InternalServerException {
+	public void removeEntry(Comparable<Object>[] key, MidataId target, MidataId aps) throws InternalServerException {
 		if (key[0] == null) return;
 		
 	    BasicBSONObject entry = findEntry(key);
 	    if (entry == null) return;
 	    	
-	    if (removeRecord(entry, target)) {
+	    if (removeRecord(entry, target, aps)) {
 	      ((BasicBSONList) model.unencrypted.get("e")).remove(entry);
 	    }
 	}
@@ -205,12 +205,14 @@ public class IndexPage {
 		return true;
 	}
 	
-	private boolean containsRecord(BasicBSONObject row, MidataId target) {
+	private boolean containsRecord(BasicBSONObject row, MidataId target, MidataId aps) {
 	   BasicBSONList entries = (BasicBSONList) row.get("e");
 	   if (entries == null) return false;
 	   String targetStr = target.toString();
+	   String apsStr = aps.toString();
 	   for (Object entry : entries) {
-		   if (((BasicBSONObject) entry).get("t").equals(targetStr)) return true;
+		   if (((BasicBSONObject) entry).get("t").equals(targetStr) &&
+			  ((BasicBSONObject) entry).get("a").equals(apsStr)) return true;
 	   }
 	   return false;
 	}
@@ -240,13 +242,14 @@ public class IndexPage {
 	  model.unencrypted.put("size", ((BasicBSONObject) model.unencrypted).getInt("size") + 1);
 	}
 	
-	private boolean removeRecord(BasicBSONObject row, MidataId target) {
+	private boolean removeRecord(BasicBSONObject row, MidataId target, MidataId aps) {
 		BasicBSONList objs = (BasicBSONList) row.get("e");
 		if (objs == null) return false;
 		String t = target.toString();
+		String a = aps.toString();
 		for (int i=0;i<objs.size();i++) {
 			BasicBSONObject e = (BasicBSONObject) objs.get(i);
-			if (t.equals(e.getString("t"))) {
+			if (t.equals(e.getString("t")) && a.equals(e.getString("a"))) {
 				objs.remove(i);		
 				changed = true;
 				return objs.size() == 0;					

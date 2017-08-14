@@ -21,7 +21,7 @@ public class IndexMatch {
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof IndexMatch) {
-			return ((IndexMatch) obj).recordId.equals(recordId);
+			return ((IndexMatch) obj).recordId.equals(recordId) && ((IndexMatch) obj).apsId.equals(apsId);
 		}
 		return false;
 	}

@@ -781,7 +781,8 @@
     "requests_access" : "Requested Access:",
     "shares_group" : "Group: {{ group }}",
     "shares_format" : "Format: {{ format }}",
-    "shares_content" : "Content: {{ content }}"
+    "shares_content" : "Content: {{ content }}",
+    "confirm_study" : "Participate Study"
   },
 
   "dashboard" : {
