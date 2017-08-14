@@ -541,7 +541,7 @@ public class Application extends APIController {
 		obj.put("userId", user._id.toString());
 		obj.put("user", JsonOutput.toJsonNode(user, "User", User.ALL_USER));
 		
-		if (user.status.equals(UserStatus.ACTIVE)) {
+		if (user.status.equals(UserStatus.ACTIVE) || user.status.equals(UserStatus.NEW)) {
 		   PortalSessionToken token = null;
 		   String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME);		
 		   token = new PortalSessionToken(handle, user._id, UserRole.ANY, null, user.developer);

@@ -24,6 +24,7 @@ import models.Circle;
 import models.Consent;
 import models.ContentInfo;
 import models.HPUser;
+import models.History;
 import models.LargeRecord;
 import models.Member;
 import models.MessageDefinition;
@@ -37,6 +38,7 @@ import models.Study;
 import models.User;
 import models.enums.AggregationType;
 import models.enums.ConsentStatus;
+import models.enums.EventType;
 import models.enums.MessageReason;
 import models.enums.UserFeature;
 import models.enums.UserRole;
@@ -318,7 +320,7 @@ public class MobileAPI extends Controller {
 	}
 	
 	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, boolean studyConfirm) throws AppException {
-		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "linkedStudy", "mustParticipateInStudy"));
+		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "linkedStudy", "mustParticipateInStudy", "termsOfUse"));
 
 		if (app.linkedStudy != null && app.mustParticipateInStudy && !studyConfirm) {
 			throw new BadRequestException("error.missing.study_accept", "Study belonging to app must be accepted.");
@@ -365,7 +367,7 @@ public class MobileAPI extends Controller {
 		}
 		
 		
-		if (app.linkedStudy != null && studyConfirm) {			
+		if (app.linkedStudy != null && studyConfirm) {								
 			controllers.members.Studies.requestParticipation(member._id, app.linkedStudy);
 		}
 		
@@ -378,6 +380,8 @@ public class MobileAPI extends Controller {
 			member.apps.add(app._id);
 			User.set(member._id, "apps", member.apps);
 		}
+		
+		if (app.termsOfUse != null) member.addHistoryOnce(new History(EventType.TERMS_OF_USE_AGREED, member, app.termsOfUse));
 				
 		if (app.predefinedMessages!=null) {
 			if (!app._id.equals(member.initialApp)) {
