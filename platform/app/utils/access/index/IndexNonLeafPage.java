@@ -241,7 +241,7 @@ public class IndexNonLeafPage extends IndexPage {
 	public void init() {		
 	}
 	
-	protected void removeFromEntries(Condition[] key, Set<String> ids) throws InternalServerException {
+	protected void removeFromEntries(Condition[] key, Set<IndexMatch> ids) throws InternalServerException {
 		
 		Collection<MidataId> targets = findEntries(key);
 		for (MidataId target : targets) {
