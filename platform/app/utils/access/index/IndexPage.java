@@ -169,7 +169,7 @@ public class IndexPage {
 		return result;
 	}
 	
-	protected void removeFromEntries(Condition[] key, Set<String> ids) throws InternalServerException {
+	protected void removeFromEntries(Condition[] key, Set<IndexMatch> ids) throws InternalServerException {
 				
 		BasicBSONList lst = (BasicBSONList) model.unencrypted.get("e");
 		for (Object entry : lst) {
@@ -181,7 +181,7 @@ public class IndexPage {
 				
 				for (int i=0;i<objs.size();i++) {
 					BasicBSONObject e = (BasicBSONObject) objs.get(i);
-					if (ids.contains(e.getString("t"))) {
+					if (ids.contains(new IndexMatch(e.getString("t"),e.getString("a")))) {
 						objs.remove(i);
 						i--;
 						changed = true;

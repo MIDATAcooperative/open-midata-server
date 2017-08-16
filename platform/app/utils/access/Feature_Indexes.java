@@ -122,6 +122,7 @@ private Feature next;
 				   Query q4 = new Query(q, CMaps.map(), aps);
 				   List<DBRecord> unindexed = next.query(q4);
 				   for (DBRecord candidate : unindexed) {
+					   candidate.consentAps = aps;
 					   if (ids.contains(candidate._id)) result.add(candidate);
 				   }
 				   AccessLog.log("add unindexed ="+unindexed.size());
@@ -154,6 +155,7 @@ private Feature next;
 					   
 					   Query q3 = new Query(q, CMaps.map("strict", "true"), aps);
 					   partresult = Feature_Prefetch.lookup(q3, partresult, next);
+					   for (DBRecord record : partresult) record.consentAps = aps;
 					   result.addAll(partresult);
 					   directSize = partresult.size();
 				   }
@@ -161,6 +163,7 @@ private Feature next;
 					if (add) {
 		              Query q2 = new Query(q, CMaps.map(q.getProperties()).map("_id", ids), aps);
 		              List<DBRecord> additional = next.query(q2);
+		              for (DBRecord record : additional) record.consentAps = aps;
 		              result.addAll(additional);
 		              AccessLog.log("looked up directly="+directSize+" additionally="+additional.size());
 					} else {
