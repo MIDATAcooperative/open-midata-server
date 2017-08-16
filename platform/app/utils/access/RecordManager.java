@@ -61,7 +61,7 @@ public class RecordManager {
 	public final static Set<String> INTERNALIDONLY = Sets.create("_id");
 	public final static Set<String> INTERNALID_AND_WACTHES = Sets.create("_id","watches");
 	public final static Set<String> COMPLETE_META = Sets.create("id", "owner",
-			"app", "creator", "created", "name", "format",  "content", "code", "description", "isStream", "lastUpdated");
+			"app", "creator", "created", "name", "format",  "content", "code", "description", "isStream", "lastUpdated", "consentAps");
 	public final static Set<String> COMPLETE_DATA = Sets.create("id", "owner", "ownerName",
 			"app", "creator", "created", "name", "format", "content", "code", "description", "isStream", "lastUpdated",
 			"data", "group");
@@ -587,6 +587,7 @@ public class RecordManager {
 		fields.add("owner");
 		fields.add("stream");
 		fields.add("isStream");
+		fields.add("consentAps");
 		fields.addAll(APSEntry.groupingFields);
 		APSCache cache = getCache(executingPerson);
 		query.put("owner", "self");
@@ -1053,6 +1054,7 @@ public class RecordManager {
 		Set<String> fields = new HashSet<String>();
 		fields.add("owner");
 		fields.addAll(APSEntry.groupingFields);
+		fields.add("consentAps");
 		List<DBRecord> streams = QueryEngine.listInternal(cache, userId, CMaps.map("owner", "self").map("streams", "only").map("flat", "true"), fields);
 		List<DBRecord> emptyStreams = new ArrayList<DBRecord>();
 		for (DBRecord str : streams) {
