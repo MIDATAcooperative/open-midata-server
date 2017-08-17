@@ -156,7 +156,7 @@ public class QuickRegistration extends APIController {
 		Circles.fetchExistingConsents(user._id, user.emailLC);
 		Application.sendWelcomeMail(app._id, user);
 		
-		if (notok.isEmpty()) {
+		if (notok == null || notok.isEmpty()) {
 		
 			if (study != null) controllers.members.Studies.requestParticipation(user._id, study._id);
 			
