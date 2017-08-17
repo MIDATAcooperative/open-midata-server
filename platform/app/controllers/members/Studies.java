@@ -324,7 +324,7 @@ public class Studies extends APIController {
 		
 		Set<UserFeature> requirements = precheckRequestParticipation(userId, studyId);
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
-		if (!notok.isEmpty()) requireUserFeature(notok.iterator().next());
+		if (notok != null && !notok.isEmpty()) requireUserFeature(notok.iterator().next());
 		
 		requestParticipation(userId, studyId);		
 		return ok();
