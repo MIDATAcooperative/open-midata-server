@@ -10,7 +10,9 @@
   "portal" : {
      "origin" : "https://localhost:9002",
      "backend" : "https://localhost:9000",
-     "beta" : false
+     "beta" : false,
+     "languages" : "en,de,fr",
+     "countries" : "CH"
   },
   "platform" : {
      "port" : "9001"

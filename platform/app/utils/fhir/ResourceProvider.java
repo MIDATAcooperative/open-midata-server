@@ -401,7 +401,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 		
 		if (record.app != null) {
 		  Plugin creatorApp = Plugin.getById(record.app);		
-		  meta.addExtension("app", new Coding("http://midata.coop/codesystems/app", creatorApp.filename, creatorApp.name));
+		  if (creatorApp != null) meta.addExtension("app", new Coding("http://midata.coop/codesystems/app", creatorApp.filename, creatorApp.name));
 		}
 		if (record.creator != null) meta.addExtension("creator", FHIRTools.getReferenceToUser(record.creator, record.creator.equals(record.owner) ? record.ownerName : null ));
 				

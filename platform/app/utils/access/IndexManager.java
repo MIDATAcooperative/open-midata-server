@@ -91,7 +91,7 @@ public class IndexManager {
 			List<DBRecord> part = records.subList(cur, cur+CHUNK_SIZE > max ? max : cur+CHUNK_SIZE);
 			QueryEngine.loadData(part);
 			for (DBRecord record : part) {
-				index.addEntry(aps != null ? aps : record.consentAps, record);				
+				if (record.data != null) index.addEntry(aps != null ? aps : record.consentAps, record);				
 				// Remove from memory
 				record.data = null;
 				record.encryptedData = null;
