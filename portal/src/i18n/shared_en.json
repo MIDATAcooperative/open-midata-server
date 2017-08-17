@@ -173,7 +173,10 @@
        "OTHER" : "other"
      },
      "country" : {
-       "CH" : "Switzerland"
+       "CH" : "Switzerland",
+       "DE" : "Germany",
+       "NL" : "Netherlands",
+       "GB" : "United Kingdom"
      },
      "eventtype" : {
        "CODE_ENTERED" : "Code entered",

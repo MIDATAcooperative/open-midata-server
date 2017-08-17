@@ -3,6 +3,7 @@ angular.module('portal')
 	
 	$scope.registration = { language : $translate.use() };
 	$scope.languages = languages.all;
+	$scope.countries = languages.countries;
 	$scope.error = null;
 	$scope.submitted = false;
 	$scope.offline = (window.jsRoutes === undefined) || (window.jsRoutes.controllers === undefined);
