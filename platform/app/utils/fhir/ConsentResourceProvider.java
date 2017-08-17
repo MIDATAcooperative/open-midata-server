@@ -438,7 +438,7 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 	
 	private static void mayShare(MidataId pluginId, Map<String, Object> query) throws AppException {
 		Plugin plugin = Plugin.getById(pluginId);
-		if (!plugin.resharesData) throw new ForbiddenOperationException("Plugin is not allowed to share data.");
+		if (plugin == null || !plugin.resharesData) throw new ForbiddenOperationException("Plugin is not allowed to share data.");
 		if (!isSubQuery(plugin.defaultQuery, query)) throw new ForbiddenOperationException("Plugin is not allowed to share this type of data.");
 				
 	}
