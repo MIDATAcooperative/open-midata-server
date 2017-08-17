@@ -1,26 +1,19 @@
 angular.module('services')
-.factory('languages', function() {
+.factory('languages', ['ENV', function(ENV) {
 	var service = {};
  
-	service.all = [
-	   {
-		  value : "en",
-		  name : "enum.language.EN"
-	   },
-	   {		   	   
-		  value : "de",
-		  name : "enum.language.DE"
-	   },
-	   {
-		  value : "fr",
-		  name : "enum.language.FR"
-	   }/*,
-	   {
-		  value : "it",
-		  name : "enum.language.IT"
-	   }*/
-	];
-	service.array = ['en' , 'de' , 'fr' /*, 'it' */]; 
+	var arr = function(obj) {
+		if (angular.isArray(obj.length)) return obj;
+		return obj.split(",");
+	};
+	
+	service.all = [];
+	   
+	service.array = arr(ENV.languages);
+	
+	for (var i=0;i<service.array.length;i++) service.all.push({ value : service.array[i], name : "enum.language."+service.array[i].toUpperCase() });
+	
+	service.countries = arr(ENV.countries);
 	
 	return service;
-});
+}]);

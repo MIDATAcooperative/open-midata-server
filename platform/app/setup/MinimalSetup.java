@@ -128,6 +128,21 @@ public class MinimalSetup {
 			Plugin.add(portal);
 		} 
 		
+		if (Plugin.getById(MidataId.from("588b53a7aed64509f5095def")) == null) {
+			Plugin portal = new Plugin();
+			portal._id = MidataId.from("588b53a7aed64509f5095def");
+			portal.filename = "portal-old";
+			portal.name = "Midata Portal";
+			portal.targetUserRole = UserRole.ANY;
+			portal.status = PluginStatus.DEPRECATED;
+			portal.type = "visualization";
+			portal.description = "The MIDATA portal";
+			portal.creator = Developer.getByEmail("development@midata.coop", Sets.create("_id"))._id;
+			portal.creatorLogin = "development@midata.coop";
+			portal.defaultQuery=new HashMap<String, Object>();
+			Plugin.add(portal);
+		}
+		
 		if (Plugin.getByFilename("common", Sets.create("_id")) == null ) {
 			Plugin common = new Plugin();
 			common._id = new MidataId();

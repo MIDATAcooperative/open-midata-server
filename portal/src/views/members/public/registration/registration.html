@@ -64,7 +64,7 @@
 							  <formrow myid="zip" label="registration.zip"><input type="text" class="form-control" id="zip" name="zip" translate translate-attr-placeholder="registration.zip" ng-model="registration.zip" ng-required="{{addressNeeded()}}"></formrow>
 							  </div>
 							  <div class="required">
-							  <formrow myid="country" label="registration.country"><select class="form-control" id="country" name="country" ng-model="registration.country" required><option value="CH" translate="enum.country.CH"></option></select></formrow>
+							  <formrow myid="country" label="registration.country"><select class="form-control" id="country" name="country" ng-model="registration.country" required ng-options="country as ('enum.country.'+country)|translate for country in countries"></select></formrow>
 							  </div>                             
                               <formrow myid="phone" label="registration.phone"><input type="text" class="form-control" id="phone" name="phone" translate translate-attr-placeholder="registration.phone" ng-model="registration.phone"></formrow>
                               <div ng-class="{ 'required' : phoneNeeded() }">

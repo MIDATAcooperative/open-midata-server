@@ -1,9 +1,10 @@
 angular.module('portal')
-.controller('AdminRegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', function($scope, $state, server, status, session, $translate, languages) {
+.controller('AdminRegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$document', function($scope, $state, server, status, session, $translate, languages, $document) {
 	
 	$scope.registration = { language : $translate.use(), subroles:[] };
 	$scope.subroles = ["SUPERADMIN", "USERADMIN", "STUDYADMIN", "CONTENTADMIN", "PLUGINADMIN", "NEWSWRITER"];
 	$scope.languages = languages.all;
+	$scope.countries = languages.countries;
 	$scope.error = null;
 	$scope.status = new status(false, $scope);
 	
@@ -17,7 +18,11 @@ angular.module('portal')
 		$scope.submitted = true;	
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;
-		if (! $scope.myform.$valid) return;
+		if (! $scope.myform.$valid) {
+			var elem = $document[0].querySelector('input.ng-invalid');
+			if (elem && elem.focus) elem.focus();
+			return;
+		}
 		
 		if ($scope.registration.password !=  $scope.registration.password2) {
 			$scope.error = { code : "error.invalid.password_repetition" };
