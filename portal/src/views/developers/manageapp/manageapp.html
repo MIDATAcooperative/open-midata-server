@@ -48,6 +48,7 @@
 		    <input type="text" id="orgName" name="orgName" class="form-control" placeholder="Name" ng-model="app.orgName">		 
 		  </formrow>
 		 
+		 
 		  <hr>
 		  <formrow myid="x" label="Multi Language Support">
 		    <div class="help-block">
@@ -149,7 +150,10 @@
 		   <formrow myid="developmentServer" label="Development Server" ng-hide="app.type == 'mobile' || !app.developmentServer">
 		    <p class="form-control-static">{{ app.developmentServer }}</p>
 		  </formrow>
-		  
+		   <formrow myid="unlockCode" label="manageapp.unlock_code" ng-show="app.type == 'mobile'">
+		    <input type="text" id="unlockCode" name="unlockCode" class="form-control" ng-model="app.unlockCode">
+		    <p class="help-block" translate="manageapp.info.unlock_code"></p>
+		  </formrow>
 		  <hr ng-show="app.type == 'mobile'">
 		  <p class="alert alert-info" ng-show="app.type == 'mobile'" translate="manageapp.admin_only"></p>
 		  <formrow myid="termsOfUse" label="manageapp.terms_of_use" ng-show="app.type == 'mobile'">

@@ -68,6 +68,7 @@
     "admin_only" : "Only a MIDATA admin may change this section. Please request changes if required.",
     "terms_of_use" : "Terms of Use",
     "show_terms" : "Show terms of use",
+    "unlock_code" : "Code for registration",    
     "info" : {
        "filename" : "This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).",
        "targetUserRole" : "Is your app for a specific role only? Otherwise choose 'Any Role'.",
@@ -85,7 +86,8 @@
        "defaultQuery" : "Query restricting the access of the plugin to the database. Access must be restricted by at least one of 'code', 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
        "defaultQuery_extra" : "Look for valid values for 'code', 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { \"group\" : \"all\", \"group-system\" : \"v1\" }. Please refine query before plugin or app goes in production.",
        "secret" : "Your app will need this 'secret' during login. Choose whatever you like.",
-       "mustParticipateInStudy" : "User must participate in Study in order to use app."
+       "mustParticipateInStudy" : "User must participate in Study in order to use app.",
+       "unlock_code" : "If filled out this code word must be entered by the user in order to login or register to the app. (not case sensitive)"
     }
   },
   

@@ -75,6 +75,7 @@
        "json" : "Invalid JSON provided",
        "passphrase" : "Bad passphrase",
        "passcode": "Bad passcode",
+       "unlock_code" : "Incorrect unlock code",
        "plugin" : "Plugin is only for a different role",
        "access_query" : "Access query must restrict by 'content' or 'group'!",
        "sharing" : "Data excluded by study configuration is shared in sharing query."
@@ -447,7 +448,8 @@
     "app_agb2" : "I accept the",
     "app_agb3" : "App Terms And Conditions",
     "study_agb" : "Study Terms of Use",
-    "sign_up_btn" : "Sign Up"
+    "sign_up_btn" : "Sign Up",
+    "unlock_code" : "Unlock Code"
   },
 
   "login" : {
@@ -774,7 +776,8 @@
   },
 
   "oauth2" : {
-    // todo This application has to be activated ???
+    "reshares_data" : "App may share data it has access to to other parties.",
+    "allows_user_search" : "Your name and email address may be searched by other people using this app.",
     "requesting_app" : "This application requests access:",
     "sign_in" : "MIDATA Sign In for:",
     "sign_in_btn" : "Sign In",

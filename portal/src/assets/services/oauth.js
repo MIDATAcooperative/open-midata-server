@@ -54,6 +54,11 @@ angular.module('services')
 	   cred.role = role || "MEMBER";
 	};
 	
+	service.setUnlockCode = function(code) {
+		console.log("set:"+code);
+		cred.unlockCode = code;
+	};
+	
 	service.getAppname =function() {
 		return cred.appname;
 	};
