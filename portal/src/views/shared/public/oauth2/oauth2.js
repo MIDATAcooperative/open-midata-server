@@ -77,6 +77,8 @@ angular.module('portal')
 	$scope.confirm = function() {
 		$scope.error = null;
 		
+		if ($scope.login.unlockCode) oauth.setUnlockCode($scope.login.unlockCode);
+		
 		$scope.status.doAction("login", oauth.login(true, $scope.login.confirmStudy))
 		.then(function(result) {
 		  if (result !== "ACTIVE") {

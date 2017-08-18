@@ -39,6 +39,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation;
+import utils.json.JsonValidation.JsonValidationException;
 
 public class OAuth2 extends Controller {
 
@@ -95,10 +96,12 @@ public class OAuth2 extends Controller {
 	    boolean confirmStudy = JsonValidation.getBoolean(json, "confirmStudy");
 	   					
 	    // Validate Mobile App	
-		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements", "linkedStudy", "termsOfUse"));
+		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements", "linkedStudy", "termsOfUse", "unlockCode"));
 		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");		
 		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
 		if (!redirectUri.equals(app.redirectUri)) throw new InternalServerException("error.internal", "Wrong redirect uri");
+		
+		
 		
 		Set<UserFeature> requirements = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(role);
 		if (app.requirements != null) requirements.addAll(app.requirements);
@@ -136,6 +139,11 @@ public class OAuth2 extends Controller {
 		
 		if (appInstance == null) {		
 			if (!confirmed) return ok("CONFIRM");
+			
+			if (app.unlockCode != null) {				
+				String code = JsonValidation.getStringOrNull(json, "unlockCode");
+				if (code == null || !app.unlockCode.toUpperCase().equals(code.toUpperCase())) throw new JsonValidationException("error.invalid.unlock_code", "unlockCode", "invalid", "Invalid unlock code");
+			}			
 			
 			if (notok != null) {
 			  return Application.loginHelperResult(user, notok);

@@ -70,6 +70,11 @@
                               <div ng-class="{ 'required' : phoneNeeded() }">
                               <formrow myid="mobile" label="registration.mobile_phone"><input type="text" class="form-control" id="mobile" name="mobile" translate translate-attr-placeholder="registration.mobile_phone" ng-model="registration.mobile" ng-required="{{phoneNeeded()}}"></formrow>
                               </div>
+                              <div class="required" ng-if="app.unlockCode">
+                              <formrow myid="unlockCode" label="registration.unlock_code"><input type="text" class="form-control" id="unlockCode" name="unlockCode" translate translate-attr-placeholder="registration.unlock_code" ng-model="registration.unlockCode" required>
+                                 <formerror myid="unlockCode" type="invalid" message="error.invalid.unlock_code"></formerror>
+                              </formrow>
+                              </div>
                               <formrow myid="agb" label="registration.agb">
                                  <div class="checkbox">
                                    <label>

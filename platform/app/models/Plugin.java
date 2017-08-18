@@ -42,7 +42,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret",
 	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n",
-	                     "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements", "orgName");
+	                     "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -52,7 +52,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "predefinedMessages", "resharesData", "linkedStudy", "mustParticipateInStudy", "pluginVersion",
-	                     "termsOfUse", "requirements", "orgName");
+	                     "termsOfUse", "requirements", "orgName", "unlockCode");
 	
 	/**
 	 * timestamp of last change. Used to prevent lost updates.
@@ -195,6 +195,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	 * type can be one of: visualization, create, oauth1, oauth2, mobile
 	 */
 	public String type;
+	
+	/**
+	 * code word that must be entered by user to register using this app
+	 */
+	public String unlockCode;
 		
 	/**
 	 * list of ids of other plugins that a user may like if he likes this plugin
@@ -293,7 +298,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	
 	public void update() throws InternalServerException, LostUpdateException {		
 		try {
-		   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements", "orgName" );
+		   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode" );
 		   Instances.cacheClear("plugin",  _id);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);
