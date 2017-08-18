@@ -69,6 +69,11 @@ public class QuickRegistration extends APIController {
 		Plugin app = Plugin.getByFilename(appName, Plugin.ALL_PUBLIC);
 		if (app == null) throw new BadRequestException("error.invalid.appcode", "Unknown code for app.");
   
+		if (app.unlockCode != null) {
+			JsonValidation.validate(json, "unlockCode");
+			String code = JsonValidation.getString(json, "unlockCode");
+			if (!app.unlockCode.toUpperCase().equals(code.toUpperCase())) throw new JsonValidationException("error.invalid.unlock_code", "unlockCode", "invalid", "Invalid unlock code");
+		}
 		Set<UserFeature> requirements = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(UserRole.MEMBER);
 		if (app.requirements != null) requirements.addAll(app.requirements);
 		

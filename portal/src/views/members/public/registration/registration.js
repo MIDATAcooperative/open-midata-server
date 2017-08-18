@@ -72,9 +72,12 @@ angular.module('portal')
 		if (oauth.getAppname()) {		  
 		  data.app = oauth.getAppname();
 		  data.device = oauth.getDevice();
+		  if ($scope.registration.unlockCode) oauth.setUnlockCode($scope.registration.unlockCode);
+		  
 		  $scope.status.doAction("register", server.post(jsRoutes.controllers.QuickRegistration.register().url, JSON.stringify(data))).
-		  then(function(data) { 			 
+		  then(function(datax) { 			 
 			  oauth.setUser($scope.registration.email, $scope.registration.password);
+			  console.log(data);
 			  oauth.login(true, data.confirmStudy).then(function(result) {
 				  if (result !== "ACTIVE") { session.postLogin({ data : result}, $state);}
 			  });		
