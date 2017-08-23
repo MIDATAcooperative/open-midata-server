@@ -3,16 +3,8 @@
     "researcher_registration" : {
         "sign_up" : "Registrierung als Forscher",
         "research_organization" : "Forschungseinrichtung",
-
-        // TODO CHANGED
-        // OLD: Name
-        // NEW: Name*
-        "name" : "Name",
-
-        // TODO CHANGED
-        // OLD: Description
-        // NEW: Description*
-        "description" : "Beschreibung",
+        "name" : "Name*",
+        "description" : "Beschreibung*",
         "research_user" : "Forschungsbenutzer"
     },
 
@@ -57,12 +49,8 @@
         "description" : "Wenn eine Studie läuft, können Sie Daten mit Teilnehmern teilen und Aufgaben stellen (z.B. ein Formular ausfüllen).",
         "select_group_btn" : "Gruppe auswählen",
         "add_task_btn" : "Aufgabe für Teilnehmer hinzufügen",
-
-        // TODO NEW: Research Application
-        "plugin" : "Research Application",
-
-        // TODO NEW: Device Code
-        "device" : "Device Code",
+        "plugin" : "Forschungsapplikation",
+        "device" : "Code des Gerätes",
 
         // TODO NEW: Restrict Read to Group
         "restrict" : "Restrict Read to Group",
@@ -142,23 +130,15 @@
         "group" : "Datengruppe",
         "number_of_records" : "# Einträge",
         "download_btn" : "Herunterladen",
-
-        // TODO NEW: Download FHIR Bundle
-        "fhir_download_btn" : "Download FHIR Bundle"
+        "fhir_download_btn" : "FHIR Bundle herunterladen"
     },
 
     "studyrules" : {
         "title" : "Regel der Studie",
         "no_change_warning" : "Diese Konfiguration kann nicht mehr geändert werden, sobald die Studie validiert wurde.",
         "sharing_query" : "Sharing Query (JSON)",
-
-        // TODO NEW: Terms
-        "terms_of_use" : "Terms",
-
-        // TODO NEW: Show Terms
-        "show_terms" : "Show Terms",
-
-        // TODO NEW: Requirements
-        "requirements" : "Requirements"
+        "terms_of_use" : "Bestimmungen",
+        "show_terms" : "Bestimmungen anzeigen",
+        "requirements" : "Anforderungen"
     }
 }

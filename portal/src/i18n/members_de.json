@@ -8,16 +8,8 @@
 
     "member_quickregistration" : {
         "sign_up" : "Registrieren",
-
-        // TODO CHANGED
-        // OLD: Study
-        // NEW: Study*
-        "study" : "Studie",
-
-        // TODO CHANGED
-        // OLD: App to be used
-        // NEW: App to be used*
-        "app" : "Benutzte App",
+        "study" : "Studie*",
+        "app" : "Benutzte App*",
         "app_password" : "Kennwort der App",
         "account_password" : "Kennwort des Kontos",
         "repeat_account_password" : "Kennwort des Kontos wiederholen"

@@ -6,9 +6,7 @@
         "plugins" : "Plugins",
         "content" : "Inhalt",
         "studies" : "Studien",
-
-        // TODO NEW: Terms
-        "terms" : "Terms",
+        "terms" : "Bestimmungen",
         "registration" : "Administrator registrieren"
     },
 
@@ -48,7 +46,7 @@
     "admin_news" : {
         "created" : "Erstellt",
         "language" : "Sprache",
-        "title" : "Titel",
+        "title" : "Überschrift",
         "expires" : "Ablaufdatum",
         "delete_btn" : "Löschen",
         "empty" : "Keine News-Einträge gefunden"
@@ -57,7 +55,7 @@
     "admin_managenews" : {
         "title1" : "Neuer News-Eintrag hinzufügen",
         "title2" : "News-Eintrag ändern",
-        "title" : "Titel des News-Eintrags",
+        "title" : "Überschrift des News-Eintrags",
         "language" : "Sprache des News-Eintrags",
         "content" : "Inhalt",
         "url" : "URL der vollständigen Nachricht",
@@ -71,113 +69,49 @@
     "admin_plugins" : {
         "title" : "Plugins",
         "developer" : "Nach Entwickler filtern",
-
-        // TODO NEW: There are no apps or plugins yet.
-        "empty" : "There are no apps or plugins yet."
+        "empty" : "Es gibt noch keine App oder Plugin."
     },
 
     "admin_studies" : {
-
-        // TODO NEW: Studies
-        "title" : "Studies",
-
-        // TODO NEW: Search criteria
-        "criteria" : "Search criteria",
-
-        // TODO NEW: No matching studies found.
-        "empty" : "No matching studies found."
+        "title" : "Studien",
+        "criteria" : "Suchkriterien",
+        "empty" : "Keine passende Studie gefunden."
     },
 
     "admin_terms" : {
-
-        // TODO NEW: Terms of Use
-        "title" : "Terms of Use",
-
-        // TODO NEW: No terms of use stored.
-        "empty" : "No terms of use stored.",
-
-        // TODO NEW: Name
+        "title" : "Bestimmungen",
+        "empty" : "Keine Bestimmungen vorhanden.",
         "name" : "Name",
-
-        // TODO NEW: Version
         "version" : "Version",
-
-        // TODO NEW: Language
-        "language" : "Language",
-
-        // TODO NEW: Creation Date
-        "createdAt" : "Creation Date"
+        "language" : "Sprache",
+        "createdAt" : "Erstellungsdatum"
     },
 
     "admin_manageterms" : {
-
-        // TODO NEW: Terms of Use
-        "pagetitle" : "Terms of Use",
-
-        // TODO NEW: Internal Name
-        "name" : "Internal Name",
-
-        // TODO NEW: Version
+        "pagetitle" : "Bestimmungen",
+        "name" : "Interner Name",
         "version" : "Version",
-
-        // TODO NEW: Language
-        "language" : "Language",
-
-        // TODO NEW: Title (public)
-        "title" : "Title (public)",
-
-        // TODO NEW: Content (HTML)
-        "text" : "Content (HTML)"
+        "language" : "Sprache",
+        "title" : "Überschrift (öffentlich)",
+        "text" : "Inhalt (HTML)"
     },
 
     "admin_study" : {
-
-        // TODO NEW: Study
-        "title" : "Study",
-
-        // TODO NEW: Name
+        "title" : "Studie",
         "name" : "Name",
-
-        // TODO NEW: Created At
-        "created_at" : "Created At",
-
-        // TODO NEW: Description
-        "description" : "Description",
-
-        // TODO NEW: Code
+        "created_at" : "Erstellt am",
+        "description" : "Beschreibung",
         "code" : "Code",
-
-        // TODO NEW: Required Information
-        "required_information" : "Required Information",
-
-        // TODO NEW: Required Assistance
-        "required_assistance" : "Required Assistance",
-
-        // TODO NEW: Terms Of Use
-        "termsOfUse" : "Terms Of Use",
-
-        // TODO NEW: Sharing Query
+        "required_information" : "Benötigte Informationen",
+        "required_assistance" : "Belegarzt benötigt",
+        "termsOfUse" : "Bestimmungen",
         "sharing_query" : "Sharing Query",
-
-        // TODO NEW: Requirements
-        "requirements" : "Requirements",
-
-        // TODO NEW: Groups
-        "groups" : "Groups",
-
-        // TODO NEW: Group Name
-        "group_name" : "Group Name",
-
-        // TODO NEW: Description
-        "group_description" : "Description",
-
-        // TODO NEW: History
-        "history" : "History",
-
-        // TODO NEW: End Validation
-        "end_validation_btn" : "End Validation",
-
-        // TODO NEW: Delete Study
-        "delete_study_btn" : "Delete Study"
+        "requirements" : "Anforderungen",
+        "groups" : "Gruppen",
+        "group_name" : "Name der Gruppe",
+        "group_description" : "Beschreibung",
+        "history" : "Historie",
+        "end_validation_btn" : "Validierung abschliessen",
+        "delete_study_btn" : "Studie löschen"
     }
 }

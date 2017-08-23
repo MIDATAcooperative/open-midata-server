@@ -1,11 +1,7 @@
 {
 
     "footer" : {
-
-        // TODO CHANGED
-        // OLD: (c) 2015-2016 ETH Zürich
-        // NEW: (c) 2015-{{now}} ETH Zürich
-        "copyright" : "(c) 2015-{{now}} ETH Zürich",
+        "copyright" : "©{{now}} ETH Zürich",
 
         // TODO NEW: MIDATA Homepage
         "homepage" : "MIDATA Homepage",

@@ -6,9 +6,7 @@
         "plugins" : "Plugins",
         "content" : "Contenu",
         "studies" : "Études",
-
-        // TODO NEW: Terms
-        "terms" : "Terms",
+        "terms" : "Dispositions",
         "registration" : "Enregistrer un administrateur"
     },
 
@@ -34,12 +32,12 @@
         "status" : "État :",
         "agb_status" : "État des CGU :",
         "contract_status" : "État du contrat :",
-        "email_status" : "État de l'eMail :",
+        "email_status" : "État de l'e-mail :",
         "confirmation_code" : "Code de confirmation :",
         "registration_date" : "Date d'enregistrement :",
         "confirmation_date" : "Date de confirmation :",
         "last_login" : "Dernière connexion :",
-        "email_confirm_btn" : "Confirmer l'adresse eMail",
+        "email_confirm_btn" : "Confirmer l'adresse e-mail",
         "comment" : "Commentaire",
         "add_comment_btn" : "Ajouter un commentaire",
         "wipe_btn" : "Supprimer le compte"
@@ -48,7 +46,7 @@
     "admin_news" : {
         "created" : "Créée",
         "language" : "Langue",
-        "title" : "Titre",
+        "title" : "Intitulé",
         "expires" : "Date d'expiration",
         "delete_btn" : "Effacer",
         "empty" : "Aucune News trouvée"
@@ -57,7 +55,7 @@
     "admin_managenews" : {
         "title1" : "Ajouter une nouvelle News",
         "title2" : "Modifier une News",
-        "title" : "Titre de la News",
+        "title" : "Intitulé de la News",
         "language" : "Langue de la News",
         "content" : "Contenu",
         "url" : "URL du message complet",
@@ -71,113 +69,49 @@
     "admin_plugins" : {
         "title" : "Plugins",
         "developer" : "Filtrer par développeur",
-
-        // TODO NEW: There are no apps or plugins yet.
-        "empty" : "There are no apps or plugins yet."
+        "empty" : "Il n'existe encore aucune app ou plugin."
     },
 
     "admin_studies" : {
-
-        // TODO NEW: Studies
-        "title" : "Studies",
-
-        // TODO NEW: Search criteria
-        "criteria" : "Search criteria",
-
-        // TODO NEW: No matching studies found.
-        "empty" : "No matching studies found."
+        "title" : "Études",
+        "criteria" : "Critère de recherche",
+        "empty" : "Aucune étude correspondante trouvée."
     },
 
     "admin_terms" : {
-
-        // TODO NEW: Terms of Use
-        "title" : "Terms of Use",
-
-        // TODO NEW: No terms of use stored.
-        "empty" : "No terms of use stored.",
-
-        // TODO NEW: Name
-        "name" : "Name",
-
-        // TODO NEW: Version
+        "title" : "Dispositions",
+        "empty" : "Aucunes dispositions disponibles.",
+        "name" : "Nom",
         "version" : "Version",
-
-        // TODO NEW: Language
-        "language" : "Language",
-
-        // TODO NEW: Creation Date
-        "createdAt" : "Creation Date"
+        "language" : "Langue",
+        "createdAt" : "Date de création"
     },
 
     "admin_manageterms" : {
-
-        // TODO NEW: Terms of Use
-        "pagetitle" : "Terms of Use",
-
-        // TODO NEW: Internal Name
-        "name" : "Internal Name",
-
-        // TODO NEW: Version
+        "pagetitle" : "Dispositions",
+        "name" : "Nom interne",
         "version" : "Version",
-
-        // TODO NEW: Language
-        "language" : "Language",
-
-        // TODO NEW: Title (public)
-        "title" : "Title (public)",
-
-        // TODO NEW: Content (HTML)
-        "text" : "Content (HTML)"
+        "language" : "Langue",
+        "title" : "Intitulé (public)",
+        "text" : "Contenu (HTML)"
     },
 
     "admin_study" : {
-
-        // TODO NEW: Study
-        "title" : "Study",
-
-        // TODO NEW: Name
-        "name" : "Name",
-
-        // TODO NEW: Created At
-        "created_at" : "Created At",
-
-        // TODO NEW: Description
+        "title" : "Étude",
+        "name" : "Nom",
+        "created_at" : "Créée le",
         "description" : "Description",
-
-        // TODO NEW: Code
         "code" : "Code",
-
-        // TODO NEW: Required Information
-        "required_information" : "Required Information",
-
-        // TODO NEW: Required Assistance
-        "required_assistance" : "Required Assistance",
-
-        // TODO NEW: Terms Of Use
-        "termsOfUse" : "Terms Of Use",
-
-        // TODO NEW: Sharing Query
+        "required_information" : "Informations requises",
+        "required_assistance" : "Médecin agréé requis",
+        "termsOfUse" : "Dispositions",
         "sharing_query" : "Sharing Query",
-
-        // TODO NEW: Requirements
-        "requirements" : "Requirements",
-
-        // TODO NEW: Groups
-        "groups" : "Groups",
-
-        // TODO NEW: Group Name
-        "group_name" : "Group Name",
-
-        // TODO NEW: Description
+        "requirements" : "Exigences",
+        "groups" : "Groupes",
+        "group_name" : "Nom du groupe",
         "group_description" : "Description",
-
-        // TODO NEW: History
-        "history" : "History",
-
-        // TODO NEW: End Validation
-        "end_validation_btn" : "End Validation",
-
-        // TODO NEW: Delete Study
-        "delete_study_btn" : "Delete Study"
+        "history" : "Historique",
+        "end_validation_btn" : "Terminer la validation",
+        "delete_study_btn" : "Effacer l'étude"
     }
 }
