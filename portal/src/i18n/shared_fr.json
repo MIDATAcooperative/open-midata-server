@@ -146,7 +146,7 @@
 
         "no_alter" : {
             "consent" : "Les consentements pour les études ne peuvent pas être modifiés.",
-            "study" : "Les préférences ne peuvent être modifiées que si l'étude est en phase d'ébauche."
+            "study" : "Les préférences ne peuvent être modifiées que si l'étude est en phase d'ébauche.",
             "group" : "Le groupe de participants ne peut être modifié que si l'ètude n'est pas en cours ou qu'aucune participation n'a été approuvée."
         }
 

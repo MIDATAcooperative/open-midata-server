@@ -78,7 +78,7 @@
             "token" : "Fehlendes oder falsches Token.",
             "agb" : "Allgemeine Geschäftsbedingungen (AGB) nicht akzeptiert.",
             "privacypolicy" : "Die Datenschutzerklärung muss akzeptiert werden.",
-            "study_accept" : "Die Studienteilnahme muss akzeptiert werden."
+            "study_accept" : "Die Studienteilnahme muss akzeptiert werden.",
             "study_group" : "Der Teilnehmer muss zuerst an einer Gruppe zugeordnet werden."
         },
 
@@ -109,7 +109,7 @@
         "blocked" : {
             "user" : "Dieser Benutzer ist nicht berechtigt sich anzumelden. Kontaktieren Sie bitte support@midata.coop für Hilfe.",
             "participation" : "Dieser Kontoinhabende ist nicht berechtigt an einer Studie teilzunehmen.",
-            "consent" : "Die Zustimmung um diese App zu benutzen wurde widerrufen. Um die App zu reaktivieren, muss die zurückgewiesene oder abgelaufene Zustimmung auf dem MIDATA-Portal gelöscht werden."
+            "consent" : "Die Zustimmung um diese App zu benutzen wurde widerrufen. Um die App zu reaktivieren, muss die zurückgewiesene oder abgelaufene Zustimmung auf dem MIDATA-Portal gelöscht werden.",
 
 	        "app" : "Sie dürfen diese App auf Maximum 10 Geräte benutzen. Löschen Sie bitte nicht mehr benutzte Zustimmungen auf dem MIDATA-Portal." 
         },
@@ -336,7 +336,7 @@
     },
 
     "instance" : {
-        "rules" : "", // DELETE
+        "rules" : "", 
         "purpose" : "Zweck dieser MIDATA-Instanz",
         "access" : "Zugriff zu dieser MIDATA-Instanz",
         "uptime" : "Verfügbarkeit und Ausfallzeiten",
