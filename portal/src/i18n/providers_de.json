@@ -3,8 +3,8 @@
     "provider_registration" : {
         "sign_up" : "Registrierung als Gesundheitsfachperson",
         "provider" : "Gesundheitsfachperson",
-        "user" : "Benutzer",
-        "name" : "Name*"
+        "user" : "Benutzer",   
+        "name" : "Name"
     },
 
     "provider_login" : {

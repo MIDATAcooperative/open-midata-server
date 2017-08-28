@@ -50,16 +50,11 @@
         "select_group_btn" : "Gruppe auswählen",
         "add_task_btn" : "Aufgabe für Teilnehmer hinzufügen",
         "plugin" : "Forschungsapplikation",
-        "device" : "Code des Gerätes",
+        "device" : "Code des Gerätes",        
+        "restrict" : "Lesen auf diese Studiengruppe beschränken",
 
-        // TODO NEW: Restrict Read to Group
-        "restrict" : "Restrict Read to Group",
-
-        // TODO NEW: Add Study Data Providing Application
-        "add_application_btn" : "Add Study Data Providing Application",
-
-        // TODO NEW: Application Consents
-        "linked_apps" : "Application Consents"
+        "add_application_btn" : "Studiendaten liefernde Anwendung hinzufügen.",       
+        "linked_apps" : "Anwendungsnutzungs-Zustimmungen"
     },
 
     "studyfields" : {
@@ -102,7 +97,8 @@
         "end_participant_search_btn" : "Suche nach Teilnehmer beenden",
         "start_study_execution_btn" : "Durchführung der Studie starten",
         "finish_study_btn" : "Studie beenden",
-        "delete_study_btn" : "Studie löschen"
+        "delete_study_btn" : "Studie löschen",        
+        "abort_study_btn" : "Studie abbrechen"
     },
 
     "studyparticipant" : {
