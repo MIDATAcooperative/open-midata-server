@@ -63,13 +63,14 @@
                             <input type="text" class="form-control" id="unlockCode" name="unlockCode" translate translate-attr-placeholder="registration.unlock_code" ng-model="login.unlockCode" required></formrow>                            
                           </div>
 		            	  <hr>
+		            	
+		            	  <p><b translate="oauth2.requests_access"></b></p>
+		            	  <ul>		            	  
+		            	  <li ng-repeat="label in labels">{{ label }}</li>
+		            	  <li ng-repeat="format in app.defaultQuery.format" translate="oauth2.shares_format" translate-value-format="{{ format }}"></li>		            	  
+		            	  </ul>
 		            	  <p translate="oauth2.reshares_data" ng-show="app.resharesData"></p>
 		            	  <p translate="oauth2.allows_user_search" ng-show="app.allowsUserSearch"></p>
-		            	  <p translate="oauth2.requests_access"></p>
-		            	  <div ng-repeat="group in app.defaultQuery.group" translate="oauth2.shares_group" translate-value-group="{{ group }}"></div>
-		            	  <div ng-repeat="format in app.defaultQuery.format" translate="oauth2.shares_format" translate-value-format="{{ format }}"></div>
-		            	  <div ng-repeat="content in app.defaultQuery.content" translate="oauth2.shares_content" translate-value-content="{{ content }}"></div>
-		            	  
 		            	  
 		            	  
 		            	  <div ng-show="app.termsOfUse">

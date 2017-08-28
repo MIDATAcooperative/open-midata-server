@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('OAuth2LoginCtrl', ['$scope', '$location', '$translate', 'server', '$state', 'status', 'session', 'apps', 'studies', 'oauth', 'views', function($scope, $location, $translate, server, $state, status, session, apps, studies, oauth, views) {
+.controller('OAuth2LoginCtrl', ['$scope', '$location', '$translate', 'server', '$state', 'status', 'session', 'apps', 'studies', 'oauth', 'views', 'labels', function($scope, $location, $translate, server, $state, status, session, apps, studies, oauth, views,labels) {
 	
 	// init
 	$scope.login = { role : "MEMBER"};	
@@ -7,6 +7,7 @@ angular.module('portal')
 	$scope.status = new status(false);
 	$scope.params = $location.search();
 	$scope.translate = $translate;
+	$scope.labels = [];
 	$scope.roles = [
 		{ value : "MEMBER", name : "enum.userrole.MEMBER" },
 		{ value : "PROVIDER" , name : "enum.userrole.PROVIDER "}
@@ -64,6 +65,7 @@ angular.module('portal')
 		.then(function(result) {
 		  if (result === "CONFIRM") {
 			  $scope.acceptConsent = true;
+			  $scope.prepareConfirm();
 		  } else if (result !== "ACTIVE") {
 			  if (result.istatus) { $scope.pleaseConfirm = true; }
 			  else {
@@ -73,6 +75,29 @@ angular.module('portal')
 		})
 		.catch(function(err) { $scope.error = err.data; });
 	};	
+	
+	$scope.prepareConfirm = function() {
+		var sq = $scope.app.defaultQuery;
+		console.log(sq);
+		$scope.labels = [];
+		if (sq) {
+			if (sq.content) {
+				angular.forEach(sq.content, function(r) {
+				  labels.getContentLabel($translate.use(), r).then(function(lab) {
+					 $scope.labels.push(lab); 
+				  });
+				});
+			}
+			if (sq.group) {
+				angular.forEach(sq.group, function(r) {
+					  labels.getGroupLabel($translate.use(), r).then(function(lab) {
+						 $scope.labels.push(lab); 
+					  });
+				});
+			}
+		}
+		
+	};
 	
 	$scope.confirm = function() {
 		$scope.error = null;
