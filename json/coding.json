@@ -221,3 +221,4 @@
 {"_id":{"$oid":"59802513aed6450a5c70f843"},"system":"http://midata.coop","code":"MiSensQuestionnaire","display":"MiSens General Questionnaire","content":"MiSensQuestionnaire"}
 {"_id":{"$oid":"59802514aed6450a5c70f844"},"system":"http://midata.coop","code":"MiSensTasteIntensity","display":"Taste intensity on a GLMS (General Labeled Magnitude Scale) of a specific substance","content":"MiSensTasteIntensity"}
 {"_id":{"$oid":"59802674aed6450a5c70f848"},"system":"http://loinc.org","code":"63582-1","display":"Do you now smoke cigarettes every day, some days, or not at all","content":"loinc/63582-1"}
+{"_id":{"$oid":"59a3fa4eaed645237854253e"},"system":"http://midata.coop","code":"profile/picture","display":"Profile Picture","content":"profile/picture"}

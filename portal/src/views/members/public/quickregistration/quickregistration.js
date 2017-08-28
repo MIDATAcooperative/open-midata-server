@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('QuickRegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$document', function($scope, $state, server, status, session, $translate, languages, $document) {
+.controller('QuickRegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$document', 'dateService', function($scope, $state, server, status, session, $translate, languages, $document, dateService) {
 	
 	$scope.registration = { language : $translate.use() };
 	$scope.languages = languages.all;
@@ -17,11 +17,10 @@ angular.module('portal')
 		$scope.submitted = true;	
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		
-	    $scope.myform.birthday.$setValidity('day', $scope.registration.birthdayDay > 0 && $scope.registration.birthdayDay < 32);
-        $scope.myform.birthday.$setValidity('month', $scope.registration.birthdayMonth > 0);
-		$scope.myform.birthday.$setValidity('year', $scope.registration.birthdayYear >= 1900 && $scope.registration.birthdayYear <= new Date().getFullYear());
-	
-		
+		if ($scope.registration.birthdayDay) {
+          $scope.myform.birthday.$setValidity('date', dateService.isValidDate($scope.registration.birthdayDay, $scope.registration.birthdayMonth, $scope.registration.birthdayYear));
+        }
+	    		
 		$scope.error = null;
 		if (! $scope.myform.$valid) {
 			var elem = $document[0].querySelector('input.ng-invalid');

@@ -14,6 +14,18 @@ angular.module('portal')
 		criteria : { status : "NEW", agbStatus : "PRINTED" }
 	  },	 
 	  {
+		name : "admin_members.no_email_confirm",
+		criteria : { emailStatus : "UNVALIDATED" }
+	  },
+	  {
+		name : "admin_members.email_rejected",
+		criteria : { emailStatus : "REJECTED" }
+	  },
+	  {
+		name : "admin_members.not_admin_confirmed",
+		criteria : { status : "NEW" }
+	  },
+	  {
 		name : "admin_members.overview",
 		criteria : { role : "MEMBER", status : "NEW" },
 	    changeable : true

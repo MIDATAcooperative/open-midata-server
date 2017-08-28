@@ -152,6 +152,7 @@
 
      "expired" : {
        "token" : "Token has already expired. Please request a new one.",
+       "tokenresent" : "Your activation token has already expired. A new token has been sent to your email address right now - please confirm within 24 hours.",
        "code" : "Participation code has expired."
      },
 

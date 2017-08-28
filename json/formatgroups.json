@@ -48,3 +48,4 @@
 {"_id":{"$oid":"58e60ed1aed6450f67436b75"},"system":"v1","name":"assessment","label":{"de":"Bewertungen","en":"Assessment"},"parent":"health","contents":["MiSensSmellThreshold","MSCogTestSDPrep","MSMotTestLine","MSMotTestDot","MSCogTestLab","MiSensTasteIntensity","MSTests","MSCogTestSD","MiSensQuestionnaire"]}
 {"_id":{"$oid":"5909f37caed6450e198a9451"},"system":"v1","name":"behavior","label":{"en":"Behavior"},"parent":"health","contents":["behavior/craves-for-drugs"]}
 {"_id":{"$oid":"598025dbaed6450a5c70f846"},"system":"v1","name":"habits","label":{"en":"Habits"},"parent":"lifestyle","contents":["loinc/63582-1"]}
+{"_id":{"$oid":"59a3fa4eaed645237854253d"},"system":"v1","name":"media","label":{"en":"Media"},"parent":"other","contents":["profile/picture"]}

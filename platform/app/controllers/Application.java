@@ -73,6 +73,8 @@ import views.txt.mails.adminnotify;
 public class Application extends APIController {
 
 	public final static long MAX_TIME_UNTIL_EMAIL_CONFIRMATION = -1l; //1000l * 60l * 60l * 24l;
+	public final static long EMAIL_TOKEN_LIFETIME = 1000l * 60l * 60l * 24l;
+	
 	// public final static long MAX_TRIAL_DURATION = 1000l * 60l * 60l * 24l * 30l;
 	/**
 	 * for debugging only : displays API call test page
@@ -251,7 +253,7 @@ public class Application extends APIController {
 		if (user!=null && !user.emailStatus.equals(EMailStatus.VALIDATED)) {							
 		       if (user.resettoken != null 		    		    
 		    		   && user.resettoken.equals(token)
-		    		   && System.currentTimeMillis() - user.resettokenTs < 1000 * 60 * 15) {	   
+		    		   && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME) {	   
 			   
 		    	   
 		    	   if (wanted == EMailStatus.REJECTED) {
@@ -264,6 +266,10 @@ public class Application extends APIController {
 		           user.emailStatus = wanted;
 			       user.set("emailStatus", wanted);				       
 			       
+		       } else if (user!=null && user.emailStatus.equals(EMailStatus.UNVALIDATED) && user.resettoken != null 
+		    		   && user.resettoken.equals(token)) {
+		    	     sendWelcomeMail(user);
+		    	     throw new BadRequestException("error.expired.tokenresent", "Token has already expired. A new one has been requested.");
 		       } else throw new BadRequestException("error.expired.token", "Token has already expired. Please request a new one.");
 		       
 		       checkAccount(user);
@@ -397,7 +403,7 @@ public class Application extends APIController {
 				
 		       if (user.resettoken != null 		    		    
 		    		   && user.resettoken.equals(token)
-		    		   && System.currentTimeMillis() - user.resettokenTs < 1000 * 60 * 15) {	   
+		    		   && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME) {	   
 			   
 		           user.set("resettoken", null);		       
 			       user.set("password", Member.encrypt(password));
