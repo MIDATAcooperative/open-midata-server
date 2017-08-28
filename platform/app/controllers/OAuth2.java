@@ -39,6 +39,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonValidation;
+import utils.json.JsonValidation.JsonValidationException;
 
 public class OAuth2 extends Controller {
 
@@ -81,7 +82,9 @@ public class OAuth2 extends Controller {
 				
         JsonNode json = request().body().asJson();		
         JsonValidation.validate(json, "appname", "username", "password", "device", "state", "redirectUri");
-						
+
+        UserRole role = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;
+        
         String name = JsonValidation.getString(json, "appname");
 		String state = JsonValidation.getString(json, "state");
 		String redirectUri = JsonValidation.getString(json, "redirectUri"); 
@@ -93,16 +96,17 @@ public class OAuth2 extends Controller {
 	    boolean confirmStudy = JsonValidation.getBoolean(json, "confirmStudy");
 	   					
 	    // Validate Mobile App	
-		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements", "linkedStudy", "termsOfUse"));
+		Plugin app = Plugin.getByFilename(name, Sets.create("type", "name", "redirectUri", "requirements", "linkedStudy", "termsOfUse", "unlockCode"));
 		if (app == null) throw new BadRequestException("error.unknown.app", "Unknown app");		
 		if (!app.type.equals("mobile")) throw new InternalServerException("error.internal", "Wrong app type");
 		if (!redirectUri.equals(app.redirectUri)) throw new InternalServerException("error.internal", "Wrong redirect uri");
 		
-		Set<UserFeature> requirements = app.requirements;
+		
+		
+		Set<UserFeature> requirements = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(role);
+		if (app.requirements != null) requirements.addAll(app.requirements);
 		if (app.linkedStudy != null && confirmStudy) {
-			Study study = Study.getByIdFromMember(app.linkedStudy, Sets.create("requirements"));
-			requirements = EnumSet.noneOf(UserFeature.class);
-			if (app.requirements != null) requirements.addAll(app.requirements);
+			Study study = Study.getByIdFromMember(app.linkedStudy, Sets.create("requirements"));			
 			if (study.requirements != null) requirements.addAll(study.requirements);
 		}
 		
@@ -112,7 +116,7 @@ public class OAuth2 extends Controller {
 		
 		String username = JsonValidation.getEMail(json, "username");
 		String password = JsonValidation.getString(json, "password");
-		UserRole role = json.has("role") ? JsonValidation.getEnum(json, "role", UserRole.class) : UserRole.MEMBER;
+		
 		String phrase = device;
 					
 		User user = null;
@@ -135,6 +139,11 @@ public class OAuth2 extends Controller {
 		
 		if (appInstance == null) {		
 			if (!confirmed) return ok("CONFIRM");
+			
+			if (app.unlockCode != null) {				
+				String code = JsonValidation.getStringOrNull(json, "unlockCode");
+				if (code == null || !app.unlockCode.toUpperCase().equals(code.toUpperCase())) throw new JsonValidationException("error.invalid.unlock_code", "unlockCode", "invalid", "Invalid unlock code");
+			}			
 			
 			if (notok != null) {
 			  return Application.loginHelperResult(user, notok);
@@ -198,8 +207,9 @@ public class OAuth2 extends Controller {
 			
 			Plugin app = Plugin.getById(appInstance.applicationId);
 			User user = User.getById(appInstance.owner, User.ALL_USER);
-			
-			Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, app.requirements);
+			Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
+			if (app.requirements != null) req.addAll(app.requirements);
+			Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, req);
 			if (notok != null) {
 				return status(UNAUTHORIZED);
 			}                       

@@ -523,11 +523,7 @@ public class Application extends APIController {
 				}
 			}
 		}
-		
-		if (!user.status.equals(UserStatus.ACTIVE) && InstanceConfig.getInstance().getInstanceType().getUsersNeedValidation()) {
-			if (missing == null) missing = new HashSet<UserFeature>();
-			missing.add(UserFeature.ADDRESS_VERIFIED);
-		}
+				
 		
 		return missing;
 	}
@@ -545,7 +541,7 @@ public class Application extends APIController {
 		obj.put("userId", user._id.toString());
 		obj.put("user", JsonOutput.toJsonNode(user, "User", User.ALL_USER));
 		
-		if (user.status.equals(UserStatus.ACTIVE)) {
+		if (user.status.equals(UserStatus.ACTIVE) || user.status.equals(UserStatus.NEW)) {
 		   PortalSessionToken token = null;
 		   String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME);		
 		   token = new PortalSessionToken(handle, user._id, UserRole.ANY, null, user.developer);
@@ -564,7 +560,7 @@ public class Application extends APIController {
 	 * @throws AppException
 	 */
 	public static Result loginHelper(User user ) throws AppException {
-		Set<UserFeature> notok = loginHelperPreconditionsFailed(user, null);
+		Set<UserFeature> notok = loginHelperPreconditionsFailed(user, InstanceConfig.getInstance().getInstanceType().defaultRequirementsPortalLogin(user.role));
 		
 		PortalSessionToken token = null;
 		String handle = KeyManager.instance.login(PortalSessionToken.LIFETIME);
@@ -707,7 +703,7 @@ public class Application extends APIController {
 		
 		user.role = UserRole.MEMBER;
 		user.registeredAt = new Date();
-		user.status = UserStatus.ACTIVE;		
+		user.status = UserStatus.NEW;		
 		user.contractStatus = ContractStatus.NEW;	
 		user.agbStatus = ContractStatus.NEW;
 		user.emailStatus = EMailStatus.UNVALIDATED;

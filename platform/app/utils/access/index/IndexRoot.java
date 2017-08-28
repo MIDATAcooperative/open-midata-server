@@ -138,6 +138,7 @@ public class IndexRoot {
 		
 		EntryInfo inf = new EntryInfo();		
 		inf.record = record;
+		inf.aps = record.consentAps;
 		inf.key = new Comparable[model.fields.size()];		
 		extract(0, inf, null,null, null, 0, true);						
 	}
@@ -159,7 +160,7 @@ public class IndexRoot {
 			
 				if (keyIdx >= model.fields.size()) {
 					if (remove) {
-					  rootPage.removeEntry(inf.key, inf.record._id);	
+					  rootPage.removeEntry(inf.key, inf.record._id, inf.aps);	
 					} else {
 					  rootPage.addEntry(inf.key, inf.aps, inf.record._id);
 					}
@@ -215,7 +216,7 @@ public class IndexRoot {
 		return rootPage.lookup(key);
 	}
 
-	public void removeRecords(Condition[] key, Set<String> ids) throws InternalServerException {
+	public void removeRecords(Condition[] key, Set<IndexMatch> ids) throws InternalServerException {
 		rootPage.removeFromEntries(key, ids);				
 	}
 

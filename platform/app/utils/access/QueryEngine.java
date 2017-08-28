@@ -88,6 +88,7 @@ class QueryEngine {
 	}
 	
 	public static Collection<RecordsInfo> infoQuery(Query q, MidataId aps, boolean cached, AggregationType aggrType, MidataId owner) throws AppException {
+		long t = System.currentTimeMillis();
 		AccessLog.logBegin("begin infoQuery aps="+aps+" cached="+cached);
 		Map<String, RecordsInfo> result = new HashMap<String, RecordsInfo>();
 		
@@ -180,7 +181,7 @@ class QueryEngine {
 						
 		}
 		
-		AccessLog.logEnd("end infoQuery result: cached="+cached+" records="+recs.size()+" result="+result.size());
+		AccessLog.logEnd("end infoQuery result: cached="+cached+" records="+recs.size()+" result="+result.size()+" time="+(System.currentTimeMillis() - t));
 		if (cached && recs.size()>0 && result.size() == 1) {
 			RecordsInfo inf = result.values().iterator().next();
 			if (inf.apps.size() == 1) {

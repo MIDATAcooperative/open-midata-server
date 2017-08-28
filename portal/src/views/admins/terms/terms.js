@@ -6,6 +6,7 @@ angular.module('portal')
 	$scope.init = function(userId) {	
 		$scope.status.doBusy(terms.search({ }, ["name", "version", "language", "title", "createdAt"]))
     	.then(function(results) {
+    		
 		  $scope.terms = results.data;
     	});
 	};

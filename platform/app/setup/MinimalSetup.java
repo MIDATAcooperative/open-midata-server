@@ -122,11 +122,26 @@ public class MinimalSetup {
 			portal.status = PluginStatus.ACTIVE;
 			portal.type = "visualization";
 			portal.description = "The MIDATA portal";
-			portal.creator = Developer.getByEmail("development@midata.coop", Sets.create("_id"))._id;
-			portal.creatorLogin = "development@midata.coop";
+			portal.creator = Developer.getByEmail("developers@midata.coop", Sets.create("_id"))._id;
+			portal.creatorLogin = "developers@midata.coop";
 			portal.defaultQuery=new HashMap<String, Object>();
 			Plugin.add(portal);
 		} 
+		
+		if (Plugin.getById(MidataId.from("588b53a7aed64509f5095def")) == null) {
+			Plugin portal = new Plugin();
+			portal._id = MidataId.from("588b53a7aed64509f5095def");
+			portal.filename = "portal-old";
+			portal.name = "Midata Portal";
+			portal.targetUserRole = UserRole.ANY;
+			portal.status = PluginStatus.DEPRECATED;
+			portal.type = "visualization";
+			portal.description = "The MIDATA portal";
+			portal.creator = Developer.getByEmail("developers@midata.coop", Sets.create("_id"))._id;
+			portal.creatorLogin = "developers@midata.coop";
+			portal.defaultQuery=new HashMap<String, Object>();
+			Plugin.add(portal);
+		}
 		
 		if (Plugin.getByFilename("common", Sets.create("_id")) == null ) {
 			Plugin common = new Plugin();
@@ -137,8 +152,8 @@ public class MinimalSetup {
 			common.status = PluginStatus.ACTIVE;
 			common.type = "visualization";
 			common.description = "Midata Common Messages";
-			common.creator = Developer.getByEmail("development@midata.coop", Sets.create("_id"))._id;
-			common.creatorLogin = "development@midata.coop";
+			common.creator = Developer.getByEmail("developers@midata.coop", Sets.create("_id"))._id;
+			common.creatorLogin = "developers@midata.coop";
 			common.defaultQuery=new HashMap<String, Object>();
 			Plugin.add(common);
 		}

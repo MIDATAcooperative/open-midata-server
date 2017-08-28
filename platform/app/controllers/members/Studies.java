@@ -324,7 +324,7 @@ public class Studies extends APIController {
 		
 		Set<UserFeature> requirements = precheckRequestParticipation(userId, studyId);
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
-		if (!notok.isEmpty()) requireUserFeature(notok.iterator().next());
+		if (notok != null && !notok.isEmpty()) requireUserFeature(notok.iterator().next());
 		
 		requestParticipation(userId, studyId);		
 		return ok();
@@ -333,9 +333,9 @@ public class Studies extends APIController {
 	public static void requestParticipation(MidataId userId, MidataId studyId) throws AppException {
 		
 		
-		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "birthday", "gender", "country"));		
+		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "birthday", "gender", "country", "history"));		
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create("status", "pstatus", "history", "ownerName", "owner", "authorized", "sharingQuery", "validUntil", "createdBefore"));		
-		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history", "owner", "createdBy", "name", "recordQuery", "requiredInformation"));
+		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus", "history", "owner", "createdBy", "name", "recordQuery", "requiredInformation", "termsOfUse"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		if (participation == null) {
@@ -350,7 +350,7 @@ public class Studies extends APIController {
 		
 		participation.setPStatus(ParticipationStatus.REQUEST);						
 		participation.addHistory(new History(EventType.PARTICIPATION_REQUESTED, participation, user, null));
-				
+		if (study.termsOfUse != null) user.addHistoryOnce(new History(EventType.TERMS_OF_USE_AGREED, user, study.termsOfUse));		
 		if (study.requiredInformation.equals(InformationType.RESTRICTED)) {
 			PatientResourceProvider.createPatientForStudyParticipation(participation, user);
 		} else {

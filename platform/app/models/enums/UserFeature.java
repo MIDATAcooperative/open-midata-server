@@ -47,7 +47,12 @@ public enum UserFeature {
 	/**
 	 * the user is member of the MIDATA cooperative
 	 */
-	MIDATA_COOPERATIVE_MEMBER;
+	MIDATA_COOPERATIVE_MEMBER,
+	
+	/**
+	 * the user account has been unlocked by an MIDATA admin
+	 */
+	ADMIN_VERIFIED;
 		
 	/**
 	 * Does a user satisfy this feature?
@@ -64,6 +69,7 @@ public enum UserFeature {
 			case ADDRESS_VERIFIED: return user.agbStatus.equals(ContractStatus.SIGNED);
 			case PASSPORT_VERIFIED: return false;
 			case MIDATA_COOPERATIVE_MEMBER: return user.contractStatus.equals(ContractStatus.SIGNED);
+			case ADMIN_VERIFIED: return user.status.equals(UserStatus.ACTIVE);
 		}
 		return false;
 	}

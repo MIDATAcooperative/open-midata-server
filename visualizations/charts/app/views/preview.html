@@ -8,22 +8,22 @@
 
 <p class="text-center"><strong translate="{{ report.id }}"></strong></p>
 <div ng-if="chartType=='line'">
-<canvas id="line" class="chart chart-line" data="data"
-  labels="labels" legend="false" series="series"
+<canvas id="line" class="chart chart-line" chart-data="data"
+  chart-labels="labels" chart-legend="false" chart-series="series"
   click="onClick">
 </canvas> 
 </div>
 
 <div ng-if="chartType=='bar'">
-<canvas id="bar" legend="false" class="chart chart-bar" data="data" labels="labels"></canvas>
+<canvas id="bar" chart-legend="false" class="chart chart-bar" chart-data="data" chart-labels="labels"></canvas>
 </div>
 
 <div ng-if="chartType=='pie'">
-<canvas id="doughnut" class="chart chart-doughnut" data="data" labels="labels" series="series"></canvas>
+<canvas id="doughnut" class="chart chart-doughnut" chart-data="data" chart-labels="labels" chart-series="series"></canvas>
 </div>
 
 <div ng-if="chartType=='radar'">
-<canvas id="radar" class="chart chart-radar" data="data" labels="labels" series="series"></canvas>
+<canvas id="radar" class="chart chart-radar" chart-data="data" chart-labels="labels" chart-series="series"></canvas>
 </div>
 
 <div ng-if="chartType=='simple'">

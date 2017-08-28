@@ -106,7 +106,7 @@ fr = {
   "calories": "Calories",
   "activities": "Activités",
   "sleep": "Sommeil",
-  "water": "Consommation d'eau"
+  "water": "Consommation d'eau",
 
   "empty": {
         "weight": "Entrez votre poids!",

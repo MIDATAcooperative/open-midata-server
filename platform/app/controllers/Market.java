@@ -118,6 +118,7 @@ public class Market extends APIController {
 		app.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 		app.resharesData = JsonValidation.getBoolean(json, "resharesData");
 		app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
+		app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
 		app.i18n = new HashMap<String, Plugin_i18n>();
 		app.pluginVersion = System.currentTimeMillis();
 		
@@ -299,6 +300,7 @@ public class Market extends APIController {
 		plugin.defaultQuery = JsonExtraction.extractMap(json.get("defaultQuery"));
 		plugin.resharesData = JsonValidation.getBoolean(json, "resharesData");
 		plugin.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
+		plugin.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
 		plugin.predefinedMessages = parseMessages(json);
 		plugin.pluginVersion = System.currentTimeMillis();
 		

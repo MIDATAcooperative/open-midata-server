@@ -28,6 +28,8 @@ import utils.auth.AnyRoleSecured;
 import utils.auth.Rights;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
+import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonValidation;
@@ -38,7 +40,7 @@ public class Terms extends APIController {
 	@BodyParser.Of(BodyParser.Json.class)
 	@Security.Authenticated(AdminSecured.class)
 	@APICall
-	public static Result add() throws JsonValidationException, InternalServerException {
+	public static Result add() throws AppException {
 		// validate json
 		JsonNode json = request().body().asJson();
 		MidataId userId = new MidataId(request().username());
@@ -59,6 +61,9 @@ public class Terms extends APIController {
 		terms.title = JsonValidation.getString(json, "title");
 		terms.version = JsonValidation.getString(json, "version");
 
+		TermsOfUse result = TermsOfUse.getByNameVersionLanguage(terms.name, terms.version, terms.language);
+		if (result != null) throw new BadRequestException("error.exists.terms", "Terms with this name,version and language already exist.");
+		
 		terms.add();
 		
 		return ok();

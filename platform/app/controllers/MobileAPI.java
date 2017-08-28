@@ -24,6 +24,7 @@ import models.Circle;
 import models.Consent;
 import models.ContentInfo;
 import models.HPUser;
+import models.History;
 import models.LargeRecord;
 import models.Member;
 import models.MessageDefinition;
@@ -37,6 +38,7 @@ import models.Study;
 import models.User;
 import models.enums.AggregationType;
 import models.enums.ConsentStatus;
+import models.enums.EventType;
 import models.enums.MessageReason;
 import models.enums.UserFeature;
 import models.enums.UserRole;
@@ -45,6 +47,7 @@ import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import utils.AccessLog;
+import utils.InstanceConfig;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
@@ -217,7 +220,9 @@ public class MobileAPI extends Controller {
 			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");            
             if (!refreshToken.appId.equals(app._id)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");
             User user = User.getById(appInstance.owner, User.ALL_USER);
-            if (Application.loginHelperPreconditionsFailed(user, app.requirements) != null) return status(UNAUTHORIZED); 
+            Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
+            if (app.requirements != null) req.addAll(app.requirements);
+            if (Application.loginHelperPreconditionsFailed(user, req) != null) return status(UNAUTHORIZED); 
             
             phrase = refreshToken.phrase;
             KeyManager.instance.unlock(appInstance._id, phrase);
@@ -246,7 +251,9 @@ public class MobileAPI extends Controller {
 			if (!Member.authenticationValid(password, user.password)) {
 				throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
 			}
-			if (Application.loginHelperPreconditionsFailed(user, app.requirements)!=null) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
+			Set<UserFeature> req = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(user.role);
+			if (app.requirements != null) req.addAll(app.requirements);
+			if (Application.loginHelperPreconditionsFailed(user, req)!=null) throw new BadRequestException("error.invalid.credentials",  "Login preconditions failed.");
 			
 			appInstance= getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));			
 			if (appInstance != null && !verifyAppInstance(appInstance, user._id, app._id)) {
@@ -313,7 +320,7 @@ public class MobileAPI extends Controller {
 	}
 	
 	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, boolean studyConfirm) throws AppException {
-		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "linkedStudy", "mustParticipateInStudy"));
+		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "linkedStudy", "mustParticipateInStudy", "termsOfUse"));
 
 		if (app.linkedStudy != null && app.mustParticipateInStudy && !studyConfirm) {
 			throw new BadRequestException("error.missing.study_accept", "Study belonging to app must be accepted.");
@@ -360,7 +367,7 @@ public class MobileAPI extends Controller {
 		}
 		
 		
-		if (app.linkedStudy != null && studyConfirm) {			
+		if (app.linkedStudy != null && studyConfirm) {								
 			controllers.members.Studies.requestParticipation(member._id, app.linkedStudy);
 		}
 		
@@ -373,6 +380,8 @@ public class MobileAPI extends Controller {
 			member.apps.add(app._id);
 			User.set(member._id, "apps", member.apps);
 		}
+		
+		if (app.termsOfUse != null) member.addHistoryOnce(new History(EventType.TERMS_OF_USE_AGREED, member, app.termsOfUse));
 				
 		if (app.predefinedMessages!=null) {
 			if (!app._id.equals(member.initialApp)) {

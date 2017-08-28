@@ -91,7 +91,7 @@ public class IndexManager {
 			List<DBRecord> part = records.subList(cur, cur+CHUNK_SIZE > max ? max : cur+CHUNK_SIZE);
 			QueryEngine.loadData(part);
 			for (DBRecord record : part) {
-				index.addEntry(aps != null ? aps : record.consentAps, record);				
+				if (record.data != null) index.addEntry(aps != null ? aps : record.consentAps, record);				
 				// Remove from memory
 				record.data = null;
 				record.encryptedData = null;
@@ -262,15 +262,15 @@ public class IndexManager {
 		
 		AccessLog.log("Index found records:"+validatedResult.size()+" still valid:"+stillValid.size());
 		if (validatedResult.size() > stillValid.size()) {			
-			Set<String> ids = new HashSet<String>();
-			for (DBRecord rec : validatedResult) ids.add(rec._id.toString());
-			for (DBRecord rec : stillValid) ids.remove(rec._id.toString());
+			Set<IndexMatch> ids = new HashSet<IndexMatch>();
+			for (DBRecord rec : validatedResult) ids.add(new IndexMatch(rec._id, rec.consentAps));
+			for (DBRecord rec : stillValid) ids.remove(new IndexMatch(rec._id, rec.consentAps));
 			AccessLog.log("Removing "+ids.size()+" records from index.");
 			removeRecords(root, cond, ids);			
 		}				 
 	}
 	
-	private void removeRecords(IndexRoot root, Condition[] cond, Set<String> ids) throws InternalServerException {
+	private void removeRecords(IndexRoot root, Condition[] cond, Set<IndexMatch> ids) throws InternalServerException {
 		try {
 		  root.removeRecords(cond, ids);
 		  root.flush();

@@ -32,6 +32,7 @@ import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
+import utils.InstanceConfig;
 import utils.access.RecordManager;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
@@ -68,7 +69,12 @@ public class QuickRegistration extends APIController {
 		Plugin app = Plugin.getByFilename(appName, Plugin.ALL_PUBLIC);
 		if (app == null) throw new BadRequestException("error.invalid.appcode", "Unknown code for app.");
   
-		Set<UserFeature> requirements = EnumSet.noneOf(UserFeature.class);
+		if (app.unlockCode != null) {
+			JsonValidation.validate(json, "unlockCode");
+			String code = JsonValidation.getString(json, "unlockCode");
+			if (!app.unlockCode.toUpperCase().equals(code.toUpperCase())) throw new JsonValidationException("error.invalid.unlock_code", "unlockCode", "invalid", "Invalid unlock code");
+		}
+		Set<UserFeature> requirements = InstanceConfig.getInstance().getInstanceType().defaultRequirementsOAuthLogin(UserRole.MEMBER);
 		if (app.requirements != null) requirements.addAll(app.requirements);
 		
 		if (app.linkedStudy != null && app.mustParticipateInStudy && !confirmStudy) {
@@ -118,16 +124,7 @@ public class QuickRegistration extends APIController {
 		user.name = firstName + " " + lastName;
 		
 		user.password = Member.encrypt(password);
-		
-		Application.registerSetDefaultFields(user);
-		
-		
-		if (study != null) {
-		  user.subroles = EnumSet.of(SubUserRole.STUDYPARTICIPANT);
-		} else {
-		  user.subroles = EnumSet.of(SubUserRole.APPUSER);
-		}
-		
+						
 		user.address1 = JsonValidation.getString(json, "address1");
 		user.address2 = JsonValidation.getString(json, "address2");
 		user.city = JsonValidation.getString(json, "city");
@@ -142,10 +139,18 @@ public class QuickRegistration extends APIController {
 		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");
 		
+        Application.registerSetDefaultFields(user);		
+		
+		if (study != null) {
+		  user.subroles = EnumSet.of(SubUserRole.STUDYPARTICIPANT);
+		} else {
+		  user.subroles = EnumSet.of(SubUserRole.APPUSER);
+		}
+		
 		user.initialApp = app._id;
 		if (study != null) user.initialStudy = study._id;
 									
-		user.status = UserStatus.ACTIVE;	
+		user.status = UserStatus.NEW;	
 		
 		user.history.add(new History(EventType.TERMS_OF_USE_AGREED, user, app.termsOfUse));
 		
@@ -156,7 +161,7 @@ public class QuickRegistration extends APIController {
 		Circles.fetchExistingConsents(user._id, user.emailLC);
 		Application.sendWelcomeMail(app._id, user);
 		
-		if (notok.isEmpty()) {
+		if (notok == null || notok.isEmpty()) {
 		
 			if (study != null) controllers.members.Studies.requestParticipation(user._id, study._id);
 			
@@ -230,7 +235,7 @@ public class QuickRegistration extends APIController {
 		
 		user.initialApp = app._id;		
 						
-		user.status = UserStatus.ACTIVE;		
+		user.status = UserStatus.NEW;		
 		Application.registerCreateUser(user);								
 		Application.sendWelcomeMail(app._id,user);
 		Circles.fetchExistingConsents(user._id, user.emailLC);

@@ -328,6 +328,18 @@ public class User extends Model implements Comparable<User> {
     	Model.set(User.class, collection, this._id, "history", this.history);
     }
 	
+	public void addHistoryOnce(History newhistory) throws InternalServerException {
+		User u2 = User.getById(this._id, Sets.create("history"));
+		this.history = u2.history;
+		
+	    for (History h : this.history) {
+	    	if (h.event.equals(newhistory.event) && h.message != null && h.message.equals(newhistory.message)) return;
+	    }
+		
+    	this.history.add(newhistory);
+    	Model.set(User.class, collection, this._id, "history", this.history);
+    }
+	
 	public static void delete(MidataId userId) throws InternalServerException {			
 		Model.delete(User.class, collection, CMaps.map("_id", userId));
 	}

@@ -42,7 +42,7 @@ public class AccessLog {
 	public static void log(String txt) {
 		String msg = "                                            ".substring(0,ident.get())+txt;
 		//if (logToFile) Logger.debug(msg);
-		if (logForMail) msgs.get().writer.println(msg);
+		if (logForMail) msgs.get().println(msg);
 	}
 	
 	/**
