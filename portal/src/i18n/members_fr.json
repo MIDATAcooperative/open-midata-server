@@ -8,8 +8,9 @@
 
     "member_quickregistration" : {
         "sign_up" : "Inscription",
-        "study" : "Étude",
-        "app" : "App utilisée",
+
+        "study" : "Étude*",
+        "app" : "App utilisée*",
         "app_password" : "Mot de passe de l'app",
         "account_password" : "Mot de passe du compte",
         "repeat_account_password" : "Répéter le mot de passe du compte"
@@ -90,7 +91,6 @@
 
     "member_user" : {
         "account_status" : "État du compte",
-        "trialuser" : "Vous possédez actuellement un compte de test à fonctionnalité limitée.",
         "studyparticipant" : "Votre compte a été créé pour participer à une étude. Sa fonctionnalité est limitée. Vous pouvez le faire évoluer vers un compte à part entière.",
         "appuser" : "Votre compte a été créé par une application externe. Sa fonctionnalité est limitée. Vous pouvez le faire évoluer vers un compte à part entière.",
         "memberofcooperative" : "Vous êtes membre de la coopérative MIDATA.",
@@ -101,7 +101,7 @@
         "agb_signed" : "Vous avez signé les CGU.",
         "confirmed" : "Votre adresse postale a été confirmée.",
         "entercode" : "Une lettre contenant un code d'enregistrement vous a été envoyée. Veuillez saisir le code ici dès que vous l'avez reçu :",
-        "email_unvalidated" : "Votre adresse eMail n'a pas encore été validée. Veuillez cliquer sur le lien que vous avez reçu dans l'eMail de confirmation !",
+        "email_unvalidated" : "Votre adresse e-mail n'a pas encore été validée. Veuillez cliquer sur le lien que vous avez reçu dans l'e-mail de confirmation !",
         "request_membership_btn" : "Demander un contrat"
     }
 }

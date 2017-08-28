@@ -6,6 +6,7 @@
         "plugins" : "Plugins",
         "content" : "Contenu",
         "studies" : "Études",
+        "terms" : "Dispositions",
         "registration" : "Enregistrer un administrateur"
     },
 
@@ -14,7 +15,6 @@
         "search_type" : "Recherche",
         "contract_required" : "Le contrat doit être envoyé",
         "contract_confirm_required" : "Le contrat signé doit être confirmé",
-        "trialusers" : "Utilisateurs à l'essai actifs",
         "overview" : "Aperçu",
         "specific_user" : "Utilisateur spécifique",
         "role" : "Rôle",
@@ -32,12 +32,12 @@
         "status" : "État :",
         "agb_status" : "État des CGU :",
         "contract_status" : "État du contrat :",
-        "email_status" : "État de l'eMail :",
+        "email_status" : "État de l'e-mail :",
         "confirmation_code" : "Code de confirmation :",
         "registration_date" : "Date d'enregistrement :",
         "confirmation_date" : "Date de confirmation :",
         "last_login" : "Dernière connexion :",
-        "email_confirm_btn" : "Confirmer l'adresse eMail",
+        "email_confirm_btn" : "Confirmer l'adresse e-mail",
         "comment" : "Commentaire",
         "add_comment_btn" : "Ajouter un commentaire",
         "wipe_btn" : "Supprimer le compte"
@@ -46,7 +46,7 @@
     "admin_news" : {
         "created" : "Créée",
         "language" : "Langue",
-        "title" : "Titre",
+        "title" : "Intitulé",
         "expires" : "Date d'expiration",
         "delete_btn" : "Effacer",
         "empty" : "Aucune News trouvée"
@@ -55,7 +55,7 @@
     "admin_managenews" : {
         "title1" : "Ajouter une nouvelle News",
         "title2" : "Modifier une News",
-        "title" : "Titre de la News",
+        "title" : "Intitulé de la News",
         "language" : "Langue de la News",
         "content" : "Contenu",
         "url" : "URL du message complet",
@@ -69,20 +69,49 @@
     "admin_plugins" : {
         "title" : "Plugins",
         "developer" : "Filtrer par développeur",
-
-        // TODO NEW: There are no apps or plugins yet.
-        "empty" : "There are no apps or plugins yet."
+        "empty" : "Il n'existe encore aucune app ou plugin."
     },
 
     "admin_studies" : {
+        "title" : "Études",
+        "criteria" : "Critère de recherche",
+        "empty" : "Aucune étude correspondante trouvée."
+    },
 
-        // TODO NEW: Studies
-        "title" : "Studies",
+    "admin_terms" : {
+        "title" : "Dispositions",
+        "empty" : "Aucunes dispositions disponibles.",
+        "name" : "Nom",
+        "version" : "Version",
+        "language" : "Langue",
+        "createdAt" : "Date de création"
+    },
 
-        // TODO NEW: Search criteria
-        "criteria" : "Search criteria",
+    "admin_manageterms" : {
+        "pagetitle" : "Dispositions",
+        "name" : "Nom interne",
+        "version" : "Version",
+        "language" : "Langue",
+        "title" : "Intitulé (public)",
+        "text" : "Contenu (HTML)"
+    },
 
-        // TODO NEW: No matching studies found.
-        "empty" : "No matching studies found."
+    "admin_study" : {
+        "title" : "Étude",
+        "name" : "Nom",
+        "created_at" : "Créée le",
+        "description" : "Description",
+        "code" : "Code",
+        "required_information" : "Informations requises",
+        "required_assistance" : "Médecin agréé requis",
+        "termsOfUse" : "Dispositions",
+        "sharing_query" : "Sharing Query",
+        "requirements" : "Exigences",
+        "groups" : "Groupes",
+        "group_name" : "Nom du groupe",
+        "group_description" : "Description",
+        "history" : "Historique",
+        "end_validation_btn" : "Terminer la validation",
+        "delete_study_btn" : "Effacer l'étude"
     }
 }

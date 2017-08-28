@@ -2,8 +2,8 @@
   "researcher_registration" : {
     "sign_up" : "Research Sign up",
     "research_organization" : "Research Organization",
-    "name" : "Name",
-    "description" : "Description",
+    "name" : "Name*",
+    "description" : "Description*",
     "research_user" : "Research User"
   },
   
@@ -47,7 +47,12 @@
   "studyactions" : {
     "description" : "When the study is running you can share data with participants and have them complete tasks. (Like fill out a form)",
     "select_group_btn" : "Select Group",
-    "add_task_btn" : "Add Task for Participants"
+    "add_task_btn" : "Add Task for Participants",
+    "plugin" : "Research Application",
+    "device" : "Device Code",
+    "restrict" : "Restrict Read to Group",
+    "add_application_btn" : "Add Study Data Providing Application",
+    "linked_apps" : "Application Consents"
   },
   
   "studyfields" : {
@@ -117,12 +122,16 @@
     "empty" : "Once data is available it can be downloaded here.",
     "group" : "Data Group",
     "number_of_records" : "# Records",
-    "download_btn" : "Download"
+    "download_btn" : "Download",
+    "fhir_download_btn" : "Download FHIR Bundle"
   },
   
   "studyrules" : {
     "title" : "Study Rules",
     "no_change_warning" : "This setup cannot be changed anymore after Study has been validated.",
-    "sharing_query" : "Sharing Query (JSON)"
+    "sharing_query" : "Sharing Query (JSON)",
+    "terms_of_use" : "Terms",
+    "show_terms" : "Show Terms",
+    "requirements" : "Requirements"
   }
 }

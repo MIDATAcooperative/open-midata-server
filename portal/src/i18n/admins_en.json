@@ -78,8 +78,8 @@
   },
   
   "admin_terms" : {
-    "title" : "Terms of Use",
-    "empty" : "No terms of use stored.",
+    "title" : "Terms",
+    "empty" : "No terms available.",
     "name" : "Name",
     "version" : "Version",
     "language" : "Language",
@@ -87,7 +87,7 @@
   },
   
   "admin_manageterms" : {
-    "pagetitle" : "Terms of Use",
+    "pagetitle" : "Terms",
     "name" : "Internal Name",
     "version" : "Version",
     "language" : "Language",
@@ -103,14 +103,14 @@
      "code" : "Code",
      "required_information" : "Required Information",
      "required_assistance" : "Required Assistance",
-     "termsOfUse" : "Terms Of Use",
+     "termsOfUse" : "Terms",
      "sharing_query" : "Sharing Query",
      "requirements" : "Requirements",
      "groups" : "Groups",
      "group_name" : "Group Name",
      "group_description" : "Description",
      "history" : "History",
-     "end_validation_btn" : "End Validation",
+     "end_validation_btn" : "Complete Validation",
      "delete_study_btn" : "Delete Study"    
   }
 }

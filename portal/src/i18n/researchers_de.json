@@ -3,8 +3,8 @@
     "researcher_registration" : {
         "sign_up" : "Registrierung als Forscher",
         "research_organization" : "Forschungseinrichtung",
-        "name" : "Name",
-        "description" : "Beschreibung",
+        "name" : "Name*",
+        "description" : "Beschreibung*",
         "research_user" : "Forschungsbenutzer"
     },
 
@@ -48,7 +48,18 @@
     "studyactions" : {
         "description" : "Wenn eine Studie läuft, können Sie Daten mit Teilnehmern teilen und Aufgaben stellen (z.B. ein Formular ausfüllen).",
         "select_group_btn" : "Gruppe auswählen",
-        "add_task_btn" : "Aufgabe für Teilnehmer hinzufügen"
+        "add_task_btn" : "Aufgabe für Teilnehmer hinzufügen",
+        "plugin" : "Forschungsapplikation",
+        "device" : "Code des Gerätes",
+
+        // TODO NEW: Restrict Read to Group
+        "restrict" : "Restrict Read to Group",
+
+        // TODO NEW: Add Study Data Providing Application
+        "add_application_btn" : "Add Study Data Providing Application",
+
+        // TODO NEW: Application Consents
+        "linked_apps" : "Application Consents"
     },
 
     "studyfields" : {
@@ -118,12 +129,16 @@
         "empty" : "Sobald Daten verfügbar sind, können diese hier heruntergeladen werden.",
         "group" : "Datengruppe",
         "number_of_records" : "# Einträge",
-        "download_btn" : "Herunterladen"
+        "download_btn" : "Herunterladen",
+        "fhir_download_btn" : "FHIR Bundle herunterladen"
     },
 
     "studyrules" : {
         "title" : "Regel der Studie",
         "no_change_warning" : "Diese Konfiguration kann nicht mehr geändert werden, sobald die Studie validiert wurde.",
-        "sharing_query" : "Sharing Query (JSON)"
+        "sharing_query" : "Sharing Query (JSON)",
+        "terms_of_use" : "Bestimmungen",
+        "show_terms" : "Bestimmungen anzeigen",
+        "requirements" : "Anforderungen"
     }
 }
