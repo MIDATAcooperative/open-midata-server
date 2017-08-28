@@ -1,15 +1,15 @@
 {
 
     "researcher_registration" : {
-        "sign_up" : "Enregistrement d'un compte chercheur",
+        "sign_up" : "Enregistrement en tant que chercheur",
         "research_organization" : "Organisation de recherche",
-        "name" : "Nom",
-        "description" : "Description",
+        "name" : "Nom*",
+        "description" : "Description*",
         "research_user" : "Utilisateur"
     },
 
     "researcher_login" : {
-        "title" : "Connexion compte chercheur"
+        "title" : "Connexion en tant que chercheur"
     },
 
     "researcher_navbar" : {
@@ -48,7 +48,20 @@
     "studyactions" : {
         "description" : "Lorsque l'étude est en cours, vous pouvez partager des données avec les participants et leur assigner des tâches (p.ex. remplir un formulaire).",
         "select_group_btn" : "Sélectionnez un groupe",
-        "add_task_btn" : "Ajouter une tâche pour les participants"
+        "add_task_btn" : "Ajouter une tâche pour les participants",
+        // TODO NEW: Research Application
+        "plugin" : "Application pour la recherche",
+
+        "device" : "Code de l'appareil",
+
+        // TODO NEW: Restrict Read to Group
+        "restrict" : "Restrict Read to Group",
+
+        // TODO NEW: Add Study Data Providing Application
+        "add_application_btn" : "Add Study Data Providing Application",
+
+        // TODO NEW: Application Consents
+        "linked_apps" : "Application Consents"
     },
 
     "studyfields" : {
@@ -58,7 +71,7 @@
         "anonymous1" : "Participation anonyme",
         "anonymous2" : ", révèle l'ID anonyme, l'année de naissance, le genre et le pays",
         "not_anonymous1" : "Pas anonyme",
-        "not_anonymous2" : ", requière que le membre partage son nom complet, date de naissance et informations de contact (adresse, téléphone, eMail)",
+        "not_anonymous2" : ", requière que le membre partage son nom complet, date de naissance et informations de contact (adresse, téléphone, e-mail)",
         "assistance" : "Assistance",
         "no_assistance1" : "Aucune",
         "no_assistance2" : " - le membre MIDATA participate de façon autonome.",
@@ -118,12 +131,16 @@
         "empty" : "Dès quelles sont disponibles, vous pourrez télécharger les données ici.",
         "group" : "Groupe de données",
         "number_of_records" : "# enregistrements",
-        "download_btn" : "Télécharger"
+        "download_btn" : "Télécharger",
+        "fhir_download_btn" : "Télécharger le FHIR Bundle"
     },
 
     "studyrules" : {
         "title" : "Règles de l'étude",
         "no_change_warning" : "Cette configuration ne peut plus être modifiée une fois l'étude validée.",
-        "sharing_query" : "Sharing Query (JSON)"
+        "sharing_query" : "Sharing Query (JSON)",
+        "terms_of_use" : "Dispositions",
+        "show_terms" : "Afficher les dispositions",
+        "requirements" : "Exigences"
     }
 }

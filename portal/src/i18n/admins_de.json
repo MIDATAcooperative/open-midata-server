@@ -6,6 +6,7 @@
         "plugins" : "Plugins",
         "content" : "Inhalt",
         "studies" : "Studien",
+        "terms" : "Bestimmungen",
         "registration" : "Administrator registrieren"
     },
 
@@ -14,7 +15,6 @@
         "search_type" : "Suche",
         "contract_required" : "Der Vertrag muss geschickt werden",
         "contract_confirm_required" : "Der unterschriebene Vertrag muss bestätigt werden",
-        "trialusers" : "Aktive Probebenutzer",
         "overview" : "Übersicht",
         "specific_user" : "Bestimmten Benutzer",
         "role" : "Rolle",
@@ -46,7 +46,7 @@
     "admin_news" : {
         "created" : "Erstellt",
         "language" : "Sprache",
-        "title" : "Titel",
+        "title" : "Überschrift",
         "expires" : "Ablaufdatum",
         "delete_btn" : "Löschen",
         "empty" : "Keine News-Einträge gefunden"
@@ -55,7 +55,7 @@
     "admin_managenews" : {
         "title1" : "Neuer News-Eintrag hinzufügen",
         "title2" : "News-Eintrag ändern",
-        "title" : "Titel des News-Eintrags",
+        "title" : "Überschrift des News-Eintrags",
         "language" : "Sprache des News-Eintrags",
         "content" : "Inhalt",
         "url" : "URL der vollständigen Nachricht",
@@ -69,20 +69,49 @@
     "admin_plugins" : {
         "title" : "Plugins",
         "developer" : "Nach Entwickler filtern",
-
-        // TODO NEW: There are no apps or plugins yet.
-        "empty" : "There are no apps or plugins yet."
+        "empty" : "Es gibt noch keine App oder Plugin."
     },
 
     "admin_studies" : {
+        "title" : "Studien",
+        "criteria" : "Suchkriterien",
+        "empty" : "Keine passende Studie gefunden."
+    },
 
-        // TODO NEW: Studies
-        "title" : "Studies",
+    "admin_terms" : {
+        "title" : "Bestimmungen",
+        "empty" : "Keine Bestimmungen vorhanden.",
+        "name" : "Name",
+        "version" : "Version",
+        "language" : "Sprache",
+        "createdAt" : "Erstellungsdatum"
+    },
 
-        // TODO NEW: Search criteria
-        "criteria" : "Search criteria",
+    "admin_manageterms" : {
+        "pagetitle" : "Bestimmungen",
+        "name" : "Interner Name",
+        "version" : "Version",
+        "language" : "Sprache",
+        "title" : "Überschrift (öffentlich)",
+        "text" : "Inhalt (HTML)"
+    },
 
-        // TODO NEW: No matching studies found.
-        "empty" : "No matching studies found."
+    "admin_study" : {
+        "title" : "Studie",
+        "name" : "Name",
+        "created_at" : "Erstellt am",
+        "description" : "Beschreibung",
+        "code" : "Code",
+        "required_information" : "Benötigte Informationen",
+        "required_assistance" : "Belegarzt benötigt",
+        "termsOfUse" : "Bestimmungen",
+        "sharing_query" : "Sharing Query",
+        "requirements" : "Anforderungen",
+        "groups" : "Gruppen",
+        "group_name" : "Name der Gruppe",
+        "group_description" : "Beschreibung",
+        "history" : "Historie",
+        "end_validation_btn" : "Validierung abschliessen",
+        "delete_study_btn" : "Studie löschen"
     }
 }

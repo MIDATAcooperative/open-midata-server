@@ -12,6 +12,10 @@
         "user" : "User",
 
         // TODO NEW: Name
+
+        // TODO CHANGED
+        // OLD: Name
+        // NEW: Name*
         "name" : "Name"
     },
 

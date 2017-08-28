@@ -18,9 +18,17 @@
         "sign_up" : "Sign up",
 
         // TODO NEW: Study
+
+        // TODO CHANGED
+        // OLD: Study
+        // NEW: Study*
         "study" : "Study",
 
         // TODO NEW: App to be used
+
+        // TODO CHANGED
+        // OLD: App to be used
+        // NEW: App to be used*
         "app" : "App to be used",
 
         // TODO NEW: Password for app
@@ -200,9 +208,6 @@
 
         // TODO NEW: Account Status
         "account_status" : "Account Status",
-
-        // TODO NEW: Your account is currently a trial account with limited functionality.
-        "trialuser" : "Your account is currently a trial account with limited functionality.",
 
         // TODO NEW: Your account has been set up for participation in a study. Functionality is limited. You may upgrade your user account to a full account.
         "studyparticipant" : "Your account has been set up for participation in a study. Functionality is limited. You may upgrade your user account to a full account.",

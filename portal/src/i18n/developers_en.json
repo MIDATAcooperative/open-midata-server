@@ -34,7 +34,7 @@
   
   "appmessages" : {
     "title" : "Predefined Messages for App:",
-    "reason" : "Reason (Trigger)",
+    "reason" : "Event (Trigger)",
 	"code" : "Code",
     "languages" : "Languages",
     "empty" : "There are no app specfic messages defined yet.",
@@ -55,7 +55,8 @@
 	   "CONSENT_CONFIRM_OWNER" : "Consent confirmation (Grantor)",
 	   "CONSENT_CONFIRM_AUTHORIZED" : "Consent confirmation (Grantee)",
 	   "CONSENT_REJECT_OWNER" : "Consent rejection (Grantor)",
-	   "CONSENT_REJECT_AUTHORIZED" : "Consent rejection (Grantee)"	   
+	   "CONSENT_REJECT_AUTHORIZED" : "Consent rejection (Grantee)",
+	   "ACCOUNT_UNLOCK" : "Account unlocked by admin"	   
     }		      
   },
   
@@ -64,10 +65,10 @@
     "stats_btn" : "Debug Info",
     "debug_btn" : "API Tester",
     "linkedStudy" : "Study linked to App (Code)",
-    "mustParticipateInStudy" : "Study Required",
+    "mustParticipateInStudy" : "Study Participation Required",
     "admin_only" : "Only a MIDATA admin may change this section. Please request changes if required.",
-    "terms_of_use" : "Terms of Use",
-    "show_terms" : "Show terms of use",
+    "terms_of_use" : "Terms",
+    "show_terms" : "Show terms",
     "unlock_code" : "Code for registration",    
     "info" : {
        "filename" : "This name is internally used to identify your app. Should be a valid identifier (a-z, A-Z, 0-9, _).",
@@ -76,7 +77,7 @@
        "name" : "The name of your app or plugin that will be presented to the end user.",
        "description" : "A description of your plugin that will also be shown on the marked place.",
        "resharesData" : "App is allowed to reshare data it has access to to 3rd party.",
-       "allowsUserSearch" : "Users of app are allowed to search for other users of same app.",
+       "allowsUserSearch" : "Users of the app are allowed to search for other users of the same app.",
        "defaultSpaceName" : "Title of the tile for your plugin on the dashboard.",
        "tags" : "Categories on the market place for which your plugin should be listed.",
        "url" : "URL of your plugins main page. If you use the template from MIDATA it is 'dist/index.html#?authToken=:authToken''",
@@ -86,7 +87,7 @@
        "defaultQuery" : "Query restricting the access of the plugin to the database. Access must be restricted by at least one of 'code', 'content', 'group', 'format' or 'owner'. Valid example (all Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
        "defaultQuery_extra" : "Look for valid values for 'code', 'content' or 'format' on the 'Format/Content' list of the developer guide. As a first version you may start with access to all data. For that use { \"group\" : \"all\", \"group-system\" : \"v1\" }. Please refine query before plugin or app goes in production.",
        "secret" : "Your app will need this 'secret' during login. Choose whatever you like.",
-       "mustParticipateInStudy" : "User must participate in Study in order to use app.",
+       "mustParticipateInStudy" : "User must participate in study in order to use app.",
        "unlock_code" : "If filled out this code word must be entered by the user in order to login or register to the app. (not case sensitive)"
     }
   },
@@ -96,15 +97,15 @@
     "action" : "Action",
     "first" : "First action recordet at",
     "lastrun" : "Last executed",    
-    "count" : "Statistic",
+    "count" : "Statistics",
     "run" : "Number of times the action has been invoked.",
     "retry" : "Number of times operations had to be repeated because of concurrency issues.",
-    "db" :  "Average number of internal (MongoDB) database queries executed per action invocation.",
+    "db" :  "Average number of internal database (MongoDB) queries executed per action invocation.",
     "time" : "Execution time",
     "avgtime" : "Avg",
     "lasttime" : "Last",
     "results" : "Results and Warnings",
-    "result" : "response",
+    "result" : "Response",
     "empty" : "No information has been recorded since debug information was last cleared.",
     "reload_btn" : "Refresh",
     "reset_btn" : "Clear"    

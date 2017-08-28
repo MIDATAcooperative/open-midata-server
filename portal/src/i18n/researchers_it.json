@@ -9,9 +9,17 @@
         "research_organization" : "Research Organization",
 
         // TODO NEW: Name
+
+        // TODO CHANGED
+        // OLD: Name
+        // NEW: Name*
         "name" : "Name",
 
         // TODO NEW: Description
+
+        // TODO CHANGED
+        // OLD: Description
+        // NEW: Description*
         "description" : "Description",
 
         // TODO NEW: Research User
@@ -108,7 +116,22 @@
         "select_group_btn" : "Select Group",
 
         // TODO NEW: Add Task for Participants
-        "add_task_btn" : "Add Task for Participants"
+        "add_task_btn" : "Add Task for Participants",
+
+        // TODO NEW: Research Application
+        "plugin" : "Research Application",
+
+        // TODO NEW: Device Code
+        "device" : "Device Code",
+
+        // TODO NEW: Restrict Read to Group
+        "restrict" : "Restrict Read to Group",
+
+        // TODO NEW: Add Study Data Providing Application
+        "add_application_btn" : "Add Study Data Providing Application",
+
+        // TODO NEW: Application Consents
+        "linked_apps" : "Application Consents"
     },
 
     "studyfields" : {
@@ -288,7 +311,10 @@
         "number_of_records" : "# Records",
 
         // TODO NEW: Download
-        "download_btn" : "Download"
+        "download_btn" : "Download",
+
+        // TODO NEW: Download FHIR Bundle
+        "fhir_download_btn" : "Download FHIR Bundle"
     },
 
     "studyrules" : {
@@ -300,6 +326,15 @@
         "no_change_warning" : "This setup cannot be changed anymore after Study has been validated.",
 
         // TODO NEW: Sharing Query (JSON)
-        "sharing_query" : "Sharing Query (JSON)"
+        "sharing_query" : "Sharing Query (JSON)",
+
+        // TODO NEW: Terms
+        "terms_of_use" : "Terms",
+
+        // TODO NEW: Show Terms
+        "show_terms" : "Show Terms",
+
+        // TODO NEW: Requirements
+        "requirements" : "Requirements"
     }
 }

@@ -1,12 +1,10 @@
 {
 
     "footer" : {
+        "copyright" : "©{{now}} ETH Zürich",
 
-        // TODO CHANGED
-        // OLD: (c) 2015-2016 ETH Zürich
-        // NEW: (c) 2015-{{now}} ETH Zürich
-        "copyright" : "(c) 2015-{{now}} ETH Zürich",
-
+        // TODO NEW: MIDATA Homepage
+        "homepage" : "MIDATA Homepage",
         "portals" : "MIDATA Portals:",
 
         // TODO NEW: For Account Holders
@@ -26,6 +24,9 @@
 
         // TODO NEW: Toggle navigation
         "toggle_navigation" : "Toggle navigation",
+
+        // TODO NEW: Pilot Phase
+        "ribbon" : "Pilot Phase",
 
         // TODO NEW: Login
         "login" : "Login",
@@ -95,7 +96,6 @@
 
 
         // TODO NEW: MIDATA cooperative membership required!
-
         // TODO CHANGED
         // OLD: Midata cooperative membership required!
         // NEW: MIDATA cooperative membership required!
@@ -103,7 +103,6 @@
 
 
         // TODO NEW: In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
-
         // TODO CHANGED
         // OLD: In order to use this feature you must be member of the midata cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
         // NEW: In order to use this feature you must be member of the MIDATA cooperative. Click on your username on the top right and check the 'Account Status' section for more information.
@@ -189,7 +188,10 @@
             "plugin" : "Plugin is only for a different role",
 
             // TODO NEW: Access query must restrict by 'content' or 'group'!
-            "access_query" : "Access query must restrict by 'content' or 'group'!"
+            "access_query" : "Access query must restrict by 'content' or 'group'!",
+
+            // TODO NEW: Data excluded by study configuration is shared in sharing query.
+            "sharing" : "Data excluded by study configuration is shared in sharing query."
         },
 
         "missing" : {
@@ -219,8 +221,14 @@
             // TODO NEW: Terms and conditions not accepted.
             "agb" : "Terms and conditions not accepted.",
 
+            // TODO NEW: Privacy policy must be accepted.
+            "privacypolicy" : "Privacy policy must be accepted.",
+
             // TODO NEW: Study participation must be accepted.
-            "study_accept" : "Study participation must be accepted."
+            "study_accept" : "Study participation must be accepted.",
+
+            // TODO NEW: Group must be assigned to participant first.
+            "study_group" : "Group must be assigned to participant first."
         },
 
         "unknown" : {
@@ -292,7 +300,10 @@
             "participation" : "Account holder is not allowed to participate in study.",
 
             // TODO NEW: The consent for using this app has been revoked. To reenable use the MIDATA portal and delete the rejected or expired consent.
-            "consent" : "The consent for using this app has been revoked. To reenable use the MIDATA portal and delete the rejected or expired consent."
+            "consent" : "The consent for using this app has been revoked. To reenable use the MIDATA portal and delete the rejected or expired consent.",
+
+            // TODO NEW: You are allowed to use this app on a maximum of 10 devices. Please delete unused consents on the MIDATA portal.
+            "app" : "You are allowed to use this app on a maximum of 10 devices. Please delete unused consents on the MIDATA portal."
         },
 
         "closed" : {
@@ -352,7 +363,10 @@
             "consent" : "Consents for studies may not be altered.",
 
             // TODO NEW: Setup can only be changed as long as study is in draft phase.
-            "study" : "Setup can only be changed as long as study is in draft phase."
+            "study" : "Setup can only be changed as long as study is in draft phase.",
+
+            // TODO NEW: Group of participant can only be changed if study is not running or participant not accepted yet.
+            "group" : "Group of participant can only be changed if study is not running or participant not accepted yet."
         }
 
     },
@@ -443,7 +457,36 @@
             "ACCOUNT_DELETED" : "Account deleted",
 
             // TODO NEW: Internal Comment
-            "INTERNAL_COMMENT" : "Internal Comment"
+            "INTERNAL_COMMENT" : "Internal Comment",
+
+            // TODO NEW: Agreed to terms of use
+            "TERMS_OF_USE_AGREED" : "Agreed to terms of use"
+        },
+        "userfeature" : {
+
+            // TODO NEW: Email address of user must be known to the platform
+            "EMAIL_ENTERED" : "Email address of user must be known to the platform",
+
+            // TODO NEW: Email address of user must have been verified
+            "EMAIL_VERIFIED" : "Email address of user must have been verified",
+
+            // TODO NEW: Mobile phone number of user must be known to the platform
+            "PHONE_ENTERED" : "Mobile phone number of user must be known to the platform",
+
+            // TODO NEW: Users mobile phone number must be known and verified
+            "PHONE_VERIFIED" : "Users mobile phone number must be known and verified",
+
+            // TODO NEW: User must have entered his address
+            "ADDRESS_ENTERED" : "User must have entered his address",
+
+            // TODO NEW: User address must have been verified
+            "ADDRESS_VERIFIED" : "User address must have been verified",
+
+            // TODO NEW: Users ID card must have been verified
+            "PASSPORT_VERIFIED" : "Users ID card must have been verified",
+
+            // TODO NEW: User must be member of the cooperative
+            "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative"
         },
         "consentstatus" : {
 
@@ -796,6 +839,10 @@
         "data" : "Data stored in this MIDATA instance",
 
         // TODO NEW: Choose one of the portal from the bottom of the page to start. Each portal has its own LOGIN and SIGN UP page.
+
+        // TODO CHANGED
+        // OLD: Choose one of the portal from the bottom of the page to start. Each portal has its own LOGIN and SIGN UP page.
+        // NEW: Choose one of the portal from the top of the page to start. Each portal has its own LOGIN and SIGN UP page.
         "start" : "Choose one of the portal from the bottom of the page to start. Each portal has its own LOGIN and SIGN UP page.",
 
         "localhost" : {
@@ -890,6 +937,9 @@
         // TODO NEW: Sign Up
         "sign_up" : "Sign Up",
 
+        // TODO NEW: Fields marked with a * must be filled out.
+        "mandantory_fields" : "Fields marked with a * must be filled out.",
+
         // TODO NEW: EMail
         "email" : "EMail",
 
@@ -951,26 +1001,60 @@
         "coach" : "Contact person MIDATA",
 
         // TODO NEW: Purpose of Registration
+
+        // TODO CHANGED
+        // OLD: Purpose of Registration
+        // NEW: Purpose of Registration*
         "reason" : "Purpose of Registration",
 
         // TODO NEW: AGB
-
         // TODO CHANGED
         // OLD: AGB
         // NEW: Midata AGB
+
+        // TODO CHANGED
+        // OLD: Midata AGB
+        // NEW: Midata AGBs
         "agb" : "AGB",
 
         // TODO NEW: Research
         "study" : "Research",
 
         // TODO NEW: I accept the terms and conditions
+
+        // TODO CHANGED
+        // OLD: I accept the terms and conditions
+        // NEW: I accept the
         "agb2" : "I accept the terms and conditions",
 
+        // TODO NEW: Terms of Use
+        "agb3" : "Terms of Use",
+
+        // TODO NEW: I accept the
+        "privacypolicy2" : "I accept the",
+
+        // TODO NEW: Privacy Policy
+        "privacypolicy3" : "Privacy Policy",
+
         // TODO NEW: App AGB
+
+        // TODO CHANGED
+        // OLD: App AGB
+        // NEW: App Terms of Use
         "app_agb" : "App AGB",
 
         // TODO NEW: I accept the terms and conditions
+
+        // TODO CHANGED
+        // OLD: I accept the terms and conditions
+        // NEW: I accept the
         "app_agb2" : "I accept the terms and conditions",
+
+        // TODO NEW: App Terms And Conditions
+        "app_agb3" : "App Terms And Conditions",
+
+        // TODO NEW: Study Terms of Use
+        "study_agb" : "Study Terms of Use",
 
         // TODO NEW: Sign Up
         "sign_up_btn" : "Sign Up"
@@ -1062,8 +1146,6 @@
         // TODO NEW: Welcome to MIDATA
         "title" : "Welcome to MIDATA",
 
-        // TODO NEW: Before you can use your account your identity needs to be verified:
-        "description" : "Before you can use your account your identity needs to be verified:",
 
         // TODO NEW: E-Mail confirmed?
         "email_confirmed" : "E-Mail confirmed?",
@@ -1080,8 +1162,6 @@
         // TODO NEW: Confirmation Code entered?
         "code_entered" : "Confirmation Code entered?",
 
-        // TODO NEW: 1. Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.
-
         // TODO CHANGED
         // OLD: 1. Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.
         // NEW: Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.
@@ -1096,28 +1176,30 @@
         // TODO NEW: Retry login
         "retry_btn" : "Retry login",
 
-        // TODO NEW: 2. A contract has been sent to your postal address. Return it signed to MIDATA.
-
         // TODO CHANGED
         // OLD: 2. A contract has been sent to your postal address. Return it signed to MIDATA.
         // NEW: A contract has been sent to your postal address. Return it signed to MIDATA.
         "contract_instructions" : "2. A contract has been sent to your postal address. Return it signed to MIDATA.",
-
-        // TODO NEW: 3. A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.
 
         // TODO CHANGED
         // OLD: 3. A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.
         // NEW: A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.
         "code_intructions" : "3. A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
 
-        // TODO NEW: Confirmation code may be entered here after signed contract has arrived at MIDATA office.
-        "code_later" : "Confirmation code may be entered here after signed contract has arrived at MIDATA office.",
+        // TODO NEW: You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA office.
+        "code_done" : "You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA office.",
 
         // TODO NEW: Enter now
         "enter_now_btn" : "Enter now",
 
         // TODO NEW: E-Mail address has been confirmed.
-        "email_success" : "E-Mail address has been confirmed."
+        "email_success" : "E-Mail address has been confirmed.",
+
+        // TODO NEW: Your postal address is required to use this service, please provide it.
+        "address_entered" : "Your postal address is required to use this service, please provide it.",
+
+        // TODO NEW: A mobile phone number is required to use this service, please provide it.
+        "phone_entered" : "A mobile phone number is required to use this service, please provide it."
     },
 
     "changepassphrase" : {
@@ -1388,8 +1470,24 @@
         // TODO NEW: Change Address
         "change_address_btn" : "Change Address",
 
+        // TODO NEW: Account visibility
+        "searchable_short" : "Account visibility",
+
         // TODO NEW: Is your account visible for other MIDATA account holders?
+
+        // TODO CHANGED
+        // OLD: Is your account visible for other MIDATA account holders?
+        // NEW: May other users find your profile, while searching for your email?
         "searchable" : "Is your account visible for other MIDATA account holders?",
+
+        // TODO NEW: Yes, I want my name and email to be visible to other users
+        "searchable_yes" : "Yes, I want my name and email to be visible to other users",
+
+        // TODO NEW: No, I don't want that any other user sees my profile
+        "searchable_no" : "No, I don't want that any other user sees my profile",
+
+        // TODO NEW: This setting has no effect on your existing data sharing consents.
+        "searchable_info" : "This setting has no effect on your existing data sharing consents.",
 
         // TODO NEW: Change Settings
         "change_settings_btn" : "Change Settings",
@@ -1409,6 +1507,9 @@
 
         // TODO NEW: Created by:
         "created_by" : "Created by:",
+
+        // TODO NEW: Organization:
+        "orgName" : "Organization:",
 
         // TODO NEW: Description:
         "description" : "Description:",
@@ -1589,6 +1690,9 @@
         // TODO NEW: This consent shares data with research for use in a study.
         "type_studyparticipation" : "This consent shares data with research for use in a study.",
 
+        // TODO NEW: This consent shares research data to a study participant.
+        "type_studyrelated" : "This consent shares research data to a study participant.",
+
         // TODO NEW: This consent shares data with a mobile app or external service.
         "type_externalservice" : "This consent shares data with a mobile app or external service.",
 
@@ -1758,6 +1862,15 @@
 
         // TODO NEW: Grouped by application
         "by_plugin" : "Grouped by application",
+
+        // TODO NEW: Global
+        "type_global" : "Global",
+
+        // TODO NEW: Research
+        "type_study" : "Research",
+
+        // TODO NEW: Other Account Holders
+        "type_circle" : "Other Account Holders",
 
         // TODO NEW: Show:
         "show" : "Show:",
@@ -2189,5 +2302,20 @@
 
         // TODO NEW: Add As Changing Team To Consent
         "add_group_btn" : "Add As Changing Team To Consent"
+    },
+
+    "confirm" : {
+
+        // TODO NEW: Are you really sure?
+        "title" : "Are you really sure?",
+
+        // TODO NEW: Cancel
+        "cancel" : "Cancel"
+    },
+
+    "terms" : {
+
+        // TODO NEW: << Back
+        "close_btn" : "<< Back"
     }
 }
