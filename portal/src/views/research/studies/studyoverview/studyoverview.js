@@ -42,7 +42,11 @@ angular.module('portal')
 	};
 	
 	$scope.readyForDelete = function() {
-		return $scope.study.executionStatus == "PRE";
+		return $scope.study.executionStatus == "PRE" || $scope.study.executionStatus == "ABORTED";
+	};
+	
+	$scope.readyForAbort = function() {
+		return $scope.study.validationStatus == "VALIDATED" && $scope.study.executionStatus != "ABORTED" && $scope.study.participantSearchStatus != "SEARCHING";
 	};
 	
 	$scope.readyForStartExecution = function() {
@@ -109,6 +113,18 @@ angular.module('portal')
 		$scope.error = null;
 		
 		server.post(jsRoutes.controllers.research.Studies.finishExecution($scope.studyid).url).
+		success(function(data) { 				
+		    $scope.reload();
+		}).
+		error(function(err) {
+			$scope.error = err;			
+		});
+	};
+	
+	$scope.abortExecution = function() {
+		$scope.error = null;
+		
+		server.post(jsRoutes.controllers.research.Studies.abortExecution($scope.studyid).url).
 		success(function(data) { 				
 		    $scope.reload();
 		}).

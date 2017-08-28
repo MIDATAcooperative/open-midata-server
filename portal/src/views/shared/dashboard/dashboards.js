@@ -441,7 +441,7 @@ angular.module('portal')
 	    	 
 	    	   active : true,
 	    	   position : "small",
-	    	   setup : { properties : { }, fields : ["name"] }
+	    	   setup : { properties : { participantSearchStatus : "SEARCHING" }, fields : ["name"] }
 	       },
 	       {
 			     id: "researchnews",
@@ -494,7 +494,7 @@ angular.module('portal')
 	       	    	 
 	       	    	   active : true,
 	       	    	   position : "full",
-	       	    	   setup : { properties : { }, fields : ["name"] }
+	       	    	   setup : { properties : { participantSearchStatus : "SEARCHING" }, fields : ["name"] }
 	       	       }
 	     ],
 	 "circles" : [
@@ -767,7 +767,7 @@ angular.module('portal')
   	 	    	
   	 	    	   active : true,
   	 	    	   position : "small",
-  	 	    	   setup : { properties : { }, fields : ["name"] }
+  	 	    	   setup : { properties : { participantSearchStatus : "SEARCHING" }, fields : ["name"] }
   	 	       },
   	 	       {
   	 			     id: "researchnews",

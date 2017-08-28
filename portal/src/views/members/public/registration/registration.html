@@ -48,9 +48,7 @@
 							        </div>
 							     </div>
 							  
-                                 <formerror myid="birthday" type="day" message="error.invalid.day"></formerror>
-                                 <formerror myid="birthday" type="month" message="error.invalid.month"></formerror>
-                                 <formerror myid="birthday" type="year" message="error.invalid.year"></formerror>
+							     <formerror myid="birthday" type="date" message="error.invalid.date"></formerror>                                 
 							  </formrow>
 
 							  <formrow myid="language" label="registration.language"><select class="form-control" id="language" ng-model="registration.language" ng-change="changeLanguage(registration.language);" ng-options="lang.value as lang.name | translate for lang in languages"></select></formrow>

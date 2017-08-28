@@ -1,5 +1,6 @@
 package controllers.admin;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,12 +28,15 @@ import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.EventType;
 import models.enums.Gender;
+import models.enums.MessageReason;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.InstanceConfig;
+import utils.RuntimeConstants;
 import utils.access.RecordManager;
 import utils.auth.AdminSecured;
 import utils.auth.CodeGenerator;
@@ -44,6 +48,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
+import utils.messaging.Messager;
 
 /**
  * functions for user administration. May only be used by the MIDATA admin.
@@ -79,6 +84,10 @@ public class Administration extends APIController {
 		UserStatus oldstatus = user.status;
 		user.status = status;
 		User.set(user._id, "status", user.status);
+		
+		if (user.status.equals(UserStatus.ACTIVE) && !oldstatus.equals(UserStatus.ACTIVE)) {			
+			Messager.sendMessage(RuntimeConstants.instance.portalPlugin, MessageReason.ACCOUNT_UNLOCK, null, Collections.singleton(user._id), null, new HashMap<String, String>());			
+		}
 		
 		if (user.status != oldstatus && user.status == UserStatus.DELETED) {
 			User.set(user._id, "searchable", false);

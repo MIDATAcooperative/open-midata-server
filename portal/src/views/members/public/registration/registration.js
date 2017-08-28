@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', 'oauth', '$document', 'views', function($scope, $state, server, status, session, $translate, languages, $stateParams, oauth, $document, views) {
+.controller('RegistrationCtrl', ['$scope', '$state', 'server', 'status', 'session', '$translate', 'languages', '$stateParams', 'oauth', '$document', 'views', 'dateService', function($scope, $state, server, status, session, $translate, languages, $stateParams, oauth, $document, views, dateService) {
 	
 	$scope.registration = { language : $translate.use() };
 	$scope.languages = languages.all;
@@ -24,9 +24,9 @@ angular.module('portal')
         }
 
         
-        $scope.myform.birthday.$setValidity('day', $scope.registration.birthdayDay > 0 && $scope.registration.birthdayDay < 32);
-        $scope.myform.birthday.$setValidity('month', $scope.registration.birthdayMonth > 0);
-		$scope.myform.birthday.$setValidity('year', $scope.registration.birthdayYear >= 1900 && $scope.registration.birthdayYear <= new Date().getFullYear());
+        if ($scope.registration.birthdayDay) {
+          $scope.myform.birthday.$setValidity('date', dateService.isValidDate($scope.registration.birthdayDay, $scope.registration.birthdayMonth, $scope.registration.birthdayYear));
+        }
 				
         if (!$scope.registration.privacypolicy) {        	
         	$scope.myform.privacypolicy.$invalid = true;

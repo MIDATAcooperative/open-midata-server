@@ -55,7 +55,8 @@
 	   "CONSENT_CONFIRM_OWNER" : "Consent confirmation (Grantor)",
 	   "CONSENT_CONFIRM_AUTHORIZED" : "Consent confirmation (Grantee)",
 	   "CONSENT_REJECT_OWNER" : "Consent rejection (Grantor)",
-	   "CONSENT_REJECT_AUTHORIZED" : "Consent rejection (Grantee)"	   
+	   "CONSENT_REJECT_AUTHORIZED" : "Consent rejection (Grantee)",
+	   "ACCOUNT_UNLOCK" : "Account unlocked by admin"	   
     }		      
   },
   
