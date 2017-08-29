@@ -95,7 +95,8 @@
     "end_participant_search_btn" : "End Participant Search",
     "start_study_execution_btn" : "Start Study Execution",
     "finish_study_btn" : "Finish Study",
-    "delete_study_btn" : "Delete Study"
+    "delete_study_btn" : "Delete Study",
+    "abort_study_btn" : "Abort Study"
   },
   
   "studyparticipant" : {

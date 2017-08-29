@@ -140,6 +140,7 @@ public enum InstanceType {
 	}
 	
 	public Set<UserFeature> defaultRequirementsPortalLogin(UserRole role) {
+		if (this == PERFTEST) return EnumSet.of(UserFeature.EMAIL_ENTERED);
 		if (role != UserRole.MEMBER) return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED);
 		if (this == TEST || this == DEMO || this == PROD) {
 		   return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED);
@@ -148,10 +149,11 @@ public enum InstanceType {
 	}
 	
     public Set<UserFeature> defaultRequirementsOAuthLogin(UserRole role) {
+    	if (this == PERFTEST) return EnumSet.of(UserFeature.EMAIL_ENTERED);
     	if (role != UserRole.MEMBER) return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED);
     	if (this == TEST || this == DEMO) {
- 		   return EnumSet.of(UserFeature.EMAIL_VERIFIED, UserFeature.ADMIN_VERIFIED);
+ 		   return EnumSet.of(UserFeature.EMAIL_ENTERED, UserFeature.ADMIN_VERIFIED);
  		}
-    	return EnumSet.of(UserFeature.EMAIL_VERIFIED);
+    	return EnumSet.of(UserFeature.EMAIL_ENTERED);
 	}
 }

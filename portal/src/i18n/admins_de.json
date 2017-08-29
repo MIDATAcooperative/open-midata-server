@@ -15,6 +15,15 @@
         "search_type" : "Suche",
         "contract_required" : "Der Vertrag muss geschickt werden",
         "contract_confirm_required" : "Der unterschriebene Vertrag muss bestätigt werden",
+
+        // TODO NEW: E-Mail not confirmed by user
+        "no_email_confirm" : "E-Mail nicht vom Benutzer bestätigt.",
+
+        // TODO NEW: E-Mail confirmation rejected by user
+        "email_rejected" : "E-Mail-Bestätigung vom Benutzer abgelehnt.",
+
+        // TODO NEW: Not confirmed by administrator
+        "not_admin_confirmed" : "Nicht vom Administrator bestätigte Accounts",
         "overview" : "Übersicht",
         "specific_user" : "Bestimmten Benutzer",
         "role" : "Rolle",
@@ -79,7 +88,9 @@
     },
 
     "admin_terms" : {
-        "title" : "Bestimmungen",
+
+       
+        "title" : "Bestimmungen",     
         "empty" : "Keine Bestimmungen vorhanden.",
         "name" : "Name",
         "version" : "Version",
@@ -88,6 +99,7 @@
     },
 
     "admin_manageterms" : {
+       
         "pagetitle" : "Bestimmungen",
         "name" : "Interner Name",
         "version" : "Version",
@@ -104,6 +116,7 @@
         "code" : "Code",
         "required_information" : "Benötigte Informationen",
         "required_assistance" : "Belegarzt benötigt",
+       
         "termsOfUse" : "Bestimmungen",
         "sharing_query" : "Sharing Query",
         "requirements" : "Anforderungen",
@@ -111,6 +124,7 @@
         "group_name" : "Name der Gruppe",
         "group_description" : "Beschreibung",
         "history" : "Historie",
+        
         "end_validation_btn" : "Validierung abschliessen",
         "delete_study_btn" : "Studie löschen"
     }
