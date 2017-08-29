@@ -13,7 +13,10 @@
     "title" : "Member List",
     "search_type" : "Search",
     "contract_required" : "Contract needs to be sent",
-    "contract_confirm_required" : "Signed contract needs to be confirmed",   
+    "contract_confirm_required" : "Signed contract needs to be confirmed",  
+    "no_email_confirm" : "E-Mail not confirmed by user",
+    "email_rejected" : "E-Mail confirmation rejected by user",
+	"not_admin_confirmed" : "Not confirmed by administrator", 
     "overview" : "Overview",
     "specific_user" : "Specific User",
     "role" : "Role",
@@ -78,8 +81,8 @@
   },
   
   "admin_terms" : {
-    "title" : "Terms of Use",
-    "empty" : "No terms of use stored.",
+    "title" : "Terms",
+    "empty" : "No terms available.",
     "name" : "Name",
     "version" : "Version",
     "language" : "Language",
@@ -87,7 +90,7 @@
   },
   
   "admin_manageterms" : {
-    "pagetitle" : "Terms of Use",
+    "pagetitle" : "Terms",
     "name" : "Internal Name",
     "version" : "Version",
     "language" : "Language",
@@ -103,14 +106,14 @@
      "code" : "Code",
      "required_information" : "Required Information",
      "required_assistance" : "Required Assistance",
-     "termsOfUse" : "Terms Of Use",
+     "termsOfUse" : "Terms",
      "sharing_query" : "Sharing Query",
      "requirements" : "Requirements",
      "groups" : "Groups",
      "group_name" : "Group Name",
      "group_description" : "Description",
      "history" : "History",
-     "end_validation_btn" : "End Validation",
+     "end_validation_btn" : "Complete Validation",
      "delete_study_btn" : "Delete Study"    
   }
 }

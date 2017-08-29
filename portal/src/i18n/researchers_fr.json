@@ -49,9 +49,8 @@
         "description" : "Lorsque l'étude est en cours, vous pouvez partager des données avec les participants et leur assigner des tâches (p.ex. remplir un formulaire).",
         "select_group_btn" : "Sélectionnez un groupe",
         "add_task_btn" : "Ajouter une tâche pour les participants",
-        // TODO NEW: Research Application
-        "plugin" : "Application pour la recherche",
 
+        "plugin" : "Application pour la recherche",
         "device" : "Code de l'appareil",
 
         // TODO NEW: Restrict Read to Group
@@ -104,7 +103,10 @@
         "end_participant_search_btn" : "Terminer la recherche de participants",
         "start_study_execution_btn" : "Débuter la recherche",
         "finish_study_btn" : "Terminer la recherche",
-        "delete_study_btn" : "Effacer la recherche"
+        "delete_study_btn" : "Effacer la recherche",
+
+        // TODO NEW: Abort Study
+        "abort_study_btn" : "Abort Study"
     },
 
     "studyparticipant" : {

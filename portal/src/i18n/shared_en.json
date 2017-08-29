@@ -369,7 +369,7 @@
   },
 
   "instance" : {
-     "rules"  : "", // DELETE
+     "rules"  : "", 
      "purpose" : "Purpose of this MIDATA instance",
      "access" : "Access to this MIDATA instance",
      "uptime" : "Availability and downtimes",

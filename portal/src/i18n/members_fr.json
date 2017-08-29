@@ -8,7 +8,6 @@
 
     "member_quickregistration" : {
         "sign_up" : "Inscription",
-
         "study" : "Étude*",
         "app" : "App utilisée*",
         "app_password" : "Mot de passe de l'app",
