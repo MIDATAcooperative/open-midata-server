@@ -2,9 +2,6 @@
 
     "footer" : {
 
-        // TODO CHANGED
-        // OLD: (c) 2015-{{now}} ETH Zürich
-        // NEW: ©{{now}} ETH Zürich
         "copyright" : "©{{now}} ETH Zürich",
         "homepage" : "Homepage MIDATA",
         "portals" : "Portails MIDATA:",
@@ -69,15 +66,9 @@
             "appcode" : "Code d'app inconnu",
             "status_transition" : "Changement d'état invalide",
             "date" : "Valeur invalide pour le champ date",
-
-            // TODO NEW: Enter a valid day of month (1 - 31)
-            "day" : "Enter a valid day of month (1 - 31)",
-
-            // TODO NEW: Enter a valid year (4 digits)
-            "year" : "Enter a valid year (4 digits)",
-
-            // TODO NEW: Choose a valid month
-            "month" : "Choose a valid month",
+            "day" : "Veuillez entrer un jour valide (entre 1 et 31)",
+            "year" : "Veuillez entrer une année valide (format AAAA)",
+            "month" : "Veuillez sélectionner un mois valide",
             "string" : "Ce champ doit contenir du text",
             "token" : "Jeton d'autorisation invalide. ",
             "json" : "JSON fourni invalide",
@@ -88,9 +79,7 @@
             // OLD: Plugin is only for a different role
             // NEW: Plugin is intended for a different role
             "plugin" : "Ce plugin est prévu pour un rôle différent",
-
-            // TODO NEW: Incorrect unlock code
-            "unlock_code" : "Incorrect unlock code",
+            "unlock_code" : "Code d'activation incorrect",
             "access_query" : "La requête d'accès doit être restreinte par 'contenu' ou 'groupe'!",
 
             // TODO CHANGED
@@ -100,10 +89,6 @@
         },
 
         "missing" : {
-
-            // TODO CHANGED
-            // OLD: Please provide a username  and a password.
-            // NEW: Please provide a username and a password.
             "credentials" : "Veuillez entrer un nom d'utilisateur et un mot de passe.",
 
             "email" : "Veuillez entrer votre adresse e-mail",
@@ -115,10 +100,6 @@
             "agb" : "Conditions Générales d'Utilisation (CGU) pas acceptées.",
             "privacypolicy" : "La déclaration de confidentialité doit être acceptée.",
             "study_accept" : "La participation à l'étude doit être acceptée.",
-
-            // TODO CHANGED
-            // OLD: Group must be assigned to participant first.
-            // NEW: Participant must first be assigned to a group.
             "study_group" : "Le participant doit d'abord être assigné à un groupe."
         },
 
@@ -181,28 +162,18 @@
 
         "expired" : {
             "token" : "Le jeton a expiré. Veuillez en demander un nouveau.",
-
-            // TODO NEW: Your activation token has already expired. A new token has been sent to your email address right now - please confirm within 24 hours.
-            "tokenresent" : "Your activation token has already expired. A new token has been sent to your email address right now - please confirm within 24 hours.",
+            "tokenresent" : "Votre jeton d'activation est expiré. Un nouveau jeton d'activation a été envoyé par e-mail à l'instant. Veuillez valider votre adresse e-mail dans les 24 heures.",
             "code" : "Le code de participation a expiré."
         },
 
         "already_done" : {
-
-            // TODO CHANGED
-            // OLD: E-Mail has already been verified.
-            // NEW: Email has already been verified.
             "email_verification" : "L'adresse e-mail a déjà été vérifié."
         },
 
         "no_alter" : {
             "consent" : "Les consentements pour les études ne peuvent pas être modifiés.",
             "study" : "Les préférences ne peuvent être modifiées que si l'étude est en phase d'ébauche.",
-
-            // TODO CHANGED
-            // OLD: Group of participant can only be changed if study is not running or participant not accepted yet.
-            // NEW: Group of participant can only be changed if study is not running or no participant accepted yet.
-            "group" : "Le groupe de participants ne peut être modifié que si l'ètude n'est pas en cours ou qu'aucune participation n'a été approuvée."
+            "group" : "Le groupe de participants ne peut être modifié que si l'étude n'est pas en cours ou qu'aucune participation n'a été approuvée."
         }
 
     },
@@ -215,15 +186,9 @@
         },
         "country" : {
             "CH" : "Suisse",
-
-            // TODO NEW: Germany
-            "DE" : "Germany",
-
-            // TODO NEW: Netherlands
-            "NL" : "Netherlands",
-
-            // TODO NEW: United Kingdom
-            "GB" : "United Kingdom"
+            "DE" : "Allemagne",
+            "NL" : "Pays-Bas",
+            "GB" : "Royaume-Uni"
         },
         "eventtype" : {
             "CODE_ENTERED" : "Code entré",
@@ -282,19 +247,9 @@
             // OLD: User address must have been verified
             // NEW: Post address of user must have been verified
             "ADDRESS_VERIFIED" : "User address must have been verified",
-
-            // TODO NEW: Users ID card must have been verified
-
-            // TODO CHANGED
-            // OLD: Users ID card must have been verified
-            // NEW: ID card of users must have been verified
-            "PASSPORT_VERIFIED" : "Users ID card must have been verified",
-
-            // TODO NEW: User must be member of the cooperative
-            "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative",
-
-            // TODO NEW: Account must have been unlocked by MIDATA admin
-            "ADMIN_VERIFIED" : "Account must have been unlocked by MIDATA admin"
+            "PASSPORT_VERIFIED" : "La'ID de l'utilisateur doit être vérifiée.",
+            "MIDATA_COOPERATIVE_MEMBER" : "L'utilisateur doit être membre de la cooperative.",
+            "ADMIN_VERIFIED" : "Votre compte doit être validé par un administrateur."
         },
         "consentstatus" : {
             "ACTIVE" : "Actif",
@@ -348,10 +303,6 @@
             "VALIDATION" : "en cours de validation"
         },
         "userrole" : {
-
-            // TODO CHANGED
-            // OLD: Admin
-            // NEW: Administrator
             "ADMIN" : "Administrateur",
             "ANY" : "Tous les rôles",
             "DEVELOPER" : "Développeur",
@@ -396,42 +347,18 @@
             "FR" : "français"
         },
         "month" : {
-
-            // TODO NEW: Jan
-            "01" : "Jan",
-
-            // TODO NEW: Feb
-            "02" : "Feb",
-
-            // TODO NEW: Mar
-            "03" : "Mar",
-
-            // TODO NEW: Apr
-            "04" : "Apr",
-
-            // TODO NEW: May
-            "05" : "May",
-
-            // TODO NEW: Jun
-            "06" : "Jun",
-
-            // TODO NEW: Jul
-            "07" : "Jul",
-
-            // TODO NEW: Aug
-            "08" : "Aug",
-
-            // TODO NEW: Sep
-            "09" : "Sep",
-
-            // TODO NEW: Oct
-            "10" : "Oct",
-
-            // TODO NEW: Nov
-            "11" : "Nov",
-
-            // TODO NEW: Dec
-            "12" : "Dec"
+            "01" : "Jan.",
+            "02" : "Fev.",
+            "03" : "Mar.",
+            "04" : "Avr.",
+            "05" : "Mai",
+            "06" : "Juin",
+            "07" : "Jul.",
+            "08" : "Août",
+            "09" : "Sep.",
+            "10" : "Oct.",
+            "11" : "Nov.",
+            "12" : "Dec."
         },
         "tags" : {
             "Analysis" : "Analyse",
@@ -447,10 +374,6 @@
             "create" : "Formulaire",
             "oauth1" : "OAuth 1",
             "oauth2" : "OAuth 2",
-
-            // TODO CHANGED
-            // OLD: Mobile
-            // NEW: App (Smartphone, Web)
             "mobile" : "App (Smartphone, Web)"
         }
     },
@@ -481,7 +404,7 @@
 
     "instance" : {
 
-        // TODO NEW: 
+        // TODO NEW:
         "rules" : ""
         "purpose" : "Raison d'être de cette instance MIDATA",
         "access" : "Accès à cette instance MIDATA",
@@ -490,10 +413,6 @@
         "start" : "Veuillez choisir l'un des portails du haut de la page. Chaque portail possède sont propre formulaire d'inscription et d'authentification.",
 
         "localhost" : {
-
-            // TODO CHANGED
-            // OLD: Local MIDATA Instance (localhost)
-            // NEW: Local Instance (localhost)
             "name" : "Instance locale (localhost)",
 
             // TODO CHANGED
@@ -506,19 +425,11 @@
             // OLD: You may register user accounts for all four portals. Accounts do not need to be confirmed or validated by MIDATA administration. You may use and register your own admin accounts.
             // NEW: You may register user accounts for all four portals. Accounts do not need to be validated by a MIDATA administrator. You may register and use your own admin accounts.
             "access" : "Vous pouvez créer des comptes utilisateurs pour les quatre portails. Les comptes de doivent pas être validés par un administrateur MIDATA. Vous pouvez créer et utiliser vos propres comptes administrateur.",
-
-            // TODO CHANGED
-            // OLD: Whenever you run it its available for you :-)
-            // NEW: Whenever you run it, its available for you :-)
-            "uptime" : "Chaque fois que vous l'exécutez, il est disponible pour vous :-)",
+            "uptime" : "Chaque fois que vous l'exécutez, elle est disponible uniquement vous :-)",
             "data" : "Les données stockées dans cette instance ne seront disponibles que sur votre PC local."
         },
 
         "test" : {
-
-            // TODO CHANGED
-            // OLD: test.midata.coop (Test Instance)
-            // NEW: Test Instance (test.midata.coop)
             "name" : "Instance de test (test.midata.coop)",
             "intro" : "Ceci est une instance de test de la plate-forme MIDATA.",
 
@@ -544,15 +455,7 @@
         },
 
         "demo" : {
-
-            // TODO CHANGED
-            // OLD: demo.midata.coop (Demo Instance)
-            // NEW: Demo Instance (demo.midata.coop)
             "name" : "Instance de démonstration (demo.midata.coop)",
-
-            // TODO CHANGED
-            // OLD: This is a demonstration instance of MIDATA.
-            // NEW: This is a demonstration instance of the MIDATA platform.
             "intro" : "Ceci est une instance de démonstration de la plate-forme MIDATA.",
 
             // TODO CHANGED
@@ -566,7 +469,7 @@
             "access" : "Vous pouvez créer des comptes utilisateurs pour les quatre portails. Les comptes doivent être validés par un administrateur, avant de pouvoir être utilisés.",
 
             // TODO CHANGED
-            // OLD: This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time 
+            // OLD: This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week at monday between 12:00 and 14:00 central european time
             // NEW: This instance is updated less frequently than the test.midata.coop instance. Expected downtime is once a week on Monday between 12:00 and 14:00 central european time.
             "uptime" : "Cette instance est mise à jour moins fréquemment que l'instance de test test.midata.coop. La plage de maintenance prévue est une fois par semaine le lundi entre 12:00 et 14:00 heure d'Europe centrale.",
 
@@ -577,10 +480,6 @@
         },
 
         "ch" : {
-
-            // TODO CHANGED
-            // OLD: ch.midata.coop (MIDATA Switzerland)
-            // NEW: MIDATA Switzerland (ch.midata.coop)
             "name" : "MIDATA Suisse (ch.midata.coop)",
             "intro" : "Ceci est la plate-forme MIDATA pour la Suisse.",
 
@@ -646,29 +545,15 @@
         // NEW: Study Terms
         "study_agb" : "Conditions de l'étude",
         "sign_up_btn" : "S'inscrire",
-
-        // TODO NEW: Unlock Code
-        "unlock_code" : "Unlock Code"
+        "unlock_code" : "Code d'activation"
     },
 
     "login" : {
         "email_address" : "Adresse e-mail",
         "password" : "Mot de passe",
-
-        // TODO CHANGED
-        // OLD: Remember Me
-        // NEW: Remember me
         "remember_me" : "Rester connecté",
-
-        // TODO CHANGED
-        // OLD: Sign in
-        // NEW: Log in
         "sign_in_btn" : "Se connecter",
         "forgot_your_password" : "Mot de passe oublié?",
-
-        // TODO CHANGED
-        // OLD: Login
-        // NEW: Log in
         "login_btn" : "Se connecter"
     },
 
@@ -704,25 +589,13 @@
 
     "postregister" : {
         "title" : "Bienvenue sur MIDATA",
-
-        // TODO CHANGED
-        // OLD: E-Mail confirmed?
-        // NEW: Email confirmed?
         "email_confirmed" : "E-mail confirmé?",
         "contract_signed" : "Contrat signé et renvoyé?",
         "resent_success" : "Le courrier de bienvenue a été renvoyé.",
         "address_success" : "L'adresse a été confirmée.",
-
-        // TODO CHANGED
-        // OLD: Confirmation Code entered?
-        // NEW: Confirmation code entered?
         "code_entered" : "Code de confirmation saisi?",
         "email_instructions" : "Votre adresse e-mail doit être confirmée. Un e-mail d'activation vous a été envoyé. Cliquez sur le lien indiqué dans cet e-mail pour confirmer votre adresse e-mail.",
         "email_code" : "Vous pouvez également saisir le code reçu par e-mail ici:",
-
-        // TODO CHANGED
-        // OLD: Resend eMail
-        // NEW: Resend email
         "resend_btn" : "Renvoyer l'e-mail",
         "retry_btn" : "Veuillez vous authentifier à nouveau",
 
@@ -736,10 +609,6 @@
         "code_intructions" : "Une lettre contenant un code de confirmation vous a été adressée par la poste. Veuillez saisir ce code de confirmation pour pouvoir accéder à la plateforme.",
         "code_done" : "Vous avez saisi le code de confirmation. Vous pourrez vous connecter dès que le contrat signé sera parvenu à l'agence MIDATA.",
         "enter_now_btn" : "Entrer maintenant",
-
-        // TODO CHANGED
-        // OLD: E-Mail address has been confirmed.
-        // NEW: Email address has been confirmed.
         "email_success" : "L'adresse e-mail a déjà été confirmée.",
         "address_entered" : "Votre adresse postale est requise pour utiliser ce service, veuillez la saisir.",
         "phone_entered" : "Un numéro de téléphone mobile est requis pour utiliser ce service, veuillez le saisir.",
@@ -818,11 +687,7 @@
         "download_btn" : "Télécharger",
         "content_visualization" : "Visualisation du contenu",
         "no_visualization" : "Cet enregistrement ne peut pas être visualisé.",
-
-        // TODO CHANGED
-        // OLD: RAW Data
-        // NEW: Raw Data
-        "raw_data" : "Données brutes"
+        "raw_data" : "Données brutes (Raw data)"
     },
 
     "studydetails" : {
@@ -879,10 +744,6 @@
         "settings" : "Paramètres",
         "address" : "Adresse et coordonnées",
         "change_address_btn" : "Changement d'adresse",
-
-        // TODO CHANGED
-        // OLD: Account visibility
-        // NEW: Visibility of your account
         "searchable_short" : "Visibilité de votre compte",
         "searchable" : "Votre profil est-il visible pour d'autres utilisateurs, si ceux-ci font une recherche sur vous?",
         "searchable_yes" : "Oui, je veux que mon nom et mon adresse e-mail soient visible pour d'autres utilisateurs",
@@ -996,11 +857,7 @@
         // OLD: Using consents you can grant others (healthcare professionals, friends, research...) access to some of your data. Use this page to manage your existing consents or to create a new one.
         // NEW: Using consents you can grant others (healthcare professionals, friends, researchers, ...) access to some of your data. Use this page to manage your consents and create new ones.
         "description" : "Les consentements permettent de donner access à vos données à d'autres utilisateurs (professionnels de la santé, amis, chercheurs, ...). Cette page vous permet de gérer vos consentements et d'en créer de nouveaux.",
-
-        // TODO CHANGED
-        // OLD: You have {{ count }} consents:
-        // NEW: You have {{ count }} consent(s):
-        "count" : "Vous avez {{ count }} consentements:",
+        "count" : "Vous avez {{ count }} consentement(s):",
         "where_owner" : "Afficher les consentements pour lesquels vous partagez des données avec d'autres personnes",
         "where_authorized" : "Afficher les consentements pour lesquels des données sont partagées avec vous",
         "name" : "Libellé du consentement",
@@ -1043,32 +900,16 @@
         "title" : "Mes données",
         "share_instructions1" : "Utilisez les boutons 'partager' et 'supprimer le partage' pour sélectionner les enregistrementd que vous désirez partager sous le consentement  ",
         "share_instructions2" : "Ce consentement permet le partage de données avec ",
-
-        // TODO CHANGED
-        // OLD: people.
-        // NEW: person(s).
         "share_instructions3" : "personne(s).",
         "delete_instructions1" : "Afin de ",
         "delete_instructions2" : "supprimer",
 
         // TODO CHANGED
-        // OLD: a record 
-        // NEW: a record, 
+        // OLD: a record
+        // NEW: a record,
         "delete_instructions3" : "de façon permanente un enregistrement, ",
-
-        // TODO CHANGED
-        // OLD: double-click
-        // NEW: double click
         "delete_instructions4" : "double cliquez",
-
-        // TODO CHANGED
-        // OLD: on the delete button to the right of the record.
-        // NEW: on the 'delete' button to the right of the record.
         "delete_instructions5" : "sur le bouton 'supprimer' à droite de l'enregistrement.",
-
-        // TODO CHANGED
-        // OLD: In order to permanently delete all records of a certain category double click on the delete button to the right of the category.
-        // NEW: In order to permanently delete all records of a certain category, double click on the 'delete all' button to the right of the category.
         "delete_instructions6" : "Afin de supprimer de façon permanente tous les enregistrements d'une certaine catégorie, double cliquez sur le bouton 'supprimer tout' à droite de la catégorie.",
         "shared_with" : "Partagé avec:",
         "records_used_for_app" : "Enregistrements utilisés pour l'app",
@@ -1077,10 +918,6 @@
         "by_plugin" : "Grouper par application",
         "type_global" : "Global",
         "type_study" : "Recherche",
-
-        // TODO CHANGED
-        // OLD: Other Account Holders
-        // NEW: Other users
         "type_circle" : "Autres utilisateurs",
         "show" : "Afficher:",
         "my_data" : "Mes données",
@@ -1105,15 +942,7 @@
         // TODO NEW: Your name and email address may be searched by other people using this app.
         "allows_user_search" : "Your name and email address may be searched by other people using this app.",
         "requesting_app" : "Cette application demande l'accès:",
-
-        // TODO CHANGED
-        // OLD: MIDATA Sign In for:
-        // NEW: MIDATA login for:
         "sign_in" : "Connexion à MIDATA pour:",
-
-        // TODO CHANGED
-        // OLD: Sign In
-        // NEW: Log in
         "sign_in_btn" : "Se connecter",
         "device" : "Appareil : {{ device}}",
 
@@ -1126,9 +955,7 @@
         "shares_group" : "Groupe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Contenu: {{ content }}",
-
-        // TODO NEW: Participate Study
-        "confirm_study" : "Participate Study"
+        "confirm_study" : "Participer à l'étude"
     },
 
     "dashboard" : {
@@ -1142,10 +969,6 @@
         // TODO NEW: Share your data with friends. Communicate with people sharing your health situation. Motivate yourself by competition with others.
         "social_text" : "Share your data with friends. Communicate with people sharing your health situation. Motivate yourself by competition with others.",
         "research" : "Recherche",
-
-        // TODO CHANGED
-        // OLD: Participate in studies. Inform yourself about ongoing research.
-        // NEW: Participate in studies. Inform yourself about current research.
         "research_text" : "Participez à des études. Informez-vous au sujet des recherches actuelles.",
         "health" : "Santé",
         "health_text" : "Partagez des données avec votre médecin. Rechercher des professionnels de la santé.",
@@ -1158,9 +981,7 @@
         // TODO NEW: There are no new records. Visit the records page to browser all of your records.
         "newrecords_teaser" : "There are no new records. Visit the records page to browser all of your records.",
         "myaccount" : "Données de mon compte",
-
-        // TODO NEW: New records shared with you
-        "newsharedrecords" : "New records shared with you",
+        "newsharedrecords" : "Nouveaux enregistrement partagés avec vous",
 
         // TODO CHANGED
         // OLD: Other MIDATA members may share their data with you.
@@ -1305,9 +1126,7 @@
 
     "usergroupsearch" : {
         "name" : "Nom de l'équipe",
-
-        // TODO NEW: No matching teams found.
-        "empty_result" : "No matching teams found.",
+        "empty_result" : "Aucune équipe de correspond à votre recherche.",
 
         // TODO NEW: Add As Individual People To Consent
         "add_individuals_btn" : "Add As Individual People To Consent",

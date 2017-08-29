@@ -63,7 +63,7 @@
             "CONSENT_REJECT_AUTHORIZED" : "Refus de consentement (bénéficiaire)",
 
             // TODO NEW: Account unlocked by admin
-            "ACCOUNT_UNLOCK" : "Account unlocked by admin"
+            "ACCOUNT_UNLOCK" : "Compte validé par un administrateur."
         }
     },
 
@@ -72,10 +72,6 @@
         "stats_btn" : "Informations de débogage",
         "debug_btn" : "API Tester",
         "linkedStudy" : "Étude liée à l'app (code)",
-
-        // TODO CHANGED
-        // OLD: Study Required
-        // NEW: Study Participation Required
         "mustParticipateInStudy" : "Participation à l'étude requise",
         "admin_only" : "Seul un administrateur MIDATA peux modifier cette section. Veuillez faire une demande si nécessaire.",
 
@@ -88,9 +84,7 @@
         // OLD: Show terms of use
         // NEW: Show terms
         "show_terms" : "Afficher les dispositions",
-
-        // TODO NEW: Code for registration
-        "unlock_code" : "Code for registration",
+        "unlock_code" : "Code d'activation",
         "info" : {
             "filename" : "Ce nom est utilisé (en interne) pour identifier votre app. Il doit s'agir d'un identificateur valide (a-z, A-Z, 0-9, _).",
             "targetUserRole" : "Est-ce que votre app est spécifique à un rôle ? Si non, veuillez choisir 'Tous les rôles'.",
@@ -128,26 +122,14 @@
         "action" : "Opération",
         "first" : "Première opération enregistrée le",
         "lastrun" : "Exécuté en dernier",
-
-        // TODO CHANGED
-        // OLD: Statistic
-        // NEW: Statistics
         "count" : "Statistiques",
         "run" : "Nombre de fois où l'opération a été exécutée.",
         "retry" : "Nombre de fois où l'opération a dû être répétée pour cause de problèmes de parallélisme.",
-
-        // TODO CHANGED
-        // OLD: Average number of internal (MongoDB) database queries executed per action invocation.
-        // NEW: Average number of internal database (MongoDB) queries executed per action invocation.
         "db" : "Nombre moyen des requêtes internes sur la base de données (MongoDB) par exécution de l'opération.",
         "time" : "Temps d'exécution",
         "avgtime" : "Moyenne",
         "lasttime" : "En dernier",
         "results" : "Résultats et alertes",
-
-        // TODO CHANGED
-        // OLD: response
-        // NEW: Response
         "result" : "Réponse",
         "empty" : "Aucunes informations n'ont été enregistrées depuis que les informations de débogage ont été effacées.",
         "reload_btn" : "Rafraichir",
