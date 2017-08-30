@@ -154,19 +154,20 @@
 		    <input type="text" id="unlockCode" name="unlockCode" class="form-control" ng-model="app.unlockCode">
 		    <p class="help-block" translate="manageapp.info.unlock_code"></p>
 		  </formrow>
+		  <div ng-show="app.type == 'mobile' && app.targetUserRole != 'RESEARCH'">
 		  <hr ng-show="app.type == 'mobile'">
 		  <p class="alert alert-info" ng-show="app.type == 'mobile'" translate="manageapp.admin_only"></p>
-		  <formrow myid="termsOfUse" label="manageapp.terms_of_use" ng-show="app.type == 'mobile'">
+		  <formrow myid="termsOfUse" label="manageapp.terms_of_use">
 		    <input id="termsOfUse" type="text" ng-disabled="!allowStudyConfig" name="termsOfUse" class="form-control" ng-model="app.termsOfUse" autocomplete="off" uib-typeahead="term.id as term.fullname for term in terms">
 		    
 		     <p class="help-block" ng-show="app.termsOfUse"><a ui-sref="^.terms({ which:app.termsOfUse })" translate="manageapp.show_terms"></a></p> 
 		  </formrow>
-		  <formrow myid="linkedStudy" label="manageapp.linkedStudy" ng-show="app.type == 'mobile'">
+		  <formrow myid="linkedStudy" label="manageapp.linkedStudy" >
 		    <input type="text" id="linkedStudy" ng-disabled="!allowStudyConfig" name="linkedStudy" class="form-control" placeholder="Study" ng-model="app.linkedStudyCode">
 		    <formerror myid="linkedStudy" type="invalid" message="error.unknown.study" ></formerror>
 		     <p class="help-block">{{ app.linkedStudyName }}</p> 
 		  </formrow>
-		   <formrow myid="mustParticipateInStudy" label="manageapp.mustParticipateInStudy" ng-show="app.type == 'mobile'">
+		   <formrow myid="mustParticipateInStudy" label="manageapp.mustParticipateInStudy">
 		    <div class="checkbox">
 		    <label>
 		      <input type="checkbox" id="mustParticipateInStudy" ng-disabled="!allowStudyConfig" name="mustParticipateInStudy" ng-model="app.mustParticipateInStudy" value="true">
@@ -174,6 +175,7 @@
 		    </label>
 		    </div>
 		  </formrow>
+		  </div>
 		  
 		  <formrow myid="x" label="">
 		    <button type="submit" ng-disabled="status.action=='submit'" class="btn btn-primary">Submit</button>

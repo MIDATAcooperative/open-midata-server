@@ -412,11 +412,11 @@ class APSImplementation extends APS {
 		obj = APSEntry.getEntries(obj);
 		// remove entry
 		boolean result = obj.containsField(record._id.toString());
-		obj.remove(record._id.toString());
-		
-		if (obj.isEmpty()) APSEntry.cleanupRows(eaps.getPermissions());
-
-		addHistory(record._id, record.isStream, true);
+		if (result) {
+			obj.remove(record._id.toString());				
+		    if (obj.isEmpty()) APSEntry.cleanupRows(eaps.getPermissions());
+		    addHistory(record._id, record.isStream, true);
+		}
 		return result;
 	}
 
@@ -436,11 +436,12 @@ class APSImplementation extends APS {
 
 	public void removePermission(Collection<DBRecord> records) throws AppException {
 		try {
+			boolean updated = false;
 			for (DBRecord record : records)
-				removePermissionInternal(record);
+				updated = removePermissionInternal(record) || updated;
 
 			// Store
-			eaps.savePermissions();
+			if (updated) eaps.savePermissions();
 		} catch (LostUpdateException e) {
 			recoverFromLostUpdate();
 			removePermission(records);

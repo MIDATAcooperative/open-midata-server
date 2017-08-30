@@ -515,6 +515,31 @@ public class Studies extends APIController {
 	}
 	
 	/**
+	 * back to draft
+	 * @param id ID of study
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public static Result backToDraft(String id) throws JsonValidationException, AppException {
+		MidataId userId = new MidataId(request().username());		
+		MidataId studyid = new MidataId(id);
+		
+		User user = Admin.getById(userId, Sets.create("firstname","lastname"));
+		Study study = Study.getByIdFromMember(studyid, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history","groups","recordQuery"));
+		
+		if (study == null) throw new BadRequestException("error.missing.study", "Study does not exist");
+		if (!study.validationStatus.equals(StudyValidationStatus.VALIDATION)) return badRequest("Study has already been validated.");
+									 
+		study.addHistory(new History(EventType.STUDY_REJECTED, user, "Reset to draft mode"));
+		study.setValidationStatus(StudyValidationStatus.DRAFT);
+						
+		return ok();
+	}
+	
+	/**
 	 * start participant search phase
 	 * @param id ID of study
 	 * @return status ok

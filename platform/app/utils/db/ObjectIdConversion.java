@@ -16,7 +16,7 @@ import models.MidataId;
 public class ObjectIdConversion {
 
 	public static Set<MidataId> toMidataIds(Set<String> strings) {
-		Set<MidataId> set = new HashSet<MidataId>();
+		Set<MidataId> set = new HashSet<MidataId>(strings.size());
 		for (String s : strings) {
 			set.add(new MidataId(s));
 		}
@@ -34,7 +34,7 @@ public class ObjectIdConversion {
 	*/
 
 	public static Set<String> toStrings(Set<MidataId> MidataIds) {
-		Set<String> set = new HashSet<String>();
+		Set<String> set = new HashSet<String>(MidataIds.size());
 		for (MidataId oid : MidataIds) {
 			set.add(oid.toString());
 		}

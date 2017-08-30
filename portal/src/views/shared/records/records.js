@@ -398,8 +398,8 @@ angular.module('portal')
 		if (group.content) props.content = group.content;
 		if (group.group) props.group = group.group;
 		
-		server.post(jsRoutes.controllers.Records["delete"]().url, props).
-		success(function(data) {
+		$scope.status.doBusy(server.post(jsRoutes.controllers.Records["delete"]().url, props))
+		.then(function(data) {
 			$scope.loadGroups();
 			$scope.getInfos($scope.userId, "self");
 		});

@@ -101,7 +101,15 @@ public class RecordManager {
 	}
 	
 	public void clearCache() {
-		if (apsCache.get() != null) apsCache.set(null);
+		APSCache old = apsCache.get();
+		if (old != null) {
+			try {
+			  old.finishTouch();
+			} catch (AppException e) {
+				AccessLog.logException("clearCache", e);
+			}
+			apsCache.set(null);
+		}
 	}
 
 	/**
@@ -547,6 +555,10 @@ public class RecordManager {
 			String providedVersion = record.version != null ? record.version : VersionedDBRecord.INITIAL_VERSION; 
 			if (!providedVersion.equals(storedVersion)) throw new BadRequestException("error.concurrent.update", "Concurrent update", HttpStatus.SC_CONFLICT);
 			
+			if (record.format != null && !rec.meta.getString("format").equals(record.format)) throw new InternalServerException("error.invalid.request", "Tried to change record format during update.");
+			if (record.content != null && !rec.meta.getString("content").equals(record.content)) throw new InternalServerException("error.invalid.request", "Tried to change record content type during update.");
+			if (record.owner != null && !rec.owner.equals(record.owner)) throw new InternalServerException("error.invalid.request", "Tried to change record owner during update.");
+			
 			VersionedDBRecord vrec = new VersionedDBRecord(rec);		
 			RecordEncryption.encryptRecord(vrec);			
 					
@@ -642,9 +654,11 @@ public class RecordManager {
 			}
 		}
 		
+		Set<MidataId> ids = new HashSet<MidataId>(recs.size());				
 		for (DBRecord record : recs) { 
-		  DBRecord.delete(record.owner, record._id);
+			ids.add(record._id);		  
 		}
+		DBRecord.deleteMany(ids);
 		
 		for (MidataId streamId : streams) {
 			try {
@@ -695,7 +709,7 @@ public class RecordManager {
 		    if (upsert) { DBRecord.upsert(record); } else { DBRecord.add(record); }	  
 		    
 		    if (!unencrypted.direct && !documentPart) apswrapper.addPermission(unencrypted, false);
-			else apswrapper.touch();
+			else getCache(executingPerson).touchAPS(apswrapper.getId());
 		    
 		    //Feature_Expiration.check(getCache(executingPerson), apswrapper);
 			
