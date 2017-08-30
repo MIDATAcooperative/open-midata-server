@@ -1,7 +1,6 @@
 {
 
     "footer" : {
-
         "copyright" : "©{{now}} ETH Zürich",
         "homepage" : "Homepage MIDATA",
         "portals" : "Portails MIDATA:",
@@ -403,8 +402,6 @@
     },
 
     "instance" : {
-
-        // TODO NEW:
         "rules" : "",
         "purpose" : "Raison d'être de cette instance MIDATA",
         "access" : "Accès à cette instance MIDATA",

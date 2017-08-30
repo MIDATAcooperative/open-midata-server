@@ -72,8 +72,8 @@ import views.txt.mails.adminnotify;
  */
 public class Application extends APIController {
 
-	public final static long MAX_TIME_UNTIL_EMAIL_CONFIRMATION = -1l; //1000l * 60l * 60l * 24l;
-	public final static long EMAIL_TOKEN_LIFETIME = 1000l * 60l * 60l * 24l;
+	public final static long MAX_TIME_UNTIL_EMAIL_CONFIRMATION = 1000l * 60l * 60l * 24l;
+	public final static long EMAIL_TOKEN_LIFETIME = 1000l * 60l * 60l * 24l *3l;
 	
 	// public final static long MAX_TRIAL_DURATION = 1000l * 60l * 60l * 24l * 30l;
 	/**
