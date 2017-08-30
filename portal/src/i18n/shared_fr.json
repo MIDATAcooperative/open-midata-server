@@ -405,7 +405,7 @@
     "instance" : {
 
         // TODO NEW:
-        "rules" : ""
+        "rules" : "",
         "purpose" : "Raison d'être de cette instance MIDATA",
         "access" : "Accès à cette instance MIDATA",
         "uptime" : "Disponibilité et plages de maintenance",
