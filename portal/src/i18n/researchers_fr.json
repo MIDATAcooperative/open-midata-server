@@ -104,9 +104,7 @@
         "start_study_execution_btn" : "Débuter la recherche",
         "finish_study_btn" : "Terminer la recherche",
         "delete_study_btn" : "Effacer la recherche",
-
-        // TODO NEW: Abort Study
-        "abort_study_btn" : "Abort Study"
+        "abort_study_btn" : "Annuler l'étude"
     },
 
     "studyparticipant" : {

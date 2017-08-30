@@ -36,6 +36,7 @@ import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException;
+import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import models.ContentInfo;
 import models.MidataId;
@@ -246,6 +247,7 @@ public class QuestionnaireResponseResourceProvider extends ResourceProvider<Ques
 		List<Coding> codings = new ArrayList<Coding>();
 		for (Extension ext : theQuestionnaireResponse.getExtensionsByUrl("http://midata.coop/extensions/response-code")) {
 			  Coding coding = (Coding) ext.getValue();
+			  if (coding == null) throw new InvalidRequestException("Missing coding in extension for response-code");
 			  codings.add(coding);
 		}
 		if (codings.isEmpty()) {
