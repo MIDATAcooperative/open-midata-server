@@ -24,9 +24,21 @@ body {
 }
 
 #mainheader {
-    background: rgba(0, 0, 0, 0) linear-gradient(to bottom, rgba(0, 184, 212, 0.01) 0%, rgba(0, 184, 212, 0.75) 100%) repeat scroll 0 0;
+		background: #32c6b6 ; /* Old Browsers */
+		background: -webkit-radial-gradient(top right,#32c6b6,#1490d1); /*Safari 5.1-6*/
+		background: -o-radial-gradient(top right,#32c6b6,#1490d1); /*Opera 11.1-12*/
+		background: -moz-radial-gradient(top right,#32c6b6,#1490d1); /*Fx 3.6-15*/
+		background: radial-gradient(top right, #32c6b6, #1490d1); /*Standard*/
     opacity: 1;
     width: 100%;
+    h1 {
+      font-size: 49px;
+      font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+      font-weight: 100;
+      margin:0px;
+      padding:0px;
+      padding-bottom:10px;
+    }
 }
 
 .margin-top { 
@@ -64,7 +76,7 @@ footer {
 
 .navbar .midata {
     font-size: 2.75rem;
-    font-family: coco_gothicheavy, Sans-serif;    
+		font-family: coco_gothicheavy, Sans-serif;   
 }
 
 .extraspace { margin-bottom: 10px; }
@@ -193,7 +205,7 @@ body { background-color:#f0f0f0 }
   /* background-color:#c6851d;
   color: #ffffff; */
   background-color:#ffffff;
-  color: #c6851d;
+  color: #3F8EFC;
   font-weight: bold;
   padding: 10px 15px;
   border-bottom: none;
@@ -431,60 +443,61 @@ body.modal-open {
 body.localhost {
     
   .navbar-default .navbar-brand {
-     background-color : #c0c0ff;
-     color:darkblue;
-     border:1px solid darkblue;
-     margin-left:5px;
-     margin-right:20px;
-     padding-left:10px;
-     padding-right:10px;
+    
           
-     .midata::before {
-       content : 'LOCAL.';
-       font-size:50%;
+     .midata::after {
+       content : 'Local';
+       font-size:75%;
+       
+        background-color : #c0c0ff;
+        color:darkblue;
+        border:1px solid darkblue;
+        margin-left:5px;
+        margin-right:20px;
+        padding-left:10px;
+        padding-right:10px;
      }
   }
 }
 
 body.test {
     
-  .navbar-default .navbar-brand {
-     background-color : #ffc0c0;
-     color:darkred;
-     border:1px solid darkred;
-     margin-left:5px;
-     margin-right:20px;
-     padding-left:10px;
-     padding-right:10px;
+  .navbar-default .navbar-brand {   
           
-     .midata::before {
-       content : 'TEST.';
-       font-size:50%;
+     .midata::after {
+       content : 'Test';
+       font-size:75%;
+       
+        background-color : #ffc0c0;
+        color:darkred;
+        border:1px solid darkred;
+        margin-left:5px;
+        margin-right:20px;
+        padding-left:10px;
+        padding-right:10px;
      }
   }
+
 }
 
 body.demo {
     
-  .navbar-default .navbar-brand {
-     /*background-color : #e0e0e0;
-     color:#808080;
-     border:1px solid #808080;*/
-     
-     background-color : #e0ffe0;
-     color:darkgreen;
-     border:1px solid darkgreen;
-     
-     margin-left:5px;
-     margin-right:20px;
-     padding-left:10px;
-     padding-right:10px;
+  .navbar-default .navbar-brand {  
           
-     .midata::before {
-       content : 'DEMO.';
-       font-size:50%;
+     .midata::after {
+        content : 'Demo';
+       font-size:75%;
+       
+       background-color : #e0ffe0;
+       color:darkgreen;
+       border:1px solid darkgreen;
+        margin-left:5px;
+        margin-right:20px;
+        padding-left:10px;
+        padding-right:10px;
      }
   }
+	
 }
 
 #pubnavbar {
