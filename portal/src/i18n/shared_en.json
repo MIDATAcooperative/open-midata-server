@@ -787,7 +787,7 @@
     "shares_group" : "Group: {{ group }}",
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}",
-    "confirm_study" : "Participate Study"
+    "confirm_study" : "Participate to the study"
   },
 
   "dashboard" : {
