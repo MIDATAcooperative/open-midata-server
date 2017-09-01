@@ -15,6 +15,7 @@ import org.bson.types.BasicBSONList;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 
+import models.APSNotExistingException;
 import models.MidataId;
 import models.enums.APSSecurityLevel;
 import utils.AccessLog;
@@ -48,6 +49,14 @@ class APSImplementation extends APS {
 	
 	public boolean isAccessible() throws AppException {
 		return eaps.isAccessable();
+	}
+	
+	public boolean isUsable() throws AppException {
+		try {
+		    return eaps.isAccessable();
+		} catch (APSNotExistingException e) {
+			return false;
+		}
 	}
 	
 	public APSSecurityLevel getSecurityLevel() throws InternalServerException {

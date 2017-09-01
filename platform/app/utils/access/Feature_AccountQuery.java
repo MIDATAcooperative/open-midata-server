@@ -129,6 +129,17 @@ public class Feature_AccountQuery extends Feature {
 		return consents;
 	}
 	
+	private static Set<Consent> applyWriteFilters(Query q, Set<Consent> consents) throws AppException {
+		if (q.restrictedBy("updatable") && !consents.isEmpty()) {			
+			Set<Consent> filtered = new HashSet<Consent>(consents.size());
+			for (Consent consent : consents) {
+			   if (consent.writes == null || consent.writes.isUpdateAllowed()) filtered.add(consent);
+			}
+			return filtered;
+		}
+		return consents;
+	}
+	
 	protected static boolean mainApsIncluded(Query q) throws AppException {
 		if (!q.restrictedBy("owner")) return true;
 		Set<String> sets = q.getRestriction("owner");
@@ -197,6 +208,8 @@ public class Feature_AccountQuery extends Feature {
 		consents = applyConsentTimeFilter(q, consents);
 		
 		q.getCache().cache(consents);
+		
+		consents = applyWriteFilters(q, consents);
 		return consents;
 	}			
 

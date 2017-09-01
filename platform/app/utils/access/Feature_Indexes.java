@@ -116,60 +116,64 @@ private Feature next;
 			for (Map.Entry<MidataId, Set<MidataId>> entry : filterMatches.entrySet()) {				
 			   MidataId aps = entry.getKey();
 			   AccessLog.log("Now processing aps:"+aps.toString());
-			   Set<MidataId> ids = entry.getValue();
+			   			  
+			   if (q.getCache().getAPS(aps).isUsable()) {
 			   
-			   if (ids.size() > INDEX_REVERSE_USE) {
-				   Query q4 = new Query(q, CMaps.map(), aps);
-				   List<DBRecord> unindexed = next.query(q4);
-				   for (DBRecord candidate : unindexed) {
-					   candidate.consentAps = aps;
-					   if (ids.contains(candidate._id)) result.add(candidate);
-				   }
-				   AccessLog.log("add unindexed ="+unindexed.size());
-				   //result.addAll(unindexed);
-			   } else {
-				   Map<String, Object> readRecs = new HashMap<String, Object>();
-				   boolean add = false;
-				   boolean directQuery = true;
-				   if (ids.size() > 5) {
-					    Map<String, Object> props = new HashMap<String, Object>();
-						props.putAll(q.getProperties());
-						props.put("streams", "only");
-						List<DBRecord> matchStreams = next.query(new Query(props, Sets.create("_id"), q.getCache(), aps));
-						AccessLog.log("index query streams "+matchStreams.size()+" matches.");
-						if (matchStreams.isEmpty()) directQuery = false;
-						else {
-							Set<MidataId> streams = new HashSet<MidataId>();
-							for (DBRecord r : matchStreams) streams.add(r._id);
-							readRecs.put("stream", streams);
-						}
-						add = true;
-				   }
-				   readRecs.put("_id", ids);
-				
-				   int directSize = 0;
-				   if (directQuery) {
-					   long time = System.currentTimeMillis();
-					   List<DBRecord> partresult = new ArrayList(DBRecord.getAll(readRecs, queryFields));
-					   AccessLog.log("db time:"+(System.currentTimeMillis() - time));
-					   
-					   Query q3 = new Query(q, CMaps.map("strict", "true"), aps);
-					   partresult = Feature_Prefetch.lookup(q3, partresult, next);
-					   for (DBRecord record : partresult) record.consentAps = aps;
-					   result.addAll(partresult);
-					   directSize = partresult.size();
-				   }
+				   Set<MidataId> ids = entry.getValue();
+				   
+				   if (ids.size() > INDEX_REVERSE_USE) {
+					   Query q4 = new Query(q, CMaps.map(), aps);
+					   List<DBRecord> unindexed = next.query(q4);
+					   for (DBRecord candidate : unindexed) {
+						   candidate.consentAps = aps;
+						   if (ids.contains(candidate._id)) result.add(candidate);
+					   }
+					   AccessLog.log("add unindexed ="+unindexed.size());
+					   //result.addAll(unindexed);
+				   } else {
+					   Map<String, Object> readRecs = new HashMap<String, Object>();
+					   boolean add = false;
+					   boolean directQuery = true;
+					   if (ids.size() > 5) {
+						    Map<String, Object> props = new HashMap<String, Object>();
+							props.putAll(q.getProperties());
+							props.put("streams", "only");
+							List<DBRecord> matchStreams = next.query(new Query(props, Sets.create("_id"), q.getCache(), aps));
+							AccessLog.log("index query streams "+matchStreams.size()+" matches.");
+							if (matchStreams.isEmpty()) directQuery = false;
+							else {
+								Set<MidataId> streams = new HashSet<MidataId>();
+								for (DBRecord r : matchStreams) streams.add(r._id);
+								readRecs.put("stream", streams);
+							}
+							add = true;
+					   }
+					   readRecs.put("_id", ids);
 					
-					if (add) {
-		              Query q2 = new Query(q, CMaps.map(q.getProperties()).map("_id", ids), aps);
-		              List<DBRecord> additional = next.query(q2);
-		              for (DBRecord record : additional) record.consentAps = aps;
-		              result.addAll(additional);
-		              AccessLog.log("looked up directly="+directSize+" additionally="+additional.size());
-					} else {
-		              AccessLog.log("looked up directly="+directSize);
-					}		            
-					
+					   int directSize = 0;
+					   if (directQuery) {
+						   long time = System.currentTimeMillis();
+						   List<DBRecord> partresult = new ArrayList(DBRecord.getAll(readRecs, queryFields));
+						   AccessLog.log("db time:"+(System.currentTimeMillis() - time));
+						   
+						   Query q3 = new Query(q, CMaps.map("strict", "true"), aps);
+						   partresult = Feature_Prefetch.lookup(q3, partresult, next);
+						   for (DBRecord record : partresult) record.consentAps = aps;
+						   result.addAll(partresult);
+						   directSize = partresult.size();
+					   }
+						
+						if (add) {
+			              Query q2 = new Query(q, CMaps.map(q.getProperties()).map("_id", ids), aps);
+			              List<DBRecord> additional = next.query(q2);
+			              for (DBRecord record : additional) record.consentAps = aps;
+			              result.addAll(additional);
+			              AccessLog.log("looked up directly="+directSize+" additionally="+additional.size());
+						} else {
+			              AccessLog.log("looked up directly="+directSize);
+						}		            
+						
+				   }
 			   }
 			}
 			long endTime = System.currentTimeMillis();

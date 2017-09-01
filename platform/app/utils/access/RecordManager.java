@@ -545,7 +545,7 @@ public class RecordManager {
 	public String updateRecord(MidataId executingPerson, MidataId apsId, Record record) throws AppException {
 		AccessLog.logBegin("begin updateRecord executor="+executingPerson.toString()+" aps="+apsId.toString()+" record="+record._id.toString());
 		try {
-			List<DBRecord> result = QueryEngine.listInternal(getCache(executingPerson), apsId, CMaps.map("_id", record._id), RecordManager.COMPLETE_DATA_WITH_WATCHES);	
+			List<DBRecord> result = QueryEngine.listInternal(getCache(executingPerson), apsId, CMaps.map("_id", record._id).map("updatable", true), RecordManager.COMPLETE_DATA_WITH_WATCHES);	
 			if (result.size() != 1) throw new InternalServerException("error.internal.notfound", "Unknown Record");
 			if (record.data == null) throw new BadRequestException("error.internal", "Missing data");
 			

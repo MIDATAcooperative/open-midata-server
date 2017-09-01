@@ -53,6 +53,11 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	public @NotMaterialized MidataId consentAps;
 	
 	/**
+	 * AccessContext of this record
+	 */
+	public @NotMaterialized AccessContext context;
+	
+	/**
 	 * creation date as stored in aps
 	 */
 	public @NotMaterialized Date createdFromAps;

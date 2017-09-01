@@ -46,6 +46,7 @@ public class Query {
 	private boolean restrictedOnTime;
 	private APSCache cache;
 	private MidataId apsId;		
+	private AccessContext context;
 		
 	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId) throws AppException {
 		this.properties = new HashMap<String, Object>(properties);
@@ -80,6 +81,10 @@ public class Query {
 	
 	public APSCache getCache() {
 		return cache;
+	}
+	
+	public AccessContext getContext() {
+		return context;
 	}
 	
 	public MidataId getApsId() {
