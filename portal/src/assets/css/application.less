@@ -68,7 +68,7 @@ footer {
 
 .navbar .midata {
     font-size: 2.75rem;
-    font-family: coco_gothicheavy, Sans-serif;    
+    font-family: WeissenhofGrotesk-Light, sans-serif !important;    
 }
 
 .extraspace { margin-bottom: 10px; }
@@ -462,10 +462,14 @@ body.test {
      padding-right:10px;
           
      .midata::before {
-       content : 'TEST.';
+       content : 'TEST.MIDATA.COOP';
        font-size:50%;
      }
   }
+
+	#headerLogo {
+	    display: none;
+	}
 }
 
 body.demo {
@@ -485,10 +489,14 @@ body.demo {
      padding-right:10px;
           
      .midata::before {
-       content : 'DEMO.';
+       content : 'DEMO.MIDATA.COOP';
        font-size:50%;
      }
   }
+
+	#headerLogo {
+	    display: none;
+	}
 }
 
 #pubnavbar {
