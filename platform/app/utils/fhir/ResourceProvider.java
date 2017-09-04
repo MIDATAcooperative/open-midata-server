@@ -71,6 +71,8 @@ import models.Record;
 import models.TypedMidataId;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.access.AccessContext;
+import utils.access.ConsentAccessContext;
 import utils.access.RecordManager;
 import utils.access.VersionedDBRecord;
 import utils.auth.ExecutionInfo;
@@ -454,10 +456,10 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 	}
 
 	public void insertRecord(Record record, IBaseResource resource) throws AppException {
-		insertRecord(record, resource, (MidataId) null);
+		insertRecord(record, resource, info().context);
 	}
 	
-	public static void insertRecord(Record record, IBaseResource resource, MidataId targetConsent) throws AppException {
+	public static void insertRecord(Record record, IBaseResource resource, AccessContext targetConsent) throws AppException {
 		AccessLog.logBegin("begin insert FHIR record");		    
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);			
 			record.data = (DBObject) JSON.parse(encoded);			
@@ -472,7 +474,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 		MidataId owner = record.owner;
 		if (!owner.equals(inf.executorId)) {
 			Consent consent = Circles.getOrCreateMessagingConsent(inf.executorId, inf.executorId, owner, owner, false);
-			insertRecord(record, resource, consent._id);
+			insertRecord(record, resource, new ConsentAccessContext(consent, info().context));
 			shareFrom = consent._id;
 		} else {
 			insertRecord(record, resource);
@@ -518,7 +520,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 		String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 		record.data = (DBObject) JSON.parse(encoded);	
 		record.version = resource.getMeta().getVersionId();
-		record.version = RecordManager.instance.updateRecord(info().executorId, info().targetAPS, record);
+		record.version = RecordManager.instance.updateRecord(info().executorId, info().context, record);
 	
 	}
 	

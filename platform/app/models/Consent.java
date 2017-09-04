@@ -168,11 +168,11 @@ public class Consent extends Model {
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorized(MidataId member) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", ConsentStatus.ACTIVE), Sets.create("name", "order", "owner", "ownerName", "type", "writes"));
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", ConsentStatus.ACTIVE), Sets.create("name", "order", "owner", "ownerName", "type", "writes", "sharingQuery"));
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorized(MidataId member, long since) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", ConsentStatus.ACTIVE).map("dataupdate", CMaps.map("$gte", since)), Sets.create("name", "order", "owner", "ownerName", "type", "writes"));
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("status", ConsentStatus.ACTIVE).map("dataupdate", CMaps.map("$gte", since)), Sets.create("name", "order", "owner", "ownerName", "type", "writes", "sharingQuery"));
 	}
 	
 	public static Set<Consent> getAllByAuthorized(MidataId member, Map<String, Object> properties, Set<String> fields) throws InternalServerException {
@@ -184,15 +184,15 @@ public class Consent extends Model {
 	}
 	
 	public static Set<Consent> getAllByAuthorized(MidataId member) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member), Sets.create("name", "order", "owner", "ownerName", "type", "status"));
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member), Sets.create("name", "order", "owner", "ownerName", "type", "status", "writes", "sharingQuery"));
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorizedAndOwners(MidataId member, Set<MidataId> owners) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owners).map("status",  ConsentStatus.ACTIVE).map("ownerName", CMaps.map("$exists", false)), Sets.create("name", "order", "owner", "ownerName", "type", "writes"));
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owners).map("status",  ConsentStatus.ACTIVE).map("ownerName", CMaps.map("$exists", false)), Sets.create("name", "order", "owner", "ownerName", "type", "writes", "sharingQuery"));
 	}
 	
 	public static Set<Consent> getHealthcareActiveByAuthorizedAndOwner(MidataId member, MidataId owner) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  ConsentStatus.ACTIVE).map("type",  ConsentType.HEALTHCARE), Sets.create("name", "order", "owner", "type", "writes"));
+		return Model.getAll(Consent.class, collection, CMaps.map("authorized", member).map("owner", owner).map("status",  ConsentStatus.ACTIVE).map("type",  ConsentType.HEALTHCARE), Sets.create("name", "order", "owner", "type", "writes", "sharingQuery"));
 	}
 	
 	public static Set<Consent> getByExternalEmail(String emailLC) throws InternalServerException {

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import models.enums.PluginStatus;
 import models.enums.UserFeature;
 import models.enums.UserRole;
+import models.enums.WritePermissionType;
 import utils.AccessLog;
 import utils.collections.CMaps;
 import utils.collections.ChainedMap;
@@ -42,7 +43,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "accessTokenUrl", "consumerKey", "consumerSecret",
 	                     "requestTokenUrl", "scopeParameters", "secret", "redirectUri", "developmentServer", "status", "i18n",
-	                     "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode");
+	                     "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode", "writes");
 	
 	/**
 	 * constant containing all fields visible to anyone
@@ -52,7 +53,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	                     "targetUserRole", "spotlighted", "url", "addDataUrl", "previewUrl", "defaultSpaceName",
 	                     "defaultSpaceContext", "defaultQuery", "type", "recommendedPlugins",
 	                     "authorizationUrl", "consumerKey", "scopeParameters", "status", "i18n", "lang", "predefinedMessages", "resharesData", "linkedStudy", "mustParticipateInStudy", "pluginVersion",
-	                     "termsOfUse", "requirements", "orgName", "unlockCode");
+	                     "termsOfUse", "requirements", "orgName", "unlockCode", "writes");
 	
 	/**
 	 * timestamp of last change. Used to prevent lost updates.
@@ -190,6 +191,11 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	public Map<String, Object> defaultQuery;
 	
 	/**
+	 * Default policy for writes with this plugin
+	 */
+	public WritePermissionType writes;
+	
+	/**
 	 * the type of the plugin
 	 * 
 	 * type can be one of: visualization, create, oauth1, oauth2, mobile
@@ -298,7 +304,7 @@ public class Plugin extends Model implements Comparable<Plugin> {
 	
 	public void update() throws InternalServerException, LostUpdateException {		
 		try {
-		   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode" );
+		   DBLayer.secureUpdate(this, collection, "version", "creator", "filename", "name", "description", "tags", "targetUserRole", "spotlighted", "type","accessTokenUrl", "authorizationUrl", "consumerKey", "consumerSecret", "defaultQuery", "defaultSpaceContext", "defaultSpaceName", "previewUrl", "recommendedPlugins", "requestTokenUrl", "scopeParameters","secret","redirectUri", "url","developmentServer", "status", "i18n", "predefinedMessages", "resharesData", "allowsUserSearch", "linkedStudy", "mustParticipateInStudy", "pluginVersion", "termsOfUse", "requirements", "orgName", "unlockCode", "writes" );
 		   Instances.cacheClear("plugin",  _id);
 		} catch (DatabaseException e) {
 			throw new InternalServerException("error.internal_db", e);

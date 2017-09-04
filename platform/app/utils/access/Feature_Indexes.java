@@ -38,6 +38,14 @@ private Feature next;
 	public final static int AUTOCREATE_INDEX_COUNT = 30;
 	public final static int NO_SECOND_INDEX_COUNT = 30;
 	
+	private AccessContext getContextForAps(Query q, MidataId aps) throws AppException {
+		 if (! q.getCache().getAPS(aps).isUsable()) return null;
+	     if (q.getCache().getExecutor().equals(aps)) return new AccountAccessContext(q.getCache(), q.getContext());
+	     Consent c = q.getCache().getConsent(aps);
+	     if (c == null) return null;
+	     return new ConsentAccessContext(c, q.getContext());
+		 
+	}
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
 		if (q.restrictedBy("index") && !q.restrictedBy("_id")) {
@@ -116,13 +124,14 @@ private Feature next;
 			for (Map.Entry<MidataId, Set<MidataId>> entry : filterMatches.entrySet()) {				
 			   MidataId aps = entry.getKey();
 			   AccessLog.log("Now processing aps:"+aps.toString());
-			   			  
-			   if (q.getCache().getAPS(aps).isUsable()) {
+			   		
+			   AccessContext context = getContextForAps(q, aps);
+			   if (context != null) {
 			   
 				   Set<MidataId> ids = entry.getValue();
 				   
 				   if (ids.size() > INDEX_REVERSE_USE) {
-					   Query q4 = new Query(q, CMaps.map(), aps);
+					   Query q4 = new Query(q, CMaps.map(), aps, context);
 					   List<DBRecord> unindexed = next.query(q4);
 					   for (DBRecord candidate : unindexed) {
 						   candidate.consentAps = aps;
@@ -138,7 +147,7 @@ private Feature next;
 						    Map<String, Object> props = new HashMap<String, Object>();
 							props.putAll(q.getProperties());
 							props.put("streams", "only");
-							List<DBRecord> matchStreams = next.query(new Query(props, Sets.create("_id"), q.getCache(), aps));
+							List<DBRecord> matchStreams = next.query(new Query(props, Sets.create("_id"), q.getCache(), aps, context));
 							AccessLog.log("index query streams "+matchStreams.size()+" matches.");
 							if (matchStreams.isEmpty()) directQuery = false;
 							else {
@@ -156,7 +165,7 @@ private Feature next;
 						   List<DBRecord> partresult = new ArrayList(DBRecord.getAll(readRecs, queryFields));
 						   AccessLog.log("db time:"+(System.currentTimeMillis() - time));
 						   
-						   Query q3 = new Query(q, CMaps.map("strict", "true"), aps);
+						   Query q3 = new Query(q, CMaps.map("strict", "true"), aps, context);
 						   partresult = Feature_Prefetch.lookup(q3, partresult, next);
 						   for (DBRecord record : partresult) record.consentAps = aps;
 						   result.addAll(partresult);
@@ -164,7 +173,7 @@ private Feature next;
 					   }
 						
 						if (add) {
-			              Query q2 = new Query(q, CMaps.map(q.getProperties()).map("_id", ids), aps);
+			              Query q2 = new Query(q, CMaps.map(q.getProperties()).map("_id", ids), aps, context);
 			              List<DBRecord> additional = next.query(q2);
 			              for (DBRecord record : additional) record.consentAps = aps;
 			              result.addAll(additional);

@@ -171,14 +171,14 @@ public class IndexManager {
 				long now = System.currentTimeMillis();
 				 
 				restrictions.put("updated-after", limit);								
-				List<DBRecord> recs = QueryEngine.listInternal(cache, aps, restrictions, Sets.create("_id"));
+				List<DBRecord> recs = QueryEngine.listInternal(cache, aps, null, restrictions, Sets.create("_id"));
 				addRecords(index, aps, recs);
 				boolean updateTs = recs.size() > 0;
 				// Records that have been freshly shared
 				if (limit.getTime() > 0) {
 					restrictions.remove("updated-after");
 					restrictions.put("shared-after", limit);
-					List<DBRecord> recs2 = QueryEngine.listInternal(cache, aps, restrictions, Sets.create("_id", "key"));
+					List<DBRecord> recs2 = QueryEngine.listInternal(cache, aps, null, restrictions, Sets.create("_id", "key"));
 					addRecords(index, aps, recs2);
 					if (recs2.size()>0) updateTs = true;
 					AccessLog.log("Add index from sharing="+recs2.size());

@@ -101,7 +101,9 @@
 		    <p class="help-block" ng-hide="app.type == 'mobile'" translate="manageapp.info.defaultQuery"></p>
 		    <p class="help-block" translate="manageapp.info.defaultQuery_extra"></p>
 		  </formrow>
-		 
+		  <formrow myid="writes" label="Write Mode">
+		    <select class="form-control" name="writes" ng-model="app.writes" ng-options="mode as ('enum.writepermissiontype.'+mode)|translate for mode in writemodes"></select>
+		  </formrow>	
 		  <formrow myid="resharesData" label="Resharing">
 		    <div class="checkbox">
 		    <label>

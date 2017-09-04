@@ -57,6 +57,7 @@ import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
 import models.enums.UserFeature;
 import models.enums.UserRole;
+import models.enums.WritePermissionType;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -694,6 +695,7 @@ public class Studies extends APIController {
 		consent.authorized = new HashSet<MidataId>();
 		consent.dateOfCreation = new Date();		
 		consent.status = ConsentStatus.ACTIVE;
+		consent.writes = WritePermissionType.NONE;
 					
 		RecordManager.instance.createAnonymizedAPS(ownerId, ownerId, consent._id, true);
 		Circles.prepareConsent(consent);

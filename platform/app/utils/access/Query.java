@@ -48,25 +48,27 @@ public class Query {
 	private MidataId apsId;		
 	private AccessContext context;
 		
-	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId) throws AppException {
+	public Query(Map<String, Object> properties, Set<String> fields, APSCache cache, MidataId apsId, AccessContext context) throws AppException {
 		this.properties = new HashMap<String, Object>(properties);
 		this.fields = fields;
 		this.cache = cache;
 		this.apsId = apsId;
+		this.context = context;
 		process();
 		//AccessLog.logQuery(properties, fields);
 	}
 	
 	public Query(Query q, Map<String, Object> properties) throws AppException {
-		this(q, properties, q.getApsId());
+		this(q, properties, q.getApsId(), q.getContext());
 	}
 	
-	public Query(Query q, Map<String, Object> properties, MidataId aps) throws AppException {
+	public Query(Query q, Map<String, Object> properties, MidataId aps, AccessContext context) throws AppException {
 		this.properties = new HashMap<String, Object>(q.getProperties());
 		this.properties.putAll(properties);
 		this.fields = q.getFields();
 		this.cache = q.getCache();
 		this.apsId = aps;			
+		this.context = context;
 		process();
 		//AccessLog.logQuery(properties, fields);
 	}		
@@ -90,6 +92,7 @@ public class Query {
 	public MidataId getApsId() {
 		return apsId;
 	}
+		
 	
 	public Set<String> getFieldsFromDB() {
 		return fieldsFromDB;

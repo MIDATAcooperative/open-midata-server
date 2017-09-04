@@ -79,6 +79,7 @@ import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.EntityType;
 import models.enums.UserStatus;
+import models.enums.WritePermissionType;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.access.Feature_FormatGroups;
@@ -506,6 +507,7 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 			
         consent.type = ConsentType.valueOf(theResource.getPurposeFirstRep().getCode());
 		consent.owner = info().ownerId;
+		consent.writes = WritePermissionType.UPDATE_AND_CREATE;
 		
 		for (ConsentActorComponent cac : theResource.getActor()) {
 			Reference ref = FHIRTools.resolve(cac.getReference());

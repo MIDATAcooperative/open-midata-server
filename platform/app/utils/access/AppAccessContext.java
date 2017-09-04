@@ -2,21 +2,26 @@ package utils.access;
 
 import java.util.Collections;
 
+import models.MidataId;
 import models.MobileAppInstance;
 import utils.exceptions.AppException;
 
 public class AppAccessContext extends AccessContext {
 
 	private MobileAppInstance instance;
-	private APSCache cache;
+	
+	public AppAccessContext(MobileAppInstance instance, APSCache cache, AccessContext parent) {
+		super(cache, parent);
+		this.instance = instance;
+	}
 	
 	@Override
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
-		if (instance.writes == null) return true;
+		if (instance.writes == null) return parent==null || parent.mayCreateRecord(record);
 		if (!instance.writes.isCreateAllowed()) return false;
 		
-		if (instance.writes.isUnrestricted()) return true;
-		return !QueryEngine.listFromMemory(cache, instance.sharingQuery, Collections.singletonList(record)).isEmpty();
+		if (instance.writes.isUnrestricted()) return parent==null || parent.mayCreateRecord(record);
+		return !QueryEngine.listFromMemory(cache, instance.sharingQuery, Collections.singletonList(record)).isEmpty() && (parent==null || parent.mayCreateRecord(record));
 		
 	}
 
@@ -31,6 +36,16 @@ public class AppAccessContext extends AccessContext {
 	public boolean mustPseudonymize() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public MidataId getTargetAps() {
+		return instance._id;
+	}
+
+	@Override
+	public boolean isIncluded(DBRecord record) throws AppException {
+		return !QueryEngine.listFromMemory(cache, instance.sharingQuery, Collections.singletonList(record)).isEmpty();
 	}
 	
 

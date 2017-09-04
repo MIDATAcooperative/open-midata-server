@@ -320,7 +320,7 @@ public class MobileAPI extends Controller {
 	}
 	
 	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, boolean studyConfirm) throws AppException {
-		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "linkedStudy", "mustParticipateInStudy", "termsOfUse"));
+		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "linkedStudy", "mustParticipateInStudy", "termsOfUse", "writes"));
 
 		if (app.linkedStudy != null && app.mustParticipateInStudy && !studyConfirm) {
 			throw new BadRequestException("error.missing.study_accept", "Study belonging to app must be accepted.");
@@ -339,6 +339,7 @@ public class MobileAPI extends Controller {
     	appInstance.owner = member._id;
     	appInstance.passcode = Member.encrypt(phrase); 
     	appInstance.dateOfCreation = new Date();
+    	appInstance.writes = app.writes;
 		
     	MobileAppInstance.add(appInstance);	
 		KeyManager.instance.unlock(appInstance._id, phrase);	   		    
