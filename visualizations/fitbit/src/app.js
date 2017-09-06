@@ -458,7 +458,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 					// show error message when no 
 					if (!((_error_message.indexOf("/activities/elevation") !== -1 || _error_message.indexOf("/activities/floors") !== -1)
 						&& _error_message.indexOf("nvalid time series") !== -1)) {
-							errorMessage("Failed to import data on " + formattedFromDate + ": " + response.errors[0].message + ".");	
+							errorMessage("Failed to import data on " + formattedFromDate + ": " + _error_message + ".");	
 					}
 				} else {
 					console.log(response);
