@@ -448,26 +448,6 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 		importer.error.message = null;
 		importer.error.messages = [];
 
-		var fromBase = new Date();
-		// 1. Set Interval to import
-		// "from" and "to" saved in measurements
-		if (importer.firstTime) {
-			// var from2008 = new Date();
-			// var toToday = new Date();
-			// // Withing founded: June 2008
-			// from2008.setFullYear(2008);
-			// from2008.setHours(1, 1, 1, 1);
-			// toToday.setHours(1, 1, 1, 1);
-			// setDateInMeasurements("specified", from2008, toToday);
-			fromBase.setFullYear(2008);
-			fromBase.setHours(1,1,1,1);
-		} else {
-			//setDateInMeasurements("lastweek");
-			////setDateInMeasurements("lastyear");
-			fromBase.setDate(fromBase.getDate() - daysRequestInterval);
-			fromBase.setHours(1,1,1,1);
-		}
-
 		// 2. get user id
 		midataServer.getOAuthParams(authToken)
 			.then(function (response) {
@@ -476,108 +456,106 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 				importer.requesting = importer.measurementGroups.length;
 				// Import all defined measurements groups
 				importer.measurementGroups.forEach(function (measurementGroup) {
-
-					// TODO: request information for 90 days
-
-					/**
-					 * 	
-			if (measurement.to.getTime() - measurement.from.getTime() > 1000 * 60 * 60 * 24 * 365) {
-			  var years = Math.floor((measurement.to.getTime() - measurement.from.getTime()) / (1000 * 60 * 60 * 24 * 365));
-			  if (years > $scope.totalYears) { $scope.totalYears = years; }
-			  
-			  measurement.to = new Date(measurement.from.getTime() + 1000 * 60 * 60 * 24 * 365);
-			  console.log("do repeat");
-			  measurement.repeat = true;
-			  
-			  
-			} else measurement.repeat = false;
-					 */
-					// = milliseconds * seconds * minutes * hours * days
-				var intervalDaysInMilliseconds =  1000 * 60 * 60 * 24 * daysRequestInterval;
-				var today = new Date();
-				today.setHours(1,1,1,1);
-
-				while (fromBase.getTime() < today.getTime()) {
-					//var temp_to = new Date(measurementGroup.from.getTime() + intervalDaysInMilliseconds);
-					//if (temp_to.getTime() > today.getTime()){
-					//	measurementGroup.to = new Date();
-					//} else {
-					//	measurementGroup.to = temp_to;
-					//}
-
-					var temp_to_milliseconds = fromBase.getTime() + intervalDaysInMilliseconds;
-					if (temp_to_milliseconds > today.getTime()) {
-						temp_to_milliseconds = today.getTime();
+					// 1. Set Interval to import
+					var fromBase = new Date();
+					// if imported from portal
+					if (importer.firstTime) {
+						// // Withing founded: June 2008
+						fromBase.setFullYear(2008);
+						fromBase.setHours(1,1,1,1);
+					} else {
+						//setDateInMeasurements("lastweek");
+						////setDateInMeasurements("lastyear");
+						fromBase.setDate(fromBase.getDate() - daysRequestInterval);
+						fromBase.setHours(1,1,1,1);
 					}
-					// 3. request to Nokia Health
-					midataServer.oauth1Request(authToken, measurementGroup.getURL(_userid, fromBase, new Date(temp_to_milliseconds)))
-					.then(function (response) {
-						if (response.data.status == "0") {
-							// get all prev records
-							var _defPrevRecords = $q.defer();
-							var _arrPrevRecords = [];
-							var _chainPrevRecords = _defPrevRecords.promise;
-							_defPrevRecords.resolve();
 
-							measurementGroup.measureTypes.forEach(function (measurementType) {
-								var f = function() { return getPrevRecords(authToken, measurementType.system + " " + measurementType.code, measurementGroup.from);};
-								_chainPrevRecords = _chainPrevRecords.then(f);
+					// = milliseconds * seconds * minutes * hours * days
+					var intervalDaysInMilliseconds =  1000 * 60 * 60 * 24 * daysRequestInterval;
+					var today = new Date();
+					today.setHours(1,1,1,1);
+					var fromBaseArray = [];
+					while (fromBase.getTime() < today.getTime()) {
+						fromBaseArray.push(fromBase);
+						fromBase = new Date(fromBase.getTime() + intervalDaysInMilliseconds);
+					}
 
-								$translate(measurementType.id).then(function (t) { measurementType.title = t; });
-								$translate(measurementType.id).then(function (t) { measurementType.name_translated = t; });
-								$translate(importer.codeObservations.fitness.translate).then(function(t){importer.codeObservations.fitness.name_translated = t;});
-								$translate(importer.codeObservations.vitalSigns.translate).then(function(t){importer.codeObservations.vitalSigns.name_translated = t;});
-
-								if (measurementType.diastolic){
-									$translate(measurementType.diastolic.id).then(function (t) { measurementType.diastolic.name_translated = t; });
-								}
-								if (measurementType.systolic){
-									$translate(measurementType.systolic.id).then(function (t) { measurementType.systolic.name_translated = t; });
-								}
-							});
-
-							// all prev. Records loaded
-							_chainPrevRecords.then(function () {
-
-								//save records
-								if (measurementGroup.groupMeasureId == 'activity_measures') {
-									// save every measure
-									measurementGroup.measureTypes.forEach(function (measurement) {
-										if (measurement.import) {
-											save_activities(authToken, response, measurement);
-										}
-									});
-									updateRequesting();
-
-								} else if (measurementGroup.groupMeasureId == 'body_measures') {
-									save_bodyMeasures(authToken, response, measurementGroup);
-									updateRequesting();
-								} else if (measurementGroup.groupMeasureId == 'sleep_summary') {
-									save_sleepMeasures(authToken, response, measurementGroup);
-									updateRequesting();
-								} else {
-									console.log("Error! new measurement group not defined");
-									updateRequesting();
-								}
-							},
-							function(error){
-								console.log("Error: " + error);
-								updateRequesting();
-							});
-
-						} else {
-							console.log("Error: url " + measurementGroup.getURL(_userid));
-							updateRequesting();
+					fromBaseArray.forEach(function(_fromBase){
+						var temp_to_milliseconds = _fromBase.getTime() + intervalDaysInMilliseconds;
+						if (temp_to_milliseconds > today.getTime()) {
+							temp_to_milliseconds = today.getTime();
 						}
-					},
-					function(error){
-						console.log('Failed: ' + error);
-						updateRequesting();
-					});
 
-					fromBase = new Date(fromBase.getTime() + intervalDaysInMilliseconds);
-				}
-					
+						// 3. request to Nokia Health
+						midataServer.oauth1Request(authToken, measurementGroup.getURL(_userid, _fromBase, new Date(temp_to_milliseconds)))
+						.then(function (response) {
+							if (response.data.status == "0") {
+								// get all prev records
+								var _defPrevRecords = $q.defer();
+								var _arrPrevRecords = [];
+								var _chainPrevRecords = _defPrevRecords.promise;
+								_defPrevRecords.resolve();
+
+								measurementGroup.measureTypes.forEach(function (measurementType) {
+									var f = function() { return getPrevRecords(authToken, measurementType.system + " " + measurementType.code, _fromBase/*measurementGroup.from*/);};
+									_chainPrevRecords = _chainPrevRecords.then(f);
+
+									$translate(measurementType.id).then(function (t) { measurementType.title = t; });
+									$translate(measurementType.id).then(function (t) { measurementType.name_translated = t; });
+									$translate(importer.codeObservations.fitness.translate).then(function(t){importer.codeObservations.fitness.name_translated = t;});
+									$translate(importer.codeObservations.vitalSigns.translate).then(function(t){importer.codeObservations.vitalSigns.name_translated = t;});
+
+									if (measurementType.diastolic){
+										$translate(measurementType.diastolic.id).then(function (t) { measurementType.diastolic.name_translated = t; });
+									}
+									if (measurementType.systolic){
+										$translate(measurementType.systolic.id).then(function (t) { measurementType.systolic.name_translated = t; });
+									}
+								});
+
+								// all prev. Records loaded
+								_chainPrevRecords.then(function () {
+
+									//save records
+									if (measurementGroup.groupMeasureId == 'activity_measures') {
+										// save every measure
+										measurementGroup.measureTypes.forEach(function (measurement) {
+											if (measurement.import) {
+												save_activities(authToken, response, measurement);
+											}
+										});
+										updateRequesting();
+
+									} else if (measurementGroup.groupMeasureId == 'body_measures') {
+										save_bodyMeasures(authToken, response, measurementGroup);
+										updateRequesting();
+									} else if (measurementGroup.groupMeasureId == 'sleep_summary') {
+										save_sleepMeasures(authToken, response, measurementGroup);
+										updateRequesting();
+									} else {
+										console.log("Error! new measurement group not defined");
+										updateRequesting();
+									}
+								},
+								function(error){
+									console.log("Error: " + error);
+									updateRequesting();
+								});
+
+							} else {
+								console.log("Error: url " + measurementGroup.getURL(_userid, _fromBase, new Date(temp_to_milliseconds)));
+								if (response.data.error) {
+									console.log("Error Message from Nokia Health (status: " + response.data.status + "): " + response.data.error);
+								}
+								updateRequesting();
+							}
+						},
+						function(error){
+							console.log('Failed: ' + error);
+							updateRequesting();
+						});
+						
+					});
 					/*
 					// 3. request to Nokia Health
 					midataServer.oauth1Request(authToken, measurementGroup.getURL(_userid))
@@ -650,7 +628,9 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 			});
 	};
 
+	//var counterFromTest = 0;
 	var getPrevRecords = function (authToken, code, from) {
+		//console.log("from in getPrevRecords " + (counterFromTest++) + ": " + from.getTime());
 		return midataServer.getRecords(authToken, { "format": "fhir/Observation", "code": code, "index": { "effectiveDateTime": { "!!!ge": from } } }, ["version", "content", "data"])
 			.then(function (results) {
 				angular.forEach(results.data, function (rec) {
