@@ -510,7 +510,7 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);
 			record.data = (DBObject) JSON.parse(encoded);
 			
-			PluginsAPI.createRecord(info(), record, data, fileName, contentType, null);			
+			PluginsAPI.createRecord(info(), record, data, fileName, contentType, info().context);			
 		
 		AccessLog.logEnd("end insert FHIR record with attachment");
 	}

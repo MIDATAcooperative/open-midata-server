@@ -32,7 +32,7 @@ public enum WritePermissionType {
 	}
 	
 	public boolean isCreateAllowed() {
-		return this == CREATE_SHARED || this == WRITE_ANY;
+		return this == CREATE_SHARED || this == WRITE_ANY || this == UPDATE_AND_CREATE;
 	}
 	
 	public boolean isUnrestricted() {

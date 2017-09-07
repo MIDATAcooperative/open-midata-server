@@ -1,24 +1,34 @@
 package utils.access;
 
 import java.util.Collections;
+import java.util.Set;
 
+import controllers.Circles;
 import models.Consent;
 import models.MidataId;
 import models.enums.WritePermissionType;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
 
 public class ConsentAccessContext extends AccessContext{
 
-	private Consent consent;	
+	private Consent consent;
+	private final Set<String> reqfields = Sets.create("sharingQuery", "createdBefore", "validUntil");
 	
-	public ConsentAccessContext(Consent consent, APSCache cache, AccessContext parent) {
+	public ConsentAccessContext(Consent consent, APSCache cache, AccessContext parent) throws AppException {
 		super(cache, parent);
 		this.consent = consent;
+		if (consent.sharingQuery == null) {
+		  consent.sharingQuery = Circles.getQueries(consent.owner, consent._id);
+		}
 	}
 	
-	public ConsentAccessContext(Consent consent, AccessContext parent) {
+	public ConsentAccessContext(Consent consent, AccessContext parent) throws AppException {
 		super(parent.getCache(), parent);
 		this.consent = consent;
+		if (consent.sharingQuery == null) {
+		  consent.sharingQuery = Circles.getQueries(consent.owner, consent._id);
+		}		
 	}
 	
 	@Override
@@ -32,6 +42,7 @@ public class ConsentAccessContext extends AccessContext{
 
 	@Override
 	public boolean mayUpdateRecord() {
+		if (consent.writes == null) return false;
 		if (!consent.writes.isUpdateAllowed()) return false;
 		if (parent != null) return parent.mayUpdateRecord();
 		return true;

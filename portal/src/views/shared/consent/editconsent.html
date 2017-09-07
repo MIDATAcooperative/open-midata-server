@@ -104,7 +104,7 @@
 	</formrow>
 	
 	<formrow id="writes" label="editconsent.writes">
-	  <p class="form-control-static">{{ ('enum.writepermissions.'+consent.writes)|translate }}</p>
+	  <p class="form-control-static">{{ ('enum.writepermissiontype.'+consent.writes)|translate }}</p>
 	</formrow>
 	<a  ui-sref="^.circles" class="btn btn-default" translate="common.back_btn"></a>
 	<button type="button" ng-click="confirmConsent();" ng-show="mayConfirm()" class="btn btn-primary" translate="editconsent.confirm_btn"></button>

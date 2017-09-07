@@ -403,11 +403,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     }
     
     public static void updatePatientForAccount(MidataId who) throws AppException {
-      ExecutionInfo inf = new ExecutionInfo();
-      inf.executorId = who;
-      inf.targetAPS = who;
-      inf.ownerId = who;
-      inf.pluginId = RuntimeConstants.instance.portalPlugin;
+      ExecutionInfo inf = new ExecutionInfo(who);      
       
       PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
       patientProvider.setExecutionInfo(inf);
@@ -436,11 +432,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     }
     
     public static void createPatientForStudyParticipation(StudyParticipation part, Member member) throws AppException {
-        ExecutionInfo inf = new ExecutionInfo();
-        inf.executorId = member._id;
-        inf.targetAPS = member._id;
-        inf.ownerId = member._id;
-        inf.pluginId = RuntimeConstants.instance.portalPlugin;
+        ExecutionInfo inf = new ExecutionInfo(member._id);       
         
         PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
         PatientResourceProvider.setExecutionInfo(inf);

@@ -842,7 +842,7 @@ public class PluginsAPI extends APIController {
 			 		
 			}
 					
-			createRecord(authToken, record, new FileInputStream(file), filename, contentType, null);
+			createRecord(authToken, record, new FileInputStream(file), filename, contentType, authToken.context);
 					
 			Stats.finishRequest(request(), "200");
 			ObjectNode obj = Json.newObject();
