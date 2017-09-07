@@ -17,7 +17,7 @@ fitbit.config(['$translateProvider', 'i18nc', function($translateProvider, i18nc
 }]);
 fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', function($http, $translate, midataServer, $q) {
 	var $scope = {};
-	
+	midataServer.setSingleRequestMode(true);
 	$scope.error = {};
 	$scope.reimport = 7;
 	$scope.status = null;

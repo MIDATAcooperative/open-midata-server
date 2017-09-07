@@ -20,6 +20,8 @@ nokiaHealth.config(['$translateProvider', 'i18nc', function ($translateProvider,
 // The data importer
 nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', function ($http, $translate, midataServer, $q) {
 
+	midataServer.setSingleRequestMode(true);
+	
 	var importer = {};
 	importer.autoimport = {};
 
