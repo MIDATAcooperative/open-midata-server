@@ -449,15 +449,15 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			var formattedEndDate = toDate.getFullYear() + "-" + twoDigit(toDate.getMonth() + 1) + "-" + twoDigit(toDate.getDate());
 												
 			midataServer.oauth2Request($scope.authToken, baseUrl + measure.endpoint.replace("{date}", formattedFromDate).replace("1d", formattedEndDate))
-			.success(function(response) {
+			.then(function(response1) {
+				var response = response1.data;
 					// check if an error was returned
 				var actions = [];
 				
 				if (response.errors) {
 					var _error_message = response.errors[0].message;
 					// show error message when no 
-					if (!((_error_message.indexOf("/activities/elevation") !== -1 || _error_message.indexOf("/activities/floors") !== -1)
-						&& _error_message.indexOf("nvalid time series") !== -1)) {
+					if (!((_error_message.indexOf("/activities/elevation") !== -1 || _error_message.indexOf("/activities/floors") !== -1) && _error_message.indexOf("nvalid time series") !== -1)) {
 							errorMessage("Failed to import data on " + formattedFromDate + ": " + _error_message + ".");	
 					}
 				} else {
@@ -515,8 +515,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				
 				$scope.requesting--;
 				finish();
-			}).
-			error(function(err) {
+			}, function(err) {
 					errorMessage("Failed to import data on " + formattedDate + ": " + err);
 			});
 						
