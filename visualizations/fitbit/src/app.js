@@ -456,8 +456,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				if (response.errors) {
 					var _error_message = response.errors[0].message;
 					// show error message when no 
-					if (!((_error_message.indexOf("/activities/elevation") !== -1 || _error_message.indexOf("/activities/floors") !== -1)
-						&& _error_message.indexOf("nvalid time series") !== -1)) {
+					if (!((_error_message.indexOf("/activities/elevation") !== -1 || _error_message.indexOf("/activities/floors") !== -1) && _error_message.indexOf("nvalid time series") !== -1)) {
 							errorMessage("Failed to import data on " + formattedFromDate + ": " + _error_message + ".");	
 					}
 				} else {
