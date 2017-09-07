@@ -45,7 +45,7 @@ public class Feature_AccountQuery extends Feature {
 
 			if ((sets.contains("self") || sets.contains("all") || sets.contains(q.getApsId().toString())) && !q.restrictedBy("consent-after") && !q.restrictedBy("usergroup") && !q.restrictedBy("study")) {
 				result = next.query(q);
-				setIdAndConsentField(q, q.getApsId(), result);						
+				setIdAndConsentField(q, q.getContext(), q.getApsId(), result);						
 			} else {
 				result = new ArrayList<DBRecord>();
 			}
@@ -54,9 +54,9 @@ public class Feature_AccountQuery extends Feature {
 									
 			for (Consent circle : consents) {
 			   AccessLog.logBegin("start query for consent id="+circle._id);
-			   List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id));
+			   List<DBRecord> consentRecords = next.query(new Query(q.getProperties(), q.getFields(), q.getCache(), circle._id, new ConsentAccessContext(circle, q.getContext())));
 			   setOwnerField(q, circle, consentRecords);
-			   setIdAndConsentField(q, circle._id, consentRecords);							
+			   setIdAndConsentField(q, new ConsentAccessContext(circle, q.getContext()), circle._id, consentRecords);							
 			   result.addAll(consentRecords);
 			   AccessLog.logEnd("end query for consent");
 			}				
@@ -68,13 +68,14 @@ public class Feature_AccountQuery extends Feature {
 			
 			List<DBRecord> result = next.query(q);
 
-			setIdAndConsentField(q, q.getApsId(), result);
+			setIdAndConsentField(q, q.getContext(), q.getApsId(), result);
 			
 			return result;
 		}
 	}
 	
-	private void setIdAndConsentField(Query q, MidataId sourceAps, List<DBRecord> targetRecords) {
+	private void setIdAndConsentField(Query q, AccessContext context, MidataId sourceAps, List<DBRecord> targetRecords) {
+		for (DBRecord record : targetRecords) record.context = context;
 		if (q.returns("id")) {
 			for (DBRecord record : targetRecords)
 				record.id = record._id.toString() + "." + sourceAps.toString();
@@ -123,6 +124,17 @@ public class Feature_AccountQuery extends Feature {
 			   if (consentDate < consentaps.getLastChanged()) {
 				   filtered.add(consent);
 			   }	
+			}
+			return filtered;
+		}
+		return consents;
+	}
+	
+	private static Set<Consent> applyWriteFilters(Query q, Set<Consent> consents) throws AppException {
+		if (q.restrictedBy("updatable") && !consents.isEmpty()) {			
+			Set<Consent> filtered = new HashSet<Consent>(consents.size());
+			for (Consent consent : consents) {
+			   if (consent.writes == null || consent.writes.isUpdateAllowed()) filtered.add(consent);
 			}
 			return filtered;
 		}
@@ -197,6 +209,8 @@ public class Feature_AccountQuery extends Feature {
 		consents = applyConsentTimeFilter(q, consents);
 		
 		q.getCache().cache(consents);
+		
+		consents = applyWriteFilters(q, consents);
 		return consents;
 	}			
 

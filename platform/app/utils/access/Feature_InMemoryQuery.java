@@ -157,6 +157,11 @@ public class Feature_InMemoryQuery extends APS {
 	@Override
 	public void provideAPSKeyAndOwner(byte[] unlock, MidataId owner) {				
 	}
+
+	@Override
+	public boolean isUsable() throws AppException {
+		return true;
+	}
 	
 	
 

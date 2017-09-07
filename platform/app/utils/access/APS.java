@@ -27,6 +27,8 @@ public abstract class APS extends Feature {
 	
 	public abstract boolean isAccessible() throws AppException;
 	
+	public abstract boolean isUsable() throws AppException;
+	
 	public abstract void touch() throws AppException;
 	
 	public abstract long getLastChanged() throws AppException;

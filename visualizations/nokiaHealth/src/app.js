@@ -20,6 +20,8 @@ nokiaHealth.config(['$translateProvider', 'i18nc', function ($translateProvider,
 // The data importer
 nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', function ($http, $translate, midataServer, $q) {
 
+	midataServer.setSingleRequestMode(true);
+	
 	var importer = {};
 	importer.autoimport = {};
 
@@ -40,6 +42,7 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 		fitness: {code: "fitness", translate: "fitness_data", name_translated: "Fitness Data"},
 		vitalSigns : {code: "vital-signs", translate: "vital_signs_data", name_translated: "Vital Signs"}
 	};
+	var daysRequestInterval = 90;
 
 	var workouts_categories = [
 		{ "id": 1, "name": "Walk" },
@@ -102,12 +105,12 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 				{ id: "activity_measures_moderate", name: "Activity Measures - Moderate Activities", measureType: "moderate", unit: "min", system: "http://midata.coop", code: "activities/minutes-fairly-active", factor: 0.0166667, unitSystem: "http://unitsofmeasure.org", unitCode: "min" },//, system : "http://loinc.org", code : "55411-3"},
 				{ id: "activity_measures_intense", name: "Activity Measures - Intense Activities", measureType: "intense", unit: "min", system: "http://midata.coop", code: "activities/minutes-very-active", factor: 0.0166667, unitSystem: "http://unitsofmeasure.org", unitCode: "min" }//, system : "http://loinc.org", code : "55411-3"},
 			],
-			getURL: function (userid) { // max 60 calls per minute  // https://developer.health.nokia.com/api/doc#api-Measure-get_activity
+			getURL: function (userid, from, to) { // max 60 calls per minute  // https://developer.health.nokia.com/api/doc#api-Measure-get_activity
 				var _url = baseUrl + "/v2/measure?";
 				_url += ("action=" + this.actionType);
 				_url += ("&userid=" + userid);
-				_url += ("&startdateymd=" + this.from.getFullYear() + "-" + twoDigit(this.from.getMonth() + 1) + "-" + twoDigit(this.from.getDate()));
-				_url += ("&enddateymd=" + this.to.getFullYear() + "-" + twoDigit(this.to.getMonth() + 1) + "-" + twoDigit(this.to.getDate()));
+				_url += ("&startdateymd=" + from.getFullYear() + "-" + twoDigit(from.getMonth() + 1) + "-" + twoDigit(from.getDate()));
+				_url += ("&enddateymd=" + to.getFullYear() + "-" + twoDigit(to.getMonth() + 1) + "-" + twoDigit(to.getDate()));
 				/*
 				oauth_consumer_key	String	Consumer key, provided by Nokia when registering as a partner.
 				oauth_nonce	String	Random string (should be different for every request).
@@ -148,12 +151,12 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 				//{ id: "body_measures_bone_mass", name: "Body Measures - Bone Mass", measureType: 88, unit: "kg", system: "http://midata.coop", code: "body/bone_mass", unitSystem: "http://unitsofmeasure.org", unitCode: "" },// unit not defined. Do Tests!
 				//{ id: "body_measures_pulse_wave_velocity", name: "Body Measures - Pulse Wave Velocity", measureType: 91, unit: "?cm/s", system: "http://loinc.org", code: "77196-4", unitSystem: "http://unitsofmeasure.org", unitCode: "" }// unit not defined. Do Tests!
 			],
-			getURL: function (userid) {
+			getURL: function (userid, from, to) {
 				var _url = baseUrl + "/measure?";
 				_url += ("action=" + this.actionType);
 				_url += ("&userid=" + userid);
-				_url += ("&startdate=" + Math.round(this.from.getTime() / 1000));
-				_url += ("&enddate=" + Math.round(this.to.getTime() / 1000));
+				_url += ("&startdate=" + Math.round(from.getTime() / 1000));
+				_url += ("&enddate=" + Math.round(to.getTime() / 1000));
 				/*
 				oauth_consumer_key	String	Consumer key, provided by Nokia when registering as a partner.
 				oauth_nonce	String	Random string (should be different for every request).
@@ -178,12 +181,12 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 				{ id: "intraday_activity_stroke", name: "Intraday Activity - Stroke", measureType: "stroke", unit: "{#}", system: "http://midata.coop", code: "activities/intraday/stroke", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
 				{ id: "intraday_activity_pool_lap", name: "Intraday Activity - Pool lap", measureType: "pool_lap", unit: "{#}", system: "http://midata.coop", code: "activities/intraday/pool-lap", unitSystem: "http://unitsofmeasure.org", unitCode: "" }
 			],
-			getURL: function (userid) { // max. 120 calls per minute
+			getURL: function (userid, from, to) { // max. 120 calls per minute
 				var _url = baseUrl + "/v2/measure?";
 				_url += ("action=" + this.actionType);
 				_url += ("&userid=" + userid);
-				_url += ("&startdate=" + Math.round(this.from.getTime()/1000) );
-				_url += ("&enddate=" + Math.round(this.to.getTime()/1000) );
+				_url += ("&startdate=" + Math.round(from.getTime()/1000) );
+				_url += ("&enddate=" + Math.round(to.getTime()/1000) );
 
 				return _url;
 			}
@@ -197,12 +200,12 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 				//duplicated in summary//{ id: "sleep_measures_deep_sleep", name: "Sleep Summary - Deep Sleep", measureType: 2, unit: "min", system: "http://midata.coop", code: "sleep/minutes-asleep", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
 				//duplicated in summary//{ id: "sleep_measures_rem_sleep", name: "Sleep Summary - REM Sleep", measureType: 3, unit: "min", system: "http://loinc.org", code: "sleep/rem", unitSystem: "http://unitsofmeasure.org", unitCode: "" }
 			],
-			getURL: function (userid) { //  A single call can span up to 7 days maximum
+			getURL: function (userid, from, to) { //  A single call can span up to 7 days maximum
 				var _url = baseUrl + "/v2/sleep?";
 				_url += ("action=" + this.actionType);
 				_url += ("&userid=" + userid);
-				_url += ("&startdate=" + Math.round(this.from.getTime()/1000) );
-				_url += ("&enddate=" + Math.round(this.to.getTime()/1000) );
+				_url += ("&startdate=" + Math.round(from.getTime()/1000) );
+				_url += ("&enddate=" + Math.round(to.getTime()/1000) );
 
 				return _url;
 			}
@@ -219,12 +222,12 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 				//{ id: "sleep_summary_durationtosleep", name: "Sleep Summary - Duration to sleep", measureType: "durationtosleep", unit: "min", system: "http://midata.coop", code: "sleep/minutes-to-fall-asleep", factor: 0.0166667, unitSystem: "http://unitsofmeasure.org", unitCode: "" },
 				//{ id: "sleep_summary_durationtowakeup", name: "Sleep Summary - Duration to wake up", measureType: "durationtowakeup", unit: "min", system: "http://loinc.org", code: "65554-8", factor: 0.0166667, unitSystem: "http://unitsofmeasure.org", unitCode: "" } // ATTENTION: Loinc-Unit "hh:mm".
 			],
-			getURL: function (userid) { // A single call can span up to 200 days maximum.
+			getURL: function (userid, from, to) { // A single call can span up to 200 days maximum.
 				var _url = baseUrl + "/v2/sleep?";
 				_url += ("action=" + this.actionType);
 				_url += ("&userid=" + userid);
-				_url += ("&startdateymd=" + this.from.getFullYear() + "-" + twoDigit(this.from.getMonth() + 1) + "-" + twoDigit(this.from.getDate()));
-				_url += ("&enddateymd=" + this.to.getFullYear() + "-" + twoDigit(this.to.getMonth() + 1) + "-" + twoDigit(this.to.getDate()));
+				_url += ("&startdateymd=" + from.getFullYear() + "-" + twoDigit(from.getMonth() + 1) + "-" + twoDigit(from.getDate()));
+				_url += ("&enddateymd=" + to.getFullYear() + "-" + twoDigit(to.getMonth() + 1) + "-" + twoDigit(to.getDate()));
 
 				return _url;
 			}
@@ -239,12 +242,12 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 				//not found //{ id: "workouts_pool_laps", name: "Workouts - Pool laps", measureType: "pool_laps", unit: "{#}", system: "http://loinc.org", code: "", unitSystem: "http://unitsofmeasure.org", unitCode: "" },
 				//not found //{ id: "workouts_effduration", name: "Workouts - Effective duration", measureType: "effduration", unit: "seconds", system: "http://loinc.org", code: "", unitSystem: "http://unitsofmeasure.org", unitCode: "" }
 			],
-			getURL: function (userid) {
+			getURL: function (userid, from, to) {
 				var _url = baseUrl + "/v2/measure?";
 				_url += ("action=" + this.actionType);
 				_url += ("&userid=" + userid);
-				_url += ("&startdateymd=" + this.from.getFullYear() + "-" + twoDigit(this.from.getMonth() + 1) + "-" + twoDigit(this.from.getDate()) );
-				_url += ("&enddateymd=" + this.to.getFullYear() + "-" + twoDigit(this.to.getMonth() + 1) + "-" + twoDigit(this.to.getDate()) );
+				_url += ("&startdateymd=" + from.getFullYear() + "-" + twoDigit(from.getMonth() + 1) + "-" + twoDigit(from.getDate()) );
+				_url += ("&enddateymd=" + to.getFullYear() + "-" + twoDigit(to.getMonth() + 1) + "-" + twoDigit(to.getDate()) );
 
 				return _url;
 			},
@@ -288,44 +291,44 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 	var baseUrl = "https://api.health.nokia.com";
 	var stored = {};
 
-	// range: lastweek | lastmonth | lastyear | specified
-	// date_from: type -> Date
-	// date_to: type -> Date
-	var setDateInMeasurements = function (range, date_from, date_to) {
-		var _from = new Date();
-		var _to = new Date();
+	// // range: lastweek | lastmonth | lastyear | specified
+	// // date_from: type -> Date
+	// // date_to: type -> Date
+	// var setDateInMeasurements = function (range, date_from, date_to) {
+	// 	var _from = new Date();
+	// 	var _to = new Date();
 
-		if (range !== undefined && range !== null) {
+	// 	if (range !== undefined && range !== null) {
 
-			if (range == "lastweek") {
-				_from.setDate(_from.getDate() - 8);
-				_from.setHours(1, 1, 1, 1);
+	// 		if (range == "lastweek") {
+	// 			_from.setDate(_from.getDate() - 8);
+	// 			_from.setHours(1, 1, 1, 1);
 
-				_to.setDate(_to.getDate() - 1);
-				_to.setHours(1, 1, 1, 1);
-			} else if (range == "lastmonth") {
-				_from.setMonth(_from.getMonth() - 1);
-				_from.setHours(1, 1, 1, 1);
+	// 			_to.setDate(_to.getDate() - 1);
+	// 			_to.setHours(1, 1, 1, 1);
+	// 		} else if (range == "lastmonth") {
+	// 			_from.setMonth(_from.getMonth() - 1);
+	// 			_from.setHours(1, 1, 1, 1);
 
-				_to.setDate(_to.getDate() - 1);
-				_to.setHours(1, 1, 1, 1);
-			} else if (range == "lastyear") {
-				_from.setFullYear(_from.getFullYear() - 1);
-				_from.setHours(1, 1, 1, 1);
+	// 			_to.setDate(_to.getDate() - 1);
+	// 			_to.setHours(1, 1, 1, 1);
+	// 		} else if (range == "lastyear") {
+	// 			_from.setFullYear(_from.getFullYear() - 1);
+	// 			_from.setHours(1, 1, 1, 1);
 
-				_to.setDate(_to.getDate() - 1);
-				_to.setHours(1, 1, 1, 1);
-			} else if (range == "specified") {
-				_from = date_from;
-				_to = date_to;
-			}
-		}
+	// 			_to.setDate(_to.getDate() - 1);
+	// 			_to.setHours(1, 1, 1, 1);
+	// 		} else if (range == "specified") {
+	// 			_from = date_from;
+	// 			_to = date_to;
+	// 		}
+	// 	}
 
-		angular.forEach(importer.measurementGroups, function (measurement) {
-			measurement.from = _from;
-			measurement.to = _to;
-		});
-	};
+	// 	//angular.forEach(importer.measurementGroups, function (measurement) {
+	// 	//	measurement.from = _from;
+	// 	//	measurement.to = _to;
+	// 	//});
+	// };
 
 	importer.initForm = function (authToken) {
 		var deferred = $q.defer();
@@ -396,6 +399,7 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 									importer.last = newestDate;
 								}
 
+								// TODO: do nothing?
 								measurement.imported = entry.count;
 								if (measurement.from == null || measurement.from < newestDate) measurement.from = newestDate;
 							}
@@ -436,7 +440,7 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 	// Trigger the import. Must be runnable from webbrowser or from server
 	importer.importNow = function (authToken) {
 
-		console.log("import now started");
+		console.log("import started");
 		importer.saving = true;
 		importer.status = "importing";
 		importer.requested = 0;
@@ -446,20 +450,6 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 		importer.error.message = null;
 		importer.error.messages = [];
 
-		// 1. Set Interval to import
-		// "from" and "to" saved in measurements
-		if (importer.firstTime) {
-			var from1970 = new Date();
-			var toToday = new Date();
-			from1970.setFullYear(1970);
-			from1970.setHours(1, 1, 1, 1);
-			toToday.setHours(1, 1, 1, 1);
-			setDateInMeasurements("specified", from1970, toToday);
-		} else {
-			//setDateInMeasurements("lastweek");
-			setDateInMeasurements("lastyear");
-		}
-
 		// 2. get user id
 		midataServer.getOAuthParams(authToken)
 			.then(function (response) {
@@ -468,7 +458,107 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 				importer.requesting = importer.measurementGroups.length;
 				// Import all defined measurements groups
 				importer.measurementGroups.forEach(function (measurementGroup) {
+					// 1. Set Interval to import
+					var fromBase = new Date();
+					// if imported from portal
+					if (importer.firstTime) {
+						// // Withing founded: June 2008
+						fromBase.setFullYear(2008);
+						fromBase.setHours(1,1,1,1);
+					} else {
+						//setDateInMeasurements("lastweek");
+						////setDateInMeasurements("lastyear");
+						fromBase.setDate(fromBase.getDate() - daysRequestInterval);
+						fromBase.setHours(1,1,1,1);
+					}
 
+					// = milliseconds * seconds * minutes * hours * days
+					var intervalDaysInMilliseconds =  1000 * 60 * 60 * 24 * daysRequestInterval;
+					var today = new Date();
+					today.setHours(1,1,1,1);
+					var fromBaseArray = [];
+					while (fromBase.getTime() < today.getTime()) {
+						fromBaseArray.push(fromBase);
+						fromBase = new Date(fromBase.getTime() + intervalDaysInMilliseconds);
+					}
+
+					fromBaseArray.forEach(function(_fromBase){
+						var temp_to_milliseconds = _fromBase.getTime() + intervalDaysInMilliseconds;
+						if (temp_to_milliseconds > today.getTime()) {
+							temp_to_milliseconds = today.getTime();
+						}
+
+						// 3. request to Nokia Health
+						midataServer.oauth1Request(authToken, measurementGroup.getURL(_userid, _fromBase, new Date(temp_to_milliseconds)))
+						.then(function (response) {
+							if (response.data.status == "0") {
+								// get all prev records
+								var _defPrevRecords = $q.defer();
+								var _arrPrevRecords = [];
+								var _chainPrevRecords = _defPrevRecords.promise;
+								_defPrevRecords.resolve();
+
+								measurementGroup.measureTypes.forEach(function (measurementType) {
+									var f = function() { return getPrevRecords(authToken, measurementType.system + " " + measurementType.code, _fromBase/*measurementGroup.from*/);};
+									_chainPrevRecords = _chainPrevRecords.then(f);
+
+									$translate(measurementType.id).then(function (t) { measurementType.title = t; });
+									$translate(measurementType.id).then(function (t) { measurementType.name_translated = t; });
+									$translate(importer.codeObservations.fitness.translate).then(function(t){importer.codeObservations.fitness.name_translated = t;});
+									$translate(importer.codeObservations.vitalSigns.translate).then(function(t){importer.codeObservations.vitalSigns.name_translated = t;});
+
+									if (measurementType.diastolic){
+										$translate(measurementType.diastolic.id).then(function (t) { measurementType.diastolic.name_translated = t; });
+									}
+									if (measurementType.systolic){
+										$translate(measurementType.systolic.id).then(function (t) { measurementType.systolic.name_translated = t; });
+									}
+								});
+
+								// all prev. Records loaded
+								_chainPrevRecords.then(function () {
+
+									//save records
+									if (measurementGroup.groupMeasureId == 'activity_measures') {
+										// save every measure
+										measurementGroup.measureTypes.forEach(function (measurement) {
+											if (measurement.import) {
+												save_activities(authToken, response, measurement);
+											}
+										});
+										updateRequesting();
+
+									} else if (measurementGroup.groupMeasureId == 'body_measures') {
+										save_bodyMeasures(authToken, response, measurementGroup);
+										updateRequesting();
+									} else if (measurementGroup.groupMeasureId == 'sleep_summary') {
+										save_sleepMeasures(authToken, response, measurementGroup);
+										updateRequesting();
+									} else {
+										console.log("Error! new measurement group not defined");
+										updateRequesting();
+									}
+								},
+								function(error){
+									console.log("Error: " + error);
+									updateRequesting();
+								});
+
+							} else {
+								console.log("Error: url " + measurementGroup.getURL(_userid, _fromBase, new Date(temp_to_milliseconds)));
+								if (response.data.error) {
+									console.log("Error Message from Nokia Health (status: " + response.data.status + "): " + response.data.error);
+								}
+								updateRequesting();
+							}
+						},
+						function(error){
+							console.log('Failed: ' + error);
+							updateRequesting();
+						});
+						
+					});
+					/*
 					// 3. request to Nokia Health
 					midataServer.oauth1Request(authToken, measurementGroup.getURL(_userid))
 						.then(function (response) {
@@ -483,7 +573,7 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 									var f = function() { return getPrevRecords(authToken, measurementType.system + " " + measurementType.code, measurementGroup.from);};
 									_chainPrevRecords = _chainPrevRecords.then(f);
 
-									$translate(/*"titles." + */measurementType.id).then(function (t) { measurementType.title = t; });
+									$translate(measurementType.id).then(function (t) { measurementType.title = t; });
 									$translate(measurementType.id).then(function (t) { measurementType.name_translated = t; });
 									$translate(importer.codeObservations.fitness.translate).then(function(t){importer.codeObservations.fitness.name_translated = t;});
 									$translate(importer.codeObservations.vitalSigns.translate).then(function(t){importer.codeObservations.vitalSigns.name_translated = t;});
@@ -534,11 +624,15 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 							console.log('Failed: ' + error);
 							updateRequesting();
 						});
+						*/
+
 				}, this);
 			});
 	};
 
+	//var counterFromTest = 0;
 	var getPrevRecords = function (authToken, code, from) {
+		//console.log("from in getPrevRecords " + (counterFromTest++) + ": " + from.getTime());
 		return midataServer.getRecords(authToken, { "format": "fhir/Observation", "code": code, "index": { "effectiveDateTime": { "!!!ge": from } } }, ["version", "content", "data"])
 			.then(function (results) {
 				angular.forEach(results.data, function (rec) {
@@ -860,20 +954,6 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 	};
 
 	var processTransaction = function (authToken, actions) {
-		actions.sort(function(a,b){
-			var _value = 0;
-			try {
-				var _a = new Date(a.resource.effectiveDateTime);
-				var _b = new Date(b.resource.effectiveDateTime);
-				_value = _a.getTime() - _b.getTime();
-			}
-			catch(err) {
-				_value = 0;
-			}
-			return _value;
-		});
-		console.log('array sorted');
-		console.log(actions);
 		var request = {
 			"resourceType": "Bundle",
 			"id": "bundle-transaction",

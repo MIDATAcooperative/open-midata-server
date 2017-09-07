@@ -68,7 +68,7 @@ public class Feature_QueryRedirect extends Feature {
 		}
 		Object targetAPSId = query.get("aps");
 		AccessLog.logBegin("begin redirect to Query:");
-		List<DBRecord> result = next.query(new Query(combined, q.getFields(), q.getCache(), new MidataId(targetAPSId.toString())));
+		List<DBRecord> result = next.query(new Query(combined, q.getFields(), q.getCache(), new MidataId(targetAPSId.toString()), new AccountAccessContext(q.getCache(), q.getContext())));
 		
 		/*if (query.containsField("_exclude") && result.size() > 0) {			
 			List<DBRecord> excluded = QueryEngine.listFromMemory(q.getCache(), (Map<String, Object>) query.get("_exclude"), result);

@@ -36,7 +36,7 @@ angular.module('portal')
 		if ($state.params.consentId) {
 			$scope.consentId = $state.params.consentId;
 			
-			$scope.status.doBusy(circles.listConsents({ "_id" : $state.params.consentId }, ["name", "type", "status", "owner", "authorized", "entityType", "createdBefore", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery", "dateOfCreation" ]))
+			$scope.status.doBusy(circles.listConsents({ "_id" : $state.params.consentId }, ["name", "type", "status", "owner", "authorized", "entityType", "createdBefore", "validUntil", "externalOwner", "externalAuthorized", "sharingQuery", "dateOfCreation", "writes" ]))
 			.then(function(data) {
 				
 				$scope.consent = $scope.myform = data.data[0];		
@@ -83,7 +83,7 @@ angular.module('portal')
 			    }
 			});
 		} else {
-			$scope.consent = { type : ($state.current.data.role === "PROVIDER" ? "HEALTHCARE" : "CIRCLE"), status : "ACTIVE", authorized : [] };
+			$scope.consent = { type : ($state.current.data.role === "PROVIDER" ? "HEALTHCARE" : "CIRCLE"), status : "ACTIVE", authorized : [], writes : "NONE" };
 			views.disableView("records_shared");
 			
 			if ($state.params.owner != null) {
@@ -150,6 +150,9 @@ angular.module('portal')
 		if ($scope.error && $scope.error.field && $scope.error.type) $scope.myform[$scope.error.field].$setValidity($scope.error.type, true);
 		$scope.error = null;		
 		if (! $scope.myform.$valid) return;
+				
+		$scope.consent.writes = $scope.consent.writesBool ? "UPDATE_AND_CREATE" : "NONE";
+		
 		
 		$scope.status.doAction("create", circles.createNew($scope.consent))		
 		.then(function(result) {

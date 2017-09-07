@@ -53,6 +53,11 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	public @NotMaterialized MidataId consentAps;
 	
 	/**
+	 * AccessContext of this record
+	 */
+	public @NotMaterialized AccessContext context;
+	
+	/**
 	 * creation date as stored in aps
 	 */
 	public @NotMaterialized Date createdFromAps;
@@ -204,7 +209,11 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	}
 
 	public static void delete(MidataId ownerId, MidataId recordId) throws InternalServerException {			
-		Model.delete(DBRecord.class, collection, new ChainedMap<String, MidataId>().put("_id", recordId).get());
+		Model.delete(DBRecord.class, collection, CMaps.map("_id", recordId));
+	}
+	
+	public static void deleteMany(Set<MidataId> recordIds) throws InternalServerException {			
+		Model.delete(DBRecord.class, collection, CMaps.map("_id", recordIds));
 	}
 
 	@Override

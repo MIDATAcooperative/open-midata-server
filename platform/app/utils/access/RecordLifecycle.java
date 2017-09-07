@@ -68,16 +68,16 @@ public class RecordLifecycle {
 	 * @throws AppException
 	 */
 	public static void notifyOfChange(DBRecord rec, APSCache cache) throws AppException {
-		if (rec.stream != null) cache.getAPS(rec.stream).touch();
+		if (rec.stream != null) cache.touchAPS(rec.stream);
 		if (rec.watches == null) {
 			AccessLog.log("no watches registered for notify of change");
 			return;	
 		}
-		AccessLog.logBegin("start notify of change");
+		AccessLog.log("notify of change");
 		Set<MidataId> ids = new HashSet<MidataId>();
-		for (Object watch : rec.watches) ids.add(MidataId.from(watch));
-		Consent.updateTimestamp(ids, System.currentTimeMillis(), System.currentTimeMillis() + 1000l * 60l * 60l);
-		AccessLog.logEnd("end notify of change");
+		for (Object watch : rec.watches) cache.touchConsent(MidataId.from(watch));
+		//Consent.updateTimestamp(ids, System.currentTimeMillis(), System.currentTimeMillis() + 1000l * 60l * 60l);
+		//AccessLog.logEnd("end notify of change");
 	}
 		
 		

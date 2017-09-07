@@ -57,7 +57,7 @@ public class Feature_Streams extends Feature {
 			  
 			  AccessLog.logBegin("begin single stream query");
 			  
-			  List<DBRecord> streams = next.query(new Query(CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")).removeKey("quick"), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId() ));
+			  List<DBRecord> streams = next.query(new Query(CMaps.map(q.getProperties()).map("_id", q.getProperties().get("stream")).removeKey("quick"), Sets.create("_id", "key", "owner"), q.getCache(), q.getApsId(), q.getContext() ));
 				
 			  for (DBRecord r : streams) {
 				  if (r.isStream) {
@@ -251,7 +251,7 @@ public class Feature_Streams extends Feature {
 
 	private static MidataId getStreamByProperties(MidataId who, MidataId apsId, Map<String, Object> properties, boolean writeableOnly, boolean doNotify)
 			throws AppException {
-		List<DBRecord> result = QueryEngine.listInternal(RecordManager.instance.getCache(who), apsId, 
+		List<DBRecord> result = QueryEngine.listInternal(RecordManager.instance.getCache(who), apsId, null,
 				CMaps.map(properties)				     
 					 .map("streams", "only")
 					 .map("owner", "self")

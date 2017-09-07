@@ -218,12 +218,12 @@ angular.module('portal')
 	   	newgroup.id = newgroup.name.replace(/[/\-]/g,'_');
 	   	
 	   	if (newgroup.parent == null || newgroup.parent === "") {
-	   		newgroup.fullLabel = newgroup.label[$scope.lang] || newgroup.name;
+	   		newgroup.fullLabel = { fullLabel : newgroup.label[$scope.lang] || newgroup.name };
 	   		$scope.tree.push(newgroup);
 	   	} else {
 	   		var prt = getOrCreateGroup(newgroup.parent);
 	   		/*if (prt.parent != null) newgroup.fullLabel = (prt.label[$scope.lang] || prt.name) + " / "+(newgroup.label[$scope.lang] || newgroup.name);
-	   		else*/ newgroup.fullLabel = newgroup.label[$scope.lang] || newgroup.name;
+	   		else*/ newgroup.fullLabel = { fullLabel : newgroup.label[$scope.lang] || newgroup.name };
 	   		prt.children.push(newgroup);
 	   	}
 	   	
@@ -242,12 +242,12 @@ angular.module('portal')
 	   	newplugin.infoCount = 0;
 	   	newplugin.countShared = 0;	   	
 	   		   	
-	   	newplugin.fullLabel = "Label "+newplugin.id;
+	   	newplugin.fullLabel = { fullLabel : "Label "+newplugin.id };
 	   	if (contentLabels[plugin]) {
-	   		newplugin.fullLabel = contentLabels[plugin];
+	   		newplugin.fullLabel.fullLabel = contentLabels[plugin];
 	   	} else {
 	   		if (plugin) {
-		   		loadPlugins[plugin] = newplugin;
+		   		loadPlugins[plugin] = newplugin.fullLabel;
 		   		doLoadPlugins = true;
 	   		}
 	   	}
@@ -264,12 +264,14 @@ angular.module('portal')
 	   	if (groups["cnt:"+format] != null) return groups["cnt:"+format];
 	   
 	   	var grp = getOrCreateGroup(group);
-	   	var newfmt = { name : "cnt:"+format, content:format, type:"group", fullLabel:"Content: "+format, parent:group, children:[], records:[] };
+	   	var newfmt = { name : "cnt:"+format, content:format, type:"group", fullLabel: { fullLabel : "Content: "+format }, parent:group, children:[], records:[] };
 	   	
 	   	if (contentLabels[format]) {
-	   		newfmt.fullLabel = contentLabels[format];
+	   		newfmt.fullLabel.fullLabel = contentLabels[format];
+	   	} else if (loadLabels[format]) {
+	   	    newfmt.fullLabel = loadLabels[format];		   	
 	   	} else {
-	   		loadLabels[format] = newfmt;
+	   		loadLabels[format] = newfmt.fullLabel;
 	   		doLoadLabels = true;
 	   	}
 	   	
@@ -281,12 +283,14 @@ angular.module('portal')
 	var getOrCreatePluginContent = function(content, plugin) {
 	   	if (plugin.contents[content] != null) return plugin.contents[content];
 	   	
-	   	var newfmt = { name : "cnt:"+content, type:"group", fullLabel:"Content: "+content, parent:plugin, plugin:plugin.plugin, content:content, children:[], records:[] };
+	   	var newfmt = { name : "cnt:"+content, type:"group", fullLabel:{ fullLabel : "Content: "+content }, parent:plugin, plugin:plugin.plugin, content:content, children:[], records:[] };
 	   	
 	   	if (contentLabels[content]) {
-	   		newfmt.fullLabel = contentLabels[content];
+	   		newfmt.fullLabel.fullLabel = contentLabels[content];
+	   	} else if (loadLabels[content]) {
+	   		newfmt.fullLabel = loadLabels[content];
 	   	} else {
-	   		loadLabels[content] = newfmt;
+	   		loadLabels[content] = newfmt.fullLabel;
 	   		doLoadLabels = true;
 	   	}
 	   	
@@ -345,8 +349,8 @@ angular.module('portal')
 		plugins = {};		
 		
 		if ($scope.treeMode === "plugin") {
-			$scope.tree = [ { name : "all",  fullLabel:"", parent:null, children:[], records:[] } ];
-			$translate("records.all").then(function(f) { $scope.tree[0].fullLabel = f; });
+			$scope.tree = [ { name : "all",  fullLabel:{ fullLabel : "" }, parent:null, children:[], records:[] } ];
+			$translate("records.all").then(function(f) { $scope.tree[0].fullLabel.fullLabel = f; });
 			angular.forEach($scope.infos, function(info) {		    
 			    var plugin = info.apps[0];
 			    var pluginItem = getOrCreatePlugin(plugin);
@@ -398,8 +402,8 @@ angular.module('portal')
 		if (group.content) props.content = group.content;
 		if (group.group) props.group = group.group;
 		
-		server.post(jsRoutes.controllers.Records["delete"]().url, props).
-		success(function(data) {
+		$scope.status.doBusy(server.post(jsRoutes.controllers.Records["delete"]().url, props))
+		.then(function(data) {
 			$scope.loadGroups();
 			$scope.getInfos($scope.userId, "self");
 		});

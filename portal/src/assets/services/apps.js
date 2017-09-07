@@ -4,6 +4,8 @@ angular.module('services')
 
 	service.userfeatures = ['EMAIL_ENTERED', 'EMAIL_VERIFIED', 'PHONE_ENTERED', 'PHONE_VERIFIED', 'ADDRESS_ENTERED' ,'ADDRESS_VERIFIED', 'PASSPORT_VERIFIED', 'MIDATA_COOPERATIVE_MEMBER', 'ADMIN_VERIFIED'];
 	
+	service.writemodes = ['NONE', 'UPDATE_EXISTING', 'UPDATE_AND_CREATE', 'WRITE_ANY'];
+	
     service.getApps = function(properties, fields) {
    	   var data = {"properties": properties, "fields": fields};
 	   return server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify(data));

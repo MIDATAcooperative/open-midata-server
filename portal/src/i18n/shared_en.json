@@ -217,6 +217,12 @@
 	   "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative",
 	   "ADMIN_VERIFIED" : "Account must have been unlocked by MIDATA admin"
 	 },
+	 "writepermissiontype" : {
+	   "NONE" : "No data may be written.",
+	   "UPDATE_EXISTING" : "Existing data may be updated.",
+	   "UPDATE_AND_CREATE" : "Data covered by consent may be written or updated.", 
+	   "WRITE_ANY" : "Any kind of data may be written using this consent."
+	 },
 	 "consentstatus" : {
 	   "ACTIVE" : "Active",
 	   "EXPIRED" : "Expired",
@@ -661,6 +667,8 @@
     "add_yourself_btn" : "Add yourself",
     "add_person_btn" : "Add New Person",
     "add_usergroup_btn" : "Add New Team",
+    "writes" : "Write Permission",
+    "writes2" : "The persons authorized by this consent may create or update data in your account covered by this consent.",
     "reshare" : "3rd party access?",
     "reshare2" : "The persons authorized with this consent may reshare the data I gave them access to.",
     "expiration_date" : "Consent expiration date:",
@@ -683,6 +691,7 @@
     "add_usergroup_btn" : "Add a Team",
     "reshare" : "@:newconsent.reshare",
     "reshare2" : "@:newconsent.reshare2",
+    "writes" : "Write Permission",
     "expiration_date" : "Consent expiration date:",
     "created_before" : "Does not share data created after:",
     "what_is_shared" : "What data is shared?",

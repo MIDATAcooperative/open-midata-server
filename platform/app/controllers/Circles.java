@@ -16,6 +16,7 @@ import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 
 import actions.APICall;
 import models.Circle;
@@ -39,6 +40,7 @@ import models.enums.EntityType;
 import models.enums.MessageReason;
 import models.enums.SubUserRole;
 import models.enums.UserFeature;
+import models.enums.WritePermissionType;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -67,7 +69,7 @@ import utils.messaging.Messager;
 
 /**
  * functions for managing consents
- *
+ *    
  */
 public class Circles extends APIController {	
 
@@ -262,13 +264,16 @@ public class Circles extends APIController {
 			consent = new Circle();
 			((Circle) consent).order = Circle.getMaxOrder(userId) + 1;
 			patientRecord = true;
+			consent.writes = WritePermissionType.NONE;
 			break;
 		case HEALTHCARE :
 			consent = new MemberKey();
 			patientRecord = true;
+			consent.writes = WritePermissionType.UPDATE_AND_CREATE;
 			break;
 		case HCRELATED :
 			consent = new HCRelated();
+			consent.writes = WritePermissionType.NONE;
 			break;		
 		default :
 			throw new BadRequestException("error.internal", "Unsupported consent type");
@@ -294,6 +299,9 @@ public class Circles extends APIController {
 		consent.status = userId.equals(executorId) ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;
 		consent.validUntil = validUntil;
 		consent.createdBefore = createdBefore;
+		if (json.has("writes")) {
+		  consent.writes = JsonValidation.getEnum(json, "writes", WritePermissionType.class);
+		}
 		if (! userId.equals(executorId)) consent.authorized.add(executorId);
 				
 		addConsent(executorId, consent, patientRecord, passcode);
@@ -371,6 +379,7 @@ public class Circles extends APIController {
 		consent.authorized = Collections.singleton(other);
 		consent.status = ConsentStatus.ACTIVE;
 		consent.entityType = groupReceiver ? EntityType.USERGROUP : EntityType.USER;
+		consent.writes = WritePermissionType.WRITE_ANY;
 		
 		if (groupReceiver && other.equals(receiver)) {
 			UserGroup othergroup = UserGroup.getById(receiver, Sets.create("name"));

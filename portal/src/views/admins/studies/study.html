@@ -16,7 +16,11 @@
 	  <tr>
         <td translate="admin_study.created_at"></td>
         <td>{{ study.createdAt | date }}</td>
-      </tr>   
+      </tr>
+       <tr>
+        <td translate="admin_study.created_by"></td>
+        <td>{{ creator.firstname }} {{ creator.lastname }} ({{ creator.email }})</td>
+      </tr>    
       <tr>
         <td translate="admin_study.description"></td>
         <td>{{ study.description }}</td>
@@ -76,7 +80,7 @@
       </thead>
       <tbody>
         <tr ng-repeat="entry in study.history">
-          <td>{{ entry.event }}</td>
+          <td translate="{{ 'enum.eventtype.'+entry.event }}"></td>
           <td>{{ entry.whoName }}</td>
           <td>{{ entry.timestamp | date }}</td>
           <td>{{ entry.message }}</td>
@@ -88,7 +92,8 @@
     
   
     <a class="btn btn-default" ui-sref="admin.studies" translate="common.back_btn">Back</a> 
-    <button class="btn btn-primary" ng-click="finishValidation()" translate="admin_study.end_validation_btn"></button>    
+    <button ng-show="study.validationStatus == 'VALIDATION'" class="btn btn-primary" ng-click="finishValidation()" translate="admin_study.end_validation_btn"></button>    
+    <button ng-show="study.validationStatus == 'VALIDATION'" class="btn btn-default" ng-click="backToDraft()" translate="admin_study.back_to_draft_btn"></button>
     <button ng-show="readyForDelete()" class="btn btn-danger" ng-click="delete()" translate="admin_study.delete_study_btn"></button>
     
 </div>

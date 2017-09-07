@@ -9,6 +9,7 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
 import akka.routing.BroadcastGroup;
+import models.ContentCode;
 import models.MidataId;
 import models.Plugin;
 import models.RecordGroup;
@@ -96,6 +97,7 @@ class InstanceSync extends UntypedActor {
 			   Plugin.cacheRemove(msg.entry);
 		   } else if (msg.collection.equals("content")) {
 			   RecordGroup.load();
+			   ContentCode.reset();
 		   }
 		} else {
 		    unhandled(message);

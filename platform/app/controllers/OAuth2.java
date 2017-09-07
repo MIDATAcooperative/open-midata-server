@@ -134,7 +134,8 @@ public class OAuth2 extends Controller {
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
 		
 		
-		appInstance = MobileAPI.getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));
+		appInstance = MobileAPI.getAppInstance(phrase, app._id, user._id, Sets.create("owner", "applicationId", "status", "passcode", "appVersion"));		
+		
 		KeyManager.instance.login(60000l);
 		
 		if (appInstance == null) {		

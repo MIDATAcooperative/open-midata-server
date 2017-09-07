@@ -32,6 +32,7 @@ import models.enums.ParticipationCodeStatus;
 import models.enums.ParticipationStatus;
 import models.enums.SubUserRole;
 import models.enums.UserFeature;
+import models.enums.WritePermissionType;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -237,6 +238,7 @@ public class Studies extends APIController {
 				
 		part.ownerName = userName;
 		part.status = ConsentStatus.ACTIVE;
+		part.writes = WritePermissionType.NONE;
 		if (code != null) {
 			part.group = code.group;
 			part.recruiter = code.recruiter;		
