@@ -515,8 +515,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				
 				$scope.requesting--;
 				finish();
-			}).
-			error(function(err) {
+			}, function(err) {
 					errorMessage("Failed to import data on " + formattedDate + ": " + err);
 			});
 						
