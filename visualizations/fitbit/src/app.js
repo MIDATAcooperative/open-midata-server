@@ -449,7 +449,8 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			var formattedEndDate = toDate.getFullYear() + "-" + twoDigit(toDate.getMonth() + 1) + "-" + twoDigit(toDate.getDate());
 												
 			midataServer.oauth2Request($scope.authToken, baseUrl + measure.endpoint.replace("{date}", formattedFromDate).replace("1d", formattedEndDate))
-			.success(function(response) {
+			.then(function(response1) {
+				var response = response1.data;
 					// check if an error was returned
 				var actions = [];
 				
