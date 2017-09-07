@@ -30,6 +30,7 @@ import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
 import models.enums.UserFeature;
 import models.enums.UserRole;
+import models.enums.WritePermissionType;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -119,6 +120,7 @@ public class Market extends APIController {
 		app.resharesData = JsonValidation.getBoolean(json, "resharesData");
 		app.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		app.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
+		app.writes = JsonValidation.getEnum(json, "writes", WritePermissionType.class);
 		app.i18n = new HashMap<String, Plugin_i18n>();
 		app.pluginVersion = System.currentTimeMillis();
 		
@@ -237,7 +239,7 @@ public class Market extends APIController {
 		// validate json
 		JsonNode json = request().body().asJson();
 		
-		JsonValidation.validate(json, "name", "type");
+		JsonValidation.validate(json, "name", "type", "writes");
 		String type = JsonValidation.getString(json, "type");
 		
 		if (type.equals("create")) {
@@ -301,6 +303,7 @@ public class Market extends APIController {
 		plugin.resharesData = JsonValidation.getBoolean(json, "resharesData");
 		plugin.allowsUserSearch = JsonValidation.getBoolean(json, "allowsUserSearch");
 		plugin.unlockCode = JsonValidation.getStringOrNull(json, "unlockCode");
+		plugin.writes = JsonValidation.getEnum(json, "writes", WritePermissionType.class);
 		plugin.predefinedMessages = parseMessages(json);
 		plugin.pluginVersion = System.currentTimeMillis();
 		

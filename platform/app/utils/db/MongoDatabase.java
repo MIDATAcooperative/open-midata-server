@@ -281,9 +281,13 @@ public class MongoDatabase extends Database {
 		for (String key : properties.keySet()) {
 			Object property = properties.get(key);
 			if (property instanceof Collection<?> && !key.startsWith("$")) {
-				ArrayList al = new ArrayList();
-				for (Object v : ((Collection<?>) property)) al.add(conversion.toDBObjectValue(v));
-				dbObject.put(key, new BasicDBObject("$in", al));
+				if (((Collection<?>) property).size() == 1) {
+					dbObject.put(key, conversion.toDBObjectValue(((Collection<?>) property).iterator().next()));
+				} else {				
+					ArrayList al = new ArrayList();
+					for (Object v : ((Collection<?>) property)) al.add(conversion.toDBObjectValue(v));
+					dbObject.put(key, new BasicDBObject("$in", al));
+				}
 			} else if (property instanceof Map<?, ?>) {
 				BasicDBObject dbo = new BasicDBObject();
 				Map propertyMap = (Map<?,?>) property;

@@ -16,11 +16,13 @@ import play.libs.Json;
 import play.mvc.Http.Request;
 import utils.AccessLog;
 import utils.RuntimeConstants;
+import utils.access.AccessContext;
 import utils.access.RecordManager;
 import utils.collections.RequestCache;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
 
 public class ExecutionInfo {
 
@@ -38,13 +40,16 @@ public class ExecutionInfo {
 	
 	public RequestCache cache = new RequestCache();
 	
+	public AccessContext context = null;
+	
 	public ExecutionInfo() {}
 	
-	public ExecutionInfo(MidataId executor) {
+	public ExecutionInfo(MidataId executor) throws InternalServerException {
 		this.executorId = executor;
 		this.ownerId = executor;
 		this.targetAPS = executor;
 		this.pluginId = RuntimeConstants.instance.portalPlugin;
+		this.context = RecordManager.instance.createContextFromAccount(executor);
 	}
 	
 	public static ExecutionInfo checkToken(Request request, String token, boolean allowInactive) throws AppException {
@@ -82,13 +87,14 @@ public class ExecutionInfo {
 			result.recordId = authToken.recordId;			
 			result.ownerId = authToken.userId;
 		} else if (authToken.pluginId == null) {							
-			Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.userId, Sets.create("visualization", "app", "aps", "autoShare"));
+			Space space = Space.getByIdAndOwner(authToken.spaceId, authToken.userId, Sets.create("visualization", "app", "aps", "autoShare", "sharingQuery", "writes"));
 			if (space == null) throw new BadRequestException("error.unknown.space", "The current space does no longer exist.");
 				
 			result.pluginId = space.visualization;
 			result.targetAPS = space._id;
 			result.ownerId = authToken.userId;
 			result.space = space;
+			result.context = RecordManager.instance.createContextFromSpace(result.executorId, space);
 			
 			User targetUser = Member.getById(authToken.userId, Sets.create("myaps", "tokens"));
 			if (targetUser == null) throw new BadRequestException("error.internal", "Invalid authToken.");
@@ -117,7 +123,7 @@ public class ExecutionInfo {
 		if (authToken == null) MobileAPI.invalidToken();				
 		
 		AccessLog.logBegin("begin check 'mobile' type session token");
-		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare", "status"));
+		MobileAppInstance appInstance = MobileAppInstance.getById(authToken.appInstanceId, Sets.create("owner", "applicationId", "autoShare", "status", "sharingQuery", "writes"));
         if (appInstance == null) MobileAPI.invalidToken(); 
 
         if (!allowInactive && !appInstance.status.equals(ConsentStatus.ACTIVE)) throw new BadRequestException("error.noconsent", "Consent needs to be confirmed before creating records!");
@@ -142,6 +148,7 @@ public class ExecutionInfo {
 		result.ownerId = appInstance.owner;
 		result.pluginId = appInstance.applicationId;
 		result.targetAPS = appInstance._id;
+		result.context = RecordManager.instance.createContextFromApp(result.executorId, appInstance);
 		AccessLog.logEnd("end check 'mobile' type session token");
 		
         return result;						

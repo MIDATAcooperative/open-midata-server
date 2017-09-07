@@ -2,6 +2,7 @@ package models;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import utils.collections.CMaps;
 import utils.collections.Sets;
@@ -40,6 +41,7 @@ public class ContentCode extends Model  {
 	   */
 	  public String content;
 	  
+	  public static Map<String, String> contentForSystemCode = new ConcurrentHashMap<String, String>();
 	  	
 	  /**
 	   * returns all coding entries matching the given criteria.
@@ -59,13 +61,19 @@ public class ContentCode extends Model  {
 	   * @throws InternalServerException
 	   */
 	  public static String getContentForSystemCode(String systemCode) throws InternalServerException {
+		  String fast = contentForSystemCode.get(systemCode);
+		  if (fast != null) return fast;
+		  
 		  int p = systemCode.indexOf(' ');
 		  if (p<0) return null;
 		  String system = systemCode.substring(0, p);
 		  String code = systemCode.substring(p+1);
 		  
 		  ContentCode result = Model.get(ContentCode.class, collection, CMaps.map("system", system).map("code", code), Sets.create("content"));
-		  if (result != null) return result.content;
+		  if (result != null) {
+			  contentForSystemCode.put(systemCode, result.content);
+			  return result.content;
+		  }
 		  
 		  return null;
 	  }
@@ -91,5 +99,8 @@ public class ContentCode extends Model  {
 		  Model.delete(ContentCode.class, collection, CMaps.map("_id", ccId));
 	  }
 
+	  public static void reset() {
+		  contentForSystemCode.clear();
+	  }
 	  	  	 
 }

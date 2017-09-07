@@ -57,6 +57,7 @@ import models.enums.StudyExecutionStatus;
 import models.enums.StudyValidationStatus;
 import models.enums.UserFeature;
 import models.enums.UserRole;
+import models.enums.WritePermissionType;
 import play.libs.Json;
 import play.mvc.BodyParser;
 import play.mvc.Result;
@@ -515,6 +516,31 @@ public class Studies extends APIController {
 	}
 	
 	/**
+	 * back to draft
+	 * @param id ID of study
+	 * @return status ok
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public static Result backToDraft(String id) throws JsonValidationException, AppException {
+		MidataId userId = new MidataId(request().username());		
+		MidataId studyid = new MidataId(id);
+		
+		User user = Admin.getById(userId, Sets.create("firstname","lastname"));
+		Study study = Study.getByIdFromMember(studyid, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus", "history","groups","recordQuery"));
+		
+		if (study == null) throw new BadRequestException("error.missing.study", "Study does not exist");
+		if (!study.validationStatus.equals(StudyValidationStatus.VALIDATION)) return badRequest("Study has already been validated.");
+									 
+		study.addHistory(new History(EventType.STUDY_REJECTED, user, "Reset to draft mode"));
+		study.setValidationStatus(StudyValidationStatus.DRAFT);
+						
+		return ok();
+	}
+	
+	/**
 	 * start participant search phase
 	 * @param id ID of study
 	 * @return status ok
@@ -669,6 +695,7 @@ public class Studies extends APIController {
 		consent.authorized = new HashSet<MidataId>();
 		consent.dateOfCreation = new Date();		
 		consent.status = ConsentStatus.ACTIVE;
+		consent.writes = WritePermissionType.NONE;
 					
 		RecordManager.instance.createAnonymizedAPS(ownerId, ownerId, consent._id, true);
 		Circles.prepareConsent(consent);

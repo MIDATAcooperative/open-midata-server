@@ -124,6 +124,7 @@ GET     /api/research/studies/:study/requiredinfo        controllers.research.St
 POST    /api/research/studies/:study/requiredinfo        controllers.research.Studies.setRequiredInformationSetup(study: String)
 POST    /api/research/studies/:study/status/validate     controllers.research.Studies.startValidation(study: String)
 POST    /api/admin/studies/:study/status/validate        controllers.research.Studies.endValidation(study: String)
+POST    /api/admin/studies/:study/status/backtodraft     controllers.research.Studies.backToDraft(study: String)
 POST    /api/research/studies/:study/status/startsearch  controllers.research.Studies.startParticipantSearch(study: String)
 POST    /api/research/studies/:study/status/endsearch    controllers.research.Studies.endParticipantSearch(study: String)
 POST    /api/research/studies/:study/status/start        controllers.research.Studies.startExecution(study: String)

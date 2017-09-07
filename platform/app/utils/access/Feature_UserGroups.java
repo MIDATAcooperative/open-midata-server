@@ -56,7 +56,8 @@ public class Feature_UserGroups extends Feature {
 		Map<String, Object> newprops = new HashMap<String, Object>();
 		newprops.putAll(q.getProperties());
 		newprops.put("usergroup", ugm.userGroup);
-		Query qnew = new Query(newprops, q.getFields(), q.getCache().getSubCache(group), group);
+		APSCache subcache = q.getCache().getSubCache(group); 
+		Query qnew = new Query(newprops, q.getFields(), subcache, group, new UserGroupAccessContext(subcache, q.getContext()));
 		List<DBRecord> result = next.query(qnew);
 		AccessLog.logEnd("end user group query for group="+group.toString());
 		

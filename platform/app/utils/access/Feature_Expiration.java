@@ -32,7 +32,7 @@ public class Feature_Expiration {
 	}
 	
 	public static void expireOldRecords(APSCache cache, MidataId aps, int count) throws AppException {
-    	List<DBRecord> result = QueryEngine.listInternal(cache, aps, CMaps.map("sort", "lastUpdated desc"), Sets.create("_id"));
+    	List<DBRecord> result = QueryEngine.listInternal(cache, aps, null, CMaps.map("sort", "lastUpdated desc"), Sets.create("_id"));
     	if (result.size() > count) {
     		result.subList(0, count).clear();
     		APS target = cache.getAPS(aps);            
