@@ -59,6 +59,7 @@ import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.ServerTools;
 import utils.access.AccessContext;
 import utils.access.ConsentAccessContext;
 import utils.access.DBRecord;
@@ -509,13 +510,7 @@ public class PluginsAPI extends APIController {
 		
 		Set<MidataId> records = Collections.singleton(record._id);
 								    				
-		AccessContext myContext = context;
-		while (myContext != null) {
-			if (!myContext.isIncluded(dbrecord)) {
-				RecordManager.instance.share(inf.executorId, inf.ownerId, myContext.getTargetAps(), records, false);
-			}
-			myContext = myContext.getParent();
-		}
+		AccessContext myContext = context;		
 		
 		if (inf.executorId.equals(inf.ownerId)) {
 			while (myContext != null) {
@@ -856,8 +851,7 @@ public class PluginsAPI extends APIController {
 			ErrorReporter.report("Plugin API", ctx(), e2);
 			return internalServerError(e2.getMessage());			
 		} finally {
-			RecordManager.instance.clear();
-			AccessLog.newRequest();	
+			ServerTools.endRequest();			
 		}
 		
 	}

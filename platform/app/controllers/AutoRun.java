@@ -32,6 +32,7 @@ import scala.concurrent.duration.Duration;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
+import utils.ServerTools;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
 import utils.auth.SpaceToken;
@@ -233,8 +234,7 @@ public class AutoRun extends APIController {
 		    		ErrorReporter.report("Autorun-Service", null, e);	
 		    		throw e;
 		    	} finally {
-		    		RecordManager.instance.clear();
-					AccessLog.newRequest();	
+		    		ServerTools.endRequest();		    		
 		    	}
 		      } else {
 		        unhandled(message);
@@ -295,8 +295,7 @@ public class AutoRun extends APIController {
 				ErrorReporter.report("Autorun-Service", null, e);	
 				throw e;
 			} finally {
-				RecordManager.instance.clear();
-				AccessLog.newRequest();	
+				ServerTools.endRequest();				
 			}
 		}
 		

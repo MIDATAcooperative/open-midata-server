@@ -257,6 +257,7 @@ public class RecordManager {
 	public void share(MidataId who, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner,
 			Set<MidataId> records, boolean withOwnerInformation)
 			throws AppException {
+		if (fromAPS.equals(toAPS)) return;
         AccessLog.logBegin("begin share: who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString()+" count="+(records!=null ? records.size() : "?"));
 		APS apswrapper = getCache(who).getAPS(toAPS, toAPSOwner);
 		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(who), fromAPS, null,
