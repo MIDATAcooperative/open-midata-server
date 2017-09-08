@@ -61,6 +61,7 @@ public class ConsentAccessContext extends AccessContext{
 
 	@Override
 	public boolean isIncluded(DBRecord record) throws AppException {
+		if (consent.writes == null) return false;
 		return !QueryEngine.listFromMemory(cache, consent.sharingQuery, Collections.singletonList(record)).isEmpty();
 	}
 
