@@ -18,15 +18,19 @@ nokiaHealth.controller('ImportController', ['$scope', '$translate', '$location',
 
 		$scope.Import = function(){
 			importer.firstTime = true;
-			importer.saveConfig(authToken)
-			.then(function() {
-				importer.importNow(authToken);
+			importer.saveConfig()
+			.then(function(){
+				importer.initForm(authToken)
+				.then(function() {
+					importer.importNow();
+				});
 			});
+			
 			$scope.status = "ok";
 		};
 
 		$scope.saveConfig = function(){
-			importer.saveConfig(authToken)
+			importer.saveConfig()
 			.then(function(){
             	importer.status = "changesSaved";
         	});

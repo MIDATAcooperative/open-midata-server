@@ -1,3 +1,11 @@
+// the URL for the calls
+var baseUrl = "https://api.health.nokia.com";
+
+// make a two digit string out of a given number
+var twoDigit = function (num) {
+    return ("0" + num).slice(-2);
+};
+
 // there are the categories for the workouts (defined in Nokia Health)
 var workouts_categories = [
     { "id": 1, "name": "Walk" },
