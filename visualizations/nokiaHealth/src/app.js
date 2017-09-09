@@ -128,13 +128,8 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 
 								// if not defined
 								if (!importer.allMeasurementGroups[measurementGroup.groupMeasureId]) {
-									// initialize allMeasurementGroups to import from today
-									// TODO:posible solution = null?? and if null then set later 2008?
-									var _from = new Date();
-									_from.setFullYear(2008);
-									_from.setHours(1, 1, 1, 1);
-									_from.setMonth(1);
-									importer.allMeasurementGroups[measurementGroup.groupMeasureId] = {from : _from};
+									// initialize allMeasurementGroups with null
+									importer.allMeasurementGroups[measurementGroup.groupMeasureId] = {from : null};
 								}
 							}
 						}
@@ -183,6 +178,8 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 							var measurement = map[entry.contents[0]];
 
 							if (measurement != null) {
+								measurement.hasSummary = true;
+
 								var newestDate = new Date(entry.newest);
 
 								newestDate.setHours(1, 1, 1, 1);
@@ -197,10 +194,9 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 
 								// set value of "from" to import
 								if (!importer.allMeasurementGroups[mapMeasureTypeToGroup[measurement.id]].from ||
-									importer.allMeasurementGroups[mapMeasureTypeToGroup[measurement.id]].from.getTime() - (1000 * 60 * 60 * 24 * daysRequest) < newestDate.getTime()) {
+									importer.allMeasurementGroups[mapMeasureTypeToGroup[measurement.id]].from.getTime() - (1000 * 60 * 60 * 24 * daysRequest) > newestDate.getTime()) {
 									importer.allMeasurementGroups[mapMeasureTypeToGroup[measurement.id]].from = newestDate;
-								} // TODO: es nimmt immer die neueste Wert! sollte der ältester in der Gruppe nehmmen um die Daten aktualisieren zu können!
-								// das Problem ist dass per Default der Datum 2008 ist => muss das erstes Mal mit newestDate aktualisiert werden
+								}
 							}
 						}
 
@@ -209,7 +205,32 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 					function () { reqDone(); });
 			});
 
-		return deferred.promise;
+		return deferred.promise
+		.then(function(){
+			var setDefaultDate = false;
+			// set default initial date to import
+			for(var key in importer.allMeasurementGroups){
+				if (!importer.allMeasurementGroups[key].from) {
+					setDefaultDate = true;
+				} else { // proof if all types were checked
+					for (var i = 0; i < importer.allMeasureTypes.length; i++) {
+						var mt = importer.allMeasureTypes[i];
+						if (!mt.hasSummary && mt.import) {
+							setDefaultDate = true;
+							break;
+						}
+					}
+				}
+
+				if (setDefaultDate) {
+					var _from =new Date();
+					_from.setFullYear(2008);
+					_from.setHours(1, 1, 1, 1);
+					_from.setMonth(1);
+					importer.allMeasurementGroups[key].from = _from;
+				}
+			}
+		});
 	};
 
 	importer.saveConfig = function () {
@@ -248,20 +269,6 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 		importer.requesting = 0;
 		importer.error.message = null;
 		importer.error.messages = [];
-
-		///** used to import from Server in days*/
-		//var baseDateToStartImport = new Date();
-		//baseDateToStartImport.setFullYear(2008);
-		//baseDateToStartImport.setHours(1,1,1,1);
-
-		// // if imported from portal
-		// if (importer.firstTime) {
-		// 	// // Withing founded: June 2008
-		// } else { // if imported from Server
-		// 	baseDateToStartImport.setDate(baseDateToStartImport.getDate() - daysRequest);
-		// 	baseDateToStartImport.setHours(1,1,1,1);
-		// }
-		//console.log("importing from " + baseDateToStartImport.getFullYear() + "-" + twoDigit(baseDateToStartImport.getMonth() + 1) + "-" + twoDigit(baseDateToStartImport.getDate()));
 
 		// load cache
 		var _defPrevRecords = $q.defer();
@@ -361,10 +368,8 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 									return save_sleepMeasures(response, measurementGroup);
 								};
 								actionChain2 = actionChain2.then(f_s_sm);
-								//updateRequesting();
 							} else {
 								console.log("Error! new measurement group not defined");
-								//updateRequesting();
 							}
 
 						} else {
@@ -372,67 +377,18 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 							if (response.data.error) {
 								console.log("Error Message from Nokia Health (status: " + response.data.status + "): " + response.data.error);
 							}
-							//updateRequesting();
 						}
 
 						return actionChain2;
 					}, function (error) {
 						console.log('Failed: ' + error);
-						//updateRequesting();
 					}).then(function(){
 						importer.requesting--;
 						console.log("requesting: " + importer.requesting);
 					});
 				};
 				actionChain = actionChain.then(f);
-				// // 3. request to Nokia Health
-				// var f = function(){
-				// 	console.log("call url " + measurementGroup.getURL(importer.userid, _fromBase, new Date(temp_to_milliseconds)));
-				// 	return midataServer.oauth1Request(importer.authToken, measurementGroup.getURL(importer.userid, _fromBase, new Date(temp_to_milliseconds)))
-				// 	.then(function (response) {
-				// 		if (response.data.status == "0") {
-				// 			//save records
-				// 			if (measurementGroup.groupMeasureId == 'activity_measures') {
-				// 				console.log("Response activity_measures");
-				// 				// // save every measure
-				// 				// measurementGroup.measureTypes.forEach(function (measurement) {
-				// 				// 	if (measurement.import) {
-				// 				// 		save_activities(response, measurement);
-				// 				// 	}
-				// 				// });
-				// 				// //updateRequesting();
-				// 				save_activities(response, measurementGroup);
 
-				// 			} else if (measurementGroup.groupMeasureId == 'body_measures') {
-				// 				console.log("Response body_measures");
-				// 				save_bodyMeasures(response, measurementGroup);
-				// 				//updateRequesting();
-				// 			} else if (measurementGroup.groupMeasureId == 'sleep_summary') {
-				// 				console.log("Response sleep_summary");
-				// 				save_sleepMeasures(response, measurementGroup);
-				// 				//updateRequesting();
-				// 			} else {
-				// 				console.log("Error! new measurement group not defined");
-				// 				//updateRequesting();
-				// 			}
-
-				// 		} else {
-				// 			console.log("Error: url " + measurementGroup.getURL(_userid, _fromBase, new Date(temp_to_milliseconds)));
-				// 			if (response.data.error) {
-				// 				console.log("Error Message from Nokia Health (status: " + response.data.status + "): " + response.data.error);
-				// 			}
-				// 			//updateRequesting();
-				// 		}
-				// 	}, function (error) {
-				// 		console.log('Failed: ' + error);
-				// 		//updateRequesting();
-				// 	}).then(function(){
-				// 		importer.requesting--;
-				// 		console.log("requesting: " + importer.requesting);
-				// 	});
-				// };
-
-				// actionChain = actionChain.then(f);
 			} else {
 				importer.requesting--;
 				console.log("requesting: " + importer.requesting);
@@ -591,9 +547,6 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 					};
 					transactionsChain = transactionsChain.then(func_trans1);
 				}
-
-
-
 			}
 		});
 
@@ -806,19 +759,11 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 		return midataServer.fhirTransaction(importer.authToken, request)
 			.then(function () {
 				importer.saved += actions.length;
-				//finish();
 			},
 			function (reason) {
 				importer.notSaved += actions.length;
-				//importer.error.messages.push(reason);
-				//finish();
 			});
 	};
-
-	//var updateRequesting = function () {
-	//	importer.requesting--;
-	//	finish();
-	//};
 
 	var finish = function () {
 		if (importer.finished && importer.requesting <= 0 && importer.saved + importer.notSaved === importer.requested) {
@@ -827,6 +772,7 @@ nokiaHealth.factory('importer', ['$http', '$translate', 'midataServer', '$q', fu
 			if (importer.notSaved !== 0) {
 				importer.status = "with_errors";
 			}
+			importer.initForm(importer.authToken);
 		} else {
 			importingRecords();
 		}
