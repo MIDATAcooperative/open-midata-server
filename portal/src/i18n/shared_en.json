@@ -854,7 +854,8 @@
 	"view_btn" : "View",
 	"install_btn" : "Add more",
 	"observations" : "Measures",
-	"calendar" : "Calendar"
+	"calendar" : "Calendar",
+	"smallstudies" : "Want to help studies by sharing your data?"
    },
 
    "measure" : {

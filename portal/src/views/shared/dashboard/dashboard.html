@@ -1,4 +1,4 @@
-    <div ng-show="isReady" ng-controller="DashboardCtrl">
+    <div ng-show="isReady" class="dashboard" ng-controller="DashboardCtrl">
     
     <div class="row" ng-if="layout.addmore">
 	  <div class="col-sm-12">
@@ -7,7 +7,7 @@
 	</div>
 	<div class="extraspace"></div>
     
-    <div ng-repeat="def in layout.page">
+    <div class="bigline" ng-repeat="def in layout.page">
       <div class="extraspace">
 	     <button class="btn btn-default" ng-click="layout.page=[];"><span class="glyphicon glyphicon-chevron-left"></span><span translate="common.back_btn"></span></button>
 	  </div>

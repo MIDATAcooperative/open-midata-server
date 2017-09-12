@@ -48,8 +48,7 @@
 				<button type="submit" class="btn btn-primary">Go!</button>
 			</form>
 			 -->
-			<ul class="nav navbar-nav navbar-right" ng-cloak>
-			    <li><a>{{user.midataID}}</a></li>
+			<ul class="nav navbar-nav navbar-right" ng-cloak>			   
 				<li><a ui-sref=".user({ userId : user._id})">{{user.name}}</a></li>
 				<li><a ng-click="logout()" href="javascript:">
 					<span class="glyphicon glyphicon-off"></span> <span translate="navbar.sign_out"></span>

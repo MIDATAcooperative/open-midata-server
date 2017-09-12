@@ -481,20 +481,12 @@ angular.module('portal')
 					   setup : {}
 				   },
 	       	       {
-	       	    	   id : "yourstudies",
-	       	    	   template : "/views/members/dashboardTiles/yourstudies/yourstudies.html",
+	       	    	   id : "smallstudies",
+	       	    	   template : "/views/members/dashboardTiles/smallstudies/smallstudies.html",
 	       	    	 
 	       	    	   active : true,
 	       	    	   teaser : "dashboard.yourstudies_teaser",
 	       	    	   position : "full"
-	       	       },
-	       	       {
-	       	    	   id : "newstudies",
-	       	    	   template : "/views/shared/dashboardTiles/flexiblestudies/flexiblestudies.html",
-	       	    	 
-	       	    	   active : true,
-	       	    	   position : "full",
-	       	    	   setup : { properties : { participantSearchStatus : "SEARCHING" }, fields : ["name"] }
 	       	       }
 	     ],
 	 "circles" : [

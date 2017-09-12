@@ -1,0 +1,39 @@
+<div ng-controller="SmallStudiesCtrl" ng-cloak class="autosize body">
+    <loader busy="status.isBusy !== false">
+    
+    <ul class="nav nav-tabs">
+  <li role="presentation" ng-class="{'active' : tab==0 }"><a href="javascript:" ng-click="setTab(0)" translate="smallstudies.recruiting">Home</a></li>
+  <li role="presentation" ng-class="{'active' : tab==1 }"><a href="javascript:" ng-click="setTab(1)" translate="smallstudies.ongoing">Profile</a></li>
+  <li role="presentation" ng-class="{'active' : tab==2 }"><a href="javascript:" ng-click="setTab(2)" translate="smallstudies.completed">Messages</a></li>
+  <li role="presentation" ng-class="{'active' : tab==3 }"><a href="javascript:" ng-click="setTab(3)" translate="smallstudies.stopped">Messages</a></li>
+    </ul>
+     	
+	<div ng-show="results.length > 0">
+	<table class="table table-hover">
+	  <thead>
+	    <tr>
+	      <th translate="smallstudies.studies"></th>
+	      <th class="status-column" translate="smallstudies.status"></th>	      	     
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr ng-repeat="study in results|filter : selection">
+	      <td>
+	         <a ui-sref="^.studydetails({ studyId : study.study })">{{ study.studyName }}</a>
+	         <p>{{ study.description }}</p>
+	      </td>	  
+	      <td class="status-column">
+	        <span class="icon glyphicon glyphicon-ok-sign" ng-show="study.pstatus == 'ACCEPTED'"></span>
+	        <span class="icon glyphicon glyphicon-ok-circle" ng-show="study.pstatus == 'REQUEST'"></span>
+	        <span class="icon glyphicon glyphicon-ban-circle" ng-show="study.pstatus == 'MEMBER_REJECTED' || study.pstatus == 'RESEARCH_REJECTED'"></span>
+	        <button class="btn btn-small btn-default" ng-show="study.pstatus == 'MATCH'">apply</button>
+	      </td>
+	    </tr>
+	  </tbody>
+	</table>
+	</div>
+	<p ng-show="results.length == 0" translate="yourstudies.empty">	  
+	</p>	
+	 
+	 </loader>
+</div>
