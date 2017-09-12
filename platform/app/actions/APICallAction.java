@@ -75,12 +75,13 @@ public class APICallAction extends Action<APICall> {
 		} catch (Exception e2) {	
 			ErrorReporter.report("Portal", ctx, e2);					
 			return F.Promise.pure((Result) internalServerError(""+e2.getMessage()));			
-		} finally {			
-			ServerTools.endRequest();
+		} finally {
 			long endTime = System.currentTimeMillis();
 			if (endTime - startTime > 1000l * 4l) {
 				 ErrorReporter.reportPerformance("Portal", ctx, endTime - startTime);
-			}			
+			}	
+			ServerTools.endRequest();
+					
 		}
     }
 }

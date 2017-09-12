@@ -55,12 +55,14 @@ public class MobileCallAction extends Action<MobileCall> {
 			if (Stats.enabled) Stats.finishRequest(ctx.request(), "500");
 			return F.Promise.pure((Result) internalServerError(e2.getMessage()));			
 		} finally {
-			ServerTools.endRequest();
-						
 			long endTime = System.currentTimeMillis();
 			if (endTime - startTime > 1000l * 4l) {
 			   ErrorReporter.reportPerformance("Mobile API", ctx, endTime - startTime);
-			}			 							  
+			}	
+			
+			ServerTools.endRequest();
+						
+					 							  
 		}
     }
 }

@@ -40,7 +40,8 @@ private Feature next;
 	
 	private AccessContext getContextForAps(Query q, MidataId aps) throws AppException {
 		 if (! q.getCache().getAPS(aps).isUsable()) return null;
-	     if (q.getCache().getExecutor().equals(aps)) return new AccountAccessContext(q.getCache(), q.getContext());
+		 if (q.getApsId().equals(aps)) return q.getContext();
+	     if (q.getCache().getExecutor().equals(aps)) return new AccountAccessContext(q.getCache(), q.getContext());	     
 	     Consent c = q.getCache().getConsent(aps);
 	     if (c == null) return null;
 	     return new ConsentAccessContext(c, q.getContext());

@@ -65,12 +65,14 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
 			if (Stats.enabled) Stats.finishRequest(ctx.request(), "500");
 			return F.Promise.pure((Result) internalServerError("err:"+e2.getMessage()));			
 		} finally {
-			ServerTools.endRequest();
-			
 			long endTime = System.currentTimeMillis();
 			if (endTime - startTime > 1000l * 4l) {
 			   ErrorReporter.reportPerformance("Plugin API", ctx, endTime - startTime);
-			}			
+			}	
+			
+			ServerTools.endRequest();
+			
+					
 		}
     }
 }
