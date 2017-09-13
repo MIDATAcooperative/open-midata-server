@@ -65,6 +65,7 @@ import play.mvc.Security;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
+import utils.ServerTools;
 import utils.access.Feature_FormatGroups;
 import utils.access.Query;
 import utils.access.RecordManager;
@@ -269,10 +270,7 @@ public class Studies extends APIController {
 		        		AccessLog.logException("download", e);
 		        		ErrorReporter.report("Study Download", null, e);		        		
 		        	} finally {
-		        		RecordManager.instance.clear();	
-		    			PortalSessionToken.clear();
-		    			AccessLog.newRequest();	
-		    			ResourceProvider.setExecutionInfo(null);
+		        		ServerTools.endRequest();		        		
 		        	}
 		        }
 

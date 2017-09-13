@@ -39,6 +39,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
 import utils.AccessLog;
+import utils.ServerTools;
 import utils.access.RecordManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.KeyManager;
@@ -470,8 +471,7 @@ public class Plugins extends APIController {
 					return badRequest("Access token not found.");
 				}
 				} finally {
-					RecordManager.instance.clear();
-					AccessLog.newRequest();	
+					ServerTools.endRequest();					
 				}
 			}
 		});
@@ -543,8 +543,7 @@ public class Plugins extends APIController {
 					} catch (InternalServerException e) {
 						return false;
 					} finally {
-						RecordManager.instance.clear();
-						AccessLog.newRequest();	
+						ServerTools.endRequest();						
 					}
 					return true;
 				} else {

@@ -257,6 +257,7 @@ public class RecordManager {
 	public void share(MidataId who, MidataId fromAPS, MidataId toAPS, MidataId toAPSOwner,
 			Set<MidataId> records, boolean withOwnerInformation)
 			throws AppException {
+		if (fromAPS.equals(toAPS)) return;
         AccessLog.logBegin("begin share: who="+who.toString()+" from="+fromAPS.toString()+" to="+toAPS.toString()+" count="+(records!=null ? records.size() : "?"));
 		APS apswrapper = getCache(who).getAPS(toAPS, toAPSOwner);
 		List<DBRecord> recordEntries = QueryEngine.listInternal(getCache(who), fromAPS, null,
@@ -445,19 +446,7 @@ public class RecordManager {
 		AccessLog.logEnd("end removeMeta");
 	}
 
-	public void addDocumentRecord(MidataId owner, Record record,
-			Collection<Record> parts) throws AppException {
-		DBRecord dbrecord = RecordConversion.instance.toDB(record);
-		byte[] key = addRecordIntern(owner, dbrecord, false, null, false);
-		if (key == null)
-			throw new NullPointerException("no key");
-		for (Record rec : parts) {
-			DBRecord dbrec = RecordConversion.instance.toDB(rec);
-			dbrec.document = record._id;
-			dbrec.key = key;
-			addRecordIntern(owner, dbrec, true, null, false);
-		}
-	}
+
 
 	/**
 	 * add a new record to the database 
@@ -701,15 +690,7 @@ public class RecordManager {
 		if (!documentPart) {
 			APS apswrapper = getCache(executingPerson).getAPS(record.stream, record.owner);	
 			
-			if (record.document != null) {
-				List<DBRecord> doc = QueryEngine.listInternal(getCache(executingPerson), record.owner, null, CMaps.map("_id", record.document.toString()), Sets.create("key"));
-				if (doc.size() == 1) {
-					record.key = doc.get(0).key;
-					record.security = doc.get(0).security;
-				}
-				else throw new InternalServerException("error.internal", "Document not identified");
-				documentPart = true;
-			} else apswrapper.provideRecordKey(record);
+			apswrapper.provideRecordKey(record);
 			
 			usedKey = record.key;
     								

@@ -9,8 +9,10 @@ import play.mvc.Http;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.ServerTools;
 import utils.access.RecordManager;
 import utils.auth.KeyManager;
+import utils.auth.PortalSessionToken;
 import utils.exceptions.BadRequestException;
 import utils.fhir.ResourceProvider;
 import utils.json.JsonValidation.JsonValidationException;
@@ -56,12 +58,11 @@ public class MobileCallAction extends Action<MobileCall> {
 			long endTime = System.currentTimeMillis();
 			if (endTime - startTime > 1000l * 4l) {
 			   ErrorReporter.reportPerformance("Mobile API", ctx, endTime - startTime);
-			}
+			}	
 			
-			// KeyManager.instance.logout(); FHIR API should not logout
-			RecordManager.instance.clear();			
-			ResourceProvider.setExecutionInfo(null);			
-			AccessLog.newRequest();
+			ServerTools.endRequest();
+						
+					 							  
 		}
     }
 }

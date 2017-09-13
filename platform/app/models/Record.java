@@ -25,26 +25,10 @@ public class Record extends Model implements Comparable<Record>, Cloneable {
 	public @NotMaterialized final static Set<String> ALL_PUBLIC = Sets.create("_id", "id", "version", "owner",
 			"app", "creator", "created", "name", "format", "content", "code", "description", "data", "group");
 
-	
-	/**
-	 * the id of the document record this record belongs to.
-	 * 
-	 * This field is null for all records that are not part of a document
-	 * This field is not encrypted but stored in the database.
-	 * 
-	 */
-	public MidataId document;
+		
 	
 	public MidataId stream;
-	
-	/**
-	 * a part name for records that are part of a document,
-	 * 
-	 * This field is null for all records that are not part of a document
-	 * This field is not encrypted but stored in the database
-	 */
-	public String part;
-		
+				
 	
 	/**
 	 * an alternative ID for this record that has the access permission set ID also encoded in the ID.

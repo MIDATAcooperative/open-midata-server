@@ -12,6 +12,7 @@ import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
+import utils.ServerTools;
 import utils.access.RecordManager;
 import utils.auth.PortalSessionToken;
 import utils.exceptions.AuthException;
@@ -77,13 +78,10 @@ public class APICallAction extends Action<APICall> {
 		} finally {
 			long endTime = System.currentTimeMillis();
 			if (endTime - startTime > 1000l * 4l) {
-			   ErrorReporter.reportPerformance("Portal", ctx, endTime - startTime);
-			}
-			
-			RecordManager.instance.clear();	
-			PortalSessionToken.clear();
-			AccessLog.newRequest();	
-			ResourceProvider.setExecutionInfo(null);
+				 ErrorReporter.reportPerformance("Portal", ctx, endTime - startTime);
+			}	
+			ServerTools.endRequest();
+					
 		}
     }
 }

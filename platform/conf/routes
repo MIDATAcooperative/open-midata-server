@@ -229,12 +229,6 @@ GET     /api/assets/javascripts/routes  controllers.Application.javascriptRoutes
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
-# Genome data converter (special controller for the 23andMe Converter app)
-OPTIONS /apps/gdconverter/files     controllers.apps.GenomeDataConverter.checkPreflight()
-POST    /apps/gdconverter/files     controllers.apps.GenomeDataConverter.getFiles()
-OPTIONS /apps/gdconverter/convert   controllers.apps.GenomeDataConverter.checkPreflight()
-POST    /apps/gdconverter/convert   controllers.apps.GenomeDataConverter.convert()
-
 # Mobile Public API
 OPTIONS /v1/auth            controllers.MobileAPI.checkPreflight()
 POST    /v1/auth            controllers.MobileAPI.authenticate()

@@ -27,6 +27,7 @@ public class AppAccessContext extends AccessContext {
 
 	@Override
 	public boolean mayUpdateRecord() {
+		if (instance.writes == null) return true;
 		if (!instance.writes.isUpdateAllowed()) return false;
 		if (parent != null) return parent.mayUpdateRecord();
 		return true;
@@ -45,6 +46,7 @@ public class AppAccessContext extends AccessContext {
 
 	@Override
 	public boolean isIncluded(DBRecord record) throws AppException {
+		if (instance.writes == null) return false;
 		return !QueryEngine.listFromMemory(cache, instance.sharingQuery, Collections.singletonList(record)).isEmpty();
 	}
 	

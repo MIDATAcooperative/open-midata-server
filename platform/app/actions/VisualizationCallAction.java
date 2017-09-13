@@ -10,6 +10,7 @@ import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
+import utils.ServerTools;
 import utils.access.RecordManager;
 import utils.exceptions.BadRequestException;
 import utils.fhir.ResourceProvider;
@@ -67,11 +68,11 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
 			long endTime = System.currentTimeMillis();
 			if (endTime - startTime > 1000l * 4l) {
 			   ErrorReporter.reportPerformance("Plugin API", ctx, endTime - startTime);
-			}
+			}	
 			
-			RecordManager.instance.clear();
-			AccessLog.newRequest();	
-			ResourceProvider.setExecutionInfo(null);
+			ServerTools.endRequest();
+			
+					
 		}
     }
 }
