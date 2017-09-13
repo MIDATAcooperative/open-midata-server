@@ -37,15 +37,7 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	 * This field is not encrypted but stored in the database.
 	 */
 	public long time;
-	
-	/**
-	 * the id of the document record this record belongs to.
-	 * 
-	 * This field is null for all records that are not part of a document
-	 * This field is not encrypted but stored in the database.
-	 * 
-	 */
-	public MidataId document;
+		
 	
 	/**
 	 * id of consent/owner aps this record has been found in. Only set if queried for field "consentAps"
@@ -61,15 +53,7 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	 * creation date as stored in aps
 	 */
 	public @NotMaterialized Date createdFromAps;
-	
-	/**
-	 * a part name for records that are part of a document,
-	 * 
-	 * This field is null for all records that are not part of a document
-	 * This field is not encrypted but stored in the database
-	 */
-	public String part;
-
+		
 	public BasicBSONObject meta;
 		
 	/**

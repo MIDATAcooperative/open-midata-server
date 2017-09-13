@@ -25,7 +25,6 @@ import models.Consent;
 import models.ContentInfo;
 import models.HPUser;
 import models.History;
-import models.LargeRecord;
 import models.Member;
 import models.MessageDefinition;
 import models.MidataId;
@@ -469,7 +468,7 @@ public class MobileAPI extends Controller {
 			properties.put("content", add);
 		}*/
 		
-		records = LargeRecord.getAll(executor, appInstance._id, properties, fields);		  
+		records = RecordManager.instance.list(executor, appInstance._id, properties, fields);		  
 				
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		

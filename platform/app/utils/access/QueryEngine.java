@@ -50,7 +50,7 @@ class QueryEngine {
 		if (!cache.getAPS(aps).isAccessible()) return new ArrayList<DBRecord>();
 
 		if (AccessLog.detailedLog) AccessLog.logBegin("Begin check contained in aps #recs="+candidates.size());
-		List<DBRecord> result = Feature_Prefetch.lookup(new Query(CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps, null), candidates, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_Documents(new Feature_Streams())))));
+		List<DBRecord> result = Feature_Prefetch.lookup(new Query(CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps, null), candidates, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_Streams()))));
 		if (AccessLog.detailedLog) AccessLog.logEnd("End check contained in aps #recs="+result.size());
 		
 		return result;						
@@ -208,10 +208,10 @@ class QueryEngine {
     	MidataId userGroup = Feature_UserGroups.identifyUserGroup(cache, aps);
     	if (userGroup != null) {
     		properties.put("usergroup", userGroup);
-    		qm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Documents(new Feature_Streams()))))))))));
+    		qm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))));
     	} else {    	
     	   APS target = cache.getAPS(aps);    	
-    	   qm = new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Documents(new Feature_Streams()))))))))))));
+    	   qm = new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))));
     	}
     	List<DBRecord> result = query(properties, fields, aps, context, cache, qm);
     	
@@ -290,9 +290,7 @@ class QueryEngine {
 			record.encryptedData = r2.encryptedData;	
 			record.encWatches = r2.encWatches;
 			if (record.stream == null) record.stream = r2.stream;
-			if (record.time == 0) record.time = r2.time;
-			if (record.document == null) record.document = r2.document;
-			if (record.part == null) record.part = r2.part;
+			if (record.time == 0) record.time = r2.time;			
 		}
     }
     
