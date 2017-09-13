@@ -1,4 +1,0 @@
-values
-====
-
-Single Data Entry
