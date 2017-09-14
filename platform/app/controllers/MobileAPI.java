@@ -36,6 +36,7 @@ import models.ResearchUser;
 import models.Study;
 import models.User;
 import models.enums.AggregationType;
+import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.EventType;
 import models.enums.MessageReason;
@@ -49,6 +50,7 @@ import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.auth.MobileAppSessionToken;
@@ -329,6 +331,7 @@ public class MobileAPI extends Controller {
 			controllers.members.Studies.precheckRequestParticipation(member._id, app.linkedStudy);
 		}
 		
+		AuditManager.instance.addAuditEvent(AuditEventType.APP_FIRST_USE, member, app._id);
 		MobileAppInstance appInstance = new MobileAppInstance();
 		appInstance._id = new MidataId();
 		appInstance.name = "App: "+ app.name+" (Device: "+phrase.substring(0, 3)+")";
@@ -391,7 +394,8 @@ public class MobileAPI extends Controller {
 			} 
 			Messager.sendMessage(app._id, MessageReason.FIRSTUSE_ANYUSER, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());								
 		}
-				
+			
+		AuditManager.instance.success();
 		return appInstance;
 	}
 	

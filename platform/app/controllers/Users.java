@@ -24,6 +24,7 @@ import models.Research;
 import models.Space;
 import models.Study;
 import models.User;
+import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EventType;
 import models.enums.Gender;
@@ -38,6 +39,7 @@ import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.access.IndexManager;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
@@ -271,6 +273,8 @@ public class Users extends APIController {
 		user.lastname = JsonValidation.getString(json, "lastname");
 		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
 		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_ADDRESS_CHANGE, user);
+		
 		User.set(user._id, "email", user.email);
 		User.set(user._id, "emailLC", user.emailLC);
 		User.set(user._id, "name", user.name);
@@ -291,7 +295,7 @@ public class Users extends APIController {
 		  PatientResourceProvider.updatePatientForAccount(user._id);
 		}
 		
-		user.addHistory(new History(EventType.CONTACT_ADDRESS_CHANGED, user, null));
+		AuditManager.instance.success();
 		
 		return ok();		
 	}
@@ -350,7 +354,7 @@ public class Users extends APIController {
 		//	
 		//} else throw new BadRequestException("invalid.status_transition", "No membership request required.");
 		
-		
+		AuditManager.instance.addAuditEvent(AuditEventType.CONTRACT_REQUESTED, user);
 		
 		if (user.agbStatus.equals(ContractStatus.NEW)) {
 			user.agbStatus = ContractStatus.REQUESTED;
@@ -358,9 +362,9 @@ public class Users extends APIController {
 		} else if (user.contractStatus.equals(ContractStatus.NEW)) {
 			user.contractStatus = ContractStatus.REQUESTED;
 			Member.set(user._id, "contractStatus", ContractStatus.REQUESTED);
-		}
-						
-		user.addHistory(new History(EventType.MEMBERSHIP_REQUEST, user, null));
+		}								
+		
+		AuditManager.instance.success();
 		
 		if (InstanceConfig.getInstance().getInstanceType().getAutoGrandMembership()) {
 			

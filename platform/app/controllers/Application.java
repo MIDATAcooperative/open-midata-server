@@ -22,6 +22,7 @@ import models.MidataId;
 import models.ResearchUser;
 import models.User;
 import models.enums.AccountSecurityLevel;
+import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.EventType;
@@ -41,6 +42,7 @@ import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
@@ -257,9 +259,11 @@ public class Application extends APIController {
 			   
 		    	   
 		    	   if (wanted == EMailStatus.REJECTED) {
+		    		   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_REJECTED, user);
 		    		   user.status = UserStatus.BLOCKED;
 			    	   user.set("status", user.status);
-			    	   user.addHistory(new History(EventType.INTERNAL_COMMENT, user, "E-Mail explicitely rejected at "+new Date().toString()));
+			       } else {
+			    	   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CONFIRMED, user);
 			       }
 		    	   
 		           user.set("resettoken", null);	
@@ -273,6 +277,7 @@ public class Application extends APIController {
 		       } else throw new BadRequestException("error.expired.token", "Token has already expired. Please request a new one.");
 		       
 		       checkAccount(user);
+		       AuditManager.instance.success();
 		       
 		       return loginHelper(user);
 		} else if (user != null) {
