@@ -237,8 +237,8 @@ POST    /v1/authorize            controllers.OAuth2.login()
 OPTIONS /v1/token            controllers.OAuth2.checkPreflight()
 POST    /v1/token            controllers.OAuth2.authenticate()
 
-OPTIONS /v1/register        controllers.MobileAPI.checkPreflight()
-POST    /v1/register        controllers.QuickRegistration.registerFromApp()
+# OPTIONS /v1/register        controllers.MobileAPI.checkPreflight()
+# POST    /v1/register        controllers.QuickRegistration.registerFromApp()
 
 #OPTIONS /v1/midata            controllers.MobileAPI.checkPreflight()
 #POST    /v1/midata            controllers.MobileAPI.midataLogin()

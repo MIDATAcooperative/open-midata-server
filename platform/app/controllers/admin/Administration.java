@@ -1,11 +1,15 @@
 package controllers.admin;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.bson.BSONObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -18,12 +22,15 @@ import models.Circle;
 import models.Consent;
 import models.HealthcareProvider;
 import models.History;
+import models.MidataAuditEvent;
 import models.MidataId;
 import models.Research;
 import models.Space;
 import models.Study;
 import models.User;
 import models.enums.AccountSecurityLevel;
+import models.enums.AuditEventType;
+import models.enums.ConsentType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.EventType;
@@ -38,14 +45,19 @@ import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
+import utils.auth.Rights;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
+import utils.json.JsonExtraction;
+import utils.json.JsonOutput;
 import utils.json.JsonValidation;
 import utils.json.JsonValidation.JsonValidationException;
 import utils.messaging.Messager;
@@ -176,6 +188,8 @@ public class Administration extends APIController {
 		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		
+		//AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, app, who, modifiedUser, consent, message);
+		
 		user.apps = new HashSet<MidataId>();
 		user.tokens = new HashMap<String, Map<String, String>>();
 		user.visualizations = new HashSet<MidataId>();
@@ -270,5 +284,28 @@ public class Administration extends APIController {
 		KeyManager.instance.deleteKey(userId);
 		User.delete(userId);
 		return ok();
+	}
+	
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public static Result searchAuditLog() throws JsonValidationException, AppException {
+		JsonNode json = request().body().asJson();					
+		JsonValidation.validate(json, "properties", "fields");
+		
+		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));	
+		ObjectIdConversion.convertMidataIds(properties, "_id", "owner", "authorized");
+		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));		
+		
+		Rights.chk("MidataAuditEvent.search", getRole(), properties, fields);
+		
+		List<MidataAuditEvent> events = null;
+	
+		
+		events = new ArrayList<MidataAuditEvent>(MidataAuditEvent.getAll(properties, fields));
+							
+		
+		//Collections.sort(circles);
+		return ok(JsonOutput.toJson(events, "MidataAuditEvent", fields));
 	}
 }

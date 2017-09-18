@@ -1,7 +1,9 @@
 package utils.audit;
 
 import java.util.Date;
+import java.util.HashSet;
 
+import models.Consent;
 import models.MidataAuditEvent;
 import models.MidataId;
 import models.User;
@@ -17,32 +19,41 @@ public class AuditManager {
 	private ThreadLocal<MidataAuditEvent> running = new ThreadLocal<MidataAuditEvent>();
 
 	public void addAuditEvent(AuditEventType type, User who) throws AppException {
-		addAuditEvent(type, who, null, null);
+		addAuditEvent(type, null, who, null, null, null);
 	}
 	
-	public void addAuditEvent(AuditEventType type, User who, String message) throws AppException {
-		addAuditEvent(type, who, message, null);
-	}
+	/*public void addAuditEvent(AuditEventType type, User who, String message) throws AppException {
+		addAuditEvent(type, who, message, null, null, null);
+	}*/
 	public void addAuditEvent(AuditEventType type, User who, MidataId app) throws AppException {
-		addAuditEvent(type, who, null, app);
+		addAuditEvent(type, app, who, null, null, null);
 	}
 	
-	public void addAuditEvent(AuditEventType type, User who, String message, MidataId app) throws AppException {
+	public void addAuditEvent(AuditEventType type, MidataId app, User who, User modifiedUser, Consent consent, String message) throws AppException {
 		MidataAuditEvent mae = new MidataAuditEvent();
+		mae._id = new MidataId();
 		mae.event = type;
 		mae.timestamp = new Date();
-		mae.who = who._id;
-		mae.whoRole = who.getRole();
-		mae.whoName = who.lastname+", "+who.firstname;
-		mae.message = message;
-		mae.appUsed = app;
+		mae.status = 12;
+		mae.authorized = new HashSet<MidataId>();
+		if (who != null) mae.authorized.add(who._id);
+		if (modifiedUser != null) {
+			mae.authorized.add(modifiedUser._id);
+			mae.about = modifiedUser._id;
+		}
+		if (consent != null) {
+			mae.about = consent._id;
+			if (consent.owner != null) mae.authorized.add(consent.owner);
+			if (consent.authorized != null) mae.authorized.addAll(consent.authorized);
+		}
+		AuditEventResourceProvider.updateMidataAuditEvent(mae, app, who, modifiedUser, consent, message);
 		addAuditEvent(mae);
 	}
 	
-	public void addAuditEvent(MidataAuditEvent event) throws AppException {
+	private void addAuditEvent(MidataAuditEvent event) throws AppException {
 		MidataAuditEvent old = running.get();
 		if (old != null) throw new InternalServerException("error.internal", "Last audit event not finished");
-		AuditEventResourceProvider.updateMidataAuditEvent(event);
+		
 		running.set(event);
 		event.add();
 	}
@@ -50,7 +61,7 @@ public class AuditManager {
 	public void success() throws AppException {
 		MidataAuditEvent event = running.get();
 		if (event != null) {
-			event.setStatus(200, null);
+			event.setStatus(0, null);
 			running.remove();
 		}
 	}
@@ -58,6 +69,8 @@ public class AuditManager {
 	public void fail(int status, String error) {
 		MidataAuditEvent event = running.get();
 		if (event != null) {
+			if (status >= 400 && status < 500) status = 4;
+			if (status > 500) status = 8;
 			try {
 			  event.setStatus(status, error);
 			} catch (AppException e) {}

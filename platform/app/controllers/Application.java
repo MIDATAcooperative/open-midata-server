@@ -495,6 +495,8 @@ public class Application extends APIController {
 		// check status
 		Member user = Member.getByEmail(email , Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));
 		if (user == null) throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
 		if (!Member.authenticationValid(password, user.password)) {
 			throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
 		}
@@ -539,7 +541,7 @@ public class Application extends APIController {
 		return missing;
 	}
 	
-	public static Result loginHelperResult(User user, Set<UserFeature> missing) throws InternalServerException {
+	public static Result loginHelperResult(User user, Set<UserFeature> missing) throws AppException {
 		ObjectNode obj = Json.newObject();
 		obj.put("status", user.status.toString());
 		obj.put("contractStatus", user.contractStatus.toString());		
@@ -559,7 +561,8 @@ public class Application extends APIController {
 		   obj.put("sessionToken", token.encrypt(request()));
 		   KeyManager.instance.unlock(user._id, null);
 		}
-								
+					
+		AuditManager.instance.success();
 		return ok(obj);
 	}
 	
@@ -599,6 +602,8 @@ public class Application extends APIController {
 		  obj.put("lastLogin", Json.toJson(user.login));
 		}
 	    User.set(user._id, "login", new Date());
+	    
+	    AuditManager.instance.success();
 		return ok(obj);
 	}
 	
@@ -688,6 +693,8 @@ public class Application extends APIController {
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");										
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		
 		registerSetDefaultFields(user);				
 		developerRegisteredAccountCheck(user, json);		

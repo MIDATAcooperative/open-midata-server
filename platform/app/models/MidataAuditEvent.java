@@ -21,7 +21,7 @@ public class MidataAuditEvent extends Model {
 	/**
      * constant with all fields
      */
-	public @NotMaterialized final static Set<String> ALL = Sets.create("_id", "event", "timestamp", "who", "whoName", "whoRole", "message","status", "statusDescription", "targetAccount", "targetConsent", "fhirAuditEvent", "appUsed" );
+	public @NotMaterialized final static Set<String> ALL = Sets.create("_id", "event", "timestamp", "status", "statusDescription","fhirAuditEvent", "authorized", "about" );
 
 	
 	/**
@@ -33,27 +33,7 @@ public class MidataAuditEvent extends Model {
 	 * when did the event occur
 	 */
 	public Date timestamp;
-	
-	/**
-	 * id of person triggering the event
-	 */
-	public MidataId who;
-	
-	/**
-	 * public name of person triggering the event. This may be not the persons real name but a pseudonym for studies.
-	 */
-	public String whoName;
-	
-	/**
-	 * the role of the person triggering the event
-	 */
-	public UserRole whoRole;
-	
-	/**
-	 * a string further describing the event
-	 */
-	public String message;
-	
+		
 	/**
 	 * http status of request
 	 */
@@ -63,21 +43,11 @@ public class MidataAuditEvent extends Model {
 	 * description for failures
 	 */
 	public String statusDescription;
+		
 	
-	/**
-	 * id of user account that was changed or null if none
-	 */
-	public MidataId targetAccount;
-			
-	/**
-	 * id of consent that was changed or null if none
-	 */
-	public MidataId targetConsent;
+	public Set<MidataId> authorized;
 	
-	/**
-	 * id of app that triggered the event
-	 */
-	public MidataId appUsed;
+	public MidataId about;
 	
 	/**
 	 * FHIR audit event
@@ -89,8 +59,10 @@ public class MidataAuditEvent extends Model {
 	}
     
     public void setStatus(int status, String description) throws InternalServerException {
+    	this.status = status;
     	Model.set(MidataAuditEvent.class, collection, _id, "status", status);
     	if (description != null) {
+    		this.statusDescription = description;
     		Model.set(MidataAuditEvent.class, collection, _id, "statusDescription", description);
     	}
     }

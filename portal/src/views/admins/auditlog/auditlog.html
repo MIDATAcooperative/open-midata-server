@@ -1,0 +1,72 @@
+<div ng-controller="MembersListCtrl">
+
+	<div class="panel panel-primary">
+		<div class="panel-heading" translate="admin_members.title"></div>
+		<div class="body">
+		    <form class="css-form form-horizontal">
+		      <formrow myid="search" label="admin_members.search_type">
+		        <select class="form-control" id="search" ng-change="reload(searchName);" ng-model="searchName" ng-options="search.name as search.name | translate for search in searches"></select>
+		      </formrow>
+		      <formrow myid="role" label="admin_members.role" ng-show="search.changeable">
+		        <select  class="form-control" id="role" ng-change="reload();" ng-model="search.criteria.role" ng-options="role as 'enum.userrole.'+role | translate for role in roles"></select>
+		      </formrow>
+		      <formrow myid="status" label="admin_members.status" ng-show="search.changeable">
+		        <select  class="form-control" id="status" ng-change="reload();" ng-model="search.criteria.status" ng-options="status as 'enum.userstatus.'+status | translate for status in stati"></select>
+		      </formrow>
+		      <formrow myid="lastname" label="common.user.lastname" ng-show="search.searchable">
+		        <div class="input-group">
+		        <input type="text" class="form-control" id="lastname" ng-model="search.criteria.lastname" >
+		        <div class="input-group-btn">
+		          <button class="btn btn-primary" ng-click="reload()" translate="common.search_btn"></button>
+		        </div>
+		        </div>
+		      </formrow>
+		      <formrow myid="email" label="common.user.email" ng-show="search.searchable">
+		        <div class="input-group">
+		        <input type="text" class="form-control" id="email" ng-model="search.criteria.email" >
+		        <div class="input-group-btn">
+		          <button class="btn btn-primary" ng-click="reload()" translate="common.search_btn"></button>
+		        </div>
+		        </div>
+		      </formrow>
+		    </form>
+		            
+            <loader busy="status.isBusy !== false">
+			
+			<div ng-if="members.length > 10">
+              <dir-pagination-controls pagination-id="membertable" current-page="page.nr"></dir-pagination-controls>
+             </div>
+
+			<table class="table table-striped" ng-show="members.length">
+
+				<tr>
+					<th translate="admin_members.midata_id"></th>
+					<th translate="common.user.firstname"></th>
+					<th translate="common.user.lastname"></th>
+					<th translate="common.user.email"></th>
+					<th></th>
+					<th translate="admin_members.role"></th>
+					<th translate="admin_members.status"></th>
+				</tr>
+								
+				<tr dir-paginate="member in members | itemsPerPage : 10" pagination-id="membertable" current-page="page.nr">
+					<td><a href="javascript:" ui-sref="^.address({ userId : member._id })">{{ member.midataID || 'none' }}</a></td>
+					<td>{{ member.firstname }}</td>
+					<td>{{ member.lastname }}</td>
+					<td>{{ member.email }}</td>
+					<td>
+					  <span ng-show="member.developer" class="glyphicon glyphicon-link" title="tied to developer"></span>
+					  <span ng-show="member.emailStatus != 'VALIDATED'" class="glyphicon glyphicon-question-sign" title="email not confirmed"></span>					  
+					  <span ng-show="!member.login || member.login &lt; dateLimit" class="glyphicon glyphicon-time" title="last login older 1 month"></span>
+					</td>
+					<td translate="{{ 'enum.userrole.'+member.role }}"></td>
+					<td><select ng-change="changeUser(member);" ng-model="member.status" class="form-control" ng-options="status as 'enum.userstatus.'+status | translate for status in stati"></select></td>
+				</tr>
+			</table>
+
+            <p ng-show="members.length === 0" translate="admin_members.empty"></p>
+			
+			</loader>
+		</div>
+	</div>
+</div>
