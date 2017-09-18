@@ -110,7 +110,7 @@ public class FHIR extends Controller {
 	 * @throws ServletException
 	 */
 	@MobileCall
-	@BodyParser.Of(BodyParser.Raw.class) 
+	@BodyParser.Of(value = BodyParser.Raw.class, maxLength = 100 * 1024 * 1024)
 	public static Result postRoot() throws AppException, IOException, ServletException {
 		return post("/");
 	}
@@ -125,7 +125,7 @@ public class FHIR extends Controller {
 	 * @throws ServletException
 	 */
 	@MobileCall
-	@BodyParser.Of(BodyParser.Raw.class) 
+	@BodyParser.Of(value = BodyParser.Raw.class, maxLength = 100 * 1024 * 1024)
 	public static Result post(String all) throws AppException, IOException, ServletException {
 		Stats.startRequest(request());
 		
@@ -166,7 +166,7 @@ public class FHIR extends Controller {
 	 * @throws ServletException
 	 */
 	@MobileCall
-	@BodyParser.Of(BodyParser.Raw.class) 
+	@BodyParser.Of(value = BodyParser.Raw.class, maxLength = 100 * 1024 * 1024)
 	public static Result putRoot() throws AppException, IOException, ServletException {
 		return put("/");
 	}
@@ -181,7 +181,7 @@ public class FHIR extends Controller {
 	 * @throws ServletException
 	 */
 	@MobileCall
-	@BodyParser.Of(BodyParser.Raw.class) 
+	@BodyParser.Of(value = BodyParser.Raw.class, maxLength = 100 * 1024 * 1024)
 	public static Result put(String all) throws AppException, IOException, ServletException {
 		Stats.startRequest(request());
 		

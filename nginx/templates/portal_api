@@ -41,6 +41,16 @@ server {
            proxy_cookie_path / "/; secure; HttpOnly";
            client_max_body_size 100M;
         }
+        
+        location /fhir {
+           proxy_pass http://localhost:PLATFORM_INTERNAL_PORT;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_http_version 1.1;
+           proxy_cookie_path / "/; secure; HttpOnly";
+           client_max_body_size 100M;
+        }
+                
 
 }
 
