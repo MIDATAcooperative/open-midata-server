@@ -21,6 +21,7 @@ import models.MemberKey;
 import models.MidataId;
 import models.User;
 import models.enums.AccountSecurityLevel;
+import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
@@ -33,6 +34,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
@@ -108,6 +110,8 @@ public class Providers extends APIController {
 		user.visualizations = new HashSet<MidataId>();
 		
 		Application.developerRegisteredAccountCheck(user, json);
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
 		user.security = AccountSecurityLevel.KEY;

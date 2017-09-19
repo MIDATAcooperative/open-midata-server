@@ -15,6 +15,7 @@ import models.MidataId;
 import models.Research;
 import models.ResearchUser;
 import models.enums.AccountSecurityLevel;
+import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
@@ -25,6 +26,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.collections.Sets;
@@ -97,6 +99,8 @@ public class Researchers extends APIController {
 		user.visualizations = new HashSet<MidataId>();
 		
 		Application.developerRegisteredAccountCheck(user, json);
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		
 		Research.add(research);
 		user.organization = research._id;

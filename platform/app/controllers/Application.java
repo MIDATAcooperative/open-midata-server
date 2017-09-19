@@ -405,7 +405,7 @@ public class Application extends APIController {
 		default: break;		
 		}
 		if (user!=null) {				
-				
+			 AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, userId);
 		       if (user.resettoken != null 		    		    
 		    		   && user.resettoken.equals(token)
 		    		   && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME) {	   
@@ -414,7 +414,7 @@ public class Application extends APIController {
 			       user.set("password", Member.encrypt(password));
 		       } else throw new BadRequestException("error.expired.token", "Password reset token has already expired.");
 		}
-					
+		AuditManager.instance.success();		
 		// response
 		return ok();		
 	}
@@ -437,12 +437,15 @@ public class Application extends APIController {
 		String oldPassword = JsonValidation.getString(json, "oldPassword");
 		String password = JsonValidation.getPassword(json, "password");
 		
-		User user = User.getById(userId, Sets.create("password"));
+		User user = User.getById(userId, User.ALL_USER_INTERNAL);
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, user);
 		if (!Member.authenticationValid(oldPassword, user.password)) throw new BadRequestException("error.invalid.password_old","Bad password.");
 		
 		user.set("password", Member.encrypt(password));
 		       			
 		// response
+		AuditManager.instance.success();
 		return ok();		
 	}
 	
@@ -464,6 +467,8 @@ public class Application extends APIController {
 		String oldPassphrase = JsonValidation.getStringOrNull(json, "oldPassphrase");
 		String passphrase = JsonValidation.getPassword(json, "passphrase");
 		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSPHRASE_CHANGE, userId);
+		
 		KeyManager.instance.unlock(userId, oldPassphrase);
 		
 		// This is a dummy query to check if provided passphrase works
@@ -472,6 +477,8 @@ public class Application extends APIController {
 		} catch (InternalServerException e) { throw new BadRequestException("error.passphrase_old", "Old passphrase not correct."); }
 		
 		KeyManager.instance.changePassphrase(userId, passphrase);
+		
+		AuditManager.instance.success();
 		
 		return ok();
 	}
@@ -493,7 +500,7 @@ public class Application extends APIController {
 		String password = JsonValidation.getString(json, "password");
 		
 		// check status
-		Member user = Member.getByEmail(email , Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));
+		Member user = Member.getByEmail(email , Sets.create("firstname", "lastname", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));
 		if (user == null) throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
@@ -693,11 +700,12 @@ public class Application extends APIController {
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");										
+						
+		registerSetDefaultFields(user);				
+		developerRegisteredAccountCheck(user, json);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		
-		registerSetDefaultFields(user);				
-		developerRegisteredAccountCheck(user, json);		
 		registerCreateUser(user);		
 		
 		Circles.fetchExistingConsents(user._id, user.emailLC);

@@ -13,10 +13,13 @@ public enum AuditEventType {
 	
 	USER_PASSWORD_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-password-change", "Password changed"), AuditEventAction.U),
 	
+	USER_PASSPHRASE_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-passphrase-change", "Passphrase changed"), AuditEventAction.U),
+	
 	USER_ADDRESS_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-address-change", "User address changed"), AuditEventAction.U),
 	
 	USER_EMAIL_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-email-change", "Email changed"), AuditEventAction.U),
 	
+	// Not done
 	USER_STATUS_CHANGE(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-status-change", "User status changed"), AuditEventAction.U),
 	
 	USER_EMAIL_CONFIRMED(new Coding(System.DCM,"110110","Patient Record"), new Coding(System.MIDATA, "user-email-confirmed", "User email confirmed"), AuditEventAction.U),
@@ -44,9 +47,10 @@ public enum AuditEventType {
 	
 	CONSENT_PERSONS_CHANGE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "consent-persons-change", "Consent persons changed"), AuditEventAction.U),
 	
+	// TODO
 	CONSENT_CHANGE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "consent-change", "Consent changed"), AuditEventAction.U),
 	
-	CONSENT_APPROVE(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "consent-approved", "Consent approved"), AuditEventAction.U),
+	CONSENT_APPROVED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "consent-approved", "Consent approved"), AuditEventAction.U),
 	
 	CONSENT_REJECTED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "consent-rejected", "Consent rejected"), AuditEventAction.U),
 	

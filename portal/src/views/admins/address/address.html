@@ -53,24 +53,7 @@
 	<div class="panel panel-primary">
     <div class="panel-heading">History</div>
     <div class="panel-body">
-    <table class="table" ng-show="member.history.length">
-      <thead>
-        <tr>
-          <th>Event</th>
-          <th>Who</th>
-          <th>When</th>
-          <th>Comment</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="entry in member.history">
-          <td translate="{{ 'enum.eventtype.'+entry.event }}"></td>
-          <td>{{ entry.whoName }}</td>
-          <td>{{ entry.timestamp | date }}</td>
-          <td>{{ entry.message }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <auditlog patient="{{ member._id }}"></auditlog>   
     <form class="form">
       <div class="form-group">
         <label for="comment" translate="admin_address.comment"></label>

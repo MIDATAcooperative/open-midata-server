@@ -26,27 +26,9 @@
     <p><span translate="studyparticipant.group"></span>{{ participation.group }}</p>
     </div>
     </div>	
-    <div ng-show="participation.history.length" class="panel panel-primary">
+    <div class="panel panel-primary">
 	    <div class="panel-heading" translate="studyparticipant.history"></div>
-	    
-	    <table class="table">
-	      <thead>
-	        <tr>
-	          <th translate="studyoverview.event"></th>
-              <th translate="studyoverview.who"></th>
-              <th translate="studyoverview.when"></th>
-              <th translate="studyoverview.comment"></th>
-	        </tr>
-	      </thead>
-	      <tbody>
-	        <tr ng-repeat="entry in participation.history">
-	          <td translate="{{ 'enum.eventtype.'+entry.event }}"></td>
-	          <td>{{ entry.whoName }}</td>
-	          <td>{{ entry.timestamp | date }}</td>
-	          <td>{{ entry.message }}</td>
-	        </tr>
-	      </tbody>
-	    </table>	    
+	    <auditlog entity="{{ studyId }}" patient="{{ studyparticipant.owner }}"></auditlog>	      
     </div>
     
     <div ng-include="'/views/shared/dashboard/dashboard.html'"></div> 

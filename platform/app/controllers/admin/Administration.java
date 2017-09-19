@@ -87,9 +87,9 @@ public class Administration extends APIController {
 		MidataId userId = JsonValidation.getMidataId(json, "user");
 		UserStatus status = JsonValidation.getEnum(json, "status", UserStatus.class);
 		
-		User user = User.getById(userId, Sets.create("status", "contractStatus", "agbStatus", "subroles", "confirmedAt", "emailStatus", "history"));
+		User user = User.getById(userId, User.ALL_USER_INTERNAL); //Sets.create("status", "contractStatus", "agbStatus", "subroles", "confirmedAt", "emailStatus", "history"));
 		
-		User admin = User.getById(executorId, Sets.create("firstname", "lastname", "role"));
+		
 		
 		if (user == null) throw new BadRequestException("error.unknown.user", "Unknown user");
 		
@@ -102,8 +102,8 @@ public class Administration extends APIController {
 		}
 		
 		if (user.status != oldstatus && user.status == UserStatus.DELETED) {
-			User.set(user._id, "searchable", false);
-			user.addHistory(new History(EventType.ACCOUNT_DELETED, admin, null));
+			AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_DELETED, null, executorId, user);
+			User.set(user._id, "searchable", false);			
 		}
 		
 		if (json.has("contractStatus")) {
@@ -112,10 +112,12 @@ public class Administration extends APIController {
 			User.set(user._id, "contractStatus", user.contractStatus);
 			if (old == user.contractStatus) {
 			} else if (user.contractStatus == ContractStatus.PRINTED) {
-			  user.addHistory(new History(EventType.CONTRACT_SEND, admin, "Midata contract"));				
+			  AuditManager.instance.addAuditEvent(AuditEventType.CONTRACT_SEND, null, executorId, user);
+			  //user.addHistory(new History(EventType.CONTRACT_SEND, admin, "Midata contract"));				
 			
 			} else {
-			  user.addHistory(new History(EventType.ADMIN_ACCOUNT_CHANGE, admin, "contract status "+old.toString()+" to "+user.contractStatus.toString()));
+			  AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_CHANGE_BY_ADMIN, null, executorId, user, "contract status "+old.toString()+" to "+user.contractStatus.toString());
+			  //user.addHistory(new History(EventType.ADMIN_ACCOUNT_CHANGE, admin, "contract status "+old.toString()+" to "+user.contractStatus.toString()));
 			}
 		}
 		
@@ -125,9 +127,11 @@ public class Administration extends APIController {
 			User.set(user._id, "agbStatus", user.agbStatus);
 			if (old == user.agbStatus) {
 			} else if (user.agbStatus == ContractStatus.PRINTED) {
-			   user.addHistory(new History(EventType.CONTRACT_SEND, admin, "AGB"));							
+			  AuditManager.instance.addAuditEvent(AuditEventType.CONTRACT_SEND, null, executorId, user);
+			  //user.addHistory(new History(EventType.CONTRACT_SEND, admin, "AGB"));							
 			} else {
-			   user.addHistory(new History(EventType.ADMIN_ACCOUNT_CHANGE, admin, "agb status "+old.toString()+" to "+user.agbStatus.toString()));
+			   AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_CHANGE_BY_ADMIN, null, executorId, user, "agb status "+old.toString()+" to "+user.agbStatus.toString());
+			  // user.addHistory(new History(EventType.ADMIN_ACCOUNT_CHANGE, admin, "agb status "+old.toString()+" to "+user.agbStatus.toString()));
 			}
 		}
 		
@@ -136,12 +140,14 @@ public class Administration extends APIController {
 			user.emailStatus = JsonValidation.getEnum(json, "emailStatus", EMailStatus.class);
 			User.set(user._id, "emailStatus", user.emailStatus);
 			if (old != user.emailStatus) {
-			  user.addHistory(new History(EventType.ADMIN_ACCOUNT_CHANGE, admin, "email status "+old.toString()+" to "+user.emailStatus.toString()));
+			   AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_CHANGE_BY_ADMIN, null, executorId, user, "email status "+old.toString()+" to "+user.emailStatus.toString());
+			 // user.addHistory(new History(EventType.ADMIN_ACCOUNT_CHANGE, admin, "email status "+old.toString()+" to "+user.emailStatus.toString()));
 			}
 		}
 		
 		Application.checkAccount(user);
 		
+		AuditManager.instance.success();
 		return ok();
 	}
 	
@@ -188,7 +194,7 @@ public class Administration extends APIController {
 		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		
-		//AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, app, who, modifiedUser, consent, message);
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().username()), user);
 		
 		user.apps = new HashSet<MidataId>();
 		user.tokens = new HashMap<String, Map<String, String>>();
@@ -200,7 +206,8 @@ public class Administration extends APIController {
 		Admin.add(user);
 					
 		Application.sendWelcomeMail(user);
-				
+			
+		AuditManager.instance.success();
 		return ok();		
 	}
 	
@@ -222,11 +229,11 @@ public class Administration extends APIController {
 		String comment = JsonValidation.getString(json, "comment");
 		
 		MidataId executorId = new MidataId(request().username());				
-		User admin = User.getById(executorId, Sets.create("firstname", "lastname", "role"));
-	
 		
-		User targetUser = User.getById(userId, Sets.create("history"));		
-		targetUser.addHistory(new History(EventType.INTERNAL_COMMENT, admin, comment));
+		User targetUser = User.getById(userId, User.ALL_USER);
+		AuditManager.instance.addAuditEvent(AuditEventType.INTERNAL_COMMENT, null, executorId, targetUser, comment);
+		AuditManager.instance.success();
+		//targetUser.addHistory(new History(EventType.INTERNAL_COMMENT, admin, comment));
 		
 		return ok();
 	}

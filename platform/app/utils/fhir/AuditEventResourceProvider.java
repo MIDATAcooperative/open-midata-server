@@ -68,6 +68,7 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.auth.ExecutionInfo;
 import utils.collections.Sets;
+import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.stats.Stats;
 
@@ -283,12 +284,17 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 	
 			Query query = new Query();		
 			QueryBuilder builder = new QueryBuilder(params, query, null);
-			query.putAccount("authorized", info.executorId);
+			
+			User current = info().cache.getUserById(info().ownerId);
+			
+			if (!current.role.equals(UserRole.ADMIN)) {
+			  query.putAccount("authorized", info.executorId);
+			}
 			
 			builder.handleIdRestriction();
 			builder.restriction("action", false, QueryBuilder.TYPE_CODE, "fhirAuditEvent.action");
 			builder.restriction("address", false, QueryBuilder.TYPE_STRING, "fhirAuditEvent.agent.network.address");
-			builder.restriction("agent", false, null, "fhirAuditEvent.agent.reference");
+			builder.restriction("agent", false, "Patient", "fhirAuditEvent.agent.reference");
 			
 			if (params.containsKey("agent")) {
 			  List<ReferenceParam> agents = builder.resolveReferences("agent", null);
@@ -317,7 +323,12 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 				
 			//outcome	token	Whether the event succeeded or failed	AuditEvent.outcome	
 			
-			
+			if (params.containsKey("patient")) {
+				List<ReferenceParam> patients = builder.resolveReferences("patient", null);
+				if (patients != null) {
+					query.putAccount("authorized", FHIRTools.referencesToIds(patients));
+				}
+			}
 			//patient	reference	Direct reference to resource	AuditEvent.agent.reference | AuditEvent.entity.reference
 			//Patient)	
 			builder.restriction("policy", false, QueryBuilder.TYPE_URI, "fhirAuditEvent.agent.policy");
@@ -330,7 +341,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 			builder.restriction("user", false, QueryBuilder.TYPE_IDENTIFIER, "fhirAuditEvent.agent.userId");
 			
 			Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
-			
+			ObjectIdConversion.convertMidataIds(properties, "authorized", "about");
 											
 			Set<MidataAuditEvent> events = MidataAuditEvent.getAll(properties, MidataAuditEvent.ALL);
 			List<IBaseResource> result = new ArrayList<IBaseResource>();
@@ -378,10 +389,21 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 			actor.setName(actorUser.firstname+" "+actorUser.lastname);
 			actor.setUserId(new Identifier().setValue(actorUser._id.toString()));
 		}
+		if (modifiedUser != null) {
+			AuditEventEntityComponent aeec = ae.addEntity();
+			aeec.setReference(new Reference("Patient/"+modifiedUser._id.toString()));
+			aeec.setName(modifiedUser.firstname+" "+modifiedUser.lastname);
+			aeec.setIdentifier(new Identifier().setValue(modifiedUser._id.toString()));
+		}
 				
 		if (affectedConsent != null) {
 			AuditEventEntityComponent aeec = ae.addEntity();
 			aeec.setReference(new Reference("Consent/"+affectedConsent._id.toString()));
+			aeec.setName(affectedConsent.name);
+		}
+		if (message != null) {
+			AuditEventEntityComponent aeec = ae.addEntity();			
+			aeec.setName(message);
 		}
 		String encoded = ctx.newJsonParser().encodeResourceToString(ae);		
 		mae.fhirAuditEvent = (DBObject) JSON.parse(encoded);				

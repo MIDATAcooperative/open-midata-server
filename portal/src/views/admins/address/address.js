@@ -39,6 +39,7 @@ angular.module('portal')
 		administration.addComment($scope.member._id, $scope.comment)
 		.then(function() {
 			$scope.comment = "";
+			$scope.member._id = null;
 		    $scope.reload();
 		});		
 	};

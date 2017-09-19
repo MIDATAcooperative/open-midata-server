@@ -34,6 +34,7 @@ import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.AggregationType;
+import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.EntityType;
@@ -48,6 +49,7 @@ import utils.PasswordHash;
 import utils.RuntimeConstants;
 import utils.access.APS;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
@@ -323,6 +325,8 @@ public class Circles extends APIController {
 		consent._id = new MidataId();
 		consent.dateOfCreation = new Date();				
 			
+		AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_CREATE, executorId, consent);
+		
 		if (consent.status != ConsentStatus.DRAFT && consent.status != ConsentStatus.UNCONFIRMED && consent.type != ConsentType.IMPLICIT) {
 			if (consent.owner == null || !consent.owner.equals(executorId)) throw new AuthException("error.invalid.consent", "You must be owner to create active consents!");
 		}
@@ -351,7 +355,7 @@ public class Circles extends APIController {
 			sendConsentNotifications(executorId, consent, consent.status);
 		}
 				
-		
+		AuditManager.instance.success();
 
 	}
 	
@@ -462,7 +466,12 @@ public class Circles extends APIController {
 			throw new BadRequestException("error.unknown.consent", "No consent with this id exists.");
 		}
 		if (consent.type != ConsentType.CIRCLE && consent.type != ConsentType.EXTERNALSERVICE && consent.type != ConsentType.IMPLICIT && consent.type != ConsentType.STUDYRELATED) throw new BadRequestException("error.unsupported", "Operation not supported");
-						
+				
+		switch (consent.type) {
+		case EXTERNALSERVICE:AuditManager.instance.addAuditEvent(AuditEventType.APP_DELETED, userId, consent);break;
+		default: AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_DELETE, userId, consent);break;
+		}
+		
 		consentStatusChange(userId, consent, ConsentStatus.EXPIRED);
 		RecordManager.instance.deleteAPS(consent._id, userId);
 		
@@ -531,11 +540,15 @@ public class Circles extends APIController {
 		if (newMemberIds.contains(null)) throw new NullPointerException();
 		
 		consent.authorized.addAll(newMemberIds);
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_PERSONS_CHANGE, executor, consent);
 		Consent.set(consent._id, "authorized", consent.authorized);
 		
 		if (consent.status == ConsentStatus.ACTIVE) {
 		  RecordManager.instance.shareAPS(consent._id, executor, newMemberIds);
 		}
+		
+		AuditManager.instance.success();
 	}
 
 	/**

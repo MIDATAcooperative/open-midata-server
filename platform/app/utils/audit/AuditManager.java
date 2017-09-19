@@ -18,6 +18,11 @@ public class AuditManager {
 	
 	private ThreadLocal<MidataAuditEvent> running = new ThreadLocal<MidataAuditEvent>();
 
+	public void addAuditEvent(AuditEventType type, MidataId who) throws AppException {
+		User executingUser = User.getById(who, User.ALL_USER);
+		addAuditEvent(type, null, executingUser, null, null, null);
+	}
+	
 	public void addAuditEvent(AuditEventType type, User who) throws AppException {
 		addAuditEvent(type, null, who, null, null, null);
 	}
@@ -27,6 +32,21 @@ public class AuditManager {
 	}*/
 	public void addAuditEvent(AuditEventType type, User who, MidataId app) throws AppException {
 		addAuditEvent(type, app, who, null, null, null);
+	}
+	
+	public void addAuditEvent(AuditEventType type, MidataId app, MidataId who, User modifiedUser) throws AppException {
+		User executingUser = User.getById(who, User.ALL_USER);
+		addAuditEvent(type, app, executingUser, modifiedUser, null, null);
+	}
+	
+	public void addAuditEvent(AuditEventType type, MidataId app, MidataId who, User modifiedUser, String message) throws AppException {
+		User executingUser = User.getById(who, User.ALL_USER);
+		addAuditEvent(type, app, executingUser, modifiedUser, null, message);
+	}
+	
+	public void addAuditEvent(AuditEventType type, MidataId who, Consent consent) throws AppException {
+		User executingUser = User.getById(who, User.ALL_USER);
+		addAuditEvent(type, null, executingUser, null, consent, null);
 	}
 	
 	public void addAuditEvent(AuditEventType type, MidataId app, User who, User modifiedUser, Consent consent, String message) throws AppException {

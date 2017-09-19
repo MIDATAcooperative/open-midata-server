@@ -398,6 +398,8 @@ public class Users extends APIController {
 		if (!InstanceConfig.getInstance().getInstanceType().getAccountWipeAvailable()) throw new InternalServerException("error.internal", "Only allowed on demo server");
 		
 		MidataId userId = new MidataId(request().username());
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_DELETED, userId);
 						
 		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
 		for (Space space : spaces) {
@@ -441,6 +443,7 @@ public class Users extends APIController {
 		KeyManager.instance.deleteKey(userId);
 		User.delete(userId);
 		
+		AuditManager.instance.success();
 		return ok();
 	}
 }

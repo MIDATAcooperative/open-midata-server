@@ -1,0 +1,30 @@
+
+            <loader busy="status.isBusy !== false">
+			
+			<div ng-if="log.length > 10">
+              <dir-pagination-controls pagination-id="membertable" current-page="page.nr"></dir-pagination-controls>
+             </div>
+
+			<table class="table table-striped" ng-show="log.length">
+			   <tr>
+			     <td translate="auditlog.event"></td>
+			     <td translate="auditlog.actor"></td>
+			     <td translate="auditlog.entity"></td>
+			     <td translate="auditlog.recorded"></td>
+			     <td translate="auditlog.outcome"></td>
+			   </tr>
+			
+               <tr ng-repeat="entry in log | orderBy : 'recorded'">
+			   <td translate="{{ 'enum.eventtype.'+entry.subtype[0].code }}"></td>
+               <td>{{ entry.agent[0].name }}</td>
+               <td><div ng-repeat="entity in entry.entity">{{ entity.name }}</div>
+               </td>
+               <td>{{ entry.recorded | date }}</td>
+               <td>{{ entry.outcome }}</td>
+			  </tr>
+			</table>
+
+            <p ng-show="log.length === 0" translate="auditlog.empty"></p>
+			
+			</loader>
+		
