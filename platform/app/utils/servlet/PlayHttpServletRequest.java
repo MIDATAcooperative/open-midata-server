@@ -95,7 +95,9 @@ public class PlayHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public ServletInputStream getInputStream() throws IOException {
-		return new PlayServletInputStream(new ByteArrayInputStream(request.body().asRaw().asBytes()));
+		Http.RawBuffer b = request.body().asRaw();
+		long l = b.size();		
+		return new PlayServletInputStream(new ByteArrayInputStream(request.body().asRaw().asBytes((int) l)));
 	}
 
 	@Override
