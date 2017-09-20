@@ -21,7 +21,6 @@ import models.Admin;
 import models.Circle;
 import models.Consent;
 import models.HealthcareProvider;
-import models.History;
 import models.MidataAuditEvent;
 import models.MidataId;
 import models.Research;
@@ -87,7 +86,7 @@ public class Administration extends APIController {
 		MidataId userId = JsonValidation.getMidataId(json, "user");
 		UserStatus status = JsonValidation.getEnum(json, "status", UserStatus.class);
 		
-		User user = User.getById(userId, User.ALL_USER_INTERNAL); //Sets.create("status", "contractStatus", "agbStatus", "subroles", "confirmedAt", "emailStatus", "history"));
+		User user = User.getById(userId, User.ALL_USER_INTERNAL); //Sets.create("status", "contractStatus", "agbStatus", "subroles", "confirmedAt", "emailStatus"));
 		
 		
 		
@@ -196,8 +195,7 @@ public class Administration extends APIController {
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().username()), user);
 		
-		user.apps = new HashSet<MidataId>();
-		user.tokens = new HashMap<String, Map<String, String>>();
+		user.apps = new HashSet<MidataId>();		
 		user.visualizations = new HashSet<MidataId>();
 		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);

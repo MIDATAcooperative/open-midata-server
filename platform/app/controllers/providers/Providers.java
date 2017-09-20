@@ -105,8 +105,7 @@ public class Providers extends APIController {
 		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		
-		user.apps = new HashSet<MidataId>();
-		user.tokens = new HashMap<String, Map<String, String>>();
+		user.apps = new HashSet<MidataId>();	
 		user.visualizations = new HashSet<MidataId>();
 		
 		Application.developerRegisteredAccountCheck(user, json);

@@ -438,7 +438,7 @@ public class QueryBuilder {
 				} else throw new NullPointerException();
 				
 				if (prefix==null) prefix = ParamPrefixEnum.EQUAL;
-				
+				AccessLog.log("prefix="+prefix);
 			    switch (prefix) {
 				case GREATERTHAN: bld.addComp(hPath, CompareOperator.GE, hDate, true);break;
 				case LESSTHAN: bld.addComp(lPath,CompareOperator.LT, lDate, true);break;

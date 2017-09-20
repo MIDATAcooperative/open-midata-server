@@ -24,7 +24,6 @@ import models.Circle;
 import models.Consent;
 import models.ContentInfo;
 import models.HPUser;
-import models.History;
 import models.Member;
 import models.MessageDefinition;
 import models.MidataId;
@@ -373,7 +372,7 @@ public class MobileAPI extends Controller {
 		}
 				
 		if (app.linkedStudy != null && studyConfirm) {								
-			controllers.members.Studies.requestParticipation(member._id, app.linkedStudy);
+			controllers.members.Studies.requestParticipation(member._id, app.linkedStudy, app._id);
 		}
 		
 		if (autoConfirm) {
@@ -386,7 +385,7 @@ public class MobileAPI extends Controller {
 			User.set(member._id, "apps", member.apps);
 		}
 		
-		if (app.termsOfUse != null) member.addHistoryOnce(new History(EventType.TERMS_OF_USE_AGREED, member, app.termsOfUse));
+		if (app.termsOfUse != null) member.agreedToTerms(app.termsOfUse, app._id);
 				
 		if (app.predefinedMessages!=null) {
 			if (!app._id.equals(member.initialApp)) {

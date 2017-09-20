@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import actions.APICall;
 import models.Developer;
 import models.HPUser;
-import models.History;
 import models.Member;
 import models.MidataId;
 import models.ResearchUser;
@@ -736,14 +735,12 @@ public class Application extends APIController {
 		user.confirmationCode = CodeGenerator.nextCode();
 		user.partInterest = ParticipationInterest.UNSET;
 							
-		user.apps = new HashSet<MidataId>();
-		user.tokens = new HashMap<String, Map<String, String>>();
+		user.apps = new HashSet<MidataId>();	
 		user.visualizations = new HashSet<MidataId>();
 		
 		user.login = new Date();
 		user.news = new HashSet<MidataId>();
-		
-		user.history = new ArrayList<History>();
+				
 		Terms.addAgreedToDefaultTerms(user);
 	}
 	

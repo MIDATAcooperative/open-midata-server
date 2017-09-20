@@ -6,8 +6,10 @@ import javax.servlet.ServletException;
 
 import actions.MobileCall;
 import models.enums.UserRole;
+import play.api.mvc.RawBuffer;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.auth.ExecutionInfo;
@@ -90,7 +92,7 @@ public class FHIR extends Controller {
 			String portal = req.getHeader("X-Session-Token");
 			if (portal != null) {
 				PortalSessionToken tk = PortalSessionToken.decrypt(request());
-			    if (tk == null || tk.getRole() != UserRole.ADMIN) return null;
+			    if (tk == null || tk.getRole() == UserRole.ANY) return null;
 			    try {
 			      KeyManager.instance.continueSession(tk.getHandle());
 			    } catch (AuthException e) { return null; }	
@@ -141,6 +143,7 @@ public class FHIR extends Controller {
 	@MobileCall
 	@BodyParser.Of(value = BodyParser.Raw.class, maxLength = 100 * 1024 * 1024)
 	public static Result post(String all) throws AppException, IOException, ServletException {
+				
 		Stats.startRequest(request());
 		
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request());

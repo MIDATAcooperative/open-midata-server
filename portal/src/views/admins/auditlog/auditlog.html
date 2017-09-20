@@ -3,8 +3,30 @@
 	<div class="panel panel-primary">
 		<div class="panel-heading" translate="admin_auditlog.title"></div>
 		<div class="body">
-		            
-		    <auditlog all="true"></auditlog>
+		    <form class="form-inline">
+		    <div class="form-group">
+		    <label>From:</label>
+		    <div class="input-group">
+				  <input type="text" id="date" is-open="datePickers.dateOpened" datepicker-options="dateOptions" close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" placeholder="Date" autofocus ng-model="criteria.from">
+				  <span class="input-group-btn">
+                      <button type="button" class="btn btn-default" ng-click="datePickers.dateOpened=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+                  </span>
+             </div>
+             </div>
+            
+            <div class="form-group">
+            <label>To:</label> 
+              <div class="input-group">
+				  <input type="text" id="date" is-open="datePickers.endOpened" datepicker-options="dateOptions" close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" placeholder="Date" autofocus ng-model="criteria.to">
+				  <span class="input-group-btn">
+                      <button type="button" class="btn btn-default" ng-click="datePickers.endOpened=true;"><i class="glyphicon glyphicon-calendar"></i></button>
+                  </span>
+             </div>	    	    
+             </form>
+             </div>
+		        
+		    <auditlog api="auditlog" from="criteria.from" to="criteria.to"></auditlog>
+		    <button class="btn btn-default" translate="admin_auditlog.refresh_btn" ng-click="refresh();"></button>
         </div>
 	</div>
 </div>

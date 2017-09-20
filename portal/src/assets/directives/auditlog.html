@@ -2,7 +2,7 @@
             <loader busy="status.isBusy !== false">
 			
 			<div ng-if="log.length > 10">
-              <dir-pagination-controls pagination-id="membertable" current-page="page.nr"></dir-pagination-controls>
+              <dir-pagination-controls pagination-id="audit" current-page="page.nr"></dir-pagination-controls>
              </div>
 
 			<table class="table table-striped" ng-show="log.length">
@@ -14,7 +14,7 @@
 			     <td translate="auditlog.outcome"></td>
 			   </tr>
 			
-               <tr ng-repeat="entry in log | orderBy : 'recorded'">
+               <tr dir-paginate="entry in log | orderBy : 'recorded' : true | itemsPerPage : 10" pagination-id="audit">
 			   <td translate="{{ 'enum.eventtype.'+entry.subtype[0].code }}"></td>
                <td>{{ entry.agent[0].name }}</td>
                <td><div ng-repeat="entity in entry.entity">{{ entity.name }}</div>

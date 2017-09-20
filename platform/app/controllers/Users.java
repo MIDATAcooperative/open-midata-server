@@ -17,7 +17,6 @@ import models.Circle;
 import models.Consent;
 import models.Developer;
 import models.HealthcareProvider;
-import models.History;
 import models.Member;
 import models.MidataId;
 import models.Research;
@@ -216,28 +215,7 @@ public class Users extends APIController {
 	public static Result complete(String query) {
 		return ok(Json.toJson(Collections.EMPTY_LIST)); //Search.complete(Type.USER, query)));
 	}
-
-
-	/**
-	 * Get a user's authorization tokens for an app.
-	 */
-	protected static Map<String, String> getTokens(MidataId userId, MidataId appId) throws InternalServerException {
-		Member user = Member.get(new ChainedMap<String, MidataId>().put("_id", userId).get(), new ChainedSet<String>().add("tokens").get());
-		if (user.tokens.containsKey(appId.toString())) {
-			return user.tokens.get(appId.toString());
-		} else {
-			return new HashMap<String, String>();
-		}
-	}
-
-	/**
-	 * Set authorization tokens, namely the access and refresh token.
-	 */
-	protected static void setTokens(MidataId userId, MidataId appId, Map<String, String> tokens) throws InternalServerException {
-		Member user = Member.get(new ChainedMap<String, MidataId>().put("_id", userId).get(), new ChainedSet<String>().add("tokens").get());
-		user.tokens.put(appId.toString(), tokens);
-		Member.set(userId, "tokens", user.tokens);
-	}
+	
 	
 	/**
 	 * Updates the address information of a user.
@@ -348,7 +326,7 @@ public class Users extends APIController {
 	
 	public static Result requestMembershipHelper(MidataId userId) throws AppException {			
 		
-		Member user = Member.getById(userId, Sets.create("_id", "status", "role", "subroles", "history", "emailStatus", "confirmedAt", "contractStatus", "agbStatus", "lastname", "firstname")); 
+		Member user = Member.getById(userId, Sets.create("_id", "status", "role", "subroles",  "emailStatus", "confirmedAt", "contractStatus", "agbStatus", "lastname", "firstname")); 
 		if (user == null) throw new InternalServerException("error.internal", "User record not found.");
 		//if (user.subroles.contains(SubUserRole.TRIALUSER) || user.subroles.contains(SubUserRole.NONMEMBERUSER) || user.subroles.contains(SubUserRole.STUDYPARTICIPANT) || user.subroles.contains(SubUserRole.APPUSER)) {
 		//	

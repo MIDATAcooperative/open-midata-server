@@ -14,6 +14,7 @@ import org.bson.BSONObject;
 import com.fasterxml.jackson.annotation.JsonFilter;
 
 import models.enums.AccountSecurityLevel;
+import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
@@ -21,10 +22,12 @@ import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.PasswordHash;
+import utils.audit.AuditManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.NotMaterialized;
 import utils.evolution.AccountPatches;
+import utils.exceptions.AppException;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -218,23 +221,14 @@ public class User extends Model implements Comparable<User> {
 	 * Public key of user
 	 */
 	public byte[] publicKey;
-	
-	/**
-	 * History of important changes to user account
-	 */
-	public List<History> history;
+		
 	
 	/**
 	 * Set of ids of installed forms/importers of the user
 	 */
 	public Set<MidataId> apps; // installed apps
 	
-	/**
-	 * Security token map
-	 * 
-	 * Map is from plugin id to Map token name to token value
-	 */
-	public Map<String, Map<String, String>> tokens; // map from apps to app details
+	public Set<String> termsAgreed;
 	
 	/**
 	 * Set of ids of installed plugins
@@ -320,24 +314,20 @@ public class User extends Model implements Comparable<User> {
 	
 	public static void set(MidataId userId, String field, Object value) throws InternalServerException {
 		Model.set(User.class, collection, userId, field, value);
-	}
+	}		
 	
-	public void addHistory(History newhistory) throws InternalServerException {
-		if (history == null) history = new ArrayList<History>();
-    	this.history.add(newhistory);
-    	Model.set(User.class, collection, this._id, "history", this.history);
-    }
-	
-	public void addHistoryOnce(History newhistory) throws InternalServerException {
-		User u2 = User.getById(this._id, Sets.create("history"));
-		this.history = u2.history;
+	public void agreedToTerms(String terms, MidataId app) throws AppException {		
+		User u2 = User.getById(this._id, Sets.create("termsAgreed"));
+		this.termsAgreed = u2.termsAgreed;
+		if (this.termsAgreed==null) this.termsAgreed = new HashSet<String>();
 		
-	    for (History h : this.history) {
-	    	if (h.event.equals(newhistory.event) && h.message != null && h.message.equals(newhistory.message)) return;
-	    }
-		
-    	this.history.add(newhistory);
-    	Model.set(User.class, collection, this._id, "history", this.history);
+		if (!termsAgreed.contains(terms)) {
+			AuditManager.instance.addAuditEvent(AuditEventType.USER_TERMS_OF_USE_AGREED, app, this, null, null, terms, null);
+			termsAgreed.add(terms);
+			Model.set(User.class, collection, this._id, "termsAgreed", this.termsAgreed);
+			AuditManager.instance.success();
+		}
+					        	
     }
 	
 	public static void delete(MidataId userId) throws InternalServerException {			

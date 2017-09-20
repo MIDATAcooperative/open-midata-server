@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import actions.APICall;
 import actions.MobileCall;
 import controllers.members.HealthProvider;
-import models.History;
 import models.Member;
 import models.MidataId;
 import models.MobileAppInstance;
@@ -154,7 +153,7 @@ public class QuickRegistration extends APIController {
 									
 		user.status = UserStatus.NEW;	
 		
-		user.history.add(new History(EventType.TERMS_OF_USE_AGREED, user, app.termsOfUse));
+		user.agreedToTerms(app.termsOfUse, user.initialApp);
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user, app._id);
 		
@@ -167,7 +166,7 @@ public class QuickRegistration extends APIController {
 		
 		if (notok == null || notok.isEmpty()) {
 		
-			if (study != null) controllers.members.Studies.requestParticipation(user._id, study._id);
+			if (study != null) controllers.members.Studies.requestParticipation(user._id, study._id, user.initialApp);
 			
 			if (device != null) {
 			   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true, confirmStudy);

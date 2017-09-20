@@ -121,6 +121,7 @@
   },
   
   "admin_auditlog" : {
-    "title" : "Audit Log"
+    "title" : "Audit Log",
+    "refresh_btn" : "Refresh"
   }
 }

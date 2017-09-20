@@ -25,8 +25,7 @@ public class Admin extends User {
 		this.email = email;
 		this.emailLC = email.toLowerCase();
 		
-		login = new Date();
-		history = new ArrayList<History>();
+		login = new Date();		
 		subroles = EnumSet.noneOf(SubUserRole.class);
 	}
 

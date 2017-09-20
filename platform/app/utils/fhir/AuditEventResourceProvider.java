@@ -9,6 +9,7 @@ import java.util.Set;
 import org.hl7.fhir.dstu3.model.AuditEvent;
 import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventAgentComponent;
 import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventEntityComponent;
+import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventEntityDetailComponent;
 import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventOutcome;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Coding;
@@ -42,6 +43,7 @@ import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.api.SummaryEnum;
 import ca.uhn.fhir.rest.param.CompositeAndListParam;
+import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceParam;
@@ -57,6 +59,7 @@ import models.Consent;
 import models.MidataAuditEvent;
 import models.MidataId;
 import models.Record;
+import models.Study;
 import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
@@ -160,7 +163,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 	    		   
 	    		@Description(shortDefinition="Time when the event occurred on source")
 	    		@OptionalParam(name="date")
-	    		DateRangeParam theDate, 
+	    		DateAndListParam theDate, 
 	    		   
 	    		@Description(shortDefinition="Specific instance of resource")
 	    		@OptionalParam(name="entity", targetTypes={  } )
@@ -286,9 +289,10 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 			QueryBuilder builder = new QueryBuilder(params, query, null);
 			
 			User current = info().cache.getUserById(info().ownerId);
-			
+			boolean authrestricted = false;
 			if (!current.role.equals(UserRole.ADMIN)) {
 			  query.putAccount("authorized", info.executorId);
+			  authrestricted = true;
 			}
 			
 			builder.handleIdRestriction();
@@ -298,7 +302,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 			
 			if (params.containsKey("agent")) {
 			  List<ReferenceParam> agents = builder.resolveReferences("agent", null);
-			   if (agents != null) {
+			   if (agents != null && !authrestricted) {
 				query.putAccount("authorized", FHIRTools.referencesToIds(agents));
 			   }
 			}
@@ -325,7 +329,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 			
 			if (params.containsKey("patient")) {
 				List<ReferenceParam> patients = builder.resolveReferences("patient", null);
-				if (patients != null) {
+				if (patients != null && !authrestricted) {
 					query.putAccount("authorized", FHIRTools.referencesToIds(patients));
 				}
 			}
@@ -369,7 +373,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 		return null;
 	}	
 	
-	public static void updateMidataAuditEvent(MidataAuditEvent mae, MidataId appUsed, User actorUser, User modifiedUser, Consent affectedConsent, String message) throws AppException {
+	public static void updateMidataAuditEvent(MidataAuditEvent mae, MidataId appUsed, User actorUser, User modifiedUser, Consent affectedConsent, String message, Study study) throws AppException {
 		AuditEvent ae = new AuditEvent();
 
 		ae.setId(mae._id.toString());
@@ -401,10 +405,19 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 			aeec.setReference(new Reference("Consent/"+affectedConsent._id.toString()));
 			aeec.setName(affectedConsent.name);
 		}
+		if (study != null) {
+			AuditEventEntityComponent aeec = ae.addEntity();
+			aeec.setReference(new Reference("ResearchStudy/"+study._id.toString()));
+			aeec.setName(study.name);
+			aeec.setIdentifier(new Identifier().setValue(study._id.toString()));
+		}
+				
+		
 		if (message != null) {
 			AuditEventEntityComponent aeec = ae.addEntity();			
 			aeec.setName(message);
 		}
+		
 		String encoded = ctx.newJsonParser().encodeResourceToString(ae);		
 		mae.fhirAuditEvent = (DBObject) JSON.parse(encoded);				
 	}

@@ -1000,6 +1000,7 @@
     "actor" : "Actor",
     "entity" : "Entity",
     "recorded" : "Time",
-    "outcome" : "Outcome"
+    "outcome" : "Outcome",
+    "empty" : "No entries yet."
   }
 }

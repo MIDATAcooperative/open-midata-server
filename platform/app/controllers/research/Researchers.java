@@ -94,8 +94,7 @@ public class Researchers extends APIController {
 		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
 		user.security = AccountSecurityLevel.KEY;
-		user.apps = new HashSet<MidataId>();
-		user.tokens = new HashMap<String, Map<String, String>>();
+		user.apps = new HashSet<MidataId>();	
 		user.visualizations = new HashSet<MidataId>();
 		
 		Application.developerRegisteredAccountCheck(user, json);
