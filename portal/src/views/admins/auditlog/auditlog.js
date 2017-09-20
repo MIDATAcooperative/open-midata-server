@@ -4,7 +4,8 @@ angular.module('portal')
 	$scope.status = new status(true);    
 
 	$scope.auditlog = {};
-	$scope.criteria = { from: new Date(), to : new Date() };
+	var now = new Date();
+	$scope.criteria = { from: new Date(), to : new Date(), days:2 };	
 	$scope.page = { nr : 1 };
 	
 	$scope.datePickers = {};
@@ -16,6 +17,12 @@ angular.module('portal')
     $scope.refresh = function() {
     	$scope.auditlog.reload();
     };	
+    
+    $scope.recalc = function() {
+    	$scope.criteria.from = new Date($scope.criteria.to);
+    	$scope.criteria.from.setDate($scope.criteria.to.getDate() - $scope.criteria.days);
+    };
 	
+    $scope.recalc();
 
 }]);

@@ -399,7 +399,7 @@ public class Studies extends APIController {
 		
 		Member user = Member.getById(userId, Sets.create("firstname", "lastname", "birthday", "gender", "country"));
 		StudyParticipation participation = StudyParticipation.getByStudyAndMember(studyId, userId, Sets.create(Consent.ALL, "status", "pstatus", "ownerName", "owner", "authorized"));		
-		Study study = Study.getByIdFromMember(studyId, Sets.create("executionStatus", "participantSearchStatus"));
+		Study study = Study.getByIdFromMember(studyId, Sets.create("name", "executionStatus", "participantSearchStatus", "createdBy"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Study does not exist.");
 		if (participation == null) throw new BadRequestException("error.blocked.participation", "Member is not allowed to participate in study.");

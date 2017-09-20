@@ -1,6 +1,7 @@
 package utils.fhir;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +71,7 @@ import models.enums.UserStatus;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.auth.ExecutionInfo;
+import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
@@ -310,7 +312,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 			builder.restriction("agent-name", false, QueryBuilder.TYPE_STRING, "fhirAuditEvent.agent.name");
 			builder.restriction("agent-role", false, QueryBuilder.TYPE_CODEABLE_CONCEPT, "fhirAuditEvent.agent.role");	
 			builder.restriction("altid", false, QueryBuilder.TYPE_CODE, "fhirAuditEvent.agent.altId");	
-			builder.restriction("date", false, QueryBuilder.TYPE_DATETIME, "recorded");	
+			builder.restriction("date", false, QueryBuilder.TYPE_DATETIME, "timestamp");	
 			
 			if (params.containsKey("entity")) {
 				List<ReferenceParam> entities = builder.resolveReferences("entity", null);
@@ -346,6 +348,8 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 			
 			Map<String, Object> properties = query.retrieveAsNormalMongoQuery();
 			ObjectIdConversion.convertMidataIds(properties, "authorized", "about");
+			
+			//properties = CMaps.map("recorded", CMaps.map("$ge", 150));
 											
 			Set<MidataAuditEvent> events = MidataAuditEvent.getAll(properties, MidataAuditEvent.ALL);
 			List<IBaseResource> result = new ArrayList<IBaseResource>();

@@ -192,11 +192,12 @@ public class AndCondition implements Condition {
 	@Override
 	public Map<String, Object> asMongoQuery() {
 		Map<String, Object> result = new HashMap<String, Object>();
-		List<Object> parts = new ArrayList<Object>();
+		//List<Object> parts = new ArrayList<Object>();
 		for (Condition check : checks) {
-			parts.add(check.asMongoQuery());
+			Map<String, Object> part = (Map<String, Object>) check.asMongoQuery(); 
+			result.putAll(part);
 		}
-		result.put("$and", parts);
+		//result.put("$and", parts);
 		return result;
 	}
 	

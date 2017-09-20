@@ -105,8 +105,8 @@ public class CompareCondition implements Condition {
 		case EQ:return val;
 		case NE:result.put("$ne", val);break;
 		case GT:result.put("$gt", val);break;
-		case GE:result.put("$ge", val);break;
-		case LE:result.put("$le", val);break;
+		case GE:result.put("$gte", val);break;
+		case LE:result.put("$lte", val);break;
 		case LT:result.put("$lt", val);break;
 		}
 		return result;

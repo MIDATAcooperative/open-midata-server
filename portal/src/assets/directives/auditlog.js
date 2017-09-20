@@ -9,7 +9,7 @@ angular.module('portal')
     	"entity" : "@",
     	"all" : "@",
     	"from" : "=",
-    	"to" : "@",
+    	"to" : "=",
     	"api" : "="
       },
       controller : ['$scope', 'status', 'fhir', 'paginationService', function($scope, status, fhir, paginationService) {
@@ -23,7 +23,7 @@ angular.module('portal')
     			var crit = {};
     			if ($scope.patient) crit.patient = $scope.patient;
     			if ($scope.entity) crit.entity = $scope.entity;
-    			if ($scope.from) crit.date = "sa"+$scope.from.toISOString();
+    			if ($scope.from && $scope.to) crit.date = ["sa"+$scope.from.toISOString(), "eb"+$scope.to.toISOString()];
     			console.log(crit);
     			$scope.status.doBusy(fhir.search("AuditEvent", crit))
     			.then(function(log) {

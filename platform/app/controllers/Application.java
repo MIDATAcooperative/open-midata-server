@@ -959,6 +959,7 @@ public class Application extends APIController {
 				controllers.admin.routes.javascript.Administration.changeStatus(),
 				controllers.admin.routes.javascript.Administration.addComment(),
 				controllers.admin.routes.javascript.Administration.adminWipeAccount(),
+				controllers.admin.routes.javascript.Administration.deleteStudy(),
 				// Market				
 				controllers.routes.javascript.Market.registerPlugin(),
 				controllers.routes.javascript.Market.updatePlugin(),

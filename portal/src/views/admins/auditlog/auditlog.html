@@ -6,24 +6,25 @@
 		    <form class="form-inline">
 		    <div class="form-group">
 		    <label>From:</label>
-		    <div class="input-group">
-				  <input type="text" id="date" is-open="datePickers.dateOpened" datepicker-options="dateOptions" close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" placeholder="Date" autofocus ng-model="criteria.from">
+		    <div class="form-control-static">{{ criteria.from | date : "dd.MM.yyyy" }}</div>
+		   
+            
+            <div class="form-group">
+            <label>Days:</label>
+            <input type="number" ng-change="recalc()" ng-model="criteria.days">
+            </div>
+            <div class="form-group">
+            <label>Until:</label>
+             <div class="input-group">
+				  <input type="text" id="date" ng-change="recalc()" is-open="datePickers.dateOpened" datepicker-options="dateOptions" close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" placeholder="Date" autofocus ng-model="criteria.to">
 				  <span class="input-group-btn">
                       <button type="button" class="btn btn-default" ng-click="datePickers.dateOpened=true;"><i class="glyphicon glyphicon-calendar"></i></button>
                   </span>
              </div>
              </div>
-            
-            <div class="form-group">
-            <label>To:</label> 
-              <div class="input-group">
-				  <input type="text" id="date" is-open="datePickers.endOpened" datepicker-options="dateOptions" close-text="Close" uib-datepicker-popup="dd.MM.yyyy" class="form-control" placeholder="Date" autofocus ng-model="criteria.to">
-				  <span class="input-group-btn">
-                      <button type="button" class="btn btn-default" ng-click="datePickers.endOpened=true;"><i class="glyphicon glyphicon-calendar"></i></button>
-                  </span>
-             </div>	    	    
-             </form>
-             </div>
+            </div> 
+              	    	    
+             </form>            
 		        
 		    <auditlog api="auditlog" from="criteria.from" to="criteria.to"></auditlog>
 		    <button class="btn btn-default" translate="admin_auditlog.refresh_btn" ng-click="refresh();"></button>

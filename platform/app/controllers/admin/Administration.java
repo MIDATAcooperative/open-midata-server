@@ -24,6 +24,7 @@ import models.HealthcareProvider;
 import models.MidataAuditEvent;
 import models.MidataId;
 import models.Research;
+import models.ResearchUser;
 import models.Space;
 import models.Study;
 import models.User;
@@ -35,6 +36,7 @@ import models.enums.EMailStatus;
 import models.enums.EventType;
 import models.enums.Gender;
 import models.enums.MessageReason;
+import models.enums.StudyExecutionStatus;
 import models.enums.SubUserRole;
 import models.enums.UserRole;
 import models.enums.UserStatus;
@@ -49,12 +51,14 @@ import utils.auth.AdminSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
+import utils.auth.ResearchSecured;
 import utils.auth.Rights;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
 import utils.json.JsonValidation;
@@ -312,5 +316,30 @@ public class Administration extends APIController {
 		
 		//Collections.sort(circles);
 		return ok(JsonOutput.toJson(events, "MidataAuditEvent", fields));
+	}
+	
+	/**
+	 * delete a Study
+	 * @return 200 ok
+	 * @throws JsonValidationException
+	 * @throws InternalServerException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AdminSecured.class)
+	public static Result deleteStudy(String id) throws JsonValidationException, AppException {
+		MidataId userId = new MidataId(request().username());
+		MidataId owner = PortalSessionToken.session().getOrg();
+		MidataId studyid = new MidataId(id);
+		
+		
+		Study study = Study.getByIdFromMember(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus", "createdBy"));
+		
+		if (study == null) throw new BadRequestException("error.missing.study", "Study not found.");
+		if (study.executionStatus != StudyExecutionStatus.PRE && study.executionStatus != StudyExecutionStatus.ABORTED) throw new BadRequestException("error.invalid.status_transition", "Wrong study execution status.");
+	
+		controllers.research.Studies.deleteStudy(userId, study._id, false);
+		
+		return ok();
 	}
 }
