@@ -16,7 +16,7 @@ class Node(Product):
 		self.base = os.path.join(self.parent, 'node')
 		self.bin = os.path.join(self.base, 'bin', 'node')
 		self.code = os.path.join(self.parent, 'serverjs')
-		self.ssl = SSLCertificate(self.parent).base
+		self.ssl = SSLCertificate(self.parent, buildDir, runDir).base
 
 	def setup(self, version):
 		print 'Setting up Node.js...'

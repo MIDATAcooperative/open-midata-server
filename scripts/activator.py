@@ -23,7 +23,7 @@ class Activator(Product):
 		self.coderun = os.path.join(runDir, 'platform')
 		self.stagerun = os.path.join(self.coderun, 'target', 'universal', 'stage')
 		self.apprun = os.path.join(self.stagerun, 'bin', 'hdc')
-		self.keystore = os.path.join(SSLCertificate(self.parent).base, 'server.keystore')
+		self.keystore = os.path.join(SSLCertificate(self.parent, buildDir, runDir).base, 'server.keystore')
 		self.mcrypt = '/usr/bin/mcrypt'
 		self.shred = '/usr/bin/shred'
 		self.conf = os.path.join(self.code, 'conf')

@@ -15,7 +15,7 @@ class Lighttpd(Product):
 		self.parent = parentDir
 		self.base = os.path.join(self.parent, 'lighttpd')
 		self.logs = os.path.join(self.parent, 'logs')
-		self.ssl = SSLCertificate(self.parent).base
+		self.ssl = SSLCertificate(self.parent, buildDir,runDir).base
 
 	def setup(self, version):
 		print 'Setting up Lighttpd...'

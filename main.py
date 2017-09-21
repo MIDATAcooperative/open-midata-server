@@ -19,18 +19,18 @@ def main(command, product=None):
 	baseDir = os.getcwd()
 	runDir = baseDir
 	buildDir = baseDir
+		
+	if os.path.isfile(os.path.join(baseDir, 'instance1', 'run')):
+		runDir = os.path.join(baseDir, 'instance1')
+	if os.path.isfile(os.path.join(baseDir, 'instance2', 'run')):
+		runDir = os.path.join(baseDir, 'instance2')
+	if os.path.isfile(os.path.join(baseDir, 'instance1', 'builddir')):
+		buildDir = os.path.join(baseDir, 'instance1')
+	if os.path.isfile(os.path.join(baseDir, 'instance2', 'builddir')):
+		buildDir = os.path.join(baseDir, 'instance2')
 	print "base="+baseDir
 	print "build="+buildDir
 	print "run="+runDir
-	
-	if os.path.isfile(os.path.join(baseDir, 'instance1', 'run'))
-		runDir = os.path.join(baseDir, 'instance1')
-	if os.path.isfile(os.path.join(baseDir, 'instance2', 'run'))
-		runDir = os.path.join(baseDir, 'instance2')
-	if os.path.isfile(os.path.join(baseDir, 'instance1', 'builddir'))
-		buildDir = os.path.join(baseDir, 'instance1')
-	if os.path.isfile(os.path.join(baseDir, 'instance2', 'builddir'))
-		buildDir = os.path.join(baseDir, 'instance2')
 
 	# get used modules
 	with open('scripts/modules.json', 'r') as reader:
