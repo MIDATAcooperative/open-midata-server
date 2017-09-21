@@ -10,7 +10,7 @@ from command import Command
 
 class Plugins(Product):
 
-	def __init__(self, parentDir):
+	def __init__(self, parentDir, buildDir, runDir):
 		self.parent = parentDir		
 		self.apps = os.path.join(self.parent, 'apps')
 		self.plugins = os.path.join(self.parent, 'visualizations')		

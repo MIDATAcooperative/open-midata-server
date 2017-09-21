@@ -10,8 +10,9 @@ from command import Command
 
 class Portal(Product):
 
-	def __init__(self, parentDir):
-		self.parent = parentDir		
+	def __init__(self, parentDir, buildDir, runDir):
+		self.parent = parentDir	
+		self.locdir = buildDir	
 		self.portal = os.path.join(self.parent, 'portal')
 		self.appconf = os.path.join(self.parent, 'platform', 'conf')					
 
@@ -38,7 +39,7 @@ class Portal(Product):
 			config = config.replace('NODE_INTERNAL_PORT', instance['node']['port'])
 			config = config.replace('PLATFORM_INTERNAL_PORT', instance['platform']['port'])
 			config = config.replace('INSTANCETYPE', instance['instanceType'])
-			config = config.replace('ROOTDIR', self.parent)												
+			config = config.replace('ROOTDIR', self.parent)															
 		with open(os.path.join(self.appconf, 'application.conf'), 'w') as configFile:
 			configFile.write(config)
 	

@@ -12,13 +12,17 @@ from shutil import copyfile
 
 class Activator(Product):
 
-	def __init__(self, parentDir):
+	def __init__(self, parentDir, buildDir, runDir):
 		self.parent = parentDir
+		self.runDir = runDir
 		self.base = os.path.join(self.parent, 'activator')
 		self.bin = os.path.join(self.base, 'activator')
-		self.code = os.path.join(self.parent, 'platform')
+		self.code = os.path.join(buildDir, 'platform')
 		self.stage = os.path.join(self.code, 'target', 'universal', 'stage')
 		self.app = os.path.join(self.stage, 'bin', 'hdc')
+		self.coderun = os.path.join(runDir, 'platform')
+		self.stagerun = os.path.join(self.coderun, 'target', 'universal', 'stage')
+		self.apprun = os.path.join(self.stagerun, 'bin', 'hdc')
 		self.keystore = os.path.join(SSLCertificate(self.parent).base, 'server.keystore')
 		self.mcrypt = '/usr/bin/mcrypt'
 		self.shred = '/usr/bin/shred'
@@ -42,6 +46,11 @@ class Activator(Product):
 		with open('/dev/shm/secret.conf', 'a') as fout:
 			with open(os.path.join(self.conf, 'application.conf'),'r') as fi:
 				fout.write(fi.read())
+		with open('/dev/shm/secret.conf', 'r') as configFile:				
+			config = configFile.read()																		
+			config = config.replace('RUNDIR', self.runDir)
+		with open('/dev/shm/secret.conf', 'w') as configFile:
+			configFile.write(config)				
 	
 
 	def start(self):
@@ -49,9 +58,9 @@ class Activator(Product):
 		password = getpass.getpass("Please enter the password for the Java KeyStore: ")
 		# workaround: use the stage task as the start command doesn't work with HTTPS for now...		
 		Activator.readconf(self)
-		Command.execute('{0} stage'.format(self.bin), self.code)
+		Command.execute('{0} stage'.format(self.bin), self.coderun)
 		Command.execute('{0} -Dpidfile.path=/dev/shm/play.pid -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 -Dhttps.keyStore={1} -Dhttps.keyStorePassword={2} &'
-			.format(self.app, self.keystore, password), redirect=os.path.join(self.parent, 'logs', 'activator.log'))
+			.format(self.apprun, self.keystore, password), redirect=os.path.join(self.parent, 'logs', 'activator.log'))
 		print 'Waiting for startup...'		
 		time.sleep(30)
 		print 'Fetching Page'
@@ -61,12 +70,33 @@ class Activator(Product):
 		Command.execute('{0} -zun 0 /dev/shm/secret.conf'.format(self.shred), self.conf)
 		print 'Done startup activator'
 
+	def hotprepare(self):
+		print 'Preparing Activator...'		
+		Activator.readconf(self)
+		Command.execute('{0} stage'.format(self.bin), self.code)
+		print 'Done preparing activator'		
+
+	def hotswap(self):
+		print 'Swapping Activator...'
+		Command.execute('pkill -f typesafe')
+		print 'Starting new instance...'				
+		Command.execute('{0} -Dpidfile.path=/dev/shm/play.pid -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 &'
+			.format(self.app), redirect=os.path.join(self.parent, 'logs', 'activator.log'))
+		print 'Waiting for startup...'		
+		time.sleep(30)
+		print 'Fetching Page'
+		t = urllib2.urlopen('http://localhost:9001/api/test')		
+		t.read()		
+		t.close()		
+		Command.execute('{0} -zun 0 /dev/shm/secret.conf'.format(self.shred), self.conf)
+		print 'Done swapping activator'		
+
 	def run(self):
 		print 'Running Activator...'
 		password = getpass.getpass("Please enter the password for the Java KeyStore: ")
 		Activator.readconf(self)
 		Command.execute('{0} run -Dpidfile.path=/dev/shm/play.pid -Dconfig.file=/dev/shm/secret.conf -Dhttp.port=9001 -Dhttps.port=9000 -Dhttps.keyStore={1} -Dhttps.keyStorePassword={2}'
-			.format(self.bin, self.keystore, password), self.code)
+			.format(self.bin, self.keystore, password), self.coderun)
 		Command.execute('{0} -zun 0 /dev/shm/secret.conf'.format(self.shred), self.conf)
 
 	def stop(self):

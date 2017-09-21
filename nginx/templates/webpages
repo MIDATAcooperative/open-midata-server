@@ -22,12 +22,12 @@ server {
         error_page 503 @maintenance;
 
         location @maintenance {
-          root ROOTDIR/portal/dest;
+          root RUNDIR/portal/dest;
           try_files /maintenance.html 404;
         }
     
         location / { 
-          root ROOTDIR/portal/dest;
+          root RUNDIR/portal/dest;
           add_header 'X-Frame-Options' 'DENY';
           add_header 'X-XSS-Protection' "1; mode=block";
           add_header 'X-Content-Type-Options' 'nosniff';
@@ -76,7 +76,7 @@ server {
         }
          
         location /plugin {   
-           alias ROOTDIR/visualizations;
+           alias RUNDIR/visualizations;
            
            add_header 'X-Frame-Options' 'ALLOW-FROM https://DOMAIN';
            add_header 'X-XSS-Protection' "1; mode=block";
