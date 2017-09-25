@@ -17,6 +17,20 @@ def instantiate(modules, name, *args):
 def main(command, product=None):
 	# base directory is project home (current working directory)
 	baseDir = os.getcwd()
+	runDir = baseDir
+	buildDir = baseDir
+		
+	if os.path.isfile(os.path.join(baseDir, 'instance1', 'run')):
+		runDir = os.path.join(baseDir, 'instance1')
+	if os.path.isfile(os.path.join(baseDir, 'instance2', 'run')):
+		runDir = os.path.join(baseDir, 'instance2')
+	if os.path.isfile(os.path.join(baseDir, 'instance1', 'builddir')):
+		buildDir = os.path.join(baseDir, 'instance1')
+	if os.path.isfile(os.path.join(baseDir, 'instance2', 'builddir')):
+		buildDir = os.path.join(baseDir, 'instance2')	
+	if command == 'hotprepare':
+		runDir = buildDir
+	print "Runnable instance at: "+runDir
 
 	# get used modules
 	with open('scripts/modules.json', 'r') as reader:
@@ -25,11 +39,11 @@ def main(command, product=None):
 	# load specified (otherwise all) modules and instantiate respective classes
 	instances = []
 	if product in modules:
-		instances.append((product, instantiate(modules, product, baseDir)))
+		instances.append((product, instantiate(modules, product, baseDir, buildDir, runDir)))
 	else:
 		# append instances in correct starting order
 		for productName in sorted(modules, key=lambda name: modules[name]['startOrder']):
-			instances.append((productName, instantiate(modules, productName, baseDir)))
+			instances.append((productName, instantiate(modules, productName, baseDir, buildDir, runDir)))
 
 	# possibly execute general operations
 	args = []

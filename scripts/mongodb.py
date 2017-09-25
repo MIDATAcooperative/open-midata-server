@@ -11,7 +11,7 @@ from shutil import copyfile
 
 class MongoDB(Product):
 
-	def __init__(self, parentDir):
+	def __init__(self, parentDir, buildDir, runDir):
 		self.parent = parentDir
 		self.base = os.path.join(self.parent, 'mongodb')
 		self.data = os.path.join(self.base, 'data')
