@@ -18,6 +18,7 @@ import models.Plugin;
 import models.ResearchUser;
 import models.Study;
 import models.User;
+import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.UserFeature;
 import models.enums.UserRole;
@@ -29,6 +30,7 @@ import play.mvc.Result;
 import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.KeyManager;
 import utils.auth.MobileAppSessionToken;
 import utils.auth.MobileAppToken;
@@ -128,6 +130,8 @@ public class OAuth2 extends Controller {
 		//case RESEARCH : user = ResearchUser.getByEmail(username, Sets.create("apps","password","firstname","lastname","email","language", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer", "initialApp"));break;
 		}
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Unknown user or bad password");
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user, app._id);
 		if (!Member.authenticationValid(password, user.password)) {
 			throw new BadRequestException("error.invalid.credentials",  "Unknown user or bad password");
 		}
@@ -174,6 +178,8 @@ public class OAuth2 extends Controller {
 		ObjectNode obj = Json.newObject();								
 		obj.put("code", tk.encrypt());
 		obj.put("istatus", appInstance.status.toString());
+		
+		AuditManager.instance.success();
 		return ok(obj);
 	}
 

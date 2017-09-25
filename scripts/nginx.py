@@ -11,10 +11,11 @@ from sslcert import SSLCertificate
 
 class Nginx(Product):
 
-	def __init__(self, parentDir):
+	def __init__(self, parentDir, buildDir, runDir):
 		self.parent = parentDir
+		self.rundir = buildDir
 		self.source = os.path.join(self.parent, 'nginx', 'templates')
-		self.target = os.path.join(self.parent, 'nginx', 'sites-available')	
+		self.target = os.path.join(self.rundir, 'nginx', 'sites-available')	
 
 
 	def setup(self):
@@ -36,7 +37,8 @@ class Nginx(Product):
 				config = config.replace('DHPARAMS', instance['certificate']['dhparams'])				
 				config = config.replace('NODE_INTERNAL_PORT', instance['node']['port'])
 				config = config.replace('PLATFORM_INTERNAL_PORT', instance['platform']['port'])
-				config = config.replace('ROOTDIR', self.parent)												
+				config = config.replace('ROOTDIR', self.parent)
+				config = config.replace('RUNDIR', self.rundir)													
 			with open(os.path.join(self.target, instance['name']+'_'+f), 'w') as configFile:
 				configFile.write(config)
 		with open(os.path.join(self.source, 'sslredirect'), 'r') as configFile:

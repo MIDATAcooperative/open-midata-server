@@ -21,6 +21,7 @@ import models.MemberKey;
 import models.MidataId;
 import models.User;
 import models.enums.AccountSecurityLevel;
+import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
@@ -33,6 +34,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
@@ -103,11 +105,12 @@ public class Providers extends APIController {
 		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		
-		user.apps = new HashSet<MidataId>();
-		user.tokens = new HashMap<String, Map<String, String>>();
+		user.apps = new HashSet<MidataId>();	
 		user.visualizations = new HashSet<MidataId>();
 		
 		Application.developerRegisteredAccountCheck(user, json);
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
 		user.security = AccountSecurityLevel.KEY;
@@ -141,9 +144,10 @@ public class Providers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		HPUser user = HPUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "provider", "role", "subroles", "login", "registeredAt", "developer", "keywordsLC"));
+		HPUser user = HPUser.getByEmail(email, Sets.create("firstname", "lastname", "email", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "provider", "role", "subroles", "login", "registeredAt", "developer", "keywordsLC"));
 		
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
 		if (!HPUser.authenticationValid(password, user.password)) {
 			throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		}
@@ -179,7 +183,7 @@ public class Providers extends APIController {
 		Member result = Member.getByMidataIDAndBirthday(midataID, birthday, memberFields);
 		if (result == null) return ok();
 		
-		HPUser hpuser = HPUser.getById(userId, Sets.create("provider", "firstname", "lastname"));
+		HPUser hpuser = HPUser.getById(userId, Sets.create("provider", "firstname", "lastname", "email"));
 		
 		//MemberKeys.getOrCreate(hpuser, result);
 		Set<MemberKey> memberKeys = MemberKey.getByOwnerAndAuthorizedPerson(result._id, userId);

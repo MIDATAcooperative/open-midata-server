@@ -15,6 +15,7 @@ import models.Member;
 import models.MidataId;
 import models.User;
 import models.enums.AccountSecurityLevel;
+import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
@@ -26,6 +27,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.DeveloperSecured;
@@ -85,9 +87,10 @@ public class Developers extends APIController {
 		user.emailStatus = EMailStatus.UNVALIDATED;
 		user.confirmationCode = CodeGenerator.nextCode();
 		
-		user.apps = new HashSet<MidataId>();
-		user.tokens = new HashMap<String, Map<String, String>>();
+		user.apps = new HashSet<MidataId>();	
 		user.visualizations = new HashSet<MidataId>();
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
 		user.security = AccountSecurityLevel.KEY;
@@ -120,11 +123,12 @@ public class Developers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		Developer user = Developer.getByEmail(email, Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "role", "subroles", "login", "registeredAt"));
+		Developer user = Developer.getByEmail(email, Sets.create("firstname", "lastname", "email", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "role", "subroles", "login", "registeredAt"));
 		
 		if (user == null) {
-			Admin adminuser = Admin.getByEmail(email, Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "role", "subroles", "login", "registeredAt"));
+			Admin adminuser = Admin.getByEmail(email, Sets.create("firstname", "lastname", "email", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "role", "subroles", "login", "registeredAt"));
 			if (adminuser != null) {
+				AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, adminuser);
 				if (!Admin.authenticationValid(password, adminuser.password)) {
 					throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 				}
@@ -135,6 +139,7 @@ public class Developers extends APIController {
 		}
 		
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
 		if (!Developer.authenticationValid(password, user.password)) {
 			throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		}

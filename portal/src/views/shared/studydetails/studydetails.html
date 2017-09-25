@@ -88,26 +88,11 @@
 
 		</div>
 	</div>
-	<div ng-show="participation.history.length" class="panel panel-primary">
+	<div  class="panel panel-primary">
 		<div class="panel-heading" translate="studydetails.participation_history"></div>
-		<table class="table">
-			<thead>
-				<tr>
-					<th translate="studydetails.history_event"></th>
-					<th translate="studydetails.history_who"></th>
-					<th translate="studydetails.history_when"></th>
-					<th translate="studydetails.history_comment"></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="entry in participation.history">
-					<td translate="{{ 'enum.eventtype.'+entry.event }}"></td>
-					<td>{{ entry.whoName }}</td>
-					<td>{{ entry.timestamp | date }}</td>
-					<td>{{ entry.message }}</td>
-				</tr>
-			</tbody>
-		</table>
+		<div class="panel-body">
+		  <auditlog entity="{{ studyid }}"></auditlog>
+	    </div>
 	</div>
 	
 

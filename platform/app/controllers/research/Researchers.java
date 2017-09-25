@@ -15,6 +15,7 @@ import models.MidataId;
 import models.Research;
 import models.ResearchUser;
 import models.enums.AccountSecurityLevel;
+import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.Gender;
@@ -25,6 +26,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.collections.Sets;
@@ -92,11 +94,12 @@ public class Researchers extends APIController {
 		
 		user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);
 		user.security = AccountSecurityLevel.KEY;
-		user.apps = new HashSet<MidataId>();
-		user.tokens = new HashMap<String, Map<String, String>>();
+		user.apps = new HashSet<MidataId>();	
 		user.visualizations = new HashSet<MidataId>();
 		
 		Application.developerRegisteredAccountCheck(user, json);
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
 		
 		Research.add(research);
 		user.organization = research._id;
@@ -127,9 +130,11 @@ public class Researchers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		ResearchUser user = ResearchUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "organization", "role", "subroles", "login", "registeredAt", "developer"));
+		ResearchUser user = ResearchUser.getByEmail(email, Sets.create("firstname", "lastname", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "organization", "role", "subroles", "login", "registeredAt", "developer"));
 		
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
+		
 		if (!ResearchUser.authenticationValid(password, user.password)) {
 			throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		}

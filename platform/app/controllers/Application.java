@@ -16,12 +16,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import actions.APICall;
 import models.Developer;
 import models.HPUser;
-import models.History;
 import models.Member;
 import models.MidataId;
 import models.ResearchUser;
 import models.User;
 import models.enums.AccountSecurityLevel;
+import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
 import models.enums.EventType;
@@ -41,6 +41,7 @@ import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
@@ -248,7 +249,7 @@ public class Application extends APIController {
 		}
 		
 		
-		User user = User.getById(userId, Sets.create("firstname", "lastname", "status", "role", "subroles", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "resettoken","password","resettokenTs", "registeredAt", "confirmedAt", "developer"));
+		User user = User.getById(userId, Sets.create("firstname", "lastname", "email","status", "role", "subroles", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "resettoken","password","resettokenTs", "registeredAt", "confirmedAt", "developer"));
 		
 		if (user!=null && !user.emailStatus.equals(EMailStatus.VALIDATED)) {							
 		       if (user.resettoken != null 		    		    
@@ -257,9 +258,11 @@ public class Application extends APIController {
 			   
 		    	   
 		    	   if (wanted == EMailStatus.REJECTED) {
+		    		   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_REJECTED, user);
 		    		   user.status = UserStatus.BLOCKED;
 			    	   user.set("status", user.status);
-			    	   user.addHistory(new History(EventType.INTERNAL_COMMENT, user, "E-Mail explicitely rejected at "+new Date().toString()));
+			       } else {
+			    	   AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CONFIRMED, user);
 			       }
 		    	   
 		           user.set("resettoken", null);	
@@ -273,6 +276,7 @@ public class Application extends APIController {
 		       } else throw new BadRequestException("error.expired.token", "Token has already expired. Please request a new one.");
 		       
 		       checkAccount(user);
+		       AuditManager.instance.success();
 		       
 		       return loginHelper(user);
 		} else if (user != null) {
@@ -400,7 +404,7 @@ public class Application extends APIController {
 		default: break;		
 		}
 		if (user!=null) {				
-				
+			 AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, userId);
 		       if (user.resettoken != null 		    		    
 		    		   && user.resettoken.equals(token)
 		    		   && System.currentTimeMillis() - user.resettokenTs < EMAIL_TOKEN_LIFETIME) {	   
@@ -409,7 +413,7 @@ public class Application extends APIController {
 			       user.set("password", Member.encrypt(password));
 		       } else throw new BadRequestException("error.expired.token", "Password reset token has already expired.");
 		}
-					
+		AuditManager.instance.success();		
 		// response
 		return ok();		
 	}
@@ -432,12 +436,15 @@ public class Application extends APIController {
 		String oldPassword = JsonValidation.getString(json, "oldPassword");
 		String password = JsonValidation.getPassword(json, "password");
 		
-		User user = User.getById(userId, Sets.create("password"));
+		User user = User.getById(userId, User.ALL_USER_INTERNAL);
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSWORD_CHANGE, user);
 		if (!Member.authenticationValid(oldPassword, user.password)) throw new BadRequestException("error.invalid.password_old","Bad password.");
 		
 		user.set("password", Member.encrypt(password));
 		       			
 		// response
+		AuditManager.instance.success();
 		return ok();		
 	}
 	
@@ -459,6 +466,8 @@ public class Application extends APIController {
 		String oldPassphrase = JsonValidation.getStringOrNull(json, "oldPassphrase");
 		String passphrase = JsonValidation.getPassword(json, "passphrase");
 		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_PASSPHRASE_CHANGE, userId);
+		
 		KeyManager.instance.unlock(userId, oldPassphrase);
 		
 		// This is a dummy query to check if provided passphrase works
@@ -467,6 +476,8 @@ public class Application extends APIController {
 		} catch (InternalServerException e) { throw new BadRequestException("error.passphrase_old", "Old passphrase not correct."); }
 		
 		KeyManager.instance.changePassphrase(userId, passphrase);
+		
+		AuditManager.instance.success();
 		
 		return ok();
 	}
@@ -488,8 +499,10 @@ public class Application extends APIController {
 		String password = JsonValidation.getString(json, "password");
 		
 		// check status
-		Member user = Member.getByEmail(email , Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));
+		Member user = Member.getByEmail(email , Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));
 		if (user == null) throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
 		if (!Member.authenticationValid(password, user.password)) {
 			throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
 		}
@@ -534,7 +547,7 @@ public class Application extends APIController {
 		return missing;
 	}
 	
-	public static Result loginHelperResult(User user, Set<UserFeature> missing) throws InternalServerException {
+	public static Result loginHelperResult(User user, Set<UserFeature> missing) throws AppException {
 		ObjectNode obj = Json.newObject();
 		obj.put("status", user.status.toString());
 		obj.put("contractStatus", user.contractStatus.toString());		
@@ -554,7 +567,8 @@ public class Application extends APIController {
 		   obj.put("sessionToken", token.encrypt(request()));
 		   KeyManager.instance.unlock(user._id, null);
 		}
-								
+					
+		AuditManager.instance.success();
 		return ok(obj);
 	}
 	
@@ -594,6 +608,8 @@ public class Application extends APIController {
 		  obj.put("lastLogin", Json.toJson(user.login));
 		}
 	    User.set(user._id, "login", new Date());
+	    
+	    AuditManager.instance.success();
 		return ok(obj);
 	}
 	
@@ -683,9 +699,12 @@ public class Application extends APIController {
 		user.birthday = JsonValidation.getDate(json, "birthday");
 		user.language = JsonValidation.getString(json, "language");
 		user.ssn = JsonValidation.getString(json, "ssn");										
-		
+						
 		registerSetDefaultFields(user);				
-		developerRegisteredAccountCheck(user, json);		
+		developerRegisteredAccountCheck(user, json);
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user);
+		
 		registerCreateUser(user);		
 		
 		Circles.fetchExistingConsents(user._id, user.emailLC);
@@ -716,14 +735,12 @@ public class Application extends APIController {
 		user.confirmationCode = CodeGenerator.nextCode();
 		user.partInterest = ParticipationInterest.UNSET;
 							
-		user.apps = new HashSet<MidataId>();
-		user.tokens = new HashMap<String, Map<String, String>>();
+		user.apps = new HashSet<MidataId>();	
 		user.visualizations = new HashSet<MidataId>();
 		
 		user.login = new Date();
 		user.news = new HashSet<MidataId>();
-		
-		user.history = new ArrayList<History>();
+				
 		Terms.addAgreedToDefaultTerms(user);
 	}
 	
@@ -942,6 +959,7 @@ public class Application extends APIController {
 				controllers.admin.routes.javascript.Administration.changeStatus(),
 				controllers.admin.routes.javascript.Administration.addComment(),
 				controllers.admin.routes.javascript.Administration.adminWipeAccount(),
+				controllers.admin.routes.javascript.Administration.deleteStudy(),
 				// Market				
 				controllers.routes.javascript.Market.registerPlugin(),
 				controllers.routes.javascript.Market.updatePlugin(),

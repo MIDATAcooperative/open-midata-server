@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
 import models.Developer;
-import models.History;
 import models.MidataId;
 import models.NewsItem;
 import models.TermsOfUse;
@@ -92,11 +91,11 @@ public class Terms extends APIController {
 		return ok(Json.toJson(result));
 	}
 	
-	public static void addAgreedToDefaultTerms(User user) {
+	public static void addAgreedToDefaultTerms(User user) throws AppException {
 		String terms = Play.application().configuration().getString("versions.midata-terms-of-use","1.0");
 		String ppolicy = Play.application().configuration().getString("versions.midata-privacy-policy","1.0");
-		user.history.add(new History(EventType.TERMS_OF_USE_AGREED, user, "midata-terms-of-use--"+terms));
-		user.history.add(new History(EventType.TERMS_OF_USE_AGREED, user, "midata-privacy-policy--"+ppolicy));
+		user.agreedToTerms("midata-terms-of-use--"+terms, user.initialApp);
+		user.agreedToTerms("midata-privacy-policy--"+ppolicy, user.initialApp);		
 	}
 	
 	@BodyParser.Of(BodyParser.Json.class)

@@ -48,7 +48,7 @@ angular.module('portal')
 	$scope.delete = function() {
 		$scope.error = null;
 		
-		server.post(jsRoutes.controllers.research.Studies.delete($scope.studyid).url).
+		server.post(jsRoutes.controllers.admin.Administration.deleteStudy($scope.studyid).url).
 		success(function(data) { 				
 		    $state.go("admin.studies");
 		}).
