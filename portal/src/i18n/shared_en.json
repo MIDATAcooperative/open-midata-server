@@ -656,6 +656,7 @@
     "email" : "EMail:",
     "change_password_btn" : "Change Password",
  	"change_passphrase_btn" : "Change Passphrase",
+ 	"auditlog_btn" : "View Log",
 	"repair_account_btn" : "Repair Account",
 	"reset_spaces_btn" : "Reset Portal",
 	"delete_records_btn" : "Delete Records",
@@ -1001,6 +1002,14 @@
     "entity" : "Entity",
     "recorded" : "Time",
     "outcome" : "Outcome",
-    "empty" : "No entries yet."
+    "empty" : "No entries yet.",
+    "title" : "Audit Log",
+    "refresh_btn" : "Refresh",
+    "via" : "via",
+    "CIRCLE" : "Consent",
+    "ResearchStudy" : "Study",
+    "EXTERNALSERVICE" : "App",
+    "STUDYPARTICIPATION" : "Participation"
   }
+    
 }

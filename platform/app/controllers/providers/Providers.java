@@ -144,9 +144,10 @@ public class Providers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		HPUser user = HPUser.getByEmail(email, Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "provider", "role", "subroles", "login", "registeredAt", "developer", "keywordsLC"));
+		HPUser user = HPUser.getByEmail(email, Sets.create("firstname", "lastname", "email", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "provider", "role", "subroles", "login", "registeredAt", "developer", "keywordsLC"));
 		
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
 		if (!HPUser.authenticationValid(password, user.password)) {
 			throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		}
@@ -182,7 +183,7 @@ public class Providers extends APIController {
 		Member result = Member.getByMidataIDAndBirthday(midataID, birthday, memberFields);
 		if (result == null) return ok();
 		
-		HPUser hpuser = HPUser.getById(userId, Sets.create("provider", "firstname", "lastname"));
+		HPUser hpuser = HPUser.getById(userId, Sets.create("provider", "firstname", "lastname", "email"));
 		
 		//MemberKeys.getOrCreate(hpuser, result);
 		Set<MemberKey> memberKeys = MemberKey.getByOwnerAndAuthorizedPerson(result._id, userId);

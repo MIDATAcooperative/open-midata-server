@@ -91,10 +91,14 @@ public class AndCondition implements Condition {
 		for (int i=0;i<checks.size();i++) {
 			Condition c = checks.get(i).optimize();
 			if (c instanceof FieldAccess) {
-				String field = ((FieldAccess) c).getField();
-				if (commonField == null) commonField = field;
-				else if (!commonField.equals(field)) allFieldAccess = false;
-				
+				Condition c2 = ((FieldAccess) c).getCondition();
+				if (c2 instanceof ElemMatchCondition || c2 instanceof CompareCaseInsensitive || c2 instanceof EqualsSingleValueCondition) {
+					allFieldAccess = false;
+				} else {
+				   String field = ((FieldAccess) c).getField();
+				   if (commonField == null) commonField = field;
+				   else if (!commonField.equals(field)) allFieldAccess = false;
+				}
 			} else  {
 				allFieldAccess = false;			
 			} 

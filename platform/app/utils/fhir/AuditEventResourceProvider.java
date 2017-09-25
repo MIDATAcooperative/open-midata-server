@@ -59,6 +59,7 @@ import controllers.UserGroups;
 import models.Consent;
 import models.MidataAuditEvent;
 import models.MidataId;
+import models.Plugin;
 import models.Record;
 import models.Study;
 import models.User;
@@ -66,6 +67,7 @@ import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
+import models.enums.ConsentType;
 import models.enums.UserRole;
 import models.enums.UserStatus;
 import utils.AccessLog;
@@ -386,31 +388,61 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 		ae.setAction(mae.event.getAction());
 		ae.setRecorded(mae.timestamp);
 		
+		MidataId anonymize = null;
+		if (affectedConsent != null && affectedConsent.type.equals(ConsentType.STUDYPARTICIPATION) && affectedConsent.getOwnerName() != null) {
+			anonymize = affectedConsent.owner;			
+		}
+		
 		if (actorUser != null) {
 			AuditEventAgentComponent actor = ae.addAgent();
+			actor.addRole().addCoding().setSystem("http://midata.coop/codesystems/user-role").setCode(actorUser.role.toString());
 			actor.setRequestor(true);
-			if (actorUser.role.equals(UserRole.MEMBER)) {
-				actor.setReference(new Reference("Patient/"+actorUser._id.toString()));
-			} else if (actorUser.role.equals(UserRole.PROVIDER)) {
-				actor.setReference(new Reference("Practitioner/"+actorUser._id.toString()));
+			
+			if (anonymize != null && actorUser._id.equals(anonymize)) {
+				actor.setName(affectedConsent.getOwnerName());
+				actor.setReference(new Reference("Patient/"+affectedConsent._id.toString()));
+			} else {			
+				if (actorUser.role.equals(UserRole.MEMBER)) {
+					actor.setReference(new Reference("Patient/"+actorUser._id.toString()));
+				} else if (actorUser.role.equals(UserRole.PROVIDER)) {
+					actor.setReference(new Reference("Practitioner/"+actorUser._id.toString()));
+				}
+				actor.setName(actorUser.firstname+" "+actorUser.lastname);
+				actor.setUserId(new Identifier().setValue(actorUser.email));
 			}
-			actor.setName(actorUser.firstname+" "+actorUser.lastname);
-			actor.setUserId(new Identifier().setValue(actorUser._id.toString()));
 		}
 		if (modifiedUser != null) {
 			AuditEventEntityComponent aeec = ae.addEntity();
-			aeec.setReference(new Reference("Patient/"+modifiedUser._id.toString()));
+			aeec.setType(new Coding().setSystem("http://midata.coop/codesystems/user-role").setCode(modifiedUser.role.toString()));
+			
+			if (anonymize != null && modifiedUser._id.equals(anonymize)) {
+				aeec.setName(affectedConsent.getOwnerName());
+				aeec.setReference(new Reference("Patient/"+affectedConsent._id.toString()));
+			} else {
+				if (modifiedUser.role == UserRole.PROVIDER) {			   
+				   aeec.setReference(new Reference("Practitioner/"+modifiedUser._id.toString()));
+				} else {			   
+				   aeec.setReference(new Reference("Patient/"+modifiedUser._id.toString()));
+				}
+			}
+			
 			aeec.setName(modifiedUser.firstname+" "+modifiedUser.lastname);
-			aeec.setIdentifier(new Identifier().setValue(modifiedUser._id.toString()));
+			aeec.setIdentifier(new Identifier().setValue(modifiedUser.email));
 		}
 				
 		if (affectedConsent != null) {
-			AuditEventEntityComponent aeec = ae.addEntity();
+			AuditEventEntityComponent aeec = ae.addEntity();			
+			aeec.setType(new Coding().setSystem("http://midata.coop/codesystems/consent-type").setCode(affectedConsent.type.toString()));			
 			aeec.setReference(new Reference("Consent/"+affectedConsent._id.toString()));
-			aeec.setName(affectedConsent.name);
+			if (affectedConsent.type.equals(ConsentType.STUDYPARTICIPATION) && affectedConsent.getOwnerName() != null) {
+			   aeec.setName(affectedConsent.getOwnerName());
+			} else {
+			   aeec.setName(affectedConsent.name);
+			}
 		}
 		if (study != null) {
 			AuditEventEntityComponent aeec = ae.addEntity();
+			aeec.setType(new Coding().setSystem("http://hl7.org/fhir/resource-types").setCode("ResearchStudy"));
 			aeec.setReference(new Reference("ResearchStudy/"+study._id.toString()));
 			aeec.setName(study.name);
 			aeec.setIdentifier(new Identifier().setValue(study._id.toString()));
@@ -420,6 +452,16 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 		if (message != null) {
 			AuditEventEntityComponent aeec = ae.addEntity();			
 			aeec.setName(message);
+		}
+		
+		if (appUsed != null) {
+			Plugin plugin = Plugin.getById(appUsed);
+			if (plugin != null) {
+			  AuditEventAgentComponent actor = ae.addAgent();
+			  actor.addRole().addCoding().setSystem("http://dicom.nema.org/resources/ontology/DCM").setCode("110150");
+			  actor.setName(plugin.name);
+			  actor.setUserId(new Identifier().setValue(appUsed.toString()));
+			}
 		}
 		
 		String encoded = ctx.newJsonParser().encodeResourceToString(ae);		

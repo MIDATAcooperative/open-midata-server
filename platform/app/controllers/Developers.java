@@ -123,11 +123,12 @@ public class Developers extends APIController {
 		
 		String email = JsonValidation.getString(json, "email");
 		String password = JsonValidation.getString(json, "password");
-		Developer user = Developer.getByEmail(email, Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "role", "subroles", "login", "registeredAt"));
+		Developer user = Developer.getByEmail(email, Sets.create("firstname", "lastname", "email", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "role", "subroles", "login", "registeredAt"));
 		
 		if (user == null) {
-			Admin adminuser = Admin.getByEmail(email, Sets.create("password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "role", "subroles", "login", "registeredAt"));
+			Admin adminuser = Admin.getByEmail(email, Sets.create("firstname", "lastname", "email", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "email", "role", "subroles", "login", "registeredAt"));
 			if (adminuser != null) {
+				AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, adminuser);
 				if (!Admin.authenticationValid(password, adminuser.password)) {
 					throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 				}
@@ -138,6 +139,7 @@ public class Developers extends APIController {
 		}
 		
 		if (user == null) throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
 		if (!Developer.authenticationValid(password, user.password)) {
 			throw new BadRequestException("error.invalid.credentials", "Invalid user or password.");
 		}

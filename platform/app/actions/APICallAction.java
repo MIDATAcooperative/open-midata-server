@@ -58,7 +58,7 @@ public class APICallAction extends Action<APICall> {
                         .put("message", e.getMessage())));
     		}
     	} catch (BadRequestException e5) {
-    		AuditManager.instance.fail(400, e5.getMessage());
+    		AuditManager.instance.fail(400, e5.getMessage(), e5.getLocaleKey());
     		return F.Promise.pure((Result) badRequest(
 				    Json.newObject()
                     .put("code", e5.getLocaleKey())
@@ -76,7 +76,7 @@ public class APICallAction extends Action<APICall> {
     		    
 		} catch (Exception e2) {	
 			ErrorReporter.report("Portal", ctx, e2);
-			AuditManager.instance.fail(500, e2.getMessage());
+			AuditManager.instance.fail(500, e2.getMessage(), null);
 			return F.Promise.pure((Result) internalServerError(""+e2.getMessage()));			
 		} finally {
 			long endTime = System.currentTimeMillis();

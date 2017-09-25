@@ -536,9 +536,8 @@ public class Studies extends APIController {
 	public static Result backToDraft(String id) throws JsonValidationException, AppException {
 		MidataId userId = new MidataId(request().username());		
 		MidataId studyid = new MidataId(id);
-		
-		User user = Admin.getById(userId, Sets.create("firstname","lastname"));
-		Study study = Study.getByIdFromMember(studyid, Sets.create("owner","executionStatus", "participantSearchStatus","validationStatus","groups","recordQuery", "createdBy"));
+				
+		Study study = Study.getByIdFromMember(studyid, Sets.create("name", "owner","executionStatus", "participantSearchStatus","validationStatus","groups","recordQuery", "createdBy"));
 		
 		if (study == null) throw new BadRequestException("error.missing.study", "Study does not exist");
 		
@@ -1045,7 +1044,7 @@ public class Studies extends APIController {
 		String comment = JsonValidation.getString(json, "comment");
 		
 		User user = ResearchUser.getById(userId, Sets.create("firstname","lastname"));					
-		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("name", "pstatus", "ownerName"));		
+		StudyParticipation participation = StudyParticipation.getByStudyAndId(studyId, partId, Sets.create("name", "pstatus", "owner", "ownerName"));		
 		Study study = Study.getByIdFromOwner(studyId, owner, Sets.create("name", "executionStatus", "participantSearchStatus"));
 		
 		if (study == null) throw new BadRequestException("error.unknown.study", "Unknown Study");

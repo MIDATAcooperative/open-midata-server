@@ -486,7 +486,7 @@ public class Circles extends APIController {
 		case STUDYRELATED : StudyRelated.delete(userId, circleId);break;
 		default:break;
 		}
-		
+		AuditManager.instance.success();
 		
 		return ok();
 	}
@@ -540,8 +540,9 @@ public class Circles extends APIController {
 		if (newMemberIds.contains(null)) throw new NullPointerException();
 		
 		consent.authorized.addAll(newMemberIds);
-		
-		AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_PERSONS_CHANGE, executor, consent);
+		if (!consent.type.equals(ConsentType.STUDYRELATED)) {
+		  AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_PERSONS_CHANGE, executor, consent);
+		}
 		Consent.set(consent._id, "authorized", consent.authorized);
 		
 		if (consent.status == ConsentStatus.ACTIVE) {

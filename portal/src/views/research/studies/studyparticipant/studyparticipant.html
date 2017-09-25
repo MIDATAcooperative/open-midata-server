@@ -28,7 +28,9 @@
     </div>	
     <div class="panel panel-primary">
 	    <div class="panel-heading" translate="studyparticipant.history"></div>
-	    <auditlog entity="{{ studyId }}" patient="{{ studyparticipant.owner }}"></auditlog>	      
+	    <div class="panel-body">
+	      <auditlog entity="{{ participation._id }}"></auditlog>
+	    </div>	      
     </div>
     
     <div ng-include="'/views/shared/dashboard/dashboard.html'"></div> 

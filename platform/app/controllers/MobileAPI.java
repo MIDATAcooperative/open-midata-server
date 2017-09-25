@@ -330,14 +330,17 @@ public class MobileAPI extends Controller {
 			controllers.members.Studies.precheckRequestParticipation(member._id, app.linkedStudy);
 		}
 		
-		AuditManager.instance.addAuditEvent(AuditEventType.APP_FIRST_USE, member, app._id);
+		
 		MobileAppInstance appInstance = new MobileAppInstance();
 		appInstance._id = new MidataId();
+		appInstance.owner = member._id;
 		appInstance.name = "App: "+ app.name+" (Device: "+phrase.substring(0, 3)+")";
 		appInstance.applicationId = app._id;	
 		appInstance.appVersion = app.pluginVersion;
-        appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, phrase);
-    	appInstance.owner = member._id;
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.APP_FIRST_USE, app._id, member, null, appInstance, null, null);
+		
+        appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, phrase);    	
     	appInstance.passcode = Member.encrypt(phrase); 
     	appInstance.dateOfCreation = new Date();
     	appInstance.writes = app.writes;

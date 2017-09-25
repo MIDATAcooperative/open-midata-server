@@ -50,12 +50,12 @@ public class MobileCallAction extends Action<MobileCall> {
     		}
     	} catch (BadRequestException e3) {
     		if (Stats.enabled) Stats.finishRequest(ctx.request(), e3.getStatusCode()+"");
-    		AuditManager.instance.fail(400, e3.getMessage());
+    		AuditManager.instance.fail(400, e3.getMessage(), e3.getLocaleKey());
     		return F.Promise.pure((Result) status(e3.getStatusCode(), e3.getMessage()));
 		} catch (Exception e2) {			
 			ErrorReporter.report("Mobile API", ctx, e2);
 			if (Stats.enabled) Stats.finishRequest(ctx.request(), "500");
-			AuditManager.instance.fail(500, e2.getMessage());
+			AuditManager.instance.fail(500, e2.getMessage(), null);
 			return F.Promise.pure((Result) internalServerError(e2.getMessage()));			
 		} finally {
 			long endTime = System.currentTimeMillis();

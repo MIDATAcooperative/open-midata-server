@@ -7,6 +7,7 @@ angular.module('portal')
       scope : {
     	"patient" : "@",
     	"entity" : "@",
+    	"altentity" : "@",
     	"all" : "@",
     	"from" : "=",
     	"to" : "=",
@@ -22,8 +23,14 @@ angular.module('portal')
     		$scope.reload = function() {
     			var crit = {};
     			if ($scope.patient) crit.patient = $scope.patient;
-    			if ($scope.entity) crit.entity = $scope.entity;
+    			if ($scope.entity && $scope.altentity) {
+    				crit.entity = [$scope.entity, $scope.altentity];
+    			} else if ($scope.entity) crit.entity = $scope.entity;
     			if ($scope.from && $scope.to) crit.date = ["sa"+$scope.from.toISOString(), "eb"+$scope.to.toISOString()];
+    			
+    			
+    			if (!$scope.all && !$scope.patient && !$scope.entity && !$scope.from && !$scope.to) return;
+    			
     			console.log(crit);
     			$scope.status.doBusy(fhir.search("AuditEvent", crit))
     			.then(function(log) {
@@ -38,10 +45,7 @@ angular.module('portal')
     		var api = $scope.api || {};
     		api.reload = $scope.reload;
     		
-    		$scope.$watch('patient', function(p) { if (p) $scope.reload(); });
-    		$scope.$watch('entity', function(p) { if (p) $scope.reload(); });
-    		$scope.$watch('from', function(p) { if (p) $scope.reload(); });
-    		$scope.$watch('to', function(p) { if (p) $scope.reload(); });
+    		$scope.$watchGroup(['patient','entity','altentity', 'from','to'], function() { $scope.reload(); });    		
     		if ($scope.all) $scope.reload();
 
     	}]

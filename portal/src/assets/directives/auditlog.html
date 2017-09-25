@@ -5,26 +5,31 @@
               <dir-pagination-controls pagination-id="audit" current-page="page.nr"></dir-pagination-controls>
              </div>
 
-			<table class="table table-striped" ng-show="log.length">
-			   <tr>
-			     <td translate="auditlog.event"></td>
-			     <td translate="auditlog.actor"></td>
-			     <td translate="auditlog.entity"></td>
-			     <td translate="auditlog.recorded"></td>
-			     <td translate="auditlog.outcome"></td>
-			   </tr>
-			
-               <tr dir-paginate="entry in log | orderBy : 'recorded' : true | itemsPerPage : 10" pagination-id="audit">
-			   <td translate="{{ 'enum.eventtype.'+entry.subtype[0].code }}"></td>
-               <td>{{ entry.agent[0].name }}</td>
-               <td><div ng-repeat="entity in entry.entity">{{ entity.name }}</div>
-               </td>
-               <td>{{ entry.recorded | date }}</td>
-               <td>{{ entry.outcome }}</td>
-			  </tr>
-			</table>
-
-            <p ng-show="log.length === 0" translate="auditlog.empty"></p>
+			<div dir-paginate="entry in log | orderBy : 'recorded' : true | itemsPerPage : 10" pagination-id="audit">
+			  <div class="row">
+			  <div class="col-sm-6 col-md-2" style="color:#707070">{{ entry.recorded | date : 'dd.MM.yyyy HH:mm' }}</div>
+			  <div class="col-sm-6 col-md-3">
+   			    
+			    <span class="glyphicon " ng-class="{ 'glyphicon-wrench text-danger' : entry.outcome == 12, 'glyphicon-warning-sign text-danger' : entry.outcome == 8, 'glyphicon-remove text-warning' : entry.outcome == 4, 'glyphicon-ok text-success' : entry.outcome == 0 }"></span> <b><span translate="{{ 'enum.eventtype.'+entry.subtype[0].code }}"></span></b>
+			    <div>{{ entry.outcomeDesc }}</div>			      			    			   
+			  </div>
+			  <div class="col-sm-6 col-md-4">
+			    <div>{{ entry.agent[0].name }} <span ng-show="entry.agent[0].role[0].coding[0].code != 'MEMBER'" class="label label-default" translate="{{ 'enum.userrole.'+entry.agent[0].role[0].coding[0].code }}"></span></div>
+			    <div class="text-primary">{{ entry.agent[0].userId.value }}</div>
+			    <div ng-show="entry.agent.length>1"><i><span translate="auditlog.via"></span> {{ entry.agent[1].name }}</i></div>  
+			  </div>			  
+			  
+			  <div class="col-sm-6 col-md-3">
+			     <div ng-repeat="entity in entry.entity">
+			       <b translate="{{ 'auditlog.'+entity.type.code }}">{{ entity.type.code }}</b>:
+			       <div>{{ entity.name }}</div>
+			     </div>
+			  </div>
+			  </div>			  			  
+			  <div style="border-bottom: 1px solid #e0e0e0; margin-top:10px; margin-bottom:5px"></div>
+			</div>
+            
+            <p ng-show="log.length==0" translate="auditlog.empty"></p>
 			
 			</loader>
 		

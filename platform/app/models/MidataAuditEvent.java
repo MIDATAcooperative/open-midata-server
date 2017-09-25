@@ -21,7 +21,7 @@ public class MidataAuditEvent extends Model {
 	/**
      * constant with all fields
      */
-	public @NotMaterialized final static Set<String> ALL = Sets.create("_id", "event", "timestamp", "status", "statusDescription","fhirAuditEvent", "authorized", "about" );
+	public @NotMaterialized final static Set<String> ALL = Sets.create("_id", "event", "timestamp", "status", "statusKey", "statusDescription","fhirAuditEvent", "authorized", "about" );
 
 	
 	/**
@@ -43,10 +43,20 @@ public class MidataAuditEvent extends Model {
 	 * description for failures
 	 */
 	public String statusDescription;
-		
 	
+	/**
+	 * translatation key for failures
+	 */
+	public String statusKey;
+		
+	/**
+	 * authorized users or organizations
+	 */
 	public Set<MidataId> authorized;
 	
+	/**
+	 * id of entity this record is about
+	 */
 	public MidataId about;
 	
 	/**
@@ -54,16 +64,22 @@ public class MidataAuditEvent extends Model {
 	 */
     public BSONObject fhirAuditEvent;
     
+    public @NotMaterialized MidataAuditEvent next;
+    
     public void add() throws InternalServerException {
 		Model.insert(collection, this);	
 	}
     
-    public void setStatus(int status, String description) throws InternalServerException {
+    public void setStatus(int status, String description, String key) throws InternalServerException {
     	this.status = status;
     	Model.set(MidataAuditEvent.class, collection, _id, "status", status);
     	if (description != null) {
     		this.statusDescription = description;
     		Model.set(MidataAuditEvent.class, collection, _id, "statusDescription", description);
+    	}
+    	if (key != null) {
+    		this.statusKey = key;
+    		Model.set(MidataAuditEvent.class, collection, _id, "statusKey", key);
     	}
     }
     

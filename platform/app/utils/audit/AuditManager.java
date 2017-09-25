@@ -84,7 +84,9 @@ public class AuditManager {
 	
 	private void addAuditEvent(MidataAuditEvent event) throws AppException {
 		MidataAuditEvent old = running.get();
-		if (old != null) throw new InternalServerException("error.internal", "Last audit event not finished");
+		if (old != null) {
+			event.next = old;
+		}
 		
 		running.set(event);
 		event.add();
@@ -92,21 +94,25 @@ public class AuditManager {
 	
 	public void success() throws AppException {
 		MidataAuditEvent event = running.get();
-		if (event != null) {
-			event.setStatus(0, null);
-			running.remove();
-		}
+		
+		while (event != null) {
+		  event.setStatus(0, null, null);
+		  event = event.next;
+		  running.remove();
+		}			
+		
 	}
 	
-	public void fail(int status, String error) {
+	public void fail(int status, String error, String errorkey) {
 		MidataAuditEvent event = running.get();
-		if (event != null) {
+		while (event != null) {
 			if (status >= 400 && status < 500) status = 4;
 			if (status > 500) status = 8;
 			try {
-			  event.setStatus(status, error);
+			  event.setStatus(status, error, errorkey);
 			} catch (AppException e) {}
 			running.remove();
+			event = event.next;
 		}
 	}
 	
