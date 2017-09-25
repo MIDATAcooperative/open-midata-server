@@ -33,11 +33,11 @@ find visualizations -maxdepth 2 -name dist -print0 | xargs -0 -Ihello cp -r hell
 cp -r portal/dest $instance/portal
 
 python main.py setup nginx
+python main.py hotprepare activator
+sudo cp $instance/nginx/sites-available/* /etc/nginx/sites-available
 rm -f instance1/run
 rm -f instance2/run
 touch $instance/run
-python main.py hotprepare activator
-sudo cp $instance/nginx/sites-available/* /etc/nginx/sites-available
 echo "Instance LOCKED for start..."
 touch lock apilock
 python main.py hotswap activator

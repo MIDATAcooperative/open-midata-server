@@ -27,10 +27,10 @@ def main(command, product=None):
 	if os.path.isfile(os.path.join(baseDir, 'instance1', 'builddir')):
 		buildDir = os.path.join(baseDir, 'instance1')
 	if os.path.isfile(os.path.join(baseDir, 'instance2', 'builddir')):
-		buildDir = os.path.join(baseDir, 'instance2')
-	print "base="+baseDir
-	print "build="+buildDir
-	print "run="+runDir
+		buildDir = os.path.join(baseDir, 'instance2')	
+	if command == 'hotprepare':
+		runDir = buildDir
+	print "Runnable instance at: "+runDir
 
 	# get used modules
 	with open('scripts/modules.json', 'r') as reader:
