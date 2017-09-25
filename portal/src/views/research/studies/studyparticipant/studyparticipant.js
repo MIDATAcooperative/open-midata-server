@@ -16,6 +16,7 @@ angular.module('portal')
 		server.get(jsRoutes.controllers.research.Studies.getParticipant($scope.studyid, $scope.memberid).url).
 			success(function(data) { 								
 				$scope.participation = data.participation;
+				console.log($scope.participation);
 				$scope.member = data.member;
 				$scope.loading = false;
 				if (data.participation && data.participation.status == "ACTIVE") {

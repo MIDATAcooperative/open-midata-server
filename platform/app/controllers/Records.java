@@ -25,6 +25,7 @@ import models.RecordsInfo;
 import models.Space;
 import models.User;
 import models.enums.AggregationType;
+import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import play.Play;
@@ -36,6 +37,7 @@ import utils.AccessLog;
 import utils.access.APS;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.MemberSecured;
 import utils.auth.PortalSessionToken;
@@ -294,7 +296,8 @@ public class Records extends APIController {
         		
 		if (json.has("_id")) {
 			String id = JsonValidation.getString(json, "_id");
-			RecordToken tk = getRecordTokenFromString(id);				
+			RecordToken tk = getRecordTokenFromString(id);
+			AuditManager.instance.addAuditEvent(AuditEventType.DATA_DELETION, null, userId, null, "id="+id);
 			RecordManager.instance.wipe(userId, CMaps.map("_id", tk.recordId));
 		} else if (json.has("group") || json.has("content") || json.has("app")) {
 			
@@ -302,7 +305,14 @@ public class Records extends APIController {
 			if (json.has("group")) properties.put("group", JsonValidation.getString(json, "group"));
 			if (json.has("content")) properties.put("content", JsonValidation.getString(json, "content"));
 			if (json.has("app")) properties.put("app", JsonValidation.getString(json, "app"));
-			RecordManager.instance.wipe(userId,  properties);			
+			String message = "";
+			for (Map.Entry<String, Object> prop : properties.entrySet()) {				
+				message += (message.length()>0?"&":"")+prop.getKey()+"="+prop.getValue();			
+			}
+			
+			AuditManager.instance.addAuditEvent(AuditEventType.DATA_DELETION, null, userId, null, message);
+			RecordManager.instance.wipe(userId,  properties);
+			AuditManager.instance.success();
 		}
 		
 		return ok();

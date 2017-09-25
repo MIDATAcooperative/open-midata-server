@@ -17,13 +17,13 @@ import models.Circle;
 import models.Consent;
 import models.Developer;
 import models.HealthcareProvider;
-import models.History;
 import models.Member;
 import models.MidataId;
 import models.Research;
 import models.Space;
 import models.Study;
 import models.User;
+import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EventType;
 import models.enums.Gender;
@@ -38,6 +38,7 @@ import play.mvc.Security;
 import utils.InstanceConfig;
 import utils.access.IndexManager;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
@@ -214,28 +215,7 @@ public class Users extends APIController {
 	public static Result complete(String query) {
 		return ok(Json.toJson(Collections.EMPTY_LIST)); //Search.complete(Type.USER, query)));
 	}
-
-
-	/**
-	 * Get a user's authorization tokens for an app.
-	 */
-	protected static Map<String, String> getTokens(MidataId userId, MidataId appId) throws InternalServerException {
-		Member user = Member.get(new ChainedMap<String, MidataId>().put("_id", userId).get(), new ChainedSet<String>().add("tokens").get());
-		if (user.tokens.containsKey(appId.toString())) {
-			return user.tokens.get(appId.toString());
-		} else {
-			return new HashMap<String, String>();
-		}
-	}
-
-	/**
-	 * Set authorization tokens, namely the access and refresh token.
-	 */
-	protected static void setTokens(MidataId userId, MidataId appId, Map<String, String> tokens) throws InternalServerException {
-		Member user = Member.get(new ChainedMap<String, MidataId>().put("_id", userId).get(), new ChainedSet<String>().add("tokens").get());
-		user.tokens.put(appId.toString(), tokens);
-		Member.set(userId, "tokens", user.tokens);
-	}
+	
 	
 	/**
 	 * Updates the address information of a user.
@@ -271,6 +251,8 @@ public class Users extends APIController {
 		user.lastname = JsonValidation.getString(json, "lastname");
 		user.gender = JsonValidation.getEnum(json, "gender", Gender.class);
 		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_ADDRESS_CHANGE, user);
+		
 		User.set(user._id, "email", user.email);
 		User.set(user._id, "emailLC", user.emailLC);
 		User.set(user._id, "name", user.name);
@@ -291,7 +273,7 @@ public class Users extends APIController {
 		  PatientResourceProvider.updatePatientForAccount(user._id);
 		}
 		
-		user.addHistory(new History(EventType.CONTACT_ADDRESS_CHANGED, user, null));
+		AuditManager.instance.success();
 		
 		return ok();		
 	}
@@ -344,13 +326,13 @@ public class Users extends APIController {
 	
 	public static Result requestMembershipHelper(MidataId userId) throws AppException {			
 		
-		Member user = Member.getById(userId, Sets.create("_id", "status", "role", "subroles", "history", "emailStatus", "confirmedAt", "contractStatus", "agbStatus", "lastname", "firstname")); 
+		Member user = Member.getById(userId, Sets.create("_id", "status", "role", "subroles",  "emailStatus", "confirmedAt", "contractStatus", "agbStatus", "lastname", "firstname")); 
 		if (user == null) throw new InternalServerException("error.internal", "User record not found.");
 		//if (user.subroles.contains(SubUserRole.TRIALUSER) || user.subroles.contains(SubUserRole.NONMEMBERUSER) || user.subroles.contains(SubUserRole.STUDYPARTICIPANT) || user.subroles.contains(SubUserRole.APPUSER)) {
 		//	
 		//} else throw new BadRequestException("invalid.status_transition", "No membership request required.");
 		
-		
+		AuditManager.instance.addAuditEvent(AuditEventType.CONTRACT_REQUESTED, user);
 		
 		if (user.agbStatus.equals(ContractStatus.NEW)) {
 			user.agbStatus = ContractStatus.REQUESTED;
@@ -358,9 +340,9 @@ public class Users extends APIController {
 		} else if (user.contractStatus.equals(ContractStatus.NEW)) {
 			user.contractStatus = ContractStatus.REQUESTED;
 			Member.set(user._id, "contractStatus", ContractStatus.REQUESTED);
-		}
-						
-		user.addHistory(new History(EventType.MEMBERSHIP_REQUEST, user, null));
+		}								
+		
+		AuditManager.instance.success();
 		
 		if (InstanceConfig.getInstance().getInstanceType().getAutoGrandMembership()) {
 			
@@ -394,6 +376,8 @@ public class Users extends APIController {
 		if (!InstanceConfig.getInstance().getInstanceType().getAccountWipeAvailable()) throw new InternalServerException("error.internal", "Only allowed on demo server");
 		
 		MidataId userId = new MidataId(request().username());
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_ACCOUNT_DELETED, userId);
 						
 		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
 		for (Space space : spaces) {
@@ -437,6 +421,7 @@ public class Users extends APIController {
 		KeyManager.instance.deleteKey(userId);
 		User.delete(userId);
 		
+		AuditManager.instance.success();
 		return ok();
 	}
 }

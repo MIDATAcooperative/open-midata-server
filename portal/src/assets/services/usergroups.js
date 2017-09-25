@@ -3,7 +3,7 @@ angular.module('services')
 	
 	var service = {};
 		
-	service.ALLPUBLIC = ["creator", "history", "name", "registeredAt", "searchable", "status", "type"];
+	service.ALLPUBLIC = ["creator", "name", "registeredAt", "searchable", "status", "type"];
 	service.MINIMAL = [ "name"];
 		
 	service.search = function(properties, fields) {

@@ -17,6 +17,7 @@
 			<ul class="nav navbar-nav">            	
 				<!--  <li ui-sref-active="active"><a ui-sref="admin.messages">Messages</a></li>  -->
 				<li ui-sref-active="active" ng-show="hasSubRole('USERADMIN')"><a ui-sref="admin.members" translate="admin_navbar.members"></a></li>				
+				<li ui-sref-active="active" ng-show="hasSubRole('USERADMIN')"><a ui-sref="admin.auditlog" translate="admin_navbar.auditlog"></a></li>
 				<li ui-sref-active="active" ng-show="hasSubRole('NEWSWRITER')"><a ui-sref="admin.news" translate="admin_navbar.news"></a></li>
 				<li ui-sref-active="active" ng-show="hasSubRole('STUDYADMIN')"><a ui-sref="admin.studies" translate="admin_navbar.studies"></a></li>
 				<li ui-sref-active="active" ng-show="hasSubRole('PLUGINADMIN')"><a ui-sref="admin.yourapps" translate="admin_navbar.plugins"></a></li>

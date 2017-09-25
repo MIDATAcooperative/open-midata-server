@@ -5,12 +5,18 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 
 import actions.MobileCall;
+import models.enums.UserRole;
+import play.api.mvc.RawBuffer;
 import play.mvc.BodyParser;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.auth.ExecutionInfo;
+import utils.auth.KeyManager;
+import utils.auth.PortalSessionToken;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
 import utils.fhir.FHIRServlet;
 import utils.fhir.ResourceProvider;
 import utils.servlet.PlayHttpServletRequest;
@@ -82,6 +88,16 @@ public class FHIR extends Controller {
           ExecutionInfo info = ExecutionInfo.checkToken(request(), param.substring("Bearer ".length()), false);
           Stats.setPlugin(info.pluginId);
           ResourceProvider.setExecutionInfo(info);
+		} else {
+			String portal = req.getHeader("X-Session-Token");
+			if (portal != null) {
+				PortalSessionToken tk = PortalSessionToken.decrypt(request());
+			    if (tk == null || tk.getRole() == UserRole.ANY) return null;
+			    try {
+			      KeyManager.instance.continueSession(tk.getHandle());
+			    } catch (AuthException e) { return null; }	
+			    ResourceProvider.setExecutionInfo(new ExecutionInfo(tk.getUserId()));
+			}
 		}
         
 		AccessLog.logBegin("begin FHIR get request: "+req.getRequestURI());
@@ -127,6 +143,7 @@ public class FHIR extends Controller {
 	@MobileCall
 	@BodyParser.Of(value = BodyParser.Raw.class, maxLength = 100 * 1024 * 1024)
 	public static Result post(String all) throws AppException, IOException, ServletException {
+				
 		Stats.startRequest(request());
 		
 		PlayHttpServletRequest req = new PlayHttpServletRequest(request());

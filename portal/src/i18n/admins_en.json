@@ -1,6 +1,7 @@
 {
   "admin_navbar" : {
     "members" : "Members",
+    "auditlog" : "Audit",
     "news" : "News",
     "plugins" : "Plugins",
 	"content" : "Content",

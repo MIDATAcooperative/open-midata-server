@@ -25,7 +25,7 @@ import utils.exceptions.InternalServerException;
 public class UserGroup extends Model {
 
 	protected static final @NotMaterialized String collection = "usergroups";
-	public static final @NotMaterialized Set<String> ALL = Sets.create("name", "registeredAt", "status", "type", "creator", "history");
+	public static final @NotMaterialized Set<String> ALL = Sets.create("name", "registeredAt", "status", "type", "creator");
 	public static final @NotMaterialized Set<String> FHIR = Sets.create("fhirGroup");
 
 	
@@ -88,11 +88,7 @@ public class UserGroup extends Model {
 	 * FHIR representation of UserGroup
 	 */
 	public BSONObject fhirGroup;
-	
-	/**
-	 * History of important changes to group account
-	 */
-	public List<History> history;
+		
 		
 	/**
 	 * Queries for sharing records with consents
@@ -125,12 +121,7 @@ public class UserGroup extends Model {
 	public static void set(MidataId userId, String field, Object value) throws InternalServerException {
 		Model.set(UserGroup.class, collection, userId, field, value);
 	}
-	
-	public void addHistory(History newhistory) throws InternalServerException {
-		if (history == null) history = new ArrayList<History>();
-    	this.history.add(newhistory);
-    	Model.set(UserGroup.class, collection, this._id, "history", this.history);
-    }
+		
 	
 	public static void delete(MidataId userId) throws InternalServerException {			
 		Model.delete(UserGroup.class, collection, CMaps.map("_id", userId));

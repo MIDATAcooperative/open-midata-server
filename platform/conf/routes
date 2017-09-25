@@ -131,6 +131,7 @@ POST    /api/research/studies/:study/status/start        controllers.research.St
 POST    /api/research/studies/:study/status/finish       controllers.research.Studies.finishExecution(study: String)
 POST    /api/research/studies/:study/status/abort        controllers.research.Studies.abortExecution(study: String)
 POST    /api/research/studies/:study/status/delete       controllers.research.Studies.delete(study: String)
+POST    /api/admin/studies/:study/status/delete       controllers.admin.Administration.deleteStudy(study: String)
 GET     /api/research/studies/:study/participants        controllers.research.Studies.listParticipants(study: String)
 GET     /api/research/studies/:study/participants/:participant controllers.research.Studies.getParticipant(study: String, participant: String)
 POST    /api/research/studies/:study/approve             controllers.research.Studies.approveParticipation(study: String)
@@ -237,8 +238,8 @@ POST    /v1/authorize            controllers.OAuth2.login()
 OPTIONS /v1/token            controllers.OAuth2.checkPreflight()
 POST    /v1/token            controllers.OAuth2.authenticate()
 
-OPTIONS /v1/register        controllers.MobileAPI.checkPreflight()
-POST    /v1/register        controllers.QuickRegistration.registerFromApp()
+# OPTIONS /v1/register        controllers.MobileAPI.checkPreflight()
+# POST    /v1/register        controllers.QuickRegistration.registerFromApp()
 
 #OPTIONS /v1/midata            controllers.MobileAPI.checkPreflight()
 #POST    /v1/midata            controllers.MobileAPI.midataLogin()

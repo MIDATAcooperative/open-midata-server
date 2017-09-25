@@ -24,7 +24,6 @@ import models.Circle;
 import models.Consent;
 import models.ContentInfo;
 import models.HPUser;
-import models.History;
 import models.Member;
 import models.MessageDefinition;
 import models.MidataId;
@@ -36,6 +35,7 @@ import models.ResearchUser;
 import models.Study;
 import models.User;
 import models.enums.AggregationType;
+import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.EventType;
 import models.enums.MessageReason;
@@ -49,6 +49,7 @@ import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.auth.MobileAppSessionToken;
@@ -329,13 +330,17 @@ public class MobileAPI extends Controller {
 			controllers.members.Studies.precheckRequestParticipation(member._id, app.linkedStudy);
 		}
 		
+		
 		MobileAppInstance appInstance = new MobileAppInstance();
 		appInstance._id = new MidataId();
+		appInstance.owner = member._id;
 		appInstance.name = "App: "+ app.name+" (Device: "+phrase.substring(0, 3)+")";
 		appInstance.applicationId = app._id;	
 		appInstance.appVersion = app.pluginVersion;
-        appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, phrase);
-    	appInstance.owner = member._id;
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.APP_FIRST_USE, app._id, member, null, appInstance, null, null);
+		
+        appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, phrase);    	
     	appInstance.passcode = Member.encrypt(phrase); 
     	appInstance.dateOfCreation = new Date();
     	appInstance.writes = app.writes;
@@ -370,7 +375,7 @@ public class MobileAPI extends Controller {
 		}
 				
 		if (app.linkedStudy != null && studyConfirm) {								
-			controllers.members.Studies.requestParticipation(member._id, app.linkedStudy);
+			controllers.members.Studies.requestParticipation(member._id, app.linkedStudy, app._id);
 		}
 		
 		if (autoConfirm) {
@@ -383,7 +388,7 @@ public class MobileAPI extends Controller {
 			User.set(member._id, "apps", member.apps);
 		}
 		
-		if (app.termsOfUse != null) member.addHistoryOnce(new History(EventType.TERMS_OF_USE_AGREED, member, app.termsOfUse));
+		if (app.termsOfUse != null) member.agreedToTerms(app.termsOfUse, app._id);
 				
 		if (app.predefinedMessages!=null) {
 			if (!app._id.equals(member.initialApp)) {
@@ -391,7 +396,8 @@ public class MobileAPI extends Controller {
 			} 
 			Messager.sendMessage(app._id, MessageReason.FIRSTUSE_ANYUSER, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());								
 		}
-				
+			
+		AuditManager.instance.success();
 		return appInstance;
 	}
 	
