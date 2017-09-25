@@ -18,6 +18,7 @@ import org.hl7.fhir.dstu3.model.Group;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Identifier;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.dstu3.model.Group.GroupMemberComponent;
 import org.hl7.fhir.dstu3.model.Group.GroupType;
 import org.hl7.fhir.instance.model.api.IBaseResource;
@@ -130,6 +131,9 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 		default:p.setOutcome(AuditEventOutcome._12);
 		}
 		p.setOutcomeDesc(mae.statusDescription);
+		if (mae.statusKey != null) {
+			p.addExtension().setUrl("http://midata.coop/extensions/outcome-localekey").setValue(new StringType(mae.statusKey));
+		}
 		
 		return p;
 	}

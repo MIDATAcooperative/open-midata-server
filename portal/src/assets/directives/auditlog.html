@@ -11,7 +11,8 @@
 			  <div class="col-sm-6 col-md-3">
    			    
 			    <span class="glyphicon " ng-class="{ 'glyphicon-wrench text-danger' : entry.outcome == 12, 'glyphicon-warning-sign text-danger' : entry.outcome == 8, 'glyphicon-remove text-warning' : entry.outcome == 4, 'glyphicon-ok text-success' : entry.outcome == 0 }"></span> <b><span translate="{{ 'enum.eventtype.'+entry.subtype[0].code }}"></span></b>
-			    <div>{{ entry.outcomeDesc }}</div>			      			    			   
+			    <div ng-hide="entry.extension[0].valueString">{{ entry.outcomeDesc }}</div>		
+			    <div ng-show="entry.extension[0].valueString">{{ entry.extension[0].valueString | translate }}</div>	      			    			   
 			  </div>
 			  <div class="col-sm-6 col-md-4">
 			    <div>{{ entry.agent[0].name }} <span ng-show="entry.agent[0].role[0].coding[0].code != 'MEMBER'" class="label label-default" translate="{{ 'enum.userrole.'+entry.agent[0].role[0].coding[0].code }}"></span></div>
