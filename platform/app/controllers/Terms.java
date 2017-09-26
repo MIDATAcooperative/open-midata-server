@@ -93,7 +93,7 @@ public class Terms extends APIController {
 	
 	public static void addAgreedToDefaultTerms(User user) throws AppException {
 		String terms = Play.application().configuration().getString("versions.midata-terms-of-use","1.0");
-		String ppolicy = Play.application().configuration().getString("versions.midata-privacy-policy","1.0");
+		String ppolicy = Play.application().configuration().getString("versions.midata-privacy-policy","1.0");		
 		user.agreedToTerms("midata-terms-of-use--"+terms, user.initialApp);
 		user.agreedToTerms("midata-privacy-policy--"+ppolicy, user.initialApp);		
 	}
