@@ -449,7 +449,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 			aeec.setType(new Coding().setSystem("http://hl7.org/fhir/resource-types").setCode("ResearchStudy"));
 			aeec.setReference(new Reference("ResearchStudy/"+study._id.toString()));
 			aeec.setName(study.name);
-			aeec.setIdentifier(new Identifier().setValue(study._id.toString()));
+			aeec.setIdentifier(new Identifier().setValue(study.code));
 		}
 				
 		
