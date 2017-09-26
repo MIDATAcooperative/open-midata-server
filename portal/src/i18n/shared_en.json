@@ -94,7 +94,8 @@
        "agb" : "Terms and conditions not accepted.",
        "privacypolicy" : "Privacy policy must be accepted.",
        "study_accept" : "Study participation must be accepted.",
-       "study_group" : "Participant must first be assigned to a group."
+       "study_group" : "Participant must first be assigned to a group.",
+       "confirmation" : "Confirmation by user required first."
      },
 
      "unknown" : {
@@ -1009,7 +1010,10 @@
     "CIRCLE" : "Consent",
     "ResearchStudy" : "Study",
     "EXTERNALSERVICE" : "App",
-    "STUDYPARTICIPATION" : "Participation"
+    "STUDYPARTICIPATION" : "Participation",
+    "HEALTHCARE" : "Consent (Healthcare)",
+    "MEMBER" : "Account",
+    "PROVIDER" : "Account (Healthcare)"
   }
     
 }

@@ -318,7 +318,7 @@ public class User extends Model implements Comparable<User> {
 	
 	public void agreedToTerms(String terms, MidataId app) throws AppException {		
 		User u2 = User.getById(this._id, Sets.create("termsAgreed"));
-		this.termsAgreed = u2.termsAgreed;
+		if (u2 != null) this.termsAgreed = u2.termsAgreed;
 		if (this.termsAgreed==null) this.termsAgreed = new HashSet<String>();
 		
 		if (!termsAgreed.contains(terms)) {

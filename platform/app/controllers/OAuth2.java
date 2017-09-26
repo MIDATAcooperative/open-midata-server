@@ -143,7 +143,10 @@ public class OAuth2 extends Controller {
 		KeyManager.instance.login(60000l);
 		
 		if (appInstance == null) {		
-			if (!confirmed) return ok("CONFIRM");
+			if (!confirmed) {
+				AuditManager.instance.fail(0, "Confirmation required", "error.missing.confirmation");
+				return ok("CONFIRM");
+			}
 			
 			if (app.unlockCode != null) {				
 				String code = JsonValidation.getStringOrNull(json, "unlockCode");
