@@ -22,8 +22,9 @@
 			  
 			  <div class="col-sm-6 col-md-3">
 			     <div ng-repeat="entity in entry.entity">
-			       <b translate="{{ 'auditlog.'+entity.type.code }}">{{ entity.type.code }}</b>:
+			       <b ng-show="entity.type.code"><span translate="{{ 'auditlog.'+entity.type.code }}">{{ entity.type.code }}</span>:</b>
 			       <div>{{ entity.name }}</div>
+			       <div class="text-primary">{{ entity.identifier.value }}</div>
 			     </div>
 			  </div>
 			  </div>			  			  
