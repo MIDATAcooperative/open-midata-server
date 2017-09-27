@@ -822,7 +822,8 @@ public class Studies extends APIController {
 		
 		HealthProvider.confirmConsent(appInstance.owner, appInstance._id);
 		appInstance.status = ConsentStatus.ACTIVE;
-				
+			
+		AuditManager.instance.success();
 		return ok();
 	}
 	

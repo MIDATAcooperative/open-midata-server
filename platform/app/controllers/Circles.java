@@ -306,7 +306,7 @@ public class Circles extends APIController {
 		}
 		if (! userId.equals(executorId)) consent.authorized.add(executorId);
 				
-		addConsent(executorId, consent, patientRecord, passcode);
+		addConsent(executorId, consent, patientRecord, passcode, false);
 			
 		
 		
@@ -321,13 +321,13 @@ public class Circles extends APIController {
 		return ok(JsonOutput.toJson(consent, "Consent", Consent.ALL));
 	}
 	
-	public static void addConsent(MidataId executorId, Consent consent, boolean patientRecord, String passcode) throws AppException {
+	public static void addConsent(MidataId executorId, Consent consent, boolean patientRecord, String passcode, boolean force) throws AppException {
 		consent._id = new MidataId();
 		consent.dateOfCreation = new Date();				
 			
 		AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_CREATE, executorId, consent);
 		
-		if (consent.status != ConsentStatus.DRAFT && consent.status != ConsentStatus.UNCONFIRMED && consent.type != ConsentType.IMPLICIT) {
+		if (consent.status != ConsentStatus.DRAFT && consent.status != ConsentStatus.UNCONFIRMED && !force && consent.type != ConsentType.IMPLICIT) {
 			if (consent.owner == null || !consent.owner.equals(executorId)) throw new AuthException("error.invalid.consent", "You must be owner to create active consents!");
 		}
 		
@@ -343,9 +343,9 @@ public class Circles extends APIController {
 						
 		//consentSettingChange(executorId, consent);
 		prepareConsent(consent);
-		consentStatusChange(executorId, consent, null);
+		consentStatusChange(executorId, consent, null, patientRecord);
 		
-		if (consent.status.equals(ConsentStatus.ACTIVE) && patientRecord) autosharePatientRecord(consent);
+		if (consent.status.equals(ConsentStatus.ACTIVE) && patientRecord) autosharePatientRecord(executorId, consent);
 		
 		consent.add();
 								
@@ -393,7 +393,7 @@ public class Circles extends APIController {
 			consent.name="Msg: "+otheruser.firstname+" "+otheruser.lastname;
 		}
 		
-		addConsent(executorId, consent, false, null);
+		addConsent(executorId, consent, false, null, true);
 						
 		return consent;		
 	}
@@ -403,10 +403,10 @@ public class Circles extends APIController {
 	 * @param consent consent with which the patient record should be shared
 	 * @throws AppException
 	 */
-	public static void autosharePatientRecord(Consent consent) throws AppException {
-		List<Record> recs = RecordManager.instance.list(consent.owner, consent.owner, CMaps.map("owner", "self").map("format", "fhir/Patient").map("data", CMaps.map("id", consent.owner.toString())), Sets.create("_id", "data"));
+	public static void autosharePatientRecord(MidataId executorId, Consent consent) throws AppException {
+		List<Record> recs = RecordManager.instance.list(executorId, consent.owner, CMaps.map("owner", "self").map("format", "fhir/Patient").map("data", CMaps.map("id", consent.owner.toString())), Sets.create("_id", "data"));
 		if (recs.size()>0) {
-		  RecordManager.instance.share(consent.owner, consent.owner, consent._id, Collections.singleton(recs.get(0)._id), true);
+		  RecordManager.instance.share(executorId, consent.owner, consent._id, Collections.singleton(recs.get(0)._id), true);
 		} else throw new InternalServerException("error.internal", "Patient Record not found!");
 	}
 	
@@ -600,6 +600,10 @@ public class Circles extends APIController {
 	 * @throws AppException
 	 */
 	public static void consentStatusChange(MidataId executor, Consent consent, ConsentStatus newStatus) throws AppException {
+	  Circles.consentStatusChange(executor, consent, newStatus, true);	
+	}
+	
+	public static void consentStatusChange(MidataId executor, Consent consent, ConsentStatus newStatus, boolean patientRecord) throws AppException {
 		
 		ConsentStatus oldStatus = consent.status;
 		boolean wasActive = oldStatus.equals(ConsentStatus.ACTIVE);
@@ -614,7 +618,7 @@ public class Circles extends APIController {
 		if (active && !wasActive) {
 			RecordManager.instance.shareAPS(consent._id, executor, consent.authorized);
 			consentSettingChange(executor, consent);
-			if (consent.type.equals(ConsentType.CIRCLE) || consent.type.equals(ConsentType.HEALTHCARE)) autosharePatientRecord(consent);
+			
 			Map<String, Object> query = consent.sharingQuery;
 			if (query == null) query = Circles.getQueries(consent.owner, consent._id);			
 			if (query!=null) {
@@ -625,6 +629,8 @@ public class Circles extends APIController {
 				  RecordManager.instance.applyQuery(executor, query, consent.owner, consent._id, true);
 				}
 			}
+			
+			if (patientRecord && (consent.type.equals(ConsentType.CIRCLE) || consent.type.equals(ConsentType.HEALTHCARE))) autosharePatientRecord(executor, consent);
 		} else if (!active && wasActive) {
 			Set<MidataId> auth = consent.authorized;
 			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }

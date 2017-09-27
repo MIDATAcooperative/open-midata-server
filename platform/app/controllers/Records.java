@@ -297,7 +297,7 @@ public class Records extends APIController {
 		if (json.has("_id")) {
 			String id = JsonValidation.getString(json, "_id");
 			RecordToken tk = getRecordTokenFromString(id);
-			AuditManager.instance.addAuditEvent(AuditEventType.DATA_DELETION, null, userId, null, "id="+id);
+			AuditManager.instance.addAuditEvent(AuditEventType.DATA_DELETION, null, userId, null, "id="+tk.recordId);
 			RecordManager.instance.wipe(userId, CMaps.map("_id", tk.recordId));
 		} else if (json.has("group") || json.has("content") || json.has("app")) {
 			
@@ -311,9 +311,9 @@ public class Records extends APIController {
 			}
 			
 			AuditManager.instance.addAuditEvent(AuditEventType.DATA_DELETION, null, userId, null, message);
-			RecordManager.instance.wipe(userId,  properties);
-			AuditManager.instance.success();
+			RecordManager.instance.wipe(userId,  properties);			
 		}
+		AuditManager.instance.success();
 		
 		return ok();
 	}
@@ -392,15 +392,16 @@ public class Records extends APIController {
         	if (query != null) {
         		        		
         		Feature_FormatGroups.convertQueryToContents(groupSystem, query);        		
-        		
-        		if (hasAccess) {
-	        		List<Record> recs = RecordManager.instance.list(userId, start, CMaps.map(query).map("flat", "true"), Sets.create("_id"));
-	        		Set<MidataId> remove = new HashSet<MidataId>();
-	        		for (Record r : recs) remove.add(r._id);
-	        		RecordManager.instance.unshare(userId, start, remove);
-        		}
+        		        		
         		
         		if (consent == null || consent.type.equals(ConsentType.EXTERNALSERVICE)) {
+        		  if (hasAccess) {
+    	        	List<Record> recs = RecordManager.instance.list(userId, start, CMaps.map(query).map("flat", "true"), Sets.create("_id"));
+    	        	Set<MidataId> remove = new HashSet<MidataId>();
+    	        	for (Record r : recs) remove.add(r._id);
+    	        	RecordManager.instance.unshare(userId, start, remove);
+            	  }
+        			
         		  RecordManager.instance.shareByQuery(userId, userId, start, query);
         		} else {
         		  consent.set(consent._id, "sharingQuery", query);
