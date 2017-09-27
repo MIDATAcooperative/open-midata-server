@@ -359,7 +359,7 @@ public class Studies extends APIController {
 		if (study.requiredInformation.equals(InformationType.RESTRICTED)) {
 			PatientResourceProvider.createPatientForStudyParticipation(participation, user);
 		} else {
-			Circles.autosharePatientRecord(participation);
+			Circles.autosharePatientRecord(userId, participation);
 		}
 		
 		Circles.consentStatusChange(userId, participation, ConsentStatus.ACTIVE);				

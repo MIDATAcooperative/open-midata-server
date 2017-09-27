@@ -83,6 +83,7 @@ import models.enums.WritePermissionType;
 import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.access.Feature_FormatGroups;
+import utils.audit.AuditManager;
 import utils.collections.Sets;
 import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
@@ -433,7 +434,7 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 		
 		MethodOutcome retVal = new MethodOutcome(new IdType("Consent", consent._id.toString(), null), true);	
         retVal.setResource(theResource);
-        
+        AuditManager.instance.success();
 		return retVal;		
 	}
 	
@@ -570,7 +571,7 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 		}
 		
 		if (consent.type == ConsentType.IMPLICIT) throw new ForbiddenOperationException("consent type not supported for creation.");
-		Circles.addConsent(info().executorId, consent, true, null);
+		Circles.addConsent(info().executorId, consent, true, null, false);
         
 		theResource.setDateTime(consent.dateOfCreation);
 		
