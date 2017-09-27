@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import org.hl7.fhir.dstu3.model.Address;
 import org.hl7.fhir.dstu3.model.ContactPoint;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
+import org.hl7.fhir.dstu3.model.Extension;
 import org.hl7.fhir.dstu3.model.HumanName;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.Observation;
@@ -68,6 +70,8 @@ import models.enums.EntityType;
 import models.enums.Gender;
 import models.enums.SubUserRole;
 import models.enums.WritePermissionType;
+import play.Play;
+import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.PasswordHash;
 import utils.RuntimeConstants;
@@ -402,8 +406,11 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		
 		List<Record> recs = query.execute(info);
 		List<Record> result = new ArrayList<Record>(recs.size());
-		for (Record record : recs) {
-			if (record.data.get("id").equals(record.owner.toString())) result.add(record);
+		for (Record record : recs) {			
+			if (record.data == null) continue;			
+			Object id = record.data.get("id");
+			AccessLog.log(id.toString()+" vs "+record.owner.toString());
+			if (id.equals(record.owner.toString())) result.add(record);
 		}
 		return result;
 	}
@@ -578,6 +585,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 				user.language = comm.getLanguage().getCodingFirstRep().getCode();
 			}
 		}
+		user.initialApp = info().pluginId;
 		
 		if (user.firstname == null) throw new UnprocessableEntityException("Patient 'given' name not given.");
 		if (user.lastname == null) throw new UnprocessableEntityException("Patient family name not given.");
@@ -586,11 +594,33 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		if (user.gender == null) throw new UnprocessableEntityException("Patient gender not given.");
 		if (user.birthday == null) throw new UnprocessableEntityException("Patient birth date not given.");
 		
+		String password = null;
+		for (Extension ext : thePatient.getExtensionsByUrl("http://midata.coop/extensions/account-password")) {
+		  password = ext.getValue().primitiveValue();
+		}
+		user.password = Member.encrypt(password);
+		
+		if (user.password == null) throw new UnprocessableEntityException("Patient account password not given.");
+		
+		String terms = "midata-terms-of-use--"+Play.application().configuration().getString("versions.midata-terms-of-use","1.0");
+		String ppolicy = "midata-privacy-policy--"+Play.application().configuration().getString("versions.midata-privacy-policy","1.0");	
+		boolean termsOk = false;
+		boolean ppolicyOk = false;
+		
+		for (Extension ext : thePatient.getExtensionsByUrl("http://midata.coop/extensions/terms-agreed")) {
+		   String agreed = ext.getValue().primitiveValue();
+		   if (agreed.equals(terms)) termsOk = true;
+		   if (agreed.equals(ppolicy)) ppolicyOk = true;
+		}
+		
+		if (!termsOk || !ppolicyOk) throw new UnprocessableEntityException("Patient must approve terms of use and privacy policy");
+		
 		Member existing = Member.getByEmail(user.email, Member.ALL_USER);
 		
 		if (existing == null) {
-			user.password = "Secret123";
+			
 			Application.registerSetDefaultFields(user);
+			thePatient.setId(user._id.toString());
 			AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, info().pluginId, info().ownerId, user);			
 			
 			user.security = AccountSecurityLevel.KEY;		
@@ -601,14 +631,9 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 			user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
 			Member.set(user._id, "myaps", user.myaps);
 									
-	     	Record record = newRecord("fhir/Patient");
-	     	record.owner = user._id;	     	
-			prepare(record, thePatient);		
-			insertRecord(record, thePatient);
+	     	
 										
-			//Circles.fetchExistingConsents(info().executorId, user.emailLC);
-			Application.sendWelcomeMail(user);
-			if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
+			//Circles.fetchExistingConsents(info().executorId, user.emailLC);			
 		} else {
 			user = existing;
 		}																		    							    							    			    		
@@ -620,8 +645,20 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		consent.authorized = new HashSet<MidataId>();
 		consent.status = existing == null ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;				
 		consent.authorized.add(info().ownerId);
+		consent.sharingQuery = new HashMap<String, Object>();
+		consent.sharingQuery.put("owner", "self");		
 				
-		Circles.addConsent(info().executorId, consent, true, null);								
+		Circles.addConsent(info().executorId, consent, false, null, true);		
+		
+		if (existing == null) {
+			Record record = newRecord("fhir/Patient");
+	     	record.owner = user._id;	     	
+			prepare(record, thePatient);		
+			insertRecord(record, thePatient);
+			
+			Application.sendWelcomeMail(info().pluginId, user);
+			if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
+		}
 		
 		thePatient.setId(user._id.toString());
 		MethodOutcome retVal = new MethodOutcome(new IdType(thePatient.getResourceType().name(), user._id.toString()));    			

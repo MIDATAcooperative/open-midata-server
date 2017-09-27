@@ -37,7 +37,7 @@ public class Feature_InMemoryQuery extends APS {
 			  if (ids.contains(record._id)) result.add(record);
 		  }
 		  return result;
-		} else return contents;
+		} else return new ArrayList(contents);
 	}
 	
 

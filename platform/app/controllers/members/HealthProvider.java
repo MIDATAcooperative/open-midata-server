@@ -134,7 +134,9 @@ public class HealthProvider extends APIController {
 		JsonValidation.validate(json, "consent");
 		
 		MidataId consentId = JsonValidation.getMidataId(json, "consent");		
-		confirmConsent(userId, consentId);				
+		confirmConsent(userId, consentId);
+		
+		AuditManager.instance.success();
 		return ok();
 	}
 	
@@ -155,7 +157,9 @@ public class HealthProvider extends APIController {
 			target.setConfirmDate(new Date());			
 			Circles.consentStatusChange(userId, target, ConsentStatus.ACTIVE);
 			Circles.sendConsentNotifications(userId, target, ConsentStatus.ACTIVE);
-		} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");			
+		} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");		
+		
+		
 	}
 	
 	

@@ -126,6 +126,8 @@ public class RecordManager {
 		EncryptedAPS eaps = new EncryptedAPS(proposedId, who, who, APSSecurityLevel.HIGH, false);
 		EncryptionUtils.addKey(who, eaps);		
 		eaps.create();
+		APSCache current = apsCache.get();
+		if (current != null) current.addAPS(new APSImplementation(new EncryptedAPS(eaps.getId(), current.getExecutor(), eaps.getAPSKey(), eaps.getOwner())));
         AccessLog.logEnd("end createPrivateAPS");
 		return eaps.getId();
 	}
@@ -732,11 +734,13 @@ public class RecordManager {
 	 */
 	public void applyQuery(MidataId userId, Map<String, Object> query, MidataId sourceaps, MidataId targetaps, boolean ownerInformation) throws AppException {
 		AccessLog.logBegin("BEGIN APPLY QUERY");
+				
+		List<Record> recs = RecordManager.instance.list(userId, targetaps, CMaps.map(query).map("flat", "true").map("owner", "self"), Sets.create("_id"));
+		Set<MidataId> remove = new HashSet<MidataId>();
+		for (Record r : recs) remove.add(r._id);
+		AccessLog.log("REMOVE DUPLICATES:"+remove.size());
+		RecordManager.instance.unshare(userId, targetaps, remove);		
 		
-		
-		//List<DBRecord> records = QueryEngine.listInternal(getCache(userId), sourceaps, RecordManager.FULLAPS_FLAT_OWNER, RecordManager.COMPLETE_META);
-		//AccessLog.debug("SHARE CANDIDATES:"+records.size());
-		//records = QueryEngine.listFromMemory(query, records);
 		
 		Map<String, Object> selectionQuery = CMaps.map(query).map("streams", "true").map("flat", "true").map("owner", "self");		
 		List<DBRecord> records = QueryEngine.listInternal(getCache(userId), sourceaps, null, selectionQuery, RecordManager.COMPLETE_META);
@@ -753,7 +757,7 @@ public class RecordManager {
 		
 		List<DBRecord> stillOkay = QueryEngine.listFromMemory(getCache(userId), query, streams);
 		streams.removeAll(stillOkay);		
-		Set<MidataId> remove = new HashSet<MidataId>();
+		remove = new HashSet<MidataId>();
 		for (DBRecord stream : streams) {
 			remove.add(stream._id);
 		}

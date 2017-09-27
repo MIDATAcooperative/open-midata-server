@@ -1013,7 +1013,8 @@
     "STUDYPARTICIPATION" : "Participation",
     "HEALTHCARE" : "Consent (Healthcare)",
     "MEMBER" : "Account",
-    "PROVIDER" : "Account (Healthcare)"
+    "PROVIDER" : "Account (Healthcare)",
+    "RESEARCH" : "Account (Researcher)"
   }
     
 }
