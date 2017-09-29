@@ -294,7 +294,8 @@
 	 "emailstatus" : {
 	   "REJECTED" : "Rejected",
 	   "UNVALIDATED" : "Not confirmed yet",
-	   "VALIDATED" : "Confirmed"
+	   "VALIDATED" : "Confirmed",
+	   "EXTERN_VALIDATED" : "Confirmed by 3rd party"
 	 },
 	 "participantsearchstatus" : {
 	   "CLOSED" : "Closed",
