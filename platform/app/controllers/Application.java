@@ -157,7 +157,7 @@ public class Application extends APIController {
 		MidataId userId = JsonValidation.getMidataId(json, "userId");
 		User user = User.getById(userId, Sets.create("firstname", "lastname", "email", "emailStatus", "status", "role"));
 		
-		if (user != null && user.emailStatus.equals(EMailStatus.UNVALIDATED)) {							  
+		if (user != null && (user.emailStatus.equals(EMailStatus.UNVALIDATED) || user.emailStatus.equals(EMailStatus.EXTERN_VALIDATED)) ) {							  
 		   sendWelcomeMail(user);
 		}
 			

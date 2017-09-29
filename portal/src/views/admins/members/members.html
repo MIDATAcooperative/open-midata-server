@@ -56,7 +56,7 @@
 					<td>{{ member.email }}</td>
 					<td>
 					  <span ng-show="member.developer" class="glyphicon glyphicon-link" title="tied to developer"></span>
-					  <span ng-show="member.emailStatus != 'VALIDATED'" class="glyphicon glyphicon-question-sign" title="email not confirmed"></span>					  
+					  <span ng-show="member.emailStatus != 'VALIDATED' && member.emailStatus != 'EXTERN_VALIDATED'" class="glyphicon glyphicon-question-sign" title="email not confirmed"></span>					  
 					  <span ng-show="!member.login || member.login &lt; dateLimit" class="glyphicon glyphicon-time" title="last login older 1 month"></span>
 					</td>
 					<td translate="{{ 'enum.userrole.'+member.role }}"></td>
