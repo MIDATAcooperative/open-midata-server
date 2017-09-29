@@ -618,7 +618,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		for (Extension ext : thePatient.getExtensionsByUrl("http://midata.coop/extensions/account-password")) {
 		  password = ext.getValue().primitiveValue();
 		}
-		if (user.password == null) throw new UnprocessableEntityException("Patient account password not given.");
+		if (password == null) throw new UnprocessableEntityException("Patient account password not given.");
 		
 		user.password = Member.encrypt(password);				
 		
@@ -641,6 +641,8 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		if (!foundLoginId) {
 			thePatient.addIdentifier().setSystem("http://midata.coop/identifier/patient-login").setValue(user.emailLC);
 		}
+		
+		thePatient.getExtension().clear();
 		
 		Member existing = Member.getByEmail(user.email, Member.ALL_USER);
 		
@@ -667,6 +669,9 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 			//Circles.fetchExistingConsents(info().executorId, user.emailLC);			
 		} else {
 			user = existing;
+			
+			Set<Consent> exist = Consent.getAllActiveByAuthorizedAndOwners(info().ownerId, Collections.singleton(user._id));
+			if (!exist.isEmpty()) throw new UnprocessableEntityException("Already exists.");
 		}																		    							    							    			    		
 				
 		Plugin plugin = Plugin.getById(info().pluginId);
