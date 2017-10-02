@@ -269,19 +269,22 @@ public class IndexManager {
 					
 		for (DBRecord r : validatedResult) QueryEngine.loadData(r);
 		List<DBRecord> stillValid;
-		if (validatedResult.size()> 0) stillValid = QueryEngine.filterByDataQuery(validatedResult, indexQuery);
-		else stillValid = validatedResult;
-		
+		List<DBRecord> notValid = new ArrayList<DBRecord>();
+		stillValid = QueryEngine.filterByDataQuery(validatedResult, indexQuery, notValid);
+				
 		AccessLog.log("Index found records:"+validatedResult.size()+" still valid:"+stillValid.size());
-		if (validatedResult.size() > stillValid.size()) {			
-			Set<IndexMatch> ids = new HashSet<IndexMatch>();
-			for (DBRecord rec : validatedResult) ids.add(new IndexMatch(rec._id, rec.consentAps));
-			for (DBRecord rec : stillValid) ids.remove(new IndexMatch(rec._id, rec.consentAps));
-			AccessLog.log("Removing "+ids.size()+" records from index.");
-			removeRecords(root, cond, ids);			
+		if (validatedResult.size() > stillValid.size()) {
+			AccessLog.log("Removing "+notValid.size()+" records from index.");
+			try {
+			   for (DBRecord rec : notValid) {				
+				  root.removeEntry(rec);				
+			   }
+			   root.flush();
+			} catch (LostUpdateException e) {}
 		}				 
 	}
 	
+	/*
 	private void removeRecords(IndexRoot root, Condition[] cond, Set<IndexMatch> ids) throws InternalServerException {
 		try {
 		  root.removeRecords(cond, ids);
@@ -290,7 +293,7 @@ public class IndexManager {
 			root.reload();
 			removeRecords(root, cond, ids);
 		}
-	}
+	}*/
 	
 	public void removeRecords(APSCache cache, MidataId user, List<DBRecord> records) throws AppException {
 		IndexPseudonym pseudo = getIndexPseudonym(cache, user, user, false);

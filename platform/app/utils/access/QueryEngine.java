@@ -449,10 +449,10 @@ class QueryEngine {
 		
 		if (q.restrictedBy("index") && !q.getApsId().equals(q.getCache().getAccountOwner())) {
 			AccessLog.log("Manually applying index query aps="+q.getApsId().toString());
-			result = QueryEngine.filterByDataQuery(result, q.getProperties().get("index"));
+			result = QueryEngine.filterByDataQuery(result, q.getProperties().get("index"), null);
 		}
 		
-		if (q.restrictedBy("data"))	result = filterByDataQuery(result, q.getProperties().get("data"));
+		if (q.restrictedBy("data"))	result = filterByDataQuery(result, q.getProperties().get("data"), null);
 		
 		result = filterByDateRange(result, "created", q.getMinDateCreated(), q.getMaxDateCreated());			
 		result = filterByDateRange(result, "lastUpdated", q.getMinDateUpdated(), q.getMaxDateUpdated());
@@ -523,7 +523,7 @@ class QueryEngine {
     	return filteredResult;
     }
     
-    protected static List<DBRecord> filterByDataQuery(List<DBRecord> input, Object query) throws InternalServerException {    	
+    protected static List<DBRecord> filterByDataQuery(List<DBRecord> input, Object query, List<DBRecord> nomatch) throws InternalServerException {    	
     	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());    	
     	Condition condition = null;
     	if (query instanceof Map<?, ?>) condition = new AndCondition((Map<String, Object>) query).optimize();
@@ -532,7 +532,9 @@ class QueryEngine {
     	AccessLog.log("validate condition:"+condition.toString());
     	for (DBRecord record : input) {
             Object accessVal = record.data;                        
-            if (condition.satisfiedBy(accessVal)) filteredResult.add(record);    		
+            if (condition.satisfiedBy(accessVal)) {
+            	filteredResult.add(record);    		
+            } else if (nomatch != null) nomatch.add(record);
     	}    	
     	return filteredResult;
     }

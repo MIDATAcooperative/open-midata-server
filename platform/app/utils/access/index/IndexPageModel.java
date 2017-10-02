@@ -41,8 +41,12 @@ public class IndexPageModel extends Model {
 	/**
 	 * Unencrypted data of index
 	 */
-	public @NotMaterialized BSONObject unencrypted;
+	//public @NotMaterialized BSONObject unencrypted;
 	
+	
+	
+	
+		
 	public static void add(IndexPageModel def) throws InternalServerException {
 		Model.insert(collection, def);				
 	}
