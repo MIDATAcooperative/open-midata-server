@@ -160,8 +160,8 @@ public class IndexPage {
 		if (mKeys == null) {
 		  mIsLeaf = true;
           mCurrentKeyNum = 0;
-          mKeys = new IndexKey[BTNode.UPPER_BOUND_KEYNUM];
-          mChildren = new MidataId[BTNode.UPPER_BOUND_KEYNUM + 1];        
+          mKeys = new IndexKey[IndexRoot.UPPER_BOUND_KEYNUM];
+          mChildren = new MidataId[IndexRoot.UPPER_BOUND_KEYNUM + 1];        
 		  changed = true;
 		}
 	}
@@ -174,8 +174,8 @@ public class IndexPage {
 	public void initNonLeaf() {		
 		mIsLeaf = false;
         mCurrentKeyNum = 0;
-        mKeys = new IndexKey[BTNode.UPPER_BOUND_KEYNUM];
-        mChildren = new MidataId[BTNode.UPPER_BOUND_KEYNUM + 1];        
+        mKeys = new IndexKey[IndexRoot.UPPER_BOUND_KEYNUM];
+        mChildren = new MidataId[IndexRoot.UPPER_BOUND_KEYNUM + 1];        
 		changed = true;		
 	}
 	
@@ -209,8 +209,8 @@ public class IndexPage {
 			ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(data));
 			mIsLeaf = in.readBoolean();
 			mCurrentKeyNum = in.readInt();
-			mKeys = new IndexKey[BTNode.UPPER_BOUND_KEYNUM];
-	        mChildren = new MidataId[BTNode.UPPER_BOUND_KEYNUM + 1];       
+			mKeys = new IndexKey[IndexRoot.UPPER_BOUND_KEYNUM];
+	        mChildren = new MidataId[IndexRoot.UPPER_BOUND_KEYNUM + 1];       
 			
 			for (int i=0;i<mCurrentKeyNum;i++) {
 				mKeys[i] = (IndexKey) in.readObject();
