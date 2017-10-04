@@ -391,7 +391,10 @@ class QueryEngine {
     	if (q.getFetchFromDB()) {	
     		//result = duplicateElimination(result);    		
 			for (DBRecord record : result) {
-				if (record.encrypted == null) fetchIds.put(record._id, record);				
+				if (record.encrypted == null) {
+					DBRecord old = fetchIds.put(record._id, record);
+					if (old != null) old.meta = null;
+				}
 			}
     	} else {
     		Set<String> check = q.mayNeedFromDB();
@@ -409,7 +412,10 @@ class QueryEngine {
     					AccessLog.log("need: "+k);
     					fetch = true; 
     				}
-    				if (fetch) { fetchIds.put(record._id, record); }
+    				if (fetch) { 
+    					DBRecord old = fetchIds.put(record._id, record);
+    					if (old != null) old.meta = null;
+    				}
     				
     			}
     		}
@@ -424,7 +430,7 @@ class QueryEngine {
     	}
     	
 		for (DBRecord record : result) {
-			if (minTime == 0 || record.time ==0 || record.time >= minTime) {
+			if (record.meta != null && (minTime == 0 || record.time ==0 || record.time >= minTime)) {
 			  RecordEncryption.decryptRecord(record);
 			  if (!record.meta.containsField("creator")) record.meta.put("creator", record.owner);
 			} else {compress++;record.meta=null;}						

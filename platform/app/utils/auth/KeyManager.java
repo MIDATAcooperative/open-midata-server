@@ -225,6 +225,11 @@ public class KeyManager implements KeySession {
 		} else throw new AuthException("error.relogin", "Session expired. Please relogin.");
 	}
 	
+	public String currentHandle() {
+		KeyManagerSession current = session.get();
+		if (current != null) return current.handle;
+		return null;
+	}
 	
 	public void logout() {		
 		KeyManagerSession current = session.get();

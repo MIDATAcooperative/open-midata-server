@@ -45,6 +45,7 @@ import models.enums.WritePermissionType;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
 import utils.PasswordHash;
 import utils.RuntimeConstants;
 import utils.access.APS;
@@ -62,6 +63,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.RequestTooLargeException;
 import utils.fhir.ConsentResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -75,6 +77,7 @@ import utils.messaging.Messager;
  */
 public class Circles extends APIController {	
 
+	public final static int RETURNED_CONSENT_LIMIT = 1000;
 	/**
 	 * list either all Circles of a user or all consents of others where the user is authorized 
 	 * @return list of circles
@@ -128,6 +131,8 @@ public class Circles extends APIController {
 		List<Consent> consents = null;
 	
 		MidataId owner = new MidataId(request().username());
+		
+		
 		if (properties.containsKey("_id")) {
 			MidataId target = MidataId.from(properties.get("_id"));
 			Consent c = getConsentById(owner, target, fields);
@@ -136,7 +141,7 @@ public class Circles extends APIController {
 		  properties.remove("member");
 		  consents = new ArrayList<Consent>(getConsentsAuthorized(owner, properties, fields));
 		} else {
-		  consents = new ArrayList<Consent>(Consent.getAllByOwner(owner, properties, fields));
+		  consents = new ArrayList<Consent>(Consent.getAllByOwner(owner, properties, fields, RETURNED_CONSENT_LIMIT));
 		}
 		
 		fillConsentFields(owner, consents, fields);
@@ -160,14 +165,18 @@ public class Circles extends APIController {
 	}
 	
 	public static void fillConsentFields(MidataId executor, Collection<Consent> consents, Set<String> fields) throws AppException {
-        if (fields.contains("ownerName")) ReferenceTool.resolveOwners(consents, true);
-		
+        
+        AccessLog.log("consents size="+consents.size());
+		if (fields.contains("ownerName")) ReferenceTool.resolveOwners(consents, true);
+	
 		if (fields.contains("records")) {
 			Map<String, Object> all = new HashMap<String,Object>();
 			for (Consent consent : consents) {
 				if (consent.status.equals(ConsentStatus.ACTIVE)) {
-				  Collection<RecordsInfo> summary = RecordManager.instance.info(executor, consent._id, all, AggregationType.ALL);
-				  if (summary.isEmpty()) consent.records = 0; else consent.records = summary.iterator().next().count;
+				  try {
+				    Collection<RecordsInfo> summary = RecordManager.instance.info(executor, consent._id, all, AggregationType.ALL);
+				    if (summary.isEmpty()) consent.records = 0; else consent.records = summary.iterator().next().count;
+				  } catch (RequestTooLargeException e) { consent.records = -1; }
 				} else consent.records = 0;
 			}
 		}
@@ -207,7 +216,7 @@ public class Circles extends APIController {
 		Set<MidataId> auth = new HashSet<MidataId>();
 		auth.add(user);
 		for (UserGroupMember group : groups) auth.add(group.userGroup);
-		Collection<Consent> consents = Consent.getAllByAuthorized(auth, properties, fields);
+		Collection<Consent> consents = Consent.getAllByAuthorized(auth, properties, fields, RETURNED_CONSENT_LIMIT);
 		return consents;
 	}
 	

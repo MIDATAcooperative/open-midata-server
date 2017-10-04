@@ -230,9 +230,9 @@ public class Studies extends APIController {
 		 AuditManager.instance.addAuditEvent(AuditEventType.DATA_EXPORT, executorId, null, study);
 		 setAttachmentContentDisposition("study.json");
 				 		 		
-		 	     			    
-		 final List<Record> allRecords = RecordManager.instance.list(executorId, executorId, CMaps.map("study", study._id).map("study-group", studyGroup), Sets.create("_id"));
-		 final Iterator<Record> recordIterator = allRecords.iterator();				 
+		 final Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroup(study._id, studyGroup, Sets.create("owner"));			    
+		 
+		 				 
 		 final String handle = PortalSessionToken.session().handle;
 		 
 		 
@@ -243,15 +243,20 @@ public class Studies extends APIController {
 		        	try {
 		        		KeyManager.instance.continueSession(handle);
 		        		ResourceProvider.setExecutionInfo(new ExecutionInfo(executorId));
-		        		out.write("{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"total\" : "+allRecords.size()+", \"entry\" : [ ");
+		        		out.write("{ \"resourceType\" : \"Bundle\", \"type\" : \"searchset\", \"entry\" : [ ");
+
 		        		boolean first = true;
+		        		for (StudyParticipation part : parts) {
+		        		List<Record> allRecords = RecordManager.instance.list(executorId, part._id, CMaps.map(), Sets.create("_id"));
+		        		Iterator<Record> recordIterator = allRecords.iterator();
+
 		        		while (recordIterator.hasNext()) {
 				            int i = 0;
 				            Set<MidataId> ids = new HashSet<MidataId>();		           
 				            while (i < 100 && recordIterator.hasNext()) {
 				            	ids.add(recordIterator.next()._id);i++;
 				            }
-				            List<Record> someRecords = RecordManager.instance.list(executorId, executorId, CMaps.map("study", study._id).map("study-group", studyGroup).map("_id", ids), RecordManager.COMPLETE_DATA);
+				            List<Record> someRecords = RecordManager.instance.list(executorId, part._id, CMaps.map("_id", ids), RecordManager.COMPLETE_DATA);
 				            for (Record rec : someRecords) {
 				            	
 				            	String format = rec.format.startsWith("fhir/") ? rec.format.substring("fhir/".length()) : "Basic";
@@ -266,6 +271,8 @@ public class Studies extends APIController {
 				            	}
 			            		first = false;
 				            }
+		        		}
+		        		
 		        		}
 		        		out.write("] }");
 			        	out.close();

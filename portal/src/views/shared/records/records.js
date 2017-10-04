@@ -88,6 +88,7 @@ angular.module('portal')
 			properties["group-system"] = "v1";
 		}
 		if ($scope.debug) properties.streams = "true";
+		properties.limit = 5000;
 		return $scope.status.doAction("load", records.getRecords(userId, properties, ["id", "owner", "ownerName", "content", "created", "name", "group", "app"])).
 		then(function(results) {
 			$scope.records = results.data;

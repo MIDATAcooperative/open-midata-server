@@ -13,7 +13,7 @@ import utils.exceptions.AppException;
 public class ConsentAccessContext extends AccessContext{
 
 	private Consent consent;
-	private final Set<String> reqfields = Sets.create("sharingQuery", "createdBefore", "validUntil");
+	//private final Set<String> reqfields = Sets.create("sharingQuery", "createdBefore", "validUntil");
 	
 	public ConsentAccessContext(Consent consent, APSCache cache, AccessContext parent) throws AppException {
 		super(cache, parent);
@@ -63,6 +63,10 @@ public class ConsentAccessContext extends AccessContext{
 	public boolean isIncluded(DBRecord record) throws AppException {
 		if (consent.writes == null) return false;
 		return !QueryEngine.listFromMemory(cache, consent.sharingQuery, Collections.singletonList(record)).isEmpty();
+	}
+	
+	public Consent getConsent() {
+		return consent;
 	}
 
 	

@@ -49,6 +49,15 @@ public class IndexRoot {
 		this.loadedPages = new HashMap<MidataId, IndexPage>();
 	}
 	
+	
+	
+	public IndexDefinition getModel() {
+		return model;
+	}
+
+
+	
+
 	public long getVersion() {
 		return rootPage.getVersion();
 	}

@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import actions.APICall;
 import controllers.APIController;
 import controllers.Application;
+import controllers.Circles;
 import controllers.Users;
 import models.HCRelated;
 import models.HPUser;
@@ -207,7 +208,7 @@ public class Providers extends APIController {
 		
 		MidataId userId = new MidataId(request().username());
 
-		Set<MemberKey> memberKeys = MemberKey.getByAuthorizedPerson(userId, Sets.create("owner"));
+		Set<MemberKey> memberKeys = MemberKey.getByAuthorizedPerson(userId, Sets.create("owner"), Circles.RETURNED_CONSENT_LIMIT);
 		Set<MidataId> ids = new HashSet<MidataId>();
 		for (MemberKey key : memberKeys) ids.add(key.owner);
 		Set<String> fields = Sets.create("_id", "firstname","birthday", "lastname"); 

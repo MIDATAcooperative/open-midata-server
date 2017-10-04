@@ -13,13 +13,19 @@ import java.util.UUID;
 import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
+import akka.actor.ActorRef;
+import akka.actor.Props;
 import models.Consent;
 import models.MidataId;
+import play.libs.Akka;
 import utils.AccessLog;
 import utils.access.index.IndexDefinition;
 import utils.access.index.IndexMatch;
+import utils.access.index.IndexRemoveMsg;
 import utils.access.index.IndexRoot;
+import utils.access.index.IndexUpdateMsg;
 import utils.access.op.Condition;
+import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
 import utils.db.LostUpdateException;
@@ -35,8 +41,14 @@ import utils.stats.Stats;
 public class IndexManager {
 
 	public static IndexManager instance = new IndexManager();
-	
+			
 	private static long UPDATE_TIME = 1000 * 10;
+	
+	private ActorRef indexSupervisor;
+	
+	public IndexManager() {
+		indexSupervisor = Akka.system().actorOf(Props.create(IndexSupervisor.class), "indexSupervisor");
+	}
 
 	public IndexPseudonym getIndexPseudonym(APSCache cache, MidataId user, MidataId targetAPS, boolean create) throws AppException {		
 
@@ -141,7 +153,7 @@ public class IndexManager {
 		
 	}
 	
-	protected void indexUpdate(APSCache cache, IndexRoot index, MidataId executor, Set<MidataId> targetAps) throws AppException {
+	public void indexUpdate(APSCache cache, IndexRoot index, MidataId executor, Set<MidataId> targetAps) throws AppException {
 						
 		AccessLog.logBegin("start index update");
 		long startUpdate = System.currentTimeMillis();
@@ -234,13 +246,20 @@ public class IndexManager {
 	}
 	
 	public IndexRoot getIndexRootAndUpdate(IndexPseudonym pseudo, APSCache cache, MidataId user, IndexDefinition idx, Set<MidataId> targetAps) throws AppException {
-		IndexRoot root = new IndexRoot(pseudo.getKey(), idx, false);		
-		indexUpdate(cache, root, user, targetAps);		
+		IndexRoot root = new IndexRoot(pseudo.getKey(), idx, false);	
+		indexSupervisor.tell(new IndexUpdateMsg(idx._id, user, pseudo, KeyManager.instance.currentHandle(), targetAps), null);
+		//indexUpdate(cache, root, user, targetAps);		
 		return root;
 	}
 	
 	public IndexDefinition findIndex(IndexPseudonym pseudo, Set<String> format, List<String> pathes) throws AppException {		
 		Set<IndexDefinition> res = IndexDefinition.getAll(CMaps.map("owner", pseudo.getPseudonym()).map("formats", CMaps.map("$all", format)).map("fields", CMaps.map("$all", pathes)), IndexDefinition.ALL);
+		if (res.size() == 1) return res.iterator().next();
+		return null;
+	}
+	
+	public IndexDefinition findIndex(IndexPseudonym pseudo, MidataId id) throws AppException {		
+		Set<IndexDefinition> res = IndexDefinition.getAll(CMaps.map("owner", pseudo.getPseudonym()).map("_id", id), IndexDefinition.ALL);
 		if (res.size() == 1) return res.iterator().next();
 		return null;
 	}
@@ -264,7 +283,7 @@ public class IndexManager {
 		AccessLog.logEnd("end clear indexes");
 	}
 
-	public void revalidate(List<DBRecord> validatedResult, IndexRoot root, Object indexQuery, Condition[] cond) throws AppException {		
+	public void revalidate(List<DBRecord> validatedResult, MidataId executor,  IndexPseudonym pseudo, IndexRoot root, Object indexQuery, Condition[] cond) throws AppException {		
 		if (validatedResult.size() == 0) return;
 					
 		for (DBRecord r : validatedResult) QueryEngine.loadData(r);
@@ -275,12 +294,7 @@ public class IndexManager {
 		AccessLog.log("Index found records:"+validatedResult.size()+" still valid:"+stillValid.size());
 		if (validatedResult.size() > stillValid.size()) {
 			AccessLog.log("Removing "+notValid.size()+" records from index.");
-			try {
-			   for (DBRecord rec : notValid) {				
-				  root.removeEntry(rec);				
-			   }
-			   root.flush();
-			} catch (LostUpdateException e) {}
+			indexSupervisor.tell(new IndexRemoveMsg(root.getModel()._id, executor, pseudo, KeyManager.instance.currentHandle(), notValid), null);			
 		}				 
 	}
 	
