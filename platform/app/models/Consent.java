@@ -34,7 +34,7 @@ public class Consent extends Model {
 	/**
 	 * constant for all fields of a consent
 	 */
-	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "externalAuthorized", "writes");
+	public @NotMaterialized final static Set<String> ALL = Sets.create("owner", "ownerName", "name", "authorized", "entityType", "type", "status", "categoryCode", "creatorApp", "sharingQuery", "validUntil", "createdBefore", "dateOfCreation", "sharingQuery", "externalOwner", "externalAuthorized", "writes", "dataupdate");
 	
 	/**
 	 * constant for all FHIR fields of a consent
@@ -163,8 +163,8 @@ public class Consent extends Model {
 		return Model.get(Consent.class, collection, CMaps.map("owner", ownerId).map("passcode", passcode), fields);
 	}
 	
-	public static Set<Consent> getAllByOwner(MidataId owner, Map<String, Object> properties,  Set<String> fields) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("owner", owner), fields);
+	public static Set<Consent> getAllByOwner(MidataId owner, Map<String, Object> properties,  Set<String> fields, int limit) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("owner", owner), fields, limit);
 	}
 	
 	public static Set<Consent> getAllActiveByAuthorized(MidataId member) throws InternalServerException {
@@ -179,8 +179,8 @@ public class Consent extends Model {
 		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("authorized", member), fields);
 	}
 	
-	public static Set<Consent> getAllByAuthorized(Set<MidataId> member, Map<String, Object> properties, Set<String> fields) throws InternalServerException {
-		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("authorized", member), fields);
+	public static Set<Consent> getAllByAuthorized(Set<MidataId> member, Map<String, Object> properties, Set<String> fields, int limit) throws InternalServerException {
+		return Model.getAll(Consent.class, collection, CMaps.map(properties).map("authorized", member), fields, limit);
 	}
 	
 	public static Set<Consent> getAllByAuthorized(MidataId member) throws InternalServerException {

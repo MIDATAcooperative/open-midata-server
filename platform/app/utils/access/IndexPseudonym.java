@@ -9,11 +9,11 @@ public class IndexPseudonym {
 	   this.key = key;
    }
    
-   protected String getPseudonym() {
+   public String getPseudonym() {
 	   return pseudonym;
    }
    
-   protected byte[] getKey() {
+   public byte[] getKey() {
 	   return key;
    }
    

@@ -135,6 +135,55 @@ public class EncryptionUtils {
 	
 	}
 	
+	public static byte[] decrypt(byte[] key, byte[] encrypted) throws InternalServerException {
+		try {
+			SecretKey keySpec = getKeySpec(key);
+			String ciperAlg = CIPHER_ALG[getCipherAlg(key)];
+			Cipher c = Cipher.getInstance(ciperAlg);
+			c.init(Cipher.DECRYPT_MODE, keySpec);
+
+			byte[] cipherText = encrypted; 
+			return EncryptionUtils.derandomize(c.doFinal(cipherText));		   													    	
+	    			    	
+		} catch (InvalidKeyException e) {
+			throw new InternalServerException("error.internal.cryptography", e);
+		} catch (NoSuchPaddingException e2) {
+			throw new InternalServerException("error.internal.cryptography",e2);
+		} catch (NoSuchAlgorithmException e3) {
+			throw new InternalServerException("error.internal.cryptography",e3);
+		} catch (BadPaddingException e4) {
+			throw new InternalServerException("error.internal.cryptography",e4);
+		} catch (IllegalBlockSizeException e5) {
+			throw new InternalServerException("error.internal.cryptography",e5);
+		} 
+
+	}
+	
+	public static byte[] encrypt(byte[] key, byte[] bson) throws InternalServerException {
+		try {
+			SecretKey keySpec = getKeySpec(key);
+			String ciperAlg = CIPHER_ALG[getCipherAlg(key)];
+			
+			Cipher c = Cipher.getInstance(ciperAlg);
+			c.init(Cipher.ENCRYPT_MODE, keySpec);
+		    
+			byte[] cipherText = c.doFinal(EncryptionUtils.randomize(bson));
+							
+	    	return cipherText;
+		} catch (InvalidKeyException e) {
+			throw new InternalServerException("error.internal.cryptography", e);
+		} catch (NoSuchPaddingException e2) {
+			throw new InternalServerException("error.internal.cryptography", e2);
+		} catch (NoSuchAlgorithmException e3) {
+			throw new InternalServerException("error.internal.cryptography", e3);
+		} catch (BadPaddingException e4) {
+			throw new InternalServerException("error.internal.cryptography", e4);
+		} catch (IllegalBlockSizeException e5) {
+			throw new InternalServerException("error.internal.cryptography", e5);
+		} 
+	
+	}
+	
 	public static InputStream encryptStream(byte[] key, InputStream in) throws InternalServerException {
 		try {
 			SecretKey keySpec = getKeySpec(key);

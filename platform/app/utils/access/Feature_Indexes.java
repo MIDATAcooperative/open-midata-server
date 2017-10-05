@@ -98,6 +98,7 @@ private Feature next;
 						
 			List<DBRecord> result = new ArrayList<DBRecord>();
 			
+									
 			
 			IndexUse myAccess = parse(pseudo, q.getRestriction("format"), indexQueryParsed);			
 				
@@ -190,11 +191,31 @@ private Feature next;
 
 			AccessLog.log("index query found "+matches.size()+" matches, "+result.size()+" in correct aps.");
 				
-			myAccess.revalidate(result);				
+			myAccess.revalidate(q.getCache().getExecutor(), result);				
 			
 			long afterRevalidateTime = System.currentTimeMillis();
 			
-			AccessLog.logEnd("end index query "+result.size()+" matches. timePrepare="+(afterPrepareTime-startTime)+" exec="+(afterQuery-afterPrepareTime)+" postLookup="+(endTime-afterQuery)+" revalid="+(afterRevalidateTime-endTime));
+			AccessLog.logBegin("start to look for new entries");
+			if (targetAps != null) {
+			for (MidataId id : targetAps) {
+				long v = myAccess.version(id);
+												
+				AccessContext context = getContextForAps(q, id);
+				if (context != null) {
+					if (context instanceof ConsentAccessContext && ((ConsentAccessContext) context).getConsent().dataupdate <= v) continue;
+				    result.addAll(next.query(new Query(q, CMaps.map("updated-after", v), id, context)));
+				    result.addAll(next.query(new Query(q, CMaps.map("shared-after", v), id, context)));
+				}
+			}
+			} else {
+				long v = myAccess.version(null);
+				result.addAll(next.query(new Query(q, CMaps.map("updated-after", v ))));
+				result.addAll(next.query(new Query(q, CMaps.map("shared-after", v))));
+			}
+			AccessLog.logEnd("end to look for new entries");
+			long endTime2 = System.currentTimeMillis();
+			
+			AccessLog.logEnd("end index query "+result.size()+" matches. timePrepare="+(afterPrepareTime-startTime)+" exec="+(afterQuery-afterPrepareTime)+" postLookup="+(endTime-afterQuery)+" revalid="+(afterRevalidateTime-endTime)+" old="+(endTime2-afterRevalidateTime));
 			return result;
 						
 			
@@ -225,7 +246,8 @@ private Feature next;
 	
 	interface IndexUse {		
 		Collection<IndexMatch> query(Query q, Set<MidataId> targetAps) throws AppException;
-		void revalidate(List<DBRecord> result) throws AppException;
+		void revalidate(MidataId executor, List<DBRecord> result) throws AppException;
+		long version(MidataId aps);
 	}
 	
 	class IndexAccess implements IndexUse {
@@ -278,21 +300,31 @@ private Feature next;
 			long t1 = System.currentTimeMillis();
 			prepare();
 			root = cachedIndexRoots.get(index._id);
-			long t2 = System.currentTimeMillis();
+			boolean doupdate = false;
 			if (root == null) {
-			  root = IndexManager.instance.getIndexRootAndUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index, targetAps);
+			  root = IndexManager.instance.getIndexRoot(pseudo, index);
+			  doupdate = true;
 			  cachedIndexRoots.put(index._id, root);
 			}
-			long t3 = System.currentTimeMillis();
+			long t2 = System.currentTimeMillis();			
 			matches = IndexManager.instance.queryIndex(root, condition);
-			AccessLog.log("Index use: prep="+(t2-t1)+" update="+(t3-t2)+" query="+(System.currentTimeMillis() - t3));
+			if (doupdate) IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index, targetAps);
+			AccessLog.log("Index use: prep="+(t2-t1)+" query="+(System.currentTimeMillis() - t2));
 			return matches;
 			
 		}
 		
-		public void revalidate(List<DBRecord> result) throws AppException {
+		public void revalidate(MidataId executor, List<DBRecord> result) throws AppException {
 			if (index==null) return;
-			IndexManager.instance.revalidate(result, root, revalidationQuery, condition);
+			IndexManager.instance.revalidate(result, executor, pseudo, root, revalidationQuery, condition);
+		}
+		
+		public long version(MidataId aps) {
+			if (root != null) {
+				if (aps == null) return root.getAllVersion();
+				return root.getVersion(aps);
+			}
+			return -1;
 		}
 	}
 	
@@ -325,8 +357,18 @@ private Feature next;
 		}
 
 		@Override
-		public void revalidate(List<DBRecord> result) throws AppException {
-			for (IndexUse part : parts) part.revalidate(result);			
+		public void revalidate(MidataId executor, List<DBRecord> result) throws AppException {
+			for (IndexUse part : parts) part.revalidate(executor, result);			
+		}
+		
+		public long version(MidataId aps) {
+			long r = -1;
+			for (IndexUse part : parts) {
+			   long v = part.version(aps);
+			   if (r == -1) r = v;
+			   else if (v > -1 && v < r)  r = v;				
+			}
+			return r;
 		}
 		
 	}
@@ -354,8 +396,18 @@ private Feature next;
 		}
 
 		@Override
-		public void revalidate(List<DBRecord> result) throws AppException {
+		public void revalidate(MidataId executor, List<DBRecord> result) throws AppException {
 			//for (IndexUse part : parts) part.revalidate(result);			
+		}
+		
+		public long version(MidataId aps) {
+			long r = -1;
+			for (IndexUse part : parts) {
+			   long v = part.version(aps);
+			   if (r == -1) r = v;
+			   else if (v > -1 && v < r)  r = v;				
+			}
+			return r;
 		}
 	}
 

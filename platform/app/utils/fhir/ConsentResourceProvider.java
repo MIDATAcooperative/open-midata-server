@@ -376,7 +376,7 @@ public class ConsentResourceProvider extends ResourceProvider<org.hl7.fhir.dstu3
 			
 			Set<models.Consent> consents = new HashSet<models.Consent>();						
 			if (authorized == null || authorized.contains(info().ownerId.toString())) consents.addAll(Consent.getAllByAuthorized(info().ownerId, properties, Consent.FHIR));
-			if (!properties.containsKey("owner") || utils.access.Query.getRestriction(properties.get("owner"), "owner").contains(info().ownerId.toString())) consents.addAll(Consent.getAllByOwner(info().ownerId, properties, Consent.FHIR));
+			if (!properties.containsKey("owner") || utils.access.Query.getRestriction(properties.get("owner"), "owner").contains(info().ownerId.toString())) consents.addAll(Consent.getAllByOwner(info().ownerId, properties, Consent.FHIR, Circles.RETURNED_CONSENT_LIMIT));
 			List<IBaseResource> result = new ArrayList<IBaseResource>();
 			for (models.Consent consent : consents) {
 				result.add(readConsentFromMidataConsent(consent, true));

@@ -260,7 +260,7 @@ public class Administration extends APIController {
 			Space.delete(userId, space._id);
 		}
 		
-		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map(), Consent.ALL);
+		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map(), Consent.ALL, Integer.MAX_VALUE);
 		for (Consent consent : consents) {			
 			AccessPermissionSet.delete(consent._id);
 			Circle.delete(userId, consent._id);
