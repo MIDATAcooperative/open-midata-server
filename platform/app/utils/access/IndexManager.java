@@ -171,7 +171,7 @@ public class IndexManager {
 		    }
 		    
 		    AccessLog.log("number of aps to update = "+targetAps.size());
-			
+			int modCount = 0;
 			for (MidataId aps : targetAps) {
 				if (index.getModCount() > 5000) index.flush();
 				
@@ -201,10 +201,12 @@ public class IndexManager {
 				if (updateTs) index.setVersion(aps, now);
 				AccessLog.log("Add index: from updated="+recs.size());
 				
+				modCount += index.getModCount();
+				
 				
 			}
 			
-			if (updateAllTs != 0 && (index.isChanged() || targetAps.size() > 3)) index.setAllVersion(updateAllTs);
+			if (updateAllTs != 0 && (modCount>0 || targetAps.size() > 3)) index.setAllVersion(updateAllTs);
 			index.flush();
 		} catch (LostUpdateException e) {
 			try {

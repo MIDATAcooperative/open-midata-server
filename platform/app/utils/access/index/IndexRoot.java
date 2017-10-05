@@ -149,10 +149,7 @@ public class IndexRoot {
 		locked = false;
 		modCount = 0;
 	}
-	
-	public boolean isChanged() {
-		return rootPage.changed;
-	}
+		
 
 	public List<String> getFormats() {		
 		return model.formats;

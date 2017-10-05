@@ -529,7 +529,8 @@ class QueryEngine {
     	return filteredResult;
     }
     
-    protected static List<DBRecord> filterByDataQuery(List<DBRecord> input, Object query, List<DBRecord> nomatch) throws InternalServerException {    	
+    protected static List<DBRecord> filterByDataQuery(List<DBRecord> input, Object query, List<DBRecord> nomatch) throws InternalServerException {
+    	if (input.size() == 0) return input;
     	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());    	
     	Condition condition = null;
     	if (query instanceof Map<?, ?>) condition = new AndCondition((Map<String, Object>) query).optimize();
