@@ -1,7 +1,14 @@
 package utils.access.index;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.bson.BasicBSONObject;
@@ -12,6 +19,7 @@ import utils.AccessLog;
 import utils.access.EncryptionUtils;
 import utils.access.op.Condition;
 import utils.db.LostUpdateException;
+import utils.db.NotMaterialized;
 import utils.exceptions.InternalServerException;
 
 /**
@@ -21,24 +29,34 @@ import utils.exceptions.InternalServerException;
 public class IndexPage {
 
 	protected IndexPageModel model;
+	protected IndexRoot root;
 	protected byte[] key;
 	protected boolean changed;
+	protected boolean childsChanged;
 	
-	public final static int PAGE_LIMIT = 10000;
+	protected boolean mIsLeaf;
+    protected int mCurrentKeyNum;
+    protected IndexKey mKeys[];  
+    protected MidataId mChildren[];
+    protected Map<String, Long> ts;
+    
+    	
 	
 	protected IndexPage() {}
 	
-	public IndexPage(byte[] key, IndexPageModel model) throws InternalServerException {
+	public IndexPage(byte[] key, IndexPageModel model, IndexRoot root) throws InternalServerException {
 		this.key = key;
 		this.model = model;
+		this.root = root;
 		if (model.enc != null) decrypt();
 	}
 	
 	
-	public IndexPage(byte[] key) throws InternalServerException {
+	public IndexPage(byte[] key, IndexRoot root) throws InternalServerException {
 		this.key = key;
 		this.model = new IndexPageModel();
 		this.model._id = new MidataId();
+		this.root = root;
 		
 		init();				
 		encrypt();
@@ -46,15 +64,44 @@ public class IndexPage {
 		IndexPageModel.add(this.model);
 	}
 	
+	public void copyFrom(IndexPage other) {
+		this.mIsLeaf = other.mIsLeaf;
+	    this.mCurrentKeyNum = other.mCurrentKeyNum;
+	    System.arraycopy(other.mKeys, 0, this.mKeys, 0, other.mKeys.length);
+	    System.arraycopy(other.mChildren, 0, this.mChildren, 0, other.mChildren.length);    
+	    this.changed = true;
+	}
+	
+	public IndexPage getChild(int idx) throws InternalServerException, LostUpdateException {
+		MidataId child = mChildren[idx];
+		if (child == null) return null;
+		
+		
+		IndexPage loaded = root.loadedPages.get(child);
+		if (loaded != null) return loaded;
+				
+		loaded = new IndexPage(this.key, IndexPageModel.getById(child), root);
+		if (loaded.model.lockTime > root.getVersion()) throw new LostUpdateException();
+		root.loadedPages.put(child, loaded);
+		return loaded;
+	}
+	
+	public MidataId getId() {
+		return model._id;
+	}
+		
+	/*
 	public void setRange(BasicBSONList lk, BasicBSONList hk) {
 		this.model.unencrypted.put("lk", lk);
 		this.model.unencrypted.put("hk", hk);
 	}
+	*/
 	
 	public long getVersion() {
 		return model.version;
 	}
 	
+	/*
 	public void addEntry(Comparable<Object>[] key, MidataId aps, MidataId target) throws InternalServerException {
 		//if (key[0] == null) return;
 		
@@ -79,132 +126,162 @@ public class IndexPage {
 	      ((BasicBSONList) model.unencrypted.get("e")).remove(entry);
 	    }
 	}
+	*/
 	
-	public Collection<IndexMatch> lookup(Condition[] key) throws InternalServerException  {
+	public Collection<IndexMatch> lookup(Condition[] key) throws InternalServerException, LostUpdateException  {
         long t = System.currentTimeMillis();				
-		BasicBSONList entries = findEntries(key);
+		Collection<IndexKey> entries = findEntries(key);
 		if (entries == null) return null;
 		
-		Collection<IndexMatch> results = new ArrayList<IndexMatch>();
-		for (Object o : entries) {
-			BasicBSONObject obj = (BasicBSONObject) o;
-			IndexMatch match = new IndexMatch();
-			match.apsId = new MidataId(obj.get("a").toString());
-			match.recordId = new MidataId(obj.get("t").toString());
-			results.add(match);
+		Collection<IndexMatch> results = new ArrayList<IndexMatch>(entries.size());
+		for (IndexKey o : entries) {
+			results.add(new IndexMatch(MidataId.from(o.getId()), MidataId.from(o.value)));			
 		}
 		AccessLog.log("lookup:"+(System.currentTimeMillis() - t));
 		return results;
 	}
-	
-	public void flush() throws InternalServerException, LostUpdateException {
+
+	public boolean flush() throws InternalServerException, LostUpdateException {
 		if (changed) {
 			AccessLog.log("Flushing index page");
 			encrypt();
 			model.update();			
 			changed = false;
+			return true;
 		}
+		return false;
+		
 	}
 	
 	public void reload() throws InternalServerException {
 		model = IndexPageModel.getById(model._id);
 		decrypt();
+		
 	}
 	
 	public void init() {
-		if (model.unencrypted == null) {
-			model.unencrypted = new BasicBSONObject();
-			BasicBSONList entries = new BasicBSONList();
-			model.unencrypted.put("e", entries);
-			model.unencrypted.put("size", 0);
-			model.unencrypted.put("ts", new BasicBSONObject());
-			changed = true;
+		if (mKeys == null) {
+		  mIsLeaf = true;
+          mCurrentKeyNum = 0;
+          mKeys = new IndexKey[IndexRoot.UPPER_BOUND_KEYNUM];
+          mChildren = new MidataId[IndexRoot.UPPER_BOUND_KEYNUM + 1];        
+		  changed = true;
 		}
+	}
+	
+	public void initAsRootPage() {
+		init();
+		this.ts = new HashMap<String, Long>();
+	}
+	
+	public void initNonLeaf() {		
+		mIsLeaf = false;
+        mCurrentKeyNum = 0;
+        mKeys = new IndexKey[IndexRoot.UPPER_BOUND_KEYNUM];
+        mChildren = new MidataId[IndexRoot.UPPER_BOUND_KEYNUM + 1];        
+		changed = true;		
 	}
 	
 	protected void encrypt() throws InternalServerException {
-		model.enc = EncryptionUtils.encryptBSON(key, model.unencrypted);
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		try {
+			AccessLog.log("encrypt:"+mIsLeaf+" "+mCurrentKeyNum+" ts="+ts);
+			ObjectOutputStream oos = new ObjectOutputStream(bos);
+			oos.writeBoolean(mIsLeaf);
+			oos.writeInt(mCurrentKeyNum);			
+			for (int i=0;i<mCurrentKeyNum;i++) {
+				oos.writeObject(mKeys[i]);
+			}
+			if (!mIsLeaf) {
+				for (int i=0;i<=mCurrentKeyNum;i++) {
+					oos.writeUTF(mChildren[i].toString());
+				}
+			}
+			
+			oos.writeObject(ts);
+			oos.close();
+		} catch (IOException e) {
+			
+		}
+		model.enc = EncryptionUtils.encrypt(key, bos.toByteArray());
 	}
 	
 	protected void decrypt() throws InternalServerException {
-		model.unencrypted = EncryptionUtils.decryptBSON(key, model.enc);
-		if (model.unencrypted.get("ts") == null) throw new InternalServerException("error.internal", "Failed to load index");		
+		byte[] data = EncryptionUtils.decrypt(key, model.enc);
+		try {
+			ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(data));
+			mIsLeaf = in.readBoolean();
+			mCurrentKeyNum = in.readInt();
+			mKeys = new IndexKey[IndexRoot.UPPER_BOUND_KEYNUM];
+	        mChildren = new MidataId[IndexRoot.UPPER_BOUND_KEYNUM + 1];       
+			
+			for (int i=0;i<mCurrentKeyNum;i++) {
+				mKeys[i] = (IndexKey) in.readObject();
+			}
+			
+			if (!mIsLeaf) {
+				for (int i=0;i<=mCurrentKeyNum;i++) {
+					mChildren[i] = MidataId.from(in.readUTF());
+				}
+			}
+			
+			this.ts = (Map<String, Long>) in.readObject();
+			
+			AccessLog.log("decrypt:"+mIsLeaf+" "+mCurrentKeyNum+" ts="+ts);
+		} catch (IOException e) {
+			AccessLog.logException("IOException", e);
+			throw new InternalServerException("error.internal", "IOException"); }
+		catch (ClassNotFoundException e2) { throw new InternalServerException("error.internal", "ClassNotFoundException");}
 	}
-	
-	private BasicBSONObject findEntry(Object[] key) {
-		BasicBSONList lst = (BasicBSONList) model.unencrypted.get("e");
-		for (Object entry : lst) {
-			BasicBSONObject row = (BasicBSONObject) entry;
-			BasicBSONList rowkey = (BasicBSONList) row.get("k");
-			boolean match = keyCompare(key, rowkey);						
-			if (match) return row;
-		}
-		return null;
-	}
-	
-	private BasicBSONList findEntries(Condition[] key) {
-		BasicBSONList result = null;
-		boolean cloned = false;
+			
+	protected Collection<IndexKey> findEntries(Condition[] key) throws InternalServerException, LostUpdateException {
+		Collection<IndexKey> result = new ArrayList<IndexKey>();
 		
-		BasicBSONList lst = (BasicBSONList) model.unencrypted.get("e");
-		AccessLog.log("idx size, normal="+lst.size());
-		for (Object entry : lst) {
-			BasicBSONObject row = (BasicBSONObject) entry;
-			BasicBSONList rowkey = (BasicBSONList) row.get("k");
-			boolean match = conditionCompare(key, rowkey);						
-			if (match) {
-				if (result == null) {
-					result = (BasicBSONList) row.get("e");
-				} else if (cloned) {
-					result.addAll((BasicBSONList) row.get("e"));
-				} else {
-					BasicBSONList old = result;
-					result = new BasicBSONList();
-					result.addAll(old);
-					result.addAll((BasicBSONList) row.get("e"));
-					cloned = true;
+		
+		if (mIsLeaf) {
+			for (int i=0;i<mCurrentKeyNum;i++)  {			
+				boolean match = conditionCompare(key, mKeys[i].getKey());						
+				if (match) {
+					result.add(mKeys[i]);
+				}			
+			}
+		} else {
+				
+			for (int i=0;i<=mCurrentKeyNum;i++) {	
+				
+				boolean match = conditionCompare(key, i==0 ? null : mKeys[i-1].getKey(), i == mCurrentKeyNum ? null : mKeys[i].getKey());						
+				if (match) {
+					IndexPage c = getChild(i);
+					result.addAll(c.findEntries(key));				
 				}
 			}
 		}
 		return result;
 	}
+		
 	
-	protected void removeFromEntries(Condition[] key, Set<IndexMatch> ids) throws InternalServerException {
-				
-		BasicBSONList lst = (BasicBSONList) model.unencrypted.get("e");
-		for (Object entry : lst) {
-			BasicBSONObject row = (BasicBSONObject) entry;
-			BasicBSONList rowkey = (BasicBSONList) row.get("k");
-			boolean match = conditionCompare(key, rowkey);						
-			if (match) {
-				BasicBSONList objs = (BasicBSONList) row.get("e");
-				
-				for (int i=0;i<objs.size();i++) {
-					BasicBSONObject e = (BasicBSONObject) objs.get(i);
-					if (ids.contains(new IndexMatch(e.getString("t"),e.getString("a")))) {
-						objs.remove(i);
-						i--;
-						changed = true;
-					}
-				}
-			}
-		}		
-	}
-	
-	private boolean keyCompare(Object[] key, BasicBSONList idxKey) {
+	private boolean keyCompare(Object[] key, Comparable[] idxKey) {
 		for (int i=0;i<key.length;i++) {
-			if ((key[i] != null) ? (!key[i].equals(idxKey.get(i))) : (idxKey.get(i) != null)) return false;
+			if ((key[i] != null) ? (!key[i].equals(idxKey[i])) : (idxKey[i] != null)) return false;
 		}		
 		return true;
 	}
 	
-	private boolean conditionCompare(Condition[] key, BasicBSONList idxKey) {
+	private boolean conditionCompare(Condition[] key, Comparable[] idxKey) {
 		for (int i=0;i<key.length;i++) {
-			if (!key[i].satisfiedBy(idxKey.get(i))) return false;
+			if (!key[i].satisfiedBy(idxKey[i])) return false;
 		}		
 		return true;
 	}
 	
+	private boolean conditionCompare(Condition[] cond, Comparable[] lowkey, Comparable[] highkey) {
+		for (int i=0;i<cond.length;i++) {
+			if (!cond[i].isInBounds(lowkey==null ? null : lowkey[i],  highkey == null ? null: highkey[i]))  return false;
+		}		
+		return true;
+	}
+	
+	/*
 	private boolean containsRecord(BasicBSONObject row, MidataId target, MidataId aps) {
 	   BasicBSONList entries = (BasicBSONList) row.get("e");
 	   if (entries == null) return false;
@@ -270,15 +347,7 @@ public class IndexPage {
 		if (v == null) return -1;
 		return ((Long) v);
 	}
+		
 	
-	public boolean needsSplit() {
-		return ((BasicBSONObject) model.unencrypted).getInt("size") > PAGE_LIMIT
-				&& ((BasicBSONList) model.unencrypted.get("e")).size() >= 10;
-	}
-	
-	public boolean isNonLeaf() {
-		return model.unencrypted.get("p") != null;
-	}
-	
-	
+	*/
 }

@@ -631,7 +631,7 @@ public class RecordManager {
 		
 		IndexManager.instance.removeRecords(cache, executingPerson, recs);
 		
-		Set<Consent> consents = Consent.getAllByOwner(executingPerson, new HashMap<String, Object>(), Sets.create("_id"));
+		Set<Consent> consents = Consent.getAllByOwner(executingPerson, new HashMap<String, Object>(), Sets.create("_id"), Integer.MAX_VALUE);
 		
 		for (Consent c : consents) {
 			cache.getAPS(c._id).removePermission(recs);		
@@ -1035,7 +1035,7 @@ public class RecordManager {
 		AccessLog.logEnd("end search for missing records");
 		
 		AccessLog.logBegin("start searching for missing records in consents");
-		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map(), Sets.create("_id"));
+		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map(), Sets.create("_id"), Integer.MAX_VALUE);
 		for (Consent consent : consents) {
 			try {
 				cache.getAPS(consent._id, userId).getStoredOwner();					

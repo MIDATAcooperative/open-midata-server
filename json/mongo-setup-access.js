@@ -1,6 +1,6 @@
 // Access DB
 db.consents.createIndex({ "owner" : 1 });
-db.consents.createIndex({ "authorized" : 1 });
+db.consents.createIndex({ "authorized" : 1, "dataupdate" : 1 });
 db.consents.createIndex({ "externalOwner" : 1 });
 db.consents.createIndex({ "externalAuthorized" : 1 });
 db.groupmember.createIndex({ "member" : 1 });

@@ -99,7 +99,7 @@ public class AccountPatches {
 			AccessPermissionSet.setConsent(c._id);					
 			Consent.set(c._id, "dataupdate", System.currentTimeMillis());
 		}
-		consents = Consent.getAllByOwner(user._id, CMaps.map(), Sets.create("_id"));
+		consents = Consent.getAllByOwner(user._id, CMaps.map(), Sets.create("_id"), Integer.MAX_VALUE);
 		for (Consent c : consents) {
 			AccessPermissionSet.setConsent(c._id);					
 			Consent.set(c._id, "dataupdate", System.currentTimeMillis());
@@ -138,7 +138,7 @@ public class AccountPatches {
 			Space.delete(userId, space._id);
 		}
 		
-		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map("type", ConsentType.EXTERNALSERVICE), Consent.ALL);
+		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map("type", ConsentType.EXTERNALSERVICE), Consent.ALL, Integer.MAX_VALUE);
 		for (Consent consent : consents) {
 			RecordManager.instance.deleteAPS(consent._id, userId);
 			Circle.delete(userId, consent._id);
