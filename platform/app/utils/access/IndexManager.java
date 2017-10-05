@@ -173,6 +173,8 @@ public class IndexManager {
 		    AccessLog.log("number of aps to update = "+targetAps.size());
 			
 			for (MidataId aps : targetAps) {
+				if (index.getModCount() > 5000) index.flush();
+				
 				Map<String, Object> restrictions = new HashMap<String, Object>();
 				restrictions.put("format", index.getFormats());
 				if (aps.equals(executor)) restrictions.put("owner", "self");
@@ -198,6 +200,7 @@ public class IndexManager {
 				
 				if (updateTs) index.setVersion(aps, now);
 				AccessLog.log("Add index: from updated="+recs.size());
+				
 				
 			}
 			
@@ -245,11 +248,12 @@ public class IndexManager {
 		return matches;		
 	}
 	
-	public IndexRoot getIndexRootAndUpdate(IndexPseudonym pseudo, APSCache cache, MidataId user, IndexDefinition idx, Set<MidataId> targetAps) throws AppException {
-		IndexRoot root = new IndexRoot(pseudo.getKey(), idx, false);	
-		indexSupervisor.tell(new IndexUpdateMsg(idx._id, user, pseudo, KeyManager.instance.currentHandle(), targetAps), null);
-		//indexUpdate(cache, root, user, targetAps);		
-		return root;
+	public void triggerUpdate(IndexPseudonym pseudo, APSCache cache, MidataId user, IndexDefinition idx, Set<MidataId> targetAps) throws AppException {			
+		indexSupervisor.tell(new IndexUpdateMsg(idx._id, user, pseudo, KeyManager.instance.currentHandle(), targetAps), null);		
+	}
+	
+	public IndexRoot getIndexRoot(IndexPseudonym pseudo, IndexDefinition idx) throws AppException {
+		return new IndexRoot(pseudo.getKey(), idx, false);							
 	}
 	
 	public IndexDefinition findIndex(IndexPseudonym pseudo, Set<String> format, List<String> pathes) throws AppException {		

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Stack;
 
+import utils.db.LostUpdateException;
 import utils.exceptions.InternalServerException;
 
 public class BTree
@@ -65,7 +66,7 @@ public class BTree
      //
       // Search value for a specified key of the tree
       //
-      public IndexKey search(IndexKey key) throws InternalServerException {
+      public IndexKey search(IndexKey key) throws InternalServerException, LostUpdateException {
           IndexPage currentNode = mRoot;
           IndexKey currentKey;
           int i, numberOfKeys;
@@ -111,7 +112,7 @@ public class BTree
       //
       // Insert key and its value into the tree
       //
-      public BTree insert(IndexKey key) throws InternalServerException {
+      public BTree insert(IndexKey key) throws InternalServerException, LostUpdateException {
           if (mRoot == null) {
               mRoot = createNode();
           }
@@ -135,7 +136,7 @@ public class BTree
       //
       // Insert key and its value to the specified root
       //
-      private void insertKeyAtNode(IndexPage rootNode, IndexKey key) throws InternalServerException {
+      private void insertKeyAtNode(IndexPage rootNode, IndexKey key) throws InternalServerException, LostUpdateException {
           int i;
           int currentKeyNum = rootNode.mCurrentKeyNum;
   
@@ -282,7 +283,7 @@ public class BTree
       //
       // Find the predecessor node for a specified node
       //
-      private IndexPage findPredecessor(IndexPage btNode, int nodeIdx) throws InternalServerException {
+      private IndexPage findPredecessor(IndexPage btNode, int nodeIdx) throws InternalServerException, LostUpdateException {
           if (btNode.mIsLeaf) {
               return btNode;
           }
@@ -313,7 +314,7 @@ public class BTree
       //
       // Find predecessor node of a specified node
       //
-      private IndexPage findPredecessorForNode(IndexPage btNode, int keyIdx) throws InternalServerException {
+      private IndexPage findPredecessorForNode(IndexPage btNode, int keyIdx) throws InternalServerException, LostUpdateException {
           IndexPage predecessorNode;
           IndexPage originalNode = btNode;
           if (keyIdx > -1) {
@@ -584,7 +585,7 @@ public class BTree
       // Return value if it finds the key and delete it
       // Return null if it cannot find the key
       //
-      public IndexKey delete(IndexKey key) throws InternalServerException {
+      public IndexKey delete(IndexKey key) throws InternalServerException, LostUpdateException {
           mIntermediateInternalNode = null;
           IndexKey keyVal = deleteKey(null, mRoot, key, 0);
           if (keyVal == null) {
@@ -598,7 +599,7 @@ public class BTree
       //
       // Delete a key from a tree node
       //
-      private IndexKey deleteKey(IndexPage parentNode, IndexPage btNode, IndexKey key, int nodeIdx) throws InternalServerException {
+      private IndexKey deleteKey(IndexPage parentNode, IndexPage btNode, IndexKey key, int nodeIdx) throws InternalServerException, LostUpdateException {
           int i;
           int nIdx;
           IndexKey retVal;
@@ -807,7 +808,7 @@ public class BTree
                                                        int keyIdx,
                                                        IndexPage parentNode,
                                                        IndexPage siblingNode,
-                                                       boolean isRightSibling) throws InternalServerException {
+                                                       boolean isRightSibling) throws InternalServerException, LostUpdateException {
           int i;
           
           btNode.changed = true;
@@ -902,7 +903,7 @@ public class BTree
       // true if it needs to continue rebalancing further
       // false if further rebalancing is no longer needed
       //
-      private boolean rebalanceTreeAtNode(IndexPage parentNode, IndexPage btNode, int nodeIdx, int balanceType) throws InternalServerException {
+      private boolean rebalanceTreeAtNode(IndexPage parentNode, IndexPage btNode, int nodeIdx, int balanceType) throws InternalServerException, LostUpdateException {
           if (balanceType == REBALANCE_FOR_LEAF_NODE) {
               if ((btNode == null) || (btNode == mRoot)) {
                   return false;
@@ -955,7 +956,7 @@ public class BTree
       //
       // Re-balance the tree upward from the lower node to the upper node
       //
-      private void rebalanceTree(IndexPage upperNode, IndexPage lowerNode, IndexKey key) throws InternalServerException {
+      private void rebalanceTree(IndexPage upperNode, IndexPage lowerNode, IndexKey key) throws InternalServerException, LostUpdateException {
           mStackTracer.clear();
           mStackTracer.add(new StackInfo(null, upperNode, 0));
   

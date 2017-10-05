@@ -72,7 +72,7 @@ public class IndexPage {
 	    this.changed = true;
 	}
 	
-	public IndexPage getChild(int idx) throws InternalServerException {
+	public IndexPage getChild(int idx) throws InternalServerException, LostUpdateException {
 		MidataId child = mChildren[idx];
 		if (child == null) return null;
 		
@@ -81,6 +81,7 @@ public class IndexPage {
 		if (loaded != null) return loaded;
 				
 		loaded = new IndexPage(this.key, IndexPageModel.getById(child), root);
+		if (loaded.model.lockTime > root.getVersion()) throw new LostUpdateException();
 		root.loadedPages.put(child, loaded);
 		return loaded;
 	}
@@ -127,7 +128,7 @@ public class IndexPage {
 	}
 	*/
 	
-	public Collection<IndexMatch> lookup(Condition[] key) throws InternalServerException  {
+	public Collection<IndexMatch> lookup(Condition[] key) throws InternalServerException, LostUpdateException  {
         long t = System.currentTimeMillis();				
 		Collection<IndexKey> entries = findEntries(key);
 		if (entries == null) return null;
@@ -140,13 +141,15 @@ public class IndexPage {
 		return results;
 	}
 
-	public void flush() throws InternalServerException, LostUpdateException {
+	public boolean flush() throws InternalServerException, LostUpdateException {
 		if (changed) {
 			AccessLog.log("Flushing index page");
 			encrypt();
 			model.update();			
 			changed = false;
+			return true;
 		}
+		return false;
 		
 	}
 	
@@ -231,7 +234,7 @@ public class IndexPage {
 		catch (ClassNotFoundException e2) { throw new InternalServerException("error.internal", "ClassNotFoundException");}
 	}
 			
-	protected Collection<IndexKey> findEntries(Condition[] key) throws InternalServerException {
+	protected Collection<IndexKey> findEntries(Condition[] key) throws InternalServerException, LostUpdateException {
 		Collection<IndexKey> result = new ArrayList<IndexKey>();
 		
 		

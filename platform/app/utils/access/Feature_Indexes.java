@@ -195,6 +195,7 @@ private Feature next;
 			
 			long afterRevalidateTime = System.currentTimeMillis();
 			
+			AccessLog.logBegin("start to look for new entries");
 			if (targetAps != null) {
 			for (MidataId id : targetAps) {
 				long v = myAccess.version(id);
@@ -211,7 +212,7 @@ private Feature next;
 				result.addAll(next.query(new Query(q, CMaps.map("updated-after", v ))));
 				result.addAll(next.query(new Query(q, CMaps.map("shared-after", v))));
 			}
-			
+			AccessLog.logEnd("end to look for new entries");
 			long endTime2 = System.currentTimeMillis();
 			
 			AccessLog.logEnd("end index query "+result.size()+" matches. timePrepare="+(afterPrepareTime-startTime)+" exec="+(afterQuery-afterPrepareTime)+" postLookup="+(endTime-afterQuery)+" revalid="+(afterRevalidateTime-endTime)+" old="+(endTime2-afterRevalidateTime));
@@ -299,14 +300,16 @@ private Feature next;
 			long t1 = System.currentTimeMillis();
 			prepare();
 			root = cachedIndexRoots.get(index._id);
-			long t2 = System.currentTimeMillis();
+			boolean doupdate = false;
 			if (root == null) {
-			  root = IndexManager.instance.getIndexRootAndUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index, targetAps);
+			  root = IndexManager.instance.getIndexRoot(pseudo, index);
+			  doupdate = true;
 			  cachedIndexRoots.put(index._id, root);
 			}
-			long t3 = System.currentTimeMillis();
+			long t2 = System.currentTimeMillis();			
 			matches = IndexManager.instance.queryIndex(root, condition);
-			AccessLog.log("Index use: prep="+(t2-t1)+" update="+(t3-t2)+" query="+(System.currentTimeMillis() - t3));
+			if (doupdate) IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index, targetAps);
+			AccessLog.log("Index use: prep="+(t2-t1)+" query="+(System.currentTimeMillis() - t2));
 			return matches;
 			
 		}

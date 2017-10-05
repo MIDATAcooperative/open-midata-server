@@ -55,8 +55,14 @@ public class IndexRoot {
 		return model;
 	}
 
-
+    
 	
+
+	public int getModCount() {
+		return modCount;
+	}
+
+
 
 	public long getVersion() {
 		return rootPage.getVersion();
@@ -82,11 +88,30 @@ public class IndexRoot {
 	}
 	
 	public void flush() throws InternalServerException, LostUpdateException {
-		AccessLog.log("Flushing index root");
-		rootPage.model.lockTime = 0;
-		rootPage.flush();
-		for (IndexPage page : loadedPages.values()) page.flush();
 		
+		int modified = 0;		
+		for (IndexPage page : loadedPages.values()) if (page.changed) modified++;
+		if (rootPage.changed) modified += 1;
+		
+		AccessLog.log("Flushing index root, modifiedPages="+modified+" modCount="+modCount);
+		
+		if (modified > 1) lockIndex();
+		
+		if (locked) {
+			for (IndexPage page : loadedPages.values()) {
+				if (page.changed) page.model.updateLock();
+			}
+		}
+		
+		for (IndexPage page : loadedPages.values()) {
+            if (locked) page.model.lockTime = System.currentTimeMillis();			
+			page.flush();		
+		}
+		rootPage.model.lockTime = 0;
+		if (!rootPage.flush() && locked) {
+			rootPage.model.updateLock();
+		}
+				
 		locked = false;
 		modCount = 0;
 	}
@@ -111,7 +136,7 @@ public class IndexRoot {
 			AccessLog.log("waiting for lock release");
 			try {
 			  Stats.reportConflict();
-			  Thread.sleep(500);
+			  Thread.sleep(50);
 			} catch (InterruptedException e) {}
 			rootPage.reload();
 		}
@@ -142,7 +167,7 @@ public class IndexRoot {
 
 	public void addEntry(MidataId aps, DBRecord record) throws InternalServerException, LostUpdateException {
 		modCount++;
-		if (modCount > 100) lockIndex();
+		//if (modCount > 100) lockIndex();
 		
 		EntryInfo inf = new EntryInfo();
 		inf.aps = aps;
@@ -154,7 +179,7 @@ public class IndexRoot {
 	
 	public void removeEntry(DBRecord record) throws InternalServerException, LostUpdateException {
 		modCount++;
-		if (modCount > 100) lockIndex();
+		//if (modCount > 100) lockIndex();
 		
 		EntryInfo inf = new EntryInfo();		
 		inf.record = record;
@@ -164,7 +189,7 @@ public class IndexRoot {
 	}
 
 
-	private void extract(int keyIdx, EntryInfo inf, BSONObject data, String path, String[] allpath, int pathIdx, boolean remove) throws InternalServerException {
+	private void extract(int keyIdx, EntryInfo inf, BSONObject data, String path, String[] allpath, int pathIdx, boolean remove) throws InternalServerException, LostUpdateException {
 		if (data == null) {
 			if (allpath != null) {
 				if (pathIdx < allpath.length) {			
@@ -234,26 +259,34 @@ public class IndexRoot {
 	}
 	
 	public Collection<IndexMatch> lookup(Condition[] key) throws InternalServerException {
-		return rootPage.lookup(key);
+		try {
+		  return rootPage.lookup(key);
+		} catch (LostUpdateException e) {
+			try {
+			   Thread.sleep(20);
+			} catch (InterruptedException e2) {}
+			rootPage.reload();
+			return lookup(key);
+		}
 	}
 
-	protected static IndexPage getRightSiblingAtIndex(IndexPage parentNode, int keyIdx) throws InternalServerException  {
+	protected static IndexPage getRightSiblingAtIndex(IndexPage parentNode, int keyIdx) throws InternalServerException, LostUpdateException  {
 	    return getChildNodeAtIndex(parentNode, keyIdx, 1);
 	}
 
-	protected static IndexPage getLeftSiblingAtIndex(IndexPage parentNode, int keyIdx) throws InternalServerException  {
+	protected static IndexPage getLeftSiblingAtIndex(IndexPage parentNode, int keyIdx) throws InternalServerException, LostUpdateException  {
 	    return getChildNodeAtIndex(parentNode, keyIdx, -1);
 	}
 
-	protected static IndexPage getRightChildAtIndex(IndexPage btNode, int keyIdx) throws InternalServerException  {
+	protected static IndexPage getRightChildAtIndex(IndexPage btNode, int keyIdx) throws InternalServerException, LostUpdateException  {
 	    return getChildNodeAtIndex(btNode, keyIdx, 1);
 	}
 
-	protected static IndexPage getLeftChildAtIndex(IndexPage btNode, int keyIdx) throws InternalServerException  {
+	protected static IndexPage getLeftChildAtIndex(IndexPage btNode, int keyIdx) throws InternalServerException, LostUpdateException  {
 	    return getChildNodeAtIndex(btNode, keyIdx, 0);
 	}
 
-	protected static IndexPage getChildNodeAtIndex(IndexPage btNode, int keyIdx, int nDirection) throws InternalServerException  {
+	protected static IndexPage getChildNodeAtIndex(IndexPage btNode, int keyIdx, int nDirection) throws InternalServerException, LostUpdateException  {
 	    if (btNode.mIsLeaf) {
 	        return null;
 	    }
