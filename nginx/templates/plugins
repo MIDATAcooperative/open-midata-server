@@ -15,7 +15,7 @@ server {
         ssl_prefer_server_ciphers on;
         ssl_dhparam DHPARAMS;
 
-        root ROOTDIR/visualizations;
+        root RUNDIR/visualizations;
        
         add_header 'X-XSS-Protection' "1; mode=block"; 
         add_header 'X-Content-Type-Options' 'nosniff';
@@ -45,7 +45,7 @@ server {
         ssl_prefer_server_ciphers on;
         ssl_dhparam DHPARAMS;
 
-        root ROOTDIR/visualizations;
+        root RUNDIR/visualizations;
 
         if (-f ROOTDIR/lock) {
             return 503;

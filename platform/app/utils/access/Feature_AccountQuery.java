@@ -16,6 +16,7 @@ import utils.AccessLog;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
 import utils.exceptions.BadRequestException;
+import utils.exceptions.RequestTooLargeException;
 
 /**
  * queries made to the access permission set of a user 
@@ -24,6 +25,8 @@ import utils.exceptions.BadRequestException;
  */
 public class Feature_AccountQuery extends Feature {
 
+	public final static int MAX_CONSENTS_IN_QUERY = 100;
+	
 	private Feature next;
 
 	public Feature_AccountQuery(Feature next) {
@@ -51,6 +54,10 @@ public class Feature_AccountQuery extends Feature {
 			}
 
 			Set<Consent> consents = getConsentsForQuery(q);
+			
+			if (!q.restrictedBy("consent-limit")) {
+				if (consents.size() > MAX_CONSENTS_IN_QUERY) throw new RequestTooLargeException("error.toomany.consents", "Too many consents in query #="+consents.size());
+			}
 									
 			for (Consent circle : consents) {
 			   AccessLog.logBegin("start query for consent id="+circle._id);

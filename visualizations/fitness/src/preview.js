@@ -38,7 +38,7 @@ angular.module('fhirObservation')
  				    var ageDate = new Date(ageDifMs); // miliseconds from epoch
  				    $scope.age = Math.abs(ageDate.getUTCFullYear() - 1970); 					
  					$scope.gender = patient.gender;
- 					$scope.myid = patient.id;
+ 					$scope.myid = $state.params.owner;
  					
  					
  					$scope.loadRecords($scope.previews);
@@ -107,9 +107,12 @@ angular.module('fhirObservation')
  			  var p = pmap[record.content]; 	
  			  
  			  if (p) {
+ 				 //console.log(record);
+ 				  
 	 			  p.display = p.display || data.getCodeableConcept(record.data.code);
 	 			  
 	 			  if (record.owner !== $scope.myid) {
+	 				  
 	 				 if (!p.others) p.others = {};
 	 				 var px = p.others[record.owner];
 	 				 if (!px) px = p.others[record.owner] = { name : record.ownerName, last : {}, best : {}, worst:{ value:99999 }, avg:{ value:0, count:0 } };
@@ -132,6 +135,7 @@ angular.module('fhirObservation')
 	 				 
 	 				 
 	 			  } else if (record.data.valueQuantity) {
+	 				  
 	 				 p.count++;
 	 				 if (record.data.effectiveDateTime) p.recs.push(record);
 	 				 var date = new Date(record.data.effectiveDateTime);
@@ -183,7 +187,7 @@ angular.module('fhirObservation')
  				$scope.build(p.info, p);
  				
  				p.hint = "default_hint."+p.display;
- 				console.log($state.params);
+ 				//console.log($state.params);
  				p.tab = "intro";
  				if ($state.params.measure && $state.params.measure === p.content) {
  					selected.splice(0,0,p);
@@ -195,7 +199,8 @@ angular.module('fhirObservation')
 	 				}
  				}
  			});
- 			
+ 			console.log(selected);
+ 			console.log(later);
  			return selected.concat(later);
  		};
  		

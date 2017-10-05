@@ -7,7 +7,7 @@ angular.module('portal')
 	$scope.searches = [ 
 	  { 
 		name : "admin_members.contract_required",
-		criteria : { status : "NEW", agbStatus : "REQUESTED", emailStatus : "VALIDATED" }
+		criteria : { status : "NEW", agbStatus : "REQUESTED" }
 	  },
 	  {
 		name : "admin_members.contract_confirm_required",

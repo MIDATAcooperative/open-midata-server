@@ -12,6 +12,7 @@ import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.ServerTools;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.exceptions.BadRequestException;
 import utils.fhir.ResourceProvider;
 import utils.json.JsonValidation.JsonValidationException;
@@ -59,18 +60,22 @@ public class VisualizationCallAction extends Action<VisualizationCall> {
     		}
     	} catch (BadRequestException e3) {
     		if (Stats.enabled) Stats.finishRequest(ctx.request(), e3.getStatusCode()+"");
+    		AuditManager.instance.fail(400, e3.getMessage(), e3.getLocaleKey());
     		return F.Promise.pure((Result) badRequest(e3.getMessage()));
 		} catch (Exception e2) {					
 			ErrorReporter.report("Plugin API", ctx, e2);
 			if (Stats.enabled) Stats.finishRequest(ctx.request(), "500");
+			AuditManager.instance.fail(500, e2.getMessage(), null);
 			return F.Promise.pure((Result) internalServerError("err:"+e2.getMessage()));			
 		} finally {
-			ServerTools.endRequest();
-			
 			long endTime = System.currentTimeMillis();
 			if (endTime - startTime > 1000l * 4l) {
 			   ErrorReporter.reportPerformance("Plugin API", ctx, endTime - startTime);
-			}			
+			}	
+			
+			ServerTools.endRequest();
+			
+					
 		}
     }
 }

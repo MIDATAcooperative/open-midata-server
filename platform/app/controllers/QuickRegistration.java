@@ -12,13 +12,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import actions.APICall;
 import actions.MobileCall;
 import controllers.members.HealthProvider;
-import models.History;
 import models.Member;
 import models.MidataId;
 import models.MobileAppInstance;
 import models.Plugin;
 import models.Study;
 import models.enums.AccountSecurityLevel;
+import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ContractStatus;
 import models.enums.EMailStatus;
@@ -34,6 +34,7 @@ import play.mvc.BodyParser;
 import play.mvc.Result;
 import utils.InstanceConfig;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.collections.Sets;
@@ -152,7 +153,9 @@ public class QuickRegistration extends APIController {
 									
 		user.status = UserStatus.NEW;	
 		
-		user.history.add(new History(EventType.TERMS_OF_USE_AGREED, user, app.termsOfUse));
+		user.agreedToTerms(app.termsOfUse, user.initialApp);
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, user, app._id);
 		
 		Application.registerCreateUser(user);
 				
@@ -163,7 +166,7 @@ public class QuickRegistration extends APIController {
 		
 		if (notok == null || notok.isEmpty()) {
 		
-			if (study != null) controllers.members.Studies.requestParticipation(user._id, study._id);
+			if (study != null) controllers.members.Studies.requestParticipation(user._id, study._id, user.initialApp);
 			
 			if (device != null) {
 			   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true, confirmStudy);
@@ -180,7 +183,7 @@ public class QuickRegistration extends APIController {
 	 * @return status ok
 	 * @throws AppException	
 	 */
-	@BodyParser.Of(BodyParser.Json.class)
+	/*@BodyParser.Of(BodyParser.Json.class)
 	@MobileCall
 	public static Result registerFromApp() throws AppException {
 		// validate 
@@ -202,12 +205,12 @@ public class QuickRegistration extends APIController {
 		String lastName = JsonValidation.getString(json, "lastname");
 		String password = JsonValidation.getPassword(json, "password");
 
-		// check status
+	
 		if (Member.existsByEMail(email)) {
 		  throw new BadRequestException("error.exists.user", "A user with this email address already exists.");
 		}
 		
-		// create the user
+		
 		Member user = new Member();		
 		user.email = email;
 		user.emailLC = email.toLowerCase();
@@ -243,10 +246,9 @@ public class QuickRegistration extends APIController {
 		MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, phrase, true, false);		
 		appInstance.status = ConsentStatus.ACTIVE;
 		
-		/*RecordManager.instance.clear();
-		KeyManager.instance.unlock(appInstance._id, phrase);*/	
+		
 		Map<String, Object> meta = RecordManager.instance.getMeta(user._id, appInstance._id, "_app").toMap();			
 		
 		return MobileAPI.authResult(user._id, appInstance, meta, phrase);		
-	}
+	}*/
 }

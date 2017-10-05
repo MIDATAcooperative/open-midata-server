@@ -50,7 +50,7 @@ class QueryEngine {
 		if (!cache.getAPS(aps).isAccessible()) return new ArrayList<DBRecord>();
 
 		if (AccessLog.detailedLog) AccessLog.logBegin("Begin check contained in aps #recs="+candidates.size());
-		List<DBRecord> result = Feature_Prefetch.lookup(new Query(CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps, null), candidates, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_Documents(new Feature_Streams())))));
+		List<DBRecord> result = Feature_Prefetch.lookup(new Query(CMaps.map(RecordManager.FULLAPS_WITHSTREAMS).map("strict", true), Sets.create("_id"), cache, aps, null), candidates, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_AccountQuery(new Feature_Streams()))));
 		if (AccessLog.detailedLog) AccessLog.logEnd("End check contained in aps #recs="+result.size());
 		
 		return result;						
@@ -208,10 +208,10 @@ class QueryEngine {
     	MidataId userGroup = Feature_UserGroups.identifyUserGroup(cache, aps);
     	if (userGroup != null) {
     		properties.put("usergroup", userGroup);
-    		qm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Documents(new Feature_Streams()))))))))));
+    		qm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))));
     	} else {    	
     	   APS target = cache.getAPS(aps);    	
-    	   qm = new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Documents(new Feature_Streams()))))))))))));
+    	   qm = new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))));
     	}
     	List<DBRecord> result = query(properties, fields, aps, context, cache, qm);
     	
@@ -290,9 +290,7 @@ class QueryEngine {
 			record.encryptedData = r2.encryptedData;	
 			record.encWatches = r2.encWatches;
 			if (record.stream == null) record.stream = r2.stream;
-			if (record.time == 0) record.time = r2.time;
-			if (record.document == null) record.document = r2.document;
-			if (record.part == null) record.part = r2.part;
+			if (record.time == 0) record.time = r2.time;			
 		}
     }
     
@@ -393,7 +391,10 @@ class QueryEngine {
     	if (q.getFetchFromDB()) {	
     		//result = duplicateElimination(result);    		
 			for (DBRecord record : result) {
-				if (record.encrypted == null) fetchIds.put(record._id, record);				
+				if (record.encrypted == null) {
+					DBRecord old = fetchIds.put(record._id, record);
+					if (old != null) old.meta = null;
+				}
 			}
     	} else {
     		Set<String> check = q.mayNeedFromDB();
@@ -411,7 +412,10 @@ class QueryEngine {
     					AccessLog.log("need: "+k);
     					fetch = true; 
     				}
-    				if (fetch) { fetchIds.put(record._id, record); }
+    				if (fetch) { 
+    					DBRecord old = fetchIds.put(record._id, record);
+    					if (old != null) old.meta = null;
+    				}
     				
     			}
     		}
@@ -426,7 +430,7 @@ class QueryEngine {
     	}
     	
 		for (DBRecord record : result) {
-			if (minTime == 0 || record.time ==0 || record.time >= minTime) {
+			if (record.meta != null && (minTime == 0 || record.time ==0 || record.time >= minTime)) {
 			  RecordEncryption.decryptRecord(record);
 			  if (!record.meta.containsField("creator")) record.meta.put("creator", record.owner);
 			} else {compress++;record.meta=null;}						
@@ -451,10 +455,10 @@ class QueryEngine {
 		
 		if (q.restrictedBy("index") && !q.getApsId().equals(q.getCache().getAccountOwner())) {
 			AccessLog.log("Manually applying index query aps="+q.getApsId().toString());
-			result = QueryEngine.filterByDataQuery(result, q.getProperties().get("index"));
+			result = QueryEngine.filterByDataQuery(result, q.getProperties().get("index"), null);
 		}
 		
-		if (q.restrictedBy("data"))	result = filterByDataQuery(result, q.getProperties().get("data"));
+		if (q.restrictedBy("data"))	result = filterByDataQuery(result, q.getProperties().get("data"), null);
 		
 		result = filterByDateRange(result, "created", q.getMinDateCreated(), q.getMaxDateCreated());			
 		result = filterByDateRange(result, "lastUpdated", q.getMinDateUpdated(), q.getMaxDateUpdated());
@@ -525,7 +529,8 @@ class QueryEngine {
     	return filteredResult;
     }
     
-    protected static List<DBRecord> filterByDataQuery(List<DBRecord> input, Object query) throws InternalServerException {    	
+    protected static List<DBRecord> filterByDataQuery(List<DBRecord> input, Object query, List<DBRecord> nomatch) throws InternalServerException {
+    	if (input.size() == 0) return input;
     	List<DBRecord> filteredResult = new ArrayList<DBRecord>(input.size());    	
     	Condition condition = null;
     	if (query instanceof Map<?, ?>) condition = new AndCondition((Map<String, Object>) query).optimize();
@@ -534,7 +539,9 @@ class QueryEngine {
     	AccessLog.log("validate condition:"+condition.toString());
     	for (DBRecord record : input) {
             Object accessVal = record.data;                        
-            if (condition.satisfiedBy(accessVal)) filteredResult.add(record);    		
+            if (condition.satisfiedBy(accessVal)) {
+            	filteredResult.add(record);    		
+            } else if (nomatch != null) nomatch.add(record);
     	}    	
     	return filteredResult;
     }

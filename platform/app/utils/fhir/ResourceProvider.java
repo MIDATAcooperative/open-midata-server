@@ -462,10 +462,12 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 	public static void insertRecord(Record record, IBaseResource resource, AccessContext targetConsent) throws AppException {
 		AccessLog.logBegin("begin insert FHIR record");		    
 			String encoded = ctx.newJsonParser().encodeResourceToString(resource);			
-			record.data = (DBObject) JSON.parse(encoded);			
-			PluginsAPI.createRecord(info(), record, targetConsent);			
-		
-		AccessLog.logEnd("end insert FHIR record");
+			record.data = (DBObject) JSON.parse(encoded);	
+			try {
+			  PluginsAPI.createRecord(info(), record, targetConsent);			
+			} finally {
+		      AccessLog.logEnd("end insert FHIR record");
+			}
 	}
 	
 	public MidataId insertMessageRecord(Record record, IBaseResource resource) throws AppException {

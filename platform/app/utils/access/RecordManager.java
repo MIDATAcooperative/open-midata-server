@@ -126,6 +126,8 @@ public class RecordManager {
 		EncryptedAPS eaps = new EncryptedAPS(proposedId, who, who, APSSecurityLevel.HIGH, false);
 		EncryptionUtils.addKey(who, eaps);		
 		eaps.create();
+		APSCache current = apsCache.get();
+		if (current != null) current.addAPS(new APSImplementation(new EncryptedAPS(eaps.getId(), current.getExecutor(), eaps.getAPSKey(), eaps.getOwner())));
         AccessLog.logEnd("end createPrivateAPS");
 		return eaps.getId();
 	}
@@ -446,19 +448,7 @@ public class RecordManager {
 		AccessLog.logEnd("end removeMeta");
 	}
 
-	public void addDocumentRecord(MidataId owner, Record record,
-			Collection<Record> parts) throws AppException {
-		DBRecord dbrecord = RecordConversion.instance.toDB(record);
-		byte[] key = addRecordIntern(owner, dbrecord, false, null, false);
-		if (key == null)
-			throw new NullPointerException("no key");
-		for (Record rec : parts) {
-			DBRecord dbrec = RecordConversion.instance.toDB(rec);
-			dbrec.document = record._id;
-			dbrec.key = key;
-			addRecordIntern(owner, dbrec, true, null, false);
-		}
-	}
+
 
 	/**
 	 * add a new record to the database 
@@ -641,7 +631,7 @@ public class RecordManager {
 		
 		IndexManager.instance.removeRecords(cache, executingPerson, recs);
 		
-		Set<Consent> consents = Consent.getAllByOwner(executingPerson, new HashMap<String, Object>(), Sets.create("_id"));
+		Set<Consent> consents = Consent.getAllByOwner(executingPerson, new HashMap<String, Object>(), Sets.create("_id"), Integer.MAX_VALUE);
 		
 		for (Consent c : consents) {
 			cache.getAPS(c._id).removePermission(recs);		
@@ -702,15 +692,7 @@ public class RecordManager {
 		if (!documentPart) {
 			APS apswrapper = getCache(executingPerson).getAPS(record.stream, record.owner);	
 			
-			if (record.document != null) {
-				List<DBRecord> doc = QueryEngine.listInternal(getCache(executingPerson), record.owner, null, CMaps.map("_id", record.document.toString()), Sets.create("key"));
-				if (doc.size() == 1) {
-					record.key = doc.get(0).key;
-					record.security = doc.get(0).security;
-				}
-				else throw new InternalServerException("error.internal", "Document not identified");
-				documentPart = true;
-			} else apswrapper.provideRecordKey(record);
+			apswrapper.provideRecordKey(record);
 			
 			usedKey = record.key;
     								
@@ -752,11 +734,13 @@ public class RecordManager {
 	 */
 	public void applyQuery(MidataId userId, Map<String, Object> query, MidataId sourceaps, MidataId targetaps, boolean ownerInformation) throws AppException {
 		AccessLog.logBegin("BEGIN APPLY QUERY");
+				
+		List<Record> recs = RecordManager.instance.list(userId, targetaps, CMaps.map(query).map("flat", "true").map("owner", "self"), Sets.create("_id"));
+		Set<MidataId> remove = new HashSet<MidataId>();
+		for (Record r : recs) remove.add(r._id);
+		AccessLog.log("REMOVE DUPLICATES:"+remove.size());
+		RecordManager.instance.unshare(userId, targetaps, remove);		
 		
-		
-		//List<DBRecord> records = QueryEngine.listInternal(getCache(userId), sourceaps, RecordManager.FULLAPS_FLAT_OWNER, RecordManager.COMPLETE_META);
-		//AccessLog.debug("SHARE CANDIDATES:"+records.size());
-		//records = QueryEngine.listFromMemory(query, records);
 		
 		Map<String, Object> selectionQuery = CMaps.map(query).map("streams", "true").map("flat", "true").map("owner", "self");		
 		List<DBRecord> records = QueryEngine.listInternal(getCache(userId), sourceaps, null, selectionQuery, RecordManager.COMPLETE_META);
@@ -773,7 +757,7 @@ public class RecordManager {
 		
 		List<DBRecord> stillOkay = QueryEngine.listFromMemory(getCache(userId), query, streams);
 		streams.removeAll(stillOkay);		
-		Set<MidataId> remove = new HashSet<MidataId>();
+		remove = new HashSet<MidataId>();
 		for (DBRecord stream : streams) {
 			remove.add(stream._id);
 		}
@@ -1051,7 +1035,7 @@ public class RecordManager {
 		AccessLog.logEnd("end search for missing records");
 		
 		AccessLog.logBegin("start searching for missing records in consents");
-		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map(), Sets.create("_id"));
+		Set<Consent> consents = Consent.getAllByOwner(userId, CMaps.map(), Sets.create("_id"), Integer.MAX_VALUE);
 		for (Consent consent : consents) {
 			try {
 				cache.getAPS(consent._id, userId).getStoredOwner();					

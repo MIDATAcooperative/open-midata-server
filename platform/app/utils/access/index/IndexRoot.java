@@ -2,7 +2,9 @@ package utils.access.index;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bson.BSONObject;
@@ -25,45 +27,91 @@ public class IndexRoot {
 
 	private IndexDefinition model;
 	private IndexPage rootPage;
+	private BTree btree;
 	private byte[] key;
 	private boolean locked;
 	private int modCount = 0;
+	protected Map<MidataId, IndexPage> loadedPages;
+	
+	public final static int MIN_DEGREE          =   100;
+	public final static int UPPER_BOUND_KEYNUM  =   (MIN_DEGREE * 2) - 1;
+	public final static int LOWER_BOUND_KEYNUM  =   MIN_DEGREE - 1;	
 	
 	public IndexRoot(byte[] key, IndexDefinition def, boolean isnew) throws InternalServerException {
 		this.key = key;
 		this.model = def;
-		this.rootPage = new IndexPage(this.key, def);		
+		this.rootPage = new IndexPage(this.key, def, this);		
 		if (isnew) {
 			locked = true;
-			this.rootPage.init();
+			this.rootPage.initAsRootPage();
 		}
-		if (this.rootPage.isNonLeaf()) this.rootPage = new IndexNonLeafPage(key, def);
+		this.btree = new BTree(this, this.rootPage);
+		this.loadedPages = new HashMap<MidataId, IndexPage>();
 	}
 	
+	
+	
+	public IndexDefinition getModel() {
+		return model;
+	}
+
+    
+	
+
+	public int getModCount() {
+		return modCount;
+	}
+
+
+
 	public long getVersion() {
 		return rootPage.getVersion();
 	}
 	
-	public long getVersion(MidataId aps) {
-		return rootPage.getTimestamp(aps.toString());
+	public long getVersion(MidataId aps) {		
+		Long result = rootPage.ts.get(aps.toString());
+		return result == null ? 0 : result;
 	}
 	
 	public void setVersion(MidataId aps, long now) {
-		rootPage.setTimestamp(aps.toString(), now);	
+		rootPage.ts.put(aps.toString(), now);
+		
 	}
 	
 	public long getAllVersion() {
-		return rootPage.getTimestamp("all");
+		Long result = rootPage.ts.get("all");
+		return result == null ? 0 : result;
 	}
 	
 	public void setAllVersion(long now) {
-		rootPage.setTimestamp("all", now);	
+		rootPage.ts.put("all", now);			
 	}
 	
 	public void flush() throws InternalServerException, LostUpdateException {
-		AccessLog.log("Flushing index root");
+		
+		int modified = 0;		
+		for (IndexPage page : loadedPages.values()) if (page.changed) modified++;
+		if (rootPage.changed) modified += 1;
+		
+		AccessLog.log("Flushing index root, modifiedPages="+modified+" modCount="+modCount);
+		
+		if (modified > 1) lockIndex();
+		
+		if (locked) {
+			for (IndexPage page : loadedPages.values()) {
+				if (page.changed) page.model.updateLock();
+			}
+		}
+		
+		for (IndexPage page : loadedPages.values()) {
+            if (locked) page.model.lockTime = System.currentTimeMillis();			
+			page.flush();		
+		}
 		rootPage.model.lockTime = 0;
-		rootPage.flush();
+		if (!rootPage.flush() && locked) {
+			rootPage.model.updateLock();
+		}
+				
 		locked = false;
 		modCount = 0;
 	}
@@ -88,22 +136,20 @@ public class IndexRoot {
 			AccessLog.log("waiting for lock release");
 			try {
 			  Stats.reportConflict();
-			  Thread.sleep(500);
+			  Thread.sleep(50);
 			} catch (InterruptedException e) {}
 			rootPage.reload();
 		}
 	}
 			
 	public void reload() throws InternalServerException {
+		loadedPages.clear();
 		rootPage.reload();
-		if (rootPage.isNonLeaf() && !(rootPage instanceof IndexNonLeafPage)) { this.rootPage = new IndexNonLeafPage(key, rootPage.model); }
+		
 		locked = false;
 		modCount = 0;
 	}
-	
-	public boolean isChanged() {
-		return rootPage.changed;
-	}
+		
 
 	public List<String> getFormats() {		
 		return model.formats;
@@ -118,23 +164,19 @@ public class IndexRoot {
 
 	public void addEntry(MidataId aps, DBRecord record) throws InternalServerException, LostUpdateException {
 		modCount++;
-		if (modCount > 100) lockIndex();
+		//if (modCount > 100) lockIndex();
 		
 		EntryInfo inf = new EntryInfo();
 		inf.aps = aps;
 		inf.record = record;
 		inf.key = new Comparable[model.fields.size()];		
 		extract(0, inf, null,null, null, 0, false);				
-		if (rootPage.needsSplit()) {
-			flush();
-			lockIndex();
-			rootPage = IndexNonLeafPage.split(this.key, rootPage);				
-		}
+		
 	}
 	
 	public void removeEntry(DBRecord record) throws InternalServerException, LostUpdateException {
 		modCount++;
-		if (modCount > 100) lockIndex();
+		//if (modCount > 100) lockIndex();
 		
 		EntryInfo inf = new EntryInfo();		
 		inf.record = record;
@@ -144,7 +186,7 @@ public class IndexRoot {
 	}
 
 
-	private void extract(int keyIdx, EntryInfo inf, BSONObject data, String path, String[] allpath, int pathIdx, boolean remove) throws InternalServerException {
+	private void extract(int keyIdx, EntryInfo inf, BSONObject data, String path, String[] allpath, int pathIdx, boolean remove) throws InternalServerException, LostUpdateException {
 		if (data == null) {
 			if (allpath != null) {
 				if (pathIdx < allpath.length) {			
@@ -160,9 +202,10 @@ public class IndexRoot {
 			
 				if (keyIdx >= model.fields.size()) {
 					if (remove) {
-					  rootPage.removeEntry(inf.key, inf.record._id, inf.aps);	
+					  btree.delete(new IndexKey(inf.key, inf.record._id, inf.aps));
+					  
 					} else {
-					  rootPage.addEntry(inf.key, inf.aps, inf.record._id);
+					  btree.insert(new IndexKey(inf.key, inf.record._id, inf.aps));					  
 					}
 					return;
 				}			
@@ -213,12 +256,58 @@ public class IndexRoot {
 	}
 	
 	public Collection<IndexMatch> lookup(Condition[] key) throws InternalServerException {
-		return rootPage.lookup(key);
+		try {
+		  return rootPage.lookup(key);
+		} catch (LostUpdateException e) {
+			try {
+			   Thread.sleep(20);
+			} catch (InterruptedException e2) {}
+			rootPage.reload();
+			return lookup(key);
+		}
 	}
 
+	protected static IndexPage getRightSiblingAtIndex(IndexPage parentNode, int keyIdx) throws InternalServerException, LostUpdateException  {
+	    return getChildNodeAtIndex(parentNode, keyIdx, 1);
+	}
+
+	protected static IndexPage getLeftSiblingAtIndex(IndexPage parentNode, int keyIdx) throws InternalServerException, LostUpdateException  {
+	    return getChildNodeAtIndex(parentNode, keyIdx, -1);
+	}
+
+	protected static IndexPage getRightChildAtIndex(IndexPage btNode, int keyIdx) throws InternalServerException, LostUpdateException  {
+	    return getChildNodeAtIndex(btNode, keyIdx, 1);
+	}
+
+	protected static IndexPage getLeftChildAtIndex(IndexPage btNode, int keyIdx) throws InternalServerException, LostUpdateException  {
+	    return getChildNodeAtIndex(btNode, keyIdx, 0);
+	}
+
+	protected static IndexPage getChildNodeAtIndex(IndexPage btNode, int keyIdx, int nDirection) throws InternalServerException, LostUpdateException  {
+	    if (btNode.mIsLeaf) {
+	        return null;
+	    }
+	
+	    keyIdx += nDirection;
+	    if ((keyIdx < 0) || (keyIdx > btNode.mCurrentKeyNum)) {
+	        return null;
+	    }
+	
+	    return btNode.getChild(keyIdx);
+	}
+
+	/*
 	public void removeRecords(Condition[] key, Set<IndexMatch> ids) throws InternalServerException {
-		rootPage.removeFromEntries(key, ids);				
+		for (IndexMatch m : ids) {
+			btree.delete(new IndexKey(key, m.recordId, m.apsId))
+		}
+		Collection<IndexKey> entries = rootPage.findEntries(key);
+		for (IndexKey k : entries) {
+			if (ids.contains(new IndexMatch(MidataId.from(k.getId()), MidataId.from(k.getValue())) {
+				
+			}
+		}			
 	}
-
+*/
 	
 }

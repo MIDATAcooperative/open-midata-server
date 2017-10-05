@@ -30,7 +30,6 @@ import actions.VisualizationCall;
 import models.Admin;
 import models.Consent;
 import models.ContentInfo;
-import models.LargeRecord;
 import models.MidataId;
 import models.Plugin;
 import models.Record;
@@ -313,7 +312,7 @@ public class PluginsAPI extends APIController {
 				
 		AccessLog.log("NEW QUERY");
 		
-		records = LargeRecord.getAll(inf.executorId, inf.targetAPS, properties, fields);		  
+		records = RecordManager.instance.list(inf.executorId, inf.targetAPS, properties, fields);		  
 						
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		

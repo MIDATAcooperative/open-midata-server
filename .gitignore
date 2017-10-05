@@ -1,5 +1,7 @@
 /.settings
 logs/
+instance1/
+instance2/
 activator
 activator*/
 elasticsearch

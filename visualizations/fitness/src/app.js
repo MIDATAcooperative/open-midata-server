@@ -18,11 +18,11 @@ angular.module('fhirObservation', [ 'midata', 'ui.router','ui.bootstrap', 'chart
 	
 	 $stateProvider	    
 	    .state('overview', {
-	      url: '/overview?lang&authToken',	   
+	      url: '/overview?lang&authToken&owner',	   
 	      templateUrl: 'overview.html'
 	    })
 	    .state('preview', {
-	      url: '/preview?lang&authToken&measure',	   
+	      url: '/preview?lang&authToken&measure&owner',	   
 	      templateUrl: 'preview.html'
 	    });
 	 

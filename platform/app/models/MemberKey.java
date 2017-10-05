@@ -47,8 +47,8 @@ public class MemberKey extends Consent {
 		return Model.getAll(MemberKey.class, collection, CMaps.map("owner", ownerId).map("authorized", authorizedId).map("type",  ConsentType.HEALTHCARE), ALL);
 	}
 	
-	public static Set<MemberKey> getByAuthorizedPerson(MidataId authorizedId, Set<String> fields) throws InternalServerException {
-		return Model.getAll(MemberKey.class, collection, CMaps.map("authorized", authorizedId).map("type", ConsentType.HEALTHCARE), fields);
+	public static Set<MemberKey> getByAuthorizedPerson(MidataId authorizedId, Set<String> fields, int limit) throws InternalServerException {
+		return Model.getAll(MemberKey.class, collection, CMaps.map("authorized", authorizedId).map("type", ConsentType.HEALTHCARE), fields, limit);
 	}
 	
 	public static Set<MemberKey> getByOwner(MidataId ownerId) throws InternalServerException {

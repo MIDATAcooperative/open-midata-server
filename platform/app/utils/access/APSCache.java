@@ -20,7 +20,7 @@ import utils.exceptions.InternalServerException;
  * caches access permission sets during a request. No inter-request caching. 
  *
  */
-class APSCache {
+public class APSCache {
 
 	private Map<String, APS> cache;
 	private Map<String, APSCache> subcache;
