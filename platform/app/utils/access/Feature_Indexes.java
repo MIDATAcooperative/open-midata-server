@@ -203,14 +203,14 @@ private Feature next;
 				AccessContext context = getContextForAps(q, id);
 				if (context != null) {
 					if (context instanceof ConsentAccessContext && ((ConsentAccessContext) context).getConsent().dataupdate <= v) continue;
-				    result.addAll(next.query(new Query(q, CMaps.map("updated-after", v), id, context)));
-				    result.addAll(next.query(new Query(q, CMaps.map("shared-after", v), id, context)));
+				    result.addAll(QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("updated-after", v), id, context)), indexQueryParsed, null));
+				    result.addAll(QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("shared-after", v), id, context)), indexQueryParsed, null));
 				}
 			}
 			} else {
 				long v = myAccess.version(null);
-				result.addAll(next.query(new Query(q, CMaps.map("updated-after", v ))));
-				result.addAll(next.query(new Query(q, CMaps.map("shared-after", v))));
+				result.addAll(QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("updated-after", v ))), indexQueryParsed, null));
+				result.addAll(QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("shared-after", v))), indexQueryParsed, null));
 			}
 			AccessLog.logEnd("end to look for new entries");
 			long endTime2 = System.currentTimeMillis();
