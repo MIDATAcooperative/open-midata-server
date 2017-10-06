@@ -15,13 +15,13 @@ angular.module('views')
 			return study.participantSearchStatus == "SEARCHING";
 		},
 		function(study) {
-			return study.pstatus == "ACCEPTED";
+			return study.pstatus == "ACCEPTED" && study.executionStatus == "RUNNING";
 		},
 		function(study) {
-			return study.pstatus == "ACCEPTED";
+			return study.pstatus == "ACCEPTED" && study.executionStatus == "FINISHED";
 		},
 		function(study) {
-			return study.pstatus == "MEMBER_REJECTED" || study.pstatus == "RESEARCH_REJECTED";
+			return study.pstatus == "MEMBER_REJECTED" || study.pstatus == "RESEARCH_REJECTED" || study.executionStatus == "ABORTED";
 		}		
 	];
 	
@@ -33,11 +33,13 @@ angular.module('views')
 		$scope.status.doBusy(server.get(jsRoutes.controllers.members.Studies.list().url)).
 		then(function(results) { 				
 		    $scope.results = results.data;
+		    var ids = [];
 		    angular.forEach(results.data, function(study) {
 		    	studyById[study.study] = study;
+		    	ids.push(study.study);
 		    });
 		    
-		    $scope.status.doBusy(studies.search({ participantSearchStatus : "SEARCHING" }, ["name", "description", "participantSearchStatus"])).
+		    $scope.status.doBusy(studies.search({ participantSearchStatus : "SEARCHING" }, ["name", "description", "participantSearchStatus", "executionStatus"])).
 			then(function (result) {
 				angular.forEach(result.data, function(study) {
 					var part = studyById[study._id];
@@ -45,10 +47,31 @@ angular.module('views')
 						part = study;
 						part.pstatus = "MATCH";
 						part.studyName = part.name;
+						part.study = study._id;
 						$scope.results.push(part);
 					} else {
 						part.description = study.description;
 						part.participantSearchStatus = study.participantSearchStatus;
+						part.executionStatus = study.executionStatus;
+						
+					}
+				});				 
+			});
+		    
+		    $scope.status.doBusy(studies.search({ _id : ids  }, ["name", "description", "participantSearchStatus", "executionStatus"])).
+			then(function (result) {
+				angular.forEach(result.data, function(study) {
+					var part = studyById[study._id];
+					if (!part) {
+						part = study;
+						part.pstatus = "MATCH";
+						part.studyName = part.name;
+						part.study = study._id;
+						$scope.results.push(part);
+					} else {
+						part.description = study.description;
+						part.participantSearchStatus = study.participantSearchStatus;
+						part.executionStatus = study.executionStatus;
 						
 					}
 				});				 

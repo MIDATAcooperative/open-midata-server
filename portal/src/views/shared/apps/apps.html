@@ -1,0 +1,48 @@
+<div ng-controller="AppsCtrl">
+
+	<div class="panel panel-primary">
+		<div class="panel-heading" translate="apps.title"></div>
+		<div class="body">
+						          
+            <loader busy="status.isBusy !== false">
+			<p translate="apps.count" translate-value-count="{{ apps.length }}"></p>
+
+			<table class="table table-hover clickable" ng-show="apps.length">
+				
+				<tr ng-repeat="app in apps | orderBy : 'name'" ng-class="{ 'warning' : app.status == 'UNCONFIRMED' }" ng-click="editConsent(app);">
+					<td>{{ app.name }}</td>				
+					<td class="status-column">
+					  <span class="icon glyphicon glyphicon-ok-sign" ng-show="app.status == 'ACTIVE'"></span>
+	                  <span class="icon glyphicon glyphicon-question-sign" ng-show="app.status == 'UNCONFIRMED'"></span>
+	                  <span class="icon glyphicon glyphicon-ban-circle" ng-show="study.status == 'REJECTED'"></span>
+	    
+					</td>
+					
+					
+				</tr>
+			</table>
+			
+			</loader>
+		</div>
+	</div>
+	
+	<div class="panel panel-primary">
+		<div class="panel-heading" translate="apps.services"></div>
+		<div class="body">
+		   <loader busy="status.isBusy !== false">
+		      <table class="table table-hover clickable" ng-show="services.length">
+		        <tr ng-repeat="visualization in services | orderBy : 'name'" ng-click="install(visualization)">
+		          <td>
+		            {{ visualization.i18n[translate.use()].name || visualization.name}}
+		          </td>
+		          <td class="status-column">
+		            <span  class="icon glyphicon glyphicon-ok-sign" ng-show="pluginToSpace[visualization._id]"></span>
+		            <button class="btn btn-sm btn-default" ng-hide="pluginToSpace[visualization._id]" translate="apps.connect_btn"></button>
+		          </td>
+		        </tr>
+		      </table>		      
+	       </loader>
+		</div>
+	</div>
+	<div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
+</div>

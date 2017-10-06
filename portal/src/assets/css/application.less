@@ -66,6 +66,8 @@ footer {
     
 }
 
+.clickable { cursor : pointer; }
+
 .mainpart { min-height:500px; padding-bottom:10px; }
 
 .navbar-brand { height : auto; line-height:inherit;padding-left:20px;margin-left:0px; }
@@ -596,7 +598,7 @@ body.demo {
     color:white;
     */
     
-    
+    /*
     .container { 
       width : 100%;
       padding: 0px; 
@@ -607,7 +609,7 @@ body.demo {
       padding-left:40px;
       padding-right:40px;
       
-    }
+    }*/
     
     .container .body, .container .panel-body {
       padding-left:40px;
@@ -622,6 +624,7 @@ body.demo {
     }
     
     .dashboard > .extraspace { margin:0px; } 
+
 
   .panel {
     background-color: inherit;
@@ -639,19 +642,29 @@ body.demo {
   .panel-heading {
     background-color: inherit;
   }
-  
+ 
   .navbar-default {
-     background-color: inherit;
+     
      border: none;
+       background: #32c6b6 ; 
+		background: -webkit-radial-gradient(top right,#32c6b6,#1490d1); 
+		background: -o-radial-gradient(top right,#32c6b6,#1490d1);
+		background: -moz-radial-gradient(top right,#32c6b6,#1490d1);
+		background: radial-gradient(top right, #32c6b6, #1490d1);
+    opacity: 1;
+    
+    color:white;
   }
   
+  /*
   .bigline .panel:first-child .panel-heading {
     opacity: 1;
     width: 100%;
     color:white;
     font-size:20px;    
   }
-  
+  */
+  /*
   .navbar:before {
   content: '';
   position: absolute;
@@ -669,6 +682,7 @@ body.demo {
   z-index: -1;
   
   }
+  */
   
   
   .panel-body, .body {
@@ -706,7 +720,7 @@ body.demo {
   .nav-tabs>li>a {
     background-color: inherit;
     border:none;
-    font-size:20px;
+    font-size:16px;
     color:black;
     padding-top: 15px;
       padding-bottom: 3px;

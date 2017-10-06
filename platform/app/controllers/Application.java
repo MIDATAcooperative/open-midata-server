@@ -500,7 +500,14 @@ public class Application extends APIController {
 		
 		// check status
 		Member user = Member.getByEmail(email , Sets.create("firstname", "lastname", "email", "role", "password", "status", "contractStatus", "agbStatus", "emailStatus", "confirmationCode", "accountVersion", "role", "subroles", "login", "registeredAt", "developer"));
-		if (user == null) throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
+		if (user == null) {
+			Set<User> alts = User.getAllUser(CMaps.map("emailLC", email.toLowerCase()).map("status", User.NON_DELETED).map("role", Sets.create(UserRole.DEVELOPER.toString(), UserRole.RESEARCH.toString(), UserRole.PROVIDER.toString())), Sets.create("role"));
+			if (!alts.isEmpty()) {				
+			  throw new BadRequestException("error.invalid.credentials_hint",  "Invalid user or password.");
+			} else {
+			  throw new BadRequestException("error.invalid.credentials",  "Invalid user or password.");
+			}
+		}
 		
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_AUTHENTICATION, user);
 		if (!Member.authenticationValid(password, user.password)) {

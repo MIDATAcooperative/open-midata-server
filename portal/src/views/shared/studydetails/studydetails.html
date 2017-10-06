@@ -1,46 +1,96 @@
 
 <div ng-controller="StudyDetailCtrl" ng-cloak>
 	<div class="extraspace">
-	  <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span><span translate="common.back_btn"></span></button>
-	</div>	
-	<div class="panel panel-primary">
-		<div class="panel-heading" translate="studydetails.study"></div>
-		<div class="panel-body">
-		   				
-			<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert"></p>
-			<p>{{ study.name }}</p>
-			<p>{{ study.description }}</p>
-			
-			<p>
-			  <span translate="studydetails.participant_search_status"></span>
-              <span translate="{{ 'enum.participantsearchstatus.'+study.participantSearchStatus }}"></span>              
-            </p>
-            <p>
-              <span translate="studydetails.execution_status"></span>
-              <span translate="{{ 'enum.studyexecutionstatus.'+study.executionStatus }}"></span>
-            </p>
-      </tr>
+		<button class="btn btn-default" ng-click="goBack();">
+			<span class="glyphicon glyphicon-chevron-left"></span><span translate="common.back_btn"></span>
+		</button>
+	</div>
+
+
+	<p ng-show="error && !error.field" translate="{{ error.code }}"
+		ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert"></p>
+	<div class="row">
+		<div class="col-sm-4">
+
+
+
+
+
+			<div class="panel panel-primary">
+				<div class="panel-heading" translate="studydetails.information_that_needs_sharing"></div>
+				<div class="panel-body">
+
+
+					<div ng-show="needs('RESTRICTED')" translate="studydetails.information_restricted"></div>
+					<div ng-show="needs('DEMOGRAPHIC')" translate="studydetails.information_demographic"></div>
+
+					<div ng-repeat="(rule, params) in study.recordQuery">
+						<span ng-if="rule == 'format'"><span translate="studydetails.records_with_format"></span>
+							<ul>
+								<li ng-repeat="format in params">{{ format }}</li>
+							</ul> </span> <span ng-if="rule == 'owner'"><span translate="studydetails.records_with_owner"></span>
+							<ul>
+								<li ng-repeat="owner in params" translate="{{ 'studydetails.owner_'+ owner }}"></li>
+							</ul> </span> <span ng-if="rule == 'content'"><span translate="studydetails.records_with_content"></span>
+							<ul>
+								<li ng-repeat="content in params">{{ content }}</li>
+							</ul> </span> <span ng-if="rule == 'content/*'"><span translate="studydetails.records_with_content"></span>
+							<ul>
+								<li ng-repeat="content in params">{{ content }}</li>
+							</ul> </span> <span ng-if="rule == 'group'"><span translate="studydetails.records_with_group"></span>
+							<ul>
+								<li ng-repeat="group in params">{{ group }}</li>
+							</ul> </span>
+					</div>
+
+
+				</div>
+			</div>
+
+			<div class="panel panel-primary">
+				<div class="panel-heading" translate="studydetails.status"></div>
+				<div class="panel-body">
+
+					<div translate="{{ 'enum.participantsearchstatus.'+study.participantSearchStatus }}"></div>
+					<div translate="{{ 'enum.studyexecutionstatus.'+study.executionStatus }}"></div>
+				</div>
+			</div>
+
+		</div>
+
+		
+
+		<div class="col-sm-8">
+			<div class="panel panel-primary">
+				<div class="panel-heading">{{ study.name }}</div>
+				<div class="panel-body">					
+					<p>{{ study.description }}</p>
+
+					<p>{{ research.name }}</p>
+					<p>{{ research.description }}</p>
+					
+					<button ng-show="mayRequestParticipation()" ng-click="requestParticipation()" class="btn btn-primary"
+		                translate="studydetails.request_participation_btn"></button>
+	                <button ng-show="mayDeclineParticipation()" ng-click="noParticipation()" class="btn btn-danger"
+		                translate="studydetails.do_not_participate_btn"></button>
+				</div>
+			</div>
+
 		</div>
 	</div>
-	<div class="panel panel-primary">
-		<div class="panel-heading" translate="studydetails.organization"></div>
-		<div class="panel-body">
-			<p>{{ research.name }}</p>
-			<p>{{ research.description }}</p>
-		</div>
-	</div>
+
+
 	<div class="panel panel-primary" ng-show="participation && study.assistance=='HCPROFESSIONAL'">
 		<div class="panel-heading" translate="studydetails.providers_monitoring"></div>
 		<div class="panel-body">
-		    <p ng-show="providers.length == 0" translate="studydetails.no_providers"></p>
+			<p ng-show="providers.length == 0" translate="studydetails.no_providers"></p>
 			<div ng-repeat="prov in providers">
 				<address>
-					<strong>{{ prov.firstname }} {{ prov.lastname }}</strong><br>
-					 {{ prov.address1 }}<br>
-					 {{ prov.address2 }}<br> 
-					 {{ prov.zip }} {{ prov.city }}<br> {{ 'enum.country'+prov.country | translate }}<br> <span ng-show="prov.phone"><span translate="common.user.phone"></span>: {{ prov.phone }}</span><br>
-					<span ng-show="prov.mobile"><span translate="common.user.mobile_phone"></span>: {{ prov.mobile }}</span><br>
-					<span ng-show="prov.email"><span translate="common.user.email"></span>: {{ prov.email }}</span><br>
+					<strong>{{ prov.firstname }} {{ prov.lastname }}</strong><br> {{ prov.address1 }}<br> {{ prov.address2 }}<br> {{
+					prov.zip }} {{ prov.city }}<br> {{ 'enum.country'+prov.country | translate }}<br> <span ng-show="prov.phone"><span
+						translate="common.user.phone"></span>: {{ prov.phone }}</span><br> <span ng-show="prov.mobile"><span
+						translate="common.user.mobile_phone"></span>: {{ prov.mobile }}</span><br> <span ng-show="prov.email"><span
+						translate="common.user.email"></span>: {{ prov.email }}</span><br>
 				</address>
 				<button class="btn btn-danger btn-xs" ng-click="removeProvider(prov);" translate="studydetails.provider_remove_btn"></button>
 			</div>
@@ -48,58 +98,18 @@
 			<button class="btn btn-default" ng-click="addProvider()" translate="studydetails.provider_add_btn"></button>
 		</div>
 	</div>
-	<div class="panel panel-primary">
-		<div class="panel-heading" translate="studydetails.information_that_needs_sharing"></div>
-		<div class="panel-body">
 
-			<ul>
-				<li ng-show="needs('RESTRICTED')" translate="studydetails.information_restricted"></li>
-				<li ng-show="needs('DEMOGRAPHIC')" translate="studydetails.information_demographic"></li>
-				
-				<li ng-repeat="(rule, params) in study.recordQuery">
-			          <span ng-if="rule == 'format'"><span translate="studydetails.records_with_format"></span>
-			            <ul>
-			              <li ng-repeat="format in params">{{ format }}</li>
-			            </ul> 
-			          </span>
-			          <span ng-if="rule == 'owner'"><span translate="studydetails.records_with_owner"></span>
-			            <ul>
-			              <li ng-repeat="owner in params" translate="{{ 'studydetails.owner_'+ owner }}"></li>
-			            </ul> 
-			          </span>
-			          <span ng-if="rule == 'content'"><span translate="studydetails.records_with_content"></span>
-			            <ul>
-			              <li ng-repeat="content in params">{{ content }}</li>
-			            </ul> 
-			          </span>
-			          <span ng-if="rule == 'content/*'"><span translate="studydetails.records_with_content"></span>
-			            <ul>
-			              <li ng-repeat="content in params">{{ content }}</li>
-			            </ul> 
-			          </span>
-			          <span ng-if="rule == 'group'"><span translate="studydetails.records_with_group"></span>
-			            <ul>
-			              <li ng-repeat="group in params">{{ group }}</li>
-			            </ul> 
-			          </span>
-			      </li>
-				
-			</ul>
-
-		</div>
-	</div>
-	<div  class="panel panel-primary">
+	<div class="panel panel-primary" ng-show="participation">
 		<div class="panel-heading" translate="studydetails.participation_history"></div>
 		<div class="panel-body">
-		  <auditlog entity="{{ studyid }}"></auditlog>
-	    </div>
+			<auditlog entity="{{ studyid }}"></auditlog>
+		</div>
 	</div>
+
+
+
 	
 
-
-	<button ng-show="mayRequestParticipation()" ng-click="requestParticipation()" class="btn btn-success" translate="studydetails.request_participation_btn"></button>
-	<button ng-show="mayDeclineParticipation()" ng-click="noParticipation()" class="btn btn-danger" translate="studydetails.do_not_participate_btn"></button>
-
-    <div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
+	<div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
 
 </div>

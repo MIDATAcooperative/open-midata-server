@@ -8,7 +8,7 @@
   <li role="presentation" ng-class="{'active' : tab==3 }"><a href="javascript:" ng-click="setTab(3)" translate="smallstudies.stopped">Messages</a></li>
     </ul>
      	
-	<div ng-show="results.length > 0">
+	<div ng-show="filteredStudies.length > 0">
 	<table class="table table-hover">
 	  <thead>
 	    <tr>
@@ -17,23 +17,25 @@
 	    </tr>
 	  </thead>
 	  <tbody>
-	    <tr ng-repeat="study in results|filter : selection">
+	    <tr class="clickable" ng-repeat="study in filteredStudies = (results|filter : selection)" ui-sref="^.studydetails({ studyId : study.study })">
 	      <td>
-	         <a ui-sref="^.studydetails({ studyId : study.study })">{{ study.studyName }}</a>
+	         <a href="javascript:">{{ study.studyName }}</a>
 	         <p>{{ study.description }}</p>
 	      </td>	  
 	      <td class="status-column">
 	        <span class="icon glyphicon glyphicon-ok-sign" ng-show="study.pstatus == 'ACCEPTED'"></span>
 	        <span class="icon glyphicon glyphicon-ok-circle" ng-show="study.pstatus == 'REQUEST'"></span>
 	        <span class="icon glyphicon glyphicon-ban-circle" ng-show="study.pstatus == 'MEMBER_REJECTED' || study.pstatus == 'RESEARCH_REJECTED'"></span>
-	        <button class="btn btn-small btn-default" ng-show="study.pstatus == 'MATCH'">apply</button>
+	        <button ui-sref="^.studydetails({ studyId : study.study })" class="btn btn-small btn-default" ng-show="study.pstatus == 'MATCH'">apply</button>
 	      </td>
 	    </tr>
 	  </tbody>
 	</table>
 	</div>
-	<p ng-show="results.length == 0" translate="yourstudies.empty">	  
-	</p>	
+	<div ng-show="filteredStudies.length == 0">
+	  <div class="extraspace"></div>
+	  <span translate="flexiblestudies.empty"></span>	  
+	</div>	
 	 
 	 </loader>
 </div>
