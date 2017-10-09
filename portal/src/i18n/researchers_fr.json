@@ -49,18 +49,13 @@
         "description" : "Lorsque l'étude est en cours, vous pouvez partager des données avec les participants et leur assigner des tâches (p.ex. remplir un formulaire).",
         "select_group_btn" : "Sélectionnez un groupe",
         "add_task_btn" : "Ajouter une tâche pour les participants",
-
         "plugin" : "Application pour la recherche",
         "device" : "Code de l'appareil",
-
-        // TODO NEW: Restrict Read to Group
-        "restrict" : "Restrict Read to Group",
-
-        // TODO NEW: Add Study Data Providing Application
-        "add_application_btn" : "Add Study Data Providing Application",
-
-        // TODO NEW: Application Consents
-        "linked_apps" : "Application Consents"
+        // TODO ?!?
+        "restrict" : "Restreindre la lecture à ce groupe",
+        "add_application_btn" : "Ajouter les applications fournissant des données à l'étude",
+        // TODO ?!?
+        "linked_apps" : "Consentements pour les applications"
     },
 
     "studyfields" : {

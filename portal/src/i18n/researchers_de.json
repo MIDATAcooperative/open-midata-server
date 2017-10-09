@@ -50,9 +50,8 @@
         "select_group_btn" : "Gruppe auswählen",
         "add_task_btn" : "Aufgabe für Teilnehmer hinzufügen",
         "plugin" : "Forschungsapplikation",
-        "device" : "Code des Gerätes",        
+        "device" : "Code des Gerätes",
         "restrict" : "Lesen auf diese Studiengruppe beschränken",
-
         "add_application_btn" : "Studiendaten liefernde Anwendung hinzufügen.",       
         "linked_apps" : "Anwendungsnutzungs-Zustimmungen"
     },

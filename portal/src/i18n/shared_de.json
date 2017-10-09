@@ -1,6 +1,6 @@
 {
 
-    "footer" : {      
+    "footer" : {
         "copyright" : "©{{now}} ETH Zürich",
         "homepage" : "MIDATA Homepage",
         "portals" : "MIDATA Portale:",
@@ -35,13 +35,9 @@
         "noconsent" : "Kein aktive Zustimmung erlaubt Daten bei der Zielperson hinzufügen.",
         "unsupported" : "Operation nicht unterstützt",
         "notrialuser_title" : "Vollständige Mitgliedschaft notwendig!",
-
         "notrialuser_detail" : "Um diese Funktion benutzen zu können, benötigen Sie eine vollständige Registrierung. Request a written copy of the AGB and return it signed. You will also receive a confirmation code to verify your postal address. If you want to check your account status click on your username on the top right and check the 'Account Status' section.",
-
         "mustbemember_title" : "Mitgliedschaft bei MIDATA Cooperative erforderlich!",
-
         "mustbemember_detail" : "Um diese Funktion benutzen zu können, müssen sie Mitglied der MIDATA Cooperative sein. Klicken Sie auf Ihre our username on the top right and check the 'Account Status' section for more information.",
-
         "notauthorized" : {
             "action" : "Sie sind nicht berechtigt diese Aktion auszuführen",
             "fields" : "Sie sind nicht berechtigt diese Felder abzufragen",
@@ -50,12 +46,9 @@
             "not_plugin_owner" : "Dies ist nicht Ihr Plugin"
         },
 
-
         "invalid" : {
             "email" : "Bitte eine gültige E-Mail-Addresse eingeben.",
-
             "credentials" : "Ungültiger Benutzername oder Kennwort!",
-
             "password_repetition" : "Kennwort und Kennwortwiederholung stimmen nicht überein!",
             "passphrase_repetition" : "Passphrase und Passphrase-Wiederholung stimmen nicht überein!",
             "passphrase_old" : "Alte Passphrase nicht korrekt.",
@@ -65,32 +58,22 @@
             "appcode" : "Unbekannter App-Code.",
             "status_transition" : "Ungültiger Zustandswechsel",
             "date" : "Ungültiger Wert für ein Datumsfeld",
-
-            // TODO NEW: Enter a valid day of month (1 - 31)
-            "day" : "Enter a valid day of month (1 - 31)",
-
-            // TODO NEW: Enter a valid year (4 digits)
-            "year" : "Enter a valid year (4 digits)",
-
-            // TODO NEW: Choose a valid month
-            "month" : "Choose a valid month",
+            "day" : "Geben Sie einen gültigen Montastag ein (1 - 31)", // TODO !?!
+            "year" : "Geben Sie ein gültiges Jahr ein (4 Ziffern)", // TODO !?!
+            "month" : "Wählen Sie einen gültigen Monat", // TODO !?!
             "string" : "Dieses Feld muss vom Typ string sein",
             "token" : "Ungültiger Authorisierungs-Token. Bitte neu anmelden.",
             "json" : "Ungültiges JSON",
             "passphrase" : "Falsches Passphrase",
             "passcode" : "Falscher Zugangscode",
-    
             "plugin" : "Dieses Plugin ist nur für eine andere Rolle vorgesehen",
-            
             "unlock_code" : "Falscher Freischaltcode",
             "access_query" : "Das Query muss den Zugriff nach 'content' oder 'group' einschränken!",
             "sharing" : "Das Sharing Query greift auf Datentypen zu, die in der Studienkonfiguration ausgeschlossen sind."
         },
 
         "missing" : {
-           
             "credentials" : "Bitte Benutzernamen und Kennwort eingeben!",
-
             "email" : "Geben Sie bitte Ihre E-Mail-Adresse ein.",
             "input_field" : "Füllen Sie bitte dieses Eingabefeld.",
             "newpassword" : "Geben Sie bitte ein neues Kennwort ein!",
@@ -99,7 +82,7 @@
             "token" : "Fehlendes oder falsches Token.",
             "agb" : "Allgemeine Geschäftsbedingungen (AGB) nicht akzeptiert.",
             "privacypolicy" : "Die Datenschutzerklärung muss akzeptiert werden.",
-            "study_accept" : "Die Studienteilnahme muss akzeptiert werden.",     
+            "study_accept" : "Die Studienteilnahme muss akzeptiert werden.",
             "study_group" : "Der Teilnehmer muss zuerst zu einer Gruppe zugeordnet werden."
         },
 
@@ -130,8 +113,7 @@
         "blocked" : {
             "user" : "Dieser Benutzer ist nicht berechtigt sich anzumelden. Kontaktieren Sie bitte support@midata.coop für Hilfe.",
             "participation" : "Dieser Kontoinhabende ist nicht berechtigt an einer Studie teilzunehmen.",
-           
-            "consent" : "Die Zustimmung um diese App zu benutzen wurde widerrufen. Um die App zu reaktivieren, muss die zurückgewiesene oder abgelaufene Zustimmung auf dem MIDATA-Portal gelöscht werden.",
+            "consent" : "Die Zustimmung um diese App zu benutzen wurde widerrufen. Falls Sie diese App wieder benutzen möchten, müssen Sie die zurückgewiesene oder abgelaufene Zustimmung auf dem MIDATA-Portal löschen.",
             "app" : "Sie dürfen diese App auf Maximum 10 Geräte benutzen. Löschen Sie bitte nicht mehr benutzte Zustimmungen auf dem MIDATA-Portal."
         },
 
@@ -159,20 +141,17 @@
 
         "expired" : {
             "token" : "Dieses Token ist bereits abgelaufen. Fordern Sie bitte ein neues.",
-
-            // TODO NEW: Your activation token has already expired. A new token has been sent to your email address right now - please confirm within 24 hours.
-            "tokenresent" : "Dieses Token ist bereits abgelaufen. Ein neues Token wurde an ihre email addresse gesendet. Bitte bestätigen Sie ihre eMailadresse mit dem neuen Token innerhalb von 24 Stunden.",
+            "tokenresent" : "Dieses Token ist bereits abgelaufen. Ein neues Token wurde soeben an Ihrer E-Mail-Adresse gesendet. Bitte bestätigen Sie ihre E-Mail-Adresse innerhalb von 24 Stunden mit dem neuen Token.",
             "code" : "Dieser Teilnahmecode ist abgelaufen."
         },
 
         "already_done" : {
-            
             "email_verification" : "Die E-Mail-Adresse wurde bereits verifiziert."
         },
 
         "no_alter" : {
             "consent" : "Zustimmungen für Studien können nicht verändert werden.",
-            "study" : "Der Studienaufbau kann nur während der Entwurfsphase geändert werden.",            
+            "study" : "Der Studienaufbau kann nur während der Entwurfsphase geändert werden.",
             "group" : "Die Teilnehmergruppe kann nur geändert werden wenn die Studie noch nicht am Laufen ist oder wenn noch keine Teilnehmer angenommen sind."
         }
 
@@ -219,13 +198,13 @@
         "userfeature" : {
             "EMAIL_ENTERED" : "Die E-Mail-Adresse des Benutzers muss der Plattform bekannt sein",
             "EMAIL_VERIFIED" : "Die E-Mail-Adresse des Benutzers muss geprüft worden sein",
-            "PHONE_ENTERED" : "Die Mobiltelefonnummer des Benutzers muss der Plattform bekannt sein",           
-            "PHONE_VERIFIED" : "Die Mobiltelefonnummer des Benutzers muss geprüft worden sein",         
-            "ADDRESS_ENTERED" : "Die Postadresse des Benutzers muss der Plattform bekannt sein",   
-            "ADDRESS_VERIFIED" : "Die Postadresse des Benutzers muss geprüft worden sein",         
+            "PHONE_ENTERED" : "Die Mobiltelefonnummer des Benutzers muss der Plattform bekannt sein",
+            "PHONE_VERIFIED" : "Die Mobiltelefonnummer des Benutzers muss geprüft worden sein",
+            "ADDRESS_ENTERED" : "Die Postadresse des Benutzers muss der Plattform bekannt sein",
+            "ADDRESS_VERIFIED" : "Die Postadresse des Benutzers muss geprüft worden sein",
             "PASSPORT_VERIFIED" : "Die ID-Karte des Benutzers muss geprüft worden sein",
             "MIDATA_COOPERATIVE_MEMBER" : "Der Benutzer muss Mitglied der Genossenschaft sein",
-            "ADMIN_VERIFIED" : "Der Account muss von einem MIDATA Administrator freigeschaltet worden sein."
+            "ADMIN_VERIFIED" : "Der Account muss von einem MIDATA Administrator freigeschaltet worden sein"
         },
         "consentstatus" : {
             "ACTIVE" : "Aktiv",
@@ -279,7 +258,6 @@
             "VALIDATION" : "Validierung am Laufen"
         },
         "userrole" : {
-           
             "ADMIN" : "Administrator",
             "ANY" : "Jede Rolle",
             "DEVELOPER" : "Entwickler",
@@ -324,41 +302,17 @@
             "FR" : "Französisch"
         },
         "month" : {
-
-            // TODO NEW: Jan
             "01" : "Jan",
-
-            // TODO NEW: Feb
             "02" : "Feb",
-
-            // TODO NEW: Mar
             "03" : "Mär",
-
-            // TODO NEW: Apr
             "04" : "Apr",
-
-            // TODO NEW: May
             "05" : "Mai",
-
-            // TODO NEW: Jun
             "06" : "Jun",
-
-            // TODO NEW: Jul
             "07" : "Jul",
-
-            // TODO NEW: Aug
             "08" : "Aug",
-
-            // TODO NEW: Sep
             "09" : "Sep",
-
-            // TODO NEW: Oct
             "10" : "Okt",
-
-            // TODO NEW: Nov
             "11" : "Nov",
-
-            // TODO NEW: Dec
             "12" : "Dez"
         },
         "tags" : {
@@ -374,7 +328,7 @@
             "visualization" : "Plugin",
             "create" : "Formular",
             "oauth1" : "OAuth 1",
-            "oauth2" : "OAuth 2",       
+            "oauth2" : "OAuth 2",
             "mobile" : "App (Smartphone, Web)"
         }
     },
@@ -403,8 +357,8 @@
 
     },
 
-    "instance" : {    
-        "rules" : "",
+    "instance" : {
+        "rules" : "", // TODO !?! -> DELETE
         "purpose" : "Zweck dieser MIDATA-Instanz",
         "access" : "Zugriff zu dieser MIDATA-Instanz",
         "uptime" : "Verfügbarkeit und Ausfallzeiten",
@@ -412,60 +366,38 @@
         "start" : "Wählen Sie einen Portal im oberen Bereich dieser Seite. Jedes Portal hat eine eigene Anmeldungs- und Registrierungsseite.",
 
         "localhost" : {
-       
             "name" : "Lokale Instanz (localhost)",
-            
             "intro" : "Dies ist eine lokale Installation der MIDATA-Plattform, die nur auf Ihrem PC erreichbar ist.",
             "purpose" : "Eine lokale Installation dient für Beiträge an der MIDATA-Plattform und Testzwecken.",
-           
             "access" : "Sie können Benutzerkonten für alle vier Portale registrieren. Die Konten müssen nicht durch einen MIDATA-Administrator validiert werden. Sie können Ihre eigenen Administratoren-Konten registrieren und benutzen.",
-
-            "uptime" : "Wann auch immer Sie sie laufen lassen, die Instanz gehört Ihnen :-)",
+            "uptime" : "Wann auch immer Sie sie laufen lassen, die Instanz gehört nur Ihnen :-)",
             "data" : "Daten, die in dieser Instanz gespeichert werden, sind nur auf Ihren lokalen PC verfügbar."
         },
 
         "test" : {
-            
             "name" : "Test-Instanz (test.midata.coop)",
             "intro" : "Dies ist eine Testinstanz der MIDATA-Plattform.",
-
             "purpose" : "Diese Instanz kann benutzt werden, um Apps und MIDATA-Plugins in einer sicheren Umgebung zu entwicklen und testen. Sie wird auch verwendet, um neue Versionen des Portals und des Backends zu testen, bevor die anderen Instanzen aktualisiert werden.",
-            
             "access" : "Registrieren Sie Ihr eigenes Entwicklerkonto. Nach Validierung durch einen MIDATA-Administrator, können Sie Testkonten für Nutzer, Forscher und Gesundheitsfachpersonen registrieren ohne zusätzliche Validierung.",
-            
             "uptime" : "Es gibt keine Garantie über die Verfügbarkeit. Die Instanz kann jederzeit nach Bedarf aktualisiert werden. Wenn möglich, werden Updates zwischen 12:00 und 13:00 mitteleuropäische Zeit ausgeführt, können aber bei Problemen auch mehrmals pro Tag auftreten.",
-           
             "data" : "Speichern Sie nur Testdaten auf diese Instanz. Daten und Konten können gelöscht werden wenn notwendig. Daten können durch Fehler korrupt werden. Die Daten werden nicht gesichert."
         },
 
         "demo" : {
-
-     
             "name" : "Demo-Instanz (demo.midata.coop)",
-
- 
             "intro" : "Dies ist eine Demonstrations-Instanz der MIDATA-Plattform.",
-
-      
             "purpose" : "Diese Instanz kann zu Demonstrations- und Übungszweck verwendet werden.",
-           
             "access" : "Sie können Benutzerkonten für alle vier Portale registrieren. Die Konten müssen durch einen MIDATA-Administrator validiert werden, bevor sie benutzt werden können.",
-
-  
             "uptime" : "Diese Instanz wird weniger oft aktualisiert als die Test-Instanz test.midata.coop. Das vorgesehene Wartungsfenster ist am Montag zwischen 12:00 und 14:00 mitteleuropäische Zeit.",
-          
             "data" : "Speichern Sie nur Demonstrationsdaten auf diese Instanz. Die Daten werden nicht gesichert."
         },
 
         "ch" : {
-
             "name" : "MIDATA Schweiz (ch.midata.coop)",
             "intro" : "Dies ist die schweizerische MIDATA-Plattform.",
-            
             "purpose" : "Dies ist die produktive MIDATA-Plattform für die Speicherung von Gesundheitsdaten in der Schweiz.",
             "access" : "Neue Benutzerkonten haben Funktionalitätseinschränkungen. Konten für Gesundheitsfachpersonen, Forscher und Entwickler können nur nach Validierung durch die MIDATA Geschäftsstelle benutzt werden. Fingierte oder Testkonten sind nicht erlaubt und werden gesperrt.",
             "uptime" : "Ausfälle werden angekündigt.",
-
             "data" : "Diese Instanz dient zur Speicherung von echten Daten für echte Personen. Die Daten werden täglich gesichert."
         }
 
@@ -495,42 +427,31 @@
         "mobile_phone" : "Mobiltelefon",
         "coach" : "Kontaktperson bei MIDATA",
         "reason" : "Zweck der Registrierung*",
-     
         "agb" : "MIDATA-Bestimmungen",
         "study" : "Forschung",
         "agb2" : "Ich akzeptiere die",
         "agb3" : "Allgemeine Geschäftsbedingungen",
         "privacypolicy2" : "Ich akzeptiere die",
         "privacypolicy3" : "Datenschutzerklärung",
-    
         "app_agb" : "App-Bestimmungen",
         "app_agb2" : "Ich akzeptiere die",
         "app_agb3" : "Allgemeine Geschäftsbedingungen der App",
-
-      
         "study_agb" : "Studien-Bestimmungen",
         "sign_up_btn" : "Registrieren",
-        
         "unlock_code" : "Freischaltcode"
     },
 
     "login" : {
         "email_address" : "E-Mail Adresse",
         "password" : "Kennwort",
-
-    
         "remember_me" : "Angemeldet bleiben",
-
-    
         "sign_in_btn" : "Anmelden",
         "forgot_your_password" : "Kennwort vergessen?",
-    
         "login_btn" : "Anmelden"
     },
 
     "lostpw" : {
         "title" : "Kennwort Assistent - Schritt 1",
-       
         "description" : "Geben Sie die mit Ihrem Account assoziierte E-Mail Adresse ein, dann klicken Sie auf Weiter. Sie werden eine E-Mail erhalten, mit einem Link auf eine Seite wo sie ein neues Kennwort setzen können.",
         "email" : "E-Mail Adresse",
         "continue" : "Weiter",
@@ -557,42 +478,30 @@
 
     "postregister" : {
         "title" : "Willkommen bei MIDATA",
-      
         "email_confirmed" : "E-Mail bestätigt?",
         "contract_signed" : "Vertrag unterschrieben und zurückgeschickt?",
         "resent_success" : "Die Willkommens-E-Mail wurde erneut versendet.",
         "address_success" : "Die Adresse wurde bestätigt.",
-    
         "code_entered" : "Bestätigungscode eingegeben?",
         "email_instructions" : "Ihre E-Mail-Adresse muss bestätigt werden. Eine Aktivierungs-E-Mail wurde Ihnen geschickt. Klicken Sie bitte auf dem Link um Ihre E-Mail-Adresse zu bestätigen.",
         "email_code" : "Sie können auch den per E-Mail erhaltenen Code direkt hier eingeben:",
-     
         "resend_btn" : "E-Mail erneut versenden",
         "retry_btn" : "Anmeldung erneut versuchen",
-       
         "contract_instructions" : "Ein Vertrag wurde an Ihre Postadresse geschickt. Schicken Sie ihn bitte unterschrieben an MIDATA zurück.",
-
-        // TODO NEW: During the pilot phase (or if you are on a test server) NO contract will be sent to you. A MIDATA admin will verify and unlock your account. You will be notified when your account has been unlocked.
-        "pilot_phase" : "During the pilot phase (or if you are on a test server) NO contract will be sent to you. A MIDATA admin will verify and unlock your account. You will be notified when your account has been unlocked.",
+        "pilot_phase" : "Während der Pilotphase (oder auf der Testinstanz) wird KEINEN Vertrag versendet. Ein MIDATA-Administrator wird Ihr Konto verifizieren und freischalten. Sie werden informiert, wenn Ihr Konto freigeschaltet wurde.",
         "code_intructions" : "Ein Brief mit einem Bestätigungscode wurde an Ihre Postadresse geschickt. Geben Sie bitte den Bestätigungscode ein, um Zugriff auf die Plattform zu erhalten.",
         "code_done" : "Sie haben den Bestätigungscode eingegeben. Sie werden sich anmelden können sobald Ihr unterschriebener Vertrag an der MIDATA Geschäftsstelle angekommen ist.",
         "enter_now_btn" : "Jetzt eingeben",
-    
         "email_success" : "Die E-Mail-Adresse wurde bestätigt.",
         "address_entered" : "Geben Sie bitte Ihre Postadresse ein, sie ist erforderlich, um diesen Dienst zu benutzen.",
         "phone_entered" : "Geben Sie bitte Ihre Mobiltelefonnummer ein, sie ist erforderlich, um diesen Dienst zu benutzen.",
-
-        // TODO NEW: Your account must be confirmed by a MIDATA admin. Please retry later. If your account has not been confirmed for more than 24 hours please contact MIDATA.
-        "admin_verified" : "Your account must be confirmed by a MIDATA admin. Please retry later. If your account has not been confirmed for more than 24 hours please contact MIDATA."
+        "admin_verified" : "Ihr Konto muss durch einen MIDATA-Administrator freigeschaltet werden. Versuchen Sie bitte später. Falls Ihr Konto nicht innert 24 Stunden freigeschaltet wurde, kontaktieren sie bitte MIDATA."
     },
 
     "changepassphrase" : {
         "title" : "Passphrase ändern",
-        
         "description" : "Ein Passphrase ist einen zusätzliche Absicherung (zusätzliche Verschlüsselung) für Ihre Daten. Es wird nicht auf unsere Servers gespeichert. Sie müssen Ihr Passphrase bei jeder Anmeldung angeben, damit Ihre Daten entschlüsselt werden können.",
-
         "if_unprotected" : "Wenn Ihr Konto noch nicht durch ein Passphrase geschützt ist, dann lassen Sie das Feld 'Altes Passphrase' leer.",
-
         "keep_passphrase_safe" : "Behalten Sie Ihr Passphrase in einem sicheren Ort, es gibt Wiederherstellungsmöglichkeit. Beim Verlust Ihres Passphrase werden Sie Ihre Daten nicht mehr zugreifen können!",
         "old_passphrase" : "Altes Passphrase",
         "new_passphrase" : "Neues Passphrase",
@@ -620,7 +529,7 @@
     "market" : {
         "categories" : "Kategorien",
         "plugins" : "Plugins",
-        "no_spotlighted_plugins" : "?TODO? There are no spotlighted plugins yet. ! spotlighted = sichtbar auf Marktplatz !",
+        "no_spotlighted_plugins" : "Es wurde noch kein Plugin auf dem Markplatz veröffentlicht.",
         "plugins_you_may_like" : "Plugins die Ihnen gefallen könnten",
         "no_recommendations" : "Wir haben noch keine Empfehlung für Sie.",
         "install_now_btn" : "Sofort anwenden"
@@ -647,14 +556,12 @@
         "download_btn" : "Herunterladen",
         "content_visualization" : "Visualisierung des Inhalts",
         "no_visualization" : "Keine Visualisierung vorhanden für diesen Datensatz.",
-        
         "raw_data" : "Rohdaten"
     },
 
     "studydetails" : {
         "study" : "Studie",
         "participant_search_status" : "Suche nach Teilnehmer:",
-        
         "execution_status" : "Durchführung der Studie:",
         "organization" : "Einrichtung",
         "providers_monitoring" : "Betreuende Fachpersonen der Studie",
@@ -662,10 +569,7 @@
         "provider_remove_btn" : "Entfernen",
         "provider_add_btn" : "Hinzufügen",
         "information_that_needs_sharing" : "Informationen die geteilt werden müssen um teilnehmen zu können",
-
-  
         "information_restricted" : "Ihr Geschlecht, Geburtsjahr und Wohnsitzland",
-
         "information_demographic" : "Ihre kompletten demographischen Daten (Name, Geburtsdatum, Adresse, ...)",
         "records_with_format" : "Datensätze im Format:",
         "records_with_content" : "Datensätze mit Inhalt:",
@@ -697,7 +601,6 @@
         "settings" : "Einstellungen",
         "address" : "Adresse und Kontaktinformationen",
         "change_address_btn" : "Adresse ändern",
-      
         "searchable_short" : "Sichtbarkeit Ihres Kontos",
         "searchable" : "Können andere Benutzer Ihr Profil finden, wenn sie danach suchen?",
         "searchable_yes" : "Ja, ich will dass mein Name und meine E-Mail-Adresse für andere Benutzer sichtbar sind",
@@ -739,18 +642,15 @@
         "share_with_members" : "Ich will Daten mit anderen MIDATA Kontoinhabenden teilen.",
         "share_with_provider" : "Ich will Daten mit einer Gesundheitsfachperson teilen.",
         "use_passcode" : "Zugangscode benutzen?",
-
         "use_passcode2" : "Ich weiss noch nicht mit wem ich die Daten teilen will. Zugangscode – das ich an einer Gesundheitsfachperson mitteilen kann – für diese Zustimmung setzen.",
         "choose_passcode" : "Wählen Sie einen sicheren Zugangscode",
         "who_is_owner" : "Wer teilt seine Daten?",
         "which_persons" : "Mit welchen Personen sind Daten geteilt?",
-       
         "set_owner_btn" : "Person auswählen, die ihre Daten teilt",
         "add_yourself_btn" : "Sie selbst hinzufügen",
         "add_person_btn" : "Neue Person hinzufügen",
         "add_usergroup_btn" : "Neues Team hinzufügen",
         "reshare" : "Zugriff für Drittpartei?",
-
         "reshare2" : "Die durch diese Zustimmung berechtigten Personen dürfen die entsprechenden Daten weiter teilen.",
         "expiration_date" : "Ablaufdatum der Zustimmung:",
         "created_before" : "Daten nicht teilen, die erstellt wurden nach dem:",
@@ -797,14 +697,11 @@
 
     "consents" : {
         "title" : "Zustimmungen",
-       
         "description" : "Zustimmungen geben Anderen (Gesundheitsfachpersonen, Freunde, Forscher, ...) Zugriff auf bestimmte Daten. Hier können Sie Ihre Zustimmung verwalten oder neue erstellen.",
-
         "count" : "Sie haben {{ count }} Zustimmung(en):",
         "where_owner" : "Zustimmungen anzeigen, bei denen Sie Daten mit anderen teilen",
         "where_authorized" : "Zustimmungen anzeigen, bei denen Daten mit Ihnen geteilt sind",
         "name" : "Bezeichnung der Zustimmung",
-        
         "ownerName" : "Besitzer",
         "type" : "Typ",
         "status" : "Status",
@@ -814,7 +711,6 @@
     },
 
     "revconsents" : {
-        
         "count" : "Es gibt {{ count }} Zustimmung(en), die Daten mit Ihnen teilen:",
         "add_new_btn" : "Neue Anfrage für eine Zustimmung"
     },
@@ -837,17 +733,12 @@
         "title" : "Meine Daten",
         "share_instructions1" : "Benutzen Sie die Buttons 'teilen' und 'nicht teilen', um zu bestimmen welche Datensätze Sie teilen wollen mit der Zustimmung ",
         "share_instructions2" : "Diese Zustimmung teil momentan Daten mit ",
-      
         "share_instructions3" : "Person(en).",
         "delete_instructions1" : "Um einen Eintrag permanent zu ",
         "delete_instructions2" : "löschen",
-       
         "delete_instructions3" : ", ",
-     
         "delete_instructions4" : "Doppelklicken",
-
         "delete_instructions5" : "auf dem Button 'Löschen' rechts dem Eintrag.",
-       
         "delete_instructions6" : "Um alle Datensätze einer bestimmten Kategorie permanent zu löschen, Doppelklicken Sie auf dem Button 'alle löschen' rechts der Kategorie.",
         "shared_with" : "Geteilt mit:",
         "records_used_for_app" : "Datensätze die durch der benutzt weden",
@@ -856,7 +747,6 @@
         "by_plugin" : "Nach Applikation gruppiert",
         "type_global" : "Global",
         "type_study" : "Forschung",
-        
         "type_circle" : "Andere Benutzer",
         "show" : "Ansehen:",
         "my_data" : "Meine Daten",
@@ -874,24 +764,18 @@
     },
 
     "oauth2" : {
-        
-        "reshares_data" : "Die Anwendung darf Daten, auf die sie Zugriff hat, an Dritte weitergeben.",
-
-        "allows_user_search" : "Ihr Name und eMailadresse können von anderen Nutzern dieser Anwendung nachgeschlagen werden.",
+        "reshares_data" : "Die Anwendung darf Daten, auf die sie Zugriff hat, an Dritten weitergeben.",
+        "allows_user_search" : "Ihre Name und E-Mail-Adresse können von anderen Nutzern dieser Anwendung nachgeschlagen werden.",
         "requesting_app" : "Diese Applikation benötigt Zugriff auf:",
-       
         "sign_in" : "MIDATA Anmeldung für:",
-     
         "sign_in_btn" : "Anmelden",
         "device" : "Gerät: {{ device}}",
- 
         "please_confirm" : "Bestätigen Sie bitte die Aktivierung der Applikation auf dem MIDATA Portal, dann versuchen Sie erneut. Zustimmungsbezeichnung: {{ consent }}",
         "confirm_btn" : "Zugriff bestätigen",
         "requests_access" : "Angeforderter Zugriff:",
         "shares_group" : "Gruppe: {{ group }}",
         "shares_format" : "Format: {{ format }}",
         "shares_content" : "Inhalt: {{ content }}",
-        
         "confirm_study" : "An Studie teilnehmen"
     },
 
@@ -904,7 +788,6 @@
         "social" : "Sozial",
         "social_text" : "Teile Sie Ihre Daten mit Freunden. Kommunizieren Sie mit Personen im selben Gesundheitszustand wie Sie. Motivieren Sie sich im Wettbewerb mit Anderen.",
         "research" : "Forschung",
-        
         "research_text" : "An Studien teilnehmen. Informieren Sie sich über aktuelle Forschung.",
         "health" : "Gesundheit",
         "health_text" : "Teilen Sie Daten mit Ihrem Arzt. Suche nach Gesundheitsfachperson.",
@@ -916,13 +799,13 @@
         "newrecords_teaser" : "Es gibt keine neue Einträge. Besuchen Sie die Seite 'Meine Daten' um alle Einträge anzuschauen.",
         "myaccount" : "Meine Account-Daten",
         "newsharedrecords" : "Neue Einträge die mit Ihnen geteilt wurden",
-        "newsharedrecords_teaser" : "Andere MIDATA Kontoinhabende können Daten mit Ihnen teilen.",
+        "newsharedrecords_teaser" : "Andere MIDATA Benutzer können ihre Daten mit Ihnen teilen.",
         "circles" : "Mitglied des Circles",
         "circles_teaser" : "Fragen Sie Anderen, Sie in ihre Circles aufzunehmen.",
         "circles2" : "Ihre Circles",
         "circles2_teaser" : "Erstellen Sie Circles um Ihre Daten mit Anderen zu teilen. Teilen Sie mit Freunden, Familie oder Anderen.",
         "providers" : "Ihre Zustimmungen",
-        "providers_teaser" : "Suchen Sie nach Gesundheitsfachpersonen und fügen Sie sie in Ihre Liste hinzu, um Daten mit sie teilen zu können.",
+        "providers_teaser" : "Suchen Sie nach Gesundheitsfachpersonen und fügen Sie sie in Ihrer Liste hinzu, um Daten mit sie teilen zu können.",
         "providersearch" : "Suche nach Gesundheitsfachpersonen",
         "providersearch_text" : "Suchfunktion für Gesundheitsfachpersonen.",
         "usergroupsearch" : "Suche nach Teams",
@@ -1033,7 +916,7 @@
     "usergroupsearch" : {
         "name" : "Name des Teams",
         "empty_result" : "Kein passendes Team gefunden.",
-        "add_individuals_btn" : "Als individuelle Personen an der Zustimmung hinzufügen",
+        "add_individuals_btn" : "Als individuellen Personen an der Zustimmung hinzufügen",
         "add_group_btn" : "Als veränderliches Team an der Zustimmung hinzufügen"
     },
 

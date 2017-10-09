@@ -35,21 +35,18 @@
 
     "appmessages" : {
         "title" : "Vordefinierte Meldungen für die App:",
-       
         "reason" : "Grund (Auslöser)",
         "code" : "Code",
         "languages" : "Sprachen",
         "empty" : "Es gibt noch keine App spezifische Meldung.",
-
         "lang" : "Sprache",
         "msgtitle" : "Meldungsüberschrift",
         "text" : "Meldungstext",
         "available_tags" : "Verfügbare Variablen",
-
         "reasons" : {
             "REGISTRATION" : "Neue Benutzerregistrierung",
             "FIRSTUSE_ANYUSER" : "Erste App-Anwendung",
-            "FIRSTUSE_EXISTINGUSER" : "Erst App-Anwendung (wenn kein Registrierungsmail versendet)",
+            "FIRSTUSE_EXISTINGUSER" : "Erst App-Anwendung (wenn kein Registrierungs-E-Mail versendet)",
             "CONSENT_REQUEST_OWNER_INVITED" : "Vorgeschlagene Zustimmung (Geber, Einladung)",
             "CONSENT_REQUEST_OWNER_EXISTING" : "Vorgeschlagene Zustimmung (Geber, Nutzer)",
             "CONSENT_REQUEST_AUTHORIZED_INVITED" : "Vorgeschlagene Zustimmung (Empfänger, Einladung)",
@@ -67,14 +64,10 @@
         "stats_btn" : "Debug Info",
         "debug_btn" : "API Tester",
         "linkedStudy" : "Mit der App verknüpfte Studie (Code)",
-      
         "mustParticipateInStudy" : "Studienteilnahme erforderlich",
         "admin_only" : "Nur ein MIDATA Administrator kann diese Abschnitt ändern. Stellen Sie bitte eine Anfrage für Veränderungen.",
-      
         "terms_of_use" : "Bestimmungen",
-      
         "show_terms" : "Bestimmungen anzeigen",
-        
         "unlock_code" : "Freischaltcode",
         "info" : {
             "filename" : "Dieser Name wird intern für die Kennung Ihrer App verwendet. Es sollte einen gültigen Identifikator sein (a-z, A-Z, 0-9, _).",
@@ -82,7 +75,7 @@
             "type" : "Wählen Sie 'Plugin' wenn Ihre App im MIDATA-Portal laufen wird. Wählen Sie 'Mobile App' für eine externe App. Wählen Sie 'OAuth1 Import' oder 'OAuth2 Import' wenn Sie sich über OAuth1 oder OAuth2 mit einem externen Server verbinden.",
             "name" : "Der Name der App oder des Plugins für den Endbenutzer.",
             "description" : "Die Beschreibung des Plugins, die im Markplatz erscheinen wird.",
-            "resharesData" : "Die App darf Daten, auf die sie Zugriff hat, an Drittparteien weitergeben.",         
+            "resharesData" : "Die App darf Daten, auf die sie Zugriff hat, an Drittparteien weitergeben.",
             "allowsUserSearch" : "Benutzer dieser App dürfen nach anderen Benutzern der gleichen App suchen.",
             "defaultSpaceName" : "Titel der Kachel des Plugins auf dem Dashboard.",
             "tags" : "Kategorien unter welchen das Plugin im Marktplatz erscheinen wird.",
@@ -93,9 +86,8 @@
             "defaultQuery" : "Query, das den Zugriff des Plugins auf die Datenbank begrenzt. Der Zugriff muss mindestens eingeschränkt werden nach 'code', 'content', 'group', 'format' oder 'owner'. Gültiges Beispiel (alle Observations): '{ \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery_extra" : "Gültige Werte für 'code', 'content' oder 'format' sind im Developer Guide unter 'Format/Content' aufgelistet. Für erste Versionen kann der Vollzugriff erstattet werden mit { \"group\" : \"all\", \"group-system\" : \"v1\" }. Schränken Sie allerdings den Zugriff weiter ein, bevor das Plugin oder die App produktiv eingesetzt wird.",
             "secret" : "Ihre App braucht dieses 'secret' um sich anmelden zu können. Wählen Sie es nach Belieben.",
-           
             "mustParticipateInStudy" : "Benutzer müssen an der Studie teilnehmen um diese App benutzen zu können.",
-            "unlock_code" : "Wenn ausgefüllt muss dieser Code vom Benutzer bei Registrierung oder erster Nutzung der App eingegeben werden. (nicht case-sensitiv)"
+            "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer eingegeben werden bei der Registrierung oder ersten Anmeldung bei MIDATA über die App. Der Code ist nicht 'case sensitiv'."
         }
     },
 
@@ -104,16 +96,14 @@
         "action" : "Operation",
         "first" : "Erste Operation aufgezeichnet am",
         "lastrun" : "Zuletzt ausgeführt",
-     
         "count" : "Statistiken",
         "run" : "Anzahl Ausführungen dieser Aktion.",
         "retry" : "Anzahl Mal die Operation wiederholt werden musste auf Grund von Parallelitätsprobleme.",
-
         "db" : "Durchschnittliche Anzahl internen Datenbankabfragen (MongoDB) pro Ausführung der Operation.",
         "time" : "Ausführungsdauer",
         "avgtime" : "Durchschnitt",
         "lasttime" : "Zuletzt",
-        "results" : "Resultate und Warnungen",     
+        "results" : "Resultate und Warnungen",
         "result" : "Antwort",
         "empty" : "Keine Angaben wurden aufgezeichnet seit die Debug-Informationen gelöscht wurden.",
         "reload_btn" : "Aktualisieren",
