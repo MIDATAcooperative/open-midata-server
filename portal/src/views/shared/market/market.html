@@ -1,64 +1,41 @@
 
-	<div ng-app="market" ng-controller="MarketCtrl">
-		<div class="extraspace">
-	      <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span><span translate="common.back_btn"></span></button>
-	    </div>	
+<div ng-app="market" ng-controller="MarketCtrl" class="midata-overlay borderless">
+	<div class="overlay-body">
+
 		<div class="alert alert-danger alert-dismissable" ng-show="error" ng-cloak>
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			<p translate="{{ error.code }}"></p>
 		</div>
-			
+
 		<!-- Visualizations -->
-		<div ng-show="beta">
-		<div class="page-header">
-			<h1><small translate="market.categories"></small></h1>
-		</div>
+
 		
-		<div class="row" ng-cloak>		 		   
-		    <div class="col-sm-2" ng-repeat="tag in tags"><a class="btn btn-default btn-block" href="javascript:" ng-click="setTag(tag);" translate="{{ 'enum.tags.'+tag }}"></a></div>		    		
-		</div>
-		
-		<div class="page-header">
-			<h1><small translate="market.plugins"></small></h1>
-		</div>
-		</div>
-						
-		<div class="row" ng-cloak>
-			<div ng-class="{ 'col-md-6' : beta, 'col-md-12' : !beta }">
-			  <div class="panel panel-primary">
-				<div class="panel-heading" translate="{{ 'enum.tags.'+(tag || 'Available') }}"></div>
-				<div class="panel-body">
-				<p ng-hide="visualizations.spotlighted.length" translate="market.no_spotlighted_plugins"></p>
-				<div class="media" ng-repeat="visualization in visualizations.spotlighted | filter : hasTag">
-					<a class="pull-left" href="javascript:;" ng-click="showVisualizationDetails(visualization)">
-						<img class="media-object" ng-src="{{ getVisualizationImage(visualization) }}" alt="Icon">
-					</a>
-					<div class="media-body">
-						<a href="javascript:;" ng-click="showVisualizationDetails(visualization)">{{ visualization.i18n[translate.use()].name || visualization.name}}</a>
-						<p>{{visualization.i18n[translate.use()].description || visualization.description}}</p>
-						<button ng-click="install(visualization)" class="btn btn-xs btn-default" translate="market.install_now_btn"></button>
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<span translate="{{ 'enum.tags.'+(tag || 'Available') }}"></span> <a ng-click="goBack()" href="javascript:"
+							class="close-icon pull-right"><span class="glyphicon glyphicon-remove"></span></a>
+					</div>
+					<div class="panel-body">
+						<p ng-hide="visualizations.spotlighted.length" translate="market.no_spotlighted_plugins"></p>
+						<table class="table table-hover clickable">
+						<tr ng-click="install(visualization)" ng-repeat="visualization in visualizations.spotlighted | filter : hasTag">
+							<!--  a class="pull-left" href="javascript:;" ng-click="showVisualizationDetails(visualization)"> <img class="media-object"
+								ng-src="{{ getVisualizationImage(visualization) }}" alt="Icon">
+							</a -->
+							<td>
+							    <!--  div class="pull-right">
+								<button ng-click="showVisualizationDetails(visualization)" class="btn btn-xs btn-default" translate="market.install_now_btn"></button>
+								</div -->
+								<b>{{ visualization.i18n[translate.use()].name ||
+									visualization.name}}</b>
+								<p>{{visualization.i18n[translate.use()].description || visualization.description}}</p>
+								
+							</td>
+						</div>
+						</table>
 					</div>
 				</div>
-				</div>
-				</div>
 			</div>
-			<div ng-show="beta" class="col-md-6">
-			    <div class="panel panel-primary">
-				<div class="panel-heading" translate="market.plugins_you_may_like"></div>
-				<div class="panel-body">
-				<p ng-hide="visualizations.suggested.length" translate="market.no_recommendations"></p>
-				<div class="media" ng-repeat="visualization in visualizations.suggested">
-					<a class="pull-left" href="javascript:;" ng-click="showVisualizationDetails(visualization)">
-						<img class="media-object" ng-src="{{ getVisualizationImage(visualization) }}" alt="Icon">
-					</a>
-					<div class="media-body">
-						<a href="javascript:;" ng-click="showVisualizationDetails(visualization)">{{ visualization.i18n[translate.use()].name || visualization.name}}</a>
-						<p>{{visualization.i18n[translate.use()].description || visualization.description}}</p>
-					</div>
-				</div>
-				</div>
-			</div>
-		</div>
-		</div>
-	</div>
-	
+
+</div>
+

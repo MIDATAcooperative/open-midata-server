@@ -203,14 +203,24 @@ private Feature next;
 				AccessContext context = getContextForAps(q, id);
 				if (context != null) {
 					if (context instanceof ConsentAccessContext && ((ConsentAccessContext) context).getConsent().dataupdate <= v) continue;
-				    result.addAll(QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("updated-after", v), id, context)), indexQueryParsed, null));
-				    result.addAll(QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("shared-after", v), id, context)), indexQueryParsed, null));
+					List<DBRecord> add;				
+					add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("updated-after", v), id, context)), indexQueryParsed, null);
+					AccessLog.log("found new updated entries aps="+id+": "+add.size());
+				    result.addAll(add);
+				    add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("shared-after", v), id, context)), indexQueryParsed, null);
+				    AccessLog.log("found new shared entries aps="+id+": "+add.size());
+				    result.addAll(add);				    
 				}
 			}
 			} else {
 				long v = myAccess.version(null);
-				result.addAll(QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("updated-after", v ))), indexQueryParsed, null));
-				result.addAll(QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("shared-after", v))), indexQueryParsed, null));
+				List<DBRecord> add;
+				add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("updated-after", v ))), indexQueryParsed, null);
+				AccessLog.log("found new updated entries: "+add.size());
+				result.addAll(add);
+				add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("shared-after", v))), indexQueryParsed, null);
+				AccessLog.log("found new shared entries: "+add.size());
+				result.addAll(add);
 			}
 			AccessLog.logEnd("end to look for new entries");
 			long endTime2 = System.currentTimeMillis();

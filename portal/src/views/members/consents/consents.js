@@ -4,7 +4,9 @@ angular.module('portal')
 	$scope.status = new status(true);
 		
 	loadConsents = function(userId) {	
-		$scope.status.doBusy(circles.listConsents({ }, [ "name", "authorized", "type", "status", "records" ]))
+		var prop = {};
+		if ($state.current.types) prop = { type : $state.current.types };
+		$scope.status.doBusy(circles.listConsents(prop, [ "name", "authorized", "type", "status", "records" ]))
 		.then(function(data) {
 			$scope.consents = data.data;						
 		});

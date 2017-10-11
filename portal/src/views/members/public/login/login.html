@@ -18,8 +18,18 @@
 		              		<h3 class="panel-title" translate="member_login.sign_in"></h3>
 		            	</div>
 		            	<div class="panel-body">
-			            	<p translate="{{ error.code }}" ng-show="error" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                           
-	                        </p>
+			            	<div ng-show="error" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">
+			            	  <span translate="{{ error.code }}"></span>
+			            	  <span ng-if="error.code == 'error.invalid.credentials_hint'">
+			            	    
+			            	    <a class="alert-link" ui-sref="public_research.login" translate="enum.userrole.RESEARCH"></a>,
+			                    <a class="alert-link" ui-sref="public_provider.login" translate="enum.userrole.PROVIDER"></a>
+			                    <span translate="common.or"></span>
+			                    <a class="alert-link" ui-sref="public_developer.login" translate="enum.userrole.DEVELOPER"></a>
+			                    ?		
+			            	   </span>                           
+	                        </div>
+	                        
 	                        <p ng-show="offline" class="alert alert-danger" translate="error.offline"></p>
 							<form ng-submit="login()" role="form" ng-hide="offline">
 								<input type="email" class="form-control" translate translate-attr-placeholder="login.email_address" ng-model="login.email" style="margin-bottom:5px;" autofocus>

@@ -15,13 +15,17 @@
 	  "login" : "Login",
 	  "sign_up" : "Sign Up",
 	  "sign_out" : "Sign out",
+	  "edit_profile" : "Edit Profile",
+	  "app_count" : "connected apps",
+	  "study_count" : "studies enrollments",
 	  "me" : "Me",
 	  "view" : "View",
       "overview" : "Overview",
 	  "messages" : "Messages",
 	  "my_data" : "My Data",
 	  "consents" : "Sharing",
-	  "research" : "News",
+	  "research" : "Research",
+	  "apps" : "Apps",
 	  "config" : "Configuration",
 	  "help" : "Help"
    },
@@ -55,9 +59,9 @@
      "invalid" : {
        "email" : "Please enter a valid email address",
 
-	//TODO username?
+	
        "credentials" : "Invalid username or password.",
-
+       "credentials_hint" : "Invalid username or password. You are trying to log in as account holder. Are you ",
        "password_repetition" : "Password and password repetition do not match!",
        "passphrase_repetition" : "Passphrase and passphrase repetition do not match!",
        "passphrase_old" : "Old passphrase not correct.",
@@ -385,8 +389,7 @@
 	   "Import" : "Import",
 	   "Planning" : "Planning",
 	   "Tools" : "Tools",
-	   "Fitbit" : "Fitbit",
-	   "Jawbone" : "Jawbone",
+	   "Protocol" : "Protocol",
 	   "Available" : "Available Plugins"
 	 },
 	 "plugintype" : {
@@ -408,6 +411,7 @@
     "view_btn" : "View",
     "submit_btn" : "Submit",
     "delete_btn" : "Delete",
+    "or" : "or",
 
     "user" : {
       "lastname" : "Surname",
@@ -625,15 +629,13 @@
   },
 
   "studydetails" : {
-    "study" : "Study",
-    "participant_search_status" : "Participant search:",
-    "execution_status" : "Study accomplishment:",
-    "organization" : "Organization",
+    "study" : "Study",    
+    "organization" : "Organization performing the research:",
     "providers_monitoring" : "Healthcare Providers monitoring the study",
     "no_providers" : "None",
     "provider_remove_btn" : "Remove",
     "provider_add_btn" : "Add",
-    "information_that_needs_sharing" : "Information that must be shared for participation",
+    "information_that_needs_sharing" : "Required data",
     "information_restricted" : "Your gender, year of birth and country of residence",
     "information_demographic" : "Your complete demographic data (name, birthday, address, ...)",
     "records_with_format" : "Records that have format:",
@@ -648,7 +650,8 @@
 	"history_when" : "When",
 	"history_comment" : "Comment",
 	"request_participation_btn" : "Request Participation",
-	"do_not_participate_btn" : "Do not participate"
+	"do_not_participate_btn" : "Do not participate",
+	"status" : "Status"
   },
 
   "user" : {
@@ -656,6 +659,7 @@
     "user" : "User",
     "name" : "Name:",
     "email" : "EMail:",
+    "action" : "More...",
     "change_password_btn" : "Change Password",
  	"change_passphrase_btn" : "Change Passphrase",
  	"auditlog_btn" : "View Log",
@@ -903,7 +907,8 @@
 	"view_btn" : "View",
 	"install_btn" : "Add more",
 	"observations" : "Measures",
-	"calendar" : "Calendar"
+	"calendar" : "Calendar",
+	"smallstudies" : "Studies"
    },
 
    "measure" : {
@@ -1016,6 +1021,15 @@
     "MEMBER" : "Account",
     "PROVIDER" : "Account (Healthcare)",
     "RESEARCH" : "Account (Researcher)"
+  },
+  
+  "apps" : {
+    "greeting" : "Connect your apps to collect your datas",
+    "title" : "Apps",
+    "description" : "Connected Apps",
+    "count" : "You have {{count}} connected apps:",
+    "services" : "Services",
+    "connect_btn" : "Connect"       
   }
     
 }
