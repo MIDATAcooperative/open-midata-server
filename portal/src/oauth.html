@@ -46,7 +46,7 @@
 		<script type="text/javascript" src="oauthapp.js" defer></script>
 		<!-- endbuild -->
 	</head>
-	<body ng-app="portal" ng-csp="no-unsafe-eval" class="<!-- @echo NAME --> newdesign">
+	<body ng-app="portal" ng-csp="no-unsafe-eval" class="<!-- @echo NAME -->">
 	
 	  <div ng-if="false" class="colored fullheight">
 	  <header id="navbar" class="navbar navbar-default" role="navigation" ng-controller="NavbarCtrl">
@@ -69,7 +69,7 @@
 	  <div id="maincontent" ui-view ng-cloak></div>
 	  <footer id="footer">
 		 <div class="container">
-			<p translate="footer.copyright" translate-value-now="{{ currentDate | date:'yyyy' }}"></p>		   
+			<p onClick="document.body.classList.toggle('newdesign');" translate="footer.copyright" translate-value-now="{{ currentDate | date:'yyyy' }}"></p>		   
 		 </div>
 	  </footer>
 	  </div>
