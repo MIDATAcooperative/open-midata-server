@@ -1,16 +1,30 @@
 package utils.fhir;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hl7.fhir.dstu3.model.Address;
+import org.hl7.fhir.dstu3.model.ContactPoint;
 import org.hl7.fhir.dstu3.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
+import org.hl7.fhir.dstu3.model.Extension;
+import org.hl7.fhir.dstu3.model.HumanName;
 import org.hl7.fhir.dstu3.model.IdType;
+import org.hl7.fhir.dstu3.model.Identifier;
+import org.hl7.fhir.dstu3.model.Observation;
 import org.hl7.fhir.dstu3.model.Patient;
+import org.hl7.fhir.dstu3.model.Patient.ContactComponent;
+import org.hl7.fhir.dstu3.model.Patient.PatientCommunicationComponent;
+import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IIdType;
 
@@ -20,13 +34,16 @@ import com.mongodb.util.JSON;
 import ca.uhn.fhir.model.api.Include;
 import ca.uhn.fhir.model.api.annotation.Description;
 import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.annotation.Create;
 import ca.uhn.fhir.rest.annotation.History;
 import ca.uhn.fhir.rest.annotation.IdParam;
 import ca.uhn.fhir.rest.annotation.IncludeParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.Read;
+import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.annotation.Sort;
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.SortSpec;
 import ca.uhn.fhir.rest.param.DateAndListParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
@@ -34,17 +51,48 @@ import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.StringAndListParam;
 import ca.uhn.fhir.rest.param.TokenAndListParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import ca.uhn.fhir.rest.server.exceptions.AuthenticationException;
 import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
+import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import controllers.Application;
+import controllers.Circles;
+import models.Circle;
+import models.Consent;
+import models.HCRelated;
+import models.HPUser;
+import models.HealthcareProvider;
 import models.Member;
+import models.MemberKey;
 import models.MidataId;
+import models.Plugin;
 import models.Record;
 import models.StudyParticipation;
+import models.enums.AccountSecurityLevel;
+import models.enums.AuditEventType;
+import models.enums.ConsentStatus;
+import models.enums.EMailStatus;
+import models.enums.EntityType;
+import models.enums.Gender;
+import models.enums.SubUserRole;
+import models.enums.UserStatus;
+import models.enums.WritePermissionType;
+import play.Play;
+import utils.AccessLog;
+import utils.InstanceConfig;
+import utils.PasswordHash;
 import utils.RuntimeConstants;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
+import utils.auth.KeyManager;
 import utils.collections.CMaps;
 import utils.collections.Sets;
+import utils.db.ObjectIdConversion;
 import utils.exceptions.AppException;
+import utils.exceptions.BadRequestException;
+import utils.exceptions.InternalServerException;
+import utils.json.JsonExtraction;
+import utils.json.JsonValidation;
 
 
 public class PatientResourceProvider extends ResourceProvider<Patient> implements IResourceProvider {
@@ -364,8 +412,11 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		
 		List<Record> recs = query.execute(info);
 		List<Record> result = new ArrayList<Record>(recs.size());
-		for (Record record : recs) {
-			if (record.data.get("id").equals(record.owner.toString())) result.add(record);
+		for (Record record : recs) {			
+			if (record.data == null) continue;			
+			Object id = record.data.get("id");
+			AccessLog.log(id.toString()+" vs "+record.owner.toString());
+			if (id.equals(record.owner.toString())) result.add(record);
 		}
 		return result;
 	}
@@ -376,6 +427,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
 		p.addName().setFamily(member.lastname).addGiven(member.firstname);
 		p.setBirthDate(member.birthday);
 		p.addIdentifier().setSystem("http://midata.coop/identifier/midata-id").setValue(member.midataID);
+		p.addIdentifier().setSystem("http://midata.coop/identifier/patient-login").setValue(member.emailLC);
 		p.setGender(AdministrativeGender.valueOf(member.gender.toString()));
 		p.addTelecom().setSystem(ContactPointSystem.EMAIL).setValue(member.email);
 		if (member.phone != null && member.phone.length()>0) {
@@ -386,7 +438,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     }
     
     public void updatePatientForAccount(Member member) throws AppException {
-    	List<Record> allExisting = RecordManager.instance.list(member._id, member._id, CMaps.map("format", "fhir/Patient").map("owner", "self").map("data", CMaps.map("id", member._id.toString())), Record.ALL_PUBLIC);
+    	List<Record> allExisting = RecordManager.instance.list(info().executorId, member._id, CMaps.map("format", "fhir/Patient").map("owner", "self").map("data", CMaps.map("id", member._id.toString())), Record.ALL_PUBLIC);
     	
     	if (allExisting.isEmpty()) {    	
     	  Patient patient = generatePatientForAccount(member);
@@ -403,14 +455,15 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     }
     
     public static void updatePatientForAccount(MidataId who) throws AppException {
-      ExecutionInfo inf = new ExecutionInfo();
-      inf.executorId = who;
-      inf.targetAPS = who;
-      inf.ownerId = who;
-      inf.pluginId = RuntimeConstants.instance.portalPlugin;
-      
       PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
-      patientProvider.setExecutionInfo(inf);
+      
+      try {
+    	info();  
+      } catch (AuthenticationException e) {
+        ExecutionInfo inf = new ExecutionInfo(who);      
+        patientProvider.setExecutionInfo(inf);
+      }            
+      
       Member member = Member.getById(who, Sets.create("firstname", "lastname", "birthday", "midataID", "gender", "email", "phone", "city", "country", "zip", "address1", "address2"));
       patientProvider.updatePatientForAccount(member);
     }
@@ -436,11 +489,7 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     }
     
     public static void createPatientForStudyParticipation(StudyParticipation part, Member member) throws AppException {
-        ExecutionInfo inf = new ExecutionInfo();
-        inf.executorId = member._id;
-        inf.targetAPS = member._id;
-        inf.ownerId = member._id;
-        inf.pluginId = RuntimeConstants.instance.portalPlugin;
+        ExecutionInfo inf = new ExecutionInfo(member._id);       
         
         PatientResourceProvider patientProvider = (PatientResourceProvider) FHIRServlet.myProviders.get("Patient");
         PatientResourceProvider.setExecutionInfo(inf);
@@ -483,5 +532,189 @@ public class PatientResourceProvider extends ResourceProvider<Patient> implement
     }
     */
 
+    @Create
+	@Override
+	public MethodOutcome createResource(@ResourceParam Patient thePatient) {
+		return super.createResource(thePatient);
+	}
+    
+    protected MethodOutcome create(Patient thePatient) throws AppException {
+
+    	        			
+		// create the user
+		Member user = new Member();
+		
+		for (HumanName name : thePatient.getName()) {
+			if (name.getPeriod() == null || !name.getPeriod().hasEnd()) {
+			  user.firstname = name.getGivenAsSingleString();
+			  user.lastname = name.getFamily();
+			}
+		}
+			
+		for (Address address : thePatient.getAddress()) {
+			if (!address.hasPeriod() || !address.getPeriod().hasEnd()) {
+				user.city = address.getCity();
+				user.country = address.getCountry();
+				user.zip = address.getPostalCode();        				
+				List<StringType> lines = address.getLine();
+				if (lines.size() > 0) user.address1 = lines.get(0).asStringValue();
+				if (lines.size() > 1) user.address2 = lines.get(0).asStringValue();
+			}
+		}
+			
+		boolean foundEmail = false;
+		boolean foundLoginId = false;
+		boolean foundMidataId = false;
+		
+		for (ContactPoint point : thePatient.getTelecom()) {
+		
+		   if (!point.hasPeriod() || !point.getPeriod().hasEnd()) {
+		     if (point.getSystem().equals(ContactPointSystem.EMAIL)) {
+			   user.email = point.getValue();
+			   user.emailLC = user.email.toLowerCase();
+			   foundEmail = true;
+		     } else if (point.getSystem().equals(ContactPointSystem.PHONE)) {
+		    	 user.phone = point.getValue();
+		     } else if (point.getSystem().equals(ContactPointSystem.SMS)) {
+		    	 user.mobile = point.getValue();
+		     }
+		   }
+		}
+		
+		for (Identifier identifier : thePatient.getIdentifier()) {
+			if (identifier.getSystem().equals("http://midata.coop/identifier/patient-login")) {
+				user.email = identifier.getValue();
+				user.emailLC = user.email.toLowerCase();
+				foundLoginId = true;
+			} 
+		}
+		
+				
+		user.name = user.firstname + " " + user.lastname;    			    			
+		user.subroles = EnumSet.noneOf(SubUserRole.class);		    		
+		switch(thePatient.getGender()) {
+		  case FEMALE: user.gender = Gender.FEMALE; break;
+		  case MALE: user.gender = Gender.MALE; break;
+		  case OTHER: user.gender = Gender.OTHER; break;
+		  default:
+		}
+		user.birthday = thePatient.getBirthDate();
+		user.language = InstanceConfig.getInstance().getDefaultLanguage();
+		for (PatientCommunicationComponent comm : thePatient.getCommunication()) {
+			if (comm.getPreferred()) {
+				user.language = comm.getLanguage().getCodingFirstRep().getCode();
+			}
+		}
+		user.initialApp = info().pluginId;
+		
+		if (user.firstname == null) throw new UnprocessableEntityException("Patient 'given' name not given.");
+		if (user.lastname == null) throw new UnprocessableEntityException("Patient family name not given.");
+		if (user.email == null) throw new UnprocessableEntityException("Patient email not given.");
+		if (user.country == null) throw new UnprocessableEntityException("Patient country not given.");
+		if (user.gender == null) throw new UnprocessableEntityException("Patient gender not given.");
+		if (user.birthday == null) throw new UnprocessableEntityException("Patient birth date not given.");
+		
+		String password = null;
+		for (Extension ext : thePatient.getExtensionsByUrl("http://midata.coop/extensions/account-password")) {
+		  password = ext.getValue().primitiveValue();
+		}
+		if (password == null) throw new UnprocessableEntityException("Patient account password not given.");
+		
+		user.password = Member.encrypt(password);				
+		
+		String terms = "midata-terms-of-use--"+Play.application().configuration().getString("versions.midata-terms-of-use","1.0");
+		String ppolicy = "midata-privacy-policy--"+Play.application().configuration().getString("versions.midata-privacy-policy","1.0");	
+		boolean termsOk = false;
+		boolean ppolicyOk = false;
+		
+		for (Extension ext : thePatient.getExtensionsByUrl("http://midata.coop/extensions/terms-agreed")) {
+		   String agreed = ext.getValue().primitiveValue();
+		   if (agreed.equals(terms)) termsOk = true;
+		   if (agreed.equals(ppolicy)) ppolicyOk = true;
+		}
+		
+		if (!termsOk || !ppolicyOk) throw new UnprocessableEntityException("Patient must approve terms of use and privacy policy");
+		
+		if (!foundEmail) {
+			thePatient.addTelecom().setSystem(ContactPointSystem.EMAIL).setValue(user.email);
+		}
+		if (!foundLoginId) {
+			thePatient.addIdentifier().setSystem("http://midata.coop/identifier/patient-login").setValue(user.emailLC);
+		}
+		
+		thePatient.getExtension().clear();
+		
+		Member existing = Member.getByEmail(user.email, Member.ALL_USER);
+		
+		if (existing == null) {
+			
+			Application.registerSetDefaultFields(user);
+			
+			user.emailStatus = EMailStatus.EXTERN_VALIDATED;
+			user.status = UserStatus.ACTIVE;
+			
+			thePatient.setId(user._id.toString());
+			AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, info().pluginId, info().ownerId, user);			
+			
+			user.security = AccountSecurityLevel.KEY;		
+			user.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(user._id);								
+			Member.add(user);			
+			KeyManager.instance.unlock(user._id, null);
+			
+			user.myaps = RecordManager.instance.createPrivateAPS(user._id, user._id);
+			Member.set(user._id, "myaps", user.myaps);
+									
+	     	
+										
+			//Circles.fetchExistingConsents(info().executorId, user.emailLC);			
+		} else {
+			user = existing;
+			
+			Set<Consent> exist = Consent.getAllActiveByAuthorizedAndOwners(info().ownerId, Collections.singleton(user._id));
+			if (!exist.isEmpty()) throw new UnprocessableEntityException("Already exists.");
+		}																		    							    							    			    		
+				
+		Plugin plugin = Plugin.getById(info().pluginId);
+		String consentName = plugin.name;
+		HPUser hpuser = HPUser.getById(info().ownerId, Sets.create("provider", "firstname", "lastname"));
+		if (hpuser != null) {
+		   consentName = hpuser.firstname+" "+hpuser.lastname;	
+		   if (hpuser.provider != null) {
+		      HealthcareProvider prov = HealthcareProvider.getById(hpuser.provider);
+		      if (prov != null) consentName = prov.name;
+		   }
+		}
+		
+		Consent consent = new MemberKey();
+		consent.writes = WritePermissionType.WRITE_ANY;							
+		consent.owner = user._id;
+		consent.name = consentName;		
+		consent.authorized = new HashSet<MidataId>();
+		consent.status = existing == null ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;				
+		consent.authorized.add(info().ownerId);
+		consent.sharingQuery = new HashMap<String, Object>();
+		consent.sharingQuery.put("owner", "self");
+		consent.sharingQuery.put("app", plugin.filename);
+				
+		Circles.addConsent(info().executorId, consent, false, null, true);		
+		
+		if (existing == null) {
+			Record record = newRecord("fhir/Patient");
+	     	record.owner = user._id;	     	
+			prepare(record, thePatient);		
+			insertRecord(record, thePatient);
+			
+			Application.sendWelcomeMail(info().pluginId, user);
+			//if (InstanceConfig.getInstance().getInstanceType().notifyAdminOnRegister() && user.developer == null) Application.sendAdminNotificationMail(user);
+		}
+		
+		thePatient.setId(user._id.toString());
+		MethodOutcome retVal = new MethodOutcome(new IdType(thePatient.getResourceType().name(), user._id.toString()));    			
+        retVal.setResource(thePatient);
+
+        return retVal;
+
+				
+	}
 
 }

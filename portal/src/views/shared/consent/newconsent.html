@@ -73,6 +73,14 @@
 		<button type="button" class="btn btn-default" ng-click="addPeople();" translate="newconsent.add_person_btn"></button>
 		<button type="button" class="btn btn-default" ng-click="addUserGroup();" translate="newconsent.add_usergroup_btn"></button>
 	</formrow>
+	<formrow myid="writes" label="newconsent.writes">
+	  <div class="checkbox">
+	    <label>
+	      <input type="checkbox" ng-model="consent.writesBool"><span translate="newconsent.writes2"></span>
+	    </label>
+	  </div>
+	</formrow>
+	
 	<formrow myid="reshare" label="newconsent.reshare">
 	  <div class="checkbox">
 	    <label>

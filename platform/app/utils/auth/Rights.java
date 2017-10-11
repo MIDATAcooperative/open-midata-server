@@ -40,18 +40,18 @@ public class Rights {
 		role(UserRole.MEMBER, "_id", "role", "firstname", "lastname", "name", "status", "email");
 		role(UserRole.RESEARCH, "_id", "role", "firstname", "lastname", "name", "status", "email");
 		role(UserRole.DEVELOPER, "_id", "role", "firstname", "lastname", "name", "email", "developer", "status");
-		role(UserRole.ADMIN, "_id", "address1", "address2", "city", "contractStatus", "agbStatus", "country", "email", "emailLC", "firstname", "gender", "history", "lastname", "login", "mobile", "name", "phone", "registeredAt", "role", "subroles", "security", "status", "zip", "midataID", "birthday", "confirmationCode", "emailStatus", "confirmedAt", "reason", "coach", "developer");
+		role(UserRole.ADMIN, "_id", "address1", "address2", "city", "contractStatus", "agbStatus", "country", "email", "emailLC", "firstname", "gender", "lastname", "login", "mobile", "name", "phone", "registeredAt", "role", "subroles", "security", "status", "zip", "midataID", "birthday", "confirmationCode", "emailStatus", "confirmedAt", "reason", "coach", "developer");
 		role(UserRole.PROVIDER, "_id", "address1", "address2", "city", "contractStatus", "agbStatus", "country", "email", "emailLC", "firstname", "gender", "lastname", "login", "mobile", "name", "phone", "role", "subroles", "status", "zip", "midataID", "birthday");
 		
 		action("Users.getPROVIDER");
 		role(UserRole.MEMBER  , "_id", "address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "phone", "mobile", "name", "role", "subroles", "status", "zip");
 		
 		action("Users.getSelf");
-		role(UserRole.MEMBER, "_id", "address1", "address2", "apps", "city", "emailStatus", "contractStatus", "agbStatus", "country", "email", "firstname", "name", "lastname", "gender", "history", "login", "messages", "mobile", "phone", "registeredAt", "role", "subroles", "security", "status", "visualizations", "zip", "birthday", "midataID", "news", "partInterest", "ssn", "language", "searchable", "confirmedAt");
-		role(UserRole.RESEARCH, "_id", "address1", "address2", "apps", "city", "emailStatus", "contractStatus", "agbStatus", "country", "email", "firstname", "name", "lastname", "gender", "history", "login", "messages", "mobile", "phone", "registeredAt", "role", "subroles", "security", "status", "visualizations", "zip", "midataID", "language", "searchable", "confirmedAt"); // TODO Remove midataID 
-		role(UserRole.PROVIDER, "_id", "address1", "address2", "apps", "city", "emailStatus", "contractStatus", "agbStatus", "country", "email", "firstname", "name", "lastname", "gender", "history", "login", "messages", "mobile", "phone", "registeredAt", "role", "subroles", "security", "status", "visualizations", "zip", "midataID", "language", "searchable", "confirmedAt"); // TODO Remove midataID
-		role(UserRole.DEVELOPER, "_id", "address1", "address2", "apps", "city", "emailStatus", "contractStatus", "agbStatus", "country", "email", "firstname", "name", "lastname", "gender", "history", "login", "messages", "mobile", "phone", "registeredAt", "role", "subroles", "security", "status", "visualizations", "zip", "midataID", "language", "searchable", "confirmedAt"); // TODO Remove midataID
-		role(UserRole.ADMIN, "_id", "address1", "address2", "apps", "city", "emailStatus", "contractStatus", "agbStatus", "country", "email", "firstname", "name", "lastname", "gender", "history", "login", "messages", "mobile", "phone", "registeredAt", "role", "subroles", "security", "status", "visualizations", "zip", "midataID", "language", "searchable", "confirmedAt"); // TODO Remove midataID
+		role(UserRole.MEMBER, "_id", "address1", "address2", "apps", "city", "emailStatus", "contractStatus", "agbStatus", "country", "email", "firstname", "name", "lastname", "gender", "login", "messages", "mobile", "phone", "registeredAt", "role", "subroles", "security", "status", "visualizations", "zip", "birthday", "midataID", "news", "partInterest", "ssn", "language", "searchable", "confirmedAt");
+		role(UserRole.RESEARCH, "_id", "address1", "address2", "apps", "city", "emailStatus", "contractStatus", "agbStatus", "country", "email", "firstname", "name", "lastname", "gender", "login", "messages", "mobile", "phone", "registeredAt", "role", "subroles", "security", "status", "visualizations", "zip", "midataID", "language", "searchable", "confirmedAt"); // TODO Remove midataID 
+		role(UserRole.PROVIDER, "_id", "address1", "address2", "apps", "city", "emailStatus", "contractStatus", "agbStatus", "country", "email", "firstname", "name", "lastname", "gender", "login", "messages", "mobile", "phone", "registeredAt", "role", "subroles", "security", "status", "visualizations", "zip", "midataID", "language", "searchable", "confirmedAt"); // TODO Remove midataID
+		role(UserRole.DEVELOPER, "_id", "address1", "address2", "apps", "city", "emailStatus", "contractStatus", "agbStatus", "country", "email", "firstname", "name", "lastname", "gender", "login", "messages", "mobile", "phone", "registeredAt", "role", "subroles", "security", "status", "visualizations", "zip", "midataID", "language", "searchable", "confirmedAt"); // TODO Remove midataID
+		role(UserRole.ADMIN, "_id", "address1", "address2", "apps", "city", "emailStatus", "contractStatus", "agbStatus", "country", "email", "firstname", "name", "lastname", "gender", "login", "messages", "mobile", "phone", "registeredAt", "role", "subroles", "security", "status", "visualizations", "zip", "midataID", "language", "searchable", "confirmedAt"); // TODO Remove midataID
 		
 		action("HealthProvider.search");
 		role(UserRole.MEMBER  , "_id", "address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "mobile", "name", "role", "status", "zip");
@@ -60,17 +60,17 @@ public class Rights {
 		role(UserRole.ADMIN   , "_id", "address1", "address2", "city", "country", "email", "firstname", "gender", "lastname", "mobile", "name", "role", "status", "zip");
 		
 		action("Studies.search");
-		role(UserRole.RESEARCH, "_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history", "groups", "termsOfUse", "requirements");
-		role(UserRole.ADMIN, "_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history", "groups", "termsOfUse", "requirements");
-		role(UserRole.PROVIDER, "_id", "name", "code", "owner", "createdAt", "description", "infos", "studyKeywords", "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history", "termsOfUse", "requirements");
-		role(UserRole.MEMBER, "_id", "name", "code", "owner", "createdAt", "description", "infos", "studyKeywords", "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history", "termsOfUse", "requirements");
+		role(UserRole.RESEARCH, "_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "termsOfUse", "requirements");
+		role(UserRole.ADMIN, "_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "termsOfUse", "requirements");
+		role(UserRole.PROVIDER, "_id", "name", "code", "owner", "createdAt", "description", "infos", "studyKeywords", "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "termsOfUse", "requirements");
+		role(UserRole.MEMBER, "_id", "name", "code", "owner", "createdAt", "description", "infos", "studyKeywords", "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "termsOfUse", "requirements");
 		
 		action("getRecords");
 		role(UserRole.ANY, "_id", "id", "owner" , "ownerName", "creatorName", "format", "subformat", "content", "code", "group", "app", "creator", "created", "lastUpdated", "version", "name", "description", "tags", "data", "created-after", "created-before", "max-age", "group-strict", "group-exclude", "limit");
 		
 		action("Circles.listConsents");
-		role(UserRole.RESEARCH, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "sharingQuery.target-study", "sharingQuery.target-study-group");
-		role(UserRole.ANY, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation");		
+		role(UserRole.RESEARCH, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "sharingQuery.target-study", "sharingQuery.target-study-group", "writes");
+		role(UserRole.ANY, "_id", "owner", "name", "authorized", "entityType", "type", "status", "ownerName", "member", "records", "passcode", "createdBefore", "validUntil", "sharingQuery", "externalOwner", "externalAuthorized", "dateOfCreation", "writes");		
 		
 		action("Plugins.get");
 		role(UserRole.ANY, Plugin.ALL_PUBLIC);
@@ -78,10 +78,10 @@ public class Rights {
 		role(UserRole.ADMIN, Plugin.ALL_DEVELOPER);
 		
 		action("UserGroups.search");
-		role(UserRole.ANY, "_id", "creator", "history", "name", "registeredAt", "searchable", "status", "type", "member");
+		role(UserRole.ANY, "_id", "creator", "name", "registeredAt", "searchable", "status", "type", "member");
 
 		action("UserGroups.searchOwn");
-		role(UserRole.ANY, "_id", "creator", "history", "name", "registeredAt", "searchable", "status", "type", "member");
+		role(UserRole.ANY, "_id", "creator", "name", "registeredAt", "searchable", "status", "type", "member");
 	}
 	
 	public static void chk(String action, UserRole role, Map<String, Object> props, Set<String> fields) throws InternalServerException, AuthException {

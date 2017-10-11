@@ -30,7 +30,7 @@ public class Study extends Model {
 	/**
 	 * constant set containing all fields
 	 */
-	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "history", "groups", "requirements", "termsOfUse");
+	public @NotMaterialized static final Set<String> ALL = Sets.create("_id", "name", "code", "owner", "createdBy", "createdAt", "description", "infos", "studyKeywords", "participantRules",  "recordQuery", "requiredInformation", "assistance", "validationStatus", "participantSearchStatus", "executionStatus", "groups", "requirements", "termsOfUse");
 	
 	/**
 	 * name of study
@@ -108,12 +108,7 @@ public class Study extends Model {
 	 * Status of study execution
 	 */
 	public StudyExecutionStatus executionStatus;
-	
-	/**
-	 * Study change history
-	 */
-    public List<History> history;
-    
+		
     /**
      * Definition of groups of participants
      */
@@ -200,11 +195,7 @@ public class Study extends Model {
     	this.termsOfUse = termsOfUse;
     	Model.set(Study.class, collection, this._id, "termsOfUse", termsOfUse);
     }
-    
-    public void addHistory(History newhistory) throws InternalServerException {
-    	this.history.add(newhistory);
-    	Model.set(Study.class, collection, this._id, "history", this.history);
-    }
+        
     
     public static void delete(MidataId studyId) throws InternalServerException {	
 		Model.delete(Study.class, collection, CMaps.map("_id", studyId));

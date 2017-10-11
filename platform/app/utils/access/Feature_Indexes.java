@@ -38,6 +38,15 @@ private Feature next;
 	public final static int AUTOCREATE_INDEX_COUNT = 30;
 	public final static int NO_SECOND_INDEX_COUNT = 30;
 	
+	private AccessContext getContextForAps(Query q, MidataId aps) throws AppException {
+		 if (! q.getCache().getAPS(aps).isUsable()) return null;
+		 if (q.getApsId().equals(aps)) return q.getContext();
+	     if (q.getCache().getExecutor().equals(aps)) return new AccountAccessContext(q.getCache(), q.getContext());	     
+	     Consent c = q.getCache().getConsent(aps);
+	     if (c == null) return null;
+	     return new ConsentAccessContext(c, q.getContext());
+		 
+	}
 	@Override
 	protected List<DBRecord> query(Query q) throws AppException {
 		if (q.restrictedBy("index") && !q.restrictedBy("_id")) {
@@ -89,6 +98,7 @@ private Feature next;
 						
 			List<DBRecord> result = new ArrayList<DBRecord>();
 			
+									
 			
 			IndexUse myAccess = parse(pseudo, q.getRestriction("format"), indexQueryParsed);			
 				
@@ -116,71 +126,106 @@ private Feature next;
 			for (Map.Entry<MidataId, Set<MidataId>> entry : filterMatches.entrySet()) {				
 			   MidataId aps = entry.getKey();
 			   AccessLog.log("Now processing aps:"+aps.toString());
-			   Set<MidataId> ids = entry.getValue();
+			   		
+			   AccessContext context = getContextForAps(q, aps);
+			   if (context != null) {
 			   
-			   if (ids.size() > INDEX_REVERSE_USE) {
-				   Query q4 = new Query(q, CMaps.map(), aps);
-				   List<DBRecord> unindexed = next.query(q4);
-				   for (DBRecord candidate : unindexed) {
-					   candidate.consentAps = aps;
-					   if (ids.contains(candidate._id)) result.add(candidate);
-				   }
-				   AccessLog.log("add unindexed ="+unindexed.size());
-				   //result.addAll(unindexed);
-			   } else {
-				   Map<String, Object> readRecs = new HashMap<String, Object>();
-				   boolean add = false;
-				   boolean directQuery = true;
-				   if (ids.size() > 5) {
-					    Map<String, Object> props = new HashMap<String, Object>();
-						props.putAll(q.getProperties());
-						props.put("streams", "only");
-						List<DBRecord> matchStreams = next.query(new Query(props, Sets.create("_id"), q.getCache(), aps));
-						AccessLog.log("index query streams "+matchStreams.size()+" matches.");
-						if (matchStreams.isEmpty()) directQuery = false;
-						else {
-							Set<MidataId> streams = new HashSet<MidataId>();
-							for (DBRecord r : matchStreams) streams.add(r._id);
-							readRecs.put("stream", streams);
-						}
-						add = true;
-				   }
-				   readRecs.put("_id", ids);
-				
-				   int directSize = 0;
-				   if (directQuery) {
-					   long time = System.currentTimeMillis();
-					   List<DBRecord> partresult = new ArrayList(DBRecord.getAll(readRecs, queryFields));
-					   AccessLog.log("db time:"+(System.currentTimeMillis() - time));
-					   
-					   Query q3 = new Query(q, CMaps.map("strict", "true"), aps);
-					   partresult = Feature_Prefetch.lookup(q3, partresult, next);
-					   for (DBRecord record : partresult) record.consentAps = aps;
-					   result.addAll(partresult);
-					   directSize = partresult.size();
-				   }
+				   Set<MidataId> ids = entry.getValue();
+				   
+				   if (ids.size() > INDEX_REVERSE_USE) {
+					   Query q4 = new Query(q, CMaps.map(), aps, context);
+					   List<DBRecord> unindexed = next.query(q4);
+					   for (DBRecord candidate : unindexed) {
+						   candidate.consentAps = aps;
+						   if (ids.contains(candidate._id)) result.add(candidate);
+					   }
+					   AccessLog.log("add unindexed ="+unindexed.size());
+					   //result.addAll(unindexed);
+				   } else {
+					   Map<String, Object> readRecs = new HashMap<String, Object>();
+					   boolean add = false;
+					   boolean directQuery = true;
+					   if (ids.size() > 5) {
+						    Map<String, Object> props = new HashMap<String, Object>();
+							props.putAll(q.getProperties());
+							props.put("streams", "only");
+							List<DBRecord> matchStreams = next.query(new Query(props, Sets.create("_id"), q.getCache(), aps, context));
+							AccessLog.log("index query streams "+matchStreams.size()+" matches.");
+							if (matchStreams.isEmpty()) directQuery = false;
+							else {
+								Set<MidataId> streams = new HashSet<MidataId>();
+								for (DBRecord r : matchStreams) streams.add(r._id);
+								readRecs.put("stream", streams);
+							}
+							add = true;
+					   }
+					   readRecs.put("_id", ids);
 					
-					if (add) {
-		              Query q2 = new Query(q, CMaps.map(q.getProperties()).map("_id", ids), aps);
-		              List<DBRecord> additional = next.query(q2);
-		              for (DBRecord record : additional) record.consentAps = aps;
-		              result.addAll(additional);
-		              AccessLog.log("looked up directly="+directSize+" additionally="+additional.size());
-					} else {
-		              AccessLog.log("looked up directly="+directSize);
-					}		            
-					
+					   int directSize = 0;
+					   if (directQuery) {
+						   long time = System.currentTimeMillis();
+						   List<DBRecord> partresult = new ArrayList(DBRecord.getAll(readRecs, queryFields));
+						   AccessLog.log("db time:"+(System.currentTimeMillis() - time));
+						   
+						   Query q3 = new Query(q, CMaps.map("strict", "true"), aps, context);
+						   partresult = Feature_Prefetch.lookup(q3, partresult, next);
+						   for (DBRecord record : partresult) record.consentAps = aps;
+						   result.addAll(partresult);
+						   directSize = partresult.size();
+					   }
+						
+						if (add) {
+			              Query q2 = new Query(q, CMaps.map(q.getProperties()).map("_id", ids), aps, context);
+			              List<DBRecord> additional = next.query(q2);
+			              for (DBRecord record : additional) record.consentAps = aps;
+			              result.addAll(additional);
+			              AccessLog.log("looked up directly="+directSize+" additionally="+additional.size());
+						} else {
+			              AccessLog.log("looked up directly="+directSize);
+						}		            
+						
+				   }
 			   }
 			}
 			long endTime = System.currentTimeMillis();
 
 			AccessLog.log("index query found "+matches.size()+" matches, "+result.size()+" in correct aps.");
 				
-			myAccess.revalidate(result);				
+			myAccess.revalidate(q.getCache().getExecutor(), result);				
 			
 			long afterRevalidateTime = System.currentTimeMillis();
 			
-			AccessLog.logEnd("end index query "+result.size()+" matches. timePrepare="+(afterPrepareTime-startTime)+" exec="+(afterQuery-afterPrepareTime)+" postLookup="+(endTime-afterQuery)+" revalid="+(afterRevalidateTime-endTime));
+			AccessLog.logBegin("start to look for new entries");
+			if (targetAps != null) {
+			for (MidataId id : targetAps) {
+				long v = myAccess.version(id);
+												
+				AccessContext context = getContextForAps(q, id);
+				if (context != null) {
+					if (context instanceof ConsentAccessContext && ((ConsentAccessContext) context).getConsent().dataupdate <= v) continue;
+					List<DBRecord> add;				
+					add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("updated-after", v), id, context)), indexQueryParsed, null);
+					AccessLog.log("found new updated entries aps="+id+": "+add.size());
+				    result.addAll(add);
+				    add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("shared-after", v), id, context)), indexQueryParsed, null);
+				    AccessLog.log("found new shared entries aps="+id+": "+add.size());
+				    result.addAll(add);				    
+				}
+			}
+			} else {
+				long v = myAccess.version(null);
+				List<DBRecord> add;
+				add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("updated-after", v ))), indexQueryParsed, null);
+				AccessLog.log("found new updated entries: "+add.size());
+				result.addAll(add);
+				add = QueryEngine.filterByDataQuery(next.query(new Query(q, CMaps.map("shared-after", v))), indexQueryParsed, null);
+				AccessLog.log("found new shared entries: "+add.size());
+				result.addAll(add);
+			}
+			AccessLog.logEnd("end to look for new entries");
+			long endTime2 = System.currentTimeMillis();
+			
+			AccessLog.logEnd("end index query "+result.size()+" matches. timePrepare="+(afterPrepareTime-startTime)+" exec="+(afterQuery-afterPrepareTime)+" postLookup="+(endTime-afterQuery)+" revalid="+(afterRevalidateTime-endTime)+" old="+(endTime2-afterRevalidateTime));
 			return result;
 						
 			
@@ -211,7 +256,8 @@ private Feature next;
 	
 	interface IndexUse {		
 		Collection<IndexMatch> query(Query q, Set<MidataId> targetAps) throws AppException;
-		void revalidate(List<DBRecord> result) throws AppException;
+		void revalidate(MidataId executor, List<DBRecord> result) throws AppException;
+		long version(MidataId aps);
 	}
 	
 	class IndexAccess implements IndexUse {
@@ -264,21 +310,31 @@ private Feature next;
 			long t1 = System.currentTimeMillis();
 			prepare();
 			root = cachedIndexRoots.get(index._id);
-			long t2 = System.currentTimeMillis();
+			boolean doupdate = false;
 			if (root == null) {
-			  root = IndexManager.instance.getIndexRootAndUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index, targetAps);
+			  root = IndexManager.instance.getIndexRoot(pseudo, index);
+			  doupdate = true;
 			  cachedIndexRoots.put(index._id, root);
 			}
-			long t3 = System.currentTimeMillis();
+			long t2 = System.currentTimeMillis();			
 			matches = IndexManager.instance.queryIndex(root, condition);
-			AccessLog.log("Index use: prep="+(t2-t1)+" update="+(t3-t2)+" query="+(System.currentTimeMillis() - t3));
+			if (doupdate) IndexManager.instance.triggerUpdate(pseudo, q.getCache(), q.getCache().getExecutor(), index, targetAps);
+			AccessLog.log("Index use: prep="+(t2-t1)+" query="+(System.currentTimeMillis() - t2));
 			return matches;
 			
 		}
 		
-		public void revalidate(List<DBRecord> result) throws AppException {
+		public void revalidate(MidataId executor, List<DBRecord> result) throws AppException {
 			if (index==null) return;
-			IndexManager.instance.revalidate(result, root, revalidationQuery, condition);
+			IndexManager.instance.revalidate(result, executor, pseudo, root, revalidationQuery, condition);
+		}
+		
+		public long version(MidataId aps) {
+			if (root != null) {
+				if (aps == null) return root.getAllVersion();
+				return root.getVersion(aps);
+			}
+			return -1;
 		}
 	}
 	
@@ -311,8 +367,18 @@ private Feature next;
 		}
 
 		@Override
-		public void revalidate(List<DBRecord> result) throws AppException {
-			for (IndexUse part : parts) part.revalidate(result);			
+		public void revalidate(MidataId executor, List<DBRecord> result) throws AppException {
+			for (IndexUse part : parts) part.revalidate(executor, result);			
+		}
+		
+		public long version(MidataId aps) {
+			long r = -1;
+			for (IndexUse part : parts) {
+			   long v = part.version(aps);
+			   if (r == -1) r = v;
+			   else if (v > -1 && v < r)  r = v;				
+			}
+			return r;
 		}
 		
 	}
@@ -340,8 +406,18 @@ private Feature next;
 		}
 
 		@Override
-		public void revalidate(List<DBRecord> result) throws AppException {
+		public void revalidate(MidataId executor, List<DBRecord> result) throws AppException {
 			//for (IndexUse part : parts) part.revalidate(result);			
+		}
+		
+		public long version(MidataId aps) {
+			long r = -1;
+			for (IndexUse part : parts) {
+			   long v = part.version(aps);
+			   if (r == -1) r = v;
+			   else if (v > -1 && v < r)  r = v;				
+			}
+			return r;
 		}
 	}
 

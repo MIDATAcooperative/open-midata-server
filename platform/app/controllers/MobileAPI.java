@@ -24,8 +24,6 @@ import models.Circle;
 import models.Consent;
 import models.ContentInfo;
 import models.HPUser;
-import models.History;
-import models.LargeRecord;
 import models.Member;
 import models.MessageDefinition;
 import models.MidataId;
@@ -37,6 +35,7 @@ import models.ResearchUser;
 import models.Study;
 import models.User;
 import models.enums.AggregationType;
+import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.EventType;
 import models.enums.MessageReason;
@@ -50,6 +49,7 @@ import utils.AccessLog;
 import utils.InstanceConfig;
 import utils.access.Feature_FormatGroups;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.ExecutionInfo;
 import utils.auth.KeyManager;
 import utils.auth.MobileAppSessionToken;
@@ -216,7 +216,7 @@ public class MobileAPI extends Controller {
 			if (refreshToken.created + MobileAPI.DEFAULT_REFRESHTOKEN_EXPIRATION_TIME < System.currentTimeMillis()) return MobileAPI.invalidToken();
 			appInstanceId = refreshToken.appInstanceId;
 			
-			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "applicationId", "status", "appVersion"));
+			appInstance = MobileAppInstance.getById(appInstanceId, Sets.create("owner", "applicationId", "status", "appVersion", "writes", "sharingQuery"));
 			if (!verifyAppInstance(appInstance, refreshToken.ownerId, refreshToken.appId)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");            
             if (!refreshToken.appId.equals(app._id)) throw new BadRequestException("error.invalid.token", "Bad refresh token.");
             User user = User.getById(appInstance.owner, User.ALL_USER);
@@ -320,7 +320,7 @@ public class MobileAPI extends Controller {
 	}
 	
 	public static MobileAppInstance installApp(MidataId executor, MidataId appId, User member, String phrase, boolean autoConfirm, boolean studyConfirm) throws AppException {
-		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "linkedStudy", "mustParticipateInStudy", "termsOfUse"));
+		Plugin app = Plugin.getById(appId, Sets.create("name", "pluginVersion", "defaultQuery", "predefinedMessages", "linkedStudy", "mustParticipateInStudy", "termsOfUse", "writes"));
 
 		if (app.linkedStudy != null && app.mustParticipateInStudy && !studyConfirm) {
 			throw new BadRequestException("error.missing.study_accept", "Study belonging to app must be accepted.");
@@ -330,27 +330,22 @@ public class MobileAPI extends Controller {
 			controllers.members.Studies.precheckRequestParticipation(member._id, app.linkedStudy);
 		}
 		
+		
 		MobileAppInstance appInstance = new MobileAppInstance();
 		appInstance._id = new MidataId();
+		appInstance.owner = member._id;
 		appInstance.name = "App: "+ app.name+" (Device: "+phrase.substring(0, 3)+")";
 		appInstance.applicationId = app._id;	
 		appInstance.appVersion = app.pluginVersion;
-        appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, phrase);
-    	appInstance.owner = member._id;
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.APP_FIRST_USE, app._id, member, null, appInstance, null, null);
+		
+        appInstance.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(appInstance._id, phrase);    	
     	appInstance.passcode = Member.encrypt(phrase); 
     	appInstance.dateOfCreation = new Date();
+    	appInstance.writes = app.writes;
 		
-    	MobileAppInstance.add(appInstance);	
-		KeyManager.instance.unlock(appInstance._id, phrase);	   		    
-		RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id, true);
-		
-		
-		Map<String, Object> meta = new HashMap<String, Object>();
-		meta.put("phrase", phrase);
-		if (executor == null) executor = appInstance._id;
-		RecordManager.instance.setMeta(executor, appInstance._id, "_app", meta);
-		
-		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {
+    	if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {
 			String groupSystem = null;
 			if (app.defaultQuery != null) {
 				if (app.defaultQuery.containsKey("group-system")) {
@@ -361,14 +356,26 @@ public class MobileAPI extends Controller {
 			}
 		    Feature_FormatGroups.convertQueryToContents(groupSystem, app.defaultQuery);
 		    
-		    appInstance.sharingQuery = app.defaultQuery;
-				
+		    appInstance.sharingQuery = app.defaultQuery;						   
+		}
+    	
+    	
+    	MobileAppInstance.add(appInstance);	
+		KeyManager.instance.unlock(appInstance._id, phrase);	   		    
+		RecordManager.instance.createAnonymizedAPS(member._id, appInstance._id, appInstance._id, true);
+		
+		
+		Map<String, Object> meta = new HashMap<String, Object>();
+		meta.put("phrase", phrase);
+		if (executor == null) executor = appInstance._id;
+		RecordManager.instance.setMeta(executor, appInstance._id, "_app", meta);
+		
+		if (app.defaultQuery != null && !app.defaultQuery.isEmpty()) {			
 		    RecordManager.instance.shareByQuery(executor, member._id, appInstance._id, app.defaultQuery);
 		}
-		
-		
+				
 		if (app.linkedStudy != null && studyConfirm) {								
-			controllers.members.Studies.requestParticipation(member._id, app.linkedStudy);
+			controllers.members.Studies.requestParticipation(member._id, app.linkedStudy, app._id);
 		}
 		
 		if (autoConfirm) {
@@ -381,7 +388,7 @@ public class MobileAPI extends Controller {
 			User.set(member._id, "apps", member.apps);
 		}
 		
-		if (app.termsOfUse != null) member.addHistoryOnce(new History(EventType.TERMS_OF_USE_AGREED, member, app.termsOfUse));
+		if (app.termsOfUse != null) member.agreedToTerms(app.termsOfUse, app._id);
 				
 		if (app.predefinedMessages!=null) {
 			if (!app._id.equals(member.initialApp)) {
@@ -389,7 +396,8 @@ public class MobileAPI extends Controller {
 			} 
 			Messager.sendMessage(app._id, MessageReason.FIRSTUSE_ANYUSER, null, Collections.singleton(member._id), member.language, new HashMap<String, String>());								
 		}
-				
+			
+		AuditManager.instance.success();
 		return appInstance;
 	}
 	
@@ -466,7 +474,7 @@ public class MobileAPI extends Controller {
 			properties.put("content", add);
 		}*/
 		
-		records = LargeRecord.getAll(executor, appInstance._id, properties, fields);		  
+		records = RecordManager.instance.list(executor, appInstance._id, properties, fields);		  
 				
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		
@@ -539,9 +547,7 @@ public class MobileAPI extends Controller {
 		
 		MidataId owner = inf.ownerId;
 		MidataId ownerOverride = JsonValidation.getMidataId(json, "owner");
-		if (ownerOverride != null && !ownerOverride.equals(owner)) {
-			Set<Consent> consent = Consent.getHealthcareActiveByAuthorizedAndOwner(inf.ownerId, ownerOverride);
-			if (consent == null || consent.isEmpty()) throw new BadRequestException("error.noconsent", "No active consent that allows to add data for target person.");
+		if (ownerOverride != null && !ownerOverride.equals(owner)) {			
 			owner = ownerOverride;
 		}
 				
@@ -571,7 +577,7 @@ public class MobileAPI extends Controller {
 		record.name = name;
 		record.description = description;
 								
-		PluginsAPI.createRecord(inf, record, null, null,null, null);
+		PluginsAPI.createRecord(inf, record, null, null,null, inf.context);
 		
 		Stats.finishRequest(request(), "200", Collections.EMPTY_SET);
 		ObjectNode obj = Json.newObject();		

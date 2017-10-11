@@ -1,6 +1,6 @@
 {
   "member_login" : {
-    "teaser": "MY DATA - OUR HEALTH!",
+    "teaser": "My data - Our health",
     "register_now" : "Register Now",
     "sign_in" : "Sign in"
   },   
@@ -101,5 +101,15 @@
 	"entercode" : "The letter sent to you contains a registration code. Please enter your code here once you have received it:",
 	"email_unvalidated" : "Your email address has not been validated yet. Please click on the link in the validation email you received!", 
 	"request_membership_btn" : "Request Contract"						
+  },
+  
+  "smallstudies" : {
+    "greeting" : "Want to help studies by sharing your data?",
+    "studies" : "Studies",
+    "status" : "Enrollment",
+    "recruiting" : "Recruiting",
+    "ongoing" : "Ongoing",
+    "completed" : "Completed",
+    "stopped" : "Stopped"
   }
 }

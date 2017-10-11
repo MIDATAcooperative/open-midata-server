@@ -16,6 +16,7 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.InstanceConfig;
 import utils.RuntimeConstants;
+import utils.ServerTools;
 import utils.access.RecordManager;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -159,8 +160,7 @@ class MailSender extends UntypedActor {
 			ErrorReporter.report("Messager", null, e);	
 			throw e;
 		} finally {
-			RecordManager.instance.clear();
-			AccessLog.newRequest();	
+			ServerTools.endRequest();			
 		}
 	}
 	

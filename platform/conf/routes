@@ -124,12 +124,14 @@ GET     /api/research/studies/:study/requiredinfo        controllers.research.St
 POST    /api/research/studies/:study/requiredinfo        controllers.research.Studies.setRequiredInformationSetup(study: String)
 POST    /api/research/studies/:study/status/validate     controllers.research.Studies.startValidation(study: String)
 POST    /api/admin/studies/:study/status/validate        controllers.research.Studies.endValidation(study: String)
+POST    /api/admin/studies/:study/status/backtodraft     controllers.research.Studies.backToDraft(study: String)
 POST    /api/research/studies/:study/status/startsearch  controllers.research.Studies.startParticipantSearch(study: String)
 POST    /api/research/studies/:study/status/endsearch    controllers.research.Studies.endParticipantSearch(study: String)
 POST    /api/research/studies/:study/status/start        controllers.research.Studies.startExecution(study: String)
 POST    /api/research/studies/:study/status/finish       controllers.research.Studies.finishExecution(study: String)
 POST    /api/research/studies/:study/status/abort        controllers.research.Studies.abortExecution(study: String)
 POST    /api/research/studies/:study/status/delete       controllers.research.Studies.delete(study: String)
+POST    /api/admin/studies/:study/status/delete       controllers.admin.Administration.deleteStudy(study: String)
 GET     /api/research/studies/:study/participants        controllers.research.Studies.listParticipants(study: String)
 GET     /api/research/studies/:study/participants/:participant controllers.research.Studies.getParticipant(study: String, participant: String)
 POST    /api/research/studies/:study/approve             controllers.research.Studies.approveParticipation(study: String)
@@ -228,12 +230,6 @@ GET     /api/assets/javascripts/routes  controllers.Application.javascriptRoutes
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
-# Genome data converter (special controller for the 23andMe Converter app)
-OPTIONS /apps/gdconverter/files     controllers.apps.GenomeDataConverter.checkPreflight()
-POST    /apps/gdconverter/files     controllers.apps.GenomeDataConverter.getFiles()
-OPTIONS /apps/gdconverter/convert   controllers.apps.GenomeDataConverter.checkPreflight()
-POST    /apps/gdconverter/convert   controllers.apps.GenomeDataConverter.convert()
-
 # Mobile Public API
 OPTIONS /v1/auth            controllers.MobileAPI.checkPreflight()
 POST    /v1/auth            controllers.MobileAPI.authenticate()
@@ -242,8 +238,8 @@ POST    /v1/authorize            controllers.OAuth2.login()
 OPTIONS /v1/token            controllers.OAuth2.checkPreflight()
 POST    /v1/token            controllers.OAuth2.authenticate()
 
-OPTIONS /v1/register        controllers.MobileAPI.checkPreflight()
-POST    /v1/register        controllers.QuickRegistration.registerFromApp()
+# OPTIONS /v1/register        controllers.MobileAPI.checkPreflight()
+# POST    /v1/register        controllers.QuickRegistration.registerFromApp()
 
 #OPTIONS /v1/midata            controllers.MobileAPI.checkPreflight()
 #POST    /v1/midata            controllers.MobileAPI.midataLogin()

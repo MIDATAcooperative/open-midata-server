@@ -1,7 +1,6 @@
 angular.module('portal')
 .controller('MarketCtrl', ['$scope', '$translate', 'server', '$state', 'ENV', '$window', 'status', 'apps', 'session', 'spaces', function($scope, $translate, server, $state, ENV, $window, status, apps, session, spaces) {
-	
-	var pathsegment = window.location.pathname.split("/")[1];
+		
 	// init
 	$scope.error = null;
 	$scope.beta = ENV.beta;

@@ -8,7 +8,6 @@ import java.util.HashMap;
 
 import models.Admin;
 import models.Developer;
-import models.History;
 import models.MidataId;
 import models.Plugin;
 import models.enums.AccountSecurityLevel;
@@ -50,7 +49,7 @@ public class MinimalSetup {
 			admin.lastname = "Administrator";
 			admin.gender = Gender.OTHER;
 			admin.security = AccountSecurityLevel.KEY;
-			admin.history = new ArrayList<History>();
+			
 			admin.emailStatus = EMailStatus.VALIDATED;
 			admin.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(admin._id);
 			Admin.add(admin);
@@ -76,7 +75,7 @@ public class MinimalSetup {
 			developer.lastname = "Developer";
 			developer.gender = Gender.OTHER;
 			developer.security = AccountSecurityLevel.KEY;
-			developer.history = new ArrayList<History>();			
+					
 			developer.emailStatus = EMailStatus.VALIDATED;			
 			developer.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(developer._id);
 			
@@ -104,7 +103,7 @@ public class MinimalSetup {
 			admin.lastname = "Service";
 			admin.gender = Gender.OTHER;
 			admin.security = AccountSecurityLevel.KEY;
-			admin.history = new ArrayList<History>();
+			
 			admin.emailStatus = EMailStatus.VALIDATED;
 			admin.publicKey = KeyManager.instance.generateKeypairAndReturnPublicKey(admin._id);
 			Admin.add(admin);

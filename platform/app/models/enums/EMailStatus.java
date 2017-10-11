@@ -19,5 +19,10 @@ public enum EMailStatus {
 	  /**
 	   * email address has been rejected
 	   */
-	  REJECTED
+	  REJECTED,
+	  
+	  /**
+	   * email address validated by external party
+	   */
+	  EXTERN_VALIDATED
 	}

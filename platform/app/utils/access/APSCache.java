@@ -3,6 +3,7 @@ package utils.access;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,7 +20,7 @@ import utils.exceptions.InternalServerException;
  * caches access permission sets during a request. No inter-request caching. 
  *
  */
-class APSCache {
+public class APSCache {
 
 	private Map<String, APS> cache;
 	private Map<String, APSCache> subcache;
@@ -27,6 +28,10 @@ class APSCache {
 	private MidataId accountOwner;
 	
 	private Map<MidataId, Consent> consentCache;
+	
+	private Set<MidataId> touchedConsents = null;
+	private Set<MidataId> touchedAPS = null;
+	
 	private long consentLimit;
 	private Set<UserGroupMember> userGroupMember;
 	
@@ -165,5 +170,34 @@ class APSCache {
 	public void resetConsentCache() {
 		consentLimit = -1;
 		consentCache.clear();
+	}
+	
+	public void touchConsent(MidataId consentId) {
+		if (touchedConsents == null) touchedConsents = new HashSet<MidataId>();
+		touchedConsents.add(consentId);
+	}
+	
+	public void touchAPS(MidataId apsId) {
+		if (touchedAPS == null) touchedAPS = new HashSet<MidataId>();
+		touchedAPS.add(apsId);
+	}
+	
+	public void finishTouch() throws AppException {
+		if (touchedAPS != null) {
+			for (MidataId id : touchedAPS) {
+			   getAPS(id).touch();
+			}
+		}
+		
+		if (touchedConsents != null) {
+			Consent.updateTimestamp(touchedConsents, System.currentTimeMillis(), System.currentTimeMillis() + 1000l * 60l * 60l);
+		}
+		if (subcache != null) {
+			for (APSCache sub : subcache.values()) {
+				sub.finishTouch();
+			}
+		}
+		touchedConsents = null;
+		touchedAPS = null;
 	}
 }

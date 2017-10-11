@@ -1,5 +1,7 @@
 package utils.db;
 
+import utils.AccessLog;
+
 /**
  * Exception is thrown if a database change would cause data to be lost due to concurrent updates
  *
@@ -11,5 +13,8 @@ public class LostUpdateException extends Exception {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public LostUpdateException() { super(); };
+	public LostUpdateException() { 
+		super();
+		AccessLog.log("Lost update thrown.");
+	};
 }

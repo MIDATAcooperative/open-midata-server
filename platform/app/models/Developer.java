@@ -23,8 +23,7 @@ public class Developer extends User {
 		this.email = email;
 		this.emailLC = email.toLowerCase();
 		
-		login = new Date();	
-		history = new ArrayList<History>();
+		login = new Date();			
 	}
 	
 	/**

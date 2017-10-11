@@ -37,15 +37,7 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	 * This field is not encrypted but stored in the database.
 	 */
 	public long time;
-	
-	/**
-	 * the id of the document record this record belongs to.
-	 * 
-	 * This field is null for all records that are not part of a document
-	 * This field is not encrypted but stored in the database.
-	 * 
-	 */
-	public MidataId document;
+		
 	
 	/**
 	 * id of consent/owner aps this record has been found in. Only set if queried for field "consentAps"
@@ -53,18 +45,15 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	public @NotMaterialized MidataId consentAps;
 	
 	/**
+	 * AccessContext of this record
+	 */
+	public @NotMaterialized AccessContext context;
+	
+	/**
 	 * creation date as stored in aps
 	 */
 	public @NotMaterialized Date createdFromAps;
-	
-	/**
-	 * a part name for records that are part of a document,
-	 * 
-	 * This field is null for all records that are not part of a document
-	 * This field is not encrypted but stored in the database
-	 */
-	public String part;
-
+		
 	public BasicBSONObject meta;
 		
 	/**
@@ -204,7 +193,11 @@ public class DBRecord extends Model implements Comparable<DBRecord>, Cloneable {
 	}
 
 	public static void delete(MidataId ownerId, MidataId recordId) throws InternalServerException {			
-		Model.delete(DBRecord.class, collection, new ChainedMap<String, MidataId>().put("_id", recordId).get());
+		Model.delete(DBRecord.class, collection, CMaps.map("_id", recordId));
+	}
+	
+	public static void deleteMany(Set<MidataId> recordIds) throws InternalServerException {			
+		Model.delete(DBRecord.class, collection, CMaps.map("_id", recordIds));
 	}
 
 	@Override

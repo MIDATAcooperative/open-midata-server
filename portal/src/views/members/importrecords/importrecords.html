@@ -1,10 +1,11 @@
 
-	<div ng-controller="ImportRecordsCtrl">
-	  <div class="extraspace">
-		 <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span><span translate="common.back_btn"></span></button>
-	  </div>	  
+	<div ng-controller="ImportRecordsCtrl" class="midata-overlay borderless">
+	  <div class="overlay-body">
+	   
 	  <div class="panel panel-primary">
-	  <div class="panel-heading" translate="importrecords.title">Import</div>
+	  <div class="panel-heading"><span translate="importrecords.title"></span>
+	    <a ng-click="goBack()" href="javascript:" class="close-icon pull-right"><span class="glyphicon glyphicon-remove"></span></a> 
+	  </div>
 	  <div class="panel-body">		    
 		<loader busy="status.isBusy !== false">
 			<div class="alert alert-danger alert-dismissable" ng-show="error">
@@ -26,5 +27,6 @@
 				</div>
 		</loader>
 		</div>
+	</div>
 	</div>
 	</div>

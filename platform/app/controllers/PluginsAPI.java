@@ -30,7 +30,6 @@ import actions.VisualizationCall;
 import models.Admin;
 import models.Consent;
 import models.ContentInfo;
-import models.LargeRecord;
 import models.MidataId;
 import models.Plugin;
 import models.Record;
@@ -59,6 +58,11 @@ import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.ServerTools;
+import utils.access.AccessContext;
+import utils.access.ConsentAccessContext;
+import utils.access.DBRecord;
+import utils.access.RecordConversion;
 import utils.access.RecordManager;
 import utils.auth.ExecutionInfo;
 import utils.auth.RecordToken;
@@ -308,7 +312,7 @@ public class PluginsAPI extends APIController {
 				
 		AccessLog.log("NEW QUERY");
 		
-		records = LargeRecord.getAll(inf.executorId, inf.targetAPS, properties, fields);		  
+		records = RecordManager.instance.list(inf.executorId, inf.targetAPS, properties, fields);		  
 						
 		ReferenceTool.resolveOwners(records, fields.contains("ownerName"), fields.contains("creatorName"));
 		
@@ -462,45 +466,69 @@ public class PluginsAPI extends APIController {
 	 * @throws AppException
 	 */
 	public static void createRecord(ExecutionInfo inf, Record record) throws AppException  {
-       createRecord(inf, record, null, null, null, null);		
+       createRecord(inf, record, null, null, null, inf.context);		
 	}
 	
-	public static void createRecord(ExecutionInfo inf, Record record, MidataId targetConsent) throws AppException  {
-	    createRecord(inf, record, null, null, null, targetConsent);		
+	public static void createRecord(ExecutionInfo inf, Record record, AccessContext context) throws AppException  {
+	    createRecord(inf, record, null, null, null, context);		
 	}
 	
-	public static void createRecord(ExecutionInfo inf, Record record, InputStream fileData, String fileName, String contentType, MidataId targetConsent) throws AppException  {
+	public static void createRecord(ExecutionInfo inf, Record record, InputStream fileData, String fileName, String contentType, AccessContext context) throws AppException  {
 		if (record.format==null) record.format = "application/json";
 		if (record.content==null) record.content = "other";
 		if (record.owner==null) record.owner = inf.ownerId;
 		
-		
-		
-		if (!record.owner.equals(inf.ownerId) && targetConsent == null) {
+		DBRecord dbrecord = RecordConversion.instance.toDB(record);
+        	
+		if (!record.owner.equals(inf.ownerId) && !(context instanceof ConsentAccessContext)) {
 			Set<Consent> consent = Consent.getHealthcareActiveByAuthorizedAndOwner(inf.executorId, record.owner);
 			if (consent == null || consent.isEmpty()) throw new BadRequestException("error.noconsent", "No active consent that allows to add data for target person.");
 			
+			for (Consent c : consent) {
+				ConsentAccessContext cac = new ConsentAccessContext(c, context);
+				if (cac.mayCreateRecord(dbrecord)) {
+					context = cac;
+					break;
+				}
+			}
+			
 		}
 		
-		MidataId targetAPS = targetConsent != null ? targetConsent : inf.targetAPS;
+		
+		if (!context.mayCreateRecord(dbrecord)) {
+			throw new InternalServerException("error.internal", "Record may not be created!");			
+		}
+		
+		//MidataId targetAPS = targetConsent != null ? targetConsent : inf.targetAPS;
 		
 		if (fileData != null) {
-			  RecordManager.instance.addRecord(inf.executorId, record, targetAPS, fileData, fileName, contentType);
+			  RecordManager.instance.addRecord(inf.executorId, record, context.getTargetAps(), fileData, fileName, contentType);
 		} else {
-			  RecordManager.instance.addRecord(inf.executorId, record, targetAPS);
+			  RecordManager.instance.addRecord(inf.executorId, record, context.getTargetAps());
 		}
 		
 		Set<MidataId> records = Collections.singleton(record._id);
 								    				
+		AccessContext myContext = context;		
+		
 		if (inf.executorId.equals(inf.ownerId)) {
-			if (targetConsent != null) RecordManager.instance.share(inf.executorId, inf.ownerId, targetConsent, records, false);
-			RecordManager.instance.share(inf.executorId, inf.ownerId, inf.targetAPS, records, false);
+			while (myContext != null) {
+				if (!myContext.isIncluded(dbrecord)) {
+					RecordManager.instance.share(inf.executorId, inf.ownerId, myContext.getTargetAps(), records, false);
+				}
+				myContext = myContext.getParent();
+			}									
 		} else {
-			if (targetConsent != null && !targetConsent.equals(inf.targetAPS)) {
-				RecordManager.instance.share(inf.executorId, targetConsent, inf.targetAPS, records, false);
-			}
+			myContext = myContext.getParent();
+			while (myContext != null) {
+				if (!myContext.isIncluded(dbrecord)) {
+					RecordManager.instance.share(inf.executorId, context.getTargetAps(), myContext.getTargetAps(), records, false);
+				}
+				myContext = myContext.getParent();
+			}					
 		}
 		
+		/*
 		if (inf.space != null && inf.space.autoShare != null && !inf.space.autoShare.isEmpty()) {
 			for (MidataId autoshareAps : inf.space.autoShare) {
 				Consent consent = Consent.getByIdAndOwner(autoshareAps, inf.ownerId, Sets.create("type"));
@@ -509,6 +537,7 @@ public class PluginsAPI extends APIController {
 				}
 			}
 		}
+		*/
 		
 		/* Publication of study results */ 
 		BSONObject query = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_query");
@@ -660,7 +689,7 @@ public class PluginsAPI extends APIController {
 	 * @return the new version string of the record
 	 */
 	public static String updateRecord(ExecutionInfo inf, Record record) throws AppException  {
-		return RecordManager.instance.updateRecord(inf.executorId, inf.targetAPS, record);				
+		return RecordManager.instance.updateRecord(inf.executorId, inf.context, record);				
 	}
 	
 	/**
@@ -807,7 +836,7 @@ public class PluginsAPI extends APIController {
 			 		
 			}
 					
-			createRecord(authToken, record, new FileInputStream(file), filename, contentType, null);
+			createRecord(authToken, record, new FileInputStream(file), filename, contentType, authToken.context);
 					
 			Stats.finishRequest(request(), "200");
 			ObjectNode obj = Json.newObject();
@@ -821,8 +850,7 @@ public class PluginsAPI extends APIController {
 			ErrorReporter.report("Plugin API", ctx(), e2);
 			return internalServerError(e2.getMessage());			
 		} finally {
-			RecordManager.instance.clear();
-			AccessLog.newRequest();	
+			ServerTools.endRequest();			
 		}
 		
 	}

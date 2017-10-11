@@ -1,4 +1,4 @@
-
+<div class="colored">
 	<!-- Navbar -->
 	<header id="navbar" class="navbar navbar-default" role="navigation" ng-controller="NavbarCtrl">
 	  <div class="container">
@@ -10,16 +10,17 @@
 				<span class="icon-bar"></span>
 			</button>
 			<a class="navbar-brand" ui-sref="admin.members">
-	           	  <span class="midata" id="logotype">MIDATA<span>.COOP</span></span>
+	        <span class="midata" id="logotype"><img src="/images/logo.png" style="height: 36px;"></span>
 	         </a>
 		</div>
 		<nav class="collapse navbar-collapse navbar-ex1-collapse">
 			<ul class="nav navbar-nav">            	
 				<!--  <li ui-sref-active="active"><a ui-sref="admin.messages">Messages</a></li>  -->
 				<li ui-sref-active="active" ng-show="hasSubRole('USERADMIN')"><a ui-sref="admin.members" translate="admin_navbar.members"></a></li>				
+				<li ui-sref-active="active" ng-show="hasSubRole('USERADMIN')"><a ui-sref="admin.auditlog" translate="admin_navbar.auditlog"></a></li>
 				<li ui-sref-active="active" ng-show="hasSubRole('NEWSWRITER')"><a ui-sref="admin.news" translate="admin_navbar.news"></a></li>
 				<li ui-sref-active="active" ng-show="hasSubRole('STUDYADMIN')"><a ui-sref="admin.studies" translate="admin_navbar.studies"></a></li>
-				<li ui-sref-active="active" ng-show="hasSubRole('PLUGINADMIN')"><a ui-sref="admin.plugins" translate="admin_navbar.plugins"></a></li>
+				<li ui-sref-active="active" ng-show="hasSubRole('PLUGINADMIN')"><a ui-sref="admin.yourapps" translate="admin_navbar.plugins"></a></li>
 				<li ui-sref-active="active" ng-show="hasSubRole('PLUGINADMIN')"><a ui-sref="admin.viewterms" translate="admin_navbar.terms"></a></li>
 				<li ui-sref-active="active" ng-show="hasSubRole('CONTENTADMIN')"><a ui-sref="admin.content" translate="admin_navbar.content"></a></li>
 				<li ui-sref-active="active" ng-show="hasSubRole('SUPERADMIN')"><a ui-sref="admin.registration" translate="admin_navbar.registration"></a></li>								
@@ -33,7 +34,7 @@
 	    </nav>	    
 	   </div>
 	</header>
-	
+	</div>
 	<div class="container mainpart">
 		<div ui-view></div>
 	</div>

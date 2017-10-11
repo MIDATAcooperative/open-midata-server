@@ -28,7 +28,7 @@ public class ResearchUser extends User {
 		this.emailLC = email.toLowerCase();
 		
 		login = new Date();	
-		history = new ArrayList<History>();
+		
 	}
 	
 	public static boolean existsByEMail(String email) throws InternalServerException {

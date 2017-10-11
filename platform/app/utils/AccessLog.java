@@ -18,7 +18,7 @@ import utils.exceptions.AuthException;
  */
 public class AccessLog {
 
-	/**
+	/** 
 	 * log more detailed?
 	 */
 	public static boolean detailedLog = true;

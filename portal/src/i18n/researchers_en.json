@@ -2,8 +2,8 @@
   "researcher_registration" : {
     "sign_up" : "Research Sign up",
     "research_organization" : "Research Organization",
-    "name" : "Name*",
-    "description" : "Description*",
+    "name" : "Name",
+    "description" : "Description",
     "research_user" : "Research User"
   },
   

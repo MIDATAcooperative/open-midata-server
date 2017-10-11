@@ -16,6 +16,7 @@ import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormat;
 
 import actions.APICall;
 import models.Circle;
@@ -33,19 +34,23 @@ import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.AggregationType;
+import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.EntityType;
 import models.enums.MessageReason;
 import models.enums.SubUserRole;
 import models.enums.UserFeature;
+import models.enums.WritePermissionType;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.AccessLog;
 import utils.PasswordHash;
 import utils.RuntimeConstants;
 import utils.access.APS;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.KeyManager;
 import utils.auth.MemberSecured;
@@ -58,6 +63,7 @@ import utils.exceptions.AppException;
 import utils.exceptions.AuthException;
 import utils.exceptions.BadRequestException;
 import utils.exceptions.InternalServerException;
+import utils.exceptions.RequestTooLargeException;
 import utils.fhir.ConsentResourceProvider;
 import utils.json.JsonExtraction;
 import utils.json.JsonOutput;
@@ -67,10 +73,11 @@ import utils.messaging.Messager;
 
 /**
  * functions for managing consents
- *
+ *    
  */
 public class Circles extends APIController {	
 
+	public final static int RETURNED_CONSENT_LIMIT = 1000;
 	/**
 	 * list either all Circles of a user or all consents of others where the user is authorized 
 	 * @return list of circles
@@ -124,6 +131,8 @@ public class Circles extends APIController {
 		List<Consent> consents = null;
 	
 		MidataId owner = new MidataId(request().username());
+		
+		
 		if (properties.containsKey("_id")) {
 			MidataId target = MidataId.from(properties.get("_id"));
 			Consent c = getConsentById(owner, target, fields);
@@ -132,7 +141,7 @@ public class Circles extends APIController {
 		  properties.remove("member");
 		  consents = new ArrayList<Consent>(getConsentsAuthorized(owner, properties, fields));
 		} else {
-		  consents = new ArrayList<Consent>(Consent.getAllByOwner(owner, properties, fields));
+		  consents = new ArrayList<Consent>(Consent.getAllByOwner(owner, properties, fields, RETURNED_CONSENT_LIMIT));
 		}
 		
 		fillConsentFields(owner, consents, fields);
@@ -156,14 +165,18 @@ public class Circles extends APIController {
 	}
 	
 	public static void fillConsentFields(MidataId executor, Collection<Consent> consents, Set<String> fields) throws AppException {
-        if (fields.contains("ownerName")) ReferenceTool.resolveOwners(consents, true);
-		
+        
+        AccessLog.log("consents size="+consents.size());
+		if (fields.contains("ownerName")) ReferenceTool.resolveOwners(consents, true);
+	
 		if (fields.contains("records")) {
 			Map<String, Object> all = new HashMap<String,Object>();
 			for (Consent consent : consents) {
 				if (consent.status.equals(ConsentStatus.ACTIVE)) {
-				  Collection<RecordsInfo> summary = RecordManager.instance.info(executor, consent._id, all, AggregationType.ALL);
-				  if (summary.isEmpty()) consent.records = 0; else consent.records = summary.iterator().next().count;
+				  try {
+				    Collection<RecordsInfo> summary = RecordManager.instance.info(executor, consent._id, all, AggregationType.ALL);
+				    if (summary.isEmpty()) consent.records = 0; else consent.records = summary.iterator().next().count;
+				  } catch (RequestTooLargeException e) { consent.records = -1; }
 				} else consent.records = 0;
 			}
 		}
@@ -203,7 +216,7 @@ public class Circles extends APIController {
 		Set<MidataId> auth = new HashSet<MidataId>();
 		auth.add(user);
 		for (UserGroupMember group : groups) auth.add(group.userGroup);
-		Collection<Consent> consents = Consent.getAllByAuthorized(auth, properties, fields);
+		Collection<Consent> consents = Consent.getAllByAuthorized(auth, properties, fields, RETURNED_CONSENT_LIMIT);
 		return consents;
 	}
 	
@@ -262,13 +275,16 @@ public class Circles extends APIController {
 			consent = new Circle();
 			((Circle) consent).order = Circle.getMaxOrder(userId) + 1;
 			patientRecord = true;
+			consent.writes = WritePermissionType.NONE;
 			break;
 		case HEALTHCARE :
 			consent = new MemberKey();
 			patientRecord = true;
+			consent.writes = WritePermissionType.UPDATE_AND_CREATE;
 			break;
 		case HCRELATED :
 			consent = new HCRelated();
+			consent.writes = WritePermissionType.NONE;
 			break;		
 		default :
 			throw new BadRequestException("error.internal", "Unsupported consent type");
@@ -294,9 +310,12 @@ public class Circles extends APIController {
 		consent.status = userId.equals(executorId) ? ConsentStatus.ACTIVE : ConsentStatus.UNCONFIRMED;
 		consent.validUntil = validUntil;
 		consent.createdBefore = createdBefore;
+		if (json.has("writes")) {
+		  consent.writes = JsonValidation.getEnum(json, "writes", WritePermissionType.class);
+		}
 		if (! userId.equals(executorId)) consent.authorized.add(executorId);
 				
-		addConsent(executorId, consent, patientRecord, passcode);
+		addConsent(executorId, consent, patientRecord, passcode, false);
 			
 		
 		
@@ -311,11 +330,13 @@ public class Circles extends APIController {
 		return ok(JsonOutput.toJson(consent, "Consent", Consent.ALL));
 	}
 	
-	public static void addConsent(MidataId executorId, Consent consent, boolean patientRecord, String passcode) throws AppException {
+	public static void addConsent(MidataId executorId, Consent consent, boolean patientRecord, String passcode, boolean force) throws AppException {
 		consent._id = new MidataId();
 		consent.dateOfCreation = new Date();				
 			
-		if (consent.status != ConsentStatus.DRAFT && consent.status != ConsentStatus.UNCONFIRMED && consent.type != ConsentType.IMPLICIT) {
+		AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_CREATE, executorId, consent);
+		
+		if (consent.status != ConsentStatus.DRAFT && consent.status != ConsentStatus.UNCONFIRMED && !force && consent.type != ConsentType.IMPLICIT) {
 			if (consent.owner == null || !consent.owner.equals(executorId)) throw new AuthException("error.invalid.consent", "You must be owner to create active consents!");
 		}
 		
@@ -331,9 +352,9 @@ public class Circles extends APIController {
 						
 		//consentSettingChange(executorId, consent);
 		prepareConsent(consent);
-		consentStatusChange(executorId, consent, null);
+		consentStatusChange(executorId, consent, null, patientRecord);
 		
-		if (consent.status.equals(ConsentStatus.ACTIVE) && patientRecord) autosharePatientRecord(consent);
+		if (consent.status.equals(ConsentStatus.ACTIVE) && patientRecord) autosharePatientRecord(executorId, consent);
 		
 		consent.add();
 								
@@ -343,7 +364,7 @@ public class Circles extends APIController {
 			sendConsentNotifications(executorId, consent, consent.status);
 		}
 				
-		
+		AuditManager.instance.success();
 
 	}
 	
@@ -371,6 +392,7 @@ public class Circles extends APIController {
 		consent.authorized = Collections.singleton(other);
 		consent.status = ConsentStatus.ACTIVE;
 		consent.entityType = groupReceiver ? EntityType.USERGROUP : EntityType.USER;
+		consent.writes = WritePermissionType.WRITE_ANY;
 		
 		if (groupReceiver && other.equals(receiver)) {
 			UserGroup othergroup = UserGroup.getById(receiver, Sets.create("name"));
@@ -380,7 +402,7 @@ public class Circles extends APIController {
 			consent.name="Msg: "+otheruser.firstname+" "+otheruser.lastname;
 		}
 		
-		addConsent(executorId, consent, false, null);
+		addConsent(executorId, consent, false, null, true);
 						
 		return consent;		
 	}
@@ -390,10 +412,10 @@ public class Circles extends APIController {
 	 * @param consent consent with which the patient record should be shared
 	 * @throws AppException
 	 */
-	public static void autosharePatientRecord(Consent consent) throws AppException {
-		List<Record> recs = RecordManager.instance.list(consent.owner, consent.owner, CMaps.map("owner", "self").map("format", "fhir/Patient").map("data", CMaps.map("id", consent.owner.toString())), Sets.create("_id", "data"));
+	public static void autosharePatientRecord(MidataId executorId, Consent consent) throws AppException {
+		List<Record> recs = RecordManager.instance.list(executorId, consent.owner, CMaps.map("owner", "self").map("format", "fhir/Patient").map("data", CMaps.map("id", consent.owner.toString())), Sets.create("_id", "data"));
 		if (recs.size()>0) {
-		  RecordManager.instance.share(consent.owner, consent.owner, consent._id, Collections.singleton(recs.get(0)._id), true);
+		  RecordManager.instance.share(executorId, consent.owner, consent._id, Collections.singleton(recs.get(0)._id), true);
 		} else throw new InternalServerException("error.internal", "Patient Record not found!");
 	}
 	
@@ -453,7 +475,12 @@ public class Circles extends APIController {
 			throw new BadRequestException("error.unknown.consent", "No consent with this id exists.");
 		}
 		if (consent.type != ConsentType.CIRCLE && consent.type != ConsentType.EXTERNALSERVICE && consent.type != ConsentType.IMPLICIT && consent.type != ConsentType.STUDYRELATED) throw new BadRequestException("error.unsupported", "Operation not supported");
-						
+				
+		switch (consent.type) {
+		case EXTERNALSERVICE:AuditManager.instance.addAuditEvent(AuditEventType.APP_DELETED, userId, consent);break;
+		default: AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_DELETE, userId, consent);break;
+		}
+		
 		consentStatusChange(userId, consent, ConsentStatus.EXPIRED);
 		RecordManager.instance.deleteAPS(consent._id, userId);
 		
@@ -468,7 +495,7 @@ public class Circles extends APIController {
 		case STUDYRELATED : StudyRelated.delete(userId, circleId);break;
 		default:break;
 		}
-		
+		AuditManager.instance.success();
 		
 		return ok();
 	}
@@ -522,11 +549,16 @@ public class Circles extends APIController {
 		if (newMemberIds.contains(null)) throw new NullPointerException();
 		
 		consent.authorized.addAll(newMemberIds);
+		if (!consent.type.equals(ConsentType.STUDYRELATED)) {
+		  AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_PERSONS_CHANGE, executor, consent);
+		}
 		Consent.set(consent._id, "authorized", consent.authorized);
 		
 		if (consent.status == ConsentStatus.ACTIVE) {
 		  RecordManager.instance.shareAPS(consent._id, executor, newMemberIds);
 		}
+		
+		AuditManager.instance.success();
 	}
 
 	/**
@@ -577,6 +609,10 @@ public class Circles extends APIController {
 	 * @throws AppException
 	 */
 	public static void consentStatusChange(MidataId executor, Consent consent, ConsentStatus newStatus) throws AppException {
+	  Circles.consentStatusChange(executor, consent, newStatus, true);	
+	}
+	
+	public static void consentStatusChange(MidataId executor, Consent consent, ConsentStatus newStatus, boolean patientRecord) throws AppException {
 		
 		ConsentStatus oldStatus = consent.status;
 		boolean wasActive = oldStatus.equals(ConsentStatus.ACTIVE);
@@ -591,7 +627,7 @@ public class Circles extends APIController {
 		if (active && !wasActive) {
 			RecordManager.instance.shareAPS(consent._id, executor, consent.authorized);
 			consentSettingChange(executor, consent);
-			if (consent.type.equals(ConsentType.CIRCLE) || consent.type.equals(ConsentType.HEALTHCARE)) autosharePatientRecord(consent);
+			
 			Map<String, Object> query = consent.sharingQuery;
 			if (query == null) query = Circles.getQueries(consent.owner, consent._id);			
 			if (query!=null) {
@@ -602,6 +638,8 @@ public class Circles extends APIController {
 				  RecordManager.instance.applyQuery(executor, query, consent.owner, consent._id, true);
 				}
 			}
+			
+			if (patientRecord && (consent.type.equals(ConsentType.CIRCLE) || consent.type.equals(ConsentType.HEALTHCARE))) autosharePatientRecord(executor, consent);
 		} else if (!active && wasActive) {
 			Set<MidataId> auth = consent.authorized;
 			if (auth.contains(consent.owner)) { auth.remove(consent.owner); }

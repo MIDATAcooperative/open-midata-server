@@ -1,16 +1,31 @@
 module.exports = function(grunt) {
   var instance = grunt.file.readJSON('../config/instance.json');
+  
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    
+    filerev: {
+        options: {
+          algorithm: 'md5',
+          length: 8
+        },
+        
+        build : {
+        	src : ['dest/app.min.js','dest/oauth.min.js','dest/app.min.css']        	
+        }
+    },
+    
     /*
     uglify: {
       options: {
        
       },
       build: {
-        src: 'dest/app.js',
-        dest: 'dest/app.min.js'
+        files : [
+        	{ src: 'dest/app.js', dest : 'dest/app'+version+'.min.js' },
+        	{ src: 'dest/oauthapp.js', dest : 'dest/oauthapp'+version+'.min.js' }
+        ]        
       }
     },
     
@@ -241,6 +256,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-usemin');
   grunt.loadNpmTasks('grunt-jsonmin');
   grunt.loadNpmTasks('grunt-env');
+  grunt.loadNpmTasks('grunt-filerev');
   grunt.loadNpmTasks('grunt-preprocess');
   //grunt.loadNpmTasks('connect-livereload');
 
@@ -254,6 +270,7 @@ module.exports = function(grunt) {
                                'concat:generated',
                                'cssmin:generated',
                                'uglify:generated',
+                               'filerev',
                                'usemin'
   ]);
   grunt.registerTask('server'           , ['clean', 'ngconstant:development', 'env:dev', 'bundle','webserver']);

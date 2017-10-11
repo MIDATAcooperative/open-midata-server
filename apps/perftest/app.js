@@ -52,6 +52,63 @@ jsonRecords.factory('server', [ '$http', function($http) {
 		return wrap($http.post(service.baseurl+"/api/members/join", data))		       
 	};
 	
+	service.createRegisterAPI = function(userId, session) {
+		// construct json
+		var data = {
+				  "resourceType" : "Patient",
+				  "active" : true,
+				  "name" : [{
+				     "family" : "Nachname"+userId,
+				     "given" : ["Vorname"+userId]
+				   }],
+				  "telecom" : [{
+				     "system" : "email",
+				     "value" : "apiuser"+userId+"@instant-mail.de"
+				   },{
+				     "system" : "phone",
+				     "value" : "01234567"
+				   }
+				   ],
+				  "gender" : "male",
+				  "birthDate" : "1975-07-30",
+				  "address" : [{
+				     "line" : ["Strasse"],
+				     "city" : "Stadt",
+				     "postalCode" : "12345",
+				     "country" : "CH"
+				   }],
+				  "communication" : [{
+				    "language" : {
+				       "coding" : { "code" : "en", "system" : "urn:ietf:bcp:47" }
+				    },
+				    "preferred" : true
+				  }],
+				  "extension" : [
+				    { 
+				      "url" : "http://midata.coop/extensions/account-password",
+				      "valueString" : "Secret123"
+				    },
+				   { 
+				      "url" : "http://midata.coop/extensions/terms-agreed",
+				      "valueString" : "midata-terms-of-use--1.0"
+				    },
+				   { 
+				      "url" : "http://midata.coop/extensions/terms-agreed",
+				      "valueString" : "midata-privacy-policy--1.0"
+				    }
+				  ]
+				};
+
+		return wrap($http({
+			  "method" : "POST",
+			  "url" : service.baseurl+"/fhir/Patient",
+			  "headers" : {
+				  "Authorization" : "Bearer "+session.authToken
+			  },
+			  "data" : data
+		}));				      
+	};
+	
 	service.loginUserPortal = function(userId) {
 		var data = {
 			"email" : "user"+userId+"@instant-mail.de", 			
@@ -68,6 +125,20 @@ jsonRecords.factory('server', [ '$http', function($http) {
 		};			
 		
 		return wrap($http.post(service.baseurl+"/api/research/login", data));
+	};
+	
+	service.loginHCApp = function() {
+		var data = {
+			"username" : "hc@instant-mail.de", 			
+			"password" : "Secret123",
+			"appname" : "hcmobile",
+			"secret" : "12345",
+			"device" : "abcdefgh",
+			"role" : "PROVIDER"
+		};			
+			
+		// submit to server
+		return wrap($http.post(service.baseurl+"/v1/auth", data));
 	};
 	
 	service.loginUserApp = function(userId) {
@@ -107,6 +178,7 @@ jsonRecords.factory('server', [ '$http', function($http) {
 						} 
 					] 
 	            }, 
+	            "comment" : "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789",
 	            "effectiveDateTime": effDate, 
 	            "valueQuantity": { 
 	            	"value": 81, 
@@ -295,6 +367,23 @@ jsonRecords.controller('CreateCtrl', ['$scope', '$http', '$location', '$filter',
 				scedule(part * x, part, f)
 				.then(function() { server.out += "ok"; $scope.success = true; });	
 			}
+									
+		};
+		
+		$scope.executeCreateUsersAPI = function() {
+			
+			server.out = "";
+			server.time = server.requests = 0;
+			
+			server.loginHCApp().then(function(session) {
+				var f = function(i) { return function() { return server.createRegisterAPI(i, session); } };
+				
+				var part = Math.floor($scope.setup.usersCreate / $scope.setup.numSync); 
+				for (var x=0;x<$scope.setup.numSync;x++) {
+					scedule(part * x, part, f)
+					.then(function() { server.out += "ok"; $scope.success = true; });	
+				}
+			});
 									
 		};
 		

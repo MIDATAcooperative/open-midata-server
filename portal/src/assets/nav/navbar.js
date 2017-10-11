@@ -1,9 +1,10 @@
 angular.module('portal')
-.controller('NavbarCtrl', ['$scope', '$state', '$translate', '$translatePartialLoader', 'server', 'session', 'ENV', 'spaces', 'circles', function($scope, $state, $translate, $translatePartialLoader, server, session, ENV, spaces, circles) {
+.controller('NavbarCtrl', ['$scope', '$state', '$translate', '$translatePartialLoader', 'server', 'session', 'ENV', 'spaces', 'circles', '$rootScope', function($scope, $state, $translate, $translatePartialLoader, server, session, ENV, spaces, circles, $rootScope) {
 	
 	// init
 	$scope.user = { subroles:[] };	
 	$scope.beta = ENV.beta;	
+	$rootScope.greeting = {};
 	
 	$translatePartialLoader.addPart($state.current.data.locales);
 	
@@ -24,9 +25,20 @@ angular.module('portal')
 	    		$scope.me_menu = results.data;
 	    	});
 			
-			circles.listConsents({ "status" : "UNCONFIRMED" }, ["status"])
+			circles.listConsents({  }, ["type", "status"])
 			.then(function(results) {
-				circles.unconfirmed = results.data.length;
+				var l = results.data.length;
+				circles.apps = 0;
+				circles.studies = 0;
+				circles.unconfirmed = 0;
+				for (var i=0;i<l;i++) {
+					var c = results.data[i];
+					if (c.type == "EXTERNALSERVICE") circles.apps++;
+					else if (c.type == "STUDYPARTICIPATION") circles.studies++;
+					else if (c.status == "UNCONFIRMED") circles.unconfirmed++;
+				}
+				
+				//circles.unconfirmed = results.data.length;
 			});
 	    
 		});	

@@ -9,8 +9,11 @@ import play.mvc.Http;
 import play.mvc.Result;
 import utils.AccessLog;
 import utils.ErrorReporter;
+import utils.ServerTools;
 import utils.access.RecordManager;
+import utils.audit.AuditManager;
 import utils.auth.KeyManager;
+import utils.auth.PortalSessionToken;
 import utils.exceptions.BadRequestException;
 import utils.fhir.ResourceProvider;
 import utils.json.JsonValidation.JsonValidationException;
@@ -31,7 +34,7 @@ public class MobileCallAction extends Action<MobileCall> {
     	  ctx.response().setHeader("Allow", "*");
     	  ctx.response().setHeader("Access-Control-Allow-Credentials", "true");
     	  ctx.response().setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH");
-    	  ctx.response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, Authorization, Prefer, Location, IfMatch, ETag, LastModified, Pragma, Cache-Control");
+    	  ctx.response().setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Referer, User-Agent, Set-Cookie, Cookie, Authorization, Prefer, Location, IfMatch, ETag, LastModified, Pragma, Cache-Control, X-Session-Token");
     	  ctx.response().setHeader("Pragma", "no-cache");
     	  ctx.response().setHeader("Cache-Control", "no-cache");
           return delegate.call(ctx);
@@ -47,21 +50,22 @@ public class MobileCallAction extends Action<MobileCall> {
     		}
     	} catch (BadRequestException e3) {
     		if (Stats.enabled) Stats.finishRequest(ctx.request(), e3.getStatusCode()+"");
+    		AuditManager.instance.fail(400, e3.getMessage(), e3.getLocaleKey());
     		return F.Promise.pure((Result) status(e3.getStatusCode(), e3.getMessage()));
 		} catch (Exception e2) {			
 			ErrorReporter.report("Mobile API", ctx, e2);
 			if (Stats.enabled) Stats.finishRequest(ctx.request(), "500");
+			AuditManager.instance.fail(500, e2.getMessage(), null);
 			return F.Promise.pure((Result) internalServerError(e2.getMessage()));			
 		} finally {
 			long endTime = System.currentTimeMillis();
 			if (endTime - startTime > 1000l * 4l) {
 			   ErrorReporter.reportPerformance("Mobile API", ctx, endTime - startTime);
-			}
+			}	
 			
-			// KeyManager.instance.logout(); FHIR API should not logout
-			RecordManager.instance.clear();			
-			ResourceProvider.setExecutionInfo(null);			
-			AccessLog.newRequest();
+			ServerTools.endRequest();
+						
+					 							  
 		}
     }
 }

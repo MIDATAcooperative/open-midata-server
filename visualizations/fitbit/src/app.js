@@ -17,7 +17,7 @@ fitbit.config(['$translateProvider', 'i18nc', function($translateProvider, i18nc
 }]);
 fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', function($http, $translate, midataServer, $q) {
 	var $scope = {};
-	
+	midataServer.setSingleRequestMode(true);
 	$scope.error = {};
 	$scope.reimport = 7;
 	$scope.status = null;
@@ -449,12 +449,17 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 			var formattedEndDate = toDate.getFullYear() + "-" + twoDigit(toDate.getMonth() + 1) + "-" + twoDigit(toDate.getDate());
 												
 			midataServer.oauth2Request($scope.authToken, baseUrl + measure.endpoint.replace("{date}", formattedFromDate).replace("1d", formattedEndDate))
-			.success(function(response) {
+			.then(function(response1) {
+				var response = response1.data;
 					// check if an error was returned
 				var actions = [];
 				
 				if (response.errors) {
-					errorMessage("Failed to import data on " + formattedFromDate + ": " + response.errors[0].message + ".");
+					var _error_message = response.errors[0].message;
+					// show error message when no 
+					if (!((_error_message.indexOf("/activities/elevation") !== -1 || _error_message.indexOf("/activities/floors") !== -1) && _error_message.indexOf("nvalid time series") !== -1)) {
+							errorMessage("Failed to import data on " + formattedFromDate + ": " + _error_message + ".");	
+					}
 				} else {
 					console.log(response);
 					angular.forEach(response, function(v,dataName) {						
@@ -510,8 +515,7 @@ fitbit.factory('importer', ['$http' , '$translate', 'midataServer', '$q', functi
 				
 				$scope.requesting--;
 				finish();
-			}).
-			error(function(err) {
+			}, function(err) {
 					errorMessage("Failed to import data on " + formattedDate + ": " + err);
 			});
 						

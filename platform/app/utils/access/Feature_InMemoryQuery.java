@@ -37,7 +37,7 @@ public class Feature_InMemoryQuery extends APS {
 			  if (ids.contains(record._id)) result.add(record);
 		  }
 		  return result;
-		} else return contents;
+		} else return new ArrayList(contents);
 	}
 	
 
@@ -156,6 +156,11 @@ public class Feature_InMemoryQuery extends APS {
 
 	@Override
 	public void provideAPSKeyAndOwner(byte[] unlock, MidataId owner) {				
+	}
+
+	@Override
+	public boolean isUsable() throws AppException {
+		return true;
 	}
 	
 	

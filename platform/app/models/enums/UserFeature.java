@@ -62,7 +62,7 @@ public enum UserFeature {
 	public boolean isSatisfiedBy(User user) {
 		switch (this) {
 			case EMAIL_ENTERED: return true;
-			case EMAIL_VERIFIED: return user.emailStatus.equals(EMailStatus.VALIDATED);
+			case EMAIL_VERIFIED: return (user.emailStatus.equals(EMailStatus.VALIDATED) || user.emailStatus.equals(EMailStatus.EXTERN_VALIDATED));
 			case PHONE_ENTERED: return user.mobile != null && user.mobile.length() > 0;
 			case PHONE_VERIFIED: return false;
 			case ADDRESS_ENTERED: return user.city != null && user.city.length() > 0 && user.zip != null && user.zip.length() > 0 && user.address1 != null;

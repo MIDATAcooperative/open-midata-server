@@ -103,11 +103,11 @@ public class CompareCondition implements Condition {
 		Map<String, Object> result = new HashMap<String, Object>();
 		switch (op) {
 		case EQ:return val;
-		case NE:result.put("$ne", val);
-		case GT:result.put("$gt", val);
-		case GE:result.put("$ge", val);
-		case LE:result.put("$le", val);
-		case LT:result.put("$lt", val);
+		case NE:result.put("$ne", val);break;
+		case GT:result.put("$gt", val);break;
+		case GE:result.put("$gte", val);break;
+		case LE:result.put("$lte", val);break;
+		case LT:result.put("$lt", val);break;
 		}
 		return result;
 	}

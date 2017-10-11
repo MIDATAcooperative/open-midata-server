@@ -25,9 +25,7 @@ public class VersionedDBRecord extends DBRecord {
 	public VersionedDBRecord(DBRecord rec) {	
 		this._id = rec._id;
 		this.stream = rec.stream; 
-		this.time = rec.time;
-		this.document = rec.document;
-		this.part = rec.part;
+		this.time = rec.time;		
 		this.meta = rec.meta;
 		this.data = rec.data;
 		this.owner = rec.owner;
@@ -91,11 +89,9 @@ public class VersionedDBRecord extends DBRecord {
 	
 	public void merge(DBRecord record) {
 		this.stream = record.stream; 
-		this.time = record.time;
-		this.document = record.document;
+		this.time = record.time;		
 		this.consentAps = record.consentAps;
-		this.createdFromAps = record.createdFromAps;
-		this.part = record.part;
+		this.createdFromAps = record.createdFromAps;		
 		this.id = record.id;
 		this.owner = record.owner;		
 		this.key = record.key;

@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import actions.APICall;
 import models.Consent;
-import models.History;
 import models.MidataId;
 import models.User;
 import models.UserGroup;
@@ -142,8 +141,7 @@ public class UserGroups extends APIController {
 		userGroup.creator = executorId;
 		
 		userGroup._id = new MidataId();
-		userGroup.nameLC = userGroup.name.toLowerCase();
-		userGroup.history = new ArrayList<History>();
+		userGroup.nameLC = userGroup.name.toLowerCase();	
 		userGroup.keywordsLC = new HashSet<String>();
 		userGroup.registeredAt = new Date();
 		

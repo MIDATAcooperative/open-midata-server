@@ -15,13 +15,17 @@
 	  "login" : "Login",
 	  "sign_up" : "Sign Up",
 	  "sign_out" : "Sign out",
+	  "edit_profile" : "Edit Profile",
+	  "app_count" : "connected apps",
+	  "study_count" : "studies enrollments",
 	  "me" : "Me",
 	  "view" : "View",
       "overview" : "Overview",
 	  "messages" : "Messages",
 	  "my_data" : "My Data",
 	  "consents" : "Sharing",
-	  "research" : "News",
+	  "research" : "Research",
+	  "apps" : "Apps",
 	  "config" : "Configuration",
 	  "help" : "Help"
    },
@@ -55,9 +59,9 @@
      "invalid" : {
        "email" : "Please enter a valid email address",
 
-	//TODO username?
+	
        "credentials" : "Invalid username or password.",
-
+       "credentials_hint" : "Invalid username or password. You are trying to log in as account holder. Are you ",
        "password_repetition" : "Password and password repetition do not match!",
        "passphrase_repetition" : "Passphrase and passphrase repetition do not match!",
        "passphrase_old" : "Old passphrase not correct.",
@@ -94,7 +98,8 @@
        "agb" : "Terms and conditions not accepted.",
        "privacypolicy" : "Privacy policy must be accepted.",
        "study_accept" : "Study participation must be accepted.",
-       "study_group" : "Participant must first be assigned to a group."
+       "study_group" : "Participant must first be assigned to a group.",
+       "confirmation" : "Confirmation by user required first."
      },
 
      "unknown" : {
@@ -204,7 +209,53 @@
 	   "ADMIN_ACCOUNT_CHANGE" : "Account changed by admin",
 	   "ACCOUNT_DELETED" : "Account deleted",
 	   "INTERNAL_COMMENT" : "Internal Comment",
-	   "TERMS_OF_USE_AGREED" : "Agreed to terms of use"
+	   "TERMS_OF_USE_AGREED" : "Agreed to terms of use",
+	   
+	   "user-registration" : "User registration",
+	   "110122" : "Login",
+	   "user-password-change" : "Password changed",
+	   "user-passphrase-change" : "Passphrase changed",
+	   "user-address-change" :"User address changed",
+	   "user-email-change" :"Email changed",
+	   "user-status-change" : "User status changed",
+	   "user-email-confirmed" : "User email confirmed",
+	   "user-email-rejected" : "User email rejected",
+	   "user-account-change-by-admin" : "User account changed by admin",
+	   "user-account-deleted" : "User account deleted",
+	   "app-first-use" : "First use of application",
+	   "app-rejected" : "Application rejected",
+	   "app-deleted" :"Application consent deleted",
+	   "consent-create" :"Consent created",
+	   "consent-persons-change" :"Consent persons changed",
+	   "consent-change" : "Consent changed",
+	   "consent-approved": "Consent approved",
+	   "consent-rejected" : "Consent rejected",
+	   "consent-deleted" : "Consent deleted",
+	   "study-participation-requested" : "Study participation requested",
+	   "study-participation-member-rejected" : "Study participation rejected by member",
+	   "study-participation-member-rejected" : "Study participation rejected by research",
+	   "study-participation-approved" :"Study participation approved",
+	   "study-participation-group-assigned" : "Study participation group assigned",
+	   "study-validation-requested" : "Study validation requested",
+	   "study-validated" : "Study validated",
+	   "study-rejected" : "Study rejected",
+	   "study-participant-search-started" : "Study participant search started",
+	   "study-participant-search-closed" : "Study participant search closed",
+	   "study-started" : "Study started",
+	   "study-finished" : "Study finished",
+	   "study-aborted" : "Study aborted",
+	   "110105" : "Entire Study has been deleted",
+	   "study-setup-changed" : "Study has been changed",
+	   "data-deletion" : "Data has been deleted",
+       "data-export" : "Data exported",
+       "data-import" : "Data import",
+       "contract-requested" : "Contract requested by user",
+       "contract-send" : "Contract send to user",
+       "internal-comment" : "Internal comment",
+       "user-terms-of-use-agreed" : "Agreed to terms of use",
+       "audit-log-used" : "Audit Log Used"		   
+	   
+	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -216,6 +267,12 @@
 	   "PASSPORT_VERIFIED" : "ID card of users must have been verified",
 	   "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative",
 	   "ADMIN_VERIFIED" : "Account must have been unlocked by a MIDATA administrator"
+	 },
+	 "writepermissiontype" : {
+	   "NONE" : "No data may be written.",
+	   "UPDATE_EXISTING" : "Existing data may be updated.",
+	   "UPDATE_AND_CREATE" : "Data covered by consent may be written or updated.", 
+	   "WRITE_ANY" : "Any kind of data may be written using this consent."
 	 },
 	 "consentstatus" : {
 	   "ACTIVE" : "Active",
@@ -241,7 +298,8 @@
 	 "emailstatus" : {
 	   "REJECTED" : "Rejected",
 	   "UNVALIDATED" : "Not confirmed yet",
-	   "VALIDATED" : "Confirmed"
+	   "VALIDATED" : "Confirmed",
+	   "EXTERN_VALIDATED" : "Confirmed by 3rd party"
 	 },
 	 "participantsearchstatus" : {
 	   "CLOSED" : "Closed",
@@ -331,8 +389,7 @@
 	   "Import" : "Import",
 	   "Planning" : "Planning",
 	   "Tools" : "Tools",
-	   "Fitbit" : "Fitbit",
-	   "Jawbone" : "Jawbone",
+	   "Protocol" : "Protocol",
 	   "Available" : "Available Plugins"
 	 },
 	 "plugintype" : {
@@ -354,6 +411,7 @@
     "view_btn" : "View",
     "submit_btn" : "Submit",
     "delete_btn" : "Delete",
+    "or" : "or",
 
     "user" : {
       "lastname" : "Surname",
@@ -571,15 +629,13 @@
   },
 
   "studydetails" : {
-    "study" : "Study",
-    "participant_search_status" : "Participant search:",
-    "execution_status" : "Study accomplishment:",
-    "organization" : "Organization",
+    "study" : "Study",    
+    "organization" : "Organization performing the research:",
     "providers_monitoring" : "Healthcare Providers monitoring the study",
     "no_providers" : "None",
     "provider_remove_btn" : "Remove",
     "provider_add_btn" : "Add",
-    "information_that_needs_sharing" : "Information that must be shared for participation",
+    "information_that_needs_sharing" : "Required data",
     "information_restricted" : "Your gender, year of birth and country of residence",
     "information_demographic" : "Your complete demographic data (name, birthday, address, ...)",
     "records_with_format" : "Records that have format:",
@@ -594,16 +650,19 @@
 	"history_when" : "When",
 	"history_comment" : "Comment",
 	"request_participation_btn" : "Request Participation",
-	"do_not_participate_btn" : "Do not participate"
+	"do_not_participate_btn" : "Do not participate",
+	"status" : "Status"
   },
 
   "user" : {
     "account" : "User Account",
     "user" : "User",
     "name" : "Name:",
-    "email" : "Email:",
+    "email" : "EMail:",
+    "action" : "More...",
     "change_password_btn" : "Change Password",
  	"change_passphrase_btn" : "Change Passphrase",
+ 	"auditlog_btn" : "View Log",
 	"repair_account_btn" : "Repair Account",
 	"reset_spaces_btn" : "Reset Portal",
 	"delete_records_btn" : "Delete Records",
@@ -661,6 +720,8 @@
     "add_yourself_btn" : "Add yourself",
     "add_person_btn" : "Add New Person",
     "add_usergroup_btn" : "Add New Team",
+    "writes" : "Write Permission",
+    "writes2" : "The persons authorized by this consent may create or update data in your account covered by this consent.",
     "reshare" : "3rd party access?",
     "reshare2" : "The persons authorized with this consent may reshare the data I gave them access to.",
     "expiration_date" : "Consent expiration date:",
@@ -683,6 +744,7 @@
     "add_usergroup_btn" : "Add a Team",
     "reshare" : "@:newconsent.reshare",
     "reshare2" : "@:newconsent.reshare2",
+    "writes" : "Write Permission",
     "expiration_date" : "Consent expiration date:",
     "created_before" : "Does not share data created after:",
     "what_is_shared" : "What data is shared?",
@@ -845,7 +907,8 @@
 	"view_btn" : "View",
 	"install_btn" : "Add more",
 	"observations" : "Measures",
-	"calendar" : "Calendar"
+	"calendar" : "Calendar",
+	"smallstudies" : "Studies"
    },
 
    "measure" : {
@@ -938,5 +1001,35 @@
   
   "terms" : {
     "close_btn" : "<< Back"
+  },
+  
+  "auditlog" : {
+    "event" : "Event",
+    "actor" : "Actor",
+    "entity" : "Entity",
+    "recorded" : "Time",
+    "outcome" : "Outcome",
+    "empty" : "No entries yet.",
+    "title" : "Audit Log",
+    "refresh_btn" : "Refresh",
+    "via" : "via",
+    "CIRCLE" : "Consent",
+    "ResearchStudy" : "Study",
+    "EXTERNALSERVICE" : "App",
+    "STUDYPARTICIPATION" : "Participation",
+    "HEALTHCARE" : "Consent (Healthcare)",
+    "MEMBER" : "Account",
+    "PROVIDER" : "Account (Healthcare)",
+    "RESEARCH" : "Account (Researcher)"
+  },
+  
+  "apps" : {
+    "greeting" : "Connect your apps to collect your datas",
+    "title" : "Apps",
+    "description" : "Connected Apps",
+    "count" : "You have {{count}} connected apps:",
+    "services" : "Services",
+    "connect_btn" : "Connect"       
   }
+    
 }

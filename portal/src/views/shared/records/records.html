@@ -65,7 +65,7 @@
               <span ng-show="data.open && !data.type" ng-click="setOpen(data,false);" class="treehandle glyphicon glyphicon-minus"></span>
               </span>
               <span ng-hide="data.children.length" class="treehandle glyphicon">&nbsp;</span>
-              <a href="javascript:" ng-click="showRecords(data);" ng-class="{ 'text-success' : isSharedGroup(data), 'format': data.type == 'content', 'nodata' : data.count == 0 }">{{data.fullLabel}}</a> <small>(<span ng-show="selectedAps">{{ data.countShared }} / </span>{{ data.count }})</small><button class="btn btn-xs btn-danger" ng-show="allowDelete" ng-dblclick="deleteGroup(data)" translate="records.delete_all_btn"></button></h1>
+              <a href="javascript:" ng-click="showRecords(data);" ng-class="{ 'text-success' : isSharedGroup(data), 'format': data.type == 'content', 'nodata' : data.count == 0 }">{{data.fullLabel.fullLabel}}</a> <small>(<span ng-show="selectedAps">{{ data.countShared }} / </span>{{ data.count }})</small><button class="btn btn-xs btn-danger" ng-show="allowDelete" ng-dblclick="deleteGroup(data)" translate="records.delete_all_btn"></button></h1>
            <div ng-show="data.open">          
            
             
@@ -89,7 +89,7 @@
             <div class="modal-content"> 
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> 
-                <h4 class="modal-title">{{selectedData.fullLabel}}</h4> 
+                <h4 class="modal-title">{{selectedData.fullLabel.fullLabel}}</h4> 
               </div>
               <div class="container" ng-if="selectedData.allRecords.length > 10">
               <dir-pagination-controls pagination-id="selectedData.id"></dir-pagination-controls>

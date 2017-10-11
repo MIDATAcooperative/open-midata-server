@@ -1,10 +1,11 @@
 
-	<div ng-controller="RecordCtrl">
-		<div class="extraspace">
-			  <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span><span translate="common.back_btn"></span></button>
-		</div>
+	<div ng-controller="RecordCtrl" class="midata-overlay borderless">
+	  <div class="overlay-body">
 		<div class="panel panel-primary">
-		  <div class="panel-heading" translate="recorddetail.meta"></div>
+		  <div class="panel-heading">
+		    <span translate="recorddetail.meta"></span>
+		    <a ng-click="goBack()" href="javascript:" class="close-icon pull-right"><span class="glyphicon glyphicon-remove"></span></a>
+		  </div>
 		  <div class="panel-body">
 			<loader busy="status.isBusy !== false">
 						
@@ -53,6 +54,7 @@
 		    <div class="panel-body">
 			  <div style="white-space: pre-wrap;" ng-show="record.json">{{record.json}}</div>		
 		    </div>
-		</div>		
+		</div>	
+	  </div>	
 	</div>
 	

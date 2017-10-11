@@ -4,7 +4,7 @@
 	<div class="tab-content">	
 	<div class="tab-pane active">
 	<loader busy="status.isBusy !== false">
-	<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
+	<p ng-show="error && !error.field" translate="{{ error.code || error }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	   
 	</p>
 	<table class="table">
 	  <tr>
@@ -43,27 +43,10 @@
     </loader>
     </div>
     </div>
-    <div ng-show="study.history.length" class="panel panel-primary">
+    <div class="panel panel-primary">
     <div class="panel-heading" translate="studyoverview.history"></div>
     <div class="panel-body">
-    <table class="table">
-      <thead>
-        <tr>
-          <th translate="studyoverview.event"></th>
-          <th translate="studyoverview.who"></th>
-          <th translate="studyoverview.when"></th>
-          <th translate="studyoverview.comment"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="entry in study.history">
-          <td translate="{{ 'enum.eventtype.'+entry.event }}"></td>
-          <td>{{ entry.whoName }}</td>
-          <td>{{ entry.timestamp | date }}</td>
-          <td>{{ entry.message }}</td>
-        </tr>
-      </tbody>
-    </table>    
+      <auditlog entity="{{ study._id }}" api="auditlog"></auditlog>  
     </div>
     </div>
     

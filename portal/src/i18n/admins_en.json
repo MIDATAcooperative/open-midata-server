@@ -1,6 +1,7 @@
 {
   "admin_navbar" : {
     "members" : "Members",
+    "auditlog" : "Audit",
     "news" : "News",
     "plugins" : "Plugins",
 	"content" : "Content",
@@ -101,7 +102,8 @@
   "admin_study" : {
      "title" : "Study",
      "name" : "Name",
-     "created_at" : "Created At",
+     "created_at" : "Created at",
+     "created_by" : "Created by",
      "description" : "Description",
      "code" : "Code",
      "required_information" : "Required Information",
@@ -114,6 +116,7 @@
      "group_description" : "Description",
      "history" : "History",
      "end_validation_btn" : "Complete Validation",
+     "back_to_draft_btn" : "Back to Draft",
      "delete_study_btn" : "Delete Study"    
   }
 }

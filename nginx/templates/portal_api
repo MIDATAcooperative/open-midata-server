@@ -14,7 +14,7 @@ server {
         ssl_prefer_server_ciphers on;
         ssl_dhparam DHPARAMS;
 
-        root ROOTDIR/portal/dest;   
+        root RUNDIR/portal/dest;   
         
         add_header 'X-Frame-Options' 'DENY';
         add_header 'X-XSS-Protection' "1; mode=block"; 
@@ -41,6 +41,16 @@ server {
            proxy_cookie_path / "/; secure; HttpOnly";
            client_max_body_size 100M;
         }
+        
+        location /fhir {
+           proxy_pass http://localhost:PLATFORM_INTERNAL_PORT;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_http_version 1.1;
+           proxy_cookie_path / "/; secure; HttpOnly";
+           client_max_body_size 100M;
+        }
+                
 
 }
 

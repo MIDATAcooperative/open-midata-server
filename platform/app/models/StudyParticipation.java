@@ -26,8 +26,7 @@ public class StudyParticipation extends Consent {
 	public String group; // If study has multiple separate groups of participants
 	public MidataId recruiter; // if member has been recruited through someone (by entering a participation code)
 	public String recruiterName; // replication of recruiter name
-	public Set<MidataId> providers; // (Optional) List of healthcare providers monitoring the member for this study.
-	public List<History> history; // History of participation process
+	public Set<MidataId> providers; // (Optional) List of healthcare providers monitoring the member for this study.	
 	
 	public int yearOfBirth;
 	public String country;
@@ -88,11 +87,7 @@ public class StudyParticipation extends Consent {
 	public void setPStatus(ParticipationStatus newstatus) throws InternalServerException {
 		Model.set(StudyParticipation.class, collection, this._id, "pstatus", newstatus);
 	}
-    
-    public void addHistory(History newhistory) throws InternalServerException {
-    	this.history.add(newhistory);
-    	Model.set(StudyParticipation.class, collection, this._id, "history", this.history);
-    }
+       
     
     public static void delete(MidataId studyId, MidataId partId) throws InternalServerException {	
 		Model.delete(StudyParticipation.class, collection, CMaps.map("_id", partId).map("study", studyId));

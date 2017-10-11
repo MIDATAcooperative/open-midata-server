@@ -32,7 +32,10 @@ angular.module('views')
     	
     	$scope.status.doBusy(news.get({ "language" : $translate.use() }, ["content", "created", "title", "studyId", "url"]))
     	.then(function(results) {
-    	   if (results.data.length===0) return; 
+    	   if (results.data.length===0) {
+    		   $scope.view.active = false;
+    		   return; 
+    	   }
     	   for (var i=0;i<results.data.length-1;i++) {
     		   $scope.addNews(results.data[i]);
     	   }

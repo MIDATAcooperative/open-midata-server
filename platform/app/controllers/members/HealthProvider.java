@@ -19,6 +19,7 @@ import models.HPUser;
 import models.MemberKey;
 import models.MidataId;
 import models.User;
+import models.enums.AuditEventType;
 import models.enums.ConsentStatus;
 import models.enums.ConsentType;
 import models.enums.MessageReason;
@@ -26,6 +27,7 @@ import models.enums.UserRole;
 import play.mvc.BodyParser;
 import play.mvc.Result;
 import play.mvc.Security;
+import utils.audit.AuditManager;
 import utils.auth.AnyRoleSecured;
 import utils.auth.MemberSecured;
 import utils.auth.Rights;
@@ -132,13 +134,22 @@ public class HealthProvider extends APIController {
 		JsonValidation.validate(json, "consent");
 		
 		MidataId consentId = JsonValidation.getMidataId(json, "consent");		
-		confirmConsent(userId, consentId);				
+		confirmConsent(userId, consentId);
+		
+		AuditManager.instance.success();
 		return ok();
 	}
 	
     public static void confirmConsent(MidataId userId, MidataId consentId) throws AppException, JsonValidationException {
 										
 		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Consent.ALL);
+		
+		if (target.type.equals(ConsentType.EXTERNALSERVICE)) {
+			   //AuditManager.instance.addAuditEvent(AuditEventType.APP_, userId, target);
+		} else {
+			   AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_APPROVED, userId, target);
+		}
+		
 		if (target.status.equals(ConsentStatus.UNCONFIRMED)) {
 			if (target.type.equals(ConsentType.EXTERNALSERVICE)) {
 				MobileAPI.confirmMobileConsent(userId, consentId);
@@ -146,7 +157,9 @@ public class HealthProvider extends APIController {
 			target.setConfirmDate(new Date());			
 			Circles.consentStatusChange(userId, target, ConsentStatus.ACTIVE);
 			Circles.sendConsentNotifications(userId, target, ConsentStatus.ACTIVE);
-		} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");			
+		} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");		
+		
+		
 	}
 	
 	
@@ -173,12 +186,20 @@ public class HealthProvider extends APIController {
     public static void rejectConsent(MidataId userId, MidataId consentId) throws AppException, JsonValidationException {
 		
 		MemberKey target = MemberKey.getByIdAndOwner(consentId, userId, Consent.ALL);
+		
+		if (target.type.equals(ConsentType.EXTERNALSERVICE)) {
+		   AuditManager.instance.addAuditEvent(AuditEventType.APP_REJECTED, userId, target);
+		} else {
+		   AuditManager.instance.addAuditEvent(AuditEventType.CONSENT_REJECTED, userId, target);
+		}
+		
 		if (target.status.equals(ConsentStatus.UNCONFIRMED) || target.status.equals(ConsentStatus.ACTIVE)) {
 			target.setConfirmDate(new Date());			
 			Circles.consentStatusChange(userId, target, ConsentStatus.REJECTED);
 			Circles.sendConsentNotifications(userId, target, ConsentStatus.REJECTED);
 		} else throw new BadRequestException("error.invalid.status_transition", "Wrong status");
 	
+		AuditManager.instance.success();
 	}
 	
 	

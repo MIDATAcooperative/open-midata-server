@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('ImportRecordsCtrl', ['$scope', '$state', '$translate', 'server', '$sce', 'session', 'status', 'spaces', function($scope, $state, $translate, server, $sce, session, status, spaces) {
+.controller('ImportRecordsCtrl', ['$scope', '$state', '$translate', 'server', '$sce', 'session', 'status', 'spaces', '$window', function($scope, $state, $translate, server, $sce, session, status, spaces, $window) {
 	
 	// init
 	$scope.error = null;
@@ -151,8 +151,10 @@ angular.module('portal')
 	};
 	
 	$scope.goBack = function() {
+		$window.history.back();
+		/*
 		   spaces.get({ "_id" :  $scope.spaceId }, ["context"]).
-		   then(function(result) { $state.go('^.dashboard', { dashId : result.data[0].context }); });
+		   then(function(result) { $state.go('^.dashboard', { dashId : result.data[0].context }); });*/
 	};
 		
 }]);

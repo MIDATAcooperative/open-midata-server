@@ -438,7 +438,7 @@ public class QueryBuilder {
 				} else throw new NullPointerException();
 				
 				if (prefix==null) prefix = ParamPrefixEnum.EQUAL;
-				
+				AccessLog.log("prefix="+prefix);
 			    switch (prefix) {
 				case GREATERTHAN: bld.addComp(hPath, CompareOperator.GE, hDate, true);break;
 				case LESSTHAN: bld.addComp(lPath,CompareOperator.LT, lDate, true);break;
@@ -649,11 +649,14 @@ public class QueryBuilder {
 		for (List<? extends IQueryParameterType> paramsOr : paramsAnd) {
 		  if (paramsOr == null) continue;
 		  for (IQueryParameterType p2 : paramsOr) {
-			StringParam p = (StringParam) p2;
-			
-			if (p == null) continue;
-			
-			result.add(p.getValue());		
+			  if (p2 == null) continue;
+			  if (p2 instanceof StringParam) { 
+			    StringParam p = (StringParam) p2;
+				result.add(p.getValue());
+			  } else if (p2 instanceof TokenParam) {
+				TokenParam p = (TokenParam) p2;
+				result.add(p.getValue());
+			  }
 		  }
 		}
 	
