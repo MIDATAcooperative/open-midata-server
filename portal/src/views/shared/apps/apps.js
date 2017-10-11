@@ -4,6 +4,7 @@ angular.module('portal')
 	$scope.status = new status(true);
 	$scope.targetRole = $state.current.data.role;
 	$scope.pluginToSpace = {};
+	$scope.greeting.text = "apps.greeting";
 		
 	loadConsents = function(userId) {	
 		$scope.status.doBusy(circles.listConsents({type : "EXTERNALSERVICE" }, [ "name", "authorized", "type", "status"]))

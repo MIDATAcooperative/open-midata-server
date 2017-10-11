@@ -1,10 +1,10 @@
 angular.module('views')
-.controller('SmallStudiesCtrl', ['$scope', '$state', 'server', '$attrs', 'views', 'studies', 'status', function($scope, $state, server, $attrs, views, studies, status) {
+.controller('SmallStudiesCtrl', ['$scope', '$state', 'server', 'views', 'studies', 'status', function($scope, $state, server, views, studies, status) {
 	
 	$scope.studies = [];	
-	$scope.view = views.getView($attrs.viewid || $scope.def.id);
+	//$scope.view = views.getView($attrs.viewid || $scope.def.id);
 	$scope.status = new status(true);	
-	
+	$scope.greeting.text = "smallstudies.greeting";
 	$scope.criteria = { };
 	$scope.tab = 0;
 	
@@ -28,7 +28,7 @@ angular.module('views')
 	
 	
 	$scope.reload = function() {		
-		if (!$scope.view.active) return;
+		
 										
 		$scope.status.doBusy(server.get(jsRoutes.controllers.members.Studies.list().url)).
 		then(function(results) { 				
@@ -91,6 +91,6 @@ angular.module('views')
 	
 	$scope.setTab(0);
 	
-	$scope.$watch('view.setup', function() { $scope.reload(); });	
+	$scope.reload();	
 	
 }]);

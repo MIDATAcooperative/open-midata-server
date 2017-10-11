@@ -1,7 +1,9 @@
 
-	<!-- Navbar -->
-	<div id="navbar" class="navbar navbar-default" role="navigation" ng-controller="NavbarCtrl">
-	 <script type="text/ng-template" id="userinfo.html">
+<!-- Navbar -->
+<div class="colored" ng-controller="NavbarCtrl">
+	<div id="navbar" class="navbar navbar-default" role="navigation" >
+		<script type="text/ng-template" id="userinfo.html">
+	   <div class="popoverbox">
         <div><b>{{ user.firstname }} {{ user.lastname }}</b></div>
         <div>{{ user.email }}</div>
         <hr>
@@ -10,70 +12,64 @@
         <div class="extraspace"></div>
         <a href="javascript:" ui-sref=".user({ userId : user._id})" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> <span translate="navbar.edit_profile"></span></a>
         <a href="javascript:" ng-click="logout()" class="btn btn-default"><span class="glyphicon glyphicon-off"></span> <span translate="navbar.sign_out"></span></a>
+       </div>
      </script>
-	  <div class="container-fluid">
-		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-				<span class="sr-only" translate="navbar.toggle_navigation"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			</button>
-			<a class="navbar-brand" ui-sref="member.overview">
-	        <span class="midata" id="logotype"><img src="/images/logo.png" style="height: 36px;"></span>
-	           	</a>
-		</div>
-		<div class="collapse navbar-collapse navbar-ex1-collapse">
-		   <ul class="hidden-xs nav navbar-nav navbar-right" ng-cloak>	
-			    
-			    <li><a href="javascript:" uib-popover-template="'userinfo.html'" popover-trigger="focus" popover-placement="left-bottom">{{user.name}}</a></li>
-				
-			</ul>
-			<div class="hidden-md hidden-sm hidden-lg">
-			  <div ng-include="'userinfo.html'"></div>
-			  <hr>
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+					<span class="sr-only" translate="navbar.toggle_navigation"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" ui-sref="member.overview"> <span class="midata" id="logotype"><img src="/images/logo.png"
+						style="height: 36px;"></span>
+				</a>
 			</div>
-		
-			<ul class="nav navbar-nav">
-			    <li ui-sref-active="active"><a ui-sref="member.overview" translate="navbar.me"></a></li>
-			    
-			    			    			    
-			    
-            	<!-- <li ng-show="beta" ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'overview' })" translate="navbar.overview"></a></li> -->
-				<!-- <li ui-sref-active="active"><a ui-sref="member.messages">Messages</a></li> -->				
-				<li ng-show="beta" ui-sref-active="active"><a ui-sref="member.records" translate="navbar.my_data"></a></li>				
-				<li ui-sref-active="active"><a ui-sref="member.circles"><span translate="navbar.consents"></span> <span ng-show="circles.unconfirmed" class="badge">{{circles.unconfirmed}}</span></a></li>
-				<li ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'studiessmall' })" translate="navbar.research"></a></li>
-				<li ui-sref-active="active"><a ui-sref="member.apps"><span translate="navbar.apps"></span></a></li>
-				
-				<!-- li ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'help' })" translate="navbar.help"></a></li> -->
-				
-				<li ui-sref-active="active" class="dropdown">
-                   <a href="javascript:" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
-                     <ul class="dropdown-menu">
-                       <li><a href="javascript:" ng-click="showApp('fhir-observation');" translate="dashboard.observations"></a></li>
-                       <li><a href="javascript:" ng-click="showApp('calendar');" translate="dashboard.calendar"></a></li>
-                       <li ng-repeat="entry in me_menu">
-                         <a href="javascript:" ng-click="showSpace(entry)" translate="{{entry.name}}"></a>
-                       </li>  
-                                 
-                     </ul>
-                </li>				
-			</ul>
-			<!-- 
-			<form class="navbar-form navbar-left" ng-submit="startSearch()">
-				<div class="form-group">
-					<input type="text" typeahead="res.value for res in search($viewValue)" typeahead-on-select="startSearch();" class="form-control" placeholder="Search in your data" ng-model="query">
+			<div class="collapse navbar-collapse navbar-ex1-collapse">
+				<ul class="hidden-xs nav navbar-nav navbar-right" ng-cloak>
+
+					<li><a href="javascript:" uib-popover-template="'userinfo.html'" popover-trigger="focus" popover-placement="left-bottom">{{user.name}}</a></li>
+
+				</ul>
+				<div class="hidden-md hidden-sm hidden-lg">
+					<div ng-include="'userinfo.html'"></div>
+					<hr>
 				</div>
-				<button type="submit" class="btn btn-primary">Go!</button>
-			</form>
-			 -->
-			
-		</div><!--/.nav-collapse -->
-	  </div>
+
+				<ul class="nav navbar-nav">
+					<li ui-sref-active="active"><a ui-sref="member.overview" translate="navbar.me"></a></li>
+
+
+
+					<!-- <li ng-show="beta" ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'overview' })" translate="navbar.overview"></a></li> -->
+					<!-- <li ui-sref-active="active"><a ui-sref="member.messages">Messages</a></li> -->
+					<li ng-show="beta" ui-sref-active="active"><a ui-sref="member.records" translate="navbar.my_data"></a></li>
+					<li ui-sref-active="active"><a ui-sref="member.circles"><span translate="navbar.consents"></span> <span
+							ng-show="circles.unconfirmed" class="badge">{{circles.unconfirmed}}</span></a></li>
+					<li ui-sref-active="active"><a ui-sref="member.studies" translate="navbar.research"></a></li>
+					<li ui-sref-active="active"><a ui-sref="member.apps"><span translate="navbar.apps"></span></a></li>
+
+					<!-- li ui-sref-active="active"><a ui-sref="member.dashboard({ dashId : 'help' })" translate="navbar.help"></a></li> -->
+
+					<li ui-sref-active="active" class="dropdown"><a href="javascript:" class="dropdown-toggle" data-toggle="dropdown" role="button"
+						aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="javascript:" ng-click="showApp('fhir-observation');" translate="dashboard.observations"></a></li>
+							<li><a href="javascript:" ng-click="showApp('calendar');" translate="dashboard.calendar"></a></li>
+							<li ng-repeat="entry in me_menu"><a href="javascript:" ng-click="showSpace(entry)" translate="{{entry.name}}"></a></li>
+
+						</ul></li>
+				</ul>
+
+			</div>
+			<!--/.nav-collapse -->
+		</div>
 	</div>
-	
+	<div class="greeting container" ng-show="greeting.text">
+	  <p class="section">{{ greeting.text | translate }}</p>
+	</div>
+</div>
+<div class="mainpart">
 	<div class="container">
-	  <div ui-view></div>
+		<div ui-view></div>
 	</div>
-	
+</div>

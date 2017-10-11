@@ -908,7 +908,7 @@
 	"install_btn" : "Add more",
 	"observations" : "Measures",
 	"calendar" : "Calendar",
-	"smallstudies" : "Want to help studies by sharing your data?"
+	"smallstudies" : "Studies"
    },
 
    "measure" : {
@@ -1024,6 +1024,7 @@
   },
   
   "apps" : {
+    "greeting" : "Connect your apps to collect your datas",
     "title" : "Apps",
     "description" : "Connected Apps",
     "count" : "You have {{count}} connected apps:",

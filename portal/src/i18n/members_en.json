@@ -104,6 +104,7 @@
   },
   
   "smallstudies" : {
+    "greeting" : "Want to help studies by sharing your data?",
     "studies" : "Studies",
     "status" : "Enrollment",
     "recruiting" : "Recruiting",

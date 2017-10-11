@@ -1,14 +1,15 @@
 <div ng-controller="SmallStudiesCtrl" ng-cloak class="autosize body">
     <loader busy="status.isBusy !== false">
-    
-    <ul class="nav nav-tabs">
+    <div class="">
+    <ul class="borderless nav nav-tabs">
   <li role="presentation" ng-class="{'active' : tab==0 }"><a href="javascript:" ng-click="setTab(0)" translate="smallstudies.recruiting">Home</a></li>
   <li role="presentation" ng-class="{'active' : tab==1 }"><a href="javascript:" ng-click="setTab(1)" translate="smallstudies.ongoing">Profile</a></li>
   <li role="presentation" ng-class="{'active' : tab==2 }"><a href="javascript:" ng-click="setTab(2)" translate="smallstudies.completed">Messages</a></li>
   <li role="presentation" ng-class="{'active' : tab==3 }"><a href="javascript:" ng-click="setTab(3)" translate="smallstudies.stopped">Messages</a></li>
     </ul>
+    </div>
      	
-	<div ng-show="filteredStudies.length > 0">
+	<div class="" ng-show="filteredStudies.length > 0">
 	<table class="table table-hover">
 	  <thead>
 	    <tr>
@@ -32,7 +33,7 @@
 	  </tbody>
 	</table>
 	</div>
-	<div ng-show="filteredStudies.length == 0">
+	<div class="section" ng-show="filteredStudies.length == 0">
 	  <div class="extraspace"></div>
 	  <span translate="flexiblestudies.empty"></span>	  
 	</div>	

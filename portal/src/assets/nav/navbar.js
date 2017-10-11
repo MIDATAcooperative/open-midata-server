@@ -1,9 +1,10 @@
 angular.module('portal')
-.controller('NavbarCtrl', ['$scope', '$state', '$translate', '$translatePartialLoader', 'server', 'session', 'ENV', 'spaces', 'circles', function($scope, $state, $translate, $translatePartialLoader, server, session, ENV, spaces, circles) {
+.controller('NavbarCtrl', ['$scope', '$state', '$translate', '$translatePartialLoader', 'server', 'session', 'ENV', 'spaces', 'circles', '$rootScope', function($scope, $state, $translate, $translatePartialLoader, server, session, ENV, spaces, circles, $rootScope) {
 	
 	// init
 	$scope.user = { subroles:[] };	
 	$scope.beta = ENV.beta;	
+	$rootScope.greeting = {};
 	
 	$translatePartialLoader.addPart($state.current.data.locales);
 	
