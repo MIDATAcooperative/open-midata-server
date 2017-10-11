@@ -19,12 +19,25 @@
 			<div class="row" ng-show="isSelf">
 			  <div class="col-sm-12">
 			     <a class="btn btn-default" href="javascript:" ui-sref="^.changepassword" translate="user.change_password_btn"></a>
-			     <a class="btn btn-default" href="javascript:" ui-sref="^.changepassphrase" translate="user.change_passphrase_btn"></a>
-			     <a class="btn btn-default" href="javascript:" ui-sref="^.auditlog" translate="user.auditlog_btn"></a>
-			     <a class="btn btn-default" href="javascript:" ng-disabled="msg" ng-click="fixAccount();" translate="user.repair_account_btn"></a>
-			     <a class="btn btn-default" href="javascript:" ng-disabled="msg" ng-click="resetSpaces();" translate="user.reset_spaces_btn"></a>
-			     <a class="btn btn-default" href="javascript:" ui-sref="^.delete_records" translate="user.delete_records_btn"></a>
-			     <a ng-show="beta && user.role=='MEMBER'" class="btn btn-danger" href="javascript:" ng-click="askwipe()">test server: wipe account</a>
+			     
+			     <div class="btn-group">
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span translate="user.action"></span> <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    <li><a href="javascript:" ui-sref="^.changepassphrase" translate="user.change_passphrase_btn"></a></li>
+    <li><a href="javascript:" ui-sref="^.auditlog" translate="user.auditlog_btn"></a></li>
+	<li><a href="javascript:" ng-disabled="msg" ng-click="fixAccount();" translate="user.repair_account_btn"></a></li>
+	<li><a href="javascript:" ng-disabled="msg" ng-click="resetSpaces();" translate="user.reset_spaces_btn"></a></li>
+	<li><a href="javascript:" ui-sref="^.delete_records" translate="user.delete_records_btn"></a></li>
+	<li ng-show="beta && user.role=='MEMBER'"><a  href="javascript:" ng-click="askwipe()">test server: wipe account</a></li>
+  </ul>
+</div>
+			     
+			     
+			     
+			     
+			     
 			  </div>			  
 			</div>
 			<div class="extraspace"></div>

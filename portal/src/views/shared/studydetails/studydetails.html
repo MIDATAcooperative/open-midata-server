@@ -1,16 +1,22 @@
 
-<div ng-controller="StudyDetailCtrl" ng-cloak>
-	<div class="extraspace">
-		<button class="btn btn-default" ng-click="goBack();">
-			<span class="glyphicon glyphicon-chevron-left"></span><span translate="common.back_btn"></span>
-		</button>
-	</div>
+<div ng-controller="StudyDetailCtrl" ng-cloak class="midata-overlay borderless">
+	
+ <div class="overlay-body">
 
-
+		
+    <div class="panel panel-primary">
+				<div class="panel-heading">
+				  <span translate="studydetails.study"></span>
+				  <a ng-click="goBack()" href="javascript:" class="close-icon pull-right"><span class="glyphicon glyphicon-remove"></span></a>
+				</div>
+				<div class="panel-body">
+		
 	<p ng-show="error && !error.field" translate="{{ error.code }}"
 		ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert"></p>
+	
+				
 	<div class="row">
-		<div class="col-sm-4">
+		<div class="col-sm-4 infopanel">
 
 
 
@@ -51,8 +57,8 @@
 				<div class="panel-heading" translate="studydetails.status"></div>
 				<div class="panel-body">
 
-					<div translate="{{ 'enum.participantsearchstatus.'+study.participantSearchStatus }}"></div>
-					<div translate="{{ 'enum.studyexecutionstatus.'+study.executionStatus }}"></div>
+					<div class="lead" translate="{{ 'enum.participantsearchstatus.'+study.participantSearchStatus }}"></div>
+					<div class="lead" translate="{{ 'enum.studyexecutionstatus.'+study.executionStatus }}"></div>
 				</div>
 			</div>
 
@@ -61,24 +67,28 @@
 		
 
 		<div class="col-sm-8">
-			<div class="panel panel-primary">
-				<div class="panel-heading">{{ study.name }}</div>
-				<div class="panel-body">					
+				
+				    <p class="lead">{{ study.name }}</p>
+				    <div class="line"></div>			
 					<p>{{ study.description }}</p>
 
-					<p>{{ research.name }}</p>
-					<p>{{ research.description }}</p>
+					<p translate="studydetails.organization"></p>								
+					<p><i>{{ research.name }}</i></p>
+					<p><i>{{ research.description }}</i></p>
 					
 					<button ng-show="mayRequestParticipation()" ng-click="requestParticipation()" class="btn btn-primary"
 		                translate="studydetails.request_participation_btn"></button>
 	                <button ng-show="mayDeclineParticipation()" ng-click="noParticipation()" class="btn btn-danger"
 		                translate="studydetails.do_not_participate_btn"></button>
-				</div>
-			</div>
+				
+
+           
+
 
 		</div>
 	</div>
-
+	</div>
+	</div>
 
 	<div class="panel panel-primary" ng-show="participation && study.assistance=='HCPROFESSIONAL'">
 		<div class="panel-heading" translate="studydetails.providers_monitoring"></div>
@@ -111,5 +121,5 @@
 	
 
 	<div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
-
+</div>
 </div>

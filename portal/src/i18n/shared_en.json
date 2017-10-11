@@ -389,8 +389,7 @@
 	   "Import" : "Import",
 	   "Planning" : "Planning",
 	   "Tools" : "Tools",
-	   "Fitbit" : "Fitbit",
-	   "Jawbone" : "Jawbone",
+	   "Protocol" : "Protocol",
 	   "Available" : "Available Plugins"
 	 },
 	 "plugintype" : {
@@ -631,7 +630,7 @@
 
   "studydetails" : {
     "study" : "Study",    
-    "organization" : "Organization",
+    "organization" : "Organization performing the research:",
     "providers_monitoring" : "Healthcare Providers monitoring the study",
     "no_providers" : "None",
     "provider_remove_btn" : "Remove",
@@ -660,6 +659,7 @@
     "user" : "User",
     "name" : "Name:",
     "email" : "EMail:",
+    "action" : "More...",
     "change_password_btn" : "Change Password",
  	"change_passphrase_btn" : "Change Passphrase",
  	"auditlog_btn" : "View Log",

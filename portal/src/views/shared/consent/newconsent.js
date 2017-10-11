@@ -1,5 +1,5 @@
 angular.module('portal')
-.controller('NewConsentCtrl', ['$scope', '$state', '$translate', 'server', 'status', 'circles', 'hc', 'views', 'session', 'users', 'usergroups', 'records', 'labels', function($scope, $state, $translate, server, status, circles, hc, views, session, users, usergroups, records, labels) {
+.controller('NewConsentCtrl', ['$scope', '$state', '$translate', 'server', 'status', 'circles', 'hc', 'views', 'session', 'users', 'usergroups', 'records', 'labels', '$window', function($scope, $state, $translate, server, status, circles, hc, views, session, users, usergroups, records, labels, $window) {
 	
 	$scope.types = [
 	                { value : "CIRCLE", label : "enum.consenttype.CIRCLE"},
@@ -310,6 +310,10 @@ angular.module('portal')
 		.then(function(data) {
 			$scope.consent.passcode = data.data[0].passcode;
 		});
+	};
+	
+	$scope.goBack = function() {
+		$window.history.back();
 	};
 		
 	

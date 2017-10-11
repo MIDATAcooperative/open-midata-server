@@ -1,41 +1,50 @@
-<div>
+<div style="max-height:305px;overflow:hidden;">
 
-<div ng-if="wizard">
-   <p class="body teaser" translate="please_configure"></p>
-</div>
+	<div ng-if="wizard">
+		<p class="body teaser" translate="please_configure"></p>
+	</div>
 
-<div ng-if="!wizard">
+	<div ng-if="!wizard">
 
-<p class="text-center"><strong translate="{{ report.id }}"></strong></p>
-<div ng-if="chartType=='line'">
-<canvas id="line" class="chart chart-line" chart-data="data"
-  chart-labels="labels" chart-legend="false" chart-series="series"
-  click="onClick">
-</canvas> 
-</div>
+		<p class="text-center">
+			<strong translate="{{ report.id }}"></strong>
+		</p>
+		<div ng-if="chartType=='line'">
+			<canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="false" chart-series="series"
+				click="onClick">
+</canvas>
+		</div>
 
-<div ng-if="chartType=='bar'">
-<canvas id="bar" chart-legend="false" class="chart chart-bar" chart-data="data" chart-labels="labels"></canvas>
-</div>
+		<div ng-if="chartType=='bar'">
+			<canvas id="bar" chart-legend="false" class="chart chart-bar" chart-data="data" chart-labels="labels"></canvas>
+		</div>
 
-<div ng-if="chartType=='pie'">
-<canvas id="doughnut" class="chart chart-doughnut" chart-data="data" chart-labels="labels" chart-series="series"></canvas>
-</div>
+		<div ng-if="chartType=='pie'">
+			<canvas id="doughnut" class="chart chart-doughnut" chart-data="data" chart-labels="labels" chart-series="series"></canvas>
+		</div>
 
-<div ng-if="chartType=='radar'">
-<canvas id="radar" class="chart chart-radar" chart-data="data" chart-labels="labels" chart-series="series"></canvas>
-</div>
+		<div ng-if="chartType=='radar'">
+			<canvas id="radar" class="chart chart-radar" chart-data="data" chart-labels="labels" chart-series="series"></canvas>
+		</div>
 
-<div ng-if="chartType=='simple'">
-  <div class="text-center text-primary"><b>{{ entry.format }}</b></div>
-  <div class="text-center"><i>{{ entry.context }}</i></div>
-  <div class="text-center lead"><span style="color: #1c4982;display: block;font-size: 100px;">{{ entry.value }}</span>{{ entry.unit }}</div>
-  <div class="text-center"><strong>{{ entry.dateTime }}</strong></div>
-</div>
+		<div ng-if="chartType=='simple'">
+			<div class="text-center text-primary">
+				<b>{{ entry.format }}</b>
+			</div>
+			<div class="text-center">
+				<i>{{ entry.context }}</i>
+			</div>
+			<div class="text-center lead">
+				<span style="color: #1c4982; display: block; font-size: 100px;">{{ entry.value }}</span>{{ entry.unit }}
+			</div>
+			<div class="text-center">
+				<strong>{{ entry.dateTime }}</strong>
+			</div>
+		</div>
 
-<div ng-show="entries.length==0" class="text-center">
-  <strong translate="empty"></strong>   
-</div>
+		<div ng-show="entries.length==0" class="text-center">
+			<strong translate="empty"></strong>
+		</div>
 
-</div>
+	</div>
 </div>

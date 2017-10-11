@@ -34,7 +34,7 @@ angular.module('portal')
 			    position : "small",
 			    setup : {	
 			    	 context : "me",		        	 
-			    	 always : true,
+			    	 always : false,
 			    	 visualizations : []
 			    }
 			}
@@ -382,14 +382,14 @@ angular.module('portal')
 	       }
 	     ],
 	     "studiessmall" : [
-				  {
+				  /*{
 					   id : "newsconfig",
 					   template : "/views/shared/dashboardTiles/newsconfig/newsconfig.html",					 
 					   active : true,
 					   teaser : "dashboard.newsconfig_teaser",
 					   position : "full",
 					   setup : {}
-				   },
+				   },*/
 	       	       {
 	       	    	   id : "smallstudies",
 	       	    	   template : "/views/members/dashboardTiles/smallstudies/smallstudies.html",

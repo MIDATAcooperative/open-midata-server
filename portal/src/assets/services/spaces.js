@@ -1,5 +1,5 @@
 angular.module('services')
-.factory('spaces', ['server', '$q', function(server, $q) {
+.factory('spaces', ['server', '$q', 'apps', function(server, $q, apps) {
 	var service = {};
 
 	service.getSpacesOfUser = function(userId) {
@@ -67,6 +67,7 @@ angular.module('services')
 			  server.post(jsRoutes.controllers.Plugins.get().url, JSON.stringify({ "properties" : { "filename" : data.app }, "fields": ["_id", "type"] }))
 			  .then(function(result) {				
 				  if (result.data.length == 1) {
+					  var app = result.data[0];
 					  service.get({ "owner": userId, "visualization" : result.data[0]._id }, ["_id"])
 					  .then(function(spaceresult) {
 						 if (spaceresult.data.length > 0) {
@@ -78,7 +79,28 @@ angular.module('services')
 							 }
 						 } else {
 							 
-							   $state.go("^.visualization", { "visualizationId" : result.data[0]._id, "params" : JSON.stringify(data.params) });
+							 
+							 apps.installPlugin(app._id, { applyRules : true })
+								.then(function(result) {				
+									//session.login();
+									if (result.data && result.data._id) {
+									  if (app.type === "oauth1" || app.type === "oauth2") {
+										 $state.go("^.importrecords", { "spaceId" : result.data._id, params : JSON.stringify(data.params) });
+									  } else { 
+									     $state.go('^.spaces', { spaceId : result.data._id });
+									  }
+									} else {
+									  $state.go('^.dashboard', { dashId : $scope.options.context });
+									}
+								});
+							 
+							 
+							 
+							 
+							 
+							 
+							 
+							  // $state.go("^.visualization", { "visualizationId" : result.data[0]._id, "params" : JSON.stringify(data.params) });
 							 
 						 }
 					  });

@@ -8,7 +8,8 @@
   <li role="presentation" ng-class="{'active' : tab==3 }"><a href="javascript:" ng-click="setTab(3)" translate="smallstudies.stopped">Messages</a></li>
     </ul>
     </div>
-     	
+     <div class="tab-content">
+	    <div class="tab-pane active">	
 	<div class="" ng-show="filteredStudies.length > 0">
 	<table class="table table-hover">
 	  <thead>
@@ -20,7 +21,7 @@
 	  <tbody>
 	    <tr class="clickable" ng-repeat="study in filteredStudies = (results|filter : selection)" ui-sref="^.studydetails({ studyId : study.study })">
 	      <td>
-	         <a href="javascript:">{{ study.studyName }}</a>
+	         <b>{{ study.studyName }}</b>
 	         <p>{{ study.description }}</p>
 	      </td>	  
 	      <td class="status-column">
@@ -37,6 +38,6 @@
 	  <div class="extraspace"></div>
 	  <span translate="flexiblestudies.empty"></span>	  
 	</div>	
-	 
+	 </div>
 	 </loader>
 </div>

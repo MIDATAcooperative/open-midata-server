@@ -46,36 +46,26 @@
 		<script type="text/javascript" src="oauthapp.js" defer></script>
 		<!-- endbuild -->
 	</head>
-	<body ng-app="portal" ng-csp="no-unsafe-eval" class="<!-- @echo NAME -->">
-	  <div id="wrapper">
-	  <div ng-if="false">
+	<body ng-app="portal" ng-csp="no-unsafe-eval" class="<!-- @echo NAME --> newdesign">
+	
+	  <div ng-if="false" class="colored fullheight">
 	  <header id="navbar" class="navbar navbar-default" role="navigation" ng-controller="NavbarCtrl">
-	  <div class="container">
-		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-				<span class="sr-only">Toggle navigation</span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			</button>
-			<a class="navbar-brand" href="https://www.midata.coop">			
-	    	<span class="midata" id="logotype"><img src="/images/logo.png" style="height: 36px;"></span>	        
-	        </a>
-		</div>
-			    
-	   </div>
-	   </header>
-	  
-	    <div class="container">
-	     <div class="panel panel-primary">
-	       <div class="panel-body" style="height:200px;position:relative;">
-	         <div style="text-align:center;margin-top:-40px;top:50%;width:100%;position:absolute;">
-	           Please wait...
-	         </div>
-	       </div>
-	     </div>
-	     </div>
+				<div class="container">
+
+
+					<span style="text-align: center" class="midata center-block" id="logotype"><img src="/images/logo.png" style="height: 36px;"></span>
+
+				</div>
+			</header>
+
+
+			<div style="position: relative;" class="fullheight">
+				<div id="loader">
+					Hello!</div>
+			</div>
+
 	  </div>
+    <div id="wrapper">
 	  <div id="maincontent" ui-view ng-cloak></div>
 	  <footer id="footer">
 		 <div class="container">

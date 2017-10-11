@@ -1,25 +1,27 @@
     <div ng-show="isReady" class="dashboard" ng-controller="DashboardCtrl">
     
-    <div class="row" ng-if="layout.addmore">
+    <div class="row" ng-if="layout.addmore && !layout.page.length">
 	  <div class="col-sm-12">
 	    <a ui-sref="{{ layout.addmore.link }}" class="btn btn-default pull-right"><span class="glyphicon glyphicon-plus"></span><span translate="{{ layout.addmore.button }}"></span></a>
-	  </div>	  
+	  </div>
+	  <div class="extraspace"></div>	  
 	</div>
-	<div class="extraspace"></div>
+	
     
     <div class="bigline" ng-repeat="def in layout.page">
-      <div class="extraspace">
-	     <button class="btn btn-default" ng-click="layout.page=[];"><span class="glyphicon glyphicon-chevron-left"></span><span translate="common.back_btn"></span></button>
-	  </div>
+      <div class="midata-overlay borderless">
+      <div class="overlay-body">
       <div class="panel panel-primary">
 	    <div class="panel-heading">
 	      <span ng-click="makeSmall(def)" translate="{{ def.title }}"></span>
 	      <a ng-show="def.actions.remove" ng-click="remove(def)" class="pull-right" href="javascript:"><span class="glyphicon glyphicon-remove-circle"></span></a>
 	      <a ng-show="def.actions.big" ng-href="{{def.actions.big}}" class="pull-right"><span class="glyphicon glyphicon-plus-sign"></span></a>
+	      <a ng-click="layout.page=[];" href="javascript:" class="close-icon pull-right"><span class="glyphicon glyphicon-remove"></span></a>
 	    </div>
         <div class="ignore" ng-include="def.template"></div>		  
 	  </div>
-	
+	  </div>
+	  </div>
 	</div>
     
     <div ng-hide="layout.page.length">

@@ -82,18 +82,20 @@
 			    <button class="btn btn-primary" ng-click="newEntry()" translate="new_entry"></button>
 			    <div class="extraspace"></div>
 				<p ng-hide="records.length" translate="empty"></p>
-				<div class="panel-group" ng-show="records.length">
-					<div class="panel panel-primary" ng-repeat="record in records | orderBy : record.data.effectiveDateTime">
-						<div class="panel-heading">
-							<h4 class="panel-title">
-								<a ng-click="record.open = !record.open;">
-									{{ record.data.effectiveDateTime | date }} : {{record.name}}
-								</a>
-							</h4>
+				<div class="" ng-show="records.length">
+					<div ng-repeat="record in records | orderBy : record.data.effectiveDateTime">
+					  <div class="row">
+						<div class="col-sm-2">
+						  {{ record.data.effectiveDateTime | date }}
 						</div>
-						<div uib-collapse="!record.open" class="panel-collapse">
-							<div class="panel-body" style="white-space: pre-line;">{{record.data.valueString}}</div>
+						<div class="col-sm-10">							
+						  <b>{{record.name}}</b>								
 						</div>
+						<div class="col-sm-offset-2 col-sm-10">
+							<div style="white-space: pre-line;">{{record.data.valueString}}</div>
+						</div>
+					  </div>
+						<hr>
 					</div>
 				</div>
 			</div>
