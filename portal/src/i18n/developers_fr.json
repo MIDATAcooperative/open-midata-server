@@ -46,6 +46,10 @@
         "reasons" : {
             "REGISTRATION" : "Enregistrement d'un nouvel utilisateur",
             "FIRSTUSE_ANYUSER" : "Première utilisation de l'app",
+
+            // TODO CHANGED
+            // OLD: First use of app (if no registration mail sent)
+            // NEW: First use of app (if no registration email sent)
             "FIRSTUSE_EXISTINGUSER" : "Première utilisation de l'app (si pas d'e-mail d'enregistrement envoyé)",
             "CONSENT_REQUEST_OWNER_INVITED" : "Consentement proposé (cédant, invitation)",
             "CONSENT_REQUEST_OWNER_EXISTING" : "Consentement proposé (cédant, utilisateur)",
@@ -55,6 +59,10 @@
             "CONSENT_CONFIRM_AUTHORIZED" : "Confirmation de consentement (bénéficiaire)",
             "CONSENT_REJECT_OWNER" : "Refus de consentement (cédant)",
             "CONSENT_REJECT_AUTHORIZED" : "Refus de consentement (bénéficiaire)",
+
+            // TODO CHANGED
+            // OLD: Account unlocked by admin
+            // NEW: Account unlocked by the administrator
             "ACCOUNT_UNLOCK" : "Compte validé par l'administrateur"
         }
     },
@@ -87,6 +95,10 @@
             "defaultQuery_extra" : "Veuillez consulter les valeurs valides pour 'code', 'content' et 'format' sous 'Format/Content' dans le guide du développeur. Pour une première version, vous pouvez débuter avec un accès total en indiquant : { \"group\" : \"all\", \"group-system\" : \"v1\" }. Veuillez préciser la limitation avant que le plugin ou l'app soit mis en production.",
             "secret" : "Votre app aura besoin de ce 'secret' pour se connecter. Choisissez le librement.",
             "mustParticipateInStudy" : "Les utilisateurs doivent participer à l'étude afin de pouvoir utiliser l'app.",
+
+            // TODO CHANGED
+            // OLD: If filled out this code word must be entered by the user in order to login or register to the app. (not case sensitive)
+            // NEW: If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the app. The code is not case sensitive.
             "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'enregistrement ou lors de la première connexion à MIDATA par cette app. Le code n'est pas sensible à la casse."
         }
     },

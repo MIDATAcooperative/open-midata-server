@@ -1,6 +1,10 @@
 {
 
     "member_login" : {
+
+        // TODO CHANGED
+        // OLD: MY DATA - OUR HEALTH!
+        // NEW: My data - Our health
         "teaser" : "Meine Daten - Unsere Gesundheit!",
         "register_now" : "Jetzt registrieren",
         "sign_in" : "Anmelden"
@@ -100,7 +104,35 @@
         "agb_signed" : "Sie haben die AGB unterzeichnet.",
         "confirmed" : "Ihr Postadresse wurde bestätigt.",
         "entercode" : "Sie sollten einen Brief mit einem Registrierungscode erhalten haben. Geben Sie bitte den Code hier ein, sobald Sie ihn erhalten haben:",
+
+        // TODO CHANGED
+        // OLD: Your eMail address has not been validated yet. Please click on the link of the validation email you received in your email account!
+        // NEW: Your email address has not been validated yet. Please click on the link in the validation email you received!
         "email_unvalidated" : "Ihre E-Mail-Adresse wurde bisher noch nicht bestätigt. Klicken Sie bitten auf dem Link den Sie in der Bestätigungs-E-Mail erhalten haben!",
         "request_membership_btn" : "Vertrag anfordern"
+    },
+
+    "smallstudies" : {
+
+        // TODO NEW: Want to help studies by sharing your data?
+        "greeting" : "Want to help studies by sharing your data?",
+
+        // TODO NEW: Studies
+        "studies" : "Studies",
+
+        // TODO NEW: Enrollment
+        "status" : "Enrollment",
+
+        // TODO NEW: Recruiting
+        "recruiting" : "Recruiting",
+
+        // TODO NEW: Ongoing
+        "ongoing" : "Ongoing",
+
+        // TODO NEW: Completed
+        "completed" : "Completed",
+
+        // TODO NEW: Stopped
+        "stopped" : "Stopped"
     }
 }

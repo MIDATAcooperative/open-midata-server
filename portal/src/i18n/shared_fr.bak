@@ -15,13 +15,17 @@
 	  "login" : "Login",
 	  "sign_up" : "Sign Up",
 	  "sign_out" : "Sign out",
+	  "edit_profile" : "Edit Profile",
+	  "app_count" : "connected apps",
+	  "study_count" : "studies enrollments",
 	  "me" : "Me",
 	  "view" : "View",
       "overview" : "Overview",
 	  "messages" : "Messages",
 	  "my_data" : "My Data",
 	  "consents" : "Sharing",
-	  "research" : "News",
+	  "research" : "Research",
+	  "apps" : "Apps",
 	  "config" : "Configuration",
 	  "help" : "Help"
    },
@@ -55,9 +59,9 @@
      "invalid" : {
        "email" : "Please enter a valid email address",
 
-	//TODO username?
+	
        "credentials" : "Invalid username or password.",
-
+       "credentials_hint" : "Invalid username or password. You are trying to log in as account holder. Are you ",
        "password_repetition" : "Password and password repetition do not match!",
        "passphrase_repetition" : "Passphrase and passphrase repetition do not match!",
        "passphrase_old" : "Old passphrase not correct.",
@@ -94,7 +98,8 @@
        "agb" : "Terms and conditions not accepted.",
        "privacypolicy" : "Privacy policy must be accepted.",
        "study_accept" : "Study participation must be accepted.",
-       "study_group" : "Participant must first be assigned to a group."
+       "study_group" : "Participant must first be assigned to a group.",
+       "confirmation" : "Confirmation by user required first."
      },
 
      "unknown" : {
@@ -151,9 +156,9 @@
      },
 
      "expired" : {
-       "token" : "Token has already expired. Please request a new one.",
-       "tokenresent" : "Your activation token has already expired. A new token has been sent to your email address right now - please confirm within 24 hours.",
-       "code" : "Participation code has expired."
+       "token" : "This activation token has already expired. Please request a new one.",
+       "tokenresent" : "This activation token has already expired. A new token has been sent to your email address right now. Please confirm your email address within 24 hours using the new token.",
+       "code" : "This participation code has expired."
      },
 
      "already_done" : {
@@ -204,7 +209,53 @@
 	   "ADMIN_ACCOUNT_CHANGE" : "Account changed by admin",
 	   "ACCOUNT_DELETED" : "Account deleted",
 	   "INTERNAL_COMMENT" : "Internal Comment",
-	   "TERMS_OF_USE_AGREED" : "Agreed to terms of use"
+	   "TERMS_OF_USE_AGREED" : "Agreed to terms of use",
+	   
+	   "user-registration" : "User registration",
+	   "110122" : "Login",
+	   "user-password-change" : "Password changed",
+	   "user-passphrase-change" : "Passphrase changed",
+	   "user-address-change" :"User address changed",
+	   "user-email-change" :"Email changed",
+	   "user-status-change" : "User status changed",
+	   "user-email-confirmed" : "User email confirmed",
+	   "user-email-rejected" : "User email rejected",
+	   "user-account-change-by-admin" : "User account changed by admin",
+	   "user-account-deleted" : "User account deleted",
+	   "app-first-use" : "First use of application",
+	   "app-rejected" : "Application rejected",
+	   "app-deleted" :"Application consent deleted",
+	   "consent-create" :"Consent created",
+	   "consent-persons-change" :"Consent persons changed",
+	   "consent-change" : "Consent changed",
+	   "consent-approved": "Consent approved",
+	   "consent-rejected" : "Consent rejected",
+	   "consent-deleted" : "Consent deleted",
+	   "study-participation-requested" : "Study participation requested",
+	   "study-participation-member-rejected" : "Study participation rejected by member",
+	   "study-participation-member-rejected" : "Study participation rejected by research",
+	   "study-participation-approved" :"Study participation approved",
+	   "study-participation-group-assigned" : "Study participation group assigned",
+	   "study-validation-requested" : "Study validation requested",
+	   "study-validated" : "Study validated",
+	   "study-rejected" : "Study rejected",
+	   "study-participant-search-started" : "Study participant search started",
+	   "study-participant-search-closed" : "Study participant search closed",
+	   "study-started" : "Study started",
+	   "study-finished" : "Study finished",
+	   "study-aborted" : "Study aborted",
+	   "110105" : "Entire Study has been deleted",
+	   "study-setup-changed" : "Study has been changed",
+	   "data-deletion" : "Data has been deleted",
+       "data-export" : "Data exported",
+       "data-import" : "Data import",
+       "contract-requested" : "Contract requested by user",
+       "contract-send" : "Contract send to user",
+       "internal-comment" : "Internal comment",
+       "user-terms-of-use-agreed" : "Agreed to terms of use",
+       "audit-log-used" : "Audit Log Used"		   
+	   
+	   
 	 },
 	 "userfeature" : {
 	   "EMAIL_ENTERED" : "Email address of user must be known to the platform",
@@ -215,7 +266,13 @@
 	   "ADDRESS_VERIFIED" : "Post address of user must have been verified",
 	   "PASSPORT_VERIFIED" : "ID card of users must have been verified",
 	   "MIDATA_COOPERATIVE_MEMBER" : "User must be member of the cooperative",
-	   "ADMIN_VERIFIED" : "Account must have been unlocked by MIDATA admin"
+	   "ADMIN_VERIFIED" : "Account must have been unlocked by a MIDATA administrator"
+	 },
+	 "writepermissiontype" : {
+	   "NONE" : "No data may be written.",
+	   "UPDATE_EXISTING" : "Existing data may be updated.",
+	   "UPDATE_AND_CREATE" : "Data covered by consent may be written or updated.", 
+	   "WRITE_ANY" : "Any kind of data may be written using this consent."
 	 },
 	 "consentstatus" : {
 	   "ACTIVE" : "Active",
@@ -241,7 +298,8 @@
 	 "emailstatus" : {
 	   "REJECTED" : "Rejected",
 	   "UNVALIDATED" : "Not confirmed yet",
-	   "VALIDATED" : "Confirmed"
+	   "VALIDATED" : "Confirmed",
+	   "EXTERN_VALIDATED" : "Confirmed by 3rd party"
 	 },
 	 "participantsearchstatus" : {
 	   "CLOSED" : "Closed",
@@ -331,8 +389,7 @@
 	   "Import" : "Import",
 	   "Planning" : "Planning",
 	   "Tools" : "Tools",
-	   "Fitbit" : "Fitbit",
-	   "Jawbone" : "Jawbone",
+	   "Protocol" : "Protocol",
 	   "Available" : "Available Plugins"
 	 },
 	 "plugintype" : {
@@ -354,6 +411,7 @@
     "view_btn" : "View",
     "submit_btn" : "Submit",
     "delete_btn" : "Delete",
+    "or" : "or",
 
     "user" : {
       "lastname" : "Surname",
@@ -369,7 +427,7 @@
   },
 
   "instance" : {
-     "rules"  : "", // DELETE
+     "rules"  : "", 
      "purpose" : "Purpose of this MIDATA instance",
      "access" : "Access to this MIDATA instance",
      "uptime" : "Availability and downtimes",
@@ -381,7 +439,7 @@
         "intro": "This is a local installation of the MIDATA platform, only available from your PC.",
         "purpose" : "A local installation may be used in order to contribute to the MIDATA platform and for testing purposes.",
         "access" : "You may register user accounts for all four portals. Accounts do not need to be validated by a MIDATA administrator. You may register and use your own admin accounts.",
-        "uptime" : "Whenever you run it, its available for you :-)",
+        "uptime" : "Whenever you run it, its available only for you :-)",
         "data" : "Data stored in this instance will only be available on your local PC."
      },
 
@@ -491,22 +549,22 @@
     "title" : "Welcome to MIDATA",    
     "email_confirmed" : "Email confirmed?",
     "contract_signed" : "Contract signed and sent back?",
-    "resent_success" : "Welcome mail has been resent.",
+    "resent_success" : "Welcome email has been resent.",
     "address_success" : "Address has been confirmed.",
     "code_entered" : "Confirmation code entered?",
-    "email_instructions" : "Your email address needs to be confirmed. An activation mail has been sent to your account. Just click on the link in this mail to confirm your email address.",
+    "email_instructions" : "Your email address needs to be confirmed. An activation email has been sent to your account. Just click on the link in this email to confirm your email address.",
     "email_code" : "For convenience you may enter the code from the email here:",
     "resend_btn" : "Resend email",
     "retry_btn" : "Retry login",
     "contract_instructions" : "A contract has been sent to your postal address. Please return it signed to MIDATA.",
-    "pilot_phase" : "During the pilot phase (or if you are on a test server) NO contract will be sent to you. A MIDATA admin will verify and unlock your account. You will be notified when your account has been unlocked.",
+    "pilot_phase" : "During the pilot phase (or if you are on a test server) NO contract will be sent to you. A MIDATA administrator will verify and unlock your account. You will be notified when your account has been unlocked.",
     "code_intructions" : "A letter with a confirmation code will be sent to your postal address. Enter this confirmation code to access the platform.",
     "code_done" : "You have provided the confirmation code. You may login after the signed contract has arrived at MIDATA office.",
     "enter_now_btn" : "Enter now",
     "email_success" : "Email address has been confirmed.",
     "address_entered" : "Your postal address is required to use this service, please provide it.",
     "phone_entered" : "A mobile phone number is required to use this service, please provide it.",
-    "admin_verified" : "Your account must be confirmed by a MIDATA admin. Please retry later. If your account has not been confirmed for more than 24 hours please contact MIDATA."
+    "admin_verified" : "Your account must be unlocked by a MIDATA administrator. Please retry later. If your account has not been unlocked for more than 24 hours, please contact MIDATA."
   },
 
   "changepassphrase" : {
@@ -571,15 +629,13 @@
   },
 
   "studydetails" : {
-    "study" : "Study",
-    "participant_search_status" : "Participant search:",
-    "execution_status" : "Study accomplishment:",
-    "organization" : "Organization",
+    "study" : "Study",    
+    "organization" : "Organization performing the research:",
     "providers_monitoring" : "Healthcare Providers monitoring the study",
     "no_providers" : "None",
     "provider_remove_btn" : "Remove",
     "provider_add_btn" : "Add",
-    "information_that_needs_sharing" : "Information that must be shared for participation",
+    "information_that_needs_sharing" : "Required data",
     "information_restricted" : "Your gender, year of birth and country of residence",
     "information_demographic" : "Your complete demographic data (name, birthday, address, ...)",
     "records_with_format" : "Records that have format:",
@@ -594,7 +650,8 @@
 	"history_when" : "When",
 	"history_comment" : "Comment",
 	"request_participation_btn" : "Request Participation",
-	"do_not_participate_btn" : "Do not participate"
+	"do_not_participate_btn" : "Do not participate",
+	"status" : "Status"
   },
 
   "user" : {
@@ -602,8 +659,10 @@
     "user" : "User",
     "name" : "Name:",
     "email" : "EMail:",
+    "action" : "More...",
     "change_password_btn" : "Change Password",
  	"change_passphrase_btn" : "Change Passphrase",
+ 	"auditlog_btn" : "View Log",
 	"repair_account_btn" : "Repair Account",
 	"reset_spaces_btn" : "Reset Portal",
 	"delete_records_btn" : "Delete Records",
@@ -661,6 +720,8 @@
     "add_yourself_btn" : "Add yourself",
     "add_person_btn" : "Add New Person",
     "add_usergroup_btn" : "Add New Team",
+    "writes" : "Write Permission",
+    "writes2" : "The persons authorized by this consent may create or update data in your account covered by this consent.",
     "reshare" : "3rd party access?",
     "reshare2" : "The persons authorized with this consent may reshare the data I gave them access to.",
     "expiration_date" : "Consent expiration date:",
@@ -683,6 +744,7 @@
     "add_usergroup_btn" : "Add a Team",
     "reshare" : "@:newconsent.reshare",
     "reshare2" : "@:newconsent.reshare2",
+    "writes" : "Write Permission",
     "expiration_date" : "Consent expiration date:",
     "created_before" : "Does not share data created after:",
     "what_is_shared" : "What data is shared?",
@@ -775,7 +837,7 @@
   },
 
   "oauth2" : {
-    "reshares_data" : "App may share data it has access to to other parties.",
+    "reshares_data" : "App may share data it has access to to third parties.",
     "allows_user_search" : "Your name and email address may be searched by other people using this app.",
     "requesting_app" : "This application requests access:",
     "sign_in" : "MIDATA login for:",
@@ -787,7 +849,7 @@
     "shares_group" : "Group: {{ group }}",
     "shares_format" : "Format: {{ format }}",
     "shares_content" : "Content: {{ content }}",
-    "confirm_study" : "Participate Study"
+    "confirm_study" : "Participate to the study"
   },
 
   "dashboard" : {
@@ -820,12 +882,12 @@
 	"providersearch" : "Search for Health Providers",
 	"providersearch_text" : "Search function for healthcare providers.",
 	"usergroupsearch" : "Search for Teams",
-	"hcrecords" : "Newest Records from your healthcare providers",
+	"hcrecords" : "Newest records from your healthcare providers",
 	"records" : "Records",
     "share" : "Share",
     "details" : "Details",
     "yourstudies" : "Studies you are involved:",
-	"studies_teaser" : "If you want to participate in research configure your research settings. You will be contacted in this tile if you match a studies requirements.",
+	"studies_teaser" : "If you want to participate in research, configure your research settings. You will be contacted in this tile if you match a studies requirements.",
 	"newstudies" : "New Studies",
 	"newsconfig" : "News",
 	"newsconfig_teaser" : "There are currently no announcements",
@@ -845,7 +907,8 @@
 	"view_btn" : "View",
 	"install_btn" : "Add more",
 	"observations" : "Measures",
-	"calendar" : "Calendar"
+	"calendar" : "Calendar",
+	"smallstudies" : "Studies"
    },
 
    "measure" : {
@@ -938,5 +1001,35 @@
   
   "terms" : {
     "close_btn" : "<< Back"
+  },
+  
+  "auditlog" : {
+    "event" : "Event",
+    "actor" : "Actor",
+    "entity" : "Entity",
+    "recorded" : "Time",
+    "outcome" : "Outcome",
+    "empty" : "No entries yet.",
+    "title" : "Audit Log",
+    "refresh_btn" : "Refresh",
+    "via" : "via",
+    "CIRCLE" : "Consent",
+    "ResearchStudy" : "Study",
+    "EXTERNALSERVICE" : "App",
+    "STUDYPARTICIPATION" : "Participation",
+    "HEALTHCARE" : "Consent (Healthcare)",
+    "MEMBER" : "Account",
+    "PROVIDER" : "Account (Healthcare)",
+    "RESEARCH" : "Account (Researcher)"
+  },
+  
+  "apps" : {
+    "greeting" : "Connect your apps to collect your datas",
+    "title" : "Apps",
+    "description" : "Connected Apps",
+    "count" : "You have {{count}} connected apps:",
+    "services" : "Services",
+    "connect_btn" : "Connect"       
   }
+    
 }

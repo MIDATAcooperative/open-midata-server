@@ -3,7 +3,15 @@
     "researcher_registration" : {
         "sign_up" : "Enregistrement en tant que chercheur",
         "research_organization" : "Organisation de recherche",
+
+        // TODO CHANGED
+        // OLD: Name*
+        // NEW: Name
         "name" : "Nom*",
+
+        // TODO CHANGED
+        // OLD: Description*
+        // NEW: Description
         "description" : "Description*",
         "research_user" : "Utilisateur"
     },
@@ -51,10 +59,16 @@
         "add_task_btn" : "Ajouter une tâche pour les participants",
         "plugin" : "Application pour la recherche",
         "device" : "Code de l'appareil",
+
         // TODO ?!?
         "restrict" : "Restreindre la lecture à ce groupe",
         "add_application_btn" : "Ajouter les applications fournissant des données à l'étude",
+
         // TODO ?!?
+
+        // TODO CHANGED
+        // OLD: Application Consents
+        // NEW: Applications Consents
         "linked_apps" : "Consentements pour les applications"
     },
 
@@ -65,6 +79,10 @@
         "anonymous1" : "Participation anonyme",
         "anonymous2" : ", révèle l'ID anonyme, l'année de naissance, le genre et le pays",
         "not_anonymous1" : "Pas anonyme",
+
+        // TODO CHANGED
+        // OLD: , requests member to share full name, birthday and contact Information (address, phone, eMail)
+        // NEW: , requests member to share full name, birthday and contact Information (address, phone, email)
         "not_anonymous2" : ", requière que le membre partage son nom complet, date de naissance et informations de contact (adresse, téléphone, e-mail)",
         "assistance" : "Assistance",
         "no_assistance1" : "Aucune",
