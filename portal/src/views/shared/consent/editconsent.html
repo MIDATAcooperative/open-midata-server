@@ -1,6 +1,8 @@
-<div ng-controller="NewConsentCtrl">
+<div ng-controller="NewConsentCtrl" class="midata-overlay borderless">
+ <div class="overlay-body">
  <div class="panel panel-primary">
-  <div class="panel-heading" translate="editconsent.title">    
+  <div class="panel-heading"><span translate="editconsent.title"></span>
+  <a ng-click="goBack()" href="javascript:" class="close-icon pull-right"><span class="glyphicon glyphicon-remove"></span></a>    
   </div>
   <div class="panel-body">
   <loader busy="status.isBusy !== false">
@@ -116,5 +118,6 @@
 </div>
 </div>
 <div ng-include="'/views/shared/dashboard/dashboard.html'"></div>
+</div>
 </div>
 	

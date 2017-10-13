@@ -27,7 +27,7 @@ angular.module('portal')
 	    { value : "mobile", label : "Mobile App" }
 	];
 	$scope.tags = [
-	    "Analysis", "Import", "Planning", "Tools", "Fitbit", "Jawbone"
+	    "Analysis", "Import", "Planning", "Protocol"
     ];
 			
 	$scope.loadApp = function(appId) {

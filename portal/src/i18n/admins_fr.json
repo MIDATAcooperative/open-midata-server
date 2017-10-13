@@ -15,15 +15,9 @@
         "search_type" : "Recherche",
         "contract_required" : "Le contrat doit être envoyé",
         "contract_confirm_required" : "Le contrat signé doit être confirmé",
-
-        // TODO NEW: E-Mail not confirmed by user
-        "no_email_confirm" : "E-Mail not confirmed by user",
-
-        // TODO NEW: E-Mail confirmation rejected by user
-        "email_rejected" : "E-Mail confirmation rejected by user",
-
-        // TODO NEW: Not confirmed by administrator
-        "not_admin_confirmed" : "Not confirmed by administrator",
+        "no_email_confirm" : "E-mail non confirmé par l'utilisateur",
+        "email_rejected" : "Confirmation e-mail rejetée par l'utilisateur",
+        "not_admin_confirmed" : "Non confirmé par un administrateur",
         "overview" : "Aperçu",
         "specific_user" : "Utilisateur spécifique",
         "role" : "Rôle",
@@ -88,15 +82,7 @@
     },
 
     "admin_terms" : {
-
-        // TODO CHANGED
-        // OLD: Terms of Use
-        // NEW: Terms
         "title" : "Dispositions",
-
-        // TODO CHANGED
-        // OLD: No terms of use stored.
-        // NEW: No terms available.
         "empty" : "Aucunes dispositions disponibles.",
         "name" : "Nom",
         "version" : "Version",
@@ -105,10 +91,6 @@
     },
 
     "admin_manageterms" : {
-
-        // TODO CHANGED
-        // OLD: Terms of Use
-        // NEW: Terms
         "pagetitle" : "Dispositions",
         "name" : "Nom interne",
         "version" : "Version",
@@ -125,10 +107,6 @@
         "code" : "Code",
         "required_information" : "Informations requises",
         "required_assistance" : "Médecin agréé requis",
-
-        // TODO CHANGED
-        // OLD: Terms Of Use
-        // NEW: Terms
         "termsOfUse" : "Dispositions",
         "sharing_query" : "Sharing Query",
         "requirements" : "Exigences",
@@ -136,11 +114,7 @@
         "group_name" : "Nom du groupe",
         "group_description" : "Description",
         "history" : "Historique",
-
-        // TODO CHANGED
-        // OLD: End Validation
-        // NEW: Complete Validation
-        "end_validation_btn" : "Terminer la validation",
+        "end_validation_btn" : "Finaliser la validation",
         "delete_study_btn" : "Effacer l'étude"
     }
 }

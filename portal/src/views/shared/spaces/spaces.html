@@ -1,13 +1,13 @@
 
-	<div  ng-controller="Spaces2Ctrl">
-		
+	<div  ng-controller="Spaces2Ctrl" class="midata-overlay borderless">
+	<div class="overlay-body">
 		
 		<div ng-cloak>
-		    <div class="extraspace">
-			  <button class="btn btn-default" ng-click="goBack();"><span class="glyphicon glyphicon-chevron-left"></span><span translate="common.back_btn"></span></button>
-			</div>
+		    
 			<div class="panel panel-primary">
-			  <div class="panel-heading" translate="{{ title || 'spaces.title' }}"></div>
+			  <div class="panel-heading"><span translate="{{ title || 'spaces.title' }}"></span>
+			    <a ng-click="goBack()" href="javascript:" class="close-icon pull-right"><span class="glyphicon glyphicon-remove"></span></a> 
+			  </div>
 			  <div class="panel-body">	
 			
 						<div class="row">
@@ -56,4 +56,5 @@
 		
 		
 		</div>
+	</div>
 	</div>

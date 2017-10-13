@@ -4,7 +4,8 @@ angular.module('portal')
 	    .state('member.circles', {
 	      url: '/circles?circleId',
 	      templateUrl: 'views/members/consents/consents.html',	      
-	      dashId : 'circles'
+	      dashId : 'circles',
+	      types : ['CIRCLE','HEALTHCARE']
 	    })
 	    .state('provider.circles', {
 	      url: '/circles?circleId',

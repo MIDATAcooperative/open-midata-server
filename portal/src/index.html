@@ -1,124 +1,115 @@
 <!DOCTYPE html>
 
 <html>
-	<head>
-		<title>MIDATA.coop</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="description" content="MIDATA">		
-	<!-- Favicon -->
-	<link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57.png" />
-	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114.png" />
-	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72.png" />
-	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/apple-touch-icon-144x144.png" />
-	<link rel="apple-touch-icon-precomposed" sizes="60x60" href="/images/apple-touch-icon-60x60.png" />
-	<link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/apple-touch-icon-120x120.png" />
-	<link rel="apple-touch-icon-precomposed" sizes="76x76" href="/images/apple-touch-icon-76x76.png" />
-	<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/apple-touch-icon-152x152.png" />
-	<link rel="icon" type="image/png" href="/images/favicon-196x196.png" sizes="196x196" />
-	<link rel="icon" type="image/png" href="/images/favicon-96x96.png" sizes="96x96" />
-	<link rel="icon" type="image/png" href="/images/favicon-32x32.png" sizes="32x32" />
-	<link rel="icon" type="image/png" href="/images/favicon-16x16.png" sizes="16x16" />
-	<link rel="icon" type="image/png" href="/images/favicon-128.png" sizes="128x128" />
-	<meta name="application-name" content="MIDATA"/>
-	<meta name="msapplication-TileColor" content="#FFFFFF" />
-	<meta name="msapplication-TileImage" content="/images/mstile-144x144.png" />
-	<meta name="msapplication-square70x70logo" content="/images/mstile-70x70.png" />
-	<meta name="msapplication-square150x150logo" content="/images/mstile-150x150.png" />
-	<meta name="msapplication-wide310x150logo" content="/images/mstile-310x150.png" />
-	<meta name="msapplication-square310x310logo" content="/images/mstile-310x310.png" />
+<head>
+<title>MIDATA.coop</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="MIDATA">
+<!-- Favicon -->
+<link rel="apple-touch-icon-precomposed" sizes="57x57" href="/images/apple-touch-icon-57x57.png" />
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114.png" />
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72.png" />
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/apple-touch-icon-144x144.png" />
+<link rel="apple-touch-icon-precomposed" sizes="60x60" href="/images/apple-touch-icon-60x60.png" />
+<link rel="apple-touch-icon-precomposed" sizes="120x120" href="/images/apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon-precomposed" sizes="76x76" href="/images/apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/apple-touch-icon-152x152.png" />
+<link rel="icon" type="image/png" href="/images/favicon-196x196.png" sizes="196x196" />
+<link rel="icon" type="image/png" href="/images/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/png" href="/images/favicon-32x32.png" sizes="32x32" />
+<link rel="icon" type="image/png" href="/images/favicon-16x16.png" sizes="16x16" />
+<link rel="icon" type="image/png" href="/images/favicon-128.png" sizes="128x128" />
+<meta name="application-name" content="MIDATA" />
+<meta name="msapplication-TileColor" content="#FFFFFF" />
+<meta name="msapplication-TileImage" content="/images/mstile-144x144.png" />
+<meta name="msapplication-square70x70logo" content="/images/mstile-70x70.png" />
+<meta name="msapplication-square150x150logo" content="/images/mstile-150x150.png" />
+<meta name="msapplication-wide310x150logo" content="/images/mstile-310x150.png" />
+<meta name="msapplication-square310x310logo" content="/images/mstile-310x310.png" />
 
 
 
-   <link rel="apple-touch-icon" sizes="57x57" href="/images/apple-icon-57x57.png">
-   <link rel="apple-touch-icon" sizes="60x60" href="/images/apple-icon-60x60.png">
-   <link rel="apple-touch-icon" sizes="72x72" href="/images/apple-icon-72x72.png">
-   <link rel="apple-touch-icon" sizes="76x76" href="/images/apple-icon-76x76.png">
-   <link rel="apple-touch-icon" sizes="114x114" href="/images/apple-icon-114x114.png">
-   <link rel="apple-touch-icon" sizes="120x120" href="/images/apple-icon-120x120.png">
-   <link rel="apple-touch-icon" sizes="144x144" href="/images/apple-icon-144x144.png">
-   <link rel="apple-touch-icon" sizes="152x152" href="/images/apple-icon-152x152.png">
-   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-icon-180x180.png">
-   <link rel="icon" type="image/png" sizes="192x192"  href="/images/android-icon-192x192.png">
-   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
-   <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
-   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
-   <link rel="manifest" href="/images/manifest.json">
-		<!-- Clear CSS defaults -->
-					
-		<!-- Application style sheet -->
-		<!-- build:css app.min.css -->
-		<link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.min.css">
-		<!-- <link rel="stylesheet" href="components/jquery-ui/themes/smoothness/jquery-ui.css">  -->
-		<link rel="stylesheet" href="/app.css">
-		<!-- endbuild -->
-				        
-		<script type="text/javascript" src="<!-- @echo BACKEND -->/api/assets/javascripts/routes" defer></script>		
-		<script type="text/javascript" src="components/jquery/dist/jquery.js" defer></script>			
-		<script type="text/javascript" src="components/underscore/underscore-min.js" defer></script>
-		<script type="text/javascript" src="components/bootstrap/dist/js/bootstrap.js" defer></script>
-		<!-- <script type="text/javascript" src="components/jquery-ui/jquery-ui.js" defer></script>  -->  
-		
-		<!-- build:js app.min.js -->				
-        <script type="text/javascript" src="components/angular/angular.js" defer></script>
-        <script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap.js" defer></script>
-        <script type="text/javascript" src="components/angular-sanitize/angular-sanitize.js" defer></script>
-        <script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
-        <script type="text/javascript" src="components/angular-translate-loader-partial/angular-translate-loader-partial.js" defer></script>
-        <script type="text/javascript" src="components/angular-translate-storage-cookie/angular-translate-storage-cookie.js" defer></script>
-        <script type="text/javascript" src="components/angular-translate-storage-local/angular-translate-storage-local.js" defer></script>
-        <script type="text/javascript" src="components/angular-cookies/angular-cookies.js" defer></script>
-        <script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>
-        <script type="text/javascript" src="components/angular-ui-router/release/angular-ui-router.js" defer></script> 
-        <script type="text/javascript" src="components/angular-post-message/dist/angular-post-message.js" defer></script>
-        <script type="text/javascript" src="components/angular-utils-pagination/dirPagination.js" defer></script>
-                    			
-		<script type="text/javascript" src="app.js" defer></script>
-		<!-- endbuild -->
-	</head>
-	<body ng-app="portal" ng-csp="no-unsafe-eval" class="<!-- @echo NAME -->">
-	  <div id="wrapper">
-	  <div ng-if="false">
-	  <header id="navbar" class="navbar navbar-default" role="navigation" ng-controller="NavbarCtrl">
-	  <div class="container">
-		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-				<span class="sr-only">Toggle navigation</span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			</button>
-			<a class="navbar-brand" ui-sref="public.info" href="#/portal/info">
-	    	<span class="midata" id="logotype"><img src="/images/logo.png" style="height: 36px;"></span>
-	    </a>
+<link rel="apple-touch-icon" sizes="57x57" href="/images/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="/images/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/images/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/images/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/images/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/images/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/images/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/images/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/images/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+<link rel="manifest" href="/images/manifest.json">
+<!-- Clear CSS defaults -->
+
+<!-- Application style sheet -->
+<!-- build:css app.min.css -->
+<link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.min.css">
+<!-- <link rel="stylesheet" href="components/jquery-ui/themes/smoothness/jquery-ui.css">  -->
+<link rel="stylesheet" href="/app.css">
+<!-- endbuild -->
+
+<script type="text/javascript" src="<!-- @echo BACKEND -->/api/assets/javascripts/routes" defer></script>
+<script type="text/javascript" src="components/jquery/dist/jquery.js" defer></script>
+<script type="text/javascript" src="components/underscore/underscore-min.js" defer></script>
+<script type="text/javascript" src="components/bootstrap/dist/js/bootstrap.js" defer></script>
+<!-- <script type="text/javascript" src="components/jquery-ui/jquery-ui.js" defer></script>  -->
+
+<!-- build:js app.min.js -->
+<script type="text/javascript" src="components/angular/angular.js" defer></script>
+<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap.js" defer></script>
+<script type="text/javascript" src="components/angular-sanitize/angular-sanitize.js" defer></script>
+<script type="text/javascript" src="components/angular-translate/angular-translate.js" defer></script>
+<script type="text/javascript" src="components/angular-translate-loader-partial/angular-translate-loader-partial.js" defer></script>
+<script type="text/javascript" src="components/angular-translate-storage-cookie/angular-translate-storage-cookie.js" defer></script>
+<script type="text/javascript" src="components/angular-translate-storage-local/angular-translate-storage-local.js" defer></script>
+<script type="text/javascript" src="components/angular-cookies/angular-cookies.js" defer></script>
+<script type="text/javascript" src="components/angular-bootstrap/ui-bootstrap-tpls.js" defer></script>
+<script type="text/javascript" src="components/angular-ui-router/release/angular-ui-router.js" defer></script>
+<script type="text/javascript" src="components/angular-post-message/dist/angular-post-message.js" defer></script>
+<script type="text/javascript" src="components/angular-utils-pagination/dirPagination.js" defer></script>
+
+<script type="text/javascript" src="app.js" defer></script>
+<!-- endbuild -->
+</head>
+<body ng-app="portal" ng-csp="no-unsafe-eval" class="<!-- @echo NAME -->">
+	
+		<div ng-if=false class="colored fullheight">
+			<header id="navbar" class="navbar navbar-default" role="navigation" ng-controller="NavbarCtrl">
+				<div class="container">
+
+
+					<span style="text-align: center" class="midata center-block" id="logotype"><img src="/images/logo.png" style="height: 36px;"></span>
+
+				</div>
+			</header>
+
+
+			<div style="position: relative;" class="fullheight">
+				<div id="loader">
+					Hello!</div>
+			</div>
+
 		</div>
-			    
-	   </div>
-	   </header>
-	  
-	    <div class="container">
-	     <div class="panel panel-primary">
-	       <div class="panel-body" style="height:200px;position:relative;">
-	         <div style="text-align:center;margin-top:-40px;top:50%;width:100%;position:absolute;">
-	           Please wait...
-	         </div>
-	       </div>
-	     </div>
-	     </div>
-	  </div>
-	  <div id="maincontent" ui-view ng-cloak></div>
-	  <footer id="footer">
-		 <div class="container">
-			<p translate="footer.copyright" translate-value-now="{{ currentDate | date:'yyyy' }}">(c) ETH Zürich</p>
-			
-			   <ul>		
-			      <li><a href="https://www.midata.coop" translate="footer.homepage">MIDATA Homepage</a></li>	     
-			      <li><a ui-sref="public.terms({which : 'midata-terms-of-use'})" translate="registration.agb3">Terms of Use</a></li>
-			      <li><a ui-sref="public.terms({which : 'midata-privacy-policy'})" translate="registration.privacypolicy3">Privacy Policy</a></li>
-			     
-			   </ul>	    
-		 </div>
-	  </footer>
-	  </div>
-	</body>
+	<div id="wrapper">
+		<div id="maincontent" ui-view ng-cloak></div>
+		<footer id="footer">
+			<div class="container">
+				<p onClick="document.body.classList.toggle('newdesign');" translate="footer.copyright"
+					translate-value-now="{{ currentDate | date:'yyyy' }}">(c) ETH Zürich</p>
+
+				<ul>
+					<li><a href="https://www.midata.coop" translate="footer.homepage">MIDATA Homepage</a></li>
+					<li><a ui-sref="public.terms({which : 'midata-terms-of-use'})" translate="registration.agb3">Terms of Use</a></li>
+					<li><a ui-sref="public.terms({which : 'midata-privacy-policy'})" translate="registration.privacypolicy3">Privacy Policy</a></li>
+
+				</ul>
+			</div>
+		</footer>
+	</div>
+</body>
 </html>

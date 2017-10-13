@@ -291,8 +291,7 @@ public class IndexManager {
 
 	public void revalidate(List<DBRecord> validatedResult, MidataId executor,  IndexPseudonym pseudo, IndexRoot root, Object indexQuery, Condition[] cond) throws AppException {		
 		if (validatedResult.size() == 0) return;
-					
-		for (DBRecord r : validatedResult) QueryEngine.loadData(r);
+							
 		List<DBRecord> stillValid;
 		List<DBRecord> notValid = new ArrayList<DBRecord>();
 		stillValid = QueryEngine.filterByDataQuery(validatedResult, indexQuery, notValid);

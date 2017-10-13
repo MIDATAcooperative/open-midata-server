@@ -52,7 +52,7 @@
     "device" : "Device Code",
     "restrict" : "Restrict Read to Group",
     "add_application_btn" : "Add Study Data Providing Application",
-    "linked_apps" : "Application Consents"
+    "linked_apps" : "Applications Consents"
   },
   
   "studyfields" : {
@@ -62,7 +62,7 @@
     "anonymous1" : "Anonymous Participation",
     "anonymous2" : ", reveals anonymized ID, year of birth, gender and country",
     "not_anonymous1" : "Not Anonymous",
-    "not_anonymous2" : ", requests member to share full name, birthday and contact Information (address, phone, eMail)",
+    "not_anonymous2" : ", requests member to share full name, birthday and contact Information (address, phone, email)",
     "assistance" : "Assistance",
     "no_assistance1" : "None",
     "no_assistance2" : " - the MIDATA member participates alone.",

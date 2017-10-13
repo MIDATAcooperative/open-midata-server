@@ -35,20 +35,14 @@
 
     "appmessages" : {
         "title" : "Messages spécifiques à l'app:",
-
-        // TODO CHANGED
-        // OLD: Reason (Trigger)
-        // NEW: Event (Trigger)
         "reason" : "Événement (déclencheur)",
         "code" : "Code",
         "languages" : "Langues",
         "empty" : "Aucun message spécifique à l'app défini.",
-
         "lang" : "Langue",
         "msgtitle" : "Libellé du message",
         "text" : "Texte du message",
         "available_tags" : "Variables disponibles",
-
         "reasons" : {
             "REGISTRATION" : "Enregistrement d'un nouvel utilisateur",
             "FIRSTUSE_ANYUSER" : "Première utilisation de l'app",
@@ -61,9 +55,7 @@
             "CONSENT_CONFIRM_AUTHORIZED" : "Confirmation de consentement (bénéficiaire)",
             "CONSENT_REJECT_OWNER" : "Refus de consentement (cédant)",
             "CONSENT_REJECT_AUTHORIZED" : "Refus de consentement (bénéficiaire)",
-
-            // TODO NEW: Account unlocked by admin
-            "ACCOUNT_UNLOCK" : "Compte validé par un administrateur."
+            "ACCOUNT_UNLOCK" : "Compte validé par l'administrateur"
         }
     },
 
@@ -74,15 +66,7 @@
         "linkedStudy" : "Étude liée à l'app (code)",
         "mustParticipateInStudy" : "Participation à l'étude requise",
         "admin_only" : "Seul un administrateur MIDATA peux modifier cette section. Veuillez faire une demande si nécessaire.",
-
-        // TODO CHANGED
-        // OLD: Terms of Use
-        // NEW: Terms
         "terms_of_use" : "Dispositions",
-
-        // TODO CHANGED
-        // OLD: Show terms of use
-        // NEW: Show terms
         "show_terms" : "Afficher les dispositions",
         "unlock_code" : "Code d'activation",
         "info" : {
@@ -92,10 +76,6 @@
             "name" : "Le nom de l'app ou du plugin tel qu'il est affiché pour les utilisateurs finaux.",
             "description" : "La description du plugin qui sera affichée sur la place du marché.",
             "resharesData" : "L'app est autorisée à transmettre les données auxquelles elle a accès à des tierces parties.",
-
-            // TODO CHANGED
-            // OLD: Users of app are allowed to search for other users of same app.
-            // NEW: Users of the app are allowed to search for other users of the same app.
             "allowsUserSearch" : "Les utilisateurs de l'app sont autorisés à rechercher d'autres utilisateurs de la même app.",
             "defaultSpaceName" : "Titre de la tuile du plugin sur le tableau de bord.",
             "tags" : "Catégories sous lesquelles le plugin sera listé sur la place du marché.",
@@ -106,14 +86,8 @@
             "defaultQuery" : "Requête limitant l'accès du plugin à la base de données. L'accès doit être limité au moins par 'code', 'content', 'group', 'format' ou 'owner'. Example valide (toutes les Observations) : '{ \"format\" : [\"fhir/Observation\" ] }'",
             "defaultQuery_extra" : "Veuillez consulter les valeurs valides pour 'code', 'content' et 'format' sous 'Format/Content' dans le guide du développeur. Pour une première version, vous pouvez débuter avec un accès total en indiquant : { \"group\" : \"all\", \"group-system\" : \"v1\" }. Veuillez préciser la limitation avant que le plugin ou l'app soit mis en production.",
             "secret" : "Votre app aura besoin de ce 'secret' pour se connecter. Choisissez le librement.",
-
-            // TODO CHANGED
-            // OLD: User must participate in Study in order to use app.
-            // NEW: User must participate in study in order to use app.
             "mustParticipateInStudy" : "Les utilisateurs doivent participer à l'étude afin de pouvoir utiliser l'app.",
-
-            // TODO NEW: If filled out this code word must be entered by the user in order to login or register to the app. (not case sensitive)
-            "unlock_code" : "If filled out this code word must be entered by the user in order to login or register to the app. (not case sensitive)"
+            "unlock_code" : "Si renseigné, ce code doit être saisi par l'utilisateur lors de l'enregistrement ou lors de la première connexion à MIDATA par cette app. Le code n'est pas sensible à la casse."
         }
     },
 

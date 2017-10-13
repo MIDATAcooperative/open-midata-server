@@ -82,6 +82,12 @@ angular.module('portal', [ 'ngCookies', 'ui.router', 'ui.bootstrap', 'services',
    });
    $rootScope.currentDate = new Date();
    $translatePartialLoader.addPart("shared");
+   
+   $rootScope.greeting = {};
+   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){ 
+       $rootScope.greeting = {};
+   });
+   
 }])
 .config(['$compileProvider', function ($compileProvider) {
   $compileProvider.debugInfoEnabled(false);
