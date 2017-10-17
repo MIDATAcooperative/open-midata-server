@@ -266,6 +266,7 @@ public class User extends Model implements Comparable<User> {
 	 */
 	public static boolean authenticationValid(String givenPassword, String savedPassword) throws InternalServerException {
 		try {
+			if (givenPassword == null || savedPassword == null) return false;
 			return PasswordHash.validatePassword(givenPassword, savedPassword);
 		} catch (NoSuchAlgorithmException e) {
 			throw new InternalServerException("error.internal", e);

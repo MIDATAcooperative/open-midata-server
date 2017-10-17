@@ -69,7 +69,7 @@ public enum AuditEventType {
 	/**
 	 * study participation of a user has been rejected
 	 */
-	STUDY_PARTICIPATION_RESEARCH_REJECTED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "study-participation-member-rejected", "Study participation rejected by research"), AuditEventAction.U),
+	STUDY_PARTICIPATION_RESEARCH_REJECTED(new Coding(System.DCM,"110100","Application Activity"), new Coding(System.MIDATA, "study-participation-research-rejected", "Study participation rejected by research"), AuditEventAction.U),
 	
 	/**
 	 * study participation of a user has been approved

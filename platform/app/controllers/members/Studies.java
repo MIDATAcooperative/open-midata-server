@@ -322,7 +322,7 @@ public class Studies extends APIController {
 		MidataId userId = new MidataId(request().username());		
 		MidataId studyId = new MidataId(id);	
 		
-		User user = Member.getById(userId, Member.ALL_USER);
+		User user = Member.getById(userId, Member.ALL_USER_INTERNAL);
 		
 		Set<UserFeature> requirements = precheckRequestParticipation(userId, studyId);
 		Set<UserFeature> notok = Application.loginHelperPreconditionsFailed(user, requirements);
