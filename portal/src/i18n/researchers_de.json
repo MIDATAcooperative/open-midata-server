@@ -3,16 +3,8 @@
     "researcher_registration" : {
         "sign_up" : "Registrierung als Forscher",
         "research_organization" : "Forschungseinrichtung",
-
-        // TODO CHANGED
-        // OLD: Name*
-        // NEW: Name
-        "name" : "Name*",
-
-        // TODO CHANGED
-        // OLD: Description*
-        // NEW: Description
-        "description" : "Beschreibung*",
+        "name" : "Name",
+        "description" : "Beschreibung",
         "research_user" : "Forschungsbenutzer"
     },
 
@@ -61,11 +53,7 @@
         "device" : "Code des Gerätes",
         "restrict" : "Lesen auf diese Studiengruppe beschränken",
         "add_application_btn" : "Studiendaten liefernde Anwendung hinzufügen.",
-
-        // TODO CHANGED
-        // OLD: Application Consents
-        // NEW: Applications Consents
-        "linked_apps" : "Anwendungsnutzungs-Zustimmungen"
+        "linked_apps" : "Zustimmungen für Anwendungen"
     },
 
     "studyfields" : {
@@ -75,10 +63,6 @@
         "anonymous1" : "Anonyme Teilnahme",
         "anonymous2" : ", legt anonymisierte ID, Geburtsjahr, Geschlecht und Land offen",
         "not_anonymous1" : "Nicht anonym",
-
-        // TODO CHANGED
-        // OLD: , requests member to share full name, birthday and contact Information (address, phone, eMail)
-        // NEW: , requests member to share full name, birthday and contact Information (address, phone, email)
         "not_anonymous2" : ", bedingt, dass das Mitglied seinen vollständigen Name, Geburtsdatum und Kontaktinformationen (Adresse, Telefon, E-Mail) teilt",
         "assistance" : "Unterstützung",
         "no_assistance1" : "Keine",

@@ -2,8 +2,6 @@
 
     "admin_navbar" : {
         "members" : "Membres",
-
-        // TODO NEW: Audit
         "auditlog" : "Audit",
         "news" : "News",
         "plugins" : "Plugins",
@@ -18,15 +16,7 @@
         "search_type" : "Recherche",
         "contract_required" : "Le contrat doit être envoyé",
         "contract_confirm_required" : "Le contrat signé doit être confirmé",
-
-        // TODO CHANGED
-        // OLD: E-Mail not confirmed by user
-        // NEW: Email not confirmed by user
         "no_email_confirm" : "E-mail non confirmé par l'utilisateur",
-
-        // TODO CHANGED
-        // OLD: E-Mail confirmation rejected by user
-        // NEW: Email confirmation rejected by user
         "email_rejected" : "Confirmation e-mail rejetée par l'utilisateur",
         "not_admin_confirmed" : "Non confirmé par un administrateur",
         "overview" : "Aperçu",
@@ -46,19 +36,11 @@
         "status" : "État :",
         "agb_status" : "État des CGU :",
         "contract_status" : "État du contrat :",
-
-        // TODO CHANGED
-        // OLD: eMail Status:
-        // NEW: Email Status:
         "email_status" : "État de l'e-mail :",
         "confirmation_code" : "Code de confirmation :",
         "registration_date" : "Date d'enregistrement :",
         "confirmation_date" : "Date de confirmation :",
         "last_login" : "Dernière connexion :",
-
-        // TODO CHANGED
-        // OLD: Confirm eMail Address
-        // NEW: Confirm email Address
         "email_confirm_btn" : "Confirmer l'adresse e-mail",
         "comment" : "Commentaire",
         "add_comment_btn" : "Ajouter un commentaire",
@@ -121,14 +103,8 @@
     "admin_study" : {
         "title" : "Étude",
         "name" : "Nom",
-
-        // TODO CHANGED
-        // OLD: Created At
-        // NEW: Created at
         "created_at" : "Créée le",
-
-        // TODO NEW: Created by
-        "created_by" : "Created by",
+        "created_by" : "Créée par",
         "description" : "Description",
         "code" : "Code",
         "required_information" : "Informations requises",
@@ -141,9 +117,7 @@
         "group_description" : "Description",
         "history" : "Historique",
         "end_validation_btn" : "Finaliser la validation",
-
-        // TODO NEW: Back to Draft
-        "back_to_draft_btn" : "Back to Draft",
+        "back_to_draft_btn" : "Revenir à l'ébauche",
         "delete_study_btn" : "Effacer l'étude"
     }
 }

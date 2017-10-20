@@ -1,10 +1,6 @@
 {
 
     "member_login" : {
-
-        // TODO CHANGED
-        // OLD: MY DATA - OUR HEALTH!
-        // NEW: My data - Our health
         "teaser" : "Mes données - Notre santé",
         "register_now" : "S'inscrire maintenant",
         "sign_in" : "Connexion"
@@ -104,35 +100,17 @@
         "agb_signed" : "Vous avez signé les CGU.",
         "confirmed" : "Votre adresse postale a été confirmée.",
         "entercode" : "Une lettre contenant un code d'enregistrement vous a été envoyée. Veuillez saisir le code ici dès que vous l'avez reçu :",
-
-        // TODO CHANGED
-        // OLD: Your eMail address has not been validated yet. Please click on the link of the validation email you received in your email account!
-        // NEW: Your email address has not been validated yet. Please click on the link in the validation email you received!
         "email_unvalidated" : "Votre adresse e-mail n'a pas encore été validée. Veuillez cliquer sur le lien que vous avez reçu dans l'e-mail de confirmation !",
         "request_membership_btn" : "Demander un contrat"
     },
 
     "smallstudies" : {
-
-        // TODO NEW: Want to help studies by sharing your data?
-        "greeting" : "Want to help studies by sharing your data?",
-
-        // TODO NEW: Studies
-        "studies" : "Studies",
-
-        // TODO NEW: Enrollment
-        "status" : "Enrollment",
-
-        // TODO NEW: Recruiting
-        "recruiting" : "Recruiting",
-
-        // TODO NEW: Ongoing
-        "ongoing" : "Ongoing",
-
-        // TODO NEW: Completed
-        "completed" : "Completed",
-
-        // TODO NEW: Stopped
-        "stopped" : "Stopped"
+        "greeting" : "Voulez-vous venir en aide et partager vos données pour une étude?",
+        "studies" : "Études",
+        "status" : "Inscription",
+        "recruiting" : "Recrutement",
+        "ongoing" : "En cours",
+        "completed" : "Achevée",
+        "stopped" : "Stoppée"
     }
 }

@@ -46,10 +46,6 @@
         "reasons" : {
             "REGISTRATION" : "Neue Benutzerregistrierung",
             "FIRSTUSE_ANYUSER" : "Erste App-Anwendung",
-
-            // TODO CHANGED
-            // OLD: First use of app (if no registration mail sent)
-            // NEW: First use of app (if no registration email sent)
             "FIRSTUSE_EXISTINGUSER" : "Erst App-Anwendung (wenn kein Registrierungs-E-Mail versendet)",
             "CONSENT_REQUEST_OWNER_INVITED" : "Vorgeschlagene Zustimmung (Geber, Einladung)",
             "CONSENT_REQUEST_OWNER_EXISTING" : "Vorgeschlagene Zustimmung (Geber, Nutzer)",
@@ -59,10 +55,6 @@
             "CONSENT_CONFIRM_AUTHORIZED" : "Zustimmungsannahme (Empfänger)",
             "CONSENT_REJECT_OWNER" : "Zustimmungsablehnung (Geber)",
             "CONSENT_REJECT_AUTHORIZED" : "Zustimmungsablehnung (Empfänger)",
-
-            // TODO CHANGED
-            // OLD: Account unlocked by admin
-            // NEW: Account unlocked by the administrator
             "ACCOUNT_UNLOCK" : "Konto vom Administrator freigeschaltet"
         }
     },
@@ -95,10 +87,6 @@
             "defaultQuery_extra" : "Gültige Werte für 'code', 'content' oder 'format' sind im Developer Guide unter 'Format/Content' aufgelistet. Für erste Versionen kann der Vollzugriff erstattet werden mit { \"group\" : \"all\", \"group-system\" : \"v1\" }. Schränken Sie allerdings den Zugriff weiter ein, bevor das Plugin oder die App produktiv eingesetzt wird.",
             "secret" : "Ihre App braucht dieses 'secret' um sich anmelden zu können. Wählen Sie es nach Belieben.",
             "mustParticipateInStudy" : "Benutzer müssen an der Studie teilnehmen um diese App benutzen zu können.",
-
-            // TODO CHANGED
-            // OLD: If filled out this code word must be entered by the user in order to login or register to the app. (not case sensitive)
-            // NEW: If filled out, this code must be entered by the user in order to sign up or log in the first time to MIDATA using the app. The code is not case sensitive.
             "unlock_code" : "Wenn ausgefüllt, muss dieser Code vom Benutzer eingegeben werden bei der Registrierung oder ersten Anmeldung bei MIDATA über die App. Der Code ist nicht 'case sensitiv'."
         }
     },
