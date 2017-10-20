@@ -43,7 +43,8 @@
     "email_confirm_btn" : "Confirm email Address",
     "comment" : "Comment",
     "add_comment_btn" : "Add Comment",
-    "wipe_btn" : "Wipe Account"    
+    "wipe_btn" : "Wipe Account",
+    "change_email_btn" : "Change eMail"    
   },
   
   "admin_news" : {

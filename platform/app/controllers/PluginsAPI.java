@@ -37,6 +37,7 @@ import models.RecordsInfo;
 import models.Space;
 import models.StudyRelated;
 import models.User;
+import models.UserGroupMember;
 import models.enums.AggregationType;
 import models.enums.UserRole;
 import oauth.signpost.exception.OAuthCommunicationException;
@@ -60,10 +61,12 @@ import utils.AccessLog;
 import utils.ErrorReporter;
 import utils.ServerTools;
 import utils.access.AccessContext;
+import utils.access.AccountCreationAccessContext;
 import utils.access.ConsentAccessContext;
 import utils.access.DBRecord;
 import utils.access.RecordConversion;
 import utils.access.RecordManager;
+import utils.access.UserGroupAccessContext;
 import utils.auth.ExecutionInfo;
 import utils.auth.RecordToken;
 import utils.auth.Rights;
@@ -480,8 +483,18 @@ public class PluginsAPI extends APIController {
 		
 		DBRecord dbrecord = RecordConversion.instance.toDB(record);
         	
-		if (!record.owner.equals(inf.ownerId) && !(context instanceof ConsentAccessContext)) {
-			Set<Consent> consent = Consent.getHealthcareActiveByAuthorizedAndOwner(inf.executorId, record.owner);
+		if (!record.owner.equals(inf.ownerId) && !(context instanceof ConsentAccessContext) && !(context instanceof AccountCreationAccessContext)) {
+			BSONObject query = RecordManager.instance.getMeta(inf.executorId, inf.targetAPS, "_query");
+			Set<Consent> consent = null;
+			if (query != null && query.containsField("link-study")) {
+				MidataId groupId = MidataId.from(query.get("link-study"));
+                UserGroupMember ugm = UserGroupMember.getByGroupAndMember(groupId, inf.executorId);
+                if (ugm != null) context = new UserGroupAccessContext(ugm, context.getCache().getSubCache(groupId), context);
+				consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(groupId, record.owner);
+			} else {
+			    consent = Consent.getHealthcareOrResearchActiveByAuthorizedAndOwner(inf.executorId, record.owner);
+			}
+									
 			if (consent == null || consent.isEmpty()) throw new BadRequestException("error.noconsent", "No active consent that allows to add data for target person.");
 			
 			for (Consent c : consent) {

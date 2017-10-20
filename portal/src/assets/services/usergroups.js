@@ -24,8 +24,9 @@ angular.module('services')
 		return server.post(jsRoutes.controllers.UserGroups.createUserGroup().url, JSON.stringify(usergroup));
 	};
 	
-	service.addMembersToUserGroup = function(group, members) {
+	service.addMembersToUserGroup = function(group, members, role) {
 		var data = {"group": group, "members" : members };
+		if (role) data.role = role;
 		return server.post(jsRoutes.controllers.UserGroups.addMembersToUserGroup().url, JSON.stringify(data));
 	};
 

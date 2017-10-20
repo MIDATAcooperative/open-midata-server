@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import models.enums.UserRole;
@@ -26,7 +27,7 @@ public class ResearchUser extends User {
 	public ResearchUser(String email) {		
 		this.email = email;
 		this.emailLC = email.toLowerCase();
-		
+		this.role = UserRole.RESEARCH;
 		login = new Date();	
 		
 	}
@@ -41,6 +42,10 @@ public class ResearchUser extends User {
 	
 	public static ResearchUser getById(MidataId id, Set<String> fields) throws InternalServerException {
 		return Model.get(ResearchUser.class, collection, CMaps.map("_id", id), fields);
+	}
+	
+	public static Set<ResearchUser> getAll(Map<String, ? extends Object> properties, Set<String> fields, int limit) throws InternalServerException {
+		return Model.getAll(ResearchUser.class, collection, properties, fields, limit);
 	}
 	
 	public static void add(ResearchUser user) throws InternalServerException {

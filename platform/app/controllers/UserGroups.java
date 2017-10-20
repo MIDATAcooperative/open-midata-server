@@ -18,6 +18,7 @@ import models.User;
 import models.UserGroup;
 import models.UserGroupMember;
 import models.enums.ConsentStatus;
+import models.enums.ResearcherRole;
 import models.enums.UserGroupType;
 import models.enums.UserStatus;
 import play.mvc.BodyParser;
@@ -234,6 +235,8 @@ public class UserGroups extends APIController {
 		UserGroupMember self = UserGroupMember.getByGroupAndMember(groupId, executorId);
 		if (self == null) throw new AuthException("error.internal", "User not member of group");
 		
+		ResearcherRole role = json.has("role") ? JsonValidation.getEnum(json, "role", ResearcherRole.class) : null;
+		
 		BSONObject meta = RecordManager.instance.getMeta(executorId, self._id, "_usergroup");
 		byte[] key = (byte[]) meta.get("aliaskey");
 		KeyManager.instance.unlock(groupId, self._id, key);
@@ -247,6 +250,7 @@ public class UserGroups extends APIController {
 				member.userGroup = groupId;
 				member.status = ConsentStatus.ACTIVE;
 				member.startDate = new Date();
+				member.role = role;
 																									
 				Map<String, Object> accessData = new HashMap<String, Object>();
 				accessData.put("aliaskey", KeyManager.instance.generateAlias(groupId, member._id));
@@ -258,9 +262,11 @@ public class UserGroups extends APIController {
 				old.status = ConsentStatus.ACTIVE;
 				old.startDate = new Date();
 				old.endDate = null;
+				old.role = role;
 				UserGroupMember.set(old._id, "status", old.status);
 				UserGroupMember.set(old._id, "startDate", old.startDate);
 				UserGroupMember.set(old._id, "endDate", old.endDate);
+				UserGroupMember.set(old._id, "role", old.role);
 			}
 		}
 				 

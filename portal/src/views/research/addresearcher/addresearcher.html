@@ -1,0 +1,68 @@
+
+	<div class="container" ng-controller="AddResearcherCtrl" ng-cloak>
+		<div class="row">
+			<!-- Registration -->
+			<div class="col-sm-12">
+				<div class="panel-container" style="max-width:630px; padding-top:30px; margin:0 auto;">
+					<div class="panel panel-primary">
+		            	<div class="panel-heading">
+		              		<h3 class="panel-title" translate="addresearcher.sign_up"></h3>
+		            	</div>
+		            	<div class="panel-body">
+		            		<p ng-show="error && !error.field" translate="{{ error.code }}" ng-class="{ 'alert-warning' : error.level == 'warning', 'alert-danger' : !error.level }" class="alert">	                          
+	                        </p>		                       			
+	                        <p ng-show="success" translate="addresearcher.success" class="alert alert-success"></p>	
+							<form name="myform" novalidate class="css-form form-horizontal required" ng-submit="register()" role="form">								  
+							  <formrow myid="email" label="registration.email">
+							    <input type="email" class="form-control" id="email" name="email" translate translate-attr-placeholder="registration.email" ng-model="registration.email" required>
+							    <formerror myid="email" type="email" message="error.invalid.email" ></formerror> 
+							    <formerror myid="email" type="exists" message="error.exists.member"></formerror> 
+							  </formrow>
+							  							  
+							  <formrow myid="firstname" label="registration.firstname"><input type="text" class="form-control" id="firstname" name="firstname" translate translate-attr-placeholder="registration.firstname" ng-model="registration.firstname" required></formrow>
+							  <formrow myid="lastname" label="registration.lastname"><input type="text" class="form-control" id="lastname" name="lastname" translate translate-attr-placeholder="registration.lastname" ng-model="registration.lastname" required></formrow>
+							  
+							  <formrow myid="gender" label="registration.gender"><select class="form-control" id="gender" name="gender" ng-model="registration.gender"><option value="FEMALE" translate="enum.gender.FEMALE">female</option><option value="MALE" translate="enum.gender.MALE"></option><option value="OTHER" translate="enum.gender.OTHER"></option></select></formrow>
+							  
+							  <!-- 
+							  <formrow myid="birthday" label="registration.birthday">  
+							    <div class="input-group">
+							    <div class="input-group-addon" translate="registration.day"></div>
+							    <select class="form-control " id="birthday" name="birthday" ng-model="registration.birthdayDay" ><option ng-repeat="day in days">{{ day }}</option></select>
+							    <div class="input-group-addon" translate="registration.month"></div>
+							    <select class="form-control" id="birthdayMonth" name="birthdayMonth" ng-model="registration.birthdayMonth"><option ng-repeat="month in months">{{ month }}</option></select>
+							    <div class="input-group-addon" translate="registration.year"></div>
+							    <select class="form-control" id="birthdayYear" name="birthdayYear" ng-model="registration.birthdayYear"><option ng-repeat="year in years">{{ year }}</option></select>
+							    </div>
+							  </formrow>
+							   -->							  
+							  <formrow myid="language" label="registration.language"><select class="form-control" id="language" ng-model="registration.language" ng-options="lang.value as lang.name | translate for lang in languages"></select></formrow>
+							  
+							  <!-- 
+							  <formrow myid="address1" label="registration.address"><input type="text" class="form-control" id="address1" name="address1" translate translate-attr-placeholder="registration.address_line1" ng-model="registration.address1" required></formrow>
+							  <formrow myid="address2" label=""><input type="text" class="form-control" id="address2" name="address2" translate translate-attr-placeholder="registration.address_line2" ng-model="registration.address2"></formrow>
+							  <formrow myid="city" label="registration.city"><input type="text" class="form-control" id="city" name="city" translate translate-attr-placeholder="registration.city" ng-model="registration.city" required></formrow>
+							  <formrow myid="zip" label="registration.zip"><input type="text" class="form-control" id="zip" name="zip" translate translate-attr-placeholder="registration.zip" ng-model="registration.zip" required></formrow>
+							  -->
+							  <formrow myid="country" label="registration.country"><select class="form-control" id="country" name="country" ng-model="registration.country" required ng-options="country as ('enum.country.'+country)|translate for country in countries"></select></formrow>
+							  <!--                              
+                              <formrow myid="phone" label="registration.phone"><input type="text" class="form-control" id="phone" name="phone" translate translate-attr-placeholder="registration.phone" ng-model="registration.phone"></formrow>
+                              <formrow myid="mobile" label="registration.mobile_phone"><input type="text" class="form-control" id="mobile" name="mobile" translate translate-attr-placeholder="registration.mobile_phone" ng-model="registration.mobile"></formrow>
+                             -->
+                              <!--  <div ng-repeat="subrole in subroles">
+                                <formrow myid="{{subrole}}" label="">
+                                  <label class="checkbox">
+                                    <input type="checkbox" id="{{subrole}}" name="{{subrole}}" ng-checked="hasSubRole(subrole)" ng-click="changeSubRole(subrole)">
+                                    <span translate="{{ 'enum.subuserrole.'+subrole }}"></span>
+                                  </label>
+                                </formrow>
+                              </div> -->
+                             <button type="submit" ng-disabled="status.action=='register'" class="btn btn-lg btn-primary btn-block" translate="registration.sign_up_btn"></button>
+                            </form>
+		            	</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	

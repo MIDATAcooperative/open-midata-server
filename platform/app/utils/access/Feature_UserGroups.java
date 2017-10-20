@@ -1,7 +1,9 @@
 package utils.access;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -9,10 +11,14 @@ import java.util.Set;
 import org.bson.BasicBSONObject;
 
 import models.MidataId;
+import models.StudyParticipation;
 import models.UserGroupMember;
+import models.enums.ResearcherRole;
 import utils.AccessLog;
 import utils.auth.KeyManager;
+import utils.collections.Sets;
 import utils.exceptions.AppException;
+import utils.exceptions.AuthException;
 import utils.exceptions.InternalServerException;
 
 public class Feature_UserGroups extends Feature {
@@ -57,7 +63,26 @@ public class Feature_UserGroups extends Feature {
 		newprops.putAll(q.getProperties());
 		newprops.put("usergroup", ugm.userGroup);
 		APSCache subcache = q.getCache().getSubCache(group); 
-		Query qnew = new Query(newprops, q.getFields(), subcache, group, new UserGroupAccessContext(subcache, q.getContext()));
+		if (ugm.role == null) ugm.role = ResearcherRole.HC;
+		
+		if (q.restrictedBy("export") && !ugm.role.mayExportData()) throw new AuthException("error.notauthorized.export", "You are not allowed to export this data.");
+		
+		if (!ugm.role.mayReadData()) return new ArrayList<DBRecord>();
+		
+		if (ugm.role.pseudonymizedAccess()) {
+			
+			 if (q.restrictedBy("owner")) {
+				   Set<StudyParticipation> parts = StudyParticipation.getActiveParticipantsByStudyAndGroupsAndParticipant(q.getMidataIdRestriction("study"), q.getRestriction("study-group"), group, q.getMidataIdRestriction("owner"), Sets.create("name", "order", "owner", "ownerName", "type"), false);
+				   Set<MidataId> owners = new HashSet<MidataId>();
+				   for (StudyParticipation part : parts) {
+					  owners.add(part.owner);
+				   }
+				   newprops.put("owner", owners);
+		    }		
+			
+		}
+		
+		Query qnew = new Query(newprops, q.getFields(), subcache, group, new UserGroupAccessContext(ugm, subcache, q.getContext()));
 		List<DBRecord> result = next.query(qnew);
 		AccessLog.logEnd("end user group query for group="+group.toString());
 		

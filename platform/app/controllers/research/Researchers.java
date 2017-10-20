@@ -112,6 +112,7 @@ public class Researchers extends APIController {
 			
 	    ResearchUser user = new ResearchUser(email);
 		
+	    user._id = new MidataId();
 		user.address1 = JsonValidation.getStringOrNull(json, "address1");
 		user.address2 = JsonValidation.getStringOrNull(json, "address2");
 		user.city = JsonValidation.getStringOrNull(json, "city");
@@ -124,6 +125,7 @@ public class Researchers extends APIController {
 		user.phone = JsonValidation.getStringOrNull(json, "phone");
 		user.mobile = JsonValidation.getStringOrNull(json, "mobile");
 		user.organization = PortalSessionToken.session().org;
+		user.status = UserStatus.ACTIVE;
 						
 		AuditManager.instance.addAuditEvent(AuditEventType.USER_REGISTRATION, null, new MidataId(request().username()), user);
 		register(user ,null);
@@ -142,7 +144,7 @@ public class Researchers extends APIController {
 		user.role = UserRole.RESEARCH;
 		user.subroles = EnumSet.noneOf(SubUserRole.class);
 		user.registeredAt = new Date();				
-		user.status = UserStatus.NEW;		
+		if (user.status == null) user.status = UserStatus.NEW;		
 		user.contractStatus = ContractStatus.REQUESTED;
 		user.agbStatus = ContractStatus.REQUESTED;
 		user.emailStatus = EMailStatus.UNVALIDATED;

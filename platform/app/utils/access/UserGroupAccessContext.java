@@ -1,17 +1,20 @@
 package utils.access;
 
 import models.MidataId;
+import models.UserGroupMember;
 import utils.exceptions.AppException;
 
 public class UserGroupAccessContext extends AccessContext {
 
-	public UserGroupAccessContext(APSCache cache, AccessContext parent) {
+	private UserGroupMember ugm;
+	
+	public UserGroupAccessContext(UserGroupMember ugm, APSCache cache, AccessContext parent) {
 		super(cache, parent);
-		
+	    this.ugm = ugm;	
 	}
 	@Override
 	public boolean mayCreateRecord(DBRecord record) throws AppException {
-		return parent.mayCreateRecord(record);
+		return ugm.role.mayWriteData() && parent.mayCreateRecord(record);
 	}
 
 	@Override
@@ -21,17 +24,26 @@ public class UserGroupAccessContext extends AccessContext {
 
 	@Override
 	public boolean mayUpdateRecord() {
-		return parent.mayUpdateRecord();
+		return ugm.role.mayWriteData() && parent.mayUpdateRecord();
 	}
 
 	@Override
 	public boolean mustPseudonymize() {
-		return parent.mustPseudonymize();
+		return ugm.role.pseudonymizedAccess();
 	}
 
 	@Override
 	public MidataId getTargetAps() {
 		return cache.getAccountOwner();
+	}
+	
+	@Override
+	public String getOwnerName() {		
+		return null;
+	}
+	@Override
+	public MidataId getOwner() {
+		return ugm.userGroup;
 	}
 
 }

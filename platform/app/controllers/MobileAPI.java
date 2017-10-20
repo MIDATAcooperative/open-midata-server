@@ -375,7 +375,7 @@ public class MobileAPI extends Controller {
 		}
 				
 		if (app.linkedStudy != null && studyConfirm) {								
-			controllers.members.Studies.requestParticipation(member._id, app.linkedStudy, app._id);
+			controllers.members.Studies.requestParticipation(executor, member._id, app.linkedStudy, app._id);
 		}
 		
 		if (autoConfirm) {

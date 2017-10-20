@@ -176,6 +176,7 @@ public class Application extends APIController {
 	
 	public static void sendWelcomeMail(MidataId sourcePlugin, User user) throws AppException {
 	   if (user.developer == null) {
+		   if (user.email == null) return;
 		   PasswordResetToken token = new PasswordResetToken(user._id, user.role.toString(), true);
 		   user.set("resettoken", token.token);
 		   user.set("resettokenTs", System.currentTimeMillis());
@@ -205,10 +206,10 @@ public class Application extends APIController {
 	public static void sendAdminNotificationMail(User user) throws InternalServerException {
 	   if (user.status == UserStatus.NEW) {		   
 		   String site = "https://" + InstanceConfig.getInstance().getPortalServerDomain();
-		   String email = user.email;
+		   String email = user.getPublicIdentifier();
 		   String role = user.role.toString();
 		   
-		   AccessLog.log("send admin notification mail: "+user.email);	   
+		   AccessLog.log("send admin notification mail: "+user.getPublicIdentifier());	   
 	  	   Messager.sendTextMail(InstanceConfig.getInstance().getAdminEmail(), user.firstname+" "+user.lastname, "New MIDATA User", adminnotify.render(site, email, role).toString());
 	   }
 	}
@@ -891,6 +892,7 @@ public class Application extends APIController {
 				
 				//Research
 				controllers.research.routes.javascript.Researchers.register(),
+				controllers.research.routes.javascript.Researchers.registerOther(),
 				controllers.research.routes.javascript.Researchers.login(),
 				controllers.research.routes.javascript.Studies.create(),
 				controllers.research.routes.javascript.Studies.list(),
@@ -950,6 +952,7 @@ public class Application extends APIController {
 				
 				controllers.admin.routes.javascript.Administration.register(),
 				controllers.admin.routes.javascript.Administration.changeStatus(),
+				controllers.admin.routes.javascript.Administration.changeUserEmail(),
 				controllers.admin.routes.javascript.Administration.addComment(),
 				controllers.admin.routes.javascript.Administration.adminWipeAccount(),
 				controllers.admin.routes.javascript.Administration.deleteStudy(),

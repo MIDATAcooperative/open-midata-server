@@ -30,7 +30,8 @@
     "actions" : "Actions",
     "participants" : "Participants",
     "records" : "Records",
-    "results" : "Results"
+    "results" : "Results",
+    "team" : "Team"
   },
   
   "studies" : {
@@ -50,8 +51,9 @@
     "add_task_btn" : "Add Task for Participants",
     "plugin" : "Research Application",
     "device" : "Device Code",
-    "restrict" : "Restrict Read to Group",
-    "add_application_btn" : "Add Study Data Providing Application",
+    "restrict" : "Restrict read to group",
+    "shareback" : "Application shares data to participant group",
+    "add_application_btn" : "Add Research Application",
     "linked_apps" : "Applications Consents"
   },
   
@@ -134,5 +136,16 @@
     "terms_of_use" : "Terms",
     "show_terms" : "Show Terms",
     "requirements" : "Requirements"
+  },
+  
+  "addresearcher" : {
+    "sign_up" : "Sign Up Researcher",
+    "success" : "A new researcher has been added to your organization."
+  },
+  
+  "studyteam" : {
+    "person" : "Team member",
+    "role" : "Role",
+    "addperson_btn" : "Add Person"
   }
 }

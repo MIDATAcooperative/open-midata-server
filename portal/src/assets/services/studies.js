@@ -2,6 +2,8 @@ angular.module('services')
 .factory('studies', ['server', function(server) {
 	var service = {};
 	
+	service.roles = ["PI","MONITOR"];
+	
 	service.search = function(properties, fields) {
 		var data = {"properties": properties, "fields": fields };
 		return server.post(jsRoutes.controllers.Studies.search().url, JSON.stringify(data));

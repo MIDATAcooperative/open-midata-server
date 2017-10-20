@@ -6,6 +6,7 @@ import java.util.Set;
 import controllers.Circles;
 import models.Consent;
 import models.MidataId;
+import models.enums.ConsentType;
 import models.enums.WritePermissionType;
 import utils.collections.Sets;
 import utils.exceptions.AppException;
@@ -50,8 +51,7 @@ public class ConsentAccessContext extends AccessContext{
 
 	@Override
 	public boolean mustPseudonymize() {
-		// TODO Auto-generated method stub
-		return false;
+		return consent.type.equals(ConsentType.STUDYPARTICIPATION) && consent.ownerName != null && (parent == null || parent.mustPseudonymize());		
 	}
 
 	@Override
@@ -69,6 +69,13 @@ public class ConsentAccessContext extends AccessContext{
 		return consent;
 	}
 
-	
+	public String getOwnerName() {
+		return consent.ownerName;
+	}
+
+	@Override
+	public MidataId getOwner() {
+		return consent.owner;
+	}
 
 }

@@ -412,7 +412,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 					actor.setReference(new Reference("Practitioner/"+actorUser._id.toString()));
 				}
 				actor.setName(actorUser.firstname+" "+actorUser.lastname);
-				actor.setUserId(new Identifier().setValue(actorUser.email));
+				actor.setUserId(new Identifier().setValue(actorUser.getPublicIdentifier()));
 			}
 		}
 		if (modifiedUser != null) {
@@ -431,7 +431,7 @@ public class AuditEventResourceProvider extends ResourceProvider<AuditEvent> imp
 			}
 			
 			aeec.setName(modifiedUser.firstname+" "+modifiedUser.lastname);
-			aeec.setIdentifier(new Identifier().setValue(modifiedUser.email));
+			aeec.setIdentifier(new Identifier().setValue(modifiedUser.getPublicIdentifier()));
 		}
 				
 		if (affectedConsent != null) {

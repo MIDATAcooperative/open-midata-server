@@ -9,5 +9,10 @@ public enum UserGroupType {
 	/**
 	 * A group of healthcare providers
 	 */
-	CARETEAM
+	CARETEAM,
+	
+	/**
+	 * A group of researchers having access to a study
+	 */
+	RESEARCHTEAM
 }

@@ -20,6 +20,7 @@ import models.HealthcareProvider;
 import models.Member;
 import models.MidataId;
 import models.Research;
+import models.ResearchUser;
 import models.Space;
 import models.Study;
 import models.User;
@@ -83,14 +84,14 @@ public class Users extends APIController {
 		
 		// get parameters
 		Map<String, Object> properties = JsonExtraction.extractMap(json.get("properties"));
-		ObjectIdConversion.convertMidataIds(properties, "_id", "developer");
+		ObjectIdConversion.convertMidataIds(properties, "_id", "developer", "organization");
 		Set<String> fields = JsonExtraction.extractStringSet(json.get("fields"));
 		
 		// check authorization
 		
-		if (!getRole().equals(UserRole.ADMIN) && !properties.containsKey("_id") && !properties.containsKey("developer")) properties.put("searchable", true);
+		if (!getRole().equals(UserRole.ADMIN) && !properties.containsKey("_id") && !properties.containsKey("developer") && !properties.containsKey("organization")) properties.put("searchable", true);
 		boolean postcheck = false;		
-		if (!getRole().equals(UserRole.ADMIN) && !properties.containsKey("email") && !properties.containsKey("midataID") && !properties.containsKey("_id") && !properties.containsKey("developer")) {
+		if (!getRole().equals(UserRole.ADMIN) && !properties.containsKey("email") && !properties.containsKey("midataID") && !properties.containsKey("_id") && !properties.containsKey("developer") && !properties.containsKey("organization")) {
 			throw new AuthException("error.notauthorized.action", "Search must be restricted");
 		}
 		UserRole role = null;
@@ -124,9 +125,11 @@ public class Users extends APIController {
 			properties.remove("email");
 		}				
 		
-		List<User> users;
+		List<User> users;		
 		if (role != null && role == UserRole.DEVELOPER) {
 		  users = new ArrayList<User>(Developer.getAll(properties, fields, 100));
+		} else if (role != null && role == UserRole.RESEARCH) {
+		  users = new ArrayList<User>(ResearchUser.getAll(properties, fields, 100));		
 		} else {
 		  users = new ArrayList<User>(Member.getAll(properties, fields, 100));
 		}
@@ -157,9 +160,11 @@ public class Users extends APIController {
 	@APICall
 	public static Result getCurrentUser() {
 						
-		ObjectNode obj = Json.newObject();								
-		obj.put("role", PortalSessionToken.session().getRole().toString());
-		obj.put("user", PortalSessionToken.session().getUserId().toString());
+		ObjectNode obj = Json.newObject();	
+		PortalSessionToken session = PortalSessionToken.session();
+		obj.put("role", session.getRole().toString());
+		obj.put("user", session.getUserId().toString());
+		if (session.org != null) obj.put("org", session.org.toString());
 																
 		return ok(obj);
 	}

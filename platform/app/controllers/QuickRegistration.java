@@ -166,7 +166,7 @@ public class QuickRegistration extends APIController {
 		
 		if (notok == null || notok.isEmpty()) {
 		
-			if (study != null) controllers.members.Studies.requestParticipation(user._id, study._id, user.initialApp);
+			if (study != null) controllers.members.Studies.requestParticipation(user._id, user._id, study._id, user.initialApp);
 			
 			if (device != null) {
 			   MobileAppInstance appInstance = MobileAPI.installApp(user._id, app._id, user, device, true, confirmStudy);

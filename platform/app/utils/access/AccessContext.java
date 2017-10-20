@@ -23,6 +23,10 @@ public abstract class AccessContext {
 	
 	public abstract MidataId getTargetAps();
 	
+	public abstract MidataId getOwner();
+	
+	public abstract String getOwnerName();
+	
 	public AccessContext getParent() {
 		return parent;
 	}

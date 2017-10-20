@@ -1,6 +1,7 @@
 package models;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bson.BSONObject;
@@ -60,8 +61,10 @@ public class StudyParticipation extends Consent {
 		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).map("group", group).map("pstatus", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST)), fields);
 	}
 	
-	public static Set<StudyParticipation> getActiveParticipantsByStudyAndGroupsAndParticipant(Set<MidataId> study, Set<String> group, MidataId member, Set<MidataId> owners, Set<String> fields) throws InternalServerException {
-		return Model.getAll(StudyParticipation.class, collection, CMaps.map("type", ConsentType.STUDYPARTICIPATION).map("study", study).mapNotEmpty("group", group).map("pstatus", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST)).map("authorized", member).mapNotEmpty("owner", owners).map("status",  ConsentStatus.ACTIVE).map("ownerName", CMaps.map("$exists", false)), fields);
+	public static Set<StudyParticipation> getActiveParticipantsByStudyAndGroupsAndParticipant(Set<MidataId> study, Set<String> group, MidataId member, Set<MidataId> owners, Set<String> fields, boolean alsoPseudonymized) throws InternalServerException {
+		Map<String, Object> m = CMaps.map("type", ConsentType.STUDYPARTICIPATION).mapNotEmpty("study", study).mapNotEmpty("group", group).map("pstatus", Sets.createEnum(ParticipationStatus.ACCEPTED, ParticipationStatus.REQUEST)).map("authorized", member).mapNotEmpty("owner", owners).map("status",  ConsentStatus.ACTIVE);
+		if (!alsoPseudonymized) m.put("ownerName", CMaps.map("$exists", false));
+		return Model.getAll(StudyParticipation.class, collection, m, fields);
 	}
 	
 	public static Set<StudyParticipation> getActiveParticipantsByStudyAndGroupsAndIds(Set<MidataId> study, Set<String> group, MidataId member, Set<MidataId> owners, Set<String> fields) throws InternalServerException {

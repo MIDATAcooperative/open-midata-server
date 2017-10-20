@@ -36,5 +36,13 @@ public class SpaceAccessContext extends AccessContext {
 	public boolean isIncluded(DBRecord record) throws AppException {
 		return false;
 	}
+	@Override
+	public String getOwnerName() {		
+		return null;
+	}
+	@Override
+	public MidataId getOwner() {
+		return cache.getAccountOwner();
+	}
 
 }

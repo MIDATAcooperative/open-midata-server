@@ -207,11 +207,12 @@ class QueryEngine {
     	Feature qm = null;
     	MidataId userGroup = Feature_UserGroups.identifyUserGroup(cache, aps);
     	if (userGroup != null) {
+    		properties = new HashMap<String, Object>(properties);
     		properties.put("usergroup", userGroup);
-    		qm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))));
+    		qm = new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))));
     	} else {    	
     	   APS target = cache.getAPS(aps);    	
-    	   qm = new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams())))))))))));
+    	   qm = new Feature_BlackList(target, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_Versioning(new Feature_UserGroups(new Feature_Prefetch(new Feature_Indexes(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Consents(new Feature_Streams()))))))))))));
     	}
     	List<DBRecord> result = query(properties, fields, aps, context, cache, qm);
     	
@@ -433,7 +434,8 @@ class QueryEngine {
 			if (record.meta != null && (minTime == 0 || record.time ==0 || record.time >= minTime)) {
 			  RecordEncryption.decryptRecord(record);
 			  if (!record.meta.containsField("creator")) record.meta.put("creator", record.owner);
-			} else {compress++;record.meta=null;}						
+			} else {compress++;record.meta=null;}
+			AccessLog.log("on="+record.meta.get("ownerName"));
 		}
     	     	
     	if (compress > 0) {

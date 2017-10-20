@@ -351,6 +351,10 @@
 	   "NONMEMBERUSER" : "Validated Account Holder",
 	   "MEMBEROFCOOPERATIVE" : "Member of Cooperative"
 	 },
+	 "researcherrole" : {
+	   "PI" : "Pi",
+	   "MONITOR" : "Monitor"
+	 },
 	 "userstatus" : {
 	   "ACTIVE" : "Active",
 	   "BLOCKED" : "Blocked",
@@ -1020,7 +1024,8 @@
     "HEALTHCARE" : "Consent (Healthcare)",
     "MEMBER" : "Account",
     "PROVIDER" : "Account (Healthcare)",
-    "RESEARCH" : "Account (Researcher)"
+    "RESEARCH" : "Account (Researcher)",
+    "ADMIN" : "Account (Admin)"
   },
   
   "apps" : {
@@ -1030,6 +1035,17 @@
     "count" : "You have {{count}} connected apps:",
     "services" : "Services",
     "connect_btn" : "Connect"       
+  },
+  
+  "changeemail" : {
+    "title" : "Change Account eMail Address",
+    "midataId" : "Midata ID",
+    "name" : "Name",
+    "old_email" : "Current eMail Address",
+    "new_email" : "New eMail Address",
+    "none" : "None",
+    "change_btn" : "Change",
+    "success" : "EMail address successfully changed!"
   }
     
 }

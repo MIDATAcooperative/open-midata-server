@@ -122,6 +122,16 @@ public  abstract class ResourceProvider<T extends DomainResource> implements IRe
 	}
 	
 	/**
+	 * Retrives ExecutionInfo for current thread or default instance
+	 * @return ExecutionInfo
+	 */
+	public static ExecutionInfo info(MidataId executor) throws InternalServerException {
+		ExecutionInfo inf = tinfo.get();
+		if (inf == null) return new ExecutionInfo(executor);
+		return inf;
+	}
+	
+	/**
 	 * Returns the class of FHIR resources provided by this resource provider
 	 * @return Subclass of BaseResource 
 	 */

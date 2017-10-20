@@ -96,7 +96,7 @@ public class PersonResourceProvider extends ResourceProvider<Person> implements 
 		//p.setBirthDate(member.birthday);
 		//p.addIdentifier().setSystem("http://midata.coop/midataID").setValue(member.midataID);
 		p.setGender(AdministrativeGender.valueOf(userToConvert.gender.toString()));
-		p.addTelecom().setSystem(ContactPointSystem.EMAIL).setValue(userToConvert.email);
+		if (userToConvert.email != null) p.addTelecom().setSystem(ContactPointSystem.EMAIL).setValue(userToConvert.email);
 		if (userToConvert.phone != null && userToConvert.phone.length()>0) {
 			p.addTelecom().setSystem(ContactPointSystem.PHONE).setValue(userToConvert.phone);
 		}

@@ -33,7 +33,7 @@ angular.module('portal')
          }
          
          var call = { method: $scope.type, url: url, data : body }; 
-         if ($scope.authheader) call.headers = { "Authorization" : $scope.authheader };
+         if ($scope.authheader) call.headers = { "Authorization" : $scope.authheader, "Prefer" : "return=representation" };
 
          $scope.results = "Processing request...";
         

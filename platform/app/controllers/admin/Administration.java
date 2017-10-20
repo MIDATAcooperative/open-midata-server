@@ -48,6 +48,7 @@ import utils.RuntimeConstants;
 import utils.access.RecordManager;
 import utils.audit.AuditManager;
 import utils.auth.AdminSecured;
+import utils.auth.AnyRoleSecured;
 import utils.auth.CodeGenerator;
 import utils.auth.KeyManager;
 import utils.auth.PortalSessionToken;
@@ -234,6 +235,54 @@ public class Administration extends APIController {
 		
 		User targetUser = User.getById(userId, User.ALL_USER);
 		AuditManager.instance.addAuditEvent(AuditEventType.INTERNAL_COMMENT, null, executorId, targetUser, comment);
+		AuditManager.instance.success();
+		//targetUser.addHistory(new History(EventType.INTERNAL_COMMENT, admin, comment));
+		
+		return ok();
+	}
+	
+	/**
+	 * change email address for user
+	 * @return 200 ok
+	 * @throws AppException
+	 */
+	@BodyParser.Of(BodyParser.Json.class)
+	@APICall
+	@Security.Authenticated(AnyRoleSecured.class)
+	public static Result changeUserEmail() throws AppException {
+		
+		
+		JsonNode json = request().body().asJson();		
+		JsonValidation.validate(json, "user", "email");
+							
+		MidataId userId = JsonValidation.getMidataId(json, "user");
+		String email = JsonValidation.getEMail(json, "email");
+		
+		MidataId executorId = new MidataId(request().username());
+		
+		//Check authorization except for change self
+		if (!executorId.equals(userId)) {
+		  requireSubUserRole(SubUserRole.USERADMIN);
+		}
+		
+		User targetUser = User.getById(userId, User.ALL_USER);
+		if (targetUser.email != null && targetUser.email.equals(email)) return ok();
+		
+		AuditManager.instance.addAuditEvent(AuditEventType.USER_EMAIL_CHANGE, null, executorId, targetUser, targetUser.email + " -> "+email);
+		
+		if (User.exists(CMaps.map("emailLC", email.toLowerCase()).map("role", targetUser.role))) {
+			throw new BadRequestException("error.exists.user", "A person with this email already exists.");
+		}
+		
+		targetUser.email = email;
+		targetUser.emailLC = email.toLowerCase();
+		targetUser.emailStatus = EMailStatus.UNVALIDATED;
+		
+		targetUser.set("email", targetUser.email);
+		targetUser.set("emailLC", targetUser.emailLC);
+		targetUser.set("emailStatus", targetUser.emailStatus);
+		Application.sendWelcomeMail(targetUser);
+		
 		AuditManager.instance.success();
 		//targetUser.addHistory(new History(EventType.INTERNAL_COMMENT, admin, comment));
 		
