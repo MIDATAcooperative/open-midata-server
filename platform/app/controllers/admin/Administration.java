@@ -28,6 +28,7 @@ import models.ResearchUser;
 import models.Space;
 import models.Study;
 import models.User;
+import models.UserGroupMember;
 import models.enums.AccountSecurityLevel;
 import models.enums.AuditEventType;
 import models.enums.ConsentType;
@@ -300,7 +301,7 @@ public class Administration extends APIController {
 							
 		MidataId userId = JsonValidation.getMidataId(json, "user");
 		
-		User selected = User.getById(userId, Sets.create("status"));
+		User selected = User.getById(userId, User.ALL_USER);
 		if (!selected.status.equals(UserStatus.DELETED)) throw new BadRequestException("error.invalid.status",  "User must have status deleted to be wiped.");
 		
 		Set<Space> spaces = Space.getAllByOwner(userId, Space.ALL);
@@ -322,16 +323,21 @@ public class Administration extends APIController {
 			Consent.set(consent._id, "authorized", consent.authorized);			
 		}
 		
+		Set<UserGroupMember> ugs = UserGroupMember.getAllByMember(userId);
+		for (UserGroupMember ug : ugs) {
+			AccessPermissionSet.delete(ug._id);
+			ug.delete();
+		}
 		
-		
+				
 		if (getRole().equals(UserRole.RESEARCH)) {
-			Set<Study> studies = Study.getByOwner(PortalSessionToken.session().org, Sets.create("_id"));
+			/*Set<Study> studies = Study.getByOwner(PortalSessionToken.session().org, Sets.create("_id"));
 			
 			for (Study study : studies) {
 				controllers.research.Studies.deleteStudy(userId, study._id, true);
-			}
+			}*/
 			
-			Research.delete(PortalSessionToken.session().org);			
+			
 			
 		}
 		
@@ -341,6 +347,11 @@ public class Administration extends APIController {
 		
 		KeyManager.instance.deleteKey(userId);
 		User.delete(userId);
+		
+		/*if (!User.exists(CMaps.map("organization", PortalSessionToken.session().org))) {
+			  Research.delete(PortalSessionToken.session().org);			
+		}*/
+		
 		return ok();
 	}
 	

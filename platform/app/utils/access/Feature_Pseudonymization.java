@@ -36,7 +36,7 @@ public class Feature_Pseudonymization extends Feature {
 		boolean oname = q.returns("ownerName");
 		if (q.returns("owner") || oname) {
 			for (DBRecord r : result) {
-				AccessLog.log("onyes="+oname+" must="+r.context.mustPseudonymize()+" on="+r.context.getOwnerName());
+				//AccessLog.log("onyes="+oname+" must="+r.context.mustPseudonymize()+" on="+r.context.getOwnerName());
 				if (r.context.mustPseudonymize()) {
 					r.owner = r.context.getTargetAps();
 
@@ -54,7 +54,7 @@ public class Feature_Pseudonymization extends Feature {
 
 				} else r.owner = r.context.getOwner();
 				
-				AccessLog.log("on2="+r.meta.get("ownerName"));
+				//AccessLog.log("on2="+r.meta.get("ownerName"));
 			}
 		}
 

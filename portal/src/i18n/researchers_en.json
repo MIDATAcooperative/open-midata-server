@@ -14,7 +14,8 @@
   "researcher_navbar" : {
     "studies" : "Studies",
     "workspace" : "Workspace",
-    "data" : "Data"
+    "data" : "Data",
+    "addresearcher" : "Add Researcher"
   },
   
   "createstudy" : {

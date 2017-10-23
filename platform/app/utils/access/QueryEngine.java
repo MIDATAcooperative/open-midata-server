@@ -145,7 +145,7 @@ class QueryEngine {
 		}
 		
 		
-		Feature qm = new Feature_Prefetch(new Feature_BlackList(myaps, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_UserGroups(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Streams()))))))));
+		Feature qm = new Feature_Prefetch(new Feature_BlackList(myaps, new Feature_QueryRedirect(new Feature_FormatGroups(new Feature_ProcessFilters(new Feature_Pseudonymization(new Feature_UserGroups(new Feature_AccountQuery(new Feature_ConsentRestrictions(new Feature_Streams())))))))));
 				
 		List<DBRecord> recs = qm.query(q);
 		recs = postProcessRecords(q.getProperties(), recs);
@@ -154,7 +154,7 @@ class QueryEngine {
 			if (record.isStream) {				
 				q.getCache().getAPS(record._id, record.key, record.owner); // Called to make sure stream is accessible
 				
-				Collection<RecordsInfo> streaminfo = infoQuery(new Query(q, CMaps.map("stream", record._id)), record._id, !doNotCacheInStreams, aggrType, record.owner);
+				Collection<RecordsInfo> streaminfo = infoQuery(new Query(q, CMaps.map("stream", record._id).map("owner", record.owner)), record._id, !doNotCacheInStreams, aggrType, record.owner);
 				
 				for (RecordsInfo inf : streaminfo) {
 					if (record.owner != null) inf.owners.add(record.owner.toString());
@@ -434,8 +434,7 @@ class QueryEngine {
 			if (record.meta != null && (minTime == 0 || record.time ==0 || record.time >= minTime)) {
 			  RecordEncryption.decryptRecord(record);
 			  if (!record.meta.containsField("creator")) record.meta.put("creator", record.owner);
-			} else {compress++;record.meta=null;}
-			AccessLog.log("on="+record.meta.get("ownerName"));
+			} else {compress++;record.meta=null;}			
 		}
     	     	
     	if (compress > 0) {

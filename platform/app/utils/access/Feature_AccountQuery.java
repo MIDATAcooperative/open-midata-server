@@ -209,7 +209,12 @@ public class Feature_AccountQuery extends Feature {
 				}
 			}
 			if (!owners.isEmpty()) {
-				consents = Consent.getAllActiveByAuthorizedAndOwners(q.getCache().getAccountOwner(), owners);
+				long limit = 0;
+				if (q.restrictedBy("created-after")) limit = q.getMinCreatedTimestamp();
+				if (q.restrictedBy("updated-after")) limit = q.getMinUpdatedTimestamp();				
+				if (q.restrictedBy("shared-after")) limit = q.getMinSharedTimestamp();
+				
+				consents = q.getCache().getAllActiveByAuthorizedAndOwners(owners, limit);
 				//if (consents.size() < owners.size()) consents.addAll(Consent.getByIdsAndAuthorized(owners, q.getCache().getAccountOwner(), Sets.create("name", "order", "owner", "type", "ownerName")));
 			}
 		}

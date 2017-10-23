@@ -1,9 +1,11 @@
 package utils.access;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,6 +30,7 @@ public class APSCache {
 	private MidataId accountOwner;
 	
 	private Map<MidataId, Consent> consentCache;
+	private Map<MidataId, MidataId[]> ownerToConsent;
 	
 	private Set<MidataId> touchedConsents = null;
 	private Set<MidataId> touchedAPS = null;
@@ -167,8 +170,35 @@ public class APSCache {
 		return consents;
 	}
 	
+	public Set<Consent> getAllActiveByAuthorizedAndOwners(Set<MidataId> owners, long limit) throws InternalServerException {
+		if (owners.size() == 1) {
+			if (ownerToConsent == null) ownerToConsent = new HashMap<MidataId,MidataId[]>();
+			MidataId owner = owners.iterator().next();
+			MidataId[] consents = ownerToConsent.get(owner);
+			if (consents != null) {
+			  Set<Consent> result = new HashSet<Consent>(consents.length);
+			  for (MidataId id : consents) result.add(getConsent(id));
+			  return result;
+			} else {
+			  Set<Consent> result = Consent.getAllActiveByAuthorizedAndOwners(getAccountOwner(), owners);
+			  cache(result);
+			  MidataId[] ids = new MidataId[result.size()];
+			  int idx = 0;
+			  for (Consent c : result) { ids[idx] = c._id;idx++; }
+			  ownerToConsent.put(owner, ids);
+			  return result;
+			}
+		}
+				
+		Set<Consent> result = Consent.getAllActiveByAuthorizedAndOwners(getAccountOwner(), owners);
+		cache(result);
+		return result;
+		
+	}
+	
 	public void resetConsentCache() {
 		consentLimit = -1;
+		ownerToConsent = null;
 		consentCache.clear();
 	}
 	

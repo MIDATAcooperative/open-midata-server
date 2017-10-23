@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import actions.APICall;
+import models.AccessPermissionSet;
 import models.Circle;
 import models.Consent;
 import models.Developer;
@@ -24,6 +25,7 @@ import models.ResearchUser;
 import models.Space;
 import models.Study;
 import models.User;
+import models.UserGroupMember;
 import models.enums.AuditEventType;
 import models.enums.ContractStatus;
 import models.enums.EventType;
@@ -403,12 +405,18 @@ public class Users extends APIController {
 			Consent.set(consent._id, "authorized", consent.authorized);			
 		}
 		
+		Set<UserGroupMember> ugs = UserGroupMember.getAllByMember(userId);
+		for (UserGroupMember ug : ugs) {
+			AccessPermissionSet.delete(ug._id);
+			ug.delete();
+		}
+		
 		RecordManager.instance.clearIndexes(userId);
 		
 		RecordManager.instance.wipe(userId, CMaps.map("owner", "self"));
 		RecordManager.instance.wipe(userId, CMaps.map("owner", "self").map("streams", "true"));
 		
-		if (getRole().equals(UserRole.RESEARCH)) {
+		/*if (getRole().equals(UserRole.RESEARCH)) {
 			Set<Study> studies = Study.getByOwner(PortalSessionToken.session().org, Sets.create("_id"));
 			
 			for (Study study : studies) {
@@ -417,11 +425,11 @@ public class Users extends APIController {
 			
 			Research.delete(PortalSessionToken.session().org);			
 			
-		}
+		}*/
 		
-		if (getRole().equals(UserRole.PROVIDER)) {
+		/*if (getRole().equals(UserRole.PROVIDER)) {
 			HealthcareProvider.delete(PortalSessionToken.session().org);
-		}
+		}*/
 		
 		KeyManager.instance.deleteKey(userId);
 		User.delete(userId);
